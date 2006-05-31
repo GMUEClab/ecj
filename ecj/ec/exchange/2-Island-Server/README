@@ -1,0 +1,33 @@
+[If you're looking for a simple example of doing an island
+model, don't look here -- look instead in 3-Island.]
+
+This model is a special example of how to create a server
+that's not actually a client program -- the process
+SOLELY exists to be a server.  Why would you want to do this?
+Well, we were running on a beowulf cluster maintained by a 
+company that wouldn't allow us to know beforehand exactly
+what the IP address was of *any* node.  (They were using a
+queueing system, argh).  We got around this by putting our
+clients out on the cluster, but having a dedicated machine
+with a known IP address as the server.  The company permitted
+this because the server doesn't have almost any network traffic
+going to it -- it's just for synchronization.
+
+So in this example we'll have two islands, Minoa and Crete,
+using minoa.params and crete.params, plus a separate server 
+(in server.params).  You need to launch the server differently
+than you'd normally launch an ECJ process.  What you do here
+is launch the server as:
+
+	java ec.exchange.IslandExchange -file server.params
+
+...which starts off on a special main() function which just
+sets up some basic stuff to be a server.  It's a real hack
+though.  :-(
+
+As always, if you'd like to run the clients on the same
+machine, you'll need to tweak the parameter files so that
+each has a different client port.  The parameter to modify
+is:
+	exch.client-port = 9030
+

@@ -1,0 +1,43 @@
+Before you do anything else, please read the file "LICENSE",
+located in this directory. It contains the software license
+you are bound to if you wish to use this software -- note that
+the license is not *quite* your normal open source license;
+it requires you to make certain admissions about using ECJ in
+your published research work.
+
+Additionally, please see the following important files:
+
+docs/index.html         ECJ documentation.  Start here.
+LICENSE			ECJ's license
+CHANGES			Change log.  Very important!
+ABOUT.JDK13		How to deal with Sun's not-so-sharp
+			decisions with regard to JDK 1.3
+Makefile		Useful if you're running under UNIX
+
+
+ECJ has two modules which rely on external facilities.  They
+are both optional, but you need to delete the directories or
+otherwise turn those features off in the Makefile:
+
+- The teambots package relies on the Teambots simulator 
+  from teambots.org.  As we're mostly using ECJ with MASON to
+  do our simulations in-house now this package may soon go
+  away unless we hear from others.  At any rate, you can get
+  rid of it simply by deleting the ec/teambots directory.
+
+- The GUI system relies in part on the JFreeChart and iText
+  facilities from jfreechart.org (add the jfreechart*.jar and
+  jcommon*.jar files to your CLASSPATH) and from
+  http://www.lowagie.com/iText/ (add the itext*.jar file to
+  your CLASSPATH).  The system does not require them but you
+  will not be able to compile the charting facility without
+  them.
+
+
+Thanks,
+Sean Luke
+ECLab, Department of Computer Science
+George Mason University
+
+ECJ:	http://cs.gmu.edu/~eclab/projects/ecj/
+ECLab:	http://cs.gmu.edu/~eclab/

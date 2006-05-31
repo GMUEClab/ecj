@@ -1,0 +1,29 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0		= ../../simple/simple.params
+pop.subpop.0.size = 100
+generations = 200
+
+pop.subpop.0.species		= ec.vector.IntegerVectorSpecies
+pop.subpop.0.species.ind	= ec.vector.IntegerVectorIndividual
+pop.subpop.0.species.min-gene	= -12312
+pop.subpop.0.species.max-gene 	= 2341212	
+pop.subpop.0.species.genome-size	= 20
+pop.subpop.0.species.crossover-type	= two
+pop.subpop.0.species.crossover-prob	= 1.0
+pop.subpop.0.species.mutation-prob	= 0.05
+
+# Use our own custom mutation class
+pop.subpop.0.species.pipe = ec.app.tutorial2.OurMutatorPipeline
+pop.subpop.0.species.pipe.source.0	= ec.vector.breed.VectorCrossoverPipeline
+# Toss the second child
+pop.subpop.0.species.pipe.source.0.toss = true
+pop.subpop.0.species.pipe.source.0.source.0 = ec.select.FitProportionateSelection
+pop.subpop.0.species.pipe.source.0.source.1 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.1.size = 5
+# Pick the worst individual in the tournament
+pop.subpop.0.species.pipe.source.0.source.1.pick-worst = true
+
+eval.problem            = ec.app.tutorial2.AddSubtract

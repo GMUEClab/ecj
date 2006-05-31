@@ -1,0 +1,33 @@
+This directory contains the code for running the ECJ master/slave
+evaluator.  The master/slave evaluator allows you to connect one ECJ
+evolution process with some N remove slave processes.  These processes
+can come on-line at any time, and you can add new processes at any
+time, perhaps if new machines come available, or to replace slaves
+which have died for some reason.
+
+Slaves' random number generators are based on the wall clock time
+(they're each given a different seed by the master), regardless of
+their seeds in their parameter files.
+
+You can use the master/slave evaluator in conjunction with island 
+models to connect each island to its own private group of N slaves,
+though we have no examples for that in the distribution.
+
+Read the master.params file for information about the various parameter
+options.  
+
+Typical params files for the master and for the slaves are illustrated in
+the ec/app/star directory.
+
+
+You fire up the master something like this:
+
+java ec.Evolve -file foo.master.params
+
+
+You fire up each of the N slaves something like this:
+
+java ec.eval.Slave -file foo.slave.params
+
+...and it should all nicely work!  The system works fine under 
+checkpointing as far as we know.

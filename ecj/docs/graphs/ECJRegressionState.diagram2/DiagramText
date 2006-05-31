@@ -1,0 +1,4760 @@
+#!DG_TEXT-Version-2
+# D2 Version: Built by spencer on Mon May  1 17:41:27 PDT 1995
+
+
+windowOrigin 142.00 13.00
+viewOrigin 1.00 9.00
+viewSize 775.00 785.00
+visibleOrigin 0.00 0.00
+showTools
+snapToGrid
+defaultFont "Helvetica"
+defaultFontSize 12.00
+printInfoFile "PrintInfo"
+colorFile "Colors.clr"
+
+symbol 2147483647
+	default
+	layer -1
+	shape "Rectangle"
+	location 20.00 20.00
+	size 60.00 30.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 580
+	layer 0
+	shape "Rectangle"
+	location 540.00 2187.00
+	size 99.00 45.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Array of sources feeding the pipeline (acutally one source)
+}
+
+	textPlacement top
+end
+
+symbol 578
+	layer 1
+	shape "Rectangle"
+	location 513.00 2115.00
+	size 27.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 . . .
+}
+
+	textPlacement top
+end
+
+symbol 577
+	layer 2
+	shape "Rectangle"
+	location 549.00 2124.00
+	size 72.00 54.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.\
+GPBreeding\
+Source: 
+\b0 ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 576
+	layer 3
+	shape "Rectangle"
+	location 540.00 2115.00
+	size 72.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement top
+end
+
+symbol 575
+	layer 4
+	shape "Rectangle"
+	location 531.00 2106.00
+	size 72.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement top
+end
+
+symbol 567
+	layer 5
+	shape "Rectangle"
+	location 342.00 2223.00
+	size 63.00 54.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Tournament size
+}
+
+	textPlacement middle
+end
+
+symbol 566
+	layer 6
+	shape "Circle"
+	location 324.00 2246.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 554
+	layer 12
+	shape "Rectangle"
+	location 432.00 2178.00
+	size 108.00 36.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Selects points in the old individual to replace with a new subtree.
+}
+
+	textPlacement top
+end
+
+symbol 552
+	layer 13
+	shape "Rectangle"
+	location 639.00 2178.00
+	size 81.00 45.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Grows new subtrees for the mutation process
+}
+
+	textPlacement top
+end
+
+symbol 550
+	layer 14
+	shape "Rectangle"
+	location 612.00 2214.00
+	size 108.00 54.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 The maximum valid depth of a newly-bred individual
+}
+
+	textPlacement middle
+end
+
+symbol 549
+	layer 15
+	shape "Circle"
+	location 603.00 2237.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 547
+	layer 16
+	shape "Rectangle"
+	location 450.00 2223.00
+	size 135.00 36.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 How many times to try to breed a valid individual before giving up and just copying the old one.
+}
+
+	textPlacement middle
+end
+
+symbol 546
+	layer 17
+	shape "Circle"
+	location 441.00 2237.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 544
+	layer 18
+	shape "Rectangle"
+	location 630.00 2106.00
+	size 81.00 63.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.koza. GrowBuilder:
+\b0  ec.gp.\
+GPNodeBuilder: ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 542
+	layer 19
+	shape "Rectangle"
+	location 432.00 2106.00
+	size 81.00 63.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.koza.Koza\
+NodeSelector:
+\b0  ec.gp.\
+GPNodeSelector: ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 540
+	layer 20
+	shape "Rectangle"
+	location 423.00 2079.00
+	size 297.00 189.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i\ulnone\qc\fs16\fc0\cf0 (example) 
+\i0 ec.gp.koza.MutationPipeline: 
+\b0 ec.gp.GPBreedingPipeline: ec.BreedingSource: ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 538
+	layer 21
+	shape "Rectangle"
+	location 342.00 2169.00
+	size 63.00 63.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Probability of being picked as the parent's breeding source
+}
+
+	textPlacement middle
+end
+
+symbol 537
+	layer 22
+	shape "Circle"
+	location 324.00 2192.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 532
+	layer 26
+	shape "Rectangle"
+	location 315.00 2079.00
+	size 90.00 189.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i\ulnone\qc\fs16\fc0\cf0 (example) 
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\i0\qc\fc0\cf0 ec.select.\
+Tournament Selection: 
+\b0 ec.SelectionMethod: ec.BreedingSource: ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 530
+	layer 27
+	shape "Rectangle"
+	location 117.00 2178.00
+	size 171.00 72.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 An array of either 
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\b\fc0\cf0 ec.SelectionMethod
+\b0 s (like: 
+\b e
+c
+.
+s
+e
+l
+e
+c
+t
+.
+T
+o
+u
+r
+n
+a
+m
+e
+n
+t
+S
+e
+l
+e
+c
+t
+i
+o
+n
+)
+ 
+\b0 or 
+\b ec.gp.GPBreedingPipeline
+\b0 s which feed individuals into this pipeline.  Here's an example which does Koza-style "point mutation": 
+\b e
+c
+.
+g
+p
+.
+k
+o
+z
+a
+.
+M
+u
+t
+a
+t
+i
+o
+n
+P
+i
+p
+e
+l
+i
+n
+e
+}
+
+	textPlacement top
+end
+
+symbol 528
+	layer 28
+	shape "Rectangle"
+	location 144.00 2241.00
+	size 126.00 27.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Probability of being picked as the parent's breeding source
+}
+
+	textPlacement middle
+end
+
+symbol 527
+	layer 29
+	shape "Circle"
+	location 126.00 2246.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 525
+	layer 30
+	shape "Rectangle"
+	location 126.00 2115.00
+	size 27.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 . . .
+}
+
+	textPlacement top
+end
+
+symbol 524
+	layer 31
+	shape "Rectangle"
+	location 162.00 2124.00
+	size 99.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.\
+GPBreedingSource: 
+\b0 ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 523
+	layer 32
+	shape "Rectangle"
+	location 153.00 2115.00
+	size 99.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement top
+end
+
+symbol 522
+	layer 33
+	shape "Rectangle"
+	location 144.00 2106.00
+	size 99.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement top
+end
+
+symbol 520
+	layer 34
+	shape "Rectangle"
+	location 108.00 2079.00
+	size 180.00 189.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.BreedingPipeline: 
+\b0 ec.BreedingSource: ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 518
+	layer 35
+	shape "Rectangle"
+	location 603.00 1998.00
+	size 117.00 54.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Argument types for the children to this kind of node.  Regression is typeless, so these are all the same 
+\b ec.gp.GPAtomicType
+}
+
+	textPlacement top
+end
+
+symbol 516
+	layer 36
+	shape "Rectangle"
+	location 504.00 1980.00
+	size 90.00 63.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 The return type for this kind of node.  Regression is typeless, so this is a solitary 
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\b\fc0\cf0 ec.gp. GPAtomicType
+}
+
+	textPlacement top
+end
+
+symbol 514
+	layer 37
+	shape "Rectangle"
+	location 441.00 1989.00
+	size 54.00 36.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Constraints name
+}
+
+	textPlacement middle
+end
+
+symbol 513
+	layer 38
+	shape "Circle"
+	location 432.00 2003.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 511
+	layer 39
+	shape "Rectangle"
+	location 594.00 1935.00
+	size 27.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 . . .
+}
+
+	textPlacement top
+end
+
+symbol 509
+	layer 40
+	shape "Rectangle"
+	location 504.00 1926.00
+	size 81.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.GPType: 
+\b0 ec.Clique: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 507
+	layer 41
+	shape "Rectangle"
+	location 630.00 1944.00
+	size 81.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.GPType: 
+\b0 ec.Clique: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 505
+	layer 42
+	shape "Rectangle"
+	location 621.00 1935.00
+	size 81.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement top
+end
+
+symbol 503
+	layer 43
+	shape "Rectangle"
+	location 612.00 1926.00
+	size 81.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement top
+end
+
+symbol 501
+	layer 44
+	shape "Rectangle"
+	location 441.00 1944.00
+	size 54.00 36.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Constraints index
+}
+
+	textPlacement middle
+end
+
+symbol 500
+	layer 45
+	shape "Circle"
+	location 432.00 1958.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 498
+	layer 46
+	shape "Rectangle"
+	location 423.00 1908.00
+	size 297.00 144.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.GPNodeConstraints: 
+\b0 ec.Clique: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 496
+	layer 47
+	shape "Rectangle"
+	location 342.00 1971.00
+	size 108.00 72.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Type index
+}
+
+	textPlacement middle
+end
+
+symbol 495
+	layer 48
+	shape "Circle"
+	location 324.00 2003.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 493
+	layer 49
+	shape "Rectangle"
+	location 342.00 1926.00
+	size 108.00 72.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Type name
+}
+
+	textPlacement middle
+end
+
+symbol 492
+	layer 50
+	shape "Circle"
+	location 324.00 1958.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 490
+	layer 51
+	shape "Rectangle"
+	location 315.00 1908.00
+	size 90.00 144.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.GPType: 
+\b0 ec.Clique: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 488
+	layer 52
+	shape "Rectangle"
+	location 450.00 1845.00
+	size 126.00 27.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Child arguments to this node.
+}
+
+	textPlacement top
+end
+
+symbol 486
+	layer 53
+	shape "Rectangle"
+	location 333.00 1827.00
+	size 99.00 45.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 My node parent, ether another GPNode, or (if I'm the root), a GPTree
+}
+
+	textPlacement top
+end
+
+symbol 484
+	layer 54
+	shape "Rectangle"
+	location 603.00 1800.00
+	size 108.00 90.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 The node's shared GPNodeConstraints (a byte index instead of an object to save space)
+}
+
+	textPlacement middle
+end
+
+symbol 483
+	layer 55
+	shape "Circle"
+	location 585.00 1841.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 481
+	layer 56
+	shape "Rectangle"
+	location 603.00 1764.00
+	size 108.00 72.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Argument position of this node in its parent (byte)
+}
+
+	textPlacement middle
+end
+
+symbol 480
+	layer 57
+	shape "Circle"
+	location 585.00 1796.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 476
+	layer 58
+	shape "Rectangle"
+	location 432.00 1791.00
+	size 27.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 . . .
+}
+
+	textPlacement top
+end
+
+symbol 474
+	layer 59
+	shape "Rectangle"
+	location 468.00 1800.00
+	size 81.00 36.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.GPNode:
+\b0  ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 472
+	layer 60
+	shape "Rectangle"
+	location 459.00 1791.00
+	size 81.00 36.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement top
+end
+
+symbol 470
+	layer 61
+	shape "Rectangle"
+	location 450.00 1782.00
+	size 81.00 36.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement top
+end
+
+symbol 468
+	layer 62
+	shape "Rectangle"
+	location 333.00 1782.00
+	size 90.00 36.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.\
+GPNodeParent
+}
+
+	textPlacement top
+end
+
+symbol 466
+	layer 63
+	shape "Rectangle"
+	location 315.00 1755.00
+	size 405.00 126.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.GPNode:
+\b0  ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 464
+	layer 64
+	shape "Rectangle"
+	location 126.00 1917.00
+	size 153.00 99.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 A table of GPFuncInfo objects, each containing a GPNode.  These GPNodes are the prototypical nodes for each function (nonterminal or terminal) in the function set.  In Symbolic Regression, this includes nodes for Sin, Cos, X, +, -, /, *, Log, and ERCs.  These are stored in 
+\b ec.app.regression.func.*
+}
+
+	textPlacement top
+end
+
+symbol 462
+	layer 65
+	shape "Rectangle"
+	location 162.00 2007.00
+	size 90.00 36.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Function Set Name
+}
+
+	textPlacement middle
+end
+
+symbol 461
+	layer 66
+	shape "Circle"
+	location 153.00 2021.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 459
+	layer 67
+	shape "Rectangle"
+	location 162.00 1881.00
+	size 81.00 27.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Prototypical node for this function
+}
+
+	textPlacement top
+end
+
+symbol 457
+	layer 68
+	shape "Rectangle"
+	location 162.00 1836.00
+	size 81.00 36.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.GPNode:
+\b0  ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 455
+	layer 69
+	shape "Rectangle"
+	location 117.00 1791.00
+	size 27.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 . . .
+}
+
+	textPlacement top
+end
+
+symbol 454
+	layer 70
+	shape "Rectangle"
+	location 153.00 1800.00
+	size 99.00 108.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.GPFuncInfo:
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\b0\qc\fc0\cf0  ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 453
+	layer 71
+	shape "Rectangle"
+	location 144.00 1791.00
+	size 99.00 108.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 452
+	layer 72
+	shape "Rectangle"
+	location 135.00 1782.00
+	size 99.00 108.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 450
+	layer 73
+	shape "Rectangle"
+	location 108.00 1755.00
+	size 180.00 297.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.GPFunctionSet:
+\b0  ec.Clique: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 448
+	layer 74
+	shape "Circle"
+	location 15.00 2281.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 447
+	layer 75
+	shape "Rectangle"
+	location 36.00 2232.00
+	size 63.00 63.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b\i0\ulnone\fs16\fc0\cf0 Legend
+\fs8 \
+
+\b0\fs16 Static objects\
+
+\b\fs10 \
+
+\b0\fs16 Instances\
+\
+Data
+}
+
+	textPlacement top
+end
+
+symbol 446
+	layer 76
+	shape "Diamond"
+	location 9.00 2241.00
+	size 18.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 445
+	layer 77
+	shape "Rectangle"
+	location 9.00 2259.00
+	size 18.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 440
+	layer 81
+	shape "Rectangle"
+	location 549.00 1431.00
+	size 90.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b0\i\ulnone\fs16\fc0\cf0 See Additional Page
+}
+
+	textPlacement top
+end
+
+symbol 427
+	layer 85
+	shape "Rectangle"
+	location 648.00 1422.00
+	size 90.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b0\i\ulnone\fs16\fc0\cf0 See Additional Page
+}
+
+	textPlacement top
+end
+
+symbol 404
+	layer 98
+	shape "Rectangle"
+	location 18.00 1476.00
+	size 90.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b0\i\ulnone\fs16\fc0\cf0 See Additional Page
+}
+
+	textPlacement top
+end
+
+symbol 402
+	layer 99
+	shape "Rectangle"
+	location 9.00 1584.00
+	size 90.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b0\i\ulnone\fs16\fc0\cf0 See Additional Page
+}
+
+	textPlacement top
+end
+
+symbol 394
+	layer 100
+	shape "Circle"
+	location 594.00 1238.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 388
+	layer 105
+	shape "Rectangle"
+	location 621.00 1575.00
+	size 90.00 54.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 The return type of this tree.  Regression is typeless, so this is a solitary 
+\b ec.gp. GPAtomicType
+\b0 . 
+}
+
+	textPlacement top
+end
+
+symbol 386
+	layer 106
+	shape "Rectangle"
+	location 513.00 1575.00
+	size 108.00 45.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Responsible for creating initial trees of this kind using ramped half-and-half algorithm.
+}
+
+	textPlacement top
+end
+
+symbol 384
+	layer 107
+	shape "Rectangle"
+	location 432.00 1575.00
+	size 90.00 36.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 The function set for nodes in this tree.
+}
+
+	textPlacement top
+end
+
+symbol 382
+	layer 108
+	shape "Rectangle"
+	location 108.00 1710.00
+	size 477.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 An individual is the fundamental unit of evolution Ð it is the thing that is bred, evaluated, and assigned a fitness.
+}
+
+	textPlacement top
+end
+
+symbol 380
+	layer 109
+	shape "Rectangle"
+	location 252.00 1674.00
+	size 477.00 27.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 The tree forest associated with this individual.  For Symbolic Regression, the tree forest is of size 1.  For ADFs or other purposes, the tree forest is often bigger.
+}
+
+	textPlacement top
+end
+
+symbol 378
+	layer 110
+	shape "Rectangle"
+	location 423.00 1638.00
+	size 288.00 27.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 The constraints for this tree.  This is 
+\i shared
+\i0  with other trees in the same tree-position in other individuals.  The tree does not have a unique copy.
+}
+
+	textPlacement top
+end
+
+symbol 376
+	layer 111
+	shape "Rectangle"
+	location 342.00 1557.00
+	size 72.00 99.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 The individual containing this tree.  This is  a reference pointing to the outside containing individual in this diagram.
+}
+
+	textPlacement top
+end
+
+symbol 374
+	layer 112
+	shape "Rectangle"
+	location 261.00 1557.00
+	size 72.00 27.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 The root node for this tree
+}
+
+	textPlacement top
+end
+
+symbol 372
+	layer 113
+	shape "Rectangle"
+	location 117.00 1539.00
+	size 90.00 63.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 The fitness object for this individual Ð originally copied from the subpopulation's prototype.
+}
+
+	textPlacement top
+end
+
+symbol 369
+	layer 114
+	shape "Rectangle"
+	location 450.00 1593.00
+	size 72.00 36.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Constraints name
+}
+
+	textPlacement middle
+end
+
+symbol 368
+	layer 115
+	shape "Circle"
+	location 441.00 1607.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 341
+	layer 116
+	shape "Rectangle"
+	location 117.00 1296.00
+	size 27.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 . . .
+}
+
+	textPlacement top
+end
+
+symbol 366
+	layer 117
+	shape "Rectangle"
+	location 432.00 1521.00
+	size 72.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.GP\
+FunctionSet: 
+\b0 ec.Clique: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 364
+	layer 118
+	shape "Rectangle"
+	location 621.00 1521.00
+	size 81.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.GPType: 
+\b0 ec.Clique: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 362
+	layer 119
+	shape "Rectangle"
+	location 513.00 1521.00
+	size 99.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.koza.\
+HalfBuilder:
+\b0  ec.gp.GPNodebuilder: ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 360
+	layer 120
+	shape "Rectangle"
+	location 423.00 1503.00
+	size 288.00 126.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.GPTreeConstraints:
+\b0  ec.Clique: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 358
+	layer 121
+	shape "Rectangle"
+	location 342.00 1503.00
+	size 72.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.\
+GPIndividual:
+\b0  ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 356
+	layer 122
+	shape "Rectangle"
+	location 261.00 1503.00
+	size 72.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.\
+GPNode:
+\b0  ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 354
+	layer 123
+	shape "Rectangle"
+	location 216.00 1557.00
+	size 27.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 . . .
+}
+
+	textPlacement top
+end
+
+symbol 353
+	layer 124
+	shape "Rectangle"
+	location 252.00 1485.00
+	size 468.00 180.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.GPTree:
+\b0  ec.Prototype: ec.Setup (also: GPNodeParent)
+}
+
+	textPlacement top
+end
+
+symbol 352
+	layer 125
+	shape "Rectangle"
+	location 243.00 1476.00
+	size 468.00 180.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 351
+	layer 126
+	shape "Rectangle"
+	location 234.00 1467.00
+	size 468.00 180.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 349
+	layer 127
+	shape "Rectangle"
+	location 144.00 1611.00
+	size 81.00 72.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Has this individual been evaluated already?
+}
+
+	textPlacement middle
+end
+
+symbol 348
+	layer 128
+	shape "Circle"
+	location 126.00 1643.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 346
+	layer 129
+	shape "Circle"
+	location 126.00 1508.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 344
+	layer 130
+	shape "Rectangle"
+	location 135.00 1503.00
+	size 99.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0  The raw fitness value
+}
+
+	textPlacement middle
+end
+
+symbol 343
+	layer 131
+	shape "Rectangle"
+	location 117.00 1467.00
+	size 108.00 63.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.koza.\
+KozaFitness:
+\b0  ec.Fitness: ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 339
+	layer 132
+	shape "Rectangle"
+	location 108.00 1449.00
+	size 621.00 252.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.GPIndividual: 
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\b0\qc\fc0\cf0 ec.Individual: ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 337
+	layer 133
+	shape "Rectangle"
+	location 603.00 1233.00
+	size 99.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0  The raw fitness value
+}
+
+	textPlacement middle
+end
+
+symbol 331
+	layer 134
+	shape "Rectangle"
+	location 126.00 1359.00
+	size 153.00 36.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 An array of individuals.  These are the actual individuals evaluated and bred in the evolutionary system.
+}
+
+	textPlacement top
+end
+
+symbol 329
+	layer 135
+	shape "Rectangle"
+	location 270.00 1305.00
+	size 306.00 54.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 The "species" for individuals in this subpopulation.  Defines the prototypical individual from which all the individuals are initially copied, and a set of prototypical breeding pipelines with which to breed individuals into new ones.
+}
+
+	textPlacement top
+end
+
+symbol 327
+	layer 136
+	shape "Rectangle"
+	location 414.00 1215.00
+	size 27.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 . . .
+}
+
+	textPlacement top
+end
+
+symbol 325
+	layer 137
+	shape "Rectangle"
+	location 585.00 1278.00
+	size 135.00 63.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 The prototypical fitness class copied and attached to new individuals or newly-bred individuals.  Implements Koza-style fitness (raw/standardized/adjusted/hits)
+}
+
+	textPlacement top
+end
+
+symbol 323
+	layer 138
+	shape "Rectangle"
+	location 135.00 1233.00
+	size 126.00 45.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 The Filename of the file we read the subpopulation from, if we're doing that instead of initializing randomly.
+}
+
+	textPlacement top
+end
+
+symbol 319
+	layer 139
+	shape "Rectangle"
+	location 450.00 1224.00
+	size 99.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.BreedingPipeline: 
+\b0 ec.BreedingSource: ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 318
+	layer 140
+	shape "Rectangle"
+	location 441.00 1215.00
+	size 99.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 317
+	layer 141
+	shape "Rectangle"
+	location 432.00 1206.00
+	size 99.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 313
+	layer 142
+	shape "Rectangle"
+	location 288.00 1215.00
+	size 99.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.GPIndividual: 
+\b0 ec.Individual: ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 311
+	layer 143
+	shape "Circle"
+	location 315.00 1373.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 310
+	layer 144
+	shape "Rectangle"
+	location 333.00 1350.00
+	size 198.00 54.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 During population initialization, the number of times to retry generation of an individual if it is a duplicate of one already in the Subpopulation
+}
+
+	textPlacement middle
+end
+
+symbol 308
+	layer 145
+	shape "Rectangle"
+	location 153.00 1305.00
+	size 99.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.GPIndividual: 
+\b0 ec.Individual: ec.Prototype: ec.Setup
+}
+
+	textPlacement middle
+end
+
+symbol 307
+	layer 146
+	shape "Rectangle"
+	location 144.00 1296.00
+	size 99.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 306
+	layer 147
+	shape "Rectangle"
+	location 135.00 1287.00
+	size 99.00 45.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 302
+	layer 148
+	shape "Rectangle"
+	location 270.00 1188.00
+	size 297.00 108.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.GPSpecies: 
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\b0\qc\fc0\cf0 ec.Species
+}
+
+	textPlacement top
+end
+
+symbol 300
+	layer 149
+	shape "Rectangle"
+	location 585.00 1188.00
+	size 117.00 81.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.koza.KozaFitness:
+\b0  ec.Fitness: ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 298
+	layer 150
+	shape "Rectangle"
+	location 135.00 1188.00
+	size 117.00 36.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 java.io.File
+}
+
+	textPlacement middle
+end
+
+symbol 296
+	layer 151
+	shape "Circle"
+	location 15.00 1705.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 295
+	layer 152
+	shape "Rectangle"
+	location 36.00 1656.00
+	size 63.00 63.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b\i0\ulnone\fs16\fc0\cf0 Legend
+\fs8 \
+
+\b0\fs16 Static objects\
+
+\b\fs10 \
+
+\b0\fs16 Instances\
+\
+Data
+}
+
+	textPlacement top
+end
+
+symbol 294
+	layer 153
+	shape "Diamond"
+	location 9.00 1665.00
+	size 18.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 293
+	layer 154
+	shape "Rectangle"
+	location 9.00 1683.00
+	size 18.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 291
+	layer 155
+	shape "Rectangle"
+	location 108.00 1170.00
+	size 621.00 243.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.Subpopulation: 
+\b0 ec.Group: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 289
+	layer 156
+	shape "Rectangle"
+	location 108.00 1080.00
+	size 621.00 72.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 An ADF Context holds the current execution context of an ADF function call.  The ADF ("Automatically Defined Function", see Koza-I and Koza-II) called is stored in the context, as is the returned data from its children nodes.  A prototypical data object is also held from which new children results are created if necessary.  This data object is typically the same kind of prototype as the one used in the problem, in this case, 
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\b\fc0\cf0 ec.app.regression.Regression.  
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\b0\fc0\cf0 ADF Contexts are also used for ADMs ("Automatically Defined Macros").  Since Symbolic Regression doesn't have ADFs, this facility is left unused.
+}
+
+	textPlacement top
+end
+
+symbol 287
+	layer 157
+	shape "Rectangle"
+	location 576.00 1026.00
+	size 126.00 27.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 The ADF Node that was executed
+}
+
+	textPlacement top
+end
+
+symbol 285
+	layer 158
+	shape "Rectangle"
+	location 144.00 1026.00
+	size 126.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Prototypical Regression Data
+}
+
+	textPlacement top
+end
+
+symbol 283
+	layer 159
+	shape "Rectangle"
+	location 504.00 981.00
+	size 63.00 36.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Return results from ADF's children
+}
+
+	textPlacement top
+end
+
+symbol 281
+	layer 160
+	shape "Circle"
+	location 360.00 1004.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 280
+	layer 161
+	shape "Rectangle"
+	location 378.00 999.00
+	size 153.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 x:  floating-point return value
+}
+
+	textPlacement middle
+end
+
+symbol 278
+	layer 162
+	shape "Circle"
+	location 144.00 995.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 277
+	layer 163
+	shape "Rectangle"
+	location 162.00 990.00
+	size 153.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 x:  floating-point return value
+}
+
+	textPlacement middle
+end
+
+symbol 270
+	layer 164
+	shape "Rectangle"
+	location 315.00 963.00
+	size 27.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 . . .
+}
+
+	textPlacement top
+end
+
+symbol 269
+	layer 165
+	shape "Rectangle"
+	location 351.00 963.00
+	size 144.00 63.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.RegressionData: 
+\b0 ec.gp.GPData: ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 268
+	layer 166
+	shape "Rectangle"
+	location 342.00 954.00
+	size 144.00 63.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 267
+	layer 167
+	shape "Rectangle"
+	location 333.00 945.00
+	size 144.00 63.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 263
+	layer 168
+	shape "Rectangle"
+	location 135.00 954.00
+	size 144.00 63.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.RegressionData: 
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\b0\qc\fc0\cf0 ec.gp.GPData: ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 261
+	layer 169
+	shape "Rectangle"
+	location 576.00 963.00
+	size 117.00 54.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.ADF: 
+\b0 ec.gp.GPNode: ec.Prototype: ec.Setup
+}
+
+	textPlacement middle
+end
+
+symbol 244
+	layer 175
+	shape "Rectangle"
+	location 108.00 909.00
+	size 621.00 153.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.ADFContext: 
+\b0 ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 242
+	layer 176
+	shape "Rectangle"
+	location 306.00 792.00
+	size 405.00 72.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 A prototypical ADF Stack object, copied once per thread, each time a generation of individuals needs to be evaluated.  ADF Stacks holds current contextual state of ADF function calls in two special stacks of 
+\b ec.gp.ADFContext
+\b0  objects, one ADF Context per pending ADF function call.  A prototypical ADF Context object is copied when new ADFContext objects are needed; old ADFContext objects are held in a Reserve to prevent excessive object construction.  For more information on this complicated mechanism, see the class documentation.  Since Symbolic regression doesn't have ADFs, this facility is left unused.
+}
+
+	textPlacement top
+end
+
+symbol 240
+	layer 177
+	shape "Rectangle"
+	location 648.00 747.00
+	size 63.00 27.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Prototypical ADF Context
+}
+
+	textPlacement top
+end
+
+symbol 238
+	layer 178
+	shape "Rectangle"
+	location 648.00 693.00
+	size 54.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Reserve
+}
+
+	textPlacement top
+end
+
+symbol 236
+	layer 179
+	shape "Rectangle"
+	location 468.00 747.00
+	size 54.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Substack
+}
+
+	textPlacement top
+end
+
+symbol 234
+	layer 180
+	shape "Rectangle"
+	location 531.00 738.00
+	size 99.00 27.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.ADFContext: 
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\b0\qc\fc0\cf0 ec.Prototype: ec.Setup
+}
+
+	textPlacement middle
+end
+
+symbol 232
+	layer 181
+	shape "Rectangle"
+	location 495.00 666.00
+	size 27.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 . . .
+}
+
+	textPlacement top
+end
+
+symbol 231
+	layer 182
+	shape "Rectangle"
+	location 531.00 684.00
+	size 99.00 27.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.ADFContext: 
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\b0\qc\fc0\cf0 ec.Prototype: ec.Setup
+}
+
+	textPlacement middle
+end
+
+symbol 230
+	layer 183
+	shape "Rectangle"
+	location 522.00 675.00
+	size 99.00 27.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 229
+	layer 184
+	shape "Rectangle"
+	location 513.00 666.00
+	size 99.00 27.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 227
+	layer 185
+	shape "Rectangle"
+	location 315.00 666.00
+	size 27.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 . . .
+}
+
+	textPlacement top
+end
+
+symbol 226
+	layer 186
+	shape "Rectangle"
+	location 351.00 684.00
+	size 99.00 27.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.ADFContext: 
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\b0\qc\fc0\cf0 ec.Prototype: ec.Setup
+}
+
+	textPlacement middle
+end
+
+symbol 225
+	layer 187
+	shape "Rectangle"
+	location 342.00 675.00
+	size 99.00 27.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 224
+	layer 188
+	shape "Rectangle"
+	location 333.00 666.00
+	size 99.00 27.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 222
+	layer 189
+	shape "Rectangle"
+	location 315.00 720.00
+	size 27.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 . . .
+}
+
+	textPlacement top
+end
+
+symbol 216
+	layer 190
+	shape "Rectangle"
+	location 351.00 738.00
+	size 99.00 27.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.ADFContext: 
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\b0\qc\fc0\cf0 ec.Prototype: ec.Setup
+}
+
+	textPlacement middle
+end
+
+symbol 214
+	layer 191
+	shape "Rectangle"
+	location 468.00 693.00
+	size 54.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Stack
+}
+
+	textPlacement top
+end
+
+symbol 211
+	layer 192
+	shape "Circle"
+	location 108.00 716.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 210
+	layer 193
+	shape "Rectangle"
+	location 126.00 711.00
+	size 153.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 x:  floating-point return value
+}
+
+	textPlacement middle
+end
+
+symbol 208
+	layer 194
+	shape "Rectangle"
+	location 99.00 792.00
+	size 189.00 90.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 The prototypical data object, copied once per thread, each time a generation of individuals needs to be evaluated, and passed between 
+\b ec.gp.GPNode
+\b0 s to transfer data between then when they are executing.  For Symbolic Regression, this object holds the floating-point value returned by functions.
+}
+
+	textPlacement top
+end
+
+symbol 206
+	layer 195
+	shape "Rectangle"
+	location 99.00 648.00
+	size 189.00 135.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.app.regression. RegressionData: 
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\b0\qc\fc0\cf0 ec.gp.GPData: ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 202
+	layer 196
+	shape "Circle"
+	location 15.00 1129.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 201
+	layer 197
+	shape "Rectangle"
+	location 36.00 1080.00
+	size 63.00 63.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b\i0\ulnone\fs16\fc0\cf0 Legend
+\fs8 \
+
+\b0\fs16 Static objects\
+
+\b\fs10 \
+
+\b0\fs16 Instances\
+\
+Data
+}
+
+	textPlacement top
+end
+
+symbol 200
+	layer 198
+	shape "Diamond"
+	location 9.00 1089.00
+	size 18.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 199
+	layer 199
+	shape "Rectangle"
+	location 9.00 1107.00
+	size 18.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 197
+	layer 200
+	shape "Circle"
+	location 15.00 553.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 195
+	layer 201
+	shape "Circle"
+	location 576.00 266.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 193
+	layer 202
+	shape "Circle"
+	location 576.00 248.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 191
+	layer 203
+	shape "Circle"
+	location 576.00 230.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 189
+	layer 204
+	shape "Circle"
+	location 576.00 212.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 187
+	layer 205
+	shape "Circle"
+	location 576.00 194.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 185
+	layer 206
+	shape "Circle"
+	location 576.00 176.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 183
+	layer 207
+	shape "Circle"
+	location 576.00 158.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 181
+	layer 208
+	shape "Circle"
+	location 576.00 140.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 179
+	layer 209
+	shape "Circle"
+	location 576.00 122.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 177
+	layer 210
+	shape "Circle"
+	location 576.00 104.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 176
+	layer 211
+	shape "Circle"
+	location 576.00 86.00
+	size 9.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	textPlacement top
+end
+
+symbol 171
+	layer 212
+	shape "Rectangle"
+	location 126.00 90.00
+	size 27.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 . . .
+}
+
+	textPlacement top
+end
+
+symbol 169
+	layer 213
+	shape "Rectangle"
+	location 432.00 99.00
+	size 27.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 . . .
+}
+
+	textPlacement top
+end
+
+symbol 167
+	layer 214
+	shape "Rectangle"
+	location 585.00 351.00
+	size 27.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 . . .
+}
+
+	textPlacement top
+end
+
+symbol 156
+	layer 215
+	shape "Rectangle"
+	location 36.00 504.00
+	size 63.00 63.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b\i0\ulnone\fs16\fc0\cf0 Legend
+\fs8 \
+
+\b0\fs16 Static objects\
+
+\b\fs10 \
+
+\b0\fs16 Instances\
+\
+Data
+}
+
+	textPlacement top
+end
+
+symbol 155
+	layer 216
+	shape "Diamond"
+	location 9.00 513.00
+	size 18.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 154
+	layer 217
+	shape "Rectangle"
+	location 9.00 531.00
+	size 18.00 9.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 152
+	layer 218
+	shape "Rectangle"
+	location 117.00 504.00
+	size 468.00 54.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b\i0\ulnone\fs16\fc0\cf0 ec.simple.SimpleEvolutionState
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\b0\fc0\cf0  holds the complete state of an evolution run.  Performs a simple breed-evaluate loop on individuals in its population.  Every object stored within this object is serializable, and so can be written out to a checkpoint file using 
+\b ec.util.Checkpoint.
+\b0   The evolution state is also passed around to among objects a lot so they can access its random number generators, parameter database, and logs.  This is done, of course, in a threadsafe manner.
+}
+
+	textPlacement top
+end
+
+symbol 139
+	layer 227
+	shape "Diamond"
+	location 0.00 162.00
+	size 108.00 54.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b\i0\ulnone\qc\fs15\fc0\cf0 ec.util.\
+Checkpoint
+}
+
+	textPlacement middle
+end
+
+symbol 134
+	layer 231
+	shape "Rectangle"
+	location 9.00 315.00
+	size 90.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b0\i\ulnone\fs16\fc0\cf0 See Additional Page
+}
+
+	textPlacement top
+end
+
+symbol 132
+	layer 232
+	shape "Rectangle"
+	location 144.00 225.00
+	size 117.00 54.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.app.regression. Regression: 
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\b0\qc\fc0\cf0 ec.gp.GPProblem: ec.Problem: ec.Prototype: ec.Setup
+}
+
+	textPlacement middle
+end
+
+symbol 124
+	layer 236
+	shape "Rectangle"
+	location 657.00 504.00
+	size 90.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b0\i\ulnone\fs16\fc0\cf0 See Additional Page
+}
+
+	textPlacement top
+end
+
+symbol 99
+	layer 241
+	shape "Rectangle"
+	location 621.00 351.00
+	size 90.00 63.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.Subpopulation: 
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\b0\qc\fc0\cf0 ec.Group: ec.Setup
+}
+
+	textPlacement middle
+end
+
+symbol 98
+	layer 242
+	shape "Rectangle"
+	location 612.00 342.00
+	size 90.00 63.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 97
+	layer 243
+	shape "Rectangle"
+	location 603.00 333.00
+	size 90.00 63.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 95
+	layer 244
+	shape "Rectangle"
+	location 576.00 432.00
+	size 135.00 45.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Holds an array of\
+
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\b\fc0\cf0 ec.Subpopulation
+\b0 s,\
+each of which holds a subpopulation of individuals
+}
+
+	textPlacement top
+end
+
+symbol 94
+	layer 245
+	shape "Rectangle"
+	location 576.00 306.00
+	size 144.00 117.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.Population: 
+\b0 ec.Group: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 92
+	layer 246
+	shape "Rectangle"
+	location 423.00 432.00
+	size 135.00 45.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Prints out statistics to various 
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\b\fc0\cf0 ec.util.Log
+\b0 s
+.
+}
+
+	textPlacement top
+end
+
+symbol 91
+	layer 247
+	shape "Rectangle"
+	location 423.00 360.00
+	size 135.00 63.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.koza.KozaStatistics: 
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\b0\qc\fc0\cf0 ec.simple.SimpleStatistics: ec.Statistics: ec.Singleton: ec.Setup
+}
+
+	textPlacement middle
+end
+
+symbol 89
+	layer 248
+	shape "Rectangle"
+	location 135.00 297.00
+	size 135.00 54.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Performs simple, multithreaded generational evaluation.  Holds a prototypical problem, which is copied as necessary, one per thread, to evaluate individuals.
+}
+
+	textPlacement top
+end
+
+symbol 88
+	layer 249
+	shape "Rectangle"
+	location 135.00 189.00
+	size 135.00 99.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.simple.SimpleEvaluator:
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\b0\qc\fc0\cf0  ec.Evaluator: ec.Singleton: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 82
+	layer 250
+	shape "Rectangle"
+	location 135.00 432.00
+	size 135.00 45.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Performs simple, non-coevolved, multithreaded generational breeding
+}
+
+	textPlacement top
+end
+
+symbol 81
+	layer 251
+	shape "Rectangle"
+	location 135.00 360.00
+	size 135.00 63.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.simple.SimpleBreeder:
+\b0  ec.Breeder: ec.Singleton: ec.Setup
+}
+
+	textPlacement middle
+end
+
+symbol 79
+	layer 252
+	shape "Rectangle"
+	location 279.00 432.00
+	size 135.00 45.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Hooks for doing inter-population exchanges, inter-process exchanges, etc.  Default does nothing. 
+}
+
+	textPlacement top
+end
+
+symbol 78
+	layer 253
+	shape "Rectangle"
+	location 279.00 360.00
+	size 135.00 63.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.simple.SimpleExchanger:
+\b0  ec.Exchanger: ec.Singleton: ec.Setup
+}
+
+	textPlacement middle
+end
+
+symbol 76
+	layer 254
+	shape "Rectangle"
+	location 423.00 297.00
+	size 126.00 45.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Responsible for cleaning up the population at the end of a run.  Default does nothing.
+}
+
+	textPlacement top
+end
+
+symbol 74
+	layer 255
+	shape "Rectangle"
+	location 423.00 225.00
+	size 135.00 63.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.simple.SimpleFinisher:
+\b0  ec.Finisher: ec.Singleton: ec.Setup
+}
+
+	textPlacement middle
+end
+
+symbol 72
+	layer 256
+	shape "Rectangle"
+	location 279.00 297.00
+	size 135.00 45.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Responsible for initializing the population.  Default does this by having the 
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\b\fc0\cf0 ec.Subpopulation
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\b0\fc0\cf0 s populate themselves.
+}
+
+	textPlacement top
+end
+
+symbol 70
+	layer 257
+	shape "Rectangle"
+	location 279.00 225.00
+	size 135.00 63.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.simple.SimpleInitializer:
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\b0\qc\fc0\cf0  ec.Initializer: ec.Singleton: ec.Setup
+}
+
+	textPlacement middle
+end
+
+symbol 65
+	layer 258
+	shape "Rectangle"
+	location 594.00 261.00
+	size 153.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 max number of generations
+}
+
+	textPlacement middle
+end
+
+symbol 62
+	layer 259
+	shape "Rectangle"
+	location 594.00 243.00
+	size 153.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 current generation number
+}
+
+	textPlacement middle
+end
+
+symbol 59
+	layer 260
+	shape "Rectangle"
+	location 594.00 216.00
+	size 153.00 36.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 do we quit when we find a perfect individual?
+}
+
+	textPlacement middle
+end
+
+symbol 56
+	layer 261
+	shape "Rectangle"
+	location 594.00 207.00
+	size 153.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 do we garbage-collect aggressively?
+}
+
+	textPlacement middle
+end
+
+symbol 53
+	layer 262
+	shape "Rectangle"
+	location 594.00 189.00
+	size 144.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 how often do we garbage-collect?
+}
+
+	textPlacement middle
+end
+
+symbol 50
+	layer 263
+	shape "Rectangle"
+	location 594.00 171.00
+	size 126.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 should we garbage-collect?
+}
+
+	textPlacement middle
+end
+
+symbol 47
+	layer 264
+	shape "Rectangle"
+	location 594.00 153.00
+	size 126.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 how often do we checkpoint?
+}
+
+	textPlacement middle
+end
+
+symbol 44
+	layer 265
+	shape "Rectangle"
+	location 594.00 135.00
+	size 126.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 checkpoint file prefix
+}
+
+	textPlacement middle
+end
+
+symbol 41
+	layer 266
+	shape "Rectangle"
+	location 594.00 117.00
+	size 126.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 should we checkpoint?
+}
+
+	textPlacement middle
+end
+
+symbol 38
+	layer 267
+	shape "Rectangle"
+	location 594.00 99.00
+	size 126.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 number of eval threads
+}
+
+	textPlacement middle
+end
+
+symbol 36
+	layer 268
+	shape "Parallel Lines"
+	location 594.00 81.00
+	size 126.00 18.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b0\i0\ulnone\fs16\fc0\cf0 number of breed threads
+}
+
+	textPlacement middle
+end
+
+symbol 28
+	layer 269
+	shape "Rectangle"
+	location 468.00 117.00
+	size 63.00 18.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.util.Log
+}
+
+	textPlacement middle
+end
+
+symbol 26
+	layer 270
+	shape "Rectangle"
+	location 423.00 162.00
+	size 135.00 54.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Threadsafe, checkpointsafe logging facility.  The right way to write output.  Holds a table of 
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\b\fc0\cf0 ec.util.Log
+\b0 s
+.
+ 
+ 
+E
+a
+c
+h
+ 
+l
+o
+g
+ 
+h
+a
+s
+ 
+a
+ 
+u
+n
+i
+q
+u
+e
+ 
+n
+u
+m
+b
+e
+r
+.
+}
+
+	textPlacement top
+end
+
+symbol 16
+	layer 271
+	shape "Rectangle"
+	location 279.00 162.00
+	size 144.00 45.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs16\fc0\cf0 Database of user-provided run parameters.  Parameter values are stored in various tables and are accessed using 
+\b ec.util.Parameter
+}
+
+	textPlacement top
+end
+
+symbol 13
+	layer 272
+	shape "Rectangle"
+	location 135.00 144.00
+	size 153.00 36.00
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b0\i0\ulnone\fs16\fc0\cf0 Mersenne Twister Random Number Generators, one per thread, i.e., Max(eval threads, breed threads)
+}
+
+	textPlacement top
+end
+
+symbol 6
+	layer 273
+	shape "Rectangle"
+	location 171.00 99.00
+	size 90.00 36.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.util.\
+MersenneTwister\
+Fast
+}
+
+	textPlacement middle
+end
+
+symbol 4
+	layer 274
+	shape "Diamond"
+	location 0.00 9.00
+	size 108.00 54.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.Evolve
+}
+
+	textPlacement middle
+end
+
+symbol 7
+	layer 275
+	shape "Rectangle"
+	location 162.00 90.00
+	size 90.00 36.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 9
+	layer 276
+	shape "Rectangle"
+	location 153.00 81.00
+	size 90.00 36.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 15
+	layer 277
+	shape "Rectangle"
+	location 279.00 81.00
+	size 135.00 63.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx355\tx711\tx1067\tx1423\tx1779\tx2135\tx2490\tx2846\tx3202\tx3558\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.util.ParameterDatabase
+\b0 : java.util.PropertyList
+}
+
+	textPlacement middle
+end
+
+symbol 29
+	layer 278
+	shape "Rectangle"
+	location 459.00 108.00
+	size 63.00 18.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 31
+	layer 279
+	shape "Rectangle"
+	location 450.00 99.00
+	size 63.00 18.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 25
+	layer 280
+	shape "Rectangle"
+	location 423.00 81.00
+	size 135.00 63.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.util.Output
+}
+
+	textPlacement top
+end
+
+symbol 5
+	layer 281
+	shape "Rectangle"
+	location 117.00 63.00
+	size 630.00 423.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+{\colortbl;\red0\green0\blue0;}
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b\i0\ulnone\qc\fs16\fc1\cf1 ec.simple.SimpleEvolutionState
+\b0 : ec.EvolutionState: ec.Singleton: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 218
+	layer 282
+	shape "Rectangle"
+	location 342.00 729.00
+	size 99.00 27.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 220
+	layer 283
+	shape "Rectangle"
+	location 333.00 720.00
+	size 99.00 27.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	textPlacement middle
+end
+
+symbol 213
+	layer 284
+	shape "Rectangle"
+	location 306.00 648.00
+	size 405.00 135.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx340\tx700\tx1060\tx1420\tx1760\tx2120\tx2480\tx2840\tx3200\tx3540\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.gp.ADFStack: 
+\b0 ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+symbol 204
+	layer 285
+	shape "Rectangle"
+	location 81.00 621.00
+	size 648.00 252.00
+	framed
+	fillColor colorIndex 0
+	frameColor colorIndex 1
+	shadowColor colorIndex 2
+	lineWidth 1.00
+	filled
+	shadowed
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b\i0\ulnone\qc\fs16\fc0\cf0 ec.app.regression. Regression: 
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\b0\qc\fc0\cf0 ec.gp.GPProblem: ec.Problem: ec.Prototype: ec.Setup
+}
+
+	textPlacement top
+end
+
+vertex 2147483645
+	default
+	layer -1
+	location 0.00 0.00
+end
+vertex 2147483644
+	default
+	layer -1
+	location 0.00 0.00
+end
+vertex 563
+	layer 7
+	location 439.20 2268.00
+end
+vertex 565
+	layer 8
+	location 414.00 2286.00
+end
+vertex 564
+	layer 9
+	location 315.00 2286.00
+end
+vertex 562
+	layer 10
+	location 261.00 2241.00
+end
+vertex 536
+	layer 23
+	location 315.00 2186.00
+end
+vertex 535
+	layer 24
+	location 279.00 2196.00
+end
+vertex 444
+	layer 78
+	location 589.60 1431.00
+end
+vertex 443
+	layer 79
+	location 510.49 1269.00
+end
+vertex 439
+	layer 82
+	location 690.48 1440.00
+end
+vertex 438
+	layer 83
+	location 667.80 1521.00
+end
+vertex 420
+	layer 86
+	location 67.50 1476.00
+end
+vertex 422
+	layer 87
+	location 90.00 1431.00
+end
+vertex 421
+	layer 88
+	location 225.00 1431.00
+end
+vertex 419
+	layer 89
+	location 279.86 1503.00
+end
+vertex 413
+	layer 91
+	location 99.00 1599.00
+end
+vertex 417
+	layer 92
+	location 189.00 1611.00
+end
+vertex 416
+	layer 93
+	location 270.00 1656.00
+end
+vertex 415
+	layer 94
+	location 414.00 1656.00
+end
+vertex 414
+	layer 95
+	location 414.00 1575.00
+end
+vertex 412
+	layer 96
+	location 432.00 1564.50
+end
+vertex 392
+	layer 101
+	location 331.88 1449.00
+end
+vertex 393
+	layer 102
+	location 270.00 1359.00
+end
+vertex 391
+	layer 103
+	location 250.71 1350.00
+end
+vertex 255
+	layer 170
+	location 342.00 909.00
+end
+vertex 257
+	layer 171
+	location 297.00 864.00
+end
+vertex 256
+	layer 172
+	location 297.00 774.00
+end
+vertex 254
+	layer 173
+	location 351.00 762.26
+end
+vertex 150
+	layer 219
+	location 54.00 162.00
+end
+vertex 151
+	layer 220
+	location 54.00 117.00
+end
+vertex 149
+	layer 221
+	location 54.00 63.00
+end
+vertex 146
+	layer 223
+	location 54.00 216.00
+end
+vertex 147
+	layer 224
+	location 54.00 270.00
+end
+vertex 145
+	layer 225
+	location 117.00 270.75
+end
+vertex 138
+	layer 228
+	location 72.56 315.00
+end
+vertex 137
+	layer 229
+	location 146.81 279.00
+end
+vertex 131
+	layer 233
+	location 699.52 504.00
+end
+vertex 130
+	layer 234
+	location 674.69 414.00
+end
+vertex 103
+	layer 237
+	location 224.49 63.00
+end
+vertex 104
+	layer 238
+	location 198.00 36.00
+end
+vertex 102
+	layer 239
+	location 108.00 36.00
+end
+line 2147483646
+	default
+	from 2147483645
+	to 2147483644
+	2147483645
+	2147483644
+	layer -1
+	lineWidth 1.00
+	filled
+	frameColor colorIndex 1
+	fillColor colorIndex 0
+end
+line 561
+	from 562
+	to 540
+	562
+	564
+	565
+	563
+	layer 11
+	headType solidCircle
+	lineWidth 1.00
+	filled
+	frameColor colorIndex 1
+	fillColor colorIndex 0
+end
+line 534
+	from 535
+	to 532
+	535
+	536
+	layer 25
+	headType solidCircle
+	lineWidth 1.00
+	filled
+	frameColor colorIndex 1
+	fillColor colorIndex 0
+end
+line 442
+	from 319
+	to 440
+	443
+	444
+	layer 80
+	headType solidCircle
+	lineWidth 1.00
+	filled
+	frameColor colorIndex 1
+	fillColor colorIndex 0
+end
+line 437
+	from 364
+	to 427
+	438
+	439
+	layer 84
+	headType solidCircle
+	lineWidth 1.00
+	filled
+	frameColor colorIndex 1
+	fillColor colorIndex 0
+end
+line 418
+	from 356
+	to 404
+	419
+	421
+	422
+	420
+	layer 90
+	headType solidCircle
+	lineWidth 1.00
+	filled
+	frameColor colorIndex 1
+	fillColor colorIndex 0
+end
+line 411
+	from 366
+	to 402
+	412
+	414
+	415
+	416
+	417
+	413
+	layer 97
+	headType solidCircle
+	lineWidth 1.00
+	filled
+	frameColor colorIndex 1
+	fillColor colorIndex 0
+end
+line 390
+	from 308
+	to 339
+	391
+	393
+	392
+	layer 104
+	headType solidCircle
+	lineWidth 1.00
+	filled
+	frameColor colorIndex 1
+	fillColor colorIndex 0
+end
+line 253
+	from 216
+	to 244
+	254
+	256
+	257
+	255
+	layer 174
+	headType solidCircle
+	lineWidth 1.00
+	filled
+	frameColor colorIndex 1
+	fillColor colorIndex 0
+end
+line 148
+	from 4
+	to 139
+	149
+	151
+	150
+	layer 222
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b0\i\ulnone\qc\fs16\fc0\cf0 restarts from checkpoints using
+}
+
+	labelPosition 0.50
+	labelOffset 0.00
+	labelWidth 54.00
+	headType arrow
+	lineWidth 1.00
+	filled
+	frameColor colorIndex 1
+	fillColor colorIndex 0
+end
+line 144
+	from 5
+	to 139
+	145
+	147
+	146
+	layer 226
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b0\i\ulnone\qc\fs16\fc0\cf0 writes to checkpoints using
+}
+
+	labelPosition 0.50
+	labelOffset 0.00
+	labelWidth 54.00
+	headType arrow
+	lineWidth 1.00
+	filled
+	frameColor colorIndex 1
+	fillColor colorIndex 0
+end
+line 136
+	from 132
+	to 134
+	137
+	138
+	layer 230
+	headType solidCircle
+	lineWidth 1.00
+	filled
+	frameColor colorIndex 1
+	fillColor colorIndex 0
+end
+line 129
+	from 99
+	to 124
+	130
+	131
+	layer 235
+	headType solidCircle
+	lineWidth 1.00
+	filled
+	frameColor colorIndex 1
+	fillColor colorIndex 0
+end
+line 101
+	from 4
+	to 5
+	102
+	104
+	103
+	layer 240
+	rtfText {\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;}
+\margl40
+\margr40
+\pard\tx533\tx1067\tx1601\tx2135\tx2668\tx3202\tx3736\tx4270\tx4803\tx5337\f0\b0\i\ulnone\qc\fs16\fc0\cf0 creates
+}
+
+	labelPosition 0.50
+	labelOffset 0.00
+	labelWidth 54.00
+	headType arrow
+	lineWidth 1.00
+	filled
+	frameColor colorIndex 1
+	fillColor colorIndex 0
+end

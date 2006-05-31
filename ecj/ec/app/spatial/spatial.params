@@ -1,0 +1,42 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 =                              		../../simple/simple.params
+
+# We use the Rosenbrock function as defined in the ECSuite application
+eval.problem = 						ec.app.ecsuite.ECSuite
+eval.problem.type = 					rosenbrock
+
+# The SpatialBreeder puts spatial constraints on the whole breeding process, such that only
+# nearby individuals are selected as parents for a child
+breed =							ec.spatial.SpatialBreeder
+
+# For spatial EAs, we employ a Spatial1DSubpopulation, which embeds the whole population
+# onto a toroidal ring with the same size as the population.  We also use the new Gaussian
+# mutation for DoubleVectorIndividuals. 
+pop.subpops =                           		1
+pop.subpop.0 =						ec.spatial.Spatial1DSubpopulation
+pop.subpop.0.duplicate-retries =			10
+pop.subpop.0.fitness =					ec.simple.SimpleFitness
+pop.subpop.0.size =					16
+pop.subpop.0.species =					ec.vector.FloatVectorSpecies
+pop.subpop.0.species.crossover-type = 			one
+pop.subpop.0.species.genome-size =			2
+pop.subpop.0.species.ind =				ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.min-gene =				-5.12
+pop.subpop.0.species.max-gene =				5.12
+pop.subpop.0.species.pipe =             		ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.mutation-type =                    gauss
+pop.subpop.0.species.mutation-stdev =	       		0.25
+pop.subpop.0.species.mutation-prob =    		0.75
+
+# Parents are selected via SpatialTournamentSelection: given mutation alone, a child at location
+# x is created by mutating an parent that is selected from the current population in the vecinity
+# of location x (the neighborhood size is set to 2 in this case).  If ind-competes is set to true,
+# the parent at location x is always selected as one of the participants to the spatial tournament
+# selection.  In our case, the tournament selection is of size 2.
+pop.subpop.0.species.pipe.source.0 = 			ec.spatial.SpatialTournamentSelection
+pop.subpop.0.species.pipe.source.0.size = 		2
+pop.subpop.0.species.pipe.source.0.neighborhood-size = 	2
+pop.subpop.0.species.pipe.source.0.ind-competes = 	true

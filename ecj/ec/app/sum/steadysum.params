@@ -1,0 +1,68 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../steadystate/steadystate.params
+parent.1 = sum.params
+
+# The stuff above is all you need to do single-population
+# steady-state evolution.  But there are some additional
+# gizmos you should be aware of.
+
+# 0. By default, the "deselector" (the selection operator
+# responsible for determining who in the population will
+# die) is tournament selection of size 1 -- that is,
+# random selection.  Let's say you'd like it to be more
+# aggressive, say, tournament selection of size 2, picking
+# the worse individual.  You can do that like this:
+# 
+# steady.deselector.0.size = 	2	
+#
+# Or much more aggressive:
+#
+# steady.deselector.0.size =	7
+#
+# You can change the deselector entirely but it needs
+# to be of SteadyStateBreedingSourceForm, and the most
+# obvous choice (the classic for Steady State GA's,
+# BestSelection set to pick-worst) is actually not of
+# this form because it's expensive to scan through the
+# whole population each time.
+
+# 1. By default, the steady-state evolution runs for some
+# number of *generations*, where a generation is defined
+# as the time in which N individuals are evaluated, where
+# N is the size of subpopulation 0.  The first generation
+# is of course special as all the individuals are
+# evaluated together.  Subsequent "generations" are just
+# however long it takes for N more individuals to be
+# evaluated.  You can change the run-length from being
+# based on generations to being based on number of
+# evaluations if you want something more precise.  To do
+# that you'd set:
+#
+# evaluations = 	...
+#
+# Which says how many evaluations you want.  Obviously
+# this must be larger than the initial population size...
+
+# 2. When you run in its current form, this parameter
+# file will cause the system to complain that you didn't
+# provide a SteadyStateStatistics object.  This is okay,
+# but you may not get the statistics you expect.  For
+# more information, see SteadyStateEvolutionState
+
+# statistics =		...
+
+# 3. You want to specify whether or not to allow any
+# children to enter the population if they are identical
+# to some existing member of the population.  Disallowing
+# duplicates in this way is the traditional approach to
+# steady-state evolution.  At present, each time we 
+# need to make an individual, we try up to 100 times to
+# create one that's not a duplicate.  You can change
+# the number of times to retry (or set to 0 to not
+# retry) by changing this parameter:
+
+# steady.duplicate-retries = 		...
+

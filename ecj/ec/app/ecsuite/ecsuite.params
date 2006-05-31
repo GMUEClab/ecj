@@ -1,0 +1,50 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../ec.params
+
+eval.problem = ec.app.ecsuite.ECSuite
+eval.problem.type = rastrigin
+#
+# optionally your type could be: rosenbrock, sphere, step, noisy-quartic, 
+# or kdj-f1, kdj-f2, kdj-f3, or kdj-f4		(the kdj-foo names
+# are just aliases for other problems, useful for people who might
+# know them as specific problems in the DeJong test suite)
+#
+
+
+state = 				ec.simple.SimpleEvolutionState
+init = 					ec.simple.SimpleInitializer
+finish = 	        		ec.simple.SimpleFinisher
+exch = 					ec.simple.SimpleExchanger
+breed =					ec.simple.SimpleBreeder
+eval =					ec.simple.SimpleEvaluator
+stat =					ec.simple.SimpleStatistics
+generations =				100
+quit-on-run-complete =			true
+pop = 					ec.Population
+pop.subpops =				1
+pop.subpop.0 = 				ec.Subpopulation
+pop.subpop.0.duplicate-retries =	2
+pop.subpop.0.species =                  ec.vector.FloatVectorSpecies
+pop.subpop.0.fitness =			ec.simple.SimpleFitness
+pop.subpop.0.species.pipe = 		ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0 = 	ec.vector.breed.VectorCrossoverPipeline
+pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.1 = same
+
+pop.subpop.0.species.ind =		ec.vector.DoubleVectorIndividual
+
+# you can change these to whatever tickles your fancy
+pop.subpop.0.species.min-gene =	-5.12
+pop.subpop.0.species.max-gene =	5.12
+pop.subpop.0.species.genome-size = 	100
+
+
+select.tournament.size = 		2
+pop.subpop.0.species.mutation-prob = 0.005
+pop.subpop.0.species.crossover-type = one
+
+pop.subpop.0.size =			1000
+stat.file				$out.stat

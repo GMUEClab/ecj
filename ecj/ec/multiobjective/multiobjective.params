@@ -1,0 +1,11 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+#
+# Simple default parameters for multiobjective fitness
+#
+
+# how many objectives should we have by default?
+# you can also assign this on a per-subpopulation basis
+multi.fitness.numobjectives = 2

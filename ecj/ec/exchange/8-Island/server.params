@@ -1,0 +1,94 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = client.params
+exch.i-am-server = true
+
+#exch.sync = true
+exch.mod = 4
+exch.start = 1
+
+exch.num-islands = 8
+
+exch.island.0.id = SurvivorIsland
+exch.island.0.num-mig = 3
+exch.island.0.mig.0 = GilligansIsland
+exch.island.0.mig.1 = TemptationIsland
+exch.island.0.mig.2 = RhodeIsland
+exch.island.0.size = 4
+exch.island.0.mod = 4
+exch.island.0.start = 1
+exch.island.0.mailbox-capacity = 20
+
+exch.island.1.id = GilligansIsland
+exch.island.1.num-mig = 3
+exch.island.1.mig.0 = SurvivorIsland
+exch.island.1.mig.1 = EllisIsland
+exch.island.1.mig.2 = FantasyIsland
+exch.island.1.size = 4
+exch.island.1.mod = 4
+exch.island.1.start = 2
+exch.island.1.mailbox-capacity = 20
+
+exch.island.2.id = FantasyIsland
+exch.island.2.num-mig = 3
+exch.island.2.mig.0 = GilligansIsland
+exch.island.2.mig.1 = ConeyIsland
+exch.island.2.mig.2 = TemptationIsland
+exch.island.2.size = 4
+exch.island.2.mod = 4
+exch.island.2.start = 3
+exch.island.2.mailbox-capacity = 20
+
+exch.island.3.id = TemptationIsland
+exch.island.3.num-mig = 3
+exch.island.3.mig.0 = TreasureIsland
+exch.island.3.mig.1 = SurvivorIsland
+exch.island.3.mig.2 = FantasyIsland
+exch.island.3.size = 4
+exch.island.3.mod = 4
+exch.island.3.start = 2
+exch.island.3.mailbox-capacity = 20
+
+exch.island.4.id = RhodeIsland
+exch.island.4.num-mig = 3
+exch.island.4.mig.0 = TreasureIsland
+exch.island.4.mig.1 = SurvivorIsland
+exch.island.4.mig.2 = EllisIsland
+exch.island.4.size = 4
+exch.island.4.mod = 4
+exch.island.4.start = 2
+exch.island.4.mailbox-capacity = 20
+
+exch.island.5.id = EllisIsland
+exch.island.5.num-mig = 3
+exch.island.5.mig.0 = GilligansIsland
+exch.island.5.mig.1 = ConeyIsland
+exch.island.5.mig.2 = RhodeIsland
+exch.island.5.size = 4
+exch.island.5.mod = 4
+exch.island.5.start = 3
+exch.island.5.mailbox-capacity = 20
+
+exch.island.6.id = ConeyIsland
+exch.island.6.num-mig = 3
+exch.island.6.mig.0 = EllisIsland
+exch.island.6.mig.1 = TreasureIsland
+exch.island.6.mig.2 = FantasyIsland
+exch.island.6.size = 4
+exch.island.6.mod = 4
+exch.island.6.start = 1
+exch.island.6.mailbox-capacity = 20
+
+exch.island.7.id = TreasureIsland
+exch.island.7.num-mig = 3
+exch.island.7.mig.0 = ConeyIsland
+exch.island.7.mig.1 = TemptationIsland
+exch.island.7.mig.2 = RhodeIsland
+exch.island.7.size = 4
+exch.island.7.mod = 4
+exch.island.7.start = 3
+exch.island.7.mailbox-capacity = 20
+
+

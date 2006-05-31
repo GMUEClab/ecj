@@ -1,0 +1,19 @@
+This defines the [even/odd]-[2...31]-parity problem family, with
+or without adfs.  Because there are so many possible functions
+necessary to do, for example, even-31-parity (!), the parameter
+files are big and hairy.  But here's what you need to know to change
+the values.
+
+The parameter which determines even/odd is:
+
+	eval.problem.even
+
+The parameter which determines the value from 2...31 is:
+
+	eval.problem.bits
+
+However, after you change eval.problem bits, you need to
+change the gp.fs.0.size (and for adfs, the gp.fs.1.size
+and gp.fs.2.size) parameter immediately after it as it
+describes.  This determines the function set used.
+

@@ -1,0 +1,99 @@
+<HTML>
+	<HEAD>
+		<TITLE>
+			Post-Tutorial Discussion: Other Stuff ECJ Has Built In
+		</TITLE>
+	</HEAD>
+	<BODY bgcolor=white>
+		<p>
+			<table border=0 width="100%">
+				<tr>
+					<td bgcolor="darkblue" width="100%">
+						<font color=white size=5><b>ECJ</b></font>
+					</td>
+				</tr>
+			</table>
+			<h2>
+			Post-Tutorial Discussion: Other Stuff ECJ Has Built In
+			</h2>
+			<p>ECJ can do quite a lot of stuff not covered in the tutorials, but until more tutorials are written :-) you'll have to dig around to find it.  Here are some such features.
+
+<h3>Other Representations</h3>
+<p><b>Sets and Multisets (Bags)</b> The <a href="../../docs/classdocs/ec/rule/package-summary.html">ec.rule</a> package has facilities for making individuals which consist of one or more multisets (bags) each.  The notional idea is that individuals contain some fixed number of <i>rulesets</i>, each of which contains an arbitrary number of <i>rules</i>.  A rule is left undefined.  The notion of "rule" came from our original use for the package, which was to do Pitt-approach ruleset systems. This package comes with some simple breeding operators, though you'll probably want to make your own more specialized versions.  The package is also a good jumping-off point for building bags with constraints, such as sets or abitrarily-sized graph structures (neural nets, FSAs, etc.).  You'll need to build the constraints into the initialization and breeding operators.
+
+<p><b>Strings</b> The representations in the <a href="../../docs/classdocs/ec/vector/package-summary.html">ec.vector</a> package all have built-in methods (cut, join, etc.) for modifying arbitrary-length vectors (strings).  However the package doesn't presently come with breeding operators which call these methods to manipulate arbitrary-length vectors; you'll need to make breeding operators appropriate for your problem.
+
+<p><b>Arbitrary Representations</b> It's fairly easy to make arbitrary representations with ECJ.  Just subclass <a href="../../docs/classdocs/ec/Individual.html">Individual</a> and add in your own representation.  You may need to make your own <a hreff="../../docs/classdocs/ec/BreedingPipeline.html">BreedingPipeline</a>s which know how to cross over or mutate your representation.
+
+<h3>Genetic Programming Gizmos</h3>
+
+<p><b>Breeding Operators</b>  In addition to standard subtree mutation and subtree crossover, ECJ comes with <a href="../../docs/classdocs/ec/gp/breed/">eight breeding operators</a>, most of which :-) have been used in previous literature (the one exception, <a href="../../docs/classdocs/ec/gp/breed/RehangPipeline.html">RehangPipeline</a>, is very interesting but perhaps not all that useful).  All operators but RehangPipeline work great with strong typing.
+
+<p><b>Tree Generation Functions</b> Tired of GP's GROW, FULL, and RAMPED HALF-AND-HALF tree generators?  ECJ has 
+<a href="../../docs/classdocs/ec/gp/breed/">five more tree-generation functions</a>, most of which can guarantee tree sizes and all of which work nicely with strong typing.
+
+<p><b>Forests, ADFs, ADMs, and ERCs</b> ECJ's GP individuals can have multiple trees.  ECJ's tree forests can support <a href="../../docs/classdocs/ec/gp/ADF.html">Automatically Defined Functions (ADFs)</a> and <a href="../../docs/classdocs/ec/gp/ADM.html">Automatically Defined Macros (ADMs)</a>, among other things.  At present ECJ does not have modification operators which permit Koza-style architecture-altering operations.  The system also has built-in support for a variety of <a href="../../docs/classdocs/ec/gp/ERC.html">Ephemeral Random Constants (ERCs)</a>.  The <b>ec.app.regression</b> example shows one way of using ERCs.
+
+<h3>Coevolution</h3>
+
+<p>ECJ's populations are broken into multiple subpopulations.  Ordinarily you'd only use one subpopulation, but multiple subpopulations are particularly useful for coevolution.  The <a href="../../docs/classdocs/ec/coevolve/package-summary.html">ec.coevolve</a> package has basic support for defining evaluation of an individual in the context of other individuals with both multi-population coevolution and single-population "competitive fitness" coevolution.
+
+<h3>Spatially Distributed EAs</h3>
+
+<p>ECJ's <a href="../../docs/classdocs/ec/spatial/package-summary.html">ec.spatial</a> package supports both spatially distributed and coevolved spatially distributed evolutionary algorithms.  See the <tt>ec/app/spatial</tt> directory for examples.
+
+<h3>Island Models</h3>
+
+<p>Another use of multiple subpopulations is to perform <i>island models</i> inside an ECJ run, essentially treating each subpopulation as its own evolutionary run, with occasional migrations from subpopulation to subpopulation.  ECJ handles island models by plugging in <a href="../../docs/classdocs/ec/Exchanger.html">Exchanger</a>s into the system.  For multiple islands within one run, one uses the <a href="../../docs/classdocs/ec/exchange/InterPopulationExchange.html">ec.exchange.InterPopulationExchange</a> exchanger.  Alternatively, one can build an island model consisting of many different processes running on different networked computers.  ECJ supports such models with the <a href="../../docs/classdocs/ec/exchange/IslandExchange.html">ec.exchange.IslandExchange</a> exchanger.  While <b>InterPopulationExchange</b> must be synchronous, <b>IslandExchange</b> can be either synchronous or asynchronous.
+
+<p>Some caveats.  First, ECJ presently cannot support both <b>InterPopulationExchange</b> and <b>IslandExchange</b> simultaneously.  Second, island models are best done with generational evolutionary methods.  Third, an asynchronous <b>IslandExchange</b> cannot guarantee replicability (different computers run at different speeds).
+
+<h3>Master-Slave Evaluation</h3>
+
+<p>ECJ supports master-slave evaluation, where a single master ECJ process sends Individuals to slave processes which evaluate them in parallel and return them with modified Fitnesses.  Internally, ECJ does this by wrapping your Problem in an outer <a href="../../docs/classdocs/ec/eval/MasterProblem.html">MasterProblem</a> which ships individuals handed it (by the Evaluator) off to remote <a href="../../docs/classdocs/ec/eval/Slave.html">Slave</a> evaluation processes.  There are instructions for setting up the master and any number of slaves in <b>ec/eval/</b> and some examples in <b>ec/app/star</b>. Master-slave evaluation can also be done in combination with island models: some N islands might each have their own set of slaves.  The system is able to handle any number of slaves, and that number can increase or decrease at any time in the run.
+
+<p>Note that networks are inherently slow.  At present the cost of sending indivdiuals over the network is high and so master-slave evaluation is only really helpful if it takes more than a fraction of a second or so to evaluate an individual.  Also note that, like IslandExchange, Master-Slave evaluation cannot  guarantee replicability between runds.
+
+<h3>The GUI</h3>
+
+Maybe soon we'll have a tutorial for this.  ECJ now has a GUI!  You can use it to load and run jobs from parameter files and from checkpoint files, and to edit parameters.  The GUI is in its early stages but we thought you'd like to play with it.  We hope to extend the GUI to be more and more useful.  You can fire up the GUI by running <tt>java ec.display.Console</tt> 
+
+<p>The GUI can also do some nice statistics charting using the <a href="http://www.jfree.org/jfreechart/">JFreeChart</a> and <a href="http://www.lowagie.com/iText/">iText</a> libraries (which you must install yourself if you wish to take advantage of this feature).  The aim is to provide both on-screen charts and publication-quality PDF output.  Charting statistics are done using a subclass of <a href="../../docs/classdocs/ec/display/chart/ChartableStatistics.html">ChartableStatistics</a>.  There are certain versions of the examples (in the <b>gui</b>) which, when loaded into the Console, will do charting for you.  Like the GUI, charting is in its early stages and will see improvement as time goes by.
+
+
+<h3>Multiobjective Fitnesses</h3>
+
+<p>ECJ has hooks for multiobjective fitness.  These hooks come in the form of a custom Fitness subclass, <a href="../../docs/classdocs/ec/multiobjective/MultiObjectiveFitness.html">MultiObjectiveFitness</a>, which can be plugged into basic evolutionary systems.
+
+<p>ECJ's <a href="../../docs/classdocs/ec/Fitness.html">Fitness</a>es are separate classes from individuals: thus you can plug in your own customized Fitness class if you don't like the ones provided.
+
+<p>Robert Hubley donated the <a href="../../docs/classdocs/ec/multiobjective/spea2/package-summary.html">spea2 </a> package consisting of classes which implement a simple version of the SPEA2 algorithm (a pareto-optimizing multiobjective algorithm for parsimony pressure).
+
+<h3>Useful Breeding Operators and Selection Methods</h3>
+
+<p>In addition to tournament selection, ECJ's <a href="../../docs/classdocs/ec/select/package-summary.html">ec.select</a> package supports Fitness Proportionate (Roulette) Selection, Koza-style Greedy Overselection, FirstSelection (returning the first individual in the population), BestSelection (picking uniformly from the best N individuals in the population), and a joint selection operator which picks from a variety of selection methods.
+
+<p>ECJ's <a href="../../docs/classdocs/ec/bree">ec.breed</a> has various classes which allow one to glue different breeding operators together in different ways.  For example, one can buffer results, force N individuals to be returned at a time, change the breeding operator after some N generations, and choose at random from N different breeding operators.
+
+<h3>Steady State Evolution</h3>
+
+<p>ECJ supports steady-state evolution in the <a href="../../docs/classdocs/ec/steadystate/package-summary.html">ec.steadystate</a> package.  This package contains special breeders, evaluators, and evolution states.  Because steady state evolution isn't generational, there are certain things which are incompatable with it, or at least inappropriate for it.  For example, Island Models are not compatible with it.  And fitness proportionate selection and other statistics-based selection methods are inappropriate to use with steady state evolution because they need to be constantly updated every time a new individual is created.  Last, steady state evolution cannot run multithreaded.
+
+<h3>Parsimony Pressure</h3>
+
+<p>ECJ individuals have a <b>size()</b> method which they can overload to indicate their "size".  This can be used in parsimony pressure methods.  We have some built-in nonparametric parsimony pressure selection methods (lexicogaphic tournament, double tournament, ratio tournament) available in the <a href="../../docs/classdocs/ec/parsimony/package-summary.html">ec.parsimony</a> package.
+
+<h3>Utilities</h3>
+
+The <a href="../../docs/classdocs/ec/util/package-summary.html">util</a> package contains EC-independent utilities useful for all sorts of stuff.  You've seen a few of them: ParameterDatabase, Output, Code, and the MersenneTwisterFast random number generator.    You also used the checkpoint facility without accessing the Checkpoint class directly (and probably would never need to).  But you ought to know what else is available in this package to avoid reinventing the wheel!  Other utilities include:
+
+<ul>
+<li><b>RandomChoice</b>.  This class makes it easy to organize arrays of objects into random distributions and pick random objects under those distributions.
+<li><b>QuickSort</b>.  Facilities for the Quick Sort algorithm.
+<li><b>Version</b>.  The class that stores the current ECJ version number and other strings printed out at the beginning of a run.
+<li><b>MersenneTwister</b>.  This class is a drop-in subclass replacement for <b>java.util.Random</b> which uses the Mersenne Twister algorithm rather than the Knuth Subtractive algorithm.  It differs from MersenneTwisterFast only in that its methods, like Random's, are synchronized so it can be used in multithreaded situations.  It's about twice as fast as Random, but half the speed of MersenneTwisterFast.
+</ul>
+			<br>
+			<br>
+	</BODY>
+</HTML>

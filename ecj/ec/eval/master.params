@@ -1,0 +1,58 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+# When eval.masterproblem is turned on, the system assumes
+# use of the master/slave evaluator.
+eval.masterproblem = ec.eval.MasterProblem
+
+# Turning this on will provide synchronization
+# information for debugging the master/slave evaluator
+eval.masterproblem.debug-info = false
+
+# How many jobs do you hand to a slave in bulk?  
+# A small number allows finer resolution of job distribution
+# among the slaves, but may result in jobs being sent out
+# in individual packets on the network (quite inefficient).
+# If you have N slaves and need to distribute M jobs total
+# (perhaps you have a population of size M?), then your
+# max-jobs-per-slave should be no more than, and ideally a
+# small fraction of, M/N.
+eval.masterproblem.max-jobs-per-slave = 20
+
+# This compresses the streams between the master and slaves.
+# Compression is probably helpful
+eval.compression=true
+
+# This defines the socket port that the master listens in
+# for incomoing Slaves to connect.
+eval.master.port = 15000
+
+# Change this to force whole Individuals to be returned by the
+# Slave rather than just returning Fitnesses, plus whether or not the
+# Individual was evaluated.  Returning a whole Individual is expensive
+# over the network and should only be done if, for some reason, your
+# Problem class modified the Individuals as it evaluates them.
+eval.return-inds = false
+
+
+
+# OPTIONAL SLAVE PARAMETERS
+
+# Lets the slaves know that they're slaves.  Slaves should
+# have different parameter files than masters.
+# eval.i-am-slave = true
+
+# Specifies the IP address of the master, for the Slaves
+# to connect.  Slaves need to be told this in their
+# parameter files.  The example below sets it to localhost,
+# which is probably not what you want.
+# eval.master.host = 127.0.0.1
+
+# Specifies a slave's name for debugging purposes.  If this is not
+# set (the default), then the system will use an approximately unique
+# name constructed from the IP address and startup time of the
+# slave.  Names don't have to be unique -- it's only for debugging.
+# eval.slave-name = my-slave-name
+
+

@@ -1,0 +1,46 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+#
+# Some sample aditional parameters for steady-state evolution,
+# beyond what's provided in, say, simple/simple.params
+#
+
+# ec.Evolve
+# ==============================
+
+# simple generational evolution
+state = 				ec.steadystate.SteadyStateEvolutionState
+
+# We can EITHER say to run for N evaluations of subpopulation 0
+# (evaluations in other subpopulations are not counted) like this:
+# evaluations = 50000
+
+# ... or we can say to run for N generations, where a generation
+# is equal to the size of subpopulation 0.  After the initial population
+# is evaluated, only one additional individual is evaluated each time
+# generations = 50
+
+# threads should be 1 each
+evalthreads = 				1
+breedthreads = 				1
+
+# ec.EvolutionState
+# ==============================
+
+# We'll use a SimpleExchanger
+exch = 					ec.simple.SimpleExchanger
+
+# We MUST use a SteadyStateBreeder and SteadyStateEvaluator
+breed =					ec.steadystate.SteadyStateBreeder
+eval =					ec.steadystate.SteadyStateEvaluator
+
+# We must specify a deselector for each subpopulation.  Here is random
+# deselection for subpopulation 0.
+steady.deselector.0 =			ec.select.TournamentSelection
+steady.deselector.0.size =		1
+steady.deselector.0.pick-worst =	true
+
+# Traditionally, steady-state GAs try hard not to produce duplicates.
+steady.duplicate-retries =		100

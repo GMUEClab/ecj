@@ -1,0 +1,17 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = client.params
+exch.id = FantasyIsland
+stat.file = fantasy.stat
+
+# We need to give this island its own unique random number seed
+seed.0 = 1002
+
+# We also need to give this island its own unique client port.  Actually
+# if you're running on different machines, then each island can use the 
+# same port.  But since we don't know this ahead of time, it's safer to
+# give 'em different ports
+exch.client-port = 9002
+

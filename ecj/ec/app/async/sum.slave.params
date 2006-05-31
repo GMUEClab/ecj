@@ -1,0 +1,33 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = asesum.params
+
+# We tell our slave that he's a slave.
+eval.i-am-slave = true
+
+
+# You may want to customize each slave by giving it a unique
+# name like this:
+# 
+# eval.slave-name = my-slave-name
+#
+# (do this differently for each slave:, slave-2, slave-3, etc.)
+# Otherwise, each slave will give itself an approximately unique name based
+# on the current time and the IP address of the slave.  The unique name
+# doesn't HAVE to be unique -- it's just for printing/debug purposes.
+
+
+# We want to make sure that the Slave's Statistics object does not
+# override the Master's statistics files.  The easiest way to do this
+# is to eliminate the Statistics object in the slave by setting it
+# to the (empty default) Statistics class with no children.
+
+eval.stat = ec.Statistics
+eval.stat.num-children = 0
+
+
+# The slave needs to know where the Master is.  You need to 
+# change this.
+eval.master.host = 127.0.0.1

@@ -1,0 +1,4 @@
+This is the new form of Multiplexer, 10 times the speed of the old form,
+but much more complex.  If you want to just use Multiplexer as an example
+template from which to write new application domains, you might want to
+use the old "slow" form instead.

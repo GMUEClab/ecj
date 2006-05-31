@@ -1,0 +1,50 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 =                              		../coevolve2/coevolve2.params
+
+# The breeder is of type SpatialBreeder to take advantage of the spatially-embedded population
+breed =                                 		ec.spatial.SpatialBreeder
+
+# We use the SpatialMultiPopCoevolutionaryEvaluator class, which selects partners in the vecinity of the
+# location where the child will be created (it assumes all populations have the same spatial embedding).
+eval =                                  		ec.spatial.SpatialMultiPopCoevolutionaryEvaluator
+
+# Notice that multiple partners (collaborators) can be selected for evaluating each individual.  In our
+# experiments, we have found that selecting just the partner at the same location in the other populations
+# works best; this is what the following settings accomplish.
+eval.subpop.0.use-same-location-partners =              true
+eval.subpop.0.num-partners =                            1
+eval.subpop.0.select =                                  ec.spatial.SpatialTournamentSelection
+eval.subpop.0.select.size =                             1
+eval.subpop.0.select.neighborhood-size =                1
+
+eval.subpop.1.use-same-location-partners =              true
+eval.subpop.1.num-partners =                            1
+eval.subpop.1.select =                                  ec.spatial.SpatialTournamentSelection
+eval.subpop.1.select.size =                             1
+eval.subpop.1.select.neighborhood-size =                1
+
+
+# The last three lines of each of the following two groups
+# could have been replaced with just:
+# spatial.tournament.size = 2
+# spatial.tournament.neighborhood-size = 2
+# spatial.tournament.ind-competes = true
+
+pop.subpops =                           		2
+pop.subpop.0 = 						ec.spatial.Spatial1DSubpopulation
+pop.subpop.0.size = 					32
+pop.subpop.0.species.pipe.source.0 = 			ec.spatial.SpatialTournamentSelection
+pop.subpop.0.species.pipe.source.0.size = 		2
+pop.subpop.0.species.pipe.source.0.neighborhood-size = 	2
+pop.subpop.0.species.pipe.source.0.ind-competes = 	true
+
+pop.subpop.1 = 						ec.spatial.Spatial1DSubpopulation
+pop.subpop.1.size = 					32
+pop.subpop.1.species.pipe.source.0 = 			ec.spatial.SpatialTournamentSelection
+pop.subpop.1.species.pipe.source.0.size = 		2
+pop.subpop.1.species.pipe.source.0.neighborhood-size = 	2
+pop.subpop.1.species.pipe.source.0.ind-competes = 	true
+

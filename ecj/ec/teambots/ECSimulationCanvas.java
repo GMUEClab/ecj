@@ -28,7 +28,7 @@ and disclaimer for distribution information regarding this file.
  *
  * @author Tucker Balch
  * @author Liviu Panait
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.1.1.1 $
  */
 
 package ec.teambots;
@@ -1481,8 +1481,8 @@ public class ECSimulationCanvas extends Canvas implements Runnable
     }
 /*
   $Log: not supported by cvs2svn $
-  Revision 1.1  2006/05/31 22:27:56  feijai
-  Initial revision
+  Revision 1.1.1.1  2006/05/31 22:27:56  feijai
+  Original Import
 
   Revision 1.2  2006/02/12 20:07:02  feijai
   Updated License
