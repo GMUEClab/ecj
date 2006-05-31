@@ -1,0 +1,274 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+#
+# This file roughly defines a typeless, Koza-I-style
+# generational GP system with a single tree (meaning
+# no ADFs or ADMs.  We use Tournament selection instead
+# of Koza-style Fitness-proportionate selection because
+# fitness-proportionate selection, well, is kinda icky.
+#
+
+# We're derived some of this
+# from ../../simple/params, which defines
+# generational, basic evolutionary mechanisms, selection mechanisms...
+
+parent.0 = ../../simple/simple.params
+
+
+#
+# We define the fitness of an individual to use the traditional
+# Koza-style fitness metrics, just to make everyone happy :-)
+#
+
+pop.subpop.0.fitness = ec.gp.koza.KozaFitness
+
+#
+# We have a GP-specific initializer and a Koza-specific
+# statistics to go with this fitness 
+#
+
+init = ec.gp.GPInitializer
+stat = ec.gp.koza.KozaStatistics
+
+
+# We have a single subpopulation containing a GPSpecies,
+# using GPIndividuals as the prototypical individual class.
+
+pop.subpop.0.species = ec.gp.GPSpecies
+pop.subpop.0.species.ind = ec.gp.GPIndividual
+
+# We retry 100 times for duplicates (this is the lil-gp default)
+# in our subpopulation 0
+
+pop.subpop.0.duplicate-retries = 100
+
+# That GPIndividual has a single tree, which uses the
+# "tc0" Tree Constraints (which we define below later)
+
+pop.subpop.0.species.ind.numtrees = 1
+pop.subpop.0.species.ind.tree.0 = ec.gp.GPTree
+pop.subpop.0.species.ind.tree.0.tc = tc0
+
+
+# The GPSpecies has 2 pipelines, Crossover and Reproduction,
+# chosen with 0.9 and 0.1 likelihood respectively.
+
+pop.subpop.0.species.pipe = ec.breed.MultiBreedingPipeline
+# Koza's decision here was odd...
+pop.subpop.0.species.pipe.generate-max = false
+# Subsidiary pipelines:
+pop.subpop.0.species.pipe.num-sources = 2
+pop.subpop.0.species.pipe.source.0 = ec.gp.koza.CrossoverPipeline
+pop.subpop.0.species.pipe.source.0.prob = 0.9
+pop.subpop.0.species.pipe.source.1 = ec.breed.ReproductionPipeline
+pop.subpop.0.species.pipe.source.1.prob = 0.1
+
+
+
+
+#
+# Here we define the default values for Crossover,
+# Reproduction, Mutation, as well as our selection
+# approaches (Koza I).  These can be overridden on a per-species
+# level of course.
+#
+
+# Reproduction will use Tournament Selection 
+breed.reproduce.source.0 = ec.select.TournamentSelection
+
+# Crossover will use Tournament Selection, try only 1
+# time, have a max depth of 17, and use KozaNodeSelector
+gp.koza.xover.source.0 = ec.select.TournamentSelection
+gp.koza.xover.source.1 = same
+gp.koza.xover.ns.0 = ec.gp.koza.KozaNodeSelector
+gp.koza.xover.ns.1 = same
+gp.koza.xover.maxdepth = 17
+# This is the default for Koza and lil-gp, though it's
+# a little wimpy; on the other hand, a higher number can
+# make things really slow
+gp.koza.xover.tries = 1
+
+
+
+
+# Point Mutation will use Tournament Selection, try only 1
+# time, have a max depth of 17, and use KozaNodeSelector
+# and GROW for building.  Also, Point Mutation uses a GrowBuilder
+# by default, with a default of min-depth=max-depth=5
+# as shown a ways below
+gp.koza.mutate.source.0 = ec.select.TournamentSelection
+gp.koza.mutate.ns.0 = ec.gp.koza.KozaNodeSelector
+gp.koza.mutate.build.0 = ec.gp.koza.GrowBuilder
+gp.koza.mutate.maxdepth = 17
+# This is the default for Koza and lil-gp, though it's
+# a little wimpy; on the other hand, a higher number can
+# make things really slow
+gp.koza.mutate.tries = 1
+
+
+
+
+#
+# The default tournament size for TournamentSelection is 7
+#
+
+select.tournament.size = 7
+
+
+
+
+# Since GROW is only used for subtree mutation, ECJ uses
+# the Koza-standard subtree mutation GROW values for the
+# default for GROW as a whole.  This default is
+# min-depth=max-depth=5, which I don't like very much,
+# but hey, that's the standard.  
+# This means that if someone decided to use GROW to generate
+# new individual trees, it's also use the defaults below
+# unless he overrided them locally.
+gp.koza.grow.min-depth = 5
+gp.koza.grow.max-depth = 5
+
+
+
+#
+# We specify a few things about ADFs  -- what kind 
+# of stack they use, and what kind of context
+#
+
+eval.problem.stack = ec.gp.ADFStack
+eval.problem.stack.context = ec.gp.ADFContext
+
+# 
+# Here we define the default values for KozaNodeSelection;
+# as always, these can be overridden by values hanging off
+# of the Crossover/Reproduction/Mutation/whatever pipelines,
+# like we did for node-building, but hey, whatever. 
+# The default is 10% terminals, 90% nonterminals when possible,
+# 0% "always pick the root", 0% "pick any node"
+
+gp.koza.ns.terminals = 0.1
+gp.koza.ns.nonterminals = 0.9
+gp.koza.ns.root = 0.0
+
+
+
+
+# You need to create at least one function set, 
+# called "f0", which your first tree will use.  
+# You don't need to include the class declaration here,
+# but it quiets warnings.
+
+gp.fs.size = 1
+gp.fs.0 = ec.gp.GPFunctionSet
+gp.fs.0.name = f0
+#fill the rest of this out on a per-problem basis
+
+
+# Here we define a single atomic type, "nil", which everyone will use.
+# There are no set types defined.
+
+gp.type.a.size = 1
+gp.type.a.0.name = nil
+gp.type.s.size = 0
+
+# Here we define one GPTreeConstraints object, "tc0",
+# which uses ec.gp.koza.HalfBuilder to create nodes,
+# only allows nodes from the GPFunctionSet "fset",
+# and has the single type "nil" as its tree type.
+# You don't need to include the class declaration here,
+# but it quiets warnings.
+
+gp.tc.size = 1
+gp.tc.0 = ec.gp.GPTreeConstraints
+gp.tc.0.name = tc0
+gp.tc.0.fset = f0
+gp.tc.0.returns = nil
+
+# The tree uses an ec.gp.koza.HalfBuilder to create
+# itself initially.
+# HalfBuilder will pick GROW half the time and FULL
+# the other half, with a ramp from 2 to 6 inclusive.
+# By ramp we mean that it first picks a random number between
+# 2 and 6 inclusive.  This then becomes the *maximum* tree size
+# (for the FULL approach, it's the tree size of the tree, for
+# GROW, the tree can get no bigger than this)
+
+gp.tc.0.init = ec.gp.koza.HalfBuilder
+
+# We set the default for HalfBuilder to be a ramp of 2--6,
+# with a grow probability of 0.5
+gp.koza.half.min-depth = 2
+gp.koza.half.max-depth = 6
+gp.koza.half.growp = 0.5
+
+
+
+
+# Here we define 7 GPNodeConstraints, nc0...nc6, which
+# describe nodes with 0...6 children respectively, which only
+# use a single type, "nil", for their argument and return types
+# You don't need to include the class declarations with everything
+# else below, but it quiets warnings
+
+gp.nc.size = 7
+
+gp.nc.0 = ec.gp.GPNodeConstraints
+gp.nc.0.name = nc0
+gp.nc.0.returns = nil
+gp.nc.0.size = 0
+
+gp.nc.1 = ec.gp.GPNodeConstraints
+gp.nc.1.name = nc1
+gp.nc.1.returns = nil
+gp.nc.1.size = 1
+gp.nc.1.child.0 = nil
+
+gp.nc.2 = ec.gp.GPNodeConstraints
+gp.nc.2.name = nc2
+gp.nc.2.returns = nil
+gp.nc.2.size = 2
+gp.nc.2.child.0 = nil
+gp.nc.2.child.1 = nil
+
+gp.nc.3 = ec.gp.GPNodeConstraints
+gp.nc.3.name = nc3
+gp.nc.3.returns = nil
+gp.nc.3.size = 3
+gp.nc.3.child.0 = nil
+gp.nc.3.child.1 = nil
+gp.nc.3.child.2 = nil
+
+gp.nc.4 = ec.gp.GPNodeConstraints
+gp.nc.4.name = nc4
+gp.nc.4.returns = nil
+gp.nc.4.size = 4
+gp.nc.4.child.0 = nil
+gp.nc.4.child.1 = nil
+gp.nc.4.child.2 = nil
+gp.nc.4.child.3 = nil
+
+gp.nc.5 = ec.gp.GPNodeConstraints
+gp.nc.5.name = nc5
+gp.nc.5.returns = nil
+gp.nc.5.size = 5
+gp.nc.5.child.0 = nil
+gp.nc.5.child.1 = nil
+gp.nc.5.child.2 = nil
+gp.nc.5.child.3 = nil
+gp.nc.5.child.4 = nil
+
+gp.nc.6 = ec.gp.GPNodeConstraints
+gp.nc.6.name = nc6
+gp.nc.6.returns = nil
+gp.nc.6.size = 6
+gp.nc.6.child.0 = nil
+gp.nc.6.child.1 = nil
+gp.nc.6.child.2 = nil
+gp.nc.6.child.3 = nil
+gp.nc.6.child.4 = nil
+gp.nc.6.child.5 = nil
+
+
+

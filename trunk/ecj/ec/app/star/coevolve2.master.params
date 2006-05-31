@@ -1,0 +1,11 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../coevolve2/coevolve2.params
+parent.1 = ../../eval/master.params
+
+# That's it!  We're not changing any of the parameters
+# but you might want to look at your options in 
+# ec/eval/master.params
+

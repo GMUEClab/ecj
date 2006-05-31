@@ -1,0 +1,93 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../ec.params
+
+# 
+# The following parameter file will set up a very basic form
+# of evolution, single-threaded, no coevolution, no exchanging,
+# no cross-population breeding, using generational evolution,
+# simple fitness, popsize=1024, etc. 
+# You'll need to fill in some of the gaps.
+#
+
+# ec.Evolve
+# ==============================
+
+# simple generational evolution
+state = 				ec.simple.SimpleEvolutionState
+
+
+
+# ec.EvolutionState
+# ==============================
+
+# We're using the standard initialization method
+init = 					ec.simple.SimpleInitializer
+
+# We're using the standard (empty) finalization method
+finish = 	        		ec.simple.SimpleFinisher
+
+# We're using the standard (empty) exchange method
+exch = 					ec.simple.SimpleExchanger
+
+# We're using standard breeding -- no cross-population breeding
+breed =					ec.simple.SimpleBreeder
+
+# We're using standard evaluation -- no coevolution
+eval =					ec.simple.SimpleEvaluator
+
+# We're using simple statistics
+stat =					ec.simple.SimpleStatistics
+
+# run for 51 generations, quit prematurely if I find something ideal
+generations =				51
+quit-on-run-complete =			true
+
+
+
+# ec.Initializer
+# ==============================
+
+pop = 					ec.Population
+
+
+# ec.Population
+# ==============================
+
+# No multiple populations
+pop.subpops =				1
+pop.subpop.0 = 				ec.Subpopulation
+
+
+# ec.Subpopulation
+# ==============================
+
+# subpop size is 1024 individuals
+pop.subpop.0.size =			1024
+# use SimpleFitness for the first subpop
+pop.subpop.0.fitness =			ec.simple.SimpleFitness
+# don't bother trying to eliminate duplicates from the
+# initial population
+pop.subpop.0.duplicate-retries =	0
+
+# ==You need to provide the species info for the subpopulation.==
+
+# ec.simple.SimpleBreeder
+# ==============================
+
+# By default elitism isn't done.  If you want to do elitism for, say,
+# the top 10 individuals in subpopulation 0, you'd say:
+
+# breed.elite.0 = 			10
+
+
+# ec.SimpleStatistics
+# ==============================
+
+# output statistics to the file "out.stat" in the directory
+# the run was started in
+stat.file				$out.stat
+
+

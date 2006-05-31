@@ -1,0 +1,52 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 =	../../es/es.params
+
+#                    ...the default option is ec.es.MuCommaLambdaBreeder
+breed =              ec.es.MuPlusLambdaBreeder
+es.mu.0 =            5 
+es.lambda.0 =        100 
+pop.subpop.0.size =  105 
+generations =        200
+
+pop.subpop.0.species.pipe = ec.vector.breed.VectorCrossoverPipeline
+pop.subpop.0.species.pipe.source.0 = ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0.source.0 = ec.es.ESSelection
+
+# Use our own custom selection operator class
+pop.subpop.0.species.pipe.source.1 = ec.app.tutorial3.OurSelection
+
+# We'll talk about this parameter later on
+pop.subpop.0.species.pipe.source.1.middle-probability = 0.5
+
+eval.problem = ec.app.tutorial3.OddRosenbrock
+# Doubles and floats use the FloatVectorSpecies
+pop.subpop.0.species =                  ec.vector.FloatVectorSpecies
+pop.subpop.0.species.ind =              ec.vector.DoubleVectorIndividual
+# Per-gene mutation probability of 0.005
+pop.subpop.0.species.mutation-prob = 0.005
+# One-point crossover
+pop.subpop.0.species.crossover-type = one
+pop.subpop.0.species.genome-size =      5
+pop.subpop.0.species.min-gene.0 = -5.12
+pop.subpop.0.species.max-gene.0 = 5.12
+pop.subpop.0.species.min-gene.1 = -3
+pop.subpop.0.species.max-gene.1 = 2
+pop.subpop.0.species.min-gene.2 = -7.6
+pop.subpop.0.species.max-gene.2 = 1.1
+pop.subpop.0.species.min-gene.3 = 0
+pop.subpop.0.species.max-gene.3 = 1.0
+pop.subpop.0.species.min-gene.4 = -10.3
+pop.subpop.0.species.max-gene.4 = 2.2
+# Because we need default min/max genes even if we don't use them
+pop.subpop.0.species.min-gene = -100
+pop.subpop.0.species.max-gene = 100
+
+# Add our statistics object
+stat.num-children      = 1
+stat.child.0           = ec.app.tutorial3.MyStatistics
+stat.child.0.pop-file  = pop.stat
+stat.child.0.info-file = info.stat
+

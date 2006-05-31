@@ -1,0 +1,68 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../gp/koza/koza.params
+
+
+# Stolen from koza/params -- overwriting just
+# a little for readability
+# You need to create at least one function set, 
+# called "f0", which your first tree will use.  
+
+gp.fs.size = 1
+gp.fs.0.name = f0
+gp.fs.0.info = ec.gp.GPFuncInfo
+
+### The functions, carefully ordered :-)  (See below)
+
+gp.fs.0.func.0 = ec.app.multiplexerslow.func.And
+gp.fs.0.func.0.nc = nc2
+gp.fs.0.func.1 = ec.app.multiplexerslow.func.Or
+gp.fs.0.func.1.nc = nc2
+gp.fs.0.func.2 = ec.app.multiplexerslow.func.Not
+gp.fs.0.func.2.nc = nc1
+gp.fs.0.func.3 = ec.app.multiplexerslow.func.A0
+gp.fs.0.func.3.nc = nc0
+gp.fs.0.func.4 = ec.app.multiplexerslow.func.D0
+gp.fs.0.func.4.nc = nc0
+gp.fs.0.func.5 = ec.app.multiplexerslow.func.D1
+gp.fs.0.func.5.nc = nc0
+gp.fs.0.func.6 = ec.app.multiplexerslow.func.If
+gp.fs.0.func.6.nc = nc3
+gp.fs.0.func.7 = ec.app.multiplexerslow.func.A1
+gp.fs.0.func.7.nc = nc0
+gp.fs.0.func.8 = ec.app.multiplexerslow.func.D2
+gp.fs.0.func.8.nc = nc0
+gp.fs.0.func.9 = ec.app.multiplexerslow.func.D3
+gp.fs.0.func.9.nc = nc0
+gp.fs.0.func.10 = ec.app.multiplexerslow.func.A2
+gp.fs.0.func.10.nc = nc0
+gp.fs.0.func.11 = ec.app.multiplexerslow.func.D4
+gp.fs.0.func.11.nc = nc0
+gp.fs.0.func.12 = ec.app.multiplexerslow.func.D5
+gp.fs.0.func.12.nc = nc0
+gp.fs.0.func.13 = ec.app.multiplexerslow.func.D6
+gp.fs.0.func.13.nc = nc0
+gp.fs.0.func.14 = ec.app.multiplexerslow.func.D7
+gp.fs.0.func.14.nc = nc0
+
+
+#
+# We specify our problem here
+#
+
+eval.problem = ec.app.multiplexerslow.Multiplexer
+eval.problem.data = ec.app.multiplexerslow.MultiplexerData
+# ADFs use the same data type typically -- we need to include
+# this even if we're not implementing ADFs
+eval.problem.stack.context.data = ec.app.multiplexerslow.MultiplexerData
+
+
+# Here we determine what kind of Multiplexer we're doing:
+
+# 11-Multiplexer with IF
+eval.problem.bits = 3
+gp.fs.0.size = 15
+
+

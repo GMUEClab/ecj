@@ -1,0 +1,84 @@
+<HTML>
+	<HEAD>
+		<TITLE>
+			ECJ Evolutionary Computation System
+		</TITLE>
+	</HEAD>
+	<BODY bgcolor=white>
+		<p>
+			<table border=0 width="100%">
+				<tr>
+					<td bgcolor="darkblue" width="100%">
+						<font color=white size=5><b>ECJ</b></font>
+					</td>
+				</tr>
+			</table>
+			<b>An Evolutionary Computation and Genetic Programming System</b><br>
+			<br>
+			<p>
+			<h3>
+				License Agreement
+			</h3>
+			<p> This software is licensed under the Academic Free License version 3.0.  See the file 'LICENSE' for more details.
+			<h3>
+				Documentation and Help
+			</h3>
+			<p>
+			This distribution comes with several pieces of documentation:
+			<ul>
+				<li><b>A high-level <a href="overview.html">overview</a></b> of the packages and classes in the system. Read this thoroughly first.
+				<li><b>A primer about <a href="parameters.html">parameters and parameter files</a></b>.
+				<li>A lot of <b><a href="classdocs/index.html">class documentation</a></b>.
+				<li>A PDF file showing the <b><a href="graphs/ECJClassHierarchy.pdf">ECJ class hierarchy</a></b> as of ECJ 4.
+				<li>A PDF file detailing the <b><a href="graphs/ECJRegressionState.pdf">Object state of ECJ when running Symbolic Regression</a></b> as of ECJ 4 (still pretty valid).
+				<li>A discussion of historical <a href="warts.html"><b>warts in ECJ</b></a>.
+			</ul>
+
+			<p>Still confused?  The ECJ mailing list is here to help you.  See the <a href="http://cs.gmu.edu/~eclab/projects/ecj/">ECJ webpage</a> for more information.  Please post questions to the list.  There is also a direct email address to the authors which you may use, but try not to do so except for direct questions to the authors, not general questions about using ECJ.
+
+			<h3>
+				Tutorials
+			</h3>
+			<p>
+			Here are some tutorials to get you up to speed.  As I have time, I'll produce tutorials on the other various odd features of the system.
+			<ol>
+				<li><b><a href="tutorials/tutorial1/index.html">Tutorial 1:</a> Build a Genetic Algorithm for the MaxOnes Problem.</b> Introduces the basics of building a simple ECJ problem, high-level ECJ constructs, the concepts behind the parameter files, and how to make an evaluation function.
+				<li><b><a href="tutorials/tutorial2/index.html">Tutorial 2:</a> Build a Genetic Algorithm for an Integer Problem.</b> Shows how to use a new representation (integer vectors), parent parameter files, multiple threads, custom breeding pipelines and breeding operators, and other good stuff.
+				<li><b><a href="tutorials/tutorial3/index.html">Tutorial 3:</a> Build a Floating-Point Evolution Strategies Problem.</b> Shows how to build a generational ES, to perform and recover from checkpointing, to use the setup() method, to make custom selection and statistics classes, and to read and write populations to files.
+				<li><b><a href="tutorials/tutorial4/index.html">Tutorial 4:</a> Build a Genetic Programming Symbolic Regression Problem.</b>  Shows how to use the genetic programming package, how to manipulate the GP statistics classes, and how to add elitism.
+				<li><b><a href="tutorials/discussion.html">Post-Tutorial Discussion:</a></b> Quick roundup of additional stuff ECJ does that's not in the tutorials.
+			</ol>
+<h3>
+Using the GUI
+</h3>
+<p>ECJ now has a basic GUI for loading and running jobs from parameter files and checkpoint files, editing parameters, and charting statistics.  Try the quick examples in the next section; afterwards, you can try it by running <tt>java ec.display.Console</tt>.  There are certain versions of the examples (in the <b>gui</b>) which, when loaded into the Console, will do charting for you as well.
+
+<p>The GUI can optionally chart statistics (see the <b>ec/app/gui/</b> directory for some examples).  However to use the charting, you need to install the <a href="http://www.jfree.org/jfreechart/">JFreeChart</a> and <a href="http://www.lowagie.com/iText/">iText</a> libraries (for charting and PDF export respectively).  The console will still run without them, but you will not be able to run the charting examples.  To compile the charting, facility, you compile with <tt>make chart</tt>
+
+			<h3>
+				Quick Examples
+			</h3>
+			<p>
+			Some runs which result in the ideal individual being found (in most cases). First, <tt>cd</tt> to the <b>ec</b> directory. Then add the parent directory of the <b>ec</b> directory to your <b>CLASSPATH</b>. Then issue <tt>javac -O *.java */*.java */*/*.java */*/*/*.java</tt> Alternatively you can run the makefile.
+			<P>
+			Now you're ready. Here are some problems to try.
+			<dl>
+				<dt><b>(GA) Vector Sum</b> (pop=100, 10 genes)<dd><tt>java ec.Evolve -file app/sum/sum.params</tt> <dt><b>(GA) Rastrigin</b> (pop=1000, 100 genes)<dd><tt>java ec.Evolve -file app/ecsuite/ecsuite.params</tt> <dt><b>(GA) Rosenbrock</b> (pop=1000, 100 genes)<dd><tt>java ec.Evolve -file app/ecsuite/ecsuite.params -p eval.problem.type=rosenbrock</tt> <dt><b>(GA) Sphere</b> (pop=1000, 100 genes)<dd><tt>java ec.Evolve -file app/ecsuite/ecsuite.params -p eval.problem.type=sphere</tt> <dt><b>(GA) Step</b> (pop=1000, 100 genes)<dd><tt>java ec.Evolve -file app/ecsuite/ecsuite.params -p eval.problem.type=step</tt> <dt><b>(GA) Noisy-Quartic</b> (pop=1000, 100 genes)<dd><tt>java ec.Evolve -file app/ecsuite/ecsuite.params -p eval.problem.type=noisy-quartic</tt> 
+
+<dt><b>(GP) Symbolic Regression, no ercs, x<sup>4</sup>+x<sup>3</sup>+x<sup>2</sup>+x equation </b> <dd><tt>java ec.Evolve -file app/regression/noerc.params</tt> <dt><b>(GP) Symbolic Regression with ercs, x<sup>4</sup>+x<sup>3</sup>+x<sup>2</sup>+x equation </b> <dd><tt>java ec.Evolve -file app/regression/erc.params</tt> 
+
+<dt><b>(GP) Symbolic Regression, no ercs, x<sup>5</sup>-2x<sup>3</sup>+x equation </b> <dd><tt>java ec.Evolve -file app/regression/quinticnoerc.params</tt> <dt><b>(GP) Symbolic Regression with ercs,  x<sup>5</sup>-2x<sup>3</sup>+x  equation </b> <dd><tt>java ec.Evolve -file app/regression/quinticerc.params</tt> 
+
+<dt><b>(GP) Symbolic Regression, no ercs, x<sup>6</sup>-2x<sup>4</sup>+x<sup>2</sup> equation </b> <dd><tt>java ec.Evolve -file app/regression/sexticnoerc.params</tt> <dt><b>(GP) Symbolic Regression with ercs, x<sup>6</sup>-2x<sup>4</sup>+x<sup>2</sup> equation </b> <dd><tt>java ec.Evolve -file app/regression/sexticerc.params</tt> 
+
+<dt><b>(GP) Two Box Problem, no ADFs</b> <dd><tt>java ec.Evolve -file app/twobox/noadf.params</tt> <dt><b>(GP) Two Box Problem with ADFs </b> <dd><tt>java ec.Evolve -file app/twobox/adf.params</tt> 
+
+
+<dt><b>(GP) Artificial Ant, Santa Fe Trail</b> <dd><tt>java ec.Evolve -file app/ant/ant.params</tt> <dt><b>(GP) Artificial Ant, Los Altos Hills Trail</b> <dd><tt>java ec.Evolve -file app/ant/ant.params -p eval.problem.file=app/ant/losaltos.trl</tt> <dt><b>(GP) Boolean 3 Multiplexer (new fast form)</b> <dd><tt>java ec.Evolve -file app/multiplexer/3.params</tt> <dt><b>(GP) Boolean 6 Multiplexer (new fast form)</b> <dd><tt>java ec.Evolve -file app/multiplexer/6.params</tt> <dt><b>(GP) Boolean 11 Multiplexer (new fast form)</b> <dd><tt>java ec.Evolve -file app/multiplexer/11.params</tt> <dt><b>(GP) Boolean 3 Multiplexer (original form)</b> <dd><tt>java ec.Evolve -file app/multiplexerslow/3.params</tt> <dt><b>(GP) Boolean 6 Multiplexer (original form)</b> <dd><tt>java ec.Evolve -file app/multiplexerslow/6.params</tt> <dt><b>(GP) Boolean 11 Multiplexer (original form)</b> <dd><tt>java ec.Evolve -file app/multiplexerslow/11.params</tt> <dt><b>(GP) 8x8 Lawnmower</b> <dd><tt>java ec.Evolve -file app/lawnmower/noadf.params</tt> <dt><b>(GP) 8x8 Lawnmower with 2 ADFs</b> <dd><tt>java ec.Evolve -file app/lawnmower/adf.params</tt> <dt><b>(GP) Even 4-Parity</b> <dd><tt>java ec.Evolve -file app/parity/parity.params -p eval.problem.even=true</tt> <dt><b>(GP) Odd 4-Parity</b> <dd><tt>java ec.Evolve -file app/parity/parity.params -p eval.problem.even=false</tt> <dt><b>(GP) Odd 10-Parity</b> <dd><tt>java ec.Evolve -file app/parity/parity.params -p eval.problem.even=false -p eval.problem.bits=10 -p gp.fs.0.size=14</tt> <dt><b>(GP) Even 3-Parity with 2 ADFs</b> <dd><tt>java ec.Evolve -file app/parity/adf.params -p eval.problem.even=true</tt> <dt><b>(GP) Odd 3-Parity with 2 ADFs</b> <dd><tt>java ec.Evolve -file app/parity/adf.params -p eval.problem.even=false</tt> <dt><b>(GP) Simple Edge Encoding for Tomita Language Problem 3</b> <dd><tt>java ec.Evolve -file app/edge/3.params</tt>
+			</dl>
+			<p>
+			After a run, various statistical information is written to the <b>out.stat</b> file. All the GP examples use a population size of 1024, and 7-tournament selection. All other parameters are Koza-I/II standard.
+			<br>
+			<br>
+	</BODY>
+</HTML>

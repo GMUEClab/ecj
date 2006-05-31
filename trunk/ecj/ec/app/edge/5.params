@@ -1,0 +1,15 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = 1.params
+
+#
+# Here we specify the particular files to do induction over
+#
+
+eval.problem.allpos = input/5.out.gz
+eval.problem.allneg = input/5a.out.gz
+eval.problem.testpos = input/5s.out.gz
+eval.problem.testneg = input/5sa.out.gz
+

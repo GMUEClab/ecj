@@ -1,0 +1,359 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../gp/koza/koza.params
+
+# THIS IS A LONG FILE -- GO TO THE END IF YOU JUST
+# WANT TO CHANGE THE "N" IN "N"-PARITY
+
+# First, we're gonna change the number of trees in
+# the individual, to accommodate the ADFs
+# Each of our three trees uses a different tree constraints,
+# tc0, tc1, tc2
+
+pop.subpop.0.species.ind.numtrees = 3
+
+# "The result-producing branch" (the "third" tree in Koza-I p. 538)
+pop.subpop.0.species.ind.tree.0 = ec.gp.GPTree
+pop.subpop.0.species.ind.tree.0.tc = tc0
+# "ADF0 body" (the "first" tree in Koza-I p. 538)
+pop.subpop.0.species.ind.tree.1 = ec.gp.GPTree
+pop.subpop.0.species.ind.tree.1.tc = tc1
+# "ADF1 body" (the "second" tree in Koza-I p. 538)
+pop.subpop.0.species.ind.tree.2 = ec.gp.GPTree
+pop.subpop.0.species.ind.tree.2.tc = tc2
+
+
+
+# Now, let's define what tc0, tc1, and tc2 are.
+# Each has a different function set, f0, f1, and f2
+
+gp.tc.size = 3
+
+gp.tc.0 = ec.gp.GPTreeConstraints
+gp.tc.0.name = tc0
+gp.tc.0.fset = f0
+gp.tc.0.returns = nil
+gp.tc.0.init = ec.gp.koza.GrowBuilder
+gp.tc.0.init.growp = 0.5
+gp.tc.0.init.min = 2
+gp.tc.0.init.max = 6
+
+gp.tc.1 = ec.gp.GPTreeConstraints
+gp.tc.1.name = tc1
+gp.tc.1.fset = f1
+gp.tc.1.returns = nil
+gp.tc.1.init = ec.gp.koza.GrowBuilder
+gp.tc.1.init.growp = 0.5
+gp.tc.1.init.min = 2
+gp.tc.1.init.max = 6
+
+gp.tc.2 = ec.gp.GPTreeConstraints
+gp.tc.2.name = tc2
+gp.tc.2.fset = f2
+gp.tc.2.returns = nil
+gp.tc.2.init = ec.gp.koza.GrowBuilder
+gp.tc.2.init.growp = 0.5
+gp.tc.2.init.min = 2
+gp.tc.2.init.max = 6
+
+
+
+# Now we define the three function sets
+
+gp.fs.size = 3
+
+
+gp.fs.0.name = f0
+gp.fs.0.info = ec.gp.GPFuncInfo
+
+### The functions, carefully ordered :-)  (See below)
+gp.fs.0.func.0 = ec.app.parity.func.And
+gp.fs.0.func.0.nc = nc2
+gp.fs.0.func.1 = ec.app.parity.func.Or
+gp.fs.0.func.1.nc = nc2
+gp.fs.0.func.2 = ec.app.parity.func.Nand
+gp.fs.0.func.2.nc = nc2
+gp.fs.0.func.3 = ec.app.parity.func.Nor
+gp.fs.0.func.3.nc = nc2
+# ADF0 (2 arguments, tree 1)
+gp.fs.0.func.4 = ec.gp.ADF
+gp.fs.0.func.4.nc = nc2
+gp.fs.0.func.4.tree = 1
+gp.fs.0.func.4.name = 0
+# ADF1 (3 arguments, tree 2)
+gp.fs.0.func.5 = ec.gp.ADF
+gp.fs.0.func.5.nc = nc3
+gp.fs.0.func.5.tree = 2
+gp.fs.0.func.5.name = 1
+gp.fs.0.func.6 = ec.app.parity.func.D0
+gp.fs.0.func.6.nc = nc0
+gp.fs.0.func.7 = ec.app.parity.func.D1
+gp.fs.0.func.7.nc = nc0
+gp.fs.0.func.8 = ec.app.parity.func.D2
+gp.fs.0.func.8.nc = nc0
+gp.fs.0.func.9 = ec.app.parity.func.D3
+gp.fs.0.func.9.nc = nc0
+gp.fs.0.func.10 = ec.app.parity.func.D4
+gp.fs.0.func.10.nc = nc0
+gp.fs.0.func.11 = ec.app.parity.func.D5
+gp.fs.0.func.11.nc = nc0
+gp.fs.0.func.12 = ec.app.parity.func.D6
+gp.fs.0.func.12.nc = nc0
+gp.fs.0.func.13 = ec.app.parity.func.D7
+gp.fs.0.func.13.nc = nc0
+gp.fs.0.func.14 = ec.app.parity.func.D8
+gp.fs.0.func.14.nc = nc0
+gp.fs.0.func.15 = ec.app.parity.func.D9
+gp.fs.0.func.16.nc = nc0
+gp.fs.0.func.16 = ec.app.parity.func.D10
+gp.fs.0.func.16.nc = nc0
+gp.fs.0.func.17 = ec.app.parity.func.D11
+gp.fs.0.func.17.nc = nc0
+gp.fs.0.func.18 = ec.app.parity.func.D12
+gp.fs.0.func.18.nc = nc0
+gp.fs.0.func.19 = ec.app.parity.func.D13
+gp.fs.0.func.19.nc = nc0
+gp.fs.0.func.20 = ec.app.parity.func.D14
+gp.fs.0.func.20.nc = nc0
+gp.fs.0.func.21 = ec.app.parity.func.D15
+gp.fs.0.func.21.nc = nc0
+gp.fs.0.func.22 = ec.app.parity.func.D16
+gp.fs.0.func.22.nc = nc0
+gp.fs.0.func.23 = ec.app.parity.func.D17
+gp.fs.0.func.23.nc = nc0
+gp.fs.0.func.24 = ec.app.parity.func.D18
+gp.fs.0.func.24.nc = nc0
+gp.fs.0.func.25 = ec.app.parity.func.D19
+gp.fs.0.func.25.nc = nc0
+gp.fs.0.func.26 = ec.app.parity.func.D20
+gp.fs.0.func.26.nc = nc0
+gp.fs.0.func.27 = ec.app.parity.func.D21
+gp.fs.0.func.27.nc = nc0
+gp.fs.0.func.28 = ec.app.parity.func.D22
+gp.fs.0.func.28.nc = nc0
+gp.fs.0.func.29 = ec.app.parity.func.D23
+gp.fs.0.func.29.nc = nc0
+gp.fs.0.func.30 = ec.app.parity.func.D24
+gp.fs.0.func.30.nc = nc0
+gp.fs.0.func.31 = ec.app.parity.func.D25
+gp.fs.0.func.31.nc = nc0
+gp.fs.0.func.32 = ec.app.parity.func.D26
+gp.fs.0.func.32.nc = nc0
+gp.fs.0.func.33 = ec.app.parity.func.D27
+gp.fs.0.func.33.nc = nc0
+gp.fs.0.func.34 = ec.app.parity.func.D28
+gp.fs.0.func.34.nc = nc0
+gp.fs.0.func.35 = ec.app.parity.func.D29
+gp.fs.0.func.35.nc = nc0
+gp.fs.0.func.36 = ec.app.parity.func.D30
+gp.fs.0.func.36.nc = nc0
+gp.fs.0.func.37 = ec.app.parity.func.D31
+gp.fs.0.func.37.nc = nc0
+
+
+
+# ADF1's tree
+gp.fs.1.name = f1
+gp.fs.1.info = ec.gp.GPFuncInfo
+gp.fs.1 = ec.gp.GPFunctionSet
+
+### The functions, carefully ordered :-)  (See below)
+gp.fs.1.func.0 = ec.app.parity.func.And
+gp.fs.1.func.0.nc = nc2
+gp.fs.1.func.1 = ec.app.parity.func.Or
+gp.fs.1.func.1.nc = nc2
+gp.fs.1.func.2 = ec.app.parity.func.Nand
+gp.fs.1.func.2.nc = nc2
+gp.fs.1.func.3 = ec.app.parity.func.Nor
+gp.fs.1.func.3.nc = nc2
+# ARG0
+gp.fs.1.func.4 = ec.gp.ADFArgument
+gp.fs.1.func.4.nc = nc0
+gp.fs.1.func.4.arg = 0
+# ARG1
+gp.fs.1.func.5 = ec.gp.ADFArgument
+gp.fs.1.func.5.nc = nc0
+gp.fs.1.func.5.arg = 1
+gp.fs.1.func.6 = ec.app.parity.func.D0
+gp.fs.1.func.6.nc = nc0
+gp.fs.1.func.7 = ec.app.parity.func.D1
+gp.fs.1.func.7.nc = nc0
+gp.fs.1.func.8 = ec.app.parity.func.D2
+gp.fs.1.func.8.nc = nc0
+gp.fs.1.func.9 = ec.app.parity.func.D3
+gp.fs.1.func.9.nc = nc0
+gp.fs.1.func.10 = ec.app.parity.func.D4
+gp.fs.1.func.10.nc = nc0
+gp.fs.1.func.11 = ec.app.parity.func.D5
+gp.fs.1.func.11.nc = nc0
+gp.fs.1.func.12 = ec.app.parity.func.D6
+gp.fs.1.func.12.nc = nc0
+gp.fs.1.func.13 = ec.app.parity.func.D7
+gp.fs.1.func.13.nc = nc0
+gp.fs.1.func.14 = ec.app.parity.func.D8
+gp.fs.1.func.14.nc = nc0
+gp.fs.1.func.15 = ec.app.parity.func.D9
+gp.fs.1.func.16.nc = nc0
+gp.fs.1.func.16 = ec.app.parity.func.D10
+gp.fs.1.func.16.nc = nc0
+gp.fs.1.func.17 = ec.app.parity.func.D11
+gp.fs.1.func.17.nc = nc0
+gp.fs.1.func.18 = ec.app.parity.func.D12
+gp.fs.1.func.18.nc = nc0
+gp.fs.1.func.19 = ec.app.parity.func.D13
+gp.fs.1.func.19.nc = nc0
+gp.fs.1.func.20 = ec.app.parity.func.D14
+gp.fs.1.func.20.nc = nc0
+gp.fs.1.func.21 = ec.app.parity.func.D15
+gp.fs.1.func.21.nc = nc0
+gp.fs.1.func.22 = ec.app.parity.func.D16
+gp.fs.1.func.22.nc = nc0
+gp.fs.1.func.23 = ec.app.parity.func.D17
+gp.fs.1.func.23.nc = nc0
+gp.fs.1.func.24 = ec.app.parity.func.D18
+gp.fs.1.func.24.nc = nc0
+gp.fs.1.func.25 = ec.app.parity.func.D19
+gp.fs.1.func.25.nc = nc0
+gp.fs.1.func.26 = ec.app.parity.func.D20
+gp.fs.1.func.26.nc = nc0
+gp.fs.1.func.27 = ec.app.parity.func.D21
+gp.fs.1.func.27.nc = nc0
+gp.fs.1.func.28 = ec.app.parity.func.D22
+gp.fs.1.func.28.nc = nc0
+gp.fs.1.func.29 = ec.app.parity.func.D23
+gp.fs.1.func.29.nc = nc0
+gp.fs.1.func.30 = ec.app.parity.func.D24
+gp.fs.1.func.30.nc = nc0
+gp.fs.1.func.31 = ec.app.parity.func.D25
+gp.fs.1.func.31.nc = nc0
+gp.fs.1.func.32 = ec.app.parity.func.D26
+gp.fs.1.func.32.nc = nc0
+gp.fs.1.func.33 = ec.app.parity.func.D27
+gp.fs.1.func.33.nc = nc0
+gp.fs.1.func.34 = ec.app.parity.func.D28
+gp.fs.1.func.34.nc = nc0
+gp.fs.1.func.35 = ec.app.parity.func.D29
+gp.fs.1.func.35.nc = nc0
+gp.fs.1.func.36 = ec.app.parity.func.D30
+gp.fs.1.func.36.nc = nc0
+gp.fs.1.func.37 = ec.app.parity.func.D31
+gp.fs.1.func.37.nc = nc0
+
+
+
+
+
+## ADF0's tree
+gp.fs.2.name = f2
+gp.fs.2.info = ec.gp.GPFuncInfo
+gp.fs.2 = ec.gp.GPFunctionSet
+
+### The functions, carefully ordered :-)  (See below)
+gp.fs.2.func.0 = ec.app.parity.func.And
+gp.fs.2.func.0.nc = nc2
+gp.fs.2.func.1 = ec.app.parity.func.Or
+gp.fs.2.func.1.nc = nc2
+gp.fs.2.func.2 = ec.app.parity.func.Nand
+gp.fs.2.func.2.nc = nc2
+gp.fs.2.func.3 = ec.app.parity.func.Nor
+gp.fs.2.func.3.nc = nc2
+# ARG0
+gp.fs.2.func.4 = ec.gp.ADFArgument
+gp.fs.2.func.4.nc = nc0
+gp.fs.2.func.4.arg = 0
+# ARG1
+gp.fs.2.func.5 = ec.gp.ADFArgument
+gp.fs.2.func.5.nc = nc0
+gp.fs.2.func.5.arg = 1
+# ARG2
+gp.fs.2.func.6 = ec.gp.ADFArgument
+gp.fs.2.func.6.nc = nc0
+gp.fs.2.func.6.arg = 2
+gp.fs.2.func.7 = ec.app.parity.func.D0
+gp.fs.2.func.7.nc = nc0
+gp.fs.2.func.8 = ec.app.parity.func.D1
+gp.fs.2.func.8.nc = nc0
+gp.fs.2.func.9 = ec.app.parity.func.D2
+gp.fs.2.func.9.nc = nc0
+gp.fs.2.func.10 = ec.app.parity.func.D3
+gp.fs.2.func.10.nc = nc0
+gp.fs.2.func.11 = ec.app.parity.func.D4
+gp.fs.2.func.11.nc = nc0
+gp.fs.2.func.12 = ec.app.parity.func.D5
+gp.fs.2.func.12.nc = nc0
+gp.fs.2.func.13 = ec.app.parity.func.D6
+gp.fs.2.func.13.nc = nc0
+gp.fs.2.func.14 = ec.app.parity.func.D7
+gp.fs.2.func.14.nc = nc0
+gp.fs.2.func.15 = ec.app.parity.func.D8
+gp.fs.2.func.16.nc = nc0
+gp.fs.2.func.16 = ec.app.parity.func.D9
+gp.fs.2.func.16.nc = nc0
+gp.fs.2.func.17 = ec.app.parity.func.D10
+gp.fs.2.func.17.nc = nc0
+gp.fs.2.func.18 = ec.app.parity.func.D11
+gp.fs.2.func.18.nc = nc0
+gp.fs.2.func.19 = ec.app.parity.func.D12
+gp.fs.2.func.19.nc = nc0
+gp.fs.2.func.20 = ec.app.parity.func.D13
+gp.fs.2.func.20.nc = nc0
+gp.fs.2.func.21 = ec.app.parity.func.D14
+gp.fs.2.func.21.nc = nc0
+gp.fs.2.func.22 = ec.app.parity.func.D15
+gp.fs.2.func.22.nc = nc0
+gp.fs.2.func.23 = ec.app.parity.func.D16
+gp.fs.2.func.23.nc = nc0
+gp.fs.2.func.24 = ec.app.parity.func.D17
+gp.fs.2.func.24.nc = nc0
+gp.fs.2.func.25 = ec.app.parity.func.D18
+gp.fs.2.func.25.nc = nc0
+gp.fs.2.func.26 = ec.app.parity.func.D19
+gp.fs.2.func.26.nc = nc0
+gp.fs.2.func.27 = ec.app.parity.func.D20
+gp.fs.2.func.27.nc = nc0
+gp.fs.2.func.28 = ec.app.parity.func.D21
+gp.fs.2.func.28.nc = nc0
+gp.fs.2.func.29 = ec.app.parity.func.D22
+gp.fs.2.func.29.nc = nc0
+gp.fs.2.func.30 = ec.app.parity.func.D23
+gp.fs.2.func.30.nc = nc0
+gp.fs.2.func.31 = ec.app.parity.func.D24
+gp.fs.2.func.31.nc = nc0
+gp.fs.2.func.32 = ec.app.parity.func.D25
+gp.fs.2.func.32.nc = nc0
+gp.fs.2.func.33 = ec.app.parity.func.D26
+gp.fs.2.func.33.nc = nc0
+gp.fs.2.func.34 = ec.app.parity.func.D27
+gp.fs.2.func.34.nc = nc0
+gp.fs.2.func.35 = ec.app.parity.func.D28
+gp.fs.2.func.35.nc = nc0
+gp.fs.2.func.36 = ec.app.parity.func.D29
+gp.fs.2.func.36.nc = nc0
+gp.fs.2.func.37 = ec.app.parity.func.D30
+gp.fs.2.func.37.nc = nc0
+gp.fs.2.func.38 = ec.app.parity.func.D31
+gp.fs.2.func.38.nc = nc0
+
+
+# We specify our problem here
+#
+
+eval.problem = ec.app.parity.Parity
+eval.problem.data = ec.app.parity.ParityData
+# ADFs use the same data type typically -- we need to include
+# this even if we're not implementing ADFs
+eval.problem.stack.context.data = ec.app.parity.ParityData
+
+
+# Here we determine what kind of Parity we're doing:
+eval.problem.bits = 3
+eval.problem.even = true
+
+# this value must always be set to *6* more than eval.problem.bits
+gp.fs.0.size = 9
+# this value must always be set to *6* more than eval.problem.bits
+gp.fs.1.size = 9
+# this value must always be set to *7* more than eval.problem.bits
+gp.fs.2.size = 10

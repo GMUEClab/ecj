@@ -1,0 +1,66 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 =                              ../../simple/simple.params
+
+generations =				100
+#print-used-params =			true
+quit-on-run-complete =			false
+
+eval =                                  ec.coevolve.MultiPopCoevolutionaryEvaluator
+
+eval.subpop.0.num-rand-ind =		4
+eval.subpop.0.num-elites =		1
+eval.subpop.0.num-ind =			2
+eval.subpop.0.select =			ec.select.TournamentSelection
+eval.subpop.0.select.size =		1
+
+eval.subpop.1.num-rand-ind =		4
+eval.subpop.1.num-elites =		1
+eval.subpop.1.num-ind =			2
+eval.subpop.1.select =			ec.select.TournamentSelection
+eval.subpop.1.select.size =		1
+
+eval.problem =                          ec.app.coevolve2.CoevolutionaryRosenbrock
+
+pop.subpops =                           2
+pop.subpop.0 = 				ec.Subpopulation
+pop.subpop.0.duplicate-retries = 	10
+pop.subpop.0.fitness = 			ec.simple.SimpleFitness
+pop.subpop.0.size = 			16
+pop.subpop.0.species = 			ec.vector.FloatVectorSpecies
+pop.subpop.0.species.crossover-type = 	one
+pop.subpop.0.species.genome-size = 	1
+pop.subpop.0.species.ind = 		ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.min-gene = 	-5.12
+pop.subpop.0.species.max-gene = 	5.12
+pop.subpop.0.species.pipe =             ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.mutation-type =    gauss
+pop.subpop.0.species.mutation-stdev =   0.25
+pop.subpop.0.species.mutation-prob =    0.95
+pop.subpop.0.species.pipe.source.0 = 		ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.size = 	2
+
+pop.subpop.1 = 				ec.Subpopulation
+pop.subpop.1.duplicate-retries = 	10
+pop.subpop.1.fitness = 			ec.simple.SimpleFitness
+pop.subpop.1.size = 			16
+pop.subpop.1.species = 			ec.vector.FloatVectorSpecies
+pop.subpop.1.species.crossover-type = 	one
+pop.subpop.1.species.genome-size = 	1
+pop.subpop.1.species.ind = 		ec.vector.DoubleVectorIndividual
+pop.subpop.1.species.min-gene = 	-5.12
+pop.subpop.1.species.max-gene = 	5.12
+pop.subpop.1.species.pipe =             ec.vector.breed.VectorMutationPipeline
+pop.subpop.1.species.mutation-type =    gauss
+pop.subpop.1.species.mutation-stdev =   0.25
+pop.subpop.1.species.mutation-prob =    0.95
+pop.subpop.1.species.pipe.source.0 = 		ec.select.TournamentSelection
+pop.subpop.1.species.pipe.source.0.size = 	2
+
+stat =                                  ec.simple.SimpleShortStatistics
+stat.file =				\$out.stat
+
+breed.elite.0 =				1
+breed.elite.1 =				1

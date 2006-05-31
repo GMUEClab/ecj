@@ -1,0 +1,17 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../coevolve2/coevolve2.params
+
+stat.num-children = 2
+stat.child.0 = ec.app.gui.SimpleXYSeriesChartStatistics
+stat.child.0.title = Best of Generation
+stat.child.0.x-axis-label = generation
+stat.child.0.y-axis-label = value
+
+stat.child.1 = ec.app.gui.SimpleBarChartStatistics
+stat.child.1.title = Best of Generation
+stat.child.1.x-axis-label = generation
+stat.child.1.y-axis-label = value
+

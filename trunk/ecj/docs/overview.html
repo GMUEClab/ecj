@@ -1,0 +1,219 @@
+<HTML>
+<HEAD>
+<title>Overview</title>
+</HEAD>
+<BODY bgcolor=white>
+
+<h1>Facility Overview</h1>
+
+As far as GP systems go, this is a big one.  It sports a number of packages for doing a variety of custom tasks.  The big hierarchies are:
+
+<ul>
+  <li>The <b>ec.util</b> package contains utility code unrelated to evolution.
+  <li>The <b>ec</b> package contains high-level abstract evolutionary computation objects.  Subsidiary packages handle basic breeding, selection, generational or steady-state evolution, and multiobjective optimization.
+  <li>The <b>ec.gp</b> package contains GP stuff.  It contains a number of subpackages with custom breeders, node builders, Koza-specific mechanisms, etc.
+  <li>The <b>ec.vector</b> package contains vector stuff for GAs and ES.
+  <li>The <b>ec.app</b> package holds example problem applications.
+  <li>The <b>ec.experiment</b> package is for temporary experimental code.
+</ul>
+
+<p><table border=0 width="100%"><tr><td bgcolor="darkblue" width="100%">
+<font color=white size=5>The ec.util Package</font>
+</td></tr></table>
+
+<p>The <b>ec.util</b> package contains a number of objects which are not evolution-specific, but are useful in their own right as generic objects for a variety of purposes.
+
+<h3>Random Number Generators</h3>
+
+<p>The system comes with two random number generators, <b>MersenneTwister</b> and <b>MersenneTwisterFast</b>.  Algorithmically they are identical; however, <c>MersenneTwister</c> is a formal subclass of <c>java.util.Random</c>, is synchronized, and is therefore half the speed as <c>MersenneTwisterFast</c>.  It's not used in the system, but is included in case you might find it useful.  
+
+<p>The <c>MersenneTwister</c> is an exceptionally high-quality random number generator which has a very long period, has extremely good statistical properties out to hundreds of dimensions, and is quite fast.  It is widely considered superior to most every existing random number generator, including: C's broken <tt>rand()</tt> and <tt>random()</tt>, the Park-Miller generator used in Numerical Recipies' <tt>rand1()</tt> and <tt>rand2()</tt>, and the Knuth subtractive generator used in Numerical Recipies' <tt>rand3()</tt> and in <tt>java.util.Random</tt>.  This Java version is fully serializable, extensively tested, and surprisingly fast.
+
+<h3>Parameter Files</h3>
+
+<p>The system relies on user-provided runtime parameters to guide nearly every decision it makes, from the classes it loads to the evolution settings they use.  These parameters are stored in a parameter file specified at runtime.  This parameter file may have parent parameter files whose parameters it overrides; they in turn may have parent parameter files, and so on.  Parameter files are similar in design to Java's property lists; similarly the storage facility for parameters, <b>ParameterDatabase</b>, is based on <c>java.util.PropertyList</c>.  <c>ParameterDatabase</c> returns values for <b>Parameter</b> settings, which are organized hierarchically much like directories and files.  Malformed <c>Parameter</c>s generate <b>BadParameterException</b>s, and when a parameter specifies a classname, failure to load that class results in a <b>ParameterClassNotFoundException</b>.  Many packages contain a parameter file, <b>params</b>, which defines some basic parameter settings for guiding objects in that package.
+
+<H3>Checkpointing and Encoding</h3>
+
+<p>The <b>Checkpoint</b> class serializes objects out to a checkpoint file, or restores the object state from a checkpoint file.  Checkpoint files are compressed for storage.  The <b>Code</b> class is provided for encoding binary data in a reliable but (somewhat) readable way in a text file.  When reading data from strings, <c>Code</c> wraps them in a <b>DecodeReturn</b> object to tokenize them and return decoded data.
+
+<h3>Logging</h3>
+
+<p>To output information under multithreaded conditions, handle exceptional conditions gracefully, and recover well under checkpoints, the system provides an <b>Output</b> logging facility.  This facility maintains a set of <b>Log</b>s, which write to various streams.  Logs can be restarted after a checkpoint through their <b>LogRestarter</b>s.  Problems in logging to streams result in <b>OutputException</b>s.  <b>Announcement</b>s are special messages outputted to <c>Log</c>s which indicate warnings, errors, or other important messages; <c>Announcement</c>s can be stored in memory and so are guaranteed to be preserved across checkpoint restarts. 
+
+<h3>Other Stuff</h3>
+
+<p>The system comes with a fast middlemost <b>QuickSort</b> routine, which does object comparisons using the <b>SortComparator</b> and <b>SortComparatorL</b> interfaces.  <b>RandomChoice</b> picks a random item from a probability distribution.  Lastly the current system version, and related information, is stored in the <b>Version</b> class. 
+
+<p><table border=0 width="100%"><tr><td bgcolor="darkblue" width="100%"><font color=white size=5>The ec Package</font></td></tr></table>
+
+<p>The <b>ec</b> package lays out the overall abstract design of the evolutionary mechanism.  It provides the entry point for programs, high-level abstract evolutionary objects and processes, and design patterns.
+
+<h3>Design Patterns</h3>
+
+<p>At the most abstract level are five <i>design pattern interfaces</i> which guide the overall syntactic design of most all other classes in the system.  The topmost design pattern is <b>Setup</b>, which is <c>java.io.Serialiable</c> (nearly every class in the system must be serializable in order for checkpointing to work).  <c>Setup</c> defines a single method, <tt>setup(...)</tt>, which is called near the beginning of an evolutionary run to allow an object to set itself up from <c>ec.util.Parameter</c>s stored in the <c>ec.util.ParameterDatabase</c>.
+
+<p><b>Singleton</b> is a <c>Setup</c> which defines classes which have only a single global instance throughout the evolutionary run.  <b>Clique</b> is a <c>Setup</c> which defines classes which contain a small set of instances which are considered unique from each other, and which each get <tt>setup(...)</tt> seperately.  For example, the set of GP types (<c>ec.gp.GPType</c>) is a <c>Clique</c>.  <c>Clique</c>s typically have a centralized static <c>java.util.Hashtable</c> which holds all member instances of the <c>Clique</c>.  <b>Prototype</b> is a <c>Setup</c> which defines classes whose instances are commonly created not with <tt>new</tt> but through cloning a single unused <i>prototypical instance</i> with <tt>clone()</tt>.  The prototypical instance receives a single (usually) call to <tt>setup(...)</tt>; thereafter all cloned instances do not get called <tt>setup(...)</tt>.  <c>Prototype</c>s are very common objects in the system, used for nearly everything that must be allocated a very many number of times (<c>Individual</c>s, for example).  Lastly, <b>Group</b> is a <c>Setup</c> which defines classes very much like <c>Prototype</c>s, but have prototypical instances which must be used.  <c>Population</c>, for example, is a <c>Group</c> because a prototypical instance would be very large and expensive to stash away only for the purpose of cloning other <c>Population</c>s.
+
+<h3>High-Level Evolutionary Processes</h3>
+
+<p><b>Evolve</b> is the topmost class in the evolutionary system.  It provides the entry point <tt>main(...)</tt> which sets up the checkpointing facility, random number generators, output logging facility, parameter database, and the <b>EvolutionState</b> object.  <c>EvolutionState</c>, a <c>Singleton</c>, holds the complete state of evolution at any time.  Because it holds <i>everything</i> but <c>Evolve</c>, either directly or indirectly through some trail of references, the state of the entire system can be checkpointed simply by serializing <c>EvolutionState</c>.  Because it holds the random number generators, the output facility, the population, and the parameter database, <c>EvolutionState</c> is passed around in a lot of methods to objects which need access to these features.  <c>EvolutionState</c> also is the entry point for the main evolutionary loop.  For this reason it is abstract; you must define this loop for your own purposes (steady state evolution vs. generational evolution most notably). 
+
+<p><c>EvolutionState</c> contains five other <c>Singleton</c> objects which abstract the high-level evolutionary process.  Their abstract forms in the <c>ec</c> package define their functions but do little or nothing to implement them. <b>Initializer</b> is responsible for creating the initial population.  Depending on the <c>Subpopulation</c>, it might do this by randomly-generating individuals or by loading them from a text file the user provides.  <b>Evaluator</b> evaluates a population and assesses its fitness. <b>Breeder</b> breeds new populations from previous ones.  <b>Exchanger</b> performs inter-subpopulation exchanges or inter-process exchanges (possibly with other machines).  Unlike other objects, <c>Exchanger</c> contains only hooks; all of its operations are highly domain-specific. <b>Finisher</b> is responsible for "cleaning up" a population at the end of an evolutionary run; it is typically unused as well.  
+
+<p>Finally, EvolutionState contains a tree of one or more <b>Statistics</b> objects which perform a variety of statistics accumulation and logging tasks throughout the evolutionary process.
+
+<h3>Populations, Individuals, and Other Stuff</h3>
+
+<p><c>EvolutionState</c> contains a single <b>Population</b>, which it receives from <c>Initializer</c> and updates during the evolutionary run.  The <c>Population</c> holds an array of <b>Subpopulation</b>s. <c>Population</c> and <c>Subpopulation</c> are both <c>Group</c>s.  It's up to the particular <c>Breeder</c> and <c>Evaluator</c> used as to how the <c>Population</c> and its one or more <c>Subpopulation</c>s are to be bred and evaluated.
+
+<p>Each <c>Subpopulation</c> contains an array of evolutionary <b>Individual</b>s, a <b>Species</b> to which they belong, and a prototypical <b>Fitness</b> which is used to clone <c>Fitness</c> objects each <c>Individual</c>s is evaluated with.
+
+<p>An <c>Individual</c> is the basic atomic unit of evolution.  It is evaluated and bred, and defines a possible solution to the given evolutionary domain problem.  Each <c>Individual</c> holds a <c>Fitness</c> instance, which defines its evaluated fitness in the population.  Both <c>Individual</c> and <c>Fitness</c> are abstract; there are specialized forms of them elsewhere in the system to do various kinds of things (simple vs. multiobjective fitness, GP individuals, etc.).
+
+<p>A <c>Species</c> represents a group of <c>Individuals</c> which have the same basic genetic makeup.  A <c>Species</c> instance contains a prototypical <c>Individual</c> which is commonly used to generate new <c>Individuals</c> at the request of the <c>Initializer</c> when it is creating an initial population.  It also contains a set of <b>Breeding Pipelines</b> used to breed individuals of that <c>Species</c>.  <c>Species</c> is abstract.
+
+<p>A <c>BreedingPipeline</c> is a basic mechanism for breeding individuals from a previous generation to form the next generation.  <c>BreedingPipeline</c>s are in some sense similar to Java streams: they take <c>Individuals</c> from one or more <b>BreedingSource</b>s, which may be either <b>SelectionMethod</b>s or other <c>BreedingPipeline</c>s, and produce new individuals derived from those source individuals.  <c>BreedingPipeline</c>s are designed to be linkable in chains or hierarchies to facilitate fairly flexible breeding mechanisms.  At one end of this chain are <c>SelectionMethod</c>s, which select individuals from an old population and return them.  The <c>BreedingPipeline</c> mechanism is also designed to work properly in a multithreaded environment, even though there are no synchronized methods in the system (for efficiency).  Each breeding thread receives its own separate set of <c>BreedingPipelines</c>, and in a multithreaded environment <c>Subpopulation</c>s are meant to be write-once, read-many.  If you need to create a breeder which demands locks, you'll need to synchronize on <c>Individual</c>s on your own.  <c>BreedingSource</c>, <c>BreedingPipeline</c>, and <c>SelectionMethod</c> are all abstract.
+
+<p>The <c>Evaluator</c> contains a prototypical <b>Problem</b>, which defines the problem domain individuals are being evaluated against.  At evaluation-time, the <c>Evaluator</c> clones a separate <c>Problem</c> for each evaluation thread.  <c>Problem</c> is abstract; a problem domain subclasses from <c>Problem</c> to create its own unique evaluation function.
+
+<p><b>DefaultsForm</b> is the interface adhered to by all defaults (classes which provide the default base for a given package).  <b>ECDefaults</b> provides the default base for the <c>ec</c> package.
+
+<p><table border=0 width="100%"><tr><td bgcolor="darkblue" width="100%"><font color=white size=5>The ec.simple Package</font></td></tr></table>
+
+<p>The <b>ec.simple</b> package contains basic implementations of several of <c>ec</c>'s abstract objects, providing simple non-coevolved, generational, non-multiobjective evolution.  Even if you're doing something more advanced than this, you may still be able to reuse those objects in this package which do not conflict with your evolution style.
+
+<p><b>SimpleEvolutionState</b> evaluates and breeds individuals using generational evolution. <b>SimpleInitializer</b> initializes a population simply by calling <c>Population</c>'s <tt>populate(...)</tt> method.  <b>SimpleBreeder</b> and <b>SimpleEvaluator</b> breed and evaluate individuals in a non-coevolutionary fashion, that is, individually.  <b>SimpleFitness</b> defines the fitness of an individual as a single floating-point value, with 0.0 being ideal and positive infinity being worst.  <b>SimpleProblemForm</b> defines the procedure for problems which evaluate individuals independently of one another.
+<b>SimpleStatistics</b> writes basic population statistics to an output <c>Log</c>, namely the best individual of each generation, and the best individual of the run. <b>SimpleShortStatistics</b> writes population statistics out in a column-oriented fashion that can be easily disected with tools such as <tt>awk</tt>.  <b>SimpleExchanger</b> and <b>SimpleFinisher</b> do nothing.  <b>SimpleDefaults</b> provides the defaults base for the package.
+
+<p><table border=0 width="100%"><tr><td bgcolor="darkblue" width="100%"><font color=white size=5>The ec.multiobjective Package</font></td></tr></table>
+
+<p>The <b>ec.multiobjective</b> package provides hooks for doing multiobjective evolution.  Its sole class, <b>MultiobjectiveFitness</b>, defines a <c>Fitness</c> which is an array of floating-point values. <b>MultiObjectiveDefaults,</b> provides the defaults base for the package.
+
+<p><table border=0 width="100%"><tr><td bgcolor="darkblue" width="100%"><font color=white size=5>The ec.steadystate Package</font></td></tr></table>
+
+<p>The <b>ec.steadystate</b> package provides facilities for doing basic steady-state evolution.  The <b>SteadyStateEvolutionState</b> class breeds and evaluates a single individual at a time, reintroducing it to the population.  To do this, it works in concert with the <b>SteadyStateEvaluator</b> and <b>SteadyStateBreeder</b> classes.  Some interfaces are defined for other evolutionary elements to adhere to: <b>SteadyStateSpeciesForm</b>, <b>SteadyStateBreedingSourceForm</b>, and <b>SteadyStateExchangerForm</b>.  Because it doesn't do anything at all, <c>ec.SimpleExchanger</c> implements <c>SteadyStateExchangerForm</c>.  <b>SteadyStateDefaults</b> provides the defaults base for the package.
+
+<p><table border=0 width="100%"><tr><td bgcolor="darkblue" width="100%"><font color=white size=5>The ec.select Package</font></td></tr></table>
+
+<p>The <b>ec.select</b> package contains implementations of <c>SelectionMethod</c>s.  <b>TournamentSelection</b> implements basic tournament selection, and adheres to <c>ec.steadystate.SteadyStateBreedingSourceForm</c>.  <b>MultiSelection</b> stores several subsidiary <c>SelectionMethod</c>s and selects one at random to select for it. <b>BestSelection</b> always returns the best (or worst) individual in a population.  <b>FitnessProportionateSelection</b> implements Koza-style fitness proportionate (roulette) selection.  <b>GreedyOverselection</b> implements Koza-style fitness proportionate selection with greedy overselection.  <b>FirstSelection</b> always returns the first individual in a population -- used primarily for testing purposes.  <b>SelectDefaults</b> provides the default base for the package.
+
+<p><table border=0 width="100%"><tr><td bgcolor="darkblue" width="100%"><font color=white size=5>The ec.breed Package</font></td></tr></table>
+
+<p>The <b>ec.breed</b> package contains implementations of domain-independent <c>BreedingPipeline</c>s which work across domains. <b>MultiBreedingPipeline</b> stores several subsidiary <c>BreedingPipeline</c>s and selects one at random to breed for it. <b>ForceBreedingPipeline</b> stores a subsidary <c>BreedingPipeline</c> and forces it to always produce <i>n</i> individuals at a shot.  <b>BufferedBreedingPipeline</b> stores a subsidiary <c>BreedingPipeline</c>, and has it produce <i>n</i> individuals at a shot, which are buffered and used to return individuals as needed.  <b>BreedDefaults</b> provides the default base for the package.
+
+<p><table border=0 width="100%"><tr><td bgcolor="darkblue" width="100%"><font color=white size=5>The ec.es Package</font></td></tr></table>
+
+<p>The <b>ec.es</b> package contans classes which make possible the (mu,lambda) and (mu+lambda) selection procedures common in Evolution Strategies (and the (mu+mu) procedure common in Evolutionary Programming), plus hooks for the 1/5 rule.
+
+<p>To do these procedures, the package provides its own EvolutionState object, <b>ESEvolutionState</b>, plus two associated breeders, <b>MuCommaLambdaBreeder</b> and <b>MuPlusLambdaBreeder</b>, both of the form <b>ESBreederForm</b>.  These breeders require the use of a special SelectionMethod, <b>ESSelection</b>.  <b>ESDefaults</b> defines the default base for the package.
+
+<p><table border=0 width="100%"><tr><td bgcolor="darkblue" width="100%"><font color=white size=5>The ec.exchange Package</font></td></tr></table>
+
+<p>The <b>ec.exchange</b> package contains various interesting Exchangers.  Of particular interest is <b>IslandExchange</b>, which does asynchronous and synchronous island exchange models over large numbers of parallel processes on different machines.  ECJ is platform-agnostic, so these machines can be different operating systems and processor types.  <b>InterPopulationExchange</b> does basic exchanges between subpopulations in a population. 
+
+<p><table border=0 width="100%"><tr><td bgcolor="darkblue" width="100%"><font color=white size=5>The ec.experiment Package</font></td></tr></table>
+
+<p>The <b>ec.experiment</b> package is provided for you to place experimental examples that shouldn't otherwise go in the <b>app</b> package, and also might not be distributed.  To make the namespace clean in case experiments are distributed with this package that could conflict with yours, I suggest creating subpackages of the form <b>ec.experiment.<i>yourname</i>.<i>yourexperiment</i></b>.
+
+<p><table border=0 width="100%"><tr><td bgcolor="darkblue" width="100%"><font color=white size=5>The ec.vector Package</font></td></tr></table>
+
+<p>The <b>ec.vector</b> package provides tools for doing vector-style evolution common in Genetic Algorithms and Evolution Strategies.  The package by default assumes fixed-length vectors, but can also accommodate variable-length vector representations.
+
+<p>The basic abstract individual in the package is <b>VectorIndividual</b>, of the species <b>VectorSpecies</b>.  Vector individuals contain a genome consisting of an array of some type.  Various concrete subclasses of VectorIndividual round out the different types that might fill this array: <b>BitVectorIndividual</b>, <b>ByteVectorIndividual</b>, <b>ShortVectorIndividual</b>, <b>IntegerVectorIndividual</b>, <b>LongVectorIndividual</b>, <b>FloatVectorIndividual</b>, and <b>DoubleVectorIndividual</b> provide genomes of their respective types plus appropriate mutation mechanisms for that type. <b>GeneVectorIndividual</b> allows for vectors of arbitrary types: its genome is an array of <b>VectorGene</b> objects, which you may subclass to do whatever you like with.  <b>VectorDefaults</b> defines the default base for the package.
+
+<p><table border=0 width="100%"><tr><td bgcolor="darkblue" width="100%"><font color=white size=5>The ec.vector.breed Package</font></td></tr></table>
+
+<p>The <b>ec.vector.breed</b> package gives some basic breeding pipelines applicable to all VectorIndividual, including the most common breeding procedures in GAs.  <b>VectorCrossoverPipeline</b> provides one, two, and any-point (uniform) crossover.  <b>VectorMutationPipeline</b> gives a basic mutation procedure.  <b>VectorReproductionPipeline</b> simply makes copies of individuals.  
+
+<p><table border=0 width="100%"><tr><td bgcolor="darkblue" width="100%"><font color=white size=5>The ec.gp Package</font></td></tr></table>
+
+<p>The <b>ec.gp</b> package contains a number of classes which implement tree-style genetic programming.  The package is fairly complete, containing multiple tree forests, full strongly-typed genetic programming with generic types, automatically-defined functions, automatically-defined macros, ephemeral random constants, and a collection of Koza-I and Koza-II-style breeding and initialization methods.
+
+<h3>Individuals, Trees, and Nodes</h3>
+
+<p>Genetic programming individuals are of <c>Species</c> which implement the interface <b>GPSpeciesForm</b>.  <b>GPSpecies</b> is a simple <c>Species</c> which implements this form.  Generally, GP individuals are of the class <b>GPIndividual</b> or a subclass.  This class contains an array of <b>GPTree</b>s associated with that individual.  A <c>GPTree</c> is a single tree made up of function-nodes, instances of subclasses of <b>GPNode</b> (which is abstract).  When executed, a <c>GPNode</c> receives and returns its data in the form of some subclass of the abstract class <b>GPData</b>.
+
+<p><c>GPNode</c>s have "parents" and "children".  Children of <c>GPNode</c>s must always be other <c>GPNode</c>s, but parents of <c>GPNode</c>s implement the interface <b>GPNodeParent</b>.  <c>GPTree</c>s and <c>GPNode</c>s are both <c>GPNodeParent</c>s.
+
+<p>The GP system provides a few <c>GPNode</c>s by default.  <b>ERC</b> is an abstract superclass for ephemeral random constants.  <b>ADF</b> defines an automatically-defined function (see Koza-II), associated with a particular tree in the <c>GPIndividual</c>'s tree forest.  <c>ADF</c> nodes work in concert with <b>ADFArgument</b> nodes, leaf (terminal) nodes which return the evaluated subtrees of the <c>ADF</c> node.  <b>ADM</b> nodes [Lee Spector] are like <c>ADF</c>s except that the do not store the evaluated results of their children, but instead execute and re-execute them as necessary.  The <c>ADF</c> and <c>ADM</c> facility relies on storing the current calling context in an <b>ADFContext</b>, which is pushed and popped onto a complex double-stack object called an <b>ADFStack</b>.
+
+<h3>Types and Constraints</h3>
+
+<p>This GP system obeys a set of strongly-typed type constraints which guide which <c>GPNode</c>s may be the children of other <c>GPNode</c>s or the root of which <c>GPTree</c>s in an individual.  <p>Types themselves are defined by three classes: an abstract superclass <b>GPType</b>, and its two subclasses <b>GPAtomicType</b> (basic types, compatible only with themselves) and <b>GPSetType</b> (types compatible with a set of other types).  These three classes together form a <c>Clique</c>.  
+
+<p><c>GPFunctionSet</c>, another <c>Clique</c>, defines a set of <c>GPNode</c>s which form a function set for some tree.  It holds an array of <b>GPFuncInfo</b> instances, each one a wrapper for a single prototypical <c>GPNode</c> instance.
+
+<p>The return type and children argument types of a particular <c>GPNode</c> are given its associated <b>GPNodeConstraints</b> object.  Likewise, the root type for a <c>GPTree</c>, plus the <b>GPFunctionSet</b> (the set of valid <c>GPNode</c> classes) for the tree and its <b>GPNodeBuilder</b> (the abstract superclass of objects which create initial trees or subtrees), are stored in the <c>GPTree</c>'s associated <b>GPTreeConstraints</b> object.  <c>GPTreeConstraints</c> and <c>GPNodeConstraints</c> are both <c>Clique</c>s.
+
+<h3>Tree Manipulators and Other Stuff</h3>
+
+<p><b>GPBreedingPipeline</b> is an abstract subclass of <c>BreedingPipeline</c> designed specifically for GP.  The <b>GPInitializer</b> sets up the various GP <c>Clique</c>s before performing any initialization.  A <b>GPNodeSelector</b> is an abstract superclass of GP objects which pick a node out of a tree, perhaps to choose a crossover or mutation point.  A <b>GPProblem</b> is a special kind of <c>Problem</b> which defines and holds the <c>ADFStack</c> and <c>GPData</c> passed into trees when executing them.  Lastly, <b>GPDefaults</b> holds the default parameter base off of which various GP objects derive their default <c>Parameter</c>s.
+
+<p><table border=0 width="100%"><tr><td bgcolor="darkblue" width="100%"><font color=white size=5>The ec.gp.koza Package</font></td></tr></table>
+
+<p>The <b>ec.gp.koza</b> package holds objects which define the specific algorithms used in Koza-I and Koza-II.
+
+<h3>Pipelines</h3>
+
+<p>Three pipelines, <b>CrossoverPipeline</b>, <b>MutationPipeline</b>, and <b>ReproductionPipeline</b> are versions of <c>GPBreedingPipeline</c> which perform subtree crossover, point mutation, and reproduction, respectively.  These pipelines attempt to be as close to the Koza texts as possible, though they have some minor differences due to ad-hoc approaches taken by Koza-I and Koza-II.  These pipelines also implement features found in <tt>lil-gp</tt> when possible.
+
+<h3>Node Builders</h3>
+
+<p>Three <c>GPNodeBuilder</c>s, <b>FullBuilder</b>, <b>GrowBuilder</b>, and <b>HalfBuilder</b>, build trees using the Koza-I FULL, GROW, and RAMPED HALF-AND-HALF building methods, respectively.  Like the pipelines above, these objects attempt to replicate the Koza texts as closely as possible, but there are minor differences due to certain ad-hoc features of Koza-I and Koza-II.  These node builders also implement features found in <tt>lil-gp</tt> when possible.
+
+<h3>Other Stuff</h3>
+
+<p>The <b>KozaNodeSelector</b> is a <c>GPNodeSelector</c> which performs Koza-style node selection (plus some additional features), choosing leaf nodes over terminal nodes with a given probability, etc.  <b>KozaFitness</b> replicates the Koza-I fitness metric (raw/standardized/adjusted fitness and number of hits) with one exception: raw fitnesses must always be standardized (that is, 0 must be the best fitness, and positive infinity the worst).  <b>KozaStatistics</b> provides additional statistics information, including evaluation and breeding timings, mean fitnesses, and number of nodes and individuals processed. <b>KozaShortStatistics</b> performs abbreviated statistics for each generation, one per line, designed to be parseable with tools such as <tt>awk</tt>.  <b>KozaDefaults</b> holds the default parameter base off of which various Koza-specific objects derive their default <c>Parameter</c>s.
+
+<p><table border=0 width="100%"><tr><td bgcolor="darkblue" width="100%"><font color=white size=5>The ec.gp.breed Package</font></td></tr></table>
+
+<p>The <b>ec.select.breed</b> package contains <c>GPBreedingPipeline</c>s other than the standard Koza collection.  Presently this consists primarily of mutation methods defined by [Kumar Chellapilla] and [Una-May O'Reilly], plus a few special to ECJ.
+
+<p><b>InternalCrossoverPipeline</b> swaps two nodes within the same individual. <b>MutateAllNodesPipeline</b> attempts to replace every node in the tree with a compatible node.  <b>MutateOneNodePipeline</b> picks one node in the tree and replaces it with a compatible node.  <b>MutateERCPipeline</b> mutates an <c>ERC</c> in a way appropriate for it (often numerically).  <b>MutateSwapPipeline</b> picks a nonterminal node and swaps two type-compatible sibling subtrees of that node. <b>MutatePromotePipeline</b> picks a node, clips its subtree out, and fills that spot with one of its children nodes.  <b>MutateDemotePipeline</b> picks a node, clips its subtree out, fills the spot with a new random node, fills one of that node's argument positions with the original node and its subtree, and generates random subtrees for the remaining argument positions. <b>RehangPipeline</b> adjusts the a tree so that some node within the tree (other than the root) becomes the new root.  This can be visualized to some (incorrect) extent in an interesting way: imagine that the tree is a hanging mobile of coat hangers and joints.  Now pick a nonterminal in the tree, and grab it with your fingers.  Let the rest of the tree droop beneath it.  You have rehung the tree. <b>GPBreedDefaults</b> holds the default parameter base off of which <c>GPBreedingPipeline</c>s (except for Koza's) derive their default <c>Parameter</c>s.
+
+<p><table border=0 width="100%"><tr><td bgcolor="darkblue" width="100%"><font color=white size=5>The ec.gp.build Package</font></td></tr></table>
+
+<p>The <b>ec.gp.build</b> package contains <c>GPNodeBuilder</c>s other than the standard Koza collection.  <b>RandomBranch</b> restricts node building as described by [Kumar Chellapilla].  <b>PTC1</b> and <b>PTC2</b> implement the respective algorithms as described by [Sean Luke].  They require function sets of <b>PTCFuntionSetForm</b>.   <b>PTCFunctionSet</b> provides one such set for your use.  <b>RandTree</b> implements the algorithm by the same name by [Hitoshi Iba] -- the implementation is experimental, however.  Instead, try the 100% <b>Uniform</b> algorithm as defined by [Bohm and Geyer-Shultz]. <b>GPBuildDefaults</b> holds the default parameter base for this package.
+
+<p><table border=0 width="100%"><tr><td bgcolor="darkblue" width="100%"><font color=white size=5>Problem Domains</font></td></tr></table>
+
+<p>Presently there are five problem domains which use this system.  Each contains parameter files which set up the evolutionary run.  Problem domains typically contain a subclass of <c>ec.Problem</c> which evaluates individuals in the given problem domain.  GP Problem domains also typically contain a sublcass of <c>ec.GPData</c>, plus a <b>func</b> subpackage which stores the <c>GPNode</c> subclasses which define the actual function nodes for the problem.
+
+<dl>
+<dt><b>ec.app.multiplexer</b>
+<dd>The Koza-I Boolean-Multiplexer problem.  <b>11.params</b> runs the 11-Booolean Multiplexer, <b>6.params</b> runs the 6-Boolean Multiplexer, and <b>3.params</b> runs the 3-Boolean Multiplexer (with no <tt>if</tt> statements).  This version of multiplexer, which should be algorithmically identical to the "slow" multiplexer below, takes advantage of Langdon and Poli's "Sub-Machine Code" GP, basically doing a single call of the function tree but having each node perform its operation on all the multiplexer problems simultaneously.  This can be done very efficiently, especially for 6.params, and typically results in a 3 to 10 times speedup, depending on the length of the run.
+
+<dt><b>ec.app.multiplexerslow ("Slow" multiplexer)</b>
+<dd>This original form of the Koza-I Boolean-Multiplexer problem can be found in the directory <tt>ec/app/multiplexerslow</tt>  It's much easier to understand than the new (and much much faster) multiplexer code, so it's provided here as example code. 
+     
+<dt><b>ec.app.regression</b>
+<dd>The Koza-I Symbolic Regression problem.  The <b>erc.params</b> file runs Symbolic Regression with ephemeral random constants between -1.0 and 1.0 inclusive.  The <b>noerc.params</b> file runs Symbolic Regression without ephemeral random constants.  Symbolic regression can be sped up in the same way as "fast" multiplexer is done, but the difference is minor enough (maybe 5%) that it's not worth the dramatic increase in complexity.
+
+<dt><b>ec.app.ant</b>
+<dd>The Koza-I Artificial Ant problem.  <b>params</b> runs the standard Ant problem with the Santa Fe trail (<b>santafe.trl</b>).  <b>progn4.params</b> runs the Ant problem with the addition of a <tt>progn4</tt> statement with the Santa Fe trail, as used in <tt>lil-gp</tt>.  The Ant directory also contains an additional trail, the Los Altos trail (<b>losaltos.trl</b>).  Both trail files are compatible with <tt>lil-gp</tt>.  The Ant problem also has a special <c>Statistics</c> class, <c>AntStatistics</c>, which prints out the best ant trail.
+
+<dt><b>ec.app.lawnmower</b>
+<dd>The Koza-II Lawnmower problem.  <b>params</b> runs the Lawnmower problem with an 8x8 lawn and no <c>ADF</c>s.  <b>adf.params</b> runs the same problem but with 2 <c>ADF</c>s as described in Koza-II.
+
+<dt><b>ec.app.parity</b>
+<dd>The [even|odd] <i>n-</i>parity problem, for values of <i>n</i> between 2 and 31 inclusive.  <b>params</b> runs the <i>n-</i>parity problem with no <c>ADF</c>s.  <b>adf.params</b> runs the same problem but with 2 <c>ADF</c>s as described in Koza-II.  Perhaps in the future if there's time, parity will also get the "fast" treatment like multiplexer did.
+
+<dt><b>ec.app.edge</b>
+<dd>Edge-encoding problems for the Tomita Language set.  See Sean Luke's PhD thesis, or other papers on Edge Encoding, which can be found at his <a href="http://www.cs.gmu.edu/~sean/papers/">papers repository</a>.  Edge comes with its own statistics which, like Ant, describe the result.  The Tomita Language problems 1-7 can be run with the equivalent <b>1.params, 2.params, 3.params, 4.params, 5.params, 6.params, 7.params</b> files.
+
+<dt><b>ec.app.twobox</b>
+<dd>The Koza-II Two-Box problem, with or without ADFs.  <b>adf.params</b> runs the problem with
+ADFs, and <b>noadf.params</b> runs the problem without ADFs.
+
+<dt><b>ec.app.sum</b>
+<dd>A simple GA problem in ECJ. Sum is a simple example of doing the fitness=(sum over vector) problem.  <b>sum.params</b> runs the example.
+
+<dt><b>ec.app.ecsuite</b>
+<dd>ECSuite is a collection of common floating-point GA problems.  ecsuite.params by default runs the Rastrigin problem -- read the parameter file for information on how to run other problem domains.
+
+</dl>
+
+
+</BODY>
+</HTML>

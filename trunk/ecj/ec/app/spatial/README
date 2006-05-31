@@ -1,0 +1,5 @@
+This package shows two examples of evolutionary search using ECJ's spatially-embedded models.  Both of them use the optimization in the Rosenbrock problem domain.
+
+First, we show how to use a regular spatially-embedded evolutionary computation model (file: spatial.params).  The population is embedded in a 1-D ring (the only spatial model available in ECJ v14), and a spatial version of tournament selection is used for breeding.
+
+Second, we show hot to use a spatially-embedded coevolutionary model (file: spatialcoevolve.params).  Here, both populations are embedded in 1-D rings of the same size.  Aside from the evolution in each population (which is set as in the previous case), we also employ a spatial coevolutionary evaluator: individuals are evaluated in combination with partners that reside at neighboring locations in the other populations.

@@ -1,0 +1,100 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+# Some rules about Java Property Lists, which is what the
+# system uses for parameters.  Java property lists are a little weird:
+# 
+# 1. Lines with only whitespace are ignored.
+# 2. Lines beginning with a # are ignored.
+# 3. Initial whitespace is trimmed.  The property is everything up to 
+#    the next chunk of whitespace or a '='
+# 4. A following '=' is *optional*
+# 5. After the chunk of whitespace and the optional '=', the next
+#    whitespace is trimmed.
+# 6. Typically, EVERYTHING after that is the value of the property, 
+#    up to but not including a '\n'. However, my version trims off
+#    the final bit of whitespace if any.
+# 7. If two parameters of the same name are found, the later one
+#    is used.
+#
+# Some examples and warnings:
+#
+# LINE (begins at | )          PROPERTY(between /'s)  VALUE(between /'s)
+#
+# |yo.yo.yo! = heave ho               /yo.yo.yo!/            /heave ho/
+# |my parameter                       /my/                   /parameter/
+# |my=parameter                       /my/                   /parameter/
+# |my= parameter                      /my/                   /parameter/
+# |
+# |#this is a comment
+# |    # this is NOT                  /#/                    /this is NOT/
+# |
+# |   my    =parameter                /my/                   /parameter/
+# |my parameter = this                /my/                   /parameter = this/
+# |myparameter=                       /myparameter/          //
+# |myparameter                        /myparameter/          //
+# |=myparameter                       //                     /myparameter/
+# |watch out here!                    /watch/                /out here!/
+# |comments=don't work  #see?         /comments/             /don't work  #see?/
+#
+#
+# The '.' is the delimiter for hierarchical elements.  
+# You generally shouldn't begin or end a property with an '.'
+#
+# If you want a list to first load some parent lists, include them as parameters:
+#
+#    parent.0 = filename for 0
+#    parent.1 = filename for 1
+#    ....
+#
+# The parameters will load as follows: your parameters will get checked first,
+# Then parent 0 (and all its ancestors), then parent 1 (and all its ancestors),
+# and so on.
+#
+
+
+
+
+
+#
+# Here are a few default values for administration stuff -- you can
+# find some basic evolution parameters in simple/params
+
+
+
+# ec.Evolve
+# ==============================
+
+# we want store announcements in memory, so...
+store = 				true
+
+# totally verbose
+verbosity = 				0
+
+# flush output immediately, don't buffer it
+flush = 				true
+
+# one thread
+evalthreads = 				1
+breedthreads = 				1
+
+# a good random seed for thread 0
+seed.0 = 				4357
+
+
+
+
+# ec.EvolutionState
+# ==============================
+
+# We're not writing checkpoint files.  If we were, we'd do it every
+# generation, and the prefix to all the files would be "ec.*"
+checkpoint =				false
+checkpoint-modulo =                     1
+prefix = 				ec
+
+
+
+
+

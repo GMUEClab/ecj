@@ -1,0 +1,50 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+
+# This parameter file extends simple to provide some GP-specific stuff.
+# Default type constraints are given for typeless GP programming also.
+#
+
+
+# My parent:
+parent.0 =				../simple/simple.params
+
+
+# ec.gp.GPData
+# ==============================
+
+# set this elsewhere!
+# gp.gpdata =
+
+
+# ec.Subpopulation
+# ==============================
+
+# You might change this, but it must be a GPSpeciesForm!
+pop.subpop.0.species = 			ec.gp.GPSpecies
+
+# ec.Species
+# ==============================
+
+pop.subpop.0.species.ind = 		ec.gp.GPIndividual
+
+#You need to provide a basic pipe -- if you want to pick from among
+#pipes (like Koza does, 10% reproduction and 90% crossover), see
+#ec.breed.MultiBreedingPipeline
+#pop.subpop.0.species.pipe =
+#...
+
+
+# ec.GPIndividual
+# ==============================
+
+# We'll define a single tree -- you might want to change its class
+pop.subpop.0.species.ind.numtrees =	1
+pop.subpop.0.species.ind.tree.0 =	ec.gp.GPTree
+
+
+# ec.GPTree
+# ==============================
+

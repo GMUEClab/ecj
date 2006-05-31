@@ -1,0 +1,1116 @@
+ECJ
+
+Version		Change Log
+----------------------------------------------------------------------------
+1		Initial version
+
+2		First prerelease, too many additions to mention
+
+3		Second prerelease
+		Race condition bug fixed in ec.gp.koza.Crossover
+	     	Breeding trees can now be prespecified
+		Crossover can throw away the second sibling
+		Multiplexer sped up by a factor of 10!  I might do the
+			same thing for Parity and Regression if I have time,
+			though for Regression it won't make much of a 
+			difference -- thanks to Poli and Langdon
+		Lots of little additions and tweaks
+		GPNode functions increased
+		Regression's * operator no longer shortcuts (due to NaN/Inf)
+		Documentation fixes
+		Fitness.equivalentTo() now is ==, not >=
+		ec.util.Version modified slightly
+		Individuals can now be written out to streams, not just logs
+
+4		Third prerelease
+		Finisher and Exchanger now are told the run result 
+			(success/failure) when they're cleaning up
+		Protected Log (rlog) in ec.app.regression.func.Log now is:
+				(if (= x 0) x (abs (log x)))
+			It was incorrectly:
+				(if (<= x 0) x (abs (log x)))
+		Edge domain added, with basic function classes
+		GPNode.readNode() and ERC.readNode() now check to 
+			make sure that the character after the read node is 
+			whitespace, (, ), or end of string
+		GPTree's readTree() method now checks if a line is empty, 
+			rather than bombing.  :-)
+		Default population size is now 1024
+		Koza FULL/GROW/HALF algorithms now ramp properly; before 
+			they were fixed to maxDepth rather than ramping 
+			between minDepth and maxDepth.
+		ECJ now uses the following for its FULL/GROW/HALF algorithm
+			parameter defaults:
+				GROW:  	min-depth=5, max-depth=5 (Koza standard
+					for mutation)
+				FULL:	undefined
+				HALF:	min-depth=2, max-depth=6 (Koza standard
+					for new individuals)
+			Unlike Koza, ECJ permits single-terminal trees/subtrees
+		Fixed the documentation for FULL/GROW/HALF to describe the
+			odd things that Koza and lil-gp do.
+		MersenneTwister and MersenneTwisterFast implement the new, 
+			official, improved Mersenne Twister seeding algorithm.
+		MersenneFastest.c file deleted
+		Three Classes Shortened to the 31 char Mac filename limit:
+			ParameterClassNotFoundException ->
+				ParameterClassLoadException
+			FitnessProportionateSelection ->
+				FitProportionateSelection
+			SteadyStateBreedingSourceForm ->
+				SteadyStateBSourceForm
+		ec/params and ec/simple/params files now don't have overlapping
+			stuff
+		ec/gp/params no longer includes ec/multiobjective/params
+		ec.gp.koza.KozaShortStatistics now splits up
+			postEvaluationStatistics so that you can include
+			stuff in an overriding class before a println 
+			is issued.
+		
+5		Fourth prerelease
+		Decided on a strategy to deal with (ARGH!!!) Sun's shift to
+			incompatible floating point types across platforms.
+			See the file "ABOUT.JDK13"
+		ec.select.TournamentSelection can have a tournament of 1
+		added README.MacOS
+		minor fix to ec.util.ParameterDatabase
+		removed the (commented out) populate(...) method from ec.Group
+		ec.Evolve now allows <=0 as a seed (since we're using the new
+			MersenneTwister seeding algorithm).
+		minor fix to ec.gp.GPTreeConstraints
+		Added the TwoBox problem
+		Orphaned interface GPNodeBuilderHelper deleted
+		Modified documentation eval.finish -> eval.problem parameter
+		Added the PTC1 and PTC2 algorithms.  Slight addition to
+			GPNodeConstraints to accommodate them.
+		Added the es package, including (mu,lambda) and (mu+lambda)
+			selection strategies.  Totally untested, use at
+			your own risk.
+		Modified ECJ's strong-typing claim.  ECJ does atomic and
+			set-based typing, but will not handle polymorphic
+			algorithms without some coding (which I may or
+			may not get to -- set-based strong typing is
+			pretty dang useful, and it's rare that you
+			need more than that).
+		Tweaked documentation of SteadyState stuff; as currently
+			implemented, the steady state evolution only marks
+			one individual per subpop for death each loop
+			(not n individuals, as had previously suggested).
+		Added elitism to ec.simple.SimpleBreeder
+		Symbolic Regression training set size now a parameter
+		Fixed ForceBreedingPipeline's claimed default parameter base
+		Changed default parameter base for entire ec.breed package
+			to "breed"
+		Moved all params files to foo.params.  Updated parent 
+			statements within params files to reflect this.
+			Hope I got 'em all.
+		ec.BreedingSource now has typicalIndsProduced() set to a
+			default of 1, rather than forcing it to be abstract.
+		MAJOR CHANGE: Species no longer has an array of breeding 
+			pipelines. It now has a single pipeline.  If you 
+			need to pick from among pipelines, use 
+			ec.breed.MultiBreedingPipeline.  The various GP 
+			params files have been updated to reflect this 
+			(since Koza GP by default picks from among pipelines),
+			but your params files may be broken because stuff like
+				pop.subpop.0.species.pipe.0.blah.blah
+			has now changed to
+				pop.subpop.0.species.pipe.source.0.blah.blah
+			with the insertion of the MultiBreedingPipeline.  
+			This is a good thing overall though -- it 
+			dramatically simplifies the breeding code with no net
+			loss.
+		Tweaked the documentation stating the purpose of 
+			GPBreedingPipeline.
+		Tweaked documentation for ec.Evolve
+		Modified ec.util.ParameterDatabase to sort its listed parameters
+		Fixed bugs (I hope) in ec.gp.breed.RandomBranch
+		Modified RandomChoice (adding the exemptZeroes method) so that 
+			it properly handles zero-probability values, and also
+			added the ability to handle objects which return 
+			doubles rather than floats (RandomChoiceChooserD).
+		ec.gp.GPNodeBuilder.canPick() and ec.gp.GPNodeBuilder.pickSize()
+			are no longer final
+		ec.util.MersenneTwister[Fast].nextBoolean([float|double]) now
+			checks to see if the probability is 0.0 or 1.0 and
+			guarantees to return false or true in that case
+        	Modified ec.Exchanger.runComplete(...) to return a String
+        	Modified the various EvolutionState subclasses to consider
+        	    ec.Exchanger.runComplete(...) properly in their decision
+        	    to shut down prematurely
+		ec.steadystate.SteadyStateEvolutionState now reports that it
+		    found an ideal individual
+		Docs updated
+
+6	Fifth prerelease
+	Island models, coevolution, and competitive fitness have been added.
+		A bunch of big modifications were made in order to implement 
+       	     	coevolution, competitive fitness, and island models.  Get
+            	ready, here we go:
+        Major change, not backward-compatible:  the thread parameter
+		    has been removed from most print- and read- methods 
+		    which operate on PrintWriters or LineNumberReaders for
+		    individuals and subcomponents.  This is because reading
+		    and writing might be done in a private thread (for 
+		    asynchronous island model exchanges for example), and so
+ 		    no thread number is appropriate.  If you need to use a
+		    random number generator,  you will need to create one
+		    yourself.  Do not rely on random[0].  Affected methods:
+
+			Species.newIndividual(...)
+			Fitness.printFitness(...)
+			Fitness.readFitness(...)
+			Individual.printIndividual(...)
+			Individual.readindividual(...)
+			simple.SimpleFitness.printFitness(...)
+			simple.SimpleFitness.readFitness(...)
+			gp.GPSpecies.newIndividual(...)
+			gp.GPIndividual.printIndividual(...)
+			gp.GPIndividual.readIndividual(...)
+			gp.GPTree.printTree(...)
+			gp.GPTree.readTree(...)
+			gp.GPNode.printRootedTree(...)
+			gp.GPNode.readRootedTree(...)
+			gp.GPNode.printNode(...)
+			gp.koza.KozaFitness.printFitness(...)
+			gp.kozalKozaFitness.readFitness(...)
+			multiobjective.MultiObjectiveFitness.printFitness(...)
+			multiobjective.MultiObjectiveFitness.readFitness(...)
+        
+        Bug fix in ParameterDatabase.getStringWithDefault() now always
+            returns the default string if the string was not found for
+            the given parameter (sometimes it was returning null)
+        gp.GPTree.printTree* methods now make certain that a return is
+            printed at the end.  Also gp.GPIndividual.printIndividual*
+            does not make certain (it assumes that printTree will 
+            do it). Fixed to make IslandModel exchanges work right.
+        EvolutionState.resetFromCheckpoint() is no longer a hook -- 
+            now it's the official mechanism that Checkpoint uses
+            to get the whole evolution system to restart itself
+            after a checkpoint.  Accordingly, output.restart() and
+            Exchanger.reinitializeContacts() have been moved to this
+            location, and removed from their previous locations in
+            the various EvolutionState objects.
+        EvolutionState.go() and EvolutionState.run() no longer throw
+            IOExceptions, because they no longer call output.restart()
+        Fixed checkpoint bug -- GPNodeConstraints wasn't writing out all
+            of its static variables.
+        Fixed another checkpoint bug -- various Clique objects weren't
+            getting written out at all because we no longer reference
+            them with pointers but instead with bytes.  This was fixed
+            by sticking their static hashtables in a vector called
+            "statics" maintained by EvolutionState, so *something*
+            serializable is pointing to them.
+        Major change, not backward-compatable: the mechanism behind
+            the Problem class has been modified, in order to clean up
+            stuff to make competitive fitness and coevolution methods more
+            doable.  To whit:
+                1. Problem is no longer an interface.  It is now an
+                empty abstract class.  We may add stuff to this class in
+                the future.
+                2. Problem's methods have been moved into another
+                interface, "SimpleProblemForm".  Problems will now have
+                Problem Forms which they implement.  This permits us to
+                have different kinds of evaluation methods (for single
+                evolution, coevolution, etc.)  The Evaluator involved
+                is responsible for checking to make certain that the
+                correct Problem Form is being used.
+                3. The evaluate(...) and describe(...) methods no longer
+                pass in an array of individuals; instead they pass in a
+                single individual.
+                
+            The net result of this is that you will have to modify your
+                Problem subclasses so that they implement
+                ec.simple.SimpleProblemForm, and so that they do not go
+                through the individuals passed in one by one and evaluate
+                them, but rather just evaluate a single individual.  This
+                generally means you just remove an outer for-loop (at
+                least that's what I had to do for all the demo examples).
+                
+            Affected classes (besides your own Problem subclasses):
+                SimpleProblemForm (new)
+                Problem
+                GPProblem
+                SimpleEvaluator
+                SteadyStateEvaluator
+                Ant
+                Edge
+                Lawnmower
+                Multiplexer
+                multiplexerslow.Multiplexer
+                Parity
+                Regression
+                TwoBox
+	
+	And now for stuff that doesn't have to do with Island Models or
+	Coevolution or Competitive Fitness:
+
+	MersenneTwister and MersenneTwisterFast now have a new nextLong(long)
+		method so you can get longs up to a certain size.  It's not
+		nearly as efficient as the nextInt method, as you might guess.
+	ParameterDatabase now has the methods getLongWithMax and 
+		getLongWithDefault.  One set of getLong(...) methods has been
+		deprecated.  This gets getLong...(...) in-line with the getInt
+		methods.
+	A new package, vector, has been added for simple GA individuals.
+		This package may be modified heavily, don't rely on it to be
+		forward-compatible with future versions.
+	A new package, rule, has been added for simple rule-based individuals.
+		This package may be modified heavily, don't rely on it to be
+		forward-compatible with future versions.
+	Individuals now have a size() method, which provides a hook for
+		parsimony pressure techniques.
+	The ParameterDatabase itself has a new global parameter,
+		print-params,
+		which if true will print parameters as they are grabbed
+		from the database through the various get() methods.
+		Printing is done through stderr, not logged.
+	ec.Evolve has been updated to provide new parameters which list
+		all the parameters NOT used or NOT accessed (so you
+		can see if you misspelled something and it's being ignored,
+		for example).
+        Fitness has been tweaked a little bit to allow the fitness() function
+                to return ANY value between 0.0 and infinity, rather than the
+                previous form (between 0.0 and 1.0).  This isn't a problem
+                for fitness-proportionate selection methods because they use
+                the distribution mechanisms, which autonormalize.  However,
+                it necessitates changing SimpleFitness so that you now have
+                to *specify* whether or not something is the ideal fitness.
+                This may require a tiny rewrite in those apps which use
+                SimpleFitness.  KozaFitness isn't affected because it's defined
+                to have the ideal at 0.0.  MultiObjectiveFitness still defines
+                its fitnesses as arrays from 0.0 to 1.0 inclusive -- if you
+                need them to go to infinity as well, let us know.
+        KozaFitness has deprecated its setFitness() function -- now you should
+                instead use the better-named setStandardizedFitness().
+        Some changes in how breeding pipelines operate:
+                1. if generateMax is true, then MultiBreedingPipeline will 
+		   return *exactly* the maximum typical number.  Previously
+		   the pipeline returned a value between the maximum typical 
+		   number and the maximum requested.
+                2.  The typicalIndsProduced() method has been modified in all
+		    the breeding pipelines.  Instead of returning 1 (for 
+		    mutation) or 1 or 2 (for crossover), it now operates as
+		    follows:
+                        A. Mutation and Reproduction pipelines return the 
+			   typical number of individuals returned by their 
+		   	   sources.  Thus they no longer force their sources 
+			   to return 1 individual apiece.
+                        B. Crossover pipelines return the minimum typical number
+                           of individuals returned by their sources.   Thus they
+                           no longer force their sources to return 1 or 2 
+			   individuals.
+                    This change was made to make it easier to tack a mutation 
+		    pipeline onto a crossover pipeline without losing 
+		    individuals.
+		3. Buffered and Force Breeding pipelines still work as normal
+		Hope this doesn't break anything! Most of this will not make 
+	        any difference, because selection methods typically return 1
+		individual apiece anyway, which gets bubbled up through the 
+		pipelines.  
+	Added the Uniform and RandTree tree-generation algorithms.
+	A Makefile is now provided.
+	Added the app/ecsuite and app/sum examples for the Vector package
+
+7 	Sixth prerelease
+	Added SimpleShortStatistics	
+	Modified Statistics to be a Clique, so you can have multiple statistics
+		in tree arrangement.  If you have subclassed SimpleStatistics,
+		you may want to modify your code to subclass from Statistics
+		instead.
+	Converted KozaStatistics to be a subclass of Statistics, not 
+		SimpleStatistics
+        Converted KozaShortStatistics to be a subclass of Statistics, not 
+		SimpleStatistics
+	Fixed a serious bug in the IslandExchange which causes it to not 
+		connect to the correct topology.  
+	Changed "nr-dest" to "num-dest" in InterPopulationExchange.
+	Removed the "id" parameter in InterPopulationExchange (wasn't being 
+		used).
+	Updated and fixed the documentation for IslandExchange and 
+		InterPopulationExchange.
+	Added ABOUT.MacOSX
+	Added a textual version of the license in LICENSE
+
+8	Seventh prerelease
+        All Individuals now must have a method called deepClone(), which 
+                guarantees a deep clone of the individual.  This is done
+                by default by doing a protoCloneSimple(), though if protoClone
+                normally light-clones, deepClone() should be overridden.  This
+                is done already in GPIndividual, and GPTree now sports a
+                deepClone() method as well.  ec.gp.koza.ReproductionPipeline
+                has been retrofitted to use deepClone(), just for the heck
+                of it.  Best-of-generation now uses deep cloning to hang onto
+                its individual and guarantee that its fitness doesn't change.
+                Affected classes:
+                    Individual, GPIndividual, GPTree, SimpleStatistics,
+                    SimpleShortStatistics, KozaStatistics, KozaShortStatistics
+        Removed best_of_generation from SimpleShortStatistics and
+                KozaShortStatistics.  best_of_generation has long been
+                supplanted by best_of_generation_a, and was dead code.
+	Modified the island model parameter file examples so that they provide
+		different initial seeds to different islands -- oops!
+	Fixed CHANGES to be 80 columns
+	ECJ now prints out seed and thread information
+	Modified the island model parameter file examples so that they use
+		8999 as the server port and 9000 and up for the client ports;
+		each client island parameter file now specifies a unique client
+		port, it was too much of a hassle having to specify the port
+		on the command line every time to just test the system on a
+		single machine.
+	ecsuite no longer uses a ForceBreedingPipeline -- this is unneccessary
+		because recent changes in Mutation pipelines has them returning
+		all the individuals they receive from children rather than just
+		1 (we were using a ForceBreedingPipeline to force the Mutation
+		pipeline to return 2 kids, which it does anyway now)
+	Modified ABOUT.MacOSX to add the trick where if you do -Xincgc you get
+		much faster evolution runs
+        Methods previously using ec.gp.koza.KozaFitness.setFitness() now instead
+                call ec.gp.koza.KozaFitness.setStandardizedFitness() (the first
+                method has been deprecated).  Accordingly, the sample domains
+		now use setStandardizedFitness().
+        Removed the numbits package
+        BreedingSource had its produce(...) method incorrectly stated as having
+            final int max, final int min.... instead of the other way around.
+            No methods actually implementing or using BreedingSource did it this
+            way however (it was a typo), so it's been fixed to be min first,
+            then max.
+	ParameterDatabase can now print out parameters as they're requested.
+            Simply say:		-p print-params=true
+	Fixed some bugs in the es package which were causing it to crash.
+	    Also, es now uses es.mu.N to specify the mu value for subpopulation
+	    N.  Additionally, the es.params file has been modified to make it
+	    cleaner and easier to follow.
+        Modified ABOUT.MacOSX to note that Apple has fixed the hostname bug
+            in OS X 10.1
+        Added VectorGene and GeneVectorIndividual to the vector package.
+        Fixed bugs in the FloatVectorIndividual and DoubleVectorIndividual
+            (they were being cast to IntegerVectorIndividual, which would
+            cause a crash during equals(...)).
+        Deleted RuleSetConstraint.java
+        In GPNode's comments, oldSubtree and newSubtree were accidentally
+            reversed.  That has been remedied.
+        Modified TournamentSelection so that you can now specify a tournament
+            "size" between 1.0 and 2.0 (floating-point), which results in a
+            tournament of size 2 where the "better" individual wins with a
+            probability of size/2.  Accordingly, TournamentSelection no longer
+            permits a default size -- you *must* specify one.
+        Added a ReproductionPipeline to ec.breed.  This pipeline relies on the
+            new Individual.deepClone()... method.  Consequently, other
+            ReproductionPipeline classes have been deprecated.
+        Changes were made to better support steady state evolution:
+            1. BreedingPipelines now support SteadyStateBSourceForm
+            2. Major rewrite of SteadyStateEvolutionState, SteadyStateBreeder,
+               and SteadyStateEvaluator to handle statistics better.
+            3. Added an optional SteadyStateStatisticsForm
+	    4. Added a new Statistics object: KozaSteadyStateStatistics
+        A bug was fixed in SteadyStateEvaluator: it doesn't count the first
+            population's individuals in the generation count.  This is remedied
+            by updating the generation count by the generation size after the
+            first evaluation.
+        Modifications were made to the documentation of Statistics indicating 
+            that when and if Statistics hooks are called is entirely up to the
+            EvolutionState object, so you should make sure your Statistics 
+            object is compatible with it.
+        Slight modification to FitProportionateSelection documentation.
+        BufferedBreedingPipeline, ForceBreedingPipeline, and 
+            MultiBreedingPipeline weren't necessarily cloning their individuals.
+            Now they are more careful!
+        GenerationSwitchPipeline added.  This pipeline switches children at some
+            generation.  Useful for some adaptive mechanisms.
+        Added Tutorial 1
+        Fixed an inifinite-loop bug in BufferedBreedingPipeline
+        Fixed some equality bugs in IslandExchange noted by jlint
+        Fixed a minor output verbosity bug noted by jlint
+        Little syntactic tweaks (no bug fixes) to make jlint happier
+        jlint makes numerous other complaints, but I've verified that they're
+            not significant.  To whit:
+            1. complaints about null references are due to jlint not 
+               understanding that state.output.fatal() and 
+               state.output.exitWithErrors() will exit the program.
+            2. array index out-of-bounds complaints are because I will subtract
+               1 from a value to get the array index sometimes; that's just 
+               fine.
+            3. complaints about "volatile" access are because multiple threads 
+               in ECJ make simultaneous access to read-only protocol areas of
+               the program, which is fine.
+            4. synchronized complaints are specious
+            5. Complaints about Mersenne Twister bugs are all false -- I've
+               double checked.  It looks like an error in jlint's understanding
+               of how >> works.  BTW, it also complains about java.util.Random
+               in the same way. :-)
+        Minor efficiency change: CrossoverPipeline (line 325) used to avoid
+               verifying points only when the second parent was tossed; now we
+               also do it if there's only one individual to create.  Should have
+               no change at all on the system.
+        CrossoverPipeline.parents made public, CrossoverPipeline.verifyPoints
+               moved from private to public final
+	Added Koza Quintic and Sextic problems to Regression
+        Fixes to elitism code -- SimpleBreeder wasn't preserving all the elites,
+               and also wasn't deep-cloning them.  Thanks to garij8l0@elon.edu
+        RuleSetConstraints and RuleConstraints serialize properly, oops
+	Made a few static constants final that we had not noticed.
+        Fixed reset bug in GeneVectorIndividual.
+	(Finally) changed the nostore parameter to store (and flipped the
+               meaning)
+        Individuals now contain a pointer to their species.  readIndividual(...)
+               should not try to "read" in the species, nor should
+               printIndividual(...) attempt to "print" the species to the
+               stream.  Species should be careful to set the prototypical 
+               individual's species to themselves BEFORE calling setup(...) on
+               the prototypical individual.
+        MAJOR OVERHAUL OF VECTOR PACKAGE.  Sorry, it had to be done.
+               VectorIndividuals previously were carrying around lots of baggage
+               (like genome size, mutation probabilities, crossover types, etc.)
+               that should be shared among individuals.  So now they store this
+               information in their shared VectorSpecies.  Accordingly, there 
+               are different VectorSpecies subclasses for different data type 
+               groups.  An individual can access this data now because 
+               Individuals have pointers to their species (see above) now.
+        VectorIndividuals can now have a min/max constraint on their genes OR
+               individual unique min/max constraints on each separate gene. 
+        Deleted old MacOSX 10.0.x stuff from About.MacOSX
+	GroupedProblem changed to an Interface called GroupedProblemForm
+	Removed ec.gp.koza.ReproductionPipeline and
+		ec.rule.breed.RuleReproductionPipeline and
+		ec.vector.breed.VectorReproductionPipeline since they 
+		all duplicate ec.breed.ReproductionPipeline
+	simple.params now states that the default fitness for subpop 0 is
+		ec.simple.SimpleFitness
+	ec.params now has duplicate-retries set to 0
+	when seeds=time, ec.Evolve makes sure the seeds are all different from
+		each other.
+	Added tutorial 2
+	Fixed small bug in CompetitiveEvaluator (sometimes the number of games
+		for individuals in two-way random tournaments were mixed).
+		Thanks to Flavio Baronti <f.baro@libero.it> for alerting us.
+	Fixed a bug in the Statistics files that altered the best_of_run
+		individual being properly calculated in the multiple
+		population cases. Thanks to Krzysztof (Chris) Krawiec for
+		alerting us.
+	Added the parsimony package. This package contains various simple
+		parsimony pressure techniques we've been using.
+	Added the teambots package.
+
+9	Eighth Prerelease
+	Well, it looks like ECJ usage is really taking off, given the rate
+		of bug reports.  :-)
+	Fixed a bug in IntegerVectorSpecies and FloatVectorSpecies that did
+		not properly set the min and max gene values on a per-gene
+		basis. Thanks to Emanuel Slaby <Emanuel.Slaby@unibw-hamburg.de>
+	Fixed a minor bug in ec.util.Output that might cause it to try to
+		get the value of the announcements vector even if the vector
+		is null.  Thanks to Mohamad Mehdi Haji <m2haji@yahoo.com>
+	Added the ability to specify an integer Parameter value in hex
+	Bug fix in PTC2, not using the right distributions when doing strong
+		typing.  Doesn't affect typeless runs.  Thanks to David
+		Chan <dmchan@stanford.edu>
+	KozaStatistcs now does printIndividualForHumans rather than
+		printIndividual -- not sure when it had reverted there.
+	SteadyStateBreeder had a serious bug that prevented individuals from
+		getting evaluated -- this resulted in statistics that didn't
+		converge (They stayed perfectly flat), so it was pretty
+		obvious.  Nailed down thanks to a mention of oddities from
+		Atif Azad <atif.azad@ul.ie>
+	SteadyStateBreeder now lets the deselector know that an individual has
+		been replaced.
+	The IslandExchange server now announces that it's shutting down -- it
+		only does so if all the clients have disconnected.
+	Vector package includes evaluated: line in its readers and writers
+	Tutorials 3 and 4 added
+	Minor print bug removed form DoubleIndividual and FloatIndividual
+	Small bugs fixed in island model
+	SPEA2 package added (thanks to Robert Hubley!)
+
+10	Ninth Prerelease :-)
+	Mersenne Twister code updated to new initialization algorithm.  This
+		will result in replicability incompatibility with versions
+		9 and below.  I keep the old versions of MersenneTwister
+		as gzipped files in the ec/util/ directory in case you'd
+		want to use them.
+	Small makefile and documentation mods
+	ec.coevolve.CompetitiveEvaluator#EncapsulatedIndividual moved out to
+		its own scope to make older java systems happy.  Should have no
+		effect otherwise.
+	ECJ now signals an error if the seed is bad
+	Added gzipped capabilities to logs.  Gzipped output streams are heavily
+		buffered (argh) and Java doesn't necessarily call finalize() on
+		them so they will not write out.  So we had to add a new close()
+		method to the Output class which Evolve() calls and gets it to
+		flush and close its logs prior to shutting down.  The gzipped
+		classes will STILL not properly write out if the user breaks the
+		program prematurely.
+	Improvements to rule code (preprocesing, post processing, etc.)
+	Removed a column from SimpleShortStatistics' printing, and fixed its
+		statements of what gets printed in the documentation
+	Fixed BAD bug in evolution strategies package: populations were being
+		sorted in the wrong direction, so the mu parents were actually
+		the *worst* of the population, not the best.  Also, we now
+		deep-clone the individuals for mu+lambda, not just copy them,
+		just to be safe.
+	Individual.toString() now prints out its hash code (which is not
+		unique for Individuals) after its unique identity hash
+		code (which IS unique for all objects).  That way two
+		individuals never print the same even if they have the same
+		internals.
+	GeneVectorIndividual didn't set up its genome properly (left the genes
+		as null).  Minor mods to GeneVectorindividual and to
+		GeneVectorSpecies to handle this correctly.
+	Slight modification to MersenneTwister and MersenneTwisterFast: changed
+		the default constructors so that they randomized based on the
+		system time rather than on an arbitrary constant seed (4357).
+		This should have no effect on ECJ as it never uses the default
+		constructor -- however if you use the default constructor for
+		your own purposes, things will now be different.  This change
+		was made to bring MT in line with java.util.Random's behavior.
+
+11 Tenth Prerelease.  Maybe we should start calling these "Releases"!  :-)
+
+	Slight tweak to the tutorials to fix an HTML bug in /tt
+	Fixed bug in gp/build/MutateOneNodePipeline, which didn't handle
+		mutation of an already-copied individual properly.  Along the
+		way, added a new method to GPNode: replaceWith(GPNode), which
+		replaces it in its tree with some other node.  Thanks to
+		David Cooper dcooper@atl.lmco.com
+	Small error in parity documentation.  Thanks to Howard Landman
+		howard@riverrock.org
+	finishProducing(...) had not been implemented but never called in
+		SelectionMethod  -- it was vestigial.  But because we found it
+		useful for coevolution stuff, it's now properly called by all
+		the places I know of which also call prepareToProduce(), namely
+		MuCommaLambdaBreeder, SimpleBreeder, IslandExchange, 
+		InterPopulationExchange, and SteadyStateBreeder.  The latter	
+		required a new function to be implemented called finishPipelines
+		(called only on SteadyStateBreeder).  All this should have no
+		effect at all on preexisting stuff.
+	Received permission to change, then promptly changed, the license to
+		MersenneTwister.  It was originally under LGPL, and FSF won't
+		give a straight answer as to whether or not LGPL is valid
+		for Java or if in fact it just reverts to GPL due to some
+		errors in the LGPL.  It looks like LGPL is broken with
+		respect to Java, and so to prevent ECJ from going all under
+		GPL, I've changed MersenneTwister's license to Artistic
+		with permission of the original [early] author.
+	Slightly tweaked MersenneTwister and MersenneTwisterFast, copying
+		certain variables to locals, which should result in very
+		slightly faster MT code (maybe 5%)
+	MultiobjectiveFitness had slight change in printFitnessForHumans
+		(a println instead of a print)
+	RandomChoiceChooser now has additional organizeDistribution functions
+		which allow distributions to be all zeros (if so, it's
+		assumed to choose from among the elements uniformly).  
+		The default functions still throw exceptions if this 
+		is the case.  Also RandomChoiceChooser now throws an 
+		exception if the distribution is empty.
+	IMPORTANT CHANGE, may not be backward-compatible.  Fitness has
+		been revised to now allow the fitness() function to return
+		negative values.  Any finite value is now permitted.
+		Selection methods based on proportionate selection, which
+		previously could safely assume that fitnesses were zero or
+		positive, may no longer be able to do so.  You must check
+		to see if fitnesses are negative in such selection
+		methods.  BestSelection, FitProportionateSelection, and
+		GreedyOverselection have been accordingly revised.
+	IslandExchange and InterPopulationExchange now have a chattiness
+		option to shut them up.
+	SPEAMultiObjectiveFitness is now a subclass of
+		MultiObjectiveFitness, and its methods have been cleaned
+		up accordingly.  The primary effect here is the
+		elimination of the default base.  We're now using
+		MultiObjectiveFitness's default base, so watch out there.
+	MultiObjectiveFitness now always returns false for isIdealFitness(),
+		unless overridden in a subclass.  Accordingly the
+		criterionIsAnd parameter is now gone.
+	SPEATournamentSelection is now a subclass of TournamentSelection,
+		and its methods have been unified accordingly.  The
+		primary effect here is the elimination of the default base.
+		We're now using TournamentSelection's default base, so
+		watch out there.
+	Addition of spea2.params
+	multiobjective.params updated to corrected parameters
+	bug fix to inter.params
+	BreedingSource.setupProbabilities now allows all of the children
+		to have zero probabilities.  POSSIBLY NOT Backward 
+		compatible -- double-check your code to make sure that
+		if you call this function (unlikely) that this fact
+		is acceptable (it almost certainly should be). 
+	Accordingly, MultiBreedingPipeline now allows all of its children
+		to have zero probabilities, but issues a warning just in case.
+	Removed ABOUT.MacOSX file: nothing in it interesting any longer
+	Documentation fix to RuleSpecies' default base
+	Fixed bugs in the parameters returned in the fatal errors of
+		IntegerVectorSpecies.setup and FloatVectorSpecies.setup
+	Various vector species now properly look up default parameters
+	InterPopulationExchange's selection methods are set up with the
+		proper parameters.
+	InterPopulationExchange double-checks that incoming immigrants
+		won't be more than the subpopulation size (which would
+		cause an infinite loop in the selection-to-die procedure)
+	Redesigned the coevolutionary evaluator for both single population
+		competitive coevolution, and also for multiple population
+		cooperative coevolution.  There's no need for incremental
+		fitness anymore, but rather the Problem becomes more
+		important for different ways of combining results from
+		different interactions with other individuals into a unique
+		fitness.
+	Added  app/coevolve1 and app/coevolve2 to illustrate simple
+	       competitive and cooperative coevolutionary settings.
+	Reformatted
+
+12 Eleventh er, prerelease
+
+        Fixed some bugs in the Makefile indent feature
+	Fixed a documentation bug in MersenneTwisterFast that suggested that
+       	       nextDouble() returned a number in [0,1].  It does not.  
+               It's [0,1), just like java.util.Random.
+        Added DecompressingInputStream and CompressingOutputStream in 
+               preparation for compressing the stream sockets of the 
+               island model etc.
+        ParameterDatabase.getString(Param) now public.  Dunno why not.
+        ParameterDatabase.list... methods all now flush
+        Version no longer has a "suggested minimum Java" field.  Instead
+               there's just the "minimum java" field.  This field has now
+               been bumped up from 1.1 to 1.2.
+        ParameterDatabase uses Java's Collections.sort(...) routines rather
+               than QuickSort.  We can do this because the minimum java is now
+               1.2.  This allows ParameterDatabase to be used independently
+               of ECJ (or more specifically, of QuickSort).
+        ParameterDatabase.toString() defined for benefit of bsh.  The format
+               is HASH : (PARENT1, PARENT2, ...)  where HASH is the
+               .toString() value of the ParameterDatabase's hash table
+               (typically it's of the form {key=val, key=val, ...} ), and each
+               PARENT is the .toString() of the ParameterDatababase's
+               parent parameter databases.
+	Added "*.java" (top-level ec directory) to the Makefile
+	Reformatting
+	Other authors added to the header when ECJ is run
+	Default format for Code.encode(true) is "T" and for false, "F".
+		Code.decode(...) can still detect "true" and "false" if
+		necessary.
+	Code.decode() can detect floats and doubles in the form
+		d|HUMAN_READABLE_FORMAT| and f|HUMAN_READABLE_FORMAT|
+		in this case, the human readable format is used and the
+		(missing) machine readable format is ignored.  This
+		simplifies writing floats and doubles to be read in
+		for reading populations from files.
+	Print out message when loading subpopulations from files
+	Rewrote the vector read/write code to consistently use Code.  This
+		is much less readable, but it's consistent and easier to
+		debug.  We had some ugly bugs in there.  Thanks to Ta Nguyen
+		Binh Duong binhduong@pmail.ntu.edu.sg
+	Rewrote Individual to eliminate the necessity to override some methods
+		(namely, printIndividual (both versions), readIndividual, and
+		printIndividualForHumans).  This was done by implementing a
+		default version of each of these methods.  This in turn
+		required implementing three new methods which have default
+		versions and are NOT abstract, but which the user will
+		likely want to override: genotypeToString, 
+		genotypeToStringForHumans, and parseGenotype (which by
+		default generates an error).
+	Rewrote the vector classes to use the new Individual string methods
+		described previously.  This necessitated deprecating some
+		GeneVector methods and implementing new methods called
+		printGeneToString and printGeneToStringForHumans.  Let's
+		hope all this rewriting doesn't break something!
+
+13 	Yet another prerelease!
+        Tweaks to Makefile to make compiling with jikes more straightforward
+        ec.EvolutionState is now allowed to use ec.Statistics as its
+                (do-nothing) statistics class
+        Slight bug in MersenneTwister: seeds were only allowed to be 28 bits.
+                The mask was supposed to allow 32 bits.
+	IslandExchange flushes the output streams just in case the Individuals
+		didn't use println to write themselves to the PrintWriter.
+	Added some warnings to the Compressing stream docs
+	Individual.setup no longer abstract.  It's just a default
+		implementation which does nothing.
+	MAJOR CHANGE: Fitness is now an abstract class, not an interface.
+		This done mostly to make it easier to create Fitness objects
+		by providing sensible default methods, just as we had rewritten
+		Individual to eliminate some methods.  If you have created
+		a Fitness implementation, you'll need to change 'implements'
+		to 'extends'.  Beyond that you shouldn't need to do anything,
+		though you can get rid of your protoCloneSimple() function,
+		your protoClone() function if it does nothing but call clone()
+		(or otherwise call super.protoClone() to get the object now),
+		and just for good measure, call super.setup() in your setup
+		method (though Fitness.setup() actually does nothing).  Now
+		you can delete your printFitness...() methods and replace
+		them with fitnessToString() and fitnessToStringForHumans()
+		implementations.
+	Removed ABOUT.MacOS9, since the current minimum Java for ECJ is
+		1.2, and OS 9 only supports 1.1.8.
+	Modified Tutorial4 documentation so that it uses the (revised)
+		breed.elites.0=... rather than breed.elites=...  Thanks to 
+		Grant Morganryuugguu <grant@ryuuguu.com>
+	Fixed bug in [Integer|Double|etc]VectorIndividual.split(...) which
+		didn't put the elements in the proper location in the arrays,
+		leading to a crash.
+	IslandExchange clients now properly retry to connect after a sleep
+	Added Master/Slave capability for distributed evaluation of individuals.
+	Added compression to the communication streams between the StarProblem 
+		master and slaves.  It's use is configurable via the 
+		star.compression parameter.	
+	Removed globals that otherwise prevent ECJ to be self contained.  The 
+		motivation here is to permit multiple experiments to be run in
+		the same JVM, either sequentially or concurrently, and to 
+		allow experiments to be run in Java Applets.  The globals in 
+		question are:
+		
+		ec.gp.GPFunctionSet.all
+			-> ec.gp.GPInitializer.functionSetRepository
+		ec.gp.GPType.all
+			-> ec.gp.GPInitializer.typeRepository
+		ec.gp.GPType.numAtomic
+			-> ec.gp.GPInitializer.numAtomicTypes
+		ec.gp.GPType.numSet
+			-> ec.gp.GPInitializer.numSetTypes
+		ec.gp.GPNodeConstraints.all
+			-> ec.gp.GPInitializer.nodeConstraintRepository
+		ec.gp.GPNodeConstraints.constraints
+			-> ec.gp.GPInitializer.nodeConstraints
+		ec.gp.GPNodeConstraints.numConstraints
+			-> ec.gp.GPInitializer.numNodeConstraints
+		ec.gp.GPTreeConstraints.all
+			-> ec.gp.GPInitializer.treeConstraintRepository
+		ec.gp.GPTreeConstraints.constraints
+			-> ec.gp.GPInitializer.treeConstraints
+		ec.gp.GPTreeConstraints.numConstraints
+			-> ec.gp.GPInitializer.numTreeConstraints
+		ec.rule.RuleConstraints.all
+			-> ec.rule.RuleInitializer.ruleConstraintRepository
+		ec.rule.RuleConstraints.constraints
+			-> ec.rule.RuleInitializer.ruleConstraints
+		ec.rule.RuleConstraints.numConstraints
+			-> ec.rule.RuleInitializer.numRuleConstraints
+		ec.rule.RuleSetConstraints.all
+			-> ec.rule.RuleInitializer.ruleSetConstraintRepository
+		ec.rule.RuleSetConstraints.constraints
+			-> ec.rule.RuleInitializer.ruleSetConstraints
+		ec.rule.RuleSetConstraints.numConstraints
+			-> ec.rule.RuleInitializer.numRuleSetConstraints
+		
+		These variables were moved to either GPInitializer or
+		RuleInitializer respectively and were made member variables
+		instead of globals.  They are initialized during
+		{GP|Rule}Initializer.setup(...) and are available via
+		EvolutionState.initializer.  These globals were also given new
+		names as specified above.
+		
+		Consequently, the following methods needed to be modified in
+		order to accomodate the change.  They now accept an additional
+		Initializer (either GP or Rule) parameter in order to get access
+		to the relevant data: 
+
+		ec.gp.GPAtomicType.compatibleWith()
+		ec.gp.GPNode.constraints()
+		ec.gp.GPNode.parentType()
+		ec.gp.GPNode.swapCompatibleWith()
+		ec.gp.GPSetType.compatibleWith()
+		ec.gp.GPTree.constraints()
+		ec.gp.GPType.compatibleWith()
+		ec.gp.breed.MutateDemotePipeline.demotable()
+		ec.gp.breed.MutateDemotePipeline.numDemotableNodes()
+		ec.gp.breed.MutateDemotePipeline._numDemotableNodes()
+		ec.gp.breed.MutateDemotePipeline.pickDemotableNode()
+		ec.gp.breed.MutateDemotePipeline._pickDemotableNode()
+		ec.gp.breed.MutatePromotePipeline.promotable()
+		ec.gp.breed.MutatePromotePipeline.numPromotableNodes()
+		ec.gp.breed.MutatePromotePipeline.pickPromotableNode()
+		ec.gp.breed.MutateSwapPipeline.swappable()
+		ec.gp.breed.MutateSwapPipeline.numSwappableNodes()
+		ec.gp.breed.MutateSwapPipeline.pickSwappableNode()
+		ec.gp.breed.InternalCrossoverPipeline.verifyPoints()
+		ec.gp.breed.CrossoverPipeline.verifyPoints()
+		ec.gp.build.Uniform.numTreesOfType()
+		ec.gp.build.Uniform.numTreesRootedByNode()
+		ec.gp.build.Uniform.numChildPermutations()
+		ec.gp.build.Uniform.createTreeOfType()
+		ec.gp.build.Uniform.fillNodeWithChildren()
+		ec.rule.Rule.constraints()
+		ec.rule.RuleSet.constraints()
+		
+	Added checkpointing of Slave random state.  When a checkpoint occurs,
+		the StarProblemServer requests the current random state of each
+		slave. The random state is then appended to the checkpoint file.
+	Updated MersenneTwister to latest version (11), which is just
+		documentation changes.  Thanks to Seth Sticco sethn@snsware.net
+	Modifications to SimpleEvolutionState, mostly cleaning up stuff.  The
+		go() method has been removed in preparation for a new more
+		modular design which will be added in a bit.  Also, the
+		generation counter has been moved to a different location
+		in the loop, though the print-outs stay the same.  It will
+		very slightly affect checkpointing as generation++ occurs
+		BEFORE checkpointing now.
+	Significant modifications to the Steady State package.  We have cleaned
+		up the package to conform to the same layout as the
+		SimpleEvolutionState package above; plus a number of clean-ups
+		including the elimination of pseudoGeneration.  generation
+		now actually means *generation* in some reason sense, and
+		there's a new variable called evaluations.
+	We've eliminated SteadyStateSpeciesForm and have moved its sole
+		method, deselector(), into SteadyStateBreeder, which gathers
+		deselectors directly using a new parameter in
+		steadystate.params.
+	Eliminated GPSteadyStateSpecies because SteadyStateSpeciesForm is gone
+	Eliminated garbage collection parameters (gc, aggressive)
+	Moved ESEvolutionState's various variables into MuCommaLambdaBreeder
+		(where they should have gone in the first place).
+	Deleted ESEvolutionState -- no longer needed
+	Deleted ESBreederForm -- no longer needed
+	added ec/app/sum/steadysum.params example
+	Eliminated Evolve.make
+	Tutorials updated to reflect new arrangement
+	ProportionalTournament's default parameter base has been changed
+		to proportional-tournament (from prob-tournament)
+	Added documentation for DoubleTournament
+	Changed all the parsimony class names to be more consistent with
+		ECJ's naming scheme:
+
+		DoubleTournament -> DoubleTournamentSelection
+		ProportionalTournament -> ProportionalTournamentSelection
+		BucketTournament -> BucketTournamentSelection
+		RatioBucketTournament -> RatioBucketTournamentSelection
+		LexicographicTournament -> LexicographicTournamentSelection
+
+		These names are over 32 bytes long and so may cause problems
+		for older operating systems (MacOS 9 for example).
+	Added TarpeianStatistics
+	Updated Version class
+	Added one-time warnings
+	Updated Evolve to add a new loop facility
+	Eliminated GPSpeciesForm
+	Added warts.html
+	Minor bug fixes to Uniform.java
+	Added types[] array to list all the GPTypes
+	Modified GPTreeConstraints' error messages about typing to warnings
+		about typing.
+	Added binary read/write functionality to rule package
+	Added binary read/write functionality to vector package
+	Added binary read/write functionality to all fitness classes
+	Updated binary read/write functionality for GP facility to write GPNodes
+		using indexes into functionsets.
+	Updated documentation on Clique explaining the new location of various
+		Clique repositories
+	Added about box to GUI
+	Bug fixes to master/slave evaluator
+	Added bulk-sends in SimpleEvolutionState for the master/slave evaluator
+	Re-indented
+
+14 	At this point, dare we call it a prerelease?
+	Boolean.toString(boolean) is not available in Java 1.3.  Changed to
+		("" + boolean) in ec.display.ControlPanel
+	Likewise for all-caps colors
+	Removed magic numbers in Slave
+	Slave can now return fitnesses (as default) instead of individuals
+	Slave doesn't generate a new Subpopulation each time an individual
+		is evaluated (oops)
+	Added Evolve.determineSeed
+	EvolutionState now contains a randomSeedOffset variable, set by Evolve
+		to help ec.eval.MasterProblem create seeds.
+	Updated MersenneTwister and MersenneTwisterFast to version 12,
+		including equals(...) methods.
+	Deleted Evolve.main2
+	In Evolve, as soon as the Output is set up, all future errors are
+		fatal(...) or error(...) rather than initialError(...)
+	Deleted unused Problem.setCheckpoint, restoreFromCheckpoint,
+		resetFromCheckpoint
+	Problem.shutdown renamed to Problem.closeContacts(state,result)
+	Evaluator.closeContacts(state,result) added
+	SteadyStateBreeder now checks for duplicate individuals.
+	Uniform now resets its new nodes. This necessitated adding
+		EvolutionState and thread to some functions as arguments.
+		Thanks to Artur Matos amatos@create.human.nagoya-u.ac.jp
+	Introduced GPNode.nodeEquivalentTo(...) which is looser than
+		GPNode.nodeEquals(...) and attempts to determine if the two
+		nodes came from the same prototype parent (or are otherwise
+		compatible in that fashion).  GPNode.writeRootedTree(...)
+		now uses nodeEquivalentTo(...) instead of nodeEquals(...)
+		Thanks to Artur Matos amatos@create.human.nagoya-u.ac.jp
+	Commented out print-used-params in coevolve2.params
+	Updated docs for BestSelection (n wasn't explained).  Thanks to
+		Robert Hovden Robert.M.Hovden@jpl.nasa.gov
+	Added donated modifications to charting code.  Thanks to
+		Robert Hovden Robert.M.Hovden@jpl.nasa.gov
+	SimpleChartingStatistics.java has been deleted entirely
+	Statistics is back to being a Singleton.  Sure, you can have more
+		than one Statistics object; but Cliques generally require
+		repositories and Statistics doesn't have one.  Maybe we
+		should make Statistics just a Setup instead.
+	SteadyStateStatisticsForm.nextPseudogenerationStatistics deleted
+	SteadyStateBreeder's duplicate checking uses hash tables with
+		incremented and decremented integers rather than doing
+		an O(n) scan through the array.  Rather faster.
+	steadystate.params has pick-worst set to true now, just in case
+	SteadyStateBreeder now properly looks up the deselector, oops
+	Additions to Statistics so it can be a SteadyStateStatisticsForm
+	Updated KozaStatistics and SimpleStatistics to provide basic
+		SteadyStateStatisticsForm implementations (at least
+		to handle the best individual of population properly).
+	Deleted KozaSteadyStateStatistics
+	Updated steadysum.params
+	Added steadynoerc.params to Regression example
+	ParameterDatabase.getInt(parameter) now private
+	ParameterDatabase.getLong(parameter) now private
+	ParameterDatabase.getString(parameter) now private
+	ParameterDatabase.getStringWithDefault(parameter) now private
+	ParameterDatabase.uncheck() now private
+	Modifications to various classes in display/ and display/chart
+		and eval/ so they don't call the protected single-parameter
+		ParameterDatabase functions.  Also, Evaluator.
+	Modified ParameterDatabase's print-params function to be more
+		expressive (prints existence tests, failed and
+		unnecessary tests)
+	All private and protected ParameterDatabase methods now
+		package-level
+	Documentation changes to ParameterDatabase
+	Modified GPTreeConstraints.checkFunctionSetAvailablility to fix
+		a type bug (root types were not being added to the list
+		of types to check).
+	Updated MersenneTwister and MersenneTwisterFast
+        Minor bug in Code: \uxxxx was falling through in the switch
+	MutationPipeline and MutateAllNodesPipeline were both incorrectly 
+		setting individual.evaluated = true instead of = false
+		when the source was another pipeline rather than a selection
+		method.  This would result in individuals not being run
+		again for fitness.  InternalCrossoverPipeline was doing the
+		same, but in all cases.  These have been fixed.  Thanks
+		to Stefan Wappler stefan.wappler@daimlerchrysler.com
+	The SimpleEvaluator class has two new functions: prepareToEvaluate
+		and finishEvaluating.  They are called before and after a
+		bunch of individuals need to be evaluated.  The Master/Slave
+		evaluation has been updated to take advantage of this setup.
+	Fixed a small bug Evolve.java when determining the random seed for
+		each thread.
+	Made various methods non-private in the GUI
+	Made certain final variables static
+	Removed MersenneTwisterFastOLD.java.gz MersenneTwisterOLD.java.gz
+	Updated ecj to new directory structure consistent with mason.  In
+		this structure, the old ec directory is now a subdirectory
+		of an outer ecj directory.  In the ecj directory goes the
+		docs directory, READMEs, a new start directory (with some
+		scripts to fire up ecj), the Makefile, etc.
+	Added a start-up script for Windows
+	Fixed minor bugs in CompetitiveEvaluator
+	Removed some private declarations in the GUI
+	Made the GUI capable of use in 1.3.1
+	Reindented
+	Fixed mutation bugs in vectors when maxGene is much larger than
+		minGene (over the size of an integer or long)
+	steadysum.params now does random deselection.  We've updated the
+		instructions in the two app examples for steady state
+		evolution accordingly.
+	Updated SimpleFitness docs
+        All minimization problems in ECSuite are now transformed into
+                maximization problems by converting f(x) --> -f(x), instead
+                of f(x) --> 1.0/(1.0+f(x)).  Also, the Booth and Griewangk
+                problems are now supported.
+	Slight modification to seed-setting in Evolve.java.  See the
+		Evolve.java documentation for more information.  We've not
+		updated the seed-setting in the GUI, so there may be a
+		discontinuity, particularly if you're using both the command
+		line and the GUI to do multiple-job runs.
+	Modifications of Evolve.java to fix a few bugs in the main() and
+		make it easier to use.  There is now an extensive discussion
+		in the Evolve.java docs about how to make new main() loops.
+	Modified MuCommaLambdaBreeder to (knock on wood) to properly compute
+		the 1/5 rule.  This was broken when we merged the es package
+		and got rid of ESEvolutionState.
+	EvolutionState.statics has been officially deprecated.  Do not use it.
+	Tweaked Tutorial4
+	Updated the License
+	Fixed a bug in ADFs that was tickled by typing.  We check to see if
+		there exists exactly one ADFArgument node in an ADF's tree for
+		each argument of the ADF.  But we check it using the nodes
+		array in the GPFunctionSet, which can contain multiple copies
+		of the same exact node, put into different subarrays by
+		compatable type.  This was not taken into account, producing
+		a spurious warning.  We now make certain that the additional
+		ADFArgument we've discovered isn't the exact same node as the
+		original one.  Thanks to Hauptman Ami amiha@cs.bgu.ac.il
+	Documentation bugs in FloatVectorSpecies fixed.
+	Added a simple C-style printing mechanism.  Thanks to Leonardo
+		Vanneschi lvanneschi@yahoo.it for the idea.  Updated tutorial
+		4 to reflect this.
+	Added spatial package: spatially-embedded EAs 
+	Added a new newIndividual(...) to Species
+	Removed certain newIndividual(...) abstract methods from Species 
+		(or more specifically, created default versions of them 
+		which operate properly in most cases).  Set all current
+		Species subclasses to use those default versions.
+	Changed the island model facility to use the new DataInput/DataOutput
+		reader and writer.
+	Removed deprecated show() references
+	Rule.readRuleFromString() by default now throws an error
+	VectorGene.printGeneToString() and printGeneToStringForHumans() now
+		by default both call toString().
+	Added Rule.printRuleToString() and Rule.printRuleToStringForHumans()
+	Undeprecated printGene(state,verbosity,log)
+	GPNode.readNode/writeNode now by default throw errors
+	Updated various prototypes' discussion of printing
+
+15 	Now that's what I call a prerelease!
+	See the file 'UPGRADING' for more detailed discussion.
+	Reduced protoClone() to clone().  Some history: in the far past,
+		there were different rules about clone() and I was worried
+		about violating the clone() definition.  Hence protoClone()
+		instead of clone().  Furthermore, there was a significant
+		cost paid when wrapping code in a try { ... } (or so I had
+		thought, memory is fuzzy now) way back in 1998, before
+		HotSpot etc. changed how we do things now.  That cost
+		is zero now, thus obviating the need for protoCloneSimple.
+		So we have eliminated all the protoCloneSimple calls
+		entirely, and rewritten all protoClone methods to just be
+		clone methods which call super.clone wrapped in a try { }.
+		This is dramatically simpler.  We've also eliminated all
+		the Simple versions of various cloners in GPNode, and have
+		cleaned out all the previous try { } wrappers various
+		methods used to directly call protoClone rather than
+		protoCloneSimple.  Additionally, MersenneTwister and
+		MersenneTwisterFast have had their clone() methods
+		upgraded to not throw CloneNotSupportedException, and
+		Group has had its abstract emptyClone() method's
+		CloneNotSupportedException removed.  We still use
+		emptyClone because it's fundamentally different from the
+		clone() contract.  Individual.deepClone() has also had
+		CloneNotSupportedException removed in certain cases.
+		This will require some modification of your code but it
+		will certainly be easier to read and more Java-standard.
+	We also cleaned out some unused variables, no big deal there.
+
+16	P R E ... R E L ... M O U S E
+	Removed GPFuncInfo, a vestigial class which never had any actual
+		function (I think!).  This will effect tree builder
+		functions and tree breeder functions, but it's easy to
+		update: instead of using function sets consisting of
+		arrays of GPFuncInfo objects, you have function sets
+		consisting of arrays of GPNodes.  And you delete ".node"
+		from various places.
+	Added newIndividual(...) methods to GPSpecies which override the
+		standard ones and perform light cloning rather than
+		deep cloning.  A bug fix tickled by our change from
+		protoClone to clone.  Thanks to Michael Solano
+		(mike.solano@gmail.com).
+	Restored docs/tutorial4/GPGraph.png, which had been removed in
+		the 14->15 transition by accident
+	Moved P_FITNESS into Fitness.java, deleting from other classes,
+		and made it consistently equal to "fitness".
+	Moved FITNESS_PREAMBLE into Fitness.java, deleting from other
+		classes, and made it consistently equal to "Fitness: "
+	Moved EVALUATED_PREAMBLE into Individual.java, deleting from
+		other classes, and made it consistently equal to
+		"Evaluated: "
+	Moved P_INDIVIDUAL into Individual.java, deleting from other
+		classes, and made it consistently equal to "individual"
+	Moved P_DATA into GPProblem.java, deleting from other classes,
+		and made it consistently equal to "data"
+	Moved CHECKBOUNDARY into BreedingSource, deleting from other
+		classes, and made it consistently equal to 8.
+	Renamed type -> t in one method in GPSetType
+	Renamed data -> dataPart and address -> addressPart in
+		MultiplexerSlow and its various functions
+	Renamed numRules -> ruleCount in one function in RuleSet
+	Changed P_PROB to P_CROSSOVERPROB in RuleCrossoverPipeline.
+		Also changed its value from "prob" to "crossover-prob".
+		It was incorrectly shadoing P_PROB ( = "prob" ) used
+		for a different function in BreedingSource
