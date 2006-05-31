@@ -1,0 +1,14 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+# defines the Ant problem, 400 moves, Santa Fe trail, using
+# an additional function, "progn4", which was defined as
+# an option in lil-gp, so we include it here.
+
+parent.0 = ant.params
+
+# no progn4, 400 moves, Santa Fe trail
+gp.fs.0.size = 7
+eval.problem.moves = 400
+eval.problem.file = santafe.trl

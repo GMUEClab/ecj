@@ -1,0 +1,381 @@
+<HTML>
+	<HEAD>
+		<TITLE>
+			Tutorial 1: Build a Genetic Algorithm for the MaxOnes Problem
+		</TITLE>
+	</HEAD>
+	<BODY bgcolor=white>
+		<p>
+			<table border=0 width="100%">
+				<tr>
+					<td bgcolor="darkblue" width="100%">
+						<font color=white size=5><b>ECJ</b></font>
+					</td>
+				</tr>
+			</table>
+			<h2>
+				Tutorial 1: Build a Genetic Algorithm for the MaxOnes Problem
+			</h2>
+
+<p>With the first tutorial, we will build an evolutionary computation system that uses:
+<ul>
+<li>Generational evolution
+<li>A GA-style selection and breeding mechanism (a pipeline of tournament selection, then crossover, then mutation)
+<li>A single, non-coevolutionary population
+<li>A simple, floating-point fitness value (no multiobjective fitness stuff)
+<li>A fixed-length vector representation (MaxOnes uses a vector of bits)
+<li>Only one thread of execution.
+<li>Only one process (no island models or other such funkiness).
+</ul>
+
+<p>The tutorial described here assumes that you have already set up ECJ's classpath and understand how to run the example problems.  The tutorial also assumes you're using a UNIX box (I'm on a MacOS X machine); you may have to make small modifications to pathnames etc. if it doesn't work on a non-UNIX machine.
+
+<p>It should be noted that in this tutorial you will have to do a lot of work setting up parameters that ordinarily you won't have to do -- there are default parameter files in ECJ to do nearly all of this work for you already.  However, we'll go through the annoyance of setting up the whole system from scratch in this first tutorial, so you can see what all those little parameters do.  In <a href="../tutorial2/">Tutorial 2</a>, for example, you'll have many fewer parameters, because we'll just use the defaults ECJ provides.
+
+<h3>Create an app subdirectory and parameters file</h3>
+<p>Go into the <tt>ec/app</tt> directory and create a directory called <tt>tutorial1</tt>.  In this directory, create a file called <tt>tutorial1.params</tt>.  The params file is where we will specify parameters which direct ECJ to do an evolutionary run.  ECJ parameters guide practically every aspect of ECJ's operation, down to the specific classes to be loaded for various functions. 
+
+<p>Parameter files are modifications of Java Property List files, and have an identical syntax.  You would do well to read the <a href="../../parameters.html">introduction to Parameter files</a>.  You might also read the <tt>ec/ec.params</tt> parameter file, it has documentation in it which discusses the proper syntax of parameters.
+
+<h3>About the Evolve and EvolutionState objects</h3>
+<p>ECJ's top-level object is <a href="../../classdocs/ec/Evolve.html">ec.Evolve</a>.  Evolve has only one purpose: to initialize a subclass of <a href="../../classdocs/ec/EvolutionState.html">ec.EvolutionState</a>, set it up, and get it going.  The entire evolutionary system is contained somewhere within the EvolutionState object or a sub-object hanging off of it.
+
+<p>The EvolutionState object stores a lot of top-level global evolution parameters and several important top-level objects which define the general evolution mechanism.  Some of the parameters include:
+
+<ul>
+<li> The number of generations to run
+<li> Whether or not we should quit when we find an ideal individual, or go on to the end of generations
+</ul>
+
+<p>Some of the top-level objects inside EvolutionState include:
+<ul>
+<li> A subclass of <a href="../../classdocs/ec/Initializer.html">ec.Initializer</a>, responsible for creating the initial population.
+<li> An <a href="../../classdocs/ec/Population.html">ec.Population</a>, created initially by the Initializer.  A Population stores an array of <a href="../../classdocs/ec/Subpopulation.html">ec.Subpopulation</a>s.  Each Subpopulation stores an array of <a href="../../classdocs/ec/Individual.html">ec.Individual</a>s, plus an <a href="../../classdocs/ec/Species.html">ec.Species</a> which specifies how the Individuals are to be created and bred.  We'll be using a Population with just a single Subpopulation.
+<li> A subclass of <a href="../../classdocs/ec/Evaluator.html">ec.Evaluator</a>, responsible for evaluating individuals.
+<li> A subclass of <a href="../../classdocs/ec/Breeder.html">ec.Breeder</a>, responsible for breeding individuals.
+<li> A subclass of <a href="../../classdocs/ec/Exchanger.html">ec.Exchanger</a>, responsible for exchanging individuals among subpopulations or among different processes.  Our version of Exchanger won't do anything at all.
+<li> A subclass of <a href="../../classdocs/ec/Finisher.html">ec.Finisher </a>, responsible for cleaning up when the system is about to quit.  Our Finisher won't do anything at all.
+<li> A subclass of <a href="../../classdocs/ec/Statistics.html">ec.Statistics</a>, responsible for printing out statistics during the run.
+<li> An <a href="../../classdocs/ec/util/Output.html">ec.util.Output</a> facility, responsible for logging messages.  We use this instead of System.out.println(...), because Output makes certain guarantees about checkpointing, thread-safeness, etc., and can also prematurely quit the system for us if we send it a <b>fatal</b> or <b>error</b> message.
+<li> A <a href="../../classdocs/ec/util/ParameterDatabase.html">ec.util.ParameterDatabase</a>.  The ParameterDatabase stores all the parameters loaded from our params file and other parameter files, and is used to help the system set itself up.
+<li> One or more <a href="../../classdocs/ec/util/MersenneTwisterFast.html">ec.util.MersenneTwisterFast</a> random number generators, one per thread.  Since we're using only one thread, we'll only have one random number generator.
+</ul>
+
+<h3>Define Parameters for the Evolve object</h3>
+<p>Let's begin by defining some basic parameters in our params file which the Evolve class uses.  Since Evolve (oddly given its name) isn't involved in evolution, these parameters are mostly administrative stuff.  Add the following parameters to your <tt>tutorial1.params</tt> file.
+
+<tt><pre>
+verbosity	= 0
+flush		= true
+store		= true
+</pre></tt>
+
+<p>Most of the things ECJ prints out to the terminal are <i>messages</i>.  A message is a string which is sent to the Output facility to be printed and logged.  Messages can take several forms, though you'll usually see: plain-old messages, warnings, errors, and fatal errors.  A fatal error causes ECJ to quit as soon as it is printed and logged.  An ordinary error raises an <i>error flag</i> in the Output facility; ECJ can wait after a string of errors before it finally quits (to give you more debugging information).  Warnings and messages do not quit ECJ.  The <tt>verbosity</tt> parameter tells ECJ what kinds of things it should print to the screen: a verbosity of 0 says ECJ should print everything to the screen, no matter how inconsequential.  You can change the verbosity: for more information, see the <a href="../../classdocs/ec/util/Output.html">Output</a> documentation.
+
+<p>The <tt>flush</tt> parameter tells ECJ whether or not it should immediately attempt to flush messages to the screen as soon as it logs them; generally, you'd want this to be <tt>true</tt>.  The <tt>store</tt> parameter tells ECJ whether or not it should store messages in memory as it logs them.  Unless you have an absolutely gargantuan number of messages, this should probably be <tt>true</tt>.  
+
+<tt><pre>
+breedthreads	= 1
+evalthreads	= 1
+seed.0		= 4357
+</pre></tt>
+
+<p>This tells ECJ whether or not it should be multithreaded.  If you're running on a single-processor machine, it rarely makes sense to be multithreaded (in fact, it's generally slower).  <tt>breedthreads</tt> tells the Breeder how many threads to spawn when breeding.  <tt>evalthreads</tt> tells the Evaluator how many threads to spawn when evaluating.
+
+<p>Each thread will be given its own unique random number generator. You should make sure that these generators have different seeds from one another.  The generator seeds are <tt>seed.0</tt>, <tt>seed.1</tt> .... up to <tt>seed.<i>n</i></tt> where n = max(breedthreads,evalthreads) - 1.  Since we have only one thread, we only need one random number generator.  4357 is a good initial seed for the generator: but remember that if you run your evolution twice with the same seed, you'll get the same results!  So change your seed for each run.  If you'd like the system to automatically change the seed to an arbitrary seed each time you run, you can base the seed on the current wall clock time.  You do this by saying <tt>seed.0	= time</tt>
+
+<p>Next let's define our evolution state.  The <a href="../../classdocs/ec/simple/">simple</a> package defines lots of basic generational evolution stuff, and we can borrow liberally from it for most of our purposes.  We'll start by using its EvolutionState subclass, <a href="../../classdocs/ec/simple/SimpleEvolutionState">ec.simple.SimpleEvolutionState</a>.  We do this by defining a final parameter which Evolve uses to set stuff up:
+
+<tt><pre>
+state		= ec.simple.SimpleEvolutionState
+</pre></tt>
+
+<h3>Define Parameters for the SimpleEvolutionState object</h3>
+
+<p>SimpleEvolutionState defines a simple, generational, non-coevolutionary evolution procedure.  The procedure is as follows:
+
+<ol>
+<li>Call the Initializer to create a Population.
+<li>Call the Evaluator on the Population, replacing the old Population with the result.
+<li>If the Evaluator found an ideal Individual, and if we're quitting when we find an ideal individual, then go to Step 9.
+<li>Else if we've run out of generations, go to Step 9.
+<li>Call the Exchanger on the Population (asking for a Pre-breeding Exchange), replacing the old Population with the result.
+<li>Call the Breeder on the Population, replacing the old Population with the result.
+<li>Call the Exchanger on the Population (asking for a Post-breeding Exchange), replacing the old Population with the result.
+<li>Increment the generation count, and go to Step 2.
+<li>Call the Finisher on the population, then quit.
+</ol>
+
+<p>In between any of these steps, there are hooks to call the Statistics object so it can update itself and print out statistics information.  Since our Exchanger will do nothing, steps 5 and 7 won't do anything at all.
+
+<p>SimpleEvolutionState can work with a variety of Initializers, Evaluators, Breeders, Exchangers, Finishers, and Populations.  But to keep things simple, let's use the basic ones which go along with it nicely.  Here are some parameters which will direct SimpleEvolutionState to load these classes:
+
+<tt><pre>
+pop		= ec.Population
+init		= ec.simple.SimpleInitializer
+finish		= ec.simple.SimpleFinisher
+breed		= ec.simple.SimpleBreeder
+eval		= ec.simple.SimpleEvaluator
+stat		= ec.simple.SimpleStatistics
+exch		= ec.simple.SimpleExchanger
+</pre></tt>
+
+<p>SimpleInitializer makes a population by loading an instance of (in this case ec.Population) and telling it to populate itself randomly.  Populations, by the way, can also load themselves from files (see the <a href="../../classdocs/ec/Subpopulation.html">Subpopulation documentation</a>).  The SimpleEvaluator evaluates each individual in the population independently.  The SimpleStatistics just reports basic statistical information on a per-generation basis.  The SimpleExchanger and SimpleFinisher do nothing at all.
+
+<p>Additionally, there are some more parameters that SimpleEvolutionState needs:
+
+<tt><pre>
+generations		= 200
+quit-on-run-complete	= true
+checkpoint		= false
+prefix			= ec
+checkpoint-modulo	= 1
+</pre></tt>
+
+<p><tt>generations</tt> is the number of generations to run.  <tt>quit-on-run-complete</tt> tells us whether or not we should quit ECJ when it finds an ideal individual; otherwise it will continue until it runs out of generations.
+
+<p><tt>checkpoint</tt> tells ECJ that it should perform <i>checkpointing</i>  every <tt>checkpoint-modulo</tt> generations, using a Gzipped checkpoint file whose name begins with the prefix specified in <tt>prefix</tt>.  Checkpointing saves out the state of the entire evolutionary process to a file; you can then start from that point by launching ECJ on that checkpoint file (for more information on how to do this, see the <a href="../../classdocs/ec/Evolve.html">Evolve</a> documentation).  If you have a long run and expect that the power might go out or the system might be shut down, you may want to checkpoint.  Otherwise don't do it, it's an expensive thing to do.  
+
+<h3>Define the Statistics File</h3>
+
+<p>SimpleStatistics requires a file to write out to.  Let's tell it that it should write out to a file called <tt>out.stat</tt>, located right where the user launched ECJ at (that's what the $ is for):
+
+<tt><pre>
+stat.file		= $out.stat
+</pre></tt>
+
+<p>How do we know that SimpleStatistics needs a file?  Because it says so.  In the <a href="../../classdocs/ec/simple/SimpleStatistics.html">SimpleStatistics documentation</a>, we're told that there is a parameter called <tt><i>base</i>.file</tt>.  A great many objects in ECJ have <i>parameter bases</i>.  The parameter base is passed to the object when it is created, and is prefixed to its parameter names.  That way, for example, you could conceivably create two different Statistics objects, pass them different bases, and they'd be able to load different parameters.  Some ECJ objects also have a <i>default base</i> which defines a secondary parameter location that the object will look for if it can't find a parameter it needs at its standard parameter base.  This allows some objects to all use the same default parameters, but specialize only on certain ones.
+
+<p>SimpleStatistics doesn't have a default base.  It's too high-level an object to need one.  The base for our SimpleStatistics object is <b>stat</b>.  Usually the bases for objects correspond with the parameter name that specified what class they were supposed to be.  For SimpleStatistics, for example, the class-specifying parameter was <tt>stat = ec.simple.SimpleStatistics</tt>, hence <tt>stat</tt> is the base, and the SimpleStatistics' output filename is at <tt>stat.file</tt>.
+
+<p>If no file is specified, by the way, SimpleStatistics will just output statistics to the screen.
+
+<h3>Define the Population parameters</h3>
+
+<p>We begin by telling ECJ that the Population will have only one Subpopulation, and we'll use the default Subpopulation class for subpopulation #0.
+
+<tt><pre>
+pop.subpops		= 1
+pop.subpop.0		= ec.Subpopulation
+</pre></tt>
+
+<p>Note that Population, like Statistics, also uses parameter bases (in this case its base is <tt>pop</tt>).  Similarly, Subpopulation #0 has a parameter base.  It will be, you guessed it, <tt>pop.subpop.0</tt>.  Let's define some stuff about Subpopulation #0:
+
+<tt><pre>
+pop.subpop.0.size 		= 100
+pop.subpop.0.duplicate-retries 	= 0
+pop.subpop.0.fitness 		= ec.simple.SimpleFitness
+pop.subpop.0.species 		= ec.vector.VectorSpecies
+</pre></tt>
+
+<p>We've first stated that the size of the subpopulation is going to be 100 individuals.  Also, when initializing themselves, subpopulations can guarantee that they won't duplicate individuals: they do this by generating an individual over and over again until it's different from its peers.  By default we're telling the system not to bother to do this, duplicates are fine.
+
+<p>Every individual has some kind of fitness attached to it, defined by a subclass of <a href="../../classdocs/ec/Fitness.html">ec.Fitness</a>.  Here we say that we will use <a href="../../classdocs/ec/simple/SimpleFitness.html">ec.simple.SimpleFitness</a> as our fitness class.  SimpleFitness defines fitness values from 0.0 inclusive to infinity exclusive, where 0.0 is the worst possible fitness, and infinity is better than the ideal fitness.  You can define the ideal fitness to any value greater than 0, we'll get to that later.
+
+<p>Lastly, as mentioned earlier, every Subpopulation has an associated <a href="../../classdocs/ec/Species.html">ec.Species</a> which defines features of the Individuals in the Subpopulation: specifically, how to create them and how to breed them.  This is the first <b>representation-specific</b> object we've seen so far: <a href="../../classdocs/ec/vector/VectorSpecies.html">ec.vector.VectorSpecies</a> defines a particular kind of Species that knows how to make <a href="../../classdocs/ec/vector/VectorIndividual.html">BitVectorIndividual</a>s, which are the kind of individuals we'll be using.  Other kinds of individuals require their own special Species classes.
+
+<h3>Define the Representation</h3>
+
+<p>Species hold a <i>prototypical Individual</i> which they clone multiple times to create new Individuals for that Species.  This is the first place you will see the notion of <i>prototypes</i> in ECJ, a concept that's used widely.  A prototype is an object which can be loaded once from the parameter files, and set up, then cloned repeatedly to make lots of customized copies of itself.  In ECJ, Individuals are prototypes.
+
+<p>The parameters for <a href="../../classdocs/ec/Species.html">ec.Species</a> are where the individual is specified:
+
+<tt><pre>
+pop.subpop.0.species.ind	= ec.vector.BitVectorIndividual
+</pre></tt>
+
+<p>Here we stipulate that the kind of individual used is a <a href="../../classdocs/ec/vector/BitVectorIndividual.html">ec.vector.BitVectorIndividual</a>, which defines an Individual that holds a vector of with boolean values.  VectorSpecies also holds various parameters that all
+individuals of that species will abide by:
+
+<tt><pre>
+pop.subpop.0.species.genome-size	= 100
+pop.subpop.0.species.crossover-type	= one
+pop.subpop.0.species.crossover-prob	= 1.0
+pop.subpop.0.species.mutation-prob	= 0.01
+</pre></tt>
+
+<p>This stipulates that our individuals will be vectors of 100 bits, that their "default" crossover will be one-point crossover, that if we use the default crossover we will use it 100% of the time to breed individuals (as opposed to 0% direct copying), and finally that if we use the "default" mutation, then each bit will have a 1% probability of getting bit-flipped, independent of other bits.
+
+<p>We'll get to the "default" crossover and mutation in a second, but first note that VectorSpecies is a Prototype, and Prototypes almost always have <b>default parameter bases</b> to fall back on.  The default parameter base for VectorSpecies is <tt>vector.species</tt> (see the <a href="../../classdocs/ec/vector/VectorSpecies.html"> VectorSpecies documentation</a>).  For example, instead of explicitly saying that all indivividuals in the species used in subpopulation #0 of the population are supposed to have a genome-size of 100, we could have simply said that all individuals belonging to any VectorSpecies have a genome size of 100 unless otherwise stipulated.  We say it like this:  <tt>vector.species.genome-size = 100</tt>
+
+<h3>Define the Breeding Procedure</h3>
+
+<p>ECJ has a very flexible breeding mechanism called a <b>breeding pipeline</b>.  It's not actually a pipeline per se: it's really a tree.  The leaves of the tree are selection methods, responsible for picking individuals from the old population.  Nonleaf nodes of the tree are breeding operators, which take individuals handed them by their child nodes, breed them, and send them to their parent node.  The root of the tree then hands completely-bred individuals to be added to the new population.
+
+<p><img src="BreedingPipelineTree.jpg" valign=top align=right>We will define a breeding pipeline which does the following.  First, it picks two individuals from the population and hands them to be crossed over.  The crossover operator then hands the individuals to a mutation operator to be mutated.  The mutation operator then hands the individuals off to be placed into the new population.  The tree thus has a mutation operator at the root, with one child (the crossover operator).  The crossover operator has two children, each selection methods.  The pipeline is shown at right.
+
+<p>For a mutation operator we will use <a href="../../classdocs/ec/vector/breed/VectorMutationPipeline.html">ec.vector.breed.VectorMutationPipeline</a>.  This operator requests Individuals of its sole child source (the crossover operator), then mutates all of them.  It mutates them by simply calling the default mutation method defined in the Individuals themselves.  If you want some non-default mutation method (like vector-inversion), you'll need to define your own <a href="../../classdocs/ec/BreedingPipeline.html">BreedingPipeline</a> subclass to do the custom mutation. 
+
+<p>Similarly, for a crossover operator we will use <a href="../../classdocs/ec/vector/breed/VectorCrossoverPipeline.html">ec.vector.breed.VectorCrossoverPipeline</a>.  This operator requests one Individual from each of its two child sources (in this case, the selection methods), then crosses them over and returns both of them at once.  This pipeline does its crossover simply by calling the default crossover method defined in the Individuals themselves.  Once again, if you want a special kind of crossover not stipulated in the defaults, you'll need to define your own BreedingPipeline subclass to do the special crossover.
+
+<p>Lastly, for our selection methods, let's use <a href="../../classdocs/ec/select/TournamentSelection.html">ec.select.TournamentSelection</a>, which defines basic tournament-selection.
+
+<p>The root of the pipeline is defined by the parameter <tt>pop.subpop.0.species.pipe</tt>, and everything else derives its base off of it in a hierarchical fashion:
+
+<tt><pre>
+pop.subpop.0.species.pipe			= ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0		= ec.vector.breed.VectorCrossoverPipeline
+pop.subpop.0.species.pipe.source.0.source.0	= ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.1	= ec.select.TournamentSelection
+</pre></tt>
+
+<p>Because the default mutation and crossover probabilities and types were defined as part of the BitVectorIndividuals, we don't need to stipulate those parameters here.  But one thing is left: we have to define the tournament size for our TournamentSelection to be 2.  We <i>could</i> explicitly define sizes for each of the selection operators as follows:
+
+<tt><pre>
+pop.subpop.0.species.pipe.source.0.source.0.size	= 2
+pop.subpop.0.species.pipe.source.0.source.1.size	= 2
+</pre></tt>
+
+<p>...but TournamentSelection (and all selection methods and breeding pipeline operators) is a Prototype, and so it has a default base we could simply use instead:
+
+<tt><pre>
+select.tournament.size		= 2
+</pre></tt>
+
+
+<h3>Define the Problem</h3>
+
+<p>So far, we've managed to define the high-level evolutionary process, administrative details, representation, and complete breeding procedure without writing a single drop of code.  But not any more.  Now we have to write the object that's actually responsible for assessing the fitness of our Individuals.  This object is called a <a href="../../classdocs/ec/Problem.html">Problem</a>, and it is specified as a parameter in our Evaluator.  We will create a Problem subclass called <tt><b>ec.app.tutorial1.MaxOnes</b></tt> which will take an Individual, evaluate it, and hand it back.  Before we do so, we have one more self-explanatory parameter to define:
+
+<tt><pre>
+eval.problem		= ec.app.tutorial1.MaxOnes
+</pre></tt>
+
+<p>Now close the <b>tutorial1.params</b> file and open a new file (also in the tutorial1 directory) called <b>MaxOnes.java</b>.  In the file, write:
+
+<tt><pre>
+package ec.app.tutorial1;
+import ec.*;
+import ec.simple.*;
+import ec.util.*;
+import ec.vector.*;
+
+public class MaxOnes extends Problem implements SimpleProblemForm
+    {
+</pre></tt>
+
+<p>If you look at the <a href="../../classdocs/ec/Problem.html">Problem documentation</a>, you'll notice it defines precious few methods.  First, it defines a <b>setup</b> method, which you can override (remember to call super.setup(...) ) to set up the prototypical Problem from a parameter file.  Your Problem will be a clone of this prototypical Problem.  Second, it defines the method <b>clone()</b> which is used to make (deep) copies of the Problem.  Java's clone() method doesn't deep-clone by default; so if you have an object holding (for example) an array inside it, and clone the object, the array isn't cloned.  Instead both objects now point to the same array.  ECJ instead calls clone() on you, and you're responsible for cloning yourself properly.  Instructions for doing this are described in the <a href="../../classdocs/ec/Problem.html">documentation</a>.
+
+<p>Since we're not defining any instance data that needs to be loaded from a parameter file or specially cloned, we don't even need to touch these methods.  So what methods do we actually need to implement?  As it turns out, Problem doesn't actually define any methods for evaluating individuals.  Instead, there are special interfaces which various Evaluators use that you must implement.  SimpleEvaluator requires that its Problems implement the <a href="../../classdocs/ec/simple/SimpleProblemForm.html">ec.simple.SimpleProblemForm interface</a>.  This interface defines two methods, <b>evaluate</b> (required) and <b>describe</b> (optional).   <b>evaluate</b> takes an individual, evaluates it somehow, sets its fitness, and marks it evaluated.  <b>describe</b> takes an individual and prints out to a log some information about how the individual operates (maybe a map of it running around, or whatever you'd like).  <b>describe</b> is called when the statistics wants to print out "special" information about the best individual of the generation or of the run, and it's not necessary.  We'll leave it blank.
+
+<p>Here's the first part of the <b>evaluate</b> method:
+
+<tt><pre>
+<font color=gray>// ind is the individual to be evaluated.
+// We're given state and threadnum primarily so we
+// have access to a random number generator
+// (in the form:  state.random[threadnum] ) 
+// and to the output facility
+</font>
+
+    public void evaluate(final EvolutionState state,
+                         final Individual ind,
+                         final int threadnum)
+        {
+        if (ind.evaluated) return;   <font color=gray>//don't evaluate the individual if it's already evaluated</font>
+</pre></tt>
+
+<p>Individuals contain two main pieces of data: <b>evaluated</b>, which indicates that they've been evaluated already, and <b>fitness</b>, which stores their fitness object.  Continuing:
+
+<tt><pre>
+        if (!(ind instanceof BitVectorIndividual))
+            state.output.fatal("Whoa!  It's not a BitVectorIndividual!!!",null);
+        BitVectorIndividual ind2 = (BitVectorIndividual)ind;
+</pre></tt>
+
+<p>First we check to see if ind is a BitVectorIndividual -- otherwise something has gone terribly wrong.  If something's wrong, we issue a fatal error through the state's Output facility.  Messages (like fatal) all have one or two additional arguments where you can specify a Parameter that caused the fatal error, because it's very common to issue a fatal error on loading something from the ParameterDatabase and discovering it's incorrectly specified.  Since this fatal error doesn't have anything to do with any specific parameter we know about, we pass in null.  Continuing:
+
+<tt><pre>
+        int sum=0;        
+        for(int x=0; x&lt;ind2.genome.length; x++)
+        sum += (ind2.genome[x] ? 1 : 0);
+</pre></tt>
+
+<p>VectorIndividuals have all have an array called <b>genome</b>.  The type of this array (int, boolean, etc.) varies depending on the subclass.  For BitVectorIndividual, genome is a boolean array.  We're simply counting the number of <b>true</b>s in it.  Continuing:
+
+<tt><pre>
+        if (!(ind2.fitness instanceof SimpleFitness))
+            state.output.fatal("Whoa!  It's not a SimpleFitness!!!",null);
+
+        ((SimpleFitness)ind2.fitness).setFitness(state,
+                <font color=gray>// ...the fitness...</font>
+                (float)(((double)sum)/ind2.genome.length),
+                <font color=gray>///... is the individual ideal?  Indicate here...</font>
+                sum == ind2.genome.length);
+        ind2.evaluated = true;
+        }
+</pre></tt>
+
+<p>Note that Fitness itself doesn't actually contain any methods for <i>setting</i> the fitness, only for <i>getting</i> the fitness.  This is because different Fitness subtypes operate differently.  In order to set a fitness, we must assume that it's some particular Fitness, in this case, SimpleFitness.  Just in case, we double-check first.  [If you're just hacking something up fast and you know that you're using a given kind of Individual and a given kind of Fitness, the double-checking is probably unnecessary, but if you change your Individual or Fitness in your parameters, your code may break in an icky way of course].
+
+<p>SimpleFitness defines a fitness-setting method where you provide the EvolutionState object, the fitness value you want to set (for SimpleFitness, this is between 0 inclusive and infinity exclusive, 0 being worst and infinity being better than the best), and a flag indicating whether or not this fitness is the ideal fitness.  We do exactly this.
+
+<p>Lastly, we mark the individual as evaluated, and we're done!
+
+<p>We finish out with an empty version of the <b>describe</b> method, since we don't have anything special to say about individuals:
+
+<tt><pre>
+    public void describe(final Individual ind, 
+                         final EvolutionState state, 
+                         final int threadnum, final int log,
+                         final int verbosity)
+        {
+        }
+    }
+</pre></tt>
+
+<h3>Run That Puppy</h3>
+
+<p>Close the <b>MaxOnes.java</b> file and compile it.  If you're inside the <b>tutorial1</b> directory, you can run it by calling:
+
+<tt><pre>
+java ec.Evolve -file tutorial1.params
+</pre></tt>
+
+<p>As of ECJ 8, the ideal individual will be discovered in the Generation 102, at least on Java VMs which obey strict math (Microsoft's VM does not).  For more information on that little annoyance, see the <b>ABOUT.JDK13</b> file.  The system dumps its statistics into the <b>out.stat</b> file like you requested.  Look in the file and note the style of the statistics that SimpleStatistics uses.  The last few lines of the file look like this:
+
+<tt><pre>
+Generation: 101
+Best Individual:
+Evaluated: true
+Fitness: 0.99
+ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+
+Generation: 102
+Best Individual:
+Evaluated: true
+Fitness: 1.0
+ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+
+Best Individual of Run:
+Evaluated: true
+Fitness: 1.0
+ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+</pre></tt>
+
+<p>If you'd like information instead in a columnar format, and don't care about what the best individuals <i>look like</i>, you might try using <a href="../../classdocs/ec/simple/SimpleShortStatistics.html">ec.simple.SimpleShortStatistics</a> instead of SimpleStatistics.  You can of course modify your parameter file, but it might be easier to simply override a parameter on the command line:
+
+<tt><pre>
+java ec.Evolve -file tutorial1.params -p stat=ec.simple.SimpleShortStatistics
+</pre></tt>
+
+<p>...the last few lines look like this:
+
+<tt><pre>
+100 0.9550000005960464 0.99 0.99 
+101 0.9568999993801117 0.99 0.99 
+102 0.9563999980688095 1.0 1.0 
+</pre></tt>
+
+<p>These columns are: the generation number, the mean fitness of the first subpopulation per generation, the best fitness of the first subpopulation per generation, and the best fitness of the first subpopulation so far in the run.  You can turn on even more statistics-gathering in most Statistics objects by saying <tt>stat.gather-full = true</tt>  More than one Statistics object can be defined simultaneously for a run as well, though that's out of the scope of this tutorial.
+
+<p>Remember, you can also change the random number generator seed as well:
+
+<tt><pre>
+java ec.Evolve -file tutorial1.params -p seed.0=4
+</pre></tt>
+
+
+<br><br><br>
+	</BODY>
+</HTML>

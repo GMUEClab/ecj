@@ -1,0 +1,451 @@
+<HTML>
+<HEAD>
+<title>About Parameters and Parameter Files</title>
+</HEAD>
+<BODY bgcolor=white>
+
+<h1>About Parameters and Parameter Files</h1>
+
+<p>ECJ relies heavily on parameter files for nearly <i>every</i> conceivable parameter setting.  It even relies on parameter files to determine which classes to use in diffent places.  This means that understanding parameters and parameter files is crucial to using ECJ.
+
+
+<h3>Parameters</h3>
+
+<p>ECJ's parameters are written one to a line in Java property-list style.  They may be in one of the two following formats:
+
+<p><tt><i>parametername</i> = <i>value</i></tt>
+<br><tt><i>parametername</i> <i>value</i></tt>
+
+<p>The second option is deprecated, please don't do it.  Whitespace is stripped.  Parameter values may contain internal whitespace but parameter names may not.  Blank lines and lines beginning with a "#" are ignored.  Parameter names and values are <b>case-sensitive</b>.
+
+<p>Parameter values are interpreted as one of five data types, depending on the parameter:
+
+<ul> 
+<li><b>Strings</b>.  Consist of everything after the equals sign and before the newline, trimmed of whitespace.
+
+<li><b>Classnames</b>.  Parsed as Strings are.  Must be the full absolute classname (for example, <tt>java.util.Hashtable</tt>).
+
+<li><b>Pathnames</b>.  Parsed as Strings are.  Pathnames can be either absolute (as in /foo/bar) or relative (as in foo/bar or ../../foo/bar).  If they are relative, they are interpreted relative to the directory of the parameter file in which they are found.  However, if a relative pathname is prefixed with a "$" (as in $foo/bar or $../../foo/bar), then it is assumed relative with respect to the directory in which the java process was started.
+
+<li><b>Integers and Floating-point Numbers</b>.  Must be in Java-standard numerical form.
+
+<li><b>Booleans</b>.  Boolean values are of the form:
+
+<p><tt><i>parametername</i> = true</tt>
+<br><tt><i>parametername</i> = false</tt>
+
+<p>If a parameter is declared but is not one of these two values, it is assumed to be a "default" value, which varies depending on the parameter.  For example, if the default for "myparameter" is <tt>true</tt>, then:
+
+<p><tt>myparameter = gobbledygook</tt>
+<br><tt>myparameter = </tt>
+
+<p>...both signify that myparameter is to be set to "true".
+
+</ul>
+
+<h3>Parameter Files</h3>
+
+ECJ reads parameters from a hierarchical set of parameter files, typically called "params" or ending with the extension ".params".  When you start up ECJ, you specify a parameter file as such:
+
+<p><tt>java ec.Evolve -file <i>myParameterFile</i></tt>
+
+<p>Parameter files can have multiple parents which define additional parameters.  A parameter file specifies that it has a parent with a special parameter:
+
+<p><tt>parent.<i>n</i> = <i>parentFile</i></tt>
+
+<p>...where <i>n</i> indicates that the parent is parent #<i>n</i>.  <i>n</i> starts at 0 and increases.  Your parents must be assigned with consecutive parameter names starting with <tt>parent.0</tt>.  For example:
+
+<p><tt>parent.0 = ../../myFirstParent.params</tt>
+<br><tt>parent.1 = ../../../mySecondParent.params</tt>
+<br><tt>parent.2 = ../foo/bar/myThirdParent.params</tt>
+
+<p>
+
+<h3>Precedence</h3>
+
+<p>Parameters may also be defined on the command line when running ECJ with the "-p" option, which may appear multiple times.  No space may appear between the parameter name, "=", and value.  For example:
+
+<p><tt>java ec.Evolve -file my.params -p extraparam=extravalue -p anotherparam=anothervalue</tt>
+
+<p>Parameters may further be programatically defined internally by the system, though ECJ presently never does this.
+
+If you have two parameters with the same name, here are the rules guiding which ones take precedence:
+
+<ul>
+  <li>Programmatically-set parameters override all others.
+  <li>Next come command-line parameters.
+  <li>Later command-line parameters override earlier ones.
+  <li>Next come parameters in the specified parameter file.
+  <li>Within a file, later parameters override earlier ones.
+  <li>Child parameter files' parameters override their parents' or ancestors' parameters.
+  <li>If a file has parents <i>parent.m</i> and <i>parent.m</i>, then all parameters derived from <i>parent.n</i> and its ancestors override all parameters  derived from <i>parent.m</i> and its ancestors if <i>n</i> is less than <i>m</i>.
+</ul>
+
+<h3>ECJ's Parameter Style</h3>
+
+<p>Since numerous objects read parameters from the parameter database, ECJ organizes its parameter namespace hierarchically using periods to separate elements in parameter names.  Let's begin with the simplest situation:  someECJ parameters are simple global parameters.  For example,
+
+<p><tt>evalthreads = 4</tt></p>
+
+<p>...tells ECJ that it should spawn 4 threads when doing population evaluation.  
+Other parameters are organized hierarchically because it's cleaner that way.  For example, if <i>evalthreads</i> and <i>breedthreads</i> are both 4, then there are 4 seeds for the random number generator which must be defined.  They are defined as such (Note the period between <i>seed</i> and the number <i>n</i>):
+
+<p><tt>seed.0 = 2341</tt><br>
+<tt>seed.1 = 7234123</tt><br>
+<tt>seed.2 = 411</tt><br>
+<tt>seed.3 = 34021239</tt>
+
+<p>It's common for arrays of objects are defined like this, with numbers representing their position.
+
+<p>The period is used for other hierarchical purposes.  When an object contains other objects as subordinates, they fall within its hierarchy.  Such objects have a <i>parameter base</i> which is prefixed to them.  For example, the global Population instance contains an array of Subpopulation instances, each of which in turn contain a variety of objects.  Here's how the Population instance is defined, the number of subpops it contains is set, the classes for its various subpopulations are defined, and the number of individuals each one has is set:
+
+<p><tt># We're doing some coevolution, so we need two<br>
+# subpopulations, each with 500 individuals<br>
+pop = ec.Population<br>
+pop.subpops = 2<br>
+pop.subpop.0 = ec.Subpopulation<br>
+pop.subpop.0.size = 500<br>
+pop.subpop.1 = ec.Subpopulation<br>
+pop.subpop.1.size = 500
+</tt>
+
+<p>Note that the parameters for each subpopulation begin with the parameter base <tt>pop.subpop.<i>n</i></tt>.  Each Subpopulation instance requests a "size" relative to its current parameter base handed it by its "controlling" object.  As you might guess, these hierarchical bases can get very long.
+
+<p>If an object needs a given parameter, and the parameter does not exist with the provided base, then the object can check a <i>default base</i> for the parameter.  For example, let's say that breeding pipeline #0 of the species for subpopulation #1 of the population is a MutationPipeline (GP point mutation) and is using Tournament Selection as it's source #0 to select individuals.  It might declare some information thusly:
+
+<p><tt>pop.subpop.1.species.pipe.0 = ec.gp.koza.MutationPipeline</tt>
+<p><tt>pop.subpop.1.species.pipe.0.source.0 = ec.select.TournamentSelection</tt>
+
+<p>...we can custom-define the tournament size parameter by tacking it onto this base as:
+
+<p><tt>pop.subpop.1.species.pipe.0.source.0.size = 7</tt>
+
+<p>...or we can fall back on a "default" setting for this parameter for all Tournament Selection objects as:
+
+<p><tt>select.tournament.size = 2</tt>
+
+<p>...In this case the hierarchical parameter base is <tt>pop.subpop.1.species.pipe.0.source.0</tt> and the "default base" for Tournament Selection is <tt>select.tournament</tt>.  If the object looks both places and still can't find a parameter defined (or it's improperly defined), it will issue an error.  Some global objects don't have default parameter bases, but most every object which can be repeatedly declared in different places will have a default base.
+
+<p>In general, objects which read parameters fall into one of several classes:
+
+<ul>
+  <li><b>Singletons</b> are high-level global objects, and typically have global parameters or form the root of parameter hierarchies.  For example, the EvolutionState object is a Singleton.
+  <li><b>Groups</b> (Populations and their subpopulations) are rooted globally with <tt>pop</tt>.
+  <li><b>Cliques</b> are small groups of instances which together form a global family.  For example, GP Types are a clique.  Typically Cliques form their own little hierarchies rooted globally.
+  <li><b>Prototypes</b> hang off of Singletons and Groups, and are never the root of a hierarchy.  Prototypes almost always have default bases.  For example, Tournament Selection objects are Prototypes.
+</ul>
+
+<h3>Tracing Bases Through Class Documentation</h3>
+
+<p>The class documentation contains three tables which give information about parameters and parameter bases for instances of that class.  The <b>Parameters</b> table indicates the valid parameters declared for that instance.  The <b>Default Base</b> indicates the class's default base, if any.  The <b>Parameter Bases</b> table indicates the new parameter bases for subsidiary objects to this instance.  For example, here's the tables from ec.gp.koza.MutationPipeline, the class responsible for doing the GP point mutation operator:
+
+<p>
+<table><tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td bgcolor="#DDDDDD">
+
+<p><b>Parameters</b><br>
+<table>
+<tr><td valign=top><i>base</i>.<tt>tries</tt><br>
+<font size=-1>int &gt;= 1</font></td>
+<td valign=top>(number of times to try finding valid pairs of nodes)</td></tr>
+
+<tr><td valign=top><i>base</i>.<tt>maxdepth</tt><br>
+<font size=-1>int &gt;= 1</font></td>
+<td valign=top>(maximum valid depth of a crossed-over subtree)</td></tr>
+
+<tr><td valign=top><i>base</i>.<tt>ns</tt><br>
+<font size=-1>classname, inherits and != GPNodeSelector</font></td>
+<td valign=top>(GPNodeSelector for tree)</td></tr>
+
+<tr><td valign=top><i>base</i>.<tt>build</tt>.0<br>
+<font size=-1>classname, inherits and != GPNodeBuilder</font></td>
+<td valign=top>(GPNodeBuilder for new subtree)</td></tr>
+
+<tr><td valign=top><tt>equal</tt><br>
+<font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</td>
+<td valign=top>(do we attempt to replace the subtree with a new one of roughly the same size?)</td></tr>
+
+<tr><td valign=top><i>base</i>.<tt>tree.0</tt><br>
+<font size=-1>0 &lt; int &lt; (num trees in individuals), if exists</font></td>
+<td valign=top>(tree chosen for mutation; if parameter doesn't exist, tree is picked at random)</td></tr>
+
+</table>
+
+<p><b>Default Base</b><br>
+gp.koza.mutate
+
+<p><b>Parameter bases</b><br>
+<table>
+
+<tr><td valign=top><i>base</i>.<tt>ns</tt><br>
+<td>nodeselect</td></tr>
+
+<tr><td valign=top><i>base</i>.<tt>build</tt><br>
+<td>builder</td></tr>
+
+</table>
+</td></tr></table>
+
+<p>MutationPipeline is derived from <b>ec.BreedingPipeline</b>, which adds the following tables:
+
+<p>
+<table><tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td bgcolor="#DDDDDD">
+<p><b>Parameters</b><br>
+<table>
+<tr><td valign=top><i>base</i>.<tt>num-sources</tt><br>
+<font size=-1>int &gt;= 1</font></td>
+<td valign=top>(User-specified number of sources to the pipeline.  
+Some pipelines have hard-coded numbers of sources; others indicate 
+(with the java constant DYNAMIC_SOURCES) that the number of sources is determined by this
+user parameter instead.)</td></tr>
+
+<tr><td valign=top><i>base</i>.<tt>source.</tt><i>n</i><br>
+<font size=-1>classname, inherits and != BreedingSource, or the value <tt>same</tt></td>
+<td valign=top>(Source <i>n</i> for this BreedingPipeline.
+If the value is set to <tt>same</tt>, then this source is the
+exact same source object as <i>base</i>.<tt>source.</tt><i>n-1</i>, and
+further parameters for this object will be ignored and treated as the same 
+as those for <i>n-1</i>.  <tt>same<tt> is not valid for 
+<i>base</i>.<tt>source.0</tt>)</td></tr>
+</table>
+
+<p><b>Parameter bases</b><br>
+<table>
+
+<tr><td valign=top><i>base</i>.<tt>source.</tt><i>n</i><br>
+<td>Source <i>n</i></td></tr>
+</table>
+</td></tr></table>
+
+<p>ec.BreedingPipeline in turn is derived from <b>ec.BreedingSource</b>, which adds the following tables:
+
+<p>
+<table><tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td bgcolor="#DDDDDD">
+<p><b>Parameters</b><br>
+<table>
+<tr><td valign=top><i>base</i><tt>.prob</tt><br>
+<font size=-1>0.0 &lt;= float &lt;= 1.0, or undefined</font></td>
+<td valign=top>(probability this BreedingSource gets chosen.  Undefined is only valid if the caller of this BreedingSource doesn't need a probability)</td></tr>
+</table>
+</td></tr></table>
+
+<p>Although MutationPipeline inherits all these parameters, the parameter base for <i>all</i> of them is the instance's parameter base handed it by its controller object.  And the default base for all of them is always the last one defined (in this case, "gp.koza.mutate".  Default bases for parent classes are not used.
+
+<p>Back to our original example, imagine that we had a MutationPipeline used as breeding pipeline #0 of the species used in subpopulation #1 of the population:
+
+<p><tt>pop.subpop.1.species.pipe.0 = ec.gp.koza.MutationPipeline</tt>
+
+<p>We could specify a probability for this pipeline as:
+
+<p><tt>pop.subpop.1.species.pipe.0.prob = 0.9</tt>
+
+<p>...or we might specify a default probability (not necessarily a good idea) for all MutationPipelines as:
+
+<p><tt>gp.koza.mutate.prob = 0.4</tt>
+
+<p>MutationPipeline contains two subsidiary instances, one which subclasses from <b>gp.GPNodeSelector</b>, and one which subclasses from <b>gp.GPNodeBuilder</b>.  The first is responsible for picking a subtree to mutate, and the second is responsible for creating a new subtree.  We specify classes for those instances in their parameters (we'll use a KozaNodeSelector and a GrowBuilder):
+
+<p><tt>pop.subpop.1.species.pipe.0.ns.0 = ec.gp.koza.KozaNodeSelector<br>
+pop.subpop.1.species.pipe.0.build.0 = ec.gp.koza.GrowBuilder</tt>
+
+<p>Of course, we might provide default choices as well:
+
+<p><tt>gp.koza.mutate.ns.0 = ec.gp.koza.KozaNodeSelector<br>
+gp.koza.mutate.build.0 = ec.gp.koza.GrowBuilder</tt>
+
+<p>These two objects have parameters to set up as well.  Their parameter bases are specified as <tt><i>base</i>.ns</tt> and <tt><i>base</i>.build</tt> respectively.  In this case, it means that their parameter bases are <tt>pop.subpop.1.species.pipe.0.ns.0</tt> and <tt>pop.subpop.1.species.pipe.0.build.0</tt>.  And thus the cycle of life continues.  For example, KozaNodeSelectors have default base of <tt>gp.koza.ns</tt> and a <tt>root</tt> parameter which specifies the probability they'd pick the root of a tree.  The root parameter would then be found at <tt>pop.subpop.1.species.pipe.0.ns.0.root</tt>, or the default value at <tt>gp.koza.ns.root</tt>.
+
+<h3>Where to look for specifics about parameters</h3>
+
+<p>There are way too many possible parameters to discuss here.  Here are some places to start digging.
+
+<ul>
+  <li> ec/params
+  <li> ec/simple/params and ec/gp/koza/params if you're doing GP
+  <li> different problem's parameter files
+  <li> ec.Evolve contains documentation on many basic parameters
+  <li> ec.EvolutionState holds most subsidiary objects.
+  <li> ec.Population is the root object for a lot of parameter bases.
+</ul>
+
+<h3>Parameters currently used by Symbolic Regression</h3>
+
+<p>Some are global parameters, some are defined through the parameter base hierarchy, and some are defined through default bases.  The parameter files are app/regression/noerc.params, its parent gp/koza/params, and its parent simple/params.
+
+<pre>
+<b>Number of threads and random number generator seeds</b>
+breedthreads = 1
+evalthreads = 1
+seed.0 = 4357
+
+<b>Garbage collection</b>
+gc = false
+aggressive = true
+gc-modulo = 1
+
+<b>Checkpointing</b>
+checkpoint = false
+checkpoint-modulo = 1
+prefix = ec
+
+<b>Outputting Stuff</b>
+nostore = false
+flush = true
+verbosity = 0
+
+<b>The EvolutionState Object</b>
+state = ec.simple.SimpleEvolutionState
+
+<b>Evolution Parameters</b>
+generations = 51
+quit-on-run-complete = true
+
+<b>The Initializer, Breeder, Exchanger, and Finisher</b>
+breed = ec.simple.SimpleBreeder
+exch = ec.simple.SimpleExchanger
+finish = ec.simple.SimpleFinisher
+init = ec.gp.GPInitializer
+
+<b>The Evaluator and the Problem (ADF stuff is always loaded but not used in this case)</b>
+eval = ec.simple.SimpleEvaluator
+eval.problem = ec.app.regression.Regression
+eval.problem.data = ec.app.regression.RegressionData
+eval.problem.stack = ec.gp.ADFStack
+eval.problem.stack.context = ec.gp.ADFContext
+eval.problem.stack.context.data = ec.app.regression.RegressionData
+
+<b>The Statistics</b>
+stat = ec.gp.koza.KozaStatistics
+stat.file = $out.stat
+
+<b>Default Tournament Selection tournament size</b>
+select.tournament.size = 7
+
+<b>Default HalfBuilder (ramped half/half tree building) parameters</b>
+gp.koza.half.growp = 0.5
+gp.koza.half.max-depth = 6
+
+<b>Default KozaNodeSelector parameters</b>
+gp.koza.ns.nonterminals = 0.9
+gp.koza.ns.root = 0.0
+gp.koza.ns.terminals = 0.1
+
+<b>Default Reproduction operator parameters</b>
+gp.koza.reproduce.source.0 = ec.select.TournamentSelection
+
+<b>Default Crossover operator parameters </b>
+gp.koza.xover.maxdepth = 17
+gp.koza.xover.ns.0 = ec.gp.koza.KozaNodeSelector
+gp.koza.xover.ns.1 = same
+gp.koza.xover.source.0 = ec.select.TournamentSelection
+gp.koza.xover.source.1 = same
+gp.koza.xover.tries = 1
+
+<b>Function Sets (there's only one)</b>
+gp.fs.size = 1
+gp.fs.0 = ec.gp.GPFunctionSet
+gp.fs.0.info = ec.gp.GPFuncInfo
+gp.fs.0.name = f0
+gp.fs.0.size = 9
+gp.fs.0.func.0 = ec.app.regression.func.X
+gp.fs.0.func.0.nc = nc0
+gp.fs.0.func.1 = ec.app.regression.func.Add
+gp.fs.0.func.1.nc = nc2
+gp.fs.0.func.2 = ec.app.regression.func.Mul
+gp.fs.0.func.2.nc = nc2
+gp.fs.0.func.3 = ec.app.regression.func.Sub
+gp.fs.0.func.3.nc = nc2
+gp.fs.0.func.4 = ec.app.regression.func.Div
+gp.fs.0.func.4.nc = nc2
+gp.fs.0.func.5 = ec.app.regression.func.Sin
+gp.fs.0.func.5.nc = nc1
+gp.fs.0.func.6 = ec.app.regression.func.Cos
+gp.fs.0.func.6.nc = nc1
+gp.fs.0.func.7 = ec.app.regression.func.Exp
+gp.fs.0.func.7.nc = nc1
+gp.fs.0.func.8 = ec.app.regression.func.Log
+gp.fs.0.func.8.nc = nc1
+
+<b>Standard Node Constraints for untyped GP with nodes of various arity sizes</b>
+gp.nc.size = 7
+gp.nc.0 = ec.gp.GPNodeConstraints
+gp.nc.0.name = nc0
+gp.nc.0.returns = nil
+gp.nc.0.size = 0
+gp.nc.1 = ec.gp.GPNodeConstraints
+gp.nc.1.name = nc1
+gp.nc.1.returns = nil
+gp.nc.1.size = 1
+gp.nc.1.child.0 = nil
+gp.nc.2 = ec.gp.GPNodeConstraints
+gp.nc.2.name = nc2
+gp.nc.2.returns = nil
+gp.nc.2.size = 2
+gp.nc.2.child.0 = nil
+gp.nc.2.child.1 = nil
+gp.nc.3 = ec.gp.GPNodeConstraints
+gp.nc.3.name = nc3
+gp.nc.3.returns = nil
+gp.nc.3.size = 3
+gp.nc.3.child.0 = nil
+gp.nc.3.child.1 = nil
+gp.nc.3.child.2 = nil
+gp.nc.4 = ec.gp.GPNodeConstraints
+gp.nc.4.name = nc4
+gp.nc.4.returns = nil
+gp.nc.4.size = 4
+gp.nc.4.child.0 = nil
+gp.nc.4.child.1 = nil
+gp.nc.4.child.2 = nil
+gp.nc.4.child.3 = nil
+gp.nc.5 = ec.gp.GPNodeConstraints
+gp.nc.5.name = nc5
+gp.nc.5.returns = nil
+gp.nc.5.size = 5
+gp.nc.5.child.0 = nil
+gp.nc.5.child.1 = nil
+gp.nc.5.child.2 = nil
+gp.nc.5.child.3 = nil
+gp.nc.5.child.4 = nil
+gp.nc.6 = ec.gp.GPNodeConstraints
+gp.nc.6.name = nc6
+gp.nc.6.returns = nil
+gp.nc.6.size = 6
+gp.nc.6.child.0 = nil
+gp.nc.6.child.1 = nil
+gp.nc.6.child.2 = nil
+gp.nc.6.child.3 = nil
+gp.nc.6.child.4 = nil
+gp.nc.6.child.5 = nil
+
+<b>Tree Constraints</b>
+gp.tc.size = 1
+gp.tc.0 = ec.gp.GPTreeConstraints
+gp.tc.0.init = ec.gp.koza.HalfBuilder
+gp.tc.0.name = tc0
+gp.tc.0.returns = nil
+
+<b>GP Types</b>
+gp.type.a.size = 1
+gp.type.a.0.name = nil
+gp.type.s.size = 0
+
+<b>The Population, and its one subpopulation, species, breeding pipelines and individuals</b>
+pop = ec.Population
+pop.subpops = 1
+pop.subpop.0 = ec.Subpopulation
+pop.subpop.0.duplicate-retries = 100
+pop.subpop.0.fitness = ec.gp.koza.KozaFitness
+pop.subpop.0.size = 1000
+pop.subpop.0.species = ec.gp.GPSpecies
+pop.subpop.0.species.ind = ec.gp.GPIndividual
+pop.subpop.0.species.ind.numtrees = 1
+pop.subpop.0.species.ind.tree.0 = ec.gp.GPTree
+pop.subpop.0.species.ind.tree.0.tc = tc0
+pop.subpop.0.species.numpipes = 2
+pop.subpop.0.species.pipe.0 = ec.gp.koza.CrossoverPipeline
+pop.subpop.0.species.pipe.0.prob = 0.9
+pop.subpop.0.species.pipe.1 = ec.gp.koza.ReproductionPipeline
+pop.subpop.0.species.pipe.1.prob = 0.1
+
+</BODY>
+</HTML>

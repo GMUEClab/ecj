@@ -1,0 +1,45 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../gp/koza/koza.params
+
+
+# Stolen from koza/params -- overwriting just
+# a little for readability
+# You need to create at least one function set, 
+# called "f0", which your first tree will use.  
+
+gp.fs.size = 1
+gp.fs.0.name = f0
+gp.fs.0.info = ec.gp.GPFuncInfo
+gp.fs.0.size = 6
+gp.fs.0.func.0 = ec.app.lawnmower.func.LawnERC
+gp.fs.0.func.0.nc = nc0
+gp.fs.0.func.1 = ec.app.lawnmower.func.Left
+gp.fs.0.func.1.nc = nc0
+gp.fs.0.func.2 = ec.app.lawnmower.func.Mow
+gp.fs.0.func.2.nc = nc0
+gp.fs.0.func.3 = ec.app.lawnmower.func.V8a
+gp.fs.0.func.3.nc = nc2
+gp.fs.0.func.4 = ec.app.lawnmower.func.Progn2
+gp.fs.0.func.4.nc = nc2
+gp.fs.0.func.5 = ec.app.lawnmower.func.Frog
+gp.fs.0.func.5.nc = nc1
+
+#
+# We specify our problem here
+#
+
+eval.problem = ec.app.lawnmower.Lawnmower
+eval.problem.data = ec.app.lawnmower.LawnmowerData
+eval.problem.x = 8
+eval.problem.y = 8
+
+# ADFs use the same data type typically -- we need to include
+# this even if we're not implementing ADFs
+eval.problem.stack.context.data = ec.app.lawnmower.LawnmowerData
+
+#stat = ec.gp.koza.KozaShortStatistics
+stat = ec.app.lawnmower.LawnmowerStatistics
+stat.gather-full = true

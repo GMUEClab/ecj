@@ -1,0 +1,499 @@
+<HTML>
+    <HEAD>
+        <TITLE>
+            Tutorial 3: Build a Floating-Point Evolution Strategies Problem
+        </TITLE>
+    </HEAD>
+    <BODY bgcolor=white>
+        <p>
+            <table border=0 width="100%">
+                <tr>
+                    <td bgcolor="darkblue" width="100%">
+                        <font color=white size=5><b>ECJ</b></font>
+                    </td>
+                </tr>
+            </table>
+            <h2>
+            Tutorial 3: Build a Floating-Point Evolution Strategies Problem
+            </h2>
+            <p>
+            In the third tutorial, we will build a generational Evolution Strategy (ES) for a problem requiring our individuals to be vectors of doubles.  The tutorial will also show how to perform and recover from checkpointing, how to make a custom selection operator, how to use the setup() method, how to make a custom statistics class, and how to read and write populations to files.
+            <h3>
+                Create an app subdirectory and parameters file
+            </h3>
+            <p>
+            Go into the <tt>ec/app</tt> directory and create a directory called <tt>tutorial3</tt>. In this directory, create a file called <tt>tutorial3.params</tt>. In this file, add as a first line the following: 
+
+<tt>
+<pre>
+parent.0        = ../../es/es.params
+</pre>
+</tt>
+
+<p>This tells us that we will be using the <a href="../../classdocs/ec/es/package-summary.html">ec.es</a> package facility, which implements Evolution Strategies and Evolutionary Programming.  This package includes a special selection method, <a href="../../classdocs/ec/es/ESSelection.html">ec.es.ESSelection</a> and two special breeders, <a href="../../classdocs/ec/es/MuCommaLambdaBreeder.html">ec.es.MuCommaLambdaBreeder</a> and <a href="../../classdocs/ec/es/MuPlusLambdaBreeder.html">ec.es.MuPlusLambdaBreeder</a> which handle the two main kinds of ES selection and breeding (the [mu,lambda] and [mu+lambda] strategies respectively).
+
+<h3>
+Setting Up an Evolution Strategies Procedure
+</h3>
+
+<p>A quick refresher on Evolution Strategies.  lambda represents the number of children we create each generation.  mu represents the number of parents used to create the children.  lambda <b>must</b> be a multiple of mu.  The [mu,lambda] and [mu+lambda] strategies are truncation selection procedures, meaning that parents are picked simply by deleting the N worst individuals and keeping the mu best ones.
+
+<p>The basic [mu,lambda] evolution loop works as follows: the mu best individuals from the previous population are retained, and the others are discarded.  These mu individuals are called the "parents".  Each parent gets to produce lambda/mu children: thus the total number of children is lambda.    These lambda children form the next generation.  The basic [mu+lambda] evolution work is similar, except that it is elitist.  The lambda children, <i>plus</i> the mu parents which created them, together form the next generation. Evolutionary Programming's (EP's) 50% truncation procedure works essentially the same as the [mu+lambda] procedure, except that mu and lambda are the same size.
+
+<p>One gotcha is how large the first generation population is.  Traditionally, both strategies assume that even though the [mu,lambda] generations are generally lambda in size, and the [mu+lambda] generations are generally mu+lambda in size, the initial population for both strategies is, weirdly, <i>mu</i> in size.  Thus the first population undergoes no selection at all (no children are deleted).  That's a little inefficient.  ECJ permits the initial population to be any size, so long as it is greater than or equal to mu.  For the [mu,lambda] strategy, a good choice is to make the initial population lambda in size.  For the [mu+lambda] strategy, try making the initial population mu+lambda in size.
+
+<p>By default the <tt>es.params</tt> file assumes the [mu,lambda] strategy, with mu=1 and lambda=10. Let's change this to the [mu+lambda] strategy, plus new values for mu, lambda, initial population size (mu+lambda) and generations.  We do this by adding the following parameters:
+
+<tt>
+<pre>
+#                    ...the default option is ec.es.MuCommaLambdaBreeder
+breed =              ec.es.MuPlusLambdaBreeder
+es.mu.0 =            5
+es.lambda.0 =        100
+pop.subpop.0.size =  105
+generations =        200
+</pre>
+</tt>
+
+<p><img valign=top align=right src="pipeline.jpg">Note that although they're not associated with the population directly (and are in fact stored inside the ec.es., not Population) the <tt>es.mu.0</tt> and <tt>es.lambda.0</tt> parameters have a "0" at the end.  If you use evolution strategies, ECJ requires that you do so for all of your subpopulations.  However, each subpopulation can have a different initial size, different mu, and different lambda.  Thus the "0" means these values are for subpopulation 0.
+
+<p>ES and EP were not designed with crossover in mind.  Thus they have traditionally assumed that children would have a single parent from which they are mutated.  Only later historically was crossover added, in a variety of ways.  ECJ permits children to be created any way you like in ES, so long as each each time the breeding pipeline is called, one and exactly one instance of <tt>ec.es.ESSelection</tt> is called, exactly once, to "select" a parent.  The ESSelection method chooses the ES parent to be used to generate this child -- how you pick other "parents" for crossover is up to you.  Tournament Selection, for example, works fine. 
+
+<p>In this example we will create a crossover breeding pipeline as shown at right.  As can be seen, ESSelection will be called once to pick a parent.  This parent will be copied and mutated, then crossed over with another parent chosen with <tt>OurSelection</tt>, a selection method we will define later.  Since ES will demand that only one child is produced at a time, the second child mothered by the OurSelection selection method will be discarded automatically.  This breeding pipeline is specified with the following parameters:
+
+<tt>
+<pre>
+pop.subpop.0.species.pipe = ec.vector.breed.VectorCrossoverPipeline
+pop.subpop.0.species.pipe.source.0 = ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0.source.0 = ec.es.ESSelection
+
+# Use our own custom selection operator class
+pop.subpop.0.species.pipe.source.1 = ec.app.tutorial3.OurSelection
+
+# We'll talk about this parameter later on
+pop.subpop.0.species.pipe.source.1.middle-probability = 0.5
+
+</pre>
+</tt>
+
+<h3>
+Define the Individual and the Problem
+</h3>
+<p>We'll use the well-known Rosenbrock problem, but we'll add a few twists to it (and call it the "OddRosenbrock" problem).  The first twist is that we'll have only five doubles in the vector.  The second twist is that each gene will have its own min-gene and max-gene constraints:
+
+<tt>
+<pre>
+eval.problem = ec.app.tutorial3.OddRosenbrock
+# Doubles and floats use the FloatVectorSpecies
+pop.subpop.0.species =                  ec.vector.FloatVectorSpecies
+pop.subpop.0.species.ind =              ec.vector.DoubleVectorIndividual
+# Per-gene mutation probability of 0.005
+pop.subpop.0.species.mutation-prob = 0.005
+# One-point crossover
+pop.subpop.0.species.crossover-type = one
+pop.subpop.0.species.genome-size =      5
+pop.subpop.0.species.min-gene.0 = -5.12
+pop.subpop.0.species.max-gene.0 = 5.12
+pop.subpop.0.species.min-gene.1 = -3
+pop.subpop.0.species.max-gene.1 = 2
+pop.subpop.0.species.min-gene.2 = -7.6
+pop.subpop.0.species.max-gene.2 = 1.1
+pop.subpop.0.species.min-gene.3 = 0
+pop.subpop.0.species.max-gene.3 = 1.0
+pop.subpop.0.species.min-gene.4 = -10.3
+pop.subpop.0.species.max-gene.4 = 2.2
+# Because we need default min/max genes even if we don't use them
+pop.subpop.0.species.min-gene = -100
+pop.subpop.0.species.max-gene = 100
+</pre>
+</tt>
+
+<p>Compare this to the min-gene and max-gene stipulations in the previous tutorial.  ECJ checks to see if it should use a per-gene min/max-gene setup by checking for the existence of min-gene.0 and max-gene.0.  If they are there, it uses min-gene.X and max-gene.X for each separate gene, reverting to ordinary min-gene and max-gene defaults if one is missing.
+
+<p>Now we define the problem proper.  Create a file called <tt>OddRosenbrock.java</tt> in the <tt>tutorial3</tt> directory.  In this file add the following:
+
+<tt>
+<pre>
+package ec.app.tutorial3;
+
+import ec.util.*;
+import ec.*;
+import ec.simple.*;
+import ec.vector.*;
+
+public class OddRosenbrock extends Problem implements SimpleProblemForm
+    {
+    public void setup(final EvolutionState state, final Parameter base) { }
+
+    public void evaluate(final EvolutionState state,
+             final Individual ind,
+             final int threadnum)
+        {
+        if( !( ind instanceof DoubleVectorIndividual ) )
+            state.output.fatal( "The individuals for this problem should be DoubleVectorIndividuals." );
+
+        double[] genome = ((DoubleVectorIndividual)ind).genome;
+        int len = genome.length;
+        double value = 0;
+
+        <font color=gray>// Compute the Rosenbrock function for our genome</font>
+        for( int i = 1 ; i &lt; len ; i++ )
+            value += 100*(genome[i-1]*genome[i-1]-genome[i])*
+            (genome[i-1]*genome[i-1]-genome[i]) +
+            (1-genome[i-1])*(1-genome[i-1]);
+
+        <font color=gray>// Rosenbrock is a minimizing function which does not drop below 0. 
+        // But SimpleFitness requires a maximizing function -- where 0 is worst
+        // and 1 is best.  To use SimpleFitness, we must convert the function.
+        // This is the Koza style of doing it:</font>
+
+        value = 1.0 / ( 1.0 + value );
+        ((SimpleFitness)(ind.fitness)).setFitness( state, (float)value, value==1.0 );
+    
+        ind.evaluated = true;
+        }
+
+    public void describe(final Individual ind, 
+             final EvolutionState _state, 
+             final int threadnum,
+             final int log,
+             final int verbosity)  { return; }
+    }
+</pre>
+</tt>
+
+<h3>
+Define the Custom Selection Method
+</h3>
+
+Here we will make our own Selection Method, called OurSelection, which will pick three individuals at random with replacement, then with some probability <b>P</b> will return the <b>middlemost</b> one, else it will return a random one from the three.  Create a file called <tt>OurSelection.java</tt> in the <tt>tutorial3</tt> directory.  In this file, add:
+
+<tt>
+<pre>
+package ec.app.tutorial3;
+import ec.*;
+import ec.util.*;
+
+public class OurSelection extends SelectionMethod
+    {
+    <font color=gray>// We have to specify a default base</font>
+    public static final String P_OURSELECTION = "our-selection";
+    public Parameter defaultBase() { return new Parameter(P_OURSELECTION); }
+</pre>
+</tt>
+
+We'll explain the <a href="../../classdocs/ec/util/Parameter.html">ec.util.Parameter</a> class later. Next we must load the <b>P</b> probability parameter from the parameter database.  To do this, we need to define two things.  First, we must define the default base (already done: it's <tt>our-selection</tt>).  Next, we need to define the parameter name.  How about: <tt>middle-probability</tt>.  I'd use <tt>probability</tt>, except that a superclass already uses that.  Thus to set this parameter value, the user would define the parameter <tt>pop.subpop.0.species.pipe.source.1.probability = ... </tt>, and barring that, the system would look for the parameter <tt>our-selection.probability = ...</tt>  We define and load the parameter in the <tt>setup()</tt> method:
+
+<tt>
+<pre>
+    public static final String P_MIDDLEPROBABILITY = "middle-probability";  <font color=gray>// our parameter name</font>
+
+    public double middleProbability;
+
+    public void setup(final EvolutionState state, final Parameter base)
+        {
+        super.setup(state,base);  <font color=gray> // always call super.setup(...) first if it exists!</font>
+
+        Parameter def = defaultBase();
+
+        <font color=gray>// gets a double between min (0.0) and max (1.0), from the parameter
+        // database, returning a value of min-1 (-1.0) if the parameter doesn't exist or was 
+        // outside this range.</font>
+        middleProbability = state.parameters.getDouble(base.push(P_MIDDLEPROBABILITY),
+            def.push(P_MIDDLEPROBABILITY),0.0,1.0);
+        if (middleProbability &lt; 0.0)
+            state.output.fatal("Middle-Probability must be between 0.0 and 1.0",
+                base.push(P_MIDDLEPROBABILITY),def.push(P_MIDDLEPROBABILITY));
+        } 
+</pre>
+</tt>
+
+<p>The setup() method is most ECJ objects' constructor.   Most ECJ classes are mostly loaded through the ParameterDatabase's instanceForParameter(...) method.  This method in turn uses Class.newInstance(), which only calls the empty constructor on the instance.  The large bulk of ECJ instances are born through applying clone() to the original instance created with Class.newInstance().  Class.newInstance() does not give us an opportunity to pass the ParameterDatabase to the class so it can initialize itself according to user parameters.  Thus immediately after calling the instanceForParameter(...) method, we call the setup(...) method to give the instance a chance to <i>really</i> construct itself.
+
+<p>This is the first time we have used the <a href="../../classdocs/ec/util/Parameter.html">ec.util.Parameter</a> and <a href="../../classdocs/ec/util/ParameterDatabase">ec.util.ParameterDatabase</a> classes.  The ParameterDatabase, as discussed earlier, is a table of parameters and their values (stored as strings).  You can extract a value in a variety of forms: booleans, numbers, strings, filenames, even as instances and classes.  In the example above, we used a method to extract a value as a double, telling the ParameterDatabase to look two places: <tt>pop.subpop.0.species.pipe.source.1.middle-probability</tt> first, then <tt>our-selection.middle-probability</tt> if necessary.
+
+<p>Parameters are formed by pushing and popping onto bases.  The base passed to us was the parameter <tt>pop.subpop.0.species.pipe.source.1</tt>  The setup() method always passes you your current parameter base.  The "default base" we had defined by creating an initial parameter called <tt>our-selection</tt>  We then formed the relevant parameters for our probability variable by pushing <tt>middle-probability</tt> onto the end of each of these (pushing adds a period first).
+
+<p>If we discover that we have an invalid or missing probability, we issue a fatal error.  As you can see, fatal(...) can take Parameters as optional arguments, and prints them out in a nice way so it's easy to see what parameter caused the problem.
+
+<p>Our class inherits from <a href="../../classdocs/ec/SelectionMethod.html">ec.SelectionMethod</a>, which inherits from <a href="../../classdocs/ec/BreedingSource.html">ec.BreedingSource</a>, which implements <a href="../../classdocs/ec/Prototype.html">ec.Prototype</a>, which in turn implements <a href="../../classodcs/ec/Setup.html">ec.Setup</a>, which is where the setup(...) method came from.  This method is called when a class is first loaded and initialized at startup-time.  From then on, Prototypes are copied from the initial class using Java's clone() facility.  Note that clone() does not deep-clone.  That's okay, since our parameter is just a double and will get cloned by clone().  But if it were an array, we'd have to override the <tt>clone()</tt> method in <tt>ec.Prototype</tt> to do more intelligent cloning.  (For historical purposes, every Prototype except for subclasses of Individual that uses clone() does deep-cloning with it -- Individuals should have their deepClone() method called instead).
+
+<p>Selection methods, like breeding pipelines, have methods <tt>prepareToProduce(...)</tt> and <tt>finishProducing(...)</tt> which are called prior to and after a chain of <tt>produce(...)</tt> calls. These methods allow the pipeline to set itself up (gathering sorted statistics of fitness values, or whatever is necessary).  Also, there is a method called <tt>produces(...)</tt> which returns true if we can produce individuals for a given subpopulation.  Our pipeline doesn't need to call any of these methods, so we will rely on the defaults in the SelectionMethod class, which do nothing.
+
+<p>This means we need only to write the <tt>produce(...)</tt> method.  A SelectionMethod's <tt>produce(...)</tt> method is supposed to return an individual from a subpopulation: unlike Breeding Pipelines, Selection Method's <tt>produce(...)</tt> methods don't copy the individual first -- they just return the original individual selected from the subpopulation.  Actually, SelectionMethods have <i>two</i> versions of the <tt>produce(...)</tt> method.  One version returns N individuals as requested.  The second returns the <i>index</i> in the subpopulation array of a single selected individual.  SelectionMethod has a default implementation of the first method which just calls the second.  So here we will just write the second method (though we might override the first one as well, if we liked, in order to make the system faster).  We add to the file:
+
+<tt>
+<pre>
+    public int produce(final int subpopulation, final EvolutionState state, final int thread)
+        {
+        <font color=gray>//toss a coin</font>
+        if (state.random[thread].nextBoolean(middleProbability))
+            {
+            <font color=gray>//pick three individuals, return the middle one</font>
+            Individual[] inds = state.population.subpops[subpopulation].individuals;
+            int one = state.random[thread].nextInt(inds.length);
+            int two = state.random[thread].nextInt(inds.length);
+            int three = state.random[thread].nextInt(inds.length);
+            <font color=gray>// generally the betterThan(...) method imposes an ordering,
+            // so you shouldn't see any cycles here except in very unusual domains...</font>
+            if (inds[two].fitness.betterThan(inds[one].fitness))
+                {
+                if (inds[three].fitness.betterThan(inds[two].fitness)) <font color=gray>//  1 &lt; 2 &lt; 3</font>
+                    return two;
+                else if (inds[three].fitness.betterThan(inds[one].fitness)) <font color=gray>//  1 &lt; 3 &lt; 2</font>
+                    return three;
+                else <font color=gray>//  3 &lt; 1 &lt; 2</font>
+                    return one;
+                }
+            else if (inds[three].fitness.betterThan(inds[one].fitness)) <font color=gray>//  2 &lt; 1 &lt; 3</font>
+                return one;
+            else if (inds[three].fitness.betterThan(inds[two].fitness)) <font color=gray>//  2 &lt; 3 &lt; 1</font>
+                return three;
+            else <font color=gray>//  3 &lt; 2 &lt; 1</font>
+                return two;
+            }
+        else        <font color=gray>//select a random individual's index</font>
+            {
+            return state.random[thread].nextInt(
+                state.population.subpops[subpopulation].individuals.length);
+            }
+        }
+    } <font color=gray> // close the class</font>
+</pre>
+</tt>
+
+<p>Save and close the file.  The <tt>middle-probability</tt> parameter is already in the <tt>tutorial3.params</tt> file, so we don't need to add that.
+
+<h3>
+Create a custom statistics class
+</h3>
+
+Let's now make a custom statistics object, a subclass of <a href="../../classdocs/ec/Statistics">ec.Statistics</a>.  What our class will do is write out to two files:
+
+<dl>
+<dt>pop.out<dd>Logs all the members of the generation and of previous generations, in a fashion that can be read back in again.
+<dt>info.out<dd>Prints out, in a human-readable fashion, the individual in subpopulation #0 with the highest value of gene #3.  What the heck...maybe you'd need that one day!
+</dl>
+
+Statistics classes are little more than collections of hooks.  These hooks are called at various times during the evolution cycle.  For a generational evolution mechanism (<a href="../../classdocs/ec/simple/SimpleEvolutionState.html">ec.simple.SimpleEvolutionState</a>), the hooks defined in <a href="../../classdocs/ec/Statistics.html">ec.Statistics</a> suffice.  For a steady-state mechanism, you'll need different hooks: see <a href="../../classdocs/ec/steadystate/SteadyStateStatisticsForm.html">ec.steadystate.SteadyStateStatisticsForm</a> for the list of relevant hooks.
+
+<p>Since we're doing a generational EC, examine <a href="../../classdocs/ec/Statistics">ec.Statistics</a>.  Here's a general list of when various hooks are called:
+
+<ul>
+<li>Immediately before and immediately after initialization
+<li>(The Big Loop)
+<ul>
+<li>Immediately before and immediately after evaluation
+<li>Immediately before and immediately after pre-breeding exchange
+<li>Immediately before and immediately after breeding
+<li>Immediately before and immediately after post-breeding exchange
+<li>Immediately before and immediately after checkpointing, if checkpointing is done
+</ul>
+<li>Immediately before finishing
+</ul>
+
+<p>Exchanges are used in island models and inter-population exchange models.  Otherwise, you can ignore them.  We'll talk about checkpointing below.  The point here is that there are lots of places where statistics objects are called, so you have lots of opportunities to stick some code in where you need it.
+
+<p>We begin by subclassing from Statistics.  Create a file called <b>MyStatistics.java</b>, and add to it:
+
+<tt><pre>
+package ec.app.tutorial3;
+import ec.*;
+import ec.util.*;
+import java.io.*;
+import ec.vector.*;
+
+public class MyStatistics extends Statistics
+    {
+    <font color=gray>// The parameter string and log number of the file for our readable population</font>
+    public static final String P_POPFILE = "pop-file";
+    public int popLog;
+
+    <font color=gray>// The parameter string and log number of the file for our best-genome-#3 individual</font>
+    public static final String P_INFOFILE = "info-file";
+    public int infoLog;
+
+    public void setup(final EvolutionState state, final Parameter base)
+        {
+        <font color=gray>// DO NOT FORGET to call super.setup(...) !!</font>
+        super.setup(state,base);
+
+</pre></tt>
+We will set up a log called "pop-file".  This is done through our Output
+object.  Of course we could just write to the file stream ourselves; but it is
+convenient to use the Output logger because it recovers from checkpoints and 
+it's threadsafe.  
+
+<p> We tell Output to add a log file writing to "pop-file",
+             with a verbosity that just barely accepts the statistics messages
+             we'll send out (with verbosity V_NO_GENERAL).  We will NOT post
+             announcements to the log (no fatal, error, warning messages etc.).
+             The log WILL open via appending (not rewriting) upon a restart after
+             a checkpoint failure.
+
+<tt><pre>
+        <font color=gray>// set up popFile</font>
+        File popFile = state.parameters.getFile(
+            base.push(P_POPFILE),null);
+        if (popFile!=null) try
+            {
+            popLog = state.output.addLog(popFile,Output.V_NO_GENERAL-1,false,true);
+            }
+        catch (IOException i)
+            {
+            state.output.fatal("An IOException occurred while trying to create the log " + 
+                popFile + ":\n" + i);
+            }
+
+        <font color=gray>// similarly we set up infoFile</font>
+        File infoFile = state.parameters.getFile(
+            base.push(P_INFOFILE),null);
+        if (infoFile!=null) try
+            {
+            infoLog = state.output.addLog(infoFile,Output.V_NO_GENERAL-1,false,true);
+            }
+        catch (IOException i)
+            {
+            state.output.fatal("An IOException occurred while trying to create the log " + 
+                infoFile + ":\n" + i);
+            }
+
+        }
+</pre></tt>
+
+<p>We will overload one hook, often the most common: <b>postEvaluationStatistics</b>.  Add to the file:
+
+<tt><pre>
+    public void postEvaluationStatistics(final EvolutionState state)
+        {
+        <font color=gray>// be certain to call the hook on super!</font>
+        super.postEvaluationStatistics(state);
+</pre></tt>
+
+<p>Statistics objects have <i>children</i>.  Hook methods are called in depth-first post-order.  When a hook method is called in the a statistics object, the first thing that must be done is a call to <tt>super.<i>hook(...)</i></tt>.  This gives the <b>Statistics</b> class a chance to call  <tt>hook(...)</tt> on all of the the object's children first.
+
+<p>Next we write a message to the file indicating the next generation is coming, using Output's <b>println</b> method.
+
+<tt><pre>
+        <font color=gray>// write out a warning that the next generation is coming </font>
+        state.output.println("-----------------------\nGENERATION " + 
+                state.generation + "\n-----------------------",
+            Output.V_NO_GENERAL, popLog);
+</pre></tt>
+
+<p>Now we print out all the individuals.  Individuals have a method called <b>printIndividual</b> which dumps them to a log in <i>both computer- and approximately-human-readable format</i>.  If you want to print an individual to log in solely <i>human-readable format</i>, use <b>printIndividualForHumans</b>.
+
+<p>One confusing bit about <b>printIndividual</b> and <b>printIndividualForHumans</b> is that their log and verbosity arguments are reversed from <b>println</b>.  It's a historical stupidity, and I'm sorry about that.
+
+<tt><pre>
+        <font color=gray>// print out the population </font>
+        for(int x=0;x&lt;state.population.subpops.length;x++)
+            for(int y=0;y&lt;state.population.subpops[x].individuals.length;y++)
+                state.population.subpops[x].individuals[y].printIndividual(state,popLog,Output.V_NO_GENERAL);
+</pre></tt>
+
+<p>Now let's print out the individual whose genome #3 is highest to infoLog.  We'll print that one out in a human-readable fashion, so we use <b>printIndividualForHumans</b>.
+
+<tt><pre>
+        <font color=gray>// print out best genome #3 individual in subpop 0</font>
+        int best = 0;
+        double best_val = ((DoubleVectorIndividual)state.population.subpops[0].individuals[0]).genome[3];
+            for(int y=1;y&lt;state.population.subpops.[0].individuals.length;y++)
+                {
+                <font color=gray>// We'll be unsafe and assume the individual is a DoubleVectorIndividual</font>
+                double val = ((DoubleVectorIndividual)state.population.subpops[0].individuals[y]).genome[3];
+                if (val > best_val)
+                    {
+                    best = y;
+                    best_val = val;
+                    }
+                }
+        state.population.subpops[0].individuals[best].printIndividualForHumans(state,infoLog,Output.V_NO_GENERAL);
+        }
+    }
+
+</pre></tt>
+
+Close the file and save it.
+
+
+
+<h3>
+Run and Checkpoint
+</h3>
+
+<p>If we wrote everything right, you should be able to compile all the java files without any trouble.  On MacOS X (my machine), the files are compiled with <tt><b>javac *.java</b></tt> or with <tt><b>jikes *.java</b></tt>.
+
+<p>You can run the program with <tt><b>java ec.Evolve -file tutorial3.params</b></tt> and see the results in the file <b>out.stat</b>.
+
+<p>Note that we have not yet added in our custom Statistics class, so the pop-file and info-file files haven't been defined.  The basic Statistics object (in this case, <a href="../../classdocs/ec/simple/SimpleStatistics">ec.simple.SimpleStatistics</a>) is already installed in parent parameter files with the parameter <tt>stat</tt>.  We can now add our custom Statistics class as a child of the parent Statistics class (its hooks will be called by its parent's hooks).  We do this by adding some additional parameters to the <b>tutorial3.params</b> file.  Reopen that file and add:
+
+<tt><pre>
+# Add our statistics object
+stat.num-children      = 1
+stat.child.0           = ec.app.tutorial3.MyStatistics
+stat.child.0.pop-file  = pop.stat
+stat.child.0.info-file = info.stat
+</pre></tt>
+
+Save the file and try running <tt><b>java ec.Evolve -file tutorial3.params</b></tt> again.
+
+<p>While the program used to run very quickly, now it is signficantly slower.  This is because every generation we're writing the entire generation out to the file <b>pop.stat</b>.  At the end of the run, <b>pop.stat</b> has grown to five megabytes.  It contains, per generation, all individuals in that population written in a computer-readable fashion.  The <b>info.stat</b> file contains the individual, per generation, which maximized genome #3 in a human-readable fashion, as we had intended.
+
+<p>While we're slowing the system down, let's go ahead and checkpoint every fifty generations. Checkpointing writes out the state of the entire system to a checkpoint file.  If your evolutionary run is halted prematurely, you can restart it from any checkpoint and it should continue exactly where it had left off.  Checkpointing is made possible because in ECJ every object (except the bootstrapping object <b>ec.Evolve</b>) is serializable and hangs off of somewhere from the <b>EvolutionState</b> object.  Thus we can serialize EvolutionState and the entire program will be serialized out to a file.
+
+<p>We can easily checkpoint by adding a few additional parameters.  The parameters are <tt>checkpoint</tt>, which turns on checkpointing, and <tt>checkpoint-modulo</tt>, which tells us how many generations to wait between each checkpoint.  Run the program with the command <tt><b>java ec.Evolve -file tutorial3.params -p checkpoint=true -p checkpoint-modulo=50</b></tt>
+
+<p>Imagine if your system administrator had killed your process at generation 75.  You'd like to restart from generation 49, where the last checkpoint was done.  You can do this with the command <tt><b>java ec.Evolve -checkpoint ec.49.gz</b></tt>.  
+
+<p>Notice that ECJ re-prints all the messages outputted up to that point; it can do this because it stores all messages in memory by default (with the parameter <b>store</b>), so they're checkpointed just like everything else.  It also reopens statistics files as directed (most statistics objects, like our custom one, are set to append on restart from checkpoint -- meaning that the previous run's data won't get overwritten -- but watch out because the statistics files don't back up to the previous checkpoint position.  They just go from wherever they are now.)
+
+<h3>
+How to load a file 
+</h3>
+
+ECJ's subpopulations be initialized from files.  We wrote out our population to the <b>pop.stat</b> file.  Imagine if we wanted to initialize the population with the individuals in Generation 4.  To do this, cut out the section for Generation 4...that is between -- but not including -- the markers:
+
+<tt><pre>
+-----------------------
+GENERATION 4
+-----------------------
+</pre></tt>
+
+<p>...and...
+
+<tt><pre>
+-----------------------
+GENERATION 5
+-----------------------
+</pre></tt>
+
+<p>Save this cut-out section as a separate file called <b>pop.in</b>.  Here's the first individual:
+
+<tt><pre>
+Evaluated: true
+Fitness: f909358974|2.6779885E-6|
+i5|d-4606155858520324594|-4.911768686944482|d-4611122232166470172|-2.250371395135277|
+d-4603400987177135530|-7.358585963015306|d4602931922300395390|0.5281000920031003|
+d-4610532014993728050|-2.5124804730182637|
+</pre></tt>
+
+<p>What the heck is this?  It's not so bad really.  The first line indicates if the individual has been evaluated already or not (and thus whether or not it should be reevaluated).  The second line is the individual's Fitness class printing out fitness information.  The remaining lines are the genome.
+
+<p>Many ECJ individuals use the <a href="../../classdocs/ec/util/Code.html">ec.util.Code</a> class to assist in writing numbers which are human-readable but can be read-back in identically to their original form.  <b>Code</b> writes out doubles with the form <b>d<i>encoded-number</i>|<i>human-number</i>|</b>  The encoded number is a binary representation of the double.  The human number is a human-readable version of the double.  Floats are printed similarly, but begin with an <b>f</b>.  Integers are written with the form <b>i<i>number</i>|</b>.  Booleans are written with <b>true</b> or <b>false</b>.
+
+<p>Subpopulations load from files with a special parameter specifying that they are to use a file rather than creating individuals randomly during initialization.  We can specify this parameter at the command line:  <b>java ec.Evolve -file tutorial3.params -p pop.subpop.0.file=pop.in</b>
+
+<p>Keep in mind that sometimes ECJ will output individuals in human-readable format and sometimes in computer-readable (and barely-human-readable) format.  But ECJ will <i>only</i> read in individuals if they are in the second format.
+
+<h3>
+Where's the 1/5 Rule?
+</h3>
+
+Evolution Strategies often use adaptive techniques such as the 1/5 Rule, and we can't finish a tutorial on setting up an ES system without it!  :-)  The 1/5 Rule says, more or less, that if less than 1/5 of the children are better than their parents were, decrease the mutation rate, and if over 1/5 of the children are better than their parents, increase the mutation rate.
+
+<p>ECJ does not automatically increase or decrease mutation rates.  However, the ECJ ES package <i>does</i> maintain statistics for the 1/5 rule, which your custom mutation operator can consult if necessary.  The <a href="../../classdocs/ec/es/MuCommaLambdaBreeder.html">MuCommaLambdaBreeder</a> object maintains mu, lambda, and current 1/5 rule results for each subpopulation.  You can update your mutation operator when its <b>prepareToProduce(...)</b> method is called, which the breeders in the ES package call once a generation.
+
+<br><br><br>
+    </BODY>
+</HTML>

@@ -1,0 +1,98 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+#
+# The following is an example of Inter-subpopulation exchange
+# within the same process, using three subpopulations, 
+# with the GP Ant example. In the example below, we've set
+# up three subpopulations, and the exchange is as follows:
+# subpop 0 sends inds to subpops 1 and 2, subpop 1 sends
+# inds to subpop 2, and subpop 2 sends inds to subpop 0.
+# All three subpops start exchanging immediately (after
+# population initialization) and thereafter send every two
+# generations. They exchange 3 individuals each.
+#
+# If you're looking instead for multi-process, network island
+# models, see the 3-Island and 8-Island examples
+#
+
+parent.0 = ../app/ant/ant.params
+
+pop.subpops = 3
+
+pop.subpop.0 = ec.Subpopulation
+pop.subpop.0.size = 200
+pop.subpop.0.fitness = ec.gp.koza.KozaFitness
+pop.subpop.0.species = ec.gp.GPSpecies
+pop.subpop.0.species.ind = ec.gp.GPIndividual
+pop.subpop.0.duplicate-retries = 100
+pop.subpop.0.species.ind.numtrees = 1
+pop.subpop.0.species.ind.tree.0 = ec.gp.GPTree
+pop.subpop.0.species.ind.tree.0.tc = tc0
+pop.subpop.0.species.pipe = ec.breed.MultiBreedingPipeline
+pop.subpop.0.species.pipe.generate-max = false
+pop.subpop.0.species.pipe.num-sources = 2
+pop.subpop.0.species.pipe.source.0 = ec.gp.koza.CrossoverPipeline
+pop.subpop.0.species.pipe.source.0.prob = 0.9
+pop.subpop.0.species.pipe.source.1 = ec.breed.ReproductionPipeline
+pop.subpop.0.species.pipe.source.1.prob = 0.1
+
+pop.subpop.1 = ec.Subpopulation
+pop.subpop.1.size = 200
+pop.subpop.1.fitness = ec.gp.koza.KozaFitness
+pop.subpop.1.species = ec.gp.GPSpecies
+pop.subpop.1.species.ind = ec.gp.GPIndividual
+pop.subpop.1.duplicate-retries = 100
+pop.subpop.1.species.ind.numtrees = 1
+pop.subpop.1.species.ind.tree.0 = ec.gp.GPTree
+pop.subpop.1.species.ind.tree.0.tc = tc0
+pop.subpop.1.species.pipe = ec.breed.MultiBreedingPipeline
+pop.subpop.1.species.pipe.generate-max = false
+pop.subpop.1.species.pipe.num-sources = 2
+pop.subpop.1.species.pipe.source.0 = ec.gp.koza.CrossoverPipeline
+pop.subpop.1.species.pipe.source.0.prob = 0.9
+pop.subpop.1.species.pipe.source.1 = ec.breed.ReproductionPipeline
+pop.subpop.1.species.pipe.source.1.prob = 0.1
+
+pop.subpop.2 = ec.Subpopulation
+pop.subpop.2.size = 200
+pop.subpop.2.fitness = ec.gp.koza.KozaFitness
+pop.subpop.2.species = ec.gp.GPSpecies
+pop.subpop.2.species.ind = ec.gp.GPIndividual
+pop.subpop.2.duplicate-retries = 100
+pop.subpop.2.species.ind.numtrees = 1
+pop.subpop.2.species.ind.tree.0 = ec.gp.GPTree
+pop.subpop.2.species.ind.tree.0.tc = tc0
+pop.subpop.2.species.pipe = ec.breed.MultiBreedingPipeline
+pop.subpop.2.species.pipe.generate-max = false
+pop.subpop.2.species.pipe.num-sources = 2
+pop.subpop.2.species.pipe.source.0 = ec.gp.koza.CrossoverPipeline
+pop.subpop.2.species.pipe.source.0.prob = 0.9
+pop.subpop.2.species.pipe.source.1 = ec.breed.ReproductionPipeline
+pop.subpop.2.species.pipe.source.1.prob = 0.1
+
+exch = ec.exchange.InterPopulationExchange
+
+exch.subpop.0.select = ec.select.TournamentSelection
+exch.subpop.0.mod = 2
+exch.subpop.0.start = 0
+exch.subpop.0.size = 3
+exch.subpop.0.num-dest = 2
+exch.subpop.0.dest.0 = 1
+exch.subpop.0.dest.1 = 2
+
+exch.subpop.1.select = ec.select.TournamentSelection
+exch.subpop.1.mod = 2
+exch.subpop.1.start = 0
+exch.subpop.1.size = 3
+exch.subpop.1.num-dest = 1
+exch.subpop.1.dest.0 = 2
+
+exch.subpop.2.select = ec.select.TournamentSelection
+exch.subpop.2.mod = 2
+exch.subpop.2.start = 0
+exch.subpop.2.size = 3
+exch.subpop.2.num-dest = 1
+exch.subpop.2.dest.0 = 0
+

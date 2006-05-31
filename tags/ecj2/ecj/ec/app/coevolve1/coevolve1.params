@@ -1,0 +1,65 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = 				../../simple/simple.params
+
+generations =				100
+quit-on-run-complete =			true
+eval =					ec.coevolve.CompetitiveEvaluator
+
+pop = 					ec.Population
+pop.subpops =				1
+pop.subpop.0 = 				ec.Subpopulation
+pop.subpop.0.size =			31
+pop.subpop.0.fitness =			ec.simple.SimpleFitness
+pop.subpop.0.duplicate-retries =	2
+pop.subpop.0.species =                  ec.vector.VectorSpecies
+pop.subpop.0.species.genome-size = 	50
+pop.subpop.0.species.chunk-size =	1
+pop.subpop.0.species.pipe = 		ec.breed.ForceBreedingPipeline
+pop.subpop.0.species.pipe.num-inds = 	2
+pop.subpop.0.species.pipe.source.0 = 	ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0.source.0 =			ec.vector.breed.VectorCrossoverPipeline
+pop.subpop.0.species.pipe.source.0.source.0.source.0 = 		ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.0.source.0.size = 	3
+pop.subpop.0.species.pipe.source.0.source.0.source.1 = 	  	same
+pop.subpop.0.species.pipe.source.0.source.0.source.1.size = 	3
+
+pop.subpop.0.species.ind =		ec.vector.BitVectorIndividual
+pop.subpop.0.species.mutation-prob = 	0.01
+pop.subpop.0.species.crossover-type = 	one
+
+stat.file				$out.stat
+
+select.tournament.size = 2
+
+eval.problem =				ec.app.coevolve1.CompetitiveMaxOne
+eval.problem.hist-size =		1
+stat.child.0.hist-size =		1
+stat.child.0.file =			compete.stat
+
+stat =					ec.simple.SimpleStatistics
+stat.gather-full =			true
+stat.num-children =			0
+
+breed.elite.0 =				1
+
+# for single elimination tournament
+eval.style =				single-elim-tournament
+
+# for round robin
+#eval.style =				round-robin
+
+# for pseudo round robin
+#eval.style =				pseudo-round-robin
+#eval.group-size =			10
+
+# for random one way tournament
+#eval.style =				rand-1-way
+#eval.group-size =			7
+
+# for random two ways tournament
+#eval.style =				rand-2-ways
+#eval.group-size =			7
+

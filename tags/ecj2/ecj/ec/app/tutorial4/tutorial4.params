@@ -1,0 +1,36 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../gp/koza/koza.params
+
+# the next four items are already defined in koza.params, but we
+# put them here to be clear.
+
+# We have one function set, of class GPFunctionSet
+gp.fs.size = 1
+gp.fs.0 = ec.gp.GPFunctionSet
+# We'll call the function set "f0".  It uses the default GPFuncInfo class
+gp.fs.0.name = f0
+gp.fs.0.info = ec.gp.GPFuncInfo
+
+# We have five functions in the function set.  They are:
+gp.fs.0.size = 5
+gp.fs.0.func.0 = ec.app.tutorial4.X
+gp.fs.0.func.0.nc = nc0
+gp.fs.0.func.1 = ec.app.tutorial4.Y
+gp.fs.0.func.1.nc = nc0
+gp.fs.0.func.2 = ec.app.tutorial4.Add
+gp.fs.0.func.2.nc = nc2
+gp.fs.0.func.3 = ec.app.tutorial4.Sub
+gp.fs.0.func.3.nc = nc2
+gp.fs.0.func.4 = ec.app.tutorial4.Mul
+gp.fs.0.func.4.nc = nc2
+
+eval.problem = ec.app.tutorial4.MultiValuedRegression
+eval.problem.data = ec.app.tutorial4.DoubleData
+# The following should almost *always* be the same as eval.problem.data
+# For those who are interested, it defines the data object used internally
+# inside ADF stack contexts
+eval.problem.stack.context.data = ec.app.tutorial4.DoubleData
+

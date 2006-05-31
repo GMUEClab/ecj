@@ -1,0 +1,77 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../gp/koza/koza.params
+
+
+# Stolen from koza/params -- overwriting just
+# a little for readability
+# You need to create at least one function set, 
+# called "f0", which your first tree will use.  
+
+gp.fs.size = 1
+gp.fs.0.name = f0
+gp.fs.0.info = ec.gp.GPFuncInfo
+gp.fs.0.size = 10
+gp.fs.0.func.0 = ec.app.edge.func.Double
+gp.fs.0.func.0.nc = nc2
+gp.fs.0.func.1 = ec.app.edge.func.Bud
+gp.fs.0.func.1.nc = nc2
+gp.fs.0.func.2 = ec.app.edge.func.Split
+gp.fs.0.func.2.nc = nc2
+gp.fs.0.func.3 = ec.app.edge.func.Loop
+gp.fs.0.func.3.nc = nc2
+gp.fs.0.func.4 = ec.app.edge.func.Reverse
+gp.fs.0.func.4.nc = nc1
+gp.fs.0.func.5 = ec.app.edge.func.Accept
+gp.fs.0.func.5.nc = nc1
+gp.fs.0.func.6 = ec.app.edge.func.Start
+gp.fs.0.func.6.nc = nc1
+gp.fs.0.func.7 = ec.app.edge.func.Zero
+gp.fs.0.func.7.nc = nc0
+gp.fs.0.func.8 = ec.app.edge.func.One
+gp.fs.0.func.8.nc = nc0
+gp.fs.0.func.9 = ec.app.edge.func.Epsilon
+gp.fs.0.func.9.nc = nc0
+
+#
+# Uncomment this to use the additional operations
+#
+
+gp.fs.0.size = 14
+gp.fs.0.func.10 = ec.app.edge.func.BBud
+gp.fs.0.func.10.nc = nc2
+gp.fs.0.func.11= ec.app.edge.func.BLoop
+gp.fs.0.func.11.nc = nc2
+gp.fs.0.func.12 = ec.app.edge.func.BStart
+gp.fs.0.func.12.nc = nc1
+gp.fs.0.func.13 = ec.app.edge.func.BAccept
+gp.fs.0.func.13.nc = nc1
+
+#
+# We specify our problem here
+#
+
+eval.problem = ec.app.edge.Edge
+eval.problem.data = ec.app.edge.EdgeData
+
+# ADFs use the same data type typically -- we need to include
+# this even if we're not implementing ADFs
+eval.problem.stack.context.data = ec.app.edge.EdgeData
+
+#
+# Here we specify the particular files to do induction over
+#
+
+eval.problem.allpos = input/1.out.gz
+eval.problem.allneg = input/1a.out.gz
+eval.problem.testpos = input/1s.out.gz
+eval.problem.testneg = input/1sa.out.gz
+
+#
+# Uncomment this to test generalization (much slower)
+#
+
+eval.problem.generalize = true
+stat = ec.app.edge.EdgeStatistics

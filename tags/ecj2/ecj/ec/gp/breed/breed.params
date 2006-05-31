@@ -1,0 +1,37 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+
+#
+# Some basic default values for various breeding stuff
+#
+
+
+gp.breed.internal-xover.source.0 = ec.select.TournamentSelection
+gp.breed.internal-xover.tries = 5
+gp.breed.internal-xover.maxdepth = 17
+gp.breed.internal-xover.ns.0 = ec.gp.koza.KozaNodeSelector
+gp.breed.internal-xover.ns.1 = same
+
+gp.breed.rehang.source.0 = ec.select.TournamentSelection
+gp.breed.rehang.tries = 1
+
+gp.breed.mutate-swap.source.0 = ec.select.TournamentSelection
+gp.breed.mutate-swap.tries = 1
+
+gp.breed.mutate-all-nodes.source.0 = ec.select.TournamentSelection
+gp.breed.mutate-all-nodes.ns.0 = ec.gp.koza.KozaNodeSelector
+
+gp.breed.mutate-one-node.source.0 = ec.select.TournamentSelection
+gp.breed.mutate-one-node.ns.0 = ec.gp.koza.KozaNodeSelector
+
+gp.breed.mutate-demote.source.0 = ec.select.TournamentSelection
+gp.breed.mutate-demote.tries = 1
+gp.breed.mutate-demote.maxdepth = 17
+
+gp.breed.mutate-promote.source.0 = ec.select.TournamentSelection
+gp.breed.mutate-promote.tries = 1
+
+gp.breed.mutate-erc.source.0 = ec.select.TournamentSelection
+gp.breed.mutate-erc.ns.0 = ec.gp.koza.KozaNodeSelector

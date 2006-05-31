@@ -1,0 +1,39 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../simple/simple.params
+
+# The following is a quick-and-dirty example of how to use the vector
+# package to create a simple GA.  The GA is as follows:
+#
+# 1-point crossover over a vector of integers
+# ints range from 0 to 100 inclusive.  Fitness = sum(vector)
+# 2-tournament selection
+# Individuals are selected, crossed over, and then mutated
+# mutation probability = 0.1
+# mutation is randomization of the integer
+
+pop.subpop.0.size = 100
+generations = 1000
+pop.subpop.0.fitness =			ec.simple.SimpleFitness
+
+pop.subpop.0.duplicate-retries = 0
+
+# specify species information
+pop.subpop.0.species = 			ec.vector.IntegerVectorSpecies
+pop.subpop.0.species.ind = 		ec.vector.IntegerVectorIndividual
+pop.subpop.0.species.min-gene = 0
+pop.subpop.0.species.max-gene = 100
+pop.subpop.0.species.genome-size = 10
+pop.subpop.0.species.crossover-type = one
+pop.subpop.0.species.mutation-prob = 0.1
+
+pop.subpop.0.species.pipe = ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0 = ec.vector.breed.VectorCrossoverPipeline
+
+select.tournament.size = 2
+pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.1 = same
+
+eval.problem = ec.app.sum.Sum

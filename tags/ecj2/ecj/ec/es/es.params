@@ -1,0 +1,55 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../simple/simple.params
+
+# 
+# The following parameter file will set up (mu,lambda) evolution,
+# single-threaded, no coevolution, no exchanging,
+# no cross-population breeding, using generational evolution,
+# simple fitness, popsize=1024, etc. 
+# You'll need to fill in some of the gaps.
+#
+# This file tweaks some features in simple.params.  Perhaps you might
+# change parent.0 to ../gp/koza/koza.params if you're doing GP (see below)
+#
+# Some notes: 
+# 1. The (mu,lambda) and (mu+lambda) evolutionary strategies
+#    techniques require you to set up a breeding pipeline which 
+#    can produce exactly one child at a time, and in that process
+#    calls upon EXACTLY ONE ec.es.ESSelection selection method 
+#    EXACTLY ONCE.  You can call upon other selection methods if
+#    you need to select more than one parent in order to produce
+#    this single child.  Note that this is NOT CHECKED FOR.
+#
+# 2. You need to specify the mu and lambda values for each of your
+#    subpopulations.  This is different than past versions of ECJ where
+#    you didn't specify the lambda -- it was inferred from the subpopulation
+#    size.  However, now, you are permitted to have whatever initial
+#    subpopulation size you like.
+#
+# 3. If you want to do EP-style 50/50 truncation selection, I believe the
+#    way to do it is to set your mu value to the same as the lambda,
+#    and use ec.es.MuPlusLambdaBreeder.
+#
+
+# We begin by specifying the mu value for the first subpopulation,
+# You need to change this and/or specify mu values for additional
+# subpopulations as needed.  We'll default the mu to 1.
+# We'll default the lambda to 10.  What the heck.
+# ================================================================
+
+es.mu.0 =				1
+es.lambda.0 =				10
+breed =					ec.es.MuCommaLambdaBreeder
+
+# you'll need to remember to set up the system so that one, and exactly
+# one, selection method called each time is an ESSelectionMethod.  Here's
+# how you could do it if you were doing Koza-style GP stuff:
+
+# gp.koza.reproduce.source.0 = ec.es.ESSelection
+# gp.koza.xover.source.0 = ec.es.ESSelection
+# gp.koza.xover.source.1 = ec.select.TournamentSelection
+# gp.koza.mutate.source.0 = ec.es.ESSelection
+

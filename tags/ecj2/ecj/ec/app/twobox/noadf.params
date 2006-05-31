@@ -1,0 +1,49 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../gp/koza/koza.params
+
+# Stolen from koza/params -- overwriting just
+# a little for readability
+# You need to create at least one function set, 
+# called "f0", which your first tree will use.  
+
+gp.fs.size = 1
+gp.fs.0.name = f0
+gp.fs.0.info = ec.gp.GPFuncInfo
+gp.fs.0.size = 10
+gp.fs.0.func.0 = ec.app.twobox.func.L0
+gp.fs.0.func.0.nc = nc0
+gp.fs.0.func.1 = ec.app.twobox.func.W0
+gp.fs.0.func.1.nc = nc0
+gp.fs.0.func.2 = ec.app.twobox.func.H0
+gp.fs.0.func.2.nc = nc0
+gp.fs.0.func.3 = ec.app.twobox.func.L1
+gp.fs.0.func.3.nc = nc0
+gp.fs.0.func.4 = ec.app.twobox.func.W1
+gp.fs.0.func.4.nc = nc0
+gp.fs.0.func.5 = ec.app.twobox.func.H1
+gp.fs.0.func.5.nc = nc0
+gp.fs.0.func.6 = ec.app.twobox.func.Add
+gp.fs.0.func.6.nc = nc2
+gp.fs.0.func.7 = ec.app.twobox.func.Sub
+gp.fs.0.func.7.nc = nc2
+gp.fs.0.func.8 = ec.app.twobox.func.Mul
+gp.fs.0.func.8.nc = nc2
+gp.fs.0.func.9 = ec.app.twobox.func.Div
+gp.fs.0.func.9.nc = nc2
+
+#
+# We specify our problem here
+#
+
+eval.problem = ec.app.twobox.TwoBox
+eval.problem.data = ec.app.twobox.TwoBoxData
+# ADFs use the same data type typically -- we need to include
+# this even if we're not implementing ADFs
+eval.problem.stack.context.data = ec.app.twobox.TwoBoxData
+
+# Define our training set size and range here
+eval.problem.size = 10
+eval.problem.range = 10

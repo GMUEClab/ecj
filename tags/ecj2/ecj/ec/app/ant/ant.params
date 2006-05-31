@@ -1,0 +1,55 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../gp/koza/koza.params
+
+
+# Stolen from koza/params -- overwriting just
+# a little for readability
+# You need to create at least one function set, 
+# called "f0", which your first tree will use.  
+
+gp.fs.size = 1
+gp.fs.0.name = f0
+gp.fs.0.info = ec.gp.GPFuncInfo
+
+### The functions, carefully ordered :-)  (See below)
+
+gp.fs.0.func.0 = ec.app.ant.func.Left
+gp.fs.0.func.0.nc = nc0
+gp.fs.0.func.1 = ec.app.ant.func.Right
+gp.fs.0.func.1.nc = nc0
+gp.fs.0.func.2 = ec.app.ant.func.Move
+gp.fs.0.func.2.nc = nc0
+gp.fs.0.func.3 = ec.app.ant.func.IfFoodAhead
+gp.fs.0.func.3.nc = nc2
+gp.fs.0.func.4 = ec.app.ant.func.Progn2
+gp.fs.0.func.4.nc = nc2
+gp.fs.0.func.5 = ec.app.ant.func.Progn3
+gp.fs.0.func.5.nc = nc3
+# We won't use this one here
+gp.fs.0.func.6 = ec.app.ant.func.Progn4
+gp.fs.0.func.6.nc = nc4
+
+
+#
+# We specify our problem here
+#
+
+eval.problem = ec.app.ant.Ant
+eval.problem.data = ec.app.ant.AntData
+# ADFs use the same data type typically -- we need to include
+# this even if we're not implementing ADFs
+eval.problem.stack.context.data = ec.app.ant.AntData
+
+# We have our own kind of statistics
+stat = ec.app.ant.AntStatistics
+
+
+# Here we determine what kind of Ant we're doing:
+
+# no progn4, 400 moves, Santa Fe trail
+gp.fs.0.size = 6
+eval.problem.moves = 400
+eval.problem.file = santafe.trl

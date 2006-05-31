@@ -1,0 +1,38 @@
+This directory contains code to help you hook ECJ together with
+teambots, for evolved robot experiments.  The general idea is that
+we treat Teambots as a subsidiary library of ECJ.
+The files in this directory are as follows:
+
+0. EvolvedControlSystem
+   An empty subclass of Teambots' 
+   EDU.gatech.cc.is.abstractrobot.ControlSystemS class.  You should
+   make your control systems a subclass of EvolvedControlSystem if
+   you can: we may add hooks into this at a future date.  See
+   TeambotsExampleProblem for an example.
+
+1. ECSimulationCanvas.java
+   This is a special class that ECJ uses instead of Teambots'
+   standard TBSim.ECSimulationCanvas class.  The main difference
+   is that it allows ECJ to brain-wipe and reset Teambots inbetween
+   evaluations.
+
+2. TeambotsProblem.java
+   A special abstract subclass of Problem with hooks for communicating
+   with ECSimulationCanvas.  All your Problems that do Teambots
+   evaluation will subclass from TeambotsProblem.
+
+3. TeambotsExampleProblem.java
+   A template example showing how to make a TeambotsProblem subclass
+   that communicates with Teambots.
+
+In the future we may provide some application examples of using ECJ
+with Teambots.  For now, you're on your own!
+
+To compile this code, first you need to download and add the Teambots 
+distribution to your CLASSPATH.  Then you simply go out to the ec
+directory and type:
+
+	make teambots
+
+Sean Luke
+Liviu Panait

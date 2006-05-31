@@ -1,0 +1,74 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+###### example params file, goes in ec/app/regression
+parent.0 = ./noerc.params
+
+# To require that the root of a tree be a given node, you
+# simply need to set up the typing so that that node is
+# the only node which is compatable with the tree's return
+# type.  The way to do this is to make not one but two
+# atomic types (in the example below, nil and root).  nil
+# is the default type used by our GP nodes.  root will be
+# the return type of the tree.  Then we create a set type
+# which is compatable with both of them called nil-and-root,
+# and set it up so the return type of our desired node
+# (in this case, 'div'), returns nil-and-root.  Thus 'div'
+# is legal to hang as root (and is the only such node), AND
+# 'div' is still perfectly compatable as a child of other
+# nodes as before.
+
+# The gotcha: many GP node builders require that for every
+# reachable type used by nodes in the function set there
+# must exist at least one terminal (and ideally one nonterminal)
+# in the function set which returns that type.  This is
+# because many GP node builder algorithms insist on being
+# able to emit a terminal whenever they so desire, regardless
+# of what the current type situation is where the terminal
+# has to be hung.  The notable exception to this is Uniform.
+
+# Ordinarily this would be a problem for us as we use
+# Ramped Half-and-Half as our builder, and it has this 
+# requirement.  However since we are telling Ramped Half-and-Half
+# to generate only trees of sizes 2 and up (NOT 1 and up), 
+# it will never attempt to select a terminal for the root
+# and this gotcha will not occur.  The issue would also come
+# up if we use tree mutation as an operator rather than solely
+# crossover.  But we're not doing that.
+
+# Okay, here we go.
+
+# Add an atomic type (root) and a set type
+# (nil-and-root) which is compatible with both
+# nil and root
+gp.type.a.size = 2
+gp.type.a.0.name = nil
+gp.type.a.1.name = root
+gp.type.s.size = 1
+gp.type.s.0.name = nil-and-root
+gp.type.s.0.size = 2
+gp.type.s.0.member.0 = nil
+gp.type.s.0.member.1 = root
+
+# make a new contraints form for div which returns
+# things of type nil-and-root.  This is compatable
+# with all elements that accept nil (which will be
+# all other functions), so div will still fit right in.
+gp.nc.size = 8
+gp.nc.7 = ec.gp.GPNodeConstraints
+gp.nc.7.name = nc-returning-nil-and-root
+gp.nc.7.returns = nil-and-root
+gp.nc.7.size = 2
+gp.nc.7.child.0 = nil
+gp.nc.7.child.1 = nil
+
+# redefine div to return things of type nil-and-root.
+gp.fs.0.func.4.nc = nc-returning-nil-and-root
+
+# define the tree so that it only accepts items that
+# are compatible with root.  div will be the only
+# such item.
+gp.tc.0.returns = root
+
+###### end example

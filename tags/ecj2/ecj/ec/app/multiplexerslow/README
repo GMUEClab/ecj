@@ -1,0 +1,2 @@
+This is the original ECJ form of Multiplexer, easy to read and understand,
+but 1/10 the speed of the new form.

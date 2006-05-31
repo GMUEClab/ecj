@@ -1,0 +1,24 @@
+In this model, eight islands are created:
+Ellis, Gilligans, Coney, Fantasy, Rhode, Survivor, Temptation,
+and Treasure Island.  Survivor Island will be the server.
+
+To run this example, launch eight processes, each with
+the appropriate .params file for that island.  
+
+In client.params, you'll need to modify the parameter
+
+	exch.server-addr = your.server.address.here.com 
+
+To the address of your server, whatever it is.  Alternatively
+you can just override this parameter with the -p option when
+you run your processes.
+
+If you'd like to run two or more processes on the same
+machine, you'll need to tweak the parameter files so that
+each has a different client port.  The parameter to modify
+is:
+	exch.client-port = 9030
+
+...otherwise you will get a null pointer exception.
+
+For a simpler example, see the README file in 3-Island.

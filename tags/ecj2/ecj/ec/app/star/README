@@ -1,0 +1,46 @@
+This directory contains two examples for the ECJ master/slave evaluator.
+See ec/eval/README for more information on how to run the evaluator
+and the ec/eval/master.params file for more parameter information and
+options.
+
+NOTE: these examples are worst-case scenarios for the master/slave
+evaluator -- they evaluate rapidly and so the time is CONSUMED by
+transfering over the net.  The examples are only here to give you 
+the idea of how to get your own jobs up and running.
+
+
+Artificial Ant (change the eval.master.host in ant.slave.params to the
+	appropriate IP of the master's machine.  By default it's
+	127.0.0.1, which only works if all the slaves are on the
+	same machine as the host; this configuration is likely 
+	only useful for testing purposes)
+
+MASTER:		java ec.Evolve -file ant.master.params
+EACH SLAVE:	java ec.eval.Slave -file ant.slave.params
+
+
+
+Coevolve1 - an example of competitive coevolution using the
+	master-slave architecture. (change the eval.master.host 
+	in coevolve1.slave.params to the
+        appropriate IP of the master's machine.  By default it's
+        127.0.0.1, which only works if all the slaves are on the
+        same machine as the host; this configuration is likely 
+        only useful for testing purposes). 
+
+MASTER:         java ec.Evolve -file coevolve1.master.params
+EACH SLAVE:     java ec.eval.Slave -file coevolve1.slave.params
+
+
+Coevolve2 - an example of cooperative coevolution using the
+	master-slave architecture. (change the eval.master.host 
+	in coevolve2.slave.params to the
+        appropriate IP of the master's machine.  By default it's
+        127.0.0.1, which only works if all the slaves are on the
+        same machine as the host; this configuration is likely
+        only useful for testing purposes).
+
+MASTER:         java ec.Evolve -file coevolve2.master.params
+EACH SLAVE:     java ec.eval.Slave -file coevolve2.slave.params
+
+

@@ -1,0 +1,40 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = client.params
+exch.i-am-server = true
+
+#exch.sync = true
+exch.mod = 4
+exch.start = 1
+
+exch.num-islands = 3
+
+exch.island.0.id = WallopsIsland
+exch.island.0.num-mig = 2
+exch.island.0.mig.0 = AssateagueIsland
+exch.island.0.mig.1 = ChincoteagueIsland
+exch.island.0.size = 40
+exch.island.0.mod = 6
+exch.island.0.start = 1
+exch.island.0.mailbox-capacity = 200
+
+exch.island.1.id = AssateagueIsland
+exch.island.1.num-mig = 2
+exch.island.1.mig.0 = ChincoteagueIsland
+exch.island.1.mig.1 = WallopsIsland
+exch.island.1.size = 40
+exch.island.1.mod = 6
+exch.island.1.start = 3
+exch.island.1.mailbox-capacity = 200
+
+exch.island.2.id = ChincoteagueIsland
+exch.island.2.num-mig = 2
+exch.island.2.mig.0 = WallopsIsland
+exch.island.2.mig.1 = AssateagueIsland
+exch.island.2.size = 40
+exch.island.2.mod = 6
+exch.island.2.start = 5
+exch.island.2.mailbox-capacity = 200
+

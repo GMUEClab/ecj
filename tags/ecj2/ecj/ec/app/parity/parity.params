@@ -1,0 +1,111 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../gp/koza/koza.params
+
+
+# Stolen from koza/params -- overwriting just
+# a little for readability
+# You need to create at least one function set, 
+# called "f0", which your first tree will use.  
+
+gp.fs.size = 1
+gp.fs.0.name = f0
+gp.fs.0.info = ec.gp.GPFuncInfo
+
+### The functions, carefully ordered :-)  (See below)
+
+gp.fs.0.func.0 = ec.app.parity.func.And
+gp.fs.0.func.0.nc = nc2
+gp.fs.0.func.1 = ec.app.parity.func.Or
+gp.fs.0.func.1.nc = nc2
+gp.fs.0.func.2 = ec.app.parity.func.Nand
+gp.fs.0.func.2.nc = nc2
+gp.fs.0.func.3 = ec.app.parity.func.Nor
+gp.fs.0.func.3.nc = nc2
+gp.fs.0.func.4 = ec.app.parity.func.D0
+gp.fs.0.func.4.nc = nc0
+gp.fs.0.func.5 = ec.app.parity.func.D1
+gp.fs.0.func.5.nc = nc0
+gp.fs.0.func.6 = ec.app.parity.func.D2
+gp.fs.0.func.6.nc = nc0
+gp.fs.0.func.7 = ec.app.parity.func.D3
+gp.fs.0.func.7.nc = nc0
+gp.fs.0.func.8 = ec.app.parity.func.D4
+gp.fs.0.func.8.nc = nc0
+gp.fs.0.func.9 = ec.app.parity.func.D5
+gp.fs.0.func.9.nc = nc0
+gp.fs.0.func.10 = ec.app.parity.func.D6
+gp.fs.0.func.10.nc = nc0
+gp.fs.0.func.11 = ec.app.parity.func.D7
+gp.fs.0.func.11.nc = nc0
+gp.fs.0.func.12 = ec.app.parity.func.D8
+gp.fs.0.func.12.nc = nc0
+gp.fs.0.func.13 = ec.app.parity.func.D9
+gp.fs.0.func.13.nc = nc0
+gp.fs.0.func.14 = ec.app.parity.func.D10
+gp.fs.0.func.14.nc = nc0
+gp.fs.0.func.15 = ec.app.parity.func.D11
+gp.fs.0.func.16.nc = nc0
+gp.fs.0.func.16 = ec.app.parity.func.D12
+gp.fs.0.func.16.nc = nc0
+gp.fs.0.func.17 = ec.app.parity.func.D13
+gp.fs.0.func.17.nc = nc0
+gp.fs.0.func.18 = ec.app.parity.func.D14
+gp.fs.0.func.18.nc = nc0
+gp.fs.0.func.19 = ec.app.parity.func.D15
+gp.fs.0.func.19.nc = nc0
+gp.fs.0.func.20 = ec.app.parity.func.D16
+gp.fs.0.func.20.nc = nc0
+gp.fs.0.func.21 = ec.app.parity.func.D17
+gp.fs.0.func.21.nc = nc0
+gp.fs.0.func.22 = ec.app.parity.func.D18
+gp.fs.0.func.22.nc = nc0
+gp.fs.0.func.23 = ec.app.parity.func.D19
+gp.fs.0.func.23.nc = nc0
+gp.fs.0.func.24 = ec.app.parity.func.D20
+gp.fs.0.func.24.nc = nc0
+gp.fs.0.func.25 = ec.app.parity.func.D21
+gp.fs.0.func.25.nc = nc0
+gp.fs.0.func.26 = ec.app.parity.func.D22
+gp.fs.0.func.26.nc = nc0
+gp.fs.0.func.27 = ec.app.parity.func.D23
+gp.fs.0.func.27.nc = nc0
+gp.fs.0.func.28 = ec.app.parity.func.D24
+gp.fs.0.func.28.nc = nc0
+gp.fs.0.func.29 = ec.app.parity.func.D25
+gp.fs.0.func.29.nc = nc0
+gp.fs.0.func.30 = ec.app.parity.func.D26
+gp.fs.0.func.30.nc = nc0
+gp.fs.0.func.31 = ec.app.parity.func.D27
+gp.fs.0.func.31.nc = nc0
+gp.fs.0.func.32 = ec.app.parity.func.D28
+gp.fs.0.func.32.nc = nc0
+gp.fs.0.func.33 = ec.app.parity.func.D29
+gp.fs.0.func.33.nc = nc0
+gp.fs.0.func.34 = ec.app.parity.func.D30
+gp.fs.0.func.34.nc = nc0
+gp.fs.0.func.35 = ec.app.parity.func.D31
+gp.fs.0.func.35.nc = nc0
+
+
+#
+# We specify our problem here
+#
+
+eval.problem = ec.app.parity.Parity
+eval.problem.data = ec.app.parity.ParityData
+# ADFs use the same data type typically -- we need to include
+# this even if we're not implementing ADFs
+eval.problem.stack.context.data = ec.app.parity.ParityData
+
+
+# Here we determine what kind of Parity we're doing:
+eval.problem.bits = 4
+eval.problem.even = true
+
+# this value must always be set to *4* more than eval.problem.bits
+gp.fs.0.size = 8
+
+

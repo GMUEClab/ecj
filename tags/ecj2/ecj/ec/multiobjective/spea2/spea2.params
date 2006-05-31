@@ -1,0 +1,35 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../simple/simple.params
+parent.1 = ../multiobjective.params
+
+# Be sure to set the multiobjective fitness size as shown in ../multiobjective.params
+
+# We use a special subpopulation which has an archive region
+pop.subpop.0 =					ec.multiobjective.spea2.SPEA2Subpopulation
+
+# the size of the elitist archive.  This must not be larger
+# than the subpopulation size, and it generally could be roughly
+# the size of the number of solutions you expect.  If your subpopulation
+# was 1024 in size, maybe this might be a reasonable value...
+pop.subpop.0.archive-size =			128
+
+# We also use a special version of MultiObjectiveFitness
+pop.subpop.0.fitness =				ec.multiobjective.spea2.SPEA2MultiObjectiveFitness
+
+# We have our own evaluator and breeder
+eval =						ec.multiobjective.spea2.SPEA2Evaluator
+breed =						ec.multiobjective.spea2.SPEA2Breeder
+
+# It's important that you use a modified version of TournamentSelection
+# for all selection functions in your breeding pipeline.  
+# This version is called ec.multiobjective.spea2.SPEA2TournamentSelection
+# For example:
+
+# pop.subpop.0.species.pipe           	      = ec.vector.breed.VectorMutationPipeline
+# pop.subpop.0.species.pipe.source.0          = ec.vector.breed.VectorCrossoverPipeline
+# pop.subpop.0.species.pipe.source.0.source.0 = ec.multiobjective.spea2.SPEA2TournamentSelection
+# pop.subpop.0.species.pipe.source.0.source.1 = same
+

@@ -1,0 +1,9 @@
+These versions of the parameter files, when run in the GUI, additionally chart
+their statistics if you have JFreeChart and iText installed (for printing
+to PDF).
+
+JFreeChart:
+	http://www.jfree.org/jfreechart/
+
+iText:
+	http://www.lowagie.com/iText/
