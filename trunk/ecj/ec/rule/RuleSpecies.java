@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke and George Mason University
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke and George Mason University
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -50,8 +50,8 @@ public class RuleSpecies extends Species
         }    
 
     public Individual newIndividual(EvolutionState state,
-									Subpopulation _population,
-									Fitness _fitness) 
+                                    Subpopulation _population,
+                                    Fitness _fitness) 
         {
         RuleIndividual newind = (RuleIndividual)(i_prototype.clone());
         
@@ -69,49 +69,49 @@ public class RuleSpecies extends Species
         }
 
 /*
-    public Individual newIndividual(final EvolutionState state,
-                                    final Subpopulation _population,
-                                    final Fitness _fitness,
-                                    final LineNumberReader reader)
-        throws IOException
-        {
-        RuleIndividual newind = (RuleIndividual)(i_prototype.protoClone());
+  public Individual newIndividual(final EvolutionState state,
+  final Subpopulation _population,
+  final Fitness _fitness,
+  final LineNumberReader reader)
+  throws IOException
+  {
+  RuleIndividual newind = (RuleIndividual)(i_prototype.protoClone());
         
-        // Set the fitness -- must be done BEFORE loading!
-        newind.fitness = _fitness;
-        newind.evaluated = false; // for sanity's sake, though it's a useless line
+  // Set the fitness -- must be done BEFORE loading!
+  newind.fitness = _fitness;
+  newind.evaluated = false; // for sanity's sake, though it's a useless line
 
-        // Set the species to me
-        newind.species = this;
+  // Set the species to me
+  newind.species = this;
 
-        // load that sucker
-        newind.readIndividual(state,reader);
+  // load that sucker
+  newind.readIndividual(state,reader);
 
-        // and we're ready!
-        return newind;  
-        }
+  // and we're ready!
+  return newind;  
+  }
 
-    public Individual newIndividual(final EvolutionState state,
-                                    final Subpopulation _population,
-                                    final Fitness _fitness,
-                                    final DataInput dataInput)
-        throws IOException
-        {
-        RuleIndividual newind = (RuleIndividual)(i_prototype.protoClone());
+  public Individual newIndividual(final EvolutionState state,
+  final Subpopulation _population,
+  final Fitness _fitness,
+  final DataInput dataInput)
+  throws IOException
+  {
+  RuleIndividual newind = (RuleIndividual)(i_prototype.protoClone());
         
-        // Set the fitness -- must be done BEFORE loading!
-        newind.fitness = _fitness;
-        newind.evaluated = false; // for sanity's sake, though it's a useless line
+  // Set the fitness -- must be done BEFORE loading!
+  newind.fitness = _fitness;
+  newind.evaluated = false; // for sanity's sake, though it's a useless line
 
-        // Set the species to me
-        newind.species = this;
+  // Set the species to me
+  newind.species = this;
 
-        // load that sucker
-        newind.readGenotype(state,dataInput);
+  // load that sucker
+  newind.readGenotype(state,dataInput);
 
-        // and we're ready!
-        return newind;  
-        }
+  // and we're ready!
+  return newind;  
+  }
 
 */
     }

@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke and George Mason University
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke and George Mason University
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -41,7 +41,7 @@ public class EvaluationData
     int threadnum;
 
     // either Slave.V_EVALUATESIMPLE or Slave.V_EVALUATEGROUPED
-	int type;
+    int type;
 
     // for Slave.V_EVALUATESIMPLE
     int subPopNum;

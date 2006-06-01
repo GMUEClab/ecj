@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -155,11 +155,11 @@ public class EvolutionState implements Singleton
     // set just after construction
 
     /** 
-	@deprecated
-	Do not use this vector -- it is deprecated and will go away soon.  The original function of the
-	vector (to enable a location for statically-allocated objects to be stashed in order to be
-	serializable) has gone away.
-	*/
+        @deprecated
+        Do not use this vector -- it is deprecated and will go away soon.  The original function of the
+        vector (to enable a location for statically-allocated objects to be stashed in order to be
+        serializable) has gone away.
+    */
     
     public Vector statics; 
 

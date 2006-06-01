@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -80,15 +80,15 @@ public abstract class Species implements Prototype
 
     public Object clone()
         {
-    	try
-			{
-			Species myobj = (Species) (super.clone());
-			myobj.i_prototype = (Individual) i_prototype.clone();
-			myobj.pipe_prototype = (BreedingPipeline) pipe_prototype.clone();
-			return myobj;
-			}
+        try
+            {
+            Species myobj = (Species) (super.clone());
+            myobj.i_prototype = (Individual) i_prototype.clone();
+            myobj.pipe_prototype = (BreedingPipeline) pipe_prototype.clone();
+            return myobj;
+            }
         catch (CloneNotSupportedException e)
-			{ throw new InternalError(); } // never happens
+            { throw new InternalError(); } // never happens
         } 
 
 
@@ -103,17 +103,17 @@ public abstract class Species implements Prototype
        Override this to provide an individual read from a file; the individual will
        appear as it was written by printIndividual(...).  You should read and
        set up the fitness as well.  Don't close the file.  The default version of this
-	   method throws an error.
+       method throws an error.
     */
 
     public Individual newIndividual(final EvolutionState state,
-                                             final Subpopulation _population,
-                                             final Fitness _fitness,
-                                             final LineNumberReader reader)
+                                    final Subpopulation _population,
+                                    final Fitness _fitness,
+                                    final LineNumberReader reader)
         throws IOException
-		{
+        {
         Individual newind = (Individual)(i_prototype.clone());
-		
+                
         // Set the fitness -- must be done BEFORE loading!
         newind.fitness = _fitness;
         newind.evaluated = false; // for sanity's sake, though it's a useless line
@@ -126,19 +126,19 @@ public abstract class Species implements Prototype
 
         // and we're ready!
         return newind;  
-		}
+        }
 
     /**
        Override this to provide an individual read from a binary stream, likely using readIndividual(...).
-	   You should read and set up the fitness as well.  Don't close the file.   The default version of this method throws an error.
+       You should read and set up the fitness as well.  Don't close the file.   The default version of this method throws an error.
     */
 
     public Individual newIndividual(final EvolutionState state,
-                                             final Subpopulation _population,
-                                             final Fitness _fitness,
-                                             final DataInput dataInput)
+                                    final Subpopulation _population,
+                                    final Fitness _fitness,
+                                    final DataInput dataInput)
         throws IOException
-		{
+        {
         Individual newind = (Individual)(i_prototype.clone());
         
         // Set the fitness -- must be done BEFORE loading!
@@ -153,7 +153,7 @@ public abstract class Species implements Prototype
 
         // and we're ready!
         return newind;  
-		}
+        }
 
 
     /** The default version of setup(...) loads requested pipelines and calls setup(...) on them and normalizes their probabilities.  

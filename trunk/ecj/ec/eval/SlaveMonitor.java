@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke and George Mason University
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke and George Mason University
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -39,27 +39,27 @@ public class SlaveMonitor
     // the maximum number of jobs per slave
     int maxJobsPerSlave;
 
-	// whether the system should display information that is useful for debugging 
+    // whether the system should display information that is useful for debugging 
     boolean showDebugInfo;
 
     /**
-		Simple constructor that initializes the data structures for keeping track of the state of each slave.
-		The constructor receives two parameters: a boolean flag indicating whether the system should display
-		information that is useful for debugging, and the maximum load per slave (the maximum number of jobs
-		that a slave can be entrusted with at each time).
-	*/
+       Simple constructor that initializes the data structures for keeping track of the state of each slave.
+       The constructor receives two parameters: a boolean flag indicating whether the system should display
+       information that is useful for debugging, and the maximum load per slave (the maximum number of jobs
+       that a slave can be entrusted with at each time).
+    */
     public SlaveMonitor( boolean showDebugInfo, int maxJobsPerSlave )
         {
         this.showDebugInfo = showDebugInfo;
         allSlaves = new LinkedList();
         availableSlaves = new LinkedList();
-		this.evaluatedIndividuals = new LinkedList();
+        this.evaluatedIndividuals = new LinkedList();
         this.maxJobsPerSlave = maxJobsPerSlave;
         }
 
     /**
-		Registers a new slave with the monitor.  Upon registration, a slave is marked as available for jobs.
-	*/
+       Registers a new slave with the monitor.  Upon registration, a slave is marked as available for jobs.
+    */
     public synchronized void registerSlave( SlaveData slave )
         {
         allSlaves.addLast(slave);
@@ -68,9 +68,9 @@ public class SlaveMonitor
         notifyAll();
         }
 
-	/**
-		Mark a slave as unavailable (the slave has reached its maximum load).
-	*/
+    /**
+       Mark a slave as unavailable (the slave has reached its maximum load).
+    */
     public synchronized void markSlaveAsUnavailable( SlaveData slave )
         {
         availableSlaves.remove(slave);
@@ -79,8 +79,8 @@ public class SlaveMonitor
         }
 
     /**
-		Unregisters a dead slave from the monitor.
-	*/
+       Unregisters a dead slave from the monitor.
+    */
     public synchronized void unregisterSlave( SlaveData slave )
         {
         availableSlaves.remove(slave);
@@ -89,9 +89,9 @@ public class SlaveMonitor
         notifyAll();
         }
 
-	/**
-		Shuts down the slave monitor (also shuts down all slaves).
-	*/
+    /**
+       Shuts down the slave monitor (also shuts down all slaves).
+    */
     public synchronized void shutdown( final EvolutionState state )
         {
         while( !allSlaves.isEmpty() )
@@ -101,10 +101,10 @@ public class SlaveMonitor
             }
         }
 
-	/**
-		Schedules a job for execution on one of the available slaves.  The monitor waits until at least one
-		slave is available to perform the job.
-	*/
+    /**
+       Schedules a job for execution on one of the available slaves.  The monitor waits until at least one
+       slave is available to perform the job.
+    */
     public synchronized void scheduleJobForEvaluation( final EvolutionState state, EvaluationData toEvaluate )
         {
         while( availableSlaves.isEmpty() )
@@ -189,19 +189,19 @@ public class SlaveMonitor
                 }
             }
                 
-		// we are not sure whether this notifyAll is useful for anything or not, but it does not hurt for sure (in may incur a small
-		// computation to wake up all threads that wait on the monitor, and for them to figure out whether they should wait some more or not).
-		// it may disappear in the future, in case we discover it is not useful.
+        // we are not sure whether this notifyAll is useful for anything or not, but it does not hurt for sure (in may incur a small
+        // computation to wake up all threads that wait on the monitor, and for them to figure out whether they should wait some more or not).
+        // it may disappear in the future, in case we discover it is not useful.
         notifyAll();
         }
 
     /**
-		This method returns only when all slaves have finished the jobs that they were assigned.  While this method waits,
-		new jobs can be assigned to the slaves.  This method is usually invoked from MasterProblem.finishEvaluating.  You
-		should not abuse using this method: if there are two evaluation threads, where one of them waits until all jobs are
-		finished, while the second evaluation thread keeps posting jobs to the slaves, the first thread might have to wait
-		until the second thread has had all its jobs finished.
-	*/
+       This method returns only when all slaves have finished the jobs that they were assigned.  While this method waits,
+       new jobs can be assigned to the slaves.  This method is usually invoked from MasterProblem.finishEvaluating.  You
+       should not abuse using this method: if there are two evaluation threads, where one of them waits until all jobs are
+       finished, while the second evaluation thread keeps posting jobs to the slaves, the first thread might have to wait
+       until the second thread has had all its jobs finished.
+    */
     public synchronized void waitForAllSlavesToFinishEvaluating( final EvolutionState state )
         {
         Iterator iter;
@@ -252,9 +252,9 @@ public class SlaveMonitor
         }
 
     /**
-		Notifies the monitor that the particular slave has finished performing a job, and it (probably) is
-		available for other jobs.
-	*/
+       Notifies the monitor that the particular slave has finished performing a job, and it (probably) is
+       available for other jobs.
+    */
     public synchronized void notifySlaveAvailability( SlaveData slave, final EvaluationData ed )
         {
         final EvolutionState state = ed.state;
@@ -268,34 +268,34 @@ public class SlaveMonitor
         if( showDebugInfo )
             state.output.message( Thread.currentThread().getName() + "Notify the monitor that the slave is available." );
 
-		if( ed.type == Slave.V_EVALUATESIMPLE && state instanceof ec.eval.AsynchronousEvolutionState )
-			evaluatedIndividuals.addLast( ed.ind );
+        if( ed.type == Slave.V_EVALUATESIMPLE && state instanceof ec.eval.AsynchronousEvolutionState )
+            evaluatedIndividuals.addLast( ed.ind );
 
         notifyAll();
         }
 
-	LinkedList evaluatedIndividuals = null;
+    LinkedList evaluatedIndividuals = null;
 
-	public synchronized Individual waitForIndividual( final EvolutionState state )
-	{
-		while( evaluatedIndividuals.size() == 0 )
-		{
-			try
-				{
-				if(showDebugInfo)
-					state.output.message( Thread.currentThread().getName() + "Waiting for individual to be evaluated." );
-				wait();
-				}
-			catch (InterruptedException e) {}
-			if(showDebugInfo)
-				state.output.message( Thread.currentThread().getName() + "At least one individual has been finished." );
-		}
-		return (Individual)(evaluatedIndividuals.removeFirst());
-	}
+    public synchronized Individual waitForIndividual( final EvolutionState state )
+        {
+        while( evaluatedIndividuals.size() == 0 )
+            {
+            try
+                {
+                if(showDebugInfo)
+                    state.output.message( Thread.currentThread().getName() + "Waiting for individual to be evaluated." );
+                wait();
+                }
+            catch (InterruptedException e) {}
+            if(showDebugInfo)
+                state.output.message( Thread.currentThread().getName() + "At least one individual has been finished." );
+            }
+        return (Individual)(evaluatedIndividuals.removeFirst());
+        }
 
     /**
-		Returns the number of slaves (available and busy) that are currently registered with the monitor.
-	*/
+       Returns the number of slaves (available and busy) that are currently registered with the monitor.
+    */
     public synchronized int numSlaves()
         {
         return allSlaves.size();

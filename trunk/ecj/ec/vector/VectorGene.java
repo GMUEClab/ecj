@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -75,11 +75,11 @@ public abstract class VectorGene implements Prototype
         }
     
     public Object clone()
-    {
-    try { return super.clone(); }
-    catch (CloneNotSupportedException e) 
-        { throw new InternalError(); } // never happens
-    }
+        {
+        try { return super.clone(); }
+        catch (CloneNotSupportedException e) 
+            { throw new InternalError(); } // never happens
+        }
         
 
 
@@ -106,7 +106,7 @@ public abstract class VectorGene implements Prototype
 
     /**
        Nice printing.  The default form simply calls printGeneToStringForHumans and prints the result, 
-	   but you might want to override this.
+       but you might want to override this.
     */
     public void printGeneForHumans( final EvolutionState state, final int verbosity, final int log )
         {  state.output.println(printGeneToStringForHumans(),verbosity,log); }

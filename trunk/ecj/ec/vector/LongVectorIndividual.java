@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -181,20 +181,20 @@ public class LongVectorIndividual extends VectorIndividual
         genome = newgenome;
         }
 
-	/** Returns a random value from between min and max inclusive.  This method handles
-		overflows that complicate this computation.  Does NOT check that
-		min is less than or equal to max.  You must check this yourself. */
+    /** Returns a random value from between min and max inclusive.  This method handles
+        overflows that complicate this computation.  Does NOT check that
+        min is less than or equal to max.  You must check this yourself. */
     public long randomValueFromClosedInterval(long min, long max, MersenneTwisterFast random)
-		{
-		if (max - min < 0) // we had an overflow
-			{
-			long l = 0;
-			do l = random.nextLong();
-			while(l < min || l > max);
-			return l;
-			}
-		else return min + random.nextLong(max - min + 1L);
-		}
+        {
+        if (max - min < 0) // we had an overflow
+            {
+            long l = 0;
+            do l = random.nextLong();
+            while(l < min || l > max);
+            return l;
+            }
+        else return min + random.nextLong(max - min + 1L);
+        }
 
     /** Destructively mutates the individual in some default manner.  The default form
         simply randomizes genes to a uniform distribution from the min and max of the gene values. */
@@ -206,15 +206,15 @@ public class LongVectorIndividual extends VectorIndividual
             if (s.mutationProbability>0.0)
                 for(int x=0;x<genome.length;x++)
                     if (state.random[thread].nextBoolean(s.mutationProbability))
-						genome[x] = randomValueFromClosedInterval(s.minGene(x), s.maxGene(x), state.random[thread]);
+                        genome[x] = randomValueFromClosedInterval(s.minGene(x), s.maxGene(x), state.random[thread]);
             }
         else  // quite a bit faster
             {
             if (s.mutationProbability>0.0)
                 for(int x=0;x<genome.length;x++)
                     if (state.random[thread].nextBoolean(s.mutationProbability))
-						genome[x] = randomValueFromClosedInterval(s.minGene, s.maxGene, state.random[thread]);
-			}
+                        genome[x] = randomValueFromClosedInterval(s.minGene, s.maxGene, state.random[thread]);
+            }
         }
         
     /** Initializes the individual by randomly choosing Longs uniformly from mingene to maxgene. */
@@ -223,10 +223,10 @@ public class LongVectorIndividual extends VectorIndividual
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
         if (s.individualGeneMinMaxUsed())
             for(int x=0;x<genome.length;x++)
-				genome[x] = randomValueFromClosedInterval(s.minGene(x), s.maxGene(x), state.random[thread]);
+                genome[x] = randomValueFromClosedInterval(s.minGene(x), s.maxGene(x), state.random[thread]);
         else // quite a bit faster
             for(int x=0;x<genome.length;x++)
-				genome[x] = randomValueFromClosedInterval(s.minGene, s.maxGene, state.random[thread]);
+                genome[x] = randomValueFromClosedInterval(s.minGene, s.maxGene, state.random[thread]);
         }
 
     public int hashCode()

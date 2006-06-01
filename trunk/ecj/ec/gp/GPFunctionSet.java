@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -228,7 +228,7 @@ public class GPFunctionSet implements Clique
             // load
             Parameter pp = p.push(""+x);
             GPNode gpfi = (GPNode)(state.parameters.getInstanceForParameter(
-                                     pp, null, GPNode.class));
+                                       pp, null, GPNode.class));
             gpfi.setup(state,pp);
 
             // add to my collection

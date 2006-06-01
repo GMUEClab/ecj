@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -75,16 +75,16 @@ public class ADFArgument extends GPNode
     public String toString() { return  "ARG[" + argument + "]"; }
 
 
-     public void writeNode(final EvolutionState state, final DataOutput dataOutput) throws IOException
-         {
-               dataOutput.writeInt(argument);
-         }
+    public void writeNode(final EvolutionState state, final DataOutput dataOutput) throws IOException
+        {
+        dataOutput.writeInt(argument);
+        }
          
  
-     public void readNode(final EvolutionState state, final DataInput dataInput) throws IOException
-         {
-               argument = dataInput.readInt();
-		}
+    public void readNode(final EvolutionState state, final DataInput dataInput) throws IOException
+        {
+        argument = dataInput.readInt();
+        }
 
     public void eval(final EvolutionState state,
                      final int thread,

@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke and George Mason University
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke and George Mason University
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -120,7 +120,7 @@ public abstract class Rule implements Prototype, Comparable
 
     /**
        Nice printing.  The default form simply calls printRuleToStringForHumans and prints the result,
-	   but you might want to override this.
+       but you might want to override this.
     */
     public void printRuleForHumans( final EvolutionState state, final int log, final int verbosity )
         { state.output.println(printRuleToStringForHumans(),verbosity,log);}
@@ -195,11 +195,11 @@ public abstract class Rule implements Prototype, Comparable
         }
 
     public Object clone()
-    {
-    try { return super.clone(); }
-    catch (CloneNotSupportedException e) 
-        { throw new InternalError(); } // never happens
-    }
+        {
+        try { return super.clone(); }
+        catch (CloneNotSupportedException e) 
+            { throw new InternalError(); } // never happens
+        }
 
 
     public void setup(EvolutionState state, Parameter base)

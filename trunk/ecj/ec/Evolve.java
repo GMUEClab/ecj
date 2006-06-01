@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -401,18 +401,18 @@ public class Evolve
 * MAIN
 * 
 * Evolve has... evolved from previous Evolves.  The goal behind these changes is:
-* 	1. To provide a simple jobs facility
-* 	2. To make it easy for you to make your own main(), including more
-* 	   sophisticated jobs facilities.
+*       1. To provide a simple jobs facility
+*       2. To make it easy for you to make your own main(), including more
+*          sophisticated jobs facilities.
 * 
 * Before we get into the specifics of this file, let's first look at the main
 * evolution loop in EvolutionState.java.  The general code is:
-* 	1.  If I was loaded from a checkpoint, call the hook startFromCheckpoint()
-* 	2.  If I'm instead starting from scratch, call the hook startFresh() 
-* 	3.  Loop:
-* 		4. result = evolve() 
-* 		5. If result != EvolutionState.R_NOTDONE, break from loop
-* 	6.	Call the hook finish(result)
+*       1.  If I was loaded from a checkpoint, call the hook startFromCheckpoint()
+*       2.  If I'm instead starting from scratch, call the hook startFresh() 
+*       3.  Loop:
+*               4. result = evolve() 
+*               5. If result != EvolutionState.R_NOTDONE, break from loop
+*       6.      Call the hook finish(result)
 * 
 * That's all there's to it.  Various EvolutionState classes need to implement
 * the startFromCheckpoint, startFresh, evolve, and finish methods.  This basic
@@ -424,55 +424,55 @@ public class Evolve
 * Here's the general mechanism:
 * 
 * - To load from checkpoint, we must find the checkpoint filename and call
-* 	Checkpoint.restoreFromCheckpoint(filename) to generate the EvolutionState
-* 	instance.  Evolve.java provides a convenience function for this called
-* 	possiblyRestoreFromCheckpoint(...), which returns null if there *isn't*
-* 	a checkpoint file to load from.  Else it returns the unfrozen EvolutionState.
-* 	
+*       Checkpoint.restoreFromCheckpoint(filename) to generate the EvolutionState
+*       instance.  Evolve.java provides a convenience function for this called
+*       possiblyRestoreFromCheckpoint(...), which returns null if there *isn't*
+*       a checkpoint file to load from.  Else it returns the unfrozen EvolutionState.
+*       
 * - To instead set up from scratch, you have to do a bunch of stuff to set up the state.
-* 	First, you need to load a parameter database.  Evolve.java has a convenience function
-* 	for that called loadParameterDatabase(...).  Second, you must do a series
-* 	of items: (1) generate an Output object (2) identify the number of threads
-* 	(3) create the MersenneTwisterFast random number generators (4) instantiate
-* 	the EvolutionState subclass instance (5) plug these items, plus the random 
-* 	seed offset and the parameter database, into the instance.  These five
-* 	steps are done for you in a convenience function called initialize(...).
+*       First, you need to load a parameter database.  Evolve.java has a convenience function
+*       for that called loadParameterDatabase(...).  Second, you must do a series
+*       of items: (1) generate an Output object (2) identify the number of threads
+*       (3) create the MersenneTwisterFast random number generators (4) instantiate
+*       the EvolutionState subclass instance (5) plug these items, plus the random 
+*       seed offset and the parameter database, into the instance.  These five
+*       steps are done for you in a convenience function called initialize(...).
 * 
-* -	Now the state is ready to go. Call run(...) on your EvolutionState
-*	(or do the evolution loop described above manually if you wish)
+* -     Now the state is ready to go. Call run(...) on your EvolutionState
+*       (or do the evolution loop described above manually if you wish)
 * 
 * - Finally, to shut down, you need to (1) flush the Output (2) print out
-* 	the used, accessed, unused, unaccessed, and all parameters if the user
-* 	requested a printout at the end [rarely] (3) flush System.err and System.out
-* 	for good measure, and (4) close Output -- which closes its streams except
-* 	for System.err and System.out.  There is a convenience function for this as
-* 	well.  It's called cleanup(...).
-* 	
+*       the used, accessed, unused, unaccessed, and all parameters if the user
+*       requested a printout at the end [rarely] (3) flush System.err and System.out
+*       for good measure, and (4) close Output -- which closes its streams except
+*       for System.err and System.out.  There is a convenience function for this as
+*       well.  It's called cleanup(...).
+*       
 * - Last, you shut down with System.exit(0) -- very important because it quits
-* 	any remaining threads the user might have had running and forgot about.
-* 	
+*       any remaining threads the user might have had running and forgot about.
+*       
 * So there you have it.  Several convenience functions in Evolve...
-* 	Evolve.possiblyRestoreFromCheckpoint
-* 	Evolve.loadParameterDatabase
-* 	Evolve.initialize
-* 	EvolutionState.run
-* 	Evolve.cleanup
+*       Evolve.possiblyRestoreFromCheckpoint
+*       Evolve.loadParameterDatabase
+*       Evolve.initialize
+*       EvolutionState.run
+*       Evolve.cleanup
 * ... result in a very simple basic main() function:
-* 	
+*       
 *
-* 		public static void main(String[] args)
-* 			{
-* 			EvolutionState state = possiblyRestoreFromCheckpoint(args);
-* 			if (state!=null)  // loaded from checkpoint
-* 				state.run(EvolutionState.C_STARTED_FROM_CHECKPOINT);
-* 			else
-* 				{
-* 				state = initialize(loadParameterDatabase(args), 0);
-* 				state.run(EvolutionState.C_STARTED_FRESH);
-* 				}
-* 			cleanup(state);
-* 			System.exit(0);
-* 			}
+*               public static void main(String[] args)
+*                       {
+*                       EvolutionState state = possiblyRestoreFromCheckpoint(args);
+*                       if (state!=null)  // loaded from checkpoint
+*                               state.run(EvolutionState.C_STARTED_FROM_CHECKPOINT);
+*                       else
+*                               {
+*                               state = initialize(loadParameterDatabase(args), 0);
+*                               state.run(EvolutionState.C_STARTED_FRESH);
+*                               }
+*                       cleanup(state);
+*                       System.exit(0);
+*                       }
 *
 *
 * Piece of cake!
@@ -481,8 +481,8 @@ public class Evolve
 * doing basic job iteration.  EvolutionState has two convenience slots for
 * doing job iteration:
 *
-*	job					(an Object[]	use this as you like)
-*	runtimeArguments	(a String[]		put args in here)
+*       job                                     (an Object[]    use this as you like)
+*       runtimeArguments        (a String[]             put args in here)
 *
 * The reason these are slots in EvolutionState is so you can store this information
 * across checkpoints and continue where you had started job-number-wise when the
@@ -493,8 +493,8 @@ public class Evolve
 * doesn't have to be numbers), and you'll also probably want checkpoint files to be
 * similarly prefixed.  So you'll probably want to do:
 *
-*	state.output.setFilePrefix(jobPrefix);
-*	state.checkpointPrefix = jobPrefix + state.checkpointPrefix;
+*       state.output.setFilePrefix(jobPrefix);
+*       state.checkpointPrefix = jobPrefix + state.checkpointPrefix;
 *
 * The extravagant main below is basically doing this.  We're using state.job to stash
 * away a single iterated job number, stored as an Integer in state.job[0], and then
@@ -516,9 +516,9 @@ public class Evolve
 
 
 
-	/** Top-level evolutionary loop.  */
+    /** Top-level evolutionary loop.  */
 
-   public static void main(String[] args)
+    public static void main(String[] args)
         {
         EvolutionState state;
         ParameterDatabase parameters;
@@ -533,7 +533,7 @@ public class Evolve
                 
         if (state != null)  // loaded from checkpoint
             {
-			// extract the next job number from state.job[0] (where in this example we'll stash it)
+            // extract the next job number from state.job[0] (where in this example we'll stash it)
             try
                 {
                 if (state.runtimeArguments == null)
@@ -546,28 +546,28 @@ public class Evolve
                 Output.initialError("EvolutionState's jobs variable is not set up properly.  Exiting...");
                 }
 
-			state.run(EvolutionState.C_STARTED_FROM_CHECKPOINT);
-			cleanup(state);
+            state.run(EvolutionState.C_STARTED_FROM_CHECKPOINT);
+            cleanup(state);
             }
 
-		// A this point we've finished out any previously-checkpointed job.  If there was
-		// one such job, we've updated the current job number (currentJob) to the next number.
-		// Otherwise currentJob is 0.
+        // A this point we've finished out any previously-checkpointed job.  If there was
+        // one such job, we've updated the current job number (currentJob) to the next number.
+        // Otherwise currentJob is 0.
 
-		// Now we're going to load the parameter database to see if there are any more jobs.
-		// We could have done this using the previous parameter database, but it's no big deal.
+        // Now we're going to load the parameter database to see if there are any more jobs.
+        // We could have done this using the previous parameter database, but it's no big deal.
         parameters = loadParameterDatabase(args);
         int numJobs = parameters.getIntWithDefault(new Parameter("jobs"), null, 1);
         if (numJobs < 1)
             Output.initialError("The 'jobs' parameter must be >= 1 (or not exist, which defaults to 1)");
                 
-		
+                
         // Now we know how many jobs remain.  Let's loop for that many jobs.  Each time we'll
-		// load the parameter database scratch (except the first time where we reuse the one we
-		// just loaded a second ago).  The reason we reload from scratch each time is that the
-		// experimenter is free to scribble all over the parameter database and it'd be nice to
-		// have everything fresh and clean.  It doesn't take long to load the database anyway,
-		// it's usually small.
+        // load the parameter database scratch (except the first time where we reuse the one we
+        // just loaded a second ago).  The reason we reload from scratch each time is that the
+        // experimenter is free to scribble all over the parameter database and it'd be nice to
+        // have everything fresh and clean.  It doesn't take long to load the database anyway,
+        // it's usually small.
         for(int job = currentJob ; job < numJobs; job++)
             {
             // load the parameter database (reusing the very first if it exists)
@@ -575,18 +575,18 @@ public class Evolve
                 parameters = loadParameterDatabase(args);
                         
             // Initialize the EvolutionState, then set its job variables
-            state = initialize(parameters, job);		// pass in job# as the seed increment
+            state = initialize(parameters, job);                // pass in job# as the seed increment
             state.output.systemMessage("Job: " + job);
-            state.job = new Object[1];					// make the job argument storage
-            state.job[0] = new Integer(job);			// stick the current job in our job storage
-            state.runtimeArguments = args;				// stick the runtime arguments in our storage
-            if (numJobs > 1)							// only if iterating (so we can be backwards-compatible),
-				{
-				String jobFilePrefix = "job." + job + ".";
+            state.job = new Object[1];                                  // make the job argument storage
+            state.job[0] = new Integer(job);                    // stick the current job in our job storage
+            state.runtimeArguments = args;                              // stick the runtime arguments in our storage
+            if (numJobs > 1)                                                    // only if iterating (so we can be backwards-compatible),
+                {
+                String jobFilePrefix = "job." + job + ".";
                 state.output.setFilePrefix(jobFilePrefix);     // add a prefix for checkpoint/output files 
-				state.checkpointPrefix = jobFilePrefix + state.checkpointPrefix;  // also set up checkpoint prefix
-				}
-				
+                state.checkpointPrefix = jobFilePrefix + state.checkpointPrefix;  // also set up checkpoint prefix
+                }
+                                
             // Here you can set up the EvolutionState's parameters further before it's setup(...).
             // This includes replacing the random number generators, changing values in state.parameters,
             // changing instance variables (except for job and runtimeArguments, please), etc.
@@ -597,7 +597,7 @@ public class Evolve
 
             // now we let it go
             state.run(EvolutionState.C_STARTED_FRESH);
-			cleanup(state);  // flush and close various streams, print out parameters if necessary
+            cleanup(state);  // flush and close various streams, print out parameters if necessary
             parameters = null;  // so we load a fresh database next time around
             }
 

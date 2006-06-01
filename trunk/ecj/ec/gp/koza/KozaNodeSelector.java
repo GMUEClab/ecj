@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -105,16 +105,16 @@ public class KozaNodeSelector implements GPNodeSelector
 
     public Object clone()
         {
-    	try
-    	{
-        KozaNodeSelector s = (KozaNodeSelector)(super.clone());
-        // allocate a new gatherer, so we're always threadsafe
-        s.gatherer = new GPNodeGatherer();
-        s.reset();
-        return s;
-        }
-    	catch (CloneNotSupportedException e)
-    	{ throw new InternalError(); } // never happens
+        try
+            {
+            KozaNodeSelector s = (KozaNodeSelector)(super.clone());
+            // allocate a new gatherer, so we're always threadsafe
+            s.gatherer = new GPNodeGatherer();
+            s.reset();
+            return s;
+            }
+        catch (CloneNotSupportedException e)
+            { throw new InternalError(); } // never happens
         }
 
 

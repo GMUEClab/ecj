@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke and George Mason University
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke and George Mason University
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -86,10 +86,10 @@ public class ECSuite extends Problem implements SimpleProblemForm
             problemType = PROB_STEP;
         else if ( wp.compareTo( P_NOISY_QUARTIC ) == 0 || wp.compareTo (P_F4)==0)
             problemType = PROB_NOISY_QUARTIC;
-		else if( wp.compareTo( P_BOOTH ) == 0 )
-			problemType = PROB_BOOTH;
-		else if( wp.compareTo( P_GRIEWANGK ) == 0 )
-			problemType = PROB_GRIEWANGK;		
+        else if( wp.compareTo( P_BOOTH ) == 0 )
+            problemType = PROB_BOOTH;
+        else if( wp.compareTo( P_GRIEWANGK ) == 0 )
+            problemType = PROB_GRIEWANGK;           
         else state.output.fatal(
             "Invalid value for parameter, or parameter not found.\n" +
             "Acceptable values are:\n" +
@@ -115,7 +115,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
         double[] genome = temp.genome;
         int len = genome.length;
         double value = 0;
-		float fit;
+        float fit;
 
         switch(problemType)
             {
@@ -124,7 +124,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
                     value += 100*(genome[i-1]*genome[i-1]-genome[i])*
                         (genome[i-1]*genome[i-1]-genome[i]) +
                         (1-genome[i-1])*(1-genome[i-1]);
-				fit = (float)(-value);
+                fit = (float)(-value);
                 ((SimpleFitness)(ind.fitness)).setFitness( state, fit, fit==0.0f );
                 break;
                 
@@ -132,21 +132,21 @@ public class ECSuite extends Problem implements SimpleProblemForm
                 value = len * A;
                 for( int i = 0 ; i < len ; i++ )
                     value += ( genome[i]*genome[i] - A * Math.cos( 2 * Math.PI * genome[i] ) );
-				fit = (float)(-value);
+                fit = (float)(-value);
                 ((SimpleFitness)(ind.fitness)).setFitness( state, fit, fit==0.0f );
                 break;
                 
             case PROB_SPHERE:
                 for( int i = 0 ; i < len ; i++ )
                     value += genome[i]*genome[i];
-				fit = (float)(-value);
+                fit = (float)(-value);
                 ((SimpleFitness)(ind.fitness)).setFitness( state, fit, fit==0.0f );
                 break;
 
             case PROB_STEP:
                 for( int i = 0 ; i < len ; i++ )
                     value += 6 + Math.floor( genome[i] );
-				fit = (float)(-value);
+                fit = (float)(-value);
                 ((SimpleFitness)(ind.fitness)).setFitness( state, fit, fit==0.0f );
                 break;
 
@@ -154,29 +154,29 @@ public class ECSuite extends Problem implements SimpleProblemForm
                 for( int i = 0 ; i < len ; i++ )
                     value += (i+1)*(genome[i]*genome[i]*genome[i]*genome[i]) + // no longer : Math.pow( genome[i], 4 ) +
                         state.random[threadnum].nextDouble();
-				fit = (float)(-value);
+                fit = (float)(-value);
                 ((SimpleFitness)(ind.fitness)).setFitness( state, fit, false ); // no solution is ideal for sure due to noise
                 break;
 
             case PROB_BOOTH:
-				if( len != 2 )
-					state.output.fatal( "The Booth problem is defined for only two terms, and as a consequence the genome of the DoubleVectorIndividual should have size 2." );
-				value = (genome[0] + 2*genome[1] - 7) * (genome[0] + 2*genome[1] - 7) +
-						(2*genome[0] + genome[1] - 5) * (2*genome[0] + genome[1] - 5);
-				fit = (float)(-value);
+                if( len != 2 )
+                    state.output.fatal( "The Booth problem is defined for only two terms, and as a consequence the genome of the DoubleVectorIndividual should have size 2." );
+                value = (genome[0] + 2*genome[1] - 7) * (genome[0] + 2*genome[1] - 7) +
+                    (2*genome[0] + genome[1] - 5) * (2*genome[0] + genome[1] - 5);
+                fit = (float)(-value);
                 ((SimpleFitness)(ind.fitness)).setFitness( state, fit, false ); // no solution is ideal for sure due to noise
                 break;
 
             case PROB_GRIEWANGK:
-				value = 1;
-				double prod = 1;
+                value = 1;
+                double prod = 1;
                 for( int i = 0 ; i < len ; i++ )
-					{
-					value += (genome[i]*genome[i])/4000.0;
-					prod *= Math.cos( genome[i] / Math.sqrt(i+1) );
-					}
-				value -= prod;
-				fit = (float)(-value);
+                    {
+                    value += (genome[i]*genome[i])/4000.0;
+                    prod *= Math.cos( genome[i] / Math.sqrt(i+1) );
+                    }
+                value -= prod;
+                fit = (float)(-value);
                 ((SimpleFitness)(ind.fitness)).setFitness( state, fit, false ); // no solution is ideal for sure due to noise
                 break;
 

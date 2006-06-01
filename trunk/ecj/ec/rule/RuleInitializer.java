@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke and George Mason University
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke and George Mason University
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -115,10 +115,10 @@ public class RuleInitializer extends SimpleInitializer
             numRuleConstraints++;
             }
         
-		/*
-  // no longer necessary
-          state.statics.addElement(ruleConstraintRepository);
-		*/
+        /*
+        // no longer necessary
+        state.statics.addElement(ruleConstraintRepository);
+        */
         }
     
     public void setupRuleSetConstraints(final EvolutionState state,
@@ -147,8 +147,8 @@ public class RuleInitializer extends SimpleInitializer
             ruleSetConstraints[y] = c;
             }
         /*
-  // no longer necessary
-          state.statics.addElement(ruleSetConstraintRepository);
-		*/
+        // no longer necessary
+        state.statics.addElement(ruleSetConstraintRepository);
+        */
         }
     }

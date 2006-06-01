@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Paus
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Paus
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -669,7 +669,7 @@ public class Console extends JFrame
                         b.add(j);
 
                         j = new JLabel("For help, send mail to " + Version.authorEmail0 + "@" + 
-												Version.authorEmail1);
+                                       Version.authorEmail1);
                         j.setFont(small);
                         b.add(j);
 

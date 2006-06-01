@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -120,17 +120,17 @@ public abstract class GPNodeBuilder implements Prototype
 
     public Object clone()
         {
-    	try
-    	{
-        GPNodeBuilder c = (GPNodeBuilder)(super.clone());
+        try
+            {
+            GPNodeBuilder c = (GPNodeBuilder)(super.clone());
 
-        if (sizeDistribution != null) c.sizeDistribution = 
-                                          (float[]) (sizeDistribution.clone());
+            if (sizeDistribution != null) c.sizeDistribution = 
+                                              (float[]) (sizeDistribution.clone());
 
-        return c;
-    	}
-    	catch (CloneNotSupportedException e)
-    	{ throw new InternalError(); } // never happens
+            return c;
+            }
+        catch (CloneNotSupportedException e)
+            { throw new InternalError(); } // never happens
         }
 
 

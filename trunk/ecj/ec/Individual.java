@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -65,8 +65,8 @@ import ec.util.*;
 
 public abstract class Individual implements Prototype
     {
-	/** A reasonable parameter base element for individuals*/
-	public static final String P_INDIVIDUAL = "individual";
+    /** A reasonable parameter base element for individuals*/
+    public static final String P_INDIVIDUAL = "individual";
 
     /** A string appropriate to put in front of whether or not the individual has been printed. */
     public static final String EVALUATED_PREAMBLE = "Evaluated: ";
@@ -81,16 +81,16 @@ public abstract class Individual implements Prototype
     public boolean evaluated;
 
     public Object clone()
-    {
-    try 
-    	{ 
-    		Individual myobj = (Individual) (super.clone());
-    if (myobj.fitness!=null) myobj.fitness = (Fitness)(fitness.clone());
-    return myobj; 
-    }
-    catch (CloneNotSupportedException e) 
-        { throw new InternalError(); } // never happens
-    }
+        {
+        try 
+            { 
+            Individual myobj = (Individual) (super.clone());
+            if (myobj.fitness!=null) myobj.fitness = (Fitness)(fitness.clone());
+            return myobj; 
+            }
+        catch (CloneNotSupportedException e) 
+            { throw new InternalError(); } // never happens
+        }
 
    
 

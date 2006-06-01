@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -69,16 +69,16 @@ public class GPSpecies extends Species
         }
 
 
-	// A custom version of newIndividual() which guarantees that the
-	// prototype is light-cloned before readIndividual is issued
+    // A custom version of newIndividual() which guarantees that the
+    // prototype is light-cloned before readIndividual is issued
     public Individual newIndividual(final EvolutionState state,
-                                             final Subpopulation _population,
-                                             final Fitness _fitness,
-                                             final LineNumberReader reader)
+                                    final Subpopulation _population,
+                                    final Fitness _fitness,
+                                    final LineNumberReader reader)
         throws IOException
-		{
+        {
         GPIndividual newind = ((GPIndividual)i_prototype).lightClone();
-		
+                
         // Set the fitness -- must be done BEFORE loading!
         newind.fitness = _fitness;
         newind.evaluated = false; // for sanity's sake, though it's a useless line
@@ -91,17 +91,17 @@ public class GPSpecies extends Species
 
         // and we're ready!
         return newind;  
-		}
+        }
 
 
-	// A custom version of newIndividual() which guarantees that the
-	// prototype is light-cloned before readIndividual is issued
+    // A custom version of newIndividual() which guarantees that the
+    // prototype is light-cloned before readIndividual is issued
     public Individual newIndividual(final EvolutionState state,
-                                             final Subpopulation _population,
-                                             final Fitness _fitness,
-                                             final DataInput dataInput)
+                                    final Subpopulation _population,
+                                    final Fitness _fitness,
+                                    final DataInput dataInput)
         throws IOException
-		{
+        {
         GPIndividual newind = ((GPIndividual)i_prototype).lightClone();
         
         // Set the fitness -- must be done BEFORE loading!
@@ -116,6 +116,6 @@ public class GPSpecies extends Species
 
         // and we're ready!
         return newind;  
-		}
+        }
 
     }

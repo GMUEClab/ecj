@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -280,34 +280,34 @@ public class GPIndividual extends Individual
         }
 
     /** Deep-clones the GPIndividual.  Note that you should not deep-clone the prototypical GPIndividual
-	stored in GPSpecies: they contain blank GPTrees with null roots, and this method,
-	which calls GPTree.clone(), will produce a NullPointerException as a result. Instead, you probably
-	want to use GPSpecies.newIndividual(...) if you're thinking of playing with the prototypical
-	GPIndividual. */
-	
+        stored in GPSpecies: they contain blank GPTrees with null roots, and this method,
+        which calls GPTree.clone(), will produce a NullPointerException as a result. Instead, you probably
+        want to use GPSpecies.newIndividual(...) if you're thinking of playing with the prototypical
+        GPIndividual. */
+        
     public Object clone()
         {
-		// a deep clone
-		
+        // a deep clone
+                
         GPIndividual myobj = (GPIndividual)(super.clone());
 
-		// copy the tree array
+        // copy the tree array
         myobj.trees = new GPTree[trees.length];
         for(int x=0;x<trees.length;x++)
-			{
+            {
             myobj.trees[x] = (GPTree)(trees[x].clone());  // force a deep clone
             myobj.trees[x].owner = myobj;  // reset owner away from me
-			}
+            }
         return myobj;
         }
 
-	/** Like clone(), but doesn't force the GPTrees to deep-clone themselves. */
-	public GPIndividual lightClone()
+    /** Like clone(), but doesn't force the GPTrees to deep-clone themselves. */
+    public GPIndividual lightClone()
         {
-		// a light clone
+        // a light clone
         GPIndividual myobj = (GPIndividual)(super.clone());
         
-		// copy the tree array
+        // copy the tree array
         myobj.trees = new GPTree[trees.length];
         for(int x=0;x<trees.length;x++)
             {

@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -207,13 +207,13 @@ public class GeneVectorIndividual extends VectorIndividual
         {
         GeneVectorSpecies s = (GeneVectorSpecies) species;
 
-            for(int x=0;x<genome.length;x++)
-                {
-                // first create the gene if it doesn't exist
-                if (genome[x]==null) genome[x] = (VectorGene)(s.genePrototype.clone());
-                // now reset it
-                genome[x].reset(state,thread);
-                }
+        for(int x=0;x<genome.length;x++)
+            {
+            // first create the gene if it doesn't exist
+            if (genome[x]==null) genome[x] = (VectorGene)(s.genePrototype.clone());
+            // now reset it
+            genome[x].reset(state,thread);
+            }
 
         }
 
