@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke and George Mason University
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke and George Mason University
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -46,8 +46,8 @@ public class JobQueue
     int numToReschedule = 0;
 
     /**
-		A simple constructor.  A pointer to the slave monitor is necessary for synchronization purposes.
-	*/
+       A simple constructor.  A pointer to the slave monitor is necessary for synchronization purposes.
+    */
     public JobQueue( SlaveMonitor sm )
         {
         slaveMonitor = sm;
@@ -58,8 +58,8 @@ public class JobQueue
         }
 
     /**
-		Resets the state of the queue (empties the queue of jobs)
-	*/
+       Resets the state of the queue (empties the queue of jobs)
+    */
     public void reset()
         {
         synchronized( slaveMonitor )
@@ -69,29 +69,29 @@ public class JobQueue
         }
 
     /**
-		Adds a new jobs to the queue.  This implies that the slave will be in charge of executing
-		this particular job.
-	*/
+       Adds a new jobs to the queue.  This implies that the slave will be in charge of executing
+       this particular job.
+    */
     public void scheduleJob( final EvaluationData ed )
         {
         synchronized( slaveMonitor )
             {
             objects.addLast(ed);
-			// for synchronization purposes, we may need to inform other treads that a job has been scheduled
-			// (other threads may be waiting to schedule jobs as well)
+            // for synchronization purposes, we may need to inform other treads that a job has been scheduled
+            // (other threads may be waiting to schedule jobs as well)
             slaveMonitor.notifyAll();
             }
         }
 
     /**
-		As the slave executes jobs, it sends back individuals that have been evaluated (or only their fitness).
-		This function returns a pointer to the next individual that has to be read back from the slave (only
-		individuals know how to read themselves).  In a traditional evolutionary algorithm, this pointer is the
-		one to the only individual associated with the job (the one that was sent to the slave to be evaluated).
-		However, multiple individuals could be sent to the slave for evaluation in a coevolutionary algorithm.
-		In this case, the function uses the information on how many individuals in this current job have been
-		read back from the slave, and returns a pointer to the next individual that is expected from the slave.
-	*/
+       As the slave executes jobs, it sends back individuals that have been evaluated (or only their fitness).
+       This function returns a pointer to the next individual that has to be read back from the slave (only
+       individuals know how to read themselves).  In a traditional evolutionary algorithm, this pointer is the
+       one to the only individual associated with the job (the one that was sent to the slave to be evaluated).
+       However, multiple individuals could be sent to the slave for evaluation in a coevolutionary algorithm.
+       In this case, the function uses the information on how many individuals in this current job have been
+       read back from the slave, and returns a pointer to the next individual that is expected from the slave.
+    */
     public Individual getIndividual( final EvolutionState state )
         {
         synchronized( slaveMonitor )
@@ -134,15 +134,15 @@ public class JobQueue
             }
         }
 
-	/**
-		Once an evaluated individual has been read back from a slave, the job queue might undergo certain updates.
-		In a traditional evolutionary algorithm, a job is finished once the individual is read back, and as such,
-		the job should be removed from the list of jobs that the slave is currently in charge of.  In a coevolutionary
-		algorithm, each job consists of multiple individuals.  In this case, a job is finished only when all individuals
-		associated with a job have been received back from the slave.
-		
-		The function returns the job that has just finished, or null if no job was finished (only for coevolutionary algorithms).
-	*/
+    /**
+       Once an evaluated individual has been read back from a slave, the job queue might undergo certain updates.
+       In a traditional evolutionary algorithm, a job is finished once the individual is read back, and as such,
+       the job should be removed from the list of jobs that the slave is currently in charge of.  In a coevolutionary
+       algorithm, each job consists of multiple individuals.  In this case, a job is finished only when all individuals
+       associated with a job have been received back from the slave.
+                
+       The function returns the job that has just finished, or null if no job was finished (only for coevolutionary algorithms).
+    */
     public EvaluationData finishReadingIndividual( final EvolutionState state, final SlaveData slaveData )
         {
         synchronized( slaveMonitor )
@@ -180,10 +180,10 @@ public class JobQueue
         return null;
         }
 
-	/**
-		Reschedules the jobs in this job queue to other slaves in the system.  It assumes that the slave associated
-		with this queue has already been removed from the available slaves, such that it is not assigned its own jobs.
-	*/
+    /**
+       Reschedules the jobs in this job queue to other slaves in the system.  It assumes that the slave associated
+       with this queue has already been removed from the available slaves, such that it is not assigned its own jobs.
+    */
     public void rescheduleJobs( final EvolutionState state )
         {
         while( true )
@@ -232,14 +232,14 @@ public class JobQueue
             }
         }
 
-	/**
-		Returns the number of jobs that a slave is in charge of.
-	*/
+    /**
+       Returns the number of jobs that a slave is in charge of.
+    */
     public int numJobs()
         {
         synchronized( slaveMonitor )
             {
-			// we also need to account for the jobs that are in the process of being rescheduled.
+            // we also need to account for the jobs that are in the process of being rescheduled.
             return objects.size() + numToReschedule;
             }
         }

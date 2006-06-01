@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke and George Mason University
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke and George Mason University
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -102,24 +102,24 @@ public class RuleSet implements Prototype
 
     public Object clone()
         {
-    	try
-    	{
-        RuleSet newRuleSet = (RuleSet)(super.clone());
-        // copy the rules over
-        if( rules != null )
+        try
             {
-            newRuleSet.rules = (Rule[])(rules.clone());
+            RuleSet newRuleSet = (RuleSet)(super.clone());
+            // copy the rules over
+            if( rules != null )
+                {
+                newRuleSet.rules = (Rule[])(rules.clone());
+                }
+            else
+                {
+                newRuleSet.rules = null;
+                }
+            for(int x=0;x<numRules;x++)
+                newRuleSet.rules[x] = (Rule)(rules[x].clone());
+            return newRuleSet;
             }
-        else
-            {
-            newRuleSet.rules = null;
-            }
-        for(int x=0;x<numRules;x++)
-            newRuleSet.rules[x] = (Rule)(rules[x].clone());
-        return newRuleSet;
-    	}
         catch (CloneNotSupportedException e)
-        { throw new InternalError(); } // never happens
+            { throw new InternalError(); } // never happens
         }
 
 
@@ -278,8 +278,8 @@ public class RuleSet implements Prototype
         // copy in the new rules
         System.arraycopy( other.rules, 0, rules, numRules, other.numRules );
         // protoclone the rules
-            for(int x=numRules;x<numRules+other.numRules;x++)
-                rules[x] = (Rule)(rules[x].clone());
+        for(int x=numRules;x<numRules+other.numRules;x++)
+            rules[x] = (Rule)(rules[x].clone());
         numRules += other.numRules;
         }
         

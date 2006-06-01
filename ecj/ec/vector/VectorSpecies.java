@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke and George Mason University
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke and George Mason University
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -167,51 +167,51 @@ public class VectorSpecies extends Species
         return newind;
         }
     
-	/*
-    public Individual newIndividual(final EvolutionState state,
-                                    final Subpopulation _population,
-                                    final Fitness _fitness,
-                                    final LineNumberReader reader)
-        throws IOException
-        {
-        VectorIndividual newind = (VectorIndividual)(i_prototype.protoClone());
-		
-        // Set the fitness -- must be done BEFORE loading!
-        newind.fitness = _fitness;
-        newind.evaluated = false; // for sanity's sake, though it's a useless line
+    /*
+      public Individual newIndividual(final EvolutionState state,
+      final Subpopulation _population,
+      final Fitness _fitness,
+      final LineNumberReader reader)
+      throws IOException
+      {
+      VectorIndividual newind = (VectorIndividual)(i_prototype.protoClone());
+                
+      // Set the fitness -- must be done BEFORE loading!
+      newind.fitness = _fitness;
+      newind.evaluated = false; // for sanity's sake, though it's a useless line
 
-        // load that sucker
-        newind.readIndividual(state,reader);
+      // load that sucker
+      newind.readIndividual(state,reader);
 
-        // Set the species to me
-        newind.species = this;
+      // Set the species to me
+      newind.species = this;
 
-        // and we're ready!
-        return newind;  
-        }
+      // and we're ready!
+      return newind;  
+      }
 
-    public Individual newIndividual(final EvolutionState state,
-                                    final Subpopulation _population,
-                                    final Fitness _fitness,
-                                    final DataInput dataInput)
-        throws IOException
-        {
-        VectorIndividual newind = (VectorIndividual)(i_prototype.protoClone());
+      public Individual newIndividual(final EvolutionState state,
+      final Subpopulation _population,
+      final Fitness _fitness,
+      final DataInput dataInput)
+      throws IOException
+      {
+      VectorIndividual newind = (VectorIndividual)(i_prototype.protoClone());
         
-        // Set the fitness -- must be done BEFORE loading!
-        newind.fitness = _fitness;
-        newind.evaluated = false; // for sanity's sake, though it's a useless line
+      // Set the fitness -- must be done BEFORE loading!
+      newind.fitness = _fitness;
+      newind.evaluated = false; // for sanity's sake, though it's a useless line
 
-        // Set the species to me
-        newind.species = this;
+      // Set the species to me
+      newind.species = this;
 
-        // load that sucker
-        newind.readGenotype(state,dataInput);
+      // load that sucker
+      newind.readGenotype(state,dataInput);
 
-        // and we're ready!
-        return newind;  
-        }
-	*/
+      // and we're ready!
+      return newind;  
+      }
+    */
     }
 
 

@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke and George Mason University
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke and George Mason University
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -649,7 +649,7 @@ public class IslandExchange extends Exchanger
 
             // sending the server own contact information
             toServer.writeUTF( ownId );
-			toServer.flush();
+            toServer.flush();
 
             // Launch the mailbox thread (read from the server how many sockets to allocate
             // on the mailbox. Obtain the port and address of the mailbox.
@@ -665,7 +665,7 @@ public class IslandExchange extends Exchanger
             try
                 {
                 toServer.writeUTF( InetAddress.getLocalHost().getHostAddress() );
-				toServer.flush();
+                toServer.flush();
                 state.output.message("My address is: " + InetAddress.getLocalHost().getHostAddress() );
                 }
             catch( UnknownHostException e )
@@ -673,7 +673,7 @@ public class IslandExchange extends Exchanger
                 state.output.fatal( "Could not get the address of the local computer." );
                 }
             toServer.writeInt( mailbox.getPort() );
-			toServer.flush();
+            toServer.flush();
 
             // read from the server the modulo, offset and size it has to use.
             // this parameters allow an extendable/modifiable version where different
@@ -738,7 +738,7 @@ public class IslandExchange extends Exchanger
                         }
                         
                     outWriters[y].writeUTF(ownId);
-					outWriters[y].flush();
+                    outWriters[y].flush();
             
                     running[y] = true;
                     }
@@ -754,7 +754,7 @@ public class IslandExchange extends Exchanger
 
             // synchronization stuff: tells the server it finished connecting to other mailboxes
             toServer.writeUTF( OKAY );
-			toServer.flush();
+            toServer.flush();
 
             // wait for the run signal
             fromServer.readUTF();
@@ -818,43 +818,43 @@ public class IslandExchange extends Exchanger
 
             // for each of the islands where we have to send individuals
             for( int x = 0 ; x < number_of_destination_islands ; x++ )
-				try
-                {
-
-                // check whether the communication is ok with the current island
-                if( running[x] )
+                try
                     {
 
-                    if (chatty) state.output.message( "Sending " + size + " emigrants to island " + outgoingIds[x] );
-
-                    // for each of the subpopulations
-                    for( int subpop = 0 ; subpop < state.population.subpops.length ; subpop++ )
+                    // check whether the communication is ok with the current island
+                    if( running[x] )
                         {
-                        // send the subpopulation
-                        outWriters[x].writeInt( subpop );
 
-                        // send the number of individuals to be sent
-                        // it's better to send this information too, such that islands can (potentially)
-                        // send different numbers of individuals
-                        outWriters[x].writeInt( size );
+                        if (chatty) state.output.message( "Sending " + size + " emigrants to island " + outgoingIds[x] );
 
-                        // select "size" individuals and send then to the destination as emigrants
-                        immigrantsSelectionMethod.prepareToProduce( state, subpop, 0 );
-                        for( int y = 0 ; y < size ; y++ ) // send all necesary individuals
+                        // for each of the subpopulations
+                        for( int subpop = 0 ; subpop < state.population.subpops.length ; subpop++ )
                             {
-                            int index = immigrantsSelectionMethod.produce( subpop, state, 0 );
-                            state.population.subpops[subpop].individuals[index].
-                                writeGenotype( state, outWriters[x] );
-							outWriters[x].flush();  // just in case the individuals didn't do a println
+                            // send the subpopulation
+                            outWriters[x].writeInt( subpop );
+
+                            // send the number of individuals to be sent
+                            // it's better to send this information too, such that islands can (potentially)
+                            // send different numbers of individuals
+                            outWriters[x].writeInt( size );
+
+                            // select "size" individuals and send then to the destination as emigrants
+                            immigrantsSelectionMethod.prepareToProduce( state, subpop, 0 );
+                            for( int y = 0 ; y < size ; y++ ) // send all necesary individuals
+                                {
+                                int index = immigrantsSelectionMethod.produce( subpop, state, 0 );
+                                state.population.subpops[subpop].individuals[index].
+                                    writeGenotype( state, outWriters[x] );
+                                outWriters[x].flush();  // just in case the individuals didn't do a println
+                                }
+                            immigrantsSelectionMethod.finishProducing( state, subpop, 0 ); // end the selection step
                             }
-                        immigrantsSelectionMethod.finishProducing( state, subpop, 0 ); // end the selection step
                         }
                     }
-                }
-				catch( IOException e )
-					{
-					running[x] = false;
-					}
+                catch( IOException e )
+                    {
+                    running[x] = false;
+                    }
             }
 
         return state.population;
@@ -888,7 +888,7 @@ public class IslandExchange extends Exchanger
                 {
                 // send the sync message
                 toServer.writeUTF( SYNC );
-				toServer.flush();
+                toServer.flush();
                 // wait for the okay message
                 String temp = fromServer.readUTF();
                 if( temp.equals( IslandExchangeServer.GOODBYE ) )
@@ -1008,7 +1008,7 @@ public class IslandExchange extends Exchanger
                     message = "Exit: Another island found the perfect individual.";
                     state.output.message( "Another island found the perfect individual. Exiting...." );
                     toServer.writeUTF( OKAY );
-					toServer.flush();
+                    toServer.flush();
                     }
                 else
                     {
@@ -1059,12 +1059,12 @@ public class IslandExchange extends Exchanger
         // then send a message to the server that it was found
         if( result == EvolutionState.R_SUCCESS )
             {
-			try
-				{
-				toServer.writeUTF( FOUND );
-				toServer.flush();
-				}
-			catch( IOException e ) {}
+            try
+                {
+                toServer.writeUTF( FOUND );
+                toServer.flush();
+                }
+            catch( IOException e ) {}
             }
 
         // close socket to server
@@ -1278,12 +1278,12 @@ class IslandExchangeMailbox implements Runnable
                 else
                     {
                     dataInput[x] = new DataInputStream(inSockets[x].getInputStream());
-					dataOutput = new DataOutputStream(inSockets[x].getOutputStream());
+                    dataOutput = new DataOutputStream(inSockets[x].getOutputStream());
                     }
 
-				// send my id, then read an id
+                // send my id, then read an id
                 dataOutput.writeUTF(myId);
-				dataOutput.flush();
+                dataOutput.flush();
                 incomingIds[x] = dataInput[x].readUTF().trim();    
 
                 state.output.message( "Island " + incomingIds[x] + " connected to my mailbox" );
@@ -1948,8 +1948,8 @@ class IslandExchangeServer implements Runnable
 
                 // send the capacity of the mailbox
                 dataOut[x].writeInt( ieii.mailbox_capacity );
-				
-				dataOut[x].flush();
+                                
+                dataOut[x].flush();
 
                 // read the address and port of the island
                 ieii.address = dataIn[x].readUTF().trim();
@@ -1993,67 +1993,67 @@ class IslandExchangeServer implements Runnable
                     continue;
                     }
 
-				try
-					{
-					// send the synchronous, modulo, offset and size information to the current islands
-					if( synchronous )
-						dataOut[x].writeInt( 1 );
-					else
-						dataOut[x].writeInt( 0 );
-					dataOut[x].writeInt( ieii.modulo );
-					dataOut[x].writeInt( ieii.offset );
-					dataOut[x].writeInt( ieii.size );
+                try
+                    {
+                    // send the synchronous, modulo, offset and size information to the current islands
+                    if( synchronous )
+                        dataOut[x].writeInt( 1 );
+                    else
+                        dataOut[x].writeInt( 0 );
+                    dataOut[x].writeInt( ieii.modulo );
+                    dataOut[x].writeInt( ieii.offset );
+                    dataOut[x].writeInt( ieii.size );
 
-					// send the number of address-port pairs that will be sent
-					dataOut[x].writeInt( ieii.num_mig );
+                    // send the number of address-port pairs that will be sent
+                    dataOut[x].writeInt( ieii.num_mig );
 
-					for( int y = 0 ; y < ieii.num_mig ; y++ )
-						{
-						IslandExchangeIslandInfo temp;
+                    for( int y = 0 ; y < ieii.num_mig ; y++ )
+                        {
+                        IslandExchangeIslandInfo temp;
 
-						temp = (IslandExchangeIslandInfo)info.get( ieii.migrating_island_ids[y] );
+                        temp = (IslandExchangeIslandInfo)info.get( ieii.migrating_island_ids[y] );
 
-						if( temp == null )
-							{
-							state.output.warning( "There is incorrect information on the island " + connected_island_ids[x]  );
-							dataOut[x].writeUTF( " " );
-							dataOut[x].writeInt( -1 );
-							}
-						else
-							{
-							state.output.message( "Island " + connected_island_ids[x] + " should connect to island " +
-												  ieii.migrating_island_ids[y] + " at " + temp.address + " : " + temp.port );
-							dataOut[x].writeUTF( temp.address );
-							dataOut[x].writeInt( temp.port );
-							}
-						}
-					dataOut[x].flush();
-				}
-				catch( IOException e )
-					{
-					// other errors while reading
-					state.output.message("Server: Island " + island_ids[x] + " dropped connection");
-					clientRunning[x] = false;
-					continue;
-					}
-				catch( NullPointerException e )
-					{
-					// other errors while reading
-					state.output.message("Server: Island " + island_ids[x] + " dropped connection");
-					clientRunning[x] = false;
-					try
-						{
-						dataIn[x].close();
-						dataOut[x].close();
-						con[x].close();
-						}
-					catch( IOException f )
-						{
-						}
-					continue;
-					}
+                        if( temp == null )
+                            {
+                            state.output.warning( "There is incorrect information on the island " + connected_island_ids[x]  );
+                            dataOut[x].writeUTF( " " );
+                            dataOut[x].writeInt( -1 );
+                            }
+                        else
+                            {
+                            state.output.message( "Island " + connected_island_ids[x] + " should connect to island " +
+                                                  ieii.migrating_island_ids[y] + " at " + temp.address + " : " + temp.port );
+                            dataOut[x].writeUTF( temp.address );
+                            dataOut[x].writeInt( temp.port );
+                            }
+                        }
+                    dataOut[x].flush();
+                    }
+                catch( IOException e )
+                    {
+                    // other errors while reading
+                    state.output.message("Server: Island " + island_ids[x] + " dropped connection");
+                    clientRunning[x] = false;
+                    continue;
+                    }
+                catch( NullPointerException e )
+                    {
+                    // other errors while reading
+                    state.output.message("Server: Island " + island_ids[x] + " dropped connection");
+                    clientRunning[x] = false;
+                    try
+                        {
+                        dataIn[x].close();
+                        dataOut[x].close();
+                        con[x].close();
+                        }
+                    catch( IOException f )
+                        {
+                        }
+                    continue;
+                    }
+                }
             }
-		}
 
         try
             {
@@ -2067,7 +2067,7 @@ class IslandExchangeServer implements Runnable
             for(int x=0;x<dataOut.length;x++)
                 {
                 dataOut[x].writeUTF( RUN );
-				dataOut[x].flush();
+                dataOut[x].flush();
                 }
             }
         catch( IOException e )
@@ -2222,12 +2222,12 @@ class IslandExchangeServer implements Runnable
                                 {
                                 // send the okay message (the client can continue executing)
                                 if( clientRunning[y] )
-									try
-										{
-										dataOut[y].writeUTF( OKAY );
-										dataOut[y].flush();
-										}
-									catch( IOException e ) {}
+                                    try
+                                        {
+                                        dataOut[y].writeUTF( OKAY );
+                                        dataOut[y].flush();
+                                        }
+                                    catch( IOException e ) {}
                                 // reset the who_is_synchronized variable
                                 who_is_synchronized[y] = false;
                                 }

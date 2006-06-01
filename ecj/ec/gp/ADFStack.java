@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -115,29 +115,29 @@ public class ADFStack implements Prototype
 
     public Object clone()
         {
-    	try
-    	{
-        ADFStack myobj = (ADFStack) (super.clone());
+        try
+            {
+            ADFStack myobj = (ADFStack) (super.clone());
 
-        // deep-cloned stuff
-        myobj.context_proto = (ADFContext)(context_proto.clone());
+            // deep-cloned stuff
+            myobj.context_proto = (ADFContext)(context_proto.clone());
 
-        // clone the stack arrays -- dunno if this is faster than new ADFContext[...]
-        myobj.stack = (ADFContext[])(stack.clone());
-        myobj.substack = (ADFContext[])(substack.clone());
-        myobj.reserve = (ADFContext[])(reserve.clone());
+            // clone the stack arrays -- dunno if this is faster than new ADFContext[...]
+            myobj.stack = (ADFContext[])(stack.clone());
+            myobj.substack = (ADFContext[])(substack.clone());
+            myobj.reserve = (ADFContext[])(reserve.clone());
 
-        // fill 'em up
-        for(int x=0;x<onStack;x++)
-            myobj.stack[x] = (ADFContext)(stack[x].clone());
-        for(int x=0;x<onSubstack;x++)
-            myobj.substack[x] = (ADFContext)(substack[x].clone());
-        for(int x=0;x<inReserve;x++)
-            myobj.reserve[x] = (ADFContext)(reserve[x].clone());
-        return myobj;
-        }
-    	catch (CloneNotSupportedException e) 
-    	{ throw new InternalError(); } // never happens
+            // fill 'em up
+            for(int x=0;x<onStack;x++)
+                myobj.stack[x] = (ADFContext)(stack[x].clone());
+            for(int x=0;x<onSubstack;x++)
+                myobj.substack[x] = (ADFContext)(substack[x].clone());
+            for(int x=0;x<inReserve;x++)
+                myobj.reserve[x] = (ADFContext)(reserve[x].clone());
+            return myobj;
+            }
+        catch (CloneNotSupportedException e) 
+            { throw new InternalError(); } // never happens
         }
     
     /** Returns an ADFContext from the stack's reserve, or creates one

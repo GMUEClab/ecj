@@ -22,27 +22,27 @@ public class AsynchronousEvolutionState extends SteadyStateEvolutionState
         if (generationBoundary)
             statistics.preEvaluationStatistics(this);
 
-		((MasterProblem)(evaluator.p_problem)).batchMode = true;
+        ((MasterProblem)(evaluator.p_problem)).batchMode = true;
         evaluator.evaluatePopulation(this);
 
-		//  new code for asynchronous evolution state:
-		//    wait to receive back N individuals, put them back in the population, then create some more individuals to be evaluated
-		if( firstTimeAround )
-		{
-			for( int i = 0 ; i < population.subpops[0].individuals.length ; i++ )
-			{
-				Individual ind = (((MasterProblem)(evaluator.p_problem)).server).slaveMonitor.waitForIndividual(this);
-				population.subpops[0].individuals[i] = ind;
-				ind = population.subpops[0].species.newIndividual( this, population.subpops[0], ind.fitness );
-				((SimpleProblemForm)evaluator.p_problem).evaluate(this, ind, 0);
-			}
-		}
-		else
-		{
-				Individual ind = (((MasterProblem)(evaluator.p_problem)).server).slaveMonitor.waitForIndividual(this);
-				population.subpops[0].individuals[newIndividuals[0]] = ind;
-				((SteadyStateBreeder)(breeder)).individualReplaced(this,0,0,newIndividuals[0]);
-		}
+        //  new code for asynchronous evolution state:
+        //    wait to receive back N individuals, put them back in the population, then create some more individuals to be evaluated
+        if( firstTimeAround )
+            {
+            for( int i = 0 ; i < population.subpops[0].individuals.length ; i++ )
+                {
+                Individual ind = (((MasterProblem)(evaluator.p_problem)).server).slaveMonitor.waitForIndividual(this);
+                population.subpops[0].individuals[i] = ind;
+                ind = population.subpops[0].species.newIndividual( this, population.subpops[0], ind.fitness );
+                ((SimpleProblemForm)evaluator.p_problem).evaluate(this, ind, 0);
+                }
+            }
+        else
+            {
+            Individual ind = (((MasterProblem)(evaluator.p_problem)).server).slaveMonitor.waitForIndividual(this);
+            population.subpops[0].individuals[newIndividuals[0]] = ind;
+            ((SteadyStateBreeder)(breeder)).individualReplaced(this,0,0,newIndividuals[0]);
+            }
 
         if (generationBoundary)
             statistics.postEvaluationStatistics(this);

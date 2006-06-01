@@ -178,14 +178,14 @@ public class MersenneTwisterFast implements Serializable, Cloneable
     /* We're overriding all internal data, to my knowledge, so this should be okay */
     public Object clone()
         {
-		try
-			{
-			MersenneTwisterFast f = (MersenneTwisterFast)(super.clone());
-			f.mt = (int[])(mt.clone());
-			f.mag01 = (int[])(mag01.clone());
-			return f;
-			}
-		catch (CloneNotSupportedException e) { throw new InternalError(); } // should never happen
+        try
+            {
+            MersenneTwisterFast f = (MersenneTwisterFast)(super.clone());
+            f.mt = (int[])(mt.clone());
+            f.mag01 = (int[])(mag01.clone());
+            return f;
+            }
+        catch (CloneNotSupportedException e) { throw new InternalError(); } // should never happen
         }
     
     public boolean stateEquals(Object o)

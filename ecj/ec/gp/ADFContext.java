@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -81,22 +81,22 @@ public class ADFContext implements Prototype
 
     public Object clone()
         {
-    	try 
-    	{
-        ADFContext myobj = (ADFContext) (super.clone());
+        try 
+            {
+            ADFContext myobj = (ADFContext) (super.clone());
 
-        // deep-clone the context proto
-        myobj.arg_proto = (GPData)(arg_proto.clone());
+            // deep-clone the context proto
+            myobj.arg_proto = (GPData)(arg_proto.clone());
 
-        // deep-clone the contexts
-        myobj.arguments = new GPData[arguments.length];
-        for(int x=0;x<myobj.arguments.length;x++)
-            myobj.arguments[x] = (GPData)(arguments[x].clone());
+            // deep-clone the contexts
+            myobj.arguments = new GPData[arguments.length];
+            for(int x=0;x<myobj.arguments.length;x++)
+                myobj.arguments[x] = (GPData)(arguments[x].clone());
 
-        return myobj;
-    	}
-    	catch (CloneNotSupportedException e)
-    	{ throw new InternalError(); }
+            return myobj;
+            }
+        catch (CloneNotSupportedException e)
+            { throw new InternalError(); }
         }
 
  

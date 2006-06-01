@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -46,11 +46,11 @@ public abstract class GPData implements Prototype
         { }
 
     public Object clone()
-    {
-    try { return super.clone(); }
-    catch (CloneNotSupportedException e) 
-        { throw new InternalError(); } // never happens
-    }
+        {
+        try { return super.clone(); }
+        catch (CloneNotSupportedException e) 
+            { throw new InternalError(); } // never happens
+        }
 
 
     }

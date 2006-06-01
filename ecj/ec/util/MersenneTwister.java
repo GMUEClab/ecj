@@ -175,14 +175,14 @@ public class MersenneTwister extends java.util.Random implements Serializable, C
     /* We're overriding all internal data, to my knowledge, so this should be okay */
     public Object clone()
         {
-		try
-			{
-			MersenneTwister f = (MersenneTwister)(super.clone());
-			f.mt = (int[])(mt.clone());
-			f.mag01 = (int[])(mag01.clone());
-			return f;
-			}
-		catch (CloneNotSupportedException e) { throw new InternalError(); } // should never happen
+        try
+            {
+            MersenneTwister f = (MersenneTwister)(super.clone());
+            f.mt = (int[])(mt.clone());
+            f.mag01 = (int[])(mag01.clone());
+            return f;
+            }
+        catch (CloneNotSupportedException e) { throw new InternalError(); } // should never happen
         }
 
     public boolean stateEquals(Object o)

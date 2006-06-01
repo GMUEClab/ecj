@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -153,7 +153,7 @@ public class GPTree implements GPNodeParent
     public static final String P_TREE = "tree";
     public static final String P_TREECONSTRAINTS = "tc";
     public static final String P_USELATEX = "latex";
-	public static final String P_USEC = "c";
+    public static final String P_USEC = "c";
     public static final int NO_TREENUM = -1;
 
     /** the root GPNode in the GPTree */
@@ -197,25 +197,25 @@ public class GPTree implements GPNodeParent
         }
 
     /** Like clone() but doesn't copy the tree. */
-	public GPTree lightClone()
-    	{
-    	try 
-		{ 
-		return (GPTree)(super.clone());  // note that the root child reference is copied, not cloned
-		}
-    	catch (CloneNotSupportedException e) { throw new InternalError(); } // never happens
-    	}
+    public GPTree lightClone()
+        {
+        try 
+            { 
+            return (GPTree)(super.clone());  // note that the root child reference is copied, not cloned
+            }
+        catch (CloneNotSupportedException e) { throw new InternalError(); } // never happens
+        }
 
     /** Deep-clones the tree.  Note that you should not deep-clone trees attached to the
         prototypical GPIndividual: they are blank trees with no root, and this method
-	will generate a NullPointerException as a result. */
+        will generate a NullPointerException as a result. */
     public Object clone()
         {
         GPTree newtree = lightClone();
-		newtree.child = (GPNode)(child.cloneReplacing());  // force a deep copy
-		newtree.child.parent = newtree;
-		newtree.child.argposition = 0;
-		return newtree;
+        newtree.child = (GPNode)(child.cloneReplacing());  // force a deep copy
+        newtree.child.parent = newtree;
+        newtree.child.argposition = 0;
+        return newtree;
         }
     
     /** An expensive function which determines my tree number -- only

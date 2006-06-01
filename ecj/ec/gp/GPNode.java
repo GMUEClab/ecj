@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -380,14 +380,14 @@ public abstract class GPNode implements GPNodeParent
 
     public Object clone()
         { 
-    	try
-    	{
-        GPNode obj = (GPNode)(super.clone());
-        obj.children = new GPNode[children.length];
-        return obj;
-        }
-    	catch (CloneNotSupportedException e)
-    	{ throw new InternalError(); } // never happens
+        try
+            {
+            GPNode obj = (GPNode)(super.clone());
+            obj.children = new GPNode[children.length];
+            return obj;
+            }
+        catch (CloneNotSupportedException e)
+            { throw new InternalError(); } // never happens
         }
 
 
@@ -782,31 +782,31 @@ public abstract class GPNode implements GPNodeParent
         s = s + "\\end{bundle}";
         return s;
         }
-	
-	/** Producess a String consisting of the tree in pseudo-C form, given that the parent already will wrap the
-		expression in parentheses (or not).  In pseudo-C form, functions with one child are printed out as a(b), 
-		functions with more than two children are printed out as a(b,c,d,...), and functions with exactly two
-		children are supposed to be operators and so are printed out as (b a c) -- for example, (b * c). */
-		
-	public String makeCTree(boolean parentMadeParens)
-		{
-		if (children.length==0)
-			return toString();
-		else if (children.length==1)
-			return toString() + "(" + children[0].makeCTree(true) + ")";
-		else if (children.length==2)
-			return (parentMadeParens ? "" : "(") + 
-				children[0].makeCTree(false) + " " + 
-				toString() + " " + children[1].makeCTree(false) + 
-				(parentMadeParens ? "" : ")");
-		else
-			{
-			String s = toString() + "(" + children[0].makeCTree(true);
-			for(int x = 1; x < children.length;x++)
-				s = s + ", " + children[x].makeCTree(true);
-			return s + ")";
-			}
-		}
+        
+    /** Producess a String consisting of the tree in pseudo-C form, given that the parent already will wrap the
+        expression in parentheses (or not).  In pseudo-C form, functions with one child are printed out as a(b), 
+        functions with more than two children are printed out as a(b,c,d,...), and functions with exactly two
+        children are supposed to be operators and so are printed out as (b a c) -- for example, (b * c). */
+                
+    public String makeCTree(boolean parentMadeParens)
+        {
+        if (children.length==0)
+            return toString();
+        else if (children.length==1)
+            return toString() + "(" + children[0].makeCTree(true) + ")";
+        else if (children.length==2)
+            return (parentMadeParens ? "" : "(") + 
+                children[0].makeCTree(false) + " " + 
+                toString() + " " + children[1].makeCTree(false) + 
+                (parentMadeParens ? "" : ")");
+        else
+            {
+            String s = toString() + "(" + children[0].makeCTree(true);
+            for(int x = 1; x < children.length;x++)
+                s = s + ", " + children[x].makeCTree(true);
+            return s + ")";
+            }
+        }
 
     /** Prints out the tree on a single line, with no ending \n, in a fashion that can
         be read in later by computer. O(n).  
@@ -976,17 +976,17 @@ public abstract class GPNode implements GPNodeParent
         }
 
     /** Override this to write any additional node-specific information to dataOutput besides: the number of arguments, 
-	the specific node class, the children, and the parent.  The default version of this method does nothing. */
+        the specific node class, the children, and the parent.  The default version of this method does nothing. */
     public void writeNode(final EvolutionState state, final DataOutput dataOutput) throws IOException
         {
-		// do nothing
+        // do nothing
         }
         
     /** Override this to read any additional node-specific information from dataInput besides: the number of arguments,
-	the specific node class, the children, and the parent.  The default version of this method does nothing. */
+        the specific node class, the children, and the parent.  The default version of this method does nothing. */
     public void readNode(final EvolutionState state, final DataInput dataInput) throws IOException
         {
-		// do nothing
+        // do nothing
         }
 
     /** Reads the node and its children from the form printed out by printRootedTree. */

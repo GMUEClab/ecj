@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -54,7 +54,7 @@ public abstract class Fitness implements Prototype
     /** base parameter for defaults */
     public static final String P_FITNESS = "fitness";
 
-	/** Basic preamble for printing Fitness values out */
+    /** Basic preamble for printing Fitness values out */
     public static final String FITNESS_PREAMBLE = "Fitness: ";
 
     /** Should return an absolute fitness value ranging from negative
@@ -194,11 +194,11 @@ public abstract class Fitness implements Prototype
         }
 
     public Object clone()
-    {
-    try { return super.clone(); }
-    catch (CloneNotSupportedException e) 
-        { throw new InternalError(); } // never happens
-    }
+        {
+        try { return super.clone(); }
+        catch (CloneNotSupportedException e) 
+            { throw new InternalError(); } // never happens
+        }
 
 
 

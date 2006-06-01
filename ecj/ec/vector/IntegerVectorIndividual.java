@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -180,25 +180,25 @@ public class IntegerVectorIndividual extends VectorIndividual
         }
 
 
-	/** Returns a random value from between min and max inclusive.  This method handles
-		overflows that complicate this computation.  Does NOT check that
-		min is less than or equal to max.  You must check this yourself. */
+    /** Returns a random value from between min and max inclusive.  This method handles
+        overflows that complicate this computation.  Does NOT check that
+        min is less than or equal to max.  You must check this yourself. */
     public int randomValueFromClosedInterval(int min, int max, MersenneTwisterFast random)
-		{
-		if (max - min < 0) // we had an overflow
-			{
-			int l = 0;
-			do l = random.nextInt();
-			while(l < min || l > max);
-			return l;
-			}
-		else return min + random.nextInt(max - min + 1);
-		}
+        {
+        if (max - min < 0) // we had an overflow
+            {
+            int l = 0;
+            do l = random.nextInt();
+            while(l < min || l > max);
+            return l;
+            }
+        else return min + random.nextInt(max - min + 1);
+        }
 
 
     /** Destructively mutates the individual in some default manner.  The default form
         simply randomizes genes to a uniform distribution from the min and max of the gene values. */
-	// notice that we bump to longs to avoid overflow errors
+    // notice that we bump to longs to avoid overflow errors
     public void defaultMutate(EvolutionState state, int thread)
         {
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
@@ -207,30 +207,30 @@ public class IntegerVectorIndividual extends VectorIndividual
             if (s.mutationProbability>0.0)
                 for(int x=0;x<genome.length;x++)
                     if (state.random[thread].nextBoolean(s.mutationProbability))
-						genome[x] = randomValueFromClosedInterval((int)s.minGene(x), (int)s.maxGene(x), state.random[thread]);
+                        genome[x] = randomValueFromClosedInterval((int)s.minGene(x), (int)s.maxGene(x), state.random[thread]);
             }
         else  // quite a bit faster
             {
             if (s.mutationProbability>0.0)
                 for(int x=0;x<genome.length;x++)
                     if (state.random[thread].nextBoolean(s.mutationProbability))
-						genome[x] = randomValueFromClosedInterval((int)s.minGene, (int)s.maxGene, state.random[thread]);
+                        genome[x] = randomValueFromClosedInterval((int)s.minGene, (int)s.maxGene, state.random[thread]);
             }
         }
         
     
 
     /** Initializes the individual by randomly choosing Integers uniformly from mingene to maxgene. */
-	// notice that we bump to longs to avoid overflow errors
+    // notice that we bump to longs to avoid overflow errors
     public void reset(EvolutionState state, int thread)
         {
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
         if (s.individualGeneMinMaxUsed())
             for(int x=0;x<genome.length;x++)
-				genome[x] = randomValueFromClosedInterval((int)s.minGene(x), (int)s.maxGene(x), state.random[thread]);
+                genome[x] = randomValueFromClosedInterval((int)s.minGene(x), (int)s.maxGene(x), state.random[thread]);
         else // quite a bit faster
             for(int x=0;x<genome.length;x++)
-				genome[x] = randomValueFromClosedInterval((int)s.minGene, (int)s.maxGene, state.random[thread]);
+                genome[x] = randomValueFromClosedInterval((int)s.minGene, (int)s.maxGene, state.random[thread]);
         }
 
     public int hashCode()

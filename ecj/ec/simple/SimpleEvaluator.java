@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -113,7 +113,7 @@ public class SimpleEvaluator extends Evaluator
         you should not call it. */
 
     void evalPopChunk(EvolutionState state, int[] numinds, int[] from,
-                             int threadnum, SimpleProblemForm p)
+                      int threadnum, SimpleProblemForm p)
         {
         ((ec.Problem)p).prepareToEvaluate(state,threadnum);
         

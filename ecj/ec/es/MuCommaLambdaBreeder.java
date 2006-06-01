@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -144,7 +144,7 @@ public class MuCommaLambdaBreeder extends Breeder
             // A child C's parent's index I is equal to C / mu[subpopulation].
             for (int x=0;x<state.population.subpops.length;x++)
                 {
-				int numChildrenBetter = 0;
+                int numChildrenBetter = 0;
                 for (int i = 0; i < lambda[x]; i++)
                     {
                     int parent = i / (lambda[x] / mu[x]);  // note integer division
@@ -298,20 +298,20 @@ public class MuCommaLambdaBreeder extends Breeder
                 }
             }
 
-      /*
-	    // determine our comparisons
+        /*
+        // determine our comparisons
         for(int x=0;x<state.population.subpops.length;x++)
-            {
-            int total = 0;
-            for(int y=0;y<state.breedthreads;y++)
-                total += bettercount[y][x];
-            if (((double)total)/state.population.subpops[x].individuals.length > 0.2)
-                comparison[x] = C_OVER_ONE_FIFTH_BETTER;
-            else if (((double)total)/state.population.subpops[x].individuals.length < 0.2)
-                comparison[x] = C_UNDER_ONE_FIFTH_BETTER;
-            else comparison[x] = C_EXACTLY_ONE_FIFTH_BETTER;
-            }
-		*/
+        {
+        int total = 0;
+        for(int y=0;y<state.breedthreads;y++)
+        total += bettercount[y][x];
+        if (((double)total)/state.population.subpops[x].individuals.length > 0.2)
+        comparison[x] = C_OVER_ONE_FIFTH_BETTER;
+        else if (((double)total)/state.population.subpops[x].individuals.length < 0.2)
+        comparison[x] = C_UNDER_ONE_FIFTH_BETTER;
+        else comparison[x] = C_EXACTLY_ONE_FIFTH_BETTER;
+        }
+        */
         return postProcess(newpop,state.population,state);
         }
 

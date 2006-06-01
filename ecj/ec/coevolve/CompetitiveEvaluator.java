@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke and George Mason University
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke and George Mason University
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -164,7 +164,7 @@ public class CompetitiveEvaluator extends Evaluator
             {
             style = STYLE_ROUND_ROBIN;
             }
-		else if( temp.equalsIgnoreCase( "pseudo-round-robin" ) )
+        else if( temp.equalsIgnoreCase( "pseudo-round-robin" ) )
             {
             style = STYLE_PSEUDO_ROUND_ROBIN;
             }
@@ -299,9 +299,9 @@ public class CompetitiveEvaluator extends Evaluator
             case STYLE_N_RANDOM_COMPETITORS_TWOWAY:
                 evalNRandomTwoWay( state, from, numinds, state.population.subpops[0].individuals, prob );
                 break;
-			case STYLE_PSEUDO_ROUND_ROBIN:
-				evalPseudoRoundRobin( state, state.population.subpops[0].individuals, prob );
-				break;
+            case STYLE_PSEUDO_ROUND_ROBIN:
+                evalPseudoRoundRobin( state, state.population.subpops[0].individuals, prob );
+                break;
                 //          case STYLE_WORLD_CUP:
                 //              evalWorldCup( state, state.population.subpops[0].individuals, prob );
                 //              break;
@@ -653,10 +653,10 @@ public class CompetitiveEvaluator extends Evaluator
                 // if the opponent is not the actual individual, we can
                 // have a competition
                 if( competition[1] != individuals[x] )
-					{
+                    {
                     prob.evaluate(state,competition,updates,false,0);
-					y++;
-					}
+                    y++;
+                    }
                 }
             }
         }

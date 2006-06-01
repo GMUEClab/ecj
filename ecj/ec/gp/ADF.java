@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -93,18 +93,18 @@ public class ADF extends GPNode
         return GPDefaults.base().push(P_ADF);
         }
 
-     public void writeNode(final EvolutionState state, final DataOutput dataOutput) throws IOException
-         {
-               dataOutput.writeInt(associatedTree);
-               dataOutput.writeUTF(functionName);
-         }
+    public void writeNode(final EvolutionState state, final DataOutput dataOutput) throws IOException
+        {
+        dataOutput.writeInt(associatedTree);
+        dataOutput.writeUTF(functionName);
+        }
          
  
-     public void readNode(final EvolutionState state, final DataInput dataInput) throws IOException
-         {
-               associatedTree = dataInput.readInt();
-               functionName = dataInput.readUTF();
-		}
+    public void readNode(final EvolutionState state, final DataInput dataInput) throws IOException
+        {
+        associatedTree = dataInput.readInt();
+        functionName = dataInput.readUTF();
+        }
 
     /** Returns functionName.hashCode() + class.hashCode() + associatedTree.  Hope
         that's reasonably random. */
@@ -164,7 +164,7 @@ public class ADF extends GPNode
                 for (int x=0;x<gpfi.length;x++)
                     if (gpfi[x] instanceof ADFArgument)
                         {
-						ADFArgument argument = (ADFArgument)(gpfi[x]);
+                        ADFArgument argument = (ADFArgument)(gpfi[x]);
                         int arg = argument.argument;
                         if (arg >= children.length)  // uh oh
                             state.output.error("The node " +
@@ -184,7 +184,7 @@ public class ADF extends GPNode
                             
                             // is the argument terminal of the correct return type?  Issue an error.
                             if (!gpfi[x].constraints(initializer).returntype.compatibleWith(initializer,
-                                                                                                 constraints(initializer).childtypes[arg]))
+                                                                                            constraints(initializer).childtypes[arg]))
                                 state.output.error("The node " +
                                                    toStringForError() + 
                                                    " in individual " +

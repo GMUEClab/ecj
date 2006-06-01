@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -194,27 +194,27 @@ public class Subpopulation implements Group
                 h = new Hashtable(individuals.length / 2);  // seems reasonable
 
             for(int x=0;x<individuals.length;x++) 
-			    {
-			    for(int tries=0; 
-			        tries <= /* Yes, I see that*/ numDuplicateRetries; 
-			        tries++)
-			        {
-			        individuals[x] = species.newIndividual(
-			            state,this,(Fitness)(f_prototype.clone()));
+                {
+                for(int tries=0; 
+                    tries <= /* Yes, I see that*/ numDuplicateRetries; 
+                    tries++)
+                    {
+                    individuals[x] = species.newIndividual(
+                        state,this,(Fitness)(f_prototype.clone()));
 
-			        if (numDuplicateRetries >= 1)
-			            {
-			            // check for duplicates
-			            Object o = h.get(individuals[x]);
-			            if (o == null) // found nothing, we're safe
-			                // hash it and go
-			                {
-			                h.put(individuals[x],individuals[x]);
-			                break;
-			                }
-			            }
-			        }  // oh well, we tried to cut down the duplicates
-			    }
+                    if (numDuplicateRetries >= 1)
+                        {
+                        // check for duplicates
+                        Object o = h.get(individuals[x]);
+                        if (o == null) // found nothing, we're safe
+                            // hash it and go
+                            {
+                            h.put(individuals[x],individuals[x]);
+                            break;
+                            }
+                        }
+                    }  // oh well, we tried to cut down the duplicates
+                }
             }
         }
     }

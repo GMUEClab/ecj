@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke and George Mason University
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke and George Mason University
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 package ec.spatial;
@@ -16,17 +16,17 @@ import ec.util.*;
  */
 
 /**
- *	A Spatial1DSubpopulation is an EC subpopulation that is additionally embedded into
- *	a one-dimmensional space.
- *	In a spatially-embedded EA, the subpopulations of individuals are assumed to be
- *	spatially distributed in some sort of space, be it one-dimmensional, two-
- *	dimmensional, or whatever else.  The space may or may not be toroidal (although
- *	it usually is).  Each location in the space has a set of neighboring locations.
- *	Thus, each individual has an index in the subpopulation, and also a location in
- *	the space.
+ *      A Spatial1DSubpopulation is an EC subpopulation that is additionally embedded into
+ *      a one-dimmensional space.
+ *      In a spatially-embedded EA, the subpopulations of individuals are assumed to be
+ *      spatially distributed in some sort of space, be it one-dimmensional, two-
+ *      dimmensional, or whatever else.  The space may or may not be toroidal (although
+ *      it usually is).  Each location in the space has a set of neighboring locations.
+ *      Thus, each individual has an index in the subpopulation, and also a location in
+ *      the space.
  *
- *	This public interface provides a method to obtain the indexes of the neighbors
- *	of a location.
+ *      This public interface provides a method to obtain the indexes of the neighbors
+ *      of a location.
  *
  <p><b>Parameters</b><br>
  <table>
@@ -38,93 +38,93 @@ import ec.util.*;
  *
  * @author Liviu Panait
  * @version 1.0 
-*/
+ */
 public class Spatial1DSubpopulation extends Subpopulation implements Space
-{
-	/**
-		This parameter stipulates whether the world is toroidal or not.
-		If missing, its default value is true.
-	*/
-	public static final String P_TOROIDAL = "toroidal";
-	public boolean toroidal;
+    {
+    /**
+       This parameter stipulates whether the world is toroidal or not.
+       If missing, its default value is true.
+    */
+    public static final String P_TOROIDAL = "toroidal";
+    public boolean toroidal;
 
-	/**
-		Read additional parameters for the spatially-embedded subpopulation.
-	*/
+    /**
+       Read additional parameters for the spatially-embedded subpopulation.
+    */
     public void setup(final EvolutionState state, final Parameter base)
-	{
-		super.setup(state,base);
+        {
+        super.setup(state,base);
 
-		// by default, the space is toroidal
-		toroidal = state.parameters.getBoolean(base.push(P_TOROIDAL),null,true);
+        // by default, the space is toroidal
+        toroidal = state.parameters.getBoolean(base.push(P_TOROIDAL),null,true);
 
-	}
+        }
 
-	/**
-		1D mapping is identity
-	*/
-	public int locationToIndex( final Object location )
-	{
-		if( location instanceof Integer )
-			return ((Integer)location).intValue();
-		return -1;
-	}
+    /**
+       1D mapping is identity
+    */
+    public int locationToIndex( final Object location )
+        {
+        if( location instanceof Integer )
+            return ((Integer)location).intValue();
+        return -1;
+        }
 
-	/**
-		1D mapping is identity
-	*/
-	public Object indexToLocation( final int index)
-	{
-		return new Integer(index);
-	}
+    /**
+       1D mapping is identity
+    */
+    public Object indexToLocation( final int index)
+        {
+        return new Integer(index);
+        }
 
-	public void setIndex( int threadnum, int index )
-	{
-		if( indexes == null )
-			indexes = new int[threadnum+1];
-		if( threadnum >= indexes.length )
-		{
-			int currentSize = indexes.length;
-			int[] temp = new int[threadnum*2+1];
-			System.arraycopy(indexes,0,temp,0,currentSize);
-			indexes = temp;
-		}
-		indexes[threadnum] = index;
-	}
+    public void setIndex( int threadnum, int index )
+        {
+        if( indexes == null )
+            indexes = new int[threadnum+1];
+        if( threadnum >= indexes.length )
+            {
+            int currentSize = indexes.length;
+            int[] temp = new int[threadnum*2+1];
+            System.arraycopy(indexes,0,temp,0,currentSize);
+            indexes = temp;
+            }
+        indexes[threadnum] = index;
+        }
 
-	public int getIndex( int threadnum )
-	{
-		if( indexes == null || threadnum > indexes.length )
-			return -1;
-		else
-			return indexes[threadnum];
-	}
+    public int getIndex( int threadnum )
+        {
+        if( indexes == null || threadnum > indexes.length )
+            return -1;
+        else
+            return indexes[threadnum];
+        }
 
-	// indexed by threadnum
-	int[] indexes;
+    // indexed by threadnum
+    int[] indexes;
 
-	/**
-		Returns a the index of a random neighbor.
-	*/
-	public int getIndexRandomNeighbor( final EvolutionState state, int threadnum, int distance )
-	{
-		int index = indexes[threadnum];
+    /**
+       Returns a the index of a random neighbor.
+    */
+    public int getIndexRandomNeighbor( final EvolutionState state, int threadnum, int distance )
+        {
+        int index = indexes[threadnum];
 
-		int size = individuals.length;
-		if( size == 0 )
-			return index;
-		if( toroidal )
-		{
-			int max = (2*distance+1>size) ? size : (2*distance+1);
-			int rand = state.random[threadnum].nextInt(max);
-			return (index+rand-distance+size)%size;
-		}
-		else
-		{
-			int min = (index-distance<0) ? 0 : (index-distance);
-			int max = (index+distance>=size) ? size : (index+distance);
-			return min + state.random[threadnum].nextInt(max-min+1);
-		}
-	}
+        int size = individuals.length;
+        if( size == 0 )
+            return index;
+        if( toroidal )
+            {
+            int max = (2*distance+1>size) ? size : (2*distance+1);
+            int rand = state.random[threadnum].nextInt(max);
+            return (index+rand-distance+size)%size;
+            }
+        else
+            {
+            int min = (index-distance<0) ? 0 : (index-distance);
+            int max = (index+distance>=size) ? size : (index+distance);
+            return min + state.random[threadnum].nextInt(max-min+1);
+            }
+        }
 
-}
+    }

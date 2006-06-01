@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -105,10 +105,10 @@ public class Multiplexer extends GPProblem implements SimpleProblemForm
                         state,threadnum,input,stack,((GPIndividual)ind),this);
                     sum += 1- (                  /* "Not" */
                         ((dataPart >>> addressPart) & 1) /* extracts the address-th 
-                                                    bit in data and moves 
-                                                    it to position 0, 
-                                                    clearing out all 
-                                                    other bits */
+                                                            bit in data and moves 
+                                                            it to position 0, 
+                                                            clearing out all 
+                                                            other bits */
                         ^                   /* "Is Different from" */
                         (input.x & 1));      /* A 1 if input.x is 
                                                 non-zero, else 0. */
