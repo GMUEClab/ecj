@@ -1114,3 +1114,5 @@ Version		Change Log
 		Also changed its value from "prob" to "crossover-prob".
 		It was incorrectly shadoing P_PROB ( = "prob" ) used
 		for a different function in BreedingSource
+	Moved the teambots package to the CVS repository contrib
+		directory

@@ -15,15 +15,10 @@ ABOUT.JDK13		How to deal with Sun's not-so-sharp
 Makefile		Useful if you're running under UNIX
 
 
-ECJ has two modules which rely on external facilities.  They
-are both optional, but you need to delete the directories or
-otherwise turn those features off in the Makefile:
-
-- The teambots package relies on the Teambots simulator 
-  from teambots.org.  As we're mostly using ECJ with MASON to
-  do our simulations in-house now this package may soon go
-  away unless we hear from others.  At any rate, you can get
-  rid of it simply by deleting the ec/teambots directory.
+ECJ has one optional module which relies on external 
+facilities.  If you choose not to use it, you need to 
+delete its directory or otherwise turn off using it in
+the Makefile:
 
 - The GUI system relies in part on the JFreeChart and iText
   facilities from jfreechart.org (add the jfreechart*.jar and
