@@ -7,16 +7,13 @@
 # get it at http://oss.software.ibm.com/developerworks/opensource/jikes/`
 # To just use javac, simply change the JAVAC flag below as appropriate.
 #
-# To compile all java but teambots API:	make 
-# To compile everything + teambots API:	make teambots
+# To compile everything but charting:	make 
 # To delete class files:		make clean
 # To build the documentation:		make docs
 # To build using jikes for sure:	make jikes
 # To build using javac for sure:	make javac
 # To auto-indent using Emacs:		make indent
-# To build with teambots:		make teambots
-#	(requires TeamBots:  teambots.org)
-# To build charting:			make chart
+# To build everything + charting:	make chart
 #	(requires JFreeChart: www.jfree.org/jfreechart/)
 #	(requires iText: www.lowagie.com/iText/)
 # [also, used here at GMU, you can ignore it...]
@@ -80,15 +77,11 @@ ec/display/*.java \
 ec/display/portrayal/*.java
 
 all: base
-	@ echo This builds the code except for charting and teambots.
+	@ echo This builds the code except for charting 
 	@ echo For other Makefile options, type:  make help
 
 base:
 	${JAVAC} ${FLAGS} ${DIRS}
-
-teambots: base
-	${JAVAC} ${FLAGS} ec/teambots/*.java
-	@ echo This builds the base code and the teambots code
 
 chart: base
 	${JAVAC} ${FLAGS} ec/display/chart/*.java ec/app/gui/*.java
@@ -102,7 +95,7 @@ clean:
 	rm -rf docs/classdocs/*
 
 doc:
-	javadoc -d docs/classdocs ec ec.gp ec.gp.koza ec.simple ec.select ec.multiobjective ec.steadystate ec.util ec.breed ec.gp.breed ec.gp.build ec.es ec.exchange ec.vector ec.vector.breed ec.parsimony ec.coevolve ec.rule ec.teambots ec.rule.breed ec.multiobjective.spea2 ec.eval ec.spatial ec.display ec.display.portrayal
+	javadoc -d docs/classdocs ec ec.gp ec.gp.koza ec.simple ec.select ec.multiobjective ec.steadystate ec.util ec.breed ec.gp.breed ec.gp.build ec.es ec.exchange ec.vector ec.vector.breed ec.parsimony ec.coevolve ec.rule ec.rule.breed ec.multiobjective.spea2 ec.eval ec.spatial ec.display ec.display.portrayal
 
 docs: doc
 
@@ -138,8 +131,6 @@ help:
 	@ echo "make dist     Does a make clean, make docs, and make, then deletes CVS dirs"
 	@ echo "make help     Brings up this message!"
 	@ echo "make indent   Uses emacs to re-indent ECJ java files as you'd prefer"
-	@ echo "make teambots Compiles the additional teambots module (requires TeamBots,"
-	@ echo "                see teambots.org"
 	@ echo "make chart    Compiles the charting facility (requires JFreeChart and iText,"
 	@ echo "                see www.jfree.org/jfreechart/ and www.lowagie.com/iText/"
 	@ echo
