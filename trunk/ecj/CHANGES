@@ -1112,7 +1112,7 @@ Version		Change Log
 	Renamed numRules -> ruleCount in one function in RuleSet
 	Changed P_PROB to P_CROSSOVERPROB in RuleCrossoverPipeline.
 		Also changed its value from "prob" to "crossover-prob".
-		It was incorrectly shadoing P_PROB ( = "prob" ) used
+		It was incorrectly shadowing P_PROB ( = "prob" ) used
 		for a different function in BreedingSource
 	Moved the teambots package to the CVS repository contrib
 		directory
