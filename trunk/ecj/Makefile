@@ -7,13 +7,13 @@
 # get it at http://oss.software.ibm.com/developerworks/opensource/jikes/`
 # To just use javac, simply change the JAVAC flag below as appropriate.
 #
-# To compile everything but charting:	make 
+# To compile everything but GUI:	make 
 # To delete class files:		make clean
 # To build the documentation:		make docs
 # To build using jikes for sure:	make jikes
 # To build using javac for sure:	make javac
 # To auto-indent using Emacs:		make indent
-# To build everything + charting:	make chart
+# To build everything + GUI:		make gui 
 #	(requires JFreeChart: www.jfree.org/jfreechart/)
 #	(requires iText: www.lowagie.com/iText/)
 # [also, used here at GMU, you can ignore it...]
@@ -72,20 +72,22 @@ ec/vector/breed/*.java \
 ec/parsimony/*.java\
 ec/rule/*.java \
 ec/rule/breed/*.java \
-ec/multiobjective/spea2/*.java \
-ec/display/*.java \
-ec/display/portrayal/*.java
+ec/multiobjective/spea2/*.java
 
 all: base
-	@ echo This builds the code except for charting 
-	@ echo For other Makefile options, type:  make help
 
 base:
+	@ echo This builds the code except for gui
+	@ echo For other Makefile options, type:  make help
+	@ echo
 	${JAVAC} ${FLAGS} ${DIRS}
 
-chart: base
-	${JAVAC} ${FLAGS} ec/display/chart/*.java ec/app/gui/*.java
-	@ echo This builds the base code and the charting code
+gui:
+	@ echo This builds the base code and the gui code
+	@ echo -- requires JFreeChart: www.jfree.org/jfreechart/
+	@ echo -- requires iText: www.lowagie.com/iText/
+	@ echo
+	${JAVAC} ${FLAGS} ${DIRS} ec/display/chart/*.java ec/app/gui/*.java ec/display/*.java ec/display/portrayal/*.java
 
 clean:
 	find . -name "*.class" -exec rm -f {} \;

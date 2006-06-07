@@ -1116,3 +1116,9 @@ Version		Change Log
 		for a different function in BreedingSource
 	Moved the teambots package to the CVS repository contrib
 		directory
+	Fixed a bug in the Makefile which was building code that depended
+		on JFreeChart in the main build.  To fix this, we deleted
+		the 'make chart' option and instead created a 'make gui'
+		option.  Now the GUI isn't built when you just do 'make'.
+		You have to type 'make gui' *and* have the JFreeChart
+		etc. jar files installed.
