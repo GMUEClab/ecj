@@ -194,8 +194,8 @@ public class FloatVectorSpecies extends VectorSpecies
 
         minGene = state.parameters.getDoubleWithDefault(base.push(P_MINGENE),
                                                         def.push(P_MINGENE), 0);
-        maxGene = state.parameters.getDouble(base.push(P_MAXGENE), def
-                                             .push(P_MAXGENE), minGene);
+        maxGene = state.parameters.getDouble(base.push(P_MAXGENE), 
+											def.push(P_MAXGENE), minGene);
         if (maxGene < minGene)
             state.output
                 .fatal(
@@ -220,8 +220,7 @@ public class FloatVectorSpecies extends VectorSpecies
                     base.push(P_MAXGENE), def.push(P_MAXGENE));
 
         // Next check to see if the gene-by-gene min/max values exist
-        if (state.parameters.exists(base.push(P_MAXGENE).push("0"), def.push(
-                                        P_MAXGENE).push("0")))
+        if (state.parameters.exists(base.push(P_MAXGENE).push("0"), def.push(P_MAXGENE).push("0")))
             {
             minGenes = new double[genomeSize];
             maxGenes = new double[genomeSize];
@@ -232,7 +231,7 @@ public class FloatVectorSpecies extends VectorSpecies
                 minGenes[x] = minGene;
                 maxGenes[x] = maxGene;
                 if (!state.parameters.exists(base.push(P_MINGENE).push("" + x),
-                                             base.push(P_MINGENE).push("" + x)))
+                                             def.push(P_MINGENE).push("" + x)))
                     {
                     if (!warnedMin)
                         {
@@ -244,9 +243,8 @@ public class FloatVectorSpecies extends VectorSpecies
                         warnedMin = true;
                         }
                     } else
-                        minGenes[x] = state.parameters.getDoubleWithDefault(base
-                                                                            .push(P_MINGENE).push("" + x), def.push(P_MINGENE)
-                                                                            .push("" + x), minGene);
+                        minGenes[x] = state.parameters.getDoubleWithDefault(base.push(P_MINGENE).push("" + x), 
+																			def.push(P_MINGENE).push("" + x), minGene);
 
                 if (!state.parameters.exists(base.push(P_MAXGENE).push("" + x),
                                              def.push(P_MAXGENE).push("" + x)))
@@ -261,9 +259,8 @@ public class FloatVectorSpecies extends VectorSpecies
                         warnedMax = true;
                         }
                     } else
-                        maxGenes[x] = state.parameters.getDoubleWithDefault(base
-                                                                            .push(P_MAXGENE).push("" + x), def.push(P_MAXGENE)
-                                                                            .push("" + x), maxGene);
+                        maxGenes[x] = state.parameters.getDoubleWithDefault(base.push(P_MAXGENE).push("" + x), 
+																			def.push(P_MAXGENE).push("" + x), maxGene);
 
                 if (maxGenes[x] < minGenes[x])
                     state.output.fatal(

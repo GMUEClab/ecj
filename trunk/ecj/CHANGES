@@ -1122,3 +1122,7 @@ Version		Change Log
 		option.  Now the GUI isn't built when you just do 'make'.
 		You have to type 'make gui' *and* have the JFreeChart
 		etc. jar files installed.
+	Small bug fix in FloatVectorSpecies: it wasn't looking for the
+		existence of P_MINGENE in the default base and thus was
+		complaining even if the default parameter was there.
+		Thanks to Elena Popovici (epopvic@cs.gmu.edu).
