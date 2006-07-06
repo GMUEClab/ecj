@@ -101,7 +101,7 @@ doc:
 
 docs: doc
 
-dist: clean chart doc 
+dist: clean gui doc 
 	find . -name "*.stat" -exec rm rf {} \; -print
 	echo --------------------------
 	echo Expect some errors here...
@@ -133,7 +133,7 @@ help:
 	@ echo "make dist     Does a make clean, make docs, and make, then deletes CVS dirs"
 	@ echo "make help     Brings up this message!"
 	@ echo "make indent   Uses emacs to re-indent ECJ java files as you'd prefer"
-	@ echo "make chart    Compiles the charting facility (requires JFreeChart and iText,"
+	@ echo "make gui      Compiles the GUI and charting (requires JFreeChart and iText,"
 	@ echo "                see www.jfree.org/jfreechart/ and www.lowagie.com/iText/"
 	@ echo
 	@ echo By default ECJ uses IBM\'s jikes compiler by default.  You can always
