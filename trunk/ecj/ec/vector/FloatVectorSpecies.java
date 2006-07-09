@@ -176,7 +176,7 @@ public class FloatVectorSpecies extends VectorSpecies
             return gaussMutationStdev;
         }
 
-    public boolean inRange(double geneVal)
+    public boolean inNumericalTypeRange(double geneVal)
         {
         if (i_prototype instanceof FloatVectorIndividual)
             return (geneVal <= Float.MAX_VALUE && geneVal >= -Float.MAX_VALUE);
@@ -204,14 +204,14 @@ public class FloatVectorSpecies extends VectorSpecies
 
         // check to see if these longs are within the data type of the
         // particular individual
-        if (!inRange(minGene))
+        if (!inNumericalTypeRange(minGene))
             state.output
                 .fatal(
                     "This FloatvectorSpecies has a prototype of the kind: "
                     + i_prototype.getClass().getName()
                     + ", but doesn't have a min-gene value within the range of this prototype's genome's data types",
                     base.push(P_MINGENE), def.push(P_MINGENE));
-        if (!inRange(maxGene))
+        if (!inNumericalTypeRange(maxGene))
             state.output
                 .fatal(
                     "This FloatvectorSpecies has a prototype of the kind: "
@@ -271,7 +271,7 @@ public class FloatVectorSpecies extends VectorSpecies
 
                 // check to see if these longs are within the data type of the
                 // particular individual
-                if (!inRange(minGenes[x]))
+                if (!inNumericalTypeRange(minGenes[x]))
                     state.output
                         .fatal(
                             "This FloatvectorSpecies has a prototype of the kind: "
@@ -281,7 +281,7 @@ public class FloatVectorSpecies extends VectorSpecies
                             + "] value within the range of this prototype's genome's data types",
                             base.push(P_MINGENE).push("" + x), def
                             .push(P_MINGENE).push("" + x));
-                if (!inRange(maxGenes[x]))
+                if (!inNumericalTypeRange(maxGenes[x]))
                     state.output
                         .fatal(
                             "This FloatvectorSpecies has a prototype of the kind: "

@@ -37,7 +37,7 @@ import java.io.*;
  * of rules, then calls read/writeRule(...) on each Rule.  Override this if you need more functionality.
  *
  * <li><b>printRuleSet(...,PrintWriter)/readRuleSet(...,LineNumberReader)</b>&nbsp;&nbsp;&nbsp;This
- * approacch transmits or receives a RuleSet in text encoded such that the RuleSet is largely readable
+ * approach transmits or receives a RuleSet in text encoded such that the RuleSet is largely readable
  * by humans but can be read back in 100% by ECJ as well.  To do this, these methods will typically encode numbers
  * using the <tt>ec.util.Code</tt> class.  These methods are mostly used to write out populations to
  * files for inspection, slight modification, then reading back in later on.  <b>readRuleSet</b>

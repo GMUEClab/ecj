@@ -33,7 +33,7 @@ import java.io.*;
  * You don't need to implement them if you don't plan on using read/writeIndividual.
  *
  * <li><b>printIndividual(...,PrintWriter)/readIndividual(...,LineNumberReader)</b>&nbsp;&nbsp;&nbsp;This
- * approacch transmits or receives an indivdual in text encoded such that the individual is largely readable
+ * approach transmits or receives an indivdual in text encoded such that the individual is largely readable
  * by humans but can be read back in 100% by ECJ as well.  To do this, these methods will encode numbers
  * using the <tt>ec.util.Code</tt> class.  These methods are mostly used to write out populations to
  * files for inspection, slight modification, then reading back in later on.  <b>readIndividual</b>reads
@@ -47,7 +47,7 @@ import java.io.*;
  * them you will not be able to write individuals to files in a simultaneously computer- and human-readable fashion.
  *
  * <li><b>printIndividualForHumans(...,PrintWriter)</b>&nbsp;&nbsp;&nbsp;This
- * approacch prints an individual in a fashion intended for human consumption only.
+ * approach prints an individual in a fashion intended for human consumption only.
  * <b>printIndividualForHumans</b> writes out the fitness and evaluation flag, then calls <b>genotypeToStringForHumans<b> 
  * and printlns the resultant string. You are responsible for implementing the genotypeToStringForHumans method.
  * The default form of genotypeToStringForHumans simply calls <b>toString</b>, which you may override instead if you like
