@@ -86,7 +86,7 @@ public class IntegerVectorSpecies extends VectorSpecies
         else return minGene;
         }
     
-    public boolean inRange(long geneVal)
+    public boolean inNumericalTypeRange(long geneVal)
         {
         if (i_prototype instanceof ByteVectorIndividual)
             return (geneVal <= Byte.MAX_VALUE && geneVal >= Byte.MIN_VALUE);
@@ -113,12 +113,12 @@ public class IntegerVectorSpecies extends VectorSpecies
                                base.push(P_MAXGENE),def.push(P_MAXGENE));
         
         // check to see if these longs are within the data type of the particular individual
-        if (!inRange(minGene))
+        if (!inNumericalTypeRange(minGene))
             state.output.fatal("This IntegerVectorSpecies has a prototype of the kind: " 
                                + i_prototype.getClass().getName() +
                                ", but doesn't have a min-gene value within the range of this prototype's genome's data types",
                                base.push(P_MINGENE),def.push(P_MINGENE));
-        if (!inRange(maxGene))
+        if (!inNumericalTypeRange(maxGene))
             state.output.fatal("This IntegerVectorSpecies has a prototype of the kind: " 
                                + i_prototype.getClass().getName() +
                                ", but doesn't have a max-gene value within the range of this prototype's genome's data types",
@@ -163,12 +163,12 @@ public class IntegerVectorSpecies extends VectorSpecies
                                        base.push(P_MAXGENE).push(""+x),base.push(P_MAXGENE).push(""+x));
                 
                 // check to see if these longs are within the data type of the particular individual
-                if (!inRange(minGenes[x]))
+                if (!inNumericalTypeRange(minGenes[x]))
                     state.output.error("This IntegerVectorSpecies has a prototype of the kind: " 
                                        + i_prototype.getClass().getName() +
                                        ", but doesn't have a min-gene["+x+"] value within the range of this prototype's genome's data types",
                                        base.push(P_MINGENE).push(""+x),base.push(P_MINGENE).push(""+x));
-                if (!inRange(maxGenes[x]))
+                if (!inNumericalTypeRange(maxGenes[x]))
                     state.output.fatal("This IntegerVectorSpecies has a prototype of the kind: " 
                                        + i_prototype.getClass().getName() +
                                        ", but doesn't have a max-gene["+x+"] value within the range of this prototype's genome's data types",

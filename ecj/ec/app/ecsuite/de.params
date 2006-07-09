@@ -1,0 +1,17 @@
+parent.0 =				ecsuite.params
+
+breed =                                 ec.de.SimpleDEBreeder
+# Other breed choices: ec.de.Best1BinDEBreeder, ec.de.Rand1EitherOrDEBreeder,
+# ec.de.Rand1ExpDEBreeder
+
+
+# Differential Evolution requires a special statistics object 
+# (ec.de.DEStatistics) to deal with certain issues that arise in parent/child 
+# competition.  See the DEStatistics documentation for more discussion.  The 
+# way we use the object is as the primary statistics object, and then we hang
+# SimpleStatistics as a subsidiary statistics object off of it like so:
+stat = 					ec.de.DEStatistics
+stat.num-children = 			1
+stat.child.0 = 				ec.simple.SimpleStatistics
+stat.child.0.file = 			$out.stat
+

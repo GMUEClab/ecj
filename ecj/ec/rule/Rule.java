@@ -45,7 +45,7 @@ import java.io.*;
  * You don't need to implement them if you don't plan on using read/writeRule.
  *
  * <li><b>printRule(...,PrintWriter)/readRule(...,LineNumberReader)</b>&nbsp;&nbsp;&nbsp;This
- * approacch transmits or receives a Rule in text encoded such that the Rule is largely readable
+ * approach transmits or receives a Rule in text encoded such that the Rule is largely readable
  * by humans but can be read back in 100% by ECJ as well.  To do this, these methods will typically encode numbers
  * using the <tt>ec.util.Code</tt> class.  These methods are mostly used to write out populations to
  * files for inspection, slight modification, then reading back in later on.  <b>readRule</b>
