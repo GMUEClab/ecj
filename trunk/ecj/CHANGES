@@ -1126,3 +1126,8 @@ Version		Change Log
 		existence of P_MINGENE in the default base and thus was
 		complaining even if the default parameter was there.
 		Thanks to Elena Popovici (epopvic@cs.gmu.edu).
+	A few additions to various Individuals in order to support
+		particle swarm optimization
+	Added asynchronous distributed evaluation
+	Removed final declarations in ParameterDatabase and DecodeReturn.
+		Thanks to Remi Vankeisbelck (remi.vankeisbelck@cstb.fr)

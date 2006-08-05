@@ -74,7 +74,7 @@ public class DecodeReturn
     public DecodeReturn(String _data, int _pos) { data = _data; pos = _pos; }
 
     /** Sets the DecodeReturn to begin scanning at _pos, which should be valid. */
-    public final DecodeReturn scanAt(int _pos) 
+    public DecodeReturn scanAt(int _pos) 
         {
         pos = Math.min(Math.max(_pos,0),data.length());
         return this;
