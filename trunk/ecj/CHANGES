@@ -1131,3 +1131,4 @@ Version		Change Log
 	Added asynchronous distributed evaluation
 	Removed final declarations in ParameterDatabase and DecodeReturn.
 		Thanks to Remi Vankeisbelck (remi.vankeisbelck@cstb.fr)
+	Modifications to the C printing facility in GP.

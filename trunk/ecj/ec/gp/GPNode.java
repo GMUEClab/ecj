@@ -785,25 +785,29 @@ public abstract class GPNode implements GPNodeParent
         
     /** Producess a String consisting of the tree in pseudo-C form, given that the parent already will wrap the
         expression in parentheses (or not).  In pseudo-C form, functions with one child are printed out as a(b), 
-        functions with more than two children are printed out as a(b,c,d,...), and functions with exactly two
-        children are supposed to be operators and so are printed out as (b a c) -- for example, (b * c). */
+        functions with more than two children are printed out as a(b, c, d, ...), and functions with exactly two
+        children are either printed as a(b, c) or in operator form as (b a c) -- for example, (b * c).  Whether
+		or not to do this depends on the setting of <tt>useOperatorForm</tt>.  Additionally, terminals will be
+		printed out either in variable form -- a -- or in zero-argument function form -- a() -- depending on
+		the setting of <tt>printTerminalsAsVariables</tt>.
+		*/
                 
-    public String makeCTree(boolean parentMadeParens)
+    public String makeCTree(boolean parentMadeParens, boolean printTerminalsAsVariables, boolean useOperatorForm)
         {
         if (children.length==0)
-            return toString();
+            return (printTerminalsAsVariables ? toString() : toString() + "()");
         else if (children.length==1)
-            return toString() + "(" + children[0].makeCTree(true) + ")";
-        else if (children.length==2)
+            return toString() + "(" + children[0].makeCTree(true, printTerminalsAsVariables, useOperatorForm) + ")";
+        else if (children.length==2 && useOperatorForm)
             return (parentMadeParens ? "" : "(") + 
-                children[0].makeCTree(false) + " " + 
-                toString() + " " + children[1].makeCTree(false) + 
+                children[0].makeCTree(false, printTerminalsAsVariables, useOperatorForm) + " " + 
+                toString() + " " + children[1].makeCTree(false, printTerminalsAsVariables, useOperatorForm) + 
                 (parentMadeParens ? "" : ")");
         else
             {
-            String s = toString() + "(" + children[0].makeCTree(true);
+            String s = toString() + "(" + children[0].makeCTree(true, printTerminalsAsVariables, useOperatorForm);
             for(int x = 1; x < children.length;x++)
-                s = s + ", " + children[x].makeCTree(true);
+                s = s + ", " + children[x].makeCTree(true, printTerminalsAsVariables, useOperatorForm);
             return s + ")";
             }
         }
