@@ -63,19 +63,23 @@ import java.io.*;
 
 
 
- * <p>GPTrees can print themselves for humans in one of three ways.  First, a GPTree can print
- * the tree as a Koza-style Lisp s-expression, which is the default.  
- * Second, a GPTree can print itself in pseudo-Lisp format; specifically,
- * functions with one child are printed out as a(b), functions with more than
- * two children are printed out as a(b,c,d,...), and functions with exactly two
- * children are supposed to be operators and so are printed out as (b a c) --
- * for example, (b * c).
- * Third, a GPTree can print the tree as a LaTeX2e code snippet, which can be inserted
+ * <p>GPTrees can print themselves for humans in one of three ways:
+ * <ol><li>A GPTree can print the tree as a Koza-style Lisp s-expression, which is the default.  
+ * <li> A GPTree can print itself in pseudo-C format:
+ *     <ol><li>Terminals can be printed either as variables "a" or as zero-argument functions "a()"
+ *     <li>One-argument nonterminals are printed as functions "a(b)"
+ *     <li>Two-argument nonterminals can be printed either as operators "b a c" or as functions "a(b, c)"
+ *     <li>Nonterminals with more arguments are printed as functions "a(b, c, d, ...)"
+ * </ol>
+ * <li>A GPTree can print the tree as a LaTeX2e code snippet, which can be inserted
  * into a LaTeX2e file and will result in a picture of the tree!  Cool, no?
+ * </ol>
  *
- * <p>You turn the C-printing feature on with the <b>c</b> parameter below.
+ * <p>You turn the C-printing feature on with the <b>c</b> parameter, plus certain
+ * optional parameters (<b>c-operators</b>, <b>c-variables</b>) as described below.
  * You turn the latex-printing <b>latex</b> parameter below.  The C-printing parameter
  * takes precedence.
+ * <p>
  * Here's how the latex system works.  To insert the code, you'll need to include the
  * <tt>epic</tt>,<tt>ecltree</tt>, and probably the <tt>fancybox</tt> packages,
  * in that order.  You'll also need to define the command <tt>\gpbox</tt>, which
@@ -139,6 +143,12 @@ import java.io.*;
  <tr><td valign=top><i>base</i>.<tt>c</tt><br>
  <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</td>
  <td valign=top>(print for humans using c?  Takes precedence over latex)</td></tr>
+ <tr><td valign=top><i>base</i>.<tt>c-operators</tt><br>
+ <font size=-1>bool = <tt>true</tt> (default) or <tt>false</tt></td>
+ <td valign=top>(when printing using c, print two-argument functions operators "b a c"?  The alternative is functions "a(b, c)."</td></tr>
+ <tr><td valign=top><i>base</i>.<tt>c-variables</tt><br>
+ <font size=-1>bool = <tt>true</tt> (default) or <tt>false</tt></td>
+ <td valign=top>(when printing using c, print zero-argument functions as variables "a"?  The alternative is functions "a()".)</td></tr>
  </table>
 
  <p><b>Default Base</b><br>
@@ -154,6 +164,8 @@ public class GPTree implements GPNodeParent
     public static final String P_TREECONSTRAINTS = "tc";
     public static final String P_USELATEX = "latex";
     public static final String P_USEC = "c";
+	public static final String P_USEOPS = "c-operators";
+	public static final String P_USEVARS = "c-variables";
     public static final int NO_TREENUM = -1;
 
     /** the root GPNode in the GPTree */
@@ -172,6 +184,14 @@ public class GPTree implements GPNodeParent
 
     /** Use c to print for humans?  Takes precedence over latex. */
     public boolean useC;
+
+    /** When using c to print for humans, do we print terminals as variables? 
+		(as opposed to zero-argument functions)? */
+	public boolean printTerminalsAsVariablesInC;
+
+    /** When using c to print for humans, do we print two-argument nonterminals in operator form "a op b"? 
+		(as opposed to functions "op(a, b)")? */
+    public boolean printTwoArgumentNonterminalsAsOperatorsInC;
 
     public final GPTreeConstraints constraints( final GPInitializer initializer ) 
         { return initializer.treeConstraints[constraints]; }
@@ -247,6 +267,12 @@ public class GPTree implements GPNodeParent
 
         // print for humans using C?
         useC = state.parameters.getBoolean(base.push(P_USEC),def.push(P_USEC),false);
+
+        // in C, treat terminals as variables?  By default, yes.
+		printTerminalsAsVariablesInC = state.parameters.getBoolean(base.push(P_USEVARS),def.push(P_USEVARS),true);
+
+        // in C, treat two-child functions as operators?  By default, yes.
+        printTwoArgumentNonterminalsAsOperatorsInC = state.parameters.getBoolean(base.push(P_USEOPS),def.push(P_USEOPS),true);
 
         // determine my constraints -- at this point, the constraints should have been loaded.
         String s = state.parameters.getString(base.push(P_TREECONSTRAINTS),
@@ -330,7 +356,9 @@ public class GPTree implements GPNodeParent
     public void printTreeForHumans(final EvolutionState state, final int log,
                                    final int verbosity)
         {
-        if (useC) state.output.print(child.makeCTree(true),verbosity,log);
+		System.out.println(child.makeCTree(true, printTerminalsAsVariablesInC, printTwoArgumentNonterminalsAsOperatorsInC));
+        if (useC) state.output.print(child.makeCTree(true, 
+			printTerminalsAsVariablesInC, printTwoArgumentNonterminalsAsOperatorsInC),verbosity,log);
         else if (useLatex) state.output.print(child.makeLatexTree(),verbosity,log);
         else child.printRootedTreeForHumans(state,log,verbosity,0,0);
         // printRootedTreeForHumans doesn't print a '\n', so I need to do so here
