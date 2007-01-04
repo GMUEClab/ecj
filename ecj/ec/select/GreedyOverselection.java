@@ -103,7 +103,7 @@ public class GreedyOverselection extends SelectionMethod
         }
     
     
-    // don't need protoClone etc. -- I'll never clone with my arrays intact
+    // don't need clone etc. -- I'll never clone with my arrays intact
     
     public void prepareToProduce(final EvolutionState s,
                                  final int subpopulation,
@@ -123,16 +123,12 @@ public class GreedyOverselection extends SelectionMethod
                                 {
                                 return ((Individual)(i[(int)b])).fitness.betterThan(
                                     ((Individual)(i[(int)a])).fitness);
-                                /* return ((Individual)(i[(int)a])).fitness.fitness() <
-                                   ((Individual)(i[(int)b])).fitness.fitness(); */
                                 }
 
                             public boolean gt(long a, long b)
                                 {
                                 return ((Individual)(i[(int)a])).fitness.betterThan(
                                     ((Individual)(i[(int)b])).fitness);
-                                /* return ((Individual)(i[(int)a])).fitness.fitness() >
-                                   ((Individual)(i[(int)b])).fitness.fitness(); */
                                 }
                             });
         

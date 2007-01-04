@@ -59,6 +59,9 @@ import java.io.*;
  <tr><td valign=top><i>base</i>.<tt>pipe</tt></td>
  <td>pipe_prototype (breeding pipeline prototype)</td></tr>
 
+ <tr><td valign=top><i>base</i>.<tt>fitness</tt></td>
+ <td>f_prototype (the prototypical fitness)</td></tr>
+
  </table>
 
 
@@ -71,12 +74,16 @@ public abstract class Species implements Prototype
     {
     public static final String P_INDIVIDUAL = "ind";
     public static final String P_PIPE = "pipe";
+    public static final String P_FITNESS = "fitness";
 
-    /** The prototypical individual for this species.       
-     */
-
+    /** The prototypical individual for this species. */
     public Individual i_prototype;
+    
+    /** The prototypical breeding pipeline for this species. */
     public BreedingPipeline pipe_prototype;
+
+    /** The prototypical fitness for individuals of this species. */
+    public Fitness f_prototype;    
 
     public Object clone()
         {
@@ -84,6 +91,7 @@ public abstract class Species implements Prototype
             {
             Species myobj = (Species) (super.clone());
             myobj.i_prototype = (Individual) i_prototype.clone();
+            myobj.f_prototype = (Fitness) f_prototype.clone();
             myobj.pipe_prototype = (BreedingPipeline) pipe_prototype.clone();
             return myobj;
             }
@@ -93,29 +101,59 @@ public abstract class Species implements Prototype
 
 
 
-    /** override this to provide a brand-new individual to fill in a population. The CloneNotSupportedException permits you to use protoClone() rather than protoCloneSimple(), for efficiency gains.  It's assumed that the thread is thread 0. */
+    // deprecate the old ones
+    final private Individual newIndividual(final EvolutionState state,
+                                           final Subpopulation _population, 
+                                           final Fitness _fitness) throws IOException { return null; }
+    final private Individual newIndividual(final EvolutionState state,
+                                           final Subpopulation _population,
+                                           final Fitness _fitness,
+                                           final LineNumberReader reader) throws IOException  { return null; }
+    final private Individual newIndividual(final EvolutionState state,
+                                           final Subpopulation _population,
+                                           final Fitness _fitness,
+                                           final DataInput input) throws IOException  { return null; }
+    
+    /** Provides a brand-new individual to fill in a population.  The default form
+        simply calls clone(), creates a fitness, sets evaluated to false, and sets
+        the species.  If you need to make a more custom genotype (as is the case
+        for GPSpecies, which requires a light rather than deep clone), 
+        you will need to override this method as you see fit.
+    */
+    
+    public Individual newIndividual(final EvolutionState state, int thread)
+        {
+        Individual newind = (Individual)(i_prototype.clone());
 
-    public abstract Individual newIndividual(final EvolutionState state,
-                                             final Subpopulation _population, 
-                                             final Fitness _fitness);
+        // Set the fitness
+        newind.fitness = (Fitness)(f_prototype.clone());
+        newind.evaluated = false;
+
+        // Set the species to me
+        newind.species = this;
+
+        // ...and we're ready!
+        return newind;
+        }
     
     /**
-       Override this to provide an individual read from a file; the individual will
-       appear as it was written by printIndividual(...).  You should read and
-       set up the fitness as well.  Don't close the file.  The default version of this
-       method throws an error.
+       Provides an individual read from a stream, including
+       the fitness; the individual will
+       appear as it was written by printIndividual(...).  Doesn't 
+       close the stream.  Sets evaluated to false and sets the species.
+       If you need to make a more custom mechanism (as is the case
+       for GPSpecies, which requires a light rather than deep clone), 
+       you will need to override this method as you see fit.
     */
 
     public Individual newIndividual(final EvolutionState state,
-                                    final Subpopulation _population,
-                                    final Fitness _fitness,
                                     final LineNumberReader reader)
         throws IOException
         {
         Individual newind = (Individual)(i_prototype.clone());
                 
-        // Set the fitness -- must be done BEFORE loading!
-        newind.fitness = _fitness;
+        // Set the fitness
+        newind.fitness = (Fitness)(f_prototype.clone());
         newind.evaluated = false; // for sanity's sake, though it's a useless line
 
         // load that sucker
@@ -129,27 +167,29 @@ public abstract class Species implements Prototype
         }
 
     /**
-       Override this to provide an individual read from a binary stream, likely using readIndividual(...).
-       You should read and set up the fitness as well.  Don't close the file.   The default version of this method throws an error.
+       Provides an individual read from a DataInput source, including
+       the fitness.  Doesn't 
+       close the DataInput.  Sets evaluated to false and sets the species.
+       If you need to make a more custom mechanism (as is the case
+       for GPSpecies, which requires a light rather than deep clone), 
+       you will need to override this method as you see fit.
     */
 
     public Individual newIndividual(final EvolutionState state,
-                                    final Subpopulation _population,
-                                    final Fitness _fitness,
                                     final DataInput dataInput)
         throws IOException
         {
         Individual newind = (Individual)(i_prototype.clone());
         
-        // Set the fitness -- must be done BEFORE loading!
-        newind.fitness = _fitness;
+        // Set the fitness
+        newind.fitness = (Fitness)(f_prototype.clone());
         newind.evaluated = false; // for sanity's sake, though it's a useless line
 
         // Set the species to me
         newind.species = this;
 
         // load that sucker
-        newind.readGenotype(state,dataInput);
+        newind.readIndividual(state,dataInput);
 
         // and we're ready!
         return newind;  
@@ -177,10 +217,18 @@ public abstract class Species implements Prototype
         state.output.exitIfErrors();
 
         // load our individual prototype
-        i_prototype = (Individual)(state.parameters.getInstanceForParameter(base.push(P_INDIVIDUAL),def.push(P_INDIVIDUAL),Individual. class));
+        i_prototype = (Individual)(state.parameters.getInstanceForParameter(
+                                       base.push(P_INDIVIDUAL),def.push(P_INDIVIDUAL),
+                                       Individual. class));
         // set the species to me before setting up the individual, so they know who I am
         i_prototype.species = this;
         i_prototype.setup(state,base.push(P_INDIVIDUAL));
+        
+        // load our fitness
+        f_prototype = (Fitness) state.parameters.getInstanceForParameter(
+            base.push(P_FITNESS),null,
+            Fitness.class);
+        f_prototype.setup(state,base.push(P_FITNESS));
         }
     }
 

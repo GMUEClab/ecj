@@ -192,7 +192,7 @@ public class SimpleBreeder extends Breeder
             // the right kind of individuals.  Don't want a mistake there! :-)
             int x;
             if (!bp.produces(state,newpop,subpop,threadnum))
-                state.output.fatal("The Breeding Pipeline of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops[subpop].species.getClass().getName() + " or fitness " + newpop.subpops[subpop].f_prototype );
+                state.output.fatal("The Breeding Pipeline of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops[subpop].species.getClass().getName() + " or fitness " + newpop.subpops[subpop].species.f_prototype );
             bp.prepareToProduce(state,subpop,threadnum);
                 
             // start breedin'!
@@ -247,10 +247,6 @@ public class SimpleBreeder extends Breeder
                 // sort the best so far where "<" means "not as fit as"
                 QuickSort.qsort(orderedPop, new EliteComparator(state.population.subpops[sub].individuals));
                 // load the top N individuals
-
-                //for(int x=0;x<orderedPop.length;x++)
-                //System.out.print(" " + orderedPop[x]);
-                //System.out.println();
 
                 Individual[] inds = newpop.subpops[sub].individuals;
                 Individual[] oldinds = state.population.subpops[sub].individuals;

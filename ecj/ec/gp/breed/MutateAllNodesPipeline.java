@@ -178,7 +178,7 @@ public class MutateAllNodesPipeline extends GPBreedingPipeline
     private GPNode generateCompatibleTree(final GPNode original, final GPFunctionSet set, final EvolutionState state, final GPType returntype, final int thread) 
         {
         // pick a new node and clone it
-        GPNode node = (GPNode)(pickCompatibleNode(original,set,state,returntype,thread).clone());
+        GPNode node = (GPNode)(pickCompatibleNode(original,set,state,returntype,thread).lightClone());
         
         // reset it
         node.resetNode(state,thread);

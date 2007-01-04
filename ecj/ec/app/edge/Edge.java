@@ -201,33 +201,6 @@ public class Edge extends GPProblem implements SimpleProblemForm
         // return the same ordering, I guess that's because it does
         // pointer hashing.  Just want to guarantee replicability!
 
-/*
-  QuickSort.qsort(newcases,
-  new SortComparator()
-  {
-  public boolean lt(Object a, Object b)
-  { 
-  boolean[] aa = (boolean[])a;
-  boolean[] bb = (boolean[])b;
-  for(int x=0;x<Math.min(aa.length,bb.length);x++)
-  if (!aa[x] && bb[x]) return true;
-  else if (aa[x] && !bb[x]) return false;
-  if (aa.length<bb.length) return true;
-  return false;
-  }
-                            
-  public boolean gt(Object a, Object b)
-  { 
-  boolean[] aa = (boolean[])a;
-  boolean[] bb = (boolean[])b;
-  for(int x=0;x<Math.min(aa.length,bb.length);x++)
-  if (!aa[x] && bb[x]) return false;
-  else if (aa[x] && !bb[x]) return true;
-  if (aa.length>bb.length) return true;
-  return false;
-  }
-  });
-*/
         // is this correct?
         java.util.Arrays.sort(newcases,
                               new java.util.Comparator()

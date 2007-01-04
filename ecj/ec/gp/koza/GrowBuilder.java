@@ -120,46 +120,15 @@ import ec.util.*;
 
 
 
-public class GrowBuilder extends GPNodeBuilder
+public class GrowBuilder extends KozaBuilder
     {
     public static final String P_GROWBUILDER = "grow";
-    public static final String P_MAXDEPTH = "max-depth";
-    public static final String P_MINDEPTH = "min-depth";
-
-    /** The largest maximum tree depth GROW can specify. */
-    public int maxDepth;
-
-    /** The smallest maximum tree depth GROW can specify. */
-    public int minDepth;
 
     public Parameter defaultBase()
         {
         return GPKozaDefaults.base().push(P_GROWBUILDER); 
         }
 
-    public void setup(final EvolutionState state, final Parameter base)
-        {
-        super.setup(state,base);
-
-        Parameter def = defaultBase();
-
-        // load maxdepth and mindepth, check that maxdepth>0, mindepth>0, maxdepth>=mindepth
-        maxDepth = state.parameters.getInt(base.push(P_MAXDEPTH),def.push(P_MAXDEPTH),1);
-        if (maxDepth<=0)
-            state.output.fatal("The Max Depth for GrowBuilder must be at least 1.",
-                               base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
-        
-        minDepth = state.parameters.getInt(base.push(P_MINDEPTH),def.push(P_MINDEPTH),1);
-        if (minDepth<=0)
-            state.output.fatal("The Max Depth for GrowBuilder must be at least 1.",
-                               base.push(P_MINDEPTH),def.push(P_MINDEPTH));
-
-        if (maxDepth<minDepth)
-            state.output.fatal("Max Depth must be >= Min Depth for GrowBuilder",
-                               base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
-        }    
-
-    
     public GPNode newRootedTree(final EvolutionState state,
                                 final GPType type,
                                 final int thread,
@@ -170,43 +139,6 @@ public class GrowBuilder extends GPNodeBuilder
         {
         GPNode n = growNode(state,0,state.random[thread].nextInt(maxDepth-minDepth+1) + minDepth,type,thread,parent,argposition,set);
         return n;
-        }
-
-
-    /** A private function which recursively returns a GROW tree to newRootedTree(...) */
-    private GPNode growNode(final EvolutionState state,
-                            final int current,
-                            final int max,
-                            final GPType type,
-                            final int thread,
-                            final GPNodeParent parent,
-                            final int argposition,
-                            final GPFunctionSet set) 
-        {
-        if (current +1 >= max)  // we're at max depth, force a terminal
-            {
-            GPNode[] nn = set.terminals[type.type];
-            GPNode n = (GPNode)(nn[state.random[thread].nextInt(nn.length)].clone());
-            n.resetNode(state,thread);  // give ERCs a chance to randomize
-            n.argposition = (byte)argposition;
-            n.parent = parent;
-            return n;
-            }
-        else // pick either a terminal or a nonterminal
-            {
-            GPNode[] nn = set.nodes[type.type];
-            GPNode n = (GPNode)(nn[state.random[thread].nextInt(nn.length)].clone());
-            n.resetNode(state,thread);  // give ERCs a chance to randomize
-            n.argposition = (byte)argposition;
-            n.parent = parent;
-
-            // Populate the node...
-            GPType[] childtypes = n.constraints(((GPInitializer)state.initializer)).childtypes;
-            for(int x=0;x<childtypes.length;x++)
-                n.children[x] = growNode(state,current+1,max,childtypes[x],thread,n,x,set);
-
-            return n;
-            }
         }
     }
 

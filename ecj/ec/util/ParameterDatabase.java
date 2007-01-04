@@ -497,7 +497,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * is marked "used".
      */
     public Object getInstanceForParameterEq(Parameter parameter,
-                                                  Parameter defaultParameter, Class mustCastTosuperclass)
+                                            Parameter defaultParameter, Class mustCastTosuperclass)
         throws ParamClassLoadException 
         {
         printGotten(parameter, defaultParameter, false);
@@ -584,7 +584,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * "used".
      */
     public Object getClassForParameter(Parameter parameter,
-                                             Parameter defaultParameter, Class mustCastTosuperclass)
+                                       Parameter defaultParameter, Class mustCastTosuperclass)
         throws ParamClassLoadException 
         {
         printGotten(parameter, defaultParameter, false);
@@ -645,7 +645,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * exists.
      */
     public boolean getBoolean(Parameter parameter,
-                                    Parameter defaultParameter, boolean defaultValue) 
+                              Parameter defaultParameter, boolean defaultValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -661,7 +661,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * Else true is returned. The parameter chosen is marked "used" if it
      * exists.
      */
-	boolean getBoolean(Parameter parameter, boolean defaultValue) 
+    boolean getBoolean(Parameter parameter, boolean defaultValue) 
         {
         if (!_exists(parameter))
             return defaultValue;
@@ -764,7 +764,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * may be in decimal or (if preceded with an X or x) in hexadecimal.
      */
     public int getInt(Parameter parameter, Parameter defaultParameter,
-                            int minValue) 
+                      int minValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -807,7 +807,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * may be in decimal or (if preceded with an X or x) in hexadecimal.
      */
     public int getIntWithDefault(Parameter parameter,
-                                       Parameter defaultParameter, int defaultValue) 
+                                 Parameter defaultParameter, int defaultValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -822,7 +822,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * is returned. The parameter chosen is marked "used" if it exists. Integers
      * may be in decimal or (if preceded with an X or x) in hexadecimal.
      */
-	int getIntWithDefault(Parameter parameter, int defaultValue) 
+    int getIntWithDefault(Parameter parameter, int defaultValue) 
         {
         if (_exists(parameter)) 
             {
@@ -848,7 +848,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * hexadecimal.
      */
     public int getIntWithMax(Parameter parameter,
-                                   Parameter defaultParameter, int minValue, int maxValue) 
+                             Parameter defaultParameter, int minValue, int maxValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -865,7 +865,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * exists. Integers may be in decimal or (if preceded with an X or x) in
      * hexadecimal.
      */
-	int getIntWithMax(Parameter parameter, int minValue, int maxValue) 
+    int getIntWithMax(Parameter parameter, int minValue, int maxValue) 
         {
         if (_exists(parameter)) 
             {
@@ -895,7 +895,7 @@ public class ParameterDatabase extends Properties implements Serializable
      */
 
     public float getFloat(Parameter parameter,
-                                Parameter defaultParameter, double minValue) 
+                          Parameter defaultParameter, double minValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -911,7 +911,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * it exists.
      */
 
-	float getFloat(Parameter parameter, double minValue) 
+    float getFloat(Parameter parameter, double minValue) 
         {
         if (_exists(parameter)) 
             {
@@ -943,7 +943,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * returned. The parameter chosen is marked "used" if it exists.
      */
     public float getFloatWithDefault(Parameter parameter,
-                                           Parameter defaultParameter, double defaultValue) 
+                                     Parameter defaultParameter, double defaultValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -957,7 +957,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * a float. If there is an error in parsing the parameter, then default is
      * returned. The parameter chosen is marked "used" if it exists.
      */
-	float getFloatWithDefault(Parameter parameter, double defaultValue) 
+    float getFloatWithDefault(Parameter parameter, double defaultValue) 
         {
         if (_exists(parameter)) 
             {
@@ -986,7 +986,7 @@ public class ParameterDatabase extends Properties implements Serializable
      */
 
     public float getFloat(Parameter parameter,
-                                Parameter defaultParameter, double minValue, double maxValue) 
+                          Parameter defaultParameter, double minValue, double maxValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1002,7 +1002,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * marked "used" if it exists.
      */
 
-	float getFloat(Parameter parameter, double minValue, double maxValue) 
+    float getFloat(Parameter parameter, double minValue, double maxValue) 
         {
         if (_exists(parameter)) 
             {
@@ -1038,7 +1038,7 @@ public class ParameterDatabase extends Properties implements Serializable
      */
 
     public double getDouble(Parameter parameter,
-                                  Parameter defaultParameter, double minValue) 
+                            Parameter defaultParameter, double minValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1054,7 +1054,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * "used" if it exists.
      */
 
-	double getDouble(Parameter parameter, double minValue) 
+    double getDouble(Parameter parameter, double minValue) 
         {
         if (_exists(parameter)) 
             {
@@ -1088,7 +1088,7 @@ public class ParameterDatabase extends Properties implements Serializable
      */
 
     public double getDouble(Parameter parameter,
-                                  Parameter defaultParameter, double minValue, double maxValue) 
+                            Parameter defaultParameter, double minValue, double maxValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1104,7 +1104,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * marked "used" if it exists.
      */
 
-	double getDouble(Parameter parameter, double minValue, double maxValue) 
+    double getDouble(Parameter parameter, double minValue, double maxValue) 
         {
         if (_exists(parameter)) 
             {
@@ -1138,7 +1138,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * returned. The parameter chosen is marked "used" if it exists.
      */
     public double getDoubleWithDefault(Parameter parameter,
-                                             Parameter defaultParameter, double defaultValue) 
+                                       Parameter defaultParameter, double defaultValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1152,7 +1152,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * a float. If there is an error in parsing the parameter, then default is
      * returned. The parameter chosen is marked "used" if it exists.
      */
-	double getDoubleWithDefault(Parameter parameter, double defaultValue) 
+    double getDoubleWithDefault(Parameter parameter, double defaultValue) 
         {
         if (_exists(parameter)) 
             {
@@ -1230,7 +1230,7 @@ public class ParameterDatabase extends Properties implements Serializable
      */
 
     public long getLong(Parameter parameter, Parameter defaultParameter,
-                              long minValue) 
+                        long minValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1246,7 +1246,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * exists. Longs may be in decimal or (if preceded with an X or x) in
      * hexadecimal.
      */
-	long getLong(Parameter parameter, long minValue) 
+    long getLong(Parameter parameter, long minValue) 
         {
         if (_exists(parameter)) 
             {
@@ -1273,7 +1273,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * be in decimal or (if preceded with an X or x) in hexadecimal.
      */
     public long getLongWithDefault(Parameter parameter,
-                                         Parameter defaultParameter, long defaultValue) 
+                                   Parameter defaultParameter, long defaultValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1288,7 +1288,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * returned. The parameter chosen is marked "used" if it exists. Longs may
      * be in decimal or (if preceded with an X or x) in hexadecimal.
      */
-	long getLongWithDefault(Parameter parameter, long defaultValue) 
+    long getLongWithDefault(Parameter parameter, long defaultValue) 
         {
         if (_exists(parameter)) 
             {
@@ -1313,7 +1313,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * an X or x) in hexadecimal.
      */
     public long getLongWithMax(Parameter parameter,
-                                     Parameter defaultParameter, long minValue, long maxValue) 
+                               Parameter defaultParameter, long minValue, long maxValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1329,7 +1329,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * parameter value. The parameter chosen is marked "used" if it exists.
      * Longs may be in decimal or (if preceded with an X or x) in hexadecimal.
      */
-	long getLongWithMax(Parameter parameter, long minValue, long maxValue) 
+    long getLongWithMax(Parameter parameter, long minValue, long maxValue) 
         {
         if (_exists(parameter)) 
             {
@@ -1361,7 +1361,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * @deprecated
      */
     public long getLong(Parameter parameter, Parameter defaultParameter,
-                              long minValue, long maxValue) 
+                        long minValue, long maxValue) 
         {
         printGotten(parameter, defaultParameter, false);
         return getLongWithMax(parameter, defaultParameter, minValue, maxValue);
@@ -1375,7 +1375,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * 
      * @deprecated
      */
-	long getLong(Parameter parameter, long minValue, long maxValue) 
+    long getLong(Parameter parameter, long minValue, long maxValue) 
         {
         return getLongWithMax(parameter, minValue, maxValue);
         }
@@ -1412,7 +1412,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * parameter chosen is marked "used" if it exists.
      */
 
-	File getFile(Parameter parameter) 
+    File getFile(Parameter parameter) 
         {
         if (_exists(parameter)) 
             {
@@ -1440,7 +1440,7 @@ public class ParameterDatabase extends Properties implements Serializable
      */
 
     public synchronized String getString(Parameter parameter,
-                                               Parameter defaultParameter) 
+                                         Parameter defaultParameter) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1469,7 +1469,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * result is not found or the trimmed result is empty.
      */
     public String getStringWithDefault(Parameter parameter,
-                                             Parameter defaultParameter, String defaultValue) 
+                                       Parameter defaultParameter, String defaultValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1484,7 +1484,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * result is not found or the trimmed result is empty.
      */
     /*protected*/ String getStringWithDefault(Parameter parameter,
-                                                    String defaultValue) 
+                                              String defaultValue) 
         {
         if (_exists(parameter)) 
             {
@@ -1762,7 +1762,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * database
      */
     public synchronized boolean exists(Parameter parameter,
-                                             Parameter defaultParameter) 
+                                       Parameter defaultParameter) 
         {
         printGotten(parameter, defaultParameter, true);
         if (exists(parameter))
@@ -1870,7 +1870,7 @@ public class ParameterDatabase extends Properties implements Serializable
         }
 
     /** Private helper function */
-	synchronized String _get(String parameter) 
+    synchronized String _get(String parameter) 
         {
         if (parameter == null)
             {
@@ -1953,7 +1953,7 @@ public class ParameterDatabase extends Properties implements Serializable
         }
     
     /** Private helper function */
-	synchronized File _directoryFor(Parameter parameter) 
+    synchronized File _directoryFor(Parameter parameter) 
         {
         if (checked)
             return null; // we already searched this path
@@ -1989,7 +1989,7 @@ public class ParameterDatabase extends Properties implements Serializable
         return result;
         }
 
-	synchronized File _fileFor(Parameter parameter) 
+    synchronized File _fileFor(Parameter parameter) 
         {
         if (checked)
             return null;
@@ -2053,7 +2053,12 @@ public class ParameterDatabase extends Properties implements Serializable
         listeners = new Vector();
         }
     
-    /** Creates a new parameter database from the given Dictionary.  Both the keys and values will be run through toString() before adding to the dataase.   Keys are parameters.  Values are the values of the parameters.  Beware that a ParameterDatabase is itself a Dictionary; but if you pass one in here you will only get the lowest-level elements.  If parent.n are defined, parents will be attempted to be loaded -- that's the reason for the FileNotFoundException and IOException.  */
+    /** Creates a new parameter database from the given Dictionary.  
+        Both the keys and values will be run through toString() before adding to the dataase.   
+        Keys are parameters.  Values are the values of the parameters.  
+        Beware that a ParameterDatabase is itself a Dictionary; but if you pass one in here you 
+        will only get the lowest-level elements.  If parent.n are defined, parents will 
+        be attempted to be loaded -- that's the reason for the FileNotFoundException and IOException.  */
     public ParameterDatabase(java.util.Dictionary map) throws FileNotFoundException, IOException 
         {
         this();
@@ -2077,8 +2082,37 @@ public class ParameterDatabase extends Properties implements Serializable
             }
         }
 
-    /** Creates a new parameter database loaded from the given stream. If parent.n are defined, parents will be attempted to be loaded -- that's the reason for the FileNotFoundException and IOException. */
-    
+    /** Creates a new parameter database loaded from the given string describing a file in a jar,
+        in the context of a resource location (a class).
+        This approach uses resourceLocation.getResourceAsStream() to load the parameter file.
+        If parent.n are defined, parents will be attempted to be loaded -- that's 
+        the reason for the FileNotFoundException and IOException. */
+
+    public ParameterDatabase(String pathNameInJar, Class jarResourceLocation) throws FileNotFoundException, IOException 
+        {
+        this();
+        load(jarResourceLocation.getResourceAsStream(pathNameInJar));
+
+        listeners = new Vector();
+
+        // load parents
+        for (int x = 0;; x++) 
+            {
+            String s = getProperty("parent." + x);
+            if (s == null)
+                return; // we're done
+
+            String path = new File(new File(pathNameInJar).getParent(), s).toString();
+
+            parents.addElement(new ParameterDatabase(path, jarResourceLocation));
+            }
+        }
+
+
+    /** Creates a new parameter database loaded from the given stream.  Non-relative parents are not permitted.
+        If parent.n are defined, parents will be attempted to be loaded -- that's 
+        the reason for the FileNotFoundException and IOException. */
+
     public ParameterDatabase(java.io.InputStream stream) throws FileNotFoundException, IOException 
         {
         this();
@@ -2168,7 +2202,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * Parses and adds s to the database. Returns true if there was actually
      * something to parse.
      */
-	boolean parseParameter(String s) 
+    boolean parseParameter(String s) 
         {
         s = s.trim();
         if (s.length() == 0)
@@ -2252,8 +2286,8 @@ public class ParameterDatabase extends Properties implements Serializable
         }
 
     /** Private helper function. */
-	void _list(PrintWriter p, boolean listShadowed,
-                     String prefix, Hashtable gather) 
+    void _list(PrintWriter p, boolean listShadowed,
+               String prefix, Hashtable gather) 
         {
         if (listShadowed) 
             {
@@ -2305,9 +2339,9 @@ public class ParameterDatabase extends Properties implements Serializable
     public TreeModel buildTreeModel() 
         {
         String sep = System.getProperty("file.separator");
-		ParameterDatabaseTreeNode root = new ParameterDatabaseTreeNode(
+        ParameterDatabaseTreeNode root = new ParameterDatabaseTreeNode(
             this.directory.getAbsolutePath() + sep + this.filename);
-		ParameterDatabaseTreeModel model = new ParameterDatabaseTreeModel(root);
+        ParameterDatabaseTreeModel model = new ParameterDatabaseTreeModel(root);
 
         _buildTreeModel(model, root);
 

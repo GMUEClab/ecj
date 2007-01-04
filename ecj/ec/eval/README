@@ -31,3 +31,60 @@ java ec.eval.Slave -file foo.slave.params
 
 ...and it should all nicely work!  The system works fine under 
 checkpointing as far as we know.
+
+
+FITNESS VERSUS INDIVIDUAL
+
+By default the master/slave system sends individuals from master to slave,
+but only returns FITNESS values from slave to master, in order to save on
+network bandwidth.  However it is possible that some evaluations of individuals
+literally change them during evaluation.  If you have done such an evil thing,
+you'll need to have the modified individual shipped back to the master for
+reinsertion.  Be sure to change the appropriate parameter:
+
+eval.return-inds = true
+
+
+
+SYNCHRONOUS VERSUS ASYNCHRONOUS EVALUATION
+
+The master/slave evaluator is fairly clever about evaluation.  When asked to
+evaluate a collection (a population, say) of N individuals on M slaves, where
+M << N, the evaluator will fire off chunks of individuals to each slave.  When
+a new slave comes online or an existing slave returns with its individuals
+processed, it becomes available or more individuals right then and there.  This
+process continues until all N individuals are completed.
+
+Some evaluation procedures can take advantage of this to provide a degree
+of semi-asynchrony.  For example, SimpleEvaluator performs per-thread
+evaluation in the following way:
+
+	problem.prepareToEvaluate(...)
+	for each individual
+		problem.evaluate(individual,...)
+	problem.finishEvaluating(...)
+
+This protocol informs the underlying Problem that it is free to delay
+actual evaluation of the requested individuals until finishEvaluating(...)
+time.  This in turn allows a MasterProblem to bulk up all the individuals
+and send them in a chunk to the M slaves as it wishes.  Note that this is
+SEMI-asynchronous because it must sync at generation boundaries in order to
+do breeding with a full population.
+
+Other evaluation procedures cannot take full advantage of such semi-asynchrony;
+for example, a single-elimination tournament coevolved evaluator has an explicit
+ordering among some of the individuals, and so cannot just "send individuals
+off to be evaluated" -- they have to be sent in a certain order and returned
+in a certain order, with fitness intact.  To a small degree we are free to send
+individuals in different orders in the single elimination tournament as long
+as they aren't above one another in the tournament hierarchy; but this is
+somewhat complex and we have opted, for now, to just do fully synchronous.
+Perhaps some kind soul might rewrite this in a semi-asynchronous form.
+
+We also provide a FULLY asynchronous mechanism. We have a special 
+EvolutionState called AsynchronousEvolutionState, a subclass of 
+SteadyStateEvolutionState which performs evaluation by sending individuals
+off into the inky void, and then waiting for SOME individual to return, which
+then gets processed and added to the population.  This allows individuals to
+take a very long time to be evaluated, while other individuals quickly 
+evaluate and particpate in evolution.

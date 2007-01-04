@@ -185,17 +185,20 @@ public class MultiObjectiveFitness extends Fitness
                             final LineNumberReader reader)
         throws IOException
         {
-        int linenumber = reader.getLineNumber();
-        String s = reader.readLine();
-        if (s==null || s.length() < (FITNESS_PREAMBLE + "[").length()) // uh oh
-            state.output.fatal("Reading Line " + linenumber + ": " +
-                               "Bad Fitness.");
-        DecodeReturn d = new DecodeReturn(s, (FITNESS_PREAMBLE + "[").length());
+        /*
+          int linenumber = reader.getLineNumber();
+          String s = reader.readLine();
+          if (s==null || s.length() < (FITNESS_PREAMBLE + "[").length()) // uh oh
+          state.output.fatal("Reading Line " + linenumber + ": " +
+          "Bad Fitness.");
+          DecodeReturn d = new DecodeReturn(s, (FITNESS_PREAMBLE + "[").length());
+        */
+        DecodeReturn d = Code.checkPreamble(FITNESS_PREAMBLE, state, reader);
         for(int x=0;x<multifitness.length;x++)
             {
             Code.decode(d);
             if (d.type!=DecodeReturn.T_FLOAT)
-                state.output.fatal("Reading Line " + linenumber + ": " +
+                state.output.fatal("Reading Line " + d.lineNumber + ": " +
                                    "Bad Fitness (multifitness value #" + x + ").");
             multifitness[x] = (float)d.d;
             }

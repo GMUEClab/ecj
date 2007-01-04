@@ -267,83 +267,6 @@ public class ByteVectorIndividual extends VectorIndividual
             }
         }
 
-/*
-  public void readIndividual(final EvolutionState state, 
-  final LineNumberReader reader)
-  throws IOException
-  {
-  // First, was I evaluated?
-  int linenumber = reader.getLineNumber();
-  String s = reader.readLine();
-  if (s==null || s.length() < EVALUATED_PREAMBLE.length()) // uh oh
-  state.output.fatal("Reading Line " + linenumber + ": " +
-  "Bad 'Evaluated?' line.");
-  DecodeReturn d = new DecodeReturn(s, EVALUATED_PREAMBLE.length());
-  Code.decode(d);
-  if (d.type!=DecodeReturn.T_BOOLEAN)
-  state.output.fatal("Reading Line " + linenumber + ": " +
-  "Bad 'Evaluated?' line.");
-  evaluated = (d.l!=0);
-
-  // Next, what's my fitness?
-  fitness.readFitness(state,reader);
-
-  // read in the next line.  The first item is the number of genes
-  s = reader.readLine();
-  d.reset(s);
-  Code.decode( d );
-  int lll = (int)(d.l);
-
-  genome = new byte[ lll ];
-
-  // read in the genes
-  for( int i = 0 ; i < genome.length ; i++ )
-  {
-  Code.decode( d );
-  genome[i] = (byte)(d.l);
-  }
-  }
-
-  public void printIndividualForHumans(final EvolutionState state,
-  final int log, 
-  final int verbosity)
-  {
-  state.output.println(EVALUATED_PREAMBLE + Code.encode(evaluated), 
-  verbosity, log);
-  fitness.printFitnessForHumans(state,log,verbosity);
-  String s = "";
-  for( int i = 0 ; i < genome.length ; i++ )
-  s = s + " " + genome[i];
-  state.output.println( s, verbosity, log );
-  }
-
-  public void printIndividual(final EvolutionState state,
-  final int log, 
-  final int verbosity)
-  {
-  state.output.println(EVALUATED_PREAMBLE + Code.encode(evaluated), 
-  verbosity, log);
-  fitness.printFitness(state,log,verbosity);
-  StringBuffer s = new StringBuffer();
-  s.append( Code.encode( genome.length ) );
-  for( int i = 0 ; i < genome.length ; i++ )
-  s.append( Code.encode( genome[i] ) );
-  state.output.println( s.toString(), verbosity, log );
-  }
-
-  public void printIndividual(final EvolutionState state,
-  final PrintWriter writer)
-  {
-  writer.println(EVALUATED_PREAMBLE + Code.encode(evaluated));
-  fitness.printFitness(state,writer);
-  StringBuffer s = new StringBuffer();
-  s.append( Code.encode( genome.length ) );
-  for( int i = 0 ; i < genome.length ; i++ )
-  s.append( Code.encode( genome[i] ) );
-  writer.println( s );
-  }
-*/
-
     public boolean equals(Object ind)
         {
         if (!(this.getClass().equals(ind.getClass()))) return false; // SimpleRuleIndividuals are special.
@@ -381,32 +304,32 @@ public class ByteVectorIndividual extends VectorIndividual
             genome[x] = dataInput.readByte();
         }
 
-	/** Clips each gene value to be within its specified [min,max] range. */
-	public void clamp() 
-		{
-		IntegerVectorSpecies _species = (IntegerVectorSpecies)species;
-		for (int i = 0; i < genomeLength(); i++)
-			{
-			byte minGene = (byte)_species.minGene(i);
-			if (genome[i] < minGene)
-				genome[i] = minGene;
-			else 
-				{
-				byte maxGene = (byte)_species.maxGene(i);
-				if (genome[i] > maxGene)
-				genome[i] = maxGene;
-				}
-			}
-		}
-		
-	/** Returns true if each gene value is within is specified [min,max] range. */
-	public boolean isInRange() 
-		{
-		IntegerVectorSpecies _species = (IntegerVectorSpecies)species;
-		for (int i = 0; i < genomeLength(); i++)
-			if (genome[i] < _species.minGene(i) ||
-				genome[i] > _species.maxGene(i)) return false;
-		return true;
-		}
+    /** Clips each gene value to be within its specified [min,max] range. */
+    public void clamp() 
+        {
+        IntegerVectorSpecies _species = (IntegerVectorSpecies)species;
+        for (int i = 0; i < genomeLength(); i++)
+            {
+            byte minGene = (byte)_species.minGene(i);
+            if (genome[i] < minGene)
+                genome[i] = minGene;
+            else 
+                {
+                byte maxGene = (byte)_species.maxGene(i);
+                if (genome[i] > maxGene)
+                    genome[i] = maxGene;
+                }
+            }
+        }
+                
+    /** Returns true if each gene value is within is specified [min,max] range. */
+    public boolean isInRange() 
+        {
+        IntegerVectorSpecies _species = (IntegerVectorSpecies)species;
+        for (int i = 0; i < genomeLength(); i++)
+            if (genome[i] < _species.minGene(i) ||
+                genome[i] > _species.maxGene(i)) return false;
+        return true;
+        }
 
     }

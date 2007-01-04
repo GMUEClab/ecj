@@ -225,7 +225,7 @@ public class MutateDemotePipeline extends GPBreedingPipeline
                     if (numDemotable==demoteItem)
                         {
                         // clone the node
-                        GPNode cnode = (GPNode)(set.nonterminals[t.type][x].clone());
+                        GPNode cnode = (GPNode)(set.nonterminals[t.type][x].lightClone());
 
                         // choose a spot to hang the old parent under
                         int numSpots=0;
@@ -264,7 +264,7 @@ public class MutateDemotePipeline extends GPBreedingPipeline
                                     // hang a randomly-generated terminal off of cnode
                                     GPNode term = (GPNode)(set.terminals[chityp[z].type][
                                                                state.random[thread].nextInt(
-                                                                   set.terminals[chityp[z].type].length)].clone());
+                                                                   set.terminals[chityp[z].type].length)].lightClone());
                                     cnode.children[z] = term;
                                     term.parent = cnode; // just in case
                                     term.argposition = (byte)z;  // just in case
@@ -279,7 +279,7 @@ public class MutateDemotePipeline extends GPBreedingPipeline
                                 // hang a randomly-generated terminal off of cnode
                                 GPNode term = (GPNode)(set.terminals[chityp[z].type][
                                                            state.random[thread].nextInt(
-                                                               set.terminals[chityp[z].type].length)].clone());
+                                                               set.terminals[chityp[z].type].length)].lightClone());
                                 cnode.children[z] = term;
                                 term.parent = cnode; // just in case
                                 term.argposition = (byte)z;  // just in case
@@ -312,7 +312,7 @@ public class MutateDemotePipeline extends GPBreedingPipeline
         // find it
 
         // clone the node
-        GPNode cnode = (GPNode)(set.nonterminals[0][demoteItem].clone());
+        GPNode cnode = (GPNode)(set.nonterminals[0][demoteItem].lightClone());
         
         GPType[] chityp = cnode.constraints(((GPInitializer)state.initializer)).childtypes;
 
@@ -339,7 +339,7 @@ public class MutateDemotePipeline extends GPBreedingPipeline
                 GPNode term = (GPNode)(
                     set.terminals[chityp[z].type][
                         state.random[thread].nextInt(
-                            set.terminals[chityp[z].type].length)].clone());
+                            set.terminals[chityp[z].type].length)].lightClone());
                 cnode.children[z] = term;
                 term.parent = cnode; // just in case
                 term.argposition = (byte)z;  // just in case

@@ -14,7 +14,7 @@ import ec.util.*;
  * MultiPopCoevolutionaryEvaluator.java
  *
 
- <p>MultiPopCoevolutionaryEvaluator is an Evaluator which performs <i>competitive or cooperative
+ <p>MultiPopCoevolutionaryEvaluator is an Evaluator which performs <i>competitive or cooperative multi-population
  coevolution</i>.  Competitive coevolution is where individuals' fitness is determined by
  testing them against individuals from other subpopulation.  Cooperative coevolution is where individuals
  form teams together with members of other subpopulations, and the individuals' fitness is computed based

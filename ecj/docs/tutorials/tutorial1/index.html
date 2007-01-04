@@ -164,15 +164,12 @@ pop.subpop.0		= ec.Subpopulation
 <tt><pre>
 pop.subpop.0.size 		= 100
 pop.subpop.0.duplicate-retries 	= 0
-pop.subpop.0.fitness 		= ec.simple.SimpleFitness
 pop.subpop.0.species 		= ec.vector.VectorSpecies
 </pre></tt>
 
 <p>We've first stated that the size of the subpopulation is going to be 100 individuals.  Also, when initializing themselves, subpopulations can guarantee that they won't duplicate individuals: they do this by generating an individual over and over again until it's different from its peers.  By default we're telling the system not to bother to do this, duplicates are fine.
 
-<p>Every individual has some kind of fitness attached to it, defined by a subclass of <a href="../../classdocs/ec/Fitness.html">ec.Fitness</a>.  Here we say that we will use <a href="../../classdocs/ec/simple/SimpleFitness.html">ec.simple.SimpleFitness</a> as our fitness class.  SimpleFitness defines fitness values from 0.0 inclusive to infinity exclusive, where 0.0 is the worst possible fitness, and infinity is better than the ideal fitness.  You can define the ideal fitness to any value greater than 0, we'll get to that later.
-
-<p>Lastly, as mentioned earlier, every Subpopulation has an associated <a href="../../classdocs/ec/Species.html">ec.Species</a> which defines features of the Individuals in the Subpopulation: specifically, how to create them and how to breed them.  This is the first <b>representation-specific</b> object we've seen so far: <a href="../../classdocs/ec/vector/VectorSpecies.html">ec.vector.VectorSpecies</a> defines a particular kind of Species that knows how to make <a href="../../classdocs/ec/vector/VectorIndividual.html">BitVectorIndividual</a>s, which are the kind of individuals we'll be using.  Other kinds of individuals require their own special Species classes.
+<p>As mentioned earlier, every Subpopulation has an associated <a href="../../classdocs/ec/Species.html">ec.Species</a> which defines features of the Individuals in the Subpopulation: specifically, how to create them and how to breed them.  This is the first <b>representation-specific</b> object we've seen so far: <a href="../../classdocs/ec/vector/VectorSpecies.html">ec.vector.VectorSpecies</a> defines a particular kind of Species that knows how to make <a href="../../classdocs/ec/vector/VectorIndividual.html">BitVectorIndividual</a>s, which are the kind of individuals we'll be using.  Other kinds of individuals require their own special Species classes.
 
 <h3>Define the Representation</h3>
 
@@ -197,6 +194,18 @@ pop.subpop.0.species.mutation-prob	= 0.01
 <p>This stipulates that our individuals will be vectors of 100 bits, that their "default" crossover will be one-point crossover, that if we use the default crossover we will use it 100% of the time to breed individuals (as opposed to 0% direct copying), and finally that if we use the "default" mutation, then each bit will have a 1% probability of getting bit-flipped, independent of other bits.
 
 <p>We'll get to the "default" crossover and mutation in a second, but first note that VectorSpecies is a Prototype, and Prototypes almost always have <b>default parameter bases</b> to fall back on.  The default parameter base for VectorSpecies is <tt>vector.species</tt> (see the <a href="../../classdocs/ec/vector/VectorSpecies.html"> VectorSpecies documentation</a>).  For example, instead of explicitly saying that all indivividuals in the species used in subpopulation #0 of the population are supposed to have a genome-size of 100, we could have simply said that all individuals belonging to any VectorSpecies have a genome size of 100 unless otherwise stipulated.  We say it like this:  <tt>vector.species.genome-size = 100</tt>
+
+<h3>Define the Fitness</h3>
+
+Fitnesses are similarly defined: 
+
+<tt><pre>
+pop.subpop.0.species.fitness 		= ec.simple.SimpleFitness
+</pre></tt>
+
+<p>Every Individual has some kind of fitness attached to it, defined by a subclass of <a href="../../classdocs/ec/Fitness.html">ec.Fitness</a>.  Fitnesses are not built into Individuals; and instances of the same Individual subclass can have different kinds of Fitnesses if you see fit.  Fitnesses are prototypes just like Individuals are: each Species instantiates one Fitness subclass, called the <i>prototypical Fitness</i>, and uses that class to clone copies which are attached to new Individuals  the Species has created. 
+
+<p>Here we say that we will use <a href="../../classdocs/ec/simple/SimpleFitness.html">ec.simple.SimpleFitness</a> as our fitness class.  SimpleFitness defines fitness values from 0.0 inclusive to infinity exclusive, where 0.0 is the worst possible fitness, and infinity is better than the ideal fitness.  You can define the ideal fitness to any value greater than 0, we'll get to that later.
 
 <h3>Define the Breeding Procedure</h3>
 

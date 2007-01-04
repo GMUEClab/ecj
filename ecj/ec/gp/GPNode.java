@@ -24,7 +24,7 @@ import ec.EvolutionState;
  * for cloning subtrees in special ways, counting the number of nodes
  * in subtrees in special ways, and finding specific nodes in subtrees.
  *
- * GPNode's protoClone() method does not clone its children (it copies the
+ * GPNode's lightClone() method does not clone its children (it copies the
  * array, but that's it).  If you want to deep-clone a tree or subtree, you
  * should use one of the cloneReplacing(...) methods instead.
  *
@@ -83,7 +83,7 @@ import ec.EvolutionState;
  * @version 1.0 
  */
 
-public abstract class GPNode implements GPNodeParent
+public abstract class GPNode implements GPNodeParent, Prototype
     {
     public static final String P_NODE = "node";
     public static final String P_NODECONSTRAINTS = "nc";
@@ -345,14 +345,6 @@ public abstract class GPNode implements GPNodeParent
         while(cparent!=null && cparent instanceof GPNode)
             cparent = ((GPNode)(cparent)).parent;
         return cparent; 
-
-
-        /* // -- old code
-           if (parent==null) return null;
-           if (!(parent instanceof GPNode))  // found the root!
-           return parent;
-           return ((GPNode)parent).rootParent();
-        */
         }
 
     /** Returns true if the subtree rooted at this node contains subnode.  O(n). */
@@ -378,7 +370,7 @@ public abstract class GPNode implements GPNodeParent
     public String errorInfo() { return "GPNode " + toString() + " in the function set for tree " + ((GPTree)(rootParent())).treeNumber(); }
 
 
-    public Object clone()
+    public GPNode lightClone()
         { 
         try
             {
@@ -390,7 +382,25 @@ public abstract class GPNode implements GPNodeParent
             { throw new InternalError(); } // never happens
         }
 
-
+    /** Deep-clones the tree rooted at this node, and returns the entire
+        copied tree.  The result has everything set except for the root
+        node's parent and argposition.*/    
+ 
+    public Object clone()
+        { 
+        throw new InternalError(
+            "GPNode.clone() is moving from light clone to deep clone status.  To make certain that this doesn't create unforseen bugs in your code, "+
+            "we have added this error to the GPNode.clone() code.  If you need to do a light clone, call GPNode.lightClone().  If you need to do a full deep clone, " +
+            "call GPNode.cloneReplacing().  We'll remove this error message in a while when we think all usage of clone() has gone away for the moment, and it will " +
+            "operate identically to cloneReplacing().\n\nIf you see this message but didn't do anything to cause it, please contact ecj-help@cs.gmu.edu and send us " +
+            "the backtrace -- we probably forgot to change over a clone() call ourselves.  Thanks!");
+        
+        
+        // eventually, we'll do this:
+        /*
+          return cloneReplacing();
+        */
+        }
 
     /** Deep-clones the tree rooted at this node, and returns the entire
         copied tree.  The result has everything set except for the root
@@ -398,7 +408,7 @@ public abstract class GPNode implements GPNodeParent
  
     public final GPNode cloneReplacing() 
         {
-        GPNode newnode = (GPNode)(clone());
+        GPNode newnode = (GPNode)(lightClone());
         for(int x=0;x<children.length;x++)
             {
             newnode.children[x] = (GPNode)(children[x].cloneReplacing()); 
@@ -424,7 +434,7 @@ public abstract class GPNode implements GPNodeParent
             return newSubtree.cloneReplacing();
         else
             {
-            GPNode newnode = (GPNode)(clone());
+            GPNode newnode = (GPNode)(lightClone());
             for(int x=0;x<children.length;x++)
                 {
                 newnode.children[x] = (GPNode)(children[x].cloneReplacing(newSubtree,oldSubtree)); 
@@ -454,7 +464,7 @@ public abstract class GPNode implements GPNodeParent
             }
         else
             {
-            GPNode newnode = (GPNode)(clone());
+            GPNode newnode = (GPNode)(lightClone());
             for(int x=0;x<children.length;x++)
                 {
                 newnode.children[x] = (GPNode)(children[x].cloneReplacingNoSubclone(newSubtree,oldSubtree)); 
@@ -490,7 +500,7 @@ public abstract class GPNode implements GPNodeParent
             return newSubtrees[candidate].cloneReplacing(newSubtrees,oldSubtrees);
         else
             {
-            GPNode newnode = (GPNode)(clone());
+            GPNode newnode = (GPNode)(lightClone());
             for(int x=0;x<children.length;x++)
                 {
                 newnode.children[x] = (GPNode)(children[x].cloneReplacing(newSubtrees,oldSubtrees)); 
@@ -526,7 +536,7 @@ public abstract class GPNode implements GPNodeParent
         else
             {
             numArgs = children.length;
-            curnode = (GPNode)clone();
+            curnode = (GPNode)lightClone();
             }
 
         // populate
@@ -577,7 +587,7 @@ public abstract class GPNode implements GPNodeParent
         else
             {
             numArgs = children.length;
-            curnode = (GPNode)clone();
+            curnode = (GPNode)lightClone();
             }
 
         // populate
@@ -624,7 +634,7 @@ public abstract class GPNode implements GPNodeParent
         }
     
     /** Returns true if I and the provided node are the same kind of
-        node -- that is, we could have both been protoCloned() and reset() from
+        node -- that is, we could have both been cloned() and reset() from
         the same prototype node.  The default form of this function returns
         true if I and the node have the same class, the same length children
         array, and the same constraints.  You may wish to override this in
@@ -787,10 +797,10 @@ public abstract class GPNode implements GPNodeParent
         expression in parentheses (or not).  In pseudo-C form, functions with one child are printed out as a(b), 
         functions with more than two children are printed out as a(b, c, d, ...), and functions with exactly two
         children are either printed as a(b, c) or in operator form as (b a c) -- for example, (b * c).  Whether
-		or not to do this depends on the setting of <tt>useOperatorForm</tt>.  Additionally, terminals will be
-		printed out either in variable form -- a -- or in zero-argument function form -- a() -- depending on
-		the setting of <tt>printTerminalsAsVariables</tt>.
-		*/
+        or not to do this depends on the setting of <tt>useOperatorForm</tt>.  Additionally, terminals will be
+        printed out either in variable form -- a -- or in zero-argument function form -- a() -- depending on
+        the setting of <tt>printTerminalsAsVariables</tt>.
+    */
                 
     public String makeCTree(boolean parentMadeParens, boolean printTerminalsAsVariables, boolean useOperatorForm)
         {
@@ -915,7 +925,7 @@ public abstract class GPNode implements GPNodeParent
 
         // we're happy!
         dret.pos += len2;
-        return (GPNode)clone();
+        return (GPNode)lightClone();
         }
 
 
@@ -961,7 +971,7 @@ public abstract class GPNode implements GPNodeParent
             set.terminals[expectedType.type] : 
             set.nonterminals[expectedType.type];
 
-        GPNode node = ((GPNode)(gpfi[index].clone()));
+        GPNode node = ((GPNode)(gpfi[index].lightClone()));
         
         if (node.children == null || node.children.length != len)
             state.output.fatal("Mismatch in number of children (" + len + 

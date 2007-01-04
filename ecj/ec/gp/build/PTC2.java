@@ -155,14 +155,20 @@ public class PTC2 extends GPNodeBuilder
 
 
     public GPNode newRootedTree(final EvolutionState state,
-                                final GPType type,
+                                GPType type,
                                 final int thread,
                                 final GPNodeParent parent,
                                 final GPFunctionSet set,
                                 final int argposition,
                                 int requestedSize)
         {
-        int t = type.type;
+        // ptc2 can mess up if there are no available terminals for a given type.  If this occurs,
+        // and we find ourselves unable to pick a terminal when we want to do so, we will issue a warning,
+        // and pick a nonterminal, violating the ptc2 size and depth contracts.  This can lead to pathological situations
+        // where the system will continue to go on and on unable to stop because it can't pick a terminal,
+        // resulting in running out of memory or some such.  But there are cases where we'd want to let
+        // this work itself out.
+        boolean triedTerminals = false;
 
         if (!(set instanceof PTCFunctionSetForm))
             state.output.fatal("Set " + set.name + " is not of the class ec.gp.build.PTCFunctionSetForm, and so cannot be used with PTC Nodebuilders.");
@@ -176,27 +182,39 @@ public class PTC2 extends GPNodeBuilder
 
         GPNode root;
 
-        if (requestedSize==1)  // return a terminal
+        int t = type.type;
+        GPNode[] terminals = set.terminals[t];
+        GPNode[] nonterminals = set.nonterminals[t];
+        GPNode[] nodes = set.nodes[t];          
+
+        if (nodes.length == 0)
+            errorAboutNoNodeWithType(type, state);   // total failure
+
+
+
+        // return a terminal
+        if ((   requestedSize==1 ||                                                          // Now pick a terminal if our size is 1
+                warnAboutNonterminal(nonterminals.length==0, type, false, state)) &&         // OR if there are NO nonterminals!
+            (triedTerminals = true) &&                                                       // [first set triedTerminals]
+            terminals.length != 0)                                                           // AND if there are available terminals
             {
-            GPNode[] nn = set.terminals[t];
             root = (GPNode)
-                nn[RandomChoice.pickFromDistribution(
-                       pset.terminalProbabilities(t),
-                       state.random[thread].nextFloat(),CHECK_BOUNDARY)].clone();
+                terminals[RandomChoice.pickFromDistribution(
+                              pset.terminalProbabilities(t),
+                              state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
             root.resetNode(state,thread);  // give ERCs a chance to randomize
             root.argposition = (byte)argposition;
             root.parent = parent;
             }
         else   // return a nonterminal-rooted tree
             {
+            if (triedTerminals) warnAboutNoTerminalWithType(type, false, state);        // we tried terminals and we're here because there were none!
 
             // pick a nonterminal
-
-            GPNode[] nn = set.nonterminals[t];
             root = (GPNode)
-                nn[RandomChoice.pickFromDistribution(
-                       pset.nonterminalProbabilities(t),
-                       state.random[thread].nextFloat(),CHECK_BOUNDARY)].clone();
+                nonterminals[RandomChoice.pickFromDistribution(
+                                 pset.nonterminalProbabilities(t),
+                                 state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
             root.resetNode(state,thread);  // give ERCs a chance to randomize
             root.argposition = (byte)argposition;
             root.parent = parent;
@@ -210,33 +228,49 @@ public class PTC2 extends GPNodeBuilder
             for(int x=0;x<childtypes.length;x++)
                 enqueue(root,x,1);  /* depth 1 */
             
-            
-            // begin the first loop
-            while(!(s_size + s >= requestedSize || s_size==0))
+                        
+                        
+                        
+            while(s_size>0)
                 {
+                triedTerminals = false;
                 randomDequeue(state,thread);
-                int y = dequeue_node.constraints(initializer).childtypes[dequeue_argpos].type;
+                type = dequeue_node.constraints(initializer).childtypes[dequeue_argpos];
                 
-                if (dequeue_depth==maxDepth)  // pick a terminal
+                int y = type.type;
+                terminals = set.terminals[y];
+                nonterminals = set.nonterminals[y];
+                nodes = set.nodes[y];           
+
+                if (nodes.length == 0)
+                    errorAboutNoNodeWithType(type, state);   // total failure
+
+                // pick a terminal 
+                if ((   s_size + s >= requestedSize ||                                        // if we need no more nonterminal nodes
+                        dequeue_depth==maxDepth ||                                            // OR if we're at max depth and must pick a terminal
+                        warnAboutNonterminal(nonterminals.length==0, type, false, state)) &&  // OR if there are NO nonterminals!
+                    (triedTerminals = true) &&                                                // [first set triedTerminals]
+                    terminals.length != 0)                                                    // AND if there are available terminals
                     {
-                    nn = set.terminals[y];
                     GPNode n = (GPNode)
-                        nn[RandomChoice.pickFromDistribution(
-                               pset.terminalProbabilities(y),
-                               state.random[thread].nextFloat(),CHECK_BOUNDARY)].clone();
+                        terminals[RandomChoice.pickFromDistribution(
+                                      pset.terminalProbabilities(y),
+                                      state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
                     dequeue_node.children[dequeue_argpos] = n;
                     n.resetNode(state,thread);  // give ERCs a chance to randomize
                     n.argposition = (byte)dequeue_argpos;
                     n.parent = dequeue_node;
                     }
                 
-                else   // pick a nonterminal and enqueue its children
+                // pick a nonterminal and enqueue its children
+                else
                     {
-                    nn = set.nonterminals[y];
+                    if (triedTerminals) warnAboutNoTerminalWithType(type, false, state);       // we tried terminals and we're here because there were none!
+                                                                                        
                     GPNode n = (GPNode)
-                        nn[RandomChoice.pickFromDistribution(
-                               pset.nonterminalProbabilities(y),
-                               state.random[thread].nextFloat(),CHECK_BOUNDARY)].clone();
+                        nonterminals[RandomChoice.pickFromDistribution(
+                                         pset.nonterminalProbabilities(y),
+                                         state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
                     dequeue_node.children[dequeue_argpos] = n;
                     n.resetNode(state,thread);  // give ERCs a chance to randomize
                     n.argposition = (byte)dequeue_argpos;
@@ -248,29 +282,7 @@ public class PTC2 extends GPNodeBuilder
                     }
                 s++;
                 }
-            
-            
-            // begin the second loop
-            while(s_size!=0)
-                {
-                randomDequeue(state,thread);
-                int y = dequeue_node.constraints(initializer).childtypes[dequeue_argpos].type;
-                // pick a terminal
-                
-                nn = set.terminals[y];
-                GPNode n = (GPNode)
-                    nn[RandomChoice.pickFromDistribution(
-                           pset.terminalProbabilities(y),
-                           state.random[thread].nextFloat(),CHECK_BOUNDARY)].clone();
-                dequeue_node.children[dequeue_argpos] = n;
-                n.resetNode(state,thread);  // give ERCs a chance to randomize
-                n.argposition = (byte)dequeue_argpos;
-                n.parent = dequeue_node;
-                }
             }
-
-        //root.printRootedTreeForHumans(state,0,3000,0,0);
-        //System.out.println();
 
         return root;
         }

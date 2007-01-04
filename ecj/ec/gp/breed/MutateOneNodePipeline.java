@@ -215,7 +215,7 @@ public class MutateOneNodePipeline extends GPBreedingPipeline
             GPType type;
             type = p1.parentType(initializer);
             
-            p2 = (GPNode)(pickCompatibleNode(p1,i.trees[t].constraints(initializer).functionset,state,type,thread)).clone();
+            p2 = (GPNode)(pickCompatibleNode(p1,i.trees[t].constraints(initializer).functionset,state,type,thread)).lightClone();
 
             // if it's an ERC, let it set itself up
             p2.resetNode(state,thread);

@@ -42,7 +42,7 @@ import ec.vector.*;
  
 public class ECSuite extends Problem implements SimpleProblemForm
     {
-
+    static boolean notfirst;
     EvolutionState state;
 
     public static final String P_WHICH_PROBLEM = "type";
@@ -107,6 +107,18 @@ public class ECSuite extends Problem implements SimpleProblemForm
                          final Individual ind,
                          final int threadnum)
         {
+
+        if (!notfirst)
+            {
+            try {
+                java.io.PrintWriter p = new java.io.PrintWriter(new java.io.FileWriter("/tmp/out"));
+                state.population.printPopulation(state, p);
+                p.close();
+                }
+            catch (java.io.IOException e) { e.printStackTrace(); }
+                
+            notfirst = true;
+            }
 
         if( !( ind instanceof DoubleVectorIndividual ) )
             _state.output.fatal( "The individuals for this problem should be DoubleVectorIndividuals." );

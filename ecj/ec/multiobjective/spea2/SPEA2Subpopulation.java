@@ -8,6 +8,9 @@
 package ec.multiobjective.spea2;
 import ec.*;
 import ec.util.Parameter;
+import java.io.*;
+import ec.util.DecodeReturn;
+import ec.util.Code;
 
 /* 
  * SPEA2Subpopulation.java
@@ -38,7 +41,7 @@ import ec.util.Parameter;
  <td>species (the subpopulations' species)</td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>fitness</tt></td>
- <td>f_prototype (the prototypical fitness)</td></tr>
+ <td>species.f_prototype (the prototypical fitness)</td></tr>
 
  </table>
 
@@ -56,6 +59,7 @@ public class SPEA2Subpopulation extends Subpopulation
     public int archiveSize;
 
     public static final String P_ARCHIVESIZE = "archive-size";
+    public static final String ARCHIVE_PREAMBLE = "SPEA2 Archive Size: ";
 
     /** Returns an instance of Subpopulation just like it had been before it was
         populated with individuals. You may need to override this if you override
@@ -77,6 +81,69 @@ public class SPEA2Subpopulation extends Subpopulation
                 "Archive size must be an integer >= 1 and <= population size-1.\n",
                 base.push(P_ARCHIVESIZE),null);
 
+        }
+
+
+    /** Overridden to include the archive size in the stream. */
+    public void printSubpopulationForHumans(final EvolutionState state,
+                                            final int log, 
+                                            final int verbosity)
+        {
+        state.output.println(ARCHIVE_PREAMBLE + archiveSize, verbosity, log);
+        super.printSubpopulationForHumans(state, log, verbosity);
+        }
+        
+    /** Overridden to include the archive size in the stream. */
+    public void printSubpopulation(final EvolutionState state,
+                                   final int log, 
+                                   final int verbosity)
+        {
+        state.output.println(ARCHIVE_PREAMBLE + Code.encode(archiveSize), verbosity, log);
+        super.printSubpopulation(state, log, verbosity);
+        }
+        
+    /** Overridden to include the archive size in the stream. */
+    public void printSubpopulation(final EvolutionState state,
+                                   final PrintWriter writer)
+        {
+        writer.println(ARCHIVE_PREAMBLE + Code.encode(archiveSize));
+        super.printSubpopulation(state, writer);
+        }
+        
+
+    /** Overridden to include the archive size in the stream. */
+    public void readSubpopulation(final EvolutionState state, 
+                                  final LineNumberReader reader) throws IOException
+        {
+        // check the size
+        int size = Code.readIntegerWithPreamble(NUM_INDIVIDUALS_PREAMBLE, state, reader);
+
+        // read in individuals
+        if (archiveSize != size)
+            state.output.fatal("On reading a SPEA2 subpopulation from a text stream, the archive sizes did not match.");
+        
+        super.readSubpopulation(state, reader);
+        }
+        
+    /** Overridden to include the archive size in the stream. */
+    public void writeSubpopulation(final EvolutionState state,
+                                   final DataOutput dataOutput) throws IOException
+        {
+        dataOutput.writeInt(archiveSize);
+        super.writeSubpopulation(state, dataOutput);
+        }
+    
+    /** Overridden to include the archive size in the stream. */
+    public void readSubpopulation(final EvolutionState state,
+                                  final DataInput dataInput) throws IOException
+        {
+        int size = dataInput.readInt();
+        
+        // read in individuals
+        if (archiveSize != size)
+            state.output.fatal("On reading a SPEA2 subpopulation from a binary stream, the archive sizes did not match.");
+
+        super.readSubpopulation(state, dataInput);
         }
 
     }

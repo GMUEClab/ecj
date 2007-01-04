@@ -25,10 +25,11 @@ import ec.vector.*;
 
 public class Rand1ExpDEBreeder extends DEBreeder
     {
-
+    // Cr is crossover constant.  A default value of 0.9 might be a good idea.
     public static final String P_Cr = "Cr";
     public double Cr;
         
+    // F is weighting factor.  A default value of 0.8 might be a good idea.
     public static final String P_F = "F";
     public double F;
 
@@ -48,23 +49,24 @@ public class Rand1ExpDEBreeder extends DEBreeder
     public Individual createIndividual( final EvolutionState state,
                                         int subpop,
                                         Individual[] inds,
-                                        int index )
+                                        int index,
+                                        int thread)
         {
         // select three indexes different from one another and from that of the current parent
         int r0, r1, r2;
         do
             {
-            r0 = state.random[0].nextInt(inds.length);
+            r0 = state.random[thread].nextInt(inds.length);
             }
         while( r0 == index );
         do
             {
-            r1 = state.random[0].nextInt(inds.length);
+            r1 = state.random[thread].nextInt(inds.length);
             }
         while( r1 == r0 || r1 == index );
         do
             {
-            r2 = state.random[0].nextInt(inds.length);
+            r2 = state.random[thread].nextInt(inds.length);
             }
         while( r2 == r1 || r2 == r0 || r2 == index );
 
@@ -74,7 +76,7 @@ public class Rand1ExpDEBreeder extends DEBreeder
         DoubleVectorIndividual g2 = (DoubleVectorIndividual)(inds[r2]);
 
         int dim = v.genome.length;
-        int localIndex = state.random[0].nextInt(dim);
+        int localIndex = state.random[thread].nextInt(dim);
         int counter = 0;
 
         // create the child
@@ -83,7 +85,7 @@ public class Rand1ExpDEBreeder extends DEBreeder
             v.genome[localIndex] = g0.genome[localIndex] + F * (g1.genome[localIndex] - g2.genome[localIndex]);
             localIndex = ++localIndex % dim;
             }
-        while ((state.random[0].nextDouble() < Cr) && (++counter < dim));
+        while ((state.random[thread].nextDouble() < Cr) && (++counter < dim));
 
         return v;
 

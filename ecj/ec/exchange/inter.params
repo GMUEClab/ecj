@@ -23,8 +23,8 @@ pop.subpops = 3
 
 pop.subpop.0 = ec.Subpopulation
 pop.subpop.0.size = 200
-pop.subpop.0.fitness = ec.gp.koza.KozaFitness
 pop.subpop.0.species = ec.gp.GPSpecies
+pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
 pop.subpop.0.species.ind = ec.gp.GPIndividual
 pop.subpop.0.duplicate-retries = 100
 pop.subpop.0.species.ind.numtrees = 1
@@ -40,8 +40,8 @@ pop.subpop.0.species.pipe.source.1.prob = 0.1
 
 pop.subpop.1 = ec.Subpopulation
 pop.subpop.1.size = 200
-pop.subpop.1.fitness = ec.gp.koza.KozaFitness
 pop.subpop.1.species = ec.gp.GPSpecies
+pop.subpop.1.species.fitness = ec.gp.koza.KozaFitness
 pop.subpop.1.species.ind = ec.gp.GPIndividual
 pop.subpop.1.duplicate-retries = 100
 pop.subpop.1.species.ind.numtrees = 1
@@ -57,8 +57,8 @@ pop.subpop.1.species.pipe.source.1.prob = 0.1
 
 pop.subpop.2 = ec.Subpopulation
 pop.subpop.2.size = 200
-pop.subpop.2.fitness = ec.gp.koza.KozaFitness
 pop.subpop.2.species = ec.gp.GPSpecies
+pop.subpop.2.species.fitness = ec.gp.koza.KozaFitness
 pop.subpop.2.species.ind = ec.gp.GPIndividual
 pop.subpop.2.duplicate-retries = 100
 pop.subpop.2.species.ind.numtrees = 1

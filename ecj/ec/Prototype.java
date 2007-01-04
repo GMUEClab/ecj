@@ -22,16 +22,28 @@ import ec.util.Parameter;
  * setup(...) called on them.  From then on, all new instances of a Prototype
  * classes are Cloned from these prototype instances.
  *
- * This EC library uses Prototypes a lot.  Individuals are prototypes.
- * Species are prototypes.  Fitness objects are prototypes.  
- * In the GP section, GPNodes and GPTrees are prototypes.
- *
- * The purpose of a prototype is to make it possible to ask classes,
+ * <p>The purpose of a prototype is to make it possible to ask classes,
  * determined at run-time by user parameters, to instantiate
  * themselves very many times without using the Reflection library, which 
  * would be very inefficient.
  *
- * Prototypes must be Cloneable, Serializable (through Setup), and of
+ * <p>ECJ makes extensive use of Prototypes.  Individuals are prototypes.
+ * Species are prototypes.  Fitness objects are prototypes.  Breeding
+ * pipelines and selection methods are prototypes.  In the GP section, 
+ * GPNodes and GPTrees are prototypes.  In the Rule section, Rulesets and
+ * Rules are prototypes.  In the Vector section, VectorGenes are prototypes.
+ * And so on.
+ *
+ * <p>ECJ uses Prototypes almost exclusively instead of calling <tt>new</tt>.
+ * This is because <tt>new</t> requires that you know, in your code, the exact
+ * class of the object to be created.  Doing so programmatically essentially
+ * precludes being able to set up object graphs dynamically from parameter files.
+ * 
+ * <p>Sadly, clone() is rather slower than calling <tt>new</tt>.  However
+ * it <i>is</i> a lot faster than calling java.lang.Class.newInstance(),
+ * and somewhat faster than rolling our own "cloner" method.
+ *
+ * <p>Prototypes must be Cloneable, Serializable (through Setup), and of
  * course, Setup.
  *
  * @author Sean Luke
@@ -44,11 +56,9 @@ public interface Prototype extends Cloneable, Setup
         and suitable to begin use in its own evolutionary
         context.
 
-        <p>The question here is whether or not this means to perform a 
-        "deep" or "light" ("shallow") clone, or something in-between.  
-        You may need to deep-clone parts of your object
-        rather than simply copying their references, depending
-        on the situation:
+        <p>Typically this should be a full "deep" clone.
+        However, you may share certain elements with other objects
+        rather than clone hem, depending on the situation:
 
         <p>
         <ul>
@@ -68,83 +78,65 @@ public interface Prototype extends Cloneable, Setup
         <p><b>Implementations.</b>
 
         <ul>
-        <li>If no ancestor of yours implements protoClone(),
-        and you have no need to either (light cloning is fine with you),
-        and you are abstract, then you should not declare protoClone().
+        <li>If no ancestor of yours implements clone(),
+        and you have no need to do clone deeply,
+        and you are abstract, then you should not declare clone().
         
-        <li>If no ancestor of yours implements protoClone(),
-        and you have no need to either (light cloning is fine with you),
+        <li>If no ancestor of yours implements clone(),
+        and you have no need to do clone deeply,
         and you are <b>not</b> abstract, then you should implement
         it as follows:
 
         <p>
         <tt><pre>
-        public Object protoClone() 
-        { 
-        return super.clone();
-        }
+        * public Object clone() 
+        *     {
+        *     try
+        *         { 
+        *         return super.clone();
+        *         }
+        *     catch ((CloneNotSupportedException e)
+        *         { throw new InternalError(); } // never happens
+        *     }
         </pre></tt>
         
-        <li>If no ancestor of yours implements protoClone(), but you
+        <li>If no ancestor of yours implements clone(), but you
         need to deep-clone some things, then you should implement it
         as follows:
 
         <p>
         <tt><pre>
-        public Object protoClone() 
-        {
-        myobj = (MyObject) (super.clone());
-
-        // put your deep-cloning code here...
-        // ...you should use protoClone and not 
-        // protoCloneSimple to clone subordinate objects...
-        return myobj;
-        } 
+        * public Object clone() 
+        *     {
+        *     try
+        *         { 
+        *         MyObject myobj = (MyObject) (super.clone());
+        *
+        *         // put your deep-cloning code here...
+        *         }
+        *     catch ((CloneNotSupportedException e)
+        *         { throw new InternalError(); } // never happens
+        *     return myobj;
+        *     } 
         </pre></tt>
 
-        <li>If you need to override an ancestors' implementation
-        of protoClone, in order to do your own deep cloning as well,
-        then you should implement it as follows:
+        <li>If an ancestor has implemented clone(), and you also need
+        to deep clone some things, then you should implement it as follows:
 
         <p>
         <tt><pre>
-        public Object protoClone() 
-        {
-        MyObject myobj = (MyObject)(super.protoClone());
-
-        // put your deep-cloning code here...
-        // ...you should use protoClone and not 
-        // protoCloneSimple to clone subordinate objects...
-        return myobj;
-        } 
+        * public Object clone() 
+        *     { 
+        *     MyObject myobj = (MyObject) (super.clone());
+        *
+        *     // put your deep-cloning code here...
+        *
+        *     return myobj;
+        *     } 
         </pre></tt>
-
-        </ul>
-
-        <p>If you know that your superclasses will <i>never</i> change
-        their protoClone() implementations, you might try inlining them
-        in your overridden protoClone() method.  But this is dangerous
-        (though it yields a small net increase).
-
-        <p>In general, you want to keep your deep cloning to an absolute
-        minimum, so that you don't have to call protoClone() but
-        one time.
-
-        <p>The approach taken here is the fastest that I am aware of
-        while still permitting objects to be specified at runtime from
-        a parameter file.  It would be faster to use the "new" operator;
-        but that would require hard-coding that we can't do.  Although
-        using java.lang.Object.clone() entails an extra layer that
-        deals with stripping away the "protected" keyword and also 
-        wrapping the exception handling (which is a BIG hit, about
-        three times as slow as using "new"), it's still MUCH faster
-        than using java.lang.Class.newInstance(), and also much faster
-        than rolling our own Clone() method.
     */
 
     public Object clone();
-
-
 
     /** Sets up the object by reading it from the parameters stored
         in <i>state</i>, built off of the parameter base <i>base</i>.

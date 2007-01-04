@@ -51,7 +51,7 @@ public class SimpleEvolutionState extends EvolutionState
         // POPULATION INITIALIZATION
         output.message("Initializing Generation 0");
         statistics.preInitializationStatistics(this);
-        population = initializer.initialPopulation(this);
+        population = initializer.initialPopulation(this, 0); // unthreaded
         statistics.postInitializationStatistics(this);
 
         // INITIALIZE CONTACTS -- done after initialization to allow

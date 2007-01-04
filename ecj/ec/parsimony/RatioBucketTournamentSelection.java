@@ -141,23 +141,6 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
     public void prepareToProduce(final EvolutionState state, final int subpopulation, final int thread) 
         {
         bucketValues = new int[ state.population.subpops[subpopulation].individuals.length ];
-
-        /*
-        // sort the population according to fitness (so that last individuals are better!!!!)
-        SortComparator compare = new SortComparator()
-        {
-        public boolean lt( Object a, Object b)
-        {
-        return ((Individual)b).fitness.betterThan( ((Individual)a).fitness );
-        }
-        public boolean gt( Object a, Object b)
-        {
-        return ((Individual)a).fitness.betterThan( ((Individual)b).fitness );
-        }
-        };
-        QuickSort.qsort( state.population.subpops[subpopulation].individuals,
-        compare );
-        */
         
         // correct?
         java.util.Arrays.sort(state.population.subpops[subpopulation].individuals,

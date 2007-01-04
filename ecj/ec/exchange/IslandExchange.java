@@ -1371,9 +1371,7 @@ class IslandExchangeMailbox implements Runnable
                                         {
                                         // read the emigrant in the storage
                                         immigrants[subpop][person2die[subpop]] = state.population.subpops[subpop].species.
-                                            newIndividual( state, state.population.subpops[subpop],
-                                                           (Fitness)state.population.subpops[subpop].f_prototype.clone(),
-                                                           dataInput[x] );
+                                            newIndividual( state, dataInput[x] );
 
                                         //state.output.message( "Individual received." );
                                         

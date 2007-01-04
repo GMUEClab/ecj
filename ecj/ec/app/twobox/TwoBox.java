@@ -99,7 +99,7 @@ public class TwoBox extends GPProblem implements SimpleProblemForm
         if (trainingSetSize<1) state.output.fatal("Range must be an integer greater than 0"); 
 
         // Compute our inputs so they
-        // can be copied with protoClone later
+        // can be copied with clone later
         
         inputsl0 = new double[trainingSetSize];
         inputsw0 = new double[trainingSetSize];

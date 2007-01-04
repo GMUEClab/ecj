@@ -52,7 +52,7 @@ public class FitProportionateSelection extends SelectionMethod
         return SelectDefaults.base().push(P_FITNESSPROPORTIONATE);
         }
 
-    // don't need protoClone etc. 
+    // don't need clone etc. 
 
     public void prepareToProduce(final EvolutionState s,
                                  final int subpopulation,

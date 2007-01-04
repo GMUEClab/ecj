@@ -128,4 +128,4 @@ public abstract class VectorIndividual extends Individual
     public void join(Object[] pieces) { }
     
     public long size() { return genomeLength(); }
-	}
+    }

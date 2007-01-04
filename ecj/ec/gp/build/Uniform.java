@@ -431,7 +431,7 @@ public class Uniform extends GPNodeBuilder
         int choice = RandomChoice.pickFromDistribution(
             ROOT_D[functionset][type][size],ROOT_D[0][0][0][0],
             mt.nextDouble(),CHECKBOUNDARY);
-        GPNode node = (GPNode)(ROOT_D[functionset][type][size][choice].node.clone());
+        GPNode node = (GPNode)(ROOT_D[functionset][type][size][choice].node.lightClone());
         node.resetNode(state,thread);  // give ERCs a chance to randomize
         //System.out.println("Size: " + size + "Rooted: " + node);
         if (node.children.length == 0 && size !=1) // uh oh

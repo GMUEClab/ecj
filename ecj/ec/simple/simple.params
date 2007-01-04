@@ -66,8 +66,6 @@ pop.subpop.0 = 				ec.Subpopulation
 
 # subpop size is 1024 individuals
 pop.subpop.0.size =			1024
-# use SimpleFitness for the first subpop
-pop.subpop.0.fitness =			ec.simple.SimpleFitness
 # don't bother trying to eliminate duplicates from the
 # initial population
 pop.subpop.0.duplicate-retries =	0

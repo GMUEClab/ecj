@@ -80,10 +80,28 @@ public class RandomBranch extends GPNodeBuilder
                                 final int argposition,
                                 final GPFunctionSet set) 
         {
-        if (maxLength == 1)         // pick a random terminal
+        // randomBranch can mess up if there are no available terminals for a given type.  If this occurs,
+        // and we find ourselves unable to pick a terminal when we want to do so, we will issue a warning,
+        // and pick a nonterminal, violating the maximum-size contract.  This can lead to pathological situations
+        // where the system will continue to go on and on unable to stop because it can't pick a terminal,
+        // resulting in running out of memory or some such.  But there are cases where we'd want to let
+        // this work itself out.
+        boolean triedTerminals = false;
+
+        int t = type.type;
+        GPNode[] terminals = set.terminals[t];
+        GPNode[] nonterminals = set.nonterminals[t];
+        GPNode[] nodes = set.nodes[t];          
+
+        if (nodes.length == 0)
+            errorAboutNoNodeWithType(type, state);   // total failure
+
+        if ((   maxLength == 1 ||                                                       // if the desired length is 1
+                warnAboutNonterminal(nonterminals.length==0, type, false, state)) &&    // OR if there are NO nonterminals!
+            (triedTerminals = true) &&                                                  // [first set triedTerminals]
+            terminals.length != 0)                                                      // AND if there are available terminals
             {
-            GPNode[] nn = set.terminals[type.type];
-            GPNode n = (GPNode)(nn[state.random[thread].nextInt(nn.length)].clone());
+            GPNode n = (GPNode)(terminals[state.random[thread].nextInt(terminals.length)].lightClone());
             n.resetNode(state,thread);  // give ERCs a chance to randomize
             n.argposition = (byte)argposition;
             n.parent = parent;
@@ -91,24 +109,27 @@ public class RandomBranch extends GPNodeBuilder
             }
         else
             {
+            if (triedTerminals) warnAboutNoTerminalWithType(type, false, state);        // we tried terminals and we're here because there were none!
+                        
             // grab all the nodes whose arity is <= maxlength-1
             int len = set.nonterminalsUnderArity[type.type].length-1;
             if (len > maxLength-1) len = maxLength-1;
             GPNode[] okayNonterms = set.nonterminalsUnderArity[type.type][len];
 
-            if (okayNonterms.length == 0) // no nodes, pick a nonterminal
+            if (okayNonterms.length == 0) // no nodes, pick a terminal
                 {
-                GPNode[] okayTerms = set.terminals[type.type];
-                GPNode n = (GPNode)(okayTerms[state.random[thread].nextInt(okayTerms.length)].clone());
+                if (terminals.length == 0) 
+                    errorAboutNoNodeWithType(type, state);   // total failure
+                                
+                GPNode n = (GPNode)(terminals[state.random[thread].nextInt(terminals.length)].lightClone());
                 n.resetNode(state,thread);  // give ERCs a chance to randomize
                 n.argposition = (byte)argposition;
                 n.parent = parent;
                 return n;
                 }
-            
             else // we've got nonterminals, pick one at random
                 {
-                GPNode n = (GPNode)(okayNonterms[state.random[thread].nextInt(okayNonterms.length)].clone());
+                GPNode n = (GPNode)(okayNonterms[state.random[thread].nextInt(okayNonterms.length)].lightClone());
                 n.resetNode(state,thread);  // give ERCs a chance to randomize
                 n.argposition = (byte)argposition;
                 n.parent = parent;

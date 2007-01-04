@@ -41,13 +41,20 @@ public class DecodeReturn
     public static final byte T_BOOLEAN = 0;
     public static final byte T_BYTE = 1;
     public static final byte T_CHAR = 2;
+    /** Same as T_CHAR */
+    public static final byte T_CHARACTER = 2;
     public static final byte T_SHORT = 3;
     public static final byte T_INT = 4;
+    /** Same as T_INT */
+    public static final byte T_INTEGER = 4;
     public static final byte T_LONG = 5;
     public static final byte T_FLOAT = 6;
     public static final byte T_DOUBLE = 7;
     public static final byte T_STRING = 8;
 
+    /** The Line number, if it has been posted. */
+    public int lineNumber = 0;
+    
     /** The DecodeReturn type */
     public byte type;
 

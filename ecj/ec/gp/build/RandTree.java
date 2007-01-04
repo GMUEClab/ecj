@@ -380,7 +380,7 @@ public class RandTree extends GPNodeBuilder
             if ((nextChar=='x') || (nextChar=='*')) /* terminal node */
                 {
                 GPNode[] nn = set.terminals[0];
-                GPNode n = (GPNode)(nn[state.random[thread].nextInt(nn.length)].clone());
+                GPNode n = (GPNode)(nn[state.random[thread].nextInt(nn.length)].lightClone());
                 n.resetNode(state,thread);  // give ERCs a chance to randomize
                 s.push(n);
                 }
@@ -400,7 +400,7 @@ public class RandTree extends GPNodeBuilder
 
                 //Arity found.  Now just choose non terminal at random.
                 GPNode[] nonTerms=set.nodesByArity[0][Ycount];
-                GPNode nT=(GPNode) (nonTerms[state.random[thread].nextInt(nonTerms.length)].clone());
+                GPNode nT=(GPNode) (nonTerms[state.random[thread].nextInt(nonTerms.length)].lightClone());
                 // Non terminal chosen, now attaching children
                 int childcount=Ycount;
                 while (childcount>0)

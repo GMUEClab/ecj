@@ -35,9 +35,9 @@ pop.subpop.0		= ec.Subpopulation
 
 pop.subpop.0.size 		= 10
 pop.subpop.0.duplicate-retries 	= 0
-pop.subpop.0.fitness 		= ec.simple.SimpleFitness
 pop.subpop.0.species 		= ec.vector.VectorSpecies
 
+pop.subpop.0.species.fitness 	= ec.simple.SimpleFitness
 pop.subpop.0.species.ind	= ec.vector.BitVectorIndividual
 
 pop.subpop.0.species.genome-size	= 20

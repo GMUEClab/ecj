@@ -24,7 +24,7 @@ import ec.util.*;
  * cloned and used, on a per-thread basis, for the evolution of each
  * chunk of individuals in a new population.  If you for some reason
  * need global Problem information, you will have to provide it
- * statically, or copy pointers over during the protoClone() process
+ * statically, or copy pointers over during the clone() process
  * (there is likely only one Problem prototype, depending on the
  * Evaluator class used).
  *
@@ -69,7 +69,8 @@ public abstract class Problem implements Prototype
 
     // default form does nothing
     public void setup(final EvolutionState state, final Parameter base) 
-        { }
+        {
+        }
 
     public Object clone()
         {
@@ -77,8 +78,6 @@ public abstract class Problem implements Prototype
         catch (CloneNotSupportedException e) 
             { throw new InternalError(); } // never happens
         }
-    
-
 
     /** May be called by the Evaluator prior to a series of individuals to 
         evaluate, and then ended with a finishEvaluating(...).  If this is the
@@ -103,16 +102,18 @@ public abstract class Problem implements Prototype
 
     /** Called to set up remote evaluation network contacts when the run is started.  By default does nothing. */
     public void initializeContacts( EvolutionState state )
-        { }
+        {
+        }
 
     /**  Called to reinitialize remote evaluation network contacts when the run is restarted from checkpoint.  By default does nothing. */
     public void reinitializeContacts( EvolutionState state )
-        { }
+        {
+        }
     
     /**  Called to shut down remote evaluation network contacts when the run is completed.  By default does nothing. */
     public void closeContacts(EvolutionState state, int result)
-        { }
-
+        {
+        }
     }
 
 

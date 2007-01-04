@@ -68,9 +68,6 @@ public final class GPSetType extends GPType
             }
 
         // Sort the packed array
-        /*
-          QuickSort.qsort(types_packed);
-        */
         java.util.Arrays.sort(types_packed);
         }
 

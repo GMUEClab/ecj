@@ -16,12 +16,12 @@ parent.0 = ../../simple/simple.params
 
 pop.subpop.0.size = 100
 generations = 1000
-pop.subpop.0.fitness =			ec.simple.SimpleFitness
 
 pop.subpop.0.duplicate-retries = 0
 
 # specify species information
 pop.subpop.0.species = 			ec.vector.IntegerVectorSpecies
+pop.subpop.0.species.fitness =		ec.simple.SimpleFitness
 pop.subpop.0.species.ind = 		ec.vector.IntegerVectorIndividual
 pop.subpop.0.species.min-gene = 0
 pop.subpop.0.species.max-gene = 100

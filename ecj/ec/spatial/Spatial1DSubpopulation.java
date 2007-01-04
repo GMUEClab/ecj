@@ -25,8 +25,10 @@ import ec.util.*;
  *      Thus, each individual has an index in the subpopulation, and also a location in
  *      the space.
  *
- *      This public interface provides a method to obtain the indexes of the neighbors
+ *      <p>This public interface provides a method to obtain the indexes of the neighbors
  *      of a location.
+ *
+ *      <P>This Subpopulation does not include toroidalness in writing out to streams.
  *
  <p><b>Parameters</b><br>
  <table>
@@ -126,5 +128,4 @@ public class Spatial1DSubpopulation extends Subpopulation implements Space
             return min + state.random[threadnum].nextInt(max-min+1);
             }
         }
-
     }
