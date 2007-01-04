@@ -195,26 +195,7 @@ public class MuCommaLambdaBreeder extends Breeder
         for(int x=0;x<state.population.subpops.length;x++)
             {
             final Individual[] i = state.population.subpops[x].individuals;
-            /*
-              QuickSort.qsort(i,
-              new SortComparator()
-              {
-              // gt implies that object a should appear after object b in the sorted array.
-              // we want this to be the case if object a has WORSE fitness
-              public boolean gt(Object a, Object b)
-              {
-              return ((Individual)b).fitness.betterThan(
-              ((Individual)a).fitness);
-              }
-              // gt implies that object a should appear before object b in the sorted array
-              // we want this to be the case if object a has BETTER fitness
-              public boolean lt(Object a, Object b)
-              {
-              return ((Individual)a).fitness.betterThan(
-              ((Individual)b).fitness);
-              }
-              });
-            */
+
             java.util.Arrays.sort(i,
                                   new java.util.Comparator()
                                       {
@@ -344,7 +325,7 @@ public class MuCommaLambdaBreeder extends Breeder
             // check to make sure that the breeding pipeline produces
             // the right kind of individuals.  Don't want a mistake there! :-)
             if (!bp.produces(state,newpop,subpop,threadnum))
-                state.output.fatal("The Breeding Pipeline of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops[subpop].species.getClass().getName() + " or fitness " + newpop.subpops[subpop].f_prototype );
+                state.output.fatal("The Breeding Pipeline of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops[subpop].species.getClass().getName() + " or fitness " + newpop.subpops[subpop].species.f_prototype );
             bp.prepareToProduce(state,subpop,threadnum);
             
             // start breedin'!

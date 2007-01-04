@@ -351,9 +351,7 @@ public class Slave
         Individual ind = null;
         try
             {
-            ind = subPop.species.newIndividual(
-                state, subPop, (Fitness)(subPop.f_prototype.clone()));
-            ind.readIndividual(state,dataIn);
+            ind = subPop.species.newIndividual( state, dataIn);
             }
         catch (IOException e)
             {
@@ -441,9 +439,7 @@ public class Slave
             {
             for(int i=0;i<inds.length;++i)
                 {
-                inds[i] = subPop[i].species.newIndividual(
-                    state, subPop[i], (Fitness)(subPop[i].f_prototype.clone()));
-                inds[i].readIndividual(state,dataIn);
+                inds[i] = subPop[i].species.newIndividual( state, dataIn );
                 updateFitness[i] = dataIn.readBoolean();
                 }
             }

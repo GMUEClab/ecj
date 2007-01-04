@@ -158,7 +158,7 @@ public class SteadyStateBreeder extends SimpleBreeder
                     bp[pop] = (BreedingPipeline)st.population.subpops[pop].species.
                         pipe_prototype.clone();
                     if (!bp[pop].produces(st,st.population,pop,0))
-                        st.output.error("The Breeding Pipeline of subpopulation " + pop + " does not produce individuals of the expected species " + st.population.subpops[pop].species.getClass().getName() + " and with the expected Fitness class " + st.population.subpops[pop].f_prototype.getClass().getName());
+                        st.output.error("The Breeding Pipeline of subpopulation " + pop + " does not produce individuals of the expected species " + st.population.subpops[pop].species.getClass().getName() + " and with the expected Fitness class " + st.population.subpops[pop].species.f_prototype.getClass().getName());
                     }
                 // are they of the proper form?
                 sourcesAreProperForm(st,bp);

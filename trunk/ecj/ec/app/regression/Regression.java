@@ -85,7 +85,7 @@ public class Regression extends GPProblem implements SimpleProblemForm
         trainingSetSize = state.parameters.getInt(base.push(P_SIZE),null,1);
         if (trainingSetSize<1) state.output.fatal("Training Set Size must be an integer greater than 0"); 
 
-        // Compute our inputs so they can be copied with protoClone later
+        // Compute our inputs so they can be copied with clone later
         
         inputs = new double[trainingSetSize];
         outputs = new double[trainingSetSize];

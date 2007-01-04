@@ -12,7 +12,6 @@ pop = 					ec.Population
 pop.subpops =				1
 pop.subpop.0 = 				ec.Subpopulation
 pop.subpop.0.size =			31
-pop.subpop.0.fitness =			ec.simple.SimpleFitness
 pop.subpop.0.duplicate-retries =	2
 pop.subpop.0.species =                  ec.vector.VectorSpecies
 pop.subpop.0.species.genome-size = 	50
@@ -26,6 +25,7 @@ pop.subpop.0.species.pipe.source.0.source.0.source.0.size = 	3
 pop.subpop.0.species.pipe.source.0.source.0.source.1 = 	  	same
 pop.subpop.0.species.pipe.source.0.source.0.source.1.size = 	3
 
+pop.subpop.0.species.fitness =		ec.simple.SimpleFitness
 pop.subpop.0.species.ind =		ec.vector.BitVectorIndividual
 pop.subpop.0.species.mutation-prob = 	0.01
 pop.subpop.0.species.crossover-type = 	one

@@ -62,7 +62,7 @@ public class SpatialBreeder extends Breeder
             // check to make sure that the breeding pipeline produces
             // the right kind of individuals.  Don't want a mistake there! :-)
             if (!bp.produces(state,newpop,subpop,0))
-                state.output.fatal("The Breeding Pipeline of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops[subpop].species.getClass().getName() + " or fitness " + newpop.subpops[subpop].f_prototype );
+                state.output.fatal("The Breeding Pipeline of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops[subpop].species.getClass().getName() + " or fitness " + newpop.subpops[subpop].species.f_prototype );
             bp.prepareToProduce(state,subpop,0);
                 
             for( int x = 0 ; x < newpop.subpops[subpop].individuals.length ; x++ )

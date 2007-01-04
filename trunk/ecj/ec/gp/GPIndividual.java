@@ -23,10 +23,9 @@ import java.io.*;
  * You can use GPIndividual directly, or subclass it to extend it as
  * you see fit.
  
- * <P>GPIndividuals have two clone methods.  The standard
- * protoClone method in GPIndividual is <i>NOT a deep clone</i>.  If you
- * require a deep clone, Individual provides the <b>deepClone</b> method, which all Individuals should properly
- * override to ensure deep cloning.
+ * <P>GPIndividuals have two clone methods: clone() and lightClone().  clone() is
+ * a deep clone method as usual.  lightClone() is a light clone which does not copy
+ * the trees.
  *
  * <p>In addition to serialization for checkpointing, Individuals may read and write themselves to streams in three ways.
  *
@@ -174,11 +173,7 @@ public class GPIndividual extends Individual
         state.output.exitIfErrors();
         }
 
-    /** A printer for the individual in a reasonable human-readable,
-        fashion.  The default version prints out whether the
-        individual has been evaluated, what its fitness is, and
-        each of its trees in turn.     Don't write the species.
-        Modify this function as you see fit.  */
+    /** Overridden for the GPIndividual genotype, writing each tree in turn. */
     public void printIndividualForHumans(final EvolutionState state, final int log, 
                                          final int verbosity)
         {
@@ -192,11 +187,7 @@ public class GPIndividual extends Individual
             }
         }
 
-    /** Prints the individual in a way that it can be read in again
-        by computer.  The default version prints out whether the
-        individual has been evaluated, what its fitness is, and
-        each of its trees in turn.    Don't write the species.
-        Modify this function as you see fit. */
+    /** Overridden for the GPIndividual genotype, writing each tree in turn. */
     public void printIndividual(final EvolutionState state, final int log, 
                                 final int verbosity)
         {
@@ -210,11 +201,7 @@ public class GPIndividual extends Individual
             }   
         }
             
-    /** Prints the individual in a way that it can be read in again
-        by computer.  The default version prints out whether the
-        individual has been evaluated, what its fitness is, and
-        each of its trees in turn.  Don't write the species.
-        Modify this function as you see fit. */
+    /** Overridden for the GPIndividual genotype, writing each tree in turn. */
     public void printIndividual(final EvolutionState state,
                                 final PrintWriter writer)
         {
@@ -227,6 +214,7 @@ public class GPIndividual extends Individual
             }   
         }
         
+    /** Overridden for the GPIndividual genotype. */
     public void writeGenotype(final EvolutionState state,
                               final DataOutput dataOutput) throws IOException
         {
@@ -235,6 +223,7 @@ public class GPIndividual extends Individual
             trees[x].writeTree(state,dataOutput);
         }
 
+    /** Overridden for the GPIndividual genotype. */
     public void readGenotype(final EvolutionState state,
                              final DataInput dataInput) throws IOException
         {
@@ -245,27 +234,27 @@ public class GPIndividual extends Individual
             trees[x].readTree(state,dataInput);
         }
 
-    /** Reads in the individual from a form printed by printIndividual().
-        The Fitness should have already been assigned to the individual at this
-        point.  Don't read in the species, it should also get set externally
-        by whoever calls this function. */ 
+    /** Overridden for the GPIndividual genotype. */
     
     public void readIndividual(final EvolutionState state,
                                final LineNumberReader reader) 
         throws IOException
         {
+        /*
         // First, was I evaluated?
         int linenumber = reader.getLineNumber();
         String s = reader.readLine();
         if (s==null || s.length() < EVALUATED_PREAMBLE.length()) // uh oh
-            state.output.fatal("Reading Line " + linenumber + ": " +
-                               "Bad 'Evaluated?' line.");
+        state.output.fatal("Reading Line " + linenumber + ": " +
+        "Bad 'Evaluated?' line.");
         DecodeReturn d = new DecodeReturn(s, EVALUATED_PREAMBLE.length());
         Code.decode(d);
         if (d.type!=DecodeReturn.T_BOOLEAN)
-            state.output.fatal("Reading Line " + linenumber + ": " +
-                               "Bad 'Evaluated?' line.");
+        state.output.fatal("Reading Line " + linenumber + ": " +
+        "Bad 'Evaluated?' line.");
         evaluated = (d.l!=0);
+        */
+        evaluated = Code.readBooleanWithPreamble(EVALUATED_PREAMBLE, state, reader);
 
         // Next, what's my fitness?
         fitness.readFitness(state,reader);

@@ -112,48 +112,15 @@ import ec.util.*;
 
 
 
-public class FullBuilder extends GPNodeBuilder
+public class FullBuilder extends KozaBuilder
     {
     public static final String P_FULLBUILDER = "full";
-    public static final String P_MAXDEPTH = "max-depth";
-    public static final String P_MINDEPTH = "min-depth";
-
-    /** The largest maximum tree depth FULL can specify. */
-    public int maxDepth;
-
-    /** The smallest maximum tree depth FULL can specify. */
-    public int minDepth;
 
     public Parameter defaultBase()
         {
         return GPKozaDefaults.base().push(P_FULLBUILDER); 
         }
 
-
-    public void setup(final EvolutionState state, final Parameter base)
-        {
-        super.setup(state,base);
-
-        Parameter def = defaultBase();
-
-        // load maxdepth and mindepth, check that maxdepth>0, mindepth>0, maxdepth>=mindepth
-        maxDepth = state.parameters.getInt(base.push(P_MAXDEPTH),def.push(P_MAXDEPTH),1);
-        if (maxDepth<=0)
-            state.output.fatal("The Max Depth for FullBuilder must be at least 1.",
-                               base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
-        
-        minDepth = state.parameters.getInt(base.push(P_MINDEPTH),def.push(P_MINDEPTH),1);
-        if (minDepth<=0)
-            state.output.fatal("The Max Depth for FullBuilder must be at least 1.",
-                               base.push(P_MINDEPTH),def.push(P_MINDEPTH));
-
-        if (maxDepth<minDepth)
-            state.output.fatal("Max Depth must be >= Min Depth for FullBuilder",
-                               base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
-        }
-
-
-    
     public GPNode newRootedTree(final EvolutionState state,
                                 final GPType type,
                                 final int thread,
@@ -164,49 +131,4 @@ public class FullBuilder extends GPNodeBuilder
         {
         return fullNode(state,0,state.random[thread].nextInt(maxDepth-minDepth+1) + minDepth,type,thread,parent,argposition,set);
         }
-
-
-    /** A private recursive method which builds a FULL-style tree for newRootedTree(...) */
-    private GPNode fullNode(final EvolutionState state,
-                            final int current,
-                            final int max,
-                            final GPType type,
-                            final int thread,
-                            final GPNodeParent parent,
-                            final int argposition,
-                            final GPFunctionSet set) 
-        {
-        // Pick a random node from Hashtable for a given type --
-        // we assume it's been pre-checked for invalid type situations
-        
-        if (current+1 >= max)  // we're at max depth, force a terminal
-            {
-            GPNode[] nn = set.terminals[type.type];
-            GPNode n = (GPNode)(nn[state.random[thread].nextInt(nn.length)].clone());
-            n.resetNode(state,thread);  // give ERCs a chance to randomize
-            n.argposition = (byte)argposition;
-            n.parent = parent;
-            return n;
-            }
-        else // we're not at max depth, force a nonterminal if you can
-            {
-            GPNode[] nn = set.nonterminals[type.type];
-            if (nn==null || nn.length ==0)  /* no nonterminals, hope the guy
-                                               knows what he's doing! */
-                nn = set.terminals[type.type];
-
-            GPNode n = (GPNode)(nn[state.random[thread].nextInt(nn.length)].clone());
-            n.resetNode(state,thread);  // give ERCs a chance to randomize
-            n.argposition = (byte)argposition;
-            n.parent = parent;
-
-            // Populate the node...
-            GPType[] childtypes = n.constraints(((GPInitializer)state.initializer)).childtypes;
-            for(int x=0;x<childtypes.length;x++)
-                n.children[x] = fullNode(state,current+1,max,childtypes[x],thread,n,x,set);
-
-            return n;
-            }
-        }
-
     }

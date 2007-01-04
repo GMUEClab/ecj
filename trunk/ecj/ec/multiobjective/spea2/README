@@ -1,0 +1,36 @@
+This is an implementation of the Strength Pareto Evolutionary Algorithm
+for the ECJ package.
+
+Details of this approach can be found in the following paper:
+
+E. Zitzler, M. Laumanns, and L. Thiele.SPEA2: Improving the Performance
+of the Strength Pareto Evolutionary Algorithm. Technical Report 103,
+Computer Engineering and Communication Networks Lab (TIK), Swiss Federal
+Institute of Technology (ETH) Zurich, Gloriastrasse 35, CH-8092 Zurich,
+May 2001. 
+
+ftp://ftp.tik.ee.ethz.ch/pub/people/zitzler/ZLT2001a.ps (Postscript),
+ftp://ftp.tik.ee.ethz.ch/pub/people/zitzler/ZLT2001a.pdf (PDF)
+
+
+ABSTRACT 
+
+The Strength Pareto Evolutionary Algorithm (SPEA) (Zitzler and Thiele
+1999) is a relatively recent technique for finding or approximating the
+Pareto-optimal set for multiobjective optimization problems. In
+different studies (Zitzler and Thiele 1999; Zitzler, Deb, and Thiele
+2000) SPEA has shown very good performance in comparison to other
+multiobjective evolutionary algorithms, and therefore it has been a
+point of reference in various recent investigations, e.g., (Corne,
+Knowles, and Oates 2000). Furthermore, it has been used in different
+applications, e.g., (La-hanas, Milickovic, Baltas, and Zamboglou 2001).
+In this paper, an improved ver-sion, namely SPEA2, is proposed, which
+incorporates in contrast to its predecessor a fine-grained fitness
+assignment strategy, a density estimation technique, and an enhanced
+archive truncation method. The comparison of SPEA2 with SPEA and two
+other modern elitist methods, PESA and NSGA-II, on different test
+problems yields promising results.
+
+
+Author of ECJ SPEA package: Robert Hubley, Insitute for Systems Biology
+With modifications by Sean Luke

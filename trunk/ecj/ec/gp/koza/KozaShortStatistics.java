@@ -287,7 +287,7 @@ public class KozaShortStatistics extends Statistics
             float meanAdjusted = 0.0f;
             long hits = 0;
             
-            if (!(state.population.subpops[x].f_prototype instanceof KozaFitness))
+            if (!(state.population.subpops[x].species.f_prototype instanceof KozaFitness))
                 state.output.fatal("Subpopulation " + x +
                                    " is not of the fitness KozaFitness.  Cannot do timing statistics with KozaStatistics.");
 

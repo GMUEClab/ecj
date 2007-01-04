@@ -150,20 +150,19 @@ public class KozaFitness extends Fitness
                                   final LineNumberReader reader)
         throws IOException
         {
-        int linenumber = reader.getLineNumber();
-        String s = reader.readLine();
-        if (s==null || s.length() < FITNESS_PREAMBLE.length()) // uh oh
-            state.output.fatal("Reading Line " + linenumber + ": " +
-                               "Bad Fitness.");
-        DecodeReturn d = new DecodeReturn(s, FITNESS_PREAMBLE.length());
+        DecodeReturn d = Code.checkPreamble(FITNESS_PREAMBLE, state, reader);
+        
+        // extract fitness
         Code.decode(d);
         if (d.type!=DecodeReturn.T_FLOAT)
-            state.output.fatal("Reading Line " + linenumber + ": " +
+            state.output.fatal("Reading Line " + d.lineNumber + ": " +
                                "Bad Fitness.");
         fitness = (float)d.d;
+        
+        // extract hits
         Code.decode(d);
         if (d.type!=DecodeReturn.T_INT)
-            state.output.fatal("Reading Line " + linenumber + ": " +
+            state.output.fatal("Reading Line " + d.lineNumber + ": " +
                                "Bad Fitness.");
         hits = (int)d.l;
         }

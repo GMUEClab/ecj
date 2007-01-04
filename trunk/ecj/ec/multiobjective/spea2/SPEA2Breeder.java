@@ -163,7 +163,7 @@ public class SPEA2Breeder extends Breeder
                 state.output.error("The Breeding Pipeline of subpopulation " + subpop + 
                                    " does not produce individuals of the expected species " + 
                                    newpop.subpops[subpop].species.getClass().getName() + 
-                                   " or fitness " + newpop.subpops[subpop].f_prototype );
+                                   " or fitness " + newpop.subpops[subpop].species.f_prototype );
             bp.prepareToProduce(state,subpop,threadnum);
             state.output.exitIfErrors();
 
@@ -337,6 +337,13 @@ public class SPEA2Breeder extends Breeder
             } // next subpopulation
         }
 
+
+
+
+    // NOTE FROM SEAN: 
+    // I have not yet deleted this and replaced it with Arrays.sort or with
+    // java.ec.util.Quicksort.sort because I'm not sure what direction the
+    // fitness sorting is supposed to go.  > or < ?
 
 
     /** Private quicksort function */

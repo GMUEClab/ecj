@@ -22,7 +22,7 @@ import ec.util.*;
  * of the ec.Species class.
  *
  * <P>In general Individuals are immutable.  That is, once they are created
- * they should not be modified.  This protocol helps insure that they are
+ * their genetic material should not be modified.  This protocol helps insure that they are
  * safe to read under multithreaded conditions.  You can violate this protocol,
  * but try to do so when you know you have only have a single thread.
  *
@@ -59,6 +59,12 @@ import ec.util.*;
  * to ensure individuals can be printed by ECJ.
  * </ul>
  *
+ * <p>Since individuals should be largely immutable, why is there a <b>readIndividual</b> method?
+ * after all this method doesn't create a <i>new</i> individual -- it just erases the existing one.  This is
+ * largely historical; but the method is used underneath by the various <b>newIndividual</b> methods in Species,
+ * which <i>do</i> create new individuals read from files.  If you're trying to create a brand new individual
+ * read from a file, look in Species.
+ *
  * @author Sean Luke
  * @version 1.0
  */
@@ -85,7 +91,7 @@ public abstract class Individual implements Prototype
         try 
             { 
             Individual myobj = (Individual) (super.clone());
-            if (myobj.fitness!=null) myobj.fitness = (Fitness)(fitness.clone());
+            if (myobj.fitness != null) myobj.fitness = (Fitness)(fitness.clone());
             return myobj; 
             }
         catch (CloneNotSupportedException e) 
@@ -93,10 +99,6 @@ public abstract class Individual implements Prototype
         }
 
    
-
- 
-
-
     /** Returns the "size" of the individual.  This is used for things like
         parsimony pressure.  The default form of this method returns 0 --
         if you care about parsimony pressure, you'll need to override the
@@ -163,8 +165,9 @@ public abstract class Individual implements Prototype
         fitness.printFitnessForHumans(state,log,verbosity);
                 
         <p>The default form of this method simply prints out whether or not the
-        individual has been evaluated, its fitness, and then Individual.genotypeToStringForHumans().
-        Feel free to override this to produce more sophisticated behavior.
+        individual has been evaluated, its fitness, and then calls Individual.genotypeToStringForHumans().
+        Feel free to override this to produce more sophisticated behavior, 
+        though it is rare to need to -- instead you could just override genotypeToStringForHumans().
     */
 
     public void printIndividualForHumans(final EvolutionState state,
@@ -183,8 +186,9 @@ public abstract class Individual implements Prototype
         fitness.printFitness(state,log,verbosity);
                 
         <p>The default form of this method simply prints out whether or not the
-        individual has been evaluated, its fitness, and then Individual.genotypeToString().
-        Feel free to override this to produce more sophisticated behavior.
+        individual has been evaluated, its fitness, and then calls Individual.genotypeToString().
+        Feel free to override this to produce more sophisticated behavior, 
+        though it is rare to need to -- instead you could just override genotypeToString().
     */
 
     public void printIndividual(final EvolutionState state,
@@ -205,8 +209,9 @@ public abstract class Individual implements Prototype
         Output facility for some reason.
 
         <p>The default form of this method simply prints out whether or not the
-        individual has been evaluated, its fitness, and then Individual.genotypeToString().
-        Feel free to override this to produce more sophisticated behavior.
+        individual has been evaluated, its fitness, and then calls Individual.genotypeToString().
+        Feel free to override this to produce more sophisticated behavior, 
+        though it is rare to need to -- instead you could just override genotypeToString().
     */
 
     public void printIndividual(final EvolutionState state,
@@ -217,27 +222,36 @@ public abstract class Individual implements Prototype
         writer.println( genotypeToString() );
         }
 
-    /** Reads in the individual from a form printed by printIndividual().  The default
+    /** Reads in the individual from a form printed by printIndividual(), erasing the previous
+        information stored in this Individual.  If you are trying to <i>create</i> an Individual
+        from information read in from a stream or DataInput,
+        see the various newIndividual() methods in Species. The default form of this method
         simply reads in evaluation information, then fitness information, and then 
-        calls parseGenotype() (which you should implement).  Or feel free to override 
-        this to produce more sophisticated behavior. */ 
+        calls parseGenotype() (which you should implement).  The Species is not changed or
+        attached, so you may need to do that elsewhere.  Feel free to override 
+        this method to produce more sophisticated behavior, 
+        though it is rare to need to -- instead you could just override parseGenotype(). */ 
 
     public void readIndividual(final EvolutionState state, 
                                final LineNumberReader reader)
         throws IOException
         {
+        evaluated = Code.readBooleanWithPreamble(EVALUATED_PREAMBLE, state, reader);
+        
+        /*
         // First, was I evaluated?
         int linenumber = reader.getLineNumber();
         String s = reader.readLine();
         if (s==null || s.length() < EVALUATED_PREAMBLE.length()) // uh oh
-            state.output.fatal("Reading Line " + linenumber + ": " +
-                               "Bad 'Evaluated?' line.");
+        state.output.fatal("Reading Line " + linenumber + ": " +
+        "Bad 'Evaluated?' line.");
         DecodeReturn d = new DecodeReturn(s, EVALUATED_PREAMBLE.length());
         Code.decode(d);
         if (d.type!=DecodeReturn.T_BOOLEAN)
-            state.output.fatal("Reading Line " + linenumber + ": " +
-                               "Bad 'Evaluated?' line.");
+        state.output.fatal("Reading Line " + linenumber + ": " +
+        "Bad 'Evaluated?' line.");
         evaluated = (d.l!=0);
+        */
 
         // Next, what's my fitness?
         fitness.readFitness(state,reader);
@@ -259,16 +273,10 @@ public abstract class Individual implements Prototype
         
     /** Writes the binary form of an individual out to a DataOutput.  This is not for serialization:
         the object should only write out the data relevant to the object sufficient to rebuild it from a DataInput.
-        The Species will be reattached later, there's no need to write it.  The default version 
-        simply writes the evaluated and fitness information and nothing else.
-        Thus if (for example) your individual's genotype consists of an array of integers, you might do this:
-        
-        <pre><tt>
-        super.writeIndividual(state,dataOutput);
-        dataOutput.writeInt(integers.length);
-        for(int x=0;x<integers.length;x++)
-        dataOutput.writeInt(integers[x]);
-        </tt></pre>
+        The Species will be reattached later, and you should not write it.   The default version of this
+        method writes the evaluated and fitness information, then calls writeGenotype() to write the genotype
+        information.  Feel free to override this method to produce more sophisticated behavior, 
+        though it is rare to need to -- instead you could just override writeGenotype(). 
     */
     public void writeIndividual(final EvolutionState state,
                                 final DataOutput dataOutput) throws IOException
@@ -278,11 +286,39 @@ public abstract class Individual implements Prototype
         writeGenotype(state,dataOutput);
         }
     
+    
+    /** Writes the genotypic information to a DataOutput.  Largely called by writeIndividual(), and
+        nothing else.  The default simply throws an error.  Various subclasses of Individual override this as
+        appropriate. For example, if your custom individual's genotype consists of an array of 
+        integers, you might do this:
+
+        * <pre><tt>
+        * dataOutput.writeInt(integers.length);
+        * for(int x=0;x<integers.length;x++)
+        *     dataOutput.writeInt(integers[x]);
+        * </tt></pre>
+        */ 
     public void writeGenotype(final EvolutionState state,
                               final DataOutput dataOutput) throws IOException
         {
         state.output.fatal("writeGenotype(EvolutionState, DataOutput) not implemented in " + this.getClass());
         }
+
+    /** Reads in the genotypic information from a DataInput, erasing the previous genotype
+        of this Individual.  Largely called by readIndividual(), and nothing else.  
+        If you are trying to <i>create</i> an Individual
+        from information read in from a stream or DataInput,
+        see the various newIndividual() methods in Species.
+        The default simply throws an error.  Various subclasses of Individual override this as
+        appropriate.  For example, if your custom individual's genotype consists of an array of 
+        integers, you might do this:
+        
+        * <pre><tt>
+        * integers = new int[dataInput.readInt()];
+        * for(int x=0;x<integers.length;x++)
+        *     integers[x] = dataInput.readInt();
+        * </tt></pre>
+        */
 
     public void readGenotype(final EvolutionState state,
                              final DataInput dataInput) throws IOException
@@ -290,18 +326,17 @@ public abstract class Individual implements Prototype
         state.output.fatal("readGenotype(EvolutionState, DataOutput) not implemented in " + this.getClass());
         }
 
-    /** Reads the binary form of an individual from a DataInput.  This is not for serialization:
+    /** Reads the binary form of an individual from a DataInput, erasing the previous
+        information stored in this Individual.  This is not for serialization:
         the object should only read in the data written out via printIndividual(state,dataInput).  
-        The Species will be reattached later, there's no need to read it.  The default version 
-        simply reads the evaluated and fitness information and nothing else.
-        Thus if (for example) your individual's genotype consists of an array of integers, you might do this:
-        
-        <pre><tt>
-        super.readIndividual(state,dataInput);
-        integers = new int[dataInput.read(integers.length);
-        for(int x=0;x<integers.length;x++)
-        integers[x] = dataInput.readInt();
-        </tt></pre>
+        If you are trying to <i>create</i> an Individual
+        from information read in from a stream or DataInput,
+        see the various newIndividual() methods in Species. The default form of this method
+        simply reads in evaluation information, then fitness information, and then 
+        calls readGenotype() (which you will need to override -- its default form simply throws an error).
+        The Species is not changed or attached, so you may need to do that elsewhere.  Feel free to override 
+        this method to produce more sophisticated behavior, though it is rare to need to -- instead you could
+        just override readGenotype().
     */
     public void readIndividual(final EvolutionState state,
                                final DataInput dataInput) throws IOException

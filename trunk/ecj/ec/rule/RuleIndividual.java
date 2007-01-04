@@ -173,6 +173,7 @@ public class RuleIndividual extends Individual
             }
         }
 
+    /** Overridden for the RuleIndividual genotype, writing each ruleset in turn. */
     public void printIndividualForHumans(final EvolutionState state,
                                          final int log, 
                                          final int verbosity)
@@ -187,6 +188,7 @@ public class RuleIndividual extends Individual
             }
         }
 
+    /** Overridden for the RuleIndividual genotype, writing each ruleset in turn. */
     public void printIndividual(final EvolutionState state,
                                 final int log, 
                                 final int verbosity)
@@ -201,6 +203,7 @@ public class RuleIndividual extends Individual
             }
         }
 
+    /** Overridden for the RuleIndividual genotype, writing each ruleset in turn. */
     public void printIndividual(final EvolutionState state,
                                 final PrintWriter writer)
         {
@@ -212,7 +215,8 @@ public class RuleIndividual extends Individual
             rulesets[x].printRuleSet(state,writer);
             }
         }
-        
+    
+    /** Overridden for the RuleIndividual genotype, writing each ruleset in turn. */
     public void writeGenotype(final EvolutionState state,
                               final DataOutput dataOutput) throws IOException
         {
@@ -221,6 +225,7 @@ public class RuleIndividual extends Individual
             rulesets[x].writeRuleSet(state,dataOutput);
         }
 
+    /** Overridden for the RuleIndividual genotype. */
     public void readGenotype(final EvolutionState state,
                              final DataInput dataInput) throws IOException
         {
@@ -232,6 +237,7 @@ public class RuleIndividual extends Individual
         }
 
 
+    /** Overridden for the RuleIndividual genotype. */
     public void parseGenotype(final EvolutionState state, 
                               final LineNumberReader reader)
         throws IOException

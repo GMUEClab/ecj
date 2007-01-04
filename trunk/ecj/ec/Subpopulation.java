@@ -7,9 +7,9 @@
 
 
 package ec;
-import ec.util.Parameter;
 import java.util.*;
 import java.io.*;
+import ec.util.*;
 
 /* 
  * Subpopulation.java
@@ -65,9 +65,6 @@ import java.io.*;
  <tr><td valign=top><i>base</i>.<tt>species</tt></td>
  <td>species (the subpopulations' species)</td></tr>
 
- <tr><td valign=top><i>base</i>.<tt>fitness</tt></td>
- <td>f_prototype (the prototypical fitness)</td></tr>
-
  </table>
 
 
@@ -82,9 +79,6 @@ public class Subpopulation implements Group
         otherwise they should be created at random.  */
     public File loadInds;
 
-    /** The prototypical fitness for individuals in this subpopulation. */
-    public Fitness f_prototype;
-    
     /** The species for individuals in this subpopulation. */
     public Species species;
 
@@ -97,8 +91,10 @@ public class Subpopulation implements Group
     public static final String P_FILE = "file";
     public static final String P_SUBPOPSIZE = "size";  // parameter for number of subpops or pops
     public static final String P_SPECIES = "species";
-    public static final String P_FITNESS = "fitness";
     public static final String P_RETRIES = "duplicate-retries";
+
+    public static final String NUM_INDIVIDUALS_PREAMBLE = "Number of Individuals: ";
+    public static final String INDIVIDUAL_INDEX_PREAMBLE = "Individual Number: ";
 
     /** Returns an instance of Subpopulation just like it had been before it was
         populated with individuals. You may need to override this if you override
@@ -114,7 +110,6 @@ public class Subpopulation implements Group
             {
             Subpopulation p = (Subpopulation)clone();
             p.species = species;  // don't throw it away...maybe this is a bad idea...
-            p.f_prototype = f_prototype;  // don't throw it away...maybe this is a bad idea...
             p.individuals = new Individual[individuals.length];  // empty
             return p;   
             }
@@ -135,13 +130,6 @@ public class Subpopulation implements Group
             base.push(P_SPECIES),null,
             Species.class);
         species.setup(state,base.push(P_SPECIES));
-
-        // what fitness metric do we use?
-
-        f_prototype = (Fitness) state.parameters.getInstanceForParameter(
-            base.push(P_FITNESS),null,
-            Fitness.class);
-        f_prototype.setup(state,base.push(P_FITNESS));
 
         // how big should our subpopulation be?
         
@@ -164,27 +152,23 @@ public class Subpopulation implements Group
 
 
 
-    /** Note: don't call populate() in a multithreaded environment unless
-        at least one instance of Fitness has been called already.  Otherwise
-        MultiObjectiveFitness *may* have an initial race condition. 
-        As presently coded, Subpopulation's constructor runs in a
-        single thread only, during population initialization, which
-        is single-threaded on purpose. */
-
-    public void populate(EvolutionState state)
+    public void populate(EvolutionState state, int thread)
         {
         // should we load individuals from a file? -- duplicates are permitted
         if (loadInds!=null)
             {
+            /*
             // let's make some individuals!
             try
-                {
-                LineNumberReader reader = new LineNumberReader(new FileReader(loadInds));
-                for(int x=0;x<individuals.length;x++)
-                    individuals[x] = species.newIndividual(
-                        state,this,(Fitness)(f_prototype.clone()),reader);
-                state.output.message("Loading subpopulation from file " + loadInds);
-                }
+            {
+            LineNumberReader reader = new LineNumberReader(new FileReader(loadInds));
+            for(int x=0;x<individuals.length;x++)
+            individuals[x] = species.newIndividual(state,reader);
+            state.output.message("Loading subpopulation from file " + loadInds);
+            }
+            catch (IOException e) { state.output.fatal("An IOException occurred when trying to read from the file " + loadInds + ".  The IOException was: \n" + e); }
+            */
+            try { readSubpopulation(state, new LineNumberReader(new FileReader(loadInds))); }
             catch (IOException e) { state.output.fatal("An IOException occurred when trying to read from the file " + loadInds + ".  The IOException was: \n" + e); }
             }
         else
@@ -199,8 +183,7 @@ public class Subpopulation implements Group
                     tries <= /* Yes, I see that*/ numDuplicateRetries; 
                     tries++)
                     {
-                    individuals[x] = species.newIndividual(
-                        state,this,(Fitness)(f_prototype.clone()));
+                    individuals[x] = species.newIndividual(state, thread);
 
                     if (numDuplicateRetries >= 1)
                         {
@@ -216,5 +199,94 @@ public class Subpopulation implements Group
                     }  // oh well, we tried to cut down the duplicates
                 }
             }
+        }
+        
+    /** Prints an entire subpopulation in a form readable by humans. */
+    public void printSubpopulationForHumans(final EvolutionState state,
+                                            final int log, 
+                                            final int verbosity)
+        {
+        state.output.println(NUM_INDIVIDUALS_PREAMBLE + individuals.length, verbosity, log);
+        for(int i = 0 ; i < individuals.length; i++)
+            individuals[i].printIndividualForHumans(state, log, verbosity);
+        }
+        
+    /** Prints an entire subpopulation in a form readable by humans but also parseable by the computer using readSubpopulation(EvolutionState, LineNumberReader). */
+    public void printSubpopulation(final EvolutionState state,
+                                   final int log, 
+                                   final int verbosity)
+        {
+        state.output.println(NUM_INDIVIDUALS_PREAMBLE + Code.encode(individuals.length), verbosity, log);
+        for(int i = 0 ; i < individuals.length; i++)
+            individuals[i].printIndividual(state, log, verbosity);
+        }
+        
+    /** Prints an entire subpopulation in a form readable by humans but also parseable by the computer using readSubpopulation(EvolutionState, LineNumberReader). */
+    public void printSubpopulation(final EvolutionState state,
+                                   final PrintWriter writer)
+        {
+        writer.println(NUM_INDIVIDUALS_PREAMBLE + Code.encode(individuals.length));
+        for(int i = 0 ; i < individuals.length; i++)
+            individuals[i].printIndividual(state, writer);
+        }
+    
+    /** Reads a subpopulation from the format generated by printSubpopulation(....).  If the number of individuals is not identical, the individuals array will
+        be deleted and replaced with a new array, and a warning will be generated as individuals will have to be created using newIndividual(...) rather
+        than readIndividual(...). */
+    public void readSubpopulation(final EvolutionState state, 
+                                  final LineNumberReader reader) throws IOException
+        {
+        // read in number of individuals and check to see if this appears to be a valid subpopulation
+        int numIndividuals = Code.readIntegerWithPreamble(NUM_INDIVIDUALS_PREAMBLE, state, reader);
+
+        // read in individuals
+        if (numIndividuals != individuals.length)
+            {
+            state.output.warnOnce("On reading subpopulation from text stream, the subpopulation size was incorrect.\n" + 
+                                  "Had to resize and use newIndividual() instead of readIndividual().");
+            individuals = new Individual[numIndividuals];
+            for(int i = 0 ; i < individuals.length; i++)
+                {
+                int j = Code.readIntegerWithPreamble(INDIVIDUAL_INDEX_PREAMBLE, state, reader);
+                // sanity check
+                if (j!=i) state.output.warnOnce("On reading subpopulation from text stream, some individual indexes in the subpopulation did not match.");
+                individuals[i] = species.newIndividual(state, reader);
+                }
+            }
+        else for(int i = 0 ; i < individuals.length; i++)
+            {
+            int j = Code.readIntegerWithPreamble(INDIVIDUAL_INDEX_PREAMBLE, state, reader);
+            // sanity check
+            if (j!=i) state.output.warnOnce("On reading subpopulation from text stream, some individual indexes in the subpopulation did not match.");
+            individuals[i].readIndividual(state, reader);
+            }
+        }
+        
+    /** Writes a subpopulation in binary form, in a format readable by readSubpopulation(EvolutionState, DataInput). */
+    public void writeSubpopulation(final EvolutionState state,
+                                   final DataOutput dataOutput) throws IOException
+        {
+        dataOutput.writeInt(individuals.length);
+        for(int i = 0 ; i < individuals.length; i++)
+            individuals[i].writeIndividual(state, dataOutput);
+        }
+    
+    /** Reads a subpopulation in binary form, from the format generated by writeSubpopulation(...).  If the number of individuals is not identical, the individuals array will
+        be deleted and replaced with a new array, and a warning will be generated as individuals will have to be created using newIndividual(...) rather
+        than readIndividual(...) */
+    public void readSubpopulation(final EvolutionState state,
+                                  final DataInput dataInput) throws IOException
+        {
+        int numIndividuals = dataInput.readInt();
+        if (numIndividuals != individuals.length)
+            {
+            state.output.warnOnce("On reading subpopulation from binary stream, the subpopulation size was incorrect.\n" + 
+                                  "Had to resize and use newIndividual() instead of readIndividual().");
+            individuals = new Individual[numIndividuals];
+            for(int i = 0 ; i < individuals.length; i++)
+                individuals[i] = species.newIndividual(state, dataInput);
+            }
+        else for(int i = 0 ; i < individuals.length; i++)
+            individuals[i].readIndividual(state, dataInput);
         }
     }

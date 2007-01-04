@@ -45,7 +45,7 @@ Set-based strong typing is sufficient for a wide variety of needs, including typ
 
 <p>GP builds trees using tree generation algorithms, all of which are subclasses of <a href="../../classdocs/ec/gp/GPNodeBuilder.html">GPNodeBuilder</a>.   Tree generation algorithms are usually used in one of two places: population initialization and mutation.  Mutation algorithms have their own parameters where you can specify the GPNodeBuilder subclass you'd like.  Additionally, each GPTree has a reference (not shown on the graph) to a GPNodeBuilder resonsible for initialization of that tree.
 
-<p>ECJ's GP package has its own special <a href="../../classdocs/ec/gp/GPInitializer">GPInitializer</a> subclass of Initializer.  The reason for this is that GP needs <i>some</i> location to set up the GPFunctionSets, GPTreeConstraints, and GPNodeConstraints before evolution begins.  Initializer is the most obvious location.
+<p>ECJ's GP package has its own special <a href="../../classdocs/ec/gp/GPInitializer.html">GPInitializer</a> subclass of Initializer.  The reason for this is that GP needs <i>some</i> location to set up the GPFunctionSets, GPTreeConstraints, and GPNodeConstraints before evolution begins.  Initializer is the most obvious location.
 
 The <a href="../../classdocs/ec/gp/koza/">ec.gp.koza</a> package adds the Koza-specific features to the general notion of tree-based genetic programming.  
 
@@ -631,7 +631,7 @@ two children are printed as if the node was an operator (+, *, etc.), and nodes 
 
 <h3>Try some Elitism</h3>
 
-Let's add two more gizmos.  First, we'll make the model elitist, which in this case wil be keeping the two best individuals in the subpopulation 0 of the population (you can specify different elitism values for each subpopulation).  Second, we'll change the statistics from the default <a href="../../classdocs/ec/gp/koza/KozaStatistics.html">KozaStatistics</a> to the line-by-line data format of <a href="../../classdoocs/ec/gp/koza/KozaShortStatistics.html">KozaShortStatistics</a>.  We can change both on the command line.  <a href="../../classdocs/ec/simple/SimpleBreeder.html">SimpleBreeder</a> has an elitist feature.  Run the system as <b>java ec.Evolve -file tutorial4.params -p breed.elite.0=2 -p stat=ec.gp.koza.KozaShortStatistics -p stat.gather-full=true</b>
+Let's add two more gizmos.  First, we'll make the model elitist, which in this case wil be keeping the two best individuals in the subpopulation 0 of the population (you can specify different elitism values for each subpopulation).  Second, we'll change the statistics from the default <a href="../../classdocs/ec/gp/koza/KozaStatistics.html">KozaStatistics</a> to the line-by-line data format of <a href="../../classdocs/ec/gp/koza/KozaShortStatistics.html">KozaShortStatistics</a>.  We can change both on the command line.  <a href="../../classdocs/ec/simple/SimpleBreeder.html">SimpleBreeder</a> has an elitist feature.  Run the system as <b>java ec.Evolve -file tutorial4.params -p breed.elite.0=2 -p stat=ec.gp.koza.KozaShortStatistics -p stat.gather-full=true</b>
 
 <p>The results are very similar in this case.  Here's the statistics file:
 

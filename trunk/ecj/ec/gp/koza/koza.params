@@ -22,7 +22,7 @@ parent.0 = ../../simple/simple.params
 # Koza-style fitness metrics, just to make everyone happy :-)
 #
 
-pop.subpop.0.fitness = ec.gp.koza.KozaFitness
+pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
 
 #
 # We have a GP-specific initializer and a Koza-specific

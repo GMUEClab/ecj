@@ -375,17 +375,20 @@ public class RuleSet implements Prototype
                             final LineNumberReader reader)
         throws IOException
         {
-        int linenumber = reader.getLineNumber();
-        String s = reader.readLine();
-        if (s==null || !s.startsWith(N_RULES))
-            state.output.fatal("Reading Line " + linenumber + ": " +
-                               "Bad '" + N_RULES + "' line." + "\n-->" + s);
-        DecodeReturn d = new DecodeReturn(s, N_RULES.length());
-        Code.decode(d);
-        if (d.type!=DecodeReturn.T_INT)
-            state.output.fatal("Reading Line " + linenumber + ": " +
-                               "Couldn't Decode '" + N_RULES + "' line." + "\n-->" + s);
-        numRules = (int)d.l;
+        numRules = Code.readIntegerWithPreamble(N_RULES, state, reader);
+        /*
+          int linenumber = reader.getLineNumber();
+          String s = reader.readLine();
+          if (s==null || !s.startsWith(N_RULES))
+          state.output.fatal("Reading Line " + linenumber + ": " +
+          "Bad '" + N_RULES + "' line." + "\n-->" + s);
+          DecodeReturn d = new DecodeReturn(s, N_RULES.length());
+          Code.decode(d);
+          if (d.type!=DecodeReturn.T_INT)
+          state.output.fatal("Reading Line " + linenumber + ": " +
+          "Couldn't Decode '" + N_RULES + "' line." + "\n-->" + s);
+          numRules = (int)d.l;
+        */
 
         rules = new Rule[ numRules ];
         for(int x=0;x<numRules;x++)
@@ -467,10 +470,7 @@ public class RuleSet implements Prototype
 
         Rule[] srules = (Rule[])(rules.clone());
         Rule[] orules = (Rule[])(other.rules.clone());
-        /*
-          QuickSort.qsort(srules,srules[0]);
-          QuickSort.qsort(orules,orules[0]);
-        */
+
         java.util.Arrays.sort(srules);
         java.util.Arrays.sort(orules);
         

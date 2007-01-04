@@ -60,7 +60,6 @@ pop =                                   ec.Population
 pop.subpops =                           1
 pop.subpop.0 =                          ec.Subpopulation
 pop.subpop.0.size =                     1024
-pop.subpop.0.fitness =                  ec.simple.SimpleFitness
 stat.file                               $out.stat
 </pre>
 						</tt>
@@ -111,6 +110,7 @@ prefix =                                ec
 			<pre>
 pop.subpop.0.species		= ec.vector.IntegerVectorSpecies
 pop.subpop.0.species.ind	= ec.vector.IntegerVectorIndividual
+pop.subpop.0.species.fitness = ec.simple.SimpleFitness
 </pre>
 			</tt>
 			<p>
@@ -474,7 +474,7 @@ Initializing Generation 0
         P: pop.subpop.0.species.ind = ec.vector.IntegerVectorIndividual
         P: pop.subpop.0.species.min-gene = -12312
         P: pop.subpop.0.species.max-gene = 2341212
-        P: pop.subpop.0.fitness = ec.simple.SimpleFitness
+        P: pop.subpop.0.species.fitness = ec.simple.SimpleFitness
         P: pop.subpop.0.size = 100
         P: pop.subpop.0.duplicate-retries = 0
 Generation 1

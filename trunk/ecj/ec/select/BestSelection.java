@@ -74,7 +74,7 @@ public class BestSelection extends SelectionMethod
         return SelectDefaults.base().push(P_BEST);
         }
 
-    // don't need protoClone etc. 
+    // don't need clone etc. 
 
     public void setup(final EvolutionState state, final Parameter base)
         {
@@ -108,16 +108,12 @@ public class BestSelection extends SelectionMethod
                                 {
                                 return ((Individual)(i[(int)b])).fitness.betterThan(
                                     ((Individual)(i[(int)a])).fitness);
-                                /* return ((Individual)(i[(int)a])).fitness.fitness() <
-                                   ((Individual)(i[(int)b])).fitness.fitness(); */
                                 }
 
                             public boolean gt(long a, long b)
                                 {
                                 return ((Individual)(i[(int)a])).fitness.betterThan(
                                     ((Individual)(i[(int)b])).fitness);
-                                /* return ((Individual)(i[(int)a])).fitness.fitness() >
-                                   ((Individual)(i[(int)b])).fitness.fitness(); */
                                 }
                             });
 

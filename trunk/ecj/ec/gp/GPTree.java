@@ -19,8 +19,8 @@
  */
 
 package ec.gp;
+import ec.*;
 import ec.util.*;
-import ec.EvolutionState;
 import java.io.*;
 
 /* 
@@ -158,14 +158,14 @@ import java.io.*;
  * @version 1.0 
  */
 
-public class GPTree implements GPNodeParent
+public class GPTree implements GPNodeParent, Prototype
     {
     public static final String P_TREE = "tree";
     public static final String P_TREECONSTRAINTS = "tc";
     public static final String P_USELATEX = "latex";
     public static final String P_USEC = "c";
-	public static final String P_USEOPS = "c-operators";
-	public static final String P_USEVARS = "c-variables";
+    public static final String P_USEOPS = "c-operators";
+    public static final String P_USEVARS = "c-variables";
     public static final int NO_TREENUM = -1;
 
     /** the root GPNode in the GPTree */
@@ -186,11 +186,11 @@ public class GPTree implements GPNodeParent
     public boolean useC;
 
     /** When using c to print for humans, do we print terminals as variables? 
-		(as opposed to zero-argument functions)? */
-	public boolean printTerminalsAsVariablesInC;
+        (as opposed to zero-argument functions)? */
+    public boolean printTerminalsAsVariablesInC;
 
     /** When using c to print for humans, do we print two-argument nonterminals in operator form "a op b"? 
-		(as opposed to functions "op(a, b)")? */
+        (as opposed to functions "op(a, b)")? */
     public boolean printTwoArgumentNonterminalsAsOperatorsInC;
 
     public final GPTreeConstraints constraints( final GPInitializer initializer ) 
@@ -269,7 +269,7 @@ public class GPTree implements GPNodeParent
         useC = state.parameters.getBoolean(base.push(P_USEC),def.push(P_USEC),false);
 
         // in C, treat terminals as variables?  By default, yes.
-		printTerminalsAsVariablesInC = state.parameters.getBoolean(base.push(P_USEVARS),def.push(P_USEVARS),true);
+        printTerminalsAsVariablesInC = state.parameters.getBoolean(base.push(P_USEVARS),def.push(P_USEVARS),true);
 
         // in C, treat two-child functions as operators?  By default, yes.
         printTwoArgumentNonterminalsAsOperatorsInC = state.parameters.getBoolean(base.push(P_USEOPS),def.push(P_USEOPS),true);
@@ -357,7 +357,7 @@ public class GPTree implements GPNodeParent
                                    final int verbosity)
         {
         if (useC) state.output.print(child.makeCTree(true, 
-			printTerminalsAsVariablesInC, printTwoArgumentNonterminalsAsOperatorsInC),verbosity,log);
+                                                     printTerminalsAsVariablesInC, printTwoArgumentNonterminalsAsOperatorsInC),verbosity,log);
         else if (useLatex) state.output.print(child.makeLatexTree(),verbosity,log);
         else child.printRootedTreeForHumans(state,log,verbosity,0,0);
         // printRootedTreeForHumans doesn't print a '\n', so I need to do so here

@@ -28,12 +28,12 @@ pop.subpops =				1
 pop.subpop.0 = 				ec.Subpopulation
 pop.subpop.0.duplicate-retries =	2
 pop.subpop.0.species =                  ec.vector.FloatVectorSpecies
-pop.subpop.0.fitness =			ec.simple.SimpleFitness
 pop.subpop.0.species.pipe = 		ec.vector.breed.VectorMutationPipeline
 pop.subpop.0.species.pipe.source.0 = 	ec.vector.breed.VectorCrossoverPipeline
 pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
 pop.subpop.0.species.pipe.source.0.source.1 = same
 
+pop.subpop.0.species.fitness =		ec.simple.SimpleFitness
 pop.subpop.0.species.ind =		ec.vector.DoubleVectorIndividual
 
 # you can change these to whatever tickles your fancy

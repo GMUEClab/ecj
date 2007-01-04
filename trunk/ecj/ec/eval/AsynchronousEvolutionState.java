@@ -33,7 +33,7 @@ public class AsynchronousEvolutionState extends SteadyStateEvolutionState
                 {
                 Individual ind = (((MasterProblem)(evaluator.p_problem)).server).slaveMonitor.waitForIndividual(this);
                 population.subpops[0].individuals[i] = ind;
-                ind = population.subpops[0].species.newIndividual( this, population.subpops[0], ind.fitness );
+                ind = population.subpops[0].species.newIndividual( this, 0 );  // unthreaded
                 ((SimpleProblemForm)evaluator.p_problem).evaluate(this, ind, 0);
                 }
             }

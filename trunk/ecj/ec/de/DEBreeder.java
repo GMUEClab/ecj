@@ -18,6 +18,11 @@ import ec.vector.*;
  * http://www.icsi.berkeley.edu/~storn/code.html .  For more information on
  * Differential Evolution, please refer to the aforementioned webpage.
 
+ * <p>The default breeding code in DEBreeder is a simple adaptive breeder communicated personally
+ * by Dr. Kenneth Price.  The algorithm might also be explored in the recent book
+ * "Differential Evolution: A Practical Approach to Global Optimization"
+ * by Kenneth Price, Rainer Storn, and Jouni Lampinen.
+ * 
  * @author Liviu Panait
  * @version 1.0
  */
@@ -68,7 +73,7 @@ public abstract class DEBreeder extends Breeder
             Individual[] inds = state.population.subpops[subpop].individuals;
             for( int i = 0 ; i < inds.length ; i++ )
                 {
-                newpop.subpops[subpop].individuals[i] = createIndividual( state, subpop, inds, i );
+                newpop.subpops[subpop].individuals[i] = createIndividual( state, subpop, inds, i, 0);  // unthreaded for now
                 }
             }
 
@@ -77,9 +82,68 @@ public abstract class DEBreeder extends Breeder
         return newpop;
         }
 
-    public abstract Individual createIndividual( final EvolutionState state,
-                                                 int subpop,
-                                                 Individual[] inds,
-                                                 int index );
+    public static final double SCALE_F = 1.9;
+    
+    public Individual createIndividual( final EvolutionState state,
+                                        int subpop,
+                                        Individual[] inds,
+                                        int index,
+                                        int thread)
+        {
+        // default value for mutation probability Pm
+        double Pm = 1.0 / inds.length;
+
+        // default value for scaling factor F
+        double F = state.random[thread].nextBoolean() ? 1.0 : ( SCALE_F / Math.sqrt(inds.length) );
+
+        // K is random value distributed N(0,1)
+        double K = state.random[thread].nextGaussian();
+
+        // select three indexes different from each other and from that of the current parent
+        int r0, r1, r2;
+        do
+            {
+            r0 = state.random[thread].nextInt(inds.length);
+            }
+        while( r0 == index );
+        do
+            {
+            r1 = state.random[thread].nextInt(inds.length);
+            }
+        while( r1 == r0 || r1 == index );
+        do
+            {
+            r2 = state.random[thread].nextInt(inds.length);
+            }
+        while( r2 == r1 || r2 == r0 || r2 == index );
+
+        DoubleVectorIndividual v = (DoubleVectorIndividual)(inds[index].clone());
+        DoubleVectorIndividual g0 = (DoubleVectorIndividual)(inds[r0]);
+        DoubleVectorIndividual g1 = (DoubleVectorIndividual)(inds[r1]);
+        DoubleVectorIndividual g2 = (DoubleVectorIndividual)(inds[r2]);
+
+        int dim = v.genome.length;
+        int localIndex = state.random[thread].nextInt(dim);
+        int counter = 0;
+
+        // create the child
+        do
+            {
+            if( state.random[thread].nextDouble() <= Pm )
+                {
+                v.genome[localIndex] = v.genome[localIndex] + F * (g1.genome[localIndex] - g2.genome[localIndex]);
+                }
+            else
+                {
+                v.genome[localIndex] = v.genome[localIndex] + K * (g0.genome[localIndex] - v.genome[localIndex]);
+                }
+            localIndex = (localIndex+1) % dim;
+            }
+        while (++counter < dim);
+
+        return v;
+
+        }
+
 
     }

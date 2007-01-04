@@ -118,18 +118,10 @@ import ec.util.*;
     */
 
 
-public class HalfBuilder extends GPNodeBuilder
+public class HalfBuilder extends KozaBuilder
     {
     public static final String P_HALFBUILDER = "half";
-    public static final String P_MAXDEPTH = "max-depth";
-    public static final String P_MINDEPTH = "min-depth";
     public static final String P_PICKGROWPROBABILITY = "growp";
-
-    /** The largest maximum tree depth RAMPED HALF-AND-HALF can specify. */
-    public int maxDepth;
-
-    /** The smallest maximum tree depth RAMPED HALF-AND-HALF can specify. */
-    public int minDepth;
 
     /** The likelihood of using GROW over FULL. */
     public float pickGrowProbability;
@@ -145,29 +137,12 @@ public class HalfBuilder extends GPNodeBuilder
 
         Parameter def = defaultBase();
 
-        // load maxdepth and mindepth, check that maxdepth>0, mindepth>0, maxdepth>=mindepth
-        maxDepth = state.parameters.getInt(base.push(P_MAXDEPTH),def.push(P_MAXDEPTH),1);
-        if (maxDepth<=0)
-            state.output.fatal("The Max Depth for HalfBuilder must be at least 1.",
-                               base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
-        
-        minDepth = state.parameters.getInt(base.push(P_MINDEPTH),def.push(P_MINDEPTH),1);
-        if (minDepth<=0)
-            state.output.fatal("The Max Depth for HalfBuilder must be at least 1.",
-                               base.push(P_MINDEPTH),def.push(P_MINDEPTH));
-
-        if (maxDepth<minDepth)
-            state.output.fatal("Max Depth must be >= Min Depth for HalfBuilder",
-                               base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
-
         pickGrowProbability = state.parameters.getFloat(
             base.push(P_PICKGROWPROBABILITY),
             def.push(P_PICKGROWPROBABILITY),0.0f,1.0f);
         if (pickGrowProbability < 0.0f)
             state.output.fatal("The Pick-Grow Probability for HalfBuilder must be a floating-point value between 0.0 and 1.0 inclusive.", base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
         }
-
-
     
     public GPNode newRootedTree(final EvolutionState state,
                                 final GPType type,
@@ -183,87 +158,6 @@ public class HalfBuilder extends GPNodeBuilder
             return fullNode(state,0,state.random[thread].nextInt(maxDepth-minDepth+1) + minDepth,type,thread,parent,argposition,set);
         }
 
-    /** A private method which recursively returns a FULL tree to newRootedTree(...) */
-    private GPNode fullNode(final EvolutionState state,
-                            final int current,
-                            final int max,
-                            final GPType type,
-                            final int thread,
-                            final GPNodeParent parent,
-                            final int argposition,
-                            final GPFunctionSet set) 
-        {
-        // Pick a random node from Hashtable for a given type --
-        // we assume it's been pre-checked for invalid type situations
-        
-        if (current+1 >= max)  // we're at max depth, force a terminal
-            {
-            GPNode[] nn = set.terminals[type.type];
-            GPNode n = (GPNode)(nn[state.random[thread].nextInt(nn.length)].clone());
-            n.resetNode(state,thread);  // give ERCs a chance to randomize
-            n.argposition = (byte)argposition;
-            n.parent = parent;
-            return n;
-            }
-        else // we're not at max depth, force a nonterminal if you can
-            {
-            GPNode[] nn = set.nonterminals[type.type];
-            if (nn==null || nn.length ==0)  /* no nonterminals, hope the guy
-                                               knows what he's doing! */
-                nn = set.terminals[type.type];
-            
-            GPNode n = (GPNode)(nn[state.random[thread].nextInt(nn.length)].clone());
-            n.resetNode(state,thread);  // give ERCs a chance to randomize
-            n.argposition = (byte)argposition;
-            n.parent = parent;
-
-            // Populate the node...
-            GPType[] childtypes = n.constraints(((GPInitializer)state.initializer)).childtypes;
-            for(int x=0;x<childtypes.length;x++)
-                n.children[x] = fullNode(state,current+1,max,childtypes[x],thread,n,x,set);
-
-            return n;
-            }
-        }
-
-    /** A private method which recursively returns a GROW tree to newRootedTree(...) */
-    private GPNode growNode(final EvolutionState state,
-                            final int current,
-                            final int max,
-                            final GPType type,
-                            final int thread,
-                            final GPNodeParent parent,
-                            final int argposition,
-                            final GPFunctionSet set) 
-        {
-        // Pick a random node from Hashtable for a given type --
-        // we assume it's been pre-checked for invalid type situations
-        
-        if (current+1 >= max)  // we're at max depth, force a terminal
-            {
-            GPNode[] nn = set.terminals[type.type];
-            GPNode n = (GPNode)(nn[state.random[thread].nextInt(nn.length)].clone());
-            n.resetNode(state,thread);  // give ERCs a chance to randomize
-            n.argposition = (byte)argposition;
-            n.parent = parent;
-            return n;
-            }
-        else // pick either a terminal or a nonterminal
-            {
-            GPNode[] nn = set.nodes[type.type];
-            GPNode n = (GPNode)(nn[state.random[thread].nextInt(nn.length)].clone());
-            n.resetNode(state,thread);  // give ERCs a chance to randomize
-            n.argposition = (byte)argposition;
-            n.parent = parent;
-
-            // Populate the node...
-            GPType[] childtypes = n.constraints(((GPInitializer)state.initializer)).childtypes;
-            for(int x=0;x<childtypes.length;x++)
-                n.children[x] = growNode(state,current+1,max,childtypes[x],thread,n,x,set);
-
-            return n;
-            }
-        }
     }
 
 

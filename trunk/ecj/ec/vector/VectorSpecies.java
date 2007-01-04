@@ -117,7 +117,7 @@ public class VectorSpecies extends Species
             state.output.error("VectorSpecies must have a mutation probability between 0.0 and 1.0 inclusive",
                                base.push(P_MUTATIONPROB),def.push(P_MUTATIONPROB));
     
-        String ctype = state.parameters.getStringWithDefault(base.push(P_CROSSOVERTYPE), null, "");
+        String ctype = state.parameters.getStringWithDefault(base.push(P_CROSSOVERTYPE), def.push(P_CROSSOVERTYPE), "");
         crossoverType = C_ONE_POINT;
         if (ctype==null)
             state.output.warning("No crossover type given for VectorSpecies, assuming one-point crossover",
@@ -146,72 +146,15 @@ public class VectorSpecies extends Species
         super.setup(state,base);
         }
 
-    public Individual newIndividual(final EvolutionState state,
-                                    final Subpopulation _population, 
-                                    final Fitness _fitness) 
+    public Individual newIndividual(final EvolutionState state, int thread) 
         
         {
-        VectorIndividual newind = (VectorIndividual)(i_prototype.clone());
+        VectorIndividual newind = (VectorIndividual)(super.newIndividual(state, thread));
 
-        // what is my thread????
-        newind.reset( state, 0);
+        newind.reset( state, thread);
 
-        // Set the fitness
-        newind.fitness = _fitness;
-        newind.evaluated = false;
-
-        // Set the species to me
-        newind.species = this;
-
-        // ...and we're ready!
         return newind;
         }
-    
-    /*
-      public Individual newIndividual(final EvolutionState state,
-      final Subpopulation _population,
-      final Fitness _fitness,
-      final LineNumberReader reader)
-      throws IOException
-      {
-      VectorIndividual newind = (VectorIndividual)(i_prototype.protoClone());
-                
-      // Set the fitness -- must be done BEFORE loading!
-      newind.fitness = _fitness;
-      newind.evaluated = false; // for sanity's sake, though it's a useless line
-
-      // load that sucker
-      newind.readIndividual(state,reader);
-
-      // Set the species to me
-      newind.species = this;
-
-      // and we're ready!
-      return newind;  
-      }
-
-      public Individual newIndividual(final EvolutionState state,
-      final Subpopulation _population,
-      final Fitness _fitness,
-      final DataInput dataInput)
-      throws IOException
-      {
-      VectorIndividual newind = (VectorIndividual)(i_prototype.protoClone());
-        
-      // Set the fitness -- must be done BEFORE loading!
-      newind.fitness = _fitness;
-      newind.evaluated = false; // for sanity's sake, though it's a useless line
-
-      // Set the species to me
-      newind.species = this;
-
-      // load that sucker
-      newind.readGenotype(state,dataInput);
-
-      // and we're ready!
-      return newind;  
-      }
-    */
     }
 
 

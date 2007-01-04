@@ -90,22 +90,23 @@ public class SPEA2MultiObjectiveFitness extends MultiObjectiveFitness
         throws IOException
         {
         super.readFitness(state,reader);
-    
-        String s = reader.readLine();
-        int linenumber = reader.getLineNumber();
-        if (s==null || s.length() < SPEA2FIT_PREAMBLE.length()) // uh oh
-            state.output.fatal("Reading Line " + linenumber + ": " +
-                               "Bad SPEA2Fitness.");
-        DecodeReturn d = new DecodeReturn(s, SPEA2FIT_PREAMBLE.length());
-        Code.decode(d);
-        if (d.type!=DecodeReturn.T_DOUBLE)
-            state.output.fatal("Reading Line " + linenumber + ": " +
-                               "Bad '" + SPEA2FIT_PREAMBLE + "' line.");
-        SPEA2Fitness = d.d;
-
+        Code.readDoubleWithPreamble(SPEA2FIT_PREAMBLE, state, reader);
+        /*
+          String s = reader.readLine();
+          int linenumber = reader.getLineNumber();
+          if (s==null || s.length() < SPEA2FIT_PREAMBLE.length()) // uh oh
+          state.output.fatal("Reading Line " + linenumber + ": " +
+          "Bad SPEA2Fitness.");
+          DecodeReturn d = new DecodeReturn(s, SPEA2FIT_PREAMBLE.length());
+          Code.decode(d);
+          if (d.type!=DecodeReturn.T_DOUBLE)
+          state.output.fatal("Reading Line " + linenumber + ": " +
+          "Bad '" + SPEA2FIT_PREAMBLE + "' line.");
+          SPEA2Fitness = d.d;
+        */
         // NOTE: At this time I am not reading/writing the SPEA2 strength, raw, 
         //       and distance values.  These are intermediate values to the 
-        //       overal SPEA2Fitness and so are not really worth preserving.
+        //       overall SPEA2Fitness and so are not really worth preserving.
 
         }
 

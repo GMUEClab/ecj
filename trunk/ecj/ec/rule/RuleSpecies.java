@@ -49,69 +49,12 @@ public class RuleSpecies extends Species
             state.output.fatal("The Individual class for the Species " + getClass().getName() + " is must be a subclass of ec.rule.RuleIndividual.", base );
         }    
 
-    public Individual newIndividual(EvolutionState state,
-                                    Subpopulation _population,
-                                    Fitness _fitness) 
+    public Individual newIndividual(EvolutionState state, int thread) 
         {
-        RuleIndividual newind = (RuleIndividual)(i_prototype.clone());
+        RuleIndividual newind = (RuleIndividual)(super.newIndividual(state, thread));
         
-        newind.reset(state,0);  // unthreaded at this point...
+        newind.reset( state, thread);
 
-        // Set the fitness
-        newind.fitness = _fitness;
-        newind.evaluated = false;
-
-        // Set the species to me
-        newind.species = this;
-
-        // ...and we're ready!
         return newind;
         }
-
-/*
-  public Individual newIndividual(final EvolutionState state,
-  final Subpopulation _population,
-  final Fitness _fitness,
-  final LineNumberReader reader)
-  throws IOException
-  {
-  RuleIndividual newind = (RuleIndividual)(i_prototype.protoClone());
-        
-  // Set the fitness -- must be done BEFORE loading!
-  newind.fitness = _fitness;
-  newind.evaluated = false; // for sanity's sake, though it's a useless line
-
-  // Set the species to me
-  newind.species = this;
-
-  // load that sucker
-  newind.readIndividual(state,reader);
-
-  // and we're ready!
-  return newind;  
-  }
-
-  public Individual newIndividual(final EvolutionState state,
-  final Subpopulation _population,
-  final Fitness _fitness,
-  final DataInput dataInput)
-  throws IOException
-  {
-  RuleIndividual newind = (RuleIndividual)(i_prototype.protoClone());
-        
-  // Set the fitness -- must be done BEFORE loading!
-  newind.fitness = _fitness;
-  newind.evaluated = false; // for sanity's sake, though it's a useless line
-
-  // Set the species to me
-  newind.species = this;
-
-  // load that sucker
-  newind.readGenotype(state,dataInput);
-
-  // and we're ready!
-  return newind;  
-  }
-
-*/
     }

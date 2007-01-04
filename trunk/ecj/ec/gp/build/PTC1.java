@@ -111,12 +111,9 @@ public class PTC1 extends GPNodeBuilder
         // build the tree
         if (requestedSize == NOSIZEGIVEN)  // use the default
             {
-            GPNode pt = ptc1(state,0,type,thread,parent,argposition,
-                             set,(PTCFunctionSetForm)set,
-                             ((PTCFunctionSetForm)set).nonterminalSelectionProbabilities(expectedSize));
-            pt.printRootedTreeForHumans(state,0,3000,0,0);
-            System.out.println();
-            return pt;
+            return ptc1(state,0,type,thread,parent,argposition,
+                        set,(PTCFunctionSetForm)set,
+                        ((PTCFunctionSetForm)set).nonterminalSelectionProbabilities(expectedSize));
             }
         if (requestedSize < 1)
             state.output.fatal("etc.gp.build.PTC1 was requested to build a tree, but a requested size was given that is < 1.");
@@ -139,15 +136,32 @@ public class PTC1 extends GPNodeBuilder
                         final float[] nonterminalSelectionProbabilities) 
         
         {
+        // ptc1 can mess up if there are no available terminals for a given type.  If this occurs,
+        // and we find ourselves unable to pick a terminal when we want to do so, we will issue a warning,
+        // and pick a nonterminal, violating the PTC1 size and depth contracts.  This can lead to pathological situations
+        // where the system will continue to go on and on unable to stop because it can't pick a terminal,
+        // resulting in running out of memory or some such.  But there are cases where we'd want to let
+        // this work itself out.
+        boolean triedTerminals = false;
+                
         int t = type.type;
-        if (current+1 >= maxDepth ||  // we're at max depth, force a terminal
-            !(state.random[thread].nextBoolean(nonterminalSelectionProbabilities[t]))) // below p_y, pick a terminal
+        GPNode[] terminals = set.terminals[t];
+        GPNode[] nonterminals = set.nonterminals[t];
+        GPNode[] nodes = set.nodes[t];          
+
+        if (nodes.length == 0)
+            errorAboutNoNodeWithType(type, state);   // total failure
+
+        if ((  (current+1 >= maxDepth) ||                                                    // Now pick if we're at max depth
+               !(state.random[thread].nextBoolean(nonterminalSelectionProbabilities[t])) ||  // OR if we're below p_y
+               warnAboutNonterminal(nonterminals.length==0, type, false, state)) &&         // OR if there are NO nonterminals!
+            (triedTerminals = true) &&                                                       // [first set triedTerminals]
+            terminals.length != 0)                                                           // AND if there are available terminals
             {
-            GPNode[] nn = set.terminals[t];
             GPNode n = (GPNode)
-                nn[RandomChoice.pickFromDistribution(
-                       pset.terminalProbabilities(t),
-                       state.random[thread].nextFloat(),CHECK_BOUNDARY)].clone();
+                terminals[RandomChoice.pickFromDistribution(
+                              pset.terminalProbabilities(t),
+                              state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
             n.resetNode(state,thread);  // give ERCs a chance to randomize
             n.argposition = (byte)argposition;
             n.parent = parent;
@@ -155,11 +169,12 @@ public class PTC1 extends GPNodeBuilder
             }
         else  // above p_y, pick a nonterminal by q_ny probabilities
             {
-            GPNode[] nn = set.nonterminals[t];
+            if (triedTerminals) warnAboutNoTerminalWithType(type, false, state);        // we tried terminals and we're here because there were none!
+
             GPNode n = (GPNode)
-                nn[RandomChoice.pickFromDistribution(
-                       pset.nonterminalProbabilities(t),
-                       state.random[thread].nextFloat(),CHECK_BOUNDARY)].clone();
+                nonterminals[RandomChoice.pickFromDistribution(
+                                 pset.nonterminalProbabilities(t),
+                                 state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
             n.resetNode(state,thread);  // give ERCs a chance to randomize
             n.argposition = (byte)argposition;
             n.parent = parent;

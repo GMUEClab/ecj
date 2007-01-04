@@ -1132,3 +1132,70 @@ Version		Change Log
 	Removed final declarations in ParameterDatabase and DecodeReturn.
 		Thanks to Remi Vankeisbelck (remi.vankeisbelck@cstb.fr)
 	Modifications to the C printing facility in GP.
+	Added KozaBuilder as an abstract superclass to GrowBuilder,
+		HalfBuilder, and FullBuilder, to simplify redundant
+		code and to make it easier to verify consistency of
+		the type checks added (see next entry).
+	Added more generous type checking to GrowBuilder, HalfBuilder,
+		FullBuilder, PTC1, PTC2, and RandomBranch.  Now if
+		a terminal or nonterminal is not avaialble when
+		an algorithm requests one, rather than failing, in
+		most circumstances the algorithm will try for
+		a nonterminal or terminal respectively, but will issue
+		a warning.  This should help people stuck with typing
+		problems but required a lot of retooling and may have
+		introduced bugs into the builders.
+	Added warning mechanisms in GPNodeBuilder to simplify the type
+		checking in the entry above.
+	Bug fix in Species.newIndividual and GPSpecies.newIndividual,
+		which were calling readGenotype instead of
+		readIndividual, resulting in the Fitness not being
+		read in right.
+	Documentation cleanups in Individual, RuleIndividual, GPIndividual,
+		 and Species.
+	NOT BACKWARD COMPATIBLE.  Initializer.initialPopulation now has a 
+		thread parameter.
+	NOT BACKWARD COMPATIBLE.  Population.populate and 
+		Subpopulation.populate now have thread parameters
+	NOT BACKWARD COMPATIBLE.  The fitness prototype (f_prototype) has 
+		been moved from Subpopulation to Species.  This requires any
+		previous references to f_prototype to now say
+		species.f_prototype
+	NOT BACKWARD COMPATIBLE.  The various newIndividual methods have
+		been simplified considerably and made easier to use.  The
+		old methods have been made private and final to prevent
+		accidental overriding (which would be a bug).  The basic
+		newIndividual from scratch now has a thread parameter and
+		so can be used in a multithreaded environment.
+	Moved in new FloatVectorSpecies and IntegerVectorSpecies, which now
+		allow gene min/max to be specified not only globally, and
+		by individual gene, but also by gene region.  The new setup
+		methods are more complex mostly because they do lots of
+		careful checking.  Thanks to Rafal Kicinger.
+	javac has grown up and jikes has fallen into disrepair.  We move
+		ECJ's default compiler to javac -target 1.3 -source 1.3
+	NOT BACKWARD COMPATIBLE.  GPNode's clone() method will be a deep
+		clone call, like everything else.  We've changed all the
+		calls to clone() to instead call lightClone() (we hope!)
+		and have added an error message to clone() for the time
+		being to warn people to use either lightClone() or
+		cloneReplacing() instead.  Later on we'll set clone()
+		to just call cloneReplacing().
+	Added methods for reading and writing populations and subpopulations
+		to streams and logs.
+	Modifications to SPEA2Subpopulation to read and write the archive size
+		when writing subpopulations
+	Added T_INTEGER and T_CHARACTER to Code
+	Added several methods to Code to simplify reading from files.  Modified
+		much existing code to use the Code methods instead of 
+		rolling their own.  One unfortunate affect of this is that Code
+		now longer is independent of EvolutionState.  Perhaps we might
+		make a utility class instead.
+	Moved ec/multiobjective/spea/package.html to a README file
+	Subpopulations now initialize via loading from files using the new
+		file loading code.
+	Updates to MersenneTwister and MersenneTwisterFast
+	Small setup() fix to VectorSpecies -- wasn't looking up default 
+		parameter for crossover type.  Thanks to Michael Orlov
+		<orlovm@cs.bgu.ac.il>
+	Added indent to make dist

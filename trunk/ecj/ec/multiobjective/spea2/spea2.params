@@ -17,7 +17,7 @@ pop.subpop.0 =					ec.multiobjective.spea2.SPEA2Subpopulation
 pop.subpop.0.archive-size =			128
 
 # We also use a special version of MultiObjectiveFitness
-pop.subpop.0.fitness =				ec.multiobjective.spea2.SPEA2MultiObjectiveFitness
+pop.subpop.0.species.fitness =				ec.multiobjective.spea2.SPEA2MultiObjectiveFitness
 
 # We have our own evaluator and breeder
 eval =						ec.multiobjective.spea2.SPEA2Evaluator

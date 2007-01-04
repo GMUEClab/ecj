@@ -26,7 +26,7 @@ import java.io.*;
  *
  * <p> Remember that if your ERC value isn't a simple or mutable type 
  * (like an int or a string), you'll have to deep-clone it in an overridden
- * protoClone() method.
+ * clone() method.
  *
  * @author Sean Luke
  * @version 1.0 
@@ -131,7 +131,7 @@ public abstract class ERC extends GPNode
 
         // looks good!  try to load this sucker.
         dret.pos += len2;
-        ERC node = (ERC) clone();
+        ERC node = (ERC) lightClone();
         if (!node.decode(dret)) 
             { dret.pos = originalPos; return null; }  // couldn't decode it
 

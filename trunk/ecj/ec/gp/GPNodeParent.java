@@ -23,6 +23,6 @@ import ec.Prototype;
  * @version 1.0 
  */
 
-public interface GPNodeParent extends Prototype
+public interface GPNodeParent
     {
     }

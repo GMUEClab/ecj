@@ -229,4 +229,61 @@ public abstract class GPNodeBuilder implements Prototype
                                          final GPFunctionSet set,
                                          final int argposition,
                                          final int requestedSize);
+        
+    /** Issues a warning that no terminal was found with a return type of the given type, and that an algorithm
+        had requested one.  If fail is true, then a fatal is issued rather than a warning.  The warning takes
+        the form of a one-time big explanatory message, followed by a one-time-per-type message. */
+    protected void warnAboutNoTerminalWithType(GPType type, boolean fail, EvolutionState state)
+        {
+        // big explanation -- appears only once
+        state.output.warnOnce("A GPNodeBuilder has been requested at least once to generate a one-node tree with " +
+                              "a return value type-compatable with a certain type; but there is no TERMINAL which is type-compatable " +
+                              "in this way.  As a result, the algorithm was forced to use a NON-TERMINAL, making the tree larger than " +
+                              "requested, and exposing more child slots to fill, which if not carefully considered, could " +
+                              "recursively repeat this problem and eventually fill all memory.");
+                
+        // shorter explanation -- appears for each node builder and type combo
+        if (fail)
+            state.output.fatal("" + this.getClass() + " can't find a terminal type-compatable with " + type + 
+                               " and cannot replace it with a nonterminal.  You may need to try a different node-builder algorithm.");
+        else
+            state.output.warnOnce("" + this.getClass() + " can't find a terminal type-compatable with " + type);
+        }
+                
+    /** If the given test is true, issues a warning that no terminal was found with a return type of the given type, and that an algorithm
+        had requested one.  If fail is true, then a fatal is issued rather than a warning.  The warning takes
+        the form of a one-time big explanatory message, followed by a one-time-per-type message. Returns the value of the test.
+        This form makes it easy to insert warnings into if-statements.  */
+    protected boolean warnAboutNonterminal(boolean test, GPType type, boolean fail, EvolutionState state)
+        {
+        if (test) warnAboutNonTerminalWithType(type, fail, state);
+        return test;
+        }
+         
+    /** Issues a warning that no nonterminal was found with a return type of the given type, and that an algorithm
+        had requested one.  If fail is true, then a fatal is issued rather than a warning.  The warning takes
+        the form of a one-time big explanatory message, followed by a one-time-per-type message. */
+    protected void warnAboutNonTerminalWithType(GPType type, boolean fail, EvolutionState state)
+        {
+        // big explanation -- appears only once
+        state.output.warnOnce("A GPNodeBuilder has been requested at least once to generate a one-node tree with " +
+                              "a return value type-compatable with a certain type; but there is no NON-TERMINAL which is type-compatable " +
+                              "in this way.  As a result, the algorithm was forced to use a TERMINAL, making the tree larger than " +
+                              "requested, and exposing more child slots to fill, which if not carefully considered, could " +
+                              "recursively repeat this problem and eventually fill all memory.");
+                
+        // shorter explanation -- appears for each node builder and type combo
+        if (fail)
+            state.output.fatal("" + this.getClass() + " can't find a terminal type-compatable with " + type + 
+                               " and cannot replace it with a nonterminal.  You may need to try a different node-builder algorithm.");
+        else
+            state.output.warnOnce("" + this.getClass() + " can't find a terminal type-compatable with " + type);
+        }
+
+    /** Issues a fatal error that no node (nonterminal or terminal) was found with a return type of the given type, and that an algorithm
+        had requested one.  */
+    protected void errorAboutNoNodeWithType(GPType type, EvolutionState state)
+        {
+        state.output.fatal("" + this.getClass() + " could find no terminal or nonterminal type-compatable with " + type);
+        }
     }

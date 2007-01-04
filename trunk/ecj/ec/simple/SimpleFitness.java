@@ -110,17 +110,21 @@ public class SimpleFitness extends Fitness
                             final LineNumberReader reader)
         throws IOException
         {
-        int linenumber = reader.getLineNumber();
-        String s = reader.readLine();
-        if (s==null || s.length() < FITNESS_PREAMBLE.length()) // uh oh
-            state.output.fatal("Reading Line " + linenumber + ": " +
-                               "Bad Fitness.");
-        DecodeReturn d = new DecodeReturn(s, FITNESS_PREAMBLE.length());
-        Code.decode(d);
-        if (d.type!=DecodeReturn.T_FLOAT)
-            state.output.fatal("Reading Line " + linenumber + ": " +
-                               "Bad Fitness.");
-        setFitness(state,(float)d.d,false);
+        setFitness(state, Code.readFloatWithPreamble(FITNESS_PREAMBLE, state, reader));
+
+/*
+  int linenumber = reader.getLineNumber();
+  String s = reader.readLine();
+  if (s==null || s.length() < FITNESS_PREAMBLE.length()) // uh oh
+  state.output.fatal("Reading Line " + linenumber + ": " +
+  "Bad Fitness.");
+  DecodeReturn d = new DecodeReturn(s, FITNESS_PREAMBLE.length());
+  Code.decode(d);
+  if (d.type!=DecodeReturn.T_FLOAT)
+  state.output.fatal("Reading Line " + linenumber + ": " +
+  "Bad Fitness.");
+  setFitness(state,(float)d.d,false);
+*/
         }
 
     public void writeFitness(final EvolutionState state,

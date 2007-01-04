@@ -45,5 +45,5 @@ public abstract class Initializer implements Singleton
         This is commonly done by creating a Population, setting it up (call
         setup() on it!), and calling its populate() method. This method
         will likely only be called once in a run. */
-    public abstract Population initialPopulation(final EvolutionState state);
+    public abstract Population initialPopulation(final EvolutionState state, int thread);
     }

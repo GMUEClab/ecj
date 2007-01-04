@@ -25,18 +25,16 @@ import ec.vector.*;
 
 public class Rand1EitherOrDEBreeder extends DEBreeder
     {
-
     // Pm is the probability of mutation.
-    public static final String P_Pm = "Pm";
     public double Pm;
-
     // A good default value for K is 0.5 * ( 1 + F )
-    public static final String P_K = "K";
-    public double K;
-
-    // F is scale factor
-    public static final String P_F = "F";
     public double F;
+    // F is scale factor
+    public double K;
+    
+    public static final String P_Pm = "Pm";
+    public static final String P_K = "K";
+    public static final String P_F = "F";
 
     public void setup(final EvolutionState state, final Parameter base) 
         {
@@ -64,23 +62,24 @@ public class Rand1EitherOrDEBreeder extends DEBreeder
     public Individual createIndividual( final EvolutionState state,
                                         int subpop,
                                         Individual[] inds,
-                                        int index )
+                                        int index,
+                                        int thread )
         {
         // select three indexes different from each other and from that of the current parent
         int r0, r1, r2;
         do
             {
-            r0 = state.random[0].nextInt(inds.length);
+            r0 = state.random[thread].nextInt(inds.length);
             }
         while( r0 == index );
         do
             {
-            r1 = state.random[0].nextInt(inds.length);
+            r1 = state.random[thread].nextInt(inds.length);
             }
         while( r1 == r0 || r1 == index );
         do
             {
-            r2 = state.random[0].nextInt(inds.length);
+            r2 = state.random[thread].nextInt(inds.length);
             }
         while( r2 == r1 || r2 == r0 || r2 == index );
 
@@ -90,13 +89,13 @@ public class Rand1EitherOrDEBreeder extends DEBreeder
         DoubleVectorIndividual g2 = (DoubleVectorIndividual)(inds[r2]);
 
         int dim = v.genome.length;
-        int localIndex = state.random[0].nextInt(dim);
+        int localIndex = state.random[thread].nextInt(dim);
         int counter = 0;
 
         // create the child
         do
             {
-            if( state.random[0].nextDouble() <= Pm )
+            if( state.random[thread].nextDouble() <= Pm )
                 {
                 v.genome[localIndex] = g0.genome[localIndex] + F * (g1.genome[localIndex] - g2.genome[localIndex]);
                 }

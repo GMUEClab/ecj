@@ -1,0 +1,30 @@
+This package implements various Differential Evolution algorithms from
+"Differential Evolution: A Practical Approach to Global Optimization"
+by Kenneth Price, Rainer Storn, and Jouni Lampinen.  Much of the algorithms
+were taken, with permission from the Differential Evolution website 
+http://www.icsi.berkeley.edu/~storn/code.html
+
+ECJ's implementation of Differential Evolution requires that the
+user specify one of several Breeders, and also that the user include
+a special Statistics object in the Statistics chain.  This Statistics
+object must be the *first* such object in the chain -- other Statistics
+objects must hang off of it.
+
+The Breeder options implement various Differential Evolution Algorithms.
+Options include:
+
+breed = 	ec.de.DEBreeder
+breed = 	ec.de.Best1BinDEBreeder
+breed = 	ec.de.Rand1EitherOrDEBreeder
+breed = 	ec.de.Rand1ExpDEBreeder
+
+The Statistics object is ec.de.DEStatistics.  To use it in conjunction 
+with ec.simple.SimpleStatistics, for example, we do:
+
+stat =                                  ec.de.DEStatistics
+stat.num-children =                     1
+stat.child.0 =                          ec.simple.SimpleStatistics
+stat.child.0.file =                     $out.stat
+
+The ec/app/ecsuite/de.params file contains an example.
+
