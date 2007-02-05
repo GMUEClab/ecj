@@ -110,31 +110,6 @@ public class SimpleBreeder extends Breeder
                 
                 // figure from
                 from[y][x] = (firstBreedChunkSizes * y);
-                
-                //System.out.println("Vals: " + numinds[y][x] + " " + from[y][x]);
-                
-                /*
-                // figure numinds
-                if (y<state.breedthreads-1) // not last one
-                numinds[y][x]=
-                (state.population.subpops[x].individuals.length - elite[x])/
-                state.breedthreads;
-                else // in case we're slightly off in division
-                numinds[y][x]=
-                (state.population.subpops[x].individuals.length - elite[x])/
-                state.breedthreads +
-                            
-                ((state.population.subpops[x].individuals.length - elite[x]) - 
-                ((state.population.subpops[x].individuals.length - elite[x])/
-                state.breedthreads)  // note integer division
-                *state.breedthreads);                    
-                    
-                // figure from
-                from[y][x]=
-                ((state.population.subpops[x].individuals.length - elite[x])/
-                state.breedthreads) * y;
-                */
-                
                 }
             
         if (state.breedthreads==1)
