@@ -26,7 +26,7 @@ import ec.util.*;
  * which is cloned to form Fitness objects for individuals in the subpopulation.
  *
  * <p>An initial subpopulation is populated with new random individuals 
- * using the populate() method.  This method typically populates
+ * using the populate(...) method.  This method typically populates
  * by filling the array with individuals created using the Subpopulations' 
  * species' emptyClone() method, though you might override this to create
  * them with other means, by loading from text files for example.
