@@ -62,22 +62,34 @@ import ec.util.*;
 
 public class MultiPopCoevolutionaryEvaluator extends Evaluator
     {
-
     // the preamble for selecting partners from each subpopulation
     public static final String P_SUBPOP = "subpop";
 
     // the number of random partners selected from the current generation
     public static final String P_NUM_RAND_IND = "num-rand-ind";
     protected int[] numRand;
+    public int getNumRandomPartners(int subpop)
+	{
+	return numRand[subpop];
+	}
 
     // the number of elite partners selected from the previous generation
     public static final String P_NUM_ELITE = "num-elites";
     protected int[] numElite;
+    public int getNumEliteIndividuals(int subpop)
+	{
+	return numElite[subpop];
+	}
     Individual[][] eliteIndividuals;
+
 
     // the number of other partners selected from the previous generation
     public final static String P_NUM_IND = "num-ind";
     protected int[] numInd;
+    public int getNumPreviousGenerationPartners(int subpop)
+	{
+	return numInd[subpop];
+	}
 
     // the selection method used to select the other partners from the previous generation
     public static final String P_SELECTIONMETHOD = "select";
@@ -85,6 +97,10 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
 
     // the total number of partners (numRand+numElite+numInd)
     protected int[] numSelected;
+    public int getNumPartners(int subpop)
+	{
+	return numSelected[subpop];
+	}
 
     Population previousPopulation;
 
