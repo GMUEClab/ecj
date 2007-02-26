@@ -1199,3 +1199,4 @@ Version		Change Log
 		parameter for crossover type.  Thanks to Michael Orlov
 		<orlovm@cs.bgu.ac.il>
 	Added indent to make dist
+	Added setGenomeLength(...) to VectorIndividuals
