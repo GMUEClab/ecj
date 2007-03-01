@@ -109,10 +109,10 @@ public class ProportionalTournamentSelection extends SelectionMethod implements 
 
         pickWorst = state.parameters.getBoolean(base.push(P_PICKWORST),def.push(P_PICKWORST),false);
 
-        fitnessPressureProb = state.parameters.getDouble(base.push(P_PROB),def.push(P_PROB),0.0);
+        fitnessPressureProb = state.parameters.getDouble(base.push(P_PROBABILITY),def.push(P_PROBABILITY),0.0);
         if( fitnessPressureProb<0.0 || fitnessPressureProb>1.0 )
             state.output.fatal( "Probability must be between 0.0 and 1.0",
-                                base.push(P_PROB),def.push(P_PROB));
+                                base.push(P_PROBABILITY),def.push(P_PROBABILITY));
         }
 
 

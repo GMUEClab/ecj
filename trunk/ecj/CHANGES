@@ -1200,3 +1200,6 @@ Version		Change Log
 		<orlovm@cs.bgu.ac.il>
 	Added indent to make dist
 	Added setGenomeLength(...) to VectorIndividuals
+	Incorrect parameter (P_PROB instead of P_PROBABILITY) fixed in
+		ProportionalTournamentSelection.  Thanks to Robert Baruch
+		<autophile@zoominternet.net>
