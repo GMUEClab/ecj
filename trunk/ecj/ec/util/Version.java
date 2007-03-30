@@ -26,16 +26,16 @@ import java.util.*;
 public class Version
     {
     public static final String name = "ECJ";
-    public static final String version = "16";
-    public static final String copyright = "2006";
+    public static final String version = "17";
+    public static final String copyright = "2007";
     public static final String author = "Sean Luke";
     public static final String contributors = "L. Panait, G. Balan, S. Paus, Z. Skolicki, R. Kicinger,";
-    public static final String contributors2 = "J. Bassett, R. Hubley, A. Desai, and A. Chircop";
+    public static final String contributors2 = "J. Harrison, J. Bassett, R. Hubley, A. Desai, and A. Chircop";
     public static final String authorEmail0 = "ecj-help";
     public static final String authorEmail1 = "cs.gmu.edu";
     public static final String authorEmail2 = "(better: join ECJ-INTEREST at URL above)";
     public static final String authorURL = "http://cs.gmu.edu/~eclab/projects/ecj/";
-    public static final String date = "April 26, 2006";
+    public static final String date = "March 20 2007";
     public static final String minimumJavaVersion = "1.3";
 
     public static final String message()
