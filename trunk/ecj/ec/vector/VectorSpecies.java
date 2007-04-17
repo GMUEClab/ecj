@@ -117,7 +117,7 @@ public class VectorSpecies extends Species
             state.output.error("VectorSpecies must have a mutation probability between 0.0 and 1.0 inclusive",
                                base.push(P_MUTATIONPROB),def.push(P_MUTATIONPROB));
     
-        String ctype = state.parameters.getStringWithDefault(base.push(P_CROSSOVERTYPE), def.push(P_CROSSOVERTYPE), "");
+        String ctype = state.parameters.getStringWithDefault(base.push(P_CROSSOVERTYPE), def.push(P_CROSSOVERTYPE), null);
         crossoverType = C_ONE_POINT;
         if (ctype==null)
             state.output.warning("No crossover type given for VectorSpecies, assuming one-point crossover",

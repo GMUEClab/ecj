@@ -17,43 +17,43 @@ eval.problem.type = rosenbrock
 # know them as specific problems in the DeJong test suite)
 #
 
-seed.0 = time
+seed.0 = 						time
 
-state = 							ec.simple.SimpleEvolutionState
-init = 								ec.simple.SimpleInitializer
+state = 						ec.simple.SimpleEvolutionState
+init = 							ec.simple.SimpleInitializer
 finish = 	        				ec.simple.SimpleFinisher
 exch = 							ec.simple.SimpleExchanger
 breed =							ec.pso.PSOBreeder
 eval =							ec.simple.SimpleEvaluator
 stat =							ec.simple.SimpleStatistics
-generations =					200
-quit-on-run-complete =		true
+generations =						200
+quit-on-run-complete =					true
 pop = 							ec.Population
-pop.subpops =					1
-pop.subpop.0 = 				ec.pso.PSOSubpopulation
-pop.subpop.0.duplicate-retries =						2
-pop.subpop.0.species =                  				ec.vector.FloatVectorSpecies
-pop.subpop.0.species.fitness 	= 						ec.simple.SimpleFitness
-pop.subpop.0.species.pipe = 							ec.vector.breed.VectorMutationPipeline
-pop.subpop.0.species.pipe.source.0 = 				ec.vector.breed.VectorCrossoverPipeline
-pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
-pop.subpop.0.species.pipe.source.0.source.1 = same
+pop.subpops =						1
+pop.subpop.0 = 						ec.pso.PSOSubpopulation
+pop.subpop.0.duplicate-retries =			2
+pop.subpop.0.species =                  		ec.vector.FloatVectorSpecies
+pop.subpop.0.species.fitness 	= 			ec.simple.SimpleFitness
+pop.subpop.0.species.pipe = 				ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0 = 			ec.vector.breed.VectorCrossoverPipeline
+pop.subpop.0.species.pipe.source.0.source.0 = 		ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.1 = 		same
 
-pop.subpop.0.species.ind =							ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.ind =				ec.vector.DoubleVectorIndividual
 
 # you can change these to whatever tickles your fancy
-pop.subpop.0.species.min-gene =	-5.12
-pop.subpop.0.species.max-gene =	5.12
-pop.subpop.0.species.genome-size = 	2
+pop.subpop.0.species.min-gene =				-5.12
+pop.subpop.0.species.max-gene =				5.12
+pop.subpop.0.species.genome-size = 			2
 
-select.tournament.size = 		2
-pop.subpop.0.species.mutation-prob = 0.005
-pop.subpop.0.species.crossover-type = one
+select.tournament.size = 				2
+pop.subpop.0.species.mutation-prob = 			0.005
+pop.subpop.0.species.crossover-type = 			one
 
-pop.subpop.0.size =							50
-pop.subpop.0.neighborhood-size = 		20
-pop.subpop.0.clamp = 						false
-pop.subpop.0.initial-velocity-scale = 	1.0
-pop.subpop.0.velocity-multiplier = 		1.5
+pop.subpop.0.size =					50
+pop.subpop.0.neighborhood-size = 			20
+pop.subpop.0.clamp = 					false
+pop.subpop.0.initial-velocity-scale = 			1.0
+pop.subpop.0.velocity-multiplier = 			1.5
 
-stat.file											$out.stat
+stat.file						$out.stat
