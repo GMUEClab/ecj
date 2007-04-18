@@ -251,7 +251,7 @@ public class Subpopulation implements Group
         // read in individuals
         if (numIndividuals != individuals.length)
             {
-            state.output.warnOnce("On reading subpopulation from text stream, the subpopulation size was incorrect.\n" + 
+            state.output.warnOnce("On reading subpopulation from text stream, the subpopulation size didn't match.\n" + 
                                   "Had to resize and use newIndividual() instead of readIndividual().");
             individuals = new Individual[numIndividuals];
             for(int i = 0 ; i < individuals.length; i++)
@@ -271,9 +271,9 @@ public class Subpopulation implements Group
 		individuals[i].readIndividual(state, reader);
 	    else
 		{
-		state.output.warnOnce("On reading subpopulation from text stream, some slots in the subpopulation were null.\n" +
+		state.output.warnOnce("On reading subpopulation from text stream, some of the preexisting subpopulation's slots were null.\n" +
 				      "Had to use newIndividual() instead of readIndividual().");
-		individuals[i] = species.newIndividual(state, reader); //tibi 
+		individuals[i] = species.newIndividual(state, reader);
 		}
             }
         }
