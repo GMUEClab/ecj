@@ -1,0 +1,1 @@
+drmnode.new -g alc -p 10121 -v 3 -r maxones.jar\!ec.drm.DRMLauncher -a -params tutorial1.params
