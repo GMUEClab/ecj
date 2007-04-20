@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# drmnode [--nogui] [pars...]
+#
+# Starts the TestGUINode, with the current directory as application
+# directory. That means that applications which have ther jar files
+# in the directory where the node was started (or in any directory under it) 
+# have application rights on this node.
+#
+# if --nogui is specified, then NakedNode is started with nice,
+# otherwise TestGUINode without nice.
+nice -n 10 drmstarter --rootdir . drm.server.NewNode "$@"
+
