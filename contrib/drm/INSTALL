@@ -1,0 +1,64 @@
+INSTALLATION GUIDE
+
+Installation is very simple since you don't have to recompile anything
+as the software is written in java. Eg it was succesfully installed on
+a Mac OS X too which supports java 1.3 and BSD tools which the sripts
+in linux/bin use to start up the applications.
+
+IMPORTANT: Please do not use the Sun 1.4.0 version VM. It has a bug in the
+binary format of internet addresses. We advise you to use either
+version 1.3.1 or 1.4.1.
+
+LINUX
+
+Normally you have a good chance that the RPM distribution works
+for you. At least the tools will always be installed as it involves
+extracting a dir and linking some scripts into the system path.
+Installing the automatically started contributor node might fail on
+non-redht style systems.
+
+Anyway, we describe the installation process in detail. The requirement is
+that you have a java VM installed which supports at least java 1.3
+and you have it in the path with the name "java".
+
+
+1 Extract the distribution directory to the final place (if you already have,
+  move it to its final place). The suggested place is /usr/dr-ea-m.
+
+1.5 It is suggested to create a lib directory which contains a .jar
+  compressed archive of the drm library.
+
+2 add the executables in the directory linux/bin to the path or link the
+  scripts in it to a standard bin dir like /usr/bin.
+
+3 If the name of the directory you chosen is different from /usr/dr-ea-m,
+  say /home/foo/dr-ea-m, you have to add a file called drm.config into
+  /etc, or into $HOME/.dream/ with the one line content
+
+  DRM_HOME /home/foo/dr-ea-m
+
+4 Optionally you can add a line like
+
+  DRM_JVM /usr/java/j2sad1.4/bin/java
+
+  if you want to set the required java VM explicitly.
+
+
+You installation is ready if you don't want to contribute to the "big drm"
+out there. If you do, you have to start a node in your login profile, or
+at boot time. It is done by running "drmd.init start" in your startup
+configuration. You can just include it in your profile, or (depending on
+the convensions followed by your linux distribution) you can eg link
+drmd.init into /etc/init.d and configure it to be started at the runlevels
+you wish (on redhat style systems chkconfig).
+You can stop this contributor node any time by saying "drmd.init stop".
+
+IMPORTANT: if you start the contributor node at boot time, make sure
+java is accessible and that drm.config is in /etc (or you installed
+it into the default /usr/dr-ea-m) having in mind that your path settings are
+not in effect yet at that time.
+The same is true for the executables in linux/bin which also have to be
+in a standard bin directory (linked or copied) like /usr/bin or /usr/local/bin.
+
+Also, the environment variables DRM_HOME and DRM_JVM are understood
+but of course not at boot time when they are not set yet.
