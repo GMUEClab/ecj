@@ -1,0 +1,75 @@
+# This parameter file supports the GEP Odd-3-parity example from GeneXProTools.
+#
+# A text file provides the data.
+
+
+# My parent:
+parent.0 =				../../../gep/gep.params
+
+# Problem
+#===============================
+eval.problem = ec.app.gep.Odd3Parity.Odd3Parity
+
+
+# run for 50 generations, quit prematurely if I find something ideal
+generations =				    5000
+quit-on-run-complete =			true
+
+
+# ec.Subpopulation
+# ==============================
+
+# subpop size is 30 individuals
+pop.subpop.0.size =			30
+
+
+# ec.Species
+# ==============================
+
+gep.species.inversion-prob         = 0.1
+gep.species.mutation-prob          = 0.044
+gep.species.istransposition-prob   = 0.1
+gep.species.ristransposition-prob  = 0.1
+gep.species.onepointrecomb-prob    = 0.3
+gep.species.twopointrecomb-prob    = 0.3
+gep.species.generecomb-prob        = 0.1
+gep.species.genetransposition-prob = 0.1
+
+gep.species.numgenes = 3
+gep.species.gene-headsize = 8
+gep.species.gene-linking-function = and
+
+# Problem type must be one of: functionfinding, classification, timeseries, logical
+# Set default to be 'unknown' so user is forced to specify in the problem params file 
+gep.species.problemtype = logical
+
+gep.species.symbolset.terminalfilename = ec/app/gep/Odd3Parity/Odd-3-parity.txt
+gep.species.symbolset.functionsize = 3
+gep.species.symbolset.function.0 = Not
+gep.species.symbolset.function.0.weight = 1
+gep.species.symbolset.function.1 = And
+gep.species.symbolset.function.1.weight = 1
+gep.species.symbolset.function.2 = Or
+gep.species.symbolset.function.2.weight = 1
+
+
+
+# Statistics 
+#stat.num-children = 3
+#stat.child.0 = ec.gep.test.SimpleXYSeriesChartStatistics
+#stat.child.0.title = Best of Generation
+#stat.child.0.x-axis-label = generation
+#stat.child.0.y-axis-label = fitness
+#stat.child.1 = ec.simple.SimpleShortStatistics
+#stat.child.1.file = simpleshortstats.txt
+#stat.child.1.gather-full = true
+#stat.child.2 = ec.gep.GEPSimpleStatistics
+# will write to console if file not specified
+#stat.child.2.file = simplestats.txt
+
+stat = ec.gep.GEPSimpleStatistics
+stat.file = Odd-3-parity.stat
+
+
+
+

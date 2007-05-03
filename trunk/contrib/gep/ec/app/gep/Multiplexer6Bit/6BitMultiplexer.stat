@@ -1,0 +1,391 @@
+Maximum number of generations in this run: 5000
+Size of population in this run: 30
+Number of genes per chromosome: 4
+Size of gene head: 8
+Seed(s) used in this job: 4357
+Problem type: logical
+
+
+Generation: 0
+Best Individual:
+Evaluated: T
+Fitness: 328.125
+Linking function: and
+Gene 0
+not.and.and.not.not.d1.not.d5.d0.d1.d1.d0.d5.d1.d2.d3.d4
+Gene 1
+not.and.d5.and.and.not.or.and.d4.d2.d1.d0.d2.d4.d1.d3.d3
+Gene 2
+and.d4.or.not.d3.d0.not.not.d3.d1.d3.d4.d4.d5.d4.d4.d4
+Gene 3
+or.not.or.not.or.not.not.not.d1.d1.d4.d3.d5.d5.d4.d0.d1
+
+(not (((not d5) and d1) and (not (not d0)))) and (not (d5 and (((d2 or d1) and (d0 and d2)) and (not d4)))) and (d4 and ((not d0) or d3)) and ((not (not (not d4))) or (((not d3) or d1) or (not d1)))
+
+
+Generation: 1
+Best Individual:
+Evaluated: T
+Fitness: 468.75
+Linking function: and
+Gene 0
+not.and.and.not.not.d1.not.d5.d0.d1.d1.d0.d5.d1.d2.d3.d4
+Gene 1
+not.and.d5.and.and.not.or.and.d4.d2.d1.d0.d2.d4.d1.d1.d4
+Gene 2
+and.d4.d4.or.not.d3.d0.d0.d5.d1.d3.d4.d4.d5.d4.d4.d3
+Gene 3
+or.not.or.not.or.not.not.not.d1.d1.d4.d3.d5.d5.d4.d0.d1
+
+(not (((not d5) and d1) and (not (not d0)))) and (not (d5 and (((d2 or d1) and (d0 and d2)) and (not d4)))) and (d4 and d4) and ((not (not (not d4))) or (((not d3) or d1) or (not d1)))
+
+
+Generation: 4
+Best Individual:
+Evaluated: T
+Fitness: 481.4453
+Linking function: and
+Gene 0
+not.and.and.not.not.or.not.d5.d0.d1.d1.d0.d5.d1.d2.d5.d4
+Gene 1
+not.and.d5.and.and.not.or.and.d4.d2.d4.d0.d2.d4.d1.d1.d4
+Gene 2
+and.d4.or.or.not.d3.d0.or.d5.d1.d3.d4.d4.d5.d4.d4.d3
+Gene 3
+or.not.or.not.or.not.not.not.d1.d1.d4.d3.d5.d5.d4.d0.d1
+
+(not (((not d5) and (d0 or d1)) and (not (not d1)))) and (not (d5 and (((d2 or d4) and (d0 and d2)) and (not d4)))) and (d4 and ((d3 or d0) or (not (d5 or d1)))) and ((not (not (not d4))) or (((not d3) or d1) or (not d1)))
+
+
+Generation: 10
+Best Individual:
+Evaluated: T
+Fitness: 484.375
+Linking function: and
+Gene 0
+or.d1.not.or.not.or.not.not.d1.d5.d4.d3.d5.d5.d4.d0.d1
+Gene 1
+not.and.d5.and.and.not.or.and.d4.d1.d1.d1.d2.d1.d1.d1.d4
+Gene 2
+and.or.or.or.not.d3.d0.or.d5.d2.d3.d4.d4.d4.d4.d0.d3
+Gene 3
+not.and.and.not.not.or.not.d5.d0.d2.d1.d0.d5.d3.d2.d4.d4
+
+(d1 or (not ((not (not d5)) or ((not d4) or d1)))) and (not (d5 and (((d1 or d1) and (d1 and d2)) and (not d4)))) and ((((d3 or d4) or d5) or (not d2)) and (d3 or d0)) and (not (((not d5) and (d0 or d2)) and (not (not d1))))
+
+
+Generation: 15
+Best Individual:
+Evaluated: T
+Fitness: 515.625
+Linking function: and
+Gene 0
+not.and.and.not.not.d1.not.d3.d0.d1.d0.d3.d5.d1.d5.d3.d4
+Gene 1
+or.or.d3.and.or.not.and.d1.d4.d2.d3.d4.d2.d1.d1.d1.d4
+Gene 2
+and.or.or.or.not.d3.d0.or.d5.d5.d3.d4.d4.d1.d4.d0.d3
+Gene 3
+not.and.and.not.not.or.not.d5.d0.d2.d1.d0.d5.d3.d2.d4.d4
+
+(not (((not d3) and d1) and (not (not d0)))) and ((((not d2) and (d3 and d4)) or (d1 or d4)) or d3) and ((((d3 or d4) or d5) or (not d5)) and (d3 or d0)) and (not (((not d5) and (d0 or d2)) and (not (not d1))))
+
+
+Generation: 18
+Best Individual:
+Evaluated: T
+Fitness: 539.0625
+Linking function: and
+Gene 0
+not.and.not.not.not.or.not.d5.d0.d2.d0.d0.d5.d3.d2.d4.d4
+Gene 1
+or.d4.d1.not.or.not.and.d5.d4.d1.d1.d1.d3.d2.d1.d1.d5
+Gene 2
+and.or.or.or.or.d3.d0.or.d0.d5.d1.d4.d4.d1.d4.d3.d5
+Gene 3
+or.not.or.not.or.not.d2.or.d1.d1.d4.d5.d5.d2.d0.d4.d1
+
+(not ((not (not (not d2))) and (not (d5 or d0)))) and (d4 or d1) and ((((d4 or d4) or d0) or (d5 or d1)) and (d3 or d0)) and ((not (not d2)) or (((d4 or d5) or d1) or (not d1)))
+
+
+Generation: 22
+Best Individual:
+Evaluated: T
+Fitness: 561.52344
+Linking function: and
+Gene 0
+not.and.not.not.not.or.not.d5.d0.d2.d0.d0.d5.d3.d2.d4.d4
+Gene 1
+or.d4.d1.or.or.not.and.d5.d4.d1.d3.d1.d3.d2.d1.d1.d5
+Gene 2
+and.or.or.or.or.d3.d0.or.d0.d5.d1.d4.d4.d1.d5.d3.d3
+Gene 3
+or.not.or.or.not.or.not.d1.d3.d5.d4.d1.d5.d0.d1.d0.d0
+
+(not ((not (not (not d2))) and (not (d5 or d0)))) and (d4 or d1) and ((((d4 or d4) or d0) or (d5 or d1)) and (d3 or d0)) and ((not ((not d1) or d1)) or ((not d3) or (d5 or d4)))
+
+
+Generation: 28
+Best Individual:
+Evaluated: T
+Fitness: 580.0781
+Linking function: and
+Gene 0
+not.and.not.not.and.or.not.d5.d4.d2.d0.d5.d5.d3.d2.d4.d4
+Gene 1
+or.d4.d1.d4.or.or.not.and.d4.d1.d5.d1.d3.d2.d1.d1.d5
+Gene 2
+and.or.or.or.or.d3.d0.not.d0.d2.d1.d4.d4.d1.d2.d5.d3
+Gene 3
+or.not.or.or.not.or.not.d2.d3.d5.d4.d1.d5.d0.d1.d0.d0
+
+(not ((not ((not d0) and d5)) and (not (d4 or d2)))) and (d4 or d1) and ((((not d4) or d0) or (d2 or d1)) and (d3 or d0)) and ((not ((not d1) or d2)) or ((not d3) or (d5 or d4)))
+
+
+Generation: 29
+Best Individual:
+Evaluated: T
+Fitness: 585.9375
+Linking function: and
+Gene 0
+not.and.and.not.not.or.not.d5.d0.d2.d0.d0.d5.d3.d2.d4.d4
+Gene 1
+or.d4.d1.or.or.not.and.d5.d4.d1.d3.d1.d3.d2.d1.d1.d5
+Gene 2
+and.or.or.or.or.d3.d0.or.d0.d5.d1.d4.d4.d1.d5.d3.d3
+Gene 3
+or.not.or.or.not.or.not.d1.d3.d5.d4.d1.d5.d0.d1.d0.d0
+
+(not (((not d5) and (d0 or d2)) and (not (not d0)))) and (d4 or d1) and ((((d4 or d4) or d0) or (d5 or d1)) and (d3 or d0)) and ((not ((not d1) or d1)) or ((not d3) or (d5 or d4)))
+
+
+Generation: 31
+Best Individual:
+Evaluated: T
+Fitness: 644.53125
+Linking function: and
+Gene 0
+not.and.and.not.not.or.not.d5.d0.d2.d0.d0.d5.d3.d2.d4.d4
+Gene 1
+or.d4.d1.or.and.not.not.or.d4.d5.d3.d1.d3.d2.d1.d1.d5
+Gene 2
+and.or.or.or.not.d3.d0.or.d0.d5.d1.d4.d4.d1.d5.d3.d3
+Gene 3
+or.not.or.not.or.or.not.d1.d3.d1.d4.d1.d5.d0.d1.d0.d0
+
+(not (((not d5) and (d0 or d2)) and (not (not d0)))) and (d4 or d1) and ((((d1 or d4) or d0) or (not d5)) and (d3 or d0)) and ((not (not (not d1))) or ((d1 or d3) or (d1 or d4)))
+
+
+Generation: 56
+Best Individual:
+Evaluated: T
+Fitness: 761.71875
+Linking function: and
+Gene 0
+or.not.or.and.or.and.not.d1.d3.d1.d4.d5.d5.d0.d1.d0.d0
+Gene 1
+not.and.and.not.not.d1.d5.not.d0.d4.d0.d0.d0.d3.d2.d4.d4
+Gene 2
+and.or.or.or.and.d3.d0.or.d0.d1.d1.d4.d3.d1.d5.d3.d3
+Gene 3
+or.d4.d1.or.not.not.not.not.d1.d3.d1.d1.d5.d2.d1.d1.d5
+
+((not ((not d5) and d1)) or ((d3 or d1) or (d4 and d5))) and (not (((not (not d0)) and d1) and (not d5))) and ((((d4 or d3) or d0) or (d1 and d1)) and (d3 or d0)) and (d4 or d1)
+
+
+Generation: 65
+Best Individual:
+Evaluated: T
+Fitness: 765.625
+Linking function: and
+Gene 0
+or.d4.d1.or.not.or.d5.d2.d3.d4.d2.d0.d5.d4.d2.d4.d0
+Gene 1
+not.and.and.not.not.d1.d5.not.d0.d4.d0.d0.d0.d3.d2.d4.d4
+Gene 2
+and.or.or.or.not.or.d0.or.d0.d1.d1.d2.d3.d4.d0.d3.d3
+Gene 3
+or.or.not.d1.or.not.d1.d4.d1.d1.d1.d5.d5.d2.d1.d0.d1
+
+(d4 or d1) and (not (((not (not d0)) and d1) and (not d5))) and ((((d3 or d4) or d0) or (not d1)) and ((d1 or d2) or d0)) and ((d1 or (d1 or d4)) or (not (not d1)))
+
+
+Generation: 70
+Best Individual:
+Evaluated: T
+Fitness: 820.3125
+Linking function: and
+Gene 0
+or.or.and.or.not.or.and.d1.d4.d1.d4.d5.d5.d2.d4.d1.d1
+Gene 1
+not.and.and.not.not.d1.d5.not.d0.d4.d0.d0.d4.d3.d2.d4.d4
+Gene 2
+and.or.or.or.not.or.d0.or.d0.d1.d1.d2.d3.d3.d0.d0.d3
+Gene 3
+or.or.not.d4.or.or.d1.d4.d1.d3.d1.d1.d5.d2.d1.d4.d5
+
+(((d1 or d4) or (not d1)) or ((d4 or d5) and (d5 and d2))) and (not (((not (not d0)) and d1) and (not d5))) and ((((d3 or d3) or d0) or (not d1)) and ((d1 or d2) or d0)) and ((d4 or (d1 or d4)) or (not (d1 or d3)))
+
+
+Generation: 72
+Best Individual:
+Evaluated: T
+Fitness: 875.0
+Linking function: and
+Gene 0
+or.d4.d1.or.not.or.not.d4.d1.d3.d1.d1.d5.d2.d1.d4.d5
+Gene 1
+not.and.and.not.not.d1.d5.not.d0.d4.d0.d0.d4.d3.d2.d4.d4
+Gene 2
+and.or.or.or.not.or.d0.or.d0.d1.d1.d2.d3.d3.d0.d0.d0
+Gene 3
+or.or.and.or.not.or.and.d1.d4.d1.d4.d5.d1.d2.d4.d1.d1
+
+(d4 or d1) and (not (((not (not d0)) and d1) and (not d5))) and ((((d3 or d3) or d0) or (not d1)) and ((d1 or d2) or d0)) and (((d1 or d4) or (not d1)) or ((d4 or d5) and (d1 and d2)))
+
+
+Generation: 255
+Best Individual:
+Evaluated: T
+Fitness: 906.25
+Linking function: and
+Gene 0
+not.and.and.not.not.d1.not.and.d0.d0.d5.d1.d2.d5.d5.d3.d3
+Gene 1
+or.or.d1.d4.or.d1.and.not.d3.d0.d4.d0.d4.d3.d0.d2.d1
+Gene 2
+and.or.or.or.not.or.d0.and.d0.d1.d1.d2.d3.d3.d1.d3.d1
+Gene 3
+or.or.d2.d3.d4.or.and.d0.d2.d5.d2.d5.d0.d0.d1.d1.d3
+
+(not (((not (d0 and d5)) and d1) and (not (not d0)))) and ((d4 or (d1 or ((not d0) and d3))) or d1) and ((((d3 and d3) or d0) or (not d1)) and ((d1 or d2) or d0)) and ((d3 or d4) or d2)
+
+
+Generation: 336
+Best Individual:
+Evaluated: T
+Fitness: 937.5
+Linking function: and
+Gene 0
+or.or.d1.d4.or.and.or.not.d3.d4.d4.d0.d2.d0.d5.d2.d2
+Gene 1
+or.or.d0.and.d3.or.not.d4.d2.d1.d0.d5.d4.d3.d0.d2.d2
+Gene 2
+and.or.or.or.d4.or.d0.or.d0.d2.d1.d2.d3.d3.d1.d3.d1
+Gene 3
+not.and.and.not.not.d1.not.and.d0.d0.d5.d5.d1.d5.d4.d0.d4
+
+((d4 or (((not d0) and d3) or (d4 or d4))) or d1) and ((((d4 or d2) and (not d1)) or d3) or d0) and ((((d2 or d3) or d0) or d4) and ((d2 or d1) or d0)) and (not (((not (d0 and d5)) and d1) and (not (not d0))))
+
+
+Generation: 465
+Best Individual:
+Evaluated: T
+Fitness: 1000.0
+Linking function: and
+Gene 0
+or.or.d0.and.d3.or.not.d4.d2.d1.d0.d5.d1.d1.d5.d5.d3
+Gene 1
+or.or.d1.d4.or.and.and.not.d2.d4.d0.d0.d4.d0.d3.d5.d0
+Gene 2
+and.or.or.or.d4.or.d0.not.d0.d2.d1.d0.d3.d2.d3.d3.d1
+Gene 3
+not.and.and.not.not.d1.not.and.d0.d0.d5.d1.d5.d3.d4.d2.d0
+
+((((d4 or d2) and (not d1)) or d3) or d0) and ((d4 or (((not d0) and d2) or (d4 and d0))) or d1) and ((((not d0) or d0) or d4) and ((d2 or d1) or d0)) and (not (((not (d0 and d5)) and d1) and (not (not d0))))
+
+
+Best Individual of Run:
+Found at Generation: 465
+Evaluated: T
+Fitness: 1000.0
+Linking function: and
+Gene 0
+or.or.d0.and.d3.or.not.d4.d2.d1.d0.d5.d1.d1.d5.d5.d3
+Gene 1
+or.or.d1.d4.or.and.and.not.d2.d4.d0.d0.d4.d0.d3.d5.d0
+Gene 2
+and.or.or.or.d4.or.d0.not.d0.d2.d1.d0.d3.d2.d3.d3.d1
+Gene 3
+not.and.and.not.not.d1.not.and.d0.d0.d5.d1.d5.d3.d4.d2.d0
+
+((((d4 or d2) and (not d1)) or d3) or d0) and ((d4 or (((not d0) and d2) or (d4 and d0))) or d1) and ((((not d0) or d0) or d4) and ((d2 or d1) or d0)) and (not (((not (d0 and d5)) and d1) and (not (not d0))))
+
+Size of program: 45
+Variables used(count): d0(8), d1(4), d2(3), d3(1), d4(4), d5(1)
+
+***** TRAINING data results *****
+Confusion Matrix: 
+                Predicted Value
+               |  Yes	|  No
+               |----------------
+            Yes|  32	|  0
+Actual Value   |----------------
+            No |  0	|  32
+               |----------------
+
+Observed	Computed
+0.0	0.0
+0.0	0.0
+0.0	0.0
+0.0	0.0
+0.0	0.0
+0.0	0.0
+0.0	0.0
+0.0	0.0
+1.0	1.0
+1.0	1.0
+1.0	1.0
+1.0	1.0
+1.0	1.0
+1.0	1.0
+1.0	1.0
+1.0	1.0
+0.0	0.0
+0.0	0.0
+0.0	0.0
+0.0	0.0
+1.0	1.0
+1.0	1.0
+1.0	1.0
+1.0	1.0
+0.0	0.0
+0.0	0.0
+0.0	0.0
+0.0	0.0
+1.0	1.0
+1.0	1.0
+1.0	1.0
+1.0	1.0
+0.0	0.0
+0.0	0.0
+1.0	1.0
+1.0	1.0
+0.0	0.0
+0.0	0.0
+1.0	1.0
+1.0	1.0
+0.0	0.0
+0.0	0.0
+1.0	1.0
+1.0	1.0
+0.0	0.0
+0.0	0.0
+1.0	1.0
+1.0	1.0
+0.0	0.0
+1.0	1.0
+0.0	0.0
+1.0	1.0
+0.0	0.0
+1.0	1.0
+0.0	0.0
+1.0	1.0
+0.0	0.0
+1.0	1.0
+0.0	0.0
+1.0	1.0
+0.0	0.0
+1.0	1.0
+0.0	0.0
+1.0	1.0

@@ -1,0 +1,40 @@
+Before you do anything else, please read the file "ECJ-GEP-LICENSE",
+located in this directory. It contains the software license
+you are bound to if you wish to use this software -- note that
+the license is not *quite* your normal open source license;
+it requires you to make certain admissions about using ECJ-GEP in
+your published research work. It is the same license used for ECJ.
+
+Additionally, please see the following important files:
+
+docs/gep-extension.html         ECJ-GEP documentation.  
+ECJ-GEP-LICENSE			            The ECJ-GEP license.
+
+All of the source code for the GEP extension to ECJ is found under ec/gep.
+
+The documentation file mentioned above is found in the 'docs' directory.
+
+The required javacsv.jar file is found in the 'start' directory.
+
+Also there have been very minor changes to 3 standard ecj files:
+
+	ec/EvolutionState.java    
+	ec/Evolve.java
+	ec/display/Console.java   (optional replacement)
+	
+These files should replace the standard ecj files before compiling the ecj-gep system.
+
+This version works with ECJ 16.
+
+Thanks,
+Bob Orchard 
+
+National Research Council Canada      Conseil national de recherches Canada 
+Institute for Information Technology  Institut de technologie de l'information 
+1200 Montreal Road, Building M-50     M50, 1200 chemin Montréal 
+Ottawa, ON, Canada K1A 0R6            Ottawa (Ontario) Canada K1A 0R6 
+(613) 993-8557 
+(613) 952-0215 Fax / télécopieur 
+bob.orchard@nrc-cnrc.gc.ca 
+Government of Canada | Gouvernement du Canada 
+

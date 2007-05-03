@@ -1,0 +1,61 @@
+# This parameter file supports a simple test example to solve x^2 + y.
+#
+# The data (including variable names) is in the file test1.txt.
+#
+# Using the default user java program .... will specify finess function below
+
+# My parent:
+parent.0 =				../../../gep/gep.params
+
+# Problem
+#===============================
+eval.problem = ec.gep.GEPDefaultUserProg
+eval.problem.fitness-function = RH
+eval.problem.fitness-function-arg0 = 2.0
+
+# run for 100 generations, quit prematurely if I find something ideal
+generations =				    100
+quit-on-run-complete =			true
+
+# ec.Subpopulation
+# ==============================
+
+# subpop size is 50 individuals
+pop.subpop.0.size =			50
+
+# ec.Species
+# ==============================
+
+gep.species.numgenes = 2
+gep.species.gene-headsize = 5
+gep.species.gene-linking-function = +
+
+# Problem type must be one of: functionfinding, classification, timeseries, logical
+# Set default to be 'unknown' so user is forced to specify in the problem params file 
+gep.species.problemtype = functionfinding
+
+# specify the symbols ... functions and terminals (variables)
+#
+# the terminal symbols (variable names) will be obtained from the data file (1st row)
+gep.species.symbolset.terminalfilename = ec/app/gep/test1/test1.txt
+# 4 functions + - * /  are used in this problem
+gep.species.symbolset.functionsize = 4
+gep.species.symbolset.function.0 = Add
+gep.species.symbolset.function.1 = Sub
+gep.species.symbolset.function.2 = Mul
+gep.species.symbolset.function.3 = Div
+
+# Statistics
+# ==============================
+
+# output statistics to the file "test1.stat" in the directory
+# the run was started in
+stat =				ec.gep.GEPSimpleStatistics
+stat.file =			test3.stat
+
+
+
+
+
+
+

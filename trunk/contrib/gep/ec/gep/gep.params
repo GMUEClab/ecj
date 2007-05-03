@@ -1,0 +1,388 @@
+# This parameter file provides basic GEP-specific stuff.
+# 
+# Some rules about Java Property Lists, which is what the
+# system uses for parameters.  Java property lists are a little weird:
+# 
+# 1. Lines with only whitespace are ignored.
+# 2. Lines beginning with a # are ignored.
+# 3. Initial whitespace is trimmed.  The property is everything up to 
+#    the next chunk of whitespace or a '='
+# 4. A following '=' is *optional*
+# 5. After the chunk of whitespace and the optional '=', the next
+#    whitespace is trimmed.
+# 6. Typically, EVERYTHING after that is the value of the property, 
+#    up to but not including a '\n'. However, my version trims off
+#    the final bit of whitespace if any.
+# 7. If two parameters of the same name are found, the later one
+#    is used.
+#
+# Some examples and warnings:
+#
+# LINE (begins at | )          PROPERTY(between /'s)  VALUE(between /'s)
+#
+# |yo.yo.yo! = heave ho               /yo.yo.yo!/            /heave ho/
+# |my parameter                       /my/                   /parameter/
+# |my=parameter                       /my/                   /parameter/
+# |my= parameter                      /my/                   /parameter/
+# |
+# |#this is a comment
+# |    # this is NOT                  /#/                    /this is NOT/
+# |
+# |   my    =parameter                /my/                   /parameter/
+# |my parameter = this                /my/                   /parameter = this/
+# |myparameter=                       /myparameter/          //
+# |myparameter                        /myparameter/          //
+# |=myparameter                       //                     /myparameter/
+# |watch out here!                    /watch/                /out here!/
+# |comments=don't work  #see?         /comments/             /don't work  #see?/
+#
+#
+#
+#
+# This file has info about the parameters that can or must be set for gep
+# projects. Defaults are supplied where necessary
+
+# My parent: probably should not change this
+parent.0 =				../ec.params
+
+# Problem --- specified by the user's param file
+#===============================
+# eval.problem = ec.gep.test.test2
+#
+# specifies the user's GEPProblem class that he created for his problem.
+#
+# If the user wants to just take a default route and NOT create any code at all,
+# he can use the default class ec.gep.GEPDefaultUserProg. He will then
+# also specify a 'fitness-function' to use by setting the eval.fitness-function 
+# parameter to one of: (check the GEPFitnessFunction.java class for the latest list of these)
+#
+#       AEWSR (Absolute Error with Selection Range) 
+#	AH (Absolute/Hits)
+#	MSE (mean squared error) 
+#	RMSE (root mean squared error) 
+#	MAE (mean absolute error) 
+#	RSE (relative squared error) 
+#	RRSE (root relative squared error) 
+#	RAE (relative absolute error) 
+#	REWSR (Relative Error with Selection Range) 
+#	RH (Relative/Hits) 
+#	rMSE (relative MSE) 
+#	rRMSE (relative RMSE) 
+#	rMAE (relative MAE) 
+#	rRSE (relative RSE) 
+#	rRRSE (relative RRSE) 
+#	rRAE (relative RAE) 
+#	RS (R-square) 
+#	CC (Correlation Coefficient) 
+#	NH (Number of Hits) 
+#	NHWP(Number of Hits with Penalty) 
+#	ACC (Accuracy) 
+#	SACC (Squared Accuracy) 
+#	SS (Sensitivity/Specificity) 
+#	PPNVP (PPV/NPV Positive Predictive Value / Negative Predictive Value ) 
+#	SSPN (Sensitivity/Specificity/PPV/NPV ) 
+#	WCorrRMSE (Weighted correlation coefficient and Root Mean Squared Error)
+#
+# Case is important in these names! Also a few of the functions require 
+# extra double parameters beyond the GEPIndividual 1st parameter.
+# (like AHfitness(GEPIndividual, double) which requires that a precision be
+# specified. To do this the user can add the numeric values in the parameters
+# eval.problem.fitness-function-arg0 and eval.problem.fitness-function-arg1
+#
+# eval.problem.fitness-function = RH
+# eval.problem.fitness-function-arg0 = 2.0
+
+
+# ec.Evolve
+# ==============================
+
+# we want store announcements in memory, so...
+store = 				true
+
+# totally verbose
+verbosity = 				0
+
+# flush output immediately, don't buffer it
+flush = 				true
+
+# one thread  could have multiple threads but it would NOT work as per the GeneXProTools system
+evalthreads = 				1
+breedthreads = 				1
+
+# a good random seed for thread 0  - as per ec.params but we might want a  different one for gep
+seed.0 = 				4357
+
+
+# ec.EvolutionState
+# ==============================
+
+# We're not writing checkpoint files.  If we were, we'd do it every
+# generation, and the prefix to all the files would be "ec.*" as specified here
+checkpoint =				false
+# checkpoint-modulo =    #    1
+# prefix = 				    ec
+
+# simple generational evolution -- don't change this
+state = 				ec.simple.SimpleEvolutionState
+
+# We're using the GEP initialization method
+init = 					ec.gep.GEPInitializer
+
+# We're using the standard (empty) finalization method by default
+finish = 	        	ec.simple.SimpleFinisher
+
+# We're using the standard (empty) exchange method
+exch = 					ec.simple.SimpleExchanger
+
+# We're using standard breeding -- no cross-population breeding
+breed =					ec.simple.SimpleBreeder
+
+# We're using standard evaluation -- no coevolution
+eval =					ec.simple.SimpleEvaluator
+
+
+# run for 100 generations, quit prematurely if I find something ideal
+# (default values only)
+generations =				    100
+quit-on-run-complete =			true
+
+
+# ec.Population
+# ==============================
+
+pop = 					ec.Population
+
+# No multiple populations for gep so subpops should always be 1
+pop.subpops =				1
+pop.subpop.0 = 				ec.Subpopulation
+
+
+# ec.Subpopulation
+# ==============================
+# don't bother trying to eliminate duplicates from the
+# initial population
+pop.subpop.0.duplicate-retries =	0
+
+# subpop size is 30 individuals -- example only
+pop.subpop.0.size =			30
+
+# You might change this, but it must be a GEPSpeciesForm!
+pop.subpop.0.species = 			ec.gep.GEPSpecies
+pop.subpop.0.species.ind = 		ec.gep.GEPIndividual
+# use SimpleFitness for the subpop
+pop.subpop.0.species.fitness =			ec.simple.SimpleFitness
+
+
+# ec.Species
+# ==============================
+# standard defaults for the evolutionary parameters as suggested by Ferreira
+gep.species.inversion-prob         = 0.1
+gep.species.mutation-prob          = 0.044
+gep.species.istransposition-prob   = 0.1
+gep.species.ristransposition-prob  = 0.1
+gep.species.onepointrecomb-prob    = 0.3
+gep.species.twopointrecomb-prob    = 0.3
+gep.species.generecomb-prob        = 0.1
+gep.species.genetransposition-prob = 0.1
+
+# Constants can not be used with Logical problem types ... will be ignored if specified
+gep.species.use-constants             = false
+#examples for constants if used
+# gep.species.numconstantspergene       = 10
+# gep.species.integer-constants         = true
+# gep.species.constants-lowerlimit      = 0
+# gep.species.constants-upperlimit      = 100
+# can alwys default to these values as suggested by Ferreira
+gep.species.rnc-mutation-prob         = 0.01
+gep.species.dc-mutation-prob          = 0.044
+gep.species.dc-inversion-prob         = 0.1
+gep.species.dc-istransposition-prob   = 0.1
+
+gep.species.numchromosomes = 1
+gep.species.numgenes = 3
+gep.species.gene-headsize = 8
+# The linking function may be one of +, -, * or / for most problems
+# and for logic problems can be one of: and, or, nand, nor, xor, nxor.
+# Default specified here is +
+gep.species.gene-linking-function = +
+
+# Problem type must be one of: functionfinding, classification, timeseries, logical
+# Set default to be 'unknown' so user is forced to specify in the problem params file 
+gep.species.problemtype = unknown
+
+# If the problem is a classification type problem a threshold value (used
+# to convert real values to 0 or 1 during fitness calculations) must be 
+# specified (do not specify this unless it IS a classification type problem).
+# gep.species.classification-threshold  = 0.5
+
+# If the problem type is timeseries then the user can provide the raw time series data 
+# (in a file or from the user program) or the processed data in the same format as
+# other problem types ... see below. If using raw data then the user must specify: 
+#   timeseries-delay -- if 1 uses each time series value, if 2 uses every other one, etc.
+#   timeseries-embeddingdimension -- determines the number of timeseries points to use 
+#        as independent variables when transforming the set of time series data. Another
+#        data point is used as the dependent variable value. So the time series 'raw' data
+#        consisting of a list of single values is processed by splitting the data into
+#        groups (rows) of size embeddingdimension+1. From the end of the time series data
+#        embeddingdimension+1 values are chosen (if delay is 1 all values are chosen, if 
+#        2 every other one is chosen). The last value is the independent variable value.
+#        Then the next row is selected by moving 'delay'
+#        values from the end and chosing embeddingdimension+1 values. This is repeated
+#        until no more sets of size embeddingdimension+1 can be chosen. If this produces
+#        n sets of data then testingprediction of them are used for testing and
+#        (n - testingpredictions) are used for training.
+#
+#        So if we had the data:
+#        1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21
+#        and delay was 1 and embeddingdimension was 4 then we'd process the set into 
+#        the following 17 data sets. If testingpredictions was 6 then the 1st 11
+#        would be used for training and the LAST 6 for testing
+#        iv1 iv2 iv3 iv4  dv
+#          1   2   3   4   5
+#          2   3   4   5   6
+#          3   4   5   6   7
+#              . . .
+#         14  15  16  17  18
+#         15  16  17  18  19
+#         16  17  18  19  20
+#         17  18  19  20  21
+#        If delay was 2 then 7 sets would be formed as:
+#        iv1 iv2 iv3 iv4  dv
+#          1   3   5   7   9
+#          3   5   7   9  11
+#              . . .
+#          9  11  13  15  17
+#         11  13  15  17  19
+#         13  15  17  19  21
+#   timeseries-testingpredictions -- specifies the number of sets of data to devote to testing
+#
+# gep.species.timeseries-delay    1
+# gep.species.timeseries-embeddingdimension 4
+# gep.species.timeseries-testingpredictions 6           
+
+# Specifying the symbols to be used (functions and terminals)
+# user provides exact values as required
+
+# Do NOT change the species symbolset... must be GEPSymbolSet
+gep.species.symbolset   = ec.gep.GEPSymbolSet
+
+# symbolset.name is not actually used since we only have one symbol 
+# set at this time BUT a name must be specified so do it in the default params
+gep.species.symbolset.name = ss0
+#
+# gep.species.symbolset.functionsize = 4
+# gep.species.symbolset.function.0 = Add
+# gep.species.symbolset.function.0.weight = 1
+# gep.species.symbolset.function.1 = Sub
+# gep.species.symbolset.function.1.weight = 1
+# gep.species.symbolset.function.2 = Mul
+# gep.species.symbolset.function.2.weight = 1
+# gep.species.symbolset.function.3 = Div
+# gep.species.symbolset.function.3.weight = 1
+#
+# gep.species.symbolset.terminalsize = 1
+# gep.species.symbolset.terminal.0 = x
+# OR for the terminal set the info can be in a text file where the file
+# has the names of the terminal symbols and the dependent variable
+# in the first record/line (comma separated (default)... or tab separated, etc)
+# and the training values for the terminal symbols in the other 
+# records; the number of terminals is computed from the number of terminal
+# symbols in the 1st record. So a file might look like:
+# x1, x2, x3, dvar
+# 0.5, 0.6, 0.7, 1.8
+# 0.1, 0.2, 0.3, 0.6
+# ...
+# 1.0, 2.0, 3.0, 6.0
+#
+# Can use "," or "comma" to specify a comma separator
+# Can use "\\t" or "tab" to specify a tab separator
+# defaults to 'comma'
+# gep.species.symbolset.terminalfilename = filename
+# gep.species.symbolset.terminalfileseparator = ,
+# or for a tab
+# gep.species.symbolset.terminalfileseparator = tab
+#
+# NOTE for a time series problem do NOT specify the terminals. They will
+# be detemined automatically as the time series data is processed. Also
+# for time series problems a data file will have only a list of data values
+# in the file. The first row will NOT have terminal symbol names. The
+# data values in a file can have 1 or more values per row (separated by commas
+# or tabs as specified).
+#
+# Can also have a CSV file with the TESTING data values...it will use the same separator
+# as the file with the training data and terminal symbol (variable) names. In this
+# case there is NO line with the terminal symbol names! Also for a timeseries data file the 
+# test data and the training data are in the same file (specified by terminalfilename). 
+# The gep.species.timeseries-testingpredictions indicates how many rows of the data 
+# set to use for testing (after the timeseries file has been processed as described
+# above); the remaining rows are used for training.          
+# gep.species.symbolset.testingdatafilename = testDataFileName
+
+
+# for gep systems breeding should be as shown below ... changing them 
+# is possible but will not be as per original gep by Ferreira (as in GeneXProTools)
+gep.species.pipe = ec.gep.breed.DcGeneticOperatorsPipeline
+gep.dcgeneticoperators.source.0 = ec.gep.breed.GenerecombinationPipeline
+gep.generecombination.source.0 = ec.gep.breed.TwopointrecombinationPipeline
+gep.twopointrecombination.source.0 = ec.gep.breed.OnepointrecombinationPipeline
+gep.onepointrecombination.source.0 = ec.gep.breed.GenetranspositionPipeline
+gep.genetransposition.source.0 = ec.gep.breed.RIStranspositionPipeline
+gep.RIStransposition.source.0 = ec.gep.breed.IStranspositionPipeline
+gep.IStransposition.source.0 = ec.gep.breed.InversionPipeline
+gep.inversion.source.0 = ec.gep.breed.MutationPipeline
+# FitProportionateSelection (roulette selection) is used exclusively by Ferreira - could be changed
+gep.mutation.source.0 = ec.select.FitProportionateSelection
+
+# 1 is the default and only value used by Ferreira
+breed.elite.0 = 			1
+
+# ec.SimpleStatistics
+# ==============================
+
+# output statistics to the file "out.stat" in the directory
+# the run was started in
+# GEPSimpleStatistics has a number of parameters it
+# can use to control the output:
+#   file - The main output is directed to the file specified by the file param
+#   file-observed-versus-computed - this file, if specified, gets the results
+#         of the best of run model by listing the observed values versus
+#         the model's predicted values (useful for plotting). By default this
+#         will include the training and testing data values (with test values
+#         appended to the end if they exist). To get the training and testing
+#         values separated identify a second file in the paramater 
+#         file-observed-versus-computed-test. If not specified prints to the 
+#         main output file if specified or to the console.
+#   file-observed-versus-computed-test - If specificed, this identifies a
+#         a file with only the test data. If not specified prints to console.
+#   no-observed-versus-computed - if true then don't print any observed/computed values
+#         even if files are specified
+#  
+#   detail-to-log - the user can specify the detail of the output to the main
+#         log file (param 'file')
+#             all - it can display the best model from every generation (can be a large
+#                   amount of output)
+#             change - logs the best model of the generation when the fitness improves (default)
+#             final - logs only the best of run model information
+stat =					ec.gep.GEPSimpleStatistics
+stat.file				$out.stat
+# stat.file-observed-versus-computed = ourOvsC.stat
+# stat.file-observed-versus-computed-test = ourOvsCtest.stat
+# stat.detail-to-log = change
+
+# Statistics -- examples for setting multiple stats packages
+# user specifies in his param file
+# stat.num-children = 3
+# stat.child.0 = ec.gep.test.SimpleXYSeriesChartStatistics
+# stat.child.0.title = Best of Generation
+# stat.child.0.x-axis-label = generation
+# stat.child.0.y-axis-label = fitness
+# stat.child.1 = ec.simple.SimpleShortStatistics
+# stat.child.1.file = simpleshortstats.txt
+# stat.child.1.gather-full = true
+# stat.child.2 = ec.gep.GEPSimpleStatistics
+# will write to console if file not specified
+#stat.child.2.file = simplestats.txt
+#stat.child.2.file-observed-versus-computed = simplestatsOvsC.txt
+
+
+
