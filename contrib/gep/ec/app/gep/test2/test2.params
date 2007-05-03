@@ -1,0 +1,61 @@
+# This parameter file supports a simple test example to solve x^4 + x^3 + x^2 + x.
+#
+# The user program provides the data.
+
+
+# My parent:
+parent.0 =				../../../gep/gep.params
+
+# Problem
+#===============================
+eval.problem = ec.app.gep.test2.test2
+
+
+# run for 50 generations, quit prematurely if I find something ideal
+generations =				50
+quit-on-run-complete =			true
+
+
+# ec.Subpopulation
+# ==============================
+
+# subpop size is 30 individuals
+pop.subpop.0.size =			30
+
+
+# ec.Species
+# ==============================
+
+gep.species.numgenes = 3
+gep.species.gene-headsize = 8
+gep.species.gene-linking-function = +
+
+# Problem type must be one of: functionfinding, classification, timeseries, logical
+# Set default to be 'unknown' so user is forced to specify in the problem params file 
+gep.species.problemtype = functionfinding
+
+gep.species.symbolset.terminalsize = 1
+gep.species.symbolset.terminal.0 = x
+gep.species.symbolset.functionsize = 4
+gep.species.symbolset.function.0 = Add
+gep.species.symbolset.function.0.weight = 1
+gep.species.symbolset.function.1 = Sub
+gep.species.symbolset.function.1.weight = 1
+gep.species.symbolset.function.2 = Mul
+gep.species.symbolset.function.2.weight = 1
+gep.species.symbolset.function.3 = Div
+gep.species.symbolset.function.3.weight = 1
+
+
+# Statistics
+# ==============================
+
+# output statistics to the file "test2.stat" in the directory
+# the run was started in
+stat =				ec.gep.GEPSimpleStatistics
+stat.file =			test2.stat
+
+
+
+
+

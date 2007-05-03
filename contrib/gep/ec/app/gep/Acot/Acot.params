@@ -1,0 +1,115 @@
+# This parameter file supports the GEP ACOT example from GeneXProTools.
+#
+# The user program provides the data.
+
+
+# My parent:
+parent.0 =				../../../gep/gep.params
+
+# Problem
+#===============================
+eval.problem = ec.app.gep.Acot.Acot
+
+
+# run for 3000 generations, quit prematurely if I find something ideal
+generations =				3000
+quit-on-run-complete =		true
+
+
+# ec.Subpopulation
+# ==============================
+
+# subpop size is 30 individuals
+pop.subpop.0.size =			30
+
+
+# ec.Species
+# ==============================
+
+gep.species.inversion-prob         = 0.1
+gep.species.mutation-prob          = 0.044
+gep.species.istransposition-prob   = 0.1
+gep.species.ristransposition-prob  = 0.1
+gep.species.onepointrecomb-prob    = 0.3
+gep.species.twopointrecomb-prob    = 0.3
+gep.species.generecomb-prob        = 0.1
+gep.species.genetransposition-prob = 0.1
+
+gep.species.use-constants             = true
+gep.species.numconstantspergene       = 2
+gep.species.integer-constants         = false
+gep.species.constants-lowerlimit      = -10
+gep.species.constants-upperlimit      = 10
+gep.species.rnc-mutation-prob         = 0.01
+gep.species.dc-mutation-prob          = 0.044
+gep.species.dc-inversion-prob         = 0.1
+gep.species.dc-istransposition-prob   = 0.1
+
+gep.species.numgenes = 1
+gep.species.gene-headsize = 8
+gep.species.gene-linking-function = +
+
+# Problem type must be one of: functionfinding, classification, timeseries, logical
+# Set default to be 'unknown' so user is forced to specify in the problem params file 
+gep.species.problemtype = functionfinding
+
+gep.species.symbolset   = ec.gep.GEPSymbolSet
+gep.species.symbolset.name = ss0
+gep.species.symbolset.terminalsize = 1
+gep.species.symbolset.terminal.0 = d0
+gep.species.symbolset.functionsize = 17
+gep.species.symbolset.function.0 = Add
+gep.species.symbolset.function.0.weight = 3
+gep.species.symbolset.function.1 = Sub
+gep.species.symbolset.function.1.weight = 3
+gep.species.symbolset.function.2 = Mul
+gep.species.symbolset.function.2.weight = 3
+gep.species.symbolset.function.3 = Div
+gep.species.symbolset.function.3.weight = 3
+gep.species.symbolset.function.4 = Sqrt
+gep.species.symbolset.function.4.weight = 1
+gep.species.symbolset.function.5 = Exp
+gep.species.symbolset.function.5.weight = 1
+gep.species.symbolset.function.6 = Floor
+gep.species.symbolset.function.6.weight = 1
+gep.species.symbolset.function.7 = Ceiling
+gep.species.symbolset.function.7.weight = 1
+gep.species.symbolset.function.8 = Abs
+gep.species.symbolset.function.8.weight = 1
+gep.species.symbolset.function.9 = Neg
+gep.species.symbolset.function.9.weight = 1
+gep.species.symbolset.function.10 = Sin
+gep.species.symbolset.function.10.weight = 1
+gep.species.symbolset.function.11 = Cos
+gep.species.symbolset.function.11.weight = 1
+gep.species.symbolset.function.12 = Tan
+gep.species.symbolset.function.12.weight = 1
+gep.species.symbolset.function.13 = Asin
+gep.species.symbolset.function.13.weight = 1
+gep.species.symbolset.function.14 = Acos
+gep.species.symbolset.function.14.weight = 1
+gep.species.symbolset.function.15 = Atan
+gep.species.symbolset.function.15.weight = 1
+gep.species.symbolset.function.16 = Ln
+gep.species.symbolset.function.16.weight = 1
+
+
+# Statistics 
+#stat.num-children = 3
+#stat.child.0 = ec.gep.test.SimpleXYSeriesChartStatistics
+#stat.child.0.title = Best of Generation
+#stat.child.0.x-axis-label = generation
+#stat.child.0.y-axis-label = fitness
+#stat.child.1 = ec.simple.SimpleShortStatistics
+#stat.child.1.file = simpleshortstats.txt
+#stat.child.1.gather-full = true
+#stat.child.2 = ec.gep.GEPSimpleStatistics
+# will write to console if file not specified
+#stat.child.2.file = simplestats.txt
+
+stat = ec.gep.GEPSimpleStatistics
+stat.file = Acot.stat
+
+
+
+
