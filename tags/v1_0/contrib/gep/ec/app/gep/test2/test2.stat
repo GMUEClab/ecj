@@ -1,0 +1,86 @@
+Maximum number of generations in this run: 50
+Size of population in this run: 30
+Number of genes per chromosome: 3
+Size of gene head: 8
+Seed(s) used in this job: 4357
+Problem type: functionfinding
+
+
+Generation: 0
+Best Individual:
+Evaluated: T
+Fitness: 0.004819467
+Linking function: +
+Gene 0
+-.-.-.x.*.*.-.x.x.x.x.x.x.x.x.x.x
+Gene 1
+*.+.-.x./.x././.x.x.x.x.x.x.x.x.x
+Gene 2
+*.+.+.x.*.*.x.x.x.x.x.x.x.x.x.x.x
+
+((x-(x*x))-((x*x)-(x-x))) + ((x+((x/x)/x))*(x-(x/x))) + ((x+(x*x))*((x*x)+x))
+
+
+Generation: 1
+Best Individual:
+Evaluated: T
+Fitness: 410.7618
+Linking function: +
+Gene 0
+-.-.*.x.*.*.-.x.x.x.x.x.x.x.x.x.x
+Gene 1
+*.+.-.x./.x././.x.x.x.x.x.x.x.x.x
+Gene 2
+*.+.+.x.*.*./.x.x.x.x.x.x.x.x.x.x
+
+((x-(x*x))-((x*x)*(x-x))) + ((x+((x/x)/x))*(x-(x/x))) + ((x+(x*x))*((x*x)+(x/x)))
+
+
+Generation: 4
+Best Individual:
+Evaluated: T
+Fitness: 1000.0
+Linking function: +
+Gene 0
+-.x.x././.x.x.-.x.x.x.x.x.x.x.x.x
+Gene 1
+*.-.*.x.*.*.-.x.x.x.x.x.x.x.x.x.x
+Gene 2
+*.+.+.x.*.*./.x.x.x.x.x.x.x.x.x.x
+
+(x-x) + ((x-(x*x))*((x*x)*(x-x))) + ((x+(x*x))*((x*x)+(x/x)))
+
+
+Best Individual of Run:
+Found at Generation: 4
+Evaluated: T
+Fitness: 1000.0
+Linking function: +
+Gene 0
+-.x.x././.x.x.-.x.x.x.x.x.x.x.x.x
+Gene 1
+*.-.*.x.*.*.-.x.x.x.x.x.x.x.x.x.x
+Gene 2
+*.+.+.x.*.*./.x.x.x.x.x.x.x.x.x.x
+
+(x-x) + ((x-(x*x))*((x*x)*(x-x))) + ((x+(x*x))*((x*x)+(x/x)))
+
+Size of program: 29
+Variables used(count): x(16)
+
+***** TRAINING data results *****
+Statistics: 
+MSE:  7.182716450022835E-24    	RAE:  4.832470396077297E-16    	RSE:  4.344516272977063E-31
+RMSE: 2.680059038533076E-12    	MAE:  1.7715995337397316E-12    	RRSE: 6.591294465411982E-16
+
+Observed	Computed
+9103.54918799079	9103.549187990786
+1213.47815867463	1213.4781586746294
+160.18146840485	160.18146840484988
+4432.23529247904	4432.235292479036
+7671.79392962917	7671.793929629167
+11.8327154232663	11.832715423266338
+193.570365560718	193.57036556071805
+11124.3786278048	11124.378627804794
+-0.326443121119579	-0.3264431211195794
+1093.78835980998	1093.7883598099795

@@ -1,0 +1,163 @@
+# This parameter file supports the GEP Exchange Rate example from GeneXProTools.
+#
+# A text file provides the data.
+
+
+# My parent:
+parent.0 =				../../../gep/gep.params
+
+# Problem
+#===============================
+eval.problem = ec.app.gep.ExchangeRate.ExchangeRate
+
+
+# run for 5000 generations, quit prematurely if I find something ideal
+generations =				5000
+quit-on-run-complete =		true
+
+
+# ec.Subpopulation
+# ==============================
+
+# subpop size is 30 individuals
+pop.subpop.0.size =			30
+
+
+# ec.Species
+# ==============================
+
+gep.species.inversion-prob         = 0.1
+gep.species.mutation-prob          = 0.044
+gep.species.istransposition-prob   = 0.1
+gep.species.ristransposition-prob  = 0.1
+gep.species.onepointrecomb-prob    = 0.3
+gep.species.twopointrecomb-prob    = 0.3
+gep.species.generecomb-prob        = 0.1
+gep.species.genetransposition-prob = 0.1
+
+gep.species.use-constants             = true
+#examples for constants if used
+gep.species.numconstantspergene       = 2
+gep.species.integer-constants         = false
+gep.species.constants-lowerlimit      = -10.0
+gep.species.constants-upperlimit      = 10.0
+gep.species.rnc-mutation-prob         = 0.01
+gep.species.dc-mutation-prob          = 0.044
+gep.species.dc-inversion-prob         = 0.1
+gep.species.dc-istransposition-prob   = 0.1
+
+gep.species.numgenes = 3
+gep.species.gene-headsize = 8
+gep.species.gene-linking-function = +
+
+# Problem type must be one of: functionfinding, classification, timeseries, logical
+# Set default to be 'unknown' so user is forced to specify in the problem params file 
+gep.species.problemtype = timeseries
+gep.species.timeseries-delay    1
+gep.species.timeseries-embeddingdimension 12
+gep.species.timeseries-testingpredictions 12          
+
+gep.species.symbolset.terminalfilename = ec/app/gep/ExchangeRate/ExchangeRate.txt
+gep.species.symbolset.functionsize = 40
+gep.species.symbolset.function.0 = Add
+gep.species.symbolset.function.0.weight = 5
+gep.species.symbolset.function.1 = Sub
+gep.species.symbolset.function.1.weight = 5
+gep.species.symbolset.function.2 = Mul
+gep.species.symbolset.function.2.weight = 5
+gep.species.symbolset.function.3 = Div
+gep.species.symbolset.function.3.weight = 1
+gep.species.symbolset.function.4 = Sqrt
+gep.species.symbolset.function.4.weight = 1
+gep.species.symbolset.function.5 = Exp
+gep.species.symbolset.function.5.weight = 1
+gep.species.symbolset.function.6 = Log
+gep.species.symbolset.function.6.weight = 1
+gep.species.symbolset.function.7 = Abs
+gep.species.symbolset.function.7.weight = 1
+gep.species.symbolset.function.8 = X2
+gep.species.symbolset.function.8.weight = 1
+gep.species.symbolset.function.9 = X3
+gep.species.symbolset.function.9.weight = 1
+gep.species.symbolset.function.10 = X5
+gep.species.symbolset.function.10.weight = 1
+gep.species.symbolset.function.11 = Add3
+gep.species.symbolset.function.11.weight = 1
+gep.species.symbolset.function.12 = Sub3
+gep.species.symbolset.function.12.weight = 1
+gep.species.symbolset.function.13 = Mul3
+gep.species.symbolset.function.13.weight = 1
+gep.species.symbolset.function.14 = Add4
+gep.species.symbolset.function.14.weight = 1
+gep.species.symbolset.function.15 = Sub4
+gep.species.symbolset.function.15.weight = 1
+gep.species.symbolset.function.16 = Mul4
+gep.species.symbolset.function.16.weight = 1
+gep.species.symbolset.function.17 = Min2
+gep.species.symbolset.function.17.weight = 1
+gep.species.symbolset.function.18 = Min3
+gep.species.symbolset.function.18.weight = 1
+gep.species.symbolset.function.19 = Min4
+gep.species.symbolset.function.19.weight = 1
+gep.species.symbolset.function.20 = Max2
+gep.species.symbolset.function.20.weight = 1
+gep.species.symbolset.function.21 = Max3
+gep.species.symbolset.function.21.weight = 1
+gep.species.symbolset.function.22 = Max4
+gep.species.symbolset.function.22.weight = 1
+gep.species.symbolset.function.23 = Avg2
+gep.species.symbolset.function.23.weight = 1
+gep.species.symbolset.function.24 = Avg3
+gep.species.symbolset.function.24.weight = 1
+gep.species.symbolset.function.25 = Avg4
+gep.species.symbolset.function.25.weight = 1
+gep.species.symbolset.function.26 = Logistic
+gep.species.symbolset.function.26.weight = 1
+gep.species.symbolset.function.27 = Gau
+gep.species.symbolset.function.27.weight = 1
+gep.species.symbolset.function.28 = Pi
+gep.species.symbolset.function.28.weight = 1
+gep.species.symbolset.function.29 = Sin
+gep.species.symbolset.function.29.weight = 1
+gep.species.symbolset.function.30 = Cos
+gep.species.symbolset.function.30.weight = 1
+gep.species.symbolset.function.31 = Tan
+gep.species.symbolset.function.31.weight = 1
+gep.species.symbolset.function.32 = Cot
+gep.species.symbolset.function.32.weight = 1
+gep.species.symbolset.function.33 = Asin
+gep.species.symbolset.function.33.weight = 1
+gep.species.symbolset.function.34 = Atan
+gep.species.symbolset.function.34.weight = 1
+gep.species.symbolset.function.35 = Acsc
+gep.species.symbolset.function.35.weight = 1
+gep.species.symbolset.function.36 = Tanh
+gep.species.symbolset.function.36.weight = 1
+gep.species.symbolset.function.37 = Csch
+gep.species.symbolset.function.37.weight = 1
+gep.species.symbolset.function.38 = Sech
+gep.species.symbolset.function.38.weight = 1
+gep.species.symbolset.function.39 = Comp
+gep.species.symbolset.function.39.weight = 1
+
+
+# Statistics 
+#stat.num-children = 3
+#stat.child.0 = ec.gep.test.SimpleXYSeriesChartStatistics
+#stat.child.0.title = Best of Generation
+#stat.child.0.x-axis-label = generation
+#stat.child.0.y-axis-label = fitness
+#stat.child.1 = ec.simple.SimpleShortStatistics
+#stat.child.1.file = simpleshortstats.txt
+#stat.child.1.gather-full = true
+#stat.child.2 = ec.gep.GEPSimpleStatistics
+# will write to console if file not specified
+#stat.child.2.file = simplestats.txt
+
+stat = ec.gep.GEPSimpleStatistics
+stat.file = ExchangeRate.stat
+
+
+
+
+

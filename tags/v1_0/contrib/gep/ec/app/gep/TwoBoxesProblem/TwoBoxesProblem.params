@@ -1,0 +1,74 @@
+# This parameter file supports a simple test example known as the "Two Boxes Problem". It is
+# commonly used for illustration purposes; Dr. John Koza describes this problem in his book, 
+# Genetic Programming II, it provides a good example of the kind of problem Genetic 
+# Programming can easily solve, is not solvable by other techniques, ans is easy to understand.
+#
+# The Two Boxes problem is this: Given six input values, the first three are the x, y and z
+# dimensions of a box and the second three are the x, y and z dimensions of a second box.
+# The computed value is the difference in volume by subtracting the second box from the first.
+# The following is the equation which describes this relationship.
+#
+# Volume Diff = x1×y1×z1 - x2×y2×z2
+#
+# For example, if the first box has dimensions of x1=3, y1=4 and z1=7 and the second box has
+# dimensions of x2=2, y2=5, z2=3, the resulting volume difference is 54.
+#
+# The data (including variable names) is in the file TwoBoxesProblem.txtt.
+
+# My parent:
+parent.0 =				../../../gep/gep.params
+
+# Problem
+#===============================
+eval.problem = ec.gep.GEPDefaultUserProg
+eval.problem.fitness-function = RRSE
+
+# run for n generations, quit prematurely if I find something ideal
+generations =				    1000
+quit-on-run-complete =			true
+
+# ec.Subpopulation
+# ==============================
+
+# subpop size is m individuals
+pop.subpop.0.size =			100
+
+# ec.Species
+# ==============================
+
+gep.species.numgenes = 2
+gep.species.gene-headsize = 8
+gep.species.gene-linking-function = +
+
+# Problem type must be one of: functionfinding, classification, timeseries, logical
+# Set default to be 'unknown' so user is forced to specify in the problem params file 
+gep.species.problemtype = functionfinding
+
+# specify the symbols ... functions and terminals (variables)
+#
+# the terminal symbols (variable names) will be obtained from the data file (1st row)
+gep.species.symbolset.terminalfileseparator = tab
+gep.species.symbolset.terminalfilename = ec/app/gep/TwoBoxesProblem/TwoBoxesProblem.txt
+gep.species.symbolset.testingdatafilename = ec/app/gep/TwoBoxesProblem/TwoBoxesProblemTest.txt
+
+# 4 functions + - * /  are used in this problem
+gep.species.symbolset.functionsize = 4
+gep.species.symbolset.function.0 = Add
+gep.species.symbolset.function.1 = Sub
+gep.species.symbolset.function.2 = Mul
+gep.species.symbolset.function.3 = Div
+
+# Statistics
+# ==============================
+
+# output statistics to the file "test1.stat" in the directory
+# the run was started in
+stat =				ec.gep.GEPSimpleStatistics
+stat.file =			TwoBoxesProblem.stat
+
+
+
+
+
+
+
