@@ -25,6 +25,8 @@ eval.problem = ec.app.tutorial3.OddRosenbrock
 # Doubles and floats use the FloatVectorSpecies
 pop.subpop.0.species =                  ec.vector.FloatVectorSpecies
 pop.subpop.0.species.ind =              ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.fitness = 		ec.simple.SimpleFitness
+
 # Per-gene mutation probability of 0.005
 pop.subpop.0.species.mutation-prob = 0.005
 # One-point crossover

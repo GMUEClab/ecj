@@ -8,6 +8,7 @@ generations = 200
 
 pop.subpop.0.species		= ec.vector.IntegerVectorSpecies
 pop.subpop.0.species.ind	= ec.vector.IntegerVectorIndividual
+pop.subpop.0.species.fitness 	= ec.simple.SimpleFitness
 pop.subpop.0.species.min-gene	= -12312
 pop.subpop.0.species.max-gene 	= 2341212	
 pop.subpop.0.species.genome-size	= 20
