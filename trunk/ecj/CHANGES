@@ -1212,3 +1212,5 @@ Version		Change Log
 	Small crossover type parameter bug fixed, and printout error in
 		FloatVectorSpecies fixed.  Thanks to Elena Popovici
 		<epopovici@gmu.edu>
+	tutorial2 and tutorial3 missing fitness parameter declarations.
+		Thanks to Rick van Krevelen <krevelen@cs.vu.nl>
