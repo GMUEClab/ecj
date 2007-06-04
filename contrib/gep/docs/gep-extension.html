@@ -503,8 +503,12 @@ this is
 ‘perfect’ sample data for
 the function z = x*x + y.&nbsp;Data files that are currently
 supported are the so called CSV, comma
-separated value, text files. Initially we allow either a
-comma or a tab to be the field separator. The example above uses a
+separated value, text files. NOTE: gzip'd files can also be used
+directly.So if a file ends in .gz or .gzip we will handle the
+uncompression of the file. For example in this case we could have
+compressed test1.txt to create test1.txt.gz and identified the gzip'd
+file rather than the .txt file in the parameter file (see below).</p><p class="MsoNormal"></p><p class="MsoNormal">Generally one will use either a
+comma, a space or a tab to be the field separator. The example above uses a
 comma. The first row of the file must identify
 the independent and dependent variable names with the last column being
 the
