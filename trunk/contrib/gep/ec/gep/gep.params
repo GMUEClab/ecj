@@ -282,10 +282,14 @@ gep.species.symbolset.name = ss0
 #
 # gep.species.symbolset.terminalsize = 1
 # gep.species.symbolset.terminal.0 = x
+#
 # OR for the terminal set the info can be in a text file where the file
 # has the names of the terminal symbols and the dependent variable
-# in the first record/line (comma separated (default)... or tab separated, etc)
-# and the training values for the terminal symbols in the other 
+# in the first record/line (comma separated, space separated, tab separated, etc).
+# If the filename ends with .dat then a space is the delimeter, otherwise it
+# is assumed to be a comma delimiter. However, the separator can be
+# specified directly by including a terminalfileseparator parameter.
+# The training values for the terminal symbols are in in the other 
 # records; the number of terminals is computed from the number of terminal
 # symbols in the 1st record. So a file might look like:
 # x1, x2, x3, dvar
@@ -296,11 +300,17 @@ gep.species.symbolset.name = ss0
 #
 # Can use "," or "comma" to specify a comma separator
 # Can use "\\t" or "tab" to specify a tab separator
-# defaults to 'comma'
+# Use "space" to specifiy a space as the separator
+# The field separator defaults to 'comma' unless the filename ends in .dat in
+# which case it defaults to a space. The separator can be
+# changed by including a terminalfileseparator parameter.
+#
 # gep.species.symbolset.terminalfilename = filename
 # gep.species.symbolset.terminalfileseparator = ,
 # or for a tab
 # gep.species.symbolset.terminalfileseparator = tab
+# or for a space
+# gep.species.symbolset.terminalfileseparator = space
 #
 # NOTE for a time series problem do NOT specify the terminals. They will
 # be detemined automatically as the time series data is processed. Also
@@ -309,13 +319,18 @@ gep.species.symbolset.name = ss0
 # data values in a file can have 1 or more values per row (separated by commas
 # or tabs as specified).
 #
-# Can also have a CSV file with the TESTING data values...it will use the same separator
+# Can also have a text file with the TESTING data values...it will use the same separator
 # as the file with the training data and terminal symbol (variable) names. In this
 # case there is NO line with the terminal symbol names! Also for a timeseries data file the 
 # test data and the training data are in the same file (specified by terminalfilename). 
 # The gep.species.timeseries-testingpredictions indicates how many rows of the data 
 # set to use for testing (after the timeseries file has been processed as described
-# above); the remaining rows are used for training.          
+# above); the remaining rows are used for training.  
+#
+# NOTE: the text files can be gzip'd files (.gz of .gzip extensions) and there is no 
+# need to uncompress them. So you might have the file abc.txt.gz and we will treat it as if it were
+# the file abc.txt.
+#      
 # gep.species.symbolset.testingdatafilename = testDataFileName
 
 
