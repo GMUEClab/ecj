@@ -21,10 +21,12 @@
 
 package ec.gep;
 import java.io.*;
+import java.nio.charset.*;
 import ec.*;
 import ec.util.*;
 
 import java.util.*;
+import java.util.zip.*;
 import com.csvreader.*;
 
 /* 
@@ -196,33 +198,68 @@ public class GEPSymbolSet implements Clique
                                               species.timeseriesEmbeddingDimension > 0;
         if (!terminalFilename.equals(""))
         {
+        	String defaultTerminalFileSeparator = ","; // default field separator is comma	
         	try 
-        	{ terminalFileCSV = new CsvReader(terminalFilename);
+        	{ 
+            	// allow for gzip files .... end with .gz or .gzip\
+            	if (terminalFilename.endsWith(".gz") || terminalFilename.endsWith(".gzip"))
+            	{            		
+            		terminalFileCSV = new CsvReader((InputStream)(new GZIPInputStream(new FileInputStream(terminalFilename))),
+            				                         Charset.forName("ISO-8859-1"));
+            		// set terminal file name to be the one with gzip or gz removed from the end
+            		if (terminalFilename.endsWith(".gz"))
+            			terminalFilename = terminalFilename.substring(0, terminalFilename.length()-3);
+            		else
+            			terminalFilename = terminalFilename.substring(0, terminalFilename.length()-5);
+            	}
+            	else
+        		    terminalFileCSV = new CsvReader(terminalFilename);
         	}
         	catch (FileNotFoundException e)
         	{ state.output.fatal("The file with terminal definitions and/or values (" + terminalFilename +
         			             ") could not be found", base.push(P_TERMINALFILENAME), def.push(P_TERMINALFILENAME));
         	}
+        	catch (IOException e)
+        	{ state.output.fatal("The file with terminal definitions and/or values (" + terminalFilename +
+        			             ") could not be found or the expected GZIP file could nor be opened", base.push(P_TERMINALFILENAME), def.push(P_TERMINALFILENAME));
+        	}
+        	// if filename has extension .dat it is space delimited, if .csv (or anything else 
+        	// for that matter) it is comma delimited
+        	// (separator can still be changed with the terminalfileseparator parameter)
+        	if (terminalFilename.endsWith(".dat")) 
+        		defaultTerminalFileSeparator = "space";
         	// if using a file for the terminals and their values then check for a non-default separator
             String terminalFileSeparator = state.parameters.getStringWithDefault(base.push(P_TERMINALFILESEPARATOR), 
-                    def.push(P_TERMINALFILESEPARATOR), ",");
+                    def.push(P_TERMINALFILESEPARATOR), defaultTerminalFileSeparator);
             if ( terminalFileSeparator.toLowerCase().equals("comma"))
             	terminalFileSeparator = ",";
             else if (terminalFileSeparator=="\\t" || terminalFileSeparator.toLowerCase().equals("tab"))
             	terminalFileSeparator = "\t";
+            else if (terminalFileSeparator=="space")
+            	terminalFileSeparator = " ";
             terminalFileCSV.setDelimiter(terminalFileSeparator.charAt(0));
             // let's check for a testing dat file at this time as well .. if no file for
             // names and training data no need to worry about this one.
             if (!testingTerminalFilename.equals(""))
             {
             	try 
-            	{ testingTerminalFileCSV = new CsvReader(testingTerminalFilename);
-            	  testingTerminalFileCSV.setDelimiter(terminalFileSeparator.charAt(0));
+            	{ 
+                	// allow for gzip files .... end with .gz or .gzip\
+                	if (testingTerminalFilename.endsWith(".gz") || testingTerminalFilename.endsWith(".gzip"))            		
+                		testingTerminalFileCSV = new CsvReader((InputStream)(new GZIPInputStream(new FileInputStream(testingTerminalFilename))),
+                				                         Charset.forName("ISO-8859-1"));
+                	else
+            		testingTerminalFileCSV = new CsvReader(testingTerminalFilename);
+            	    testingTerminalFileCSV.setDelimiter(terminalFileSeparator.charAt(0));
             	}
             	catch (FileNotFoundException e)
             	{ state.output.fatal("The file with testing data values (" + testingTerminalFilename +
             			             ") could not be found", base.push(P_TERMINALFILENAME), def.push(P_TERMINALFILENAME));
             	}
+            	catch (IOException e)
+            	{ state.output.fatal("The file with testing data values (" + terminalFilename +
+            			             ") could not be found or the expected GZIP file could nor be opened", base.push(P_TERMINALFILENAME), def.push(P_TERMINALFILENAME));
+                }
             }
         }
         
