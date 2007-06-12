@@ -1,3 +1,6 @@
+# Copyright 2007 by Alberto Cuesta Cañada and Instituto
+# Tecnológico de Informática
+
 This example illustrates how to implement a Master/Slave model using DRM for a 
 simple problem.
 

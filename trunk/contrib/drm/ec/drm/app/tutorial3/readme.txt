@@ -1,3 +1,6 @@
+# Copyright 2007 by Alberto Cuesta Cañada and Instituto
+# Tecnológico de Informática
+
 This example illustrates how to implement a Island model using EvolutionAgents, 
 which sends identical islands to as many nodes as it finds to solve it cooperatively
 exchanging individuals.
