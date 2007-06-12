@@ -1,3 +1,6 @@
+# Copyright 2007 by Alberto Cuesta Cañada and Instituto
+# Tecnológico de Informática
+
 This example encapsulates a simple ECJ experiment inside an EvolutionAgent.
 
 Compress into a jar at least the following directories:

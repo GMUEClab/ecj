@@ -1,3 +1,6 @@
+# Copyright 2007 by Alberto Cuesta Cañada and Instituto
+# Tecnológico de Informática
+
 This example encapsulates a simple ECJ experiment inside an EvolutionAgent, 
 which sends identical agents to as many nodes as it finds to solve it many times.
 

@@ -1,3 +1,6 @@
+# Copyright 2007 by Alberto Cuesta Cañada and Instituto
+# Tecnológico de Informática
+
 This example illustrates how to use the describe function to test the
 evolved best individual at the end of an experiment with some test samples.
 
