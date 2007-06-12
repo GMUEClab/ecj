@@ -1,3 +1,9 @@
+/** Some code taken from Sean Luke's ECJ and Màrk Jelasity's DRM.
+ * Copyright 2006 Alberto Cuesta Cañada, licensed under the Academic Free License.
+ * @author Alberto Cuesta Cañada
+ * @version 0.1 
+ */
+
 package ec.drm;
 
 import java.io.*;
@@ -11,6 +17,8 @@ import ec.util.ParameterDatabase;
 import drm.agentbase.*;
 import drm.core.*;
 
+/** A DRM replacement for ec.Evolve, it initializes whatever is needed
+ * before starting the initial agent and launches it locally */
 public class DRMLauncher implements Runnable{
     public static final String P_STATE = "state";
     
@@ -24,12 +32,12 @@ public class DRMLauncher implements Runnable{
     public static final String A_PARAMS_COMP = "-file";
     
     /** The argument indicating a data file we could need. */
-    public static final String A_DATA = "-data";
+    //public static final String A_DATA = "-data";
 	
     protected final Node node;
 	protected final String[] args;
 
-	protected static ParameterDatabase loadParameterDatabase(String filename){
+	protected ParameterDatabase loadParameterDatabase(String filename){
 		try{
 			return new ParameterDatabase(
 				new File(new File(filename).getAbsolutePath()));
@@ -49,7 +57,7 @@ public class DRMLauncher implements Runnable{
 		return null;
 	}
 	
-	protected static Object loadData(String filename){return null;}
+	//protected Object loadData(String filename){return null;}
 	
     protected static EvolutionState restoreFromCheckpoint(String filename){
     	EvolutionState state = null;
@@ -87,15 +95,9 @@ public class DRMLauncher implements Runnable{
     
 	public void run(){
 		ParameterDatabase parameters = null;
-		Object data = null;
 		EvolutionState evolutionState = null;
 		
 		for(int a=0; a < args.length; a++){
-		    if(args[a].equals(A_DATA)){
-		    	System.out.print("Loading problem data...");
-				data = loadData(args[++a]);
-				System.out.println("OK");
-		    }
 		    if(args[a].equals(A_PARAMS) || args[a].equals(A_PARAMS_COMP)){
 				System.out.print("Loading parameter database...");
 				parameters = loadParameterDatabase(args[++a]);
@@ -118,8 +120,13 @@ public class DRMLauncher implements Runnable{
 		
 		// preLaunchSetup(), an agent without name will get nasty errors.
 		rootAgent.parameters = parameters;
-		rootAgent.data = data;
 		rootAgent.setName(p);
+		
+		p = new Parameter(ProblemData.P_PROBLEM_DATA);
+		if(parameters.exists(p)){ // If not it should anyway instance and setup a blank ProblemData
+			rootAgent.data = (ProblemData)parameters.getInstanceForParameterEq(p,null,ProblemData.class);
+			rootAgent.data.setup(rootAgent, p);
+		}
 		
 		System.out.println("Launching root agent " + parameters.getString(p, null));
 		IRequest request = node.launch("DIRECT", rootAgent, null);

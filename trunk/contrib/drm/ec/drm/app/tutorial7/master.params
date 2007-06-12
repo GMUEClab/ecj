@@ -1,0 +1,45 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+# The parameters that were laid out in Tutorial 1 (see the documentation)
+
+parent.0 = ../../../gp/koza/koza.params
+
+state					= ec.drm.masterslave.MasterAgent
+
+stat		= ec.drm.DRMStatistics
+stat.file	= master.out
+
+# The structure we are going to use to store the problem samples
+data		= ec.drm.app.tutorial7.MyData
+
+# input samples
+data.file-in	= in.data
+
+# output samples
+data.file-out	= out.data
+
+eval					= ec.drm.masterslave.MasterEvaluator
+eval.chunk-size			= 256
+eval.problem 			= ec.drm.app.tutorial7.MultiValuedRegression
+eval.problem.data 		= ec.drm.app.tutorial7.DoubleData
+eval.problem.stack.context.data = ec.drm.app.tutorial7.DoubleData
+
+generations				= 20
+
+gp.fs.size = 1
+gp.fs.0 = ec.gp.GPFunctionSet
+gp.fs.0.name = f0
+gp.fs.0.info = ec.gp.GPFuncInfo
+gp.fs.0.size = 5
+gp.fs.0.func.0 = ec.drm.app.tutorial7.X
+gp.fs.0.func.0.nc = nc0
+gp.fs.0.func.1 = ec.drm.app.tutorial7.Y
+gp.fs.0.func.1.nc = nc0
+gp.fs.0.func.2 = ec.drm.app.tutorial7.Add
+gp.fs.0.func.2.nc = nc2
+gp.fs.0.func.3 = ec.drm.app.tutorial7.Sub
+gp.fs.0.func.3.nc = nc2
+gp.fs.0.func.4 = ec.drm.app.tutorial7.Mul
+gp.fs.0.func.4.nc = nc2

@@ -1,0 +1,21 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+# The parameters that were laid out in Tutorial 1 (see the documentation)
+
+parent.0	= ../../../app/tutorial1/tutorial1.params
+
+seed.0		= time
+
+state	=	ec.drm.app.tutorial2.ReplicatorAgent
+replica	=	ec.drm.EvolutionAgent
+
+stat 					= ec.drm.DRMStatistics
+stat.store-best			= false
+
+# Number of generations between stats reports
+stat.frequency			= 10
+
+# Prefix for the stats files
+stat.file				= tutorial2

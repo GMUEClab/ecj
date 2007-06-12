@@ -1,3 +1,9 @@
+/** 
+ * Copyright 2007 Alberto Cuesta Cañada, licensed under the Academic Free License.
+ * @author Alberto Cuesta Cañada
+ * @version 0.1 
+ */
+
 package ec.drm.peerselect;
 
 import drm.agentbase.Address;

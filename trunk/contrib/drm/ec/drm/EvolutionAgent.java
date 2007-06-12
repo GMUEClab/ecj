@@ -1,5 +1,4 @@
-/** Some code taken from Sean Luke's ECJ (ec.EvolutionState, ec.Evolve) and 
- * Màrk Jelasity's DRM (drm.agentbase.IAgent, drm.agents.CollectiveAgent).
+/** Some code taken from Sean Luke's ECJ and Màrk Jelasity's DRM.
  * Copyright 2006 Alberto Cuesta Cañada, licensed under the Academic Free License.
  * @author Alberto Cuesta Cañada
  * @version 0.1 
@@ -15,6 +14,7 @@ import ec.util.*;
 import drm.agentbase.*;
 import drm.core.*;
 
+/** Basic DRM Agent, is an EvolutionState with DRM communicating capabilities */
 public class EvolutionAgent extends ec.simple.SimpleEvolutionState implements IAgent{
 
 	/** Serialization identificator */
@@ -69,7 +69,7 @@ public class EvolutionAgent extends ec.simple.SimpleEvolutionState implements IA
 
     /** This container is for passing experiment information to spawning children,
      * i. e. pairs of points for a symbolic regression problem.*/
-    public Object data = null;
+    public ProblemData data = null;
     
     /** True if we are not connected to DRM or we are a root node. 
      * This means that we can receive stats and transfer them to a file or stdout. */
@@ -136,6 +136,9 @@ public class EvolutionAgent extends ec.simple.SimpleEvolutionState implements IA
 	public Address getRootAddress(){ return root; }
 	/** Called to discover peers that participate in the same job.*/
 
+	/** Returns the Addresses of the agents in the neighbouring nodes which
+	 * are in our same job. To be used when the agent cache is empty to try to
+	 * get some adecuate neighbours. */
 	public Address[] getPeerAddresses(){
 		Iterator nodes = getDRM().getContributions().iterator();
 		Iterator agents;
@@ -207,15 +210,15 @@ public class EvolutionAgent extends ec.simple.SimpleEvolutionState implements IA
 			}
 			((DRMExchanger)exchanger).storeData((ExchangerData)object);
 		}else if( m.getType().equals(M_STATS) ){
-			if(!(object instanceof StatsData)){
-				output.error("Stats data must be sent in StatsData format.");
+			if(!(object instanceof StatisticsData)){
+				output.error("Stats data must be sent in StatisticsData format.");
 				return false;
 			}
 			if(!(statistics instanceof DRMStatistics)){
 				output.error("Only ec.drm.DRMStatistics can handle DRM stats messages.");
 				return false;
 			}
-			((DRMStatistics)statistics).printStatistics(this,(StatsData)object);
+			((DRMStatistics)statistics).printStatistics(this,(StatisticsData)object);
 		}else if( m.getType().equals(M_FINISHED) ){
 			output.message(m.getSender().name + " has finished.");
 		}else if( m.getType().equals(M_IDEAL_FOUND) ){
@@ -226,6 +229,7 @@ public class EvolutionAgent extends ec.simple.SimpleEvolutionState implements IA
 		return true;
 	}
 	
+	/** Sets the name from the parameter file or from defaults, an agent must have a name */
 	public String setName(Parameter base){
 		type = parameters.getStringWithDefault(
         		base.push(P_TYPE),null,"EvolutionAgent");
@@ -238,13 +242,10 @@ public class EvolutionAgent extends ec.simple.SimpleEvolutionState implements IA
         return getName();
 	}
 
-    /** This method is called after a checkpoint
-    is restored from but before the run starts up again.  You might use this
-    to set up file pointers that were lost, etc. */
-
-    /** Unlike for other setup() methods, ignore the base; it will always be null. 
-    @see Prototype#setup(EvolutionState,Parameter)*/
-		
+	/** Unlike for other setup() methods, ignore the base; it will always be null. 
+	 * Adapted from ec.Evolve.initialize() it sets up almost everything in a
+	 * hyerarchical fashion, should always be the first thing to call when arriving
+	 * to a node, at the start of the run() method*/	
 	public void setup(final EvolutionState state, final Parameter base) {
 	    int[] seeds;
 	    int x;
@@ -373,8 +374,9 @@ public class EvolutionAgent extends ec.simple.SimpleEvolutionState implements IA
 	    generation = 0;
     }
 
-	/** Usually called after setup(), initialize() calls the initializers of the
-	 *  EvolutionState modules, effectively enabling a EvolutionState to start evolving. 
+	/** Usually called after setup(), startFresh() calls the initializers of the
+	 *  EvolutionState modules, effectively enabling a EvolutionState to start evolving.
+	 *  By all means you need it if you are going to use the population.
 	 *	@see setup(EvolutionState,Parameter)
 	 */
 	public void startFresh() {
@@ -401,9 +403,7 @@ public class EvolutionAgent extends ec.simple.SimpleEvolutionState implements IA
 	    evaluator.reinitializeContacts(this);
 	    }
 	
-    /**
-     * @param result
-     */
+    /** Tell root this agent is going to commit suicide */
     public void finish(int result) 
         {
         super.finish(result);
@@ -414,7 +414,7 @@ public class EvolutionAgent extends ec.simple.SimpleEvolutionState implements IA
         	}
         }
 	
-    /* Some code copied from ec.EvolutionState.run() */
+    /** Adapted from ec.EvolutionState.run() setups and does a evolutionary loop, finishing right */
     public void run(){
     	/* I'd prefer to do setup before, ideally on onArrival */
     	setup(this,null);

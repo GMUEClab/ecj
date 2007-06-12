@@ -4,44 +4,40 @@
 
 # The parameters that were laid out in Tutorial 1 (see the documentation)
 
-
-state		= ec.drm.EvolutionAgent
-
 verbosity	= 0
 flush		= true
 nostore		= true
 
 breedthreads	= 1
 evalthreads	= 1
-seed.0		= 4357
+seed.0		= time
 
-pop		= ec.Population
+pop			= ec.Population
 init		= ec.simple.SimpleInitializer
 finish		= ec.simple.SimpleFinisher
 breed		= ec.simple.SimpleBreeder
-eval		= ec.simple.SimpleEvaluator
-stat		= ec.simple.SimpleStatistics
 exch		= ec.simple.SimpleExchanger
 
-generations		= 200
-quit-on-run-complete	= true
-checkpoint		= false
-prefix			= ec
-checkpoint-modulo	= 1
+stat		= ec.simple.SimpleStatistics
+stat.file	= master.out
 
-stat.file		= $out.stat
+generations				= 20
+quit-on-run-complete	= true
+checkpoint				= false
+prefix					= ec
+checkpoint-modulo		= 1
 
 pop.subpops		= 1
 pop.subpop.0		= ec.Subpopulation
 
-pop.subpop.0.size 		= 10
+pop.subpop.0.size 		= 5000
 pop.subpop.0.duplicate-retries 	= 0
 pop.subpop.0.species 		= ec.vector.VectorSpecies
 
 pop.subpop.0.species.fitness 	= ec.simple.SimpleFitness
 pop.subpop.0.species.ind	= ec.vector.BitVectorIndividual
 
-pop.subpop.0.species.genome-size	= 20
+pop.subpop.0.species.genome-size	= 180
 pop.subpop.0.species.crossover-type	= one
 pop.subpop.0.species.crossover-prob	= 1.0
 pop.subpop.0.species.mutation-prob	= 0.01
@@ -51,8 +47,10 @@ pop.subpop.0.species.pipe.source.0		= ec.vector.breed.VectorCrossoverPipeline
 pop.subpop.0.species.pipe.source.0.source.0	= ec.select.TournamentSelection
 pop.subpop.0.species.pipe.source.0.source.1	= ec.select.TournamentSelection
 
-select.tournament.size		= 2
+select.tournament.size	= 2
 
-breed.elites.0 = 1
+breed.elites.0 			= 1
 
-eval.problem		= ec.drm.app.tutorial1.MaxOnes
+state					= ec.drm.app.tutorial5.MasterAgent
+eval					= ec.drm.app.tutorial5.MasterEvaluator
+eval.problem			= ec.drm.app.tutorial5.MaxOnes

@@ -1,10 +1,10 @@
-/** 
- * Copyright 2007 Alberto Cuesta Cañada, licensed under the Academic Free License.
+/** Most code taken from Sean Luke's ECJ (ec.EvolutionState, ec.Evolve) and 
+ * Màrk Jelasity's DRM (drm.agentbase.IAgent).
+ * Copyright 2006 Alberto Cuesta Cañada, licensed under the Academic Free License.
  * @author Alberto Cuesta Cañada
  * @version 0.1 
  */
-
-package ec.drm.app.tutorial3;
+package ec.drm.app.tutorial8;
 
 import java.util.*;
 
@@ -19,7 +19,6 @@ public class IslandAgent extends EvolutionAgent{
 	/** Serialization identificator */
 	private static final long serialVersionUID = 1L;
 
-	/** The root island will store here the addresses to the islands it has created */
 	protected HashSet islands = new HashSet();
 	
 	/** Handles incoming messages. */
@@ -41,6 +40,8 @@ public class IslandAgent extends EvolutionAgent{
 	/** Sends an IDEAL_FOUND message to all islands. */
 	protected void announceIdealIndividual(Address except){
     	output.message("Telling everybody that an ideal individual has been found.");
+    	/*Address[] peers = getPeerAddresses();
+    	for( int x = 0 ; x < peers.length ; x++ )*/
     	
     	Address target = null;
     	Iterator peers = islands.iterator();
@@ -65,7 +66,7 @@ public class IslandAgent extends EvolutionAgent{
 	}
 	
 
-	/** Sends an island to each available node, except the local one */
+	
 	public void floodWithIslands(){
 		Address target;
 		
@@ -77,15 +78,16 @@ public class IslandAgent extends EvolutionAgent{
 		
 		Parameter p = new Parameter(DRMLauncher.P_STATE);
 
-		EvolutionAgent island = (EvolutionAgent)
-    	parameters.getInstanceForParameterEq(p,null,EvolutionAgent.class);
-		
-		island.parameters = parameters;
-		island.data = data;
-		island.setRoot(new Address(getName()));
+		EvolutionAgent agent;
 		
 		while(peers.hasNext()){
-			island.setName(p);
+			agent = (EvolutionAgent)
+	        	parameters.getInstanceForParameterEq(p,null,EvolutionAgent.class);
+			
+			agent.parameters = parameters;
+			agent.data = data;
+			agent.setName(p);
+			agent.setRoot(new Address(getName()));
 			
 			target = ((ContributionBox)peers.next()).contributor;
 			if(target.port == Integer.parseInt(base.getProperty("port")) 
@@ -95,7 +97,7 @@ public class IslandAgent extends EvolutionAgent{
 				}
 			
 			// Launch the agent to the target host
-		    IRequest request = base.launch("DIRECT", island, target);
+		    IRequest request = base.launch("DIRECT", agent, target);
 		    while(request.getStatus() == IRequest.WAITING)
 		    	try{Thread.sleep(1000);}
 		    	catch(Exception e){}
@@ -103,24 +105,25 @@ public class IslandAgent extends EvolutionAgent{
 		    if(request.getStatus() != IRequest.DONE)
 		    	output.error("There was an error sending the agent: " + request.getThrowable());
 		    else{
-		    	output.message("Agent " + island.getName() + " sent to " + target.name);
+		    	output.message("Agent " + agent.getName() + " sent to " + target.name);
 		    	synchronized(islands){
-		    		islands.add(new Address(target.getHost(), target.port, island.getName()));
+		    		islands.add(new Address(target.getHost(), target.port, agent.getName()));
 		    	}
 		    }
 		}
 	}
 	
-	/** The master island will not do evolutionary work, everything is cleaner this way */
+	public void runMaster(){
+		setup(this,null);
+		floodWithIslands();
+        waitForIslands();
+        output.message("Everyone finished, shutting down");
+        suicide();
+        System.exit(0);
+	}
+	
     public void run(){
-		if(iamroot){
-			setup(this,null);
-			floodWithIslands();
-	        waitForIslands();
-	        output.message("Everyone finished, shutting down");
-	        suicide();
-	        System.exit(0);
-		}
-		else super.run(); // EvolutionAgent.run()
+		if(iamroot)runMaster();
+		else super.run();
     }
 }

@@ -1,5 +1,5 @@
-/** Most code taken from Sean Luke's ECJ (ec.simple.SimpleExchanger),
- * licensed under the Academic Free License.
+/** Some code taken from Sean Luke's ECJ and Màrk Jelasity's DRM.
+ * Copyright 2006 Alberto Cuesta Cañada, licensed under the Academic Free License.
  * @author Alberto Cuesta Cañada
  * @version 0.1 
  */
@@ -13,6 +13,7 @@ import ec.*;
 import ec.drm.peerselect.*;
 import ec.util.Parameter;
 
+/** Allows exchanging of Individuals through DRM links */
 public class DRMExchanger extends Exchanger{
 	
 	/** Serialization identificator */
@@ -94,9 +95,9 @@ public class DRMExchanger extends Exchanger{
     	if (!(state instanceof EvolutionAgent))
     		state.output.fatal("DRMExchanger requires an EvolutionAgent, reset failed",null,null);
 
-        migrationsize = state.parameters.getInt(base.push(P_MIGRATION_SIZE), null, 1);
-        frequency = state.parameters.getInt(base.push(P_FREQUENCY), null, 1);
-        offset = state.parameters.getInt(base.push(P_OFFSET), null, 0);
+        migrationsize = state.parameters.getIntWithDefault(base.push(P_MIGRATION_SIZE), null, 1);
+        frequency = state.parameters.getIntWithDefault(base.push(P_FREQUENCY), null, 1);
+        offset = state.parameters.getIntWithDefault(base.push(P_OFFSET), null, 0);
         //use_collective = state.parameters.getBoolean(base.push(P_COLLECTIVE), null, false);
     	
         Parameter p;
