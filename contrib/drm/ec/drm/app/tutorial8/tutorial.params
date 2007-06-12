@@ -1,0 +1,54 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+# The parameters that were laid out in Tutorial 1 (see the documentation)
+
+parent.0 = ../../../gp/koza/koza.params
+
+state		=	ec.drm.app.tutorial8.IslandAgent
+
+generations				= 50
+pop.subpop.0.size 		= 1000
+
+data		= ec.drm.app.tutorial8.MyProblemData
+data.train-in	= TrI.data
+data.train-out	= TrO.data
+data.test-in	= TeI.data
+data.test-out	= TeO.data
+
+stat			= ec.drm.app.tutorial8.MyStatistics
+stat.store-best			= true
+stat.use-collective		= false
+stat.frequency			= 10
+stat.offset				= 0
+stat.file				= tutorial8
+
+exch					= ec.drm.DRMExchanger
+exch.select				= ec.select.TournamentSelection
+exch.select-to-die		= ec.select.TournamentSelection
+exch.select-to-die.pick-worst = true
+exch.select-peer		= ec.drm.peerselect.RandomPeerSelection
+exch.migration-size		= 1
+exch.frequency			= 10
+exch.offset				= 1
+
+gp.fs.size = 1
+gp.fs.0 = ec.gp.GPFunctionSet
+gp.fs.0.name = f0
+gp.fs.0.info = ec.gp.GPFuncInfo
+gp.fs.0.size = 5
+gp.fs.0.func.0 = ec.drm.app.tutorial8.X
+gp.fs.0.func.0.nc = nc0
+gp.fs.0.func.1 = ec.drm.app.tutorial8.Y
+gp.fs.0.func.1.nc = nc0
+gp.fs.0.func.2 = ec.drm.app.tutorial8.Add
+gp.fs.0.func.2.nc = nc2
+gp.fs.0.func.3 = ec.drm.app.tutorial8.Sub
+gp.fs.0.func.3.nc = nc2
+gp.fs.0.func.4 = ec.drm.app.tutorial8.Mul
+gp.fs.0.func.4.nc = nc2
+
+eval.problem = ec.drm.app.tutorial8.MultiValuedRegression
+eval.problem.data = ec.drm.app.tutorial8.DoubleData
+eval.problem.stack.context.data = ec.drm.app.tutorial8.DoubleData

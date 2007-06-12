@@ -1,5 +1,5 @@
-/** Most code taken from Sean Luke's ECJ (ec.simple.SimpleStatistics),
- * licensed under the Academic Free License.
+/** Some code taken from Sean Luke's ECJ and Màrk Jelasity's DRM.
+ * Copyright 2006 Alberto Cuesta Cañada, licensed under the Academic Free License.
  * @author Alberto Cuesta Cañada
  * @version 0.1 
  */
@@ -15,25 +15,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * A basic Statistics class suitable for simple problem applications.
- *
- * SimpleStatistics prints out the best individual, per subpopulation,
- * each generation.  At the end of a run, it also prints out the best
- * individual of the run.  SimpleStatistics outputs this data to a log
- * which may either be a provided file or stdout.  Compressed files will
- * be overridden on restart from checkpoint; uncompressed files will be 
- * appended on restart.
- *
-
- <p><b>Parameters</b><br>
- <table>
- <tr><td valign=top><i>base.</i><tt>gzip</tt><br>
- <font size=-1>boolean</font></td>
- <td valign=top>(whether or not to compress the file (.gz suffix added)</td></tr>
- <tr><td valign=top><i>base.</i><tt>file</tt><br>
- <font size=-1>String (a filename), or nonexistant (signifies stdout)</font></td>
- <td valign=top>(the log for statistics)</td></tr>
- </table>
+ * Allows to collect statistics and send them across DRM links
  */
 
 public class DRMStatistics extends Statistics
@@ -101,7 +83,7 @@ public class DRMStatistics extends Statistics
     	EvolutionAgent agent = (EvolutionAgent)state;
     	
     	super.setup(state,base);
-    	frequency = state.parameters.getInt(base.push(P_FREQUENCY),null,1);
+    	frequency = state.parameters.getIntWithDefault(base.push(P_FREQUENCY),null,1);
     	store_best = state.parameters.getBoolean(base.push(P_STORE_BEST),null,true);
     	//use_collective = state.parameters.getBoolean(base.push(P_COLLECTIVE),null,true);
 
@@ -159,7 +141,7 @@ public class DRMStatistics extends Statistics
 
         EvolutionAgent agent = (EvolutionAgent)state;
         
-        StatsData data = new StatsData(
+        StatisticsData data = new StatisticsData(
         		new Address(agent.getName()),
         		state.generation,
         		getBestIndividual(state));
@@ -195,7 +177,7 @@ public class DRMStatistics extends Statistics
         
         EvolutionAgent agent = (EvolutionAgent)state;
         
-        StatsData data = new StatsData(
+        StatisticsData data = new StatisticsData(
         		new Address(agent.getName()),
         		state.generation,
         		System.currentTimeMillis() - creationtime,
@@ -239,8 +221,8 @@ public class DRMStatistics extends Statistics
     	}
     }
     
-    /** Prints StatsData structures to local logs. */
-    public void printStatistics(final EvolutionState state, StatsData data){	
+    /** Prints StatisticsData structures to local logs. */
+    public void printStatistics(final EvolutionState state, StatisticsData data){	
     	int log = -6;
     	String sender;
     	

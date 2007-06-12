@@ -9,25 +9,28 @@ flush		= true
 nostore		= true
 
 breedthreads	= 1
-evalthreads	= 1
-seed.0		= time
+evalthreads		= 1
+seed.0			= time
 
-state		=	ec.drm.app.tutorial3.IslandAgent
-
-pop		= ec.Population
+pop			= ec.Population
 init		= ec.simple.SimpleInitializer
 finish		= ec.simple.SimpleFinisher
 breed		= ec.simple.SimpleBreeder
+exch		= ec.simple.SimpleExchanger
 eval		= ec.simple.SimpleEvaluator
 
-generations				= 2000
+stat					= ec.drm.DRMStatistics
+stat.frequency			= 0
+stat.file				= none
+
+generations				= 1
 quit-on-run-complete	= true
 checkpoint				= false
 prefix					= ec
 checkpoint-modulo		= 1
 
-pop.subpops		= 1
-pop.subpop.0		= ec.Subpopulation
+pop.subpops				= 1
+pop.subpop.0			= ec.Subpopulation
 
 pop.subpop.0.size 		= 5000
 pop.subpop.0.duplicate-retries 	= 0
@@ -46,24 +49,9 @@ pop.subpop.0.species.pipe.source.0		= ec.vector.breed.VectorCrossoverPipeline
 pop.subpop.0.species.pipe.source.0.source.0	= ec.select.TournamentSelection
 pop.subpop.0.species.pipe.source.0.source.1	= ec.select.TournamentSelection
 
-select.tournament.size		= 2
+select.tournament.size	= 2
 
-breed.elites.0 = 1
-eval.problem		= ec.drm.app.tutorial3.MaxOnes
+breed.elites.0 			= 1
+eval.problem			= ec.drm.app.tutorial5.MaxOnes
 
-
-stat 					= ec.drm.DRMStatistics
-stat.store-best			= true
-stat.use-collective		= false
-stat.frequency			= 10
-stat.offset				= 0
-stat.file				= tutorial3
-
-exch					= ec.drm.DRMExchanger
-exch.select				= ec.select.TournamentSelection
-exch.select-to-die		= ec.select.TournamentSelection
-exch.select-to-die.pick-worst = true
-exch.select-peer		= ec.drm.peerselect.RandomPeerSelection
-exch.migration-size		= 1
-exch.frequency			= 10
-exch.offset				= 1
+state					= ec.drm.app.tutorial5.SlaveAgent

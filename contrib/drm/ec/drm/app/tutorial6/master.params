@@ -1,0 +1,16 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+# The parameters that were laid out in Tutorial 1 (see the documentation)
+
+parent.0	= ../../../app/tutorial1/tutorial1.params
+
+state					= ec.drm.masterslave.MasterAgent
+
+eval					= ec.drm.masterslave.MasterEvaluator
+
+# Number of individuals to be sent each time to a slave for evaluation
+eval.chunk_size			= 100
+
+pop.subpop.0.size 		= 1000

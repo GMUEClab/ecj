@@ -1,0 +1,15 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+# The parameters that were laid out in Tutorial 1 (see the documentation)
+
+# You can use the master params as an start
+parent.0	= master.params
+
+state					= ec.drm.masterslave.SlaveAgent
+
+# This is a little hack to get a Statistics module that doesn't try to do anything
+stat					= ec.drm.DRMStatistics
+stat.frequency			= 0
+stat.file				= none
