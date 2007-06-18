@@ -12,6 +12,6 @@ state					= ec.drm.masterslave.MasterAgent
 eval					= ec.drm.masterslave.MasterEvaluator
 
 # Number of individuals to be sent each time to a slave for evaluation
-eval.chunk_size			= 100
+eval.chunk-size			= 100
 
 pop.subpop.0.size 		= 1000

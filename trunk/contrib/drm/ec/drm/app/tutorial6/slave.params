@@ -10,6 +10,9 @@ parent.0	= master.params
 
 state					= ec.drm.masterslave.SlaveAgent
 
+# You want a normal evaluator, no a MasterEvaluator
+eval 			= ec.simple.SimpleEvaluator
+
 # This is a little hack to get a Statistics module that doesn't try to do anything
 stat					= ec.drm.DRMStatistics
 stat.frequency			= 0

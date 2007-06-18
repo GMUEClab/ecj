@@ -48,7 +48,7 @@ public class SlaveAgent extends EvolutionAgent{
     		if(mailbox.size() == 0){
     			output.message("Waiting for individuals to evaluate...");
     			try{Thread.sleep(1000);}
-    			catch(Exception e){}
+    			catch(Exception e){output.error("Exception: " + e.getMessage());}
     			continue;
     		}
     		
