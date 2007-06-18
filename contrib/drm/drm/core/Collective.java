@@ -428,7 +428,7 @@ private boolean refresh() {
 			peer, "collectiveUpdate-"+name, this );
 		while(answer.getStatus()==IRequest.WAITING)
 		{
-			try{ Thread.currentThread().sleep(100); }
+			try{ Thread.sleep(100); }
 			catch(Exception e) {}
 		}
 		if( answer.getStatus()==IRequest.DONE ) break;
@@ -629,10 +629,10 @@ public final void run() {
 				}
 			}
 			for(int i=0; i<REFRESHRATE; i+=1000){
-				try { Thread.currentThread().sleep( 1000 ); }
+				try { Thread.sleep( 1000 ); }
 				catch( InterruptedException e ) { shouldLive = false; }
 				if( shouldLive == false ) break;
-				Thread.currentThread().yield();
+				Thread.yield();
 			}
 		/*}
 		catch( RuntimeException e )

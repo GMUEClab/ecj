@@ -30,7 +30,8 @@ package drm.agentbase;
 * parameter settings.
 */
 public class LaunchImpossibleException extends Exception {
-
+private static final long serialVersionUID = 1L;
+	
 public LaunchImpossibleException() {}
 
 public LaunchImpossibleException( String m ) { super(m); }

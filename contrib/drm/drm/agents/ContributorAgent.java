@@ -30,9 +30,6 @@ import drm.agentbase.Logger;
 import drm.core.*;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
 * This is an agent that participates in a collective.

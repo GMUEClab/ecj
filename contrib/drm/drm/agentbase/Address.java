@@ -32,7 +32,7 @@ import java.net.InetAddress;
 * or empty.
 */
 public class Address implements java.io.Serializable {
-private static final long serialVersionUID = 2145788465305611890L;
+private static final long serialVersionUID = 1L;
 
 
 // =========== Package Fields ========================================
