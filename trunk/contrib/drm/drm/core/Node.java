@@ -48,7 +48,7 @@ import java.io.IOException;
 */
 public final class Node extends Base
 implements Observer, Contributor, Controller, IDRM {
-
+private static final long serialVersionUID = 1L;
 
 // ===================== Private Fields ===========================
 // ================================================================

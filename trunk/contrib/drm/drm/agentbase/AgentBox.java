@@ -30,7 +30,7 @@ import java.util.Date;
  * Stores relevant information to administrate agents on the base.
  */
 class AgentBox implements java.io.Serializable {
-
+private static final long serialVersionUID = 1L;
 
 // =========== Package Fields ========================================
 // ===================================================================

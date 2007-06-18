@@ -24,11 +24,9 @@ contact: http://www.dr-ea-m.org, http://www.sourceforge.net/projects/dr-ea-m
 
 package drm.server;
 
-import drm.agentbase.Address;
 import drm.agentbase.Logger;
 import drm.core.Node;
 import drm.util.ConfigProperties;
-import java.util.Properties;
 import java.util.Random;
 
 /**
@@ -112,8 +110,7 @@ public static void main( String[] args ) {
 		try
 		{
 			Logger.debug( "NakedNode","waiting until "+startTime );
-			Thread.currentThread().sleep(
-				startTime - System.currentTimeMillis());
+			Thread.sleep(startTime - System.currentTimeMillis());
 		}
 		catch( InterruptedException e ) {}
 	}
@@ -155,7 +152,7 @@ public static void main( String[] args ) {
 	try
 	{ 
 		// first wait 30 secs for connection to the network
-		Thread.currentThread().sleep(30000);
+		Thread.sleep(30000);
 		ScriptUtils.startAllScripts( cfg, "runClass", s );
 	}
 	catch( Throwable t )
@@ -168,7 +165,7 @@ public static void main( String[] args ) {
 	{
 		try
 		{
-			Thread.currentThread().sleep(lifeTime*1000);
+			Thread.sleep(lifeTime*1000);
 			Logger.debug( "NakedNode",
 				"Timeout "+lifeTime+"s elapsed, exiting");
 		}

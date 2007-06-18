@@ -256,7 +256,7 @@ public class EvolutionAgent extends ec.simple.SimpleEvolutionState implements IA
 	    
 	    // make a new Statics
 	
-	    statics = new Vector();
+	    //statics = new Vector();
 	
 	    // 1. create the output
 	    p = new Parameter(P_STORE);

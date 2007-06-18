@@ -25,16 +25,14 @@ contact: http://www.dr-ea-m.org, http://www.sourceforge.net/projects/dr-ea-m
 package drm.util;
 
 import java.util.Properties;
-import java.util.Enumeration;
 import java.io.*;
-import java.net.URL;
 
 /**
 * Class for handling configuration files. Extends the functionality
 * of Properties by handling files, system resources and command lines.
 */
 public class ConfigProperties extends Properties {
-
+private static final long serialVersionUID = 1L;
 
 // =========== Public Constructors ===================================
 // ===================================================================

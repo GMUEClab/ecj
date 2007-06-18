@@ -29,7 +29,6 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 import java.util.LinkedList;
-import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Properties;
 import javax.swing.*;
@@ -37,7 +36,6 @@ import javax.swing.event.*;
 
 import drm.agentbase.*;
 import drm.core.*;
-import drm.agents.*;
 import drm.util.ConfigProperties;
 
 /**
@@ -49,7 +47,7 @@ import drm.util.ConfigProperties;
 */
 public class TestGUINode extends JFrame
 implements ActionListener, ListSelectionListener, IBaseListener {
-
+private static final long serialVersionUID = 1L;
 
 // =========== Private Fields ========================================
 // ===================================================================
