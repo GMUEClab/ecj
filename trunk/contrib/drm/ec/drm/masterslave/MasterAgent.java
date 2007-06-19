@@ -67,7 +67,7 @@ public class MasterAgent extends EvolutionAgent{
 		    	catch(Exception e){}
 		    	
 		    if(request.getStatus() != IRequest.DONE)
-		    	output.error("There was an error sending the agent: " + request.getThrowable());
+		    	output.warning("There was an error sending the agent: " + request.getThrowable());
 		    else{
 		    	output.message("Slave " + slave.getName() + " sent to " + target.name);
 		    	synchronized(slaves){
