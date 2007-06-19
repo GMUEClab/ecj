@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>DRM Security</title>
+<META NAME="author" CONTENT="Mark Jelasity">
+</head>
+<body   bgcolor="#ffffcc" text="#000000" >
+<center><h1>Security</h1></center>
+
+<h2>Introduction</h2>
+
+<p>An agent architecture in general raises many security problems.
+This is in connection with the fact that agents run program code that
+was written by unknown people so the quality and friendliness is
+not guaranteed.
+
+<p>The situation is almost the same as in the case of applets. The only
+difference is that with agents one doesn't have a clearly and securely
+identifiable code source. In the case of applets this code source is the
+URL which the applet was downloaded from. However signatures can be applied
+in both cases to identify the creator of the code.
+
+<p>Our architecture is based on the possibilities provided by java.
+In the following it will not be assumed that the reader is familiar with
+the basic concepts of the java security architecture when describing the
+step-by-step procedure to start up a node with security support.
+However to be able to really make use of the possibilities it is essential
+that one has a basic understanding of these concepts.
+The webpage
+<a href="http://java.sun.com/j2se/1.3/docs/guide/security/index.html">
+<code>http://java.sun.com/j2se/1.3/docs/guide/security/index.html</code></a>
+offers a very good introduction.
+
+<h2>No protection</h2>
+
+<p>In the simplest case there is no protection and the node and the agents
+too are run just like any other application under the local operating system.
+When starting the java virtual machine without any special options or
+configuration settings this is the default behaviour.
+Thus saying
+<pre>
+java drm.test.TestGUINode
+</pre>
+or
+<pre>
+java drm.server.NakedNode
+</pre>
+(of course an eventual <code>-classpath</code> argument may be present)
+starts a node without the security features and then any agent arriving
+at the node will have equal rights to all the applications of the
+operating system.
+They can open, write, delete files, they can open network connections,
+change system properties, etc.
+Obviously this is not desirable. 
+
+<h2>Sandbox model</h2>
+
+The sandbox model means that the agents are granted only the default minimal
+permissions which are just enough for running.
+However the agents can send messages and launch new agents trough library
+functions provided by the node.
+This offers a safe and controlled way of accessing resources.
+
+Implementing the sandbox model is easy.
+To do this, first of all the node must be started with the default
+security manager installed.
+For the sun j2 sdk package the standard option to do this is
+<code>-Djava.security.manager</code>:
+<pre>
+java -Djava.security.manager drm.test.TestGUINode
+</pre>
+or
+<pre>
+java -Djava.security.manager drm.server.NakedNode
+</pre>
+This is not enough however.
+In fact it is too much because this way the whole node is run as an
+applet in the sandbox not only the agents.
+But the node needs application rights.
+To give the node application rights you have to edit (or create) a policy
+file.
+The easiest thing is to edit the default policy file
+(<code>${user.home}/.java.policy</code>).
+Another possibility is to create a new one (say <code>my.policy</code>)
+and using the option <code>-Djava.security.policy=my.policy</code>
+
+<p>To the policy file you should add a grant entry which looks like
+<pre>
+grant codeBase "file:/home/garfield/drm/-" {
+        permission java.security.AllPermission;
+};
+</pre>
+Don't forget the - at the end of the codeBase!
+For <code>/home/garfield/drm</code> you have to substitute the directory
+where you installed the class files (or the jar archive(s)) of the node.
+<p><b>Important!</b> The directory where the system stores temporary files,
+including downloaded jar files (defined by the java system property
+<code>java.io.tmpdir</code>) <b>must not be</b> under this
+directory (and thus in this codeBase) otherwise the agents will be granted the
+application permissions too which makes the security manager useless.
+It is safe not to change the default value of <code>java.io.tmpdir</code>
+as it is very unlikely to be under the drm installation directory.
+
+<h2>More fine-grained security control</h2>
+Due to the implementation of mobility in our architecture it is relatively
+easy to apply the security concepts originally developed for applets.
+The classes needed to run the agents are downloaded in one step as a jar
+archive and copied to the temporary directory (maybe to subdirectories
+under this directory).
+The name of this directory defaults to <code>java.io.tmpdir</code>.
+The user can change this system property if necessary at JVM startup.
+
+Using this directory as a codeBase it is possible to grant
+fine-grained permissions to the agents.
+Applying also signatures it becomes possible to control agents signed by
+different parties differently.
+We do not go into the details, those who know the possibilities of
+the java security model already understand the situation.
+To give a simple example (without using signatures) let us assume that
+the node will be started using
+<pre>
+java -Djava.security.manager drm.test.TestGUINode
+</pre>
+or
+<pre>
+java -Djava.security.manager drm.server.NakedNode
+</pre>
+Then adding the following to a default policy file will allow fine-grained
+control of the agent's permissions:
+<pre>
+grant codeBase "file:/home/garfield/drm/-" {
+        permission java.security.AllPermission;
+};
+
+grant codeBase "file:${java.io.tmpdir}/-" {
+	// agents' permissions 
+	// come here
+};
+</pre>
+
+</body>
+</html>

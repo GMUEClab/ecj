@@ -1,0 +1,102 @@
+\documentclass{article}
+\usepackage{times,moreverb}
+
+\usepackage{verbatimfiles}
+
+
+
+\title{DRM Programming Tutorial 2}
+\author{Alberto Cuesta}
+\date{04/05/2006}
+
+\renewcommand{\verbatimtabsize}{3}
+
+\begin{document}
+\maketitle
+
+\section{What is this tutorial about?}
+
+The Distributed Resource Machine (DRM) is a framework initially coded by M\'ark Jelasity to allow the distribution of java programs across a computer network, be it a LAN or the Internet. The DRM network is composed by nodes, each one has a ip address, a listening port, and a unique drm name. A DRM network is identified by a group name, so different networks can be constructed for particular purposes.
+
+This tutorial aims to address some dark points that may arise after reading the DRM Programming Tutorial by M\'ark Jelasity. It will be supposed that the reader is able to reproduce at least the three first examples in that document so their particulars won't be explained. More precisely this tutorial has been written to show the use of \textsl{``DIRECT''} launching, how to send messages to a particular agent, and to clarify the use of a collective.
+
+\section{Direct modes, addressing}
+Sending an agent to a particular DRM node and communicating with it can be a bit confusing for the first time, but actually it is no so difficult. In the first example of this tutorial, the Killer application, we can see a first easy example. 
+
+In this example, the root node gets the \textsl{Address} of a node in the same DRM network by using \textsl{getDRM().getNewestContribution().contributor}. To send an agent to this particular node we only have to state it in the \textsl{launch} method, like \textsl{base.launch(``DIRECT'', agent, address)}. What we have done exactly is to ask for the repository of the DRM lore (\textsl{getDRM()}), then get the last piece of information that arrived to it (\textsl{getNewestContribution()}) and then get the address of the node that made it (\textsl{ contributor}). 
+
+The agent was created with \textsl{new Killer(job, ``child'', new Address(this.name, -1, null))}, this means that it belongs to the same job (and collective) than the root node and his that ``child'' will be appended to its name to differentiate it from the root node, which name ends with ``root''. And the \textsl{new Address(this.name, -1, null)}?, that is the address of the root node, to know where to send messages if needed, we only give the name of the root agent (\textsl{this.name}), the rest of the parameters will be corrected when the agent arrives at its final destination. We have already the agent and the address to send it, so the launching takes place.
+
+We have launched an agent to a remote node, in this particular example we only wanted to do one more thing, that is, sending that poor agent a message to make it commit suicide and finish the job that way. When you want to send a message to an agent, you need the complete DRM Address for that agent. This Address is composed of the IP Address of the node which hosts it, the port at which the node is listening to, and the name of the agent. Much like we built the address for the agent to know where its root agent was, but if we are not launching an agent, we need all the parameters.
+
+Make sure to differentiate the {\bf node} (which gets started when you call drmnode in a machine) and the {\bf agent} (which gets sent through the DRM network), if you send a message to a node hoping that it will transfer it to the agent, the message will be lost. The reason for this is that the node doesn't know to which of the many agents (maybe only one) it has to transfer the message, so make sure that you state the name of the agent when sending a message.
+
+The name of an agent is given in the constructor. In order to know it in the Killer job, the agents are created locally, to be sent afterwards to a remote machine. This way the root has access to the name of such agent and can send it a message afterwards. Bad thing for the agent :), because we have coded in \textsl{handleMessage} that such message will make it die, using \textsl{suicide()}.
+
+You can also use the collective to retrieve the name of the launched agents instead of creating them locally, but that will be explained later, don't worry. For now study the code for this example and read the comments, remember to understand the concepts of node and agent, how an address is built, and that you can use that address to send messages and agents.
+
+\section{Sending objects and first approach to the collective}
+
+Take a look on the second example, \textsl{Sender}, this example shows how to send agents to all the nodes in a DRM network, the subtle difference between this and sending messages to all the agents in a collective, and how we can send objects that implement \textsl{java.io.Serializable} in a message.
+
+First thing, note that we get all the contributions with \textsl{getDRM().getContributions()}. This is a \textsl{List} of \textsl{ContributionBox}, each one of these is a container with the address of the node that sent it, the time at which it was made, and some generic data that can be used for any purpose (we will see that later). For now we are only interested in the addresses, so we take them and send an agent to each one. Take care of the size of the network you are in, and make tests first in a small, private network.
+
+What we want to see next is the agents sending some data between them, we are going to use the collective the same way that we use the DRM. First wait some time for the agents to arrive destination and make contact between them to build a collective, I'd say thirty seconds. Then get the data to be sent, in our case we create a hashtable with random strings, but you can send anything that is serializable.
+
+To get the list of the agents in our collective we use \textsl{collective.getContributions()}, the data returned is similar to that returned by \textsl{getDRM().getContributions()}, but it refers instead to the agents we sent before.
+
+So we have the addresses and the data, we can send the messages, it's as simple as \textsl{fireMessage(address, type, data)}. In \textsl{type} you have to put some string that helps to recognize how the message should be processed, in our case is ``data''. You can check the request the the message returns to see if the message has been received or not.
+
+At the other side of the communication (which is this same agent, they are all clones), in the method \textsl{handleMessage(Message, Object)}, we have to put the controls to manage this message. This method should first see if any parent class can handle the message, if this fails, then try to handle itself, returning true if it succeeds and false if it doesn't. Receiving the object attached in the message is as easy as downcasting the \textsl{ Object} parameter to anything that it should be, taking proper care.
+
+Well, this was more complex than the previous, wasn't it?. Although what you need to remember from this example is when to use the \textsl{getDRM()} method and when the \textsl{collective} field, that you can get the addresses of the nodes and the agents from them, and that you can send serializable objects in a message and recover them at the other side.
+
+\section{Sending objects to the collective}
+
+Third and last example. This one should be read between M\'ark's third and fourth examples. The concepts explained are the same than in the HillClimber example from M\'ark but reduced to the bare minimum. The only thing that we want to explain here is how you can use the collective to transfer information in the most clearer way. Refer to the \textsl{Contributor} job in the appendix, should be easy enough with the comments, but we will explain it here.
+
+Let's go, last method first, you will see that the \textsl{run()} method for this one is only for the root node, and only serves to send an agent to each available node, and there is no \textsl{handleMessage()} method, so what the sent agents do?.
+
+You can think that each agent mantains a piece of information, its {\bf contribution}. That contribution is requested periodically by a {\bf collective} to which all the nodes can ask for information. The collective uses the method \textsl{getContribution()} in each agent to to request their contributions. The return of this function is what each agent contributes to the collective and what every other agent in the collective can see. The \textsl{collectiveUpdated()} function is called on each agent each time the collective has asked everyone for their contribution, and it's a good method to place anything that we want the agents make with the collective data.
+
+In our example, the {\textsl getContribution()} method returns a string containing the local time of the agent, and each agents consults the collective when the {\textsl collectiveUpdated()} method is called, printing the local time each agent was asked for its contribution. It's fairly simple, yet powerful enough to make agents collaborate in more complex job like the \textsl{HillClimber} algorithm from M\'arks tutorial.
+
+From this last example, you should remember that the \textsl{getContribution()} method returns data that all agents in a collective can see.
+
+\section{Acknowledgments}
+This tutorial and these examples habe been made in the months that I've been fighting with DRM and the tools that use it. I'd like to thank Ken Sharman for allowing me to do all this and supporting me, and to M\'ark Jelasity for making this strange and wonderful application.
+
+Oh!, and I'd like also to thank you, my kind reader. Any comment about this tutorial, good or bad, will be welcome.
+\pagebreak
+
+\appendix
+
+\section{Launch}
+\label{launch5}
+\listinginput{1}{examples/5/Launch.java}
+\pagebreak
+\section{killjob.Killer}
+\label{agent5}
+\listinginput{1}{examples/5/killjob/Killer.java}
+\pagebreak
+
+\section{Launch}
+\label{launch6}
+\listinginput{1}{examples/6/Launch.java}
+\pagebreak
+\section{sendjob.Sender}
+\label{agent6}
+\listinginput{1}{examples/6/sendjob/Sender.java}
+\pagebreak
+
+\section{Launch}
+\label{launch7}
+\listinginput{1}{examples/7/Launch.java}
+\pagebreak
+\section{contributionjob.Contributor}
+\label{agent7}
+\listinginput{1}{examples/7/contributionjob/Contributor.java}
+\pagebreak
+
+\end{document}
+

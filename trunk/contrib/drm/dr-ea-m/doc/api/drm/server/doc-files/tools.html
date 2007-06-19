@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>DRM tools</title>
+<META NAME="author" CONTENT="Mark Jelasity">
+</head>
+<body   bgcolor="#ffffcc" text="#000000" >
+<center><h1>DRM tools</h1></center>
+
+This document describes the tools that come with the DRM distribution.
+These tools are in fact starter scripts that start java applications
+with appropriate security and classpath settings.
+
+<h2>drmnode</h2>
+<pre>
+drmnode [--nogui] [parameters]
+</pre>
+
+Starts a DRM node.
+If option <code>--nogui</code> is not given it starts
+the class <code>drm.server.TestGUINode</code> otherwise it starts
+<code>drm.server.NakedNode</code>.
+
+<p>
+The parameters can be configuration parameters as described in
+the <a href="drm/server/doc-files/config.html">configuration guide</a>
+except that system properties cannot be set only the config file and
+command line parameters can be given.
+
+<p>
+Classes and jar archives from within and under the current directory and
+all optional
+libraries installed with the DRM will get application rights, any other
+classes will have the most restricted sandbox permissions only.
+This is important when starting experiments: the code (jar file) of the
+experiment has to be in the current directory.
+
+<p>
+With the <code>--nogui</code> option and without changing the DRM group
+setting the node will attempt to connect to the default DRM using
+default node addresses.
+If the DRM group name is different from "default", this will not be
+attempted.
+Changing the group name can be done by a command line parameter
+(see also 
+the <a href="drm/server/doc-files/config.html">configuration guide</a>)
+<pre>
+drmnode --nogui "group=mylocalgroup"
+</pre>
+
+<h2>drmapp</h2>
+<pre>
+drmapp [--gui] jar[!class] [parameters]
+</pre>
+
+Starts a DRM node and starts an application on it.
+If option <code>--gui</code> is given it starts
+the class <code>drm.server.TestGUINode</code> otherwise it starts
+<code>drm.server.NakedNode</code>.
+The experiment is not started immediately, only after approx. 30 seconds
+delay.
+The reason of this is to allow the node to connect to peer nodes which is
+essential for spreading computation over the peer network.
+
+<p>
+The parameters can be configuration parameters as described in
+the <a href="drm/server/doc-files/config.html">configuration guide</a>
+except that system properties cannot be set only the config file and
+command line parameters can be given.
+
+<p>
+Classes and jar archives from within and under the directory of the given jar
+file and all optional
+libraries installed with the DRM will get application rights, any other
+classes will have the most restricted sandbox permissions only.
+
+<p>
+An optional class name can be given after a "!" in which case it will be
+the launcher class of the application.
+You can find technical details about launching experiments in the
+<a href="drm/server/doc-files/stexp.html">
+experiment starting specification</a> and in the <a href="../../../../drm.html">
+DRM tutorial</a>.
+
+<p>
+Without the <code>--gui</code> option and without changing the DRM group
+setting the node will attempt to connect to the default DRM using
+default node addresses.
+This is useful when starting experiments on the default DRM.
+If the DRM group name is different from "default", this will not be
+attempted.
+Changing the group name can be done by a command line parameter
+(see also 
+the <a href="drm/server/doc-files/config.html">configuration guide</a>)
+<pre>
+drmapp experiment.jar "group=mylocalgroup"
+</pre>
+
+Note that an application can be started from a node started with
+<code>drmnode</code> as well, this tool is just a shorthand, the only
+extra service is that the directory of the jar will be given application
+rights instead of the current directory.
+
+<h2>drmd</h2>
+<pre>
+drmd [parameters]
+</pre>
+
+Starts a DRM node without graphical user interface and with
+restricted security settings.
+
+<p>
+The parameters can be configuration parameters as described in
+the <a href="drm/server/doc-files/config.html">configuration guide</a>
+except that system properties cannot be set only the config file and
+command line parameters can be given.
+
+<p>
+No libraries will get application rights, not even the optional libraries,
+only the classes of the drm node itself.
+The purpose of this tool is to allow contribution.
+For example <code>drmd</code> can be started in the background
+safely each time a computer boots or a user logs in.
+Without changing the DRM group the node will attempt to connect to the
+default DRM when started.
+This way contribution to the default DRM can be easily implemented.
+
+</body>
+</html>
+
+
