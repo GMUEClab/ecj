@@ -35,7 +35,7 @@ import java.security.PrivilegedAction;
 * and receive them, handles their requests and messages.
 */
 public class Base implements IBase, IAgent {
-
+private static final long serialVersionUID = 1L;
 
 // ===================== Private Fields ===========================
 // ================================================================
@@ -189,11 +189,14 @@ private class ConnectionHandler extends Thread {
 	{
 		Logger.debug( getClass().getName(), "an AGENT arrived" );
 		
-		/**/
+		/* This code makes this class not compatible with previous versions,
+		 * because it changes the protocol. It is needed to make sure that
+		 * messages are delivered to the right agent or discarded with an error. */
 		String to = (String)ais.readObject();
 		if( to == null || !to.equals(name))
 		{
 			oos.writeByte( NOT_OK );
+			oos.flush();
 			Logger.warning( getClass().getName(),
 					"AGENT rejected: I'm not " + to, null );
 			return;
@@ -227,7 +230,8 @@ private class ConnectionHandler extends Thread {
 		catch( Throwable e )
 		{
 			oos.writeByte(NOT_OK);
-			if( e instanceof IOException ) throw (IOException)e;
+			if( e instanceof IOException ) 
+				throw (IOException)e;
 			else if( e instanceof ClassNotFoundException )
 				throw (ClassNotFoundException)e;
 			else Logger.error( getClass().getName(), "", e );
@@ -283,9 +287,16 @@ private class ConnectionHandler extends Thread {
 			oos.flush();
 			Message m = (Message)ais.readObject();
 			m.sender.host = socket.getInetAddress();
-			mHandled = rec.handleMessage( m,
-			    AgentInputStream.getObject(m.getBinary(),rec));
-
+			try{
+				mHandled = rec.handleMessage( m,
+						AgentInputStream.getObject(m.getBinary(),rec));
+			}
+			catch(Exception e){
+				oos.writeByte(NOT_OK);
+				Logger.error( getClass().getName(),
+						"Handling the message " + m.toString() + 
+						" raised an Exception", e);
+			}
 			if( !mHandled ) oos.writeByte(NOT_OK);
 			else
 			{
@@ -294,7 +305,7 @@ private class ConnectionHandler extends Thread {
 					oos.writeByte( MESSAGE );
 					oos.writeObject(m.reply);
 				}
-				else	oos.writeByte(OK);
+				else oos.writeByte(OK);
 			}
 		}
 	}
@@ -327,6 +338,8 @@ private class ConnectionHandler extends Thread {
 	// --------------------------------------------------------
 	
 	public void run(){
+		String peerGroup = null;
+		final byte type;
 		
 		try
 		{
@@ -336,34 +349,58 @@ private class ConnectionHandler extends Thread {
 			ais = new AgentInputStream(socket.getInputStream(),
 				null);
 			version = ais.readInt();
-			String peerGroup = (String)ais.readObject();
-			final byte type = ais.readByte();
+			peerGroup = (String)ais.readObject();
+			type = ais.readByte();
 			
 			oos = new ObjectOutputStream(socket.getOutputStream());
-			
-			if( !peerGroup.equals(group) )
+		}
+		catch(SocketException e){
+			Logger.error( getClass().getName(), "Exception caught when setting socket timeout: ", e );
+			return;
+			}
+		catch(IOException e){
+			Logger.error( getClass().getName(), "Exception caught when reading data from a socket", e );
+			return;
+		}
+		catch(ClassNotFoundException e){
+			Logger.error( getClass().getName(), "I got a non-String as peerGroup: ", e );
+			return;
+		}
+
+		try
+		{	
+			if( peerGroup == null || !peerGroup.equals(group) )
 			{
-			
 				oos.writeInt(GROUP_MISMATCH);
 				oos.flush();
 				throw new ProtocolException(
 					"Peer is from group "+
 					peerGroup+", our group is "+group);
 			}
-			
+				
 			if( version != PROTOCOL_VERSION )
 			{
-			
 				oos.writeInt(PROTOCOL_MISMATCH);
 				oos.flush();
 				throw new ProtocolException(
 					"Peer is using protocol version " +
 					version + ", our version is " + PROTOCOL_VERSION);
 			}
-			
+				
 			oos.writeInt(PROTOCOL_VERSION);
 			oos.flush();
+		}
+		catch(ProtocolException e){
+			Logger.error( getClass().getName(), "", e );
+			return;
+		}
+		catch(IOException e){
+			Logger.error( getClass().getName(), "Exception caught when writing data to a socket: ", e );
+			return;
+		}
 			
+		try
+		{
 			switch(type)
 			{
 				case AGENT:
@@ -376,13 +413,12 @@ private class ConnectionHandler extends Thread {
 					receiveIsAlive();
 					break;
 				default:
-					throw
-					new ProtocolException("Bad header");
+					throw new ProtocolException("Bad header, type not recognized");
 			}
 		}
 		catch( Exception e )
 		{
-			Logger.error( getClass().getName(), "1", e );
+			Logger.error( getClass().getName(), "Exception caught when receiving an agent or message: ", e );
 		}
 
 		try
@@ -395,9 +431,9 @@ private class ConnectionHandler extends Thread {
 			if( ais != null ) ais.close();
 			if( socket != null ) socket.close();
 		}
-		catch( Exception e )
+		catch( IOException e )
 		{
-			Logger.error( getClass().getName(), "2", e );
+			Logger.error( getClass().getName(), "Exception caught when closing the socket: ", e );
 		}
 	}
 }	
@@ -434,22 +470,22 @@ private class ListenThread extends Thread {
 		} 
 		while( shouldLive )
 		{
-		try
-		{
-			socket = serverSocket.accept();
-			new ConnectionHandler( socket ).start();
-			yield();
-		}
-		catch( InterruptedIOException e ) {
-		// This happens regularly when the socket times out
-		// The outer loop checks, if the server should continue
-		// accepting connections
-		}
-		catch( IOException e )
-		{
-			Logger.error( getClass().getName(), null, e );
-			// but we continue listening
-		}
+			try
+			{
+				socket = serverSocket.accept();
+				new ConnectionHandler( socket ).start();
+				yield();
+			}
+			catch( InterruptedIOException e ) {
+			// This happens regularly when the socket times out
+			// The outer loop checks, if the server should continue
+			// accepting connections
+			}
+			catch( IOException e )
+			{
+				Logger.error( getClass().getName(), null, e );
+				// but we continue listening
+			}
 		}
 		
 		try { serverSocket.close(); } 
@@ -564,9 +600,10 @@ private class SendMessageThread extends Thread implements IRequest {
 		}
 
 		try { if( c != null ) c.close(); }
-		catch( Throwable e )
+		catch( IOException e )
 		{
-			Logger.error( getClass().getName(), "Exception when closing a connection for " + m, e );
+			Logger.error( getClass().getName(), "Exception when closing a connection to " + 
+					m.getRecipient() + ": ", e );
 			thr = e;
 			status = ERROR;
 		}
@@ -687,7 +724,9 @@ private class SendAgentThread extends Thread implements IRequest {
 		try {
 			c = new Connection( to, group, AGENT );
 			
-			/**/
+			/* This code makes this class not compatible with previous versions,
+			 * because it changes the protocol. It is needed to make sure that
+			 * messages are delivered to the right agent or discarded with an error. */
 			c.oos.writeObject(to.name);
 			c.oos.flush();
 			reply = c.ois.readByte();
@@ -1222,15 +1261,15 @@ public final void run() {
 		if( isOnline() )
 		{
 			clm.cleanup( JAR_TIMEOUT );
-			try { Thread.currentThread().sleep( REFRESHRATE ); }
+			try { Thread.sleep( REFRESHRATE ); }
 			catch( InterruptedException e ) {}
 		}
 		else
 		{
-			try { Thread.currentThread().sleep(1000); }
+			try { Thread.sleep(1000); }
 			catch( InterruptedException e ) {}
 		}
-		Thread.currentThread().yield();
+		Thread.yield();
 	}
 }
 
