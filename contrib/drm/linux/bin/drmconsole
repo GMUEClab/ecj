@@ -1,7 +1,0 @@
-#!/bin/bash
-#
-# Starts up the console in the sandbox model.
-#
-
-drmstarter dream.gui.Console "$@"
-
