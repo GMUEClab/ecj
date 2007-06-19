@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>DRM Experiment Launching</title>
+<META NAME="author" CONTENT="Mark Jelasity">
+</head>
+<body   bgcolor="#ffffcc" text="#000000" >
+<center><h1>Starting Experiments</h1></center>
+
+<h2>Introduction</h2>
+
+Starting experiments has a number of technical requirements that are
+detailed in this note.
+These requirements have to do with security and efficiency.
+In this document we describe how to start an experiment in a typical case.
+Typical case means that
+it is run on multiple nodes (the code of the experiment will
+migrate from one node to another), the nodes involved use
+a security manager and it contains user-written classes.
+
+<h2>What classes to write?</h2>
+
+The experiment has to contain at least two classes: an agent and
+a launcher class.
+It may contain any additional classes and resources.
+
+<p>A launcher is by definition any class that has a constructor
+which accepts exactly one parameter of type <code>drm.core.Node</code>
+and implements the interface <code>java.lang.Runnable</code>.
+When a node launches an experiment it in fact runs this class after
+constructing it with itself as a parameter.
+A launcher will normally launch agents using the interface provided by
+the node.
+
+<p>
+An agent is by definition any class that implements the
+<code>drm.agentbase.IAgent</code> interface.
+Normally it will extend a class from package <code>drm.agents</code>
+or any other class from a library
+that implements <code>drm.agentbase.IAgent</code>.
+An agent must be present even if it its empty ie if it does nothing else but
+calls the constructor of its superclass.
+
+<h2>Where to put stuff?</h2>
+
+Packaging the experiment has no restrictions.
+In principle, even if more experiments use the same package (or even
+class!) names, conflicts are not possible.
+However, it is
+a good practice to package the experiment into a uniquely named package.
+
+<p>There are more restrictions however on the physical location
+of the experiment at launching time:
+<ul>
+<li>
+The first restriction is that none of the classes that
+are not part of the standard DRM distribution are allowed to be in the
+classpath of the application which runs the node.
+To avoid violating this restriction, always start the node with a classpath
+which contains nothing else than the classes of the node, when developing
+experiments.
+This restriction will normally not be violated by average users, only
+by people who work on developing the DRM itself, and tend to have their
+experiments nearby...
+</li><li>
+The second restriction is that the classes have to be either in
+<em>one</em> jar file, or under <em>one</em> directory.
+</li>
+</ul>
+<p>
+The mobility of experiments started from a jar and from a directory are
+different.
+<ul>
+<li>
+Experiments started from a jar are completely mobile, ie agents
+of that experiment can move to any other node without restriction.
+</li><li>
+Experiments started from a directory behave differently. Agents from
+such experiments can move to another node only if on the filesystem
+of the computer that runs that node there is a directory with exactly
+the same name and content than the one used for starting.
+The possibility of starting from a directory is there to allow quick
+development and debugging only, and normally used only if all the
+nodes use the very same filesystem (ie if they were started on the same
+computer by the same user).
+</li>
+</ul>
+
+<h2>The name of the experiment</h2>
+
+Users should keep in mind that the resources associated with the experiment
+are identified by the experiment name (or job name, which means the same).
+The job name is the name returned by <code>IAgent.getJob()</code>.
+Launching agents with different job names within the same job (experiment)
+is technically possible but in fact it is equivalent to starting
+many experiments.
+This results in an unnecessary multiplication of the resources (the jar file)
+used by the experiment.
+<p>
+For the above reason only one experiment name should be used within the
+experiment, and this name should also be unique to avoid conflicts with
+other users' experiments.
+For example, names like "test", "experiment", "myexp" etc should be avoided.
+Appending a random number and username is a possible solution.
+
+<h2>Launching</h2>
+
+To launch an experiment on a DRM one has to have access to a node
+which is part of that DRM.
+There are two applications that can be used to run a node.
+The first is called <code>drm.server.NakedNode</code> and the second is
+<code>drm.server.TestGUINode</code>.
+When running these application they have to be properly configured
+to connect to the target DRM we want to launch to.
+
+<p>The actual launching can be scheduled in the configuration settings, or
+it can be done interactively (only in the case of
+<code>drm.server.TestGUINode</code>).
+In the first case the property "runClass" can be used (see
+<a href="config.html">configuration guide</a> and
+<a href="config.txt">configurable properties</a>), in the second case
+the message dialog "File/run script" can be used.
+The value to be typed (or configured) has to identify the launcher class
+of the experiment (see above) and has the same syntax in both cases:
+<pre>
+filename[!packagename.classname]
+</pre>
+"filename" specifies the location of the experiment.
+It can be a jar file or a directory as described above.
+The classname of the launcher class can be optionally given.
+it has to be a full classname with full package specification.
+If the classname is not given then "Launch" is used (default package).
+
+Note that in the case of launching using the configuration possibilities
+(for <code>NakedNode</code> this is the only way) launching happens only
+after a delay to make sure that the node is connected to the DRM already.
+</body>
+</html>
+

@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# Starts a Naked node with the sandbox security model, i.e. every
+# applications (experiments) have only sandbox rights. The
+# parameters are passed on to the node.
+# 
+# This script is called by the system startup utilities, and it is
+# not safe to run it by hand as it can be stopped by system utilities.
+# To set up your own node to experiment with use "drmnode" instead.
+#
+
+drmstarter drm.server.NakedNode "$@"
+

@@ -1,0 +1,15 @@
+grant codeBase "file:${drm.home}/lib/-" {
+   permission java.security.AllPermission;
+};
+
+grant codeBase "file:${drm.home}/optlib/-" {
+   permission java.security.AllPermission;
+};
+
+grant codeBase "file:${app.home}/-" {
+   permission java.security.AllPermission;
+};
+
+grant {
+   permission java.io.FilePermission "${app.home}/-", "read, write";
+};

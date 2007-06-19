@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>DRM Configuration</title>
+<META NAME="author" CONTENT="Mark Jelasity">
+</head>
+<body   bgcolor="#ffffcc" text="#000000" >
+<center><h1>Configuration</h1></center>
+
+This document describes the configuration possibilities of the
+DRM nodes <code>drm.server.NakedNode</code> and 
+<code>drm.test.TestGUINode</code>.
+There are three ways of configuring the nodes: using a configuration
+file, from command line, or through setting system properties.
+
+<h2>Configuration files</h2>
+
+When using a configuration file the name of the file has to be given as
+a command line parameter.  For example:
+<pre>
+java drm.server.NakedNode /home/garfield/drm/config
+</pre>
+The content of the configuration file should conform to the format
+specified by the java class <code>java.util.Properties</code>.
+The known properties and their description can be found in the
+following <a href="config.txt">default configuration file</a>.
+
+<h2>Command line</h2>
+
+Command line configuration can be used with or without a configuration file.
+Each command line argument is interpreted as a line of a configuration file.
+The command line parameters override the configuration file.
+
+<p>The first argument is interpreted as a configuration file name first.
+If a file with that name could be loaded then it is loaded and the rest of
+the arguments are interpreted as additional lines from a configuration file.
+If the file could not be loaded then all arguments (including the first one)
+are interpreted as configuration file lines. For example:
+<pre>
+java drm.server.NakedNode config "port=11111" "runClass=myexp.jar!Launch"
+</pre>
+would load the given config file, override the port number and run the given
+application after startup.
+<pre>
+java drm.test.TestGUINode "port=11111"
+</pre>
+simply uses the default values and the port number is set to the given value.
+We get into trouble if there is a file called "port=11111" but it is not very
+likely...
+
+<h2>System properties</h2>
+
+Besides configuration files systems properties can also be set when
+starting up the node. At the moment only one system property
+is understood:
+<dl>
+<dt><code>java.io.tmpdir</code></dt> <dd>This property gives the directory
+which will be used by the node to store temporary files,
+classes of arriving agents, etc. This directory must
+be writable by the node.
+Note that it is a standard system property so change it only if you
+really know what you are doing.</dd>
+</ul>
+<p>
+You can set any property in the java command line using the <code>-D</code>
+option if no default value
+is provided by the local environment or the default is not appropriate:
+<pre>
+java -Djava.io.tmpdir="/home/garfield/.drm" drm.server.NakedNode
+</pre>
+
+
+</body>
+</html>
+
+

@@ -1,0 +1,456 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>DRM Protocol version 1</title>
+<META NAME="author" CONTENT="Mark Jelasity">
+</head>
+<body   bgcolor="#ffffcc" text="#000000" >
+<center><h1>DRM Protocol version 1</h1></center>
+
+<h2>Introduction</h2>
+
+This document describes only the lowest layer of the architecture.
+This means of course that compatibility at this level does not mean
+compatibility at higher levels, if the semantics of the data that is
+transmitted changes.
+The semantics is described in the API documentation of the java classes
+that are mentioned here.
+The API and this low level protocol have therefore a different versioning.
+
+<p>The protocol is based on java object serialization streams using the
+serialization stream format of JDK<sup><font size="-2">TM</font></sup> 1.2.
+This document does not define the object serialization protocol. 
+The reader should refer to
+<a href="http://java.sun.com/j2se/1.3/docs/guide/serialization/index.html">
+<code>http://java.sun.com/j2se/1.3/docs/guide/serialization/index.html.</code></a>
+Accordingly, in the description of the protocol java types will be used
+as primitives.
+These types should be written and read using the above mentioned java
+serialization streams through a socket connection.
+The objects in the stream must not be null except when it is
+explicitly allowed.
+
+<p>A session always starts with an initiation when the protocol versions
+understood by the peers and the group names are exchanged and the type of
+the session is identified by the initiator.
+This is followed by the actual data exchange.
+In the following the initiation will be described followed by the detailed
+description of the different types of sessions.
+
+<p>The following table contains definitions of terms used throughout
+the document.
+
+<p><table border=1>
+	<tr>
+		<th>Client</th>
+		<td>
+			The initiator of the communication. Only
+			temporary role, the same application can be server
+			too.
+		</td>
+	</tr>
+	<tr>
+		<th>Server</th>
+		<td>
+			The passive party that accepts communication
+			requests. Only
+			temporary role, the same application can be client
+			too.
+		</td>
+	</tr>
+</table>
+
+<p>This document contains strictly technical information, further
+documentation of the classes mentioned here can be found elsewhere.
+All constants are given in unsigned decimal format.
+
+<h2>Initiation</h2>
+
+The connection starts with establishing a socket connection between the
+peers (initiated by the client).
+This means that an IP address and a port identifies a peer.
+The default port we use is 10101, but any other port is allowed.
+Typically if this number is not available the sequential
+ports can be tried, e.g. 10102, 10103, etc.
+The following table shows the communication steps.
+
+<p><table border=1>
+	<tr>
+		<th>Client</th>
+		<td><code>int VERSION</code></td>
+		<td><code>String GROUP</code></td>
+		<td><code>byte TYPE</code></td>
+		<td>-</td>
+	</tr>
+	<tr>
+		<th>Server</th>
+		<td>-</td>
+		<td>-</td>
+		<td>-</td>
+		<td><code>int ANSWER</code></td>
+	</tr>
+</table>
+
+<p>For this version the <code>VERSION</code> value is 1.
+If <code>ANSWER</code> equals <code>GROUP_MISMATCH(=-1)</code> then
+the peer is from a different group and the communication will be closed.
+Otherwise <code>ANSWER</code> equals the protocol version spoken by the peer.
+The following table gives the values of the known session types:
+
+<p><table border=1>
+	<tr>
+		<th><code>TYPE</code></th>
+		<th>meaning</th>
+	</tr>
+	<tr>
+		<td><code>0</code></td>
+		<td><code>MESSAGE (message sending)</code></td>
+	</tr>
+	<tr>
+		<td><code>1</code></td>
+		<td><code>AGENT (agent sending)</code></td>
+	</tr>
+	<tr>
+		<td><code>123</code></td>
+		<td><code>ISALIVE (are you alive?)</code></td>
+	</tr>
+</table>
+
+<h2>ISALIVE</h2>
+
+Let's start with the simplest session, the ISALIVE request.
+
+<p><table border=1>
+	<tr>
+		<th>Client</th>
+		<td><code>-</code></td>
+	</tr>
+	<tr>
+		<th>Server</th>
+		<td><code>java.lang.String BASE-NAME</code></td>
+	</tr>
+</table>
+
+<p>In words: the server simply replies by sending a String object.
+This string contains the name of the server.
+
+<h2>MESSAGE</h2>
+
+When the message has no reply, the communication looks like this:
+<p><table border=1>
+	<tr>
+		<th>Client</th>
+		<th>Server</th>
+	</tr>
+	<tr>
+		<td><code>String RECIPIENT</code></td>
+		<td><code>-</code></td>
+	</tr>
+	<tr>
+		<td><code>-</code></td>
+		<td><code>byte STATUS_1</code></td>
+	</tr>
+	<tr>
+		<td><code>drm.agentbase.Message MESSAGE</code></td>
+		<td><code>-</code></td>
+	</tr>
+	<tr>
+		<td><code>-</code></td>
+		<td><code>byte STATUS_2</code></td>
+	</tr>
+</table>
+
+<p>When the message has a reply, it looks like this:
+
+<p><table border=1>
+	<tr>
+		<th>Client</th>
+		<th>Server</th>
+	</tr>
+	<tr>
+		<td><code>String RECIPIENT</code></td>
+		<td><code>-</code></td>
+	</tr>
+	<tr>
+		<td><code>-</code></td>
+		<td><code>byte STATUS_1</code></td>
+	</tr>
+	<tr>
+		<td><code>drm.agentbase.Message MESSAGE</code></td>
+		<td><code>-</code></td>
+	</tr>
+	<tr>
+		<td><code>-</code></td>
+		<td><code>byte STATUS_2=0</code></td>
+	</tr>
+	<tr>
+		<td><code>-</code></td>
+		<td><code>Object REPLY</code></td>
+	</tr>
+</table>
+
+<p>The interpretation of the status info is the following:
+
+<p><table border=1>
+	<tr>
+		<th><code>STATUS_1</code></th>
+		<th>meaning</th>
+	</tr>
+	<tr>
+		<td><code>101</code></td>
+		<td><code>OK:</code> The recipient is here, send message.</td>
+	</tr>
+	<tr>
+		<td><code>102</code></td>
+		<td><code>NOT_OK:</code> The recipient is not here, don't
+			send message. The connection is 
+			interrupted by the server.</td>
+	</tr>
+</table>
+
+<p><table border=1>
+	<tr>
+		<th><code>STATUS_2</code></th>
+		<th>meaning</th>
+	</tr>
+	<tr>
+		<td><code>101</code></td>
+		<td><code>OK:</code> The message was delivered to the
+			recipient successfully, and the recipient does not
+			send a reply.</td>
+	</tr>
+	<tr>
+		<td><code>102</code></td>
+		<td><code>NOT_OK:</code> There was a problem
+			with delivering or handling the message.</td>
+	</tr>
+	<tr>
+		<td><code>0</code></td>
+		<td><code>REPLY:</code> The message was handled and a
+			reply is on the way.</td>
+	</tr>
+</table>
+
+
+<p><code>drm.agentbase.Message</code> is a class with serial version uid
+<pre>
+static final long serialVersionUID = 49323201182294530L;
+</pre>
+Its serialized fields are
+<pre>
+drm.agentbase.Address sender;
+drm.agentbase.Address recipient;
+java.lang.String type;
+byte[] contbin;
+</pre>
+The serial version of drm.agentbase.Address is
+<pre>
+static final long serialVersionUID = 2145788465305611890L;
+</pre>
+Its serialized fields are
+<pre>
+java.net.InetAddress host
+int port
+java.lang.String name
+</pre>
+It is also part of the low level protocol that the <code>host</code> field of
+the <code>sender</code> address in the message must be set to the client
+side IP of the socket after deserialization.
+The reason for this is that the sender entity is
+not required to know its own IP address.
+For this reason the sender IP must be determined on the recipient side.
+
+<h2>AGENT</h2>
+
+The agent has its own class type that must implement
+<code>drm.agentbase.IAgent</code> and it may need several other
+classes to run.
+For the API of <code>drm.agentbase.IAgent</code> please refer to version 2
+of the DRM (see <a href="http://sourceforge.net/projects/dr-ea-m/">
+http://sourceforge.net/projects/dr-ea-m/</a>).
+The agent also belongs to a job that has a name.
+When loading the agent the server checks if it has the class files
+for running the agent using the job name. Thus the job name identifies
+the resources used by the agent.
+
+<p>Here we can have two scenarios.
+In the first case the class files needed to run the agent
+are already at the node.
+In the second case they are not.
+The first table shows the communication in the first case.
+
+<p><table border=1>
+	<tr>
+		<th>Client</th>
+		<th>Server</th>
+	</tr>
+	<tr>
+		<td><code>java.lang.String JOBNAME</code></td>
+		<td><code>-</code></td>
+	</tr>
+	<tr>
+		<td><code>-</code></td>
+		<td><code>byte STATUS=101</code></td>
+	</tr>
+	<tr>
+		<td><code>drm.agentbase.IAgent AGENT</code></td>
+		<td><code>-</code></td>
+	</tr>
+	<tr>
+		<td><code>drm.agentbase.Address SENDER_BASE</code></td>
+		<td><code>-</code></td>
+	</tr>
+	<tr>
+		<td><code>-</code></td>
+		<td><code>byte STATUS</code></td>
+	</tr>
+</table>
+
+<p><code>JOBNAME</code> is the name of the job the agent is a part of.
+It can be used by the server to check if the resources for the agent
+are accessible locally.
+This is why it is important that every job must have a unique
+name (at least with a high probability) that is suitable to identify
+the presence of specific optional classes.
+
+<p><code>AGENT</code> can be of any type but it must implement the
+<code>drm.agentbase.IAgent</code> interface from DRM.
+The agentbase will communicate with the agent trough this interface.
+
+<p>Just like in the case of MESSAGE the
+IP address in the <code>addr</code> field
+of <code>SENDER-BASE</code> must be set to the client side IP of the socket by
+the server.
+
+<p>The second table shows the communication if the class files of the
+agent are not at the server.
+
+<p><table border=1>
+	<tr>
+		<th>Client</th>
+		<th>Server</th>
+	</tr>
+	<tr>
+		<td><code>java.lang.String JOBNAME</code></td>
+		<td><code>-</code></td>
+	</tr>
+	<tr>
+		<td><code>-</code></td>
+		<td><code>byte STATUS=100</code></td>
+	</tr>
+	<tr>
+		<td><code>int SIZE</code></td>
+		<td><code>-</code></td>
+	</tr>
+	<tr>
+		<td><code>DATA</code></td>
+		<td><code>-</code></td>
+	</tr>
+	<tr>
+		<td><code>-</code></td>
+		<td><code>byte ACK</code></td>
+	</tr>
+	<tr>
+		<td><code>drm.agentbase.IAgent AGENT</code></td>
+		<td><code>-</code></td>
+	</tr>
+	<tr>
+		<td><code>drm.agentbase.Address SENDER_BASE</code></td>
+		<td><code>-</code></td>
+	</tr>
+	<tr>
+		<td><code>-</code></td>
+		<td><code>byte STATUS</code></td>
+	</tr>
+</table>
+
+<p>Everything is the same only here we also have an uploading phase
+inserted.
+If <code>SIZE</code> is positive than <code>DATA</code>
+contains a jar file of
+<code>SIZE</code> bytes. These bytes are simply written to the stream
+sequentially.
+If <code>SIZE</code> is negative then <code>DATA</code> is an object of
+type <code>java.util.File</code> describing an absolute directory name.
+The resources of the job must be in that directory on the server.
+
+<p><code>ACK</code> can have any value. It indicates that the jar file has been
+read.
+
+<p>The interpretation of the closing status report of the server is the
+following:
+
+<p><table border=1>
+	<tr>
+		<th><code>STATUS</code></th>
+		<th>meaning</th>
+	</tr>
+	<tr>
+		<td><code>101</code></td>
+		<td><code>OK. The agent was successfully installed.</code></td>
+	</tr>
+	<tr>
+		<td><code>102</code></td>
+		<td><code>NOT_OK. There was a problem with installing the
+			agent.</code></td>
+	</tr>
+</table>
+
+
+
+<h2>Evolvability</h2>
+
+Finally some notes on the evolvability of the protocol.
+Even though the possibility of extension of the protocol is not strictly
+part of the protocol definition (it is mostly an implementation issue),
+we would like to give some ideas.
+
+<p>The most problems come from the fact that we are dealing with mobile
+code (agents).
+There are two sides of this question: the DRM-agent and the agent-DRM
+interface. In other words the agent should be able to talk to the system
+and the way round.
+And the versions of the agent and the DRM may not match.
+(see <code>drm.agentbase.IAgent.version()</code>
+and <code>Base.RELEASE_VERSION</code> in the DRM release).
+
+<p>The system talks to the agent through the
+<code>drm.agentbase.IAgent</code> interface.
+If methods are deleted from it then the old system version
+will not be able to call these
+methods, and if methods are added then the new system version will miss them
+when talking to an old agent.
+(Changing a method signature is equivalent to an addition and a removal.)
+Removing methods is unlikely and also unnecessary (since they can be 
+given an empty implementation).
+The case when we add methods can be solved by wrapping the lower version
+agent into an object that propagates the old
+method calls to the agent and gives default implementations to the new
+ones. When sending such an agent on of course only the original wrapped
+object should be sent.
+
+<p>The agent can use any publicly accessible part of the DRM.
+The problems come when an agent of a newer version goes to a base
+which implements an old DRM version.
+The agent will miss the methods that are present only in its version. 
+There is no real solution to this beside the clear documentation of new
+methods and avoiding deleting old ones just like it is done in the
+standard java packages. 
+Indicating that a field or method is present only from a given version
+will allow the developer of the agent to decide whether the agent should
+remain compatible.
+Another possibility is reflection, i.e. the agent can first check if
+a given method is implemented before calling it.
+
+<p>Of course the compatibility of the system classes w.r.t. serialization
+can also be maintained without great difficulties: if we only add new
+fields to the classes they remain compatible: this is guaranteed by the
+serialization stream specification.
+
+<p>Changes in the protocol can also be handled by later versions as
+the protocol itself is versioned too (see the initiation section).
+
+</body>
+</html>
+
+

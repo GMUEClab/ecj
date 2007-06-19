@@ -1,0 +1,72 @@
+##########################################################################
+# This file gives all the known properties together with their default
+# values and description. You can use this as a template to create your
+# configuration file.
+##########################################################################
+
+#
+# The verbosity level. If 0, nothing is printed. If larger than 9,
+# every available information is printed.
+# For levels 1,2,3 and 4 panic, error, warning and debug messages are
+# also included. For level 5 or larger the stack trace of every exception is
+# also printed.
+# Default is 10.
+#
+verbosity = 10
+
+#
+# If spy is true then the node does not publish information
+# about itself so the rest of the network will not know
+# about it. It receives information however, so such a server
+# is useful for "spying" the network.
+#
+spy = false
+
+#
+# Nodes form groups. Communication is possible only inside a group.
+# If not given, then "default" is used.
+#
+group = default
+
+#
+# The port the node listens to.
+# If not given, 10101 is the default. If the port is not available the
+# node might try a couple of succeeding port numbers, so
+# using exactly this port is not guaranteed.
+#
+port = 10101
+
+#
+# This gives an address of another node from the network. If the given
+# node is online it will be added to the list of known nodes.
+#
+#node = localhost:10102
+
+#
+# It is possible to give more addresses, use the property names below.
+#
+#node.1 = ...
+#node.2 = ...
+#...
+
+#
+# This gives the specification of a class that launches experiments (jobs).
+# It must be in the form   filename[!full-classname]
+# The filename can be a jar file or a directory. If the classname is not
+# given than "Launch" is tried from the default package.
+#
+# It is possible that the class is run only after some delay after startup.
+# This is to make sure that the node is already connected.
+#
+# For example: 
+#
+#runClass = /home/garfield/my.jar!mypackage.Launch
+
+#
+# It is possible to give many classes to run, use the following property
+# names. These are run sequentially in this order.
+#
+#runClass.1 = ...
+#runClass.2 = ...
+#...
+
