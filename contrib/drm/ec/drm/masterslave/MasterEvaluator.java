@@ -19,19 +19,19 @@ import drm.agentbase.*;
 public class MasterEvaluator extends SimpleEvaluator{
 	private static final long serialVersionUID = 1L;
 	
-	private ArrayList mailbox = new ArrayList();
-	private ArrayList ready_slaves = new ArrayList();
+	private List mailbox = Collections.synchronizedList(new ArrayList());
+	private List ready_slaves = Collections.synchronizedList(new ArrayList());
 	
 	public int chunk_size;
 	
 	public static final String P_CHUNK_SIZE = "chunk-size";
 	
 	public void receiveEvaluatorData(EvaluatorData evData){
-		synchronized(mailbox){mailbox.add(evData);}
+		mailbox.add(evData);
 	}
 	
 	public void receiveReadySlave(Address slave){
-		synchronized(ready_slaves){ready_slaves.add(slave);}
+		ready_slaves.add(slave);
 	}
 	
     public void setup(final EvolutionState state, final Parameter base){
@@ -58,12 +58,12 @@ public class MasterEvaluator extends SimpleEvaluator{
     	boolean[] returned_chunks = new boolean[number_of_chunks];
     	Arrays.fill(returned_chunks, false);
     	
-    	mailbox.clear();
+    	//mailbox.clear(); // Not really needed, datachuncks from previous generations will be discarded later
     	
     	while(number_of_remaining_chunks > 0){
     		if(mailbox.size() > 0){
     			long t0 = System.currentTimeMillis();
-    			synchronized(mailbox){evData = (EvaluatorData)mailbox.remove(0);}
+    			evData = (EvaluatorData)mailbox.remove(0);
     			
     			if(returned_chunks[evData.id]) continue;
     			if(evData.generation != state.generation) continue;
@@ -78,7 +78,7 @@ public class MasterEvaluator extends SimpleEvaluator{
     		
     		if(ready_slaves.size() > 0) {
     			if(!returned_chunks[current_chunk]){
-    				synchronized(ready_slaves){target = (Address)ready_slaves.remove(0);}
+    				target = (Address)ready_slaves.remove(0);
     				Individual[] newinds = new Individual[Math.min(chunk_size,inds.length - current_chunk*chunk_size)];
     				for(int i=0; i < newinds.length; i++)
     					newinds[i] = inds[current_chunk*chunk_size+i];
@@ -86,11 +86,11 @@ public class MasterEvaluator extends SimpleEvaluator{
     				
     	    		long t0 = System.currentTimeMillis();
     	    		IRequest request = agent.fireMessage(target,MasterAgent.M_EVALUATE, evData);
-    				while(request.getStatus() == IRequest.WAITING)
+    				/*while(request.getStatus() == IRequest.WAITING)
     					try{Thread.sleep(1000);}
     					catch(InterruptedException e){}
     				if(request.getStatus() != IRequest.DONE)
-    					ready_slaves.add(target); // If the message fails we will simply try again later
+    					ready_slaves.add(target);*/ // If the message fails we will simply try again later
     				
     				agent.output.message(evData.individuals.length + " individuals exported to " + target.name);
     				agent.output.message("Sending time: " + (System.currentTimeMillis()-t0)/1000.0 + " s");

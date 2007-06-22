@@ -20,14 +20,14 @@ public class IslandAgent extends EvolutionAgent{
 	private static final long serialVersionUID = 1L;
 
 	/** The root island will store here the addresses to the islands it has created */
-	protected HashSet islands = new HashSet();
+	protected Set islands = Collections.synchronizedSet(new HashSet());
 	
 	/** Handles incoming messages. */
 	public boolean handleMessage( Message m, Object object ) { // I reversed here the handling order
 		if( m.getType().equals(M_FINISHED) ){
 			output.message(m.getSender().name + " finished.");
 			if(iamroot)
-				synchronized(islands){islands.remove(m.getSender());} // I'm using a hashtable, that means that I don't need to synchronize?
+				islands.remove(m.getSender());
 			return true;
 		}else if( m.getType().equals(M_IDEAL_FOUND) ){
 			output.message(m.getSender().name + " found an ideal individual.");
@@ -43,11 +43,13 @@ public class IslandAgent extends EvolutionAgent{
     	output.message("Telling everybody that an ideal individual has been found.");
     	
     	Address target = null;
-    	Iterator peers = islands.iterator();
-    	while(peers.hasNext())
-    		target = (Address)peers.next();
-    		if(!target.equals(null) && !target.equals(except))
-    			fireMessage(target,M_IDEAL_FOUND,null);
+    	synchronized(islands){
+	    	Iterator peers = islands.iterator();
+	    	while(peers.hasNext())
+	    		target = (Address)peers.next();
+	    		if(!target.equals(null) && !target.equals(except))
+	    			fireMessage(target,M_IDEAL_FOUND,null);
+    	}
 	}
 	
     /** Convenience method */
@@ -59,9 +61,11 @@ public class IslandAgent extends EvolutionAgent{
 	/** Waits until we have received a "finished" message from each sent agent. */
 	protected void waitForIslands(){
 		output.message("Waiting for islands:");
-    	Iterator keys = islands.iterator();
-    	while(keys.hasNext()) output.message(((Address)keys.next()).name);
-		while(islands.size() > 0) wait(5);
+    	synchronized(islands){
+	    	Iterator keys = islands.iterator();
+	    	while(keys.hasNext()) output.message(((Address)keys.next()).name);
+			while(islands.size() > 0) wait(5);
+    	}
 	}
 	
 
@@ -104,9 +108,7 @@ public class IslandAgent extends EvolutionAgent{
 		    	output.error("There was an error sending the agent: " + request.getThrowable());
 		    else{
 		    	output.message("Agent " + island.getName() + " sent to " + target.name);
-		    	synchronized(islands){
-		    		islands.add(new Address(target.getHost(), target.port, island.getName()));
-		    	}
+		    	islands.add(new Address(target.getHost(), target.port, island.getName()));
 		    }
 		}
 	}

@@ -19,7 +19,7 @@ public class MasterAgent extends EvolutionAgent{
 	private static final long serialVersionUID = 1L;
 	
     /** Address of the slave agent. */
-	protected ArrayList slaves = new ArrayList();
+	protected List slaves = Collections.synchronizedList(new ArrayList());
     
     public ParameterDatabase slaveParameters;
     
@@ -70,9 +70,7 @@ public class MasterAgent extends EvolutionAgent{
 		    	output.warning("There was an error sending the agent: " + request.getThrowable());
 		    else{
 		    	output.message("Slave " + slave.getName() + " sent to " + target.name);
-		    	synchronized(slaves){
-		    		slaves.add(new Address(target.getHost(), target.port, slave.getName()));
-		    	}
+		    	slaves.add(new Address(target.getHost(), target.port, slave.getName()));
 		    }
 		}
 	}

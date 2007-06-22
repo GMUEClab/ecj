@@ -43,14 +43,20 @@ public class SlaveAgent extends EvolutionAgent{
     	
     	fireMessage(root,MasterAgent.M_READY_SLAVE, null);
     	EvaluatorData evData;
+    	boolean warned = false;
     	
     	while(shouldLive){ // suicide() sets this to false
     		if(mailbox.size() == 0){
-    			output.message("Waiting for individuals to evaluate...");
+    			fireMessage(root,MasterAgent.M_READY_SLAVE, null);
+    			if(!warned){
+    				output.message("Waiting for individuals to evaluate...");
+    				warned = true;
+    			}
     			try{Thread.sleep(1000);}
     			catch(Exception e){output.error("Exception: " + e.getMessage());}
     			continue;
     		}
+    		warned = false;
     		
     		//long t0 = System.currentTimeMillis();
     		synchronized(mailbox){evData = (EvaluatorData)mailbox.remove(0);}
@@ -64,15 +70,15 @@ public class SlaveAgent extends EvolutionAgent{
     		//t0 = System.currentTimeMillis();
     		output.message("Sending EvaluatorData to " + evData.sender.name);
     		synchronized(evData){
-    			IRequest request = fireMessage(evData.sender,MasterAgent.M_EVALUATE, evData);
-	    		while(request.getStatus() == IRequest.WAITING)
+    			/*IRequest request = */fireMessage(evData.sender,MasterAgent.M_EVALUATE, evData);
+	    		/*while(request.getStatus() == IRequest.WAITING)
 					try{Thread.sleep(1000);}
-					catch(InterruptedException e){}
+					catch(InterruptedException e){}*/
     		}
     		//output.message("Return time: " + (System.currentTimeMillis()-t0)/1000.0 + " s");
     		
-    		if(mailbox.size() == 0)
-    			fireMessage(evData.sender,MasterAgent.M_READY_SLAVE, null);
+    		//if(mailbox.size() == 0)
+    			//fireMessage(evData.sender,MasterAgent.M_READY_SLAVE, null);
     	}
     	output.message("All tasks finished.");
     	suicide();
