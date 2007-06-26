@@ -85,7 +85,7 @@ public class MasterEvaluator extends SimpleEvaluator{
     	    		evData = new EvaluatorData(current_chunk,state.generation,null,0,newinds,false);
     				
     	    		long t0 = System.currentTimeMillis();
-    	    		IRequest request = agent.fireMessage(target,MasterAgent.M_EVALUATE, evData);
+    	    		/*IRequest request = */agent.fireMessage(target,MasterAgent.M_EVALUATE, evData);
     				/*while(request.getStatus() == IRequest.WAITING)
     					try{Thread.sleep(1000);}
     					catch(InterruptedException e){}
