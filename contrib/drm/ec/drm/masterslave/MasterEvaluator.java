@@ -97,9 +97,10 @@ public class MasterEvaluator extends SimpleEvaluator{
     			}
 				current_chunk = (current_chunk + 1) % number_of_chunks;
     		}else{
-    			try{Thread.sleep(1000);}
-    			catch(Exception e){}
-    			continue;
+    			//try{Thread.sleep(1000);}
+    			//catch(Exception e){}
+    			//continue;
+    			Thread.yield();
     		}
     	}
 	}

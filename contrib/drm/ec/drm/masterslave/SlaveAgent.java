@@ -19,7 +19,7 @@ public class SlaveAgent extends EvolutionAgent{
 	/** Serialization identificator */
 	private static final long serialVersionUID = 1L;
 	
-	private ArrayList mailbox = new ArrayList();
+	private List mailbox = Collections.synchronizedList(new ArrayList());
 	
 	/** Handles incoming messages. */
 	public boolean handleMessage( Message m, Object o ) {
@@ -27,7 +27,7 @@ public class SlaveAgent extends EvolutionAgent{
 			if( m.getType().equals(MasterAgent.M_EVALUATE) ){
 				output.message("EvaluatorData received from " + m.getSender().name);
 				((EvaluatorData)o).sender = m.getSender();
-				synchronized(mailbox){mailbox.add(o);}
+				mailbox.add(o);
 			}else if( m.getType().equals(MasterAgent.M_END_EXPERIMENT) ){
 				output.message("End experiment message received from " + m.getSender().name);
 				shouldLive = false;
@@ -46,7 +46,7 @@ public class SlaveAgent extends EvolutionAgent{
     	boolean warned = false;
     	
     	while(shouldLive){ // suicide() sets this to false
-    		if(mailbox.size() == 0){
+    		while(mailbox.size() == 0){
     			fireMessage(root,MasterAgent.M_READY_SLAVE, null);
     			if(!warned){
     				output.message("Waiting for individuals to evaluate...");
@@ -54,31 +54,17 @@ public class SlaveAgent extends EvolutionAgent{
     			}
     			try{Thread.sleep(1000);}
     			catch(Exception e){output.error("Exception: " + e.getMessage());}
-    			continue;
     		}
     		warned = false;
-    		
-    		//long t0 = System.currentTimeMillis();
-    		synchronized(mailbox){evData = (EvaluatorData)mailbox.remove(0);}
+
+    		evData = (EvaluatorData)mailbox.remove(0);
     		output.message(evData.individuals.length + " individuals imported for generation " + evData.generation);
     		if(evData.evaluated) continue; // It should warn
     		population.subpops[0].individuals = (Individual[])evData.individuals;
     		evaluator.evaluatePopulation(this);
-    		evData.evaluated = true;
-    		//output.message("Evaluation time: " + (System.currentTimeMillis()-t0)/1000.0 + " s");
-    		
-    		//t0 = System.currentTimeMillis();
+
     		output.message("Sending EvaluatorData to " + evData.sender.name);
-    		synchronized(evData){
-    			/*IRequest request = */fireMessage(evData.sender,MasterAgent.M_EVALUATE, evData);
-	    		/*while(request.getStatus() == IRequest.WAITING)
-					try{Thread.sleep(1000);}
-					catch(InterruptedException e){}*/
-    		}
-    		//output.message("Return time: " + (System.currentTimeMillis()-t0)/1000.0 + " s");
-    		
-    		//if(mailbox.size() == 0)
-    			//fireMessage(evData.sender,MasterAgent.M_READY_SLAVE, null);
+    		fireMessage(evData.sender,MasterAgent.M_EVALUATE, evData); // I think that there is no need to synchronize evData
     	}
     	output.message("All tasks finished.");
     	suicide();

@@ -43,7 +43,7 @@ public class IslandAgent extends EvolutionAgent{
     	output.message("Telling everybody that an ideal individual has been found.");
     	
     	Address target = null;
-    	synchronized(islands){
+    	synchronized(islands){ // This should be better synchronized
 	    	Iterator peers = islands.iterator();
 	    	while(peers.hasNext())
 	    		target = (Address)peers.next();
@@ -52,20 +52,14 @@ public class IslandAgent extends EvolutionAgent{
     	}
 	}
 	
-    /** Convenience method */
-	private void wait(int s){
-		try{Thread.sleep(s*1000);}
-    	catch(Exception e){output.error("Exception: " + e);}
-	}
-	
 	/** Waits until we have received a "finished" message from each sent agent. */
 	protected void waitForIslands(){
 		output.message("Waiting for islands:");
     	synchronized(islands){
 	    	Iterator keys = islands.iterator();
 	    	while(keys.hasNext()) output.message(((Address)keys.next()).name);
-			while(islands.size() > 0) wait(5);
     	}
+	    while(islands.size() > 0) Thread.yield();
 	}
 	
 
@@ -101,8 +95,7 @@ public class IslandAgent extends EvolutionAgent{
 			// Launch the agent to the target host
 		    IRequest request = base.launch("DIRECT", island, target);
 		    while(request.getStatus() == IRequest.WAITING)
-		    	try{Thread.sleep(1000);}
-		    	catch(Exception e){}
+		    	Thread.yield();
 		    	
 		    if(request.getStatus() != IRequest.DONE)
 		    	output.error("There was an error sending the agent: " + request.getThrowable());

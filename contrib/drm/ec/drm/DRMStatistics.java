@@ -191,8 +191,9 @@ public class DRMStatistics extends Statistics
         	for (int i=0; i<5;i++){ // Try to send final data 5 times
 	    		IRequest request = agent.fireMessage(agent.getRootAddress(),EvolutionAgent.M_STATS,data);
 	    		while(request.getStatus() == IRequest.WAITING){
-	    			try{Thread.sleep(1000);}
-	    			catch(Exception e){state.output.error("Exception: " + e);}
+	    			Thread.yield();
+	    			//try{Thread.sleep(1000);}
+	    			//catch(Exception e){state.output.error("Exception: " + e);}
 	    		}
 	    		if(request.getStatus() == IRequest.DONE){break;}
 	    		else{

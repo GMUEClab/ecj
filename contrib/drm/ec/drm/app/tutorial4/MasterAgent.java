@@ -38,8 +38,9 @@ public class MasterAgent extends EvolutionAgent{
 		// Launch the agent to the target host
 		IRequest request = base.launch("DIRECT", tmpslave, target);
 		while(request.getStatus() == IRequest.WAITING)
-		    try{Thread.sleep(1000);}
-		    catch(Exception e){}
+		    Thread.yield();
+			//try{Thread.sleep(1000);}
+		    //catch(Exception e){}
 		    	
 		if(request.getStatus() != IRequest.DONE)
 		    output.error("There was an error sending the slave: " + request.getThrowable());

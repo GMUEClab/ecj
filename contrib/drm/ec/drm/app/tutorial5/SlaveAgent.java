@@ -10,7 +10,7 @@ public class SlaveAgent extends EvolutionAgent{
 	/** Serialization identificator */
 	private static final long serialVersionUID = 1L;
 	
-	private ArrayList mailbox = new ArrayList();
+	private List mailbox = Collections.synchronizedList(new ArrayList());
 	
 	/** Handles incoming messages. */
 	public boolean handleMessage( Message m, Object o ) {
@@ -18,7 +18,7 @@ public class SlaveAgent extends EvolutionAgent{
 			if( m.getType().equals(MasterAgent.M_EVALUATE) ){
 				output.message("EvaluatorData received from " + m.getSender().name);
 				((EvaluatorData)o).sender = m.getSender();
-				synchronized(mailbox){mailbox.add(o);}
+				mailbox.add(o);
 			}else if( m.getType().equals(MasterAgent.M_END_EXPERIMENT) ){
 				output.message("End experiment message received from " + m.getSender().name);
 				shouldLive = false;
@@ -35,13 +35,14 @@ public class SlaveAgent extends EvolutionAgent{
     	EvaluatorData evData;
     	
     	while(shouldLive){
-    		if(mailbox.size() == 0){
+    		while(mailbox.size() == 0){
+    			Thread.yield();
     			//output.message("Waiting for individuals to evaluate...");
-    			try{Thread.sleep(1000);}
-    			catch(Exception e){}
-    			continue;
+    			//try{Thread.sleep(1000);}
+    			//catch(Exception e){}
+    			//continue;
     		}
-    		synchronized(mailbox){evData = (EvaluatorData)mailbox.remove(0);}
+    		evData = (EvaluatorData)mailbox.remove(0);
     		if(evData.evaluated) continue; // It should warn
     		population.subpops[0].individuals = (Individual[])evData.individuals;
     		evaluator.evaluatePopulation(this);
