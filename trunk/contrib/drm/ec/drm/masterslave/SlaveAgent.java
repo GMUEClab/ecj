@@ -6,7 +6,6 @@
 
 package ec.drm.masterslave;
 
-import drm.agentbase.IRequest;
 import drm.agentbase.Message;
 import ec.drm.*;
 import ec.*;
