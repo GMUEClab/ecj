@@ -65,8 +65,9 @@ public class Launch extends DRMLauncher{
 		System.out.println("Launching master agent " + masterAgent.getName());
 		IRequest request = node.launch("DIRECT", masterAgent, null);
     	while(request.getStatus() == IRequest.WAITING)
-    		try{Thread.sleep(1000);}
-    		catch(Exception e){}
+    		Thread.yield();
+    		//try{Thread.sleep(1000);}
+    		//catch(Exception e){}
     	if(request.getStatus() != IRequest.DONE)
     		System.err.println("There was an error launching the agent: " + request.getThrowable());
 		

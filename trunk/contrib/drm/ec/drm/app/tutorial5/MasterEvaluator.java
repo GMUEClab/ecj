@@ -51,8 +51,9 @@ public class MasterEvaluator extends SimpleEvaluator{
 		
 		while(mailbox.size() < agent.slaves.size()){
 			//state.output.message("Waiting for evaluated individuals to return...");
-			try{Thread.sleep(1000);}
-			catch(Exception e){}
+			Thread.yield();
+			//try{Thread.sleep(1000);}
+			//catch(Exception e){}
 		}
 		for(int i = 0; i < mailbox.size(); i++){
 			evData = (EvaluatorData)mailbox.get(i);
