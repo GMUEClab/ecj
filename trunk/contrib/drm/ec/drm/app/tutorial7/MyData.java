@@ -62,9 +62,9 @@ public class MyData extends ProblemData
         	}
     	}
     	catch(FileNotFoundException e){
-    		Output.initialError("Data file " + file_in + " not found");}
+    		Output.initialError("Data file " + file_out + " not found");}
     	catch(IOException e){
-    		Output.initialError("IOException when reading " + file_in + ": " + e);}
+    		Output.initialError("IOException when reading " + file_out + ": " + e);}
 
     	data_out = new double[tmp_data_out.size()];
     	for(int i=0; i<tmp_data_out.size(); i++){
