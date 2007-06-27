@@ -6,6 +6,7 @@
 
 package ec.drm.masterslave;
 
+import drm.agentbase.IRequest;
 import drm.agentbase.Message;
 import ec.drm.*;
 import ec.*;
@@ -46,13 +47,15 @@ public class SlaveAgent extends EvolutionAgent{
     	
     	while(shouldLive){ // suicide() sets this to false
     		while(mailbox.size() == 0){
-    			fireMessage(root,MasterAgent.M_READY_SLAVE, null);
-    			if(!warned){
-    				output.message("Waiting for individuals to evaluate...");
-    				warned = true;
+    			while(!warned){ // This loop makes sure that a M_READY_SLAVE message arrives to the master
+    				IRequest request = fireMessage(root,MasterAgent.M_READY_SLAVE, null);
+    				while(request.getStatus() == IRequest.WAITING) Thread.yield();
+					if(request.getStatus() == IRequest.DONE){
+						warned = true;
+						output.message("Waiting for individuals to evaluate...");
+					}
     			}
-    			try{Thread.sleep(1000);}
-    			catch(Exception e){output.error("Exception: " + e.getMessage());}
+    			Thread.yield();
     		}
     		warned = false;
 
