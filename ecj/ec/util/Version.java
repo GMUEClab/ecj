@@ -29,7 +29,7 @@ public class Version
     public static final String version = "17";
     public static final String copyright = "2007";
     public static final String author = "Sean Luke";
-    public static final String contributors = "L. Panait, G. Balan, S. Paus, Z. Skolicki, R. Kicinger,";
+    public static final String contributors = "L. Panait, G. Balan, S. Paus, Z. Skolicki, R. Kicinger, E. Popovici,";
     public static final String contributors2 = "J. Harrison, J. Bassett, R. Hubley, A. Desai, and A. Chircop";
     public static final String authorEmail0 = "ecj-help";
     public static final String authorEmail1 = "cs.gmu.edu";

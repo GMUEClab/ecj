@@ -21,7 +21,7 @@
 <h3>Other Representations</h3>
 <p><b>Sets and Multisets (Bags)</b> The <a href="../../docs/classdocs/ec/rule/package-summary.html">ec.rule</a> package has facilities for making individuals which consist of one or more multisets (bags) each.  The notional idea is that individuals contain some fixed number of <i>rulesets</i>, each of which contains an arbitrary number of <i>rules</i>.  A rule is left undefined.  The notion of "rule" came from our original use for the package, which was to do Pitt-approach ruleset systems. This package comes with some simple breeding operators, though you'll probably want to make your own more specialized versions.  The package is also a good jumping-off point for building bags with constraints, such as sets or abitrarily-sized graph structures (neural nets, FSAs, etc.).  You'll need to build the constraints into the initialization and breeding operators.
 
-<p><b>Strings</b> The representations in the <a href="../../docs/classdocs/ec/vector/package-summary.html">ec.vector</a> package all have built-in methods (cut, join, etc.) for modifying arbitrary-length vectors (strings).  However the package doesn't presently come with breeding operators which call these methods to manipulate arbitrary-length vectors; you'll need to make breeding operators appropriate for your problem.
+<p><b>Strings (Lists)</b> The representations in the <a href="../../docs/classdocs/ec/vector/package-summary.html">ec.vector</a> package all have built-in methods (cut, join, etc.) for modifying arbitrary-length vectors (strings).  However the package doesn't presently come with breeding operators which call these methods to manipulate arbitrary-length vectors; you'll need to make breeding operators appropriate for your problem.
 
 <p><b>Arbitrary Representations</b> It's fairly easy to make arbitrary representations with ECJ.  Just subclass <a href="../../docs/classdocs/ec/Individual.html">Individual</a> and add in your own representation.  You may need to make your own <a hreff="../../docs/classdocs/ec/BreedingPipeline.html">BreedingPipeline</a>s which know how to cross over or mutate your representation.
 
@@ -78,6 +78,10 @@ Maybe soon we'll have a tutorial for this.  ECJ now has a GUI!  You can use it t
 <h3>Steady State Evolution</h3>
 
 <p>ECJ supports steady-state evolution in the <a href="../../docs/classdocs/ec/steadystate/package-summary.html">ec.steadystate</a> package.  This package contains special breeders, evaluators, and evolution states.  Because steady state evolution isn't generational, there are certain things which are incompatable with it, or at least inappropriate for it.  For example, Island Models are not compatible with it.  And fitness proportionate selection and other statistics-based selection methods are inappropriate to use with steady state evolution because they need to be constantly updated every time a new individual is created.  Last, steady state evolution cannot run multithreaded.
+
+<h3>Differential Evolution and Particle Swarm Optimization</h3>
+
+<p>ECJ has packages for <a href="../../docs/classdocs/ec/de/package-summary.html">differential evolution (DE)</a> and for <a href="../../docs/classdocs/ec/pso/package-summary.html">particle swarm optimization (PSO)</a>.  The differential evolution package implements several 'common' DE breeding mechanisms (standard, Best1Bin, Rand1EitherOr, Rand1Exp, etc.) via Breeders.  The PSO package has its own Breeder and Subpopulation, as PSO requires much more information stored about individuals than ordinary population-based methods.
 
 <h3>Parsimony Pressure</h3>
 
