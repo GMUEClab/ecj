@@ -1214,3 +1214,10 @@ Version		Change Log
 		<epopovici@gmu.edu>
 	tutorial2 and tutorial3 missing fitness parameter declarations.
 		Thanks to Rick van Krevelen <krevelen@cs.vu.nl>
+	documentation fix (a </ul>) to Prototype which should keep the
+		class documentation of all prototypes from getting incorrectly
+		indented.
+	Added Elena Popovici to the author's list
+	Tweaked the post-tutorial discussion
+	Updated Mersenne Twister to include SerialVersionUIDs to quiet
+		compiler warnings in JDK 1.6
