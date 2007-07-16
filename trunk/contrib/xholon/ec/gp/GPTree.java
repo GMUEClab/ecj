@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -19,9 +19,10 @@ See the file "LICENSE" for more information
  */
 
 package ec.gp;
+import ec.*;
 import ec.util.*;
-import ec.EvolutionState;
 import java.io.*;
+
 import org.primordion.xholon.base.Activity;
 import org.primordion.xholon.base.IXholon;
 import org.primordion.xholon.base.XholonClass;
@@ -32,7 +33,7 @@ import org.primordion.xholon.base.XholonClass;
  * Created: Fri Aug 27 17:14:02 1999
  * By: Sean Luke
  * 
- * Edited by: Ken Webb
+ *  * Edited by: Ken Webb
  * May 29, 2006
  * - GPTree extends Activity, implements IXholon
  * - in setup(), added call to setXhc()
@@ -42,7 +43,7 @@ import org.primordion.xholon.base.XholonClass;
  *   - writeXml()
  * April 17, 2007
  * - modified to comply with deprecation of ITreeNode; uses IXholon instead
- * - still works with ECJ 15
+ * - modified to work with ECJ 16
  */
 
 /**
@@ -78,19 +79,23 @@ import org.primordion.xholon.base.XholonClass;
 
 
 
- * <p>GPTrees can print themselves for humans in one of three ways.  First, a GPTree can print
- * the tree as a Koza-style Lisp s-expression, which is the default.  
- * Second, a GPTree can print itself in pseudo-Lisp format; specifically,
- * functions with one child are printed out as a(b), functions with more than
- * two children are printed out as a(b,c,d,...), and functions with exactly two
- * children are supposed to be operators and so are printed out as (b a c) --
- * for example, (b * c).
- * Third, a GPTree can print the tree as a LaTeX2e code snippet, which can be inserted
+ * <p>GPTrees can print themselves for humans in one of three ways:
+ * <ol><li>A GPTree can print the tree as a Koza-style Lisp s-expression, which is the default.  
+ * <li> A GPTree can print itself in pseudo-C format:
+ *     <ol><li>Terminals can be printed either as variables "a" or as zero-argument functions "a()"
+ *     <li>One-argument nonterminals are printed as functions "a(b)"
+ *     <li>Two-argument nonterminals can be printed either as operators "b a c" or as functions "a(b, c)"
+ *     <li>Nonterminals with more arguments are printed as functions "a(b, c, d, ...)"
+ * </ol>
+ * <li>A GPTree can print the tree as a LaTeX2e code snippet, which can be inserted
  * into a LaTeX2e file and will result in a picture of the tree!  Cool, no?
+ * </ol>
  *
- * <p>You turn the C-printing feature on with the <b>c</b> parameter below.
+ * <p>You turn the C-printing feature on with the <b>c</b> parameter, plus certain
+ * optional parameters (<b>c-operators</b>, <b>c-variables</b>) as described below.
  * You turn the latex-printing <b>latex</b> parameter below.  The C-printing parameter
  * takes precedence.
+ * <p>
  * Here's how the latex system works.  To insert the code, you'll need to include the
  * <tt>epic</tt>,<tt>ecltree</tt>, and probably the <tt>fancybox</tt> packages,
  * in that order.  You'll also need to define the command <tt>\gpbox</tt>, which
@@ -154,6 +159,12 @@ import org.primordion.xholon.base.XholonClass;
  <tr><td valign=top><i>base</i>.<tt>c</tt><br>
  <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</td>
  <td valign=top>(print for humans using c?  Takes precedence over latex)</td></tr>
+ <tr><td valign=top><i>base</i>.<tt>c-operators</tt><br>
+ <font size=-1>bool = <tt>true</tt> (default) or <tt>false</tt></td>
+ <td valign=top>(when printing using c, print two-argument functions operators "b a c"?  The alternative is functions "a(b, c)."</td></tr>
+ <tr><td valign=top><i>base</i>.<tt>c-variables</tt><br>
+ <font size=-1>bool = <tt>true</tt> (default) or <tt>false</tt></td>
+ <td valign=top>(when printing using c, print zero-argument functions as variables "a"?  The alternative is functions "a()".)</td></tr>
  </table>
 
  <p><b>Default Base</b><br>
@@ -163,12 +174,14 @@ import org.primordion.xholon.base.XholonClass;
  * @version 1.0 
  */
 
-public class GPTree extends Activity implements GPNodeParent, IXholon // ECJ 15
+public class GPTree extends Activity implements GPNodeParent, Prototype, IXholon // ECJ 16
     {
     public static final String P_TREE = "tree";
     public static final String P_TREECONSTRAINTS = "tc";
     public static final String P_USELATEX = "latex";
-	public static final String P_USEC = "c";
+    public static final String P_USEC = "c";
+    public static final String P_USEOPS = "c-operators";
+    public static final String P_USEVARS = "c-variables";
     public static final int NO_TREENUM = -1;
 
     /** the root GPNode in the GPTree */
@@ -187,6 +200,14 @@ public class GPTree extends Activity implements GPNodeParent, IXholon // ECJ 15
 
     /** Use c to print for humans?  Takes precedence over latex. */
     public boolean useC;
+
+    /** When using c to print for humans, do we print terminals as variables? 
+        (as opposed to zero-argument functions)? */
+    public boolean printTerminalsAsVariablesInC;
+
+    /** When using c to print for humans, do we print two-argument nonterminals in operator form "a op b"? 
+        (as opposed to functions "op(a, b)")? */
+    public boolean printTwoArgumentNonterminalsAsOperatorsInC;
 
     public final GPTreeConstraints constraints( final GPInitializer initializer ) 
         { return initializer.treeConstraints[constraints]; }
@@ -212,22 +233,25 @@ public class GPTree extends Activity implements GPNodeParent, IXholon // ECJ 15
         }
 
     /** Like clone() but doesn't copy the tree. */
-	public GPTree lightClone()
-    {
-    try 
-		{ 
-		return (GPTree)(super.clone());  // note that the root child reference is copied, not cloned
-		}
-    catch (CloneNotSupportedException e) { throw new InternalError(); } // never happens
-    }
+    public GPTree lightClone()
+        {
+        try 
+            { 
+            return (GPTree)(super.clone());  // note that the root child reference is copied, not cloned
+            }
+        catch (CloneNotSupportedException e) { throw new InternalError(); } // never happens
+        }
 
+    /** Deep-clones the tree.  Note that you should not deep-clone trees attached to the
+        prototypical GPIndividual: they are blank trees with no root, and this method
+        will generate a NullPointerException as a result. */
     public Object clone()
         {
         GPTree newtree = lightClone();
-		newtree.child = (GPNode)(child.cloneReplacing());  // force a deep copy
-		newtree.child.parent = newtree;
-		newtree.child.argposition = 0;
-		return newtree;
+        newtree.child = (GPNode)(child.cloneReplacing());  // force a deep copy
+        newtree.child.parent = newtree;
+        newtree.child.argposition = 0;
+        return newtree;
         }
     
     /** An expensive function which determines my tree number -- only
@@ -259,6 +283,12 @@ public class GPTree extends Activity implements GPNodeParent, IXholon // ECJ 15
 
         // print for humans using C?
         useC = state.parameters.getBoolean(base.push(P_USEC),def.push(P_USEC),false);
+
+        // in C, treat terminals as variables?  By default, yes.
+        printTerminalsAsVariablesInC = state.parameters.getBoolean(base.push(P_USEVARS),def.push(P_USEVARS),true);
+
+        // in C, treat two-child functions as operators?  By default, yes.
+        printTwoArgumentNonterminalsAsOperatorsInC = state.parameters.getBoolean(base.push(P_USEOPS),def.push(P_USEOPS),true);
 
         // determine my constraints -- at this point, the constraints should have been loaded.
         String s = state.parameters.getString(base.push(P_TREECONSTRAINTS),
@@ -344,7 +374,8 @@ public class GPTree extends Activity implements GPNodeParent, IXholon // ECJ 15
     public void printTreeForHumans(final EvolutionState state, final int log,
                                    final int verbosity)
         {
-        if (useC) state.output.print(child.makeCTree(true),verbosity,log);
+        if (useC) state.output.print(child.makeCTree(true, 
+                                                     printTerminalsAsVariablesInC, printTwoArgumentNonterminalsAsOperatorsInC),verbosity,log);
         else if (useLatex) state.output.print(child.makeLatexTree(),verbosity,log);
         else child.printRootedTreeForHumans(state,log,verbosity,0,0);
         // printRootedTreeForHumans doesn't print a '\n', so I need to do so here

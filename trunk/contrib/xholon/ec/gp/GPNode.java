@@ -1,7 +1,7 @@
 /*
-Copyright 2006 by Sean Luke
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
+  Copyright 2006 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
 */
 
 
@@ -33,7 +33,8 @@ import ec.EvolutionState;
  *   - writeXml()
  * April 17, 2007
  * - modified to comply with deprecation of ITreeNode; uses IXholon instead
- * - still works with ECJ 15
+ * - modified to work with ECJ 16
+ * - 
  */
 
 /**
@@ -42,7 +43,7 @@ import ec.EvolutionState;
  * for cloning subtrees in special ways, counting the number of nodes
  * in subtrees in special ways, and finding specific nodes in subtrees.
  *
- * GPNode's protoClone() method does not clone its children (it copies the
+ * GPNode's lightClone() method does not clone its children (it copies the
  * array, but that's it).  If you want to deep-clone a tree or subtree, you
  * should use one of the cloneReplacing(...) methods instead.
  *
@@ -101,7 +102,7 @@ import ec.EvolutionState;
  * @version 1.0 
  */
 
-public abstract class GPNode extends Activity implements GPNodeParent, IXholon // ECJ 15
+public abstract class GPNode extends Activity implements GPNodeParent, Prototype, IXholon // ECJ 16
     {
     public static final String P_NODE = "node";
     public static final String P_NODECONSTRAINTS = "nc";
@@ -365,14 +366,6 @@ public abstract class GPNode extends Activity implements GPNodeParent, IXholon /
         while(cparent!=null && cparent instanceof GPNode)
             cparent = ((GPNode)(cparent)).parent;
         return cparent; 
-
-
-        /* // -- old code
-           if (parent==null) return null;
-           if (!(parent instanceof GPNode))  // found the root!
-           return parent;
-           return ((GPNode)parent).rootParent();
-        */
         }
 
     /** Returns true if the subtree rooted at this node contains subnode.  O(n). */
@@ -398,19 +391,37 @@ public abstract class GPNode extends Activity implements GPNodeParent, IXholon /
     public String errorInfo() { return "GPNode " + toString() + " in the function set for tree " + ((GPTree)(rootParent())).treeNumber(); }
 
 
+    public GPNode lightClone()
+        { 
+        try
+            {
+            GPNode obj = (GPNode)(super.clone());
+            obj.children = new GPNode[children.length];
+            return obj;
+            }
+        catch (CloneNotSupportedException e)
+            { throw new InternalError(); } // never happens
+        }
+
+    /** Deep-clones the tree rooted at this node, and returns the entire
+        copied tree.  The result has everything set except for the root
+        node's parent and argposition.*/    
+ 
     public Object clone()
         { 
-    	try
-    	{
-        GPNode obj = (GPNode)(super.clone());
-        obj.children = new GPNode[children.length];
-        return obj;
+        throw new InternalError(
+            "GPNode.clone() is moving from light clone to deep clone status.  To make certain that this doesn't create unforseen bugs in your code, "+
+            "we have added this error to the GPNode.clone() code.  If you need to do a light clone, call GPNode.lightClone().  If you need to do a full deep clone, " +
+            "call GPNode.cloneReplacing().  We'll remove this error message in a while when we think all usage of clone() has gone away for the moment, and it will " +
+            "operate identically to cloneReplacing().\n\nIf you see this message but didn't do anything to cause it, please contact ecj-help@cs.gmu.edu and send us " +
+            "the backtrace -- we probably forgot to change over a clone() call ourselves.  Thanks!");
+        
+        
+        // eventually, we'll do this:
+        /*
+          return cloneReplacing();
+        */
         }
-    	catch (CloneNotSupportedException e)
-    	{ throw new InternalError(); } // never happens
-        }
-
-
 
     /** Deep-clones the tree rooted at this node, and returns the entire
         copied tree.  The result has everything set except for the root
@@ -418,7 +429,7 @@ public abstract class GPNode extends Activity implements GPNodeParent, IXholon /
  
     public final GPNode cloneReplacing() 
         {
-        GPNode newnode = (GPNode)(clone());
+        GPNode newnode = (GPNode)(lightClone());
         for(int x=0;x<children.length;x++)
             {
             newnode.children[x] = (GPNode)(children[x].cloneReplacing()); 
@@ -444,7 +455,7 @@ public abstract class GPNode extends Activity implements GPNodeParent, IXholon /
             return newSubtree.cloneReplacing();
         else
             {
-            GPNode newnode = (GPNode)(clone());
+            GPNode newnode = (GPNode)(lightClone());
             for(int x=0;x<children.length;x++)
                 {
                 newnode.children[x] = (GPNode)(children[x].cloneReplacing(newSubtree,oldSubtree)); 
@@ -474,7 +485,7 @@ public abstract class GPNode extends Activity implements GPNodeParent, IXholon /
             }
         else
             {
-            GPNode newnode = (GPNode)(clone());
+            GPNode newnode = (GPNode)(lightClone());
             for(int x=0;x<children.length;x++)
                 {
                 newnode.children[x] = (GPNode)(children[x].cloneReplacingNoSubclone(newSubtree,oldSubtree)); 
@@ -510,7 +521,7 @@ public abstract class GPNode extends Activity implements GPNodeParent, IXholon /
             return newSubtrees[candidate].cloneReplacing(newSubtrees,oldSubtrees);
         else
             {
-            GPNode newnode = (GPNode)(clone());
+            GPNode newnode = (GPNode)(lightClone());
             for(int x=0;x<children.length;x++)
                 {
                 newnode.children[x] = (GPNode)(children[x].cloneReplacing(newSubtrees,oldSubtrees)); 
@@ -546,7 +557,7 @@ public abstract class GPNode extends Activity implements GPNodeParent, IXholon /
         else
             {
             numArgs = children.length;
-            curnode = (GPNode)clone();
+            curnode = (GPNode)lightClone();
             }
 
         // populate
@@ -597,7 +608,7 @@ public abstract class GPNode extends Activity implements GPNodeParent, IXholon /
         else
             {
             numArgs = children.length;
-            curnode = (GPNode)clone();
+            curnode = (GPNode)lightClone();
             }
 
         // populate
@@ -644,7 +655,7 @@ public abstract class GPNode extends Activity implements GPNodeParent, IXholon /
         }
     
     /** Returns true if I and the provided node are the same kind of
-        node -- that is, we could have both been protoCloned() and reset() from
+        node -- that is, we could have both been cloned() and reset() from
         the same prototype node.  The default form of this function returns
         true if I and the node have the same class, the same length children
         array, and the same constraints.  You may wish to override this in
@@ -721,7 +732,7 @@ public abstract class GPNode extends Activity implements GPNodeParent, IXholon /
                                   final int log, 
                                   final int verbosity)
         {
-        String n = toStringForHumans(); // + getId();
+        String n = toStringForHumans();
         state.output.print(n,verbosity,log);
         return n.length();
         }
@@ -802,31 +813,35 @@ public abstract class GPNode extends Activity implements GPNodeParent, IXholon /
         s = s + "\\end{bundle}";
         return s;
         }
-	
-	/** Producess a String consisting of the tree in pseudo-C form, given that the parent already will wrap the
-		expression in parentheses (or not).  In pseudo-C form, functions with one child are printed out as a(b), 
-		functions with more than two children are printed out as a(b,c,d,...), and functions with exactly two
-		children are supposed to be operators and so are printed out as (b a c) -- for example, (b * c). */
-		
-	public String makeCTree(boolean parentMadeParens)
-		{
-		if (children.length==0)
-			return toString();
-		else if (children.length==1)
-			return toString() + "(" + children[0].makeCTree(true) + ")";
-		else if (children.length==2)
-			return (parentMadeParens ? "" : "(") + 
-				children[0].makeCTree(false) + " " + 
-				toString() + " " + children[1].makeCTree(false) + 
-				(parentMadeParens ? "" : ")");
-		else
-			{
-			String s = toString() + "(" + children[0].makeCTree(true);
-			for(int x = 1; x < children.length;x++)
-				s = s + ", " + children[x].makeCTree(true);
-			return s + ")";
-			}
-		}
+        
+    /** Producess a String consisting of the tree in pseudo-C form, given that the parent already will wrap the
+        expression in parentheses (or not).  In pseudo-C form, functions with one child are printed out as a(b), 
+        functions with more than two children are printed out as a(b, c, d, ...), and functions with exactly two
+        children are either printed as a(b, c) or in operator form as (b a c) -- for example, (b * c).  Whether
+        or not to do this depends on the setting of <tt>useOperatorForm</tt>.  Additionally, terminals will be
+        printed out either in variable form -- a -- or in zero-argument function form -- a() -- depending on
+        the setting of <tt>printTerminalsAsVariables</tt>.
+    */
+                
+    public String makeCTree(boolean parentMadeParens, boolean printTerminalsAsVariables, boolean useOperatorForm)
+        {
+        if (children.length==0)
+            return (printTerminalsAsVariables ? toString() : toString() + "()");
+        else if (children.length==1)
+            return toString() + "(" + children[0].makeCTree(true, printTerminalsAsVariables, useOperatorForm) + ")";
+        else if (children.length==2 && useOperatorForm)
+            return (parentMadeParens ? "" : "(") + 
+                children[0].makeCTree(false, printTerminalsAsVariables, useOperatorForm) + " " + 
+                toString() + " " + children[1].makeCTree(false, printTerminalsAsVariables, useOperatorForm) + 
+                (parentMadeParens ? "" : ")");
+        else
+            {
+            String s = toString() + "(" + children[0].makeCTree(true, printTerminalsAsVariables, useOperatorForm);
+            for(int x = 1; x < children.length;x++)
+                s = s + ", " + children[x].makeCTree(true, printTerminalsAsVariables, useOperatorForm);
+            return s + ")";
+            }
+        }
 
     /** Prints out the tree on a single line, with no ending \n, in a fashion that can
         be read in later by computer. O(n).  
@@ -931,7 +946,7 @@ public abstract class GPNode extends Activity implements GPNodeParent, IXholon /
 
         // we're happy!
         dret.pos += len2;
-        return (GPNode)clone();
+        return (GPNode)lightClone();
         }
 
 
@@ -942,13 +957,13 @@ public abstract class GPNode extends Activity implements GPNodeParent, IXholon /
         boolean isTerminal = (children.length == 0);
 
         // identify the node
-        GPFuncInfo[] gpfi = isTerminal ? 
+        GPNode[] gpfi = isTerminal ? 
             set.terminals[expectedType.type] : 
             set.nonterminals[expectedType.type];
         
         int index=0;
         for( /*int index=0 */; index <gpfi.length;index++)
-            if ((gpfi[index].node.nodeEquivalentTo(this))) break;
+            if ((gpfi[index].nodeEquivalentTo(this))) break;
         
         if (index==gpfi.length)  // uh oh
             state.output.fatal("No node in the function set can be found that is equivalent to the node " + this +     
@@ -973,11 +988,11 @@ public abstract class GPNode extends Activity implements GPNodeParent, IXholon /
         int index = dataInput.readInt();    // index in function set
         
         boolean isTerminal = (len == 0);
-        GPFuncInfo[] gpfi = isTerminal ? 
+        GPNode[] gpfi = isTerminal ? 
             set.terminals[expectedType.type] : 
             set.nonterminals[expectedType.type];
 
-        GPNode node = ((GPNode)(gpfi[index].node.clone()));
+        GPNode node = ((GPNode)(gpfi[index].lightClone()));
         
         if (node.children == null || node.children.length != len)
             state.output.fatal("Mismatch in number of children (" + len + 
@@ -996,17 +1011,17 @@ public abstract class GPNode extends Activity implements GPNodeParent, IXholon /
         }
 
     /** Override this to write any additional node-specific information to dataOutput besides: the number of arguments, 
-	the specific node class, the children, and the parent.  The default version of this method does nothing. */
+        the specific node class, the children, and the parent.  The default version of this method does nothing. */
     public void writeNode(final EvolutionState state, final DataOutput dataOutput) throws IOException
         {
-		// do nothing
+        // do nothing
         }
         
     /** Override this to read any additional node-specific information from dataInput besides: the number of arguments,
-	the specific node class, the children, and the parent.  The default version of this method does nothing. */
+        the specific node class, the children, and the parent.  The default version of this method does nothing. */
     public void readNode(final EvolutionState state, final DataInput dataInput) throws IOException
         {
-		// do nothing
+        // do nothing
         }
 
     /** Reads the node and its children from the form printed out by printRootedTree. */
@@ -1064,13 +1079,13 @@ public abstract class GPNode extends Activity implements GPNodeParent, IXholon /
         
         
         // find that node!
-        GPFuncInfo[] gpfi = isTerminal ? 
+        GPNode[] gpfi = isTerminal ? 
             set.terminals[expectedType.type] : 
             set.nonterminals[expectedType.type];
         
         GPNode node = null;
         for(int x=0;x<gpfi.length;x++)
-            if ((node = gpfi[x].node.readNode(dret)) != null) break;
+            if ((node = gpfi[x].readNode(dret)) != null) break;
         
         // did I find one?
         
