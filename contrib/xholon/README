@@ -1,11 +1,15 @@
 Xholon contrib for ECJ
 =============
-Xholon is a general purpose modeling and simulation tool written in Java. ECJ is a research evolutionary computation (EC) system written in Java.
+Xholon (http://www.primordion.com/Xholon/) is a general purpose modeling and simulation tool written in Java. ECJ (http://cs.gmu.edu/~eclab/projects/ecj/) is a research evolutionary computation (EC) system written in Java.
 
 Users of Xholon can make use of the ECJ software to do genetic programming. This involves integrating portions of ECJ into Xholon. This document describes how to do this, from the perspective of a user of Xholon.
 
 Several ECJ Java source files have been modified to enable ECJ to be integrated with Xholon. These files have been added to the ECJ CVS repository, under contrib/xholon.
 
+If you are a user of Xholon, then you will have all the parts of ECJ that you need when you download Xholon at:
+https://sourceforge.net/projects/xholon/
+
+If you are a user of ECJ, then the contrib/xholon files may be of interest as an example of one way to integrate ECJ into your own existing separate project.
 
 Ealontro
 --------
