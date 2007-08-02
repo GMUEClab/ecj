@@ -1,15 +1,22 @@
 Xholon contrib for ECJ
 =============
-Xholon (http://www.primordion.com/Xholon/) is a general purpose modeling and simulation tool written in Java. ECJ (http://cs.gmu.edu/~eclab/projects/ecj/) is a research evolutionary computation (EC) system written in Java.
+Xholon (http://www.primordion.com/Xholon/) is a general purpose modeling and simulation
+tool written in Java. ECJ (http://cs.gmu.edu/~eclab/projects/ecj/) is a research
+evolutionary computation (EC) system written in Java.
 
-Users of Xholon can make use of the ECJ software to do genetic programming. This involves integrating portions of ECJ into Xholon. This document describes how to do this, from the perspective of a user of Xholon.
+Users of Xholon can make use of the ECJ software to do genetic programming. This involves
+integrating portions of ECJ into Xholon. This document describes how to do this, 
+from the perspective of a user of Xholon.
 
-Several ECJ Java source files have been modified to enable ECJ to be integrated with Xholon. These files have been added to the ECJ CVS repository, under contrib/xholon.
+Several ECJ Java source files have been modified to enable ECJ to be integrated with Xholon.
+These files have been added to the ECJ CVS repository, under contrib/xholon.
 
-If you are a user of Xholon, then you will have all the parts of ECJ that you need when you download Xholon at:
+If you are a user of Xholon, then you will have all the parts of ECJ that you need when
+you download Xholon at:
 https://sourceforge.net/projects/xholon/
 
-If you are a user of ECJ, then the contrib/xholon files may be of interest as an example of one way to integrate ECJ into your own existing separate project.
+If you are a user of ECJ, then the contrib/xholon files may be of interest as an example
+of one way to integrate ECJ into your own existing separate project.
 
 Ealontro
 --------
@@ -25,7 +32,8 @@ Xholon and Ealontro are licensed under the terms of the GNU Lesser General Publi
 Ealontro - How to run Xholon with ECJ
 -------------------------------------
 
-To run some of the applications in the ealontro packages (org.primordion.ealontro.*), you can use the subset of ECJ functionality included in either of the two jar files in Xholon/lib:
+To run some of the applications in the ealontro packages (org.primordion.ealontro.*), you
+can use the subset of ECJ functionality included in either of the two jar files in Xholon/lib:
 ecj15_xholon.jar
 ecj16_xholon.jar
 If you use this approach, then no special setup is required. By default, Xholon uses ECJ 16.
@@ -33,7 +41,9 @@ If you use this approach, then no special setup is required. By default, Xholon 
 Alternatively, you can download ECJ version 15 or 16 from:
 http://cs.gmu.edu/~eclab/projects/ecj/
 Install it on your computer, and include it in your classpath when running Xholon.
-You will need to make several modifications to the standard ECJ Java files. Copy the following files from the org.primordion.ealontro.gp folder to the indicated "copy to ECJ folder" below. These will replace existing files. Several small but essential changes have been made to each class.
+You will need to make several modifications to the standard ECJ Java files. Copy the following
+files from the org.primordion.ealontro.gp folder to the indicated "copy to ECJ folder" below.
+These will replace existing files. Several small but essential changes have been made to each class.
 File Name            Copy to ECJ folder
 -------------------- ------------------
 GPNode.java          ec.gp
@@ -43,11 +53,12 @@ GPTree.class         ec.gp
 AntStatistics.java   ec.app.ant
 AntStatistics.class  ec.app.ant
 
-The ECJ files santafe.trl and losaltos.trl have already been copied to the Xholon config/ealontro/EcjAntTrail folder.
+The ECJ files santafe.trl and losaltos.trl have already been copied to the Xholon
+config/ealontro/EcjAntTrail folder.
 
 The various ECJ .param files are in the config/ealontro folder and sub-folders.
 
-################################################################################
+######################################################
 Xholon 0.5 and ECJ 16
 
 The Xholon versions of GPTree.java and GPNode.java needed to be modified.
@@ -55,7 +66,7 @@ No changes were needed to AntStatistics.java.
 The following line was added to koza.params:
 pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
 
-################################################################################
+######################################################
 How Xholon 0.3 and ECJ 15 work together
 Ken Webb
 ken@primordion.com
@@ -65,43 +76,91 @@ XholonECJ.txt
 July 24, 2006
 ---------------------------------------
 
-This document briefly describes initial work designed to make Xholon and ECJ work together. The initial integration has been successful, but is not yet very clean. The purpose of the initial work was to demonstrate that it could be done, to demonstrate the value of doing this, and to prepare for a more seemless integration in the future.
+This document briefly describes initial work designed to make Xholon and ECJ work together.
+The initial integration has been successful, but is not yet very clean. The purpose of the initial
+work was to demonstrate that it could be done, to demonstrate the value of doing this,
+and to prepare for a more seemless integration in the future.
 
-Xholon is a framework for developing event-driven systems. A Xholon application has structure and behavior, both of which are modeled within the same overall tree structure. Each class or instance of an active object within the Xholon structure may have its own behavior.
+Xholon is a framework for developing event-driven systems. A Xholon application has structure
+and behavior, both of which are modeled within the same overall tree structure. Each class or
+instance of an active object within the Xholon structure may have its own behavior.
 
-ECJ is a Java-based evolutionary computation research system that includes support for genetic programming (GP). In GP, behaviors are organized into trees that are genetically evolved.
+ECJ is a Java-based evolutionary computation research system that includes support for
+genetic programming (GP). In GP, behaviors are organized into trees that are genetically
+evolved.
 
-By integrating the ECJ GP capabilities into Xholon, a Xholon application can now evolve all or some of its behaviors. There may be many different classes of active xholon objects in a model, each needing its own behavior. Typically all of these would be traditionally designed by a human programmer, but one of them (or one at a time) can now be designed by genetic programming.
+By integrating the ECJ GP capabilities into Xholon, a Xholon application can now evolve
+all or some of its behaviors. There may be many different classes of active xholon objects
+in a model, each needing its own behavior. Typically all of these would be traditionally
+designed by a human programmer, but one of them (or one at a time) can now be
+designed by genetic programming.
 
-The first step toward this integration has been taken with the release of version 0.3 of Xholon, which optionally works with version 15 of ECJ. There's a division of responsibilities between the two when running inside the same application. The Xholon part acts on phenotypes by executing behaviors and assigning fitness values to each behavior in a population of variant individuals. ECJ acts on genotypes by initially creating a population of behaviors, and evolving the population over a series of generations using crossover and mutation operators.
+The first step toward this integration has been taken with the release of version 0.3 of
+Xholon, which optionally works with version 15 of ECJ. There's a division of responsibilities
+between the two when running inside the same application. The Xholon part acts on
+phenotypes by executing behaviors and assigning fitness values to each behavior in a
+population of variant individuals. ECJ acts on genotypes by initially creating a population
+of behaviors, and evolving the population over a series of generations using crossover
+and mutation operators.
 
 The run-time flow of events is roughly as follows:
 - The Xholon GUI starts up, and the user selects an application that requires ECJ.
-- The GUI loads the Xholon application. The XML configuration file includes the location of the main ECJ parameter file. A set of Xholon XML configuration files and ECJ text-based parameter files are loaded.
-- The user selects Controller --> Start from the Xholon GUI. The Xholon Pause, un-Pause, Step and Stop controls can subsequently be selected while the app is running.
-- ECJ creates an initial random population (typically 1024 individuals) of behaviors, each organized as a composite hierarchy of functions.
+- The GUI loads the Xholon application. The XML configuration file includes the location of
+the main ECJ parameter file. A set of Xholon XML configuration files and ECJ text-based
+parameter files are loaded.
+- The user selects Controller --> Start from the Xholon GUI. The Xholon Pause, un-Pause,
+  Step and Stop controls can subsequently be selected while the app is running.
+- ECJ creates an initial random population (typically 1024 individuals) of behaviors,
+  each organized as a composite hierarchy of functions.
 - Xholon controls adding these behavior variants to its internal tree.
-- The Xholon application runs for a generation using the current set of evolving behaviors. Each generation lasts for a user-specified number of time-steps, typically 400 or so.
-- At the end of each generation, ECJ uses crossover and optionally mutation to evolve the population. The most fit behaviors reproduce themselves and cross over (mate) with other fit behaviors. The least fit behaviors have a high probability of dying out.
-- Xholon and ECJ continue taking turns executing and evolving behaviors until the maximum number of generations is reached or until the desired level of fitness is reached.
-- Xholon then writes the best behavior of the run to an XML configuration file for later use, possibly in a separate application that needs this behavior.
+- The Xholon application runs for a generation using the current set of evolving behaviors.
+  Each generation lasts for a user-specified number of time-steps, typically 400 or so.
+- At the end of each generation, ECJ uses crossover and optionally mutation to evolve
+  the population. The most fit behaviors reproduce themselves and cross over (mate) with
+  other fit behaviors. The least fit behaviors have a high probability of dying out.
+- Xholon and ECJ continue taking turns executing and evolving behaviors until the maximum
+  number of generations is reached or until the desired level of fitness is reached.
+- Xholon then writes the best behavior of the run to an XML configuration file for later use,
+  possibly in a separate application that needs this behavior.
 
-A number of changes must be made to ECJ to allow it to run under Xholon. The GPNode and GPTree ECJ classes are changed to extend the Xholon Activity class and implement the IXHolon interface. This allows instances of these classes to be part of a Xholon composite structure hierarchy tree. Several methods have been added to these classes so they can find their children and siblings, return a Xholon compliant name, and write themselves out as XML. The ECJ AntStatistics class in the Ant Trail application has been changed so it extends XhKozaStatistics rather than KozaStatistics.
+A number of changes must be made to ECJ to allow it to run under Xholon. The GPNode
+and GPTree ECJ classes are changed to extend the Xholon Activity class and implement
+the IXHolon interface. This allows instances of these classes to be part of a Xholon
+composite structure hierarchy tree. Several methods have been added to these classes
+so they can find their children and siblings, return a Xholon compliant name, and write
+themselves out as XML. The ECJ AntStatistics class in the Ant Trail application has been
+changed so it extends XhKozaStatistics rather than KozaStatistics.
 
-Two new ECJ-specific Xholon classes have been added. XhKozaStatistics extends KozaStatistics, while XhSimpleEvolutionState extends SimpleEvolutionState.
+Two new ECJ-specific Xholon classes have been added. XhKozaStatistics extends
+KozaStatistics, while XhSimpleEvolutionState extends SimpleEvolutionState.
 
-Four sample applications have been built so far, to demonstrate that Xholon and ECJ can be made to work together. Two of these, the Ant Trail app and the ECJ Tutorial 4, are adapted directly from ECJ sample applications. The cart centering and ant foraging applications are taken from John Koza's "Genetic Programming" book.
+Four sample applications have been built so far, to demonstrate that Xholon and ECJ
+can be made to work together. Two of these, the Ant Trail app and the ECJ Tutorial 4,
+are adapted directly from ECJ sample applications. The cart centering and ant foraging
+applications are taken from John Koza's "Genetic Programming" book.
 
-The ant foraging application is the most sophisticated so far in its division of labor between the Xholon (phenotype) part and the ECJ (genotype) part. The ECJ classes that extend GPNode do nothing in their eval() methods. Instead, the Xholon XhEcjAntForaging and XhAntForaging classes execute all the evolving behaviors.
+The ant foraging application is the most sophisticated so far in its division of labor between
+the Xholon (phenotype) part and the ECJ (genotype) part. The ECJ classes that extend
+GPNode do nothing in their eval() methods. Instead, the Xholon XhEcjAntForaging and
+XhAntForaging classes execute all the evolving behaviors.
 
-Future work includes an investigation into evolving of state machines. Most Xholon applications include one or more state machines. These can be organized as a tree structure, a structure that can be directly executed by the Xholon runtime framework. These state machines can currently be intentionally modeled by humans using XML and Java. Or they can be modeled using either the MagicDraw or Poseidon UML design tools, exported as standard XMI files, automatically transformed into the required Xholon XML format and Java code, and executed using the Xholon runtime framework.
+Future work includes an investigation into evolving of state machines. Most Xholon
+applications include one or more state machines. These can be organized as a tree
+structure, a structure that can be directly executed by the Xholon runtime framework.
+These state machines can currently be intentionally modeled by humans using XML and Java.
+Or they can be modeled using either the MagicDraw or Poseidon UML design tools, exported
+as standard XMI files, automatically transformed into the required Xholon XML format and
+Java code, and executed using the Xholon runtime framework.
 
 Additional information is available from:
 
-- The README_Ealontro.txt file found in the root directory of the Xholon_0_3 release. Ealontro is the Xholon package that has to do with evolutionary and adaptive systems. See:
+- The README_Ealontro.txt file found in the root directory of the Xholon_0_3 release.
+  Ealontro is the Xholon package that has to do with evolutionary and adaptive systems. See:
   http://xholon.cvs.sourceforge.net/xholon/xholon/README_Ealontro.txt?revision=1.1&view=markup
 
-- The project web site includes detailed descriptions of all four sample applications that integrate Xholon and ECJ functionality. For each of these four, there is one page about the non-GP version, and one page on the GP version of the application. Visit:
+- The project web site includes detailed descriptions of all four sample applications that
+  integrate Xholon and ECJ functionality. For each of these four, there is one page about
+  the non-GP version, and one page on the GP version of the application. Visit:
   http://www.primordion.com/Xholon/samples/samples.html
 and click on:
   Ant Foraging
