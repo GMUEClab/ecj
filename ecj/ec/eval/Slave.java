@@ -347,20 +347,22 @@ public class Slave
         else
             subPop = state.population.subpops[subPopNum];
         
-        // Read the individual from the stream
+        // Read the individual(s) from the stream
+		// and evaluate 
         Individual ind = null;
         try
             {
-            ind = subPop.species.newIndividual( state, dataIn);
+				while (true) { 
+					ind = subPop.species.newIndividual( state, dataIn);
+					if (ind == null) 
+						break; 
+					((SimpleProblemForm)(state.evaluator.p_problem)).evaluate( state, ind, 0 );
+				}
             }
         catch (IOException e)
             {
             state.output.fatal("Unable to read individual from master.");
             }
-
-        // Evaluate the individual
-        // TODO Check to make sure the real problem is an instance of SimpleProblemForm
-        ((SimpleProblemForm)(state.evaluator.p_problem)).evaluate( state, ind, 0 );
         
         // Return the evaluated individual to the master
         try
