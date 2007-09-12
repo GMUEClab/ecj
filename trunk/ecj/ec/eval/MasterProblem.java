@@ -123,6 +123,8 @@ public class MasterProblem extends Problem
         ed.type = Slave.V_EVALUATESIMPLE;
         ed.inds = new Individual[1]; 
 		ed.inds[0] = ind;
+		ed.subPops = new int[1]; 
+		ed.subPops[0] = subPopNum;
         server.slaveMonitor.scheduleJobForEvaluation(state,ed);
         if( !batchMode )
             server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );

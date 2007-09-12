@@ -45,4 +45,6 @@ public interface SimpleProblemForm
                          final EvolutionState state, 
                          final int threadnum, final int log,
                          final int verbosity);
+
+	public boolean canEvaluate();
     }
