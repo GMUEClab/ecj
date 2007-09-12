@@ -355,7 +355,7 @@ public class GPTree implements GPNodeParent, Prototype
     
     public void printTreeForHumans(final EvolutionState state, final int log,
                                    final int verbosity)
-        {
+        {		
         if (useC) state.output.print(child.makeCTree(true, 
                                                      printTerminalsAsVariablesInC, printTwoArgumentNonterminalsAsOperatorsInC),verbosity,log);
         else if (useLatex) state.output.print(child.makeLatexTree(),verbosity,log);

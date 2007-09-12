@@ -9,89 +9,19 @@ package ec.steadystate;
 import ec.*;
 import ec.util.Parameter;
 import ec.util.Checkpoint;
-
-/* 
- * SteadyStateEvolutionState.java
- * 
- * Created: Tue Aug 10 22:14:46 1999
- * By: Sean Luke
- */
-
-/**
- * A SteadyStateEvolutionState is an EvolutionState which implements a simple
- * form of steady-state evolution.
- *
- * <p>First, all the individuals in the population are created and evaluated.
- * <b>(A)</b> Then 1 individual is selected by the breder for removal from the
- * population.  They are replaced by the result of breeding the other
- * individuals in the population.  Then just those newly-bred individuals are
- * evaluted.  Goto <b>(A)</b>.
- *
- * <p>The individual selected for removal is done so by calling the <i>deselector</i>
- * for that subpopulation.  Deselectors are stored and defined in SteadyStateBreeder.
- *
- * <p>A generation is defined as the interval in which N indidivuals are
- * evaluated, where N is set to the size of subpopulation 0.  SteadyStateEvolutioState
- * keeps track of both generations and number of evaluations performed so far.
- * 
- * <p>Exchanges and checkpointing occur each generation.
- *
- * <p>Evolution stops in any of the following conditions:
- * <ul><li> An ideal individual is found (if quitOnRunComplete is set to true)
- * <li> The number of generations has been exceeded (if evaluations is not set)
- * <li> The number of evaluations has been exceeded (if evaluations is set)
- * </ul>
-
- <p><b>Additional constraints:</b>
- <ul>
- <li> The breeder must be SteadyStateBreeder, or a subclass of it.
- <li> All breeding sources (pipelines, selection methods) must adhere to SteadyStateBSourceForm.
- <li> The breeder's deselectors must adhere to SteadyStateBSourceForm.
- <li> The evaluator must be a SteadyStateEvaluator, or a subclass of it.
- <li> The exchanger must be of SteadyStateExchangerForm.
- </ul>
- 
- <p>If your statistics object adheres to SteadyStateStatisticsForm, it will receive
- additional statistics as specified in that form.  If it does <i>not</i> adhere to this
- form, you should be aware that the evaluation and breeding statistics hooks are called
- oddly: they wrap the evaluation of the first individual of a generation and the
- subsequent breeding of the population immediately thereafter.  Thus because it's
- steady-state and fine-grained, a lot of evaluations and breedings occur for which the
- statistics hooks are NOT called.  Furthermore, exchanges only occur on the generation
- boundary, and are wrapped with statistics hooks there.
- 
- <p><b>Parameters</b><br>
- <table>
- <tr><td valign=top><tt>breed</tt><br>
- <font size=-1>classname, inherits or = ec.steadystate.SteadyStateBreeder</font></td>
- <td valign=top>(the class for breeder)</td></tr>
- <tr><td valign=top><tt>eval</tt><br>
- <font size=-1>classname, inherits or = ec.steadystate.SteadyStateEvaluator</font></td>
- <td valign=top>(the class for evaluator)</td></tr>
- <tr><td valign=top><tt>evaluations</tt><br>
- <font size=-1>int >= 1</font> or undefined (the default)</td>
- <td valign=top>Number of evaluations to perform.  If this parameter is undefined, number of generations is used instead</td></tr>
- </table>
-
-
- * @author Sean Luke
- * @version 1.0 
- */
+import ec.util.Output;
+import ec.simple.*;
+//import ec.eval.MasterProblem;
+import java.util.*; 
 
 public class SteadyStateEvolutionState extends EvolutionState
     {
     /** base parameter for steady-state */
     public static final String P_STEADYSTATE = "steady";
     public static final String P_NUMEVALUATIONS = "evaluations";
-
-    /** The breeder puts the index of the newly-bred individuals in this
-        array for the Evaluator to find them, one per subpopulation */
-    public int newIndividuals[];
-
+	
     /** Did we just start a new generation? */
     public boolean generationBoundary;
-    /** Is this the first time the population is being evaluated, and so the *entire* population must be evaluated? */
-    public boolean firstTimeAround;
     /** How many evaluations should we run for?  If set to UNDEFINED (0), we run for the number of generations instead. */
     public long numEvaluations;
     public static long UNDEFINED = 0;
@@ -99,7 +29,19 @@ public class SteadyStateEvolutionState extends EvolutionState
     public int generationSize;
     /** How many evaluations have we run so far? */
     public long evaluations;
+	
+	/** How many individuals have we added to the initial population? */ 
+	int[] individualCount; 
+	
+	/** Hash table to check for duplicate individuals */ 
+	HashMap individualHash; 
+	
+	/** Holds which subpopulation we are currently operating on */
+	int whichSubpop;
     
+	/** First time calling evolve */ 
+	boolean firstTime; 
+	
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state,base);
@@ -141,16 +83,25 @@ public class SteadyStateEvolutionState extends EvolutionState
         // POPULATION INITIALIZATION
         output.message("Initializing Generation 0");
         statistics.preInitializationStatistics(this);
-        population = initializer.initialPopulation(this, 0);  // unthreaded
+        population = initializer.setupPopulation(this, 0);  // unthreaded
         statistics.postInitializationStatistics(this);
 
         // INITIALIZE VARIABLES
         if (numEvaluations > 0 && numEvaluations < population.subpops[0].individuals.length)
             output.fatal("Number of evaluations desired is smaller than the initial population of individuals");
-        else newIndividuals = new int[population.subpops.length];
-        generationSize = population.subpops[0].individuals.length;
-        generationBoundary = (evaluations % generationSize == 0);
-        firstTimeAround=true;
+        generationSize = 0;
+		generationBoundary = false;
+		firstTime = true; 
+		evaluations=0; 
+		whichSubpop=-1; 
+		
+		individualHash = new HashMap(generationSize); 
+		
+		individualCount = new int[population.subpops.length];
+		for (int sub=0; sub < population.subpops.length; sub++)  { 
+			individualCount[sub]=0;
+			generationSize += population.subpops[sub].individuals.length;  // so our sum total 'generationSize' will be the initial total number of individuals
+		}
 
         // INITIALIZE CONTACTS -- done after initialization to allow
         // a hook for the user to do things in Initializer before
@@ -160,57 +111,119 @@ public class SteadyStateEvolutionState extends EvolutionState
     }
 
 
-    /** Performs the evolutionary run.  Garbage collection and checkpointing are done only once every <i>generation</i> evaluations.  The only Statistics calls made are preInitializationStatistics(), postInitializationStatistics(), occasional postEvaluationStatistics (done once every <i>generation</i> evaluations), and finalStatistics(). */
-
+  
     public int evolve()
         {
-        if (generationBoundary && generation > 0)
-            output.message("Generation " + generation);
-        
-        // EVALUATION
-        
-        if (firstTimeAround)
+		if (generationBoundary && generation > 0)
+            output.message("Generation " + generation +"\tEvaluations " + evaluations);
+		
+		if (firstTime) {
             if (statistics instanceof SteadyStateStatisticsForm)
                 ((SteadyStateStatisticsForm)statistics).preInitialEvaluationStatistics(this);
-            
-        if (generationBoundary)
-            statistics.preEvaluationStatistics(this);
-        evaluator.evaluatePopulation(this);
-        if (generationBoundary)
-            statistics.postEvaluationStatistics(this);
-        
-        if (firstTimeAround)
+			((SteadyStateBreeder)breeder).prepareToBreed(this, 0); // unthreaded 
+			((SteadyStateEvaluator)evaluator).prepareToEvaluate(this, 0); // unthreaded 
+			firstTime=false; 
+		} 
+		
+		// CHECKPOINTING
+        if (checkpoint && generation%checkpointModulo == 0) 
             {
-            if (statistics instanceof SteadyStateStatisticsForm)
-                ((SteadyStateStatisticsForm)statistics).postInitialEvaluationStatistics(this);
-            evaluations += population.subpops[0].individuals.length;
+            output.message("Checkpointing");
+            statistics.preCheckpointStatistics(this);
+            Checkpoint.setCheckpoint(this);
+            statistics.postCheckpointStatistics(this);
             }
-        else
-            {
-            if (statistics instanceof SteadyStateStatisticsForm)
-                ((SteadyStateStatisticsForm)statistics).individualsEvaluatedStatistics(this);
-            evaluations++;
-            }
+		
+		whichSubpop = (whichSubpop+1)%population.subpops.length;  // round robin selection
+		
+		// is the current subpop full? 
+		boolean partiallyFullSubpop = (individualCount[whichSubpop] < population.subpops[whichSubpop].individuals.length);  
+		
+		// MAIN EVOLVE LOOP 
+		if (((SimpleEvaluator)evaluator).canEvaluate()) {  // are we ready to evaluate? 
+			Individual ind=null; 
+			int numDuplicateRetries = population.subpops[whichSubpop].numDuplicateRetries; 
 
-        // COMPUTE GENERATION BOUNDARY
-        generationBoundary = (evaluations % generationSize == 0);
+			for (int tries=0; tries <= numDuplicateRetries; tries++) {  // see Subpopulation
+				if ( partiallyFullSubpop )  { // is population full?
+					ind = population.subpops[whichSubpop].species.newIndividual(this, 0);  // unthreaded 
+				}
+				else  { 
+					ind = ((SteadyStateBreeder)breeder).breedIndividual(this, whichSubpop,0); 
+					statistics.individualsBredStatistics(this, null, null, null); 
+				}
+				
+				if (numDuplicateRetries >= 1)  { 
+					Object o = individualHash.get(ind); 
+					if (o == null) { 
+						individualHash.put(ind, ind); 
+						break; 
+					}
+				}
+			} // tried to cut down the duplicates 
+			
+			// evaluate the new individual
+			((SimpleEvaluator)evaluator).evaluateIndividual(this, ind, whichSubpop);
+		}
+		
+		boolean didEvaluate = false;
+		if (((SimpleEvaluator)evaluator).isNextEvaluatedIndividualAvailable()) {  // do we have an evaluated individual? 
+			QueueIndividual q  = ((SteadyStateEvaluator)evaluator).getNextEvaluatedIndividual(); // remove from queue 
+						
+			if ( partiallyFullSubpop ) {  // is subpopulation full? 
+				population.subpops[q.subpop].individuals[individualCount[q.subpop]++]=q.ind; 
+				
+				// STATISTICS FOR GENERATION ZERO 
+				if ( individualCount[q.subpop] < population.subpops[q.subpop].individuals.length ) 
+					if (statistics instanceof SteadyStateStatisticsForm)
+						((SteadyStateStatisticsForm)statistics).postInitialEvaluationStatistics(this); 
+			}
+			else  { 
+				// mark individual for death 
+				int deadIndividual = ((SteadyStateBreeder)breeder).deselectors[q.subpop].produce(q.subpop,this,0);
+				Individual deadInd = population.subpops[q.subpop].individuals[deadIndividual];
+				
+				// replace dead individual with new individual 
+				population.subpops[q.subpop].individuals[deadIndividual] = q.ind; 
+				
+				// update duplicate hash table 
+				individualHash.remove(deadInd); 
+				
+				if (statistics instanceof SteadyStateStatisticsForm) 
+					((SteadyStateStatisticsForm)statistics).individualsEvaluatedStatistics(this, null, null,null,null); 
+			}
+						
+			// INCREMENT NUMBER OF COMPLETED EVALUATIONS
+			evaluations++;
+			didEvaluate = true;
+		}
+		
+		// COMPUTE GENERATION BOUNDARY
+		if (didEvaluate) { 
+			generationBoundary = (evaluations % generationSize == 0);
+		}
+		else 
+			generationBoundary = false; 
+
 
         // SHOULD WE QUIT?
-        if (evaluator.runComplete(this) && quitOnRunComplete)
+        if (!partiallyFullSubpop && evaluator.runComplete(this) && quitOnRunComplete)
             { 
             output.message("Found Ideal Individual"); 
             return R_SUCCESS;
             }
-        
-        if ((numEvaluations > 0 && evaluations >= numEvaluations) ||  // using numEvaluations
+		
+		if ((numEvaluations > 0 && evaluations >= numEvaluations) ||  // using numEvaluations
             (numEvaluations <= 0 && generationBoundary && generation == numGenerations -1))  // not using numEvaluations
             {
             return R_FAILURE;
             }
-        
-        // PRE-BREEDING EXCHANGING
+		
+		
+		// EXCHANGING
         if (generationBoundary)
             {
+			// PRE-BREED EXCHANGE 
             statistics.prePreBreedingExchangeStatistics(this);
             population = exchanger.preBreedingExchangePopulation(this);
             statistics.postPreBreedingExchangeStatistics(this);
@@ -220,41 +233,22 @@ public class SteadyStateEvolutionState extends EvolutionState
                 output.message(exchangerWantsToShutdown); 
                 return R_SUCCESS;
                 }
-            }
-            
-        // BREEDING
-        if (generationBoundary)
-            statistics.preBreedingStatistics(this);
-        population = breeder.breedPopulation(this);
-        if (statistics instanceof SteadyStateStatisticsForm)
-            ((SteadyStateStatisticsForm)statistics).individualsBredStatistics(this);
-        if (generationBoundary)
-            statistics.postBreedingStatistics(this);
-        
-        // POST-BREEDING EXCHANGE
-        if (generationBoundary)
-            {
-            statistics.prePostBreedingExchangeStatistics(this);
+			
+			// POST BREED EXCHANGE
+			statistics.prePostBreedingExchangeStatistics(this);
             population = exchanger.postBreedingExchangePopulation(this);
             statistics.postPostBreedingExchangeStatistics(this);
+			
+			// INCREMENT GENERATION 
+			generation++;
+			
+			// STATISTICS 
+			statistics.generationBoundaryStatistics(this); 
+			statistics.postEvaluationStatistics(this); 
             }
-        
-        // INCREMENT GENERATION 
-        if (generationBoundary)
-            generation++;
-        firstTimeAround = false;
-
-        // CHECKPOINTING
-        if (checkpoint && generation%checkpointModulo == 0) 
-            {
-            output.message("Checkpointing");
-            statistics.preCheckpointStatistics(this);
-            Checkpoint.setCheckpoint(this);
-            statistics.postCheckpointStatistics(this);
-            }
-        return R_NOTDONE;
-        }
-    
+		return R_NOTDONE;
+		}
+	
     /**
      * @param result
      */

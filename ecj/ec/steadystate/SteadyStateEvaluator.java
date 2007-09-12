@@ -1,81 +1,80 @@
 /*
-  Copyright 2006 by Sean Luke
-  Licensed under the Academic Free License version 3.0
-  See the file "LICENSE" for more information
-*/
+ Copyright 2006 by Sean Luke
+ Licensed under the Academic Free License version 3.0
+ See the file "LICENSE" for more information
+ */
 
 
 package ec.steadystate;
 import ec.simple.*;
 import ec.*;
-
-/* 
- * SteadyStateEvaluator.java
- * 
- * Created: Wed Aug 18 21:31:18 1999
- * By: Sean Luke
- */
-
-/**
- * The SteadyStateEvaluator is a simple, mostly single-threaded,
- * non-coevolved steady-state
- * evaluator which evaluates every single member of every subpopulation
- * individually.  On the first pass, SteadyStateEvaluator's functions
- * deal with the whole population.  On subsequent passes, the functions
- * only consider the first state.newnuminds individuals in each subpopulation; thus breeding
- * methods must place the new individuala in the first spota in a subpopulation.
- * Furthermore, the first pass is the only time you'll see multiple threads,
- * if any.
- *
- * @author Sean Luke
- * @version 1.0 
- */
+import ec.util.Parameter;
+import java.util.LinkedList; 
+import ec.eval.MasterProblem;
 
 public class SteadyStateEvaluator extends SimpleEvaluator
-    {
-    /** If it's the first time around, all the individuals in the population
-        are evaluated.  Else only the first individual in each subpopulation
-        is evaluated. */
-    public void evaluatePopulation(final EvolutionState state)
-        {
-        final SteadyStateEvolutionState st = (SteadyStateEvolutionState) state; 
-        if (st.firstTimeAround)
-            // evaluate the initial population
-            super.evaluatePopulation(st);
-        else
-            {
-            // evaluate the individual in each subpopulation
-            for(int pop=0;pop<st.population.subpops.length;pop++)
-                {
-                ((SimpleProblemForm)p_problem).evaluate(st, 
-                                                        st.population.subpops[pop].individuals[st.newIndividuals[pop]], 0);
-                
-                // inform the breeder that things have finally changed
-                // and been evaluated for these subpopulations
-                ((SteadyStateBreeder)(st.breeder)).
-                    individualReplaced(st,pop,0,st.newIndividuals[pop]);
-                }
-            }
-        }
-    
-    /** The SteadyStateEvaluator determines that a run is complete by asking
-        each individual if he's optimal; if he finds one that's optimal,
-        he signals that the run is complete.  This version checks every
-        individual in the population it's the first time around, else it only
-        checks the first individual in each subpopulation. */
-    public boolean runComplete(final EvolutionState state)
-        {
-        final SteadyStateEvolutionState st = (SteadyStateEvolutionState) state; 
-        if (st.firstTimeAround)
-            // check the whole population
-            return super.runComplete(st);
-        else
-            {
-            for(int pop = 0;pop<st.population.subpops.length;pop++)
-                if (st.population.subpops[pop].individuals[st.newIndividuals[pop]].
-                    fitness.isIdealFitness())
-                    return true;
-            return false;
-            }
-        }
-    }
+{
+	/** Holds the individuals that have been evaluated. */ 
+	LinkedList queue; 
+	
+	SimpleProblemForm problem; 
+	
+	public void setup(final EvolutionState state, final Parameter base)
+		{
+		super.setup(state,base);
+		queue = new LinkedList(); 
+		}
+	
+	public void prepareToEvaluate(EvolutionState state, int thread) 
+		{
+		problem = (SimpleProblemForm)p_problem.clone();
+		
+		/* 
+		We only call prepareToEvaluate during Asynchronous Evolution.
+		 */
+		if (problem instanceof MasterProblem) 
+			((MasterProblem)problem).prepareToEvaluate(state, thread); 
+		}
+	
+	public void evaluateIndividual(final EvolutionState state, Individual ind, int subpop)
+		{
+		problem.evaluate(state, ind, 0);
+		addNextEvaluatedIndividual(ind, subpop); 
+		}
+	
+	public boolean canEvaluate() 
+		{
+		return problem.canEvaluate(); 
+		}
+	
+	public boolean isNextEvaluatedIndividualAvailable()
+		{
+		return (queue.size() != 0); 
+		}
+	
+	/** Returns the QueueIndividual from the front of the queue. Assumes the user already knows that the queue is not empty */
+	public QueueIndividual getNextEvaluatedIndividual()
+		{
+		return (QueueIndividual)queue.removeFirst(); 
+		}
+	
+	/** Adds the individual and corresponding subpopulation to the queue */ 
+	public void addNextEvaluatedIndividual (Individual ind, int subpop) 
+		{
+		QueueIndividual q = new QueueIndividual(ind, subpop);
+		queue.addLast(q); 
+		}
+}
+
+/** Private data structure to augment ec.Individual with the corresponding subpopulation.  Even though its declared public 
+(so SteadyStateEvolutionState can access it), you should not use this class.  */ 
+class QueueIndividual 
+{ 
+	Individual ind;
+	int subpop; 
+	public  QueueIndividual(Individual i, int s)
+		{
+		ind = i; 
+		subpop=s; 
+		}
+};

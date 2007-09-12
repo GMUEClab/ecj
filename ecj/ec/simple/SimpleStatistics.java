@@ -123,10 +123,11 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         }
 
     /** Steady State only: loads any additional post-generation boundary stragglers into best_of_run. */
-    public void individualsEvaluatedStatistics(SteadyStateEvolutionState state)
+    public void individualsEvaluatedStatistics(SteadyStateEvolutionState state, Individual[] newIndividuals, 
+											   Individual[] oldIndividuals, int[] subpopulations, int[] indicies)
         {
-        super.individualsEvaluatedStatistics(state);
-        
+        super.individualsEvaluatedStatistics(state, newIndividuals, oldIndividuals, subpopulations, indicies);
+        /*
         for(int x=0;x<state.population.subpops.length;x++)
             {
             // best individual
@@ -135,7 +136,15 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
                 fitness.betterThan(best_of_run[x].fitness))
                 best_of_run[x] = state.population.subpops[x].individuals[state.newIndividuals[x]];
             }
+		 */
         }
+	
+	/** Steady-state only: computes statistics at each generation count */ 
+	public void generationBoundaryStatistics(final EvolutionState state) 
+		{
+		super.generationBoundaryStatistics(state);
+		}
+	
 
     /** Logs the best individual of the run. */
     public void finalStatistics(final EvolutionState state, final int result)

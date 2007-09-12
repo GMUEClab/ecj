@@ -39,12 +39,18 @@ public class SimpleInitializer extends Initializer
         Obviously, this is an expensive method.  It should only
         be called once typically in a run. */
 
-    public Population initialPopulation(EvolutionState state, int thread)
+    public Population initialPopulation(final EvolutionState state, int thread)
         {
-        Parameter base = new Parameter(P_POP);
-        Population p = (Population) state.parameters.getInstanceForParameterEq(base,null,Population.class);  // Population.class is fine
-        p.setup(state,base);
-        p.populate(state, thread);
+		Population p = setupPopulation(state, thread); 
+		p.populate(state, thread);
         return p;
         }
+		
+	public Population setupPopulation(final EvolutionState state, int thread)
+		{
+		Parameter base = new Parameter(P_POP);
+        Population p = (Population) state.parameters.getInstanceForParameterEq(base,null,Population.class);  // Population.class is fine
+        p.setup(state,base);
+		return p;
+		}
     }
