@@ -14,8 +14,8 @@ parent.0 = ../../simple/simple.params
 # mutation probability = 0.1
 # mutation is randomization of the integer
 
-pop.subpop.0.size = 100
-generations = 1000
+pop.subpop.0.size = 10
+generations = 20000 
 
 pop.subpop.0.duplicate-retries = 0
 

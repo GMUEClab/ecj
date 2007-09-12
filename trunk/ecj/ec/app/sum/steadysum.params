@@ -41,7 +41,7 @@ parent.1 = sum.params
 # evaluations if you want something more precise.  To do
 # that you'd set:
 #
-# evaluations = 	...
+#evaluations = 100 
 #
 # Which says how many evaluations you want.  Obviously
 # this must be larger than the initial population size...

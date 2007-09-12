@@ -114,6 +114,13 @@ public abstract class Problem implements Prototype
     public void closeContacts(EvolutionState state, int result)
         {
         }
+	
+	/** Asynchronous Steady-State EC only: Returns true if the problem is ready to evaluate.  In most cases, 
+		the default is true.  */ 
+	public boolean canEvaluate()
+		{ 
+		return true; 
+		}
     }
 
 

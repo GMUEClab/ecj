@@ -4,4 +4,6 @@
 
 parent.0 = ./erc.params
 
+generations = 1000
+
 gp.fs.0.size = 9
