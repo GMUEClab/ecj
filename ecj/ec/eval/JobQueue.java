@@ -113,25 +113,10 @@ public class JobQueue
                 }
 
             EvaluationData ed = (EvaluationData)(objects.getFirst());
-            if( ed.type == Slave.V_EVALUATESIMPLE )
-                {
-                Individual result = ed.ind;
-                slaveMonitor.notifyAll();
-                return result;
-                }
-            else
-                {
-                if( ed.index >= ed.length )
-                    {
-                    if(slaveMonitor.showDebugInfo)
-                        state.output.message( "Should not have gotten here!" );
-                    System.exit(1);
-                    }
-                Individual result = ed.inds[ed.index];
-                slaveMonitor.notifyAll();
-                return result;
-                }
-            }
+			Individual result = ed.inds[ed.index];
+			slaveMonitor.notifyAll();
+			return result;
+			}
         }
 
     /**
@@ -158,16 +143,10 @@ public class JobQueue
                 }
             else
                 {
-                if( ed.index >= ed.length )
-                    {
-                    if(slaveMonitor.showDebugInfo)
-                        state.output.message( Thread.currentThread().getName() + "Should not have gotten here!" );
-                    System.exit(1);
-                    }
 
                 ed.index++;
 
-                if( ed.index == ed.length )
+                if( ed.index == ed.inds.length )
                     {
                     EvaluationData result = (EvaluationData)(objects.removeFirst());
                     if(slaveMonitor.showDebugInfo)

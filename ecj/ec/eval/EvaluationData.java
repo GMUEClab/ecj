@@ -43,7 +43,13 @@ public class EvaluationData
     // either Slave.V_EVALUATESIMPLE or Slave.V_EVALUATEGROUPED
     int type;
 
-    // for Slave.V_EVALUATESIMPLE
+	Individual []inds; 
+	int []subPops; 
+	boolean countVictoriesOnly;
+	boolean[] updateFitness;
+	int index; // how many have been read back from the slaves
+	
+  /*  // for Slave.V_EVALUATESIMPLE
     int subPopNum;
     Individual ind;
 
@@ -52,6 +58,7 @@ public class EvaluationData
     int[] subPops;
     boolean countVictoriesOnly;
     Individual[] inds;
-    boolean[] updateFitness;
+    
     int index; // how many have been read back from the slaves
+	*/
     }

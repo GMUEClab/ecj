@@ -121,8 +121,8 @@ public class MasterProblem extends Problem
         ed.mp = this;
         ed.threadnum = threadnum;
         ed.type = Slave.V_EVALUATESIMPLE;
-        ed.subPopNum = subPopNum;
-        ed.ind = ind;
+        ed.inds = new Individual[1]; 
+		ed.inds[0] = ind;
         server.slaveMonitor.scheduleJobForEvaluation(state,ed);
         if( !batchMode )
             server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
@@ -204,7 +204,6 @@ public class MasterProblem extends Problem
         ed.mp = this;
         ed.threadnum = threadnum;
         ed.type = Slave.V_EVALUATEGROUPED;
-        ed.length = inds.length;
         ed.subPops = subPopNum;
         ed.countVictoriesOnly = countVictoriesOnly;
         ed.inds = inds;
@@ -259,5 +258,12 @@ public class MasterProblem extends Problem
             {
             }
         }
+	
+	public boolean canEvaluate() 
+		{
+		return (server.slaveMonitor.numAvailableSlaves() != 0); 
+		}
+		
+	
 
     }
