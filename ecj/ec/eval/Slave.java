@@ -312,9 +312,11 @@ public class Slave
         {
         // Read the subpopulation number
         int subPopNum = -1;
+		int numInds=1; 
         try
             {
             subPopNum = dataIn.readInt();
+				numInds = dataIn.readInt(); 
             }
         catch (IOException e)
             {
@@ -349,14 +351,14 @@ public class Slave
         
         // Read the individual(s) from the stream
 		// and evaluate 
-        Individual ind = null;
+        Individual []inds = new Individual[numInds];
+		boolean []updateFitness = new boolean[numInds];
         try
             {
-				while (true) { 
-					ind = subPop.species.newIndividual( state, dataIn);
-					if (ind == null) 
-						break; 
-					((SimpleProblemForm)(state.evaluator.p_problem)).evaluate( state, ind, 0 );
+				for (int i=0; i < numInds; i++) { 
+					inds[i] = subPop.species.newIndividual( state, dataIn);
+					((SimpleProblemForm)(state.evaluator.p_problem)).evaluate( state, inds[i], 0 );
+					updateFitness[i] = true; 
 				}
             }
         catch (IOException e)
@@ -365,23 +367,10 @@ public class Slave
             }
         
         // Return the evaluated individual to the master
-        try
-            {
-            dataOut.writeByte(returnIndividuals ? V_INDIVIDUAL : V_FITNESS);
-            if (returnIndividuals)
-                {
-                // write the whole individual
-                ind.writeIndividual(state, dataOut);
-                }
-            else
-                {
-                // just write evaluated and fitness
-                dataOut.writeBoolean(ind.evaluated);
-                ind.fitness.writeFitness(state,dataOut);
-                }
-            dataOut.flush();
-            }
-        catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
+        try { 
+			returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals); 
+		} catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
+		
         }
     
     public static void evaluateGroupedProblemForm( EvolutionState state, boolean returnIndividuals,
@@ -453,29 +442,35 @@ public class Slave
         // Evaluate the individual
         // TODO Check to make sure the real problem is an instance of GroupedProblemForm
         ((GroupedProblemForm)(state.evaluator.p_problem)).evaluate( state, inds, updateFitness, countVictoriesOnly, 0 );
-                
-        try
-            {
-            // Return the evaluated individual to the master
-            // just write evaluated and fitness
-            for(int i=0;i<inds.length;i++)
-                {
-                dataOut.writeByte(returnIndividuals ? V_INDIVIDUAL : (updateFitness[i] ? V_FITNESS : V_NOTHING));
-                if (returnIndividuals)
-                    {
-                    inds[i].writeIndividual(state, dataOut);
-                    }
-                else if (updateFitness[i])
-                    {
-                    dataOut.writeBoolean(inds[i].evaluated);
-                    inds[i].fitness.writeFitness(state,dataOut);
-                    }
-                }
-            dataOut.flush();
-            }
-        catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
+            
+		
+		try { 
+			returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals); 
+		} catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
+	
+		}
+	
+	private static void returnIndividualsToMaster(EvolutionState state, Individual []inds, boolean[] updateFitness,
+										   DataOutputStream dataOut, boolean returnIndividuals) throws IOException 
+		{
+			// Return the evaluated individual to the master
+			// just write evaluated and fitness
+			for(int i=0;i<inds.length;i++)
+				{
+				dataOut.writeByte(returnIndividuals ? V_INDIVIDUAL : (updateFitness[i] ? V_FITNESS : V_NOTHING));
+				if (returnIndividuals)
+					{
+					inds[i].writeIndividual(state, dataOut);
+					}
+				else if (updateFitness[i])
+					{
+					dataOut.writeBoolean(inds[i].evaluated);
+					inds[i].fitness.writeFitness(state,dataOut);
+					}
+				}
+			dataOut.flush();
         }
-        
+	
     private static void checkpointRandomState(final EvolutionState state,
                                               DataOutputStream dataOut )
         {
