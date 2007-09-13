@@ -153,10 +153,9 @@ public class SlaveMonitor
 		
 		try {
 			// Transmit the subpopulation number to the slave 
-			for(int x=0;x<toEvaluate.subPops.length;x++) { 
+			for(int x=0;x<toEvaluate.subPops.length;x++)
 				dataOut.writeInt(toEvaluate.subPops[x]);
-			}
-			
+					
 			// transmit number of individuals 
 			dataOut.writeInt(toEvaluate.inds.length); 
 			

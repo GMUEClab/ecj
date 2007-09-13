@@ -333,15 +333,15 @@ public class KozaStatistics extends Statistics implements SteadyStateStatisticsF
     /** Steady State only: loads any additional post-generation boundary stragglers into best_of_run. */
     public void individualsEvaluatedStatistics(SteadyStateEvolutionState state)
         {
-        super.individualsEvaluatedStatistics(state);
+        //super.individualsEvaluatedStatistics(state);
         
         for(int x=0;x<state.population.subpops.length;x++)
             {
             // best individual
-            if (best_of_run[x]==null || 
-                state.population.subpops[x].individuals[state.newIndividuals[x]].
-                fitness.betterThan(best_of_run[x].fitness))
-                best_of_run[x] = state.population.subpops[x].individuals[state.newIndividuals[x]];
+            //if (best_of_run[x]==null || 
+                //state.population.subpops[x].individuals[state.newIndividuals[x]].
+                //fitness.betterThan(best_of_run[x].fitness))
+                //best_of_run[x] = state.population.subpops[x].individuals[state.newIndividuals[x]];
             }
         }
 
