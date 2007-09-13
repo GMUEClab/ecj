@@ -133,6 +133,7 @@ public class SlaveMonitor
 				dataOut.writeByte(Slave.V_EVALUATESIMPLE);
 			} catch (Exception e)
 			{
+				state.output.message("Shutdown from EVALUATESIMPLE"); 
 				result.shutdown(state);
 			}
 			}
@@ -152,8 +153,12 @@ public class SlaveMonitor
 		
 		try {
 			// Transmit the subpopulation number to the slave 
-			for(int x=0;x<toEvaluate.subPops.length;x++)
+			for(int x=0;x<toEvaluate.subPops.length;x++) { 
 				dataOut.writeInt(toEvaluate.subPops[x]);
+			}
+			
+			// transmit number of individuals 
+			dataOut.writeInt(toEvaluate.inds.length); 
 			
 			// Transmit the individuals to the server for evaluation...
 			for(int i=0;i<toEvaluate.inds.length;i++)
@@ -162,15 +167,17 @@ public class SlaveMonitor
 				dataOut.writeBoolean(toEvaluate.updateFitness[i]);
 				}
 			dataOut.flush();
-			
+
 			if( result.jobQueue.numJobs() < maxJobsPerSlave )
 				{
 				if( !result.isSlaveAvailable )
 					availableSlaves.addLast(result);
 				result.isSlaveAvailable = true;
 				}
+
 		} catch (Exception e) 
 			{
+			state.output.message("Shutdown from transmitting");
 			result.shutdown(state); 
 			}
 		

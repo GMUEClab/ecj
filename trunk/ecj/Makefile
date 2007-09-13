@@ -90,10 +90,6 @@ clean:
 	find . -name "*.java*~" -exec rm -rf {} \;
 	rm -rf docs/classdocs/*
 
-doc:
-	javadoc -d docs/classdocs ec ec.gp ec.gp.koza ec.simple ec.select ec.multiobjective ec.steadystate ec.util ec.breed ec.gp.breed ec.gp.build ec.es ec.exchange ec.vector ec.vector.breed ec.parsimony ec.coevolve ec.rule ec.rule.breed ec.multiobjective.spea2 ec.eval ec.spatial ec.display ec.display.portrayal ec.de ec.pso
-
-docs: doc
 
 dist: clean gui indent doc 
 	find . -name "*.stat" -exec rm rf {} \; -print

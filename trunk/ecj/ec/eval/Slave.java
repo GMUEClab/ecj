@@ -317,6 +317,8 @@ public class Slave
             {
             subPopNum = dataIn.readInt();
 				numInds = dataIn.readInt(); 
+
+		System.out.println(subPopNum + " : " + numInds); 
             }
         catch (IOException e)
             {
@@ -358,12 +360,12 @@ public class Slave
 				for (int i=0; i < numInds; i++) { 
 					inds[i] = subPop.species.newIndividual( state, dataIn);
 					((SimpleProblemForm)(state.evaluator.p_problem)).evaluate( state, inds[i], 0 );
-					updateFitness[i] = true; 
+					updateFitness[i] = dataIn.readBoolean(); 
 				}
             }
         catch (IOException e)
             {
-            state.output.fatal("Unable to read individual from master.");
+            state.output.fatal("Unable to read individual from master." + e);
             }
         
         // Return the evaluated individual to the master

@@ -125,6 +125,9 @@ public class MasterProblem extends Problem
 		ed.inds[0] = ind;
 		ed.subPops = new int[1]; 
 		ed.subPops[0] = subPopNum;
+		ed.updateFitness = new boolean[ed.inds.length]; 
+		for (int i=0; i < ed.inds.length; i++) 
+			ed.updateFitness[i] = true; 
         server.slaveMonitor.scheduleJobForEvaluation(state,ed);
         if( !batchMode )
             server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
