@@ -255,7 +255,6 @@ public class EvolveSlave
 				for(int x=0;x<numInds;x++)
 					 // Read the individuals from the stream
 					state.population.subpops[subPopNum].individuals[x] = state.population.subpops[subPopNum].species.newIndividual( state, dataIn );
-					}
             }
         catch (IOException e)
             {
