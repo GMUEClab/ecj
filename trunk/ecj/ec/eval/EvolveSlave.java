@@ -226,8 +226,8 @@ public class EvolveSlave
        
         try
             {
-				numInds = dataIn.readInt();
 				subPopNum = dataIn.readInt();
+				numInds = dataIn.readInt();
 				
 				if( state.population == null )
 					state.population = new Population();
@@ -247,17 +247,12 @@ public class EvolveSlave
 					state.population.subpops[subPopNum].setup(state, param);
 					}
 				
-				if (state.population.subpops[subPopNum].individuals == null) 
+				if ((state.population.subpops[subPopNum].individuals == null) || 
+					(state.population.subpops[subPopNum].individuals.length != numInds))
 					state.population.subpops[subPopNum].individuals = new Individual[numInds]; 
 				
+
 				for(int x=0;x<numInds;x++)
-					{					
-					if (state.population.subpops[subPopNum].individuals[x] == null) { 
-						Individual[] temp = state.population.subpops[subPopNum].individuals; 
-						state.population.subpops[subPopNum].individuals = new Individual[numInds]; 
-						System.arraycopy(temp, 0, state.population.subpops[subPopNum].individuals, 0, temp.length); 
-					}
-					
 					 // Read the individuals from the stream
 					state.population.subpops[subPopNum].individuals[x] = state.population.subpops[subPopNum].species.newIndividual( state, dataIn );
 					}
