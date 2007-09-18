@@ -98,6 +98,10 @@ public class Slave
     /** state parameter */
     public static final String P_STATE = "state";
 	
+	/** Time to run evolution on the slaves in seconds */ 
+	public static final String P_RUNTIME = "runtime"; 
+	public static int runTime=0; 
+	
     /** How long we sleep in between attempts to connect to the master (in milliseconds). */
     public static final int SLEEP_TIME = 100;
 	
@@ -189,6 +193,8 @@ public class Slave
         int masterPort = state.parameters.getInt(
 												 new Parameter(P_EVALMASTERPORT),null);
         boolean useCompression = state.parameters.getBoolean(new Parameter(P_EVALCOMPRESSION),null,false);
+		
+		runTime = state.parameters.getInt(new Parameter(P_RUNTIME), null, 0); 
 		
         // Continue to serve new masters until killed.
         while (true)
@@ -306,7 +312,7 @@ public class Slave
 			}
             }
         }
-	
+		
     public static void evaluateSimpleProblemForm( EvolutionState state, boolean returnIndividuals,
                                                   DataInputStream dataIn, DataOutputStream dataOut )
         {
@@ -317,8 +323,6 @@ public class Slave
             {
 				subPopNum = dataIn.readInt();
 				numInds = dataIn.readInt(); 
-
-		System.out.println(subPopNum + " : " + numInds); 
             }
         catch (IOException e)
             {

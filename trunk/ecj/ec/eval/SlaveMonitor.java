@@ -163,7 +163,8 @@ public class SlaveMonitor
 			for(int i=0;i<toEvaluate.inds.length;i++)
 				{
 				toEvaluate.inds[i].writeIndividual(state, dataOut);
-				dataOut.writeBoolean(toEvaluate.updateFitness[i]);
+				if (toEvaluate.type == Slave.V_EVALUATEGROUPED) 
+					dataOut.writeBoolean(toEvaluate.updateFitness[i]);
 				}
 			dataOut.flush();
 

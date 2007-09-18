@@ -133,6 +133,51 @@ public class MasterProblem extends Problem
             server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
         if(showDebugInfo) state.output.message(Thread.currentThread().getName() + "Finished evaluating the individual.");
         }
+	
+	
+	// send a group of individuals to one slave for evaluation 
+	public void evaluate(EvolutionState state, Individual inds[], int threadnum)
+        {
+        if(showDebugInfo)
+            state.output.message(Thread.currentThread().getName() + "Starting an evaluation.");
+		
+        // Determine the subpopulation number associated with this individual
+        int subPopNum[] = new int[inds.length];
+		for(int i=0;i<inds.length;i++)
+            {
+            boolean subPopNumFound = false;
+            for (int x=0;x<state.population.subpops.length && !subPopNumFound;x++)
+                {
+                if (state.population.subpops[x].species == inds[i].species)
+                    {
+                    subPopNum[i] = x;
+                    subPopNumFound = true;
+                    break;
+                    }
+                }
+            if (!subPopNumFound)
+                {
+                // Is it possible that there isn't a matching species?
+                state.output.fatal("Whoa!  Couldn't find a matching species for Individual!");
+                }
+            }
+		
+        // Acquire a slave socket
+        EvaluationData ed = new EvaluationData();
+        ed.state = state;
+        ed.mp = this;
+        ed.threadnum = threadnum;
+        ed.type = Slave.V_EVALUATESIMPLE;
+		ed.inds = inds;
+		ed.subPops = subPopNum;
+        server.slaveMonitor.scheduleJobForEvaluation(state,ed);
+        if( !batchMode )
+            server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
+        if(showDebugInfo) state.output.message(Thread.currentThread().getName() + "Finished evaluating the individual.");
+        }
+	
+	
+	
 
     /* (non-Javadoc)
      * @see ec.simple.SimpleProblemForm#describe(ec.Individual, ec.EvolutionState, int, int, int)
