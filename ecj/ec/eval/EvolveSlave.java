@@ -228,7 +228,7 @@ public class EvolveSlave
             {
 				subPopNum = dataIn.readInt();
 				numInds = dataIn.readInt();
-				
+
 				if( state.population == null )
 					state.population = new Population();
 				if( state.population.subpops == null )
