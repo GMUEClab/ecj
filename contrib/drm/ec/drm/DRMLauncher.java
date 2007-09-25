@@ -1,6 +1,6 @@
-/** Some code taken from Sean Luke's ECJ and Màrk Jelasity's DRM.
- * Copyright 2006 Alberto Cuesta Cañada, licensed under the Academic Free License.
- * @author Alberto Cuesta Cañada
+/** Some code taken from Sean Luke's ECJ and Mï¿½rk Jelasity's DRM.
+ * Copyright 2006 Alberto Cuesta Caï¿½ada, licensed under the Academic Free License.
+ * @author Alberto Cuesta Caï¿½ada
  * @version 0.1 
  */
 
@@ -128,7 +128,7 @@ public class DRMLauncher implements Runnable{
 			rootAgent.data.setup(rootAgent, p);
 		}
 		
-		System.out.println("Launching root agent " + parameters.getString(p, null));
+		System.out.println("Launching root agent " + rootAgent.getName());
 		IRequest request = node.launch("DIRECT", rootAgent, null);
     	while(request.getStatus() == IRequest.WAITING)
     		Thread.yield();
