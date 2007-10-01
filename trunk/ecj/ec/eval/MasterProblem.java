@@ -121,9 +121,8 @@ public class MasterProblem extends Problem
         ed.mp = this;
         ed.threadnum = threadnum;
         ed.type = Slave.V_EVALUATESIMPLE;
-        ed.inds = new Individual[5]; 
-		for (int i=0; i < 5; i++) 
-			ed.inds[i] = ind;
+        ed.inds = new Individual[1]; 
+		ed.inds[0] = ind;
 		ed.subPops = new int[1]; 
 		ed.subPops[0] = subPopNum;
 		ed.updateFitness = new boolean[ed.inds.length]; 
