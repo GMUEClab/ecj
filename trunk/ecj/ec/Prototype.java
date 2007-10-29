@@ -134,7 +134,7 @@ public interface Prototype extends Cloneable, Setup
         *     return myobj;
         *     } 
         </pre></tt>
-	</ul>
+        </ul>
     */
 
     public Object clone();

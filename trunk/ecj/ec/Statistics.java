@@ -204,30 +204,30 @@ public class Statistics implements Singleton
     /** Steady-state EC only: called each time new individuals are bred during the steady-state
         process. */
     public void individualsBredStatistics(SteadyStateEvolutionState state, Individual[] newIndividuals, 
-										  int[] subpopulations, int[] indicies)
+                                          int[] subpopulations, int[] indicies)
         {
         for(int x=0;x<children.length;x++)
             if (children[x] instanceof SteadyStateStatisticsForm)
                 ((SteadyStateStatisticsForm)children[x]).individualsBredStatistics(state, newIndividuals, 
-																				   subpopulations, indicies);
+                                                                                   subpopulations, indicies);
         }
     
     /** Steady-state EC only: called each time new individuals are evaluated during the steady-state
         process.  You can look up the individuals in state.newIndividuals[] */
     public void individualsEvaluatedStatistics(SteadyStateEvolutionState state, Individual[] newIndividuals, 
-											   Individual[] oldIndividuals, int[] subpopulations, int[] indicies)
+                                               Individual[] oldIndividuals, int[] subpopulations, int[] indicies)
         {
         for(int x=0;x<children.length;x++)
             if (children[x] instanceof SteadyStateStatisticsForm)
                 ((SteadyStateStatisticsForm)children[x]).individualsEvaluatedStatistics(state, newIndividuals, oldIndividuals, 
-																						subpopulations, indicies);
+                                                                                        subpopulations, indicies);
         }
-	
-	/** Steady-State EC only: called each time the generation count increments */ 
-	public void generationBoundaryStatistics(final EvolutionState state) 
-		{
-		for (int x=0; x < children.length; x++) 
-			if (children[x] instanceof SteadyStateStatisticsForm) 
-				((SteadyStateStatisticsForm)children[x]).generationBoundaryStatistics(state); 
-		}
+        
+    /** Steady-State EC only: called each time the generation count increments */ 
+    public void generationBoundaryStatistics(final EvolutionState state) 
+        {
+        for (int x=0; x < children.length; x++) 
+            if (children[x] instanceof SteadyStateStatisticsForm) 
+                ((SteadyStateStatisticsForm)children[x]).generationBoundaryStatistics(state); 
+        }
     }

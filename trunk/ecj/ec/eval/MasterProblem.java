@@ -83,7 +83,7 @@ public class MasterProblem extends Problem
         batchMode = true;
         }
 
-    // wait untill a batch of evaluations is finished
+    // wait until a batch of evaluations is finished
     public void finishEvaluating(final EvolutionState state, final int threadnum)
         {
         if(showDebugInfo)
@@ -122,28 +122,28 @@ public class MasterProblem extends Problem
         ed.threadnum = threadnum;
         ed.type = Slave.V_EVALUATESIMPLE;
         ed.inds = new Individual[1]; 
-		ed.inds[0] = ind;
-		ed.subPops = new int[1]; 
-		ed.subPops[0] = subPopNum;
-		ed.updateFitness = new boolean[ed.inds.length]; 
-		for (int i=0; i < ed.inds.length; i++) 
-			ed.updateFitness[i] = true; 
+        ed.inds[0] = ind;
+        ed.subPops = new int[1]; 
+        ed.subPops[0] = subPopNum;
+        ed.updateFitness = new boolean[ed.inds.length]; 
+        for (int i=0; i < ed.inds.length; i++) 
+            ed.updateFitness[i] = true; 
         server.slaveMonitor.scheduleJobForEvaluation(state,ed);
         if( !batchMode )
             server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
         if(showDebugInfo) state.output.message(Thread.currentThread().getName() + "Finished evaluating the individual.");
         }
-	
-	
-	// send a group of individuals to one slave for evaluation 
-	public void evaluate(EvolutionState state, Individual inds[], int threadnum)
+        
+        
+    // send a group of individuals to one slave for evaluation 
+    public void evaluate(EvolutionState state, Individual inds[], int threadnum)
         {
         if(showDebugInfo)
             state.output.message(Thread.currentThread().getName() + "Starting an evaluation.");
-		
+                
         // Determine the subpopulation number associated with this individual
         int subPopNum[] = new int[inds.length];
-		for(int i=0;i<inds.length;i++)
+        for(int i=0;i<inds.length;i++)
             {
             boolean subPopNumFound = false;
             for (int x=0;x<state.population.subpops.length && !subPopNumFound;x++)
@@ -161,23 +161,23 @@ public class MasterProblem extends Problem
                 state.output.fatal("Whoa!  Couldn't find a matching species for Individual!");
                 }
             }
-		
+                
         // Acquire a slave socket
         EvaluationData ed = new EvaluationData();
         ed.state = state;
         ed.mp = this;
         ed.threadnum = threadnum;
         ed.type = Slave.V_EVALUATESIMPLE;
-		ed.inds = inds;
-		ed.subPops = subPopNum;
+        ed.inds = inds;
+        ed.subPops = subPopNum;
         server.slaveMonitor.scheduleJobForEvaluation(state,ed);
         if( !batchMode )
             server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
         if(showDebugInfo) state.output.message(Thread.currentThread().getName() + "Finished evaluating the individual.");
         }
-	
-	
-	
+        
+        
+        
 
     /* (non-Javadoc)
      * @see ec.simple.SimpleProblemForm#describe(ec.Individual, ec.EvolutionState, int, int, int)
@@ -308,12 +308,12 @@ public class MasterProblem extends Problem
             {
             }
         }
-	
-	public boolean canEvaluate() 
-		{
-		return (server.slaveMonitor.numAvailableSlaves() != 0); 
-		}
-		
-	
+        
+    public boolean canEvaluate() 
+        {
+        return (server.slaveMonitor.numAvailableSlaves() != 0); 
+        }
+                
+        
 
     }

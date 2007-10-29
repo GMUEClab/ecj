@@ -333,12 +333,12 @@ public class LongVectorIndividual extends VectorIndividual
         }
                 
     public void setGenomeLength(int len)
-	{
-	long[] newGenome = new long[len];
-	System.arraycopy(genome, 0, newGenome, len, 
-	    genome.length < newGenome.length ? genome.length : newGenome.length);
-	genome = newGenome;
-	}
+        {
+        long[] newGenome = new long[len];
+        System.arraycopy(genome, 0, newGenome, len, 
+                         genome.length < newGenome.length ? genome.length : newGenome.length);
+        genome = newGenome;
+        }
 
     /** Returns true if each gene value is within is specified [min,max] range. */
     public boolean isInRange() 

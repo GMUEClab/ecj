@@ -339,9 +339,9 @@ public class KozaStatistics extends Statistics implements SteadyStateStatisticsF
             {
             // best individual
             //if (best_of_run[x]==null || 
-                //state.population.subpops[x].individuals[state.newIndividuals[x]].
-                //fitness.betterThan(best_of_run[x].fitness))
-                //best_of_run[x] = state.population.subpops[x].individuals[state.newIndividuals[x]];
+            //state.population.subpops[x].individuals[state.newIndividuals[x]].
+            //fitness.betterThan(best_of_run[x].fitness))
+            //best_of_run[x] = state.population.subpops[x].individuals[state.newIndividuals[x]];
             }
         }
 

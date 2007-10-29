@@ -118,14 +118,14 @@ public abstract class VectorIndividual extends Individual
 
     /** Initializes the individual to a new size.  Only use this if you need to initialize variable-length individuals. */
     public void reset(EvolutionState state, int thread, int newSize)
-	{
-	setGenomeLength(newSize);
-	reset(state, thread);
-	}
+        {
+        setGenomeLength(newSize);
+        reset(state, thread);
+        }
 
     /** Sets the genome length.  If the length is longer, then it is filled with a default value (likely 0 or false).
-	This may or may not be a valid value -- you will need to set appropriate values here. 
-	The default implementation does nothing; but all subclasses in ECJ implement a subset of this. */
+        This may or may not be a valid value -- you will need to set appropriate values here. 
+        The default implementation does nothing; but all subclasses in ECJ implement a subset of this. */
     public void setGenomeLength(int len) { }
 
     /** Splits the genome into n pieces, according to points, which *must* be sorted. 

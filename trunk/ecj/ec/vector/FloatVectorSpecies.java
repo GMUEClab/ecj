@@ -427,7 +427,7 @@ public class FloatVectorSpecies extends VectorSpecies
         mutationType = C_RESET_MUTATION;
         if (mtype == null)
             state.output.warning("No mutation type given for VectorSpecies, assuming 'reset' mutation",
-                    base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE));
+                                 base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE));
         else if (mtype.equalsIgnoreCase(V_RESET_MUTATION))
             mutationType = C_RESET_MUTATION; // redundant
         else if (mtype.equalsIgnoreCase(V_GAUSS_MUTATION))
@@ -441,7 +441,7 @@ public class FloatVectorSpecies extends VectorSpecies
             gaussMutationStdev = state.parameters.getDouble(base.push(P_STDEV),def.push(P_STDEV), 0);
             if (gaussMutationStdev <= 0)
                 state.output.fatal("If it's going to use gaussian mutation, FloatvectorSpecies must have a strictly positive standard deviation",
-                        base.push(P_STDEV), def.push(P_STDEV));
+                                   base.push(P_STDEV), def.push(P_STDEV));
 
             if (individualGeneMinMaxUsed())
                 {
