@@ -39,8 +39,8 @@ public class SteadyStateEvolutionState extends EvolutionState
     /** Holds which subpopulation we are currently operating on */
     int whichSubpop;
     
-    /** First time calling evolve */ 
-    boolean firstTime; 
+    /** First time calling evolve */
+	protected boolean firstTime; 
         
     public void setup(final EvolutionState state, final Parameter base)
         {

@@ -1221,3 +1221,4 @@ Version		Change Log
 	Tweaked the post-tutorial discussion
 	Updated Mersenne Twister to include SerialVersionUIDs to quiet
 		compiler warnings in JDK 1.6
+	
