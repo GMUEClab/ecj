@@ -46,6 +46,6 @@ public abstract class Initializer implements Singleton
         setup() on it!), and calling its populate() method. This method
         will likely only be called once in a run. */
     public abstract Population initialPopulation(final EvolutionState state, int thread);
-	
-	public abstract Population setupPopulation(final EvolutionState state, int thread); 
+        
+    public abstract Population setupPopulation(final EvolutionState state, int thread); 
     }

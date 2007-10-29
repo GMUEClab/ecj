@@ -41,16 +41,16 @@ public class SimpleInitializer extends Initializer
 
     public Population initialPopulation(final EvolutionState state, int thread)
         {
-		Population p = setupPopulation(state, thread); 
-		p.populate(state, thread);
+        Population p = setupPopulation(state, thread); 
+        p.populate(state, thread);
         return p;
         }
-		
-	public Population setupPopulation(final EvolutionState state, int thread)
-		{
-		Parameter base = new Parameter(P_POP);
+                
+    public Population setupPopulation(final EvolutionState state, int thread)
+        {
+        Parameter base = new Parameter(P_POP);
         Population p = (Population) state.parameters.getInstanceForParameterEq(base,null,Population.class);  // Population.class is fine
         p.setup(state,base);
-		return p;
-		}
+        return p;
+        }
     }

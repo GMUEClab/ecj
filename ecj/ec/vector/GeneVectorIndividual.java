@@ -291,15 +291,15 @@ public class GeneVectorIndividual extends VectorIndividual
         }
 
     public void setGenomeLength(int len)
-	{
+        {
         GeneVectorSpecies s = (GeneVectorSpecies) species;
-	VectorGene[] newGenome = new VectorGene[len];
-	System.arraycopy(genome, 0, newGenome, len, 
-	    genome.length < newGenome.length ? genome.length : newGenome.length);
-	for(int x=genome.length; x< newGenome.length; x++)
-	    if (genome[x]==null) genome[x] = (VectorGene)(s.genePrototype.clone());  // not reset
-	genome = newGenome;
-	}
+        VectorGene[] newGenome = new VectorGene[len];
+        System.arraycopy(genome, 0, newGenome, len, 
+                         genome.length < newGenome.length ? genome.length : newGenome.length);
+        for(int x=genome.length; x< newGenome.length; x++)
+            if (genome[x]==null) genome[x] = (VectorGene)(s.genePrototype.clone());  // not reset
+        genome = newGenome;
+        }
 
     public void readGenotype(final EvolutionState state,
                              final DataInput dataInput) throws IOException

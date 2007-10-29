@@ -128,59 +128,59 @@ public class SlaveMonitor
 
         if( toEvaluate.type == Slave.V_EVALUATESIMPLE )
             {
-			try { 
-				// Tell the server we're evaluating a SimpleProblemForm
-				dataOut.writeByte(Slave.V_EVALUATESIMPLE);
-			} catch (Exception e)
-			{
-				state.output.message("Shutdown from EVALUATESIMPLE"); 
-				result.shutdown(state);
-			}
-			}
+            try { 
+                // Tell the server we're evaluating a SimpleProblemForm
+                dataOut.writeByte(Slave.V_EVALUATESIMPLE);
+                } catch (Exception e)
+                    {
+                    state.output.message("Shutdown from EVALUATESIMPLE"); 
+                    result.shutdown(state);
+                    }
+            }
         else
             {
-			try { 
-				// Tell the server we're evaluating a GroupedProblemForm
-				dataOut.writeByte(Slave.V_EVALUATEGROUPED);
-				
-				// Tell the server whether to count victories only or not.
-				dataOut.writeBoolean(toEvaluate.countVictoriesOnly);
-			} catch (Exception e) 
-			{
-				result.shutdown(state); 
-			}
-			}
-		
-		try {
-			// Transmit the subpopulation number to the slave 
-			for(int x=0;x<toEvaluate.subPops.length;x++)
-				dataOut.writeInt(toEvaluate.subPops[x]);
-					
-			// transmit number of individuals 
-			dataOut.writeInt(toEvaluate.inds.length); 
-			
-			// Transmit the individuals to the server for evaluation...
-			for(int i=0;i<toEvaluate.inds.length;i++)
-				{
-				toEvaluate.inds[i].writeIndividual(state, dataOut);
-				if (toEvaluate.type == Slave.V_EVALUATEGROUPED) 
-					dataOut.writeBoolean(toEvaluate.updateFitness[i]);
-				}
-			dataOut.flush();
+            try { 
+                // Tell the server we're evaluating a GroupedProblemForm
+                dataOut.writeByte(Slave.V_EVALUATEGROUPED);
+                                
+                // Tell the server whether to count victories only or not.
+                dataOut.writeBoolean(toEvaluate.countVictoriesOnly);
+                } catch (Exception e) 
+                    {
+                    result.shutdown(state); 
+                    }
+            }
+                
+        try {
+            // Transmit the subpopulation number to the slave 
+            for(int x=0;x<toEvaluate.subPops.length;x++)
+                dataOut.writeInt(toEvaluate.subPops[x]);
+                                        
+            // transmit number of individuals 
+            dataOut.writeInt(toEvaluate.inds.length); 
+                        
+            // Transmit the individuals to the server for evaluation...
+            for(int i=0;i<toEvaluate.inds.length;i++)
+                {
+                toEvaluate.inds[i].writeIndividual(state, dataOut);
+                if (toEvaluate.type == Slave.V_EVALUATEGROUPED) 
+                    dataOut.writeBoolean(toEvaluate.updateFitness[i]);
+                }
+            dataOut.flush();
 
-			if( result.jobQueue.numJobs() < maxJobsPerSlave )
-				{
-				if( !result.isSlaveAvailable )
-					availableSlaves.addLast(result);
-				result.isSlaveAvailable = true;
-				}
+            if( result.jobQueue.numJobs() < maxJobsPerSlave )
+                {
+                if( !result.isSlaveAvailable )
+                    availableSlaves.addLast(result);
+                result.isSlaveAvailable = true;
+                }
 
-		} catch (Exception e) 
-			{
-			state.output.message("Shutdown from transmitting");
-			result.shutdown(state); 
-			}
-		
+            } catch (Exception e) 
+                {
+                state.output.message("Shutdown from transmitting");
+                result.shutdown(state); 
+                }
+                
                 
         // we are not sure whether this notifyAll is useful for anything or not, but it does not hurt for sure (in may incur a small
         // computation to wake up all threads that wait on the monitor, and for them to figure out whether they should wait some more or not).
@@ -293,17 +293,17 @@ public class SlaveMonitor
         {
         return allSlaves.size();
         }
-	
-	/** Returns the number of available slave (not busy) */ 
-	public synchronized int numAvailableSlaves()
-		{
-		return availableSlaves.size(); 
-		}
-	
-	/** Returns the number of evaluated individuals */ 
-	public synchronized int numEvaluatedIndividuals()
-		{
-		return evaluatedIndividuals.size(); 
-		}
+        
+    /** Returns the number of available slave (not busy) */ 
+    public synchronized int numAvailableSlaves()
+        {
+        return availableSlaves.size(); 
+        }
+        
+    /** Returns the number of evaluated individuals */ 
+    public synchronized int numEvaluatedIndividuals()
+        {
+        return evaluatedIndividuals.size(); 
+        }
 
     }

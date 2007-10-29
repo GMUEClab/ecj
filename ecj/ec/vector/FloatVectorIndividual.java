@@ -434,12 +434,12 @@ public class FloatVectorIndividual extends VectorIndividual
         }
                 
     public void setGenomeLength(int len)
-	{
-	float[] newGenome = new float[len];
-	System.arraycopy(genome, 0, newGenome, len, 
-	    genome.length < newGenome.length ? genome.length : newGenome.length);
-	genome = newGenome;
-	}
+        {
+        float[] newGenome = new float[len];
+        System.arraycopy(genome, 0, newGenome, len, 
+                         genome.length < newGenome.length ? genome.length : newGenome.length);
+        genome = newGenome;
+        }
 
     /** Returns true if each gene value is within is specified [min,max] range.
         NaN is presently considered in range but the behavior of this method

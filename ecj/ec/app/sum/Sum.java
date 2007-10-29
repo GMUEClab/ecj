@@ -64,8 +64,8 @@ public class Sum extends Problem implements SimpleProblemForm
         // but first, let's check to make sure that there are no custom
         // max gene values:
         
-    //    if (s.individualGeneMinMaxUsed())  // uh oh...
-    //       state.output.fatal("Whoa!  Can't use separate max-gene values for each gene in this problem!",null);
+        //    if (s.individualGeneMinMaxUsed())  // uh oh...
+        //       state.output.fatal("Whoa!  Can't use separate max-gene values for each gene in this problem!",null);
         
         // okay, we know we're fine.
         int maximumSum = (int)s.maxGene*ind2.genome.length;
@@ -76,7 +76,7 @@ public class Sum extends Problem implements SimpleProblemForm
                                                  (float)(((double)sum)/(maximumSum)),
                                                  ///... our definition of the ideal individual
                                                  sum == maximumSum);
-		
+                
         ind2.evaluated = true;
         }
     

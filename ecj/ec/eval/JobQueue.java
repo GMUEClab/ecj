@@ -113,10 +113,10 @@ public class JobQueue
                 }
 
             EvaluationData ed = (EvaluationData)(objects.getFirst());
-			Individual result = ed.inds[ed.index];
-			slaveMonitor.notifyAll();
-			return result;
-			}
+            Individual result = ed.inds[ed.index];
+            slaveMonitor.notifyAll();
+            return result;
+            }
         }
 
     /**

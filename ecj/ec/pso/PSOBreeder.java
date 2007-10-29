@@ -67,12 +67,12 @@ public class PSOBreeder extends Breeder
             for (int j = 0; j < ind.genomeLength(); j++)
                 { 
                 double velocity = ind.genome[j] - prevInd.genome[j];
-                double pDelta = pBest.genome[j] - ind.genome[j];			// difference to personal best
-                double nDelta = nBest.genome[j] - ind.genome[j];			// difference to neighborhood best
-                double gDelta = gBest.genome[j] - ind.genome[j];			// difference to global best
-                double pWeight = state.random[0].nextDouble();				// weight for personal best
-                double nWeight = state.random[0].nextDouble();				// weight for neighborhood best
-                double gWeight = state.random[0].nextDouble();				// weight for global best
+                double pDelta = pBest.genome[j] - ind.genome[j];                        // difference to personal best
+                double nDelta = nBest.genome[j] - ind.genome[j];                        // difference to neighborhood best
+                double gDelta = gBest.genome[j] - ind.genome[j];                        // difference to global best
+                double pWeight = state.random[0].nextDouble();                          // weight for personal best
+                double nWeight = state.random[0].nextDouble();                          // weight for neighborhood best
+                double gWeight = state.random[0].nextDouble();                          // weight for global best
                 double newDelta = (velocity + pWeight*pDelta + nWeight*nDelta + gWeight*gDelta) / (1+pWeight+nWeight+gWeight);
                         
                 // update this individual's genome for this dimension
@@ -80,7 +80,7 @@ public class PSOBreeder extends Breeder
                 }
             
             if (subpop.clampRange)
-            	ind.clamp();                 
+                ind.clamp();                 
             }               
                 
         // update previous locations

@@ -17,11 +17,11 @@ import java.io.*;
  
  <p>Particle Swarm Optimization (PSO) is a population-oriented stochastic search 
  technique similar to genetic algorithms, evolutionary strategies, and other evolutionary
-  computation algorithms. The technique discovers solutions for N-dimensional 
-  parameterized problems: basically it discovers the point in N-dimensional space which
-   maximizes some quality function. 
+ computation algorithms. The technique discovers solutions for N-dimensional 
+ parameterized problems: basically it discovers the point in N-dimensional space which
+ maximizes some quality function. 
    
-   <p>PSOSubpopulation handles initialization and input/output of the swarm.   
+ <p>PSOSubpopulation handles initialization and input/output of the swarm.   
  
  <p><b>Parameters</b><br>
  <table>
@@ -106,26 +106,26 @@ public class PSOSubpopulation extends Subpopulation
         {
         super.populate(state, thread);
         
-		if (loadInds == null)  // we're generating new individuals, not reading them from a file
-		    {
-		    FloatVectorSpecies fvSpecies = (FloatVectorSpecies)species;
-		    double range = fvSpecies.maxGene - fvSpecies.minGene;
-		    
-		    for (int i = 0; i < individuals.length; i++)
-				{
-				DoubleVectorIndividual prevInd = (DoubleVectorIndividual)individuals[i].clone();
-				    
-				// pick a genome near prevInd but not outside the box
-				for(int j = 0; j < prevInd.genomeLength(); j++)
-				    {
-				    double val = prevInd.genome[j];
-				    do 
-				    	prevInd.genome[j] = val + (range * initialVelocityScale) * (state.random[thread].nextDouble()*2.0 - 1.0);
-				    while (prevInd.genome[j] < fvSpecies.minGene(j) || prevInd.genome[j] > fvSpecies.maxGene(j));
-				    }
-				previousIndividuals[i] = prevInd;
-				}
-		    }
+        if (loadInds == null)  // we're generating new individuals, not reading them from a file
+            {
+            FloatVectorSpecies fvSpecies = (FloatVectorSpecies)species;
+            double range = fvSpecies.maxGene - fvSpecies.minGene;
+                    
+            for (int i = 0; i < individuals.length; i++)
+                {
+                DoubleVectorIndividual prevInd = (DoubleVectorIndividual)individuals[i].clone();
+                                    
+                // pick a genome near prevInd but not outside the box
+                for(int j = 0; j < prevInd.genomeLength(); j++)
+                    {
+                    double val = prevInd.genome[j];
+                    do 
+                        prevInd.genome[j] = val + (range * initialVelocityScale) * (state.random[thread].nextDouble()*2.0 - 1.0);
+                    while (prevInd.genome[j] < fvSpecies.minGene(j) || prevInd.genome[j] > fvSpecies.maxGene(j));
+                    }
+                previousIndividuals[i] = prevInd;
+                }
+            }
         }
 
     /** Overridden to include the global best, neighborhood bests, personal bests, and previous individuals in the stream.
