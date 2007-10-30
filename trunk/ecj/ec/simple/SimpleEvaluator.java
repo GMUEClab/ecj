@@ -143,27 +143,7 @@ public class SimpleEvaluator extends Evaluator
                     return true;
         return false;
         }
-                
-                
-    /** Steady-state and Asynchronous EC only:  used to determine if 
-        we can evaluate an individual */ 
-    public boolean canEvaluate()
-        {
-        return true; 
-        }
-                
-    /** Steady-state and Asynchronous EC only:  used to determine if 
-        an evaluated individual has returned */ 
-    public boolean isNextEvaluatedIndividualAvailable()
-        {
-        return true; 
-        }
-                
-    public void evaluateIndividual(final EvolutionState state, Individual ind, int subpop)
-        {
-        }
-                
-    }
+	}
 
 /** A private helper class for implementing multithreaded evaluation */
 class SimpleEvaluatorThread implements Runnable
