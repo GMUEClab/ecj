@@ -140,7 +140,7 @@ public class SteadyStateEvolutionState extends EvolutionState
         boolean partiallyFullSubpop = (individualCount[whichSubpop] < population.subpops[whichSubpop].individuals.length);  
                 
         // MAIN EVOLVE LOOP 
-        if (((SimpleEvaluator)evaluator).canEvaluate()) {  // are we ready to evaluate? 
+        if (((SteadyStateEvaluator)evaluator).canEvaluate()) {  // are we ready to evaluate? 
             Individual ind=null; 
             int numDuplicateRetries = population.subpops[whichSubpop].numDuplicateRetries; 
 
@@ -153,9 +153,11 @@ public class SteadyStateEvolutionState extends EvolutionState
                     statistics.individualsBredStatistics(this, null, null, null); 
                     }
                                 
-                if (numDuplicateRetries >= 1)  { 
+                if (numDuplicateRetries >= 1)  
+				{ 
                     Object o = individualHash.get(ind); 
-                    if (o == null) { 
+                    if (o == null) 
+					{ 
                         individualHash.put(ind, ind); 
                         break; 
                         }
@@ -163,11 +165,12 @@ public class SteadyStateEvolutionState extends EvolutionState
                 } // tried to cut down the duplicates 
                         
             // evaluate the new individual
-            ((SimpleEvaluator)evaluator).evaluateIndividual(this, ind, whichSubpop);
+            ((SteadyStateEvaluator)evaluator).evaluateIndividual(this, ind, whichSubpop);
             }
                 
         boolean didEvaluate = false;
-        if (((SimpleEvaluator)evaluator).isNextEvaluatedIndividualAvailable()) {  // do we have an evaluated individual? 
+        if (((SteadyStateEvaluator)evaluator).isNextEvaluatedIndividualAvailable())   // do we have an evaluated individual? 
+			{
             QueueIndividual q  = ((SteadyStateEvaluator)evaluator).getNextEvaluatedIndividual(); // remove from queue 
                                                 
             if ( partiallyFullSubpop ) {  // is subpopulation full? 

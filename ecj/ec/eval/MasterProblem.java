@@ -11,6 +11,7 @@ import ec.*;
 import ec.util.*;
 import ec.coevolve.GroupedProblemForm;
 import ec.simple.SimpleProblemForm;
+import java.util.ArrayList;
 
 import java.io.*;
 
@@ -37,11 +38,13 @@ import java.io.*;
  * @version 1.0 
  */
 
-public class MasterProblem extends Problem 
-    implements SimpleProblemForm, GroupedProblemForm 
+public class MasterProblem extends Problem implements SimpleProblemForm, GroupedProblemForm 
     {
 
     public static final String P_DEBUG_INFO = "debug-info";
+	public static final String P_CHUNK_SIZE = "chunk-size";
+	
+	int chunkSize;
     boolean showDebugInfo;
 
     public Problem problem;
@@ -74,12 +77,17 @@ public class MasterProblem extends Problem
         Thread.currentThread().setName("MainThread: ");
         super.setup(state, base);
         showDebugInfo = state.parameters.getBoolean(base.push(P_DEBUG_INFO),null,false);
+		
+		
+		/// INCOMPLETE: LOAD THE CHUNK SIZE
+		
         batchMode = false;
         }
 
     // prepare for a batch of evaluations
     public void prepareToEvaluate(final EvolutionState state, final int threadnum)
         {
+		if (chunkSize > 1) queue = new ArrayList();
         batchMode = true;
         }
 
@@ -88,6 +96,9 @@ public class MasterProblem extends Problem
         {
         if(showDebugInfo)
             state.output.message(Thread.currentThread().getName() + "Waiting for all slaves to finish.");
+		flush(state, threadnum);
+		queue = null;  // get rid of it just in case
+		
         server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
         batchMode = false;
         if(showDebugInfo)
@@ -97,46 +108,74 @@ public class MasterProblem extends Problem
     // evaluate a regular individual
     public void evaluate(EvolutionState state, Individual ind, int threadnum)
         {
-        if(showDebugInfo)
-            state.output.message(Thread.currentThread().getName() + "Starting an evaluation.");
+		if (chunkSize > 1 && batchMode == true)    // chunked evaluation mechanism, no idea if this works yet.
+			{
+			queue.add(ind);
+			if (queue.size() >= chunkSize)
+				flush(state, threadnum);
+			}
+		else    /// ordinary evaluation mechanism  -- can we do the replacement below that we did?
+			{
+			evaluate(state, new Individual[] { ind }, threadnum);
+			/*
+			if(showDebugInfo)
+				state.output.message(Thread.currentThread().getName() + "Starting an evaluation.");
 
-        // Determine the subpopulation number associated with this individual
-        int subPopNum = 0;
-        boolean found = false;
-        for (int x=0;x<state.population.subpops.length && !found;x++)
-            {
-            if (state.population.subpops[x].species == ind.species)
-                {
-                subPopNum = x;
-                found = true;
-                }
-            }
+			// Determine the subpopulation number associated with this individual
+			int subPopNum = 0;
+			boolean found = false;
+			for (int x=0;x<state.population.subpops.length && !found;x++)
+				{
+				if (state.population.subpops[x].species == ind.species)
+					{
+					subPopNum = x;
+					found = true;
+					}
+				}
 
-        if (!found)
-            state.output.fatal("Whoa!  Couldn't find a matching species for the individual!");
+			if (!found)
+				state.output.fatal("Whoa!  Couldn't find a matching species for the individual!");
 
-        // Acquire a slave socket
-        EvaluationData ed = new EvaluationData();
-        ed.state = state;
-        ed.mp = this;
-        ed.threadnum = threadnum;
-        ed.type = Slave.V_EVALUATESIMPLE;
-        ed.inds = new Individual[1]; 
-        ed.inds[0] = ind;
-        ed.subPops = new int[1]; 
-        ed.subPops[0] = subPopNum;
-        ed.updateFitness = new boolean[ed.inds.length]; 
-        for (int i=0; i < ed.inds.length; i++) 
-            ed.updateFitness[i] = true; 
-        server.slaveMonitor.scheduleJobForEvaluation(state,ed);
-        if( !batchMode )
-            server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
-        if(showDebugInfo) state.output.message(Thread.currentThread().getName() + "Finished evaluating the individual.");
+			// Acquire a slave socket
+			EvaluationData ed = new EvaluationData();
+			ed.state = state;
+			ed.mp = this;
+			ed.threadnum = threadnum;
+			ed.type = Slave.V_EVALUATESIMPLE;
+			ed.inds = new Individual[1]; 
+			ed.inds[0] = ind;
+			ed.subPops = new int[1]; 
+			ed.subPops[0] = subPopNum;
+			ed.updateFitness = new boolean[ed.inds.length]; 
+			for (int i=0; i < ed.inds.length; i++) 
+				ed.updateFitness[i] = true; 
+			server.slaveMonitor.scheduleJobForEvaluation(state,ed);
+			if( !batchMode )
+				server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
+			if(showDebugInfo) state.output.message(Thread.currentThread().getName() + "Finished evaluating the individual.");
+			*/
+			}
         }
         
         
+	ArrayList queue;
+	void flush(EvolutionState state, int threadnum)
+		{
+		if (queue!=null && queue.size() > 0 )
+			{
+			Individual[] inds = new Individual[queue.size()];
+			for(int i = 0; i < queue.size(); i++)
+				{
+				inds[i] = (Individual)(queue.get(i));
+				}
+			evaluate(state, inds, threadnum);
+			}
+		queue = new ArrayList();
+		}
+
+
     // send a group of individuals to one slave for evaluation 
-    public void evaluate(EvolutionState state, Individual inds[], int threadnum)
+	void evaluate(EvolutionState state, Individual inds[], int threadnum)
         {
         if(showDebugInfo)
             state.output.message(Thread.currentThread().getName() + "Starting an evaluation.");

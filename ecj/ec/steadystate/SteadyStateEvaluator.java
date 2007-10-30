@@ -5,6 +5,7 @@
 */
 
 
+                
 package ec.steadystate;
 import ec.simple.*;
 import ec.*;
@@ -35,18 +36,25 @@ public class SteadyStateEvaluator extends SimpleEvaluator
         if (problem instanceof MasterProblem) 
             ((MasterProblem)problem).prepareToEvaluate(state, thread); 
         }
-        
+	
+	/** Submits an individual to be evaluated by the Problem, and adds it and its subpopulation to the queue. */
     public void evaluateIndividual(final EvolutionState state, Individual ind, int subpop)
         {
         problem.evaluate(state, ind, 0);
-        addNextEvaluatedIndividual(ind, subpop); 
+        QueueIndividual q = new QueueIndividual(ind, subpop);
+        queue.addLast(q); 
         }
-        
+    
+	/** Returns true if we're ready to evaluate an individual.  Ordinarily this is ALWAYS true,
+	    except in the asynchronous evolution situation, where we may not have a processor ready yet. */
     public boolean canEvaluate() 
         {
         return problem.canEvaluate(); 
         }
         
+	/** Returns true if an evaluated individual is in the queue and ready to come back to us.  
+	    Ordinarily this is ALWAYS true at the point that we call it, except in the asynchronous 
+		evolution situation, where we may not have a job completed yet. */
     public boolean isNextEvaluatedIndividualAvailable()
         {
         return (queue.size() != 0); 
@@ -56,13 +64,6 @@ public class SteadyStateEvaluator extends SimpleEvaluator
     public QueueIndividual getNextEvaluatedIndividual()
         {
         return (QueueIndividual)queue.removeFirst(); 
-        }
-        
-    /** Adds the individual and corresponding subpopulation to the queue */ 
-    public void addNextEvaluatedIndividual (Individual ind, int subpop) 
-        {
-        QueueIndividual q = new QueueIndividual(ind, subpop);
-        queue.addLast(q); 
         }
     }
 
