@@ -78,9 +78,10 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         super.setup(state, base);
         showDebugInfo = state.parameters.getBoolean(base.push(P_DEBUG_INFO),null,false);
 		
-		
-		/// INCOMPLETE: LOAD THE CHUNK SIZE
-		
+        chunkSize = state.parameters.getIntWithDefault(base.push(P_CHUNK_SIZE),null,1);
+        if (chunkSize<=0)
+            state.output.fatal("The chunk size must be an integer > 0.", base.push(P_CHUNK_SIZE));
+
         batchMode = false;
         }
 
