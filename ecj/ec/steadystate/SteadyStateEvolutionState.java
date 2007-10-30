@@ -84,7 +84,7 @@ public class SteadyStateEvolutionState extends EvolutionState
         output.message("Initializing Generation 0");
         statistics.preInitializationStatistics(this);
         population = initializer.setupPopulation(this, 0);  // unthreaded
-        statistics.postInitializationStatistics(this);
+        //statistics.postInitializationStatistics(this);   // not in steady state
 
         // INITIALIZE VARIABLES
         if (numEvaluations > 0 && numEvaluations < population.subpops[0].individuals.length)
@@ -168,18 +168,17 @@ public class SteadyStateEvolutionState extends EvolutionState
             ((SteadyStateEvaluator)evaluator).evaluateIndividual(this, ind, whichSubpop);
             }
                 
-        boolean didEvaluate = false;
-        if (((SteadyStateEvaluator)evaluator).isNextEvaluatedIndividualAvailable())   // do we have an evaluated individual? 
-			{
+        if (((SimpleEvaluator)evaluator).isNextEvaluatedIndividualAvailable())   // do we have an evaluated individual? 
+	{
             QueueIndividual q  = ((SteadyStateEvaluator)evaluator).getNextEvaluatedIndividual(); // remove from queue 
                                                 
             if ( partiallyFullSubpop ) {  // is subpopulation full? 
                 population.subpops[q.subpop].individuals[individualCount[q.subpop]++]=q.ind; 
                                 
                 // STATISTICS FOR GENERATION ZERO 
-                if ( individualCount[q.subpop] < population.subpops[q.subpop].individuals.length ) 
+                if ( individualCount[q.subpop] == population.subpops[q.subpop].individuals.length ) 
                     if (statistics instanceof SteadyStateStatisticsForm)
-                        ((SteadyStateStatisticsForm)statistics).postInitialEvaluationStatistics(this); 
+                        ((SteadyStateStatisticsForm)statistics).postInitialEvaluationStatistics(q.subpop, this); 
                 }
             else  { 
                 // mark individual for death 
@@ -198,16 +197,14 @@ public class SteadyStateEvolutionState extends EvolutionState
                                                 
             // INCREMENT NUMBER OF COMPLETED EVALUATIONS
             evaluations++;
-            didEvaluate = true;
-            }
-                
-        // COMPUTE GENERATION BOUNDARY
-        if (didEvaluate) { 
+	    
+	    // COMPUTE GENERATION BOUNDARY
             generationBoundary = (evaluations % generationSize == 0);
             }
-        else 
+	else
+	    {
             generationBoundary = false; 
-
+	    }
 
         // SHOULD WE QUIT?
         if (!partiallyFullSubpop && evaluator.runComplete(this) && quitOnRunComplete)
@@ -247,7 +244,7 @@ public class SteadyStateEvolutionState extends EvolutionState
                         
             // STATISTICS 
             statistics.generationBoundaryStatistics(this); 
-            statistics.postEvaluationStatistics(this); 
+            //statistics.postEvaluationStatistics(this); 
             }
         return R_NOTDONE;
         }

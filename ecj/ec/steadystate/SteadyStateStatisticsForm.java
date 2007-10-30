@@ -34,12 +34,17 @@ public interface SteadyStateStatisticsForm
     {
     /** Called immediately before population initialization occurs. */
     public void preInitializationStatistics(final EvolutionState state);
-    /** Called immediately after population initialization occurs. */
-    public void postInitializationStatistics(final EvolutionState state);
+    
+    /// No longer called because we don't know when the population's
+    /// initialization has been completed (it could be asynchronous)
+    /* Called immediately after population initialization occurs. */
+    //public void postInitializationStatistics(final EvolutionState state);
+    
+    
     /** Called immediately before the initial generation is evaluated. */
     public void preInitialEvaluationStatistics(final SteadyStateEvolutionState state);
     /** Called immediately after the initial generation is evaluated. */
-    public void postInitialEvaluationStatistics(final SteadyStateEvolutionState state);
+    public void postInitialEvaluationStatistics(int subpop, final SteadyStateEvolutionState state);
     /** Called each time new individuals are bred during the steady-state
         process.   */
     public void individualsBredStatistics(SteadyStateEvolutionState state, Individual[] newIndividuals, 
