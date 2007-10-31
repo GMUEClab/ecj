@@ -168,7 +168,7 @@ public class SteadyStateEvolutionState extends EvolutionState
             ((SteadyStateEvaluator)evaluator).evaluateIndividual(this, ind, whichSubpop);
             }
                 
-        if (((SimpleEvaluator)evaluator).isNextEvaluatedIndividualAvailable())   // do we have an evaluated individual? 
+        if (((SteadyStateEvaluator)evaluator).isNextEvaluatedIndividualAvailable())   // do we have an evaluated individual? 
 	{
             QueueIndividual q  = ((SteadyStateEvaluator)evaluator).getNextEvaluatedIndividual(); // remove from queue 
                                                 

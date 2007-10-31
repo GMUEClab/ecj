@@ -98,7 +98,8 @@ public class Statistics implements Singleton
         for(int x=0;x<children.length;x++)
             children[x].preInitializationStatistics(state);
         }
-    /** Called immediately after population initialization occurs. */
+	
+    /** GENERATIONAL: Called immediately after population initialization occurs. */
     public void postInitializationStatistics(final EvolutionState state) 
         {
         for(int x=0;x<children.length;x++)
@@ -119,14 +120,14 @@ public class Statistics implements Singleton
             children[x].postCheckpointStatistics(state);
         }
 
-    /** Called immediately before evaluation occurs. */
+    /** GENERATIONAL: Called immediately before evaluation occurs. */
     public void preEvaluationStatistics(final EvolutionState state)
         {
         for(int x=0;x<children.length;x++)
             children[x].preEvaluationStatistics(state);
         }
 
-    /** Called immediately after evaluation occurs. */
+    /** GENERATIONAL: Called immediately after evaluation occurs. */
     public void postEvaluationStatistics(final EvolutionState state)
         {
         for(int x=0;x<children.length;x++)
@@ -147,14 +148,14 @@ public class Statistics implements Singleton
             children[x].postPreBreedingExchangeStatistics(state);
         }
 
-    /** Called immediately before breeding occurs. */
+    /** GENERATIONAL: Called immediately before breeding occurs. */
     public void preBreedingStatistics(final EvolutionState state)
         {
         for(int x=0;x<children.length;x++)
             children[x].preBreedingStatistics(state);
         }
 
-    /** Called immediately after breeding occurs. */
+    /** GENERATIONAL: Called immediately after breeding occurs. */
     public void postBreedingStatistics(final EvolutionState state)
         {
         for(int x=0;x<children.length;x++)
@@ -185,7 +186,7 @@ public class Statistics implements Singleton
             children[x].finalStatistics(state, result);
         }
     
-    /** Steady-state EC only: called immediately before the initial generation is evaluated. */
+    /** STEADY-STATE: called immediately before the initial generation is evaluated. */
     public void preInitialEvaluationStatistics(final SteadyStateEvolutionState state)
         {
         for(int x=0;x<children.length;x++)
@@ -193,15 +194,15 @@ public class Statistics implements Singleton
                 ((SteadyStateStatisticsForm)children[x]).preInitialEvaluationStatistics(state);
         }
         
-    /** Steady-state EC only: called immediately after the initial generation is evaluated. */
-    public void postInitialEvaluationStatistics(final SteadyStateEvolutionState state)
+    /** STEADY-STATE: called immediately after the a subpopulation's first full evaluation has been completed. */
+    public void postInitialEvaluationStatistics(int subpop, final SteadyStateEvolutionState state)
         {
         for(int x=0;x<children.length;x++)
             if (children[x] instanceof SteadyStateStatisticsForm)
-                ((SteadyStateStatisticsForm)children[x]).postInitialEvaluationStatistics(state);
+                ((SteadyStateStatisticsForm)children[x]).postInitialEvaluationStatistics(subpop, state);
         }
         
-    /** Steady-state EC only: called each time new individuals are bred during the steady-state
+    /** STEADY-STATE: called each time new individuals are bred during the steady-state
         process. */
     public void individualsBredStatistics(SteadyStateEvolutionState state, Individual[] newIndividuals, 
                                           int[] subpopulations, int[] indicies)
@@ -212,7 +213,7 @@ public class Statistics implements Singleton
                                                                                    subpopulations, indicies);
         }
     
-    /** Steady-state EC only: called each time new individuals are evaluated during the steady-state
+    /** STEADY-STATE: called each time new individuals are evaluated during the steady-state
         process.  You can look up the individuals in state.newIndividuals[] */
     public void individualsEvaluatedStatistics(SteadyStateEvolutionState state, Individual[] newIndividuals, 
                                                Individual[] oldIndividuals, int[] subpopulations, int[] indicies)
@@ -223,7 +224,7 @@ public class Statistics implements Singleton
                                                                                         subpopulations, indicies);
         }
         
-    /** Steady-State EC only: called each time the generation count increments */ 
+    /** STEADY-STATE: called each time the generation count increments */ 
     public void generationBoundaryStatistics(final EvolutionState state) 
         {
         for (int x=0; x < children.length; x++) 
