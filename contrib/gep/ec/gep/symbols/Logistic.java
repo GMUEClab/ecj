@@ -26,6 +26,6 @@ public class Logistic extends GEPFunctionSymbol {
 
 	public String printMathExpression( String p[] )
 	{
-		return "(1/(1+pow(e,-"+p[0]+"))";
+		return "(1/(1+pow(e,-"+p[0]+")))";
 	}
 }
