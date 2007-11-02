@@ -285,7 +285,7 @@ public class GEPSymbolSet implements Clique
         else
         {
            numberOfTerminals = state.parameters.getInt(base.push(P_TERMINALSIZE), def.push(P_TERMINALSIZE),1);
-        }
+        } 
         numberOfSymbols += numberOfTerminals;
         
         if (numberOfSymbols < 1)

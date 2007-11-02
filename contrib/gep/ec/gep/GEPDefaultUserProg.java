@@ -31,8 +31,15 @@ import java.lang.reflect.*;
  * @author Bob Orchard
  *
  * A class that will be the default user program if none is specified. If this is 
- * the case then the user will have to specify the 'fitness-function' paramater so that
+ * the case then the user will have to specify the 'fitness-function' parameter so that
  * this function can do the required fitness evaluation as evolution takes place.
+ * Note that some fitness functions (such as AH -Absolute/Hits) take extra double arguments.
+ * These are passed as a single extra argumnet in a double array. To specifiy these the user must
+ * provide a series of parameters of the form:
+ * 
+ * fitness-function-arg0  1st extra double value
+ * fitness-function-arg1  2nd extra double value
+ * ...
  * 
  */
 
@@ -43,24 +50,22 @@ public class GEPDefaultUserProg extends GEPProblem implements SimpleProblemForm
 	 */
 	String fitnessFunction = "";
 	/**
-	 * The 1st numeric argument to be used with the fitness function
+	 * The extra numeric (double) arguments to be used with certain fitness functions
 	 */
-	Double ffArg0;
+	double ffArgs[];
 	/**
-	 * The 2nd numeric argument to be used with the fitness function
+	 * True if extra numeric args provided for the fitness function 
 	 */
-	Double ffArg1;
-	/**
-	 * The number of numeric args that the fitness function requires
-	 */
-	int ffNumArgs = 0;
+	boolean ffExtraArgs = false;
 	
 	/**
-	 * The paramater for specifiying the fitness function
+	 * The parameters for specifiying the fitness function:
+	 * 
+	 * fitness-function will be a string with the name of the fitness function to be used
+	 * fitness-function-argn (with n = 0, 1, 2, ...) will be the extra double args for the ff
 	 */
 	public static final String P_FITNESS_FUNCTION = "fitness-function";
-	public static final String P_FITNESS_FUNCTION_ARG0 = "fitness-function-arg0";
-	public static final String P_FITNESS_FUNCTION_ARG1 = "fitness-function-arg1";
+	public static final String P_FITNESS_FUNCTION_ARG = "fitness-function-arg";
 	
 	/**
 	 * Will use Java reflection to get find method to call for the user specified fitness function
@@ -82,37 +87,28 @@ public class GEPDefaultUserProg extends GEPProblem implements SimpleProblemForm
         	state.output.fatal("Must specify the fitness-function parameter when using the default user program (GEPDefaultUserProg).", 
         			base.push(P_FITNESS_FUNCTION));
         // get the fitness method (in GEPFitnessFunction) to use when evaluate is called.
-        // The fitness methods usually have 1 argument, but some have 1 or 2 extra
+        // The fitness methods usually have 1 argument, but some have extra
         // double values associated with them. So try to find the right one.
 		fitnessMaxName = fitnessName + "maxFitness";
 		fitnessName += "fitness";
         try
-        {   // try to find method with 3 args
+        {   // try to find method with extra args -- 2nd arg is array of doubles
         	fitnessMethod = GEPFitnessFunction.class.getMethod(fitnessName, 
-        			new Class[]{GEPIndividual.class, double.class, double.class});
-        	ffNumArgs = 2;
+        			new Class[]{GEPIndividual.class, double[].class});
+        	ffExtraArgs = true; /// will have at least 1 numeric argument in an array of doubles
         }
         catch (Exception e1)
         {   
-            try
-            {   // try to find method with 2 args
-            	fitnessMethod = GEPFitnessFunction.class.getMethod(fitnessName, 
-            			new Class[]{GEPIndividual.class, double.class});
-            	ffNumArgs = 1;
-            }
-            catch (Exception e2)
-            { 
-            	try
-            	{	// try to find method with 1 arg
-            		fitnessMethod = GEPFitnessFunction.class.getMethod(fitnessName, new Class[]{GEPIndividual.class});
-            		ffNumArgs = 0;
-            	}
-            	catch (NoSuchMethodException e3)
-            	{
-            		state.output.fatal("GEPDEfaultUserProg:No fitness-function '" + 
-        			fitnessName + "' was found.\n" + e3);
-            	}
-            }
+        	try
+        	{	// try to find method with only 1 argument
+        		fitnessMethod = GEPFitnessFunction.class.getMethod(fitnessName, new Class[]{GEPIndividual.class});
+        		ffExtraArgs = false; // no extra numeric args for the fitness function
+        	}
+        	catch (NoSuchMethodException e3)
+        	{
+        		state.output.fatal("GEPDEfaultUserProg:No fitness-function '" + 
+    			fitnessName + "' was found.\n" + e3);
+        	}
         }
         try
         {
@@ -123,26 +119,23 @@ public class GEPDefaultUserProg extends GEPProblem implements SimpleProblemForm
     		state.output.fatal("GEPDEfaultUserProg:No max fitness-function '" + 
 			fitnessName + "' was found.\n" + e3);
     	}
-    	// get the args from the parameter file if required.
-    	if (ffNumArgs > 0)
+    	// get the extra args from the parameter file if required.
+    	if (ffExtraArgs)
     	{
-    		if (state.parameters.exists(base.push(P_FITNESS_FUNCTION_ARG0)))
-    			ffArg0 = new Double(state.parameters.getDoubleWithDefault(base.push(P_FITNESS_FUNCTION_ARG0), 
-    					base.push(P_FITNESS_FUNCTION_ARG0), 0.0));
-    		else
-    			state.output.fatal("GEPDEfaultUserProg: Fitnsess function '" + fitnessName + 
-    					"' requires 2 numeric arguments be specified with fitness-function-arg1 and fitness-function-arg1 parameters.", 
-    					base.push(P_FITNESS_FUNCTION_ARG0));
-    		if (ffNumArgs == 2)
+    		Vector extraArgsVec = new Vector();
+    		int argnum = 0;
+    		String ffArg_param_name = P_FITNESS_FUNCTION_ARG + argnum;
+    		while (state.parameters.exists(base.push(ffArg_param_name)))
     		{
-        		if (state.parameters.exists(base.push(P_FITNESS_FUNCTION_ARG1)))
-        			ffArg1 = new Double(state.parameters.getDoubleWithDefault(base.push(P_FITNESS_FUNCTION_ARG1), 
-        					base.push(P_FITNESS_FUNCTION_ARG1), 0.0));
-        		else
-        			state.output.fatal("GEPDEfaultUserProg: Fitnsess function '" + fitnessName + 
-        					"' requires 2 numeric arguments be specified with fitness-function-arg1 and fitness-function-arg1 parameters.", 
-        					base.push(P_FITNESS_FUNCTION_ARG1));
+    			Double ffarg = new Double(state.parameters.getDoubleWithDefault(base.push(ffArg_param_name), 
+    					base.push(ffArg_param_name), 0.0));
+    			extraArgsVec.add(ffarg);
+    			argnum++;
+    			ffArg_param_name = P_FITNESS_FUNCTION_ARG + argnum;
     		}
+    		ffArgs = new double[extraArgsVec.size()];
+    		for (int i=0; i<ffArgs.length; i++)
+    			ffArgs[i] = ((Double)extraArgsVec.get(i)).doubleValue();
     	}
     }
 
@@ -155,18 +148,11 @@ public class GEPDefaultUserProg extends GEPProblem implements SimpleProblemForm
         	// execute the fitness function
         	try
         	{
-	            switch (ffNumArgs)
-	            {
-	             default:
-	             case 0:
+        		if (ffExtraArgs)
+        			fitnessD = (Double)fitnessMethod.invoke(null, new Object[]{(GEPIndividual)ind, ffArgs});
+        		else
 	            	fitnessD = (Double)fitnessMethod.invoke(null, new Object[]{(GEPIndividual)ind});
-	            	break;
-	             case 1:
-	            	fitnessD = (Double)fitnessMethod.invoke(null, new Object[]{(GEPIndividual)ind, ffArg0});
-	            	break;
-	             case 2:
-	            	fitnessD = (Double)fitnessMethod.invoke(null, new Object[]{(GEPIndividual)ind, ffArg0, ffArg1});
-	            }
+        		
 	            fitness = fitnessD.doubleValue();
 	        	// execute the function that provides the maximum value for the fitness (e.g. 1000)         
 	            Double fitnessMaxD = (Double)fitnessMaxMethod.invoke(null, new Object[]{(GEPIndividual)ind});

@@ -25,6 +25,8 @@ import ec.gp.GPNode;
 import ec.util.*;
 import java.io.*;
 import java.util.*;
+import jscl.math.Expression;
+import jscl.text.ParseException;
 
 /* 
  * GEPIndividual.java
@@ -51,7 +53,7 @@ import java.util.*;
  * You don't need to implement them if you don't plan on using read/writeIndividual.
  *
  * <li><b>printIndividual(...,PrintWriter)/readIndividual(...,LineNumberReader)</b>&nbsp;&nbsp;&nbsp;This
- * approacch transmits or receives an indivdual in text encoded such that the individual is largely readable
+ * approach transmits or receives an individual in text encoded such that the individual is largely readable
  * by humans but can be read back in 100% by ECJ as well.  To do this, these methods will encode numbers
  * using the <tt>ec.util.Code</tt> class.  These methods are mostly used to write out populations to
  * files for inspection, slight modification, then reading back in later on.  <b>readIndividual</b>reads
@@ -352,10 +354,19 @@ public class GEPIndividual extends Individual
     
     public String genotypeToStringForHumans()
     {
-			String s = "Linking function: " + ((GEPSpecies)species).linkingFunctionName + "\n";
+			String s = "Linking function: " + ((GEPSpecies)species).linkingFunctionName + 
+					   "\n\nGEP-MODEL\nKARVA\n";
 			s = s + genotypeToStringForHumansKarva();
-			s = s + "\n" + genotypeToStringForHumansMathExpression();
-			s = s + "\n";
+			String mathExpression = genotypeToStringForHumansMathExpression();
+			s = s + "\nMATH\n" + mathExpression;
+			try
+			{
+				s = s + "\n\nMATH (SIMPLIFIED)\n" + Expression.valueOf(mathExpression).simplify().toString() + "\n";
+			}
+			catch (Exception e)
+			{
+				s = s + "\n\nMATH (SIMPLIFIED)\nUnable to simplify the math expression ... jscl.meditor simplify failed\n";
+			}
 			return s;
     }
         
@@ -385,7 +396,8 @@ public class GEPIndividual extends Individual
 			    	for (int k=0; k<genomeConstants[i].length; k++)
 			    		s = s + "C" + k + ": " + genomeConstants[i][k] + "\n";
 			    }
-			    s = s + "\n";
+			    else 
+			    	s = s + "\n";
 			}
 			return s;
 		} catch (RuntimeException e) {
@@ -432,7 +444,7 @@ public class GEPIndividual extends Individual
     	GEPFunctionSymbol fs = (GEPFunctionSymbol)(exprNode.symbol);
     	if (fs.arity == 0)
     		return fs.symbol;
-    	// Each function knows how to print if you provide the paramters as strings
+    	// Each function knows how to print if you provide the parameters as strings
     	int numParams = exprNode.numParameters;
     	String params[] = new String[numParams];
     	for (int i=0; i<exprNode.numParameters; i++)

@@ -64,7 +64,7 @@ public class GEPExpressionTreeNode implements Serializable, Cloneable
 	double evaluatedParameters[]; 
 	/** This is the Terminal or Function Symbol for the node (empty if a constant node) */
 	public GEPSymbol symbol;
-	/** Number of paramters if this is a function node */
+	/** Number of parameters if this is a function node */
 	public int numParameters = 0;
 	/** true if this is a constant node */
 	public boolean isConstantNode = false;
@@ -114,6 +114,10 @@ public class GEPExpressionTreeNode implements Serializable, Cloneable
      */
     public double eval(int valuesIndex)
     {
+    	// If we encounter + or - infinity or NaN as a result of any parameter
+    	// we can't rely on the result of the expression evaluation
+    	// being correct ... always return NaN in these cases
+    	
     	if (isConstantNode)
     		return constantValue;
     	if (symbol instanceof GEPTerminalSymbol)
@@ -121,7 +125,11 @@ public class GEPExpressionTreeNode implements Serializable, Cloneable
     	// for function symbols we have to calc each parameter and then call the
     	// evaluator for the function with these paramaters.
     	for (int i=0; i<numParameters; i++)
+    	{
     		evaluatedParameters[i] =  parameters[i].eval(valuesIndex);
+    		if (Double.isInfinite(evaluatedParameters[i]) || Double.isNaN(evaluatedParameters[i]))
+    			return Double.NaN;
+    	}
 
     	return ((GEPFunctionSymbol)symbol).eval(evaluatedParameters);
     }

@@ -73,7 +73,7 @@ package ec.gep;
   		GEPFitnessFunction.MSEfitness( gepindividual );
   			- calculates the fitness using the individual's gene expressions
   			- it gets the raw fitness first from MSErawFitness (the mean squared error
-  			  of the predicted values versus the text/expected values)
+  			  of the predicted values versus the expected values)
   			- then it normalizes the result between 0 and 1000  
   				(1000 * (1/(1 + raw MSE))
   		GEPFitnessFunction.MSErawFitness( gepindividual );
@@ -81,7 +81,12 @@ package ec.gep;
   		GEPFitnessFunction.NHmaxFitness( gepindividual );
  *			- in this case max is always 1000
   </code>
- * 
+ * <li>
+ * A few fitness functions take 1 or more extra double parameters. These must be passed to the XXXXfitness
+ * method in an array of doubles. Again this is to make the GEPDefaultUserProg simpler to implement.
+ * Users will not find any problems but if you add new fitness functions with extra double parameters 
+ * you must use the double array to pass them, even if there is only 1 extra double value. See the 
+ * AH (AHfitness) fitness function for example.
  */
 public final class GEPFitnessFunction
 {
@@ -969,12 +974,15 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the AH (Absolute/Hits) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @param precision specified as a percentage deviation from the expected value
+	 * @param precision double array expected to have a single value that is the 
+	 *        percentage deviation from the expected value
 	 * @return the 'raw' fitness value before normaization from 0 to max value
 	 */
-	public static double AHfitness(GEPIndividual ind, double precision) 
+	public static double AHfitness(GEPIndividual ind, double precision[]) 
     {
-        double AH = AHrawFitness(ind, precision);
+		if (precision.length != 1)
+			System.err.println("Warning: 2nd arg to AHfitness method expected to have 1 double value (precision) but has " + precision.length);
+        double AH = AHrawFitness(ind, precision[0]);
         // fitness is between 0 and the number of test cases
         return (AH);
 	}
@@ -1033,12 +1041,15 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the RH (Relative/Hits) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @param precision specified as a percentage deviation from the expected value
+	 * @param precision double array expected to have a single value that is the 
+	 *        percentage deviation from the expected value
 	 * @return the 'raw' fitness value before normaization from 0 to max value
 	 */
-	public static double RHfitness(GEPIndividual ind, double precision) 
+	public static double RHfitness(GEPIndividual ind, double precision[]) 
     {
-        double RH = RHrawFitness(ind, precision);
+		if (precision.length != 1)
+			System.err.println("Warning: 2nd arg to RHfitness method expected to have 1 double value (precision) but has " + precision.length);
+        double RH = RHrawFitness(ind, precision[0]);
         // fitness is between 0 and the number of test cases
         return (RH);
 	}
@@ -1094,15 +1105,34 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the AEWSR (Absolute Error with Selection Range) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @param range range for the fitness calcualtion
-	 * @param precision specified as a percentage deviation from the expected value
+	 * @param range_precision an array with 2 values expected - 1st the range for the fitness calculation
+	 *        and 2nd the precision specified as a percentage deviation from the expected value
 	 * @return the 'raw' fitness value before normaization from 0 to max value
 	 */
-	public static double AEWSRfitness(GEPIndividual ind, double range, double precision) 
+	
+	static double AEWSRrange = 1.0;
+	public static double AEWSRfitness(GEPIndividual ind, double range_precision[]) 
     {
-        double AEWSR = AEWSRrawFitness(ind, range, precision);
+		if (range_precision.length != 2)
+			System.err.println("Warning: 2nd arg to AEWSRfitness method expected to have 2 double values (range and precision) but has " + range_precision.length);
+		AEWSRrange = range_precision[0];
+		double precision = range_precision[1];
+        double AEWSR = AEWSRrawFitness(ind, AEWSRrange, precision);
         // fitness is between 0 and the number of test cases
         return (AEWSR);
+	}
+
+	/**
+	 * The max value for this type of fitness is range * length of the test data set.
+	 * In this case range is not specified so use the value set when AEWSTfitness was last called.
+	 * This version of the method is here to support the use of this fitness function from the GEPDefaultUserProg.
+	 * @param ind the GEP individual that needs its fitness calculated.
+	 * @return range * length of the test data set
+	 */
+	public static double AEWSRmaxFitness(GEPIndividual ind) 
+	{
+		// maximum value is the number of test cases (since each one could meet the threshold)
+		return (GEPDependentVariable.getDependentVariableValues().length * AEWSRrange);
 	}
 
 	/**
@@ -1123,7 +1153,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the REWSR (Relative Error with Selection Range) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @param range range for the fitness calcualtion
+	 * @param range range for the fitness calculation
 	 * @param precision specified as a percentage deviation from the expected value
 	 * @return the 'raw' fitness value before normaization from 0 to max value
 	 */
@@ -1163,17 +1193,35 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the REWSR (Relative Error with Selection Range) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @param range range for the fitness calcualtion
-	 * @param precision specified as a percentage deviation from the expected value
+	 * @param range_precision an array with 2 values expected - 1st the range for the fitness calculation
+	 *        and 2nd the precision specified as a percentage deviation from the expected value
 	 * @return the 'raw' fitness value before normaization from 0 to max value
 	 */
-	public static double REWSRfitness(GEPIndividual ind, double range, double precision) 
+	static double REWSRrange = 1.0;
+	public static double REWSRfitness(GEPIndividual ind, double range_precision[]) 
     {
-        double REWSR = REWSRrawFitness(ind, range, precision);
+		if (range_precision.length != 2)
+			System.err.println("Warning: 2nd arg to REWSRfitness method expected to have 2 double values (range and precision) but has " + range_precision.length);
+		REWSRrange = range_precision[0];
+		double precision = range_precision[1];
+        double REWSR = REWSRrawFitness(ind, REWSRrange, precision);
         // fitness is between 0 and the number of test cases
         return (REWSR);
 	}
 
+	/**
+	 * The max value for this type of fitness is range * length of the test data set.
+	 * In this case range is not specified so use the value set when AEWSTfitness was last called.
+	 * This version of the method is here to support the use of this fitness function from the GEPDefaultUserProg.
+	 * @param ind the GEP individual that needs its fitness calculated.
+	 * @return range * length of the test data set
+	 */
+	public static double REWSRmaxFitness(GEPIndividual ind) 
+	{
+		// maximum value is the number of test cases (since each one could meet the threshold)
+		return (GEPDependentVariable.getDependentVariableValues().length * REWSRrange);
+	}
+	
 	/**
 	 * The max value for this type of fitness is range * length of the test data set.
 	 * @param ind the GEP individual that needs its fitness calculated.
@@ -1562,11 +1610,11 @@ public final class GEPFitnessFunction
 	 * weighted average of these ... also between 0 and 1000.
 	 * 
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @param corrWeight - weight to be applied to the normalized (from 0 to 1000) Correlation Coefficient
-	 * @param RMSEWeight - weight to be applied to the normalized (from 0 to 1000) RMSE
+	 * @param corrWeight_RMSEweight - array that has RMSEweight, the weight to be applied to the normalized (from 0 to 1000) Correlation Coefficient
+	 *        and RMSEweight, the weight to be applied to the normalized (from 0 to 1000) RMSE
 	 * @return the fitness value
 	 */
-	public static double WCorrRMSEfitness(GEPIndividual ind, double corrWeight, double RMSEweight) 
+	public static double WCorrRMSEfitness(GEPIndividual ind, double corrWeight_RMSEweight[]) 
 	{
         double dependentVar[] = GEPDependentVariable.getDependentVariableValues();
         int nSamples = dependentVar.length;
@@ -1610,6 +1658,11 @@ public final class GEPFitnessFunction
 
         //      FITNESS FUNCTION
         //        
+		if (corrWeight_RMSEweight.length != 2)
+			System.err.println("Warning: 2nd arg to WCorrRMSEfitness method expected to have 2 double values (correlation weight and RMSE weight) but has " + corrWeight_RMSEweight.length);
+		double corrWeight = corrWeight_RMSEweight[0];
+		double RMSEweight = corrWeight_RMSEweight[1];
+
         fitness = (RMSEweight * fitnessRMSE + corrWeight * fitnessCorr)/(RMSEweight + corrWeight);
         
         return fitness;
