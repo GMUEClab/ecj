@@ -10,7 +10,11 @@ import ec.*;
 import ec.steadystate.*;
 import java.io.IOException;
 import java.util.*;
+
 import ec.util.*;
+
+import jscl.math.Expression;
+import jscl.text.ParseException;
 
 import java.io.File;
 
@@ -171,6 +175,13 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
         String seedStr = String.valueOf(seeds[0]);
         for (int i=0; i<seeds.length-1; i++)
         	seedStr += String.valueOf(seeds[i]);
+        state.output.println("GENERAL PARAMETERS", Output.V_NO_GENERAL,statisticslog);
+        String runtimeargs = "";
+        String runtimeargsarray[] = state.runtimeArguments;
+        if (runtimeargsarray != null)
+        	for (int i=0; i<runtimeargsarray.length; i++)
+        	    runtimeargs = runtimeargsarray[i] + " ";
+        state.output.println("Arguments used in this run: " + runtimeargs, Output.V_NO_GENERAL,statisticslog);
         state.output.println("Maximum number of generations in this run: " + state.numGenerations,Output.V_NO_GENERAL,statisticslog);
         state.output.println("Size of population in this run: " + state.population.subpops[0].individuals.length,Output.V_NO_GENERAL,statisticslog);
         state.output.println("Number of genes per chromosome: " + species.numberOfGenes,Output.V_NO_GENERAL,statisticslog);
@@ -178,7 +189,9 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
         state.output.println("Seed(s) used in this job: " + seedStr,Output.V_NO_GENERAL,statisticslog);
         state.output.println("Problem type: " + species.problemTypeName,Output.V_NO_GENERAL,statisticslog);
         if (species.problemType == GEPSpecies.PT_CLASSIFICATION)
-        	state.output.println("Classification rounding threshold: " + GEPIndividual.getThreshold(),Output.V_NO_GENERAL,statisticslog);        	
+        	state.output.println("Classification rounding threshold: " + GEPIndividual.getThreshold(),Output.V_NO_GENERAL,statisticslog);
+        Parameter p = new Parameter("eval.problem.fitness-function");
+        state.output.println("Fitness function: " + state.parameters.getStringWithDefault(p, p, "??UNKNOWN??"),Output.V_NO_GENERAL,statisticslog);
         state.output.println("",Output.V_NO_GENERAL,statisticslog);
             }
 
@@ -217,8 +230,8 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
             	(detailToLog.equals("change") && newBestOfRun))
             {
                 // print the best-of-generation individual
-                state.output.println("\nGeneration: " + state.generation,Output.V_NO_GENERAL,statisticslog);
-                state.output.println("Best Individual:",Output.V_NO_GENERAL,statisticslog);
+                state.output.println("BEST INDIVIDUAL OF GENERATION",Output.V_NO_GENERAL,statisticslog);
+                state.output.println("Generation: " + state.generation,Output.V_NO_GENERAL,statisticslog);
                 best_i[x].printIndividualForHumans(state,statisticslog,Output.V_NO_GENERAL);
             }
         }     
@@ -250,16 +263,18 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
         
         for(int x=0;x<state.population.subpops.length;x++ )
         {
-            state.output.println("\nBest Individual of Run:",Output.V_NO_GENERAL,statisticslog);
+	        GEPIndividual best = (GEPIndividual)best_of_run[x];
+            state.output.println("\nBEST INDIVIDUAL OF RUN",Output.V_NO_GENERAL,statisticslog);
             state.output.println("Found at Generation: " + best_of_run_generation[x],Output.V_NO_GENERAL,statisticslog);
-            best_of_run[x].printIndividualForHumans(state,statisticslog,Output.V_NO_GENERAL);
+            best.printIndividualForHumans(state,statisticslog,Output.V_NO_GENERAL);
         
 	        // also print some stats about the expression ... its size, number of terminals used and
 	        // the number of times each variable and function is used
-	        state.output.println("Size of program: " + best_of_run[x].size(), 
+            state.output.println("MODEL COMPOSITION",Output.V_NO_GENERAL,statisticslog);
+	        state.output.println("Size of program: " + best.size(), 
 	        		             Output.V_NO_GENERAL,statisticslog);
-	        state.output.print("Variables used(count): ", Output.V_NO_GENERAL,statisticslog);
-	        int counts[] = ((GEPIndividual)best_of_run[x]).variableUseageCounts();
+	        state.output.print("Variables used(variable count): ", Output.V_NO_GENERAL,statisticslog);
+	        int counts[] = best.variableUseageCounts();
 	        GEPSymbolSet ss = ((GEPSpecies)state.population.subpops[x].species).symbolSet;
 	        boolean first = true;
 	        for (int i=0; i<counts.length; i++)
@@ -269,13 +284,13 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
 	        		if (!first)
 	 	   	           state.output.print(", ", Output.V_NO_GENERAL,statisticslog);
 	        	    String terminalName = ss.symbols[ss.terminals[i]].symbol;
-	   	            state.output.print(terminalName +"(" + counts[i] + ")", 
+	   	            state.output.print(terminalName +" " + counts[i], 
 	   	            		           Output.V_NO_GENERAL,statisticslog);
 	   	            first = false;
 	        	}
 	        }
-	        state.output.print("\nFunctions used(count): ", Output.V_NO_GENERAL,statisticslog);
-	        HashMap fcounts = ((GEPIndividual)best_of_run[x]).functionUseageCounts();
+	        state.output.print("\nFunctions used(function count): ", Output.V_NO_GENERAL,statisticslog);
+	        HashMap fcounts = best.functionUseageCounts();
 	        Set countsSet = fcounts.entrySet();
 	        first = true;
 	        for (Iterator iter = countsSet.iterator(); iter.hasNext ();) 
@@ -286,14 +301,26 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
 	        	Map.Entry e = (Map.Entry)iter.next();
    	            String key = (String)e.getKey();
 	            String value = ((Integer)e.getValue()).toString();
-   	            state.output.print(key +"(" + value + ")", 
+   	            state.output.print(key +" " + value, 
         		           Output.V_NO_GENERAL,statisticslog);
 	        }
 
+	        // print the functions and variables (and count) used in the simplified MATH expression
+			String mathExpression = best.genotypeToStringForHumansMathExpression();
+			String mathExpressionSimplified = "";
+			try
+			{ mathExpressionSimplified = Expression.valueOf(mathExpression).simplify().toString();
+			}
+			catch (ParseException e)
+			{}
+
+	        displaySimplifiedMathExpressionVariableFunctionCounts(state, ss, "MATH", mathExpressionSimplified);
+				
+			// print Model quality measures
 	        GEPSpecies species = (GEPSpecies)state.population.subpops[0].species;
-	        GEPIndividual ind = (GEPIndividual)best_of_run[x];
-	        state.output.println("\n\n***** TRAINING data results *****", Output.V_NO_GENERAL,statisticslog);	
-	        displayStatistics(state, species, ind);
+
+	        state.output.println("\n\nMODEL QUALITY MEASURES (TRAINING)", Output.V_NO_GENERAL,statisticslog);	
+	        displayStatistics(state, species, best);
 	        // Do the same thing for the test data if there is any
 	  	    // To do this we need to force the terminal symbols (including the
 	  	    // dependent variable) to give the test data rather than the training data
@@ -302,20 +329,20 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
 	        double testingValues[] = GEPDependentVariable.getDependentVariableValues();
 	  	    if (testingValues != null)
 	  	    {
-		        state.output.println("\n***** TEST data results *****", Output.V_NO_GENERAL,statisticslog);	
+		        state.output.println("\nMODEL QUALITY MEASURES (TEST)", Output.V_NO_GENERAL,statisticslog);	
   	    		int numErrors = 0;
   	  	    	// in test data we might get values that lead to errors when applying the model
   	  	    	// since there could be div by zero, etc.). So count those that will fail when
   	  	    	// evaluated with the model
   	            for (int i=0; i<testingValues.length; i++)
   	            {
-  	              double computed = ind.eval(i);
+  	              double computed = best.eval(i);
   	              if (computed == Double.POSITIVE_INFINITY || computed == Double.NEGATIVE_INFINITY || Double.isNaN(computed))
   	            	numErrors++;
   	            }
   	  		    state.output.println("Number of Calculation Errors: " + numErrors + 
   	  		    		" out of " + testingValues.length + " test sets",Output.V_NO_GENERAL,statisticslog);
-		        displayStatistics(state, species, ind);
+		        displayStatistics(state, species, best);
 	  	    }
 	        // reset back to using the training values
 	        GEPDependentVariable.useTrainingData = true;
@@ -324,12 +351,13 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
 	  	    // if desired
 	  	    if (!noObserveredComputedDisplay)
 	  	    {
-	  		    state.output.println("Observed\tComputed",Output.V_NO_GENERAL,observedVsComputedlog);
+	  		    state.output.println("OBSERVED	AND COMPUTED (TRAINING)",Output.V_NO_GENERAL,observedVsComputedlog);
+	  		    state.output.println("#Observed GEP-Model",Output.V_NO_GENERAL,observedVsComputedlog);
 	  	        double dependentVarValues[] = GEPDependentVariable.getDependentVariableValues();
 	  		    for (int i=0; i<dependentVarValues.length; i++)
 	  		    {
 	  		    	double observed = dependentVarValues[i];
-	  		    	double computed = ind.eval(i);
+	  		    	double computed = best.eval(i);
 	  		        state.output.println(Double.toString(observed)+"\t"+Double.toString(computed),Output.V_NO_GENERAL,observedVsComputedlog);
 	  		    }
 	  		    // and if testing data available add it to the end of this data or to it's own file
@@ -337,17 +365,20 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
 		  	    {
 		  	    	GEPDependentVariable.useTrainingData = false;
 			        state.output.println("", Output.V_NO_GENERAL,statisticslog);	
+		  		    state.output.println("OBSERVED	AND COMPUTED (TEST)",Output.V_NO_GENERAL,observedVsComputedlog);
+		  		    state.output.println("#Observed GEP-Model",Output.V_NO_GENERAL,observedVsComputedlog);
 			        dependentVarValues = GEPDependentVariable.getDependentVariableValues();
 		  		    for (int i=0; i<dependentVarValues.length; i++)
 		  		    {
 		  		    	double observed = dependentVarValues[i];
-		  		    	double computed = ind.eval(i);
+		  		    	double computed = best.eval(i);
 		  		        state.output.println(Double.toString(observed)+"\t"+Double.toString(computed),
 		  		        		Output.V_NO_GENERAL, observedVsComputedTestlog);
 		  		    }
 			        // reset back to using the training values
 		  		  GEPDependentVariable.useTrainingData = true;
 		  	    }
+	  		    state.output.println("#----------",Output.V_NO_GENERAL,observedVsComputedlog);
 	  	    }
         }        
     }
@@ -376,7 +407,126 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
     		                     "    \tMAE:  "+GEPFitnessFunction.MAErawFitness(ind)+	  		    		             
 	    		                 "    \tRRSE: "+GEPFitnessFunction.RRSErawFitness(ind)  		    		             
   		    		             ,Output.V_NO_GENERAL,statisticslog);  	    	
+  		    state.output.println("Corr Coeff: "+GEPFitnessFunction.CCrawFitness(ind)
+		             ,Output.V_NO_GENERAL,statisticslog);  
   	    }
         state.output.println("", Output.V_NO_GENERAL,statisticslog);	
     }
+    
+    void displaySimplifiedMathExpressionVariableFunctionCounts(EvolutionState state, GEPSymbolSet ss, String expressionType, String mathExpressionSimplified)
+    {
+		int numberOfVariables = 0, numberOfFunctions = 0;
+		String partExpression = "";
+		
+		if (mathExpressionSimplified.equals(""))
+		{
+			state.output.println("\n\nSize of program ("+ expressionType+" simplified): unknown ... expression simplification failed", 
+		             Output.V_NO_GENERAL,statisticslog);
+			return;
+		}
+		// count the variables in the expression
+        HashMap varCounts = new HashMap();
+        partExpression = mathExpressionSimplified;
+        String varNames[] = new String[ss.numberOfTerminals];
+        for (int i=0; i<ss.numberOfTerminals; i++)
+        {
+        	GEPSymbol sym = ss.symbols[ss.terminals[i]];
+        	String varName = sym.symbol;
+        	// must simplify the var name since sometimes at NRC we use var names like T[t-1] and this
+        	// gets simplified to T[-1+t]
+        	try
+        	{varName = Expression.valueOf(varName).simplify().toString();}
+        	catch (ParseException e)
+        	{}
+        	// must quote every character in case it is a special character of regex
+        	// use \Q ... \E of regex
+        	varNames[i] = varName;
+        }
+        // sort them with longest first so counting/replacement doesn't have to worry about
+        // names like x1 and x11 ... will count and remove all x11 instances first .. process
+        // the longer names first
+        Arrays.sort(varNames);
+        for (int i=ss.numberOfTerminals-1; i>=0; i--)
+        {
+        	String regex = "\\Q"+varNames[i]+"\\E";
+        	String expressionWithoutVariable = partExpression.replaceFirst(regex, "");
+        	while (!expressionWithoutVariable.equals(partExpression))
+        	{
+	        	numberOfVariables++;
+				Integer cnt = (Integer)varCounts.get(varNames[i]);
+				if (cnt==null)
+					varCounts.put(varNames[i], new Integer(1));
+				else
+					varCounts.put(varNames[i], new Integer((cnt.intValue())+1));
+				partExpression = expressionWithoutVariable;
+				expressionWithoutVariable = partExpression.replaceFirst(regex, "");
+        	}
+        }
+		
+		// count the functions used in the expression
+        // may be some special functions added by the simplification ... e.g. ^ (power), ...
+        String SimplificationFunctions[] = {"^", "**"};
+        HashMap functionCounts = new HashMap();
+        String functionNames[] = new String[ss.numberOfFunctions+SimplificationFunctions.length]; // include functions which simplify might introduce
+        for (int i=0; i<ss.numberOfFunctions; i++)
+        {
+        	GEPSymbol sym = ss.symbols[ss.functions[i]];
+        	functionNames[i] = sym.symbol;
+        }
+        for (int i=0; i<SimplificationFunctions.length; i++)
+        	functionNames[ss.numberOfFunctions+i]= SimplificationFunctions[i]; // for the simplification functions
+        // sort them with longest first so counting/replacement doesn't have to worry about
+        // names like log and loge ... will count and remove all loge instances first .. process
+        // the longer names first
+        Arrays.sort(functionNames);
+        for (int i=functionNames.length-1; i>=0; i--)
+        {
+        	String regex = "\\Q"+functionNames[i]+"\\E";
+        	String expressionWithoutFunction = partExpression.replaceFirst(regex, "");
+        	while (!expressionWithoutFunction.equals(partExpression))
+        	{        	
+        		numberOfFunctions++;
+				Integer cnt = (Integer)functionCounts.get(functionNames[i]);
+				if (cnt==null)
+					functionCounts.put(functionNames[i], new Integer(1));
+				else
+					functionCounts.put(functionNames[i], new Integer((cnt.intValue())+1));
+				partExpression = expressionWithoutFunction;
+				expressionWithoutFunction = partExpression.replaceFirst(regex, "");
+        	}
+        }
+		
+		state.output.println("\n\nSize of program ("+ expressionType+" simplified): " + (numberOfVariables+numberOfFunctions), 
+                 Output.V_NO_GENERAL,statisticslog);
+		
+        state.output.print("Variables used(variable count): ", Output.V_NO_GENERAL,statisticslog);
+        Set countsSet = varCounts.entrySet();
+        boolean first = true;
+        for (Iterator iter = countsSet.iterator(); iter.hasNext ();) 
+        {
+        	if (!first) 
+        		state.output.print(", ", Output.V_NO_GENERAL,statisticslog);
+        	first = false;
+        	Map.Entry e = (Map.Entry)iter.next();
+	            String key = (String)e.getKey();
+            String value = ((Integer)e.getValue()).toString();
+	            state.output.print(key +" " + value, 
+    		           Output.V_NO_GENERAL,statisticslog);
+        }
+        state.output.print("\nFunctions used(function count): ", Output.V_NO_GENERAL,statisticslog);
+        countsSet = functionCounts.entrySet();
+        first = true;
+        for (Iterator iter = countsSet.iterator(); iter.hasNext ();) 
+        {
+        	if (!first) 
+        		state.output.print(", ", Output.V_NO_GENERAL,statisticslog);
+        	first = false;
+        	Map.Entry e = (Map.Entry)iter.next();
+	            String key = (String)e.getKey();
+            String value = ((Integer)e.getValue()).toString();
+	            state.output.print(key +" " + value, 
+    		           Output.V_NO_GENERAL,statisticslog);
+        }
+    }
+
 }
