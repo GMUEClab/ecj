@@ -26,6 +26,6 @@ public class Min3 extends GEPFunctionSymbol {
 
 	public String printMathExpression( String p[] )
 	{
-		return "min(" + p[0] + "," + p[1] + "," + p[2] + ")";
+		return "min3(" + p[0] + "," + p[1] + "," + p[2] + ")";
 	}
 }
