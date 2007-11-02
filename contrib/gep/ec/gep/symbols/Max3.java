@@ -26,6 +26,6 @@ public class Max3 extends GEPFunctionSymbol {
 
 	public String printMathExpression( String p[] )
 	{
-		return "max(" + p[0] + "," + p[1] + "," + p[2] + ")";
+		return "max3(" + p[0] + "," + p[1] + "," + p[2] + ")";
 	}
 }

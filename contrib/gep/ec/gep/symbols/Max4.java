@@ -26,6 +26,6 @@ public class Max4 extends GEPFunctionSymbol {
 
 	public String printMathExpression( String p[] )
 	{
-		return "max(" + p[0] + "," + p[1] + "," + p[2] + "," + p[3] + ")";
+		return "max4(" + p[0] + "," + p[1] + "," + p[2] + "," + p[3] + ")";
 	}
 }
