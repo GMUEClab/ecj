@@ -444,12 +444,13 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
         }
         // sort them with longest first so counting/replacement doesn't have to worry about
         // names like x1 and x11 ... will count and remove all x11 instances first .. process
-        // the longer names first
+        // the longer names first. Also we replace the variables by a # character so it won't
+        // get matched again and it keeps the functions separated
         Arrays.sort(varNames);
         for (int i=ss.numberOfTerminals-1; i>=0; i--)
         {
         	String regex = "\\Q"+varNames[i]+"\\E";
-        	String expressionWithoutVariable = partExpression.replaceFirst(regex, "");
+        	String expressionWithoutVariable = partExpression.replaceFirst(regex, "#");
         	while (!expressionWithoutVariable.equals(partExpression))
         	{
 	        	numberOfVariables++;
@@ -459,7 +460,7 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
 				else
 					varCounts.put(varNames[i], new Integer((cnt.intValue())+1));
 				partExpression = expressionWithoutVariable;
-				expressionWithoutVariable = partExpression.replaceFirst(regex, "");
+				expressionWithoutVariable = partExpression.replaceFirst(regex, "#");
         	}
         }
 		
