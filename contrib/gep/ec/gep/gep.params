@@ -325,7 +325,7 @@ gep.species.symbolset.name = ss0
 # test data and the training data are in the same file (specified by terminalfilename). 
 # The gep.species.timeseries-testingpredictions indicates how many rows of the data 
 # set to use for testing (after the timeseries file has been processed as described
-# above); the remaining rows are used for training.  
+# above); the remaining rows are used for training. 
 #
 # NOTE: the text files can be gzip'd files (.gz of .gzip extensions) and there is no 
 # need to uncompress them. So you might have the file abc.txt.gz and we will treat it as if it were
