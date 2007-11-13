@@ -60,7 +60,10 @@ import java.io.File;
  <tr><td valign=top><i>base.</i><tt>detail-to-log</tt><br>
  <font size=-1>String (one of all, change or final), or nonexistant (change)</font></td>
  <td valign=top>(log results from all generations, only when the fitness changes or only final model)</td></tr>
- </table>
+  <tr><td valign=top><i>base.</i><tt>number-of-best-to-log</tt><br>
+ <font size=-1>int (>= 1))</font></td>
+ <td valign=top>(number of best individuals to display in final results of run; normally 1)</td></tr>
+</table>
 
  *
  * @author Bob Orchard
