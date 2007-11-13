@@ -75,6 +75,7 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
     public static final String P_OBSERVED_VS_COMPUTED_TEST_FILE = "file-observed-versus-computed-test";
     public static final String P_DETAIL_TO_LOG = "detail-to-log";
     public static final String P_NO_OBSERVED_VS_COMPUTED = "no-observed-versus-computed";
+    public static final String P_NUMBER_OF_BEST_TO_LOG = "number-of-best-to-log";
     
     /** compress? */
     public static final String P_COMPRESS = "gzip";
@@ -85,6 +86,7 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
     public int observedVsComputedTestlog;
     public boolean noObserveredComputedDisplay = false;;
     public String detailToLog = "change";
+    public int numberOfBestToLog = 1;  // for final results display this many of the top individuals 
 
     /** The best individual we've found so far */
     public Individual[] best_of_run;
@@ -158,6 +160,11 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
         	state.output.warning("Expecting detail-to-log to be one of 'change', 'final' or 'all' not '" + detailToLog + "'. Setting to 'change'.");
         	detailToLog = "change";
         }
+        
+        numberOfBestToLog = state.parameters.getIntWithDefault(base.push(P_NUMBER_OF_BEST_TO_LOG), 
+        		                                               base.push(P_NUMBER_OF_BEST_TO_LOG), 1);
+        if (numberOfBestToLog < 1) // can't be less than 1
+        	numberOfBestToLog = 1;
     }
 
     public void postInitializationStatistics(final EvolutionState state)
@@ -252,20 +259,64 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
         }
     }
 
+    class BestGEPIndividualComparator implements SortComparatorL
+    {
+     Individual[] inds;
+     public BestGEPIndividualComparator(Individual[] inds) {super(); this.inds = inds;}
+     public boolean lt(long a, long b)
+        { return inds[(int)b].fitness.betterThan(inds[(int)a].fitness); }
+     public boolean gt(long a, long b)
+        { return inds[(int)a].fitness.betterThan(inds[(int)b].fitness); }
+    }
+
     /** 
-     * Logs the best individual of the run showing details 
+     * Logs the best individual(s) of the run showing details 
      */
     public void finalStatistics(final EvolutionState state, final int result)
     {
         super.finalStatistics(state,result);
-        
-        // for now we just print the best fitness 
-        
+                
         for(int x=0;x<state.population.subpops.length;x++ )
         {
-	        GEPIndividual best = (GEPIndividual)best_of_run[x];
-            state.output.println("\nBEST INDIVIDUAL OF RUN",Output.V_NO_GENERAL,statisticslog);
-            state.output.println("Found at Generation: " + best_of_run_generation[x],Output.V_NO_GENERAL,statisticslog);
+          // make sure number of best individuals to log is not bigger than size of population
+          int popSize = state.population.subpops[x].individuals.length;
+          if (numberOfBestToLog > popSize)
+        	  numberOfBestToLog = popSize;
+          // for now we just print the individual(s) with the best fitness value(s)
+          //
+          // get the n best individuals
+          GEPIndividual bestN[] = new GEPIndividual[numberOfBestToLog];
+          if (numberOfBestToLog == 1)
+          	bestN[0] = (GEPIndividual)best_of_run[x]; // already have the best one
+          else
+          { // otherwise get the best n from the last generation ... the top individual will always be in the
+          	// last generation; the next ones we assume are also in the last generation; this may not be completely
+            // since some very good ones might have been lost in the evolution ... however, if one sets the 
+            // number of 'elites' to propagate to each generation to be the same (or greater) than the number
+            // of 'best' individuals to display in the final stats then we will have the actual best n.
+        	// We'll need to sort them...
+            int[] orderedPop = new int[popSize];
+            for(int j=0; j<popSize; j++) 
+            	orderedPop[j] = j;
+
+            // sort the best so far where "<" means "not as fit as"
+            QuickSort.qsort(orderedPop, new BestGEPIndividualComparator(state.population.subpops[x].individuals));
+            // load the best n individuals from the sorted population .. in increasing order of fitness so take from end!
+            Individual[] oldinds = state.population.subpops[x].individuals;
+            for(int j=0; j<numberOfBestToLog; j++)
+            	bestN[j] = (GEPIndividual)(oldinds[orderedPop[popSize-1-j]]);
+          }
+          
+          for (int bn=0; bn<bestN.length; bn++)
+          {  
+	        GEPIndividual best = bestN[bn];
+            if (bn == 0)
+            {	state.output.println("\nBEST INDIVIDUAL OF RUN",Output.V_NO_GENERAL,statisticslog);
+            	state.output.println("Found at Generation: " + best_of_run_generation[x], Output.V_NO_GENERAL,statisticslog);
+            }
+            else
+            	state.output.println("\n\nNEXT BEST INDIVIDUAL OF RUN",Output.V_NO_GENERAL,statisticslog);
+            state.output.println("Raw Fitness: " + ((1000.0/best.fitness.fitness())-1.0), Output.V_NO_GENERAL,statisticslog);
             best.printIndividualForHumans(state,statisticslog,Output.V_NO_GENERAL);
         
 	        // also print some stats about the expression ... its size, number of terminals used and
@@ -380,6 +431,7 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
 		  	    }
 	  		    state.output.println("#----------",Output.V_NO_GENERAL,observedVsComputedlog);
 	  	    }
+	  	  }
         }        
     }
     
