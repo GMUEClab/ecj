@@ -56,7 +56,7 @@ parent.0 =				../ec.params
 # also specify a 'fitness-function' to use by setting the eval.fitness-function 
 # parameter to one of: (check the GEPFitnessFunction.java class for the latest list of these)
 #
-#       AEWSR (Absolute Error with Selection Range) 
+#   AEWSR (Absolute Error with Selection Range) 
 #	AH (Absolute/Hits)
 #	MSE (mean squared error) 
 #	RMSE (root mean squared error) 
@@ -348,7 +348,8 @@ gep.inversion.source.0 = ec.gep.breed.MutationPipeline
 # FitProportionateSelection (roulette selection) is used exclusively by Ferreira - could be changed
 gep.mutation.source.0 = ec.select.FitProportionateSelection
 
-# 1 is the default and only value used by Ferreira
+# 1 is the default and only value used by Ferreira (could be changed to operate differently than Ferreira
+# or to make sure we have the k best individuals in the final generation)
 breed.elite.0 = 			1
 
 # ec.SimpleStatistics
@@ -378,8 +379,11 @@ breed.elite.0 = 			1
 #                   amount of output)
 #             change - logs the best model of the generation when the fitness improves (default)
 #             final - logs only the best of run model information
+#   number-of-best-to-log  - this indicates the number of best individuals to display in the final
+#         statistics output; normally 1 to display only the single best individual of the run
 stat =					ec.gep.GEPSimpleStatistics
 stat.file				$out.stat
+stat.number-of-best-to-log = 1
 # stat.file-observed-versus-computed = ourOvsC.stat
 # stat.file-observed-versus-computed-test = ourOvsCtest.stat
 # stat.detail-to-log = change
