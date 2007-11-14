@@ -314,11 +314,11 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
           {  
 	        GEPIndividual best = bestN[bn];
             if (bn == 0)
-            {	state.output.println("\nBEST INDIVIDUAL OF RUN",Output.V_NO_GENERAL,statisticslog);
+            {	state.output.println("\nBEST INDIVIDUAL 1",Output.V_NO_GENERAL,statisticslog);
             	state.output.println("Found at Generation: " + best_of_run_generation[x], Output.V_NO_GENERAL,statisticslog);
             }
             else
-            	state.output.println("\n\nNEXT BEST INDIVIDUAL OF RUN",Output.V_NO_GENERAL,statisticslog);
+            	state.output.println("\n\nBEST INDIVIDUAL "+ (bn+1),Output.V_NO_GENERAL,statisticslog);
             state.output.println("Raw Fitness: " + ((1000.0/best.fitness.fitness())-1.0), Output.V_NO_GENERAL,statisticslog);
             best.printIndividualForHumans(state,statisticslog,Output.V_NO_GENERAL);
         
