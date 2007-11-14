@@ -977,7 +977,7 @@ ECJ console. To run from a command line execute something like:<br>
 
 
 <small><code>D:\ecj&gt;java -classpath
-./;./start/javacsv.jar ec.Evolve
+./;./start/javacsv.jar;./start/meditor.jar ec.Evolve
 -file ec/app/gep/test1/test1.params<br>
 
 
@@ -988,169 +988,23 @@ ECJ console. To run from a command line execute something like:<br>
 
 
 <p class="MsoNormal">You'll
-notice that there is a jar file called javacsv.jar that must be
-included in the classpath. This is used to read the CSV files and can
-be found at http://sourceforge.net/projects/javacsv/. Assuming all goes
-well you will see the following output on the console.<br>
-
-
-<br>
-
-
-</p>
-
-
-<p class="MsoNormal"><small><code>|
-ECJ<br>
-
-
-| An evolutionary computation system (version 15)<br>
-
-
-| By Sean Luke<br>
-
-
-| Contributors: L. Panait, G. Balan, S. Paus, Z. Skolicki,<br>
-
-
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-J. Bassett, R. Hubley, and A. Chircop<br>
-
-
-| URL: http://cs.gmu.edu/~eclab/projects/ecj/<br>
-
-
-| Mail: ecj-help@cs.gmu.edu<br>
-
-
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (better:
-join ECJ-INTEREST at URL
-above)<br>
-
-
-| Date: April 4, 2006<br>
-
-
-| Current Java: 1.5.0_10 / Java HotSpot(TM) Client VM-1.5.0_10-b03<br>
-
-
-| Required Minimum Java: 1.3<br>
-
-
-<br>
-
-
-Threads:&nbsp; breed/1 eval/1<br>
-
-
-Seed: 4357<br>
-
-
-Job: 0<br>
-
-
-Setting up<br>
-
-
-Initializing Generation 0<br>
-
-
-WARNING:<br>
-
-
-Weight for GEP Function must be &gt; 0; defaulting to 1)<br>
-
-
-PARAMETER: pop.subpop.0.species.symbolset.function.0.weight<br>
-
-
-&nbsp;&nbsp;&nbsp;&nbsp; ALSO:
-gep.species.symbolset.function.0.weight<br>
-
-
-WARNING:<br>
-
-
-Weight for GEP Function must be &gt; 0; defaulting to 1)<br>
-
-
-PARAMETER: pop.subpop.0.species.symbolset.function.1.weight<br>
-
-
-&nbsp;&nbsp;&nbsp;&nbsp; ALSO:
-gep.species.symbolset.function.1.weight<br>
-
-
-WARNING:<br>
-
-
-Weight for GEP Function must be &gt; 0; defaulting to 1)<br>
-
-
-PARAMETER: pop.subpop.0.species.symbolset.function.2.weight<br>
-
-
-&nbsp;&nbsp;&nbsp;&nbsp; ALSO:
-gep.species.symbolset.function.2.weight<br>
-
-
-WARNING:<br>
-
-
-Weight for GEP Function must be &gt; 0; defaulting to 1)<br>
-
-
-PARAMETER: pop.subpop.0.species.symbolset.function.3.weight<br>
-
-
-&nbsp;&nbsp;&nbsp;&nbsp; ALSO:
-gep.species.symbolset.function.3.weight<br>
-
-
-Generation 1<br>
-
-
-</code></small></p>
-
-
-<p class="MsoNormal"><small><code>Evaluated:
-T<br>
-
-
-Fitness: 1000.0<br>
-
-
-Linking function: +<br>
-
-
-Gene 0<br>
-
-
-*.x.x.y.y.x.x.y.x.x.x<br>
-
-
-Gene 1<br>
-
-
-y./.x.+.+.x.x.x.x.x.x<br>
-
-
-<br>
-
-
-(x*x) + y<br>
-
-
-<br>
-
-
-Found Ideal Individual</code></small><br>
-
-
-<br>
-
-
-The warnings about weight for the functions can be ignored. There is an
+notice that there are 2 jar files, javacsv.jar and meditor.jar,
+that must be
+included in the classpath. The javacsv.jar file is used to read the CSV
+files and can
+be found at http://sourceforge.net/projects/javacsv/. The meditor.jar
+file is used to simplify the mathematical expressions constructed by
+ECJ-GEP. This is a symbolic computing library (GPL licence) that can be
+found at http://sourceforge.net/projects/jscl-meditor/. Assuming all
+goes
+well you will see something like the following output on the console.<br>
+
+
+</p><p class="MsoNormal"><small><span style="font-family: monospace;" class="MsoNormal"></span></small></p><p class="MsoNormal"><small><span style="font-family: monospace;" class="MsoNormal">| ECJ</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">| An evolutionary computation system (version 16)</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">| By Sean Luke</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">| Contributors: L. Panait, G. Balan, S. Paus, Z. Skolicki, R. Kicinger,</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+J. Bassett, R. Hubley, A. Desai, and A. Chircop</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">| URL: http://cs.gmu.edu/~eclab/projects/ecj/</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">| Mail: ecj-help@cs.gmu.edu</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (better: join ECJ-INTEREST at URL above)</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">| Date: April 26, 2006</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">| Current Java: 1.5.0_11 / Java HotSpot(TM) Client VM-1.5.0_11-b03</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">| Required Minimum Java: 1.3</span><br style="font-family: monospace;" class="MsoNormal"><br style="font-family: monospace;" class="MsoNormal"><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Threads:&nbsp; breed/1 eval/1</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Seed: 4357</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Job: 0</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Setting up</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Initializing Generation 0</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">WARNING:</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Weight for GEP Function must be &gt; 0; defaulting to 1)</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">PARAMETER: pop.subpop.0.species.symbolset.function.0.weight</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp; ALSO: gep.species.symbolset.function.0.weight</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">WARNING:</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Weight for GEP Function must be &gt; 0; defaulting to 1)</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">PARAMETER: pop.subpop.0.species.symbolset.function.1.weight</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp; ALSO: gep.species.symbolset.function.1.weight</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">WARNING:</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Weight for GEP Function must be &gt; 0; defaulting to 1)</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">PARAMETER: pop.subpop.0.species.symbolset.function.2.weight</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp; ALSO: gep.species.symbolset.function.2.weight</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">WARNING:</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Weight for GEP Function must be &gt; 0; defaulting to 1)</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">PARAMETER: pop.subpop.0.species.symbolset.function.3.weight</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp; ALSO: gep.species.symbolset.function.3.weight</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Generation 1</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Generation 2</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Generation 3</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Generation 4</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Evaluated: T</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Fitness: 1000.0</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Linking function: +</span><br style="font-family: monospace;" class="MsoNormal"><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">GEP-MODEL</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">KARVA</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Gene 0</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">+.-.x.y.x.y.y.y.y.y.x</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">Gene 1</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">*.x.x.y.x.y.y.y.x.y.x</span><br style="font-family: monospace;" class="MsoNormal"><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">MATH</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">((y-x)+x) + (x*x)</span><br style="font-family: monospace;" class="MsoNormal"><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">MATH (SIMPLIFIED)</span><br style="font-family: monospace;" class="MsoNormal"><span style="font-family: monospace;" class="MsoNormal">x^2+y</span><br style="font-family: monospace;" class="MsoNormal"><br style="font-family: monospace;" class="MsoNormal"></small>Found Ideal Individual<br><br>
+
+
+</p><p class="MsoNormal">The warnings about weight for the functions can be ignored. There is an
 option to identify weights for the functions so that the ones with
 higher weights are selected more often when building and evolving
 genes. The default of 1 was used by not specifying the weights. In the
@@ -1166,7 +1020,7 @@ chromosome in a mathematical formula:<br>
 <br>
 
 
-&nbsp;&nbsp;&nbsp; (x*x) + y<br>
+&nbsp;&nbsp;&nbsp; <small><span style="font-family: monospace;" class="MsoNormal">((y-x)+x) + (x*x) &nbsp; &nbsp; &nbsp;or in simplified format &nbsp; &nbsp; </span><span style="font-family: monospace;">(x^2) + y</span></small><br>
 
 
 <br>
@@ -1177,177 +1031,10 @@ the statistics for the run in the file test1.stat. This should contain
 the following information:</p>
 
 
-<br>
+<br><small class="MsoNormal"><span style="font-family: monospace;">GENERAL PARAMETERS</span><br style="font-family: monospace;"><span style="font-family: monospace;">Arguments used in this run: </span><br style="font-family: monospace;"><span style="font-family: monospace;">Maximum number of generations in this run: 100</span><br style="font-family: monospace;"><span style="font-family: monospace;">Size of population in this run: 50</span><br style="font-family: monospace;"><span style="font-family: monospace;">Number of genes per chromosome: 2</span><br style="font-family: monospace;"><span style="font-family: monospace;">Size of gene head: 5</span><br style="font-family: monospace;"><span style="font-family: monospace;">Seed(s) used in this job: 4357</span><br style="font-family: monospace;"><span style="font-family: monospace;">Problem type: functionfinding</span><br style="font-family: monospace;"><span style="font-family: monospace;">Fitness function: ??UNKNOWN??</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">BEST INDIVIDUAL OF GENERATION</span><br style="font-family: monospace;"><span style="font-family: monospace;">Generation: 0</span><br style="font-family: monospace;"><span style="font-family: monospace;">Evaluated: T</span><br style="font-family: monospace;"><span style="font-family: monospace;">Fitness: 274.6781</span><br style="font-family: monospace;"><span style="font-family: monospace;">Linking function: +</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">GEP-MODEL</span><br style="font-family: monospace;"><span style="font-family: monospace;">KARVA</span><br style="font-family: monospace;"><span style="font-family: monospace;">Gene 0</span><br style="font-family: monospace;"><span style="font-family: monospace;">-.x.-.y.y.y.y.x.y.y.y</span><br style="font-family: monospace;"><span style="font-family: monospace;">Gene 1</span><br style="font-family: monospace;"><span style="font-family: monospace;">+.x.y.y.-.x.y.y.y.y.x</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">MATH</span><br style="font-family: monospace;"><span style="font-family: monospace;">(x-(y-y)) + (x+y)</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">MATH (SIMPLIFIED)</span><br style="font-family: monospace;"><span style="font-family: monospace;">2*x+y</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">BEST INDIVIDUAL OF GENERATION</span><br style="font-family: monospace;"><span style="font-family: monospace;">Generation: 3</span><br style="font-family: monospace;"><span style="font-family: monospace;">Evaluated: T</span><br style="font-family: monospace;"><span style="font-family: monospace;">Fitness: 499.56635</span><br style="font-family: monospace;"><span style="font-family: monospace;">Linking function: +</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">GEP-MODEL</span><br style="font-family: monospace;"><span style="font-family: monospace;">KARVA</span><br style="font-family: monospace;"><span style="font-family: monospace;">Gene 0</span><br style="font-family: monospace;"><span style="font-family: monospace;">+./.+.-./.y.y.y.x.y.x</span><br style="font-family: monospace;"><span style="font-family: monospace;">Gene 1</span><br style="font-family: monospace;"><span style="font-family: monospace;">/.-.x./.y.y.y.y.x.y.x</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">MATH</span><br style="font-family: monospace;"><span style="font-family: monospace;">(((y-x)/(y/x))+(y+y)) + (((y/y)-y)/x)</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">MATH (SIMPLIFIED)</span><br style="font-family: monospace;"><span style="font-family: monospace;">-(x^3-y-x^2*y+y^2-2*x*y^2)/(x*y)</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">BEST INDIVIDUAL OF GENERATION</span><br style="font-family: monospace;"><span style="font-family: monospace;">Generation: 4</span><br style="font-family: monospace;"><span style="font-family: monospace;">Evaluated: T</span><br style="font-family: monospace;"><span style="font-family: monospace;">Fitness: 1000.0</span><br style="font-family: monospace;"><span style="font-family: monospace;">Linking function: +</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">GEP-MODEL</span><br style="font-family: monospace;"><span style="font-family: monospace;">KARVA</span><br style="font-family: monospace;"><span style="font-family: monospace;">Gene 0</span><br style="font-family: monospace;"><span style="font-family: monospace;">+.-.x.y.x.y.y.y.y.y.x</span><br style="font-family: monospace;"><span style="font-family: monospace;">Gene 1</span><br style="font-family: monospace;"><span style="font-family: monospace;">*.x.x.y.x.y.y.y.x.y.x</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">MATH</span><br style="font-family: monospace;"><span style="font-family: monospace;">((y-x)+x) + (x*x)</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">MATH (SIMPLIFIED)</span><br style="font-family: monospace;"><span style="font-family: monospace;">x^2+y</span><br style="font-family: monospace;"><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">BEST INDIVIDUAL OF RUN</span><br style="font-family: monospace;"><span style="font-family: monospace;">Found at Generation: 4</span><br style="font-family: monospace;"><span style="font-family: monospace;">Evaluated: T</span><br style="font-family: monospace;"><span style="font-family: monospace;">Fitness: 1000.0</span><br style="font-family: monospace;"><span style="font-family: monospace;">Linking function: +</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">GEP-MODEL</span><br style="font-family: monospace;"><span style="font-family: monospace;">KARVA</span><br style="font-family: monospace;"><span style="font-family: monospace;">Gene 0</span><br style="font-family: monospace;"><span style="font-family: monospace;">+.-.x.y.x.y.y.y.y.y.x</span><br style="font-family: monospace;"><span style="font-family: monospace;">Gene 1</span><br style="font-family: monospace;"><span style="font-family: monospace;">*.x.x.y.x.y.y.y.x.y.x</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">MATH</span><br style="font-family: monospace;"><span style="font-family: monospace;">((y-x)+x) + (x*x)</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">MATH (SIMPLIFIED)</span><br style="font-family: monospace;"><span style="font-family: monospace;">x^2+y</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">MODEL COMPOSITION</span><br style="font-family: monospace;"><span style="font-family: monospace;">Size of program: 8</span><br style="font-family: monospace;"><span style="font-family: monospace;">Variables used(variable count): x 4, y 1</span><br style="font-family: monospace;"><span style="font-family: monospace;">Functions used(function count): - 1, + 1, * 1</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">Size of program (MATH simplified): 4<br>Variables used(variable count): y 1, x 1<br>Functions used(function count): ^ 1, + 1<br></span><br style="font-family: monospace;"><span style="font-family: monospace;">MODEL QUALITY MEASURES (TRAINING)</span><br style="font-family: monospace;"><span style="font-family: monospace;">Statistics: </span><br style="font-family: monospace;"><span style="font-family: monospace;">MSE:&nbsp; 0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RAE:&nbsp; 0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RSE:&nbsp; 0.0</span><br style="font-family: monospace;"><span style="font-family: monospace;">RMSE: 0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; MAE:&nbsp; 0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RRSE: 0.0</span><br style="font-family: monospace;"><span style="font-family: monospace;">Corr Coeff: 1.0</span><br style="font-family: monospace;"><br style="font-family: monospace;"><span style="font-family: monospace;">OBSERVED&nbsp;&nbsp;&nbsp; AND COMPUTED (TRAINING)</span><br style="font-family: monospace;"><span style="font-family: monospace;">#Observed GEP-Model</span><br style="font-family: monospace;"><span style="font-family: monospace;">1.25&nbsp;&nbsp;&nbsp; 1.25</span><br style="font-family: monospace;"><span style="font-family: monospace;">3.0&nbsp;&nbsp;&nbsp; &nbsp;3.0</span><br style="font-family: monospace;"><span style="font-family: monospace;">8.0&nbsp;&nbsp;&nbsp; &nbsp;8.0</span><br style="font-family: monospace;"><span style="font-family: monospace;">21.0&nbsp;&nbsp;&nbsp; 21.0</span><br style="font-family: monospace;"><span style="font-family: monospace;">#----------</span></small><br><br>
 
 
-<span style="font-family: &quot;Times New Roman&quot;;"><small><code>Seed(s)
-used in
-this job: 4357<br>
-
-
-Problem Type: functionfinding<br>
-
-
-<br>
-
-
-Generation: 0<br>
-
-
-Best Individual:<br>
-
-
-Evaluated: T<br>
-
-
-Fitness: 274.6781<br>
-
-
-Linking function: +<br>
-
-
-Gene 0<br>
-
-
--.x.-.y.y.y.y.x.y.y.y<br>
-
-
-Gene 1<br>
-
-
-+.x.y.y.-.x.y.y.y.y.x<br>
-
-
-<br>
-
-
-(x-(y-y)) + (x+y)<br>
-
-
-<br>
-
-
-Generation: 1<br>
-
-
-Best Individual:<br>
-
-
-Evaluated: T<br>
-
-
-Fitness: 1000.0&lt;small&gt;&lt;code&gt;<br>
-
-
-Linking function: +<br>
-
-
-Gene 0<br>
-
-
-*.x.x.y.y.x.x.y.x.x.x<br>
-
-
-Gene 1<br>
-
-
-y./.x.+.+.x.x.x.x.x.x<br>
-
-
-<br>
-
-
-(x*x) + y<br>
-
-
-<br>
-
-
-Best Individual of Run:<br>
-
-
-Found at Generation: 1<br>
-
-
-Evaluated: T<br>
-
-
-Fitness: 1000.0<br>
-
-
-Linking function: +<br>
-
-
-Gene 0<br>
-
-
-*.x.x.y.y.x.x.y.x.x.x<br>
-
-
-Gene 1<br>
-
-
-y./.x.+.+.x.x.x.x.x.x<br>
-
-
-<br>
-
-
-(x*x) + y<br>
-
-
-<br>
-
-
-Size of program: 4<br>
-
-
-Variables used(count): x(2), y(1)<br>
-
-
-<br>
-
-
-***** TRAINING data results *****<br>
-
-
-Statistics: <br>
-
-
-MSE:&nbsp; 0.0&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; RAE:&nbsp;
-0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-RSE:&nbsp; 0.0<br>
-
-
-RMSE: 0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-MAE:&nbsp;
-0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RRSE:
-0.0<br>
-
-
-<br>
-
-
-Observed&nbsp;&nbsp;&nbsp; Computed<br>
-
-
-1.25&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-1.25<br>
-
-
-3.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-3.0<br>
-
-
-8.0&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; 8.0<br>
-
-
-21.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-21.0</code></small><br>
-
-
-<br>
+<span style="font-family: &quot;Times New Roman&quot;;"><small><code></code></small><br>
 
 
 <p class="MsoNormal"><span style="" lang="EN">The
@@ -1358,11 +1045,11 @@ were only 2 generations needed to find a solution to this problem since
 it was a simple one. Notice that in the first generation (generation
 0), the best solution found was (x-(y-y) + (x+y). It had a fitness
 value of 274.6781, well below the perfect value of 1000 that we get
-with the best solution of generation 1. The statistics also
+with the best solution of generation 4. The statistics also
 provide some other information. The size of the best solution found
-during the run was 4. This means that there were 4 symbols used in the
-expression (excluding the linking function). So we had 2 x terminal
-symbols, 1 y terminal symbol and the * function symbol in the solution.
+during the run was 8 (before simplification of the expression). This means that there were 8 symbols used in the
+expression (excluding the linking function). So we had 4 x terminal
+symbols, 1 y terminal symbol and 1 each of the function symbols +, - and * in the solution.
 We also display some statistical values including mean squared error
 (MSE), root mean squared error (RMSE), etc. Finally we display the
 values expected or observed (from our training data) and the values
@@ -1644,292 +1331,12 @@ file will look like:</span></p>
 <br>
 
 
-<small><code>Seed(s) used in this job: 4357<br>
-
-
-Problem Type: functionfinding<br>
-
-
-<br>
-
-
-Generation: 0<br>
-
-
-Best Individual:<br>
-
-
-Evaluated: T<br>
-
-
-Fitness: 0.004819467<br>
-
-
-Linking function: +<br>
-
-
-Gene 0<br>
-
-
--.-.-.x.*.*.-.x.x.x.x.x.x.x.x.x.x<br>
-
-
-Gene 1<br>
-
-
-*.+.-.x./.x././.x.x.x.x.x.x.x.x.x<br>
-
-
-Gene 2<br>
-
-
-*.+.+.x.*.*.x.x.x.x.x.x.x.x.x.x.x<br>
-
-
-<br>
-
-
-((x-(x*x))-((x*x)-(x-x))) + ((x+((x/x)/x))*(x-(x/x))) +
-((x+(x*x))*((x*x)+x))<br>
-
-
-<br>
-
-
-Generation: 1<br>
-
-
-Best Individual:<br>
-
-
-Evaluated: T<br>
-
-
-Fitness: 410.7618<br>
-
-
-Linking function: +<br>
-
-
-Gene 0<br>
-
-
--.-.*.x.*.*.-.x.x.x.x.x.x.x.x.x.x<br>
-
-
-Gene 1<br>
-
-
-*.+.-.x./.x././.x.x.x.x.x.x.x.x.x<br>
-
-
-Gene 2<br>
-
-
-*.+.+.x.*.*./.x.x.x.x.x.x.x.x.x.x<br>
-
-
-<br>
-
-
-((x-(x*x))-((x*x)*(x-x))) + ((x+((x/x)/x))*(x-(x/x))) +
-((x+(x*x))*((x*x)+(x/x)))<br>
-
-
-<br>
-
-
-Generation: 6<br>
-
-
-Best Individual:<br>
-
-
-Evaluated: T<br>
-
-
-Fitness: 500.0<br>
-
-
-Linking function: +<br>
-
-
-Gene 0<br>
-
-
--.-.*.x.x.x.x.x.x.x.x.x.x.x.x.x.x<br>
-
-
-Gene 1<br>
-
-
-*.+./.x./.x././.x.x.x.x.x.x.x.x.x<br>
-
-
-Gene 2<br>
-
-
-*.+.+.x.*.*./.x.x.x.x.x.x.x.x.x.x<br>
-
-
-<br>
-
-
-((x-x)-(x*x)) + ((x+((x/x)/x))*(x/(x/x))) + ((x+(x*x))*((x*x)+(x/x)))<br>
-
-
-<br>
-
-
-Generation: 14<br>
-
-
-Best Individual:<br>
-
-
-Evaluated: T<br>
-
-
-Fitness: 1000.0<br>
-
-
-Linking function: +<br>
-
-
-Gene 0<br>
-
-
--.-.*.x.x.x.x.x.x.x.x.x.x.x.x.x.x<br>
-
-
-Gene 1<br>
-
-
-*.x.x.x.x.x.x.+.x.x.x.x.x.x.x.x.x<br>
-
-
-Gene 2<br>
-
-
-*.+.+.x.*.*./.x.x.x.x.x.x.x.x.x.x<br>
-
-
-<br>
-
-
-((x-x)-(x*x)) + (x*x) + ((x+(x*x))*((x*x)+(x/x)))<br>
-
-
-<br>
-
-
-Best Individual of Run:<br>
-
-
-Found at Generation: 14<br>
-
-
-Evaluated: T<br>
-
-
-Fitness: 1000.0<br>
-
-
-Linking function: +<br>
-
-
-Gene 0<br>
-
-
--.-.*.x.x.x.x.x.x.x.x.x.x.x.x.x.x<br>
-
-
-Gene 1<br>
-
-
-*.x.x.x.x.x.x.+.x.x.x.x.x.x.x.x.x<br>
-
-
-Gene 2<br>
-
-
-*.+.+.x.*.*./.x.x.x.x.x.x.x.x.x.x<br>
-
-
-<br>
-
-
-((x-x)-(x*x)) + (x*x) + ((x+(x*x))*((x*x)+(x/x)))<br>
-
-
-<br>
-
-
-Size of program: 23<br>
-
-
-Variables used(count): x(13)<br>
-
-
-<br>
-
-
-***** TRAINING data results *****<br>
-
-
-Statistics: <br>
-
-
-MSE:&nbsp; 7.182716450022835E-24&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;
-RAE:&nbsp; 4.832470396077297E-16&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;
-RSE:&nbsp; 4.344516272977063E-31<br>
-
-
-RMSE: 2.680059038533076E-12&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;
-MAE:&nbsp; 1.7715995337397316E-12&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;
-RRSE: 6.591294465411982E-16<br>
-
-
-<br>
-
-
-Observed&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; Computed<br>
-
-
-9103.54918799079&nbsp;&nbsp;&nbsp; 9103.549187990786<br>
-
-
-1213.47815867463&nbsp;&nbsp;&nbsp; 1213.4781586746294<br>
-
-
-160.18146840485&nbsp;&nbsp;&nbsp;
-&nbsp;160.18146840484988<br>
-
-
-4432.23529247904&nbsp;&nbsp;&nbsp; 4432.235292479036<br>
-
-
-7671.79392962917&nbsp;&nbsp;&nbsp; 7671.793929629167<br>
-
-
-11.8327154232663&nbsp;&nbsp;&nbsp; 11.832715423266338<br>
-
-
-193.570365560718&nbsp;&nbsp;&nbsp; 193.57036556071805<br>
-
-
-11124.3786278048&nbsp;&nbsp;&nbsp; 11124.378627804794<br>
-
-
--0.326443121119579&nbsp;&nbsp;-0.3264431211195794<br>
-
-
-1093.78835980998&nbsp;&nbsp;&nbsp; 1093.7883598099795</code></small><br>
+<small><code>GENERAL PARAMETERS<br>Arguments used in this run: <br>Maximum number of generations in this run: 50<br>Size of population in this run: 30<br>Number of genes per chromosome: 3<br>Size of gene head: 8<br>Seed(s) used in this job: 4357<br>Problem type: functionfinding<br>Fitness function: ??UNKNOWN??<br><br>BEST INDIVIDUAL OF GENERATION<br>Generation: 0<br>Evaluated: T<br>Fitness: 0.004819467<br>Linking function: +<br><br>GEP-MODEL<br>KARVA<br>Gene 0<br>-.-.-.x.*.*.-.x.x.x.x.x.x.x.x.x.x<br>Gene 1<br>*.+.-.x./.x././.x.x.x.x.x.x.x.x.x<br>Gene 2<br>*.+.+.x.*.*.x.x.x.x.x.x.x.x.x.x.x<br><br>MATH<br>((x-(x*x))-((x*x)-(x-x))) + ((x+((x/x)/x))*(x-(x/x))) + ((x+(x*x))*((x*x)+x))<br><br>MATH (SIMPLIFIED)<br>-(1-x-2*x^4-x^5)/x<br><br>BEST INDIVIDUAL OF GENERATION</code></small></span><a title="http://www.youtube.com/watch?v=KLB1b0WGHN0" href="http://www.youtube.com/watch?v=KLB1b0WGHN0" target="_blank">http://www.youtube.com/watch?v=KLB1b0WGHN0</a><b><span style="font-weight: bold;"> <br></span></b><br><span style="font-family: &quot;Times New Roman&quot;;"><small><code>Generation: 1<br>Evaluated: T<br>Fitness: 410.7618<br>Linking function: +<br><br>GEP-MODEL<br>KARVA<br>Gene 0<br>-.-.*.x.*.*.-.x.x.x.x.x.x.x.x.x.x<br>Gene 1<br>*.+.-.x./.x././.x.x.x.x.x.x.x.x.x</code></small></span><a title="http://www.youtube.com/watch?v=KLB1b0WGHN0" href="http://www.youtube.com/watch?v=KLB1b0WGHN0" target="_blank">http://www.youtube.com/watch?v=KLB1b0WGHN0</a><b><span style="font-weight: bold;"> <br></span></b><br><span style="font-family: &quot;Times New Roman&quot;;"><small><code>Gene 2<br>*.+.+.x.*.*./.x.x.x.x.x.x.x.x.x.x<br><br>MATH<br>((x-(x*x))-((x*x)*(x-x))) + ((x+((x/x)/x))*(x-(x/x))) + ((x+(x*x))*((x*x)+(x/x)))<br><br>MATH (SIMPLIFIED)<br>-(1-x-x^2-x^3-x^4-x^5)/x<br><br>BEST INDIVIDUAL OF GENERATION<br>Generation: 4<br>Evaluated: T<br>Fitness: 1000.0<br>Linking function: +<br><br>GEP-MODEL<br>KARVA<br>Gene 0<br>-.x.x././.x.x.-.x.x.x.x.x.x.x.x.x<br>Gene 1<br>*.-.*.x.*.*.-.x.x.x.x.x.x.x.x.x.x<br>Gene 2<br>*.+.+.x.*.*./.x.x.x.x.x.x.x.x.x.x<br><br>MATH<br>(x-x) + ((x-(x*x))*((x*x)*(x-x))) + ((x+(x*x))*((x*x)+(x/x)))<br><br>MATH (SIMPLIFIED)<br>x+x^2+x^3+x^4<br><br><br>BEST INDIVIDUAL OF RUN<br>Found at Generation: 4<br>Evaluated: T<br>Fitness: 1000.0<br>Linking function: +<br><br>GEP-MODEL<br>KARVA<br>Gene 0<br>-.x.x././.x.x.-.x.x.x.x.x.x.x.x.x<br>Gene 1GENERAL PARAMETERS<br>Arguments used in this run: <br>Maximum number of generations in this run: 100<br>Size of population in this run: 50<br>Number of genes per chromosome: 2<br>Size of gene head: 5<br>Seed(s) used in this job: 4357<br>Problem type: functionfinding<br>Fitness function: RH<br><br>BEST INDIVIDUAL OF GENERATION<br>Generation: 0<br>Evaluated: T<br>Fitness: 3.0<br>Linking function: +<br><br>GEP-MODEL<br>KARVA<br>Gene 0<br>*.-.-.+.y.y.x.x.y.x.x<br>Gene 1<br>-.y.-.y.y.y.y.y.x.y.x<br><br>MATH<br>(((x+y)-y)*(y-x)) + (y-(y-y))<br><br>MATH (SIMPLIFIED)<br>-x^2+y+x*y<br><br>BEST INDIVIDUAL OF GENERATION<br>Generation: 1<br>Evaluated: T<br>Fitness: 4.0<br>Linking function: +<br><br>GEP-MODEL<br>KARVA<br>Gene 0<br>*.x.x.y.y.x.x.y.x.x.x<br>Gene 1<br>-.y.-.y.y.y.y.y.x.y.x<br><br>MATH<br>(x*x) + (y-(y-y))<br><br>MATH (SIMPLIFIED)<br>x^2+y<br><br><br>BEST INDIVIDUAL OF RUN<br>Found at Generation: 1<br>Evaluated: T<br>Fitness: 4.0<br>Linking function: +<br><br>GEP-MODEL<br>KARVA<br>Gene 0<br>*.x.x.y.y.x.x.y.x.x.x<br>Gene 1<br>-.y.-.y.y.y.y.y.x.y.x<br><br>MATH<br>(x*x) + (y-(y-y))<br><br>MATH (SIMPLIFIED)<br>x^2+y<br><br>MODEL COMPOSITION<br>Size of program: 8<br>Variables used(variable count): x 2, y 3<br>Functions used(function count): - 2, * 1<br><br>Size of program (MATH simplified): 4<br>Variables used(variable count): y 1, x 1<br>Functions used(function count): ^ 1, + 1<br><br>MODEL QUALITY MEASURES (TRAINING)<br>Statistics: <br>MSE:&nbsp; 0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RAE:&nbsp; 0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RSE:&nbsp; 0.0<br>RMSE: 0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; MAE:&nbsp; 0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RRSE: 0.0<br>Corr Coeff: 1.0<br><br>OBSERVED&nbsp;&nbsp;&nbsp; AND COMPUTED (TRAINING)<br>#Observed GEP-Model<br>1.25&nbsp;&nbsp;&nbsp; 1.25<br>3.0&nbsp;&nbsp;&nbsp; 3.0<br>8.0&nbsp;&nbsp;&nbsp; 8.0<br>21.0&nbsp;&nbsp;&nbsp; 21.0<br>#----------<br><br>*.-.*.x.*.*.-.x.x.x.x.x.x.x.x.x.x<br>Gene 2<br>*.+.+.x.*.*./.x.x.x.x.x.x.x.x.x.x<br><br>MATH<br>(x-x) + ((x-(x*x))*((x*x)*(x-x))) + ((x+(x*x))*((x*x)+(x/x)))<br><br>MATH (SIMPLIFIED)<br>x+x^2+x^3+x^4<br><br>MODEL COMPOSITION<br>Size of program: 29<br>Variables used(variable count): x 16<br>Functions used(function count): - 3, / 1, + 2, * 7<br><br>Size of program (MATH simplified): 10<br>Variables used(variable count): x 4<br>Functions used(function count): ^ 3, + 3<br><br>MODEL QUALITY MEASURES (TRAINING)<br>Statistics: <br>MSE:&nbsp;
+7.182716450022835E-24&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RAE:&nbsp;
+4.832470396077297E-16&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RSE:&nbsp;
+4.344516272977063E-31<br>RMSE: 2.680059038533076E-12&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; MAE:&nbsp; 1.7715995337397316E-12&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;RRSE: 6.591294465411982E-16<br>Corr Coeff: 1.0000000000000002<br><br>OBSERVED&nbsp;&nbsp;&nbsp; AND COMPUTED (TRAINING)<br>#Observed GEP-Model<br>9103.54918799079&nbsp;&nbsp;&nbsp; 9103.549187990786<br>1213.47815867463&nbsp;&nbsp;&nbsp; 1213.4781586746294<br>160.18146840485&nbsp;&nbsp;&nbsp; &nbsp;160.18146840484988<br>4432.23529247904&nbsp;&nbsp;&nbsp; 4432.235292479036<br>7671.79392962917&nbsp;&nbsp;&nbsp; 7671.793929629167<br>11.8327154232663&nbsp;&nbsp;&nbsp; 11.832715423266338<br>193.570365560718&nbsp;&nbsp;&nbsp; 193.57036556071805<br>11124.3786278048&nbsp;&nbsp;&nbsp; 11124.378627804794<br>-0.326443121119579&nbsp;&nbsp;-0.3264431211195794<br>1093.78835980998&nbsp;&nbsp;&nbsp; 1093.7883598099795<br>#----------<br></code></small><br>
 
 
 <br>
@@ -1940,16 +1347,15 @@ this case it took 14 generations to solve the problem
 with an
 ideal
 (fitness = 1000) solution. The solution could use some simplification
-so that we see the first term is -x*x, the second is x*x
-&nbsp;(which
-cancel each other) and the third is (x+x*x)(x+1) or x^4+x^3+x^2+x, the
+so that we see the first term is (x-x) which is 0, the second is&nbsp;</span><small><code></code></small><span style="font-family: &quot;Times New Roman&quot;;"><small><code>((x-(x*x))*((x*x)*(x-x)))</code></small></span><span style="" lang="EN">
+&nbsp;which is also 0 and the third is&nbsp;</span><span style="font-family: &quot;Times New Roman&quot;;"><small><code>((x+(x*x))*((x*x)+(x/x)))</code></small></span><small><code></code></small><small><code></code></small><small class="MsoNormal"><code> </code></small><small class="MsoNormal"><code></code></small><small class="MsoNormal"><code>which is</code></small><span style="" lang="EN"> x^4+x^3+x^2+x, the
 desired solution. The errors in the statistics are not exactly zero but
 are quite small. This is due to loss of precision as the complex (not
 simplified) expression is evaluated. It also demonstrates why we use
 double and not float for all calculations. One final thing to note is
 that we don't print the best result after each generation. We only
 printed the results when there was an improvement in the fitness of the
-best of a generation (at generations 1, 6 and 14). This can be
+best of a generation (at generations 0, 1 and&nbsp;4). This can be
 controlled by a parameter for the statistics. You can print the results
 for every generation, only when the fitness improves (as we did here by
 default) or only the final generation of the run (see the gep.params
@@ -2030,179 +1436,10 @@ results of the run should look something like:</span></p>
 <small><br>
 
 
-<code>Seed(s) used in this job: 4357<br>
-
-
-Problem Type: functionfinding<br>
-
-
-<br>
-
-
-Generation: 0<br>
-
-
-Best Individual:<br>
-
-
-Evaluated: T<br>
-
-
-Fitness: 3.0<br>
-
-
-Linking function: +<br>
-
-
-Gene 0<br>
-
-
-*.-.-.+.y.y.x.x.y.x.x<br>
-
-
-Gene 1<br>
-
-
--.y.-.y.y.y.y.y.x.y.x<br>
-
-
-<br>
-
-
-(((x+y)-y)*(y-x)) + (y-(y-y))<br>
-
-
-<br>
-
-
-Generation: 1<br>
-
-
-Best Individual:<br>
-
-
-Evaluated: T<br>
-
-
-Fitness: 4.0<br>
-
-
-Linking function: +<br>
-
-
-Gene 0<br>
-
-
-*.x.x.y.y.x.x.y.x.x.x<br>
-
-
-Gene 1<br>
-
-
-y./.x.+.+.x.x.x.x.x.x<br>
-
-
-<br>
-
-
-(x*x) + y<br>
-
-
-<br>
-
-
-Best Individual of Run:<br>
-
-
-Found at Generation: 1<br>
-
-
-Evaluated: T<br>
-
-
-Fitness: 4.0<br>
-
-
-Linking function: +<br>
-
-
-Gene 0<br>
-
-
-*.x.x.y.y.x.x.y.x.x.x<br>
-
-
-Gene 1<br>
-
-
-y./.x.+.+.x.x.x.x.x.x<br>
-
-
-<br>
-
-
-(x*x) + y<br>
-
-
-<br>
-
-
-Size of program: 4<br>
-
-
-Variables used(count): x(2), y(1)<br>
-
-
-<br>
-
-
-***** TRAINING data results *****<br>
-
-
-Statistics: <br>
-
-
-MSE:&nbsp; 0.0&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; RAE:&nbsp;
-0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-RSE:&nbsp; 0.0<br>
-
-
-RMSE: 0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-MAE:&nbsp;
-0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RRSE:
-0.0<br>
-
-
-<br>
-
-
-Observed&nbsp;&nbsp;&nbsp; Computed<br>
-
-
-1.25&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-1.25<br>
-
-
-3.0&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp; 3.0<br>
-
-
-8.0&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp; 8.0<br>
-
-
-21.0&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; 21.0</code></small>
-<br>
-
-
-<br>
-
-
-<p class="MsoNormal"><span style="" lang="EN">As
+<code></code></small></span><small><code><span style="font-family: monospace;">GENERAL PARAMETERS<br>Arguments used in this run: <br>Maximum number of generations in this run: 100<br>Size of population in this run: 50<br>Number of genes per chromosome: 2<br>Size of gene head: 5<br>Seed(s) used in this job: 4357<br>Problem type: functionfinding<br>Fitness function: RH<br><br>BEST INDIVIDUAL OF GENERATION<br>Generation: 0<br>Evaluated: T<br>Fitness: 3.0<br>Linking function: +<br><br>GEP-MODEL<br>KARVA<br>Gene 0<br>*.-.-.+.y.y.x.x.y.x.x<br>Gene 1<br>-.y.-.y.y.y.y.y.x.y.x<br><br>MATH<br>(((x+y)-y)*(y-x)) + (y-(y-y))<br><br>MATH (SIMPLIFIED)<br>-x^2+y+x*y<br><br>BEST INDIVIDUAL OF GENERATION<br>Generation: 1<br>Evaluated: T<br>Fitness: 4.0<br>Linking function: +<br><br>GEP-MODEL<br>KARVA<br>Gene 0<br>*.x.x.y.y.x.x.y.x.x.x<br>Gene 1<br>-.y.-.y.y.y.y.y.x.y.x<br><br>MATH<br>(x*x) + (y-(y-y))<br><br>MATH (SIMPLIFIED)<br>x^2+y<br><br><br>BEST INDIVIDUAL OF RUN<br>Found at Generation: 1<br>Evaluated: T<br>Fitness: 4.0<br>Linking function: +<br><br>GEP-MODEL<br>KARVA<br>Gene 0<br>*.x.x.y.y.x.x.y.x.x.x<br>Gene 1<br>-.y.-.y.y.y.y.y.x.y.x<br><br>MATH<br>(x*x) + (y-(y-y))<br><br>MATH (SIMPLIFIED)<br>x^2+y<br><br>MODEL COMPOSITION<br>Size of program: 8<br>Variables used(variable count): x 2, y 3<br>Functions used(function count): - 2, * 1<br><br>Size of program (MATH simplified): 4<br>Variables used(variable count): y 1, x 1<br>Functions used(function count): ^ 1, + 1<br><br>MODEL QUALITY MEASURES (TRAINING)<br>Statistics: <br>MSE:&nbsp; 0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RAE:&nbsp; 0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RSE:&nbsp; 0.0<br>RMSE: 0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; MAE:&nbsp; 0.0&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RRSE: 0.0<br>Corr Coeff: 1.0<br><br>OBSERVED&nbsp;&nbsp;&nbsp; AND COMPUTED (TRAINING)<br>#Observed GEP-Model<br>1.25&nbsp;&nbsp;&nbsp; &nbsp; 1.25<br>3.0&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;3.0<br>8.0&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;8.0<br>21.0&nbsp;&nbsp;&nbsp; &nbsp; 21.0<br>#----------<br></span></code></small><span style="font-family: &quot;Times New Roman&quot;;"><br><p class="MsoNormal"><span style="" lang="EN">As
 you can see the final result is the same, we get the
 x*x+y
-equation
+equation (after simplification)
 that the data supports. The maximum fitness value in this case was 4,
 since there were only 4 training sets of data. <br>
 
@@ -2215,7 +1452,7 @@ next section identifies an number of other examples that have been
 implemented, showing more complex examples from the four types of
 problems: function finding, logical, classification and time series.
 We'll explain some of the particular parameters and considerations for
-these types of problems as we briefly describe the examples.</span></p>
+these types of problems as we briefly describe the examples.&nbsp;</span></p>
 
 
 <br>
@@ -5074,13 +4311,7 @@ not change</span> since only 1 subpop makes sense).<br>
 not change</span>.<br>
 
 
-<span style="font-weight: bold;">pop.subpop.0.fitness</span>
-- Should be ec.simple.SimpleFitness. could change this as required (for
-example to support a more complex fitess or to use doubles rather than
-floats).<br>
-
-
-<span style="font-weight: bold;">pop.subpop.0.duplicate-retries</span>
+<span style="font-weight: bold;"></span><span style="font-weight: bold;">pop.subpop.0.duplicate-retries</span>
 - should be 0? Haven't looked closely at this.<br>
 
 
@@ -5095,7 +4326,13 @@ floats).<br>
 - must be ec.gep.GEPSpecies.<br>
 
 
-<span style="font-weight: bold;">pop.subpop.0.species.ind</span>
+<span style="font-weight: bold;">pop.subpop.0.species.fitness</span>
+- Should be ec.simple.SimpleFitness. could change this as required (for
+example to support a more complex fitness or to use doubles rather than
+floats).<br>
+
+
+<span style="font-weight: bold;"></span><span style="font-weight: bold;">pop.subpop.0.species.ind</span>
 - must be ec.gep.GEPIndividual.<br>
 
 
@@ -5449,7 +4686,7 @@ ourProblem.stat<br>
 
 
 <span style="font-weight: bold;">stat.detail-to-log</span>
-= change<br>
+= change<br><span style="font-weight: bold;">stat.number-of-best-to-log</span> = 1<br><br>
 
 
 This contains all of the parameters that you might like to use but
@@ -5511,7 +4748,7 @@ improves (default)<br>
 the best of run model information<br>
 
 
-<br>
+<span style="font-weight: bold;">number-of-best-to-log</span> - this determines the number of best individuals to display in the final results. By default it is 1.<br><br>
 
 
 More complex things can be done as per standard ECJ. Consider the
@@ -5838,7 +5075,8 @@ of it's parameters.<br>
 
 
 Adding <span style="font-weight: bold;">new fitness
-functions</span> is done by adding some methods to the class
+functions</span>
+is done by adding some methods to the class
 ec.gep.GEPFitnessFunction. For each of the fitness functions there are
 3 methods that need to be supplied: one to calculate the
 fitness&nbsp;(with a value from 0 to some maximum); one to give the
@@ -5857,8 +5095,8 @@ for the&nbsp;fitness function (e.g. RRSE, MAE, etc.). This allows a
 user to specifiy a fitness function to be&nbsp;used in the default
 user program by specifying only the short pneumonic for the fitness
 function (they don't provide ANY code if they use this - check the code
-in GEPDefaultUserProg.java). The XXXXmaxFitness functions all have 1
-arg when most don't need one.&nbsp;This was just to make it
+in GEPDefaultUserProg.java). The XXXXmaxFitness functions&nbsp;all have
+1&nbsp;arg when most don't need one.&nbsp;This was just to make it
 consistent and easier to call the method based on the XXXX part only
 (again see&nbsp;GEPDefaultUserProg.java).&nbsp;For example the
 functions for the MSE fitness functions are called as:<br>
