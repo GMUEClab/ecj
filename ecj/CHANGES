@@ -1223,3 +1223,4 @@ Version		Change Log
 		compiler warnings in JDK 1.6
 	Minor documentation bug fix.  Thanks to Ian Lindsay
 		<iml04@hampshire.edu>	
+	As long promised EvolutionState.statics is gone.
