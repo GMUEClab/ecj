@@ -118,7 +118,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
 		else    /// ordinary evaluation mechanism  -- can we do the replacement below that we did?
 			{
 			evaluate(state, new Individual[] { ind }, threadnum);
-			/*
+		/*	
 			if(showDebugInfo)
 				state.output.message(Thread.currentThread().getName() + "Starting an evaluation.");
 
@@ -155,7 +155,8 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
 				server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
 			if(showDebugInfo) state.output.message(Thread.currentThread().getName() + "Finished evaluating the individual.");
 			*/
-			}
+			}	
+		
         }
         
         
@@ -210,6 +211,10 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         ed.type = Slave.V_EVALUATESIMPLE;
         ed.inds = inds;
         ed.subPops = subPopNum;
+	ed.updateFitness = new boolean[inds.length]; 
+	for (int i=0 ; i < inds.length; i++) 
+		ed.updateFitness[i]=true; 
+
         server.slaveMonitor.scheduleJobForEvaluation(state,ed);
         if( !batchMode )
             server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );

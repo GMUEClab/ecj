@@ -274,6 +274,7 @@ public class Slave
                             {
                             case V_SHUTDOWN:
                                 done = true;
+			System.out.println("HERE"); 
                                 socket.close();
                                 return;
                                                                         
@@ -471,7 +472,8 @@ public class Slave
                 }
             else if (updateFitness[i])
                 {
-                dataOut.writeBoolean(inds[i].evaluated);
+		dataOut.write(inds[i].evaluated ? 1 : 0); 
+                //dataOut.writeBoolean(inds[i].evaluated);
                 inds[i].fitness.writeFitness(state,dataOut);
                 }
             }
