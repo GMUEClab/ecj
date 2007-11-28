@@ -152,17 +152,6 @@ import java.util.Vector;
 
 public class EvolutionState implements Singleton
     {
-    // set just after construction
-
-    /** 
-        @deprecated
-        Do not use this vector -- it is deprecated and will go away soon.  The original function of the
-        vector (to enable a location for statically-allocated objects to be stashed in order to be
-        serializable) has gone away.
-    */
-    
-    public Vector statics; 
-
     /** The parameter database (threadsafe).  Parameter objects are also threadsafe.
         Nonetheless, you should generally try to treat this database as read-only. */
     public ParameterDatabase parameters;
@@ -277,10 +266,6 @@ public class EvolutionState implements Singleton
         {
 
         Parameter p;
-
-        // make a new Statics
-    
-        statics = new Vector();
 
         // we ignore the base, it's worthless anyway for EvolutionState
 

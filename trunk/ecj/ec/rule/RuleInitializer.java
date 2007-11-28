@@ -114,11 +114,6 @@ public class RuleInitializer extends SimpleInitializer
             ruleConstraints[numRuleConstraints] = c;
             numRuleConstraints++;
             }
-        
-        /*
-        // no longer necessary
-        state.statics.addElement(ruleConstraintRepository);
-        */
         }
     
     public void setupRuleSetConstraints(final EvolutionState state,
@@ -146,9 +141,5 @@ public class RuleInitializer extends SimpleInitializer
             c.setup(state,base.push(""+y));
             ruleSetConstraints[y] = c;
             }
-        /*
-        // no longer necessary
-        state.statics.addElement(ruleSetConstraintRepository);
-        */
         }
     }
