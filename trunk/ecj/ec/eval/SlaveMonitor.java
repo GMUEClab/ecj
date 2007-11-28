@@ -163,7 +163,7 @@ public class SlaveMonitor
             for(int i=0;i<toEvaluate.inds.length;i++)
                 {
                 toEvaluate.inds[i].writeIndividual(state, dataOut);
-                if (toEvaluate.type == Slave.V_EVALUATEGROUPED) 
+                //if (toEvaluate.type == Slave.V_EVALUATEGROUPED) 
                     dataOut.writeBoolean(toEvaluate.updateFitness[i]);
                 }
             dataOut.flush();
@@ -178,6 +178,7 @@ public class SlaveMonitor
             } catch (Exception e) 
                 {
                 state.output.message("Shutdown from transmitting");
+		e.printStackTrace(); 
                 result.shutdown(state); 
                 }
                 
