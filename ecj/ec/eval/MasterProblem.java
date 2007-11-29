@@ -182,27 +182,22 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         if(showDebugInfo)
             state.output.message(Thread.currentThread().getName() + "Starting an evaluation.");
                 
-        // Determine the subpopulation number associated with this individual
-        int subPopNum[] = new int[inds.length];
-        for(int i=0;i<inds.length;i++)
-            {
-            boolean subPopNumFound = false;
-            for (int x=0;x<state.population.subpops.length && !subPopNumFound;x++)
-                {
-                if (state.population.subpops[x].species == inds[i].species)
-                    {
-                    subPopNum[i] = x;
-                    subPopNumFound = true;
-                    break;
-                    }
-                }
-            if (!subPopNumFound)
-                {
-                // Is it possible that there isn't a matching species?
-                state.output.fatal("Whoa!  Couldn't find a matching species for Individual!");
-                }
-            }
-                
+		// Determine the subpopulation number associated with this individual (assumes all individuals have the same subpopulation)
+		int subPopNum = 0;
+		boolean found = false;
+		for (int x=0;x<state.population.subpops.length && !found;x++)
+			{
+			if (state.population.subpops[x].species == inds[0].species)
+				{
+				subPopNum = x;
+				found = true;
+				}
+			}
+		
+		if (!found)
+			state.output.fatal("Whoa!  Couldn't find a matching species for the individual!");
+		
+		
         // Acquire a slave socket
         EvaluationData ed = new EvaluationData();
         ed.state = state;
@@ -210,11 +205,11 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         ed.threadnum = threadnum;
         ed.type = Slave.V_EVALUATESIMPLE;
         ed.inds = inds;
-        ed.subPops = subPopNum;
-	ed.updateFitness = new boolean[inds.length]; 
-	for (int i=0 ; i < inds.length; i++) 
-		ed.updateFitness[i]=true; 
-
+        ed.subPops = new int[] { subPopNum } ;
+		ed.updateFitness = new boolean[inds.length]; 
+		for (int i=0 ; i < inds.length; i++) 
+			ed.updateFitness[i]=true; 
+		
         server.slaveMonitor.scheduleJobForEvaluation(state,ed);
         if( !batchMode )
             server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
