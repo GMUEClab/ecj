@@ -322,8 +322,8 @@ public class Slave
         int numInds=1; 
         try
             {
-            subPopNum = dataIn.readInt();
-            numInds = dataIn.readInt(); 
+				numInds = dataIn.readInt();
+				subPopNum = dataIn.readInt(); // assume all individuals are from the same subpopulation
             }
         catch (IOException e)
             {
