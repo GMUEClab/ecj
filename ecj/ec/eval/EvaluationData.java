@@ -29,7 +29,7 @@ import ec.*;
  */
 
 public class EvaluationData
-    {
+{
     // the evolution state
     EvolutionState state;
 
@@ -48,17 +48,4 @@ public class EvaluationData
     boolean countVictoriesOnly;
     boolean[] updateFitness;
     int index; // how many have been read back from the slaves
-        
-    /*  // for Slave.V_EVALUATESIMPLE
-        int subPopNum;
-        Individual ind;
-
-        // for Slave.V_EVALUATEGROUPED
-        int length;
-        int[] subPops;
-        boolean countVictoriesOnly;
-        Individual[] inds;
-    
-        int index; // how many have been read back from the slaves
-    */
-    }
+}

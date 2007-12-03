@@ -25,7 +25,7 @@ import ec.*;
  */
 
 class SlaveData 
-    {
+{
 
     /**
      * Name of the slave process
@@ -74,7 +74,7 @@ class SlaveData
                       DataOutputStream dataOut,
                       DataInputStream dataIn,
                       SlaveMonitor slaveMonitor )
-        {
+    {
         this.slaveName = slaveName;
         this.evalSocket = evalSocket;
         this.dataOut = dataOut;
@@ -84,7 +84,7 @@ class SlaveData
         this.jobQueue.reset();
         workerThread = new WorkerThread(state,this,this.slaveMonitor.showDebugInfo);
         workerThread.start();
-        }
+    }
 
     /**
        This method is called whenever there are any communication problems with the slave
@@ -92,28 +92,32 @@ class SlaveData
        be rescheduled for evaluation on other slaves.
     */
     public void shutdown( final EvolutionState state )
+<<<<<<< SlaveData.java
+    {
+=======
         {
+>>>>>>> 1.4
         try
             {
-            // 0 means shutdown
-            dataOut.writeByte(Slave.V_SHUTDOWN);
-            dataOut.flush();
-            dataOut.close();
-            dataIn.close();
-            evalSocket.close();
+                // 0 means shutdown
+                dataOut.writeByte(Slave.V_SHUTDOWN);
+                dataOut.flush();
+                dataOut.close();
+                dataIn.close();
+                evalSocket.close();
             }
         catch (IOException e)
             {
-            // Just ignore the exception since we're closing the socket and
-            // I/O streams.
+                // Just ignore the exception since we're closing the socket and
+                // I/O streams.
             }
         state.output.systemMessage( Thread.currentThread().getName() + "Slave is shutting down...." );
         slaveMonitor.markSlaveAsUnavailable(this);
         jobQueue.rescheduleJobs(state);
         slaveMonitor.unregisterSlave(this);
         state.output.systemMessage( Thread.currentThread().getName() + "Slave exists...." );
-        }
-
     }
+
+}
 
 

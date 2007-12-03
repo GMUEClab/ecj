@@ -44,7 +44,7 @@ import ec.util.*;
 
 public class MasterProblemServer
     implements Runnable, Serializable
-    {
+{
     public static final String P_EVALMASTERPORT = "eval.master.port";
         
     public static final String P_EVALCOMPRESSION = "eval.compression";
@@ -80,9 +80,9 @@ public class MasterProblemServer
 
     // simple constructor
     public MasterProblemServer( boolean showDebugInfo )
-        {
+    {
         this.showDebugInfo = showDebugInfo;
-        }
+    }
 
     /**
      * After the MasterProblemServer is created, it needs to be told to
@@ -93,53 +93,48 @@ public class MasterProblemServer
      * @param state the evolution state
      */
     public void setupServerFromDatabase( final EvolutionState state )
-        {
+    {
         this.state = state;
                 
         int port = state.parameters.getInt(
-            new Parameter( P_EVALMASTERPORT ),null);
+                                           new Parameter( P_EVALMASTERPORT ),null);
                 
         int maxNumberOfJobs = state.parameters.getInt(
-            new Parameter( P_MAXIMUMNUMBEROFCONCURRENTJOBSPERSLAVE ),null);
+                                                      new Parameter( P_MAXIMUMNUMBEROFCONCURRENTJOBSPERSLAVE ),null);
 
         useCompression = state.parameters.getBoolean(new Parameter(P_EVALCOMPRESSION),null,false);
                 
         try
             {
-            servSock = new ServerSocket(port);
-//            state.output.systemMessage("Star problem server listening on "+port);
+                servSock = new ServerSocket(port);
             }
         catch( IOException e )
             {
-            state.output.fatal("Unable to bind to port " + port + ": " + e);
+                state.output.fatal("Unable to bind to port " + port + ": " + e);
             }
                 
         slaveMonitor = new SlaveMonitor(showDebugInfo,maxNumberOfJobs); // no maximum number of slaves!
 
         randomSeed = (int)(System.currentTimeMillis());
-        }
+    }
 
     /**
      * Indicates that the background thread is to shut down and closes the
      * server socket. (should probably be synchronized).
      */
     public void shutdown()
-        {
+    {
         state.output.systemMessage("Shutting down server thread.");
-                
         shutdownInProgress = true;
-
         try
             {
-            servSock.close();
+                servSock.close();
             }
         catch (IOException e)
             {
             }
-
         slaveMonitor.shutdown( state );
-
-        }
+    }
         
     /**
      * Writes the slaves' random states to the checkpoint file.
@@ -148,10 +143,10 @@ public class MasterProblemServer
      * @throws IOException
      */
     private void writeObject(ObjectOutputStream out) throws IOException
-        {
+    {
         state.output.message("Not implemented yet: MasterProblemServer.writeObject");
         System.exit(1);
-        }
+    }
         
     /**
      * Restores the slaves random states from the checkpoint file.
@@ -161,82 +156,82 @@ public class MasterProblemServer
      * @throws ClassNotFoundException
      */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
-        {
+    {
         state.output.message("Not implemented yet: MasterProblemServer.readObject");
         System.exit(1);
-        }
+    }
 
     /**
        The run method waits for incoming slaves, and launches new worker threads (one per incoming slave)
        to handle the communication with the slave.
     */
     public void run()
-        {
+    {
         if(showDebugInfo)
             Thread.currentThread().setName("MasterProblemServer::    ");
         Socket slaveSock;
                 
         while (!shutdownInProgress)
             {
-            slaveSock = null;
-            while( slaveSock==null && !shutdownInProgress )
-                {
+                slaveSock = null;
+                while( slaveSock==null && !shutdownInProgress )
+                    {
+                        try
+                            {
+                                slaveSock = servSock.accept();
+                            }
+                        catch( IOException e ) { slaveSock = null; }
+                    }
+
+                if(showDebugInfo)
+                    state.output.message( Thread.currentThread().getName() + "Slave attempts to connect." );
+
+                if( shutdownInProgress )
+                    {
+                        if(showDebugInfo)
+                            state.output.message( Thread.currentThread().getName() + "The server is shutting down." );
+                        break;
+                    }
+
+                SlaveData newSlave = null;
+
                 try
                     {
-                    slaveSock = servSock.accept();
-                    }
-                catch( IOException e ) { slaveSock = null; }
-                }
+                        DataInputStream dataIn = null;
+                        DataOutputStream dataOut = null;
+                        InputStream tmpIn = slaveSock.getInputStream();
+                        if (this.useCompression)
+                            tmpIn = new CompressingInputStream(tmpIn);
 
-            if(showDebugInfo)
-                state.output.message( Thread.currentThread().getName() + "Slave attempts to connect." );
+                        dataIn = new DataInputStream(tmpIn);
 
-            if( shutdownInProgress )
-                {
-                if(showDebugInfo)
-                    state.output.message( Thread.currentThread().getName() + "The server is shutting down." );
-                break;
-                }
-
-            SlaveData newSlave = null;
-
-            try
-                {
-                DataInputStream dataIn = null;
-                DataOutputStream dataOut = null;
-                InputStream tmpIn = slaveSock.getInputStream();
-                if (this.useCompression)
-                    tmpIn = new CompressingInputStream(tmpIn);
-
-                dataIn = new DataInputStream(tmpIn);
-
-                OutputStream tmpOut = slaveSock.getOutputStream();
-                if (this.useCompression)
-                    tmpOut = new CompressingOutputStream(tmpOut);
+                        OutputStream tmpOut = slaveSock.getOutputStream();
+                        if (this.useCompression)
+                            tmpOut = new CompressingOutputStream(tmpOut);
                                                                                                 
-                dataOut = new DataOutputStream(tmpOut);
-                String slaveName = dataIn.readUTF();
+                        dataOut = new DataOutputStream(tmpOut);
+                        String slaveName = dataIn.readUTF();
 
-                MersenneTwisterFast random = new MersenneTwisterFast(randomSeed);
-                randomSeed++;
-                // Write random state for eval thread to slave
-                random.writeState(dataOut);
-                dataOut.flush();
+                        MersenneTwisterFast random = new MersenneTwisterFast(randomSeed);
+                        randomSeed++;
+                        // Write random state for eval thread to slave
+                        random.writeState(dataOut);
+                        dataOut.flush();
 
-                newSlave = new SlaveData( state, slaveName, slaveSock, dataOut, dataIn, slaveMonitor );
+                        newSlave = new SlaveData( state, slaveName, slaveSock, dataOut, dataIn, slaveMonitor );
 
-                slaveMonitor.registerSlave(newSlave);
-                state.output.systemMessage( "Slave " + slaveName + " connected successfully." );
-                }
-            catch (IOException e)
-                {
-                if( newSlave != null )
-                    {
-                    newSlave.shutdown(state);
+                        slaveMonitor.registerSlave(newSlave);
+                        state.output.systemMessage( "Slave " + slaveName + " connected successfully." );
                     }
-                }
+                catch (IOException e)
+                    {
+                        if( newSlave != null )
+                            {
+                                newSlave.shutdown(state);
+                            }
+                    }
             }
-        }
+    }
         
     /**
      * Creates and starts a background thread for this server. 
@@ -244,11 +239,11 @@ public class MasterProblemServer
      * @return the background thread
      */
     public Thread spawnThread()
-        {
+    {
         Thread thread = new Thread(this);
         thread.start();
         return thread;
-        }
-        
     }
+        
+}
 

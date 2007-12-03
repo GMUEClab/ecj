@@ -33,7 +33,7 @@ import java.util.LinkedList;
  */
 
 public class JobQueue
-    {
+{
 
     // this is the only synchronization device in the application
     SlaveMonitor slaveMonitor;
@@ -49,39 +49,39 @@ public class JobQueue
        A simple constructor.  A pointer to the slave monitor is necessary for synchronization purposes.
     */
     public JobQueue( SlaveMonitor sm )
-        {
+    {
         slaveMonitor = sm;
         synchronized( slaveMonitor )
             {
-            objects = new LinkedList();
+                objects = new LinkedList();
             }
-        }
+    }
 
     /**
        Resets the state of the queue (empties the queue of jobs)
     */
     public void reset()
-        {
+    {
         synchronized( slaveMonitor )
             {
-            objects.clear();
+                objects.clear();
             }
-        }
+    }
 
     /**
        Adds a new jobs to the queue.  This implies that the slave will be in charge of executing
        this particular job.
     */
     public void scheduleJob( final EvaluationData ed )
-        {
+    {
         synchronized( slaveMonitor )
             {
-            objects.addLast(ed);
-            // for synchronization purposes, we may need to inform other treads that a job has been scheduled
-            // (other threads may be waiting to schedule jobs as well)
-            slaveMonitor.notifyAll();
+                objects.addLast(ed);
+                // for synchronization purposes, we may need to inform other treads that a job has been scheduled
+                // (other threads may be waiting to schedule jobs as well)
+                slaveMonitor.notifyAll();
             }
-        }
+    }
 
     /**
        As the slave executes jobs, it sends back individuals that have been evaluated (or only their fitness).
@@ -93,31 +93,31 @@ public class JobQueue
        read back from the slave, and returns a pointer to the next individual that is expected from the slave.
     */
     public Individual getIndividual( final EvolutionState state )
-        {
+    {
         synchronized( slaveMonitor )
             {
-            while( true )
-                {
-                if( !objects.isEmpty() )
-                    break;
-                if(slaveMonitor.showDebugInfo)
-                    state.output.message( Thread.currentThread().getName() + "Waiting in getIndividual because there are no individuals to be evaluated" );
-                try
+                while( true )
                     {
-                    slaveMonitor.wait();
-                    if(slaveMonitor.showDebugInfo)
-                        state.output.message( Thread.currentThread().getName() + "An individual might be available" );
+                        if( !objects.isEmpty() )
+                            break;
+                        if(slaveMonitor.showDebugInfo)
+                            state.output.message( Thread.currentThread().getName() + "Waiting in getIndividual because there are no individuals to be evaluated" );
+                        try
+                            {
+                                slaveMonitor.wait();
+                                if(slaveMonitor.showDebugInfo)
+                                    state.output.message( Thread.currentThread().getName() + "An individual might be available" );
+                            }
+                        catch (InterruptedException e) 
+                            {}
                     }
-                catch (InterruptedException e) 
-                    {}
-                }
 
-            EvaluationData ed = (EvaluationData)(objects.getFirst());
-            Individual result = ed.inds[ed.index];
-            slaveMonitor.notifyAll();
-            return result;
+                EvaluationData ed = (EvaluationData)(objects.getFirst());
+                Individual result = ed.inds[ed.index];
+                slaveMonitor.notifyAll();
+                return result;
             }
-        }
+    }
 
     /**
        Once an evaluated individual has been read back from a slave, the job queue might undergo certain updates.
@@ -129,11 +129,13 @@ public class JobQueue
        The function returns the job that has just finished, or null if no job was finished (only for coevolutionary algorithms).
     */
     public EvaluationData finishReadingIndividual( final EvolutionState state, final SlaveData slaveData )
-        {
+    {
         synchronized( slaveMonitor )
             {
-            EvaluationData ed = (EvaluationData)(objects.getFirst());
+                EvaluationData ed = (EvaluationData)(objects.getFirst());
             
+<<<<<<< JobQueue.java
+=======
 			ed.index++;
 			System.out.println(ed.index + "\t" + ed.inds.length);
 			if( ed.index == ed.inds.length )
@@ -155,83 +157,119 @@ public class JobQueue
             else
                 {
 
+>>>>>>> 1.6
                 ed.index++;
-
+                        
                 if( ed.index == ed.inds.length )
                     {
-                    EvaluationData result = (EvaluationData)(objects.removeFirst());
-                    if(slaveMonitor.showDebugInfo)
-                        state.output.message( Thread.currentThread().getName() + objects.size() + " individuals remaining to be read back for the current coevolutioary evaluation." );
-                    slaveMonitor.notifyAll();
-                    return result;
+                        EvaluationData result = (EvaluationData)(objects.removeFirst());
+                        slaveMonitor.notifyAll();
+                        return result;
                     }
+<<<<<<< JobQueue.java
+=======
                 } */
+>>>>>>> 1.6
             }
         return null;
-        }
+    }
 
     /**
        Reschedules the jobs in this job queue to other slaves in the system.  It assumes that the slave associated
        with this queue has already been removed from the available slaves, such that it is not assigned its own jobs.
     */
     public void rescheduleJobs( final EvolutionState state )
-        {
+    {
         while( true )
             {
-            EvaluationData ed = null;
-            synchronized( slaveMonitor )
-                {
-                if( objects.isEmpty() )
-                    return;
-                ed = (EvaluationData)(objects.removeFirst());
-                numToReschedule = 1;
-                }
-            if( ed.type == Slave.V_EVALUATESIMPLE )
-                {
+                EvaluationData ed = null;
+                synchronized( slaveMonitor )
+                    {
+                        if( objects.isEmpty() )
+                            return;
+                        ed = (EvaluationData)(objects.removeFirst());
+                        numToReschedule = 1;
+                    }
+                        
+                ed.index = 0;
+                        
                 if(slaveMonitor.showDebugInfo)
                     state.output.message(Thread.currentThread().getName() + "Waiting for a slave to reschedule the evaluation.");
+                        
                 synchronized( slaveMonitor )
                     {
-                    slaveMonitor.scheduleJobForEvaluation(ed.state,ed);
-                    numToReschedule = 0;
+                        slaveMonitor.scheduleJobForEvaluation(ed.state,ed);
+                        numToReschedule = 0;
                     }
+                        
                 if(slaveMonitor.showDebugInfo) 
                     state.output.message(Thread.currentThread().getName() + "Got a slave to reschedule the evaluation.");
+                        
                 if( !ed.mp.batchMode )
                     slaveMonitor.waitForAllSlavesToFinishEvaluating( ed.state );
-                }
-            else
-                {
-                if(slaveMonitor.showDebugInfo)
-                    state.output.message(Thread.currentThread().getName() + "Waiting for a slave to reschedule this coevolutionary evaluation");
-                ed.index = 0;
+                        
+                
                 synchronized( slaveMonitor )
                     {
-                    slaveMonitor.scheduleJobForEvaluation(ed.state,ed);
-                    numToReschedule = 0;
+                        slaveMonitor.notifyAll();
                     }
-                if(slaveMonitor.showDebugInfo) 
-                    state.output.message(Thread.currentThread().getName() + "Got a slave to reschedule this coevolutionary evaluation");
-                if( !ed.mp.batchMode )
-                    slaveMonitor.waitForAllSlavesToFinishEvaluating( ed.state );
-                }
-            synchronized( slaveMonitor )
-                {
-                slaveMonitor.notifyAll();
-                }
+                        
+
+                /*
+                  synchronized( slaveMonitor )
+                  {
+                  slaveMonitor.scheduleJobForEvaluation(ed.state,ed);
+                  numToReschedule = 0;
+                  }
+                        
+                  if( ed.type == Slave.V_EVALUATESIMPLE )
+                  {
+                  if(slaveMonitor.showDebugInfo)
+                  state.output.message(Thread.currentThread().getName() + "Waiting for a slave to reschedule the evaluation.");
+                  synchronized( slaveMonitor )
+                  {
+                  slaveMonitor.scheduleJobForEvaluation(ed.state,ed);
+                  numToReschedule = 0;
+                  }
+                  if(slaveMonitor.showDebugInfo) 
+                  state.output.message(Thread.currentThread().getName() + "Got a slave to reschedule the evaluation.");
+                  if( !ed.mp.batchMode )
+                  slaveMonitor.waitForAllSlavesToFinishEvaluating( ed.state );
+                  }
+                  else
+                  {
+                  if(slaveMonitor.showDebugInfo)
+                  state.output.message(Thread.currentThread().getName() + "Waiting for a slave to reschedule this coevolutionary evaluation");
+                  ed.index = 0;
+                  synchronized( slaveMonitor )
+                  {
+                  slaveMonitor.scheduleJobForEvaluation(ed.state,ed);
+                  numToReschedule = 0;
+                  }
+                  if(slaveMonitor.showDebugInfo) 
+                  state.output.message(Thread.currentThread().getName() + "Got a slave to reschedule this coevolutionary evaluation");
+                  if( !ed.mp.batchMode )
+                  slaveMonitor.waitForAllSlavesToFinishEvaluating( ed.state );
+                  }
+                
+                  synchronized( slaveMonitor )
+                  {
+                  slaveMonitor.notifyAll();
+                  }
+                */
             }
-        }
+    }
 
     /**
        Returns the number of jobs that a slave is in charge of.
     */
     public int numJobs()
-        {
+    {
         synchronized( slaveMonitor )
             {
-            // we also need to account for the jobs that are in the process of being rescheduled.
-            return objects.size() + numToReschedule;
+                // we also need to account for the jobs that are in the process of being rescheduled.
+                return objects.size() + numToReschedule;
             }
-        }
-
     }
+
+}
