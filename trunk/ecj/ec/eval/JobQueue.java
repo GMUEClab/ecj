@@ -133,7 +133,18 @@ public class JobQueue
         synchronized( slaveMonitor )
             {
             EvaluationData ed = (EvaluationData)(objects.getFirst());
-            if( ed.type == Slave.V_EVALUATESIMPLE )
+            
+			ed.index++;
+			
+			if( ed.index == ed.inds.length )
+				{
+				EvaluationData result = (EvaluationData)(objects.removeFirst());
+				slaveMonitor.notifyAll();
+				return result;
+				}
+			
+			
+			/*if( ed.type == Slave.V_EVALUATESIMPLE )
                 {
                 EvaluationData result = (EvaluationData)(objects.removeFirst());
                 if(slaveMonitor.showDebugInfo)
@@ -156,6 +167,7 @@ public class JobQueue
                     }
                 }
             }
+			*/
         return null;
         }
 
