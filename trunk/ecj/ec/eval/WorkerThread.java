@@ -23,7 +23,7 @@ import java.io.*;
  */
 
 public class WorkerThread extends Thread
-    {
+{
 
     // pointers to the states of the evolution and of the slave 
     EvolutionState state;
@@ -34,65 +34,65 @@ public class WorkerThread extends Thread
 
     // a simple constructor
     WorkerThread( EvolutionState s, SlaveData sd, boolean showDebugInfo )
-        {
+    {
         state = s;
         slaveData = sd;
         this.showDebugInfo = showDebugInfo;
-        }
+    }
 
     /**
        The run method loops and reads back the results of evaluations from the slave associated with this worker thread.
     */
     public void run()
-        {
+    {
         if(showDebugInfo)
             {
-            currentThread().setName("WorkerThread("+slaveData.slaveName+")::    ");
+                currentThread().setName("WorkerThread("+slaveData.slaveName+")::    ");
             }
         while( true )
             {
-            if(showDebugInfo)
-                state.output.message( currentThread().getName() + "Waiting for an individual that was evaluated by the slave...." );
-
-            try
-                {
-                // ... then read the results back
-                DataInputStream dataIn = slaveData.dataIn;
-
-                byte val = dataIn.readByte();
-
-                // the jobs queue stores individuals in a first-come-first-serve order, which means that results will be received
-                // back from the slave in the same order that individuals where sent there for evaluation
-                Individual ind = slaveData.jobQueue.getIndividual(state);
-
                 if(showDebugInfo)
-                    state.output.message( currentThread().getName() + "The slave has an individual to send back...." );
+                    state.output.message( currentThread().getName() + "Waiting for an individual that was evaluated by the slave...." );
 
-                if (val == Slave.V_INDIVIDUAL)
+                try
                     {
-                    ind.readIndividual(state, dataIn);
+                        // ... then read the results back
+                        DataInputStream dataIn = slaveData.dataIn;
+
+                        byte val = dataIn.readByte();
+
+                        // the jobs queue stores individuals in a first-come-first-serve order, which means that results will be received
+                        // back from the slave in the same order that individuals where sent there for evaluation
+                        Individual ind = slaveData.jobQueue.getIndividual(state);
+
+                        if(showDebugInfo)
+                            state.output.message( currentThread().getName() + "The slave has an individual to send back...." );
+
+                        if (val == Slave.V_INDIVIDUAL)
+                            {
+                                ind.readIndividual(state, dataIn);
+                            }
+                        else if (val == Slave.V_FITNESS)
+                            {
+                                ind.evaluated = dataIn.readBoolean();
+                                ind.fitness.readFitness(state,dataIn);
+                            }
+
+                        if(showDebugInfo)
+                            state.output.message( currentThread().getName() + "The slave has finished sending back the evaluated individual...." );
+
+                        // update the jobs queue and inform the slaves monitor that another result (either individual or only its fitness)
+                        // was read back from the slave
+                        EvaluationData ed = slaveData.jobQueue.finishReadingIndividual( state, slaveData );
+                        if( ed != null )
+                            slaveData.slaveMonitor.notifySlaveAvailability( slaveData, ed );
                     }
-                else if (val == Slave.V_FITNESS)
+                catch (Exception e)
                     {
-                    ind.evaluated = dataIn.readBoolean();
-                    ind.fitness.readFitness(state,dataIn);
+                        state.output.systemMessage( "Slave " + slaveData.slaveName + " disconnected.");
+                        slaveData.shutdown(state);
+                        return;
                     }
-
-                if(showDebugInfo)
-                    state.output.message( currentThread().getName() + "The slave has finished sending back the evaluated individual...." );
-
-                // update the jobs queue and inform the slaves monitor that another result (either individual or only its fitness)
-                // was read back from the slave
-                EvaluationData ed = slaveData.jobQueue.finishReadingIndividual( state, slaveData );
-                if( ed != null )
-                    slaveData.slaveMonitor.notifySlaveAvailability( slaveData, ed );
-                }
-            catch (Exception e)
-                {
-                state.output.systemMessage( "Slave " + slaveData.slaveName + " disconnected.");
-                slaveData.shutdown(state);
-                return;
-                }
             }
-        }
     }
+}
