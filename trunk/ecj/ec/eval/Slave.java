@@ -274,7 +274,6 @@ public class Slave
                             {
                             case V_SHUTDOWN:
                                 done = true;
-			System.out.println("HERE"); 
                                 socket.close();
                                 return;
                                                                         
@@ -322,8 +321,8 @@ public class Slave
         int numInds=1; 
         try
             {
-				numInds = dataIn.readInt();
-				subPopNum = dataIn.readInt(); // assume all individuals are from the same subpopulation
+		numInds = dataIn.readInt();
+		subPopNum = dataIn.readInt(); // assume all individuals are from the same subpopulation
             }
         catch (IOException e)
             {
@@ -472,8 +471,7 @@ public class Slave
                 }
             else if (updateFitness[i])
                 {
-		dataOut.write(inds[i].evaluated ? 1 : 0); 
-                //dataOut.writeBoolean(inds[i].evaluated);
+                dataOut.writeBoolean(inds[i].evaluated);
                 inds[i].fitness.writeFitness(state,dataOut);
                 }
             }

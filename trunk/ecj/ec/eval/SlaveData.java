@@ -93,10 +93,6 @@ class SlaveData
     */
     public void shutdown( final EvolutionState state )
         {
-	System.out.println("SHUTTING DOWN!"); 
-	new Exception("YO").printStackTrace(); 
-	try { Thread.sleep(3); } catch (InterruptedException e) {}
-
         try
             {
             // 0 means shutdown

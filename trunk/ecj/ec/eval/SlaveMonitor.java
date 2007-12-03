@@ -152,7 +152,7 @@ public class SlaveMonitor
             }
                 
         try {
-			// transmit number of individuals 
+	    // transmit number of individuals 
             dataOut.writeInt(toEvaluate.inds.length); 
 			
             // Transmit the subpopulation number to the slave 

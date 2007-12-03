@@ -64,6 +64,8 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         c.server = server;
         c.serverThread = serverThread;
         c.batchMode = batchMode;
+	c.chunkSize = chunkSize; 
+	c.showDebugInfo = showDebugInfo;
 
         // deep-cloned stuff
         c.problem = (Problem)(problem.clone());
@@ -206,9 +208,9 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         ed.type = Slave.V_EVALUATESIMPLE;
         ed.inds = inds;
         ed.subPops = new int[] { subPopNum } ;
-		ed.updateFitness = new boolean[inds.length]; 
-		for (int i=0 ; i < inds.length; i++) 
-			ed.updateFitness[i]=true; 
+	ed.updateFitness = new boolean[inds.length]; 
+	for (int i=0 ; i < inds.length; i++) 
+		ed.updateFitness[i]=true; 
 		
         server.slaveMonitor.scheduleJobForEvaluation(state,ed);
         if( !batchMode )
