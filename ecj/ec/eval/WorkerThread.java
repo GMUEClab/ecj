@@ -89,8 +89,7 @@ public class WorkerThread extends Thread
                 }
             catch (Exception e)
                 {
-                state.output.systemMessage( "Slave " + slaveData.slaveName + " disconnected unexpectedly.");
-		e.printStackTrace();
+                state.output.systemMessage( "Slave " + slaveData.slaveName + " disconnected.");
                 slaveData.shutdown(state);
                 return;
                 }

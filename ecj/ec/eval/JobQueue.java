@@ -135,7 +135,7 @@ public class JobQueue
             EvaluationData ed = (EvaluationData)(objects.getFirst());
             
 			ed.index++;
-			
+			System.out.println(ed.index + "\t" + ed.inds.length);
 			if( ed.index == ed.inds.length )
 				{
 				EvaluationData result = (EvaluationData)(objects.removeFirst());
@@ -165,9 +165,8 @@ public class JobQueue
                     slaveMonitor.notifyAll();
                     return result;
                     }
-                }
+                } */
             }
-			*/
         return null;
         }
 
