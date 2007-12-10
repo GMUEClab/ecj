@@ -168,17 +168,9 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         ed.type = Slave.V_EVALUATESIMPLE;
         ed.inds = inds;
         ed.subPops = new int[] { subPopNum } ;
-<<<<<<< MasterProblem.java
         ed.updateFitness = new boolean[inds.length]; 
         for (int i=0 ; i < inds.length; i++) 
             ed.updateFitness[i]=true; 
-                
-=======
-	ed.updateFitness = new boolean[inds.length]; 
-	for (int i=0 ; i < inds.length; i++) 
-		ed.updateFitness[i]=true; 
-		
->>>>>>> 1.14
         server.slaveMonitor.scheduleJobForEvaluation(state,ed);
         if( !batchMode )
             server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );

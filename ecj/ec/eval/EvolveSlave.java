@@ -106,14 +106,11 @@ public class EvolveSlave
     public static final int SLEEP_TIME = 100;
         
     public static void main(String[] args)
-<<<<<<< EvolveSlave.java
     {
         EvolutionState state = null;
         ParameterDatabase parameters = null;
         Output output;
-=======
-    {
->>>>>>> 1.6
+
         MersenneTwisterFast[] random = new MersenneTwisterFast[1];
         random[0] = new MersenneTwisterFast();
         int verbosity;
@@ -199,13 +196,12 @@ public class EvolveSlave
         boolean useCompression = state.parameters.getBoolean(new Parameter(P_EVALCOMPRESSION),null,false);
                 
         runTime = state.parameters.getInt(new Parameter(P_RUNTIME), null, 0); 
-	
+                	
         // Continue to serve new masters until killed.
         while (true)
             {
                 try
                     {
-<<<<<<< EvolveSlave.java
                         Socket socket;
                         long connectAttemptCount = 0;
                         state.output.message("Connecting to master at "+masterHost+":"+masterPort);
@@ -232,36 +228,7 @@ public class EvolveSlave
                                 
                         DataInputStream dataIn = null;
                         DataOutputStream dataOut = null;
-=======
-                        Socket socket;
-                        long connectAttemptCount = 0;
-                        state.output.message("Connecting to master at "+masterHost+":"+masterPort);
-                        while (true)
-                            {
-                                try
-                                    {
-                                        socket = new Socket(masterHost, masterPort);
-                                        //                                              socket.setTcpNoDelay(true);
-                                        //                                              socket.setSendBufferSize(8000);
-                                        break;
-                                    }
-                                catch (ConnectException e)   // it's not up yet...
-                                    {
-                                        connectAttemptCount++;
-                                        try
-                                            {
-                                                Thread.sleep(SLEEP_TIME);
-                                            }
-                                        catch( InterruptedException f )
-                                            {
-                                            }
-                                    }
-                            }
-                        state.output.message("Connected to master after " + (connectAttemptCount * SLEEP_TIME) + " ms");
-                                
-                        DataInputStream dataIn = null;
-                        DataOutputStream dataOut = null;
->>>>>>> 1.6
+
                         try
                             {
                                 InputStream tmpIn = socket.getInputStream();
@@ -293,7 +260,6 @@ public class EvolveSlave
                         // Read random state from Master
                         random[0].readState(dataIn);
                                 
-<<<<<<< EvolveSlave.java
                         state.random = random;
                         // Is this a Simple or Grouped ProblemForm?
                         int problemType;
@@ -333,71 +299,25 @@ public class EvolveSlave
 										default:
 											state.output.fatal("Unknown problem form specified: "+problemType);
 										}
-                                    }
-                            }
-                        catch (IOException e)
-=======
-                        state.random = random;
-                        // Is this a Simple or Grouped ProblemForm?
-                        int problemType;
-                        boolean done = false;
-                        try
->>>>>>> 1.6
-                            {
-<<<<<<< EvolveSlave.java
-							// Since an IOException can happen here if the peer closes the socket
-							// on it's end, we don't necessarily have to exit.  Maybe we don't
-							// even need to print a warning, but we'll do so just to indicate
-							// something happened.
-							state.output.warning("Unable to read type of evaluation from master.  Maybe the master closed its socket and exited?:\n"+e);
-=======
-                                while (! done)
-                                    {
-                                        // 0 means to shut down
-                                        problemType = dataIn.readByte();
-                                        switch (problemType)
-                                            {
-                                            case V_SHUTDOWN:
-                                                done = true;
-                                                state.finish(state.R_FAILURE); 
-                                                Evolve.cleanup(state); 
-                                                socket.close();
-                                                return;
-                                                                        
-                                            case V_EVALUATESIMPLE:
-                                                evaluateSimpleProblemForm(state, dataIn, dataOut);
-                                                break;
-                                                                        
-                                            case V_EVALUATEGROUPED:
-                                                evaluateGroupedProblemForm(state, true, dataIn, dataOut);
-                                                break;
-                                                                        
-                                            case V_CHECKPOINT:
-                                                checkpointRandomState(state, dataOut);
-                                                break;
-                                            default:
-                                                state.output.fatal("Unknown problem form specified: "+problemType);
-                                            }
-                                    }
-                            }
-                        catch (IOException e)
-                            {
-                                // Since an IOException can happen here if the peer closes the socket
-                                // on it's end, we don't necessarily have to exit.  Maybe we don't
-                                // even need to print a warning, but we'll do so just to indicate
-                                // something happened.
-                                state.output.warning("Unable to read type of evaluation from master.  Maybe the master closed its socket and exited?:\n"+e);
->>>>>>> 1.6
-                            }
-                catch (UnknownHostException e)
-                    {
-                        state.output.fatal(e.getMessage());
-                    }
-                catch (IOException e)
-                    {
-                        state.output.fatal("Unable to connect to master:\n" + e);
-                    }
-            }
+									}
+
+							} catch (IOException e)    {
+								// Since an IOException can happen here if the peer closes the socket
+								// on it's end, we don't necessarily have to exit.  Maybe we don't
+								// even need to print a warning, but we'll do so just to indicate
+								// something happened.
+								state.output.warning("Unable to read type of evaluation from master.  Maybe the master closed its socket and exited?:\n"+e);
+							}
+					} 
+			catch (UnknownHostException e)
+			{
+				state.output.fatal(e.getMessage());
+			}
+			catch (IOException e)
+			{
+				state.output.fatal("Unable to connect to master:\n" + e);
+			}
+			}
     }
 	
     public static void evaluateSimpleProblemForm( EvolutionState state, boolean returnIndividuals,
@@ -408,7 +328,6 @@ public class EvolveSlave
         int numInds=1; 
         try
             {
-<<<<<<< EvolveSlave.java
                 numInds = dataIn.readInt();
                 subPopNum = dataIn.readInt(); // assume all individuals are from the same subpopulation
             }
@@ -454,15 +373,16 @@ public class EvolveSlave
 		
         // Read the individual(s) from the stream
         // and evaluate 
-        //Individual []inds = new Individual[numInds];
         boolean []updateFitness = new boolean[numInds];
         try
             {
                 for (int i=0; i < numInds; i++) { 
                     tempState.population.subpops[0].individuals[i] = subPop.species.newIndividual( state, dataIn);
-                    //((SimpleProblemForm)(state.evaluator.p_problem)).evaluate( state, tempState.population.subpops[0].individuals[i], 0 );
                     updateFitness[i] = dataIn.readBoolean(); 
-                } catch (IOException e) { 
+                }
+            }
+        catch (IOException e)
+            {
                 state.output.fatal("Unable to read individual from master." + e);
             }
         
@@ -476,12 +396,11 @@ public class EvolveSlave
             if ((endTime - startTime) > runTime) 
                 break;
         }
-		
+
         // Return the evaluated individual to the master
         try { 
             returnIndividualsToMaster(state, tempState.population.subpops[0].individuals, updateFitness, dataOut, returnIndividuals); 
         } catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
-                
     }
     
     public static void evaluateGroupedProblemForm( EvolutionState state, boolean returnIndividuals,
@@ -553,8 +472,7 @@ public class EvolveSlave
         // Evaluate the individual
         // TODO Check to make sure the real problem is an instance of GroupedProblemForm
         ((GroupedProblemForm)(state.evaluator.p_problem)).evaluate( state, inds, updateFitness, countVictoriesOnly, 0 );
-                
-                
+                                
         try { 
             returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals); 
         } catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
@@ -580,22 +498,5 @@ public class EvolveSlave
                 }
             }
         dataOut.flush();
-        catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
-    }
-        
-    private static void checkpointRandomState(final EvolutionState state,
-                                              DataOutputStream dataOut )
-    {
-        state.output.systemMessage("Checkpointing");
-                
-        try
-            {
-                state.random[0].writeState(dataOut);
-                dataOut.flush();
-            }
-        catch (IOException e)
-            {
-                state.output.fatal("Exception while checkpointing random state:\n"+e);
-            }
     }
 }

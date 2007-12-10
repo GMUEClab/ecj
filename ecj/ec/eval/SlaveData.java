@@ -92,11 +92,7 @@ class SlaveData
        be rescheduled for evaluation on other slaves.
     */
     public void shutdown( final EvolutionState state )
-<<<<<<< SlaveData.java
-    {
-=======
         {
->>>>>>> 1.4
         try
             {
                 // 0 means shutdown
