@@ -132,43 +132,15 @@ public class JobQueue
     {
         synchronized( slaveMonitor )
             {
-                EvaluationData ed = (EvaluationData)(objects.getFirst());
-            
-<<<<<<< JobQueue.java
-=======
-			ed.index++;
+			EvaluationData ed = (EvaluationData)(objects.getFirst());
+ 			ed.index++;
+
 			if( ed.index == ed.inds.length )
 				{
 				EvaluationData result = (EvaluationData)(objects.removeFirst());
 				slaveMonitor.notifyAll();
 				return result;
 				}
-			
-			
-			/*if( ed.type == Slave.V_EVALUATESIMPLE )
-                {
-                EvaluationData result = (EvaluationData)(objects.removeFirst());
-                if(slaveMonitor.showDebugInfo)
-                    state.output.message( Thread.currentThread().getName() + objects.size() + " individuals remaining in the slave's queue." );
-                slaveMonitor.notifyAll();
-                return result;
-                }
-            else
-                {
-
->>>>>>> 1.6
-                ed.index++;
-                        
-                if( ed.index == ed.inds.length )
-                    {
-                        EvaluationData result = (EvaluationData)(objects.removeFirst());
-                        slaveMonitor.notifyAll();
-                        return result;
-                    }
-<<<<<<< JobQueue.java
-=======
-                } */
->>>>>>> 1.6
             }
         return null;
     }

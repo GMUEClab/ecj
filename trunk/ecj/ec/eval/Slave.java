@@ -264,69 +264,61 @@ public class Slave
                         boolean done = false;
                         try
                             {
-<<<<<<< Slave.java
                                 while (! done)
                                     {
-                                        // 0 means to shut down
-                                        problemType = dataIn.readByte();
-                                        switch (problemType)
-                                            {
-                                            case V_SHUTDOWN:
-                                                done = true;
-                                                socket.close();
-                                                return;
-=======
-                            case V_SHUTDOWN:
-                                done = true;
-                                socket.close();
-                                return;
->>>>>>> 1.12
-                                                                        
-                                            case V_EVALUATESIMPLE:
-                                                evaluateSimpleProblemForm(state, returnIndividuals, dataIn, dataOut);
-                                                break;
-                                                                        
-                                            case V_EVALUATEGROUPED:
-                                                evaluateGroupedProblemForm(state, returnIndividuals, dataIn, dataOut);
-                                                break;
-                                                                        
-                                            case V_CHECKPOINT:
-                                                state.output.systemMessage("Checkpointing");
-                                                try
-                                                    {
-                                                        state.random[0].writeState(dataOut);
-                                                        dataOut.flush();
-                                                    }
-                                                catch (IOException e)
-                                                    {
-                                                        state.output.fatal("Exception while checkpointing random state:\n"+e);
-                                                    }
-                                                break;
-                                            default:
-                                                state.output.fatal("Unknown problem form specified: "+problemType);
-                                            }
+									// 0 means to shut down
+									problemType = dataIn.readByte();
+									switch (problemType)
+										{
+										case V_SHUTDOWN:
+											done = true;
+											socket.close();
+											return;
+										case V_EVALUATESIMPLE:
+											evaluateSimpleProblemForm(state, returnIndividuals, dataIn, dataOut);
+											break;
+											
+										case V_EVALUATEGROUPED:
+											evaluateGroupedProblemForm(state, returnIndividuals, dataIn, dataOut);
+											break;
+											
+										case V_CHECKPOINT:
+											state.output.systemMessage("Checkpointing");
+											try
+												{
+													state.random[0].writeState(dataOut);
+													dataOut.flush();
+												}
+												catch (IOException e)
+												{
+													state.output.fatal("Exception while checkpointing random state:\n"+e);
+												}
+												break;
+										default:
+											state.output.fatal("Unknown problem form specified: "+problemType);
+										}
                                     }
                             }
                         catch (IOException e)
                             {
-                                // Since an IOException can happen here if the peer closes the socket
-                                // on it's end, we don't necessarily have to exit.  Maybe we don't
-                                // even need to print a warning, but we'll do so just to indicate
-                                // something happened.
-                                state.output.warning("Unable to read type of evaluation from master.  Maybe the master closed its socket and exited?:\n"+e);
+							// Since an IOException can happen here if the peer closes the socket
+							// on it's end, we don't necessarily have to exit.  Maybe we don't
+							// even need to print a warning, but we'll do so just to indicate
+							// something happened.
+							state.output.warning("Unable to read type of evaluation from master.  Maybe the master closed its socket and exited?:\n"+e);
                             }
                     } 
-                catch (UnknownHostException e)
-                    {
-                        state.output.fatal(e.getMessage());
-                    }
-                catch (IOException e)
-                    {
-                        state.output.fatal("Unable to connect to master:\n" + e);
-                    }
+			catch (UnknownHostException e)
+			{
+				state.output.fatal(e.getMessage());
+			}
+			catch (IOException e)
+			{
+				state.output.fatal("Unable to connect to master:\n" + e);
+			}
             }
     }
-                
+	
     public static void evaluateSimpleProblemForm( EvolutionState state, boolean returnIndividuals,
                                                   DataInputStream dataIn, DataOutputStream dataOut )
     {
@@ -335,13 +327,8 @@ public class Slave
         int numInds=1; 
         try
             {
-<<<<<<< Slave.java
                 numInds = dataIn.readInt();
                 subPopNum = dataIn.readInt(); // assume all individuals are from the same subpopulation
-=======
-		numInds = dataIn.readInt();
-		subPopNum = dataIn.readInt(); // assume all individuals are from the same subpopulation
->>>>>>> 1.12
             }
         catch (IOException e)
             {
@@ -483,18 +470,6 @@ public class Slave
         // just write evaluated and fitness
         for(int i=0;i<inds.length;i++)
             {
-<<<<<<< Slave.java
-                dataOut.writeByte(returnIndividuals ? V_INDIVIDUAL : (updateFitness[i] ? V_FITNESS : V_NOTHING));
-                if (returnIndividuals)
-                    {
-                        inds[i].writeIndividual(state, dataOut);
-                    }
-                else if (updateFitness[i])
-                    {
-                        dataOut.writeBoolean(inds[i].evaluated);
-                        inds[i].fitness.writeFitness(state,dataOut);
-                    }
-=======
             dataOut.writeByte(returnIndividuals ? V_INDIVIDUAL : (updateFitness[i] ? V_FITNESS : V_NOTHING));
             if (returnIndividuals)
                 {
@@ -505,7 +480,6 @@ public class Slave
                 dataOut.writeBoolean(inds[i].evaluated);
                 inds[i].fitness.writeFitness(state,dataOut);
                 }
->>>>>>> 1.12
             }
         dataOut.flush();
     }
