@@ -1,4 +1,13 @@
+/*
+  Copyright 2006 by Sean Paus, Sean Luke, and George Mason University
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
+*/
 
+
+/*
+ * Created on Oct 8, 2004
+ */
 package ec.eval;
 
 import java.io.DataInputStream;
@@ -17,7 +26,21 @@ import ec.coevolve.GroupedProblemForm;
 import ec.simple.SimpleProblemForm;
 import ec.util.*;
 
-
+/**
+ * Slave.java
+ *
+ 
+ <p>Slave is the main entry point for a slave evaluation process.  It replicates most of the functionality of
+ the ec.Evolve class, for example in terms of parameters anc checkpointing.  However, the Slave class does
+ not implement an evolutionary process, as there is no selection, nor breeding.  Instead, upon initialization,
+ the Slave process only waits for jobs (evaluations) from the main evolutionary process (its <i>master</i>).
+ Such jobs can be either traditional evolutionary computation evaluations (a single individual that needs to be
+ evaluated), or coevolutionary evaluations (groups of individuals that have to be evaluated together).
+ 
+ <p>The slave is run with one of the following argument formats:
+ * 
+ * @author Sean Paus
+ */
 public class EvolveSlave 
 {
     public final static String P_PRINTACCESSEDPARAMETERS = "print-accessed-params";
@@ -41,8 +64,6 @@ public class EvolveSlave
     public final static String P_RETURNINDIVIDUALS = "eval.return-inds";
         
     public static final String P_SUBPOP = "pop.subpop";
-        
-    public static final String P_RUNTIME = "slave.runtime"; 
     
     public static final byte V_NOTHING = 0;
     public static final byte V_INDIVIDUAL = 1;
@@ -77,32 +98,141 @@ public class EvolveSlave
     /** state parameter */
     public static final String P_STATE = "state";
         
+    /** Time to run evolution on the slaves in seconds */ 
+    public static final String P_RUNTIME = "runtime"; 
+    public static int runTime=0; 
+        
     /** How long we sleep in between attempts to connect to the master (in milliseconds). */
     public static final int SLEEP_TIME = 100;
         
-    /** How long to run an evolutionary process on the slaves (in seconds)? */ 
-    public static long runTime=0; 
-        
     public static void main(String[] args)
+<<<<<<< EvolveSlave.java
     {
+        EvolutionState state = null;
+        ParameterDatabase parameters = null;
+        Output output;
+=======
+    {
+>>>>>>> 1.6
         MersenneTwisterFast[] random = new MersenneTwisterFast[1];
         random[0] = new MersenneTwisterFast();
-        EvolutionState state = Evolve.initialize(Evolve.loadParameterDatabase(args), 0);        
-        state.startFresh(); 
-       
+        int verbosity;
+        boolean store;
+        int x;
+                
+        // 0. find the parameter database
+        for (x = 0; x < args.length - 1; x++)
+            if (args[x].equals(A_FILE))
+                {
+                    try
+                        {
+                            parameters = new ParameterDatabase(
+                                                               // not available in jdk1.1: new File(args[x+1]).getAbsoluteFile(),
+                                                               new File(new File(args[x + 1]).getAbsolutePath()),
+                                                               args);
+                            break;
+                        }
+                    catch(FileNotFoundException e)
+                        { 
+                            Output.initialError(
+                                                "A File Not Found Exception was generated upon" +
+                                                "reading the parameter file \"" + args[x+1] + 
+                                                "\".\nHere it is:\n" + e); }
+                    catch(IOException e)
+                        { 
+                            Output.initialError(
+                                                "An IO Exception was generated upon reading the" +
+                                                "parameter file \"" + args[x+1] +
+                                                "\".\nHere it is:\n" + e); } 
+                }
+        if (parameters == null)
+            Output.initialError(
+                                "No parameter file was specified." ); 
+                
+        // 1. create the output
+        store = parameters.getBoolean(new Parameter(P_STORE), null, false);
+                
+        verbosity = parameters.getInt(new Parameter(P_VERBOSITY), null, 0);
+        if (verbosity < 0)
+            Output.initialError("Verbosity should be an integer >= 0.\n",
+                                new Parameter(P_VERBOSITY));
+                
+        output = new Output(store, verbosity);
+        output.setFlush(
+                        parameters.getBoolean(new Parameter(P_FLUSH),null,false));
+                
+        // stdout is always log #0. stderr is always log #1.
+        // stderr accepts announcements, and both are fully verbose
+        // by default.
+        output.addLog(ec.util.Log.D_STDOUT, Output.V_VERBOSE, false);
+        output.addLog(ec.util.Log.D_STDERR, Output.V_VERBOSE, true);
+                
+        // 4. Set up the evolution state
+                
+        // what evolution state to use?
+        state = (EvolutionState)
+            parameters.getInstanceForParameter(new Parameter(P_STATE),null,
+                                               EvolutionState.class);
+        state.parameters = parameters;
+        state.output = output;
+        state.evalthreads = 1;
+        state.breedthreads = 1;
+                
+        state.setup(null, null);
+                
+        output.systemMessage(Version.message());
+                
+        // 5. Determine whether or not to return entire Individuals or just Fitnesses
+        //    (plus whether or not the Individual has been evaluated).
+        
+        boolean returnIndividuals = state.parameters.getBoolean(new Parameter(P_RETURNINDIVIDUALS),null,false);
+                
+                
         // 6. Open a server socket and listen for requests
-        String slaveName = state.parameters.getString(new Parameter(P_EVALSLAVENAME),null);
+        String slaveName = state.parameters.getString(
+                                                      new Parameter(P_EVALSLAVENAME),null);
                 
-        String masterHost = state.parameters.getString(new Parameter(P_EVALMASTERHOST),null );
-        int masterPort = state.parameters.getInt(new Parameter(P_EVALMASTERPORT),null);
+        String masterHost = state.parameters.getString(
+                                                       new Parameter(P_EVALMASTERHOST),null );
+        int masterPort = state.parameters.getInt(
+                                                 new Parameter(P_EVALMASTERPORT),null);
         boolean useCompression = state.parameters.getBoolean(new Parameter(P_EVALCOMPRESSION),null,false);
-        runTime = state.parameters.getLong(new Parameter(P_RUNTIME), null); 
                 
+        runTime = state.parameters.getInt(new Parameter(P_RUNTIME), null, 0); 
+	
         // Continue to serve new masters until killed.
         while (true)
             {
                 try
                     {
+<<<<<<< EvolveSlave.java
+                        Socket socket;
+                        long connectAttemptCount = 0;
+                        state.output.message("Connecting to master at "+masterHost+":"+masterPort);
+                        while (true)
+                            {
+                                try
+                                    {
+                                        socket = new Socket(masterHost, masterPort);
+                                        break;
+                                    }
+                                catch (ConnectException e)   // it's not up yet...
+                                    {
+                                        connectAttemptCount++;
+                                        try
+                                            {
+                                                Thread.sleep(SLEEP_TIME);
+                                            }
+                                        catch( InterruptedException f )
+                                            {
+                                            }
+                                    }
+                            }
+                        state.output.message("Connected to master after " + (connectAttemptCount * SLEEP_TIME) + " ms");
+                                
+                        DataInputStream dataIn = null;
+                        DataOutputStream dataOut = null;
+=======
                         Socket socket;
                         long connectAttemptCount = 0;
                         state.output.message("Connecting to master at "+masterHost+":"+masterPort);
@@ -131,6 +261,7 @@ public class EvolveSlave
                                 
                         DataInputStream dataIn = null;
                         DataOutputStream dataOut = null;
+>>>>>>> 1.6
                         try
                             {
                                 InputStream tmpIn = socket.getInputStream();
@@ -162,12 +293,64 @@ public class EvolveSlave
                         // Read random state from Master
                         random[0].readState(dataIn);
                                 
+<<<<<<< EvolveSlave.java
                         state.random = random;
                         // Is this a Simple or Grouped ProblemForm?
                         int problemType;
                         boolean done = false;
                         try
                             {
+                                while (! done)
+                                    {
+									// 0 means to shut down
+									problemType = dataIn.readByte();
+									switch (problemType)
+										{
+										case V_SHUTDOWN:
+											done = true;
+											socket.close();
+											return;
+										case V_EVALUATESIMPLE:
+											evaluateSimpleProblemForm(state, returnIndividuals, dataIn, dataOut, args);
+											break;
+											
+										case V_EVALUATEGROUPED:
+											evaluateGroupedProblemForm(state, returnIndividuals, dataIn, dataOut);
+											break;
+											
+										case V_CHECKPOINT:
+											state.output.systemMessage("Checkpointing");
+											try
+												{
+													state.random[0].writeState(dataOut);
+													dataOut.flush();
+												}
+												catch (IOException e)
+												{
+													state.output.fatal("Exception while checkpointing random state:\n"+e);
+												}
+												break;
+										default:
+											state.output.fatal("Unknown problem form specified: "+problemType);
+										}
+                                    }
+                            }
+                        catch (IOException e)
+=======
+                        state.random = random;
+                        // Is this a Simple or Grouped ProblemForm?
+                        int problemType;
+                        boolean done = false;
+                        try
+>>>>>>> 1.6
+                            {
+<<<<<<< EvolveSlave.java
+							// Since an IOException can happen here if the peer closes the socket
+							// on it's end, we don't necessarily have to exit.  Maybe we don't
+							// even need to print a warning, but we'll do so just to indicate
+							// something happened.
+							state.output.warning("Unable to read type of evaluation from master.  Maybe the master closed its socket and exited?:\n"+e);
+=======
                                 while (! done)
                                     {
                                         // 0 means to shut down
@@ -204,8 +387,8 @@ public class EvolveSlave
                                 // even need to print a warning, but we'll do so just to indicate
                                 // something happened.
                                 state.output.warning("Unable to read type of evaluation from master.  Maybe the master closed its socket and exited?:\n"+e);
+>>>>>>> 1.6
                             }
-                    } 
                 catch (UnknownHostException e)
                     {
                         state.output.fatal(e.getMessage());
@@ -216,76 +399,91 @@ public class EvolveSlave
                     }
             }
     }
-        
-    public static void evaluateSimpleProblemForm( EvolutionState state, DataInputStream dataIn, DataOutputStream dataOut )
+	
+    public static void evaluateSimpleProblemForm( EvolutionState state, boolean returnIndividuals,
+                                                  DataInputStream dataIn, DataOutputStream dataOut, String[] args )
     {
-        // Read the subpopulation number and the number of individuals
-        // from the master.
-        int numInds = -1;
-        int subPopNum=-1;
-       
+        // Read the subpopulation number
+        int subPopNum = -1;
+        int numInds=1; 
         try
             {
-                subPopNum = dataIn.readInt();
+<<<<<<< EvolveSlave.java
                 numInds = dataIn.readInt();
-
-                if( state.population == null )
-                    state.population = new Population();
-                if( state.population.subpops == null )
-                    state.population.subpops = new Subpopulation[subPopNum+1];
-                if( state.population.subpops.length <= subPopNum )
-                    {
-                        Subpopulation[] temp = state.population.subpops;
-                        state.population.subpops = new Subpopulation[subPopNum+1];
-                        System.arraycopy( temp, 0, state.population.subpops, 0, temp.length );
-                    }
-                if( state.population.subpops[subPopNum] == null )
-                    {
-                        Parameter param = new Parameter(P_SUBPOP).push("" + subPopNum);
-                        state.population.subpops[subPopNum] = 
-                            (Subpopulation)(state.parameters.getInstanceForParameterEq(param,null,Subpopulation.class));
-                        state.population.subpops[subPopNum].setup(state, param);
-                    }
-                                
-                if ((state.population.subpops[subPopNum].individuals == null) || 
-                    (state.population.subpops[subPopNum].individuals.length != numInds))
-                    state.population.subpops[subPopNum].individuals = new Individual[numInds]; 
-                                
-
-                for(int x=0;x<numInds;x++)
-                    // Read the individuals from the stream
-                    state.population.subpops[subPopNum].individuals[x] = state.population.subpops[subPopNum].species.newIndividual( state, dataIn );
+                subPopNum = dataIn.readInt(); // assume all individuals are from the same subpopulation
             }
         catch (IOException e)
             {
                 state.output.fatal("Unable to read the subpopulation number from the master:\n"+e);
             }
+                
+        Subpopulation subPop;
+		
+		ParameterDatabase params = Evolve.loadParameterDatabase(args); 
+		EvolutionState tempState = Evolve.initialize(params, 0);
+		tempState.startFresh(); 
+                
+        if( state.population == null )
+            state.population = new Population();
+        if( state.population.subpops == null )
+            state.population.subpops = new Subpopulation[subPopNum+1];
+        if( state.population.subpops.length <= subPopNum )
+            {
+                Subpopulation[] temp = state.population.subpops;
+                state.population.subpops = new Subpopulation[subPopNum+1];
+                System.arraycopy( temp, 0, state.population.subpops, 0, temp.length );
+            }
+        if( state.population.subpops[subPopNum] == null )
+            {
+                Parameter param = new Parameter(P_SUBPOP).push("" + subPopNum);
+                        
+                subPop = 
+                    (Subpopulation)(state.parameters.getInstanceForParameterEq(
+                                                                               param,null,
+                                                                               Subpopulation.class));
+                // Setup the subpopulation so that it is in a valid state.
+                subPop.setup(state, param);
+                state.population.subpops[subPopNum] = subPop;
+            }
+        else
+            subPop = state.population.subpops[subPopNum];
         
-      
-        // Evaluate the population until time is up, or the evolution stops 
+		tempState.population.subpops = new Subpopulation[1]; 
+		tempState.population.subpops[0] = subPop;
+		tempState.population.subpops[0].individuals = new Individual[numInds];
+		
+        // Read the individual(s) from the stream
+        // and evaluate 
+        //Individual []inds = new Individual[numInds];
+        boolean []updateFitness = new boolean[numInds];
+        try
+            {
+                for (int i=0; i < numInds; i++) { 
+                    tempState.population.subpops[0].individuals[i] = subPop.species.newIndividual( state, dataIn);
+                    //((SimpleProblemForm)(state.evaluator.p_problem)).evaluate( state, tempState.population.subpops[0].individuals[i], 0 );
+                    updateFitness[i] = dataIn.readBoolean(); 
+                } catch (IOException e) { 
+                state.output.fatal("Unable to read individual from master." + e);
+            }
+        
+		// Evaluate the population until time is up, or the evolution stops 
         long startTime = System.currentTimeMillis(); 
         long endTime=0; 
-        int result = state.R_NOTDONE; 
-        while (result == state.R_NOTDONE) { 
-            result = state.evolve(); 
+        int result = tempState.R_NOTDONE; 
+        while (result == tempState.R_NOTDONE) { 
+            result = tempState.evolve(); 
             endTime = System.currentTimeMillis(); 
             if ((endTime - startTime) > runTime) 
                 break;
         }
-                                
-        try
-            {
-                // Return the evaluated individuals to the master
-                for(int i=0;i<numInds;i++)
-                    {
-                        dataOut.writeByte( V_INDIVIDUAL);
-                        state.population.subpops[subPopNum].individuals[i].writeIndividual(state, dataOut);
-                    }
-                dataOut.flush();
-            }
-        catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
+		
+        // Return the evaluated individual to the master
+        try { 
+            returnIndividualsToMaster(state, tempState.population.subpops[0].individuals, updateFitness, dataOut, returnIndividuals); 
+        } catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
+                
     }
-        
+    
     public static void evaluateGroupedProblemForm( EvolutionState state, boolean returnIndividuals,
                                                    DataInputStream dataIn, DataOutputStream dataOut )
     {
@@ -356,25 +554,32 @@ public class EvolveSlave
         // TODO Check to make sure the real problem is an instance of GroupedProblemForm
         ((GroupedProblemForm)(state.evaluator.p_problem)).evaluate( state, inds, updateFitness, countVictoriesOnly, 0 );
                 
-        try
+                
+        try { 
+            returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals); 
+        } catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
+                
+    }
+        
+    private static void returnIndividualsToMaster(EvolutionState state, Individual []inds, boolean[] updateFitness,
+                                                  DataOutputStream dataOut, boolean returnIndividuals) throws IOException 
+    {
+        // Return the evaluated individual to the master
+        // just write evaluated and fitness
+        for(int i=0;i<inds.length;i++)
             {
-                // Return the evaluated individual to the master
-                // just write evaluated and fitness
-                for(int i=0;i<inds.length;i++)
-                    {
-                        dataOut.writeByte(returnIndividuals ? V_INDIVIDUAL : (updateFitness[i] ? V_FITNESS : V_NOTHING));
-                        if (returnIndividuals)
-                            {
-                                inds[i].writeIndividual(state, dataOut);
-                            }
-                        else if (updateFitness[i])
-                            {
-                                dataOut.writeBoolean(inds[i].evaluated);
-                                inds[i].fitness.writeFitness(state,dataOut);
-                            }
-                    }
-                dataOut.flush();
+            dataOut.writeByte(returnIndividuals ? V_INDIVIDUAL : (updateFitness[i] ? V_FITNESS : V_NOTHING));
+            if (returnIndividuals)
+                {
+                inds[i].writeIndividual(state, dataOut);
+                }
+            else if (updateFitness[i])
+                {
+                dataOut.writeBoolean(inds[i].evaluated);
+                inds[i].fitness.writeFitness(state,dataOut);
+                }
             }
+        dataOut.flush();
         catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
     }
         
