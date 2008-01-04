@@ -31,7 +31,7 @@ import ec.*;
  */
 
 public interface SteadyStateStatisticsForm 
-    {
+{
     /** Called immediately before population initialization occurs. */
     public void preInitializationStatistics(final EvolutionState state);
     
@@ -60,4 +60,4 @@ public interface SteadyStateStatisticsForm
     public void finalStatistics(final EvolutionState state, final int result);
     /** Called when the generation count increments */ 
     public void generationBoundaryStatistics(final EvolutionState state); 
-    }
+}
