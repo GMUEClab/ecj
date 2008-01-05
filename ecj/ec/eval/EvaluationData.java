@@ -29,7 +29,7 @@ import ec.*;
  */
 
 public class EvaluationData
-{
+    {
     // the evolution state
     EvolutionState state;
 
@@ -48,4 +48,4 @@ public class EvaluationData
     boolean countVictoriesOnly;
     boolean[] updateFitness;
     int index; // how many have been read back from the slaves
-}
+    }
