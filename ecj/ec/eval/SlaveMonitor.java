@@ -269,6 +269,16 @@ public class SlaveMonitor
 
     LinkedList evaluatedIndividuals = null;
 
+	public synchronized int getNumberEvaluatedIndividuals()
+		{ 
+		return evaluatedIndividuals.size(); 
+		}
+	
+	public Object getEvaluatedIndividual()
+		{
+		return evaluatedIndividuals.removeFirst();
+		}
+	
     public synchronized Individual waitForIndividual( final EvolutionState state )
     {
         while( evaluatedIndividuals.size() == 0 )
