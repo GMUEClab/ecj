@@ -23,7 +23,7 @@ package ec.steadystate;
  */
 
 public interface SteadyStateBSourceForm
-{
+    {
     /** Called whenever an individual has been replaced by another
         in the population. */
     public void individualReplaced(final SteadyStateEvolutionState state,
@@ -36,4 +36,4 @@ public interface SteadyStateBSourceForm
         of your sources, or <i>their</i> sources, etc., are not
         of SteadyStateBSourceForm.*/
     public void sourcesAreProperForm(final SteadyStateEvolutionState state);
-}
+    }
