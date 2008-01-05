@@ -76,7 +76,7 @@ public class WorkerThread extends Thread
                             {
                                 ind.evaluated = dataIn.readBoolean();
                                 ind.fitness.readFitness(state,dataIn);
-                            }
+							}
 
                         if(showDebugInfo)
                             state.output.message( currentThread().getName() + "The slave has finished sending back the evaluated individual...." );
