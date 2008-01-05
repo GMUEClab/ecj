@@ -57,12 +57,28 @@ public class SteadyStateEvaluator extends SimpleEvaluator
         evolution situation, where we may not have a job completed yet. */
     public boolean isNextEvaluatedIndividualAvailable()
     {
+		if (problem instanceof MasterProblem) 
+			return (((MasterProblem)problem).server.slaveMonitor.getNumberEvaluatedIndividuals() != 0); 
+		
         return (queue.size() != 0); 
     }
         
     /** Returns the QueueIndividual from the front of the queue. Assumes the user already knows that the queue is not empty */
     public QueueIndividual getNextEvaluatedIndividual()
     {
+		if (problem instanceof MasterProblem) { 
+			Individual ind = (Individual)((MasterProblem)problem).server.slaveMonitor.getEvaluatedIndividual();
+			QueueIndividual q = new QueueIndividual(ind,0);  
+			for (int i=0; i < queue.size(); i++) { 
+				QueueIndividual q1 = (QueueIndividual)queue.get(i); 
+				if (q1.ind.equals(ind)) { 
+					q.subpop = q1.subpop; 
+					queue.remove(i); 
+					break;
+				}
+			}
+			return q; 
+		}
         return (QueueIndividual)queue.removeFirst(); 
     }
 }
