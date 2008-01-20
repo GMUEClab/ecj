@@ -387,11 +387,20 @@ public class Slave
         Individual[] inds = new Individual[numInds];
         try
             {
+<<<<<<< Slave.java
+                for (int i=0; i < numInds; i++) { 
+                    inds[i] = subPop.species.newIndividual( state, dataIn);
+		System.out.println(i); 
+					if (!runEvolve) 
+						((SimpleProblemForm)(state.evaluator.p_problem)).evaluate( state, inds[i], 0 );
+                    updateFitness[i] = dataIn.readBoolean(); 
+=======
             for (int i=0; i < numInds; i++) { 
                 inds[i] = subPop.species.newIndividual( state, dataIn);
                 if (!runEvolve) 
                     ((SimpleProblemForm)(state.evaluator.p_problem)).evaluate( state, inds[i], 0 );
                 updateFitness[i] = dataIn.readBoolean(); 
+>>>>>>> 1.16
                 }
             }
         catch (IOException e)
@@ -399,6 +408,26 @@ public class Slave
             state.output.fatal("Unable to read individual from master." + e);
             }
         
+<<<<<<< Slave.java
+		if (runEvolve) { 
+			// Evaluate the population until time is up, or the evolution stops
+			tempState.population.subpops[0].individuals = inds; 
+			Individual in = inds[0];
+			long startTime = System.currentTimeMillis(); 
+			long endTime=0; 
+			int result = tempState.R_NOTDONE; 
+			while (result == tempState.R_NOTDONE) { 
+				result = tempState.evolve(); 
+				endTime = System.currentTimeMillis(); 
+			System.out.println((endTime - startTime) + "\t" + runTime); 
+				if ((endTime - startTime) > runTime) 
+					break;
+			}
+			inds = tempState.population.subpops[0].individuals;
+			tempState.finish(result);
+			Evolve.cleanup(tempState);
+		}
+=======
         if (runEvolve) { 
             // Evaluate the population until time is up, or the evolution stops
             tempState.population.subpops[0].individuals = inds; 
@@ -413,12 +442,19 @@ public class Slave
                 }
             inds = tempState.population.subpops[0].individuals;
             }
+>>>>>>> 1.16
 
         // Return the evaluated individual to the master
         try { 
+<<<<<<< Slave.java
+            	returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals); 
+        } catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
+    }
+=======
             returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals); 
             } catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
         }
+>>>>>>> 1.16
     
     public static void evaluateGroupedProblemForm( EvolutionState state, boolean returnIndividuals,
                                                    DataInputStream dataIn, DataOutputStream dataOut )

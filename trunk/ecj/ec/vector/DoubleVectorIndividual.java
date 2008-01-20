@@ -406,7 +406,8 @@ public class DoubleVectorIndividual extends VectorIndividual
         int len = dataInput.readInt();
         if (genome == null || genome.length != len)
             genome = new double[len];
-        for (int x = 0; x < genome.length; x++)
+
+        for (int x = 0; x < genome.length; x++) 
             genome[x] = dataInput.readDouble();
         }
 
