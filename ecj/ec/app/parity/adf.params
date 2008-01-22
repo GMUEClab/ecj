@@ -348,12 +348,12 @@ eval.problem.stack.context.data = ec.app.parity.ParityData
 
 
 # Here we determine what kind of Parity we're doing:
-eval.problem.bits = 3
+eval.problem.bits = 4 
 eval.problem.even = true
 
 # this value must always be set to *6* more than eval.problem.bits
-gp.fs.0.size = 9
+gp.fs.0.size = 10 
 # this value must always be set to *6* more than eval.problem.bits
-gp.fs.1.size = 9
+gp.fs.1.size = 10
 # this value must always be set to *7* more than eval.problem.bits
-gp.fs.2.size = 10
+gp.fs.2.size = 11
