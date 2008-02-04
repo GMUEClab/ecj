@@ -1224,3 +1224,56 @@ Version		Change Log
 	Minor documentation bug fix.  Thanks to Ian Lindsay
 		<iml04@hampshire.edu>	
 	As long promised EvolutionState.statics is gone.
+	Added a break in the main loop of MutateSwapPipeline,
+		MutatePromotePipeline, and MutateDemotePipeline  -- thanks to
+		Andrea Arcuri <A.arcuri@cs.bham.ac.uk>
+	Removed default tournament selections from ec/gp/breed/breed.params;
+		they'd cause confusion.
+	Added GPIndividual.parseGenotype() (to be a bit more consistent),
+		eliminating GPIndividual.readIndividual(DataInput...), and
+		relying on the superclass method instead.
+	Modified the GPIndividual reader/writer documentation, which was 
+		incorrect.
+	Documentation fix to BreedingSource
+	Significant modifications to ESSelection operator.  Previously it had
+		a major constraint: it had to be called exactly once in a
+		given pipeline production of a child.  Now you can have many
+		ESSelection operators in a pipeline, and call any of them
+		multiple times, in order to produce a single child.  They will
+		all return the same parent, and only increment to the next
+		parent when the child has been created and a new child is being
+		generated.  WARNING: untested, may have introduced bugs.
+	Significant modifications to various VectorSpecies and VectorIndividual
+		subclasses: previously internally we had both a minGene
+		and a minGenes[] variable.  If a flag was set, minGene was
+		used to return the min gene value for all genes; else
+		they were per-gene using minGenes[].  Now there is no flag;
+		only minGenes[] exists internally, greatly simplifying things
+		at the cost of a small slowdown in initial setup for very large
+		genomes.  Likewise maxGenes etc.  WARNING: this required a 
+		lot of cut and paste and may have introduced bugs.
+	Cleanups to how FloatVectorSpecies and IntegerVectorSpecies check for
+		minGene/maxGene values -- now you can mix all three methods
+		of specifying them.  WARNING: this required a lot of cut 
+		and paste and may have introduced bugs.
+	Made DEBreeder.java non-abstract.  It was abstract by mistake.
+	Tweak to ec/app/sum/Sum.java which was assuming that all the genes
+		had the same min and max values.  Now that maxGene is gone,
+		it wasn't compiling.  We've changed it to maxGene(0), under
+		the assumption that IF all the genes were the same, they'd
+		all be the same as gene #0 (in terms of min/max).
+	Deleted some population printing-out code that was left in ecsuite
+		incorrectly.
+	Deleted a 'state' parameter unused in ecsuite, rejiggered.
+	Fixed silly minGene/maxGene bug in IntegerVectorSpecies
+	Bug in setup (num-buckets not working) for BucketTournamentSelection
+		-- thanks to Elena Popovici <elena@icosystem.com>
+	Bug fix in parity.params file, a node constraints was missing for
+		15-bit.  Also set both parity.params and adf.params to both
+		us 4-bit parity by default.
+	Total revamping of the distributed evaluation facility (the eval
+		directory).  Lots of bugs stomped.  Whole classes rearranged
+		and cleaned up.
+	Fixes to steadystate that were tickled by the revamping of the
+		distributed evaluation facility.
+

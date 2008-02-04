@@ -30,18 +30,38 @@ import ec.steadystate.SteadyStateEvolutionState;
 
 public class SlaveMonitor
     {
+    public boolean waitOnMonitor(Object monitor)
+	{
+	try
+	    {
+	    monitor.wait();
+	    }
+	catch (InterruptedException e) { return false; }
+	return true;
+	}
+
+    public void notifyMonitor(Object monitor)
+	{
+	monitor.notifyAll();
+	}
+
     // the slaves (not really a queue)
-    LinkedList allSlaves = null;
+    private LinkedList allSlaves = new LinkedList();
 
     // the available slaves
-    LinkedList availableSlaves = null;
+    private LinkedList availableSlaves = new LinkedList();
 
     // the maximum number of jobs per slave
     int maxJobsPerSlave;
 
     // whether the system should display information that is useful for debugging 
     boolean showDebugInfo;
-
+    
+    final void debug(String s)
+	{
+	if (showDebugInfo) { System.err.println(Thread.currentThread().getName() + "->" + s); }
+	}
+    
     /**
        Simple constructor that initializes the data structures for keeping track of the state of each slave.
        The constructor receives two parameters: a boolean flag indicating whether the system should display
@@ -51,140 +71,99 @@ public class SlaveMonitor
     public SlaveMonitor( boolean showDebugInfo, int maxJobsPerSlave )
         {
         this.showDebugInfo = showDebugInfo;
-        allSlaves = new LinkedList();
-        availableSlaves = new LinkedList();
-        this.evaluatedIndividuals = new LinkedList();
         this.maxJobsPerSlave = maxJobsPerSlave;
         }
 
     /**
        Registers a new slave with the monitor.  Upon registration, a slave is marked as available for jobs.
     */
-    public synchronized void registerSlave( SlaveData slave )
+    public void registerSlave( SlaveData slave )
         {
-        allSlaves.addLast(slave);
-        availableSlaves.addLast(slave);
-        slave.isSlaveAvailable = true;
-        notifyAll();
+	synchronized(availableSlaves)
+	    {
+	    availableSlaves.addLast(slave);
+	    notifyMonitor(availableSlaves);
+	    }
+        synchronized(allSlaves)
+	    {
+	    allSlaves.addLast(slave);
+	    notifyMonitor(allSlaves);
+	    }
         }
 
     /**
        Mark a slave as unavailable (the slave has reached its maximum load).
     */
-    public synchronized void markSlaveAsUnavailable( SlaveData slave )
+    public void markSlaveAsUnavailable( SlaveData slave )
         {
-        availableSlaves.remove(slave);
-        slave.isSlaveAvailable=false;
-        notifyAll();
+	synchronized(availableSlaves)
+	    {
+	    availableSlaves.remove(slave);
+	    notifyMonitor(availableSlaves);
+	    }
         }
 
     /**
        Unregisters a dead slave from the monitor.
     */
-    public synchronized void unregisterSlave( SlaveData slave )
+    public void unregisterSlave( SlaveData slave )
         {
-        availableSlaves.remove(slave);
-        slave.isSlaveAvailable=false;
-        allSlaves.remove(slave);
-        notifyAll();
+	synchronized(allSlaves)
+	    {
+	    allSlaves.remove(slave);
+	    notifyMonitor(allSlaves);
+	    }
+	markSlaveAsUnavailable(slave);
         }
 
     /**
        Shuts down the slave monitor (also shuts down all slaves).
     */
-    public synchronized void shutdown( final EvolutionState state )
+    public void shutdown( final EvolutionState state )
         {
-        while( !allSlaves.isEmpty() )
-            {
-            SlaveData slave = (SlaveData)(allSlaves.removeFirst());
-            slave.shutdown( state );
-            }
+        synchronized(allSlaves)
+	    {
+	    while( !allSlaves.isEmpty() )
+		{
+		((SlaveData)(allSlaves.removeFirst())).shutdown(state);
+		}
+	    notifyMonitor(allSlaves);
+	    }
         }
 
     /**
        Schedules a job for execution on one of the available slaves.  The monitor waits until at least one
        slave is available to perform the job.
     */
-    public synchronized void scheduleJobForEvaluation( final EvolutionState state, EvaluationData toEvaluate )
+    public void scheduleJobForEvaluation( final EvolutionState state, Job job )
         {
-        while( availableSlaves.isEmpty() )
-            {
-            try
-                {
-                if(showDebugInfo)
-                    state.output.message( Thread.currentThread().getName() + "Waiting for a slave that is available." );
-                wait();
-                }
-            catch (InterruptedException e) {}
-            }
-        if(showDebugInfo)
-            state.output.message( Thread.currentThread().getName() + "Got a slave that is available for work." );
+        SlaveData result = null;
+	synchronized(availableSlaves)
+	    {
+	    while( true)
+		{
+		if (!availableSlaves.isEmpty()) 
+		    {
+		    result = (SlaveData)(availableSlaves.removeFirst());
+		    break;
+		    }
+		debug("Waiting for a slave that is available." );
+		waitOnMonitor(availableSlaves);
+		}
+	    notifyMonitor(availableSlaves);
+	    }	    
+	debug( "Got a slave that is available for work." );
 
-        SlaveData result = (SlaveData)(availableSlaves.removeFirst());
-        result.isSlaveAvailable = false;
-        result.jobQueue.scheduleJob(toEvaluate);
-        DataOutputStream dataOut = result.dataOut;
+	result.scheduleJob(job);
 
-        if( toEvaluate.type == Slave.V_EVALUATESIMPLE )
-            {
-            try { 
-                // Tell the server we're evaluating a SimpleProblemForm
-                dataOut.writeByte(Slave.V_EVALUATESIMPLE);
-                } catch (Exception e)
-                    {
-                    state.output.message("Shutdown from EVALUATESIMPLE"); 
-                    result.shutdown(state);
-                    }
-            }
-        else
-            {
-            try { 
-                // Tell the server we're evaluating a GroupedProblemForm
-                dataOut.writeByte(Slave.V_EVALUATEGROUPED);
-                                
-                // Tell the server whether to count victories only or not.
-                dataOut.writeBoolean(toEvaluate.countVictoriesOnly);
-                } catch (Exception e) 
-                    {
-                    result.shutdown(state); 
-                    }
-            }
-                
-        try {
-            // transmit number of individuals 
-            dataOut.writeInt(toEvaluate.inds.length); 
-                        
-            // Transmit the subpopulation number to the slave 
-            for(int x=0;x<toEvaluate.subPops.length;x++)
-                dataOut.writeInt(toEvaluate.subPops[x]);
-                        
-            // Transmit the individuals to the server for evaluation...
-            for(int i=0;i<toEvaluate.inds.length;i++)
-                {
-                toEvaluate.inds[i].writeIndividual(state, dataOut);
-                dataOut.writeBoolean(toEvaluate.updateFitness[i]);
-                }
-            dataOut.flush();
-
-            if( result.jobQueue.numJobs() < maxJobsPerSlave )
-                {
-                if( !result.isSlaveAvailable )
-                    availableSlaves.addLast(result);
-                result.isSlaveAvailable = true;
-                }
-
-            } catch (Exception e) 
-                {
-                state.output.message("Shutdown from transmitting");
-                e.printStackTrace(); 
-                result.shutdown(state); 
-                }
-                
-                
-        // we are not sure whether this notifyAll is useful for anything or not, but it does not hurt for sure (in may incur a small
-        // computation to wake up all threads that wait on the monitor, and for them to figure out whether they should wait some more or not).
-        // it may disappear in the future, in case we discover it is not useful.
-        notifyAll();
+	if( result.numJobs() < maxJobsPerSlave )
+	    {
+	    synchronized(availableSlaves) 
+		{
+		if( !availableSlaves.contains(result)) availableSlaves.addLast(result); 
+		notifyMonitor(availableSlaves);
+		}
+	    }
         }
 
     /**
@@ -194,110 +173,143 @@ public class SlaveMonitor
        finished, while the second evaluation thread keeps posting jobs to the slaves, the first thread might have to wait
        until the second thread has had all its jobs finished.
     */
-    public synchronized void waitForAllSlavesToFinishEvaluating( final EvolutionState state )
+    public void waitForAllSlavesToFinishEvaluating( final EvolutionState state )
         {
-        Iterator iter;
-                
-        iter = allSlaves.iterator();
-        while( iter.hasNext() )
-            {
-            SlaveData slaveData = (SlaveData)(iter.next());
-            try { slaveData.dataOut.flush(); } catch (java.io.IOException e) {} // we'll catch this error later....
-            }
+	//System.out.println("+ waitForAllSlavesToFinishEvaluating");
 
+	synchronized(allSlaves)
+	    {
+	    Iterator iter = allSlaves.iterator();
+	    while( iter.hasNext() )
+		{
+		SlaveData slaveData = (SlaveData)(iter.next());
+		try { slaveData.dataOut.flush(); } catch (java.io.IOException e) {} // we'll catch this error later....
+		}
+	    notifyMonitor(allSlaves);
+	    }
+	    
         boolean shouldCycle = true;
-        while( shouldCycle )
-            {
-            shouldCycle = false;
-            iter = allSlaves.iterator();
-            while( iter.hasNext() )
-                {
-                SlaveData slaveData = (SlaveData)(iter.next());
-                if( slaveData.jobQueue.numJobs() != 0 )
-                    {
-                    if(showDebugInfo)
-                        state.output.message( Thread.currentThread().getName() + "Slave " +
-                                              slaveData + " has " + slaveData.jobQueue.numJobs() + " more jobs to finish." );
-                    shouldCycle = true;
-                    break;
-                    }                               
-                }
-            if( shouldCycle )
-                {
-                try
-                    {
-                    if(showDebugInfo)
-                        state.output.message( Thread.currentThread().getName() + "Waiting for slaves to finish their jobs." );
-                    wait();
-                    }
-                catch (InterruptedException e) {}
-                if(showDebugInfo)
-                    state.output.message( Thread.currentThread().getName() + "At least one job has been finished." );
-                }
+	synchronized(allSlaves)
+	    {
+	    while( shouldCycle )
+		{
+		shouldCycle = false;
+		Iterator iter = allSlaves.iterator();
+		while( iter.hasNext() )
+		    {
+		    SlaveData slaveData = (SlaveData)(iter.next());
+		    int jobs = slaveData.numJobs();
+		    if( jobs != 0 )
+			{
+			debug("Slave " + slaveData + " has " + jobs + " more jobs to finish." );
+			shouldCycle = true;
+			break;
+			}                               
+		    }
+		if( shouldCycle )
+		    {
+		    debug("Waiting for slaves to finish their jobs." );
+		    waitOnMonitor(allSlaves);
+		    debug("At least one job has been finished." );
+		    }
+		}
+	    notifyMonitor(allSlaves);
             }
-
-        if(showDebugInfo)
-            state.output.message( Thread.currentThread().getName() + "All slaves have finished their jobs." );
-                        
-        notifyAll();
-
+	debug("All slaves have finished their jobs." );
+	//System.out.println("- waitForAllSlavesToFinishEvaluating");
         }
 
     /**
        Notifies the monitor that the particular slave has finished performing a job, and it (probably) is
        available for other jobs.
     */
-    synchronized void notifySlaveAvailability( SlaveData slave, final EvaluationData ed )
+    void notifySlaveAvailability( SlaveData slave, final Job job, EvolutionState state )
         {
-        final EvolutionState state = ed.state;
-        if( slave.jobQueue.numJobs() < maxJobsPerSlave )
+	// first announce that a slave in allSlaves has finished, so people blocked on waitForAllSlavesToFinishEvaluating
+	// can wake up and realize it.
+	
+	synchronized(allSlaves)
+	    {
+	    notifyMonitor(allSlaves);
+	    }
+
+	// now announce that we've got a new available slave if someone wants it
+	
+        if( slave.numJobs() < maxJobsPerSlave )
             {
-            if( !slave.isSlaveAvailable )
-                availableSlaves.addLast(slave);
-            slave.isSlaveAvailable = true;
+	    synchronized(availableSlaves)
+		{ 
+		if( !availableSlaves.contains(slave)) availableSlaves.addLast(slave);
+		notifyMonitor(availableSlaves);
+		}
             }
 
-        if( showDebugInfo )
-            state.output.message( Thread.currentThread().getName() + "Notify the monitor that the slave is available." );
+        debug("Notify the monitor that the slave is available." );
 
-        if( ed.type == Slave.V_EVALUATESIMPLE && state instanceof ec.steadystate.SteadyStateEvolutionState )
-            evaluatedIndividuals.addLast( ed.inds[0] );
+	// now announce that we've got a new completed individual if someone is waiting for it
 
-        notifyAll();
+        if( state instanceof ec.steadystate.SteadyStateEvolutionState )
+	    {
+	    // Perhaps we should the individuals by fitness first, so the fitter ones show up later
+	    // and don't get immediately wiped out by less fit ones.  Or should it be the other way
+	    // around?  We might revisit that in the future.
+	    
+	    // At any rate, add ALL the individuals that came back to the evaluatedIndividuals LinkedList
+            synchronized(evaluatedIndividuals)
+		{
+		for(int x=0; x<job.inds.length;x++)
+		    evaluatedIndividuals.addLast( job.inds[x] );
+		notifyMonitor(evaluatedIndividuals);
+		}
+	    }
         }
 
-    LinkedList evaluatedIndividuals = null;
+    LinkedList evaluatedIndividuals =  new LinkedList();
 
-	public synchronized int getNumberEvaluatedIndividuals()
-		{ 
-		return evaluatedIndividuals.size(); 
-		}
-	
-	public Individual getEvaluatedIndividual()
-		{
-		return (Individual)(evaluatedIndividuals.removeFirst());
-		}
-	
-    public synchronized Individual waitForIndividual( final EvolutionState state )
+    public boolean evaluatedIndividualAvailable()
+	{
+	synchronized(evaluatedIndividuals)
+	    {
+	   // return evaluatedIndividuals.size();   // believe it or not, this is O(n)!!!
+	    try { evaluatedIndividuals.getFirst(); return true; }
+	    catch (NoSuchElementException e) { return false; }
+	    }
+	}
+
+    /** Returns null if there is no such individual, else returns the next individual. */
+    public Individual getNextAvailableIndividual()
+	{
+	synchronized(evaluatedIndividuals)
+	    {
+	    try { return (Individual)(evaluatedIndividuals.removeFirst()); }
+	    catch (NoSuchElementException e) { return null; }
+	    }
+	}
+
+    /** Blocks until an individual comes available */
+    public Individual waitForIndividual()
         {
-        while( evaluatedIndividuals.size() == 0 )
-            {
-            try
-                {
-                if(showDebugInfo)
-                    state.output.message( Thread.currentThread().getName() + "Waiting for individual to be evaluated." );
-                wait();
-                }
-            catch (InterruptedException e) {}
-            if(showDebugInfo)
-                state.output.message( Thread.currentThread().getName() + "At least one individual has been finished." );
+        while( true)
+	    {
+	    synchronized(evaluatedIndividuals)
+		{
+		if (evaluatedIndividualAvailable())
+		    return getNextAvailableIndividual();
+
+                debug("Waiting for individual to be evaluated." );
+                waitOnMonitor(evaluatedIndividuals);  // lets go of evaluatedIndividuals loc
+		debug("At least one individual has been finished." );
+		}
             }
-        return getEvaluatedIndividual();
         }
 
     /** Returns the number of available slave (not busy) */ 
-    public synchronized int numAvailableSlaves()
+    public int numAvailableSlaves()
         {
-        return availableSlaves.size(); 
+	int i = 0;
+		//System.out.println("+ numAvailableSlaves");
+        synchronized(availableSlaves) { i = availableSlaves.size(); }
+		//System.out.println("- numAvailableSlaves");
+	return i;
         }
     }

@@ -39,26 +39,22 @@ import java.io.*;
  *
  * <li><b>printIndividual(...,PrintWriter)/readIndividual(...,LineNumberReader)</b>&nbsp;&nbsp;&nbsp;This
  * approach transmits or receives an indivdual in text encoded such that the individual is largely readable
- * by humans but can be read back in 100% by ECJ as well.  To do this, these methods will encode numbers
- * using the <tt>ec.util.Code</tt> class.  These methods are mostly used to write out populations to
- * files for inspection, slight modification, then reading back in later on.  <b>readIndividual</b>reads
- * in the fitness and the evaluation flag, then calls <b>parseGenotype</b> to read in the remaining individual.
- * You are responsible for implementing parseGenotype: the Code class is there to help you.
- * <b>printIndividual</b> writes out the fitness and evaluation flag, then calls <b>genotypeToString</b> 
- * and printlns the resultant string. You are responsible for implementing the genotypeToString method in such
- * a way that parseGenotype can read back in the individual println'd with genotypeToString.  The default form
- * of genotypeToString simply calls <b>toString</b>, which you may override instead if you like.  The default
- * form of <b>parseGenotype</b> throws an error.  You are not required to implement these methods, but without
- * them you will not be able to write individuals to files in a simultaneously computer- and human-readable fashion.
+ * by humans but can be read back in 100% by ECJ as well.  Because GPIndividuals are often very large,
+ * <b>GPIndividual has overridden these methods -- they work differently than in Individual (the superclass).</b>  In specific:
+ * <b>readIndividual</b> by default reads in the fitness and the evaluation flag, then calls <b>parseGenotype</b> 
+ * to read in the trees (via GPTree.readTree(...)).
+ * However <b>printIndividual</b> by default prints the fitness and evaluation flag, and prints all the trees
+ * by calling GPTree.printTree(...).  It does not call <b>genotypeToString</b> at all.  This
+ * is because it's very wasteful to build up a large string holding the printed form of the GPIndividual 
+ * just to pump it out a stream once.
  *
  * <li><b>printIndividualForHumans(...,PrintWriter)</b>&nbsp;&nbsp;&nbsp;This
- * approach prints an individual in a fashion intended for human consumption only.
- * <b>printIndividualForHumans</b> writes out the fitness and evaluation flag, then calls <b>genotypeToStringForHumans</b> 
- * and printlns the resultant string. You are responsible for implementing the genotypeToStringForHumans method.
- * The default form of genotypeToStringForHumans simply calls <b>toString</b>, which you may override instead if you like
- * (though note that genotypeToString's default also calls toString).  You should handle one of these methods properly
- * to ensure individuals can be printed by ECJ.
- * </ul>
+ * approach prints an individual in a fashion intended for human consumption only. Because GPIndividuals are often very large,
+ * <b>GPIndividual has overridden this methods -- it works differently than in Individual (the superclass).</b>  In specific:
+ * <b>printIndividual</b> by default prints the fitness and evaluation flag, and prints all the trees
+ * by calling GPTree.printTreeForHumans(...).  It does not call <b>genotypeToStringForHumans</b> at all.  This
+ * is because it's very wasteful to build up a large string holding the printed form of the GPIndividual 
+ * just to pump it out a stream once.
  *
  * <p>In general, the various readers and writers do three things: they tell the Fitness to read/write itself,
  * they read/write the evaluated flag, and they read/write the GPTree array (by having each GPTree read/write
@@ -234,38 +230,15 @@ public class GPIndividual extends Individual
             trees[x].readTree(state,dataInput);
         }
 
-    /** Overridden for the GPIndividual genotype. */
-    
-    public void readIndividual(final EvolutionState state,
-                               final LineNumberReader reader) 
-        throws IOException
+    public void parseGenotype(final EvolutionState state,
+                              final LineNumberReader reader) throws IOException
         {
-        /*
-        // First, was I evaluated?
-        int linenumber = reader.getLineNumber();
-        String s = reader.readLine();
-        if (s==null || s.length() < EVALUATED_PREAMBLE.length()) // uh oh
-        state.output.fatal("Reading Line " + linenumber + ": " +
-        "Bad 'Evaluated?' line.");
-        DecodeReturn d = new DecodeReturn(s, EVALUATED_PREAMBLE.length());
-        Code.decode(d);
-        if (d.type!=DecodeReturn.T_BOOLEAN)
-        state.output.fatal("Reading Line " + linenumber + ": " +
-        "Bad 'Evaluated?' line.");
-        evaluated = (d.l!=0);
-        */
-        evaluated = Code.readBooleanWithPreamble(EVALUATED_PREAMBLE, state, reader);
-
-        // Next, what's my fitness?
-        fitness.readFitness(state,reader);
-
-        // Next, read my trees
+        // Read my trees
         for(int x=0;x<trees.length;x++)
             {
             reader.readLine();  // throw it away -- it's the tree indicator
             trees[x].readTree(state,reader);
             }
-
         }
 
     /** Deep-clones the GPIndividual.  Note that you should not deep-clone the prototypical GPIndividual

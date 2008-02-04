@@ -197,13 +197,16 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooser
         }
 
 
-
     /** A hook which should be passed to all your subsidiary breeding
-        sources.  If you are a BreedingPipeline and you
+        sources.  The default does this for you already, so ordinarily
+        you don't need to change anything.  If you are a BreedingPipeline and you
         implement your sources in a way different
         than using the sources[] array, be sure to override this method
         so that it calls preparePipeline(hook) on all of your sources.
-        This method might get called more than once, and by various objects
+        
+        <p>ECJ at present does not custom-implement or call this method: 
+        it's available for you. Becuase it has custom functionality, 
+        this method might get called more than once, and by various objects
         as needed.  If you use it, you should determine somehow how to use
         it to send information under the assumption that it might be sent
         by nested items in the pipeline; you don't want to scribble over

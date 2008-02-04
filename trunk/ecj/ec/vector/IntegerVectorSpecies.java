@@ -33,9 +33,7 @@ import ec.util.*;
  *      as they're used as defaults by #2 and #3 below.
  *<p>
  * <li> You may provide min and max values for genes in segments (regions) along
- *      the genome.  If not all genes are specified in this way, the default (#1) min and max
- *      value is used, and you receive a warning.  ECJ will check and use this method before
- *      it checks and uses #3 below.  This is done by specifying:
+ *      the genome.  This is done by specifying:
  *      <p><i>base</i>.<tt>num-segments</tt>
  *      The segments may be defined by either start or end indices of genes. 
  *      This is controlled by specifying the value of:
@@ -53,15 +51,13 @@ import ec.util.*;
  *      <br><i>base</i>.<tt>segment.</tt><i>j</i><tt>.max-gene</tt>
  *      if segment-type value is equal to end.
  *<p>
- * <li> You may provide min and max values for each separate gene.  If not all genes
- *      are specified in this way, the default (#1) min and max value is used, and you
- *      receive a warning.  This is done by specifying (for each gene location <i>i</i>
- *      you wish to specify)
+ * <li> You may provide min and max values for each separate gene.
+ *      This is done by specifying (for each gene location <i>i</i> you wish to specify).  
  *      <p><i>base.n</i>.<tt>min-gene</tt>.<i>i</i>
  *      <br><i>base.n</i>.<tt>max-gene</tt>.<i>i</i>
  * </ol>
  * 
- *
+ * <p>Any settings for #3 override #2, and both override #1. 
  *
  *
  * <p><b>Parameters</b><br>
@@ -133,30 +129,17 @@ public class IntegerVectorSpecies extends VectorSpecies
 
     public final static String P_SEGMENT = "segment";
         
-    public long minGene;
-    public long maxGene;
-    /** Set to null if not specified */
     public long[] minGenes;
-    /** Set to null if not specified */
     public long[] maxGenes;
     
-    public final boolean individualGeneMinMaxUsed()
+    public long maxGene(int gene)
         {
-        return (maxGenes!=null);
-        }
-        
-    public final long maxGene(int gene)
-        {
-        if (maxGenes!=null && gene >= 0 && gene < maxGenes.length)
-            return maxGenes[gene];
-        else return maxGene;
+        return maxGenes[gene];
         }
     
-    public final long minGene(int gene)
+    public long minGene(int gene)
         {
-        if (minGenes!=null && gene >= 0 && gene < minGenes.length)
-            return minGenes[gene];
-        else return minGene;
+        return minGenes[gene];
         }
     
     public boolean inNumericalTypeRange(long geneVal)
@@ -179,23 +162,31 @@ public class IntegerVectorSpecies extends VectorSpecies
 
         Parameter def = defaultBase();
 
-        minGene = state.parameters.getLongWithDefault(base.push(P_MINGENE),def.push(P_MINGENE),0);
-        maxGene = state.parameters.getLong(base.push(P_MAXGENE),def.push(P_MAXGENE),minGene);
+
+        // create the arrays
+        minGenes = new long[genomeSize];
+        maxGenes = new long[genomeSize];
+        
+        
+        
+
+        // LOADING GLOBAL MIN/MAX GENES
+        long minGene = state.parameters.getLongWithDefault(base.push(P_MINGENE),def.push(P_MINGENE),0);
+        long maxGene = state.parameters.getLong(base.push(P_MAXGENE),def.push(P_MAXGENE),minGene);
         if (maxGene < minGene)
             state.output.fatal("IntegerVectorSpecies must have a default min-gene which is <= the default max-gene",
                                base.push(P_MAXGENE),def.push(P_MAXGENE));
         
-        // check to see if these longs are within the data type of the particular individual
-        if (!inNumericalTypeRange(minGene))
-            state.output.fatal("This IntegerVectorSpecies has a prototype of the kind: " 
-                               + i_prototype.getClass().getName() +
-                               ", but doesn't have a min-gene value within the range of this prototype's genome's data types",
-                               base.push(P_MINGENE),def.push(P_MINGENE));
-        if (!inNumericalTypeRange(maxGene))
-            state.output.fatal("This IntegerVectorSpecies has a prototype of the kind: " 
-                               + i_prototype.getClass().getName() +
-                               ", but doesn't have a max-gene value within the range of this prototype's genome's data types",
-                               base.push(P_MAXGENE),def.push(P_MAXGENE));
+        for (int x = 0; x < genomeSize; x++)
+            {
+            minGenes[x] = minGene;
+            maxGenes[x] = maxGene;
+            }
+
+
+
+
+        // LOADING SEGMENTS
 
         //Set number of segments to 0 by default
         int numSegments = 0;
@@ -219,21 +210,14 @@ public class IntegerVectorSpecies extends VectorSpecies
                     base.push(P_NUM_SEGMENTS), 
                     def.push(P_NUM_SEGMENTS));
                                 
-                                
-            //Initialize min and max gene arrays
-            minGenes = new long[genomeSize];
-            maxGenes = new long[genomeSize];
-
-                        
-                        
             //read the type of segment definition using the default start value
             String segmentType = state.parameters.getStringWithDefault(base.push(P_SEGMENT_TYPE), 
                                                                        def.push(P_SEGMENT_TYPE), P_SEGMENT_START);
                         
             if(segmentType.equalsIgnoreCase(P_SEGMENT_START))
-                initializeGenomeSegmentsByStartIndices(state, base, def, numSegments);
+                initializeGenomeSegmentsByStartIndices(state, base, def, numSegments, minGene, maxGene);
             else if(segmentType.equalsIgnoreCase(P_SEGMENT_END))
-                initializeGenomeSegmentsByEndIndices(state, base, def, numSegments);
+                initializeGenomeSegmentsByEndIndices(state, base, def, numSegments, minGene, maxGene);
             else
                 state.output.fatal(
                     "Invalid specification of genome segment type: " + segmentType
@@ -243,67 +227,67 @@ public class IntegerVectorSpecies extends VectorSpecies
 
 
             }
-        // Next check to see if the gene-by-gene min/max values exist
-        else if (state.parameters.exists(base.push(P_MAXGENE).push("0"),def.push(P_MAXGENE).push("0")))
-            {
-            minGenes = new long[genomeSize];
-            maxGenes = new long[genomeSize];
-            boolean warnedMin=false;
-            boolean warnedMax=false;
-            for(int x=0;x<genomeSize;x++)
-                {
-                minGenes[x]=minGene;
-                maxGenes[x]=maxGene;
-                if (!state.parameters.exists(base.push(P_MINGENE).push(""+x),base.push(P_MINGENE).push(""+x)))
-                    {
-                    if (!warnedMin)
-                        {
-                        state.output.warning("IntegerVectorSpecies has missing min-gene values for some genes.\n" +
-                                             "The first one is gene #"+x+".", base.push(P_MINGENE).push(""+x),base.push(P_MINGENE).push(""+x));
-                        warnedMin = true;
-                        }
-                    }
-                else minGenes[x] = state.parameters.getLongWithDefault(
-                    base.push(P_MINGENE).push(""+x),base.push(P_MINGENE).push(""+x),minGene);
 
-                if (!state.parameters.exists(base.push(P_MAXGENE).push(""+x),base.push(P_MAXGENE).push(""+x)))
-                    {
-                    if (!warnedMax)
-                        {
-                        state.output.warning("IntegerVectorSpecies has missing max-gene values for some genes.\n" +
-                                             "The first one is gene #"+x+".", base.push(P_MAXGENE).push(""+x),base.push(P_MAXGENE).push(""+x));
-                        warnedMax = true;
-                        }
-                    }
-                else maxGenes[x] = state.parameters.getLongWithDefault(base.push(P_MAXGENE).push(""+x),base.push(P_MAXGENE).push(""+x),maxGene);
-                
-                if (maxGenes[x] < minGenes[x])
-                    state.output.fatal("IntegerVectorSpecies must have a min-gene["+x+"] which is <= the max-gene["+x+"]",
-                                       base.push(P_MAXGENE).push(""+x),base.push(P_MAXGENE).push(""+x));
-                
-                // check to see if these longs are within the data type of the particular individual
-                if (!inNumericalTypeRange(minGenes[x]))
-                    state.output.error("This IntegerVectorSpecies has a prototype of the kind: " 
-                                       + i_prototype.getClass().getName() +
-                                       ", but doesn't have a min-gene["+x+"] value within the range of this prototype's genome's data types",
-                                       base.push(P_MINGENE).push(""+x),base.push(P_MINGENE).push(""+x));
-                if (!inNumericalTypeRange(maxGenes[x]))
-                    state.output.fatal("This IntegerVectorSpecies has a prototype of the kind: " 
-                                       + i_prototype.getClass().getName() +
-                                       ", but doesn't have a max-gene["+x+"] value within the range of this prototype's genome's data types",
-                                       base.push(P_MAXGENE).push(""+x),base.push(P_MAXGENE).push(""+x));
-                }
-            }
-        else  //initialize minGenes and maxGenes based on global mix and max values
+
+
+        // LOADING PER-GENE VALUES
+
+        boolean foundStuff = false;
+        boolean warnedMin=false;
+        boolean warnedMax=false;
+        for(int x=0;x<genomeSize;x++)
             {
-            minGenes = new long[genomeSize];
-            maxGenes = new long[genomeSize];
-            for (int x = 0; x < genomeSize; x++)
+            if (!state.parameters.exists(base.push(P_MINGENE).push(""+x),base.push(P_MINGENE).push(""+x)))
                 {
-                minGenes[x] = minGene;
-                maxGenes[x] = maxGene;
+                if (foundStuff && !warnedMin)
+                    {
+                    state.output.warning("IntegerVectorSpecies has missing min-gene values for some genes.\n" +
+                                         "The first one is gene #"+x+".", base.push(P_MINGENE).push(""+x),base.push(P_MINGENE).push(""+x));
+                    warnedMin = true;
+                    }
+                }
+            else 
+                {
+                minGenes[x] = state.parameters.getLongWithDefault(base.push(P_MINGENE).push(""+x),base.push(P_MINGENE).push(""+x),minGene);
+                foundStuff = true;
+                }
+
+            if (!state.parameters.exists(base.push(P_MAXGENE).push(""+x),base.push(P_MAXGENE).push(""+x)))
+                {
+                if (foundStuff && !warnedMax)
+                    {
+                    state.output.warning("IntegerVectorSpecies has missing max-gene values for some genes.\n" +
+                                         "The first one is gene #"+x+".", base.push(P_MAXGENE).push(""+x),base.push(P_MAXGENE).push(""+x));
+                    warnedMax = true;
+                    }
+                }
+            else 
+                {
+                maxGenes[x] = state.parameters.getLongWithDefault(base.push(P_MAXGENE).push(""+x),base.push(P_MAXGENE).push(""+x),maxGene);
+                foundStuff = true;
                 }
             }
+        
+        
+        
+        
+        // VERIFY
+        for(int x=0; x< genomeSize; x++)
+            {
+            if (maxGenes[x] < minGenes[x])
+                state.output.fatal("IntegerVectorSpecies must have a min-gene["+x+"] which is <= the max-gene["+x+"]");
+            
+            // check to see if these longs are within the data type of the particular individual
+            if (!inNumericalTypeRange(minGenes[x]))
+                state.output.fatal("This IntegerVectorSpecies has a prototype of the kind: " 
+                                   + i_prototype.getClass().getName() +
+                                   ", but doesn't have a min-gene["+x+"] value within the range of this prototype's genome's data types");
+            if (!inNumericalTypeRange(maxGenes[x]))
+                state.output.fatal("This IntegerVectorSpecies has a prototype of the kind: " 
+                                   + i_prototype.getClass().getName() +
+                                   ", but doesn't have a max-gene["+x+"] value within the range of this prototype's genome's data types");
+            }
+
                 
         /*
         //Debugging
@@ -316,7 +300,8 @@ public class IntegerVectorSpecies extends VectorSpecies
     private void initializeGenomeSegmentsByStartIndices(final EvolutionState state, 
                                                         final Parameter base, 
                                                         final Parameter def,
-                                                        int numSegments)
+                                                        int numSegments,
+                                                        long minGene, long maxGene)
         {
         boolean warnedMin = false;
         boolean warnedMax = false;
@@ -384,19 +369,6 @@ public class IntegerVectorSpecies extends VectorSpecies
                     base.push(P_SEGMENT).push(""+i).push(P_MINGENE), 
                     minGene);
                                 
-                //check if the value is in range
-                if (!inNumericalTypeRange(currentSegmentMinGeneValue))
-                    state.output
-                        .error(
-                            "This IntegerVectorSpecies has a prototype of the kind: "
-                            + i_prototype.getClass()
-                            .getName()
-                            + ", but doesn't have a min-gene "
-                            + " value for segment " + i
-                            + " within the range of this prototype's genome's data types",
-                            base.push(P_SEGMENT).push(""+i).push(P_MINGENE), 
-                            base.push(P_SEGMENT).push(""+i).push(P_MINGENE));
-                                
                 }
                         
             if (!state.parameters.exists(base.push(P_SEGMENT).push(""+i).push(P_MAXGENE), 
@@ -422,19 +394,6 @@ public class IntegerVectorSpecies extends VectorSpecies
                     base.push(P_SEGMENT).push(""+i).push(P_MAXGENE), 
                     base.push(P_SEGMENT).push(""+i).push(P_MAXGENE), 
                     maxGene);
-                                
-                //check if the value is in range
-                if (!inNumericalTypeRange(currentSegmentMaxGeneValue))
-                    state.output
-                        .fatal(
-                            "This IntegerVectorSpecies has a prototype of the kind: "
-                            + i_prototype.getClass()
-                            .getName()
-                            + ", but doesn't have a max-gene "
-                            + " value for segment " + i
-                            + " within the range of this prototype's genome's data types",
-                            base.push(P_SEGMENT).push(""+i).push(P_MAXGENE), 
-                            base.push(P_SEGMENT).push(""+i).push(P_MAXGENE));
                 }
 
             //check is min is smaller than or equal to max
@@ -462,7 +421,8 @@ public class IntegerVectorSpecies extends VectorSpecies
     private void initializeGenomeSegmentsByEndIndices(final EvolutionState state, 
                                                       final Parameter base, 
                                                       final Parameter def,
-                                                      int numSegments)
+                                                      int numSegments,
+                                                      long minGene, long maxGene)
         {
         boolean warnedMin = false;
         boolean warnedMax = false;
@@ -528,19 +488,6 @@ public class IntegerVectorSpecies extends VectorSpecies
                     base.push(P_SEGMENT).push(""+i).push(P_MINGENE), 
                     minGene);
                                 
-                //check if the value is in range
-                if (!inNumericalTypeRange(currentSegmentMinGeneValue))
-                    state.output
-                        .error(
-                            "This IntegerVectorSpecies has a prototype of the kind: "
-                            + i_prototype.getClass()
-                            .getName()
-                            + ", but doesn't have a min-gene "
-                            + " value for segment " + i
-                            + " within the range of this prototype's genome's data types",
-                            base.push(P_SEGMENT).push(""+i).push(P_MINGENE), 
-                            base.push(P_SEGMENT).push(""+i).push(P_MINGENE));
-                                
                 }
                         
             if (!state.parameters.exists(base.push(P_SEGMENT).push(""+i).push(P_MAXGENE), 
@@ -558,7 +505,6 @@ public class IntegerVectorSpecies extends VectorSpecies
                                 
                 //the max-gen value has not been defined for this segment so assume the global max value
                 currentSegmentMaxGeneValue = maxGene;
-                                
                 }
             else   //get the max value for this segment
                 {
@@ -566,19 +512,6 @@ public class IntegerVectorSpecies extends VectorSpecies
                     base.push(P_SEGMENT).push(""+i).push(P_MAXGENE), 
                     base.push(P_SEGMENT).push(""+i).push(P_MAXGENE), 
                     maxGene);
-                                
-                //check if the value is in range
-                if (!inNumericalTypeRange(currentSegmentMaxGeneValue))
-                    state.output
-                        .fatal(
-                            "This IntegerVectorSpecies has a prototype of the kind: "
-                            + i_prototype.getClass()
-                            .getName()
-                            + ", but doesn't have a max-gene "
-                            + " value for segment " + i
-                            + " within the range of this prototype's genome's data types",
-                            base.push(P_SEGMENT).push(""+i).push(P_MAXGENE), 
-                            base.push(P_SEGMENT).push(""+i).push(P_MAXGENE));
                 }
 
             //check is min is smaller than or equal to max
@@ -588,7 +521,6 @@ public class IntegerVectorSpecies extends VectorSpecies
                     + i + " which is <= the max-gene value", 
                     base.push(P_SEGMENT).push(""+i).push(P_MAXGENE), 
                     base.push(P_SEGMENT).push(""+i).push(P_MAXGENE));
-
                         
             //and assign min and max values for all genes in this segment
             for(int j = previousSegmentEnd+1; j <= currentSegmentEnd; j++)
@@ -598,7 +530,6 @@ public class IntegerVectorSpecies extends VectorSpecies
                 }
                         
             previousSegmentEnd = currentSegmentEnd;
-                        
             }
         }
     

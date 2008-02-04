@@ -119,7 +119,10 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         state.output.println("\nGeneration: " + state.generation,Output.V_NO_GENERAL,statisticslog);
         state.output.println("Best Individual:",Output.V_NO_GENERAL,statisticslog);
         for(int x=0;x<state.population.subpops.length;x++)
+	    {
             best_i[x].printIndividualForHumans(state,statisticslog,Output.V_NO_GENERAL);
+	    state.output.message("Subpop " + x + " best fitness: " + best_i[x].fitness.fitnessToStringForHumans());
+	    }
         }
 
     /** Steady State only: loads any additional post-generation boundary stragglers into best_of_run. */

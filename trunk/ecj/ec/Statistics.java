@@ -98,7 +98,7 @@ public class Statistics implements Singleton
         for(int x=0;x<children.length;x++)
             children[x].preInitializationStatistics(state);
         }
-	
+        
     /** GENERATIONAL: Called immediately after population initialization occurs. */
     public void postInitializationStatistics(final EvolutionState state) 
         {

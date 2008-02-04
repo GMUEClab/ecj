@@ -8,9 +8,11 @@
 package ec.eval;
 
 import ec.*;
+import java.io.*;
+import ec.util.*;
 
 /**
- * EvaluationData.java
+ * Job.java
  *
 
  This class stores information that is necessary to reschedule jobs when a slave crashes.
@@ -28,24 +30,50 @@ import ec.*;
  * @version 1.0 
  */
 
-public class EvaluationData
+public class Job
     {
-    // the evolution state
-    EvolutionState state;
-
-    // the problem
-    MasterProblem mp;
-
-    // the thread number (probably of no consequence, as the random number generator cannot be
-    // set to its previous state
-    int threadnum;
-
     // either Slave.V_EVALUATESIMPLE or Slave.V_EVALUATEGROUPED
     int type;
 
-    Individual []inds; 
+    Individual []inds;   // original individuals
+    Individual []newinds;  // individuals that were returned -- may be different individuals!
     int []subPops; 
     boolean countVictoriesOnly;
     boolean[] updateFitness;
-    int index; // how many have been read back from the slaves
+    boolean batchMode;
+    
+    void copyIndividualsForward()
+	{
+	if (newinds == null || newinds.length != inds.length)
+	    newinds = new Individual[inds.length];
+	for(int i=0; i < inds.length; i++)
+	    {
+	    newinds[i] = (Individual)(inds[i].clone());
+	    }
+	}
+	
+    // a ridiculous hack
+    void copyIndividualsBack(EvolutionState state)
+	{
+	try
+	    {
+	    DataPipe p = new DataPipe();
+	    DataInputStream in = p.input;
+	    DataOutputStream out = p.output;
+	    
+	    for(int i = 0; i < inds.length; i++)
+		{
+		p.reset();
+		newinds[i].writeIndividual(state, out);
+		inds[i].readIndividual(state, in);
+		}
+		
+	    newinds = null;
+	    }
+	catch (IOException e) 
+	    { 
+	    e.printStackTrace();
+	    state.output.fatal("Caught impossible IOException in Job.copyIndividualsBack()");
+	    }
+	}
     }

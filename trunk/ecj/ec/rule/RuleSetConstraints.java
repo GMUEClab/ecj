@@ -28,7 +28,7 @@ import ec.util.*;
  * random value X is picked from this distribution, and the ruleset will be created with X initial rules.
  * You can specify the distribution in one of two ways.  First, you can specify a minimum and maximum
  * number of rules; the system will then pick an X uniformly from between the min and the max. 
- * Second, you can specify a full distribution of size probabilities for more coontrol.  For example,
+ * Second, you can specify a full distribution of size probabilities for more control.  For example,
  * to specify that the system should make individuals with 0 rules 0.1 of the time, 1 rule 0.2 of the time,
  * and 2 rules 0.7 of the time, you set <i>reset-num-sizes</i> to 3 (for rule sizes up to but not including 3),
  * and then set  reset-size.0 to 0.1, reset-size.1 to 0.2, and reset-size.2 to 0.7.
@@ -89,7 +89,6 @@ import ec.util.*;
 */
 public class RuleSetConstraints implements Clique
     {
-
     /** The size of a byte */
     public static final int SIZE_OF_BYTE = 256;
     public final static String P_NAME = "name";

@@ -1030,6 +1030,30 @@ public class ParameterDatabase extends Properties implements Serializable
             return (float) (minValue - 1);
         }
 
+
+
+    /**
+     * Searches down through databases to find a given parameter, whose value
+     * must be an double. It returns the value, else throws a
+     * NumberFormatException exception if there is an error in parsing the
+     * parameter. The parameter chosen is marked "used" if it exists. Integers
+     * may be in decimal or (if preceded with an X or x) in hexadecimal.
+     */
+    public int getDouble(Parameter parameter, Parameter defaultParameter)
+        throws NumberFormatException 
+        {
+        printGotten(parameter, defaultParameter, false);
+        if (_exists(parameter))
+            return getInt(parameter);
+        else if (_exists(defaultParameter))
+            return getInt(defaultParameter);
+        else
+            throw new NumberFormatException(
+                "Integer does not exist for either parameter " + parameter
+                + "\nor\n" + defaultParameter);
+        }
+
+
     /**
      * Searches down through databases to find a given parameter, whose value
      * must be a double >= minValue. If not, this method returns minvalue-1,

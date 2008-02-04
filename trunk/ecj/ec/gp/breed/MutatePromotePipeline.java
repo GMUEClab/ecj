@@ -239,6 +239,7 @@ public class MutatePromotePipeline extends GPBreedingPipeline
                 // promote it
                 promoteSomething(promotableNode );
                 j.evaluated = false;
+                break;
                 }
 
             

@@ -304,6 +304,7 @@ public class MutateSwapPipeline extends GPBreedingPipeline
                 swapSomething(swappableNode,state,thread);
 
                 j.evaluated = false;
+                break;
                 }
 
             // add the new individual, replacing its previous source

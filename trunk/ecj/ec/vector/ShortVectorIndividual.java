@@ -160,7 +160,7 @@ public class ShortVectorIndividual extends VectorIndividual
             pieces[x] = new short[point1-point0];
             System.arraycopy(genome,point0,pieces[x],0,point1-point0);
             point0 = point1;
-            if (x==pieces.length-2)
+            if (x >=pieces.length-2)
                 point1 = genome.length;
             else point1 = points[x+1];
             }
@@ -189,20 +189,10 @@ public class ShortVectorIndividual extends VectorIndividual
     public void defaultMutate(EvolutionState state, int thread)
         {
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
-        if (s.individualGeneMinMaxUsed())
-            {
-            if (s.mutationProbability>0.0)
-                for(int x=0;x<genome.length;x++)
-                    if (state.random[thread].nextBoolean(s.mutationProbability))
-                        genome[x] = (short)((int)s.minGene(x) + state.random[thread].nextInt((int)s.maxGene(x)-(int)s.minGene(x)+1));
-            }
-        else  // quite a bit faster
-            {
-            if (s.mutationProbability>0.0)
-                for(int x=0;x<genome.length;x++)
-                    if (state.random[thread].nextBoolean(s.mutationProbability))
-                        genome[x] = (short)((int)s.minGene + state.random[thread].nextInt((int)s.maxGene-(int)s.minGene+1));
-            }
+        if (s.mutationProbability>0.0)
+            for(int x=0;x<genome.length;x++)
+                if (state.random[thread].nextBoolean(s.mutationProbability))
+                    genome[x] = (short)((int)s.minGene(x) + state.random[thread].nextInt((int)s.maxGene(x)-(int)s.minGene(x)+1));
         }
         
     
@@ -211,12 +201,8 @@ public class ShortVectorIndividual extends VectorIndividual
     public void reset(EvolutionState state, int thread)
         {
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
-        if (s.individualGeneMinMaxUsed())
-            for(int x=0;x<genome.length;x++)
-                genome[x] = (short)((int)s.minGene(x) + state.random[thread].nextInt((int)s.maxGene(x)-(int)s.minGene(x)+1));
-        else // quite a bit faster
-            for(int x=0;x<genome.length;x++)
-                genome[x] = (short)((int)s.minGene + state.random[thread].nextInt((int)s.maxGene-(int)s.minGene+1));
+        for(int x=0;x<genome.length;x++)
+            genome[x] = (short)((int)s.minGene(x) + state.random[thread].nextInt((int)s.maxGene(x)-(int)s.minGene(x)+1));
         }
 
     public int hashCode()
