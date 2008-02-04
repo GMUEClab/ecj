@@ -71,7 +71,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
     // nothing....
     public void setup(final EvolutionState state, final Parameter base)
         {
-	super.setup(state, base);
+        super.setup(state, base);
         String wp = state.parameters.getStringWithDefault( base.push( P_WHICH_PROBLEM ), null, "" );
         if( wp.compareTo( P_ROSENBROCK ) == 0 || wp.compareTo (P_F2)==0 )
             problemType = PROB_ROSENBROCK;

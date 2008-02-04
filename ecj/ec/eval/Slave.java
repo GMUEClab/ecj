@@ -238,20 +238,20 @@ public class Slave
 
                 try
                     {
-		    InputStream tmpIn = socket.getInputStream();
+                    InputStream tmpIn = socket.getInputStream();
                     OutputStream tmpOut = socket.getOutputStream();
                     if (useCompression)
                         {
-			tmpIn = new CompressingInputStream(tmpIn);
+                        tmpIn = new CompressingInputStream(tmpIn);
                         tmpOut = new CompressingOutputStream(tmpOut);
 
 /*
-		    com.jcraft.jzlib.ZInputStream in = new com.jcraft.jzlib.ZInputStream(tmpIn, com.jcraft.jzlib.JZlib.Z_BEST_SPEED);
-		    in.setFlushMode(com.jcraft.jzlib.JZlib.Z_PARTIAL_FLUSH);
-		    tmpIn = in;
-		    com.jcraft.jzlib.ZOutputStream out = new com.jcraft.jzlib.ZOutputStream(tmpOut, com.jcraft.jzlib.JZlib.Z_BEST_SPEED);
-		    out.setFlushMode(com.jcraft.jzlib.JZlib.Z_PARTIAL_FLUSH);
-		    tmpOut = out;
+  com.jcraft.jzlib.ZInputStream in = new com.jcraft.jzlib.ZInputStream(tmpIn, com.jcraft.jzlib.JZlib.Z_BEST_SPEED);
+  in.setFlushMode(com.jcraft.jzlib.JZlib.Z_PARTIAL_FLUSH);
+  tmpIn = in;
+  com.jcraft.jzlib.ZOutputStream out = new com.jcraft.jzlib.ZOutputStream(tmpOut, com.jcraft.jzlib.JZlib.Z_BEST_SPEED);
+  out.setFlushMode(com.jcraft.jzlib.JZlib.Z_PARTIAL_FLUSH);
+  tmpOut = out;
 */
                         }
                                                 
@@ -275,7 +275,7 @@ public class Slave
                 
                 // Read random state from Master
                 random[0].readState(dataIn);
-		System.err.println("read random state");
+                System.err.println("read random state");
                                 
                 state.random = random;
                 // Is this a Simple or Grouped ProblemForm?
@@ -285,9 +285,9 @@ public class Slave
                     while (true)
                         {
                         // 0 means to shut down
-			System.err.println("reading next problem");
+                        System.err.println("reading next problem");
                         problemType = dataIn.readByte();
-			System.err.println("Read problem: " + (int)problemType);
+                        System.err.println("Read problem: " + (int)problemType);
                         switch (problemType)
                             {
                             case V_SHUTDOWN:
@@ -315,7 +315,7 @@ public class Slave
                             default:
                                 state.output.fatal("Unknown problem form specified: "+problemType);
                             }
-			//System.err.println("Done Evaluating Individual");
+                        //System.err.println("Done Evaluating Individual");
                         }
 
                     } catch (IOException e)    {
@@ -347,10 +347,10 @@ public class Slave
         int numInds=1; 
         try
             {
-	    System.err.println("reading #individuals and subpop");
+            System.err.println("reading #individuals and subpop");
             numInds = dataIn.readInt();
             subPopNum = dataIn.readInt(); // assume all individuals are from the same subpopulation
-	    System.err.println("read #individuals and subpop");
+            System.err.println("read #individuals and subpop");
             }
         catch (IOException e)
             {
@@ -400,13 +400,13 @@ public class Slave
         Individual[] inds = new Individual[numInds];
         try
             {
-	    System.err.println("reading individual");
+            System.err.println("reading individual");
             for (int i=0; i < numInds; i++) { 
                 inds[i] = subPop.species.newIndividual( state, dataIn);
                 if (!runEvolve) 
                     ((SimpleProblemForm)(state.evaluator.p_problem)).evaluate( state, inds[i], 0 );
                 updateFitness[i] = dataIn.readBoolean(); 
-	    System.err.println("Read Individual " + i);
+                System.err.println("Read Individual " + i);
                 }
             }
         catch (IOException e)
@@ -414,25 +414,25 @@ public class Slave
             state.output.fatal("Unable to read individual from master." + e);
             }
         
-		if (runEvolve) { 
-			// Evaluate the population until time is up, or the evolution stops
-			tempState.population.subpops[0].individuals = inds; 
-			Individual in = inds[0];
-			long startTime = System.currentTimeMillis(); 
-			long endTime=0; 
-			int result = tempState.R_NOTDONE; 
-			while (result == tempState.R_NOTDONE) { 
-				result = tempState.evolve(); 
-				endTime = System.currentTimeMillis(); 
-				if ((endTime - startTime) > runTime) 
-					break;
-			}
-			inds = tempState.population.subpops[0].individuals;
-			tempState.finish(result);
-			Evolve.cleanup(tempState);
-		}
+        if (runEvolve) { 
+            // Evaluate the population until time is up, or the evolution stops
+            tempState.population.subpops[0].individuals = inds; 
+            Individual in = inds[0];
+            long startTime = System.currentTimeMillis(); 
+            long endTime=0; 
+            int result = tempState.R_NOTDONE; 
+            while (result == tempState.R_NOTDONE) { 
+                result = tempState.evolve(); 
+                endTime = System.currentTimeMillis(); 
+                if ((endTime - startTime) > runTime) 
+                    break;
+                }
+            inds = tempState.population.subpops[0].individuals;
+            tempState.finish(result);
+            Evolve.cleanup(tempState);
+            }
 
-	    System.err.println("Returning Individuals ");
+        System.err.println("Returning Individuals ");
         // Return the evaluated individual to the master
         try { 
             returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals); 
@@ -522,16 +522,16 @@ public class Slave
         // just write evaluated and fitness
         for(int i=0;i<inds.length;i++)
             {
-	    System.err.println("Returning Individual " + i);
-	    System.err.println("writing byte: " + ( returnIndividuals ? V_INDIVIDUAL : (updateFitness[i] ? V_FITNESS : V_NOTHING)));
+            System.err.println("Returning Individual " + i);
+            System.err.println("writing byte: " + ( returnIndividuals ? V_INDIVIDUAL : (updateFitness[i] ? V_FITNESS : V_NOTHING)));
             dataOut.writeByte(returnIndividuals ? V_INDIVIDUAL : (updateFitness[i] ? V_FITNESS : V_NOTHING));
-//	    dataOut.flush();
-	    System.err.println("wrote byte");
+//          dataOut.flush();
+            System.err.println("wrote byte");
             if (returnIndividuals)
                 {
-//		System.err.println("Writing Individual");
+//              System.err.println("Writing Individual");
                 inds[i].writeIndividual(state, dataOut);
-//		System.err.println("Wrote Individual");
+//              System.err.println("Wrote Individual");
                 }
             else if (updateFitness[i])
                 {
@@ -539,8 +539,8 @@ public class Slave
                 inds[i].fitness.writeFitness(state,dataOut);
                 }
             }
-//	System.err.println("flushing");
+//      System.err.println("flushing");
         dataOut.flush();
-//	System.err.println("flushed");
+//      System.err.println("flushed");
         }
     }

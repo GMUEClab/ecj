@@ -162,9 +162,9 @@ public class MasterProblemServer
         }
 
     final void debug(String s)
-	{
-	if (showDebugInfo) { System.err.println(Thread.currentThread().getName() + "->" + s); }
-	}
+        {
+        if (showDebugInfo) { System.err.println(Thread.currentThread().getName() + "->" + s); }
+        }
 
     /**
        The run method waits for incoming slaves, and launches new worker threads (one per incoming slave)
@@ -202,21 +202,21 @@ public class MasterProblemServer
                 DataInputStream dataIn = null;
                 DataOutputStream dataOut = null;
                 InputStream tmpIn = slaveSock.getInputStream();
-		OutputStream tmpOut = slaveSock.getOutputStream();
+                OutputStream tmpOut = slaveSock.getOutputStream();
                 if (this.useCompression)
-		    {
-		    debug("Using Compression");
-		    tmpIn = new CompressingInputStream(tmpIn);
+                    {
+                    debug("Using Compression");
+                    tmpIn = new CompressingInputStream(tmpIn);
                     tmpOut = new CompressingOutputStream(tmpOut);
-		    /*
-		    com.jcraft.jzlib.ZInputStream in = new com.jcraft.jzlib.ZInputStream(tmpIn, com.jcraft.jzlib.JZlib.Z_BEST_SPEED);
-		    in.setFlushMode(com.jcraft.jzlib.JZlib.Z_PARTIAL_FLUSH);
-		    tmpIn = in;
-		    com.jcraft.jzlib.ZOutputStream out = new com.jcraft.jzlib.ZOutputStream(tmpOut, com.jcraft.jzlib.JZlib.Z_BEST_SPEED);
-		    out.setFlushMode(com.jcraft.jzlib.JZlib.Z_PARTIAL_FLUSH);
-		    tmpOut = out;
-		    */
-		    }
+                    /*
+                      com.jcraft.jzlib.ZInputStream in = new com.jcraft.jzlib.ZInputStream(tmpIn, com.jcraft.jzlib.JZlib.Z_BEST_SPEED);
+                      in.setFlushMode(com.jcraft.jzlib.JZlib.Z_PARTIAL_FLUSH);
+                      tmpIn = in;
+                      com.jcraft.jzlib.ZOutputStream out = new com.jcraft.jzlib.ZOutputStream(tmpOut, com.jcraft.jzlib.JZlib.Z_BEST_SPEED);
+                      out.setFlushMode(com.jcraft.jzlib.JZlib.Z_PARTIAL_FLUSH);
+                      tmpOut = out;
+                    */
+                    }
                                                                                                 
                 dataIn = new DataInputStream(tmpIn);
                 dataOut = new DataOutputStream(tmpOut);
@@ -224,7 +224,7 @@ public class MasterProblemServer
 
                 MersenneTwisterFast random = new MersenneTwisterFast(randomSeed);
                 randomSeed++;
-		
+                
                 // Write random state for eval thread to slave
                 random.writeState(dataOut);
                 dataOut.flush();

@@ -16,12 +16,12 @@ import ec.eval.MasterProblem;
 public class SteadyStateEvaluator extends SimpleEvaluator
     {
     /** Holds the individuals that have been evaluated, mapped as:
-	Individual -> QueueIndividual(Individual, subpopulation).
-	We implement it as a LinkedHashMap rather than a Linked List to
-	enable us to do ~O(1) removals in the asynchronous form of 
-	getNextEvaluatedIndividual.  We don't use a plain HashMap in order
-	to enable ~O(1) discovery of the "first" (indeed, any arbitrary) object
-	in the Map in the NON-asynchronous form of getNextEvaluatedIndividual.  */ 
+        Individual -> QueueIndividual(Individual, subpopulation).
+        We implement it as a LinkedHashMap rather than a Linked List to
+        enable us to do ~O(1) removals in the asynchronous form of 
+        getNextEvaluatedIndividual.  We don't use a plain HashMap in order
+        to enable ~O(1) discovery of the "first" (indeed, any arbitrary) object
+        in the Map in the NON-asynchronous form of getNextEvaluatedIndividual.  */ 
     LinkedHashMap queue;
     
     /** Our problem. */
@@ -62,28 +62,28 @@ public class SteadyStateEvaluator extends SimpleEvaluator
         Ordinarily this is ALWAYS true at the point that we call it, except in the asynchronous 
         evolution situation, where we may not have a job completed yet. */
     public boolean isNextEvaluatedIndividualAvailable()
-    {
-	if (problem instanceof MasterProblem) 
-		return (((MasterProblem)problem).evaluatedIndividualAvailable()); 
-		
+        {
+        if (problem instanceof MasterProblem) 
+            return (((MasterProblem)problem).evaluatedIndividualAvailable()); 
+                
         else return (queue.size() != 0);   // in non-asynchronous, an individual is always ready to go...
         }
         
     /** Returns the QueueIndividual from the front of the queue. 
-	Assumes the user already knows that the queue is not empty. */
+        Assumes the user already knows that the queue is not empty. */
     public QueueIndividual getNextEvaluatedIndividual()
-    {
-	Individual ind;
+        {
+        Individual ind;
 
-	// pull out the individual and look for its [ind,subpop] combination and return that -- the subpop
-	// is important to our customers but MasterProblem doesn't provide it.
-	if (problem instanceof MasterProblem)
-	    ind = ((MasterProblem)problem).getNextEvaluatedIndividual();
+        // pull out the individual and look for its [ind,subpop] combination and return that -- the subpop
+        // is important to our customers but MasterProblem doesn't provide it.
+        if (problem instanceof MasterProblem)
+            ind = ((MasterProblem)problem).getNextEvaluatedIndividual();
         else
-	    // just get an arbitrary individual
-	    ind = (Individual)(queue.keySet().iterator().next());
-	return (QueueIndividual)(queue.remove(ind));
-    }
+            // just get an arbitrary individual
+            ind = (Individual)(queue.keySet().iterator().next());
+        return (QueueIndividual)(queue.remove(ind));
+        }
     }
 
 /** Private data structure to augment ec.Individual with the corresponding subpopulation.  You should not use this class.  */ 

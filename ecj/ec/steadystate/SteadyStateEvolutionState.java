@@ -45,7 +45,7 @@ public class SteadyStateEvolutionState extends EvolutionState
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state,base);
-		
+                
         // double check that we have valid evaluators and breeders and exchangers
         if (!(breeder instanceof SteadyStateBreeder))
             state.output.error("You've chosen to use Steady-State Evolution, but your breeder is not of the class SteadyStateBreeder.",base);
@@ -97,8 +97,8 @@ public class SteadyStateEvolutionState extends EvolutionState
         whichSubpop=-1; 
                 
         individualHash = new HashMap[population.subpops.length];
-	for(int i=0;i<population.subpops.length; i++) individualHash[i] = new HashMap();
-	        
+        for(int i=0;i<population.subpops.length; i++) individualHash[i] = new HashMap();
+                
         individualCount = new int[population.subpops.length];
         for (int sub=0; sub < population.subpops.length; sub++)  
             { 
