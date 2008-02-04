@@ -167,7 +167,7 @@ public class GeneVectorIndividual extends VectorIndividual
             pieces[x] = new VectorGene[point1-point0];
             System.arraycopy(genome,point0,pieces[x],0,point1-point0);
             point0 = point1;
-            if (x==pieces.length-2)
+            if (x >=pieces.length-2)
                 point1 = genome.length;
             else point1 = points[x+1];
             }

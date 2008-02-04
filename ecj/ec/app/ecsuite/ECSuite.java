@@ -42,9 +42,6 @@ import ec.vector.*;
  
 public class ECSuite extends Problem implements SimpleProblemForm
     {
-    static boolean notfirst;
-    EvolutionState state;
-
     public static final String P_WHICH_PROBLEM = "type";
     public static final String P_ROSENBROCK = "rosenbrock";
     public static final String P_RASTRIGIN = "rastrigin";
@@ -72,9 +69,9 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public final static float A = 10.0f;
 
     // nothing....
-    public void setup(final EvolutionState state_, final Parameter base)
+    public void setup(final EvolutionState state, final Parameter base)
         {
-        state = state_;
+	super.setup(state, base);
         String wp = state.parameters.getStringWithDefault( base.push( P_WHICH_PROBLEM ), null, "" );
         if( wp.compareTo( P_ROSENBROCK ) == 0 || wp.compareTo (P_F2)==0 )
             problemType = PROB_ROSENBROCK;
@@ -103,25 +100,12 @@ public class ECSuite extends Problem implements SimpleProblemForm
             base.push( P_WHICH_PROBLEM ) );
         }
 
-    public void evaluate(final EvolutionState _state,
+    public void evaluate(final EvolutionState state,
                          final Individual ind,
                          final int threadnum)
         {
-
-        if (!notfirst)
-            {
-            try {
-                java.io.PrintWriter p = new java.io.PrintWriter(new java.io.FileWriter("/tmp/out"));
-                state.population.printPopulation(state, p);
-                p.close();
-                }
-            catch (java.io.IOException e) { e.printStackTrace(); }
-                
-            notfirst = true;
-            }
-
         if( !( ind instanceof DoubleVectorIndividual ) )
-            _state.output.fatal( "The individuals for this problem should be DoubleVectorIndividuals." );
+            state.output.fatal( "The individuals for this problem should be DoubleVectorIndividuals." );
 
         DoubleVectorIndividual temp = (DoubleVectorIndividual)ind;
         double[] genome = temp.genome;
@@ -201,7 +185,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
         }
 
     public void describe(final Individual ind, 
-                         final EvolutionState _state, 
+                         final EvolutionState state, 
                          final int threadnum,
                          final int log,
                          final int verbosity)

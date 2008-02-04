@@ -68,7 +68,7 @@ public class Sum extends Problem implements SimpleProblemForm
         //       state.output.fatal("Whoa!  Can't use separate max-gene values for each gene in this problem!",null);
         
         // okay, we know we're fine.
-        int maximumSum = (int)s.maxGene*ind2.genome.length;
+        int maximumSum = (int)s.maxGene(0)*ind2.genome.length;   // note that the '0' is generally a BAD idea, as it assumes all the genes have the same max
         
         // assume we're using SimpleFitness
         ((SimpleFitness)ind2.fitness).setFitness(state,

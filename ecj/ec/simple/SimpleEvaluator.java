@@ -143,7 +143,7 @@ public class SimpleEvaluator extends Evaluator
                     return true;
         return false;
         }
-	}
+    }
 
 /** A private helper class for implementing multithreaded evaluation */
 class SimpleEvaluatorThread implements Runnable

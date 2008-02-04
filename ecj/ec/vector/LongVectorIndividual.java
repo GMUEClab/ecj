@@ -157,7 +157,7 @@ public class LongVectorIndividual extends VectorIndividual
             pieces[x] = new long[point1-point0];
             System.arraycopy(genome,point0,pieces[x],0,point1-point0);
             point0 = point1;
-            if (x==pieces.length-2)
+            if (x >=pieces.length-2)
                 point1 = genome.length;
             else point1 = points[x+1];
             }
@@ -201,32 +201,18 @@ public class LongVectorIndividual extends VectorIndividual
     public void defaultMutate(EvolutionState state, int thread)
         {
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
-        if (s.individualGeneMinMaxUsed())
-            {
-            if (s.mutationProbability>0.0)
-                for(int x=0;x<genome.length;x++)
-                    if (state.random[thread].nextBoolean(s.mutationProbability))
-                        genome[x] = randomValueFromClosedInterval(s.minGene(x), s.maxGene(x), state.random[thread]);
-            }
-        else  // quite a bit faster
-            {
-            if (s.mutationProbability>0.0)
-                for(int x=0;x<genome.length;x++)
-                    if (state.random[thread].nextBoolean(s.mutationProbability))
-                        genome[x] = randomValueFromClosedInterval(s.minGene, s.maxGene, state.random[thread]);
-            }
+        if (s.mutationProbability>0.0)
+            for(int x=0;x<genome.length;x++)
+                if (state.random[thread].nextBoolean(s.mutationProbability))
+                    genome[x] = randomValueFromClosedInterval(s.minGene(x), s.maxGene(x), state.random[thread]);
         }
         
     /** Initializes the individual by randomly choosing Longs uniformly from mingene to maxgene. */
     public void reset(EvolutionState state, int thread)
         {
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
-        if (s.individualGeneMinMaxUsed())
-            for(int x=0;x<genome.length;x++)
-                genome[x] = randomValueFromClosedInterval(s.minGene(x), s.maxGene(x), state.random[thread]);
-        else // quite a bit faster
-            for(int x=0;x<genome.length;x++)
-                genome[x] = randomValueFromClosedInterval(s.minGene, s.maxGene, state.random[thread]);
+        for(int x=0;x<genome.length;x++)
+            genome[x] = randomValueFromClosedInterval(s.minGene(x), s.maxGene(x), state.random[thread]);
         }
 
     public int hashCode()

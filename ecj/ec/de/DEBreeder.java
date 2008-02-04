@@ -27,7 +27,7 @@ import ec.vector.*;
  * @version 1.0
  */
 
-public abstract class DEBreeder extends Breeder
+public class DEBreeder extends Breeder
     {
     // the previous population is stored in order to have parents compete directly with their children
     public Population previousPopulation = null;

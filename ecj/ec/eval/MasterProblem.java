@@ -161,17 +161,18 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
                 
                 
         // Acquire a slave socket
-        EvaluationData ed = new EvaluationData();
-        ed.state = state;
-        ed.mp = this;
-        ed.threadnum = threadnum;
-        ed.type = Slave.V_EVALUATESIMPLE;
-        ed.inds = inds;
-        ed.subPops = new int[] { subPopNum } ;
-        ed.updateFitness = new boolean[inds.length]; 
+        Job job = new Job();
+        //job.state = state;
+        //job.mp = this;
+        //job.threadnum = threadnum;
+	job.batchMode = batchMode;
+        job.type = Slave.V_EVALUATESIMPLE;
+        job.inds = inds;
+        job.subPops = new int[] { subPopNum } ;
+        job.updateFitness = new boolean[inds.length]; 
         for (int i=0 ; i < inds.length; i++) 
-            ed.updateFitness[i]=true; 
-        server.slaveMonitor.scheduleJobForEvaluation(state,ed);
+            job.updateFitness[i]=true; 
+        server.slaveMonitor.scheduleJobForEvaluation(state,job);
         if( !batchMode )
             server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
         if(showDebugInfo) state.output.message(Thread.currentThread().getName() + "Finished evaluating the individual.");
@@ -250,17 +251,18 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
             }
 
         // Acquire a slave socket
-        EvaluationData ed = new EvaluationData();
-        ed.state = state;
-        ed.mp = this;
-        ed.threadnum = threadnum;
-        ed.type = Slave.V_EVALUATEGROUPED;
-        ed.subPops = subPopNum;
-        ed.countVictoriesOnly = countVictoriesOnly;
-        ed.inds = inds;
-        ed.updateFitness = updateFitness;
-        ed.index = 0;
-        server.slaveMonitor.scheduleJobForEvaluation(state,ed);
+        Job job = new Job();
+        //job.state = state;
+        //job.mp = this;
+        //job.threadnum = threadnum;
+        job.type = Slave.V_EVALUATEGROUPED;
+        job.subPops = subPopNum;
+        job.countVictoriesOnly = countVictoriesOnly;
+        job.inds = inds;
+        job.updateFitness = updateFitness;
+	job.batchMode = batchMode;
+        //job.index = 0;
+        server.slaveMonitor.scheduleJobForEvaluation(state,job);
                 
         if( !batchMode )
             server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
@@ -314,4 +316,21 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         {
         return (server.slaveMonitor.numAvailableSlaves() != 0); 
         }
+	
+    /** This will only return true if (1) the EvolutionState is a SteadyStateEvolutionState and
+	(2) an individual has returned from the system.  If you're not doing steady state evolution,
+	you should not call this method.  */
+    public boolean evaluatedIndividualAvailable()
+	{
+	return server.slaveMonitor.evaluatedIndividualAvailable();
+	}
+    
+    /** This method blocks until an individual is available from the slaves (which will cause evaluatedIndividualAvailable()
+	to return true), at which time it returns the individual.  You should only call this method
+	if you're doing steady state evolution -- otherwise, the method will block forever. */
+    public Individual getNextEvaluatedIndividual()
+	{
+	return server.slaveMonitor.waitForIndividual();
+	}
+
     }

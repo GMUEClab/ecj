@@ -500,6 +500,7 @@ public class MutateDemotePipeline extends GPBreedingPipeline
                 // demote it
                 demoteSomething(demotableNode,state,thread,j.trees[t].constraints(initializer).functionset);
                 j.evaluated = false;
+                break;
                 }
 
             // add the new individual, replacing its previous source

@@ -1,6 +1,6 @@
 parent.0 =				ecsuite.params
 
-breed =                                 ec.de.SimpleDEBreeder
+breed =                                 ec.de.DEBreeder
 # Other breed choices: ec.de.Best1BinDEBreeder, ec.de.Rand1EitherOrDEBreeder,
 # ec.de.Rand1ExpDEBreeder
 

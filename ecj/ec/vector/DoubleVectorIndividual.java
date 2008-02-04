@@ -175,7 +175,7 @@ public class DoubleVectorIndividual extends VectorIndividual
             pieces[x] = new double[point1 - point0];
             System.arraycopy(genome, point0, pieces[x], 0, point1 - point0);
             point0 = point1;
-            if (x == pieces.length - 2)
+            if (x >= pieces.length - 2)
                 point1 = genome.length;
             else
                 point1 = points[x + 1];
@@ -217,81 +217,41 @@ public class DoubleVectorIndividual extends VectorIndividual
             return;
         MersenneTwisterFast rng = state.random[thread];
 
-        if (s.individualGeneMinMaxUsed())
+        if (s.mutationType == FloatVectorSpecies.C_GAUSS_MUTATION)
             {
-            if (s.mutationType == FloatVectorSpecies.C_GAUSS_MUTATION)
-                {
-                for (int x = 0; x < genome.length; x++)
-                    if (rng.nextBoolean(s.mutationProbability))
-                        {
-                        double val;
-                        double min = s.minGene(x);
-                        double max = s.maxGene(x);
-                        double stdev = s.gaussMutationStdev(x);
-                        int outOfBoundsLeftOverTries = s.outOfRangeRetries;
-                        boolean givingUpAllowed = s.outOfRangeRetries != 0;
-                        do
-                            {
-                            val = rng.nextGaussian() * stdev + genome[x];
-                            outOfBoundsLeftOverTries--;
-                            if (val > max || val < min)
-                                {
-                                if (givingUpAllowed && (outOfBoundsLeftOverTries == 0))
-                                    {
-                                    val = min + rng.nextFloat() * (max - min);
-                                    s.outOfRangeRetryLimitReached(state);// it better get inlined
-                                    break;
-                                    }
-                                } else
-                                    break;
-                            } while (true);
-                        genome[x] = val;
-                        }
-                } else
-                    {// C_RESET_MUTATION
-                    for (int x = 0; x < genome.length; x++)
-                        if (rng.nextBoolean(s.mutationProbability))
-                            genome[x] = s.minGene(x) + rng.nextDouble() * (s.maxGene(x) - s.minGene(x));
-                    }
-            } else
-                // quite a bit faster
-                {
-                double minGene = s.minGene;
-                double maxGene = s.maxGene;
-                double stdev = s.gaussMutationStdev;
-                if (s.mutationType == FloatVectorSpecies.C_GAUSS_MUTATION)
+            for (int x = 0; x < genome.length; x++)
+                if (rng.nextBoolean(s.mutationProbability))
                     {
-                    for (int x = 0; x < genome.length; x++)
-                        if (rng.nextBoolean(s.mutationProbability))
+                    double val;
+                    double min = s.minGene(x);
+                    double max = s.maxGene(x);
+                    double stdev = s.gaussMutationStdev(x);
+                    int outOfBoundsLeftOverTries = s.outOfRangeRetries;
+                    boolean givingUpAllowed = s.outOfRangeRetries != 0;
+                    do
+                        {
+                        val = rng.nextGaussian() * stdev + genome[x];
+                        outOfBoundsLeftOverTries--;
+                        if (val > max || val < min)
                             {
-                            double val;
-                            int outOfBoundsLeftOverTries = s.outOfRangeRetries;
-                            boolean givingUpAllowed = s.outOfRangeRetries != 0;
-                            do
+                            if (givingUpAllowed && (outOfBoundsLeftOverTries == 0))
                                 {
-                                val = rng.nextGaussian() * stdev + genome[x];
-                                outOfBoundsLeftOverTries--;
-                                if (val > maxGene || val < minGene)
-                                    {
-                                    if (givingUpAllowed && (outOfBoundsLeftOverTries == 0))
-                                        {
-                                        val = minGene + rng.nextFloat() * (maxGene - minGene);
-                                        s.outOfRangeRetryLimitReached(state);// it better get inlined
-                                        break;
-                                        }
-                                    } else
-                                        break;
-                                } while (true);
-                            genome[x] = val;
-                            }
-                    } else
-                        {// C_RESET_MUTATION
-                        for (int x = 0; x < genome.length; x++)
-                            if (rng.nextBoolean(s.mutationProbability))
-                                genome[x] = minGene + rng.nextDouble()
-                                    * (maxGene - minGene);
-                        }
-                }
+                                val = min + rng.nextFloat() * (max - min);
+                                s.outOfRangeRetryLimitReached(state);// it better get inlined
+                                break;
+                                }
+                            } else
+                                break;
+                        } while (true);
+                    genome[x] = val;
+                    }
+            } 
+        else
+            {// C_RESET_MUTATION
+            for (int x = 0; x < genome.length; x++)
+                if (rng.nextBoolean(s.mutationProbability))
+                    genome[x] = s.minGene(x) + rng.nextDouble() * (s.maxGene(x) - s.minGene(x));
+            }
         }
 
     /**
@@ -301,15 +261,9 @@ public class DoubleVectorIndividual extends VectorIndividual
     public void reset(EvolutionState state, int thread)
         {
         FloatVectorSpecies s = (FloatVectorSpecies) species;
-        if (s.individualGeneMinMaxUsed())
-            for (int x = 0; x < genome.length; x++)
-                genome[x] = (s.minGene(x) + state.random[thread].nextDouble()
-                             * (s.maxGene(x) - s.minGene(x)));
-        else
-            // quite a bit faster
-            for (int x = 0; x < genome.length; x++)
-                genome[x] = (s.minGene + state.random[thread].nextDouble()
-                             * (s.maxGene - s.minGene));
+        for (int x = 0; x < genome.length; x++)
+            genome[x] = (s.minGene(x) + state.random[thread].nextDouble()
+                         * (s.maxGene(x) - s.minGene(x)));
         }
 
     public int hashCode()
