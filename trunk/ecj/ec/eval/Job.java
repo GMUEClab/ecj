@@ -43,37 +43,37 @@ public class Job
     boolean batchMode;
     
     void copyIndividualsForward()
-	{
-	if (newinds == null || newinds.length != inds.length)
-	    newinds = new Individual[inds.length];
-	for(int i=0; i < inds.length; i++)
-	    {
-	    newinds[i] = (Individual)(inds[i].clone());
-	    }
-	}
-	
+        {
+        if (newinds == null || newinds.length != inds.length)
+            newinds = new Individual[inds.length];
+        for(int i=0; i < inds.length; i++)
+            {
+            newinds[i] = (Individual)(inds[i].clone());
+            }
+        }
+        
     // a ridiculous hack
     void copyIndividualsBack(EvolutionState state)
-	{
-	try
-	    {
-	    DataPipe p = new DataPipe();
-	    DataInputStream in = p.input;
-	    DataOutputStream out = p.output;
-	    
-	    for(int i = 0; i < inds.length; i++)
-		{
-		p.reset();
-		newinds[i].writeIndividual(state, out);
-		inds[i].readIndividual(state, in);
-		}
-		
-	    newinds = null;
-	    }
-	catch (IOException e) 
-	    { 
-	    e.printStackTrace();
-	    state.output.fatal("Caught impossible IOException in Job.copyIndividualsBack()");
-	    }
-	}
+        {
+        try
+            {
+            DataPipe p = new DataPipe();
+            DataInputStream in = p.input;
+            DataOutputStream out = p.output;
+            
+            for(int i = 0; i < inds.length; i++)
+                {
+                p.reset();
+                newinds[i].writeIndividual(state, out);
+                inds[i].readIndividual(state, in);
+                }
+                
+            newinds = null;
+            }
+        catch (IOException e) 
+            { 
+            e.printStackTrace();
+            state.output.fatal("Caught impossible IOException in Job.copyIndividualsBack()");
+            }
+        }
     }

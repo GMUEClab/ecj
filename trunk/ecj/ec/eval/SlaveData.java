@@ -72,12 +72,12 @@ class SlaveData
         this.evalSocket = evalSocket;
         this.dataOut = dataOut;
         this.dataIn = dataIn;
-	this.state = state;
+        this.state = state;
         this.slaveMonitor = slaveMonitor;
-	buildWorkerThread();
-	showDebugInfo = slaveMonitor.showDebugInfo;
+        buildWorkerThread();
+        showDebugInfo = slaveMonitor.showDebugInfo;
         }
-	
+        
     /**
        This method is called whenever there are any communication problems with the slave
        (indicating possibly that the slave might have crashed).  In this case, the jobs will
@@ -85,8 +85,8 @@ class SlaveData
     */
     protected void shutdown( final EvolutionState state )
         {
-	// don't want to miss any of these so we'll wrap them individually
-	try { dataOut.writeByte(Slave.V_SHUTDOWN); } catch (IOException e) { }
+        // don't want to miss any of these so we'll wrap them individually
+        try { dataOut.writeByte(Slave.V_SHUTDOWN); } catch (IOException e) { }
         try { dataOut.flush(); } catch (IOException e) { }
         try { dataOut.close(); } catch (IOException e) { }
         try { dataIn.close(); } catch (IOException e) { }
@@ -102,11 +102,11 @@ class SlaveData
     public String toString() { return "Slave(" + slaveName + ")"; }
 
     boolean showDebugInfo;
-	
+        
     final void debug(String s)
-	{
-	if (showDebugInfo) { System.err.println(Thread.currentThread().getName() + "->" + s); }
-	}
+        {
+        if (showDebugInfo) { System.err.println(Thread.currentThread().getName() + "->" + s); }
+        }
     
     /**
        Returns the number of jobs that a slave is in charge of.
@@ -120,16 +120,16 @@ class SlaveData
     
     // constructs the worker thread for the slave and starts it
     void buildWorkerThread()
-	{
- 	worker = new Thread()
-	    {
-	    public void run()
-		{
-		while( processJob()); 
-		}
-	    };
-	worker.start();
-	}
+        {
+        worker = new Thread()
+            {
+            public void run()
+                {
+                while( processJob()); 
+                }
+            };
+        worker.start();
+        }
     
     
     
@@ -137,58 +137,58 @@ class SlaveData
     // The main loop for the individual-reading thread.   This function
     // processes one job and provides it.
     boolean processJob()
-	{
-	Job job = null;
-	
-	
-	///// FIRST STEP: WAIT UNTIL I HAVE A JOB
-	
-	// get next job
-	synchronized(jobs) 
-	    {
-	    while( true )
-		{
-		if( !jobs.isEmpty() ) 
-		    {
-		    job = (Job)(jobs.getFirst());  // keep in the queue so others think we're not available
-		    break;
-		    }
-		debug("" + Thread.currentThread().getName() + "Waiting for a job" );
-		slaveMonitor.waitOnMonitor(jobs);
-		}
-	    }
-	debug("Got job: " + job);
-	
+        {
+        Job job = null;
+        
+        
+        ///// FIRST STEP: WAIT UNTIL I HAVE A JOB
+        
+        // get next job
+        synchronized(jobs) 
+            {
+            while( true )
+                {
+                if( !jobs.isEmpty() ) 
+                    {
+                    job = (Job)(jobs.getFirst());  // keep in the queue so others think we're not available
+                    break;
+                    }
+                debug("" + Thread.currentThread().getName() + "Waiting for a job" );
+                slaveMonitor.waitOnMonitor(jobs);
+                }
+            }
+        debug("Got job: " + job);
+        
 
 
 
 
-	///// NEXT STEP: WRITE THE INDIVIDUALS OUT TO THE SLAVE
-	
+        ///// NEXT STEP: WRITE THE INDIVIDUALS OUT TO THE SLAVE
+        
         if( job.type == Slave.V_EVALUATESIMPLE )
             {
             try 
-	    { 
+                { 
                 // Tell the server we're evaluating a SimpleProblemForm
                 dataOut.writeByte(Slave.V_EVALUATESIMPLE);
                 } 
-		catch (Exception e)  { shutdown(state);  }
+            catch (Exception e)  { shutdown(state);  }
             }
         else
             {
             try 
-	    { 
+                { 
                 // Tell the server we're evaluating a GroupedProblemForm
                 dataOut.writeByte(Slave.V_EVALUATEGROUPED);
                                 
                 // Tell the server whether to count victories only or not.
                 dataOut.writeBoolean(job.countVictoriesOnly);
                 } 
-		catch (Exception e)  { shutdown(state); }
+            catch (Exception e)  { shutdown(state); }
             }
                 
         try 
-	{
+            {
             // transmit number of individuals 
             dataOut.writeInt(job.inds.length); 
                         
@@ -196,90 +196,90 @@ class SlaveData
             for(int x=0;x<job.subPops.length;x++)
                 dataOut.writeInt(job.subPops[x]);
                         
-	    debug("Starting to transmit individuals"); 
-			
+            debug("Starting to transmit individuals"); 
+                        
             // Transmit the individuals to the server for evaluation...
             for(int i=0;i<job.inds.length;i++)
                 {
                 job.inds[i].writeIndividual(state, dataOut);
                 dataOut.writeBoolean(job.updateFitness[i]);
                 }
-	    dataOut.flush();
-	} 
-	catch (Exception e)  {  shutdown(state);  }
+            dataOut.flush();
+            } 
+        catch (Exception e)  {  shutdown(state);  }
                 
 
 
 
-	///// NEXT STEP: COPY THE INDIVIDUALS FORWARD INTO NEWINDS.
-	///// WE DO THIS SO WE CAN LOAD THE INDIVIDUALS BACK INTO NEWINDS
-	///// AND THEN COPY THEM BACK INTO THE ORIGINAL INDS, BECAUSE ECJ
-	///// DOESN'T HAVE A COPY(INDIVIDUAL,INTO_INDIVIDUAL) FUNCTION
-	    
-	job.copyIndividualsForward();
-	
-	
-	
-	///// NEXT STEP: READ THE INDIVIDUALS BACK FROM THE SLAVE
-	
-	// Now we read the individuals into newinds
-	try
-	    {
-	    for(int i = 0; i < job.newinds.length; i++)
-		{
-		debug(SlaveData.this.toString() + " Individual# " + i);
-		debug(SlaveData.this.toString() + " Reading Byte" );
-		byte val = dataIn.readByte();
-		debug(SlaveData.this.toString() + " Reading Individual" );
-		if (val == Slave.V_INDIVIDUAL)
-		    {
-		    job.newinds[i].readIndividual(state, dataIn);
-		    }
-		else if (val == Slave.V_FITNESS)
-		    {
-		    job.newinds[i].evaluated = dataIn.readBoolean();
-		    job.newinds[i].fitness.readFitness(state,dataIn);
-		    }
-		debug( SlaveData.this.toString() + " Read Individual" );
-		}
-	    }
-	catch (Exception e)
-	    {
-	    state.output.systemMessage( "Slave " + slaveName + " disconnected.");
-	    // put the job back, we'll have to do it over again on another slave
-	    
-	     // no need to put the job back -- it's still in the queue at the first position.
-	    synchronized(jobs)
-		{
-		//slaveMonitor.notifyMonitor(jobs);  // for good measure
-		//jobs.addFirst(job);  // put back where it was
-		}
-	    shutdown(state);  // will redistribute jobs
-	    return false;
-	    }
+        ///// NEXT STEP: COPY THE INDIVIDUALS FORWARD INTO NEWINDS.
+        ///// WE DO THIS SO WE CAN LOAD THE INDIVIDUALS BACK INTO NEWINDS
+        ///// AND THEN COPY THEM BACK INTO THE ORIGINAL INDS, BECAUSE ECJ
+        ///// DOESN'T HAVE A COPY(INDIVIDUAL,INTO_INDIVIDUAL) FUNCTION
+            
+        job.copyIndividualsForward();
+        
+        
+        
+        ///// NEXT STEP: READ THE INDIVIDUALS BACK FROM THE SLAVE
+        
+        // Now we read the individuals into newinds
+        try
+            {
+            for(int i = 0; i < job.newinds.length; i++)
+                {
+                debug(SlaveData.this.toString() + " Individual# " + i);
+                debug(SlaveData.this.toString() + " Reading Byte" );
+                byte val = dataIn.readByte();
+                debug(SlaveData.this.toString() + " Reading Individual" );
+                if (val == Slave.V_INDIVIDUAL)
+                    {
+                    job.newinds[i].readIndividual(state, dataIn);
+                    }
+                else if (val == Slave.V_FITNESS)
+                    {
+                    job.newinds[i].evaluated = dataIn.readBoolean();
+                    job.newinds[i].fitness.readFitness(state,dataIn);
+                    }
+                debug( SlaveData.this.toString() + " Read Individual" );
+                }
+            }
+        catch (Exception e)
+            {
+            state.output.systemMessage( "Slave " + slaveName + " disconnected.");
+            // put the job back, we'll have to do it over again on another slave
+            
+            // no need to put the job back -- it's still in the queue at the first position.
+            synchronized(jobs)
+                {
+                //slaveMonitor.notifyMonitor(jobs);  // for good measure
+                //jobs.addFirst(job);  // put back where it was
+                }
+            shutdown(state);  // will redistribute jobs
+            return false;
+            }
 
 
-	///// NEXT STEP: COPY THE NEWLY-READ INDIVIDUALS BACK INTO THE ORIGINAL
-	///// INDIVIDUALS.  THIS IS QUITE A HACK, IF YOU READ JOB.JAVA
+        ///// NEXT STEP: COPY THE NEWLY-READ INDIVIDUALS BACK INTO THE ORIGINAL
+        ///// INDIVIDUALS.  THIS IS QUITE A HACK, IF YOU READ JOB.JAVA
 
-	// Now we have all the individuals in so we're good.  Copy them back into the original individuals
-	job.copyIndividualsBack(state);
+        // Now we have all the individuals in so we're good.  Copy them back into the original individuals
+        job.copyIndividualsBack(state);
 
 
 
-	///// LAST STEP: LET OTHERS KNOW WE'RE DONE AND AVAILABLE FOR ANOTHER JOB
+        ///// LAST STEP: LET OTHERS KNOW WE'RE DONE AND AVAILABLE FOR ANOTHER JOB
 
-	// we're all done!  Yank the job from the queue so others think we're available
-	synchronized(jobs)
-	    {
-	    jobs.removeFirst();
-	    }
-	    
-	// And let the slave monitor we just finished a job
-	slaveMonitor.notifySlaveAvailability( SlaveData.this, job, state );
+        // we're all done!  Yank the job from the queue so others think we're available
+        synchronized(jobs)
+            {
+            jobs.removeFirst();
+            }
+            
+        // And let the slave monitor we just finished a job
+        slaveMonitor.notifySlaveAvailability( SlaveData.this, job, state );
 
-	return true;
-	}
+        return true;
+        }
 
 
 
@@ -290,11 +290,11 @@ class SlaveData
     */
     public void scheduleJob( final Job job )
         {
-	synchronized(jobs)
-	    {
-	    jobs.addLast(job);
-	    slaveMonitor.notifyMonitor(jobs);
-	    }
+        synchronized(jobs)
+            {
+            jobs.addLast(job);
+            slaveMonitor.notifyMonitor(jobs);
+            }
         }
 
     /**
@@ -308,26 +308,26 @@ class SlaveData
             {
             Job job = null;
             synchronized(jobs)
-		    {
-		    //slaveMonitor.notifyMonitor(jobs);
-		    if( jobs.isEmpty() )
-			{
-			return;
-			}
-		    job = (Job)(jobs.removeFirst());
-		    numToReschedule = 1;
-		    //job.index = 0;
-		    }
-		    
+                {
+                //slaveMonitor.notifyMonitor(jobs);
+                if( jobs.isEmpty() )
+                    {
+                    return;
+                    }
+                job = (Job)(jobs.removeFirst());
+                numToReschedule = 1;
+                //job.index = 0;
+                }
+                    
             debug(Thread.currentThread().getName() + " Waiting for a slave to reschedule the evaluation.");
                         
-	    slaveMonitor.scheduleJobForEvaluation(state,job);
+            slaveMonitor.scheduleJobForEvaluation(state,job);
 
-  	    synchronized(jobs) 
-		{ 
-		//slaveMonitor.notifyMonitor(jobs);
-		numToReschedule = 0; 
-		}
+            synchronized(jobs) 
+                { 
+                //slaveMonitor.notifyMonitor(jobs);
+                numToReschedule = 0; 
+                }
        
             debug(Thread.currentThread().getName() + " Got a slave to reschedule the evaluation.");
                         
