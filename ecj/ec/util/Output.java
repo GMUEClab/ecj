@@ -43,8 +43,6 @@ import java.util.Enumeration;
  * of importance.
  *
  * <ol>
- * <li> SYSTEM MESSAGEs.  Useful system-level facts printed out for the
- * benefit of the user.
  * <li> FATAL ERRORs.  These errors cause the system to exit(1) immediately.
  * <li> Simple ERRORs.  These errors set the "errors" flag to true; at 
  * the end of a stream of simple errors, the system in general is expected
@@ -54,15 +52,17 @@ import java.util.Enumeration;
  * <li> WARNINGs.  These errors do not cause the system to exit under any
  * circumstances.
  * <li> MESSAGEs.  Useful facts printed out for the benefit of the user.
+ * <li> SYSTEM MESSAGEs.  Useful system-level facts printed out for the
+ * benefit of the user.
  * </ol>
  *
  * <p>The default verbosity values for different kinds of announcements are
  * given below:
  *
  <table><tr><td>0</td><td>V_VERBOSE</td><td>(totally verbose)</td>
- </tr><tr><td>1000</td><td>V_NO_MESSAGES</td><td>(don't print messages)</td>
- </tr><tr><td>2000</td><td>V_NO_WARNINGS</td><td>(don't print warnings or messages)</td>
- </tr><tr><td>3000</td><td>V_NO_GENERAL</td><td>(don't print warnings, messages, or other "general info" stuff that might come along (like statistics maybe))</td>
+ </tr><tr><td>1000</td><td>V_NO_MESSAGES</td><td>(don't print messages or system messages)</td>
+ </tr><tr><td>2000</td><td>V_NO_WARNINGS</td><td>(don't print warnings, messages, or system messages)</td>
+ </tr><tr><td>3000</td><td>V_NO_GENERAL</td><td>(don't print warnings, messages, system messages, or other "general info" stuff that might come along (like statistics maybe))</td>
  </tr><tr><td>4000</td><td>V_NO_ERRORS</td><td>(don't even print errors)</td>
  </tr><tr><td>5000</td><td>V_TOTALLY_SILENT</td><td>(be totally silent)</td>
  </tr></table>
@@ -335,7 +335,7 @@ public class Output implements Serializable
     /** Posts a system message. */
     public synchronized void systemMessage(String s)
         {
-        println(s, V_TOTALLY_SILENT,ALL_LOGS, true);
+        println(s, V_NO_MESSAGES ,ALL_LOGS, true);
         }
 
     /** Posts a fatal error.  This causes the system to exit. */

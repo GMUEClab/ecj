@@ -1276,4 +1276,6 @@ Version		Change Log
 		and cleaned up.
 	Fixes to steadystate that were tickled by the revamping of the
 		distributed evaluation facility.
-
+	Output's systemMessages have been demoted in verbosity: they're no
+		longer at the top of the food chain, but are now at the
+		bottom where they should be, along with plain messages.
