@@ -109,7 +109,7 @@ public class PSOSubpopulation extends Subpopulation
         if (loadInds == null)  // we're generating new individuals, not reading them from a file
             {
             FloatVectorSpecies fvSpecies = (FloatVectorSpecies)species;
-            double range = fvSpecies.maxGene - fvSpecies.minGene;
+            /* double range = fvSpecies.maxGene - fvSpecies.minGene; */
                     
             for (int i = 0; i < individuals.length; i++)
                 {
@@ -119,6 +119,7 @@ public class PSOSubpopulation extends Subpopulation
                 for(int j = 0; j < prevInd.genomeLength(); j++)
                     {
                     double val = prevInd.genome[j];
+                    double range = fvSpecies.maxGene(j) - fvSpecies.minGene(j);
                     do 
                         prevInd.genome[j] = val + (range * initialVelocityScale) * (state.random[thread].nextDouble()*2.0 - 1.0);
                     while (prevInd.genome[j] < fvSpecies.minGene(j) || prevInd.genome[j] > fvSpecies.maxGene(j));

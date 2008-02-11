@@ -2289,15 +2289,15 @@ public class ParameterDatabase extends Properties implements Serializable
                 vec.addElement(e.nextElement());
 
             // sort the keys
-            Object[] array = new Object[vec.size()];
-            vec.copyInto(array);
-
+//            Object[] array = new Object[vec.size()];
+//            vec.copyInto(array);
+//
             java.util.Collections.sort(vec);
 
             // Uncheck and print each item
-            for (int x = 0; x < array.length; x++) 
+            for (int x = 0; x < /* array.length;*/ vec.size(); x++) 
                 {
-                String s = (String) (array[x]);
+                String s = (String) /* (array[x]); */ vec.get(x);
                 String v = null;
                 if (s != null)
                     v = (String) gather.get(s);
