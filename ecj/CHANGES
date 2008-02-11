@@ -1279,3 +1279,8 @@ Version		Change Log
 	Output's systemMessages have been demoted in verbosity: they're no
 		longer at the top of the food chain, but are now at the
 		bottom where they should be, along with plain messages.
+	Bug fix to sort function in parameter print-outs.  Thanks to
+		Michael Hart <mhart@baselinesolutions.com.au>
+	Bug fix to PSOSubpopulation.java, which was messed up by the minGene
+		maxGene changes.  Thanks to Michael Hart 
+		<mhart@baselinesolutions.com.au>

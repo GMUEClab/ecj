@@ -56,6 +56,7 @@ ec/gp/*.java \
 ec/gp/breed/*.java \
 ec/gp/build/*.java \
 ec/multiobjective/*.java \
+ec/pso/*.java \
 ec/select/*.java \
 ec/simple/*.java \
 ec/spatial/*.java \
