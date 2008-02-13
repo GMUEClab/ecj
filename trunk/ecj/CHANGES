@@ -1284,3 +1284,22 @@ Version		Change Log
 	Bug fix to PSOSubpopulation.java, which was messed up by the minGene
 		maxGene changes.  Thanks to Michael Hart 
 		<mhart@baselinesolutions.com.au>
+	Turned compression off in the eval and exchange packages because
+		Sun has broken their code.  Background: Sun's zlib packages
+		do not support PARTIAL_FLUSH, making them close to worthless
+		for doing compression of network streams.  We hacked around
+		this using code on Sun's Bug Parade site (see
+		the comments for ec/util/CompressingInputStream.java). 
+		Sadly, it appears Sun has made further modifications to their
+		(still broken) zlib packages, breaking the hack.  Now there is
+		no way to use the packages, hack or no.  Instead, we may
+		move to using jzlib, though we'd prefer not to be beholden
+		to external packages if we can help it.  In the meantime,
+		compression is out.
+	Updated Makefile, for some reason ec/gp/koza/ had been deleted from
+		the build.
+	Merged MasterProblemServer and SlaveMonitor into one unified class.
+	Added a eval/slave.params file, breaking it out from the existing
+		eval/master.params file.
+	Updated documentation on all classes in the eval directory, and
+		heavily revised the README
