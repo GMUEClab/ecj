@@ -67,6 +67,22 @@ import java.io.*;
  <td valign=top>(how large should a job be at most?)<br>
  </td></tr>
 
+
+<!-- technically these are handled by the SlaveMonitor -->
+
+ <tr><td valign=top><tt>eval.master.port</tt><br>
+ <font size=-1>int</font></td>
+ <td valign=top>(the port where the slaves will connect)<br>
+ </td></tr>
+ <tr><td valign=top><tt>eval.compression</tt><br>
+ <font size=-1>boolean</font></td>
+ <td valign=top>(whether the communication with the slaves should be compressed or not)<br>
+ </td></tr>
+ <tr><td valign=top><tt>eval.masterproblem.max-jobs-per-slave</tt><br>
+ <font size=-1>int</font></td>
+ <td valign=top>(the maximum load (number of jobs) per slave at any point in time)<br>
+ </td></tr>
+
  </table>
 
  * @author Liviu Panait, Keith Sullivan, and Sean Luke

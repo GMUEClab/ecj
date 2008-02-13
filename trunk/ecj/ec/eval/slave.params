@@ -42,3 +42,11 @@ eval.run-evolve = true
 # slave should do "evolution" on its individuals if eval.run-evolve = true
 eval.runtime = 6000
 
+
+# Change this to force whole Individuals to be returned by the^M
+# Slave rather than just returning Fitnesses, plus whether or not the^M
+# Individual was evaluated.  Returning a whole Individual is expensive^M
+# over the network and should only be done if, for some reason, your^M
+# Problem class modified the Individuals as it evaluates them.^M
+eval.return-inds = false^M
+

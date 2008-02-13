@@ -30,28 +30,8 @@ import ec.steadystate.SteadyStateEvolutionState;
  (waitForindividual()).
  
  <p>Generally speaking, the SlaveMonitor owns the SlaveConnections -- no one else
- should speak to them.  Also generally speaking, the MasterProblemServer and MasterProblem should be
- the only classes which speak to the Slave monitor.  The MasterProblemServer creates and houses the
- SlaveMonitor.
- 
- 
-<p><b>Parameters</b><br>
- <table>
- <tr><td valign=top><tt>eval.master.port</tt><br>
- <font size=-1>int</font></td>
- <td valign=top>(the port where the slaves will connect)<br>
- </td></tr>
- <tr><td valign=top><tt>eval.compression</tt><br>
- <font size=-1>boolean</font></td>
- <td valign=top>(whether the communication with the slaves should be compressed or not)<br>
- </td></tr>
- <tr><td valign=top><tt>eval.masterproblem.max-jobs-per-slave</tt><br>
- <font size=-1>int</font></td>
- <td valign=top>(the maximum load (number of jobs) per slave at any point in time)<br>
- </td></tr>
- </table>
-
- 
+ should speak to them.  Also generally speaking, only MasterProblems create and speak to the SlaveMonitor.
+  
  * @author Sean Luke, Liviu Panait, and Keith Sullivan
  * @version 1.0 
  */

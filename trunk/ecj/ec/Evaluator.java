@@ -46,7 +46,7 @@ import ec.eval.MasterProblem;
  <td valign=top>(the class for the Problem prototype p_problem)</td></tr>
  <tr><td valign=top><i>base</i><tt>.masterproblem</tt><br>
  <font size=-1>classname, inherits</font></td>
- <td valign=top>(the class for the StarProblem prototype masterproblem)</td></tr>
+ <td valign=top>(the class for the MasterProblem prototype masterproblem)</td></tr>
  </table>
  * @author Sean Luke
  * @version 1.0 
@@ -96,7 +96,7 @@ public abstract class Evaluator implements Singleton
                 masterproblem.setup(state,base.push(P_MASTERPROBLEM));
                  
                 /*
-                 * If a StarProblem was specified, interpose it between the
+                 * If a MasterProblem was specified, interpose it between the
                  * evaluator and the real problem.  This allows seamless use
                  * of the master problem.
                  */
