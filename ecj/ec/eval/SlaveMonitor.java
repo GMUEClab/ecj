@@ -11,6 +11,7 @@ import ec.*;
 
 import java.io.*;
 import java.util.*;
+import java.net.*;
 import ec.steadystate.SteadyStateEvolutionState;
 
 /**
@@ -77,16 +78,18 @@ public class SlaveMonitor
     /**
        Registers a new slave with the monitor.  Upon registration, a slave is marked as available for jobs.
     */
-    public void registerSlave( SlaveData slave )
+    public void registerSlave( EvolutionState state, String name, Socket socket, DataOutputStream out, DataInputStream in)
         {
+	SlaveConnection newSlave = new SlaveConnection( state, name, socket, out, in, this );
+	
         synchronized(availableSlaves)
             {
-            availableSlaves.addLast(slave);
+            availableSlaves.addLast(newSlave);
             notifyMonitor(availableSlaves);
             }
         synchronized(allSlaves)
             {
-            allSlaves.addLast(slave);
+            allSlaves.addLast(newSlave);
             notifyMonitor(allSlaves);
             }
         }
@@ -94,7 +97,7 @@ public class SlaveMonitor
     /**
        Mark a slave as unavailable (the slave has reached its maximum load).
     */
-    public void markSlaveAsUnavailable( SlaveData slave )
+    public void markSlaveAsUnavailable( SlaveConnection slave )
         {
         synchronized(availableSlaves)
             {
@@ -106,7 +109,7 @@ public class SlaveMonitor
     /**
        Unregisters a dead slave from the monitor.
     */
-    public void unregisterSlave( SlaveData slave )
+    public void unregisterSlave( SlaveConnection slave )
         {
         synchronized(allSlaves)
             {
@@ -125,7 +128,7 @@ public class SlaveMonitor
             {
             while( !allSlaves.isEmpty() )
                 {
-                ((SlaveData)(allSlaves.removeFirst())).shutdown(state);
+                ((SlaveConnection)(allSlaves.removeFirst())).shutdown(state);
                 }
             notifyMonitor(allSlaves);
             }
@@ -137,14 +140,14 @@ public class SlaveMonitor
     */
     public void scheduleJobForEvaluation( final EvolutionState state, Job job )
         {
-        SlaveData result = null;
+        SlaveConnection result = null;
         synchronized(availableSlaves)
             {
             while( true)
                 {
                 if (!availableSlaves.isEmpty()) 
                     {
-                    result = (SlaveData)(availableSlaves.removeFirst());
+                    result = (SlaveConnection)(availableSlaves.removeFirst());
                     break;
                     }
                 debug("Waiting for a slave that is available." );
@@ -182,8 +185,8 @@ public class SlaveMonitor
             Iterator iter = allSlaves.iterator();
             while( iter.hasNext() )
                 {
-                SlaveData slaveData = (SlaveData)(iter.next());
-                try { slaveData.dataOut.flush(); } catch (java.io.IOException e) {} // we'll catch this error later....
+                SlaveConnection slaveConnection = (SlaveConnection)(iter.next());
+                try { slaveConnection.dataOut.flush(); } catch (java.io.IOException e) {} // we'll catch this error later....
                 }
             notifyMonitor(allSlaves);
             }
@@ -197,11 +200,11 @@ public class SlaveMonitor
                 Iterator iter = allSlaves.iterator();
                 while( iter.hasNext() )
                     {
-                    SlaveData slaveData = (SlaveData)(iter.next());
-                    int jobs = slaveData.numJobs();
+                    SlaveConnection slaveConnection = (SlaveConnection)(iter.next());
+                    int jobs = slaveConnection.numJobs();
                     if( jobs != 0 )
                         {
-                        debug("Slave " + slaveData + " has " + jobs + " more jobs to finish." );
+                        debug("Slave " + slaveConnection + " has " + jobs + " more jobs to finish." );
                         shouldCycle = true;
                         break;
                         }                               
@@ -223,7 +226,7 @@ public class SlaveMonitor
        Notifies the monitor that the particular slave has finished performing a job, and it (probably) is
        available for other jobs.
     */
-    void notifySlaveAvailability( SlaveData slave, final Job job, EvolutionState state )
+    void notifySlaveAvailability( SlaveConnection slave, final Job job, EvolutionState state )
         {
         // first announce that a slave in allSlaves has finished, so people blocked on waitForAllSlavesToFinishEvaluating
         // can wake up and realize it.

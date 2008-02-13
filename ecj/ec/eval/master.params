@@ -10,15 +10,28 @@ eval.masterproblem = ec.eval.MasterProblem
 # information for debugging the master/slave evaluator
 eval.masterproblem.debug-info = false
 
-# How many jobs do you hand to a slave in bulk?  
-# A small number allows finer resolution of job distribution
-# among the slaves, but may result in jobs being sent out
-# in individual packets on the network (quite inefficient).
-# If you have N slaves and need to distribute M jobs total
-# (perhaps you have a population of size M?), then your
-# max-jobs-per-slave should be no more than, and ideally a
-# small fraction of, M/N.
-eval.masterproblem.max-jobs-per-slave = 20
+# How large should each slave's job queue be?  In the past this 
+# had a significant effect on network performance, but it doesn't
+# any more.  Now it mostly serves to allow you to send out a large
+# number of children before getting any back, which mostly has (likely
+# negative) effects on steady-state evolution.  Unless you have a special
+# reason to, keep this at 1 for the time being until we add some new code
+# which allows it to have an effect on.
+eval.masterproblem.max-jobs-per-slave = 1
+
+# How large should our job be?  If you're doing ordinary
+# non-coevolutionary evolution, you can specify how many individuals
+# should be placed into a job (maximum) and sent to the slave
+# to be evaluated at one time, using the below parameter.
+# If your individuals are small in size, this can significantly
+# improve the network bandwidth.  If the individuals are large
+# in size, it'll have no real effect.  Furthermore, if your
+# slave is running in 'evolve' mode, this parameter will determine
+# the maximum (and typical) size of the "population" the slave is
+# evolving.  This works for both steady-state and generational evolution,
+# but if you're doing coevolution, the job size is ignored -- instead
+# the job will consist of the individuals to be coevolved together.
+eval.masterproblem.job-size = 100
 
 # This compresses the streams between the master and slaves.
 # Compression at present is BROKEN and DOES NOT WORK RIGHT.
@@ -59,4 +72,6 @@ eval.return-inds = false
 # slave.  Names don't have to be unique -- it's only for debugging.
 # eval.slave-name = my-slave-name
 
-
+# Specifies the mode the slave runs in.  If FALSE, the slave runs in
+# 'regular' mode where it just evaluates the individuals and returns
+# either the fitnesses or the whole individuals.  
