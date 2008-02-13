@@ -19,41 +19,70 @@ import java.io.*;
  * MasterProblem.java
  *
 
- <p>The MasterProblem is an ECJ problem that performs evaluations by pooling an available slave
- and sending all information necessary for the evaluation to that slave.  In some sense, the
- MasterProblem is the "master" of the master-slave architecture.  As it implements both the
+ <p>The MasterProblem is a special ECJ problem that performs evaluations by sending them to
+ a remote Slave process to be evaluated.  As it implements both the
  <i>SimpleProblemForm</i> and the <i>GroupedProblemForm</i> interfaces, the MasterProblem
- can perform both traditional EC evaluations, as well as coevolutionary evaluations.
+ can perform both traditional EC evaluations as well as coevolutionary evaluations.
  
+ <p>When a MasterProblem is specified by the Evaluator, the Problem is set up as usual, but then
+ the MasterProblem replaces it.  The Problem is not garbage collected -- instead, it's hung off the
+ MasterProblem's <tt>problem</tt> variable.  In some sense the Problem is "pushed aside".
+ 
+ <p>If the Evaluator begins by calling prepareToEvaluate(), and we're not doing coevolution, then
+ the MasterProblem does not evaluate individuals immediately.  Instead, it waits for at most 
+ <i>jobSize</i> individuals be submitted via evaluate(), and then sends them all off in a group,
+ called a <i>job</i>, to the remote slave.  In other situations (coevolution, or no prepareToEvaluate())
+ the MasterProblem sends off individuals immediately.
+ 
+ <p>It may be the case that no Slave has space in its queue to accept a new job containing, among others,
+ your new individual.  In this case, calling evaluate() will block until one comes available.  You can avoid
+ this by testing for availability first by calling canEvaluate().  Note that canEvaluate() and evaluate()
+ together are not atomic and so you should not rely on this facility if your system uses multiple threads.
+ 
+ <P>When the individuals or their fitnesses return, they are immediately updated in place.  You have three
+ options to wait for them:
+ 
+  <ul>
+  <li><p>You can wait for all the individuals to finish evaluation by calling finishEvaluating().
+    If you call this method before a job is entirely filled, it will be sent in truncated format (which
+    generally is perfectly fine).  You then block until all the jobs have been completed and the individuals
+    updated.
+    
+    <li><p>You can block until at least one individual is available, by calling getNextEvaluatedIndividual(),
+    which blocks and then returns the individual that was just completed.
+    
+    <li><p>You can test in non-blocking fashion to see if an individual is available, by calling 
+    evaluatedIndividualAvailable().  If this returns true, you may then call getNextEvaluatedIndividual()
+    to get the individual.  Note that this isn't atomic, so don't use it if you have multiple threads.
+</ul>
+  
  <p><b>Parameters</b><br>
  <table>
  <tr><td valign=top><i>base.</i><tt>debug-info</tt><br>
  <font size=-1>boolean</font></td>
  <td valign=top>(whether the system should display information useful for debugging purposes)<br>
+
+ <tr><td valign=top><i>base.</i><tt>job-size</tt><br>
+ <font size=-1>integer &gt; 0 </font></td>
+ <td valign=top>(how large should a job be at most?)<br>
  </td></tr>
 
  </table>
 
- * @author Liviu Panait
+ * @author Liviu Panait, Keith Sullivan, and Sean Luke
  * @version 1.0 
  */
 
 public class MasterProblem extends Problem implements SimpleProblemForm, GroupedProblemForm 
     {
-
     public static final String P_DEBUG_INFO = "debug-info";
     public static final String P_JOB_SIZE = "job-size";
         
     int jobSize;
     boolean showDebugInfo;
-
     public Problem problem;
-        
-    public MasterProblemServer server;
-        
-    public Thread serverThread;
-        
     public boolean batchMode;
+    public SlaveMonitor monitor;
 
     // except for the problem, everything else is shallow-cloned
     public Object clone()
@@ -61,8 +90,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         MasterProblem c = (MasterProblem)(super.clone());
 
         // shallow-cloned stuff
-        c.server = server;
-        c.serverThread = serverThread;
+        c.monitor = monitor;
         c.batchMode = batchMode;
         c.jobSize = jobSize; 
         c.showDebugInfo = showDebugInfo;
@@ -102,7 +130,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         flush(state, threadnum);
         queue = null;  // get rid of it just in case
                 
-        server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
+        monitor.waitForAllSlavesToFinishEvaluating( state );
         batchMode = false;
         if(showDebugInfo)
             state.output.message(Thread.currentThread().getName() + "All slaves have finished their jobs.");
@@ -162,19 +190,15 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
                 
         // Acquire a slave socket
         Job job = new Job();
-        //job.state = state;
-        //job.mp = this;
-        //job.threadnum = threadnum;
-        job.batchMode = batchMode;
         job.type = Slave.V_EVALUATESIMPLE;
         job.inds = inds;
         job.subPops = new int[] { subPopNum } ;
         job.updateFitness = new boolean[inds.length]; 
         for (int i=0 ; i < inds.length; i++) 
             job.updateFitness[i]=true; 
-        server.slaveMonitor.scheduleJobForEvaluation(state,job);
+        monitor.scheduleJobForEvaluation(state,job);
         if( !batchMode )
-            server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
+            monitor.waitForAllSlavesToFinishEvaluating( state );
         if(showDebugInfo) state.output.message(Thread.currentThread().getName() + "Finished evaluating the individual.");
         }
         
@@ -252,20 +276,15 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
 
         // Acquire a slave socket
         Job job = new Job();
-        //job.state = state;
-        //job.mp = this;
-        //job.threadnum = threadnum;
         job.type = Slave.V_EVALUATEGROUPED;
         job.subPops = subPopNum;
         job.countVictoriesOnly = countVictoriesOnly;
         job.inds = inds;
         job.updateFitness = updateFitness;
-        job.batchMode = batchMode;
-        //job.index = 0;
-        server.slaveMonitor.scheduleJobForEvaluation(state,job);
+        monitor.scheduleJobForEvaluation(state,job);
                 
         if( !batchMode )
-            server.slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
+            monitor.waitForAllSlavesToFinishEvaluating( state );
 
         if(showDebugInfo)
             state.output.message("Finished the coevolutionary evaluation.");
@@ -286,11 +305,9 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
     /** Initialize contacts with the slaves */
     public void initializeContacts( final EvolutionState state )
         {
-        server = new MasterProblemServer(showDebugInfo);
-        server.setupServerFromDatabase(state);
         if(showDebugInfo)
             state.output.message(Thread.currentThread().getName() + "Spawning the server thread.");
-        serverThread = server.spawnThread();
+        monitor = new SlaveMonitor(state, showDebugInfo);
         }
 
     /** Reinitialize contacts with the slaves */
@@ -302,19 +319,12 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
     /** Gracefully close contacts with the slaves */
     public void closeContacts(EvolutionState state, int result)
         {
-        this.server.shutdown();
-        try
-            {
-            this.serverThread.join();
-            }
-        catch (InterruptedException e)
-            {
-            }
+        monitor.shutdown();
         }
         
     public boolean canEvaluate() 
         {
-        return (server.slaveMonitor.numAvailableSlaves() != 0); 
+        return (monitor.numAvailableSlaves() != 0); 
         }
         
     /** This will only return true if (1) the EvolutionState is a SteadyStateEvolutionState and
@@ -322,7 +332,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         you should not call this method.  */
     public boolean evaluatedIndividualAvailable()
         {
-        return server.slaveMonitor.evaluatedIndividualAvailable();
+        return monitor.evaluatedIndividualAvailable();
         }
     
     /** This method blocks until an individual is available from the slaves (which will cause evaluatedIndividualAvailable()
@@ -330,7 +340,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         if you're doing steady state evolution -- otherwise, the method will block forever. */
     public Individual getNextEvaluatedIndividual()
         {
-        return server.slaveMonitor.waitForIndividual();
+        return monitor.waitForIndividual();
         }
 
     }

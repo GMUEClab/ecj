@@ -2,13 +2,23 @@
 # Licensed under the Academic Free License version 3.0
 # See the file "LICENSE" for more information
 
+# Note that the slave shares this file with the master, because they
+# have a number of parameters held in common.  See slave.params.  
+# You don't have to do this, but it's a convenient way to keep the
+# master and slave consistent with one another.
+
+
+
+
 # When eval.masterproblem is turned on, the system assumes
 # use of the master/slave evaluator.
 eval.masterproblem = ec.eval.MasterProblem
 
+
 # Turning this on will provide synchronization
 # information for debugging the master/slave evaluator
 eval.masterproblem.debug-info = false
+
 
 # How large should each slave's job queue be?  In the past this 
 # had a significant effect on network performance, but it doesn't
@@ -18,6 +28,7 @@ eval.masterproblem.debug-info = false
 # reason to, keep this at 1 for the time being until we add some new code
 # which allows it to have an effect on.
 eval.masterproblem.max-jobs-per-slave = 1
+
 
 # How large should our job be?  If you're doing ordinary
 # non-coevolutionary evolution, you can specify how many individuals
@@ -33,6 +44,7 @@ eval.masterproblem.max-jobs-per-slave = 1
 # the job will consist of the individuals to be coevolved together.
 eval.masterproblem.job-size = 100
 
+
 # This compresses the streams between the master and slaves.
 # Compression at present is BROKEN and DOES NOT WORK RIGHT.
 # This is because somewhere in JDK 1.5 Sun further broke their
@@ -41,9 +53,11 @@ eval.masterproblem.job-size = 100
 # and running, don't use compression.
 eval.compression=false
 
+
 # This defines the socket port that the master listens in
 # for incomoing Slaves to connect.
 eval.master.port = 15000
+
 
 # Change this to force whole Individuals to be returned by the
 # Slave rather than just returning Fitnesses, plus whether or not the
@@ -53,25 +67,7 @@ eval.master.port = 15000
 eval.return-inds = false
 
 
+# You do NOT want to set   eval.i-am-slave=true   in this file,
+# because then the master will think it's a slave.  Instead, set
+# that parameter in the slave.params file.
 
-# OPTIONAL SLAVE PARAMETERS
-
-# Lets the slaves know that they're slaves.  Slaves should
-# have different parameter files than masters.
-# eval.i-am-slave = true
-
-# Specifies the IP address of the master, for the Slaves
-# to connect.  Slaves need to be told this in their
-# parameter files.  The example below sets it to localhost,
-# which is probably not what you want.
-# eval.master.host = 127.0.0.1
-
-# Specifies a slave's name for debugging purposes.  If this is not
-# set (the default), then the system will use an approximately unique
-# name constructed from the IP address and startup time of the
-# slave.  Names don't have to be unique -- it's only for debugging.
-# eval.slave-name = my-slave-name
-
-# Specifies the mode the slave runs in.  If FALSE, the slave runs in
-# 'regular' mode where it just evaluates the individuals and returns
-# either the fitnesses or the whole individuals.  
