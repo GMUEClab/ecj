@@ -16,13 +16,16 @@ import ec.*;
  * SlaveConnection.java
  *
 
- This class contains certain information associated with a slave.  Such information includes the
- name of the slave, the socket (and I/O streams) used to communicate with the slave, the job queue
- associated with the slave, as well as pointers to the slave monitor and to the worker thread (for
- synchronization purposes).
+ This class contains certain information associated with a slave: its name, connection socket,
+ input and output streams, and the job queue.  Additionally, the class sets up an auxillary thread
+ which reads and writes to the streams to talk to the slave in the background.  This thread uses
+ the SlaveMonitor as its synchronization point (it sleeps with wait() and wakes up when notified()
+ to do some work).
+ 
+ <P>Generally SlaveConnection is only seen by communicates only with SlaveMonitor.
 
- * @author Liviu Panait
- * @version 1.0 
+ * @author Liviu Panait, Keith Sullivan, and Sean Luke
+ * @version 2.0 
  */
 
 class SlaveConnection 
@@ -93,7 +96,6 @@ class SlaveConnection
         try { evalSocket.close(); } catch (IOException e) { }
 
         state.output.systemMessage( SlaveConnection.this.toString() + " Slave is shutting down...." );
-        slaveMonitor.markSlaveAsUnavailable(this);
         rescheduleJobs(state);
         slaveMonitor.unregisterSlave(this);
         state.output.systemMessage( SlaveConnection.this.toString() + " Slave exists...." );
@@ -331,8 +333,8 @@ class SlaveConnection
        
             debug(Thread.currentThread().getName() + " Got a slave to reschedule the evaluation.");
                         
-            if( !job.batchMode )
-                slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
+            //if( !job.batchMode )
+            //    slaveMonitor.waitForAllSlavesToFinishEvaluating( state );
 
             }
         }

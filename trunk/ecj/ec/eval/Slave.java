@@ -31,17 +31,124 @@ import ec.util.*;
  * Slave.java
  *
  
- <p>Slave is the main entry point for a slave evaluation process.  It replicates most of the functionality of
- the ec.Evolve class, for example in terms of parameters anc checkpointing.  However, the Slave class does
- not implement an evolutionary process, as there is no selection, nor breeding.  Instead, upon initialization,
- the Slave process only waits for jobs (evaluations) from the main evolutionary process (its <i>master</i>).
- Such jobs can be either traditional evolutionary computation evaluations (a single individual that needs to be
- evaluated), or coevolutionary evaluations (groups of individuals that have to be evaluated together).
+ <p>Slave is the main entry point for a slave evaluation process.  The slave works with a master process,
+ receiving individuals from the master, evaluating them, and reporting the results back to the master, thus
+ enabling distributed evolution.  
  
- <p>The slave is run with one of the following argument formats:
+ <p>Slave replicates most of the functionality of
+ the ec.Evolve class, for example in terms of parameters and checkpointing.  This is mostly because it needs
+ to bootstrap and set up the EvolutionState in much the same way that ec.Evolve does.  Additionally, depending
+ on settings below, the Slave may act like a mini-evolver on the individuals it receives from the master.
+ 
+ <p>Like ec.Evolve, Slave is run with one of two argument formats:
+ 
+  <p><tt>java ec.eval.Slave -file </tt><i>parameter_file [</i><tt>-p </tt><i>parameter=value]*</i>
+ 
+  <p>This starts a new slave, using the parameter file <i>parameter_file</i>.
+  The user can provide optional overriding parameters on the command-line with the <tt>-p</tt> option.
+ 
+  <p><tt>java ec.eval.Slave -checkpoint </tt><i>checkpoint_file</i>
+  
+  <p>This starts up a slave from a previous checkpoint file.  Use of this form would be
+  rare indeed.
+ 
+ <p>Slaves need to know some things in order to run: the master's IP address and socket port number,
+ whether to do compression, and whether or not to return individuals or just fitnesses.
+ 
+ <p>Slaves presently always run in single-threaded mode and receive their random number generator seed
+ from the master.  Thus they ignore any seed parameters given to them.
+ 
+ <p>Slaves run in one of three modes:
+ 
+ <ul>
+ <p><li>"Regular" mode, which does a loop where it receives N individuals, evaluates them, and
+ returns either the individuals or their new fitnesses.
+ <p><li>"Regular Coevolutionary" mode, which does a loop where it receives N individuals to assess together in
+ a single coevolutionary evaluation, evaluates them, and returns either the individuals or their new fitnesses
+ (or only some fitnesses if only some are requested).
+ <p><li>"Evolve" mode, which does a loop where it receives
+ N individuals, evaluates them, and if there's some more time left, does a little evolution on those individuals as
+ if they were a population, then when the time is up, the current individuals in the population are returned in lieu
+ of the original individuals.  In this second form, individuals MUST be returned, not fitnesses.  This mode is not
+ available if you're doing coevolution.
+ </ul>
+ 
+ <p><b>Parameters</b><br>
+ <table>
+ 
+ <tr><td valign=top><tt>eval.slave-name</tt><br>
+ <font size=-1> String </font></td>
+ <td valign=top>(the slave's name, only for debugging purposes.  If not specified, the slave makes one up.)</td></tr>
+
+ <tr><td valign=top><tt>eval.master.host</tt><br>
+ <font size=-1> String </font></td>
+ <td valign=top>(the IP Address of the master.)</td></tr>
+
+ <tr><td valign=top><tt>eval.master.port</tt><br>
+ <font size=-1> integer &gt;= 1024 </font></td>
+ <td valign=top>(the socket port number of the master.)</td></tr>
+
+ <tr><td valign=top><tt>eval.compression</tt><br>
+ <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default) </font></td>
+ <td valign=top>(should we use compressed streams in communicating with the master?)</td></tr>
+
+ <tr><td valign=top><tt>eval.run-evolve</tt><br>
+ <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default) </font></td>
+ <td valign=top>(should we immediately evaluate the individuals and return them (or their fitnesses), or if we have extra time (defined by eval.runtime),
+	    should we do a little evolution on our individuals first?)</td></tr>
+
+ <tr><td valign=top><tt>eval.runtime</tt><br>
+ <font size=-1> integer &gt; 0 </font></td>
+ <td valign=top>(if eval.run-evolve is true, how long (in milliseconds wall-clock time) should we allow the individuals to evolve?)</td></tr>
+
+ <tr><td valign=top><tt>eval.return-inds</tt><br>
+ <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default) </font></td>
+ <td valign=top>(should we return whole individuals or (if false) just the fitnesses of the individuals?  This must be TRUE if eval.run-evolve is true.)</td></tr>
+
+ <tr><td valign=top><tt>nostore</tt><br>
+ <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
+ <td valign=top>(should the ec.util.Output facility <i>not</i> store announcements in memory?)</td></tr>
+
+ <tr><td valign=top><tt>flush</tt><br>
+ <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
+ <td valign=top>(should I flush all output as soon as it's printed (useful for debugging when an exception occurs))</td></tr>
+
+ <tr><td valign=top><tt>verbosity</tt><br>
+ <font size=-1>int &gt;= 0</font></td>
+ <td valign=top>(the ec.util.Output object's verbosity)</td></tr>
+
+ <tr><td valign=top><tt>state</tt><br>
+ <font size=-1>classname, inherits and != ec.EvolutionState</font></td>
+ <td valign=top>(the EvolutionState object class)</td></tr>
+
+ <tr><td valign=top><tt>print-accessed-params</tt><br>
+ <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</td>
+ <td valign=top>(at the end of a run, do we print out a list of all the parameters requested during the run?)</td></tr>
+
+ <tr><td valign=top><tt>print-used-params</tt><br>
+ <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</td>
+ <td valign=top>(at the end of a run, do we print out a list of all the parameters actually <i>used</i> during the run?)</td></tr>
+
+ <tr><td valign=top><tt>print-unaccessed-params</tt><br>
+ <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</td>
+ <td valign=top>(at the end of a run, do we print out a list of all the parameters NOT requested during the run?)</td></tr>
+
+ <tr><td valign=top><tt>print-unused-params</tt><br>
+ <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</td>
+ <td valign=top>(at the end of a run, do we print out a list of all the parameters NOT actually used during the run?)</td></tr>
+
+ <tr><td valign=top><tt>print-all-params</tt><br>
+ <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</td>
+ <td valign=top>(at the end of a run, do we print out a list of all the parameters stored in the parameter database?)</td></tr>
+
+ </table>
+ 
  * 
- * @author Sean Paus
+ * @author Liviu Panait, Sean Paus, Keith Sullivan, and Sean Luke
  */
+ 
+ 
+ 
 public class Slave 
     {
     public final static String P_PRINTACCESSEDPARAMETERS = "print-accessed-params";
@@ -89,12 +196,6 @@ public class Slave
         
     /** verbosity parameter */
     public static final String P_VERBOSITY = "verbosity";
-        
-    /** seed parameter */
-    public static final String P_SEED = "seed";
-        
-    /** 'time' seed parameter value */
-    public static final String V_SEED_TIME = "time";
         
     /** state parameter */
     public static final String P_STATE = "state";

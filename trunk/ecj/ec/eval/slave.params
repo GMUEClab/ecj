@@ -1,0 +1,44 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+# This file is used only by the slaves, not the master.  The shared
+# parameters between the master and slaves should instead be defined
+# in the master.params file.
+
+parent.0 = master.params
+
+
+# Lets the slaves know that they're slaves.
+eval.i-am-slave = true^M
+
+
+# Specifies the IP address of the master, for the Slaves^M
+# to connect.  Slaves need to be told this in their^M
+# parameter files.  The example below sets it to localhost,^M
+# which is probably not what you want.^M
+eval.master.host = 127.0.0.1^M
+
+
+# Specifies a slave's name for debugging purposes.  If this is not^M
+# set (the default), then the system will use an approximately unique^M
+# name constructed from the IP address and startup time of the^M
+# slave.  Names don't have to be unique -- it's only for debugging.^M
+eval.slave-name = my-slave-name^M
+
+
+# Specifies the mode the slave runs in.  If false, the slave runs in
+# 'regular' mode where it just evaluates the individuals and returns
+# either the fitnesses or the whole individuals.  If true, the slave
+# runs in 'evolve' mode, where it evaluates the individuals, but then
+# if there's extra time (see next parameter), it will treat the individuals
+# as its own mini-population and do some evolution on that population
+# according to the evolution parameters you provided the slave.  When
+# the time is up, it then returns the entire individuals.
+eval.run-evolve = true
+
+
+# Specifies the length of (wall clock) time, in milliseconds, that the
+# slave should do "evolution" on its individuals if eval.run-evolve = true
+eval.runtime = 6000
+

@@ -12,25 +12,72 @@ import ec.*;
 import java.io.*;
 import java.util.*;
 import java.net.*;
+import ec.util.*;
 import ec.steadystate.SteadyStateEvolutionState;
 
 /**
  * SlaveMonitor.java
  *
 
- The SlaveMonitor is the main tool used by the evolutionary computation process to synchronize the work of
- multiple threads (for example, for different slaves).  The monitor is in charge of keeping track of all the
- slaves (either those that are busy with various jobs they have received, or those that are available to
- perform jobs on behalf of the main evolutionary process).  Additionally, the monitor provides methods to
- schedule a job to be executed by the next available slave, as well as a mechanism to wait until all jobs
- have been finished.
+ <P>The SlaveMonitor manages slave connections to each remote slave, and provides synchronization facilities
+ for the slave connections and for various other objects waiting to be notified when new slaves are
+ available, space is available in a slave's job queue, an individual has been completed, etc.
 
- * @author Liviu Panait
+ <p>The monitor provides functions to create and delete slaves (registerSlave(), unregisterSlave()), 
+ schedule a job for evaluation (scheduleJobForEvaluation(...)), block until all jobs have completed
+ (waitForAllSlavesToFinishEvaluating(...)), test if any individual in a job has been finished
+ (evaluatedIndividualAvailable()),  and block until an individual in a job is available and returned
+ (waitForindividual()).
+ 
+ <p>Generally speaking, the SlaveMonitor owns the SlaveConnections -- no one else
+ should speak to them.  Also generally speaking, the MasterProblemServer and MasterProblem should be
+ the only classes which speak to the Slave monitor.  The MasterProblemServer creates and houses the
+ SlaveMonitor.
+ 
+ 
+<p><b>Parameters</b><br>
+ <table>
+ <tr><td valign=top><tt>eval.master.port</tt><br>
+ <font size=-1>int</font></td>
+ <td valign=top>(the port where the slaves will connect)<br>
+ </td></tr>
+ <tr><td valign=top><tt>eval.compression</tt><br>
+ <font size=-1>boolean</font></td>
+ <td valign=top>(whether the communication with the slaves should be compressed or not)<br>
+ </td></tr>
+ <tr><td valign=top><tt>eval.masterproblem.max-jobs-per-slave</tt><br>
+ <font size=-1>int</font></td>
+ <td valign=top>(the maximum load (number of jobs) per slave at any point in time)<br>
+ </td></tr>
+ </table>
+
+ 
+ * @author Sean Luke, Liviu Panait, and Keith Sullivan
  * @version 1.0 
  */
 
 public class SlaveMonitor
     {
+    public static final String P_EVALMASTERPORT = "eval.master.port";
+    public static final String P_EVALCOMPRESSION = "eval.compression";
+    public static final String P_MAXIMUMNUMBEROFCONCURRENTJOBSPERSLAVE = "eval.masterproblem.max-jobs-per-slave";
+
+    public EvolutionState state;
+    
+    /**
+     *  The socket where slaves connect.
+     */
+    public ServerSocket servSock;
+        
+    /**
+     * Indicates whether compression is used over the socket IO streams.
+     */
+    public boolean useCompression;
+
+    boolean shutdownInProgress = false;
+    int randomSeed;
+    Thread thread;
+
     public boolean waitOnMonitor(Object monitor)
         {
         try
@@ -69,10 +116,90 @@ public class SlaveMonitor
        information that is useful for debugging, and the maximum load per slave (the maximum number of jobs
        that a slave can be entrusted with at each time).
     */
-    public SlaveMonitor( boolean showDebugInfo, int maxJobsPerSlave )
+    public SlaveMonitor( final EvolutionState state, boolean showDebugInfo )
         {
-        this.showDebugInfo = showDebugInfo;
-        this.maxJobsPerSlave = maxJobsPerSlave;
+	this.showDebugInfo = showDebugInfo;
+        this.state = state;
+                
+        int port = state.parameters.getInt(
+            new Parameter( P_EVALMASTERPORT ),null);
+                
+        maxJobsPerSlave = state.parameters.getInt(
+            new Parameter( P_MAXIMUMNUMBEROFCONCURRENTJOBSPERSLAVE ),null);
+
+        useCompression = state.parameters.getBoolean(new Parameter(P_EVALCOMPRESSION),null,false);
+                
+        try
+            {
+            servSock = new ServerSocket(port);
+            }
+        catch( IOException e )
+            {
+            state.output.fatal("Unable to bind to port " + port + ": " + e);
+            }
+                
+        randomSeed = (int)(System.currentTimeMillis());
+
+        // spawn the thread
+	thread = new Thread(new Runnable()
+	    {
+	    public void run()
+		{
+		Thread.currentThread().setName("SlaveMonitor::    ");
+		Socket slaveSock;
+			
+		while (!shutdownInProgress)
+		    {
+		    slaveSock = null;
+		    while( slaveSock==null && !shutdownInProgress )
+			{
+			try
+			    {
+			    slaveSock = servSock.accept();
+			    }
+			catch( IOException e ) { slaveSock = null; }
+			}
+
+		    debug(Thread.currentThread().getName() + " Slave attempts to connect." );
+
+		    if( shutdownInProgress )
+			{
+			debug( Thread.currentThread().getName() + " The monitor is shutting down." );
+			break;
+			}
+
+		    try
+			{
+			DataInputStream dataIn = null;
+			DataOutputStream dataOut = null;
+			InputStream tmpIn = slaveSock.getInputStream();
+			OutputStream tmpOut = slaveSock.getOutputStream();
+			if (useCompression)
+			    {
+			    state.output.fatal("JDK 1.5 has broken compression.  For now, you must set eval.compression=false");
+			    tmpIn = new CompressingInputStream(tmpIn);
+			    tmpOut = new CompressingOutputStream(tmpOut);
+			    }
+													
+			dataIn = new DataInputStream(tmpIn);
+			dataOut = new DataOutputStream(tmpOut);
+			String slaveName = dataIn.readUTF();
+
+			MersenneTwisterFast random = new MersenneTwisterFast(randomSeed);
+			randomSeed++;
+			
+			// Write random state for eval thread to slave
+			random.writeState(dataOut);
+			dataOut.flush();
+
+			registerSlave(state, slaveName, slaveSock, dataOut, dataIn);
+			state.output.systemMessage( "Slave " + slaveName + " connected successfully." );
+			}
+		    catch (IOException e) {  }
+		    }
+		}
+	    });
+	thread.start();
         }
 
     /**
@@ -95,18 +222,6 @@ public class SlaveMonitor
         }
 
     /**
-       Mark a slave as unavailable (the slave has reached its maximum load).
-    */
-    public void markSlaveAsUnavailable( SlaveConnection slave )
-        {
-        synchronized(availableSlaves)
-            {
-            availableSlaves.remove(slave);
-            notifyMonitor(availableSlaves);
-            }
-        }
-
-    /**
        Unregisters a dead slave from the monitor.
     */
     public void unregisterSlave( SlaveConnection slave )
@@ -116,14 +231,33 @@ public class SlaveMonitor
             allSlaves.remove(slave);
             notifyMonitor(allSlaves);
             }
-        markSlaveAsUnavailable(slave);
+        synchronized(availableSlaves)
+            {
+            availableSlaves.remove(slave);
+            notifyMonitor(availableSlaves);
+            }
         }
 
     /**
        Shuts down the slave monitor (also shuts down all slaves).
     */
-    public void shutdown( final EvolutionState state )
+    public void shutdown()
         {
+	// kill the socket socket and bring down the thread
+	shutdownInProgress = true;
+        try
+            {
+            servSock.close();
+            }
+        catch (IOException e)
+            {
+            }
+	thread.interrupt();
+	try { thread.join(); }
+	catch (InterruptedException e) { }
+	
+	// gather all the slaves
+	
         synchronized(allSlaves)
             {
             while( !allSlaves.isEmpty() )
@@ -279,15 +413,6 @@ public class SlaveMonitor
             }
         }
 
-    /** Returns null if there is no such individual, else returns the next individual. */
-    public Individual getNextAvailableIndividual()
-        {
-        synchronized(evaluatedIndividuals)
-            {
-            try { return (Individual)(evaluatedIndividuals.removeFirst()); }
-            catch (NoSuchElementException e) { return null; }
-            }
-        }
 
     /** Blocks until an individual comes available */
     public Individual waitForIndividual()
@@ -297,7 +422,7 @@ public class SlaveMonitor
             synchronized(evaluatedIndividuals)
                 {
                 if (evaluatedIndividualAvailable())
-                    return getNextAvailableIndividual();
+                    return (Individual)(evaluatedIndividuals.removeFirst());
 
                 debug("Waiting for individual to be evaluated." );
                 waitOnMonitor(evaluatedIndividuals);  // lets go of evaluatedIndividuals loc
@@ -307,12 +432,35 @@ public class SlaveMonitor
         }
 
     /** Returns the number of available slave (not busy) */ 
-    public int numAvailableSlaves()
+    int numAvailableSlaves()
         {
         int i = 0;
         //System.out.println("+ numAvailableSlaves");
         synchronized(availableSlaves) { i = availableSlaves.size(); }
         //System.out.println("- numAvailableSlaves");
         return i;
+        }
+
+    /**
+     * Writes the slaves' random states to the checkpoint file.
+     * 
+     * @param s checkpoint file output stream
+     * @throws IOException
+     */
+    private void writeObject(ObjectOutputStream out) throws IOException
+        {
+        state.output.fatal("Not implemented yet: SlaveMonitor.writeObject");
+        }
+        
+    /**
+     * Restores the slaves random states from the checkpoint file.
+     * 
+     * @param s checkpoint file input stream.
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+        {
+        state.output.fatal("Not implemented yet: SlaveMonitor.readObject");
         }
     }
