@@ -21,8 +21,12 @@ eval.masterproblem.debug-info = false
 eval.masterproblem.max-jobs-per-slave = 20
 
 # This compresses the streams between the master and slaves.
-# Compression is probably helpful
-eval.compression=true
+# Compression at present is BROKEN and DOES NOT WORK RIGHT.
+# This is because somewhere in JDK 1.5 Sun further broke their
+# already broken zlib libraries, eliminating our ability to
+# hack around them.  Until we get another zlib library up
+# and running, don't use compression.
+eval.compression=false
 
 # This defines the socket port that the master listens in
 # for incomoing Slaves to connect.
