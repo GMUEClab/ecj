@@ -3,22 +3,22 @@ evaluator.  The master/slave evaluator allows you to connect one ECJ
 evolution process with some N remove slave processes.  These processes
 can come on-line at any time, and you can add new processes at any
 time, perhaps if new machines come available, or to replace slaves
-which have died for some reason.
+which have died for some reason.  If a remote slave dies, ECJ gracefully
+handles it, rescheduling its jobs to the next available slave.
 
-Slaves' random number generators are based on the wall clock time
-(they're each given a different seed by the master), regardless of
-their seeds in their parameter files.
+Slaves run in single-threaded mode, and so have a single random number
+generator each.  A slave receives a 32-bit random number seed from the
+master.  Initially the master selects a random number seed based on
+current wall clock time.  Each time a slave goes on-line, the master
+increments this current seed and gives the slave the revised seed.
+Slaves use this seed regardless of their seeds in their parameter files.
 
-You can use the master/slave evaluator in conjunction with island 
+You can use the master/slave evaluator freely in conjunction with island 
 models to connect each island to its own private group of N slaves,
 though we have no examples for that in the distribution.
 
-Read the master.params file for information about the various parameter
-options.  
-
 Typical params files for the master and for the slaves are illustrated in
 the ec/app/star directory.
-
 
 You fire up the master something like this:
 
@@ -33,6 +33,146 @@ java ec.eval.Slave -file foo.slave.params
 checkpointing as far as we know.
 
 
+
+
+
+MASTERS AND SLAVES
+
+The master and slave processes can (and generally ought to) share parameter 
+files.  The way a slave knows it's a slave is through the addition of the following
+*slave-only* parameter:
+
+eval.i-am-slave = true
+
+The master sets up distributed evaluation by loading special class, called 
+a MasterProblem, which replaces the Problem during evaluation.   The MasterProblem 
+is defined by the following *master* parameter:
+
+eval.masterproblem = ec.eval.MasterProblem
+
+When the Evaluator is started up, it normally sets up the Problem class.  If
+eval.masterproblem is set, the Evaluator also loads the master problem and then
+*replaces* the Problem class prototype with a prototype of the MasterProblem class.  
+The Problem prototype is then set to be the 'problem' instance variable in
+the MasterProblem prototype.  This essentially allows the Problem to stick around
+even though it's never called by the Evaluator any more -- instead, the MasterProblem
+is called.
+
+The MasterProblem's job is to send stuff to remote slaves.  Thus a slave should not
+load it, but instead should load the regular Problem instance.  The slave does this by checking
+the eval.i-am-slave parameter.  If it's true, it simply ignores the eval.masterproblem
+parameter entirely.
+
+More information about the architecture may be found near the end of this file.
+
+The master listens on socket for new slaves to arrive and register themselves.
+When slaves are fired up, they attempt to attach to this socket and negotiate
+connection.  This means that both the master and the slave needs to know the
+master's port number, and furthermore the slave needs to know the master's
+IP address.  The socket port number is specified in the *master and slave*
+parameter (here set to 15000):
+
+eval.master.port = 15000
+
+The slave is told where the master is with the following *slave* parameter:
+
+eval.master.host = put.the.master.ip.address.here
+
+The master and slave can communicate over a compressed stream.  NOTE AT PRESENT
+JAVA BUGS HAVE PREVENTED THIS FROM WORKING, SO DO NOT USE IT.  This is specified
+in the *master and slave* parameter:
+
+eval.compression = true                  DO NOT USE THIS PARAMETER RIGHT NOW
+
+Last, the slave can be given a name.  This is solely for debugging purposes.  If
+you don't provide this parameter, the slave will give itself an arbitrary name,
+and that's fine.  The *slave* parameter is:
+
+eval.slave-name =  put-my-name-here
+
+The master can print out various debug information if you turn on the following
+parameter:
+
+eval.masterproblem.debug-info = false
+
+
+
+
+JOBS
+
+A slave receives chunks of individuals to evaluate and return as a group.
+This chunk is called a "job".  If you're doing non-coevolutionary evolution,
+you can specify how many individuals the slave should receive at one time
+with the *master* parameter (here set to 100):
+
+eval.master-problem.job-size = 100
+
+If you have very small individuals, or fast evaluation, this make better 
+use of network bandwidth as it sends them as a group, evaluates them all,
+and then returns them all.  This is because more individuals can get packed
+into a TCP/IP packet before it's sent out, minimizing overhead.
+
+Each slave mantains a queue of jobs that it's working on.  When the master
+needs to hand a job to a slave, it looks for one whose queue is not filled,
+and then puts the job in the queue.  In the past this
+queue was also meant to enable buffering up jobs on the network to minimize
+overhead, but this feature has been pulled back (for now).   At the moment
+this queue largely serves to allow a lot of individuals to be sent out before
+requesting any to come back.  This will only have an effect on steady-state
+evolution, where many individuals can be pushed out in the world before any
+are ready to come back in and join the population.  You probably don't want
+that, so you may want your queue size to be small (as small as 1 perhaps),
+until we reintroduce the overhead-minimization code for the queue again.
+To set the queue size, you use the *master* parameter 
+(here it's being set to 1):
+
+eval.masterproblem.max-jobs-per-slave = 1
+
+If you are doing coevolutionary evolution, a job will consist of the
+individuals necessary to perform one joint coevolutionary evaluation.
+
+
+
+SLAVE EVOLUTION
+
+Slaves can operate in one of two modes: "regular" and "evolve".  In regular
+mode, when a slave receives a job, it evaluates them and returns them 
+or their resulting fitnesses (see 'FITNESS VERSUS INDIVIDUAL' below).  
+In 'evolve' mode, the slave evaluates its individuals; but if it has some 
+extra time on its hands, it then treats the individuals as a little population 
+and does some evolution on it.  When time is up, it returns the most recent 
+individuals in its little individuals in lieu of the original individuals.  
+This is particularly useful when your evaluation procedure is very fast 
+compared to the amount of time spent reading and writing individuals over 
+the network.  Note that this only works in NON-coevolutionary evolution.
+
+To turn on this feature in a slave, you set the following parameter in the
+*slave*:
+
+eval.run-evolve = true
+
+You will also need to specify how long the slave should do its evolution.  This
+is specified in wall clock time (in milliseconds) with the following 
+*slave* parameter, here specifying 6 seconds:
+
+eval.runtime = 6000
+
+Last, you'll need to turn this *master and slave* parameter on to get "evolve" mode 
+working right (see 'FITNESS VERSUS INDIVIDUAL' below for more information):
+
+eval.return-inds = true
+
+The size of this mini-"population" the slave is evolving is determined by the
+job-size parameter discussed earlier, so you'll want to set it to something 
+appropriate.  Here again it's being set to 100:
+
+eval.master-problem.job-size = 100
+
+
+
+
+
+
 FITNESS VERSUS INDIVIDUAL
 
 By default the master/slave system sends individuals from master to slave,
@@ -40,13 +180,40 @@ but only returns FITNESS values from slave to master, in order to save on
 network bandwidth.  However it is possible that some evaluations of individuals
 literally change them during evaluation.  If you have done such an evil thing,
 you'll need to have the modified individual shipped back to the master for
-reinsertion.  Be sure to change the appropriate parameter:
+reinsertion.  Be sure to change the appropriate *master and slave* parameter:
 
 eval.return-inds = true
 
+If you're running in "evolve" mode, you will *always* need to set this parameter
+to true.
 
 
-SYNCHRONOUS VERSUS ASYNCHRONOUS EVALUATION
+
+
+ARCHITECTURE
+
+The system's classes naturally break into two groups: the Slave class and
+the various master-side classes (all others).  The Slave class is essentially
+a replacement for Evolve.java which sets up a dummy ECJ process in which to 
+evaluate individuals.  This means, of course, that the Slave must have the same
+basic evolutionary parameters -- particularly representation parameters -- 
+as the master evolutionary process.
+
+The master system is set up by MasterProblem, a special version of the Problem
+class which, instead of evaluating individuals, sends them to remote Slaves
+to be evaluated.  As mentioned before, MasterProblem is loaded in the master
+process and then replaces the original Problem instance, in essence "pretending"
+to be a Problem instance.  
+
+Like any Problem, multiple MasterProblems are created during the course of evaluation,
+one per thread and per generation.  During setup, the MasterProblem prototype
+constructs one shared class which acts as the clearing house for remotely evaluating
+individuals handed it by the various MasterProblems.  This class is called the
+MasterProblemServer.  MasterProblems send the MasterProblemServer various individuals
+and then wait for evaluated results to come back from the remote slaves.
+
+The MasterProblemServer in turn maintains another internal class, called the SlaveMonitor,
+which is responsible for keeping track of the remote slave connections.  For each Slave
 
 The master/slave evaluator is fairly clever about evaluation.  When asked to
 evaluate a collection (a population, say) of N individuals on M slaves, where

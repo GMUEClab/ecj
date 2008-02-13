@@ -13,7 +13,7 @@ import java.util.LinkedList;
 import ec.*;
 
 /**
- * SlaveData.java
+ * SlaveConnection.java
  *
 
  This class contains certain information associated with a slave.  Such information includes the
@@ -25,7 +25,7 @@ import ec.*;
  * @version 1.0 
  */
 
-class SlaveData 
+class SlaveConnection 
     {
     /** Name of the slave process */
     String slaveName;
@@ -61,7 +61,7 @@ class SlaveData
        thread that is communicating with the remote slave to read back the results
        of the evaluations.
     */
-    public SlaveData( EvolutionState state,
+    public SlaveConnection( EvolutionState state,
                       String slaveName,
                       Socket evalSocket,
                       DataOutputStream dataOut,
@@ -92,11 +92,11 @@ class SlaveData
         try { dataIn.close(); } catch (IOException e) { }
         try { evalSocket.close(); } catch (IOException e) { }
 
-        state.output.systemMessage( SlaveData.this.toString() + " Slave is shutting down...." );
+        state.output.systemMessage( SlaveConnection.this.toString() + " Slave is shutting down...." );
         slaveMonitor.markSlaveAsUnavailable(this);
         rescheduleJobs(state);
         slaveMonitor.unregisterSlave(this);
-        state.output.systemMessage( SlaveData.this.toString() + " Slave exists...." );
+        state.output.systemMessage( SlaveConnection.this.toString() + " Slave exists...." );
         }
 
     public String toString() { return "Slave(" + slaveName + ")"; }
@@ -227,10 +227,10 @@ class SlaveData
             {
             for(int i = 0; i < job.newinds.length; i++)
                 {
-                debug(SlaveData.this.toString() + " Individual# " + i);
-                debug(SlaveData.this.toString() + " Reading Byte" );
+                debug(SlaveConnection.this.toString() + " Individual# " + i);
+                debug(SlaveConnection.this.toString() + " Reading Byte" );
                 byte val = dataIn.readByte();
-                debug(SlaveData.this.toString() + " Reading Individual" );
+                debug(SlaveConnection.this.toString() + " Reading Individual" );
                 if (val == Slave.V_INDIVIDUAL)
                     {
                     job.newinds[i].readIndividual(state, dataIn);
@@ -240,7 +240,7 @@ class SlaveData
                     job.newinds[i].evaluated = dataIn.readBoolean();
                     job.newinds[i].fitness.readFitness(state,dataIn);
                     }
-                debug( SlaveData.this.toString() + " Read Individual" );
+                debug( SlaveConnection.this.toString() + " Read Individual" );
                 }
             }
         catch (Exception e)
@@ -276,7 +276,7 @@ class SlaveData
             }
             
         // And let the slave monitor we just finished a job
-        slaveMonitor.notifySlaveAvailability( SlaveData.this, job, state );
+        slaveMonitor.notifySlaveAvailability( SlaveConnection.this, job, state );
 
         return true;
         }

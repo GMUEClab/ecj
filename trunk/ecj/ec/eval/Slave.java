@@ -100,11 +100,11 @@ public class Slave
     public static final String P_STATE = "state";
         
     /** Time to run evolution on the slaves in seconds */ 
-    public static final String P_RUNTIME = "runtime"; 
+    public static final String P_RUNTIME = "eval.runtime"; 
     public static int runTime=0; 
         
     /** Should slave run its own evolutionary process? */ 
-    public static final String P_RUNEVOLVE = "run-evolve"; 
+    public static final String P_RUNEVOLVE = "eval.run-evolve"; 
     public static boolean runEvolve=false; 
         
     /** How long we sleep in between attempts to connect to the master (in milliseconds). */
@@ -203,6 +203,12 @@ public class Slave
         runTime = state.parameters.getInt(new Parameter(P_RUNTIME), null, 0); 
                 
         runEvolve = state.parameters.getBoolean(new Parameter(P_RUNEVOLVE),null,false); 
+	
+	if (runEvolve && !returnIndividuals)
+	    {
+	    state.output.fatal("You have the slave running in 'evolve' mode, but it's only returning fitnesses to the master, not whole individuals.  This is almost certainly wrong.",
+		new Parameter(P_RUNEVOLVE), new Parameter(P_RETURNINDIVIDUALS));
+	    }
                         
         // Continue to serve new masters until killed.
         while (true)
@@ -242,17 +248,11 @@ public class Slave
                     OutputStream tmpOut = socket.getOutputStream();
                     if (useCompression)
                         {
+			state.output.fatal("JDK 1.5 has broken compression.  For now, you must set eval.compression=false");
+			/*
                         tmpIn = new CompressingInputStream(tmpIn);
                         tmpOut = new CompressingOutputStream(tmpOut);
-
-/*
-  com.jcraft.jzlib.ZInputStream in = new com.jcraft.jzlib.ZInputStream(tmpIn, com.jcraft.jzlib.JZlib.Z_BEST_SPEED);
-  in.setFlushMode(com.jcraft.jzlib.JZlib.Z_PARTIAL_FLUSH);
-  tmpIn = in;
-  com.jcraft.jzlib.ZOutputStream out = new com.jcraft.jzlib.ZOutputStream(tmpOut, com.jcraft.jzlib.JZlib.Z_BEST_SPEED);
-  out.setFlushMode(com.jcraft.jzlib.JZlib.Z_PARTIAL_FLUSH);
-  tmpOut = out;
-*/
+			*/
                         }
                                                 
                     dataIn = new DataInputStream(tmpIn);
@@ -336,7 +336,7 @@ public class Slave
                 }
             }
         }
-        
+            
     public static void evaluateSimpleProblemForm( EvolutionState state, boolean returnIndividuals,
                                                   DataInputStream dataIn, DataOutputStream dataOut, String[] args )
         {
@@ -347,10 +347,8 @@ public class Slave
         int numInds=1; 
         try
             {
-            System.err.println("reading #individuals and subpop");
             numInds = dataIn.readInt();
             subPopNum = dataIn.readInt(); // assume all individuals are from the same subpopulation
-            System.err.println("read #individuals and subpop");
             }
         catch (IOException e)
             {
@@ -400,13 +398,13 @@ public class Slave
         Individual[] inds = new Individual[numInds];
         try
             {
-            System.err.println("reading individual");
+            //System.err.println("reading individual");
             for (int i=0; i < numInds; i++) { 
                 inds[i] = subPop.species.newIndividual( state, dataIn);
                 if (!runEvolve) 
                     ((SimpleProblemForm)(state.evaluator.p_problem)).evaluate( state, inds[i], 0 );
                 updateFitness[i] = dataIn.readBoolean(); 
-                System.err.println("Read Individual " + i);
+                //System.err.println("Read Individual " + i);
                 }
             }
         catch (IOException e)
@@ -432,7 +430,7 @@ public class Slave
             Evolve.cleanup(tempState);
             }
 
-        System.err.println("Returning Individuals ");
+        //System.err.println("Returning Individuals ");
         // Return the evaluated individual to the master
         try { 
             returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals); 
@@ -522,11 +520,10 @@ public class Slave
         // just write evaluated and fitness
         for(int i=0;i<inds.length;i++)
             {
-            System.err.println("Returning Individual " + i);
-            System.err.println("writing byte: " + ( returnIndividuals ? V_INDIVIDUAL : (updateFitness[i] ? V_FITNESS : V_NOTHING)));
+            //System.err.println("Returning Individual " + i);
+            //System.err.println("writing byte: " + ( returnIndividuals ? V_INDIVIDUAL : (updateFitness[i] ? V_FITNESS : V_NOTHING)));
             dataOut.writeByte(returnIndividuals ? V_INDIVIDUAL : (updateFitness[i] ? V_FITNESS : V_NOTHING));
-//          dataOut.flush();
-            System.err.println("wrote byte");
+            //System.err.println("wrote byte");
             if (returnIndividuals)
                 {
 //              System.err.println("Writing Individual");

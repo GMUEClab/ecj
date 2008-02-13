@@ -42,9 +42,9 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
     {
 
     public static final String P_DEBUG_INFO = "debug-info";
-    public static final String P_CHUNK_SIZE = "chunk-size";
+    public static final String P_JOB_SIZE = "job-size";
         
-    int chunkSize;
+    int jobSize;
     boolean showDebugInfo;
 
     public Problem problem;
@@ -64,7 +64,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         c.server = server;
         c.serverThread = serverThread;
         c.batchMode = batchMode;
-        c.chunkSize = chunkSize; 
+        c.jobSize = jobSize; 
         c.showDebugInfo = showDebugInfo;
 
         // deep-cloned stuff
@@ -80,9 +80,9 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         super.setup(state, base);
         showDebugInfo = state.parameters.getBoolean(base.push(P_DEBUG_INFO),null,false);
                 
-        chunkSize = state.parameters.getIntWithDefault(base.push(P_CHUNK_SIZE),null,1);
-        if (chunkSize<=0)
-            state.output.fatal("The chunk size must be an integer > 0.", base.push(P_CHUNK_SIZE));
+        jobSize = state.parameters.getIntWithDefault(base.push(P_JOB_SIZE),null,1);
+        if (jobSize<=0)
+            state.output.fatal("The job size must be an integer > 0.", base.push(P_JOB_SIZE));
 
         batchMode = false;
         }
@@ -90,7 +90,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
     // prepare for a batch of evaluations
     public void prepareToEvaluate(final EvolutionState state, final int threadnum)
         {
-        if (chunkSize > 1) queue = new ArrayList();
+        if (jobSize > 1) queue = new ArrayList();
         batchMode = true;
         }
 
@@ -111,10 +111,10 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
     // evaluate a regular individual
     public void evaluate(EvolutionState state, Individual ind, int threadnum)
         {
-        if (chunkSize > 1 && batchMode == true)    // chunked evaluation mechanism
+        if (jobSize > 1 && batchMode == true)    // chunked evaluation mechanism
             {
             queue.add(ind);
-            if (queue.size() >= chunkSize)
+            if (queue.size() >= jobSize)
                 flush(state, threadnum);
             }
         else    /// ordinary evaluation mechanism  

@@ -195,8 +195,6 @@ public class MasterProblemServer
                 break;
                 }
 
-            SlaveData newSlave = null;
-
             try
                 {
                 DataInputStream dataIn = null;
@@ -205,17 +203,9 @@ public class MasterProblemServer
                 OutputStream tmpOut = slaveSock.getOutputStream();
                 if (this.useCompression)
                     {
-                    debug("Using Compression");
+		    state.output.fatal("JDK 1.5 has broken compression.  For now, you must set eval.compression=false");
                     tmpIn = new CompressingInputStream(tmpIn);
                     tmpOut = new CompressingOutputStream(tmpOut);
-                    /*
-                      com.jcraft.jzlib.ZInputStream in = new com.jcraft.jzlib.ZInputStream(tmpIn, com.jcraft.jzlib.JZlib.Z_BEST_SPEED);
-                      in.setFlushMode(com.jcraft.jzlib.JZlib.Z_PARTIAL_FLUSH);
-                      tmpIn = in;
-                      com.jcraft.jzlib.ZOutputStream out = new com.jcraft.jzlib.ZOutputStream(tmpOut, com.jcraft.jzlib.JZlib.Z_BEST_SPEED);
-                      out.setFlushMode(com.jcraft.jzlib.JZlib.Z_PARTIAL_FLUSH);
-                      tmpOut = out;
-                    */
                     }
                                                                                                 
                 dataIn = new DataInputStream(tmpIn);
@@ -229,18 +219,10 @@ public class MasterProblemServer
                 random.writeState(dataOut);
                 dataOut.flush();
 
-                newSlave = new SlaveData( state, slaveName, slaveSock, dataOut, dataIn, slaveMonitor );
-
-                slaveMonitor.registerSlave(newSlave);
+                slaveMonitor.registerSlave(state, slaveName, slaveSock, dataOut, dataIn);
                 state.output.systemMessage( "Slave " + slaveName + " connected successfully." );
                 }
-            catch (IOException e)
-                {
-                if( newSlave != null )
-                    {
-                    newSlave.shutdown(state);
-                    }
-                }
+            catch (IOException e) {  }
             }
         }
         
