@@ -55,6 +55,7 @@ ec/exchange/*.java \
 ec/gp/*.java \
 ec/gp/breed/*.java \
 ec/gp/build/*.java \
+ec/gp/koza/*.java \
 ec/multiobjective/*.java \
 ec/pso/*.java \
 ec/select/*.java \

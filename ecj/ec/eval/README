@@ -168,7 +168,7 @@ the following *slave* parameter, here specifying 6 seconds:
 
 eval.runtime = 6000
 
-Last, you'll need to turn this *master and slave* parameter on to get
+Last, you'll need to turn this *slave* parameter on to get
 "evolve" mode working right (see 'FITNESS VERSUS INDIVIDUAL' below for
 more information):
 
@@ -193,7 +193,7 @@ save on network bandwidth.  However it is possible that some evaluations
 of individuals literally change them during evaluation.  If you have
 done such an evil thing, you'll need to have the modified individual
 shipped back to the master for reinsertion.  Be sure to change the
-appropriate *master and slave* parameter:
+appropriate *slave* parameter:
 
 eval.return-inds = true
 
@@ -223,20 +223,16 @@ Like any Problem, multiple MasterProblems are created during the course
 of evaluation, one per thread and per generation.  During setup, the
 MasterProblem prototype constructs one shared class which acts as the
 clearing house for remotely evaluating individuals handed it by the
-various MasterProblems.  This class is called the MasterProblemServer. 
-MasterProblems send the MasterProblemServer various individuals and then
-wait for evaluated results to come back from the remote slaves.
+various MasterProblems.  This class is called the SlaveMonitor.
 
-The MasterProblemServer in turn maintains another internal class, called
-the SlaveMonitor, which is responsible for keeping track of the remote
+The SlaveMonitor is responsible for keeping track of the remote
 slave connections.  For each Slave which has connected, the SlaveMonitor
 manages reading and writing to that slave via a SlaveConnection.  The
 SlaveConnection holds the job queue for that remote Slave, holds the
 socket connection and streams to the remote Slave, and runs, in its own
 thread, a worker thread which reads and writes jobs to/from the Slave. 
-MasterProblems submit jobs to the MasterProblemServer, which in turn
-gives them to the SlaveMonitor, which in turn distributes them to an
-available slave.
+MasterProblems submit jobs to the SlaveMonitor, which in turn 
+distributes them to an available slave.
 
 Most evaluation procedures can take advantage of this to provide a
 degree of semi-asynchrony.  For example, SimpleEvaluator performs

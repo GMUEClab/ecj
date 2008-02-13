@@ -59,14 +59,6 @@ eval.compression=false
 eval.master.port = 15000
 
 
-# Change this to force whole Individuals to be returned by the
-# Slave rather than just returning Fitnesses, plus whether or not the
-# Individual was evaluated.  Returning a whole Individual is expensive
-# over the network and should only be done if, for some reason, your
-# Problem class modified the Individuals as it evaluates them.
-eval.return-inds = false
-
-
 # You do NOT want to set   eval.i-am-slave=true   in this file,
 # because then the master will think it's a slave.  Instead, set
 # that parameter in the slave.params file.

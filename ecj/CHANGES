@@ -1303,3 +1303,4 @@ Version		Change Log
 		eval/master.params file.
 	Updated documentation on all classes in the eval directory, and
 		heavily revised the README
+	Renamed SlaveData to SlaveConnection

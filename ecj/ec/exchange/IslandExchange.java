@@ -492,8 +492,11 @@ public class IslandExchange extends Exchanger
         // by default, communication is not compressed
         compressedCommunication = state.parameters.getBoolean(base.push(P_COMPRESSED_COMMUNICATION),null,true);
         if( compressedCommunication )
-            state.output.message( "Communication will be compressed" );
-
+	    {
+	    state.output.fatal("JDK 1.5 has broken compression.  For now, you must set " + base.push(P_COMPRESSED_COMMUNICATION) + "=false");
+/*            state.output.message( "Communication will be compressed" ); */
+	    }
+	    
         // check whether it has to launch the main server for coordination
         p = base.push( P_IS_SERVER );
         iAmServer = state.parameters.getBoolean( p, null, false );
