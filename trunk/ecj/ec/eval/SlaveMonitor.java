@@ -98,7 +98,7 @@ public class SlaveMonitor
     */
     public SlaveMonitor( final EvolutionState state, boolean showDebugInfo )
         {
-	this.showDebugInfo = showDebugInfo;
+        this.showDebugInfo = showDebugInfo;
         this.state = state;
                 
         int port = state.parameters.getInt(
@@ -121,65 +121,65 @@ public class SlaveMonitor
         randomSeed = (int)(System.currentTimeMillis());
 
         // spawn the thread
-	thread = new Thread(new Runnable()
-	    {
-	    public void run()
-		{
-		Thread.currentThread().setName("SlaveMonitor::    ");
-		Socket slaveSock;
-			
-		while (!shutdownInProgress)
-		    {
-		    slaveSock = null;
-		    while( slaveSock==null && !shutdownInProgress )
-			{
-			try
-			    {
-			    slaveSock = servSock.accept();
-			    }
-			catch( IOException e ) { slaveSock = null; }
-			}
+        thread = new Thread(new Runnable()
+            {
+            public void run()
+                {
+                Thread.currentThread().setName("SlaveMonitor::    ");
+                Socket slaveSock;
+                        
+                while (!shutdownInProgress)
+                    {
+                    slaveSock = null;
+                    while( slaveSock==null && !shutdownInProgress )
+                        {
+                        try
+                            {
+                            slaveSock = servSock.accept();
+                            }
+                        catch( IOException e ) { slaveSock = null; }
+                        }
 
-		    debug(Thread.currentThread().getName() + " Slave attempts to connect." );
+                    debug(Thread.currentThread().getName() + " Slave attempts to connect." );
 
-		    if( shutdownInProgress )
-			{
-			debug( Thread.currentThread().getName() + " The monitor is shutting down." );
-			break;
-			}
+                    if( shutdownInProgress )
+                        {
+                        debug( Thread.currentThread().getName() + " The monitor is shutting down." );
+                        break;
+                        }
 
-		    try
-			{
-			DataInputStream dataIn = null;
-			DataOutputStream dataOut = null;
-			InputStream tmpIn = slaveSock.getInputStream();
-			OutputStream tmpOut = slaveSock.getOutputStream();
-			if (useCompression)
-			    {
-			    state.output.fatal("JDK 1.5 has broken compression.  For now, you must set eval.compression=false");
-			    tmpIn = new CompressingInputStream(tmpIn);
-			    tmpOut = new CompressingOutputStream(tmpOut);
-			    }
-													
-			dataIn = new DataInputStream(tmpIn);
-			dataOut = new DataOutputStream(tmpOut);
-			String slaveName = dataIn.readUTF();
+                    try
+                        {
+                        DataInputStream dataIn = null;
+                        DataOutputStream dataOut = null;
+                        InputStream tmpIn = slaveSock.getInputStream();
+                        OutputStream tmpOut = slaveSock.getOutputStream();
+                        if (useCompression)
+                            {
+                            state.output.fatal("JDK 1.5 has broken compression.  For now, you must set eval.compression=false");
+                            tmpIn = new CompressingInputStream(tmpIn);
+                            tmpOut = new CompressingOutputStream(tmpOut);
+                            }
+                                                                                                        
+                        dataIn = new DataInputStream(tmpIn);
+                        dataOut = new DataOutputStream(tmpOut);
+                        String slaveName = dataIn.readUTF();
 
-			MersenneTwisterFast random = new MersenneTwisterFast(randomSeed);
-			randomSeed++;
-			
-			// Write random state for eval thread to slave
-			random.writeState(dataOut);
-			dataOut.flush();
+                        MersenneTwisterFast random = new MersenneTwisterFast(randomSeed);
+                        randomSeed++;
+                        
+                        // Write random state for eval thread to slave
+                        random.writeState(dataOut);
+                        dataOut.flush();
 
-			registerSlave(state, slaveName, slaveSock, dataOut, dataIn);
-			state.output.systemMessage( "Slave " + slaveName + " connected successfully." );
-			}
-		    catch (IOException e) {  }
-		    }
-		}
-	    });
-	thread.start();
+                        registerSlave(state, slaveName, slaveSock, dataOut, dataIn);
+                        state.output.systemMessage( "Slave " + slaveName + " connected successfully." );
+                        }
+                    catch (IOException e) {  }
+                    }
+                }
+            });
+        thread.start();
         }
 
     /**
@@ -187,8 +187,8 @@ public class SlaveMonitor
     */
     public void registerSlave( EvolutionState state, String name, Socket socket, DataOutputStream out, DataInputStream in)
         {
-	SlaveConnection newSlave = new SlaveConnection( state, name, socket, out, in, this );
-	
+        SlaveConnection newSlave = new SlaveConnection( state, name, socket, out, in, this );
+        
         synchronized(availableSlaves)
             {
             availableSlaves.addLast(newSlave);
@@ -223,8 +223,8 @@ public class SlaveMonitor
     */
     public void shutdown()
         {
-	// kill the socket socket and bring down the thread
-	shutdownInProgress = true;
+        // kill the socket socket and bring down the thread
+        shutdownInProgress = true;
         try
             {
             servSock.close();
@@ -232,12 +232,12 @@ public class SlaveMonitor
         catch (IOException e)
             {
             }
-	thread.interrupt();
-	try { thread.join(); }
-	catch (InterruptedException e) { }
-	
-	// gather all the slaves
-	
+        thread.interrupt();
+        try { thread.join(); }
+        catch (InterruptedException e) { }
+        
+        // gather all the slaves
+        
         synchronized(allSlaves)
             {
             while( !allSlaves.isEmpty() )

@@ -65,11 +65,11 @@ class SlaveConnection
        of the evaluations.
     */
     public SlaveConnection( EvolutionState state,
-                      String slaveName,
-                      Socket evalSocket,
-                      DataOutputStream dataOut,
-                      DataInputStream dataIn,
-                      SlaveMonitor slaveMonitor )
+                            String slaveName,
+                            Socket evalSocket,
+                            DataOutputStream dataOut,
+                            DataInputStream dataIn,
+                            SlaveMonitor slaveMonitor )
         {
         this.slaveName = slaveName;
         this.evalSocket = evalSocket;
