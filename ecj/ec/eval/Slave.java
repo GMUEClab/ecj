@@ -42,15 +42,15 @@ import ec.util.*;
  
  <p>Like ec.Evolve, Slave is run with one of two argument formats:
  
-  <p><tt>java ec.eval.Slave -file </tt><i>parameter_file [</i><tt>-p </tt><i>parameter=value]*</i>
+ <p><tt>java ec.eval.Slave -file </tt><i>parameter_file [</i><tt>-p </tt><i>parameter=value]*</i>
  
-  <p>This starts a new slave, using the parameter file <i>parameter_file</i>.
-  The user can provide optional overriding parameters on the command-line with the <tt>-p</tt> option.
+ <p>This starts a new slave, using the parameter file <i>parameter_file</i>.
+ The user can provide optional overriding parameters on the command-line with the <tt>-p</tt> option.
  
-  <p><tt>java ec.eval.Slave -checkpoint </tt><i>checkpoint_file</i>
+ <p><tt>java ec.eval.Slave -checkpoint </tt><i>checkpoint_file</i>
   
-  <p>This starts up a slave from a previous checkpoint file.  Use of this form would be
-  rare indeed.
+ <p>This starts up a slave from a previous checkpoint file.  Use of this form would be
+ rare indeed.
  
  <p>Slaves need to know some things in order to run: the master's IP address and socket port number,
  whether to do compression, and whether or not to return individuals or just fitnesses.
@@ -95,7 +95,7 @@ import ec.util.*;
  <tr><td valign=top><tt>eval.run-evolve</tt><br>
  <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default) </font></td>
  <td valign=top>(should we immediately evaluate the individuals and return them (or their fitnesses), or if we have extra time (defined by eval.runtime),
-	    should we do a little evolution on our individuals first?)</td></tr>
+ should we do a little evolution on our individuals first?)</td></tr>
 
  <tr><td valign=top><tt>eval.runtime</tt><br>
  <font size=-1> integer &gt; 0 </font></td>
@@ -304,12 +304,12 @@ public class Slave
         runTime = state.parameters.getInt(new Parameter(P_RUNTIME), null, 0); 
                 
         runEvolve = state.parameters.getBoolean(new Parameter(P_RUNEVOLVE),null,false); 
-	
-	if (runEvolve && !returnIndividuals)
-	    {
-	    state.output.fatal("You have the slave running in 'evolve' mode, but it's only returning fitnesses to the master, not whole individuals.  This is almost certainly wrong.",
-		new Parameter(P_RUNEVOLVE), new Parameter(P_RETURNINDIVIDUALS));
-	    }
+        
+        if (runEvolve && !returnIndividuals)
+            {
+            state.output.fatal("You have the slave running in 'evolve' mode, but it's only returning fitnesses to the master, not whole individuals.  This is almost certainly wrong.",
+                               new Parameter(P_RUNEVOLVE), new Parameter(P_RETURNINDIVIDUALS));
+            }
                         
         // Continue to serve new masters until killed.
         while (true)
@@ -349,11 +349,11 @@ public class Slave
                     OutputStream tmpOut = socket.getOutputStream();
                     if (useCompression)
                         {
-			state.output.fatal("JDK 1.5 has broken compression.  For now, you must set eval.compression=false");
-			/*
-                        tmpIn = new CompressingInputStream(tmpIn);
-                        tmpOut = new CompressingOutputStream(tmpOut);
-			*/
+                        state.output.fatal("JDK 1.5 has broken compression.  For now, you must set eval.compression=false");
+                        /*
+                          tmpIn = new CompressingInputStream(tmpIn);
+                          tmpOut = new CompressingOutputStream(tmpOut);
+                        */
                         }
                                                 
                     dataIn = new DataInputStream(tmpIn);

@@ -42,19 +42,19 @@ import java.io.*;
  <P>When the individuals or their fitnesses return, they are immediately updated in place.  You have three
  options to wait for them:
  
-  <ul>
-  <li><p>You can wait for all the individuals to finish evaluation by calling finishEvaluating().
-    If you call this method before a job is entirely filled, it will be sent in truncated format (which
-    generally is perfectly fine).  You then block until all the jobs have been completed and the individuals
-    updated.
+ <ul>
+ <li><p>You can wait for all the individuals to finish evaluation by calling finishEvaluating().
+ If you call this method before a job is entirely filled, it will be sent in truncated format (which
+ generally is perfectly fine).  You then block until all the jobs have been completed and the individuals
+ updated.
     
-    <li><p>You can block until at least one individual is available, by calling getNextEvaluatedIndividual(),
-    which blocks and then returns the individual that was just completed.
+ <li><p>You can block until at least one individual is available, by calling getNextEvaluatedIndividual(),
+ which blocks and then returns the individual that was just completed.
     
-    <li><p>You can test in non-blocking fashion to see if an individual is available, by calling 
-    evaluatedIndividualAvailable().  If this returns true, you may then call getNextEvaluatedIndividual()
-    to get the individual.  Note that this isn't atomic, so don't use it if you have multiple threads.
-</ul>
+ <li><p>You can test in non-blocking fashion to see if an individual is available, by calling 
+ evaluatedIndividualAvailable().  If this returns true, you may then call getNextEvaluatedIndividual()
+ to get the individual.  Note that this isn't atomic, so don't use it if you have multiple threads.
+ </ul>
   
  <p><b>Parameters</b><br>
  <table>
@@ -68,7 +68,7 @@ import java.io.*;
  </td></tr>
 
 
-<!-- technically these are handled by the SlaveMonitor -->
+ <!-- technically these are handled by the SlaveMonitor -->
 
  <tr><td valign=top><tt>eval.master.port</tt><br>
  <font size=-1>int</font></td>
