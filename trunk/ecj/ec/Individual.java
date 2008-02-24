@@ -238,21 +238,6 @@ public abstract class Individual implements Prototype
         {
         evaluated = Code.readBooleanWithPreamble(EVALUATED_PREAMBLE, state, reader);
         
-        /*
-        // First, was I evaluated?
-        int linenumber = reader.getLineNumber();
-        String s = reader.readLine();
-        if (s==null || s.length() < EVALUATED_PREAMBLE.length()) // uh oh
-        state.output.fatal("Reading Line " + linenumber + ": " +
-        "Bad 'Evaluated?' line.");
-        DecodeReturn d = new DecodeReturn(s, EVALUATED_PREAMBLE.length());
-        Code.decode(d);
-        if (d.type!=DecodeReturn.T_BOOLEAN)
-        state.output.fatal("Reading Line " + linenumber + ": " +
-        "Bad 'Evaluated?' line.");
-        evaluated = (d.l!=0);
-        */
-
         // Next, what's my fitness?
         fitness.readFitness(state,reader);
 

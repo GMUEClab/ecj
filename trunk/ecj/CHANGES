@@ -1304,3 +1304,13 @@ Version		Change Log
 	Updated documentation on all classes in the eval directory, and
 		heavily revised the README
 	Renamed SlaveData to SlaveConnection
+	Change the default for exchange's compression to false
+	Bug in IslandModel: it was writing genotypes but reading indivdiuals.
+		Set to read and write individuals.  May revisit this later to
+		only read and write genotypes, though that'd require some
+		undesireable retooling of ECJ's Individual methods.
+	Bug in IslandModel: when an ideal individual was found, we were
+		joining on the mailbox thread BEFORE sending the "found it"
+		signal.  Furthermore, the thread was never interrupted so it'd
+		keep on going until the end of a run  -- as a result the signal
+		would never get sent. 

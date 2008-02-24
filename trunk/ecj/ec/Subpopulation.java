@@ -157,17 +157,6 @@ public class Subpopulation implements Group
         // should we load individuals from a file? -- duplicates are permitted
         if (loadInds!=null)
             {
-            /*
-            // let's make some individuals!
-            try
-            {
-            LineNumberReader reader = new LineNumberReader(new FileReader(loadInds));
-            for(int x=0;x<individuals.length;x++)
-            individuals[x] = species.newIndividual(state,reader);
-            state.output.message("Loading subpopulation from file " + loadInds);
-            }
-            catch (IOException e) { state.output.fatal("An IOException occurred when trying to read from the file " + loadInds + ".  The IOException was: \n" + e); }
-            */
             try { readSubpopulation(state, new LineNumberReader(new FileReader(loadInds))); }
             catch (IOException e) { state.output.fatal("An IOException occurred when trying to read from the file " + loadInds + ".  The IOException was: \n" + e); }
             }
