@@ -490,7 +490,7 @@ public class IslandExchange extends Exchanger
         chatty = state.parameters.getBoolean(base.push(P_CHATTY), null, true);
 
         // by default, communication is not compressed
-        compressedCommunication = state.parameters.getBoolean(base.push(P_COMPRESSED_COMMUNICATION),null,true);
+        compressedCommunication = state.parameters.getBoolean(base.push(P_COMPRESSED_COMMUNICATION),null,false);
         if( compressedCommunication )
             {
             state.output.fatal("JDK 1.5 has broken compression.  For now, you must set " + base.push(P_COMPRESSED_COMMUNICATION) + "=false");
@@ -847,7 +847,7 @@ public class IslandExchange extends Exchanger
                                 {
                                 int index = immigrantsSelectionMethod.produce( subpop, state, 0 );
                                 state.population.subpops[subpop].individuals[index].
-                                    writeGenotype( state, outWriters[x] );
+                                    writeIndividual( state, outWriters[x] );
                                 outWriters[x].flush();  // just in case the individuals didn't do a println
                                 }
                             immigrantsSelectionMethod.finishProducing( state, subpop, 0 ); // end the selection step
@@ -1045,19 +1045,6 @@ public class IslandExchange extends Exchanger
     /** Closes contacts with other processes, if that's what you're doing.  Called at the end of an evolutionary run. result is either ec.EvolutionState.R_SUCCESS or ec.EvolutionState.R_FAILURE, indicating whether or not an ideal individual was found. */
     public void closeContacts(EvolutionState state, int result)
         {
-
-        state.output.message( "Shutting down the mailbox" );
-        // close the mailbox and wait for the thread to terminate
-        mailbox.shutDown();
-        try
-            {
-            mailboxThread.join();
-            }
-        catch( InterruptedException e )
-            {
-            }
-        state.output.message( "Mailbox shut down" );
-
         // if the run was successful (perfect individual was found)
         // then send a message to the server that it was found
         if( result == EvolutionState.R_SUCCESS )
@@ -1078,6 +1065,19 @@ public class IslandExchange extends Exchanger
         catch( IOException e )
             {
             }
+
+        state.output.message( "Shutting down the mailbox" );
+        // close the mailbox and wait for the thread to terminate
+	mailbox.shutDown();
+	mailboxThread.interrupt();
+        try
+            {
+            mailboxThread.join();
+            }
+        catch( InterruptedException e )
+            {
+            }
+        state.output.message( "Mailbox shut down" );
 
         // close out-going sockets
         for( int x = 0 ; x < number_of_destination_islands ; x++ )
