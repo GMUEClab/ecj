@@ -169,6 +169,25 @@ public class GPIndividual extends Individual
         state.output.exitIfErrors();
         }
 
+
+    /** Verification of validity of the GPIndividual -- strictly for debugging purposes only */
+    public final void verify(EvolutionState state)
+	{
+	if (!(state.initializer instanceof GPInitializer))
+	    { state.output.error("Initializer is not a GPInitializer"); return; }
+	    
+	GPInitializer initializer = (GPInitializer)(state.initializer);
+
+	if (trees==null) 
+	    { state.output.error("Null trees in GPIndividual."); return; }
+	for(int x=0;x<trees.length;x++) if (trees[x]==null) 
+	    { state.output.error("Null tree (#"+x+") in GPIndividual."); return; }
+	for(int x=0;x<trees.length;x++)
+	    trees[x].verify(state);
+        state.output.exitIfErrors();
+	}
+
+
     /** Overridden for the GPIndividual genotype, writing each tree in turn. */
     public void printIndividualForHumans(final EvolutionState state, final int log, 
                                          final int verbosity)

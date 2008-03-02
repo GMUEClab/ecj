@@ -243,6 +243,7 @@ public class MutateOneNodePipeline extends GPBreedingPipeline
                     if (x==t)  // we've got a tree with a kicking cross position!
                         { 
                         j.trees[x] = (GPTree)(i.trees[x].lightClone());
+			j.trees[x].owner = j;
                         j.trees[x].child = i.trees[x].child.cloneReplacingAtomic(p2,p1);
                         j.trees[x].child.parent = j.trees[x];
                         j.trees[x].child.argposition = 0;
@@ -251,6 +252,7 @@ public class MutateOneNodePipeline extends GPBreedingPipeline
                     else 
                         {
                         j.trees[x] = (GPTree)(i.trees[x].lightClone());
+			j.trees[x].owner = j;
                         j.trees[x].child = i.trees[x].child.cloneReplacing();
                         j.trees[x].child.parent = j.trees[x];
                         j.trees[x].child.argposition = 0;

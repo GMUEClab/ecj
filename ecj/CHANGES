@@ -1314,3 +1314,8 @@ Version		Change Log
 		signal.  Furthermore, the thread was never interrupted so it'd
 		keep on going until the end of a run  -- as a result the signal
 		would never get sent. 
+	Added verify(...) methods to GPIndividual, GPTree, and GPIndividual to
+		make tracking down bugs in the breeders easier.
+	Bug in GP: wasn't setting a tree's owner when it was being cloned in
+		any of the breeders.  This ordinarily wouldn't have much of an
+		effect on anything, but it needed to be fixed.
