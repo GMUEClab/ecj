@@ -1319,3 +1319,6 @@ Version		Change Log
 	Bug in GP: wasn't setting a tree's owner when it was being cloned in
 		any of the breeders.  This ordinarily wouldn't have much of an
 		effect on anything, but it needed to be fixed.
+	Bug in MutateSwapPipeline: the argposition of the swappted subtrees was
+		not being swapped as well. Thanks to Andrea Arcuri
+		<A.Arcuri@cs.bham.ac.uk>
