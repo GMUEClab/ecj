@@ -37,6 +37,7 @@ public class Job
     // either Slave.V_EVALUATESIMPLE or Slave.V_EVALUATEGROUPED
     int type;
 
+    boolean sent = false;
     Individual []inds;   // original individuals
     Individual []newinds;  // individuals that were returned -- may be different individuals!
     int []subPops; 

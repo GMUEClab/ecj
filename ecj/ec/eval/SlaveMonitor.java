@@ -277,7 +277,7 @@ public class SlaveMonitor
             {
             synchronized(availableSlaves) 
                 {
-                if( !availableSlaves.contains(result)) availableSlaves.addLast(result); 
+                if( !availableSlaves.contains(result)) availableSlaves.addLast(result);  // so we're round-robin
                 notifyMonitor(availableSlaves);
                 }
             }
@@ -422,8 +422,6 @@ public class SlaveMonitor
         }
 
     /**
-     * Writes the slaves' random states to the checkpoint file.
-     * 
      * @param s checkpoint file output stream
      * @throws IOException
      */
@@ -433,8 +431,6 @@ public class SlaveMonitor
         }
         
     /**
-     * Restores the slaves random states from the checkpoint file.
-     * 
      * @param s checkpoint file input stream.
      * @throws IOException
      * @throws ClassNotFoundException

@@ -40,17 +40,12 @@ import ec.util.*;
  to bootstrap and set up the EvolutionState in much the same way that ec.Evolve does.  Additionally, depending
  on settings below, the Slave may act like a mini-evolver on the individuals it receives from the master.
  
- <p>Like ec.Evolve, Slave is run with one of two argument formats:
+ <p>Like ec.Evolve, Slave is run with like this:
  
  <p><tt>java ec.eval.Slave -file </tt><i>parameter_file [</i><tt>-p </tt><i>parameter=value]*</i>
  
  <p>This starts a new slave, using the parameter file <i>parameter_file</i>.
  The user can provide optional overriding parameters on the command-line with the <tt>-p</tt> option.
- 
- <p><tt>java ec.eval.Slave -checkpoint </tt><i>checkpoint_file</i>
-  
- <p>This starts up a slave from a previous checkpoint file.  Use of this form would be
- rare indeed.
  
  <p>Slaves need to know some things in order to run: the master's IP address and socket port number,
  whether to do compression, and whether or not to return individuals or just fitnesses.
@@ -180,10 +175,10 @@ public class Slave
     public static final byte V_SHUTDOWN = 0;
     public static final byte V_EVALUATESIMPLE = 1;
     public static final byte V_EVALUATEGROUPED = 2;
-    public static final byte V_CHECKPOINT = 3;
+//    public static final byte V_CHECKPOINT = 3;
         
-    /** The argument indicating that we're starting up from a checkpoint file. */
-    public static final String A_CHECKPOINT = "-checkpoint";
+    /* The argument indicating that we're starting up from a checkpoint file. */
+//    public static final String A_CHECKPOINT = "-checkpoint";
         
     /** The argument indicating that we're starting fresh from a new parameter file. */
     public static final String A_FILE = "-file";
@@ -401,7 +396,8 @@ public class Slave
                                 evaluateGroupedProblemForm(state, returnIndividuals, dataIn, dataOut);
                                 break;
                                                                                         
-                            case V_CHECKPOINT:
+                            /*
+			    case V_CHECKPOINT:
                                 state.output.systemMessage("Checkpointing");
                                 try
                                     {
@@ -413,6 +409,7 @@ public class Slave
                                     state.output.fatal("Exception while checkpointing random state:\n"+e);
                                     }
                                 break;
+			    */
                             default:
                                 state.output.fatal("Unknown problem form specified: "+problemType);
                             }

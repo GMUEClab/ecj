@@ -116,27 +116,32 @@ at one time with the *master* parameter (here set to 100):
 
 eval.master-problem.job-size = 100
 
-If you have very small individuals, or fast evaluation, this make better
-use of network bandwidth as it sends them as a group, evaluates them
-all, and then returns them all.  This is because more individuals can
-get packed into a TCP/IP packet before it's sent out, minimizing
-overhead.
+If you have very small individuals, or fast evaluation, this makes
+better use of network bandwidth as it sends them as a group, evaluates 
+them all, and then returns them all.  This is because more individuals 
+can get packed into a TCP/IP packet before it's sent out, minimizing
+overhead.  However, the primary effect of changing the job-size is
+to modify the "slave evolution" population size (see the next section).
 
+Another way to improve network efficiency, particularly with very fast
+jobs, is to fill the network buffer with as many jobs as you can fit.
 Each slave mantains a queue of jobs that it's working on.  When the
 master needs to hand a job to a slave, it looks for one whose queue is
-not filled, and then puts the job in the queue.  In the past this queue
-was also meant to enable buffering up jobs on the network to minimize
-overhead, but this feature has been pulled back (for now).  At the
-moment this queue largely serves to allow a lot of individuals to be
-sent out before requesting any to come back.  This will only have an
-effect on steady-state evolution, where many individuals can be pushed
-out in the world before any are ready to come back in and join the
-population.  You probably don't want that, so you may want your queue
-size to be small (as small as 1 perhaps), until we reintroduce the
-overhead-minimization code for the queue again. To set the queue size,
-you use the *master* parameter (here it's being set to 1):
+not filled, and then puts the job in the queue.  Each of the slave
+connections keep their TCP/IP buffers stuffed with as many of these
+queued jobs as they can, so jobs are available at the Slaves before
+they even realize it.  To set the queue size, you use the *master* 
+parameter (here it's being set to 100):
 
-eval.masterproblem.max-jobs-per-slave = 1
+eval.masterproblem.max-jobs-per-slave = 100
+
+If you only have 100 individuals in your population (say), this 
+won't fill all the jobs on one slave connection.  The system goes
+round-robin through all the slaves and distributes jobs appropriately.
+Even so, if you have new slaves coming online all the time, they'll
+have to wait if jobs have already been measured out to the other
+slaves, so in that case it might be wise to keep the max-jobs-per-slave
+a bit low.
 
 If you are doing coevolutionary evolution, a job will consist of the
 individuals necessary to perform one joint coevolutionary evaluation.

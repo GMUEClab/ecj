@@ -47,7 +47,7 @@ import ec.util.*;
  * from the pool of mu parents.  The particular parent is chosen round-robin, so all the parents
  * will have an equal number of children.  It's perfectly fine to have more than one ESSelection
  * object in the tree, or to call the same one repeatedly during the course of generating a child;
- * all such objects will consistently return the same parent.  They only increment to the nex
+ * all such objects will consistently return the same parent.  They only increment to the next
  * parent in the pool of mu parents after the child has been created from the pipeline.  You can
  * also mix ESSelection operators with other operators (like Tournament Selection).  But you ought
  * to have <b>at least one</b> ESSelection operator in the pipeline -- else it wouldn't be Evolution
