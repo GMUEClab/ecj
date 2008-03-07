@@ -1217,7 +1217,7 @@ Version		Change Log
 	documentation fix (a </ul>) to Prototype which should keep the
 		class documentation of all prototypes from getting incorrectly
 		indented.
-	Added Elena Popovici to the author's list
+	Added Elena Popovici to the authors' list
 	Tweaked the post-tutorial discussion
 	Updated Mersenne Twister to include SerialVersionUIDs to quiet
 		compiler warnings in JDK 1.6
@@ -1322,3 +1322,13 @@ Version		Change Log
 	Bug in MutateSwapPipeline: the argposition of the swappted subtrees was
 		not being swapped as well. Thanks to Andrea Arcuri
 		<A.Arcuri@cs.bham.ac.uk>
+	Added some efficiency to the new eval package by breaking the read/write
+		slave connection threads into separate read and write threads.
+	Both SimpleStatistics and KozaStatistics now print out, to the screen, 
+		the best-of-generation fitness per-generation and the best-of-run
+		fitness at the end.
+	Performed some refactoring on SPEA2Evalutor and SPEA2Breeder to make them
+		subclasses of SimpleEvaluator and SimpleBreeder, as they were
+		sharing a lot of code in common.  Hope we did it right.  Also
+		made small changes to SimpleEvaluator and SimpleBreeder to
+		accommodate this.

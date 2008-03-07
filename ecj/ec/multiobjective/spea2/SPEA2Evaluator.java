@@ -34,97 +34,22 @@ import ec.simple.*;
  * @version 1.0 
  */
 
-public class SPEA2Evaluator extends Evaluator
+public class SPEA2Evaluator extends SimpleEvaluator
     {
-
-    // checks to make sure that the Problem implements SimpleProblemForm
-    public void setup(final EvolutionState state, final Parameter base)
-        {
-        super.setup(state,base);
-        if (!(p_problem instanceof SimpleProblemForm))
-            state.output.fatal("SPEA2Evaluator used, but the Problem is not of SimpleProblemForm",
-                               base.push(P_PROBLEM));
-        }
-
     /** A simple evaluator that doesn't do any coevolutionary
         evaluation.  Basically it applies evaluation pipelines,
         one per thread, to various subchunks of a new population. */
     public void evaluatePopulation(final EvolutionState state)
         {
-        int numinds[][] = 
-            new int[state.evalthreads][state.population.subpops.length];
-        int from[][] = 
-            new int[state.evalthreads][state.population.subpops.length];
+	for(int i =0; i < state.population.subpops.length; i++)
+	    if (!(state.population.subpops[i] instanceof SPEA2Subpopulation))
+		state.output.fatal("SPEA2Evaluator must only be used with a SPEA2Subpopulation!", null);
+	super.evaluatePopulation(state);
+	computeAuxiliaryData(state);
+	}
 
-        if (!(state.population.subpops[0] instanceof SPEA2Subpopulation))
-            state.output.fatal("SPEA2Evaluator must only be used with a SPEA2Subpopulation!",
-                               null);
-
-        for(int y=0;y<state.evalthreads;y++)
-            {
-            for(int x=0;x<state.population.subpops.length;x++)
-                {
-                // figure numinds
-                if (y<state.evalthreads-1) // not last one
-                    {
-                    numinds[y][x]=
-                        state.population.subpops[x].individuals.length/
-                        state.evalthreads;
-                    }
-                else // in case we're slightly off in division
-                    {
-                    numinds[y][x]=
-                        state.population.subpops[x].individuals.length/
-                        state.evalthreads +
-                        (state.population.subpops[x].individuals.length -
-                         (state.population.subpops[x].individuals.length /
-                          state.evalthreads)  // note integer division
-                         *state.evalthreads);                   
-                    }
-
-                // figure from
-                from[y][x]=
-                    (state.population.subpops[x].individuals.length/
-                     state.evalthreads) * y;
-                }
-            }
-
-        if (state.evalthreads==1)
-            {
-            evalPopChunk(state,numinds[0],from[0],0,(SimpleProblemForm)(p_problem.clone()));  
-            }
-        else
-            {
-            Thread[] t = new Thread[state.evalthreads];
-
-            // start up the threads
-            for(int y=0;y<state.evalthreads;y++)
-                {
-                SPEA2EvaluatorThread r = new SPEA2EvaluatorThread();
-                r.threadnum = y;
-                r.numinds = numinds[y];
-                r.from = from[y];
-                r.me = this;
-                r.state = state;
-                r.p = (SimpleProblemForm)(p_problem.clone());
-                t[y] = new Thread(r);
-                t[y].start();
-                }
-
-            // gather the threads
-            for(int y=0;y<state.evalthreads;y++) 
-                {
-                try
-                    {
-                    t[y].join();
-                    }
-                catch(InterruptedException e)
-                    {
-                    state.output.fatal("Whoa! The main evaluation thread got interrupted!  Dying...");
-                    }
-                }
-            }
-
+    public void computeAuxiliaryData(EvolutionState state)
+	{
         // Ok...now all individuals have been evaluated
         // so we can go ahead and calculate the raw and
         // density values of the SPEA2 fitness function
@@ -244,8 +169,8 @@ public class SPEA2Evaluator extends Evaluator
                 }
 
             } // For each subpopulation
-
         }
+
 
     /** Private helper function.  This calculates the area of
         a sphere in n dimensions for use in the SPEA2 density
@@ -271,52 +196,6 @@ public class SPEA2Evaluator extends Evaluator
             vol = Math.pow(2,dimensions) * Math.pow(PI,(dimensions-1)/2) * vol;
             } // else
         return vol;
-
-        }
-
-
-
-    /** A private helper function for evaluatePopulation which evaluates a chunk
-        of individuals in a subpopulation for a given thread.
-        Although this method is declared
-        public (for the benefit of a private helper class in this file),
-        you should not call it. */
-    public void evalPopChunk(EvolutionState state, int[] numinds, int[] from,
-                             int threadnum, SimpleProblemForm p)
-        {
-        for(int pop=0;pop<state.population.subpops.length;pop++)
-            {
-            // start evaluatin'!
-            int upperbound = from[pop]+numinds[pop];
-            for (int x=from[pop];x<upperbound;x++)
-                ((SimpleProblemForm)p).evaluate(state,state.population.subpops[pop].individuals[x], threadnum);
-            }
-        }
-
-    /** The SPEA2Evaluator determines that a run is complete by asking
-        each individual in each population if he or she is optimal; if it
-        finds an individual somewhere that's optimal,
-        it signals that the run is complete. */
-    public boolean runComplete(final EvolutionState state)
-        {
-        for(int x = 0;x<state.population.subpops.length;x++)
-            for(int y=0;y<state.population.subpops[x].individuals.length;y++)
-                if (state.population.subpops[x].
-                    individuals[y].fitness.isIdealFitness())
-                    return true;
-        return false;
         }
     }
 
-/** A private helper class for implementing multithreaded evaluation */
-class SPEA2EvaluatorThread implements Runnable
-    {
-    public int[] numinds;
-    public int[] from;
-    public SPEA2Evaluator me;
-    public EvolutionState state;
-    public int threadnum;
-    public SimpleProblemForm p;
-    public synchronized void run() 
-        { me.evalPopChunk(state,numinds,from,threadnum,p); }
-    }

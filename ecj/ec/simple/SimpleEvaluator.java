@@ -35,7 +35,7 @@ public class SimpleEvaluator extends Evaluator
         {
         super.setup(state,base);
         if (!(p_problem instanceof SimpleProblemForm))
-            state.output.fatal("SimpleEvaluator used, but the Problem is not of SimpleProblemForm",
+            state.output.fatal("" + this.getClass() + " used, but the Problem is not of SimpleProblemForm",
                                base.push(P_PROBLEM));
         }
     
@@ -113,7 +113,7 @@ public class SimpleEvaluator extends Evaluator
         public (for the benefit of a private helper class in this file),
         you should not call it. */
 
-    void evalPopChunk(EvolutionState state, int[] numinds, int[] from,
+    protected void evalPopChunk(EvolutionState state, int[] numinds, int[] from,
                       int threadnum, SimpleProblemForm p)
         {
         ((ec.Problem)p).prepareToEvaluate(state,threadnum);

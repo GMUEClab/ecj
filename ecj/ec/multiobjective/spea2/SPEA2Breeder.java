@@ -13,6 +13,7 @@ import ec.EvolutionState;
 import ec.Population;
 import ec.util.Parameter;
 import ec.util.*;
+import ec.simple.*;
 
 /* 
  * SPEA2Breeder.java
@@ -44,152 +45,31 @@ import ec.util.*;
  * @version 1.0 
  */
 
-public class SPEA2Breeder extends Breeder
+public class SPEA2Breeder extends SimpleBreeder
     {
-
     /** Debug messages for this object */
-    public static final int V_DEBUG = 5;
+    //public static final int V_DEBUG = 5;
 
     public void setup(final EvolutionState state, final Parameter base) 
         {
+	super.setup(state, base);
+	// make sure SimpleBreeder's elites facility isn't being used
+	for(int i=0;i<elite.length;i++)
+	    if (elite[i] != 0)
+		state.output.fatal("Elites may not be used with SPEA2Breeder");
         }
+	
+    // this version returns the archive size for the subpopulation rather than using
+    // SimpleBreeder's elites mechanism -- perhaps we should unify this some day.
+    public int computeSubpopulationLength(EvolutionState state, int subpopulation)
+	{
+	return state.population.subpops[subpopulation].individuals.length 
+	    - ((SPEA2Subpopulation)state.population.subpops[subpopulation]).archiveSize;
 
-    /** A simple breeder that doesn't attempt to do any cross-
-        population breeding.  Basically it applies pipelines,
-        one per thread, to various subchunks of a new population. */
-    public Population breedPopulation(EvolutionState state) 
-        
-        {
-        int numinds[][] = 
-            new int[state.breedthreads][state.population.subpops.length];
-        int from[][] = 
-            new int[state.breedthreads][state.population.subpops.length];
+	}
 
-        Population newpop = (Population) state.population.emptyClone();
-
-        // load top individuals (elites) into the archive (top of newpop)
-        // TODO: Consider if this should be optimized since it is an 
-        //       expensive task but not designed to work in a multithreaded
-        //       fashion.
-        loadArchive(state, newpop);
-
-        for(int y=0;y<state.breedthreads;y++)
-            {
-            for(int x=0;x<state.population.subpops.length;x++)
-                {
-                // Subpopulation we are considering
-                SPEA2Subpopulation thisSubpop =
-                    (SPEA2Subpopulation)state.population.subpops[x];
-
-                // the number of individuals we need to breed
-                int length = state.population.subpops[x].individuals.length 
-                    - thisSubpop.archiveSize;
-
-                // the size of each breeding chunk except the last one
-                int firstBreedChunkSizes = length/state.breedthreads;
-
-                // the size of the last breeding chunk
-                int lastBreedChunkSize = firstBreedChunkSizes + length - 
-                    firstBreedChunkSizes * (state.breedthreads);
-
-                // figure numinds
-                if (y < state.breedthreads-1) // not the last one
-                    numinds[y][x] = firstBreedChunkSizes;
-                else // the last one
-                    numinds[y][x] = lastBreedChunkSize;
-
-                // figure from
-                from[y][x] = (firstBreedChunkSizes * y);
-                }
-            }
-
-        if (state.breedthreads==1)
-            {
-            breedPopChunk(newpop,state,numinds[0],from[0],0);
-            }
-        else
-            {
-            Thread[] t = new Thread[state.breedthreads];
-
-            // start up the threads
-            for(int y=0;y<state.breedthreads;y++)
-                {
-                SPEA2BreederThread r = new SPEA2BreederThread();
-                r.threadnum = y;
-                r.newpop = newpop;
-                r.numinds = numinds[y];
-                r.from = from[y];
-                r.me = this;
-                r.state = state;
-                t[y] = new Thread(r);
-                t[y].start();
-                }
-
-            // gather the threads
-            for(int y=0;y<state.breedthreads;y++) try
-                {
-                t[y].join();
-                }
-            catch(InterruptedException e)
-                {
-                state.output.fatal("Whoa! The main breeding thread got interrupted!  Dying...");
-                }
-            }
-        return newpop;
-        }
-
-
-    /** A private helper function for breedPopulation which breeds a chunk
-        of individuals in a subpopulation for a given thread.
-        Although this method is declared
-        public (for the benefit of a private helper class in this file),
-        you should not call it. */
-
-    public void breedPopChunk(Population newpop, 
-                              EvolutionState state,
-                              int[] numinds, 
-                              int[] from, 
-                              int threadnum) 
-        {
-        for(int subpop=0;subpop<newpop.subpops.length;subpop++)
-            {
-            BreedingPipeline bp = (BreedingPipeline)newpop.subpops[subpop].
-                species.pipe_prototype.clone();
-
-            // check to make sure that the breeding pipeline produces
-            // the right kind of individuals.  Don't want a mistake there! :-)
-            int x;
-            if (!bp.produces(state,newpop,subpop,threadnum))
-                state.output.error("The Breeding Pipeline of subpopulation " + subpop + 
-                                   " does not produce individuals of the expected species " + 
-                                   newpop.subpops[subpop].species.getClass().getName() + 
-                                   " or fitness " + newpop.subpops[subpop].species.f_prototype );
-            bp.prepareToProduce(state,subpop,threadnum);
-            state.output.exitIfErrors();
-
-            // start breedin'!
-            x=from[subpop];
-            int upperbound = from[subpop]+numinds[subpop];
-            while(x<upperbound)
-                {
-                x += bp.produce(1,upperbound-x,x,subpop,
-                                newpop.subpops[subpop].individuals,
-                                state,threadnum);
-                }
-            if (x>upperbound) // uh oh!  Someone blew it!
-                {
-                state.output.fatal("Whoa!  A breeding pipeline overwrote the space of " +
-                                   "another pipeline in subpopulation " + subpop + 
-                                   ".  You need to check your breeding pipeline code (in produce() ).");
-                }
-            }
-        }
-
-
-
-    /** A private helper function for breedPopulation which loads the
-        archive (top end of indivudal array) with the SPEA2 elites. */
-    public void loadArchive(EvolutionState state, Population newpop)
+    // overrides the loadElites function to load the archive the way we'd like to do it.
+    public void loadElites(EvolutionState state, Population newpop)
         {
         //state.output.println("Loading the SPEA2 archive...",V_DEBUG, Log.D_STDOUT);
         /** A large number used for sorting */
@@ -347,7 +227,7 @@ public class SPEA2Breeder extends Breeder
 
 
     /** Private quicksort function */
-    private void QuickSort(Individual a[], int l, int r)
+    private void quickSort(Individual a[], int l, int r)
         {
         int M = 4;
         int i;
@@ -386,8 +266,8 @@ public class SPEA2Breeder extends Breeder
                 swap (a,i,j);
                 }
             swap(a,i,r-1);
-            QuickSort(a,l,j);
-            QuickSort(a,i+1,r);
+            quickSort(a,l,j);
+            quickSort(a,i+1,r);
             }
         }
 
@@ -424,25 +304,8 @@ public class SPEA2Breeder extends Breeder
     /** Private helper function which calls quicksort */
     public void sort(Individual a[])
         {
-        QuickSort(a, 0, a.length - 1);
+        quickSort(a, 0, a.length - 1);
         InsertionSort(a,0,a.length-1);
         }
-
-
     }
 
-
-/** A private helper class for implementing multithreaded breeding */
-class SPEA2BreederThread implements Runnable
-    {
-    Population newpop;
-    public int[] numinds;
-    public int[] from;
-    public SPEA2Breeder me;
-    public EvolutionState state;
-    public int threadnum;
-    public void run()
-        {
-        me.breedPopChunk(newpop,state,numinds,from,threadnum);
-        }
-    }
