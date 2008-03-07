@@ -68,6 +68,14 @@ public class SimpleBreeder extends Breeder
         state.output.exitIfErrors();
         }
 
+    /** Elites are often stored in the top part of the subpopulation; this function returns what
+	part of the subpopulation contains individuals to replace with newly-bred ones
+	(up to but not including the elites). */
+    public int computeSubpopulationLength(EvolutionState state, int subpopulation)
+	{
+	return state.population.subpops[subpopulation].individuals.length - elite[subpopulation];
+	}
+
     /** A simple breeder that doesn't attempt to do any cross-
         population breeding.  Basically it applies pipelines,
         one per thread, to various subchunks of a new population. */
@@ -80,12 +88,6 @@ public class SimpleBreeder extends Breeder
 
         Population newpop = (Population) state.population.emptyClone();
         
-        // are our elites small enough?
-        for(int x=0;x<state.population.subpops.length;x++)
-            if (elite[x]>state.population.subpops[x].individuals.length)
-                state.output.error("The number of elites for subpopulation " + x + " exceeds the actual size of the subpopulation", new Parameter(EvolutionState.P_BREEDER).push(P_ELITE).push(""+x));
-        state.output.exitIfErrors();
-
         // load elites into top of newpop
         loadElites(state, newpop);
 
@@ -93,7 +95,7 @@ public class SimpleBreeder extends Breeder
             for(int x=0;x<state.population.subpops.length;x++)
                 {
                 // the number of individuals we need to breed
-                int length = state.population.subpops[x].individuals.length - elite[x];
+                int length = computeSubpopulationLength(state, x);
                 // the size of each breeding chunk except the last one
                 int firstBreedChunkSizes = length/state.breedthreads;
                 // the size of the last breeding chunk
@@ -154,7 +156,7 @@ public class SimpleBreeder extends Breeder
         public (for the benefit of a private helper class in this file),
         you should not call it. */
 
-    public void breedPopChunk(Population newpop, EvolutionState state,
+    protected void breedPopChunk(Population newpop, EvolutionState state,
                               int[] numinds, int[] from, int threadnum) 
         {
         //System.out.println("Breeding: " + numinds[0] + " Starting at: " + from[0]);
@@ -200,6 +202,12 @@ public class SimpleBreeder extends Breeder
 
     public void loadElites(EvolutionState state, Population newpop)
         {
+        // are our elites small enough?
+        for(int x=0;x<state.population.subpops.length;x++)
+            if (elite[x]>state.population.subpops[x].individuals.length)
+                state.output.error("The number of elites for subpopulation " + x + " exceeds the actual size of the subpopulation", new Parameter(EvolutionState.P_BREEDER).push(P_ELITE).push(""+x));
+        state.output.exitIfErrors();
+
         // we assume that we're only grabbing a small number (say <10%), so
         // it's not being done multithreaded
         for(int sub=0;sub<state.population.subpops.length;sub++) 
