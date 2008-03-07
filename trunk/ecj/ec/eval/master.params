@@ -20,14 +20,16 @@ eval.masterproblem = ec.eval.MasterProblem
 eval.masterproblem.debug-info = false
 
 
-# How large should each slave's job queue be?  In the past this 
-# had a significant effect on network performance, but it doesn't
-# any more.  Now it mostly serves to allow you to send out a large
-# number of children before getting any back, which mostly has (likely
-# negative) effects on steady-state evolution.  Unless you have a special
-# reason to, keep this at 1 for the time being until we add some new code
-# which allows it to have an effect on.
-eval.masterproblem.max-jobs-per-slave = 1
+# How large should each slave's job queue be?  ECJ will
+# keep slaves' TCP/IP streams filled with jobs even if the
+# slaves haven't processed them yet, which has a significant
+# effect on network performance.  Increasing this number is
+# likely to be more efficient.  Note that once a job is
+# committed to a slave, a brand new slave coming on-line cannot
+# take it -- it'll have to sit and wait, which isn't particularly
+# efficient.  At the very least, it's probably helpful to have 2
+# or 3 jobs in the queue.
+eval.masterproblem.max-jobs-per-slave = 3
 
 
 # How large should our job be?  If you're doing ordinary
