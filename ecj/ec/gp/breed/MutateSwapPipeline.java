@@ -158,9 +158,9 @@ public class MutateSwapPipeline extends GPBreedingPipeline
         GPNode tmp = node.children[x];
         node.children[x] = node.children[y];
         node.children[y] = tmp;
-	node.children[x].argposition = (byte)x;
+        node.children[x].argposition = (byte)x;
         node.children[y].argposition = (byte)y;
-	// no need to set parent -- it's the same parent of course
+        // no need to set parent -- it's the same parent of course
         }
 
     
@@ -198,7 +198,7 @@ public class MutateSwapPipeline extends GPBreedingPipeline
                         node.children[y] = tmp;
                         node.children[x].argposition = (byte)x;
                         node.children[y].argposition = (byte)y;
-			// no need to set parent -- it's the same parent of course
+                        // no need to set parent -- it's the same parent of course
                         return;
                         }
                     else numSwappable++;
@@ -278,7 +278,7 @@ public class MutateSwapPipeline extends GPBreedingPipeline
                 for(int x=0;x<j.trees.length;x++)
                     {
                     j.trees[x] = (GPTree)(i.trees[x].lightClone());
-		    j.trees[x].owner = j;
+                    j.trees[x].owner = j;
                     j.trees[x].child = i.trees[x].child.cloneReplacing();
                     j.trees[x].child.parent = j.trees[x];
                     j.trees[x].child.argposition = 0;

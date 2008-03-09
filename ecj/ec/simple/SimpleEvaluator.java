@@ -114,7 +114,7 @@ public class SimpleEvaluator extends Evaluator
         you should not call it. */
 
     protected void evalPopChunk(EvolutionState state, int[] numinds, int[] from,
-                      int threadnum, SimpleProblemForm p)
+                                int threadnum, SimpleProblemForm p)
         {
         ((ec.Problem)p).prepareToEvaluate(state,threadnum);
         

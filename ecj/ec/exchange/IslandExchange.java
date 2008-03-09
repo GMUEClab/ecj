@@ -1068,8 +1068,8 @@ public class IslandExchange extends Exchanger
 
         state.output.message( "Shutting down the mailbox" );
         // close the mailbox and wait for the thread to terminate
-	mailbox.shutDown();
-	mailboxThread.interrupt();
+        mailbox.shutDown();
+        mailboxThread.interrupt();
         try
             {
             mailboxThread.join();

@@ -52,21 +52,21 @@ public class SPEA2Breeder extends SimpleBreeder
 
     public void setup(final EvolutionState state, final Parameter base) 
         {
-	super.setup(state, base);
-	// make sure SimpleBreeder's elites facility isn't being used
-	for(int i=0;i<elite.length;i++)
-	    if (elite[i] != 0)
-		state.output.fatal("Elites may not be used with SPEA2Breeder");
+        super.setup(state, base);
+        // make sure SimpleBreeder's elites facility isn't being used
+        for(int i=0;i<elite.length;i++)
+            if (elite[i] != 0)
+                state.output.fatal("Elites may not be used with SPEA2Breeder");
         }
-	
+        
     // this version returns the archive size for the subpopulation rather than using
     // SimpleBreeder's elites mechanism -- perhaps we should unify this some day.
     public int computeSubpopulationLength(EvolutionState state, int subpopulation)
-	{
-	return state.population.subpops[subpopulation].individuals.length 
-	    - ((SPEA2Subpopulation)state.population.subpops[subpopulation]).archiveSize;
+        {
+        return state.population.subpops[subpopulation].individuals.length 
+            - ((SPEA2Subpopulation)state.population.subpops[subpopulation]).archiveSize;
 
-	}
+        }
 
     // overrides the loadElites function to load the archive the way we'd like to do it.
     public void loadElites(EvolutionState state, Population newpop)
