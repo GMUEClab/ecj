@@ -396,20 +396,20 @@ public class Slave
                                 evaluateGroupedProblemForm(state, returnIndividuals, dataIn, dataOut);
                                 break;
                                                                                         
-                            /*
-			    case V_CHECKPOINT:
-                                state.output.systemMessage("Checkpointing");
-                                try
-                                    {
-                                    state.random[0].writeState(dataOut);
-                                    dataOut.flush();
-                                    }
-                                catch (IOException e)
-                                    {
-                                    state.output.fatal("Exception while checkpointing random state:\n"+e);
-                                    }
-                                break;
-			    */
+                                /*
+                                  case V_CHECKPOINT:
+                                  state.output.systemMessage("Checkpointing");
+                                  try
+                                  {
+                                  state.random[0].writeState(dataOut);
+                                  dataOut.flush();
+                                  }
+                                  catch (IOException e)
+                                  {
+                                  state.output.fatal("Exception while checkpointing random state:\n"+e);
+                                  }
+                                  break;
+                                */
                             default:
                                 state.output.fatal("Unknown problem form specified: "+problemType);
                             }

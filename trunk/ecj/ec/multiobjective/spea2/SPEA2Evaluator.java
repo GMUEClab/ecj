@@ -41,15 +41,15 @@ public class SPEA2Evaluator extends SimpleEvaluator
         one per thread, to various subchunks of a new population. */
     public void evaluatePopulation(final EvolutionState state)
         {
-	for(int i =0; i < state.population.subpops.length; i++)
-	    if (!(state.population.subpops[i] instanceof SPEA2Subpopulation))
-		state.output.fatal("SPEA2Evaluator must only be used with a SPEA2Subpopulation!", null);
-	super.evaluatePopulation(state);
-	computeAuxiliaryData(state);
-	}
+        for(int i =0; i < state.population.subpops.length; i++)
+            if (!(state.population.subpops[i] instanceof SPEA2Subpopulation))
+                state.output.fatal("SPEA2Evaluator must only be used with a SPEA2Subpopulation!", null);
+        super.evaluatePopulation(state);
+        computeAuxiliaryData(state);
+        }
 
     public void computeAuxiliaryData(EvolutionState state)
-	{
+        {
         // Ok...now all individuals have been evaluated
         // so we can go ahead and calculate the raw and
         // density values of the SPEA2 fitness function

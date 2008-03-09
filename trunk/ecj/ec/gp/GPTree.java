@@ -288,26 +288,26 @@ public class GPTree implements GPNodeParent, Prototype
 
     /** Verification of validity of the tree -- strictly for debugging purposes only */
     public final void verify(EvolutionState state)
-	{
-	if (!(state.initializer instanceof GPInitializer))
-	    { state.output.error("Initializer is not a GPInitializer"); return; }
-	    
-	GPInitializer initializer = (GPInitializer)(state.initializer);
+        {
+        if (!(state.initializer instanceof GPInitializer))
+            { state.output.error("Initializer is not a GPInitializer"); return; }
+            
+        GPInitializer initializer = (GPInitializer)(state.initializer);
 
-	if (child == null)
-	    { state.output.error("Null root child of GPTree."); return; }
-	if (owner == null)
-	    { state.output.error("Null owner of GPTree."); return; }
-	if (owner.trees == null)
-	    { state.output.error("Owner has null trees."); return; }
-	if (treeNumber() == NO_TREENUM) 
-	    { state.output.error("No Tree Number! I appear to be an orphan GPTree."); return; }
+        if (child == null)
+            { state.output.error("Null root child of GPTree."); return; }
+        if (owner == null)
+            { state.output.error("Null owner of GPTree."); return; }
+        if (owner.trees == null)
+            { state.output.error("Owner has null trees."); return; }
+        if (treeNumber() == NO_TREENUM) 
+            { state.output.error("No Tree Number! I appear to be an orphan GPTree."); return; }
         if (constraints < 0 || constraints >= initializer.numTreeConstraints)
-	    { state.output.error("Preposterous tree constraints (" + constraints + ")"); return; }
+            { state.output.error("Preposterous tree constraints (" + constraints + ")"); return; }
 
-	child.verify(state, constraints(initializer).functionset, 0);
+        child.verify(state, constraints(initializer).functionset, 0);
         state.output.exitIfErrors();
-	}
+        }
 
     /** Prints out the tree in single-line fashion suitable for reading
         in later by computer. O(n). 

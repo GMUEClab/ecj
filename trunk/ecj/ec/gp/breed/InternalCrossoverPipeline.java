@@ -256,7 +256,7 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
                 for(int x=0;x<j.trees.length;x++)
                     {
                     j.trees[x] = (GPTree)(i.trees[x].lightClone());  // light clone
-		    j.trees[x].owner = j;
+                    j.trees[x].owner = j;
                     j.trees[x].child = i.trees[x].child.cloneReplacing();
                     j.trees[x].child.parent = j.trees[x];
                     j.trees[x].child.argposition = 0;

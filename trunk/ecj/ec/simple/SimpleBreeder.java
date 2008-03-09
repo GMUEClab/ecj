@@ -69,12 +69,12 @@ public class SimpleBreeder extends Breeder
         }
 
     /** Elites are often stored in the top part of the subpopulation; this function returns what
-	part of the subpopulation contains individuals to replace with newly-bred ones
-	(up to but not including the elites). */
+        part of the subpopulation contains individuals to replace with newly-bred ones
+        (up to but not including the elites). */
     public int computeSubpopulationLength(EvolutionState state, int subpopulation)
-	{
-	return state.population.subpops[subpopulation].individuals.length - elite[subpopulation];
-	}
+        {
+        return state.population.subpops[subpopulation].individuals.length - elite[subpopulation];
+        }
 
     /** A simple breeder that doesn't attempt to do any cross-
         population breeding.  Basically it applies pipelines,
@@ -157,7 +157,7 @@ public class SimpleBreeder extends Breeder
         you should not call it. */
 
     protected void breedPopChunk(Population newpop, EvolutionState state,
-                              int[] numinds, int[] from, int threadnum) 
+                                 int[] numinds, int[] from, int threadnum) 
         {
         //System.out.println("Breeding: " + numinds[0] + " Starting at: " + from[0]);
         for(int subpop=0;subpop<newpop.subpops.length;subpop++)

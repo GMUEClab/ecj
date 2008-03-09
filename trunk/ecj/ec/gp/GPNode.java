@@ -222,68 +222,68 @@ public abstract class GPNode implements GPNodeParent, Prototype
 
     /** Verification of validity of the node in the tree -- strictly for debugging purposes only */
     public final int verify(EvolutionState state, GPFunctionSet set, int index)
-	{
-	if (!(state.initializer instanceof GPInitializer))
-	    { state.output.error("" + index + ": Initializer is not a GPInitializer"); return index+1; }
-	    
-	GPInitializer initializer = (GPInitializer)(state.initializer);
-	
-	// 1. Is the parent and argposition right?
-	if (parent == null)
-	    { state.output.error("" + index + ": null parent"); return index+1; }
-	if (argposition < 0)
-	    { state.output.error("" + index + ": negative argposition"); return index+1; }
-	if (parent instanceof GPTree && ((GPTree)parent).child != this)
-	    { state.output.error("" + index + ": I think I am a root node, but my GPTree does not think I am a root node"); return index+1; }
-	if (parent instanceof GPTree && argposition != 0)
-	    { state.output.error("" + index + ": I think I am a root node, but my argposition is not 0"); return index+1; }
-	if (parent instanceof GPNode && argposition >= ((GPNode)parent).children.length)
-	    { state.output.error("" + index + ": argposition outside range of parent's children array"); return index+1; }
-	if (parent instanceof GPNode && ((GPNode)parent).children[argposition] != this)
-	    { state.output.error("" + index + ": I am not found in the provided argposition ("+argposition+") of my parent's children array"); return index+1; }
+        {
+        if (!(state.initializer instanceof GPInitializer))
+            { state.output.error("" + index + ": Initializer is not a GPInitializer"); return index+1; }
+            
+        GPInitializer initializer = (GPInitializer)(state.initializer);
+        
+        // 1. Is the parent and argposition right?
+        if (parent == null)
+            { state.output.error("" + index + ": null parent"); return index+1; }
+        if (argposition < 0)
+            { state.output.error("" + index + ": negative argposition"); return index+1; }
+        if (parent instanceof GPTree && ((GPTree)parent).child != this)
+            { state.output.error("" + index + ": I think I am a root node, but my GPTree does not think I am a root node"); return index+1; }
+        if (parent instanceof GPTree && argposition != 0)
+            { state.output.error("" + index + ": I think I am a root node, but my argposition is not 0"); return index+1; }
+        if (parent instanceof GPNode && argposition >= ((GPNode)parent).children.length)
+            { state.output.error("" + index + ": argposition outside range of parent's children array"); return index+1; }
+        if (parent instanceof GPNode && ((GPNode)parent).children[argposition] != this)
+            { state.output.error("" + index + ": I am not found in the provided argposition ("+argposition+") of my parent's children array"); return index+1; }
 
-	// 2. Are the parents and argpositions right for my kids? [need to double check]
-	if (children==null)
-	    { state.output.error("" + index + ": Null Children Array"); return index+1; }
-	for(int x=0;x<children.length;x++)
-	    {
-	    if (children[x] == null)
-		{ state.output.error("" + index + ": Null Child (#" + x + " )"); return index+1; }
-	    if (children[x].parent != this)
-		{ state.output.error("" + index + ": child #"+x+" does not have me as a parent"); return index+1; }
-	    if (children[x].argposition < 0)
-		{ state.output.error("" + index + ": child #"+x+" argposition is negative"); return index+1; }
-	    if (children[x].argposition != x)
-		{ state.output.error("" + index + ": child #"+x+" argposition does not match position in the children array"); return index+1; }
-	    }
-	
-	// 3. Do I have valid constraints?
-	if (constraints < 0 || constraints >= initializer.numNodeConstraints)
-	    { state.output.error("" + index + ": Preposterous node constraints (" + constraints + ")"); return index+1; }
-	
-	// 4. Am I swap-compatable with my parent?
-	if (parent instanceof GPNode && !constraints(initializer).returntype.compatibleWith(initializer, 
-		((GPNode)(parent)).constraints(initializer).childtypes[argposition]))
-	    { state.output.error("" + index + ": Incompatable GP type between me and my parent"); return index+1; }
-	if (parent instanceof GPTree && !constraints(initializer).returntype.compatibleWith(initializer,
-		((GPTree)(parent)).constraints(initializer).treetype))
-	    { state.output.error("" + index + ": I am root, but incompatable GP type between me and my tree return type"); return index+1; }
-	
-	// 5. Is my class in the GPFunctionSet?
-	GPNode[] nodes = set.nodesByArity[constraints(initializer).returntype.type][children.length];
-	boolean there = false;
-	for(int x=0;x<nodes.length;x++)
-	    if (nodes[x].getClass() == this.getClass()) { there = true; break; }
-	if (!there)
-	    { state.output.error("" + index + ": I'm not in the function set."); return index+1; }
-	    
-	// otherwise we've passed -- go to next node
-	index++;
-	for(int x=0;x<children.length;x++)
-	    index = children[x].verify(state, set, index);
+        // 2. Are the parents and argpositions right for my kids? [need to double check]
+        if (children==null)
+            { state.output.error("" + index + ": Null Children Array"); return index+1; }
+        for(int x=0;x<children.length;x++)
+            {
+            if (children[x] == null)
+                { state.output.error("" + index + ": Null Child (#" + x + " )"); return index+1; }
+            if (children[x].parent != this)
+                { state.output.error("" + index + ": child #"+x+" does not have me as a parent"); return index+1; }
+            if (children[x].argposition < 0)
+                { state.output.error("" + index + ": child #"+x+" argposition is negative"); return index+1; }
+            if (children[x].argposition != x)
+                { state.output.error("" + index + ": child #"+x+" argposition does not match position in the children array"); return index+1; }
+            }
+        
+        // 3. Do I have valid constraints?
+        if (constraints < 0 || constraints >= initializer.numNodeConstraints)
+            { state.output.error("" + index + ": Preposterous node constraints (" + constraints + ")"); return index+1; }
+        
+        // 4. Am I swap-compatable with my parent?
+        if (parent instanceof GPNode && !constraints(initializer).returntype.compatibleWith(initializer, 
+                                                                                            ((GPNode)(parent)).constraints(initializer).childtypes[argposition]))
+            { state.output.error("" + index + ": Incompatable GP type between me and my parent"); return index+1; }
+        if (parent instanceof GPTree && !constraints(initializer).returntype.compatibleWith(initializer,
+                                                                                            ((GPTree)(parent)).constraints(initializer).treetype))
+            { state.output.error("" + index + ": I am root, but incompatable GP type between me and my tree return type"); return index+1; }
+        
+        // 5. Is my class in the GPFunctionSet?
+        GPNode[] nodes = set.nodesByArity[constraints(initializer).returntype.type][children.length];
+        boolean there = false;
+        for(int x=0;x<nodes.length;x++)
+            if (nodes[x].getClass() == this.getClass()) { there = true; break; }
+        if (!there)
+            { state.output.error("" + index + ": I'm not in the function set."); return index+1; }
+            
+        // otherwise we've passed -- go to next node
+        index++;
+        for(int x=0;x<children.length;x++)
+            index = children[x].verify(state, set, index);
         state.output.exitIfErrors();
-	return index;
-	}
+        return index;
+        }
 
 
     /** Returns true if I can swap into node's position. */

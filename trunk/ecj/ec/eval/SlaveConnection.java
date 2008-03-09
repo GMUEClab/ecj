@@ -157,13 +157,13 @@ class SlaveConnection
         
         // This all could have been O(1) if we had used two queues, but we're being
         // intentionally lazy to keep this from getting to complex.
-	Iterator i = jobs.iterator();
-	while(i.hasNext())
-	    {
-	    Job job = (Job)(i.next());
-	    if (!job.sent) { job.sent = true; return job; }
-	    }
-	return null;
+        Iterator i = jobs.iterator();
+        while(i.hasNext())
+            {
+            Job job = (Job)(i.next());
+            if (!job.sent) { job.sent = true; return job; }
+            }
+        return null;
         }
         
     
@@ -173,51 +173,51 @@ class SlaveConnection
         
         try
             {
-	    synchronized(jobs)
-		{
-		// check for an unsent job
-		if ((job = oldestUnsentJob()) == null)  // automatically marks as sent
-		    {
-		    // failed -- wait and drop out of the loop and come in again
-		    debug("" + Thread.currentThread().getName() + "Waiting for a job to send" );
-		    slaveMonitor.waitOnMonitor(jobs); 
-		    }
-		}
-	    if (job != null)  // we got a job inside our synchronized wait
-		{
-		// send the job
-		debug("" + Thread.currentThread().getName() + "Sending Job");
-		if( job.type == Slave.V_EVALUATESIMPLE )
-		    {
-		    // Tell the server we're evaluating a SimpleProblemForm
-		    dataOut.writeByte(Slave.V_EVALUATESIMPLE);
-		    }
-		else
-		    {
-		    // Tell the server we're evaluating a GroupedProblemForm
-		    dataOut.writeByte(Slave.V_EVALUATEGROUPED);
-					
-		    // Tell the server whether to count victories only or not.
-		    dataOut.writeBoolean(job.countVictoriesOnly);
-		    }
-		    
-		// transmit number of individuals 
-		dataOut.writeInt(job.inds.length); 
-			    
-		// Transmit the subpopulation number to the slave 
-		for(int x=0;x<job.subPops.length;x++)
-		    dataOut.writeInt(job.subPops[x]);
-			    
-		debug("Starting to transmit individuals"); 
-			    
-		// Transmit the individuals to the server for evaluation...
-		for(int i=0;i<job.inds.length;i++)
-		    {
-		    job.inds[i].writeIndividual(state, dataOut);
-		    dataOut.writeBoolean(job.updateFitness[i]);
-		    }
-		dataOut.flush();
-		}
+            synchronized(jobs)
+                {
+                // check for an unsent job
+                if ((job = oldestUnsentJob()) == null)  // automatically marks as sent
+                    {
+                    // failed -- wait and drop out of the loop and come in again
+                    debug("" + Thread.currentThread().getName() + "Waiting for a job to send" );
+                    slaveMonitor.waitOnMonitor(jobs); 
+                    }
+                }
+            if (job != null)  // we got a job inside our synchronized wait
+                {
+                // send the job
+                debug("" + Thread.currentThread().getName() + "Sending Job");
+                if( job.type == Slave.V_EVALUATESIMPLE )
+                    {
+                    // Tell the server we're evaluating a SimpleProblemForm
+                    dataOut.writeByte(Slave.V_EVALUATESIMPLE);
+                    }
+                else
+                    {
+                    // Tell the server we're evaluating a GroupedProblemForm
+                    dataOut.writeByte(Slave.V_EVALUATEGROUPED);
+                                        
+                    // Tell the server whether to count victories only or not.
+                    dataOut.writeBoolean(job.countVictoriesOnly);
+                    }
+                    
+                // transmit number of individuals 
+                dataOut.writeInt(job.inds.length); 
+                            
+                // Transmit the subpopulation number to the slave 
+                for(int x=0;x<job.subPops.length;x++)
+                    dataOut.writeInt(job.subPops[x]);
+                            
+                debug("Starting to transmit individuals"); 
+                            
+                // Transmit the individuals to the server for evaluation...
+                for(int i=0;i<job.inds.length;i++)
+                    {
+                    job.inds[i].writeIndividual(state, dataOut);
+                    dataOut.writeBoolean(job.updateFitness[i]);
+                    }
+                dataOut.flush();
+                }
             }
         catch (Exception e)  { shutdown(state); return false; }
         return true;
