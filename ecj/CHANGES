@@ -1332,3 +1332,8 @@ Version		Change Log
 		sharing a lot of code in common.  Hope we did it right.  Also
 		made small changes to SimpleEvaluator and SimpleBreeder to
 		accommodate this.
+
+18	P-P-P-Prerelease
+	DEBreeder needs to have at least 4 individuals in a subpopulation in order
+		to work properly.  We weren't verifying this condition.  Thanks to
+		Michael Hart <mhart@baselinesolutions.com.au>
