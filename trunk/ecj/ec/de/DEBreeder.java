@@ -70,6 +70,9 @@ public class DEBreeder extends Breeder
         // breed the children
         for( int subpop = 0 ; subpop < state.population.subpops.length ; subpop++ )
             {
+	    if (state.population.subpops[subpop].length < 4)  // Magic number, sorry.  createIndividual() requires at least 4 individuals in the pop
+		state.output.fatal("Subpopulation " + subpop + " has fewer than four individuals, and so cannot be used with DEBreeder.");
+	    
             Individual[] inds = state.population.subpops[subpop].individuals;
             for( int i = 0 ; i < inds.length ; i++ )
                 {
