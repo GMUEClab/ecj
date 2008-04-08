@@ -114,7 +114,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
     public byte argposition;
     /** The GPNode's constraints.  This is a byte to save space -- how often do
         you have 256 different GPNodeConstraints?  Well, I guess it's not infeasible.
-        You can increase4 this to an int without much trouble.  You typically 
+        You can increase this to an int without much trouble.  You typically 
         shouldn't access the constraints through this variable -- use the constraints(state)
         method instead. */
     public byte constraints;
@@ -450,29 +450,22 @@ public abstract class GPNode implements GPNodeParent, Prototype
 
     /** Deep-clones the tree rooted at this node, and returns the entire
         copied tree.  The result has everything set except for the root
-        node's parent and argposition.*/    
+        node's parent and argposition.  This method is identical to
+	cloneReplacing for historical reasons, except that it returns
+	the object as an Object, not a GPNode. */    
  
     public Object clone()
         { 
-        throw new InternalError(
-            "GPNode.clone() is moving from light clone to deep clone status.  To make certain that this doesn't create unforseen bugs in your code, "+
-            "we have added this error to the GPNode.clone() code.  If you need to do a light clone, call GPNode.lightClone().  If you need to do a full deep clone, " +
-            "call GPNode.cloneReplacing().  We'll remove this error message in a while when we think all usage of clone() has gone away for the moment, and it will " +
-            "operate identically to cloneReplacing().\n\nIf you see this message but didn't do anything to cause it, please contact ecj-help@cs.gmu.edu and send us " +
-            "the backtrace -- we probably forgot to change over a clone() call ourselves.  Thanks!");
-        
-        
-        // eventually, we'll do this:
-        /*
           return cloneReplacing();
-        */
         }
 
     /** Deep-clones the tree rooted at this node, and returns the entire
         copied tree.  The result has everything set except for the root
-        node's parent and argposition.*/    
+        node's parent and argposition.  This method is identical to
+	cloneReplacing for historical reasons, except that it returns
+	the object as a GPNode, not an Object. */    
  
-    public final GPNode cloneReplacing() 
+   public final GPNode cloneReplacing() 
         {
         GPNode newnode = (GPNode)(lightClone());
         for(int x=0;x<children.length;x++)
@@ -485,7 +478,6 @@ public abstract class GPNode implements GPNodeParent, Prototype
             }
         return newnode;
         }
-
 
 
     /** Deep-clones the tree rooted at this node, and returns the entire
