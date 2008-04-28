@@ -153,7 +153,5 @@ eval.problem.stack.context.data = ec.app.lawnmower.LawnmowerData
 
 #gc = true
 
-#stat = ec.gp.koza.KozaShortStatistics
-stat = ec.app.lawnmower.LawnmowerStatistics
 stat.gather-full = true
 

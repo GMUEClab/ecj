@@ -93,6 +93,7 @@ public class SpatialMultiPopCoevolutionaryEvaluator extends Evaluator
 
     private Individual[] mates = null;
     private boolean[] updates = null;
+    private int[] subpops = null;
     public void performCoevolutionaryEvaluation( final EvolutionState state,
                                                  final Population population,
                                                  final GroupedProblemForm prob )
@@ -105,6 +106,9 @@ public class SpatialMultiPopCoevolutionaryEvaluator extends Evaluator
         // the individuals to be evaluated together (one from each subpopulation)
         if( mates == null || mates.length != numPartners.length )
             mates = new Individual[numPartners.length];
+            
+        // the subpops need to be retained
+        subpops = new int[mates.length];
 
         // the fitnesses of which individuals need to be updated
         if( updates == null || updates.length != mates.length )
@@ -127,6 +131,7 @@ public class SpatialMultiPopCoevolutionaryEvaluator extends Evaluator
             for( int j = 0 ; j < population.subpops[i].individuals.length ; j++ )
                 {
                 mates[i] = population.subpops[i].individuals[j];
+                subpops[i] = i;
 
                 // generate all possible combinations of mates
                 for( int k = 0 ; k < indexes.length ; k++ )
@@ -141,6 +146,7 @@ public class SpatialMultiPopCoevolutionaryEvaluator extends Evaluator
                             if( (indexes[curI]==0) && sameLocationPartners[i] ) // the first partner is specified as the one at that location
                                 {
                                 mates[k] = population.subpops[k].individuals[j];
+                                subpops[k] = k;
                                 }
                             else // the remaining individuals are to be selected from the neighborhood
                                 {
@@ -162,7 +168,7 @@ public class SpatialMultiPopCoevolutionaryEvaluator extends Evaluator
                             }
 
                     // perform the coevolutionary evaluation of the group of individuals
-                    prob.evaluate(state,mates,updates,false,0);
+                    prob.evaluate(state,mates,updates,false,subpops,0);
 
                     curI = 0;
                     // select the next case

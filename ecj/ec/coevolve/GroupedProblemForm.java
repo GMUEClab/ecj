@@ -64,6 +64,7 @@ public interface GroupedProblemForm
                          final Individual[] ind,  // the individuals to evaluate together
                          final boolean[] updateFitness,  // should this individuals' fitness be updated?
                          final boolean countVictoriesOnly,  // update fitnesses only to reflect victories, rather than spreads
+                         final int[] subpops,
                          final int threadnum);
     }
 

@@ -451,21 +451,21 @@ public abstract class GPNode implements GPNodeParent, Prototype
     /** Deep-clones the tree rooted at this node, and returns the entire
         copied tree.  The result has everything set except for the root
         node's parent and argposition.  This method is identical to
-	cloneReplacing for historical reasons, except that it returns
-	the object as an Object, not a GPNode. */    
+        cloneReplacing for historical reasons, except that it returns
+        the object as an Object, not a GPNode. */    
  
     public Object clone()
         { 
-          return cloneReplacing();
+        return cloneReplacing();
         }
 
     /** Deep-clones the tree rooted at this node, and returns the entire
         copied tree.  The result has everything set except for the root
         node's parent and argposition.  This method is identical to
-	cloneReplacing for historical reasons, except that it returns
-	the object as a GPNode, not an Object. */    
+        cloneReplacing for historical reasons, except that it returns
+        the object as a GPNode, not an Object. */    
  
-   public final GPNode cloneReplacing() 
+    public final GPNode cloneReplacing() 
         {
         GPNode newnode = (GPNode)(lightClone());
         for(int x=0;x<children.length;x++)

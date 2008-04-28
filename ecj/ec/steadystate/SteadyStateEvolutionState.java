@@ -176,31 +176,32 @@ public class SteadyStateEvolutionState extends EvolutionState
             // evaluate the new individual
             ((SteadyStateEvaluator)evaluator).evaluateIndividual(this, ind, whichSubpop);
             }
-                
-        if (((SteadyStateEvaluator)evaluator).isNextEvaluatedIndividualAvailable())   // do we have an evaluated individual? 
+        
+        Individual ind = ((SteadyStateEvaluator)evaluator).getNextEvaluatedIndividual();
+        if (ind != null)   // do we have an evaluated individual? 
             {
-            QueueIndividual q  = ((SteadyStateEvaluator)evaluator).getNextEvaluatedIndividual(); // remove from queue 
+            int subpop = ((SteadyStateEvaluator)evaluator).getSubpopulationOfEvaluatedIndividual(); 
                                                 
             if ( partiallyFullSubpop ) // is subpopulation full? 
                 {  
-                population.subpops[q.subpop].individuals[individualCount[q.subpop]++]=q.ind; 
+                population.subpops[subpop].individuals[individualCount[subpop]++]=ind; 
                                 
                 // STATISTICS FOR GENERATION ZERO 
-                if ( individualCount[q.subpop] == population.subpops[q.subpop].individuals.length ) 
+                if ( individualCount[subpop] == population.subpops[subpop].individuals.length ) 
                     if (statistics instanceof SteadyStateStatisticsForm)
-                        ((SteadyStateStatisticsForm)statistics).postInitialEvaluationStatistics(q.subpop, this); 
+                        ((SteadyStateStatisticsForm)statistics).postInitialEvaluationStatistics(subpop, this); 
                 }
             else 
                 { 
                 // mark individual for death 
-                int deadIndividual = ((SteadyStateBreeder)breeder).deselectors[q.subpop].produce(q.subpop,this,0);
-                Individual deadInd = population.subpops[q.subpop].individuals[deadIndividual];
+                int deadIndividual = ((SteadyStateBreeder)breeder).deselectors[subpop].produce(subpop,this,0);
+                Individual deadInd = population.subpops[subpop].individuals[deadIndividual];
                                 
                 // replace dead individual with new individual 
-                population.subpops[q.subpop].individuals[deadIndividual] = q.ind; 
+                population.subpops[subpop].individuals[deadIndividual] = ind; 
                                 
                 // update duplicate hash table 
-                individualHash[q.subpop].remove(deadInd); 
+                individualHash[subpop].remove(deadInd); 
                                 
                 if (statistics instanceof SteadyStateStatisticsForm) 
                     ((SteadyStateStatisticsForm)statistics).individualsEvaluatedStatistics(this, null, null,null,null); 

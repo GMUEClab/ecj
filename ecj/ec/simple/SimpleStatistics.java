@@ -125,30 +125,6 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
             }
         }
 
-    /** Steady State only: loads any additional post-generation boundary stragglers into best_of_run. */
-    public void individualsEvaluatedStatistics(SteadyStateEvolutionState state, Individual[] newIndividuals, 
-                                               Individual[] oldIndividuals, int[] subpopulations, int[] indicies)
-        {
-        super.individualsEvaluatedStatistics(state, newIndividuals, oldIndividuals, subpopulations, indicies);
-        /*
-          for(int x=0;x<state.population.subpops.length;x++)
-          {
-          // best individual
-          if (best_of_run[x]==null || 
-          state.population.subpops[x].individuals[state.newIndividuals[x]].
-          fitness.betterThan(best_of_run[x].fitness))
-          best_of_run[x] = state.population.subpops[x].individuals[state.newIndividuals[x]];
-          }
-        */
-        }
-        
-    /** Steady-state only: computes statistics at each generation count */ 
-    public void generationBoundaryStatistics(final EvolutionState state) 
-        {
-        super.generationBoundaryStatistics(state);
-        }
-        
-
     /** Logs the best individual of the run. */
     public void finalStatistics(final EvolutionState state, final int result)
         {
@@ -161,6 +137,10 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
             {
             best_of_run[x].printIndividualForHumans(state,statisticslog,Output.V_NO_GENERAL);
             state.output.message("Subpop " + x + " best fitness of run: " + best_of_run[x].fitness.fitnessToStringForHumans());
+
+            // finally describe the winner if there is a description
+            if (state.evaluator.p_problem instanceof SimpleProblemForm)
+                ((SimpleProblemForm)(state.evaluator.p_problem.clone())).describe(best_of_run[x], state, x, 0, statisticslog,Output.V_NO_GENERAL);      
             }
         }
     }

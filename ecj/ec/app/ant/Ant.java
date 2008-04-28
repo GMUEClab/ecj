@@ -198,6 +198,7 @@ public class Ant extends GPProblem implements SimpleProblemForm
 
     public void evaluate(final EvolutionState state, 
                          final Individual ind, 
+                         final int subpopulation,
                          final int threadnum)
         {
         if (!ind.evaluated)  // don't bother reevaluating
@@ -225,7 +226,9 @@ public class Ant extends GPProblem implements SimpleProblemForm
 
     public void describe(final Individual ind, 
                          final EvolutionState state, 
-                         final int threadnum, final int log,
+                         final int subpopulation, 
+                         final int threadnum,
+                         final int log,
                          final int verbosity)
 
         {

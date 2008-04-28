@@ -11,6 +11,7 @@ import ec.*;
 import ec.util.*;
 import ec.coevolve.GroupedProblemForm;
 import ec.simple.SimpleProblemForm;
+import ec.steadystate.QueueIndividual;
 import java.util.ArrayList;
 
 import java.io.*;
@@ -153,69 +154,57 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         }
 
     // evaluate a regular individual
-    public void evaluate(EvolutionState state, Individual ind, int threadnum)
+    public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum)
         {
         if (jobSize > 1 && batchMode == true)    // chunked evaluation mechanism
             {
-            queue.add(ind);
+            queue.add(new QueueIndividual(ind, subpopulation));
             if (queue.size() >= jobSize)
                 flush(state, threadnum);
             }
         else    /// ordinary evaluation mechanism  
-            evaluate(state, new Individual[] { ind }, threadnum);           
+            evaluate(state, new Individual[] { ind }, new int[] { subpopulation }, threadnum);           
         }
         
         
     ArrayList queue;
     void flush(EvolutionState state, int threadnum)
         {
+        int subpopulation;
         if (queue!=null && queue.size() > 0 )
             {
             Individual[] inds = new Individual[queue.size()];
+            int[] subpopulations = new int[queue.size()];
             for(int i = 0; i < queue.size(); i++)
                 {
-                inds[i] = (Individual)(queue.get(i));
+                QueueIndividual qind = (QueueIndividual)(queue.get(i));
+                inds[i] = qind.ind;
+                subpopulations[i] = qind.subpop; 
                 }
-            evaluate(state, inds, threadnum);
+            evaluate(state, inds, subpopulations, threadnum);
             }
         queue = new ArrayList();
         }
 
 
     // send a group of individuals to one slave for evaluation 
-    void evaluate(EvolutionState state, Individual inds[], int threadnum)
+    void evaluate(EvolutionState state, Individual inds[], int[] subpopulations, int threadnum)
         {
         if(showDebugInfo)
-            state.output.message(Thread.currentThread().getName() + "Starting an evaluation.");
-                
-        // Determine the subpopulation number associated with this individual (assumes all individuals have the same subpopulation)
-        int subPopNum = 0;
-        boolean found = false;
-        for (int x=0;x<state.population.subpops.length && !found;x++)
-            {
-            if (state.population.subpops[x].species == inds[0].species)
-                {
-                subPopNum = x;
-                found = true;
-                }
-            }
-                
-        if (!found)
-            state.output.fatal("Whoa!  Couldn't find a matching species for the individual!");
-                
-                
+            state.output.message(Thread.currentThread().getName() + "Starting a " + (batchMode ? "batched " : "") + "SimpleProblemForm evaluation.");
+
         // Acquire a slave socket
         Job job = new Job();
         job.type = Slave.V_EVALUATESIMPLE;
         job.inds = inds;
-        job.subPops = new int[] { subPopNum } ;
+        job.subPops = subpopulations ;
         job.updateFitness = new boolean[inds.length]; 
         for (int i=0 ; i < inds.length; i++) 
             job.updateFitness[i]=true; 
         monitor.scheduleJobForEvaluation(state,job);
         if( !batchMode )
             monitor.waitForAllSlavesToFinishEvaluating( state );
-        if(showDebugInfo) state.output.message(Thread.currentThread().getName() + "Finished evaluating the individual.");
+        if(showDebugInfo) state.output.message(Thread.currentThread().getName() + "Finished a " + (batchMode ? "batched " : "") + "SimpleProblemForm evaluation.");
         }
         
         
@@ -224,15 +213,15 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
     /* (non-Javadoc)
      * @see ec.simple.SimpleProblemForm#describe(ec.Individual, ec.EvolutionState, int, int, int)
      */
-    public void describe(Individual ind, EvolutionState state, int threadnum,
+    public void describe(Individual ind, EvolutionState state, int subpopulation, int threadnum, 
                          int log, int verbosity) 
         {
         if (!(problem instanceof SimpleProblemForm)) 
             {
-            state.output.fatal("StarProblem.describe(...) invoked, but the Problem is not of SimpleProblemForm");
+            state.output.fatal("MasterProblem.describe(...) invoked, but the underlying Problem is not of SimpleProblemForm");
             }
                 
-        ((SimpleProblemForm)problem).describe( ind, state, threadnum, log, verbosity);
+        ((SimpleProblemForm)problem).describe( ind, state, subpopulation, threadnum, log, verbosity);
         }
 
     /* (non-Javadoc)
@@ -242,7 +231,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         {
         if (!(problem instanceof GroupedProblemForm)) 
             {
-            state.output.fatal("StarProblem.preprocessPopulation(...) invoked, but the Problem is not of GroupedProblemForm");
+            state.output.fatal("MasterProblem.preprocessPopulation(...) invoked, but the underlying Problem is not of GroupedProblemForm");
             }
                 
         ((GroupedProblemForm) problem).preprocessPopulation(state, pop);
@@ -255,7 +244,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         {
         if (!(problem instanceof GroupedProblemForm)) 
             {
-            state.output.fatal("StarProblem.postprocessPopulation(...) invoked, but the Problem is not of GroupedProblemForm");
+            state.output.fatal("MasterProblem.postprocessPopulation(...) invoked, but the underlying Problem is not of GroupedProblemForm");
             }
                 
         ((GroupedProblemForm) problem).postprocessPopulation(state, pop);
@@ -263,37 +252,15 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
 
     // regular coevolutionary evaluation
     public void evaluate(EvolutionState state, Individual[] inds,
-                         boolean[] updateFitness, boolean countVictoriesOnly, int threadnum)
+                         boolean[] updateFitness, boolean countVictoriesOnly, int[] subpops, int threadnum)
         {
         if(showDebugInfo)
-            state.output.message("Starting a coevolutionary evaluation.");
-
-        // Determine the subpopulation number associated with the individuals
-        int[] subPopNum = new int[inds.length];
-        boolean subPopNumFound = false;
-        for(int i=0;i<inds.length;i++)
-            {
-            subPopNumFound = false;
-            for (int x=0;x<state.population.subpops.length && !subPopNumFound;x++)
-                {
-                if (state.population.subpops[x].species == inds[i].species)
-                    {
-                    subPopNum[i] = x;
-                    subPopNumFound = true;
-                    break;
-                    }
-                }
-            if (!subPopNumFound)
-                {
-                // Is it possible that there isn't a matching species?
-                state.output.fatal("Whoa!  Couldn't find a matching species for Individual!");
-                }
-            }
+            state.output.message("Starting a GroupedProblemForm evaluation.");
 
         // Acquire a slave socket
         Job job = new Job();
         job.type = Slave.V_EVALUATEGROUPED;
-        job.subPops = subPopNum;
+        job.subPops = subpops;
         job.countVictoriesOnly = countVictoriesOnly;
         job.inds = inds;
         job.updateFitness = updateFitness;
@@ -303,7 +270,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
             monitor.waitForAllSlavesToFinishEvaluating( state );
 
         if(showDebugInfo)
-            state.output.message("Finished the coevolutionary evaluation.");
+            state.output.message("Finished the GroupedProblemForm evaluation.");
         }
 
     /** Custom serialization */
@@ -354,9 +321,8 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
     /** This method blocks until an individual is available from the slaves (which will cause evaluatedIndividualAvailable()
         to return true), at which time it returns the individual.  You should only call this method
         if you're doing steady state evolution -- otherwise, the method will block forever. */
-    public Individual getNextEvaluatedIndividual()
+    public QueueIndividual getNextEvaluatedIndividual()
         {
         return monitor.waitForIndividual();
         }
-
     }

@@ -2063,6 +2063,11 @@ public class ParameterDatabase extends Properties implements Serializable
                 .removeDeeply(parameter);
         }
 
+    public void addParent(ParameterDatabase database)
+        {
+        parents.addElement(database);
+        }
+
     /** Creates an empty parameter database. */
     public ParameterDatabase() 
         {
@@ -2281,7 +2286,7 @@ public class ParameterDatabase extends Properties implements Serializable
             _list(p, listShadowed, "root", null);
         else {
             Hashtable gather = new Hashtable();
-            _list(p, listShadowed, "root", gather);
+            _list(null, listShadowed, "root", gather);
 
             Vector vec = new Vector();
             Enumeration e = gather.keys();
@@ -2303,10 +2308,10 @@ public class ParameterDatabase extends Properties implements Serializable
                     v = (String) gather.get(s);
                 if (v == null)
                     v = UNKNOWN_VALUE;
-                p.println(s + " = " + v);
+                if (p!=null) p.println(s + " = " + v);
                 }
             }
-        p.flush();
+        if (p!=null) p.flush();
         }
 
     /** Private helper function. */
@@ -2316,7 +2321,7 @@ public class ParameterDatabase extends Properties implements Serializable
         if (listShadowed) 
             {
             // Print out my header
-            p.println("\n########" + prefix);
+            if (p!=null) p.println("\n########" + prefix);
             super.list(p);
             int size = parents.size();
             for (int x = 0; x < size; x++)
@@ -2336,7 +2341,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 gather.put(key, get(key));
                 }
             }
-        p.flush();
+        if (p!=null) p.flush();
         }
 
     public String toString() 

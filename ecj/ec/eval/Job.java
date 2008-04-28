@@ -38,9 +38,9 @@ public class Job
     int type;
 
     boolean sent = false;
-    Individual []inds;   // original individuals
-    Individual []newinds;  // individuals that were returned -- may be different individuals!
-    int []subPops; 
+    Individual[] inds;   // original individuals
+    Individual[] newinds;  // individuals that were returned -- may be different individuals!
+    int[] subPops; 
     boolean countVictoriesOnly;
     boolean[] updateFitness;
     

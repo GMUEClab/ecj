@@ -331,23 +331,6 @@ public class KozaStatistics extends Statistics implements SteadyStateStatisticsF
         }
 
 
-    /** Steady State only: loads any additional post-generation boundary stragglers into best_of_run. */
-    public void individualsEvaluatedStatistics(SteadyStateEvolutionState state)
-        {
-        //super.individualsEvaluatedStatistics(state);
-        
-        for(int x=0;x<state.population.subpops.length;x++)
-            {
-            // best individual
-            //if (best_of_run[x]==null || 
-            //state.population.subpops[x].individuals[state.newIndividuals[x]].
-            //fitness.betterThan(best_of_run[x].fitness))
-            //best_of_run[x] = state.population.subpops[x].individuals[state.newIndividuals[x]];
-            }
-        }
-
-
-
     /** Logs the best individual of the run. */
     public void finalStatistics(final EvolutionState state, final int result)
         {
@@ -363,6 +346,9 @@ public class KozaStatistics extends Statistics implements SteadyStateStatisticsF
             {
             best_of_run[x].printIndividualForHumans(state,statisticslog,Output.V_NO_GENERAL);
             state.output.message("Subpop " + x + " best fitness of run: " + best_of_run[x].fitness.fitnessToStringForHumans());
+
+            // finally describe the winner if there is a description
+            ((GPProblem)(state.evaluator.p_problem.clone())).describe(best_of_run[x], state, x, 0, statisticslog,Output.V_NO_GENERAL);  
             }
 
         // Output timings

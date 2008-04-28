@@ -14,6 +14,7 @@ import java.util.*;
 import java.net.*;
 import ec.util.*;
 import ec.steadystate.SteadyStateEvolutionState;
+import ec.steadystate.QueueIndividual;
 
 /**
  * SlaveMonitor.java
@@ -41,6 +42,7 @@ public class SlaveMonitor
     public static final String P_EVALMASTERPORT = "eval.master.port";
     public static final String P_EVALCOMPRESSION = "eval.compression";
     public static final String P_MAXIMUMNUMBEROFCONCURRENTJOBSPERSLAVE = "eval.masterproblem.max-jobs-per-slave";
+    public static final int SEED_INCREMENT = 7919; // a large value (prime for fun) bigger than expected number of threads per slave
 
     public EvolutionState state;
     
@@ -55,6 +57,10 @@ public class SlaveMonitor
     public boolean useCompression;
 
     boolean shutdownInProgress = false;
+    Object[] shutdownInProgressLock = new Object[0];  // arrays are serializable
+    final boolean isShutdownInProgress() { synchronized (shutdownInProgressLock) { return shutdownInProgress; } }
+    final void setShutdownInProgress(boolean val) { synchronized (shutdownInProgressLock) { shutdownInProgress = val; } }
+    
     int randomSeed;
     Thread thread;
 
@@ -128,10 +134,10 @@ public class SlaveMonitor
                 Thread.currentThread().setName("SlaveMonitor::    ");
                 Socket slaveSock;
                         
-                while (!shutdownInProgress)
+                while (!isShutdownInProgress())
                     {
                     slaveSock = null;
-                    while( slaveSock==null && !shutdownInProgress )
+                    while( slaveSock==null && !isShutdownInProgress() )
                         {
                         try
                             {
@@ -142,11 +148,7 @@ public class SlaveMonitor
 
                     debug(Thread.currentThread().getName() + " Slave attempts to connect." );
 
-                    if( shutdownInProgress )
-                        {
-                        debug( Thread.currentThread().getName() + " The monitor is shutting down." );
-                        break;
-                        }
+                    if( isShutdownInProgress() ) break;
 
                     try
                         {
@@ -165,11 +167,10 @@ public class SlaveMonitor
                         dataOut = new DataOutputStream(tmpOut);
                         String slaveName = dataIn.readUTF();
 
-                        MersenneTwisterFast random = new MersenneTwisterFast(randomSeed);
-                        randomSeed++;
+                        dataOut.writeInt(randomSeed);
+                        randomSeed+=SEED_INCREMENT;
                         
                         // Write random state for eval thread to slave
-                        random.writeState(dataOut);
                         dataOut.flush();
 
                         registerSlave(state, slaveName, slaveSock, dataOut, dataIn);
@@ -177,6 +178,8 @@ public class SlaveMonitor
                         }
                     catch (IOException e) {  }
                     }
+
+                debug( Thread.currentThread().getName() + " The monitor is shutting down." );
                 }
             });
         thread.start();
@@ -224,7 +227,7 @@ public class SlaveMonitor
     public void shutdown()
         {
         // kill the socket socket and bring down the thread
-        shutdownInProgress = true;
+        setShutdownInProgress(true);
         try
             {
             servSock.close();
@@ -254,6 +257,8 @@ public class SlaveMonitor
     */
     public void scheduleJobForEvaluation( final EvolutionState state, Job job )
         {
+        if (isShutdownInProgress()) return;  // no more jobs allowed.  This line rejects requests from slaveConnections when THEY'RE shutting down.
+        
         SlaveConnection result = null;
         synchronized(availableSlaves)
             {
@@ -264,12 +269,12 @@ public class SlaveMonitor
                     result = (SlaveConnection)(availableSlaves.removeFirst());
                     break;
                     }
-                debug("Waiting for a slave that is available." );
+                debug("Waiting for an available slave." );
                 waitOnMonitor(availableSlaves);
                 }
             notifyMonitor(availableSlaves);
             }       
-        debug( "Got a slave that is available for work." );
+        debug( "Got a slave available for work." );
 
         result.scheduleJob(job);
 
@@ -292,8 +297,6 @@ public class SlaveMonitor
     */
     public void waitForAllSlavesToFinishEvaluating( final EvolutionState state )
         {
-        //System.out.println("+ waitForAllSlavesToFinishEvaluating");
-
         synchronized(allSlaves)
             {
             Iterator iter = allSlaves.iterator();
@@ -333,7 +336,6 @@ public class SlaveMonitor
             notifyMonitor(allSlaves);
             }
         debug("All slaves have finished their jobs." );
-        //System.out.println("- waitForAllSlavesToFinishEvaluating");
         }
 
     /**
@@ -375,7 +377,7 @@ public class SlaveMonitor
             synchronized(evaluatedIndividuals)
                 {
                 for(int x=0; x<job.inds.length;x++)
-                    evaluatedIndividuals.addLast( job.inds[x] );
+                    evaluatedIndividuals.addLast( new QueueIndividual(job.inds[x], job.subPops[x]) );
                 notifyMonitor(evaluatedIndividuals);
                 }
             }
@@ -387,7 +389,6 @@ public class SlaveMonitor
         {
         synchronized(evaluatedIndividuals)
             {
-            // return evaluatedIndividuals.size();   // believe it or not, this is O(n)!!!
             try { evaluatedIndividuals.getFirst(); return true; }
             catch (NoSuchElementException e) { return false; }
             }
@@ -395,14 +396,14 @@ public class SlaveMonitor
 
 
     /** Blocks until an individual comes available */
-    public Individual waitForIndividual()
+    public QueueIndividual waitForIndividual()
         {
-        while( true)
+        while(true)
             {
             synchronized(evaluatedIndividuals)
                 {
                 if (evaluatedIndividualAvailable())
-                    return (Individual)(evaluatedIndividuals.removeFirst());
+                    return (QueueIndividual)(evaluatedIndividuals.removeFirst());
 
                 debug("Waiting for individual to be evaluated." );
                 waitOnMonitor(evaluatedIndividuals);  // lets go of evaluatedIndividuals loc
@@ -415,9 +416,7 @@ public class SlaveMonitor
     int numAvailableSlaves()
         {
         int i = 0;
-        //System.out.println("+ numAvailableSlaves");
         synchronized(availableSlaves) { i = availableSlaves.size(); }
-        //System.out.println("- numAvailableSlaves");
         return i;
         }
 

@@ -1,0 +1,27 @@
+parent.0 = ../../simple/simple.params
+
+seed.0 = time
+
+pop.subpop.0.species.genome-size = 64 
+
+eval.problem = ec.app.hiff.HIFF
+eval.problem.p = 6 
+eval.problem.k = 2 
+eval.problem.rc = 2
+
+pop.subpop.0.size = 1000 
+generations = 1000 
+
+pop.subpop.0.species = ec.vector.VectorSpecies 
+pop.subpop.0.species.pipe = ec.vector.breed.VectorMutationPipeline 
+pop.subpop.0.species.pipe.source.0 = ec.vector.breed.VectorCrossoverPipeline
+pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.1 = same 
+
+pop.subpop.0.species.ind = ec.vector.BitVectorIndividual
+pop.subpop.0.species.fitness = ec.simple.SimpleFitness
+
+select.tournament.size =                2 
+pop.subpop.0.species.mutation-prob = 0.0
+pop.subpop.0.species.crossover-prob = 0.3
+pop.subpop.0.species.crossover-type =two  

@@ -102,7 +102,13 @@ class SlaveConnection
         state.output.systemMessage( SlaveConnection.this.toString() + " Slave is shutting down...." );
         slaveMonitor.unregisterSlave(this);  // unregister me BEFORE I reschedule my jobs
         rescheduleJobs(state);
-        synchronized(jobs) { slaveMonitor.notifyMonitor(jobs); }  // notify my threads now that I've closed stuff in case they're still waiting
+        synchronized(jobs) 
+            {
+            // notify my threads now that I've closed stuff in case they're still waiting
+            slaveMonitor.notifyMonitor(jobs);
+            reader.interrupt();  // not important right now but...
+            writer.interrupt();  // very important that we be INSIDE the jobs synchronization here so the writer doesn't try to wait on the monitor again.
+            }
         state.output.systemMessage( SlaveConnection.this.toString() + " Slave exits...." );
         }
 
@@ -204,7 +210,7 @@ class SlaveConnection
                 // transmit number of individuals 
                 dataOut.writeInt(job.inds.length); 
                             
-                // Transmit the subpopulation number to the slave 
+                // Transmit the subpopulations to the slave 
                 for(int x=0;x<job.subPops.length;x++)
                     dataOut.writeInt(job.subPops[x]);
                             
@@ -269,6 +275,10 @@ class SlaveConnection
                     {
                     job.newinds[i].evaluated = dataIn.readBoolean();
                     job.newinds[i].fitness.readFitness(state,dataIn);
+                    }
+                else if (val == Slave.V_NOTHING)
+                    {
+                    // do nothing
                     }
                 debug( SlaveConnection.this.toString() + " Read Individual" );
                 }

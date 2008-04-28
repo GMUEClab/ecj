@@ -195,6 +195,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
 
     private Individual[] mates = null;
     private boolean[] updates = null;
+    private int[] subpops = null;
     public void performCoevolutionaryEvaluation( final EvolutionState state,
                                                  final Population population,
                                                  final GroupedProblemForm prob )
@@ -214,6 +215,9 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         // the individuals to be evaluated together (one from each subpopulation)
         if( mates == null || mates.length != numSelected.length )
             mates = new Individual[numSelected.length];
+
+        // the subpops need to be retained
+        subpops = new int[mates.length];
 
         // the fitnesses of which individuals need to be updated
         if( updates == null || updates.length != mates.length )
@@ -236,6 +240,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
             for( int j = 0 ; j < population.subpops[i].individuals.length ; j++ )
                 {
                 mates[i] = population.subpops[i].individuals[j];
+                subpops[i] = i;
 
                 // generate all possible combinations of mates
                 for( int k = 0 ; k < indexes.length ; k++ )
@@ -250,10 +255,12 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
                             if( indexes[curI] < numElite[k] ) // the first numElite[k] individuals should be the elite
                                 {
                                 mates[k] = eliteIndividuals[k][indexes[curI]];
+                                subpops[k] = k;  // eliteIndividual from subpopulation k
                                 }
                             else if( indexes[curI] < numElite[k] + numRand[k] ) // the next numRand[k] individuals are random ones from current population
                                 {
                                 mates[k] = population.subpops[k].individuals[state.random[0].nextInt(population.subpops[k].individuals.length)];
+                                subpops[k] = k;
                                 }
                             else // the remaining individuals are to be selected from the previous population
                                 {
@@ -261,6 +268,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
                                 if( state.generation == 0 )
                                     {
                                     mates[k] = population.subpops[k].individuals[state.random[0].nextInt(population.subpops[k].individuals.length)];
+                                    subpops[k] = k;
                                     }
                                 else
                                     {
@@ -268,14 +276,15 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
                                     int index = selectionMethod[k].produce( k, state, 0 );
                                     state.population = currentPopulation;
 
-                                    mates[k] = previousPopulation.subpops[k].individuals[index];                    
+                                    mates[k] = previousPopulation.subpops[k].individuals[index];
+                                    subpops[k] = k;                
                                     }
                                 }
                             curI++;
                             }
 
                     // perform the coevolutionary evaluation of the group of individuals
-                    prob.evaluate(state,mates,updates,false,0);
+                    prob.evaluate(state,mates,updates,false, subpops, 0);
 
                     curI = 0;
                     // select the next case

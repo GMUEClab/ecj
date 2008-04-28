@@ -43,9 +43,6 @@ eval.problem.data = ec.app.ant.AntData
 # this even if we're not implementing ADFs
 eval.problem.stack.context.data = ec.app.ant.AntData
 
-# We have our own kind of statistics
-stat = ec.app.ant.AntStatistics
-
 
 # Here we determine what kind of Ant we're doing:
 

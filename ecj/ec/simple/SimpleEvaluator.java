@@ -124,7 +124,7 @@ public class SimpleEvaluator extends Evaluator
             int upperbound = from[pop]+numinds[pop];
             for (int x=from[pop];x<upperbound;x++)
                 {
-                p.evaluate(state,state.population.subpops[pop].individuals[x], threadnum);
+                p.evaluate(state,state.population.subpops[pop].individuals[x], pop, threadnum);
                 }
             }
         ((ec.Problem)p).finishEvaluating(state,threadnum);

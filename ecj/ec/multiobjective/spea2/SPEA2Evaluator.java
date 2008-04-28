@@ -24,7 +24,7 @@ import ec.simple.*;
  * The SPEA2Evaluator is a simple, non-coevolved generational evaluator which
  * evaluates every single member of every subpopulation individually in its
  * own problem space.  One Problem instance is cloned from p_problem for
- * each evaluating thread.  The Problem must implement SimpleProblemForm.
+ * each evaluating thread.
  *
  * The evaluator is also responsible for calculating the SPEA2Fitness
  * function.  This function depends on the entire population and so
