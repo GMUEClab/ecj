@@ -99,7 +99,9 @@ public abstract class GPProblem extends Problem
 
     public void describe(final Individual ind, 
                          final EvolutionState state, 
-                         final int threadnum, final int log,
+                         final int subpopulation, 
+                         final int threadnum,
+                         final int log,
                          final int verbosity)
         {
         // default version does nothing

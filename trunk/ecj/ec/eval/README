@@ -190,6 +190,7 @@ eval.master-problem.job-size = 100
 
 
 
+
 FITNESS VERSUS INDIVIDUAL
 
 By default the master/slave system sends individuals from master to
@@ -204,6 +205,33 @@ eval.return-inds = true
 
 If you're running in "evolve" mode, you will *always* need to set this
 parameter to true.
+
+
+
+SLAVE CONFIGURATION
+
+Because individuals don't know that they're being evaluated remotely,
+it's best to make your Slave's EvolutionState structure, and particularly
+its Population structure, look and feel as much like the Master as
+possible.  Notably, Subpopulation classes, Species, Individual 
+representations, and Fitnesses should be the same.  This is particularly
+important if when you want to do evolution on the Slave.  The easiest way 
+to do this is simply to derive the Slave's parameter file from the Master's
+paramter file.  
+
+However, if you're doing evolution on the Slave, this doesn't mean you have
+to have the Slave set up the same way as the Master: just the Population 
+and objects hanging off of it.  It might be preferable to do (for example) 
+generational evolution on the Slave while asynchronous steady state 
+evolution is happening on the Master.  You're free to change the high-level
+evolution procedures; but you should maintain the same representations and
+breeding mechanisms so that Individuals on the Slave are valid on the Master
+when they come back.
+
+If the Master and Slave share parameters, what prevents the Slave from
+trying to set up its own MasterProblem as well?  The answer: the i-am-slave
+parameter.  The Evaluator class will not set up a MasterProblem, even if one
+is specified, if i-am-slave is true.
 
 
 
@@ -266,8 +294,8 @@ The SteadyStateEvaluator performs evaluation in a different way:
 		if problem.canEvaluate(),
 			create/breed individual
 			problem.evaluate(individual, ...)
-		if problem.evaluatedIndividualAvailable()
-			problem.getNextEvaluatedIndividual()
+		individual = problem.getNextEvaluatedIndividual()
+		if individual != null
 			introduce individual to population
 		sleep a tiny bit to avoid spin-waiting
 
@@ -312,3 +340,64 @@ Individual.writeIndividual(pipeOutputStream). We then read from that
 same pipe into the original individual, using
 Individual.readIndividual(pipeInputStream). It's a hack but a pretty
 one.
+
+
+
+MASTER/SLAVE NETWORK PROTOCOL
+
+The master maintains a thread which continually waits for new slaves
+to come in.  When a slave does in, the master creates a SlaveConnection
+to handle the slave communication.  The SlaveConnection creates a read
+thread and a write thread to keep the pipeline to the slave filled with
+Individuals.
+
+You have the option of using compressed streams: but presently it's turned
+off because JDK 1.5/1.6 has broken the compression facility.
+
+
+<On Connection>
+<- slave name							readUTF
+-> random number generator seed					writeInt
+	(note: the seed then increments by SEED_INCREMENT (7919)
+	 and the Slave is free to use any integer values between
+	 the seed and seed + SEED_INCREMENT - 1 to seed its
+	 random number generators.  We hopve 7919 is enough :-)
+-> FLUSH
+
+
+<SlaveConnection's writer protocol loops the following:>
+-> job type							writeByte
+	(Slave.V_EVALUATESIMPLE or Slave.V_EVALUATEGROUPED or
+	 Slave.V_SHUTDOWN)
+If Slave.V_SHUTDOWN,
+	break connection
+If Slave.V_EVALUATEGROUPED,
+	-> countVictoriesOnly					writeBoolean
+-> number of individuals in job					writeInt
+Loop for number of individuals in job,
+	-> individual						writeIndividual
+	-> update ind's fitness					writeBoolean
+-> FLUSH
+
+
+<SlaveConnection's reader protocol loops the following:>
+<- arbitrary byte (to block on)					readByte
+Loop for number of individuals in job,
+	<- returning individual type                            readByte
+        	(Slave.V_INDIVIDUAL or Slave.V_FITNESS)
+	If Slave.V_INDIVIDUAL,
+		<- individual					readIndividual
+	Else if Slave.V_FITNESS,
+		<- evaluated?					readBoolean
+		<- fitness					readFitness
+	Else if Slave.V_NOTHING,
+		(nothing is sent)
+<- FLUSH
+
+Note that the reader protocol does not tell the SlaveConnection how many
+individuals there are in the job.  This is because the SlaveConnection
+already knows: jobs are received in the order they were sent.
+
+The slaves and slave connections shut down when the socket breaks
+or when the Slave.V_SHUTDOWN signal was received.
+

@@ -332,6 +332,15 @@ public class Output implements Serializable
         System.err.flush();
         System.exit(1);
         }
+
+    /** Prints an initial message to System.err.  This is only to
+        be used by ec.Evolve in starting up the system.  These messages are not logged. */
+    public static void initialMessage(String s)
+        {
+        System.err.println(s);
+        System.err.flush();
+        }
+
     /** Posts a system message. */
     public synchronized void systemMessage(String s)
         {

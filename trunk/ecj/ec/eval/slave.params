@@ -10,21 +10,21 @@ parent.0 = master.params
 
 
 # Lets the slaves know that they're slaves.
-eval.i-am-slave = true^M
+eval.i-am-slave = true
 
 
-# Specifies the IP address of the master, for the Slaves^M
-# to connect.  Slaves need to be told this in their^M
-# parameter files.  The example below sets it to localhost,^M
-# which is probably not what you want.^M
-eval.master.host = 127.0.0.1^M
+# Specifies the IP address of the master, for the Slaves
+# to connect.  Slaves need to be told this in their
+# parameter files.  The example below sets it to localhost,
+# which is probably not what you want.
+eval.master.host = 127.0.0.1
 
 
-# Specifies a slave's name for debugging purposes.  If this is not^M
-# set (the default), then the system will use an approximately unique^M
-# name constructed from the IP address and startup time of the^M
-# slave.  Names don't have to be unique -- it's only for debugging.^M
-eval.slave-name = my-slave-name^M
+# Specifies a slave's name for debugging purposes.  If this is not
+# set (the default), then the system will use an approximately unique
+# name constructed from the IP address and startup time of the
+# slave.  Names don't have to be unique -- it's only for debugging.
+eval.slave-name = my-slave-name
 
 
 # Specifies the mode the slave runs in.  If false, the slave runs in
@@ -35,6 +35,11 @@ eval.slave-name = my-slave-name^M
 # as its own mini-population and do some evolution on that population
 # according to the evolution parameters you provided the slave.  When
 # the time is up, it then returns the entire individuals.
+#
+# You want to make sure that if you set this to true, then the mini-population
+# on the slave is sufficiently large to support its own evolution.
+# The population size is specified by eval.master-problem.job-size
+# on the Master.
 eval.run-evolve = true
 
 
@@ -43,10 +48,10 @@ eval.run-evolve = true
 eval.runtime = 6000
 
 
-# Change this to force whole Individuals to be returned by the^M
-# Slave rather than just returning Fitnesses, plus whether or not the^M
-# Individual was evaluated.  Returning a whole Individual is expensive^M
-# over the network and should only be done if, for some reason, your^M
-# Problem class modified the Individuals as it evaluates them.^M
-eval.return-inds = false^M
+# Change this to force whole Individuals to be returned by the
+# Slave rather than just returning Fitnesses, plus whether or not the
+# Individual was evaluated.  Returning a whole Individual is expensive
+# over the network and should only be done if, for some reason, your
+# Problem class modified the Individuals as it evaluates them.
+eval.return-inds = false
 

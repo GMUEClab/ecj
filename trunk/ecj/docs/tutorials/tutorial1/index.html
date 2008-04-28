@@ -279,6 +279,7 @@ public class MaxOnes extends Problem implements SimpleProblemForm
 
     public void evaluate(final EvolutionState state,
                          final Individual ind,
+                         final int subpopulation,
                          final int threadnum)
         {
         if (ind.evaluated) return;   <font color=gray>//don't evaluate the individual if it's already evaluated</font>

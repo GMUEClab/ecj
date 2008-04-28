@@ -1344,3 +1344,16 @@ Version		Change Log
 		clone() now just calls cloneReplacing().  We had prepared for this
 		in the previous version by putting up a big warning sign on clone()
 		to ward people off of using it as a light clone, as it used to be.
+	Removed LawnmowerStatistics.java, EdgeStatistics.java, and
+		AntStatistics.java, rolling them into KozaStatistics.java
+	KozaStatistics.java and SimpleStatistics.java now call describe() on the
+		individual regardless during finalStatistics
+	NON-backward-compatible modification to SimpleProblemForm and
+		GroupedProblemForm: added the subpopulation number(s) as an argument
+		to the evaluate and describe functions.  This is intended to
+		alleviate some nasty hacks in the distributed evaluator.  We had
+		tried to avoid doing it but just can't. You'll have to add that
+		argument (it's easy though) to get your code to compile again.
+	PseudoRoundRobin removed from CompetitiveEvaluator, it wasn't finished.
+	Revamping of Slave code
+	Added the NK, SAT, and HIFF problems

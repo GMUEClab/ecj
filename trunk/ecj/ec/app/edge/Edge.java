@@ -543,6 +543,7 @@ public class Edge extends GPProblem implements SimpleProblemForm
 
     public void evaluate(final EvolutionState state, 
                          final Individual ind, 
+                         final int subpopulation,
                          final int threadnum)
         {
         if (start==null)
@@ -593,7 +594,9 @@ public class Edge extends GPProblem implements SimpleProblemForm
 
     public void describe(final Individual ind, 
                          final EvolutionState state, 
-                         final int threadnum, final int log,
+                         final int subpopulation,
+                         final int threadnum,
+                         final int log,
                          final int verbosity)
         {
         if (start==null)
@@ -640,6 +643,7 @@ public class Edge extends GPProblem implements SimpleProblemForm
 
     public String describeShortGeneralized(final Individual ind, 
                                            final EvolutionState state, 
+                                           final int subpopulation,
                                            final int threadnum)
         {
         if (start==null)

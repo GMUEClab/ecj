@@ -127,6 +127,7 @@ public class OddRosenbrock extends Problem implements SimpleProblemForm
 
     public void evaluate(final EvolutionState state,
              final Individual ind,
+             final int subpopulation,
              final int threadnum)
         {
         if( !( ind instanceof DoubleVectorIndividual ) )

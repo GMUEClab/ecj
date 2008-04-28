@@ -106,6 +106,7 @@ public class Regression extends GPProblem implements SimpleProblemForm
 
     public void evaluate(final EvolutionState state, 
                          final Individual ind, 
+                         final int subpopulation,
                          final int threadnum)
         {
         if (!ind.evaluated)  // don't bother reevaluating

@@ -40,6 +40,4 @@ eval.problem.y = 8
 # this even if we're not implementing ADFs
 eval.problem.stack.context.data = ec.app.lawnmower.LawnmowerData
 
-#stat = ec.gp.koza.KozaShortStatistics
-stat = ec.app.lawnmower.LawnmowerStatistics
 stat.gather-full = true

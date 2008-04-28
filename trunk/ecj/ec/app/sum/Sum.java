@@ -42,6 +42,7 @@ public class Sum extends Problem implements SimpleProblemForm
 
     public void evaluate(final EvolutionState state,
                          final Individual ind,
+                         final int subpopulation,
                          final int threadnum)
         {
         if (ind.evaluated) return;
@@ -82,6 +83,8 @@ public class Sum extends Problem implements SimpleProblemForm
     
     public void describe(final Individual ind, 
                          final EvolutionState state, 
-                         final int threadnum, final int log,
+                         final int subpopulation, 
+                         final int threadnum, 
+                         final int log,
                          final int verbosity) { }
     }

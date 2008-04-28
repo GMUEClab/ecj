@@ -82,6 +82,7 @@ public class Multiplexer extends GPProblem implements SimpleProblemForm
 
     public void evaluate(final EvolutionState state, 
                          final Individual ind, 
+                         final int subpopulation,
                          final int threadnum)
         {
         input.status = (byte)bits;

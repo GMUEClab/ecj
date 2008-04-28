@@ -74,4 +74,3 @@ eval.problem.testneg = input/1sa.out.gz
 #
 
 eval.problem.generalize = true
-stat = ec.app.edge.EdgeStatistics

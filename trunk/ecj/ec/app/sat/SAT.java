@@ -1,0 +1,124 @@
+package ec.app.sat; 
+
+import ec.*; 
+import ec.simple.*; 
+import ec.vector.*; 
+import ec.util.*; 
+import java.io.*; 
+
+/**
+   SAT implements the boolean satisfiability problem. 
+  
+   <p><b>Parameters</b><br>
+   <table>
+   <tr><td valign=top><i>base</i>.<tt>sat-filename</tt><br>
+   <font size=-1>String</td>
+   <td valign=top>(Filename containing boolean satisfiability formula in Dimacs CNF format)</td></tr>
+   </table>
+ 
+   @author Keith Sullivan
+   @version 1.0
+*/
+
+public class SAT extends Problem implements SimpleProblemForm 
+    { 
+        
+    public static final String P_FILENAME = "sat-filename"; 
+        
+    Clause formula[];
+        
+    public void setup(EvolutionState state, Parameter base) 
+        {
+        super.setup(state, base); 
+        String fileName = state.parameters.getString(base.push(P_FILENAME), null); 
+                
+        try 
+            { 
+            BufferedReader inFile = new BufferedReader(new FileReader(new File(fileName))); 
+            String line=""; 
+            int cnt=0;
+            boolean start = false; 
+            while ((line = inFile.readLine()) != null) 
+                { 
+                if (start) 
+                    { 
+                    formula[cnt++] = new Clause(line);
+                    continue; 
+                    }
+                                
+                if (line.startsWith("p")) 
+                    { 
+                    start = true;
+                    String[] s = line.split(" "); 
+                    formula = new Clause[Integer.parseInt(s[s.length-1])]; 
+                    }
+                }
+            inFile.close();
+            } 
+        catch (IOException e) 
+            { 
+            state.output.fatal("Error in SAT setup, while loading from file " + fileName +
+                               "\nFrom parameter " + base.push(P_FILENAME) + "\nError:\n" + e);  
+            }
+        }
+        
+    /** 
+        Evalutes the individual using the MAXSAT fitness function.
+    */
+    public void evaluate(final EvolutionState state, final Individual ind, final int subpopulation, final int threadnum)
+        {
+        BitVectorIndividual ind2 = (BitVectorIndividual) ind; 
+        double fitness=0; 
+                
+        for (int i=0; i < formula.length; i++)                  
+            fitness += formula[i].eval(ind2); 
+                
+        ((SimpleFitness)(ind2.fitness)).setFitness( state, (float) fitness, false);
+        ind2.evaluated = true; 
+        }
+        
+    public void describe(final Individual ind, 
+                         final EvolutionState state, 
+                         final int threadnum,
+                         final int subpopulation,
+                         final int log,
+                         final int verbosity)  
+        { 
+        }
+        
+        
+    /**
+       Private helper class holding a single clause in the boolean formula. Each clause 
+       is a disjunction of boolean variables (or their negation).
+    */
+    public class Clause { 
+                
+        int[] variables; 
+        public Clause(String c) 
+            {
+            String s[] = c.split("  "); 
+            variables = new int[s.length-1];
+            for (int i=0; i < s.length-1; i++) 
+                variables[i] = Integer.parseInt(s[i]);
+            }
+                
+        /** 
+            Evaluates the individual with the clause.  Returns 1 is clase is satisfiabile, 0 otherwise.
+        */
+        public int eval(BitVectorIndividual ind)
+            {
+            boolean tmp; 
+            int x; 
+            for (int i=0; i < variables.length; i++) {                              
+                x = variables[i]; 
+                if (x < 0) 
+                    tmp = !ind.genome[-x-1]; 
+                else 
+                    tmp =  ind.genome[x-1]; 
+                                
+                if (tmp) return 1; 
+                }
+            return 0;
+            }
+        };      
+    }
