@@ -18,7 +18,7 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -1957,7 +1957,7 @@ public class ParameterDatabase extends Properties implements Serializable
 
     public Set getShadowedValues(Parameter parameter) 
         {
-        Set vals = new LinkedHashSet();
+        Set vals = new HashSet();
         vals = _getShadowedValues(parameter, vals);
         uncheck();
         return vals;
