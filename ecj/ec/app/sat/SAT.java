@@ -50,8 +50,8 @@ public class SAT extends Problem implements SimpleProblemForm
                 if (line.startsWith("p")) 
                     { 
                     start = true;
-					line.trim(); 
-					int index = line.lastIndexOf(" "); 
+                    line.trim(); 
+                    int index = line.lastIndexOf(" "); 
                     formula = new Clause[Integer.parseInt(line.substring(index+1))]; 
                     }
                 }
@@ -93,17 +93,20 @@ public class SAT extends Problem implements SimpleProblemForm
        Private helper class holding a single clause in the boolean formula. Each clause 
        is a disjunction of boolean variables (or their negation).
     */
-    public class Clause { 
+    public class Clause 
+        { 
                 
         int[] variables; 
         public Clause(String c) 
             {
-			StringTokenizer st = new StringTokenizer(c); 
-			variables = new int[st.countTokens()-1]; 
-			for (int i=0; i < variables.length; i++) 
-				variables[i] = Integer.parseInt(st.nextToken()); 
-			}
-		
+            StringTokenizer st = new StringTokenizer(c); 
+            variables = new int[st.countTokens()-1]; 
+            for (int i=0; i < variables.length; i++) 
+                {
+                variables[i] = Integer.parseInt(st.nextToken()); 
+                }
+            }
+                
         /** 
             Evaluates the individual with the clause.  Returns 1 is clase is satisfiabile, 0 otherwise.
         */
@@ -111,7 +114,8 @@ public class SAT extends Problem implements SimpleProblemForm
             {
             boolean tmp; 
             int x; 
-            for (int i=0; i < variables.length; i++) {                              
+            for (int i=0; i < variables.length; i++) 
+                {                              
                 x = variables[i]; 
                 if (x < 0) 
                     tmp = !ind.genome[-x-1]; 
