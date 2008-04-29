@@ -5,6 +5,7 @@ import ec.simple.*;
 import ec.vector.*; 
 import ec.util.*; 
 import java.io.*; 
+import java.util.*; 
 
 /**
    SAT implements the boolean satisfiability problem. 
@@ -49,8 +50,9 @@ public class SAT extends Problem implements SimpleProblemForm
                 if (line.startsWith("p")) 
                     { 
                     start = true;
-                    String[] s = line.split(" "); 
-                    formula = new Clause[Integer.parseInt(s[s.length-1])]; 
+					line.trim(); 
+					int index = line.lastIndexOf(" "); 
+                    formula = new Clause[Integer.parseInt(line.substring(index+1))]; 
                     }
                 }
             inFile.close();
@@ -96,12 +98,12 @@ public class SAT extends Problem implements SimpleProblemForm
         int[] variables; 
         public Clause(String c) 
             {
-            String s[] = c.split("  "); 
-            variables = new int[s.length-1];
-            for (int i=0; i < s.length-1; i++) 
-                variables[i] = Integer.parseInt(s[i]);
-            }
-                
+			StringTokenizer st = new StringTokenizer(c); 
+			variables = new int[st.countTokens()-1]; 
+			for (int i=0; i < variables.length; i++) 
+				variables[i] = Integer.parseInt(st.nextToken()); 
+			}
+		
         /** 
             Evaluates the individual with the clause.  Returns 1 is clase is satisfiabile, 0 otherwise.
         */
