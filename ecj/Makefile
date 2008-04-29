@@ -13,10 +13,11 @@
 # Prepare for distribution:		make dist
 #
 
-JAVAC = javac ${JAVACFLAGS}
+JAVAC = /System/Library/Frameworks/JavaVM.framework/Versions/1.3/Home/bin/javac ${JAVACFLAGS}
 #JAVAC = jikes ${JIKESFLAGS}
 
-JAVACFLAGS = -target 1.3 -source 1.3 ${FLAGS}
+#JAVACFLAGS = -target 1.3 -source 1.3 ${FLAGS}
+JAVACFLAGS = ${FLAGS}
 JIKESFLAGS = -target 1.3 +Pno-shadow ${FLAGS}
 FLAGS = -g -nowarn
 

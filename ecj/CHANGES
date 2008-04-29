@@ -1357,3 +1357,4 @@ Version		Change Log
 	PseudoRoundRobin removed from CompetitiveEvaluator, it wasn't finished.
 	Revamping of Slave code
 	Added the NK, SAT, and HIFF problems
+	Changed LinkedHashSet to HashSet in ParameterDatabase to conform with JDK 1.3
