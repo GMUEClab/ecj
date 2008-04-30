@@ -5,7 +5,7 @@ seed.0 = time
 pop.subpop.0.species.genome-size = 50 
 
 eval.problem = ec.app.sat.SAT
-eval.problem.sat-filename = data.cnf
+eval.problem.sat-filename = data-1000.cnf
 
 pop.subpop.0.size = 1000 
 generations = 100 

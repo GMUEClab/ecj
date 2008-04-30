@@ -1,0 +1,12 @@
+The boolean satisfiability problem can have widly different levels of difficulty.  To that end,
+this directory contains three different problems.  All the problems are 3CNF, and were 
+generated using the Mkcnf program from ftp://dimacs.rutgers.edu/pub/challenge/satisfiability/contributed/UCSC/instances/Cnfgen.tar.Z.  See the README file in that package for instructions on buliding 
+and usage.
+
+The three problems included here have 10, 215, and 1000 clauses, and are known to be satisfiable.  
+So, the maximum fitness is 10, 215, and 1000.  All problems have 50 variables (so a genome 
+length of 50).  
+
+Note that the problem file is assumed to be in DIMACS format.  See http://www.satlib.org/Benchmarks/SAT/satformat.ps for more information.  Mkcnf can generate arbitrary, satisfiable CNF formulas in
+DIMACS format. 
+
