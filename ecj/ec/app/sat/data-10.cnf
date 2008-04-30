@@ -1,0 +1,14 @@
+c mkcnf random cnf with seed 77141, max clause length 3
+c FORCED SATISFIABLE
+c 
+p cnf 50  10
+16  19  -30  0
+33  12  -40  0
+-12  -16  21  0
+-40  3  14  0
+6  -21  -27  0
+-50  -28  11  0
+26  36  -29  0
+9  38  14  0
+-49  6  37  0
+-23  45  33  0
