@@ -154,6 +154,9 @@ public class Evolve
 
     /** state parameter */
     public static final String P_STATE = "state";
+    
+    /** 'auto' thread parameter value */
+    public static final String V_THREADS_AUTO = "auto";
 
 
     /** Restores an EvolutionState from checkpoint if "-checkpoint FILENAME" is in the command-line arguments. */
@@ -198,20 +201,58 @@ public class Evolve
             Output.initialError("No parameter file was specified." );
         return parameters;
         }
+    
+    
+    /** Loads the number of threads. */
+    public static int determineThreads(Output output, ParameterDatabase parameters, Parameter threadParameter)
+        {
+        int thread = 1;
+        String tmp_s = parameters.getString(threadParameter,null);
+        if (tmp_s==null) // uh oh
+            {
+            output.fatal("Threads number must exist.",threadParameter,null);
+            }
+        else if (V_THREADS_AUTO.equalsIgnoreCase(tmp_s))
+            {
+            Runtime runtime = Runtime.getRuntime();
+            try { return ((Integer)runtime.getClass().getMethod("availableProcessors", (Class[])null).
+                          invoke(runtime,(Object[])null)).intValue(); }
+            catch (Exception e)
+                { 
+                output.fatal("Whoa! This Java version is to old to have the Runtime.availableProcessors() method available.\n" + 
+                             "This means you can't use 'auto' as a threads option.",threadParameter,null);
+                }
+            }
+        else
+            {
+            try
+                {
+                thread = parameters.getInt(threadParameter,null);
+                }
+            catch (NumberFormatException e)
+                {
+                output.fatal("Invalid, non-integer threads value ("+thread+")",threadParameter,null);
+                }
+            }
+        return thread;
+        }
+        
 
     /** Loads a random generator seed.  First, the seed is loaded from the seedParameter.  If the parameter
         is V_SEED_TIME, the seed is set to the currentTime value.  Then the seed is incremented by the offset. 
         This method is broken out of initialize(...) primarily to share code with ec.eval.MasterProblem.*/
-    public static int determineSeed(Output output, ParameterDatabase parameters, Parameter seedParameter, long currentTime, int offset)
+    public static int determineSeed(Output output, ParameterDatabase parameters, Parameter seedParameter, long currentTime, int offset, boolean auto)
         {
         int seed = 1;  // have to initialize to make the compiler happy
         String tmp_s = parameters.getString(seedParameter,null);
-        if (tmp_s==null) // uh oh
+        if (tmp_s==null && !auto) // uh oh
             {
             output.fatal("Seed must exist.",seedParameter,null);
             }
-        else if (tmp_s.equalsIgnoreCase(V_SEED_TIME))
+        else if (V_SEED_TIME.equalsIgnoreCase(tmp_s) || (tmp_s == null && auto))
             {
+            if (tmp_s == null && auto)
+                output.warnOnce("Using automatic determination number of threads, but not all seeds are defined.\nThe rest will be defined using the wall clock time.");
             seed = (int)currentTime;  // using low-order bits so it's probably okay
             if (seed==0)
                 output.fatal("Whoa! This Java version is returning 0 for System.currentTimeMillis(), which ain't right.  This means you can't use '"+V_SEED_TIME+"' as a seed ",seedParameter,null);
@@ -229,6 +270,7 @@ public class Evolve
             }
         return seed + offset;
         }
+
 
     /** Initializes an evolutionary run given the parameters and a random seed adjustment (added to each random seed).
         The adjustment offers a convenient way to change the seeds of the random number generators each time you
@@ -266,25 +308,33 @@ public class Evolve
         output.addLog(ec.util.Log.D_STDOUT,Output.V_VERBOSE,false);
         output.addLog(ec.util.Log.D_STDERR,Output.V_VERBOSE,true);
 
+        output.systemMessage(Version.message());
                 
         // 2. set up thread values
+        
+        /*
+          breedthreads = parameters.getInt(
+          new Parameter(P_BREEDTHREADS),null,1);
 
-        breedthreads = parameters.getInt(
-            new Parameter(P_BREEDTHREADS),null,1);
+          else if (parameters.getString(new Parameter(P_BREEDTHREADS),null).equals
 
-        if (breedthreads < 1)
-            output.fatal("Number of breeding threads should be an integer >0.",
-                         new Parameter(P_BREEDTHREADS),null);
-
-
-        evalthreads = parameters.getInt(
-            new Parameter(P_EVALTHREADS),null,1);
-
-        if (evalthreads < 1)
-            output.fatal("Number of eval threads should be an integer >0.",
-                         new Parameter(P_EVALTHREADS),null);
+          if (breedthreads < 1)
+          output.fatal("Number of breeding threads should be 'auto' or an integer >0.",
+          new Parameter(P_BREEDTHREADS),null);
 
 
+          evalthreads = parameters.getInt(
+          new Parameter(P_EVALTHREADS),null,1);
+
+          if (evalthreads < 1)
+          output.fatal("Number of eval threads should be an integer >0.",
+          new Parameter(P_EVALTHREADS),null);
+        */
+        
+        breedthreads = Evolve.determineThreads(output, parameters, new Parameter(P_BREEDTHREADS));
+        evalthreads = Evolve.determineThreads(output, parameters, new Parameter(P_EVALTHREADS));
+        boolean auto = (V_THREADS_AUTO.equalsIgnoreCase(parameters.getString(new Parameter(P_BREEDTHREADS),null)) ||
+                        V_THREADS_AUTO.equalsIgnoreCase(parameters.getString(new Parameter(P_EVALTHREADS),null)));  // at least one thread is automatic.  Seeds may need to be dynamic.
 
         // 3. create the Mersenne Twister random number generators,
         // one per thread
@@ -298,7 +348,7 @@ public class Evolve
         for (x=0;x<random.length;x++)
             {
             seeds[x] = determineSeed(output,parameters,new Parameter(P_SEED).push(""+x),
-                                     time+x,random.length * randomSeedOffset);
+                                     time+x,random.length * randomSeedOffset, auto);
             for (int y=0;y<x;y++)
                 if (seeds[x]==seeds[y])
                     output.fatal(P_SEED+"."+x+" ("+seeds[x]+") and "+P_SEED+"."+y+" ("+seeds[y]+") ought not be the same seed.",null,null); 
@@ -319,7 +369,6 @@ public class Evolve
         state.breedthreads = breedthreads;
         state.randomSeedOffset = randomSeedOffset;
 
-        output.systemMessage(Version.message());
         output.systemMessage("Threads:  breed/" + breedthreads + " eval/" + evalthreads);
         output.systemMessage(seedMessage);
                 

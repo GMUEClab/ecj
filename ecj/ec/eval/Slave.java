@@ -358,25 +358,34 @@ public class Slave
                 output.addLog(ec.util.Log.D_STDOUT, Output.V_VERBOSE, false);
                 output.addLog(ec.util.Log.D_STDERR, Output.V_VERBOSE, true);
 
+                output.systemMessage(Version.message());
 
 
                 // 2. set up thread values
 
-                int breedthreads = parameters.getInt(
-                    new Parameter(Evolve.P_BREEDTHREADS),null,1);
+/*
+  int breedthreads = parameters.getInt(
+  new Parameter(Evolve.P_BREEDTHREADS),null,1);
 
-                if (breedthreads < 1)
-                    output.fatal("Number of breeding threads should be an integer >0.",
-                                 new Parameter(Evolve.P_BREEDTHREADS),null);
+  if (breedthreads < 1)
+  output.fatal("Number of breeding threads should be an integer >0.",
+  new Parameter(Evolve.P_BREEDTHREADS),null);
 
 
-                int evalthreads = parameters.getInt(
-                    new Parameter(Evolve.P_EVALTHREADS),null,1);
+  int evalthreads = parameters.getInt(
+  new Parameter(Evolve.P_EVALTHREADS),null,1);
 
-                if (evalthreads < 1)
-                    output.fatal("Number of eval threads should be an integer >0.",
-                                 new Parameter(Evolve.P_EVALTHREADS),null);
+  if (evalthreads < 1)
+  output.fatal("Number of eval threads should be an integer >0.",
+  new Parameter(Evolve.P_EVALTHREADS),null);
+*/
 
+                int breedthreads = Evolve.determineThreads(output, parameters, new Parameter(Evolve.P_BREEDTHREADS));
+                int evalthreads = Evolve.determineThreads(output, parameters, new Parameter(Evolve.P_EVALTHREADS));
+
+                // Note that either breedthreads or evalthreads (or both) may be 'auto'.  We don't warn about this because
+                // the user isn't providing the thread seeds.
+                
 
                 // 3. create the Mersenne Twister random number generators,
                 // one per thread
@@ -403,7 +412,6 @@ public class Slave
         
                 state.setup(state, null);
                 state.population = state.initializer.setupPopulation(state, 0);
-                output.systemMessage(Version.message());
                 
 
                 // Is this a Simple or Grouped ProblemForm?
