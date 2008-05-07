@@ -867,18 +867,25 @@ public class Console extends JFrame
                 Output output = initializeOutput();
                 
                 // 2. set up thread values
-                int breedthreads = parameters.getInt(
-                    new Parameter(Evolve.P_BREEDTHREADS),null,1);
-                if (breedthreads < 1)
-                    Output.initialError("Number of breeding threads should be an integer >0.",
-                                        new Parameter(Evolve.P_BREEDTHREADS));
+                /*
+                  int breedthreads = parameters.getInt(
+                  new Parameter(Evolve.P_BREEDTHREADS),null,1);
+                  if (breedthreads < 1)
+                  Output.initialError("Number of breeding threads should be an integer >0.",
+                  new Parameter(Evolve.P_BREEDTHREADS));
                 
-                int evalthreads = parameters.getInt(
-                    new Parameter(Evolve.P_EVALTHREADS),null,1);
-                if (evalthreads < 1)
-                    Output.initialError("Number of eval threads should be an integer >0.",
-                                        new Parameter(Evolve.P_EVALTHREADS));
+                  int evalthreads = parameters.getInt(
+                  new Parameter(Evolve.P_EVALTHREADS),null,1);
+                  if (evalthreads < 1)
+                  Output.initialError("Number of eval threads should be an integer >0.",
+                  new Parameter(Evolve.P_EVALTHREADS));
+                */
                 
+                int breedthreads = Evolve.determineThreads(output, parameters, new Parameter(Evolve.P_BREEDTHREADS));
+                int evalthreads = Evolve.determineThreads(output, parameters, new Parameter(Evolve.P_EVALTHREADS));
+                boolean auto = (Evolve.V_THREADS_AUTO.equalsIgnoreCase(parameters.getString(new Parameter(Evolve.P_BREEDTHREADS),null)) ||
+                                Evolve.V_THREADS_AUTO.equalsIgnoreCase(parameters.getString(new Parameter(Evolve.P_EVALTHREADS),null)));  // at least one thread is automatic.  Seeds may need to be dynamic.
+
                 // 3. create the Mersenne Twister random number generators,
                 // one per thread
                 MersenneTwisterFast[] random = new MersenneTwisterFast[breedthreads > evalthreads ? 

@@ -803,7 +803,6 @@ public abstract class GPNode implements GPNodeParent, Prototype
         return n.length();
         }
 
-
     /** Returns a Lisp-like atom for the node which can be read in again by computer.
         If you need to encode an integer or a float or whatever for some reason
         (perhaps if it's an ERC), you should use the ec.util.Code library.  */

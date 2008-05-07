@@ -1358,3 +1358,6 @@ Version		Change Log
 	Revamping of Slave code
 	Added the NK, SAT, and HIFF problems
 	Changed LinkedHashSet to HashSet in ParameterDatabase to conform with JDK 1.3
+	Added 'auto' as an option for the breed and eval threads.  This doesn't work
+		right with the Console though, so for now it'll only be a
+		command-line option.

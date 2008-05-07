@@ -474,7 +474,7 @@ public class CompetitiveEvaluator extends Evaluator
                                 final GroupedProblemForm prob )
         {
         if (state.evalthreads==1)
-            evalRoundRobinPopChunk(state,numinds[0],from[0],0,individuals, subpop, prob);
+            evalRoundRobinPopChunk(state,from[0],numinds[0],0,individuals, subpop, prob);
         else
             {
             Thread[] t = new Thread[state.evalthreads];
