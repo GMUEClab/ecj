@@ -158,9 +158,16 @@ public class SlaveMonitor
                         OutputStream tmpOut = slaveSock.getOutputStream();
                         if (useCompression)
                             {
-                            state.output.fatal("JDK 1.5 has broken compression.  For now, you must set eval.compression=false");
+                            /*
+			    state.output.fatal("JDK 1.5 has broken compression.  For now, you must set eval.compression=false");
                             tmpIn = new CompressingInputStream(tmpIn);
                             tmpOut = new CompressingOutputStream(tmpOut);
+			    */
+			    tmpIn = Output.makeCompressingInputStream(tmpIn);
+			    tmpOut = Output.makeCompressingOutputStream(tmpOut);
+			    if (tmpIn == null || tmpOut == null)
+			    Output.initialError("You do not appear to have JZLib installed on your system, and so must set eval.compression=false. " +
+				"To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/");
                             }
                                                                                                         
                         dataIn = new DataInputStream(tmpIn);

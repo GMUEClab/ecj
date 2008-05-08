@@ -1361,3 +1361,11 @@ Version		Change Log
 	Added 'auto' as an option for the breed and eval threads.  This doesn't work
 		right with the Console though, so for now it'll only be a
 		command-line option.
+	Added compression options back into the island model and distributed
+		evaluator.  We've abandoned Sun's broken zlib code and have instead
+		gone with JZlib (http://www.jcraft.com/jzlib/).  So as not to make
+		ECJ reliant on JZlib for compiling, we're setting up the streams
+		dynamically using reflection in two new static methods in Output
+		(makeCompressedInputStream, makeCompressedOutputStream).
+		ec.util.CompressingInputStream and ec.util.CompressingOutputStream
+		are hereby deleted.

@@ -493,8 +493,8 @@ public class IslandExchange extends Exchanger
         compressedCommunication = state.parameters.getBoolean(base.push(P_COMPRESSED_COMMUNICATION),null,false);
         if( compressedCommunication )
             {
-            state.output.fatal("JDK 1.5 has broken compression.  For now, you must set " + base.push(P_COMPRESSED_COMMUNICATION) + "=false");
-/*            state.output.message( "Communication will be compressed" ); */
+//            state.output.fatal("JDK 1.5 has broken compression.  For now, you must set " + base.push(P_COMPRESSED_COMMUNICATION) + "=false");
+            state.output.message( "Communication will be compressed" ); 
             }
             
         // check whether it has to launch the main server for coordination
@@ -727,10 +727,19 @@ public class IslandExchange extends Exchanger
 
                     if( compressedCommunication )
                         {
-                        outWriters[y] = new DataOutputStream(new CompressingOutputStream(outSockets[y].getOutputStream()));
-
+			/*                        
+			outWriters[y] = new DataOutputStream(new CompressingOutputStream(outSockets[y].getOutputStream()));
                         // read the mailbox's id, then write my own id
                         outgoingIds[y] = new DataInputStream(new CompressingInputStream(outSockets[y].getInputStream())).readUTF().trim();
+			*/
+			
+			OutputStream compressedo = Output.makeCompressingOutputStream(outSockets[y].getOutputStream());
+			InputStream compressedi = Output.makeCompressingInputStream(outSockets[y].getInputStream());
+			if (compressedi == null || compressedo == null) 
+			    state.output.fatal( "You do not appear to have JZLib installed on your system, and so may must have compression turned off for IslandExchange.  "+ 
+			    	"To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/");
+			outWriters[y] = new DataOutputStream(compressedo);
+			outgoingIds[y] = new DataInputStream(compressedi).readUTF().trim();
                         }
                     else
                         {
@@ -1275,8 +1284,18 @@ class IslandExchangeMailbox implements Runnable
 
                 if( compressedCommunication )
                     {
-                    dataInput[x] = new DataInputStream(new CompressingInputStream(inSockets[x].getInputStream()));
+                    /*
+		    dataInput[x] = new DataInputStream(new CompressingInputStream(inSockets[x].getInputStream()));
                     dataOutput = new DataOutputStream(new CompressingOutputStream(inSockets[x].getOutputStream()));
+		    */
+		    OutputStream compressedo = Output.makeCompressingOutputStream(inSockets[x].getOutputStream());
+		    InputStream compressedi = Output.makeCompressingInputStream(inSockets[x].getInputStream());
+		    if (compressedi == null || compressedo == null) 
+			state.output.fatal( "You do not appear to have JZLib installed on your system, and so may must have compression turned off for IslandExchange.  "+ 
+			    "To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/");
+
+		    dataInput[x] = new DataInputStream(compressedi);
+		    dataOutput = new DataOutputStream(compressedo);
                     }
                 else
                     {
