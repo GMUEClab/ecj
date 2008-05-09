@@ -89,6 +89,8 @@ parent.0 =				../ec.params
 # specified. To do this the user can add the numeric values in the parameters
 # eval.problem.fitness-function-arg0 and eval.problem.fitness-function-arg1
 #
+# for example to use the RH function one would do:
+# eval.problem = ec.gep.GEPDefaultUserProg
 # eval.problem.fitness-function = RH
 # eval.problem.fitness-function-arg0 = 2.0
 
@@ -105,11 +107,13 @@ verbosity = 				0
 # flush output immediately, don't buffer it
 flush = 				true
 
-# one thread  could have multiple threads but it would NOT work as per the GeneXProTools system
+# one thread  - could have multiple threads but it would NOT work as per the GeneXProTools system
+#               and it is not tested at all!
 evalthreads = 				1
 breedthreads = 				1
 
 # a good random seed for thread 0  - as per ec.params but we might want a  different one for gep
+# seed.0 = 				time
 seed.0 = 				4357
 
 
@@ -153,8 +157,9 @@ quit-on-run-complete =			true
 pop = 					ec.Population
 
 # No multiple populations for gep so subpops should always be 1
+# and must always use GEPSubpopulation
 pop.subpops =				1
-pop.subpop.0 = 				ec.Subpopulation
+pop.subpop.0 = 				ec.gep.GEPSubpopulation
 
 
 # ec.Subpopulation
@@ -162,6 +167,8 @@ pop.subpop.0 = 				ec.Subpopulation
 # don't bother trying to eliminate duplicates from the
 # initial population
 pop.subpop.0.duplicate-retries =	0
+# do try to get initial population with non-zero fitness values
+pop.subpop.0.zero-fitness-retries = 10
 
 # subpop size is 30 individuals -- example only
 pop.subpop.0.size =			30
@@ -169,6 +176,10 @@ pop.subpop.0.size =			30
 # You might change this, but it must be a GEPSpeciesForm!
 pop.subpop.0.species = 			ec.gep.GEPSpecies
 pop.subpop.0.species.ind = 		ec.gep.GEPIndividual
+
+# may want to turn on/off simplifying expressions when human readable form of individual is printed
+pop.subpop.0.species.ind.simplify-expressions = true
+
 # use SimpleFitness for the subpop
 pop.subpop.0.species.fitness =			ec.simple.SimpleFitness
 
@@ -203,6 +214,19 @@ gep.species.numgenes = 3
 gep.species.gene-headsize = 8
 # The linking function may be one of +, -, * or / for most problems
 # and for logic problems can be one of: and, or, nand, nor, xor, nxor.
+# The linking function may be one of +, -, * or / for most problems
+# and for logic problems can be one of: and, or, nand, nor, xor, nxor.
+# NOTE: the above is historical since now you can use ANY of the functions
+#       defined as a functionSymbol (Add, Sub, Iflt4, etc.); for the
+#       SymbolFunctions you need to use the proper case in the name when
+#       specifying it! The arity of the function does not have to be 2 BUT
+#          arity of the linking function must suit the number of genes
+#          arity MUST be at least 2
+#          if arity is 2 ... any number of genes is OK
+#          if arity is 3 ... must be 3, 5, 7, 9, etc genes
+#          if arity is 4 ... must be 4, 7, 10, 13, etc genes
+#          and so on ...
+#
 # Default specified here is +
 gep.species.gene-linking-function = +
 
