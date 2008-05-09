@@ -107,8 +107,8 @@ public class GenetranspositionPipeline extends GEPBreedingPipeline
         {
 	    	int select = srt.nextInt(n); // choose 1 to transpose --- should be a without replacement selection!
             geneTranspose(((GEPIndividual)inds[select]).genome, srt);
-            ((GEPIndividual)inds[q]).evaluated = false;
-            ((GEPIndividual)inds[q]).parsedGeneExpressions = null;
+            ((GEPIndividual)inds[select]).evaluated = false;
+            ((GEPIndividual)inds[select]).parsedGeneExpressions = null;
         }
 
         return n;

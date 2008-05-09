@@ -125,7 +125,7 @@ try {
      *  1. choose the gene from which to extract the fragment (gf) <br>
      *  2. choose a position in the gene head as the start of the fragment (gfStart);
      *     must be a function, if not scan right till find one or exit. <br>
-     *  3. choose the size of the fragment (from 1 to min(headsize-1, genelength-gfStart)) <br>
+     *  3. choose the size of the fragment (from 1 to min(headsize, genelength-gfStart)) <br>
      *     (this will restrict the gene fragment from being too large to transpose 
      *     and going beyond the size of the head that it can replace) <br>
      *     NOTE: Ferreira's papers suggest that 3 fixed sizes are allowed only ... 
@@ -152,7 +152,7 @@ try {
         	   return;
            
            // ??? should we set up a set of f3 fixed sizes to choose from as GeneXpro does (I think)
-                      int gfSize = srt.nextInt(headsize-1 < gf.length-gfStart ? headsize-1 : gf.length-gfStart)+1;
+                      int gfSize = srt.nextInt(headsize < gf.length-gfStart ? headsize : gf.length-gfStart)+1;
            index = srt.nextInt(genome.length);
            int gt[] = genome[index]; // the gene in which we will insert the fragment
            // always insert at beginning of the target gene
