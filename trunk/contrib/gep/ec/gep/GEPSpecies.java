@@ -83,7 +83,7 @@ public class GEPSpecies extends Species
     public final static int PT_LOGICAL = 2;
     public final static int PT_TIMESERIES = 3;
     
-    // For use in determining the gene 'linking' function
+    // For use in determining the gene 'linking' function --- historical only since this was early way of specifying linking functions
     public final static int LF_FIELDSIZE_IN_LINKINGFUNCTIONS = 5;
     public final static int LF_ADD = 0;
     public final static int LF_SUB = 1;
@@ -140,18 +140,25 @@ public class GEPSpecies extends Species
     public int timeseriesTestingPredictions = 1;
     
     /** Which operator to use to combine the values of gene expressions? Must be one of
-        + - *  / and or xor nand nor nxor   */
-    public String linkingFunctionName = "+"; // default is addition
-    // each linking function name within the linkingFunctions String starts on a character
-    // index such that (index mod 5) is 0. So 5 chars allowed for each name in this string
-    // (so that each function name has at least one space after it).
-    // allow: + or add   - or sub  * or mul   / or div
-    public String linkingFunctions = "+    add  -    sub  *    mul  /    div  and  or   xor  nand nor  nxor ";
-    public int linkingFunctionIds[] = {LF_ADD, LF_ADD, LF_SUB, LF_SUB, LF_MUL, LF_MUL, LF_DIV, LF_DIV, LF_AND, LF_OR, LF_XOR, LF_NAND, LF_NOR, LF_NXOR };
-    public int linkingFunctionIndex = 0;
-    public int numericalLinkingFunctionIds[] = {LF_ADD, LF_SUB, LF_MUL, LF_DIV};
-    public int linkingFunctionId = LF_ADD;  // default
+        + - *  / and or xor nand nor nxor 
     
+        NOTE: this is from early version that restricted to these 10 linking functions; now
+        any GEPFunctionSymbol function can be used
+
+        Each linking function name within the linkingFunctions String starts on a character
+        index such that (index mod 5) is 0. So 5 chars allowed for each name in this string
+        (so that each function name has at least one space after it).
+     
+        Allow: + or add   - or sub  * or mul   / or div
+    */
+    public String linkingFunctions = "+    add  -    sub  *    mul  /    div  and  or   xor  nand nor  nxor ";
+    public String oldLinkingFunctionSymbolNames[] =
+    { "Add", "Add", "Sub", "Sub", "Mul", "Mul", "Div", "Div", 
+      "And", "Or", "Xor", "Nand", "Nor", "Nxor" 
+    };
+    public GEPFunctionSymbol linkingFunctionSymbol = null; 
+    public String linkingFunctionName = "Add"; // default
+
     /** Should we use constants for each gene */
     public boolean useConstants = false;
     /** number of constants generated for each gene */
@@ -292,38 +299,63 @@ public class GEPSpecies extends Species
         // linking function for combining values of gene expressions
         // Must be one of:    addition, subtraction, multiplication, division
         // OR for logical problems one of:    and or xor nand nor nxor
+        //
+        // NOTE: above is historical ... now can be ANY defined GEPFunctionSymbol
+        //
+        // Default is Add
         //*************************************************************************************
-        linkingFunctionName = state.parameters.getStringWithDefault(base.push(P_LINKINGFUNCTION), def.push(P_LINKINGFUNCTION), "?");
-        linkingFunctionName = linkingFunctionName.trim().toLowerCase();
-        int linkingFunctionIndex = linkingFunctions.indexOf(linkingFunctionName+" ");
-        if (linkingFunctionIndex < 0)
-        {  
-        	// if number of genes is only 1 no linking function required so quietly set to +
-        	if (numberOfGenes > 1)
-        	    state.output.warning("Gene linking function must be one of: \n" + linkingFunctions + "\n... defaulting to '+'."
-            	    	+ " Your specified value was: '" + linkingFunctionName + 
-            	    	"'. Setting linking function to addition (+).",
-            		    base.push(P_LINKINGFUNCTION),def.push(P_LINKINGFUNCTION));
-            linkingFunctionName = "+";
-            linkingFunctionIndex = linkingFunctions.indexOf(linkingFunctionName+" ");
+        linkingFunctionName = state.parameters.getStringWithDefault(base.push(P_LINKINGFUNCTION), def.push(P_LINKINGFUNCTION), "Add");
+        String linkingFunctionNameLower = linkingFunctionName.trim().toLowerCase();
+        // See if it is one of the historical ones ...
+        int linkingFunctionIndex = linkingFunctions.indexOf(linkingFunctionNameLower+" ");
+        if (linkingFunctionIndex >= 0)
+        { // get the actual name of the GEPFunctionSymbol
+        	linkingFunctionName = oldLinkingFunctionSymbolNames[linkingFunctionIndex];
         }
-        linkingFunctionId = linkingFunctionIds[linkingFunctionIndex/LF_FIELDSIZE_IN_LINKINGFUNCTIONS];
-        // logical problem types can NOT have a numerical linking function and non locical
-        // problem types must have a numerical linking function
-        boolean isNumericalLinkingFunction = false;
-        for (int i=0; i<numericalLinkingFunctionIds.length; i++)
-        	if (numericalLinkingFunctionIds[i] == linkingFunctionId)
-        	{
-        		isNumericalLinkingFunction = true;
-        		break;
-        	}
-        if (isNumericalLinkingFunction && (problemType == PT_LOGICAL))		
-        	state.output.fatal("linking function for a logical problem type must be a logical function and not: " + linkingFunctionName,
-            		base.push(P_LINKINGFUNCTION),def.push(P_LINKINGFUNCTION));
-        
-        if (!isNumericalLinkingFunction && (problemType != PT_LOGICAL))		
-        	state.output.fatal("linking function for a non logical problem type must not be a logical function as specified: " + linkingFunctionName,
-            		base.push(P_LINKINGFUNCTION),def.push(P_LINKINGFUNCTION)); 
+        // should have a GEPFunctionSymbol class name in linkingFunctionName at this point!
+        try {
+            Class classDefinition = Class.forName(GEPSymbolSet.LOCATION_OF_FUNCTION_CLASSES+"."+linkingFunctionName);
+            linkingFunctionSymbol = (GEPFunctionSymbol)classDefinition.newInstance();
+        } catch (InstantiationException e) 
+        {
+          if (numberOfGenes > 1)
+            state.output.fatal("Unable to create GEPFunctionSymbol class for linking function '" + linkingFunctionName + "'. " + e);
+        } catch (IllegalAccessException e)
+        {
+          if (numberOfGenes > 1)
+            state.output.fatal("Unable to create GEPFunctionSymbol class for linking function '" + linkingFunctionName + "' " + e);
+        } catch (ClassNotFoundException e)
+        {
+          if (numberOfGenes > 1)
+            state.output.fatal("Unable to create GEPFunctionSymbol class for linking function '" + linkingFunctionName + "' " + e);
+        }
+        // linkFunctionSymbol will be null if only 1 gene ... no linking function required
+        if (linkingFunctionSymbol != null)
+        {
+        	// only logical linking functions allowed for logical problems, etc. 
+	        if (!linkingFunctionSymbol.isLogicalFunction() && (problemType == PT_LOGICAL))		
+	        	state.output.fatal("linking function for a logical problem type must be a logical function and not: " + linkingFunctionName,
+	            		base.push(P_LINKINGFUNCTION),def.push(P_LINKINGFUNCTION));
+	        
+	        if (linkingFunctionSymbol.isLogicalFunction() && (problemType != PT_LOGICAL))		
+	        	state.output.fatal("linking function for a non logical problem type must not be a logical function as specified: " + linkingFunctionName,
+	            		base.push(P_LINKINGFUNCTION),def.push(P_LINKINGFUNCTION)); 
+        	// arity of the linking function must suit the number of genes
+	        // arity MUST be at least 2
+	        // if arity is 2 ... any number of genes is OK
+	        // if arity is 3 ... must be 3, 5, 7, 9, etc genes
+	        // if arity is 4 ... must be 4, 7, 10, 13, etc genes
+	        // and so on ...
+	        int functionArity = linkingFunctionSymbol.arity;
+	        if ( functionArity > 2 && 
+	             ((numberOfGenes-functionArity)% (functionArity-1)) != 0
+	           )
+	        {
+	        	state.output.fatal("Arity (" + linkingFunctionSymbol.arity + ") of linking function '" +
+	        			linkingFunctionName + "' is NOT compatible with the number of genes: " + numberOfGenes,
+	            		base.push(P_LINKINGFUNCTION),def.push(P_LINKINGFUNCTION)); 
+	        }
+        }
 
         //*************************************************************************************
         // Time series problems must specify all of the following if we are using raw (unprocessed)
@@ -379,7 +411,7 @@ public class GEPSpecies extends Species
     	GEPIndividual.setThresholdOFF();
         if (problemType == PT_CLASSIFICATION)
         {
-        	double threshold = 0.5;
+        	double threshold = 0.5; // default value
         	if (state.parameters.exists(base.push(P_CLASSIFICATION_THRESHOLD), def.push(P_CLASSIFICATION_THRESHOLD)))
             {
         	    threshold = state.parameters.getDouble(base.push(P_CLASSIFICATION_THRESHOLD), def.push(P_CLASSIFICATION_THRESHOLD), -1.0);

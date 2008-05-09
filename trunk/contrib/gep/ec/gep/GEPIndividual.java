@@ -92,6 +92,7 @@ public class GEPIndividual extends Individual
 {
     public static final String P_INDIVIDUAL = "individual";
     public static final int CHECK_BOUNDARY = 8;
+    public static final String P_SIMPLIFY_EXPRESSIONS = "simplify-expressions";
     
     /** This array holds a parse tree for each gene in the genome. The parse tree
      *  is used to evaluate the genome.
@@ -158,7 +159,14 @@ public class GEPIndividual extends Individual
 	 * </code>
 	 */
 	private static boolean thresholdON = false;
-	
+
+	/** 
+	 * Should we print simplified expressions as well as the generated expression in genoTypeToStringForHumans?
+	 * 
+	 */
+    public static boolean simplifyExpressions = true;
+
+
 	/**
 	 * Turns on the use of the threshold value and assigns new threshold value.
 	 * @param t the new threshold value
@@ -359,14 +367,18 @@ public class GEPIndividual extends Individual
 			s = s + genotypeToStringForHumansKarva();
 			String mathExpression = genotypeToStringForHumansMathExpression();
 			s = s + "\nMATH\n" + mathExpression;
-			try
+			if (simplifyExpressions)
 			{
-				s = s + "\n\nMATH (SIMPLIFIED)\n" + Expression.valueOf(mathExpression).simplify().toString() + "\n";
-			}
-			catch (Exception e)
-			{
-				s = s + "\n\nMATH (SIMPLIFIED)\nUnable to simplify the math expression ... jscl.meditor simplify failed\n";
-			}
+				try
+				{
+					s = s + "\n\nMATH (SIMPLIFIED)\n" + Expression.valueOf(mathExpression).simplify().toString();
+				}
+				catch (Exception e)
+				{
+					s = s + "\n\nMATH (SIMPLIFIED)\nUnable to simplify the math expression ... jscl.meditor simplify failed";
+				}
+			}			
+			s = s + "\n";
 			return s;
     }
         
@@ -419,9 +431,16 @@ public class GEPIndividual extends Individual
     		expressions[i]= nodeToStringMathExpr(parsedGeneExpressions[i]);
     	}
 		s = expressions[0];
-    	for (int i=1; i< numExpressions; i++)
+
+	    GEPFunctionSymbol fs = ((GEPSpecies)species).linkingFunctionSymbol;
+	    int arity = fs.arity;
+	    String params[] = new String[arity];
+    	for (int i=1; i< numExpressions; )
     	{
-    		s = s + " " + ((GEPSpecies)species).linkingFunctionName + " " + expressions[i];
+    		params[0] = s;
+    		for (int j=1; j<arity; j++)
+    			params[j] = expressions[i++];
+    		s = fs.printMathExpression(params);
     	}
 
     	return s;
@@ -768,68 +787,31 @@ public class GEPIndividual extends Individual
      */
     public double eval(int valueIndex)
     {
-    	boolean p1, p2;
     	// parse the gene expressions if necessary
     	if (parsedGeneExpressions == null)
     		parseGenes();
     	// evaluate the gene's expressions using the value at 'valueIndex' position in the terminal symbols
     	// and combine the gene results using the specified linking function
     	double result = parsedGeneExpressions[0].eval(valueIndex);
-    	int id = ((GEPSpecies)species).linkingFunctionId; 
-    	for (int i=1; i<genome.length; i++)
+    	if (Double.isNaN(result))
+    		return result;
+    	if (genome.length == 1)
+    		return result;
+    	
+    	GEPFunctionSymbol fs = ((GEPSpecies)species).linkingFunctionSymbol; 
+    	int functionArity = fs.arity;
+    	double params[] = new double[functionArity];
+    	for (int i=1; i<genome.length; )
     	{
-    		double nextValue = parsedGeneExpressions[i].eval(valueIndex);
-
-    		switch (id)
-			{
-             case GEPSpecies.LF_ADD:
-         		result += nextValue;
-         		break;
-             case GEPSpecies.LF_SUB:
-        		result -= nextValue;
-        		break;
-             case GEPSpecies.LF_MUL:
-        		result *= nextValue;
-        		break;
-             case GEPSpecies.LF_DIV:
-        		result /= nextValue;
-        		break;
-             case GEPSpecies.LF_AND: 
-          		 p1 = (result==0.0) ? false : true; 
-     	         p2 = (nextValue==0.0) ? false : true;
-            	 result = (p1 & p2) ? 1.0 : 0.0;
-            	 break;
-             case GEPSpecies.LF_OR:
-          		 p1 = (result==0.0) ? false : true; 
-     	         p2 = (nextValue==0.0) ? false : true;
-            	 result = (p1 | p2) ? 1.0 : 0.0;
-            	 break;
-             case GEPSpecies.LF_XOR:
-          		 p1 = (result==0.0) ? false : true; 
-     	         p2 = (nextValue==0.0) ? false : true;
-            	 result = (p1 ^ p2) ? 1.0 : 0.0;
-            	 break;
-             case GEPSpecies.LF_NAND:
-          		 p1 = (result==0.0) ? false : true; 
-     	         p2 = (nextValue==0.0) ? false : true;
-            	 result = (p1 & p2) ? 0.0 : 1.0;
-            	 break;
-             case GEPSpecies.LF_NOR:
-          		 p1 = (result==0.0) ? false : true; 
-     	         p2 = (nextValue==0.0) ? false : true;
-            	 result = (p1 | p2) ? 0.0 : 1.0;
-            	 break;
-             case GEPSpecies.LF_NXOR:
-          		 p1 = (result==0.0) ? false : true; 
-     	         p2 = (nextValue==0.0) ? false : true;
-            	 result = (p1 ^ p2) ? 0.0 : 1.0;
-            	 break;
-             default: // assume +  ... should never happen
-          		result += nextValue;
-			}
+    		params[0] = result;
+    		for (int j=1; j<functionArity; j++)
+    			params[j] = parsedGeneExpressions[i++].eval(valueIndex);
+    		result = fs.eval(params);
+        	if (Double.isNaN(result))
+        		return result;
     	}
-        if (thresholdON) // classification problem -- expect dep var values to be 0 or 1
-        	result = (result >= threshold) ? 1 : 0;
+        if (GEPIndividual.isThresholdON()) // classification problem -- expect dep var values to be 0 or 1
+        	result = (result >= GEPIndividual.getThreshold()) ? 1 : 0;
 
         return result;
     }

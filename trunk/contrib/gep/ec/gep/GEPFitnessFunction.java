@@ -145,7 +145,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the RAE (Relative Absolute Error) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
 	public static double RAEfitness(GEPIndividual ind) 
     {
@@ -173,7 +173,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the rRAE (relative RAE) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 */
 	public static double rRAErawFitness(GEPIndividual ind) 
 	{
@@ -209,7 +209,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the rRAE (relative RAE) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
 	public static double rRAEfitness(GEPIndividual ind) 
     {
@@ -235,7 +235,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the rRAE (relative RAE) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 */
 	public static double MAErawFitness(GEPIndividual ind) 
 	{
@@ -261,7 +261,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the rRAE (relative RAE) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
 	public static double MAEfitness(GEPIndividual ind) 
     {
@@ -287,7 +287,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the rMAE (relative Mean Absolute Error) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 */
 	public static double rMAErawFitness(GEPIndividual ind) 
 	{
@@ -319,7 +319,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the rMAE (relative Mean Absolute Error) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
 	public static double rMAEfitness(GEPIndividual ind) 
     {
@@ -345,7 +345,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the MSE (Mean Squared Error) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 */
 	public static double MSErawFitness(GEPIndividual ind) 
 	{
@@ -371,7 +371,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the MSE (Mean Squared Error) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
 	public static double MSEfitness(GEPIndividual ind) 
     {
@@ -397,7 +397,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the rMSE (relative Mean Squared Error) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 */
 	public static double rMSErawFitness(GEPIndividual ind) 
 	{
@@ -429,7 +429,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the rMSE (relative Mean Squared Error) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
 	public static double rMSEfitness(GEPIndividual ind) 
     {
@@ -455,7 +455,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the RMSE (Root Mean Squared Error) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 */
 	public static double RMSErawFitness(GEPIndividual ind) 
 	{
@@ -470,6 +470,8 @@ public final class GEPFitnessFunction
         {
             expectedResult = dependentVar[i];
             result = ind.eval(i);
+            if (Double.isInfinite(result) || Double.isNaN(result))
+            	return(Double.NaN);
             error = result - expectedResult;
             sumOfSquaredAbsoluteError += error * error; 
         }
@@ -481,7 +483,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the RMSE (Root Mean Squared Error) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
 	public static double RMSEfitness(GEPIndividual ind) 
     {
@@ -507,7 +509,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the rRMSE (relative Root Mean Squared Error) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 */
 	public static double rRMSErawFitness(GEPIndividual ind) 
 	{
@@ -539,7 +541,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the rRMSE (relative Root Mean Squared Error) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
 	public static double rRMSEfitness(GEPIndividual ind) 
     {
@@ -565,7 +567,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the RSE (Relative Squared Error) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 */
 	public static double RSErawFitness(GEPIndividual ind) 
 	{
@@ -596,7 +598,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the RSE (Relative Squared Error) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
 	public static double RSEfitness(GEPIndividual ind) 
     {
@@ -622,7 +624,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the rRSE (relative RSE) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 */
 	public static double rRSErawFitness(GEPIndividual ind) 
 	{
@@ -659,7 +661,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the rRSE (Relative RSE) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
 	public static double rRSEfitness(GEPIndividual ind) 
     {
@@ -685,7 +687,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the RRSE (Root Relative Squared Error) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 */
 	public static double RRSErawFitness(GEPIndividual ind) 
 	{
@@ -716,7 +718,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the RRSE (Root Relative Squared Error) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
 	public static double RRSEfitness(GEPIndividual ind) 
     {
@@ -742,7 +744,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the rRRSE (relative Root Relative Squared Error) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 */
 	public static double rRRSErawFitness(GEPIndividual ind) 
 	{
@@ -779,7 +781,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the rRRSE (relative Root Relative Squared Error) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
 	public static double rRRSEfitness(GEPIndividual ind) 
     {
@@ -805,7 +807,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the CC (Correlation Coefficient) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 */
 	public static double CCrawFitness(GEPIndividual ind) 
 	{
@@ -841,21 +843,22 @@ public final class GEPFitnessFunction
         double stdDev = Math.sqrt(sum2/dv.length);
         
         // the raw fitness ... CC
-        return covariance/(dvStdDev*stdDev);
+        double cc = covariance/(dvStdDev*stdDev);
+        return Math.min(1.0, Math.max(cc, -1.0)); // in case of math imprecision in calculations
 	}
     	
 	/**
 	 * Calculates the fitness for the CC (Correlation Coefficient) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
 	public static double CCfitness(GEPIndividual ind) 
     {
         double CC = CCrawFitness(ind);
-        // raw fitness is normalized between 0 and 1000  (1000 * CC * CC)
+        // raw fitness is normalized between 0 and 1000  (500 * (CC +1))
         // CC can be between -1.0 and 1.0
-        return (1000.0 * CC * CC);
+        return (500.0 * (CC+1.0));
 	}
 
 	/**
@@ -875,7 +878,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the RS (R-Squared) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 */
 	public static double RSrawFitness(GEPIndividual ind) 
 	{
@@ -916,7 +919,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the RS (R-Squared) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
 	public static double RSfitness(GEPIndividual ind) 
     {
@@ -944,7 +947,7 @@ public final class GEPFitnessFunction
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
 	 * @param precision specified as a percentage deviation from the expected value
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 */
 	public static double AHrawFitness(GEPIndividual ind, double precision) 
 	{
@@ -976,7 +979,7 @@ public final class GEPFitnessFunction
 	 * @param ind the GEP individual that needs its fitness calculated.
 	 * @param precision double array expected to have a single value that is the 
 	 *        percentage deviation from the expected value
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
 	public static double AHfitness(GEPIndividual ind, double precision[]) 
     {
@@ -1005,7 +1008,7 @@ public final class GEPFitnessFunction
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
 	 * @param precision specified as a percentage deviation from the expected value
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 */
 	public static double RHrawFitness(GEPIndividual ind, double precision) 
 	{
@@ -1043,7 +1046,7 @@ public final class GEPFitnessFunction
 	 * @param ind the GEP individual that needs its fitness calculated.
 	 * @param precision double array expected to have a single value that is the 
 	 *        percentage deviation from the expected value
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
 	public static double RHfitness(GEPIndividual ind, double precision[]) 
     {
@@ -1071,9 +1074,9 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the AEWSR (Absolute Error with Selection Range) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @param range range for the fitness calcualtion
+	 * @param range range for the fitness calculation
 	 * @param precision specified as a percentage deviation from the expected value
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 */
 	public static double AEWSRrawFitness(GEPIndividual ind, double range, double precision) 
 	{
@@ -1107,9 +1110,8 @@ public final class GEPFitnessFunction
 	 * @param ind the GEP individual that needs its fitness calculated.
 	 * @param range_precision an array with 2 values expected - 1st the range for the fitness calculation
 	 *        and 2nd the precision specified as a percentage deviation from the expected value
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
-	
 	static double AEWSRrange = 1.0;
 	public static double AEWSRfitness(GEPIndividual ind, double range_precision[]) 
     {
@@ -1138,13 +1140,13 @@ public final class GEPFitnessFunction
 	/**
 	 * The max value for this type of fitness is range * length of the test data set.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @param range value of the range used when the fitness was calculated
+	 * @param range value of the range used when the fitness was calculated; 1st value in doouble array
 	 * @return range * length of the test data set
 	 */
-	public static double AEWSRmaxFitness(GEPIndividual ind, double range) 
+	public static double AEWSRmaxFitness(GEPIndividual ind, double range[]) 
 	{
 		// maximum value is the number of test cases (since each one could meet the threshold)
-		return (GEPDependentVariable.getDependentVariableValues().length * range);
+		return (GEPDependentVariable.getDependentVariableValues().length * range[0]);
 	}
 
     //************************* REWSR (Relative Error with Selection Range) *****************
@@ -1153,9 +1155,9 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the REWSR (Relative Error with Selection Range) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @param range range for the fitness calculation
+	 * @param range range for the fitness calcualtion
 	 * @param precision specified as a percentage deviation from the expected value
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 */
 	public static double REWSRrawFitness(GEPIndividual ind, double range, double precision) 
 	{
@@ -1195,7 +1197,7 @@ public final class GEPFitnessFunction
 	 * @param ind the GEP individual that needs its fitness calculated.
 	 * @param range_precision an array with 2 values expected - 1st the range for the fitness calculation
 	 *        and 2nd the precision specified as a percentage deviation from the expected value
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 */
 	static double REWSRrange = 1.0;
 	public static double REWSRfitness(GEPIndividual ind, double range_precision[]) 
@@ -1221,18 +1223,7 @@ public final class GEPFitnessFunction
 		// maximum value is the number of test cases (since each one could meet the threshold)
 		return (GEPDependentVariable.getDependentVariableValues().length * REWSRrange);
 	}
-	
-	/**
-	 * The max value for this type of fitness is range * length of the test data set.
-	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @param range value of the range used when the fitness was calculated
-	 * @return range * length of the test data set
-	 */
-	public static double REWSRmaxFitness(GEPIndividual ind, double range) 
-	{
-		// maximum value is the number of test cases (since each one could meet the threshold)
-		return (GEPDependentVariable.getDependentVariableValues().length * range);
-	}
+
 
     //************************* NH (Number of Hits) *****************
 	
@@ -1240,7 +1231,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the NH (Number of Hits) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 *
 	 * Assumes that values are 1 or 0
 	 */
@@ -1267,7 +1258,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the NH (Number of Hits) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 *
 	 * Assumes that values are 1 or 0
 	 */
@@ -1295,7 +1286,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the NHWP (Number of Hits with Penalty) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 *
 	 *  Expect all values to be 0 or 1; for classification threshold value should be set.
 	 *  
@@ -1317,7 +1308,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the NHWP (Number of Hits with Penalty) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 *
 	 *  Expect all values to be 0 or 1; for classification threshold value should be set.
 	 *  
@@ -1346,7 +1337,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the ACC (Accuracy) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 *
 	 *  Expect all values to be 0 or 1; for classification threshold value should be set.
 	 *  
@@ -1367,7 +1358,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the ACC (Accuracy) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 *
 	 *  Expect all values to be 0 or 1; for classification threshold value should be set.
 	 *  
@@ -1396,7 +1387,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the SACC (Squared Accuracy) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 *
 	 *  Expect all values to be 0 or 1; for classification threshold value should be set.
 	 *  
@@ -1425,7 +1416,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the SS (Sensitivity/specificity) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 *
 	 *  Expect all values to be 0 or 1; for classification threshold value should be set.
 	 *  
@@ -1455,7 +1446,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the SS (Sensitivity/specificity) type fitness. 
 	 * Gets the raw fitness and then normalizes between 0 and max value (1000).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 *
 	 *  Expect all values to be 0 or 1; for classification threshold value should be set.
 	 *  
@@ -1484,7 +1475,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the PPVNPV (Positive Predictive Value / Negative Predictive Value ) type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 *
 	 *  Expect all values to be 0 or 1; for classification threshold value should be set.
 	 *  
@@ -1513,7 +1504,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the PPVNPV (Positive Predictive Value / Negative Predictive Value ) type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 *
 	 *  Expect all values to be 0 or 1; for classification threshold value should be set.
 	 *  
@@ -1542,7 +1533,7 @@ public final class GEPFitnessFunction
 	 * Calculates the 'raw' fitness for the SSPN (Sensitivity/Specificity/PPV/NPV type 
 	 * fitness (before the normalization from 0 to max value is done).
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the 'raw' fitness value before normalization from 0 to max value
 	 *
 	 *  Expect all values to be 0 or 1; for classification threshold value should be set.
 	 *  
@@ -1577,7 +1568,7 @@ public final class GEPFitnessFunction
 	 * Calculates the fitness for the SSPN (Sensitivity/Specificity/PPV/NPV type fitness. 
 	 * Gets the raw fitness and then normalized between 0 and max value.
 	 * @param ind the GEP individual that needs its fitness calculated.
-	 * @return the 'raw' fitness value before normaization from 0 to max value
+	 * @return the fitness value after normalization from 0 to max value
 	 *
 	 *  Expect all values to be 0 or 1; for classification threshold value should be set.
 	 *  
@@ -1728,6 +1719,8 @@ public final class GEPFitnessFunction
 
 		return fitness*(1.0+(((double)(smax-sind))/(((double)(smax-smin))*parsimonyFactor)));
 	}
+
+	// ******* Functions for confusion matrices ****************************
 	
 	/**
 	 * Given an individual calculate the true positive, false negative, false positive and
@@ -1750,6 +1743,10 @@ public final class GEPFitnessFunction
         for (int i=0; i<len; i++)
         {
         	predictedValue = ind.eval(i);
+			if (Double.isNaN(predictedValue))
+				// set all counts to 0 and return when an invalid value is found
+		        return new int[]{0, 0, 0, 0};
+
         	expectedResult = dv[i];
         	if (predictedValue == 1.0)
         		if (expectedResult == 1.0)
