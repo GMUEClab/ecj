@@ -94,9 +94,9 @@ class SlaveConnection
         
         // don't want to miss any of these so we'll wrap them individually
         try { dataOut.writeByte(Slave.V_SHUTDOWN); } catch (Exception e) { }  // exception, not IOException, because JZLib throws some array exceptions
-        try { dataOut.flush(); } catch (IOException e) { }
-        try { dataOut.close(); } catch (IOException e) { }
-        try { dataIn.close(); } catch (IOException e) { }
+        try { dataOut.flush(); } catch (Exception e) { }
+        try { dataOut.close(); } catch (Exception e) { }
+        try { dataIn.close(); } catch (Exception e) { }
         try { evalSocket.close(); } catch (IOException e) { }
 
         state.output.systemMessage( SlaveConnection.this.toString() + " Slave is shutting down...." );
