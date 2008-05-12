@@ -90,8 +90,6 @@ public class RegERC extends ERC
         return true;
         }
 
-    public String name() { return ""; } // I'm the only ERC class, this is fine
-
     public String toStringForHumans()
         { return "" + (float)value; }
 

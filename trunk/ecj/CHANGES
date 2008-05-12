@@ -1369,3 +1369,4 @@ Version		Change Log
 		(makeCompressedInputStream, makeCompressedOutputStream).
 		ec.util.CompressingInputStream and ec.util.CompressingOutputStream
 		are hereby deleted.
+	Updated ERC.java to be a bit easier to implement, and with better docs.

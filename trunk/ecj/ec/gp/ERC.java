@@ -24,9 +24,79 @@ import java.io.*;
  * then on, even after being crossed over into other individuals.
  * In order to implement an ERC, you need to override several methods below.
  *
- * <p> Remember that if your ERC value isn't a simple or mutable type 
- * (like an int or a string), you'll have to deep-clone it in an overridden
- * clone() method.
+ * <h2>Impementing an ERC</h2>
+ *
+ * A basic no-frills ERC needs to have the following things:
+ *
+ * <ul>
+ * <li>The data holding the ERC (perhaps a float or a couple of floats)
+ * <li>Possibly an implementation of the <b>clone</b> method to copy that data
+ *     properly.  If your ERC data is just a simple or immutable type
+ *     (like an int or a string), you don't need write a clone() method;
+ *     the default one works fine.  But if your data is an array or other
+ *     mutable object, you'll need to override the clone() method to copy
+ *     the array.  
+ *
+ * <li>An implementation of the <b>resetNode</b> method to randomize the
+ *     data once cloned from the prototype.  This essentially "initializes"
+ *     your ERC.
+ *
+ * <li>An implementation of the <b>encode</b> method which presents the
+ *     ERC as a String.  If you don't plan on writing individuals out to
+ *     files in a fashion that enables them to be read back in again later,
+ *     but only care to print out individuals for statistics purposes, 
+ *     you can implement this to just
+ *     write <tt>"" + <i>value</i></tt>, where <i>value</i> is your data.
+ *
+ * <li>An implementation of the <b>nodeEquals</b> method to return true if
+ *     the other node is also an ERC of the same type, and it has the
+ *     same ERC data as yourself.
+ *
+ *
+ * </ul>
+ * 
+ * A more advanced ERC will need some of the following gizmos:
+ * 
+ * <ul>
+ *
+ * <li>If you have ERCs of different class types (for example, a vector ERC
+ *      and a floating-point scalar ERC), you will wish to distinguish them
+ *      when they're printed to files.  To do this,  override the <b>name</b> 
+ *      method to return different strings for each of them (perhaps "vec" versus "").
+ *
+ * <li>If you want to write your ERCs to files such that they can be read
+ *      back in again, you'll need to override the <b>encode</b> method
+ *      to write using the <tt>ec.util.Code</tt> class.  Further, you'll need to
+ *      override the <b>decode</b> method to read in the individual using the
+ *      <tt>ec.util.Code</tt> and <tt>ec.util.DecodeReturn</tt> classes.  The
+ *      default version -- which is wrong -- returns <tt>false</tt>.
+ *      When you do this, you'll probably also want to override the <b>toStringForHumans()</b>
+ *      method to return a simple string form of the ERC: perhaps just a number
+ *      or a vector like "<7.24, 9.23>".  This is because by default <b>toStringForHumans()</b>
+ *      calls <b>toString()</b>, which in turn calls <b>encode</b>, which you have
+ *      just overidden to be more computer-ish.
+ *
+ * <li>ERCs can be mutated using a custom mutator pipeline, for example the
+ *     <b>ec.gp.breed.MutateERCPipeline</b>.  If you expect to mutate your ERCs,
+ *     you may wish to override the <b>mutateERC</b> method to do something
+ *     more subtle than its default setting (which just randomizes the
+ *     ERC again, by calling resetNode).
+ * 
+ * <li>The default <b>nodeHashCode</b> implementation is poor and slow (it
+ *     creates a string using encode() and then hashes the sting).  You might
+ *     create a better (and probably simpler) hash code function.
+ *
+ * <li>If you're going to use facilities such as the Island Model or the distributed
+ *     evaluator, you'll need to implement the <b>writeNode</b> and <b>readNode</b>
+ *     methods to read/write the node to DataInput/DataOutput.  The default implementations
+ *     just throw errors.
+ *
+ * <li>If you need to set up your ERC class from the parameter file, do so in the <b>setup</b> method.
+ *
+ * </ul>
+ *
+ * <p> See the <b>ec.app.regression.func.RegERC</b> class for an example of a simple but "fuly-implemented"
+ * ERC.  A slightly more complicated example can be found in <b>ec.app.lawnmower.func.LawnERC</b>.
  *
  * @author Sean Luke
  * @version 1.0 
@@ -39,10 +109,11 @@ public abstract class ERC extends GPNode
     /** Returns the lowercase "name" of this ERC function class, some
         simple, short name which distinguishes this class from other ERC
         function classes you're using.  If you have only one ERC function
-        class, you can just return "".  Whatever the name is, it should
+        class, you can just return "" (this is what name() returns by default).
+	Whatever the name is, it should
         generally only have letters, numbers, or hyphens or underscores in it.
         No whitespace or other characters. */
-    public abstract String name();
+    public String name() { return ""; }
 
     /** Checks to make certain that the ERC has no children. */
     public void checkConstraints(final EvolutionState state,
@@ -62,17 +133,16 @@ public abstract class ERC extends GPNode
     public abstract boolean nodeEquals(final GPNode node);
 
     /** Implement this to hash ERCs, along with other nodes, in such a way that two
-        "equal" ERCs will usually hash to the same value. */
-
-    public abstract int nodeHashCode();
+        "equal" ERCs will usually hash to the same value. The default value, which 
+	may not be very good, is a combination of the class hash code and the hash
+	code of the string returned by encode().  You might make a better hash value. */
+    public int nodeHashCode() { return super.nodeHashCode() ^ encode().hashCode(); }
 
     /** You might want to override this to return a special human-readable version of the erc value; otherwise this defaults to toString();  This should be something that resembles a LISP atom.  If a simple number or other object won't suffice, you might use something that begins with ERC_PREFIX + name() + [ + ... + ] */
-
     public String toStringForHumans() 
         { return toString(); }
 
     /** This defaults to simply ERC_PREFIX + name() + "[" + encode() + "]" */
-
     public String toString() 
         { return ERC_PREFIX + name() + "[" + encode() + "]"; }
 
@@ -84,7 +154,10 @@ public abstract class ERC extends GPNode
         exactly what was needed to decode your ERC.  If you fail to decode,
         you should make sure that the position and data in the dret are exactly
         as they were originally. */
-    public abstract boolean decode(final DecodeReturn dret);
+    public boolean decode(final DecodeReturn dret)
+	{
+	return false;
+	}
 
     /** Mutates the node's "value".  This is called by mutating operators
         which specifically <i>mutate</i> the "value" of ERCs, as opposed to 
