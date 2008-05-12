@@ -60,6 +60,9 @@ import ec.util.*;
  <td valign=top>(during initialization, when we produce an individual which already exists in the subpopulation, the number of times we try to replace it with something unique.  Ignored if we're loading from a file.)</td></tr>
  </table>
 
+ <p><b>Default Base</b><br>
+ ec.subpop
+
  <p><b>Parameter bases</b><br>
  <table>
  <tr><td valign=top><i>base</i>.<tt>species</tt></td>
@@ -88,6 +91,7 @@ public class Subpopulation implements Group
     /** Do we allow duplicates? */
     public int numDuplicateRetries;
     
+    public static final String P_SUBPOPULATION = "subpop";
     public static final String P_FILE = "file";
     public static final String P_SUBPOPSIZE = "size";  // parameter for number of subpops or pops
     public static final String P_SPECIES = "species";
@@ -95,6 +99,11 @@ public class Subpopulation implements Group
 
     public static final String NUM_INDIVIDUALS_PREAMBLE = "Number of Individuals: ";
     public static final String INDIVIDUAL_INDEX_PREAMBLE = "Individual Number: ";
+
+    public Parameter defaultBase()
+        {
+        return ECDefaults.base().push(P_SUBPOPULATION);
+        }
 
     /** Returns an instance of Subpopulation just like it had been before it was
         populated with individuals. You may need to override this if you override
@@ -118,6 +127,8 @@ public class Subpopulation implements Group
 
     public void setup(final EvolutionState state, final Parameter base)
         {
+        Parameter def = defaultBase();
+
         int size;
 
         // do we load from a file?
@@ -127,25 +138,25 @@ public class Subpopulation implements Group
         // what species do we use?
 
         species = (Species) state.parameters.getInstanceForParameter(
-            base.push(P_SPECIES),null,
+            base.push(P_SPECIES),def.push(P_SPECIES),
             Species.class);
         species.setup(state,base.push(P_SPECIES));
 
         // how big should our subpopulation be?
         
         size = state.parameters.getInt(
-            base.push(P_SUBPOPSIZE),null,1);
+            base.push(P_SUBPOPSIZE),def.push(P_SPECIES),1);
         if (size<=0)
             state.output.fatal(
                 "Subpopulation size must be an integer >= 1.\n",
-                base.push(P_SUBPOPSIZE),null);
+                base.push(P_SUBPOPSIZE),def.push(P_SPECIES));
         
         // How often do we retry if we find a duplicate?
         numDuplicateRetries = state.parameters.getInt(
-            base.push(P_RETRIES),null,0);
+            base.push(P_RETRIES),def.push(P_SPECIES),0);
         if (numDuplicateRetries < 0) state.output.fatal(
             "The number of retries for duplicates must be an integer >= 0.\n",
-            base.push(P_RETRIES),null);
+            base.push(P_RETRIES),def.push(P_SPECIES));
         
         individuals = new Individual[size];
         }
