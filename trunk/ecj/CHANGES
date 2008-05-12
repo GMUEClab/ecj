@@ -1371,4 +1371,6 @@ Version		Change Log
 		are hereby deleted.
 	Updated ERC.java to be a bit easier to implement, and with better docs.
 	Subpopulation now has a default base:  ec.subpop   This marks the first
-		actual use of the ECDefaults class.
+		actual use of the ECDefaults class.  Population doesn't have one
+		yet, making it the only Group without one.  Because it'd be
+		sort of a bit silly I guess, saying 'ec.pop...' instead of 'pop...'
