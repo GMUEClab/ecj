@@ -30,6 +30,8 @@ import java.io.*;
  *
  * <ul>
  * <li>The data holding the ERC (perhaps a float or a couple of floats)
+ * <li>An implementation of the <b>eval</b> method which returns the appropriate
+ *     data when the node is evaluated.
  * <li>Possibly an implementation of the <b>clone</b> method to copy that data
  *     properly.  If your ERC data is just a simple or immutable type
  *     (like an int or a string), you don't need write a clone() method;
