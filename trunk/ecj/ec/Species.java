@@ -226,7 +226,7 @@ public abstract class Species implements Prototype
         
         // load our fitness
         f_prototype = (Fitness) state.parameters.getInstanceForParameter(
-            base.push(P_FITNESS),null,
+            base.push(P_FITNESS),def.push(P_FITNESS),
             Fitness.class);
         f_prototype.setup(state,base.push(P_FITNESS));
         }

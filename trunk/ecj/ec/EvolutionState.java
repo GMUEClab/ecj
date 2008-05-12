@@ -291,7 +291,6 @@ public class EvolutionState implements Singleton
         quitOnRunComplete = parameters.getBoolean(p,null,false);
 
 
-
         /* Set up the singletons */
         p=new Parameter(P_INITIALIZER);
         initializer = (Initializer)

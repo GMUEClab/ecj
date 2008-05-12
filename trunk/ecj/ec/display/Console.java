@@ -1057,6 +1057,7 @@ public class Console extends JFrame
                     System.err.println("Exception when running job:\n\t"+e);
                     }
                 
+		conPanel.enableControls();
                 finishAndCleanup();
                 }
             };

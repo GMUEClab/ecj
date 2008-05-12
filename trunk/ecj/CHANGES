@@ -1374,3 +1374,7 @@ Version		Change Log
 		actual use of the ECDefaults class.  Population doesn't have one
 		yet, making it the only Group without one.  Because it'd be
 		sort of a bit silly I guess, saying 'ec.pop...' instead of 'pop...'
+	Species wasn't including the default base for loading the Fitness.  Fixed.
+		Thanks to Peter Drake <drake@lclark.edu>
+	Tweak to Console to fix parameters not being updated properly.  Thanks to
+		Bob Orchard <Bob.Orchard@nrc-cnrc.gc.ca>
