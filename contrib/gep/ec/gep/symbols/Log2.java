@@ -6,13 +6,26 @@ import ec.gp.GPData;
 import ec.gp.GPIndividual;
 import ec.util.Parameter;
 
+/**
+ * The logarithm (to a specified base)   log(x, base).
+ */
+
 public class Log2 extends GEPFunctionSymbol {
 
+	/**
+	 * The logarithm (to a specified base)   log(x, base).
+	 */
 	public Log2() 
 	{
 		super("log2", 2);
 	}
 
+	/**
+	 * Evaluate the logarithm (to a specified base).
+	 * 
+	 * @param params double array with the required parameter(s)
+	 * @return log2(params[0], params[1])
+	 */
 	public double eval(double params[]) 
 	{
 		//should check that there are exactly 2 paramaters
@@ -20,11 +33,18 @@ public class Log2 extends GEPFunctionSymbol {
 		return (Math.log(params[0])/Math.log(params[1]));
 	}
 	
+	/**
+	 * Log2 is not a logical function.
+	 * @return false
+	 */
 	public boolean isLogicalFunction()
 	{
 		return false;
 	}
 
+	/**
+	 * The human readable form of the expression
+	 */
 	public String printMathExpression( String p[] )
 	{
 		return "log2("+p[0]+")";
