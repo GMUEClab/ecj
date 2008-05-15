@@ -1,0 +1,68 @@
+Maximum number of generations in this run: 5000
+Size of population in this run: 30
+Number of genes per chromosome: 2
+Size of gene head: 8
+Seed(s) used in this job: 4357
+Problem type: logical
+
+
+Generation: 0
+Best Individual:
+Evaluated: T
+Fitness: 750.0
+Linking function: or
+Gene 0
+and.and.d2.and.or.or.or.and.d1.d0.d2.d0.d2.d1.d1.d2.d1
+Gene 1
+and.d0.d0.not.d0.d2.not.d1.d0.d0.d1.d1.d1.d2.d2.d2.d2
+
+((((d0 or d2) and (d0 or d2)) and ((d1 and d1) or d1)) and d2) or (d0 and d0)
+
+
+Generation: 10
+Best Individual:
+Evaluated: T
+Fitness: 1000.0
+Linking function: or
+Gene 0
+and.and.d2.and.or.or.or.and.d1.d0.d2.d2.d2.d0.d0.d2.d1
+Gene 1
+and.d1.d0.d2.d2.d2.d0.and.d1.d0.d2.d2.d2.d1.d0.d2.d2
+
+((((d0 or d2) and (d2 or d2)) and ((d0 and d0) or d1)) and d2) or (d1 and d0)
+
+
+Best Individual of Run:
+Found at Generation: 10
+Evaluated: T
+Fitness: 1000.0
+Linking function: or
+Gene 0
+and.and.d2.and.or.or.or.and.d1.d0.d2.d2.d2.d0.d0.d2.d1
+Gene 1
+and.d1.d0.d2.d2.d2.d0.and.d1.d0.d2.d2.d2.d1.d0.d2.d2
+
+((((d0 or d2) and (d2 or d2)) and ((d0 and d0) or d1)) and d2) or (d1 and d0)
+
+Size of program: 18
+Variables used(count): d0(4), d1(2), d2(4)
+
+***** TRAINING data results *****
+Confusion Matrix: 
+                Predicted Value
+               |  Yes	|  No
+               |----------------
+            Yes|  4	|  0
+Actual Value   |----------------
+            No |  0	|  4
+               |----------------
+
+Observed	Computed
+0.0	0.0
+0.0	0.0
+0.0	0.0
+1.0	1.0
+0.0	0.0
+1.0	1.0
+1.0	1.0
+1.0	1.0

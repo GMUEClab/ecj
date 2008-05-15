@@ -1,0 +1,89 @@
+Maximum number of generations in this run: 5000
+Size of population in this run: 30
+Number of genes per chromosome: 3
+Size of gene head: 8
+Seed(s) used in this job: 4357
+Problem type: logical
+
+
+Generation: 0
+Best Individual:
+Evaluated: T
+Fitness: 562.5
+Linking function: and
+Gene 0
+not.and.or.d2.or.or.d1.d1.d0.d1.d1.d1.d2.d0.d0.d0.d0
+Gene 1
+not.and.d1.and.d1.d0.not.d0.d0.d0.d0.d1.d2.d0.d1.d2.d2
+Gene 2
+not.and.d0.d1.d1.d2.d0.d1.d0.d0.d1.d0.d2.d0.d1.d0.d1
+
+(not (((d1 or d1) or (d0 or d1)) and d2)) and (not (d1 and (d1 and d0))) and (not (d0 and d1))
+
+
+Generation: 74
+Best Individual:
+Evaluated: T
+Fitness: 750.0
+Linking function: and
+Gene 0
+or.and.or.d2.d2.d0.d1.d1.d2.d1.d0.d0.d2.d1.d0.d1.d0
+Gene 1
+not.and.d1.d0.d0.d1.or.d0.d0.d1.d0.d1.d0.d2.d0.d1.d0
+Gene 2
+not.and.or.d2.d1.d0.d1.not.d1.d2.d0.d1.d0.d1.d1.d0.d0
+
+((d2 and d2) or (d0 or d1)) and (not (d1 and d0)) and (not ((d1 or d0) and d2))
+
+
+Generation: 3006
+Best Individual:
+Evaluated: T
+Fitness: 1000.0
+Linking function: and
+Gene 0
+or.or.d1.d0.d2.d0.not.and.d0.d0.d2.d1.d2.d1.d2.d0.d0
+Gene 1
+or.or.not.d2.not.and.or.and.d0.d2.d0.d0.d1.d2.d2.d2.d2
+Gene 2
+or.not.or.d2.not.and.or.d1.d0.d1.d0.d2.d1.d2.d0.d1.d2
+
+((d0 or d2) or d1) and ((d2 or (not (d2 or d0))) or (not ((d0 and d1) and d0))) and ((not d2) or ((not (d1 or d0)) or (d1 and d0)))
+
+
+Best Individual of Run:
+Found at Generation: 3006
+Evaluated: T
+Fitness: 1000.0
+Linking function: and
+Gene 0
+or.or.d1.d0.d2.d0.not.and.d0.d0.d2.d1.d2.d1.d2.d0.d0
+Gene 1
+or.or.not.d2.not.and.or.and.d0.d2.d0.d0.d1.d2.d2.d2.d2
+Gene 2
+or.not.or.d2.not.and.or.d1.d0.d1.d0.d2.d1.d2.d0.d1.d2
+
+((d0 or d2) or d1) and ((d2 or (not (d2 or d0))) or (not ((d0 and d1) and d0))) and ((not d2) or ((not (d1 or d0)) or (d1 and d0)))
+
+Size of program: 29
+Variables used(count): d0(6), d1(4), d2(4)
+
+***** TRAINING data results *****
+Confusion Matrix: 
+                Predicted Value
+               |  Yes	|  No
+               |----------------
+            Yes|  4	|  0
+Actual Value   |----------------
+            No |  0	|  4
+               |----------------
+
+Observed	Computed
+0.0	0.0
+1.0	1.0
+1.0	1.0
+0.0	0.0
+1.0	1.0
+0.0	0.0
+0.0	0.0
+1.0	1.0

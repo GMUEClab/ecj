@@ -1,0 +1,1349 @@
+Maximum number of generations in this run: 5000
+Size of population in this run: 30
+Number of genes per chromosome: 3
+Size of gene head: 8
+Seed(s) used in this job: 4357
+Problem type: timeseries
+
+
+Generation: 0
+Best Individual:
+Evaluated: T
+Fitness: 318.63617
+Linking function: +
+Gene 0
+comp.*.v3.csc.v7.v9.v4.v6.v2.v6.v5.v2.v2.v0.v4.v2.C0.v7.v11.v8.v6.v7.v2.v3.v1.v0.v8.v9.v8.v9.v1.v9.v1
+C0: -7.382400785552776
+C1: -2.506910890199208
+
+Gene 1
+-.v2.+.mul4./.v2.-.avg2.v2.v5.v0.v4.v6.v2.v6.v9.v4.v2.v5.v8.v8.v9.v6.v1.v4.v1.v5.v6.v5.v10.v8.C0.v4
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+tan.logi.v5.v4.min4.v6.v1.sqrt.v1.v3.v4.v5.v7.v8.v5.v7.v9.v8.v8.v1.v1.v0.v10.v1.v4.v2.v1.v8.v8.v2.v5.C0.v11
+C0: 2.1291016727602514
+C1: 2.276491214563901
+
+
+(1-(v3*csh(v7))) + (v2-((v2*(v4-v6)*((v2+v6)/2)*v2)+(v5/v0))) + tan((1/(1+pow(e,-v5)))
+
+
+Generation: 2
+Best Individual:
+Evaluated: T
+Fitness: 392.06393
+Linking function: +
+Gene 0
+mul4.v3.X3.v9.logi.v0.gau.sin.v2.v4.v5.v9.v0.v9.v9.v5.v6.v1.v2.v6.v3.v7.C0.v3.C1.v2.v11.v2.v3.v5.v10.v1.v1
+C0: -7.382400785552776
+C1: -2.506910890199208
+
+Gene 1
+-.v2.+.mul4./.v2.-.avg2.v2.v5.v0.v4.v6.v2.v6.v9.v4.v2.v5.v8.v8.v9.v6.v1.v4.v1.v5.v6.v5.v10.v8.C0.v4
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+tan.logi.v5.v4.min4.v6.v1.sqrt.v1.v3.v4.v5.v7.v8.v5.v7.v9.v8.v8.v1.v1.v0.v10.v1.v4.v2.v1.v8.v8.v2.v5.C0.v11
+C0: 2.1291016727602514
+C1: 2.276491214563901
+
+
+(v3*(v0^3)*v9*(1/(1+pow(e,-exp(-pow(sin(v2),2))))) + (v2-((v2*(v4-v6)*((v2+v6)/2)*v2)+(v5/v0))) + tan((1/(1+pow(e,-v5)))
+
+
+Generation: 3
+Best Individual:
+Evaluated: T
+Fitness: 463.70767
+Linking function: +
+Gene 0
+mul4.v3.X3.v9.logi.v0.gau.sin.v2.v4.v5.v9.v0.v9.v9.v5.v6.v1.v2.v6.v3.v7.C0.v3.C1.v2.v11.v2.v3.v5.v10.v1.v1
+C0: -7.382400785552776
+C1: -2.506910890199208
+
+Gene 1
+-.v8.+.mul4./.v2.-.avg2.v2.v5.v0.v4.v6.v2.v6.v9.v4.v2.v5.v4.v8.v9.v6.v1.v4.v1.v5.v6.v5.v10.v8.C0.v4
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+tan.logi.v5.v4.min4.v6.v1.sqrt.v1.v3.v4.v5.v7.v8.v5.v7.v9.v8.v8.v1.v1.v0.v10.v1.v4.v2.v8.v8.v8.v2.v5.v8.v11
+C0: 2.1291016727602514
+C1: 2.276491214563901
+
+
+(v3*(v0^3)*v9*(1/(1+pow(e,-exp(-pow(sin(v2),2))))) + (v8-((v2*(v4-v6)*((v2+v6)/2)*v2)+(v5/v0))) + tan((1/(1+pow(e,-v5)))
+
+
+Generation: 4
+Best Individual:
+Evaluated: T
+Fitness: 515.3708
+Linking function: +
+Gene 0
+mul4.v3.gau.v9.logi.v0.gau.sin.v2.v4.v5.v9.v0.v9.v9.v5.v6.v1.v2.v6.v3.v7.C0.v3.C1.v2.v11.v2.v3.v5.v10.v1.v1
+C0: -7.382400785552776
+C1: -2.506910890199208
+
+Gene 1
+-.v8.+.mul4./.v2.-.avg2.v2.v5.v0.v4.v6.v2.v6.v9.v4.v2.v5.v4.v8.v9.v6.v1.v4.v1.v5.v6.v5.v10.v8.C0.v4
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+tan.logi.v5.v4.min4.v6.v1.sqrt.v1.v3.v10.v5.v7.v8.v0.v7.v9.v8.v8.v1.v1.v0.v10.v1.v5.v2.v8.v8.v8.v2.v5.v8.v8
+C0: 2.1291016727602514
+C1: 2.276491214563901
+
+
+(v3*exp(-pow(v0,2))*v9*(1/(1+pow(e,-exp(-pow(sin(v2),2))))) + (v8-((v2*(v4-v6)*((v2+v6)/2)*v2)+(v5/v0))) + tan((1/(1+pow(e,-v5)))
+
+
+Generation: 6
+Best Individual:
+Evaluated: T
+Fitness: 515.547
+Linking function: +
+Gene 0
+mul4.v3.gau.v9.logi.v0.gau.sin.v2.v4.v5.v9.v0.v9.v9.v5.v6.v1.v2.v6.v3.v7.C0.v3.C1.v2.v11.v1.v3.v5.v10.v1.v1
+C0: -7.382400785552776
+C1: -2.506910890199208
+
+Gene 1
+-.v8.+.mul4./.v2.-.avg2.v2.v5.v0.v4.v6.v2.v2.v9.v4.v2.v5.v4.v8.v9.v10.v1.v4.v1.v5.v6.v7.v10.v4.C0.v4
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+tan.logi.v5.v4.min4.v6.v1.sqrt.v1.v3.v10.v5.v0.v8.v0.v7.v9.v8.v8.v1.v1.v0.v10.v1.v5.v2.v8.v8.v8.v2.v5.v8.v8
+C0: 2.1291016727602514
+C1: 2.276491214563901
+
+
+(v3*exp(-pow(v0,2))*v9*(1/(1+pow(e,-exp(-pow(sin(v2),2))))) + (v8-((v2*(v4-v6)*((v2+v2)/2)*v2)+(v5/v0))) + tan((1/(1+pow(e,-v5)))
+
+
+Generation: 10
+Best Individual:
+Evaluated: T
+Fitness: 534.34174
+Linking function: +
+Gene 0
+tan.logi.v5.v4.min4.v6.v1.sqrt.v1.v3.v10.v5.v0.v3.v0.v7.v9.v8.v6.v1.v1.v0.v10.v1.v5.v2.v8.v8.v8.v2.v5.v8.v2
+C0: -7.382400785552776
+C1: -2.506910890199208
+
+Gene 1
+mul4.v3.gau.v9.logi.v0.gau.sin.v2.v4.v5.v9.v7.v9.v9.v5.v6.v4.v2.v6.v3.v7.C0.v4.C0.v2.v11.v1.v3.v5.v10.v1.v1
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+-.v8.+.mul4./.C0.-.avg2.v2.v5.v0.v4.v6.v8.v2.v10.v4.v2.v5.v7.v8.v9.v8.v1.v4.v1.v5.v0.v7.v6.v4.v11.v4
+C0: 2.1291016727602514
+C1: 2.276491214563901
+
+
+tan((1/(1+pow(e,-v5))) + (v3*exp(-pow(v0,2))*v9*(1/(1+pow(e,-exp(-pow(sin(v2),2))))) + (v8-((2.1291016727602514*(v4-v6)*((v8+v2)/2)*v2)+(v5/v0)))
+
+
+Generation: 12
+Best Individual:
+Evaluated: T
+Fitness: 540.9149
+Linking function: +
+Gene 0
+tan.logi.v5.v4.min4.v6.v1.sqrt.v1.v3.v10.v5.v0.v3.v0.v7.v9.v8.v6.v1.v1.v0.v10.v1.v5.v2.v8.v8.v8.v2.v5.v8.v2
+C0: -7.382400785552776
+C1: -2.506910890199208
+
+Gene 1
+mul4.v3.gau.v9.logi.v0.gau.sin.v2.v4.v5.v9.v8.v9.v9.v5.v6.v4.v2.v6.v3.v7.C0.v4.C0.v2.v11.v1.v3.v5.v10.v1.v1
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+-.v8.+.mul4./.C0.-.avg2.v2.v4.v0.v4.v6.v8.v2.v10.v4.v2.v5.v8.v8.v9.v8.v1.v4.v1.v5.v0.v7.v6.v4.v11.v4
+C0: 2.1291016727602514
+C1: 2.276491214563901
+
+
+tan((1/(1+pow(e,-v5))) + (v3*exp(-pow(v0,2))*v9*(1/(1+pow(e,-exp(-pow(sin(v2),2))))) + (v8-((2.1291016727602514*(v4-v6)*((v8+v2)/2)*v2)+(v4/v0)))
+
+
+Generation: 14
+Best Individual:
+Evaluated: T
+Fitness: 540.99347
+Linking function: +
+Gene 0
+-.v8.max2.v1.*.v2.-.avg2.v2.v5.v0.v4.v6.v2.v2.v7.v4.v2.v5.v7.v8.v9.v10.v0.v4.v1.v5.v6.v7.v10.v4.v11.v4
+C0: -7.382400785552776
+C1: -2.506910890199208
+
+Gene 1
+mul4.v8.gau.-.logi.v0.gau.sin.v2.v9.v5.v9.v5.v3.v1.v11.C0.v1.v2.v1.v1.v0.v10.v3.C0.v2.v11.v1.v3.v5.v10.v1.v1
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+tan.logi.v5.v4.min4.v11.v1.avg4.v1.v10.v10.v5.v0.v3.v11.v7.v9.v8.v6.v1.v1.v10.v10.v1.v5.v5.v8.v8.v8.v4.v5.v2.v8
+C0: 2.1291016727602514
+C1: 2.276491214563901
+
+
+(v8-max(v1,(v2*(((v5+v0)/2)-v2)))) + (v8*exp(-pow(v0,2))*(exp(-pow(v9,2))-sin(v5))*(1/(1+pow(e,-v2))) + tan((1/(1+pow(e,-v5)))
+
+
+Generation: 15
+Best Individual:
+Evaluated: T
+Fitness: 623.59875
+Linking function: +
+Gene 0
+mul4.min2.gau.-.logi.-.gau.sin.v2.v4.v5.v8.v5.v9.v5.v5.v6.v1.v2.v6.v3.v7.C1.v3.C1.v2.v9.v0.v3.v2.v10.v1.v1
+C0: -7.382400785552776
+C1: -8.288771412028035
+
+Gene 1
+-.v7.v4.v5.v6.v11.v3.v1.v2.v5.v8.v11.v3.v2.v6.v9.v4.v2.v5.v9.v8.v9.v8.v9.v3.v1.v5.v0.v5.v6.v11.C0.v4
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+avg2.v2.avg4.v0.v4.tan.logi.v11.v1.v3.v10.v5.v7.v8.v5.v9.v3.v8.v8.v1.v1.v0.v3.v1.v4.v2.v8.v8.v8.v2.v5.v8.v11
+C0: 2.1291016727602514
+C1: 2.276491214563901
+
+
+(min((v8-v5),exp(-pow(v9,2)))*exp(-pow(sin(v5),2))*(v2-v4)*(1/(1+pow(e,-v5))) + (v7-v4) + ((v2+((v0+v4+tan(v11)+(1/(1+pow(e,-v1)))/4))/2)
+
+
+Generation: 16
+Best Individual:
+Evaluated: T
+Fitness: 739.33344
+Linking function: +
+Gene 0
+-.v7.v5.v4.v6.v11.v3.v1.v2.v5.v2.v8.v3.v2.v6.v9.v4.v2.v5.v4.v8.v9.C0.v3.C1.v2.v9.v0.v3.v2.v10.v1.v1
+C0: -7.382400785552776
+C1: -8.288771412028035
+
+Gene 1
+v4.v2.v5.v0.v4.tan.logi.v11.v1.v3.v10.v5.v7.v8.v8.v9.v3.v2.v8.v6.v1.v0.v3.v1.v2.v2.v8.v11.v8.v2.v5.v9.v11
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+-.v7.v5.v0.v4.tan.logi.v11.v1.v3.v10.v5.v7.v8.v5.v9.v3.v8.v8.v6.v1.v0.v3.v1.v2.v2.v8.v8.v8.v2.v5.v9.v11
+C0: 9.50097169532491
+C1: -5.7414745185364175
+
+
+(v7-v5) + v4 + (v7-v5)
+
+
+Generation: 22
+Best Individual:
+Evaluated: T
+Fitness: 871.1501
+Linking function: +
+Gene 0
+-.v7.v5.v0.v5.v11.v11.C1.v2.v5.v2.v4.v3.v2.v6.v9.v4.v2.v5.v4.v0.v9.v8.v9.v3.v0.v5.v0.v5.v11.v11.C1.v4
+C0: -7.382400785552776
+C1: -6.012274801472808
+
+Gene 1
+v4.v2.+.v3.v4.tan.logi.v11.v6.v3.v10.v4.v7.v8.v8.v9.v3.v2.v8.v6.v1.v5.v3.v10.v2.v2.v8.v11.v8.v2.v0.v9.v8
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+-.v11.v5.v0.v4.v11.logi.v11.v1.v3.v10.v5.v7.v8.v5.v9.v3.v8.v8.v11.v1.v0.v3.v1.v2.v2.v8.v8.v8.v4.v5.v0.v7
+C0: 2.1291016727602514
+C1: 2.276491214563901
+
+
+(v7-v5) + v4 + (v11-v5)
+
+
+Generation: 26
+Best Individual:
+Evaluated: T
+Fitness: 908.6454
+Linking function: +
+Gene 0
+v4.v2.v2.v0.add3.v1.logi.v11.v1.v3.v5.v9.v1.v8.v9.v9.v4.v2.v0.C1.v4.v0.v3.v7.v2.C1.v8.v11.C1.v2.v4.v9.v11
+C0: -7.382400785552776
+C1: -6.012274801472808
+
+Gene 1
+mul4.*.min2.gau.-.logi.v4.tan.v1.v10.v10.v5.v7.v7.v8.v9.v3.v6.v8.v3.v1.v5.v3.v10.v2.v2.v8.v11.C1.v2.v0.v9.v8
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+-.v11.v5.v0.logi.v11.logi.v11.v1.v11.v10.v5.v7.v8.v5.v9.v3.v8.v8.v11.v1.v0.v3.v1.v10.v2.v8.v8.v8.v4.v5.v0.v4
+C0: 2.1291016727602514
+C1: 2.276491214563901
+
+
+v4 + (((1/(1+pow(e,-v7))*v4)*min(tan(v7),v1)*exp(-pow(v10,2))*(v10-v5)) + (v11-v5)
+
+
+Generation: 32
+Best Individual:
+Evaluated: T
+Fitness: 909.886
+Linking function: +
+Gene 0
+v4.v2.v2.v0.add3.v1.logi.v11.v1.v3.v5.v9.v1.v8.v9.v9.v7.v2.v0.C1.v4.v0.v3.v7.v5.C1.v8.v10.C1.v2.v4.v2.v11
+C0: -7.382400785552776
+C1: -6.012274801472808
+
+Gene 1
+mul4.*.min2.gau.-.v3.v4.tan.v1.v10.v10.v5.v7.v10.v0.v9.v3.v10.v8.v3.v1.v5.v3.v10.v2.v2.v8.v11.C1.v2.v0.v9.v8
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+-.v11.v5.v5.logi.v11.logi.v11.v1.v1.v5.v5.v7.v8.v5.v4.v3.v8.v8.v11.v1.v0.v3.v1.v10.v2.v8.v8.v8.v4.v5.v0.v11
+C0: 2.1291016727602514
+C1: 2.276491214563901
+
+
+v4 + ((v3*v4)*min(tan(v7),v1)*exp(-pow(v10,2))*(v10-v5)) + (v11-v5)
+
+
+Generation: 56
+Best Individual:
+Evaluated: T
+Fitness: 913.2974
+Linking function: +
+Gene 0
+mul4.*.min2.gau.-.v3.v4.tan.v1.v10.v7.v3.v7.v5.v6.v9.v4.v4.v3.C1.v5.v1.v3.v1.v3.v2.v6.v11.v6.v2.v0.v9.v2
+C0: -7.382400785552776
+C1: -5.931293459696121
+
+Gene 1
+v4.*.comp.-.v10.v5.v9.v11.v6.v3.v10.v3.v7.v4.v3.v9.v3.v0.v4.C0.v1.C0.v3.v7.v2.C1.v3.v9.C1.v5.v7.C1.v9
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+-.v11.v5.mul4.v1.v5.logi.*.C1.v7.v10.v5.v2.v3.v6.v11.v5.v8.v8.v3.v1.v0.v1.v1.v10.v6.v3.v2.v9.v8.v6.v4.v0
+C0: 2.1291016727602514
+C1: -9.149607227762592
+
+
+((v3*v4)*min(tan(v7),v1)*exp(-pow(v10,2))*(v7-v3)) + v4 + (v11-v5)
+
+
+Generation: 57
+Best Individual:
+Evaluated: T
+Fitness: 913.61957
+Linking function: +
+Gene 0
+mul4.*.min2.gau.-.v3.tan.v4.v1.v10.v7.v3.v7.v5.v6.v9.v4.v4.v3.C1.v5.v1.v3.v1.v3.v2.v6.v11.v6.v2.v0.v9.v2
+C0: -7.382400785552776
+C1: -5.931293459696121
+
+Gene 1
+v4.*.comp.-.v10.*.v9.v11.v6.v3.v10.v3.v7.v4.v3.v9.v3.v0.v4.C1.v1.C0.v3.v7.v2.C1.v3.v9.C1.v5.v7.C1.v9
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+-.v11.v5.mul4.v1.v5.logi.*.C1.v7.v10.v5.v10.v3.v6.v11.v1.v8.v8.v5.v1.v0.v3.v1.v10.v6.v8.v2.v9.v9.v6.v4.v0
+C0: 2.1291016727602514
+C1: -9.149607227762592
+
+
+((v3*tan(v7))*min(v4,v1)*exp(-pow(v10,2))*(v7-v3)) + v4 + (v11-v5)
+
+
+Generation: 60
+Best Individual:
+Evaluated: T
+Fitness: 915.7469
+Linking function: +
+Gene 0
+v4.*.comp.v3.v9.C1.v5.v7.v6.v3.v9.v3.v7.v4.v3.v4.v3.v0.v4.C0.v1.C1.v3.v7.v2.C0.v3.v9.C1.v5.v7.C1.v7
+C0: -7.382400785552776
+C1: -5.931293459696121
+
+Gene 1
+mul4.*.min2.gau.-.v3.tan.v4.v1.v10.v7.v3.v3.v5.v6.v9.v4.v4.v3.C1.v0.v1.v3.v1.v3.v2.v6.v11.v6.v2.v0.v9.v2
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+-.v11.v5.mul4.v1.v5.logi.*.C1.v7.v10.v5.v10.v3.v6.v11.v1.v8.v8.v5.v1.v0.v3.v1.v10.v6.v8.v2.v9.v9.v6.v4.v0
+C0: 2.1291016727602514
+C1: -9.149607227762592
+
+
+v4 + ((v3*tan(v3))*min(v4,v1)*exp(-pow(v10,2))*(v7-v3)) + (v11-v5)
+
+
+Generation: 63
+Best Individual:
+Evaluated: T
+Fitness: 919.15564
+Linking function: +
+Gene 0
+v4.*.comp.v9.v9.C1.v5.v7.v6.v3.v9.v3.v7.v4.v3.v4.v3.v0.v4.v1.v1.C0.v3.v7.v2.C0.v3.v9.C0.v5.v7.C1.v7
+C0: -7.382400785552776
+C1: 2.3680885230411626
+
+Gene 1
+mul4.*.min2.gau.-.v3.v0.v4.v1.v10.v9.v3.v3.v5.v6.v9.v4.v4.v7.C1.v0.C0.v8.v1.v8.v2.v6.v0.v6.v2.v0.v9.v2
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+-.v11.v5.mul4.v1.v5.logi.log.C1.v7.v10.v3.v10.v3.v6.v11.v1.v8.v8.v5.v1.v8.v3.v1.v10.v6.v8.v5.v9.v9.v6.v4.v0
+C0: 2.1291016727602514
+C1: -9.149607227762592
+
+
+v4 + ((v3*v0)*min(v4,v1)*exp(-pow(v10,2))*(v9-v3)) + (v11-v5)
+
+
+Generation: 75
+Best Individual:
+Evaluated: T
+Fitness: 921.2645
+Linking function: +
+Gene 0
+v4.*.comp.v9.v9.C1.v5.v7.C0.v3.v9.v3.v7.v4.v3.v4.v3.v0.v4.v1.v1.C1.v3.v7.v2.C0.v3.v9.C1.v8.v9.C1.v7
+C0: -7.382400785552776
+C1: 2.3680885230411626
+
+Gene 1
+mul4.*.min2.gau.-.v3.v0.v4.v1.v10.v11.v3.v3.v5.v6.v5.v4.v4.v7.C1.v0.v0.v6.v1.v8.v2.v6.v0.v1.v2.v0.v9.v2
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+-.v11.v5.mul4.v1.X3.log.logi.C1.v7.v10.v3.v11.v3.v6.v11.v1.v8.v5.v5.v1.v11.v9.v3.v4.v6.v9.v5.v9.v9.v6.v4.v0
+C0: 5.000706742663912
+C1: -9.149607227762592
+
+
+v4 + ((v3*v0)*min(v4,v1)*exp(-pow(v10,2))*(v11-v3)) + (v11-v5)
+
+
+Generation: 99
+Best Individual:
+Evaluated: T
+Fitness: 922.4316
+Linking function: +
+Gene 0
+v4.*.min2.gau.-.v3.v0.v11.v1.v10.v11.v3.v0.v5.v6.v5.v4.v4.v7.C1.v7.v7.v3.v7.v1.C0.v3.v5.v9.v9.v11.v11.C1
+C0: -7.382400785552776
+C1: 2.3680885230411626
+
+Gene 1
+mul4.*.min2.gau.-.v3.v0.v4.v10.v10.v11.v3.v2.v5.v5.v5.v4.v4.v5.C0.v10.v8.v6.v1.v8.v2.v6.v0.v1.v3.v6.v9.v2
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+-.v11.v5.mul4.v3.v6.v9.v1.v7.v2.v5.v3.v11.v3.v3.v9.v1.v8.v5.C1.v1.v11.v9.v11.v4.v6.v9.v5.v9.v9.v6.v4.v0
+C0: 5.000706742663912
+C1: -9.149607227762592
+
+
+v4 + ((v3*v0)*min(v4,v10)*exp(-pow(v10,2))*(v11-v3)) + (v11-v5)
+
+
+Generation: 103
+Best Individual:
+Evaluated: T
+Fitness: 922.59216
+Linking function: +
+Gene 0
+v4.*.min2.gau.-.v3.v0.v11.v1.v10.v11.v3.v0.v5.C0.v5.v4.v4.v7.v3.v7.v7.v3.v7.v1.C0.v3.v5.v9.v9.v11.v11.C1
+C0: -7.382400785552776
+C1: 2.3680885230411626
+
+Gene 1
+mul4.*.min2.gau.-.v4.v0.v3.v10.v10.v11.v3.v2.v5.v5.v5.v4.v4.v5.C0.v10.v8.v6.v1.v8.v2.v6.v0.v1.v3.v6.v9.v2
+C0: 3.554292573668537
+C1: 2.9851243142433894
+
+Gene 2
+-.v11.v5.mul4.v3.v6.v9.v1.v7.v2.v5.v8.v11.v3.v3.v9.v1.v8.v5.C1.v1.v11.v9.v11.v4.v6.v2.v5.v9.v9.v6.v4.v0
+C0: -6.516095199283325
+C1: -9.149607227762592
+
+
+v4 + ((v4*v0)*min(v3,v10)*exp(-pow(v10,2))*(v11-v3)) + (v11-v5)
+
+
+Generation: 151
+Best Individual:
+Evaluated: T
+Fitness: 922.61633
+Linking function: +
+Gene 0
+-.v11.v5.v1.min3.v4.v5.mul4.v3.v0.v4.v8.v0.v3.v3.v2.v5.C1.v1.v1.C1.v5.C1.v1.v4.v4.v8.v0.v2.v9.v3.v11.v7
+C0: -7.382400785552776
+C1: -9.696595676127885
+
+Gene 1
+mul4.*.min2.gau.-.v4.v0.v3.v10.v11.v11.v3.v10.v5.v7.v7.C0.v4.v11.C0.C0.v4.v3.v6.v1.v5.v9.v9.v2.v3.v8.v8.v6
+C0: -5.4851845423532275
+C1: 2.9851243142433894
+
+Gene 2
+v4.v11.min2.C0.v10.v8.-.v2.v1.v3.v10.v1.v1.v6.v6.v5.v4.v2.v0.v2.v7.v10.v9.v4.v1.C1.v11.v0.v1.v8.v7.v0.v11
+C0: -6.76195195684895
+C1: -5.444528798462676
+
+
+(v11-v5) + ((v4*v0)*min(v3,v10)*exp(-pow(v11,2))*(v11-v3)) + v4
+
+
+Generation: 197
+Best Individual:
+Evaluated: T
+Fitness: 923.0689
+Linking function: +
+Gene 0
+-.v11.v5.v1.add4.v5.v11.logi.v0.v0.v7.v8.v11.v3.v3.v0.v5.C1.v8.v6.v8.v9.v4.v8.v1.v3.v11.v3.v5.v8.v2.v0.v9
+C0: -7.382400785552776
+C1: -9.696595676127885
+
+Gene 1
+v4.v11.tanh.+.v4.v3.v0.min2.v10.v5.v8.v2.v1.v3.v6.v3.v4.v2.v2.v2.v8.v1.v8.v4.v5.v1.v11.v10.v7.v8.v11.v8.v11
+C0: 6.023316634891277
+C1: 2.9851243142433894
+
+Gene 2
+mul4.*.min2.gau.-.v4.v0.v1.v10.v11.v11.v3.v5.v6.v7.v0.v6.v1.v11.C1.v0.v2.v8.v5.v11.v6.v5.v5.v5.v9.v0.v7.v11
+C0: -6.76195195684895
+C1: -5.444528798462676
+
+
+(v11-v5) + v4 + ((v4*v0)*min(v1,v10)*exp(-pow(v11,2))*(v11-v3))
+
+
+Generation: 211
+Best Individual:
+Evaluated: T
+Fitness: 923.1342
+Linking function: +
+Gene 0
+-.v11.v5.*.v4.v5.logi.v11.v0.v0.v7.v8.v11.v3.v3.v0.v5.C1.v8.v11.v8.v9.v3.v5.v1.v3.v11.v9.v5.v1.v0.v7.v11
+C0: -7.382400785552776
+C1: -9.696595676127885
+
+Gene 1
+v4.v0.tanh.v6.v4.v3.v0.min2.v10.v5.C0.v2.v5.v8.C0.v0.v4.v4.v10.v11.v8.v9.v3.v8.v1.v7.v11.v10.v5.v8.v11.v4.v7
+C0: 6.023316634891277
+C1: 2.9851243142433894
+
+Gene 2
+mul4.*.min2.gau.-.v2.v0.v1.v10.v11.v11.v3.v5.v6.v7.v0.v6.v1.v11.C1.C1.v10.v8.v0.v5.v6.v5.v5.v5.v9.v0.v7.v11
+C0: -6.76195195684895
+C1: -5.444528798462676
+
+
+(v11-v5) + v4 + ((v2*v0)*min(v1,v10)*exp(-pow(v11,2))*(v11-v3))
+
+
+Generation: 215
+Best Individual:
+Evaluated: T
+Fitness: 923.2812
+Linking function: +
+Gene 0
+-.v11.v5.-.v4.v5.logi.v11.v11.v0.v7.v8.v7.v3.v3.v0.v8.C1.v4.v11.v5.v9.v3.v5.v1.v8.v11.v9.v5.v1.v0.v7.v11
+C0: -7.382400785552776
+C1: -9.696595676127885
+
+Gene 1
+v4.v0.tanh.+.v4.v3.add4.-.v10.v5.v8.v2.v2.v3.v1.v2.v4.v5.v2.v2.v10.v11.v8.v1.v5.v3.v11.v10.v7.v8.v0.v5.v7
+C0: 6.023316634891277
+C1: 2.9851243142433894
+
+Gene 2
+mul4.*.v0.min2.gau.-.v4.v0.v10.v11.v11.v3.v11.v6.v7.v0.v6.v9.v11.v0.v3.v10.v8.v5.v11.v6.v10.v11.v5.v7.v0.v7.v11
+C0: -6.76195195684895
+C1: -5.444528798462676
+
+
+(v11-v5) + v4 + (((v11-v3)*v4)*v0*min(v0,v10)*exp(-pow(v11,2)))
+
+
+Generation: 256
+Best Individual:
+Evaluated: T
+Fitness: 938.8394
+Linking function: +
+Gene 0
+-.v11.v0.v10.v5.v4.C0.v2.v1.v6.C0.v1.v4.v1.v3.v0.v3.C1.v3.v11.v5.v11.v2.v5.v1.v8.v5.v8.v2.v10.v0.v2.v11
+C0: -7.382400785552776
+C1: -9.696595676127885
+
+Gene 1
+v0.*.v0.v3.gau.sin.-.v5.v10.v5.v8.v10.v2.v4.v11.v10.v4.v5.v8.v2.v10.v9.v2.v9.v5.v3.v2.v1.v4.C0.v0.v6.v7
+C0: 6.023316634891277
+C1: 2.9851243142433894
+
+Gene 2
+mul4.v6.v0.min2.v6.v4.-.v11.v10.v11.v6.v3.v11.v3.v7.v0.v4.v3.v5.v3.v8.v9.v0.v5.v9.v4.v6.v11.v5.v10.v3.v5.v11
+C0: -6.76195195684895
+C1: -5.444528798462676
+
+
+(v11-v0) + v0 + (v6*v0*min(v4,(v11-v10))*v6)
+
+
+Generation: 265
+Best Individual:
+Evaluated: T
+Fitness: 939.12115
+Linking function: +
+Gene 0
+v0.*.v10.v4.v4.v11.v10.v2.v10.v5.v8.v3.v4.v4.v11.v10.v2.v8.v8.v2.v10.v3.v2.v3.v5.v3.v2.v1.v11.C0.v0.C0.v7
+C0: -7.382400785552776
+C1: -9.696595676127885
+
+Gene 1
+mul4.v0.v0.v6.min2.v4.-.v11.v10.v11.v6.v3.v11.v7.v7.v5.v11.v0.v5.v3.v8.v9.v7.v5.v9.v4.v0.v11.v5.v10.v3.v3.v11
+C0: 6.023316634891277
+C1: 2.9851243142433894
+
+Gene 2
+-.v11.v0.v10.v5.v4.C0.v2.v1.v6.C1.v1.v4.v1.v7.v0.v4.v3.v5.v6.v5.v11.v2.v5.v1.v8.v7.v9.v5.v4.v0.v2.v11
+C0: -6.76195195684895
+C1: -5.444528798462676
+
+
+v0 + (v0*v0*v6*min(v4,(v11-v10))) + (v11-v0)
+
+
+Generation: 288
+Best Individual:
+Evaluated: T
+Fitness: 939.20087
+Linking function: +
+Gene 0
+v0.*.v5.v10.v4.C1.v10.v11.v8.v6.v9.v3.v3.v11.v3.v0.v3.v3.v10.v11.v6.v0.C1.v9.v2.v5.C1.v1.v0.v2.v8.v2.v7
+C0: -7.382400785552776
+C1: -9.696595676127885
+
+Gene 1
+mul4.v0.v0.v5.min2.v3.-.v11.v10.v11.v6.v3.v5.v7.v1.v11.v11.v0.v5.v3.v7.v9.v7.v11.v5.v3.v0.v3.v5.v10.v3.v2.v11
+C0: 6.023316634891277
+C1: 2.9851243142433894
+
+Gene 2
+-.v11.v0.v10.v4.C1.v10.-.v8.v5.v9.v3.v11.v1.v3.v5.v5.v4.v8.v7.v4.v0.v3.v5.v2.v3.v3.v8.v4.v4.v2.v2.v11
+C0: -6.76195195684895
+C1: 2.2714334547420947
+
+
+v0 + (v0*v0*v5*min(v3,(v11-v10))) + (v11-v0)
+
+
+Generation: 289
+Best Individual:
+Evaluated: T
+Fitness: 939.3698
+Linking function: +
+Gene 0
+-.v11.v0.v10.v10.v4.v2.v1.v1.v2.v9.v11.v11.v4.v10.v5.v9.C0.v11.C1.v9.v11.C0.v0.v0.v4.v0.v1.v7.v3.v0.v6.v7
+C0: -7.382400785552776
+C1: -9.696595676127885
+
+Gene 1
+mul4.v0.v0.v2.min2.v6.-.v11.v10.v11.v6.v3.v5.v7.v1.v3.v11.v0.v5.v3.v8.v9.v7.v0.v5.v3.v0.v6.v5.v10.v3.v3.v9
+C0: 6.023316634891277
+C1: 2.9851243142433894
+
+Gene 2
+v0.*.v5.v10.v4.v6.C0.v1.v1.v2.v9.v3.v3.v11.v11.v10.v3.v0.v10.v11.v6.v0.C1.C0.v1.v5.C1.v1.v0.v2.v8.v2.v7
+C0: -6.76195195684895
+C1: 2.2714334547420947
+
+
+(v11-v0) + (v0*v0*v2*min(v6,(v11-v10))) + v0
+
+
+Generation: 304
+Best Individual:
+Evaluated: T
+Fitness: 946.6042
+Linking function: +
+Gene 0
+mul4.v0.v0.v2.min2.v6.-.v11.v10.v8.v5.v3.v5.v7.v4.v3.v11.v0.v7.v8.v6.v2.C0.C1.v7.v5.v7.v1.v0.v2.v7.v2.v7
+C0: -7.382400785552776
+C1: -9.696595676127885
+
+Gene 1
+v11.v0.v0.v8.sub4.v9.v4.v4.v10.v11.v2.v9.v2.v7.v1.v3.v11.v5.v5.v7.v9.v9.v1.v0.v5.v8.v6.v11.v9.v10.v5.v7.v11
+C0: 6.023316634891277
+C1: -7.494757729813742
+
+Gene 2
+mul4.v0.v0.v2.min2.v6.-.v11.v10.v8.v5.v3.v5.v7.v4.v6.v11.v0.v8.v8.v1.v2.C0.v6.v7.v5.v7.v1.v0.v2.v8.v2.v7
+C0: -6.76195195684895
+C1: 2.2714334547420947
+
+
+(v0*v0*v2*min(v6,(v11-v10))) + v11 + (v0*v0*v2*min(v6,(v11-v10)))
+
+
+Generation: 310
+Best Individual:
+Evaluated: T
+Fitness: 946.6375
+Linking function: +
+Gene 0
+mul4.v0.v0.v2.min2.v6.-.v11.v10.v8.v5.v3.v5.v7.v4.v6.v11.v0.v8.v8.v1.v2.C0.v6.v7.v5.v7.v1.v0.v2.v1.v2.v7
+C0: -7.382400785552776
+C1: -9.696595676127885
+
+Gene 1
+v11.v0.v0.v8.sub4.v9.v4.v4.v3.v11.v11.v3.v11.v3.v0.v0.C0.v3.v10.v7.v9.v9.v1.v0.v5.v8.v6.v11.v9.v3.v10.v7.v11
+C0: 6.023316634891277
+C1: -7.494757729813742
+
+Gene 2
+mul4.v0.v0.v9.min2.v6.-.v11.v10.v8.v5.v3.v5.v7.v4.v1.v11.v1.v7.v8.v6.v2.v7.C0.v7.v5.v7.v1.v0.v2.v7.v2.v7
+C0: -6.76195195684895
+C1: 2.2714334547420947
+
+
+(v0*v0*v2*min(v6,(v11-v10))) + v11 + (v0*v0*v9*min(v6,(v11-v10)))
+
+
+Generation: 321
+Best Individual:
+Evaluated: T
+Fitness: 947.2391
+Linking function: +
+Gene 0
+mul4.v0.v0.v9.min2.v6.-.v11.v10.v8.v1.v3.v3.v9.v7.v1.v6.v9.v7.v8.v1.v9.v1.v3.v1.v5.v7.v3.v2.C0.v3.v11.v7
+C0: -7.382400785552776
+C1: -4.86553096901162
+
+Gene 1
+v11.v0.max4.-.v4.v5.X3.v11.v3.v11.v11.v3.v9.v10.v0.v0.v10.C0.v10.v7.v9.v9.v1.v0.v5.v6.v1.v11.v9.v9.v10.v1.v11
+C0: 6.023316634891277
+C1: 2.9851243142433894
+
+Gene 2
+mul4.v0.v0.v2.*.v4.-.v11.v10.v6.v3.v6.v5.v1.v4.v4.v3.v0.v5.v8.v1.v2.v5.v1.v0.v5.v7.v1.v0.v3.v1.v8.v0
+C0: -6.76195195684895
+C1: 2.2714334547420947
+
+
+(v0*v0*v9*min(v6,(v11-v10))) + v11 + (v0*v0*v2*(v4*(v11-v10)))
+
+
+Generation: 377
+Best Individual:
+Evaluated: T
+Fitness: 947.2445
+Linking function: +
+Gene 0
+v11.v9.C1.v6.v6.v1.v0.v0.v3.v11.v11.v3.v6.v0.v8.v5.v8.v2.v10.C0.v1.v3.v9.v6.v0.v6.v3.v7.v10.v6.v1.v0.v5
+C0: -7.382400785552776
+C1: -2.961714698852404
+
+Gene 1
+mul4.min4.atan.v2.*.v4.-.v11.v10.v0.v3.v6.v10.v11.v5.v4.v9.v11.v6.v9.v2.v8.v1.v3.v5.v1.v7.v4.v0.v8.v10.v7.v0
+C0: 6.023316634891277
+C1: -6.740199217268932
+
+Gene 2
+-.v11.v10.v9.v1.v3.v8.v4.v8.v9.v7.v1.v3.v5.v3.v1.v6.v11.v4.v9.v10.v9.v1.v3.v1.v5.v1.v3.v10.v7.v0.v10.v11
+C0: 7.939082537965202
+C1: 2.2714334547420947
+
+
+v11 + (min(v4,(v10-v11),v11,v10)*atan(v0)*v2*(v3*v6)) + (v11-v10)
+
+
+Generation: 382
+Best Individual:
+Evaluated: T
+Fitness: 947.32263
+Linking function: +
+Gene 0
+v11.C1.X2.add3.v1.min3.cos.+.v0.v11.v2.v1.v10.v10.v8.v9.v5.v9.v0.C0.v10.v6.v2.v3.v1.v5.v1.v3.v10.v7.v0.v10.v4
+C0: -7.382400785552776
+C1: -2.961714698852404
+
+Gene 1
+mul4.min4.atan.v2.*.v4.-.v11.v10.v6.v3.v6.v10.v11.v5.v4.v9.v11.v6.v0.v2.v8.v1.v3.v5.v1.v7.v4.v0.v8.v2.v7.v1
+C0: 6.023316634891277
+C1: -6.740199217268932
+
+Gene 2
+-.v11.v10.v9.v3.v5.v11.v3.v8.v1.v6.v1.v3.v5.v3.v1.v6.v3.v5.v9.v10.v9.v1.v3.v11.v5.v3.v3.v10.v7.v4.v10.v11
+C0: 7.939082537965202
+C1: 2.2714334547420947
+
+
+v11 + (min(v4,(v10-v11),v11,v10)*atan(v6)*v2*(v3*v6)) + (v11-v10)
+
+
+Generation: 384
+Best Individual:
+Evaluated: T
+Fitness: 947.35065
+Linking function: +
+Gene 0
+v11.v9.C1.v6.v6.min4.v2.v0.v3.v11.v11.v3.v6.C1.v8.v5.v8.v2.v10.C1.v1.v3.v9.v1.v1.v6.v3.v6.v4.v3.v3.v0.v4
+C0: -7.382400785552776
+C1: -3.925333841070408
+
+Gene 1
+mul4.min4.atan.v2.*.v4.-.v3.v10.v0.v6.v6.v10.v11.v5.v4.v9.v11.v6.C1.v2.v8.v1.v3.v7.v1.v7.v4.v0.v2.v10.v7.v0
+C0: 6.023316634891277
+C1: 2.732073313902257
+
+Gene 2
+-.v11.v10.v9.v1.v3.max3.v4.v8.v10.v2.v3.v9.v11.v7.v5.v7.v2.v5.v1.C1.v3.v3.v8.v7.C1.v7.v4.v2.v4.v1.v0.v0
+C0: 7.939082537965202
+C1: 2.2714334547420947
+
+
+v11 + (min(v4,(v10-v11),v3,v10)*atan(v0)*v2*(v6*v6)) + (v11-v10)
+
+
+Generation: 389
+Best Individual:
+Evaluated: T
+Fitness: 947.6065
+Linking function: +
+Gene 0
+v11.v9.C1.v8.v6.min4.v2.v0.v3.v11.v11.v3.v6.C1.v8.v5.v9.v2.v2.C1.v1.v3.v9.v1.v11.v6.v3.v6.v4.v3.v3.v0.v4
+C0: -7.382400785552776
+C1: -3.925333841070408
+
+Gene 1
+mul4.min4.atan.v2.*.-.-.v3.v10.v0.v6.v6.v10.v11.v4.v4.v9.C1.v6.C0.v2.v8.v1.v3.v7.v1.v7.v4.v0.v2.v10.v7.v0
+C0: 6.023316634891277
+C1: 2.732073313902257
+
+Gene 2
+-.v11.v10.v9.v1.v3.max3.v4.v8.v10.v9.v3.v9.v11.v7.v5.v7.v2.v5.v1.C1.v3.v3.v8.v7.C1.v7.v4.v7.v4.v1.v0.v10
+C0: 7.939082537965202
+C1: 2.2714334547420947
+
+
+v11 + (min((v10-v11),(v4-v4),v3,v10)*atan(v0)*v2*(v6*v6)) + (v11-v10)
+
+
+Generation: 395
+Best Individual:
+Evaluated: T
+Fitness: 947.7087
+Linking function: +
+Gene 0
+v11.v9.C1.v8.v0.min4.v2.v0.v3.v11.v11.v3.v6.v5.v0.v5.v10.v11.v1.C0.v1.v3.v9.v1.v11.v6.v3.v6.v4.v3.v3.v0.v4
+C0: 0.7300310881789489
+C1: -3.925333841070408
+
+Gene 1
+mul4.min4.atan.v2.*.-.-.v3.v10.v9.v6.v5.v10.v11.v4.v4.v9.C1.v6.v9.v6.v8.v6.v3.v7.v1.C0.v4.v0.v2.v10.v7.v0
+C0: 6.023316634891277
+C1: 2.732073313902257
+
+Gene 2
+-.v11.v10.v9.v4.v5.max3.v2.v8.v8.v2.v3.v9.v11.v8.v5.v7.v2.v5.v1.v2.v3.v3.v8.v7.C0.v7.v2.v10.v7.v0.v8.v3
+C0: 7.939082537965202
+C1: 2.2714334547420947
+
+
+v11 + (min((v10-v11),(v4-v4),v3,v10)*atan(v9)*v2*(v6*v5)) + (v11-v10)
+
+
+Generation: 413
+Best Individual:
+Evaluated: T
+Fitness: 947.758
+Linking function: +
+Gene 0
+v11.*.v0.comp.C0.v9.v9.-.v3.v11.v11.v3.v6.v5.v0.v5.v10.v11.v1.C0.v9.v3.v9.v1.v11.v6.v3.v4.v10.v3.v3.v6.v4
+C0: 0.7300310881789489
+C1: -3.925333841070408
+
+Gene 1
+mul4.min4.atan.v2.*.-.-.C0.v10.v9.v6.v7.v10.v11.v4.v4.v1.C1.v6.v9.v6.v2.v6.v3.v4.v1.C0.v4.v0.v6.v10.v7.v0
+C0: 6.023316634891277
+C1: 2.2420196052217314
+
+Gene 2
+-.v11.v10.v5.exp.v7.v2.v5.v8.v8.v2.v3.v9.v11.v8.C1.v7.v2.v5.v1.C0.v10.v3.v8.v7.C1.v5.v2.v10.v3.v0.v8.v3
+C0: 7.939082537965202
+C1: 2.2714334547420947
+
+
+v11 + (min((v10-v11),(v4-v4),6.023316634891277,v10)*atan(v9)*v2*(v6*v7)) + (v11-v10)
+
+
+Generation: 420
+Best Individual:
+Evaluated: T
+Fitness: 947.7651
+Linking function: +
+Gene 0
+mul4.min4.atan.v2.*.-.-.cos.v10.v10.v6.v7.v10.v11.v4.v4.v1.C0.v6.v9.v4.v2.v6.v3.v9.v7.C0.v4.v0.v6.v10.v7.v0
+C0: 0.7300310881789489
+C1: -3.925333841070408
+
+Gene 1
+v11.*.v0.comp.C0.v9.v9.-.v5.v11.v11.v0.C1.v5.v0.v5.v10.v11.v1.C0.v9.v3.v9.v1.v7.v6.v3.v8.v10.v3.v3.v6.v2
+C0: 6.023316634891277
+C1: 2.2420196052217314
+
+Gene 2
+-.v11.v10.v5.v4.v7.v2.v5.v8.v8.v1.v4.v6.C1.v0.v1.v10.v1.v10.C0.v7.v3.v3.v8.v2.v10.v7.v7.v10.v3.v0.v8.v3
+C0: 7.939082537965202
+C1: 2.2714334547420947
+
+
+(min((v10-v11),(v4-v4),cos(v1),v10)*atan(v10)*v2*(v6*v7)) + v11 + (v11-v10)
+
+
+Generation: 424
+Best Individual:
+Evaluated: T
+Fitness: 947.91113
+Linking function: +
+Gene 0
+min4.mul4.atan.v2.-.-.*.cos.v10.v10.v6.v6.v10.v11.v4.v8.v0.v5.v7.C0.v1.v6.v9.v1.v1.v7.C0.v11.v0.v1.v10.v3.v0
+C0: 0.7300310881789489
+C1: -3.925333841070408
+
+Gene 1
+v11.*.add3.comp.C0.v9.v9.-.v5.v5.v11.v0.C1.v5.v0.v5.v10.v11.v1.C0.v9.v8.v9.v1.v2.v6.v3.v4.v5.v3.v3.v6.v2
+C0: 6.023316634891277
+C1: 2.2420196052217314
+
+Gene 2
+-.v11.v10.v5.v4.v7.v2.cos.v1.v8.v5.v4.v6.C1.v0.v11.v10.v1.v10.v7.v7.v1.v3.v8.v2.v10.v7.v7.v10.v10.v0.v8.v11
+C0: 7.939082537965202
+C1: 2.2714334547420947
+
+
+min(((v10-v11)*(v4*v8)*cos(v0)*v10),atan(v10),v2,(v6-v6)) + v11 + (v11-v10)
+
+
+Generation: 441
+Best Individual:
+Evaluated: T
+Fitness: 949.0231
+Linking function: +
+Gene 0
+v11.*.add3.comp.C0.v9.+.-.v5.v5.v11.v0.C1.v11.v0.v2.v10.v8.v1.C0.v9.v8.v9.v1.v2.v6.v10.v4.v5.v11.v3.v6.v2
+C0: 0.7300310881789489
+C1: -3.925333841070408
+
+Gene 1
+min4.mul4.atan.v2.-.-.*.cos.v10.v10.v6.v6.v9.v11.v4.v8.v0.v5.C1.v3.v1.v2.v0.v3.v3.v7.v8.v7.v0.v1.v10.v8.v2
+C0: 6.023316634891277
+C1: 2.2420196052217314
+
+Gene 2
+-.v11.v10.v5.v0.v11.-.v11.v1.v1.v11.v0.v10.v5.v0.v4.v10.v1.v10.v7.v7.v1.v0.v8.v2.v10.v7.v7.v8.v11.v0.v8.v3
+C0: 7.939082537965202
+C1: 2.2714334547420947
+
+
+v11 + min(((v9-v11)*(v4*v8)*cos(v0)*v10),atan(v10),v2,(v6-v6)) + (v11-v10)
+
+
+Generation: 500
+Best Individual:
+Evaluated: T
+Fitness: 949.12756
+Linking function: +
+Gene 0
+min4.mul4.atan.v2.-.-.*.cos.v10.v10.v6.v6.v9.v11.v9.v8.v0.v1.v1.v3.v1.v2.v10.v3.v9.v7.v4.v10.v3.v6.v0.v2.v8
+C0: 7.8828584190268245
+C1: -5.99193211081489
+
+Gene 1
+-.v11.v10.mul4.+.C1.v11.-.v7.v2.v11.v6.v9.v9.v4.v4.v6.v3.v11.v2.v4.v9.v0.v3.C1.v6.v2.v2.v0.v9.v0.v4.v10
+C0: -8.215576445584725
+C1: 2.2420196052217314
+
+Gene 2
+v11.v1.-.v9.v7.v1.min3.add3.v3.v5.v1.v0.v2.v11.v9.v2.v9.v6.v4.v0.v2.v7.v11.v5.v8.v10.v8.v6.v3.v3.v3.v6.v2
+C0: -2.3175299468824884
+C1: -1.9665530304844676
+
+
+min(((v9-v11)*(v9*v8)*cos(v0)*v10),atan(v10),v2,(v6-v6)) + (v11-v10) + v11
+
+
+Generation: 528
+Best Individual:
+Evaluated: T
+Fitness: 949.24664
+Linking function: +
+Gene 0
+min4.mul4.atan.v2.-.-.X3.cos.v2.v10.v6.v6.v9.v11.v9.v8.v0.v1.v1.v3.C0.v2.v10.v3.v9.v7.v4.v10.v3.v6.v4.v0.v8
+C0: 7.8828584190268245
+C1: -5.99193211081489
+
+Gene 1
+-.v11.v10.v6.v2.v11.v0.C1.v7.v2.v11.v6.v2.C1.v7.v8.v0.v1.v1.v3.C1.v8.v10.v3.v9.v1.v5.v1.v0.v4.v2.v0.v4
+C0: -8.215576445584725
+C1: 2.2420196052217314
+
+Gene 2
+v11.v3.*.C0.v5.v2.v11.v1.v3.v6.v1.v0.v0.v11.v9.v2.v9.v11.v10.v8.v2.v2.v11.v4.v7.v10.v8.v5.v3.v3.v3.v0.v2
+C0: -2.3175299468824884
+C1: -1.9665530304844676
+
+
+min(((v9-v11)*(v9^3)*cos(v8)*v2),atan(v10),v2,(v6-v6)) + (v11-v10) + v11
+
+
+Generation: 530
+Best Individual:
+Evaluated: T
+Fitness: 949.46045
+Linking function: +
+Gene 0
+min4.mul4.atan.v2.-.-.X3.cos.v11.v10.v6.v6.v9.v11.v9.v8.v0.v1.v1.v3.C0.v2.v10.v3.v9.v7.v4.v10.v3.v6.v4.v0.v8
+C0: 7.8828584190268245
+C1: -5.99193211081489
+
+Gene 1
+-.v11.v10.v6.v2.v11.v0.C1.v7.v2.v11.v6.v2.C0.v7.v8.v0.v1.v1.v3.C0.v8.v10.v3.v9.v1.v5.v1.v0.v4.v2.v0.v4
+C0: -8.215576445584725
+C1: 2.2420196052217314
+
+Gene 2
+v11.v3.*.C0.v5.v2.v11.v1.v3.v6.v1.v0.v0.v11.v9.v2.v9.v11.v10.v8.v2.v2.v11.v4.v7.v10.v8.v5.v3.v3.v3.v0.v9
+C0: -2.3175299468824884
+C1: -1.9665530304844676
+
+
+min(((v9-v11)*(v9^3)*cos(v8)*v11),atan(v10),v2,(v6-v6)) + (v11-v10) + v11
+
+
+Generation: 531
+Best Individual:
+Evaluated: T
+Fitness: 949.6237
+Linking function: +
+Gene 0
+min4.mul4.atan.v2.-.-.X3.cos.v11.v1.v6.v6.v9.v11.v9.v1.v0.v1.v1.v3.C0.v4.v10.v3.v9.v7.v4.v10.v3.v6.v4.v0.v8
+C0: 7.8828584190268245
+C1: -5.99193211081489
+
+Gene 1
+-.v11.v10.v6.v2.v11.v0.C1.v7.v2.v11.v6.v2.C0.v7.v8.v0.v1.v1.v3.C0.v8.v10.v3.v9.v1.v5.v1.v0.v4.v2.v0.v4
+C0: -8.215576445584725
+C1: 2.2420196052217314
+
+Gene 2
+v11.v3.*.C0.v5.v2.v11.v1.v3.v6.v1.v0.v0.v11.v9.v2.v9.v11.v10.v8.v2.v3.v11.v4.v7.v10.v8.v5.v3.v3.v3.v0.v9
+C0: -2.3175299468824884
+C1: -1.9665530304844676
+
+
+min(((v9-v11)*(v9^3)*cos(v1)*v11),atan(v1),v2,(v6-v6)) + (v11-v10) + v11
+
+
+Generation: 552
+Best Individual:
+Evaluated: T
+Fitness: 949.80066
+Linking function: +
+Gene 0
+-.v11.v10.v6.v2.v11.v0.C0.v9.v1.v11.v7.v2.v4.v7.v11.C0.v3.v6.v3.C1.v2.v3.v9.v6.v7.v4.v1.v2.v4.v2.v0.v10
+C0: 7.8828584190268245
+C1: -5.99193211081489
+
+Gene 1
+v11.v3.*.v6.v2.C1.v11.avg2.v11.v10.v4.v5.v2.v8.v9.v8.v0.v3.v1.v0.C1.v0.v11.v11.v7.v1.v4.v0.v2.v8.v9.v0.v5
+C0: -8.215576445584725
+C1: 2.2420196052217314
+
+Gene 2
+min4.mul4.atan.v2.-.-.X3.v11.v11.v5.v6.v6.v9.v11.v9.v1.v1.v0.v8.v7.v4.v7.v3.v0.v8.v11.v10.v8.v3.v4.v2.v0.v2
+C0: -2.3175299468824884
+C1: 8.97156510472162
+
+
+(v11-v10) + v11 + min(((v9-v11)*(v9^3)*v11*v11),atan(v5),v2,(v6-v6))
+
+
+Generation: 558
+Best Individual:
+Evaluated: T
+Fitness: 949.8071
+Linking function: +
+Gene 0
+v11.v3.*.v6.*.v4.v11.avg2.v11.v10.v4.v5.v4.v8.v9.v10.v5.v3.v0.v0.C0.v0.v11.v11.v0.v1.v3.v0.v2.v8.v9.v0.v5
+C0: 7.8828584190268245
+C1: -5.99193211081489
+
+Gene 1
+-.v11.v10.v6.-.v11.v0.C1.v11.v1.v11.v7.v2.v10.v7.v11.v5.v3.v6.v3.C1.v2.v3.v9.v4.v7.v4.v1.v3.v4.v2.v0.v10
+C0: -8.215576445584725
+C1: 2.2420196052217314
+
+Gene 2
+min4.mul4.atan.v7.-.-.X3.v11.v10.v5.v6.v6.v9.v11.v9.v1.v1.v0.v8.v0.v4.v7.v3.v0.v8.v6.v10.v8.v3.v3.v2.v0.v8
+C0: -2.3175299468824884
+C1: 8.97156510472162
+
+
+v11 + (v11-v10) + min(((v9-v11)*(v9^3)*v11*v10),atan(v5),v7,(v6-v6))
+
+
+Generation: 561
+Best Individual:
+Evaluated: T
+Fitness: 949.8132
+Linking function: +
+Gene 0
+v11.v8.*.v6.v2.v4.v11.avg2.v11.v10.v4.v5.v4.v8.v9.v10.v5.v3.v0.v0.C0.v0.v0.v11.v0.v6.v3.v0.v2.v8.v9.v0.v5
+C0: 7.8828584190268245
+C1: -5.99193211081489
+
+Gene 1
+-.v11.v10.v6.-.cot.v0.C1.v11.v1.v11.v7.v2.v11.v7.v11.v5.v3.v6.v3.C1.v2.v3.v9.v4.v7.v3.v1.v3.v4.v9.v0.v10
+C0: -8.215576445584725
+C1: 2.2420196052217314
+
+Gene 2
+min4.mul4.atan.v7.-.-.X3.v10.v10.v5.v6.v6.v9.v11.v9.v1.v1.v0.v8.v7.v4.v7.v3.C0.v8.v6.v10.v8.v1.C1.v2.v0.v8
+C0: -2.3175299468824884
+C1: 8.97156510472162
+
+
+v11 + (v11-v10) + min(((v9-v11)*(v9^3)*v10*v10),atan(v5),v7,(v6-v6))
+
+
+Generation: 885
+Best Individual:
+Evaluated: T
+Fitness: 949.8258
+Linking function: +
+Gene 0
+-.v11.v10.tanh.v2.v0.v3.v0.v3.v6.v6.v4.v11.v3.v8.v3.v8.v0.v0.v6.v11.v2.v3.v0.v11.v2.v7.C0.v8.v9.C1.v2.C1
+C0: 0.0372863735953306
+C1: -5.151703215320693
+
+Gene 1
+v11./.add3.v10.v6.v9.v0.max3.v8.v9.v6.v0.v2.v10.v11.v1.v8.v9.v7.v11.v0.v2.v7.C1.v10.v4.v7.v10.v5.v9.v5.v6.v3
+C0: 0.4231799153960729
+C1: 0.07891448990061889
+
+Gene 2
+min4.mul4.atan.v2.-.-.X3.v10.v10.v3.v6.v6.v9.v11.v10.v11.v6.v3.v6.v1.v1.v3.v2.v8.v8.v7.v9.C1.v7.v1.v6.v5.v8
+C0: 5.480539678473601
+C1: 7.449228552049021
+
+
+(v11-v10) + v11 + min(((v9-v11)*(v10^3)*v10*v10),atan(v3),v2,(v6-v6))
+
+
+Generation: 4280
+Best Individual:
+Evaluated: T
+Fitness: 949.8468
+Linking function: +
+Gene 0
+min4.mul4.cos.-.v7.-.*.X3.v10.v11.v6.v6.v9.v11.v10.v11.v11.v4.v9.v9.v5.v10.v11.v8.v7.v10.v4.v1.v6.C0.v11.v7.v3
+C0: 8.633014086037228
+C1: 6.937121021537251
+
+Gene 1
+v11.sech.v8.+.pi.v0.v6.add4.v5.v11.v7.v9.v7.v2.v9.v1.v11.v4.v8.v5.C0.v11.v5.v10.C0.v4.C0.C1.v9.v8.v4.v7.v3
+C0: -1.4090905948548347
+C1: -3.298790336902626
+
+Gene 2
+-.v11.v10.max2.v4.+.tanh.min3.C0.v11.v1.v8.v7.v5.v11.v0.v1.v6.v11.v10.v0.v5.v7.v6.v2.v9.v11.v5.v1.v11.v5.v5.v0
+C0: 4.767766986252404
+C1: -9.396896607847669
+
+
+min(((v9-v11)*(v10*v11)*(v11^3)*v10),cos(v11),(v6-v6),v7) + v11 + (v11-v10)
+
+
+Generation: 4589
+Best Individual:
+Evaluated: T
+Fitness: 949.8491
+Linking function: +
+Gene 0
+-.v11.v10.min2.v6.v3.X3.v9.v1.v6.v7.v10.v2.C1.v11.v2.v11.v4.v5.v3.v10.C1.v2.v9.v9.v2.v4.v5.v8.v9.v6.v3.v11
+C0: 6.821466698005786
+C1: 6.937121021537251
+
+Gene 1
+min4.mul4.exp.v2.-.-.*.X3.v11.v3.v6.v6.v9.v11.v10.v11.v11.v9.v2.v8.v11.v9.v10.v3.v7.v1.v4.v3.v1.v0.v6.v6.v1
+C0: 6.037935120525049
+C1: -3.298790336902626
+
+Gene 2
+v11.v3.v7.C0.min2.v3.comp.mul4.v11.v7.v6.v9.v4.v3.v11.v3.v9.v5.C0.v3.v1.v7.v8.v11.v4.v2.v7.v5.v2.C1.v6.v10.v2
+C0: -4.000870691141996
+C1: -3.841689629564094
+
+
+(v11-v10) + min(((v9-v11)*(v10*v11)*(v11^3)*v11),exp(v3),v2,(v6-v6)) + v11
+
+
+Generation: 4852
+Best Individual:
+Evaluated: T
+Fitness: 949.85126
+Linking function: +
+Gene 0
+min4.mul4.pi.v1.-.-.*.X3.v11.v6.v6.v6.v9.v11.v11.v11.v11.v11.v3.v2.v8.v0.v4.v2.C1.v0.v2.v9.v6.v4.v5.v1.v4
+C0: -4.606282747397124
+C1: 7.1893367901058625
+
+Gene 1
+v11.min4.sub3.v6.X5.v10.v9.v3.v6.v3.v2.v7.v2.v11.v6.v2.v0.v4.v11.v10.v8.v2.v0.v0.v3.v6.v9.v8.v2.v2.v8.v10.v7
+C0: 4.664312979840037
+C1: -2.4848347836698137
+
+Gene 2
+-.v11.v10.v8.-.v7.+.*.C1.v4.v1.v6.v9.v3.v10.v6.v5.v3.v3.v2.v8.v7.v6.v9.C0.v1.v11.v11.v2.C0.v7.v9.v5
+C0: 1.8781043542897198
+C1: -3.841689629564094
+
+
+min(((v9-v11)*(v11*v11)*(v11^3)*v11),pi,v1,(v6-v6)) + v11 + (v11-v10)
+
+
+Best Individual of Run:
+Found at Generation: 4852
+Evaluated: T
+Fitness: 949.85126
+Linking function: +
+Gene 0
+min4.mul4.pi.v1.-.-.*.X3.v11.v6.v6.v6.v9.v11.v11.v11.v11.v11.v3.v2.v8.v0.v4.v2.C1.v0.v2.v9.v6.v4.v5.v1.v4
+C0: -4.606282747397124
+C1: 7.1893367901058625
+
+Gene 1
+v11.min4.sub3.v6.X5.v10.v9.v3.v6.v3.v2.v7.v2.v11.v6.v2.v0.v4.v11.v10.v8.v2.v0.v0.v3.v6.v9.v8.v2.v2.v8.v10.v7
+C0: 4.664312979840037
+C1: -2.4848347836698137
+
+Gene 2
+-.v11.v10.v8.-.v7.+.*.C1.v4.v1.v6.v9.v3.v10.v6.v5.v3.v3.v2.v8.v7.v6.v9.C0.v1.v11.v11.v2.C0.v7.v9.v5
+C0: 1.8781043542897198
+C1: -3.841689629564094
+
+
+min(((v9-v11)*(v11*v11)*(v11^3)*v11),pi,v1,(v6-v6)) + v11 + (v11-v10)
+
+Size of program: 21
+Variables used(count): v1(1), v6(3), v9(1), v10(1), v11(7)
+
+***** TRAINING data results *****
+Statistics: 
+MSE:  5.088669321632976E-6    	RAE:  0.047912259779302045    	RSE:  0.002787462691071656
+RMSE: 0.002255807908850613    	MAE:  0.0018005198526521084    	RRSE: 0.05279642687788309
+
+
+***** TEST data results *****
+Number of Calculation Errors: 0 out of 12 test sets
+Statistics: 
+MSE:  4.1933721862290064E-6    	RAE:  0.17956953477486415    	RSE:  0.038180123153280364
+RMSE: 0.0020477724937670704    	MAE:  0.0015218517972408845    	RRSE: 0.19539734684299162
+
+Observed	Computed
+0.821116667	0.8209629547260201
+0.816391667	0.8210402721074351
+0.813166667	0.811666667
+0.808825	0.8099416669999999
+0.805383333	0.8044833330000001
+0.804841667	0.8019416659999999
+0.8013	0.8043000010000001
+0.79325	0.797758333
+0.788016667	0.7852
+0.778166667	0.7827833339999999
+0.774816667	0.7683166670000001
+0.769383333	0.7714666669999999
+0.765891667	0.7639499989999999
+0.767616667	0.762400001
+0.770425	0.769341667
+0.773566667	0.7722853515832979
+0.777783333	0.7754333537657084
+0.781958333	0.7803709609336782
+0.782091667	0.7842148857484376
+0.781508333	0.7812390500361396
+0.779891667	0.780924999
+0.781066667	0.778275001
+0.783208333	0.7822416670000001
+0.784958333	0.7845844631457835
+0.787525	0.7857979687692277
+0.786841667	0.789061910259403
+0.7851	0.7857113917142897
+0.78405	0.783358333
+0.781433333	0.783
+0.779183333	0.7788166659999999
+0.7791	0.776933333
+0.779958333	0.779016667
+0.778833333	0.780642192241435
+0.775908333	0.7777083330000001
+0.773366667	0.7729833329999999
+0.7728	0.7708250010000001
+0.770933333	0.7722333330000001
+0.770766667	0.769066666
+0.769158333	0.7706000009999999
+0.766383333	0.7675499990000001
+0.760433333	0.7636083330000001
+0.753308333	0.754483333
+0.74595	0.746183333
+0.737408333	0.738591667
+0.731425	0.7288666659999999
+0.725491667	0.725441667
+0.720583333	0.719558334
+0.715366667	0.715674999
+0.711391667	0.7101500009999999
+0.704558333	0.707416667
+0.698175	0.6977249990000001
+0.693108333	0.6917916669999999
+0.689558333	0.6880416659999999
+0.683833333	0.6860083330000001
+0.681391667	0.6781083330000001
+0.679266667	0.6789500009999999
+0.678358333	0.6771416670000001
+0.681075	0.677449999
+0.682916667	0.6836111791206722
+0.6825	0.6842959397592062
+0.682566667	0.68193931034967
+0.6875	0.682633334
+0.692241667	0.6919053666794853
+0.6969	0.6959187072039085
+0.702875	0.7004814943355725
+
+0.710708333	0.7075678524883663
+0.71705	0.7167621999888603
+0.726266667	0.72146494210713
+0.734575	0.7332001560424128
+0.7385	0.7401298976145573
+0.740308333	0.7404405151142135
+0.742575	0.7411728594343306
+0.744033333	0.7441584328641743
+0.742175	0.7448597190350458
+0.740466667	0.7403166670000001
+0.740433333	0.7387583339999999
+0.741258333	0.7403999990000001

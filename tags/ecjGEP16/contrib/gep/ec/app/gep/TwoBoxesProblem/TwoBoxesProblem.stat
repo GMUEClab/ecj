@@ -1,0 +1,286 @@
+Maximum number of generations in this run: 1000
+Size of population in this run: 100
+Number of genes per chromosome: 2
+Size of gene head: 8
+Seed(s) used in this job: 4357
+Problem type: functionfinding
+
+
+Generation: 0
+Best Individual:
+Evaluated: T
+Fitness: 745.6055
+Linking function: +
+Gene 0
+-.*./.x1.*.x2.z2.y1.z1.z2.z2.x1.x1.x1.y2.z2.x1
+Gene 1
+-.z1.z1.*././.*.-.z1.x2.x1.z2.x2.x1.y2.x2.x2
+
+((x1*(y1*z1))-(x2/z2)) + (z1-z1)
+
+
+Generation: 3
+Best Individual:
+Evaluated: T
+Fitness: 769.4874
+Linking function: +
+Gene 0
++.y1././.x1.*././.x1.z2.z2.x1.x2.x1.y2.x2.x2
+Gene 1
+-.*.*.x1.*.x2.z2.y1.z1.z2.z2.x1.z1.x2.x2.z1.x2
+
+(y1+((((x1/x2)*x1)/(z2/z2))/x1)) + ((x1*(y1*z1))-(x2*z2))
+
+
+Generation: 4
+Best Individual:
+Evaluated: T
+Fitness: 781.9403
+Linking function: +
+Gene 0
+-.*.*.x1.*.x2.z2.y1.z1.z2.z2.x1.x1.x1.z1.z2.x1
+Gene 1
+-.z1.z1.*././.z2.y1.z1.z2.z2.x1.x1.y1.z1.z2.x1
+
+((x1*(y1*z1))-(x2*z2)) + (z1-z1)
+
+
+Generation: 22
+Best Individual:
+Evaluated: T
+Fitness: 815.16724
+Linking function: +
+Gene 0
+-.z1.z1.*././.z2.y1.z1.z2.z2.x1.x1.x1.y1.y2.x1
+Gene 1
+-.*.*.x1.*.x2.+.y1.z1.z2.z2.z2.y2.x1.z1.z2.x1
+
+(z1-z1) + ((x1*(y1*z1))-(x2*(z2+z2)))
+
+
+Generation: 25
+Best Individual:
+Evaluated: T
+Fitness: 825.6725
+Linking function: +
+Gene 0
+-.y2.x1.z1.z2.z1.z1.*.z1.z2.z2.x1.x1.x1.y1.y2.x1
+Gene 1
+-.*.*.x1.*.x2.+.y1.z1.z2.y2.z2.y2.x1.z1.z2.z1
+
+(y2-x1) + ((x1*(y1*z1))-(x2*(z2+y2)))
+
+
+Generation: 26
+Best Individual:
+Evaluated: T
+Fitness: 830.0797
+Linking function: +
+Gene 0
+-.z2.z1.x1.y2.z1.z1.*.z1.z2.z2.x1.x1.x1.y1.y2.x1
+Gene 1
+-.*.*.x1.*.x2.+.y1.z1.z2.y2.z2.y2.x1.z1.z2.z1
+
+(z2-z1) + ((x1*(y1*z1))-(x2*(z2+y2)))
+
+
+Generation: 27
+Best Individual:
+Evaluated: T
+Fitness: 830.9543
+Linking function: +
+Gene 0
+-.*.*.x1.*.x2.+.y1.z1.z2.y2.z2.y2.x1.z1.x1.z1
+Gene 1
+-.y2.z1.x1.z2.z1.+.*.z1.z2.z2.x1.y1.x1.y1.y2.x1
+
+((x1*(y1*z1))-(x2*(z2+y2))) + (y2-z1)
+
+
+Generation: 28
+Best Individual:
+Evaluated: T
+Fitness: 844.74744
+Linking function: +
+Gene 0
+-.*.*.x1.*.x2.+.y1.z1.z2.y2.z2.y2.x1.z1.y2.x1
+Gene 1
+-.z1.-.+.-.+./.z1.z1.z2.y1.y2.y1.z2.z1.z2.x2
+
+((x1*(y1*z1))-(x2*(z2+y2))) + (z1-(((z2+y1)+(y2/y1))-(z1-z1)))
+
+
+Generation: 36
+Best Individual:
+Evaluated: T
+Fitness: 852.26337
+Linking function: +
+Gene 0
+-.*.*.x1.*.x2.+.y1.z1.z2.y2.z2.y2.x1.z1.y2.x1
+Gene 1
+-.x2.*.z2.y1.-.x2.z1.z1.y1.z2.y1.x1.x2.x2.z1.y2
+
+((x1*(y1*z1))-(x2*(z2+y2))) + (x2-(z2*y1))
+
+
+Generation: 56
+Best Individual:
+Evaluated: T
+Fitness: 880.0432
+Linking function: +
+Gene 0
+-.*.*.x1.*.x2.+.y1.z1.z2.y2.z2.y2.x2.z1.x1.x1
+Gene 1
+-.x2.*.z2.y2.z2.y1.z1.y1.y1.z2.x1.x1.y2.z1.x1.y2
+
+((x1*(y1*z1))-(x2*(z2+y2))) + (x2-(z2*y2))
+
+
+Generation: 89
+Best Individual:
+Evaluated: T
+Fitness: 885.02545
+Linking function: +
+Gene 0
+-.*.*.x1.*.x2.+.y1.z1.z2.y2.z2.y1.z2.x1.y2.y1
+Gene 1
+-.y1.*.z2.y2.y2./.z2.y1.x2.z1.x2.x1.x2.z2.y2.z1
+
+((x1*(y1*z1))-(x2*(z2+y2))) + (y1-(z2*y2))
+
+
+Generation: 105
+Best Individual:
+Evaluated: T
+Fitness: 981.2034
+Linking function: +
+Gene 0
+-.*.*.x1.*.x2./.y1.z1.z2.x2.z2.z2.x2.z1.z1.x1
+Gene 1
+-.x1.*.z2.*.y2.*./.z1.x2.z1.x2.x1.x2.z2.y2.x2
+
+((x1*(y1*z1))-(x2*(z2/x2))) + (x1-(z2*(y2*((x2/z1)*z1))))
+
+
+Generation: 122
+Best Individual:
+Evaluated: T
+Fitness: 981.3129
+Linking function: +
+Gene 0
+-.x1.*.z2.*.y2.*./.z1.x2.z1.x2.x1.x2.z2.y2.x2
+Gene 1
+-.*.*.x1.*.x2./.y1.z1.z2.y1.x2.y1.x2.y2.y2.z2
+
+(x1-(z2*(y2*((x2/z1)*z1)))) + ((x1*(y1*z1))-(x2*(z2/y1)))
+
+
+Generation: 149
+Best Individual:
+Evaluated: T
+Fitness: 987.0874
+Linking function: +
+Gene 0
+-.*.-.x1.*.x2./.y1.z1.z2.y1.x2.x1.x2.y2.y2.z2
+Gene 1
+-.x1.*.z2.*.y2.*./.z1.x2.z1.y1.y1.z2.x2.y2.z1
+
+((x1*(y1*z1))-(x2-(z2/y1))) + (x1-(z2*(y2*((x2/z1)*z1))))
+
+
+Generation: 216
+Best Individual:
+Evaluated: T
+Fitness: 988.2611
+Linking function: +
+Gene 0
+-.x1.*.*.z2.*.y2./.z1.x2.z1.y1.y1.z2.x1.y2.z1
+Gene 1
+-.*.-.x1.*.x2./.y1.z1.z2.z1.y1.z1.y1.x2.z2.y1
+
+(x1-((((x2/z1)*z1)*y2)*z2)) + ((x1*(y1*z1))-(x2-(z2/z1)))
+
+
+Generation: 228
+Best Individual:
+Evaluated: T
+Fitness: 989.1885
+Linking function: +
+Gene 0
+-.*.-.x1.*.x2./.y1.z1.x2.z1.y1.z1.y1.x2.z2.z2
+Gene 1
+-.x1.*.*.z2.*.y2./.z1.x2.z1.y1.y1.z2.x1.y2.z1
+
+((x1*(y1*z1))-(x2-(x2/z1))) + (x1-((((x2/z1)*z1)*y2)*z2))
+
+
+Generation: 255
+Best Individual:
+Evaluated: T
+Fitness: 989.7277
+Linking function: +
+Gene 0
+-.*.-.x1.*.x2./.y1.z1.x2.x1.y2.z1.y1.z1.z2.y1
+Gene 1
+-.x1.*.*.z2.*.y2./.z1.x2.z1.x2.y1.z2.x1.x2.z1
+
+((x1*(y1*z1))-(x2-(x2/x1))) + (x1-((((x2/z1)*z1)*y2)*z2))
+
+
+Generation: 302
+Best Individual:
+Evaluated: T
+Fitness: 1000.0
+Linking function: +
+Gene 0
+-.*.+.*.x1.x1.-.z1.y1.x2.x2.z2.y1.y2.y2.z1.z1
+Gene 1
+-.x1.*.*.z2.x2.y2.x2.x1.x2.z1.z2.x1.y1.x1.y1.x1
+
+(((z1*y1)*x1)-(x1+(x2-x2))) + (x1-((x2*y2)*z2))
+
+
+Best Individual of Run:
+Found at Generation: 302
+Evaluated: T
+Fitness: 1000.0
+Linking function: +
+Gene 0
+-.*.+.*.x1.x1.-.z1.y1.x2.x2.z2.y1.y2.y2.z1.z1
+Gene 1
+-.x1.*.*.z2.x2.y2.x2.x1.x2.z1.z2.x1.y1.x1.y1.x1
+
+(((z1*y1)*x1)-(x1+(x2-x2))) + (x1-((x2*y2)*z2))
+
+Size of program: 18
+Variables used(count): x1(3), y1(1), z1(1), x2(3), y2(1), z2(1)
+
+***** TRAINING data results *****
+Statistics: 
+MSE:  0.0    	RAE:  0.0    	RSE:  0.0
+RMSE: 0.0    	MAE:  0.0    	RRSE: 0.0
+
+
+***** TEST data results *****
+Number of Calculation Errors: 0 out of 5 test sets
+Statistics: 
+MSE:  0.0    	RAE:  0.0    	RSE:  0.0
+RMSE: 0.0    	MAE:  0.0    	RRSE: 0.0
+
+Observed	Computed
+54.0	54.0
+600.0	600.0
+312.0	312.0
+111.0	111.0
+-18.0	-18.0
+-171.0	-171.0
+363.0	363.0
+-36.0	-36.0
+-24.0	-24.0
+45.0	45.0
+
+-58.0	-58.0
+58.0	58.0
+1870.0	1870.0
+44.0	44.0
+-2784.0	-2784.0

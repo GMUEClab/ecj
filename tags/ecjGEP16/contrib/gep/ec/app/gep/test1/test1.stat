@@ -1,0 +1,72 @@
+Maximum number of generations in this run: 100
+Size of population in this run: 50
+Number of genes per chromosome: 2
+Size of gene head: 5
+Seed(s) used in this job: 4357
+Problem type: functionfinding
+
+
+Generation: 0
+Best Individual:
+Evaluated: T
+Fitness: 274.6781
+Linking function: +
+Gene 0
+-.x.-.y.y.y.y.x.y.y.y
+Gene 1
++.x.y.y.-.x.y.y.y.y.x
+
+(x-(y-y)) + (x+y)
+
+
+Generation: 3
+Best Individual:
+Evaluated: T
+Fitness: 499.56635
+Linking function: +
+Gene 0
++./.+.-./.y.y.y.x.y.x
+Gene 1
+/.-.x./.y.y.y.y.x.y.x
+
+(((y-x)/(y/x))+(y+y)) + (((y/y)-y)/x)
+
+
+Generation: 4
+Best Individual:
+Evaluated: T
+Fitness: 1000.0
+Linking function: +
+Gene 0
++.-.x.y.x.y.y.y.y.y.x
+Gene 1
+*.x.x.y.x.y.y.y.x.y.x
+
+((y-x)+x) + (x*x)
+
+
+Best Individual of Run:
+Found at Generation: 4
+Evaluated: T
+Fitness: 1000.0
+Linking function: +
+Gene 0
++.-.x.y.x.y.y.y.y.y.x
+Gene 1
+*.x.x.y.x.y.y.y.x.y.x
+
+((y-x)+x) + (x*x)
+
+Size of program: 8
+Variables used(count): x(4), y(1)
+
+***** TRAINING data results *****
+Statistics: 
+MSE:  0.0    	RAE:  0.0    	RSE:  0.0
+RMSE: 0.0    	MAE:  0.0    	RRSE: 0.0
+
+Observed	Computed
+1.25	1.25
+3.0	3.0
+8.0	8.0
+21.0	21.0
