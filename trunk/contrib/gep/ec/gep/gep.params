@@ -108,7 +108,8 @@ verbosity = 				0
 flush = 				true
 
 # one thread  - could have multiple threads but it would NOT work as per the GeneXProTools system
-#               and it is not tested at all!
+#               and it is not tested at all! Probably best to NOT change this.
+#               Simple testing shows it's probably OK to have more than 1 eval thread BUT only 1 breeding thread will work properly!
 evalthreads = 				1
 breedthreads = 				1
 
