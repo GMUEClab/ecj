@@ -25,6 +25,7 @@ import java.util.Vector;
 
 import ec.*;
 import ec.util.MersenneTwisterFast;
+import ec.util.Parameter;
 
 /* 
  * GEPBreedingPipeline.java
@@ -51,18 +52,29 @@ import ec.util.MersenneTwisterFast;
 
 public abstract class GEPBreedingPipeline extends BreedingPipeline 
 {
-	private static Hashtable htReplacementArrays = new Hashtable();
+	private static Hashtable htReplacementArrays = null;
 
 	// class to hold an integer array that is used as a set of indicies to select from
 	private class IntegerArray
 	{
 		public int indicies[] = null;
-		IntegerArray(int theIntArray[])
+		IntegerArray(int numberInSelectionSet)
 		{
-			indicies = theIntArray;
+			indicies = new int[numberInSelectionSet];
+            for (int i=0; i<numberInSelectionSet; i++)
+            	indicies[i] = i;
 		}
 	}
 
+    public void setup(final EvolutionState state, final Parameter base)
+    {
+        super.setup(state,base);
+        // clear any arrays stored in the hashtable by assigning a null pointer
+        // will be allocated when 1st used after all initializations are completed
+        htReplacementArrays = null;
+    }
+    
+    
     /** Returns true if <i>s</i> is a GEPSpecies. */
     public boolean produces(final EvolutionState state,
                             final Population newpop,
@@ -94,17 +106,15 @@ public abstract class GEPBreedingPipeline extends BreedingPipeline
     	// It may have already been created previously or we create it and save it in a hash table
     	int indicies[];
     	Integer numInSet = new Integer(numberInSelectionSet);
+    	if (htReplacementArrays == null)
+    		htReplacementArrays = new Hashtable();
     	IntegerArray integerArrayObject = (IntegerArray)htReplacementArrays.get(numInSet);
     	if (integerArrayObject == null) 
     	{   // create a selectionSet of the required size since one has not been created yet
-    		indicies = new int[numberInSelectionSet];
-    		integerArrayObject = new IntegerArray(indicies);
-            for (i=0; i<numberInSelectionSet; i++)
-            	indicies[i] = i;
+    		integerArrayObject = new IntegerArray(numberInSelectionSet);
     		htReplacementArrays.put(numInSet, integerArrayObject);
     	}
-    	else
-    		indicies = integerArrayObject.indicies;
+    	indicies = integerArrayObject.indicies;
     	// then get the required selected set without replacement
         int selectionSet[] = new int[numberToSelect];
         MersenneTwisterFast srt = state.random[thread];
