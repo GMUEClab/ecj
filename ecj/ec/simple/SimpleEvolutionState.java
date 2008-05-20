@@ -44,7 +44,8 @@ public class SimpleEvolutionState extends EvolutionState
     /**
      * 
      */
-    public void startFresh() {
+    public void startFresh() 
+	{
         output.message("Setting up");
         setup(this,null);  // a garbage Parameter
 

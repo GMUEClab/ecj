@@ -145,18 +145,18 @@ public class Subpopulation implements Group
         // how big should our subpopulation be?
         
         size = state.parameters.getInt(
-            base.push(P_SUBPOPSIZE),def.push(P_SPECIES),1);
+            base.push(P_SUBPOPSIZE),def.push(P_SUBPOPSIZE),1);
         if (size<=0)
             state.output.fatal(
                 "Subpopulation size must be an integer >= 1.\n",
-                base.push(P_SUBPOPSIZE),def.push(P_SPECIES));
+                base.push(P_SUBPOPSIZE),def.push(P_SUBPOPSIZE));
         
         // How often do we retry if we find a duplicate?
         numDuplicateRetries = state.parameters.getInt(
-            base.push(P_RETRIES),def.push(P_SPECIES),0);
+            base.push(P_RETRIES),def.push(P_RETRIES),0);
         if (numDuplicateRetries < 0) state.output.fatal(
             "The number of retries for duplicates must be an integer >= 0.\n",
-            base.push(P_RETRIES),def.push(P_SPECIES));
+            base.push(P_RETRIES),def.push(P_RETRIES));
         
         individuals = new Individual[size];
         }
