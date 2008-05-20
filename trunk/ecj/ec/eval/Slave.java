@@ -100,6 +100,7 @@ import ec.util.*;
  <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default) </font></td>
  <td valign=top>(should we return whole individuals or (if false) just the fitnesses of the individuals?  This must be TRUE if eval.run-evolve is true.)</td></tr>
 
+ <!-- 
  <tr><td valign=top><tt>nostore</tt><br>
  <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
  <td valign=top>(should the ec.util.Output facility <i>not</i> store announcements in memory?)</td></tr>
@@ -107,6 +108,7 @@ import ec.util.*;
  <tr><td valign=top><tt>flush</tt><br>
  <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
  <td valign=top>(should I flush all output as soon as it's printed (useful for debugging when an exception occurs))</td></tr>
+-->
 
  <tr><td valign=top><tt>verbosity</tt><br>
  <font size=-1>int &gt;= 0</font></td>
@@ -183,11 +185,11 @@ public class Slave
     /** The argument indicating that we're starting fresh from a new parameter file. */
     public static final String A_FILE = "-file";
         
-    /** flush announcements parameter */
-    public static final String P_FLUSH = "flush";
+    /* flush announcements parameter */
+    // public static final String P_FLUSH = "flush";
         
-    /** nostore parameter */
-    public static final String P_STORE = "store";
+    /* nostore parameter */
+   // public static final String P_STORE = "store";
         
     /** verbosity parameter */
     public static final String P_VERBOSITY = "verbosity";
@@ -345,7 +347,7 @@ public class Slave
                 dataOut.flush();
 
                 // 1. create the output
-                store = parameters.getBoolean(new Parameter(P_STORE), null, false);
+                // store = parameters.getBoolean(new Parameter(P_STORE), null, false);
                 
                 verbosity = parameters.getInt(new Parameter(P_VERBOSITY), null, 0);
                 if (verbosity < 0)
@@ -353,9 +355,9 @@ public class Slave
                                         new Parameter(P_VERBOSITY));
                 
                 if (output != null) output.close();
-                output = new Output(store, verbosity);
-                output.setFlush(
-                    parameters.getBoolean(new Parameter(P_FLUSH),null,false));
+                output = new Output(true, verbosity);
+                //output.setFlush(
+                //    parameters.getBoolean(new Parameter(P_FLUSH),null,false));
                 
                 // stdout is always log #0. stderr is always log #1.
                 // stderr accepts announcements, and both are fully verbose

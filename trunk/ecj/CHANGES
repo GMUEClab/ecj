@@ -1378,3 +1378,7 @@ Version		Change Log
 		Thanks to Peter Drake <drake@lclark.edu>
 	Tweak to Console to fix parameters not being updated properly.  Thanks to
 		Bob Orchard <Bob.Orchard@nrc-cnrc.gc.ca>
+	Eliminated the 'store' and 'flush' parameter options.  You can still modify
+		the Output's behavior programatically.  This change was long
+		overdue: these two features just added complexity to an already too
+		complex parameter file. 

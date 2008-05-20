@@ -5,8 +5,6 @@
 # The parameters that were laid out in Tutorial 1 (see the documentation)
 
 verbosity	= 0
-flush		= true
-nostore		= true
 
 breedthreads	= 1
 evalthreads	= 1

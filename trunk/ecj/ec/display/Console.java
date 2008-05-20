@@ -1074,16 +1074,16 @@ public class Console extends JFrame
         throws BadParameterException 
         {
         // 1. create the output
-        boolean store = parameters.getBoolean(new Parameter(Evolve.P_STORE),null,false);
+        //boolean store = parameters.getBoolean(new Parameter(Evolve.P_STORE),null,false);
         
         int verbosity = parameters.getInt(new Parameter(Evolve.P_VERBOSITY),null,0);
         if (verbosity<0)
             Output.initialError("Verbosity should be an integer >= 0.\n",
                                 new Parameter(Evolve.P_VERBOSITY)); 
         
-        Output output = new Output(store,verbosity);
-        output.setFlush(
-            parameters.getBoolean(new Parameter(Evolve.P_FLUSH),null,false));
+        Output output = new Output(true,verbosity);
+        //output.setFlush(
+        //    parameters.getBoolean(new Parameter(Evolve.P_FLUSH),null,false));
         
         
         // stdout is always log #0.  stderr is always log #1.
