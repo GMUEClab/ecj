@@ -27,7 +27,7 @@ import java.util.Enumeration;
  * Each Output instance also has an instance-level global verbosity;
  * incoming requests to write text are additionally subject to this
  * verbosity test.  Lastly, the Output class itself has a global
- * verbosity as well.  This last verbostity is useful for shutting
+ * verbosity as well.  This last verbosity is useful for shutting
  * down writing to all logs in the entire system in a simple way.
  *
  * <p>When the system fails for some reason and must be started back
@@ -67,6 +67,12 @@ import java.util.Enumeration;
  </tr><tr><td>5000</td><td>V_TOTALLY_SILENT</td><td>(be totally silent)</td>
  </tr></table>
  *
+ * <p>Output by default will automatically flush any log which prints an announcement
+ * (or anything printed with Output.println(...).  You can change this behavior with
+ * the setFlush() method.
+ *
+ * <p>Output will also store all announcements in memory by default so as to reproduce
+ * them if it's restarted from a checkpoint.  You can change this behavior also by
  *
  * @author Sean Luke
  * @version 1.0
@@ -75,10 +81,11 @@ import java.util.Enumeration;
 public class Output implements Serializable
     {
     boolean errors;
-    Vector logs;
-    Vector announcements;
+    Vector logs = new Vector();
+    Vector announcements = new Vector();
     int verbosity;
-    boolean flush;
+    boolean flush = true;
+    boolean store = true;
     String filePrefix = "";
 
     public static final int ALL_LOGS = -1;
@@ -151,26 +158,38 @@ public class Output implements Serializable
     public Output(boolean storeAnnouncementsInMemory, int _verbosity)
         {
         errors = false;
-        logs = new Vector();
-        if (storeAnnouncementsInMemory) 
-            announcements = new Vector();
+	store = storeAnnouncementsInMemory;
         verbosity = _verbosity;
         }
 
     /** Sets whether the Output flushes its announcements.*/
-    public synchronized boolean setFlush(boolean v)
+    public synchronized void setFlush(boolean v)
         {
-        boolean oldFlush = flush;
         flush = v;
-        return oldFlush;
         }
     
-    /** Sets the Output object's general verbosity to <i>v</i>. */
-    public synchronized int setVerbosity(int v)
+    /* Returns the Output's flushing behavior. */
+    public synchronized boolean getFlush()
+	{
+	return flush;
+	}
+    
+    /** Sets whether the Output stores its announcements.*/
+    public synchronized void setStore(boolean v)
         {
-        int oldVerbosity = verbosity;
+        store = v;
+        }
+
+    /* Returns the Output's storing behavior. */
+    public synchronized boolean getStore()
+	{
+	return store;
+	}
+    
+    /** Sets the Output object's general verbosity to <i>v</i>. */
+    public synchronized void setVerbosity(int v)
+        {
         verbosity = v;
-        return oldVerbosity;
         }
     
     /** Returns the Output object's general verbosity*/
@@ -498,7 +517,7 @@ public class Output implements Serializable
         log.writer.println(s);
         if (flush) log.writer.flush();
         //...and stash it in memory maybe
-        if (announcements!=null && _announcement && !_reposting)
+        if (store && _announcement && !_reposting)
             announcements.addElement(new Announcement(s,_verbosity));
         }
 
@@ -556,7 +575,7 @@ public class Output implements Serializable
         if (verbosity >= _verbosity) return;  // don't write it
         // now write it
         log.writer.print(s);
-        if (flush) log.writer.flush();
+        //if (flush) log.writer.flush();
         }
 
     /** Prints a non-announcement message to a given log, with a
@@ -624,7 +643,7 @@ public class Output implements Serializable
             {
             Log l = (Log)(logs.elementAt(x));
             logs.setElementAt(l = l.restarter.restart(l),x);
-            if (l.repostAnnouncementsOnRestart && announcements!=null)
+            if (l.repostAnnouncementsOnRestart && store)
                 {    
                 int as = announcements.size();
                 for (int y=0;y<as;y++)

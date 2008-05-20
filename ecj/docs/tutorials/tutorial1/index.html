@@ -66,21 +66,14 @@
 
 <tt><pre>
 verbosity	= 0
-flush		= true
-store		= true
-</pre></tt>
-
-<p>Most of the things ECJ prints out to the terminal are <i>messages</i>.  A message is a string which is sent to the Output facility to be printed and logged.  Messages can take several forms, though you'll usually see: plain-old messages, warnings, errors, and fatal errors.  A fatal error causes ECJ to quit as soon as it is printed and logged.  An ordinary error raises an <i>error flag</i> in the Output facility; ECJ can wait after a string of errors before it finally quits (to give you more debugging information).  Warnings and messages do not quit ECJ.  The <tt>verbosity</tt> parameter tells ECJ what kinds of things it should print to the screen: a verbosity of 0 says ECJ should print everything to the screen, no matter how inconsequential.  You can change the verbosity: for more information, see the <a href="../../classdocs/ec/util/Output.html">Output</a> documentation.
-
-<p>The <tt>flush</tt> parameter tells ECJ whether or not it should immediately attempt to flush messages to the screen as soon as it logs them; generally, you'd want this to be <tt>true</tt>.  The <tt>store</tt> parameter tells ECJ whether or not it should store messages in memory as it logs them.  Unless you have an absolutely gargantuan number of messages, this should probably be <tt>true</tt>.  
-
-<tt><pre>
 breedthreads	= 1
 evalthreads	= 1
 seed.0		= 4357
 </pre></tt>
 
-<p>This tells ECJ whether or not it should be multithreaded.  If you're running on a single-processor machine, it rarely makes sense to be multithreaded (in fact, it's generally slower).  <tt>breedthreads</tt> tells the Breeder how many threads to spawn when breeding.  <tt>evalthreads</tt> tells the Evaluator how many threads to spawn when evaluating.
+<p>Most of the things ECJ prints out to the terminal are <i>messages</i>.  A message is a string which is sent to the Output facility to be printed and logged.  Messages can take several forms, though you'll usually see: plain-old messages, warnings, errors, and fatal errors.  A fatal error causes ECJ to quit as soon as it is printed and logged.  An ordinary error raises an <i>error flag</i> in the Output facility; ECJ can wait after a string of errors before it finally quits (to give you more debugging information).  Warnings and messages do not quit ECJ.  The <tt>verbosity</tt> parameter tells ECJ what kinds of things it should print to the screen: a verbosity of 0 says ECJ should print everything to the screen, no matter how inconsequential.  You can change the verbosity: for more information, see the <a href="../../classdocs/ec/util/Output.html">Output</a> documentation.^M
+^M
+<p>The next lines tell ECJ whether or not it should be multithreaded.  If you're running on a single-processor machine, it rarely makes sense to be multithreaded (in fact, it's generally slower).  <tt>breedthreads</tt> tells the Breeder how many threads to spawn when breeding.  <tt>evalthreads</tt> tells the Evaluator how many threads to spawn when evaluating.
 
 <p>Each thread will be given its own unique random number generator. You should make sure that these generators have different seeds from one another.  The generator seeds are <tt>seed.0</tt>, <tt>seed.1</tt> .... up to <tt>seed.<i>n</i></tt> where n = max(breedthreads,evalthreads) - 1.  Since we have only one thread, we only need one random number generator.  4357 is a good initial seed for the generator: but remember that if you run your evolution twice with the same seed, you'll get the same results!  So change your seed for each run.  If you'd like the system to automatically change the seed to an arbitrary seed each time you run, you can base the seed on the current wall clock time.  You do this by saying <tt>seed.0	= time</tt>
 

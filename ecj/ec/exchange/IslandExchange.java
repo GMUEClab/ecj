@@ -427,16 +427,16 @@ public class IslandExchange extends Exchanger
                 "No parameter file was specified." ); 
 
         // 1. create the output
-        store = (parameters.getBoolean(new Parameter(Evolve.P_STORE),null,false));
+        //store = (parameters.getBoolean(new Parameter(Evolve.P_STORE),null,false));
 
         verbosity = parameters.getInt(new Parameter(Evolve.P_VERBOSITY),null,0);
         if (verbosity<0)
             Output.initialError("Verbosity should be an integer >= 0.\n",
                                 new Parameter(Evolve.P_VERBOSITY)); 
 
-        output = new Output(store,verbosity);
-        output.setFlush(
-            parameters.getBoolean(new Parameter(Evolve.P_FLUSH),null,false));
+        output = new Output(true,verbosity);
+        // output.setFlush(
+        //    parameters.getBoolean(new Parameter(Evolve.P_FLUSH),null,false));
 
 
         // stdout is always log #0.  stderr is always log #1.

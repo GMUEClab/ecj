@@ -131,11 +131,11 @@ public class Evolve
     /** The argument indicating that we're starting fresh from a new parameter file. */
     public static final String A_FILE = "-file";
 
-    /** flush announcements parameter */
-    public static final String P_FLUSH = "flush";
+    /* flush announcements parameter */
+    //public static final String P_FLUSH = "flush";
 
-    /** nostore parameter */
-    public static final String P_STORE = "store";
+    /* nostore parameter */
+    //public static final String P_STORE = "store";
 
     /** verbosity parameter */
     public static final String P_VERBOSITY = "verbosity";
@@ -290,16 +290,16 @@ public class Evolve
         int x;
 
         // 1. create the output
-        store = parameters.getBoolean(new Parameter(P_STORE),null,false);
+//        store = parameters.getBoolean(new Parameter(P_STORE),null,false);
 
         verbosity = parameters.getInt(new Parameter(P_VERBOSITY),null,0);
         if (verbosity<0)
             Output.initialError("Verbosity should be an integer >= 0.\n",
                                 new Parameter(P_VERBOSITY)); 
 
-        output = new Output(store,verbosity);
-        output.setFlush(
-            parameters.getBoolean(new Parameter(P_FLUSH),null,false));
+        output = new Output(true,verbosity);
+//        output.setFlush(
+//            parameters.getBoolean(new Parameter(P_FLUSH),null,false));
 
 
         // stdout is always log #0.  stderr is always log #1.
