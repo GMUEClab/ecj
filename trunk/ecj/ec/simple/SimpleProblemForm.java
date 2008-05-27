@@ -48,6 +48,4 @@ public interface SimpleProblemForm
                          final int threadnum,
                          final int log,
                          final int verbosity);
-
-    //public boolean canEvaluate();
     }
