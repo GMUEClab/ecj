@@ -158,7 +158,7 @@ public class Output implements Serializable
     public Output(boolean storeAnnouncementsInMemory, int _verbosity)
         {
         errors = false;
-	store = storeAnnouncementsInMemory;
+        store = storeAnnouncementsInMemory;
         verbosity = _verbosity;
         }
 
@@ -170,9 +170,9 @@ public class Output implements Serializable
     
     /* Returns the Output's flushing behavior. */
     public synchronized boolean getFlush()
-	{
-	return flush;
-	}
+        {
+        return flush;
+        }
     
     /** Sets whether the Output stores its announcements.*/
     public synchronized void setStore(boolean v)
@@ -182,9 +182,9 @@ public class Output implements Serializable
 
     /* Returns the Output's storing behavior. */
     public synchronized boolean getStore()
-	{
-	return store;
-	}
+        {
+        return store;
+        }
     
     /** Sets the Output object's general verbosity to <i>v</i>. */
     public synchronized void setVerbosity(int v)
@@ -657,42 +657,42 @@ public class Output implements Serializable
         // exit with a fatal error if the errors flag is set. 
         exitIfErrors();
         }
-	
+        
     /** Returns a compressing input stream using JZLib (http://www.jcraft.com/jzlib/).  If JZLib is not available on your system, this method will return null. */
     public static InputStream makeCompressingInputStream(InputStream in)
-	{
-	// to do this, we're going to use reflection.  But here's the equivalent code:
-	/*
-	return new com.jcraft.jzlib.ZInputStream(in);
-	*/
-	try
-	    {
-	    return (InputStream)(Class.forName("com.jcraft.jzlib.ZInputStream").getConstructor(new Class[] { InputStream.class } ).newInstance(new Object[] { in }));
-	    }
-	catch (Exception e) { return null; }  // failed, probably doesn't have JZLib on the system
-	}
+        {
+        // to do this, we're going to use reflection.  But here's the equivalent code:
+        /*
+          return new com.jcraft.jzlib.ZInputStream(in);
+        */
+        try
+            {
+            return (InputStream)(Class.forName("com.jcraft.jzlib.ZInputStream").getConstructor(new Class[] { InputStream.class } ).newInstance(new Object[] { in }));
+            }
+        catch (Exception e) { return null; }  // failed, probably doesn't have JZLib on the system
+        }
 
     /** Returns a compressing output stream using JZLib (http://www.jcraft.com/jzlib/).  If JZLib is not available on your system, this method will return null. */
     public static OutputStream makeCompressingOutputStream(OutputStream out)
-	{
-	// to do this, we're going to use reflection.  But here's the equivalent code:
-	/*
-	com.jcraft.jzlib.ZOutputStream stream = new com.jcraft.jzlib.ZOutputStream(out, com.jcraft.jzlib.JZlib.Z_BEST_SPEED);
-	stream.setFlushMode(com.jcraft.jzlib.JZlib.Z_SYNC_FLUSH);
-	return stream;
-	*/
-	try
-	    {
-	    Class outz = Class.forName("com.jcraft.jzlib.JZlib");
-	    int Z_BEST_SPEED = outz.getField("Z_BEST_SPEED").getInt(null);
-	    int Z_SYNC_FLUSH = outz.getField("Z_SYNC_FLUSH").getInt(null);
-	    
-	    Class outc = Class.forName("com.jcraft.jzlib.ZOutputStream");
-	    Object outi = outc.getConstructor(new Class[] { OutputStream.class, Integer.TYPE }).newInstance(new Object[] { out, new Integer(Z_BEST_SPEED) });
-	    outc.getMethod("setFlushMode", new Class[] { Integer.TYPE }).invoke(outi, new Object[] { new Integer(Z_SYNC_FLUSH) });
-	    return (OutputStream) outi;
-	    }
-	catch (Exception e) { return null; } // failed, probably doesn't have JZLib on the system
-	}
+        {
+        // to do this, we're going to use reflection.  But here's the equivalent code:
+        /*
+          com.jcraft.jzlib.ZOutputStream stream = new com.jcraft.jzlib.ZOutputStream(out, com.jcraft.jzlib.JZlib.Z_BEST_SPEED);
+          stream.setFlushMode(com.jcraft.jzlib.JZlib.Z_SYNC_FLUSH);
+          return stream;
+        */
+        try
+            {
+            Class outz = Class.forName("com.jcraft.jzlib.JZlib");
+            int Z_BEST_SPEED = outz.getField("Z_BEST_SPEED").getInt(null);
+            int Z_SYNC_FLUSH = outz.getField("Z_SYNC_FLUSH").getInt(null);
+            
+            Class outc = Class.forName("com.jcraft.jzlib.ZOutputStream");
+            Object outi = outc.getConstructor(new Class[] { OutputStream.class, Integer.TYPE }).newInstance(new Object[] { out, new Integer(Z_BEST_SPEED) });
+            outc.getMethod("setFlushMode", new Class[] { Integer.TYPE }).invoke(outi, new Object[] { new Integer(Z_SYNC_FLUSH) });
+            return (OutputStream) outi;
+            }
+        catch (Exception e) { return null; } // failed, probably doesn't have JZLib on the system
+        }
 
     }

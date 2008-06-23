@@ -108,7 +108,7 @@ import ec.util.*;
  <tr><td valign=top><tt>flush</tt><br>
  <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
  <td valign=top>(should I flush all output as soon as it's printed (useful for debugging when an exception occurs))</td></tr>
--->
+ -->
 
  <tr><td valign=top><tt>verbosity</tt><br>
  <font size=-1>int &gt;= 0</font></td>
@@ -189,7 +189,7 @@ public class Slave
     // public static final String P_FLUSH = "flush";
         
     /* nostore parameter */
-   // public static final String P_STORE = "store";
+    // public static final String P_STORE = "store";
         
     /** verbosity parameter */
     public static final String P_VERBOSITY = "verbosity";
@@ -321,11 +321,11 @@ public class Slave
                           tmpIn = new CompressingInputStream(tmpIn);
                           tmpOut = new CompressingOutputStream(tmpOut);
                         */
-			tmpIn = Output.makeCompressingInputStream(tmpIn);
-			tmpOut = Output.makeCompressingOutputStream(tmpOut);
-			if (tmpIn == null || tmpOut == null)
-			    Output.initialError("You do not appear to have JZLib installed on your system, and so must set eval.compression=false.  " +
-				"To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/");
+                        tmpIn = Output.makeCompressingInputStream(tmpIn);
+                        tmpOut = Output.makeCompressingOutputStream(tmpOut);
+                        if (tmpIn == null || tmpOut == null)
+                            Output.initialError("You do not appear to have JZLib installed on your system, and so must set eval.compression=false.  " +
+                                                "To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/");
                         }
                                                 
                     dataIn = new DataInputStream(tmpIn);
