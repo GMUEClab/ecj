@@ -45,7 +45,7 @@ public class SimpleEvolutionState extends EvolutionState
      * 
      */
     public void startFresh() 
-	{
+        {
         output.message("Setting up");
         setup(this,null);  // a garbage Parameter
 
@@ -60,7 +60,7 @@ public class SimpleEvolutionState extends EvolutionState
         // an attempt is made to connect to island models etc.
         exchanger.initializeContacts(this);
         evaluator.initializeContacts(this);
-    }
+        }
 
     /**
      * @return

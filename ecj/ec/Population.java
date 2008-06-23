@@ -47,7 +47,7 @@ import java.io.*;
  <tr><td valign=top><i>base.</i><tt>default-subpop</tt><br>
  <font size=-1>classname, inherits or = ec.Subpopulation</font></td>
  <td valign=top>(the class for subpopulation #<i>n</i> if it wasn't specified with <i>base.</i><tt>subpop</tt><i>.n</i>.  
-		Don't use this except in unusual circumstances.  The parameter base is still <i>base.</i><tt>subpop</tt><i>.n</i>.</td></tr>
+ Don't use this except in unusual circumstances.  The parameter base is still <i>base.</i><tt>subpop</tt><i>.n</i>.</td></tr>
  </table>
 
  <p><b>Parameter bases</b><br>
@@ -107,16 +107,16 @@ public class Population implements Group
         for (int x=0;x<size;x++)
             {
             p = base.push(P_SUBPOP).push(""+x);
-	    if (!state.parameters.exists(p,null))
-		{
-		p = base.push(P_DEFAULT_SUBPOP);
-		if (state.parameters.exists(p, null))
-		    {
-		    state.output.warning("Class for subpopulation " + x + " not specified, using provided default: " + state.parameters.getString(p, null));
-		    }
-		// else an error will occur on the next line anyway.
-		}
-	    subpops[x] = (Subpopulation)(state.parameters.getInstanceForParameterEq(p,null,Subpopulation.class));  // Subpopulation.class is fine
+            if (!state.parameters.exists(p,null))
+                {
+                p = base.push(P_DEFAULT_SUBPOP);
+                if (state.parameters.exists(p, null))
+                    {
+                    state.output.warning("Class for subpopulation " + x + " not specified, using provided default: " + state.parameters.getString(p, null));
+                    }
+                // else an error will occur on the next line anyway.
+                }
+            subpops[x] = (Subpopulation)(state.parameters.getInstanceForParameterEq(p,null,Subpopulation.class));  // Subpopulation.class is fine
             subpops[x].setup(state,p);
             }
         }

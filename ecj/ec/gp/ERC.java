@@ -112,7 +112,7 @@ public abstract class ERC extends GPNode
         simple, short name which distinguishes this class from other ERC
         function classes you're using.  If you have only one ERC function
         class, you can just return "" (this is what name() returns by default).
-	Whatever the name is, it should
+        Whatever the name is, it should
         generally only have letters, numbers, or hyphens or underscores in it.
         No whitespace or other characters. */
     public String name() { return ""; }
@@ -136,8 +136,8 @@ public abstract class ERC extends GPNode
 
     /** Implement this to hash ERCs, along with other nodes, in such a way that two
         "equal" ERCs will usually hash to the same value. The default value, which 
-	may not be very good, is a combination of the class hash code and the hash
-	code of the string returned by encode().  You might make a better hash value. */
+        may not be very good, is a combination of the class hash code and the hash
+        code of the string returned by encode().  You might make a better hash value. */
     public int nodeHashCode() { return super.nodeHashCode() ^ encode().hashCode(); }
 
     /** You might want to override this to return a special human-readable version of the erc value; otherwise this defaults to toString();  This should be something that resembles a LISP atom.  If a simple number or other object won't suffice, you might use something that begins with ERC_PREFIX + name() + [ + ... + ] */
@@ -157,9 +157,9 @@ public abstract class ERC extends GPNode
         you should make sure that the position and data in the dret are exactly
         as they were originally. */
     public boolean decode(final DecodeReturn dret)
-	{
-	return false;
-	}
+        {
+        return false;
+        }
 
     /** Mutates the node's "value".  This is called by mutating operators
         which specifically <i>mutate</i> the "value" of ERCs, as opposed to 
