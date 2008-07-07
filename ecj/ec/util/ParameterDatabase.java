@@ -684,8 +684,27 @@ public class ParameterDatabase extends Properties implements Serializable
             return Integer.parseInt(string.substring(1), 16);
             } 
         else
-            // it's decimal
-            return Integer.parseInt(string);
+            {
+	    try
+		{
+		// it's decimal
+		return Integer.parseInt(string);
+		}
+	    catch (NumberFormatException e)
+		{
+		// maybe it's a double ending in .0, which should be okay
+		try 
+		    {
+		    double d = Double.parseDouble(string);
+		    if (d == (int) d) return (int) d;  // looking fine
+		    else throw e;
+		    }
+		catch (NumberFormatException e2)
+		    {
+		    throw e;
+		    }
+		}
+	    }
         }
 
     /**
@@ -704,8 +723,27 @@ public class ParameterDatabase extends Properties implements Serializable
             return Long.parseLong(string.substring(1), 16);
             } 
         else
-            // it's decimal
-            return Long.parseLong(string);
+	    { 
+	    try
+		{
+		// it's decimal
+		return Long.parseLong(string);
+		}
+	    catch (NumberFormatException e)
+		{
+		// maybe it's a double ending in .0, which should be okay
+		try 
+		    {
+		    double d = Double.parseDouble(string);
+		    if (d == (long) d) return (long) d;  // looking fine
+		    else throw e;
+		    }
+		catch (NumberFormatException e2)
+		    {
+		    throw e;
+		    }
+		}
+	    }
         }
 
     /**

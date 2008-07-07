@@ -1382,3 +1382,7 @@ Version		Change Log
 		the Output's behavior programatically.  This change was long
 		overdue: these two features just added complexity to an already too
 		complex parameter file. 
+
+19	Best. Prerelease. Ever.
+	Modified ParameterDatabase's parseInt and parseLong methods to allow double
+		values ending in .0 to serve as legal numbers.
