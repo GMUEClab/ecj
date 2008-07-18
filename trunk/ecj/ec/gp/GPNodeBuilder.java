@@ -266,11 +266,10 @@ public abstract class GPNodeBuilder implements Prototype
     protected void warnAboutNonTerminalWithType(GPType type, boolean fail, EvolutionState state)
         {
         // big explanation -- appears only once
-        state.output.warnOnce("A GPNodeBuilder has been requested at least once to generate a one-node tree with " +
+        state.output.warnOnce("A GPNodeBuilder has been requested at least once to generate a tree with " +
                               "a return value type-compatable with a certain type; but there is no NON-TERMINAL which is type-compatable " +
-                              "in this way.  As a result, the algorithm was forced to use a TERMINAL, making the tree larger than " +
-                              "requested, and exposing more child slots to fill, which if not carefully considered, could " +
-                              "recursively repeat this problem and eventually fill all memory.");
+                              "in this way.  As a result, the algorithm was forced to use a TERMINAL, making the tree smaller than " +
+                              "requested.");
                 
         // shorter explanation -- appears for each node builder and type combo
         if (fail)
