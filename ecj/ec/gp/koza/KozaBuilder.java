@@ -60,7 +60,7 @@ public abstract class KozaBuilder extends GPNodeBuilder
         if (maxDepth<=0)
             state.output.fatal("The Max Depth for a KozaBuilder must be at least 1.",
                                base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
-        
+        		
         minDepth = state.parameters.getInt(base.push(P_MINDEPTH),def.push(P_MINDEPTH),1);
         if (minDepth<=0)
             state.output.fatal("The Min Depth for a KozaBuilder must be at least 1.",

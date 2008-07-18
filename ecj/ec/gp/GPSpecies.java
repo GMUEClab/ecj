@@ -63,7 +63,7 @@ public class GPSpecies extends Species
 
         // Set the species to me
         newind.species = this;
-
+		
         // ...and we're ready!
         return newind;
         }
