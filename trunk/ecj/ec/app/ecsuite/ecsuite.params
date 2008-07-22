@@ -11,6 +11,7 @@ eval.problem.type = rastrigin
 # or kdj-f1, kdj-f2, kdj-f3, or kdj-f4		(the kdj-foo names
 # are just aliases for other problems, useful for people who might
 # know them as specific problems in the DeJong test suite)
+# ...or booth, griewangk
 #
 
 

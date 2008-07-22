@@ -1,0 +1,206 @@
+ECJ supports several bloat control techniques.  Many of these techniques
+are compared in detail in "A Comparison of bloat Control Methods for
+Genetic Programming" by Sean Luke and Liviu Panait.  In this directory
+we have implementations of several of them.
+
+There are several methods in the article which aren't here.  The two you
+should be aware of are BIASED MULTIOBJECTIVE, where we do multiobjective
+optimization with fitness as one objective and size as another; and
+plain-old LINEAR parsimony pressure, where the "fitness" F of an
+individual is actually his real fitness R and his size S, combined in a
+linear function, that is, F = A*R + S for some value of R.  We mention
+these two because, like many of the techniques below, they perform well
+over many different problem domains.  And importantly, LINEAR performed
+the best in our tests!  Closely followed by RATIO TOURNAMENT SELECTION
+(see below).  Double Tournament was pretty good too.  The problem with
+linear parsimony pressure is that it could need to be tuned carefully --
+though a setting of A = 32 seemed to work well in many problems.  Thus
+you may wish to try out doing a simple linear parsimony pressure before
+going to a more exotic method.  You can implement linear parsimony
+pressure in your evaluation function: compute the fitness, then call the
+size() method on the individual, then set the fitness of the individual
+to the linear combination of the two.
+
+Another technique commonly used to control bloat in GP is depth
+limiting.  ECJ implements depth limiting Koza-style with a maximum depth
+set to 17.  You can often get better results with a smaller depth limit. 
+Interestingly, when the depth limit is set to 17, you can use depth
+limiting in COMBINATION with ANY of the parsimony pressure techniques
+discussed here, (including linear and biased multiobjective) and the
+result is typically better than using them separately.
+
+
+
+DOUBLE TOURNAMENT
+
+Double tournament is a two-layer hierarchy of tournament selection
+operators. Some N tournament selections are performed on some criterion;
+and then the winners of those tournaments become contestants in a final
+tournament.  The winner of the final tournament becomes the selected
+individual.  You can have fitness as the first criterion and size as the
+second criterion, or the other way around.
+
+Here are good settings we've found for typical GP experiments.
+
+[BASE] = ec.parsimony.DoubleTournamentSelection
+# Do length as the initial tournaments, and fitness as the final tournament
+[BASE].do-length-first = true
+# The initial tournaments are of size 1.4
+[BASE].size = 1.4
+# The final tournament is of size 7
+[BASE].size2 = 7
+
+The default base is
+	select.double-tournament
+
+
+PROPORTIONAL TOURNAMENT
+
+Proportional tournament is a single tournament selection; but some
+percentage of the time the tournament is according to size rather than
+according to fitness.
+
+Here are good settings we've found for typical GP experiments.
+
+[BASE] = ec.parsimony.ProportionalTournamentSelection
+# The size of the tournament
+[BASE].size = 7
+# The probability that the tournament is by fitness (1.0 is equivalent
+# to "regular" tournament selection).
+[BASE].fitness-prob = 0.8
+
+The default base is
+	select.proportional-tournament
+
+
+
+LEXICOGRAPHIC TOURNAMENT
+
+Lexicographic tournament selection is simple.  We do a tournament
+selection by fitness, breaking ties by choosing the smaller individual. 
+Thus size is a secondary consideration: for example, if all your fitness
+values are likely to be different, then size will never have an effect. 
+Thus plain lexicographic tournament selection works best when there are
+a limited number of possible fitness values.
+
+Lexicographic tournament has no special settings -- it's basically the
+same as plain tournament selection.  Here's how we'd set it up for GP
+problems:
+
+[BASE] = ec.parsimony.LexicographicTournament
+# The size of the tournament
+[BASE].size = 7
+
+The default base is
+	select.lexicographic-tournament
+
+
+
+[DIRECT] BUCKETED TOURNAMENT SELECTION
+
+Bucketed tournament selection is an improvement of sorts over plain
+Lexicographic tournament selection.  The idea is to create an artificial
+equivalency of fitness values, even when none exists in reality, for
+purposes of lexicographic selection.  This allows size to become a
+significant factor.  to create a set of N buckets.  The population, of
+size S, is then sorted and divided into these buckets.  It's not divided
+quite equally.  Instead, the bottom S/N individuals are placed in the
+first bucket.  Then any individuals left in the population whose fitness
+equals the fittest individual in that bucket are *also* put in that
+bucket.  Then the bottom S/N of the remaining individuals in the
+population are put in the second bucket, plus any individuals whose
+fitness equals the fittest individual in the second bucket. And so on. 
+This continues until we've run out of individuals to put into buckets. 
+The idea is to make sure that individuals with the same fitness are all
+placed into the same bucket.  The "fitness" of an individual, for
+purposes of lexicographic selection, is now his bucket number.
+
+We did not find a direct bucketing number-of-buckets parameter which was
+good across several problem domains.  We found 100 was good for
+artificial ant, 250 for 11-bit Multiplexer and 5-bit Parity, and 25 for
+Symbolic Regression.  You'll need to experiment a bit.  Here's the
+settings for Multiplexer:
+
+[BASE] = ec.parsimony.BucketTournamentSelection
+# The size of the tournament
+[BASE].size = 7
+# The number of buckets
+[BASE].num-buckets = 250
+
+The default base is
+	select.bucket-tournament
+
+
+
+RATIO BUCKETED TOURNAMENT SELECTION
+
+Ratio Bucketing improves a bit over direct bucketing.  Here, the idea is
+to push low-fitness individuals in to large buckets and place
+high-fitness individuals into smaller buckets, even as small as the
+individual itself.  This allows more fitness-based distinction among the
+"important" individuals in the search (the fitter ones) and puts more
+parsimony pressure in the "less important" individuals.  We do this by
+defining a ratio of remaining individuals in the population to put in
+the next bucket.  Let's say this ratio is 1/R.  We put the 1/R worst
+individuals of the population in lowest bucket, plus all remaining
+individuals in the population whose fitness is equal to the fittest
+individual in the bucket.  We then put the 1/4 next worst remaining
+individuals in the next bucket, plus all remaining individuals in the
+population whose fitness is equal to the fittest individual in the
+second bucket.  And so on, until all individuals have been placed into
+buckets.  The "fitness" of an individual, for purposes of lexicographic
+selection, is now his bucket number.
+
+Like direct bucketing, we did not find a value of R which was good
+across several problem domains.  2 was good for artificial ant, 11-bit
+mutiplexer, and regression.  but 6 ws good for 5-bit parity.  So you'll
+need to experiment.  Here's the settings for Multiplexer:
+
+[BASE] = ec.parsimony.RatioBucketTournamentSelection
+# The size of the tournament
+[BASE].size = 7
+# The number of buckets
+[BASE].ratio = 2
+
+The default base is
+        select.ratio-bucket-tournament
+
+
+
+TARPEIAN SELECTION
+
+Tarpeian is fairly simple but clever.  PRIOR to evaluation, we sort the
+population by size, then identify the M individuals which have
+above-average size. From those M individuals we "kill" some N percent. 
+Notice that M may vary from population to population depending on the
+variance of size among the individuals.
+
+By "kill" we mean that we set the fitness of those individuals to a very
+bad value, and also mark them as evaluated so the Evaluator doesn't
+bother evaluating them.
+
+Not evaluating the individuals is really important: if every individual
+is evaluated, Tarpeian is actually pretty costly compared to other
+methods.  But if we prematurely "kill" the individuals, then Tarpeian is
+pretty competitive if you count total number of evaluations.
+
+Because Tarpeian must do its work prior to evaluation, it can't operate
+as a selection operator in ECJ's framework.  Instead, we've arranged for
+Tarpeian to be a Statistics subclass which plugs into the
+preEvaluationStatistics hook.  To use it, you just hang it off of your
+statistics chain.  Assuming you only have one existing Statistics
+object, here's how you'd add Tarpeian in a manner which has proven good
+across several problem domains:
+
+stat.num-children = 1
+stat.child.0 = ec.parsimony.TarpeianStatistics
+stat.child.0.kill-proportion = 0.3
+
+Note that our implementation of Tarpeian will operate over *all* of your
+subpopuations, even if you don't want that.  You may need to hack it to
+operate differently if you have more than one subpopulation and don't
+want Tarpeian parsimony on one or more of them.
+
+
+
+
