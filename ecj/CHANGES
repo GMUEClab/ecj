@@ -1386,3 +1386,4 @@ Version		Change Log
 19	Best. Prerelease. Ever.
 	Modified ParameterDatabase's parseInt and parseLong methods to allow double
 		values ending in .0 to serve as legal numbers.
+	Added Keith Sullivan to the contributors list
