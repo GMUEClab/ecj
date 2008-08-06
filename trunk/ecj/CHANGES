@@ -1387,3 +1387,4 @@ Version		Change Log
 	Modified ParameterDatabase's parseInt and parseLong methods to allow double
 		values ending in .0 to serve as legal numbers.
 	Added Keith Sullivan to the contributors list
+	Added GraphViz output to GP trees
