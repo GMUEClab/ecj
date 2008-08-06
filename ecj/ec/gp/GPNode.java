@@ -831,6 +831,29 @@ public abstract class GPNode implements GPNodeParent, Prototype
         else return toString();
         }
 
+    /** Produces the Graphviz code for a Graphviz tree of the subtree rooted at this node.
+	For this to work, the output of toString() must not contain a double-quote. */
+    public String makeGraphvizTree()
+	{
+	return "digraph g {\nnode [shape=rectangle];\n" + makeGraphvizSubtree("n") + "}\n";
+	}
+    
+    /** Produces the inner code for a graphviz subtree.  Called from makeGraphvizTree(). */
+    protected String makeGraphvizSubtree(String prefix)
+	{
+	String body = prefix + "[label = \"" + toString() + "\"];\n";
+	for(int x = 0; x < children.length; x++)
+	    {
+	    String newprefix;
+	    if (x < 10) newprefix = prefix + x;
+	    else newprefix = prefix + "n" + x;  // to distinguish it
+	    
+	    body = body + children[x].makeGraphvizSubtree(newprefix);
+	    body = body + prefix + " -> " + newprefix + ";\n";
+	    }
+	return body;
+	}
+
     /** Produces the LaTeX code for a LaTeX tree of the subtree rooted at this node, using the <tt>epic</tt>
         and <tt>fancybox</tt> packages, as described in sections 10.5.2 (page 307) 
         and 10.1.3 (page 278) of <i>The LaTeX Companion</i>, respectively.  For this to

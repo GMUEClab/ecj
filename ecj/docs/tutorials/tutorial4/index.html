@@ -630,6 +630,10 @@ two children are printed as if the node was an operator (+, *, etc.), and nodes 
 
 <p>We prefer a Lisp style, but this might be easier for you to read.  To do this, you can run the command like this:  <b>java ec.Evolve -file tutorial4.params -p gp.tree.c=true</b>
 
+<h3>Print out the trees in Graphviz</h3>
+
+<p><a href="http://www.research.att.com/sw/tools/graphviz/">Graphviz</a> is a graph-layout language and renderer developed by AT&amp;T.  ECJ can generate trees that Graphviz renders quite nicely to PDF and other formats for inclusion in documents as well.  To do this, you can run the command like this:  <b>java ec.Evolve -file tutorial4.params -p gp.tree.graphviz=true</b>
+
 <h3>Try some Elitism</h3>
 
 Let's add two more gizmos.  First, we'll make the model elitist, which in this case wil be keeping the two best individuals in the subpopulation 0 of the population (you can specify different elitism values for each subpopulation).  Second, we'll change the statistics from the default <a href="../../classdocs/ec/gp/koza/KozaStatistics.html">KozaStatistics</a> to the line-by-line data format of <a href="../../classdocs/ec/gp/koza/KozaShortStatistics.html">KozaShortStatistics</a>.  We can change both on the command line.  <a href="../../classdocs/ec/simple/SimpleBreeder.html">SimpleBreeder</a> has an elitist feature.  Run the system as <b>java ec.Evolve -file tutorial4.params -p breed.elite.0=2 -p stat=ec.gp.koza.KozaShortStatistics -p stat.gather-full=true</b>
