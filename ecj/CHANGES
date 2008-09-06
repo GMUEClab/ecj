@@ -1388,3 +1388,6 @@ Version		Change Log
 		values ending in .0 to serve as legal numbers.
 	Added Keith Sullivan to the contributors list
 	Added GraphViz output to GP trees
+	Bug fix in mixed-up warning messages in GPNodeBuilder
+	Fixed Tutorial3 to reflect new population writing format.  Thanks to
+		Myron Tuttle <myrongt@gmail.com>
