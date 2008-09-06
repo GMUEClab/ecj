@@ -382,15 +382,23 @@ it's threadsafe.
             Output.V_NO_GENERAL, popLog);
 </pre></tt>
 
-<p>Now we print out all the individuals.  Individuals have a method called <b>printIndividual</b> which dumps them to a log in <i>both computer- and approximately-human-readable format</i>.  If you want to print an individual to log in solely <i>human-readable format</i>, use <b>printIndividualForHumans</b>.
+<p>Now we print out all the individuals.  There are various ways to do this:
 
-<p>One confusing bit about <b>printIndividual</b> and <b>printIndividualForHumans</b> is that their log and verbosity arguments are reversed from <b>println</b>.  It's a historical stupidity, and I'm sorry about that.
+<ul>
+<li>In a computer-readable format (<b>writeIndividual</b>) written to DataOutput
+<li>In a computer- and human-readable format (<b>printIndividual</b>) written to a log or to a Writer
+<li>In a human-readable format (<b>printIndividualForHumans</b>) written to a log or to a Writer
+</ul>
+
+<p>Likwise, Subpopulations have <b>writeSubpopulation, printSubpopulation,</b>, and <b>printSubpopulationForHumans</b>.  And Population has <b>writePopulation, printPopulation,</b>, and <b>printPopulationForHumans</b>.
+
+<p>Our choice will be to do <b>Population.printPopulation</b>.
+
+<p>One confusing bit about <b>printIndividual</b> and <b>printIndividualForHumans</b> (and their Subpopulation and Population counterparts) is that their log and verbosity arguments are reversed from <b>println</b>.  It's a historical stupidity, and I'm sorry about that.
 
 <tt><pre>
         <font color=gray>// print out the population </font>
-        for(int x=0;x&lt;state.population.subpops.length;x++)
-            for(int y=0;y&lt;state.population.subpops[x].individuals.length;y++)
-                state.population.subpops[x].individuals[y].printIndividual(state,popLog,Output.V_NO_GENERAL);
+        state.population.printPopulation(state,popLog,Output.V_NO_GENERAL);
 </pre></tt>
 
 <p>Now let's print out the individual whose genome #3 is highest to infoLog.  We'll print that one out in a human-readable fashion, so we use <b>printIndividualForHumans</b>.
@@ -469,23 +477,33 @@ GENERATION 5
 -----------------------
 </pre></tt>
 
-<p>Save this cut-out section as a separate file called <b>pop.in</b>.  Here's the first individual:
+<p>Save this cut-out section as a separate file called <b>pop.in</b>.  The text begins like this:
 
 <tt><pre>
-Evaluated: true
-Fitness: f909358974|2.6779885E-6|
-i5|d-4606155858520324594|-4.911768686944482|d-4611122232166470172|-2.250371395135277|
-d-4603400987177135530|-7.358585963015306|d4602931922300395390|0.5281000920031003|
-d-4610532014993728050|-2.5124804730182637|
+Number of Subpopulations: i1|
+Subpopulation Number: i0|
+Number of Individuals: i105|
 </pre></tt>
 
-<p>What the heck is this?  It's not so bad really.  The first line indicates if the individual has been evaluated already or not (and thus whether or not it should be reevaluated).  The second line is the individual's Fitness class printing out fitness information.  The remaining lines are the genome.
+<p>This says that there is just one subpopulation (#0), and then we begin printing out Subpopulation #0.  Subpopulation #0 has 105 individuals.  For more on the odd encoding, continue reading below.
 
-<p>Many ECJ individuals use the <a href="../../classdocs/ec/util/Code.html">ec.util.Code</a> class to assist in writing numbers which are human-readable but can be read-back in identically to their original form.  <b>Code</b> writes out doubles with the form <b>d<i>encoded-number</i>|<i>human-number</i>|</b>  The encoded number is a binary representation of the double.  The human number is a human-readable version of the double.  Floats are printed similarly, but begin with an <b>f</b>.  Integers are written with the form <b>i<i>number</i>|</b>.  Booleans are written with <b>true</b> or <b>false</b>.
+<p>Here's the first individual:
+
+<tt><pre>
+Individual Number: i0|
+Evaluated: T
+Fitness: f996559373|0.0035139353|
+i5|d4607711235938838268|1.1174209926670633|d4597051221158411824|0.2188027777815349|d-4619613310710717464|-0.61989375
+84114192|d4600909262312563198|0.4017698615275832|d-4616408697680017888|-0.9756772755810665|
+</pre></tt>
+
+<p>The first line says that this is individual #0 in the subpopulation.  The second line indicates that the individual has been evaluated already (and thus doesn't need to be reevaluated).  The third line is the individual's Fitness class printing out fitness information.  The remaining lines are the genome.
+
+<p>What the heck is this encoding?  Many ECJ individuals use the <a href="../../classdocs/ec/util/Code.html">ec.util.Code</a> class to assist in writing numbers which are human-readable but can be read-back in identically to their original form.  <b>Code</b> writes out doubles with the form <b>d<i>encoded-number</i>|<i>human-number</i>|</b>  The encoded number is a binary representation of the double.  The human number is a human-readable version of the double.  Floats are printed similarly, but begin with an <b>f</b>.  Integers are written with the form <b>i<i>number</i>|</b>.  Booleans are written with <b>T</b> or <b>F</b>.
 
 <p>Subpopulations load from files with a special parameter specifying that they are to use a file rather than creating individuals randomly during initialization.  We can specify this parameter at the command line:  <b>java ec.Evolve -file tutorial3.params -p pop.subpop.0.file=pop.in</b>
 
-<p>Keep in mind that sometimes ECJ will output individuals in human-readable format and sometimes in computer-readable (and barely-human-readable) format.  But ECJ will <i>only</i> read in individuals if they are in the second format.
+<p>Keep in mind that sometimes ECJ will output individuals in computer-readable, human-readable format and computer/human-readable format.  But ECJ will (by default) <i>only</i> read in individuals if they are in the third format.  Use <b>printPopulation</b> to create populations to read in next time.
 
 <h3>
 Where's the 1/5 Rule?

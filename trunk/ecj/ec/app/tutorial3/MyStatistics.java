@@ -65,9 +65,7 @@ public class MyStatistics extends Statistics
                              Output.V_NO_GENERAL, popLog);
 
         // print out the population 
-        for(int x=0;x<state.population.subpops.length;x++)
-            for(int y=0;y<state.population.subpops[x].individuals.length;y++)
-                state.population.subpops[x].individuals[y].printIndividual(state,popLog,Output.V_NO_GENERAL);
+        state.population.printPopulation(state,popLog,Output.V_NO_GENERAL);
 
         // print out best genome #3 individual in subpop 0
         int best = 0;
