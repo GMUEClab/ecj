@@ -171,11 +171,11 @@ public abstract class Individual implements Prototype
     */
 
     public void printIndividualForHumans(final EvolutionState state,
-                                         final int log, 
-                                         final int verbosity)
+        final int log, 
+        final int verbosity)
         {
         state.output.println(EVALUATED_PREAMBLE + Code.encode(evaluated), 
-                             verbosity, log);
+            verbosity, log);
         fitness.printFitnessForHumans(state,log,verbosity);
         state.output.println( genotypeToStringForHumans(), verbosity, log );
         }
@@ -192,11 +192,11 @@ public abstract class Individual implements Prototype
     */
 
     public void printIndividual(final EvolutionState state,
-                                final int log, 
-                                final int verbosity)
+        final int log, 
+        final int verbosity)
         {
         state.output.println(EVALUATED_PREAMBLE + Code.encode(evaluated), 
-                             verbosity, log);
+            verbosity, log);
         fitness.printFitness(state,log,verbosity);
         state.output.println( genotypeToString(), verbosity, log );
         }
@@ -215,7 +215,7 @@ public abstract class Individual implements Prototype
     */
 
     public void printIndividual(final EvolutionState state,
-                                final PrintWriter writer)
+        final PrintWriter writer)
         {
         writer.println(EVALUATED_PREAMBLE + Code.encode(evaluated));
         fitness.printFitness(state,writer);
@@ -233,7 +233,7 @@ public abstract class Individual implements Prototype
         though it is rare to need to -- instead you could just override parseGenotype(). */ 
 
     public void readIndividual(final EvolutionState state, 
-                               final LineNumberReader reader)
+        final LineNumberReader reader)
         throws IOException
         {
         evaluated = Code.readBooleanWithPreamble(EVALUATED_PREAMBLE, state, reader);
@@ -251,7 +251,7 @@ public abstract class Individual implements Prototype
         exits the program with an "unimplemented" error.  You'll want to override this method,
         or to override readIndividual(...) to not use this method. */
     protected void parseGenotype(final EvolutionState state,
-                                 final LineNumberReader reader) throws IOException
+        final LineNumberReader reader) throws IOException
         {
         state.output.fatal("parseGenotype(EvolutionState, LineNumberReader) not implemented in " + this.getClass());
         }
@@ -264,7 +264,7 @@ public abstract class Individual implements Prototype
         though it is rare to need to -- instead you could just override writeGenotype(). 
     */
     public void writeIndividual(final EvolutionState state,
-                                final DataOutput dataOutput) throws IOException
+        final DataOutput dataOutput) throws IOException
         {
         dataOutput.writeBoolean(evaluated);
         fitness.writeFitness(state,dataOutput);
@@ -284,7 +284,7 @@ public abstract class Individual implements Prototype
         * </tt></pre>
         */ 
     public void writeGenotype(final EvolutionState state,
-                              final DataOutput dataOutput) throws IOException
+        final DataOutput dataOutput) throws IOException
         {
         state.output.fatal("writeGenotype(EvolutionState, DataOutput) not implemented in " + this.getClass());
         }
@@ -306,7 +306,7 @@ public abstract class Individual implements Prototype
         */
 
     public void readGenotype(final EvolutionState state,
-                             final DataInput dataInput) throws IOException
+        final DataInput dataInput) throws IOException
         {
         state.output.fatal("readGenotype(EvolutionState, DataOutput) not implemented in " + this.getClass());
         }
@@ -324,7 +324,7 @@ public abstract class Individual implements Prototype
         just override readGenotype().
     */
     public void readIndividual(final EvolutionState state,
-                               final DataInput dataInput) throws IOException
+        final DataInput dataInput) throws IOException
         {
         evaluated = dataInput.readBoolean();
         fitness.readFitness(state,dataInput);

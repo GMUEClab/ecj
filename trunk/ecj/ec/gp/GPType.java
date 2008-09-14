@@ -150,7 +150,7 @@ public abstract class GPType implements Clique
         name = state.parameters.getString(base.push(P_NAME),null);
         if (name==null)
             state.output.fatal("No name was given for this GP type.",
-                               base.push(P_NAME));
+                base.push(P_NAME));
 
         // Register me
         GPType old_type = (GPType)(((GPInitializer)state.initializer).typeRepository.put(name,this));
@@ -163,7 +163,7 @@ public abstract class GPType implements Clique
         several times, you call state.output.exitIfErrors() once. */
 
     public static GPType typeFor(final String typeName,
-                                 final EvolutionState state)
+        final EvolutionState state)
         {
         GPType myType = (GPType)(((GPInitializer)state.initializer).typeRepository.get(typeName));
         if (myType==null)

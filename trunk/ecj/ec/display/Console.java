@@ -194,9 +194,9 @@ public class Console extends JFrame
                                 currentJob = 0;
                                 spawnPlayThread(false);
                                 } else 
-                                    {
-                                    resumePlayThread();
-                                    }
+                                {
+                                resumePlayThread();
+                                }
                             playButton.setEnabled(false);
                             stepButton.setEnabled(false);
                             pauseButton.setEnabled(true);
@@ -669,7 +669,7 @@ public class Console extends JFrame
                         b.add(j);
 
                         j = new JLabel("For help, send mail to " + Version.authorEmail0 + "@" + 
-                                       Version.authorEmail1);
+                            Version.authorEmail1);
                         j.setFont(small);
                         b.add(j);
 
@@ -745,10 +745,10 @@ public class Console extends JFrame
             {
             Output.initialError("No parameter file was loaded");
             } else 
-                {
-                paramPanel.loadParameters();
-                conPanel.loadParameters();
-                }
+            {
+            paramPanel.loadParameters();
+            conPanel.loadParameters();
+            }
         }
     
     void restoreFromCheckpoint(File checkpoint) 
@@ -884,14 +884,14 @@ public class Console extends JFrame
                 int breedthreads = Evolve.determineThreads(output, parameters, new Parameter(Evolve.P_BREEDTHREADS));
                 int evalthreads = Evolve.determineThreads(output, parameters, new Parameter(Evolve.P_EVALTHREADS));
                 boolean auto = (Evolve.V_THREADS_AUTO.equalsIgnoreCase(parameters.getString(new Parameter(Evolve.P_BREEDTHREADS),null)) ||
-                                Evolve.V_THREADS_AUTO.equalsIgnoreCase(parameters.getString(new Parameter(Evolve.P_EVALTHREADS),null)));  // at least one thread is automatic.  Seeds may need to be dynamic.
+                    Evolve.V_THREADS_AUTO.equalsIgnoreCase(parameters.getString(new Parameter(Evolve.P_EVALTHREADS),null)));  // at least one thread is automatic.  Seeds may need to be dynamic.
 
                 // 3. create the Mersenne Twister random number generators,
                 // one per thread
                 MersenneTwisterFast[] random = new MersenneTwisterFast[breedthreads > evalthreads ? 
-                                                                       breedthreads : evalthreads];
+                    breedthreads : evalthreads];
                 int[] seeds = new int[breedthreads > evalthreads ? 
-                                      breedthreads : evalthreads];
+                    breedthreads : evalthreads];
                 
                 String seed_message = "Seed: ";
                 for (int x=0;x<random.length;x++)
@@ -1007,8 +1007,8 @@ public class Console extends JFrame
                         
                         result = EvolutionState.R_NOTDONE;
                         while (result == EvolutionState.R_NOTDONE &&
-                               !Thread.currentThread().isInterrupted() &&
-                               !isThreadToStop()) 
+                            !Thread.currentThread().isInterrupted() &&
+                            !isThreadToStop()) 
                             {
                             
                             try 
@@ -1079,7 +1079,7 @@ public class Console extends JFrame
         int verbosity = parameters.getInt(new Parameter(Evolve.P_VERBOSITY),null,0);
         if (verbosity<0)
             Output.initialError("Verbosity should be an integer >= 0.\n",
-                                new Parameter(Evolve.P_VERBOSITY)); 
+                new Parameter(Evolve.P_VERBOSITY)); 
         
         Output output = new Output(true,verbosity);
         //output.setFlush(

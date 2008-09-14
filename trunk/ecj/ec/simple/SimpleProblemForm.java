@@ -32,9 +32,9 @@ public interface SimpleProblemForm
     */
 
     public void evaluate(final EvolutionState state,
-                         final Individual ind,
-                         final int subpopulation,
-                         final int threadnum);
+        final Individual ind,
+        final int subpopulation,
+        final int threadnum);
 
     /** "Reevaluates" an individual,
         for the purpose of printing out
@@ -43,9 +43,9 @@ public interface SimpleProblemForm
         facts about the best individual in the population, for example. */
     
     public void describe(final Individual ind, 
-                         final EvolutionState state, 
-                         final int subpopulation,
-                         final int threadnum,
-                         final int log,
-                         final int verbosity);
+        final EvolutionState state, 
+        final int subpopulation,
+        final int threadnum,
+        final int log,
+        final int verbosity);
     }

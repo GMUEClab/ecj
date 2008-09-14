@@ -115,7 +115,7 @@ public abstract class Fitness implements Prototype
         resultant string.
     */
     public void printFitnessForHumans(EvolutionState state, int log, 
-                                      int verbosity)
+        int verbosity)
         {
         state.output.println( fitnessToStringForHumans(), verbosity, log);
         }
@@ -127,7 +127,7 @@ public abstract class Fitness implements Prototype
         resultant string.
     */
     public void printFitness(EvolutionState state, int log, 
-                             int verbosity)
+        int verbosity)
         {
         state.output.println( fitnessToString(), verbosity, log);
         }
@@ -139,7 +139,7 @@ public abstract class Fitness implements Prototype
         resultant string.
     */
     public void printFitness(final EvolutionState state,
-                             final PrintWriter writer)
+        final PrintWriter writer)
         {
         writer.println( fitnessToString() );
         }
@@ -148,7 +148,7 @@ public abstract class Fitness implements Prototype
         printFitnessForHumans(...).  The default version of this method
         exits the program with an "unimplemented" error. */ 
     public void readFitness(final EvolutionState state, 
-                            final LineNumberReader reader)
+        final LineNumberReader reader)
         throws IOException
         {
         state.output.fatal("readFitness(EvolutionState, DataOutput)  not implemented in " + this.getClass());
@@ -177,7 +177,7 @@ public abstract class Fitness implements Prototype
         The default version exits the program with an "unimplemented" error; you should override this.
     */
     public void writeFitness(final EvolutionState state,
-                             final DataOutput dataOutput) throws IOException
+        final DataOutput dataOutput) throws IOException
         {
         state.output.fatal("writeFitness(EvolutionState, DataOutput) not implemented in " + this.getClass());
         }
@@ -188,7 +188,7 @@ public abstract class Fitness implements Prototype
         The default version exits the program with an "unimplemented" error; you should override this.
     */
     public void readFitness(final EvolutionState state,
-                            final DataInput dataInput) throws IOException
+        final DataInput dataInput) throws IOException
         {
         state.output.fatal("readFitness(EvolutionState, DataOutput) not implemented in " + this.getClass());
         }

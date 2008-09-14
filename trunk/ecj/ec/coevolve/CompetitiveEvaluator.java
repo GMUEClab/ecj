@@ -173,8 +173,8 @@ public class CompetitiveEvaluator extends Evaluator
         else
             {
             state.output.fatal( "Incorrect value for parameter. Acceptable values: " +
-                                "single-elim-tournament, round-robin, rand-1-way, rand-2-ways" 
-                                /* + ", world-cup, double-elim-tournament"*/ , base.push( competeStyle ) );
+                "single-elim-tournament, round-robin, rand-1-way, rand-2-ways" 
+                /* + ", world-cup, double-elim-tournament"*/ , base.push( competeStyle ) );
             }
 
         if( style == STYLE_N_RANDOM_COMPETITORS_ONEWAY || style == STYLE_N_RANDOM_COMPETITORS_TWOWAY )
@@ -259,12 +259,12 @@ public class CompetitiveEvaluator extends Evaluator
                     state.evalthreads +
                     
                     (state.population.subpops[0].individuals.length -
-                     (state.population.subpops[0].individuals.length /
-                      state.evalthreads)
-                     *state.evalthreads);
+                        (state.population.subpops[0].individuals.length /
+                        state.evalthreads)
+                    *state.evalthreads);
             // figure from
             from[y] = (state.population.subpops[0].individuals.length/
-                       state.evalthreads) * y;
+                state.evalthreads) * y;
             }
         
         randomizeOrder( state, state.population.subpops[0].individuals );
@@ -301,9 +301,9 @@ public class CompetitiveEvaluator extends Evaluator
         }
     
     public void evalSingleElimination( final EvolutionState state,
-                                       final Individual[] individuals,
-                                       final int subpop,
-                                       final GroupedProblemForm prob )
+        final Individual[] individuals,
+        final int subpop,
+        final GroupedProblemForm prob )
         {
 
         // for a single-elimination tournament, the subpop[0] size must be 2^n for
@@ -469,9 +469,9 @@ public class CompetitiveEvaluator extends Evaluator
 */
 
     public void evalRoundRobin( final EvolutionState state,
-                                int[] from, int[] numinds,
-                                final Individual[] individuals, int subpop,
-                                final GroupedProblemForm prob )
+        int[] from, int[] numinds,
+        final Individual[] individuals, int subpop,
+        final GroupedProblemForm prob )
         {
         if (state.evalthreads==1)
             evalRoundRobinPopChunk(state,from[0],numinds[0],0,individuals, subpop, prob);
@@ -497,13 +497,13 @@ public class CompetitiveEvaluator extends Evaluator
             
             // gather the threads
             for (int y=0;y<state.evalthreads;y++) try
-                {
-                t[y].join();
-                }
-            catch(InterruptedException e)
-                {
-                state.output.fatal("Whoa! The main evaluation thread got interrupted!  Dying...");
-                }
+                                                      {
+                                                      t[y].join();
+                                                      }
+                catch(InterruptedException e)
+                    {
+                    state.output.fatal("Whoa! The main evaluation thread got interrupted!  Dying...");
+                    }
             }
         
         }
@@ -522,9 +522,9 @@ public class CompetitiveEvaluator extends Evaluator
      * @param prob
      */
     public void evalRoundRobinPopChunk(final EvolutionState state,
-                                       int from, int numinds, int threadnum, 
-                                       final Individual[] individuals, int subpop,
-                                       final GroupedProblemForm prob)
+        int from, int numinds, int threadnum, 
+        final Individual[] individuals, int subpop,
+        final GroupedProblemForm prob)
         {
         Individual[] competition = new Individual[2];
         int[] subpops = new int[] { subpop, subpop };
@@ -585,9 +585,9 @@ public class CompetitiveEvaluator extends Evaluator
 */
 
     public void evalNRandomOneWay( final EvolutionState state, 
-                                   int[] from, int[] numinds, 
-                                   final Individual[] individuals, int subpop, 
-                                   final GroupedProblemForm prob )
+        int[] from, int[] numinds, 
+        final Individual[] individuals, int subpop, 
+        final GroupedProblemForm prob )
         {
         if (state.evalthreads==1)
             evalNRandomOneWayPopChunk(state,from[0],numinds[0],0,individuals, subpop, prob);
@@ -613,21 +613,21 @@ public class CompetitiveEvaluator extends Evaluator
             
             // gather the threads
             for (int y=0;y<state.evalthreads;y++) try
-                {
-                t[y].join();
-                }
-            catch(InterruptedException e)
-                {
-                state.output.fatal("Whoa! The main evaluation thread got interrupted!  Dying...");
-                }
+                                                      {
+                                                      t[y].join();
+                                                      }
+                catch(InterruptedException e)
+                    {
+                    state.output.fatal("Whoa! The main evaluation thread got interrupted!  Dying...");
+                    }
             }
         }
     
     public void evalNRandomOneWayPopChunk( final EvolutionState state,
-                                           int from, int numinds, int threadnum,
-                                           final Individual[] individuals,
-                                           final int subpop,
-                                           final GroupedProblemForm prob )
+        int from, int numinds, int threadnum,
+        final Individual[] individuals,
+        final int subpop,
+        final GroupedProblemForm prob )
         {
         Individual[] queue = new Individual[individuals.length];
         int len = queue.length;
@@ -663,9 +663,9 @@ public class CompetitiveEvaluator extends Evaluator
         }
 
     public void evalNRandomTwoWay( final EvolutionState state,
-                                   int[] from, int[] numinds,
-                                   final Individual[] individuals, int subpop, 
-                                   final GroupedProblemForm prob )
+        int[] from, int[] numinds,
+        final Individual[] individuals, int subpop, 
+        final GroupedProblemForm prob )
         {
         if (state.evalthreads==1)
             evalNRandomTwoWayPopChunk(state,from[0],numinds[0],0,individuals, subpop, prob);
@@ -691,21 +691,21 @@ public class CompetitiveEvaluator extends Evaluator
             
             // gather the threads
             for (int y=0;y<state.evalthreads;y++) try
-                {
-                t[y].join();
-                }
-            catch(InterruptedException e)
-                {
-                state.output.fatal("Whoa! The main evaluation thread got interrupted!  Dying...");
-                }
+                                                      {
+                                                      t[y].join();
+                                                      }
+                catch(InterruptedException e)
+                    {
+                    state.output.fatal("Whoa! The main evaluation thread got interrupted!  Dying...");
+                    }
             }
         }
     
     public void evalNRandomTwoWayPopChunk( final EvolutionState state,
-                                           int from, int numinds, int threadnum,
-                                           final Individual[] individuals,
-                                           final int subpop,
-                                           final GroupedProblemForm prob )
+        int from, int numinds, int threadnum,
+        final Individual[] individuals,
+        final int subpop,
+        final GroupedProblemForm prob )
         {
 
         // the number of games played for each player

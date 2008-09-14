@@ -103,9 +103,9 @@ public class PTCFunctionSet extends GPFunctionSet implements PTCFunctionSetForm
         // set up our node probabilities.  Allow all zeros.
         for(int x=0;x<q_ty.length;x++)
             {
-			if (q_ty[x].length == 0) state.output.warning("Function Set " + name + " has no terminals for type number " + x + ".  This may cause problems for you.");
-			else RandomChoice.organizeDistribution(q_ty[x], true);
-			if (q_ny[x].length == 0) state.output.warning("Function Set " + name + " has no nonterminals for type number " + x + ".  This may cause problems for you.");
+            if (q_ty[x].length == 0) state.output.warning("Function Set " + name + " has no terminals for type number " + x + ".  This may cause problems for you.");
+            else RandomChoice.organizeDistribution(q_ty[x], true);
+            if (q_ny[x].length == 0) state.output.warning("Function Set " + name + " has no nonterminals for type number " + x + ".  This may cause problems for you.");
             else RandomChoice.organizeDistribution(q_ny[x], true);
             }
 

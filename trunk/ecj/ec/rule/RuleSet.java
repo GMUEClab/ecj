@@ -335,10 +335,10 @@ public class RuleSet implements Prototype
        Prints out the rule set in a readable fashion.
     */
     public void printRuleSetForHumans(final EvolutionState state, final int log,
-                                      final int verbosity)
+        final int verbosity)
         {
         state.output.println( "Ruleset contains " + numRules + " rules",
-                              verbosity, log );
+            verbosity, log );
         for( int i = 0 ; i < numRules ; i ++ )
             {
             state.output.println( "Rule " + i + ":", verbosity, log );
@@ -350,7 +350,7 @@ public class RuleSet implements Prototype
        Prints the rule set such that the computer can read it later
     */
     public void printRuleSet(final EvolutionState state,
-                             final int log, final int verbosity)
+        final int log, final int verbosity)
         {
         state.output.println(N_RULES + Code.encode(numRules), verbosity, log);
         for( int i = 0 ; i < numRules ; i ++ )
@@ -361,7 +361,7 @@ public class RuleSet implements Prototype
        Prints the rule set such that the computer can read it later
     */
     public void printRuleSet(final EvolutionState state,
-                             final PrintWriter writer)
+        final PrintWriter writer)
         {
         writer.println( N_RULES + Code.encode(numRules) );
         for( int i = 0 ; i < numRules ; i ++ )
@@ -372,7 +372,7 @@ public class RuleSet implements Prototype
        Reads the rule set
     */
     public void readRuleSet(final EvolutionState state,
-                            final LineNumberReader reader)
+        final LineNumberReader reader)
         throws IOException
         {
         numRules = Code.readIntegerWithPreamble(N_RULES, state, reader);
@@ -400,7 +400,7 @@ public class RuleSet implements Prototype
 
     /** Writes RuleSets out to a binary stream */
     public void writeRuleSet(final EvolutionState state,
-                             final DataOutput dataOutput) throws IOException
+        final DataOutput dataOutput) throws IOException
         {
         dataOutput.writeInt(numRules);
         for(int x=0;x<numRules;x++)
@@ -409,7 +409,7 @@ public class RuleSet implements Prototype
 
     /** Reads RuleSets in from a binary stream */
     public void readRuleSet(final EvolutionState state,
-                            final DataInput dataInput) throws IOException
+        final DataInput dataInput) throws IOException
         {
         int ruleCount = dataInput.readInt();
         if (rules==null || rules.length != ruleCount)
@@ -433,7 +433,7 @@ public class RuleSet implements Prototype
             base.push( P_CONSTRAINTS ),defaultBase().push(P_CONSTRAINTS));
         if (constraintname == null)
             state.output.fatal("No RuleSetConstraints name given",
-                               base.push( P_CONSTRAINTS ),defaultBase().push(P_CONSTRAINTS));
+                base.push( P_CONSTRAINTS ),defaultBase().push(P_CONSTRAINTS));
 
         constraints = RuleSetConstraints.constraintsFor(constraintname,state).constraintNumber;
         state.output.exitIfErrors();

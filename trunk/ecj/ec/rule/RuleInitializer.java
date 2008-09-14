@@ -80,7 +80,7 @@ public class RuleInitializer extends SimpleInitializer
         to a type by name. */
     
     public void setupConstraints(final EvolutionState state,
-                                 final Parameter base)
+        final Parameter base)
         {
         state.output.message("Processing Rule Constraints");
         
@@ -96,7 +96,7 @@ public class RuleInitializer extends SimpleInitializer
             // Figure the constraints class
             if (state.parameters.exists(base.push(""+y)))
                 c = (RuleConstraints)(state.parameters.getInstanceForParameterEq(
-                                          base.push(""+y),null,RuleConstraints.class));
+                        base.push(""+y),null,RuleConstraints.class));
             else
                 {
                 state.output.message("No Rule Constraints specified, assuming the default class: ec.rule.RuleConstraints for " + base.push(""+y));
@@ -117,7 +117,7 @@ public class RuleInitializer extends SimpleInitializer
         }
     
     public void setupRuleSetConstraints(final EvolutionState state,
-                                        final Parameter base)
+        final Parameter base)
         {
         state.output.message("Processing Ruleset Constraints");
         // How many RuleSetConstraints do we have?
@@ -132,7 +132,7 @@ public class RuleInitializer extends SimpleInitializer
             // Figure the RuleSetConstraints class
             if (state.parameters.exists(base.push(""+y)))
                 c = (RuleSetConstraints)(state.parameters.getInstanceForParameterEq(
-                                             base.push(""+y),null,RuleSetConstraints.class));
+                        base.push(""+y),null,RuleSetConstraints.class));
             else
                 {
                 state.output.message("No RuleSetConstraints specified, assuming the default class: ec.gp.RuleSetConstraints for " + base.push(""+y));

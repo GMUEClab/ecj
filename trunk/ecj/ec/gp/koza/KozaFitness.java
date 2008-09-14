@@ -147,7 +147,7 @@ public class KozaFitness extends Fitness
         }
             
     public final void readFitness(final EvolutionState state, 
-                                  final LineNumberReader reader)
+        final LineNumberReader reader)
         throws IOException
         {
         DecodeReturn d = Code.checkPreamble(FITNESS_PREAMBLE, state, reader);
@@ -156,26 +156,26 @@ public class KozaFitness extends Fitness
         Code.decode(d);
         if (d.type!=DecodeReturn.T_FLOAT)
             state.output.fatal("Reading Line " + d.lineNumber + ": " +
-                               "Bad Fitness.");
+                "Bad Fitness.");
         fitness = (float)d.d;
         
         // extract hits
         Code.decode(d);
         if (d.type!=DecodeReturn.T_INT)
             state.output.fatal("Reading Line " + d.lineNumber + ": " +
-                               "Bad Fitness.");
+                "Bad Fitness.");
         hits = (int)d.l;
         }
 
     public void writeFitness(final EvolutionState state,
-                             final DataOutput dataOutput) throws IOException
+        final DataOutput dataOutput) throws IOException
         {
         dataOutput.writeFloat(fitness);
         dataOutput.writeInt(hits);
         }
 
     public void readFitness(final EvolutionState state,
-                            final DataInput dataInput) throws IOException
+        final DataInput dataInput) throws IOException
         {
         fitness = dataInput.readFloat();
         hits = dataInput.readInt();

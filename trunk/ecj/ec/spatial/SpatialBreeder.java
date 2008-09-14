@@ -71,12 +71,12 @@ public class SpatialBreeder extends Breeder
                 // We need to ask the children to be created one at a time!
                 // This is because we need to set the index for each of them appropriately.
                 if( bp.produce( 1,  // minimum individuals to be produced
-                                1,  // maximum individuals to be produced
-                                x,  // index where they should be stored
-                                subpop, // the subpopulation the individuals belong to
-                                newpop.subpops[subpop].individuals, // where to store the individuals
-                                state,  // the evolution state
-                                0)  // the thread number
+                        1,  // maximum individuals to be produced
+                        x,  // index where they should be stored
+                        subpop, // the subpopulation the individuals belong to
+                        newpop.subpops[subpop].individuals, // where to store the individuals
+                        state,  // the evolution state
+                        0)  // the thread number
                     != 1 )
                     state.output.fatal( "The pipelines should produce one individual at a time!" );
                 }

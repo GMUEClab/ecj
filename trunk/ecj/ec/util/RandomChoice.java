@@ -174,7 +174,7 @@ public class RandomChoice
 
     /** Same as organizeDistribution(objs, chooser, <b>false</b>); */
     public static void organizeDistribution(final Object[] objs, 
-                                            final RandomChoiceChooser chooser)
+        final RandomChoiceChooser chooser)
         {
         organizeDistribution(objs,chooser, false);
         }
@@ -190,7 +190,7 @@ public class RandomChoice
         The probabilities are retrieved and set using chooser.*/
 
     public static void organizeDistribution(final Object[] objs, 
-                                            final RandomChoiceChooser chooser, final boolean allowAllZeros)
+        final RandomChoiceChooser chooser, final boolean allowAllZeros)
         {
         // first normalize
         double sum=0.0;
@@ -217,7 +217,7 @@ public class RandomChoice
 
         for(int x=0;x<objs.length;x++)
             chooser.setProbability(objs[x],
-                                   (float)(chooser.getProbability(objs[x]) / sum));
+                (float)(chooser.getProbability(objs[x]) / sum));
 
         // now sum
         sum=0.0;
@@ -239,7 +239,7 @@ public class RandomChoice
     
     /** Same as organizeDistribution(objs, chooser, <b>false</b>); */
     public static void organizeDistribution(final Object[] objs, 
-                                            final RandomChoiceChooserD chooser)
+        final RandomChoiceChooserD chooser)
         {
         organizeDistribution(objs,chooser, false);
         }
@@ -255,7 +255,7 @@ public class RandomChoice
         The probabilities are retrieved and set using chooser.*/
 
     public static void organizeDistribution(final Object[] objs, 
-                                            final RandomChoiceChooserD chooser, final boolean allowAllZeros)
+        final RandomChoiceChooserD chooser, final boolean allowAllZeros)
         {
         // first normalize
         double sum=0.0;
@@ -282,7 +282,7 @@ public class RandomChoice
 
         for(int x=0;x<objs.length;x++)
             chooser.setProbability(objs[x],
-                                   (double)(chooser.getProbability(objs[x]) / sum));
+                (double)(chooser.getProbability(objs[x]) / sum));
 
         // now sum
         sum=0.0;
@@ -332,7 +332,7 @@ public class RandomChoice
 
     // allows us to have zero-probability values
     private static final int exemptZeroes(final Object[] objs, 
-                                          final RandomChoiceChooser chooser, int index)
+        final RandomChoiceChooser chooser, int index)
         {
         //System.out.println(index);
         if (chooser.getProbability(objs[index])==0.0f) // I need to scan forward because I'm in a left-trail
@@ -348,7 +348,7 @@ public class RandomChoice
 
     // allows us to have zero-probability values
     private static final int exemptZeroes(final Object[] objs, 
-                                          final RandomChoiceChooserD chooser, int index)
+        final RandomChoiceChooserD chooser, int index)
         {
         //System.out.println(index);
         if (chooser.getProbability(objs[index])==0.0) // I need to scan forward because I'm in a left-trail
@@ -370,7 +370,7 @@ public class RandomChoice
         then a linear search is used, else a binary search is used. */
     
     public static int pickFromDistribution(final float[] probabilities,
-                                           final float prob, final int checkboundary)
+        final float prob, final int checkboundary)
         {
         if (prob<0.0f || prob>1.0f)
             throw new ArithmeticException("Invalid probability for pickFromDistribution (must be 0.0<=x<=1.0)");
@@ -421,7 +421,7 @@ public class RandomChoice
         then a linear search is used, else a binary search is used. */
     
     public static int pickFromDistribution(final double[] probabilities,
-                                           final double prob, final int checkboundary)
+        final double prob, final int checkboundary)
         {
         if (prob<0.0 || prob>1.0)
             throw new ArithmeticException("Invalid probability for pickFromDistribution (must be 0.0<=x<=1.0)");
@@ -474,8 +474,8 @@ public class RandomChoice
         then a linear search is used, else a binary search is used. */
     
     public static int pickFromDistribution(final Object[] objs, 
-                                           final RandomChoiceChooser chooser,
-                                           final float prob, final int checkboundary)
+        final RandomChoiceChooser chooser,
+        final float prob, final int checkboundary)
         {
         if (prob<0.0f || prob>1.0f)
             throw new ArithmeticException("Invalid probability for pickFromDistribution (must be 0.0<=x<=1.0)");
@@ -528,8 +528,8 @@ public class RandomChoice
         then a linear search is used, else a binary search is used. */
     
     public static int pickFromDistribution(final Object[] objs, 
-                                           final RandomChoiceChooserD chooser,
-                                           final double prob, final int checkboundary)
+        final RandomChoiceChooserD chooser,
+        final double prob, final int checkboundary)
         {
         if (prob<0.0 || prob>1.0)
             throw new ArithmeticException("Invalid probability for pickFromDistribution (must be 0.0<=x<=1.0)");

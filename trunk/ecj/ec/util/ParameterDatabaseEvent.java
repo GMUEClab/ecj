@@ -40,26 +40,26 @@ public class ParameterDatabaseEvent
         this.parameter = parameter;
         this.value = value;
         this.type = type;
-    }
+        }
     
     /**
      * @return the Parameter associated with the event
      */
     public Parameter getParameter() {
         return parameter;
-    }
+        }
     
     /**
      * @return the value of the Parameter associated with the event.
      */
     public String getValue() {
         return value;
-    }
+        }
     
     /**
      * @return the type of the event.
      */
     public int getType() {
         return type;
-    }
+        }
     }

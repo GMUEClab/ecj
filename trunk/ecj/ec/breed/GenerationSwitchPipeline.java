@@ -83,7 +83,7 @@ public class GenerationSwitchPipeline extends BreedingPipeline
         generationSwitch = state.parameters.getInt(base.push(P_SWITCHAT),def.push(P_SWITCHAT),0);
         if (generationSwitch < 0)
             state.output.fatal("GenerationSwitchPipeline must have a switch-at >= 0", 
-                               base.push(P_SWITCHAT),def.push(P_SWITCHAT));
+                base.push(P_SWITCHAT),def.push(P_SWITCHAT));
 
         generateMax = state.parameters.getBoolean(base.push(P_GEN_MAX),def.push(P_GEN_MAX),true);
         maxGeneratable=0;  // indicates that I don't know what it is yet.  
@@ -99,16 +99,16 @@ public class GenerationSwitchPipeline extends BreedingPipeline
 
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
 
         {
         BreedingSource s = (state.generation < generationSwitch ?
-                            sources[0] : sources[1] );
+            sources[0] : sources[1] );
         int total;
 
         if (generateMax)

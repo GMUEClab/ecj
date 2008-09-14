@@ -47,21 +47,21 @@ public class Checkpoint
                     new GZIPOutputStream (
                         new BufferedOutputStream(
                             new FileOutputStream ("" + state.checkpointPrefix + 
-                                                  "." + state.generation + ".gz"))));
+                                "." + state.generation + ".gz"))));
             s.writeObject(state);
             s.close();
             state.output.message("Wrote out checkpoint file " + 
-                                 state.checkpointPrefix + "." + 
-                                 state.generation + ".gz");
+                state.checkpointPrefix + "." + 
+                state.generation + ".gz");
             }
         catch (IOException e)
             {
             state.output.warning("Unable to create the checkpoint file " + 
-                                 state.checkpointPrefix + "." +
-                                 state.generation + ".gz" + 
-                                 "because of an IOException:\n--EXCEPTION--\n" +
-                                 e + 
-                                 "\n--EXCEPTION-END--\n");
+                state.checkpointPrefix + "." +
+                state.generation + ".gz" + 
+                "because of an IOException:\n--EXCEPTION--\n" +
+                e + 
+                "\n--EXCEPTION-END--\n");
             }
         }
 
@@ -73,7 +73,7 @@ public class Checkpoint
     **/
     public static EvolutionState restoreFromCheckpoint(String checkpoint)
         throws IOException, ClassNotFoundException, OptionalDataException
-        /* must throw something if error -- NEVER return null */
+    /* must throw something if error -- NEVER return null */
         { 
         // load from the file
         ObjectInputStream s = 

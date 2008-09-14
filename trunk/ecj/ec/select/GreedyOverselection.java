@@ -106,8 +106,8 @@ public class GreedyOverselection extends SelectionMethod
     // don't need clone etc. -- I'll never clone with my arrays intact
     
     public void prepareToProduce(final EvolutionState s,
-                                 final int subpopulation,
-                                 final int thread)
+        final int subpopulation,
+        final int thread)
         {
         // load sortedPop integers
         final Individual[] i = s.population.subpops[subpopulation].individuals;
@@ -117,20 +117,20 @@ public class GreedyOverselection extends SelectionMethod
         
         // sort sortedPop in increasing fitness order
         QuickSort.qsort(sortedPop, 
-                        new SortComparatorL()
-                            {
-                            public boolean lt(long a, long b)
-                                {
-                                return ((Individual)(i[(int)b])).fitness.betterThan(
-                                    ((Individual)(i[(int)a])).fitness);
-                                }
+            new SortComparatorL()
+                {
+                public boolean lt(long a, long b)
+                    {
+                    return ((Individual)(i[(int)b])).fitness.betterThan(
+                        ((Individual)(i[(int)a])).fitness);
+                    }
 
-                            public boolean gt(long a, long b)
-                                {
-                                return ((Individual)(i[(int)a])).fitness.betterThan(
-                                    ((Individual)(i[(int)b])).fitness);
-                                }
-                            });
+                public boolean gt(long a, long b)
+                    {
+                    return ((Individual)(i[(int)a])).fitness.betterThan(
+                        ((Individual)(i[(int)b])).fitness);
+                    }
+                });
         
         // determine my boundary -- must be at least 1 and must leave 1 over
         int boundary = (int)(sortedPop.length * top_n_percent);
@@ -167,8 +167,8 @@ public class GreedyOverselection extends SelectionMethod
         }
 
     public int produce(final int subpopulation,
-                       final EvolutionState state,
-                       final int thread)
+        final EvolutionState state,
+        final int thread)
         {
         // pick a coin toss
         if (state.random[thread].nextBoolean(gets_n_percent))
@@ -179,12 +179,12 @@ public class GreedyOverselection extends SelectionMethod
         else
             // under -- 0 to sortedFitUnder.length
             return sortedPop[RandomChoice.pickFromDistribution(
-                                 sortedFitUnder,state.random[thread].nextFloat(),CHECKBOUNDARY)];
+                    sortedFitUnder,state.random[thread].nextFloat(),CHECKBOUNDARY)];
         }
 
     public void finishProducing(final EvolutionState s,
-                                final int subpopulation,
-                                final int thread)
+        final int subpopulation,
+        final int thread)
         {
         // release the distributions so we can quickly 
         // garbage-collect them if necessary

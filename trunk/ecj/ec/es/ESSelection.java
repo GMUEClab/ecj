@@ -50,8 +50,8 @@ public class ESSelection extends SelectionMethod
 
     // MuCommaLambdaBreeder expects us to set the count to nonzero to indicate our existence
     public void prepareToProduce(final EvolutionState state,
-                                 final int subpopulation,
-                                 final int thread)
+        final int subpopulation,
+        final int thread)
         {
         super.prepareToProduce(state, subpopulation, thread);
         if (!(state.breeder instanceof MuCommaLambdaBreeder))
@@ -62,8 +62,8 @@ public class ESSelection extends SelectionMethod
         }
 
     public int produce(final int subpopulation,
-                       final EvolutionState state,
-                       final int thread)
+        final EvolutionState state,
+        final int thread)
         {
         if (!(state.breeder instanceof MuCommaLambdaBreeder))
             state.output.fatal("ESSelection was handed a Breeder that's not either MuCommaLambdaBreeder or MuCommaPlusLambdaBreeder.");
@@ -71,8 +71,8 @@ public class ESSelection extends SelectionMethod
         
         // determine my position in the array
         int pos = (breeder.lambda[subpopulation] % state.breedthreads == 0 ? 
-                   breeder.lambda[subpopulation]/state.breedthreads :
-                   breeder.lambda[subpopulation]/state.breedthreads + 1) * 
+            breeder.lambda[subpopulation]/state.breedthreads :
+            breeder.lambda[subpopulation]/state.breedthreads + 1) * 
             thread + breeder.count[thread];  // note integer division
         
         // determine the parent
@@ -86,12 +86,12 @@ public class ESSelection extends SelectionMethod
 
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
         {
         if (min>1) // uh oh
             state.output.fatal("ESSelection used, but it's being asked to produce more than one individual.");
@@ -101,8 +101,8 @@ public class ESSelection extends SelectionMethod
         
         // determine my position in the array
         int pos = (breeder.lambda[subpopulation] % state.breedthreads == 0 ? 
-                   breeder.lambda[subpopulation]/state.breedthreads :
-                   breeder.lambda[subpopulation]/state.breedthreads + 1) * 
+            breeder.lambda[subpopulation]/state.breedthreads :
+            breeder.lambda[subpopulation]/state.breedthreads + 1) * 
             thread + breeder.count[thread];  // note integer division
         
         // determine the parent

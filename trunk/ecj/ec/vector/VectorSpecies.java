@@ -101,27 +101,27 @@ public class VectorSpecies extends Species
         genomeSize = state.parameters.getInt(base.push(P_GENOMESIZE),def.push(P_GENOMESIZE),1);
         if (genomeSize==0)
             state.output.error("VectorSpecies must have a genome size > 0",
-                               base.push(P_GENOMESIZE),def.push(P_GENOMESIZE));
+                base.push(P_GENOMESIZE),def.push(P_GENOMESIZE));
     
         chunksize = state.parameters.getIntWithDefault(base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE),1);
         if (chunksize <= 0 || chunksize > genomeSize)
             state.output.fatal("VectorSpecies must have a chunksize which is > 0 and < genomeSize",
-                               base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE));
+                base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE));
         if (genomeSize % chunksize != 0)
             state.output.fatal("VectorSpecies must have a genomeSize which is a multiple of chunksize",
-                               base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE));
+                base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE));
 
         mutationProbability = state.parameters.getFloat(
             base.push(P_MUTATIONPROB),def.push(P_MUTATIONPROB),0.0,1.0);
         if (mutationProbability==-1.0)
             state.output.error("VectorSpecies must have a mutation probability between 0.0 and 1.0 inclusive",
-                               base.push(P_MUTATIONPROB),def.push(P_MUTATIONPROB));
+                base.push(P_MUTATIONPROB),def.push(P_MUTATIONPROB));
     
         String ctype = state.parameters.getStringWithDefault(base.push(P_CROSSOVERTYPE), def.push(P_CROSSOVERTYPE), null);
         crossoverType = C_ONE_POINT;
         if (ctype==null)
             state.output.warning("No crossover type given for VectorSpecies, assuming one-point crossover",
-                                 base.push(P_CROSSOVERTYPE),def.push(P_CROSSOVERTYPE));
+                base.push(P_CROSSOVERTYPE),def.push(P_CROSSOVERTYPE));
         else if (ctype.equalsIgnoreCase(V_ONE_POINT))
             crossoverType=C_ONE_POINT;  // redundant
         else if (ctype.equalsIgnoreCase(V_TWO_POINT))
@@ -129,7 +129,7 @@ public class VectorSpecies extends Species
         else if (ctype.equalsIgnoreCase(V_ANY_POINT))
             crossoverType=C_ANY_POINT;
         else state.output.error("VectorSpecies given a bad crossover type: " + ctype,
-                                base.push(P_CROSSOVERTYPE),def.push(P_CROSSOVERTYPE));
+            base.push(P_CROSSOVERTYPE),def.push(P_CROSSOVERTYPE));
     
         if (crossoverType==C_ANY_POINT)
             {
@@ -137,7 +137,7 @@ public class VectorSpecies extends Species
                 base.push(P_CROSSOVERPROB),def.push(P_CROSSOVERPROB),0.0,1.0);
             if (crossoverProbability==-1.0)
                 state.output.error("If it's going to use any-point crossover, VectorSpecies must have a crossover probability between 0.0 and 1.0 inclusive",
-                                   base.push(P_CROSSOVERPROB),def.push(P_CROSSOVERPROB));
+                    base.push(P_CROSSOVERPROB),def.push(P_CROSSOVERPROB));
             }
         else crossoverProbability = 0.0f;
         state.output.exitIfErrors();

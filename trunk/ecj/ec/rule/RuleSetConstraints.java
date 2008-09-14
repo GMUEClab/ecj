@@ -152,7 +152,7 @@ public class RuleSetConstraints implements Clique
        this to do whatever kind of thing you like here.
     */
     public int numRulesForReset(final RuleSet ruleset, 
-                                final EvolutionState state, final int thread)
+        final EvolutionState state, final int thread)
         {
         // the default just uses pickSize
         return pickSize(state,thread);
@@ -175,7 +175,7 @@ public class RuleSetConstraints implements Clique
         several times, you call state.output.exitIfErrors() once. */
 
     public static RuleSetConstraints constraintsFor(final String constraintsName,
-                                                    final EvolutionState state)
+        final EvolutionState state)
         {
         RuleSetConstraints myConstraints = (RuleSetConstraints)(((RuleInitializer)state.initializer).ruleSetConstraintRepository.get(constraintsName));
         if (myConstraints==null)
@@ -190,7 +190,7 @@ public class RuleSetConstraints implements Clique
         name = state.parameters.getString(base.push(P_NAME),null);
         if (name==null)
             state.output.fatal("No name was given for this RuleSetConstraints.",
-                               base.push(P_NAME));
+                base.push(P_NAME));
 
         // Register me
         RuleSetConstraints old_constraints = (RuleSetConstraints)(((RuleInitializer)state.initializer).ruleSetConstraintRepository.put(name,this));
@@ -205,20 +205,20 @@ public class RuleSetConstraints implements Clique
         if( p_add < 0 || p_add > 1 )
             {
             state.output.fatal( "Parameter not found, or its value is outside of allowed range [0..1].",
-                                base.push( P_ADD_PROB ) );
+                base.push( P_ADD_PROB ) );
             }
         p_del = state.parameters.getFloat( base.push( P_DEL_PROB ), null, 0 );
         if( p_del < 0 || p_del > 1 )
             {
             state.output.fatal( "Parameter not found, or its value is outside of allowed range [0..1].",
-                                base.push( P_DEL_PROB ) );
+                base.push( P_DEL_PROB ) );
             }
 
         p_randorder = state.parameters.getFloat( base.push( P_RAND_ORDER_PROB ), null, 0 );
         if( p_randorder < 0 || p_randorder > 1 )
             {
             state.output.fatal( "Parameter not found, or its value is outside of allowed range [0..1].",
-                                base.push( P_RAND_ORDER_PROB ) );
+                base.push( P_RAND_ORDER_PROB ) );
             }
 
         // now, we are going to load EITHER min/max size OR a size distribution, or both
@@ -231,19 +231,19 @@ public class RuleSetConstraints implements Clique
             {
             if (!(state.parameters.exists(base.push(P_RESETMAXSIZE), null)))
                 state.output.error("This RuleSetConstraints has a " + 
-                                   P_RESETMINSIZE + " but not a " + P_RESETMAXSIZE + ".");
+                    P_RESETMINSIZE + " but not a " + P_RESETMAXSIZE + ".");
            
             resetMinSize = state.parameters.getInt(
                 base.push(P_RESETMINSIZE), null,0);
             if (resetMinSize==-1) 
                 state.output.error("If min&max are defined, RuleSetConstraints must have a min size >= 0.",
-                                   base.push(P_RESETMINSIZE), null);
+                    base.push(P_RESETMINSIZE), null);
             
             resetMaxSize = state.parameters.getInt(
                 base.push(P_RESETMAXSIZE), null,0);
             if (resetMaxSize==-1) 
                 state.output.error("If min&max are defined, RuleSetConstraints must have a max size >= 0.",
-                                   base.push(P_RESETMAXSIZE), null);
+                    base.push(P_RESETMAXSIZE), null);
 
             if (resetMinSize > resetMaxSize)
                 state.output.error(
@@ -255,7 +255,7 @@ public class RuleSetConstraints implements Clique
         // load sizeDistribution
 
         if (state.parameters.exists(base.push(P_NUMSIZES),
-                                    null))
+                null))
             {
             int siz = state.parameters.getInt(
                 base.push(P_NUMSIZES), null,1);
@@ -310,10 +310,10 @@ public class RuleSetConstraints implements Clique
             {
             if (minSize!=0)
                 state.output.fatal("Using size distribution, but min size is not 0",
-                                   base.push(P_MINSIZE), null);
+                    base.push(P_MINSIZE), null);
             if (sizeDistribution.length - 1 > maxSize)
                 state.output.fatal("Using size distribution whose maximum size is higher than max size",
-                                   base.push(P_MAXSIZE), null);
+                    base.push(P_MAXSIZE), null);
             }
         else
             {

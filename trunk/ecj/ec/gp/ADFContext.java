@@ -124,7 +124,7 @@ public class ADFContext implements Prototype
                 push(GPProblem.P_DATA);
 
             state.output.warning("No ADF GPData specified; using (and setting up) from\n " 
-                                 + pp + "\nor default base " + dd, p,d);
+                + pp + "\nor default base " + dd, p,d);
             arg_proto = (GPData)
                 (state.parameters.getInstanceForParameter(pp,dd,GPData.class));
             arg_proto.setup(state,pp);  // note setting up from Problem's base!
@@ -138,12 +138,12 @@ public class ADFContext implements Prototype
 
     /** Evaluates the argument number in the current context */
     public void evaluate(final EvolutionState state,
-                         final int thread,
-                         final GPData input,
-                         final ADFStack stack,
-                         final GPIndividual individual,
-                         final Problem problem,
-                         final int argument)
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem,
+        final int argument)
         {
         // do I have that many arguments?
         if (argument >= adf.children.length || argument < 0)  // uh oh 

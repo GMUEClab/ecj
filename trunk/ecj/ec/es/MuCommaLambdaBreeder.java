@@ -123,8 +123,8 @@ public class MuCommaLambdaBreeder extends Breeder
                 {
                 Individual[] newinds = new Individual[s];
                 System.arraycopy(pop.subpops[x].individuals,0,newinds,0,
-                                 s < pop.subpops[x].individuals.length ? 
-                                 s : pop.subpops[x].individuals.length);
+                    s < pop.subpops[x].individuals.length ? 
+                    s : pop.subpops[x].individuals.length);
                 pop.subpops[x].individuals = newinds;
                 }
             }
@@ -195,22 +195,22 @@ public class MuCommaLambdaBreeder extends Breeder
             final Individual[] i = state.population.subpops[x].individuals;
 
             java.util.Arrays.sort(i,
-                                  new java.util.Comparator()
-                                      {
-                                      public int compare(Object o1, Object o2)
-                                          {
-                                          Individual a = (Individual) o1;
-                                          Individual b = (Individual) o2;
-                                          // return 1 if should appear after object b in the array.
-                                          // This is the case if a has WORSE fitness.
-                                          if (b.fitness.betterThan(a.fitness)) return 1;
-                                          // return -1 if a should appear before object b in the array.
-                                          // This is the case if b has WORSE fitness.
-                                          if (a.fitness.betterThan(b.fitness)) return -1;
-                                          // else return 0
-                                          return 0;
-                                          }
-                                      });
+                new java.util.Comparator()
+                    {
+                    public int compare(Object o1, Object o2)
+                        {
+                        Individual a = (Individual) o1;
+                        Individual b = (Individual) o2;
+                        // return 1 if should appear after object b in the array.
+                        // This is the case if a has WORSE fitness.
+                        if (b.fitness.betterThan(a.fitness)) return 1;
+                        // return -1 if a should appear before object b in the array.
+                        // This is the case if b has WORSE fitness.
+                        if (a.fitness.betterThan(b.fitness)) return -1;
+                        // else return 0
+                        return 0;
+                        }
+                    });
             }
 
         // now the subpops are sorted so that the best individuals
@@ -234,12 +234,12 @@ public class MuCommaLambdaBreeder extends Breeder
                     numinds[y][x]=
                         lambda[x]/state.breedthreads +
                         (lambda[x] - (lambda[x] / state.breedthreads)  // note integer division
-                         *state.breedthreads);                   
+                        *state.breedthreads);                   
                 
                 // figure from
                 from[y][x]=
                     (lambda[x]/
-                     state.breedthreads) * y;
+                    state.breedthreads) * y;
                 }
             
         if (state.breedthreads==1)
@@ -266,13 +266,13 @@ public class MuCommaLambdaBreeder extends Breeder
                 
             // gather the threads
             for(int y=0;y<state.breedthreads;y++) try
-                {
-                t[y].join();
-                }
-            catch(InterruptedException e)
-                {
-                state.output.fatal("Whoa! The main breeding thread got interrupted!  Dying...");
-                }
+                                                      {
+                                                      t[y].join();
+                                                      }
+                catch(InterruptedException e)
+                    {
+                    state.output.fatal("Whoa! The main breeding thread got interrupted!  Dying...");
+                    }
             }
 
         return postProcess(newpop,state.population,state);
@@ -297,7 +297,7 @@ public class MuCommaLambdaBreeder extends Breeder
         you should not call it. */
     
     public void breedPopChunk(Population newpop, EvolutionState state, 
-                              int[] numinds, int[] from, int threadnum) 
+        int[] numinds, int[] from, int threadnum) 
         {
         for(int subpop=0;subpop<newpop.subpops.length;subpop++)
             {
@@ -324,7 +324,7 @@ public class MuCommaLambdaBreeder extends Breeder
             for(int x=from[subpop];x<upperbound;x++)
                 {
                 if (bp.produce(1,1,x,subpop, newpop.subpops[subpop].individuals,
-                               state,threadnum) != 1)
+                        state,threadnum) != 1)
                     state.output.fatal("Whoa! Breeding Pipeline for subpop " + subpop + " is not producing one individual at a time, as is required by the MuLambda strategies.");
 
                 // increment the count

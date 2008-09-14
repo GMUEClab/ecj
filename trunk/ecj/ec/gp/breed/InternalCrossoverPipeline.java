@@ -149,7 +149,7 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
             }
 
         numTries = state.parameters.getInt(base.push(P_NUM_TRIES),
-                                           def.push(P_NUM_TRIES),1);
+            def.push(P_NUM_TRIES),1);
         if (numTries == 0)
             state.output.fatal("InternalCrossover Pipeline has an invalid number of tries (it must be >= 1).",base.push(P_NUM_TRIES),def.push(P_NUM_TRIES));
 
@@ -159,20 +159,20 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
 
         tree1 = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+0),
-                                    def.push(P_TREE).push(""+0)))
+                def.push(P_TREE).push(""+0)))
             {
             tree1 = state.parameters.getInt(base.push(P_TREE).push(""+0),
-                                            def.push(P_TREE).push(""+0),0);
+                def.push(P_TREE).push(""+0),0);
             if (tree1==-1)
                 state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
 
         tree2 = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+1),
-                                    def.push(P_TREE).push(""+1)))
+                def.push(P_TREE).push(""+1)))
             {
             tree2 = state.parameters.getInt(base.push(P_TREE).push(""+1),
-                                            def.push(P_TREE).push(""+1),0);
+                def.push(P_TREE).push(""+1),0);
             if (tree2==-1)
                 state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
@@ -215,12 +215,12 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
 
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
 
         {
         // grab n individuals from our source and stick 'em right into inds.
@@ -315,11 +315,11 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
                 
                 // make sure they're not the same node
                 res = (p1!=p2 &&
-                       // check for containment
-                       (t1!=t2 || noContainment(p1,p2)) &&
-                       // check for validity
-                       verifyPoints(initializer,p1,p2) &&   // 1 goes into 2
-                       verifyPoints(initializer,p2,p1));    // 2 goes into 1
+                    // check for containment
+                    (t1!=t2 || noContainment(p1,p2)) &&
+                    // check for validity
+                    verifyPoints(initializer,p1,p2) &&   // 1 goes into 2
+                    verifyPoints(initializer,p2,p1));    // 2 goes into 1
                 if (res) break; // got one
                 }
 

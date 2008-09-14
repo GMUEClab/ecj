@@ -52,7 +52,7 @@ public class GeneVectorSpecies extends VectorSpecies
         Parameter def = defaultBase();
 
         genePrototype = (VectorGene)(state.parameters.getInstanceForParameterEq(
-                                         base.push(P_GENE),def.push(P_GENE),VectorGene.class));
+                base.push(P_GENE),def.push(P_GENE),VectorGene.class));
         genePrototype.setup(state,base.push(P_GENE));
 
         // make sure that super.setup is done AFTER we've loaded our gene prototype.

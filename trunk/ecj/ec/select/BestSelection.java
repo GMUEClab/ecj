@@ -91,8 +91,8 @@ public class BestSelection extends SelectionMethod
         }
 
     public void prepareToProduce(final EvolutionState s,
-                                 final int subpopulation,
-                                 final int thread)
+        final int subpopulation,
+        final int thread)
         {
         // load sortedPop integers
         final Individual[] i = s.population.subpops[subpopulation].individuals;
@@ -102,20 +102,20 @@ public class BestSelection extends SelectionMethod
 
         // sort sortedPop in increasing fitness order
         QuickSort.qsort(sortedPop, 
-                        new SortComparatorL()
-                            {
-                            public boolean lt(long a, long b)
-                                {
-                                return ((Individual)(i[(int)b])).fitness.betterThan(
-                                    ((Individual)(i[(int)a])).fitness);
-                                }
+            new SortComparatorL()
+                {
+                public boolean lt(long a, long b)
+                    {
+                    return ((Individual)(i[(int)b])).fitness.betterThan(
+                        ((Individual)(i[(int)a])).fitness);
+                    }
 
-                            public boolean gt(long a, long b)
-                                {
-                                return ((Individual)(i[(int)a])).fitness.betterThan(
-                                    ((Individual)(i[(int)b])).fitness);
-                                }
-                            });
+                public boolean gt(long a, long b)
+                    {
+                    return ((Individual)(i[(int)a])).fitness.betterThan(
+                        ((Individual)(i[(int)b])).fitness);
+                    }
+                });
 
         // load sortedFit
         sortedFit = new float[Math.min(sortedPop.length,bestn)];
@@ -138,21 +138,21 @@ public class BestSelection extends SelectionMethod
         }
 
     public int produce(final int subpopulation,
-                       final EvolutionState state,
-                       final int thread)
+        final EvolutionState state,
+        final int thread)
         {
         // Pick and return an individual from the population
         if (pickWorst)
             return sortedPop[RandomChoice.pickFromDistribution(
-                                 sortedFit,state.random[thread].nextFloat(),CHECKBOUNDARY)];
+                    sortedFit,state.random[thread].nextFloat(),CHECKBOUNDARY)];
         else
             return sortedPop[sortedPop.length - RandomChoice.pickFromDistribution(
-                                 sortedFit,state.random[thread].nextFloat(),CHECKBOUNDARY) - 1];            
+                    sortedFit,state.random[thread].nextFloat(),CHECKBOUNDARY) - 1];            
         }
     
     public void finishProducing(final EvolutionState s,
-                                final int subpopulation,
-                                final int thread)
+        final int subpopulation,
+        final int thread)
         {
         // release the distributions so we can quickly 
         // garbage-collect them if necessary

@@ -77,12 +77,12 @@ public class ForceBreedingPipeline extends BreedingPipeline
         }
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
 
         {
         int n = numInds;
@@ -97,7 +97,7 @@ public class ForceBreedingPipeline extends BreedingPipeline
             if (numToProduce > numInds) numToProduce = numInds;
 
             total += sources[0].produce(numToProduce,numToProduce,start+total,
-                                        subpopulation,inds,state,thread);
+                subpopulation,inds,state,thread);
             }
         
         // clone if necessary

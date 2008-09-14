@@ -87,10 +87,10 @@ public class PSOSubpopulation extends Subpopulation
         
         if (!(species instanceof FloatVectorSpecies))
             state.output.error("PSOSubpopulation requires that its species is ec.vector.FloatVectorSpecies or a subclass.  Yours is: " + species.getClass(),
-                               null,null);
+                null,null);
         if (!(species.i_prototype instanceof DoubleVectorIndividual))
             state.output.error("PSOSubpopulation requires that its species' prototypical individual be is ec.vector.DoubleVectorSpecies or a subclass.  Yours is: " + species.getClass(),
-                               null,null);
+                null,null);
         
         neighborhoodBests = new DoubleVectorIndividual[individuals.length];
         personalBests = new DoubleVectorIndividual[individuals.length];
@@ -133,8 +133,8 @@ public class PSOSubpopulation extends Subpopulation
         The neighborhood size, clamp range, and initial velocity scale are not included -- it's assumed you're using the
         same values for them on reading, or understand that the values are revised. */
     public void printSubpopulationForHumans(final EvolutionState state,
-                                            final int log, 
-                                            final int verbosity)
+        final int log, 
+        final int verbosity)
         {
         // global best
         state.output.println(GLOBAL_BEST_PREAMBLE, verbosity, log);
@@ -186,8 +186,8 @@ public class PSOSubpopulation extends Subpopulation
         The neighborhood size, clamp range, and initial velocity scale are not included -- it's assumed you're using the
         same values for them on reading, or understand that the values are revised. */
     public void printSubpopulation(final EvolutionState state,
-                                   final int log, 
-                                   final int verbosity)
+        final int log, 
+        final int verbosity)
         {
         // global best
         state.output.println(GLOBAL_BEST_PREAMBLE, verbosity, log);
@@ -239,7 +239,7 @@ public class PSOSubpopulation extends Subpopulation
         The neighborhood size, clamp range, and initial velocity scale are not included -- it's assumed you're using the
         same values for them on reading, or understand that the values are revised. */
     public void printSubpopulation(final EvolutionState state,
-                                   final PrintWriter writer)
+        final PrintWriter writer)
         {
         // global best
         writer.println(GLOBAL_BEST_PREAMBLE);
@@ -298,7 +298,7 @@ public class PSOSubpopulation extends Subpopulation
         The neighborhood size, clamp range, and initial velocity scale are not included -- it's assumed you're using the
         same values for them on reading, or understand that the values are revised. */
     public void readSubpopulation(final EvolutionState state, 
-                                  final LineNumberReader reader) throws IOException
+        final LineNumberReader reader) throws IOException
         {
         // global best
         Code.checkPreamble(GLOBAL_BEST_PREAMBLE, state, reader);
@@ -326,7 +326,7 @@ public class PSOSubpopulation extends Subpopulation
         The neighborhood size, clamp range, and initial velocity scale are not included -- it's assumed you're using the
         same values for them on reading, or understand that the values are revised. */
     public void writeSubpopulation(final EvolutionState state,
-                                   final DataOutput dataOutput) throws IOException
+        final DataOutput dataOutput) throws IOException
         {
         // global best
         if (globalBest == null) 
@@ -374,7 +374,7 @@ public class PSOSubpopulation extends Subpopulation
         The neighborhood size, clamp range, and initial velocity scale are not included -- it's assumed you're using the
         same values for them on reading, or understand that the values are revised. */
     public void readSubpopulation(final EvolutionState state,
-                                  final DataInput dataInput) throws IOException
+        final DataInput dataInput) throws IOException
         {
         // global best
         globalBest = (dataInput.readBoolean() ? (DoubleVectorIndividual)species.newIndividual(state, dataInput) : null);

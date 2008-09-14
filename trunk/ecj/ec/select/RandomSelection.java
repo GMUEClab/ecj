@@ -43,8 +43,8 @@ public class RandomSelection extends SelectionMethod implements SteadyStateBSour
     // I hard-code both produce(...) methods for efficiency's sake
 
     public int produce(final int subpopulation,
-                       final EvolutionState state,
-                       final int thread)
+        final EvolutionState state,
+        final int thread)
         {
         return state.random[thread].nextInt( state.population.subpops[subpopulation].individuals.length );
         }
@@ -52,12 +52,12 @@ public class RandomSelection extends SelectionMethod implements SteadyStateBSour
     // I hard-code both produce(...) methods for efficiency's sake
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
         {
         int n = 1;
         if (n>max) n = max;
@@ -73,9 +73,9 @@ public class RandomSelection extends SelectionMethod implements SteadyStateBSour
         }
 
     public void individualReplaced(final SteadyStateEvolutionState state,
-                                   final int subpopulation,
-                                   final int thread,
-                                   final int individual)
+        final int subpopulation,
+        final int thread,
+        final int individual)
         { return; }
     
     public void sourcesAreProperForm(final SteadyStateEvolutionState state)

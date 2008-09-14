@@ -86,7 +86,7 @@ public class SPEA2MultiObjectiveFitness extends MultiObjectiveFitness
         }
         
     public void readFitness(final EvolutionState state,
-                            final LineNumberReader reader)
+        final LineNumberReader reader)
         throws IOException
         {
         super.readFitness(state,reader);
@@ -112,7 +112,7 @@ public class SPEA2MultiObjectiveFitness extends MultiObjectiveFitness
 
 
     public void writeFitness(final EvolutionState state,
-                             final DataOutput dataOutput) throws IOException
+        final DataOutput dataOutput) throws IOException
         {
         super.writeFitness(state,dataOutput);
         dataOutput.writeDouble(SPEA2Fitness);
@@ -122,7 +122,7 @@ public class SPEA2MultiObjectiveFitness extends MultiObjectiveFitness
         }
 
     public void readFitness(final EvolutionState state,
-                            final DataInput dataInput) throws IOException
+        final DataInput dataInput) throws IOException
         {
         super.readFitness(state,dataInput);
         SPEA2Fitness = dataInput.readDouble();

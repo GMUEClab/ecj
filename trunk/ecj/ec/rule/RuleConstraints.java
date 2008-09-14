@@ -58,7 +58,7 @@ public class RuleConstraints implements Clique
         name = state.parameters.getString(base.push(P_NAME),null);
         if (name==null)
             state.output.fatal("No name was given for this Rule Constraints.",
-                               base.push(P_NAME));
+                base.push(P_NAME));
 
         // Register me
         RuleConstraints old_constraints = (RuleConstraints)(((RuleInitializer)state.initializer).ruleConstraintRepository.put(name,this));
@@ -70,7 +70,7 @@ public class RuleConstraints implements Clique
         several times, you call state.output.exitIfErrors() once. */
 
     public static RuleConstraints constraintsFor(final String constraintsName,
-                                                 final EvolutionState state)
+        final EvolutionState state)
         {
         RuleConstraints myConstraints = (RuleConstraints)(((RuleInitializer)state.initializer).ruleConstraintRepository.get(constraintsName));
         if (myConstraints==null)

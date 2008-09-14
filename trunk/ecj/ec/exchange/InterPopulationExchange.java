@@ -299,8 +299,8 @@ public class InterPopulationExchange extends Exchanger
 
             // else, check whether the emigrants need to be sent
             if( ( state.generation >= exchangeInformation[i].offset ) &&
-                ( ( exchangeInformation[i].modulo == 0 ) ||
-                  ( ( ( state.generation - exchangeInformation[i].offset ) % exchangeInformation[i].modulo ) == 0 ) ) )
+                    ( ( exchangeInformation[i].modulo == 0 ) ||
+                    ( ( ( state.generation - exchangeInformation[i].offset ) % exchangeInformation[i].modulo ) == 0 ) ) )
                 {
 
                 // send the individuals!!!!
@@ -310,8 +310,8 @@ public class InterPopulationExchange extends Exchanger
                     {
 
                     if (chatty) state.output.message( "Sending the emigrants from subpopulation " +
-                                                      i + " to subpopulation " +
-                                                      exchangeInformation[i].destinations[x] );
+                        i + " to subpopulation " +
+                        exchangeInformation[i].destinations[x] );
 
                     // select "size" individuals and send then to the destination as emigrants
                     exchangeInformation[i].immigrantsSelectionMethod.prepareToProduce( state, i, 0 );
@@ -347,15 +347,15 @@ public class InterPopulationExchange extends Exchanger
             if( nImmigrants[x] > 0 && chatty )
                 {
                 state.output.message( "Immigrating " +  nImmigrants[x] +
-                                      " individuals from mailbox for subpopulation " + x );
+                    " individuals from mailbox for subpopulation " + x );
                 }
                 
             int len = state.population.subpops[x].individuals.length;
             // double check that we won't go into an infinite loop!
             if ( nImmigrants[x] >= state.population.subpops[x].individuals.length )
                 state.output.fatal("Number of immigrants ("+nImmigrants[x] +
-                                   ") is larger than subpopulation #" + x + "'s size (" +
-                                   len +").  This would cause an infinite loop in the selection-to-die procedure.");
+                    ") is larger than subpopulation #" + x + "'s size (" +
+                    len +").  This would cause an infinite loop in the selection-to-die procedure.");
 
             boolean[] selected = new boolean[ len ];
             int[] indeces = new int[ nImmigrants[x] ];

@@ -30,27 +30,27 @@ public class MyStatistics extends Statistics
         File popFile = state.parameters.getFile(
             base.push(P_POPFILE),null);
         if (popFile!=null) try
-            {
-            popLog = state.output.addLog(popFile,Output.V_NO_GENERAL-1,false,true);
-            }
-        catch (IOException i)
-            {
-            state.output.fatal("An IOException occurred while trying to create the log " + 
-                               popFile + ":\n" + i);
-            }
+                               {
+                               popLog = state.output.addLog(popFile,Output.V_NO_GENERAL-1,false,true);
+                               }
+            catch (IOException i)
+                {
+                state.output.fatal("An IOException occurred while trying to create the log " + 
+                    popFile + ":\n" + i);
+                }
 
         // set up infoFile
         File infoFile = state.parameters.getFile(
             base.push(P_INFOFILE),null);
         if (infoFile!=null) try
-            {
-            infoLog = state.output.addLog(infoFile,Output.V_NO_GENERAL-1,false,true);
-            }
-        catch (IOException i)
-            {
-            state.output.fatal("An IOException occurred while trying to create the log " + 
-                               infoFile + ":\n" + i);
-            }
+                                {
+                                infoLog = state.output.addLog(infoFile,Output.V_NO_GENERAL-1,false,true);
+                                }
+            catch (IOException i)
+                {
+                state.output.fatal("An IOException occurred while trying to create the log " + 
+                    infoFile + ":\n" + i);
+                }
 
         }
 
@@ -61,8 +61,8 @@ public class MyStatistics extends Statistics
 
         // write out a warning that the next generation is coming 
         state.output.println("-----------------------\nGENERATION " + 
-                             state.generation + "\n-----------------------",
-                             Output.V_NO_GENERAL, popLog);
+            state.generation + "\n-----------------------",
+            Output.V_NO_GENERAL, popLog);
 
         // print out the population 
         state.population.printPopulation(state,popLog,Output.V_NO_GENERAL);

@@ -55,8 +55,8 @@ public class FitProportionateSelection extends SelectionMethod
     // don't need clone etc. 
 
     public void prepareToProduce(final EvolutionState s,
-                                 final int subpopulation,
-                                 final int thread)
+        final int subpopulation,
+        final int thread)
         {
         // load sortedFit
         sortedFit = new float[s.population.subpops[subpopulation].individuals.length];
@@ -72,8 +72,8 @@ public class FitProportionateSelection extends SelectionMethod
         }
 
     public int produce(final int subpopulation,
-                       final EvolutionState state,
-                       final int thread)
+        final EvolutionState state,
+        final int thread)
         {
         // Pick and return an individual from the population
         return RandomChoice.pickFromDistribution(
@@ -81,8 +81,8 @@ public class FitProportionateSelection extends SelectionMethod
         }
     
     public void finishProducing(final EvolutionState s,
-                                final int subpopulation,
-                                final int thread)
+        final int subpopulation,
+        final int thread)
         {
         // release the distributions so we can quickly 
         // garbage-collect them if necessary

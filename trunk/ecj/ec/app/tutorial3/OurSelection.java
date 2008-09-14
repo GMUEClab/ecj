@@ -29,10 +29,10 @@ public class OurSelection extends SelectionMethod
         // database, returning a value of min-1 (-1.0) if the parameter doesn't exist or was 
         // outside this range.
         middleProbability = state.parameters.getDouble(base.push(P_MIDDLEPROBABILITY),
-                                                       def.push(P_MIDDLEPROBABILITY),0.0,1.0);
+            def.push(P_MIDDLEPROBABILITY),0.0,1.0);
         if (middleProbability < 0.0)
             state.output.fatal("Middle-Probability must be between 0.0 and 1.0",
-                               base.push(P_MIDDLEPROBABILITY),def.push(P_MIDDLEPROBABILITY));
+                base.push(P_MIDDLEPROBABILITY),def.push(P_MIDDLEPROBABILITY));
         } 
 
     public int produce(final int subpopulation, final EvolutionState state, final int thread)

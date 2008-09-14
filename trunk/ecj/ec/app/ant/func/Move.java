@@ -28,23 +28,23 @@ public class Move extends GPNode implements EvalPrint
     public String toString() { return "move"; }
 
     public void checkConstraints(final EvolutionState state,
-                                 final int tree,
-                                 final GPIndividual typicalIndividual,
-                                 final Parameter individualBase)
+        final int tree,
+        final GPIndividual typicalIndividual,
+        final Parameter individualBase)
         {
         super.checkConstraints(state,tree,typicalIndividual,individualBase);
         if (children.length!=0)
             state.output.error("Incorrect number of children for node " + 
-                               toStringForError() + " at " +
-                               individualBase);
+                toStringForError() + " at " +
+                individualBase);
         }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
         {
         Ant p = (Ant)problem;
         switch (p.orientation)
@@ -80,12 +80,12 @@ public class Move extends GPNode implements EvalPrint
 
     /** Just like eval, but it retraces the map and prints out info */
     public void evalPrint(final EvolutionState state,
-                          final int thread,
-                          final GPData input,
-                          final ADFStack stack,
-                          final GPIndividual individual,
-                          final Problem problem,
-                          final int[][] map2)
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem,
+        final int[][] map2)
         {
         Ant p = (Ant)problem;
         switch (p.orientation)

@@ -155,20 +155,20 @@ public abstract class VectorGene implements Prototype
        custom reading, or just override readGeneFromString(...), which is probably easier to do.
     */
     public void readGene(final EvolutionState state,
-                         final LineNumberReader reader)
+        final LineNumberReader reader)
         throws IOException
         { readGeneFromString(reader.readLine(),state); }
 
     /** Override this if you need to write rules out to a binary stream */
     public void writeGene(final EvolutionState state,
-                          final DataOutput dataOutput) throws IOException
+        final DataOutput dataOutput) throws IOException
         {
         state.output.fatal("writeGene(EvolutionState, DataOutput) not implemented in " + this.getClass());
         }
 
     /** Override this if you need to read rules in from a binary stream */
     public void readGene(final EvolutionState state,
-                         final DataInput dataInput) throws IOException
+        final DataInput dataInput) throws IOException
         {
         state.output.fatal("readGene(EvolutionState, DataInput) not implemented in " + this.getClass());
         }

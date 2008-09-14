@@ -20,36 +20,36 @@
  import ec.EvolutionState;
  import ec.util.Parameter;
  
-/**
- * @author spaus
- */
+ /**
+  * @author spaus
+  */
  public class BarChartStatistics
      extends ChartableStatistics
      {
      
      public DefaultCategoryDataset dataset;
-      
-      public void setup(EvolutionState state, Parameter base)
+     
+     public void setup(EvolutionState state, Parameter base)
          {
-super.setup(state, base);
-    dataset = new DefaultCategoryDataset();
-        
-        }
-      
-      public JFreeChart makeChart(){
-JFreeChart chart = ChartFactory.createBarChart(this.title,
-                                               this.xlabel,this.ylabel, this.dataset, PlotOrientation.VERTICAL,
-                                               false, true, false);
-    
-    return chart;
-        }
-      
-      public void makeBar(int seriesID, double[] genes)
+         super.setup(state, base);
+             dataset = new DefaultCategoryDataset();
+                 
+                 }
+     
+     public JFreeChart makeChart(){
+         JFreeChart chart = ChartFactory.createBarChart(this.title,
+             this.xlabel,this.ylabel, this.dataset, PlotOrientation.VERTICAL,
+             false, true, false);
+             
+             return chart;
+                 }
+     
+     public void makeBar(int seriesID, double[] genes)
          {
-for (int i = 0; i < genes.length; i++)
-        {
-dataset.setValue(genes[i], "Genome "+seriesID, String.valueOf(i));
-    }
-                                          }
-      
+         for (int i = 0; i < genes.length; i++)
+             {
+             dataset.setValue(genes[i], "Genome "+seriesID, String.valueOf(i));
+                 }
+             }
+     
      }

@@ -104,7 +104,7 @@ public class GPInitializer extends SimpleInitializer
         name. */
 
     public void setupTypes(final EvolutionState state,
-                           final Parameter base)
+        final Parameter base)
         {
         state.output.message("Processing GP Types");
         
@@ -205,7 +205,7 @@ public class GPInitializer extends SimpleInitializer
         int x = state.parameters.getInt(base.push(P_SIZE),null,1);
         if (x<=0) 
             state.output.fatal("The number of GP node constraints must be at least 1.",
-                               base.push(P_SIZE));
+                base.push(P_SIZE));
         
         // Load our constraints
         for (int y=0;y<x;y++)
@@ -214,7 +214,7 @@ public class GPInitializer extends SimpleInitializer
             // Figure the constraint class
             if (state.parameters.exists(base.push(""+y)))
                 c = (GPNodeConstraints)(state.parameters.getInstanceForParameterEq(
-                                            base.push(""+y),null,GPNodeConstraints.class));
+                        base.push(""+y),null,GPNodeConstraints.class));
             else
                 {
                 state.output.message("No GP Node Constraints specified, assuming the default class: ec.gp.GPNodeConstraints for " +  base.push(""+y));
@@ -236,7 +236,7 @@ public class GPInitializer extends SimpleInitializer
     
     
     public void setupFunctionSets(final EvolutionState state,
-                                  final Parameter base)
+        final Parameter base)
         {
         state.output.message("Processing GP Function Sets");
         
@@ -253,7 +253,7 @@ public class GPInitializer extends SimpleInitializer
             // Figure the GPFunctionSet class
             if (state.parameters.exists(base.push(""+y)))
                 c = (GPFunctionSet)(state.parameters.getInstanceForParameterEq(
-                                        base.push(""+y),null,GPFunctionSet.class));
+                        base.push(""+y),null,GPFunctionSet.class));
             else
                 {
                 state.output.message("No GPFunctionSet specified, assuming the default class: ec.gp.GPFunctionSet for " + base.push(""+y));
@@ -289,7 +289,7 @@ public class GPInitializer extends SimpleInitializer
             // Figure the constraint class
             if (state.parameters.exists(base.push(""+y)))
                 c = (GPTreeConstraints)(state.parameters.getInstanceForParameterEq(
-                                            base.push(""+y),null,GPTreeConstraints.class));
+                        base.push(""+y),null,GPTreeConstraints.class));
             else
                 {
                 state.output.message("No GP Tree Constraints specified, assuming the default class: ec.gp.GPTreeConstraints for " + base.push(""+y));

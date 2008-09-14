@@ -128,16 +128,16 @@ public class KozaNodeSelector implements GPNodeSelector
             def.push(P_TERMINAL_PROBABILITY), 0.0, 1.0);
         if (terminalProbability==-1.0)
             state.output.fatal("Invalid terminal probability for KozaNodeSelector ",
-                               base.push(P_TERMINAL_PROBABILITY),
-                               def.push(P_TERMINAL_PROBABILITY));
+                base.push(P_TERMINAL_PROBABILITY),
+                def.push(P_TERMINAL_PROBABILITY));
         
         nonterminalProbability = state.parameters.getFloat(
             base.push(P_NONTERMINAL_PROBABILITY), 
             def.push(P_NONTERMINAL_PROBABILITY),0.0, 1.0);
         if (nonterminalProbability==-1.0)
             state.output.fatal("Invalid nonterminal probability for KozaNodeSelector ",
-                               base.push(P_NONTERMINAL_PROBABILITY), 
-                               def.push(P_NONTERMINAL_PROBABILITY));
+                base.push(P_NONTERMINAL_PROBABILITY), 
+                def.push(P_NONTERMINAL_PROBABILITY));
 
         rootProbability = state.parameters.getFloat(
             base.push(P_ROOT_PROBABILITY),
@@ -145,8 +145,8 @@ public class KozaNodeSelector implements GPNodeSelector
         
         if (rootProbability==-1.0)
             state.output.fatal("Invalid root probability for KozaNodeSelector ",
-                               base.push(P_ROOT_PROBABILITY),
-                               def.push(P_ROOT_PROBABILITY));
+                base.push(P_ROOT_PROBABILITY),
+                def.push(P_ROOT_PROBABILITY));
 
         if (rootProbability+terminalProbability+nonterminalProbability > 1.0f)
             state.output.fatal("The terminal, nonterminal, and root for KozaNodeSelector" + base + " may not sum to more than 1.0. (" + terminalProbability + " " + nonterminalProbability + " " + rootProbability + ")",base);
@@ -161,10 +161,10 @@ public class KozaNodeSelector implements GPNodeSelector
         }
 
     public GPNode pickNode(final EvolutionState s,
-                           final int subpopulation,
-                           final int thread,
-                           final GPIndividual ind,
-                           final GPTree tree)
+        final int subpopulation,
+        final int thread,
+        final GPIndividual ind,
+        final GPTree tree)
         {
         float rnd = s.random[thread].nextFloat();
         
@@ -172,12 +172,12 @@ public class KozaNodeSelector implements GPNodeSelector
             {
             if (nodes==-1) nodes= 
                                tree.child.numNodes(GPNode.NODESEARCH_ALL);
-                {
-                tree.child.nodeInPosition(s.random[thread].nextInt(nodes),
-                                          gatherer,
-                                          GPNode.NODESEARCH_ALL);
-                return gatherer.node;
-                }
+                    {
+                    tree.child.nodeInPosition(s.random[thread].nextInt(nodes),
+                        gatherer,
+                        GPNode.NODESEARCH_ALL);
+                    return gatherer.node;
+                    }
             }
         else if (rnd > nonterminalProbability + terminalProbability)  // pick the root
             {
@@ -189,8 +189,8 @@ public class KozaNodeSelector implements GPNodeSelector
                                    tree.child.numNodes(GPNode.NODESEARCH_TERMINALS);
             
             tree.child.nodeInPosition(s.random[thread].nextInt(terminals),
-                                      gatherer,
-                                      GPNode.NODESEARCH_TERMINALS);
+                gatherer,
+                GPNode.NODESEARCH_TERMINALS);
             return gatherer.node;
             }
         else  // pick nonterminals if you can
@@ -200,8 +200,8 @@ public class KozaNodeSelector implements GPNodeSelector
             if (nonterminals > 0) // there are some nonterminals
                 {
                 tree.child.nodeInPosition(s.random[thread].nextInt(nonterminals),
-                                          gatherer,
-                                          GPNode.NODESEARCH_NONTERMINALS);
+                    gatherer,
+                    GPNode.NODESEARCH_NONTERMINALS);
                 return gatherer.node;
                 }
             else // there ARE no nonterminals!  It must be the root node

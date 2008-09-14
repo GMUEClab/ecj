@@ -35,7 +35,7 @@ public class SimpleBarChartStatistics extends BarChartStatistics
         for (int i = 0; i < numSubPops; ++i) {
             seriesID[i] = i; //series id identifies each sub pop
             }
-    }
+        }
     
     public void postEvaluationStatistics(EvolutionState state) {
         super.postEvaluationStatistics(state);
@@ -51,5 +51,5 @@ public class SimpleBarChartStatistics extends BarChartStatistics
                 makeBar(seriesID[subPop], ((DoubleVectorIndividual)state.population.subpops[subPop].individuals[i]).genome);
                 }
             }
-    }
+        }
     }

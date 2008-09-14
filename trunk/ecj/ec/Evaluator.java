@@ -75,7 +75,7 @@ public abstract class Evaluator implements Singleton
         {
         // Load my problem
         p_problem = (Problem)(state.parameters.getInstanceForParameter(
-                                  base.push(P_PROBLEM),null,Problem.class));
+                base.push(P_PROBLEM),null,Problem.class));
         p_problem.setup(state,base.push(P_PROBLEM));
         
         /*
@@ -92,7 +92,7 @@ public abstract class Evaluator implements Singleton
             {
             try {
                 Problem masterproblem = (Problem)(state.parameters.getInstanceForParameter(
-                                                      base.push(P_MASTERPROBLEM),null,Problem.class));
+                        base.push(P_MASTERPROBLEM),null,Problem.class));
                 masterproblem.setup(state,base.push(P_MASTERPROBLEM));
                  
                 /*

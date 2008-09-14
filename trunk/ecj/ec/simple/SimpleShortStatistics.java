@@ -101,15 +101,15 @@ public class SimpleShortStatistics extends Statistics
             base.push(P_STATISTICS_FILE),null);
 
         if (statisticsFile!=null) try
-            {
-            statisticslog = state.output.addLog(statisticsFile,Output.V_NO_GENERAL-1,false,
-                                                !state.parameters.getBoolean(base.push(P_COMPRESS),null,false),
-                                                state.parameters.getBoolean(base.push(P_COMPRESS),null,false));
-            }
-        catch (IOException i)
-            {
-            state.output.fatal("An IOException occurred while trying to create the log " + statisticsFile + ":\n" + i);
-            }
+                                      {
+                                      statisticslog = state.output.addLog(statisticsFile,Output.V_NO_GENERAL-1,false,
+                                          !state.parameters.getBoolean(base.push(P_COMPRESS),null,false),
+                                          state.parameters.getBoolean(base.push(P_COMPRESS),null,false));
+                                      }
+            catch (IOException i)
+                {
+                state.output.fatal("An IOException occurred while trying to create the log " + statisticsFile + ":\n" + i);
+                }
         doFull = state.parameters.getBoolean(base.push(P_FULL),null,false);
         }
 
@@ -236,20 +236,20 @@ public class SimpleShortStatistics extends Statistics
             // compute fitness stats
             meanFitness /= state.population.subpops[x].individuals.length;
             state.output.print("" + meanFitness + " " + best_i[x].fitness.fitness() + " ",
-                               Output.V_NO_GENERAL, statisticslog);
+                Output.V_NO_GENERAL, statisticslog);
 
             // now test to see if it's the new best_of_run_a[x]
             if (best_of_run_a[x]==null || best_i[x].fitness.betterThan(best_of_run_a[x].fitness))
                 best_of_run_a[x] = (Individual)(best_i[x].clone());
             
             state.output.print("" + best_of_run_a[x].fitness.fitness() + " ",
-                               Output.V_NO_GENERAL, statisticslog);
+                Output.V_NO_GENERAL, statisticslog);
 
             if( doFull )
                 {
                 state.output.print("" + (double)(best_i[x].size()) + " " +
-                                   (double)(best_of_run_a[x].size()) + " ",
-                                   Output.V_NO_GENERAL, statisticslog);
+                    (double)(best_of_run_a[x].size()) + " ",
+                    Output.V_NO_GENERAL, statisticslog);
                 }
             }
         // we're done!

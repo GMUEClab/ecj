@@ -271,8 +271,8 @@ public class GPTree implements GPNodeParent, Prototype
         {
         Parameter def = defaultBase();
 
-	// print for humans using graphviz?
-	useGraphviz = state.parameters.getBoolean(base.push(P_USEGRAPHVIZ), def.push(P_USEGRAPHVIZ), false);
+        // print for humans using graphviz?
+        useGraphviz = state.parameters.getBoolean(base.push(P_USEGRAPHVIZ), def.push(P_USEGRAPHVIZ), false);
 
         // print for humans using latex?
         useLatex = state.parameters.getBoolean(base.push(P_USELATEX),def.push(P_USELATEX),false);
@@ -288,7 +288,7 @@ public class GPTree implements GPNodeParent, Prototype
 
         // determine my constraints -- at this point, the constraints should have been loaded.
         String s = state.parameters.getString(base.push(P_TREECONSTRAINTS),
-                                              def.push(P_TREECONSTRAINTS));
+            def.push(P_TREECONSTRAINTS));
         if (s==null)
             state.output.fatal("No tree constraints are defined for the GPTree " + base + ".");
         else 
@@ -328,7 +328,7 @@ public class GPTree implements GPNodeParent, Prototype
         printRootedTree(...) method. */
 
     public void printTree(final EvolutionState state, final int log,
-                          final int verbosity)
+        final int verbosity)
         {
         child.printRootedTree(state,log,verbosity,0);
         // printRootedTree doesn't print a '\n', so I need to do so here
@@ -341,7 +341,7 @@ public class GPTree implements GPNodeParent, Prototype
         printRootedTree(...) method. */
 
     public void printTree(final EvolutionState state,
-                          final PrintWriter writer)
+        final PrintWriter writer)
         {
         child.printRootedTree(state,writer,0);
         // printRootedTree doesn't print a '\n', so I need to do so here
@@ -350,7 +350,7 @@ public class GPTree implements GPNodeParent, Prototype
 
     /** Reads in the tree from a form printed by printTree. */
     public void readTree(final EvolutionState state,
-                         final LineNumberReader reader) throws IOException
+        final LineNumberReader reader) throws IOException
         {
         int linenumber = reader.getLineNumber();
 
@@ -358,25 +358,25 @@ public class GPTree implements GPNodeParent, Prototype
         String s = reader.readLine();
         if (s==null)  // uh oh
             state.output.fatal("Reading Line " + linenumber + ": " +
-                               "No Tree found.");
+                "No Tree found.");
         else
             {
             GPInitializer initializer = ((GPInitializer)state.initializer);
             child = GPNode.readRootedTree(linenumber,new DecodeReturn(s),
-                                          constraints(initializer).treetype,
-                                          constraints(initializer).functionset,this,0,state);
+                constraints(initializer).treetype,
+                constraints(initializer).functionset,this,0,state);
             }
         }
 
     public void writeTree(final EvolutionState state,
-                          final DataOutput dataOutput) throws IOException
+        final DataOutput dataOutput) throws IOException
         {
         GPInitializer initializer = ((GPInitializer)state.initializer);
         child.writeRootedTree(state,constraints(initializer).treetype, constraints(initializer).functionset, dataOutput);
         }
 
     public void readTree(final EvolutionState state,
-                         final DataInput dataInput) throws IOException
+        final DataInput dataInput) throws IOException
         {
         GPInitializer initializer = ((GPInitializer)state.initializer);
         child = GPNode.readRootedTree(state,dataInput,constraints(initializer).treetype, constraints(initializer).functionset, this,0);
@@ -388,12 +388,12 @@ public class GPTree implements GPNodeParent, Prototype
         printRootedTreeForHumans(...) method. */
     
     public void printTreeForHumans(final EvolutionState state, final int log,
-                                   final int verbosity)
+        final int verbosity)
         {               
         if (useC) state.output.print(child.makeCTree(true, 
-                                                     printTerminalsAsVariablesInC, printTwoArgumentNonterminalsAsOperatorsInC),verbosity,log);
+                printTerminalsAsVariablesInC, printTwoArgumentNonterminalsAsOperatorsInC),verbosity,log);
         else if (useLatex) state.output.print(child.makeLatexTree(),verbosity,log);
-	else if (useGraphviz) state.output.print(child.makeGraphvizTree(), verbosity, log);
+        else if (useGraphviz) state.output.print(child.makeGraphvizTree(), verbosity, log);
         else child.printRootedTreeForHumans(state,log,verbosity,0,0);
         // printRootedTreeForHumans doesn't print a '\n', so I need to do so here
         state.output.println("",verbosity,log);
@@ -405,11 +405,11 @@ public class GPTree implements GPNodeParent, Prototype
         {
         GPInitializer initializer = ((GPInitializer)state.initializer);
         child = constraints(initializer).init.newRootedTree(state,
-                                                            constraints(initializer).treetype,
-                                                            thread,
-                                                            this,
-                                                            constraints(initializer).functionset,
-                                                            0,
-                                                            GPNodeBuilder.NOSIZEGIVEN);
+            constraints(initializer).treetype,
+            thread,
+            this,
+            constraints(initializer).functionset,
+            0,
+            GPNodeBuilder.NOSIZEGIVEN);
         }
     }

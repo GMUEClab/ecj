@@ -88,10 +88,10 @@ public class DEBreeder extends Breeder
     public static final double SCALE_F = 1.9;
     
     public Individual createIndividual( final EvolutionState state,
-                                        int subpop,
-                                        Individual[] inds,
-                                        int index,
-                                        int thread)
+        int subpop,
+        Individual[] inds,
+        int index,
+        int thread)
         {
         // default value for mutation probability Pm
         double Pm = 1.0 / inds.length;

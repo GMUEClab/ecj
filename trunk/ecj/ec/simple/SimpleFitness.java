@@ -107,7 +107,7 @@ public class SimpleFitness extends Fitness
 
     /** Presently does not decode the fact that the fitness is ideal or not */
     public void readFitness(final EvolutionState state, 
-                            final LineNumberReader reader)
+        final LineNumberReader reader)
         throws IOException
         {
         setFitness(state, Code.readFloatWithPreamble(FITNESS_PREAMBLE, state, reader));
@@ -128,14 +128,14 @@ public class SimpleFitness extends Fitness
         }
 
     public void writeFitness(final EvolutionState state,
-                             final DataOutput dataOutput) throws IOException
+        final DataOutput dataOutput) throws IOException
         {
         dataOutput.writeFloat(fitness);
         dataOutput.writeBoolean(isIdeal);
         }
 
     public void readFitness(final EvolutionState state,
-                            final DataInput dataInput) throws IOException
+        final DataInput dataInput) throws IOException
         {
         fitness = dataInput.readFloat();
         isIdeal = dataInput.readBoolean();

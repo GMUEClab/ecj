@@ -79,7 +79,7 @@ public class FloatVectorIndividual extends VectorIndividual
     public Object clone()
         {
         FloatVectorIndividual myobj = (FloatVectorIndividual) (super
-                                                               .clone());
+            .clone());
 
         // must clone the genome
         myobj.genome = (float[]) (genome.clone());
@@ -108,7 +108,7 @@ public class FloatVectorIndividual extends VectorIndividual
         }
 
     public void defaultCrossover(EvolutionState state, int thread,
-                                 VectorIndividual ind)
+        VectorIndividual ind)
         {
         FloatVectorSpecies s = (FloatVectorSpecies) species;
         FloatVectorIndividual i = (FloatVectorIndividual) ind;
@@ -194,7 +194,7 @@ public class FloatVectorIndividual extends VectorIndividual
         for (int x = 0; x < pieces.length; x++)
             {
             System.arraycopy(pieces[x], 0, newgenome, runningsum,
-                             ((float[]) (pieces[x])).length);
+                ((float[]) (pieces[x])).length);
             runningsum += ((float[]) (pieces[x])).length;
             }
         // set genome
@@ -246,11 +246,11 @@ public class FloatVectorIndividual extends VectorIndividual
                     genome[x] = val;
                     }
             } else
-                {// C_RESET_MUTATION
-                for (int x = 0; x < genome.length; x++)
-                    if (rng.nextBoolean(s.mutationProbability))
-                        genome[x] = (float) ((float) s.minGene(x) + rng.nextFloat() * ((float) s.maxGene(x) - (float) s.minGene(x)));
-                }
+            {// C_RESET_MUTATION
+            for (int x = 0; x < genome.length; x++)
+                if (rng.nextBoolean(s.mutationProbability))
+                    genome[x] = (float) ((float) s.minGene(x) + rng.nextFloat() * ((float) s.maxGene(x) - (float) s.minGene(x)));
+            }
         }
 
     /**
@@ -262,8 +262,8 @@ public class FloatVectorIndividual extends VectorIndividual
         FloatVectorSpecies s = (FloatVectorSpecies) species;
         for (int x = 0; x < genome.length; x++)
             genome[x] = (float) ((float) s.minGene(x) + state.random[thread]
-                                 .nextFloat()
-                                 * ((float) s.maxGene(x) - (float) s.minGene(x)));
+                .nextFloat()
+                * ((float) s.maxGene(x) - (float) s.minGene(x)));
         }
 
     public int hashCode()
@@ -296,7 +296,7 @@ public class FloatVectorIndividual extends VectorIndividual
         }
 
     protected void parseGenotype(final EvolutionState state,
-                                 final LineNumberReader reader) throws IOException
+        final LineNumberReader reader) throws IOException
         {
         // read in the next line. The first item is the number of genes
         String s = reader.readLine();
@@ -343,7 +343,7 @@ public class FloatVectorIndividual extends VectorIndividual
         }
 
     public void writeGenotype(final EvolutionState state,
-                              final DataOutput dataOutput) throws IOException
+        final DataOutput dataOutput) throws IOException
         {
         dataOutput.writeInt(genome.length);
         for (int x = 0; x < genome.length; x++)
@@ -351,7 +351,7 @@ public class FloatVectorIndividual extends VectorIndividual
         }
 
     public void readGenotype(final EvolutionState state,
-                             final DataInput dataInput) throws IOException
+        final DataInput dataInput) throws IOException
         {
         int len = dataInput.readInt();
         if (genome == null || genome.length != len)
@@ -384,7 +384,7 @@ public class FloatVectorIndividual extends VectorIndividual
         {
         float[] newGenome = new float[len];
         System.arraycopy(genome, 0, newGenome, len, 
-                         genome.length < newGenome.length ? genome.length : newGenome.length);
+            genome.length < newGenome.length ? genome.length : newGenome.length);
         genome = newGenome;
         }
 

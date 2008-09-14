@@ -63,7 +63,7 @@ public class GPSpecies extends Species
 
         // Set the species to me
         newind.species = this;
-		
+                
         // ...and we're ready!
         return newind;
         }
@@ -72,7 +72,7 @@ public class GPSpecies extends Species
     // A custom version of newIndividual() which guarantees that the
     // prototype is light-cloned before readIndividual is issued
     public Individual newIndividual(final EvolutionState state,
-                                    final LineNumberReader reader)
+        final LineNumberReader reader)
         throws IOException
         {
         GPIndividual newind = ((GPIndividual)i_prototype).lightClone();
@@ -95,7 +95,7 @@ public class GPSpecies extends Species
     // A custom version of newIndividual() which guarantees that the
     // prototype is light-cloned before readIndividual is issued
     public Individual newIndividual(final EvolutionState state,
-                                    final DataInput dataInput)
+        final DataInput dataInput)
         throws IOException
         {
         GPIndividual newind = ((GPIndividual)i_prototype).lightClone();

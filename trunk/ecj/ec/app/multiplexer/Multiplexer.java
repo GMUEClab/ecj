@@ -60,7 +60,7 @@ public class Multiplexer extends GPProblem implements SimpleProblemForm
         }
 
     public void setup(final EvolutionState state,
-                      final Parameter base)
+        final Parameter base)
         {
         // very important, remember this
         super.setup(state,base);
@@ -81,9 +81,9 @@ public class Multiplexer extends GPProblem implements SimpleProblemForm
 
 
     public void evaluate(final EvolutionState state, 
-                         final Individual ind, 
-                         final int subpopulation,
-                         final int threadnum)
+        final Individual ind, 
+        final int subpopulation,
+        final int threadnum)
         {
         input.status = (byte)bits;
 

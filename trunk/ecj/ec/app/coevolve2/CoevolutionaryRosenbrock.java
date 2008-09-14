@@ -35,11 +35,11 @@ public class CoevolutionaryRosenbrock extends Problem implements GroupedProblemF
         }
 
     public void evaluate(final EvolutionState state,
-                         final Individual[] ind,  // the individuals to evaluate together
-                         final boolean[] updateFitness,  // should this individuals' fitness be updated?
-                         final boolean countVictoriesOnly, // can be neglected in cooperative coevolution
-                         int[] subpops,
-                         final int threadnum)
+        final Individual[] ind,  // the individuals to evaluate together
+        final boolean[] updateFitness,  // should this individuals' fitness be updated?
+        final boolean countVictoriesOnly, // can be neglected in cooperative coevolution
+        int[] subpops,
+        final int threadnum)
         {
         if( ind.length != 2 ||
             ( ! ( ind[0] instanceof DoubleVectorIndividual ) ) ||

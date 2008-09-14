@@ -105,7 +105,7 @@ public class Output implements Serializable
     
     public void setFilePrefix(String filePrefix) {
         this.filePrefix = filePrefix;
-    }
+        }
 
     protected void finalize() throws Throwable
         {
@@ -212,10 +212,10 @@ public class Output implements Serializable
         and compress at the same time.*/
 
     public synchronized int addLog(File filename,
-                                   int _verbosity,
-                                   boolean postAnnouncements,
-                                   boolean appendOnRestart,
-                                   boolean gzip) throws IOException
+        int _verbosity,
+        boolean postAnnouncements,
+        boolean appendOnRestart,
+        boolean gzip) throws IOException
         {
         if (filePrefix != null && filePrefix.length()>0)
             filename = new File(filename.getParent(),filePrefix+filename.getName());
@@ -235,9 +235,9 @@ public class Output implements Serializable
         never store the log itself, which may go away upon a system restart. */
 
     public synchronized int addLog(File filename,
-                                   int _verbosity,
-                                   boolean postAnnouncements,
-                                   boolean appendOnRestart) throws IOException
+        int _verbosity,
+        boolean postAnnouncements,
+        boolean appendOnRestart) throws IOException
         {
         if (filePrefix != null && filePrefix.length()>0)
             filename = new File(filename.getParent(),filePrefix+filename.getName());
@@ -255,8 +255,8 @@ public class Output implements Serializable
         never store the log itself, which may go away upon a system restart. */
     
     public synchronized int addLog(int descriptor,
-                                   int _verbosity,
-                                   boolean postAnnouncements)
+        int _verbosity,
+        boolean postAnnouncements)
         {
         logs.addElement(new Log(descriptor,_verbosity,postAnnouncements));
         return logs.size()-1;
@@ -272,10 +272,10 @@ public class Output implements Serializable
         never store the log itself, which may go away upon a system restart. */
 
     public synchronized int addLog(Writer writer,
-                                   LogRestarter restarter,
-                                   int _verbosity,
-                                   boolean postAnnouncements,
-                                   boolean repostAnnouncements)
+        LogRestarter restarter,
+        int _verbosity,
+        boolean postAnnouncements,
+        boolean repostAnnouncements)
         {
         logs.addElement(new Log(writer,restarter,_verbosity,postAnnouncements,repostAnnouncements));
         return logs.size()-1;
@@ -504,10 +504,10 @@ public class Output implements Serializable
         <i>_announcement</i> indicates that the message is an announcement. */
 
     protected synchronized void println(String s,
-                                        int _verbosity,
-                                        Log log,
-                                        boolean _announcement,
-                                        boolean _reposting) throws OutputException
+        int _verbosity,
+        Log log,
+        boolean _announcement,
+        boolean _reposting) throws OutputException
         {
         if (log.writer==null) throw new OutputException("Log with a null writer: " + log);
         if (!log.postAnnouncements && _announcement) return;  // don't write it
@@ -525,16 +525,16 @@ public class Output implements Serializable
     /** Prints a message to a given log, 
         with a certain verbosity.  If log==ALL_LOGS, posted to all logs. */
     public synchronized void println(String s,
-                                     int _verbosity,
-                                     int log,
-                                     boolean _announcement) throws OutputException
+        int _verbosity,
+        int log,
+        boolean _announcement) throws OutputException
         {
         if (log==ALL_LOGS) for (int x = 0; x<logs.size();x++)
-            {
-            Log l = (Log) logs.elementAt(x);
-            if (l==null) throw new OutputException("Unknown log number" + l);
-            println(s,_verbosity,l,_announcement,false);
-            }
+                               {
+                               Log l = (Log) logs.elementAt(x);
+                               if (l==null) throw new OutputException("Unknown log number" + l);
+                               println(s,_verbosity,l,_announcement,false);
+                               }
         else
             {
             Log l = (Log) logs.elementAt(log);
@@ -546,8 +546,8 @@ public class Output implements Serializable
     /** Prints a non-announcement message to the given logs, 
         with a certain verbosity. */
     public synchronized void println(String s,
-                                     int _verbosity,
-                                     int[] _logs) throws OutputException
+        int _verbosity,
+        int[] _logs) throws OutputException
         {
         for(int x=0;x<_logs.length;x++)
             println(s,_verbosity,(Log)(logs.elementAt(_logs[x])),false,false);
@@ -557,8 +557,8 @@ public class Output implements Serializable
     /** Prints a non-announcement message to the given logs, 
         with a certain verbosity. */
     public synchronized void println(String s,
-                                     int _verbosity,
-                                     int log) throws OutputException
+        int _verbosity,
+        int log) throws OutputException
         {
         println(s,_verbosity,(Log)(logs.elementAt(log)),false,false);
         }
@@ -567,8 +567,8 @@ public class Output implements Serializable
     /** Prints a non-announcement message to a given log, with a 
         certain verbosity. No '\n' is printed.  */
     protected synchronized void print(String s,
-                                      int _verbosity,
-                                      Log log) throws OutputException
+        int _verbosity,
+        Log log) throws OutputException
         {
         if (log.writer==null) throw new OutputException("Log with a null writer: " + log);
         if (log.verbosity >= _verbosity) return;  // don't write it
@@ -582,15 +582,15 @@ public class Output implements Serializable
         certain verbosity. If log==ALL_LOGS, posted to all logs. 
         No '\n' is printed.  */
     public synchronized void print(String s,
-                                   int _verbosity,
-                                   int log) throws OutputException
+        int _verbosity,
+        int log) throws OutputException
         {
         if (log==ALL_LOGS) for (int x = 0; x<logs.size();x++)
-            {
-            Log l = (Log) logs.elementAt(x);
-            if (l==null) throw new OutputException("Unknown log number" + l);
-            print(s,_verbosity,l);
-            }
+                               {
+                               Log l = (Log) logs.elementAt(x);
+                               if (l==null) throw new OutputException("Unknown log number" + l);
+                               print(s,_verbosity,l);
+                               }
         else
             {
             Log l = (Log) logs.elementAt(log);
@@ -602,8 +602,8 @@ public class Output implements Serializable
     /** Prints a non-announcement message to the given logs, 
         with a certain verbosity. No '\n' is printed.  */
     public synchronized void print(String s,
-                                   int _verbosity,
-                                   int[] _logs) throws OutputException
+        int _verbosity,
+        int[] _logs) throws OutputException
         {
         for(int x=0;x<_logs.length;x++)
             print(s,_verbosity,_logs[x]);

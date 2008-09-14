@@ -46,11 +46,11 @@ public class LawnERC extends ERC
         maxx = state.parameters.getInt(newbase.push(Lawnmower.P_X),null,1);
         if (maxx==0)
             state.output.error("The width (x dimension) of the lawn must be >0",
-                               newbase.push(Lawnmower.P_X));
+                newbase.push(Lawnmower.P_X));
         maxy = state.parameters.getInt(newbase.push(Lawnmower.P_Y),null,1);
         if (maxy==0)
             state.output.error("The length (y dimension) of the lawn must be >0",
-                               newbase.push(Lawnmower.P_X));
+                newbase.push(Lawnmower.P_X));
         state.output.exitIfErrors();      
         }
 
@@ -134,11 +134,11 @@ public class LawnERC extends ERC
         { return "[" + x + "," + y + "]"; }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
         {
         LawnmowerData rd = ((LawnmowerData)(input));
         rd.x = x;

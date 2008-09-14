@@ -31,7 +31,7 @@ public class ParameterDatabaseTreeModel
     public ParameterDatabaseTreeModel(TreeNode root) {
         super(root);
         visibleLeaves = true;
-    }
+        }
 
     /**
      * @param root
@@ -40,21 +40,21 @@ public class ParameterDatabaseTreeModel
     public ParameterDatabaseTreeModel(TreeNode root, boolean asksAllowsChildren) {
         super(root, asksAllowsChildren);
         visibleLeaves = true;
-    }
+        }
 
     /**
      * @param visibleLeaves
      */
     public void setVisibleLeaves(boolean visibleLeaves) {
         this.visibleLeaves = visibleLeaves;
-    }
+        }
     
     /**
      * @return
      */
     public boolean getVisibleLeaves() {
         return visibleLeaves;
-    }
+        }
     
     /* (non-Javadoc)
      * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
@@ -67,7 +67,7 @@ public class ParameterDatabaseTreeModel
             }
         
         return ((TreeNode)parent).getChildAt(index);
-    }
+        }
     
     /* (non-Javadoc)
      * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
@@ -80,7 +80,7 @@ public class ParameterDatabaseTreeModel
             }
         
         return ((TreeNode)parent).getChildCount();
-    }
+        }
     
     /**
      * @param parent
@@ -88,5 +88,5 @@ public class ParameterDatabaseTreeModel
      */
     public void sort(Object parent, Comparator comp) {
         ((ParameterDatabaseTreeNode)parent).sort(comp);
-    }
+        }
     }

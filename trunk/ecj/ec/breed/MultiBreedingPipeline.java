@@ -102,16 +102,16 @@ public class MultiBreedingPipeline extends BreedingPipeline
 
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
 
         {
         BreedingSource s = sources[BreedingSource.pickRandom(
-                                       sources,state.random[thread].nextFloat())];
+                sources,state.random[thread].nextFloat())];
         int total;
         
         if (generateMax)

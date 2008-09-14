@@ -119,9 +119,9 @@ public abstract class ERC extends GPNode
 
     /** Checks to make certain that the ERC has no children. */
     public void checkConstraints(final EvolutionState state,
-                                 final int tree,
-                                 final GPIndividual typicalIndividual,
-                                 final Parameter individualBase)
+        final int tree,
+        final GPIndividual typicalIndividual,
+        final Parameter individualBase)
         {
         super.checkConstraints(state,tree,typicalIndividual,individualBase);
         // make sure we don't have any children...

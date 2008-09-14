@@ -96,8 +96,8 @@ public class LexicographicTournamentSelection extends SelectionMethod implements
     // I hard-code both produce(...) methods for efficiency's sake
 
     public int produce(final int subpopulation,
-                       final EvolutionState state,
-                       final int thread)
+        final EvolutionState state,
+        final int thread)
         {
         // pick size random individuals, then pick the best.
         Individual[] oldinds = (state.population.subpops[subpopulation].individuals);
@@ -142,9 +142,9 @@ public class LexicographicTournamentSelection extends SelectionMethod implements
         }
 
     public void individualReplaced(final SteadyStateEvolutionState state,
-                                   final int subpopulation,
-                                   final int thread,
-                                   final int individual)
+        final int subpopulation,
+        final int thread,
+        final int individual)
         { return; }
     
     public void sourcesAreProperForm(final SteadyStateEvolutionState state)

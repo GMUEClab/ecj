@@ -84,7 +84,7 @@ public class BufferedBreedingPipeline extends BreedingPipeline
         Parameter def = defaultBase();
 
         int bufsize = state.parameters.getInt(base.push(P_BUFSIZE),
-                                              def.push(P_BUFSIZE),1);
+            def.push(P_BUFSIZE),1);
         if (bufsize == 0)
             state.output.fatal("BufferedBreedingPipeline's number of individuals must be >= 1.",base.push(P_BUFSIZE),def.push(P_BUFSIZE));
         
@@ -94,8 +94,8 @@ public class BufferedBreedingPipeline extends BreedingPipeline
 
 
     public void prepareToProduce(final EvolutionState state,
-                                 final int subpopulation,
-                                 final int thread)
+        final int subpopulation,
+        final int thread)
         {
         super.prepareToProduce(state,subpopulation,thread);
         // reset my number of individuals to 0
@@ -104,12 +104,12 @@ public class BufferedBreedingPipeline extends BreedingPipeline
 
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
 
         {
         for(int q=start;q<min+start; q++ )
@@ -117,7 +117,7 @@ public class BufferedBreedingPipeline extends BreedingPipeline
             if (currentSize==0)         // reload
                 {
                 sources[0].produce(buffer.length,buffer.length,
-                                   0,subpopulation,buffer,state,thread);
+                    0,subpopulation,buffer,state,thread);
                 currentSize=buffer.length;
                 
                 // clone if necessary

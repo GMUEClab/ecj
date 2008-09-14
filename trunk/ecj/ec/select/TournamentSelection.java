@@ -117,8 +117,8 @@ public class TournamentSelection extends SelectionMethod implements SteadyStateB
     // I hard-code both produce(...) methods for efficiency's sake
 
     public int produce(final int subpopulation,
-                       final EvolutionState state,
-                       final int thread)
+        final EvolutionState state,
+        final int thread)
         {
         // pick size random individuals, then pick the best.
         Individual[] oldinds = state.population.subpops[subpopulation].individuals;
@@ -143,12 +143,12 @@ public class TournamentSelection extends SelectionMethod implements SteadyStateB
     // I hard-code both produce(...) methods for efficiency's sake
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
         {
         int n = 1;
         if (n>max) n = max;
@@ -177,9 +177,9 @@ public class TournamentSelection extends SelectionMethod implements SteadyStateB
         }
 
     public void individualReplaced(final SteadyStateEvolutionState state,
-                                   final int subpopulation,
-                                   final int thread,
-                                   final int individual)
+        final int subpopulation,
+        final int thread,
+        final int individual)
         { return; }
     
     public void sourcesAreProperForm(final SteadyStateEvolutionState state)

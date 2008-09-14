@@ -32,14 +32,14 @@ class ParameterDatabaseTreeNode
      */
     public ParameterDatabaseTreeNode() {
         super();
-    }
+        }
 
     /**
      * @param userObject
      */
     public ParameterDatabaseTreeNode(Object userObject) {
         super(userObject);
-    }
+        }
 
     /**
      * @param userObject
@@ -47,7 +47,7 @@ class ParameterDatabaseTreeNode
      */
     public ParameterDatabaseTreeNode(Object userObject, boolean allowsChildren) {
         super(userObject, allowsChildren);
-    }
+        }
     
     /**
      * @param index
@@ -74,7 +74,7 @@ class ParameterDatabaseTreeNode
             }
         
         return super.getChildAt(index);
-    }
+        }
     
     /**
      * @param visibleLeaves
@@ -93,7 +93,7 @@ class ParameterDatabaseTreeNode
             }
         
         return super.getChildCount();
-    }
+        }
     
     /* (non-Javadoc)
      * @see java.lang.Comparable#compareTo(java.lang.Object)
@@ -102,7 +102,7 @@ class ParameterDatabaseTreeNode
         ParameterDatabaseTreeNode n = (ParameterDatabaseTreeNode)o;
 
         return ((Comparable)userObject).compareTo(n.userObject);
-    }
+        }
     
     /**
      * @param comp
@@ -121,5 +121,5 @@ class ParameterDatabaseTreeNode
                 (ParameterDatabaseTreeNode)e.nextElement();
             n.sort(comp);
             }
-    }
+        }
     }

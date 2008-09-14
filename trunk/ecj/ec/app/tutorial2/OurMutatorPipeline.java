@@ -46,12 +46,12 @@ public class OurMutatorPipeline extends BreedingPipeline
     // source to stick those individuals into inds[] and then mutating them
     // right there.
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
         {
         // grab individuals from our source and stick 'em right into inds.
         // we'll modify them from there
@@ -72,7 +72,7 @@ public class OurMutatorPipeline extends BreedingPipeline
 
         if (!(inds[start] instanceof IntegerVectorIndividual)) // uh oh, wrong kind of individual
             state.output.fatal("OurMutatorPipeline didn't get an IntegerVectorIndividual." +
-                               "The offending individual is in subpopulation " + subpopulation + " and it's:" + inds[start]);
+                "The offending individual is in subpopulation " + subpopulation + " and it's:" + inds[start]);
         IntegerVectorSpecies species = (IntegerVectorSpecies)(inds[start].species);
 
         // mutate 'em!

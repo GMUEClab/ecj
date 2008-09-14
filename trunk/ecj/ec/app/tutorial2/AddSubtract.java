@@ -13,9 +13,9 @@ import ec.vector.*;
 public class AddSubtract extends Problem implements SimpleProblemForm
     {
     public void evaluate(final EvolutionState state,
-                         final Individual ind,
-                         final int subpopulation,
-                         final int threadnum)
+        final Individual ind,
+        final int subpopulation,
+        final int threadnum)
         {
         if (ind.evaluated) return;
 
@@ -37,20 +37,20 @@ public class AddSubtract extends Problem implements SimpleProblemForm
         if (!(ind2.fitness instanceof SimpleFitness))
             state.output.fatal("Whoa!  It's not a SimpleFitness!!!",null);
         ((SimpleFitness)ind2.fitness).setFitness(state,
-                                                 // what the heck, lets normalize the fitness for genome length
-                                                 // so it's within float range
-                                                 (float)(((double)rawfitness)/ind2.genome.length),
-                                                 ///... is the individual ideal?  Indicate here...
-                                                 false);
+            // what the heck, lets normalize the fitness for genome length
+            // so it's within float range
+            (float)(((double)rawfitness)/ind2.genome.length),
+            ///... is the individual ideal?  Indicate here...
+            false);
         ind2.evaluated = true;
         }
     
     public void describe(final Individual ind, 
-                         final EvolutionState state, 
-                         final int subpopulation, 
-                         final int threadnum,
-                         final int log,
-                         final int verbosity)
+        final EvolutionState state, 
+        final int subpopulation, 
+        final int threadnum,
+        final int log,
+        final int verbosity)
         {
         }
     }

@@ -55,12 +55,12 @@ public class RuleMutationPipeline extends BreedingPipeline
     public int typicalIndsProduced() { return (INDS_PRODUCED); }
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
         {
         // grab n individuals from our source and stick 'em right into inds.
         // we'll modify them from there

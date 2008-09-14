@@ -66,7 +66,7 @@ public class SteadyStateBreeder extends SimpleBreeder
         use this method, you must call state.output.exitIfErrors() immediately 
         afterwards. */
     public void sourcesAreProperForm(final SteadyStateEvolutionState state,
-                                     final BreedingPipeline[] breedingPipelines)
+        final BreedingPipeline[] breedingPipelines)
         {
         for(int x=0;x<breedingPipelines.length;x++)
             {
@@ -79,9 +79,9 @@ public class SteadyStateBreeder extends SimpleBreeder
     /** Called whenever individuals have been replaced by new
         individuals in the population. */
     public void individualReplaced(final SteadyStateEvolutionState state,
-                                   final int subpopulation,
-                                   final int thread,
-                                   final int individual)
+        final int subpopulation,
+        final int thread,
+        final int individual)
         {
         for(int x=0;x<bp.length;x++)
             ((SteadyStateBSourceForm)bp[x]).

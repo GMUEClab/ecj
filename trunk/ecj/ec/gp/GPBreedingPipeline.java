@@ -39,9 +39,9 @@ public abstract class GPBreedingPipeline extends BreedingPipeline
 
     /** Returns true if <i>s</i> is a GPSpecies. */
     public boolean produces(final EvolutionState state,
-                            final Population newpop,
-                            final int subpopulation,
-                            final int thread)
+        final Population newpop,
+        final int subpopulation,
+        final int thread)
         {
         if (!super.produces(state,newpop,subpopulation,thread)) return false;
 

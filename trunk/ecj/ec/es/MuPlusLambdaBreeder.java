@@ -42,8 +42,8 @@ public class MuPlusLambdaBreeder extends MuCommaLambdaBreeder
                 {
                 Individual[] newinds = new Individual[s];
                 System.arraycopy(pop.subpops[x].individuals,0,newinds,0,
-                                 s < pop.subpops[x].individuals.length ? 
-                                 s : pop.subpops[x].individuals.length);
+                    s < pop.subpops[x].individuals.length ? 
+                    s : pop.subpops[x].individuals.length);
                 pop.subpops[x].individuals = newinds;
                 }
             }

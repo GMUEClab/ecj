@@ -120,21 +120,21 @@ public class MutateDemotePipeline extends GPBreedingPipeline
         Parameter def = defaultBase();
 
         numTries = state.parameters.getInt(base.push(P_NUM_TRIES),
-                                           def.push(P_NUM_TRIES),1);
+            def.push(P_NUM_TRIES),1);
         if (numTries == 0)
             state.output.fatal("MutateDemotePipeline has an invalid number of tries (it must be >= 1).",base.push(P_NUM_TRIES),def.push(P_NUM_TRIES));
     
         maxDepth = state.parameters.getInt(base.push(P_MAXDEPTH),
-                                           def.push(P_MAXDEPTH),1);
+            def.push(P_MAXDEPTH),1);
         if (maxDepth==0)
             state.output.fatal("The MutateDemotePipeline " + base + "has an invalid maximum depth (it must be >= 1).",base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
 
         tree = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+0),
-                                    def.push(P_TREE).push(""+0)))
+                def.push(P_TREE).push(""+0)))
             {
             tree = state.parameters.getInt(base.push(P_TREE).push(""+0),
-                                           def.push(P_TREE).push(""+0),0);
+                def.push(P_TREE).push(""+0),0);
             if (tree==-1)
                 state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
@@ -149,7 +149,7 @@ public class MutateDemotePipeline extends GPBreedingPipeline
 
 
     private boolean demotable(final GPInitializer initializer,
-                              final GPNode node, final GPFunctionSet set)
+        final GPNode node, final GPFunctionSet set)
         {
         GPType t;
 
@@ -263,8 +263,8 @@ public class MutateDemotePipeline extends GPBreedingPipeline
                                     {
                                     // hang a randomly-generated terminal off of cnode
                                     GPNode term = (GPNode)(set.terminals[chityp[z].type][
-                                                               state.random[thread].nextInt(
-                                                                   set.terminals[chityp[z].type].length)].lightClone());
+                                            state.random[thread].nextInt(
+                                                set.terminals[chityp[z].type].length)].lightClone());
                                     cnode.children[z] = term;
                                     term.parent = cnode; // just in case
                                     term.argposition = (byte)z;  // just in case
@@ -278,8 +278,8 @@ public class MutateDemotePipeline extends GPBreedingPipeline
                                 {
                                 // hang a randomly-generated terminal off of cnode
                                 GPNode term = (GPNode)(set.terminals[chityp[z].type][
-                                                           state.random[thread].nextInt(
-                                                               set.terminals[chityp[z].type].length)].lightClone());
+                                        state.random[thread].nextInt(
+                                            set.terminals[chityp[z].type].length)].lightClone());
                                 cnode.children[z] = term;
                                 term.parent = cnode; // just in case
                                 term.argposition = (byte)z;  // just in case
@@ -351,7 +351,7 @@ public class MutateDemotePipeline extends GPBreedingPipeline
 
 
     private int numDemotableNodes(final GPInitializer initializer,
-                                  final GPNode root, int soFar, final GPFunctionSet set)
+        final GPNode root, int soFar, final GPFunctionSet set)
         {
         // if I have just one type, skip this and just return
         // the number of nonterminals in the tree
@@ -364,7 +364,7 @@ public class MutateDemotePipeline extends GPBreedingPipeline
 
 
     private int _numDemotableNodes(final GPInitializer initializer,
-                                   final GPNode root, int soFar, final GPFunctionSet set)
+        final GPNode root, int soFar, final GPFunctionSet set)
         {
         if (demotable(initializer,root, set)) soFar++;
         for(int x=0;x<root.children.length;x++) 
@@ -377,7 +377,7 @@ public class MutateDemotePipeline extends GPBreedingPipeline
 
 
     private int pickDemotableNode(final GPInitializer initializer,
-                                  final GPNode root, int num, final GPFunctionSet set)
+        final GPNode root, int num, final GPFunctionSet set)
         {
         // if I have just one type, skip this and just 
         // the num-th nonterminal
@@ -398,7 +398,7 @@ public class MutateDemotePipeline extends GPBreedingPipeline
 
     // sticks the node in 
     private int _pickDemotableNode(final GPInitializer initializer,
-                                   final GPNode root, int num, final GPFunctionSet set)
+        final GPNode root, int num, final GPFunctionSet set)
         {
         if (demotable(initializer,root, set))
             {
@@ -435,12 +435,12 @@ public class MutateDemotePipeline extends GPBreedingPipeline
 
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
         {
         // grab n individuals from our source and stick 'em right into inds.
         // we'll modify them from there

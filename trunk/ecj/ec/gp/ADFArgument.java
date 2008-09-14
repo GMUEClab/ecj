@@ -69,7 +69,7 @@ public class ADFArgument extends GPNode
         argument = state.parameters.getInt(base.push(P_ARGUMENT),def.push(P_ARGUMENT),0);
         if (argument < 0)
             state.output.fatal("Argument terminal must have a positive argument number.",
-                               base.push(P_ARGUMENT),def.push(P_ARGUMENT));
+                base.push(P_ARGUMENT),def.push(P_ARGUMENT));
         }
 
     public String toString() { return  "ARG[" + argument + "]"; }
@@ -87,11 +87,11 @@ public class ADFArgument extends GPNode
         }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
         {
         // get the current context
         ADFContext c = stack.top(0);

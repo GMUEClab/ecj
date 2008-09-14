@@ -51,8 +51,8 @@ public class Code
     {
     /** Encodes a boolean. */
     public static String encode(final boolean b) 
-        // old style -- no longer used
-        // { return b ? Boolean.TRUE.toString() : Boolean.FALSE.toString(); }
+    // old style -- no longer used
+    // { return b ? Boolean.TRUE.toString() : Boolean.FALSE.toString(); }
         { return b ? "T" : "F"; }
 
     /** Encodes a byte. */
@@ -505,9 +505,9 @@ public class Code
                     try
                         {
                         sb.append((char)(Integer.decode("0x" + c +
-                                                        dat.charAt(x+1) +
-                                                        dat.charAt(x+2) +
-                                                        dat.charAt(x+3)).intValue()));;
+                                    dat.charAt(x+1) +
+                                    dat.charAt(x+2) +
+                                    dat.charAt(x+3)).intValue()));;
                         x+=3;
                         }
                     catch (NumberFormatException e)
@@ -551,10 +551,10 @@ public class Code
                         try
                             {
                             c = (char)(Integer.decode("0x" + 
-                                                      dat.charAt(x+1) +
-                                                      dat.charAt(x+2) +
-                                                      dat.charAt(x+3) +
-                                                      dat.charAt(x+4)).intValue());
+                                    dat.charAt(x+1) +
+                                    dat.charAt(x+2) +
+                                    dat.charAt(x+3) +
+                                    dat.charAt(x+4)).intValue());
                             }
                         catch (NumberFormatException e)
                             { d.type = DecodeReturn.T_ERROR; d.s = "Bad Unicode in char"; return; }
@@ -610,7 +610,7 @@ public class Code
     /** Finds the next nonblank line, then trims the line and checks the preamble.  Returns a DecodeReturn on the line if successful, else posts a fatal error.
         Sets the DecodeReturn's line number.  The DecodeReturn has not yet been decoded.  You'll need to do that with Code.decode(...) */
     public static DecodeReturn checkPreamble(String preamble, final EvolutionState state, 
-                                             final LineNumberReader reader)
+        final LineNumberReader reader)
         {
         int linenumber = 0;  // throw it away later
         try
@@ -626,7 +626,7 @@ public class Code
             // check the preamble
             if (s==null || !(s = s.trim()).startsWith(preamble)) // uh oh
                 state.output.fatal("Line " + linenumber + 
-                                   "has bad preamble.  Expected '" + preamble + "'. -->" + s);
+                    "has bad preamble.  Expected '" + preamble + "'. -->" + s);
             DecodeReturn d = new DecodeReturn(s, preamble.length());
             d.lineNumber = linenumber;
             return d;
@@ -641,13 +641,13 @@ public class Code
     /** Finds the next nonblank line, skips past an expected preamble, and reads in an integer if there is one, and returns it.
         Generates an error otherwise. */
     public static int readIntegerWithPreamble(String preamble, final EvolutionState state, 
-                                              final LineNumberReader reader)
+        final LineNumberReader reader)
         {
         DecodeReturn d = checkPreamble(preamble, state, reader);
         Code.decode(d);
         if (d.type!=DecodeReturn.T_INT)
             state.output.fatal("Line " + d.lineNumber + 
-                               "has no integer after preamble '" + preamble + "'. -->" + d.data);
+                "has no integer after preamble '" + preamble + "'. -->" + d.data);
         return (int)(d.l);
         }
 
@@ -655,39 +655,39 @@ public class Code
     /** Finds the next nonblank line, skips past an expected preamble, and reads in a float if there is one, and returns it. 
         Generates an error otherwise. */
     public static float readFloatWithPreamble(String preamble, final EvolutionState state, 
-                                              final LineNumberReader reader)
+        final LineNumberReader reader)
         {
         DecodeReturn d = checkPreamble(preamble, state, reader);
         Code.decode(d);
         if (d.type!=DecodeReturn.T_FLOAT)
             state.output.fatal("Line " + d.lineNumber + 
-                               "has no floating point number after preamble '" + preamble + "'. -->" + d.data);
+                "has no floating point number after preamble '" + preamble + "'. -->" + d.data);
         return (float)(d.d);
         }
 
     /** Finds the next nonblank line, skips past an expected preamble, and reads in a float if there is one, and returns it. 
         Generates an error otherwise. */
     public static double readDoubleWithPreamble(String preamble, final EvolutionState state, 
-                                                final LineNumberReader reader)
+        final LineNumberReader reader)
         {
         DecodeReturn d = checkPreamble(preamble, state, reader);
         Code.decode(d);
         if (d.type!=DecodeReturn.T_DOUBLE)
             state.output.fatal("Line " + d.lineNumber + 
-                               "has no double floating point number after preamble '" + preamble + "'. -->" + d.data);
+                "has no double floating point number after preamble '" + preamble + "'. -->" + d.data);
         return d.d;
         }
 
     /** Finds the next nonblank line, skips past an expected preamble, and reads in a boolean value ("true" or "false") if there is one, and returns it. 
         Generates an error otherwise. */
     public static boolean readBooleanWithPreamble(String preamble, final EvolutionState state, 
-                                                  final LineNumberReader reader)
+        final LineNumberReader reader)
         {
         DecodeReturn d = checkPreamble(preamble, state, reader);
         Code.decode(d);
         if (d.type!=DecodeReturn.T_BOOLEAN)
             state.output.fatal("Line " + d.lineNumber + 
-                               "has no boolean value ('true' or 'false') after preamble '" + preamble + "'. -->" + d.data);
+                "has no boolean value ('true' or 'false') after preamble '" + preamble + "'. -->" + d.data);
         return (d.l != 0);
         }
 

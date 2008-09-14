@@ -325,7 +325,7 @@ public class ControlPanel extends JPanel
                 public void itemStateChanged(java.awt.event.ItemEvent e) 
                     {    
                     console.parameters.set(new Parameter(EvolutionState.P_QUITONRUNCOMPLETE),
-                                           "" + ((JCheckBox)e.getSource()).isSelected());
+                        "" + ((JCheckBox)e.getSource()).isSelected());
                     }
                 });
             }
@@ -604,7 +604,7 @@ public class ControlPanel extends JPanel
                         String seedFileName = seedFileField.getText();
                         File seedFile = null;
                         if ( seedFileName == null ||
-                             seedFileName.length() == 0) 
+                            seedFileName.length() == 0) 
                             {
                             FileDialog fileDialog = new FileDialog(ControlPanel.this.console,"Load...",FileDialog.LOAD);
                             fileDialog.setDirectory(System.getProperty("user.dir"));
@@ -937,7 +937,7 @@ public class ControlPanel extends JPanel
     public void loadParameters() 
         {
         numGensField.setText(console.parameters.getStringWithDefault(
-                                 new Parameter(EvolutionState.P_GENERATIONS),null,"1"));
+                new Parameter(EvolutionState.P_GENERATIONS),null,"1"));
         quitOnRunCompleteCheckbox.setSelected(console.parameters.getBoolean(new Parameter(EvolutionState.P_QUITONRUNCOMPLETE),null,true));
         evalThreadsField.setText(console.parameters.getStringWithDefault(new Parameter(Evolve.P_EVALTHREADS),null,"1"));
         breedThreadsField.setText(console.parameters.getStringWithDefault(new Parameter(Evolve.P_BREEDTHREADS),null,"1"));

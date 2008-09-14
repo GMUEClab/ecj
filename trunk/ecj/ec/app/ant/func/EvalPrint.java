@@ -24,11 +24,11 @@ import ec.gp.*;
 public interface EvalPrint
     {
     public void evalPrint(final EvolutionState state,
-                          final int thread,
-                          final GPData input,
-                          final ADFStack stack,
-                          final GPIndividual individual,
-                          final Problem problem,
-                          final int[][] map2 );
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem,
+        final int[][] map2 );
     
     }
