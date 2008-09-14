@@ -126,8 +126,8 @@ public class ParametersPanel
                             if (file != null)
                                 newRow[2] = file.getCanonicalPath();
                             } catch (IOException ex)
-                                {
-                                }
+                            {
+                            }
                         
                         if (newRow[1] != null)
                             {
@@ -157,8 +157,8 @@ public class ParametersPanel
                                 if (file != null)
                                     childRow[2] = file.getCanonicalPath();
                                 } catch (IOException ex)
-                                    {
-                                    }
+                                {
+                                }
                             if (childRow[1] != null)
                                 {
                                 tableModel.addRow(childRow);

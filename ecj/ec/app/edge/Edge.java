@@ -203,21 +203,21 @@ public class Edge extends GPProblem implements SimpleProblemForm
 
         // is this correct?
         java.util.Arrays.sort(newcases,
-                              new java.util.Comparator()
-                                  {
-                                  public int compare(Object a, Object b)
-                                      {
-                                      boolean[] aa = (boolean[])a;
-                                      boolean[] bb = (boolean[])b;
+            new java.util.Comparator()
+                {
+                public int compare(Object a, Object b)
+                    {
+                    boolean[] aa = (boolean[])a;
+                    boolean[] bb = (boolean[])b;
                                         
-                                      for(int x=0;x<Math.min(aa.length,bb.length);x++)
-                                          if (!aa[x] && bb[x]) return -1;
-                                          else if (aa[x] && !bb[x]) return 1;
-                                      if (aa.length<bb.length) return -1;
-                                      if (aa.length>bb.length) return 1;
-                                      return 0;
-                                      }
-                                  });
+                    for(int x=0;x<Math.min(aa.length,bb.length);x++)
+                        if (!aa[x] && bb[x]) return -1;
+                        else if (aa[x] && !bb[x]) return 1;
+                    if (aa.length<bb.length) return -1;
+                    if (aa.length>bb.length) return 1;
+                    return 0;
+                    }
+                });
         return newcases;
         }
 
@@ -269,7 +269,7 @@ public class Edge extends GPProblem implements SimpleProblemForm
 
 
     public void setup(final EvolutionState state,
-                      final Parameter base)
+        final Parameter base)
         {
         // very important, remember this
         super.setup(state,base);
@@ -319,19 +319,19 @@ public class Edge extends GPProblem implements SimpleProblemForm
             state.output.message("Reading Positive Examples");
             try { posA = slurp(ap); }
             catch(IOException e) { state.output.error(
-                                       "IOException reading file (here it is)\n" + e, base.push(P_ALLPOS)); }
+                    "IOException reading file (here it is)\n" + e, base.push(P_ALLPOS)); }
             state.output.message("Reading Negative Examples");
             try { negA = slurp(an); }
             catch(IOException e) { state.output.error(
-                                       "IOException reading file (here it is)\n" + e, base.push(P_ALLNEG)); }
+                    "IOException reading file (here it is)\n" + e, base.push(P_ALLNEG)); }
             }
 
         state.output.message("Reading Positive Training Examples");
         try { posT = slurp(tp); }
         catch(IOException e) { state.output.error(
-                                   "IOException reading file (here it is)\n" + e, base.push(P_TESTPOS)); }
+                "IOException reading file (here it is)\n" + e, base.push(P_TESTPOS)); }
         if ((restriction = state.parameters.getInt(
-                 base.push(P_MAXTEST),null,1))>0)
+                    base.push(P_MAXTEST),null,1))>0)
             {
             // Need to restrict
             state.output.message("Restricting to <= " + restriction + " Unique Examples");
@@ -345,9 +345,9 @@ public class Edge extends GPProblem implements SimpleProblemForm
         state.output.message("Reading Negative Training Examples");
         try { negT = slurp(tn); }
         catch(IOException e) { state.output.error(
-                                   "IOException reading file (here it is)\n" + e, base.push(P_TESTNEG)); }
+                "IOException reading file (here it is)\n" + e, base.push(P_TESTNEG)); }
         if ((restriction = state.parameters.getInt(
-                 base.push(P_MAXTEST),null,1))>0)
+                    base.push(P_MAXTEST),null,1))>0)
             {
             // Need to restrict
             state.output.message("Restricting to <= " + restriction + " Unique Examples");
@@ -473,10 +473,10 @@ public class Edge extends GPProblem implements SimpleProblemForm
     /** Tests an individual, returning its successful positives
         in totpos and its successful negatives in totneg. */
     public void fullTest(final EvolutionState state, 
-                         final Individual ind, 
-                         final int threadnum,
-                         boolean[][] pos,
-                         boolean[][] neg)
+        final Individual ind, 
+        final int threadnum,
+        boolean[][] pos,
+        boolean[][] neg)
         {
         // reset the graph
         numNodes = 2;
@@ -542,9 +542,9 @@ public class Edge extends GPProblem implements SimpleProblemForm
 
 
     public void evaluate(final EvolutionState state, 
-                         final Individual ind, 
-                         final int subpopulation,
-                         final int threadnum)
+        final Individual ind, 
+        final int subpopulation,
+        final int threadnum)
         {
         if (start==null)
             {
@@ -573,8 +573,8 @@ public class Edge extends GPProblem implements SimpleProblemForm
             // one used for these problems.  :-(
                 
             f.setStandardizedFitness(state,(float)
-                                     (1.0 - ((double)(totpos + totneg)) / 
-                                      (posT.length + negT.length)));
+                    (1.0 - ((double)(totpos + totneg)) / 
+                    (posT.length + negT.length)));
 
             // here are two other more reasonable fitness metrics
             /*
@@ -593,11 +593,11 @@ public class Edge extends GPProblem implements SimpleProblemForm
         }
 
     public void describe(final Individual ind, 
-                         final EvolutionState state, 
-                         final int subpopulation,
-                         final int threadnum,
-                         final int log,
-                         final int verbosity)
+        final EvolutionState state, 
+        final int subpopulation,
+        final int threadnum,
+        final int log,
+        final int verbosity)
         {
         if (start==null)
             {
@@ -623,28 +623,28 @@ public class Edge extends GPProblem implements SimpleProblemForm
         
         if (generalize)
             state.output.println("\n\nBest Individual's Generalization Score...\n" +
-                                 "Pos: " + totpos + "/" + posA.length + 
-                                 " Neg: " + totneg + "/" + negA.length + 
-                                 "\n(pos+neg)/(allpos+allneg):     " + 
-                                 (float)
-                                 (((double)(totpos+totneg))/(posA.length+negA.length)) +
-                                 "\n((pos/allpos)+(neg/allneg))/2: " + 
-                                 (float)
-                                 (((((double)totpos)/posA.length)+(((double)totneg)/negA.length))/2) +
-                                 "\nMin(pos/allpos,neg/allneg):    " +
-                                 (float)Math.min((((double)totpos)/posA.length),(((double)totneg)/negA.length)),
-                                 verbosity,log);
+                "Pos: " + totpos + "/" + posA.length + 
+                " Neg: " + totneg + "/" + negA.length + 
+                "\n(pos+neg)/(allpos+allneg):     " + 
+                (float)
+                (((double)(totpos+totneg))/(posA.length+negA.length)) +
+                "\n((pos/allpos)+(neg/allneg))/2: " + 
+                (float)
+                (((((double)totpos)/posA.length)+(((double)totneg)/negA.length))/2) +
+                "\nMin(pos/allpos,neg/allneg):    " +
+                (float)Math.min((((double)totpos)/posA.length),(((double)totneg)/negA.length)),
+                verbosity,log);
                 
         state.output.println("\nBest Individual's NFA\n=====================\n",
-                             verbosity,log);
+            verbosity,log);
         
         state.output.println(printCurrentNFA(),verbosity,log);
         }
 
     public String describeShortGeneralized(final Individual ind, 
-                                           final EvolutionState state, 
-                                           final int subpopulation,
-                                           final int threadnum)
+        final EvolutionState state, 
+        final int subpopulation,
+        final int threadnum)
         {
         if (start==null)
             {

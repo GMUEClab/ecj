@@ -101,10 +101,10 @@ public class MutateERCPipeline extends GPBreedingPipeline
 
         tree = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+0),
-                                    def.push(P_TREE).push(""+0)))
+                def.push(P_TREE).push(""+0)))
             {
             tree = state.parameters.getInt(base.push(P_TREE).push(""+0),
-                                           def.push(P_TREE).push(""+0),0);
+                def.push(P_TREE).push(""+0),0);
             if (tree==-1)
                 state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
@@ -112,7 +112,7 @@ public class MutateERCPipeline extends GPBreedingPipeline
 
 
     public final void mutateERCs(final GPNode node, 
-                                 final EvolutionState state, final int thread)
+        final EvolutionState state, final int thread)
         {
         // is node an erc?
         if (node instanceof ERC)
@@ -124,12 +124,12 @@ public class MutateERCPipeline extends GPBreedingPipeline
         }
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
         {
         // grab n individuals from our source and stick 'em right into inds.
         // we'll modify them from there

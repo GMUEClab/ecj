@@ -63,12 +63,12 @@ public class ReproductionPipeline extends BreedingPipeline
         }
         
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
         {
         // grab individuals from our source and stick 'em right into inds.
         // we'll modify them from there

@@ -54,16 +54,16 @@ public class RandomBranch extends GPNodeBuilder
         // we use size distributions -- did the user specify any?
         if (!canPick())
             state.output.fatal("RandomBranch requires some kind of size distribution set, either with " + P_MINSIZE + "/" + P_MAXSIZE + ", or with " + P_NUMSIZES + ".",
-                               base, defaultBase());
+                base, defaultBase());
         }
 
     public GPNode newRootedTree(final EvolutionState state,
-                                final GPType type,
-                                final int thread,
-                                final GPNodeParent parent,
-                                final GPFunctionSet set,
-                                final int argposition,
-                                final int requestedSize)
+        final GPType type,
+        final int thread,
+        final GPNodeParent parent,
+        final GPFunctionSet set,
+        final int argposition,
+        final int requestedSize)
         {
         if (requestedSize == NOSIZEGIVEN)  // pick from the distribution
             return randomBranch(state,type,pickSize(state,thread),thread,parent,argposition,set);
@@ -73,12 +73,12 @@ public class RandomBranch extends GPNodeBuilder
         }
 
     private GPNode randomBranch(final EvolutionState state,
-                                final GPType type,
-                                final int maxLength, 
-                                final int thread,
-                                final GPNodeParent parent,
-                                final int argposition,
-                                final GPFunctionSet set) 
+        final GPType type,
+        final int maxLength, 
+        final int thread,
+        final GPNodeParent parent,
+        final int argposition,
+        final GPFunctionSet set) 
         {
         // randomBranch can mess up if there are no available terminals for a given type.  If this occurs,
         // and we find ourselves unable to pick a terminal when we want to do so, we will issue a warning,

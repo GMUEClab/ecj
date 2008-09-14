@@ -42,7 +42,7 @@ public class RandTree extends GPNodeBuilder
         // we use size distributions -- did the user specify any?
         if (!canPick())
             state.output.fatal("RandTree requires some kind of size distribution set, either with " + P_MINSIZE + "/" + P_MAXSIZE + ", or with " + P_NUMSIZES + ".",
-                               base, defaultBase());
+                base, defaultBase());
         }
 
     // Added method to enhance linked list functionality with ArityObject
@@ -94,7 +94,7 @@ public class RandTree extends GPNodeBuilder
                     noOfArities++;
                     }
                 }
-                current++;
+            current++;
             }
 
         if (initArities.size()==0) {state.output.fatal("Arity count failed... counted 0.");}
@@ -168,12 +168,12 @@ public class RandTree extends GPNodeBuilder
         }
 
     public GPNode newRootedTree(final EvolutionState state,
-                                final GPType type,
-                                final int thread,
-                                final GPNodeParent parent,
-                                final GPFunctionSet set,
-                                final int argposition,
-                                final int requestedSize)
+        final GPType type,
+        final int thread,
+        final GPNodeParent parent,
+        final GPFunctionSet set,
+        final int argposition,
+        final int requestedSize)
         {
         int treeSize;
         boolean valid=false;
@@ -363,11 +363,11 @@ public class RandTree extends GPNodeBuilder
 
     // This function parses the dyck word and puts random nodes into their slots.
     private GPNode buildTree(final EvolutionState state,
-                             final int thread,
-                             final GPNodeParent parent,
-                             final int argposition,
-                             final GPFunctionSet set,
-                             final String dyckWord) 
+        final int thread,
+        final GPNodeParent parent,
+        final int argposition,
+        final GPFunctionSet set,
+        final String dyckWord) 
         {
         int counter=0;
         Stack s=new Stack();

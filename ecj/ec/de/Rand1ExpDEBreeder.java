@@ -47,10 +47,10 @@ public class Rand1ExpDEBreeder extends DEBreeder
         }
 
     public Individual createIndividual( final EvolutionState state,
-                                        int subpop,
-                                        Individual[] inds,
-                                        int index,
-                                        int thread)
+        int subpop,
+        Individual[] inds,
+        int index,
+        int thread)
         {
         // select three indexes different from one another and from that of the current parent
         int r0, r1, r2;

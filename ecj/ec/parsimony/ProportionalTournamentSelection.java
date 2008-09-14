@@ -112,25 +112,25 @@ public class ProportionalTournamentSelection extends SelectionMethod implements 
         fitnessPressureProb = state.parameters.getDouble(base.push(P_PROBABILITY),def.push(P_PROBABILITY),0.0);
         if( fitnessPressureProb<0.0 || fitnessPressureProb>1.0 )
             state.output.fatal( "Probability must be between 0.0 and 1.0",
-                                base.push(P_PROBABILITY),def.push(P_PROBABILITY));
+                base.push(P_PROBABILITY),def.push(P_PROBABILITY));
         }
 
 
     // returns true if x's fitness is better than y's and kind is true,
     //   or if x's size is smaller than y's and kind is false
     private boolean betterThan( final Individual x,
-                                final Individual y,
-                                final boolean pressureKind )
+        final Individual y,
+        final boolean pressureKind )
         {
         return ( ( pressureKind && x.fitness.betterThan(y.fitness) ) ||
-                 ( (!pressureKind) && ( x.size() < y.size() ) ) );
+            ( (!pressureKind) && ( x.size() < y.size() ) ) );
         }
 
     // I hard-code both produce(...) methods for efficiency's sake
 
     public int produce(final int subpopulation,
-                       final EvolutionState state,
-                       final int thread)
+        final EvolutionState state,
+        final int thread)
         {
         // pick size random individuals, then pick the best.
         Individual[] oldinds = state.population.subpops[subpopulation].individuals;
@@ -158,12 +158,12 @@ public class ProportionalTournamentSelection extends SelectionMethod implements 
     // I hard-code both produce(...) methods for efficiency's sake
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
         {
         int n = 1;
         if (n>max) n = max;
@@ -195,9 +195,9 @@ public class ProportionalTournamentSelection extends SelectionMethod implements 
         }
 
     public void individualReplaced(final SteadyStateEvolutionState state,
-                                   final int subpopulation,
-                                   final int thread,
-                                   final int individual)
+        final int subpopulation,
+        final int thread,
+        final int individual)
         { return; }
     
     public void sourcesAreProperForm(final SteadyStateEvolutionState state)

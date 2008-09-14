@@ -93,7 +93,7 @@ public abstract class VectorIndividual extends Individual
         would require a scratch array, so you'd be allocing and GCing an array for every crossover.
         Dunno which is more efficient.  */
     public void defaultCrossover(EvolutionState state, int thread, 
-                                 VectorIndividual ind) { }
+        VectorIndividual ind) { }
 
     /** Destructively mutates the individual in some default manner.  The default version calls reset()*/
     public void defaultMutate(EvolutionState state, int thread) { reset(state,thread); }

@@ -94,11 +94,11 @@ public class RegERC extends ERC
         { return "" + (float)value; }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
         {
         RegressionData rd = ((RegressionData)(input));
         rd.x = value;

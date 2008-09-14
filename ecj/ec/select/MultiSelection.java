@@ -91,7 +91,7 @@ public class MultiSelection extends SelectionMethod
             base.push(P_NUMSELECTS),def.push(P_NUMSELECTS),1);
         if (numSelects==0)
             state.output.fatal("The number of MultiSelection sub-selection methods must be >= 1).",
-                               base.push(P_NUMSELECTS),def.push(P_NUMSELECTS));
+                base.push(P_NUMSELECTS),def.push(P_NUMSELECTS));
 
         // make our arrays
         selects = new SelectionMethod[numSelects];
@@ -140,9 +140,9 @@ public class MultiSelection extends SelectionMethod
         }
 
     public boolean produces(final EvolutionState state,
-                            final Population newpop,
-                            final int subpopulation,
-                            final int thread)
+        final Population newpop,
+        final int subpopulation,
+        final int thread)
         {
         if (!super.produces(state,newpop,subpopulation,thread))
             return false;
@@ -155,8 +155,8 @@ public class MultiSelection extends SelectionMethod
 
 
     public void prepareToProduce(final EvolutionState s,
-                                 final int subpopulation,
-                                 final int thread)
+        final int subpopulation,
+        final int thread)
         {
         for(int x=0;x<selects.length;x++)
             selects[x].prepareToProduce(s,subpopulation,thread);
@@ -164,25 +164,25 @@ public class MultiSelection extends SelectionMethod
 
 
     public int produce(final int subpopulation,
-                       final EvolutionState state,
-                       final int thread)
+        final EvolutionState state,
+        final int thread)
         {
         return selects[BreedingSource.pickRandom(
-                           selects,state.random[thread].nextFloat())].produce(
-                               subpopulation,state,thread);
+                selects,state.random[thread].nextFloat())].produce(
+                    subpopulation,state,thread);
         }
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
 
         {
         return selects[BreedingSource.pickRandom(
-                           selects,state.random[thread].nextFloat())].produce(
-                               min,max,start,subpopulation,inds,state,thread);
+                selects,state.random[thread].nextFloat())].produce(
+                    min,max,start,subpopulation,inds,state,thread);
         }
     }

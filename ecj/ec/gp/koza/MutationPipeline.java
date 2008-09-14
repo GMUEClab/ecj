@@ -171,10 +171,10 @@ public class MutationPipeline extends GPBreedingPipeline
 
         tree = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+0),
-                                    def.push(P_TREE).push(""+0)))
+                def.push(P_TREE).push(""+0)))
             {
             tree = state.parameters.getInt(base.push(P_TREE).push(""+0),
-                                           def.push(P_TREE).push(""+0),0);
+                def.push(P_TREE).push(""+0),0);
             if (tree==-1)
                 state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
@@ -199,12 +199,12 @@ public class MutationPipeline extends GPBreedingPipeline
 
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
         {
         // grab individuals from our source and stick 'em right into inds.
         // we'll modify them from there
@@ -251,12 +251,12 @@ public class MutationPipeline extends GPBreedingPipeline
                 if (equalSize) size = p1.numNodes(GPNode.NODESEARCH_ALL);
 
                 p2 = builder.newRootedTree(state,
-                                           p1.parentType(initializer),
-                                           thread,
-                                           p1.parent,
-                                           i.trees[t].constraints(initializer).functionset,
-                                           p1.argposition,
-                                           size);
+                    p1.parentType(initializer),
+                    thread,
+                    p1.parent,
+                    i.trees[t].constraints(initializer).functionset,
+                    p1.argposition,
+                    size);
                 
                 // check for depth and swap-compatibility limits
                 res = verifyPoints(p2,p1);  // p2 can fit in p1's spot  -- the order is important!

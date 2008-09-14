@@ -98,7 +98,7 @@ public class GPNodeConstraints implements Clique
         name = state.parameters.getString(base.push(P_NAME),null);
         if (name==null)
             state.output.fatal("No name was given for this node constraints.",
-                               base.push(P_NAME));
+                base.push(P_NAME));
 
         // Register me
         GPNodeConstraints old_constraints = (GPNodeConstraints)(((GPInitializer)state.initializer).nodeConstraintRepository.put(name,this));
@@ -149,7 +149,7 @@ public class GPNodeConstraints implements Clique
         several times, you call state.output.exitIfErrors() once. */
 
     public static GPNodeConstraints constraintsFor(final String constraintsName,
-                                                   final EvolutionState state)
+        final EvolutionState state)
         {
         GPNodeConstraints myConstraints = (GPNodeConstraints)(((GPInitializer)state.initializer).nodeConstraintRepository.get(constraintsName));
         if (myConstraints==null)

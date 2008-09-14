@@ -81,29 +81,29 @@ public class PTC1 extends GPNodeBuilder
         Parameter def = defaultBase();
 
         expectedSize = state.parameters.getInt(base.push(P_EXPECTED),
-                                               def.push(P_EXPECTED),1);
+            def.push(P_EXPECTED),1);
         if (expectedSize < 1)
             state.output.fatal("Default expected size must be >= 1",
-                               base.push(P_EXPECTED),
-                               def.push(P_EXPECTED));
+                base.push(P_EXPECTED),
+                def.push(P_EXPECTED));
 
         maxDepth = state.parameters.getInt(base.push(P_MAXDEPTH),
-                                           def.push(P_MAXDEPTH),1);
+            def.push(P_MAXDEPTH),1);
         if (maxDepth < 1)
             state.output.fatal("Maximum depth must be >= 1",
-                               base.push(P_MAXDEPTH),
-                               def.push(P_MAXDEPTH));
+                base.push(P_MAXDEPTH),
+                def.push(P_MAXDEPTH));
         
         }
 
 
     public GPNode newRootedTree(final EvolutionState state,
-                                final GPType type,
-                                final int thread,
-                                final GPNodeParent parent,
-                                final GPFunctionSet set,
-                                final int argposition,
-                                final int requestedSize)
+        final GPType type,
+        final int thread,
+        final GPNodeParent parent,
+        final GPFunctionSet set,
+        final int argposition,
+        final int requestedSize)
         {
         if (!(set instanceof PTCFunctionSetForm))
             state.output.fatal("Set " + set.name + " is not of the form ec.gp.build.PTCFunctionSetForm, and so cannot be used with PTC Nodebuilders.");
@@ -112,28 +112,28 @@ public class PTC1 extends GPNodeBuilder
         if (requestedSize == NOSIZEGIVEN)  // use the default
             {
             return ptc1(state,0,type,thread,parent,argposition,
-                        set,(PTCFunctionSetForm)set,
-                        ((PTCFunctionSetForm)set).nonterminalSelectionProbabilities(expectedSize));
+                set,(PTCFunctionSetForm)set,
+                ((PTCFunctionSetForm)set).nonterminalSelectionProbabilities(expectedSize));
             }
         if (requestedSize < 1)
             state.output.fatal("etc.gp.build.PTC1 was requested to build a tree, but a requested size was given that is < 1.");
         return ptc1(state,0,type,thread,parent,argposition,
-                    set,(PTCFunctionSetForm)set,
-                    ((PTCFunctionSetForm)set).nonterminalSelectionProbabilities(requestedSize));
+            set,(PTCFunctionSetForm)set,
+            ((PTCFunctionSetForm)set).nonterminalSelectionProbabilities(requestedSize));
         }
 
     
 
     /** A private function which recursively returns a GROW tree to newRootedTree(...) */
     private GPNode ptc1(final EvolutionState state,
-                        final int current,
-                        final GPType type,
-                        final int thread,
-                        final GPNodeParent parent,
-                        final int argposition,
-                        final GPFunctionSet set,
-                        final PTCFunctionSetForm pset, // same as set
-                        final float[] nonterminalSelectionProbabilities) 
+        final int current,
+        final GPType type,
+        final int thread,
+        final GPNodeParent parent,
+        final int argposition,
+        final GPFunctionSet set,
+        final PTCFunctionSetForm pset, // same as set
+        final float[] nonterminalSelectionProbabilities) 
         
         {
         // ptc1 can mess up if there are no available terminals for a given type.  If this occurs,
@@ -153,15 +153,15 @@ public class PTC1 extends GPNodeBuilder
             errorAboutNoNodeWithType(type, state);   // total failure
 
         if ((  (current+1 >= maxDepth) ||                                                    // Now pick if we're at max depth
-               !(state.random[thread].nextBoolean(nonterminalSelectionProbabilities[t])) ||  // OR if we're below p_y
-               warnAboutNonterminal(nonterminals.length==0, type, false, state)) &&         // OR if there are NO nonterminals!
+                !(state.random[thread].nextBoolean(nonterminalSelectionProbabilities[t])) ||  // OR if we're below p_y
+                warnAboutNonterminal(nonterminals.length==0, type, false, state)) &&         // OR if there are NO nonterminals!
             (triedTerminals = true) &&                                                       // [first set triedTerminals]
             terminals.length != 0)                                                           // AND if there are available terminals
             {
             GPNode n = (GPNode)
                 terminals[RandomChoice.pickFromDistribution(
-                              pset.terminalProbabilities(t),
-                              state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
+                    pset.terminalProbabilities(t),
+                    state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
             n.resetNode(state,thread);  // give ERCs a chance to randomize
             n.argposition = (byte)argposition;
             n.parent = parent;
@@ -173,8 +173,8 @@ public class PTC1 extends GPNodeBuilder
 
             GPNode n = (GPNode)
                 nonterminals[RandomChoice.pickFromDistribution(
-                                 pset.nonterminalProbabilities(t),
-                                 state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
+                    pset.nonterminalProbabilities(t),
+                    state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
             n.resetNode(state,thread);  // give ERCs a chance to randomize
             n.argposition = (byte)argposition;
             n.parent = parent;

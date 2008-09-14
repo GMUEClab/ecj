@@ -115,7 +115,7 @@ public class Ant extends GPProblem implements SimpleProblemForm
         }
 
     public void setup(final EvolutionState state,
-                      final Parameter base)
+        final Parameter base)
         {
         // very important, remember this
         super.setup(state,base);
@@ -197,9 +197,9 @@ public class Ant extends GPProblem implements SimpleProblemForm
         }
 
     public void evaluate(final EvolutionState state, 
-                         final Individual ind, 
-                         final int subpopulation,
-                         final int threadnum)
+        final Individual ind, 
+        final int subpopulation,
+        final int threadnum)
         {
         if (!ind.evaluated)  // don't bother reevaluating
             {
@@ -225,15 +225,15 @@ public class Ant extends GPProblem implements SimpleProblemForm
         }
 
     public void describe(final Individual ind, 
-                         final EvolutionState state, 
-                         final int subpopulation, 
-                         final int threadnum,
-                         final int log,
-                         final int verbosity)
+        final EvolutionState state, 
+        final int subpopulation, 
+        final int threadnum,
+        final int log,
+        final int verbosity)
 
         {
         state.output.println("\n\nBest Individual's Map\n=====================",
-                             verbosity,log);
+            verbosity,log);
 
         sum = 0;
         pmod = 97; /** ascii a */

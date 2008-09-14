@@ -33,8 +33,8 @@ import ec.select.*;
 public class SPEA2TournamentSelection extends TournamentSelection
     {
     public int produce(final int subpopulation,
-                       final EvolutionState state,
-                       final int thread)
+        final EvolutionState state,
+        final int thread)
         {
         Individual[] oldinds = state.population.subpops[subpopulation].individuals;
         // the one change from TournamentSelection: we only pick individuals from the archive
@@ -56,12 +56,12 @@ public class SPEA2TournamentSelection extends TournamentSelection
         }
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
         {
         int n = 1;
         if (n>max) n = max;

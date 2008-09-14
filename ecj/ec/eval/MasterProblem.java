@@ -214,7 +214,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
      * @see ec.simple.SimpleProblemForm#describe(ec.Individual, ec.EvolutionState, int, int, int)
      */
     public void describe(Individual ind, EvolutionState state, int subpopulation, int threadnum, 
-                         int log, int verbosity) 
+        int log, int verbosity) 
         {
         if (!(problem instanceof SimpleProblemForm)) 
             {
@@ -252,7 +252,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
 
     // regular coevolutionary evaluation
     public void evaluate(EvolutionState state, Individual[] inds,
-                         boolean[] updateFitness, boolean countVictoriesOnly, int[] subpops, int threadnum)
+        boolean[] updateFitness, boolean countVictoriesOnly, int[] subpops, int threadnum)
         {
         if(showDebugInfo)
             state.output.message("Starting a GroupedProblemForm evaluation.");

@@ -30,9 +30,9 @@ import javax.swing.tree.TreeModel;
 
 /* 
 
-* ParameterDatabase.java
-* Created: Sat Aug  7 12:09:19 1999
-*/
+ * ParameterDatabase.java
+ * Created: Sat Aug  7 12:09:19 1999
+ */
 
 /**
  * 
@@ -422,47 +422,47 @@ public class ParameterDatabase extends Properties implements Serializable
                 "No class name provided.\nPARAMETER: "
                 + parameter
                 + (defaultParameter == null ? "" : "\n     ALSO: "
-                   + defaultParameter));
+                    + defaultParameter));
         try 
             {
             Class c = Class.forName(get(p));
             if (!mustCastTosuperclass.isAssignableFrom(c))
                 throw new ParamClassLoadException("The class "
-                                                  + c.getName()
-                                                  + "\ndoes not cast into the superclass "
-                                                  + mustCastTosuperclass.getName()
-                                                  + "\nPARAMETER: "
-                                                  + parameter
-                                                  + (defaultParameter == null ? "" : "\n     ALSO: "
-                                                     + defaultParameter));
+                    + c.getName()
+                    + "\ndoes not cast into the superclass "
+                    + mustCastTosuperclass.getName()
+                    + "\nPARAMETER: "
+                    + parameter
+                    + (defaultParameter == null ? "" : "\n     ALSO: "
+                        + defaultParameter));
             if (mustCastTosuperclass == c)
                 throw new ParamClassLoadException("The class "
-                                                  + c.getName()
-                                                  + "\nmust not be the same as the required superclass "
-                                                  + mustCastTosuperclass.getName()
-                                                  + "\nPARAMETER: "
-                                                  + parameter
-                                                  + (defaultParameter == null ? "" : "\n     ALSO: "
-                                                     + defaultParameter));
+                    + c.getName()
+                    + "\nmust not be the same as the required superclass "
+                    + mustCastTosuperclass.getName()
+                    + "\nPARAMETER: "
+                    + parameter
+                    + (defaultParameter == null ? "" : "\n     ALSO: "
+                        + defaultParameter));
             return c.newInstance();
             } 
         catch (ClassNotFoundException e) 
             {
             throw new ParamClassLoadException("Class not found: "
-                                              + get(p)
-                                              + "\nPARAMETER: "
-                                              + parameter
-                                              + (defaultParameter == null ? "" : "\n     ALSO: "
-                                                 + defaultParameter) + "\nEXCEPTION: \n\n" + e);
+                + get(p)
+                + "\nPARAMETER: "
+                + parameter
+                + (defaultParameter == null ? "" : "\n     ALSO: "
+                    + defaultParameter) + "\nEXCEPTION: \n\n" + e);
             } 
         catch (IllegalArgumentException e) 
             {
             throw new ParamClassLoadException("Could not load class: "
-                                              + get(p)
-                                              + "\nPARAMETER: "
-                                              + parameter
-                                              + (defaultParameter == null ? "" : "\n     ALSO: "
-                                                 + defaultParameter) + "\nEXCEPTION: \n\n" + e);
+                + get(p)
+                + "\nPARAMETER: "
+                + parameter
+                + (defaultParameter == null ? "" : "\n     ALSO: "
+                    + defaultParameter) + "\nEXCEPTION: \n\n" + e);
             } 
         catch (InstantiationException e) 
             {
@@ -472,7 +472,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 + "\nPARAMETER: "
                 + parameter
                 + (defaultParameter == null ? "" : "\n     ALSO: "
-                   + defaultParameter) + "\nEXCEPTION: \n\n"
+                    + defaultParameter) + "\nEXCEPTION: \n\n"
                 + e);
             } 
         catch (IllegalAccessException e) 
@@ -483,7 +483,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 + "\nPARAMETER: "
                 + parameter
                 + (defaultParameter == null ? "" : "\n     ALSO: "
-                   + defaultParameter) + "\nEXCEPTION: \n\n"
+                    + defaultParameter) + "\nEXCEPTION: \n\n"
                 + e);
             }
         }
@@ -497,7 +497,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * is marked "used".
      */
     public Object getInstanceForParameterEq(Parameter parameter,
-                                            Parameter defaultParameter, Class mustCastTosuperclass)
+        Parameter defaultParameter, Class mustCastTosuperclass)
         throws ParamClassLoadException 
         {
         printGotten(parameter, defaultParameter, false);
@@ -512,41 +512,41 @@ public class ParameterDatabase extends Properties implements Serializable
                 + parameter
                 + "\n     ALSO: "
                 + (defaultParameter == null ? "" : "\n     ALSO: "
-                   + defaultParameter));
+                    + defaultParameter));
         try
             {
             Class c = Class.forName(get(p));
             if (!mustCastTosuperclass.isAssignableFrom(c))
                 throw new ParamClassLoadException("The class "
-                                                  + c.getName()
-                                                  + "\ndoes not cast into the superclass "
-                                                  + mustCastTosuperclass.getName()
-                                                  + "\nPARAMETER: "
-                                                  + parameter
-                                                  + "\n     ALSO: "
-                                                  + (defaultParameter == null ? "" : "\n     ALSO: "
-                                                     + defaultParameter));
+                    + c.getName()
+                    + "\ndoes not cast into the superclass "
+                    + mustCastTosuperclass.getName()
+                    + "\nPARAMETER: "
+                    + parameter
+                    + "\n     ALSO: "
+                    + (defaultParameter == null ? "" : "\n     ALSO: "
+                        + defaultParameter));
             return c.newInstance();
             } 
         catch (ClassNotFoundException e) 
             {
             throw new ParamClassLoadException("Class not found: "
-                                              + get(p)
-                                              + "\nPARAMETER: "
-                                              + parameter
-                                              + "\n     ALSO: "
-                                              + (defaultParameter == null ? "" : "\n     ALSO: "
-                                                 + defaultParameter) + "\nEXCEPTION: \n\n" + e);
+                + get(p)
+                + "\nPARAMETER: "
+                + parameter
+                + "\n     ALSO: "
+                + (defaultParameter == null ? "" : "\n     ALSO: "
+                    + defaultParameter) + "\nEXCEPTION: \n\n" + e);
             } 
         catch (IllegalArgumentException e) 
             {
             throw new ParamClassLoadException("Could not load class: "
-                                              + get(p)
-                                              + "\nPARAMETER: "
-                                              + parameter
-                                              + "\n     ALSO: "
-                                              + (defaultParameter == null ? "" : "\n     ALSO: "
-                                                 + defaultParameter) + "\nEXCEPTION: \n\n" + e);
+                + get(p)
+                + "\nPARAMETER: "
+                + parameter
+                + "\n     ALSO: "
+                + (defaultParameter == null ? "" : "\n     ALSO: "
+                    + defaultParameter) + "\nEXCEPTION: \n\n" + e);
             } 
         catch (InstantiationException e) 
             {
@@ -557,7 +557,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 + parameter
                 + "\n     ALSO: "
                 + (defaultParameter == null ? "" : "\n     ALSO: "
-                   + defaultParameter) + "\nEXCEPTION: \n\n"
+                    + defaultParameter) + "\nEXCEPTION: \n\n"
                 + e);
             } 
         catch (IllegalAccessException e) 
@@ -569,7 +569,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 + parameter
                 + "\n     ALSO: "
                 + (defaultParameter == null ? "" : "\n     ALSO: "
-                   + defaultParameter) + "\nEXCEPTION: \n\n"
+                    + defaultParameter) + "\nEXCEPTION: \n\n"
                 + e);
             }
         }
@@ -584,7 +584,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * "used".
      */
     public Object getClassForParameter(Parameter parameter,
-                                       Parameter defaultParameter, Class mustCastTosuperclass)
+        Parameter defaultParameter, Class mustCastTosuperclass)
         throws ParamClassLoadException 
         {
         printGotten(parameter, defaultParameter, false);
@@ -599,41 +599,41 @@ public class ParameterDatabase extends Properties implements Serializable
                 + parameter
                 + "\n     ALSO: "
                 + (defaultParameter == null ? "" : "\n     ALSO: "
-                   + defaultParameter));
+                    + defaultParameter));
         try
             {
             Class c = Class.forName(get(p));
             if (!mustCastTosuperclass.isAssignableFrom(c))
                 throw new ParamClassLoadException("The class "
-                                                  + c.getName()
-                                                  + "\ndoes not cast into the superclass "
-                                                  + mustCastTosuperclass.getName()
-                                                  + "\nPARAMETER: "
-                                                  + parameter
-                                                  + "\n     ALSO: "
-                                                  + (defaultParameter == null ? "" : "\n     ALSO: "
-                                                     + defaultParameter));
+                    + c.getName()
+                    + "\ndoes not cast into the superclass "
+                    + mustCastTosuperclass.getName()
+                    + "\nPARAMETER: "
+                    + parameter
+                    + "\n     ALSO: "
+                    + (defaultParameter == null ? "" : "\n     ALSO: "
+                        + defaultParameter));
             return c;
             } 
         catch (ClassNotFoundException e) 
             {
             throw new ParamClassLoadException("Class not found: "
-                                              + get(p)
-                                              + "\nPARAMETER: "
-                                              + parameter
-                                              + "\n     ALSO: "
-                                              + (defaultParameter == null ? "" : "\n     ALSO: "
-                                                 + defaultParameter) + "\nEXCEPTION: \n\n" + e);
+                + get(p)
+                + "\nPARAMETER: "
+                + parameter
+                + "\n     ALSO: "
+                + (defaultParameter == null ? "" : "\n     ALSO: "
+                    + defaultParameter) + "\nEXCEPTION: \n\n" + e);
             } 
         catch (IllegalArgumentException e) 
             {
             throw new ParamClassLoadException("Could not load class: "
-                                              + get(p)
-                                              + "\nPARAMETER: "
-                                              + parameter
-                                              + "\n     ALSO: "
-                                              + (defaultParameter == null ? "" : "\n     ALSO: "
-                                                 + defaultParameter) + "\nEXCEPTION: \n\n" + e);
+                + get(p)
+                + "\nPARAMETER: "
+                + parameter
+                + "\n     ALSO: "
+                + (defaultParameter == null ? "" : "\n     ALSO: "
+                    + defaultParameter) + "\nEXCEPTION: \n\n" + e);
             }
         }
 
@@ -645,7 +645,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * exists.
      */
     public boolean getBoolean(Parameter parameter,
-                              Parameter defaultParameter, boolean defaultValue) 
+        Parameter defaultParameter, boolean defaultValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -685,26 +685,26 @@ public class ParameterDatabase extends Properties implements Serializable
             } 
         else
             {
-	    try
-		{
-		// it's decimal
-		return Integer.parseInt(string);
-		}
-	    catch (NumberFormatException e)
-		{
-		// maybe it's a double ending in .0, which should be okay
-		try 
-		    {
-		    double d = Double.parseDouble(string);
-		    if (d == (int) d) return (int) d;  // looking fine
-		    else throw e;
-		    }
-		catch (NumberFormatException e2)
-		    {
-		    throw e;
-		    }
-		}
-	    }
+            try
+                {
+                // it's decimal
+                return Integer.parseInt(string);
+                }
+            catch (NumberFormatException e)
+                {
+                // maybe it's a double ending in .0, which should be okay
+                try 
+                    {
+                    double d = Double.parseDouble(string);
+                    if (d == (int) d) return (int) d;  // looking fine
+                    else throw e;
+                    }
+                catch (NumberFormatException e2)
+                    {
+                    throw e;
+                    }
+                }
+            }
         }
 
     /**
@@ -723,27 +723,27 @@ public class ParameterDatabase extends Properties implements Serializable
             return Long.parseLong(string.substring(1), 16);
             } 
         else
-	    { 
-	    try
-		{
-		// it's decimal
-		return Long.parseLong(string);
-		}
-	    catch (NumberFormatException e)
-		{
-		// maybe it's a double ending in .0, which should be okay
-		try 
-		    {
-		    double d = Double.parseDouble(string);
-		    if (d == (long) d) return (long) d;  // looking fine
-		    else throw e;
-		    }
-		catch (NumberFormatException e2)
-		    {
-		    throw e;
-		    }
-		}
-	    }
+            { 
+            try
+                {
+                // it's decimal
+                return Long.parseLong(string);
+                }
+            catch (NumberFormatException e)
+                {
+                // maybe it's a double ending in .0, which should be okay
+                try 
+                    {
+                    double d = Double.parseDouble(string);
+                    if (d == (long) d) return (long) d;  // looking fine
+                    else throw e;
+                    }
+                catch (NumberFormatException e2)
+                    {
+                    throw e;
+                    }
+                }
+            }
         }
 
     /**
@@ -765,7 +765,7 @@ public class ParameterDatabase extends Properties implements Serializable
             catch (NumberFormatException e) 
                 {
                 throw new NumberFormatException("Bad integer ("
-                                                + get(parameter) + " ) for parameter " + parameter);
+                    + get(parameter) + " ) for parameter " + parameter);
                 }
             } 
         else
@@ -802,7 +802,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * may be in decimal or (if preceded with an X or x) in hexadecimal.
      */
     public int getInt(Parameter parameter, Parameter defaultParameter,
-                      int minValue) 
+        int minValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -845,7 +845,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * may be in decimal or (if preceded with an X or x) in hexadecimal.
      */
     public int getIntWithDefault(Parameter parameter,
-                                 Parameter defaultParameter, int defaultValue) 
+        Parameter defaultParameter, int defaultValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -886,7 +886,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * hexadecimal.
      */
     public int getIntWithMax(Parameter parameter,
-                             Parameter defaultParameter, int minValue, int maxValue) 
+        Parameter defaultParameter, int minValue, int maxValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -933,7 +933,7 @@ public class ParameterDatabase extends Properties implements Serializable
      */
 
     public float getFloat(Parameter parameter,
-                          Parameter defaultParameter, double minValue) 
+        Parameter defaultParameter, double minValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -981,7 +981,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * returned. The parameter chosen is marked "used" if it exists.
      */
     public float getFloatWithDefault(Parameter parameter,
-                                     Parameter defaultParameter, double defaultValue) 
+        Parameter defaultParameter, double defaultValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1024,7 +1024,7 @@ public class ParameterDatabase extends Properties implements Serializable
      */
 
     public float getFloat(Parameter parameter,
-                          Parameter defaultParameter, double minValue, double maxValue) 
+        Parameter defaultParameter, double minValue, double maxValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1100,7 +1100,7 @@ public class ParameterDatabase extends Properties implements Serializable
      */
 
     public double getDouble(Parameter parameter,
-                            Parameter defaultParameter, double minValue) 
+        Parameter defaultParameter, double minValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1150,7 +1150,7 @@ public class ParameterDatabase extends Properties implements Serializable
      */
 
     public double getDouble(Parameter parameter,
-                            Parameter defaultParameter, double minValue, double maxValue) 
+        Parameter defaultParameter, double minValue, double maxValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1200,7 +1200,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * returned. The parameter chosen is marked "used" if it exists.
      */
     public double getDoubleWithDefault(Parameter parameter,
-                                       Parameter defaultParameter, double defaultValue) 
+        Parameter defaultParameter, double defaultValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1254,7 +1254,7 @@ public class ParameterDatabase extends Properties implements Serializable
             catch (NumberFormatException e) 
                 {
                 throw new NumberFormatException("Bad long (" + get(parameter)
-                                                + " ) for parameter " + parameter);
+                    + " ) for parameter " + parameter);
                 }
             } 
         else
@@ -1292,7 +1292,7 @@ public class ParameterDatabase extends Properties implements Serializable
      */
 
     public long getLong(Parameter parameter, Parameter defaultParameter,
-                        long minValue) 
+        long minValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1335,7 +1335,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * be in decimal or (if preceded with an X or x) in hexadecimal.
      */
     public long getLongWithDefault(Parameter parameter,
-                                   Parameter defaultParameter, long defaultValue) 
+        Parameter defaultParameter, long defaultValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1375,7 +1375,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * an X or x) in hexadecimal.
      */
     public long getLongWithMax(Parameter parameter,
-                               Parameter defaultParameter, long minValue, long maxValue) 
+        Parameter defaultParameter, long minValue, long maxValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1423,7 +1423,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * @deprecated
      */
     public long getLong(Parameter parameter, Parameter defaultParameter,
-                        long minValue, long maxValue) 
+        long minValue, long maxValue) 
         {
         printGotten(parameter, defaultParameter, false);
         return getLongWithMax(parameter, defaultParameter, minValue, maxValue);
@@ -1502,7 +1502,7 @@ public class ParameterDatabase extends Properties implements Serializable
      */
 
     public synchronized String getString(Parameter parameter,
-                                         Parameter defaultParameter) 
+        Parameter defaultParameter) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1531,7 +1531,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * result is not found or the trimmed result is empty.
      */
     public String getStringWithDefault(Parameter parameter,
-                                       Parameter defaultParameter, String defaultValue) 
+        Parameter defaultParameter, String defaultValue) 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
@@ -1546,7 +1546,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * result is not found or the trimmed result is empty.
      */
     /*protected*/ String getStringWithDefault(Parameter parameter,
-                                              String defaultValue) 
+        String defaultValue) 
         {
         if (_exists(parameter)) 
             {
@@ -1824,7 +1824,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * database
      */
     public synchronized boolean exists(Parameter parameter,
-                                       Parameter defaultParameter) 
+        Parameter defaultParameter) 
         {
         printGotten(parameter, defaultParameter, true);
         if (exists(parameter))
@@ -2228,7 +2228,7 @@ public class ParameterDatabase extends Properties implements Serializable
             else
                 // it's relative to my path
                 parents.addElement(new ParameterDatabase(new File(filename
-                                                                  .getParent(), s)));
+                            .getParent(), s)));
             }
         }
 
@@ -2354,7 +2354,7 @@ public class ParameterDatabase extends Properties implements Serializable
 
     /** Private helper function. */
     void _list(PrintWriter p, boolean listShadowed,
-               String prefix, Hashtable gather) 
+        String prefix, Hashtable gather) 
         {
         if (listShadowed) 
             {
@@ -2364,14 +2364,14 @@ public class ParameterDatabase extends Properties implements Serializable
             int size = parents.size();
             for (int x = 0; x < size; x++)
                 ((ParameterDatabase) (parents.elementAt(x)))._list(p,
-                                                                   listShadowed, prefix + "." + x, gather);
+                    listShadowed, prefix + "." + x, gather);
             } 
         else {
             // load in reverse order so things get properly overwritten
             int size = parents.size();
             for (int x = size - 1; x >= 0; x--)
                 ((ParameterDatabase) (parents.elementAt(x)))._list(p,
-                                                                   listShadowed, prefix, gather);
+                    listShadowed, prefix, gather);
             Enumeration e = keys();
             while (e.hasMoreElements()) 
                 {
@@ -2442,7 +2442,7 @@ public class ParameterDatabase extends Properties implements Serializable
         }
 
     void _buildTreeModel(DefaultTreeModel model,
-                         DefaultMutableTreeNode root) 
+        DefaultMutableTreeNode root) 
         {
         Enumeration e = keys();
         while (e.hasMoreElements()) 
@@ -2503,7 +2503,7 @@ public class ParameterDatabase extends Properties implements Serializable
                         DefaultMutableTreeNode child = 
                             new ParameterDatabaseTreeNode(path[i]);
                         model.insertNodeInto(child, parent, 
-                                             parent.getChildCount());
+                            parent.getChildCount());
                         parent = child;
                         }
                     }
@@ -2526,7 +2526,7 @@ public class ParameterDatabase extends Properties implements Serializable
         pd.set(new Parameter("Hi there"), "Whatever");
         pd.set(new Parameter(new String[] { "1", "2", "3" }), " Whatever ");
         pd.set(new Parameter(new String[] { "a", "b", "c" }).pop().push("d"),
-               "Whatever");
+            "Whatever");
 
         System.err.println("\n\n PRINTING ALL PARAMETERS \n\n");
         pd.list(new PrintWriter(System.err, true), true);

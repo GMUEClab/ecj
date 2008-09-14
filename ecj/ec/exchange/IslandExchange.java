@@ -396,7 +396,7 @@ public class IslandExchange extends Exchanger
         // to get IslandExchange up and running all by itself.
         
         System.err.println("Island Exchange Server\n" +
-                           "Used in ECJ by Sean Luke\n");
+            "Used in ECJ by Sean Luke\n");
         
         
         // 0. find the parameter database
@@ -413,14 +413,14 @@ public class IslandExchange extends Exchanger
                     }
                 catch(FileNotFoundException e)
                     { Output.initialError(
-                        "A File Not Found Exception was generated upon" +
-                        "reading the parameter file \"" + args[x+1] + 
-                        "\".\nHere it is:\n" + e); }
+                            "A File Not Found Exception was generated upon" +
+                            "reading the parameter file \"" + args[x+1] + 
+                            "\".\nHere it is:\n" + e); }
                 catch(IOException e)
                     { Output.initialError(
-                        "An IO Exception was generated upon reading the" +
-                        "parameter file \"" + args[x+1] +
-                        "\".\nHere it is:\n" + e); } 
+                            "An IO Exception was generated upon reading the" +
+                            "parameter file \"" + args[x+1] +
+                            "\".\nHere it is:\n" + e); } 
                 }
         if (parameters==null)
             Output.initialError(
@@ -432,7 +432,7 @@ public class IslandExchange extends Exchanger
         verbosity = parameters.getInt(new Parameter(Evolve.P_VERBOSITY),null,0);
         if (verbosity<0)
             Output.initialError("Verbosity should be an integer >= 0.\n",
-                                new Parameter(Evolve.P_VERBOSITY)); 
+                new Parameter(Evolve.P_VERBOSITY)); 
 
         output = new Output(true,verbosity);
         // output.setFlush(
@@ -507,7 +507,7 @@ public class IslandExchange extends Exchanger
             // print out my IP address
             try
                 {
-                state.output.message("IP ADDRESS: " + InetAddress.getLocalHost().getHostAddress());
+                state.output.message("IP ADDRESS: " + LocalHost.getLocalHost().getHostAddress());
                 }
             catch (java.net.UnknownHostException e) { }
             }
@@ -657,7 +657,7 @@ public class IslandExchange extends Exchanger
             // Launch the mailbox thread (read from the server how many sockets to allocate
             // on the mailbox. Obtain the port and address of the mailbox.
             mailbox = new IslandExchangeMailbox( state, clientPort, fromServer.readInt(),
-                                                 fromServer.readInt(), ownId, chatty, compressedCommunication );
+                fromServer.readInt(), ownId, chatty, compressedCommunication );
             mailboxThread = new Thread( mailbox );
             mailboxThread.start();
 
@@ -667,9 +667,9 @@ public class IslandExchange extends Exchanger
             // tell the server the address and port of the mailbox
             try
                 {
-                toServer.writeUTF( InetAddress.getLocalHost().getHostAddress() );
+                toServer.writeUTF( LocalHost.getLocalHost().getHostAddress() );
                 toServer.flush();
-                state.output.message("My address is: " + InetAddress.getLocalHost().getHostAddress() );
+                state.output.message("My address is: " + LocalHost.getLocalHost().getHostAddress() );
                 }
             catch( UnknownHostException e )
                 {
@@ -737,7 +737,7 @@ public class IslandExchange extends Exchanger
                         InputStream compressedi = Output.makeCompressingInputStream(outSockets[y].getInputStream());
                         if (compressedi == null || compressedo == null) 
                             state.output.fatal( "You do not appear to have JZLib installed on your system, and so may must have compression turned off for IslandExchange.  "+ 
-                                                "To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/");
+                                "To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/");
                         outWriters[y] = new DataOutputStream(compressedo);
                         outgoingIds[y] = new DataInputStream(compressedi).readUTF().trim();
                         }
@@ -1122,19 +1122,19 @@ public class IslandExchange extends Exchanger
      * @see ec.EvolutionState#finish(int)
      */
     public void finish(int result) {
-    }
+        }
 
     /* (non-Javadoc)
      * @see ec.EvolutionState#startFromCheckpoint()
      */
     public void startFromCheckpoint() {
-    }
+        }
 
     /* (non-Javadoc)
      * @see ec.EvolutionState#startFresh()
      */
     public void startFresh() {
-    }
+        }
 
     /* (non-Javadoc)
      * @see ec.EvolutionState#evolve()
@@ -1142,7 +1142,7 @@ public class IslandExchange extends Exchanger
     public int evolve()
         throws InternalError {
         return 0;
-    }
+        }
         
     }
 
@@ -1292,7 +1292,7 @@ class IslandExchangeMailbox implements Runnable
                     InputStream compressedi = Output.makeCompressingInputStream(inSockets[x].getInputStream());
                     if (compressedi == null || compressedo == null) 
                         state.output.fatal( "You do not appear to have JZLib installed on your system, and so may must have compression turned off for IslandExchange.  "+ 
-                                            "To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/");
+                            "To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/");
 
                     dataInput[x] = new DataInputStream(compressedi);
                     dataOutput = new DataOutputStream(compressedo);
@@ -1530,26 +1530,26 @@ class IslandExchangeServer implements Runnable
     
     /*
 
-    The server-specific parameters look roughly like this:
+      The server-specific parameters look roughly like this:
 
-    exch.server-port = 8021
-    exch.num-islands = 3
-    exch.island.0.id = SurvivorIsland
-    exch.island.0.num-mig = 1
-    exch.island.0.mig.0 = GilligansIsland
-    exch.island.0.size = 5
-    exch.island.0.mod = 2
-    exch.island.0.start = 4
-    exch.island.1.id = GilligansIsland
-    exch.island.1.mod = 1
-    exch.island.1.start = 2
-    exch.island.1.size = 10
-    exch.island.1.num-mig = 2
-    exch.island.1.mig.0 = SurvivorIsland
-    exch.island.1.mig.1 = GilligansIsland
-    exch.island.2.id = BermudaIsland
-    exch.island.2.mod = 2
-    ...
+      exch.server-port = 8021
+      exch.num-islands = 3
+      exch.island.0.id = SurvivorIsland
+      exch.island.0.num-mig = 1
+      exch.island.0.mig.0 = GilligansIsland
+      exch.island.0.size = 5
+      exch.island.0.mod = 2
+      exch.island.0.start = 4
+      exch.island.1.id = GilligansIsland
+      exch.island.1.mod = 1
+      exch.island.1.start = 2
+      exch.island.1.size = 10
+      exch.island.1.num-mig = 2
+      exch.island.1.mig.0 = SurvivorIsland
+      exch.island.1.mig.1 = GilligansIsland
+      exch.island.2.id = BermudaIsland
+      exch.island.2.mod = 2
+      ...
     */
 
     //// Server information
@@ -1845,10 +1845,10 @@ class IslandExchangeServer implements Runnable
                         Integer integer = (Integer)info_immigrants.get( ieii.migrating_island_ids[y] );
                         if( integer == null )
                             info_immigrants.put( ieii.migrating_island_ids[y],
-                                                 new Integer(1) );
+                                new Integer(1) );
                         else
                             info_immigrants.put( ieii.migrating_island_ids[y],
-                                                 new Integer( integer.intValue() + 1 ) );
+                                new Integer( integer.intValue() + 1 ) );
                         }
                     }
                 }
@@ -1976,7 +1976,7 @@ class IslandExchangeServer implements Runnable
                 ieii.port = dataIn[x].readInt();
 
                 state.output.message( "" + x + ": Island " + connected_island_ids[x] + " has address " +
-                                      ieii.address + " : " + ieii.port );
+                    ieii.address + " : " + ieii.port );
 
                 // re-insert the information in the hash table
                 // info.put( id, ieii );                                // unnecessary -- Sean
@@ -2042,7 +2042,7 @@ class IslandExchangeServer implements Runnable
                         else
                             {
                             state.output.message( "Island " + connected_island_ids[x] + " should connect to island " +
-                                                  ieii.migrating_island_ids[y] + " at " + temp.address + " : " + temp.port );
+                                ieii.migrating_island_ids[y] + " at " + temp.address + " : " + temp.port );
                             dataOut[x].writeUTF( temp.address );
                             dataOut[x].writeInt( temp.port );
                             }

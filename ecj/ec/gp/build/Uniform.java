@@ -198,14 +198,14 @@ public class Uniform extends GPNodeBuilder
         else if (sizeDistribution != null)
             maxtreesize = sizeDistribution.length;
         else state.output.fatal("Uniform is used for the GP node builder, but no distribution was specified." +
-                                "  You must specify either a min/max size, or a full size distribution.",
-                                base.push(P_MINSIZE), def.push(P_MINSIZE));
+            "  You must specify either a min/max size, or a full size distribution.",
+            base.push(P_MINSIZE), def.push(P_MINSIZE));
         // preprocess offline
         preprocess(state,maxtreesize);
         }
         
     public int pickSize(final EvolutionState state, final int thread, 
-                        final int functionset, final int type)
+        final int functionset, final int type)
         {
         if (useTrueDistribution)
             return RandomChoice.pickFromDistribution(
@@ -280,7 +280,7 @@ public class Uniform extends GPNodeBuilder
             for(int y=0;y<numAtomicTypes+numSetTypes;y++)
                 for(int z=1;z<=maxtreesize;z++)
                     state.output.message("FunctionSet: " + functionsets[x].name + ", Type: " + types[y].name + ", Size: " + z + " num: " + 
-                                         (_truesizes[x][y][z] = numTreesOfType(initializer,x,y,z)));
+                        (_truesizes[x][y][z] = numTreesOfType(initializer,x,y,z)));
 
         state.output.message("Compiling Distributions");
 
@@ -307,7 +307,7 @@ public class Uniform extends GPNodeBuilder
     
     
     public BigInteger numTreesOfType(final GPInitializer initializer, 
-                                     final int functionset, final int type, final int size)
+        final int functionset, final int type, final int size)
         {
         if (NUMTREESOFTYPE[functionset][type][size]==null)
             {
@@ -321,7 +321,7 @@ public class Uniform extends GPNodeBuilder
         }
     
     public BigInteger numTreesRootedByNode(final GPInitializer initializer,
-                                           final int functionset, final GPNode node, final int size)
+        final int functionset, final GPNode node, final int size)
         {
         if (NUMTREESROOTEDBYNODE[functionset][intForNode(node)][size]==null)
             {
@@ -340,8 +340,8 @@ public class Uniform extends GPNodeBuilder
         }
     
     public BigInteger numChildPermutations( final GPInitializer initializer,
-                                            final int functionset, final GPNode parent, final int size,
-                                            final int outof, final int pickchild)
+        final int functionset, final GPNode parent, final int size,
+        final int outof, final int pickchild)
         {
         if (NUMCHILDPERMUTATIONS[functionset][intForNode(parent)][size][outof][pickchild]==null)
             {
@@ -349,7 +349,7 @@ public class Uniform extends GPNodeBuilder
             if (pickchild == parent.children.length - 1 && size==outof)
                 count = numTreesOfType(initializer,functionset,parent.constraints(initializer).childtypes[pickchild].type,size);
             else if (pickchild < parent.children.length - 1 && 
-                     outof-size >= (parent.children.length - pickchild-1))
+                outof-size >= (parent.children.length - pickchild-1))
                 {
                 BigInteger cval = numTreesOfType(initializer,functionset,parent.constraints(initializer).childtypes[pickchild].type,size);
                 BigInteger tot = BigInteger.valueOf(0);
@@ -424,7 +424,7 @@ public class Uniform extends GPNodeBuilder
         }
         
     GPNode createTreeOfType(final EvolutionState state, final int thread, final GPInitializer initializer, 
-                            final int functionset, final int type, final int size, final MersenneTwisterFast mt)
+        final int functionset, final int type, final int size, final MersenneTwisterFast mt)
         
         {
         //System.out.println("" + functionset + " " + type + " " + size);
@@ -446,8 +446,8 @@ public class Uniform extends GPNodeBuilder
         }
        
     void fillNodeWithChildren(final EvolutionState state, final int thread, final GPInitializer initializer,
-                              final int functionset, final GPNode parent, final GPNode parentc, 
-                              final int pickchild, final int outof, final MersenneTwisterFast mt)
+        final int functionset, final GPNode parent, final GPNode parentc, 
+        final int pickchild, final int outof, final MersenneTwisterFast mt)
         
         {
         if (pickchild == parent.children.length - 1)
@@ -470,12 +470,12 @@ public class Uniform extends GPNodeBuilder
         
 
     public GPNode newRootedTree(final EvolutionState state,
-                                final GPType type,
-                                final int thread,
-                                final GPNodeParent parent,
-                                final GPFunctionSet set,
-                                final int argposition,
-                                final int requestedSize)
+        final GPType type,
+        final int thread,
+        final GPNodeParent parent,
+        final GPFunctionSet set,
+        final int argposition,
+        final int requestedSize)
         {
         GPInitializer initializer = ((GPInitializer)state.initializer);
         

@@ -98,12 +98,12 @@ public class SPEA2Breeder extends SimpleBreeder
             for(int x=0;x<oldInds.length;x++)
                 {
                 if ( nIndex > thisSubpop.archiveSize && 
-                     ((SPEA2MultiObjectiveFitness)oldInds[x].fitness).SPEA2Fitness >= 1 )
+                    ((SPEA2MultiObjectiveFitness)oldInds[x].fitness).SPEA2Fitness >= 1 )
                     {
                     oldInds[x] = null;
                     }else {
-                        nIndex++;
-                        }
+                    nIndex++;
+                    }
                 }
             nIndex--;
 
@@ -159,7 +159,7 @@ public class SPEA2Breeder extends SimpleBreeder
                                 break;
                                 }
                             else if (distances[i][sortedIndex[i][j]] > 
-                                     distances[minpos][sortedIndex[minpos][j]])
+                                distances[minpos][sortedIndex[minpos][j]])
                                 break;
                             }
                         }
@@ -202,14 +202,14 @@ public class SPEA2Breeder extends SimpleBreeder
                         nullIndex = i;
                         }
                     }else
+                    {
+                    newInds[newInds.length-newIndex++] = (Individual)(oldInds[i].clone());
+                    if ( nullIndex > -1 ) 
                         {
-                        newInds[newInds.length-newIndex++] = (Individual)(oldInds[i].clone());
-                        if ( nullIndex > -1 ) 
-                            {
-                            oldInds[nullIndex++] = oldInds[i];
-                            oldInds[i] = null;
-                            }
+                        oldInds[nullIndex++] = oldInds[i];
+                        oldInds[i] = null;
                         }
+                    }
                 }
             // NOTE: This is a key place for debugging.  The archive has been built and all the individuals
             //       have *not* yet been mutated/crossed-over.  
@@ -259,9 +259,9 @@ public class SPEA2Breeder extends SimpleBreeder
             for(;;)
                 {
                 while(((SPEA2MultiObjectiveFitness)a[++i].fitness).SPEA2Fitness <
-                      ((SPEA2MultiObjectiveFitness)v.fitness).SPEA2Fitness);
+                    ((SPEA2MultiObjectiveFitness)v.fitness).SPEA2Fitness);
                 while(((SPEA2MultiObjectiveFitness)a[--j].fitness).SPEA2Fitness >
-                      ((SPEA2MultiObjectiveFitness)v.fitness).SPEA2Fitness);
+                    ((SPEA2MultiObjectiveFitness)v.fitness).SPEA2Fitness);
                 if (j<i) break;
                 swap (a,i,j);
                 }
@@ -292,7 +292,7 @@ public class SPEA2Breeder extends SimpleBreeder
             v = a[i];
             j=i;
             while ((j>lo0) && ((SPEA2MultiObjectiveFitness)a[j-1].fitness).SPEA2Fitness >
-                   ((SPEA2MultiObjectiveFitness)v.fitness).SPEA2Fitness)
+                ((SPEA2MultiObjectiveFitness)v.fitness).SPEA2Fitness)
                 {
                 a[j] = a[j-1];
                 j--;

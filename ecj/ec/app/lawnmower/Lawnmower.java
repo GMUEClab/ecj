@@ -96,7 +96,7 @@ public class Lawnmower extends GPProblem implements SimpleProblemForm
         }
 
     public void setup(final EvolutionState state,
-                      final Parameter base)
+        final Parameter base)
         {
         // very important, remember this
         super.setup(state,base);
@@ -113,11 +113,11 @@ public class Lawnmower extends GPProblem implements SimpleProblemForm
         maxx = state.parameters.getInt(base.push(P_X),null,1);
         if (maxx==0)
             state.output.error("The width (x dimension) of the lawn must be >0",
-                               base.push(P_X));
+                base.push(P_X));
         maxy = state.parameters.getInt(base.push(P_Y),null,1);
         if (maxy==0)
             state.output.error("The length (y dimension) of the lawn must be >0",
-                               base.push(P_Y));
+                base.push(P_Y));
         state.output.exitIfErrors();
             
         // set up the map
@@ -129,9 +129,9 @@ public class Lawnmower extends GPProblem implements SimpleProblemForm
         }
 
     public void evaluate(final EvolutionState state, 
-                         final Individual ind, 
-                         final int subpopulation,
-                         final int threadnum)
+        final Individual ind, 
+        final int subpopulation,
+        final int threadnum)
         {               
         if (!ind.evaluated)  // don't bother reevaluating
             {
@@ -159,15 +159,15 @@ public class Lawnmower extends GPProblem implements SimpleProblemForm
         }
 
     public void describe(final Individual ind, 
-                         final EvolutionState state, 
-                         final int subpopulation, 
-                         final int threadnum, 
-                         final int log,
-                         final int verbosity)
+        final EvolutionState state, 
+        final int subpopulation, 
+        final int threadnum, 
+        final int log,
+        final int verbosity)
         
         {
         state.output.println("\n\nBest Individual's Map\n=====================",
-                             verbosity,log);
+            verbosity,log);
         
         sum = 0;
         moves = 0;

@@ -83,7 +83,7 @@ public final class GPSetType extends GPType
         int len = state.parameters.getInt(base.push(P_SIZE),null,1);
         if (len<=0) 
             state.output.fatal("The number of atomic types in the GPSetType " +
-                               name + " must be >= 1.",base.push(P_SIZE));
+                name + " must be >= 1.",base.push(P_SIZE));
 
         // Load the GPAtomicTypes
         for(int x=0;x<len;x++)
@@ -91,20 +91,20 @@ public final class GPSetType extends GPType
             String s = state.parameters.getString(base.push(P_MEMBER).push(""+x),null);
             if (s==null)
                 state.output.fatal("Atomic type member #" + x + 
-                                   " is not defined for the GPSetType " + name +
-                                   ".",base.push(P_MEMBER).push(""+x));
+                    " is not defined for the GPSetType " + name +
+                    ".",base.push(P_MEMBER).push(""+x));
             GPType t = GPType.typeFor(s,state);
             if (!(t instanceof GPAtomicType)) // uh oh
                 state.output.fatal("Atomic type member #" + x +
-                                   " of GPSetType " + name +
-                                   " is not a GPAtomicType.",
-                                   base.push(P_MEMBER).push(""+x));
+                    " of GPSetType " + name +
+                    " is not a GPAtomicType.",
+                    base.push(P_MEMBER).push(""+x));
 
             if (types_h.get(t)!=null)
                 state.output.warning("Atomic type member #" + x +
-                                     " is included more than once in GPSetType " + 
-                                     name + ".",
-                                     base.push(P_MEMBER).push(""+x));
+                    " is included more than once in GPSetType " + 
+                    name + ".",
+                    base.push(P_MEMBER).push(""+x));
             types_h.put(t,t);
             }
         }

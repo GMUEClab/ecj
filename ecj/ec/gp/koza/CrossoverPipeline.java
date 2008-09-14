@@ -182,7 +182,7 @@ public class CrossoverPipeline extends GPBreedingPipeline
             }
 
         numTries = state.parameters.getInt(base.push(P_NUM_TRIES),
-                                           def.push(P_NUM_TRIES),1);
+            def.push(P_NUM_TRIES),1);
         if (numTries == 0)
             state.output.fatal("GPCrossover Pipeline has an invalid number of tries (it must be >= 1).",base.push(P_NUM_TRIES),def.push(P_NUM_TRIES));
 
@@ -192,25 +192,25 @@ public class CrossoverPipeline extends GPBreedingPipeline
 
         tree1 = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+0),
-                                    def.push(P_TREE).push(""+0)))
+                def.push(P_TREE).push(""+0)))
             {
             tree1 = state.parameters.getInt(base.push(P_TREE).push(""+0),
-                                            def.push(P_TREE).push(""+0),0);
+                def.push(P_TREE).push(""+0),0);
             if (tree1==-1)
                 state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
 
         tree2 = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+1),
-                                    def.push(P_TREE).push(""+1)))
+                def.push(P_TREE).push(""+1)))
             {
             tree2 = state.parameters.getInt(base.push(P_TREE).push(""+1),
-                                            def.push(P_TREE).push(""+1),0);
+                def.push(P_TREE).push(""+1),0);
             if (tree2==-1)
                 state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
         tossSecondParent = state.parameters.getBoolean(base.push(P_TOSS),
-                                                       def.push(P_TOSS),false);
+            def.push(P_TOSS),false);
 
         }
 
@@ -224,7 +224,7 @@ public class CrossoverPipeline extends GPBreedingPipeline
     /** Returns true if inner1 can feasibly be swapped into inner2's position. */
 
     public final boolean verifyPoints(final GPInitializer initializer,
-                                      final GPNode inner1, final GPNode inner2)
+        final GPNode inner1, final GPNode inner2)
         {
         // first check to see if inner1 is swap-compatible with inner2
         // on a type basis
@@ -239,12 +239,12 @@ public class CrossoverPipeline extends GPBreedingPipeline
 
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
 
         {
         // how many individuals should we make?
@@ -394,25 +394,25 @@ public class CrossoverPipeline extends GPBreedingPipeline
                 }
             
             if (n-(q-start)>=2 && !tossSecondParent) for(int x=0;x<j2.trees.length;x++)
-                {
-                if (x==t2 && res2)  // we've got a tree with a kicking cross position!
-                    { 
-                    j2.trees[x] = (GPTree)(parents[1].trees[x].lightClone());           
-                    j2.trees[x].owner = j2;
-                    j2.trees[x].child = parents[1].trees[x].child.cloneReplacing(p1,p2); 
-                    j2.trees[x].child.parent = j2.trees[x];
-                    j2.trees[x].child.argposition = 0;
-                    j2.evaluated = false; 
-                    } // it's changed
-                else 
-                    {
-                    j2.trees[x] = (GPTree)(parents[1].trees[x].lightClone());           
-                    j2.trees[x].owner = j2;
-                    j2.trees[x].child = parents[1].trees[x].child.cloneReplacing();
-                    j2.trees[x].child.parent = j2.trees[x];
-                    j2.trees[x].child.argposition = 0;
-                    }
-                }
+                                                         {
+                                                         if (x==t2 && res2)  // we've got a tree with a kicking cross position!
+                                                             { 
+                                                             j2.trees[x] = (GPTree)(parents[1].trees[x].lightClone());           
+                                                             j2.trees[x].owner = j2;
+                                                             j2.trees[x].child = parents[1].trees[x].child.cloneReplacing(p1,p2); 
+                                                             j2.trees[x].child.parent = j2.trees[x];
+                                                             j2.trees[x].child.argposition = 0;
+                                                             j2.evaluated = false; 
+                                                             } // it's changed
+                                                         else 
+                                                             {
+                                                             j2.trees[x] = (GPTree)(parents[1].trees[x].lightClone());           
+                                                             j2.trees[x].owner = j2;
+                                                             j2.trees[x].child = parents[1].trees[x].child.cloneReplacing();
+                                                             j2.trees[x].child.parent = j2.trees[x];
+                                                             j2.trees[x].child.argposition = 0;
+                                                             }
+                                                         }
             
             // add the individuals to the population
             inds[q] = j1;

@@ -86,8 +86,8 @@ public class SPEA2Subpopulation extends Subpopulation
 
     /** Overridden to include the archive size in the stream. */
     public void printSubpopulationForHumans(final EvolutionState state,
-                                            final int log, 
-                                            final int verbosity)
+        final int log, 
+        final int verbosity)
         {
         state.output.println(ARCHIVE_PREAMBLE + archiveSize, verbosity, log);
         super.printSubpopulationForHumans(state, log, verbosity);
@@ -95,8 +95,8 @@ public class SPEA2Subpopulation extends Subpopulation
         
     /** Overridden to include the archive size in the stream. */
     public void printSubpopulation(final EvolutionState state,
-                                   final int log, 
-                                   final int verbosity)
+        final int log, 
+        final int verbosity)
         {
         state.output.println(ARCHIVE_PREAMBLE + Code.encode(archiveSize), verbosity, log);
         super.printSubpopulation(state, log, verbosity);
@@ -104,7 +104,7 @@ public class SPEA2Subpopulation extends Subpopulation
         
     /** Overridden to include the archive size in the stream. */
     public void printSubpopulation(final EvolutionState state,
-                                   final PrintWriter writer)
+        final PrintWriter writer)
         {
         writer.println(ARCHIVE_PREAMBLE + Code.encode(archiveSize));
         super.printSubpopulation(state, writer);
@@ -113,7 +113,7 @@ public class SPEA2Subpopulation extends Subpopulation
 
     /** Overridden to include the archive size in the stream. */
     public void readSubpopulation(final EvolutionState state, 
-                                  final LineNumberReader reader) throws IOException
+        final LineNumberReader reader) throws IOException
         {
         // check the size
         int size = Code.readIntegerWithPreamble(NUM_INDIVIDUALS_PREAMBLE, state, reader);
@@ -127,7 +127,7 @@ public class SPEA2Subpopulation extends Subpopulation
         
     /** Overridden to include the archive size in the stream. */
     public void writeSubpopulation(final EvolutionState state,
-                                   final DataOutput dataOutput) throws IOException
+        final DataOutput dataOutput) throws IOException
         {
         dataOutput.writeInt(archiveSize);
         super.writeSubpopulation(state, dataOutput);
@@ -135,7 +135,7 @@ public class SPEA2Subpopulation extends Subpopulation
     
     /** Overridden to include the archive size in the stream. */
     public void readSubpopulation(final EvolutionState state,
-                                  final DataInput dataInput) throws IOException
+        final DataInput dataInput) throws IOException
         {
         int size = dataInput.readInt();
         

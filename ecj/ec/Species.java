@@ -103,16 +103,16 @@ public abstract class Species implements Prototype
 
     // deprecate the old ones
     final private Individual newIndividual(final EvolutionState state,
-                                           final Subpopulation _population, 
-                                           final Fitness _fitness) throws IOException { return null; }
+        final Subpopulation _population, 
+        final Fitness _fitness) throws IOException { return null; }
     final private Individual newIndividual(final EvolutionState state,
-                                           final Subpopulation _population,
-                                           final Fitness _fitness,
-                                           final LineNumberReader reader) throws IOException  { return null; }
+        final Subpopulation _population,
+        final Fitness _fitness,
+        final LineNumberReader reader) throws IOException  { return null; }
     final private Individual newIndividual(final EvolutionState state,
-                                           final Subpopulation _population,
-                                           final Fitness _fitness,
-                                           final DataInput input) throws IOException  { return null; }
+        final Subpopulation _population,
+        final Fitness _fitness,
+        final DataInput input) throws IOException  { return null; }
     
     /** Provides a brand-new individual to fill in a population.  The default form
         simply calls clone(), creates a fitness, sets evaluated to false, and sets
@@ -147,7 +147,7 @@ public abstract class Species implements Prototype
     */
 
     public Individual newIndividual(final EvolutionState state,
-                                    final LineNumberReader reader)
+        final LineNumberReader reader)
         throws IOException
         {
         Individual newind = (Individual)(i_prototype.clone());
@@ -176,7 +176,7 @@ public abstract class Species implements Prototype
     */
 
     public Individual newIndividual(final EvolutionState state,
-                                    final DataInput dataInput)
+        final DataInput dataInput)
         throws IOException
         {
         Individual newind = (Individual)(i_prototype.clone());
@@ -218,8 +218,8 @@ public abstract class Species implements Prototype
 
         // load our individual prototype
         i_prototype = (Individual)(state.parameters.getInstanceForParameter(
-                                       base.push(P_INDIVIDUAL),def.push(P_INDIVIDUAL),
-                                       Individual. class));
+                base.push(P_INDIVIDUAL),def.push(P_INDIVIDUAL),
+                Individual. class));
         // set the species to me before setting up the individual, so they know who I am
         i_prototype.species = this;
         i_prototype.setup(state,base.push(P_INDIVIDUAL));

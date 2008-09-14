@@ -269,7 +269,7 @@ public class Slave
         if (runEvolve && !returnIndividuals)
             {
             Output.initialError("You have the slave running in 'evolve' mode, but it's only returning fitnesses to the master, not whole individuals.  This is almost certainly wrong.",
-                                new Parameter(P_RUNEVOLVE), new Parameter(P_RETURNINDIVIDUALS));
+                new Parameter(P_RUNEVOLVE), new Parameter(P_RETURNINDIVIDUALS));
             }
         
         Output.initialMessage("ECJ Slave");
@@ -325,7 +325,7 @@ public class Slave
                         tmpOut = Output.makeCompressingOutputStream(tmpOut);
                         if (tmpIn == null || tmpOut == null)
                             Output.initialError("You do not appear to have JZLib installed on your system, and so must set eval.compression=false.  " +
-                                                "To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/");
+                                "To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/");
                         }
                                                 
                     dataIn = new DataInputStream(tmpIn);
@@ -352,7 +352,7 @@ public class Slave
                 verbosity = parameters.getInt(new Parameter(P_VERBOSITY), null, 0);
                 if (verbosity < 0)
                     Output.initialError("Verbosity should be an integer >= 0.\n",
-                                        new Parameter(P_VERBOSITY));
+                        new Parameter(P_VERBOSITY));
                 
                 if (output != null) output.close();
                 output = new Output(true, verbosity);
@@ -398,7 +398,7 @@ public class Slave
                 // one per thread
 
                 MersenneTwisterFast[] random = new MersenneTwisterFast[breedthreads > evalthreads ? 
-                                                                       breedthreads : evalthreads];
+                    breedthreads : evalthreads];
         
                 int seed = dataIn.readInt();
                 for(int i = 0; i < random.length; i++)
@@ -409,7 +409,7 @@ public class Slave
                 // what evolution state to use?
                 state = (EvolutionState)
                     parameters.getInstanceForParameter(new Parameter(P_STATE),null,
-                                                       EvolutionState.class);
+                        EvolutionState.class);
                 state.parameters = new ParameterDatabase();
                 state.parameters.addParent(parameters);
                 state.random = random;
@@ -463,13 +463,13 @@ public class Slave
                         }
 
                     } catch (IOException e)    
-                        {
-                        // Since an IOException can happen here if the peer closes the socket
-                        // on it's end, we don't necessarily have to exit.  Maybe we don't
-                        // even need to print a warning, but we'll do so just to indicate
-                        // something happened.
-                        state.output.warning("Unable to read type of evaluation from master.  Maybe the master closed its socket and exited?:\n"+e);
-                        }
+                    {
+                    // Since an IOException can happen here if the peer closes the socket
+                    // on it's end, we don't necessarily have to exit.  Maybe we don't
+                    // even need to print a warning, but we'll do so just to indicate
+                    // something happened.
+                    state.output.warning("Unable to read type of evaluation from master.  Maybe the master closed its socket and exited?:\n"+e);
+                    }
                 } 
             catch (UnknownHostException e)
                 {
@@ -483,7 +483,7 @@ public class Slave
         }
             
     public static void evaluateSimpleProblemForm( EvolutionState state, boolean returnIndividuals,
-                                                  DataInputStream dataIn, DataOutputStream dataOut, String[] args )
+        DataInputStream dataIn, DataOutputStream dataOut, String[] args )
         {
         ParameterDatabase params=null; 
         
@@ -586,7 +586,7 @@ public class Slave
         }
     
     public static void evaluateGroupedProblemForm( EvolutionState state, boolean returnIndividuals,
-                                                   DataInputStream dataIn, DataOutputStream dataOut )
+        DataInputStream dataIn, DataOutputStream dataOut )
         {
         boolean countVictoriesOnly = false;
 
@@ -646,7 +646,7 @@ public class Slave
         }
         
     private static void returnIndividualsToMaster(EvolutionState state, Individual []inds, boolean[] updateFitness,
-                                                  DataOutputStream dataOut, boolean returnIndividuals) throws IOException 
+        DataOutputStream dataOut, boolean returnIndividuals) throws IOException 
         {
         // Return the evaluated individual to the master
         // just write evaluated and fitness

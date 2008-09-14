@@ -95,8 +95,8 @@ public class SpatialMultiPopCoevolutionaryEvaluator extends Evaluator
     private boolean[] updates = null;
     private int[] subpops = null;
     public void performCoevolutionaryEvaluation( final EvolutionState state,
-                                                 final Population population,
-                                                 final GroupedProblemForm prob )
+        final Population population,
+        final GroupedProblemForm prob )
         {
 
         for( int i = 0 ; i < selectionMethod.length ; i++ )

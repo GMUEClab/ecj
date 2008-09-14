@@ -167,8 +167,8 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         }
 
     public void beforeCoevolutionaryEvaluation( final EvolutionState state,
-                                                final Population population,
-                                                final GroupedProblemForm prob )
+        final Population population,
+        final GroupedProblemForm prob )
         {
 
         if( state.generation == 0 )
@@ -197,8 +197,8 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
     private boolean[] updates = null;
     private int[] subpops = null;
     public void performCoevolutionaryEvaluation( final EvolutionState state,
-                                                 final Population population,
-                                                 final GroupedProblemForm prob )
+        final Population population,
+        final GroupedProblemForm prob )
         {
 
         // such that the selection methods actually select from the previous population
@@ -319,8 +319,8 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         }
 
     public void afterCoevolutionaryEvaluation( final EvolutionState state,
-                                               final Population population,
-                                               final GroupedProblemForm prob )
+        final Population population,
+        final GroupedProblemForm prob )
         {
 
 
@@ -340,8 +340,8 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         }
 
     public void loadElites( final EvolutionState state,
-                            final Subpopulation subpop,
-                            int whichSubpop )
+        final Subpopulation subpop,
+        int whichSubpop )
         {
         if (numElite[whichSubpop]==1)
             {

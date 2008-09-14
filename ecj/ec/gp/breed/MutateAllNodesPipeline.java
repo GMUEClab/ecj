@@ -102,10 +102,10 @@ public class MutateAllNodesPipeline extends GPBreedingPipeline
 
         tree = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+0),
-                                    def.push(P_TREE).push(""+0)))
+                def.push(P_TREE).push(""+0)))
             {
             tree = state.parameters.getInt(base.push(P_TREE).push(""+0),
-                                           def.push(P_TREE).push(""+0),0);
+                def.push(P_TREE).push(""+0),0);
             if (tree==-1)
                 state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
@@ -130,15 +130,15 @@ public class MutateAllNodesPipeline extends GPBreedingPipeline
             initializer.numSetTypes == 1)  // easy
             numValidNodes = set.nodesByArity[type][len].length;
         else for(int x=0;x<set.nodesByArity[type][len].length;x++) // ugh, the hard way -- nodes swap-compatible with type, and of arity len
-            {
-            failed = false;
-            for(int y=0;y<set.nodesByArity[type][len][x].constraints(initializer).childtypes.length;y++)
-                if (!set.nodesByArity[type][len][x].constraints(initializer).
-                    childtypes[y].compatibleWith(initializer,original.children[y].
-                                                 constraints(initializer).returntype))
-                    { failed = true; break; }
-            if (!failed) numValidNodes++;
-            }
+                 {
+                 failed = false;
+                 for(int y=0;y<set.nodesByArity[type][len][x].constraints(initializer).childtypes.length;y++)
+                     if (!set.nodesByArity[type][len][x].constraints(initializer).
+                         childtypes[y].compatibleWith(initializer,original.children[y].
+                             constraints(initializer).returntype))
+                         { failed = true; break; }
+                 if (!failed) numValidNodes++;
+                 }
         
         // we must have at least success -- the node itself.  Otherwise we're
         // in deep doo-doo.
@@ -152,20 +152,20 @@ public class MutateAllNodesPipeline extends GPBreedingPipeline
         if (numValidNodes == set.nodesByArity[type][len].length) // easy
             return set.nodesByArity[type][len][nodenum];
         else for(int x=0;x<set.nodesByArity[type][len].length;x++) // ugh, the hard way -- nodes swap-compatible with type, and of arity len
-            {
-            failed = false;
-            for(int y=0;y<set.nodesByArity[type][len][x].constraints(initializer).childtypes.length;y++)
-                if (!set.nodesByArity[type][len][x].constraints(initializer).
-                    childtypes[y].compatibleWith(initializer,original.children[y].
-                                                 constraints(initializer).returntype))
-                    { failed = true; break; }
-            if (!failed) 
-                {
-                if (prosnode == nodenum)  // got it!
-                    return set.nodesByArity[type][len][x];
-                prosnode++;
-                }
-            }
+                 {
+                 failed = false;
+                 for(int y=0;y<set.nodesByArity[type][len][x].constraints(initializer).childtypes.length;y++)
+                     if (!set.nodesByArity[type][len][x].constraints(initializer).
+                         childtypes[y].compatibleWith(initializer,original.children[y].
+                             constraints(initializer).returntype))
+                         { failed = true; break; }
+                 if (!failed) 
+                     {
+                     if (prosnode == nodenum)  // got it!
+                         return set.nodesByArity[type][len][x];
+                     prosnode++;
+                     }
+                 }
 
         // should never be able to get here
         throw new InternalError();  // whoops!
@@ -197,12 +197,12 @@ public class MutateAllNodesPipeline extends GPBreedingPipeline
 
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
         {
         // grab n individuals from our source and stick 'em right into inds.
         // we'll modify them from there

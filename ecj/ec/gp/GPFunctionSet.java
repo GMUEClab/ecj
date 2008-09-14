@@ -209,7 +209,7 @@ public class GPFunctionSet implements Clique
         name = state.parameters.getString(base.push(P_NAME),null);
         if (name==null)
             state.output.fatal("No name was given for this function set.",
-                               base.push(P_NAME));
+                base.push(P_NAME));
         // Register me
         GPFunctionSet old_functionset = (GPFunctionSet)(((GPInitializer)state.initializer).functionSetRepository.put(name,this));
         if (old_functionset != null)
@@ -219,7 +219,7 @@ public class GPFunctionSet implements Clique
         int numFuncs = state.parameters.getInt(base.push(P_SIZE),null,1);
         if (numFuncs < 1)
             state.output.error("The GPFunctionSet \"" + name + "\" has no functions.",
-                               base.push(P_SIZE));
+                base.push(P_SIZE));
         
         Parameter p = base.push(P_FUNC);
         Vector tmp = new Vector();
@@ -228,7 +228,7 @@ public class GPFunctionSet implements Clique
             // load
             Parameter pp = p.push(""+x);
             GPNode gpfi = (GPNode)(state.parameters.getInstanceForParameter(
-                                       pp, null, GPNode.class));
+                    pp, null, GPNode.class));
             gpfi.setup(state,pp);
 
             // add to my collection
@@ -300,7 +300,7 @@ public class GPFunctionSet implements Clique
         several times, you call state.output.exitIfErrors() once. */
 
     public static GPFunctionSet functionSetFor(final String functionSetName,
-                                               final EvolutionState state)
+        final EvolutionState state)
         {
         GPFunctionSet set = (GPFunctionSet)(((GPInitializer)state.initializer).functionSetRepository.get(functionSetName));
         if (set==null)

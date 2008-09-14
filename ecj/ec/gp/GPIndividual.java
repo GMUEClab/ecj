@@ -138,7 +138,7 @@ public class GPIndividual extends Individual
         int t = state.parameters.getInt(base.push(P_NUMTREES),def.push(P_NUMTREES),1);  // at least 1 tree for GP!
         if (t <= 0) 
             state.output.fatal("A GPIndividual must have at least one tree.",
-                               base.push(P_NUMTREES),def.push(P_NUMTREES));
+                base.push(P_NUMTREES),def.push(P_NUMTREES));
         
         // load the trees
         trees = new GPTree[t];
@@ -147,7 +147,7 @@ public class GPIndividual extends Individual
             {
             Parameter p = base.push(P_TREE).push(""+x);
             trees[x] = (GPTree)(state.parameters.getInstanceForParameterEq(
-                                    p,def.push(P_TREE).push(""+x),GPTree.class));
+                    p,def.push(P_TREE).push(""+x),GPTree.class));
             trees[x].owner = this;
             trees[x].setup(state,p);
             }
@@ -181,7 +181,7 @@ public class GPIndividual extends Individual
         if (trees==null) 
             { state.output.error("Null trees in GPIndividual."); return; }
         for(int x=0;x<trees.length;x++) if (trees[x]==null) 
-            { state.output.error("Null tree (#"+x+") in GPIndividual."); return; }
+                                            { state.output.error("Null tree (#"+x+") in GPIndividual."); return; }
         for(int x=0;x<trees.length;x++)
             trees[x].verify(state);
         state.output.exitIfErrors();
@@ -190,10 +190,10 @@ public class GPIndividual extends Individual
 
     /** Overridden for the GPIndividual genotype, writing each tree in turn. */
     public void printIndividualForHumans(final EvolutionState state, final int log, 
-                                         final int verbosity)
+        final int verbosity)
         {
         state.output.println(EVALUATED_PREAMBLE + (evaluated ? "true" : "false"), 
-                             verbosity, log);
+            verbosity, log);
         fitness.printFitnessForHumans(state,log,verbosity);
         for(int x=0;x<trees.length;x++)
             {
@@ -204,10 +204,10 @@ public class GPIndividual extends Individual
 
     /** Overridden for the GPIndividual genotype, writing each tree in turn. */
     public void printIndividual(final EvolutionState state, final int log, 
-                                final int verbosity)
+        final int verbosity)
         {
         state.output.println(EVALUATED_PREAMBLE + Code.encode(evaluated), 
-                             verbosity, log);
+            verbosity, log);
         fitness.printFitness(state,log,verbosity);
         for(int x=0;x<trees.length;x++)
             {
@@ -218,7 +218,7 @@ public class GPIndividual extends Individual
             
     /** Overridden for the GPIndividual genotype, writing each tree in turn. */
     public void printIndividual(final EvolutionState state,
-                                final PrintWriter writer)
+        final PrintWriter writer)
         {
         writer.println(EVALUATED_PREAMBLE + Code.encode(evaluated));
         fitness.printFitness(state,writer);
@@ -231,7 +231,7 @@ public class GPIndividual extends Individual
         
     /** Overridden for the GPIndividual genotype. */
     public void writeGenotype(final EvolutionState state,
-                              final DataOutput dataOutput) throws IOException
+        final DataOutput dataOutput) throws IOException
         {
         dataOutput.writeInt(trees.length);
         for(int x=0;x<trees.length;x++)
@@ -240,7 +240,7 @@ public class GPIndividual extends Individual
 
     /** Overridden for the GPIndividual genotype. */
     public void readGenotype(final EvolutionState state,
-                             final DataInput dataInput) throws IOException
+        final DataInput dataInput) throws IOException
         {
         int treelength = dataInput.readInt();
         if (trees == null || treelength != trees.length) // wrong size!
@@ -250,7 +250,7 @@ public class GPIndividual extends Individual
         }
 
     public void parseGenotype(final EvolutionState state,
-                              final LineNumberReader reader) throws IOException
+        final LineNumberReader reader) throws IOException
         {
         // Read my trees
         for(int x=0;x<trees.length;x++)

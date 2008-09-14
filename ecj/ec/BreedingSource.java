@@ -128,7 +128,7 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooser
     public static int pickRandom(final BreedingSource[] sources,final float prob)
         {
         return RandomChoice.pickFromDistribution(sources,sources[0],
-                                                 prob,CHECKBOUNDARY);
+            prob,CHECKBOUNDARY);
         }
 
     /** Normalizes and arranges the probabilities in sources so that they
@@ -152,9 +152,9 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooser
     */
 
     public abstract boolean produces(final EvolutionState state,
-                                     final Population newpop,
-                                     final int subpopulation,
-                                     int thread);
+        final Population newpop,
+        final int subpopulation,
+        int thread);
 
     /** Called before produce(...), usually once a generation, or maybe only
         once if you're doing steady-state evolution, to let the breeding source
@@ -164,15 +164,15 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooser
         'nuther subpopulation. */
 
     public abstract void prepareToProduce(final EvolutionState state,
-                                          final int subpopulation,
-                                          final int thread);
+        final int subpopulation,
+        final int thread);
 
     /** Called after produce(...), usually once a generation, or maybe only
         once if you're doing steady-state evolution (at the end of the run). */
         
     public abstract void finishProducing(final EvolutionState s,
-                                         final int subpopulation,
-                                         final int thread);
+        final int subpopulation,
+        final int thread);
 
     /** Produces <i>n</i> individuals from the given subpopulation
         and puts them into inds[start...start+n-1],
@@ -182,12 +182,12 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooser
         might typically produce two individuals, tournament selection might typically
         produce a single individual, etc. */
     public abstract int produce(final int min, 
-                                final int max, 
-                                final int start,
-                                final int subpopulation,
-                                final Individual[] inds,
-                                final EvolutionState state,
-                                final int thread) ;        
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) ;        
 
     public Object clone()
         {

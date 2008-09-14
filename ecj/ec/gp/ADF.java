@@ -126,9 +126,9 @@ public class ADF extends GPNode
 
     /** Checks type-compatibility constraints between the ADF, its argument terminals, and the tree type of its associated tree, and also checks to make sure the tree exists, there aren't invalid argument terminals in it, and there are sufficient argument terminals (a warning).  Whew! */
     public void checkConstraints(final EvolutionState state,
-                                 final int tree,
-                                 final GPIndividual typicalIndividual,
-                                 final Parameter individualBase)
+        final int tree,
+        final GPIndividual typicalIndividual,
+        final Parameter individualBase)
         {
         super.checkConstraints(state,tree,typicalIndividual,individualBase);
         
@@ -136,7 +136,7 @@ public class ADF extends GPNode
         
         if (associatedTree < 0 || associatedTree > typicalIndividual.trees.length)
             state.output.error("The node " + toStringForError() + " of individual " + 
-                               individualBase + " must have an associated tree that is >= 0 and < " + typicalIndividual.trees.length);
+                individualBase + " must have an associated tree that is >= 0 and < " + typicalIndividual.trees.length);
         else
             {
             
@@ -144,10 +144,10 @@ public class ADF extends GPNode
             GPInitializer initializer = ((GPInitializer)state.initializer);
             
             if (!constraints(initializer).returntype.compatibleWith(initializer,
-                                                                    typicalIndividual.trees[associatedTree].constraints(initializer).treetype))
+                    typicalIndividual.trees[associatedTree].constraints(initializer).treetype))
                 state.output.error("The return type of the node " + toStringForError() 
-                                   + " of individual " + 
-                                   individualBase + "is not type-compatible with the tree type of its associated tree.");
+                    + " of individual " + 
+                    individualBase + "is not type-compatible with the tree type of its associated tree.");
             
             GPNode[][] funcs = 
                 typicalIndividual.trees[associatedTree].
@@ -168,28 +168,28 @@ public class ADF extends GPNode
                         int arg = argument.argument;
                         if (arg >= children.length)  // uh oh
                             state.output.error("The node " +
-                                               toStringForError() + 
-                                               " in individual "  + 
-                                               individualBase + " would call its associated tree, which has an argument terminal with an argument number (" + arg + ") >= the ADF/ADM's arity (" + children.length +").  The argument terminal in question is " 
-                                               + gpfi[x].toStringForError()); 
+                                toStringForError() + 
+                                " in individual "  + 
+                                individualBase + " would call its associated tree, which has an argument terminal with an argument number (" + arg + ") >= the ADF/ADM's arity (" + children.length +").  The argument terminal in question is " 
+                                + gpfi[x].toStringForError()); 
                         else
                             {
                             if (validArgument[arg]!=null && validArgument[arg]!=argument)  // got one already
                                 state.output.warning("There exists more than one Argument terminal for argument #" 
-                                                     + arg + " for the node " +
-                                                     toStringForError() + 
-                                                     " in individual " + 
-                                                     individualBase);
+                                    + arg + " for the node " +
+                                    toStringForError() + 
+                                    " in individual " + 
+                                    individualBase);
                             else validArgument[arg] = argument;
                             
                             // is the argument terminal of the correct return type?  Issue an error.
                             if (!gpfi[x].constraints(initializer).returntype.compatibleWith(initializer,
-                                                                                            constraints(initializer).childtypes[arg]))
+                                    constraints(initializer).childtypes[arg]))
                                 state.output.error("The node " +
-                                                   toStringForError() + 
-                                                   " in individual " +
-                                                   individualBase + " would call its associated tree, which has an argument terminal which is not type-compatible with the related argument position of the ADF/ADM.  The argument terminal in question is " 
-                                                   + gpfi[x].toStringForError()); 
+                                    toStringForError() + 
+                                    " in individual " +
+                                    individualBase + " would call its associated tree, which has an argument terminal which is not type-compatible with the related argument position of the ADF/ADM.  The argument terminal in question is " 
+                                    + gpfi[x].toStringForError()); 
                             }
                         }
                 }
@@ -200,9 +200,9 @@ public class ADF extends GPNode
             for (int x=0;x<children.length;x++)
                 if (validArgument[x] == null) 
                     state.output.warning("There is no argument terminal for argument #" 
-                                         + x + " for the node " 
-                                         + toStringForError() + " in individual " + 
-                                         individualBase);
+                        + x + " for the node " 
+                        + toStringForError() + " in individual " + 
+                        individualBase);
             
             }
         }
@@ -219,7 +219,7 @@ public class ADF extends GPNode
         if (functionName == null)
             {
             state.output.warning("ADF/ADM node has no function name.  Using a blank name.",
-                                 base.push(P_FUNCTIONNAME),def.push(P_FUNCTIONNAME));
+                base.push(P_FUNCTIONNAME),def.push(P_FUNCTIONNAME));
             functionName = "";
             }
 
@@ -236,11 +236,11 @@ public class ADF extends GPNode
     public String toString() { return "ADF" + functionName + "[" +associatedTree + "]"; }
     
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
         {
         // get a context and prepare it
         ADFContext c = stack.get();
@@ -251,7 +251,7 @@ public class ADF extends GPNode
             {
             input.copyTo(c.arguments[x]);
             children[x].eval(state,thread,c.arguments[x],
-                             stack,individual,problem);
+                stack,individual,problem);
             }
 
         // Now push the context onto the stack.

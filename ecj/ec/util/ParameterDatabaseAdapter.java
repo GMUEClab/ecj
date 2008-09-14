@@ -23,18 +23,18 @@ public class ParameterDatabaseAdapter
      */
     public ParameterDatabaseAdapter() {
         super();
-    }
+        }
 
     /* (non-Javadoc)
      * @see ec.util.ParameterDatabaseListener#parameterSet(ec.util.ParameterDatabaseEvent)
      */
     public void parameterSet(ParameterDatabaseEvent evt) {
-    }
+        }
 
     /* (non-Javadoc)
      * @see ec.util.ParameterDatabaseListener#parameterAccessed(ec.util.ParameterDatabaseEvent)
      */
     public void parameterAccessed(ParameterDatabaseEvent evt) {
-    }
+        }
 
     }

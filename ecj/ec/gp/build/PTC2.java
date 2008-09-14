@@ -87,14 +87,14 @@ public class PTC2 extends GPNodeBuilder
         // we use size distributions -- did the user specify any?
         if (!canPick())
             state.output.fatal("PTC2 needs a distribution of tree sizes to pick from.  You can do this by either setting a distribution (with " + P_NUMSIZES + ") or with "
-                               + P_MINSIZE + " and " + P_MAXSIZE + ".", base, def);
+                + P_MINSIZE + " and " + P_MAXSIZE + ".", base, def);
 
         maxDepth = state.parameters.getInt(base.push(P_MAXDEPTH),
-                                           def.push(P_MAXDEPTH),1);
+            def.push(P_MAXDEPTH),1);
         if (maxDepth < 1)
             state.output.fatal("Maximum depth must be >= 1",
-                               base.push(P_MAXDEPTH),
-                               def.push(P_MAXDEPTH));
+                base.push(P_MAXDEPTH),
+                def.push(P_MAXDEPTH));
         }
 
     public final static int MIN_QUEUE_SIZE = 32;
@@ -155,12 +155,12 @@ public class PTC2 extends GPNodeBuilder
 
 
     public GPNode newRootedTree(final EvolutionState state,
-                                GPType type,
-                                final int thread,
-                                final GPNodeParent parent,
-                                final GPFunctionSet set,
-                                final int argposition,
-                                int requestedSize)
+        GPType type,
+        final int thread,
+        final GPNodeParent parent,
+        final GPFunctionSet set,
+        final int argposition,
+        int requestedSize)
         {
         // ptc2 can mess up if there are no available terminals for a given type.  If this occurs,
         // and we find ourselves unable to pick a terminal when we want to do so, we will issue a warning,
@@ -200,8 +200,8 @@ public class PTC2 extends GPNodeBuilder
             {
             root = (GPNode)
                 terminals[RandomChoice.pickFromDistribution(
-                              pset.terminalProbabilities(t),
-                              state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
+                    pset.terminalProbabilities(t),
+                    state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
             root.resetNode(state,thread);  // give ERCs a chance to randomize
             root.argposition = (byte)argposition;
             root.parent = parent;
@@ -213,8 +213,8 @@ public class PTC2 extends GPNodeBuilder
             // pick a nonterminal
             root = (GPNode)
                 nonterminals[RandomChoice.pickFromDistribution(
-                                 pset.nonterminalProbabilities(t),
-                                 state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
+                    pset.nonterminalProbabilities(t),
+                    state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
             root.resetNode(state,thread);  // give ERCs a chance to randomize
             root.argposition = (byte)argposition;
             root.parent = parent;
@@ -254,8 +254,8 @@ public class PTC2 extends GPNodeBuilder
                     {
                     GPNode n = (GPNode)
                         terminals[RandomChoice.pickFromDistribution(
-                                      pset.terminalProbabilities(y),
-                                      state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
+                            pset.terminalProbabilities(y),
+                            state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
                     dequeue_node.children[dequeue_argpos] = n;
                     n.resetNode(state,thread);  // give ERCs a chance to randomize
                     n.argposition = (byte)dequeue_argpos;
@@ -269,8 +269,8 @@ public class PTC2 extends GPNodeBuilder
                                                                                         
                     GPNode n = (GPNode)
                         nonterminals[RandomChoice.pickFromDistribution(
-                                         pset.nonterminalProbabilities(y),
-                                         state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
+                            pset.nonterminalProbabilities(y),
+                            state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
                     dequeue_node.children[dequeue_argpos] = n;
                     n.resetNode(state,thread);  // give ERCs a chance to randomize
                     n.argposition = (byte)dequeue_argpos;

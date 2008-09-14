@@ -76,15 +76,15 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
             base.push(P_STATISTICS_FILE),null);
 
         if (statisticsFile!=null) try
-            {
-            statisticslog = state.output.addLog(statisticsFile,Output.V_NO_GENERAL-1,false,
-                                                !state.parameters.getBoolean(base.push(P_COMPRESS),null,false),
-                                                state.parameters.getBoolean(base.push(P_COMPRESS),null,false));
-            }
-        catch (IOException i)
-            {
-            state.output.fatal("An IOException occurred while trying to create the log " + statisticsFile + ":\n" + i);
-            }
+                                      {
+                                      statisticslog = state.output.addLog(statisticsFile,Output.V_NO_GENERAL-1,false,
+                                          !state.parameters.getBoolean(base.push(P_COMPRESS),null,false),
+                                          state.parameters.getBoolean(base.push(P_COMPRESS),null,false));
+                                      }
+            catch (IOException i)
+                {
+                state.output.fatal("An IOException occurred while trying to create the log " + statisticsFile + ":\n" + i);
+                }
         }
 
     public void postInitializationStatistics(final EvolutionState state)

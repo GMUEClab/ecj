@@ -101,9 +101,9 @@ public class ECSuite extends Problem implements SimpleProblemForm
         }
 
     public void evaluate(final EvolutionState state,
-                         final Individual ind,
-                         final int subpopulation,
-                         final int threadnum)
+        final Individual ind,
+        final int subpopulation,
+        final int threadnum)
         {
         if( !( ind instanceof DoubleVectorIndividual ) )
             state.output.fatal( "The individuals for this problem should be DoubleVectorIndividuals." );
@@ -123,7 +123,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
                         (1-genome[i-1])*(1-genome[i-1]);
                 fit = (float)(-value);
                 ((SimpleFitness)(ind.fitness)).setFitness( state, fit, fit==0.0f );
-                break;
+            break;
                 
             case PROB_RASTRIGIN:
                 value = len * A;
@@ -131,21 +131,21 @@ public class ECSuite extends Problem implements SimpleProblemForm
                     value += ( genome[i]*genome[i] - A * Math.cos( 2 * Math.PI * genome[i] ) );
                 fit = (float)(-value);
                 ((SimpleFitness)(ind.fitness)).setFitness( state, fit, fit==0.0f );
-                break;
+            break;
                 
             case PROB_SPHERE:
                 for( int i = 0 ; i < len ; i++ )
                     value += genome[i]*genome[i];
                 fit = (float)(-value);
                 ((SimpleFitness)(ind.fitness)).setFitness( state, fit, fit==0.0f );
-                break;
+            break;
 
             case PROB_STEP:
                 for( int i = 0 ; i < len ; i++ )
                     value += 6 + Math.floor( genome[i] );
                 fit = (float)(-value);
                 ((SimpleFitness)(ind.fitness)).setFitness( state, fit, fit==0.0f );
-                break;
+            break;
 
             case PROB_NOISY_QUARTIC:
                 for( int i = 0 ; i < len ; i++ )
@@ -153,7 +153,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
                         state.random[threadnum].nextDouble();
                 fit = (float)(-value);
                 ((SimpleFitness)(ind.fitness)).setFitness( state, fit, false ); // no solution is ideal for sure due to noise
-                break;
+            break;
 
             case PROB_BOOTH:
                 if( len != 2 )
@@ -162,7 +162,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
                     (2*genome[0] + genome[1] - 5) * (2*genome[0] + genome[1] - 5);
                 fit = (float)(-value);
                 ((SimpleFitness)(ind.fitness)).setFitness( state, fit, false ); // no solution is ideal for sure due to noise
-                break;
+            break;
 
             case PROB_GRIEWANGK:
                 value = 1;
@@ -175,7 +175,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
                 value -= prod;
                 fit = (float)(-value);
                 ((SimpleFitness)(ind.fitness)).setFitness( state, fit, false ); // no solution is ideal for sure due to noise
-                break;
+            break;
 
             default:
                 state.output.fatal( "ec.app.ecsuite.ECSuite has an invalid problem -- how on earth did that happen?" );
@@ -186,11 +186,11 @@ public class ECSuite extends Problem implements SimpleProblemForm
         }
 
     public void describe(final Individual ind, 
-                         final EvolutionState state, 
-                         final int subpopulation,
-                         final int threadnum,
-                         final int log,
-                         final int verbosity)
+        final EvolutionState state, 
+        final int subpopulation,
+        final int threadnum,
+        final int log,
+        final int verbosity)
         {
         return;
         }

@@ -28,23 +28,23 @@ public class If extends GPNode
     public String toString() { return "if"; }
 
     public void checkConstraints(final EvolutionState state,
-                                 final int tree,
-                                 final GPIndividual typicalIndividual,
-                                 final Parameter individualBase)
+        final int tree,
+        final GPIndividual typicalIndividual,
+        final Parameter individualBase)
         {
         super.checkConstraints(state,tree,typicalIndividual,individualBase);
         if (children.length!=3)
             state.output.error("Incorrect number of children for node " + 
-                               toStringForError() + " at " +
-                               individualBase);
+                toStringForError() + " at " +
+                individualBase);
         }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
         {
         MultiplexerData md = (MultiplexerData)input;
         long[] dat_11_1=null;  // quiets compiler complaints
@@ -65,8 +65,8 @@ public class If extends GPNode
             {
             dat_11_1 = md.popDat11();
             System.arraycopy(md.dat_11,0,
-                             dat_11_1,0,
-                             MultiplexerData.MULTI_11_NUM_BITSTRINGS);
+                dat_11_1,0,
+                MultiplexerData.MULTI_11_NUM_BITSTRINGS);
             }
 
         children[1].eval(state,thread,input,stack,individual,problem);
@@ -79,8 +79,8 @@ public class If extends GPNode
             {
             dat_11_2 = md.popDat11();
             System.arraycopy(md.dat_11,0,
-                             dat_11_2,0,
-                             MultiplexerData.MULTI_11_NUM_BITSTRINGS);
+                dat_11_2,0,
+                MultiplexerData.MULTI_11_NUM_BITSTRINGS);
             }
 
         // tweak -- if a then b else c is equivalent to

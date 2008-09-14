@@ -1391,3 +1391,9 @@ Version		Change Log
 	Bug fix in mixed-up warning messages in GPNodeBuilder
 	Fixed Tutorial3 to reflect new population writing format.  Thanks to
 		Myron Tuttle <myrongt@gmail.com>
+	Added ec.util.LocalHost class to replace known bug in Java's getLocalHost
+		method.  This class relies on the NetworkInterface class in
+		Java 1.4, which is going to bump ECJ to require 1.4.  Thanks to 
+		Tomasz Nowak <nowak2000@poczta.onet.pl>
+	Bumped classfile version in Makefile to 1.4 accordingly.
+	Fixed erroneous documentation in FloatVectorSpecies and IntegerVectorSpecies

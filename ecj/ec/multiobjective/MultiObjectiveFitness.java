@@ -96,7 +96,7 @@ public class MultiObjectiveFitness extends Fitness
             base.push(P_NUMFITNESSES),def.push(P_NUMFITNESSES),0);
         if (numFitnesses<=0)
             state.output.fatal("The number of objectives must be an integer >0.",
-                               base.push(P_NUMFITNESSES),def.push(P_NUMFITNESSES));
+                base.push(P_NUMFITNESSES),def.push(P_NUMFITNESSES));
 
         multifitness = new float[numFitnesses];         
         }  
@@ -122,7 +122,7 @@ public class MultiObjectiveFitness extends Fitness
         for (int x=0;x<
                  // just to be safe...
                  Math.min(multifitness.length,
-                          ((MultiObjectiveFitness)_fitness).multifitness.length);
+                     ((MultiObjectiveFitness)_fitness).multifitness.length);
              x++)
             {
             if (multifitness[x] > 
@@ -145,7 +145,7 @@ public class MultiObjectiveFitness extends Fitness
         for (int x=0;x<
                  // just to be safe...
                  Math.min(multifitness.length,
-                          ((MultiObjectiveFitness)_fitness).multifitness.length);
+                     ((MultiObjectiveFitness)_fitness).multifitness.length);
              x++)
             {
             if (multifitness[x] >
@@ -182,7 +182,7 @@ public class MultiObjectiveFitness extends Fitness
         }
 
     public void readFitness(final EvolutionState state, 
-                            final LineNumberReader reader)
+        final LineNumberReader reader)
         throws IOException
         {
         /*
@@ -199,13 +199,13 @@ public class MultiObjectiveFitness extends Fitness
             Code.decode(d);
             if (d.type!=DecodeReturn.T_FLOAT)
                 state.output.fatal("Reading Line " + d.lineNumber + ": " +
-                                   "Bad Fitness (multifitness value #" + x + ").");
+                    "Bad Fitness (multifitness value #" + x + ").");
             multifitness[x] = (float)d.d;
             }
         }
     
     public void writeFitness(final EvolutionState state,
-                             final DataOutput dataOutput) throws IOException
+        final DataOutput dataOutput) throws IOException
         {
         dataOutput.writeInt(multifitness.length);
         for(int x=0;x<multifitness.length;x++)
@@ -213,7 +213,7 @@ public class MultiObjectiveFitness extends Fitness
         }
 
     public void readFitness(final EvolutionState state,
-                            final DataInput dataInput) throws IOException
+        final DataInput dataInput) throws IOException
         {
         int len = dataInput.readInt();
         if (multifitness==null || multifitness.length != len)

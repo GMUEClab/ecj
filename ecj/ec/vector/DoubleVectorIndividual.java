@@ -79,7 +79,7 @@ public class DoubleVectorIndividual extends VectorIndividual
     public Object clone()
         {
         DoubleVectorIndividual myobj = (DoubleVectorIndividual) (super
-                                                                 .clone());
+            .clone());
 
         // must clone the genome
         myobj.genome = (double[]) (genome.clone());
@@ -108,7 +108,7 @@ public class DoubleVectorIndividual extends VectorIndividual
         }
 
     public void defaultCrossover(EvolutionState state, int thread,
-                                 VectorIndividual ind)
+        VectorIndividual ind)
         {
         FloatVectorSpecies s = (FloatVectorSpecies) species;
         DoubleVectorIndividual i = (DoubleVectorIndividual) ind;
@@ -194,7 +194,7 @@ public class DoubleVectorIndividual extends VectorIndividual
         for (int x = 0; x < pieces.length; x++)
             {
             System.arraycopy(pieces[x], 0, newgenome, runningsum,
-                             ((double[]) (pieces[x])).length);
+                ((double[]) (pieces[x])).length);
             runningsum += ((double[]) (pieces[x])).length;
             }
         // set genome
@@ -241,7 +241,7 @@ public class DoubleVectorIndividual extends VectorIndividual
                                 break;
                                 }
                             } else
-                                break;
+                            break;
                         } while (true);
                     genome[x] = val;
                     }
@@ -263,7 +263,7 @@ public class DoubleVectorIndividual extends VectorIndividual
         FloatVectorSpecies s = (FloatVectorSpecies) species;
         for (int x = 0; x < genome.length; x++)
             genome[x] = (s.minGene(x) + state.random[thread].nextDouble()
-                         * (s.maxGene(x) - s.minGene(x)));
+                * (s.maxGene(x) - s.minGene(x)));
         }
 
     public int hashCode()
@@ -300,7 +300,7 @@ public class DoubleVectorIndividual extends VectorIndividual
         }
 
     protected void parseGenotype(final EvolutionState state,
-                                 final LineNumberReader reader) throws IOException
+        final LineNumberReader reader) throws IOException
         {
         // read in the next line. The first item is the number of genes
         String s = reader.readLine();
@@ -347,7 +347,7 @@ public class DoubleVectorIndividual extends VectorIndividual
         }
 
     public void writeGenotype(final EvolutionState state,
-                              final DataOutput dataOutput) throws IOException
+        final DataOutput dataOutput) throws IOException
         {
         dataOutput.writeInt(genome.length);
         for (int x = 0; x < genome.length; x++)
@@ -355,7 +355,7 @@ public class DoubleVectorIndividual extends VectorIndividual
         }
 
     public void readGenotype(final EvolutionState state,
-                             final DataInput dataInput) throws IOException
+        final DataInput dataInput) throws IOException
         {
         int len = dataInput.readInt();
         if (genome == null || genome.length != len)
@@ -389,7 +389,7 @@ public class DoubleVectorIndividual extends VectorIndividual
         {
         double[] newGenome = new double[len];
         System.arraycopy(genome, 0, newGenome, len, 
-                         genome.length < newGenome.length ? genome.length : newGenome.length);
+            genome.length < newGenome.length ? genome.length : newGenome.length);
         genome = newGenome;
         }
 

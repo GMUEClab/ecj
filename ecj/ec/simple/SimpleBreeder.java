@@ -138,13 +138,13 @@ public class SimpleBreeder extends Breeder
                 
             // gather the threads
             for(int y=0;y<state.breedthreads;y++) try
-                {
-                t[y].join();
-                }
-            catch(InterruptedException e)
-                {
-                state.output.fatal("Whoa! The main breeding thread got interrupted!  Dying...");
-                }
+                                                      {
+                                                      t[y].join();
+                                                      }
+                catch(InterruptedException e)
+                    {
+                    state.output.fatal("Whoa! The main breeding thread got interrupted!  Dying...");
+                    }
             }
         return newpop;
         }
@@ -157,7 +157,7 @@ public class SimpleBreeder extends Breeder
         you should not call it. */
 
     protected void breedPopChunk(Population newpop, EvolutionState state,
-                                 int[] numinds, int[] from, int threadnum) 
+        int[] numinds, int[] from, int threadnum) 
         {
         //System.out.println("Breeding: " + numinds[0] + " Starting at: " + from[0]);
         for(int subpop=0;subpop<newpop.subpops.length;subpop++)
@@ -178,8 +178,8 @@ public class SimpleBreeder extends Breeder
             int upperbound = from[subpop]+numinds[subpop];
             while(x<upperbound)
                 x += bp.produce(1,upperbound-x,x,subpop,
-                                newpop.subpops[subpop].individuals,
-                                state,threadnum);
+                    newpop.subpops[subpop].individuals,
+                    state,threadnum);
             if (x>upperbound) // uh oh!  Someone blew it!
                 state.output.fatal("Whoa!  A breeding pipeline overwrote the space of another pipeline in subpopulation " + subpop + ".  You need to check your breeding pipeline code (in produce() ).");
 

@@ -113,15 +113,15 @@ public class KozaShortStatistics extends Statistics
             base.push(P_STATISTICS_FILE),null);
 
         if (statisticsFile!=null) try
-            {
-            statisticslog = state.output.addLog(statisticsFile,Output.V_NO_GENERAL-1,false,
-                                                !state.parameters.getBoolean(base.push(P_COMPRESS),null,false),
-                                                state.parameters.getBoolean(base.push(P_COMPRESS),null,false));
-            }
-        catch (IOException i)
-            {
-            state.output.fatal("An IOException occurred while trying to create the log " + statisticsFile + ":\n" + i);
-            }
+                                      {
+                                      statisticslog = state.output.addLog(statisticsFile,Output.V_NO_GENERAL-1,false,
+                                          !state.parameters.getBoolean(base.push(P_COMPRESS),null,false),
+                                          state.parameters.getBoolean(base.push(P_COMPRESS),null,false));
+                                      }
+            catch (IOException i)
+                {
+                state.output.fatal("An IOException occurred while trying to create the log " + statisticsFile + ":\n" + i);
+                }
         doFull = state.parameters.getBoolean(base.push(P_FULL),null,false);
         }
 
@@ -225,8 +225,8 @@ public class KozaShortStatistics extends Statistics
                 // check to make sure they're the right class
                 if ( !(state.population.subpops[x].species instanceof GPSpecies ))
                     state.output.fatal("Subpopulation " + x +
-                                       " is not of the species form GPSpecies." + 
-                                       "  Cannot do timing statistics with KozaShortStatistics.");
+                        " is not of the species form GPSpecies." + 
+                        "  Cannot do timing statistics with KozaShortStatistics.");
                 
                 long[] numNodes = new long[((GPIndividual)(state.population.subpops[x].species.i_prototype)).trees.length];
                 long[] numDepth = new long[((GPIndividual)(state.population.subpops[x].species.i_prototype)).trees.length];
@@ -257,16 +257,16 @@ public class KozaShortStatistics extends Statistics
                 state.output.print("] ",Output.V_NO_GENERAL, statisticslog);
 
                 state.output.print("" + ((double)totalNodes[x])/(state.population.subpops[x].individuals.length * (state.generation + 1)) + " ",
-                                   Output.V_NO_GENERAL, statisticslog);
+                    Output.V_NO_GENERAL, statisticslog);
 
                 for(int tr=0;tr<numDepth.length;tr++) totDepthPerGen += numDepth[tr];
 
                 totalDepths[x] += totDepthPerGen;
 
                 state.output.print("" + ((double)totDepthPerGen)/
-                                   (state.population.subpops[x].individuals.length *
-                                    numDepth.length) 
-                                   + " [", Output.V_NO_GENERAL, statisticslog);
+                        (state.population.subpops[x].individuals.length *
+                        numDepth.length) 
+                    + " [", Output.V_NO_GENERAL, statisticslog);
 
 
                 for(int tr=0;tr<numDepth.length;tr++)
@@ -277,7 +277,7 @@ public class KozaShortStatistics extends Statistics
                 state.output.print("] ",Output.V_NO_GENERAL, statisticslog);
 
                 state.output.print("" + ((double)totalDepths[x])/(state.population.subpops[x].individuals.length * (state.generation + 1)) + " ",
-                                   Output.V_NO_GENERAL, statisticslog);
+                    Output.V_NO_GENERAL, statisticslog);
                 }
             
 
@@ -289,7 +289,7 @@ public class KozaShortStatistics extends Statistics
             
             if (!(state.population.subpops[x].species.f_prototype instanceof KozaFitness))
                 state.output.fatal("Subpopulation " + x +
-                                   " is not of the fitness KozaFitness.  Cannot do timing statistics with KozaStatistics.");
+                    " is not of the fitness KozaFitness.  Cannot do timing statistics with KozaStatistics.");
 
             best_i[x] = null;
             for(int y=0;y<state.population.subpops[x].individuals.length;y++)
@@ -309,21 +309,21 @@ public class KozaShortStatistics extends Statistics
             meanRaw /= state.population.subpops[x].individuals.length;
             meanAdjusted /= state.population.subpops[x].individuals.length;
             state.output.print("" + meanRaw + " " + meanAdjusted + " " + 
-                               ((double)hits)/state.population.subpops[x].individuals.length + " ", 
-                               Output.V_NO_GENERAL, statisticslog);
+                ((double)hits)/state.population.subpops[x].individuals.length + " ", 
+                Output.V_NO_GENERAL, statisticslog);
             state.output.print("" + ((KozaFitness)(best_i[x].fitness)).rawFitness() +
-                               " " + ((KozaFitness)(best_i[x].fitness)).adjustedFitness() +
-                               " " + ((KozaFitness)(best_i[x].fitness)).hits + " ",
-                               Output.V_NO_GENERAL, statisticslog);
+                " " + ((KozaFitness)(best_i[x].fitness)).adjustedFitness() +
+                " " + ((KozaFitness)(best_i[x].fitness)).hits + " ",
+                Output.V_NO_GENERAL, statisticslog);
 
             // now test to see if it's the new best_of_run_a[x]
             if (best_of_run_a[x]==null || best_i[x].fitness.betterThan(best_of_run_a[x].fitness))
                 best_of_run_a[x] = best_i[x];
             
             state.output.print("" + ((KozaFitness)(best_of_run_a[x].fitness)).rawFitness() +
-                               " " + ((KozaFitness)(best_of_run_a[x].fitness)).adjustedFitness() +
-                               " " + ((KozaFitness)(best_of_run_a[x].fitness)).hits + " ",
-                               Output.V_NO_GENERAL, statisticslog);
+                " " + ((KozaFitness)(best_of_run_a[x].fitness)).adjustedFitness() +
+                " " + ((KozaFitness)(best_of_run_a[x].fitness)).hits + " ",
+                Output.V_NO_GENERAL, statisticslog);
             }
         // we're done!
         }

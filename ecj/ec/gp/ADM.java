@@ -30,11 +30,11 @@ public class ADM extends ADF
     public String toString() { return "ADM" + functionName + "[" +associatedTree + "]"; }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
         {
         // prepare a context
         ADFContext c = stack.push(stack.get());

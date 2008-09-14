@@ -32,11 +32,11 @@ public class CompetitiveMaxOne extends Problem implements GroupedProblemForm
         }
 
     public void evaluate(final EvolutionState state,
-                         final Individual[] ind,  // the individuals to evaluate together
-                         final boolean[] updateFitness,  // should this individuals' fitness be updated?
-                         final boolean countVictoriesOnly,
-                         int[] subpops,
-                         final int threadnum)
+        final Individual[] ind,  // the individuals to evaluate together
+        final boolean[] updateFitness,  // should this individuals' fitness be updated?
+        final boolean countVictoriesOnly,
+        int[] subpops,
+        final int threadnum)
         {
         if( ind.length != 2 || updateFitness.length != 2 )
             state.output.fatal( "The InternalSumProblem evaluates only two individuals at a time." );

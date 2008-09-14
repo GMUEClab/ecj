@@ -40,9 +40,9 @@ public abstract class SelectionMethod extends BreedingSource
         with all Fitnesses.  If this isn't the case, you should override
         this to return your own assessment. */
     public boolean produces(final EvolutionState state,
-                            final Population newpop,
-                            final int subpopulation,
-                            final int thread)
+        final Population newpop,
+        final int subpopulation,
+        final int thread)
         {
         return true;
         }
@@ -50,23 +50,23 @@ public abstract class SelectionMethod extends BreedingSource
 
     /** A default version of prepareToProduce which does nothing.  */
     public void prepareToProduce(final EvolutionState s,
-                                 final int subpopulation,
-                                 final int thread)
+        final int subpopulation,
+        final int thread)
         { return; }
 
     /** A default version of finishProducing, which does nothing. */
     public void finishProducing(final EvolutionState s,
-                                final int subpopulation,
-                                final int thread)
+        final int subpopulation,
+        final int thread)
         { return; }
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
         {
         int n=INDS_PRODUCED;
         if (n<min) n = min;
@@ -82,8 +82,8 @@ public abstract class SelectionMethod extends BreedingSource
         selects an individual from the given subpopulation and 
         returns its position in that subpopulation. */
     public abstract int produce(final int subpopulation,
-                                final EvolutionState state,
-                                final int thread);
+        final EvolutionState state,
+        final int thread);
 
     public void preparePipeline(Object hook) 
         {

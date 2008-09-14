@@ -147,8 +147,8 @@ public class DoubleTournamentSelection extends SelectionMethod implements Steady
        otherwise the size of the individuals.
     */
     public int produce(final int subpopulation,
-                       final EvolutionState state,
-                       final int thread)
+        final EvolutionState state,
+        final int thread)
         {
         int[] inds = new int[size2];
         for(int x=0;x<size2;x++) inds[x] = make(subpopulation,state,thread);
@@ -201,8 +201,8 @@ public class DoubleTournamentSelection extends SelectionMethod implements Steady
        otherwise the fitness of the individuals.
     */
     public int make(final int subpopulation,
-                    final EvolutionState state,
-                    final int thread)
+        final EvolutionState state,
+        final int thread)
         {
         if (doLengthFirst) // if length first, the first tournament is based on size
             {
@@ -248,9 +248,9 @@ public class DoubleTournamentSelection extends SelectionMethod implements Steady
 
 
     public void individualReplaced(final SteadyStateEvolutionState state,
-                                   final int subpopulation,
-                                   final int thread,
-                                   final int individual)
+        final int subpopulation,
+        final int thread,
+        final int individual)
         { return; }
     
     public void sourcesAreProperForm(final SteadyStateEvolutionState state)

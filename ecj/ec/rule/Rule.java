@@ -169,21 +169,21 @@ public abstract class Rule implements Prototype, Comparable
        custom reading, or just override readRuleFromString(...), which is probably easier to do.
     */
     public void readRule(final EvolutionState state,
-                         final LineNumberReader reader)
+        final LineNumberReader reader)
         throws IOException
         { readRuleFromString(reader.readLine(),state); }
 
 
     /** Override this if you need to write rules out to a binary stream */
     public void writeRule(final EvolutionState state,
-                          final DataOutput dataOutput) throws IOException
+        final DataOutput dataOutput) throws IOException
         {
         state.output.fatal("writeRule(EvolutionState, DataOutput) not implemented in " + this.getClass());
         }
 
     /** Override this if you need to read rules in from a binary stream */
     public void readRule(final EvolutionState state,
-                         final DataInput dataInput) throws IOException
+        final DataInput dataInput) throws IOException
         {
         state.output.fatal("readRule(EvolutionState, DataInput) not implemented in " + this.getClass());
         }
@@ -208,7 +208,7 @@ public abstract class Rule implements Prototype, Comparable
             base.push( P_CONSTRAINTS ),defaultBase().push(P_CONSTRAINTS));
         if (constraintname == null)
             state.output.fatal("No RuleConstraints name given",
-                               base.push( P_CONSTRAINTS ),defaultBase().push(P_CONSTRAINTS));
+                base.push( P_CONSTRAINTS ),defaultBase().push(P_CONSTRAINTS));
 
         constraints = RuleConstraints.constraintsFor(constraintname,state).constraintNumber;
         state.output.exitIfErrors();

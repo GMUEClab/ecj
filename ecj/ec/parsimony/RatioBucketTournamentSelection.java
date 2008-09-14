@@ -144,19 +144,19 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
         
         // correct?
         java.util.Arrays.sort(state.population.subpops[subpopulation].individuals,
-                              new java.util.Comparator()
-                                  {
-                                  public int compare(Object o1, Object o2)
-                                      {
-                                      Individual a = (Individual) o1;
-                                      Individual b = (Individual) o2;
-                                      if (a.fitness.betterThan(b.fitness))
-                                          return 1;
-                                      if (b.fitness.betterThan(a.fitness))
-                                          return -1;
-                                      return 0;
-                                      }
-                                  });
+            new java.util.Comparator()
+                {
+                public int compare(Object o1, Object o2)
+                    {
+                    Individual a = (Individual) o1;
+                    Individual b = (Individual) o2;
+                    if (a.fitness.betterThan(b.fitness))
+                        return 1;
+                    if (b.fitness.betterThan(a.fitness))
+                        return -1;
+                    return 0;
+                    }
+                });
 
         // how many individuals in current bucket
         int nInd;
@@ -203,8 +203,8 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
         }
 
     public int produce(final int subpopulation,
-                       final EvolutionState state,
-                       final int thread)
+        final EvolutionState state,
+        final int thread)
         {
         // pick size random individuals, then pick the best.
         Individual[] oldinds = (state.population.subpops[subpopulation].individuals);
@@ -247,9 +247,9 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
         }
 
     public void individualReplaced(final SteadyStateEvolutionState state,
-                                   final int subpopulation,
-                                   final int thread,
-                                   final int individual)
+        final int subpopulation,
+        final int thread,
+        final int individual)
         { return; }
     
     public void sourcesAreProperForm(final SteadyStateEvolutionState state)

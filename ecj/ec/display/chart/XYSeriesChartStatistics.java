@@ -21,37 +21,37 @@
  import ec.EvolutionState;
  import ec.util.Parameter;
  
-/**
- * @author spaus
- */
+ /**
+  * @author spaus
+  */
  public abstract class XYSeriesChartStatistics
      extends ChartableStatistics 
      {
      
      public XYSeriesCollection seriesCollection;
-      
-      public void setup(EvolutionState state, Parameter base)
+     
+     public void setup(EvolutionState state, Parameter base)
          {
-super.setup(state, base);
-    
-    seriesCollection = new XYSeriesCollection();
-        
-        }
-      
-      public JFreeChart makeChart(){
-JFreeChart chart = ChartFactory.createXYLineChart(this.title,this.xlabel,this.ylabel,this.seriesCollection,PlotOrientation.VERTICAL,true,false,false);
-    
-    return chart;
-        }
-      
-      public int addSeries(String name)
+         super.setup(state, base);
+             
+             seriesCollection = new XYSeriesCollection();
+                 
+                 }
+     
+     public JFreeChart makeChart(){
+         JFreeChart chart = ChartFactory.createXYLineChart(this.title,this.xlabel,this.ylabel,this.seriesCollection,PlotOrientation.VERTICAL,true,false,false);
+             
+             return chart;
+                 }
+     
+     public int addSeries(String name)
          {
-seriesCollection.addSeries(new XYSeries(name));
-    return seriesCollection.getSeriesCount()-1;
-        }
-      
-      public void addDataPoint(int seriesID, double x, double y)
+         seriesCollection.addSeries(new XYSeries(name));
+             return seriesCollection.getSeriesCount()-1;
+                 }
+     
+     public void addDataPoint(int seriesID, double x, double y)
          {
-seriesCollection.getSeries(seriesID).add(x,y);
-    }
+         seriesCollection.getSeries(seriesID).add(x,y);
+             }
      }

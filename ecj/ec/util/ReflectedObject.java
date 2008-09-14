@@ -42,9 +42,9 @@ public class ReflectedObject implements TreeModel
             else if (type.isArray()) return field + type.getName() + ", length=" + Array.getLength(obj);
             return field+type.getName()+" "+obj.toString();
             } catch (Exception e) {
-                e.printStackTrace();
-                return field + type.getName() + " <error>";
-                }
+            e.printStackTrace();
+            return field + type.getName() + " <error>";
+            }
         }
         
     public int getNumChildren()
@@ -103,9 +103,9 @@ public class ReflectedObject implements TreeModel
                 int len = f.length;
                 if (index > len) return null;
                 return new ReflectedObject(f[index].get(obj), 
-                                           (f[index].get(obj) == null || f[index].getType().isPrimitive() ? 
-                                            f[index].getType() : f[index].get(obj).getClass()), 
-                                           f[index].getName(), f[index]);
+                        (f[index].get(obj) == null || f[index].getType().isPrimitive() ? 
+                        f[index].getType() : f[index].get(obj).getClass()), 
+                    f[index].getName(), f[index]);
                 }
             }
         catch (IllegalArgumentException e) { e.printStackTrace(); throw new RuntimeException("Unexpected Exception: " + e); }
@@ -132,8 +132,8 @@ public class ReflectedObject implements TreeModel
                 ReflectedObject[] ref = new ReflectedObject[len];
                 for(int x=0;x<len; x++)
                     ref[x] = new ReflectedObject(f[x].get(obj), 
-                                                 (f[x].get(obj) == null || f[x].getType().isPrimitive() ? f[x].getType() : f[x].get(obj).getClass()), 
-                                                 f[x].getName(), f[x]);
+                        (f[x].get(obj) == null || f[x].getType().isPrimitive() ? f[x].getType() : f[x].get(obj).getClass()), 
+                        f[x].getName(), f[x]);
                 return ref;
                 }
             }
@@ -249,8 +249,8 @@ public class ReflectedObject implements TreeModel
                                 return unknown;
                                 }
                             return new ReflectedObject(o, o == null || m[x].getReturnType().isPrimitive() ? 
-                                                       m[x].getReturnType() : o.getClass(),
-                                                       "Property " + m[x].getName(), "Property " + m[x].getName());
+                                m[x].getReturnType() : o.getClass(),
+                                "Property " + m[x].getName(), "Property " + m[x].getName());
                             }
                         count++;
                         }
@@ -292,8 +292,8 @@ public class ReflectedObject implements TreeModel
                             {
                             o = m[x].invoke(obj, new Object[0]);
                             refs[count] = new ReflectedObject(o, o == null || m[x].getReturnType().isPrimitive() ? 
-                                                              m[x].getReturnType() : o.getClass(),
-                                                              "Property " + m[x].getName(), "Property " + m[x].getName());
+                                m[x].getReturnType() : o.getClass(),
+                                "Property " + m[x].getName(), "Property " + m[x].getName());
                             }
                         catch (InvocationTargetException e)
                             {

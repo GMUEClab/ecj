@@ -100,7 +100,7 @@ public class RehangPipeline extends GPBreedingPipeline
         Parameter def = defaultBase();
 
         numTries = state.parameters.getInt(base.push(P_NUM_TRIES),
-                                           def.push(P_NUM_TRIES),1);
+            def.push(P_NUM_TRIES),1);
         if (numTries == 0)
             state.output.fatal("RehangPipeline has an invalid number of tries (it must be >= 1).",base.push(P_NUM_TRIES),def.push(P_NUM_TRIES));
 
@@ -109,10 +109,10 @@ public class RehangPipeline extends GPBreedingPipeline
 
         tree = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+0),
-                                    def.push(P_TREE).push(""+0)))
+                def.push(P_TREE).push(""+0)))
             {
             tree = state.parameters.getInt(base.push(P_TREE).push(""+0),
-                                           def.push(P_TREE).push(""+0),0);
+                def.push(P_TREE).push(""+0),0);
             if (tree==-1)
                 state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
@@ -172,7 +172,7 @@ public class RehangPipeline extends GPBreedingPipeline
     
 
     private void rehang(final EvolutionState state, final int thread,
-                        GPNode pivot, final GPNode root)
+        GPNode pivot, final GPNode root)
         {
         // pivot must not be root
         if (pivot==root) // uh oh
@@ -219,12 +219,12 @@ public class RehangPipeline extends GPBreedingPipeline
 
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
         {
         // grab n individuals from our source and stick 'em right into inds.
         // we'll modify them from there
@@ -282,7 +282,7 @@ public class RehangPipeline extends GPBreedingPipeline
 
                 int numrehang = numRehangableNodes(j.trees[t].child,0);
                 pickRehangableNode(j.trees[t].child,
-                                   state.random[thread].nextInt(numrehang));
+                    state.random[thread].nextInt(numrehang));
                 
                 rehang(state,thread,rehangableNode,j.trees[t].child);
 

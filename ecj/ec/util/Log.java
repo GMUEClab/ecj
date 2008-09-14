@@ -85,9 +85,9 @@ public class Log implements Serializable
         announcements are reposted on restart.*/
     
     public Log(File _filename,
-               int _verbosity,
-               boolean _postAnnouncements,
-               boolean _appendOnRestart) throws IOException
+        int _verbosity,
+        boolean _postAnnouncements,
+        boolean _appendOnRestart) throws IOException
         {
         this(_filename, _verbosity, _postAnnouncements, _appendOnRestart, false);
         }
@@ -100,10 +100,10 @@ public class Log implements Serializable
         then .gz is automagically appended to the file name.*/
     
     public Log(File _filename,
-               int _verbosity,
-               boolean _postAnnouncements,
-               boolean _appendOnRestart,
-               boolean gzip) throws IOException
+        int _verbosity,
+        boolean _postAnnouncements,
+        boolean _appendOnRestart,
+        boolean gzip) throws IOException
         {
         verbosity = _verbosity;
         postAnnouncements = _postAnnouncements;
@@ -117,8 +117,8 @@ public class Log implements Serializable
             if (appendOnRestart) throw new IOException("Cannot gzip and appendOnRestart at the same time: new Log(File,int,boolean,boolean,boolean)");
 
             writer = new PrintWriter(new OutputStreamWriter(new GZIPOutputStream(
-                                                                new BufferedOutputStream(
-                                                                    new FileOutputStream(filename)))));
+                        new BufferedOutputStream(
+                            new FileOutputStream(filename)))));
             restarter = new LogRestarter()
                 {
                 public Log restart(Log l) throws IOException
@@ -129,7 +129,7 @@ public class Log implements Serializable
                     {
                     if (l.writer!=null && !l.isLoggingToSystemOut) l.writer.close();
                     l.writer = new PrintWriter(new OutputStreamWriter(new GZIPOutputStream(
-                                                                          new BufferedOutputStream(new FileOutputStream(l.filename)))));
+                                new BufferedOutputStream(new FileOutputStream(l.filename)))));
                     return l;
                     }
                 };
@@ -160,8 +160,8 @@ public class Log implements Serializable
         or stderr (descriptor == Log.D_STDERR). */
 
     public Log(int descriptor,
-               int _verbosity,
-               boolean _postAnnouncements)
+        int _verbosity,
+        boolean _postAnnouncements)
         {
         filename = null;
         verbosity = _verbosity;
@@ -209,10 +209,10 @@ public class Log implements Serializable
         instead. */
 
     public Log(Writer _writer,
-               LogRestarter _restarter,
-               int _verbosity,
-               boolean _postAnnouncements,
-               boolean _repostAnnouncementsOnRestart)
+        LogRestarter _restarter,
+        int _verbosity,
+        boolean _postAnnouncements,
+        boolean _repostAnnouncementsOnRestart)
         {
         filename = null;
         verbosity = _verbosity;

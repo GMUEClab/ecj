@@ -71,8 +71,8 @@ public class TwoBox extends GPProblem implements SimpleProblemForm
     public TwoBoxData input;
 
     public final double func(final double l0, final double w0, 
-                             final double h0, final double l1, 
-                             final double w1, final double h1)
+        final double h0, final double l1, 
+        final double w1, final double h1)
         { return l0*w0*h0-l1*w1*h1; }
 
     public Object clone()
@@ -87,7 +87,7 @@ public class TwoBox extends GPProblem implements SimpleProblemForm
         }
 
     public void setup(final EvolutionState state,
-                      final Parameter base)
+        final Parameter base)
         {
         // very important, remember this
         super.setup(state,base);
@@ -118,11 +118,11 @@ public class TwoBox extends GPProblem implements SimpleProblemForm
             inputsw1[x] = state.random[0].nextInt(range)+1;
             inputsh1[x] = state.random[0].nextInt(range)+1;
             outputs[x] = func(inputsl0[x],inputsw0[x],inputsh0[x],
-                              inputsl1[x],inputsw1[x],inputsh1[x]);
+                inputsl1[x],inputsw1[x],inputsh1[x]);
             state.output.println("{" + inputsl0[x]+ "," + inputsw0[x]+ "," +
-                                 inputsh0[x]+ "," + inputsl1[x]+ "," +
-                                 inputsw1[x]+ "," + inputsh1[x]+ "," +
-                                 outputs[x] + "},",3000,0);
+                inputsh0[x]+ "," + inputsl1[x]+ "," +
+                inputsw1[x]+ "," + inputsh1[x]+ "," +
+                outputs[x] + "},",3000,0);
             }
 
         // set up our input -- don't want to use the default base, it's unsafe
@@ -133,9 +133,9 @@ public class TwoBox extends GPProblem implements SimpleProblemForm
 
 
     public void evaluate(final EvolutionState state, 
-                         final Individual ind, 
-                         final int subpopulation,
-                         final int threadnum)
+        final Individual ind, 
+        final int subpopulation,
+        final int threadnum)
         {
         if (!ind.evaluated)  // don't bother reevaluating
             {

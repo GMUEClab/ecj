@@ -59,27 +59,27 @@ public abstract class KozaBuilder extends GPNodeBuilder
         maxDepth = state.parameters.getInt(base.push(P_MAXDEPTH),def.push(P_MAXDEPTH),1);
         if (maxDepth<=0)
             state.output.fatal("The Max Depth for a KozaBuilder must be at least 1.",
-                               base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
-        		
+                base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
+                        
         minDepth = state.parameters.getInt(base.push(P_MINDEPTH),def.push(P_MINDEPTH),1);
         if (minDepth<=0)
             state.output.fatal("The Min Depth for a KozaBuilder must be at least 1.",
-                               base.push(P_MINDEPTH),def.push(P_MINDEPTH));
+                base.push(P_MINDEPTH),def.push(P_MINDEPTH));
 
         if (maxDepth<minDepth)
             state.output.fatal("Max Depth must be >= Min Depth for a KozaBuilder",
-                               base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
+                base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
         }
                 
     /** A private recursive method which builds a FULL-style tree for newRootedTree(...) */
     protected GPNode fullNode(final EvolutionState state,
-                              final int current,
-                              final int max,
-                              final GPType type,
-                              final int thread,
-                              final GPNodeParent parent,
-                              final int argposition,
-                              final GPFunctionSet set) 
+        final int current,
+        final int max,
+        final GPType type,
+        final int thread,
+        final GPNodeParent parent,
+        final int argposition,
+        final GPFunctionSet set) 
         {
         // fullNode can mess up if there are no available terminals for a given type.  If this occurs,
         // and we find ourselves unable to pick a terminal when we want to do so, we will issue a warning,
@@ -99,7 +99,7 @@ public abstract class KozaBuilder extends GPNodeBuilder
 
         // pick a terminal when we're at max depth or if there are NO nonterminals
         if ((  current+1 >= max ||                                                      // Now pick if we're at max depth
-               warnAboutNonterminal(nonterminals.length==0, type, false, state)) &&     // OR if there are NO nonterminals!
+                warnAboutNonterminal(nonterminals.length==0, type, false, state)) &&     // OR if there are NO nonterminals!
             (triedTerminals = true) &&                                                  // [first set triedTerminals]
             terminals.length != 0)                                                      // AND if there are available terminals
             {
@@ -135,13 +135,13 @@ public abstract class KozaBuilder extends GPNodeBuilder
 
     /** A private function which recursively returns a GROW tree to newRootedTree(...) */
     protected GPNode growNode(final EvolutionState state,
-                              final int current,
-                              final int max,
-                              final GPType type,
-                              final int thread,
-                              final GPNodeParent parent,
-                              final int argposition,
-                              final GPFunctionSet set) 
+        final int current,
+        final int max,
+        final GPType type,
+        final int thread,
+        final GPNodeParent parent,
+        final int argposition,
+        final GPFunctionSet set) 
         {
         // growNode can mess up if there are no available terminals for a given type.  If this occurs,
         // and we find ourselves unable to pick a terminal when we want to do so, we will issue a warning,

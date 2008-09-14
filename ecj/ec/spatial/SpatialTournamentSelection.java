@@ -84,8 +84,8 @@ public class SpatialTournamentSelection extends TournamentSelection
 
     // I hard-code both produce(...) methods for efficiency's sake
     public int produce(final int subpopulation,
-                       final EvolutionState state,
-                       final int thread)
+        final EvolutionState state,
+        final int thread)
         {
         Space space = null;
         try
@@ -121,12 +121,12 @@ public class SpatialTournamentSelection extends TournamentSelection
 
     // I hard-code both produce(...) methods for efficiency's sake
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
         {
 
         Space space = null;

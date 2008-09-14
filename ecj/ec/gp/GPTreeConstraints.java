@@ -94,7 +94,7 @@ public class GPTreeConstraints implements Clique
         name = state.parameters.getString(base.push(P_NAME),null);
         if (name==null)
             state.output.fatal("No name was given for this function set.",
-                               base.push(P_NAME));
+                base.push(P_NAME));
 
         // Register me
         GPTreeConstraints old_constraints = 
@@ -154,8 +154,8 @@ public class GPTreeConstraints implements Clique
     // one nonterminal.
 
     private void checkFunctionSetValidity(final EvolutionState state,
-                                          final Hashtable done, 
-                                          final GPType type)
+        final Hashtable done, 
+        final GPType type)
         {
         // put type in the hashtable -- it's being used
         done.put(type,type);
@@ -181,7 +181,7 @@ public class GPTreeConstraints implements Clique
         several times, you call state.output.exitIfErrors() once. */
 
     public static GPTreeConstraints constraintsFor(final String constraintsName,
-                                                   final EvolutionState state)
+        final EvolutionState state)
         {
         GPTreeConstraints myConstraints = (GPTreeConstraints)(((GPInitializer)state.initializer).treeConstraintRepository.get(constraintsName));
         if (myConstraints==null)

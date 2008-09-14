@@ -79,7 +79,7 @@ public class Statistics implements Singleton
         int t = state.parameters.getIntWithDefault(base.push(P_NUMCHILDREN),null,0);
         if (t < 0) 
             state.output.fatal("A Statistics object cannot have negative number of children",
-                               base.push(P_NUMCHILDREN));
+                base.push(P_NUMCHILDREN));
 
         // load the trees
         children = new Statistics[t];
@@ -205,23 +205,23 @@ public class Statistics implements Singleton
     /** STEADY-STATE: called each time new individuals are bred during the steady-state
         process. */
     public void individualsBredStatistics(SteadyStateEvolutionState state, Individual[] newIndividuals, 
-                                          int[] subpopulations, int[] indicies)
+        int[] subpopulations, int[] indicies)
         {
         for(int x=0;x<children.length;x++)
             if (children[x] instanceof SteadyStateStatisticsForm)
                 ((SteadyStateStatisticsForm)children[x]).individualsBredStatistics(state, newIndividuals, 
-                                                                                   subpopulations, indicies);
+                    subpopulations, indicies);
         }
     
     /** STEADY-STATE: called each time new individuals are evaluated during the steady-state
         process.  You can look up the individuals in state.newIndividuals[] */
     public void individualsEvaluatedStatistics(SteadyStateEvolutionState state, Individual[] newIndividuals, 
-                                               Individual[] oldIndividuals, int[] subpopulations, int[] indicies)
+        Individual[] oldIndividuals, int[] subpopulations, int[] indicies)
         {
         for(int x=0;x<children.length;x++)
             if (children[x] instanceof SteadyStateStatisticsForm)
                 ((SteadyStateStatisticsForm)children[x]).individualsEvaluatedStatistics(state, newIndividuals, oldIndividuals, 
-                                                                                        subpopulations, indicies);
+                    subpopulations, indicies);
         }
         
     /** STEADY-STATE: called each time the generation count increments */ 

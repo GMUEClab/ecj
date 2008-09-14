@@ -88,24 +88,24 @@ public class RuleCrossoverPipeline extends BreedingPipeline
         super.setup(state,base);
         Parameter def = defaultBase();
         tossSecondParent = state.parameters.getBoolean(base.push(P_TOSS),
-                                                       def.push(P_TOSS),false);
+            def.push(P_TOSS),false);
         ruleCrossProbability = state.parameters.getFloatWithDefault(base.push(P_CROSSOVERPROB),
-                                                                    def.push(P_CROSSOVERPROB),0.5f);
+            def.push(P_CROSSOVERPROB),0.5f);
         if (ruleCrossProbability > 1.0 || ruleCrossProbability < 0.0) 
             state.output.fatal("Rule cross probability must be between 0 and 1",base.push(P_CROSSOVERPROB),
-                               def.push(P_CROSSOVERPROB));
+                def.push(P_CROSSOVERPROB));
         }
         
     /** Returns 2 (unless tossing the second sibling, in which case it returns 1) */
     public int typicalIndsProduced() { return (tossSecondParent? 1: INDS_PRODUCED); }
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
 
         {
         // how many individuals should we make?
@@ -148,8 +148,8 @@ public class RuleCrossoverPipeline extends BreedingPipeline
             if( parents[0].rulesets.length != parents[1].rulesets.length )
                 {
                 state.output.fatal( "The number of rule sets should be identical in both parents ( " +
-                                    parents[0].rulesets.length + " : " +
-                                    parents[1].rulesets.length + " )." );
+                    parents[0].rulesets.length + " : " +
+                    parents[1].rulesets.length + " )." );
                 }
 
             // for each set of rules (assume both individuals have the same number of rule sets)

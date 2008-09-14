@@ -27,9 +27,9 @@ public interface SteadyStateBSourceForm
     /** Called whenever an individual has been replaced by another
         in the population. */
     public void individualReplaced(final SteadyStateEvolutionState state,
-                                   final int subpopulation,
-                                   final int thread,
-                                   final int individual);
+        final int subpopulation,
+        final int thread,
+        final int individual);
     
     /** Issue an error (not a fatal -- we guarantee that callers
         of this method will also call exitIfErrors) if any

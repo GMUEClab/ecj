@@ -92,23 +92,23 @@ public class MutatePromotePipeline extends GPBreedingPipeline
         Parameter def = defaultBase();
 
         numTries = state.parameters.getInt(base.push(P_NUM_TRIES),
-                                           def.push(P_NUM_TRIES),1);
+            def.push(P_NUM_TRIES),1);
         if (numTries == 0)
             state.output.fatal("MutatePromotePipeline has an invalid number of tries (it must be >= 1).",base.push(P_NUM_TRIES),def.push(P_NUM_TRIES));
 
         tree = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+0),
-                                    def.push(P_TREE).push(""+0)))
+                def.push(P_TREE).push(""+0)))
             {
             tree = state.parameters.getInt(base.push(P_TREE).push(""+0),
-                                           def.push(P_TREE).push(""+0),0);
+                def.push(P_TREE).push(""+0),0);
             if (tree==-1)
                 state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
         }
 
     private boolean promotable(final GPInitializer initializer,
-                               final GPNode node)
+        final GPNode node)
         {
         // A node is promotable if:
         // 1: its parent is a GPNode
@@ -142,7 +142,7 @@ public class MutatePromotePipeline extends GPBreedingPipeline
         }
 
     private int numPromotableNodes(final GPInitializer initializer,
-                                   final GPNode root, int soFar)
+        final GPNode root, int soFar)
         {
         if (promotable(initializer,root)) soFar++;
         for(int x=0;x<root.children.length;x++) 
@@ -155,7 +155,7 @@ public class MutatePromotePipeline extends GPBreedingPipeline
 
     // sticks the node in 
     private int pickPromotableNode(final GPInitializer initializer,
-                                   final GPNode root, int num)
+        final GPNode root, int num)
         {
         if (promotable(initializer,root))
             {
@@ -176,12 +176,12 @@ public class MutatePromotePipeline extends GPBreedingPipeline
     
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
         {
         // grab n individuals from our source and stick 'em right into inds.
         // we'll modify them from there
@@ -235,7 +235,7 @@ public class MutatePromotePipeline extends GPBreedingPipeline
                 
                 // promote the node, or if we're unsuccessful, just leave it alone
                 pickPromotableNode(initializer, j.trees[t].child,state.random[thread].
-                                   nextInt(numpromote));
+                    nextInt(numpromote));
                 
                 // promote it
                 promoteSomething(promotableNode );

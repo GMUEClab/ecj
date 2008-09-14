@@ -150,8 +150,8 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
                 base.push(P_NUMSOURCES), def.push(P_NUMSOURCES),1);
             if (numsources==0)
                 state.output.fatal("Breeding pipeline num-sources value must be > 0",
-                                   base.push(P_NUMSOURCES),
-                                   def.push(P_NUMSOURCES)); 
+                    base.push(P_NUMSOURCES),
+                    def.push(P_NUMSOURCES)); 
             }
 
         sources = new BreedingSource[numsources];
@@ -209,9 +209,9 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
 
 
     public boolean produces(final EvolutionState state,
-                            final Population newpop,
-                            final int subpopulation,
-                            int thread)
+        final Population newpop,
+        final int subpopulation,
+        int thread)
         {
         for(int x=0;x<sources.length;x++)
             if (x==0 || sources[x]!=sources[x-1])
@@ -221,8 +221,8 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
         }
 
     public void prepareToProduce(final EvolutionState state,
-                                 final int subpopulation,
-                                 final int thread)
+        final int subpopulation,
+        final int thread)
         {
         for(int x=0;x<sources.length;x++) 
             if (x==0 || sources[x]!=sources[x-1])
@@ -230,8 +230,8 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
         }
 
     public void finishProducing(final EvolutionState state,
-                                final int subpopulation,
-                                final int thread)
+        final int subpopulation,
+        final int thread)
         {
         for(int x=0;x<sources.length;x++) 
             if (x==0 || sources[x]!=sources[x-1])
@@ -248,9 +248,9 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
         }
         
     public void individualReplaced(final SteadyStateEvolutionState state,
-                                   final int subpopulation,
-                                   final int thread,
-                                   final int individual)
+        final int subpopulation,
+        final int thread,
+        final int individual)
         {
         for(int x=0; x<sources.length;x++) 
             ((SteadyStateBSourceForm)(sources[x])).individualReplaced(state,subpopulation,thread,individual);
@@ -262,7 +262,7 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
             if (! (sources[x] instanceof SteadyStateBSourceForm))
                 {
                 state.output.error("The following breeding source is not of SteadyStateBSourceForm.", 
-                                   mybase.push(P_SOURCE).push(""+x), defaultBase().push(P_SOURCE).push(""+x));
+                    mybase.push(P_SOURCE).push(""+x), defaultBase().push(P_SOURCE).push(""+x));
                 }
             else 
                 ((SteadyStateBSourceForm)(sources[x])).sourcesAreProperForm(state);

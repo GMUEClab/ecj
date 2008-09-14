@@ -36,7 +36,7 @@ public class SimpleEvaluator extends Evaluator
         super.setup(state,base);
         if (!(p_problem instanceof SimpleProblemForm))
             state.output.fatal("" + this.getClass() + " used, but the Problem is not of SimpleProblemForm",
-                               base.push(P_PROBLEM));
+                base.push(P_PROBLEM));
         }
     
     /** A simple evaluator that doesn't do any coevolutionary
@@ -63,14 +63,14 @@ public class SimpleEvaluator extends Evaluator
                         state.evalthreads +
                         
                         (state.population.subpops[x].individuals.length -
-                         (state.population.subpops[x].individuals.length /
-                          state.evalthreads)  // note integer division
-                         *state.evalthreads);                    
+                            (state.population.subpops[x].individuals.length /
+                            state.evalthreads)  // note integer division
+                        *state.evalthreads);                    
 
                 // figure from
                 from[y][x]=
                     (state.population.subpops[x].individuals.length/
-                     state.evalthreads) * y;
+                    state.evalthreads) * y;
                 }
 
         if (state.evalthreads==1)
@@ -96,13 +96,13 @@ public class SimpleEvaluator extends Evaluator
 
             // gather the threads
             for(int y=0;y<state.evalthreads;y++) try
-                {
-                t[y].join();
-                }
-            catch(InterruptedException e)
-                {
-                state.output.fatal("Whoa! The main evaluation thread got interrupted!  Dying...");
-                }
+                                                     {
+                                                     t[y].join();
+                                                     }
+                catch(InterruptedException e)
+                    {
+                    state.output.fatal("Whoa! The main evaluation thread got interrupted!  Dying...");
+                    }
 
             }
         }
@@ -114,7 +114,7 @@ public class SimpleEvaluator extends Evaluator
         you should not call it. */
 
     protected void evalPopChunk(EvolutionState state, int[] numinds, int[] from,
-                                int threadnum, SimpleProblemForm p)
+        int threadnum, SimpleProblemForm p)
         {
         ((ec.Problem)p).prepareToEvaluate(state,threadnum);
         

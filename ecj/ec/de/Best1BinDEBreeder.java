@@ -48,10 +48,10 @@ public class Best1BinDEBreeder extends Rand1ExpDEBreeder
         }
 
     public Individual createIndividual( final EvolutionState state,
-                                        int subpop,
-                                        Individual[] inds,
-                                        int index,
-                                        int thread )
+        int subpop,
+        Individual[] inds,
+        int index,
+        int thread )
         {
         DoubleVectorIndividual xbest = (DoubleVectorIndividual)(bestSoFar[subpop]);
         // select two indexes different from that of the current parent

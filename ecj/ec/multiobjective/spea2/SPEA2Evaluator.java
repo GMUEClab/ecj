@@ -100,11 +100,11 @@ public class SPEA2Evaluator extends SimpleEvaluator
                     if ( y == z ) {
                         distances[y][z] = 0;
                         }else if ( z > y ) {
-                            distances[y][z] =
-                                ((SPEA2MultiObjectiveFitness)inds[y].fitness).
-                                calcDistance( (SPEA2MultiObjectiveFitness)inds[z].fitness );
-                            distances[z][y] = distances[y][z];
-                            }
+                        distances[y][z] =
+                            ((SPEA2MultiObjectiveFitness)inds[y].fitness).
+                            calcDistance( (SPEA2MultiObjectiveFitness)inds[z].fitness );
+                        distances[z][y] = distances[y][z];
+                        }
 
                     } // For each individual z calculate RAW fitness distances
 
@@ -143,12 +143,12 @@ public class SPEA2Evaluator extends SimpleEvaluator
                 sumKthDistance += kthDistance;
 
                 // Set SPEA2 raw fitness value for each individual
-                ((SPEA2MultiObjectiveFitness)state.population.subpops[x].
-                 individuals[y].fitness).SPEA2RawFitness = rawFitness;
+                    ((SPEA2MultiObjectiveFitness)state.population.subpops[x].
+                    individuals[y].fitness).SPEA2RawFitness = rawFitness;
 
                 // Set SPEA2 k-th NN distance value for each individual
-                ((SPEA2MultiObjectiveFitness)state.population.subpops[x].
-                 individuals[y].fitness).SPEA2kthNNDistance = kthDistance;
+                    ((SPEA2MultiObjectiveFitness)state.population.subpops[x].
+                    individuals[y].fitness).SPEA2kthNNDistance = kthDistance;
 
                 } // For each individual y
 
@@ -156,15 +156,15 @@ public class SPEA2Evaluator extends SimpleEvaluator
             for(int y=0;y<inds.length;y++)
                 {
                 ((SPEA2MultiObjectiveFitness)state.population.subpops[x].
-                 individuals[y].fitness).SPEA2kthNNDistance /= sumKthDistance;
+                individuals[y].fitness).SPEA2kthNNDistance /= sumKthDistance;
 
                 // Set SPEA2 fitness value for each individual
-                ((SPEA2MultiObjectiveFitness)state.population.subpops[x].
-                 individuals[y].fitness).SPEA2Fitness =
                     ((SPEA2MultiObjectiveFitness)state.population.subpops[x].
-                     individuals[y].fitness).SPEA2RawFitness  +
-                    ((SPEA2MultiObjectiveFitness)state.population.subpops[x].
-                     individuals[y].fitness).SPEA2kthNNDistance;
+                    individuals[y].fitness).SPEA2Fitness =
+                        ((SPEA2MultiObjectiveFitness)state.population.subpops[x].
+                        individuals[y].fitness).SPEA2RawFitness  +
+                        ((SPEA2MultiObjectiveFitness)state.population.subpops[x].
+                        individuals[y].fitness).SPEA2kthNNDistance;
 
                 }
 

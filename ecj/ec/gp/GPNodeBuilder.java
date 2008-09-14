@@ -143,24 +143,24 @@ public abstract class GPNodeBuilder implements Prototype
         // min and max size
 
         if (state.parameters.exists(base.push(P_MINSIZE),
-                                    def.push(P_MINSIZE)))
+                def.push(P_MINSIZE)))
             {
             if (!(state.parameters.exists(base.push(P_MAXSIZE),
-                                          def.push(P_MAXSIZE))))
+                        def.push(P_MAXSIZE))))
                 state.output.fatal("This GPNodeBuilder has a " + 
-                                   P_MINSIZE + " but not a " + P_MAXSIZE + ".");
+                    P_MINSIZE + " but not a " + P_MAXSIZE + ".");
            
             minSize = state.parameters.getInt(
                 base.push(P_MINSIZE), def.push(P_MINSIZE),1);
             if (minSize==0) 
                 state.output.fatal("The GPNodeBuilder must have a min size >= 1.",
-                                   base.push(P_MINSIZE), def.push(P_MINSIZE));
+                    base.push(P_MINSIZE), def.push(P_MINSIZE));
             
             maxSize = state.parameters.getInt(
                 base.push(P_MAXSIZE), def.push(P_MAXSIZE),1);
             if (maxSize==0) 
                 state.output.fatal("The GPNodeBuilder must have a max size >= 1.",
-                                   base.push(P_MAXSIZE), def.push(P_MAXSIZE));
+                    base.push(P_MAXSIZE), def.push(P_MAXSIZE));
 
             if (minSize > maxSize)
                 state.output.fatal(
@@ -168,15 +168,15 @@ public abstract class GPNodeBuilder implements Prototype
                     base.push(P_MINSIZE), def.push(P_MINSIZE));
             }
         else if (state.parameters.exists(base.push(P_MAXSIZE),
-                                         def.push(P_MAXSIZE)))
+                def.push(P_MAXSIZE)))
             state.output.fatal("This GPNodeBuilder has a " + 
-                               P_MAXSIZE + " but not a " + P_MINSIZE + ".",
-                               base.push(P_MAXSIZE), def.push(P_MAXSIZE));
+                P_MAXSIZE + " but not a " + P_MINSIZE + ".",
+                base.push(P_MAXSIZE), def.push(P_MAXSIZE));
 
         // load sizeDistribution
 
         else if (state.parameters.exists(base.push(P_NUMSIZES),
-                                         def.push(P_NUMSIZES)))
+                def.push(P_NUMSIZES)))
             {
             int siz = state.parameters.getInt(
                 base.push(P_NUMSIZES), def.push(P_NUMSIZES),1);
@@ -184,7 +184,7 @@ public abstract class GPNodeBuilder implements Prototype
                 state.output.fatal("The number of sizes in the GPNodeBuilder's distribution must be >= 1. ");
             sizeDistribution = new float[siz];
             if (state.parameters.exists(base.push(P_SIZE).push("0"),
-                                        def.push(P_SIZE).push("0")))
+                    def.push(P_SIZE).push("0")))
                 state.output.warning(
                     "GPNodeBuilder does not use size #0 in the distribution",
                     base.push(P_SIZE).push("0"),
@@ -223,12 +223,12 @@ public abstract class GPNodeBuilder implements Prototype
         }
 
     public abstract GPNode newRootedTree(final EvolutionState state,
-                                         final GPType type,
-                                         final int thread,
-                                         final GPNodeParent parent,
-                                         final GPFunctionSet set,
-                                         final int argposition,
-                                         final int requestedSize);
+        final GPType type,
+        final int thread,
+        final GPNodeParent parent,
+        final GPFunctionSet set,
+        final int argposition,
+        final int requestedSize);
         
     /** Issues a warning that no terminal was found with a return type of the given type, and that an algorithm
         had requested one.  If fail is true, then a fatal is issued rather than a warning.  The warning takes
@@ -237,15 +237,15 @@ public abstract class GPNodeBuilder implements Prototype
         {
         // big explanation -- appears only once
         state.output.warnOnce("A GPNodeBuilder has been requested at least once to generate a one-node tree with " +
-                              "a return value type-compatable with a certain type; but there is no TERMINAL which is type-compatable " +
-                              "in this way.  As a result, the algorithm was forced to use a NON-TERMINAL, making the tree larger than " +
-                              "requested, and exposing more child slots to fill, which if not carefully considered, could " +
-                              "recursively repeat this problem and eventually fill all memory.");
+            "a return value type-compatable with a certain type; but there is no TERMINAL which is type-compatable " +
+            "in this way.  As a result, the algorithm was forced to use a NON-TERMINAL, making the tree larger than " +
+            "requested, and exposing more child slots to fill, which if not carefully considered, could " +
+            "recursively repeat this problem and eventually fill all memory.");
                 
         // shorter explanation -- appears for each node builder and type combo
         if (fail)
             state.output.fatal("" + this.getClass() + " can't find a terminal type-compatable with " + type + 
-                               " and cannot replace it with a nonterminal.  You may need to try a different node-builder algorithm.");
+                " and cannot replace it with a nonterminal.  You may need to try a different node-builder algorithm.");
         else
             state.output.warnOnce("" + this.getClass() + " can't find a terminal type-compatable with " + type);
         }
@@ -267,14 +267,14 @@ public abstract class GPNodeBuilder implements Prototype
         {
         // big explanation -- appears only once
         state.output.warnOnce("A GPNodeBuilder has been requested at least once to generate a tree with " +
-                              "a return value type-compatable with a certain type; but there is no NON-TERMINAL which is type-compatable " +
-                              "in this way.  As a result, the algorithm was forced to use a TERMINAL, making the tree smaller than " +
-                              "requested.");
+            "a return value type-compatable with a certain type; but there is no NON-TERMINAL which is type-compatable " +
+            "in this way.  As a result, the algorithm was forced to use a TERMINAL, making the tree smaller than " +
+            "requested.");
                 
         // shorter explanation -- appears for each node builder and type combo
         if (fail)
             state.output.fatal("" + this.getClass() + " can't find a terminal type-compatable with " + type + 
-                               " and cannot replace it with a nonterminal.  You may need to try a different node-builder algorithm.");
+                " and cannot replace it with a nonterminal.  You may need to try a different node-builder algorithm.");
         else
             state.output.warnOnce("" + this.getClass() + " can't find a terminal type-compatable with " + type);
         }

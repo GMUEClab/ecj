@@ -216,11 +216,11 @@ public class Evolve
             {
             Runtime runtime = Runtime.getRuntime();
             try { return ((Integer)runtime.getClass().getMethod("availableProcessors", (Class[])null).
-                          invoke(runtime,(Object[])null)).intValue(); }
+                    invoke(runtime,(Object[])null)).intValue(); }
             catch (Exception e)
                 { 
                 output.fatal("Whoa! This Java version is to old to have the Runtime.availableProcessors() method available.\n" + 
-                             "This means you can't use 'auto' as a threads option.",threadParameter,null);
+                    "This means you can't use 'auto' as a threads option.",threadParameter,null);
                 }
             }
         else
@@ -295,7 +295,7 @@ public class Evolve
         verbosity = parameters.getInt(new Parameter(P_VERBOSITY),null,0);
         if (verbosity<0)
             Output.initialError("Verbosity should be an integer >= 0.\n",
-                                new Parameter(P_VERBOSITY)); 
+                new Parameter(P_VERBOSITY)); 
 
         output = new Output(true,verbosity);
 //        output.setFlush(
@@ -334,13 +334,13 @@ public class Evolve
         breedthreads = Evolve.determineThreads(output, parameters, new Parameter(P_BREEDTHREADS));
         evalthreads = Evolve.determineThreads(output, parameters, new Parameter(P_EVALTHREADS));
         boolean auto = (V_THREADS_AUTO.equalsIgnoreCase(parameters.getString(new Parameter(P_BREEDTHREADS),null)) ||
-                        V_THREADS_AUTO.equalsIgnoreCase(parameters.getString(new Parameter(P_EVALTHREADS),null)));  // at least one thread is automatic.  Seeds may need to be dynamic.
+            V_THREADS_AUTO.equalsIgnoreCase(parameters.getString(new Parameter(P_EVALTHREADS),null)));  // at least one thread is automatic.  Seeds may need to be dynamic.
 
         // 3. create the Mersenne Twister random number generators,
         // one per thread
 
         random = new MersenneTwisterFast[breedthreads > evalthreads ? 
-                                         breedthreads : evalthreads];
+            breedthreads : evalthreads];
         seeds = new int[random.length];
                                                 
         String seedMessage = "Seed: ";
@@ -348,7 +348,7 @@ public class Evolve
         for (x=0;x<random.length;x++)
             {
             seeds[x] = determineSeed(output,parameters,new Parameter(P_SEED).push(""+x),
-                                     time+x,random.length * randomSeedOffset, auto);
+                time+x,random.length * randomSeedOffset, auto);
             for (int y=0;y<x;y++)
                 if (seeds[x]==seeds[y])
                     output.fatal(P_SEED+"."+x+" ("+seeds[x]+") and "+P_SEED+"."+y+" ("+seeds[y]+") ought not be the same seed.",null,null); 
@@ -361,7 +361,7 @@ public class Evolve
         // what evolution state to use?
         state = (EvolutionState)
             parameters.getInstanceForParameter(new Parameter(P_STATE),null,
-                                               EvolutionState.class);
+                EvolutionState.class);
         state.parameters = parameters;
         state.random = random;
         state.output = output;
@@ -413,14 +413,14 @@ public class Evolve
         if (state.parameters.getBoolean(new Parameter(P_PRINTUNUSEDPARAMETERS),null,false))
             {
             pw.println("\n\nUnused Parameters\n"+
-                       "================= (Ignore parent.x references) \n");
+                "================= (Ignore parent.x references) \n");
             state.parameters.listNotGotten(pw);
             }
 
         if (state.parameters.getBoolean(new Parameter(P_PRINTUNACCESSEDPARAMETERS),null,false))
             {
             pw.println("\n\nUnaccessed Parameters\n"+
-                       "===================== (Ignore parent.x references) \n");
+                "===================== (Ignore parent.x references) \n");
             state.parameters.listNotAccessed(pw);
             }
 
@@ -447,118 +447,118 @@ public class Evolve
 
 /*
 
-* MAIN
-* 
-* Evolve has... evolved from previous Evolves.  The goal behind these changes is:
-*       1. To provide a simple jobs facility
-*       2. To make it easy for you to make your own main(), including more
-*          sophisticated jobs facilities.
-* 
-* Before we get into the specifics of this file, let's first look at the main
-* evolution loop in EvolutionState.java.  The general code is:
-*       1.  If I was loaded from a checkpoint, call the hook startFromCheckpoint()
-*       2.  If I'm instead starting from scratch, call the hook startFresh() 
-*       3.  Loop:
-*               4. result = evolve() 
-*               5. If result != EvolutionState.R_NOTDONE, break from loop
-*       6.      Call the hook finish(result)
-* 
-* That's all there's to it.  Various EvolutionState classes need to implement
-* the startFromCheckpoint, startFresh, evolve, and finish methods.  This basic
-* evolution loop is encapsulated in a convenience method called EvolutionState.run(...).
-* 
-* Evolve.java is little more than code to fire up the right EvolutionState class,
-* call run(...), and then shut down.  The complexity mostly comes from bringing
-* up the class (loading it from checkpoint or from scratch) and in shutting down.
-* Here's the general mechanism:
-* 
-* - To load from checkpoint, we must find the checkpoint filename and call
-*       Checkpoint.restoreFromCheckpoint(filename) to generate the EvolutionState
-*       instance.  Evolve.java provides a convenience function for this called
-*       possiblyRestoreFromCheckpoint(...), which returns null if there *isn't*
-*       a checkpoint file to load from.  Else it returns the unfrozen EvolutionState.
-*       
-* - To instead set up from scratch, you have to do a bunch of stuff to set up the state.
-*       First, you need to load a parameter database.  Evolve.java has a convenience function
-*       for that called loadParameterDatabase(...).  Second, you must do a series
-*       of items: (1) generate an Output object (2) identify the number of threads
-*       (3) create the MersenneTwisterFast random number generators (4) instantiate
-*       the EvolutionState subclass instance (5) plug these items, plus the random 
-*       seed offset and the parameter database, into the instance.  These five
-*       steps are done for you in a convenience function called initialize(...).
-* 
-* -     Now the state is ready to go. Call run(...) on your EvolutionState
-*       (or do the evolution loop described above manually if you wish)
-* 
-* - Finally, to shut down, you need to (1) flush the Output (2) print out
-*       the used, accessed, unused, unaccessed, and all parameters if the user
-*       requested a printout at the end [rarely] (3) flush System.err and System.out
-*       for good measure, and (4) close Output -- which closes its streams except
-*       for System.err and System.out.  There is a convenience function for this as
-*       well.  It's called cleanup(...).
-*       
-* - Last, you shut down with System.exit(0) -- very important because it quits
-*       any remaining threads the user might have had running and forgot about.
-*       
-* So there you have it.  Several convenience functions in Evolve...
-*       Evolve.possiblyRestoreFromCheckpoint
-*       Evolve.loadParameterDatabase
-*       Evolve.initialize
-*       EvolutionState.run
-*       Evolve.cleanup
-* ... result in a very simple basic main() function:
-*       
-*
-*               public static void main(String[] args)
-*                       {
-*                       EvolutionState state = possiblyRestoreFromCheckpoint(args);
-*                       if (state!=null)  // loaded from checkpoint
-*                               state.run(EvolutionState.C_STARTED_FROM_CHECKPOINT);
-*                       else
-*                               {
-*                               state = initialize(loadParameterDatabase(args), 0);
-*                               state.run(EvolutionState.C_STARTED_FRESH);
-*                               }
-*                       cleanup(state);
-*                       System.exit(0);
-*                       }
-*
-*
-* Piece of cake!
-* 
-* The more extravagant main(...) you see below just has a few extra gizmos for
-* doing basic job iteration.  EvolutionState has two convenience slots for
-* doing job iteration:
-*
-*       job                                     (an Object[]    use this as you like)
-*       runtimeArguments        (a String[]             put args in here)
-*
-* The reason these are slots in EvolutionState is so you can store this information
-* across checkpoints and continue where you had started job-number-wise when the
-* user starts up from a checkpoint again.
-* 
-* You'll probably want the EvolutionState to output its stat files etc. using unique
-* prefixes to differentiate between jobs (0.stat, 1.stat, or whatever you like -- it
-* doesn't have to be numbers), and you'll also probably want checkpoint files to be
-* similarly prefixed.  So you'll probably want to do:
-*
-*       state.output.setFilePrefix(jobPrefix);
-*       state.checkpointPrefix = jobPrefix + state.checkpointPrefix;
-*
-* The extravagant main below is basically doing this.  We're using state.job to stash
-* away a single iterated job number, stored as an Integer in state.job[0], and then
-* iterating that way, making sure we stash the job number and runtime arguments each time 
-* so we can recover them when loading from checkpoint.  We use the "jobs" parameter 
-* to determine how many jobs to run.  If this number is 1, we don't even bother to set
-* the file prefixes, so ECJ generates files just like it used to.
-*
-* It's important to note that this main was created with the assumption that you might
-* modify it for your own purposes.  Do you want a nested loop, perhaps to do all combinations
-* of two parameters or something?  Rewrite it to use two array slots in the job array.
-* Want to store more information on a per-job basis?  Feel free to use the job array any
-* way you like -- it's ONLY used by this main() loop.
-*
-*/
+ * MAIN
+ * 
+ * Evolve has... evolved from previous Evolves.  The goal behind these changes is:
+ *       1. To provide a simple jobs facility
+ *       2. To make it easy for you to make your own main(), including more
+ *          sophisticated jobs facilities.
+ * 
+ * Before we get into the specifics of this file, let's first look at the main
+ * evolution loop in EvolutionState.java.  The general code is:
+ *       1.  If I was loaded from a checkpoint, call the hook startFromCheckpoint()
+ *       2.  If I'm instead starting from scratch, call the hook startFresh() 
+ *       3.  Loop:
+ *               4. result = evolve() 
+ *               5. If result != EvolutionState.R_NOTDONE, break from loop
+ *       6.      Call the hook finish(result)
+ * 
+ * That's all there's to it.  Various EvolutionState classes need to implement
+ * the startFromCheckpoint, startFresh, evolve, and finish methods.  This basic
+ * evolution loop is encapsulated in a convenience method called EvolutionState.run(...).
+ * 
+ * Evolve.java is little more than code to fire up the right EvolutionState class,
+ * call run(...), and then shut down.  The complexity mostly comes from bringing
+ * up the class (loading it from checkpoint or from scratch) and in shutting down.
+ * Here's the general mechanism:
+ * 
+ * - To load from checkpoint, we must find the checkpoint filename and call
+ *       Checkpoint.restoreFromCheckpoint(filename) to generate the EvolutionState
+ *       instance.  Evolve.java provides a convenience function for this called
+ *       possiblyRestoreFromCheckpoint(...), which returns null if there *isn't*
+ *       a checkpoint file to load from.  Else it returns the unfrozen EvolutionState.
+ *       
+ * - To instead set up from scratch, you have to do a bunch of stuff to set up the state.
+ *       First, you need to load a parameter database.  Evolve.java has a convenience function
+ *       for that called loadParameterDatabase(...).  Second, you must do a series
+ *       of items: (1) generate an Output object (2) identify the number of threads
+ *       (3) create the MersenneTwisterFast random number generators (4) instantiate
+ *       the EvolutionState subclass instance (5) plug these items, plus the random 
+ *       seed offset and the parameter database, into the instance.  These five
+ *       steps are done for you in a convenience function called initialize(...).
+ * 
+ * -     Now the state is ready to go. Call run(...) on your EvolutionState
+ *       (or do the evolution loop described above manually if you wish)
+ * 
+ * - Finally, to shut down, you need to (1) flush the Output (2) print out
+ *       the used, accessed, unused, unaccessed, and all parameters if the user
+ *       requested a printout at the end [rarely] (3) flush System.err and System.out
+ *       for good measure, and (4) close Output -- which closes its streams except
+ *       for System.err and System.out.  There is a convenience function for this as
+ *       well.  It's called cleanup(...).
+ *       
+ * - Last, you shut down with System.exit(0) -- very important because it quits
+ *       any remaining threads the user might have had running and forgot about.
+ *       
+ * So there you have it.  Several convenience functions in Evolve...
+ *       Evolve.possiblyRestoreFromCheckpoint
+ *       Evolve.loadParameterDatabase
+ *       Evolve.initialize
+ *       EvolutionState.run
+ *       Evolve.cleanup
+ * ... result in a very simple basic main() function:
+ *       
+ *
+ *               public static void main(String[] args)
+ *                       {
+ *                       EvolutionState state = possiblyRestoreFromCheckpoint(args);
+ *                       if (state!=null)  // loaded from checkpoint
+ *                               state.run(EvolutionState.C_STARTED_FROM_CHECKPOINT);
+ *                       else
+ *                               {
+ *                               state = initialize(loadParameterDatabase(args), 0);
+ *                               state.run(EvolutionState.C_STARTED_FRESH);
+ *                               }
+ *                       cleanup(state);
+ *                       System.exit(0);
+ *                       }
+ *
+ *
+ * Piece of cake!
+ * 
+ * The more extravagant main(...) you see below just has a few extra gizmos for
+ * doing basic job iteration.  EvolutionState has two convenience slots for
+ * doing job iteration:
+ *
+ *       job                                     (an Object[]    use this as you like)
+ *       runtimeArguments        (a String[]             put args in here)
+ *
+ * The reason these are slots in EvolutionState is so you can store this information
+ * across checkpoints and continue where you had started job-number-wise when the
+ * user starts up from a checkpoint again.
+ * 
+ * You'll probably want the EvolutionState to output its stat files etc. using unique
+ * prefixes to differentiate between jobs (0.stat, 1.stat, or whatever you like -- it
+ * doesn't have to be numbers), and you'll also probably want checkpoint files to be
+ * similarly prefixed.  So you'll probably want to do:
+ *
+ *       state.output.setFilePrefix(jobPrefix);
+ *       state.checkpointPrefix = jobPrefix + state.checkpointPrefix;
+ *
+ * The extravagant main below is basically doing this.  We're using state.job to stash
+ * away a single iterated job number, stored as an Integer in state.job[0], and then
+ * iterating that way, making sure we stash the job number and runtime arguments each time 
+ * so we can recover them when loading from checkpoint.  We use the "jobs" parameter 
+ * to determine how many jobs to run.  If this number is 1, we don't even bother to set
+ * the file prefixes, so ECJ generates files just like it used to.
+ *
+ * It's important to note that this main was created with the assumption that you might
+ * modify it for your own purposes.  Do you want a nested loop, perhaps to do all combinations
+ * of two parameters or something?  Rewrite it to use two array slots in the job array.
+ * Want to store more information on a per-job basis?  Feel free to use the job array any
+ * way you like -- it's ONLY used by this main() loop.
+ *
+ */
 
 
 

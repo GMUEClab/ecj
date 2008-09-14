@@ -81,7 +81,7 @@ public class VectorCrossoverPipeline extends BreedingPipeline
         super.setup(state,base);
         Parameter def = defaultBase();
         tossSecondParent = state.parameters.getBoolean(base.push(P_TOSS),
-                                                       def.push(P_TOSS),false);
+            def.push(P_TOSS),false);
         }
         
     /** Returns 2 * minimum number of typical individuals produced by any sources, else
@@ -92,12 +92,12 @@ public class VectorCrossoverPipeline extends BreedingPipeline
         }
 
     public int produce(final int min, 
-                       final int max, 
-                       final int start,
-                       final int subpopulation,
-                       final Individual[] inds,
-                       final EvolutionState state,
-                       final int thread) 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread) 
 
         {
         // how many individuals should we make?

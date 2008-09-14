@@ -60,7 +60,7 @@ public class SAT extends Problem implements SimpleProblemForm
         catch (IOException e) 
             { 
             state.output.fatal("Error in SAT setup, while loading from file " + fileName +
-                               "\nFrom parameter " + base.push(P_FILENAME) + "\nError:\n" + e);  
+                "\nFrom parameter " + base.push(P_FILENAME) + "\nError:\n" + e);  
             }
         }
         
@@ -80,11 +80,11 @@ public class SAT extends Problem implements SimpleProblemForm
         }
         
     public void describe(final Individual ind, 
-                         final EvolutionState state, 
-                         final int threadnum,
-                         final int subpopulation,
-                         final int log,
-                         final int verbosity)  
+        final EvolutionState state, 
+        final int threadnum,
+        final int subpopulation,
+        final int log,
+        final int verbosity)  
         { 
         }
         

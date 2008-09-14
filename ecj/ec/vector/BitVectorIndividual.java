@@ -223,7 +223,7 @@ public class BitVectorIndividual extends VectorIndividual
         }
                 
     protected void parseGenotype(final EvolutionState state,
-                                 final LineNumberReader reader) throws IOException
+        final LineNumberReader reader) throws IOException
         {
         // read in the next line.  The first item is the number of genes
         String s = reader.readLine();
@@ -261,7 +261,7 @@ public class BitVectorIndividual extends VectorIndividual
         { return genome.length; }
 
     public void writeGenotype(final EvolutionState state,
-                              final DataOutput dataOutput) throws IOException
+        final DataOutput dataOutput) throws IOException
         {
         dataOutput.writeInt(genome.length);
         for(int x=0;x<genome.length;x++)
@@ -269,7 +269,7 @@ public class BitVectorIndividual extends VectorIndividual
         }
 
     public void readGenotype(final EvolutionState state,
-                             final DataInput dataInput) throws IOException
+        final DataInput dataInput) throws IOException
         {
         int len = dataInput.readInt();
         if (genome==null || genome.length != len)

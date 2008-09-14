@@ -21,8 +21,8 @@ import ec.util.*;
  * <ol>
  * <li> You may provide a default min and max value.
  *      This is done by specifying:
- *      <p><i>base.n</i>.<tt>min-gene</tt>
- *      <br><i>base.n</i>.<tt>max-gene</tt>
+ *      <p><i>base</i>.<tt>min-gene</tt>
+ *      <br><i>base</i>.<tt>max-gene</tt>
  *      <p><i>Note:</i> you <b>must</b> provide these values even if you don't use them,
  *      as they're used as defaults by #2 and #3 below.
  *<p>
@@ -47,8 +47,8 @@ import ec.util.*;
  *<p>
  * <li> You may provide min and max values for each separate gene.  
  *      This is done by specifying (for each gene location <i>i</i> you wish to specify)
- *      <p><i>base.n</i>.<tt>min-gene</tt>.<i>i</i>
- *      <br><i>base.n</i>.<tt>max-gene</tt>.<i>i</i>
+ *      <p><i>base</i>.<tt>min-gene</tt>.<i>i</i>
+ *      <br><i>basn</i>.<tt>max-gene</tt>.<i>i</i>
  * </ol>
  * 
  * <p>Any settings for #3 override #2, and both override #1. 
@@ -243,7 +243,7 @@ public class FloatVectorSpecies extends VectorSpecies
         double maxGene = state.parameters.getDouble(base.push(P_MAXGENE), def.push(P_MAXGENE), minGene);
         if (maxGene < minGene)
             state.output.fatal("FloatVectorSpecies must have a default min-gene which is <= the default max-gene",
-                               base.push(P_MAXGENE), def.push(P_MAXGENE));
+                base.push(P_MAXGENE), def.push(P_MAXGENE));
         
         for (int x = 0; x < genomeSize; x++)
             {
@@ -262,7 +262,7 @@ public class FloatVectorSpecies extends VectorSpecies
         if (state.parameters.exists(base.push(P_NUM_SEGMENTS), def.push(P_NUM_SEGMENTS)))
             {
             numSegments = state.parameters.getIntWithDefault(base.push(P_NUM_SEGMENTS), 
-                                                             def.push(P_NUM_SEGMENTS), 0);
+                def.push(P_NUM_SEGMENTS), 0);
                         
             if(numSegments == 0)
                 state.output.warning(
@@ -279,7 +279,7 @@ public class FloatVectorSpecies extends VectorSpecies
                                                         
             //read the type of segment definition using the default start value
             String segmentType = state.parameters.getStringWithDefault(base.push(P_SEGMENT_TYPE), 
-                                                                       def.push(P_SEGMENT_TYPE), P_SEGMENT_START);
+                def.push(P_SEGMENT_TYPE), P_SEGMENT_START);
                         
             if(segmentType.equalsIgnoreCase(P_SEGMENT_START))
                 initializeGenomeSegmentsByStartIndices(state, base, def, numSegments, minGene, maxGene);
@@ -318,7 +318,7 @@ public class FloatVectorSpecies extends VectorSpecies
             else
                 {
                 minGenes[x] = state.parameters.getDoubleWithDefault(base.push(P_MINGENE).push("" + x), 
-                                                                    def.push(P_MINGENE).push("" + x), minGene);
+                    def.push(P_MINGENE).push("" + x), minGene);
                 foundStuff = true;
                 }
 
@@ -336,7 +336,7 @@ public class FloatVectorSpecies extends VectorSpecies
             else
                 {
                 maxGenes[x] = state.parameters.getDoubleWithDefault(base.push(P_MAXGENE).push("" + x), 
-                                                                    def.push(P_MAXGENE).push("" + x), maxGene);
+                    def.push(P_MAXGENE).push("" + x), maxGene);
                 foundStuff = true;
                 }
             }
@@ -361,16 +361,16 @@ public class FloatVectorSpecies extends VectorSpecies
             // check to see if these longs are within the data type of the particular individual
             if (!inNumericalTypeRange(minGenes[x]))
                 state.output.fatal("This FloatvectorSpecies has a prototype of the kind: "
-                                   + i_prototype.getClass().getName()
-                                   + ", but doesn't have a min-gene["
-                                   + x
-                                   + "] value within the range of this prototype's genome's data types");
+                    + i_prototype.getClass().getName()
+                    + ", but doesn't have a min-gene["
+                    + x
+                    + "] value within the range of this prototype's genome's data types");
             if (!inNumericalTypeRange(maxGenes[x]))
                 state.output.fatal("This FloatvectorSpecies has a prototype of the kind: "
-                                   + i_prototype.getClass().getName()
-                                   + ", but doesn't have a max-gene["
-                                   + x
-                                   + "] value within the range of this prototype's genome's data types");
+                    + i_prototype.getClass().getName()
+                    + ", but doesn't have a max-gene["
+                    + x
+                    + "] value within the range of this prototype's genome's data types");
             }
 
         
@@ -384,21 +384,21 @@ public class FloatVectorSpecies extends VectorSpecies
         mutationType = C_RESET_MUTATION;
         if (mtype == null)
             state.output.warning("No mutation type given for VectorSpecies, assuming 'reset' mutation",
-                                 base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE));
+                base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE));
         else if (mtype.equalsIgnoreCase(V_RESET_MUTATION))
             mutationType = C_RESET_MUTATION; // redundant
         else if (mtype.equalsIgnoreCase(V_GAUSS_MUTATION))
             mutationType = C_GAUSS_MUTATION;
         else
             state.output.fatal("FloatVectorSpecies given a bad mutation type: "
-                               + mtype, base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE));
+                + mtype, base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE));
 
         if (mutationType == C_GAUSS_MUTATION)
             {
             double gaussMutationStdev = state.parameters.getDouble(base.push(P_STDEV),def.push(P_STDEV), 0);
             if (gaussMutationStdev <= 0)
                 state.output.fatal("If it's going to use gaussian mutation, FloatvectorSpecies must have a strictly positive standard deviation",
-                                   base.push(P_STDEV), def.push(P_STDEV));
+                    base.push(P_STDEV), def.push(P_STDEV));
 
             gaussMutationStdevs = new double[genomeSize];
             double defaultRange = maxGene - minGene;
@@ -426,10 +426,10 @@ public class FloatVectorSpecies extends VectorSpecies
         
         
     private void initializeGenomeSegmentsByStartIndices(final EvolutionState state, 
-                                                        final Parameter base, 
-                                                        final Parameter def,
-                                                        int numSegments,
-                                                        double minGene, double maxGene)
+        final Parameter base, 
+        final Parameter def,
+        int numSegments,
+        double minGene, double maxGene)
         {
         boolean warnedMin = false;
         boolean warnedMax = false;
@@ -444,19 +444,19 @@ public class FloatVectorSpecies extends VectorSpecies
             {
             //check if the segment data exist
             if (state.parameters.exists(base.push(P_SEGMENT).push(""+i).push(P_SEGMENT_START), 
-                                        def.push(P_SEGMENT).push(""+i).push(P_SEGMENT_START)))
+                    def.push(P_SEGMENT).push(""+i).push(P_SEGMENT_START)))
                 {
                 //Read the index of the end gene specifying current segment
                 currentSegmentEnd = state.parameters.getInt(base.push(P_SEGMENT).push(""+i).push(P_SEGMENT_START), 
-                                                            def.push(P_SEGMENT).push(""+i).push(P_SEGMENT_START));
+                    def.push(P_SEGMENT).push(""+i).push(P_SEGMENT_START));
                                 
                 }
             else
                 {
                 state.output.fatal("Genome segment " + i + " has not been defined!" +
-                                   "\nYou must specify start indices for " + numSegments + " segment(s)", 
-                                   base.push(P_SEGMENT).push(""+i).push(P_SEGMENT_START),
-                                   base.push(P_SEGMENT).push(""+i).push(P_SEGMENT_START));
+                    "\nYou must specify start indices for " + numSegments + " segment(s)", 
+                    base.push(P_SEGMENT).push(""+i).push(P_SEGMENT_START),
+                    base.push(P_SEGMENT).push(""+i).push(P_SEGMENT_START));
                 }
                         
             //check if the start index is valid
@@ -475,7 +475,7 @@ public class FloatVectorSpecies extends VectorSpecies
                         
             //get min and max values of genes in this segment
             if (!state.parameters.exists(base.push(P_SEGMENT).push(""+i).push(P_MINGENE), 
-                                         base.push(P_SEGMENT).push(""+i).push(P_MINGENE)))
+                    base.push(P_SEGMENT).push(""+i).push(P_MINGENE)))
                 {
                 if (!warnedMin)
                     {
@@ -513,7 +513,7 @@ public class FloatVectorSpecies extends VectorSpecies
                 }
                         
             if (!state.parameters.exists(base.push(P_SEGMENT).push(""+i).push(P_MAXGENE), 
-                                         base.push(P_SEGMENT).push(""+i).push(P_MAXGENE)))
+                    base.push(P_SEGMENT).push(""+i).push(P_MAXGENE)))
                 {
                 if (!warnedMax)
                     {
@@ -573,10 +573,10 @@ public class FloatVectorSpecies extends VectorSpecies
         }
         
     private void initializeGenomeSegmentsByEndIndices(final EvolutionState state, 
-                                                      final Parameter base, 
-                                                      final Parameter def,
-                                                      int numSegments,
-                                                      double minGene, double maxGene)
+        final Parameter base, 
+        final Parameter def,
+        int numSegments,
+        double minGene, double maxGene)
         {
         boolean warnedMin = false;
         boolean warnedMax = false;
@@ -593,15 +593,15 @@ public class FloatVectorSpecies extends VectorSpecies
                 {
                 //Read the index of the end gene specifying current segment
                 currentSegmentEnd = state.parameters.getInt(base.push(P_SEGMENT).push(""+i).push(P_SEGMENT_END), 
-                                                            def.push(P_SEGMENT).push(""+i).push(P_SEGMENT_END));
+                    def.push(P_SEGMENT).push(""+i).push(P_SEGMENT_END));
                                 
                 }
             else
                 {
                 state.output.fatal("Genome segment " + i + " has not been defined!" +
-                                   "\nYou must specify end indices for " + numSegments + " segment(s)", 
-                                   base.push(P_SEGMENT).push(""+i).push(P_SEGMENT_END),
-                                   base.push(P_SEGMENT).push(""+i).push(P_SEGMENT_END));
+                    "\nYou must specify end indices for " + numSegments + " segment(s)", 
+                    base.push(P_SEGMENT).push(""+i).push(P_SEGMENT_END),
+                    base.push(P_SEGMENT).push(""+i).push(P_SEGMENT_END));
                 }
                         
             //check if the end index is valid
@@ -620,7 +620,7 @@ public class FloatVectorSpecies extends VectorSpecies
                         
             //get min and max values of genes in this segment
             if (!state.parameters.exists(base.push(P_SEGMENT).push(""+i).push(P_MINGENE), 
-                                         base.push(P_SEGMENT).push(""+i).push(P_MINGENE)))
+                    base.push(P_SEGMENT).push(""+i).push(P_MINGENE)))
                 {
                 if (!warnedMin)
                     {
@@ -658,7 +658,7 @@ public class FloatVectorSpecies extends VectorSpecies
                 }
                         
             if (!state.parameters.exists(base.push(P_SEGMENT).push(""+i).push(P_MAXGENE), 
-                                         base.push(P_SEGMENT).push(""+i).push(P_MAXGENE)))
+                    base.push(P_SEGMENT).push(""+i).push(P_MAXGENE)))
                 {
                 if (!warnedMax)
                     {

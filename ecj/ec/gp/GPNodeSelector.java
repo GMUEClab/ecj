@@ -40,10 +40,10 @@ public interface GPNodeSelector extends Prototype
     */
 
     public abstract GPNode pickNode(final EvolutionState s,
-                                    final int subpopulation,
-                                    final int thread,
-                                    final GPIndividual ind,
-                                    final GPTree tree);
+        final int subpopulation,
+        final int thread,
+        final GPIndividual ind,
+        final GPTree tree);
 
     /** Resets the Node Selector before a new series of pickNode()
         if need be. */
