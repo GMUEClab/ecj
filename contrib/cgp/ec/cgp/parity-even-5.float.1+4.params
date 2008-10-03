@@ -1,0 +1,6 @@
+parent.0 = parity-even-5.int.1+4.params
+stat.file = $parity-even-5.float.1+4.params.out.stat
+
+pop.subpop.0.species = ec.cgp.representation.FloatVectorSpecies
+pop.subpop.0.species.ind = ec.cgp.representation.FloatVectorIndividual
+

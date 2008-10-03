@@ -1,0 +1,3 @@
+parent.0 = regression-1.float.pop50.params
+stat.file = $regression-2.float.pop50.params.out.stat
+problem.which = 2

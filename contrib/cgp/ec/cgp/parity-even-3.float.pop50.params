@@ -1,0 +1,8 @@
+parent.0 = parity-even-2.float.pop50.params
+stat.file = $parity-even-3.float.pop50.params.out.stat
+
+pop.subpop.0.species.nodes = 100
+pop.subpop.0.species.inputs = 3  
+
+pop.subpop.0.species.mutation-prob = .01
+

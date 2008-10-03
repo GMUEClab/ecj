@@ -1,0 +1,13 @@
+#
+# Evolves a real-valued function that produces outputs matching some known 
+# function's values given a set of input values.
+#
+# Representation: Integer-based Cartesian Genetic Programming.
+# Algorithm: 1+4 ES.  Parent is selected uniformly at random
+# from set of individuals with fitness equal to top fitness of
+# generation.
+# 
+parent.0 = regression-1.int.1+4.params
+stat.file = $regression-3.int.1+4.params.out.stat
+# Identifies which function you want to use for regression
+problem.which = 3

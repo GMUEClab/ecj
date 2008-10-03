@@ -1,0 +1,30 @@
+Before you do anything else, please read the file "CGP-ECJ-LICENSE",
+located in this directory. It contains the software license
+you are bound to if you wish to use this software -- note that
+the license is not *quite* your normal open source license;
+it requires you to make certain admissions about using CGP-ECJ in
+your published research work. It is the same license used for ECJ.
+
+Additionally, please see the following important files:
+
+docs/index.html         CGP-ECJ documentation.  
+CGP-ECJ-LICENSE			The CGP-ECJ license.
+
+All of the source code for the CGP extension to ECJ is found under ec/cgp.
+
+The documentation file mentioned above is found in the 'docs' directory.
+
+Data used in the sample classification problems is located in the 'data' 
+directory.
+
+To compile CGP for ECJ, you will need Java 1.5 due to the internal use of 
+generics.
+
+Feel free to contact me with any questions, comments, complaints, 
+suggestions, success stories, etc.  I am very interested in expanding
+this distribution of CGP for ECJ to include many more sample problem 
+domains.
+
+David Oranchak
+doranchak@gmail.com
+http://oranchak.com
