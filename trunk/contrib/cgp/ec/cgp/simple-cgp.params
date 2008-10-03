@@ -1,0 +1,18 @@
+#================================================================================
+# Set up parameters shared by all experiments.
+#================================================================================
+
+# I log a lot of messages, so we want to avoid storing these in memory.
+nostore = true 				
+
+
+print-params = true
+generations = 999999999
+
+
+#================================================================================
+# Set up multi-threading.  TODO: test all experiments for thread safety.
+#================================================================================
+evalthreads = 1
+breedthreads = 1
+seed.0 = time

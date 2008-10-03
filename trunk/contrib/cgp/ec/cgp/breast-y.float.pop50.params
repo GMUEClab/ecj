@@ -1,0 +1,86 @@
+parent.0 = simple-cgp.params
+
+stat.file = $breast-y.float.pop50.params.out.stat
+
+parent.1 = ecj/ecj/ec/simple/simple.params
+breed = ec.cgp.Breeder
+
+
+#================================================================================
+# Set up population
+#================================================================================
+pop.subpops = 1
+pop.subpop.0 = ec.Subpopulation
+
+pop.subpop.0.size = 50
+pop.subpop.0.species = ec.cgp.representation.FloatVectorSpecies
+pop.subpop.0.species.ind = ec.cgp.representation.FloatVectorIndividual
+
+#================================================================================
+# Our own fitness.  A simple modification that makes smaller fitnesses better.
+#================================================================================
+pop.subpop.0.species.fitness = ec.cgp.FitnessCGP
+
+#================================================================================
+# Mutation rate
+#================================================================================
+pop.subpop.0.species.mutation-prob = .04
+
+
+#================================================================================
+# Function lookup table class for use by the CGP function evaluator.
+# This class is expected to implement CGPFunctions.
+#================================================================================
+pop.subpop.0.species.functions = ec.cgp.functions.FunctionsBreastCancerY
+
+# number of functions in your lookup table
+pop.subpop.0.species.num-functions = 17
+
+# number of nodes in your CGP, not including inputs and outputs.
+pop.subpop.0.species.nodes = 300
+
+# number of input nodes in your CGP.  Your problem class feeds these inputs to the CGPEvaluator. 
+# 4 inputs, 8 constants
+pop.subpop.0.species.inputs = 12 
+
+# number of output nodes in your CGP.  Your problem class extracts these outputs from the CGPEvaluator.
+pop.subpop.0.species.outputs = 1
+
+# max number of inputs for all functions in your function lookup table.
+pop.subpop.0.species.maxArity = 3
+
+#================================================================================
+# First, two parents are selected via tournament selection (size 2).  The parents
+# are recombined using convex crossover at the rate specified by 
+# crossover-prob.  The children are then mutated.
+#================================================================================
+pop.subpop.0.species.pipe = ec.vector.breed.VectorMutationPipeline
+#pop.subpop.0.species.pipe.source.0 = ec.select.TournamentSelection
+#pop.subpop.0.species.pipe.source.0.size = 20
+pop.subpop.0.species.pipe.source.0 = ec.vector.breed.VectorCrossoverPipeline
+pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.0.size = 20
+pop.subpop.0.species.pipe.source.0.source.1 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.1.size = 20
+
+#================================================================================
+# Class that sets up the classification problem.  Invokes the CGPEvaluator on all
+# possible boolean inputs.  The CGPEvaluator computes the output value of the 
+# function represented by the genome.  
+#================================================================================
+eval.problem = ec.cgp.problems.ProblemBreastCancerY
+problem.file = data/breast/breast-cancer.arff
+
+# number of ephemeral random constants, C, to use in your CGP.  They are generated before the run, and are placed in the last C slots of the input vector. 
+# Ensure that this value is not greater than the number of the inputs!
+problem.constants = 8
+
+# Define the range of constant values.  It is the half-open range [constant-min, constant-max).
+problem.constant-min = -2.0
+problem.constant-max = 2.0
+
+#================================================================================
+# Our custom stats class prints out newly discovered best-of run individuals
+# as they are discovered.
+#================================================================================
+stat = ec.cgp.Stats

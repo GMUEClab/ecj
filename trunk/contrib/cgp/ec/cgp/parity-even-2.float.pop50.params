@@ -1,0 +1,83 @@
+#
+# Evolves a boolean function that implements even 2-bit parity.
+# Representation: Integer-based Cartesian Genetic Programming.
+# Algorithm: 1+4 ES.  Parent is selected uniformly at random
+# from set of individuals with fitness equal to top fitness of
+# generation.
+#
+
+parent.0 = simple-cgp.params
+stat.file = $parity-even-2.float.pop50.params.out.stat
+
+parent.1 = ecj/ecj/ec/simple/simple.params
+breed = ec.cgp.Breeder
+
+
+#================================================================================
+# Set up population
+#================================================================================
+pop.subpops = 1
+pop.subpop.0 = ec.Subpopulation
+
+pop.subpop.0.size = 50
+pop.subpop.0.species = ec.cgp.representation.FloatVectorSpecies
+pop.subpop.0.species.ind = ec.cgp.representation.FloatVectorIndividual
+
+#================================================================================
+# Our own fitness.  A simple modification that makes smaller fitnesses better.
+#================================================================================
+pop.subpop.0.species.fitness = ec.cgp.FitnessCGP
+
+#================================================================================
+# Mutation and crossover rates
+#================================================================================
+pop.subpop.0.species.mutation-prob = .04
+
+
+#================================================================================
+# Function lookup table class for use by the CGP function evaluator.
+# This class is expected to implement CGPFunctions.
+#================================================================================
+pop.subpop.0.species.functions = ec.cgp.functions.FunctionsParity
+
+# number of functions in your lookup table
+pop.subpop.0.species.num-functions = 5
+
+# number of nodes in your CGP, not including inputs and outputs.
+pop.subpop.0.species.nodes = 10
+
+# number of input nodes in your CGP.  Your problem class feeds these inputs to the CGPEvaluator. 
+pop.subpop.0.species.inputs = 2  
+
+# number of output nodes in your CGP.  Your problem class extracts these outputs from the CGPEvaluator.
+pop.subpop.0.species.outputs = 1  
+
+# max number of inputs for all functions in your function lookup table.
+pop.subpop.0.species.maxArity = 2  
+
+#================================================================================
+# First, two parents are selected via tournament selection (size 2).  The parents
+# are recombined using convex crossover at the rate specified by 
+# crossover-prob.  The children are then mutated.
+#================================================================================
+pop.subpop.0.species.pipe = ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.size = 20
+#pop.subpop.0.species.pipe.source.0 = ec.vector.breed.VectorCrossoverPipeline
+#pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
+#pop.subpop.0.species.pipe.source.0.source.0.size = 20
+#pop.subpop.0.species.pipe.source.0.source.1 = ec.select.TournamentSelection
+#pop.subpop.0.species.pipe.source.0.source.1.size = 20
+
+#================================================================================
+# Class that sets up the parity problem.  Invokes the CGPEvaluator on all
+# possible boolean inputs.  The CGPEvaluator computes the output value of the 
+# function represented by the genome.  
+#================================================================================
+eval.problem = ec.cgp.problems.ProblemParity
+
+#================================================================================
+# Our custom stats class prints out newly discovered best-of run individuals
+# as they are discovered.
+#================================================================================
+stat = ec.cgp.Stats

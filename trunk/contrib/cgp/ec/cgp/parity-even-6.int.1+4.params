@@ -1,0 +1,11 @@
+#
+# Evolves a boolean function that implements even 6-bit parity.
+# Representation: Integer-based Cartesian Genetic Programming.
+# Algorithm: 1+4 ES.  Parent is selected uniformly at random
+# from set of individuals with fitness equal to top fitness of
+# generation.
+#
+parent.0 = parity-even-2.int.1+4.params
+stat.file = $parity-even-6.int.1+4.params.out.stat
+pop.subpop.0.species.nodes = 200
+pop.subpop.0.species.inputs = 6

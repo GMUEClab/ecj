@@ -1,0 +1,93 @@
+parent.0 = simple-cgp.params
+
+stat.file = $iris.float.1+4.params.out.stat
+
+#================================================================================
+# Set up 1+4 evolutionary strategy
+#================================================================================
+parent.1 = ecj/ecj/ec/es/es.params
+breed = ec.cgp.MuLambdaBreederCGP
+es.mu.0 = 1
+es.lambda.0 = 4
+
+
+#================================================================================
+# Set up population
+#================================================================================
+pop.subpops = 1
+pop.subpop.0 = ec.Subpopulation
+
+#================================================================================
+# Initial population size is set to mu+lambda.  Be sure to change this if you 
+# modify es.mu and es.lambda.
+#================================================================================
+pop.subpop.0.size = 5
+pop.subpop.0.species = ec.cgp.representation.FloatVectorSpecies
+pop.subpop.0.species.ind = ec.cgp.representation.FloatVectorIndividual
+
+#================================================================================
+# Our own fitness.  A simple modification that makes smaller fitnesses better.
+#================================================================================
+pop.subpop.0.species.fitness = ec.cgp.FitnessCGP
+
+#================================================================================
+# Mutation rate.
+#================================================================================
+pop.subpop.0.species.mutation-prob = .04
+
+
+#================================================================================
+# Function lookup table class for use by the CGP function evaluator.
+# This class is expected to implement CGPFunctions.
+#================================================================================
+pop.subpop.0.species.functions = ec.cgp.functions.FunctionsIris
+
+# number of functions in your lookup table
+pop.subpop.0.species.num-functions = 17
+
+# number of nodes in your CGP, not including inputs and outputs.
+pop.subpop.0.species.nodes = 300
+
+# number of input nodes in your CGP.  Your problem class feeds these inputs to the CGPEvaluator. 
+# 4 inputs, 8 constants
+pop.subpop.0.species.inputs = 12
+
+# number of output nodes in your CGP.  Your problem class extracts these outputs from the CGPEvaluator.
+pop.subpop.0.species.outputs = 3  
+
+# max number of inputs for all functions in your function lookup table.
+pop.subpop.0.species.maxArity = 3
+
+#================================================================================
+# The breeding pipeline is a simple mu+lambda ES.  First, the best individual is 
+# selected uniformly at random from all individuals sharing the top fitness.  
+# This is done via ESSelectionCGP, our customization of ESSelection that performs
+# the random selection.  This individual becomes the parent from which the next 
+# generation's children are bred.  The children are generated via mutations of 
+# the parent.  No crossover is used.
+#================================================================================
+pop.subpop.0.species.pipe = ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0 = ec.cgp.ESSelectionCGP
+
+
+#================================================================================
+# Class that sets up the classification problem.  Invokes the CGPEvaluator on all
+# possible boolean inputs.  The CGPEvaluator computes the output value of the 
+# function represented by the genome.  
+#================================================================================
+eval.problem = ec.cgp.problems.ProblemIris
+problem.file = data/iris/iris.arff
+
+# number of ephemeral random constants, C, to use in your CGP.  They are generated before the run, and are placed in the last C slots of the input vector. 
+# Ensure that this value is not greater than the number of the inputs!
+problem.constants = 8
+
+# Define the range of constant values.  It is the half-open range [constant-min, constant-max).
+problem.constant-min = -2.0
+problem.constant-max = 2.0
+
+#================================================================================
+# Our custom stats class prints out newly discovered best-of run individuals
+# as they are discovered.
+#================================================================================
+stat = ec.cgp.Stats

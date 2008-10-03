@@ -1,0 +1,94 @@
+#
+# Evolves a real-valued function that produces outputs matching some known 
+# function's values given a set of input values.
+#
+# Representation: Integer-based Cartesian Genetic Programming.
+# Algorithm: 1+4 ES.  Parent is selected uniformly at random
+# from set of individuals with fitness equal to top fitness of
+# generation.
+# 
+parent.0 = simple-cgp.params
+stat.file = $regression-1.int.1+4.params.out.stat
+
+#================================================================================
+# Set up 1+4 evolutionary strategy
+#================================================================================
+parent.1 = ecj/ecj/ec/es/es.params
+breed = ec.cgp.MuLambdaBreederCGP
+es.mu.0 = 1
+es.lambda.0 = 4
+
+
+#================================================================================
+# Set up population
+#================================================================================
+pop.subpops = 1
+pop.subpop.0 = ec.Subpopulation
+
+#================================================================================
+# Initial population size is set to mu+lambda.  Be sure to change this if you 
+# modify es.mu and es.lambda.
+#================================================================================
+pop.subpop.0.size = 5
+pop.subpop.0.species = ec.cgp.representation.IntegerVectorSpecies
+pop.subpop.0.species.ind = ec.cgp.representation.IntegerVectorIndividual
+
+#================================================================================
+# Our own fitness.  A simple modification that makes smaller fitnesses better.
+#================================================================================
+pop.subpop.0.species.fitness = ec.cgp.FitnessCGP
+
+#================================================================================
+# Mutation rate.
+#================================================================================
+pop.subpop.0.species.mutation-prob = .04
+
+
+#================================================================================
+# Function lookup table class for use by the CGP function evaluator.
+# This class is expected to implement CGPFunctions.
+#================================================================================
+pop.subpop.0.species.functions = ec.cgp.functions.FunctionsRegression
+
+# number of functions in your lookup table
+pop.subpop.0.species.num-functions = 4   
+
+# number of nodes in your CGP, not including inputs and outputs.
+pop.subpop.0.species.nodes = 10 
+
+# number of input nodes in your CGP.  Your problem class feeds these inputs to the CGPEvaluator. 
+pop.subpop.0.species.inputs = 2  
+
+# number of output nodes in your CGP.  Your problem class extracts these outputs from the CGPEvaluator.
+pop.subpop.0.species.outputs = 1  
+
+# max number of inputs for all functions in your function lookup table.
+pop.subpop.0.species.maxArity = 2  
+
+#================================================================================
+# The breeding pipeline is a simple mu+lambda ES.  First, the best individual is 
+# selected uniformly at random from all individuals sharing the top fitness.  
+# This is done via ESSelectionCGP, our customization of ESSelection that performs
+# the random selection.  This individual becomes the parent from which the next 
+# generation's children are bred.  The children are generated via mutations of 
+# the parent.  No crossover is used.
+#================================================================================
+pop.subpop.0.species.pipe = ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0 = ec.cgp.ESSelectionCGP
+
+
+#================================================================================
+# Class that sets up the regression problem.  Invokes the CGPEvaluator on all
+# possible boolean inputs.  The CGPEvaluator computes the output value of the 
+# function represented by the genome.  
+#================================================================================
+eval.problem = ec.cgp.problems.ProblemRegression
+
+# Identifies which function you want to use for regression
+problem.which = 1
+
+#================================================================================
+# Our custom stats class prints out newly discovered best-of run individuals
+# as they are discovered.
+#================================================================================
+stat = ec.cgp.Stats
