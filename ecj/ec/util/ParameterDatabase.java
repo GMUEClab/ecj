@@ -925,6 +925,51 @@ public class ParameterDatabase extends Properties implements Serializable
             return minValue - 1;
         }
 
+
+    float getFloat(Parameter parameter) throws NumberFormatException
+	{
+        if (_exists(parameter)) 
+            {
+            try
+                {
+                // For JDK 1.2 and later, this is more efficient...
+                // float i = Float.parseFloat(get(parameter));
+                // ...but we can't use it and still be compatible with JDK 1.1
+		return Float.valueOf(get(parameter)).floatValue(); // what
+									// stupidity...
+                } 
+            catch (NumberFormatException e) 
+                {
+                throw new NumberFormatException("Bad float ("
+                    + get(parameter) + " ) for parameter " + parameter);
+                }
+            } 
+        else
+            throw new NumberFormatException(
+                "Float does not exist for parameter " + parameter);
+	}
+
+    /*
+     * Searches down through databases to find a given parameter, whose value
+     * must be a float. It returns the value, else throws a
+     * NumberFormatException exception if there is an error in parsing the
+     * parameter. The parameter chosen is marked "used" if it exists.
+     */
+    public float getFloat(Parameter parameter, Parameter defaultParameter)
+        throws NumberFormatException 
+        {
+        printGotten(parameter, defaultParameter, false);
+        if (_exists(parameter))
+            return getFloat(parameter);
+        else if (_exists(defaultParameter))
+            return getFloat(defaultParameter);
+        else
+            throw new NumberFormatException(
+                "Float does not exist for either parameter " + parameter
+                + "\nor\n" + defaultParameter);
+        }
+	
+
     /**
      * Searches down through databases to find a given parameter, whose value
      * must be a float >= minValue. If not, this method returns minvalue-1, else
@@ -1068,29 +1113,49 @@ public class ParameterDatabase extends Properties implements Serializable
             return (float) (minValue - 1);
         }
 
+    double getDouble(Parameter parameter) throws NumberFormatException
+	{
+        if (_exists(parameter)) 
+            {
+            try
+                {
+                // For JDK 1.2 and later, this is more efficient...
+                // double i = Double.parseDouble(get(parameter));
+                // ...but we can't use it and still be compatible with JDK 1.1
+		return Double.valueOf(get(parameter)).doubleValue(); // what
+									// stupidity...
+                } 
+            catch (NumberFormatException e) 
+                {
+                throw new NumberFormatException("Bad double ("
+                    + get(parameter) + " ) for parameter " + parameter);
+                }
+            } 
+        else
+            throw new NumberFormatException(
+                "Double does not exist for parameter " + parameter);
+	}
 
-
-    /**
+    /*
      * Searches down through databases to find a given parameter, whose value
      * must be an double. It returns the value, else throws a
      * NumberFormatException exception if there is an error in parsing the
-     * parameter. The parameter chosen is marked "used" if it exists. Integers
-     * may be in decimal or (if preceded with an X or x) in hexadecimal.
+     * parameter. The parameter chosen is marked "used" if it exists. 
      */
-    public int getDouble(Parameter parameter, Parameter defaultParameter)
+    public double getDouble(Parameter parameter, Parameter defaultParameter)
         throws NumberFormatException 
         {
         printGotten(parameter, defaultParameter, false);
         if (_exists(parameter))
-            return getInt(parameter);
+            return getDouble(parameter);
         else if (_exists(defaultParameter))
-            return getInt(defaultParameter);
+            return getDouble(defaultParameter);
         else
             throw new NumberFormatException(
-                "Integer does not exist for either parameter " + parameter
+                "Double does not exist for either parameter " + parameter
                 + "\nor\n" + defaultParameter);
         }
-
+	
 
     /**
      * Searches down through databases to find a given parameter, whose value

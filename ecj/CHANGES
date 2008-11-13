@@ -1397,3 +1397,10 @@ Version		Change Log
 		Tomasz Nowak <nowak2000@poczta.onet.pl>
 	Bumped classfile version in Makefile to 1.4 accordingly.
 	Fixed erroneous documentation in FloatVectorSpecies and IntegerVectorSpecies
+	Slight modification of spea2.Subpopulation.setup() archive size allowance,
+		thanks to Yow Tzu <yowtzu@cs.york.ac.uk>
+	eval.masterproblem must now be a proper subclass of ec.eval.MasterProblem
+	Problem.java documentation updated
+	removed vestigial canEaluate() from Problem.java
+	Added getDouble(...) and getFloat(...) to ParameterDatabase.java, thanks to 
+		Krzysztof Krawiec <krzysztof.krawiec@cs.put.poznan.pl>
