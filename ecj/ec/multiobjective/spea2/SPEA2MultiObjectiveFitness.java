@@ -48,16 +48,16 @@ public class SPEA2MultiObjectiveFitness extends MultiObjectiveFitness
     public static final String SPEA2FIT_PREAMBLE = "SPEA2Fitness: ";
 
     /** SPEA2 overall fitness */
-    public double SPEA2Fitness;
+    public double SPEA2Fitness;   // F(i)
 
     /** SPEA2 strength (# of nodes it dominates) */
-    public double SPEA2Strength;
+    public double SPEA2Strength;  // S(i)
 
     /** SPEA2 RAW fitness */
-    public double SPEA2RawFitness;
+    public double SPEA2RawFitness;  // R(i)
 
     /** SPEA2 NN distance */
-    public double SPEA2kthNNDistance;
+    public double SPEA2kthNNDistance;  // D(i)
 
     /** Returns the sum of the squared differences between the vector
         fitness values.

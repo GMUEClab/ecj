@@ -30,20 +30,22 @@ import ec.select.*;
  * @version 1.0 
  */
 
+// This all assumes that the archive is the LAST N INDIVIDUALS in the individuals array
+
 public class SPEA2TournamentSelection extends TournamentSelection
     {
     public int produce(final int subpopulation,
         final EvolutionState state,
         final int thread)
         {
-        Individual[] oldinds = state.population.subpops[subpopulation].individuals;
+    	Individual[] oldinds = state.population.subpops[subpopulation].individuals;
         // the one change from TournamentSelection: we only pick individuals from the archive
-        int i = state.random[thread].nextInt(((SPEA2Subpopulation)state.population.subpops[subpopulation]).archiveSize);
+        int i = oldinds.length - state.random[thread].nextInt(((SPEA2Subpopulation)state.population.subpops[subpopulation]).archiveSize) - 1;
         int bad = i;
         
         for (int x=1;x<size;x++)
             {
-            int j = state.random[thread].nextInt(((SPEA2Subpopulation)state.population.subpops[subpopulation]).archiveSize);
+            int j = oldinds.length - state.random[thread].nextInt(((SPEA2Subpopulation)state.population.subpops[subpopulation]).archiveSize) - 1;
             if (pickWorst)
                 { if (!(oldinds[j].fitness.betterThan(oldinds[i].fitness))) { bad = i; i = j; } else bad = j; }
             else
@@ -71,12 +73,12 @@ public class SPEA2TournamentSelection extends TournamentSelection
             {
             Individual[] oldinds = state.population.subpops[subpopulation].individuals;
             // the one change from TournamentSelection: we only pick individuals from the archive
-            int i = state.random[thread].nextInt(((SPEA2Subpopulation)state.population.subpops[subpopulation]).archiveSize);
+            int i = oldinds.length - state.random[thread].nextInt(((SPEA2Subpopulation)state.population.subpops[subpopulation]).archiveSize) - 1;
             int bad = i;
         
             for (int x=1;x<size;x++)
                 {
-                int j = state.random[thread].nextInt(((SPEA2Subpopulation)state.population.subpops[subpopulation]).archiveSize);
+                int j = oldinds.length - state.random[thread].nextInt(((SPEA2Subpopulation)state.population.subpops[subpopulation]).archiveSize) - 1;
                 if (pickWorst)
                     { if (!(oldinds[j].fitness.betterThan(oldinds[i].fitness)))  { bad = i; i = j; } else bad = j; }
                 else
