@@ -110,7 +110,7 @@ public class SPEA2Evaluator extends SimpleEvaluator
 
                 // Density component
                 // calculate k value
-                kTH = (int)Math.sqrt(inds.length-1);
+                kTH = (int)Math.sqrt(inds.length-1); // TODO WHY is this -1?
                 vol = volSphere(((SPEA2MultiObjectiveFitness)inds[0].fitness).multifitness.length);
 
                 // calc k-th nearest neighbor distance

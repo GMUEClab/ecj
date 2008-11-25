@@ -11,7 +11,6 @@ import ec.BreedingPipeline;
 import ec.Breeder;
 import ec.EvolutionState;
 import ec.Population;
-import ec.util.Parameter;
 import ec.util.*;
 import ec.simple.*;
 
@@ -91,7 +90,25 @@ public class SPEA2Breeder extends SimpleBreeder
                 (SPEA2Subpopulation)state.population.subpops[sub];
 
             // Sort the old guys
-            sort(oldInds);
+            //sort(oldInds);
+			QuickSort.qsort(oldInds, new SortComparator()
+			{
+			    /** Returns true if a < b, else false */
+			    public boolean lt(Object a, Object b)
+			    {
+			    	return ((SPEA2MultiObjectiveFitness)(((Individual)a).fitness)).SPEA2Fitness <
+			    			((SPEA2MultiObjectiveFitness)(((Individual)b).fitness)).SPEA2Fitness;
+	    			
+			    }
+			
+			    /** Returns true if a > b, else false */
+			    public boolean gt(Object a, Object b)
+			    {
+			    	return ((SPEA2MultiObjectiveFitness)(((Individual)a).fitness)).SPEA2Fitness >
+			    			((SPEA2MultiObjectiveFitness)(((Individual)b).fitness)).SPEA2Fitness;
+	    			
+			    }
+			});
 
             // Null out non-candidates and count
             int nIndex = 1;
@@ -211,6 +228,16 @@ public class SPEA2Breeder extends SimpleBreeder
                         }
                     }
                 }
+           
+            // Right now the archive is in the beginning of the array; we move it
+            // to the end of the array here to be consistent with ECJ's assumptions.
+            
+            for(int i=0;i < thisSubpop.archiveSize; i++)
+            {
+            	oldInds[oldInds.length - i - 1] = oldInds[i];
+            	oldInds[i] = null;
+            }
+          
             // NOTE: This is a key place for debugging.  The archive has been built and all the individuals
             //       have *not* yet been mutated/crossed-over.  
 
@@ -219,93 +246,93 @@ public class SPEA2Breeder extends SimpleBreeder
 
 
 
-
-    // NOTE FROM SEAN: 
-    // I have not yet deleted this and replaced it with Arrays.sort or with
-    // java.ec.util.Quicksort.sort because I'm not sure what direction the
-    // fitness sorting is supposed to go.  > or < ?
-
-
-    /** Private quicksort function */
-    private void quickSort(Individual a[], int l, int r)
-        {
-        int M = 4;
-        int i;
-        int j;
-        Individual v;
-
-        if ((r-l)>M)
-            {
-            i = (r+l)/2;
-            if (((SPEA2MultiObjectiveFitness)a[l].fitness).SPEA2Fitness >
-                ((SPEA2MultiObjectiveFitness)a[i].fitness).SPEA2Fitness) 
-                {
-                swap(a,l,i);
-                }
-            if (((SPEA2MultiObjectiveFitness)a[l].fitness).SPEA2Fitness >
-                ((SPEA2MultiObjectiveFitness)a[r].fitness).SPEA2Fitness) 
-                {
-                swap(a,l,r);
-                }
-            if (((SPEA2MultiObjectiveFitness)a[i].fitness).SPEA2Fitness >
-                ((SPEA2MultiObjectiveFitness)a[r].fitness).SPEA2Fitness) 
-                {
-                swap(a,i,r);
-                }
-            j = r-1;
-            swap(a,i,j);
-            i = l;
-            v = a[j];
-            for(;;)
-                {
-                while(((SPEA2MultiObjectiveFitness)a[++i].fitness).SPEA2Fitness <
-                    ((SPEA2MultiObjectiveFitness)v.fitness).SPEA2Fitness);
-                while(((SPEA2MultiObjectiveFitness)a[--j].fitness).SPEA2Fitness >
-                    ((SPEA2MultiObjectiveFitness)v.fitness).SPEA2Fitness);
-                if (j<i) break;
-                swap (a,i,j);
-                }
-            swap(a,i,r-1);
-            quickSort(a,l,j);
-            quickSort(a,i+1,r);
-            }
-        }
-
-    /** Private helper function used by quicksort */
-    private void swap(Individual a[], int i, int j)
-        {
-        Individual T;
-        T = a[i]; 
-        a[i] = a[j];
-        a[j] = T;
-        }
-
-    /** Private helper function used by quicksort */
-    private void InsertionSort(Individual a[], int lo0, int hi0)
-        {
-        int i;
-        int j;
-        Individual v;
-
-        for (i=lo0+1;i<=hi0;i++)
-            {
-            v = a[i];
-            j=i;
-            while ((j>lo0) && ((SPEA2MultiObjectiveFitness)a[j-1].fitness).SPEA2Fitness >
-                ((SPEA2MultiObjectiveFitness)v.fitness).SPEA2Fitness)
-                {
-                a[j] = a[j-1];
-                j--;
-                }
-            a[j] = v;
-            }
-        }
-
-    /** Private helper function which calls quicksort */
-    public void sort(Individual a[])
-        {
-        quickSort(a, 0, a.length - 1);
-        InsertionSort(a,0,a.length-1);
-        }
+//
+//    // NOTE FROM SEAN: 
+//    // I have not yet deleted this and replaced it with Arrays.sort or with
+//    // java.ec.util.Quicksort.sort because I'm not sure what direction the
+//    // fitness sorting is supposed to go.  > or < ?
+//
+//
+//    /** Private quicksort function */
+//    private void quickSort(Individual a[], int l, int r)
+//        {
+//        int M = 4;
+//        int i;
+//        int j;
+//        Individual v;
+//
+//        if ((r-l)>M)
+//            {
+//            i = (r+l)/2;
+//            if (((SPEA2MultiObjectiveFitness)a[l].fitness).SPEA2Fitness >
+//                ((SPEA2MultiObjectiveFitness)a[i].fitness).SPEA2Fitness) 
+//                {
+//                swap(a,l,i);
+//                }
+//            if (((SPEA2MultiObjectiveFitness)a[l].fitness).SPEA2Fitness >
+//                ((SPEA2MultiObjectiveFitness)a[r].fitness).SPEA2Fitness) 
+//                {
+//                swap(a,l,r);
+//                }
+//            if (((SPEA2MultiObjectiveFitness)a[i].fitness).SPEA2Fitness >
+//                ((SPEA2MultiObjectiveFitness)a[r].fitness).SPEA2Fitness) 
+//                {
+//                swap(a,i,r);
+//                }
+//            j = r-1;
+//            swap(a,i,j);
+//            i = l;
+//            v = a[j];
+//            for(;;)
+//                {
+//                while(((SPEA2MultiObjectiveFitness)a[++i].fitness).SPEA2Fitness <
+//                    ((SPEA2MultiObjectiveFitness)v.fitness).SPEA2Fitness);
+//                while(((SPEA2MultiObjectiveFitness)a[--j].fitness).SPEA2Fitness >
+//                    ((SPEA2MultiObjectiveFitness)v.fitness).SPEA2Fitness);
+//                if (j<i) break;
+//                swap (a,i,j);
+//                }
+//            swap(a,i,r-1);
+//            quickSort(a,l,j);
+//            quickSort(a,i+1,r);
+//            }
+//        }
+//
+//    /** Private helper function used by quicksort */
+//    private void swap(Individual a[], int i, int j)
+//        {
+//        Individual T;
+//        T = a[i]; 
+//        a[i] = a[j];
+//        a[j] = T;
+//        }
+//
+//    /** Private helper function used by quicksort */
+//    private void InsertionSort(Individual a[], int lo0, int hi0)
+//        {
+//        int i;
+//        int j;
+//        Individual v;
+//
+//        for (i=lo0+1;i<=hi0;i++)
+//            {
+//            v = a[i];
+//            j=i;
+//            while ((j>lo0) && ((SPEA2MultiObjectiveFitness)a[j-1].fitness).SPEA2Fitness >
+//                ((SPEA2MultiObjectiveFitness)v.fitness).SPEA2Fitness)
+//                {
+//                a[j] = a[j-1];
+//                j--;
+//                }
+//            a[j] = v;
+//            }
+//        }
+//
+//    /** Private helper function which calls quicksort */
+//    public void sort(Individual a[])
+//        {
+//        quickSort(a, 0, a.length - 1);
+//        InsertionSort(a,0,a.length-1);
+//        }
     }
 
