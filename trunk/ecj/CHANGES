@@ -1404,3 +1404,9 @@ Version		Change Log
 	removed vestigial canEaluate() from Problem.java
 	Added getDouble(...) and getFloat(...) to ParameterDatabase.java, thanks to 
 		Krzysztof Krawiec <krzysztof.krawiec@cs.put.poznan.pl>
+	Made IPEInformation static and serializable.  Thanks to Michael Hart
+		<michael.hart.au@gmail.com>
+	PSOBreeder now considers multiple subpopulation.s  Thanks to Michael Hart
+                <michael.hart.au@gmail.com>
+	Removed vestigial GPFuncInfo.java.gz.  Thanks to David Oranchak 
+		<doranchak@cox.net>
