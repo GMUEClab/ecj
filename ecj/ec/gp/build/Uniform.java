@@ -11,6 +11,7 @@ import java.util.*;
 import java.math.*;
 import ec.util.*;
 import ec.*;
+import java.io.*;
 
 /* 
  * Uniform.java
@@ -560,7 +561,7 @@ public class Uniform extends GPNodeBuilder
     }
     
     
-class UniformGPNodeStorage implements RandomChoiceChooserD
+class UniformGPNodeStorage implements RandomChoiceChooserD, Serializable
     {
     public GPNode node;
     public double prob;
