@@ -1,173 +1,240 @@
+GENERAL PARAMETERS
+Arguments used in this run: 
 Maximum number of generations in this run: 3000
 Size of population in this run: 30
 Number of genes per chromosome: 1
 Size of gene head: 8
 Seed(s) used in this job: 4357
 Problem type: functionfinding
+Fitness function: ??UNKNOWN??
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 0
-Best Individual:
 Evaluated: T
 Fitness: 499.85913
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 ceil.tan.C1.tan.d0.C0.tan.acos.d0.d0.d0.C1.C1.C1.d0.C1.C1
 C0: -8.147180372252937
 C1: 5.652730175877368
 
-
+MATH
 ceiling(tan(5.652730175877368))
 
+MATH (SIMPLIFIED)
+ceiling(tan(5.652730175877368))
 
+BEST INDIVIDUAL OF GENERATION
 Generation: 6
-Best Individual:
 Evaluated: T
 Fitness: 519.51276
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 /.d0.*.C0.C1.exp.d0.d0.d0.d0.C1.C1.d0.C1.d0.C0.d0
 C0: -7.941507903558287
 C1: -9.819273777988295
 
-
+MATH
 (d0/((-7.941507903558287)*(-9.819273777988295)))
 
+MATH (SIMPLIFIED)
+d0/(7.941507903558287*9.819273777988295)
 
+BEST INDIVIDUAL OF GENERATION
 Generation: 9
-Best Individual:
 Evaluated: T
 Fitness: 521.73816
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 /.d0.*.C0.C0.exp.d0.d0.d0.d0.C1.C1.d0.C1.d0.C1.d0
 C0: -8.147180372252937
 C1: 5.652730175877368
 
-
+MATH
 (d0/((-8.147180372252937)*(-8.147180372252937)))
 
+MATH (SIMPLIFIED)
+d0/8.147180372252937^2
 
+BEST INDIVIDUAL OF GENERATION
 Generation: 10
-Best Individual:
 Evaluated: T
 Fitness: 524.3708
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 /.d0.*.C1.C1.exp.d0.d0.d0.d0.C1.C1.d0.C1.d0.C0.d0
 C0: -8.147180372252937
 C1: 5.652730175877368
 
-
+MATH
 (d0/(5.652730175877368*5.652730175877368))
 
+MATH (SIMPLIFIED)
+d0/5.652730175877368^2
 
+BEST INDIVIDUAL OF GENERATION
 Generation: 20
-Best Individual:
 Evaluated: T
 Fitness: 526.24817
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 /.d0.*.C1.C0.exp.ln.d0.d0.d0.C1.C1.d0.C0.d0.C1.C1
 C0: 7.234007214569239
 C1: 5.652730175877368
 
-
+MATH
 (d0/(5.652730175877368*7.234007214569239))
 
+MATH (SIMPLIFIED)
+d0/(5.652730175877368*7.234007214569239)
 
+BEST INDIVIDUAL OF GENERATION
 Generation: 22
-Best Individual:
 Evaluated: T
 Fitness: 610.51263
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 /.tan.d0.exp.atan.neg.C1.-.d0.C1.d0.d0.d0.C0.d0.C0.C1
 C0: -8.147180372252937
 C1: 5.652730175877368
 
-
+MATH
 (tan(exp(atan((-5.652730175877368))))/d0)
 
+MATH (SIMPLIFIED)
+tan(1/exp(atan(5.652730175877368)))/d0
 
+BEST INDIVIDUAL OF GENERATION
 Generation: 26
-Best Individual:
 Evaluated: T
 Fitness: 613.47406
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 /.tan.d0.exp.atan.neg.C1.-.C1.C0.d0.d0.d0.C0.d0.C1.C0
 C0: -8.147180372252937
 C1: 3.914727144577066
 
-
+MATH
 (tan(exp(atan((-3.914727144577066))))/d0)
 
+MATH (SIMPLIFIED)
+tan(1/exp(atan(3.914727144577066)))/d0
 
+BEST INDIVIDUAL OF GENERATION
 Generation: 46
-Best Individual:
 Evaluated: T
 Fitness: 622.1432
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan./.tan.d0.exp.atan.neg.C1.C1.d0.C1.d0.d0.C0.C1.C0.d0
 C0: -9.728867032428559
 C1: 3.914727144577066
 
-
+MATH
 atan((tan(exp(atan((-3.914727144577066))))/d0))
 
+MATH (SIMPLIFIED)
+atan(tan(1/exp(atan(3.914727144577066)))/d0)
 
+BEST INDIVIDUAL OF GENERATION
 Generation: 49
-Best Individual:
 Evaluated: T
 Fitness: 983.85895
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan./.tan.d0.C1.neg.atan.exp.C1.d0.C1.d0.d0.C1.d0.d0.d0
 C0: -9.728867032428559
 C1: 3.914727144577066
 
-
+MATH
 atan((tan(3.914727144577066)/d0))
 
+MATH (SIMPLIFIED)
+atan(tan(3.914727144577066)/d0)
 
+BEST INDIVIDUAL OF GENERATION
 Generation: 68
-Best Individual:
 Evaluated: T
 Fitness: 1000.0
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan././.d0.C1.C1.C1.+.C0.C0.d0.C1.d0.d0.C1.d0.C0
 C0: -9.728867032428559
 C1: 3.914727144577066
 
-
+MATH
 atan(((3.914727144577066/3.914727144577066)/d0))
 
+MATH (SIMPLIFIED)
+atan(1/d0)
 
-Best Individual of Run:
+
+BEST INDIVIDUAL OF RUN
 Found at Generation: 68
 Evaluated: T
 Fitness: 1000.0
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan././.d0.C1.C1.C1.+.C0.C0.d0.C1.d0.d0.C1.d0.C0
 C0: -9.728867032428559
 C1: 3.914727144577066
 
-
+MATH
 atan(((3.914727144577066/3.914727144577066)/d0))
 
-Size of program: 6
-Variables used(count): d0(1)
+MATH (SIMPLIFIED)
+atan(1/d0)
 
-***** TRAINING data results *****
+MODEL COMPOSITION
+Size of program: 6
+Variables used(variable count): d0 1
+Functions used(function count): / 2, atan 1
+
+Size of program (MATH simplified): 3
+Variables used(variable count): d0 1
+Functions used(function count): / 1, tan 1
+
+MODEL QUALITY MEASURES (TRAINING)
 Statistics: 
 MSE:  6.5223928682607005E-31    	RAE:  1.4189629717074661E-15    	RSE:  5.2194614261805544E-30
 RMSE: 8.076133275436148E-16    	MAE:  3.738676035425215E-16    	RRSE: 2.284614065040429E-15
+Corr Coeff: 0.9999999999999998
 
-Observed	Computed
+OBSERVED	AND COMPUTED (TRAINING)
+#Observed GEP-Model
 -0.204002518946359	-0.2040025189463591
 -0.339365885046348	-0.3393658850463476
 -0.387522092113786	-0.3875220921137857
@@ -268,3 +335,4 @@ Observed	Computed
 -0.182368282843355	-0.18236828284335482
 0.160813070832659	0.1608130708326594
 0.139880646214395	0.13988064621439456
+#----------

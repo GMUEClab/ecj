@@ -1,273 +1,561 @@
+GENERAL PARAMETERS
+Arguments used in this run: 
 Maximum number of generations in this run: 1000
 Size of population in this run: 100
+Number of Chromosomes per individual: 1
 Number of genes per chromosome: 2
 Size of gene head: 8
 Seed(s) used in this job: 4357
 Problem type: functionfinding
+Fitness function: RRSE
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 0
-Best Individual:
 Evaluated: T
 Fitness: 745.6055
-Linking function: +
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
 -.*./.x1.*.x2.z2.y1.z1.z2.z2.x1.x1.x1.y2.z2.x1
 Gene 1
 -.z1.z1.*././.*.-.z1.x2.x1.z2.x2.x1.y2.x2.x2
 
-((x1*(y1*z1))-(x2/z2)) + (z1-z1)
+MATH
+(((x1*(y1*z1))-(x2/z2))+(z1-z1))
+
+MATH (SIMPLIFIED)
+-(x2-x1*y1*z1*z2)/z2
 
 
-Generation: 3
-Best Individual:
+BEST INDIVIDUAL OF GENERATION
+Generation: 9
 Evaluated: T
-Fitness: 769.4874
-Linking function: +
+Fitness: 759.4298
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
-+.y1././.x1.*././.x1.z2.z2.x1.x2.x1.y2.x2.x2
+z2.y1.*.+.x1./.*.*.z1.y2.y1.z2.x1.z1.z1.x2.z1
 Gene 1
--.*.*.x1.*.x2.z2.y1.z1.z2.z2.x1.z1.x2.x2.z1.x2
+-.*./.x1.*.*./.y1.z1.z2.x1.x1.x1.x1.y2.z2.x1
 
-(y1+((((x1/x2)*x1)/(z2/z2))/x1)) + ((x1*(y1*z1))-(x2*z2))
+MATH
+(z2+((x1*(y1*z1))-((z2*x1)/(x1/x1))))
+
+MATH (SIMPLIFIED)
+x1*y1*z1+z2-x1*z2
 
 
-Generation: 4
-Best Individual:
+BEST INDIVIDUAL OF GENERATION
+Generation: 12
 Evaluated: T
-Fitness: 781.9403
-Linking function: +
+Fitness: 764.74664
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.*.*.x1.*.x2.z2.y1.z1.z2.z2.x1.x1.x1.z1.z2.x1
+-.*./.x1.*.x2.z2.y1.z1.z2.z2.x1.x1.x1.y2.x1.y2
 Gene 1
--.z1.z1.*././.z2.y1.z1.z2.z2.x1.x1.y1.z1.z2.x1
+-.*.-.-.y2.z2.-.-.z2.z2.z2.x2.z2.x1.y2.z1.x2
 
-((x1*(y1*z1))-(x2*z2)) + (z1-z1)
+MATH
+(((x1*(y1*z1))-(x2/z2))+((((x2-z2)-z2)*y2)-(z2-(z2-z2))))
+
+MATH (SIMPLIFIED)
+-(x2-x2*y2*z2-x1*y1*z1*z2+z2^2+2*y2*z2^2)/z2
 
 
-Generation: 22
-Best Individual:
+BEST INDIVIDUAL OF GENERATION
+Generation: 13
 Evaluated: T
-Fitness: 815.16724
-Linking function: +
+Fitness: 767.6545
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.z1.z1.*././.z2.y1.z1.z2.z2.x1.x1.x1.y1.y2.x1
+*./.y1./.x1.z1.y2.y1.z1.z2.x1.x1.x1.x1.y2.z2.x1
 Gene 1
--.*.*.x1.*.x2.+.y1.z1.z2.z2.z2.y2.x1.z1.z2.x1
+-.*./.x1.*.*.z1.y1.z1.y2.x2.x2.x1.y2.y2.y2.z1
 
-(z1-z1) + ((x1*(y1*z1))-(x2*(z2+z2)))
+MATH
+((((z1/y2)/x1)*y1)+((x1*(y1*z1))-((y2*x2)/z1)))
+
+MATH (SIMPLIFIED)
+-(x1*x2*y2^2-y1*z1^2-x1^2*y1*y2*z1^2)/(x1*y2*z1)
 
 
-Generation: 25
-Best Individual:
+BEST INDIVIDUAL OF GENERATION
+Generation: 15
 Evaluated: T
-Fitness: 825.6725
-Linking function: +
+Fitness: 797.44653
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.y2.x1.z1.z2.z1.z1.*.z1.z2.z2.x1.x1.x1.y1.y2.x1
+-.*./.x1.*.*./.y1.z1.z2.x2.z1.x1.y2.y2.z2.z1
 Gene 1
--.*.*.x1.*.x2.+.y1.z1.z2.y2.z2.y2.x1.z1.z2.z1
+-.z1.z1.-./.+./.z2.z1.z1.z2.z1.x1.z1.z1.z2.z1
 
-(y2-x1) + ((x1*(y1*z1))-(x2*(z2+y2)))
+MATH
+(((x1*(y1*z1))-((z2*x2)/(z1/x1)))+(z1-z1))
+
+MATH (SIMPLIFIED)
+(x1*y1*z1^2-x1*x2*z2)/z1
 
 
-Generation: 26
-Best Individual:
+BEST INDIVIDUAL OF GENERATION
+Generation: 16
 Evaluated: T
-Fitness: 830.0797
-Linking function: +
+Fitness: 814.2733
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.z2.z1.x1.y2.z1.z1.*.z1.z2.z2.x1.x1.x1.y1.y2.x1
+*././.-.*.+./.z1.y2.z1.z1.y2.x2.x1.y2.z2.z2
 Gene 1
--.*.*.x1.*.x2.+.y1.z1.z2.y2.z2.y2.x1.z1.z2.z1
+-.*./.x1.*.*./.y1.z1.x1.x2.y2.y2.z2.y2.z2.y2
 
-(z2-z1) + ((x1*(y1*z1))-(x2*(z2+y2)))
+MATH
+((((z1-y2)/(z1*z1))*((y2+x2)/(x1/y2)))+((x1*(y1*z1))-((x1*x2)/(y2/y2))))
+
+MATH (SIMPLIFIED)
+-(x2*y2^2+y2^3-x2*y2*z1-y2^2*z1+x1^2*x2*z1^2-x1^2*y1*z1^3)/(x1*z1^2)
 
 
-Generation: 27
-Best Individual:
+BEST INDIVIDUAL OF GENERATION
+Generation: 32
 Evaluated: T
-Fitness: 830.9543
-Linking function: +
+Fitness: 814.6736
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.*.*.x1.*.x2.+.y1.z1.z2.y2.z2.y2.x1.z1.x1.z1
+*././.-.*.+./.z1.y2.z1.z1.y2.x2.x1.y2.y1.z2
 Gene 1
--.y2.z1.x1.z2.z1.+.*.z1.z2.z2.x1.y1.x1.y1.y2.x1
+-.*./.x1.*.*./.y1.z1.x1.y1.y2.y2.z2.y2.z2.y2
 
-((x1*(y1*z1))-(x2*(z2+y2))) + (y2-z1)
+MATH
+((((z1-y2)/(z1*z1))*((y2+x2)/(x1/y2)))+((x1*(y1*z1))-((x1*y1)/(y2/y2))))
+
+MATH (SIMPLIFIED)
+-(x2*y2^2+y2^3-x2*y2*z1-y2^2*z1+x1^2*y1*z1^2-x1^2*y1*z1^3)/(x1*z1^2)
 
 
-Generation: 28
-Best Individual:
+BEST INDIVIDUAL OF GENERATION
+Generation: 41
 Evaluated: T
-Fitness: 844.74744
-Linking function: +
+Fitness: 819.3302
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.*.*.x1.*.x2.+.y1.z1.z2.y2.z2.y2.x1.z1.y2.x1
+*./.+.-.*././.z1.y2.z1.x1.y2.x2.x1.y2.y1.z1
 Gene 1
--.z1.-.+.-.+./.z1.z1.z2.y1.y2.y1.z2.z1.z2.x2
+-.*./.x1.*.*./.y1.z1.x1.x2.z1.y2.z2.z1.y2.z1
 
-((x1*(y1*z1))-(x2*(z2+y2))) + (z1-(((z2+y1)+(y2/y1))-(z1-z1)))
+MATH
+((((z1-y2)/(z1*x1))*((y2/x2)+(x1/y2)))+((x1*(y1*z1))-((x1*x2)/(z1/y2))))
+
+MATH (SIMPLIFIED)
+-(x1*x2*y2+x1^2*x2^2*y2^2+y2^3-x1*x2*z1-y2^2*z1-x1^2*x2*y1*y2*z1^2)/(x1*x2*y2*z1)
 
 
-Generation: 36
-Best Individual:
+BEST INDIVIDUAL OF GENERATION
+Generation: 42
 Evaluated: T
-Fitness: 852.26337
-Linking function: +
+Fitness: 820.24176
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.*.*.x1.*.x2.+.y1.z1.z2.y2.z2.y2.x1.z1.y2.x1
+*./.+.-.*.+./.z1.y2.z1.z1.y2.x2.x1.y2.y1.z2
 Gene 1
--.x2.*.z2.y1.-.x2.z1.z1.y1.z2.y1.x1.x2.x2.z1.y2
+-.*./.x1.*.*./.y1.z1.x1.x2.z1.y2.z2.z1.y2.z1
 
-((x1*(y1*z1))-(x2*(z2+y2))) + (x2-(z2*y1))
+MATH
+((((z1-y2)/(z1*z1))*((y2+x2)+(x1/y2)))+((x1*(y1*z1))-((x1*x2)/(z1/y2))))
+
+MATH (SIMPLIFIED)
+-(x1*y2+x2*y2^2+y2^3-x1*z1-x2*y2*z1-y2^2*z1+x1*x2*y2^2*z1-x1*y1*y2*z1^3)/(y2*z1^2)
 
 
+BEST INDIVIDUAL OF GENERATION
+Generation: 47
+Evaluated: T
+Fitness: 833.4604
+Linking function: Add
+
+GEP-MODEL
+KARVA
+Gene 0
++.-./.-./.x1.*.-.y2.z1.y1.y2.z1.y1.z2.y1.z2
+Gene 1
+-.*./.x1.*.*./.y1.z1.x1.x2.z1.y2.z2.z1.y2.z1
+
+MATH
+(((((y1-z2)-y2)-(z1/y1))+(x1/(y2*z1)))+((x1*(y1*z1))-((x1*x2)/(z1/y2))))
+
+MATH (SIMPLIFIED)
+(x1*y1-x1*x2*y1*y2^2+y1^2*y2*z1-y1*y2^2*z1-y2*z1^2+x1*y1^2*y2*z1^2-y1*y2*z1*z2)/(y1*y2*z1)
+
+
+BEST INDIVIDUAL OF GENERATION
+Generation: 51
+Evaluated: T
+Fitness: 837.4688
+Linking function: Add
+
+GEP-MODEL
+KARVA
+Gene 0
+-.*./.x1.*.*./.y1.z1.z2.x2.z1.y2.y2.z1.x2.z1
+Gene 1
+-.x2.y2.z2.z2.*.y2.y1.y2.z1.z2.y2.x2.x1.y1.z2.z2
+
+MATH
+(((x1*(y1*z1))-((z2*x2)/(z1/y2)))+(x2-y2))
+
+MATH (SIMPLIFIED)
+(x2*z1-y2*z1+x1*y1*z1^2-x2*y2*z2)/z1
+
+
+BEST INDIVIDUAL OF GENERATION
 Generation: 56
-Best Individual:
 Evaluated: T
-Fitness: 880.0432
-Linking function: +
+Fitness: 852.1122
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.*.*.x1.*.x2.+.y1.z1.z2.y2.z2.y2.x2.z1.x1.x1
+-.*./.x1.*.*./.y1.z1.z2.z2.z1.y2.y2.z1.x2.z1
 Gene 1
--.x2.*.z2.y2.z2.y1.z1.y1.y1.z2.x1.x1.y2.z1.x1.y2
++.x2.-.-.+./.*.x2.y2.z1.y2.y1.z2.z2.x1.z2.y2
 
-((x1*(y1*z1))-(x2*(z2+y2))) + (x2-(z2*y2))
+MATH
+(((x1*(y1*z1))-((z2*z2)/(z1/y2)))+(x2+(((z1/y2)-(y1*z2))-(x2+y2))))
+
+MATH (SIMPLIFIED)
+-(y2^2*z1-z1^2-x1*y1*y2*z1^2+y1*y2*z1*z2+y2^2*z2^2)/(y2*z1)
 
 
-Generation: 89
-Best Individual:
+BEST INDIVIDUAL OF GENERATION
+Generation: 59
 Evaluated: T
-Fitness: 885.02545
-Linking function: +
+Fitness: 875.6528
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.*.*.x1.*.x2.+.y1.z1.z2.y2.z2.y1.z2.x1.y2.y1
+-.x2.*.*.z2.y2./.+.z1.z1.z2.y2.x2.z2.y1.z2.z2
 Gene 1
--.y1.*.z2.y2.y2./.z2.y1.x2.z1.x2.x1.x2.z2.y2.z1
+-.*.-.x1.*.*./.y1.z1.z2.x2.x1.y1.y2.z1.x2.z1
 
-((x1*(y1*z1))-(x2*(z2+y2))) + (y1-(z2*y2))
+MATH
+((x2-((y2*((z1+z2)/z1))*z2))+((x1*(y1*z1))-((z2*x2)-(x1/y1))))
+
+MATH (SIMPLIFIED)
+(x1*z1+x2*y1*z1+x1*y1^2*z1^2-x2*y1*z1*z2-y1*y2*z1*z2-y1*y2*z2^2)/(y1*z1)
 
 
-Generation: 105
-Best Individual:
+BEST INDIVIDUAL OF GENERATION
+Generation: 67
 Evaluated: T
-Fitness: 981.2034
-Linking function: +
+Fitness: 894.79663
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.*.*.x1.*.x2./.y1.z1.z2.x2.z2.z2.x2.z1.z1.x1
+-.x2.*.*.z2.y2./.+.z1.z1.z2.y2.x2.x2.y1.z2.z2
 Gene 1
--.x1.*.z2.*.y2.*./.z1.x2.z1.x2.x1.x2.z2.y2.x2
+-.*.-.x1.*.*./.y1.z1.x2.x2.x1.y1.y2.z1.x2.z1
 
-((x1*(y1*z1))-(x2*(z2/x2))) + (x1-(z2*(y2*((x2/z1)*z1))))
+MATH
+((x2-((y2*((z1+z2)/z1))*z2))+((x1*(y1*z1))-((x2*x2)-(x1/y1))))
+
+MATH (SIMPLIFIED)
+(x1*z1+x2*y1*z1-x2^2*y1*z1+x1*y1^2*z1^2-y1*y2*z1*z2-y1*y2*z2^2)/(y1*z1)
 
 
-Generation: 122
-Best Individual:
+BEST INDIVIDUAL OF GENERATION
+Generation: 69
 Evaluated: T
-Fitness: 981.3129
-Linking function: +
+Fitness: 925.8997
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.x1.*.z2.*.y2.*./.z1.x2.z1.x2.x1.x2.z2.y2.x2
+-.*.*./.-.*.z2.*.z1.z1.z2.y2.x2.z2.y1.z1.x2
 Gene 1
--.*.*.x1.*.x2./.y1.z1.z2.y1.x2.y1.x2.y2.y2.z2
+-.*./.x1.*.+.z2.y1.z1.z2.x2.z1.x2.y2.x2.x1.y2
 
-(x1-(z2*(y2*((x2/z1)*z1)))) + ((x1*(y1*z1))-(x2*(z2/y1)))
+MATH
+(((((z2*y1)/z1)*(z1-z2))-((y2*x2)*z2))+((x1*(y1*z1))-((z2+x2)/z2)))
+
+MATH (SIMPLIFIED)
+-(x2*z1+z1*z2-x1*y1*z1^2*z2-y1*z1*z2^2+x2*y2*z1*z2^2+y1*z2^3)/(z1*z2)
 
 
-Generation: 149
-Best Individual:
+BEST INDIVIDUAL OF GENERATION
+Generation: 72
 Evaluated: T
-Fitness: 987.0874
-Linking function: +
+Fitness: 956.8216
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.*.-.x1.*.x2./.y1.z1.z2.y1.x2.x1.x2.y2.y2.z2
+-.*.*./.-.*.z2.x2.z1.z1.z2.y2.x2.z2.y1.z1.x2
 Gene 1
--.x1.*.z2.*.y2.*./.z1.x2.z1.y1.y1.z2.x2.y2.z1
+-.*./.x1.*.+.z2.y1.z1.z2.x2.z1.x2.z2.y1.z2.x2
 
-((x1*(y1*z1))-(x2-(z2/y1))) + (x1-(z2*(y2*((x2/z1)*z1))))
+MATH
+((((x2/z1)*(z1-z2))-((y2*x2)*z2))+((x1*(y1*z1))-((z2+x2)/z2)))
+
+MATH (SIMPLIFIED)
+-(x2*z1+z1*z2-x2*z1*z2-x1*y1*z1^2*z2+x2*z2^2+x2*y2*z1*z2^2)/(z1*z2)
 
 
-Generation: 216
-Best Individual:
+BEST INDIVIDUAL OF GENERATION
+Generation: 77
 Evaluated: T
-Fitness: 988.2611
-Linking function: +
+Fitness: 958.91705
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.x1.*.*.z2.*.y2./.z1.x2.z1.y1.y1.z2.x1.y2.z1
+-.*.*./.-.*.z2.x2.z1.z1.z2.y2.x2.z2.y1.z1.y2
 Gene 1
--.*.-.x1.*.x2./.y1.z1.z2.z1.y1.z1.y1.x2.z2.y1
+-.*./.x1.*.+.z2.y1.z1.z2.x1.x1.y1.x1.z1.x1.x2
 
-(x1-((((x2/z1)*z1)*y2)*z2)) + ((x1*(y1*z1))-(x2-(z2/z1)))
+MATH
+((((x2/z1)*(z1-z2))-((y2*x2)*z2))+((x1*(y1*z1))-((z2+x1)/z2)))
+
+MATH (SIMPLIFIED)
+-(x1*z1+z1*z2-x2*z1*z2-x1*y1*z1^2*z2+x2*z2^2+x2*y2*z1*z2^2)/(z1*z2)
 
 
-Generation: 228
-Best Individual:
+BEST INDIVIDUAL OF GENERATION
+Generation: 78
 Evaluated: T
-Fitness: 989.1885
-Linking function: +
+Fitness: 970.3317
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.*.-.x1.*.x2./.y1.z1.x2.z1.y1.z1.y1.x2.z2.z2
+-.*.*./.-.*.z2.x2.z1.y2.z2.y2.x2.z2.y1.z1.y2
 Gene 1
--.x1.*.*.z2.*.y2./.z1.x2.z1.y1.y1.z2.x1.y2.z1
+-.*./.x1.*.+.z2.y1.z1.z2.x1.x1.y1.x1.z1.x1.x2
 
-((x1*(y1*z1))-(x2-(x2/z1))) + (x1-((((x2/z1)*z1)*y2)*z2))
+MATH
+((((x2/z1)*(y2-z2))-((y2*x2)*z2))+((x1*(y1*z1))-((z2+x1)/z2)))
+
+MATH (SIMPLIFIED)
+-(x1*z1-x2*y2*z2+z1*z2-x1*y1*z1^2*z2+x2*z2^2+x2*y2*z1*z2^2)/(z1*z2)
 
 
-Generation: 255
-Best Individual:
+BEST INDIVIDUAL OF GENERATION
+Generation: 87
 Evaluated: T
-Fitness: 989.7277
-Linking function: +
+Fitness: 971.2281
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.*.-.x1.*.x2./.y1.z1.x2.x1.y2.z1.y1.z1.z2.y1
+-.*.*./.-.*.z2.y1.z1.y2.z2.y2.x2.z2.y1.z1.y2
 Gene 1
--.x1.*.*.z2.*.y2./.z1.x2.z1.x2.y1.z2.x1.x2.z1
+-.*./.x1.*.+.x2.y1.z1.z2.x1.x1.y1.x1.z1.y2.x2
 
-((x1*(y1*z1))-(x2-(x2/x1))) + (x1-((((x2/z1)*z1)*y2)*z2))
+MATH
+((((y1/z1)*(y2-z2))-((y2*x2)*z2))+((x1*(y1*z1))-((z2+x1)/x2)))
+
+MATH (SIMPLIFIED)
+(x2*y1*y2-x1*z1+x1*x2*y1*z1^2-x2*y1*z2-z1*z2-x2^2*y2*z1*z2)/(x2*z1)
 
 
-Generation: 302
-Best Individual:
+BEST INDIVIDUAL OF GENERATION
+Generation: 88
+Evaluated: T
+Fitness: 989.3828
+Linking function: Add
+
+GEP-MODEL
+KARVA
+Gene 0
+-.*.*./.-.*.z2.x2.z1.z2.z2.y2.x2.z2.y1.z1.y2
+Gene 1
+-.*./.x1.*.+.+.z1.y1.y2.z2.x1.x1.y2.z1.z2.x2
+
+MATH
+((((x2/z1)*(z2-z2))-((y2*x2)*z2))+((x1*(z1*y1))-((y2+z2)/(x1+x1))))
+
+MATH (SIMPLIFIED)
+-(y2-2*x1^2*y1*z1+z2+2*x1*x2*y2*z2)/(2*x1)
+
+
+BEST INDIVIDUAL OF GENERATION
+Generation: 90
+Evaluated: T
+Fitness: 991.0811
+Linking function: Add
+
+GEP-MODEL
+KARVA
+Gene 0
+-.*.*./.-.*.z2.x2.z1.z2.z2.y2.x2.x1.y1.z1.y2
+Gene 1
+-.*./.x1.*.+.+.z1.y1.y2.x1.x1.x1.y1.y2.x1.x2
+
+MATH
+((((x2/z1)*(z2-z2))-((y2*x2)*z2))+((x1*(z1*y1))-((y2+x1)/(x1+x1))))
+
+MATH (SIMPLIFIED)
+-(x1+y2-2*x1^2*y1*z1+2*x1*x2*y2*z2)/(2*x1)
+
+
+BEST INDIVIDUAL OF GENERATION
+Generation: 101
+Evaluated: T
+Fitness: 993.94006
+Linking function: Add
+
+GEP-MODEL
+KARVA
+Gene 0
+-.*.*./.-.*.z2.x2.z1.z2.z2.y2.x2.x1.y1.z1.y2
+Gene 1
+-.*./.x1.*.+.+.z1.y1.y1.x1.x1.x1.y1.x1.y1.x1
+
+MATH
+((((x2/z1)*(z2-z2))-((y2*x2)*z2))+((x1*(z1*y1))-((y1+x1)/(x1+x1))))
+
+MATH (SIMPLIFIED)
+-(x1+y1-2*x1^2*y1*z1+2*x1*x2*y2*z2)/(2*x1)
+
+
+BEST INDIVIDUAL OF GENERATION
+Generation: 108
+Evaluated: T
+Fitness: 995.1961
+Linking function: Add
+
+GEP-MODEL
+KARVA
+Gene 0
+-.*.*./.-.*.z2.x2.z1.z2.z2.y2.x2.x1.y1.z1.y2
+Gene 1
+-.*./.x1.*.+.+.z1.y1.y1.x1.x1.z1.y1.x1.z2.x2
+
+MATH
+((((x2/z1)*(z2-z2))-((y2*x2)*z2))+((x1*(z1*y1))-((y1+x1)/(x1+z1))))
+
+MATH (SIMPLIFIED)
+-(x1+y1-x1^2*y1*z1-x1*y1*z1^2+x1*x2*y2*z2+x2*y2*z1*z2)/(x1+z1)
+
+
+BEST INDIVIDUAL OF GENERATION
+Generation: 181
+Evaluated: T
+Fitness: 998.53546
+Linking function: Add
+
+GEP-MODEL
+KARVA
+Gene 0
+-.*.*./.-.*.z2.x1.x1.z2.z2.y2.x2.y1.x1.y1.x2
+Gene 1
+-.*./.x1.*.-.+.z1.y1.y1.x1.x1.z1.x1.x1.x1.x2
+
+MATH
+((((x1/x1)*(z2-z2))-((y2*x2)*z2))+((x1*(z1*y1))-((y1-x1)/(x1+z1))))
+
+MATH (SIMPLIFIED)
+(x1-y1+x1^2*y1*z1+x1*y1*z1^2-x1*x2*y2*z2-x2*y2*z1*z2)/(x1+z1)
+
+
+BEST INDIVIDUAL OF GENERATION
+Generation: 189
 Evaluated: T
 Fitness: 1000.0
-Linking function: +
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.*.+.*.x1.x1.-.z1.y1.x2.x2.z2.y1.y2.y2.z1.z1
+-.*.*./.-.*.z2.+.x1.z2.z2.y2.x2.z1.x1.x1.z1
 Gene 1
--.x1.*.*.z2.x2.y2.x2.x1.x2.z1.z2.x1.y1.x1.y1.x1
++.*./.x1.*.-.y1.z1.y1.z2.z2.y2.x2.y1.x1.y1.x2
 
-(((z1*y1)*x1)-(x1+(x2-x2))) + (x1-((x2*y2)*z2))
+MATH
+(((((z1+x1)/x1)*(z2-z2))-((y2*x2)*z2))+((x1*(z1*y1))+((z2-z2)/y1)))
+
+MATH (SIMPLIFIED)
+x1*y1*z1-x2*y2*z2
 
 
-Best Individual of Run:
-Found at Generation: 302
+
+BEST INDIVIDUAL 1
+Found at Generation: 189
+Raw Fitness: 0.0
 Evaluated: T
 Fitness: 1000.0
-Linking function: +
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.*.+.*.x1.x1.-.z1.y1.x2.x2.z2.y1.y2.y2.z1.z1
+-.*.*./.-.*.z2.+.x1.z2.z2.y2.x2.z1.x1.x1.z1
 Gene 1
--.x1.*.*.z2.x2.y2.x2.x1.x2.z1.z2.x1.y1.x1.y1.x1
++.*./.x1.*.-.y1.z1.y1.z2.z2.y2.x2.y1.x1.y1.x2
 
-(((z1*y1)*x1)-(x1+(x2-x2))) + (x1-((x2*y2)*z2))
+MATH
+(((((z1+x1)/x1)*(z2-z2))-((y2*x2)*z2))+((x1*(z1*y1))+((z2-z2)/y1)))
 
-Size of program: 18
-Variables used(count): x1(3), y1(1), z1(1), x2(3), y2(1), z2(1)
+MATH (SIMPLIFIED)
+x1*y1*z1-x2*y2*z2
 
-***** TRAINING data results *****
+
+MODEL COMPOSITION
+Size of program: 26
+Variables used(variable count) 6: x1 3, y1 2, z1 2, x2 1, y2 1, z2 5
+Functions used(function count) 4: - 3, / 2, + 2, * 5
+
+Size of program (MATH simplified): 11
+Variables used(variable count) 6: x2 1, z1 1, x1 1, y2 1, y1 1, z2 1
+Functions used(function count) 2: - 1, * 4
+
+MODEL QUALITY MEASURES (TRAINING)
 Statistics: 
 MSE:  0.0    	RAE:  0.0    	RSE:  0.0
 RMSE: 0.0    	MAE:  0.0    	RRSE: 0.0
+Corr Coeff: 1.0
 
 
-***** TEST data results *****
+MODEL QUALITY MEASURES (TEST)
 Number of Calculation Errors: 0 out of 5 test sets
 Statistics: 
 MSE:  0.0    	RAE:  0.0    	RSE:  0.0
 RMSE: 0.0    	MAE:  0.0    	RRSE: 0.0
+Corr Coeff: 1.0
 
-Observed	Computed
+OBSERVED	AND COMPUTED (TRAINING)
+#Observed GEP-Model
 54.0	54.0
 600.0	600.0
 312.0	312.0
@@ -279,8 +567,11 @@ Observed	Computed
 -24.0	-24.0
 45.0	45.0
 
+OBSERVED	AND COMPUTED (TEST)
+#Observed GEP-Model
 -58.0	-58.0
 58.0	58.0
 1870.0	1870.0
 44.0	44.0
 -2784.0	-2784.0
+#----------

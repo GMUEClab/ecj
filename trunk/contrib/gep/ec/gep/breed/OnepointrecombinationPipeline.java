@@ -115,15 +115,26 @@ public class OnepointrecombinationPipeline extends GEPBreedingPipeline
 try {
 	    for(int q=0; q<chosenOnes.length-1; q += 2)
         {
+	    	GEPChromosome chromosome1, chromosome2;
+	    	GEPIndividual ind1, ind2;
         	int selInd1 = chosenOnes[q];
         	int selInd2 = chosenOnes[q+1];
-            onepointRecombine(state, thread, s, srt,
-            		    (GEPIndividual)inds[selInd1],
-						(GEPIndividual)inds[selInd2]);
-            ((GEPIndividual)inds[selInd1]).evaluated = false;
-            ((GEPIndividual)inds[selInd1]).parsedGeneExpressions = null;
-            ((GEPIndividual)inds[selInd2]).evaluated = false;
-            ((GEPIndividual)inds[selInd2]).parsedGeneExpressions = null;
+	    	ind1 = (GEPIndividual)inds[selInd1];
+	    	ind2 = (GEPIndividual)inds[selInd2];
+	    	int numChromosomes = ind1.chromosomes.length;
+	    	// must do the recombine for each chromosome in the individual
+	    	for (int i=0; i<numChromosomes; i++)
+	    	{
+	    		chromosome1 = ind1.chromosomes[i];
+	    		chromosome2 = ind2.chromosomes[i];
+                onepointRecombine(state, thread, s, srt, chromosome1, chromosome2);
+		        chromosome1.parsedGeneExpressions = null;
+		        chromosome2.parsedGeneExpressions = null;
+	    	}
+	        ind1.evaluated = false;
+	        ind1.chromosomesParsed = false;
+	        ind2.evaluated = false;
+	        ind2.chromosomesParsed = false;
         }
 } catch (Exception e) { e.printStackTrace(); }
 
@@ -143,11 +154,11 @@ try {
      */
     
     public void onepointRecombine( EvolutionState state, int thread, GEPSpecies s,
-    		                       MersenneTwisterFast srt, GEPIndividual ind1, 
-    		                       GEPIndividual ind2)
+    		                       MersenneTwisterFast srt, GEPChromosome chromosome1, 
+    		                       GEPChromosome chromosome2)
     {  
-       int genome1[][] = ind1.genome;
-       int genome2[][] = ind2.genome;
+       int genome1[][] = chromosome1.genome;
+       int genome2[][] = chromosome2.genome;
 try {
        int crossoverPoint = srt.nextInt((s.geneSize*s.numberOfGenes)-1); // - 1 since we no bond at end of chromosome
        int pointsTomove = crossoverPoint+1; // num pts from beginning to the position of bond selected

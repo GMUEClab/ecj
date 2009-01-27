@@ -20,10 +20,6 @@
 
 package ec.gep;
 
-import ec.*;
-import ec.gep.*;
-import ec.util.Parameter;
-
 /* 
  * GEPConstantTerminalSymbol.java
  * 

@@ -29,17 +29,17 @@ xmlns="http://www.w3.org/TR/REC-html40">
  <o:DocumentProperties>
   <o:Author>Bob Orchard</o:Author>
   <o:LastAuthor> </o:LastAuthor>
-  <o:Revision>18</o:Revision>
-  <o:TotalTime>184</o:TotalTime>
-  <o:Created>2007-02-01T20:37:00Z</o:Created>
-  <o:LastSaved>2008-05-09T19:29:00Z</o:LastSaved>
+  <o:Revision>21</o:Revision>
+  <o:TotalTime>313</o:TotalTime>
+  <o:Created>2008-08-05T13:17:00Z</o:Created>
+  <o:LastSaved>2008-12-09T20:26:00Z</o:LastSaved>
   <o:Pages>1</o:Pages>
-  <o:Words>13268</o:Words>
-  <o:Characters>75628</o:Characters>
+  <o:Words>13648</o:Words>
+  <o:Characters>77797</o:Characters>
   <o:Company>National Research Council</o:Company>
-  <o:Lines>630</o:Lines>
-  <o:Paragraphs>177</o:Paragraphs>
-  <o:CharactersWithSpaces>88719</o:CharactersWithSpaces>
+  <o:Lines>648</o:Lines>
+  <o:Paragraphs>182</o:Paragraphs>
+  <o:CharactersWithSpaces>91263</o:CharactersWithSpaces>
   <o:Version>11.9999</o:Version>
  </o:DocumentProperties>
 </xml><![endif]--><!--[if gte mso 9]><xml>
@@ -68,9 +68,8 @@ st1\:*{behavior:url(#ieooui) }
 	panose-1:2 11 6 4 2 2 2 2 2 4;
 	mso-font-charset:0;
 	mso-generic-font-family:swiss;
-	mso-font-format:other;
 	mso-font-pitch:variable;
-	mso-font-signature:3 0 0 0 1 0;}
+	mso-font-signature:536902279 -2147483648 8 0 511 0;}
  /* Style Definitions */
  p.MsoNormal, li.MsoNormal, div.MsoNormal
 	{mso-style-parent:"";
@@ -169,7 +168,7 @@ div.Section1
 	mso-bidi-language:#0400;}
 </style>
 <![endif]--><!--[if gte mso 9]><xml>
- <o:shapedefaults v:ext="edit" spidmax="3074">
+ <o:shapedefaults v:ext="edit" spidmax="9218">
   <o:colormenu v:ext="edit" fillcolor="none"/>
  </o:shapedefaults></xml><![endif]--><!--[if gte mso 9]><xml>
  <o:shapelayout v:ext="edit">
@@ -187,8 +186,8 @@ div.Section1
  style='width:100.0%;mso-cellspacing:1.5pt;mso-padding-alt:0in 0in 0in 0in'>
  <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes;mso-yfti-lastrow:yes'>
   <td width="100%" style='width:100.0%;background:darkblue;padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><b><span style='font-size:18.0pt;color:white'>ECJ</span></b>
-  </p>
+  <p class=MsoNormal style='tab-stops:189.0pt'><b><span style='font-size:18.0pt;
+  color:white'>ECJ</span></b> </p>
   </td>
  </tr>
 </table>
@@ -201,7 +200,7 @@ Programming System</b></p>
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
 <p style='margin:0in;margin-bottom:.0001pt'>Bob Orchard
-(bob.orchard@nrc.iit.gc.ca)</p>
+(bob.orchard@nrc-cnrc.gc.ca)</p>
 
 <p class=MsoNormal>National Research Council of <st1:country-region w:st="on"><st1:place
  w:st="on">Canada</st1:place></st1:country-region></p>
@@ -412,22 +411,21 @@ style='font-size:10.0pt'>,&nbsp;&nbsp;&nbsp;&nbsp; y,&nbsp;&nbsp;&nbsp; z<o:p></
 <p class=MsoNormal>You might quickly see that this is ‘perfect’ sample data for
 the function z = x*x + y.&nbsp;Data files that are currently supported are the
 so called CSV, comma separated value, text files. NOTE: gzip<st1:PersonName
-w:st="on">'</st1:PersonName>d files can also be used directly.So if a file ends
-in .gz or .gzip we will handle the de-compression of the file. For example in
-this case we could have compressed test1.txt to create test1.txt.gz and
+w:st="on">'</st1:PersonName>d files can also be used directly. So if a file
+ends in .gz or .gzip we will handle the de-compression of the file. For example
+in this case we could have compressed test1.txt to create test1.txt.gz and
 identified the gzip<st1:PersonName w:st="on">'</st1:PersonName>d file rather
 than the .txt file in the parameter file (see below)<span class=GramE>.</span></p>
 
-<p class=MsoNormal style='margin-bottom:12.0pt'>Generally one will use <span
-class=GramE>either a</span> comma, a space or a tab to be the field separator.
-The example above uses a comma. The first row of the file must identify the
-independent and dependent variable names with the last column being the
-dependent variable. You’ll see later that for time series problems there is
-another file format that is used with ‘raw’ time series data, but for most
-problems the training data, when in a file, has this format. So here we have 3
-columns that identify the 2 independent variables <i>x</i> and <i>y</i> plus
-the dependent variable <i>z</i>. There are 4 rows of numeric data that we will
-use as <st1:PersonName w:st="on">'</st1:PersonName>training<st1:PersonName
+<p class=MsoNormal style='margin-bottom:12.0pt'>Generally one will use either a
+comma, a space or a tab to be the field separator. The example above uses a
+comma. The first row of the file must identify the independent and dependent
+variable names with the last column being the dependent variable. You’ll see
+later that for time series problems there is another file format that is used
+with ‘raw’ time series data, but for most problems the training data, when in a
+file, has this format. So here we have 3 columns that identify the 2
+independent variables <i>x</i> and <i>y</i> plus the dependent variable <i>z</i>.
+There are 4 rows of numeric data that we will use as <st1:PersonName w:st="on">'</st1:PersonName>training<st1:PersonName
 w:st="on">'</st1:PersonName> data during the evolutionary process.&nbsp;</p>
 
 <p class=MsoNormal>The parameter file that tells the gep system how to behave
@@ -528,9 +526,9 @@ detail below.&nbsp;</p>
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
 <p class=MsoNormal><span lang=EN style='mso-ansi-language:EN'>The next 2
-parameters identify the maximum number of generations (in this case 100) that we
-should run when trying to find a solution to the problem and whether we should
-quit when we find a <st1:PersonName w:st="on">'</st1:PersonName>suitable<st1:PersonName
+parameters identify the maximum number of generations (in this case 100) that
+we should run when trying to find a solution to the problem and whether we
+should quit when we find a <st1:PersonName w:st="on">'</st1:PersonName>suitable<st1:PersonName
 w:st="on">'</st1:PersonName> solution. In this case we say that we should quit
 when the solution is found, rather than continuing until 100 generations have
 been run. The parameter pop.subpop.0.size tells how many instances of possible
@@ -552,7 +550,13 @@ will refer to these concepts without great explanations). Each gene is
 identified by its <st1:PersonName w:st="on">'</st1:PersonName>head<st1:PersonName
 w:st="on">'</st1:PersonName> size and if there are multiple genes one needs to
 specify the operator that will link the gene expressions together. Here we use
-chromosomes with 2 genes, each with a head size of 5 and linked by addition. </span></p>
+chromosomes with 2 genes, each with a head size of 5 and linked by addition.
+(NOTE: unlike Ferreira’s implementation, any operator can be used as the
+linking function and not just +, -, * and / or ‘or’, ‘and’, ‘xor’, ‘nor’, and
+‘nand’ for logical problems. Most commonly the linking operator is addition. If
+operators other than these standard ones are used then the type of operator
+(logical or non-logical) must be correct and the arity must agree with the
+number of genes in a chromosome).</span></p>
 
 <p class=MsoNormal>There are 4 types of problems that can be handled by the gep
 approach (at this time). In this case we are doing a function finding problem.
@@ -568,11 +572,10 @@ directory. It is quite simple to add more functions as needed. Just follow the
 example of a similar type of function and create a new class. The terminal or
 independent variable symbols can also be defined in the parameter file but for
 this example we have a training data file that contains the terminal symbols in
-the 1st row of the file. So we specify that
-gep.species.symbolset.terminalfilename is&nbsp;<code><b><span style='font-size:
-10.0pt'>ec/app/gep/test1/test1.txt</span></b></code>. As shown above this will
-identify the 2 terminal symbols x and y (as well as the dependent variable
-symbol z).&nbsp;</p>
+the 1st row of the file. So we specify that gep.species.symbolset.terminalfilename
+is&nbsp;<code><b><span style='font-size:10.0pt'>ec/app/gep/test1/test1.txt</span></b></code>.
+As shown above this will identify the 2 terminal symbols x and y (as well as
+the dependent variable symbol z).&nbsp;</p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
@@ -610,10 +613,10 @@ threadnum) </code><br>
 <code>&nbsp;&nbsp;&nbsp; if (!ind.evaluated)&nbsp; // don<st1:PersonName w:st="on">'</st1:PersonName>t
 bother reevaluating</code><br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;{</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Mean Squared Error (MSE) fitness is normalized
-between 0 and 1000 (1000 * (1/(1+MSE))</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Mean Squared Error (MSE) fitness is
+normalized between 0 and 1000 (1000 * (1/(1+MSE))</code><br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double fitness =
-GEPFitnessFunction.MSEfitness((GEPIndividual)ind);</code><br>
+GEPFitnessFunction.MSEfitness(true, (GEPIndividual)ind);</code><br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </code><br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // the fitness better be SimpleFitness!</code><br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SimpleFitness f = ((SimpleFitness<span
@@ -645,6 +648,18 @@ ec.gep.GEPFitnessFunction class) and you can easily create your own.&nbsp;</p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
+<p class=MsoNormal>Note: the 1<sup>st</sup> argument to a fitness function
+evaluation is a <span class=GramE>boolean</span> that specifies whether
+training data (true) or testing data (false) should be used when calculating
+the fitness of the function. The training data will always be used when
+measuring the fitness of functions (models) created during the evolutionary
+process. The fitness of the model with testing data will normally be used to
+validate that ‘good’ models selected from the training (evolutionary) exercise
+are still good when subjected to other data.<span style='mso-spacerun:yes'> 
+</span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
 <p class=MsoNormal style='margin-bottom:12.0pt'>So now we have all of the
 required pieces to define our problem and to execute it we can use the command
 line or the ECJ console. To run from a command line execute something like<span
@@ -657,7 +672,7 @@ class=GramE>:</span><br>
 notice that there is a jar file called javacsv.jar that must be included in the
 classpath. This is used to read the CSV files and can be found at
 http://sourceforge.net/projects/javacsv/. Assuming all goes well you will see
-the following output on the console.</p>
+the following output (or very similar output) on the console.</p>
 
 <p class=MsoNormal><code><span style='font-size:10.0pt'>| ECJ</span></code><span
 style='font-size:10.0pt;font-family:"Courier New"'><br>
@@ -710,15 +725,15 @@ style='font-size:10.0pt;font-family:"Courier New"'><br>
 <br>
 <code>Found Ideal Individual</code></span><br>
 <br>
-<span class=GramE>The</span> warnings about weight for the functions can be
-ignored. There is an option to identify weights for the functions so that the
-ones with higher weights are selected more often when building and evolving
-genes. The default of 1 was used by not specifying the weights. In the code we
-chose to display&nbsp;the best individual when it was found and thus the output
-showing the details for the chromosome with an ideal fitness of 1000. It
-identifies the linking function used (+), the contents of the 2 genes (in Karva
-format ... see the gep documentation in papers by Ferreira, etc.) and the
-expression of the chromosome in a mathematical formula:<br>
+<span class=GramE>The</span> warnings about weight for the functions can be ignored.
+There is an option to identify weights for the functions so that the ones with
+higher weights are selected more often when building and evolving genes. The
+default of 1 was used by not specifying the weights. In the code we chose to
+display&nbsp;the best individual when it was found and thus the output showing
+the details for the chromosome with an ideal fitness of 1000. It identifies the
+linking function used (+), the contents of the 2 genes (in Karva format ... see
+the gep documentation in papers by Ferreira, etc.) and the expression of the
+chromosome in a mathematical formula:<br>
 <br>
 &nbsp;&nbsp;&nbsp; (x*x) + y<br>
 <br>
@@ -792,11 +807,48 @@ value of 1000 that we get with the best solution of generation 1. The
 statistics also provide some other information. The size of the best solution
 found during the run was 4. This means that there were 4 symbols used in the
 expression (excluding the linking function). So we had 2 x terminal symbols, 1
-y terminal symbol and the * function symbol in the solution. We also display
-some statistical values including mean squared error (MSE), root mean squared
-error (RMSE), etc. Finally we display the values expected or observed (from our
+y terminal symbol and the * function symbol in the solution. We also display some
+statistical values including mean squared error (MSE), root mean squared error
+(RMSE), etc. Finally we display the values expected or observed (from our
 training data) and the values produced by the best model in the run, in this
-case a perfect model.</span></p>
+case a perfect model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=EN style='mso-ansi-language:EN'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span lang=EN style='mso-ansi-language:EN'>Note that in more
+recent versions of ECJ-GEP you can request that the mathematical expressions
+found be simplified. In which case you would see in the results and statistics
+file something like:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=EN style='mso-ansi-language:EN'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>MATH<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>(<span
+class=GramE>y</span>+(x*x))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>MATH
+(SIMPLIFIED)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:10.0pt;font-family:
+"Courier New"'>x^</span></span><span style='font-size:10.0pt;font-family:"Courier New"'>2+y<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>But so note that in most cases it is best to do your
+experiments without simplification turned on since the software system used to
+do the simplification of expressions (meditor) has been know to cause crashes
+or non terminating loops for some expressions. Also the meditor.jar file must
+be in the ‘start’ directory. To turn on simplification the following line must
+be in the parameter file:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:10.0pt;font-family:
+"Courier New"'>pop.subpop.0.species.ind.simplify-expressions</span></span><span
+style='font-size:10.0pt;font-family:"Courier New"'> = true<o:p></o:p></span></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
@@ -885,9 +937,9 @@ fitness = GEPFitnessFunction.MSEfitness((GEPIndividual)ind);</code><br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // the
 fitness better be SimpleFitness!</code><br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-SimpleFitness f = ((SimpleFitness<span class=GramE>)ind.fitness</span>);</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-f.setFitness(state,(float)fitness, fitness &gt;= IDEAL_FITNESS_MINIMUM);</code><br>
+SimpleFitness f = (true, (SimpleFitness<span class=GramE>)ind.fitness</span>);</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; f.setFitness(state,(float)fitness,
+fitness &gt;= IDEAL_FITNESS_MINIMUM);</code><br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ind.evaluated = true;</code><br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </code><br>
@@ -905,7 +957,7 @@ IDEAL_FITNESS_MINIMUM)</code><br>
 <p class=MsoNormal><span lang=EN style='mso-ansi-language:EN'>The main
 difference here is that we have to provide a method getDataValues to supply the
 data values for the terminal symbols identified in the param file. In this case
-that is the x value. The ECJ system will call this function during
+that is the x values. The ECJ system will call this function during
 initialization to get the values, passing the symbol &quot;x&quot; as an
 argument. The user program must provide a <span class=GramE>double[</span>]
 result. In the previous example the data was in a file and the first row had
@@ -913,10 +965,11 @@ the symbols for the independent variable and the dependent variable. In the
 parameter file we don<st1:PersonName w:st="on">'</st1:PersonName>t specify the
 name of the dependent variable so the system will ask for the dependent
 variable values using the label &quot;dependentVariable&quot;. It is probably
-most common to use a file to hold the training data. However, if the training
-data is to be provided by performing a calculation (via a simulation or some
-other means for example), then using the user program to provide the data makes
-sense&nbsp;&nbsp;For test2 the statistics file will look like:</span></p>
+most common to use a file to hold the training data. <span class=GramE>However,
+if the training data is to be provided by performing a calculation (via a
+simulation or some other means for example), then using the user program to
+provide the data might make sense.</span>&nbsp;&nbsp;For test2 the statistics
+file will look like:</span></p>
 
 <p class=MsoNormal style='margin-bottom:12.0pt'><br>
 <code><span style='font-size:10.0pt'>Seed(s) used in this job: 4357</span></code><span
@@ -1019,22 +1072,47 @@ MAE:&nbsp; 1.7715995337397316E-12&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RRSE:
 <code>-0.326443121119579&nbsp;&nbsp;-0.3264431211195794</code><br>
 <code>1093.78835980998&nbsp;&nbsp;&nbsp; 1093.7883598099795</code></span></p>
 
-<p class=MsoNormal><span lang=EN style='mso-ansi-language:EN'>In this case it took
-14 generations to solve the problem with an ideal (fitness = 1000) solution.
-The solution could use some simplification so that we see the first term is
--x*x, the second is x*x (which cancel each other) and the third is (x+x*x<span
-class=GramE>)(</span>x+1) or x^4+x^3+x^2+x, the desired solution. The errors in
-the statistics are not exactly zero but are quite small. This is due to loss of
-precision as the complex (not simplified) expression is evaluated. It also
-demonstrates why we use double and not float for all calculations. One final
-thing to note is that we don<st1:PersonName w:st="on">'</st1:PersonName>t print
-the best result after each generation. We only printed the results when there
-was an improvement in the fitness of the best of a generation (at generations
-1, 6 and 14). This can be controlled by a parameter for the statistics. You can
-print the results for every generation, only when the fitness improves (as we
-did here by default) or only the final generation of the run (see the
-gep.params files for details). <br>
-<br>
+<p class=MsoNormal><span lang=EN style='mso-ansi-language:EN'>In this case it
+took 14 generations to solve the problem with an ideal (fitness = 1000)
+solution. The solution could use some simplification so that we see the first
+term is -x*x, the second is x*x (which cancel each other) and the third is
+(x+x*x<span class=GramE>)(</span>x+1) or x^4+x^3+x^2+x, the desired solution.
+The errors in the statistics are not exactly zero but are quite small. This is
+due to loss of precision as the complex (not simplified) expression is
+evaluated. It also demonstrates why we use double and not float for all
+calculations. One final thing to note is that we don<st1:PersonName w:st="on">'</st1:PersonName>t
+print the best result after each generation. We only printed the results when
+there was an improvement in the fitness of the best of a generation (at
+generations 1, 6 and 14). This can be controlled by a parameter for the
+statistics. You can print the results for every generation, only when the
+fitness improves (as we did here by default) or only the final generation of
+the run (see the gep.params files for details). <o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=EN style='mso-ansi-language:EN'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span lang=EN style='mso-ansi-language:EN'>Again, if
+simplification of math expressions was turned on you would see something like
+the following in the output:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=EN style='mso-ansi-language:EN'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span lang=EN style='font-size:10.0pt;font-family:"Courier New";
+mso-ansi-language:EN'>MATH<o:p></o:p></span></p>
+
+<p class=MsoNormal><code><span style='font-size:10.0pt'>((x-x)-(x*x)) + (x*x) +
+((x+(x*x))*((x*x<span class=GramE>)+</span>(x/x)))<o:p></o:p></span></code></p>
+
+<p class=MsoNormal><span lang=EN style='mso-ansi-language:EN'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span lang=EN style='font-size:10.0pt;font-family:"Courier New";
+mso-ansi-language:EN'>MATH (SIMPLIFIED)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=EN style='font-size:10.0pt;font-family:"Courier New";
+mso-ansi-language:EN'>x+x^2+x^3+x^4<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=EN style='font-size:10.0pt;font-family:"Courier New";
+mso-ansi-language:EN'><br>
+</span><span lang=EN style='mso-ansi-language:EN'><br>
 Test3 is just test1 again, but this time we do not have to supply a Java
 program at all, we<st1:PersonName w:st="on">'</st1:PersonName>ll use the
 default one. The test3.param file has the following changes:</span></p>
@@ -1056,11 +1134,11 @@ one or 2 extra numeric arguments. In the case of test3 we<st1:PersonName w:st="o
 used the Relative Hits (RH) fitness function. It requires one numeric argument,
 the precision. It is not necessarily the best choice for this problem but does
 illustrate the use of the parameters to specify the fitness function and an
-argument. The RH function counts the number of hits (matches) between the
-expected results in the training set and the computed results. A comparison is
+argument. The RH function counts the number of hits (matches) between the expected
+results in the training set and the computed results. A comparison is
 considered to be a hit if the percentage difference between the expected and
-computed <span class=GramE>values &nbsp;is</span> less than the precision
-specified, in this case 2%. So the test is:</span></p>
+computed values is less than the precision specified, in this case 2%. So the
+test is:</span></p>
 
 <p class=MsoNormal style='margin-bottom:12.0pt'><span style='font-size:10.0pt'><br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</span><code><span style='font-size:10.0pt'>&nbsp;100*(<span
@@ -1136,11 +1214,11 @@ The maximum fitness value in this case was 4, since there were only 4 training
 sets of data. <br>
 <br>
 This concludes the introduction to using the ECJ GEP extension. The next
-section identifies <span class=GramE>an</span> number of other examples that
-have been implemented, showing more complex examples from the four types of
-problems: function finding, logical, classification and time series. We<st1:PersonName
-w:st="on">'</st1:PersonName>ll explain some of the particular parameters and
-considerations for these types of problems as we briefly describe the examples.</span></p>
+section identifies a number of other examples that have been implemented,
+showing more complex examples from the four types of problems: function
+finding, logical, classification and time series. We<st1:PersonName w:st="on">'</st1:PersonName>ll
+explain some of the particular parameters and considerations for these types of
+problems as we briefly describe the examples.</span></p>
 
 <p class=MsoNormal style='margin-bottom:12.0pt'><o:p>&nbsp;</o:p></p>
 
@@ -1155,9 +1233,8 @@ describe them very briefly and point out any interesting new things that are
 introduced.<br>
 <br>
 <b>1. Acot Example</b> - this is an attempt to discover the ArcCotangent
-function using a set <span class=GramE>of &nbsp;100</span> training cases.
-There is only 1 gene, 30 chromosomes (individuals) in the population and the
-RRSE (Root Relative Squared Error<span class=GramE>) &nbsp;fitness</span>
+function using a set of 100 training cases. There is only 1 gene, 30
+individuals in the population and the RRSE (Root Relative Squared Error) fitness
 function is used. There is one independent variable, d0, specified in the
 Acot.param file. There are 17 functions used (+, -, *, /, Sqrt, Exp,
 Floor,&nbsp;Ceiling, Abs, Neg, Sin, <st1:place w:st="on">Cos</st1:place>, Tan,
@@ -1185,13 +1262,12 @@ to use constants you do need to supply some extra information.<br>
 <code>gep.species.dc-istransposition-prob&nbsp;&nbsp; = 0.1</code></span><br>
 <br>
 First we identify that we are going to use constants and that there will be 2
-constants allocated per gene. <span class=GramE>we</span> are using floating
-point constants since integer-constants is set to false. The values of the
-constants are allowed to range between -10.0 and +10.0. The other parameters
-relate to how constants evolve from generation to generation. <span
-class=GramE>this</span> again is covered in Ferreira<st1:PersonName w:st="on">'</st1:PersonName>s
-documentation. But these values are the ones she suggests as defaults that work
-well for most problems.<br>
+constants allocated per gene. We are using floating point constants since the
+integer-constants parameter is set to false. The values of the constants are
+allowed to range between -10.0 and +10.0. The other parameters relate to how
+constants evolve from generation to generation. This again is covered in
+Ferreira<st1:PersonName w:st="on">'</st1:PersonName>s documentation. But these
+values are the ones she suggests as defaults that work well for most problems.<br>
 <br>
 After running the example we get the output in the Acot.stat file.<br>
 <br>
@@ -1345,8 +1421,8 @@ style='font-size:10.0pt;font-family:"Courier New"'><br>
 <code>Gene 2</code><br>
 <code>-.*.-./.-.d8.*./.d0.d13.d8.d7.d12.d0.d11.d4.d5</code><br>
 <br>
-<code>((((d6*d6)*d0)-(d2*d15))+((d13/d4)-(d12-d10))) +
-(d6+((d5-(d12/d3))*((d13*d0)+d3))) + ((((d0/d11)/d0)*(d13-d8))-(d8-(d7*d12)))</code><br>
+<code>((((d6*d6)*d0)-(d2*d15))+((d13/d4)-(d12-d10))) + (d6+((d5-(d12/d3))*((d13*d0)+d3)))
++ ((((d0/d11)/d0)*(d13-d8))-(d8-(d7*d12)))</code><br>
 <br>
 <code>&nbsp;&nbsp;&nbsp; ...</code><br>
 <br>
@@ -1390,7 +1466,8 @@ style='font-size:10.0pt;font-family:"Courier New"'><br>
 <code>Gene 2</code><br>
 <code>+.*.d6.*.*./.d0.d0.d0.d0.d0.d10.d5.d8.d5.d8.d7</code><br>
 <br>
-<code>(<b>(d1-d6)+d0) + (((((d0*d0)*d0)+d0)*d0)-d1) + ((((d0/d0)*d0)*(d0*d0))+d6)</b></code><br>
+<code>(<b>(d1-d6)+d0) + (((((d0*d0)*d0)+d0)*d0)-d1) +
+((((d0/d0)*d0)*(d0*d0))+d6)</b></code><br>
 <br>
 <code>Size of program: 27</code><br>
 <code>Variables used(count): d0(11), d1(2), d6(2)</code><br>
@@ -1398,8 +1475,8 @@ style='font-size:10.0pt;font-family:"Courier New"'><br>
 <code>***** TRAINING data results *****</code><br>
 <code>Statistics: </code><br>
 <code>MSE:&nbsp; 7.99571803020474E-23&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-RAE:&nbsp; 1.0804622056054273E-15&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-RSE:&nbsp; 4.6576363300204115E-30</code><br>
+RAE:&nbsp; 1.0804622056054273E-15&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RSE:&nbsp;
+4.6576363300204115E-30</code><br>
 <code>RMSE: 8.941877895724556E-12&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; MAE:&nbsp;
 3.3320664912135643E-12&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RRSE:
 2.1581557705643983E-15</code><br>
@@ -1421,8 +1498,8 @@ RSE:&nbsp; 4.6576363300204115E-30</code><br>
 You<st1:PersonName w:st="on">'</st1:PersonName>ll also notice that for this
 particular run the solution looks pretty complex but it simplifies to:<br>
 <br>
-&nbsp;&nbsp;&nbsp;<code><span style='font-size:10.0pt'> </span></code><code><span
-style='font-size:7.5pt'>d1-d6+d0 + d0^4+d0^2-d1 + d0^3+d6</span></code><br>
+&nbsp;&nbsp;&nbsp;<code><span style='font-size:10.0pt'> d1-d6+d0 + d0^4+d0^2-d1
++ d0^3+d6</span></code><br>
 or<br>
 &nbsp;&nbsp;&nbsp;<code><span style='font-size:10.0pt'> d0&nbsp;+ d0^4 + d0^2 +
 d0^3</span></code><br>
@@ -1431,18 +1508,18 @@ the expected solution.&nbsp;There is a second version of the program,
 dataMining2 that has the data in a CSV text file.<br>
 <br>
 <b>3. Production example</b> - In this example we have real-world production
-data from 446 firms. The goal is to explain the Production&nbsp;as a function
-of Labor, Material, and Capital. There is nothing new in the parameter file
-that we haven<st1:PersonName w:st="on">'</st1:PersonName>t seen before. The
-data is provided in the user program. The only unique thing we haven<st1:PersonName
+data from 446 firms. The goal is to explain the Production&nbsp;as a function of
+Labor, Material, and Capital. There is nothing new in the parameter file that
+we haven<st1:PersonName w:st="on">'</st1:PersonName>t seen before. The data is
+provided in the user program. The only unique thing we haven<st1:PersonName
 w:st="on">'</st1:PersonName>t seen before is that the program runs to
 completion at 3000 generations without reaching an <st1:PersonName w:st="on">'</st1:PersonName>ideal<st1:PersonName
 w:st="on">'</st1:PersonName> or <st1:PersonName w:st="on">'</st1:PersonName>perfect<st1:PersonName
 w:st="on">'</st1:PersonName> solution. This is probably more like real problems
 with real (imperfect) data. We only explored the solution using the functions
 add, subtract, multiply and divide. Perhaps there are more complicated
-relations ships and trying some trigonometric functions might help. In any case,
-this attempt provided a solution with a fitness of 8878.4472. In real
+relations ships and trying some trigonometric functions might help. In any
+case, this attempt provided a solution with a fitness of 8878.4472. In real
 investigations we might run this problem 500 or 1000 times with different seeds
 for 10000 generations each to try to find a set of best possible solutions. The
 best solution of the run is extracted from the statistics output file and shown
@@ -1470,7 +1547,8 @@ style='font-size:10.0pt;font-family:"Courier New"'><br>
 <code>C1: -0.49638400660778004</code><br>
 <br>
 <code>((((material/material)-material)*(capital-material))/((7.249937058678704/labour)/material))
-+ material + ((((material-labour)/material)/((-3.2099741094356737)-material))*((-0.49638400660778004)/((-0.49638400660778004)/material)))</code><br>
++ material +
+((((material-labour)/material)/((-3.2099741094356737)-material))*((-0.49638400660778004)/((-0.49638400660778004)/material)))</code><br>
 <br>
 <code>Size of program: 31</code><br>
 <code>Variables used(count): labour(2), material(10), capital(1)</code></span></p>
@@ -1561,9 +1639,9 @@ specified, In this case the value is set to 0.5. The data is in CSV files. The
 training data set is in IrisVirginica.txt. There are 100 sets of data in the
 file along with the first record that holds the names of the terminals
 (variables) as d0, d1, d2, and D.V. We see also that there is a testing data
-set file specified as IrisVirginicaTest.txt. This file holds the 50 testing
-sets of data and <b>does not</b> have the names of the variables in the first
-row! When the best model is determined from the run, the gep system will
+set file specified as IrisVirginicaTest.txt. This file holds the 50 testing sets
+of data and <b>does not</b> have the names of the variables in the first row!
+When the best model is determined from the run, the gep system will
 automatically access the test data and compare the results of using the model
 with this data against the expected values. This will help in the assessment of
 the quality of the model that was chosen. Let<st1:PersonName w:st="on">'</st1:PersonName>s
@@ -1858,12 +1936,12 @@ integr value determines the number of timeseries points to use&nbsp;as
 independent variables when transforming the set of time series data.
 Another&nbsp;data point is used as the dependent variable value. So the time
 series <st1:PersonName w:st="on">'</st1:PersonName>raw<st1:PersonName w:st="on">'</st1:PersonName>
-data consisting of a list of single values is processed by splitting the data
-into&nbsp;groups (rows) of size embeddingdimension+1. From the end of the time
-series data&nbsp;embeddingdimension+1 <span class=GramE>values</span> are
-chosen (if delay is 1 all values are chosen, if it is 2 every other one is
-chosen). The last value is the independent variable value.&nbsp;Then the next
-row is selected by moving <st1:PersonName w:st="on">'</st1:PersonName>delay<st1:PersonName
+data consisting of a list of single values is processed by splitting the data into&nbsp;groups
+(rows) of size embeddingdimension+1. From the end of the time series
+data&nbsp;embeddingdimension+1 <span class=GramE>values</span> are chosen (if
+delay is 1 all values are chosen, if it is 2 every other one is chosen). The
+last value is the independent variable value.&nbsp;Then the next row is
+selected by moving <st1:PersonName w:st="on">'</st1:PersonName>delay<st1:PersonName
 w:st="on">'</st1:PersonName>&nbsp;values from the end and choosing another
 embeddingdimension+1 <span class=GramE>values</span>. This is
 repeated&nbsp;until no more sets of size embeddingdimension+1 can be
@@ -1975,8 +2053,8 @@ style='font-size:10.0pt;font-family:"Courier New"'><br>
 <code>C0: 9.111412390259325</code><br>
 <code>C1: 9.94532215973475</code><br>
 <br>
-<code>exp(-pow((1-(v6*(-9.528899601444923))),2)) + max((5.353542014548175^3),v9)
-+ pi</code><br>
+<code>exp(-pow((1-(v6*(-9.528899601444923))),2)) +
+max((5.353542014548175^3),v9) + pi</code><br>
 <br>
 <code>Generation: 2</code><br>
 <code>Best Individual:</code><br>
@@ -2228,9 +2306,10 @@ Yes|&nbsp; 2&nbsp;&nbsp;&nbsp; &nbsp;|&nbsp; 0</code><br>
 <code>1.0&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;1.0</code><br>
 <code>0.0&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; 0.0</code></span><br>
 <br>
-<b>2. Majority Function Example</b> - This example looks for a logical expression
-that can determine if given three inputs (x, y and z) there are at least 2 true
-(1) values. The solution uses only the operators <b>not</b>, <b>and</b> and <b>or</b>.<br>
+<b>2. Majority Function Example</b> - This example looks for a logical
+expression that can determine if given three inputs (x, y and z) there are at
+least 2 true (1) values. The solution uses only the operators <b>not</b>, <b>and</b>
+and <b>or</b>.<br>
 <br>
 <b>3. Odd 3-Parity Example</b> - This example looks at 3 <span class=GramE>boolean</span>
 input variables (x, y, and z) and looks for a logical expression that can
@@ -2267,8 +2346,8 @@ d4&amp;d0&amp;~d1 v d5&amp;d0&amp;d1</p>
 GEP Parameter File (gep.params)</h1>
 
 <p class=MsoNormal style='margin-bottom:12.0pt'><br>
-The file ec/gep/gep.params has most of the required details in comments. But here
-we list the parameter settings that are of concern for gep problems.<br>
+The file ec/gep/gep.params has most of the required details in comments. But
+here we list the parameter settings that are of concern for gep problems.<br>
 <br>
 <b>eval.problem</b> - The user code to support the problem. <span class=GramE>For
 example, ec.app.gep.test2.test2.</span> These classes will be of type
@@ -2311,7 +2390,14 @@ are completed. <span class=GramE>an</span> <st1:PersonName w:st="on">'</st1:Pers
 w:st="on">'</st1:PersonName> individual is normally when the maximum fitness
 value (or something very vlose to maximum) is found. This can be controlled by
 the user written code (see eval.problem) or by modifying the default user code.<br>
-<br>
+<b style='mso-bidi-font-weight:normal'>fitness-function-ideal-percent-threshold</b>
+- specifies a percentage of the maximum fitness value (MaxThreshold) that must
+be reached to be considered an ideal fitness value; the default value is
+99.999999; so if the maximum fitness value is 1000 and the fitness-function-ideal-percent-threshold
+is set to 99.9 then a fitness value &gt;= 999 will be considered ideal; by
+default a value &gt;= 999.99999 will be ideal.</p>
+
+<p class=MsoNormal><br>
 <span class=GramE><b>pop</b></span> - Should be ec.Population. - As for
 standard ecj.<br>
 <b>pop.subpops</b> - must be set to 1 (<b>do not change</b> since only 1 subpop
@@ -2385,18 +2471,18 @@ chromosomes: like the SEWD (Sammon Error with Dissimilarity) fitness function.<b
 each gene.</span><br>
 <br>
 The <b style='mso-bidi-font-weight:normal'><i style='mso-bidi-font-style:normal'>linking-function</i></b>
-is the function to use to combine the values of the expressions for each gene. In
-early versions the linking-function could be one of +, -, * or / for numerical
-problem types and for&nbsp;logic problems it could be one of: and, or, nand,
-nor, xor, nxor. This was as provided in Ferreira’s implementation. These
-choices are still available, but now any function defined as a
+is the function to use to combine the values of the expressions for each gene.
+In early versions the linking-function could be one of +, -, * or / for
+numerical problem types and for&nbsp;logic problems it could be one of: and,
+or, nand, nor, xor, nxor. This was as provided in Ferreira’s implementation.
+These choices are still available, but now any function defined as a
 GEPFunctionSymbol (such as <span style='font-size:11.0pt;font-family:"Courier New"'>Add,
 Sub, Mul, Div, Ifgt4, Ifeq4, <span class=GramE>Pow</span>,</span> etc) that has
 arity of 2 or more can be used. It must be specified with the same ‘case’ as
 the class name and there must be a ‘correct’ number of genes that suit the
-arity of the function. For a function with arity of 2 any number of genes is OK;
-for arity 3 there must be 3, 5, 7, 9, etc. genes; for arity 4 there must be 4,
-7, 10, 13, etc. genes; For 1 gene then no function is needed.<br>
+arity of the function. For a function with arity of 2 any number of genes is
+OK; for arity 3 there must be 3, 5, 7, 9, etc. genes; for arity 4 there must be
+4, 7, 10, 13, etc. genes; For 1 gene then no function is needed.<br>
 <span class=GramE><b>gep.species.gene-linking-function</b></span> - The
 function to use when combining the values the expressions for each gene.<br>
 <br>
@@ -2457,9 +2543,9 @@ ec/gep/gep.params since there are some slightly complex situations (timeseries
 data etc.).<br>
 <b>gep.species.symbolset.testingterminalfilename</b> = testDataFileName<br>
 <br>
-<span class=GramE>For</span> gep systems breeding should be as shown below.
-Changing theseis possible but will not be as per original gep by Ferreira (as
-in GeneXProTools) and will require some in-depth knowledge!<br>
+<span class=GramE>For</span> gep systems breeding should be as shown below. Changing
+theseis possible but will not be as per original gep by Ferreira (as in
+GeneXProTools) and will require some in-depth knowledge!<br>
 <b>gep.species.pipe</b> = ec.gep.breed.DcGeneticOperatorsPipeline<br>
 <b>gep.dcgeneticoperators.source.0</b> = ec.gep.breed.GenerecombinationPipeline<br>
 <b>gep.generecombination.source.0</b> =
@@ -2531,7 +2617,8 @@ GEPSimpleStatisticsMultipleChromosomes class to handle the capture of
 information from a gep run. For the basic setting of statistics output you can
 do something like the following.<br>
 <br>
-<span class=GramE><b>stat</b></span> = ec.gep.GEPSimpleStatisticsMultipleChromosomes<br>
+<span class=GramE><b>stat</b></span> =
+ec.gep.GEPSimpleStatisticsMultipleChromosomes<br>
 <b>stat.file</b> = ourProblem.stat<br>
 <b>stat.file-computed-values</b> = ourOvsC.stat<br>
 <b>stat.no-computed</b> = false<br>
@@ -2568,7 +2655,7 @@ Details<br>
 <br>
 <span class=GramE><span style='font-weight:normal'>The</span></span><span
 style='font-weight:normal'> system has been tested using </span>Java version
-1.5<span style='font-weight:normal'>.</span><br>
+1.6<span style='font-weight:normal'>.</span><br>
 <br>
 <span style='font-weight:normal'>One thing to note about the gep implementation
 is that </span>all values are double<span style='font-weight:normal'>, rather
@@ -2590,26 +2677,15 @@ quickly as is and these are not problems we were all that interested in for our
 research.<br>
 <br>
 This is the first version of this gep extension and the code could use some
-reorganization, optimization and perhaps better adherance to the ECJ structures
+reorganization, optimization and perhaps better adherence to the ECJ structures
 (although it isn<st1:PersonName w:st="on">'</st1:PersonName>t too bad).<br>
 <br>
 <a name=ModsToExistingECJcode></a>I did modify a couple of the standard ECJ
-files. These were very minor modifications. First<span class=GramE>&nbsp; the</span>
-</span>ec.display.Console<span style='font-weight:normal'> was changed slightly
-to fix a problem with being able to control the parameters (visible in the
-interface) properly. This required the addition of 1 line of code around line
-1050 (in the run method):<br>
-<br>
-</span><code><span style='font-size:10.0pt;font-weight:normal'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-class=GramE>conPanel.enableControls(</span>); // this line added</span></code><span
-style='font-size:10.0pt;font-family:"Courier New";font-weight:normal'><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;finishAndCleanup();</code></span><span
-style='font-size:10.0pt;font-family:"Courier New"'><br>
-</span><span style='font-weight:normal'><br>
-A second change in ec.display.Console was to allow the seed that is used in a
-run to be stored for access later in statistics output. This also required some
-changes to other files (below). The change was near line 927 in
-initializeEvolutionState:<br>
+files. These were very minor modifications. First&nbsp;the </span>ec.display.Console<span
+style='font-weight:normal'> was changed slightly to allow the seed that is used
+in a run to be stored for access later in statistics output. This also required
+some changes to other files (below). The change was near line 935 in
+ec.display.Console:<br>
 <br>
 </span><code><span style='font-size:10.0pt;font-weight:normal'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 state.evalthreads = evalthreads;</span></code><span style='font-size:10.0pt;
@@ -2617,14 +2693,14 @@ font-family:"Courier New";font-weight:normal'><br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;state.breedthreads =
 breedthreads;</code><br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;state.seeds = seeds<span
-class=GramE>; &nbsp;/</span>/ this line added</code></span><br>
+class=GramE>; &nbsp;/</span>/ this line was added</code></span><br>
 <br>
-<span style='font-weight:normal'>The other changes were made to files </span>ec.Evolve<span
+<span style='font-weight:normal'>Corresponding changes were made to files </span>ec.Evolve<span
 style='font-weight:normal'> and </span>ec.EvolutionState <span
 style='font-weight:normal'>to support the need to have access to the seed
 value(s) for reporting in statistics. This is important so that one can rerun
 the program with the same seed at some later time and there was no way to
-record this in the current version of ECJ. in ec.Evolve near line 320 we added
+record this in the standard version of ECJ. In ec.Evolve near line 371 we added
 the code:<br>
 <br>
 </span><code><span style='font-size:10.0pt;font-weight:normal'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -2633,9 +2709,9 @@ font-family:"Courier New";font-weight:normal'><br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; state.randomSeedOffset =
 randomSeedOffset;</code><br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; state.seeds = seeds<span
-class=GramE>; &nbsp;/</span>/ line was added</code><br>
+class=GramE>; &nbsp;/</span>/ this line was added</code><br>
 </span><span style='font-weight:normal'><br>
-and near line 200 in ec.EvolutionState we added the code:<br>
+and near line 187 in ec.EvolutionState we added the code:<br>
 <br>
 </span><code><span style='font-size:10.0pt;font-weight:normal'>&nbsp;&nbsp;&nbsp;
 /**</span></code><span style='font-size:10.0pt;font-family:"Courier New";
@@ -2682,7 +2758,7 @@ params</code><br>
 <code>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return false;</code><br>
 <code>&nbsp;&nbsp;&nbsp; }</code><br>
 <br>
-<code>&nbsp;&nbsp;&nbsp; public String printMathExpression( String p[] )</code><br>
+<code>&nbsp;&nbsp;&nbsp; public String getMathExpressionAsString( String p[] )</code><br>
 <code>&nbsp;&nbsp;&nbsp; {</code><br>
 <code>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return &quot;(&quot; + p[0] +
 &quot;+&quot; + p[1] + &quot;)&quot;;</code><br>
@@ -2708,22 +2784,23 @@ functions. so we must provide the simple isLogicalFunction method. Finally in
 order to display the expressions in a mathematical notation it is necessary for
 the function to provide an appropriate string representation for this purpose.
 I<st1:PersonName w:st="on">'</st1:PersonName>d suggest looking at a similar
-function to see how it was done and proceed from there. The array passed to
-printMathExpression contains the string representations of its parameters.<br>
+function to see how it was done and proceed from there. The array passed to <code><b><span
+style='font-size:10.0pt'>getMathExpressionAsString</span></b></code> contains
+the string representations of its parameters.<br>
 <br>
 Adding <b>new fitness functions</b> is done by adding some methods to the class
 ec.gep.GEPFitnessFunction. For each of the fitness functions there are 3
 methods that need to be supplied: one to calculate the fitness&nbsp;(with a
 value from 0 to some maximum); one to give the raw fitness value, the value
 prior&nbsp;to being mapped between 0 and the maximum value; and one to provide
-the maximum value that the fitness value can take for that fitness function.
-Actually the raw value is not always needed (see for example the specialized
-fitness function WCorrRMSE (Weighted correlation coefficient and Root Mean
-Squared Error). There is no raw value for this since it combines to other
-fitness values. <span class=GramE>but</span> since some users might want access
-to the value before it is converted to a value from 0 to a maximum value, it
-seemed prudent to make this available whenever possible. By convention we use
-the names XXXXfitness, XXXXrawFitness&nbsp;and XXXXmaxFitness for all of the
+the maximum value that the fitness value can take for that fitness function. Actually
+the raw value is not always needed (see for example the specialized fitness
+function WCorrRMSE (Weighted correlation coefficient and Root Mean Squared
+Error). There is no raw value for this since it combines to other fitness
+values. <span class=GramE>but</span> since some users might want access to the
+value before it is converted to a value from 0 to a maximum value, it seemed
+prudent to make this available whenever possible. By convention we use the
+names XXXXfitness, XXXXrawFitness&nbsp;and XXXXmaxFitness for all of the
 fitness functions. XXXX is the pneumonic for the&nbsp;fitness function (e.g.
 RRSE, MAE, etc.). This allows a user to specifiy a fitness function to
 be&nbsp;used in the default user program by specifying only the short pneumonic
@@ -2735,134 +2812,795 @@ consistent and easier to call the method based on the XXXX part only (again
 see&nbsp;GEPDefaultUserProg.java).&nbsp;For example the functions for the MSE
 fitness functions are called as:<br>
 <br>
-<code><span style='font-size:10.0pt'>&nbsp; &nbsp;&nbsp;&nbsp;
-GEPFitnessFunction.MSEfitness( gepindividual );</span></code><span
-style='font-size:10.0pt;font-family:"Courier New"'><br>
+<code><span style='font-size:10.0pt'>&nbsp; &nbsp;&nbsp;&nbsp; <span
+class=GramE>GEPFitnessFunction.MSEfitness(</span>useTrainingData, gepindividual
+);</span></code><span style='font-size:10.0pt;font-family:"Courier New"'><br>
 <code>&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; - calculates the fitness
 using the individual<st1:PersonName w:st="on">'</st1:PersonName>s gene
-expressions</code><br>
-<code>&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; - it gets the raw fitness
-first from MSErawFitness (the mean squared error</code><br>
-<code>&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; of the predicted
-values versus the text/expected values)</code><br>
-<code>&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; - then it normalizes the
-result between 0 and 1000&nbsp; </code><br>
-<code>&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; (1000 *
-(1/(1 + raw MSE))</code><br>
-<code>&nbsp; &nbsp;&nbsp;&nbsp; GEPFitnessFunction.MSErawFitness( gepindividual
-);</code><br>
-<code>&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - sum((predicted valuei
-- expected valuei)**2)/n</code><br>
-<code>&nbsp; &nbsp;&nbsp;&nbsp; GEPFitnessFunction.NHmaxFitness( gepindividual
-);</code><br>
-<code>&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; - in this case max is always
-1000 but some fitness functions</code><br>
-<code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; have a maximum that depends on
-the number of training data sets</code><br>
-</span><br>
+expressions<o:p></o:p></code></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='mso-spacerun:yes'>    </span>- it uses either the training date (<code><span
+style='font-size:10.0pt'>useTrainingData</span></code><span style='color:black'>
+is true) or the testing data (</span><code><span style='font-size:10.0pt'>useTrainingData</span></code><span
+style='color:black'> is false)</span><br>
+<code><span style='font-size:10.0pt'>&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; - it gets the raw fitness first from MSErawFitness (the mean
+squared error</span></code><br>
+<code><span style='font-size:10.0pt'>&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp; of the predicted values versus the text/expected
+values)</span></code><br>
+<code><span style='font-size:10.0pt'>&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; - then it normalizes the result between 0 and 1000&nbsp; </span></code><br>
+<code><span style='font-size:10.0pt'>&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; (1000 * (1/(1 + raw MSE))</span></code><br>
+<code><span style='font-size:10.0pt'>&nbsp; &nbsp;&nbsp;&nbsp;
+GEPFitnessFunction.MSErawFitness(useTrainingData, gepindividual,
+chromosomeNum);</span></code><br>
+<code><span style='font-size:10.0pt'>&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - sum((predicted valuei - expected
+valuei)**2)/n</span></code><br>
+<code><span style='font-size:10.0pt'>&nbsp; &nbsp;&nbsp;&nbsp;
+GEPFitnessFunction.NHmaxFitness( gepindividual );</span></code><br>
+<code><span style='font-size:10.0pt'>&nbsp;&nbsp; &nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; - in this case max is always 1000 but some fitness functions</span></code><br>
+<code><span style='font-size:10.0pt'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+have a maximum that depends on the number of training data sets</span></code><br>
+<br>
 Again let<st1:PersonName w:st="on">'</st1:PersonName>s look at a the code of a
 fitness function to see what<st1:PersonName w:st="on">'</st1:PersonName>s
 required.<br>
 <br>
-<code><span style='font-size:10.0pt'>&nbsp;&nbsp;&nbsp;
-//************************* RAE (Relative Absolute Error) *****************</span></code><span
-style='font-size:10.0pt;font-family:"Courier New"'><br>
-<code>&nbsp;&nbsp;&nbsp; /**</code><br>
-<code>&nbsp;&nbsp;&nbsp; &nbsp;* Calculates the <st1:PersonName w:st="on">'</st1:PersonName>raw<st1:PersonName
-w:st="on">'</st1:PersonName> fitness for the RAE (Relative Absolute Error) type
-</code><br>
-<code>&nbsp;&nbsp;&nbsp; &nbsp;* fitness (before the normalization from 0 to
-max value is done).</code><br>
-<code>&nbsp;&nbsp;&nbsp; &nbsp;* @param <st1:place w:st="on"><st1:State w:st="on"><span
-  class=GramE>ind</span></st1:State></st1:place> the GEP individual that needs
-its fitness calculated.</code><br>
-<code>&nbsp;&nbsp;&nbsp; &nbsp;* @return the <st1:PersonName w:st="on">'</st1:PersonName>raw<st1:PersonName
-w:st="on">'</st1:PersonName> fitness value before normalization from 0 to max
-value</code><br>
-<code>&nbsp;&nbsp;&nbsp; &nbsp;*/</code><br>
-<code>&nbsp;&nbsp;&nbsp; public static double RAErawFitness(GEPIndividual ind) </code><br>
-<code>&nbsp;&nbsp;&nbsp; {</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double sumOfAbsoluteError =
-0.0;</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double expectedResult;</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double result;</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double error;</code><br>
-<br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double dependentVar[] =
-GEPDependentVariable.getDependentVariableValues();</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double dvSumOfAbsoluteError =
-GEPDependentVariable.getDependentVariableSumOfAbsoluteError();</code><br>
-<br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i=0;
-i&lt;dependentVar.length; i++)</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { &nbsp; expectedResult =
-dependentVar[i];</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result
-= ind.eval(i);</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error
-= result - expectedResult;</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-sumOfAbsoluteError += Math.abs(error); </code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (dvSumOfAbsoluteError ==
-0.0)</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;
-dvSumOfAbsoluteError = RELATIVE_ERROR_ZERO_FACTOR;</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-System.err.println(&quot;Warning: sum of error for dependent variable is 0 in
-RAE fitness calculation. Adjusting to avoid division by zero.&quot;);</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // the raw fitness ... RAE</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return
-(sumOfAbsoluteError/dvSumOfAbsoluteError);</code><br>
-<code>&nbsp;&nbsp;&nbsp; }</code><br>
-<code>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </code><br>
-<code>&nbsp;&nbsp;&nbsp; /**</code><br>
-<code>&nbsp;&nbsp;&nbsp; &nbsp;* Calculates the fitness for the RAE (Relative
-Absolute Error) type fitness. </code><br>
-<code>&nbsp;&nbsp;&nbsp; &nbsp;* Gets the raw fitness and then normalized
-between 0 and max value.</code><br>
-<code>&nbsp;&nbsp;&nbsp; &nbsp;* @param <st1:place w:st="on"><st1:State w:st="on"><span
-  class=GramE>ind</span></st1:State></st1:place> the GEP individual that needs
-its fitness calculated.</code><br>
-<code>&nbsp;&nbsp;&nbsp; &nbsp;* @return the <st1:PersonName w:st="on">'</st1:PersonName>raw<st1:PersonName
-w:st="on">'</st1:PersonName> fitness value before normaization from 0 to max
-value</code><br>
-<code>&nbsp;&nbsp;&nbsp; &nbsp;*/</code><br>
-<code>&nbsp;&nbsp;&nbsp; public static double RAEfitness(GEPIndividual ind) </code><br>
-<code>&nbsp;&nbsp;&nbsp; {</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double RAE =
-RAErawFitness(ind);</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // raw fitness is normalized
-between 0 and 1000&nbsp; (1000 * (1/(1+RAE))</code><br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (1000.0)/(1.0+RAE);</code><br>
-<code>&nbsp;&nbsp;&nbsp; }</code><br>
-<br>
-<code>&nbsp;&nbsp;&nbsp; /**</code><br>
-<code>&nbsp;&nbsp;&nbsp; &nbsp;* The max value for this type of fitness is
-always 1000.</code><br>
-<code>&nbsp;&nbsp;&nbsp; &nbsp;* @param <st1:place w:st="on"><st1:State w:st="on"><span
-  class=GramE>ind</span></st1:State></st1:place> the GEP individual that needs
-its fitness calculated.</code><br>
-<code>&nbsp;&nbsp;&nbsp; &nbsp;* @return value 1000.0</code><br>
-<code>&nbsp;&nbsp;&nbsp; &nbsp;*/</code><br>
-<code>&nbsp;&nbsp;&nbsp; public static double <span class=GramE>RAEmaxFitness(</span>GEPIndividual
-<st1:place w:st="on"><st1:State w:st="on">ind</st1:State></st1:place>) </code><br>
-<code>&nbsp;&nbsp;&nbsp; {</code><br>
-<code>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // always 1000</code><br>
-<code>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 1000.0;</code><br>
-<code>&nbsp;&nbsp;&nbsp; } </code></span><span style='font-size:10.0pt'><o:p></o:p></span></p>
+<span style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span></span><span style='font-size:10.0pt;
+font-family:"Courier New";color:#3F5FBF'>/**</span></p>
 
-<p>The code is fairly straight forward. the only thing to note is that at one
-point we accessed the sum of the absolute error of the values of the dependent
-variable data in the training set using - GEPDependentVariable.getDependentVariableSumOfAbsoluteError().
-When the training and testing data for the program is obtained, a number of
-values are calculated and stored statically in the class GEPDependentVariable.
-This is so these values, which are used by several fitness functions, don<st1:PersonName
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span><span style='mso-spacerun:yes'> </span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>Calculates</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>the</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><st1:PersonName
+w:st="on"><span style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>'</span></st1:PersonName><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>raw<st1:PersonName
+w:st="on">'</st1:PersonName></span><span style='font-size:10.0pt;font-family:
+"Courier New";color:black'> </span><span style='font-size:10.0pt;font-family:
+"Courier New";color:#3F5FBF'>fitness</span><span style='font-size:10.0pt;
+font-family:"Courier New";color:black'> </span><span style='font-size:10.0pt;
+font-family:"Courier New";color:#3F5FBF'>for</span><span style='font-size:10.0pt;
+font-family:"Courier New";color:black'> </span><span style='font-size:10.0pt;
+font-family:"Courier New";color:#3F5FBF'>the</span><span style='font-size:10.0pt;
+font-family:"Courier New";color:black'> </span><span style='font-size:10.0pt;
+font-family:"Courier New";color:#3F5FBF'>RAE</span><span style='font-size:10.0pt;
+font-family:"Courier New";color:black'> </span><span style='font-size:10.0pt;
+font-family:"Courier New";color:#3F5FBF'>(Relative</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>Absolute</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>Error)</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>type</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span><span style='mso-spacerun:yes'> </span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+class=GramE><span style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>fitness</span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>(before</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>the</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>normalization</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>from</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>0</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>to</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>max</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>value</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>is</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>done).</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span><span style='mso-spacerun:yes'> </span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F9FBF'>@param</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>useTrainingData</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>true</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>if</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>using</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>training</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>data,</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>else</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>use</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>testing</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>data</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span><span style='mso-spacerun:yes'> </span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F9FBF'>@param</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><st1:place
+w:st="on"><st1:State w:st="on"><span class=GramE><span style='font-size:10.0pt;
+  font-family:"Courier New";color:#3F5FBF'>ind</span></span></st1:State></st1:place><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>the</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>GEP</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>individual</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>that</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>needs</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>its</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>fitness</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>calculated.</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span><span style='mso-spacerun:yes'> </span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F9FBF'>@param</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>chromosomeNum</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>which</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>chromosome</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>in</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>the</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>individual</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>to</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>use</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>to</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>calc</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>the</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>raw</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>RAE</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span><span style='mso-spacerun:yes'> </span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F9FBF'>@return</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>the</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><st1:PersonName
+w:st="on"><span style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>'</span></st1:PersonName><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>raw<st1:PersonName
+w:st="on">'</st1:PersonName></span><span style='font-size:10.0pt;font-family:
+"Courier New";color:black'> </span><span style='font-size:10.0pt;font-family:
+"Courier New";color:#3F5FBF'>fitness</span><span style='font-size:10.0pt;
+font-family:"Courier New";color:black'> </span><span style='font-size:10.0pt;
+font-family:"Courier New";color:#3F5FBF'>value</span><span style='font-size:
+10.0pt;font-family:"Courier New";color:black'> </span><span style='font-size:
+10.0pt;font-family:"Courier New";color:#3F5FBF'>before</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>normalization</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>from</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>0</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>to</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>max</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>value</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span><span style='mso-spacerun:yes'> </span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*/</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span></span><span class=GramE><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>static</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>double</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> <span
+style='background:silver;mso-highlight:silver'>RAErawFitness</span>(</span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>boolean</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>
+useTrainingData, GEPIndividual <st1:place w:st="on"><st1:State w:st="on">ind</st1:State></st1:place>,
+</span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>int</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> chromosomeNum) </span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span>{</span><span style='font-size:10.0pt;
+font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span></span><span class=GramE><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>double</span></b></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>
+sumOfAbsoluteError = 0.0;</span><span style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span></span><span class=GramE><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>double</span></b></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> expectedResult;</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span></span><span class=GramE><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>double</span></b></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> result;</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span></span><span class=GramE><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>double</span></b></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> error;</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span>GEPDependentVariable dv;</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span></span><span class=GramE><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>if</span></b></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>
+(useTrainingData) </span><span style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span><span style='mso-tab-count:1'>    </span><span
+class=GramE>dv</span> = GEPDependentVariable.</span><i><span style='font-size:
+10.0pt;font-family:"Courier New";color:#0000C0'>trainingData</span></i><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>;</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span></span><span class=GramE><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>else</span></b></span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span><span style='mso-tab-count:1'>    </span><span
+class=GramE>dv</span> = GEPDependentVariable.</span><i><span style='font-size:
+10.0pt;font-family:"Courier New";color:#0000C0'>testingData</span></i><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>;</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span></span><span style='font-size:10.0pt;
+font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span></span><span class=GramE><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>double</span></b></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> dvValues[] =
+dv.getDependentVariableValues(chromosomeNum);</span><span style='font-size:
+10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span></span><span class=GramE><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>double</span></b></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>
+dvSumOfAbsoluteError = dv.getDependentVariableSumOfAbsoluteError(chromosomeNum);</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span></span><span class=GramE><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>for</span></b></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> (</span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>int</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> i=0;
+i&lt;dvValues.</span><span style='font-size:10.0pt;font-family:"Courier New";
+color:#0000C0'>length</span><span style='font-size:10.0pt;font-family:"Courier New";
+color:black'>; i++)</span><span style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span>{</span><span style='font-size:10.0pt;
+font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>            </span><span class=GramE>expectedResult</span>
+= dvValues[i];</span><span style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>            </span><span class=GramE>result</span> =
+ind.eval(chromosomeNum, useTrainingData, i);</span><span style='font-size:10.0pt;
+font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>            </span><span class=GramE>error</span> =
+result - expectedResult;</span><span style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>            </span><span class=GramE>sumOfAbsoluteError</span>
++= Math.<i>abs</i>(error); </span><span style='font-size:10.0pt;font-family:
+"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span>}</span><span style='font-size:10.0pt;
+font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span></span><span style='font-size:10.0pt;
+font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span></span><span class=GramE><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>if</span></b></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>
+(dvSumOfAbsoluteError == 0.0)</span><span style='font-size:10.0pt;font-family:
+"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span>{<span style='mso-spacerun:yes'>  
+</span><span class=GramE>dvSumOfAbsoluteError</span> = </span><i><span
+style='font-size:10.0pt;font-family:"Courier New";color:#0000C0'>RELATIVE_ERROR_ZERO_FACTOR</span></i><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>;</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span><span style='mso-tab-count:1'>    </span><span
+class=GramE>System.<i><span style='color:#0000C0'>err</span></i>.println(</span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;Warning:
+sum of error for dependent variable is 0 in RAE fitness calculation. Adjusting
+to avoid division by zero.&quot;</span><span style='font-size:10.0pt;
+font-family:"Courier New";color:black'>);</span><span style='font-size:10.0pt;
+font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span>}</span><span style='font-size:10.0pt;
+font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span></span><span style='font-size:10.0pt;
+font-family:"Courier New";color:#3F7F5F'>// the raw fitness ... RAE</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span></span><span class=GramE><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>return</span></b></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>
+(sumOfAbsoluteError/dvSumOfAbsoluteError);</span><span style='font-size:10.0pt;
+font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span>}</span><span style='font-size:10.0pt;
+font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>    </span><span style='mso-tab-count:1'>  </span></span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span></span><span style='font-size:10.0pt;
+font-family:"Courier New";color:#3F5FBF'>/**</span><span style='font-size:10.0pt;
+font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span><span style='mso-spacerun:yes'> </span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>Calculates</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>the</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>fitness</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>for</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>the</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>RAE</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>(Relative</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>Absolute</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>Error)</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>type</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>fitness.</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span><span style='mso-spacerun:yes'> </span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>Gets</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>the</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>raw</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>fitness</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>and</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>then</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>normalizes</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>between</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>0</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>and</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>max</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>value</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>as</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>(maxValue</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>(1<span
+class=GramE>/(</span>1+RAE)).</span><span style='font-size:10.0pt;font-family:
+"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span><span style='mso-spacerun:yes'> </span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F9FBF'>@param</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>useTrainingData</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>true</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>if</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>using</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>training</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>data,</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>else</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>use</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>testing</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>data</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span><span style='mso-spacerun:yes'> </span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F9FBF'>@param</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><st1:place
+w:st="on"><st1:State w:st="on"><span class=GramE><span style='font-size:10.0pt;
+  font-family:"Courier New";color:#3F5FBF'>ind</span></span></st1:State></st1:place><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>the</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>GEP</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>individual</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>that</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>needs</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>its</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>fitness</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>calculated.</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span><span style='mso-spacerun:yes'> </span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F9FBF'>@return</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>the</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>fitness</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>value</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>after</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>normalization</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>from</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>0</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>to</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>max</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>value</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span><span style='mso-spacerun:yes'> </span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*/</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>      </span></span><span class=GramE><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>static</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>double</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> RAEfitness(</span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>boolean</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>
+useTrainingData, GEPIndividual <st1:place w:st="on"><st1:State w:st="on">ind</st1:State></st1:place>)
+</span><span style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>      </span>{</span><span style='font-size:10.0pt;
+font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span></span><span class=GramE><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>double</span></b></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> RAE = <i><span
+style='background:silver;mso-highlight:silver'>RAErawFitness</span></i>(useTrainingData,
+<st1:place w:st="on"><st1:State w:st="on">ind</st1:State></st1:place>, 0);</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span></span><span style='font-size:10.0pt;
+font-family:"Courier New";color:#3F7F5F'>// raw fitness is normalized between 0
+and <span class=GramE>1000<span style='mso-spacerun:yes'>  </span>(</span>1000
+* (1/(1+RAE))</span><span style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>        </span></span><span class=GramE><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>return</span></b></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>
+(1000.0)/(1.0+RAE);</span><span style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-spacerun:yes'>      </span>}</span><span style='font-size:10.0pt;
+font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span></span><span style='font-size:10.0pt;
+font-family:"Courier New";color:#3F5FBF'>/**</span><span style='font-size:10.0pt;
+font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span><span style='mso-spacerun:yes'> </span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>The</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>max</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>value</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>for</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>this</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>type</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>of</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>fitness</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>is</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>always</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>1000.</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span><span style='mso-spacerun:yes'> </span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F9FBF'>@param</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><st1:place
+w:st="on"><st1:State w:st="on"><span class=GramE><span style='font-size:10.0pt;
+  font-family:"Courier New";color:#3F5FBF'>ind</span></span></st1:State></st1:place><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>the</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>GEP</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>individual</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>that</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>needs</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>its</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>fitness</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>calculated.</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span><span style='mso-spacerun:yes'> </span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F9FBF'>@return</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>value</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>1000.0</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span><span style='mso-spacerun:yes'> </span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#3F5FBF'>*/</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span></span><span class=GramE><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>static</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>double</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>
+RAEmaxfitness(GEPIndividual <st1:place w:st="on"><st1:State w:st="on">ind</st1:State></st1:place>)
+</span><span style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span>{</span><span style='font-size:10.0pt;
+font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:2'>            </span></span><span style='font-size:10.0pt;
+font-family:"Courier New";color:#3F7F5F'>// always 1000</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:2'>            </span></span><span class=GramE><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>return</span></b></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> 1000.0;</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'><span
+style='mso-tab-count:1'>      </span>}</span><span style='font-size:10.0pt;
+font-family:"Courier New"'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New"'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span
+style='mso-spacerun:yes'> </span>The code is fairly straight forward. the only thing
+to note is that at one point we accessed the sum of the absolute error of the
+values of the dependent variable data in the training set using -
+GEPDependentVariable.getDependentVariableSumOfAbsoluteError(). When the
+training and testing data for the program is obtained, a number of values are
+calculated and stored statically in the class GEPDependentVariable. This is so
+these values, which are used by several fitness functions, don<st1:PersonName
 w:st="on">'</st1:PersonName>t have to be recalculated many times as the
 evolutionary process measures the fitness of many individuals. The values
 available for use in the fitness functions are:</p>
+
+<p class=MsoNormal style='text-indent:.5in'><o:p>&nbsp;</o:p></p>
 
 <p class=MsoNormal style='margin-bottom:12.0pt'><code><span style='font-size:
 10.0pt'>&nbsp;&nbsp;&nbsp; /** Mean value of the training values for the
@@ -2900,8 +3638,7 @@ dependentVariableSumOfSquaredRelativeError = 0.0;</code></span><span
 style='font-size:10.0pt'><o:p></o:p></span></p>
 
 <p class=MsoNormal>These values are available for both the training data as
-shown above and for the test data as well. See the class
-ec.gep.GEPDependentVariable.</p>
+shown above and for the test data as well. See the class ec.gep.GEPDependentVariable.</p>
 
 <p class=MsoNormal style='margin-bottom:12.0pt'><o:p>&nbsp;</o:p></p>
 

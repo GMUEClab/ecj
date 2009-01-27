@@ -1,10 +1,6 @@
 package ec.gep.symbols;
 
-import ec.EvolutionState;
 import ec.gep.GEPFunctionSymbol;
-import ec.gp.GPData;
-import ec.gp.GPIndividual;
-import ec.util.Parameter;
 
 /**
  * The logarithm (to a specified base)   log(x, base).
@@ -45,8 +41,8 @@ public class Log2 extends GEPFunctionSymbol {
 	/**
 	 * The human readable form of the expression
 	 */
-	public String printMathExpression( String p[] )
+	public String getMathExpressionAsString( String p[] )
 	{
-		return "log2("+p[0]+")";
+		return "ln("+p[0]+")/ln("+p[1]+")";
 	}
 }

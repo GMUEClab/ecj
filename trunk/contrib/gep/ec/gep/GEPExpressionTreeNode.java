@@ -20,8 +20,6 @@
 
 package ec.gep;
 
-import java.util.*;
-
 /**
  * GEPExpressionTreeNode.java
  * 
@@ -40,12 +38,12 @@ import java.util.*;
  *                               Node0
  *                               - Function node for +
  *                               - param1 is Node1
- *                               - param2 is node2
+ *                               - param2 is Node2
  *                           
  *                  Node1                        Node2
- *                  - Function node for *        - Constant Node for C0
- *                  - param1 is node3            - constant value stored here
- *                  - param2 is node4
+ *                  - Function node for *        - Constant node for C0
+ *                  - param1 is Node3            - constant value stored here
+ *                  - param2 is Node4
  *              
  *       Node3                      Node4
  *       - terminal node for v1     - terminal node for v2
@@ -55,13 +53,14 @@ import java.util.*;
  */
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 public class GEPExpressionTreeNode implements Serializable, Cloneable  
 { 
 	/** If this is a function node then there is a link to each parameter for the function */
 	public GEPExpressionTreeNode parameters[];
 	/** When the function's parameters are evaluated they are stored in this array */
-	double evaluatedParameters[]; 
+	double evaluatedParameters[] = null;	
 	/** This is the Terminal or Function Symbol for the node (empty if a constant node) */
 	public GEPSymbol symbol;
 	/** Number of parameters if this is a function node */
@@ -103,16 +102,17 @@ public class GEPExpressionTreeNode implements Serializable, Cloneable
     
     /**
      * Evaluate the expression encoded in this node and its
-     * descendents (encoded in the parameters if any). Each
+     * descendants (encoded in the parameters if any). Each
      * problem being investigated has a set of data associated with 
      * each variable. The expression is asked for an evaluation for
      * a particular index into this data set. The values for each 
      * terminal (variable) are stored in the terminal symbol object.
      * 
+	 * @param useTrainingData if true use Training data else use Testing data
      * @param valuesIndex For which set of data should we evaluate the expression.
      * @return the evaluated expression
      */
-    public double eval(int valuesIndex)
+    public double eval(boolean useTrainingData, int valuesIndex)
     {
     	// If we encounter + or - infinity or NaN as a result of any parameter
     	// we can't rely on the result of the expression evaluation
@@ -121,18 +121,19 @@ public class GEPExpressionTreeNode implements Serializable, Cloneable
     	if (isConstantNode)
     		return constantValue;
     	if (symbol instanceof GEPTerminalSymbol)
-    	   return ((GEPTerminalSymbol)symbol).eval(valuesIndex);
+    	   return ((GEPTerminalSymbol)symbol).eval(useTrainingData, valuesIndex);
     	// for function symbols we have to calc each parameter and then call the
     	// evaluator for the function with these paramaters.
     	for (int i=0; i<numParameters; i++)
     	{
-    		evaluatedParameters[i] =  parameters[i].eval(valuesIndex);
+    		evaluatedParameters[i] =  parameters[i].eval(useTrainingData, valuesIndex);
     		if (Double.isInfinite(evaluatedParameters[i]) || Double.isNaN(evaluatedParameters[i]))
     			return Double.NaN;
     	}
 
     	return ((GEPFunctionSymbol)symbol).eval(evaluatedParameters);
     }
+    
     
     public Object clone()
     {
@@ -168,7 +169,7 @@ public class GEPExpressionTreeNode implements Serializable, Cloneable
      *  is index 0 in the array refers to the count of the 1st variable in the list of
      *  terminals.
      *  
-     *  @param counts integer array in which the counts will be tallied as we walk through the tre
+     *  @param counts integer array in which the counts will be tallied as we walk through the tree
      *  
      */
     public void variableUseageCounts( int counts[] )
@@ -200,11 +201,12 @@ public class GEPExpressionTreeNode implements Serializable, Cloneable
 			GEPFunctionSymbol s = (GEPFunctionSymbol)symbol;
 			Integer cnt = (Integer)counts.get(s.symbol);
 			if (cnt==null)
-				counts.put(s.symbol, new Integer(1));
+				counts.put(s.symbol, Integer.valueOf(1));
 			else
-				counts.put(s.symbol, new Integer((cnt.intValue())+1));
+				counts.put(s.symbol, Integer.valueOf((cnt.intValue())+1));
 		}
     	for (int i=0; i<numParameters; i++)
     		parameters[i].functionUseageCounts( counts );
     }
+
 }

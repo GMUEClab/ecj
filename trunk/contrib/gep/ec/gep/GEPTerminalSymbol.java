@@ -20,10 +20,6 @@
 
 package ec.gep;
 
-import ec.*;
-import ec.gep.*;
-import ec.util.Parameter;
-
 /* 
  * GEPTerminalSymbol.java
  * 
@@ -42,7 +38,11 @@ import ec.util.Parameter;
 
 public class GEPTerminalSymbol extends GEPSymbol
 {
-	public double values[];
+	/**
+	 * The values used for training a model (the expression encoded in an individual)
+	 * to determine how well the model performs on the training set of data.
+	 */
+	public double trainingValues[];
 	/**
 	 * The values used for testing a model (the expression encoded in an individual)
 	 * to determine how well the model (which was evolved using the training values)
@@ -59,7 +59,7 @@ public class GEPTerminalSymbol extends GEPSymbol
 	{
 		arity = 0;
 		symbolSet = ss;
-		values = null;
+		trainingValues = null;
 		testingValues = null;
 	}
 	
@@ -68,7 +68,7 @@ public class GEPTerminalSymbol extends GEPSymbol
 		arity = 0;
 		symbol = sym;
 		symbolSet = ss;
-		values = null;
+		trainingValues = null;
 		testingValues = null;
 	}
 	
@@ -77,10 +77,10 @@ public class GEPTerminalSymbol extends GEPSymbol
 	 * 
 	 * @param vals - the training values for this terminal symbol 
 	 */
-	public void setValues( double vals[] )
+	public void setTrainingValues( double vals[] )
 	{
-		values = new double[vals.length];
-		System.arraycopy(vals, 0, values, 0, vals.length);
+		trainingValues = new double[vals.length];
+		System.arraycopy(vals, 0, trainingValues, 0, vals.length);
 	}
 
 	/**
@@ -98,15 +98,16 @@ public class GEPTerminalSymbol extends GEPSymbol
 	 * The value of a terminal symbol is the value stored at the specified index 
 	 * in its array of values.
 	 * 
+	 * @param useTrainingData if true use Training data else use Testing data
 	 * @param valuesIndex determines which value to access from its array of values
 	 * @return
 	 */
-	public double eval(int valuesIndex)
+	public double eval(boolean useTrainingData, int valuesIndex)
     {
     	try
     	{
-    		if (GEPDependentVariable.useTrainingData) // use the training data...there MUST be some
-    			return values[valuesIndex];
+    		if (useTrainingData) // use the training data...there MUST be some
+    			return trainingValues[valuesIndex];
     		// else use the testing data if there is any specified
     		else
     			return testingValues[valuesIndex];

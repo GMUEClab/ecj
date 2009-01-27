@@ -47,6 +47,7 @@ public class GEPSpecies extends Species
 {
     public static final String P_GEPSPECIES = "species";
     public final static String P_NUMGENES = "numgenes";
+    public final static String P_NUMCHROMOSOMES = "numchromosomes";
     public final static String P_HEADSIZE = "gene-headsize";
     public final static String P_LINKINGFUNCTION = "gene-linking-function";
     public final static String P_PROBLEMTYPE = "problemtype";
@@ -120,6 +121,15 @@ public class GEPSpecies extends Species
     public int problemTypeIds[] = {PT_FUNCTIONFINDING, PT_CLASSIFICATION, PT_TIMESERIES, PT_LOGICAL};
     public String problemTypeName = "";
 
+    /**
+     * Each GEP Individual can have 1 or more GEPchromosomes each of which
+     * can have 1 or more genes. This is an extension of the Ferreira system to allow
+     * support for vector functions (i.e. sytems with the same independent variable but multiple
+     * dependent variable. With 1 dependent variable it is the same as Ferreira's system. 
+     * When more than 1 chromosome is present then special fitness functions will be required as well.
+     */
+    public int numberOfChromosomes;
+    
     /** How many genes in each genome? */
     public int numberOfGenes;
     /** How big is the head of each gene? */
@@ -141,24 +151,24 @@ public class GEPSpecies extends Species
     
     /** Which operator to use to combine the values of gene expressions? Must be one of
         + - *  / and or xor nand nor nxor 
-    
+        
         NOTE: this is from early version that restricted to these 10 linking functions; now
         any GEPFunctionSymbol function can be used
 
         Each linking function name within the linkingFunctions String starts on a character
         index such that (index mod 5) is 0. So 5 chars allowed for each name in this string
         (so that each function name has at least one space after it).
-     
+    
         Allow: + or add   - or sub  * or mul   / or div
-    */
+     */
     public String linkingFunctions = "+    add  -    sub  *    mul  /    div  and  or   xor  nand nor  nxor ";
     public String oldLinkingFunctionSymbolNames[] =
-    { "Add", "Add", "Sub", "Sub", "Mul", "Mul", "Div", "Div", 
-      "And", "Or", "Xor", "Nand", "Nor", "Nxor" 
-    };
+            { "Add", "Add", "Sub", "Sub", "Mul", "Mul", "Div", "Div", 
+    		  "And", "Or", "Xor", "Nand", "Nor", "Nxor" 
+    		};
     public GEPFunctionSymbol linkingFunctionSymbol = null; 
     public String linkingFunctionName = "Add"; // default
-
+    
     /** Should we use constants for each gene */
     public boolean useConstants = false;
     /** number of constants generated for each gene */
@@ -192,6 +202,9 @@ public class GEPSpecies extends Species
     public void setup(final EvolutionState state, final Parameter base)
     {
         Parameter def = defaultBase();
+        
+        // special code for fitness function setup .... 
+        GEPFitnessFunction.setup(state);
 
         //*************************************************************************************
         // Handle the rates for mutation, inversion, transposition, and recombination of genes
@@ -261,8 +274,20 @@ public class GEPSpecies extends Species
         }
 
         //*************************************************************************************
-        // Get the number of genes in each chromosome (individual), the size of each gene's head, 
+        // Get the number of chromosomes, the number of genes in each chromosome (individual), 
+        // and the size of each gene's head, 
         //*************************************************************************************
+        numberOfChromosomes = state.parameters.getIntWithDefault(base.push(P_NUMCHROMOSOMES),def.push(P_NUMCHROMOSOMES),1);
+        if (numberOfChromosomes < 1)
+            state.output.error("Number of Chromosomes in an individual must be > 0",
+                               base.push(P_NUMCHROMOSOMES),def.push(P_NUMCHROMOSOMES));
+        
+        // setup GEPDependentVariable instances for training and testing data to hold enough space for this
+        // many dependent variables, since each chromosome in the individual must have
+        // a dependent variable
+        GEPDependentVariable.trainingData.setup(numberOfChromosomes);
+        GEPDependentVariable.testingData.setup(numberOfChromosomes);
+                
         numberOfGenes = state.parameters.getInt(base.push(P_NUMGENES),def.push(P_NUMGENES),1);
         if (numberOfGenes < 1)
             state.output.error("Number of Genes in Genome must be > 0",
@@ -277,10 +302,6 @@ public class GEPSpecies extends Species
         //*************************************************************************************
         // Determine the problem type
         //*************************************************************************************
-
-        // setup GEPDependentVariable class static info
-        GEPDependentVariable.setup();
-                
         problemTypeName = state.parameters.getStringWithDefault(base.push(P_PROBLEMTYPE), def.push(P_PROBLEMTYPE), "unknown");
         problemType = -1;
         for (int i=0; i<problemTypeNames.length; i++)
@@ -540,7 +561,7 @@ public class GEPSpecies extends Species
     public GEPSymbolSet symbolSetFor(final String symbolSetName, final EvolutionState state)
     {
     	GEPSymbolSet set = null;
-        if (symbolSet.name == symbolSetName)
+        if (symbolSet.name.equals(symbolSetName))
         	    set = symbolSet;
         if (set==null)
             state.output.error("The GEP symbol set \"" + symbolSetName + "\" could not be found.");
@@ -558,7 +579,7 @@ public class GEPSpecies extends Species
         // Set the fitness
         newind.fitness = (Fitness)(f_prototype.clone());
         newind.evaluated = false;
-        newind.parsedGeneExpressions = null;
+        newind.chromosomesParsed = false;
 
         // Set the species to me
         newind.species = this;

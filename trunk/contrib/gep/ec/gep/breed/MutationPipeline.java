@@ -104,7 +104,8 @@ public class MutationPipeline extends GEPBreedingPipeline
         // should we round up the number of points
         int numberOfPointsToMutate = (int)Math.round((double)(n * s.geneSize * s.numberOfGenes) * s.mutationProbability);
         
-        // Note: below we choose an individual, then a gene from the ind, then a point in the gene
+        // Note: below we choose an individual, then for each chromosome in the individual we
+        //       choose a gene from the chromosome, then a point in the gene
         //       We could also have chosen a point from the total number of points in the
         //       population (excluding the elite(s)) and then mapped that to the ind/gene/point...
         //       might be faster than calling random number generator 3 times
@@ -112,16 +113,22 @@ public class MutationPipeline extends GEPBreedingPipeline
         {   // choose a random individual form new pop excluding the elite(s))
 try {
 	        GEPIndividual randInd = (GEPIndividual)inds[srt.nextInt(n)]; // the genome (chromosome) to mutate
-        	int genome[][] = randInd.genome;
-        	// choose a gene in the genome
-        	int gene[] = genome[srt.nextInt(s.numberOfGenes)];
-        	// and the position within the gene
-        	int genePos = srt.nextInt(gene.length);
-        	// now set the new point to a random terminal or function
-        	gene[genePos] = s.symbolSet.chooseFunctionOrTerminalSymbol(state, thread, genePos, s);
-        	
-            randInd.evaluated = false;
-            randInd.parsedGeneExpressions = null;
+	    	int numChromosomes = randInd.chromosomes.length;
+	    	// do this for each chromosome in the individual
+	    	for (int i=0; i<numChromosomes; i++)
+	    	{
+	    		GEPChromosome chromosome = randInd.chromosomes[i];
+        	    int genome[][] = chromosome.genome;
+        	    // choose a gene in the genome
+        	    int gene[] = genome[srt.nextInt(s.numberOfGenes)];
+        	    // and the position within the gene
+        	    int genePos = srt.nextInt(gene.length);
+        	    // now set the new point to a random terminal or function
+        	    gene[genePos] = s.symbolSet.chooseFunctionOrTerminalSymbol(state, thread, genePos, s);
+                chromosome.parsedGeneExpressions = null;
+	    	}
+	    	randInd.evaluated = false;
+	    	randInd.chromosomesParsed = false;
 } catch (Exception e) { e.printStackTrace(); }
         }
         return n;

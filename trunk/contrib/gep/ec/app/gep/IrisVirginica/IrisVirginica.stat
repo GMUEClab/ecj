@@ -1,3 +1,5 @@
+GENERAL PARAMETERS
+Arguments used in this run: 
 Maximum number of generations in this run: 5000
 Size of population in this run: 30
 Number of genes per chromosome: 3
@@ -5,153 +7,232 @@ Size of gene head: 8
 Seed(s) used in this job: 4357
 Problem type: classification
 Classification rounding threshold: 0.5
+Fitness function: SPECIFIED IN USER PROGRAM
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 0
-Best Individual:
 Evaluated: T
 Fitness: 911.7647
-Linking function: +
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
 *.d1.C1.d0.+././.*.C1.d2.d3.d2.d0.d2.d3.C0.d2
 C0: 6.836075762086136
 C1: 0.48860901445614724
-
 Gene 1
 +.-.d2.d0.C1.d2.d1.d3.d3.d2.d2.d1.d0.d2.C1.d2.d2
 C0: 1.3962049486277406
 C1: 2.902222277968187
-
 Gene 2
 *.-.C1.-.d1.+.-./.d1.C1.d3.d3.d3.d1.d3.d3.C1
 C0: 4.994837825999998
 C1: 4.515621886771059
 
+MATH
+(((d1*0.48860901445614724)+((d0-2.902222277968187)+d2))+(((((d3/d3)+d1)-(4.515621886771059-d3))-d1)*4.515621886771059))
 
-(d1*0.48860901445614724) + ((d0-2.902222277968187)+d2) + (((((d3/d3)+d1)-(4.515621886771059-d3))-d1)*4.515621886771059)
+MATH (SIMPLIFIED)
+-2.902222277968187+4.515621886771059-4.515621886771059^2+d0+0.48860901445614724*d1+d2+4.515621886771059*d3
 
-
-Generation: 3
-Best Individual:
+BEST INDIVIDUAL OF GENERATION
+Generation: 9
 Evaluated: T
 Fitness: 939.3939
-Linking function: +
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
-+.d2.d2.d0.C1.d2.d1.d3.d3.d2.d2.d1.d0.d2.C1.d2.d2
+-.d2.+././.+.-.d3.d0.d3.d3.d3.d1.C1.d2.d2.d2
 C0: 6.836075762086136
 C1: 0.48860901445614724
-
 Gene 1
-/./.d1././.*.d1.d0.d2.d2.d2.d1.d0.d2.C1.d2.d1
+C1.-.*.d1.C1.d2.*.C1.d2.d2.d2.C1.d1.C0.d2.d2.d2
 C0: 1.3962049486277406
 C1: 2.902222277968187
-
 Gene 2
-*.-.C1.-.d1.+.-./.d1.C1.d3.d3.d2.d1.d3.d3.C1
+*.-.C1.-.d1.+.-./.d1.C1.d3.d3.d3.d1.d3.d1.C1
 C0: 4.994837825999998
 C1: 4.515621886771059
 
+MATH
+(((d2-(((d3+d3)/(d3-d1))+(d3/d0)))+2.902222277968187)+(((((d3/d3)+d1)-(4.515621886771059-d3))-d1)*4.515621886771059))
 
-(d2+d2) + ((((d2*d2)/d1)/(d0/d2))/d1) + (((((d3/d2)+d1)-(4.515621886771059-d3))-d1)*4.515621886771059)
+MATH (SIMPLIFIED)
+(2.902222277968187*d0*d1+4.515621886771059*d0*d1-4.515621886771059^2*d0*d1+d0*d1*d2+2*d0*d3-2.902222277968187*d0*d3-4.515621886771059*d0*d3+4.515621886771059^2*d0*d3-d1*d3+4.515621886771059*d0*d1*d3-d0*d2*d3+d3^2-4.515621886771059*d0*d3^2)/(d0*d1-d0*d3)
 
+BEST INDIVIDUAL OF GENERATION
+Generation: 10
+Evaluated: T
+Fitness: 941.17645
+Linking function: Add
 
-Generation: 75
-Best Individual:
+GEP-MODEL
+KARVA
+Gene 0
+-.d2.+././.+.d3.+.d3.d0.d1.C1.d1.C0.d2.d0.C0
+C0: 6.836075762086136
+C1: 0.48860901445614724
+Gene 1
+*./.C1.d0.+.d0./.C1.d0.C0.d1.C1.d1.d3.d3.d1.C0
+C0: 0.561118189863351
+C1: 2.902222277968187
+Gene 2
+-.d2.C1.-.d1.+.-.*.d1.C0.d3.d3.d0.d0.d3.d3.C1
+C0: 4.994837825999998
+C1: 4.515621886771059
+
+MATH
+(((d2-(((d0+d1)/d3)+((0.48860901445614724+d1)/d3)))+((d0/(d0+(2.902222277968187/d0)))*2.902222277968187))+(d2-4.515621886771059))
+
+MATH (SIMPLIFIED)
+-(0.48860901445614724*2.902222277968187+2.902222277968187*d0+0.48860901445614724*d0^2+d0^3+2*2.902222277968187*d1+2*d0^2*d1+2.902222277968187*4.515621886771059*d3-2.902222277968187*d0^2*d3+4.515621886771059*d0^2*d3-2*2.902222277968187*d2*d3-2*d0^2*d2*d3)/(2.902222277968187*d3+d0^2*d3)
+
+BEST INDIVIDUAL OF GENERATION
+Generation: 15
 Evaluated: T
 Fitness: 954.5455
-Linking function: +
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.d3.C1.C0.d1.-.-.d1.d1.d2.d2.d0.d2.d1.d0.d1.d2
-C0: 6.502701445514435
-C1: 4.343147785180093
-
+-.d2.+././.+.d3./.d3.d0.d1.C1.d1.C0.d2.d0.C0
+C0: 6.836075762086136
+C1: 0.48860901445614724
 Gene 1
-/.d1.d1.d1.d3.d1.C0.+.d3.d1.d1.d3.d1.d0.d2.C0.d3
-C0: 2.079217448515717
-C1: 6.228200727501301
-
+*./.d3.d0.+.d0.d3.C1.d0.C1.d1.C0.d1.d3.d3.d1.C1
+C0: 0.561118189863351
+C1: 2.902222277968187
 Gene 2
-/.d2.-.C0.d3.+.+.d3.C0.d2.C1.d1.d3.C0.d1.d0.d2
-C0: 3.5970068073457853
-C1: 4.423907327183186
+-.d2.C1.-.d1.+.-.*.d1.C1.d3.d3.d0.d0.d3.d3.C1
+C0: 4.994837825999998
+C1: 4.515621886771059
 
+MATH
+(((d2-(((d0+d1)/d3)+((0.48860901445614724/d1)/d3)))+((d0/(d0+d3))*d3))+(d2-4.515621886771059))
 
-(d3-4.343147785180093) + (d1/d1) + (d2/(3.5970068073457853-d3))
+MATH (SIMPLIFIED)
+-(0.48860901445614724*d0+d0^2*d1+d0*d1^2+0.48860901445614724*d3+d0*d1*d3+4.515621886771059*d0*d1*d3+d1^2*d3-2*d0*d1*d2*d3+4.515621886771059*d1*d3^2-d0*d1*d3^2-2*d1*d2*d3^2)/(d0*d1*d3+d1*d3^2)
 
+BEST INDIVIDUAL OF GENERATION
+Generation: 85
+Evaluated: T
+Fitness: 955.8823
+Linking function: Add
 
-Generation: 148
-Best Individual:
+GEP-MODEL
+KARVA
+Gene 0
++.d3./.-.d0.d1.d2.-.d3.d0.d3.d1.d3.d1.d0.C0.d0
+C0: 8.812583447501503
+C1: 0.48860901445614724
+Gene 1
+-.d2.+./.+.-.d2./.d3.d3.d1.C0.d2.d3.d3.C1.d0
+C0: 0.561118189863351
+C1: 2.902222277968187
+Gene 2
+-.d2.+./.+.+.d3./.d1.d0.d3.d1.d3.d1.d0.C0.d0
+C0: 4.994837825999998
+C1: 4.515621886771059
+
+MATH
+(((d3+((d1-d2)/d0))+(d2-(((d3-d1)/d2)+((0.561118189863351/d2)+d3))))+(d2-(((d0+d3)/d3)+((d1/d3)+d1))))
+
+MATH (SIMPLIFIED)
+-(d0^2*d2+d0*d1*d2+0.561118189863351*d0*d3-d0*d1*d3+d0*d2*d3-d1*d2*d3+d0*d1*d2*d3+d2^2*d3-2*d0*d2^2*d3+d0*d3^2)/(d0*d2*d3)
+
+BEST INDIVIDUAL OF GENERATION
+Generation: 223
 Evaluated: T
 Fitness: 969.69696
-Linking function: +
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.d3.+.d3.d1.C1.d3.d3.d3.d2.d1.d3.d1.d2.d1.d1.C1
-C0: 4.507653761655358
-C1: 4.343147785180093
-
+-.+.-.d2.d2.d1.d2.d1.d1.d2.d3.d2.d3.d1.d2.d1.d1
+C0: 8.812583447501503
+C1: 0.48860901445614724
 Gene 1
-/.d0.*.+.-.+.d1./.C1.d0.d0.d0.d2.d3.d1.C1.d0
-C0: 0.2682255993567928
-C1: 0.8222523295700002
-
+-.d0.d1./.d0.d1.d3./.d3.d0.d1.C1.d2.d3.C0.d3.d0
+C0: 0.561118189863351
+C1: 9.781716535355141
 Gene 2
-/.d2.-.C0.d3.*.-.+.C1.d2.d1.d2.d0.d0.d2.C1.d0
-C0: 3.5970068073457853
-C1: 4.423907327183186
+-.d2.+.d0.+.+.d0./.d1.d0.d3.C1.d0.d1.d0.d1.d3
+C0: 4.994837825999998
+C1: 9.591449694287702
+
+MATH
+((((d2+d2)-(d1-d2))+(d0-d1))+(d2-(d0+(((d0/d3)+d1)+d0))))
+
+MATH (SIMPLIFIED)
+-(d0+d0*d3+3*d1*d3-4*d2*d3)/d3
 
 
-(d3-(d3+d1)) + (d0/(((d0+d0)+d1)*((d0/d2)-0.8222523295700002))) + (d2/(3.5970068073457853-d3))
-
-
-Best Individual of Run:
-Found at Generation: 148
+BEST INDIVIDUAL 1
+Found at Generation: 223
+Raw Fitness: 0.03125000983476656
 Evaluated: T
 Fitness: 969.69696
-Linking function: +
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.d3.+.d3.d1.C1.d3.d3.d3.d2.d1.d3.d1.d2.d1.d1.C1
-C0: 4.507653761655358
-C1: 4.343147785180093
-
+-.+.-.d2.d2.d1.d2.d1.d1.d2.d3.d2.d3.d1.d2.d1.d1
+C0: 8.812583447501503
+C1: 0.48860901445614724
 Gene 1
-/.d0.*.+.-.+.d1./.C1.d0.d0.d0.d2.d3.d1.C1.d0
-C0: 0.2682255993567928
-C1: 0.8222523295700002
-
+-.d0.d1./.d0.d1.d3./.d3.d0.d1.C1.d2.d3.C0.d3.d0
+C0: 0.561118189863351
+C1: 9.781716535355141
 Gene 2
-/.d2.-.C0.d3.*.-.+.C1.d2.d1.d2.d0.d0.d2.C1.d0
-C0: 3.5970068073457853
-C1: 4.423907327183186
+-.d2.+.d0.+.+.d0./.d1.d0.d3.C1.d0.d1.d0.d1.d3
+C0: 4.994837825999998
+C1: 9.591449694287702
 
+MATH
+((((d2+d2)-(d1-d2))+(d0-d1))+(d2-(d0+(((d0/d3)+d1)+d0))))
 
-(d3-(d3+d1)) + (d0/(((d0+d0)+d1)*((d0/d2)-0.8222523295700002))) + (d2/(3.5970068073457853-d3))
+MATH (SIMPLIFIED)
+-(d0+d0*d3+3*d1*d3-4*d2*d3)/d3
 
-Size of program: 23
-Variables used(count): d0(4), d1(2), d2(2), d3(3)
+MODEL COMPOSITION
+Size of program: 21
+Variables used(variable count) 4: d0 4, d1 3, d2 4, d3 1
+Functions used(function count) 3: - 4, / 1, + 4
 
-***** TRAINING data results *****
+Size of program (MATH simplified): 18
+Variables used(variable count) 4: d1 1, d3 4, d0 2, d2 1
+Functions used(function count) 4: - 2, / 1, + 2, * 5
+
+MODEL QUALITY MEASURES (TRAINING)
 Confusion Matrix: 
                 Predicted Value
-               |  Yes	|  No
+               |  Yes  |  No   
                |----------------
-            Yes|  34	|  0
+           Yes |    34 |     0
 Actual Value   |----------------
-            No |  2	|  64
+           No  |     2 |    64
                |----------------
 
 
-***** TEST data results *****
+MODEL QUALITY MEASURES (TEST)
 Number of Calculation Errors: 0 out of 50 test sets
 Confusion Matrix: 
                 Predicted Value
-               |  Yes	|  No
+               |  Yes  |  No   
                |----------------
-            Yes|  16	|  0
+           Yes |    16 |     0
 Actual Value   |----------------
-            No |  1	|  33
+           No  |     1 |    33
                |----------------
 
-Observed	Computed
+OBSERVED	AND COMPUTED (TRAINING)
+#Observed GEP-Model
 1.0	1.0
 1.0	1.0
 0.0	0.0
@@ -253,6 +334,8 @@ Observed	Computed
 0.0	0.0
 0.0	0.0
 
+OBSERVED	AND COMPUTED (TEST)
+#Observed GEP-Model
 1.0	1.0
 0.0	0.0
 0.0	0.0
@@ -303,3 +386,4 @@ Observed	Computed
 0.0	0.0
 1.0	1.0
 0.0	0.0
+#----------

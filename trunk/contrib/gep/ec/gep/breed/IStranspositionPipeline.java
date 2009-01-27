@@ -107,9 +107,17 @@ try {
         for(int q=0; q<numberToTranspose; q++) 
         {
         	int select = srt.nextInt(n); // choose 1 to transpose --- should be a without replacement selection!
-            isTranspose(((GEPIndividual)inds[select]).genome, srt, s.headSize, s.geneSize);
-            ((GEPIndividual)inds[select]).evaluated = false;
-            ((GEPIndividual)inds[select]).parsedGeneExpressions = null;
+        	GEPIndividual ind = (GEPIndividual)inds[select];
+	    	int numChromosomes = ind.chromosomes.length;
+	    	// do this for each chromosome in the individual
+	    	for (int i=0; i<numChromosomes; i++)
+	    	{
+	    		GEPChromosome chromosome = ind.chromosomes[i];
+                isTranspose(chromosome.genome, srt, s.headSize, s.geneSize);
+                chromosome.parsedGeneExpressions = null;
+	    	}
+            ind.evaluated = false;
+            ind.chromosomesParsed = false;
         }
 } catch (Exception e) { e.printStackTrace(); }
 
@@ -122,7 +130,7 @@ try {
      *  So we do the following:
      *  <br>
      *  1. choose the gene from which to extract the fragment (gf) <br>
-     *  2. choose a position in the gene as the start of the fragment (gfStart) <br>
+     *  2. choose a position (0 to genesize-1) in the gene as the start of the fragment (gfStart) <br>
      *  3. choose the size of the fragment (from 1 to min(headsize-1, genelength-gfStart)) <br>
      *     - if headsize is 1 then can't do anything
      *     (this will restrict the gene fragment from being too large to transpose 

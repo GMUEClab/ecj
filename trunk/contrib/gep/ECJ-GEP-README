@@ -15,6 +15,7 @@ All of the source code for the GEP extension to ECJ is found under ec/gep.
 The documentation file mentioned above is found in the 'docs' directory.
 
 The required javacsv.jar file is found in the 'start' directory.
+The required meditor.jar file is found in the 'start' directory.
 
 Also there have been very minor changes to 3 standard ecj files:
 
@@ -24,7 +25,7 @@ Also there have been very minor changes to 3 standard ecj files:
 	
 These files should replace the standard ecj files before compiling the ecj-gep system.
 
-This version works with ECJ 16.
+This version works with ECJ 18.
 
 Thanks,
 Bob Orchard 
