@@ -8,7 +8,7 @@
 # The computed value is the difference in volume by subtracting the second box from the first.
 # The following is the equation which describes this relationship.
 #
-# Volume Diff = x1×y1×z1 - x2×y2×z2
+# Volume Diff = x1*y1*z1 - x2*y2*z2
 #
 # For example, if the first box has dimensions of x1=3, y1=4 and z1=7 and the second box has
 # dimensions of x2=2, y2=5, z2=3, the resulting volume difference is 54.
@@ -33,9 +33,13 @@ quit-on-run-complete =			true
 # subpop size is m individuals
 pop.subpop.0.size =			100
 
+# may want to turn on/off simplifying expressions when human readable form of individual is printed
+# (careful since the meditor.jar file must be in start directory and it has been know to cause
+# crashes or no terminating loops for some expressions)
+pop.subpop.0.species.ind.simplify-expressions = true
+
 # ec.Species
 # ==============================
-
 gep.species.numgenes = 2
 gep.species.gene-headsize = 8
 gep.species.gene-linking-function = +

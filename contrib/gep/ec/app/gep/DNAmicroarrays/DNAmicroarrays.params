@@ -59,8 +59,8 @@ gep.species.problemtype = classification
 # specified (do not specify this unless it IS a classification type problem).
 gep.species.classification-threshold  = 0.5
 
-gep.species.symbolset.terminalfilename = ec/app/gep/DNAmicroarrays/DNAmicroarrays.txt
-gep.species.symbolset.testingdatafilename = ec/app/gep/DNAmicroarrays/DNAmicroarraysTest.txt
+gep.species.symbolset.terminalfilename = ec/app/gep/DNAmicroarrays/DNAmicroarrays.txt.gz
+gep.species.symbolset.testingdatafilename = ec/app/gep/DNAmicroarrays/DNAmicroarraysTest.txt.gz
 gep.species.symbolset.terminalfileseparator = tab
 
 gep.species.symbolset.functionsize = 4

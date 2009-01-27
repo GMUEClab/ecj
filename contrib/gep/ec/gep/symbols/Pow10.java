@@ -1,10 +1,6 @@
 package ec.gep.symbols;
 
-import ec.EvolutionState;
 import ec.gep.GEPFunctionSymbol;
-import ec.gp.GPData;
-import ec.gp.GPIndividual;
-import ec.util.Parameter;
 
 /**
  * The value of 10 raised to a power specified by a parameter.
@@ -44,7 +40,7 @@ public class Pow10 extends GEPFunctionSymbol {
 	/**
 	 * The human readable form of the expression
 	 */
-	public String printMathExpression( String p[] )
+	public String getMathExpressionAsString( String p[] )
 	{
 		return "pow(10," + p[0] + ")";
 	}

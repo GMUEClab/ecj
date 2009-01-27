@@ -20,8 +20,6 @@
 
 package ec.gep;
 
-import ec.*;
-import ec.util.*;
 import java.io.*;
 
 /* 

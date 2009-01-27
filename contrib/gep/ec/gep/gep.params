@@ -1,4 +1,4 @@
-# This parameter file provides basic GEP-specific stuff.
+# This parameter file provides basic GEP-specific setting and options.
 # 
 # Some rules about Java Property Lists, which is what the
 # system uses for parameters.  Java property lists are a little weird:
@@ -40,9 +40,9 @@
 #
 #
 # This file has info about the parameters that can or must be set for gep
-# projects. Defaults are supplied where necessary
+# projects. Defaults are supplied where necessary.
 
-# My parent: probably should not change this
+# My parent: probably should not change this (it should link to the basic ec parameter file)
 parent.0 =				../ec.params
 
 # Problem --- specified by the user's param file
@@ -51,12 +51,15 @@ parent.0 =				../ec.params
 #
 # specifies the user's GEPProblem class that he created for his problem.
 #
-# If the user wants to just take a default route and NOT create any code at all,
-# he can use the default class ec.gep.GEPDefaultUserProg. He will then
-# also specify a 'fitness-function' to use by setting the eval.fitness-function 
+# In this GEP implementation if the user wants to just take a default route 
+# and NOT create any code at all, he can use the default class 
+#
+#				ec.gep.GEPDefaultUserProg. 
+#
+# He will then also specify a 'fitness-function' to use by setting the eval.fitness-function 
 # parameter to one of: (check the GEPFitnessFunction.java class for the latest list of these)
 #
-#   AEWSR (Absolute Error with Selection Range) 
+# AEWSR (Absolute Error with Selection Range) 
 #	AH (Absolute/Hits)
 #	MSE (mean squared error) 
 #	RMSE (root mean squared error) 
@@ -82,18 +85,34 @@ parent.0 =				../ec.params
 #	PPNVP (PPV/NPV Positive Predictive Value / Negative Predictive Value ) 
 #	SSPN (Sensitivity/Specificity/PPV/NPV ) 
 #	WCorrRMSE (Weighted correlation coefficient and Root Mean Squared Error)
+#       MCSCE1   (Simple classification error for multiple chromosome classification problems)
+#       MCSCE2   (Simple classification error for multiple chromosome classification problems)
+#       MCSCE3   (Simple classification error for multiple chromosome classification problems)
+#       MCMSE (MultipleChromosome Mean Squared Error) 
+#       SEWD (Sammon Error With Dissimilarity) - used only when multiple chromosomes
 #
 # Case is important in these names! Also a few of the functions require 
-# extra double parameters beyond the GEPIndividual 1st parameter.
-# (like AHfitness(GEPIndividual, double) which requires that a precision be
+# extra double parameters beyond the GEPIndividual 1st parameter,
+# like AHfitness(GEPIndividual, double) which requires that a precision be
 # specified. To do this the user can add the numeric values in the parameters
 # eval.problem.fitness-function-arg0 and eval.problem.fitness-function-arg1
 #
-# for example to use the RH function one would do:
+# for example to use the RH function one would specify:
 # eval.problem = ec.gep.GEPDefaultUserProg
 # eval.problem.fitness-function = RH
 # eval.problem.fitness-function-arg0 = 2.0
-
+#
+# Also note that one can also control how the ideal fitness is determined. 
+# Ideal fitness is used to decide if we should quit doing more generations when 
+# the parameter stop-on-run-complete is set to true. The parameter 
+# fitness-function-ideal-percent-threshold is the % of the maximum fitness value associated
+# with each fitness function (normally 1000) that is required for a fitness
+# value to be considered ideal; So if the max fitness value is 1000 and the 
+# ideal % threshold is set to 99.9 then a fitness value >= 999 will be considered ideal; 
+# By default the fitness-function-ideal-percent-threshold is 99.999999 so a value >= 999.99999
+# (assuming the max fitness value is 1000) will be ideal. 
+#
+# eval.problem.fitness-function-ideal-percent-threshold = 99.999999
 
 # ec.Evolve
 # ==============================
@@ -101,7 +120,7 @@ parent.0 =				../ec.params
 # we want store announcements in memory, so...
 store = 				true
 
-# totally verbose
+# totally verbose (see ECJ documentation for the various values of verbosity ... 0, 1000, 2000, etc.)
 verbosity = 				0
 
 # flush output immediately, don't buffer it
@@ -113,7 +132,7 @@ flush = 				true
 evalthreads = 				1
 breedthreads = 				1
 
-# a good random seed for thread 0  - as per ec.params but we might want a  different one for gep
+# a good random seed for thread 0  - as per ec.params but we might want a different one for gep
 # seed.0 = 				time
 seed.0 = 				4357
 
@@ -123,14 +142,14 @@ seed.0 = 				4357
 
 # We're not writing checkpoint files.  If we were, we'd do it every
 # generation, and the prefix to all the files would be "ec.*" as specified here
-checkpoint =				false
-# checkpoint-modulo =    #    1
-# prefix = 				    ec
+checkpoint =				      false
+# checkpoint-modulo =     1
+# prefix = 				        ec
 
 # simple generational evolution -- don't change this
 state = 				ec.simple.SimpleEvolutionState
 
-# We're using the GEP initialization method
+# We're using the GEP initialization method (required for GEP problems -- or some modified variation of this)
 init = 					ec.gep.GEPInitializer
 
 # We're using the standard (empty) finalization method by default
@@ -139,28 +158,43 @@ finish = 	        	ec.simple.SimpleFinisher
 # We're using the standard (empty) exchange method
 exch = 					ec.simple.SimpleExchanger
 
-# We're using standard breeding -- no cross-population breeding
+# We're using standard breeding -- no cross-population breeding (do NOT change for GEP)
 breed =					ec.simple.SimpleBreeder
 
-# We're using standard evaluation -- no coevolution
+# We're using standard evaluation -- no coevolution (do NOT change for GEP)
 eval =					ec.simple.SimpleEvaluator
 
-
-# run for 100 generations, quit prematurely if I find something ideal
+# Parameter 'generations' specifies the maximum number of generations to run the system.
+# Parameter 'quit-on-run-complete' determines if the run can quit prior to reaching the 
+# maximum number of generations. If true and a fitness is found to be an 'ideal' 
+# fitness then the run will stop. If 'false' then the run will continue until the maximum
+# number of generations has been reached.
+# Parameter 'fitness-function-ideal-percent-threshold' specifies a percentage of the maximum
+# fitness value (MaxThreshold) that must be reached to be considered an ideal fitness value;
+# The default value is 99.999999; so if the maximum fitness value is 1000 and the
+# fitness-function-ideal-percent-threshold is set to 99.9 then a fitness value >= 999 will 
+# be considered ideal; by default a value >= 999.99999 will be ideal.
+#
+# Note that the parameters 'generations' and 'quit-on-run-complete' are standard ECJ parameters.
+# The parameter 'fitness-function-ideal-percent-threshold' was added in ECJ-GEP to allow some
+# control on the meaning of reaching an 'ideal' fitness.
+#
+# The values below would allow the system to run for 100 generations, 
+# but quit prematurely if I find something ideal
 # (default values only)
-generations =				    100
+generations =				        100
 quit-on-run-complete =			true
-
+#fitness-function-ideal-percent-threshold = 99.0
 
 # ec.Population
 # ==============================
 
-pop = 					ec.Population
+pop = 					ec.Population  
 
 # No multiple populations for gep so subpops should always be 1
 # and must always use GEPSubpopulation
 pop.subpops =				1
-pop.subpop.0 = 				ec.gep.GEPSubpopulation
+pop.subpop.0 = 			ec.gep.GEPSubpopulation
 
 
 # ec.Subpopulation
@@ -168,20 +202,24 @@ pop.subpop.0 = 				ec.gep.GEPSubpopulation
 # don't bother trying to eliminate duplicates from the
 # initial population
 pop.subpop.0.duplicate-retries =	0
-# do try to get initial population with non-zero fitness values
+
+# Do try to get initial population with non-zero fitness values.
+# This tries to ensure we start with a population that has few poor 
+# individuals with a fitness value of zero.
 pop.subpop.0.zero-fitness-retries = 10
 
-# subpop size is 30 individuals -- example only
+# subpop size is 30 individuals -- example only -- you will likely want to modify this for your problems
 pop.subpop.0.size =			30
 
-# You might change this, but it must be a GEPSpeciesForm!
-pop.subpop.0.species = 			ec.gep.GEPSpecies
+# You might change the species, but it must be a GEPSpeciesForm!
+pop.subpop.0.species = 			  ec.gep.GEPSpecies
+
+# Must have GEPIndividuals!
 pop.subpop.0.species.ind = 		ec.gep.GEPIndividual
 
 # may want to turn on/off simplifying expressions when human readable form of individual is printed
-(careful since the meditor.jar file must be in start directory and it has been know to cause
-crashes or no terminating loops for some expressions); simplification is only done at the end
-of a run for the final results!
+# (careful since the meditor.jar file must be in start directory and it has been know to cause
+# crashes or no terminating loops for some expressions)
 pop.subpop.0.species.ind.simplify-expressions = false
 
 # use SimpleFitness for the subpop
@@ -202,30 +240,34 @@ gep.species.genetransposition-prob = 0.1
 
 # Constants can not be used with Logical problem types ... will be ignored if specified
 gep.species.use-constants             = false
-#examples for constants if used
+# examples for constants if used
 # gep.species.numconstantspergene       = 10
 # gep.species.integer-constants         = true
 # gep.species.constants-lowerlimit      = 0
 # gep.species.constants-upperlimit      = 100
-# can alwys default to these values as suggested by Ferreira
+# can always default to these values as suggested by Ferreira
 gep.species.rnc-mutation-prob         = 0.01
 gep.species.dc-mutation-prob          = 0.044
 gep.species.dc-inversion-prob         = 0.1
 gep.species.dc-istransposition-prob   = 0.1
 
+# the size of the Karva expressions is given by the number of genes and the 
+# size of the head of each gene in the chromosome.
 gep.species.numchromosomes = 1
 gep.species.numgenes = 3
 gep.species.gene-headsize = 8
-# The linking function may be one of +, -, * or / for most problems
-# and for logic problems can be one of: and, or, nand, nor, xor, nxor.
+
+# The linking function is used to combine the expressions from each gene
+# into an expression for the entire chromosome.
 # The linking function may be one of +, -, * or / for most problems
 # and for logic problems can be one of: and, or, nand, nor, xor, nxor.
 # NOTE: the above is historical since now you can use ANY of the functions
-#       defined as a functionSymbol (Add, Sub, Iflt4, etc.); for the
-#       SymbolFunctions you need to use the proper case in the name when
+#       defined as a GEPFunctionSymbol (Add, Sub, Iflt4, etc.); for the
+#       GEPFunctionSymbols you need to use the proper case in the name when
 #       specifying it! The arity of the function does not have to be 2 BUT
-#          arity of the linking function must suit the number of genes
-#          arity MUST be at least 2
+#       the arity of the linking function must suit the number of genes.
+#
+#       Arity MUST be at least 2;
 #          if arity is 2 ... any number of genes is OK
 #          if arity is 3 ... must be 3, 5, 7, 9, etc genes
 #          if arity is 4 ... must be 4, 7, 10, 13, etc genes
@@ -298,6 +340,8 @@ gep.species.symbolset   = ec.gep.GEPSymbolSet
 # set at this time BUT a name must be specified so do it in the default params
 gep.species.symbolset.name = ss0
 #
+# For the functions you need to indicate how many to use, their names and the weight to
+# be used when deciding (randomly) how many of each to allocate in an expression.
 # gep.species.symbolset.functionsize = 4
 # gep.species.symbolset.function.0 = Add
 # gep.species.symbolset.function.0.weight = 1
@@ -308,17 +352,18 @@ gep.species.symbolset.name = ss0
 # gep.species.symbolset.function.3 = Div
 # gep.species.symbolset.function.3.weight = 1
 #
+# The terminal symbols can be specified directly ...
 # gep.species.symbolset.terminalsize = 1
 # gep.species.symbolset.terminal.0 = x
 #
-# OR for the terminal set the info can be in a text file where the file
+# OR for the terminal set the info can be in a text file which
 # has the names of the terminal symbols and the dependent variable
 # in the first record/line (comma separated, space separated, tab separated, etc).
 # If the filename ends with .dat then a space is the delimeter, otherwise it
 # is assumed to be a comma delimiter. However, the separator can be
 # specified directly by including a terminalfileseparator parameter.
-# The training values for the terminal symbols are in in the other 
-# records; the number of terminals is computed from the number of terminal
+# The training values for the terminal symbols are in the other 
+# records of the file; the number of terminals is computed from the number of terminal
 # symbols in the 1st record. So a file might look like:
 # x1, x2, x3, dvar
 # 0.5, 0.6, 0.7, 1.8
@@ -362,7 +407,7 @@ gep.species.symbolset.name = ss0
 # gep.species.symbolset.testingdatafilename = testDataFileName
 
 
-# for gep systems breeding should be as shown below ... changing them 
+# For GEP systems breeding should be as shown below ... changing them 
 # is possible but will not be as per original gep by Ferreira (as in GeneXProTools)
 gep.species.pipe = ec.gep.breed.DcGeneticOperatorsPipeline
 gep.dcgeneticoperators.source.0 = ec.gep.breed.GenerecombinationPipeline
@@ -383,7 +428,7 @@ breed.elite.0 = 			1
 # ec.SimpleStatistics
 # ==============================
 
-# output statistics to the file "out.stat" in the directory
+# Output statistics to the file "out.stat" in the directory
 # the run was started in
 # GEPSimpleStatistics has a number of parameters it
 # can use to control the output:

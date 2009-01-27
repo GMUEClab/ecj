@@ -1,10 +1,6 @@
 package ec.gep.symbols;
 
-import ec.EvolutionState;
 import ec.gep.GEPFunctionSymbol;
-import ec.gp.GPData;
-import ec.gp.GPIndividual;
-import ec.util.Parameter;
 
 /**
  * If (a >= b) then c else d
@@ -47,7 +43,7 @@ public class Ifgt2 extends GEPFunctionSymbol {
 	/**
 	 * The human readable form of the expression
 	 */
-	public String printMathExpression( String p[] )
+	public String getMathExpressionAsString( String p[] )
 	{
 		return "ifgt2(" + p[0] + ", " + p[1] + ")";
 	}

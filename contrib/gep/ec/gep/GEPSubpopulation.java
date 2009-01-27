@@ -119,7 +119,7 @@ public class GEPSubpopulation extends Subpopulation {
 
                 for (int zeroFitnessTries=0; zeroFitnessTries <= numZeroFitnessRetries; zeroFitnessTries++)
                 {
-                	((SimpleProblemForm)(state.evaluator.p_problem)).evaluate(state, individuals[x], 0);
+                	((SimpleProblemForm)(state.evaluator.p_problem)).evaluate(state, individuals[x], 0, 0);
                 	if (individuals[x].fitness.fitness() <= 0.0)
                 		individuals[x] = species.newIndividual(state, thread);
                 	else break;

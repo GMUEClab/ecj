@@ -21,12 +21,14 @@
 
 package ec.gep;
 import java.io.*;
-import java.nio.charset.*;
+import java.nio.charset.Charset;
+
 import ec.*;
 import ec.util.*;
 
 import java.util.*;
-import java.util.zip.*;
+import java.util.zip.GZIPInputStream;
+
 import com.csvreader.*;
 
 /* 
@@ -156,7 +158,8 @@ public class GEPSymbolSet implements Clique
     }
     
     /** Sets up all the GEPSymbolSet symbols, loading them from the parameter
-    file. */
+     *  file. 
+     */
     public void setup(final EvolutionState state, final Parameter base, final Parameter def, GEPSpecies species)
     {       	
         // Name of file with the terminal (variable) definitions and training values 
@@ -182,7 +185,8 @@ public class GEPSymbolSet implements Clique
         //      number of terminals will be specified in the embedding dimension value 
         //      provided in the parameter file
         // else if a file specified
-        //      get the 1st line of the file and count the fields in it
+        //      get the 1st line of the file and count the fields in it (#terminals is number of fields minus
+        //      the number of chromosomes/dependent variables)
         // else 
         //      use the number of terminals specified in the parameter file
  
@@ -198,7 +202,7 @@ public class GEPSymbolSet implements Clique
                                               species.timeseriesEmbeddingDimension > 0;
         if (!terminalFilename.equals(""))
         {
-        	String defaultTerminalFileSeparator = ","; // default field separator is comma	
+        	String defaultTerminalFileSeparator = ","; // default field separator is comma
         	try 
         	{ 
             	// allow for gzip files .... end with .gz or .gzip\
@@ -238,7 +242,7 @@ public class GEPSymbolSet implements Clique
             else if (terminalFileSeparator=="space")
             	terminalFileSeparator = " ";
             terminalFileCSV.setDelimiter(terminalFileSeparator.charAt(0));
-            // let's check for a testing dat file at this time as well .. if no file for
+            // let's check for a testing data file at this time as well .. if no file for
             // names and training data no need to worry about this one.
             if (!testingTerminalFilename.equals(""))
             {
@@ -276,7 +280,8 @@ public class GEPSymbolSet implements Clique
         	{ state.output.fatal("The file with variable (terminal) definitions and values (" + terminalFilename +
 		             ") failed to read the headers" + e, base.push(P_TERMINALFILENAME), def.push(P_TERMINALFILENAME));
         	}
-        	numberOfTerminals = terminalSymbolsfromFile.length-1;  // 1 less for the dependent variable at the end
+        	// 1 less for each dependent variable (number of chromosomes) at the end
+        	numberOfTerminals = terminalSymbolsfromFile.length-species.numberOfChromosomes; 
         	if (numberOfTerminals < 1)
         	state.output.fatal("The file with terminal definitions and data values (" + terminalFilename +
 			             ") has no independent variables specified in record 1", base.push(P_TERMINALFILENAME), def.push(P_TERMINALFILENAME));
@@ -285,7 +290,7 @@ public class GEPSymbolSet implements Clique
         else
         {
            numberOfTerminals = state.parameters.getInt(base.push(P_TERMINALSIZE), def.push(P_TERMINALSIZE),1);
-        } 
+        }
         numberOfSymbols += numberOfTerminals;
         
         if (numberOfSymbols < 1)
@@ -314,7 +319,7 @@ public class GEPSymbolSet implements Clique
         Parameter pFunction = base.push(P_FUNCTION);
         Parameter pdefFunction = def.push(P_FUNCTION);
         
-        // create hashtable of names of terminals and hash table with names of functons
+        // create hashtable of names of terminals and hash table with names of functions
         // so we can easily check that they are not duplicates
         Hashtable functionHT = new Hashtable();
         Hashtable terminalHT = new Hashtable();
@@ -407,8 +412,12 @@ public class GEPSymbolSet implements Clique
         }
         
         // must be at least 1 Terminal symbol in the SymbolSet.
+        // If not then the user didn't specify the terminals in the param file or in the data file
         if (numberOfTerminals < 1)
-            state.output.fatal("Must be at least one Terminal Symbol in the set of GEPSymbols");
+            state.output.fatal("Must be at least one Terminal Symbol in the set of GEPSymbols\n" +
+            		           "Either did not specify the terminal symbols in the param file or\n" + 
+            		           "did not specify the appropriate data file with the terminals specified in the first line."
+            		          );
         
         // collect the id's (indices) of the terminal and function symbols that 
         // are in the set of symbols
@@ -513,7 +522,7 @@ public class GEPSymbolSet implements Clique
     		if (rawTimeSeriesValues == null)
 				state.output.fatal("Unable to get time series data values from User Program or CSV file");
     		Vector values[] = processRawTimeSeriesValues(state, species, rawTimeSeriesValues);
-    		// have an array of vectors; 1 vector for each indep variable and the dep variable
+    		// have an array of vectors; 1 vector for each indep variable and the dep variable(s)
     		for (int i=0; i<values.length; i++)
     		{
     			// get the values for training ... and testing (specified by timeseriesTestingPredictions)
@@ -524,17 +533,18 @@ public class GEPSymbolSet implements Clique
     				v[m] = ((Double)values[i].elementAt(m)).doubleValue();
     			for (int n=0; n<testingV.length; n++)
     				testingV[n] = ((Double)values[i].elementAt(n+sizeOfTrainingData)).doubleValue();
-    			if (i==values.length-1) // last column in file is the dependent var
-    			{	GEPDependentVariable.setValues(v);
-    			    GEPDependentVariable.setTestingValues(testingV);
+    			int depVarIndex = i-values.length+species.numberOfChromosomes;
+    			if (depVarIndex>=0) // last column(s) in file is(are) the dependent variable(s)
+    			{	GEPDependentVariable.trainingData.setValues(v, depVarIndex);
+    			    GEPDependentVariable.testingData.setValues(testingV, depVarIndex);
     			}
     			else
-    			{   ((GEPTerminalSymbol)symbols[numberOfFunctions+i]).setValues(v);
+    			{   ((GEPTerminalSymbol)symbols[numberOfFunctions+i]).setTrainingValues(v);
     			    ((GEPTerminalSymbol)symbols[numberOfFunctions+i]).setTestingValues(testingV);
     			}    			
     		}
     	}
-    	// else If there is a file with the terminals and dep variable use this else ask for
+    	// else If there is a file with the terminals and dep variable(s) use this else ask for
     	// the values from the User Program (problem).
     	else if (terminalFileCSV != null )//terminals defined in CSV file
     	{
@@ -568,10 +578,11 @@ public class GEPSymbolSet implements Clique
 	    				state.output.fatal("Failed trying to read a training data set value. The field is supposed to be a number but was the string '"
 	    						+ (String)values[i].elementAt(m) + "'.\n" + e);
 	    			}
-    			if (i==terminalSymbolsfromFile.length-1) // last column in file is the dependent var
-    				GEPDependentVariable.setValues(v);
+	    		int jj = terminalSymbolsfromFile.length-species.numberOfChromosomes;
+    			if (i >= jj) // last column(s) in file is(are) the dependent variable(s)
+    				GEPDependentVariable.trainingData.setValues(v, i-jj);
     			else
-    			   ((GEPTerminalSymbol)symbols[numberOfFunctions+i]).setValues(v);
+    			   ((GEPTerminalSymbol)symbols[numberOfFunctions+i]).setTrainingValues(v);
     		}
     		// get the testing data as well if a file was specified
     		if (testingTerminalFileCSV != null )//testing data defined in CSV file
@@ -607,8 +618,9 @@ public class GEPSymbolSet implements Clique
 	        				state.output.fatal("Failed trying to read a testing data set value. The field is supposed to be a number but was the string '"
 	        						+ (String)testingValues[i].elementAt(m) + "'.\n" + e);
 	        			}
-        			if (i==terminalSymbolsfromFile.length-1) // last column in file is the dependent var
-        				GEPDependentVariable.setTestingValues(v);
+	    	    	int jj = terminalSymbolsfromFile.length-species.numberOfChromosomes;
+        			if (i >= jj) // last column(s) in file is(are) the dependent variable(s)
+        				GEPDependentVariable.testingData.setValues(v, i-jj);
         			else
         			   ((GEPTerminalSymbol)symbols[numberOfFunctions+i]).setTestingValues(v);
         		}
@@ -628,35 +640,45 @@ public class GEPSymbolSet implements Clique
 				if (vals == null)
 					state.output.fatal("Expecting user problem (GEPProblem/ProblemForm) to supply training data values for terminal symbol '" 
 							+ ts + "'.");
-				ts.setValues(vals);
+				ts.setTrainingValues(vals);
 				vals = prob.getTestingDataValues(ts.symbol);
 				if (vals != null) // don't have to supply testing data
 					ts.setTestingValues(vals);
 			}
-			vals = prob.getDataValues(GEPDependentVariable.symbol);			
-			if (vals == null)
-				state.output.fatal("Expecting user problem (GEPProblem/ProblemForm) to supply trsining data values for dependent variable.");
-			GEPDependentVariable.setValues(vals);
-			vals = prob.getTestingDataValues(GEPDependentVariable.symbol);			
-			if (vals != null) // don't have to supply testing data
-				GEPDependentVariable.setTestingValues(vals);
+			// if just one dep var then ask user by requesting with getdataValues("dependentVariable")
+			// and if more than one dep var (more than 1 chromosome) then ask for dep variables
+			// with getDataValues("dependentVariable0"), getDataValues("dependentVariable1"), ...
+			for (int i=0; i<species.numberOfChromosomes; i++)
+			{
+				String depVarSym = GEPDependentVariable.symbol;
+				if (species.numberOfChromosomes>1)
+					depVarSym = depVarSym + i;
+				vals = prob.getDataValues(depVarSym);			
+				if (vals == null)
+					state.output.fatal("Expecting user problem (GEPProblem/ProblemForm) to supply training data values for dependent variable '"
+							+ depVarSym + "'.");
+				GEPDependentVariable.trainingData.setValues(vals, i);
+				vals = prob.getTestingDataValues(depVarSym);			
+				if (vals != null) // don't have to supply testing data
+					GEPDependentVariable.testingData.setValues(vals, i);
+			}
     	}
     	
     	// Some checking of data values to ensure they meet the requirements for the various problem types.
     	// For all problem types need to make sure all indep vars and the dep var have the same number of values!
-    	int numValues = GEPDependentVariable.values.length;
+    	int numValues = GEPDependentVariable.trainingData.values[0].length;
 		for (int i = numberOfFunctions; i<numberOfSymbolsWithoutConstantSymbol; i++)
-    	    if (((GEPTerminalSymbol)symbols[i]).values.length != numValues)
+    	    if (((GEPTerminalSymbol)symbols[i]).trainingValues.length != numValues)
                 state.output.fatal("Must have same number of values for all independent variables and the dependent variable."
                 		+ "/nNumber of values for Dependent Variable is: " + numValues  
                 		+ "/nNumber of values for Independent Variable '" + symbols[i].symbol 
-                		+ "' is: " + ((GEPTerminalSymbol)symbols[i]).values.length);
+                		+ "' is: " + ((GEPTerminalSymbol)symbols[i]).trainingValues.length);
 		// For Classification and logical problems all dependent variable values must be either 0 or 1
 		if (species.problemType == GEPSpecies.PT_CLASSIFICATION  || species.problemType == GEPSpecies.PT_LOGICAL)
 		{
-			double dvVals[] = GEPDependentVariable.values;
+			double dvVals[] = GEPDependentVariable.trainingData.values[0];
 			for (int i=0; i<numValues; i++)
-				if (dvVals[i] != 0.0 & dvVals[i] != 1.0)
+				if (dvVals[i] != 0.0 && dvVals[i] != 1.0)
 	                state.output.fatal("For classification/logical problems all dependent variable values must be either 1 or 0.\nFound value " + 
 	                		dvVals[i] +  " at index " + i + "in the values.");
 		}
@@ -665,15 +687,14 @@ public class GEPSymbolSet implements Clique
 		{	// for each indep variable symbol
 			for (int i = numberOfFunctions; i<numberOfSymbolsWithoutConstantSymbol; i++)
 			{
-				double ivVals[] = ((GEPTerminalSymbol)symbols[i]).values;
+				double ivVals[] = ((GEPTerminalSymbol)symbols[i]).trainingValues;
 				for (int m=0; m<numValues; m++)
-					if (ivVals[m] != 0.0 & ivVals[m] != 1.0)
+					if (ivVals[m] != 0.0 && ivVals[m] != 1.0)
 		                state.output.fatal("For logical problems all independent variable values must be either 1 or 0.\nFound value " + 
 		                		ivVals[m] +  " at index '" + m + "' in the variable '" + 
 		                		((GEPTerminalSymbol)symbols[i]).symbol + "'.");
 			}
 		}
-		    GEPDependentVariable.useTrainingData = true;
         state.output.exitIfErrors();
     }
     
@@ -727,7 +748,7 @@ public class GEPSymbolSet implements Clique
     {
     	int rawLen = rawTimeSeriesValues.length;
     	int delay = species.timeseriesDelay;
-    	int numVars = species.timeseriesEmbeddingDimension + 1; // 1 extra for the dep var
+    	int numVars = species.timeseriesEmbeddingDimension + species.numberOfChromosomes; // 1 extra for the each dep var
     	Vector v[] = new Vector[numVars];
     	// number or rows one can get from N values, with delay of D, and
     	// numvars of M is  ((N - M*D -1)/D)+2

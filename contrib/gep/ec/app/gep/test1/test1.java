@@ -36,12 +36,12 @@ public class test1 extends GEPProblem implements SimpleProblemForm
 {
     static double IDEAL_FITNESS_MINIMUM = 999.9999;
 	
-    public void evaluate(EvolutionState state, Individual ind, int threadnum) 
+    public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum) 
     {
         if (!ind.evaluated)  // don't bother reevaluating
         {
             // Mean Squared Error (MSE) fitness is normalized between 0 and 1000 (1000 * (1/(1+MSE))
-            double fitness = GEPFitnessFunction.MSEfitness((GEPIndividual)ind);
+            double fitness = GEPFitnessFunction.MSEfitness(true, (GEPIndividual)ind);
             
             // the fitness better be SimpleFitness!
             SimpleFitness f = ((SimpleFitness)ind.fitness);

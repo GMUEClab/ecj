@@ -1,10 +1,6 @@
 package ec.gep.symbols;
 
-import ec.EvolutionState;
 import ec.gep.GEPFunctionSymbol;
-import ec.gp.GPData;
-import ec.gp.GPIndividual;
-import ec.util.Parameter;
 
 /**
  * 1 parameter raised to the 5th power.
@@ -45,7 +41,7 @@ public class X5 extends GEPFunctionSymbol {
 	/**
 	 * The human readable form of the expression
 	 */
-	public String printMathExpression( String p[] )
+	public String getMathExpressionAsString( String p[] )
 	{
 		return "(" + p[0] + "^5)";
 	}

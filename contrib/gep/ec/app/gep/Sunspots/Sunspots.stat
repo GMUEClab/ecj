@@ -1,16 +1,21 @@
+GENERAL PARAMETERS
+Arguments used in this run: 
 Maximum number of generations in this run: 5000
 Size of population in this run: 30
 Number of genes per chromosome: 5
 Size of gene head: 8
 Seed(s) used in this job: 4357
 Problem type: timeseries
+Fitness function: ??UNKNOWN??
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 0
-Best Individual:
 Evaluated: T
 Fitness: 164.93083
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 min2.-.v7.gau.v8.+.v6.+.v4.v7.v0.v4.v6.v8.v8.v0.v7.v5.v4.v2.v8.v0.v9.v2.v6.v2.v8.v2.v8.v6.v3.v7.v4
 C0: 8.99139697257921
@@ -37,14 +42,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 min((exp(-pow((v6+(v4+v7)),2))-v8),v7) + min(min(v1,(v6-pi)),v2) + (v2+v6) + sqrt(abs(((((v9+v7)+v5)+v2+v6)/3))) + (v6+v5)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1
-Best Individual:
 Evaluated: T
 Fitness: 254.44745
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 min2.-.v7.gau.+.v6.+.v8.v4.v7.v0.v4.v6.v8.v7.v0.v7.v5.v4.v2.v8.v0.v9.v2.v6.v2.v8.v2.v8.v6.v3.v8.v4
 C0: 8.99139697257921
@@ -71,14 +79,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 min((exp(-pow(v6,2))-((v4+v7)+v8)),v7) + min(min(v1,(v6-pi)),v2) + (v2+v6) + sqrt(abs(((((v9+v7)+v5)+v2+v6)/3))) + (v6+v5)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 2
-Best Individual:
 Evaluated: T
 Fitness: 291.4132
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 min2.-.v7.gau.v8.+.v6.+.v4.v7.v0.v4.v6.v8.v8.v0.v7.v5.v4.v2.v8.v0.v9.v2.v6.v2.v8.v2.v3.v6.v3.v7.v4
 C0: 8.99139697257921
@@ -105,14 +116,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 min((exp(-pow((v6+(v4+v7)),2))-v8),v7) + min(min(v1,(v6-pi)),v2) + (v2+v6) + sqrt(abs(((((v9+v7)+v5)+v2+v9)/3))) + (-6.204741423438767)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 3
-Best Individual:
 Evaluated: T
 Fitness: 299.60992
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 min2.-.v7.gau.v8.+.v6.+.v4.v7.v0.v4.v6.v8.v8.v0.v7.v5.v4.v2.v8.v0.v9.v2.v6.v2.v8.v2.v3.v6.v3.v7.v4
 C0: 8.99139697257921
@@ -139,14 +153,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 min((exp(-pow((v6+(v4+v7)),2))-v8),v7) + min(min(v1,(v6-pi)),v7) + (v2+v6) + sqrt(abs(((((v9+v7)+v5)+v2+v9)/3))) + (-6.204741423438767)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 4
-Best Individual:
 Evaluated: T
 Fitness: 415.16223
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 min2.-.v7.gau.v8.+.v6.+.C1.v7.v0.v4.v7.v8.v7.v0.v7.v5.v4.v2.v8.v0.v9.v2.v6.v2.v8.v2.v8.v6.v3.v8.v4
 C0: 8.99139697257921
@@ -173,14 +190,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 min((exp(-pow((v6+(4.832862097279346+v7)),2))-v8),v7) + (1-min(((pi-max(v0,v6))+v6),v1)) + (v8+v8) + sqrt(abs(((((v9+v7)+v5)+v2+v6)/3))) + (1/(1+pow(e,-(-6.204741423438767)))
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 6
-Best Individual:
 Evaluated: T
 Fitness: 445.91724
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.abs.avg3.+.v2.v6.-.v5.v9.v7.v4.v9.v0.v0.C1.v2.v8.v7.v8.v1.v4.v8.v2.v9.v0.v2.v0.v9.v8.v3.v6.v0.v4
 C0: 6.567275017993005
@@ -207,14 +227,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 sqrt(abs(((((v9-v7)+v5)+v2+v6)/3))) + min((exp(-pow(((v7+v0)*v4),2))-cos(v6)),v7) + tanh(v2) + sqrt(abs((((max(v9,v7,v7,v8)+v5)+v2+v9)/3))) + sin(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 7
-Best Individual:
 Evaluated: T
 Fitness: 461.98642
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.abs.avg3.+.v2.v6.+.v5.v9.v7.v4.v0.v0.v0.v0.v5.v8.v7.v8.v3.v4.v8.v2.v9.v0.v2.v0.v9.v5.v3.v6.v0.v4
 C0: 8.99139697257921
@@ -241,14 +264,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 sqrt(abs(((((v9+v7)+v5)+v2+v6)/3))) + min((exp(-pow(((v7+v0)+v4),2))-cos(v6)),v7) + tanh(v2) + sqrt(abs((((v9+exp(-pow(v9,2)))+v1+v9)/3))) + (cos(v6)+v8)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 8
-Best Individual:
 Evaluated: T
 Fitness: 500.0146
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.abs.sqrt.+.v2.v6.-.v5.v9.v7.v4.v9.v0.v0.C1.v2.v0.v7.v1.v1.v4.v8.v2.v9.v0.v2.v0.v4.v5.v3.v6.v0.v4
 C0: 6.567275017993005
@@ -275,14 +301,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 ((abs(v2)+sqrt(v6)+((v9-v7)+v5))/3) + min((exp(-pow(((v7+v0)*v4),2))-cos(v6)),v7) + tanh(v2) + sqrt(abs(((sqrt(9.000778538810074)+v2+v5)/3))) + sin(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 15
-Best Individual:
 Evaluated: T
 Fitness: 532.4611
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.abs.+.sqrt.v2.v6.-.v5.v9.v7.v4.v9.v0.v0.C1.v2.v0.v7.v1.v1.v4.v8.v2.v9.v0.C0.v0.v9.v8.v3.v7.v0.v4
 C0: 6.567275017993005
@@ -309,14 +338,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 ((abs(v2)+(v6+(v9-v7))+sqrt(v5))/3) + sech(v8) + abs(tanh(((v6+(abs(v9)-v3-v9-v3)+(1-v4))/3))) + sqrt(abs((((max(v7,v4,v7,v3)+v5)+v2+v9)/3))) + sin(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 16
-Best Individual:
 Evaluated: T
 Fitness: 602.91406
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.abs.sqrt.+.v2.v6.-.v9.v9.v7.v4.v9.v0.v0.C1.v2.v0.v7.v1.v1.v4.v8.v2.v9.v0.v2.v0.v4.v7.v3.v6.v0.v4
 C0: 6.567275017993005
@@ -343,14 +375,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 ((abs(v2)+sqrt(v6)+((v9-v7)+v9))/3) + min((exp(-pow(((v7+v0)*v4),2))-cos(v6)),v7) + tanh(v2) + sqrt(abs(v3)) + sin(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 18
-Best Individual:
 Evaluated: T
 Fitness: 624.4289
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.abs.sqrt.+.v1.v6.-.v9.v9.v7.v4.v9.v0.v0.C1.v2.v0.v7.v1.v1.v4.v8.v2.v9.v0.v2.v0.v4.v7.v3.v6.v0.v4
 C0: 6.567275017993005
@@ -377,14 +412,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 ((abs(v1)+sqrt(v6)+((v9-v7)+v9))/3) + min((exp(-pow(((v7+v0)*v4),2))-cos(v6)),v7) + tanh(v2) + sqrt(abs(v3)) + sin(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 22
-Best Individual:
 Evaluated: T
 Fitness: 637.2723
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.abs.sqrt.+.v1.v6.-.v9.v9.v7.v9.v9.v0.v0.C1.v2.v0.v7.v3.v1.v4.v8.v2.v9.v0.v0.v0.v4.v7.v3.v6.v0.v4
 C0: 6.567275017993005
@@ -411,14 +449,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 ((abs(v1)+sqrt(v6)+((v9-v7)+v9))/3) + min((exp(-pow(((v8+v9)*v4),2))-cos((v7-v0-v4-v6))),v7) + tanh(v2) + sqrt(abs((((v0+v5)+v2+v9)/3))) + sin(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 23
-Best Individual:
 Evaluated: T
 Fitness: 640.519
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.abs.sqrt.+.v1.v6.-.v9.v9.v7.v9.v9.v0.v0.C1.v2.v0.v0.v3.v1.v4.v8.v2.v9.v0.v0.v0.v4.v7.v3.v6.v0.v4
 C0: 6.567275017993005
@@ -445,14 +486,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 ((abs(v1)+sqrt(v6)+((v9-v7)+v9))/3) + min((exp(-pow(((v8+v9)*v4),2))-cos((v7-v0-v4-v6))),v4) + tanh(v2) + sqrt(abs((((v6+v5)+v2+v9)/3))) + sin(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 26
-Best Individual:
 Evaluated: T
 Fitness: 642.318
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.abs.sqrt.+.v1.v6.-.v9.v9.v7.v9.v9.v0.v3.v6.C1.v8.v7.v3.v1.v4.v8.v2.v9.v0.v0.v9.v4.v7.v3.v6.v9.v4
 C0: 6.567275017993005
@@ -479,14 +523,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 ((abs(v1)+sqrt(v6)+((v9-v7)+v9))/3) + min((exp(-pow(((v2+v9)*v4),2))-cos((v9-v0-v4-v6))),v7) + tanh(v2) + sqrt(abs(((v8+v2+v9)/3))) + sin(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 32
-Best Individual:
 Evaluated: T
 Fitness: 643.3513
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.abs.sqrt.+.v1.v6.v9.-.v9.v7.v9.v9.v0.v0.C1.v2.v8.v7.v3.v1.v4.v8.v2.v9.v9.v0.v9.v4.v7.v3.v6.v9.v4
 C0: 6.567275017993005
@@ -513,14 +560,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 ((abs(v1)+sqrt(v6)+(v9+(v9-v7)))/3) + min((exp(-pow(((v2+v9)*v4),2))-cos((v9-v0-v4-v6))),v7) + tanh(v2) + sqrt(abs(((v8+v2+v9)/3))) + sin(min((v1^3),v3,(v3*v4*v4*v9)))
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 33
-Best Individual:
 Evaluated: T
 Fitness: 653.91284
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.abs.sqrt.+.v1.v6.-.v9.v9.v7.v9.v9.v0.v3.v6.v1.v0.v1.v0.v1.v4.v8.v2.v9.v0.v0.v0.v4.v7.v3.v6.v0.v4
 C0: 6.567275017993005
@@ -547,14 +597,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 ((abs(v1)+sqrt(v6)+((v9-v7)+v9))/3) + min((exp(-pow((v0-v2-v2-v8),2))-cos((v3+v2))),((v7*v7)^3)) + tanh(v4) + sqrt(v9) + sin(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 42
-Best Individual:
 Evaluated: T
 Fitness: 654.02264
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.abs.sqrt.+.v1.v6.-.v9.v9.v7.v9.v9.v0.v3.v6.v1.v0.v1.v0.v1.v3.v8.v2.v9.v7.v0.v0.v4.v7.v3.v6.v0.v4
 C0: 6.567275017993005
@@ -581,14 +634,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 ((abs(v1)+sqrt(v6)+((v9-v7)+v9))/3) + min((exp(-pow((v0-v2-v2-(-2.2658543287782003)),2))-cos((v3+v2))),((v7*v7)^3)) + tanh(v4) + sqrt(v9) + sin(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 43
-Best Individual:
 Evaluated: T
 Fitness: 654.60706
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.abs.sqrt.+.v1.v6.-.v9.v9.v7.v9.v9.v0.v3.v5.v1.v0.v1.v0.v1.v3.v8.v2.v9.v7.v1.v0.v4.v7.v3.v6.v0.v4
 C0: 6.567275017993005
@@ -615,14 +671,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 ((abs(v1)+sqrt(v6)+((v9-v7)+v9))/3) + min(v8,(exp(-pow(cos(((v1-v7-v7-v2)*(v2+v8))),2))^3)) + tanh(v4) + sqrt(v9) + sin(v5)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 44
-Best Individual:
 Evaluated: T
 Fitness: 657.05536
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.abs.sqrt.+.v1.v6.-.+.v9.v7.C1.v9.v0.v3.v6.v1.v0.v1.v0.v1.v3.v8.v2.v9.v7.v0.v0.v4.v7.v3.v6.v0.v4
 C0: 6.567275017993005
@@ -649,14 +708,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 ((abs(v1)+sqrt(v6)+((v9-v7)+(4.832862097279346+v9)))/3) + min(v5,(exp(-pow(cos(((v7-v7-v7-v2)*(v2+v8))),2))^3)) + tanh(v4) + sqrt(v9) + sin(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 46
-Best Individual:
 Evaluated: T
 Fitness: 658.1221
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.abs.sqrt.+.v1.v6.-.+.v9.v7.C1.v9.v0.v3.v6.v1.v0.v1.v0.v1.v3.v8.v2.v9.C1.v0.v0.v4.v7.v3.v6.v0.v4
 C0: 4.286846539915
@@ -683,14 +745,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 ((abs(v1)+sqrt(v6)+((v9-v7)+(4.832862097279346+v9)))/3) + min(v5,(exp(-pow(cos(((v7-(-2.2658543287782003)-v7-v2)*(v2+v8))),2))^3)) + tanh(v4) + sqrt(v9) + sin(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 49
-Best Individual:
 Evaluated: T
 Fitness: 658.71967
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.abs.sqrt.+.v1.v6.-.+.v9.v7.C1.v9.v0.v3.v6.v1.v0.v1.v0.v9.v3.v8.v2.v9.C1.v0.v0.v4.v7.v3.v6.v0.v4
 C0: 4.286846539915
@@ -717,14 +782,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 ((abs(v1)+sqrt(v6)+((v9-v7)+(4.832862097279346+v9)))/3) + min(v5,(exp(-pow(cos(((v7-(-2.2658543287782003)-v7-v2)*(v2+v1))),2))^3)) + tanh(v4) + sqrt(v9) + sin(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 53
-Best Individual:
 Evaluated: T
 Fitness: 676.33545
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.v1.v8.abs.v9.X3./.v5.v1.v5.v9.v0.v4.v3.v5.v5.v4.v5.v6.v3.v1.v6.v4.C1.v2.v0.v9.v7.v4.v7.v4.v1
 C0: -8.778418091174679
@@ -751,14 +819,17 @@ C0: -2.6059622110163927
 C1: -6.204741423438767
 
 
+MATH
 sqrt(v9) + min(v5,(exp(-pow(cos(v5),2))^3)) + ((abs(v1)+sqrt(v6)+((v9-v7)+(2.2911551691378644+v9)))/3) + sqrt(v9) + min(tanh((v5*(((v6-v3)^2)^2))),v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 54
-Best Individual:
 Evaluated: T
 Fitness: 677.0688
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.v1.v8.abs.v9.X3./.v5.v1.v5.v9.v0.v4.v3.v5.v5.v4.v5.v6.v3.v1.v6.v4.C1.v2.v0.v9.v7.v4.v7.v4.v8
 C0: 4.286846539915
@@ -785,14 +856,17 @@ C0: 5.077586997577427
 C1: -6.204741423438767
 
 
+MATH
 sqrt(v9) + min(v5,(exp(-pow(cos(v5),2))^3)) + ((abs(v1)+sqrt(v6)+((v9-v7)+((-0.24478055786819297)+v9)))/3) + sqrt(v9) + sin(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 82
-Best Individual:
 Evaluated: T
 Fitness: 677.7396
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.v1.v8.v5.v9.X3./.v5.v1.v5.v9.v0.v4.v3.v5.v5.v4.v5.v6.v3.v7.v6.v4.C1.v2.v3.v4.v7.v6.v5.v4.v8
 C0: 4.286846539915
@@ -819,14 +893,17 @@ C0: 5.077586997577427
 C1: -6.204741423438767
 
 
+MATH
 sqrt(v9) + min((exp(-pow((v7-v7-v4-v2),2))+cos((v2^5))),(v5^3)) + ((abs(v1)+sqrt(v7)+((v9-v7)+((-0.24478055786819297)+v9)))/3) + sqrt(v9) + sin(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 96
-Best Individual:
 Evaluated: T
 Fitness: 678.0489
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 min2.v5.X3.min2.+.v9.gau.cos.v7.v8.v0.v1.v5.v2.v3.v0.v3.v0.v0.v6.v3.v1.v3.v2.C0.v5.v2.v2.v4.v1.v4.v5.v1
 C0: 0.94424687082223
@@ -853,14 +930,17 @@ C0: 5.077586997577427
 C1: -2.7770537656520204
 
 
+MATH
 min(v5,(min((exp(-pow(v7,2))+cos(v8)),v9)^3)) + sqrt(v9) + ((abs(v1)+sqrt(v7)+((v9-v7)+((-0.24478055786819297)+v9)))/3) + sqrt(v9) + sin(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 107
-Best Individual:
 Evaluated: T
 Fitness: 678.59
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 min2.v5.X3.min2.+.v9.gau.cos.v7.v5.v0.v1.v5.v2.v3.v7.v3.v0.v1.v6.v3.v1.v3.v2.C0.v5.v2.v2.v4.C1.v4.v5.v1
 C0: 0.94424687082223
@@ -887,14 +967,17 @@ C0: 5.077586997577427
 C1: -2.7770537656520204
 
 
+MATH
 min(v5,(min((exp(-pow(v7,2))+cos(v5)),v9)^3)) + sqrt(v9) + ((abs(v1)+sqrt(v7)+((v9-v7)+((-0.24478055786819297)+v9)))/3) + sqrt(v9) + sin(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 122
-Best Individual:
 Evaluated: T
 Fitness: 678.75226
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 min2.v5.X3.min2.+.v9.gau.cos.v7.v5.v0.v1.v5.v2.v7.v7.v3.v0.v1.v6.v3.v1.v0.v2.C0.v5.v2.v2.v4.v1.v4.v5.v0
 C0: 0.94424687082223
@@ -921,14 +1004,17 @@ C0: 5.077586997577427
 C1: -2.7770537656520204
 
 
+MATH
 min(v5,(min((exp(-pow(v7,2))+cos(v5)),v9)^3)) + sqrt(v9) + ((abs(v1)+sqrt(v7)+((v9-v7)+((-1.300912451382592)+v9)))/3) + sqrt(v9) + sin((pi+sqrt(v1)))
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 127
-Best Individual:
 Evaluated: T
 Fitness: 679.4185
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 min2.v5.X3.min2.+.v9.sech.cos.v0.v5.v0.v1.v5.v2.v7.v7.v3.v0.v1.v6.v3.v1.v0.v2.C0.v5.v2.v2.v4.v1.v4.v5.v0
 C0: 0.94424687082223
@@ -955,14 +1041,17 @@ C0: 5.077586997577427
 C1: -2.7770537656520204
 
 
+MATH
 min(v5,(min((sech(v0)+cos(v5)),v9)^3)) + sqrt(v9) + ((abs(v1)+sqrt(v7)+((v9-v7)+((-1.0651116762196722)+v9)))/3) + sqrt(v9) + tanh((v6+v2+(((-2.7770537656520204)+min(v3,5.077586997577427)+v5)/3)+5.077586997577427))
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 129
-Best Individual:
 Evaluated: T
 Fitness: 679.44684
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 min2.v5.X3.min2.+.v9.sech.cos.v0.v5.v0.v1.v5.v2.v7.v7.v3.v0.v1.v6.v3.v1.v0.v2.C0.v2.v2.v2.v4.v1.v4.v5.v0
 C0: 0.94424687082223
@@ -989,14 +1078,17 @@ C0: 5.077586997577427
 C1: -2.7770537656520204
 
 
+MATH
 min(v5,(min((sech(v0)+cos(v5)),v9)^3)) + sqrt(v9) + ((abs(v1)+sqrt(v7)+((v9-v7)+((-1.300912451382592)+v9)))/3) + sqrt(v9) + tanh((v6+v2+min(exp(v5),((v4+5.077586997577427+v7)/3))+5.077586997577427))
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 136
-Best Individual:
 Evaluated: T
 Fitness: 679.5146
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.v0.v8.mul3.comp.gau.v9.v5.v5.v6.v9.v2.v8.v3.v6.v7.C0.v5.v6.v7.v6.v3.v4.C1.v5.v8.v2.C1.C1.v9.v9.v8
 C0: 0.94424687082223
@@ -1023,14 +1115,17 @@ C0: 5.077586997577427
 C1: -2.7770537656520204
 
 
+MATH
 sqrt(v9) + min(v5,(min((sech(v4)+cos(v5)),v9)^3)) + ((abs(v1)+sqrt(v7)+((v9-v7)+((-1.300912451382592)+v9)))/3) + sqrt(v9) + tanh((v6+v2+min(exp(v5),((v4+5.077586997577427+v7)/3))+5.077586997577427))
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 153
-Best Individual:
 Evaluated: T
 Fitness: 679.7579
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.v9.v0.X3.mul3.comp.gau.v5.v5.v6.v9.v2.v8.v3.v6.v7.C0.v5.v6.v7.v6.v3.v9.C1.v5.v8.v2.C0.C0.v9.v9.v4
 C0: 0.94424687082223
@@ -1057,14 +1152,17 @@ C0: 5.077586997577427
 C1: -2.7770537656520204
 
 
+MATH
 sqrt(v9) + min(v2,(min((sech(v4)+cos(v5)),v9)^3)) + ((abs(v1)+sqrt(v7)+((v9-v7)+((-1.300912451382592)+v9)))/3) + sqrt(v9) + sech(v6)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 161
-Best Individual:
 Evaluated: T
 Fitness: 685.01245
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.tanh.v1.v8.-.mul3.exp.v4.v7.v3.v2.v5.v9.v5.v9.v2.v0.v5.v0.v5.v0.v1.v3.v3.v4.v1.C0.v9.v1.v4.v8.v4
 C0: 0.94424687082223
@@ -1091,14 +1189,17 @@ C0: 7.759498411033395
 C1: -2.7770537656520204
 
 
+MATH
 sqrt(v9) + sqrt(v9) + ((abs(v1)+sqrt(v7)+((v9-v7)+((-1.300912451382592)+v9)))/3) + sqrt(v9) + (-2.7770537656520204)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 178
-Best Individual:
 Evaluated: T
 Fitness: 687.6754
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 C1.v0.*.v2.v3.v5.exp.X3.v8.v8.v2.v7.v2.v2.v2.v2.v4.v9.v9.v9.v7.v8.v0.C0.v5.v3.v4.v8.v0.v6.v7.v7.v9
 C0: 0.94424687082223
@@ -1125,14 +1226,17 @@ C0: 7.759498411033395
 C1: -2.7770537656520204
 
 
+MATH
 (-6.313672246815569) + sqrt(v9) + ((abs(v1)+sqrt(v7)+((v9-v7)+((-1.300912451382592)+v9)))/3) + sqrt(v9) + sqrt(v9)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 250
-Best Individual:
 Evaluated: T
 Fitness: 687.76196
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.v3.v2.v4.v9.v7.+.v7.v8.v8.C1.v1.v6.v6.v0.v5.v0.v0.v3.C0.v2.v1.C1.v1.v5.v0.v4.v0.v8.v6.v2.v2
 C0: 2.538382861267177
@@ -1159,14 +1263,17 @@ C0: 7.759498411033395
 C1: -2.7770537656520204
 
 
+MATH
 sqrt(v9) + sqrt(v9) + ((abs(v1)+sqrt(v7)+((v9-v7)+((-1.300912451382592)+v9)))/3) + (-6.1710005168431685) + sqrt(v9)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 256
-Best Individual:
 Evaluated: T
 Fitness: 687.90546
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.*.v2.v4.v9.v7.+.v7.v8.v8.C1.v1.v6.v6.v0.v5.v0.v0.v3.C0.v2.v1.C1.v1.v5.v0.v4.v0.v8.v6.v2.v2
 C0: 2.538382861267177
@@ -1193,14 +1300,17 @@ C0: 7.759498411033395
 C1: -2.7770537656520204
 
 
+MATH
 sqrt(v9) + sqrt(v9) + ((abs(v1)+sqrt(v7)+((v9-v7)+((-0.24478055786819297)+v9)))/3) + (-6.1710005168431685) + sqrt(v9)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 283
-Best Individual:
 Evaluated: T
 Fitness: 687.92444
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.*.v2.v1.v9.v7.csc.v7.v8.v8.C0.v1.v6.v6.v8.v5.v0.v0.v3.C0.v2.v1.v8.v1.v5.v9.v4.v4.v4.v8.v2.v7
 C0: 2.538382861267177
@@ -1227,14 +1337,17 @@ C0: 7.759498411033395
 C1: -2.7770537656520204
 
 
+MATH
 sqrt(v9) + sqrt(v9) + ((abs(v1)+sqrt(v7)+((v9-v7)+max((-0.24478055786819297),v9)))/3) + (-6.1710005168431685) + sqrt(v9)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 312
-Best Individual:
 Evaluated: T
 Fitness: 709.1241
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.abs.v9.C1.v9.v7.-.max2.v9.v7.v0.v9.v3.v2.v8.v8.v1.v6.v3.v7.C0.v3.v3.v3.C0.v4.v4.C0.v1.C0.v5.v7.v6
 C0: 2.538382861267177
@@ -1261,14 +1374,17 @@ C0: 7.759498411033395
 C1: -2.7770537656520204
 
 
+MATH
 ((abs(v9)+v9+(-3.5014116371631037))/3) + (v9-v8) + sqrt(v9) + pi + pi
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 315
-Best Individual:
 Evaluated: T
 Fitness: 715.9995
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 pi.v8.v1.v3.v7.v8.v7.C1.v8.C0.v8.v4.v2.v2.C1.v8.v4.v2.v6.C0.v7.C0.v0.v5.C0.v0.v3.v2.v4.v6.v5.v9.v9
 C0: -8.838404808172381
@@ -1295,14 +1411,17 @@ C0: 7.759498411033395
 C1: -2.7770537656520204
 
 
+MATH
 pi + (v9-v8) + sqrt(v9) + ((abs(v9)+v9+2.7544954477811245)/3) + pi
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 317
-Best Individual:
 Evaluated: T
 Fitness: 719.2033
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v8.v1.v3.v7.v8.v7.avg4.v8.C1.v8.v4.v2.v2.C0.v8.v4.v2.v5.C1.v7.C0.v0.v5.C0.v0.v3.v2.v4.v6.v5.v9.v9
 C0: -8.838404808172381
@@ -1329,14 +1448,17 @@ C0: 7.759498411033395
 C1: -2.7770537656520204
 
 
+MATH
 sqrt(v8) + (v9-v8) + sqrt(v9) + ((abs(v9)+v9+2.7544954477811245)/3) + pi
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 324
-Best Individual:
 Evaluated: T
 Fitness: 724.8484
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v8.v1.v3.v7.v8.v7.avg4.v5.v9.v8.v3.v2.v2.C1.v8.v4.v2.v5.C0.v7.C1.v0.v7.v3.v5.v7.v4.v4.v6.v5.v9.v9
 C0: 2.538382861267177
@@ -1363,14 +1485,17 @@ C0: 7.759498411033395
 C1: -2.7770537656520204
 
 
+MATH
 sqrt(v8) + (v9-v8) + sqrt(v7) + ((abs(v9)+v9+(-6.1710005168431685))/3) + 7.759498411033395
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 330
-Best Individual:
 Evaluated: T
 Fitness: 727.4886
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 -.v9.v8.C1.avg3.v4.gau.C1.v5.v0.v9.v9.C0.v1.v0.v6.v4.v8.v1.v1.v9.v4.v4.v0.v4.v9.v1.C0.v7.v9.v2.v6.v0
 C0: -8.838404808172381
@@ -1397,14 +1522,17 @@ C0: 7.759498411033395
 C1: -2.7770537656520204
 
 
+MATH
 (v9-v8) + sqrt((1/(1+pow(e,-v1))) + sqrt(v7) + ((abs(v9)+v9+2.7544954477811245)/3) + 7.759498411033395
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 341
-Best Individual:
 Evaluated: T
 Fitness: 728.991
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 -.v9.v8.C1.v3.v4.gau.C0.v3.v0.v9.v9.C1.v1.v0.C1.v6.C1.v1.v1.v9.v5.v0.v0.v4.v0.v1.v2.v7.v9.v8.v6.v0
 C0: 2.4852680024780565
@@ -1431,14 +1559,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 (v9-v8) + sqrt((1/(1+pow(e,-tanh(v3)))) + sqrt(v7) + ((((v9+v8)/2)+v9+(-6.1710005168431685))/3) + 7.759498411033395
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 354
-Best Individual:
 Evaluated: T
 Fitness: 732.78754
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v7.*.X2.X5.v4.-.X3.v3.v2.v8.C1.v8.v3.v2.v8.v3.v3.v6.v1.C0.v5.v7.v8.C1.v5.v9.C1.v9.C1.v4.v2.v5
 C0: 2.4852680024780565
@@ -1465,14 +1596,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 sqrt(v7) + sqrt((1/(1+pow(e,-tanh(v3)))) + (v9-v8) + ((((v9+v8)/2)+v9+0.12478897313333626)/3) + 7.759498411033395
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 356
-Best Individual:
 Evaluated: T
 Fitness: 732.9191
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v7.*.X2.X5.v4.add3.X3.v3.v2.v8.C1.v8.v3.v2.v8.v3.v3.v6.v1.C0.v5.v7.v8.C1.v5.v9.C1.v9.C1.v4.v2.v5
 C0: 2.4852680024780565
@@ -1499,14 +1633,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 sqrt(v7) + sqrt((1/(1+pow(e,-v0))) + (v9-v8) + ((((v9+v8)/2)+v9+0.12478897313333626)/3) + 7.759498411033395
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 358
-Best Individual:
 Evaluated: T
 Fitness: 732.9638
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.avg2.v9.C1.v9.v8.tan.C0.v8.v1.v0.v1.v2.v5.v9.v8.v3.v0.v1.v1.v9.v4.v4.v0.v4.v8.C1.C1.v2.v0.v4.v0.v9
 C0: 2.4852680024780565
@@ -1533,14 +1670,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 ((((v9+v8)/2)+v9+(-6.313672246815569))/3) + sqrt((1/(1+pow(e,-tanh(v3)))) + sqrt(v7) + (v9-v8) + tan(7.759498411033395)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 415
-Best Individual:
 Evaluated: T
 Fitness: 733.33765
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.avg2.v9.C1.v9.v8.v5.C1.v7.v2.v4.v7.v2.v3.v3.v8.v3.v0.v5.v1.v7.v4.v4.v2.v4.v6.v5.v9.v5.v8.v4.v0.v9
 C0: 2.4852680024780565
@@ -1567,14 +1707,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 ((((v9+v8)/2)+v9+(-6.313672246815569))/3) + min((1/(1+pow(e,-v2)),tanh(v8),v3,((v1-(-3.0239681317498786))*v7)) + sqrt(v7) + (v9-v8) + tan(7.759498411033395)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 426
-Best Individual:
 Evaluated: T
 Fitness: 733.4782
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.avg3.C1.v9.C1.v4.C1.v4.v7.v1.C1.v8.v3.v8.v2.v7.v4.v7.v2.v3.v2.v5.v4.v7.v3.v4.v8.v5.v1.v8.v1.v6.v6
 C0: -5.105277251379277
@@ -1601,14 +1744,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 atan((((-6.313672246815569)+v9+(-6.313672246815569))/3)) + ((((v9+v8)/2)+v9+(-3.0239681317498786))/3) + sqrt(v7) + (v9-v8) + tan(7.759498411033395)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 466
-Best Individual:
 Evaluated: T
 Fitness: 734.23004
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.avg2.v9.C1.v9.v8.v8.+.v9.v2.v1.v6.v2.v3.v4.v7.v6.v9.v5.v1.v3.v3.v4.v2.v4.v6.v5.v0.v3.v5.v4.v0.C0
 C0: -5.105277251379277
@@ -1635,14 +1781,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 ((((v9+v8)/2)+v9+(-6.313672246815569))/3) + atan((((-2.2658543287782003)+v9+(-3.0239681317498786))/3)) + sqrt(v7) + (v9-v8) + tan(7.759498411033395)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 490
-Best Individual:
 Evaluated: T
 Fitness: 734.34357
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.avg2.v9.C1.v9.v8.v8.+.v4.v2.v1.v9.v2.v3.v5.v8.v6.v9.v5.v1.v3.v3.v4.v2.C0.v0.v5.v0.v3.v5.v7.v0.C1
 C0: -5.105277251379277
@@ -1669,14 +1818,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 ((((v9+v8)/2)+v9+(-6.313672246815569))/3) + atan((((-3.0239681317498786)+v9+(-3.0239681317498786))/3)) + sqrt(v7) + (v9-v8) + tan(7.759498411033395)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 515
-Best Individual:
 Evaluated: T
 Fitness: 734.85724
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.avg2.v9.C1.v9.v8.logi.+.v4.v2.v1.v9.v2.v3.v5.v8.v6.v9.v5.v1.v8.v3.v4.v2.v1.v0.v5.v4.v4.v5.v7.v6.v3
 C0: -5.105277251379277
@@ -1703,14 +1855,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 ((((v9+v8)/2)+v9+(-6.313672246815569))/3) + atan((((v4-v3)+v9+(-3.0239681317498786))/3)) + sqrt(v1) + (v9-v8) + tan(7.759498411033395)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 519
-Best Individual:
 Evaluated: T
 Fitness: 735.49536
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.avg2.v9.C1.v9.v8.logi.+.v4.v0.v1.v9.v2.v3.v5.v8.v6.v9.v5.v1.v8.v3.v4.v2.v4.v2.v7.v6.v3.v4.v1.v1.v9
 C0: -5.105277251379277
@@ -1737,14 +1892,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 ((((v9+v8)/2)+v9+(-6.313672246815569))/3) + atan((((-3.0239681317498786)+v9+(-3.0239681317498786))/3)) + sqrt(v1) + (v9-v8) + tan(7.759498411033395)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 620
-Best Individual:
 Evaluated: T
 Fitness: 738.8917
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.avg3.C1.v9.C0.v4.v3.v0.C1.v6.v6.C1.v4.v8.v9.v9.v3.v9.v1.v9.v2.v5.v3.C1.C0.v1.v5.v7.v0.v4.v4.v4.v7
 C0: -5.105277251379277
@@ -1771,14 +1929,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 atan((((-6.313672246815569)+v9+(-5.105277251379277))/3)) + ((v8+(-3.0239681317498786)+v9)/3) + sqrt(v1) + (v9-v8) + tan(7.759498411033395)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 633
-Best Individual:
 Evaluated: T
 Fitness: 739.12714
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 -.v9.v8.v6.exp.+.v9.*.v6.v7.v3.v3.v5.v7.v4.v9.v0.v4.v6.v1.v1.v7.C1.v6.v2.v3.v3.v9.v6.v9.C1.v3.C0
 C0: -5.105277251379277
@@ -1805,14 +1966,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 (v9-v8) + ((v8+(-3.0239681317498786)+v9)/3) + sqrt(v1) + atan((((-8.90612816798381)+v9+(-8.90612816798381))/3)) + tan(7.759498411033395)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 636
-Best Individual:
 Evaluated: T
 Fitness: 739.9633
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.v8.C1.v9.*.v4.v3.v0.v9.v2.C1.v9.C0.v2.v9.v5.v3.v4.v2.C1.v3.v4.v8.v9.v9.v6.v6.v2.v4.v7.v3.v9.v6
 C0: -5.105277251379277
@@ -1839,14 +2003,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 ((v8+(-6.313672246815569)+v9)/3) + (v9-v8) + sqrt(v1) + atan((((-8.90612816798381)+v9+(-8.90612816798381))/3)) + tan(7.759498411033395)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 643
-Best Individual:
 Evaluated: T
 Fitness: 740.65
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.v8.C1.v9.+.v0.v3.v4.v9.v2.v9.v9.C1.v2.v7.v5.v3.v4.v2.C0.v3.v4.v8.v1.v9.v6.v6.v2.v4.v7.v3.v9.v6
 C0: -5.105277251379277
@@ -1873,14 +2040,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 ((v8+(-6.313672246815569)+v9)/3) + (v9-v8) + sqrt(v1) + atan(((-8.90612816798381)+v9)) + tan(7.759498411033395)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 693
-Best Individual:
 Evaluated: T
 Fitness: 740.75946
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v1.tanh.v3.csc.v4.v3.v2.v4.v0.v6.v3.v9.v5.C1.v5.v8.v6.v9.v5.v1.v5.v7.v5.v6.v3.C0.v2.v9.v6.v6.v3.v8
 C0: -5.105277251379277
@@ -1907,14 +2077,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 sqrt(v1) + (v9-v8) + sqrt(v1) + atan(((-8.90612816798381)+v9)) + ((v9+7.759498411033395+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 714
-Best Individual:
 Evaluated: T
 Fitness: 741.41376
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v1.tanh.gau.+.v4.v3.v2.v4.v0.v6.v3.v4.v5.C1.v2.v0.v6.v9.v5.v5.v5.v7.v5.v6.v6.C1.v2.v9.v9.v6.v3.v8
 C0: -5.105277251379277
@@ -1941,14 +2114,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 sqrt(v1) + (v9-v8) + sqrt(v1) + atan(((v8-(((-6.1710005168431685)+v0)/2))+v9)) + ((v9+7.759498411033395+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 722
-Best Individual:
 Evaluated: T
 Fitness: 742.95905
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 -.v9.v8.v7.min3.v9.v9.v8.v4.v6.v0.v6.v0.v5.v0.v1.v3.v9.v7.v7.v2.v2.v8.v4.v8.v6.v5.v7.v2.v6.v0.v1.v9
 C0: -5.105277251379277
@@ -1975,14 +2151,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 (v9-v8) + sqrt(max(tanh(v5),exp(-pow(((v0+v6)*v4),2)),v9)) + sqrt(v1) + atan(v9) + ((v9+7.759498411033395+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 750
-Best Individual:
 Evaluated: T
 Fitness: 743.0742
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v1.tanh.*.v5.*.v4.v6.v6.v0.v6.v7.v2.v3.v3.v4.v2.v5.v1.v2.v2.v8.v4.v9.C1.v9.v3.v3.v8.v6.v8.v6.v2
 C0: -5.105277251379277
@@ -2009,14 +2188,17 @@ C0: 7.759498411033395
 C1: 0.23547799022263938
 
 
+MATH
 sqrt(v1) + sqrt(max(v9,exp(-pow(v5,2)),v9)) + (v9-v8) + atan(v9) + ((v9+7.759498411033395+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 813
-Best Individual:
 Evaluated: T
 Fitness: 743.2376
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.X2.atan.v6.v1.v3.v1.sub4.v5.v7.C0.v7.C0.v2.C0.v9.C0.v2.v9.v5.C1.C1.v2.v9.v6.v6.v1.v3.v8.v6.v0.v3.v3
 C0: -5.105277251379277
@@ -2043,14 +2225,17 @@ C0: 7.759498411033395
 C1: 4.330684104441428
 
 
+MATH
 atan((atan(v6)^2)) + sqrt(v9) + (v9-v8) + sqrt(v1) + ((v9+7.759498411033395+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 852
-Best Individual:
 Evaluated: T
 Fitness: 743.50494
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.X2.atan.v6.v1.v3.-.abs.v5.v0.v0.v7.C1.v2.C0.v9.C1.v7.v9.v6.C0.C1.v2.v9.v6.v6.v1.v3.v8.v6.v3.v3.v3
 C0: -5.105277251379277
@@ -2077,14 +2262,17 @@ C0: 7.759498411033395
 C1: 4.330684104441428
 
 
+MATH
 atan((atan(v6)^2)) + sqrt(v9) + (v9-v8) + sqrt(v1) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 857
-Best Individual:
 Evaluated: T
 Fitness: 743.643
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.X2.atan.v9.v1.v4.v8.abs.v5.v0.v0.v7.C1.v2.C0.v9.C1.v7.v9.v6.C0.C1.v2.v9.v6.v6.v1.v3.v8.v4.v3.v3.v3
 C0: -5.105277251379277
@@ -2111,14 +2299,17 @@ C0: 7.759498411033395
 C1: 4.330684104441428
 
 
+MATH
 atan((atan(v9)^2)) + sqrt(v9) + (v9-v8) + sqrt(v1) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 879
-Best Individual:
 Evaluated: T
 Fitness: 743.74243
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.v3.atan.v9.v1.v4.v8.abs.v5.v0.v0.v7.C0.v2.v9.v9.v1.v0.v4.v6.C0.C0.v7.v9.v7.v6.C0.v3.v8.v4.v3.v3.v3
 C0: -5.105277251379277
@@ -2145,14 +2336,17 @@ C0: 7.759498411033395
 C1: 4.330684104441428
 
 
+MATH
 atan(v3) + sqrt(v9) + (v9-v8) + sqrt(v1) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 977
-Best Individual:
 Evaluated: T
 Fitness: 743.8429
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v1.v0.v5.+.max3.v5.avg3.v1.v9.v5.C0.v9.v6.v3.v0.v1.v6.v5.v6.C1.v0.v2.v1.v4.v6.v5.v5.v1.v2.v0.v4.v1
 C0: -5.105277251379277
@@ -2179,14 +2373,17 @@ C0: 7.759498411033395
 C1: 4.330684104441428
 
 
+MATH
 sqrt(v1) + (v9-v8) + atan((atan((v0-abs(v8)))+log10((v5+v3)))) + sqrt(v9) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 986
-Best Individual:
 Evaluated: T
 Fitness: 743.94836
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v1.v0.v5.+.max3.v5.avg3.v1.C0.v5.C1.v9.v6.v3.v6.v1.v6.v5.v6.C1.v9.v6.v1.v4.v8.v5.v6.v1.v6.v0.v4.v1
 C0: -5.105277251379277
@@ -2213,14 +2410,17 @@ C0: 7.759498411033395
 C1: 4.330684104441428
 
 
+MATH
 sqrt(v1) + (v9-v8) + atan((atan((abs(v0)-v9))+min((v3+v8),v0))) + sqrt(v9) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 989
-Best Individual:
 Evaluated: T
 Fitness: 744.24347
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.max3.v2.v1.v2.v1.add4.max4.v1.C0.v5.C1.v9.v6.v3.v6.v1.v6.v5.v6.C1.v9.v6.v1.v4.v8.v5.v6.v1.v6.v0.v4.v1
 C0: -5.105277251379277
@@ -2247,14 +2447,17 @@ C0: 7.759498411033395
 C1: 4.330684104441428
 
 
+MATH
 sqrt(max(v2,v1,v2)) + (v9-v8) + atan((atan((abs(v0)-v9))+min((v3+v8),v0))) + sqrt(v9) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1077
-Best Individual:
 Evaluated: T
 Fitness: 744.25055
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.+.atan.min2.-.+.v0.abs.v6.v3.v8.v0.v6.v5.v0.C1.v6.v7.v2.v8.v9.v0.v0.C0.v5.v0.v8.C1.v2.v1.v3.v0.v5
 C0: -5.105277251379277
@@ -2281,14 +2484,17 @@ C0: 7.759498411033395
 C1: 4.330684104441428
 
 
+MATH
 atan((atan((abs(v0)-v6))+min((v3+v8),v0))) + (v9-v8) + sqrt(max(v2,v1,(cos(v0)-(-7.517009228140223)-(v3+(-2.7091430595507715)+v0+v7)-v3))) + sqrt(v9) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1082
-Best Individual:
 Evaluated: T
 Fitness: 744.4246
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.+.atan.min2.-.+.v0.abs.v6.v3.v8.v0.v6.v5.v9.C1.v1.v7.v2.v8.v9.v0.v0.C0.v5.v0.v8.C1.v2.v1.v8.v0.v5
 C0: -4.785609039762752
@@ -2315,14 +2521,17 @@ C0: 3.3203935199333383
 C1: 4.330684104441428
 
 
+MATH
 atan((atan((abs(v0)-v6))+min((v3+v8),v0))) + (v9-v8) + sqrt(max(v2,v1,(cos(v0)-(-7.517009228140223)-(v3+(-7.517009228140223)+v0+v7)-v3))) + sqrt(v9) + ((v9+3.3203935199333383+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1107
-Best Individual:
 Evaluated: T
 Fitness: 744.4479
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.+.atan.min2.-.v1.v0.abs.v6.v3.v8.v0.v6.v5.v9.C1.v1.v7.v2.v8.v9.v1.v0.C0.v5.v0.v8.v3.v2.v1.v8.v0.v1
 C0: -4.785609039762752
@@ -2349,14 +2558,17 @@ C0: 3.3203935199333383
 C1: 4.330684104441428
 
 
+MATH
 atan((atan((abs(v3)-v6))+min(v1,v0))) + (v9-v8) + sqrt(max(v2,v1,(cos(v0)-(-7.517009228140223)-(v3+(-7.517009228140223)+v0+v7)-v3))) + sqrt(v9) + ((v9+3.3203935199333383+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1137
-Best Individual:
 Evaluated: T
 Fitness: 744.47424
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.asin.tanh.max2.*.avg4.*.v1.v3.v8.v6.v1.v8.v6.v9.v9.C1.v9.v4.v9.v0.v1.v4.v1.v3.v7.v9.v3.v8.v6.v6.v0
 C0: -4.785609039762752
@@ -2383,14 +2595,17 @@ C0: 3.3203935199333383
 C1: 4.330684104441428
 
 
+MATH
 sqrt(v9) + (v9-v8) + sqrt(max(v2,v1,((v0-v3)-(-7.517009228140223)-(v2+v0+v7+v5)-v3))) + atan((atan((abs(v1)-v6))+min(v1,v0))) + ((v9+3.3203935199333383+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1138
-Best Individual:
 Evaluated: T
 Fitness: 744.7715
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.asin.tanh.max2.*.avg4.*.v1.v3.v8.v6.v1.v8.v0.v9.v9.C1.v5.v4.v9.v0.v1.v4.v1.v3.v7.v9.v3.v8.v6.v6.v0
 C0: -4.785609039762752
@@ -2417,14 +2632,17 @@ C0: 3.3203935199333383
 C1: 4.330684104441428
 
 
+MATH
 sqrt(v9) + (v9-v8) + sqrt(max(v2,v1,((v6-v3)-(-7.517009228140223)-(v9+v0+v2+v4)-v3))) + atan((v1+min((cos(v3)*abs(v2)),v1))) + ((v9+3.3203935199333383+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1165
-Best Individual:
 Evaluated: T
 Fitness: 745.2505
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 -.v9.v8.comp.+.v7.C0.avg2.v2.v0.v3.v0.v2.C0.C1.v6.v9.v8.v9.v7.v0.v9.v8.v8.v9.v5.v3.v1.v0.v7.C0.v4.v2
 C0: -8.792541884208571
@@ -2451,14 +2669,17 @@ C0: 3.3203935199333383
 C1: 4.330684104441428
 
 
+MATH
 (v9-v8) + sqrt(v9) + sqrt(max(v2,v1,((v6-v3)-(-9.092522876634812)-(v9+v0+v2+v4)-v3))) + atan((v1+min((cos(v0)*abs(v0)),(v3*v9)))) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1166
-Best Individual:
 Evaluated: T
 Fitness: 745.2511
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 -.v9.v8.v0.+.v7.C0.avg2.v0.v5.v7.v4.v2.v1.v9.v1.v9.v2.v9.v3.v0.v9.v8.v5.v8.v5.v3.v1.v0.v7.C0.v3.v2
 C0: -8.792541884208571
@@ -2485,14 +2706,17 @@ C0: 3.3203935199333383
 C1: 4.330684104441428
 
 
+MATH
 (v9-v8) + sqrt(v9) + sqrt(max(v2,v1,((v6-v3)-(-9.092522876634812)-(v9+v0+v2+(-9.092522876634812))-v3))) + atan((v1+min((cos(v0)*abs(v0)),(v3*v9)))) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1186
-Best Individual:
 Evaluated: T
 Fitness: 746.8032
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 -.v9.v8.v0.+.v1.C0.exp.v0.v5.C0.v4.v2.v1.v9.v1.v9.v8.v9.v0.v0.v9.v8.v5.v8.v5.v3.v1.v4.v7.v9.v4.v2
 C0: -8.792541884208571
@@ -2519,14 +2743,17 @@ C0: 3.3203935199333383
 C1: 4.330684104441428
 
 
+MATH
 (v9-v8) + sqrt(v9) + sqrt(max(v2,v1,((v6-v3)-(-9.092522876634812)-(v9+v3+v2+(-9.092522876634812))-v3))) + atan((v1+min((cos(v8)*abs(v0)),(v3*v9)))) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1190
-Best Individual:
 Evaluated: T
 Fitness: 746.8344
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 -.v9.v8.v0.+.v1.C0.exp.v0.v5.v2.v4.v8.v1.v9.v1.v9.v8.v9.v0.v0.v9.v8.v5.v8.v5.v3.v1.v4.v7.v9.v4.v2
 C0: -8.792541884208571
@@ -2553,14 +2780,17 @@ C0: 3.3203935199333383
 C1: 4.330684104441428
 
 
+MATH
 (v9-v8) + sqrt(v9) + sqrt(max(v2,v1,((v9-v3)-(-9.092522876634812)-(v9+v3+v2+(-9.092522876634812))-v3))) + atan((v1+min((cos(v8)*abs(v0)),(v3*v9)))) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1199
-Best Individual:
 Evaluated: T
 Fitness: 747.0573
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 -.v9.v8.v0.+.v1.C0.exp.v0.v5.v2.v9.v8.v1.v9.v1.v9.v8.v2.v0.v0.v9.v8.v5.v8.v5.v8.v1.v4.v7.v9.v4.v2
 C0: -8.792541884208571
@@ -2587,14 +2817,17 @@ C0: 3.3203935199333383
 C1: 4.330684104441428
 
 
+MATH
 (v9-v8) + sqrt(v9) + sqrt(max(v2,v1,((v9-v6)-(-9.092522876634812)-(v9+v3+v2+(-9.092522876634812))-v3))) + atan((v1+min((cos(v8)*abs(v0)),(v3*v9)))) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1202
-Best Individual:
 Evaluated: T
 Fitness: 747.0618
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 -.v9.v8.v0.+.v1.C0.exp.v0.v5.v2.v9.v8.v1.v4.v1.v9.v8.v2.v0.v7.v9.v8.v2.v8.v5.C1.v1.v3.v7.v9.v4.v2
 C0: -8.792541884208571
@@ -2621,14 +2854,17 @@ C0: 3.3203935199333383
 C1: 4.330684104441428
 
 
+MATH
 (v9-v8) + sqrt(v9) + sqrt(max(v2,v1,((v5-v6)-(-9.092522876634812)-(v9+v3+v2+(-9.092522876634812))-v3))) + atan((v1+min((cos(v8)*abs(v0)),(v8*v9)))) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1206
-Best Individual:
 Evaluated: T
 Fitness: 747.874
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 -.v9.v8.v0.+.v1.v0.exp.v0.v5.v2.v9.v8.v1.v4.v1.v9.v8.v2.v0.v7.v9.v8.v2.v8.v5.C0.v1.v3.C1.v9.v4.v2
 C0: -8.792541884208571
@@ -2655,14 +2891,17 @@ C0: 3.3203935199333383
 C1: 4.330684104441428
 
 
+MATH
 (v9-v8) + sqrt(v9) + sqrt(max(v2,v1,((v5-v6)-(-9.092522876634812)-(v9+v3+v2+(-9.092522876634812))-v3))) + atan((v1+min((cos(v8)*abs(v9)),v6))) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1271
-Best Individual:
 Evaluated: T
 Fitness: 747.8749
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.+.v1.min2.*.v7.cos.abs.v8.v9.v6.v0.v0.v9.v7.v9.v1.v1.v2.v8.v9.v9.v2.v5.v6.v0.v2.v3.v1.v3.v8.v0.v8
 C0: -8.792541884208571
@@ -2689,14 +2928,17 @@ C0: 3.3203935199333383
 C1: 4.330684104441428
 
 
+MATH
 atan((v1+min((cos(v8)*abs(v9)),v7))) + (v9-v8) + sqrt(max(v2,v1,((v1-v7)-(v9+(-9.092522876634812)+v3)-(v3+v6+v4+v9)-v1))) + sqrt(v9) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1339
-Best Individual:
 Evaluated: T
 Fitness: 747.8949
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.+.v1.min2.*.v7.cos.abs.v8.v9.v9.v0.C0.v9.v3.v9.v0.v7.C1.v6.v9.v9.v2.v5.v6.v8.v6.v4.v4.v9.C1.v8.v8
 C0: 0.9554519192274782
@@ -2723,14 +2965,17 @@ C0: 3.3203935199333383
 C1: 4.330684104441428
 
 
+MATH
 atan((v1+min((cos(v8)*abs(v9)),v7))) + (v9-v8) + sqrt(max(v0,v1,((v1-v8)-tan(v9)-((-9.947941208548276)+v5)-v1))) + sqrt(v9) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1371
-Best Individual:
 Evaluated: T
 Fitness: 748.0123
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.asin.v5.v8.sub4.sqrt./.v3.C0.v6.C1.v0.v9.v5.v4.v9.v4.v2.v7.v6.v8.v9.v8.C1.C0.v5.v6.v7.v0.v3.v7.v5
 C0: 0.9554519192274782
@@ -2757,14 +3002,17 @@ C0: 3.3203935199333383
 C1: 4.330684104441428
 
 
+MATH
 sqrt(v9) + (v9-v8) + sqrt(max(v0,v1,(v2-tan(v1)-(v8+v9)-v1))) + atan((v1+min((cos(v8)*abs(v9)),v7))) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1372
-Best Individual:
 Evaluated: T
 Fitness: 748.80695
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.asin.v5.min2.sub4.sqrt.v8.v3.C0.v6.C1.v0.v9.v5.v4.v9.v7.v2.v7.v6.v8.v9.v8.C1.C0.v5.v6.v7.v0.v6.v7.v9
 C0: 0.9554519192274782
@@ -2791,14 +3039,17 @@ C0: 3.3203935199333383
 C1: 4.330684104441428
 
 
+MATH
 sqrt(v9) + (v9-v8) + sqrt(max(v0,v1,((v1-v8)-tan(v2)-((-9.947941208548276)+v5)-v1))) + atan((v1+min((cos(v8)*abs(v9)),v7))) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1375
-Best Individual:
 Evaluated: T
 Fitness: 750.27277
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.asin.v5.min2.sub4.sqrt.v8.v3.C0.v6.C1.v0.v9.v5.v4.v9.v7.v2.v7.v6.v8.v5.v8.C1.v9.v5.v6.v7.v0.v6.v7.v9
 C0: 0.9554519192274782
@@ -2825,14 +3076,17 @@ C0: 3.3203935199333383
 C1: 4.330684104441428
 
 
+MATH
 sqrt(v9) + (v9-v8) + sqrt(max(v0,v1,((v8-v8)-tan(v2)-((-9.947941208548276)+v2)-v1))) + atan((v1+min((cos(v8)*abs(v9)),v7))) + ((v9+4.330684104441428+v8)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1440
-Best Individual:
 Evaluated: T
 Fitness: 750.82715
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.+.v0.min2.*.v7.cos.abs.v8.v9.v2.v6.v0.v9.v3.v1.v0.v8.C1.v6.v1.v0.v7.v0.v2.v1.v6.v2.v7.v5.v3.v6.v3
 C0: 9.958770768068469
@@ -2859,14 +3113,17 @@ C0: 0.27888072090484073
 C1: 4.330684104441428
 
 
+MATH
 atan((v0+min((cos(v8)*abs(v9)),v7))) + (v9-v8) + sqrt(max(v0,v1,((v8-v8)-tan(v2)-((-9.947941208548276)+v2)-v1))) + sqrt(v9) + ((v8+v9+4.330684104441428)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1490
-Best Individual:
 Evaluated: T
 Fitness: 752.06793
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.v0.v9.v4.v7.v2.v5.v3.C1.v1.v2.v5.C1.v9.v1.v9.v8.v4.C0.v6.v3.v0.v5.C1.v8.v5.v6.C0.v0.v0.v7.v3
 C0: 9.958770768068469
@@ -2893,14 +3150,17 @@ C0: 0.27888072090484073
 C1: 4.330684104441428
 
 
+MATH
 sqrt(v9) + atan((v0+min((cos(v8)*abs(v9)),v6))) + sqrt(max(v0,min((v2-(-9.947941208548276)),tan(v2)),((v2+v6)-v7-v8-v8))) + (v9-v8) + ((v8+v9+4.330684104441428)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1504
-Best Individual:
 Evaluated: T
 Fitness: 753.6369
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.v0.v9.X5.v7.v2.v5.v3.C1.v1.v2.v5.C1.v9.v1.v9.v8.v4.v3.v7.v3.v0.C0.C1.v8.v5.v6.C0.v0.v0.v7.v3
 C0: 9.958770768068469
@@ -2927,14 +3187,17 @@ C0: -4.117545618594313
 C1: 4.330684104441428
 
 
+MATH
 sqrt(v9) + atan((v0+min((cos(v8)*abs(v9)),v6))) + sqrt(max(v0,min((v2-v9),tan(v2)),((v2+v3)-v7-v8-v8))) + (v9-v8) + ((v8+v9+4.330684104441428)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1508
-Best Individual:
 Evaluated: T
 Fitness: 754.2453
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.v0.v9.X5.v7.v2.v5.v3.C1.v1.v2.v5.C1.v9.v1.v9.v8.v4.v3.v7.v3.v6.C0.C1.v8.v5.v6.C0.v0.v0.v7.v3
 C0: 9.958770768068469
@@ -2961,14 +3224,17 @@ C0: -4.117545618594313
 C1: 4.330684104441428
 
 
+MATH
 sqrt(v9) + atan((v0+min((cos(v8)*abs(v9)),v6))) + sqrt(max(v0,min((v2-v9),v8),((v4+v2)-v7-v8-v8))) + (v9-v8) + ((v8+v9+4.330684104441428)/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1698
-Best Individual:
 Evaluated: T
 Fitness: 754.27216
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.min3.*.v6.+.min3.asin.v3.v6.v5.v2.v5.v8.v0.v8.v9.v9.v6.v8.v1.v7.v7.v5.C1.v0.v4.v0.v5.v0.v2.v7.v9
 C0: -9.43843303852157
@@ -2995,14 +3261,17 @@ C0: -4.117545618594313
 C1: 4.330684104441428
 
 
+MATH
 sqrt(v9) + sqrt(max(v0,min((v2-v9),v8),((v4+v2)-v7-v8-v8))) + atan((v0+min((cos(v8)*v9),v6))) + (v9-v8) + ((v8+v9+atan(abs(v9)))/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1703
-Best Individual:
 Evaluated: T
 Fitness: 754.32007
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.min3.*.v6.+.min3.asin.C1.v6.v5.v2.v5.v8.v0.v8.v9.v9.v6.v6.v1.v7.v7.v5.C1.v5.v4.v0.v5.v0.v2.v7.v9
 C0: -9.43843303852157
@@ -3029,14 +3298,17 @@ C0: -4.117545618594313
 C1: 4.330684104441428
 
 
+MATH
 sqrt(v9) + sqrt(max(v0,min((v7-v9),v8),((v4+v2)-v7-v8-v8))) + atan((v0+min((cos(v8)*v9),v6))) + (v9-v8) + ((v8+v9+atan(abs(v9)))/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1905
-Best Individual:
 Evaluated: T
 Fitness: 754.4098
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.max3.v0.min2.sub4.-.v8.+.v7.v8.v8.v7.v9.v2.v2.v7.v6.v0.v5.v3.v9.v3.v8.v8.v1.v5.v8.v2.v5.v3.v5.v9.v0
 C0: 5.793614990946274
@@ -3063,14 +3335,17 @@ C0: -4.117545618594313
 C1: 7.0604067508951935
 
 
+MATH
 sqrt(max(v0,min((v7-v9),v8),((v2+v2)-v7-v8-v8))) + sqrt(v9) + atan((v0+min((cos(v8)*v9),v6))) + (v9-v8) + ((v8+v9+atan(abs(v9)))/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 1922
-Best Individual:
 Evaluated: T
 Fitness: 754.54
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.v0.v5.C1.v7.v6.v3.v7.v3.v2.v0.v8.v8.v2.v8.v5.v4.v4.v6.v1.v2.v9.v1.v2.v4.v7.v8.v0.v0.v3.v7.v5
 C0: 5.793614990946274
@@ -3097,14 +3372,17 @@ C0: -4.117545618594313
 C1: 7.0604067508951935
 
 
+MATH
 sqrt(v9) + sqrt(max(v0,min((v7-v9),v6),((v2+v2)-v7-v8-v8))) + atan((v0+min((cos(v8)*v9),v6))) + (v9-v8) + ((v8+v9+atan(abs(v9)))/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 2356
-Best Individual:
 Evaluated: T
 Fitness: 754.545
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.+.v0.min2.*.mul3.cos.v9.v8.C1.v7.v8.v9.v6.v3.v9.v2.v1.v5.v1.v9.v6.C0.v7.v6.v0.v9.v3.v9.v2.v1.v0.v3
 C0: 0.4343080519924456
@@ -3131,14 +3409,17 @@ C0: 3.0429977364846827
 C1: 7.0604067508951935
 
 
+MATH
 atan((v0+min((cos(v8)*v9),(v8*0.4810050091767675*v7)))) + sqrt(max(v0,min((v7-v9),v6),((v2+v2)-v7-v8-v8))) + (v9-v8) + sqrt(v9) + ((v8+v9+atan(abs(v9)))/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 2393
-Best Individual:
 Evaluated: T
 Fitness: 754.54517
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.+.v0.min2.*.mul3.cos.v9.v8.C1.v4.v8.v6.v6.v3.v8.v2.v1.v5.v8.v9.v6.C0.v7.v7.v0.v9.v3.v9.v2.v1.v0.v3
 C0: 0.4343080519924456
@@ -3165,14 +3446,17 @@ C0: 3.0429977364846827
 C1: 7.0604067508951935
 
 
+MATH
 atan((v0+min((cos(v8)*v9),(v8*0.4810050091767675*v4)))) + sqrt(max(v0,min((v7-v9),v6),((v2+v2)-v7-v8-v8))) + (v9-v8) + sqrt(v9) + ((v8+v9+atan(abs(v9)))/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 2428
-Best Individual:
 Evaluated: T
 Fitness: 754.6084
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.+.v0.min2.*.mul3.cos.v9.v8.C1.v4.v8.v6.v3.v3.v8.v2.v1.v5.v8.v9.v6.C0.v7.v7.v0.v0.v3.v8.v2.v1.v0.v3
 C0: 0.4343080519924456
@@ -3199,14 +3483,17 @@ C0: -6.843185233406645
 C1: 7.0604067508951935
 
 
+MATH
 atan((v0+min((cos(v8)*v9),(v8*0.4810050091767675*v4)))) + sqrt(max(v0,min((v7-v9),v6),((v3+v2)-v7-v8-v8))) + (v9-v8) + sqrt(v9) + ((v8+v9+atan(abs(v9)))/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 2499
-Best Individual:
 Evaluated: T
 Fitness: 754.6085
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.+.v0.min2.*.mul3.cos.v9.v8.v9.v4.v8.v6.v3.C0.v8.v2.v1.v3.v8.v9.v3.C0.v8.v7.v0.v0.v9.v5.v2.v4.v3.v5
 C0: 0.4343080519924456
@@ -3233,14 +3520,17 @@ C0: -6.843185233406645
 C1: 7.0604067508951935
 
 
+MATH
 atan((v0+min((cos(v8)*v9),(v8*v9*v4)))) + sqrt(max(v0,min((v7-v9),v6),((v3+v2)-v7-v8-v8))) + (v9-v8) + sqrt(v9) + ((v8+v9+atan(v9))/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 2542
-Best Individual:
 Evaluated: T
 Fitness: 754.79065
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.+.v0.min2.*.v0.cos.v9.v8.v9.v4.v8.v6.v3.C1.v8.v2.v1.v3.v8.v9.v3.C0.v8.v9.v0.v6.v9.v5.v2.v2.v4.v5
 C0: 0.4343080519924456
@@ -3267,14 +3557,17 @@ C0: -6.843185233406645
 C1: 7.0604067508951935
 
 
+MATH
 atan((v0+min((cos(v8)*v9),v0))) + sqrt(max(v0,min((v7-v9),v6),((v3+v2)-v7-v8-v8))) + (v9-v8) + sqrt(v9) + ((v8+v9+atan(v9))/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 4194
-Best Individual:
 Evaluated: T
 Fitness: 754.9244
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 -.v9.v8.-.v2.C1.-.v1.v1.v7.v5.v9.v9.v8.v4.v2.v6.v2.v0.v1.v1.v0.v6.v9.v4.C1.v2.v0.v8.v6.v5.v0.v4
 C0: -7.420259599738797
@@ -3301,14 +3594,17 @@ C0: -0.6255998980258131
 C1: -5.323798141526275
 
 
+MATH
 (v9-v8) + sqrt(v9) + atan((v0+min(v0,(v9*cos(v8))))) + sqrt(max(min((v7-v9),v6),v0,((v3+v2)-v7-v8-v8))) + ((v8+v9+atan(min(v2,v0,v9,v9)))/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 4330
-Best Individual:
 Evaluated: T
 Fitness: 754.9256
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.v8.v9.atan.min4.v2.v0.avg2.v9.v1.v0.v5.v4.v5.v0.v2.C1.v7.v2.C1.v0.v6.C1.v3.v2.v8.v7.v8.C1.v9.v1.v4.v4
 C0: -7.420259599738797
@@ -3335,14 +3631,17 @@ C0: -8.020701801613106
 C1: -5.323798141526275
 
 
+MATH
 ((v8+v9+atan(min(v2,v0,((v1+v0)/2),v9)))/3) + sqrt(v9) + atan((v0+min(v0,(cos(v8)*v9)))) + sqrt(max(min((v7-v9),v6),v0,((v3+v2)-v7-v8-v8))) + (v9-v8)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 4400
-Best Individual:
 Evaluated: T
 Fitness: 754.9453
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 -.v9.v8.min4.max2.v3.min3.v0.C1.v7.v9.v8.C1.v4.v4.v2.v6.v1.v5.v1.C1.v3.v6.v0.v6.v8.v0.v3.C0.v6.v9.v4.v2
 C0: -7.420259599738797
@@ -3369,14 +3668,17 @@ C0: -8.020701801613106
 C1: -1.9262085877103363
 
 
+MATH
 (v9-v8) + sqrt(v9) + atan((v0+min(v0,(cos(v8)*v9)))) + sqrt(max(min((v7-v9),v6),v0,((v3+v2)-v7-v8-v8))) + ((v8+v9+atan(min(v2,v0,(v1*v0*v4),v9)))/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 4461
-Best Individual:
 Evaluated: T
 Fitness: 754.99713
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 -.v9.v8.v8.v5.v8.C1.v2.C1.v7.v5.v8.C1.v4.v4.v2.v6.v1.v5.v1.C1.v3.v6.v8.v0.v8.v9.v3.v0.v6.v9.v4.v2
 C0: -7.420259599738797
@@ -3403,14 +3705,17 @@ C0: 3.642033760670131
 C1: -1.9262085877103363
 
 
+MATH
 (v9-v8) + sqrt(v9) + atan((v0+min(v0,(cos(v8)*v9)))) + sqrt(max(min((v7-v9),v6),v0,((v3+v2)-v7-v8-v8))) + ((v8+v9+atan(min(v2,v0,(v8*v0*v4),v9)))/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 4462
-Best Individual:
 Evaluated: T
 Fitness: 755.03674
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.v8.v9.atan.min4.v2.v0.mul3.v9.v1.v6.v4.v8.v5.v0.v2.v6.v1.v5.v1.C1.v4.C1.v0.v6.C1.v0.v5.v9.v2.v3.v4.v6
 C0: -7.420259599738797
@@ -3437,14 +3742,17 @@ C0: 3.642033760670131
 C1: -1.9262085877103363
 
 
+MATH
 ((v8+v9+atan(min(v2,v0,(v1*v6*v4),v9)))/3) + sqrt(v9) + atan((v0+min(v0,(cos(v8)*v9)))) + sqrt(max(min((v7-v9),v6),v0,((v3+v2)-v7-v8-v8))) + (v9-v8)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 4539
-Best Individual:
 Evaluated: T
 Fitness: 756.6035
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 sqrt.v9.v2.acsc.v9.v7.-.atan.v6.v0.v3.v5.v4.v7.v3.v5.v4.v2.v2.v2.v8.v8.v5.v7.C0.v3.v3.v7.v2.v8.v1.v5.C1
 C0: -7.420259599738797
@@ -3471,14 +3779,17 @@ C0: 1.2837953014020904
 C1: -1.9262085877103363
 
 
+MATH
 sqrt(v9) + atan((v0+min(v0,(cos(v8)*v9)))) + (v9-v8) + sqrt(max(min((v7-v9),v6),v0,((v3+v2)-v7-v8-v8))) + ((v8+v9+sqrt(min(v2,v0,(v1*v6*v4),v9)))/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 4641
-Best Individual:
 Evaluated: T
 Fitness: 756.9723
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 mul3.sqrt.v9.tanh.acsc.v9.max3.-.v6.v9.v3.v5.v4.C1.v3.v3.v4.v8.v2.v2.v8.v8.C0.v8.C1.v7.v1.v5.v5.v8.v8.v8.C0
 C0: -7.420259599738797
@@ -3505,14 +3816,17 @@ C0: 1.2837953014020904
 C1: -1.9262085877103363
 
 
+MATH
 (sqrt(acsc(max((v3-v5),v6,v9)))*v9*tanh(v9)) + atan((v0+min(v3,(cos(v8)*v9)))) + (v9-v8) + sqrt(max(min((v7-v9),v6),v0,((v3+v2)-v7-v8-v8))) + ((v8+v9+sqrt(min(v2,v0,(v1*v6*v4),v9)))/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 4657
-Best Individual:
 Evaluated: T
 Fitness: 757.0155
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 mul3.sqrt.v9.tanh.acsc.v9.max3.-.v6.v9.v3.v5.v4.C1.C0.v3.v9.v8.v2.v2.v8.v8.C1.v8.C0.v7.v1.v9.v5.v8.v8.v8.C0
 C0: -7.420259599738797
@@ -3539,14 +3853,17 @@ C0: 1.2837953014020904
 C1: -1.9262085877103363
 
 
+MATH
 (sqrt(acsc(max((v3-v5),v6,v9)))*v9*tanh(v9)) + atan((v0+min(v3,(cos(v8)*v9)))) + (v9-v8) + sqrt(max(v7,(v0-min(v7,v9)),((v3+v2)-v7-v8-v8))) + ((v8+v9+sqrt(min(v2,v0,(v1*v6*v4),v9)))/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 4674
-Best Individual:
 Evaluated: T
 Fitness: 757.0639
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.v8.v9.sqrt.min4.v2.v0.mul3.v9.v8.v6.v4.v0.v3.v0.v8.v7.v8.C1.v1.v4.v4.v9.v5.v0.v1.v1.v4.v9.v4.v6.v4.v6
 C0: -7.420259599738797
@@ -3573,14 +3890,17 @@ C0: 1.2837953014020904
 C1: -1.9262085877103363
 
 
+MATH
 ((v8+v9+sqrt(min(v2,v0,(v8*v6*v4),v9)))/3) + atan((v0+min(v3,(cos(v8)*v9)))) + (v9-v8) + sqrt(max(v7,(v0-min(v7,v9)),((v3+v2)-v7-v8-v8))) + (sqrt(acsc(max((v3-v5),v6,v9)))*v9*tanh(v9))
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 4741
-Best Individual:
 Evaluated: T
 Fitness: 757.071
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.v8.v9.sqrt.min4.v2.v0.mul3.v9.v3.v6.v4.v0.v3.v0.v8.v4.v8.C1.v1.v4.v9.v9.v5.v0.v8.v4.v4.v9.v4.v2.v4.v6
 C0: 5.490556883834785
@@ -3607,14 +3927,17 @@ C0: 1.2837953014020904
 C1: -1.9262085877103363
 
 
+MATH
 ((v8+v9+sqrt(min(v2,v0,(v3*v6*v4),v9)))/3) + atan((v0+min(v3,(cos(v8)*v9)))) + (v9-v8) + sqrt(max(v7,(v0-min(v7,v9)),((v3+v2)-v7-v8-v8))) + (sqrt(acsc(max((v3-v5),v6,v9)))*v9*tanh(v9))
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 4772
-Best Individual:
 Evaluated: T
 Fitness: 757.4932
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 avg3.v8.v9.sqrt.min4.v2.v0.mul3.v9.v3.v6.v4.v0.v3.v0.v8.v4.v8.C1.v1.v4.v9.v9.v1.v0.v4.v4.v4.v9.v4.v2.v4.v6
 C0: 5.490556883834785
@@ -3641,14 +3964,17 @@ C0: 1.2837953014020904
 C1: -1.9262085877103363
 
 
+MATH
 ((v8+v9+sqrt(min(v2,v0,(v3*v6*v4),v9)))/3) + atan((v0+min(v3,(cos(v8)*v9)))) + (v9-v8) + sqrt(max(v7,(v0-min(v7,v9)),((v3+v2)-v7-v8-v8))) + (sqrt(acsc(max((v3-v5),v6,v9)))*v9*tanh(v0))
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 4886
-Best Individual:
 Evaluated: T
 Fitness: 758.2623
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 mul3.sqrt.v9.tanh.acsc.v0.max3.-.v6.v9.v3.v5.C1.v9.v0.v2.v7.C0.v2.v2.v0.v3.C1.v8.C0.v0.C1.v9.v8.v8.v9.v1.C0
 C0: 5.490556883834785
@@ -3675,14 +4001,17 @@ C0: 1.2837953014020904
 C1: -8.498487778238218
 
 
+MATH
 (sqrt(acsc(max((v3-v5),v6,v9)))*v9*tanh(v0)) + atan((v0+min(v3,(cos(v8)*v9)))) + (v9-v8) + sqrt(max(v7,(v0-min(v9,v9)),((v3+v2)-v7-v8-v8))) + ((v8+v9+sqrt(min(v2,v0,(v3*v6*v4),v9)))/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 4925
-Best Individual:
 Evaluated: T
 Fitness: 758.578
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 mul3.sqrt.v9.tanh.acsc.v0.max3.tanh.v6.v9.v3.v5.C1.v9.v0.v2.v7.v2.v2.v2.v0.v3.C0.v8.C0.v0.C0.v9.v8.v8.v7.v1.C0
 C0: 5.490556883834785
@@ -3709,14 +4038,17 @@ C0: 1.2837953014020904
 C1: -8.498487778238218
 
 
+MATH
 (sqrt(acsc(max(tanh(v3),v6,v9)))*v9*tanh(v0)) + atan((v0+min(v3,(cos(v8)*v9)))) + (v9-v8) + sqrt(max(v7,(v0-min(v9,v9)),((v3+v2)-v7-v8-v8))) + ((v8+v9+sqrt(min(v2,v0,(v3*v6*v4),v9)))/3)
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 4946
-Best Individual:
 Evaluated: T
 Fitness: 758.6103
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.+.v0.min2.v3.*.cos.v9.v8.v2.v1.v8.v4.v9.v5.v9.C1.C0.C0.v4.v8.v8.v9.v3.v9.v5.v3.v1.v5.v9.v8.v0.v4
 C0: 5.490556883834785
@@ -3743,14 +4075,18 @@ C0: 1.2837953014020904
 C1: -8.498487778238218
 
 
+MATH
 atan((v0+min(v3,(cos(v8)*v9)))) + (sqrt(acsc(max(tanh(v3),v6,v9)))*v9*tanh(v0)) + (v9-v8) + sqrt(max(v7,(v0-min(v9,v0)),((v3+v2)-v7-v8-v8))) + ((v8+v9+sqrt(min(v2,v0,(v7*v6*v4),v9)))/3)
 
 
-Best Individual of Run:
+BEST INDIVIDUAL OF RUN
 Found at Generation: 4946
 Evaluated: T
 Fitness: 758.6103
 Linking function: +
+
+GEP-MODEL
+KARVA
 Gene 0
 atan.+.v0.min2.v3.*.cos.v9.v8.v2.v1.v8.v4.v9.v5.v9.C1.C0.C0.v4.v8.v8.v9.v3.v9.v5.v3.v1.v5.v9.v8.v0.v4
 C0: 5.490556883834785
@@ -3777,24 +4113,28 @@ C0: 1.2837953014020904
 C1: -8.498487778238218
 
 
+MATH
 atan((v0+min(v3,(cos(v8)*v9)))) + (sqrt(acsc(max(tanh(v3),v6,v9)))*v9*tanh(v0)) + (v9-v8) + sqrt(max(v7,(v0-min(v9,v0)),((v3+v2)-v7-v8-v8))) + ((v8+v9+sqrt(min(v2,v0,(v7*v6*v4),v9)))/3)
 
+MODEL COMPOSITION
 Size of program: 50
-Variables used(count): v0(5), v2(2), v3(3), v4(1), v6(2), v7(3), v8(5), v9(7)
+Variables used(variable count): v0 5, v2 2, v3 3, v4 1, v6 2, v7 3, v8 5, v9 7
+Functions used(function count): min2 2, + 2, tanh 2, sqrt 3, - 2, atan 1, cos 1, mul3 2, min4 1, sub4 1, avg3 1, max3 2, acsc 1, * 1
 
-***** TRAINING data results *****
+MODEL QUALITY MEASURES (TRAINING)
 Statistics: 
 MSE:  130.8745503638107    	RAE:  0.3087431540036992    	RSE:  0.10125114035798835
 RMSE: 11.440041536804431    	MAE:  8.946894191849072    	RRSE: 0.3181998434286044
 
 
-***** TEST data results *****
+MODEL QUALITY MEASURES (TEST)
 Number of Calculation Errors: 0 out of 10 test sets
 Statistics: 
 MSE:  156.05922477372928    	RAE:  0.45865628425877936    	RSE:  0.21967487053072068
 RMSE: 12.492366660234133    	MAE:  10.200515761915252    	RRSE: 0.46869485865616306
 
-Observed	Computed
+OBSERVED	AND COMPUTED (TRAINING)
+#Observed GEP-Model
 85.0	85.95134151464732
 68.0	54.80559709280882
 38.0	51.76266599753638
@@ -3876,6 +4216,8 @@ Observed	Computed
 55.0	46.68062282309698
 94.0	77.69048387033848
 
+OBSERVED	AND COMPUTED (TEST)
+#Observed GEP-Model
 96.0	107.16354785295158
 77.0	86.18827755414777
 59.0	60.210507441374695
@@ -3886,3 +4228,4 @@ Observed	Computed
 7.0	15.720846413216911
 37.0	12.655424790499623
 74.0	64.63560991391984
+#----------

@@ -1,10 +1,6 @@
 package ec.gep.symbols;
 
-import ec.EvolutionState;
 import ec.gep.GEPFunctionSymbol;
-import ec.gp.GPData;
-import ec.gp.GPIndividual;
-import ec.util.Parameter;
 
 /**
  * The hyperbolic cosecant value of a single parameter (radians).
@@ -17,7 +13,7 @@ public class Csch extends GEPFunctionSymbol {
 	 */
 	public Csch() 
 	{
-		super("csc", 1);
+		super("csch", 1);
 	}
 
 	/**
@@ -44,8 +40,8 @@ public class Csch extends GEPFunctionSymbol {
 	/**
 	 * The human readable form of the expression
 	 */
-	public String printMathExpression( String p[] )
+	public String getMathExpressionAsString( String p[] )
 	{
-		return "csh("+p[0]+")";
+		return "csch("+p[0]+")";
 	}
 }

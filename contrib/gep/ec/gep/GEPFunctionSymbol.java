@@ -20,12 +20,6 @@
 
 package ec.gep;
 
-import ec.EvolutionState;
-import ec.Problem;
-import ec.gp.ADFStack;
-import ec.gp.GPData;
-import ec.gp.GPIndividual;
-
 /* 
  * GEPTerminalSymbol.java
  * 
@@ -36,7 +30,7 @@ import ec.gp.GPIndividual;
 
  /**
   * Supports encoding the information about a function: its arity (number
-  * of argments) and its name (symbol).
+  * of arguments) and its name (symbol).
   */
 
 
@@ -60,6 +54,6 @@ public abstract class GEPFunctionSymbol extends GEPSymbol
     
     public abstract boolean isLogicalFunction();
     
-    public abstract String printMathExpression( String params[] );
+    public abstract String getMathExpressionAsString( String params[] );
 
 }

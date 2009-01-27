@@ -116,31 +116,38 @@ public class DcGeneticOperatorsPipeline extends GEPBreedingPipeline
         int totalNumberOfGenes = n * s.numberOfGenes;
         int chosenOnes[];
         
-        // RNC mutation ... change some of the random constants associated with each gene
+        // RNC mutation ... change some of the random constants associated with each gene in each chromosome
         int numberOfConstantsToMutate = (int)Math.round((double)(totalNumberOfGenes * s.numberOfConstantsPerGene) * s.rncMutationProbability);
-        // Note: below we choose an individual, then a gene from the ind, then a constant in 
+        // Note: below we choose an individual, then for each chromosome in the individual we
+        //       choose a gene from the chromosome, then a constant in 
         //       the constants for the gene
         for(int q=0; q<numberOfConstantsToMutate; q++)
         {   // choose a random individual form new pop excluding the elite(s))
 try {
 	        randInd = (GEPIndividual)inds[srt.nextInt(n)]; // the individual to mutate
-        	double genomeConstants[][] = randInd.genomeConstants; // the Constant arrays in this individual (genome)
-        	// choose a specific gene's constant array in the genome
-        	geneIndex = srt.nextInt(s.numberOfGenes);
-        	double constants[] = genomeConstants[geneIndex];
-        	// and the position within the Constant array
-        	pos = srt.nextInt(s.numberOfConstantsPerGene); 
-        	// now set the new constant point to reference one of the constants associated with the gene
-        	// create the values in Dc of the gene
-        	if (s.integerConstants)
-        	{   int range = (int)((s.constantsUpperLimit-s.constantsLowerLimit)+1);
-        		constants[pos] = srt.nextInt(range) + s.constantsLowerLimit;
-        	}
-        	else
-        	    constants[pos] = randInd.getRandomFromLowerToUpper(srt, s.constantsLowerLimit, s.constantsUpperLimit);
-        	
+	        // mutate the constants in each chromosome of the individual
+	        for (int i=0; i<randInd.chromosomes.length; i++)
+	        {
+	        	GEPChromosome chromosome = randInd.chromosomes[i];
+	        	double genomeConstants[][] = chromosome.genomeConstants; // the Constant arrays in this individual (genome)
+	        	// choose a specific gene's constant array in the genome
+	        	geneIndex = srt.nextInt(s.numberOfGenes);
+	        	double constants[] = genomeConstants[geneIndex];
+	        	// and the position within the Constant array
+	        	pos = srt.nextInt(s.numberOfConstantsPerGene); 
+	        	// now set the new constant point to reference one of the constants associated with the gene
+	        	// create the values in Dc of the gene
+	        	if (s.integerConstants)
+	        	{   int range = (int)((s.constantsUpperLimit-s.constantsLowerLimit)+1);
+	        		constants[pos] = srt.nextInt(range) + s.constantsLowerLimit;
+	        	}
+	        	else
+	        	    constants[pos] = chromosome.getRandomFromLowerToUpper(srt, s.constantsLowerLimit, s.constantsUpperLimit);
+	
+	        	chromosome.parsedGeneExpressions = null;
+	        }
             randInd.evaluated = false;
-            randInd.parsedGeneExpressions = null;
+            randInd.chromosomesParsed = false;
 } catch (Exception e) { e.printStackTrace(); }
         }
         
@@ -148,7 +155,8 @@ try {
         // should we round up the number of points
         int numberOfPointsToMutate = (int)Math.round((double)(totalNumberOfGenes * s.tailSize) * s.dcMutationProbability);
         
-        // Note: below we choose an individual, then a gene from the ind, then a point in the Dc area
+        // Note: below we choose an individual, then for each chromosome in the individual we
+        //       choose a gene from the chromosome, then a point in the Dc area
         //       We could also have chosen a point from the total number of Dc points in the
         //       population (excluding the elite(s)) and then mapped that to the ind/gene/point...
         //       might be faster than calling random number generator 3 times
@@ -156,17 +164,23 @@ try {
         {   // choose a random individual form new pop excluding the elite(s))
 try {
 	        randInd = (GEPIndividual)inds[srt.nextInt(n)]; // the individual to mutate
-        	int genomeDc[][] = randInd.genomeDc; // the DcAreas in this individual (genome)
-        	// choose a specific gene's Dc area in the genome
-        	geneIndex = srt.nextInt(s.numberOfGenes);
-        	int DcArea[] = genomeDc[geneIndex];
-        	// and the position within the DcArea
-        	pos = srt.nextInt(DcArea.length); // DcArea.length is same as s.tailSize
-        	// now set the new constant point to reference one of the constants associated with the gene
-        	DcArea[pos] = srt.nextInt(s.numberOfConstantsPerGene);
-        	
-            randInd.evaluated = false;
-            randInd.parsedGeneExpressions = null;
+	        // Dc mutate the constants in each chromosome of the individual
+	        for (int i=0; i<randInd.chromosomes.length; i++)
+	        {
+	        	GEPChromosome chromosome = randInd.chromosomes[i];
+	        	int genomeDc[][] = chromosome.genomeDc; // the DcAreas in this individual (genome)
+	        	// choose a specific gene's Dc area in the genome
+	        	geneIndex = srt.nextInt(s.numberOfGenes);
+	        	int DcArea[] = genomeDc[geneIndex];
+	        	// and the position within the DcArea
+	        	pos = srt.nextInt(DcArea.length); // DcArea.length is same as s.tailSize
+	        	// now set the new constant point to reference one of the constants associated with the gene
+	        	DcArea[pos] = srt.nextInt(s.numberOfConstantsPerGene);
+	        	
+	        	chromosome.parsedGeneExpressions = null;
+        }
+        randInd.evaluated = false;
+        randInd.chromosomesParsed = false;
 } catch (Exception e) { e.printStackTrace(); }
         }
         
@@ -175,7 +189,8 @@ try {
         // number of points in the population)
         // should we round up the number of points
         int numberOfGenomesToInvert = (int)Math.round((double)n * s.dcInversionProbability);
-        // Note: below we choose an individual, then a gene from the ind, then a range in the Dc area to invert
+        // Note: below we choose an individual, then for each chromosome in the individual we
+        //       choose a gene from the chromosome, then a range in the Dc area to invert.
         // select the genomes without replacement
         chosenOnes = chooseWithoutReplacement(state, thread, numberOfGenomesToInvert, n);
 try {
@@ -183,9 +198,14 @@ try {
         {
         	int select = chosenOnes[q];
         	GEPIndividual ind = (GEPIndividual)inds[select];
-            dcInvert(ind.genomeDc, srt);
-            ind.evaluated = false;
-            ind.parsedGeneExpressions = null;
+	        for (int i=0; i<ind.chromosomes.length; i++)
+	        {
+	        	GEPChromosome chromosome = ind.chromosomes[i];
+                dcInvert(chromosome.genomeDc, srt);
+	        	chromosome.parsedGeneExpressions = null;
+	        }
+	        ind.evaluated = false;
+	        ind.chromosomesParsed = false;
         }
 } catch (Exception e) { e.printStackTrace(); }
 
@@ -194,19 +214,25 @@ try {
 		// population (unlike mutation which uses the number of points in the population)
 		// should we round up the number of points ... probably
 		int numberOfGenomesToTranspose = (int)Math.round((double)n * s.dcIsTranspositionProbability);
-		// Note: below we choose an individual, then a gene from the ind, then a range in the Dc area to invert
+		// Note: below we choose an individual, then for each chromosome in the individual we
+        //       choose a gene from the chromosome, then a range in the Dc area to invert.
 		// select the genomes without replacement
 		chosenOnes = chooseWithoutReplacement(state, thread, numberOfGenomesToTranspose, n);
-		try {
+try {
 		for(int q=0; q<numberOfGenomesToTranspose; q++)
 		{
 			int select = chosenOnes[q];
 			GEPIndividual ind = (GEPIndividual)inds[select];
-		    dcIsTranspose(ind.genomeDc, srt);
-		    ind.evaluated = false;
-		    ind.parsedGeneExpressions = null;
+	        for (int i=0; i<ind.chromosomes.length; i++)
+	        {
+	        	GEPChromosome chromosome = ind.chromosomes[i];
+		        dcIsTranspose(chromosome.genomeDc, srt);
+        	    chromosome.parsedGeneExpressions = null;
+	        }
+	        ind.evaluated = false;
+	        ind.chromosomesParsed = false;
 		}
-		} catch (Exception e) { e.printStackTrace(); }
+} catch (Exception e) { e.printStackTrace(); }
 
         
         return n;

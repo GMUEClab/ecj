@@ -9,14 +9,17 @@ package ec.gep;
 import ec.*;
 import ec.steadystate.*;
 import java.io.IOException;
-import java.util.*;
-
 import ec.util.*;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Arrays;
 
 import jscl.math.Expression;
 import jscl.text.ParseException;
-
-import java.io.File;
 
 /* 
  * GEPSimpleStatistics.java
@@ -60,10 +63,10 @@ import java.io.File;
  <tr><td valign=top><i>base.</i><tt>detail-to-log</tt><br>
  <font size=-1>String (one of all, change or final), or nonexistant (change)</font></td>
  <td valign=top>(log results from all generations, only when the fitness changes or only final model)</td></tr>
-  <tr><td valign=top><i>base.</i><tt>number-of-best-to-log</tt><br>
+ <tr><td valign=top><i>base.</i><tt>number-of-best-to-log</tt><br>
  <font size=-1>int (>= 1))</font></td>
  <td valign=top>(number of best individuals to display in final results of run; normally 1)</td></tr>
-</table>
+ </table>
 
  *
  * @author Bob Orchard
@@ -183,23 +186,24 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
         GEPSpecies species = (GEPSpecies)state.population.subpops[0].species;
         int seeds[] = state.seeds;
         String seedStr = String.valueOf(seeds[0]);
-        for (int i=0; i<seeds.length-1; i++)
-        	seedStr += String.valueOf(seeds[i]);
+        for (int i=1; i<seeds.length; i++)
+        	seedStr = seedStr + ", " + String.valueOf(seeds[i]);
         state.output.println("GENERAL PARAMETERS", Output.V_NO_GENERAL,statisticslog);
         String runtimeargs = "";
         String runtimeargsarray[] = state.runtimeArguments;
         if (runtimeargsarray != null)
-        	for (int i=0; i<runtimeargsarray.length; i++)
-        	    runtimeargs = runtimeargsarray[i] + " ";
+	        for (int i=0; i<runtimeargsarray.length; i++)
+	        	runtimeargs = runtimeargsarray[i] + " ";
         state.output.println("Arguments used in this run: " + runtimeargs, Output.V_NO_GENERAL,statisticslog);
         state.output.println("Maximum number of generations in this run: " + state.numGenerations,Output.V_NO_GENERAL,statisticslog);
         state.output.println("Size of population in this run: " + state.population.subpops[0].individuals.length,Output.V_NO_GENERAL,statisticslog);
+        state.output.println("Number of Chromosomes per individual: " + species.numberOfChromosomes,Output.V_NO_GENERAL,statisticslog);
         state.output.println("Number of genes per chromosome: " + species.numberOfGenes,Output.V_NO_GENERAL,statisticslog);
         state.output.println("Size of gene head: " + species.headSize,Output.V_NO_GENERAL,statisticslog);
         state.output.println("Seed(s) used in this job: " + seedStr,Output.V_NO_GENERAL,statisticslog);
         state.output.println("Problem type: " + species.problemTypeName,Output.V_NO_GENERAL,statisticslog);
         if (species.problemType == GEPSpecies.PT_CLASSIFICATION)
-        	state.output.println("Classification rounding threshold: " + GEPIndividual.getThreshold(),Output.V_NO_GENERAL,statisticslog);
+        	state.output.println("Classification rounding threshold: " + GEPIndividual.getThreshold(),Output.V_NO_GENERAL,statisticslog);        	
         Parameter p = new Parameter("eval.problem.fitness-function");
         String fitnessFunction = state.parameters.getStringWithDefault(p, p, "SPECIFIED IN USER PROGRAM");
         state.output.println("Fitness function: " + fitnessFunction,Output.V_NO_GENERAL,statisticslog);
@@ -264,22 +268,7 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
         }     
     }
 
-    /** Steady State only: loads any additional post-generation boundary stragglers into best_of_run. */
-    public void individualsEvaluatedStatistics(SteadyStateEvolutionState state)
-    {
-        super.individualsEvaluatedStatistics(state);
-        
-        for(int x=0;x<state.population.subpops.length;x++)
-        {
-            // best individual
-            if (best_of_run[x]==null || 
-                state.population.subpops[x].individuals[state.newIndividuals[x]].
-                fitness.betterThan(best_of_run[x].fitness))
-                best_of_run[x] = state.population.subpops[x].individuals[state.newIndividuals[x]];
-        }
-    }
-
-    class BestGEPIndividualComparator implements SortComparatorL
+    static private class BestGEPIndividualComparator implements SortComparatorL
     {
      Individual[] inds;
      public BestGEPIndividualComparator(Individual[] inds) {super(); this.inds = inds;}
@@ -295,7 +284,7 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
     public void finalStatistics(final EvolutionState state, final int result)
     {
         super.finalStatistics(state,result);
-                
+        
         for(int x=0;x<state.population.subpops.length;x++ )
         {
           // make sure number of best individuals to log is not bigger than size of population
@@ -341,155 +330,156 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
         
 	        // also print some stats about the expression ... its size, number of terminals used and
 	        // the number of times each variable and function is used
-            state.output.println("MODEL COMPOSITION",Output.V_NO_GENERAL,statisticslog);
-	        state.output.println("Size of program: " + best.size(), 
-	        		             Output.V_NO_GENERAL,statisticslog);
-	        int counts[] = best.variableUseageCounts();
-        	int countsNotZero = 0;
-        	for (int i=0; i<counts.length; i++)  
-        		if (counts[i] > 0) countsNotZero++;
+	        int numChromosomes = best.chromosomes.length;
+	        // print stuff for each chromosome in the individual
+	        state.output.println("MODEL COMPOSITION",Output.V_NO_GENERAL,statisticslog);
+	        for (int n=0; n<numChromosomes; n++)
+	        {
+	        	int j = n+1;
+	        	if (n>0) state.output.println("", Output.V_NO_GENERAL,statisticslog);
+	        	if (numChromosomes>1)
+	        		state.output.println("Chromosome " + j + ":", Output.V_NO_GENERAL,statisticslog);
+	        	GEPChromosome chromosome = best.chromosomes[n];
+		        state.output.println("Size of program: " + chromosome.size(), 
+   		             Output.V_NO_GENERAL,statisticslog);
+	        	int counts[] = chromosome.variableUseageCounts();
+	        	int countsNotZero = 0;
+	        	for (int i=0; i<counts.length; i++)  
+	        		if (counts[i] > 0) countsNotZero++;
 
-	        state.output.print("Variables used(variable count) " + countsNotZero + ": ", Output.V_NO_GENERAL,statisticslog);
-	        GEPSymbolSet ss = ((GEPSpecies)state.population.subpops[x].species).symbolSet;
-	        boolean first = true;
-	        for (int i=0; i<counts.length; i++)
-	        {   
-	        	if (counts[i] > 0)
-	        	{
-	        		if (!first)
-	 	   	           state.output.print(", ", Output.V_NO_GENERAL,statisticslog);
-	        	    String terminalName = ss.symbols[ss.terminals[i]].symbol;
-	   	            state.output.print(terminalName +" " + counts[i], 
+		        state.output.print("Variables used(variable count) " + countsNotZero + ": ", Output.V_NO_GENERAL,statisticslog);
+	        	GEPSymbolSet ss = ((GEPSpecies)state.population.subpops[x].species).symbolSet;
+	        	boolean first = true;
+	        	for (int i=0; i<counts.length; i++)
+	        	{   
+	        		if (counts[i] > 0)
+	        		{
+	        			if (!first)
+	        				state.output.print(", ", Output.V_NO_GENERAL,statisticslog);
+	        			String terminalName = ss.symbols[ss.terminals[i]].symbol;
+	        			state.output.print(terminalName +" " + counts[i], 
 	   	            		           Output.V_NO_GENERAL,statisticslog);
-	   	            first = false;
+	        			first = false;
+	        		}
 	        	}
-	        }
-	        HashMap fcounts = best.functionUseageCounts();
-	        Set countsSet = fcounts.entrySet();
-	        state.output.print("\nFunctions used(function count) " + countsSet.size() + ": ", Output.V_NO_GENERAL,statisticslog);
-	        first = true;
-	        for (Iterator iter = countsSet.iterator(); iter.hasNext ();) 
-	        {
-	        	if (!first) 
-	        		state.output.print(", ", Output.V_NO_GENERAL,statisticslog);
-	        	first = false;
-	        	Map.Entry e = (Map.Entry)iter.next();
-   	            String key = (String)e.getKey();
-	            String value = ((Integer)e.getValue()).toString();
-   	            state.output.print(key +" " + value, 
-        		           Output.V_NO_GENERAL,statisticslog);
-	        }
+		        HashMap fcounts = chromosome.functionUseageCounts();
+		        Set countsSet = fcounts.entrySet();
+		        state.output.print("\nFunctions used(function count) " + countsSet.size() + ": ", Output.V_NO_GENERAL,statisticslog);
+		        first = true;
+		        for (Iterator iter = countsSet.iterator(); iter.hasNext ();) 
+		        {
+		        	if (!first) 
+		        		state.output.print(", ", Output.V_NO_GENERAL,statisticslog);
+		        	first = false;
+		        	Map.Entry e = (Map.Entry)iter.next();
+	   	            String key = (String)e.getKey();
+		            String value = ((Integer)e.getValue()).toString();
+	   	            state.output.print(key +" " + value, 
+	        		           Output.V_NO_GENERAL,statisticslog);
+		        }
 
-	        if (GEPIndividual.simplifyExpressions)
-	        {
-		        // print the functions and variables (and count) used in the simplified MATH expression
-				String mathExpression = best.genotypeToStringForHumansMathExpression();
-				String mathExpressionSimplified = "";
-				try
-				{ mathExpressionSimplified = Expression.valueOf(mathExpression).simplify().toString();
-				}
-				catch (ParseException e)
-				{}
+		        if (GEPIndividual.simplifyExpressions)
+		        {
+			        // print the functions and variables (and count) used in the simplified MATH expression
+					String mathExpression = chromosome.genotypeToStringForHumansMathExpression();
+					String mathExpressionSimplified = "";
+					try
+					{ mathExpressionSimplified = Expression.valueOf(mathExpression).simplify().toString();
+					}
+					catch (ParseException e)
+					{}
 	
-		        displaySimplifiedMathExpressionVariableFunctionCounts(state, ss, "MATH", mathExpressionSimplified);
-	        }
-				
-			// print Model quality measures
-	        GEPSpecies species = (GEPSpecies)state.population.subpops[0].species;
+			        displaySimplifiedMathExpressionVariableFunctionCounts(state, ss, "MATH", mathExpressionSimplified);
+		        }
 
-	        state.output.println("\n\nMODEL QUALITY MEASURES (TRAINING)", Output.V_NO_GENERAL,statisticslog);	
-	        displayStatistics(state, species, best);
-	        // Do the same thing for the test data if there is any
-	  	    // To do this we need to force the terminal symbols (including the
-	  	    // dependent variable) to give the test data rather than the training data
-	  	    // temporarily.
-  	    	GEPDependentVariable.useTrainingData = false;
-	        double testingValues[] = GEPDependentVariable.getDependentVariableValues();
-	  	    if (testingValues != null)
-	  	    {
-		        state.output.println("\nMODEL QUALITY MEASURES (TEST)", Output.V_NO_GENERAL,statisticslog);	
-  	    		int numErrors = 0;
-  	  	    	// in test data we might get values that lead to errors when applying the model
-  	  	    	// since there could be div by zero, etc.). So count those that will fail when
-  	  	    	// evaluated with the model
-  	            for (int i=0; i<testingValues.length; i++)
-  	            {
-  	              double computed = best.eval(i);
-  	              if (computed == Double.POSITIVE_INFINITY || computed == Double.NEGATIVE_INFINITY || Double.isNaN(computed))
-  	            	numErrors++;
-  	            }
-  	  		    state.output.println("Number of Calculation Errors: " + numErrors + 
-  	  		    		" out of " + testingValues.length + " test sets",Output.V_NO_GENERAL,statisticslog);
-		        displayStatistics(state, species, best);
-	  	    }
-	        // reset back to using the training values
-	        GEPDependentVariable.useTrainingData = true;
-
-	        // And also the final observed versus computed values for the 'best' of run model
-	  	    // if desired
-	  	    if (!noObserveredComputedDisplay)
-	  	    {
-	  		    state.output.println("OBSERVED	AND COMPUTED (TRAINING)",Output.V_NO_GENERAL,observedVsComputedlog);
-	  		    state.output.println("#Observed GEP-Model",Output.V_NO_GENERAL,observedVsComputedlog);
-	  	        double dependentVarValues[] = GEPDependentVariable.getDependentVariableValues();
-	  		    for (int i=0; i<dependentVarValues.length; i++)
-	  		    {
-	  		    	double observed = dependentVarValues[i];
-	  		    	double computed = best.eval(i);
-	  		        state.output.println(Double.toString(observed)+"\t"+Double.toString(computed),Output.V_NO_GENERAL,observedVsComputedlog);
-	  		    }
-	  		    // and if testing data available add it to the end of this data or to it's own file
+				// print Model quality measures
+	        	GEPSpecies species = (GEPSpecies)state.population.subpops[0].species;
+		        state.output.println("\n\nMODEL QUALITY MEASURES (TRAINING)", Output.V_NO_GENERAL,statisticslog);	
+		        displayStatistics(state, species, best, n, true);
+		        // Do the same thing for the test data if there is any
+		        double testingValues[] = GEPDependentVariable.testingData.getDependentVariableValues(n);
 		  	    if (testingValues != null)
 		  	    {
-		  	    	GEPDependentVariable.useTrainingData = false;
-			        state.output.println("", Output.V_NO_GENERAL,statisticslog);	
-		  		    state.output.println("OBSERVED	AND COMPUTED (TEST)",Output.V_NO_GENERAL,observedVsComputedlog);
+			        state.output.println("\nMODEL QUALITY MEASURES (TEST)", Output.V_NO_GENERAL,statisticslog);	
+	  	    		int numErrors = 0;
+	  	  	    	// in test data we might get values that lead to errors when applying the model
+	  	  	    	// since there could be division by zero, etc.). So count those that will fail when
+	  	  	    	// evaluated with the model
+	  	            for (int i=0; i<testingValues.length; i++)
+	  	            {
+	  	              double computed = best.eval(n, false, i);
+	  	              if (computed == Double.POSITIVE_INFINITY || computed == Double.NEGATIVE_INFINITY || Double.isNaN(computed))
+	  	            	numErrors++;
+	  	            }
+	  	  		    state.output.println("Number of Calculation Errors: " + numErrors + 
+	  	  		    		" out of " + testingValues.length + " test sets",Output.V_NO_GENERAL,statisticslog);
+			        displayStatistics(state, species, best, n, false);
+		  	    }
+		        // reset back to using the training values
+	
+		        // And also the final observed versus computed values for the 'best' of run model
+		  	    // if desired
+		  	    if (!noObserveredComputedDisplay)
+		  	    {
+		  		    state.output.println("OBSERVED	AND COMPUTED (TRAINING)",Output.V_NO_GENERAL,observedVsComputedlog);
 		  		    state.output.println("#Observed GEP-Model",Output.V_NO_GENERAL,observedVsComputedlog);
-			        dependentVarValues = GEPDependentVariable.getDependentVariableValues();
+		  	        double dependentVarValues[] = GEPDependentVariable.trainingData.getDependentVariableValues(n);
 		  		    for (int i=0; i<dependentVarValues.length; i++)
 		  		    {
 		  		    	double observed = dependentVarValues[i];
-		  		    	double computed = best.eval(i);
-		  		        state.output.println(Double.toString(observed)+"\t"+Double.toString(computed),
-		  		        		Output.V_NO_GENERAL, observedVsComputedTestlog);
+		  		    	double computed = best.eval(n, true, i);
+		  		        state.output.println(Double.toString(observed)+"\t"+Double.toString(computed),Output.V_NO_GENERAL,observedVsComputedlog);
 		  		    }
-			        // reset back to using the training values
-		  		  GEPDependentVariable.useTrainingData = true;
+		  		    // and if testing data available add it to the end of this data or to it's own file
+			  	    if (testingValues != null)
+			  	    {
+				        state.output.println("", Output.V_NO_GENERAL,statisticslog);	
+			  		    state.output.println("OBSERVED	AND COMPUTED (TEST)",Output.V_NO_GENERAL,observedVsComputedlog);
+			  		    state.output.println("#Observed GEP-Model",Output.V_NO_GENERAL,observedVsComputedlog);
+				        dependentVarValues = GEPDependentVariable.testingData.getDependentVariableValues(n);
+			  		    for (int i=0; i<dependentVarValues.length; i++)
+			  		    {
+			  		    	double observed = dependentVarValues[i];
+			  		    	double computed = best.eval(n, false, i);
+			  		        state.output.println(Double.toString(observed)+"\t"+Double.toString(computed),
+			  		        		Output.V_NO_GENERAL, observedVsComputedTestlog);
+			  		    }
+			  	    }
+		  		    state.output.println("#----------",Output.V_NO_GENERAL,observedVsComputedlog);
 		  	    }
-	  		    state.output.println("#----------",Output.V_NO_GENERAL,observedVsComputedlog);
-	  	    }
-	  	  }
+	        }
+          }
         }        
     }
     
-    void displayStatistics(EvolutionState state, GEPSpecies species, GEPIndividual ind)
+    void displayStatistics(EvolutionState state, GEPSpecies species, GEPIndividual ind, int chromosomeNum, boolean useTrainingdata)
     {
         // if classification or boolean problem then show the confusion matrix as well
   	    if (species.problemType == GEPSpecies.PT_CLASSIFICATION || species.problemType == GEPSpecies.PT_LOGICAL)
         {
   		    state.output.println("Confusion Matrix: ",Output.V_NO_GENERAL,statisticslog);
   		    state.output.println("                Predicted Value\n               |  Yes  |  No   \n               |----------------",Output.V_NO_GENERAL,statisticslog);
-  		    int confusionMatrix[] = GEPFitnessFunction.getConfusionMatrixValues(ind);
+  		    int confusionMatrix[] = GEPFitnessFunction.getConfusionMatrixValues(useTrainingdata, ind, 0);
   		    state.output.println("           Yes |"+String.format("%1$6d", confusionMatrix[0])+
   		    		             " |"+String.format("%1$6d", confusionMatrix[1]),Output.V_NO_GENERAL,statisticslog);
   		    state.output.println("Actual Value   |----------------",Output.V_NO_GENERAL,statisticslog);
   		    state.output.println("           No  |"+String.format("%1$6d", confusionMatrix[2])+
  		             " |"+String.format("%1$6d", confusionMatrix[3]),Output.V_NO_GENERAL,statisticslog);
   		    state.output.println("               |----------------",Output.V_NO_GENERAL,statisticslog);
-        }
+        } 
   	    else
   	    {
   		    state.output.println("Statistics: ",Output.V_NO_GENERAL,statisticslog);
-  		    state.output.println("MSE:  "+GEPFitnessFunction.MSErawFitness(ind)+
-                                 "    \tRAE:  "+GEPFitnessFunction.RAErawFitness(ind)+	  		    		             
-	                             "    \tRSE:  "+GEPFitnessFunction.RSErawFitness(ind)  		    		             
+  		    state.output.println("MSE:  "+GEPFitnessFunction.MSErawFitness(useTrainingdata, ind, chromosomeNum)+
+                                 "    \tRAE:  "+GEPFitnessFunction.RAErawFitness(useTrainingdata, ind, chromosomeNum)+	  		    		             
+	                             "    \tRSE:  "+GEPFitnessFunction.RSErawFitness(useTrainingdata, ind, chromosomeNum)  		    		             
     		             ,Output.V_NO_GENERAL,statisticslog);
-  		    state.output.println("RMSE: "+GEPFitnessFunction.RMSErawFitness(ind)+
-    		                     "    \tMAE:  "+GEPFitnessFunction.MAErawFitness(ind)+	  		    		             
-	    		                 "    \tRRSE: "+GEPFitnessFunction.RRSErawFitness(ind)  		    		             
-  		    		             ,Output.V_NO_GENERAL,statisticslog);  	    	
-  		    state.output.println("Corr Coeff: "+GEPFitnessFunction.CCrawFitness(ind)
-		             ,Output.V_NO_GENERAL,statisticslog);  
+  		    state.output.println("RMSE: "+GEPFitnessFunction.RMSErawFitness(useTrainingdata, ind, chromosomeNum)+
+    		                     "    \tMAE:  "+GEPFitnessFunction.MAErawFitness(useTrainingdata, ind, chromosomeNum)+	  		    		             
+	    		                 "    \tRRSE: "+GEPFitnessFunction.RRSErawFitness(useTrainingdata, ind, chromosomeNum)  		    		             
+  		    		             ,Output.V_NO_GENERAL,statisticslog);  
+  		    state.output.println("Corr Coeff: "+GEPFitnessFunction.CCrawFitness(useTrainingdata, ind, chromosomeNum)
+ 		             ,Output.V_NO_GENERAL,statisticslog);  
   	    }
         state.output.println("", Output.V_NO_GENERAL,statisticslog);	
     }
@@ -609,6 +599,6 @@ public class GEPSimpleStatistics extends Statistics implements SteadyStateStatis
 	            state.output.print(key +" " + value, 
     		           Output.V_NO_GENERAL,statisticslog);
         }
-    }
 
+    }
 }

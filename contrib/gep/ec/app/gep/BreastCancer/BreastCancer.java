@@ -54,12 +54,12 @@ public class BreastCancer extends GEPProblem implements SimpleProblemForm
         super.setup(state, base);    
     }
 
-	public void evaluate(EvolutionState state, Individual ind, int threadnum) 
+	public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum) 
 	{
         if (!ind.evaluated)  // don't bother reevaluating
         {
             // SSPN fitness is normalized between 0 and 1000  (1000 * raw SSPN)
-            double fitness = GEPFitnessFunction.SSPNfitness((GEPIndividual)ind);
+            double fitness = GEPFitnessFunction.SSPNfitness(true, (GEPIndividual)ind);
             // with parsimony pressure
             //fitness = GEPFitnessFunction.parsimonyFitness((GEPIndividual)ind, fitness);
             

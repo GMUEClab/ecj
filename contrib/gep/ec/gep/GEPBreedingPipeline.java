@@ -21,8 +21,6 @@
 
 package ec.gep;
 import java.util.Hashtable;
-import java.util.Vector;
-
 import ec.*;
 import ec.util.MersenneTwisterFast;
 import ec.util.Parameter;
@@ -55,7 +53,7 @@ public abstract class GEPBreedingPipeline extends BreedingPipeline
 	private static Hashtable htReplacementArrays = null;
 
 	// class to hold an integer array that is used as a set of indicies to select from
-	private class IntegerArray
+	static private class IntegerArray
 	{
 		public int indicies[] = null;
 		IntegerArray(int numberInSelectionSet)
@@ -105,7 +103,7 @@ public abstract class GEPBreedingPipeline extends BreedingPipeline
     	// first get an integer array of the right size initialize with all of the indexes
     	// It may have already been created previously or we create it and save it in a hash table
     	int indicies[];
-    	Integer numInSet = new Integer(numberInSelectionSet);
+    	Integer numInSet = Integer.valueOf(numberInSelectionSet);
     	if (htReplacementArrays == null)
     		htReplacementArrays = new Hashtable();
     	IntegerArray integerArrayObject = (IntegerArray)htReplacementArrays.get(numInSet);

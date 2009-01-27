@@ -1,10 +1,6 @@
 package ec.gep.symbols;
 
-import ec.EvolutionState;
 import ec.gep.GEPFunctionSymbol;
-import ec.gp.GPData;
-import ec.gp.GPIndividual;
-import ec.util.Parameter;
 
 /**
  * The complement value of a single parameter (1-value) Only makes sense if value is 0 or 1..
@@ -44,7 +40,7 @@ public class Comp extends GEPFunctionSymbol {
 	/**
 	 * The human readable form of the expression
 	 */
-	public String printMathExpression( String p[] )
+	public String getMathExpressionAsString( String p[] )
 	{
 		return "(1-"+p[0]+")";
 	}

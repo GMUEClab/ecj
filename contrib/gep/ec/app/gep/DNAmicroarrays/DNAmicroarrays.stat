@@ -188,6 +188,7 @@ d341.-.-.d4678.*.-.*.d7043.d6218.d6485.d1640.d6360.d700.d4739.d3034.d3164.d290
 
 Size of program: 31
 Variables used(count): d258(1), d341(1), d349(2), d869(2), d1009(1), d1014(2), d3001(1), d4739(2), d5458(1), d5500(2), d5980(1), d6218(1)
+Functions used(count): -(8), +(2), *(4)
 
 ***** TRAINING data results *****
 Confusion Matrix: 

@@ -100,7 +100,7 @@ public abstract class GEPProblem extends Problem
     }
 
     public void describe(final Individual ind, 
-                         final EvolutionState state, 
+                         final EvolutionState state, int subpopulation,
                          final int threadnum, final int log,
                          final int verbosity)
     {

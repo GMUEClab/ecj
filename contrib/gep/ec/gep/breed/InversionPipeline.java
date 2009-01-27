@@ -108,9 +108,17 @@ public class InversionPipeline extends GEPBreedingPipeline
         for(int q=0; q<numberToInvert; q++)
         {
         	int select = srt.nextInt(n); // choose 1 to invert --- should be a without replacement selection!
-            invert(((GEPIndividual)inds[select]).genome, srt, headsize);
-            ((GEPIndividual)inds[select]).evaluated = false;
-            ((GEPIndividual)inds[select]).parsedGeneExpressions = null;
+        	GEPIndividual ind = (GEPIndividual)inds[select];
+	    	int numChromosomes = ind.chromosomes.length;
+	    	// do this for each chromosome in the individual
+	    	for (int i=0; i<numChromosomes; i++)
+	    	{
+	    		GEPChromosome chromosome = ind.chromosomes[i];
+	            invert(chromosome.genome, srt, headsize);
+                chromosome.parsedGeneExpressions = null;
+	    	}
+            ind.evaluated = false;
+            ind.chromosomesParsed = false;
         }
 
         return n;

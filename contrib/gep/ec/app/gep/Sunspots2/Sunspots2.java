@@ -56,12 +56,12 @@ public class Sunspots2 extends GEPProblem implements SimpleProblemForm
     	return timeSeriesData;
     }
 
-	public void evaluate(EvolutionState state, Individual ind, int threadnum) 
+	public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum) 
 	{
         if (!ind.evaluated)  // don't bother reevaluating
         {
             // fitness is normalized between 0 and 1000  (1000 * (1/(1+RRSE))
-            double fitness = GEPFitnessFunction.RRSEfitness((GEPIndividual)ind);
+            double fitness = GEPFitnessFunction.RRSEfitness(true, (GEPIndividual)ind);
                         
             // the fitness better be SimpleFitness!
             SimpleFitness f = ((SimpleFitness)ind.fitness);

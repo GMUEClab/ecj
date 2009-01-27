@@ -106,9 +106,17 @@ public class GenetranspositionPipeline extends GEPBreedingPipeline
 	    for(int q=0; q<numberToTranspose; q++) 
         {
 	    	int select = srt.nextInt(n); // choose 1 to transpose --- should be a without replacement selection!
-            geneTranspose(((GEPIndividual)inds[select]).genome, srt);
-            ((GEPIndividual)inds[select]).evaluated = false;
-            ((GEPIndividual)inds[select]).parsedGeneExpressions = null;
+	    	GEPIndividual ind = (GEPIndividual)inds[select];
+	    	int numChromosomes = ind.chromosomes.length;
+	    	// do this for each chromosome in the individual
+	    	for (int i=0; i<numChromosomes; i++)
+	    	{
+	    		GEPChromosome chromosome = ind.chromosomes[i];
+                geneTranspose(chromosome.genome, srt);
+                chromosome.parsedGeneExpressions = null;
+	    	}
+            ind.evaluated = false;
+            ind.chromosomesParsed = false;
         }
 
         return n;

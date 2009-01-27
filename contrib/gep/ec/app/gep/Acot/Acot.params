@@ -23,6 +23,11 @@ quit-on-run-complete =		true
 pop.subpop.0.size =			30
 
 
+# may want to turn on/off simplifying expressions when human readable form of individual is printed
+# (careful since the meditor.jar file must be in start directory and it has been know to cause
+# crashes or no terminating loops for some expressions)
+pop.subpop.0.species.ind.simplify-expressions = true
+
 # ec.Species
 # ==============================
 

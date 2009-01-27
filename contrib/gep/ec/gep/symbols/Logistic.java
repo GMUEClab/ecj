@@ -1,10 +1,6 @@
 package ec.gep.symbols;
 
-import ec.EvolutionState;
 import ec.gep.GEPFunctionSymbol;
-import ec.gp.GPData;
-import ec.gp.GPIndividual;
-import ec.util.Parameter;
 
 /**
  * The logistic function (1.0/(1.0+Math.pow(Math.E, -params[0]))).
@@ -44,7 +40,7 @@ public class Logistic extends GEPFunctionSymbol {
 	/**
 	 * The human readable form of the expression
 	 */
-	public String printMathExpression( String p[] )
+	public String getMathExpressionAsString( String p[] )
 	{
 		return "(1/(1+pow(e,-"+p[0]+")))";
 	}

@@ -1,16 +1,22 @@
+GENERAL PARAMETERS
+Arguments used in this run: 
 Maximum number of generations in this run: 50
 Size of population in this run: 30
+Number of Chromosomes per individual: 1
 Number of genes per chromosome: 3
 Size of gene head: 8
 Seed(s) used in this job: 4357
 Problem type: functionfinding
+Fitness function: SPECIFIED IN USER PROGRAM
 
-
+BEST INDIVIDUAL OF GENERATION
 Generation: 0
-Best Individual:
 Evaluated: T
 Fitness: 0.004819467
-Linking function: +
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
 -.-.-.x.*.*.-.x.x.x.x.x.x.x.x.x.x
 Gene 1
@@ -18,69 +24,128 @@ Gene 1
 Gene 2
 *.+.+.x.*.*.x.x.x.x.x.x.x.x.x.x.x
 
-((x-(x*x))-((x*x)-(x-x))) + ((x+((x/x)/x))*(x-(x/x))) + ((x+(x*x))*((x*x)+x))
+MATH
+((((x-(x*x))-((x*x)-(x-x)))+((x+((x/x)/x))*(x-(x/x))))+((x+(x*x))*((x*x)+x)))
+
+MATH (SIMPLIFIED)
+-(1-x-2*x^4-x^5)/x
 
 
+BEST INDIVIDUAL OF GENERATION
 Generation: 1
-Best Individual:
 Evaluated: T
-Fitness: 410.7618
-Linking function: +
+Fitness: 0.0126469815
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.-.*.x.*.*.-.x.x.x.x.x.x.x.x.x.x
+-.-.-.x.*.*.-.x.x.x.x.x.x.x.x.x.x
 Gene 1
-*.+.-.x./.x././.x.x.x.x.x.x.x.x.x
+-.-.-.x.*.*.-.+.x.x.x.x.x.x.x.x.x
 Gene 2
-*.+.+.x.*.*./.x.x.x.x.x.x.x.x.x.x
+*.+.+.x.*.*.x.x.x.x.x.x.x.x.x.x.x
 
-((x-(x*x))-((x*x)*(x-x))) + ((x+((x/x)/x))*(x-(x/x))) + ((x+(x*x))*((x*x)+(x/x)))
+MATH
+((((x-(x*x))-((x*x)-(x-x)))+((x-((x+x)*x))-((x*x)-(x-x))))+((x+(x*x))*((x*x)+x)))
+
+MATH (SIMPLIFIED)
+2*x-4*x^2+2*x^3+x^4
 
 
+BEST INDIVIDUAL OF GENERATION
+Generation: 3
+Evaluated: T
+Fitness: 22.65327
+Linking function: Add
+
+GEP-MODEL
+KARVA
+Gene 0
+*.+.+.x.*.*.x.x.x.x.x.x.x.x.x.x.x
+Gene 1
+*.+.-.x.+.x.x./.x.x.x.x.x.x.x.x.x
+Gene 2
+-.-.x.x.*.*.x.x.x.x.x.x.x.x.x.x.x
+
+MATH
+((((x+(x*x))*((x*x)+x))+((x+((x/x)+x))*(x-x)))+((x-((x*x)*x))-x))
+
+MATH (SIMPLIFIED)
+x^2+x^3+x^4
+
+
+BEST INDIVIDUAL OF GENERATION
 Generation: 4
-Best Individual:
 Evaluated: T
 Fitness: 1000.0
-Linking function: +
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.x.x././.x.x.-.x.x.x.x.x.x.x.x.x
+*.+.+.x.*.*.x.x.x.x.x.x.x.x.x.x.x
 Gene 1
-*.-.*.x.*.*.-.x.x.x.x.x.x.x.x.x.x
+x.+.-.*.+.x.x./.x.x.x.x.x.x.x.x.x
 Gene 2
-*.+.+.x.*.*./.x.x.x.x.x.x.x.x.x.x
+-.-.x.x.*.*.x.x.x.x.x.x.x.x.x.x.x
 
-(x-x) + ((x-(x*x))*((x*x)*(x-x))) + ((x+(x*x))*((x*x)+(x/x)))
+MATH
+((((x+(x*x))*((x*x)+x))+x)+((x-((x*x)*x))-x))
+
+MATH (SIMPLIFIED)
+x+x^2+x^3+x^4
 
 
-Best Individual of Run:
+
+BEST INDIVIDUAL 1
 Found at Generation: 4
+Raw Fitness: 0.0
 Evaluated: T
 Fitness: 1000.0
-Linking function: +
+Linking function: Add
+
+GEP-MODEL
+KARVA
 Gene 0
--.x.x././.x.x.-.x.x.x.x.x.x.x.x.x
+*.+.+.x.*.*.x.x.x.x.x.x.x.x.x.x.x
 Gene 1
-*.-.*.x.*.*.-.x.x.x.x.x.x.x.x.x.x
+x.+.-.*.+.x.x./.x.x.x.x.x.x.x.x.x
 Gene 2
-*.+.+.x.*.*./.x.x.x.x.x.x.x.x.x.x
+-.-.x.x.*.*.x.x.x.x.x.x.x.x.x.x.x
 
-(x-x) + ((x-(x*x))*((x*x)*(x-x))) + ((x+(x*x))*((x*x)+(x/x)))
+MATH
+((((x+(x*x))*((x*x)+x))+x)+((x-((x*x)*x))-x))
 
-Size of program: 29
-Variables used(count): x(16)
+MATH (SIMPLIFIED)
+x+x^2+x^3+x^4
 
-***** TRAINING data results *****
+
+MODEL COMPOSITION
+Size of program: 21
+Variables used(variable count) 1: x 12
+Functions used(function count) 3: - 2, + 2, * 5
+
+Size of program (MATH simplified): 10
+Variables used(variable count) 1: x 4
+Functions used(function count) 2: ^ 3, + 3
+
+MODEL QUALITY MEASURES (TRAINING)
 Statistics: 
-MSE:  7.182716450022835E-24    	RAE:  4.832470396077297E-16    	RSE:  4.344516272977063E-31
-RMSE: 2.680059038533076E-12    	MAE:  1.7715995337397316E-12    	RRSE: 6.591294465411982E-16
+MSE:  6.789240208185518E-24    	RAE:  4.576645930738167E-16    	RSE:  4.106519416552826E-31
+RMSE: 2.6056170494118123E-12    	MAE:  1.6778134437345215E-12    	RRSE: 6.408213024356186E-16
+Corr Coeff: 1.0
 
-Observed	Computed
+OBSERVED	AND COMPUTED (TRAINING)
+#Observed GEP-Model
 9103.54918799079	9103.549187990786
-1213.47815867463	1213.4781586746294
-160.18146840485	160.18146840484988
+1213.47815867463	1213.4781586746292
+160.18146840485	160.1814684048499
 4432.23529247904	4432.235292479036
-7671.79392962917	7671.793929629167
+7671.79392962917	7671.793929629168
 11.8327154232663	11.832715423266338
 193.570365560718	193.57036556071805
 11124.3786278048	11124.378627804794
--0.326443121119579	-0.3264431211195794
-1093.78835980998	1093.7883598099795
+-0.326443121119579	-0.32644312111957946
+1093.78835980998	1093.7883598099797
+#----------

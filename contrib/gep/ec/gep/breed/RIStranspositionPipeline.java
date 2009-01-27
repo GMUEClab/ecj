@@ -107,9 +107,17 @@ try {
 	    for(int q=0; q<numberToTranspose; q++) 
 	    {
 	    	int select = srt.nextInt(n); // choose 1 to transpose --- should be a without replacement selection!
-	        risTranspose(((GEPIndividual)inds[select]).genome, srt, s);
-	        ((GEPIndividual)inds[select]).evaluated = false;
-	        ((GEPIndividual)inds[select]).parsedGeneExpressions = null;
+        	GEPIndividual ind = (GEPIndividual)inds[select];
+	    	int numChromosomes = ind.chromosomes.length;
+	    	// do this for each chromosome in the individual
+	    	for (int i=0; i<numChromosomes; i++)
+	    	{
+	    		GEPChromosome chromosome = ind.chromosomes[i];
+	            risTranspose(chromosome.genome, srt, s);
+                chromosome.parsedGeneExpressions = null;
+	    	}
+            ind.evaluated = false;
+            ind.chromosomesParsed = false;
 	    }
 } catch (Exception e) { e.printStackTrace(); }
 
