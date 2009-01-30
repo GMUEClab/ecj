@@ -38,7 +38,7 @@ public class SPEA2TournamentSelection extends TournamentSelection
         final EvolutionState state,
         final int thread)
         {
-    	Individual[] oldinds = state.population.subpops[subpopulation].individuals;
+        Individual[] oldinds = state.population.subpops[subpopulation].individuals;
         // the one change from TournamentSelection: we only pick individuals from the archive
         int i = oldinds.length - state.random[thread].nextInt(((SPEA2Subpopulation)state.population.subpops[subpopulation]).archiveSize) - 1;
         int bad = i;
