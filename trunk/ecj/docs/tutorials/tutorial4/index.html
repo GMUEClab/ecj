@@ -373,7 +373,7 @@ public class MultiValuedRegression extends GPProblem implements SimpleProblemFor
 
                 <font color=gray>// the fitness better be KozaFitness!</font>
                 KozaFitness f = ((KozaFitness)ind.fitness);
-                f.setFitness(state,(float)sum);
+                f.setStandardizedFitness(state,(float)sum);
                 f.hits = hits;
                 ind.evaluated = true;
                 }

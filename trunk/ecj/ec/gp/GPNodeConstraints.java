@@ -91,6 +91,10 @@ public class GPNodeConstraints implements Clique
 
     public String toString() { return name; }
 
+    /** A little memory optimization: if GPNodes have no children, they are welcome to
+        use share this zero-sized array as their children array. */
+    public GPNode zeroChildren[] = new GPNode[0];
+
     /** This must be called <i>after</i> the GPTypes have been set up. */
     public final void setup(final EvolutionState state, final Parameter base)
         {

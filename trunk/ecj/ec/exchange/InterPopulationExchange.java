@@ -8,6 +8,7 @@
 package ec.exchange;
 import ec.*;
 import ec.util.*;
+import java.io.*;
 
 /* 
  * InterPopulationExchange.java
@@ -93,6 +94,31 @@ import ec.util.*;
 
 public class InterPopulationExchange extends Exchanger
     {
+    // static inner classes don't need SerialVersionUIDs
+    static class IPEInformation implements Serializable
+        {
+        // the selection method
+        SelectionMethod immigrantsSelectionMethod;
+
+        // the selection method
+        SelectionMethod indsToDieSelectionMethod;
+
+        // the number of destination subpopulations
+        int numDest;
+
+        // the subpopulations where individuals need to be sent
+        int[] destinations;
+
+        // the modulo
+        int modulo;
+
+        // the start (offset)
+        int offset;
+
+        // the size
+        int size;
+        }
+
 
     /** The subpopulation delimiter */
     public static final String P_SUBPOP = "subpop";
@@ -127,32 +153,6 @@ public class InterPopulationExchange extends Exchanger
     // SERIALIZE
     public Parameter base;
     
-    class IPEInformation
-        {
-
-        // the selection method
-        SelectionMethod immigrantsSelectionMethod;
-
-        // the selection method
-        SelectionMethod indsToDieSelectionMethod;
-
-        // the number of destination subpopulations
-        int numDest;
-
-        // the subpopulations where individuals need to be sent
-        int[] destinations;
-
-        // the modulo
-        int modulo;
-
-        // the start (offset)
-        int offset;
-
-        // the size
-        int size;
-
-        }
-
     IPEInformation[] exchangeInformation;
 
     //  storage for the incoming immigrants: 2 sizes:

@@ -171,7 +171,7 @@ public class EvolutionState implements Singleton
     /** Should we checkpoint at all? */
     public boolean checkpoint;
 
-    /** The requested prefix start filenames, not including a following period.  You probably shouldn't modify this during a run.*/
+    /** The requested prefix start checkpoint filenames, not including a following period.  You probably shouldn't modify this during a run.*/
     public String checkpointPrefix;  // term to prefix checkpoint filenames
 
     /** The requested number of generations that should pass before we write out a checkpoint file. */
