@@ -97,7 +97,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
 
     public static final int SITUATION_NEWIND = 0;
     public static final int SITUATION_MUTATION = 1;
-
+    
     // beats me if Java compilers will take advantage of the int->byte shortening.
     // They may want everything aligned, in which case they may buffer the object
     // anyway, hope not!
@@ -118,11 +118,6 @@ public abstract class GPNode implements GPNodeParent, Prototype
         shouldn't access the constraints through this variable -- use the constraints(state)
         method instead. */
     public byte constraints;
-
-    // just in case Java's stupid enough to not move this out of the class, I
-    // put it here with the other bytes.
-    public static final char REPLACEMENT_CHAR = '@';
-
 
     /* Returns the GPNode's constraints.  A good JIT compiler should inline this. */
     public final GPNodeConstraints constraints(final GPInitializer initializer) 
@@ -206,7 +201,9 @@ public abstract class GPNode implements GPNodeParent, Prototype
         // for some special versions of GPNode, we may have to enforce certain
         // rules, checked in children versions of setup(...)
 
-        children = new GPNode[constraints(((GPInitializer)state.initializer)).childtypes.length];
+        int len = constraints(((GPInitializer)state.initializer)).childtypes.length;
+        if (len == 0) children = constraints.zeroChildren;
+        else children = new GPNode[len];
         }
 
     /** Returns the argument type of the slot that I fit into in my parent.  
@@ -341,6 +338,27 @@ public abstract class GPNode implements GPNodeParent, Prototype
             }
         return d + 1;
         }
+        
+    /** Returns the path length of the tree, which is the sum of all paths from all nodes to the root.   O(n). */
+    public int pathLength(int nodesearch) { return pathLength(NODESEARCH_ALL, 0); }
+    
+    int pathLength(int nodesearch, int currentDepth)
+        {
+        int sum = currentDepth;
+        if (nodesearch == NODESEARCH_NONTERMINALS && children.length==0 ||  // I'm a leaf, don't include me
+            nodesearch == NODESEARCH_TERMINALS && children.length > 0)  // I'm a nonleaf, don't include me
+            sum = 0;
+            
+        for(int x=0;x<children.length;x++)
+            sum += pathLength(nodesearch, currentDepth + 1);
+        return sum;
+        }
+        
+    /** Returns the mean depth of the tree, which is path length (sum of all paths from all nodes to the root) divided by the number of nodes.  O(n). */
+    int meanDepth(int nodesearch)
+        {
+        return pathLength(nodesearch) / numNodes(nodesearch);
+        }
 
     /** Returns the depth at which I appear in the tree, which is a value >= 0. O(ln n) avg.*/
     public int atDepth()
@@ -441,7 +459,9 @@ public abstract class GPNode implements GPNodeParent, Prototype
         try
             {
             GPNode obj = (GPNode)(super.clone());
-            obj.children = new GPNode[children.length];
+            int len = children.length;
+            if (len == 0) obj.children = children;  // we'll share arrays -- probably just using GPNodeConstraints.zeroChildren anyway
+            else obj.children = new GPNode[len];
             return obj;
             }
         catch (CloneNotSupportedException e)
@@ -832,16 +852,20 @@ public abstract class GPNode implements GPNodeParent, Prototype
         }
 
     /** Produces the Graphviz code for a Graphviz tree of the subtree rooted at this node.
-        For this to work, the output of toString() must not contain a double-quote. */
+        For this to work, the output of toString() must not contain a double-quote. 
+        Note that this isn't particularly efficient and should only be used to generate
+        occasional trees for display, not for storing individuals or sending them over networks. */
     public String makeGraphvizTree()
         {
         return "digraph g {\nnode [shape=rectangle];\n" + makeGraphvizSubtree("n") + "}\n";
         }
     
-    /** Produces the inner code for a graphviz subtree.  Called from makeGraphvizTree(). */
+    /** Produces the inner code for a graphviz subtree.  Called from makeGraphvizTree(). 
+        Note that this isn't particularly efficient and should only be used to generate
+        occasional trees for display, not for storing individuals or sending them over networks. */
     protected String makeGraphvizSubtree(String prefix)
         {
-        String body = prefix + "[label = \"" + toString() + "\"];\n";
+        String body = prefix + "[label = \"" + toStringForHumans() + "\"];\n";
         for(int x = 0; x < children.length; x++)
             {
             String newprefix;
@@ -857,16 +881,18 @@ public abstract class GPNode implements GPNodeParent, Prototype
     /** Produces the LaTeX code for a LaTeX tree of the subtree rooted at this node, using the <tt>epic</tt>
         and <tt>fancybox</tt> packages, as described in sections 10.5.2 (page 307) 
         and 10.1.3 (page 278) of <i>The LaTeX Companion</i>, respectively.  For this to
-        work, the output of toString() must not contain any weird latex characters, notably { or } or % or \,
+        work, the output of toStringForHumans() must not contain any weird latex characters, notably { or } or % or \,
         unless you know what you're doing. See the documentation for ec.gp.GPTree for information
-        on how to take this code snippet and insert it into your LaTeX file. */
+        on how to take this code snippet and insert it into your LaTeX file. 
+        Note that this isn't particularly efficient and should only be used to generate
+        occasional trees for display, not for storing individuals or sending them over networks. */
     
     public String makeLatexTree()
         {
         if (children.length==0)
-            return "\\gpbox{"+toString()+"}";
+            return "\\gpbox{"+toStringForHumans()+"}";
             
-        String s = "\\begin{bundle}{\\gpbox{"+toString()+"}}";
+        String s = "\\begin{bundle}{\\gpbox{"+toStringForHumans()+"}}";
         for(int x=0;x<children.length;x++)
             s = s + "\\chunk{"+children[x].makeLatexTree()+"}";
         s = s + "\\end{bundle}";
@@ -880,27 +906,48 @@ public abstract class GPNode implements GPNodeParent, Prototype
         or not to do this depends on the setting of <tt>useOperatorForm</tt>.  Additionally, terminals will be
         printed out either in variable form -- a -- or in zero-argument function form -- a() -- depending on
         the setting of <tt>printTerminalsAsVariables</tt>.
+        Note that this isn't particularly efficient and should only be used to generate
+        occasional trees for display, not for storing individuals or sending them over networks. 
     */
                 
     public String makeCTree(boolean parentMadeParens, boolean printTerminalsAsVariables, boolean useOperatorForm)
         {
         if (children.length==0)
-            return (printTerminalsAsVariables ? toString() : toString() + "()");
+            return (printTerminalsAsVariables ? toStringForHumans() : toStringForHumans() + "()");
         else if (children.length==1)
-            return toString() + "(" + children[0].makeCTree(true, printTerminalsAsVariables, useOperatorForm) + ")";
+            return toStringForHumans() + "(" + children[0].makeCTree(true, printTerminalsAsVariables, useOperatorForm) + ")";
         else if (children.length==2 && useOperatorForm)
             return (parentMadeParens ? "" : "(") + 
                 children[0].makeCTree(false, printTerminalsAsVariables, useOperatorForm) + " " + 
-                toString() + " " + children[1].makeCTree(false, printTerminalsAsVariables, useOperatorForm) + 
+                toStringForHumans() + " " + children[1].makeCTree(false, printTerminalsAsVariables, useOperatorForm) + 
                 (parentMadeParens ? "" : ")");
         else
             {
-            String s = toString() + "(" + children[0].makeCTree(true, printTerminalsAsVariables, useOperatorForm);
+            String s = toStringForHumans() + "(" + children[0].makeCTree(true, printTerminalsAsVariables, useOperatorForm);
             for(int x = 1; x < children.length;x++)
                 s = s + ", " + children[x].makeCTree(true, printTerminalsAsVariables, useOperatorForm);
             return s + ")";
             }
         }
+
+    /**
+       Produces a tree for human consumption in Lisp form similar to that generated by printTreeForHumans().
+       Note that this isn't particularly efficient and should only be used to generate
+       occasional trees for display, not for storing individuals or sending them over networks.
+    */
+    public String makeLispTree()
+        {
+        if (children.length==0)
+            return toStringForHumans();
+        else
+            {
+            String s = "(" + toStringForHumans();
+            for(int x=0;x<children.length;x++)
+                s = s + " " + children[x].makeLispTree();
+            return s + ")";
+            }
+        }
+
 
     /** Prints out the tree on a single line, with no ending \n, in a fashion that can
         be read in later by computer. O(n).  
@@ -1092,6 +1139,8 @@ public abstract class GPNode implements GPNodeParent, Prototype
         int argposition,
         EvolutionState state) 
         {
+        final char REPLACEMENT_CHAR = '@';
+
         // eliminate whitespace if any
         boolean isTerminal = true;
         int len = dret.data.length();

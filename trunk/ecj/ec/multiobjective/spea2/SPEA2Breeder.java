@@ -91,24 +91,24 @@ public class SPEA2Breeder extends SimpleBreeder
 
             // Sort the old guys
             //sort(oldInds);
-			QuickSort.qsort(oldInds, new SortComparator()
-			{
-			    /** Returns true if a < b, else false */
-			    public boolean lt(Object a, Object b)
-			    {
-			    	return ((SPEA2MultiObjectiveFitness)(((Individual)a).fitness)).SPEA2Fitness <
-			    			((SPEA2MultiObjectiveFitness)(((Individual)b).fitness)).SPEA2Fitness;
-	    			
-			    }
-			
-			    /** Returns true if a > b, else false */
-			    public boolean gt(Object a, Object b)
-			    {
-			    	return ((SPEA2MultiObjectiveFitness)(((Individual)a).fitness)).SPEA2Fitness >
-			    			((SPEA2MultiObjectiveFitness)(((Individual)b).fitness)).SPEA2Fitness;
-	    			
-			    }
-			});
+            QuickSort.qsort(oldInds, new SortComparator()
+                {
+                /** Returns true if a < b, else false */
+                public boolean lt(Object a, Object b)
+                    {
+                    return ((SPEA2MultiObjectiveFitness)(((Individual)a).fitness)).SPEA2Fitness <
+                        ((SPEA2MultiObjectiveFitness)(((Individual)b).fitness)).SPEA2Fitness;
+                                
+                    }
+                        
+                /** Returns true if a > b, else false */
+                public boolean gt(Object a, Object b)
+                    {
+                    return ((SPEA2MultiObjectiveFitness)(((Individual)a).fitness)).SPEA2Fitness >
+                        ((SPEA2MultiObjectiveFitness)(((Individual)b).fitness)).SPEA2Fitness;
+                                
+                    }
+                });
 
             // Null out non-candidates and count
             int nIndex = 1;
@@ -233,10 +233,10 @@ public class SPEA2Breeder extends SimpleBreeder
             // to the end of the array here to be consistent with ECJ's assumptions.
             
             for(int i=0;i < thisSubpop.archiveSize; i++)
-            {
-            	oldInds[oldInds.length - i - 1] = oldInds[i];
-            	oldInds[i] = null;
-            }
+                {
+                oldInds[oldInds.length - i - 1] = oldInds[i];
+                oldInds[i] = null;
+                }
           
             // NOTE: This is a key place for debugging.  The archive has been built and all the individuals
             //       have *not* yet been mutated/crossed-over.  
