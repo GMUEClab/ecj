@@ -161,7 +161,7 @@ pop.subpop.0.species.pipe.source.0.source.1.pick-worst = true
 </pre>
 			</tt>
 			<p>
-			Now we have to write the mutation class. In the <tt>tutorial2</tt> directory, create a file called <tt>OutMutatorPipeline.java</tt>.  Add the following to the file:
+			Now we have to write the mutation class. In the <tt>tutorial2</tt> directory, create a file called <tt>OurMutatorPipeline.java</tt>.  Add the following to the file:
 
 <tt><pre>
 package ec.app.tutorial2;
@@ -352,7 +352,9 @@ public class AddSubtract extends Problem implements SimpleProblemForm
     
     public void describe(final Individual ind, 
                          final EvolutionState state, 
-                         final int threadnum, final int log,
+                         final int subpopulation,
+                         final int threadnum,
+                         final int log,
                          final int verbosity)    { }
     }
 </pre></tt>

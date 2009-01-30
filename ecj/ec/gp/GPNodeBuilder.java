@@ -273,10 +273,10 @@ public abstract class GPNodeBuilder implements Prototype
                 
         // shorter explanation -- appears for each node builder and type combo
         if (fail)
-            state.output.fatal("" + this.getClass() + " can't find a terminal type-compatable with " + type + 
-                " and cannot replace it with a nonterminal.  You may need to try a different node-builder algorithm.");
+            state.output.fatal("" + this.getClass() + " can't find a non-terminal type-compatable with " + type + 
+                " and cannot replace it with a terminal.  You may need to try a different node-builder algorithm.");
         else
-            state.output.warnOnce("" + this.getClass() + " can't find a terminal type-compatable with " + type);
+            state.output.warnOnce("" + this.getClass() + " can't find a non-terminal type-compatable with " + type);
         }
 
     /** Issues a fatal error that no node (nonterminal or terminal) was found with a return type of the given type, and that an algorithm

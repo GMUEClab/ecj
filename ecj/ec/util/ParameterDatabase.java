@@ -927,7 +927,7 @@ public class ParameterDatabase extends Properties implements Serializable
 
 
     float getFloat(Parameter parameter) throws NumberFormatException
-	{
+        {
         if (_exists(parameter)) 
             {
             try
@@ -935,8 +935,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 // For JDK 1.2 and later, this is more efficient...
                 // float i = Float.parseFloat(get(parameter));
                 // ...but we can't use it and still be compatible with JDK 1.1
-		return Float.valueOf(get(parameter)).floatValue(); // what
-									// stupidity...
+                return Float.valueOf(get(parameter)).floatValue(); // what stupidity...
                 } 
             catch (NumberFormatException e) 
                 {
@@ -947,7 +946,7 @@ public class ParameterDatabase extends Properties implements Serializable
         else
             throw new NumberFormatException(
                 "Float does not exist for parameter " + parameter);
-	}
+        }
 
     /*
      * Searches down through databases to find a given parameter, whose value
@@ -968,7 +967,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 "Float does not exist for either parameter " + parameter
                 + "\nor\n" + defaultParameter);
         }
-	
+        
 
     /**
      * Searches down through databases to find a given parameter, whose value
@@ -1000,8 +999,7 @@ public class ParameterDatabase extends Properties implements Serializable
             {
             try
                 {
-                float i = Float.valueOf(get(parameter)).floatValue(); // what
-                                                                      // stupidity...
+                float i = Float.valueOf(get(parameter)).floatValue(); // what stupidity...
 
                 // For JDK 1.2 and later, this is more efficient...
                 // float i = Float.parseFloat(get(parameter));
@@ -1049,8 +1047,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 // For JDK 1.2 and later, this is more efficient...
                 // return Float.parseFloat(get(parameter));
                 // ...but we can't use it and still be compatible with JDK 1.1
-                return Float.valueOf(get(parameter)).floatValue(); // what
-                                                                   // stupidity...
+                return Float.valueOf(get(parameter)).floatValue(); // what stupidity...
                 } 
             catch (NumberFormatException e) 
                 {
@@ -1091,8 +1088,7 @@ public class ParameterDatabase extends Properties implements Serializable
             {
             try
                 {
-                float i = Float.valueOf(get(parameter)).floatValue(); // what
-                                                                      // stupidity...
+                float i = Float.valueOf(get(parameter)).floatValue(); // what stupidity...
 
                 // For JDK 1.2 and later, this is more efficient...
                 // float i = Float.parseFloat(get(parameter));
@@ -1114,7 +1110,7 @@ public class ParameterDatabase extends Properties implements Serializable
         }
 
     double getDouble(Parameter parameter) throws NumberFormatException
-	{
+        {
         if (_exists(parameter)) 
             {
             try
@@ -1122,8 +1118,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 // For JDK 1.2 and later, this is more efficient...
                 // double i = Double.parseDouble(get(parameter));
                 // ...but we can't use it and still be compatible with JDK 1.1
-		return Double.valueOf(get(parameter)).doubleValue(); // what
-									// stupidity...
+                return Double.valueOf(get(parameter)).doubleValue(); // what stupidity...
                 } 
             catch (NumberFormatException e) 
                 {
@@ -1134,7 +1129,7 @@ public class ParameterDatabase extends Properties implements Serializable
         else
             throw new NumberFormatException(
                 "Double does not exist for parameter " + parameter);
-	}
+        }
 
     /*
      * Searches down through databases to find a given parameter, whose value
@@ -1155,7 +1150,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 "Double does not exist for either parameter " + parameter
                 + "\nor\n" + defaultParameter);
         }
-	
+        
 
     /**
      * Searches down through databases to find a given parameter, whose value
@@ -1187,8 +1182,7 @@ public class ParameterDatabase extends Properties implements Serializable
             {
             try
                 {
-                double i = Double.valueOf(get(parameter)).doubleValue(); // what
-                                                                         // stupidity...
+                double i = Double.valueOf(get(parameter)).doubleValue(); // what stupidity...
 
                 // For JDK 1.2 and later, this is more efficient...
                 // double i = Double.parseDouble(get(parameter));
@@ -1237,8 +1231,7 @@ public class ParameterDatabase extends Properties implements Serializable
             {
             try
                 {
-                double i = Double.valueOf(get(parameter)).doubleValue(); // what
-                                                                         // stupidity...
+                double i = Double.valueOf(get(parameter)).doubleValue(); // what stupidity...
 
                 // For JDK 1.2 and later, this is more efficient...
                 // double i = Double.parseDouble(get(parameter));
@@ -1288,8 +1281,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 // For JDK 1.2 and later, this is more efficient...
                 // return Double.parseDouble(get(parameter));
                 // ...but we can't use it and still be compatible with JDK 1.1
-                return Double.valueOf(get(parameter)).doubleValue(); // what
-                                                                     // stupidity...
+                return Double.valueOf(get(parameter)).doubleValue(); // what stupidity...
                 } 
             catch (NumberFormatException e) 
                 {

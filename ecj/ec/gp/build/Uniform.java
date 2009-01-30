@@ -178,9 +178,18 @@ public class Uniform extends GPNodeBuilder
     public BigInteger NUMTREESROOTEDBYNODE[/*FunctionSet*/][/*nodenum*/][/*size*/];
     public BigInteger NUMCHILDPERMUTATIONS[/*FunctionSet*/][/*parentnodenum*/][/*size*/][/*outof*/][/*pickchild*/];
     
+    
+    
     // tables derived from the previous ones through some massaging
+    
+    // [/*the nodes*/] is an array of <node,probability> pairs for all possible nodes rooting
+    // trees of the desired size and compatible with the given return type.  It says that if you
+    // were to pick a tree, this would be the probability that this node would be the root of it.
     public UniformGPNodeStorage ROOT_D[/*FunctionSet*/][/*type*/][/*size*/][/*the nodes*/];
-    public boolean ROOT_D_ZERO[/*FunctionSet*/][/*type*/][/*size*/];  // is ROOT_D all zero for these values?
+    
+    // True if ROOT_D all zero for all possible nodes in [/*the nodes*/] above. 
+    public boolean ROOT_D_ZERO[/*FunctionSet*/][/*type*/][/*size*/];
+    
     public double CHILD_D[/*FunctionSet*/][/*type*/][/*outof*/][/*pickchild*/][/* the nodes*/];
     
     
@@ -255,7 +264,8 @@ public class Uniform extends GPNodeBuilder
                 tmpn = (GPNode)(e.nextElement());
                 if (maxarity < tmpn.children.length) 
                     maxarity = tmpn.children.length;
-                funcnodes.put(tmpn,new Integer(count++));
+                if (!funcnodes.containsKey(tmpn))  // don't remap the node; it'd make holes
+                    funcnodes.put(tmpn,new Integer(count++));
                 }
             }
         
@@ -430,7 +440,7 @@ public class Uniform extends GPNodeBuilder
         {
         //System.out.println("" + functionset + " " + type + " " + size);
         int choice = RandomChoice.pickFromDistribution(
-            ROOT_D[functionset][type][size],ROOT_D[0][0][0][0],
+            ROOT_D[functionset][type][size],ROOT_D[functionset][type][size][0],
             mt.nextDouble(),CHECKBOUNDARY);
         GPNode node = (GPNode)(ROOT_D[functionset][type][size][choice].node.lightClone());
         node.resetNode(state,thread);  // give ERCs a chance to randomize

@@ -155,7 +155,8 @@ public class OddRosenbrock extends Problem implements SimpleProblemForm
         }
 
     public void describe(final Individual ind, 
-             final EvolutionState _state, 
+             final EvolutionState state, 
+             final int subpopulation,
              final int threadnum,
              final int log,
              final int verbosity)  { return; }
@@ -407,7 +408,7 @@ it's threadsafe.
         <font color=gray>// print out best genome #3 individual in subpop 0</font>
         int best = 0;
         double best_val = ((DoubleVectorIndividual)state.population.subpops[0].individuals[0]).genome[3];
-            for(int y=1;y&lt;state.population.subpops.[0].individuals.length;y++)
+            for(int y=1;y&lt;state.population.subpops[0].individuals.length;y++)
                 {
                 <font color=gray>// We'll be unsafe and assume the individual is a DoubleVectorIndividual</font>
                 double val = ((DoubleVectorIndividual)state.population.subpops[0].individuals[y]).genome[3];

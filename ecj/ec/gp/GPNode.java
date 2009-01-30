@@ -201,8 +201,9 @@ public abstract class GPNode implements GPNodeParent, Prototype
         // for some special versions of GPNode, we may have to enforce certain
         // rules, checked in children versions of setup(...)
 
-        int len = constraints(((GPInitializer)state.initializer)).childtypes.length;
-        if (len == 0) children = constraints.zeroChildren;
+	GPNodeConstraints constraintsObj = constraints(((GPInitializer)state.initializer));
+        int len = constraintsObj.childtypes.length;
+        if (len == 0) children = constraintsObj.zeroChildren;
         else children = new GPNode[len];
         }
 

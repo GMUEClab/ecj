@@ -571,10 +571,10 @@ public class Evolve
         {
         EvolutionState state;
         ParameterDatabase parameters;
-        int currentJob = 0;                             // the next job number (0 by default)
                 
         // if we're loading from checkpoint, let's finish out the most recent job
         state = possiblyRestoreFromCheckpoint(args);
+        int currentJob = 0;                             // the next job number (0 by default)
 
         // this simple job iterator just uses the 'jobs' parameter, iterating from 0 to 'jobs' - 1
         // inclusive.  The current job number is stored in state.jobs[0], so we'll begin there if
@@ -606,6 +606,11 @@ public class Evolve
         // Now we're going to load the parameter database to see if there are any more jobs.
         // We could have done this using the previous parameter database, but it's no big deal.
         parameters = loadParameterDatabase(args);
+        if (currentJob == 0)  // no current job number yet
+            currentJob = parameters.getIntWithDefault(new Parameter("current-job"), null, 0);
+        if (currentJob < 0)
+            Output.initialError("The 'current-job' parameter must be >= 0 (or not exist, which defaults to 0)");
+            
         int numJobs = parameters.getIntWithDefault(new Parameter("jobs"), null, 1);
         if (numJobs < 1)
             Output.initialError("The 'jobs' parameter must be >= 1 (or not exist, which defaults to 1)");
@@ -619,35 +624,44 @@ public class Evolve
         // it's usually small.
         for(int job = currentJob ; job < numJobs; job++)
             {
-            // load the parameter database (reusing the very first if it exists)
-            if (parameters == null)
-                parameters = loadParameterDatabase(args);
-                        
-            // Initialize the EvolutionState, then set its job variables
-            state = initialize(parameters, job);                // pass in job# as the seed increment
-            state.output.systemMessage("Job: " + job);
-            state.job = new Object[1];                                  // make the job argument storage
-            state.job[0] = new Integer(job);                    // stick the current job in our job storage
-            state.runtimeArguments = args;                              // stick the runtime arguments in our storage
-            if (numJobs > 1)                                                    // only if iterating (so we can be backwards-compatible),
+            try
                 {
-                String jobFilePrefix = "job." + job + ".";
-                state.output.setFilePrefix(jobFilePrefix);     // add a prefix for checkpoint/output files 
-                state.checkpointPrefix = jobFilePrefix + state.checkpointPrefix;  // also set up checkpoint prefix
+                // load the parameter database (reusing the very first if it exists)
+                if (parameters == null)
+                    parameters = loadParameterDatabase(args);
+                            
+                // Initialize the EvolutionState, then set its job variables
+                state = initialize(parameters, job);                // pass in job# as the seed increment
+                state.output.systemMessage("Job: " + job);
+                state.job = new Object[1];                                  // make the job argument storage
+                state.job[0] = new Integer(job);                    // stick the current job in our job storage
+                state.runtimeArguments = args;                              // stick the runtime arguments in our storage
+                if (numJobs > 1)                                                    // only if iterating (so we can be backwards-compatible),
+                    {
+                    String jobFilePrefix = "job." + job + ".";
+                    state.output.setFilePrefix(jobFilePrefix);     // add a prefix for checkpoint/output files 
+                    state.checkpointPrefix = jobFilePrefix + state.checkpointPrefix;  // also set up checkpoint prefix
+                    }
+                                    
+                // Here you can set up the EvolutionState's parameters further before it's setup(...).
+                // This includes replacing the random number generators, changing values in state.parameters,
+                // changing instance variables (except for job and runtimeArguments, please), etc.
+
+
+
+
+
+                // now we let it go
+                state.run(EvolutionState.C_STARTED_FRESH);
+                cleanup(state);  // flush and close various streams, print out parameters if necessary
+                parameters = null;  // so we load a fresh database next time around
                 }
-                                
-            // Here you can set up the EvolutionState's parameters further before it's setup(...).
-            // This includes replacing the random number generators, changing values in state.parameters,
-            // changing instance variables (except for job and runtimeArguments, please), etc.
-
-
-
-
-
-            // now we let it go
-            state.run(EvolutionState.C_STARTED_FRESH);
-            cleanup(state);  // flush and close various streams, print out parameters if necessary
-            parameters = null;  // so we load a fresh database next time around
+            catch (Throwable e)  // such as an out of memory error caused by this job
+                {
+                e.printStackTrace();
+                state = null;
+                System.gc();  // take a shot!
+                }
             }
 
         System.exit(0);

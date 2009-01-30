@@ -1410,3 +1410,11 @@ Version		Change Log
                 <michael.hart.au@gmail.com>
 	Removed vestigial GPFuncInfo.java.gz.  Thanks to David Oranchak 
 		<doranchak@cox.net>
+	Tweaks to Uniform to make it properly serializable.
+	Further bug fixes in GPNodeBuilder error messages.  Thanks to David Robert
+		White (<drw@cs.york.ac.uk>
+	Cleanups to documentation.  Thanks to Claes Gyllensward <letharion@gmail.com>
+		and James Obeirne <james.obeirne@gmail.com>
+	To save some memory, GP terminals share the same (size-zero) child array.
+		The array is in GPNodeConstraints to be serializable.  That means there
+		are a few of the arrays, but it doesn't matter.
