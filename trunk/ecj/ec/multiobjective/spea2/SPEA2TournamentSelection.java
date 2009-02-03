@@ -25,6 +25,8 @@ import ec.select.*;
  * <p>NOTE: The SPEA2Breeder class leaves the individuals
  * vector with only archiveSize number indviduals.  All positions in
  * the individuals vector above archiveSize are null.
+ * 
+ * <p>Actually, the archive is located at the LAST <code>archiveSize</code> positions of the population.
  *
  * @author Robert Hubley (based on TournamentSelection by Sean Luke)
  * @version 1.0 
