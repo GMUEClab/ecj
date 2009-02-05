@@ -36,7 +36,7 @@ import ec.util.*;
  <tr><td valign=top><i>base</i>.<tt>num-inds</tt><br>
  <font size=-1>int &gt;= 1</font></td>
  <td valign=top>(The number of individuals this breeding pipeline will force its
- source to produce each tim in order to fill the quo for produce(...).)</td></tr>
+ source to produce each time in order to fill the quo for produce(...).)</td></tr>
  </table>
 
  <p><b>Default Base</b><br>
