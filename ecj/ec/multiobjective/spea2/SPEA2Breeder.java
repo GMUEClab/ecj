@@ -1,11 +1,44 @@
 package ec.multiobjective.spea2;
+/*
+Copyright 2006 by Robert Hubley
+Licensed under the Academic Free License version 3.0
+See the file "LICENSE" for more information
+*/
 
 import ec.*;
 import ec.util.*;
 import ec.simple.*; 
 
+/* 
+ * SPEA2Breeder.java
+ * 
+ * Created: Wed Jun 26 11:20:32 PDT 2002
+ * By: Robert Hubley, Institute for Systems Biology
+ *     (Based on Breeder.java by Sean Luke)
+ */
+
 /**
- * This a re-write of SPEA2Breeder.java by Robert Hubley, to make it more modular so it's easier for me to extend it.
+ * Breeds each subpopulation separately, with no inter-population exchange,
+ * and using the SPEA2 approach.  A SPEA2Breeder may have multiple
+ * threads; it divvys up a subpopulation into chunks and hands one chunk
+ * to each thread to populate.  One array of BreedingPipelines is obtained
+ * from a population's Species for each operating breeding thread.
+ *
+ * Prior to breeding a subpopulation, a SPEA2Breeder will first fill part of the
+ * new subpopulation (the archive) with the individuals with an SPEA2 fitness
+ * of less than 1.0 from the old subpopulation.  If there are less individuals
+ * with this cutoff than can fit in the archive the free slots are filled with
+ * the lowest scoring SPEA2fitness individuals.  If there are more individuals
+ * with an SPEA2Fitness less than 1 than can fit in the archive then a density
+ * metric is used to truncate the archive and remove individuals which are close
+ * to others.
+ *
+ * The archive filling step is performed by a single thread.
+ *
+ * @author Robert Hubley (based on Breeder.java by Sean Luke)
+ * @version 1.0 
+
+ * This is actually a re-write of SPEA2Breeder.java by Robert Hubley, to make it more modular so it's easier for me to extend it.
  * Namely I isolated the following functionality: "Out of N individuals, give me a front of size M < N."
  * 
  * This is also useful for others at the last generation, when you createad a bunch of individuals, evaluated them, 
@@ -25,10 +58,28 @@ import ec.simple.*;
  * a bunch of nulls at the end of the array).
  * 
  * @author Gabriel Balan (based on SPEA2Breeder.java by Robert Hubley) 
+ * @version 1.1
  */
 
 public class SPEA2Breeder extends SimpleBreeder
 {
+    public void setup(final EvolutionState state, final Parameter base) 
+    {
+    super.setup(state, base);
+    // make sure SimpleBreeder's elites facility isn't being used
+    for(int i=0;i<elite.length;i++)
+        if (elite[i] != 0)
+            state.output.fatal("Elites may not be used with SPEA2Breeder");
+    }
+    
+    // this version returns the archive size for the subpopulation rather than using
+    // SimpleBreeder's elites mechanism -- perhaps we should unify this some day.
+    public int computeSubpopulationLength(EvolutionState state, int subpopulation)
+    {
+    	SPEA2Subpopulation subpop = (SPEA2Subpopulation)state.population.subpops[subpopulation];
+    	return subpop.individuals.length - subpop.archiveSize;
+    }
+
 
     // overrides the loadElites function to load the archive the way we'd like to do it.
     public void loadElites(EvolutionState state, Population newpop)
@@ -219,7 +270,7 @@ public class SPEA2Breeder extends SimpleBreeder
         //       vector.  The SPEA2TournamentSelection depends on the individuals
         //       being between 0-archiveSize in this vector!
         //
-	//TODO is this note SEAN's or Hubley's???
+        //TODO is this note SEAN's or Hubley's???
         
         int nullIndex = -1;
         int newIndex = 1;
