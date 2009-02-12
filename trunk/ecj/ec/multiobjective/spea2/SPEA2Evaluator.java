@@ -1,21 +1,44 @@
+/*
+  Copyright 2006 by Robert Hubley
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
+*/
 package ec.multiobjective.spea2;
 
-import ec.EvolutionState;
-import ec.Individual;
+import ec.*;
 import ec.util.MersenneTwisterFast;
 import ec.simple.*; 
-
+/* 
+ * SPEA2Evaluator.java
+ * 
+ * Created: Wed Jun 26 11:20:32 PDT 2002
+ * By: Robert Hubley, Institute for Systems Biology
+ *    (based on Evaluator.java by Sean Luke)
+ */
 /**
- * This is a modified version of Robert Hubley's SPEA2Evaluator,
+ * 
+ * The SPEA2Evaluator is a simple, non-coevolved generational evaluator which
+ * evaluates every single member of every subpopulation individually in its
+ * own problem space.  One Problem instance is cloned from p_problem for
+ * each evaluating thread.
+ *
+ * The evaluator is also responsible for calculating the SPEA2Fitness
+ * function.  This function depends on the entire population and so
+ * cannot be calculated in the Problem class.
+ *
+ * @author Robert Hubley (based on Evaluator.java by Sean Luke)
+ * @version 1.0 
+ *
+ * 
+ * This is actually a modified version of Robert Hubley's SPEA2Evaluator,
  * but this time following Zitzler2001 to the letter.
  * 
  * Differences: 
  * <nl>
- * <li> kth = sqrt(popsize) -1 instead of  kth = sqrt(popsize-1); "-1" cause indices start from 0.
- * <li> density = 1/(kth distance+2) instead of some other 
- * more complicated formula I couldn't find any paper actually describing.
+ * <li> kth = sqrt(popsize) -1 instead of  kth = sqrt(popsize-1); "-1" because indices start from 0.
+ * <li> density = 1/(kth distance+2) instead of some hypersphere volume formula.
  * <li> In order to find the k'th element, this uses the order statistics algorithm (Cormen p187, O(n) expected time)
- * instead of Hubley's O(n^2) algrithm
+ * instead of Hubley's O(n^2) algrithm.
  * </nl>
  * 
  *  Note that the field SPEA2kthNNDistance in SPEA2MultiObjectiveFitness is supposed to be
@@ -25,9 +48,22 @@ import ec.simple.*;
  *  
  * 
  * @author Gabriel Balan
+ * @version 1.1
  */
 public class SPEA2Evaluator extends SimpleEvaluator
 {
+    /** A simple evaluator that doesn't do any coevolutionary
+    evaluation.  Basically it applies evaluation pipelines,
+    one per thread, to various subchunks of a new population. */
+	public void evaluatePopulation(final EvolutionState state)
+    {
+    for(int i =0; i < state.population.subpops.length; i++)
+        if (!(state.population.subpops[i] instanceof SPEA2Subpopulation))
+            state.output.fatal("SPEA2Evaluator must only be used with a SPEA2Subpopulation!", null);
+    super.evaluatePopulation(state);
+    computeAuxiliaryData(state);
+    }
+
     public void computeAuxiliaryData(EvolutionState state)
     {
     	
