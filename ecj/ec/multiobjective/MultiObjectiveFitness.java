@@ -50,7 +50,7 @@ import ec.EvolutionState;
  */
 
 public class MultiObjectiveFitness extends Fitness
-    {
+{
     public static final String FITNESS_POSTAMBLE = "]";
 
     /** parameter for size of multifitness */
@@ -58,54 +58,62 @@ public class MultiObjectiveFitness extends Fitness
 
     /** The various fitnesses. */
     public float[] multifitness; // values range from 0 (worst) to 1 INCLUSIVE 
-
+    
+    boolean lessIsBetter = false;
+    public static final String P_LESS_IS_BETTER = "less-is-better"; 
+    
     public Parameter defaultBase()
-        {
+    {
         return MultiObjectiveDefaults.base().push(P_FITNESS);
-        }
+    }
 
     public Object clone()
-        {
+    {
         MultiObjectiveFitness f = (MultiObjectiveFitness)(super.clone());
         f.multifitness = (float[])(multifitness.clone());  // cloning an array
         return f;
-        }
+    }
 
     /** Returns the Max() of multifitnesses, which adheres to Fitness.java's
         protocol for this method. Though you should not rely on a selection
         or statistics method which requires this.  */
     public float fitness()
-        {
+    {
         float fit = multifitness[0];
         for(int x=1;x<multifitness.length;x++)
             if (fit < multifitness[x]) fit = multifitness[x];
         return fit;
-        }
+    }
 
     /** Sets up.  This must be called at least once in the prototype before instantiating any
         fitnesses that will actually be used in evolution. */
 
     public void setup(EvolutionState state, Parameter base) 
-        {
+    {
         super.setup(state,base);  // unnecessary really
         
         Parameter def = defaultBase();
+        lessIsBetter = state.parameters.getBoolean(
+						   base.push(P_LESS_IS_BETTER), 
+						   def.push(P_LESS_IS_BETTER),
+						   lessIsBetter);
+        
         int numFitnesses;
 
         numFitnesses = state.parameters.getInt(
-            base.push(P_NUMFITNESSES),def.push(P_NUMFITNESSES),0);
+					       base.push(P_NUMFITNESSES),def.push(P_NUMFITNESSES),0);
         if (numFitnesses<=0)
             state.output.fatal("The number of objectives must be an integer >0.",
-                base.push(P_NUMFITNESSES),def.push(P_NUMFITNESSES));
+			       base.push(P_NUMFITNESSES),def.push(P_NUMFITNESSES));
 
         multifitness = new float[numFitnesses];         
-        }  
+    }  
 
     /** Returns true if this fitness is the "ideal" fitness. Default always returns false.  You may want to override this. */
     public boolean isIdealFitness()
-        {
+    {
         return false;
-        }
+    }
 
     /** Returns true if I'm equivalent in fitness (neither better nor worse) 
         to _fitness. The rule I'm using is this:
@@ -116,75 +124,94 @@ public class MultiObjectiveFitness extends Fitness
     */
 
     public boolean equivalentTo(Fitness _fitness)
-        {
+    {
         boolean abeatsb = false;
         boolean bbeatsa = false;
         for (int x=0;x<
                  // just to be safe...
                  Math.min(multifitness.length,
-                     ((MultiObjectiveFitness)_fitness).multifitness.length);
+			  ((MultiObjectiveFitness)_fitness).multifitness.length);
              x++)
             {
-            if (multifitness[x] > 
-                ((MultiObjectiveFitness)_fitness).multifitness[x]) abeatsb = true;
-            if (multifitness[x] <
-                ((MultiObjectiveFitness)_fitness).multifitness[x]) bbeatsa = true;
-            if (abeatsb && bbeatsa) return true;
+        	boolean axbeatsbx, bxbeatsax;
+        	if(lessIsBetter)
+		    {
+			bxbeatsax = multifitness[x] > ((MultiObjectiveFitness)_fitness).multifitness[x];
+			axbeatsbx = multifitness[x] < ((MultiObjectiveFitness)_fitness).multifitness[x];		
+		    }
+        	else
+		    {
+        		axbeatsbx = multifitness[x] > ((MultiObjectiveFitness)_fitness).multifitness[x];
+        		bxbeatsax = multifitness[x] < ((MultiObjectiveFitness)_fitness).multifitness[x];		
+		    }
+		if (axbeatsbx) abeatsb = true;
+		if (bxbeatsax) bbeatsa = true;
+		if (abeatsb && bbeatsa) return true;
             }
         if (abeatsb || bbeatsa) return false;
         return true;
-        }
+    }
 
     /** Returns true if I'm better than _fitness. The rule I'm using is this:
         if I am better in one or more criteria, and we are equal in the others,
         then betterThan is true, else it is false. */
     
     public boolean betterThan(Fitness _fitness)
-        {
+    {
         boolean abeatsb = false;
         for (int x=0;x<
                  // just to be safe...
                  Math.min(multifitness.length,
-                     ((MultiObjectiveFitness)_fitness).multifitness.length);
+			  ((MultiObjectiveFitness)_fitness).multifitness.length);
              x++)
             {
-            if (multifitness[x] >
-                ((MultiObjectiveFitness)_fitness).multifitness[x]) abeatsb = true;
-            if (multifitness[x] <
-                ((MultiObjectiveFitness)_fitness).multifitness[x]) return false;
+        	boolean axbeatsbx, bxbeatsax;
+        	if(lessIsBetter)
+		    {
+			bxbeatsax = multifitness[x] > ((MultiObjectiveFitness)_fitness).multifitness[x];
+			axbeatsbx = multifitness[x] < ((MultiObjectiveFitness)_fitness).multifitness[x];	
+		    }
+        	else
+		    {
+        		axbeatsbx = multifitness[x] > ((MultiObjectiveFitness)_fitness).multifitness[x];
+        		bxbeatsax = multifitness[x] < ((MultiObjectiveFitness)_fitness).multifitness[x];		
+		    }
+
+		if (axbeatsbx) abeatsb = true;
+		if (bxbeatsax) return false;
             }
         return abeatsb;
-        }
+    }
 
     
     // <p><tt> Fitness: [</tt><i>fitness values encoded with ec.util.Code, separated by spaces</i><tt>]</tt>
     public String fitnessToString()
-        {
+    {
         String s = FITNESS_PREAMBLE + "[";
         for (int x=0;x<multifitness.length;x++)
             {
-            if (x>0) s = s + " ";
-            s = s + Code.encode(multifitness[x]);
+		if (x>0) s = s + " ";
+		s = s + Code.encode(multifitness[x]);
             }
         return s;
-        }
+    }
 
     // <p><tt> Fitness: [</tt><i>fitness values encoded with ec.util.Code, separated by spaces</i><tt>]</tt>
     public String fitnessToStringForHumans()
-        {
+    {
         String s = FITNESS_PREAMBLE + "[";
         for (int x=0;x<multifitness.length;x++)
             {
-            if (x>0) s = s + " ";
-            s = s + Code.encode(multifitness[x]);
+		if (x>0) s = s + " ";
+		s = s + Code.encode(multifitness[x]);
             }
         return s;
-        }
+    }
 
     public void readFitness(final EvolutionState state, 
-        final LineNumberReader reader)
+			    final LineNumberReader reader)
         throws IOException
-        {
+    {
         /*
           int linenumber = reader.getLineNumber();
           String s = reader.readLine();
@@ -196,30 +223,30 @@ public class MultiObjectiveFitness extends Fitness
         DecodeReturn d = Code.checkPreamble(FITNESS_PREAMBLE, state, reader);
         for(int x=0;x<multifitness.length;x++)
             {
-            Code.decode(d);
-            if (d.type!=DecodeReturn.T_FLOAT)
-                state.output.fatal("Reading Line " + d.lineNumber + ": " +
-                    "Bad Fitness (multifitness value #" + x + ").");
-            multifitness[x] = (float)d.d;
+		Code.decode(d);
+		if (d.type!=DecodeReturn.T_FLOAT)
+		    state.output.fatal("Reading Line " + d.lineNumber + ": " +
+				       "Bad Fitness (multifitness value #" + x + ").");
+		multifitness[x] = (float)d.d;
             }
-        }
+    }
     
     public void writeFitness(final EvolutionState state,
-        final DataOutput dataOutput) throws IOException
-        {
+			     final DataOutput dataOutput) throws IOException
+    {
         dataOutput.writeInt(multifitness.length);
         for(int x=0;x<multifitness.length;x++)
             dataOutput.writeFloat(multifitness[x]);
-        }
+    }
 
     public void readFitness(final EvolutionState state,
-        final DataInput dataInput) throws IOException
-        {
+			    final DataInput dataInput) throws IOException
+    {
         int len = dataInput.readInt();
         if (multifitness==null || multifitness.length != len)
             multifitness = new float[len];
         for(int x=0;x<multifitness.length;x++)
             multifitness[x] = dataInput.readFloat();
-        }
-
     }
+
+}
