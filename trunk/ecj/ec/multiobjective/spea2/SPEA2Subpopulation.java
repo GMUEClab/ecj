@@ -76,11 +76,10 @@ public class SPEA2Subpopulation extends Subpopulation
 
         archiveSize = state.parameters.getInt(
             base.push(P_ARCHIVESIZE),null,1);
-        if (archiveSize<=0 || archiveSize >= (individuals.length)-1)
+        if (archiveSize<=0 || archiveSize >= (individuals.length)) 
             state.output.fatal(
                 "Archive size must be an integer >= 1 and <= population size-1.\n",
                 base.push(P_ARCHIVESIZE),null);
-
         }
 
 
