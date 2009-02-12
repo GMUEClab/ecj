@@ -98,16 +98,16 @@ public class SPEA2Breeder extends SimpleBreeder
     }
 
 
-    /** An array of distances between elites */
+    /** An array of distances between elites; it's static so we save on memory allocation/garbage collection. */
     static double[][] _distances = null;
-    /** An array of indexes to individuals sorted by distances */
+    /** An array of indexes to individuals sorted by distances; it's static so we save on memory allocation/garbage collection. */
     static int[][] _sortedIndex = null;
     //it's ok that these are static: they're only used in loadElites,
-    //which is called before making the breeding threads
+    //which is called before forking the breeding threads
     //(i.e. NO RACE CONDITION!)
     
     /*
-     * Apparently it's not enough to sort the array and keep the best |Archive| ?!?
+     * It's not enough to sort the array and keep the best archive-size individuals.
      * Zitzler says: copy all undominated into the new archive.
      * -if still room in the archive, fill it with dominated inds in order of their fitness;
      * -if too many points, you prune the archive with an ITERATIVE process in which 
