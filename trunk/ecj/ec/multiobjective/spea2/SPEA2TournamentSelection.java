@@ -18,10 +18,9 @@ import ec.select.*;
  */
 
 /**
-   Following Zitzler's paper, this class performs binary tournament selection 
-   using individuals from the archive.  
-
-
+ * Following Zitzler's paper, this class performs binary tournament selection 
+ * using individuals from the archive.  
+ * 
  * Does a simple tournament selection, limited to the subpopulation it's
  * working in at the time and only within the boundry of the SPEA2 archive
  * (between 0-archiveSize).
@@ -79,12 +78,12 @@ public class SPEA2TournamentSelection extends TournamentSelection
         if (n>max) n = max;
         if (n<min) n = min;
 
-	int archiveSize = ((SPEA2Subpopulation)state.population.subpops[subpopulation]).archiveSize; 
-	int archiveStart = state.population.subpops[subpopulation].individuals.length - archiveSize;
+		Individual[] oldinds = state.population.subpops[subpopulation].individuals;
+		int archiveSize = ((SPEA2Subpopulation)state.population.subpops[subpopulation]).archiveSize; 
+		int archiveStart = oldinds.length - archiveSize;
 
         for(int q = 0; q < n; q++)
             {
-		Individual[] oldinds = state.population.subpops[subpopulation].individuals;
 		// the one change from TournamentSelection: we only pick individuals from the archive
 		int i = archiveStart + state.random[thread].nextInt(archiveSize); 
 		int bad = i;
