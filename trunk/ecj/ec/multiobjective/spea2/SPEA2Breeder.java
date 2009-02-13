@@ -34,30 +34,32 @@ import ec.simple.*;
  * to others.
  *
  * The archive filling step is performed by a single thread.
- *
- * @author Robert Hubley (based on Breeder.java by Sean Luke)
- * @version 1.0 
-
+ 
+ * <p>
  * This is actually a re-write of SPEA2Breeder.java by Robert Hubley, to make it more modular so it's easier for me to extend it.
- * Namely I isolated the following functionality: "Out of N individuals, give me a front of size M < N."
+ * Namely:
+ * <ol>
+ * <li> I isolated the following functionality: "Out of N individuals, give me a front of size M < N."
  * 
- * This is also useful for others at the last generation, when you createad a bunch of individuals, evaluated them, 
- * but not give them a chance to enter the archive, as you don't call the breeder on the last generation!
+ * I need this at the last generation, when one createad a bunch of individuals, evaluated them, 
+ * but not give them a chance to enter the archive, as the breeder is not called on the last generation!
  * 
- * <p>Additonally, I made <code>double[][] distances</code> & <code>int[][] sortedIndex</code> static and REUSED THEM, to reduce GC!!!
- * In my case the the number of individuals is not known in advanced (I have a rather large upper bound), so I chose
- * to have these arrays extended when needed.  
- * 1. Note that they need not be shrunk.
- * 2. Note that in the usual case when the number of individuals from the old population is 
- * always the same, the arrays are only allocated once, so no efficiency loss here.
- * (except I keep asking are they big enough each time loadElites() is called, and that's not a big deal
- * given that loadElites() is O(n^3)).
+ * <li>Additonally, I made <code>double[][] distances</code> and <code>int[][] sortedIndex</code> static and then reused them to reduce GC!!!
+ * For more advanced cases where the the number of individuals is not fixed and/or known in advance I chose to have these arrays extended when needed.  
+ * <ul>
+ * <li> Note that they need not be shrunk.
+ * <li> Note that in the usual case when the number of individuals from the old population is 
+ * always the same, the arrays are only allocated once, so there's no efficiency loss here.
+ * (except I keep asking `are they big enough?' each time <code>loadElites()</code> is called, but that's not a big deal
+ * given that <code>loadElites()</code> is O(n^3)).
+ * </ul>
  * 
- * <p>One more thing, I do fewer iterations in the loop that compacts individuals
- * that made the cut and copies them in the new population (i.e. Hubley was visiting
+ * <li>Lastly, I do fewer iterations in the loop that compacts surviving individuals 
+ * and copies them in the new population (i.e. previous version was visiting
  * a bunch of nulls at the end of the array).
- * 
- * @author Gabriel Balan (based on SPEA2Breeder.java by Robert Hubley) 
+ * </ol>
+ *
+ * @author Robert Hubley (based on Breeder.java by Sean Luke), Gabriel Balan, Keith Sullivan
  * @version 1.1
  */
 
@@ -263,14 +265,6 @@ public class SPEA2Breeder extends SimpleBreeder
             } // end if ( nIndex > thisSubpop.archiveSize )
 
         // Compress and place in newpop
-        // NOTE: The archive is maintained at the top block of the individuals
-        //       vector.  Immediately prior to selection we copy the archive to
-        //       the next generation (top block) and then pass along the old
-        //       individuals (archive only) as the bottom block of the oldInds
-        //       vector.  The SPEA2TournamentSelection depends on the individuals
-        //       being between 0-archiveSize in this vector!
-        //
-        //TODO is this note SEAN's or Hubley's???
         
         int nullIndex = -1;
         int newIndex = 1;

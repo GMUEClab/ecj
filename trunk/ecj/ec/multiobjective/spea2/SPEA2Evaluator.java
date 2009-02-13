@@ -26,12 +26,9 @@ import ec.simple.*;
  * function.  This function depends on the entire population and so
  * cannot be calculated in the Problem class.
  *
- * @author Robert Hubley (based on Evaluator.java by Sean Luke)
- * @version 1.0 
- *
  * 
- * This is actually a modified version of Robert Hubley's SPEA2Evaluator,
- * but this time following Zitzler2001 to the letter.
+ * <p>This is actually a modified version of Robert Hubley's SPEA2Evaluator,
+ * but this time following Zitzler2001 to the letter. 
  * 
  * Differences: 
  * <nl>
@@ -41,13 +38,11 @@ import ec.simple.*;
  * instead of Hubley's O(n^2) algrithm.
  * </nl>
  * 
- *  Note that the field SPEA2kthNNDistance in SPEA2MultiObjectiveFitness is supposed to be
+ *  <p>Note that the field SPEA2kthNNDistance in SPEA2MultiObjectiveFitness is supposed to be
  *  "D(i)," the DENSITY = 1/(kth distance+2).  So the fields'name is confusing. In here I 
  *  go with density.
  *  
- *  
- * 
- * @author Gabriel Balan
+ * @author Robert Hubley (based on Evaluator.java by Sean Luke), some refactoring by Gabriel Balan
  * @version 1.1
  */
 public class SPEA2Evaluator extends SimpleEvaluator
