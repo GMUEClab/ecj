@@ -44,8 +44,8 @@ public class FitProportionateSelection extends SelectionMethod
     {
     /** Default base */
     public static final String P_FITNESSPROPORTIONATE = "fitness-proportionate";
-    /** Sorted, normalized, totalized fitnesses for the population */
-    public float[] sortedFit;
+    /** Normalized, totalized fitnesses for the population */
+    public float[] fitnesses;
 
     public Parameter defaultBase()
         {
@@ -58,17 +58,17 @@ public class FitProportionateSelection extends SelectionMethod
         final int subpopulation,
         final int thread)
         {
-        // load sortedFit
-        sortedFit = new float[s.population.subpops[subpopulation].individuals.length];
-        for(int x=0;x<sortedFit.length;x++)
+        // load fitnesses
+        fitnesses = new float[s.population.subpops[subpopulation].individuals.length];
+        for(int x=0;x<fitnesses.length;x++)
             {
-            sortedFit[x] = ((Individual)(s.population.subpops[subpopulation].individuals[x])).fitness.fitness();
-            if (sortedFit[x] < 0) // uh oh
+            fitnesses[x] = ((Individual)(s.population.subpops[subpopulation].individuals[x])).fitness.fitness();
+            if (fitnesses[x] < 0) // uh oh
                 s.output.fatal("Discovered a negative fitness value.  FitProportionateSelection requires that all fitness values be non-negative(offending subpopulation #" + subpopulation + ")");
             }
         
         // organize the distribution.  All zeros in fitness is fine
-        RandomChoice.organizeDistribution(sortedFit, true);
+        RandomChoice.organizeDistribution(fitnesses, true);
         }
 
     public int produce(final int subpopulation,
@@ -77,7 +77,7 @@ public class FitProportionateSelection extends SelectionMethod
         {
         // Pick and return an individual from the population
         return RandomChoice.pickFromDistribution(
-            sortedFit,state.random[thread].nextFloat(),CHECKBOUNDARY);
+            fitnesses,state.random[thread].nextFloat(),CHECKBOUNDARY);
         }
     
     public void finishProducing(final EvolutionState s,
@@ -86,6 +86,6 @@ public class FitProportionateSelection extends SelectionMethod
         {
         // release the distributions so we can quickly 
         // garbage-collect them if necessary
-        sortedFit = null;
+        fitnesses = null;
         }
     }
