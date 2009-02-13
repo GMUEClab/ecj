@@ -26,17 +26,15 @@ import ec.select.*;
  * (between 0-archiveSize).
  *
  * <p>NOTE: The SPEA2Breeder class leaves the individuals
- * vector with only archiveSize number indviduals.  All positions in
- * the individuals vector above archiveSize are null.
- * 
- * <p>Actually, the archive is located at the LAST <code>archiveSize</code> positions of the population.
+ * vector with only archiveSize number indviduals.  
+ * The archive is located at the LAST <code>archiveSize</code> positions of the population.
+ * The rest of the positions are null.
  *
  * @author Robert Hubley (based on TournamentSelection by Sean Luke)
  * @version 1.0 
  */
 
 // This all assumes that the archive is the LAST N INDIVIDUALS in the individuals array
-
 public class SPEA2TournamentSelection extends TournamentSelection
     {
     public int produce(final int subpopulation,

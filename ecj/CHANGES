@@ -1423,9 +1423,9 @@ Version		Change Log
 		of code working previously.
 	SPEA2 code has suffered multiple changes.  We believe that at this point it
 		behaves exactly as described in Zitzler's 2001 paper. Any previously working 
-		code using this package should will still work, but you won't be able to 
+		code using this package should still work, but you won't be able to 
 		replicate previous results.  Other than minor changes, refactoring and 
-		some optimizations, the biggest change is in the density function, 
+		some optimizations, the biggest change is in the density function 
 		(which, again, is now fully compliant with Zitzler's specifications).		
 
 	
