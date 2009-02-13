@@ -1418,3 +1418,17 @@ Version		Change Log
 	To save some memory, GP terminals share the same (size-zero) child array.
 		The array is in GPNodeConstraints to be serializable.  That means there
 		are a few of the arrays, but it doesn't matter.
+	MultiObjectiveFitness allows the user to specify whether the objectives are
+		to be maximized (default) or minimized.  This does not affect any piece
+		of code working previously.
+	SPEA2 code has suffered multiple changes.  We believe that at this point it
+		behaves exactly as described in Zitzler's 2001 paper. Any previously working 
+		code using this package should will still work, but you won't be able to 
+		replicate previous results.  Other than minor changes, refactoring and 
+		some optimizations, the biggest change is in the density function, 
+		(which, again, is now fully compliant with Zitzler's specifications).		
+
+	
+		
+		
+		
