@@ -42,14 +42,14 @@ public class ZDT4 extends Problem implements SimpleProblemForm
 			state.output.fatal("The number of variables must be an integer > 1", base.push(P_NUMVARS), def.push(P_NUMVARS));
 
 
-		/**
+		/*
 		 * I want to force the following values:
 		 * 
 		 * pop.subpop.0.species = ec.vector.FloatVectorSpecies
 		 * pop.subpop.0.species.ind = ec.vector.FloatVectorIndividual
-		 * pop.subpop.0.species.min-gene.0 = 0
+		 * pop.subpop.0.species.min-gene.0 = 0	//first gene in [0,1]
 		 * pop.subpop.0.species.max-gene.0 = 1
-		 * pop.subpop.0.species.min-gene = -5
+		 * pop.subpop.0.species.min-gene = -5	//the rest in [-5,5]
 		 * pop.subpop.0.species.max-gene = 5
 		 * pop.subpop.0.species.genome-size = numDecisionVars //could be anything, should be 10
 		 */

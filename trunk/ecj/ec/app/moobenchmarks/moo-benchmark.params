@@ -3,7 +3,13 @@ parent.0 = ../../multiobjective/spea2/spea2.params
 eval.problem = ec.app.moobenchmarks.ZDT6
 pop.subpop.0.species.fitness.maximize = false
 
-#constants from Zitzler's paper:
+
+#constants from  "Zitzler, E., Deb, K., and Thiele, L., 2000,
+#Comparison of Multiobjective Evolutionary Algorithms: Empirical Results, 
+#Evolutionary Computation, Vol. 8, No. 2, pp173-195.
+#
+#Before comparing results, note that this paper uses SPEA, not SPEA2.
+
 pop.subpop.0.size =			100
 generations =				250
 pop.subpop.0.species.crossover-prob	= 0.8
