@@ -1426,7 +1426,11 @@ Version		Change Log
 		code using this package should still work, but you won't be able to 
 		replicate previous results.  Other than minor changes, refactoring and 
 		some optimizations, the biggest change is in the density function 
-		(which, again, is now fully compliant with Zitzler's specifications).		
+		(which, again, is now fully compliant with Zitzler's specifications).
+	Added SPEA2Statistics; it prints the objective values of all individuals in the final 
+		Pareto front.
+	Added ec.app.mookenchmarks, consiting of a number of popular Multi Objective Optimization 
+		benchmark problems and the a params file.
 
 	
 		
