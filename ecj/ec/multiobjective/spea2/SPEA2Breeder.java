@@ -116,10 +116,10 @@ public class SPEA2Breeder extends SimpleBreeder
      * you drop the point with the closest neighbor in the [still overpopulated] archive.
      * 
      *  
-     * S_i= number of inds ind_i dominates      //strength
-     * R_i = sum_{j dom i} S_j                          //raw fitness
-     * D_i = 1/[2+dist_to_kth...]                       //density
-     * F=R+D                                                            //fitness,
+     * S_i= number of inds ind_i dominates		//strength
+     * R_i = sum_{j dom i} S_j					//raw fitness
+     * D_i = 1/[2+dist_to_kth...]				//density
+     * F=R+D									//fitness,
      * 
      * D<=1/2 and S,R \in N so D matters only if R is a tie!
      * R_undominated = 0.
