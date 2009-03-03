@@ -112,7 +112,7 @@ public class SUSSelection extends SelectionMethod
 	int i;
         int rand;
         
-        for(int x=numObjs-1; x > 1 ; x--)
+        for(int x=numObjs-1; x >= 1 ; x--)
             {
             rand = random.nextInt(x+1);
             f = fitnesses[x];

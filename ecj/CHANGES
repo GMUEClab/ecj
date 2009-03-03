@@ -1431,8 +1431,8 @@ Version		Change Log
 		Pareto front.
 	Added ec.app.mookenchmarks, consiting of a number of popular Multi Objective Optimization 
 		benchmark problems and the a params file.
-
-	
-		
-		
+	Bug fix to shuffling algorithm used in SUSSelection. We stopped one element too early,
+		so for small arrays the shuffling is non-uniform (and for size-two arrays
+  		there was no shuffling at all).  Gagh.  For shuffling large numbers of items,
+		the effect was minimal.
 		
