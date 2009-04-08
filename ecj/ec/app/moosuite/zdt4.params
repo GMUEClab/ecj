@@ -1,0 +1,13 @@
+parent.0 = moosuite.params
+
+eval.problem.type = zdt4
+
+# first gene in [0,1]
+pop.subpop.0.species.min-gene.0 = 0	
+pop.subpop.0.species.max-gene.0 = 1
+
+# the rest in [-5,5]
+pop.subpop.0.species.min-gene = -5	
+pop.subpop.0.species.max-gene = 5
+
+pop.subpop.0.species.genome-size = 10

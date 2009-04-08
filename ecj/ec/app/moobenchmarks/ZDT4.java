@@ -60,7 +60,7 @@ public class ZDT4 extends Problem implements SimpleProblemForm
 		state.parameters.set(new Parameter("pop.subpop.0.species.max-gene.0"),"1");
 		state.parameters.set(new Parameter("pop.subpop.0.species.min-gene"),"-5");
 		state.parameters.set(new Parameter("pop.subpop.0.species.max-gene"),"5");
-		state.parameters.set(new Parameter("pop.subpop.0.species.fitness.numobjectives"),"2");
+		state.parameters.set(new Parameter("pop.subpop.0.species.fitness.num-objectives"),"2");
 	}
 	private static final double FOUR_PI = Math.PI*4;
 	public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum)

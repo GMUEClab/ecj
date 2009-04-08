@@ -55,7 +55,7 @@ public class ZDT3 extends Problem implements SimpleProblemForm
 		state.parameters.set(new Parameter("pop.subpop.0.species.genome-size"),""+numDecisionVars);
 		state.parameters.set(new Parameter("pop.subpop.0.species.min-gene"),"0");
 		state.parameters.set(new Parameter("pop.subpop.0.species.max-gene"),"1");
-		state.parameters.set(new Parameter("pop.subpop.0.species.fitness.numobjectives"),"2");
+		state.parameters.set(new Parameter("pop.subpop.0.species.fitness.num-objectives"),"2");
 	}
 	private static final double TEN_PI = Math.PI*10;
 	public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum)
