@@ -33,8 +33,8 @@ import ec.EvolutionState;
 
  <p><b>Parameters</b><br>
  <table>
- <tr><td valign=top><i>base</i>.<tt>numobjectives</tt><br>
- (else)<tt>multi.numobjectives</tt><br>
+ <tr><td valign=top><i>base</i>.<tt>num-objectives</tt><br>
+ (else)<tt>multi.num-objectives</tt><br>
  <font size=-1>int &gt;= 1</font></td>
  <td valign=top>(the number of fitnesses in the multifitness array)</td></tr>
 
@@ -55,7 +55,7 @@ public class MultiObjectiveFitness extends Fitness
     public static final String FITNESS_POSTAMBLE = "]";
 
     /** parameter for size of multifitness */
-    public static final String P_NUMFITNESSES = "numobjectives"; 
+    public static final String P_NUMFITNESSES = "num-objectives"; 
 
     /** Is higher better? */
     public static final String P_MAXIMIZE = "maximize";
