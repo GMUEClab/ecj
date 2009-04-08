@@ -7,20 +7,12 @@ import ec.simple.*;
 import ec.multiobjective.*;
 
 /**
+ * 
+ * Sphere Model (SPH-m) m=2,3
+ * 
+ * <p>ftp.tik.ee.ethz.ch/pub/people/zitzler/ZLT2001a.pdf
+ * 
  * @author  Gabriel Balan
- * 
- * Sphere Model (SPH-m)
- * 
- * Schaffer, J. D. (1985).Multiple objective optimization with vector evaluated genetic
- * algorithms. In J. J. Grefenstette (Ed.), Proceedings of an International Conference
- * on Genetic Algorithms and Their Applications, Pittsburgh, PA, pp. 93-100.
- * sponsored by Texas Instruments and U.S. Navy Center for Applied Research in
- * Artificial Intelligence (NCARAI).
- * 
- * Laumanns, M., G. Rudolph, and H.-P. Schwefel (2001, June). Mutation control
- * and convergence in evolutionarymulti-objective optimization. In Proceedings of
- * the 7th International Mendel Conference on Soft Computing (MENDEL 2001),
- * Brno, Czech Republic.
  */
 public class SPHERE extends Problem implements SimpleProblemForm
 {

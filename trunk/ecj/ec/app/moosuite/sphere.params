@@ -1,0 +1,13 @@
+parent.0 = moosuite.params
+
+eval.problem.type = sphere
+
+
+pop.subpop.0.species.min-gene = -1000
+pop.subpop.0.species.max-gene = 1000
+pop.subpop.0.species.genome-size = 100
+
+#p.tik.ee.ethz.ch/pub/people/zitzler/ZLT2001a.pdf uses both 2 and 3 objectives
+#
+pop.subpop.0.species.fitness.num-objectives = 2
+#pop.subpop.0.species.fitness.num-objectives = 3
