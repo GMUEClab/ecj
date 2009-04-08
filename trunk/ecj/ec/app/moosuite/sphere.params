@@ -1,7 +1,7 @@
 parent.0 = moosuite.params
 
 eval.problem.type = sphere
-
+#SPHERE is also called SCH in the literature (from Schaffer).
 
 pop.subpop.0.species.min-gene = -1000
 pop.subpop.0.species.max-gene = 1000

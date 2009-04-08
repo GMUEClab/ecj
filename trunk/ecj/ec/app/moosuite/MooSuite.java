@@ -21,7 +21,7 @@ import ec.vector.*;
    <li>ZDT3, 
    <li>ZDT4, 
    <li>ZDT6, 
-   <li>SPHERE. 
+   <li>SPHERE (aka SCH). 
    </ul>
    
    <p>[ZDT]: Zitzler, E., Deb, K., and Thiele, L., 2000, Comparison of Multiobjective Evolutionary
@@ -41,7 +41,7 @@ import ec.vector.*;
    <p><b>Parameters</b><br>
    <table>
    <tr><td valign=top><i>base</i>.<tt>type</tt><br>
-   <font size=-1>String, one of: zdt-t1, zdt-t2, zdt-t3, zdt-t4, zdt-t6, sphere</font></td>
+   <font size=-1>String, one of: zdt-t1, zdt-t2, zdt-t3, zdt-t4, zdt-t6, sphere (aka sch)</font></td>
    <td valign=top>The multi-objective optimization problem to test against. </td></tr>
    
    <tr><td valign=top><i>base</i>.<tt>num-variables</tt><br>
@@ -63,6 +63,7 @@ public class MooSuite extends Problem implements SimpleProblemForm
     public static final String P_ZDT4 = "zdt4";
     public static final String P_ZDT6 = "zdt6";
     public static final String P_SPHERE = "sphere";
+    public static final String P_SCH = "sch";
 
 
     public static final int PROB_SPHERE = 0;
@@ -88,7 +89,7 @@ public class MooSuite extends Problem implements SimpleProblemForm
             problemType = PROB_ZDT4;
         else if ( wp.compareTo( P_ZDT6) == 0 )
             problemType = PROB_ZDT6;
-        else if( wp.compareTo( P_SPHERE) == 0 )
+        else if( wp.compareTo( P_SPHERE) == 0 || wp.compareTo( P_SCH) == 0 )
             problemType = PROB_SPHERE;         
         else state.output.fatal(
             "Invalid value for parameter, or parameter not found.\n" +
@@ -98,7 +99,7 @@ public class MooSuite extends Problem implements SimpleProblemForm
             "  " + P_ZDT3 + "\n" +
             "  " + P_ZDT4 + "\n" +
             "  " + P_ZDT6 + "\n" +
-            "  " + P_SPHERE + "\n",
+            "  " + P_SPHERE + "(or " + P_SCH + ")\n",
             base.push( P_WHICH_PROBLEM ) );
         }
 	
