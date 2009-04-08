@@ -20,7 +20,7 @@ import ec.multiobjective.*;
  * 
  * <p><b>Parameters</b><br>
  * <table>
- * <tr><td valign=top><i>base</i>.<tt>numvariables</tt><br>
+ * <tr><td valign=top><i>base</i>.<tt>num-variables</tt><br>
  * <font size=-1>int (default=10)</font></td>
  * <td valign=top>The number of variables; genome-size is set to this value internally.</td></tr>
  * </table>
@@ -30,7 +30,7 @@ import ec.multiobjective.*;
 public class ZDT4 extends Problem implements SimpleProblemForm
 {
 	public int numDecisionVars;
-	public static final String P_NUMVARS = "numvariables"; 
+	public static final String P_NUMVARS = "num-variables"; 
 
 
     public void setup(final EvolutionState state, final Parameter base) 
@@ -46,7 +46,7 @@ public class ZDT4 extends Problem implements SimpleProblemForm
 		 * I want to force the following values:
 		 * 
 		 * pop.subpop.0.species = ec.vector.FloatVectorSpecies
-		 * pop.subpop.0.species.ind = ec.vector.FloatVectorIndividual
+		 * pop.subpop.0.species.ind = ec.vector.DoubleVectorIndividual
 		 * pop.subpop.0.species.min-gene.0 = 0	//first gene in [0,1]
 		 * pop.subpop.0.species.max-gene.0 = 1
 		 * pop.subpop.0.species.min-gene = -5	//the rest in [-5,5]
@@ -54,7 +54,7 @@ public class ZDT4 extends Problem implements SimpleProblemForm
 		 * pop.subpop.0.species.genome-size = numDecisionVars //could be anything, should be 10
 		 */
 		state.parameters.set(new Parameter("pop.subpop.0.species"),"ec.vector.FloatVectorSpecies");
-		state.parameters.set(new Parameter("pop.subpop.0.species.ind"),"ec.vector.FloatVectorIndividual");
+		state.parameters.set(new Parameter("pop.subpop.0.species.ind"),"ec.vector.DoubleVectorIndividual");
 		state.parameters.set(new Parameter("pop.subpop.0.species.genome-size"),""+numDecisionVars);
 		state.parameters.set(new Parameter("pop.subpop.0.species.min-gene.0"),"0");
 		state.parameters.set(new Parameter("pop.subpop.0.species.max-gene.0"),"1");
@@ -67,9 +67,10 @@ public class ZDT4 extends Problem implements SimpleProblemForm
 	{
 		if(ind.evaluated)
 			return;
-		float[] genome = ((FloatVectorIndividual)ind).genome;
+		double[] genome = ((DoubleVectorIndividual)ind).genome;
 		float[] fitnesses = ((MultiObjectiveFitness)ind.fitness).multifitness;
-		float f = fitnesses[0] = genome[0];
+		double f = genome[0];
+		fitnesses[0] = (float)f;
 		float sum = 0;
 		for(int i = 1; i< numDecisionVars; ++i)
 			sum += genome[i]*genome[i]- 10*Math.cos(FOUR_PI * genome[i]);
