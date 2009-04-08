@@ -39,14 +39,14 @@ public class SPHERE extends Problem implements SimpleProblemForm
 		/**
 		 * I want to force the following values:
 		 * 
-		 * pop.subpop.0.species = ec.vector.FloatVectorSpecies
-		 * pop.subpop.0.species.ind = ec.vector.FloatVectorIndividual
+		 * pop.subpop.0.species = ec.vector.DoubleVectorSpecies
+		 * pop.subpop.0.species.ind = ec.vector.DoubleVectorIndividual
 		 * pop.subpop.0.species.min-gene = -1000
 		 * pop.subpop.0.species.max-gene = 1000
 		 * pop.subpop.0.species.genome-size = numDecisionVars
 		 */
-		state.parameters.set(new Parameter("pop.subpop.0.species"),"ec.vector.FloatVectorSpecies");
-		state.parameters.set(new Parameter("pop.subpop.0.species.ind"),"ec.vector.FloatVectorIndividual");
+		state.parameters.set(new Parameter("pop.subpop.0.species"),"ec.vector.DoubleVectorSpecies");
+		state.parameters.set(new Parameter("pop.subpop.0.species.ind"),"ec.vector.DoubleVectorIndividual");
 		state.parameters.set(new Parameter("pop.subpop.0.species.genome-size"),""+numDecisionVars);
 		state.parameters.set(new Parameter("pop.subpop.0.species.min-gene"),"-1000");
 		state.parameters.set(new Parameter("pop.subpop.0.species.max-gene"),"1000");
@@ -57,17 +57,17 @@ public class SPHERE extends Problem implements SimpleProblemForm
 	{
 		if(ind.evaluated)
 			return;
-		float[] genome = ((FloatVectorIndividual)ind).genome;
+		double[] genome = ((DoubleVectorIndividual)ind).genome;
 		float[] fitnesses = ((MultiObjectiveFitness)ind.fitness).multifitness;
 		int numObjectives = fitnesses.length;
 
 		for(int j=0; j<numObjectives; ++j)
 		{
-			float sum = (genome[j]-1)*(genome[j]-1);
+			double sum = (genome[j]-1)*(genome[j]-1);
 			for(int i=0; i<numDecisionVars; ++i)
 				if (i!=j)
 					sum += genome[i]*genome[i];
-			fitnesses[j] = sum;
+			fitnesses[j] = (float)sum;
 		}			
 		ind.evaluated = true;
 	}

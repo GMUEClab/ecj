@@ -1,6 +1,6 @@
 parent.0 = ../../multiobjective/spea2/spea2.params
 
-eval.problem = ec.app.moobenchmarks.ZDT6
+eval.problem = ec.app.moobenchmarks.ZDT1
 pop.subpop.0.species.fitness.maximize = false
 
 

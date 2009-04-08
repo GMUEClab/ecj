@@ -19,7 +19,7 @@ import ec.multiobjective.*;
  * 
  * <p><b>Parameters</b><br>
  * <table>
- * <tr><td valign=top><i>base</i>.<tt>numvariables</tt><br>
+ * <tr><td valign=top><i>base</i>.<tt>num-variables</tt><br>
  * <font size=-1>int (default=30)</font></td>
  * <td valign=top>The number of variables; genome-size is set to this value internally.</td></tr>
  * </table>
@@ -29,7 +29,7 @@ import ec.multiobjective.*;
 public class ZDT3 extends Problem implements SimpleProblemForm
 {
 	public int numDecisionVars;
-	public static final String P_NUMVARS = "numvariables"; 
+	public static final String P_NUMVARS = "num-variables"; 
 
 
     public void setup(final EvolutionState state, final Parameter base) 
@@ -45,13 +45,13 @@ public class ZDT3 extends Problem implements SimpleProblemForm
 		 * I want to force the following values:
 		 * 
 		 * pop.subpop.0.species = ec.vector.FloatVectorSpecies
-		 * pop.subpop.0.species.ind = ec.vector.FloatVectorIndividual
+		 * pop.subpop.0.species.ind = ec.vector.DoubleVectorIndividual
 		 * pop.subpop.0.species.min-gene = 0
 		 * pop.subpop.0.species.max-gene = 1
 		 * pop.subpop.0.species.genome-size = numDecisionVars //could be anything, should be 30
 		 */
 		state.parameters.set(new Parameter("pop.subpop.0.species"),"ec.vector.FloatVectorSpecies");
-		state.parameters.set(new Parameter("pop.subpop.0.species.ind"),"ec.vector.FloatVectorIndividual");
+		state.parameters.set(new Parameter("pop.subpop.0.species.ind"),"ec.vector.DoubleVectorIndividual");
 		state.parameters.set(new Parameter("pop.subpop.0.species.genome-size"),""+numDecisionVars);
 		state.parameters.set(new Parameter("pop.subpop.0.species.min-gene"),"0");
 		state.parameters.set(new Parameter("pop.subpop.0.species.max-gene"),"1");
@@ -62,10 +62,11 @@ public class ZDT3 extends Problem implements SimpleProblemForm
 	{
 		if(ind.evaluated)
 			return;
-		float[] genome = ((FloatVectorIndividual)ind).genome;
+		double[] genome = ((DoubleVectorIndividual)ind).genome;
 		float[] fitnesses = ((MultiObjectiveFitness)ind.fitness).multifitness;
-		float f = fitnesses[0] = genome[0];
-		float sum = 0;
+		double f = genome[0];
+		fitnesses[0] = (float)f;
+		double sum = 0;
 		for(int i = 1; i< numDecisionVars; ++i)
 			sum += genome[i];
 		double g = 1+9*sum/(numDecisionVars-1);
