@@ -16,6 +16,7 @@ pop.subpop.0.species = ec.vector.FloatVectorSpecies
 pop.subpop.0.species.ind = ec.vector.DoubleVectorIndividual
 
 pop.subpop.0.species.fitness.num-objectives = 2
+seed.0 = time
 
 
 #constants from  "Zitzler, E., Deb, K., and Thiele, L., 2000,
