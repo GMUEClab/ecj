@@ -1,0 +1,8 @@
+parent.0 = moosuite.params
+
+eval.problem.type = unconstrained-f3
+pop.subpop.0.species.fitness.maximize = false
+pop.subpop.0.species.min-gene = -20
+pop.subpop.0.species.max-gene = 20
+pop.subpop.0.species.genome-size = 2
+

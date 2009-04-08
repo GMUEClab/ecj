@@ -1,0 +1,7 @@
+parent.0 = moosuite.params
+
+eval.problem.type = pol
+pop.subpop.0.species.fitness.maximize = false
+pop.subpop.0.species.min-gene = -3.141592653589793
+pop.subpop.0.species.max-gene = 3.141592653589793
+pop.subpop.0.species.genome-size = 2

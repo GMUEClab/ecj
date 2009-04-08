@@ -1,6 +1,7 @@
 parent.0 = moosuite.params
 
 eval.problem.type = fon
+pop.subpop.0.species.fitness.maximize = false
 
 pop.subpop.0.species.min-gene = -4
 pop.subpop.0.species.max-gene = 4

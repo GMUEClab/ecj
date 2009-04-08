@@ -1435,9 +1435,11 @@ Version		Change Log
 		so for small arrays the shuffling is non-uniform (and for size-two arrays
   		there was no shuffling at all).  Gagh.  For shuffling large numbers of items,
 		the effect was minimal.
-	Refactoring in ec.app.moobenchmarks: 
-		-parameter "numvariables" was renamed "num-variables"
+	Refactoring in MultiObjectiveFitness:
+		-parameter "num-objectives" was renamed "num-objectives"
+	Refactoring in ec.app.moobenchmarks to make it similar to ecsuite:
+		-package was renamed moosuite,
+		-parameter "numvariables" was dropped, set the genome size instead.
 		-genome consists of doubles instead of floats (DoubleVectorIndividual)
-		expect other changes soon:
-		-rename package (moosuite)
-		-group all problems into one (MooSuite)
+		-all problems were grouped  into one class: MooSuite.java
+		-new benchmark problems added: SCH, F2, F3(unconstrained), KUR, FON, QV, POL.
