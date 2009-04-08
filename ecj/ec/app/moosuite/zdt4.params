@@ -1,7 +1,7 @@
 parent.0 = moosuite.params
 
 eval.problem.type = zdt4
-
+pop.subpop.0.species.fitness.maximize = false
 # first gene in [0,1]
 pop.subpop.0.species.min-gene.0 = 0	
 pop.subpop.0.species.max-gene.0 = 1
