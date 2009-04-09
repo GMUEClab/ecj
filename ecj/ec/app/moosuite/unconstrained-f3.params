@@ -5,4 +5,4 @@ pop.subpop.0.species.fitness.maximize = false
 pop.subpop.0.species.min-gene = -20
 pop.subpop.0.species.max-gene = 20
 pop.subpop.0.species.genome-size = 2
-
+#Srinivas & Deb uses a bit string representation with 15 bits per variable (30bit genome).
