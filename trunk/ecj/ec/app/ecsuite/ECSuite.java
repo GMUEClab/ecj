@@ -43,17 +43,18 @@ import ec.vector.*;
 public class ECSuite extends Problem implements SimpleProblemForm
     {
     public static final String P_WHICH_PROBLEM = "type";
-    public static final String P_ROSENBROCK = "rosenbrock";
-    public static final String P_RASTRIGIN = "rastrigin";
-    public static final String P_SPHERE = "sphere";
-    public static final String P_STEP = "step";
-    public static final String P_NOISY_QUARTIC = "noisy-quartic";
-    public static final String P_F1 = "kdj-f1";
-    public static final String P_F2 = "kdj-f2";
-    public static final String P_F3 = "kdj-f3";
-    public static final String P_F4 = "kdj-f4";
-    public static final String P_BOOTH = "booth";
-    public static final String P_GRIEWANGK = "griewangk";
+	
+    public static final String V_ROSENBROCK = "rosenbrock";
+    public static final String V_RASTRIGIN = "rastrigin";
+    public static final String V_SPHERE = "sphere";
+    public static final String V_STEP = "step";
+    public static final String V_NOISY_QUARTIC = "noisy-quartic";
+    public static final String V_F1 = "kdj-f1";
+    public static final String V_F2 = "kdj-f2";
+    public static final String V_F3 = "kdj-f3";
+    public static final String V_F4 = "kdj-f4";
+    public static final String V_BOOTH = "booth";
+    public static final String V_GRIEWANGK = "griewangk";
 
     public static final int PROB_ROSENBROCK = 0;
     public static final int PROB_RASTRIGIN = 1;
@@ -73,30 +74,30 @@ public class ECSuite extends Problem implements SimpleProblemForm
         {
         super.setup(state, base);
         String wp = state.parameters.getStringWithDefault( base.push( P_WHICH_PROBLEM ), null, "" );
-        if( wp.compareTo( P_ROSENBROCK ) == 0 || wp.compareTo (P_F2)==0 )
+        if( wp.compareTo( V_ROSENBROCK ) == 0 || wp.compareTo (V_F2)==0 )
             problemType = PROB_ROSENBROCK;
-        else if ( wp.compareTo( P_RASTRIGIN ) == 0 )
+        else if ( wp.compareTo( V_RASTRIGIN ) == 0 )
             problemType = PROB_RASTRIGIN;
-        else if ( wp.compareTo( P_SPHERE ) == 0 || wp.compareTo (P_F1)==0) 
+        else if ( wp.compareTo( V_SPHERE ) == 0 || wp.compareTo (V_F1)==0) 
             problemType = PROB_SPHERE;
-        else if ( wp.compareTo( P_STEP ) == 0 || wp.compareTo (P_F3)==0)
+        else if ( wp.compareTo( V_STEP ) == 0 || wp.compareTo (V_F3)==0)
             problemType = PROB_STEP;
-        else if ( wp.compareTo( P_NOISY_QUARTIC ) == 0 || wp.compareTo (P_F4)==0)
+        else if ( wp.compareTo( V_NOISY_QUARTIC ) == 0 || wp.compareTo (V_F4)==0)
             problemType = PROB_NOISY_QUARTIC;
-        else if( wp.compareTo( P_BOOTH ) == 0 )
+        else if( wp.compareTo( V_BOOTH ) == 0 )
             problemType = PROB_BOOTH;
-        else if( wp.compareTo( P_GRIEWANGK ) == 0 )
+        else if( wp.compareTo( V_GRIEWANGK ) == 0 )
             problemType = PROB_GRIEWANGK;           
         else state.output.fatal(
             "Invalid value for parameter, or parameter not found.\n" +
             "Acceptable values are:\n" +
-            "  " + P_ROSENBROCK + "(or " + P_F2 + ")\n" +
-            "  " + P_RASTRIGIN + "\n" +
-            "  " + P_SPHERE + "(or " + P_F1 + ")\n" +
-            "  " + P_STEP + "(or " + P_F3 + ")\n" +
-            "  " + P_NOISY_QUARTIC + "(or " + P_F4 + ")\n"+
-            "  " + P_BOOTH + "\n" +
-            "  " + P_GRIEWANGK + "\n",
+            "  " + V_ROSENBROCK + "(or " + V_F2 + ")\n" +
+            "  " + V_RASTRIGIN + "\n" +
+            "  " + V_SPHERE + "(or " + V_F1 + ")\n" +
+            "  " + V_STEP + "(or " + V_F3 + ")\n" +
+            "  " + V_NOISY_QUARTIC + "(or " + V_F4 + ")\n"+
+            "  " + V_BOOTH + "\n" +
+            "  " + V_GRIEWANGK + "\n",
             base.push( P_WHICH_PROBLEM ) );
         }
 

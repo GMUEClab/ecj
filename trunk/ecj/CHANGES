@@ -1444,3 +1444,4 @@ Version		Change Log
 		-all problems were grouped  into one class: MooSuite.java
 		-new benchmark problems added: SCH, F2, F3(unconstrained), KUR, FON, QV, POL.
 	Minor modification to ECSuite.java: P_... changed to V_... to be consistent
+	Missing closing 'bold' tag in vector documentation fixed
