@@ -57,10 +57,10 @@ import ec.*;
  * approach transmits or receives an indivdual in text encoded such that the individual is largely readable
  * by humans but can be read back in 100% by ECJ as well.  To do this, these methods will encode numbers
  * using the <tt>ec.util.Code</tt> class.  These methods are mostly used to write out populations to
- * files for inspection, slight modification, then reading back in later on.  <b>readIndividual</b>reads
+ * files for inspection, slight modification, then reading back in later on.  <b>readIndividual</b> reads
  * in the fitness and the evaluation flag, then calls <b>parseGenotype</b> to read in the remaining individual.
  * You are responsible for implementing parseGenotype: the Code class is there to help you.
- * <b>printIndividual</b> writes out the fitness and evaluation flag, then calls <b>genotypeToString<b> 
+ * <b>printIndividual</b> writes out the fitness and evaluation flag, then calls <b>genotypeToString</b> 
  * and printlns the resultant string. You are responsible for implementing the genotypeToString method in such
  * a way that parseGenotype can read back in the individual println'd with genotypeToString.  The default form
  * of genotypeToString simply calls <b>toString</b>, which you may override instead if you like.  The default
@@ -69,7 +69,7 @@ import ec.*;
  *
  * <li><b>printIndividualForHumans(...,PrintWriter)</b>&nbsp;&nbsp;&nbsp;This
  * approach prints an individual in a fashion intended for human consumption only.
- * <b>printIndividualForHumans</b> writes out the fitness and evaluation flag, then calls <b>genotypeToStringForHumans<b> 
+ * <b>printIndividualForHumans</b> writes out the fitness and evaluation flag, then calls <b>genotypeToStringForHumans</b> 
  * and printlns the resultant string. You are responsible for implementing the genotypeToStringForHumans method.
  * The default form of genotypeToStringForHumans simply calls <b>toString</b>, which you may override instead if you like
  * (though note that genotypeToString's default also calls toString).  You should handle one of these methods properly
