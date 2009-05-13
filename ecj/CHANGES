@@ -1431,6 +1431,7 @@ Version		Change Log
 		Pareto front.
 	Added ec.app.mookenchmarks, consiting of a number of popular Multi Objective Optimization 
 		benchmark problems and the a params file.
+        Added SUSSelection
 	Bug fix to shuffling algorithm used in SUSSelection. We stopped one element too early,
 		so for small arrays the shuffling is non-uniform (and for size-two arrays
   		there was no shuffling at all).  Gagh.  For shuffling large numbers of items,
@@ -1445,3 +1446,8 @@ Version		Change Log
 		-new benchmark problems added: SCH, F2, F3(unconstrained), KUR, FON, QV, POL.
 	Minor modification to ECSuite.java: P_... changed to V_... to be consistent
 	Missing closing 'bold' tag in vector documentation fixed
+	Added setGenomeLength to BitVectorIndividual: it was missing
+	KozaFitness.equivalentTo() and KozaFitness.betterThan() both call fitness() instead
+		of accessing fitness directly.  This puts the code in-line with SimpleFitness,
+		making subclasses which override the fitness() method easier to write. It's a
+		little bit slower though.

@@ -99,17 +99,17 @@ public class SUSSelection extends SelectionMethod
         
         Parameter def = defaultBase();
         shuffle = state.parameters.getBoolean(base.push(P_SHUFFLE),def.push(P_SHUFFLE),true);
-	}
+        }
 
     /* Largely stolen from sim.util.Bag.  Shuffles both the indices and the floats */
     void shuffle(MersenneTwisterFast random)
         {
         int numObjs = fitnesses.length;
-	float[] fitnesses = this.fitnesses;
-	int[] indices = this.indices;
-	
+        float[] fitnesses = this.fitnesses;
+        int[] indices = this.indices;
+        
         float f;
-	int i;
+        int i;
         int rand;
         
         for(int x=numObjs-1; x >= 1 ; x--)
@@ -119,9 +119,9 @@ public class SUSSelection extends SelectionMethod
             fitnesses[x] = fitnesses[rand];
             fitnesses[rand] = f;
 
-	    i = indices[x];
-	    indices[x] = indices[rand];
-	    indices[rand] = i;
+            i = indices[x];
+            indices[x] = indices[rand];
+            indices[rand] = i;
             }
         }
 
@@ -130,13 +130,13 @@ public class SUSSelection extends SelectionMethod
         final int subpopulation,
         final int thread)
         {
-	lastIndex = 0;
-	steps = 0;
-	
-	// compute offset
-	offset = (float)(s.random[thread].nextDouble() / fitnesses.length);
-	
-	// load fitnesses but don't build distribution yet
+        lastIndex = 0;
+        steps = 0;
+        
+        // compute offset
+        offset = (float)(s.random[thread].nextDouble() / fitnesses.length);
+        
+        // load fitnesses but don't build distribution yet
         fitnesses = new float[s.population.subpops[subpopulation].individuals.length];
         for(int x=0;x<fitnesses.length;x++)
             {
@@ -145,35 +145,35 @@ public class SUSSelection extends SelectionMethod
                 s.output.fatal("Discovered a negative fitness value.  SUSSelection requires that all fitness values be non-negative(offending subpopulation #" + subpopulation + ")");
             }
 
-	// construct and optionally shuffle fitness distribution and indices
-	indices = new int[s.population.subpops[subpopulation].individuals.length];
-	for(int i=0;i<indices.length;i++) indices[i] = i;
-	if (shuffle) shuffle(s.random[thread]);
-		
+        // construct and optionally shuffle fitness distribution and indices
+        indices = new int[s.population.subpops[subpopulation].individuals.length];
+        for(int i=0;i<indices.length;i++) indices[i] = i;
+        if (shuffle) shuffle(s.random[thread]);
+                
         // organize the distribution.  All zeros in fitness is fine
         RandomChoice.organizeDistribution(fitnesses, true);
-	}
+        }
 
     public int produce(final int subpopulation,
         final EvolutionState state,
         final int thread)
         {
-	if (steps >= fitnesses.length)  // we've gone too far, clearly an error
-	    {
-	    state.output.warning("SUSSelection was asked for too many individuals, so we're re-shuffling.  This will give you proper results, but it might suggest an error in your code.");
-	    boolean s = shuffle;
-	    shuffle = true;
-	    prepareToProduce(state, subpopulation, thread);  // rebuild
-	    shuffle = s; // just in case
-	    }
-	    
-	// find the next index
-	for( /* empty */ ; lastIndex < fitnesses.length - 1; lastIndex++)
-	    if ((lastIndex == 0 || offset >= fitnesses[lastIndex - 1]) && offset < fitnesses[lastIndex])
-		break;
+        if (steps >= fitnesses.length)  // we've gone too far, clearly an error
+            {
+            state.output.warning("SUSSelection was asked for too many individuals, so we're re-shuffling.  This will give you proper results, but it might suggest an error in your code.");
+            boolean s = shuffle;
+            shuffle = true;
+            prepareToProduce(state, subpopulation, thread);  // rebuild
+            shuffle = s; // just in case
+            }
+            
+        // find the next index
+        for( /* empty */ ; lastIndex < fitnesses.length - 1; lastIndex++)
+            if ((lastIndex == 0 || offset >= fitnesses[lastIndex - 1]) && offset < fitnesses[lastIndex])
+                break;
 
-	offset += (float)(1.0 / fitnesses.length);  // update for next time
-	steps++;
-	return indices[lastIndex];
+        offset += (float)(1.0 / fitnesses.length);  // update for next time
+        steps++;
+        return indices[lastIndex];
         }
     }
