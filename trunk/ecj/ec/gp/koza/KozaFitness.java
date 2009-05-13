@@ -107,7 +107,7 @@ public class KozaFitness extends Fitness
 
     public final float standardizedFitness()
         {
-        return fitness;
+        return rawFitness();
         }
 
     /** Returns the adjusted fitness metric, which recasts the fitness
@@ -116,8 +116,8 @@ public class KozaFitness extends Fitness
 
     public final float adjustedFitness()
         {
-        return 1.0f/(1.0f+fitness);
-        }
+        return fitness();
+	}
 
     public void setup(final EvolutionState state, final Parameter base) { }
     
@@ -128,12 +128,12 @@ public class KozaFitness extends Fitness
     
     public boolean equivalentTo(final Fitness _fitness)
         {
-        return ((KozaFitness)_fitness).fitness == fitness;
+        return _fitness.fitness() == fitness();
         }
 
     public boolean betterThan(final Fitness _fitness)
         {
-        return ((KozaFitness)_fitness).fitness > fitness;  // note different from SimpleFitness
+        return _fitness.fitness() < fitness();
         }
  
     public String fitnessToString()

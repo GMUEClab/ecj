@@ -260,6 +260,14 @@ public class BitVectorIndividual extends VectorIndividual
     public long genomeLength()
         { return genome.length; }
 
+    public void setGenomeLength(int len)
+        {
+        boolean[] newGenome = new boolean[len];
+        System.arraycopy(genome, 0, newGenome, len, 
+            genome.length < newGenome.length ? genome.length : newGenome.length);
+        genome = newGenome;
+        }
+
     public void writeGenotype(final EvolutionState state,
         final DataOutput dataOutput) throws IOException
         {
