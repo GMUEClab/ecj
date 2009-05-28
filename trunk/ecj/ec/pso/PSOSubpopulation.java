@@ -102,12 +102,20 @@ public class PSOSubpopulation extends Subpopulation
         velocityMultiplier = state.parameters.getDouble(base.push(P_VELOCITY_MULTIPLIER), null,0.1);
         }
     
+    void clear(DoubleVectorIndividual[] inds)
+	{
+	for(int x=0;x<inds.length;x++) { inds[x] = null; }
+	}
+	
     public void populate(EvolutionState state, int thread)
         {
         super.populate(state, thread);
         
         if (loadInds == null)  // we're generating new individuals, not reading them from a file
             {
+	    clear(neighborhoodBests);
+	    clear(personalBests);
+        
             FloatVectorSpecies fvSpecies = (FloatVectorSpecies)species;
             /* double range = fvSpecies.maxGene - fvSpecies.minGene; */
                     
