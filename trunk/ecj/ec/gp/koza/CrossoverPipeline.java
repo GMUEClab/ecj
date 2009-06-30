@@ -223,7 +223,7 @@ public class CrossoverPipeline extends GPBreedingPipeline
 
     /** Returns true if inner1 can feasibly be swapped into inner2's position. */
 
-    public final boolean verifyPoints(final GPInitializer initializer,
+    public boolean verifyPoints(final GPInitializer initializer,
         final GPNode inner1, final GPNode inner2)
         {
         // first check to see if inner1 is swap-compatible with inner2

@@ -1,0 +1,47 @@
+This directory contains GPNodeBuilder subclasses other than the most common
+ones (GPHalfBuilder, GPGrowBuilder, GPFullBuilder) found in the 'koza'
+directory.  A good description of most of these algorithms may be found in
+"A Survey and Comparison of Tree Generation Algorithms" by Sean Luke and
+Liviu Panait, GECCO 2001.  Google for it.
+
+
+
+ec.gp.build.PTC1
+
+Implements the PTC1 algorithm, a variation of the GROW algorithm which
+guarantees that generated trees will have a certain mean size.
+
+
+ec.gp.build.PTC2
+
+Implements the PTC2 algorithm, which guarantees that generated trees will
+be "more or less" a certain desired size.
+
+
+ec.gp.build.PTCFunctionSet
+
+A subclass of GPFunctionSet with additional probabilistic arguments required
+by the PTC1 and PTC2 algorithms.
+
+
+ec.gp.RandomBranch
+
+Implements the RANDOMBRANCH algorithm (Chellapilla), which creates roughly
+evenly distributed algorithms 
+
+
+ec.gp.RandTree
+
+Implements the RandTree algorithm (Iba), which picks trees uniformly according
+to structure, then labels the tree with appropriate nodes.  Note that we
+believe this code may be flakey and do not recommend it.
+
+
+ec.gp.Uniform
+
+Implements an algorithm from (Bohm and Geyer-Schulz) which draws trees 
+entirely uniformly.  The version in ECJ aso considers set and atomic types.
+
+
+If you're struggling to pick a more versatile tree generator than the Koza
+standard ones, we strongly suggest PTC2.

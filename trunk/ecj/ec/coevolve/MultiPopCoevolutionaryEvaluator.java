@@ -45,7 +45,7 @@ import ec.util.*;
 
  <tr><td valign=top><i>base.</i><tt>subpop.X.num-ind</tt><br>
  <font size=-1> int &gt;= 0</font></td>
- <td valign=top>(the number of  individuals from subpopulation X in the previous generation to be selected as partners for evaluating individuals in other subpopulations  -- individuals are selected, with replacement, by using SelectionMethods described next, and they are usually different for each of the individuals in the other subpopulations)
+ <td valign=top>(the number of individuals from subpopulation X in the previous generation to be selected as partners for evaluating individuals in other subpopulations  -- individuals are selected, with replacement, by using SelectionMethods described next, and they are usually different for each of the individuals in the other subpopulations)
  </td></tr>
 
  <tr><td valign=top><i>base.</i><tt>subpop.X.select</tt><br>

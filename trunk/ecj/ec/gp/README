@@ -1,0 +1,162 @@
+This package, and subpackages, comprise the genetic programming facility of
+ECJ.  This is by far ECJ's best-tested facility.
+
+The GP facility is fairly complex and detailed.  You might do well to start
+with the ECJ tutorials, one of which is a GP tutorial.  There are a number of
+GP example applications in the app directory as well (including regression,
+ant, multiplexer, lawnmower, etc.)
+
+The gp.params file contains certain parameters common to gp problems.  But more
+useful to you will be the koza.params file, located in the 'koza' directory,
+which contains an extensive collection of default parameter settings common to
+the GP problems often found in John Koza's works.  Most of the application
+examples rely on the koza.params files for their defaults.  After doing the
+tutorials, it might be helpful to peruse the koza.params file.
+
+
+
+
+GP Individuals
+--------------
+
+ECJ's GP system is tree-based.  GP individuals use the GPIndividual class or
+a subclass, whose species must be GPSpecies or a subclass.  A GPIndividual
+contains an array of GPTrees, each representing a tree in the individual.
+Commonly there's only one such tree, but there's no reason you can't have
+more (and we've used as many as eleven in the past).  Just as individuals
+share common data in Species, GPTrees share common data in GPTreeConstraints
+objects.  That data is primarily the function set used by the GPTree in
+question and the return type of the tree.  Hanging from GPTrees are trees
+whose nodes are all subclasses of GPNode.  GPNodes contain an array of GPNodes
+(the "children" to that GPNode).  If a GPNode has no children, its array may
+be null rather than empty, to save a bit of memory.  Various GPNodes share 
+common data in GPNodeConstraints objects, which largely specify the arity 
+of the GPNode in question (that is, the number of children it has), its 
+return type, and, for each array slot, the type that children in that slot
+must have their return types type-compatible with.
+
+Each GPNode has a parent.  That parent is usually another GPNode (to which it
+is the child).  The root GPNode has the GPTree as its parent.  Thus GPNode
+and GPTree both implement the GPNodeParent interface.
+
+
+GP Function Sets and Node Builders
+----------------------------------
+
+Each GPTreeConstraints contains a GPFunctionSet object, essentially a
+collection of prototypical GPNodes.  GP trees are constructed from copies
+of these nodes.  GPTreeConstraints also contain a GPNodeBuilder of some kind,
+responsible for actually constructing a brand new GP tree.  Some common
+GPNodeBuilders are located in the koza directory (GrowBuilder, HalfBuilder,
+and FullBuilder, all subclasses of KozaBuilder).  Other GPNodeBuilders are 
+located in the build directory.
+
+
+Types
+-----
+
+GPNodes can't just be strung together willy-nilly to form trees.  Not only
+must a tree only contain nodes drawn from that tree's function set, but
+certain constraints are placed on which nodes may serve as children to other
+nodes, or as the root of the tree.  These constraints are called types.  ECJ's
+type facility defines an abstract superclass of types called GPType with two
+concrete subclasses, GPAtomicType and GPSetType.  These types are stored in
+global collections defined within these classes.  Here's how it works.  Each
+GPNode has a return type (either an atomic or set type).  GPNodes which can
+have children also have separate types for each of those child slots.  In order
+for a node to be permitted as a child of another node in a given slot, the 
+types must be compatible.  Atomic types with one another are compatible only 
+if they are exactly the same type.  Set types contain sets of atomic types, and
+two set types are compatible with one another only if their intersection is
+nonempty.  You can mix atomic and set typing as well: a set type is compatible
+with an atomic type if the atomic type is a member of the set type.   GPTrees
+also specify a type for the root node: a GPNode's return type must be
+compatible with this type for the node to be legal as a root.  The most common
+situation is for no typing to be used at all, or more properly described,
+for all nodes to use a single atomic type.  The koza.params file in the
+koza directory defines seven GPNodeConstraints (representing nodes with
+zero through six children), all of which use the same atomic type everywhere.
+For no good reason the name of that type, in that file, is 'nil'.
+
+The various global cliques (GPNodeConstraints, GPTypes, and GPFunctionSets) 
+are all set up initially, and stored for easy access, in GPInitializer, a
+subcass of Initializer which you must use (or a subclas thereof).
+
+
+Problems and Special Kinds of GPNodes
+-------------------------------------
+
+Part of the process of making a GP problem involves the construction of the
+function set used for that problem.  Usually this means directly subclassing
+GPNode several times.  ECJ provides four utility GPNode subclasses which might
+also be useful to you.  The ERC class permits the creation of Ephemeral Random
+Constants (ERCs), essentially GPNodes which describe constant values which
+are created randomly initially but are constant thereafter.  To create them you
+need to subclass ERC and override certain methods.  The ADF class defines
+Automatically Defined Function nodes which cause execution to transfer to
+another GPTree in the individual (an Automatically Defined Function).
+Associated with ADFs are ADFArgument nodes appearing in the corresponding 
+Automatically Defined Function tree.  These nodes provide the return values
+to children of the original ADF node.  Last, ADM nodes (for Automatically
+Defined Macro) are like ADFs, only the return values of their ADFArguments
+are computed on-the-fly and dynamically rather than beforehand.
+
+All GP problems must be subclasses of GPProblem, which contains the machinery
+to make ADFs work (including special classes for execution transfer,
+ADFContext and ADFStack, which you'll never need to deal with).
+
+When a GP tree is executed, the root node is handed a GPData object which may
+contain information for the root node to act on, or (more commonly) slots of
+data for it to fill out before it hands the GPData object back.  The root node
+goes on to reuse this GPData object by handing it to its children (and receiving
+it back) and so on down the line.  As part of building a GPProblem, you'll
+probably need to define a GPData subclass.
+
+
+Breeding
+--------
+
+GP has its own traditional breeding pipeline, which is defined entirely in
+the koza.params file as well.  Breeding pipelines often, but are not required
+to, subclass from GPBreedingPipeline, which checks to make certain that the
+individual's species is a GPSpecies.  Common pipelines are found in the
+koza directory: CrossoverPipeline and MutationPipeline.  Other commonly used
+GP pipelines are in the ec/breed directory: ReproductionPipeline and
+MultiBreedingPipeline.
+
+To breed individuals, it's often necessary to select points within a tree
+(to do crossover on, for example).  This is the job of the subclasses of the
+abstract superclass GPNodeSelector.  A single concrete subclass in the 'koza'
+directory, KozaNodeSelector, can pick random nodes in a tree with certain
+probabilities based on how often you want certain kinds of nodes (the root,
+nonleaf nodes, leaf nodes, or all nodes).
+
+Certain utility functions in GPNode rely on an auxillary class, GPNodeGatherer,
+which is largely private and probably should be folded into GPNode.
+
+
+Fitness and Statistics
+----------------------
+
+Koza-style genetic programming has its own traditional fitness function which
+presents the fitness value in different guises.  The raw fitness is set by the
+application problem.  The standardized fitness converts this into a value where
+0 is optimal and infinity is worse than the worst possible.  In ECJ these two
+fitness values are the same thing.  The adjusted fitness is the raw fitness
+converted so that 1 is optimal and 0 is worse than the worst possible.  This is
+defined as adjustedFitness = (1 / (1 + rawFitness)).  Last, the auxillary hits
+measure, mostly for historical reasons, indicates how many successful tests were
+made for certain kinds of problems.
+
+Because of this fitness complexity, ECJ has its own Fitness subclass different
+from SimpleFitness which is used for GP problems: KozaFitness (in the 'koza'
+directory).  You can use whatever fitness you want for your problem, but
+KozaFitness may be convenient.
+
+Associated with KozaFitness are two revised Statistics subclasses which provide
+a variety of useful data special to GP.  KozaStatistics logs the best trees
+of each run, plus certain fitness information.  KozaShortStatistics logs a
+variety of easily parsed statistical information, one line per generation.
+Both are located in the 'koza' directory.
+
+

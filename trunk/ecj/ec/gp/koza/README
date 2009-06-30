@@ -1,0 +1,30 @@
+See the README file in the superdiretoctory (ecj/ec/gp/), which describes
+the files in this directory as well.  Some specifics not described there:
+
+
+ec.gp.koza.CrossoverPipeline
+
+A GPBreedingPipeline which performs subtree crossover.
+
+
+ec.gp.koza.MutationPipeline
+
+A GPBreedingPipeline which performs subtree mutation (replacing a randomly
+chosen subtree with a randomly-generated subtree).
+
+
+ec.gp.GrowBuilder
+
+A GPNodeBuilder which implements Koza's GROW algorithm.
+
+
+ec.gp.FullBuilder
+
+A GPNodeBuilder which implements Koza's FULL algorithm.
+
+
+ec.gp.HalfBuilder
+
+A GPNodeBuilder which implements Koza's RAMPED HALF-AND-HALF algorithm.
+
+

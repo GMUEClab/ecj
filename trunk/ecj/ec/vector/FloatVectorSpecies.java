@@ -203,12 +203,24 @@ public class FloatVectorSpecies extends VectorSpecies
     
     public double maxGene(int gene)
         {
-        return maxGenes[gene];
+        double[] m = maxGenes;
+	if (m.length <= gene)
+	    { 
+	    if (!warned) warnAboutGene(gene);
+	    gene = m.length - 1;
+	    }
+        return m[gene];
         }
 
     public double minGene(int gene)
         {
-        return minGenes[gene];
+         double[] m = minGenes;
+	if (m.length <= gene)
+	    { 
+	    if (!warned) warnAboutGene(gene);
+	    gene = m.length - 1;
+	    }
+       return m[gene];
         }
 
     public final double gaussMutationStdev(int gene)

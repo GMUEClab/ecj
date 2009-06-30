@@ -83,7 +83,7 @@ public class Regression extends GPProblem implements SimpleProblemForm
         super.setup(state,base);
 
         trainingSetSize = state.parameters.getInt(base.push(P_SIZE),null,1);
-        if (trainingSetSize<1) state.output.fatal("Training Set Size must be an integer greater than 0"); 
+        if (trainingSetSize<1) state.output.fatal("Training Set Size must be an integer greater than 0", base.push(P_SIZE)); 
 
         // Compute our inputs so they can be copied with clone later
         
@@ -94,7 +94,7 @@ public class Regression extends GPProblem implements SimpleProblemForm
             {
             inputs[x] = state.random[0].nextDouble() * 2.0 - 1.0;
             outputs[x] = func(inputs[x]);
-            state.output.println("{" + inputs[x] + "," + outputs[x] + "},",3000,0);
+            state.output.message("{" + inputs[x] + "," + outputs[x] + "},");
             }
 
         // set up our input -- don't want to use the default base, it's unsafe
