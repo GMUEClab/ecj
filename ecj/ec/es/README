@@ -1,0 +1,30 @@
+This package implements the (mu+lambda) and (mu,lambda) evolution strategies.
+Use this package in conjunction with the 'simple' package (that is,
+generational evolution).  The provided es.params file shows some more
+information on how to do this.
+
+These techniques are implemented with custom Breeders in combination with a
+special SelectionMethod which handles the dirty work of truncation selection.
+The SelectionMethod is:
+
+	ec.es.ESSelection
+
+This method should only be used with the Breeders in this package.  You can
+place ESSelection anywhere in your pipeline, including multiple times if you
+like.  It will return the mu best individuals in the population, one at a time,
+each time it's pulsed.  Individual ESSelection methods in various parts of
+your pipeline will return the same individual.
+
+The (mu,lambda) evolution strategy is implemented with the Breeder
+
+	ec.es.MuCommaLambdaBreeder
+
+This breeder requires you to specify a 'mu' value and a 'lambda' value for
+each subpopulation.  You need to provide a 'lambda' value instead of just
+the subpopulation size because the subpopulation size is used solely to set the
+INITIAL size of the subpopulation.  
+
+The (mu+lambda) evolution strategy has exactly the same options, and is
+implemented in a subclass:
+
+	ec.es.MuPlusLambdaBreeder

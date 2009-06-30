@@ -15,13 +15,9 @@ parent.0 = ../simple/simple.params
 # change parent.0 to ../gp/koza/koza.params if you're doing GP (see below)
 #
 # Some notes: 
-# 1. The (mu,lambda) and (mu+lambda) evolutionary strategies
-#    techniques require you to set up a breeding pipeline which 
-#    can produce exactly one child at a time, and in that process
-#    calls upon EXACTLY ONE ec.es.ESSelection selection method 
-#    EXACTLY ONCE.  You can call upon other selection methods if
-#    you need to select more than one parent in order to produce
-#    this single child.  Note that this is NOT CHECKED FOR.
+# 1. To perform truncation selection, include the ec.es.ESSelection
+#    selection method in your breeding pipeline.  You can mix in other
+#    selection methods along with it.
 #
 # 2. You need to specify the mu and lambda values for each of your
 #    subpopulations.  This is different than past versions of ECJ where

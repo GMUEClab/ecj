@@ -8,7 +8,8 @@ ECJ's implementation of Differential Evolution requires that the
 user specify one of several Breeders, and also that the user include
 a special Statistics object in the Statistics chain.  This Statistics
 object must be the *first* such object in the chain -- other Statistics
-objects must hang off of it.
+objects must hang off of it.  In the future we may change from using Breeders
+to using BreedingPipelines with a single breeder.
 
 The Breeder options implement various Differential Evolution Algorithms.
 Options include:
@@ -27,4 +28,81 @@ stat.child.0 =                          ec.simple.SimpleStatistics
 stat.child.0.file =                     $out.stat
 
 The ec/app/ecsuite/de.params file contains an example.
+
+
+ECJ's DE implementation (for now)
+---------------------------------
+
+ECJ implements Differential Evolution by largely by replacing the Breeder.
+The various DE breeders work like this: for each individual i in the 
+population, construct a new individual using a function called 
+createIndividual(..., i, ...).  Then replace the entire population with the
+newly constructed individuals.
+
+In DE, all individuals are DoubleVectorIndividuals.
+
+The different breeders differ largely based on how 
+createIndividual(..., i, ...) is implemented.  In all versions,
+createIndividual(..., i, ...) begins by choosing three random individuals
+r0, r1, and r2 which are different from one another and from i.  Let j
+be the new individual.
+
+
+
+The default version, implemented by
+
+	ec.de.DEBreeder
+
+... creates a new individual as follows.  Let Pm be 1 / populationSize, 
+F be (with 1/2 probability) either 1 or 1.9 / Sqrt(populationSize), and
+K be a random gaussian value.  For each gene g in j,
+
+With Pm probability,  	j[g] <-- i[g] + F * (r1[g] - r2[g])
+Else			j[g] <-- i[g] + K * (r0[g] - i[g])
+
+This particular algorithm was communicated personally by Kenneth Price,
+though we probably got it wrong!  :-)
+
+
+
+The next version is implemented by
+
+	ec.de.Rand1ExpDEBreeder
+
+Let Cr and F be constants (Suggestions: F could equal 0.8).  We pick a 
+random starting gene in j, and continue upwards, wrapping around as needed
+(j+1, j+2, ..., 0, 1, ...) until we've done all of them OR a coin flip of 
+probability Cr comes up heads.  Genes are updated as:
+
+	j[g] <-- r0[g] + F * (r1[g] - r2[g])
+
+
+
+An additional version, implemented by
+
+	ec.de.Rand1EitherOrDEBreeder	`  
+
+... works like this.  Let Pm, F, and K be constants (the default value
+for K is 0.5 * (1 + F) ).  For each gene g we do the following:
+
+With Pm probability,	j[g] <-- r0[g] + F * (r1[g] - r2[g])
+Else			j[g] <-- r0[g] + K * (r1[g] + r2[g] - r0[g])
+
+
+
+A final version, implemented by 
+
+	ec.de.Best1BinDEBreeder
+
+... is a variation of Rand1ExpDEBreeder, which changes only an interval of
+genes just like Rand1ExpDEBreeder does.  Those genes are updated as:
+
+	j[g] <- best[g] + F * (r0[g] - r1[g])
+
+... where 'best' is the best-so-far individual of the run. 
+
+
+Don't like any of these?  It should be fairly straightforward to copy an
+existing one and modify it.   
+
 

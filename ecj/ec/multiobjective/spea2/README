@@ -1,5 +1,5 @@
-This is an implementation of the Strength Pareto Evolutionary Algorithm
-for the ECJ package.
+This is an implementation of the Strength Pareto Evolutionary Algorithm 2
+for ECJ.
 
 Details of this approach can be found in the following paper:
 
@@ -32,5 +32,64 @@ other modern elitist methods, PESA and NSGA-II, on different test
 problems yields promising results.
 
 
-Author of ECJ SPEA package: Robert Hubley, Insitute for Systems Biology
+Author of ECJ SPEA2 package: Robert Hubley, Insitute for Systems Biology
 With modifications by Sean Luke, Gabriel Balan, and Keith Sullivan
+
+
+EXAMPLES
+--------
+
+There is an example application in ec/app (look for "moo" or 
+"multiobjective") which uses SPEA2.
+
+
+How ECJ implements SPEA2
+------------------------
+
+SPEA2 is an elitist archive method which in some sense extends mu+lambda. 
+That is, SPEA2 maintains a pool (the "archive") of some N high quality
+individuals which more or less holds the present known pareto front of
+the population.  That archive is carried over from generation to generation.
+
+The archive is the last N individuals in the subpopulation's array.  SPEA2
+has its own subpopulation class:
+
+	ec.multiobjective.spea2.SPEA2Subpopulation
+
+... which extends Subpopulation solely by adding a variable indicating the
+archive size.  To handle SPEA2's breeding complexity, we also have our own
+breeder which knows how work with this kind of subpopulation properly:
+
+	ec.multiobjective.spea2.SPEA2Breeder
+
+SPEA2 has an elaborate fitness setting procedure which involves the 
+computation of several odd variables before setting a final fitness
+based on the various objective results.  This is handled by a revised
+Evaluator class:
+
+	ec.multiobjective.spea2.SPEA2Evaluator
+
+These variables are stored in a revised version of MultiobjectiveFitness.
+Such variables are really not necessary to hold; the only one that matters
+is the SPEA2Fitness variable, which holds the final fitness assessment of
+the individual.  This variable exists because SPEA2MultiobjectiveFitness
+subclasses from MultiobjectiveFitness, which subclasses from Fitness rather
+than SimpleFitness: thus there's no "fitness" instance variable like there
+is in SimpleFitness.  We could tweak that in the future, so it's possible
+that this class might go away at some point.
+
+	ec.multiobjective.spea2.SPEA2MultiobjectiveFitness
+
+When SPEA2 needs to do breeding, it does so solely from the archive.
+This means that the ECJ selection operator (TournamentSelection, which 
+SPEA uses) needs to be modified to only consider the archive when
+selecting an individual.  Our modified version is here:
+
+	ec.multiobjecive.spea2.SPEA2TournamentSelection
+
+Last we have provided a simple extension of the Statistics class to provide
+a bit more information about what the final archive looks like:
+
+	ec.multiobjective.spea2.SPEA2Statistics
+
+

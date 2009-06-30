@@ -1,0 +1,9 @@
+This directory contains tools for multiobjective optimization.  The top-level
+package, ec.multiobjective, just contains a basic multiobjective fitness class
+which has multiple fitness values and a flag indicating whether higher
+fitness is "better". (By default, ECJ assumes higher values are better, but
+it is particularly common in multiobjective optimization that lower is better,
+so we've added this rather than tilt at windmills).
+
+Actual implementations for multiobjective optimization are in subdirectories.
+At present, ECJ only contains code for the SPEA2 algorithm.

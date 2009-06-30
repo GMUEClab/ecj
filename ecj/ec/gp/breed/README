@@ -1,0 +1,54 @@
+This directory contains various breeding pipelines made for GP trees.  The
+more common ones are historically elsewhere:  CrossoverPipeline and
+MutationPipeline are in the 'koza' directory, and the more general 
+ReproductionPipeline and MultiBreedingPipelien are in the 'ec/breed' directory.
+
+Special-purpose pipelines in this directory:
+
+
+
+ec.gp.breed.InternalCrossoverPipeline
+
+Two points are selected within the same individual, such that neither is a
+subtree of the other.  The points are then crossed over.
+
+
+ec.gp.breed.MutateDemotePipeline
+
+A random non-leaf GPNode is created. A tree is removed from the individual and 
+replaced with the GPNode.  The tree then is reattached as a child to that
+GPNode.  The remaining child slots of the GPNode, if any, are filled with
+randomly generated trees (using a GPNodeBuilder).
+
+
+ec.gp.breed.MutatePromotePipeline
+
+A tree is replaced with one of its children subtrees.
+
+
+ec.gp.breed.MutateSwapPipeline
+
+Two children subtrees of a random GPNode are swapped.
+
+
+ec.gp.breed.MutateOneNodePipeline
+
+A single ERC node in the tree is mutated.
+
+
+ec.gp.breed.MutateAllNodesPipeline
+
+All ERCs in the tree are mutated.
+
+
+ec.gp.breed.RehangPipeline
+
+A nonleaf GPNode in the tree is chosen as the new root.  Call it N.  We begin 
+by removing a random child subtree from that node (call it T).  The node is 
+then placed at he root.  The node's former parent is placed in the position 
+formerly occupied by T.  The parent's parent is placed in the position 
+formerly occupied by N.  The parent's parent's parent is placed in the
+position formerly occupied by N's parent.  And so on, until all parents are
+exhausted.  The remaining open slot is then filled with T.  This technique
+is highly randomizing and really only useful for odd tests here or there.
+It also cannot be used with a typed GP problem.

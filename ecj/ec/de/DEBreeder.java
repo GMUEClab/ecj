@@ -145,7 +145,6 @@ public class DEBreeder extends Breeder
         while (++counter < dim);
 
         return v;
-
         }
 
 

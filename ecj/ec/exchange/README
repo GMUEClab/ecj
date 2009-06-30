@@ -1,0 +1,136 @@
+This package contains two implementations of the Exchange facility in ECJ to
+perform island models.  The first implementation:
+
+	ec.exchange.InterPopulationExchange
+
+... works within a single evolutionary process, and treats each subpopulation 
+as a separate "island", performing a synchronous island model among the
+subpopulations.  This is mostly of academic interest, as it only runs on a 
+single evolutionary process.  Note that it's also incompatable with other
+uses of subpopulations, such as coevolution.  See the inter.params file for
+an example.
+
+
+The second implementation:
+
+	ec.exchange.IslandExchange
+
+... is an elaborate multi-process, multi-machine island model.  The system
+can perform both synchronous and asynchronous island models of any topology
+you like.  It is graceful in handling islands which disappear but cannot handle
+new islands or replacement islands.  The system is (or should be!) entirely
+compatible with the distributed evaluator, so you can have multiple islands,
+each with their own little master/slave evaluation facility.  The system also
+handles (or should) checkpointing properly.
+
+IslandExchange requires that you define an ECJ process as a "server" and
+the others as "clients".  If you like, a process can serve both as a server
+and as a client.  The clients all connect to the server and are told by the
+server how to hook up with one another in the desired topology.  The server
+also communicates signals to the clients, notably telling them to shut 
+themselves down when one of the clients has discovered an optimal solution.
+
+The directories
+
+	3-Island	8-Island
+
+...contain examples of 3- and 8-island models where the server is also a
+client.  The directory
+
+	2-Island
+
+... contains an example of a simple 2-Island model with a separate server 
+(thus 2 clients and 1 server).  Note that to run the server separately, you
+fire up ECJ not with ec.Evolve but with ec.exchange.IslandExchange.  See the
+README file in that directory for more information.
+
+There are a number of options in the island model, described more fully
+in the IslandExchange class documentation.  Here's a quick overview of some
+of them.
+
+A process is told to be a server (possibly in addition to being a client) with
+the parameter
+
+	exch.i-am-server=true
+
+Servers work by listening in on a socket port.  You specify this port as an
+integer, ideally above 2000 or so.  The clients will all need to know this
+port number as well.  The port is defined as:
+
+	exch.server-port= ...
+
+A synchronous island model (where all islands send and receive at the same
+time) is defined by the server parameter:
+
+	exch.sync=true
+
+If this is the case, then the server can specify when the at what generation
+the exchanges begin with
+
+	exch.start= ...
+
+... and also specify the interval between exchanges as:
+
+	exch.mode= ...
+
+By default, ECJ does *asynchronous* exchanges instead, where each island is
+told independently what generation it should start at and what interval it
+should use, and the islands are free to go at their own pace rather than wait
+for the other islands synchronously.  Islands each have a "mailbox" which
+receives incoming individuals from the other island, and after breeding they
+check and empty that mailbox, replacing individuals in the current population
+with the incoming immigrants.  The selection procedure for the individuals
+to be replaced is by default random selection, but you can change that.
+
+The server defines the number of islands as:
+
+	exch.num-islands= ...
+
+Each island is defined with several parameters in the server's parameter files.
+In the examples below, replace n with the numbers 0 through the number of
+islands (minus 1).
+
+	exch.island.n.id	The name of island number n (a string)
+	exch.island.n.num-mig	How many islands this island sends to.
+	exch.island.n.mig.m	The name of island number m that this island
+				sends to.  (m is a number from 0 to
+				exch.island.n.num-mig minus 1).
+	exch.island.n.size	How many individuals this island sends to
+				each of the other islands at one time.
+	exch.island.n.start	What generation the island should start sending
+				(only used if asynchronous)
+	exch.island.n.mod	The interval between sends (only used with
+				asynchronous)
+	exch.island.n.mailbox-capacity	How large the island's mailbox should
+					be.  This should be large enough to
+					accept enough individuals from other
+					islands, but not so big that it's
+					larger than your population size!
+					The mailbox will overflow if full.
+					You'll need to tune this size if
+					you have some islands that are much
+					faster at sending out individuals
+					than others are at incorporating them.
+
+Once your server has defined all these topology elements, you just need to make
+some clients.  Client parameters are quite simple.  The primary ones are:
+
+	exch.server-addr	The IP address of the server, so the client
+				knows where to connect and get its marching
+				orders.
+	exch.server-port	The socket port of the server.
+	exch.client-port	The desired socket port of the client that
+				other clients will connect to it via to set up
+				the island model.  This should be different 
+				than server-port if you have a client which is
+				also a server.
+	exch.id			The name of the client's island.  The server
+				will use this name information to determine the
+				topology as above.
+	exch.select		The selection method used to pick individuals
+				to emigrate TO other islands.
+
+There's more than this, but it's sufficient to understand what's going on in
+the example directories.  For more description of how things work, see
+the IslandExchange class documentation.
+

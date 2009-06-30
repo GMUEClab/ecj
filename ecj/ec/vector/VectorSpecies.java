@@ -85,7 +85,15 @@ public class VectorSpecies extends Species
     /** How big of chunks should we define for crossover? */
     public int chunksize;
 
-
+    protected boolean warned = false;
+    EvolutionState state;
+    protected void warnAboutGene(int gene)
+	{
+	state.output.warning("Attempt to access maxGene or minGene from IntegerVectorSpecies beyond initial genomeSize.\n" +
+	    "From now on, maxGene(a) = maxGene(maxGeneIndex) for a >= maxGeneIndex.  Likewise for minGene(...)");
+	warned = true;
+	}
+    
     public Parameter defaultBase()
         {
         return VectorDefaults.base().push(P_VECTORSPECIES);
@@ -97,6 +105,8 @@ public class VectorSpecies extends Species
         // set up.
         
         Parameter def = defaultBase();
+	
+	this.state = state;
         
         genomeSize = state.parameters.getInt(base.push(P_GENOMESIZE),def.push(P_GENOMESIZE),1);
         if (genomeSize==0)

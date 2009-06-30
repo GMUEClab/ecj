@@ -183,7 +183,7 @@ public class MutationPipeline extends GPBreedingPipeline
 
     /** Returns true if inner1 can feasibly be swapped into inner2's position */
 
-    private boolean verifyPoints(GPNode inner1, GPNode inner2)
+    public boolean verifyPoints(GPNode inner1, GPNode inner2)
         {
         // We know they're swap-compatible since we generated inner1
         // to be exactly that.  So don't bother.

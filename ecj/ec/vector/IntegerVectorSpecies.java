@@ -134,12 +134,24 @@ public class IntegerVectorSpecies extends VectorSpecies
     
     public long maxGene(int gene)
         {
-        return maxGenes[gene];
+        long[] m = maxGenes;
+	if (m.length <= gene)
+	    { 
+	    if (!warned) warnAboutGene(gene);
+	    gene = m.length - 1;
+	    }
+	return m[gene];
         }
     
     public long minGene(int gene)
         {
-        return minGenes[gene];
+        long[] m = minGenes;
+	if (m.length <= gene)
+	    { 
+	    if (!warned) warnAboutGene(gene);
+	    gene = m.length - 1;
+	    }
+        return m[gene];
         }
     
     public boolean inNumericalTypeRange(long geneVal)
@@ -159,7 +171,7 @@ public class IntegerVectorSpecies extends VectorSpecies
         {
         // keep in mind that the *species* variable has not been set yet.
         super.setup(state,base);
-
+	
         Parameter def = defaultBase();
 
 

@@ -1,0 +1,68 @@
+This package provides various common selection operators.  In ECJ, selection
+operators (called SelectionMethods) appear as leaf nodes in breeding pipelines.
+If you're having trouble selecting, we suggest you use TournamentSelection,
+perhaps with a tournament size of 2.
+
+Some of these methods require that all fitnesses be >= 0.
+
+Other methods, when first requested to select an individual, buffer up a large
+number of precomputed selections to provide later, or compute certain
+statistics to be used later.  Such selection methods cannot be used efficiently
+in steady state algorithms.
+
+ec.select.MultiSelection 
+	This isn't a selection method so much as a utility procedure.  The
+	algorithm maintains some number of subsidiary selection methods
+	(the 'selects').  When asked to produce a child, it picks a subsidiary
+	according to its associated probability; it then asks for a child from
+	that subsidiary.  The probability is defined in the 'probability'
+	parameter in the subsidiary pipeline.  Compare to 
+	ec.breed.MultiBreedingPipeline, which does more or less the same
+	thing, but as a BreedingPipeline, always copies the children produced
+	from its sources.  MultiSelection, like a good selection operator,
+	makes no such copies (and so is a bit more efficient in this context).
+
+ec.select.BestSelection
+	Always selects uniformly from among the best N individuals in the
+	population.  Can also optionally select from among the N worst.
+
+ec.select.TournamentSelection		[acceptable for Steady State]
+	When asked to select an individual, first picks N individuals at
+	random with replacement, then returns the fittest individual among
+	those N.  The size of N is known as the tournament size, and you
+	specify this.  Can also optionally select the worst among the N. 
+
+ec.select.FitProportionateSelection
+	Selects from among the individuals in the population in proportion
+	to their fitness values (which must all be >= 0).
+
+ec.select.SUSSelection
+	Performs Stochastic Universal Sampling selection, a variant of
+	fitness proportionate selection which guarantees that sufficiently
+	fit individuals will always be selected at least once.  When first
+	asked to select, SUSSelection computes selection choices for an entire
+	populations' worth of individuals beforehand.  It then begins handing
+	these choices out in response to successive requests.  When the choices
+	have been depleted, SUSSelection computes another populations's worth.
+	Like fitness proportionate selection, SUSSelection requires that all
+	fitnesses be >= 0.
+
+ec.select.GreedyOverselection
+	A version of FitProportionateSelection used in early forms of genetic
+	programming.  The individuals are divided by fitness into two groups:
+	the good group and the bad group.  To select an individual, the 
+	algorithm first picks either the good group or the bad group, then
+	performs fitness proportionate selection within that group.  You 
+	specify the size of the good group and the probability that it will
+	be selected.  Like fitness proportionate selection, SUSSelection
+	requires that all fitnesses be >= 0.
+
+ec.select.RandomSelection		[acceptable for Steady State]
+	Always provides a random individual.  This is equivalent to a
+	tournament selection with a tournament size of 1.
+
+ec.select.FirstSelection		[acceptable for Steady State]
+	Always selects the first individual in the population array.  Only
+	used for debugging purposes.
+
+

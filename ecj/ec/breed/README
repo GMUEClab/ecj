@@ -1,0 +1,48 @@
+This directory contains some simple utility breeding pipelines.  These
+pipelines don't make modifications of individuals, so if you're looking
+for crossover or mutation etc., you'll need to check in other packages
+more specifically designed for your representation.
+
+ec.breed.ReproductionPipeline
+	Requests an individual from its sole source pipeline, then
+	makes a copy of it and returns the copy.  Largely used in the
+	genetic programming package.
+
+ec.breed.MultiBreedingPipeline
+	When asked to create one or more children, selects from among
+	some N source pipelines attached to it, requests indivdiuals
+	from the chosen source, copies them, and returns them.  The
+	selection procedure is probabilistic, based on the 'probability'
+	values stored in each of the sources (in fact,
+	MultiBreedingPipeline is the reason those probability values exist.
+	This is historical: we probably should have stored them in
+	the MultiBreedingPipeline instead!  Might change in the future.)
+
+ec.breed.ForceBreedingPipeline
+	When asked to create some N children, this repeatedly requests from
+	its sole source some M<=N children at a time (you specify the M)
+	until it gets the N children asked for.  This is useful for various
+	minor tricks, such as forcing Crossover to only produce one individual.
+
+ec.breed.BufferedBreedingPipeline
+	When asked to create some N children, this makes a large request
+	from its sole source to create some M >= N children at a time
+	(you specify the M).  It then returns N of these children, storing
+	away the other M - N ones.  When asked again to create some more 
+	children, it reaches into this storage and provides some of them.
+	When the storage is depleted, it creates another M children.  This
+	is useful for certain minor tricks: for example, enabling you to cross
+	over two individuals, then cross them over *again*.  We'd do that by
+	attaching the same BufferedBreedingPipeline (with M=2) to _both_
+	sources of a CrossoverPipeline (use the "same" options).  The
+	BufferedBreedingPipeline then has another CrossoverPipeline as its
+	source.  When the top CrossoverPipeline asked for its first child
+	to cross over, the BufferedBreedingPipeline would demand two children
+	from the subsidiary CrossoverPipeline (already crossed over), then
+	provide one of them.  When the second child is requested, the remaining
+	child would be provided. 
+
+ec.breed.GenerationSwitchPipeline
+	This pipeline takes two sources.  If the generation is less than G,
+	then the pipeline provides copies of individuals from source 0.  Else
+	it provides copies of individuals from source 1.

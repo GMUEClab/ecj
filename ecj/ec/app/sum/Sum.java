@@ -49,34 +49,26 @@ public class Sum extends Problem implements SimpleProblemForm
 
         if (!(ind instanceof IntegerVectorIndividual))
             state.output.fatal("Whoa!  It's not an IntegerVectorIndividual!!!",null);
-        
-        int sum=0;
+
         IntegerVectorIndividual ind2 = (IntegerVectorIndividual)ind;
+	IntegerVectorSpecies s = (IntegerVectorSpecies)ind2.species;
+        
+        long sum=0;
+	long max=0;
         for(int x=0; x<ind2.genome.length; x++)
-            sum += ind2.genome[x];
-        
-        // Get the species for the individual
-        IntegerVectorSpecies s = (IntegerVectorSpecies)ind2.species;
-        
-        // For this example, we assume that this individual is only using
-        // one global maxGene, rather than custom maxGene values for each
-        // separate gene.  Because we assume this, we know that the 
-        // highest fitness is thus the global maxGene times the genome length.
-        // but first, let's check to make sure that there are no custom
-        // max gene values:
-        
-        //    if (s.individualGeneMinMaxUsed())  // uh oh...
-        //       state.output.fatal("Whoa!  Can't use separate max-gene values for each gene in this problem!",null);
-        
-        // okay, we know we're fine.
-        int maximumSum = (int)s.maxGene(0)*ind2.genome.length;   // note that the '0' is generally a BAD idea, as it assumes all the genes have the same max
+            {
+		sum += ind2.genome[x];
+		max += (int)(s.maxGene(x));  // perhaps this neededn't be computed over and over again
+	}
+
+	// Now we know that max is the maximum possible value, and sum is the fitness.
         
         // assume we're using SimpleFitness
         ((SimpleFitness)ind2.fitness).setFitness(state,
             /// ...the fitness...
-            (float)(((double)sum)/(maximumSum)),
+            (float)(((double)sum)), 
             ///... our definition of the ideal individual
-            sum == maximumSum);
+            sum == max);
                 
         ind2.evaluated = true;
         }
