@@ -24,9 +24,10 @@ import ec.util.*;
  RuleCrossoverPipeline is a BreedingPipeline which implements a simple default crossover
  for RuleIndividuals.  Normally it takes two individuals and returns two crossed-over 
  child individuals.  Optionally, it can take two individuals, cross them over, but throw
- away the second child (a one-child crossover).  RuleCrossoverPipeline works by calling
- defaultCrossover(...) on the first parent individual.
- 
+ away the second child (a one-child crossover).  RuleCrossoverPipeline works by iteratively taking rulesets
+ from each individual, and migrating rules from either to the other with a certain
+ per-rule probability.  Rule crossover preserves the min and max rule restrictions.
+  
  <p><b>Typical Number of Individuals Produced Per <tt>produce(...)</tt> call</b><br>
  1 or 2
 
@@ -163,8 +164,11 @@ public class RuleCrossoverPipeline extends BreedingPipeline
                         temp[i] = new RuleSet();
                     // split the ruleset indexed x in parent 1
                     temp = parents[0].rulesets[x].splitIntoTwo( state, thread, temp,ruleCrossProbability);
-                    // split the ruleset indexed x in parent 2 (append after the splitted result from previous operation)
-                    temp = parents[1].rulesets[x].splitIntoTwo( state, thread, temp, ruleCrossProbability);
+					// now temp[0] contains rules to that must go to parent[1]
+					
+                    // split the ruleset indexed x in parent 2 (append after the split results from previous operation)
+                    temp = parents[1].rulesets[x].splitIntoTwo( state, thread, temp, 1 - ruleCrossProbability);
+					// now temp[1] contains rules that must go to parent[0]
                     
                     // ensure that there are enough rules
                     if (temp[0].numRules >= parents[0].rulesets[x].constraints(initializer).minSize &&
@@ -177,8 +181,8 @@ public class RuleCrossoverPipeline extends BreedingPipeline
                     }
                     
                 // copy the results in the rulesets of the parents
-                parents[0].rulesets[x].copyNoClone(temp[0]);
-                parents[1].rulesets[x].copyNoClone(temp[1]);
+                parents[0].rulesets[x].copyNoClone(temp[1]);
+                parents[1].rulesets[x].copyNoClone(temp[0]);
                 }
             
             parents[0].postprocessIndividual(state,thread);
