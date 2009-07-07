@@ -1429,7 +1429,7 @@ Version		Change Log
 		(which, again, is now fully compliant with Zitzler's specifications).
 	Added SPEA2Statistics; it prints the objective values of all individuals in the final 
 		Pareto front.
-	Added ec.app.mookenchmarks, consiting of a number of popular Multi Objective Optimization 
+	Added ec.app.moobenchmarks, consiting of a number of popular Multi Objective Optimization 
 		benchmark problems and the a params file.
         Added SUSSelection
 	Bug fix to shuffling algorithm used in SUSSelection. We stopped one element too early,

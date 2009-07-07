@@ -23,7 +23,7 @@ import ec.util.*;
  *
  RuleMutationPipeline is a BreedingPipeline which implements a simple default Mutation
  for RuleIndividuals.  Normally it takes an individual and returns a mutated 
- child individual. RuleMutationPipeline works by calling defaultMutate(...) on the 
+ child individual. RuleMutationPipeline works by calling mutateRules(...) on each RuleSet in the 
  parent individual.
  
  <p><b>Typical Number of Individuals Produced Per <tt>produce(...)</tt> call</b><br>
