@@ -1451,3 +1451,18 @@ Version		Change Log
 		of accessing fitness directly.  This puts the code in-line with SimpleFitness,
 		making subclasses which override the fitness() method easier to write. It's a
 		little bit slower though.
+	SimpleShortStatistics now outputs best individual etc. to stdout, just like
+		SimpleStatistics
+	Added lots of new READMEs
+	Tweak to Sum to compute the ideal fitness more properly
+	Tweaks to Regression to output all elements as messages, etc.
+	Document modifications to MultiPopCoevolutionaryEvaluator
+	Additions to de/README
+	Fixes to the documentation in es.params
+	CrossoverPipeline, MutationPipeline, and InternalCrossoverPipeline have their
+		verifyPoints function made public.
+	Additions to spea2/README
+	Added a warning about incorrect max and min gene lengths.  This makes list
+		representations a little easier.  Changes to FloatVectorSpecies,
+		IntegerVectorSpecies, and VectorSpecies
+	Bug fix to RuleCrossover's crossover procedure.

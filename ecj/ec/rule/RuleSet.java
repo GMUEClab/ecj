@@ -318,7 +318,7 @@ public class RuleSet implements Prototype
        Splits the rule set into a two disjoint rule sets, copying the rules and adding
        them to the sets as appropriate.  The value <i>prob</i> is the probability that an element will
        land in the first set.  Sets must be already allocated.
-       Comment: This function appends the splitted rulesets to the existing rulesets already in <i>sets</i>.
+       Comment: This function appends the split rulesets to the existing rulesets already in <i>sets</i>.
     */
     public RuleSet[] splitIntoTwo( final EvolutionState state, final int thread, RuleSet[] sets, float prob )
         {
