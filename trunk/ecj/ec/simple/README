@@ -1,0 +1,73 @@
+ec/simple/ contains typical implementations of the abstract forms found in ec/.
+Specifically, ec/simple defines generational evolution common in genetic
+algorithms, plus some simple statistics modules sufficient to do common work.
+
+The simple.params file is used by a wide range of applications and other tools
+as a basic starting point.
+
+
+
+The classes are:
+
+
+
+ec.simple.SimpleEvolutionState
+
+Performs generational evolution.
+
+
+ec.simple.SimpleEvaluator
+
+Performs simple multithreaded evaluation of populations by, for each subpopulation,
+breaking the subpopulation into N chunks of even size and handing each chunk to
+a separate thread to evaluate.
+
+
+ec.simple.SimpleBreeder
+
+Performs simple multithreaded breeding of populations by, for each subpopulation,
+breaking the subpopulation into N chunks of even size and handing each chunk to
+a separate thread to fill with individuals generated from breeding pipelines.
+SimpleBreeder also has an optional elitism function: the best M individuals in each
+subpopulation are advanced to the next generation automatically.
+
+
+ec.simple.SimpleExchanger
+ec.simple.SimpleFinisher
+
+Implementations of Exchanger and Finisher which do nothing at all.
+
+
+ec.simple.SimpleInitializer
+
+A basic initializer which simply calls populate() on the Population to cause it to
+fill itself with new individuals.  Note that certain representations have their own
+required subclass of SimpleInitializer which does other minor duties as well.
+
+
+ec.simple.SimpleProblemForm
+
+An interface which defines how basic, non-coevolutionary, single-individual
+fitness evaluation is perfomed.  Your Problem subclass will probably be required
+to implement this interface.
+
+
+ec.simple.SimpleFitness
+
+A basic single-objective fitness class which defines better fitnesses as ones which
+have higher values.  In some cases you may wish to restrict such fitness values
+to be positive.
+
+
+ec.simple.SimpleStatistics
+
+A basic Statistics object which prints out the best individual of generation, for
+each generation, plus the best individual of run at the end.
+
+
+ec.simple.SimpleShortStatistics
+
+A basic Statistics object which prints out, one line per generation, a variety of
+easily parsed statistical information about that generation's results.
+
+

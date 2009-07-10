@@ -1,0 +1,47 @@
+The spatial package contains basic functionality for implementing spatially
+embedded (or so-called "fine-grained parallel") population models.  In these
+models each subpopulation has its individuals spread out in some notional
+space (such as a grid), and breeding is accomplished by selecting an
+individual, picking a sufficiently fit "neighbor" of that individual, breeding
+the two, and replacing the original individual with the resulting child.  The 
+definition of the space and the notion of neighborhood is up to the particular
+space being used.  The 'Space' interface defines the necessary functions
+for creating a subpopulation embedded with some space of your choosing.
+Use the SpatialTournamentSelection selection method to select individuals
+in your breeding pipeline, and a spatial Breeder.  Classes of interest:
+
+
+
+ec.spatial.Space
+
+An interface which includes methods necessary to embed notions of
+some kind of space into a subpopulation.  
+
+
+ec.spatial.Spatial1DSubpopulation
+
+A basic Subpopulation which implements Space to define a 1-dimensional
+toroidal space (that is, a ring).
+
+
+ec.spatial.SpatialTournamentSelection
+
+A variation of Tournament Selection which only picks neighbors of the current
+individual as entrants into the tournament.
+
+
+ec.spatial.SpatialBreeder
+
+A version of Breeder which, working with SpatialTournamentSelection,
+iteratively walks through the subpopulation and breeds new individuals to
+replace each slot in the subpopulation while adhering to the Space constraints.
+
+
+ec.spatial.SpatialMultiPopCoevolutionaryEvaluator
+
+A multi-population coevolutionary evaluator (similar to
+ec.coevolve.MultiPopCoevolutionaryEvaluator) which additionally can select 
+one of the partners of a given individual(s) to be the individual in the exact
+same slot in the other subpopulation(s).
+
+

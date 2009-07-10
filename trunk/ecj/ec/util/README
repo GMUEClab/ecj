@@ -1,0 +1,182 @@
+This package contains auxillary utility classes and functions used by ECJ, but
+which can easily be used by other Java libraries and are not specific to ECJ.
+
+
+LOGGING FACILITY
+----------------
+
+When ECJ was first developed (in 1998) there was no Java logging facility, no
+log4j, etc.  So I rolled my own, largely a copy of the one in lil-gp.  The 
+facility has proven fairly robust, so we've kept it over the years.  The
+facility has a basic class:
+
+	ec.util.Output
+
+... which does most of the logging work.  Output holds one or more *logs*,
+defined by
+
+	ec.util.Log
+
+... which are largely (but not required to be) wrappers around streams to
+standard out, standard err, or various files.  Output then allows you to print
+to these logs, or to issue "announcements" to them.  An announcement is 
+different from an ordinary print statement in that it is also stored in memory 
+permanently, and so gets checkpointed.  When a log is restarted from 
+checkpoint, all of its announcements can be reissued to the log; that's how 
+ECJ prints all of its stuff out to the terminal again when restarting from 
+checkpoint.  Beware that because announcements are stored in memory as well as
+printed out, if you issue too many of them, you'll fill up memory excessively.
+Announcements are all subclasses 
+
+	ec.util.Announcement
+
+Logs restart themselves from checkpoint using a small class:
+
+	ec.util.LogRestarter
+
+When output generates exceptions, usually pertaining to writing to Logs, it
+does so with an OutputException
+
+	ec.util.OutputExcption
+
+
+
+RANDOM NUMBER GENERATORS
+------------------------
+
+ECJ's random number generator is a Java implementation of the Mersenne Twister
+random number generator which I wrote in 1998.  It's still a popular
+implementation of the Mersenne Twister algorithm, largely because it's quite
+fast.  ECJ has two versions of the algorithm but only uses one:
+MersenneTwisterFast:
+
+	ec.util.MersenneTwister
+	
+	A drop-in subclass replacement for java.util.Random which uses the
+	Mersenne Twister algorithm instead.
+
+	ec.util.MersenneTwisterFast
+
+	Algorithmically identical to ec.util.MersenneTwister, but without
+	synchronization, and with a lot of hard-code-inlined methods.  As
+	a result much harder to read and understand, but over twice as fast.
+
+
+PARAMETER DATABASE	
+------------------
+
+ECJ's parameter database facility was also built from scratch at a time when
+Java had no other built-in facilities available.  The parameter database is
+built on top of Java's Properties class, but adds the additional functionality
+of multiple files with inheritance, plus command-line properties and dynamic
+properties.  The primary class is
+
+	ec.util.ParameterDatabase
+
+... which loads properties from various files and stores them internally for
+you to query at runtime.  To query for a property, you create a Parameter
+(a wrapper for String, used instead of String for entirely historical reasons).
+You then issue the Parameter to the ParameterDatabase and get the corresponding
+value.  Parameters are defined with:
+
+	ec.util.Parameter
+
+When there is an exception upon creating a Parameter, a BadParameterException
+is thrown:
+
+	ec.util.BadParameterException
+
+When you use a Parameter to attempt to load and and initialize a class from
+the ParameterDatabase, and something failed on that attempt, a 
+ParamClassLoadException is called:
+
+	ec.util.ParamClassLoadException
+
+The GUI facility of ECJ has additional classes meant to access parameters
+programmatically in Swing.  Generally you wouldn't play with these:
+
+	ec.util.ParameterDatabaseAdaptor
+	ec.util.ParameterDatabaseEvent
+	ec.util.ParameterDatabaseListener
+	ec.util.ParameterDatabaseTreeModel
+	ec.util.ParameterDatabaseTreeNode	
+	ec.util.ReflectedObject
+
+
+
+READING, WRITING, CHECKPOINTING, AND NETWORKING
+-----------------------------------------------
+
+Many ECJ objects (notably Individuals) have the ability to write themselves
+out to a stream in a fashion that is both readable by humans (more or less)
+*and* can be read back in a way that maintains integrity.  To do this they
+rely on ECJ's "Code" facility to encode and decode basic data elements.  To 
+encode data, you can use the Code class:
+
+	ec.util.Code
+
+To decode data, you use the Code class in conjunction with a special object
+which gives you additional information about the decoded data.  This special
+object is called a DecodeReturn:
+
+	ec.util.DecodeReturn
+
+In certain rare situations ECJ finds that it needs to be able to hook a
+DataOutputStream directly to a DataInputStream.  Surprisingly, Java cannot
+provide this facility without using two threads (to enable the PipedInputStream
+and PipedOutputStream).  ECJ's solution is a buffered single-thread pipe called
+DataPipe:
+
+	ec.util.DataPipe
+
+ECJ implements checkpointing of runs via Java's serialization facility.  The
+cover class which handles this work is called Checkpoint:
+
+	ec.util.Checkpoint
+
+Last, a long-standing bug in Java prevents proper lookup of localhost sockets.
+This is fixed using a class from Jakarta called LocalHost:
+
+	ec.util.LocalHost
+
+
+
+MANIPULATING ARRAYS
+-------------------
+
+Largely for historical reasons, ECJ has its own quicksort facilities.  We keep
+these facilities because, quite surprisingly, Java's current sorting facilities
+are very much insufficient.  ECJ's basic class for sorting is QuickSort:
+
+	ec.util.QuickSort
+
+QuickSort relies on a special Comparator object for determining whether two
+objects are greater or less than one another.  This is mostly for historical
+reasons.  There is also a special version of this object for longs:
+
+	ec.util.SortComparator
+	ec.util.SortComparatorL
+
+ECJ can convert arrays of floats, doubles, or arbitrary objects, into
+distributions and then select random numbers under them (treating the
+values in the arrays as actual prenormalized probabilities).  The primary class
+for this is RandomChoice:
+
+	ec.util.RandomChoice
+
+RandomChoice can work with arrays of Objects as long as there's a provided
+object a RandomChoiceChooser, which provides the "probability" value for a
+given Object.  There are two versions of RandomChoiceChooser, one which 
+assumes probabilities are floats, and the other which assumes they are doubles
+(again, mostly for historical reasons):
+
+	ec.util.RandomChoiceChooser
+	ec.util.RandomChoiceChooserD
+
+
+ECJ'S VERSION
+-------------
+
+Information regarding the current version of ECJ is located in:
+
+	ec.util.Version

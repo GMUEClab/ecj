@@ -1,0 +1,130 @@
+This package, and the 'breed' subpackage contained inside, implement basic 
+vector representations common in evolution
+strategies and genetic algorithms.  The package is straightforward.  There
+are various VectorIndividuals, each with an associated VectorSpecies that
+it uses to maintain certain constraints (such as the minimum and maximum
+gene values in the vector).
+
+VectorIndividuals can be used with any breeding pipeline you care to design,
+but since certain crossover and mutation methods are so common, the individuals
+themselves implement those methods, and the VectorMutationPipeline and
+VectorCrossoverPipeline are designed not to perform those methods but simply
+to trigger the individuals into performing it themselves.  Thus if you
+want to create a custom crossover procedure that's different from the
+standard ones, you can do so simply by overriding the appropriate
+defaultCrossover() method in the individual class, rather than making
+a new pipeline.
+
+VectorIndividuals also have significant numbers of hooks for variable-length
+vector representations.
+
+Note that there are different VectorIndividuals for different basic types.  For
+example, there's a BitVectorIndividual and a FloatVectorIndividual, etc.
+This doesn't use Java's generics facility.  Why?  Because Java's generics
+are *extremely* slow.  They simplify the implementation of code like this but
+at a very very high cost, and so ECJ just breaks out the individuals on a per-
+type basis for efficiency purposes.
+
+The various vector representations and their associated species and basic 
+types are:
+
+INDIVIDUAL			SPECIES			BASIC TYPE
+BitVectorIndividual		VectorSpecies		boolean
+ByteVectorIndividual		IntegerVectorSpecies	byte
+ShortVectorIndividual		IntegerVectorSpecies	short
+IntegerVectorIndividual		IntegerVectorSpecies	int
+LongVectorIndividual		IntegerVectorSpecies	long
+FloatVectorIndividual		FloatVectorSpecies	float
+DoubleVectorIndividual		FloatVectorSpecies	double
+GeneVectorIndividual		GeneVectorSpecies	VectorGene
+
+
+Some items to note about certain species:
+
+
+ec.vector.VectorSpecies
+
+This is the superclass of all vector species, and defines three kinds of 
+crossover: one-point, two-point, and uniform crossover (referred to as 'any'),
+with a per-gene crossover probability for uniform crossover.  Additionally, 
+a mutation probability specifies a per-gene likelihood of performing 
+mutation on that gene (the kind of mutation depends on the particular 
+vector individual being used).
+
+VectorSpecies also allows you to specify a *chunk size*.  Chunks are regions
+in which no crossover is allowed.  Crossover only occurs on chunk boundaries.
+This allows you, for example, to indicate that an individual consists of
+chunks 12 boolean values long (say), and that they are to be treated as atomic
+units by the crossover operator -- it can't cross over within the chunk.
+
+VectorSpecies is the species for BitVectorIndividual, as BitVectorIndividual
+doesn't need any special features.
+
+
+ec.vector.IntegerVectorSpecies
+
+IntegerVectorSpecies is a VectorSpecies and so has all the same features as it.
+Also, it allows you to specify min and max gene values for each 
+gene in three different ways.  First, you can specify a global min and max
+value for all genes.  Second, you can specify _segments_ (regions in the
+genome) which all share the same min and max values.  Third, you can specify
+individual min and max values for each independent gene.  These three methods
+can be mixed as well: independent gene values override segments, which override
+global values.  Note that segments are not the same thing as chunks.
+
+The default mutation procedure for IntegerVectorSpecies genes is gene
+randomization.  Override this as you see fit.
+
+
+ec.vector.FloatVectorSpecies
+
+This class, like IntegerVectorSpecies, has all the features of VectorSpecies,
+and furthermore has min and max gene values specified on a global, segment,
+and per-gene basis.  
+
+The default mutation procedure for FloatVectorSpecies can be either
+randomization or adding gaussian random noise with a specified mutation
+standard deviation.  If the random noise exceeds the min and max bounds
+for that gene, FloatVectorSpecies will retry (you can specify how many
+times) before giving up and not mutating the gene.
+
+
+ec.vector.GeneVectorSpecies
+
+This class is a VectorSpecies and so has all of its features.  However the
+atomic type of the vector array isn't a number or boolean, but rather a 
+specific object called a VectorGene; or more specifically, a subclass of
+VectorGene which you specify (with the 'gene' parameter).  The objective
+of this Species and GeneVectorIndividual is to enable you to have arbitrary
+genes of any kind you like -- just stick your data in your VectorGene
+subclass.
+
+
+
+
+Other classes of importance:
+
+
+ec.vector.VectorGene
+
+This class is used with GeneVectorIndividual and GeneVectorSpecies to give you
+flexibility with regard to the makeup of genes in the individual.  To implement
+a VectorGene subclass, you'll need to provide a few basic methods (equality
+testing, hash codes, the reset method, the mutation method) and optionally some
+print facilities, depending on your needs.
+
+
+ec.vector.breed.VectorMutationPipeline
+
+Defines a basic mutation breeding pipeline for vector individuals.  The class
+is very simple: when it is charged to produce a child, it requests a child
+from its source, then calls defaultMutate() on that child and returns it.
+
+
+ec.vector.breed.VectorCrossoverPipeline
+
+Defines a basic crossover breeding pipeline for vector individuals.  The class
+is very simple: when it is charged to produce children, it requests a child
+from each of its sources, then calls defaultCrossover() on one child, passing
+in the other child, to get them to cross over with one another. It then returns
+the children.

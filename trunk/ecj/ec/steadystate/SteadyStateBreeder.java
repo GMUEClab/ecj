@@ -26,7 +26,7 @@ public class SteadyStateBreeder extends SimpleBreeder
     SelectionMethod deselectors[];
         
     /** Do we allow duplicates? */
-    public int numDuplicateRetries;
+   // public int numDuplicateRetries;
     
     public SteadyStateBreeder() { bp = null; deselectors = null; }
         
@@ -54,12 +54,13 @@ public class SteadyStateBreeder extends SimpleBreeder
         state.output.exitIfErrors();
         
         // How often do we retry if we find a duplicate?
-        numDuplicateRetries = state.parameters.getInt(
+        /*
+		numDuplicateRetries = state.parameters.getInt(
             SteadyStateDefaults.base().push(P_RETRIES),null,0);
         if (numDuplicateRetries < 0) state.output.fatal(
             "The number of retries for duplicates must be an integer >= 0.\n",
             base.push(P_RETRIES),null);
-                
+		*/
         }
         
     /** Called to check to see if the breeding sources are correct -- if you

@@ -1,0 +1,98 @@
+This package implements steady state evolution and, by extension, asynchronous
+evolution when used in combination with the master/slave evaluation package.
+The steady state evolution facility in ECJ is fairly simple: each iteration
+the facility breeds a single individual, evaluates it, and reinserts it into
+the population (selecting an individual to die and be replaced with it).  In
+asynchronous evolution, the system breeds individuals and ships them off to
+remote slaves to evaluated whenever a remote slave is available; when an 
+individual is completed from a remote slave, if the initial population has not
+yet been filed up, the individual is inserted directly in the population, else
+the system selects an individual to die and be replaced by it.
+
+To do this magic requires several replacement classes: a new top-level
+evolution state object provides the evolutionary loop, plus a custom breeder
+and evaluator.  Because steady-state isn't generational, certain ECJ classes
+are required to implement special interfaces in order to be compatible with
+it: breeding sources (breeding pipelines, selection methods) must be of
+SteadyStateBSourceform -- notably many selection methods don't work right,
+we suggest using Tournament Selection; the statistics facility must implement
+a different non-generational collection of statistics hooks embodied in 
+SteadyStateStatisticsForm; and exchangers must implement 
+SteadyStateExchangerForm.
+
+Steady state evolution doesn't have a notion of generations per se, as no
+entire generation is replaced each iteration.  Instead, the evolution state
+facility defines a "generation" as when a population's worth of individuals
+has just been introduced into the system.  Most statistics counts are run
+not off of these pseudo-generations but rather are based on the number of
+*evaluations* (a variable in SteadyStateEvolutionState) which have been
+done so far.  As such you have the option of either stating the number
+of evaluations that the system should run for, OR the number of "generations"
+(so to speak) the system should run for.  See the file steadystate.params
+for an example of how to set up steady state evolution.
+
+Classes of relevance:
+
+
+
+ec.steady.SteadyStateEvolutionState
+
+The top-level EvolutionState which performs steady-state and asynchronous
+evolution loops.
+
+
+ec.steady.SteadyStateBreeder
+
+The steady-state breeder.   A drop-in replacement for Breeder, except that
+it also requires an additional parameter 'deselector' which indicates the
+SelectionMethod used to pick individuals to be replaced with new incoming
+children.  This could be a random selector, or a Tournament Selection
+method picking the worst individuals, etc.  See steadystate.params for
+an example.
+
+
+ec.steady.SteadyStateEvaluator
+
+The steady-state evaluator.  A drop-in replacement for Evaluator.
+
+
+ec.steady.QueueIndividual
+
+A wrapper which holds an Individual, plus the subpopulation the Individual
+is stored in.  This class is used by the SteadyStateEvaluator and also by
+the master-slave evaluation system to maintain some additional information 
+about the Individual for purposes of Asynchronous Evolution.  It's an 
+internal class and shouldn't be fooled around with; it's public because
+the master-slave facility must also be able to use it.  Ignore it.
+
+
+ec.steady.SteadyStateStatisticsForm
+
+Statistics objects which implement this interface will receive additional
+statistics hooks appropriate for the steady state loop (based largely on
+individuals being evaluated rather than based around generations).  This
+is an optional interface and your Statistics object can always be used
+even if it doesn't implement this interface; it just won't receive the
+new method calls.
+
+
+ec.steady.SteadyStateExchangerForm
+
+All exchangers must implement the SteadyStateExchangerForm in order to be
+used with the steady state facility.  This is a "gold star" interface which
+has no methods but merely is implemented by exchangers which have agreed
+to perform certain special tasks (see the code of the class).
+
+
+ec.steady.SteadyStateBSourceForm
+
+All breeding sources (BreedingPipelines, SelectionMethods) must implement
+this interface in order to be used with the steady state facility.  The
+interface largely informs breeding sources that an individual has replaced
+another in the population  Some breeding sources (such as 
+FitnessProportionateSelection) must update their distributions each time
+this happens, which is quite expensive, and so they do not implement this
+interface.  We suggest you use Tournament Selection, which is effective
+and fast.
+
+
