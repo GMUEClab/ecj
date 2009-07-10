@@ -1466,3 +1466,4 @@ Version		Change Log
 		representations a little easier.  Changes to FloatVectorSpecies,
 		IntegerVectorSpecies, and VectorSpecies
 	Bug fix to RuleCrossover's crossover procedure.
+	Vestigial 'num-retries' removed from SteadyStateBreeder

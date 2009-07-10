@@ -1,0 +1,54 @@
+This package contains classes for representations of the form of arbitrary
+collections of objects.  One common use of such collections would be as
+bags of "rules", hence the name.  However there's no reason you couldn't use
+any kind of object here.  Also don't be put off by the name "ruleset" -- it's
+not a set of rules, it's a collection (a bag, a multiset) of objects, that is,
+there's no reason the object can't appear more than one time.
+
+The package is very straightforward.  A RuleIndividual contains a fixed-length
+array of RuleSets.  Each RuleSet is an arbitrary-length array of Rules.
+A Rule is the superclass of your basic object.
+
+RuleIndividuals must belong to RuleSpecies (or a subclass), which does trivial
+checks.  Various RuleSets are associated with a RuleSetConstraints object
+in which they can store common information.  Presently RuleSetConstraints
+specify:
+
+	- the minimum number of rules allowed in the RuleSet upon initialization
+	- the maximum number of rules allowed in the RuleSet upon initialization
+or
+	- a distribution from which the number of rules is drawn
+
+Additionally:
+
+	- The probability that new rules will be added upon mutation
+	- The probability that new rules will be deleted upon mutation
+	- The probability the rules will be randomized in order upon mutation
+
+You're welcome to modify this as you see fit of course.  Rules are likewise
+associated with RuleConstraints in which they can store common information
+(presently nothing is stored).
+
+To set up the constraints objects, the rule package requires that your
+initializer be a subclass of RuleInitializer.
+
+The 'breed' directory contains two breeding pipelines which might be of use.
+RuleCrossover trades rules among rulesets using the following algorithm:
+
+	For i from 1 to the number of rulesets
+		r1 = ruleset i in individual A
+		r2 = ruleset i in individual B
+		For each rule in r1
+			With a given probability,
+				mark that rule to go to r2
+		For each rule in r2
+			With a given probability,
+				mark that rule to go to r1
+		Exchange marked rules between r1 and r2
+
+You specify the rule exchange probability.  The RuleMutation operator simply
+calls mutateRules() on all the rulesets.  The default mutateRules() function
+first calls mutate() on al the rules in the ruleset.  It then deletes rules from
+the ruleset with a certain probability.  It then adds new rules to the ruleset
+with a certain probability.  Finally it randomizes the rule order of the ruleset
+with a certain probability.

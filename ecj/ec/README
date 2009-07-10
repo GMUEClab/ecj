@@ -1,0 +1,192 @@
+This README is with regard to the 'ec' package in this directory.  Various
+subdirectories contain READMEs of their own for their respective packages.
+If you're looking for overall documentation for ECJ, see the README file
+for the parent directory of this one (that is, the 'ecj' directory).
+
+The 'ec' package contains top-level abstract classes defining most of the
+major elements of evolutionary or stochastic search processes.  You probably
+don't want abstract classes: instead you may wish to examine the 'simple'
+subpackage for concrete implementations of these classes which perform
+basic evolutionary tasks.
+
+
+
+
+DESIGN PATTERNS IN ECJ
+----------------------
+
+ECJ's basic classes sit on a set of simple interfaces defining what would now
+be called 'design patterns'.  Nearly all classes in ECJ use one or more of
+these interfaces, and together the interfaces are largely responsible for
+ECJ's dynamic loading facilities.
+
+
+ec.Setup
+
+ec.Setup is ECJ's top-level design pattern interface.  Setup defines a single
+method, setup(...), which acts as a sort of alternative constructor for
+instances which implement it.  In ECJ most classes are loaded at runtime
+from ECJ's ParameterDatabase.  Instances from such classes are dynamically
+instantiated using their default (no-argument) constructor; the setup(...)
+method then is called to give the objects a chance to set themselves up
+properly from the ParameterDatabase.  This approach was largely done because
+early versions of reflection in Java were inadequate.
+
+ec.Prototype
+
+Prototypes are Setups which are cloneable.  An class implementing Prototype
+is meant to have a single instance of the class (the "prototypical instance")
+loaded and setup from the Parameter Database; further instances of the class
+are constructed by cloning the prototypical instance. A large number of 
+ECJ objects are Prototype, including Individuals and various components of
+Individuals (such as genetic programming tree nodes).
+
+ec.Group
+
+Groups are very similar to Prototypes: their primary difference is that there
+is no prototypical Group: rather, new Groups can be cloned from currently
+in-use Groups using the method emptyClone().  Examples of Groups include
+Populations and Subpopulations.
+
+ec.Singleton
+
+Singletons are also Setups but are meant to be global objects: only one 
+instance is ever loaded and setup during the course of a run.  Most top-level
+objects (like ECJ's EvolutionState, Breeder, Evaluator, etc. objects) are
+Singletons.
+
+ec.Clique
+
+Cliques are Setups which are small groups of instances of a single class.
+Like Singletons, Cliques are global.  Once the collection of Cliques are loaded
+and setup, no more are usually created.  Cliques are associated with globally
+accessible tables which enable access to all members of the clique.  Cliques
+include genetic programming function sets, genetic programming types, etc.
+
+
+
+THE MAKEUP OF AN EVOLUTIONARY SYSTEM
+------------------------------------
+
+ec.Population
+ec.Subpopulation
+ec.Individual
+
+ECJ's evolutionary system is centered around a single Population, which 
+contains an array of Subpopulations.  Each Subpopulation contains an array of 
+Individuals.  This structure is largely to support techniques such as 
+coevolution which require more than one "population".  In ECJ such methods
+use one or more Subpopulation class to support this.  Though you will likely
+use Population and Subpopulation classes directly, almost certainly you'll
+need to subclass Individual to define its representation.  A number of
+predefined Individuals are available for you.
+
+ec.Species
+
+Many ECJ objects support the so-called "flyweight" design pattern, whereby
+large numbers of lightweight instances share a common single special object
+which acts as a repository of default information common to all of them.
+In Java this could be implemented using static members, but static members
+are challenging to serialize (an important thing in ECJ), and so ECJ instead
+uses an actual object instead.  Various Individuals in ECJ share a common
+Species.  Each Subpopulation is also associated with the Species used by
+Individuals in that Subpopulation.  Note that multiple subpopulations,
+and different groups of Individuals, might use the same Species in theory.
+
+The Species object contains the prototypical Individual from which other
+Individuals of that Species are cloned; and also contain Breeding Pipelines
+(see below) which enable Individuals to be bred from other Individuals of
+that Species.
+
+ec.Fitness
+
+Each ECJ individual contains a Fitness.  Different kinds of individuals
+can have different kinds of fitness objects (say, multiobjective fitness
+objects, or single-objective GA-style fitness objects, etc.).  The Fitness
+class is abstract: various Fitness subclasses perform different kinds of
+Fitness concepts.
+
+
+
+
+DOING EVOLUTION
+---------------
+
+ec.Evolve
+
+This class is the entry point for ECJ (it contains the main() method), but
+in fact it does relatively little: its main task is to load an EvolutionState
+from the parameter database, then get it going.
+
+ec.EvolutionState
+
+ECJ's top-level evolutionary loop is handled by subclasses of EvolutionState.
+EvolutionState also contains pointers to all the major elements of evolution,
+and ultimately everything in the entire evolutionary system.  Thus the entire
+process can be serialized (checkpointed) to disk simply by serializing
+EvolutionState.  When ECJ creates an evolutionary process, it first constructs
+an EvolutionState, then has the EvolutionState set up the rest of the process
+from the parameter database.  Because EvolutionState holds everything, it is
+often passed to many functions.
+
+ec.Initializer
+ec.Finisher
+
+To create a random  population and begin evolution, EvolutionState calls upon a
+subclass of Initializer. Likewise, just before quitting, EvolutionState
+calls upon some subclass of Finisher to clean up.
+
+ec.Evaluator
+ec.Problem
+
+EvolutionState calls upon Evaluator to evaluate the population.  Most
+Evaluators are straightforward: go through the population and evaluate each
+individual in turn.  But certain techniques require custom evaluation (such
+as coevolution).  The evaluator relies on a Problem subclass to do its dirty
+work: actually testing a given individual and assessing its fitness.  The
+experimenter (you) is required to provide a Problem subclass for his problem.
+Most of the examples in the "app" directory are largely Problem implementations.
+Often the Evaluator can work in parallel, cloning several Problems, then
+creating several threads, one thread per Problem, in order to assess the
+population more rapidly.
+
+ec.Breeder
+ec.BreedingSource
+ec.BreedingPipeline
+ec.SelectionMethod
+
+To breed a population to form a new population the EvolutionState relies on
+a subclass of Breeder.  Most Breeders work by constructing a "breeding
+pipeline" which selects individuals from the original population, mutates and
+crosses them over, and produces new children.  The breeding pipeline typically
+contains two kinds of objects: SelectionMethod objects, which pick individuals
+from the old population; and BreedingPipeline objects, which receive
+individuals from SelectionMethods or from other BreedingPipeline objects, and
+then mutate or cross over the individuals.  Both BreedingPipeline and 
+SelectionMethod objects are BreedingSources (things other BreedingPipelines
+can get individuals from).  Many breeders can work in parallel,
+constructing several breeding pipelines, one per thread, to speed up the task
+of breeding individuals and forming the next generation.
+
+ec.Exchanger
+
+In between breeding and evaluation, the EvolutionState calls on a subclass
+of Exchanger.  The default implementations do nothing at all, but certain
+versions (like IslandExchange) take this opportunity to exchange individuals
+with far-of processes on other machines.
+
+
+
+STATISTICS
+----------
+
+ec.Statistics
+
+ECJ relies on one or more subclasses of Statistics to write out statistics
+information to various logs.  Statistics can be strung out in a chain, enabling
+you to include as many different Statistics objects as you like.  Different
+Statistics subclasses are available to do various tasks.  Statistics objects
+are called at all sorts of times in the run, in-between nearly every major
+operation, to give you a lot of hooks in which to probe the current state of
+the system.
+
