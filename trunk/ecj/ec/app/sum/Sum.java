@@ -51,17 +51,17 @@ public class Sum extends Problem implements SimpleProblemForm
             state.output.fatal("Whoa!  It's not an IntegerVectorIndividual!!!",null);
 
         IntegerVectorIndividual ind2 = (IntegerVectorIndividual)ind;
-	IntegerVectorSpecies s = (IntegerVectorSpecies)ind2.species;
+        IntegerVectorSpecies s = (IntegerVectorSpecies)ind2.species;
         
         long sum=0;
-	long max=0;
+        long max=0;
         for(int x=0; x<ind2.genome.length; x++)
             {
-		sum += ind2.genome[x];
-		max += (int)(s.maxGene(x));  // perhaps this neededn't be computed over and over again
-	}
+            sum += ind2.genome[x];
+            max += (int)(s.maxGene(x));  // perhaps this neededn't be computed over and over again
+            }
 
-	// Now we know that max is the maximum possible value, and sum is the fitness.
+        // Now we know that max is the maximum possible value, and sum is the fitness.
         
         // assume we're using SimpleFitness
         ((SimpleFitness)ind2.fitness).setFitness(state,

@@ -54,6 +54,7 @@ ec/coevolve/*.java \
 ec/de/*.java \
 ec/es/*.java \
 ec/eval/*.java \
+ec/evolve/*.java \
 ec/exchange/*.java \
 ec/gp/*.java \
 ec/gp/breed/*.java \
@@ -114,7 +115,7 @@ indent:
 	find . -name "*.java" -print -exec emacs --batch --load ~/.emacs --eval='(progn (find-file "{}") (mark-whole-buffer) (setq indent-tabs-mode nil) (untabify (point-min) (point-max)) (indent-region (point-min) (point-max) nil) (save-buffer))' \;
 
 doc:
-	javadoc -classpath . -protected -d docs/classdocs ec ec.breed ec.coevolve ec.de ec.display ec.display.chart ec.display.portrayal ec.es ec.eval ec.exchange ec.gp ec.gp.breed ec.gp.build ec.gp.koza ec.multiobjective ec.multiobjective.spea2 ec.parsimony ec.pso ec.rule ec.rule.breed ec.select ec.simple ec.spatial ec.steadystate ec.util ec.vector ec.vector.breed
+	javadoc -classpath . -protected -d docs/classdocs ec ec.breed ec.coevolve ec.de ec.display ec.display.chart ec.display.portrayal ec.es ec.eval ec.evolve ec.exchange ec.gp ec.gp.breed ec.gp.build ec.gp.koza ec.multiobjective ec.multiobjective.spea2 ec.parsimony ec.pso ec.rule ec.rule.breed ec.select ec.simple ec.spatial ec.steadystate ec.util ec.vector ec.vector.breed
 
 
 # Print a help message

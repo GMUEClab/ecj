@@ -141,6 +141,46 @@ public class IntegerVectorIndividual extends VectorIndividual
                             genome[y] = tmp;
                             }
                 break;
+            case VectorSpecies.C_LINE_RECOMB:
+            {
+            double alpha = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
+            double beta = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
+            long t,u;
+            long min, max;
+            for (int x = 0; x < genome.length; x++)
+                {
+                do
+                    {
+                    min = s.minGene(x);
+                    max = s.maxGene(x);
+                    t = (long) Math.floor(alpha * genome[x] + (1 - alpha) * i.genome[x] + 0.5);
+                    u = (long) Math.floor(beta * i.genome[x] + (1 - beta) * genome[x] + 0.5);
+                    } while (t < min || t > max || u < min || u > max);
+                genome[x] = (int) t;
+                i.genome[x] = (int) u; 
+                }
+            }
+            break;
+            case VectorSpecies.C_INTERMED_RECOMB:
+            {
+            long t,u;
+            long min, max;
+            for (int x = 0; x < genome.length; x++)
+                {
+                do
+                    {
+                    double alpha = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
+                    double beta = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
+                    min = s.minGene(x);
+                    max = s.maxGene(x);
+                    t = (long) Math.floor(alpha * genome[x] + (1 - alpha) * i.genome[x] + 0.5);
+                    u = (long) Math.floor(beta * i.genome[x] + (1 - beta) * genome[x] + 0.5);
+                    } while (t < min || t > max || u < min || u > max);
+                genome[x] = (int) t;
+                i.genome[x] = (int) u; 
+                }
+            }
+            break;
             }
         }
 
@@ -340,4 +380,19 @@ public class IntegerVectorIndividual extends VectorIndividual
         return true;
         }
 
+    public double distanceTo(Individual otherInd)
+        {               
+        if (!(otherInd instanceof IntegerVectorIndividual)) 
+            return super.distanceTo(otherInd);  // will return infinity!
+                
+        IntegerVectorIndividual other = (IntegerVectorIndividual) otherInd;
+        int[] otherGenome = other.genome;
+        double sumSquaredDistance =0.0;
+        for(int i=0; i < other.genomeLength(); i++)
+            {
+            long dist = this.genome[i] - (long)otherGenome[i];
+            sumSquaredDistance += dist*dist;
+            }
+        return StrictMath.sqrt(sumSquaredDistance);
+        }
     }

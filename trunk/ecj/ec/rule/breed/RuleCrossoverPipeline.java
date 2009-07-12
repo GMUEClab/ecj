@@ -164,11 +164,11 @@ public class RuleCrossoverPipeline extends BreedingPipeline
                         temp[i] = new RuleSet();
                     // split the ruleset indexed x in parent 1
                     temp = parents[0].rulesets[x].splitIntoTwo( state, thread, temp,ruleCrossProbability);
-					// now temp[0] contains rules to that must go to parent[1]
-					
+                    // now temp[0] contains rules to that must go to parent[1]
+                                        
                     // split the ruleset indexed x in parent 2 (append after the split results from previous operation)
                     temp = parents[1].rulesets[x].splitIntoTwo( state, thread, temp, 1 - ruleCrossProbability);
-					// now temp[1] contains rules that must go to parent[0]
+                    // now temp[1] contains rules that must go to parent[0]
                     
                     // ensure that there are enough rules
                     if (temp[0].numRules >= parents[0].rulesets[x].constraints(initializer).minSize &&

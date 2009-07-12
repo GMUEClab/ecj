@@ -43,7 +43,7 @@ import ec.vector.*;
 public class ECSuite extends Problem implements SimpleProblemForm
     {
     public static final String P_WHICH_PROBLEM = "type";
-	
+        
     public static final String V_ROSENBROCK = "rosenbrock";
     public static final String V_RASTRIGIN = "rastrigin";
     public static final String V_SPHERE = "sphere";

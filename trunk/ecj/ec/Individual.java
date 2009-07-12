@@ -331,5 +331,16 @@ public abstract class Individual implements Prototype
         readGenotype(state,dataInput);
         }
     
+    /** Returns the metric distance to another individual, if such a thing can be measured.
+        Subclassess of Individual should implement this if it exists for their representation.
+        The default implementation here, which isn't very helpful, returns 0 if the individuals are equal
+        and infinity if they are not.
+    */
+
+    public double distanceTo(Individual otherInd)
+        {
+        return (equals(otherInd) ? 0 : Double.POSITIVE_INFINITY);
+        }
+
     }
 

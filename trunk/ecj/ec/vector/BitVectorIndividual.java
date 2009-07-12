@@ -285,4 +285,23 @@ public class BitVectorIndividual extends VectorIndividual
         for(int x=0;x<genome.length;x++)
             genome[x] = dataInput.readBoolean();
         }
+
+    /** Implements distance as hamming distance. */
+    public double distanceTo(Individual otherInd)
+        {
+        if (!(otherInd instanceof BitVectorIndividual)) 
+            return super.distanceTo(otherInd);  // will return infinity!
+                
+        BitVectorIndividual other = (BitVectorIndividual) otherInd;
+        boolean[] otherGenome = other.genome;
+        double hammingDistance =0;
+        for(int i=0; i < other.genomeLength(); i++)
+            {
+            if(genome[i] ^ otherGenome[i])  //^ is xor
+                hammingDistance++;
+            }
+
+        return hammingDistance;
+        }
+
     }

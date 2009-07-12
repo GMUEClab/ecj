@@ -1,0 +1,13 @@
+This package contains utility operations which can be plugged into most
+evolutionary loops, but are neither evaluation, breeding, nor exchange
+procedures.
+
+At present there is exactly one class here:
+
+
+ec.evolve.RandomRestarts	[UNTESTED]
+
+This class is a Statistics subclass and is attached into the Statistics chain.
+The class resets the evolutionary procedure every once in a while, by
+calling Population.populate(...) (with an empty loadInds file), which causes
+the Population to create all new indivdiuals.

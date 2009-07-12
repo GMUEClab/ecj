@@ -1325,145 +1325,175 @@ Version		Change Log
 	Added some efficiency to the new eval package by breaking the read/write
 		slave connection threads into separate read and write threads.
 	Both SimpleStatistics and KozaStatistics now print out, to the screen, 
-		the best-of-generation fitness per-generation and the best-of-run
-		fitness at the end.
-	Performed some refactoring on SPEA2Evalutor and SPEA2Breeder to make them
-		subclasses of SimpleEvaluator and SimpleBreeder, as they were
-		sharing a lot of code in common.  Hope we did it right.  Also
-		made small changes to SimpleEvaluator and SimpleBreeder to
-		accommodate this.
+		the best-of-generation fitness per-generation and the 
+		best-of-run fitness at the end.
+	Performed some refactoring on SPEA2Evalutor and SPEA2Breeder to make 
+		them subclasses of SimpleEvaluator and SimpleBreeder, as they 
+		were sharing a lot of code in common.  Hope we did it right.  
+		Also made small changes to SimpleEvaluator and SimpleBreeder 
+		to accommodate this.
 
 18	P-P-P-Prerelease
-	DEBreeder needs to have at least 4 individuals in a subpopulation in order
-		to work properly.  We weren't verifying this condition.  Thanks to
-		Michael Hart <mhart@baselinesolutions.com.au>
-	Updated GPNode.clone() to be exactly the same as GPNode.cloneReplacing(),
-		except that it returns object.  They're both deep-clone methods.
-		We retain GPNode.cloneReplacing for historical compatability (and
-		because it's convenient to not have to cast from Object).  In fact,
-		clone() now just calls cloneReplacing().  We had prepared for this
-		in the previous version by putting up a big warning sign on clone()
-		to ward people off of using it as a light clone, as it used to be.
+	DEBreeder needs to have at least 4 individuals in a subpopulation in 
+		order to work properly.  We weren't verifying this condition.  
+		Thanks to Michael Hart <mhart@baselinesolutions.com.au>
+	Updated GPNode.clone() to be exactly the same as 
+		GPNode.cloneReplacing(), except that it returns object.  
+		They're both deep-clone methods.  We retain 
+		GPNode.cloneReplacing for historical compatability (and because
+		it's convenient to not have to cast from Object).  In fact,
+		clone() now just calls cloneReplacing().  We had prepared for 
+		this in the previous version by putting up a big warning sign 
+		on clone() to ward people off of using it as a light clone, as 
+		it used to be.
 	Removed LawnmowerStatistics.java, EdgeStatistics.java, and
 		AntStatistics.java, rolling them into KozaStatistics.java
-	KozaStatistics.java and SimpleStatistics.java now call describe() on the
-		individual regardless during finalStatistics
+	KozaStatistics.java and SimpleStatistics.java now call describe() on 
+		the individual regardless during finalStatistics
 	NON-backward-compatible modification to SimpleProblemForm and
-		GroupedProblemForm: added the subpopulation number(s) as an argument
-		to the evaluate and describe functions.  This is intended to
-		alleviate some nasty hacks in the distributed evaluator.  We had
-		tried to avoid doing it but just can't. You'll have to add that
-		argument (it's easy though) to get your code to compile again.
+		GroupedProblemForm: added the subpopulation number(s) as an 
+		argument to the evaluate and describe functions.  This is 
+		intended to alleviate some nasty hacks in the distributed 
+		evaluator.  We had tried to avoid doing it but just can't. 
+		You'll have to add that argument (it's easy though) to get 
+		your code to compile again.
 	PseudoRoundRobin removed from CompetitiveEvaluator, it wasn't finished.
 	Revamping of Slave code
 	Added the NK, SAT, and HIFF problems
-	Changed LinkedHashSet to HashSet in ParameterDatabase to conform with JDK 1.3
-	Added 'auto' as an option for the breed and eval threads.  This doesn't work
-		right with the Console though, so for now it'll only be a
+	Changed LinkedHashSet to HashSet in ParameterDatabase to conform with 
+		JDK 1.3
+	Added 'auto' as an option for the breed and eval threads.  This doesn't
+		work right with the Console though, so for now it'll only be a
 		command-line option.
 	Added compression options back into the island model and distributed
-		evaluator.  We've abandoned Sun's broken zlib code and have instead
-		gone with JZlib (http://www.jcraft.com/jzlib/).  So as not to make
-		ECJ reliant on JZlib for compiling, we're setting up the streams
-		dynamically using reflection in two new static methods in Output
-		(makeCompressedInputStream, makeCompressedOutputStream).
-		ec.util.CompressingInputStream and ec.util.CompressingOutputStream
-		are hereby deleted.
+		evaluator.  We've abandoned Sun's broken zlib code and have 
+		instead gone with JZlib (http://www.jcraft.com/jzlib/).  So as
+		not to make ECJ reliant on JZlib for compiling, we're setting 
+		up the streams dynamically using reflection in two new static 
+		methods in Output (makeCompressedInputStream, 
+		makeCompressedOutputStream).  ec.util.CompressingInputStream 
+		and ec.util.CompressingOutputStream are hereby deleted.
 	Updated ERC.java to be a bit easier to implement, and with better docs.
 	Subpopulation now has a default base:  ec.subpop   This marks the first
 		actual use of the ECDefaults class.  Population doesn't have one
 		yet, making it the only Group without one.  Because it'd be
-		sort of a bit silly I guess, saying 'ec.pop...' instead of 'pop...'
-	Species wasn't including the default base for loading the Fitness.  Fixed.
-		Thanks to Peter Drake <drake@lclark.edu>
-	Tweak to Console to fix parameters not being updated properly.  Thanks to
-		Bob Orchard <Bob.Orchard@nrc-cnrc.gc.ca>
-	Eliminated the 'store' and 'flush' parameter options.  You can still modify
-		the Output's behavior programatically.  This change was long
-		overdue: these two features just added complexity to an already too
-		complex parameter file. 
+		sort of a bit silly I guess, saying 'ec.pop...' instead of 
+		'pop...'
+	Species wasn't including the default base for loading the Fitness.  
+		Fixed.  Thanks to Peter Drake <drake@lclark.edu>
+	Tweak to Console to fix parameters not being updated properly.  Thanks 
+		to Bob Orchard <Bob.Orchard@nrc-cnrc.gc.ca>
+	Eliminated the 'store' and 'flush' parameter options.  You can still 
+		modify the Output's behavior programatically.  This change was 
+		long overdue: these two features just added complexity to an 
+		already too complex parameter file. 
 
 19	Best. Prerelease. Ever.
-	Modified ParameterDatabase's parseInt and parseLong methods to allow double
-		values ending in .0 to serve as legal numbers.
+	Modified ParameterDatabase's parseInt and parseLong methods to allow 
+		double values ending in .0 to serve as legal numbers.
 	Added Keith Sullivan to the contributors list
 	Added GraphViz output to GP trees
 	Bug fix in mixed-up warning messages in GPNodeBuilder
 	Fixed Tutorial3 to reflect new population writing format.  Thanks to
 		Myron Tuttle <myrongt@gmail.com>
-	Added ec.util.LocalHost class to replace known bug in Java's getLocalHost
-		method.  This class relies on the NetworkInterface class in
-		Java 1.4, which is going to bump ECJ to require 1.4.  Thanks to 
-		Tomasz Nowak <nowak2000@poczta.onet.pl>
+	Added ec.util.LocalHost class to replace known bug in Java's 
+		getLocalHost method.  This class relies on the NetworkInterface
+		class in Java 1.4, which is going to bump ECJ to require 1.4.  
+		Thanks to Tomasz Nowak <nowak2000@poczta.onet.pl>
 	Bumped classfile version in Makefile to 1.4 accordingly.
-	Fixed erroneous documentation in FloatVectorSpecies and IntegerVectorSpecies
-	Slight modification of spea2.Subpopulation.setup() archive size allowance,
-		thanks to Yow Tzu <yowtzu@cs.york.ac.uk>
-	eval.masterproblem must now be a proper subclass of ec.eval.MasterProblem
+	Fixed erroneous documentation in FloatVectorSpecies and 
+		IntegerVectorSpecies
+	Slight modification of spea2.Subpopulation.setup() archive size 
+		allowance, thanks to Yow Tzu <yowtzu@cs.york.ac.uk>
+	eval.masterproblem must now be a proper subclass of 
+		ec.eval.MasterProblem
 	Problem.java documentation updated
 	removed vestigial canEaluate() from Problem.java
-	Added getDouble(...) and getFloat(...) to ParameterDatabase.java, thanks to 
-		Krzysztof Krawiec <krzysztof.krawiec@cs.put.poznan.pl>
+	Added getDouble(...) and getFloat(...) to ParameterDatabase.java, 
+		thanks to Krzysztof Krawiec <krzysztof.krawiec@cs.put.poznan.pl>
 	Made IPEInformation static and serializable.  Thanks to Michael Hart
 		<michael.hart.au@gmail.com>
-	PSOBreeder now considers multiple subpopulation.s  Thanks to Michael Hart
-                <michael.hart.au@gmail.com>
+	PSOBreeder now considers multiple subpopulations.  Thanks to Michael 
+		Hart <michael.hart.au@gmail.com>
 	Removed vestigial GPFuncInfo.java.gz.  Thanks to David Oranchak 
 		<doranchak@cox.net>
 	Tweaks to Uniform to make it properly serializable.
-	Further bug fixes in GPNodeBuilder error messages.  Thanks to David Robert
-		White (<drw@cs.york.ac.uk>
-	Cleanups to documentation.  Thanks to Claes Gyllensward <letharion@gmail.com>
-		and James Obeirne <james.obeirne@gmail.com>
-	To save some memory, GP terminals share the same (size-zero) child array.
-		The array is in GPNodeConstraints to be serializable.  That means there
-		are a few of the arrays, but it doesn't matter.
-	MultiObjectiveFitness allows the user to specify whether the objectives are
-		to be maximized (default) or minimized.  This does not affect any piece
-		of code working previously.
-	SPEA2 code has suffered multiple changes.  We believe that at this point it
-		behaves exactly as described in Zitzler's 2001 paper. Any previously working 
-		code using this package should still work, but you won't be able to 
-		replicate previous results.  Other than minor changes, refactoring and 
-		some optimizations, the biggest change is in the density function 
-		(which, again, is now fully compliant with Zitzler's specifications).
-	Added SPEA2Statistics; it prints the objective values of all individuals in the final 
-		Pareto front.
-	Added ec.app.moobenchmarks, consiting of a number of popular Multi Objective Optimization 
-		benchmark problems and the a params file.
+	Further bug fixes in GPNodeBuilder error messages.  Thanks to David 
+		Robert White (<drw@cs.york.ac.uk>)
+	Cleanups to documentation.  Thanks to Claes Gyllensward 
+		<letharion@gmail.com> and James Obeirne 
+		<james.obeirne@gmail.com>
+	To save some memory, GP terminals share the same (size-zero) child 
+		array.  The array is in GPNodeConstraints to be serializable.  
+		That means there are a few of the arrays, but it doesn't matter.
+	MultiObjectiveFitness allows the user to specify whether the objectives
+		are to be maximized (default) or minimized.  This does not 
+		affect any piece of code working previously.
+	SPEA2 code has suffered multiple changes.  We believe that at this 
+		point it behaves basically as described in Zitzler's 2001 paper.
+		Any previously working code using this package should still 
+		work, but you won't be able to replicate previous results.  
+		Other than minor changes, refactoring and some optimizations, 
+		the biggest change is in the density function (which, again, 
+		is now fully compliant with Zitzler's specifications).
+	Added SPEA2Statistics; it prints the objective values of all 
+		individuals in the final Pareto front.
+	Added ec.app.moobenchmarks, consiting of a number of popular Multi 
+		Objective Optimization benchmark problems and the a params file.
         Added SUSSelection
-	Bug fix to shuffling algorithm used in SUSSelection. We stopped one element too early,
-		so for small arrays the shuffling is non-uniform (and for size-two arrays
-  		there was no shuffling at all).  Gagh.  For shuffling large numbers of items,
-		the effect was minimal.
+	Bug fix to shuffling algorithm used in SUSSelection. We stopped one 
+		element too early, so for small arrays the shuffling is 
+		non-uniform (and for size-two arrays there was no shuffling at
+		all).  Gagh.  For shuffling large numbers of items, the effect 
+		was minimal.
 	Refactoring in MultiObjectiveFitness:
 		-parameter "num-objectives" was renamed "num-objectives"
 	Refactoring in ec.app.moobenchmarks to make it similar to ecsuite:
 		-package was renamed moosuite,
-		-parameter "numvariables" was dropped, set the genome size instead.
-		-genome consists of doubles instead of floats (DoubleVectorIndividual)
+		-parameter "numvariables" was dropped, set the genome size 
+			instead.
+		-genome consists of doubles instead of floats 
+			(DoubleVectorIndividual)
 		-all problems were grouped  into one class: MooSuite.java
-		-new benchmark problems added: SCH, F2, F3(unconstrained), KUR, FON, QV, POL.
-	Minor modification to ECSuite.java: P_... changed to V_... to be consistent
+		-new benchmark problems added: SCH, F2, F3(unconstrained), KUR,
+			 FON, QV, POL.
+	Minor modification to ECSuite.java: P_... changed to V_... to be 
+		consistent
 	Missing closing 'bold' tag in vector documentation fixed
 	Added setGenomeLength to BitVectorIndividual: it was missing
-	KozaFitness.equivalentTo() and KozaFitness.betterThan() both call fitness() instead
-		of accessing fitness directly.  This puts the code in-line with SimpleFitness,
-		making subclasses which override the fitness() method easier to write. It's a
+	KozaFitness.equivalentTo() and KozaFitness.betterThan() both call 
+		fitness() instead of accessing fitness directly.  This puts the
+		code in-line with SimpleFitness, making subclasses which 
+		override the fitness() method easier to write. It's a
 		little bit slower though.
-	SimpleShortStatistics now outputs best individual etc. to stdout, just like
-		SimpleStatistics
+	SimpleShortStatistics now outputs best individual etc. to stdout, 
+		just like SimpleStatistics
 	Added lots of new READMEs
 	Tweak to Sum to compute the ideal fitness more properly
 	Tweaks to Regression to output all elements as messages, etc.
 	Document modifications to MultiPopCoevolutionaryEvaluator
 	Additions to de/README
 	Fixes to the documentation in es.params
-	CrossoverPipeline, MutationPipeline, and InternalCrossoverPipeline have their
-		verifyPoints function made public.
+	CrossoverPipeline, MutationPipeline, and InternalCrossoverPipeline 
+		have their verifyPoints function made public.
 	Additions to spea2/README
-	Added a warning about incorrect max and min gene lengths.  This makes list
-		representations a little easier.  Changes to FloatVectorSpecies,
-		IntegerVectorSpecies, and VectorSpecies
+	Added a warning about incorrect max and min gene lengths.  This makes
+		list representations a little easier.  Changes to 
+		FloatVectorSpecies, IntegerVectorSpecies, and VectorSpecies
 	Bug fix to RuleCrossover's crossover procedure.
 	Vestigial 'num-retries' removed from SteadyStateBreeder
+	Reformated the CHANGES file to fit within 80 characters
+	Added BoltzmannSelection and SigmaScalingSelection, both due to
+		Jack Compton <jack.compton@gmail.com>.
+	Added ListCrossoverPipeline, due to Stephen Donelly <sdonnel4@gmu.edu>
+	Added MultipleVectorCrossoverPipeline, due to Beenish Jamil
+		<bjamil@gmu.edu>
+	Added the evolve package
+	Added Line and Intermediate Recombination for all integer and
+		float vector individuals.  Due to William Haddon
+		<whaddon@gmu.edu>
+	Added random restarts to the evolve package.  Due to James O'Beirne
+		<jobeirne1@gmu.edu>		
+	Added distance measures to Individual and to various subclasses.  Due
+		to Eric Kangas <ekangas@gmu.edu>
+	Reformatted

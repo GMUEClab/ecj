@@ -102,6 +102,30 @@ public class LongVectorIndividual extends VectorIndividual
         genome = new long[s.genomeSize];
         }
         
+        
+    // Because Math.floor only goes within the double integer space
+    long longFloor(double x)
+        {
+        long l = (long) x;  // pulls towards zero
+                
+        if (x >= 0)
+            {
+            return l;  // NaN will get shunted to 0 apparently
+            }
+        else if (x < Long.MIN_VALUE + 1)  // it'll go to Long.MIN_VALUE
+            {
+            return Long.MIN_VALUE;
+            }
+        else if (l == x)  // it's exact
+            {
+            return l;
+            }
+        else
+            {
+            return l - 1;
+            }
+        }
+        
     public void defaultCrossover(EvolutionState state, int thread, VectorIndividual ind)
         {
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
@@ -143,6 +167,46 @@ public class LongVectorIndividual extends VectorIndividual
                             genome[y] = tmp;
                             }
                 break;
+            case VectorSpecies.C_LINE_RECOMB:
+            {
+            double alpha = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
+            double beta = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
+            long t,u;
+            long min, max;
+            for (int x = 0; x < genome.length; x++)
+                {
+                do
+                    {
+                    min = s.minGene(x);
+                    max = s.maxGene(x);
+                    t = longFloor(alpha * genome[x] + (1 - alpha) * i.genome[x] + 0.5);
+                    u = longFloor(beta * i.genome[x] + (1 - beta) * genome[x] + 0.5);
+                    } while (t < min || t > max || u < min || u > max);
+                genome[x] = t;
+                i.genome[x] = u; 
+                }
+            }
+            break;
+            case VectorSpecies.C_INTERMED_RECOMB:
+            {
+            long t,u;
+            long min, max;
+            for (int x = 0; x < genome.length; x++)
+                {
+                do
+                    {
+                    double alpha = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
+                    double beta = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
+                    min = s.minGene(x);
+                    max = s.maxGene(x);
+                    t = longFloor(alpha * genome[x] + (1 - alpha) * i.genome[x] + 0.5);
+                    u = longFloor(beta * i.genome[x] + (1 - beta) * genome[x] + 0.5);
+                    } while (t < min || t > max || u < min || u > max);
+                genome[x] = t;
+                i.genome[x] = u; 
+                }
+            }
+            break;
             }
         }
 
@@ -336,4 +400,20 @@ public class LongVectorIndividual extends VectorIndividual
         return true;
         }
 
+    public double distanceTo(Individual otherInd)
+        {               
+        if (!(otherInd instanceof LongVectorIndividual)) 
+            return super.distanceTo(otherInd);  // will return infinity!
+                
+        LongVectorIndividual other = (LongVectorIndividual) otherInd;
+        long[] otherGenome = other.genome;
+        double sumSquaredDistance =0.0;
+        for(int i=0; i < other.genomeLength(); i++)
+            {
+            // can't subtract two longs and expect a long.  Must convert to doubles :-(
+            double dist = this.genome[i] - (double)otherGenome[i];
+            sumSquaredDistance += dist*dist;
+            }
+        return StrictMath.sqrt(sumSquaredDistance);
+        }
     }
