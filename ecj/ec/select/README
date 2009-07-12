@@ -65,4 +65,25 @@ ec.select.FirstSelection		[acceptable for Steady State]
 	Always selects the first individual in the population array.  Only
 	used for debugging purposes.
 
+ec.select.BoltzmannSelection		[NOTE: UNTESTED]
+	Performs Boltzman Selection, variation of fitness proportionate
+	selection which makes fitness differences insignificant initially
+	and more prominent as time goes on (think Simulated Annealing).
+	Each generatiowe compute a temperature, defined as the initial
+	temperature (which you define) minus the current generation times
+	the cooling rate (which you also define).  If the temperature is
+	below 1.0, the fitnesses are not adjusted.  Otherwise each
+	fitness is adjusted as E^(fitness / temperature).
 
+ec.select.SigmaScalingSelection		[NOTE: UNTESTED]
+	Performs Sigma Scaling, a variation of fitness propoprtionate
+	selection which stretches fitnesses out if they have been
+	all bunched up together, enabling fitness proportionate 
+	selection methods to still distinguish between them.  We begin
+	by computing the mean and standard deviation of the current
+	fitnesses.  If the standard deviation is not zero, we then
+	adjust each fitness as 1 + (fitness - mean)/(2 * standardDeviation).
+	If the standard deviation is zero, all fitnesses are set to 1.
+	If any fitness is less than a minimal acceptable fitness (the "floor"),
+	it is set to the floor.  This prevents fitnesses from getting stretched
+	so small that they cannot compete.  You specify the floor.

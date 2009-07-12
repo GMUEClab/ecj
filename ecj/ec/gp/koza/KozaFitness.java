@@ -117,7 +117,7 @@ public class KozaFitness extends Fitness
     public final float adjustedFitness()
         {
         return fitness();
-	}
+        }
 
     public void setup(final EvolutionState state, final Parameter base) { }
     

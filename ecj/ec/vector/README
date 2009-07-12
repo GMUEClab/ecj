@@ -128,3 +128,20 @@ is very simple: when it is charged to produce children, it requests a child
 from each of its sources, then calls defaultCrossover() on one child, passing
 in the other child, to get them to cross over with one another. It then returns
 the children.
+
+
+ec.vector.breed.ListCrossoverPipeline	[UNTESTED]
+
+Defines one-point and two-point crossover for vector individuals whose length may
+vary.  This crossover pipeline may be useful for representations which are lists
+rather than fixed-length vectors.
+
+
+ec.vector.breed.MultiCrossoverPipeline	[UNTESTED]
+
+Performs a version of N-person multiple crossover.  The size of N is determined
+by the number of sources provided to the pipeline.  For each gene, the gene
+values among the N indivdiuals are shuffled.  The resulting children are then
+returned.
+
+
