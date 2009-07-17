@@ -1497,3 +1497,8 @@ Version		Change Log
 	Added distance measures to Individual and to various subclasses.  Due
 		to Eric Kangas <ekangas@gmu.edu>
 	Reformatted
+
+20      You call that a prerelease?  THIS is a prerelease.
+	Added default parameter to FloatVector mutation.  Thanks to Elena
+		Popovici <elena@icosystem.com>
+	Tweaks to Makefile for moosuite
