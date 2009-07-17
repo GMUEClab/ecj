@@ -30,6 +30,7 @@ ec/app/edge/func/*.java \
 ec/app/hiff/*.java \
 ec/app/lawnmower/*.java \
 ec/app/lawnmower/func/*.java \
+ec/app/moosuite/*.java \
 ec/app/multiplexer/*.java \
 ec/app/multiplexer/func/*.java \
 ec/app/multiplexerslow/*.java \
@@ -95,6 +96,7 @@ clean:
 	find . -name ".DS_Store" -exec rm -rf {} \;
 	find . -name "*.java*~" -exec rm -rf {} \;
 	rm -rf docs/classdocs/*
+	rm -rf ec/app/moobenchmarks
 
 
 dist: clean gui indent doc 
