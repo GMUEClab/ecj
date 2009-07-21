@@ -272,7 +272,8 @@ public class Subpopulation implements Group
                  else
                      {
                      state.output.warnOnce("On reading subpopulation from text stream, some of the preexisting subpopulation's slots were null.\n" +
-                         "Had to use newIndividual() instead of readIndividual().");
+                         "Had to use newIndividual() instead of readIndividual().  If you're starting an evolutionary run by reading an\n" +
+						 "existing population from a file, this is expected -- ignore this message.");
                      individuals[i] = species.newIndividual(state, reader);
                      }
                  }

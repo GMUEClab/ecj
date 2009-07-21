@@ -87,8 +87,11 @@ eval.problem = ec.app.tutorial3.OddRosenbrock
 # Doubles and floats use the FloatVectorSpecies
 pop.subpop.0.species =                  ec.vector.FloatVectorSpecies
 pop.subpop.0.species.ind =              ec.vector.DoubleVectorIndividual
-# Per-gene mutation probability of 0.005
-pop.subpop.0.species.mutation-prob = 0.005
+# Per-gene mutation probability of 1.0
+pop.subpop.0.species.mutation-prob = 1.0
+# Use Gaussian Convolution with a standard deviation of 0.5
+pop.subpop.0.species.mutation-type = gauss
+pop.subpop.0.species.mutation-stdev = 0.5
 # One-point crossover
 pop.subpop.0.species.crossover-type = one
 pop.subpop.0.species.genome-size =      5
@@ -109,6 +112,8 @@ pop.subpop.0.species.max-gene = 100
 </tt>
 
 <p>Compare this to the min-gene and max-gene stipulations in the previous tutorial.  ECJ checks to see if it should use a per-gene min/max-gene setup by checking for the existence of min-gene.0 and max-gene.0.  If they are there, it uses min-gene.X and max-gene.X for each separate gene, reverting to ordinary min-gene and max-gene defaults if one is missing.
+
+<p>Note that we're also specifying a <i>form</i> of mutation for our floating-point vector.  ECJ supports two default methods: "reset", which just randomizes a gene (and is the default); and "gauss", which does gaussian convolution on the gene, that is, adds to the gene a random number under a gaussian (normal) distribution.  This second form requires a standard deviation for the distribution, which we also provide (0.5 is quite extreme, but it works reasonably well for our weird problem).   We can still stipulate a mutation probability, though here we've set it to 1.0 (always mutate every gene).
 
 <p>Now we define the problem proper.  Create a file called <tt>OddRosenbrock.java</tt> in the <tt>tutorial3</tt> directory.  In this file add the following:
 
@@ -502,7 +507,20 @@ i5|d4607711235938838268|1.1174209926670633|d4597051221158411824|0.21880277778153
 
 <p>What the heck is this encoding?  Many ECJ individuals use the <a href="../../classdocs/ec/util/Code.html">ec.util.Code</a> class to assist in writing numbers which are human-readable but can be read-back in identically to their original form.  <b>Code</b> writes out doubles with the form <b>d<i>encoded-number</i>|<i>human-number</i>|</b>  The encoded number is a binary representation of the double.  The human number is a human-readable version of the double.  Floats are printed similarly, but begin with an <b>f</b>.  Integers are written with the form <b>i<i>number</i>|</b>.  Booleans are written with <b>T</b> or <b>F</b>.
 
-<p>Subpopulations load from files with a special parameter specifying that they are to use a file rather than creating individuals randomly during initialization.  We can specify this parameter at the command line:  <b>java ec.Evolve -file tutorial3.params -p pop.subpop.0.file=pop.in</b>
+<p>Subpopulations load from files with a special parameter specifying that they are to use a file rather than creating individuals randomly during initialization.  We can specify this parameter at the command line:  <b>java ec.Evolve -file tutorial3.params -p pop.subpop.0.file=pop.in</b>  But first you need to <b>delete the first two lines</b> that we saved in <b>pop.in</b>.  That is, delete the lines:
+
+<tt><pre>
+Number of Subpopulations: i1|
+Subpopulation Number: i0|
+</pre></tt>
+
+<p>These two lines are written by the Population.  The first line written by the Subpopulation is the line
+
+<tt><pre>
+Number of Individuals: i105|
+</pre></tt>
+
+<p>...and since we're having a specific Subpopulation read in the file (<b>pop.subpop.0.file=pop.in</b>), it'll start reading at that point.
 
 <p>Keep in mind that sometimes ECJ will output individuals in computer-readable, human-readable format and computer/human-readable format.  But ECJ will (by default) <i>only</i> read in individuals if they are in the third format.  Use <b>printPopulation</b> to create populations to read in next time.
 

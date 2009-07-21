@@ -626,14 +626,14 @@ public class Code
             // check the preamble
             if (s==null || !(s = s.trim()).startsWith(preamble)) // uh oh
                 state.output.fatal("Line " + linenumber + 
-                    "has bad preamble.  Expected '" + preamble + "'. -->" + s);
+                    " has a bad preamble.Expected '" + preamble + "'\n-->" + s);
             DecodeReturn d = new DecodeReturn(s, preamble.length());
             d.lineNumber = linenumber;
             return d;
             }
         catch (IOException e)
             {
-            state.output.fatal("On line " + linenumber + "an IO error occurred:\n\n" + e);
+            state.output.fatal("On line " + linenumber + " an IO error occurred:\n\n" + e);
             return null;  // never happens
             }
         }
@@ -647,7 +647,7 @@ public class Code
         Code.decode(d);
         if (d.type!=DecodeReturn.T_INT)
             state.output.fatal("Line " + d.lineNumber + 
-                "has no integer after preamble '" + preamble + "'. -->" + d.data);
+                " has no integer after preamble '" + preamble + "'\n-->" + d.data);
         return (int)(d.l);
         }
 
@@ -661,7 +661,7 @@ public class Code
         Code.decode(d);
         if (d.type!=DecodeReturn.T_FLOAT)
             state.output.fatal("Line " + d.lineNumber + 
-                "has no floating point number after preamble '" + preamble + "'. -->" + d.data);
+                " has no floating point number after preamble '" + preamble + "'\n-->" + d.data);
         return (float)(d.d);
         }
 
@@ -674,7 +674,7 @@ public class Code
         Code.decode(d);
         if (d.type!=DecodeReturn.T_DOUBLE)
             state.output.fatal("Line " + d.lineNumber + 
-                "has no double floating point number after preamble '" + preamble + "'. -->" + d.data);
+                " has no double floating point number after preamble '" + preamble + "'. -->" + d.data);
         return d.d;
         }
 
@@ -687,7 +687,7 @@ public class Code
         Code.decode(d);
         if (d.type!=DecodeReturn.T_BOOLEAN)
             state.output.fatal("Line " + d.lineNumber + 
-                "has no boolean value ('true' or 'false') after preamble '" + preamble + "'. -->" + d.data);
+                " has no boolean value ('true' or 'false') after preamble '" + preamble + "'\n-->" + d.data);
         return (d.l != 0);
         }
 
