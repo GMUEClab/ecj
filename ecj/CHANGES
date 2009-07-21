@@ -1506,4 +1506,5 @@ Version		Change Log
 		mechanism.  Thanks to Bernd Beier <Bernd.Beier@gft.com>
 	Tweaks to Tutorial3 and ecsuite to reflect additions of gaussian
 		convolution.
-	Tweaks to the error reporting in Code.java and FloatVectorSpecies
+	Tweaks to the error reporting in Code.java, Subpopulation, and 
+		FloatVectorSpecies
