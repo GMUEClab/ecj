@@ -1502,3 +1502,8 @@ Version		Change Log
 	Added default parameter to FloatVector mutation.  Thanks to Elena
 		Popovici <elena@icosystem.com>
 	Tweaks to Makefile for moosuite
+	Modifications to Tutorial3 to reflect the new population loading
+		mechanism.  Thanks to Bernd Beier <Bernd.Beier@gft.com>
+	Tweaks to Tutorial3 and ecsuite to reflect additions of gaussian
+		convolution.
+	Tweaks to the error reporting in Code.java and FloatVectorSpecies

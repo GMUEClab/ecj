@@ -27,8 +27,11 @@ pop.subpop.0.species =                  ec.vector.FloatVectorSpecies
 pop.subpop.0.species.ind =              ec.vector.DoubleVectorIndividual
 pop.subpop.0.species.fitness = 		ec.simple.SimpleFitness
 
-# Per-gene mutation probability of 0.005
-pop.subpop.0.species.mutation-prob = 0.005
+# Per-gene mutation probability of 1.0
+pop.subpop.0.species.mutation-prob = 1.0
+# Use Gaussian Convolution with a standard deviation of 0.5
+pop.subpop.0.species.mutation-type = gauss
+pop.subpop.0.species.mutation-stdev = 0.5
 # One-point crossover
 pop.subpop.0.species.crossover-type = one
 pop.subpop.0.species.genome-size =      5

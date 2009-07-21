@@ -395,7 +395,7 @@ public class FloatVectorSpecies extends VectorSpecies
         String mtype = state.parameters.getStringWithDefault(base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE), null);
         mutationType = C_RESET_MUTATION;
         if (mtype == null)
-            state.output.warning("No mutation type given for VectorSpecies, assuming 'reset' mutation",
+            state.output.warning("No mutation type given for FloatVectorSpecies, assuming 'reset' mutation",
                 base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE));
         else if (mtype.equalsIgnoreCase(V_RESET_MUTATION))
             mutationType = C_RESET_MUTATION; // redundant
