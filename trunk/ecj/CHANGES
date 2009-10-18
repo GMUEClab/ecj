@@ -1508,3 +1508,6 @@ Version		Change Log
 		convolution.
 	Tweaks to the error reporting in Code.java, Subpopulation, and 
 		FloatVectorSpecies
+	Bug fix to Frog.java: it wasn't calling its subtree at all.  This
+		is a very old bug it would seem; though Lawnmower's less
+		used.  Thanks to Randy Casstevens <rcasstev@gmu.edu>
