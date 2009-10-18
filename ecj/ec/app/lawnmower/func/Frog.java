@@ -48,6 +48,8 @@ public class Frog extends GPNode
         {
         Lawnmower p = (Lawnmower)problem;
         LawnmowerData d = (LawnmowerData)input;
+
+        children[0].eval(state,thread,input,stack,individual,problem);
         
         // we follow the Koza-II example, not the lil-gp example.
         // that is, we "assume" that in our orientation the X axis
