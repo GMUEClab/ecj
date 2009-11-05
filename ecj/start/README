@@ -1,6 +1,6 @@
-This directory contains some scripts to make it easier to launch MASON if you 
-prefer not to have to set your CLASSPATH and run MASON from the command line 
-as per the tutorial documentation.
+This directory contains some scripts to make it easier to launch ECJ's GUI.  Be
+warned that the GUI is fairly rudimentary: in truth we almost exclusively use
+the command line.  So the GUI isn't particularly well supported.
 
 If you wish to use charting but don't know how to set up your CLASSPATH, just
 download JFreeChart, JCommon, and iText (see the ECJ website) and place the
@@ -10,30 +10,27 @@ and letters and a dot" :-)
 
 [MacOS X users]
 
-mason.command
+ecj.command
 	Double-click on this file, or alternatively launch it from the command line,
-	to run MASON.  If you have other jar files you'd like to add, just dump
+	to run the ECJ GUI. If you have other jar files you'd like to add, just dump
 	them into the 'mason' directory.  This script uses .tcsh.  Runs Java 1.4.x
-
-mason.1.3.1.command
-	Identical to mason.command, except that MASON is launched under Java 1.3.1
 
 
 [Linux / BSD users]
 
-mason.sh	[Linux / BSD]
-	Launch from the command line to run MASON.  If you have other jar files
+ecj.sh	[Linux / BSD]
+	Launch from the command line to run the ECJ GUI.  If you have other jar files
 	you'd like to add, just dump them into the 'mason' directory.  This 
 	script uses .tcsh.  Runs Java 1.4.x
 
 
 [Windows Users]
 
-mason.bat
+ecj.bat
 	This DOS batch file will launch ECJ, provided that you double click on it 
 	or an a shortcut to it. It adds the jars files in the 'ecj' directory to the 
 	class path. 
 	
 ignoreme.bat
-	Auxiliary batch file used by mason.bat to add items to the classpath.  Pay
+	Auxiliary batch file used by ecj.bat to add items to the classpath.  Pay
 	it no attention.
