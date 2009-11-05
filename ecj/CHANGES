@@ -1512,4 +1512,5 @@ Version		Change Log
 		is a very old bug it would seem; though Lawnmower's less
 		used.  Thanks to Randy Casstevens <rcasstev@gmu.edu>
 	Updates to start/README directory -- somehow we'd slipped in he
-		MASON version, not the ECJ version.  Duh!
+		MASON version, not the ECJ version.  Duh!  Thanks to
+		Jeff Bassett <jbassett@cs.gmu.edu>
