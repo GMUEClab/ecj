@@ -1511,3 +1511,5 @@ Version		Change Log
 	Bug fix to Frog.java: it wasn't calling its subtree at all.  This
 		is a very old bug it would seem; though Lawnmower's less
 		used.  Thanks to Randy Casstevens <rcasstev@gmu.edu>
+	Updates to start/README directory -- somehow we'd slipped in he
+		MASON version, not the ECJ version.  Duh!
