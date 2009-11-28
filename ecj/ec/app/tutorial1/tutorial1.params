@@ -51,5 +51,3 @@ pop.subpop.0.species.pipe.source.0.source.1	= ec.select.TournamentSelection
 select.tournament.size		= 2
 
 eval.problem		= ec.app.tutorial1.MaxOnes
-
-breed.elites.0 = 1
