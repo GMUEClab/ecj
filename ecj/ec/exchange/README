@@ -76,11 +76,13 @@ the exchanges begin with
 By default, ECJ does *asynchronous* exchanges instead, where each island is
 told independently what generation it should start at and what interval it
 should use, and the islands are free to go at their own pace rather than wait
-for the other islands synchronously.  Islands each have a "mailbox" which
-receives incoming individuals from the other island, and after breeding they
-check and empty that mailbox, replacing individuals in the current population
-with the incoming immigrants.  The selection procedure for the individuals
-to be replaced is by default random selection, but you can change that.
+for the other islands synchronously.  
+
+Islands each have a "mailbox" which receives incoming individuals from the 
+other islands, and after breeding they check and empty that mailbox, 
+replacing some individuals in the current population with the incoming 
+immigrants.  The selection procedure for the individuals to be replaced is by 
+default random selection, but you can change that (see below).
 
 The server defines the number of islands as:
 

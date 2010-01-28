@@ -39,6 +39,9 @@ import ec.util.*;
  <tr><td valign=top><tt><i>base</i>.elite.<i>i</i></tt><br>
  <font size=-1>int >= 0 (default=0)</font></td>
  <td valign=top>(the number of elitist individuals for subpopulation <i>i</i>)</td></tr>
+ <tr><td valign=top><tt><i>base</i>.reevalate-elites.<i>i</i></tt><br>
+ <font size=-1>boolean (default = false)</font></td>
+ <td valign=top>(should we reevaluate the elites of subpopulation <i>i</i> each generation?)</td></tr>
  </table>
  *
  *
@@ -49,8 +52,10 @@ import ec.util.*;
 public class SimpleBreeder extends Breeder
     {
     public static final String P_ELITE = "elite";
+    public static final String P_REEVALUATE_ELITES = "reevalate-elites";
     /** An array[subpop] of the number of elites to keep for that subpopulation */
     public int[] elite;
+	public boolean[] reevaluateElites;
 
     public void setup(final EvolutionState state, final Parameter base) 
         {
@@ -58,11 +63,13 @@ public class SimpleBreeder extends Breeder
         int size = state.parameters.getInt(p,null,1);  // if size is wrong, we'll let Population complain about it -- for us, we'll just make 0-sized arrays and drop out.
 
         elite = new int[size];
-
+		reevaluateElites = new boolean[size];
+		
         for(int x=0;x<size;x++)
             {
             elite[x] = state.parameters.getIntWithDefault(base.push(P_ELITE).push(""+x),null,0);
             if (elite[x]<0) state.output.error("The number of elites for subpopulation " + x + " must be >= 0",base.push(P_ELITE).push(""+x));
+            reevaluateElites[x] = state.parameters.getBoolean(base.push(P_REEVALUATE_ELITES).push(""+x),null,false);
             }
 
         state.output.exitIfErrors();
@@ -221,6 +228,7 @@ public class SimpleBreeder extends Breeder
                         best = x;
                 Individual[] inds = newpop.subpops[sub].individuals;
                 inds[inds.length-1] = (Individual)(oldinds[best].clone());
+				if (reevaluateElites[sub]) inds[inds.length-1].evaluated = false;  // force reevaluation
                 }
             else if (elite[sub]>0)  // we'll need to sort
                 {
@@ -234,7 +242,10 @@ public class SimpleBreeder extends Breeder
                 Individual[] inds = newpop.subpops[sub].individuals;
                 Individual[] oldinds = state.population.subpops[sub].individuals;
                 for(int x=inds.length-elite[sub];x<inds.length;x++)
+					{
                     inds[x] = (Individual)(oldinds[orderedPop[x]].clone());
+					if (reevaluateElites[sub]) inds[x].evaluated = false;  // force reevaluation
+					}
                 }
         }
     }
