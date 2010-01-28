@@ -1514,3 +1514,6 @@ Version		Change Log
 	Updates to start/README directory -- somehow we'd slipped in he
 		MASON version, not the ECJ version.  Duh!  Thanks to
 		Jeff Bassett <jbassett@cs.gmu.edu>
+	spurious breed.elites.0=1 parameter in tutorial1.params deleted
+	Added the option for reevaluation of elites in SimpleBreeder.  Thanks
+		to Vlad Palnik <vladpaln@gmail.com>

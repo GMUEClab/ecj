@@ -242,7 +242,7 @@ import ec.util.*;
  <td>selection method for the client's migrants</td></tr>
  </table>
   
- * @author Liviu Panait & Sean Luke
+ * @author Liviu Panait and Sean Luke
  * @version 2.0
  */
 

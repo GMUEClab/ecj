@@ -41,6 +41,13 @@ are constructed by cloning the prototypical instance. A large number of
 ECJ objects are Prototype, including Individuals and various components of
 Individuals (such as genetic programming tree nodes).
 
+Many ECJ Prototypes support the so-called "flyweight" design pattern, whereby
+large numbers of lightweight instances share a common single special object
+which acts as a repository of default information common to all of them.
+In Java this could be implemented using static members, but static members
+are challenging to serialize (an important thing in ECJ), and so ECJ instead
+uses an actual object instead.  
+
 ec.Group
 
 Groups are very similar to Prototypes: their primary difference is that there
@@ -83,15 +90,12 @@ predefined Individuals are available for you.
 
 ec.Species
 
-Many ECJ objects support the so-called "flyweight" design pattern, whereby
-large numbers of lightweight instances share a common single special object
-which acts as a repository of default information common to all of them.
-In Java this could be implemented using static members, but static members
-are challenging to serialize (an important thing in ECJ), and so ECJ instead
-uses an actual object instead.  Various Individuals in ECJ share a common
-Species.  Each Subpopulation is also associated with the Species used by
-Individuals in that Subpopulation.  Note that multiple subpopulations,
-and different groups of Individuals, might use the same Species in theory.
+Individuals in ECJ support the flyweight pattern (see discussion of
+ec.Prototype above) and ec.Species is their collective object.  Many Individuals
+in ECJ share a common Species.  Each Subpopulation is also associated 
+with the Species used by Individuals in that Subpopulation.  Note that 
+multiple subpopulations, and different groups of Individuals, might 
+use the same Species in theory.
 
 The Species object contains the prototypical Individual from which other
 Individuals of that Species are cloned; and also contain Breeding Pipelines
