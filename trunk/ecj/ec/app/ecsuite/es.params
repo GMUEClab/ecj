@@ -1,0 +1,12 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../es/es.params
+parent.1 = ecsuite.params
+
+# es.params defines MuCommaLambdaBreeder at (1, 10).  We also need
+# to state that the pipeline will be just mutation plus ESSelection,
+# which we do below.
+
+pop.subpop.0.species.pipe.source.0 = ec.es.ESSelection
