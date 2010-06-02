@@ -330,31 +330,48 @@ public class RuleSet implements Prototype
         return sets;
         }
     
-
     /**
        Prints out the rule set in a readable fashion.
+    */
+    public void printRuleSetForHumans(final EvolutionState state, final int log)
+        {
+        printRuleSetForHumans(state, log, Output.V_VERBOSE);
+        }
+                
+    /**
+       Prints out the rule set in a readable fashion.
+       @deprecated Verbosity no longer has an effect
     */
     public void printRuleSetForHumans(final EvolutionState state, final int log,
         final int verbosity)
         {
         state.output.println( "Ruleset contains " + numRules + " rules",
-            verbosity, log );
+            log );
         for( int i = 0 ; i < numRules ; i ++ )
             {
-            state.output.println( "Rule " + i + ":", verbosity, log );
-            rules[i].printRuleForHumans( state, verbosity, log );
+            state.output.println( "Rule " + i + ":", log );
+            rules[i].printRuleForHumans( state, log );
             }
         }
 
     /**
        Prints the rule set such that the computer can read it later
     */
+    public void printRuleSet(final EvolutionState state, final int log)
+        {
+        printRuleSet(state, log, Output.V_VERBOSE);
+        }
+                
+    /**
+       Prints the rule set such that the computer can read it later
+       @deprecated Verbosity no longer has an effect
+    */
     public void printRuleSet(final EvolutionState state,
         final int log, final int verbosity)
         {
-        state.output.println(N_RULES + Code.encode(numRules), verbosity, log);
+        state.output.println(N_RULES + Code.encode(numRules), log);
         for( int i = 0 ; i < numRules ; i ++ )
-            rules[i].printRule(state,log,verbosity);
+            rules[i].printRule(state,log);
         }
 
     /**

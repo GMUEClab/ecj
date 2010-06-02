@@ -390,7 +390,6 @@ public class IslandExchange extends Exchanger
         ParameterDatabase parameters=null;
         Output output;
         boolean store;
-        int verbosity;
         
         // The following is a little chunk of the ec.Evolve code sufficient
         // to get IslandExchange up and running all by itself.
@@ -429,12 +428,7 @@ public class IslandExchange extends Exchanger
         // 1. create the output
         //store = (parameters.getBoolean(new Parameter(Evolve.P_STORE),null,false));
 
-        verbosity = parameters.getInt(new Parameter(Evolve.P_VERBOSITY),null,0);
-        if (verbosity<0)
-            Output.initialError("Verbosity should be an integer >= 0.\n",
-                new Parameter(Evolve.P_VERBOSITY)); 
-
-        output = new Output(true,verbosity);
+        output = new Output(true);
         // output.setFlush(
         //    parameters.getBoolean(new Parameter(Evolve.P_FLUSH),null,false));
 
@@ -442,8 +436,8 @@ public class IslandExchange extends Exchanger
         // stdout is always log #0.  stderr is always log #1.
         // stderr accepts announcements, and both are fully verbose 
         // by default.
-        output.addLog(ec.util.Log.D_STDOUT,Output.V_VERBOSE,false);
-        output.addLog(ec.util.Log.D_STDERR,Output.V_VERBOSE,true); 
+        output.addLog(ec.util.Log.D_STDOUT,false);
+        output.addLog(ec.util.Log.D_STDERR,true); 
         
         
         // this is an ugly, ugly, ugly, UGLY HACK

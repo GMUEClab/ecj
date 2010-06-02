@@ -63,9 +63,9 @@ public class SimpleIndividualPortrayal
     
     public void portrayIndividual(EvolutionState state, Individual individual)
         {
-        int printIndividualLog = state.output.addLog(printIndividualWriter,restarter,0,false,false);
+        int printIndividualLog = state.output.addLog(printIndividualWriter,restarter,false,false);
         
-        individual.printIndividualForHumans(state,printIndividualLog,Output.V_NO_GENERAL);
+        individual.printIndividualForHumans(state,printIndividualLog);
         textPane.setText(printIndividualWriter.toString());
         textPane.setCaretPosition(0);
         state.output.removeLog(printIndividualLog);

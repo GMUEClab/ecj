@@ -51,7 +51,7 @@ public interface Space
     /**
        Input: a threadnumber (either for evaluation or for breeding), and an index in a subpopulation
        (the index in the subpopulation is, of course, associated with a location in the space)
-       Functionality: stores the index and the threadnumber for further accesses to the getRandomIndex
+       Functionality: stores the index and the threadnumber for further accesses to the getIndexRandomNeighbor
        method.  All such accesses from the specific thread will use the exact same index, until
        this function is called again to change the index.
     */

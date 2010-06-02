@@ -70,10 +70,6 @@ import java.io.PrintWriter;
  <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
  <td valign=top>(should I flush all output as soon as it's printed (useful for debugging when an exception occurs))</td></tr>
 
- <tr><td valign=top><tt>verbosity</tt><br>
- <font size=-1>int &gt;= 0</font></td>
- <td valign=top>(the ec.util.Output object's verbosity)</td></tr>
-
  <tr><td valign=top><tt>evalthreads</tt><br>
  <font size=-1>int &gt;= 1</font></td>
  <td valign=top>(the number of threads to spawn for evaluation)</td></tr>
@@ -136,9 +132,6 @@ public class Evolve
 
     /* nostore parameter */
     //public static final String P_STORE = "store";
-
-    /** verbosity parameter */
-    public static final String P_VERBOSITY = "verbosity";
 
     /** evalthreads parameter */
     public static final String P_EVALTHREADS = "evalthreads";
@@ -285,19 +278,13 @@ public class Evolve
         int[] seeds;
         int breedthreads = 1;
         int evalthreads = 1;
-        int verbosity;
         boolean store;
         int x;
 
         // 1. create the output
 //        store = parameters.getBoolean(new Parameter(P_STORE),null,false);
 
-        verbosity = parameters.getInt(new Parameter(P_VERBOSITY),null,0);
-        if (verbosity<0)
-            Output.initialError("Verbosity should be an integer >= 0.\n",
-                new Parameter(P_VERBOSITY)); 
-
-        output = new Output(true,verbosity);
+        output = new Output(true);
 //        output.setFlush(
 //            parameters.getBoolean(new Parameter(P_FLUSH),null,false));
 
@@ -305,8 +292,8 @@ public class Evolve
         // stdout is always log #0.  stderr is always log #1.
         // stderr accepts announcements, and both are fully verbose 
         // by default.
-        output.addLog(ec.util.Log.D_STDOUT,Output.V_VERBOSE,false);
-        output.addLog(ec.util.Log.D_STDERR,Output.V_VERBOSE,true);
+        output.addLog(ec.util.Log.D_STDOUT,false);
+        output.addLog(ec.util.Log.D_STDERR,true);
 
         output.systemMessage(Version.message());
                 

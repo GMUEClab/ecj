@@ -187,36 +187,28 @@ public class GPIndividual extends Individual
         state.output.exitIfErrors();
         }
 
-
-    /** Overridden for the GPIndividual genotype, writing each tree in turn. */
-    public void printIndividualForHumans(final EvolutionState state, final int log, 
-        final int verbosity)
+    public void printIndividualForHumans(final EvolutionState state, final int log)
         {
-        state.output.println(EVALUATED_PREAMBLE + (evaluated ? "true" : "false"), 
-            verbosity, log);
-        fitness.printFitnessForHumans(state,log,verbosity);
+        state.output.println(EVALUATED_PREAMBLE + (evaluated ? "true" : "false"), log);
+        fitness.printFitnessForHumans(state,log);
         for(int x=0;x<trees.length;x++)
             {
-            state.output.println("Tree " + x + ":",verbosity,log);
-            trees[x].printTreeForHumans(state,log,verbosity);
+            state.output.println("Tree " + x + ":",log);
+            trees[x].printTreeForHumans(state,log);
             }
         }
 
-    /** Overridden for the GPIndividual genotype, writing each tree in turn. */
-    public void printIndividual(final EvolutionState state, final int log, 
-        final int verbosity)
+    public void printIndividual(final EvolutionState state, final int log)
         {
-        state.output.println(EVALUATED_PREAMBLE + Code.encode(evaluated), 
-            verbosity, log);
-        fitness.printFitness(state,log,verbosity);
+        state.output.println(EVALUATED_PREAMBLE + Code.encode(evaluated), log);
+        fitness.printFitness(state,log);
         for(int x=0;x<trees.length;x++)
             {
-            state.output.println("Tree " + x + ":",verbosity,log);
-            trees[x].printTree(state,log,verbosity);
+            state.output.println("Tree " + x + ":",log);
+            trees[x].printTree(state,log);
             }   
         }
             
-    /** Overridden for the GPIndividual genotype, writing each tree in turn. */
     public void printIndividual(final EvolutionState state,
         final PrintWriter writer)
         {

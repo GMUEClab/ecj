@@ -31,7 +31,7 @@ public class MyStatistics extends Statistics
             base.push(P_POPFILE),null);
         if (popFile!=null) try
                                {
-                               popLog = state.output.addLog(popFile,Output.V_NO_GENERAL-1,false,true);
+                               popLog = state.output.addLog(popFile,true);
                                }
             catch (IOException i)
                 {
@@ -44,7 +44,7 @@ public class MyStatistics extends Statistics
             base.push(P_INFOFILE),null);
         if (infoFile!=null) try
                                 {
-                                infoLog = state.output.addLog(infoFile,Output.V_NO_GENERAL-1,false,true);
+                                infoLog = state.output.addLog(infoFile,true);
                                 }
             catch (IOException i)
                 {
@@ -61,11 +61,10 @@ public class MyStatistics extends Statistics
 
         // write out a warning that the next generation is coming 
         state.output.println("-----------------------\nGENERATION " + 
-            state.generation + "\n-----------------------",
-            Output.V_NO_GENERAL, popLog);
+            state.generation + "\n-----------------------", popLog);
 
         // print out the population 
-        state.population.printPopulation(state,popLog,Output.V_NO_GENERAL);
+        state.population.printPopulation(state,popLog);
 
         // print out best genome #3 individual in subpop 0
         int best = 0;
@@ -80,6 +79,6 @@ public class MyStatistics extends Statistics
                 best_val = val;
                 }
             }
-        state.population.subpops[0].individuals[best].printIndividualForHumans(state,infoLog,Output.V_NO_GENERAL);
+        state.population.subpops[0].individuals[best].printIndividualForHumans(state,infoLog);
         }
     }

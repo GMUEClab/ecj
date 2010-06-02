@@ -15,14 +15,7 @@ import java.util.zip.*;
  */
 
 /**
- * Defines a log to which Output outputs.  A log consists of three items:
- * <ol>
- * <li> A PrintWriter which prints out messages.
- * <li> A verbosity -- if a message is printed with a verbosity lower than
- * this, then the message will not be printed.
- * <li> A flag which indicates whether or not to filter out (refuse to print)
- * announcements (usually error messages and warnings).
- * </ol>
+ * Defines a log to which Output outputs. 
  *
  * Logs can be <i>restarted</i> after a computer outage by using the 
  * information stored in the LogRestarter
@@ -42,9 +35,6 @@ public class Log implements Serializable
 
     /** A filename, if the writer writes to a file */
     public File filename;                // the filename to write to, if any
-
-    /** The log's verbosity. */
-    public int verbosity;                  // the log verbosity
 
     /** Should the log post announcements? */
     public boolean postAnnouncements;      // will the log post announcements?
@@ -85,11 +75,10 @@ public class Log implements Serializable
         announcements are reposted on restart.*/
     
     public Log(File _filename,
-        int _verbosity,
         boolean _postAnnouncements,
         boolean _appendOnRestart) throws IOException
         {
-        this(_filename, _verbosity, _postAnnouncements, _appendOnRestart, false);
+        this(_filename, _postAnnouncements, _appendOnRestart, false);
         }
         
     /** Creates a log to a given filename; this file may or may not
@@ -100,12 +89,10 @@ public class Log implements Serializable
         then .gz is automagically appended to the file name.*/
     
     public Log(File _filename,
-        int _verbosity,
         boolean _postAnnouncements,
         boolean _appendOnRestart,
         boolean gzip) throws IOException
         {
-        verbosity = _verbosity;
         postAnnouncements = _postAnnouncements;
         repostAnnouncementsOnRestart = !_appendOnRestart;
         appendOnRestart = _appendOnRestart;
@@ -160,11 +147,9 @@ public class Log implements Serializable
         or stderr (descriptor == Log.D_STDERR). */
 
     public Log(int descriptor,
-        int _verbosity,
         boolean _postAnnouncements)
         {
         filename = null;
-        verbosity = _verbosity;
         postAnnouncements = _postAnnouncements;
         repostAnnouncementsOnRestart = true;
         appendOnRestart = true;  // doesn't matter
@@ -210,12 +195,10 @@ public class Log implements Serializable
 
     public Log(Writer _writer,
         LogRestarter _restarter,
-        int _verbosity,
         boolean _postAnnouncements,
         boolean _repostAnnouncementsOnRestart)
         {
         filename = null;
-        verbosity = _verbosity;
         postAnnouncements = _postAnnouncements;
         repostAnnouncementsOnRestart = _repostAnnouncementsOnRestart;
         appendOnRestart = true;  // doesn't matter

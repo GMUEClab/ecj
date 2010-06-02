@@ -141,106 +141,104 @@ public class PSOSubpopulation extends Subpopulation
         The neighborhood size, clamp range, and initial velocity scale are not included -- it's assumed you're using the
         same values for them on reading, or understand that the values are revised. */
     public void printSubpopulationForHumans(final EvolutionState state,
-        final int log, 
-        final int verbosity)
+        final int log)
         {
         // global best
-        state.output.println(GLOBAL_BEST_PREAMBLE, verbosity, log);
+        state.output.println(GLOBAL_BEST_PREAMBLE, log);
         if (globalBest == null) 
-            state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + "false", verbosity, log);
+            state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + "false", log);
         else 
             {
-            state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + "true", verbosity, log);
-            globalBest.printIndividualForHumans(state, log, verbosity);
+            state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + "true", log);
+            globalBest.printIndividualForHumans(state, log);
             }
         
         // neighborhoodBests
-        state.output.println(NEIGHBORHOOD_BEST_PREAMBLE, verbosity, log);
+        state.output.println(NEIGHBORHOOD_BEST_PREAMBLE, log);
         for(int i = 0; i < individuals.length; i++)
             if (neighborhoodBests[i] == null)
-                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + "false", verbosity, log);
+                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + "false", log);
             else 
                 {
-                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + "true", verbosity, log);
-                neighborhoodBests[i].printIndividualForHumans(state, log, verbosity);
+                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + "true", log);
+                neighborhoodBests[i].printIndividualForHumans(state, log);
                 }
             
         // personalBests
-        state.output.println(PERSONAL_BEST_PREAMBLE, verbosity, log);
+        state.output.println(PERSONAL_BEST_PREAMBLE, log);
         for(int i = 0; i < individuals.length; i++)
             if (personalBests[i] == null)
-                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + "false", verbosity, log);
+                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + "false", log);
             else 
                 {
-                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + "true", verbosity, log);
-                personalBests[i].printIndividualForHumans(state, log, verbosity);
+                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + "true", log);
+                personalBests[i].printIndividualForHumans(state, log);
                 }
 
         // neighborhoodBests
-        state.output.println(PREVIOUS_INDIVIDUAL_PREAMBLE, verbosity, log);
+        state.output.println(PREVIOUS_INDIVIDUAL_PREAMBLE, log);
         for(int i = 0; i < individuals.length; i++)
             if (previousIndividuals[i] == null)
-                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + "false", verbosity, log);
+                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + "false", log);
             else 
                 {
-                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + "true", verbosity, log);
-                previousIndividuals[i].printIndividualForHumans(state, log, verbosity);
+                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + "true", log);
+                previousIndividuals[i].printIndividualForHumans(state, log);
                 }
 
-        super.printSubpopulationForHumans(state, log, verbosity);
+        super.printSubpopulationForHumans(state, log);
         }
         
     /** Overridden to include the global best, neighborhood bests, personal bests, and previous individuals in the stream.
         The neighborhood size, clamp range, and initial velocity scale are not included -- it's assumed you're using the
         same values for them on reading, or understand that the values are revised. */
     public void printSubpopulation(final EvolutionState state,
-        final int log, 
-        final int verbosity)
+        final int log)
         {
         // global best
-        state.output.println(GLOBAL_BEST_PREAMBLE, verbosity, log);
+        state.output.println(GLOBAL_BEST_PREAMBLE, log);
         if (globalBest == null) 
-            state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + Code.encode(false), verbosity, log);
+            state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + Code.encode(false), log);
         else 
             {
-            state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + Code.encode(true), verbosity, log);
-            globalBest.printIndividual(state, log, verbosity);
+            state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + Code.encode(true), log);
+            globalBest.printIndividual(state, log);
             }
         
         // neighborhoodBests
-        state.output.println(NEIGHBORHOOD_BEST_PREAMBLE, verbosity, log);
+        state.output.println(NEIGHBORHOOD_BEST_PREAMBLE, log);
         for(int i = 0; i < individuals.length; i++)
             if (neighborhoodBests[i] == null)
-                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + Code.encode(false), verbosity, log);
+                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + Code.encode(false), log);
             else 
                 {
-                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + Code.encode(true), verbosity, log);
-                neighborhoodBests[i].printIndividual(state, log, verbosity);
+                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + Code.encode(true), log);
+                neighborhoodBests[i].printIndividual(state, log);
                 }
             
         // personalBests
-        state.output.println(PERSONAL_BEST_PREAMBLE, verbosity, log);
+        state.output.println(PERSONAL_BEST_PREAMBLE, log);
         for(int i = 0; i < individuals.length; i++)
             if (personalBests[i] == null)
-                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + Code.encode(false), verbosity, log);
+                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + Code.encode(false), log);
             else 
                 {
-                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + Code.encode(true), verbosity, log);
-                personalBests[i].printIndividual(state, log, verbosity);
+                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + Code.encode(true), log);
+                personalBests[i].printIndividual(state, log);
                 }
 
         // neighborhoodBests
-        state.output.println(PREVIOUS_INDIVIDUAL_PREAMBLE, verbosity, log);
+        state.output.println(PREVIOUS_INDIVIDUAL_PREAMBLE, log);
         for(int i = 0; i < individuals.length; i++)
             if (previousIndividuals[i] == null)
-                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + Code.encode(false), verbosity, log);
+                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + Code.encode(false), log);
             else 
                 {
-                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + Code.encode(true), verbosity, log);
-                previousIndividuals[i].printIndividual(state, log, verbosity);
+                state.output.println(INDIVIDUAL_EXISTS_PREAMBLE + Code.encode(true), log);
+                previousIndividuals[i].printIndividual(state, log);
                 }
 
-        super.printSubpopulation(state, log, verbosity);
+        super.printSubpopulation(state, log);
         }
         
     /** Overridden to include the global best, neighborhood bests, personal bests, and previous individuals in the stream.

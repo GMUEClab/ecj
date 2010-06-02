@@ -109,7 +109,7 @@ public abstract class VectorGene implements Prototype
        but you might want to override this.
     */
     public void printGeneForHumans( final EvolutionState state, final int verbosity, final int log )
-        {  state.output.println(printGeneToStringForHumans(),verbosity,log); }
+        {  state.output.println(printGeneToStringForHumans(),log); }
 
     /** Prints the gene to a string in a human-readable fashion.  The default simply calls toString(). */
     public String printGeneToStringForHumans()
@@ -138,7 +138,7 @@ public abstract class VectorGene implements Prototype
        or just override printGeneToString(...), which is probably easier to do.
     */
     public void printGene( final EvolutionState state, final int verbosity, final int log )
-        { state.output.println(printGeneToString(state),verbosity,log); }
+        { state.output.println(printGeneToString(state),log); }
 
     /**
        Prints the gene in a way that can be read by readGene().  The default form simply

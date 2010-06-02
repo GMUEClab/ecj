@@ -122,7 +122,7 @@ public class TwoBox extends GPProblem implements SimpleProblemForm
             state.output.println("{" + inputsl0[x]+ "," + inputsw0[x]+ "," +
                 inputsh0[x]+ "," + inputsl1[x]+ "," +
                 inputsw1[x]+ "," + inputsh1[x]+ "," +
-                outputs[x] + "},",3000,0);
+                outputs[x] + "},",0);
             }
 
         // set up our input -- don't want to use the default base, it's unsafe

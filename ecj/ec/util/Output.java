@@ -56,6 +56,7 @@ import java.util.Enumeration;
  * benefit of the user.
  * </ol>
  *
+ <!--
  * <p>The default verbosity values for different kinds of announcements are
  * given below:
  *
@@ -67,6 +68,8 @@ import java.util.Enumeration;
  </tr><tr><td>5000</td><td>V_TOTALLY_SILENT</td><td>(be totally silent)</td>
  </tr></table>
  *
+ -->
+ 
  * <p>Output by default will automatically flush any log which prints an announcement
  * (or anything printed with Output.println(...).  You can change this behavior with
  * the setFlush() method.
@@ -83,7 +86,6 @@ public class Output implements Serializable
     boolean errors;
     Vector logs = new Vector();
     Vector announcements = new Vector();
-    int verbosity;
     boolean flush = true;
     boolean store = true;
     String filePrefix = "";
@@ -154,12 +156,19 @@ public class Output implements Serializable
         System.err.flush();
         }
 
-    /** Creates a new, verbose, empty Output object. */
+    /** Creates a new, verbose, empty Output object. 
+        @deprecated Verbosity no longer has an effect.
+    */
     public Output(boolean storeAnnouncementsInMemory, int _verbosity)
+        {
+        this(storeAnnouncementsInMemory);
+        }
+
+    /** Creates a new, verbose, empty Output object. */
+    public Output(boolean storeAnnouncementsInMemory)
         {
         errors = false;
         store = storeAnnouncementsInMemory;
-        verbosity = _verbosity;
         }
 
     /** Sets whether the Output flushes its announcements.*/
@@ -186,20 +195,24 @@ public class Output implements Serializable
         return store;
         }
     
-    /** Sets the Output object's general verbosity to <i>v</i>. */
+    /** Sets the Output object's general verbosity to <i>v</i>. 
+        @deprecated Verbosity no longer has an effect.
+    */
     public synchronized void setVerbosity(int v)
         {
-        verbosity = v;
+//        verbosity = v;
         }
     
-    /** Returns the Output object's general verbosity*/
+    /** Returns the Output object's general verbosity
+        @deprecated Verbosity no longer has an effect.
+    */
     public synchronized int getVerbosity()
         {
-        return verbosity;
+        return V_VERBOSE;
         }
 
     /** Creates a new log of minimal verbosity <i>verbosity</i> and adds it 
-        to Output.  This log will write to the file <i>filename</i>, and may
+        to Output.  This log will write to the file <i>file</i>, and may
         or may not <i>post announcements</i> to the log. If the log must be
         reset upon restarting from a checkpoint, it will append to the file
         or erase the file and start over depending on <i>appendOnRestart</i>.
@@ -209,22 +222,24 @@ public class Output implements Serializable
         collection of logs -- you should use this to access the log always;
         never store the log itself, which may go away upon a system restart.
         The log can be compressed with gzip, but you cannot appendOnRestart
-        and compress at the same time.*/
+        and compress at the same time.
+        @deprecated Verbosity no longer has an effect.
+    */
 
-    public synchronized int addLog(File filename,
+    public synchronized int addLog(File file,
         int _verbosity,
         boolean postAnnouncements,
         boolean appendOnRestart,
         boolean gzip) throws IOException
         {
         if (filePrefix != null && filePrefix.length()>0)
-            filename = new File(filename.getParent(),filePrefix+filename.getName());
-        logs.addElement(new Log(filename,_verbosity,postAnnouncements,appendOnRestart,gzip));
+            file = new File(file.getParent(),filePrefix+file.getName());
+        logs.addElement(new Log(file,postAnnouncements,appendOnRestart,gzip));
         return logs.size()-1;
         }
         
     /** Creates a new log of minimal verbosity <i>verbosity</i> and adds it 
-        to Output.  This log will write to the file <i>filename</i>, and may
+        to Output.  This log will write to the file <i>file</i>, and may
         or may not <i>post announcements</i> to the log. If the log must be
         reset upon restarting from a checkpoint, it will append to the file
         or erase the file and start over depending on <i>appendOnRestart</i>.
@@ -232,17 +247,73 @@ public class Output implements Serializable
         true, then this log will repost all the announcements on restarting
         from a checkpoint. Returns the position of the log in Output's 
         collection of logs -- you should use this to access the log always;
-        never store the log itself, which may go away upon a system restart. */
+        never store the log itself, which may go away upon a system restart. 
+        @deprecated Verbosity no longer has an effect
+    */
 
-    public synchronized int addLog(File filename,
+    public synchronized int addLog(File file,
         int _verbosity,
         boolean postAnnouncements,
         boolean appendOnRestart) throws IOException
         {
-        if (filePrefix != null && filePrefix.length()>0)
-            filename = new File(filename.getParent(),filePrefix+filename.getName());
-        logs.addElement(new Log(filename,_verbosity,postAnnouncements,appendOnRestart));
-        return logs.size()-1;
+        return addLog(file, postAnnouncements, appendOnRestart, false);
+        }
+
+
+    /** Creates a new log <!-- of minimal verbosity V_NO_GENERAL-1 --> and adds it 
+        to Output.  This log will write to the file <i>file</i>, and may
+        or may not <i>post announcements</i> to the log. If the log must be
+        reset upon restarting from a checkpoint, it will append to the file
+        or erase the file and start over depending on <i>appendOnRestart</i>.
+        If <i>appendOnRestart</i> is false and <i>postAnnouncements</i> is
+        true, then this log will repost all the announcements on restarting
+        from a checkpoint. Returns the position of the log in Output's 
+        collection of logs -- you should use this to access the log always;
+        never store the log itself, which may go away upon a system restart.
+        The log can be compressed with gzip, but you cannot appendOnRestart
+        and compress at the same time.
+    */
+
+    public synchronized int addLog(File file,
+        boolean postAnnouncements,
+        boolean appendOnRestart,
+        boolean gzip) throws IOException
+        {
+        return addLog(file, V_VERBOSE, postAnnouncements, appendOnRestart, gzip);
+        }
+
+
+    /** Creates a new log <!-- of minimal verbosity V_NO_GENERAL-1 --> and adds it 
+        to Output.  This log will write to the file <i>file</i>, and you may
+        not post announcements to the log. If the log must be
+        reset upon restarting from a checkpoint, it will append to the file
+        or erase the file and start over depending on <i>appendOnRestart</i>.
+        Returns the position of the log in Output's 
+        collection of logs -- you should use this to access the log always;
+        never store the log itself, which may go away upon a system restart.
+        The log can be compressed with gzip, but you cannot appendOnRestart
+        and compress at the same time.*/
+
+    public synchronized int addLog(File file,
+        boolean appendOnRestart,
+        boolean gzip) throws IOException
+        {
+        return addLog(file, false, appendOnRestart, gzip);
+        }
+        
+    /** Creates a new log <!-- of minimal verbosity V_NO_GENERAL-1 --> and adds it 
+        to Output.  This log will write to the file <i>file</i>, and you may
+        not post announcements to the log. If the log must be
+        reset upon restarting from a checkpoint, it will append to the file
+        or erase the file and start over depending on <i>appendOnRestart</i>.
+        Returns the position of the log in Output's 
+        collection of logs -- you should use this to access the log always;
+        never store the log itself, which may go away upon a system restart. */
+
+    public synchronized int addLog(File file,
+        boolean appendOnRestart) throws IOException
+        {
+        return addLog(file, false, appendOnRestart, false);
         }
 
 
@@ -252,14 +323,31 @@ public class Output implements Serializable
         <i>post announcements</i> to the log. Returns the position of the 
         log in Output's 
         collection of logs -- you should use this to access the log always;
-        never store the log itself, which may go away upon a system restart. */
+        never store the log itself, which may go away upon a system restart. 
+        @deprecated Verbosity no longer has an effect
+    */
     
     public synchronized int addLog(int descriptor,
         int _verbosity,
         boolean postAnnouncements)
         {
-        logs.addElement(new Log(descriptor,_verbosity,postAnnouncements));
+        logs.addElement(new Log(descriptor,postAnnouncements));
         return logs.size()-1;
+        }
+
+    /** Creates a new log and adds it 
+        to Output.  This log will write to stdout (descriptor == Log.D_STDOUT) 
+        or stderr (descriptor == Log.D_STDERR), and may or may not
+        <i>post announcements</i> to the log. Returns the position of the 
+        log in Output's 
+        collection of logs -- you should use this to access the log always;
+        never store the log itself, which may go away upon a system restart. 
+    */
+    
+    public synchronized int addLog(int descriptor,
+        boolean postAnnouncements)
+        {
+        return addLog(descriptor, V_VERBOSE, postAnnouncements);
         }
 
     /** Creates a new log of minimal verbosity <i>verbosity</i> and adds it 
@@ -269,7 +357,9 @@ public class Output implements Serializable
         writes to <i>writer</i>, which is reset upon system restart by
         <i>restarter</i>. Returns the position of the log in Output's 
         collection of logs -- you should use this to access the log always;
-        never store the log itself, which may go away upon a system restart. */
+        never store the log itself, which may go away upon a system restart. 
+        @deprecated Verbosity no longer has an effect
+    */
 
     public synchronized int addLog(Writer writer,
         LogRestarter restarter,
@@ -277,9 +367,29 @@ public class Output implements Serializable
         boolean postAnnouncements,
         boolean repostAnnouncements)
         {
-        logs.addElement(new Log(writer,restarter,_verbosity,postAnnouncements,repostAnnouncements));
+        logs.addElement(new Log(writer,restarter,postAnnouncements,repostAnnouncements));
         return logs.size()-1;
         }
+
+    /** Creates a new log <!-- of minimal verbosity V_NO_GENERAL-1 --> and adds it 
+        to Output.  This log may or may not <i>post announcements</i> to
+        the log, and if it does, it additionally may or may not <i>repost</i>
+        all of its announcements to the log upon a restart.  The log
+        writes to <i>writer</i>, which is reset upon system restart by
+        <i>restarter</i>. Returns the position of the log in Output's 
+        collection of logs -- you should use this to access the log always;
+        never store the log itself, which may go away upon a system restart. 
+    */
+
+    public synchronized int addLog(Writer writer,
+        LogRestarter restarter,
+        boolean postAnnouncements,
+        boolean repostAnnouncements)
+        {
+        logs.addElement(new Log(writer,restarter,postAnnouncements,repostAnnouncements));
+        return logs.size()-1;
+        }
+
 
     /** Adds the given log to Output.  In general you shouldn't use this
         method unless you really <i>really</i> need something custom. 
@@ -369,73 +479,73 @@ public class Output implements Serializable
     /** Posts a fatal error.  This causes the system to exit. */
     public synchronized void fatal(String s)
         {
-        println("FATAL ERROR:\n"+s, V_TOTALLY_SILENT, ALL_LOGS, true);
+        println("FATAL ERROR:\n"+s, ALL_LOGS, true);
         exitWithError();
         }
             
     /** Posts a fatal error.  This causes the system to exit. */
     public synchronized void fatal(String s, Parameter p1)
         {
-        println("FATAL ERROR:\n"+s, V_TOTALLY_SILENT, ALL_LOGS, true);
-        if (p1!=null) println("PARAMETER: " + p1, V_TOTALLY_SILENT, ALL_LOGS, true);
+        println("FATAL ERROR:\n"+s, ALL_LOGS, true);
+        if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
         exitWithError();
         }
 
     /** Posts a fatal error.  This causes the system to exit. */
     public synchronized void fatal(String s, Parameter p1, Parameter p2)
         {
-        println("FATAL ERROR:\n"+s, V_TOTALLY_SILENT, ALL_LOGS, true);
-        if (p1!=null) println("PARAMETER: " + p1, V_TOTALLY_SILENT, ALL_LOGS, true);
-        if (p2!=null && p1!=null) println("     ALSO: " + p2, V_TOTALLY_SILENT, ALL_LOGS, true);
-        else println("PARAMETER: " + p2, V_TOTALLY_SILENT, ALL_LOGS, true);
+        println("FATAL ERROR:\n"+s, ALL_LOGS, true);
+        if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
+        if (p2!=null && p1!=null) println("     ALSO: " + p2, ALL_LOGS, true);
+        else println("PARAMETER: " + p2, ALL_LOGS, true);
         exitWithError();
         }
 
     /** Posts a simple error. This causes the error flag to be raised as well. */
     public synchronized void error(String s)
         {
-        println("ERROR:\n"+s, V_NO_ERRORS, ALL_LOGS, true);
+        println("ERROR:\n"+s, ALL_LOGS, true);
         errors = true;
         }
             
     /** Posts a simple error. This causes the error flag to be raised as well. */
     public synchronized void error(String s, Parameter p1)
         {
-        println("ERROR:\n"+s, V_TOTALLY_SILENT, ALL_LOGS, true);
-        if (p1!=null) println("PARAMETER: " + p1, V_TOTALLY_SILENT, ALL_LOGS, true);
+        println("ERROR:\n"+s, ALL_LOGS, true);
+        if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
         errors = true;
         }
 
     /** Posts a simple error. This causes the error flag to be raised as well. */
     public synchronized void error(String s, Parameter p1, Parameter p2)
         {
-        println("ERROR:\n"+s, V_TOTALLY_SILENT, ALL_LOGS, true);
-        if (p1!=null) println("PARAMETER: " + p1, V_TOTALLY_SILENT, ALL_LOGS, true);
-        if (p2!=null && p1!=null) println("     ALSO: " + p2, V_TOTALLY_SILENT, ALL_LOGS, true);
-        else println("PARAMETER: " + p2, V_TOTALLY_SILENT, ALL_LOGS, true);
+        println("ERROR:\n"+s, ALL_LOGS, true);
+        if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
+        if (p2!=null && p1!=null) println("     ALSO: " + p2, ALL_LOGS, true);
+        else println("PARAMETER: " + p2, ALL_LOGS, true);
         errors = true;
         }
 
     /** Posts a warning. */
     public synchronized void warning(String s, Parameter p1, Parameter p2)
         {
-        println("WARNING:\n"+s, V_NO_WARNINGS, ALL_LOGS, true);
-        if (p1!=null) println("PARAMETER: " + p1, V_TOTALLY_SILENT, ALL_LOGS, true);
-        if (p2!=null && p1!=null) println("     ALSO: " + p2, V_TOTALLY_SILENT, ALL_LOGS, true);
-        else println("PARAMETER: " + p2, V_TOTALLY_SILENT, ALL_LOGS, true);
+        println("WARNING:\n"+s, ALL_LOGS, true);
+        if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
+        if (p2!=null && p1!=null) println("     ALSO: " + p2, ALL_LOGS, true);
+        else println("PARAMETER: " + p2, ALL_LOGS, true);
         }
 
     /** Posts a warning. */
     public synchronized void warning(String s, Parameter p1)
         {
-        println("WARNING:\n"+s, V_NO_WARNINGS, ALL_LOGS, true);
-        if (p1!=null) println("PARAMETER: " + p1, V_TOTALLY_SILENT, ALL_LOGS, true);
+        println("WARNING:\n"+s, ALL_LOGS, true);
+        if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
         }
 
     /** Posts a warning. */
     public synchronized void warning(String s)
         {
-        println("WARNING:\n"+s, V_NO_WARNINGS, ALL_LOGS, true);
+        println("WARNING:\n"+s, ALL_LOGS, true);
         }
     
     java.util.HashSet oneTimeWarnings = new java.util.HashSet();
@@ -445,7 +555,7 @@ public class Output implements Serializable
         if (!oneTimeWarnings.contains(s))
             {
             oneTimeWarnings.add(s);
-            println("ONCE-ONLY WARNING:\n"+s, V_NO_WARNINGS, ALL_LOGS, true);
+            println("ONCE-ONLY WARNING:\n"+s, ALL_LOGS, true);
             }
         }
         
@@ -454,8 +564,8 @@ public class Output implements Serializable
         if (!oneTimeWarnings.contains(s))
             {
             oneTimeWarnings.add(s);
-            println("ONCE-ONLY WARNING:\n"+s, V_NO_WARNINGS, ALL_LOGS, true);
-            if (p1!=null) println("PARAMETER: " + p1, V_TOTALLY_SILENT, ALL_LOGS, true);
+            println("ONCE-ONLY WARNING:\n"+s, ALL_LOGS, true);
+            if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
             }
         }
         
@@ -464,10 +574,10 @@ public class Output implements Serializable
         if (!oneTimeWarnings.contains(s))
             {
             oneTimeWarnings.add(s);
-            println("ONCE-ONLY WARNING:\n"+s, V_NO_WARNINGS, ALL_LOGS, true);
-            if (p1!=null) println("PARAMETER: " + p1, V_TOTALLY_SILENT, ALL_LOGS, true);
-            if (p2!=null && p1!=null) println("     ALSO: " + p2, V_TOTALLY_SILENT, ALL_LOGS, true);
-            else println("PARAMETER: " + p2, V_TOTALLY_SILENT, ALL_LOGS, true);
+            println("ONCE-ONLY WARNING:\n"+s, ALL_LOGS, true);
+            if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
+            if (p2!=null && p1!=null) println("     ALSO: " + p2, ALL_LOGS, true);
+            else println("PARAMETER: " + p2, ALL_LOGS, true);
             }
         }
 
@@ -475,7 +585,7 @@ public class Output implements Serializable
     /** Posts a message. */
     public synchronized void message(String s)
         {
-        println(s, V_NO_MESSAGES, ALL_LOGS, true);
+        println(s, ALL_LOGS, true);
         }
   
     /** Forces a file-based log to reopen, erasing its previous contents.
@@ -501,9 +611,11 @@ public class Output implements Serializable
     
 
     /** Prints a message to a given log, with a certain verbosity.  
-        <i>_announcement</i> indicates that the message is an announcement. */
+        <i>_announcement</i> indicates that the message is an announcement. 
+        @deprecated Verbosity no longer has an effect
+    */
 
-    protected synchronized void println(String s,
+    synchronized void println(String s,
         int _verbosity,
         Log log,
         boolean _announcement,
@@ -511,20 +623,22 @@ public class Output implements Serializable
         {
         if (log.writer==null) throw new OutputException("Log with a null writer: " + log);
         if (!log.postAnnouncements && _announcement) return;  // don't write it
-        if (log.verbosity >= _verbosity) return;  // don't write it
-        if (verbosity >= _verbosity) return;  // don't write it
+        // if (log.verbosity >= _verbosity) return;  // don't write it
+        // if (verbosity >= _verbosity) return;  // don't write it
         // now write it
         log.writer.println(s);
         if (flush) log.writer.flush();
         //...and stash it in memory maybe
         if (store && _announcement && !_reposting)
-            announcements.addElement(new Announcement(s,_verbosity));
+            announcements.addElement(new Announcement(s));
         }
 
 
     /** Prints a message to a given log, 
-        with a certain verbosity.  If log==ALL_LOGS, posted to all logs. */
-    public synchronized void println(String s,
+        with a certain verbosity.  If log==ALL_LOGS, posted to all logs. 
+        @deprecated Verbosity no longer has an effect
+    */
+    synchronized void println(String s,
         int _verbosity,
         int log,
         boolean _announcement) throws OutputException
@@ -543,24 +657,46 @@ public class Output implements Serializable
             }
         }
 
+    /** Prints a message to a given log.  If log==ALL_LOGS, posted to all logs. 
+     */
+    public synchronized void println(String s,
+        int log,
+        boolean _announcement) throws OutputException
+        {
+        println(s, V_VERBOSE, log, _announcement);
+        }
+
+
     /** Prints a non-announcement message to the given logs, 
-        with a certain verbosity. */
+        with a certain verbosity. 
+        @deprecated Verbosity no longer has an effect
+    */
     public synchronized void println(String s,
         int _verbosity,
         int[] _logs) throws OutputException
         {
         for(int x=0;x<_logs.length;x++)
-            println(s,_verbosity,(Log)(logs.elementAt(_logs[x])),false,false);
+            println(s,V_VERBOSE,(Log)(logs.elementAt(_logs[x])),false,false);
         }
 
 
     /** Prints a non-announcement message to the given logs, 
-        with a certain verbosity. */
+        with a certain verbosity. 
+        @deprecated Verbosity no longer has an effect
+    */
     public synchronized void println(String s,
         int _verbosity,
         int log) throws OutputException
         {
-        println(s,_verbosity,(Log)(logs.elementAt(log)),false,false);
+        println(s,V_VERBOSE,(Log)(logs.elementAt(log)),false,false);
+        }
+
+
+    /** Prints a non-announcement message to the given logs, with a verbosity of V_NO_GENERAL. */
+    public synchronized void println(String s,
+        int log) throws OutputException
+        {
+        println(s,V_VERBOSE,log);
         }
 
 
@@ -571,8 +707,8 @@ public class Output implements Serializable
         Log log) throws OutputException
         {
         if (log.writer==null) throw new OutputException("Log with a null writer: " + log);
-        if (log.verbosity >= _verbosity) return;  // don't write it
-        if (verbosity >= _verbosity) return;  // don't write it
+        //if (log.verbosity >= _verbosity) return;  // don't write it
+        //if (verbosity >= _verbosity) return;  // don't write it
         // now write it
         log.writer.print(s);
         //if (flush) log.writer.flush();
@@ -589,33 +725,51 @@ public class Output implements Serializable
                                {
                                Log l = (Log) logs.elementAt(x);
                                if (l==null) throw new OutputException("Unknown log number" + l);
-                               print(s,_verbosity,l);
+                               print(s,V_VERBOSE,l);
                                }
         else
             {
             Log l = (Log) logs.elementAt(log);
             if (l==null) throw new OutputException("Unknown log number" + l);
-            print(s,_verbosity,l);
+            print(s,V_VERBOSE,l);
             }
         }
 
+    /** Prints a non-announcement message to a given log<!--, with a verbosity of V_NO_GENERAL-->.
+        If log==ALL_LOGS, posted to all logs. No '\n' is printed.  */
+    public synchronized void print(String s,
+        int log) throws OutputException
+        {
+        print(s, V_VERBOSE, log);
+        }
+
     /** Prints a non-announcement message to the given logs, 
-        with a certain verbosity. No '\n' is printed.  */
+        with a certain verbosity. No '\n' is printed.  
+        @deprecated Verbosity no longer has any effect 
+    */
     public synchronized void print(String s,
         int _verbosity,
         int[] _logs) throws OutputException
         {
         for(int x=0;x<_logs.length;x++)
-            print(s,_verbosity,_logs[x]);
+            print(s,_logs[x]);
         }
 
+    /** Prints a non-announcement message to the given logs, 
+        with a certain verbosity. No '\n' is printed.  
+    */
+    public synchronized void print(String s,
+        int[] _logs) throws OutputException
+        {
+        print(s, V_VERBOSE, _logs);
+        }
 
     /** Exits with a fatal error if the error flag has been raised. */
     public synchronized void exitIfErrors()
         {
         if (errors) 
             {
-            println("SYSTEM EXITING FROM ERRORS\n", V_TOTALLY_SILENT,ALL_LOGS, true);
+            println("SYSTEM EXITING FROM ERRORS\n",ALL_LOGS, true);
             exitWithError();
             }
         }
@@ -649,7 +803,7 @@ public class Output implements Serializable
                 for (int y=0;y<as;y++)
                     {
                     Announcement a = (Announcement)(announcements.elementAt(y));
-                    println(a.text,a.verbosity,l,true,true);
+                    println(a.text,V_VERBOSE,l,true,true);
                     }
                 }
             }
@@ -693,6 +847,19 @@ public class Output implements Serializable
             return (OutputStream) outi;
             }
         catch (Exception e) { return null; } // failed, probably doesn't have JZLib on the system
+        }
+
+
+    class Announcement implements Serializable
+        {
+        /** The announcement's...anouncement.*/
+        public String text;
+
+        /** Creates a new announcement with text <i>t</i> and verbosity value <i>v</i> */
+        public Announcement (String t)
+            {
+            text = t;
+            }
         }
 
     }

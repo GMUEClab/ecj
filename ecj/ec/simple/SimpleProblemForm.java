@@ -40,12 +40,11 @@ public interface SimpleProblemForm
         for the purpose of printing out
         interesting facts about the individual in the context of the
         Problem, and logs the results.  This might be called to print out 
-        facts about the best individual in the population, for example. */
+        facts about the best individual in the population, for example.  */
     
     public void describe(final Individual ind, 
         final EvolutionState state, 
         final int subpopulation,
         final int threadnum,
-        final int log,
-        final int verbosity);
+        final int log);
     }

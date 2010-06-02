@@ -150,7 +150,7 @@ public class VectorSpecies extends Species
             state.output.fatal("VectorSpecies must have a genomeSize which is a multiple of chunksize",
                 base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE));
 
-        mutationProbability = state.parameters.getFloat(
+        mutationProbability = state.parameters.getFloatWithMax(
             base.push(P_MUTATIONPROB),def.push(P_MUTATIONPROB),0.0,1.0);
         if (mutationProbability==-1.0)
             state.output.error("VectorSpecies must have a mutation probability between 0.0 and 1.0 inclusive",
@@ -187,7 +187,7 @@ public class VectorSpecies extends Species
 
         if (crossoverType==C_ANY_POINT)
             {
-            crossoverProbability = state.parameters.getFloat(
+            crossoverProbability = state.parameters.getFloatWithMax(
                 base.push(P_CROSSOVERPROB),def.push(P_CROSSOVERPROB),0.0,1.0);
             if (crossoverProbability==-1.0)
                 state.output.error("If it's going to use any-point crossover, VectorSpecies must have a crossover probability between 0.0 and 1.0 inclusive",

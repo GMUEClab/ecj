@@ -178,7 +178,7 @@ public class SPEA2Breeder extends SimpleBreeder
                 }
                 
             // Set distances
-            state.output.println("  Truncating the archive",Output.V_NO_MESSAGES, Log.D_STDOUT);
+            state.output.println("  Truncating the archive", Log.D_STDOUT);
             //state.output.println("    - Calculating distances",V_DEBUG, Log.D_STDOUT);
             for ( int y=0; y<nIndex; y++ ) 
                 {

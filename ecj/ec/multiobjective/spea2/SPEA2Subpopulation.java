@@ -85,20 +85,18 @@ public class SPEA2Subpopulation extends Subpopulation
 
     /** Overridden to include the archive size in the stream. */
     public void printSubpopulationForHumans(final EvolutionState state,
-        final int log, 
-        final int verbosity)
+        final int log)
         {
-        state.output.println(ARCHIVE_PREAMBLE + archiveSize, verbosity, log);
-        super.printSubpopulationForHumans(state, log, verbosity);
+        state.output.println(ARCHIVE_PREAMBLE + archiveSize, log);
+        super.printSubpopulationForHumans(state, log);
         }
         
     /** Overridden to include the archive size in the stream. */
     public void printSubpopulation(final EvolutionState state,
-        final int log, 
-        final int verbosity)
+        final int log)
         {
-        state.output.println(ARCHIVE_PREAMBLE + Code.encode(archiveSize), verbosity, log);
-        super.printSubpopulation(state, log, verbosity);
+        state.output.println(ARCHIVE_PREAMBLE + Code.encode(archiveSize), log);
+        super.printSubpopulation(state, log);
         }
         
     /** Overridden to include the archive size in the stream. */

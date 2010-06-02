@@ -102,7 +102,7 @@ public class SimpleShortStatistics extends Statistics
 
         if (statisticsFile!=null) try
                                       {
-                                      statisticslog = state.output.addLog(statisticsFile,Output.V_NO_GENERAL-1,false,
+                                      statisticslog = state.output.addLog(statisticsFile,
                                           !state.parameters.getBoolean(base.push(P_COMPRESS),null,false),
                                           state.parameters.getBoolean(base.push(P_COMPRESS),null,false));
                                       }
@@ -135,7 +135,7 @@ public class SimpleShortStatistics extends Statistics
         best_of_run_a = new Individual[state.population.subpops.length];
         
         // print out our generation number
-        state.output.print("0 ",Output.V_NO_GENERAL, statisticslog);
+        state.output.print("0 ", statisticslog);
 
         // gather timings       
         if (doFull)
@@ -144,8 +144,8 @@ public class SimpleShortStatistics extends Statistics
             for(int x=0;x<lengths.length;x++) lengths[x] = 0;
             Runtime r = Runtime.getRuntime();
             long curU =  r.totalMemory() - r.freeMemory();          
-            state.output.print("" + (System.currentTimeMillis()-lastTime) + " ", Output.V_NO_GENERAL, statisticslog);
-            state.output.print("" + (curU-lastUsage) + " ", Output.V_NO_GENERAL, statisticslog);            
+            state.output.print("" + (System.currentTimeMillis()-lastTime) + " ",  statisticslog);
+            state.output.print("" + (curU-lastUsage) + " ",  statisticslog);            
             }
         }
 
@@ -163,15 +163,15 @@ public class SimpleShortStatistics extends Statistics
     public void postBreedingStatistics(final EvolutionState state) 
         {
         super.postBreedingStatistics(state);
-        state.output.print("" + (state.generation + 1) + " ",Output.V_NO_GENERAL, statisticslog); // 1 because we're putting the breeding info on the same line as the generation it *produces*, and the generation number is increased *after* breeding occurs, and statistics for it
+        state.output.print("" + (state.generation + 1) + " ", statisticslog); // 1 because we're putting the breeding info on the same line as the generation it *produces*, and the generation number is increased *after* breeding occurs, and statistics for it
 
         // gather timings
         if (doFull)
             {
             Runtime r = Runtime.getRuntime();
             long curU =  r.totalMemory() - r.freeMemory();          
-            state.output.print("" + (System.currentTimeMillis()-lastTime) + " ", Output.V_NO_GENERAL, statisticslog);
-            state.output.print("" + (curU-lastUsage) + " ", Output.V_NO_GENERAL, statisticslog);            
+            state.output.print("" + (System.currentTimeMillis()-lastTime) + " ",  statisticslog);
+            state.output.print("" + (curU-lastUsage) + " ",  statisticslog);            
             }
         }
 
@@ -195,8 +195,8 @@ public class SimpleShortStatistics extends Statistics
             {
             Runtime r = Runtime.getRuntime();
             long curU =  r.totalMemory() - r.freeMemory();          
-            state.output.print("" + (System.currentTimeMillis()-lastTime) + " ", Output.V_NO_GENERAL, statisticslog);
-            state.output.print("" + (curU-lastUsage) + " ", Output.V_NO_GENERAL, statisticslog);            
+            state.output.print("" + (System.currentTimeMillis()-lastTime) + " ",  statisticslog);
+            state.output.print("" + (curU-lastUsage) + " ",  statisticslog);            
             }
         
 
@@ -214,9 +214,9 @@ public class SimpleShortStatistics extends Statistics
                     lengths[x] += size;
                     }
 
-                state.output.print("" + ((double)lengthPerGen)/state.population.subpops[x].individuals.length + " ", Output.V_NO_GENERAL, statisticslog);
+                state.output.print("" + ((double)lengthPerGen)/state.population.subpops[x].individuals.length + " ",  statisticslog);
 
-                state.output.print("" + ((double)lengths[x])/(state.population.subpops[x].individuals.length * (state.generation + 1)) + " ", Output.V_NO_GENERAL, statisticslog);
+                state.output.print("" + ((double)lengths[x])/(state.population.subpops[x].individuals.length * (state.generation + 1)) + " ",  statisticslog);
                 }
                     
             // fitness information
@@ -236,20 +236,20 @@ public class SimpleShortStatistics extends Statistics
             // compute fitness stats
             meanFitness /= state.population.subpops[x].individuals.length;
             state.output.print("" + meanFitness + " " + best_i[x].fitness.fitness() + " ",
-                Output.V_NO_GENERAL, statisticslog);
+                statisticslog);
 
             // now test to see if it's the new best_of_run_a[x]
             if (best_of_run_a[x]==null || best_i[x].fitness.betterThan(best_of_run_a[x].fitness))
                 best_of_run_a[x] = (Individual)(best_i[x].clone());
             
             state.output.print("" + best_of_run_a[x].fitness.fitness() + " ",
-                Output.V_NO_GENERAL, statisticslog);
+                statisticslog);
 
             if( doFull )
                 {
                 state.output.print("" + (double)(best_i[x].size()) + " " +
                     (double)(best_of_run_a[x].size()) + " ",
-                    Output.V_NO_GENERAL, statisticslog);
+                    statisticslog);
                 }
             }
         // we're done!
@@ -259,7 +259,7 @@ public class SimpleShortStatistics extends Statistics
         {
         super.postEvaluationStatistics(state);
         _postEvaluationStatistics(state);
-        state.output.println("",Output.V_NO_GENERAL, statisticslog);
+        state.output.println("", statisticslog);
         }
 
     }

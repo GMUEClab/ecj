@@ -228,12 +228,10 @@ public class Ant extends GPProblem implements SimpleProblemForm
         final EvolutionState state, 
         final int subpopulation, 
         final int threadnum,
-        final int log,
-        final int verbosity)
+        final int log)
 
         {
-        state.output.println("\n\nBest Individual's Map\n=====================",
-            verbosity,log);
+        state.output.println("\n\nBest Individual's Map\n=====================", log);
 
         sum = 0;
         pmod = 97; /** ascii a */
@@ -258,23 +256,23 @@ public class Ant extends GPProblem implements SimpleProblemForm
                 switch(map2[x][y])
                     {
                     case FOOD: 
-                        state.output.print("#",verbosity,log);
+                        state.output.print("#",log);
                         break;
                     case EMPTY: 
-                        state.output.print(".",verbosity,log);
+                        state.output.print(".",log);
                         break;
                     case TRAIL: 
-                        state.output.print("+",verbosity,log);
+                        state.output.print("+",log);
                         break;
                     case ATE:
-                        state.output.print("?",verbosity,log);
+                        state.output.print("?",log);
                         break;
                     default:
-                        state.output.print(""+((char)map2[x][y]),verbosity,log);
+                        state.output.print(""+((char)map2[x][y]),log);
                         break;
                     }
                 }
-            state.output.println("",verbosity,log);
+            state.output.println("",log);
             }
 
         }

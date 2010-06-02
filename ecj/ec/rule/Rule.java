@@ -122,8 +122,16 @@ public abstract class Rule implements Prototype, Comparable
        Nice printing.  The default form simply calls printRuleToStringForHumans and prints the result,
        but you might want to override this.
     */
+    public void printRuleForHumans( final EvolutionState state, final int log )
+        { printRuleForHumans(state, log, Output.V_VERBOSE); }
+                
+    /**
+       Nice printing.  The default form simply calls printRuleToStringForHumans and prints the result,
+       but you might want to override this.
+       @deprecated Verbosity no longer has an effect
+    */
     public void printRuleForHumans( final EvolutionState state, final int log, final int verbosity )
-        { state.output.println(printRuleToStringForHumans(),verbosity,log);}
+        { state.output.println(printRuleToStringForHumans(),log);}
 
     /** Nice printing to a string. The default form calls toString().  */
     public String printRuleToStringForHumans()
@@ -152,8 +160,17 @@ public abstract class Rule implements Prototype, Comparable
        calls printRuleToString(state).   Override this rule to do custom writing to the log,
        or just override printRuleToString(...), which is probably easier to do.
     */
+    public void printRule( final EvolutionState state, final int log )
+        { printRule(state, log, Output.V_VERBOSE); }
+
+    /**
+       Prints the rule in a way that can be read by readRule().  The default form simply
+       calls printRuleToString(state).   Override this rule to do custom writing to the log,
+       or just override printRuleToString(...), which is probably easier to do.
+       @deprecated Verbosity no longer has an effect
+    */
     public void printRule( final EvolutionState state, final int log, final int verbosity )
-        { state.output.println(printRuleToString(state),verbosity,log); }
+        { state.output.println(printRuleToString(state),log); }
 
     /**
        Prints the rule in a way that can be read by readRule().  The default form simply

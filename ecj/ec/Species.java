@@ -40,6 +40,10 @@ import java.io.*;
  <font size=-1>classname, inherits and != ec.Individual</font></td>
  <td valign=top>(the class for the prototypical individual for the species)</td></tr>
 
+ <tr><td valign=top><i>base</i>.<tt>fitness</tt><br>
+ <font size=-1>classname, inherits and != ec.Fitness</font></td>
+ <td valign=top>(the class for the prototypical fitness for the species)</td></tr>
+
  <tr><td valign=top><i>base</i>.<tt>numpipes</tt><br>
  <font size=-1>int &gt;= 1</font></td>
  <td valign=top>(total number of breeding pipelines for the species)</td></tr>

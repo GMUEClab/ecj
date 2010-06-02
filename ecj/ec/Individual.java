@@ -159,6 +159,18 @@ public abstract class Individual implements Prototype
         }
 
     /** Should print the individual out in a pleasing way for humans,
+        with a verbosity of Output.V_NO_GENERAL.
+    */
+
+    public void printIndividualForHumans(final EvolutionState state,
+        final int log)
+        {
+        state.output.println(EVALUATED_PREAMBLE + Code.encode(evaluated), log);
+        fitness.printFitnessForHumans(state,log);
+        state.output.println( genotypeToStringForHumans(), log );
+        }
+                
+    /** Should print the individual out in a pleasing way for humans,
         including its
         fitness, using state.output.println(...,verbosity,log)
         You can get fitness to print itself at the appropriate time by calling 
@@ -168,17 +180,28 @@ public abstract class Individual implements Prototype
         individual has been evaluated, its fitness, and then calls Individual.genotypeToStringForHumans().
         Feel free to override this to produce more sophisticated behavior, 
         though it is rare to need to -- instead you could just override genotypeToStringForHumans().
+        @deprecated Verbosity no longer used.
     */
 
-    public void printIndividualForHumans(final EvolutionState state,
+    public final void printIndividualForHumans(final EvolutionState state,
         final int log, 
         final int verbosity)
         {
-        state.output.println(EVALUATED_PREAMBLE + Code.encode(evaluated), 
-            verbosity, log);
-        fitness.printFitnessForHumans(state,log,verbosity);
-        state.output.println( genotypeToStringForHumans(), verbosity, log );
+        printIndividualForHumans(state, log);
         }
+
+    /** Should print the individual in a way that can be read by computer,
+        including its fitness, with a verbosity of Output.V_NO_GENERAL.
+    */
+
+    public void printIndividual(final EvolutionState state,
+        final int log)
+        {
+        state.output.println(EVALUATED_PREAMBLE + Code.encode(evaluated), log);
+        fitness.printFitness(state,log);
+        state.output.println( genotypeToString(), log );
+        }
+
 
     /** Should print the individual in a way that can be read by computer,
         including its fitness, using state.output.println(...,verbosity,log)
@@ -189,16 +212,14 @@ public abstract class Individual implements Prototype
         individual has been evaluated, its fitness, and then calls Individual.genotypeToString().
         Feel free to override this to produce more sophisticated behavior, 
         though it is rare to need to -- instead you could just override genotypeToString().
+        @deprecated Verbosity no longer used.
     */
 
-    public void printIndividual(final EvolutionState state,
+    public final void printIndividual(final EvolutionState state,
         final int log, 
         final int verbosity)
         {
-        state.output.println(EVALUATED_PREAMBLE + Code.encode(evaluated), 
-            verbosity, log);
-        fitness.printFitness(state,log,verbosity);
-        state.output.println( genotypeToString(), verbosity, log );
+        printIndividual( state, log,  Output.V_NO_GENERAL);
         }
 
     /** Should print the individual in a way that can be read by computer,

@@ -82,96 +82,59 @@ public class SpatialTournamentSelection extends TournamentSelection
         return SpatialDefaults.base().push(P_TOURNAMENT);
         }
 
-    // I hard-code both produce(...) methods for efficiency's sake
-    public int produce(final int subpopulation,
-        final EvolutionState state,
-        final int thread)
+    public int getRandomIndividual(int number, int subpopulation, EvolutionState state, int thread)
         {
-        Space space = null;
         try
             {
-            space = (Space)(state.population.subpops[subpopulation]);
+            Space space = (Space)(state.population.subpops[subpopulation]);
+            int index = space.getIndex(thread);
+            if (number==0 && indCompetes) return index;                                             // we're the first one
+            else return space.getIndexRandomNeighbor(state,thread,index);
             }
         catch( Exception e )
             {
             state.output.fatal( "Subpopulation "+subpopulation+" is not a spatially-embedded subpopulation.\n"+e );
             }
+        throw new InternalError("This should not be reachable");
+        }
 
-        // pick size random individuals, then pick the best.
-        Individual[] oldinds = state.population.subpops[subpopulation].individuals;
 
-        int index = space.getIndex(thread);
-        int randomNeighbor = space.getIndexRandomNeighbor(state,thread,index);
-        int i = indCompetes ? index : randomNeighbor;
-        int bad = i;
+/*
+// I hard-code both produce(...) methods for efficiency's sake
+public int produce(final int subpopulation,
+final EvolutionState state,
+final int thread)
+{
+Space space = null;
+try
+{
+space = (Space)(state.population.subpops[subpopulation]);
+}
+catch( Exception e )
+{
+state.output.fatal( "Subpopulation "+subpopulation+" is not a spatially-embedded subpopulation.\n"+e );
+}
+
+// pick size random individuals, then pick the best.
+Individual[] oldinds = state.population.subpops[subpopulation].individuals;
+
+int index = space.getIndex(thread);
+int randomNeighbor = space.getIndexRandomNeighbor(state,thread,index);
+int i = indCompetes ? index : randomNeighbor;
+int bad = i;
         
-        for (int x=1;x<size;x++)
-            {
-            int j = space.getIndexRandomNeighbor(state,thread,index);
-            if (pickWorst)
-                { if (!(oldinds[j].fitness.betterThan(oldinds[i].fitness))) { bad = i; i = j; } else bad = j; }
-            else
-                { if (oldinds[j].fitness.betterThan(oldinds[i].fitness)) { bad = i; i = j;} else bad = j; }
-            }
+for (int x=1;x<size;x++)
+{
+int j = space.getIndexRandomNeighbor(state,thread,index);
+if (pickWorst)
+{ if (!(oldinds[j].fitness.betterThan(oldinds[i].fitness))) { bad = i; i = j; } else bad = j; }
+else
+{ if (oldinds[j].fitness.betterThan(oldinds[i].fitness)) { bad = i; i = j;} else bad = j; }
+}
             
-        if (probabilityOfSelection != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection))
-            i = bad;
-        return i;
-        }
-
-    // I hard-code both produce(...) methods for efficiency's sake
-    public int produce(final int min, 
-        final int max, 
-        final int start,
-        final int subpopulation,
-        final Individual[] inds,
-        final EvolutionState state,
-        final int thread) 
-        {
-
-        Space space = null;
-        try
-            {
-            space = (Space)(state.population.subpops[subpopulation]);
-            }
-        catch( Exception e )
-            {
-            state.output.fatal( "Subpopulation "+subpopulation+" is not a spatially-embedded subpopulation.\n"+e );
-            }
-
-        int n = 1;
-        if (n>max) n = max;
-        if (n<min) n = min;
-
-        int index = space.getIndex(thread);
-
-        for(int q = 0; q < n; q++)
-            {
-            // pick size random individuals, then pick the best.
-            Individual[] oldinds = state.population.subpops[subpopulation].individuals;
-
-            // all neighbors are for the exact same index (computed earlier)
-            // this assumes the selection procedure is asked for multiple individuals, all in the
-            // neighborhood of the same individual
-            int randomNeighbor = space.getIndexRandomNeighbor(state,thread,index);
-            int i = indCompetes ? index : randomNeighbor;
-                        
-            int bad = i;
-            
-            for (int x=1;x<size;x++)
-                {
-                int j = space.getIndexRandomNeighbor(state,thread,index);
-                if (pickWorst)
-                    { if (!(oldinds[j].fitness.betterThan(oldinds[i].fitness)))  { bad = i; i = j; } else bad = j; }
-                else
-                    { if (oldinds[j].fitness.betterThan(oldinds[i].fitness))  { bad = i; i = j; } else bad = j; }
-                }
-            if (probabilityOfSelection != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection))
-                i = bad;
-            inds[start+q] = oldinds[i];  // note it's a pointer transfer, not a copy!
-//System.out.println( "Selected index " + i + " for position " + (start+q) );
-            }
-        return n;
-        }
-
+if (probabilityOfSelection != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection))
+i = bad;
+return i;
+}
+*/
     }

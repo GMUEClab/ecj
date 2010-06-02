@@ -91,12 +91,12 @@ public class GreedyOverselection extends SelectionMethod
         Parameter def = defaultBase();
         
         top_n_percent =
-            state.parameters.getFloat(base.push(P_TOP),def.push(P_TOP),0.0,1.0);
+            state.parameters.getFloatWithMax(base.push(P_TOP),def.push(P_TOP),0.0,1.0);
         if (top_n_percent < 0.0)
             state.output.fatal("Top-n-percent must be between 0.0 and 1.0", base.push(P_TOP),def.push(P_TOP));
         
         gets_n_percent =
-            state.parameters.getFloat(base.push(P_GETS),def.push(P_GETS),0.0,1.0);
+            state.parameters.getFloatWithMax(base.push(P_GETS),def.push(P_GETS),0.0,1.0);
         if (gets_n_percent < 0.0)
             state.output.fatal("Gets-n-percent must be between 0.0 and 1.0", base.push(P_GETS),def.push(P_GETS));
         

@@ -44,13 +44,4 @@ public class AddSubtract extends Problem implements SimpleProblemForm
             false);
         ind2.evaluated = true;
         }
-    
-    public void describe(final Individual ind, 
-        final EvolutionState state, 
-        final int subpopulation, 
-        final int threadnum,
-        final int log,
-        final int verbosity)
-        {
-        }
-    }
+	}

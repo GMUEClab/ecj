@@ -325,14 +325,27 @@ public class GPTree implements GPNodeParent, Prototype
     /** Prints out the tree in single-line fashion suitable for reading
         in later by computer. O(n). 
         The default version of this method simply calls child's 
-        printRootedTree(...) method. */
+        printRootedTree(...) method. 
+    */
+
+    public void printTree(final EvolutionState state, final int log)
+        {
+        printTree(state, log, Output.V_VERBOSE);
+        }
+
+    /** Prints out the tree in single-line fashion suitable for reading
+        in later by computer. O(n). 
+        The default version of this method simply calls child's 
+        printRootedTree(...) method. 
+        @deprecated Verbosity no longer has an effect
+    */
 
     public void printTree(final EvolutionState state, final int log,
         final int verbosity)
         {
-        child.printRootedTree(state,log,verbosity,0);
+        child.printRootedTree(state,log,0);
         // printRootedTree doesn't print a '\n', so I need to do so here
-        state.output.println("",verbosity,log);
+        state.output.println("",log);
         }
 
     /** Prints out the tree in single-line fashion suitable for reading
@@ -387,16 +400,28 @@ public class GPTree implements GPNodeParent, Prototype
         The default version of this method simply calls child's 
         printRootedTreeForHumans(...) method. */
     
+    public void printTreeForHumans(final EvolutionState state, final int log)
+        {               
+        printTreeForHumans(state, log, Output.V_VERBOSE);
+        }
+
+
+    /** Prints out the tree in a readable Lisp-like fashion. O(n). 
+        The default version of this method simply calls child's 
+        printRootedTreeForHumans(...) method. 
+        @deprecated Verbosityh no longer has an effect.
+    */
+    
     public void printTreeForHumans(final EvolutionState state, final int log,
         final int verbosity)
         {               
         if (useC) state.output.print(child.makeCTree(true, 
-                printTerminalsAsVariablesInC, printTwoArgumentNonterminalsAsOperatorsInC),verbosity,log);
-        else if (useLatex) state.output.print(child.makeLatexTree(),verbosity,log);
-        else if (useGraphviz) state.output.print(child.makeGraphvizTree(), verbosity, log);
-        else child.printRootedTreeForHumans(state,log,verbosity,0,0);
+                printTerminalsAsVariablesInC, printTwoArgumentNonterminalsAsOperatorsInC),log);
+        else if (useLatex) state.output.print(child.makeLatexTree(),log);
+        else if (useGraphviz) state.output.print(child.makeGraphvizTree(), log);
+        else child.printRootedTreeForHumans(state,log,0,0);
         // printRootedTreeForHumans doesn't print a '\n', so I need to do so here
-        state.output.println("",verbosity,log);
+        state.output.println("",log);
         }
 
     /** Builds a new randomly-generated rooted tree and attaches it to the GPTree. */

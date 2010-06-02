@@ -211,17 +211,14 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         
 
     /* (non-Javadoc)
-     * @see ec.simple.SimpleProblemForm#describe(ec.Individual, ec.EvolutionState, int, int, int)
+     * @see ec.simple.SimpleProblemForm#describe(ec.Individual, ec.EvolutionState, int, int)
      */
-    public void describe(Individual ind, EvolutionState state, int subpopulation, int threadnum, 
-        int log, int verbosity) 
+    public void describe(Individual ind, EvolutionState state, int subpopulation, int threadnum, int log) 
         {
-        if (!(problem instanceof SimpleProblemForm)) 
+        if ((problem instanceof SimpleProblemForm)) 
             {
-            state.output.fatal("MasterProblem.describe(...) invoked, but the underlying Problem is not of SimpleProblemForm");
+            ((SimpleProblemForm)problem).describe( ind, state, subpopulation, threadnum, log);
             }
-                
-        ((SimpleProblemForm)problem).describe( ind, state, subpopulation, threadnum, log, verbosity);
         }
 
     /* (non-Javadoc)

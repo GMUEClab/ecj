@@ -37,13 +37,4 @@ public class MaxOnes extends Problem implements SimpleProblemForm
             sum == ind2.genome.length);
         ind2.evaluated = true;
         }
-    
-    public void describe(final Individual ind, 
-        final EvolutionState state, 
-        final int subpopulation, 
-        final int threadnum,
-        final int log,
-        final int verbosity)
-        {
-        }
     }

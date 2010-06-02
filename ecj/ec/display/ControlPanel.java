@@ -274,7 +274,7 @@ public class ControlPanel extends JPanel
         this.add(getBreedThreadsField(), gridBagConstraints10);
         this.add(getJPanel(), gridBagConstraints11);
         this.add(jLabel6, gridBagConstraints25);
-        this.add(getVerbosityField(), gridBagConstraints26);
+        //this.add(getVerbosityField(), gridBagConstraints26);
         this.add(getCheckpointCheckBox(), gridBagConstraints35);
         this.add(getCheckpointPanel(), gridBagConstraints36);
         this.add(jLabel10, gridBagConstraints45);
@@ -761,33 +761,36 @@ public class ControlPanel extends JPanel
             }
         return jScrollPane;
         }
-    /**
+    /*
      * This method initializes jTextField7  
      *      
      * @return javax.swing.JTextField       
-     */    
-    JTextField getVerbosityField() 
-        {
-        if (verbosityField == null) 
-            {
-            verbosityField = new JTextField();
-            verbosityField.addKeyListener(new java.awt.event.KeyAdapter() 
-                { 
-                public void keyPressed(java.awt.event.KeyEvent e) 
-                    {    
-                    if (e.getKeyCode() == KeyEvent.VK_ENTER) 
-                        {
-                        console.parameters.set(new Parameter(Evolve.P_VERBOSITY), ((JTextField)e.getSource()).getText());
-                        } 
-                    else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) 
-                        {
-                        ((JTextField)e.getSource()).setText(console.parameters.getString(new Parameter(Evolve.P_VERBOSITY),null));
-                        }
-                    }
-                });
-            }
-        return verbosityField;
-        }
+     */
+    /*
+      JTextField getVerbosityField() 
+      {
+      if (verbosityField == null) 
+      {
+      verbosityField = new JTextField();
+      verbosityField.addKeyListener(new java.awt.event.KeyAdapter() 
+      { 
+      public void keyPressed(java.awt.event.KeyEvent e) 
+      {    
+      if (e.getKeyCode() == KeyEvent.VK_ENTER) 
+      {
+      console.parameters.set(new Parameter(Evolve.P_VERBOSITY), ((JTextField)e.getSource()).getText());
+      } 
+      else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) 
+      {
+      ((JTextField)e.getSource()).setText(console.parameters.getString(new Parameter(Evolve.P_VERBOSITY),null));
+      }
+      }
+      });
+      }
+      return verbosityField;
+      }
+    */
+        
     /**
      * @param panel TODO
      * @param enabled TODO
@@ -941,7 +944,7 @@ public class ControlPanel extends JPanel
         quitOnRunCompleteCheckbox.setSelected(console.parameters.getBoolean(new Parameter(EvolutionState.P_QUITONRUNCOMPLETE),null,true));
         evalThreadsField.setText(console.parameters.getStringWithDefault(new Parameter(Evolve.P_EVALTHREADS),null,"1"));
         breedThreadsField.setText(console.parameters.getStringWithDefault(new Parameter(Evolve.P_BREEDTHREADS),null,"1"));
-        verbosityField.setText(console.parameters.getStringWithDefault(new Parameter(Evolve.P_VERBOSITY),null,"0"));
+        //verbosityField.setText(console.parameters.getStringWithDefault(new Parameter(Evolve.P_VERBOSITY),null,"0"));
         checkpointCheckBox.setSelected(console.parameters.getBoolean(new Parameter(EvolutionState.P_CHECKPOINT),null,false));
         checkpointModuloField.setText(console.parameters.getStringWithDefault(new Parameter(EvolutionState.P_CHECKPOINTMODULO),null,"10"));
         prefixField.setText(console.parameters.getStringWithDefault(new Parameter(EvolutionState.P_CHECKPOINTPREFIX),null,"gc"));
