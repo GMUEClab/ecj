@@ -65,13 +65,12 @@
 <p>Let's begin by defining some basic parameters in our params file which the Evolve class uses.  Since Evolve (oddly given its name) isn't involved in evolution, these parameters are mostly administrative stuff.  Add the following parameters to your <tt>tutorial1.params</tt> file.
 
 <tt><pre>
-verbosity	= 0
 breedthreads	= 1
 evalthreads	= 1
 seed.0		= 4357
 </pre></tt>
 
-<p>Most of the things ECJ prints out to the terminal are <i>messages</i>.  A message is a string which is sent to the Output facility to be printed and logged.  Messages can take several forms, though you'll usually see: plain-old messages, warnings, errors, and fatal errors.  A fatal error causes ECJ to quit as soon as it is printed and logged.  An ordinary error raises an <i>error flag</i> in the Output facility; ECJ can wait after a string of errors before it finally quits (to give you more debugging information).  Warnings and messages do not quit ECJ.  The <tt>verbosity</tt> parameter tells ECJ what kinds of things it should print to the screen: a verbosity of 0 says ECJ should print everything to the screen, no matter how inconsequential.  You can change the verbosity: for more information, see the <a href="../../classdocs/ec/util/Output.html">Output</a> documentation.^M
+<p>Most of the things ECJ prints out to the terminal are <i>messages</i>.  A message is a string which is sent to the Output facility to be printed and logged.  Messages can take several forms, though you'll usually see: plain-old messages, warnings, errors, and fatal errors.  A fatal error causes ECJ to quit as soon as it is printed and logged.  An ordinary error raises an <i>error flag</i> in the Output facility; ECJ can wait after a string of errors before it finally quits (to give you more debugging information).  Warnings and messages do not quit ECJ. 
 ^M
 <p>The next lines tell ECJ whether or not it should be multithreaded.  If you're running on a single-processor machine, it rarely makes sense to be multithreaded (in fact, it's generally slower).  <tt>breedthreads</tt> tells the Breeder how many threads to spawn when breeding.  <tt>evalthreads</tt> tells the Evaluator how many threads to spawn when evaluating.
 
@@ -314,20 +313,6 @@ public class MaxOnes extends Problem implements SimpleProblemForm
 <p>SimpleFitness defines a fitness-setting method where you provide the EvolutionState object, the fitness value you want to set (for SimpleFitness, this is between 0 inclusive and infinity exclusive, 0 being worst and infinity being better than the best), and a flag indicating whether or not this fitness is the ideal fitness.  We do exactly this.
 
 <p>Lastly, we mark the individual as evaluated, and we're done!
-
-<p>We finish out with an empty version of the <b>describe</b> method, since we don't have anything special to say about individuals:
-
-<tt><pre>
-    public void describe(final Individual ind, 
-                         final EvolutionState state, 
-                         final int subpopulation,
-                         final int threadnum, 
-                         final int log,
-                         final int verbosity)
-        {
-        }
-    }
-</pre></tt>
 
 <h3>Run That Puppy</h3>
 

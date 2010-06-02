@@ -84,7 +84,6 @@ generations = 200
 						<tt>
 						<pre>
 store =                                 true
-verbosity =                             0
 flush =                                 true
 evalthreads =                           1
 breedthreads =                          1
@@ -349,13 +348,6 @@ public class AddSubtract extends Problem implements SimpleProblemForm
                 false);
         ind2.evaluated = true;
         }
-    
-    public void describe(final Individual ind, 
-                         final EvolutionState state, 
-                         final int subpopulation,
-                         final int threadnum,
-                         final int log,
-                         final int verbosity)    { }
     }
 </pre></tt>
 
@@ -417,7 +409,6 @@ java ec.Evolve -file tutorial2.params -p print-params=true
 
 <tt><pre>
         P: store = true
-        P: verbosity = 0
         P: flush = true
         P: breedthreads = 1
         P: evalthreads = 1
