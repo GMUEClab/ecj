@@ -8,6 +8,7 @@
 package ec.gp;
 import ec.util.*;
 import ec.*;
+import ec.simple.*;
 
 /* 
  * GPProblem.java
@@ -22,9 +23,6 @@ import ec.*;
  * evaluate a large number of trees without having to be garbage-collected
  * and reallocated.  Be sure to call stack.reset() after each
  * tree evaluation.
- *
- * <p>GPProblem also provides a default (empty) version of describe(...) for
- * SimpleProblemForm so you don't have to bother with it if you don't want to.
  *
  <p><b>Parameters</b><br>
  <table>
@@ -51,7 +49,7 @@ import ec.*;
  * @version 1.0 
  */
 
-public abstract class GPProblem extends Problem 
+public abstract class GPProblem extends Problem implements SimpleProblemForm
     {
     public final static String P_GPPROBLEM = "problem";
     public final static String P_STACK = "stack";
@@ -94,17 +92,5 @@ public abstract class GPProblem extends Problem
         // deep-clone the stack; it's not shared
         prob.stack = (ADFStack)(stack.clone());
         return prob;
-        }
-
-
-    public void describe(final Individual ind, 
-        final EvolutionState state, 
-        final int subpopulation, 
-        final int threadnum,
-        final int log,
-        final int verbosity)
-        {
-        // default version does nothing
-        return;
         }
     }

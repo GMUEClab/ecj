@@ -44,7 +44,7 @@ import ec.steadystate.*;
  <p><b>Parameters</b><br>
  <table>
  <tr><td valign=top><i>base.</i><tt>size</tt><br>
- <font size=-1>int &gt;= 1 <b>or</b> 1.0 &lt; float &lt; 2.0</font></td>
+ <font size=-1>float &gt;= 1</font></td>
  <td valign=top>(the tournament size)</td></tr>
 
  <tr><td valign=top><i>base.</i><tt>pick-worst</tt><br>
@@ -74,11 +74,11 @@ public class TournamentSelection extends SelectionMethod implements SteadyStateB
     /* Default size */
     public static final int DEFAULT_SIZE = 7;
 
-    /** Size of the tournament*/
-    public int size;
+    /** Base size of the tournament; this may change.  */
+    int size;
 
-    /** What's our probability of selection? If 1.0, we always pick the "good" individual. */
-    public double probabilityOfSelection;
+    /** Probablity of picking the size plus one */
+    public double probabilityOfPickingSizePlusOne;
     
     /** Do we pick the worst instead of the best? */
     public boolean pickWorst;
@@ -97,83 +97,63 @@ public class TournamentSelection extends SelectionMethod implements SteadyStateB
         double val = state.parameters.getDouble(base.push(P_SIZE),def.push(P_SIZE),1.0);
         if (val < 1.0)
             state.output.fatal("Tournament size must be >= 1.",base.push(P_SIZE),def.push(P_SIZE));
-        else if (val > 1 && val < 2) // pick with probability
+        else if (val == (int) val)  // easy, it's just an integer
             {
-            size = 2;
-            probabilityOfSelection = (val/2);
+            size = (int) val;
+            probabilityOfPickingSizePlusOne = 0.0;
             }
-        else if (val != (int)val)  // it's not an integer
-            state.output.fatal("If >= 2, Tournament size must be an integer.", base.push(P_SIZE), def.push(P_SIZE));
         else
             {
-            size = (int)val;
-            probabilityOfSelection = 1.0;
+            size = (int) Math.floor(val);
+            probabilityOfPickingSizePlusOne = val - size;  // for example, if we have 5.4, then the probability of picking *6* is 0.4
             }
 
         pickWorst = state.parameters.getBoolean(base.push(P_PICKWORST),def.push(P_PICKWORST),false);
         }
 
+    /* Returns the tournament size to use. */
+    int getTournamentSizeToUse(MersenneTwisterFast random)
+        {
+        double p = probabilityOfPickingSizePlusOne;   // pulls us to under 35 bytes
+        if (p == 0.0) return size;
+        return size + (random.nextBoolean(p) ? 1 : 0);
+        }
 
-    // I hard-code both produce(...) methods for efficiency's sake
 
-    public int produce(final int subpopulation,
+    /** Produces the index of a (typically uniformly distributed) randomly chosen individual
+        to fill the tournament.  <i>number</> is the position of the individual in the tournament.  */
+    public int getRandomIndividual(int number, int subpopulation, EvolutionState state, int thread)
+        {
+        Individual[] oldinds = state.population.subpops[subpopulation].individuals;
+        return state.random[thread].nextInt(oldinds.length);
+        }
+
+    public final int produce(final int subpopulation,
         final EvolutionState state,
         final int thread)
         {
         // pick size random individuals, then pick the best.
         Individual[] oldinds = state.population.subpops[subpopulation].individuals;
-        int i = state.random[thread].nextInt(oldinds.length) ;
-        int bad = i;
+        int best = getRandomIndividual(0, subpopulation, state, thread);
         
-        for (int x=1;x<size;x++)
-            {
-            int j = state.random[thread].nextInt(oldinds.length);
-            if (pickWorst)
-                { if (!(oldinds[j].fitness.betterThan(oldinds[i].fitness))) { bad = i; i = j; } else bad = j; }
-            else
-                { if (oldinds[j].fitness.betterThan(oldinds[i].fitness)) { bad = i; i = j;} else bad = j; }
-            }
-            
-        if (probabilityOfSelection != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection))
-            i = bad;
-        return i;
-        }
-
-
-    // I hard-code both produce(...) methods for efficiency's sake
-
-    public int produce(final int min, 
-        final int max, 
-        final int start,
-        final int subpopulation,
-        final Individual[] inds,
-        final EvolutionState state,
-        final int thread) 
-        {
-        int n = 1;
-        if (n>max) n = max;
-        if (n<min) n = min;
-
-        for(int q = 0; q < n; q++)
-            {
-            // pick size random individuals, then pick the best.
-            Individual[] oldinds = state.population.subpops[subpopulation].individuals;
-            int i = state.random[thread].nextInt(oldinds.length);
-            int bad = i;
-            
-            for (int x=1;x<size;x++)
+        int s = getTournamentSizeToUse(state.random[thread]);
+                
+        if (pickWorst)
+            for (int x=1;x<s;x++)
                 {
-                int j = state.random[thread].nextInt(oldinds.length);
-                if (pickWorst)
-                    { if (!(oldinds[j].fitness.betterThan(oldinds[i].fitness)))  { bad = i; i = j; } else bad = j; }
-                else
-                    { if (oldinds[j].fitness.betterThan(oldinds[i].fitness))  { bad = i; i = j; } else bad = j; }
+                int j = getRandomIndividual(x, subpopulation, state, thread);
+                if (!(oldinds[j].fitness.betterThan(oldinds[best].fitness)))
+                    best = j;
                 }
-            if (probabilityOfSelection != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection))
-                i = bad;
-            inds[start+q] = oldinds[i];  // note it's a pointer transfer, not a copy!
-            }
-        return n;
+        else
+            for (int x=1;x<s;x++)
+                {
+                int j = getRandomIndividual(x, subpopulation, state, thread);
+                if (oldinds[j].fitness.betterThan(oldinds[best].fitness))
+                    best = j;
+                }
+            
+        return best;
         }
 
     public void individualReplaced(final SteadyStateEvolutionState state,

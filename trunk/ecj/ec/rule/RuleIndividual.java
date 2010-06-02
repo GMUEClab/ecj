@@ -173,33 +173,27 @@ public class RuleIndividual extends Individual
             }
         }
 
-    /** Overridden for the RuleIndividual genotype, writing each ruleset in turn. */
     public void printIndividualForHumans(final EvolutionState state,
-        final int log, 
-        final int verbosity)
+        final int log)
         {
-        state.output.println(EVALUATED_PREAMBLE + (evaluated ? "true" : "false"), 
-            verbosity, log);
-        fitness.printFitnessForHumans(state,log,verbosity);
+        state.output.println(EVALUATED_PREAMBLE + (evaluated ? "true" : "false"), log);
+        fitness.printFitnessForHumans(state,log);
         for(int x=0;x<rulesets.length;x++)
             {
-            state.output.println("Ruleset " + x + ":", verbosity, log);
-            rulesets[x].printRuleSetForHumans(state, log, verbosity);
+            state.output.println("Ruleset " + x + ":", log);
+            rulesets[x].printRuleSetForHumans(state, log);
             }
         }
 
-    /** Overridden for the RuleIndividual genotype, writing each ruleset in turn. */
     public void printIndividual(final EvolutionState state,
-        final int log, 
-        final int verbosity)
+        final int log)
         {
-        state.output.println(EVALUATED_PREAMBLE + Code.encode(evaluated), 
-            verbosity, log);
-        fitness.printFitness(state, log, verbosity);
+        state.output.println(EVALUATED_PREAMBLE + Code.encode(evaluated), log);
+        fitness.printFitness(state, log);
         for(int x=0;x<rulesets.length;x++)
             {
-            state.output.println("Ruleset " + x + ":",verbosity, log);
-            rulesets[x].printRuleSet(state,log,verbosity);
+            state.output.println("Ruleset " + x + ":", log);
+            rulesets[x].printRuleSet(state,log);
             }
         }
 

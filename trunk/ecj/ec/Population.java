@@ -130,29 +130,47 @@ public class Population implements Group
         }
         
         
-    /** Prints an entire population in a form readable by humans. */
-    public void printPopulationForHumans(final EvolutionState state,
+    /** Prints an entire population in a form readable by humans. 
+        @deprecated Verbosity no longer has meaning
+    */
+    public final void printPopulationForHumans(final EvolutionState state,
         final int log, 
         final int verbosity)
         {
-        state.output.println(NUM_SUBPOPS_PREAMBLE + subpops.length, verbosity, log);
+        printPopulationForHumans(state, log);
+        }
+        
+    /** Prints an entire population in a form readable by humans but also parseable by the computer using readPopulation(EvolutionState, LineNumberReader).
+        @deprecated Verbosity no longer has meaning
+    */
+    public final void printPopulation(final EvolutionState state,
+        final int log, 
+        final int verbosity)
+        {
+        printPopulation(state, log);
+        }
+        
+    /** Prints an entire population in a form readable by humans, with a verbosity of Output.V_NO_GENERAL. */
+    public void printPopulationForHumans(final EvolutionState state,
+        final int log)
+        {
+        state.output.println(NUM_SUBPOPS_PREAMBLE + subpops.length,  log);
         for(int i = 0 ; i < subpops.length; i++)
             {
-            state.output.println(SUBPOP_INDEX_PREAMBLE + i, verbosity, log);
-            subpops[i].printSubpopulationForHumans(state, log, verbosity);
+            state.output.println(SUBPOP_INDEX_PREAMBLE + i,  log);
+            subpops[i].printSubpopulationForHumans(state, log);
             }
         }
         
-    /** Prints an entire population in a form readable by humans but also parseable by the computer using readPopulation(EvolutionState, LineNumberReader). */
+    /** Prints an entire population in a form readable by humans but also parseable by the computer using readPopulation(EvolutionState, LineNumberReader), with a verbosity of Output.V_NO_GENERAL. */
     public void printPopulation(final EvolutionState state,
-        final int log, 
-        final int verbosity)
+        final int log)
         {
-        state.output.println(NUM_SUBPOPS_PREAMBLE + Code.encode(subpops.length), verbosity, log);
+        state.output.println(NUM_SUBPOPS_PREAMBLE + Code.encode(subpops.length),  log);
         for(int i = 0 ; i < subpops.length; i++)
             {
-            state.output.println(SUBPOP_INDEX_PREAMBLE + Code.encode(i), verbosity, log);
-            subpops[i].printSubpopulation(state, log, verbosity);
+            state.output.println(SUBPOP_INDEX_PREAMBLE + Code.encode(i),  log);
+            subpops[i].printSubpopulation(state, log);
             }
         }
         

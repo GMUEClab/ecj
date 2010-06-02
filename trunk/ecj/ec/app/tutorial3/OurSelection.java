@@ -28,7 +28,7 @@ public class OurSelection extends SelectionMethod
         // gets a double between min (0.0) and max (1.0), from the parameter
         // database, returning a value of min-1 (-1.0) if the parameter doesn't exist or was 
         // outside this range.
-        middleProbability = state.parameters.getDouble(base.push(P_MIDDLEPROBABILITY),
+        middleProbability = state.parameters.getDoubleWithMax(base.push(P_MIDDLEPROBABILITY),
             def.push(P_MIDDLEPROBABILITY),0.0,1.0);
         if (middleProbability < 0.0)
             state.output.fatal("Middle-Probability must be between 0.0 and 1.0",

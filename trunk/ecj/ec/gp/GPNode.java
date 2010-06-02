@@ -654,7 +654,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
         
         for(int x=0;x<newNodes.length;x++)
             {
-            if (this==oldNodes[x]) found=x; break;
+            if (this==oldNodes[x]) { found=x; break; }
             }
 
         if (found > -1)
@@ -785,13 +785,27 @@ public abstract class GPNode implements GPNodeParent, Prototype
         and returns the number of bytes in the string that you sent
         to the log (use print(),
         not println()).  The default version gets the atom from
-        toStringForHumans(). */
+        toStringForHumans(). 
+    */
+    public int printNodeForHumans(final EvolutionState state,
+        final int log)
+        {
+        return printNodeForHumans(state, log, Output.V_VERBOSE);
+        }
+
+    /** Prints out a human-readable and Lisp-like atom for the node, 
+        and returns the number of bytes in the string that you sent
+        to the log (use print(),
+        not println()).  The default version gets the atom from
+        toStringForHumans(). 
+        @deprecated Verbosity no longer has an effect. 
+    */
     public int printNodeForHumans(final EvolutionState state,
         final int log, 
         final int verbosity)
         {
         String n = toStringForHumans();
-        state.output.print(n,verbosity,log);
+        state.output.print(n,log);
         return n.length();
         }
 
@@ -800,12 +814,27 @@ public abstract class GPNode implements GPNodeParent, Prototype
         is also suitable for readNode to read, and returns
         the number of bytes in the string that you sent to the log (use print(),
         not println()).  The default version gets the atom from toString().
-        O(1). */
+        O(1). 
+    */
+    public int printNode(final EvolutionState state, final int log)
+        {
+        printNode(state, log, Output.V_VERBOSE);
+        String n = toString();
+        return n.length();
+        }
+
+    /** Prints out a COMPUTER-readable and Lisp-like atom for the node, which
+        is also suitable for readNode to read, and returns
+        the number of bytes in the string that you sent to the log (use print(),
+        not println()).  The default version gets the atom from toString().
+        O(1). 
+        @deprecated Verbosity no longer has an effect. 
+    */
     public int printNode(final EvolutionState state, final int log, 
         final int verbosity)
         {
         String n = toString();
-        state.output.print(n,verbosity,log);
+        state.output.print(n,log);
         return n.length();
         }
 
@@ -952,20 +981,34 @@ public abstract class GPNode implements GPNodeParent, Prototype
 
     /** Prints out the tree on a single line, with no ending \n, in a fashion that can
         be read in later by computer. O(n).  
-        You should call this method with printbytes == 0. */
+        You should call this method with printbytes == 0. 
+    */
+    
+    public int printRootedTree(final EvolutionState state,
+        final int log, int printbytes)
+        {
+        return printRootedTree(state, log, Output.V_VERBOSE, printbytes);
+        }
+
+
+    /** Prints out the tree on a single line, with no ending \n, in a fashion that can
+        be read in later by computer. O(n).  
+        You should call this method with printbytes == 0. 
+        @Deprecated Verbosity no longer has an effect.
+    */
     
     public int printRootedTree(final EvolutionState state,
         final int log, final int verbosity,
         int printbytes)
         {
         if (children.length>0) { state.output.print(" (",verbosity,log); printbytes += 2; }
-        else { state.output.print(" ",verbosity,log); printbytes += 1; }
+        else { state.output.print(" ",log); printbytes += 1; }
 
-        printbytes += printNode(state,log,verbosity);
+        printbytes += printNode(state,log);
 
         for (int x=0;x<children.length;x++)
-            printbytes = children[x].printRootedTree(state,log,verbosity,printbytes);
-        if (children.length>0) { state.output.print(")",verbosity,log); printbytes += 1; }
+            printbytes = children[x].printRootedTree(state,log,printbytes);
+        if (children.length>0) { state.output.print(")",log); printbytes += 1; }
         return printbytes;
         }
 
@@ -989,7 +1032,22 @@ public abstract class GPNode implements GPNodeParent, Prototype
         }
 
 
-    /** Prints out the tree in a readable Lisp-like multi-line fashion. O(n).  You should call this method with tablevel and printbytes == 0.  No ending '\n' is printed.  */
+    /** Prints out the tree in a readable Lisp-like multi-line fashion. O(n).  
+        You should call this method with tablevel and printbytes == 0.  
+        No ending '\n' is printed.  
+    */
+    
+    public int printRootedTreeForHumans(final EvolutionState state, final int log,
+        int tablevel, int printbytes)
+        {
+        return printRootedTreeForHumans(state, log, Output.V_VERBOSE, tablevel, printbytes);
+        }
+
+    /** Prints out the tree in a readable Lisp-like multi-line fashion. O(n).  
+        You should call this method with tablevel and printbytes == 0.  
+        No ending '\n' is printed.  
+        @deprecated Verbosity no longer has an effect.
+    */
     
     public int printRootedTreeForHumans(final EvolutionState state, final int log,
         final int verbosity,
@@ -997,21 +1055,21 @@ public abstract class GPNode implements GPNodeParent, Prototype
         {
         if (printbytes>MAXPRINTBYTES)
             { 
-            state.output.print("\n",verbosity,log);
+            state.output.print("\n",log);
             tablevel++;
             printbytes = 0;
             for(int x=0;x<tablevel;x++)
-                state.output.print(GPNODEPRINTTAB,verbosity,log);
+                state.output.print(GPNODEPRINTTAB,log);
             }
 
-        if (children.length>0) { state.output.print(" (",verbosity,log); printbytes += 2; }
-        else { state.output.print(" ",verbosity,log); printbytes += 1; }
+        if (children.length>0) { state.output.print(" (",log); printbytes += 2; }
+        else { state.output.print(" ",log); printbytes += 1; }
 
-        printbytes += printNodeForHumans(state,log,verbosity);
+        printbytes += printNodeForHumans(state,log);
 
         for (int x=0;x<children.length;x++)
-            printbytes = children[x].printRootedTreeForHumans(state,log,verbosity,tablevel,printbytes);
-        if (children.length>0) { state.output.print(")",verbosity,log); printbytes += 1; }
+            printbytes = children[x].printRootedTreeForHumans(state,log,tablevel,printbytes);
+        if (children.length>0) { state.output.print(")",log); printbytes += 1; }
         return printbytes;
         }
 

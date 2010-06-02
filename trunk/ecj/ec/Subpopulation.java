@@ -201,29 +201,47 @@ public class Subpopulation implements Group
             }
         }
         
-    /** Prints an entire subpopulation in a form readable by humans. */
-    public void printSubpopulationForHumans(final EvolutionState state,
+    /** Prints an entire subpopulation in a form readable by humans. 
+        @deprecated Verbosity no longer has meaning
+    */
+    public final void printSubpopulationForHumans(final EvolutionState state,
         final int log, 
         final int verbosity)
         {
-        state.output.println(NUM_INDIVIDUALS_PREAMBLE + individuals.length, verbosity, log);
+        printSubpopulationForHumans(state, log);
+        }
+        
+    /** Prints an entire subpopulation in a form readable by humans but also parseable by the computer using readSubpopulation(EvolutionState, LineNumberReader). 
+        @deprecated Verbosity no longer has meaning
+    */
+    public final void printSubpopulation(final EvolutionState state,
+        final int log, 
+        final int verbosity)
+        {
+        printSubpopulation(state, log);
+        }
+        
+    /** Prints an entire subpopulation in a form readable by humans, with a verbosity of Output.V_NO_GENERAL. */
+    public void printSubpopulationForHumans(final EvolutionState state,
+        final int log)
+        {
+        state.output.println(NUM_INDIVIDUALS_PREAMBLE + individuals.length, log);
         for(int i = 0 ; i < individuals.length; i++)
             {
-            state.output.println(INDIVIDUAL_INDEX_PREAMBLE + Code.encode(i), verbosity, log);
-            individuals[i].printIndividualForHumans(state, log, verbosity);
+            state.output.println(INDIVIDUAL_INDEX_PREAMBLE + Code.encode(i), log);
+            individuals[i].printIndividualForHumans(state, log);
             }
         }
         
-    /** Prints an entire subpopulation in a form readable by humans but also parseable by the computer using readSubpopulation(EvolutionState, LineNumberReader). */
+    /** Prints an entire subpopulation in a form readable by humans but also parseable by the computer using readSubpopulation(EvolutionState, LineNumberReader) with a verbosity of Output.V_NO_GENERAL. */
     public void printSubpopulation(final EvolutionState state,
-        final int log, 
-        final int verbosity)
+        final int log)
         {
-        state.output.println(NUM_INDIVIDUALS_PREAMBLE + Code.encode(individuals.length), verbosity, log);
+        state.output.println(NUM_INDIVIDUALS_PREAMBLE + Code.encode(individuals.length), log);
         for(int i = 0 ; i < individuals.length; i++)
             {
-            state.output.println(INDIVIDUAL_INDEX_PREAMBLE + Code.encode(i), verbosity, log);
-            individuals[i].printIndividual(state, log, verbosity);
+            state.output.println(INDIVIDUAL_INDEX_PREAMBLE + Code.encode(i), log);
+            individuals[i].printIndividual(state, log);
             }
         }
         
@@ -273,7 +291,7 @@ public class Subpopulation implements Group
                      {
                      state.output.warnOnce("On reading subpopulation from text stream, some of the preexisting subpopulation's slots were null.\n" +
                          "Had to use newIndividual() instead of readIndividual().  If you're starting an evolutionary run by reading an\n" +
-						 "existing population from a file, this is expected -- ignore this message.");
+                         "existing population from a file, this is expected -- ignore this message.");
                      individuals[i] = species.newIndividual(state, reader);
                      }
                  }

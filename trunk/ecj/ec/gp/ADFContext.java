@@ -148,7 +148,7 @@ public class ADFContext implements Prototype
         // do I have that many arguments?
         if (argument >= adf.children.length || argument < 0)  // uh oh 
             {
-            individual.printIndividual(state,0,3000);
+            individual.printIndividual(state,0);
             state.output.fatal("Invalid argument number for " + adf.errorInfo());
             }
 

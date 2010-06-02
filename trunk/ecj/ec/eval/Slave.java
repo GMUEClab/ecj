@@ -48,7 +48,11 @@ import ec.util.*;
  The user can provide optional overriding parameters on the command-line with the <tt>-p</tt> option.
  
  <p>Slaves need to know some things in order to run: the master's IP address and socket port number,
- whether to do compression, and whether or not to return individuals or just fitnesses.
+ whether to do compression, and whether or not to return individuals or just fitnesses.  Unfortunately, 
+ Sun's CompressedInputStream/CompressedOutputStream is broken (it doesn't allow partial flushes, which
+ is critical for doing compressed network streams).  In order to do compression, you need to download the
+ JZLIB library from the ECJ website or from http://www.jcraft.com/jzlib/  .  ECJ will detect and use it
+ automatically.
  
  <p>Slaves presently always run in single-threaded mode and receive their random number generator seed
  from the master.  Thus they ignore any seed parameters given to them.
@@ -109,10 +113,6 @@ import ec.util.*;
  <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
  <td valign=top>(should I flush all output as soon as it's printed (useful for debugging when an exception occurs))</td></tr>
  -->
-
- <tr><td valign=top><tt>verbosity</tt><br>
- <font size=-1>int &gt;= 0</font></td>
- <td valign=top>(the ec.util.Output object's verbosity)</td></tr>
 
  <tr><td valign=top><tt>state</tt><br>
  <font size=-1>classname, inherits and != ec.EvolutionState</font></td>
@@ -191,9 +191,6 @@ public class Slave
     /* nostore parameter */
     // public static final String P_STORE = "store";
         
-    /** verbosity parameter */
-    public static final String P_VERBOSITY = "verbosity";
-        
     /** state parameter */
     public static final String P_STATE = "state";
         
@@ -214,7 +211,6 @@ public class Slave
         ParameterDatabase parameters = null;
         Output output = null;
 
-        int verbosity;
         boolean store;
         int x;
                 
@@ -349,21 +345,16 @@ public class Slave
                 // 1. create the output
                 // store = parameters.getBoolean(new Parameter(P_STORE), null, false);
                 
-                verbosity = parameters.getInt(new Parameter(P_VERBOSITY), null, 0);
-                if (verbosity < 0)
-                    Output.initialError("Verbosity should be an integer >= 0.\n",
-                        new Parameter(P_VERBOSITY));
-                
                 if (output != null) output.close();
-                output = new Output(true, verbosity);
+                output = new Output(true);
                 //output.setFlush(
                 //    parameters.getBoolean(new Parameter(P_FLUSH),null,false));
                 
                 // stdout is always log #0. stderr is always log #1.
                 // stderr accepts announcements, and both are fully verbose
                 // by default.
-                output.addLog(ec.util.Log.D_STDOUT, Output.V_VERBOSE, false);
-                output.addLog(ec.util.Log.D_STDERR, Output.V_VERBOSE, true);
+                output.addLog(ec.util.Log.D_STDOUT, false);
+                output.addLog(ec.util.Log.D_STDERR, true);
 
                 output.systemMessage(Version.message());
 
@@ -594,6 +585,7 @@ public class Slave
         int numInds = 1;
         try
             {
+            countVictoriesOnly = dataIn.readBoolean();
             numInds = dataIn.readInt();
             }
         catch (IOException e)

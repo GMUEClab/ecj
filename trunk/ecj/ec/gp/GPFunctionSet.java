@@ -84,6 +84,8 @@ public class GPFunctionSet implements Clique
     // some convenience methods which speed up various kinds
     // of mutation operators
 
+    /** The nodes that our GPTree can use, hashed by name. */
+    public Hashtable nodesByName;
 
     /** Nodes == a given arity, that is: nodesByArity[type][arity][thenodes] */
     public GPNode[][][]nodesByArity;
@@ -195,7 +197,6 @@ public class GPFunctionSet implements Clique
                     if (nonterminals[x][y].children.length >= a )
                         nonterminalsOverArity[x][a][cur_a++] = nonterminals[x][y];
                 }
-
         }
 
 
@@ -221,6 +222,8 @@ public class GPFunctionSet implements Clique
             state.output.error("The GPFunctionSet \"" + name + "\" has no functions.",
                 base.push(P_SIZE));
         
+        nodesByName = new Hashtable();
+
         Parameter p = base.push(P_FUNC);
         Vector tmp = new Vector();
         for(int x = 0; x < numFuncs; x++)
@@ -233,6 +236,19 @@ public class GPFunctionSet implements Clique
 
             // add to my collection
             tmp.addElement(gpfi);
+                        
+            // Load into the nodesByName hashtable
+            GPNode[] nodes = (GPNode[])(nodesByName.get(gpfi.toString()));
+            if (nodes == null)
+                nodesByName.put(gpfi.toString(), new GPNode[] { gpfi });
+            else
+                {
+                // O(n^2) but uncommon so what the heck.
+                GPNode[] nodes2 = new GPNode[nodes.length + 1];
+                System.arraycopy(nodes, 0, nodes2, 0, nodes.length);
+                nodes2[nodes2.length - 1] = gpfi;
+                nodesByName.put(gpfi.toString(), nodes2);
+                }
             }
 
         // Make my hash tables

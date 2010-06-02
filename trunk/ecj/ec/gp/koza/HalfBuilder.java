@@ -137,7 +137,7 @@ public class HalfBuilder extends KozaBuilder
 
         Parameter def = defaultBase();
 
-        pickGrowProbability = state.parameters.getFloat(
+        pickGrowProbability = state.parameters.getFloatWithMax(
             base.push(P_PICKGROWPROBABILITY),
             def.push(P_PICKGROWPROBABILITY),0.0f,1.0f);
         if (pickGrowProbability < 0.0f)

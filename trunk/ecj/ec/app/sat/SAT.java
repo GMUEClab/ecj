@@ -79,15 +79,6 @@ public class SAT extends Problem implements SimpleProblemForm
         ind2.evaluated = true; 
         }
         
-    public void describe(final Individual ind, 
-        final EvolutionState state, 
-        final int threadnum,
-        final int subpopulation,
-        final int log,
-        final int verbosity)  
-        { 
-        }
-        
         
     /**
        Private helper class holding a single clause in the boolean formula. Each clause 

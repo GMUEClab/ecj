@@ -123,7 +123,7 @@ public class KozaNodeSelector implements GPNodeSelector
         {
         Parameter def = defaultBase();
 
-        terminalProbability = state.parameters.getFloat(
+        terminalProbability = state.parameters.getFloatWithMax(
             base.push(P_TERMINAL_PROBABILITY),
             def.push(P_TERMINAL_PROBABILITY), 0.0, 1.0);
         if (terminalProbability==-1.0)
@@ -131,7 +131,7 @@ public class KozaNodeSelector implements GPNodeSelector
                 base.push(P_TERMINAL_PROBABILITY),
                 def.push(P_TERMINAL_PROBABILITY));
         
-        nonterminalProbability = state.parameters.getFloat(
+        nonterminalProbability = state.parameters.getFloatWithMax(
             base.push(P_NONTERMINAL_PROBABILITY), 
             def.push(P_NONTERMINAL_PROBABILITY),0.0, 1.0);
         if (nonterminalProbability==-1.0)
@@ -139,7 +139,7 @@ public class KozaNodeSelector implements GPNodeSelector
                 base.push(P_NONTERMINAL_PROBABILITY), 
                 def.push(P_NONTERMINAL_PROBABILITY));
 
-        rootProbability = state.parameters.getFloat(
+        rootProbability = state.parameters.getFloatWithMax(
             base.push(P_ROOT_PROBABILITY),
             def.push(P_ROOT_PROBABILITY),0.0, 1.0);
         

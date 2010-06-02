@@ -124,7 +124,7 @@ public class Parameter implements Serializable
 
         for (int y=0;y<n;y++)
             {
-            int x = param.lastIndexOf(delimiter);
+            int x = s.lastIndexOf(delimiter);
             if (x==-1) // there's nothing left
                 return null;
             else s = param.substring(0,x);

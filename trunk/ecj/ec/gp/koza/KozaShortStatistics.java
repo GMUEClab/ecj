@@ -114,7 +114,7 @@ public class KozaShortStatistics extends Statistics
 
         if (statisticsFile!=null) try
                                       {
-                                      statisticslog = state.output.addLog(statisticsFile,Output.V_NO_GENERAL-1,false,
+                                      statisticslog = state.output.addLog(statisticsFile,
                                           !state.parameters.getBoolean(base.push(P_COMPRESS),null,false),
                                           state.parameters.getBoolean(base.push(P_COMPRESS),null,false));
                                       }
@@ -146,7 +146,7 @@ public class KozaShortStatistics extends Statistics
         best_of_run_a = new Individual[state.population.subpops.length];
         
         // print out our generation number
-        state.output.print("0 ",Output.V_NO_GENERAL, statisticslog);
+        state.output.print("0 ", statisticslog);
 
         // gather timings       
         if (doFull)
@@ -157,8 +157,8 @@ public class KozaShortStatistics extends Statistics
             for(int x=0;x<totalDepths.length;x++) totalDepths[x] = 0;
             Runtime r = Runtime.getRuntime();
             long curU =  r.totalMemory() - r.freeMemory();          
-            state.output.print("" + (System.currentTimeMillis()-lastTime) + " ", Output.V_NO_GENERAL, statisticslog);
-            state.output.print("" + (curU-lastUsage) + " ", Output.V_NO_GENERAL, statisticslog);            
+            state.output.print("" + (System.currentTimeMillis()-lastTime) + " ",  statisticslog);
+            state.output.print("" + (curU-lastUsage) + " ",  statisticslog);            
             }
         }
 
@@ -176,15 +176,15 @@ public class KozaShortStatistics extends Statistics
     public void postBreedingStatistics(final EvolutionState state) 
         {
         super.postBreedingStatistics(state);
-        state.output.print("" + (state.generation + 1) + " ",Output.V_NO_GENERAL, statisticslog); // 1 because we're putting the breeding info on the same line as the generation it *produces*, and the generation number is increased *after* breeding occurs, and statistics for it
+        state.output.print("" + (state.generation + 1) + " ", statisticslog); // 1 because we're putting the breeding info on the same line as the generation it *produces*, and the generation number is increased *after* breeding occurs, and statistics for it
 
         // gather timings
         if (doFull)
             {
             Runtime r = Runtime.getRuntime();
             long curU =  r.totalMemory() - r.freeMemory();          
-            state.output.print("" + (System.currentTimeMillis()-lastTime) + " ", Output.V_NO_GENERAL, statisticslog);
-            state.output.print("" + (curU-lastUsage) + " ", Output.V_NO_GENERAL, statisticslog);            
+            state.output.print("" + (System.currentTimeMillis()-lastTime) + " ",  statisticslog);
+            state.output.print("" + (curU-lastUsage) + " ",  statisticslog);            
             }
         }
 
@@ -208,8 +208,8 @@ public class KozaShortStatistics extends Statistics
             {
             Runtime r = Runtime.getRuntime();
             long curU =  r.totalMemory() - r.freeMemory();          
-            state.output.print("" + (System.currentTimeMillis()-lastTime) + " ", Output.V_NO_GENERAL, statisticslog);
-            state.output.print("" + (curU-lastUsage) + " ", Output.V_NO_GENERAL, statisticslog);
+            state.output.print("" + (System.currentTimeMillis()-lastTime) + " ",  statisticslog);
+            state.output.print("" + (curU-lastUsage) + " ",  statisticslog);
             }
 
 
@@ -247,17 +247,17 @@ public class KozaShortStatistics extends Statistics
                 totalNodes[x] += totNodesPerGen;
 
 
-                state.output.print("" + ((double)totNodesPerGen)/state.population.subpops[x].individuals.length + " [", Output.V_NO_GENERAL, statisticslog);
+                state.output.print("" + ((double)totNodesPerGen)/state.population.subpops[x].individuals.length + " [",  statisticslog);
 
                 for(int tr=0;tr<numNodes.length;tr++)
                     {
-                    if (tr>0) state.output.print("|",Output.V_NO_GENERAL, statisticslog);
-                    state.output.print(""+((double)numNodes[tr])/state.population.subpops[x].individuals.length,Output.V_NO_GENERAL, statisticslog);
+                    if (tr>0) state.output.print("|", statisticslog);
+                    state.output.print(""+((double)numNodes[tr])/state.population.subpops[x].individuals.length, statisticslog);
                     }
-                state.output.print("] ",Output.V_NO_GENERAL, statisticslog);
+                state.output.print("] ", statisticslog);
 
                 state.output.print("" + ((double)totalNodes[x])/(state.population.subpops[x].individuals.length * (state.generation + 1)) + " ",
-                    Output.V_NO_GENERAL, statisticslog);
+                    statisticslog);
 
                 for(int tr=0;tr<numDepth.length;tr++) totDepthPerGen += numDepth[tr];
 
@@ -266,18 +266,18 @@ public class KozaShortStatistics extends Statistics
                 state.output.print("" + ((double)totDepthPerGen)/
                         (state.population.subpops[x].individuals.length *
                         numDepth.length) 
-                    + " [", Output.V_NO_GENERAL, statisticslog);
+                    + " [",  statisticslog);
 
 
                 for(int tr=0;tr<numDepth.length;tr++)
                     {
-                    if (tr>0) state.output.print("|",Output.V_NO_GENERAL, statisticslog);
-                    state.output.print(""+((double)numDepth[tr])/state.population.subpops[x].individuals.length,Output.V_NO_GENERAL, statisticslog);
+                    if (tr>0) state.output.print("|", statisticslog);
+                    state.output.print(""+((double)numDepth[tr])/state.population.subpops[x].individuals.length, statisticslog);
                     }
-                state.output.print("] ",Output.V_NO_GENERAL, statisticslog);
+                state.output.print("] ", statisticslog);
 
                 state.output.print("" + ((double)totalDepths[x])/(state.population.subpops[x].individuals.length * (state.generation + 1)) + " ",
-                    Output.V_NO_GENERAL, statisticslog);
+                    statisticslog);
                 }
             
 
@@ -310,11 +310,11 @@ public class KozaShortStatistics extends Statistics
             meanAdjusted /= state.population.subpops[x].individuals.length;
             state.output.print("" + meanRaw + " " + meanAdjusted + " " + 
                 ((double)hits)/state.population.subpops[x].individuals.length + " ", 
-                Output.V_NO_GENERAL, statisticslog);
+                statisticslog);
             state.output.print("" + ((KozaFitness)(best_i[x].fitness)).rawFitness() +
                 " " + ((KozaFitness)(best_i[x].fitness)).adjustedFitness() +
                 " " + ((KozaFitness)(best_i[x].fitness)).hits + " ",
-                Output.V_NO_GENERAL, statisticslog);
+                statisticslog);
 
             // now test to see if it's the new best_of_run_a[x]
             if (best_of_run_a[x]==null || best_i[x].fitness.betterThan(best_of_run_a[x].fitness))
@@ -323,7 +323,7 @@ public class KozaShortStatistics extends Statistics
             state.output.print("" + ((KozaFitness)(best_of_run_a[x].fitness)).rawFitness() +
                 " " + ((KozaFitness)(best_of_run_a[x].fitness)).adjustedFitness() +
                 " " + ((KozaFitness)(best_of_run_a[x].fitness)).hits + " ",
-                Output.V_NO_GENERAL, statisticslog);
+                statisticslog);
             }
         // we're done!
         }
@@ -332,7 +332,7 @@ public class KozaShortStatistics extends Statistics
         {
         super.postEvaluationStatistics(state);
         _postEvaluationStatistics(state);
-        state.output.println("",Output.V_NO_GENERAL, statisticslog);
+        state.output.println("", statisticslog);
         }
 
     }

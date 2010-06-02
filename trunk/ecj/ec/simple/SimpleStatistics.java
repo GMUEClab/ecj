@@ -77,7 +77,7 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
 
         if (statisticsFile!=null) try
                                       {
-                                      statisticslog = state.output.addLog(statisticsFile,Output.V_NO_GENERAL-1,false,
+                                      statisticslog = state.output.addLog(statisticsFile,
                                           !state.parameters.getBoolean(base.push(P_COMPRESS),null,false),
                                           state.parameters.getBoolean(base.push(P_COMPRESS),null,false));
                                       }
@@ -116,11 +116,11 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
             }
         
         // print the best-of-generation individual
-        state.output.println("\nGeneration: " + state.generation,Output.V_NO_GENERAL,statisticslog);
-        state.output.println("Best Individual:",Output.V_NO_GENERAL,statisticslog);
+        state.output.println("\nGeneration: " + state.generation,statisticslog);
+        state.output.println("Best Individual:",statisticslog);
         for(int x=0;x<state.population.subpops.length;x++)
             {
-            best_i[x].printIndividualForHumans(state,statisticslog,Output.V_NO_GENERAL);
+            best_i[x].printIndividualForHumans(state,statisticslog);
             state.output.message("Subpop " + x + " best fitness of generation: " + best_i[x].fitness.fitnessToStringForHumans());
             }
         }
@@ -132,15 +132,15 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         
         // for now we just print the best fitness 
         
-        state.output.println("\nBest Individual of Run:",Output.V_NO_GENERAL,statisticslog);
+        state.output.println("\nBest Individual of Run:",statisticslog);
         for(int x=0;x<state.population.subpops.length;x++ )
             {
-            best_of_run[x].printIndividualForHumans(state,statisticslog,Output.V_NO_GENERAL);
+            best_of_run[x].printIndividualForHumans(state,statisticslog);
             state.output.message("Subpop " + x + " best fitness of run: " + best_of_run[x].fitness.fitnessToStringForHumans());
 
             // finally describe the winner if there is a description
             if (state.evaluator.p_problem instanceof SimpleProblemForm)
-                ((SimpleProblemForm)(state.evaluator.p_problem.clone())).describe(best_of_run[x], state, x, 0, statisticslog,Output.V_NO_GENERAL);      
+                ((SimpleProblemForm)(state.evaluator.p_problem.clone())).describe(best_of_run[x], state, x, 0, statisticslog);      
             }
         }
     }

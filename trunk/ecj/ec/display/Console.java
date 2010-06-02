@@ -1076,12 +1076,7 @@ public class Console extends JFrame
         // 1. create the output
         //boolean store = parameters.getBoolean(new Parameter(Evolve.P_STORE),null,false);
         
-        int verbosity = parameters.getInt(new Parameter(Evolve.P_VERBOSITY),null,0);
-        if (verbosity<0)
-            Output.initialError("Verbosity should be an integer >= 0.\n",
-                new Parameter(Evolve.P_VERBOSITY)); 
-        
-        Output output = new Output(true,verbosity);
+        Output output = new Output(true);
         //output.setFlush(
         //    parameters.getBoolean(new Parameter(Evolve.P_FLUSH),null,false));
         
@@ -1089,8 +1084,8 @@ public class Console extends JFrame
         // stdout is always log #0.  stderr is always log #1.
         // stderr accepts announcements, and both are fully verbose 
         // by default.
-        output.addLog(ec.util.Log.D_STDOUT,Output.V_VERBOSE,false);
-        output.addLog(ec.util.Log.D_STDERR,Output.V_VERBOSE,true);
+        output.addLog(ec.util.Log.D_STDOUT,false);
+        output.addLog(ec.util.Log.D_STDERR,true);
         output.systemMessage(Version.message());
         return output;
         }

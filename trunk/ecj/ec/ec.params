@@ -66,15 +66,17 @@
 # ec.Evolve
 # ==============================
 
-# totally verbose
-verbosity = 				0
+# This parameter has been deprecated
+# verbosity = 				0
 
 # one thread
 evalthreads = 				1
 breedthreads = 				1
 
-# a good random seed for thread 0
-seed.0 = 				4357
+# ECJ used to use this as its initial random seed by default.  No longer, now
+# it's assumed to be the wall clock time by default.
+# seed.0 = 				4357
+seed.0 =				time
 
 
 

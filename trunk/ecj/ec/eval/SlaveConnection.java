@@ -206,7 +206,7 @@ class SlaveConnection
                     // Tell the server whether to count victories only or not.
                     dataOut.writeBoolean(job.countVictoriesOnly);
                     }
-                    
+                                
                 // transmit number of individuals 
                 dataOut.writeInt(job.inds.length); 
                             

@@ -162,12 +162,9 @@ public class Lawnmower extends GPProblem implements SimpleProblemForm
         final EvolutionState state, 
         final int subpopulation, 
         final int threadnum, 
-        final int log,
-        final int verbosity)
-        
+        final int log)
         {
-        state.output.println("\n\nBest Individual's Map\n=====================",
-            verbosity,log);
+        state.output.println("\n\nBest Individual's Map\n=====================", log);
         
         sum = 0;
         moves = 0;
@@ -180,39 +177,39 @@ public class Lawnmower extends GPProblem implements SimpleProblemForm
             state,threadnum,input,stack,((GPIndividual)ind),this);
             
         // print out the map
-        state.output.println(" Y ->",verbosity,log);
+        state.output.println(" Y ->", log);
         for(int x=0;x<map.length;x++)
             {
-            if (x==1) state.output.print("v",verbosity,log);
-            else if (x==0) state.output.print("X",verbosity,log);
-            else state.output.print(" ",verbosity,log);
-            state.output.print("+",verbosity,log);
+            if (x==1) state.output.print("v", log);
+            else if (x==0) state.output.print("X",log);
+            else state.output.print(" ",log);
+            state.output.print("+",log);
             for(int y=0;y<map[x].length;y++)
-                state.output.print("----+",verbosity,log);
-            state.output.println("",verbosity,log);
-            if (x==0) state.output.print("|",verbosity,log);
-            else state.output.print(" ",verbosity,log);
-            state.output.print("|",verbosity,log);
+                state.output.print("----+",log);
+            state.output.println("",log);
+            if (x==0) state.output.print("|",log);
+            else state.output.print(" ",log);
+            state.output.print("|",log);
                 
             for(int y=0;y<map[x].length;y++)
                 {
                 if (map[x][y]==UNMOWED)
-                    state.output.print("    ",verbosity,log);
+                    state.output.print("    ",log);
                 else 
                     {
                     String s = "" + (map[x][y]);
                     while (s.length()<4) s = " " + s;
-                    state.output.print(s + "|",verbosity,log);
+                    state.output.print(s + "|",log);
                     }
                 }
-            state.output.println("",verbosity,log);
+            state.output.println("",log);
             }
-        if (map.length==1) state.output.print("v",verbosity,log);
-        else state.output.print(" ",verbosity,log);
-        state.output.print("+",verbosity,log);
+        if (map.length==1) state.output.print("v",log);
+        else state.output.print(" ",log);
+        state.output.print("+",log);
         for(int y=0;y<map[map.length-1].length;y++)
-            state.output.print("----+",verbosity,log);
-        state.output.println("",verbosity,log);
+            state.output.print("----+",log);
+        state.output.println("",log);
             
             
         // clean up the map

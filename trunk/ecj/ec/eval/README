@@ -87,11 +87,15 @@ parameter:
 
 eval.master.host = put.the.master.ip.address.here
 
-The master and slave can communicate over a compressed stream.  NOTE AT
-PRESENT JAVA BUGS HAVE PREVENTED THIS FROM WORKING, SO DO NOT USE IT. 
+The master and slave can communicate over a compressed stream.  
+Communication is by default compressed.  Note that Java's
+compression routines are broken (they don't support PARTIAL_FLUSH), so we
+have to rely on a third-party library called JZLIB.  You can get the jar
+file for this library on the ECJ main web page or at
+http://www.jcraft.com/jzlib/
 This is specified in the *master and slave* parameter:
 
-eval.compression = true                     DO NOT USE THIS PARAMETER RIGHT NOW
+eval.compression = true 
 
 Last, the slave can be given a name.  This is solely for debugging
 purposes.  If you don't provide this parameter, the slave will give
@@ -351,8 +355,11 @@ to handle the slave communication.  The SlaveConnection creates a read
 thread and a write thread to keep the pipeline to the slave filled with
 Individuals.
 
-You have the option of using compressed streams: but presently it's turned
-off because JDK 1.5/1.6 has broken the compression facility.
+You have the option of using compressed streams.  Unfortunately,
+Java has broken compression -- it doesn't support "partial flush", which
+is critical for doing compressed network streams.  To do compression you
+will need to download the JZLIB library from the ECJ website or from
+http://www.jcraft.com/jzlib/  and ECJ will detect and use it automatically.
 
 
 <On Connection>

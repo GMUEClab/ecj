@@ -44,11 +44,4 @@ public class OddRosenbrock extends Problem implements SimpleProblemForm
     
         ind.evaluated = true;
         }
-
-    public void describe(final Individual ind, 
-        final EvolutionState state, 
-        final int subpopulation,
-        final int threadnum,
-        final int log,
-        final int verbosity)  { return; }
     }

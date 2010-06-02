@@ -596,8 +596,7 @@ public class Edge extends GPProblem implements SimpleProblemForm
         final EvolutionState state, 
         final int subpopulation,
         final int threadnum,
-        final int log,
-        final int verbosity)
+        final int log)
         {
         if (start==null)
             {
@@ -633,12 +632,12 @@ public class Edge extends GPProblem implements SimpleProblemForm
                 (((((double)totpos)/posA.length)+(((double)totneg)/negA.length))/2) +
                 "\nMin(pos/allpos,neg/allneg):    " +
                 (float)Math.min((((double)totpos)/posA.length),(((double)totneg)/negA.length)),
-                verbosity,log);
+                log);
                 
         state.output.println("\nBest Individual's NFA\n=====================\n",
-            verbosity,log);
+            log);
         
-        state.output.println(printCurrentNFA(),verbosity,log);
+        state.output.println(printCurrentNFA(),log);
         }
 
     public String describeShortGeneralized(final Individual ind, 

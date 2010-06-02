@@ -59,6 +59,16 @@ port number as well.  The port is defined as:
 
 	exch.server-port= ...
 
+Communication between clients is by default compressed.  Note that Java's
+compression routines are broken (they don't support PARTIAL_FLUSH), so we
+have to rely on a third-party library called JZLIB.  You can get the jar
+file for this library on the ECJ main web page or at
+http://www.jcraft.com/jzlib/
+
+To turn compression OFF for some reason, you'd say
+
+	exch.compression = false
+
 A synchronous island model (where all islands send and receive at the same
 time) is defined by the server parameter:
 

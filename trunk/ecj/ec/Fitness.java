@@ -110,9 +110,18 @@ public abstract class Fitness implements Prototype
     public abstract boolean betterThan(Fitness _fitness);
 
     /** Should print the fitness out fashion pleasing for humans to read, 
+        with a verbosity of Output.V_NO_GENERAL.
+    */
+    public void printFitnessForHumans(EvolutionState state, int log)
+        {
+        printFitnessForHumans( state, log, Output.V_NO_GENERAL);
+        }
+
+    /** Should print the fitness out fashion pleasing for humans to read, 
         using state.output.println(...,verbosity,log).  The default version
         of this method calls fitnessToStringForHumans() and println's the
         resultant string.
+        @deprecated Verbosity no longer has meaning
     */
     public void printFitnessForHumans(EvolutionState state, int log, 
         int verbosity)
@@ -121,10 +130,19 @@ public abstract class Fitness implements Prototype
         }
 
     /** Should print the fitness out in a computer-readable fashion, 
+        with a verbosity of Output.V_NO_GENERAL.
+    */
+    public void printFitness(EvolutionState state, int log)
+        {
+        printFitness( state, log, Output.V_NO_GENERAL);
+        }
+
+    /** Should print the fitness out in a computer-readable fashion, 
         using state.output.println(...,verbosity,log).  You might use
         ec.util.Code to encode fitness values.  The default version
         of this method calls fitnessToString() and println's the
         resultant string.
+        @deprecated Verbosity no longer has meaning
     */
     public void printFitness(EvolutionState state, int log, 
         int verbosity)

@@ -26,10 +26,14 @@ import ec.EvolutionState;
  * multi-objective selection mechanisms, including ones using pareto-optimality.
  *
  * <p>The object contains two items: an array of floating point values
- * representing the various multiple fitnesses (ranging from 0.0 (worst)
- * to 1.0 inclusive), and a flag (maximize) indicating whether higher is
+ * representing the various multiple fitnesses, and a flag (maximize) indicating whether higher is
  * considered better.  By default, isIdealFitness() always returns false;
  * you'll probably want to override that [if appropriate to your problem].
+ *
+ * <p>The object also contains maximum and minimum fitness values suggested for
+ * the problem, on a per-objective basis.  By default the maximum values are all 1.0
+ * and the minimum values are all 0.0, but you can change these.  Note that maximum does
+ * not mean "best" unless maximize is true.
 
  <p><b>Parameters</b><br>
  <table>
@@ -41,6 +45,22 @@ import ec.EvolutionState;
  <tr><td valign=top><i>base</i>.<tt>maximize</tt><br>
  <font size=-1> bool = <tt>true</tt> (default) or <tt>false</tt></font></td>
  <td valign=top>(are higher values considered "better"?)</table>
+
+ <tr><td valign=top><i>base</i>.<tt>max</tt><br>
+ <font size=-1> float (<tt>1.0</tt> default)</font></td>
+ <td valign=top>(maximum fitness value for all objectives)</table>
+
+ <tr><td valign=top><i>base</i>.<tt>max</tt>.<i>i</i><br>
+ <font size=-1> float (<tt>1.0</tt> default)</font></td>
+ <td valign=top>(maximum fitness value for objective <i>i</i>.  Overrides the all-objective maximum fitness.)</table>
+
+ <tr><td valign=top><i>base</i>.<tt>min</tt><br>
+ <font size=-1> float (<tt>0.0</tt> (default)</font></td>
+ <td valign=top>(minimum fitness value for all objectives)</table>
+
+ <tr><td valign=top><i>base</i>.<tt>min</tt>.<i>i</i><br>
+ <font size=-1> float = <tt>0.0</tt> (default)</font></td>
+ <td valign=top>(minimum fitness value for objective <i>i</i>.  Overrides the all-objective minimum fitness.)</table>
 
  <p><b>Default Base</b><br>
  multi.fitness
@@ -57,8 +77,20 @@ public class MultiObjectiveFitness extends Fitness
     /** parameter for size of multifitness */
     public static final String P_NUMFITNESSES = "num-objectives"; 
 
+    /** parameter for max fitness values */
+    public static final String P_MAXFITNESSES = "max"; 
+
+    /** parameter for min fitness values */
+    public static final String P_MINFITNESSES = "min"; 
+
     /** Is higher better? */
     public static final String P_MAXIMIZE = "maximize";
+
+    /** Desired maximum fitness values. By default these are 1.0.  Shared. */
+    public float[] maxfitness;
+
+    /** Desired minimum fitness values. By default these are 0.0.  Shared. */
+    public float[] minfitness;
 
     /** The various fitnesses. */
     public float[] multifitness; // values range from 0 (worst) to 1 INCLUSIVE 
@@ -73,6 +105,8 @@ public class MultiObjectiveFitness extends Fitness
         {
         MultiObjectiveFitness f = (MultiObjectiveFitness)(super.clone());
         f.multifitness = (float[])(multifitness.clone());  // cloning an array
+
+        // note that we do NOT clone max and min fitness -- they're shared
         return f;
         }
 
@@ -105,7 +139,25 @@ public class MultiObjectiveFitness extends Fitness
         maximize = state.parameters.getBoolean(
             base.push(P_MAXIMIZE), def.push(P_MAXIMIZE), true);
 
-        multifitness = new float[numFitnesses];         
+        multifitness = new float[numFitnesses];     
+        maxfitness = new float[numFitnesses];
+        minfitness = new float[numFitnesses];
+                
+        for(int i = 0; i < numFitnesses; i++)
+            {
+            // load default globals
+            minfitness[i] = state.parameters.getFloatWithDefault(base.push(P_MINFITNESSES), def.push(P_MINFITNESSES), 0.0f);
+            maxfitness[i] = state.parameters.getFloatWithDefault(base.push(P_MAXFITNESSES), def.push(P_MAXFITNESSES), 1.0f);
+                        
+            // load specifics if any
+            minfitness[i] = state.parameters.getFloatWithDefault(base.push(P_MINFITNESSES).push(""+i), def.push(P_MINFITNESSES).push(""+i), minfitness[i]);
+            maxfitness[i] = state.parameters.getFloatWithDefault(base.push(P_MAXFITNESSES).push(""+i), def.push(P_MAXFITNESSES).push(""+i), maxfitness[i]);
+                        
+            // test for validity
+            if (minfitness[i] >= maxfitness[i])
+                state.output.error("For objective " + i + "the min fitness must be strictly less than the max fitness.");
+            }
+        state.output.exitIfErrors();
         }  
 
     /** Returns true if this fitness is the "ideal" fitness. Default always returns false.  You may want to override this. */

@@ -6,5 +6,6 @@ parent.0 = ../../app/ant/ant.params
 
 exch = ec.exchange.IslandExchange
 exch.select = ec.select.TournamentSelection
+exch.compressed = true
 exch.server-addr = your.server.address.here.com
 exch.server-port = 8999

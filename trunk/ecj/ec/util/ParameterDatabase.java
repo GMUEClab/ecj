@@ -1065,7 +1065,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * marked "used" if it exists.
      */
 
-    public float getFloat(Parameter parameter,
+    public float getFloatWithMax(Parameter parameter,
         Parameter defaultParameter, double minValue, double maxValue) 
         {
         printGotten(parameter, defaultParameter, false);
@@ -1073,6 +1073,21 @@ public class ParameterDatabase extends Properties implements Serializable
             return getFloat(parameter, minValue, maxValue);
         else
             return getFloat(defaultParameter, minValue, maxValue);
+        }
+
+    /**
+     * Searches down through databases to find a given parameter, whose value
+     * must be a float >= minValue and <= maxValue. If not, this method returns
+     * minvalue-1, else it returns the parameter value. The parameter chosen is
+     * marked "used" if it exists.
+     *
+     * @deprecated Use getFloatWithMax instead
+     */
+
+    public float getFloat(Parameter parameter,
+        Parameter defaultParameter, double minValue, double maxValue) 
+        {
+        return getFloatWithMax(parameter, defaultParameter, minValue, maxValue);
         }
 
     /**
@@ -1208,7 +1223,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * marked "used" if it exists.
      */
 
-    public double getDouble(Parameter parameter,
+    public double getDoubleWithMax(Parameter parameter,
         Parameter defaultParameter, double minValue, double maxValue) 
         {
         printGotten(parameter, defaultParameter, false);
@@ -1216,6 +1231,21 @@ public class ParameterDatabase extends Properties implements Serializable
             return getDouble(parameter, minValue, maxValue);
         else
             return getDouble(defaultParameter, minValue, maxValue);
+        }
+
+    /**
+     * Searches down through databases to find a given parameter, whose value
+     * must be a double >= minValue and <= maxValue. If not, this method returns
+     * minvalue-1, else it returns the parameter value. The parameter chosen is
+     * marked "used" if it exists.
+     *
+     * @deprecated use getDoubleWithMax instead
+     */
+
+    public double getDouble(Parameter parameter,
+        Parameter defaultParameter, double minValue, double maxValue) 
+        {
+        return getDoubleWithMax(parameter, defaultParameter, minValue, maxValue);
         }
 
     /**

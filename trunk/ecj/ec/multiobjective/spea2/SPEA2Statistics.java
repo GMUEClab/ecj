@@ -23,7 +23,7 @@ public class SPEA2Statistics extends SimpleStatistics
         state.output.message(s);
         for(int sp=0;sp<state.population.subpops.length;sp++)
             {
-            state.output.println(s="Subpop "+sp+"'s Final Archive:",Output.V_NO_GENERAL,statisticslog);
+            state.output.println(s="Subpop "+sp+"'s Final Archive:",statisticslog);
             state.output.message(s);
             SPEA2Subpopulation spop=(SPEA2Subpopulation)state.population.subpops[sp];
             int length  =spop.individuals.length;
@@ -40,9 +40,9 @@ public class SPEA2Statistics extends SimpleStatistics
                 ////SPEA2Fitness.fitnessToStringForHumans prints more than I need, on 2 lines no less; 
 
                 //I include that in the stats log though, just in case:
-                individual.fitness.printFitnessForHumans(state,statisticslog,Output.V_NO_GENERAL);
+                individual.fitness.printFitnessForHumans(state,statisticslog);
                 //I also include the actual individual in the stats log; I could call describe.
-                state.output.println(individual.genotypeToStringForHumans(), Output.V_NO_GENERAL, statisticslog);
+                state.output.println(individual.genotypeToStringForHumans(), statisticslog);
 
                 ////all I need to print are the original fitness values, so I'll have to do it myself.
                 MultiObjectiveFitness mof = (MultiObjectiveFitness)individual.fitness;

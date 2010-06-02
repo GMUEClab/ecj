@@ -65,17 +65,7 @@ public class HIFF extends Problem implements SimpleProblemForm
         ((SimpleFitness)(ind2.fitness)).setFitness( state, (float) fitness, false);
         ind2.evaluated = true; 
         }
-        
-    public void describe(final Individual ind, 
-        final EvolutionState _state, 
-        final int threadnum,
-        final int subpopulation,
-        final int log,
-        final int verbosity)  
-        { 
-        }
-        
-        
+                
     double H(double genes[]) 
         {
         double bonus=1, F=0; 

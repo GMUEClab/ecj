@@ -48,12 +48,10 @@ eval.masterproblem.job-size = 100
 
 
 # This compresses the streams between the master and slaves.
-# Compression at present is BROKEN and DOES NOT WORK RIGHT.
-# This is because somewhere in JDK 1.5 Sun further broke their
-# already broken zlib libraries, eliminating our ability to
-# hack around them.  Until we get another zlib library up
-# and running, don't use compression.
-eval.compression=false
+# Compression requires the zlib library.
+# See the ECJ main webpage or http://www.jcraft.com/jzlib/
+
+eval.compression=true
 
 
 # This defines the socket port that the master listens in

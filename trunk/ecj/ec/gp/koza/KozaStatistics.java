@@ -8,6 +8,7 @@
 package ec.gp.koza;
 import ec.steadystate.*;
 import ec.*;
+import ec.simple.*;
 import ec.gp.*;
 import ec.util.*;
 import java.io.*;
@@ -100,7 +101,7 @@ public class KozaStatistics extends Statistics implements SteadyStateStatisticsF
 
         if (statisticsFile!=null) try
                                       {
-                                      statisticslog = state.output.addLog(statisticsFile,Output.V_NO_GENERAL-1,false,
+                                      statisticslog = state.output.addLog(statisticsFile,
                                           !state.parameters.getBoolean(base.push(P_COMPRESS),null,false),
                                           state.parameters.getBoolean(base.push(P_COMPRESS),null,false));
                                       }
@@ -226,12 +227,12 @@ public class KozaStatistics extends Statistics implements SteadyStateStatisticsF
         if (doFull) evaluationTime += System.currentTimeMillis()-lastTime;
 
 
-        state.output.println("\n\n\nGeneration " + state.generation + "\n================",Output.V_NO_GENERAL,statisticslog);
+        state.output.println("\n\n\nGeneration " + state.generation + "\n================",statisticslog);
 
         Individual[] best_i = new Individual[state.population.subpops.length];
         for(int x=0;x<state.population.subpops.length;x++)
             {
-            state.output.println("\nSubpopulation " + x + "\n----------------",Output.V_NO_GENERAL,statisticslog);
+            state.output.println("\nSubpopulation " + x + "\n----------------",statisticslog);
 
             // gather timings
             if (doFull)
@@ -261,26 +262,26 @@ public class KozaStatistics extends Statistics implements SteadyStateStatisticsF
                     }
                 
                 for(int tr=0;tr<numNodes.length;tr++) totNodesPerGen += numNodes[tr];
-                state.output.println("Avg Nodes: " + ((double)totNodesPerGen)/state.population.subpops[x].individuals.length,Output.V_NO_GENERAL, statisticslog);
-                state.output.print("Nodes/tree: [",Output.V_NO_GENERAL, statisticslog);
+                state.output.println("Avg Nodes: " + ((double)totNodesPerGen)/state.population.subpops[x].individuals.length, statisticslog);
+                state.output.print("Nodes/tree: [", statisticslog);
                 for(int tr=0;tr<numNodes.length;tr++)
                     {
-                    if (tr>0) state.output.print("|",Output.V_NO_GENERAL, statisticslog);
-                    state.output.print(""+((double)numNodes[tr])/state.population.subpops[x].individuals.length,Output.V_NO_GENERAL, statisticslog);
+                    if (tr>0) state.output.print("|", statisticslog);
+                    state.output.print(""+((double)numNodes[tr])/state.population.subpops[x].individuals.length, statisticslog);
                     }
-                state.output.println("]",Output.V_NO_GENERAL, statisticslog);
+                state.output.println("]", statisticslog);
 
 
                 for(int tr=0;tr<numDepth.length;tr++) totDepthPerGen += numDepth[tr];
                 state.output.println("Avg Depth: " + ((double)totDepthPerGen)/
-                    (state.population.subpops[x].individuals.length * numDepth.length),Output.V_NO_GENERAL, statisticslog);
-                state.output.print("Depth/tree: [",Output.V_NO_GENERAL, statisticslog);
+                    (state.population.subpops[x].individuals.length * numDepth.length), statisticslog);
+                state.output.print("Depth/tree: [", statisticslog);
                 for(int tr=0;tr<numDepth.length;tr++)
                     {
-                    if (tr>0) state.output.print("|",Output.V_NO_GENERAL, statisticslog);
-                    state.output.print(""+((double)numDepth[tr])/state.population.subpops[x].individuals.length,Output.V_NO_GENERAL, statisticslog);
+                    if (tr>0) state.output.print("|", statisticslog);
+                    state.output.print(""+((double)numDepth[tr])/state.population.subpops[x].individuals.length, statisticslog);
                     }
-                state.output.println("]",Output.V_NO_GENERAL, statisticslog);
+                state.output.println("]", statisticslog);
 
                 }           
             
@@ -309,9 +310,9 @@ public class KozaStatistics extends Statistics implements SteadyStateStatisticsF
             // compute fitness stats
             meanRaw /= state.population.subpops[x].individuals.length;
             meanAdjusted /= state.population.subpops[x].individuals.length;
-            state.output.print("Mean fitness raw: " + meanRaw + " adjusted: " + meanAdjusted + " hits: " + ((double)hits)/state.population.subpops[x].individuals.length,Output.V_NO_GENERAL, statisticslog);
+            state.output.print("Mean fitness raw: " + meanRaw + " adjusted: " + meanAdjusted + " hits: " + ((double)hits)/state.population.subpops[x].individuals.length, statisticslog);
                     
-            state.output.println("",Output.V_NO_GENERAL, statisticslog);
+            state.output.println("", statisticslog);
 
             // compute inds stats
             numInds += state.population.subpops[x].individuals.length;
@@ -324,8 +325,8 @@ public class KozaStatistics extends Statistics implements SteadyStateStatisticsF
                 best_of_run[x] = (Individual)(best_i[x].clone());
 
             // print the best-of-generation individual
-            state.output.println("\nBest Individual of Generation:",Output.V_NO_GENERAL,statisticslog);
-            best_i[x].printIndividualForHumans(state,statisticslog,Output.V_NO_GENERAL);
+            state.output.println("\nBest Individual of Generation:",statisticslog);
+            best_i[x].printIndividualForHumans(state,statisticslog);
             state.output.message("Subpop " + x + " best fitness of generation: " + best_i[x].fitness.fitnessToStringForHumans());
             }
         }
@@ -336,34 +337,34 @@ public class KozaStatistics extends Statistics implements SteadyStateStatisticsF
         {
         super.finalStatistics(state,result);
         
-        state.output.println("\n\n\nFinal Statistics\n================",Output.V_NO_GENERAL,statisticslog);
+        state.output.println("\n\n\nFinal Statistics\n================",statisticslog);
 
-        state.output.println("Total Individuals Evaluated: " + numInds,Output.V_NO_GENERAL,statisticslog);
+        state.output.println("Total Individuals Evaluated: " + numInds,statisticslog);
         // for now we just print the best fitness 
         
-        state.output.println("\nBest Individual of Run:",Output.V_NO_GENERAL,statisticslog);
+        state.output.println("\nBest Individual of Run:",statisticslog);
         for(int x=0;x<state.population.subpops.length;x++)
             {
-            best_of_run[x].printIndividualForHumans(state,statisticslog,Output.V_NO_GENERAL);
+            best_of_run[x].printIndividualForHumans(state,statisticslog);
             state.output.message("Subpop " + x + " best fitness of run: " + best_of_run[x].fitness.fitnessToStringForHumans());
 
             // finally describe the winner if there is a description
-            ((GPProblem)(state.evaluator.p_problem.clone())).describe(best_of_run[x], state, x, 0, statisticslog,Output.V_NO_GENERAL);  
+            ((SimpleProblemForm)(state.evaluator.p_problem.clone())).describe(best_of_run[x], state, x, 0, statisticslog);  
             }
 
         // Output timings
         if (doFull)
             {
-            state.output.println("\n\n\nTimings\n=======",Output.V_NO_GENERAL,statisticslog);
+            state.output.println("\n\n\nTimings\n=======",statisticslog);
 
-            state.output.println("Initialization: " + ((float)initializationTime)/1000 + " secs total, " + nodesInitialized + " nodes, " + nodesInitialized/(((float)initializationTime)/1000) + " nodes/sec",Output.V_NO_GENERAL,statisticslog);
-            state.output.println("Evaluating: " + ((float)evaluationTime)/1000 + " secs total, " + nodesEvaluated + " nodes, " + nodesEvaluated/(((float)evaluationTime)/1000) + " nodes/sec",Output.V_NO_GENERAL,statisticslog);
-            state.output.println("Breeding: " + ((float)breedingTime)/1000 + " secs total, " + nodesBred + " nodes, " + nodesBred/(((float)breedingTime)/1000) + " nodes/sec",Output.V_NO_GENERAL,statisticslog);
+            state.output.println("Initialization: " + ((float)initializationTime)/1000 + " secs total, " + nodesInitialized + " nodes, " + nodesInitialized/(((float)initializationTime)/1000) + " nodes/sec",statisticslog);
+            state.output.println("Evaluating: " + ((float)evaluationTime)/1000 + " secs total, " + nodesEvaluated + " nodes, " + nodesEvaluated/(((float)evaluationTime)/1000) + " nodes/sec",statisticslog);
+            state.output.println("Breeding: " + ((float)breedingTime)/1000 + " secs total, " + nodesBred + " nodes, " + nodesBred/(((float)breedingTime)/1000) + " nodes/sec",statisticslog);
 
-            state.output.println("\n\n\nMemory Usage\n==============",Output.V_NO_GENERAL,statisticslog);
-            state.output.println("Initialization: " + ((float)initializationUsage)/1024 + " KB total, " + nodesInitialized + " nodes, " + nodesInitialized/(((float)initializationUsage)/1024) + " nodes/KB",Output.V_NO_GENERAL,statisticslog);
-            state.output.println("Evaluating: " + ((float)evaluationUsage)/1024 + " KB total, " + nodesEvaluated + " nodes, " + nodesEvaluated/(((float)evaluationUsage)/1024) + " nodes/KB",Output.V_NO_GENERAL,statisticslog);
-            state.output.println("Breeding: " + ((float)breedingUsage)/1024 + " KB total, " + nodesBred + " nodes, " + nodesBred/(((float)breedingUsage)/1024) + " nodes/KB",Output.V_NO_GENERAL,statisticslog);            
+            state.output.println("\n\n\nMemory Usage\n==============",statisticslog);
+            state.output.println("Initialization: " + ((float)initializationUsage)/1024 + " KB total, " + nodesInitialized + " nodes, " + nodesInitialized/(((float)initializationUsage)/1024) + " nodes/KB",statisticslog);
+            state.output.println("Evaluating: " + ((float)evaluationUsage)/1024 + " KB total, " + nodesEvaluated + " nodes, " + nodesEvaluated/(((float)evaluationUsage)/1024) + " nodes/KB",statisticslog);
+            state.output.println("Breeding: " + ((float)breedingUsage)/1024 + " KB total, " + nodesBred + " nodes, " + nodesBred/(((float)breedingUsage)/1024) + " nodes/KB",statisticslog);            
             }
         
         }

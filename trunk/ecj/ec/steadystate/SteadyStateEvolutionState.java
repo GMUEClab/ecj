@@ -84,7 +84,7 @@ public class SteadyStateEvolutionState extends EvolutionState
         // POPULATION INITIALIZATION
         output.message("Initializing Generation 0");
         statistics.preInitializationStatistics(this);
-        population = initializer.setupPopulation(this, 0);  // unthreaded
+        population = initializer.setupPopulation(this, 0);  // unthreaded.  We're NOT initializing here, just setting up.
         //statistics.postInitializationStatistics(this);   // not in steady state
 
         // INITIALIZE VARIABLES
