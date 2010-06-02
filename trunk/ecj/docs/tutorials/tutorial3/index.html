@@ -158,13 +158,6 @@ public class OddRosenbrock extends Problem implements SimpleProblemForm
     
         ind.evaluated = true;
         }
-
-    public void describe(final Individual ind, 
-             final EvolutionState state, 
-             final int subpopulation,
-             final int threadnum,
-             final int log,
-             final int verbosity)  { return; }
     }
 </pre>
 </tt>
@@ -206,7 +199,7 @@ We'll explain the <a href="../../classdocs/ec/util/Parameter.html">ec.util.Param
         <font color=gray>// gets a double between min (0.0) and max (1.0), from the parameter
         // database, returning a value of min-1 (-1.0) if the parameter doesn't exist or was 
         // outside this range.</font>
-        middleProbability = state.parameters.getDouble(base.push(P_MIDDLEPROBABILITY),
+        middleProbability = state.parameters.getDoubleWithMax(base.push(P_MIDDLEPROBABILITY),
             def.push(P_MIDDLEPROBABILITY),0.0,1.0);
         if (middleProbability &lt; 0.0)
             state.output.fatal("Middle-Probability must be between 0.0 and 1.0",
@@ -331,9 +324,7 @@ object.  Of course we could just write to the file stream ourselves; but it is
 convenient to use the Output logger because it recovers from checkpoints and 
 it's threadsafe.  
 
-<p> We tell Output to add a log file writing to "pop-file",
-             with a verbosity that just barely accepts the statistics messages
-             we'll send out (with verbosity V_NO_GENERAL).  We will NOT post
+<p> We tell Output to add a log file writing to "pop-file".  We will NOT post
              announcements to the log (no fatal, error, warning messages etc.).
              The log WILL open via appending (not rewriting) upon a restart after
              a checkpoint failure.
@@ -344,7 +335,7 @@ it's threadsafe.
             base.push(P_POPFILE),null);
         if (popFile!=null) try
             {
-            popLog = state.output.addLog(popFile,Output.V_NO_GENERAL-1,false,true);
+            popLog = state.output.addLog(popFile,true);
             }
         catch (IOException i)
             {
@@ -357,7 +348,7 @@ it's threadsafe.
             base.push(P_INFOFILE),null);
         if (infoFile!=null) try
             {
-            infoLog = state.output.addLog(infoFile,Output.V_NO_GENERAL-1,false,true);
+            infoLog = state.output.addLog(infoFile,true);
             }
         catch (IOException i)
             {
@@ -384,8 +375,7 @@ it's threadsafe.
 <tt><pre>
         <font color=gray>// write out a warning that the next generation is coming </font>
         state.output.println("-----------------------\nGENERATION " + 
-                state.generation + "\n-----------------------",
-            Output.V_NO_GENERAL, popLog);
+                state.generation + "\n-----------------------", popLog);
 </pre></tt>
 
 <p>Now we print out all the individuals.  There are various ways to do this:
@@ -400,11 +390,9 @@ it's threadsafe.
 
 <p>Our choice will be to do <b>Population.printPopulation</b>.
 
-<p>One confusing bit about <b>printIndividual</b> and <b>printIndividualForHumans</b> (and their Subpopulation and Population counterparts) is that their log and verbosity arguments are reversed from <b>println</b>.  It's a historical stupidity, and I'm sorry about that.
-
 <tt><pre>
         <font color=gray>// print out the population </font>
-        state.population.printPopulation(state,popLog,Output.V_NO_GENERAL);
+        state.population.printPopulation(state,popLog);
 </pre></tt>
 
 <p>Now let's print out the individual whose genome #3 is highest to infoLog.  We'll print that one out in a human-readable fashion, so we use <b>printIndividualForHumans</b>.
@@ -423,7 +411,7 @@ it's threadsafe.
                     best_val = val;
                     }
                 }
-        state.population.subpops[0].individuals[best].printIndividualForHumans(state,infoLog,Output.V_NO_GENERAL);
+        state.population.subpops[0].individuals[best].printIndividualForHumans(state,infoLog);
         }
     }
 

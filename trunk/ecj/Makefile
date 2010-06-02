@@ -18,7 +18,7 @@ JAVAC = javac ${JAVACFLAGS}
 
 JAVACFLAGS = -target 1.4 -source 1.4 ${FLAGS}
 JIKESFLAGS = -target 1.4 +Pno-shadow ${FLAGS}
-FLAGS = -g -nowarn
+FLAGS = -g -nowarn -Xlint:deprecation
 
 DIRS = \
 ec/*.java \

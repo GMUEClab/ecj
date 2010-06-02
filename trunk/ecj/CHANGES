@@ -1517,3 +1517,47 @@ Version		Change Log
 	spurious breed.elites.0=1 parameter in tutorial1.params deleted
 	Added the option for reevaluation of elites in SimpleBreeder.  Thanks
 		to Vlad Palnik <vladpaln@gmail.com>
+	Bug fix to GPNode.cloneReplacingAtomic(), thanks to 
+		Michael Orlov <orlovm@cs.bgu.ac.il>
+	Tweeks and bug fixes to Moosuite
+	The default seed.0 is now set to 'time' rather than 4357
+	Bug fix to Parameter.java: popn wasn't popping off more than one
+		element in total. Thanks to Norberto Roth <betoroth@gmail.com>
+	GPProblem now implements SimpleProblemForm.  You'll need your own
+		custom GPProblem to do GroupedProblemForm.
+	KozaStatistics casts individuals to SimpleProblemForm rather than to
+		GPProblem, making it work better with MasterProblem
+	getFloat(... maxValue) and getDouble(... maxValue) deprecated.  Use
+		getFloatWithMax and getDoubleWithMax instead.
+	Added some new, shorter print and println commands to Output
+	Added new printIndividual, printPopulation, printFitness, etc.
+		methods which don't require verbosity to be stated.  Updated
+		all code to use them.
+	MasterProblem.describe() no longer throws an error if the underying
+		Problem isn't a SimpleProblemForm.
+	Bug fix to Slave.evaluateGroupedProblemForm, which wasn't reading in
+		the 'countVictoriesOnly' bit, and which screwed up
+		distributed coevolutionary stuff.
+	Added a new hashtable to GPFunctionSet which hashes GPNodes by name
+	TournamentSelection updated to allow any floating point value as
+		a tournament size.  Tournament Selection variations not
+		modified (yet).  Tournament Selection is central in ECJ;
+		I hope this is correct!
+	Verbosity deprecated everywhere.  This will be a non-backward-compatible
+		change.  Next release we'll delete verbosity in its entirety.
+	Modified SpatialTournamentSelection and SPEA2TournamentSelection to
+		reflect new approach in TournamentSelection, namely the
+		introduction of the getRandomIndividual method, which allows
+		all three to use the same algorithm.
+	Made master/slave and island model communication compressed by default
+	Documentation improvements to ec.Species
+	added ec/app/ecsuite/steady.params
+	Subpopulation.printSubpopulationForHumans no longer uses Code.encode(...)
+	Include describe(...) in ec.Problem so you don't have to type the default
+		version all the time.  Also deleted it from ec.gp.Problem because
+		it's redundant as a result.
+	Deleted the verbosity argument from describe(...).  This isn't backward
+		compatible and will break EVERYONE's code but it was necessary
+		as part of the anti-verbosity campaign.
+	Updated tutorials
+	Added ListCrossoverPipeline (which was for some reason missing)
