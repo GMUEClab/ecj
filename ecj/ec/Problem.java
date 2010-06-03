@@ -124,26 +124,27 @@ public abstract class Problem implements Prototype
         return true; 
         }
 
-	/** Part of SimpleProblemForm.  Included here so you don't have to write the default version, which usually does nothing. */
-    public void describe(final Individual ind, 
+    /** Part of SimpleProblemForm.  Included here so you don't have to write the default version, which usually does nothing. */
+    public void describe(
         final EvolutionState state, 
+        final Individual ind, 
         final int subpopulation,
         final int threadnum,
         final int log)
-		{
-		return;
-		}
+        {
+        return;
+        }
 
-	/** @deprecated.  Use the version without verbosity */
-	public void describe(final Individual ind, 
+    /** @deprecated.  Use the version without verbosity */
+    public final void describe(final Individual ind, 
         final EvolutionState state, 
         final int subpopulation,
         final int threadnum,
         final int log,
-		final int verbosity)
-		{
-		describe(ind, state, subpopulation, threadnum, log);
-		}
+        final int verbosity)
+        {
+        describe(state, ind, subpopulation, threadnum, log);
+        }
     }
 
 

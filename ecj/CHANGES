@@ -1558,6 +1558,8 @@ Version		Change Log
 		it's redundant as a result.
 	Deleted the verbosity argument from describe(...).  This isn't backward
 		compatible and will break EVERYONE's code but it was necessary
-		as part of the anti-verbosity campaign.
+		as part of the anti-verbosity campaign.  Also reorganized the
+		describe(...) method's argument ordering to be the same as
+		evaluate(...)
 	Updated tutorials
 	Added ListCrossoverPipeline (which was for some reason missing)

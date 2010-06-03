@@ -207,7 +207,7 @@ public class SimpleBreeder extends Breeder
     /** A private helper function for breedPopulation which loads elites into
         a subpopulation. */
 
-	protected void loadElites(EvolutionState state, Population newpop)
+    protected void loadElites(EvolutionState state, Population newpop)
         {
         // are our elites small enough?
         for(int x=0;x<state.population.subpops.length;x++)

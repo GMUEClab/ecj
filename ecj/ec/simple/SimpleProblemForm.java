@@ -42,8 +42,9 @@ public interface SimpleProblemForm
         Problem, and logs the results.  This might be called to print out 
         facts about the best individual in the population, for example.  */
     
-    public void describe(final Individual ind, 
+    public void describe(
         final EvolutionState state, 
+        final Individual ind, 
         final int subpopulation,
         final int threadnum,
         final int log);
