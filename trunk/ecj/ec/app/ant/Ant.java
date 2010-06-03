@@ -224,8 +224,9 @@ public class Ant extends GPProblem implements SimpleProblemForm
             }
         }
 
-    public void describe(final Individual ind, 
+    public void describe(
         final EvolutionState state, 
+        final Individual ind, 
         final int subpopulation, 
         final int threadnum,
         final int log)

@@ -211,13 +211,13 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         
 
     /* (non-Javadoc)
-     * @see ec.simple.SimpleProblemForm#describe(ec.Individual, ec.EvolutionState, int, int)
+     * @see ec.simple.SimpleProblemForm#describe(ec.EvolutionState, ec.Individual, int, int)
      */
-    public void describe(Individual ind, EvolutionState state, int subpopulation, int threadnum, int log) 
+    public void describe(EvolutionState state, Individual ind, int subpopulation, int threadnum, int log) 
         {
         if ((problem instanceof SimpleProblemForm)) 
             {
-            ((SimpleProblemForm)problem).describe( ind, state, subpopulation, threadnum, log);
+            ((SimpleProblemForm)problem).describe(state, ind, subpopulation, threadnum, log);
             }
         }
 

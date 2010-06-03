@@ -140,7 +140,7 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
 
             // finally describe the winner if there is a description
             if (state.evaluator.p_problem instanceof SimpleProblemForm)
-                ((SimpleProblemForm)(state.evaluator.p_problem.clone())).describe(best_of_run[x], state, x, 0, statisticslog);      
+                ((SimpleProblemForm)(state.evaluator.p_problem.clone())).describe(state, best_of_run[x], x, 0, statisticslog);      
             }
         }
     }
