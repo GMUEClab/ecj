@@ -1563,3 +1563,11 @@ Version		Change Log
 		evaluate(...)
 	Updated tutorials
 	Added ListCrossoverPipeline (which was for some reason missing)
+	BreedingSource.preparePipeline made non-abstract
+	BreedingSource.DEFAULT_PRODUCED deleted
+	Deprecated RandomChoice.pickFromDistribution(..., checkboundary), and
+		deleted the CHECKBOUNDARY constant from various classes.
+	Deleted BreedingSource.UNUSED
+	Added MultiSelection.preparePipeline(...)
+	Added two algorithms to VectorSpecies to set the initial genome to
+		arbitrary sizes.

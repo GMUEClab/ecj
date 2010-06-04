@@ -111,8 +111,7 @@ public abstract class GPNodeBuilder implements Prototype
             // pick from distribution
             return RandomChoice.pickFromDistribution(
                 sizeDistribution,
-                state.random[thread].nextFloat(),
-                CHECK_BOUNDARY) + 1 ;
+                state.random[thread].nextFloat()) + 1 ;
             }
         else throw new InternalError("Neither minSize nor sizeDistribution is defined in GPNodeBuilder");
         }

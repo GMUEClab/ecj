@@ -84,11 +84,6 @@ public abstract class SelectionMethod extends BreedingSource
     public abstract int produce(final int subpopulation,
         final EvolutionState state,
         final int thread);
-
-    public void preparePipeline(Object hook) 
-        {
-        // default does nothing
-        }
     }
 
 

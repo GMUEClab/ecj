@@ -185,4 +185,14 @@ public class MultiSelection extends SelectionMethod
                 selects,state.random[thread].nextFloat())].produce(
                     min,max,start,subpopulation,inds,state,thread);
         }
+
+    public void preparePipeline(Object hook)
+        {
+        // the default form calls this on all the selects.
+        // note that it follows all the source paths even if they're
+        // duplicates
+        for(int x=0; x<selects.length;x++) 
+            selects[x].preparePipeline(hook);
+        }
+        
     }

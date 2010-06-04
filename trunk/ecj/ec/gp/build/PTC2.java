@@ -201,7 +201,7 @@ public class PTC2 extends GPNodeBuilder
             root = (GPNode)
                 terminals[RandomChoice.pickFromDistribution(
                     pset.terminalProbabilities(t),
-                    state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
+                    state.random[thread].nextFloat())].lightClone();
             root.resetNode(state,thread);  // give ERCs a chance to randomize
             root.argposition = (byte)argposition;
             root.parent = parent;
@@ -214,7 +214,7 @@ public class PTC2 extends GPNodeBuilder
             root = (GPNode)
                 nonterminals[RandomChoice.pickFromDistribution(
                     pset.nonterminalProbabilities(t),
-                    state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
+                    state.random[thread].nextFloat())].lightClone();
             root.resetNode(state,thread);  // give ERCs a chance to randomize
             root.argposition = (byte)argposition;
             root.parent = parent;
@@ -255,7 +255,7 @@ public class PTC2 extends GPNodeBuilder
                     GPNode n = (GPNode)
                         terminals[RandomChoice.pickFromDistribution(
                             pset.terminalProbabilities(y),
-                            state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
+                            state.random[thread].nextFloat())].lightClone();
                     dequeue_node.children[dequeue_argpos] = n;
                     n.resetNode(state,thread);  // give ERCs a chance to randomize
                     n.argposition = (byte)dequeue_argpos;
@@ -270,7 +270,7 @@ public class PTC2 extends GPNodeBuilder
                     GPNode n = (GPNode)
                         nonterminals[RandomChoice.pickFromDistribution(
                             pset.nonterminalProbabilities(y),
-                            state.random[thread].nextFloat(),CHECK_BOUNDARY)].lightClone();
+                            state.random[thread].nextFloat())].lightClone();
                     dequeue_node.children[dequeue_argpos] = n;
                     n.resetNode(state,thread);  // give ERCs a chance to randomize
                     n.argposition = (byte)dequeue_argpos;

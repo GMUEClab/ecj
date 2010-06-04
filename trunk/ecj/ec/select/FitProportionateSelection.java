@@ -77,7 +77,7 @@ public class FitProportionateSelection extends SelectionMethod
         {
         // Pick and return an individual from the population
         return RandomChoice.pickFromDistribution(
-            fitnesses,state.random[thread].nextFloat(),CHECKBOUNDARY);
+            fitnesses,state.random[thread].nextFloat());
         }
     
     public void finishProducing(final EvolutionState s,

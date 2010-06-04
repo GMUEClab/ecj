@@ -362,13 +362,30 @@ public class RandomChoice
         }
 
 
-    /** Picks a random item from an array of probabilities,
+	public static final int CHECKBOUNDARY = 8;
+	
+   /** Picks a random item from an array of probabilities,
+        normalized and summed as follows:  For example,
+        if four probabilities are {0.3, 0.2, 0.1, 0.4}, then
+        they should get normalized and summed by the outside owners
+        as: {0.3, 0.5, 0.6, 1.0}.  If probabilities.length < CHECKBOUNDARY,
+        then a linear search is used, else a binary search is used. */
+
+    public static int pickFromDistribution(final float[] probabilities,
+        final float prob)
+		{
+		return pickFromDistribution(probabilities, prob, CHECKBOUNDARY);
+		}
+
+    
+     /** Picks a random item from an array of probabilities,
         normalized and summed as follows:  For example,
         if four probabilities are {0.3, 0.2, 0.1, 0.4}, then
         they should get normalized and summed by the outside owners
         as: {0.3, 0.5, 0.6, 1.0}.  If probabilities.length < checkboundary,
-        then a linear search is used, else a binary search is used. */
-    
+        then a linear search is used, else a binary search is used.
+		@deprecated
+		*/
     public static int pickFromDistribution(final float[] probabilities,
         final float prob, final int checkboundary)
         {
@@ -417,8 +434,24 @@ public class RandomChoice
         normalized and summed as follows:  For example,
         if four probabilities are {0.3, 0.2, 0.1, 0.4}, then
         they should get normalized and summed by the outside owners
-        as: {0.3, 0.5, 0.6, 1.0}.  If probabilities.length < checkboundary,
+        as: {0.3, 0.5, 0.6, 1.0}.  If probabilities.length < CHECKBOUNDARY,
         then a linear search is used, else a binary search is used. */
+
+    public static int pickFromDistribution(final double[] probabilities,
+        final double prob)
+		{
+		return pickFromDistribution(probabilities, prob, CHECKBOUNDARY);
+		}
+
+    
+    /** Picks a random item from an array of probabilities,
+        normalized and summed as follows:  For example,
+        if four probabilities are {0.3, 0.2, 0.1, 0.4}, then
+        they should get normalized and summed by the outside owners
+        as: {0.3, 0.5, 0.6, 1.0}.  If probabilities.length < checkboundary,
+        then a linear search is used, else a binary search is used.
+		@deprecated
+		*/
     
     public static int pickFromDistribution(final double[] probabilities,
         final double prob, final int checkboundary)
@@ -470,8 +503,27 @@ public class RandomChoice
         normalized and summed as follows:  For example,
         if four probabilities are {0.3, 0.2, 0.1, 0.4}, then
         they should get normalized and summed by the outside owners
-        as: {0.3, 0.5, 0.6, 1.0}.  If probabilities.length < checkboundary,
+        as: {0.3, 0.5, 0.6, 1.0}.  If probabilities.length < CHECKBOUNDARY,
         then a linear search is used, else a binary search is used. */
+    
+    public static int pickFromDistribution(final Object[] objs, 
+        final RandomChoiceChooser chooser,
+        final float prob)
+		{
+		return pickFromDistribution(objs, chooser, prob, CHECKBOUNDARY);
+		}
+
+    /** Picks a random item from an array of objects, each with an
+        associated probability that is accessed by taking an object
+        and passing it to chooser.getProbability(obj).  The objects'
+        probabilities are 
+        normalized and summed as follows:  For example,
+        if four probabilities are {0.3, 0.2, 0.1, 0.4}, then
+        they should get normalized and summed by the outside owners
+        as: {0.3, 0.5, 0.6, 1.0}.  If probabilities.length < checkboundary,
+        then a linear search is used, else a binary search is used.
+		@deprecated
+		*/
     
     public static int pickFromDistribution(final Object[] objs, 
         final RandomChoiceChooser chooser,
@@ -524,8 +576,27 @@ public class RandomChoice
         normalized and summed as follows:  For example,
         if four probabilities are {0.3, 0.2, 0.1, 0.4}, then
         they should get normalized and summed by the outside owners
-        as: {0.3, 0.5, 0.6, 1.0}.  If probabilities.length < checkboundary,
+        as: {0.3, 0.5, 0.6, 1.0}.  If probabilities.length < CHECKBOUNDARY,
         then a linear search is used, else a binary search is used. */
+    
+    public static int pickFromDistribution(final Object[] objs, 
+        final RandomChoiceChooserD chooser,
+        final double prob)
+        {
+		return pickFromDistribution(objs, chooser, prob, CHECKBOUNDARY);
+		}
+		
+    /** Picks a random item from an array of objects, each with an
+        associated probability that is accessed by taking an object
+        and passing it to chooser.getProbability(obj).  The objects'
+        probabilities are 
+        normalized and summed as follows:  For example,
+        if four probabilities are {0.3, 0.2, 0.1, 0.4}, then
+        they should get normalized and summed by the outside owners
+        as: {0.3, 0.5, 0.6, 1.0}.  If probabilities.length < checkboundary,
+        then a linear search is used, else a binary search is used.
+		@deprecated
+		*/
     
     public static int pickFromDistribution(final Object[] objs, 
         final RandomChoiceChooserD chooser,
