@@ -40,18 +40,50 @@ import ec.*;
  * long. For large enough values (but still smaller than the maximum long), the
  * difference between one double and the next is greater than one.</p>
  *
- * <p>VectorSpecies contains a number of parameters guiding how the individual
+ * <p>VectorSpecies has three wasy to determine the initial size of the individual:</p>
+ * <ul>
+ * <li><b>A fixed size</b>.</li>
+ * <li><b>Geometric distribution</b>.</li>
+ * <li><b>Uniform distribution</b></li>
+ * </ul>
+ *
+ * <p>If the algorithm used is the geometric distribution, the VectorSpecies starts at a
+ * minimum size and continues flipping a coin with a certain "resize probability",
+ * increasing the size each time, until the coin comes up tails (fails).  The chunk size
+ * must be 1 in this case.
+ *
+ * <p> If the algorithm used is the uniform distribution, the VectorSpecies picks a random
+ * size between a provided minimum and maximum size, inclusive.  The chunk size
+ * must be 1 in this case.
+ *
+ * <p>If the size is fixed, then you can also provide a "chunk size" which constrains the
+ * locations in which crossover can be performed (only along chunk boundaries).  The genome
+ * size must be a multiple of the chunk size in this case.
+ *
+ * <p>VectorSpecies also contains a number of parameters guiding how the individual
  * crosses over and mutates.
  
  <p><b>Parameters</b><br>
  <table>
  <tr><td valign=top><i>base.n</i>.<tt>genome-size</tt><br>
- <font size=-1>int &gt;= 1</font></td>
- <td valign=top>(size of the genome)</td></tr>
+ <font size=-1>int &gt;= 1 or one of: geometric, uniform</font></td>
+ <td valign=top>(size of the genome, or if 'geometric' or 'uniform', the algorithm used to size the initial genome)</td></tr>
 
  <tr><td valign=top><i>base.n</i>.<tt>chunk-size</tt><br>
  <font size=-1>1 &lt;= int &lt;= genome-size (default=1)</font></td>
  <td valign=top>(the chunk size for crossover (crossover will only occur on chunk boundaries))</td></tr>
+
+ <tr><td valign=top><i>base.n</i>.<tt>geometric-prob</tt><br>
+ <font size=-1>0.0 &lt;= float &lt; 1.0</font></td>
+ <td valign=top>(the coin-flip probability for increasing the initial size using the geometric distribution)</td></tr>
+
+ <tr><td valign=top><i>base.n</i>.<tt>min-initial-size</tt><br>
+ <font size=-1>int &gt;= 0</font></td>
+ <td valign=top>(the minimum initial size of the genome)</td></tr>
+
+ <tr><td valign=top><i>base.n</i>.<tt>max-initial-size</tt><br>
+ <font size=-1>int &gt;= min-initial-size</font></td>
+ <td valign=top>(the maximum initial size of the genome)</td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>crossover-type</tt><br>
  <font size=-1>string, one of: one, two, any</font></td>
@@ -94,12 +126,20 @@ public class VectorSpecies extends Species
     public final static String P_CROSSOVERPROB = "crossover-prob";
     public final static String P_GENOMESIZE = "genome-size";
     public final static String P_LINEDISTANCE = "line-extension";
+    public final static String V_GEOMETRIC = "geometric";
+    public final static String P_GEOMETRIC_PROBABILITY = "geometric-prob";
+    public final static String V_UNIFORM = "uniform";
+    public final static String P_UNIFORM_MIN = "min-initial-size";
+    public final static String P_UNIFORM_MAX = "max-initial-size";
 
     public final static int C_ONE_POINT = 0;
     public final static int C_TWO_POINT = 1;
     public final static int C_ANY_POINT = 128;
     public final static int C_LINE_RECOMB = 256;
     public final static int C_INTERMED_RECOMB = 512;
+    public final static int C_NONE = 0;
+    public final static int C_GEOMETRIC = 1;
+    public final static int C_UNIFORM = 2;
 
     /** Probability that a gene will mutate */
     public float mutationProbability;
@@ -109,6 +149,14 @@ public class VectorSpecies extends Species
     public int crossoverType;
     /** How big of a genome should we create on initialization? */
     public int genomeSize;
+    /** How should we reset the genome? */
+    public int genomeResizeAlgorithm;
+    /** What's the smallest legal genome? */
+    public int minInitialSize;
+    /** What's the largest legal genome? */
+    public int maxInitialSize;
+    /** With what probability would our genome be at least 1 larger than it is now during initialization? */
+    public float genomeIncreaseProbability;
     /** How big of chunks should we define for crossover? */
     public int chunksize;
     /** How far along the long a child can be located for line or intermediate recombination */
@@ -137,19 +185,64 @@ public class VectorSpecies extends Species
         
         this.state = state;
         
-        genomeSize = state.parameters.getInt(base.push(P_GENOMESIZE),def.push(P_GENOMESIZE),1);
-        if (genomeSize==0)
-            state.output.error("VectorSpecies must have a genome size > 0",
-                base.push(P_GENOMESIZE),def.push(P_GENOMESIZE));
-    
-        chunksize = state.parameters.getIntWithDefault(base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE),1);
-        if (chunksize <= 0 || chunksize > genomeSize)
-            state.output.fatal("VectorSpecies must have a chunksize which is > 0 and < genomeSize",
-                base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE));
-        if (genomeSize % chunksize != 0)
-            state.output.fatal("VectorSpecies must have a genomeSize which is a multiple of chunksize",
-                base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE));
+        String genomeSizeForm = state.parameters.getString(base.push(P_GENOMESIZE),def.push(P_GENOMESIZE));
+		if (genomeSizeForm.equals(V_GEOMETRIC))
+			{
+			genomeSize = 1;
+			genomeResizeAlgorithm = C_GEOMETRIC;
+			chunksize = state.parameters.getIntWithDefault(base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE),1);
+			if (chunksize != 1)
+				state.output.fatal("To use Geometric size initialization, VectorSpecies must have a chunksize of 1",
+					base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE));
+			minInitialSize = state.parameters.getInt(base.push(P_UNIFORM_MIN),def.push(P_UNIFORM_MIN), 0);
+			if (minInitialSize < 0)
+				{
+				state.output.warning("Gemoetric size initialization used, but no minimum initial size provided.  Assuming minimum is 0.");
+				minInitialSize = 0;
+				}
+			genomeIncreaseProbability = state.parameters.getFloatWithMax(base.push(P_GEOMETRIC_PROBABILITY),def.push(P_GEOMETRIC_PROBABILITY),0.0, 1.0);
+			if (genomeIncreaseProbability < 0.0 || genomeIncreaseProbability >= 1.0)  // note >=
+				state.output.fatal("To use Gemoetric size initialization, the genome increase probability must be >= 0.0 and < 1.0",
+					base.push(P_GEOMETRIC_PROBABILITY),def.push(P_GEOMETRIC_PROBABILITY));
+			}
+		else if (genomeSizeForm.equals(V_UNIFORM))
+			{
+			genomeSize = 1;
+			genomeResizeAlgorithm = C_UNIFORM;
+			chunksize = state.parameters.getIntWithDefault(base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE),1);
+			if (chunksize != 1)
+				state.output.fatal("To use Uniform size initialization, VectorSpecies must have a chunksize of 1",
+					base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE));
+			minInitialSize = state.parameters.getInt(base.push(P_UNIFORM_MIN),def.push(P_UNIFORM_MIN),0);
+			if (minInitialSize < 0)
+				state.output.fatal("To use Uniform size initialization, you must set a minimum initial size >= 0",
+					base.push(P_UNIFORM_MIN),def.push(P_UNIFORM_MIN));
+			maxInitialSize = state.parameters.getInt(base.push(P_UNIFORM_MAX),def.push(P_UNIFORM_MAX),0);
+			if (maxInitialSize < 0)
+				state.output.fatal("To use Uniform size initialization, you must set a maximum initial size >= 0",
+					base.push(P_UNIFORM_MAX),def.push(P_UNIFORM_MAX));
+			if (maxInitialSize < minInitialSize)
+				state.output.fatal("To use Uniform size initialization, you must set a maximum initial size >= the minimum initial size",
+					base.push(P_UNIFORM_MAX),def.push(P_UNIFORM_MAX));
+			}
+		else  // it's a number
+			{
+			genomeSize = state.parameters.getInt(base.push(P_GENOMESIZE),def.push(P_GENOMESIZE),1);
+			if (genomeSize==0)
+				state.output.error("VectorSpecies must have a genome size > 0",
+					base.push(P_GENOMESIZE),def.push(P_GENOMESIZE));
+			
+			genomeResizeAlgorithm = C_NONE;
 
+			chunksize = state.parameters.getIntWithDefault(base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE),1);
+			if (chunksize <= 0 || chunksize > genomeSize)
+				state.output.fatal("VectorSpecies must have a chunksize which is > 0 and < genomeSize",
+					base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE));
+			if (genomeSize % chunksize != 0)
+				state.output.fatal("VectorSpecies must have a genomeSize which is a multiple of chunksize",
+					base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE));
+			}
+				
         mutationProbability = state.parameters.getFloatWithMax(
             base.push(P_MUTATIONPROB),def.push(P_MUTATIONPROB),0.0,1.0);
         if (mutationProbability==-1.0)
@@ -205,8 +298,20 @@ public class VectorSpecies extends Species
         {
         VectorIndividual newind = (VectorIndividual)(super.newIndividual(state, thread));
 
-        newind.reset( state, thread);
-
+		if (genomeResizeAlgorithm == C_NONE)
+			newind.reset( state, thread );
+		else if (genomeResizeAlgorithm == C_UNIFORM)
+			{
+			int size = state.random[thread].nextInt(maxInitialSize - minInitialSize + 1) + minInitialSize;
+			newind.reset(state, thread, size);
+			}
+		else if (genomeResizeAlgorithm == C_GEOMETRIC)
+			{
+			int size = minInitialSize;
+			while(state.random[thread].nextBoolean(genomeIncreaseProbability)) size++;
+			newind.reset(state, thread, size);
+			}
+			
         return newind;
         }
     }

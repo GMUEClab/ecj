@@ -219,7 +219,7 @@ public class Uniform extends GPNodeBuilder
         {
         if (useTrueDistribution)
             return RandomChoice.pickFromDistribution(
-                truesizes[functionset][type],state.random[thread].nextDouble(),CHECKBOUNDARY);
+                truesizes[functionset][type],state.random[thread].nextDouble());
         else return super.pickSize(state,thread);
         }
     
@@ -441,7 +441,7 @@ public class Uniform extends GPNodeBuilder
         //System.out.println("" + functionset + " " + type + " " + size);
         int choice = RandomChoice.pickFromDistribution(
             ROOT_D[functionset][type][size],ROOT_D[functionset][type][size][0],
-            mt.nextDouble(),CHECKBOUNDARY);
+            mt.nextDouble());
         GPNode node = (GPNode)(ROOT_D[functionset][type][size][choice].node.lightClone());
         node.resetNode(state,thread);  // give ERCs a chance to randomize
         //System.out.println("Size: " + size + "Rooted: " + node);
@@ -470,7 +470,7 @@ public class Uniform extends GPNodeBuilder
             {
             int size = RandomChoice.pickFromDistribution(
                 CHILD_D[functionset][intForNode(parentc)][outof][pickchild],
-                mt.nextDouble(),CHECKBOUNDARY);
+                mt.nextDouble());
             parent.children[pickchild] = 
                 createTreeOfType(state,thread,initializer,functionset,parent.constraints(initializer).childtypes[pickchild].type,size,mt);
             fillNodeWithChildren(state,thread,initializer,functionset,parent,parentc,pickchild+1,outof-size,mt);

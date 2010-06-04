@@ -175,11 +175,11 @@ public class GreedyOverselection extends SelectionMethod
             // over -- sortedFitUnder.length to sortedPop.length
             return sortedPop[
                 sortedFitUnder.length + RandomChoice.pickFromDistribution(
-                    sortedFitOver,state.random[thread].nextFloat(),CHECKBOUNDARY)];
+                    sortedFitOver,state.random[thread].nextFloat())];
         else
             // under -- 0 to sortedFitUnder.length
             return sortedPop[RandomChoice.pickFromDistribution(
-                    sortedFitUnder,state.random[thread].nextFloat(),CHECKBOUNDARY)];
+                    sortedFitUnder,state.random[thread].nextFloat())];
         }
 
     public void finishProducing(final EvolutionState s,

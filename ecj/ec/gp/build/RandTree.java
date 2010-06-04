@@ -162,7 +162,7 @@ public class RandTree extends GPNodeBuilder
             }
         RandomChoice.organizeDistribution(prob);
         double s=0.0;
-        selection = RandomChoice.pickFromDistribution(prob,s,7);
+        selection = RandomChoice.pickFromDistribution(prob,s);
 
         return (int[])permutations.get(selection);
         }

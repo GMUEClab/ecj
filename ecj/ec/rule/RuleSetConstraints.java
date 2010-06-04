@@ -132,8 +132,7 @@ public class RuleSetConstraints implements Clique
             // pick from distribution
             return RandomChoice.pickFromDistribution(
                 sizeDistribution,
-                state.random[thread].nextFloat(),
-                CHECK_BOUNDARY);
+                state.random[thread].nextFloat());
         else
             // pick from resetMinSize...resetMaxSize
             return state.random[thread].nextInt(resetMaxSize-resetMinSize+1) + resetMinSize;

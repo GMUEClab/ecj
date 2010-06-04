@@ -53,10 +53,6 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooser
     {
     public static final String P_PROB = "prob";
     public static final float NO_PROBABILITY = -1.0f;
-    public static final int UNUSED = -1;
-    /** CheckBoundary is 8 */
-    public static final int CHECKBOUNDARY = 8;
-    public static final int DEFAULT_PRODUCED = 1;
     
     /** The probability that this BreedingSource will be chosen 
         to breed over other BreedingSources.  This may or may
@@ -127,8 +123,7 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooser
 
     public static int pickRandom(final BreedingSource[] sources,final float prob)
         {
-        return RandomChoice.pickFromDistribution(sources,sources[0],
-            prob,CHECKBOUNDARY);
+        return RandomChoice.pickFromDistribution(sources,sources[0], prob);
         }
 
     /** Normalizes and arranges the probabilities in sources so that they
@@ -213,5 +208,9 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooser
         each other's calls! Note that this method should travel *all*
         breeding source paths regardless of whether or not it's redundant to
         do so. */
-    public abstract void preparePipeline(final Object hook);
+    public void preparePipeline(final Object hook)
+		{
+		// the default method does nothing, though BreedingPipelines override this
+		// to guarantee that it's called on all their sources as well.
+		}
     }

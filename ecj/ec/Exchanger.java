@@ -28,10 +28,10 @@ package ec;
 public abstract class Exchanger implements Singleton
     {
     /** Initializes contacts with other processes, if that's what you're doing. Called at the beginning of an evolutionary run, before a population is set up. */
-    public abstract void initializeContacts(EvolutionState state);
+    public void initializeContacts(EvolutionState state) { }
 
     /** Initializes contacts with other processes, if that's what you're doing.  Called after restarting from a checkpoint. */
-    public abstract void reinitializeContacts(EvolutionState state);
+    public void reinitializeContacts(EvolutionState state) { }
 
     /** Performs exchanges after the population has been evaluated but before it has been bred,
         once every generation (or pseudogeneration). */
@@ -55,5 +55,5 @@ public abstract class Exchanger implements Singleton
     public abstract String runComplete(EvolutionState state);
 
     /** Closes contacts with other processes, if that's what you're doing.  Called at the end of an evolutionary run. result is either ec.EvolutionState.R_SUCCESS or ec.EvolutionState.R_FAILURE, indicating whether or not an ideal individual was found. */
-    public abstract void closeContacts(EvolutionState state, int result);
+    public void closeContacts(EvolutionState state, int result) { }
     }

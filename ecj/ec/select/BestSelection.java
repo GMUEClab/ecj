@@ -144,10 +144,10 @@ public class BestSelection extends SelectionMethod
         // Pick and return an individual from the population
         if (pickWorst)
             return sortedPop[RandomChoice.pickFromDistribution(
-                    sortedFit,state.random[thread].nextFloat(),CHECKBOUNDARY)];
+                    sortedFit,state.random[thread].nextFloat())];
         else
             return sortedPop[sortedPop.length - RandomChoice.pickFromDistribution(
-                    sortedFit,state.random[thread].nextFloat(),CHECKBOUNDARY) - 1];            
+                    sortedFit,state.random[thread].nextFloat()) - 1];            
         }
     
     public void finishProducing(final EvolutionState s,
