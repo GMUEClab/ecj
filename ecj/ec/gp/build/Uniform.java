@@ -127,8 +127,8 @@ import java.io.*;
    <td valign=top>(should we use the true numbers of trees for each size as the distribution for picking trees, as opposed to the user-specified distribution?)</td></tr>
    </table>
 
- <p><b>Default Base</b><br>
- gp.breed.uniform
+   <p><b>Default Base</b><br>
+   gp.breed.uniform
 
 */
 

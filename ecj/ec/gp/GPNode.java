@@ -493,12 +493,12 @@ public abstract class GPNode implements GPNodeParent, Prototype
         node's parent and argposition.  This method is identical to
         cloneReplacing for historical reasons, except that it returns
         the object as a GPNode, not an Object. 
-		@deprecated use clone() instead.
-		*/    
+        @deprecated use clone() instead.
+    */    
  
     public final GPNode cloneReplacing() 
         {
-		return (GPNode)clone();
+        return (GPNode)clone();
         }
 
 

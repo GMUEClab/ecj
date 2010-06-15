@@ -99,31 +99,31 @@ public class ADFContext implements Prototype
         Parameter d = def.push(P_DATA);
 
         
-		if (state.parameters.exists(p,d))
+        if (state.parameters.exists(p,d))
             {
-           /* arg_proto = (GPData)
-                (state.parameters.getInstanceForParameter(
-                    p,d,GPData.class));
-            arg_proto.setup(state,p);
-			*/
-			state.output.warning("ADF Data is deprecated -- this parameter is no longer used.  Instead, we directly use the GPData.",
-				p, d);
+            /* arg_proto = (GPData)
+               (state.parameters.getInstanceForParameter(
+               p,d,GPData.class));
+               arg_proto.setup(state,p);
+            */
+            state.output.warning("ADF Data is deprecated -- this parameter is no longer used.  Instead, we directly use the GPData.",
+                p, d);
             }
 //        else 
-		// snarf it from eval.problem.data, hacked up from the Problem's data type,
-            // 'cause I'm not sure if Problem's been set up yet
-            {
-            Parameter pp = new Parameter(EvolutionState.P_EVALUATOR).
-                push(Evaluator.P_PROBLEM).push(GPProblem.P_DATA);
-            Parameter dd = GPDefaults.base().push(GPProblem.P_GPPROBLEM).
-                push(GPProblem.P_DATA);
+        // snarf it from eval.problem.data, hacked up from the Problem's data type,
+        // 'cause I'm not sure if Problem's been set up yet
+                {
+                Parameter pp = new Parameter(EvolutionState.P_EVALUATOR).
+                    push(Evaluator.P_PROBLEM).push(GPProblem.P_DATA);
+                Parameter dd = GPDefaults.base().push(GPProblem.P_GPPROBLEM).
+                    push(GPProblem.P_DATA);
 
-            //state.output.warning("No ADF GPData specified; using (and setting up) from\n " 
-            //    + pp + "\nor default base " + dd, p,d);
-            arg_proto = (GPData)
-                (state.parameters.getInstanceForParameter(pp,dd,GPData.class));
-            arg_proto.setup(state,pp);  // note setting up from Problem's base!
-            }
+                //state.output.warning("No ADF GPData specified; using (and setting up) from\n " 
+                //    + pp + "\nor default base " + dd, p,d);
+                arg_proto = (GPData)
+                    (state.parameters.getInstanceForParameter(pp,dd,GPData.class));
+                arg_proto.setup(state,pp);  // note setting up from Problem's base!
+                }
 
         // clone off the prototype
         for (int x=0;x<INITIAL_ARGUMENT_SIZE;x++)

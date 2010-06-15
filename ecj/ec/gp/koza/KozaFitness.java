@@ -93,8 +93,8 @@ public class KozaFitness extends Fitness
         }
 
     /** Returns the raw fitness metric.  
-	@deprecated use standardizedFitness()
-	*/
+        @deprecated use standardizedFitness()
+    */
     public final float rawFitness()
         {
         return standardizedFitness();
