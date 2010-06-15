@@ -13,6 +13,37 @@ import ec.util.Parameter;
 import java.util.*; 
 import ec.eval.MasterProblem;
 
+/* 
+ * SteadyStateEvaluator.java
+ * 
+ */
+
+/**
+ * This subclass of Evaluator performs the evaluation portion of Steady-State Evolution and (in distributed form)
+ * Asynchronous Evolution. The procedure is as follows.  We begin with an empty Population and one by
+ * one create new Indivdiuals and send them off to be evaluated.  In basic Steady-State Evolution the
+ * individuals are immediately evaluated and we wait for them; but in Asynchronous Evolution the individuals are evaluated
+ * for however long it takes and we don't wait for them to finish.  When individuals return they are
+ * added to the Population until it is full.  No duplicate individuals are allowed.
+ *
+ * <p>At this point the system switches to its "steady state": individuals are bred from the population
+ * one by one, and sent off to be evaluated.  Once again, in basic Steady-State Evolution the
+ * individuals are immediately evaluated and we wait for them; but in Asynchronous Evolution the individuals are evaluated
+ * for however long it takes and we don't wait for them to finish.  When an individual returns, we
+ * mark an individual in the Population for death, then replace it with the new returning individual.
+ * Note that during the steady-state, Asynchronous Evolution could be still sending back some "new" individuals
+ * created during the initialization phase, not "bred" individuals.
+ *
+ * <p>The determination of how an individual is marked for death is done by the SteadyStateBreeder.
+ *
+ * <p>When SteadyStateEvaluator sends indivduals off to be evaluated, it stores them in an internal queue, along
+ * with the subpopulation in which they were destined.  This tuple is defined by QueueIndividual.java
+ * 
+ *
+ * @author Sean Luke
+ * @version 1.0 
+ */
+
 public class SteadyStateEvaluator extends SimpleEvaluator
     {
     LinkedList queue = new LinkedList();

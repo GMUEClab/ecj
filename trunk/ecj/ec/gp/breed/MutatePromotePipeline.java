@@ -60,7 +60,7 @@ import ec.gp.*;
  </table>
 
  <p><b>Default Base</b><br>
- gp.breed.mutate-demote
+ gp.breed.mutate-promote
 
 
  * @author Sean Luke
@@ -214,7 +214,7 @@ public class MutatePromotePipeline extends GPBreedingPipeline
                     {
                     j.trees[x] = (GPTree)(i.trees[x].lightClone());
                     j.trees[x].owner = j;
-                    j.trees[x].child = i.trees[x].child.cloneReplacing();
+                    j.trees[x].child = (GPNode)(i.trees[x].child.clone());
                     j.trees[x].child.parent = j.trees[x];
                     j.trees[x].child.argposition = 0;
                     }

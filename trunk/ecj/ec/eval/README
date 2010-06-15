@@ -1,6 +1,6 @@
 This directory contains the code for running the ECJ master/slave
 evaluator.  The master/slave evaluator allows you to connect one ECJ
-evolution process with some N remove slave processes.  These processes
+evolution process with some N remote slave processes.  These processes
 can come on-line at any time, and you can add new processes at any time,
 perhaps if new machines come available, or to replace slaves which have
 died for some reason.  If a remote slave dies, ECJ gracefully handles

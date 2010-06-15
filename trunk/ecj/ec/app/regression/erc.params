@@ -12,7 +12,6 @@ parent.0 = ../../gp/koza/koza.params
 
 gp.fs.size = 1
 gp.fs.0.name = f0
-gp.fs.0.info = ec.gp.GPFuncInfo
 gp.fs.0.size = 10
 gp.fs.0.func.0 = ec.app.regression.func.X
 gp.fs.0.func.0.nc = nc0
@@ -43,9 +42,6 @@ gp.fs.0.func.9.nc = nc0
 
 eval.problem = ec.app.regression.Regression
 eval.problem.data = ec.app.regression.RegressionData
-# ADFs use the same data type typically -- we need to include
-# this even if we're not implementing ADFs
-eval.problem.stack.context.data = ec.app.regression.RegressionData
 
 # The size of our training set, by default, is 20
 eval.problem.size = 20

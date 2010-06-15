@@ -65,23 +65,23 @@ import ec.*;
  
  <p><b>Parameters</b><br>
  <table>
- <tr><td valign=top><i>base.n</i>.<tt>genome-size</tt><br>
+ <tr><td valign=top><i>base</i>.<tt>genome-size</tt><br>
  <font size=-1>int &gt;= 1 or one of: geometric, uniform</font></td>
  <td valign=top>(size of the genome, or if 'geometric' or 'uniform', the algorithm used to size the initial genome)</td></tr>
 
- <tr><td valign=top><i>base.n</i>.<tt>chunk-size</tt><br>
+ <tr><td valign=top><i>base</i>.<tt>chunk-size</tt><br>
  <font size=-1>1 &lt;= int &lt;= genome-size (default=1)</font></td>
  <td valign=top>(the chunk size for crossover (crossover will only occur on chunk boundaries))</td></tr>
 
- <tr><td valign=top><i>base.n</i>.<tt>geometric-prob</tt><br>
+ <tr><td valign=top><i>base</i>.<tt>geometric-prob</tt><br>
  <font size=-1>0.0 &lt;= float &lt; 1.0</font></td>
  <td valign=top>(the coin-flip probability for increasing the initial size using the geometric distribution)</td></tr>
 
- <tr><td valign=top><i>base.n</i>.<tt>min-initial-size</tt><br>
+ <tr><td valign=top><i>base</i>.<tt>min-initial-size</tt><br>
  <font size=-1>int &gt;= 0</font></td>
  <td valign=top>(the minimum initial size of the genome)</td></tr>
 
- <tr><td valign=top><i>base.n</i>.<tt>max-initial-size</tt><br>
+ <tr><td valign=top><i>base</i>.<tt>max-initial-size</tt><br>
  <font size=-1>int &gt;= min-initial-size</font></td>
  <td valign=top>(the maximum initial size of the genome)</td></tr>
 

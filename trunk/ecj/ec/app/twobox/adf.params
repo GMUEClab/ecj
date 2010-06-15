@@ -50,7 +50,6 @@ gp.tc.1.init.max = 6
 gp.fs.size = 2
 gp.fs.0 = ec.gp.GPFunctionSet
 gp.fs.0.name = f0
-gp.fs.0.info = ec.gp.GPFuncInfo
 gp.fs.0.size = 11
 gp.fs.0.func.0 = ec.app.twobox.func.L0
 gp.fs.0.func.0.nc = nc0
@@ -82,7 +81,6 @@ gp.fs.0.func.10.nc = nc3
 
 gp.fs.1 = ec.gp.GPFunctionSet
 gp.fs.1.name = f1
-gp.fs.1.info = ec.gp.GPFuncInfo
 gp.fs.1.size = 7
 gp.fs.1.func.0 = ec.app.twobox.func.Add
 gp.fs.1.func.0.nc = nc2
@@ -109,8 +107,6 @@ gp.fs.1.func.6.nc = nc0
 
 eval.problem = ec.app.twobox.TwoBox
 eval.problem.data = ec.app.twobox.TwoBoxData
-# ADFs use the same data type typically -- we need to include this
-eval.problem.stack.context.data = ec.app.twobox.TwoBoxData
 
 # Define our training set size and range here
 eval.problem.size = 10

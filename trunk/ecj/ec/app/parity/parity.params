@@ -12,7 +12,6 @@ parent.0 = ../../gp/koza/koza.params
 
 gp.fs.size = 1
 gp.fs.0.name = f0
-gp.fs.0.info = ec.gp.GPFuncInfo
 
 ### The functions, carefully ordered :-)  (See below)
 
@@ -96,9 +95,6 @@ gp.fs.0.func.35.nc = nc0
 
 eval.problem = ec.app.parity.Parity
 eval.problem.data = ec.app.parity.ParityData
-# ADFs use the same data type typically -- we need to include
-# this even if we're not implementing ADFs
-eval.problem.stack.context.data = ec.app.parity.ParityData
 
 
 # Here we determine what kind of Parity we're doing:

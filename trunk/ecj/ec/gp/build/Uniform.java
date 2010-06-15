@@ -126,6 +126,10 @@ import java.io.*;
    <font size=-1>bool= true or false (default)</font></td>
    <td valign=top>(should we use the true numbers of trees for each size as the distribution for picking trees, as opposed to the user-specified distribution?)</td></tr>
    </table>
+
+ <p><b>Default Base</b><br>
+ gp.breed.uniform
+
 */
 
 
@@ -139,9 +143,6 @@ public class Uniform extends GPNodeBuilder
         {
         return GPBuildDefaults.base().push(P_UNIFORM);
         }
-        
-    /** CheckBoundary is 8 */
-    public static final int CHECKBOUNDARY = 8;
 
     // Mapping of integers to function sets
     public GPFunctionSet[] functionsets;

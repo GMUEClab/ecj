@@ -66,7 +66,6 @@ gp.fs.size = 3
 
 
 gp.fs.0.name = f0
-gp.fs.0.info = ec.gp.GPFuncInfo
 
 ### The functions, carefully ordered :-)  (See below)
 gp.fs.0.func.0 = ec.app.parity.func.And
@@ -156,7 +155,6 @@ gp.fs.0.func.37.nc = nc0
 
 # ADF1's tree
 gp.fs.1.name = f1
-gp.fs.1.info = ec.gp.GPFuncInfo
 gp.fs.1 = ec.gp.GPFunctionSet
 
 ### The functions, carefully ordered :-)  (See below)
@@ -247,7 +245,6 @@ gp.fs.1.func.37.nc = nc0
 
 ## ADF0's tree
 gp.fs.2.name = f2
-gp.fs.2.info = ec.gp.GPFuncInfo
 gp.fs.2 = ec.gp.GPFunctionSet
 
 ### The functions, carefully ordered :-)  (See below)
@@ -342,9 +339,6 @@ gp.fs.2.func.38.nc = nc0
 
 eval.problem = ec.app.parity.Parity
 eval.problem.data = ec.app.parity.ParityData
-# ADFs use the same data type typically -- we need to include
-# this even if we're not implementing ADFs
-eval.problem.stack.context.data = ec.app.parity.ParityData
 
 
 # Here we determine what kind of Parity we're doing:

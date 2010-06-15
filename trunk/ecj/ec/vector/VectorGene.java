@@ -116,12 +116,6 @@ public abstract class VectorGene implements Prototype
         { return toString(); }
 
     /** Prints the gene to a string in a fashion readable by readGeneFromString and parseable by readGene(state, reader).
-        The default form simply calls printGeneToString(). 
-        @deprecated use printGeneToString() instead. */
-    public String printGeneToString(final EvolutionState state)
-        { return printGeneToString(); }
-
-    /** Prints the gene to a string in a fashion readable by readGeneFromString and parseable by readGene(state, reader).
         Override this.  The default form returns toString(). */
     public String printGeneToString()
         { return toString(); }
@@ -134,20 +128,19 @@ public abstract class VectorGene implements Prototype
 
     /**
        Prints the gene in a way that can be read by readGene().  The default form simply
-       calls printGeneToString(state).   Override this gene to do custom writing to the log,
+       calls printGeneToString().   Override this gene to do custom writing to the log,
        or just override printGeneToString(...), which is probably easier to do.
     */
     public void printGene( final EvolutionState state, final int verbosity, final int log )
-        { state.output.println(printGeneToString(state),log); }
+        { state.output.println(printGeneToString(),log); }
 
     /**
        Prints the gene in a way that can be read by readGene().  The default form simply
        calls printGeneToString(state).   Override this gene to do custom writing,
        or just override printGeneToString(...), which is probably easier to do.
-       @deprecated use printGeneToString instead
     */
     public void printGene( final EvolutionState state, final PrintWriter writer )
-        { writer.println(printGeneToString(state)); }
+        { writer.println(printGeneToString()); }
 
     /**
        Reads a gene printed by printGene(...).  The default form simply reads a line into

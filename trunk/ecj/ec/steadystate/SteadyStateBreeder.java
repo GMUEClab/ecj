@@ -11,6 +11,43 @@ import ec.*;
 import ec.util.*;
 import java.util.*;
 
+/* 
+ * SteadyStateBreeder.java
+ * 
+ */
+
+/**
+ * This subclass of Breeder performs the evaluation portion of Steady-State Evolution and (in distributed form)
+ * Asynchronous Evolution. The procedure is as follows.  We begin with an empty Population and one by
+ * one create new Indivdiuals and send them off to be evaluated.  In basic Steady-State Evolution the
+ * individuals are immediately evaluated and we wait for them; but in Asynchronous Evolution the individuals are evaluated
+ * for however long it takes and we don't wait for them to finish.  When individuals return they are
+ * added to the Population until it is full.  No duplicate individuals are allowed.
+ *
+ * <p>At this point the system switches to its "steady state": individuals are bred from the population
+ * one by one, and sent off to be evaluated.  Once again, in basic Steady-State Evolution the
+ * individuals are immediately evaluated and we wait for them; but in Asynchronous Evolution the individuals are evaluated
+ * for however long it takes and we don't wait for them to finish.  When an individual returns, we
+ * mark an individual in the Population for death, then replace it with the new returning individual.
+ * Note that during the steady-state, Asynchronous Evolution could be still sending back some "new" individuals
+ * created during the initialization phase, not "bred" individuals.
+ *
+ * <p>The determination of how an individual is marked for death is done by the SteadyStateBreeder.  This is
+ * a SelectionMethod.  Note that this SelectionMethod probably should <i>not</i> be selecting for the "fittest"
+ * individuals, but rather for either random individuals (the standard approach) or for "bad" individuals.
+ * 
+ 
+ <p><b>Parameters</b><br>
+ <table>
+ <tr><td valign=top><tt>deselector</tt><br>
+ <font size=-1>classname, inherits and != ec.SelectionMethod</font></td>
+ <td valign=top>(The SelectionMethod used to pick individuals for death)</td></tr>
+ </table>
+
+ * @author Sean Luke
+ * @version 1.0 
+ */
+
 public class SteadyStateBreeder extends SimpleBreeder
     {
     /** If st.firstTimeAround, this acts exactly like SimpleBreeder.
@@ -20,7 +57,7 @@ public class SteadyStateBreeder extends SimpleBreeder
     BreedingPipeline[] bp;
     
     public static final String P_DESELECTOR = "deselector";
-    public static final String P_RETRIES = "duplicate-retries";
+    // public static final String P_RETRIES = "duplicate-retries";
         
     /** Loaded during the first iteration of breedPopulation */
     SelectionMethod deselectors[];

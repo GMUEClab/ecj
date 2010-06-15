@@ -44,13 +44,13 @@ import ec.util.*;
  <li> (if gather-full) The average depth of any tree per individual this generation
  <li> (if gather-full) [a|b|c...], representing the average depth of tree <i>a</i>, <i>b</i>, etc. of individuals this generation
  <li> (if gather-full) The average depth of any tree per individual so far in the run
- <li> The mean raw fitness of the subpopulation this generation
+ <li> The mean standardized fitness of the subpopulation this generation
  <li> The mean adjusted fitness of the subpopulation this generation
  <li> The mean hits of the subpopulation this generation
- <li> The best raw fitness of the subpopulation this generation
+ <li> The best standardized fitness of the subpopulation this generation
  <li> The best adjusted fitness of the subpopulation this generation
  <li> The best hits of the subpopulation this generation
- <li> The best raw fitness of the subpopulation so far in the run
+ <li> The best standardized fitness of the subpopulation so far in the run
  <li> The best adjusted fitness of the subpopulation so far in the run
  <li> The best hits of the subpopulation so far in the run
  </ul>
@@ -283,7 +283,7 @@ public class KozaShortStatistics extends Statistics
 
             
             // fitness information
-            float meanRaw = 0.0f;
+            float meanStandardized = 0.0f;
             float meanAdjusted = 0.0f;
             long hits = 0;
             
@@ -300,18 +300,18 @@ public class KozaShortStatistics extends Statistics
                     best_i[x] = state.population.subpops[x].individuals[y];
 
                 // mean for population
-                meanRaw += ((KozaFitness)(state.population.subpops[x].individuals[y].fitness)).rawFitness();
+                meanStandardized += ((KozaFitness)(state.population.subpops[x].individuals[y].fitness)).standardizedFitness();
                 meanAdjusted += ((KozaFitness)(state.population.subpops[x].individuals[y].fitness)).adjustedFitness();
                 hits += ((KozaFitness)(state.population.subpops[x].individuals[y].fitness)).hits;
                 }
             
             // compute fitness stats
-            meanRaw /= state.population.subpops[x].individuals.length;
+            meanStandardized /= state.population.subpops[x].individuals.length;
             meanAdjusted /= state.population.subpops[x].individuals.length;
-            state.output.print("" + meanRaw + " " + meanAdjusted + " " + 
+            state.output.print("" + meanStandardized + " " + meanAdjusted + " " + 
                 ((double)hits)/state.population.subpops[x].individuals.length + " ", 
                 statisticslog);
-            state.output.print("" + ((KozaFitness)(best_i[x].fitness)).rawFitness() +
+            state.output.print("" + ((KozaFitness)(best_i[x].fitness)).standardizedFitness() +
                 " " + ((KozaFitness)(best_i[x].fitness)).adjustedFitness() +
                 " " + ((KozaFitness)(best_i[x].fitness)).hits + " ",
                 statisticslog);
@@ -320,7 +320,7 @@ public class KozaShortStatistics extends Statistics
             if (best_of_run_a[x]==null || best_i[x].fitness.betterThan(best_of_run_a[x].fitness))
                 best_of_run_a[x] = best_i[x];
             
-            state.output.print("" + ((KozaFitness)(best_of_run_a[x].fitness)).rawFitness() +
+            state.output.print("" + ((KozaFitness)(best_of_run_a[x].fitness)).standardizedFitness() +
                 " " + ((KozaFitness)(best_of_run_a[x].fitness)).adjustedFitness() +
                 " " + ((KozaFitness)(best_of_run_a[x].fitness)).hits + " ",
                 statisticslog);

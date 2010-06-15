@@ -387,7 +387,7 @@ public class CrossoverPipeline extends GPBreedingPipeline
                     {
                     j1.trees[x] = (GPTree)(parents[0].trees[x].lightClone());
                     j1.trees[x].owner = j1;
-                    j1.trees[x].child = parents[0].trees[x].child.cloneReplacing();
+                    j1.trees[x].child = (GPNode)(parents[0].trees[x].child.clone());
                     j1.trees[x].child.parent = j1.trees[x];
                     j1.trees[x].child.argposition = 0;
                     }
@@ -409,7 +409,7 @@ public class CrossoverPipeline extends GPBreedingPipeline
                         {
                         j2.trees[x] = (GPTree)(parents[1].trees[x].lightClone());           
                         j2.trees[x].owner = j2;
-                        j2.trees[x].child = parents[1].trees[x].child.cloneReplacing();
+                        j2.trees[x].child = (GPNode)(parents[1].trees[x].child.clone());
                         j2.trees[x].child.parent = j2.trees[x];
                         j2.trees[x].child.argposition = 0;
                         }

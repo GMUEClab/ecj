@@ -41,7 +41,7 @@ Set-based strong typing is sufficient for a wide variety of needs, including typ
 
 <p>While ECJ supports strong typing, in fact most GP applications only need a single type (they are "typeless").  For convenience, ECJ's default parameter files for GP define a single type called (for want of a better name) <b>nil</b>, and some default GPNodeConstraints of various arities which only use the type <b>nil</b> 
 
-<p>Each GPTree subscribes to a <a href="../../classdocs/ec/gp/GPFunctionSet.html">GPFunctionSet</a> which defines the GPNodes legally permitted in the tree.  GPFunctionSets store, in a variety of redundant tables, the relevant GPNodes stored inside  <a href="../../classdocs/ec/gp/GPFuncInfo.html">GPFuncInfo</a> objects.  GPFuncInfo's existence is historical oddity -- the GPFunctionSet could have just stored the GPNodes directly.  When an algorithm needs to generate a tree, it does so by finding the appropriate GPFunctionSet choosing GPNodes from the set, and cloning them to produce nodes to hang in the tree.
+<p>Each GPTree subscribes to a <a href="../../classdocs/ec/gp/GPFunctionSet.html">GPFunctionSet</a> which defines the GPNodes legally permitted in the tree.  GPFunctionSets store, in a variety of redundant tables, the relevant GPNodes.  When an algorithm needs to generate a tree, it does so by finding the appropriate GPFunctionSet choosing GPNodes from the set, and cloning them to produce nodes to hang in the tree.
 
 <p>GP builds trees using tree generation algorithms, all of which are subclasses of <a href="../../classdocs/ec/gp/GPNodeBuilder.html">GPNodeBuilder</a>.   Tree generation algorithms are usually used in one of two places: population initialization and mutation.  Mutation algorithms have their own parameters where you can specify the GPNodeBuilder subclass you'd like.  Additionally, each GPTree has a reference (not shown on the graph) to a GPNodeBuilder resonsible for initialization of that tree.
 
@@ -396,9 +396,8 @@ parent.0 = ../../gp/koza/koza.params
 # We have one function set, of class GPFunctionSet
 gp.fs.size = 1
 gp.fs.0 = ec.gp.GPFunctionSet
-# We'll call the function set "f0".  It uses the default GPFuncInfo class
+# We'll call the function set "f0".
 gp.fs.0.name = f0
-gp.fs.0.info = ec.gp.GPFuncInfo
 
 # We have five functions in the function set.  They are:
 gp.fs.0.size = 5
@@ -419,10 +418,6 @@ gp.fs.0.func.4.nc = nc2
 <tt><pre>
 eval.problem = ec.app.tutorial4.MultiValuedRegression
 eval.problem.data = ec.app.tutorial4.DoubleData
-# The following should almost *always* be the same as eval.problem.data
-# For those who are interested, it defines the data object used internally
-# inside ADF stack contexts
-eval.problem.stack.context.data = ec.app.tutorial4.DoubleData
 </pre></tt>
 
 <h3>Run the Problem</h3>
