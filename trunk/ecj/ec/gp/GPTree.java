@@ -157,15 +157,15 @@ public class GPTree implements GPNodeParent, Prototype
     public static final String P_USEVARS = "c-variables";
     public static final int NO_TREENUM = -1;
 
-	public static final String P_PRINT_STYLE = "print-style";
+    public static final String P_PRINT_STYLE = "print-style";
     public static final String V_LISP = "lisp";
     public static final String V_DOT = "dot";
     public static final String V_LATEX = "latex";
     public static final String V_C = "c";
-	public static final int PRINT_STYLE_LISP = 0;
-	public static final int PRINT_STYLE_DOT = 1;
-	public static final int PRINT_STYLE_LATEX = 2;
-	public static final int PRINT_STYLE_C = 3;
+    public static final int PRINT_STYLE_LISP = 0;
+    public static final int PRINT_STYLE_DOT = 1;
+    public static final int PRINT_STYLE_LATEX = 2;
+    public static final int PRINT_STYLE_C = 3;
 
 
     /** the root GPNode in the GPTree */
@@ -179,8 +179,8 @@ public class GPTree implements GPNodeParent, Prototype
         the actual constraints object. */
     public byte constraints;
 
-	/** The print style of the GPTree. */
-	public int printStyle;
+    /** The print style of the GPTree. */
+    public int printStyle;
 
     /** When using c to print for humans, do we print terminals as variables? 
         (as opposed to zero-argument functions)? */
@@ -258,24 +258,24 @@ public class GPTree implements GPNodeParent, Prototype
         {
         Parameter def = defaultBase();
 
-		// get rid of deprecated values
-		if (state.parameters.exists(base.push(P_USEGRAPHVIZ), def.push(P_USEGRAPHVIZ)))
-			state.output.error("Parameter no longer used.  See GPTree.java for details.", base.push(P_USEGRAPHVIZ), def.push(P_USEGRAPHVIZ));
-		if (state.parameters.exists(base.push(P_USELATEX), def.push(P_USELATEX)))
-			state.output.error("Parameter no longer used.  See GPTree.java for details.", base.push(P_USELATEX), def.push(P_USELATEX));
-		if (state.parameters.exists(base.push(P_USEC), def.push(P_USEC)))
-			state.output.error("Parameter no longer used.  See GPTree.java for details.", base.push(P_USEC), def.push(P_USEC));
-		state.output.exitIfErrors();
+        // get rid of deprecated values
+        if (state.parameters.exists(base.push(P_USEGRAPHVIZ), def.push(P_USEGRAPHVIZ)))
+            state.output.error("Parameter no longer used.  See GPTree.java for details.", base.push(P_USEGRAPHVIZ), def.push(P_USEGRAPHVIZ));
+        if (state.parameters.exists(base.push(P_USELATEX), def.push(P_USELATEX)))
+            state.output.error("Parameter no longer used.  See GPTree.java for details.", base.push(P_USELATEX), def.push(P_USELATEX));
+        if (state.parameters.exists(base.push(P_USEC), def.push(P_USEC)))
+            state.output.error("Parameter no longer used.  See GPTree.java for details.", base.push(P_USEC), def.push(P_USEC));
+        state.output.exitIfErrors();
 
-		String style = state.parameters.getString(base.push(P_PRINT_STYLE), def.push(P_PRINT_STYLE));
-		if (style == null)  // assume Lisp
-			printStyle = PRINT_STYLE_LISP;
-		else if (style.equals(V_C))
-			printStyle = PRINT_STYLE_C;
-		else if (style.equals(V_DOT))
-			printStyle = PRINT_STYLE_DOT;
-		else if (style.equals(V_LATEX))
-			printStyle = PRINT_STYLE_LATEX;
+        String style = state.parameters.getString(base.push(P_PRINT_STYLE), def.push(P_PRINT_STYLE));
+        if (style == null)  // assume Lisp
+            printStyle = PRINT_STYLE_LISP;
+        else if (style.equals(V_C))
+            printStyle = PRINT_STYLE_C;
+        else if (style.equals(V_DOT))
+            printStyle = PRINT_STYLE_DOT;
+        else if (style.equals(V_LATEX))
+            printStyle = PRINT_STYLE_LATEX;
 
         // in C, treat terminals as variables?  By default, yes.
         printTerminalsAsVariablesInC = state.parameters.getBoolean(base.push(P_USEVARS),def.push(P_USEVARS),true);

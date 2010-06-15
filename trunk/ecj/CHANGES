@@ -1578,7 +1578,8 @@ Version		Change Log
 	Deleted VectorGene.printGeneToString(EvolutionState) and made
 		VectorGene.printGene(EvolutionState, PrintWriter) NON-deprecated.
 		Instead, use printGeneToString().
-	Made GPNode.verify(...) private.  Use GPNode.verify(...).
+	Made GPNode.verify(...) private.  Use GPTree.verify(...) or 
+		GPIndividual.verify(...).
 	Various documentation fixes
 	Deprecated KozaStatistics.  koza.params now uses SimpleStatistics.
 	KozaFitness.rawStatistics() deprecated.  KozaFitness now says

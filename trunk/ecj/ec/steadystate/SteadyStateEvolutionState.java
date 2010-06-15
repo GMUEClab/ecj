@@ -245,7 +245,7 @@ public class SteadyStateEvolutionState extends EvolutionState
                                 
                 if (statistics instanceof SteadyStateStatisticsForm) 
                     ((SteadyStateStatisticsForm)statistics).individualsEvaluatedStatistics(this, 
-						new Individual[]{ind}, new Individual[]{deadInd}, new int[]{subpop}, new int[]{deadIndividual}); 
+                        new Individual[]{ind}, new Individual[]{deadInd}, new int[]{subpop}, new int[]{deadIndividual}); 
                 }
                                                 
             // INCREMENT NUMBER OF COMPLETED EVALUATIONS

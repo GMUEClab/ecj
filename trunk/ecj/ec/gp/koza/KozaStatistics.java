@@ -96,8 +96,8 @@ public class KozaStatistics extends Statistics implements SteadyStateStatisticsF
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state,base);
-		
-		state.output.warnOnce("KozaStatistics is deprecated and will soon be deleted.  Use SimpleStatistics instead.");
+                
+        state.output.warnOnce("KozaStatistics is deprecated and will soon be deleted.  Use SimpleStatistics instead.");
         
         File statisticsFile = state.parameters.getFile(
             base.push(P_STATISTICS_FILE),null);

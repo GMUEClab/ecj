@@ -32,10 +32,10 @@ import ec.*;
 
 public interface SteadyStateStatisticsForm 
     {
-	/** Called when we created an empty initial Population. */
-	public void enteringInitialPopulationStatistics(SteadyStateEvolutionState state);
-	/** Called when we have filled the initial population and are entering the steady state. */
-	public void enteringSteadyStateStatistics(int subpop, SteadyStateEvolutionState state);
+    /** Called when we created an empty initial Population. */
+    public void enteringInitialPopulationStatistics(SteadyStateEvolutionState state);
+    /** Called when we have filled the initial population and are entering the steady state. */
+    public void enteringSteadyStateStatistics(int subpop, SteadyStateEvolutionState state);
     /** Called each time new individuals are bred during the steady-state
         process.   */
     public void individualsBredStatistics(SteadyStateEvolutionState state, Individual[] individuals);

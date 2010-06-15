@@ -209,8 +209,8 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooser
         breeding source paths regardless of whether or not it's redundant to
         do so. */
     public void preparePipeline(final Object hook)
-		{
-		// the default method does nothing, though BreedingPipelines override this
-		// to guarantee that it's called on all their sources as well.
-		}
+        {
+        // the default method does nothing, though BreedingPipelines override this
+        // to guarantee that it's called on all their sources as well.
+        }
     }
