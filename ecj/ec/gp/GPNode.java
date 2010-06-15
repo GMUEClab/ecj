@@ -219,7 +219,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
 
 
     /** Verification of validity of the node in the tree -- strictly for debugging purposes only */
-    public final int verify(EvolutionState state, GPFunctionSet set, int index)
+    final int verify(EvolutionState state, GPFunctionSet set, int index)
         {
         if (!(state.initializer instanceof GPInitializer))
             { state.output.error("" + index + ": Initializer is not a GPInitializer"); return index+1; }
@@ -393,7 +393,6 @@ public abstract class GPNode implements GPNodeParent, Prototype
         resultant node is returned in <i>g</i>.*/
     public int nodeInPosition(int p, final GPNodeGatherer g, final int nodesearch)
         {
-
         // am I of the type I'm looking for?
         if (nodesearch==NODESEARCH_ALL ||
             (nodesearch==NODESEARCH_TERMINALS && children.length==0) ||
@@ -477,17 +476,6 @@ public abstract class GPNode implements GPNodeParent, Prototype
  
     public Object clone()
         { 
-        return cloneReplacing();
-        }
-
-    /** Deep-clones the tree rooted at this node, and returns the entire
-        copied tree.  The result has everything set except for the root
-        node's parent and argposition.  This method is identical to
-        cloneReplacing for historical reasons, except that it returns
-        the object as a GPNode, not an Object. */    
- 
-    public final GPNode cloneReplacing() 
-        {
         GPNode newnode = (GPNode)(lightClone());
         for(int x=0;x<children.length;x++)
             {
@@ -498,6 +486,19 @@ public abstract class GPNode implements GPNodeParent, Prototype
             newnode.children[x].argposition = (byte)x;
             }
         return newnode;
+        }
+
+    /** Deep-clones the tree rooted at this node, and returns the entire
+        copied tree.  The result has everything set except for the root
+        node's parent and argposition.  This method is identical to
+        cloneReplacing for historical reasons, except that it returns
+        the object as a GPNode, not an Object. 
+		@deprecated use clone() instead.
+		*/    
+ 
+    public final GPNode cloneReplacing() 
+        {
+		return (GPNode)clone();
         }
 
 

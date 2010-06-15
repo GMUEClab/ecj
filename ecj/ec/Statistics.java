@@ -186,42 +186,39 @@ public class Statistics implements Singleton
             children[x].finalStatistics(state, result);
         }
     
-    /** STEADY-STATE: called immediately before the initial generation is evaluated. */
-    public void preInitialEvaluationStatistics(final SteadyStateEvolutionState state)
+    /** STEADY-STATE: called when we created an empty initial Population. */
+    public void enteringInitialPopulationStatistics(final SteadyStateEvolutionState state)
         {
         for(int x=0;x<children.length;x++)
             if (children[x] instanceof SteadyStateStatisticsForm)
-                ((SteadyStateStatisticsForm)children[x]).preInitialEvaluationStatistics(state);
+                ((SteadyStateStatisticsForm)children[x]).enteringInitialPopulationStatistics(state);
         }
         
-    /** STEADY-STATE: called immediately after the a subpopulation's first full evaluation has been completed. */
-    public void postInitialEvaluationStatistics(int subpop, final SteadyStateEvolutionState state)
+    /** STEADY-STATE: called when a given Subpopulation is entering the Steady-State. */
+    public void enteringSteadyStateStatistics(int subpop, final SteadyStateEvolutionState state)
         {
         for(int x=0;x<children.length;x++)
             if (children[x] instanceof SteadyStateStatisticsForm)
-                ((SteadyStateStatisticsForm)children[x]).postInitialEvaluationStatistics(subpop, state);
+                ((SteadyStateStatisticsForm)children[x]).enteringSteadyStateStatistics(subpop, state);
         }
         
     /** STEADY-STATE: called each time new individuals are bred during the steady-state
         process. */
-    public void individualsBredStatistics(SteadyStateEvolutionState state, Individual[] newIndividuals, 
-        int[] subpopulations, int[] indicies)
+    public void individualsBredStatistics(SteadyStateEvolutionState state, Individual[] individuals)
         {
         for(int x=0;x<children.length;x++)
             if (children[x] instanceof SteadyStateStatisticsForm)
-                ((SteadyStateStatisticsForm)children[x]).individualsBredStatistics(state, newIndividuals, 
-                    subpopulations, indicies);
+                ((SteadyStateStatisticsForm)children[x]).individualsBredStatistics(state, individuals);
         }
     
     /** STEADY-STATE: called each time new individuals are evaluated during the steady-state
         process.  You can look up the individuals in state.newIndividuals[] */
     public void individualsEvaluatedStatistics(SteadyStateEvolutionState state, Individual[] newIndividuals, 
-        Individual[] oldIndividuals, int[] subpopulations, int[] indicies)
+        Individual[] oldIndividuals, int[] subpopulations, int[] indices)
         {
         for(int x=0;x<children.length;x++)
             if (children[x] instanceof SteadyStateStatisticsForm)
-                ((SteadyStateStatisticsForm)children[x]).individualsEvaluatedStatistics(state, newIndividuals, oldIndividuals, 
-                    subpopulations, indicies);
+                ((SteadyStateStatisticsForm)children[x]).individualsEvaluatedStatistics(state, newIndividuals, oldIndividuals, subpopulations, indices);
         }
         
     /** STEADY-STATE: called each time the generation count increments */ 

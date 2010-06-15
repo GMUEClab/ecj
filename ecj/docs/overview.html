@@ -142,7 +142,7 @@ As far as GP systems go, this is a big one.  It sports a number of packages for 
 
 <p>This GP system obeys a set of strongly-typed type constraints which guide which <c>GPNode</c>s may be the children of other <c>GPNode</c>s or the root of which <c>GPTree</c>s in an individual.  <p>Types themselves are defined by three classes: an abstract superclass <b>GPType</b>, and its two subclasses <b>GPAtomicType</b> (basic types, compatible only with themselves) and <b>GPSetType</b> (types compatible with a set of other types).  These three classes together form a <c>Clique</c>.  
 
-<p><c>GPFunctionSet</c>, another <c>Clique</c>, defines a set of <c>GPNode</c>s which form a function set for some tree.  It holds an array of <b>GPFuncInfo</b> instances, each one a wrapper for a single prototypical <c>GPNode</c> instance.
+<p><c>GPFunctionSet</c>, another <c>Clique</c>, defines a set of <c>GPNode</c>s which form a function set for some tree.
 
 <p>The return type and children argument types of a particular <c>GPNode</c> are given its associated <b>GPNodeConstraints</b> object.  Likewise, the root type for a <c>GPTree</c>, plus the <b>GPFunctionSet</b> (the set of valid <c>GPNode</c> classes) for the tree and its <b>GPNodeBuilder</b> (the abstract superclass of objects which create initial trees or subtrees), are stored in the <c>GPTree</c>'s associated <b>GPTreeConstraints</b> object.  <c>GPTreeConstraints</c> and <c>GPNodeConstraints</c> are both <c>Clique</c>s.
 

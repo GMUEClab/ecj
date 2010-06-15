@@ -52,6 +52,7 @@ import java.io.*;
  <td valign=top>(should we full statistics on individuals (will run slower, though the slowness is due to off-line processing that won't mess up timings)</td></tr>
  </table>
  * @author Sean Luke
+ * @deprecated use SimpleStatistics instead
  */
 
 public class KozaStatistics extends Statistics implements SteadyStateStatisticsForm
@@ -95,6 +96,8 @@ public class KozaStatistics extends Statistics implements SteadyStateStatisticsF
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state,base);
+		
+		state.output.warnOnce("KozaStatistics is deprecated and will soon be deleted.  Use SimpleStatistics instead.");
         
         File statisticsFile = state.parameters.getFile(
             base.push(P_STATISTICS_FILE),null);
@@ -286,7 +289,7 @@ public class KozaStatistics extends Statistics implements SteadyStateStatisticsF
                 }           
             
             
-            float meanRaw = 0.0f;
+            float meanStandardized = 0.0f;
             float meanAdjusted = 0.0f;
             long hits = 0;
 
@@ -302,15 +305,15 @@ public class KozaStatistics extends Statistics implements SteadyStateStatisticsF
                 if (state.population.subpops[x].individuals[y].fitness.betterThan(best_i[x].fitness))
                     best_i[x] = state.population.subpops[x].individuals[y];
                 // mean for population
-                meanRaw += ((KozaFitness)(state.population.subpops[x].individuals[y].fitness)).rawFitness();
+                meanStandardized += ((KozaFitness)(state.population.subpops[x].individuals[y].fitness)).standardizedFitness();
                 meanAdjusted += ((KozaFitness)(state.population.subpops[x].individuals[y].fitness)).adjustedFitness();
                 hits += ((KozaFitness)(state.population.subpops[x].individuals[y].fitness)).hits;
                 }
 
             // compute fitness stats
-            meanRaw /= state.population.subpops[x].individuals.length;
+            meanStandardized /= state.population.subpops[x].individuals.length;
             meanAdjusted /= state.population.subpops[x].individuals.length;
-            state.output.print("Mean fitness raw: " + meanRaw + " adjusted: " + meanAdjusted + " hits: " + ((double)hits)/state.population.subpops[x].individuals.length, statisticslog);
+            state.output.print("Mean fitness raw: " + meanStandardized + " adjusted: " + meanAdjusted + " hits: " + ((double)hits)/state.population.subpops[x].individuals.length, statisticslog);
                     
             state.output.println("", statisticslog);
 

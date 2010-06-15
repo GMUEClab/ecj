@@ -14,10 +14,51 @@ import ec.simple.*;
 //import ec.eval.MasterProblem;
 import java.util.*; 
 
+/* 
+ * SteadyStateEvolutionState.java
+ * 
+ */
+
+/**
+ * This subclass of EvolutionState implements basic Steady-State Evolution and (in distributed form)
+ * Asynchronous Evolution. The procedure is as follows.  We begin with an empty Population and one by
+ * one create new Indivdiuals and send them off to be evaluated.  In basic Steady-State Evolution the
+ * individuals are immediately evaluated and we wait for them; but in Asynchronous Evolution the individuals are evaluated
+ * for however long it takes and we don't wait for them to finish.  When individuals return they are
+ * added to the Population until it is full.  No duplicate individuals are allowed.
+ *
+ * <p>At this point the system switches to its "steady state": individuals are bred from the population
+ * one by one, and sent off to be evaluated.  Once again, in basic Steady-State Evolution the
+ * individuals are immediately evaluated and we wait for them; but in Asynchronous Evolution the individuals are evaluated
+ * for however long it takes and we don't wait for them to finish.  When an individual returns, we
+ * mark an individual in the Population for death, then replace it with the new returning individual.
+ * Note that during the steady-state, Asynchronous Evolution could be still sending back some "new" individuals
+ * created during the initialization phase, not "bred" individuals.
+ *
+ * <p>The determination of how an individual is marked for death is done by the SteadyStateBreeder.
+ *
+ * <p>SteadyStateEvolutionState will run either for some N "generations" or for some M evaluations of
+ * individuals.   A "generation" is defined as a Population's worth of evaluations.   If you do not
+ * specify the number of evaluations (the M), then SteadyStateEvolutionState will use the standard
+ * generations parameter defined in EvolutionState.
+ *
+ 
+ <p><b>Parameters</b><br>
+ <table>
+ <tr><td valign=top><tt>evaluations</tt><br>
+ <font size=-1>int &gt;= 1</font></td>
+ <td valign=top>(maximal number of evaluations to run.)</td></tr>
+ </table>
+ 
+ *
+ * @author Sean Luke
+ * @version 1.0 
+ */
+
+
 public class SteadyStateEvolutionState extends EvolutionState
     {
     /** base parameter for steady-state */
-    public static final String P_STEADYSTATE = "steady";
     public static final String P_NUMEVALUATIONS = "evaluations";
         
     /** Did we just start a new generation? */
@@ -85,7 +126,6 @@ public class SteadyStateEvolutionState extends EvolutionState
         output.message("Initializing Generation 0");
         statistics.preInitializationStatistics(this);
         population = initializer.setupPopulation(this, 0);  // unthreaded.  We're NOT initializing here, just setting up.
-        //statistics.postInitializationStatistics(this);   // not in steady state
 
         // INITIALIZE VARIABLES
         if (numEvaluations > 0 && numEvaluations < population.subpops[0].individuals.length)
@@ -123,7 +163,7 @@ public class SteadyStateEvolutionState extends EvolutionState
         if (firstTime) 
             {
             if (statistics instanceof SteadyStateStatisticsForm)
-                ((SteadyStateStatisticsForm)statistics).preInitialEvaluationStatistics(this);
+                ((SteadyStateStatisticsForm)statistics).enteringInitialPopulationStatistics(this);
             statistics.postInitializationStatistics(this); 
             ((SteadyStateBreeder)breeder).prepareToBreed(this, 0); // unthreaded 
             ((SteadyStateEvaluator)evaluator).prepareToEvaluate(this, 0); // unthreaded 
@@ -159,7 +199,7 @@ public class SteadyStateEvolutionState extends EvolutionState
                 else  
                     { 
                     ind = ((SteadyStateBreeder)breeder).breedIndividual(this, whichSubpop,0); 
-                    statistics.individualsBredStatistics(this, null, null, null); 
+                    statistics.individualsBredStatistics(this, new Individual[]{ind}); 
                     }
                                 
                 if (numDuplicateRetries >= 1)  
@@ -189,7 +229,7 @@ public class SteadyStateEvolutionState extends EvolutionState
                 // STATISTICS FOR GENERATION ZERO 
                 if ( individualCount[subpop] == population.subpops[subpop].individuals.length ) 
                     if (statistics instanceof SteadyStateStatisticsForm)
-                        ((SteadyStateStatisticsForm)statistics).postInitialEvaluationStatistics(subpop, this); 
+                        ((SteadyStateStatisticsForm)statistics).enteringSteadyStateStatistics(subpop, this); 
                 }
             else 
                 { 
@@ -204,7 +244,8 @@ public class SteadyStateEvolutionState extends EvolutionState
                 individualHash[subpop].remove(deadInd); 
                                 
                 if (statistics instanceof SteadyStateStatisticsForm) 
-                    ((SteadyStateStatisticsForm)statistics).individualsEvaluatedStatistics(this, null, null,null,null); 
+                    ((SteadyStateStatisticsForm)statistics).individualsEvaluatedStatistics(this, 
+						new Individual[]{ind}, new Individual[]{deadInd}, new int[]{subpop}, new int[]{deadIndividual}); 
                 }
                                                 
             // INCREMENT NUMBER OF COMPLETED EVALUATIONS

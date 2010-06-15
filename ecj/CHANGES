@@ -1571,3 +1571,26 @@ Version		Change Log
 	Added MultiSelection.preparePipeline(...)
 	Added two algorithms to VectorSpecies to set the initial genome to
 		arbitrary sizes.
+	Added documentation to the SteadyState package
+	Deleted SteadyStateEvolutionState.P_STEADY, which was vestigial
+	Changes to the methods in SteadyStateStatisticsForm
+	Updated parameter documentation in VectorSpecies
+	Deleted VectorGene.printGeneToString(EvolutionState) and made
+		VectorGene.printGene(EvolutionState, PrintWriter) NON-deprecated.
+		Instead, use printGeneToString().
+	Made GPNode.verify(...) private.  Use GPNode.verify(...).
+	Various documentation fixes
+	Deprecated KozaStatistics.  koza.params now uses SimpleStatistics.
+	KozaFitness.rawStatistics() deprecated.  KozaFitness now says
+		"standardized= ..." rather than "raw=..." when printed out
+		Also, the protected variable "fitness" has been renamed
+		"standardizedFitness" to make it more clear what it really is.
+	Deleted remaining parameters and documentation references to GPFuncInfo
+	Deprecated cloneReplacing() [using clone() instead] and removed all uses
+		of it.
+	Internal changes to GPTree's print styles, deprecating certain paramters.
+		Use of them will generate intentional errors.
+	Deleted parameter eval.problem.stack.context.data, which used to refer
+		to a GPData separate from the main one.  I don't think it's
+		ever been used and should be cleaned up.  We now use the main
+		GPData.

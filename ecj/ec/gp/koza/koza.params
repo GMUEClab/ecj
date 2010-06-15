@@ -25,12 +25,10 @@ parent.0 = ../../simple/simple.params
 pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
 
 #
-# We have a GP-specific initializer and a Koza-specific
-# statistics to go with this fitness 
-#
+# We have a GP-specific initializer.  But we'll keep the
+# statistics as a SimpleStatistics (defined in simple.params)
 
 init = ec.gp.GPInitializer
-stat = ec.gp.koza.KozaStatistics
 
 
 # We have a single subpopulation containing a GPSpecies,

@@ -6,18 +6,6 @@
 
 
 
-/* 
- * GPTree.java
- * 
- * Created: Sat Jan 22 19:20:13 2000
- * By: Sean Luke
- */
-
-/**
- * @author Sean Luke
- * @version 1.0 
- */
-
 package ec.gp;
 import ec.*;
 import ec.util.*;
@@ -73,7 +61,7 @@ import java.io.*;
  * </ol>
  * <li>A GPTree can print the tree AT&amp;T's Graphviz format.  You can snip the code out and save 
  * it as a ".dot" file to render in any Graphviz renderer (for example, use <a href="http://www.pixelglow.com/graphviz/">
- * this MacOS X front end to the renderer).
+ * this MacOS X front end to the renderer</a>).
  * <li>A GPTree can print the tree as a LaTeX2e code snippet, which can be inserted
  * into a LaTeX2e file and will result in a picture of the tree!  Cool, no?
  * </ol>
@@ -140,15 +128,9 @@ import java.io.*;
  <tr><td valign=top><i>base</i>.<tt>tc</tt><br>
  <font size=-1>String</font></td>
  <td valign=top>(The tree's constraints)</td></tr>
- <tr><td valign=top><i>base</i>.<tt>graphviz</tt><br>
- <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</td>
- <td valign=top>(print for humans using graphviz?)</td></tr>
- <tr><td valign=top><i>base</i>.<tt>latex</tt><br>
- <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</td>
- <td valign=top>(print for humans using latex?  Takes precedence over graphviz.)</td></tr>
- <tr><td valign=top><i>base</i>.<tt>c</tt><br>
- <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</td>
- <td valign=top>(print for humans using c?  Takes precedence over latex and graphviz.)</td></tr>
+ <tr><td valign=top><i>base</i>.<tt>print-style</tt><br>
+ <font size=-1>String, one of: c, dot, latex, lisp</td>
+ <td valign=top>(specifies the print style of the tree)</td></tr>
  <tr><td valign=top><i>base</i>.<tt>c-operators</tt><br>
  <font size=-1>bool = <tt>true</tt> (default) or <tt>false</tt></td>
  <td valign=top>(when printing using c, print two-argument functions operators "b a c"?  The alternative is functions "a(b, c)."</td></tr>
@@ -175,6 +157,17 @@ public class GPTree implements GPNodeParent, Prototype
     public static final String P_USEVARS = "c-variables";
     public static final int NO_TREENUM = -1;
 
+	public static final String P_PRINT_STYLE = "print-style";
+    public static final String V_LISP = "lisp";
+    public static final String V_DOT = "dot";
+    public static final String V_LATEX = "latex";
+    public static final String V_C = "c";
+	public static final int PRINT_STYLE_LISP = 0;
+	public static final int PRINT_STYLE_DOT = 1;
+	public static final int PRINT_STYLE_LATEX = 2;
+	public static final int PRINT_STYLE_C = 3;
+
+
     /** the root GPNode in the GPTree */
     public GPNode child;
 
@@ -186,15 +179,9 @@ public class GPTree implements GPNodeParent, Prototype
         the actual constraints object. */
     public byte constraints;
 
-    /** Use graphviz to print for humans? */
-    public boolean useGraphviz;
-    
-    /** Use latex to print for humans? Takes precedence over graphviz. */
-    public boolean useLatex;
+	/** The print style of the GPTree. */
+	public int printStyle;
 
-    /** Use c to print for humans?  Takes precedence over latex and graphviz. */
-    public boolean useC;
-    
     /** When using c to print for humans, do we print terminals as variables? 
         (as opposed to zero-argument functions)? */
     public boolean printTerminalsAsVariablesInC;
@@ -242,7 +229,7 @@ public class GPTree implements GPNodeParent, Prototype
     public Object clone()
         {
         GPTree newtree = lightClone();
-        newtree.child = (GPNode)(child.cloneReplacing());  // force a deep copy
+        newtree.child = (GPNode)(child.clone());  // force a deep copy
         newtree.child.parent = newtree;
         newtree.child.argposition = 0;
         return newtree;
@@ -271,14 +258,24 @@ public class GPTree implements GPNodeParent, Prototype
         {
         Parameter def = defaultBase();
 
-        // print for humans using graphviz?
-        useGraphviz = state.parameters.getBoolean(base.push(P_USEGRAPHVIZ), def.push(P_USEGRAPHVIZ), false);
+		// get rid of deprecated values
+		if (state.parameters.exists(base.push(P_USEGRAPHVIZ), def.push(P_USEGRAPHVIZ)))
+			state.output.error("Parameter no longer used.  See GPTree.java for details.", base.push(P_USEGRAPHVIZ), def.push(P_USEGRAPHVIZ));
+		if (state.parameters.exists(base.push(P_USELATEX), def.push(P_USELATEX)))
+			state.output.error("Parameter no longer used.  See GPTree.java for details.", base.push(P_USELATEX), def.push(P_USELATEX));
+		if (state.parameters.exists(base.push(P_USEC), def.push(P_USEC)))
+			state.output.error("Parameter no longer used.  See GPTree.java for details.", base.push(P_USEC), def.push(P_USEC));
+		state.output.exitIfErrors();
 
-        // print for humans using latex?
-        useLatex = state.parameters.getBoolean(base.push(P_USELATEX),def.push(P_USELATEX),false);
-
-        // print for humans using C?
-        useC = state.parameters.getBoolean(base.push(P_USEC),def.push(P_USEC),false);
+		String style = state.parameters.getString(base.push(P_PRINT_STYLE), def.push(P_PRINT_STYLE));
+		if (style == null)  // assume Lisp
+			printStyle = PRINT_STYLE_LISP;
+		else if (style.equals(V_C))
+			printStyle = PRINT_STYLE_C;
+		else if (style.equals(V_DOT))
+			printStyle = PRINT_STYLE_DOT;
+		else if (style.equals(V_LATEX))
+			printStyle = PRINT_STYLE_LATEX;
 
         // in C, treat terminals as variables?  By default, yes.
         printTerminalsAsVariablesInC = state.parameters.getBoolean(base.push(P_USEVARS),def.push(P_USEVARS),true);
@@ -409,16 +406,16 @@ public class GPTree implements GPNodeParent, Prototype
     /** Prints out the tree in a readable Lisp-like fashion. O(n). 
         The default version of this method simply calls child's 
         printRootedTreeForHumans(...) method. 
-        @deprecated Verbosityh no longer has an effect.
+        @deprecated Verbosity no longer has an effect.
     */
     
     public void printTreeForHumans(final EvolutionState state, final int log,
         final int verbosity)
         {               
-        if (useC) state.output.print(child.makeCTree(true, 
+        if (printStyle==PRINT_STYLE_C) state.output.print(child.makeCTree(true, 
                 printTerminalsAsVariablesInC, printTwoArgumentNonterminalsAsOperatorsInC),log);
-        else if (useLatex) state.output.print(child.makeLatexTree(),log);
-        else if (useGraphviz) state.output.print(child.makeGraphvizTree(), log);
+        else if (printStyle==PRINT_STYLE_LATEX) state.output.print(child.makeLatexTree(),log);
+        else if (printStyle==PRINT_STYLE_DOT) state.output.print(child.makeGraphvizTree(), log);
         else child.printRootedTreeForHumans(state,log,0,0);
         // printRootedTreeForHumans doesn't print a '\n', so I need to do so here
         state.output.println("",log);

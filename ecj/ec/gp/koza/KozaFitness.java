@@ -42,12 +42,9 @@ public class KozaFitness extends Fitness
     {
     public static final String P_KOZAFITNESS = "fitness";
 
-    /** This ranges from 0 (best) to infinity (worst).  Koza leaves the
-        exact definition of rawFitness up to the domain problem, but I
-        define it here as equivalent to the standardized fitness, hence
-        the simple definitions of rawFitness() and standardizedFitness() 
-        below. */
-    protected float fitness;
+    /** This ranges from 0 (best) to infinity (worst).    I
+        define it here as equivalent to the standardized fitness. */
+    protected float standardizedFitness;
 
     /** This auxillary measure is used in some problems for additional
         information.  It's a traditional feature of Koza-style GP, and so
@@ -81,9 +78,9 @@ public class KozaFitness extends Fitness
         if (_f < 0.0f || _f == Float.POSITIVE_INFINITY || Float.isNaN(_f))
             {
             state.output.warning("Bad fitness (may not be < 0, NaN, or infinity): " + _f  + ", setting to 0.");
-            fitness = 0;
+            standardizedFitness = 0;
             }
-        else fitness = _f;
+        else standardizedFitness = _f;
         }
 
     /** Returns the adjusted fitness metric, which recasts the
@@ -92,22 +89,22 @@ public class KozaFitness extends Fitness
 
     public final float fitness()
         {
-        return 1.0f/(1.0f+fitness);     
+        return 1.0f/(1.0f+standardizedFitness);     
         }
 
-    /** Returns the raw fitness metric.  */
-
+    /** Returns the raw fitness metric.  
+	@deprecated use standardizedFitness()
+	*/
     public final float rawFitness()
         {
-        return fitness;
+        return standardizedFitness();
         }
 
-    /** Returns the standardized fitness metric, which is the same as the
-        raw fitness metric in this scheme. */
+    /** Returns the standardized fitness metric. */
 
     public final float standardizedFitness()
         {
-        return rawFitness();
+        return standardizedFitness;
         }
 
     /** Returns the adjusted fitness metric, which recasts the fitness
@@ -123,7 +120,7 @@ public class KozaFitness extends Fitness
     
     public final boolean isIdealFitness()
         {
-        return fitness == 0.0f;
+        return standardizedFitness == 0.0f;
         }
     
     public boolean equivalentTo(final Fitness _fitness)
@@ -138,12 +135,12 @@ public class KozaFitness extends Fitness
  
     public String fitnessToString()
         {
-        return FITNESS_PREAMBLE + Code.encode(fitness) + Code.encode(hits);
+        return FITNESS_PREAMBLE + Code.encode(standardizedFitness) + Code.encode(hits);
         }
         
     public String fitnessToStringForHumans()
         {
-        return FITNESS_PREAMBLE + "Raw=" + fitness + " Adjusted=" + adjustedFitness() + " Hits=" + hits;
+        return FITNESS_PREAMBLE + "Standardized=" + standardizedFitness + " Adjusted=" + adjustedFitness() + " Hits=" + hits;
         }
             
     public final void readFitness(final EvolutionState state, 
@@ -157,7 +154,7 @@ public class KozaFitness extends Fitness
         if (d.type!=DecodeReturn.T_FLOAT)
             state.output.fatal("Reading Line " + d.lineNumber + ": " +
                 "Bad Fitness.");
-        fitness = (float)d.d;
+        standardizedFitness = (float)d.d;
         
         // extract hits
         Code.decode(d);
@@ -170,14 +167,14 @@ public class KozaFitness extends Fitness
     public void writeFitness(final EvolutionState state,
         final DataOutput dataOutput) throws IOException
         {
-        dataOutput.writeFloat(fitness);
+        dataOutput.writeFloat(standardizedFitness);
         dataOutput.writeInt(hits);
         }
 
     public void readFitness(final EvolutionState state,
         final DataInput dataInput) throws IOException
         {
-        fitness = dataInput.readFloat();
+        standardizedFitness = dataInput.readFloat();
         hits = dataInput.readInt();
         }
 

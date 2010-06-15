@@ -84,7 +84,7 @@ import ec.util.*;
  * </tr>
  * 
  * <tr><td valign=top><i>base.</i>.<tt>segment-type</tt><br>
- * <font size=-1>int &gt;= 1 (default=start)</font></td>
+ * <font size=-1>start (default) or end</font></td>
  * <td valign=top>(defines the way in which segments are defined: either by providing start indices (segment-type=start) or by providing end indices (segment-type=end)</td>
  * </tr>
  *

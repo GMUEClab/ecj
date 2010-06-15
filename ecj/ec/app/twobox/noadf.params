@@ -11,7 +11,6 @@ parent.0 = ../../gp/koza/koza.params
 
 gp.fs.size = 1
 gp.fs.0.name = f0
-gp.fs.0.info = ec.gp.GPFuncInfo
 gp.fs.0.size = 10
 gp.fs.0.func.0 = ec.app.twobox.func.L0
 gp.fs.0.func.0.nc = nc0
@@ -40,9 +39,6 @@ gp.fs.0.func.9.nc = nc2
 
 eval.problem = ec.app.twobox.TwoBox
 eval.problem.data = ec.app.twobox.TwoBoxData
-# ADFs use the same data type typically -- we need to include
-# this even if we're not implementing ADFs
-eval.problem.stack.context.data = ec.app.twobox.TwoBoxData
 
 # Define our training set size and range here
 eval.problem.size = 10

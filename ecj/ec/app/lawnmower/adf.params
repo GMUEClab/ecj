@@ -62,7 +62,6 @@ gp.tc.2.init.max = 6
 gp.fs.size = 3
 
 gp.fs.0.name = f0
-gp.fs.0.info = ec.gp.GPFuncInfo
 gp.fs.0.size = 8
 gp.fs.0 = ec.gp.GPFunctionSet
 gp.fs.0.func.0 = ec.app.lawnmower.func.LawnERC
@@ -96,7 +95,6 @@ gp.fs.0.func.7.name = 1
 # FROG is not used, see Koza-II p. 245
 gp.fs.1 = ec.gp.GPFunctionSet
 gp.fs.1.name = f1
-gp.fs.1.info = ec.gp.GPFuncInfo
 gp.fs.1.size = 5
 gp.fs.1.func.0 = ec.app.lawnmower.func.LawnERC
 gp.fs.1.func.0.nc = nc0
@@ -112,7 +110,6 @@ gp.fs.1.func.4.nc = nc2
 # The "ADF1 body" -- see Koza-II p. 245
 gp.fs.2 = ec.gp.GPFunctionSet
 gp.fs.2.name = f2
-gp.fs.2.info = ec.gp.GPFuncInfo
 gp.fs.2.size = 8
 gp.fs.2.func.0 = ec.app.lawnmower.func.LawnERC
 gp.fs.2.func.0.nc = nc0
@@ -147,11 +144,6 @@ eval.problem = ec.app.lawnmower.Lawnmower
 eval.problem.data = ec.app.lawnmower.LawnmowerData
 eval.problem.x = 8
 eval.problem.y = 8
-
-# ADFs use the same data type typically 
-eval.problem.stack.context.data = ec.app.lawnmower.LawnmowerData
-
-#gc = true
 
 stat.gather-full = true
 

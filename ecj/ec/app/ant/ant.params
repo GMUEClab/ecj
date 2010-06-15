@@ -11,7 +11,6 @@ parent.0 = ../../gp/koza/koza.params
 
 gp.fs.size = 1
 gp.fs.0.name = f0
-gp.fs.0.info = ec.gp.GPFuncInfo
 
 ### The functions, carefully ordered :-)  (See below)
 
@@ -38,10 +37,6 @@ gp.fs.0.func.6.nc = nc4
 
 eval.problem = ec.app.ant.Ant
 eval.problem.data = ec.app.ant.AntData
-# ADFs use the same data type typically -- we need to include
-# this even if we're not implementing ADFs
-eval.problem.stack.context.data = ec.app.ant.AntData
-
 
 # Here we determine what kind of Ant we're doing:
 

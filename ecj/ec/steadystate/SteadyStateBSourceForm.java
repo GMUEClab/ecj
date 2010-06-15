@@ -13,7 +13,12 @@ package ec.steadystate;
  * Created: Sat Nov 20 17:00:18 1999
  * By: Sean Luke
  *
- * 
+ * This form is required of all BreedingSources in a pipeline used in Steady-State Evolution.
+ * It consists of two methods: <b>sourcesAreProperForm</b> which checks recursively to determine
+ * that a BreedingPipeline's own sources are also using this interface; and <b>individualReplaced</b>,
+ * which informs the BreedingSource that a new individual has entered into the population, displacing
+ * another.  This is important because it may signal to SelectionMethods that they need to update their
+ * statistics.
  *
  */
 

@@ -61,6 +61,9 @@ import ec.util.*;
  <td valign=top>maximum allowable tree depth (usually a big value)</td></tr>
  </table>
 
+ <p><b>Default Base</b><br>
+ gp.breed.ptc2
+
  * @author Sean Luke
  * @version 1.0 
  */
