@@ -19,18 +19,27 @@ import ec.select.TournamentSelection;
 /**
  * A slight modification of the tournament selection procedure for use with spatially-embedded EAs.
  *
- * When selecting an individual, the SpatialTournamentSelection method selects one from the neighbors
- * of a specific individual (as indicated by its index in the subpopulation).
+ * When selecting an individual, the SpatialTournamentSelection is told a specific individual.
+ * It then picks N individuals at random which are within a certain distance (the <i>neighborhood size</i>) of that individual.  These
+ * individuals then enter a tournament a-la standard Tournament Selection.  
+ *
+ * <p>The method of picking individuals is either <tt>uniform</tt> (picking individuals using the Space interface's
+ * getRandomIndividual(...)) or <tt>random-walk</tt> (wandering <i>distance</i> steps at random).  You can also
+ * stipulate whether the original individual must be in the tournament.
  *
  <p><b>Parameters</b><br>
  <table>
- <tr><td valign=top><i>base.</i><tt>size</tt><br>
- <font size=-1>int &gt;= 1 <b>or</b> 1.0 &lt; float &lt; 2.0</font></td>
- <td valign=top>(the tournament size)</td></tr>
+ <tr><td valign=top><i>base.</i><tt>neighborhood-size</tt><br>
+ <font size=-1>int &gt;= 1</font></td>
+ <td valign=top>(the neighborhood size)</td></tr>
 
- <tr><td valign=top><i>base.</i><tt>pick-worst</tt><br>
+ <tr><td valign=top><i>base.</i><tt>ind-compete</tt><br>
  <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
- <td valign=top>(should we pick the <i>worst</i> individual in the tournament instead of the <i>best</i>?)</td></tr>
+ <td valign=top>(Do we include the base individual in the tournament?)</td></tr>
+
+ <tr><td valign=top><i>base.</i><tt>type</tt><br>
+ <font size=-1>String: uniform (default) or random-walk</font></td>
+ <td valign=top>Method for selecting individuals in neighborhood</td></tr>
 
  </table>
 
@@ -39,12 +48,11 @@ import ec.select.TournamentSelection;
  <p><b>Default Base</b><br>
  spatial.tournament
  *
- * @author Liviu Panait
- * @version 1.0 
+ * @author Liviu Panait and Sean Luke
+ * @version 2.0
  */
 public class SpatialTournamentSelection extends TournamentSelection
     {
-
     /**
        The size of the neighborhood from where parents are selected.  Small neighborhood sizes
        enforce a local selection pressure, while larger values for this parameters allow further-away
@@ -63,6 +71,17 @@ public class SpatialTournamentSelection extends TournamentSelection
     public static final String P_IND_COMPETES = "ind-competes";
     boolean indCompetes;
 
+
+    /**
+       Selection procedure.
+    */
+    public static final String P_TYPE = "type";
+    public static final String V_UNIFORM = "uniform";
+    public static final String V_RANDOM_WALK = "random-walk";
+	public static final int TYPE_UNIFORM = 0;
+	public static final int TYPE_RANDOM_WALK = 1;
+	int type;
+
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state,base);
@@ -73,7 +92,15 @@ public class SpatialTournamentSelection extends TournamentSelection
         if( neighborhoodSize < 1 )
             state.output.fatal( "Parameter not found, or its value is < 1.", base.push(P_N_SIZE), defaultBase.push(P_N_SIZE));
 
-        indCompetes = state.parameters.getBoolean(base.push(P_IND_COMPETES),defaultBase.push(P_IND_COMPETES),false);
+        if (!state.parameters.exists(base.push(P_TYPE), defaultBase.push(P_TYPE)) ||
+			state.parameters.getString( base.push(P_TYPE), defaultBase.push(P_TYPE)).equals(V_UNIFORM))
+			type = TYPE_UNIFORM;
+		else if (state.parameters.getString( base.push(P_TYPE), defaultBase.push(P_TYPE)).equals(V_RANDOM_WALK))
+			type = TYPE_RANDOM_WALK;
+		else state.output.fatal("Invalid parameter, must be either " + V_RANDOM_WALK + " or " + V_UNIFORM + ".",
+			base.push(P_TYPE), defaultBase.push(P_TYPE));
+		
+        indCompetes = state.parameters.getBoolean(base.push(P_IND_COMPETES), defaultBase.push(P_IND_COMPETES), false);
         }
 
 
@@ -84,57 +111,24 @@ public class SpatialTournamentSelection extends TournamentSelection
 
     public int getRandomIndividual(int number, int subpopulation, EvolutionState state, int thread)
         {
-        try
-            {
-            Space space = (Space)(state.population.subpops[subpopulation]);
-            int index = space.getIndex(thread);
-            if (number==0 && indCompetes) return index;                                             // we're the first one
-            else return space.getIndexRandomNeighbor(state,thread,index);
-            }
-        catch( Exception e )
-            {
-            state.output.fatal( "Subpopulation "+subpopulation+" is not a spatially-embedded subpopulation.\n"+e );
-            }
-        throw new InternalError("This should not be reachable");
+		Subpopulation subpop = state.population.subpops[subpopulation];
+		if (!(subpop instanceof Space))
+			state.output.fatal( "Subpopulation "+subpopulation+" is not a spatially-embedded subpopulation.\n");
+		Space space = (Space)(state.population.subpops[subpopulation]);
+		int index = space.getIndex(thread);
+		
+		if (number==0 && indCompetes) 		// Should we just return the individual?
+			return index;
+		else if (type == TYPE_UNIFORM)		// Should we pick randomly in the space up to the given distance?
+			return space.getIndexRandomNeighbor(state,thread,neighborhoodSize);
+		else // if (type == TYPE_RANDOM_WALK)  // Should we do a random walk?
+			{
+			int oldIndex = index;
+			for(int x=0; x < neighborhoodSize; x++)
+				space.setIndex(thread, space.getIndexRandomNeighbor(state, thread, 1));
+			int val = space.getIndex(thread);
+			space.setIndex(thread,oldIndex);  // just in case we weren't supposed to mess around with that
+			return val;
+			}
         }
-
-
-/*
-// I hard-code both produce(...) methods for efficiency's sake
-public int produce(final int subpopulation,
-final EvolutionState state,
-final int thread)
-{
-Space space = null;
-try
-{
-space = (Space)(state.population.subpops[subpopulation]);
-}
-catch( Exception e )
-{
-state.output.fatal( "Subpopulation "+subpopulation+" is not a spatially-embedded subpopulation.\n"+e );
-}
-
-// pick size random individuals, then pick the best.
-Individual[] oldinds = state.population.subpops[subpopulation].individuals;
-
-int index = space.getIndex(thread);
-int randomNeighbor = space.getIndexRandomNeighbor(state,thread,index);
-int i = indCompetes ? index : randomNeighbor;
-int bad = i;
-        
-for (int x=1;x<size;x++)
-{
-int j = space.getIndexRandomNeighbor(state,thread,index);
-if (pickWorst)
-{ if (!(oldinds[j].fitness.betterThan(oldinds[i].fitness))) { bad = i; i = j; } else bad = j; }
-else
-{ if (oldinds[j].fitness.betterThan(oldinds[i].fitness)) { bad = i; i = j;} else bad = j; }
-}
-            
-if (probabilityOfSelection != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection))
-i = bad;
-return i;
-}
-*/
     }

@@ -46,20 +46,16 @@ stat.num-children =			0
 breed.elite.0 =				1
 
 # for single elimination tournament
-eval.style =				single-elim-tournament
+#eval.style =				single-elim-tournament
 
 # for round robin
 #eval.style =				round-robin
 
-# for pseudo round robin
-#eval.style =				pseudo-round-robin
-#eval.group-size =			10
-
 # for random one way tournament
-#eval.style =				rand-1-way
-#eval.group-size =			7
+eval.style =				rand-1-way
+eval.group-size =			7
 
-# for random two ways tournament
-#eval.style =				rand-2-ways
+# for random two way tournament
+#eval.style =				rand-2-way
 #eval.group-size =			7
 

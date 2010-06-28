@@ -78,9 +78,9 @@ public class SimpleBreeder extends Breeder
     /** Elites are often stored in the top part of the subpopulation; this function returns what
         part of the subpopulation contains individuals to replace with newly-bred ones
         (up to but not including the elites). */
-    public int computeSubpopulationLength(EvolutionState state, int subpopulation)
+    public int computeSubpopulationLength(Population newpop, int subpopulation)
         {
-        return state.population.subpops[subpopulation].individuals.length - elite[subpopulation];
+        return newpop.subpops[subpopulation].individuals.length - elite[subpopulation];
         }
 
     /** A simple breeder that doesn't attempt to do any cross-
@@ -102,7 +102,7 @@ public class SimpleBreeder extends Breeder
             for(int x=0;x<state.population.subpops.length;x++)
                 {
                 // the number of individuals we need to breed
-                int length = computeSubpopulationLength(state, x);
+                int length = computeSubpopulationLength(newpop, x);
                 // the size of each breeding chunk except the last one
                 int firstBreedChunkSizes = length/state.breedthreads;
                 // the size of the last breeding chunk

@@ -20,14 +20,14 @@ public class CoevolutionaryRosenbrock extends Problem implements GroupedProblemF
         return - ( 100.0d*(i-j*j)*(i-j*j) + (1.0d-j)*(1.0d-j) );
         }
 
-    public void preprocessPopulation(final EvolutionState state, Population pop)
+    public void preprocessPopulation(final EvolutionState state, Population pop, boolean countVictoriesOnly)
         {
         for( int i = 0 ; i < pop.subpops.length ; i++ )
             for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
-                ((SimpleFitness)(pop.subpops[i].individuals[j].fitness)).setFitness( state, -1000000000, false );
+                ((SimpleFitness)(pop.subpops[i].individuals[j].fitness)).setFitness( state, Integer.MIN_VALUE, false );
         }
 
-    public void postprocessPopulation(final EvolutionState state, Population pop)
+    public void postprocessPopulation(final EvolutionState state, Population pop, boolean countVictoriesOnly)
         {
         for( int i = 0 ; i < pop.subpops.length ; i++ )
             for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
@@ -42,14 +42,14 @@ public class CoevolutionaryRosenbrock extends Problem implements GroupedProblemF
         final int threadnum)
         {
         if( ind.length != 2 ||
-            ( ! ( ind[0] instanceof DoubleVectorIndividual ) ) ||
-            ( ! ( ind[1] instanceof DoubleVectorIndividual ) ) )
+            ( ! ( ind[0] instanceof CoevolutionaryDoubleVectorIndividual ) ) ||
+            ( ! ( ind[1] instanceof CoevolutionaryDoubleVectorIndividual ) ) )
             {
-            state.output.error( "There should be two subpopulations, both with DoubleVectorIndividuals." );
+            state.output.error( "There should be two subpopulations, both with CoevolutionaryDoubleVectorIndividual." );
             }
 
-        DoubleVectorIndividual ind1 = (DoubleVectorIndividual)(ind[0]);
-        DoubleVectorIndividual ind2 = (DoubleVectorIndividual)(ind[1]);
+        CoevolutionaryDoubleVectorIndividual ind1 = (CoevolutionaryDoubleVectorIndividual)(ind[0]);
+        CoevolutionaryDoubleVectorIndividual ind2 = (CoevolutionaryDoubleVectorIndividual)(ind[1]);
 
         double i = ind1.genome[0];
         double j = ind2.genome[0];
@@ -58,13 +58,21 @@ public class CoevolutionaryRosenbrock extends Problem implements GroupedProblemF
         if( updateFitness[0] )
             {
             if( functionValue > ind1.fitness.fitness() )
+				{
                 ((SimpleFitness)(ind1.fitness)).setFitness( state, (float)functionValue, false );
+				ind1.context = new CoevolutionaryDoubleVectorIndividual[2];
+				ind1.context[1] = ind2;
+				}
             }
         if( updateFitness[1] )
             {
             if( functionValue > ind2.fitness.fitness() )
+				{
                 ((SimpleFitness)(ind2.fitness)).setFitness( state, (float)functionValue, false );
+				ind2.context = new CoevolutionaryDoubleVectorIndividual[2];
+				ind2.context[0] = ind1;
+				}
             }
-        }
+		}
 
     }

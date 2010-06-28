@@ -73,7 +73,7 @@ public class DEBreeder extends Breeder
             if (state.population.subpops[subpop].individuals.length < 4)  // Magic number, sorry.  createIndividual() requires at least 4 individuals in the pop
                 state.output.fatal("Subpopulation " + subpop + " has fewer than four individuals, and so cannot be used with DEBreeder.");
             
-            Individual[] inds = state.population.subpops[subpop].individuals;
+            Individual[] inds = newpop.subpops[subpop].individuals;
             for( int i = 0 ; i < inds.length ; i++ )
                 {
                 newpop.subpops[subpop].individuals[i] = createIndividual( state, subpop, inds, i, 0);  // unthreaded for now

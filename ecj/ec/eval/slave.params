@@ -9,8 +9,11 @@
 parent.0 = master.params
 
 
+#### This should no longer be set -- it's set automatically by Slave.java
+#### When you run as a slave
 # Lets the slaves know that they're slaves.
-eval.i-am-slave = true
+#eval.i-am-slave = true
+#### End deprecation
 
 
 # Specifies the IP address of the master, for the Slaves

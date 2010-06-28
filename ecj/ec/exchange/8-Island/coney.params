@@ -4,7 +4,7 @@
 
 parent.0 = client.params
 exch.id = ConeyIsland
-stat.file = coney.stat
+stat.file = $coney.stat
 
 # We need to give this island its own unique random number seed
 seed.0 = 1000

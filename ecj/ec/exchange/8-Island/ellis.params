@@ -4,7 +4,7 @@
 
 parent.0 = client.params
 exch.id = EllisIsland
-stat.file = ellis.stat
+stat.file = $ellis.stat
 
 # We need to give this island its own unique random number seed
 seed.0 = 1001

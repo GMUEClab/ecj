@@ -33,8 +33,15 @@ public interface GroupedProblemForm
         your instance variables will remain valid during the evaluate(...) process.
         Do not assume that <tt>pop</tt> will be the same as <tt>state.pop</tt> -- it 
         may not.  <tt>state</tt> is only provided to give you access to EvolutionState
-        features. */
-    public void preprocessPopulation(final EvolutionState state, Population pop);
+        features.   Typically you'd use this method to set the Fitness values of all
+		Individuals to 0.
+		
+	<p> <i>countVictoriesOnly</i> will be set if Individuals' fitness is to be based on
+		whether they're the winner of a test, instead of based on the specifics of the scores
+		in the tests.  This really only happens for Single-Elimination Tournament 
+		one-population competitive coevolution.
+		*/ 
+    public void preprocessPopulation(final EvolutionState state, Population pop, final boolean countVictoriesOnly);
 
     /** Finish processing the population (such as fitness information) after evaluation.
         Although this method is not static, you should not use it to write to any instance
@@ -43,8 +50,17 @@ public interface GroupedProblemForm
         your instance variables will remain valid during the evaluate(...) process.
         Do not assume that <tt>pop</tt> will be the same as <tt>state.pop</tt> -- it 
         may not.  <tt>state</tt> is only provided to give you access to EvolutionState
-        features. */
-    public void postprocessPopulation(final EvolutionState state, Population pop);
+        features. 
+		
+	<p> <i>countVictoriesOnly</i> will be set if Individuals' fitness is to be based on
+		whether they're the winner of a test, instead of based on the specifics of the scores
+		in the tests.  This really only happens for Single-Elimination Tournament 
+		one-population competitive coevolution.  If this is set, probably would leave the Fitnesses
+		as they are here (they've been set and incremented in evaluate(...)), but if it's not set,
+		you may want to set the Fitnesses to the maximum or average or the various trials
+		performed. 
+	*/
+    public void postprocessPopulation(final EvolutionState state, Population pop, final boolean countVictoriesOnly);
 
     /** Evaluates the individuals found in ind together.  If updateFitness[i] is true,
         then you should use this evaluation to update the fitness of the individual in
@@ -54,16 +70,18 @@ public interface GroupedProblemForm
         Do not assume that the individuals in <tt>ind</tt> will actually be in <tt>state.pop</tt>
         (they may not -- this method may be called at the end of a run to determine the
         best individual of the run in some kind of contest).
-        
-        <p>If countVictoriesOnly is true, you should update fitnesses such that if two
-        individuals' fitnesses are compared, the one which has <i>won the most times</i>
-        has a superior fitness.  This will be used in single elimination tournament
-        style evaluators.
-    */
+		
+	<p> <i>countVictoriesOnly</i> will be set if Individuals' fitness is to be based on
+		whether they're the winner of a test, instead of based on the specifics of the scores
+		in the tests.  This really only happens for Single-Elimination Tournament 
+		one-population competitive coevolution.  If this is set, you should increment the Fitness of the winner
+		each time.  If it's not set, you should update Fitness as you see fit, then set
+		the final Fitness in preprocessPopulation. 
+	*/
     public void evaluate(final EvolutionState state,
         final Individual[] ind,  // the individuals to evaluate together
         final boolean[] updateFitness,  // should this individuals' fitness be updated?
-        final boolean countVictoriesOnly,  // update fitnesses only to reflect victories, rather than spreads
+		final boolean countVictoriesOnly, // don't bother updating Fitness with socres, just victories
         final int[] subpops,
         final int threadnum);
     }

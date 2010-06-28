@@ -4,9 +4,10 @@
 
 parent.0 =      coevolve1.master.params
 
+### NO LONGER NEEDED
 # We tell our slave that he's a slave.
-eval.i-am-slave = true
-
+# eval.i-am-slave = true
+### END NO LONGER NEEDED
 
 # You may want to customize each slave by giving it a unique
 # name like this:

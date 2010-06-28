@@ -86,9 +86,9 @@ public class SpatialMultiPopCoevolutionaryEvaluator extends Evaluator
 
     public void evaluatePopulation(final EvolutionState state)
         {
-        ((GroupedProblemForm)p_problem).preprocessPopulation(state,state.population);
+        ((GroupedProblemForm)p_problem).preprocessPopulation(state,state.population, false);
         performCoevolutionaryEvaluation( state, state.population, (GroupedProblemForm)p_problem );
-        ((GroupedProblemForm)p_problem).postprocessPopulation(state, state.population);
+        ((GroupedProblemForm)p_problem).postprocessPopulation(state, state.population, false);
         }
 
     private Individual[] mates = null;

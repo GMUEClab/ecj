@@ -224,6 +224,10 @@ public class Slave
                         // not available in jdk1.1: new File(args[x+1]).getAbsoluteFile(),
                         new File(new File(args[x + 1]).getAbsolutePath()),
                         args);
+						
+					// add the fact that I am a slave:      eval.i-am-slave = true
+					// this is used only by the Evaluator to determine whether to use the MasterProblem
+					parameters.set(new Parameter(ec.EvolutionState.P_EVALUATOR).push(ec.Evaluator.P_IAMSLAVE), "true");
                     break;
                     }
                 catch(FileNotFoundException e)

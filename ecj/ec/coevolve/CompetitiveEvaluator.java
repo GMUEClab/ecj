@@ -48,7 +48,7 @@ import ec.util.*;
  For details, see "A Comparison of Two Competitive Fitness Functions" by Liviu Panait and
  Sean Luke in the Proceedings of GECCO 2002.
 
- <dt><b>K-Random-Opponents-Two-Ways</b><dd>
+ <dt><b>K-Random-Opponents-Two-Way</b><dd>
  Each individual's fitness is calculated based on K competitions against random opponents. The advantage of
  this method over <b>K-Random-Opponents-One-Way</b> is a reduced number of competitions (when I competes
  against J, both I's and J's fitnesses are updated, while in the previous method only one of the individuals
@@ -65,18 +65,19 @@ import ec.util.*;
  <i>single-elim-tournament</i> (a single elimination tournament)<br>
  <i>round-robin</i> (a round robin tournament)<br>
  <i>rand-1-way</i> (K-Random-Opponents, each game counts for only one of the players)<br>
- <i>rand-2-ways</i> (K-Random-Opponents, each game counts for both players)<br>
+ <i>rand-2-way</i> (K-Random-Opponents, each game counts for both players)<br>
  </td></tr>
 
  <tr><td valign=top><i>base.</i><tt>group-size</tt><br>
  <font size=-1> int</font></td>
- <td valign=top>(how many individuals per group, used in rand-1-way</i> and <i>rand-2-ways</i> tournaments)<br>
- <i>group-size</i> &gt;= 1 for <i>rand-1-way</i> or <i>rand-2-ways</i><br>
+ <td valign=top>(how many individuals per group, used in rand-1-way</i> and <i>rand-2-way</i> tournaments)<br>
+ <i>group-size</i> &gt;= 1 for <i>rand-1-way</i> or <i>rand-2-way</i><br>
  </td></tr>
 
  <tr><td valign=top><i>base.</i><tt>over-eval</tt><br>
  <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
- <td valign=top>(if the tournament style leads to an individual playing more games than others, should the extra games be used for his fitness evaluatiuon?)</td></tr>
+ <td valign=top>(if the tournament style leads to an individual playing more games than others (as can be the case for rand-2-way),
+ should the extra games be used for his fitness evaluatiuon?)</td></tr>
 
  </table>
 
@@ -85,39 +86,6 @@ import ec.util.*;
  * @version 1.0 
  */
 
-/*
-// double elimination tournament has been removed for the time being because although
-// it's a perfectly good method, it's not actually double elimination tournament -- we
-// will revisit this later.  In the mean time, here's what the comments were:
-
-<dt><b>Double Elimination Tournament</b><dd>
-Similar to Single Elimination Tournament, except that there are in fact two single elimination
-tournaments going on: the normal one, where undefeated individuals compete, and another one with
-the individuals that lost one game. When an individual loses in the first tournament, he's placed
-in the second tournament. When the individual loses in the second tournament, he's assigned a fitness
-better than that of all individuals already eliminated from the second tournament, but worse than that
-of all inviduals still competing.
-
-<i>double-elim-tournament</i> (a double elimination tournament)<br>
-
-
-
-
-// world cup tournament has been removed for the time being because its involves both ranking and
-// non-ranking tournaments and we need to think this more before releasing it.  here's some comments
-// about the method, and the class also contains some commented out code.
-
-<dt><b>World Cup</b><dd>
-The population is split into groups with <i>group-size</i> individuals, and there is a round robin
-tournament for each such group. The first best <i>qualify-per-group</i> individuals in each group
-qualify to a single elimination tournament that ranks (more or less) the better teams.
-
-<i>world-cup</i> (grouping of individuals and round-robin tournaments for each group, then seeding and a single elimination tournament with the better individuals)<br>
-
-<i>group-size</i> &gt;= 2 for <i>world-cup</i><br>
-
-*/
-
 
 public class CompetitiveEvaluator extends Evaluator
     {
@@ -125,93 +93,57 @@ public class CompetitiveEvaluator extends Evaluator
     public static final int STYLE_ROUND_ROBIN=2;
     public static final int STYLE_N_RANDOM_COMPETITORS_ONEWAY=3;
     public static final int STYLE_N_RANDOM_COMPETITORS_TWOWAY=4;
-//    public static final int STYLE_PSEUDO_ROUND_ROBIN=5;
-//    public static final int STYLE_WORLD_CUP=6;
-//    public static final int STYLE_DOUBLE_ELIMINATION=7;
 
-    public static final String competeStyle = "style";
+    public static final String P_COMPETE_STYLE = "style";
     public int style;
 
-    public static final String size = "group-size";
+    public static final String P_GROUP_SIZE = "group-size";
     public int groupSize;
 
-//    public static final String P_QUALIFY_PER_GROUP = "qualify-per-group";
-//    public int numQualify;
-
-    public static final String overEval = "over-eval";
+    public static final String P_OVER_EVAL = "over-eval";
     public boolean allowOverEvaluation;
 
     public void setup( final EvolutionState state, final Parameter base )
         {
         super.setup( state, base );
         String temp;
-        temp = state.parameters.getStringWithDefault( base.push( competeStyle ), null, "" );
+        temp = state.parameters.getStringWithDefault( base.push( P_COMPETE_STYLE ), null, "" );
         if( temp.equalsIgnoreCase( "single-elim-tournament" ) )
             {
             style = STYLE_SINGLE_ELIMINATION;
             }
-        /*else if( temp.equalsIgnoreCase( "double-elim-tournament" ) )
-          {
-          style = STYLE_DOUBLE_ELIMINATION;
-          }*/
         else if( temp.equalsIgnoreCase( "round-robin" ) )
             {
             style = STYLE_ROUND_ROBIN;
             }
-        /*else if( temp.equalsIgnoreCase( "world-cup" ) )
-          {
-          style = STYLE_WORLD_CUP;
-          }*/
         else if( temp.equalsIgnoreCase( "rand-1-way" ) )
             {
             style = STYLE_N_RANDOM_COMPETITORS_ONEWAY;
             }
-        else if( temp.equalsIgnoreCase( "rand-2-ways" ) )
+        else if( temp.equalsIgnoreCase( "rand-2-way" ) )
             {
             style = STYLE_N_RANDOM_COMPETITORS_TWOWAY;
             }
+	else if (temp.equalsIgnoreCase( "rand-2-ways" ) )
+     	    {
+	    state.output.fatal("'rand-2-ways' is no longer a valid style name: use 'rand-2-way'",
+		base.push(P_COMPETE_STYLE), null);
+	    }
         else
             {
             state.output.fatal( "Incorrect value for parameter. Acceptable values: " +
-                "single-elim-tournament, round-robin, rand-1-way, rand-2-ways" 
-                /* + ", world-cup, double-elim-tournament"*/ , base.push( competeStyle ) );
+                "single-elim-tournament, round-robin, rand-1-way, rand-2-way" , base.push( P_COMPETE_STYLE ) );
             }
 
         if( style == STYLE_N_RANDOM_COMPETITORS_ONEWAY || style == STYLE_N_RANDOM_COMPETITORS_TWOWAY )
             {
-            groupSize = state.parameters.getInt( base.push( size ), null, 1 );
+            groupSize = state.parameters.getInt( base.push( P_GROUP_SIZE ), null, 1 );
             if( groupSize < 1 )
                 {
-                state.output.fatal( "Incorrect value for parameter", base.push( size ) );
+                state.output.fatal( "Incorrect value for parameter", base.push( P_GROUP_SIZE ) );
                 }
             }
-        /* if( style == STYLE_PSEUDO_ROUND_ROBIN )
-           {
-           groupSize = state.parameters.getInt( base.push( size ), null, 2 );
-           if( groupSize < 2 )
-           {
-           state.output.fatal( "Incorrect value for parameter. It should be >= 2.", base.push( size ) );
-           }
-           } */
-
-        /*if( style == STYLE_WORLD_CUP )
-          {
-          groupSize = state.parameters.getInt( base.push( size ), null, 2 );
-          if( groupSize < 2 )
-          {
-          state.output.fatal( "Incorrect value for parameter. It should be >= 2.", base.push( size ) );
-          }
-          numQualify = state.parameters.getInt( base.push( P_QUALIFY_PER_GROUP ), null, 1 );
-          if( numQualify < 1 || numQualify >= groupSize )
-          {
-          state.output.fatal( "Incorrect value for parameter. It should be >= 1 and smaller than " +
-          base.push( size ).toString(),
-          base.push( P_QUALIFY_PER_GROUP ) );
-          }
-          }*/
-
-        allowOverEvaluation = state.parameters.getBoolean( base.push( overEval ), null, false );
-
+		allowOverEvaluation = state.parameters.getBoolean( base.push( P_OVER_EVAL ), null, false );
         }
 
     public boolean runComplete( final EvolutionState state )
@@ -271,16 +203,14 @@ public class CompetitiveEvaluator extends Evaluator
         
         GroupedProblemForm prob = (GroupedProblemForm)(p_problem.clone());
 
-        prob.preprocessPopulation(state,state.population);
+        prob.preprocessPopulation(state,state.population, style == STYLE_SINGLE_ELIMINATION);
+		
         switch(style)
             {
             case STYLE_SINGLE_ELIMINATION:
                 evalSingleElimination( state, state.population.subpops[0].individuals, 0, prob);
                 break;
-                // case STYLE_DOUBLE_ELIMINATION:
-                //      evalDoubleElimination( state, state.population.subpops[0].individuals, 0, prob);
-                //      break;
-            case STYLE_ROUND_ROBIN:
+           case STYLE_ROUND_ROBIN:
                 evalRoundRobin( state, from, numinds, state.population.subpops[0].individuals, 0, prob );
                 break;
             case STYLE_N_RANDOM_COMPETITORS_ONEWAY:
@@ -289,15 +219,9 @@ public class CompetitiveEvaluator extends Evaluator
             case STYLE_N_RANDOM_COMPETITORS_TWOWAY:
                 evalNRandomTwoWay( state, from, numinds, state.population.subpops[0].individuals, 0, prob );
                 break;
-                /* case STYLE_PSEUDO_ROUND_ROBIN:
-                   evalPseudoRoundRobin( state, state.population.subpops[0].individuals, 0, prob );
-                   break; */
-                //          case STYLE_WORLD_CUP:
-                //              evalWorldCup( state, state.population.subpops[0].individuals, 0, prob );
-                //              break;
             }
     
-        prob.postprocessPopulation(state, state.population);
+        prob.postprocessPopulation(state, state.population, style == STYLE_SINGLE_ELIMINATION);
         }
     
     public void evalSingleElimination( final EvolutionState state,
@@ -327,7 +251,7 @@ public class CompetitiveEvaluator extends Evaluator
                 competition[0] = tourn[x];
                 competition[1] = tourn[len-x-1];
 
-                prob.evaluate(state,competition,updates,true, subpops, 0);
+                prob.evaluate(state,competition,updates,true,subpops, 0);
                 }
 
             for(int x=0;x<len/2;x++)
@@ -350,123 +274,6 @@ public class CompetitiveEvaluator extends Evaluator
             }
         }
 
-
-/*
-  public void evalDoubleElimination( final EvolutionState state,
-  final Individual[] individuals,
-  final GroupedProblemForm prob )
-  {
-
-  // perform a single elimination tournament
-  evalSingleElimination( state, individuals, prob );
-
-  // if there are less than two individuals, there's no need to go any further
-  if( individuals.length <= 2 )
-  return;
-
-  // get the winner of the single elimination tournament
-  int index = 0;
-  for( int i = 1 ; i < individuals.length ; i++ )
-  if( individuals[i].fitness.betterThan(individuals[index].fitness) )
-  index = i;
-
-  // swap the winner on the last position in the array
-  Individual ti = individuals[individuals.length-1];
-  individuals[individuals.length-1] = individuals[index];
-  individuals[index] = ti;
-
-  // create an alternate array with all the individuals that lost some game in the first tournament
-  Individual[] temp = new Individual[individuals.length-1];
-  System.arraycopy(individuals,0,temp,0,temp.length);
-
-  // here I should sort the individuals!
-  QuickSort.qsort(temp, new IndComparator());
-
-  // do another single elimination tournament with the losers
-  evalSingleElimination( state, temp, prob );
-
-  // compute the highest fitness of individuals in the second tournament
-  float max = ((SimpleFitness)(temp[0].fitness)).fitness();
-  for( int i = 1 ; i < temp.length ; i++ )
-  if( max < ((SimpleFitness)(temp[i].fitness)).fitness() )
-  max = ((SimpleFitness)(temp[i].fitness)).fitness();
-
-  // the best individual should have the highest fitness, which we set to 1+max (just computed)
-  ((SimpleFitness)(individuals[individuals.length-1].fitness)).setFitness( state, (float)(max+1), false );
-  }
-*/
-
-/*
-  public void evalWorldCup( final EvolutionState state,
-  final Individual[] individuals,
-  final GroupedProblemForm prob )
-  {
-  // the number of groups for the tournament
-  int numGroups = 0;
-
-  int count = 0;
-
-  // the number of individuals that will qualify from groups to the final tournament
-  int totalIndividualsQualified;
-
-  Individual temp;
-
-  // if there would be only one individual left in the last group, include him in the previous group
-  if( individuals.length % groupSize <= 1 )
-  {
-  numGroups = individuals.length / groupSize;
-  totalIndividualsQualified = numGroups * numQualify;
-  }
-  else
-  {
-  numGroups = individuals.length / groupSize + 1;
-  totalIndividualsQualified = (numGroups-1)*numQualify + Math.min(individuals.length%groupSize,numQualify);
-  }
-
-  // the individuals for the final tournament
-  Individual[] tournament = new Individual[ totalIndividualsQualified ];
-
-  // perform the round robin tournament for each of the groups.
-  // no round robin tournament is necessary for the last group if it contains
-  // less individuals then the number to qualify
-  for( int i = 0 ; i < individuals.length-1 ; i+=groupSize )
-  {
-  int last = Math.min( i+groupSize, individuals.length );
-  // if there would be only one individual left after this tournament, include him here....
-  if( last == individuals.length-1 )
-  last = individuals.length;
-
-  Individual[] inds = new Individual[last-i];
-  System.arraycopy( individuals, i, inds, 0, last-i );
-  evalRoundRobin( state, inds, prob );
-
-  // here I should sort the individuals!
-  QuickSort.qsort(inds, new IndComparator());
-
-  for( int x = 0 ; x < Math.min(numQualify,last-i) ; x++ )
-  tournament[(i/groupSize)*numQualify+x] = inds[x];
-  }
-
-  float max = individuals[0].fitness.fitness();
-  for( int i = 1 ; i < individuals.length ; i++ )
-  if( max < individuals[i].fitness.fitness() )
-  max = individuals[i].fitness.fitness();
-
-  // perform the single elimination tournament with the winners
-  evalSingleElimination( state, tournament, prob );
-
-  float min = tournament[0].fitness.fitness();
-  for( int i = 1 ; i < tournament.length ; i++ )
-  if( min > tournament[i].fitness.fitness() )
-  min = tournament[i].fitness.fitness();
-
-  for( int i = 0 ; i < tournament.length ; i++ )
-  {
-  ((SimpleFitness)(tournament[i].fitness)).setFitness( state, tournament[i].fitness.fitness() + max - min, false );
-  }
-
-  }
-*/
 
     public void evalRoundRobin( final EvolutionState state,
         int[] from, int[] numinds,
@@ -496,10 +303,8 @@ public class CompetitiveEvaluator extends Evaluator
                 }
             
             // gather the threads
-            for (int y=0;y<state.evalthreads;y++) try
-                                                      {
-                                                      t[y].join();
-                                                      }
+            for (int y=0;y<state.evalthreads;y++) 
+				try { t[y].join(); }
                 catch(InterruptedException e)
                     {
                     state.output.fatal("Whoa! The main evaluation thread got interrupted!  Dying...");
@@ -545,44 +350,6 @@ public class CompetitiveEvaluator extends Evaluator
                 }
         }
 
-/*
-  public void evalPseudoRoundRobin( final EvolutionState state,
-  final Individual[] individuals,
-  final GroupedProblemForm prob )
-  {
-
-  }
-    
-  public void evalPseudoRoundRobinPopChunk( final EvolutionState state,
-  int from, int numinds, int threadnum,
-  final Individual[] individuals,
-  final int subpop,
-  final GroupedProblemForm prob )
-  {
-  Individual[] competition = new Individual[2];
-  int[] subpops = new int[] { subpop, subpop };
-  boolean[] updates = new boolean[2];
-  updates[0] = updates[1] = true;
-
-        
-  for( int i = 0 ; i < individuals.length-1 ; i+=groupSize )
-  {
-  int last = Math.min( i+groupSize, individuals.length );
-
-  // if there would be only one individual left after this tournament, include him here....
-  if( last == individuals.length-1 )
-  last = individuals.length;
-
-  for(int x=i;x<last;x++)
-  for(int y=x+1;y<last;y++)
-  {
-  competition[0] = individuals[x];
-  competition[1] = individuals[y];
-  prob.evaluate(state,competition,updates,false, subpops, 0);
-  }
-  }
-  }
-*/
 
     public void evalNRandomOneWay( final EvolutionState state, 
         int[] from, int[] numinds, 
@@ -612,10 +379,8 @@ public class CompetitiveEvaluator extends Evaluator
                 }
             
             // gather the threads
-            for (int y=0;y<state.evalthreads;y++) try
-                                                      {
-                                                      t[y].join();
-                                                      }
+            for (int y=0;y<state.evalthreads;y++) 
+				try { t[y].join(); }
                 catch(InterruptedException e)
                     {
                     state.output.fatal("Whoa! The main evaluation thread got interrupted!  Dying...");
@@ -655,7 +420,7 @@ public class CompetitiveEvaluator extends Evaluator
                 // have a competition
                 if( competition[1] != individuals[x] )
                     {
-                    prob.evaluate(state,competition,updates,false, subpops, 0);
+                    prob.evaluate(state,competition,updates,false,subpops, 0);
                     y++;
                     }
                 }
@@ -690,10 +455,8 @@ public class CompetitiveEvaluator extends Evaluator
                 }
             
             // gather the threads
-            for (int y=0;y<state.evalthreads;y++) try
-                                                      {
-                                                      t[y].join();
-                                                      }
+            for (int y=0;y<state.evalthreads;y++)
+				try { t[y].join(); }
                 catch(InterruptedException e)
                     {
                     state.output.fatal("Whoa! The main evaluation thread got interrupted!  Dying...");

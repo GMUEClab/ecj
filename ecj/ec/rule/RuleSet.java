@@ -150,7 +150,7 @@ public class RuleSet implements Prototype
     /**
        Mutates rules in the RuleSet independently with the given probability.
     */
-    public void mutateRules( final EvolutionState state, final int thread)
+    public void mutate( final EvolutionState state, final int thread)
         {
         RuleInitializer initializer = ((RuleInitializer)state.initializer);
         
@@ -241,14 +241,20 @@ public class RuleSet implements Prototype
 
     /**
        Removes a rule from the rule set and returns it.  If index is out of bounds, then
-       this method returns null.
+       this method returns null.  The rules are shifted down --- thus this is O(n).
     */
     public Rule removeRule( int index )
         {
         if (index >= numRules || index < 0 ) return null;
+        Rule myrule = rules[index];
+		System.arraycopy(rules, index + 1, rules, index, numRules - index + 1);
+		
+		/*
         // swap to the top
         Rule myrule = rules[index];
         rules[index] = rules[numRules-1];
+		*/
+
         numRules--;
         return myrule; 
         }
@@ -277,14 +283,14 @@ public class RuleSet implements Prototype
             }
         // copy in the new rules
         System.arraycopy( other.rules, 0, rules, numRules, other.numRules );
-        // protoclone the rules
+        // clone the rules
         for(int x=numRules;x<numRules+other.numRules;x++)
             rules[x] = (Rule)(rules[x].clone());
         numRules += other.numRules;
         }
         
     /**
-       Clears out existing rules, and loads the rules from the other ruleset without protocloning them.
+       Clears out existing rules, and loads the rules from the other ruleset without cloning them.
        Mostly for use if you create temporary rulesets (see for example RuleCrossoverPipeline)
     */
     public void copyNoClone( final RuleSet other )
@@ -301,10 +307,36 @@ public class RuleSet implements Prototype
         }
         
     /**
+       Splits the rule set into n pieces, according to points, which *must* be sorted.
+	   The rules in each piece are cloned and added to the equivalent set.  Sets must be already allocated.
+       sets.length must be 1+ points.length.  
+	   Comment: This function appends the split rulesets to the existing rulesets already in <i>sets</i>.
+    */
+    public RuleSet[] split( int[] points, RuleSet[] sets )
+        {
+		// Do the first chunk or the whole thing
+		for(int i=0; i < (points.length > 0 ? points[0] : rules.length); i++)
+			sets[0].addRule((Rule)(rules[i].clone()) );
+		
+		if (points.length > 0)
+			{
+			// do the in-between chunks
+			for(int p = 1; p < points.length; p++)
+				for(int i= points[p-1]; i < points[p]; i++)
+					sets[p].addRule((Rule)(rules[i].clone()) );
+		
+			// do the final chunk
+			for(int i=points[points.length - 1]; i < rules.length; i++)
+				sets[points.length].addRule((Rule)(rules[i].clone()) );
+			}
+		return sets;
+        }
+    
+    /**
        Splits the rule set into a number of disjoint rule sets, copying the rules and adding
        them to the sets as appropriate.  Each rule independently
        throws a die to determine which ruleset it will go into.  Sets must be already allocated.
-       Comment: This function appends the splitted rulesets to the existing rulesets already in <i>sets</i>.
+       Comment: This function appends the split rulesets to the existing rulesets already in <i>sets</i>.
     */
     public RuleSet[] split( final EvolutionState state, final int thread, RuleSet[] sets )
         {
@@ -393,19 +425,6 @@ public class RuleSet implements Prototype
         throws IOException
         {
         numRules = Code.readIntegerWithPreamble(N_RULES, state, reader);
-        /*
-          int linenumber = reader.getLineNumber();
-          String s = reader.readLine();
-          if (s==null || !s.startsWith(N_RULES))
-          state.output.fatal("Reading Line " + linenumber + ": " +
-          "Bad '" + N_RULES + "' line." + "\n-->" + s);
-          DecodeReturn d = new DecodeReturn(s, N_RULES.length());
-          Code.decode(d);
-          if (d.type!=DecodeReturn.T_INT)
-          state.output.fatal("Reading Line " + linenumber + ": " +
-          "Couldn't Decode '" + N_RULES + "' line." + "\n-->" + s);
-          numRules = (int)d.l;
-        */
 
         rules = new Rule[ numRules ];
         for(int x=0;x<numRules;x++)

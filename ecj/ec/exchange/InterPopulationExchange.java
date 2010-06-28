@@ -50,25 +50,48 @@ import java.io.*;
  <tr><td valign=top><tt><i>base</i>.subpop.<i>n</i>.select</tt><br>
  <font size=-1>classname, inherits and != ec.SelectionMethod</font></td>
  <td valign=top> The selection method used by subpopulation #n for picking 
- migrants to emigrate to other subpopulations
+ migrants to emigrate to other subpopulations.  If not set, uses the default parameter below.
+ </td></tr>
+ <tr><td valign=top><tt><i>base</i>.select</tt><br>
+ <font size=-1>classname, inherits and != ec.SelectionMethod</font></td>
+ <td valign=top>
+ <i>server</i>: Default parameter: the selection method used by a given subpopulation for picking 
+ migrants to emigrate to other subpopulations.
  </td></tr>
  <tr><td valign=top><tt><i>base</i>.subpop.<i>n</i>.select-to-die</tt><br>
  <font size=-1>classname, inherits and != ec.SelectionMethod (Default is random selection)</font></td>
  <td valign=top> The selection method used by subpopulation #n for picking 
- individuals to be replaced by migrants
+ individuals to be replaced by migrants.  If not set, uses the default parameter below.
+ </td></tr>
+ <tr><td valign=top><tt><i>base</i>.select-to-die</tt><br>
+ <font size=-1>classname, inherits and != ec.SelectionMethod (Default is random selection)</font></td>
+ <td valign=top>
+ <i>server</i>: Default parameter: the selection method used by a given subpopulation for picking 
+ individuals to be replaced by migrants.
  </td></tr>
  <tr><td valign=top><tt><i>base</i>.subpop.<i>n</i>.mod</tt><br>
  <font size=-1>int >= 1</font></td>
  <td valign=top> The number of generations that subpopulation #n waits between 
- sending emigrants
+ sending emigrants.  If not set, uses the default parameter below.
+ </td></tr>
+ <tr><td valign=top><tt><i>base</i>.mod</tt><br>
+ <font size=-1>int >= 1</font></td>
+ <td valign=top>
+ <i>server</i>: Default parameter: the number of generations that a given subpopulation waits between 
+ sending emigrants.
  </td></tr>
  <tr><td valign=top><tt><i>base</i>.subpop.<i>n</i>.start</tt><br>
  <font size=-1>int >= 0</font></td>
- <td valign=top> The generation when subpopulation #n begins sending emigrants
+ <td valign=top> The generation when subpopulation #n begins sending emigrants.  If not set, uses the default parameter below.
+ </td></tr>
+ <tr><td valign=top><tt><i>base</i>.start</tt><br>
+ <font size=-1>int >= 0</font></td>
+ <td valign=top>
+ <i>server</i>: Default parameter: the generation when a given subpopulation begins sending emigrants.
  </td></tr>
  <tr><td valign=top><tt><i>base</i>.subpop.<i>n</i>.size</tt><br>
  <font size=-1>int >= 0</font></td>
- <td valign=top> The number of emigrants sent at one time by generation #n
+ <td valign=top> The number of emigrants sent at one time by generation #n.  If not set, uses the default parameter below.
  </td></tr>
  <tr><td valign=top><tt><i>base</i>.subpop.<i>n</i>.num-dest</tt><br>
  <font size=-1>int >= 0</font></td>
@@ -204,33 +227,33 @@ public class InterPopulationExchange extends Exchanger
 
             // read the selection method
             exchangeInformation[i].immigrantsSelectionMethod = (SelectionMethod)
-                state.parameters.getInstanceForParameter( p.push( P_SELECT_METHOD ), null, ec.SelectionMethod.class );
+                state.parameters.getInstanceForParameter( p.push( P_SELECT_METHOD ), base.push(P_SELECT_METHOD), ec.SelectionMethod.class );
             if( exchangeInformation[i].immigrantsSelectionMethod == null )
-                state.output.fatal( "Invalid parameter.",  p.push( P_SELECT_METHOD ));
+                state.output.fatal( "Invalid parameter.",  p.push( P_SELECT_METHOD ), base.push(P_SELECT_METHOD) );
             exchangeInformation[i].immigrantsSelectionMethod.setup( state, p.push(P_SELECT_METHOD) );
 
             // read the selection method
-            if( state.parameters.exists( p.push( P_SELECT_TO_DIE_METHOD ) ) )
+            if( state.parameters.exists( p.push( P_SELECT_TO_DIE_METHOD ), base.push(P_SELECT_TO_DIE_METHOD ) ) )
                 exchangeInformation[i].indsToDieSelectionMethod = (SelectionMethod)
-                    state.parameters.getInstanceForParameter( p.push( P_SELECT_TO_DIE_METHOD ), null, ec.SelectionMethod.class );
+                    state.parameters.getInstanceForParameter( p.push( P_SELECT_TO_DIE_METHOD ), base.push( P_SELECT_TO_DIE_METHOD ), ec.SelectionMethod.class );
             else // use RandomSelection
                 exchangeInformation[i].indsToDieSelectionMethod = new ec.select.RandomSelection();
-            exchangeInformation[i].indsToDieSelectionMethod.setup( state, p.push(P_SELECT_TO_DIE_METHOD) );
+            exchangeInformation[i].indsToDieSelectionMethod.setup( state, p.push(P_SELECT_TO_DIE_METHOD));
 
             // get the modulo
-            exchangeInformation[i].modulo = state.parameters.getInt( p.push( P_MODULO ), null, 1 );
+            exchangeInformation[i].modulo = state.parameters.getInt( p.push( P_MODULO ), base.push(P_MODULO ), 1 );
             if( exchangeInformation[i].modulo == 0 )
-                state.output.fatal( "Parameter not found, or it has an incorrect value.", p.push( P_MODULO ) );
+                state.output.fatal( "Parameter not found, or it has an incorrect value.", p.push( P_MODULO ), base.push( P_MODULO ) );
             
             // get the offset
-            exchangeInformation[i].offset = state.parameters.getInt( p.push( P_OFFSET ), null, 0 );
+            exchangeInformation[i].offset = state.parameters.getInt( p.push( P_OFFSET ), base.push( P_OFFSET ), 0 );
             if( exchangeInformation[i].offset == -1 )
-                state.output.fatal( "Parameter not found, or it has an incorrect value.", p.push( P_OFFSET ) );
+                state.output.fatal( "Parameter not found, or it has an incorrect value.", p.push( P_OFFSET ), base.push( P_OFFSET ) );
             
             // get the size
-            exchangeInformation[i].size = state.parameters.getInt( p.push( P_SIZE ), null, 1 );
+            exchangeInformation[i].size = state.parameters.getInt( p.push( P_SIZE ), base.push( P_SIZE ), 1 );
             if( exchangeInformation[i].size == 0 )
-                state.output.fatal( "Parameter not found, or it has an incorrect value.", p.push( P_SIZE ) );
+                state.output.fatal( "Parameter not found, or it has an incorrect value.", p.push( P_SIZE ), base.push( P_SIZE ) );
 
             // get the number of destinations
             exchangeInformation[i].numDest = state.parameters.getInt( p.push( P_DEST_FOR_SUBPOP ), null, 0 );
