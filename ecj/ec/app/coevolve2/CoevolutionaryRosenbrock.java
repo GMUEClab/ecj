@@ -58,21 +58,21 @@ public class CoevolutionaryRosenbrock extends Problem implements GroupedProblemF
         if( updateFitness[0] )
             {
             if( functionValue > ind1.fitness.fitness() )
-				{
+                {
                 ((SimpleFitness)(ind1.fitness)).setFitness( state, (float)functionValue, false );
-				ind1.context = new CoevolutionaryDoubleVectorIndividual[2];
-				ind1.context[1] = ind2;
-				}
+                ind1.context = new CoevolutionaryDoubleVectorIndividual[2];
+                ind1.context[1] = ind2;
+                }
             }
         if( updateFitness[1] )
             {
             if( functionValue > ind2.fitness.fitness() )
-				{
+                {
                 ((SimpleFitness)(ind2.fitness)).setFitness( state, (float)functionValue, false );
-				ind2.context = new CoevolutionaryDoubleVectorIndividual[2];
-				ind2.context[0] = ind1;
-				}
+                ind2.context = new CoevolutionaryDoubleVectorIndividual[2];
+                ind2.context[0] = ind1;
+                }
             }
-		}
+        }
 
     }

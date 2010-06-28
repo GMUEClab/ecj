@@ -1629,3 +1629,4 @@ Version		Change Log
 	Likewise for DEBreeder
 	Fixed several bugs in SpatialTournamentSelection and added a new parameter
 		for selecting Individuals.
+	Removed the locationToIndex and indexToLocation bijections in Space
