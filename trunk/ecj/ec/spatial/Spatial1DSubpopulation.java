@@ -62,23 +62,27 @@ public class Spatial1DSubpopulation extends Subpopulation implements Space
 
         }
 
-    /**
+    /*
        1D mapping is identity
     */
-    public int locationToIndex( final Object location )
+    /*
+	public int locationToIndex( final Object location )
         {
         if( location instanceof Integer )
             return ((Integer)location).intValue();
         return -1;
         }
+	*/
 
-    /**
+    /*
        1D mapping is identity
     */
-    public Object indexToLocation( final int index)
+    /*
+	public Object indexToLocation( final int index)
         {
         return new Integer(index);
         }
+	*/
 
     public void setIndex( int threadnum, int index )
         {

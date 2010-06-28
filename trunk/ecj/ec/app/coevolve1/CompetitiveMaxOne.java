@@ -19,11 +19,11 @@ public class CompetitiveMaxOne extends Problem implements GroupedProblemForm
         {
         for( int i = 0 ; i < pop.subpops.length ; i++ )
             for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
-				{
-				SimpleFitness sf = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
+                {
+                SimpleFitness sf = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
                 sf.trials = 0;
                 sf.setFitness( state, 0, false );
-				}
+                }
         }
 
     public void postprocessPopulation( final EvolutionState state, Population pop, boolean countVictoriesOnly )
@@ -31,11 +31,11 @@ public class CompetitiveMaxOne extends Problem implements GroupedProblemForm
         for( int i = 0 ; i < pop.subpops.length ; i++ )
             for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
                 {
-				if (!countVictoriesOnly)   // gotta average by number of trials
-					{
-					SimpleFitness sf = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
-					sf.setFitness( state, sf.fitness() / sf.trials, false );
-					}
+                if (!countVictoriesOnly)   // gotta average by number of trials
+                    {
+                    SimpleFitness sf = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
+                    sf.setFitness( state, sf.fitness() / sf.trials, false );
+                    }
                 pop.subpops[i].individuals[j].evaluated = true;
                 }
         }
@@ -77,8 +77,8 @@ public class CompetitiveMaxOne extends Problem implements GroupedProblemForm
 
         if( updateFitness[0] )
             {
-			SimpleFitness fit = ((SimpleFitness)(ind[0].fitness));
-			fit.trials++;
+            SimpleFitness fit = ((SimpleFitness)(ind[0].fitness));
+            fit.trials++;
             if( countVictoriesOnly )
                 {
                 if( ( value1 > value2 ) || 
@@ -93,8 +93,8 @@ public class CompetitiveMaxOne extends Problem implements GroupedProblemForm
 
         if( updateFitness[1] )
             {
-			SimpleFitness fit = ((SimpleFitness)(ind[1].fitness));
-			fit.trials++;
+            SimpleFitness fit = ((SimpleFitness)(ind[1].fitness));
+            fit.trials++;
 
             if( countVictoriesOnly )
                 {

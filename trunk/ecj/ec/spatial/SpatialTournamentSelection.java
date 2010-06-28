@@ -33,7 +33,7 @@ import ec.select.TournamentSelection;
  <font size=-1>int &gt;= 1</font></td>
  <td valign=top>(the neighborhood size)</td></tr>
 
- <tr><td valign=top><i>base.</i><tt>ind-compete</tt><br>
+ <tr><td valign=top><i>base.</i><tt>ind-competes</tt><br>
  <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
  <td valign=top>(Do we include the base individual in the tournament?)</td></tr>
 

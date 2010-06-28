@@ -29,10 +29,6 @@ import ec.coevolve.*;
 
 public class SpatialMultiPopCoevolutionaryEvaluator extends Evaluator
     {
-
-    /** The preamble for selecting partners from each subpopulation. */
-    public static final String P_SUBPOP = "subpop";
-
     /** The selection method used to select the other partners from the previous generation. */
     public static final String P_SELECTIONMETHOD = "select";
     SelectionMethod[] selectionMethod;
@@ -61,20 +57,20 @@ public class SpatialMultiPopCoevolutionaryEvaluator extends Evaluator
 
         for( int i = 0 ; i < numSubpopulations ; i++ )
             {
-            if( state.parameters.exists(base.push(P_SUBPOP).push(""+i).push(P_USE_SAME_LOCATION_PARTNER)) )
-                sameLocationPartners[i] = state.parameters.getBoolean(base.push(P_SUBPOP).push(""+i).push(P_USE_SAME_LOCATION_PARTNER),null,true);
+            if( state.parameters.exists(base.push(Population.P_SUBPOP).push(""+i).push(P_USE_SAME_LOCATION_PARTNER)) )
+                sameLocationPartners[i] = state.parameters.getBoolean(base.push(Population.P_SUBPOP).push(""+i).push(P_USE_SAME_LOCATION_PARTNER),null,true);
             else
-                state.output.fatal( "Parameter not found. " + base.push(P_SUBPOP).push(""+i).push(P_USE_SAME_LOCATION_PARTNER) );
+                state.output.fatal( "Parameter not found. " + base.push(Population.P_SUBPOP).push(""+i).push(P_USE_SAME_LOCATION_PARTNER) );
 
-            numPartners[i] = state.parameters.getInt( base.push(P_SUBPOP).push(""+i).push(P_NUM_PARTNERS), null, 0 );
+            numPartners[i] = state.parameters.getInt( base.push(Population.P_SUBPOP).push(""+i).push(P_NUM_PARTNERS), null, 0 );
             if( numPartners[i] < 0 )
-                state.output.fatal( "Parameter not found, or it has an incorrect value.", base.push(P_SUBPOP).push(""+i).push(P_NUM_PARTNERS) );
+                state.output.fatal( "Parameter not found, or it has an incorrect value.", base.push(Population.P_SUBPOP).push(""+i).push(P_NUM_PARTNERS) );
             else if( (!sameLocationPartners[i]) || (numPartners[i]>1) ) // greater than 1, because for 1 we only used the partners at the same location
                 {
                 selectionMethod[i] = (SelectionMethod)
                     (state.parameters.getInstanceForParameter(
-                        base.push(P_SUBPOP).push(""+i).push(P_SELECTIONMETHOD),null,SelectionMethod.class));
-                selectionMethod[i].setup(state,base.push(P_SUBPOP).push(""+i).push(P_SELECTIONMETHOD));
+                        base.push(Population.P_SUBPOP).push(""+i).push(P_SELECTIONMETHOD),null,SelectionMethod.class));
+                selectionMethod[i].setup(state,base.push(Population.P_SUBPOP).push(""+i).push(P_SELECTIONMETHOD));
                 }
             }
         }
@@ -94,11 +90,11 @@ public class SpatialMultiPopCoevolutionaryEvaluator extends Evaluator
     private Individual[] mates = null;
     private boolean[] updates = null;
     private int[] subpops = null;
+	
     public void performCoevolutionaryEvaluation( final EvolutionState state,
         final Population population,
         final GroupedProblemForm prob )
         {
-
         for( int i = 0 ; i < selectionMethod.length ; i++ )
             if( (!sameLocationPartners[i]) || (numPartners[i]>1) )
                 selectionMethod[i].prepareToProduce( state, i, 0 );
@@ -150,15 +146,10 @@ public class SpatialMultiPopCoevolutionaryEvaluator extends Evaluator
                                 }
                             else // the remaining individuals are to be selected from the neighborhood
                                 {
-                                Space space = null;
-                                try
-                                    {
-                                    space = (Space)(state.population.subpops[k]);
-                                    }
-                                catch( ClassCastException e )
-                                    {
-                                    state.output.fatal( "SpatialMultiPopCoevolutionaryEvaluator found that subpopulation " + k + " is not a spatially-embedded.\n" + e );
-                                    }
+                                if (!(state.population.subpops[k]) instanceof Space)
+									state.output.fatal( "SpatialMultiPopCoevolutionaryEvaluator found that subpopulation " + k + " is not a spatially-embedded.\n" + e );
+
+                                Space space = (Space)(state.population.subpops[k]);
 
                                 space.setIndex(0,j);
                                                                 
