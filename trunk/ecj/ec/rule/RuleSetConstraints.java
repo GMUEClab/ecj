@@ -90,12 +90,12 @@ import ec.util.*;
 public class RuleSetConstraints implements Clique
     {
     /** The size of a byte */
-    public static final int SIZE_OF_BYTE = 256;
+//    public static final int SIZE_OF_BYTE = 256;
     public final static String P_NAME = "name";
     /** num rulesets */
-    public final static String P_SIZE = "size";
+//    public final static String P_SIZE = "size";
     public final static String P_RULE = "rule";  // our prototype
-    public static final int CHECK_BOUNDARY = 8;
+//    public static final int CHECK_BOUNDARY = 8;
     public static final String P_RESETMINSIZE = "reset-min-size";
     public static final String P_RESETMAXSIZE = "reset-max-size";
     public static final String P_NUMSIZES = "reset-num-sizes";

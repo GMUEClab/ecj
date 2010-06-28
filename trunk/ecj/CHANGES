@@ -1595,3 +1595,37 @@ Version		Change Log
 		to a GPData separate from the main one.  I don't think it's
 		ever been used and should be cleaned up.  We now use the main
 		GPData.
+	Added a new split() method into ec.rule.RuleSet
+	Commented out vestigial P_SIZE, SIZE_OF_BYTE, and CHECKBOUNDARY constants
+		in RuleSetConstraints and RuleConstraints
+	RuleSet.removeRule() changed so that the top rule isn't shifted into the
+		old location (the ordering doesn't change).  This makes the
+		operation O(n) however.
+	Added RuleIndividual.mutate(...), and changed RuleMutationPipeline to use it.
+	Renamed RuleSet.mutateRules(...) to RuleSet.mutate(...)
+	rand-2-ways parameter choide changed to rand-2-way
+	Deleted long-commented-out code in CompetitiveEvaluator
+	Added 'trials' instance variable in Fitness
+	Added 'countVictoriesOnly' parameter to both preprocessPopulation and
+		postProcessPopulation in GroupedProblemForm
+	Added "Subpopulation: ..." lines to SimpleStatistics
+	Modifications to ec/app/coevolve1 so that it uses the average over trials
+		rather than the maximum (a bug -- some situations allow different
+		numbers of trials per Individual).
+	Removed the eval.i-am-slave parameter.  It's still set, but automatically
+		by Slave.java when it's fired up.  You don't need to set it in your
+		parameter file.
+	select-to-die added to the README for island models
+	Both synchronous and asynchronous island models now use per-island modulo and
+		start times for migration, and can use the "base" settings if the
+		per-island settings are not specified.  Synchronous island models 
+		now synchronize on every single generation.
+	All island model examples now use $ in front of their statistics file names
+		to be consistent with other examples in ECJ.
+	mailbox-capacity and size parameters for islands also now have default
+		parameter base values.
+	Added default base versions for several parameters in InterIslandExchange
+	Bug fix to SimpleBreeder to handle populations that differ in size
+	Likewise for DEBreeder
+	Fixed several bugs in SpatialTournamentSelection and added a new parameter
+		for selecting Individuals.

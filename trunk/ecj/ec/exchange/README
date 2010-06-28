@@ -107,13 +107,17 @@ islands (minus 1).
 	exch.island.n.mig.m	The name of island number m that this island
 				sends to.  (m is a number from 0 to
 				exch.island.n.num-mig minus 1).
-	exch.island.n.size	How many individuals this island sends to
+	exch.island.n.size
+	exch.size (default)	How many individuals this island sends to
 				each of the other islands at one time.
-	exch.island.n.start	What generation the island should start sending
+	exch.island.n.start	
+	exch.start (default)	What generation the island should start sending
 				(only used if asynchronous)
-	exch.island.n.mod	The interval between sends (only used with
+	exch.island.n.mod	
+	exch.mod (default)	The interval between sends (only used with
 				asynchronous)
-	exch.island.n.mailbox-capacity	How large the island's mailbox should
+	exch.island.n.mailbox-capacity	
+	exch.mailbox-capacity (default)	How large the island's mailbox should
 					be.  This should be large enough to
 					accept enough individuals from other
 					islands, but not so big that it's
@@ -141,6 +145,9 @@ some clients.  Client parameters are quite simple.  The primary ones are:
 				topology as above.
 	exch.select		The selection method used to pick individuals
 				to emigrate TO other islands.
+	exch.select-to-die	The selection method used to pick individuals
+				to be replaced by incoming immigrants.  By
+				default this is random selection.
 
 There's more than this, but it's sufficient to understand what's going on in
 the example directories.  For more description of how things work, see

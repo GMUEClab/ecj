@@ -4,7 +4,7 @@
 
 parent.0 = client.params
 exch.id = ChincoteagueIsland
-stat.file = chincoteague.stat
+stat.file = $chincoteague.stat
 
 # We need to give this island its own unique random number seed
 seed.0 = 1001

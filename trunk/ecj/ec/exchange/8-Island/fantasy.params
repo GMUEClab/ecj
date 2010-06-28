@@ -4,7 +4,7 @@
 
 parent.0 = client.params
 exch.id = FantasyIsland
-stat.file = fantasy.stat
+stat.file = $fantasy.stat
 
 # We need to give this island its own unique random number seed
 seed.0 = 1002

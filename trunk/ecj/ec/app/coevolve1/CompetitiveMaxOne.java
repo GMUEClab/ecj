@@ -15,18 +15,27 @@ import ec.vector.*;
 public class CompetitiveMaxOne extends Problem implements GroupedProblemForm
     {
 
-    public void preprocessPopulation( final EvolutionState state, Population pop )
+    public void preprocessPopulation( final EvolutionState state, Population pop, boolean countVictoriesOnly )
         {
         for( int i = 0 ; i < pop.subpops.length ; i++ )
             for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
-                ((SimpleFitness)(pop.subpops[i].individuals[j].fitness)).setFitness( state, 0, false );
+				{
+				SimpleFitness sf = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
+                sf.trials = 0;
+                sf.setFitness( state, 0, false );
+				}
         }
 
-    public void postprocessPopulation( final EvolutionState state, Population pop )
+    public void postprocessPopulation( final EvolutionState state, Population pop, boolean countVictoriesOnly )
         {
         for( int i = 0 ; i < pop.subpops.length ; i++ )
             for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
                 {
+				if (!countVictoriesOnly)   // gotta average by number of trials
+					{
+					SimpleFitness sf = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
+					sf.setFitness( state, sf.fitness() / sf.trials, false );
+					}
                 pop.subpops[i].individuals[j].evaluated = true;
                 }
         }
@@ -66,35 +75,37 @@ public class CompetitiveMaxOne extends Problem implements GroupedProblemForm
         if( value1 == value2 )
             firstWinsIfDraw = state.random[threadnum].nextBoolean( 0.5 );
 
-        float prevFit1 = ((SimpleFitness)(ind[0].fitness)).fitness();
-        float prevFit2 = ((SimpleFitness)(ind[1].fitness)).fitness();
-
         if( updateFitness[0] )
             {
+			SimpleFitness fit = ((SimpleFitness)(ind[0].fitness));
+			fit.trials++;
             if( countVictoriesOnly )
                 {
                 if( ( value1 > value2 ) || 
                     ( value1 == value2 && firstWinsIfDraw ) )
                     {
-                    ((SimpleFitness)(ind[0].fitness)).setFitness( state, (float)(prevFit1+1), false );
+                    fit.setFitness( state, (float)(fit.fitness() + 1), false );
                     }
                 }
             else
-                ((SimpleFitness)(ind[0].fitness)).setFitness( state, (float)(prevFit1+value1-value2), false );
+                fit.setFitness( state, (float)(fit.fitness() + value1 - value2), false );
             }
 
         if( updateFitness[1] )
             {
+			SimpleFitness fit = ((SimpleFitness)(ind[1].fitness));
+			fit.trials++;
+
             if( countVictoriesOnly )
                 {
                 if( ( value2 > value1 ) ||
                     ( value2 == value1 && !firstWinsIfDraw ) )
                     {
-                    ((SimpleFitness)(ind[1].fitness)).setFitness( state, (float)(prevFit2+1), false );
+                    fit.setFitness( state, (float)(fit.fitness() + 1), false );
                     }
                 }
             else
-                ((SimpleFitness)(ind[1].fitness)).setFitness( state, (float)(prevFit2+value2-value1), false );
+                fit.setFitness( state, (float)(fit.fitness() + value2 - value1), false );
             }
 
         }

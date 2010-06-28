@@ -183,16 +183,6 @@ import ec.util.*;
  <td valign=top>
  <i>server</i>: Are we doing a synchronous island model?  If so, the server's modulo and offset override any client's stated modulo and offset.
  </td></tr>
- <tr><td valign=top><tt><i>base</i>.start</tt><br>
- <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
- <td valign=top>
- <i>server</i>: (Only if island model is synchronous) The generation when islands begin sending emigrants.
- </td></tr>
- <tr><td valign=top><tt><i>base</i>.mod</tt><br>
- <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
- <td valign=top>
- <i>server</i>: (Only if island model is synchronous) The number of generations islands wait between sending emigrants.
- </td></tr>
  <tr><td valign=top><tt><i>base</i>.num-islands</tt><br>
  <font size=-1>int >= 1</font></td>
  <td valign=top>
@@ -216,22 +206,42 @@ import ec.util.*;
  <tr><td valign=top><tt><i>base</i>.island.<i>n</i>.size</tt><br>
  <font size=-1>int >= 1</font></td>
  <td valign=top>
- <i>server</i>: The number of emigrants (per subpopulation) that island #n sends to other islands.
+ <i>server</i>: The number of emigrants (per subpopulation) that island #n sends to other islands.  If not set, uses the default parameter below.
+ </td></tr>
+ <tr><td valign=top><tt><i>base</i>.size</tt><br>
+ <font size=-1>int >= 1</font></td>
+ <td valign=top>
+ <i>server</i>: Default parameter: number of emigrants (per subpopulation) that a given island sends to other islands.
  </td></tr>
  <tr><td valign=top><tt><i>base</i>.island.<i>n</i>.start</tt><br>
  <font size=-1>int >= 0</font></td>
  <td valign=top>
- <i>server</i>: The generation when island #n begins sending emigrants.
+ <i>server</i>: The generation when island #n begins sending emigrants. If not set, uses the default parameter below.
+ </td></tr>
+ <tr><td valign=top><tt><i>base</i>.start</tt><br>
+ <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
+ <td valign=top>
+ <i>server</i>: Default parameter: the generation when an island begins sending emigrants.
  </td></tr>
  <tr><td valign=top><tt><i>base</i>.island.<i>n</i>.mod</tt><br>
  <font size=-1>int >= 1</font></td>
  <td valign=top>
- <i>server</i>: The number of generations that island #n waits between sending emigrants.
+ <i>server</i>: The number of generations that island #n waits between sending emigrants.  If not set, uses the default parameter below.
+ </td></tr>
+ <tr><td valign=top><tt><i>base</i>.mod</tt><br>
+ <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
+ <td valign=top>
+ <i>server</i>: Default parameter: The number of generations an island waits between sending emigrants.
  </td></tr>
  <tr><td valign=top><tt><i>base</i>.island.<i>n</i>.mailbox-capacity</tt><br>
  <font size=-1>int >= 1</font></td>
  <td valign=top>
- <i>server</i>: The maximum size (per subpopulation) of the mailbox for island #n.
+ <i>server</i>: The maximum size (per subpopulation) of the mailbox for island #n.  If not set, uses the default parameter below.
+ </td></tr>
+ <tr><td valign=top><tt><i>base</i>.mailbox-capacity</tt><br>
+ <font size=-1>int >= 1</font></td>
+ <td valign=top>
+ <i>server</i>: Default parameter: the maximum size (per subpopulation) of the mailbox for a given island.
  </td></tr>
  </table>
  
@@ -874,10 +884,10 @@ public class IslandExchange extends Exchanger
         // same situation here of course.
 
         // if synchronous communication, synchronize with the mailbox
-        if( ( state.generation >= offset ) && synchronous &&
-            ( ( modulo == 0 ) || ( ( ( state.generation - offset ) % modulo ) == 0 ) ) )
+        // if( ( state.generation >= offset ) && synchronous &&
+        //    ( ( modulo == 0 ) || ( ( ( state.generation - offset ) % modulo ) == 0 ) ) )
+			if (synchronous)
             {
-
             state.output.message( "Waiting for synchronization...." );
 
             // set the socket to the server to blocking
@@ -916,9 +926,7 @@ public class IslandExchange extends Exchanger
                 {
                 state.output.fatal( "Could not set the connection to the server to non-blocking." );
                 }
-
-            state.output.message( "Synchronized. Reading individuals...." );
-
+            //state.output.message( "Synchronized. Reading individuals...." );
             }
 
         // synchronize, because immigrants is also accessed by the mailbox thread
@@ -1657,7 +1665,7 @@ class IslandExchangeServer implements Runnable
 
 
     // variables used if the execution is synchronous
-    int global_modulo, global_offset;
+    // int global_modulo, global_offset;
     boolean synchronous;
 
     // how many individuals asked to be synchronized (when it reaches the total number of
@@ -1711,9 +1719,9 @@ class IslandExchangeServer implements Runnable
         // if synchronous, read the other two global parameters
         if( synchronous )
             {
-
             state.output.message( "The communication will be synchronous." );
 
+/*
             // get the global modulo
             p = base.push( P_MODULO );
             global_modulo = state.parameters.getInt( p, null, 1 );
@@ -1725,7 +1733,7 @@ class IslandExchangeServer implements Runnable
             global_offset = state.parameters.getInt( p, null, 0 );
             if( global_offset == -1 )
                 state.output.fatal( "Parameter not found, or it has an incorrect value.", p );
-            
+*/
             }
         else
             {
@@ -1753,36 +1761,36 @@ class IslandExchangeServer implements Runnable
 
             // get the mailbox capacity of the imigration from the current island
             p = localBase.push( P_MAILBOX_CAPACITY );
-            ieii.mailbox_capacity = state.parameters.getInt( p, null, 0 );
+            ieii.mailbox_capacity = state.parameters.getInt( p, base.push(P_MAILBOX_CAPACITY), 0 );
             if( ieii.mailbox_capacity == -1 )
-                state.output.fatal( "Parameter not found, or it has an incorrect value.", p );
+                state.output.fatal( "Parameter not found, or it has an incorrect value.", p, base.push(P_MAILBOX_CAPACITY) );
 
             // get the size of the imigration from the current island
             p = localBase.push( P_SIZE );
-            ieii.size = state.parameters.getInt( p, null, 0 );
+            ieii.size = state.parameters.getInt( p, base.push(P_SIZE), 0 );
             if( ieii.size == -1 )
-                state.output.fatal( "Parameter not found, or it has an incorrect value.", p );
+                state.output.fatal( "Parameter not found, or it has an incorrect value.", p, base.push(P_SIZE) );
 
             // if synchronous execution, use the global modulo and offset
-            if( synchronous )
+            /* if( synchronous )
                 {
                 ieii.modulo = global_modulo;
                 ieii.offset = global_offset;
                 }
             else
-                {
+                {*/
                 // get the modulo of the imigration from the current island
                 p = localBase.push( P_MODULO );
-                ieii.modulo = state.parameters.getInt( p, null, 1 );
+                ieii.modulo = state.parameters.getInt( p, base.push(P_MODULO), 1 );
                 if( ieii.modulo == 0 )
-                    state.output.fatal( "Parameter not found, or it has an incorrect value.", p );
+                    state.output.fatal( "Parameter not found, or it has an incorrect value.", p , base.push(P_MODULO));
 
                 // get the offset of the imigration from the current island
                 p = localBase.push( P_OFFSET );
-                ieii.offset = state.parameters.getInt( p, null, 0 );
+                ieii.offset = state.parameters.getInt( p, base.push(P_OFFSET), 0 );
                 if( ieii.offset == -1 )
-                    state.output.fatal( "Parameter not found, or it has an incorrect value.", p );
-                }
+                    state.output.fatal( "Parameter not found, or it has an incorrect value.", p, base.push(P_OFFSET) );
+           /*     } */
 
             // mark as uninitialized
             ieii.port = -1;

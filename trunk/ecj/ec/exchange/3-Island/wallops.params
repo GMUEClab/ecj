@@ -4,7 +4,7 @@
 
 parent.0 = server.params
 exch.id = WallopsIsland
-stat.file = wallops.stat
+stat.file = $wallops.stat
 
 # We need to give this island its own unique random number seed
 seed.0 = 1002

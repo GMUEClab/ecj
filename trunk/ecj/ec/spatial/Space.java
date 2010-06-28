@@ -35,7 +35,6 @@ import ec.*;
 
 public interface Space
     {
-
     /**
        The Space should provide a bijectional mapping from locations in space
        to indexes in the subpopulation.  Returns -1 if error occured.

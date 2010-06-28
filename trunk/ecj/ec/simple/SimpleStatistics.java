@@ -120,6 +120,7 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         state.output.println("Best Individual:",statisticslog);
         for(int x=0;x<state.population.subpops.length;x++)
             {
+			state.output.println("Subpopulation " + x + ":",statisticslog);
             best_i[x].printIndividualForHumans(state,statisticslog);
             state.output.message("Subpop " + x + " best fitness of generation: " + best_i[x].fitness.fitnessToStringForHumans());
             }
@@ -135,6 +136,7 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         state.output.println("\nBest Individual of Run:",statisticslog);
         for(int x=0;x<state.population.subpops.length;x++ )
             {
+			state.output.println("Subpopulation " + x + ":",statisticslog);
             best_of_run[x].printIndividualForHumans(state,statisticslog);
             state.output.message("Subpop " + x + " best fitness of run: " + best_of_run[x].fitness.fitnessToStringForHumans());
 

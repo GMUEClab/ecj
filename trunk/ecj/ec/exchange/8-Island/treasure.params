@@ -4,7 +4,7 @@
 
 parent.0 = client.params
 exch.id = TreasureIsland
-stat.file = treasure.stat
+stat.file = $treasure.stat
 
 # We need to give this island its own unique random number seed
 seed.0 = 1007

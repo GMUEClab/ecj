@@ -6,8 +6,13 @@ parent.0 = client.params
 exch.i-am-server = true
 
 #exch.sync = true
-exch.mod = 4
-exch.start = 1
+
+### These parameters are only used if the per-island
+### versions aren't specified.
+#exch.mod = 4
+#exch.start = 1
+#exch.size = 4
+#exch.mailbox-capacity = 20
 
 exch.num-islands = 2
 

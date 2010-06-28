@@ -38,9 +38,9 @@ import ec.util.*;
 */
 public class RuleConstraints implements Clique
     {
-    public static final int SIZE_OF_BYTE = 256;
+//    public static final int SIZE_OF_BYTE = 256;
     public final static String P_NAME = "name";
-    public final static String P_SIZE = "size";
+//    public final static String P_SIZE = "size";
 
     /** The byte value of the constraints -- we can only have 256 of them */
     public byte constraintNumber;

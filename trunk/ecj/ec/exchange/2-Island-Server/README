@@ -19,15 +19,23 @@ using minoa.params and crete.params, plus a separate server
 than you'd normally launch an ECJ process.  What you do here
 is launch the server as:
 
-	java ec.exchange.IslandExchange -file server.params
+java ec.exchange.IslandExchange -file server.params
 
-...which starts off on a special main() function which just
-sets up some basic stuff to be a server.  It's a real hack
-though.  :-(
 
-As always, if you'd like to run the clients on the same
-machine, you'll need to tweak the parameter files so that
-each has a different client port.  The parameter to modify
-is:
-	exch.client-port = 9030
+Then you launch your islands:
+
+java ec.Evolve -file crete.params
+
+java ec.Evolve -file minoa.params
+
+
+If you're running crete and minoa on separate machines from
+the server, you'll need to modify the parameter to tell them
+where the server is:
+
+java ec.Evolve -file crete.params \
+    -p exch.server-addr=address.of.server.com
+
+java ec.Evolve -file minoa.params \
+    -p exch.server-addr=address.of.server.com
 

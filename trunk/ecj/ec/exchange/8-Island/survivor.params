@@ -4,7 +4,7 @@
 
 parent.0 = server.params
 exch.id = SurvivorIsland
-stat.file = survivor.stat
+stat.file = $survivor.stat
 
 # We need to give this island its own unique random number seed
 seed.0 = 1005

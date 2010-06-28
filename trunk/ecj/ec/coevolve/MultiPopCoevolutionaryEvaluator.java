@@ -159,9 +159,9 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
 
         beforeCoevolutionaryEvaluation( state, state.population, (GroupedProblemForm)p_problem );
 
-        ((GroupedProblemForm)p_problem).preprocessPopulation(state,state.population);
+        ((GroupedProblemForm)p_problem).preprocessPopulation(state,state.population, false);
         performCoevolutionaryEvaluation( state, state.population, (GroupedProblemForm)p_problem );
-        ((GroupedProblemForm)p_problem).postprocessPopulation(state, state.population);
+        ((GroupedProblemForm)p_problem).postprocessPopulation(state, state.population, false);
 
         afterCoevolutionaryEvaluation( state, state.population, (GroupedProblemForm)p_problem );
         }
@@ -284,7 +284,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
                             }
 
                     // perform the coevolutionary evaluation of the group of individuals
-                    prob.evaluate(state,mates,updates,false, subpops, 0);
+                    prob.evaluate(state,mates,updates, false, subpops, 0);
 
                     curI = 0;
                     // select the next case
@@ -322,8 +322,6 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         final Population population,
         final GroupedProblemForm prob )
         {
-
-
         // for each subpopulation, select the individuals to be used for evaluation for the other subpopulations
         for( int i = 0 ; i < numElite.length ; i++ )
             if( numElite[i] > 0 )

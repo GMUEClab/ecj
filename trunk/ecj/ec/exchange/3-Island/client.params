@@ -7,5 +7,7 @@ parent.0 = ../../app/ant/ant.params
 exch = ec.exchange.IslandExchange
 exch.select = ec.select.TournamentSelection
 exch.compressed = true
-exch.server-addr = your.server.address.here.com
+# This assumes all the islands are on the same machine.
+# You probably want to change this.
+exch.server-addr = localhost
 exch.server-port = 8999
