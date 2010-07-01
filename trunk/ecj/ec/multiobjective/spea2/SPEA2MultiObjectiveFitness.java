@@ -30,15 +30,7 @@ import ec.EvolutionState;
  * to infinity (best)), and a single SPEA2 fitness value which represents
  * the individual's overall fitness ( a function of the number of 
  * individuals it dominates and it's raw score where 0.0 is the best).
-
- <p><b>Parameters</b><br>
- <table>
- <tr><td valign=top><i>base</i>.<tt>num-objectives</tt><br>
- (else)<tt>multi.num-objectives</tt><br>
- <font size=-1>int &gt;= 1</font></td>
- <td valign=top>(the number of fitnesses in the multifitness array)</td></tr>
- </table>
-
+ *
  * @author Robert Hubley (based on MultiObjectiveFitness by Sean Luke)
  * @version 1.0 
  */
