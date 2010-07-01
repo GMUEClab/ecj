@@ -110,7 +110,6 @@ public class SPEA2Evaluator extends SimpleEvaluator
             double rawFitness = 0;
             for(int z=0;z<inds.length;z++)
                 {
-                        
                 // Raw fitness 
                 if ( inds[z].fitness.betterThan(inds[y].fitness) )
                     {
@@ -131,7 +130,7 @@ public class SPEA2Evaluator extends SimpleEvaluator
             // Set SPEA2 k-th NN distance value for each individual
             indYFitness.SPEA2kthNNDistance = density;
             // Set SPEA2 fitness value for each individual
-            indYFitness.SPEA2Fitness =indYFitness.SPEA2RawFitness + indYFitness.SPEA2kthNNDistance;
+            indYFitness.SPEA2Fitness = indYFitness.SPEA2RawFitness + indYFitness.SPEA2kthNNDistance;
             } // For each individual y
         }
     
