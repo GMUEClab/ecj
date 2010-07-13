@@ -42,6 +42,16 @@ public class SpatialBreeder extends SimpleBreeder
     {
     public void setup(final EvolutionState state, final Parameter base)
         {
+		super.setup(state, base);
+		
+		// check for elitism and warn about it
+		for(int i = 0 ; i < elite.length; i++)
+			if (elite[i] > 0)
+				{
+				state.output.warning("You're using elitism with SpatialBreeder.  This is unwise as elitism is done by moving individuals around in the population, thus messing up the spatial nature of breeding.",
+					base.push(P_ELITE).push(""+i));
+				break;
+				}
         }
                 
     protected void breedPopChunk(Population newpop, EvolutionState state,
