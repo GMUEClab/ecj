@@ -10,17 +10,11 @@ quit-on-run-complete =			false
 
 eval =                                  ec.coevolve.MultiPopCoevolutionaryEvaluator
 
-eval.subpop.0.num-rand-ind =		4
-eval.subpop.0.num-elites =		1
-eval.subpop.0.num-ind =			2
-eval.subpop.0.select =			ec.select.TournamentSelection
-eval.subpop.0.select.size =		1
-
-eval.subpop.1.num-rand-ind =		4
-eval.subpop.1.num-elites =		1
-eval.subpop.1.num-ind =			2
-eval.subpop.1.select =			ec.select.TournamentSelection
-eval.subpop.1.select.size =		1
+eval.num-current=			4
+eval.num-elites =			1
+eval.num-prev =				2
+eval.select-current =			ec.select.RandomSelection
+eval.select-prev = 			ec.select.RandomSelection
 
 eval.problem =                          ec.app.coevolve2.CoevolutionaryRosenbrock
 

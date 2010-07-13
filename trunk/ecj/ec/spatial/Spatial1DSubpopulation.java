@@ -123,13 +123,18 @@ public class Spatial1DSubpopulation extends Subpopulation implements Space
             {
             int max = (2*distance+1>size) ? size : (2*distance+1);
             int rand = state.random[threadnum].nextInt(max);
-            return (index+rand-distance+size)%size;
+            int val= (index+rand-distance);
+			if (val >= 0 && val < size) return val;
+			val = val % size;
+			if (val >= 0) return val;
+			else return val + size;
             }
         else
             {
             int min = (index-distance<0) ? 0 : (index-distance);
             int max = (index+distance>=size) ? size : (index+distance);
-            return min + state.random[threadnum].nextInt(max-min+1);
-            }
+            int val = min + state.random[threadnum].nextInt(max-min+1);
+ 			return val;
+           }
         }
     }

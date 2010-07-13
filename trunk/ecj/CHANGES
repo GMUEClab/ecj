@@ -1630,3 +1630,8 @@ Version		Change Log
 	Fixed several bugs in SpatialTournamentSelection and added a new parameter
 		for selecting Individuals.
 	Removed the locationToIndex and indexToLocation bijections in Space
+	Total rewrite of MultiPopCoevolutionaryEvaluator.  Untested.
+	Bug fix to toroidal handling in Spatial1DSubpopulation
+	Total rewrite of SpatialMultiPopCoevolutionaryEvaluator to be consistent
+		with the new MulitPopCoevolutionaryEvaluator.
+	Removed ABOUT.JDK13
