@@ -74,9 +74,8 @@ import ec.select.*;
 
 public class RatioBucketTournamentSelection extends SelectionMethod implements SteadyStateBSourceForm
     {
-
     /** default base */
-    public static final String P_TOURNAMENT = "ratio-bucket-tournament";
+    public static final String P_RATIO_BUCKET_TOURNAMENT = "ratio-bucket-tournament";
 
     /** size parameter */
     public static final String P_SIZE = "size";
@@ -107,7 +106,7 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
  
     public Parameter defaultBase()
         {
-        return SelectDefaults.base().push(P_TOURNAMENT);
+        return SelectDefaults.base().push(P_RATIO_BUCKET_TOURNAMENT);
         }
     
     public void setup(final EvolutionState state, final Parameter base)
@@ -246,6 +245,7 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
         return i;
         }
 
+	// included for SteadyState
     public void individualReplaced(final SteadyStateEvolutionState state,
         final int subpopulation,
         final int thread,
