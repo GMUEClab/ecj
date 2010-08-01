@@ -1639,3 +1639,4 @@ Version		Change Log
 	Revision of ProportionalTournamentSelection to be merged with new
 		TournamentSelection facility.  Untested!
 	Likewise for LexicographicTournamentSelection
+	Added README about TeamBots
