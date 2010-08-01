@@ -1635,3 +1635,7 @@ Version		Change Log
 	Total rewrite of SpatialMultiPopCoevolutionaryEvaluator to be consistent
 		with the new MulitPopCoevolutionaryEvaluator.
 	Removed ABOUT.JDK13
+	Added TournamentSelection.betterThan
+	Revision of ProportionalTournamentSelection to be merged with new
+		TournamentSelection facility.  Untested!
+	Likewise for LexicographicTournamentSelection
