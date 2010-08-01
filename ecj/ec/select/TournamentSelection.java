@@ -128,7 +128,7 @@ public class TournamentSelection extends SelectionMethod implements SteadyStateB
         return state.random[thread].nextInt(oldinds.length);
         }
 
-    public final int produce(final int subpopulation,
+    public int produce(final int subpopulation,
         final EvolutionState state,
         final int thread)
         {
