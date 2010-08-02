@@ -111,8 +111,8 @@ public class TournamentSelection extends SelectionMethod implements SteadyStateB
         pickWorst = state.parameters.getBoolean(base.push(P_PICKWORST),def.push(P_PICKWORST),false);
         }
 
-    /* Returns the tournament size to use. */
-    int getTournamentSizeToUse(MersenneTwisterFast random)
+    /** Returns a tournament size to use, at random, based on base size and probability of picking the size plus one. */
+    public int getTournamentSizeToUse(MersenneTwisterFast random)
         {
         double p = probabilityOfPickingSizePlusOne;   // pulls us to under 35 bytes
         if (p == 0.0) return size;
