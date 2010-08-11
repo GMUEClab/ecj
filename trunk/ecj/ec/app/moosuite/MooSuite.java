@@ -37,10 +37,6 @@ import ec.vector.*;
    <tr><td valign=top><i>base</i>.<tt>type</tt><br>
    <font size=-1>String, one of: zdt1, zdt2, zdt3, zdt4, zdt6, sphere, sch, fon, qv, pol, kur, f1, f2, unconstrained-f3</font></td>
    <td valign=top>The multi-objective optimization problem to test against. </td></tr>
-   
-   <tr><td valign=top><i>base</i>.<tt>num-variables</tt><br>
-   <font size=-1>int (default=30)</font></td>
-   <td valign=top>The number of variables; genome-size is set to this value internally.</td></tr>
    </table>
    
    
