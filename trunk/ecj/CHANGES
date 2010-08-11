@@ -1641,3 +1641,9 @@ Version		Change Log
 	Likewise for LexicographicTournamentSelection
 	Added README about TeamBots
 	VectorSpecies.setup() now checkes for a null genome size parameter
+	Added name() method to GPNode, which by default calls toString().
+	Deleted the ERC.ERC_PREFIX constant (which was "ERC", see next).
+	Changed ERC.name() to return "ERC" by default rather than "" by default.
+		Furthermore, various ERC methods no longer call ERC_PREFIX+name()
+		but instead just call name()
+	GPFunctionSet.nodesByName added, and hashes all nodes by name().

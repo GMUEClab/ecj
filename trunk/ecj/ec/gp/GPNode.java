@@ -853,6 +853,16 @@ public abstract class GPNode implements GPNodeParent, Prototype
         writer.print(n);
         return n.length();
         }
+		
+	/** Returns a Lisp-like atom for the node and any nodes of the same class.
+		This will almost always be identical to the result of toString() (and the default
+		does exactly this), but for ERCs it'll be different: toString will include the
+		encoded constant data, whereas name() will not include this information and will
+		be the same for all ERCs of this type.  If two nodes are nodeEquivalentTo(...)
+		each other, then they will have the same name().  If two nodes are nodeEquals(...)
+		each other, then they will have the same toString().  */
+		
+	public String name() { return toString(); }
 
     /** Returns a Lisp-like atom for the node which can be read in again by computer.
         If you need to encode an integer or a float or whatever for some reason

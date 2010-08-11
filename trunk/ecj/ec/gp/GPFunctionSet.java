@@ -84,7 +84,7 @@ public class GPFunctionSet implements Clique
     // some convenience methods which speed up various kinds
     // of mutation operators
 
-    /** The nodes that our GPTree can use, hashed by name. */
+    /** The nodes that our GPTree can use, hashed by name(). */
     public Hashtable nodesByName;
 
     /** Nodes == a given arity, that is: nodesByArity[type][arity][thenodes] */
@@ -238,16 +238,16 @@ public class GPFunctionSet implements Clique
             tmp.addElement(gpfi);
                         
             // Load into the nodesByName hashtable
-            GPNode[] nodes = (GPNode[])(nodesByName.get(gpfi.toString()));
+            GPNode[] nodes = (GPNode[])(nodesByName.get(gpfi.name()));
             if (nodes == null)
-                nodesByName.put(gpfi.toString(), new GPNode[] { gpfi });
+                nodesByName.put(gpfi.name(), new GPNode[] { gpfi });
             else
                 {
                 // O(n^2) but uncommon so what the heck.
                 GPNode[] nodes2 = new GPNode[nodes.length + 1];
                 System.arraycopy(nodes, 0, nodes2, 0, nodes.length);
                 nodes2[nodes2.length - 1] = gpfi;
-                nodesByName.put(gpfi.toString(), nodes2);
+                nodesByName.put(gpfi.name(), nodes2);
                 }
             }
 
