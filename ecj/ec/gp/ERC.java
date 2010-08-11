@@ -106,16 +106,15 @@ import java.io.*;
 
 public abstract class ERC extends GPNode
     {
-    public static final String ERC_PREFIX = "ERC";
-
     /** Returns the lowercase "name" of this ERC function class, some
         simple, short name which distinguishes this class from other ERC
-        function classes you're using.  If you have only one ERC function
-        class, you can just return "" (this is what name() returns by default).
+        function classes you're using.  If you have more than one ERC function,
+		you need to distinguish them here.  By default the value is "ERC",
+		which works fine for a single ERC function in the function set.
         Whatever the name is, it should
         generally only have letters, numbers, or hyphens or underscores in it.
         No whitespace or other characters. */
-    public String name() { return ""; }
+    public String name() { return "ERC"; }
 
     /** Checks to make certain that the ERC has no children. */
     public void checkConstraints(final EvolutionState state,
@@ -140,13 +139,13 @@ public abstract class ERC extends GPNode
         code of the string returned by encode().  You might make a better hash value. */
     public int nodeHashCode() { return super.nodeHashCode() ^ encode().hashCode(); }
 
-    /** You might want to override this to return a special human-readable version of the erc value; otherwise this defaults to toString();  This should be something that resembles a LISP atom.  If a simple number or other object won't suffice, you might use something that begins with ERC_PREFIX + name() + [ + ... + ] */
+    /** You might want to override this to return a special human-readable version of the erc value; otherwise this defaults to toString();  This should be something that resembles a LISP atom.  If a simple number or other object won't suffice, you might use something that begins with  name() + [ + ... + ] */
     public String toStringForHumans() 
         { return toString(); }
 
-    /** This defaults to simply ERC_PREFIX + name() + "[" + encode() + "]" */
-    public String toString() 
-        { return ERC_PREFIX + name() + "[" + encode() + "]"; }
+    /** This defaults to simply name() + "[" + encode() + "]".   You probably shouldn't deviate from this. */
+	public String toString() 
+        { return name() + "[" + encode() + "]"; }
 
     /** Encodes data from the ERC, using ec.util.Code.  */
     public abstract String encode();
@@ -193,7 +192,7 @@ public abstract class ERC extends GPNode
         int originalPos = dret.pos;
         
         // get my name
-        String str2 = ERC_PREFIX + name() + "[";
+        String str2 = name() + "[";
         int len2 = str2.length();
 
         if (dret.pos + len2 >= len)  // uh oh, not enough space
