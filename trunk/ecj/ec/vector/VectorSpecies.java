@@ -186,7 +186,11 @@ public class VectorSpecies extends Species
         this.state = state;
         
         String genomeSizeForm = state.parameters.getString(base.push(P_GENOMESIZE),def.push(P_GENOMESIZE));
-        if (genomeSizeForm.equals(V_GEOMETRIC))
+        if (genomeSizeForm == null) // clearly an error
+			{
+			state.output.fatal("No genome size specified.", base.push(P_GENOMESIZE),def.push(P_GENOMESIZE));
+			}
+		else if (genomeSizeForm.equals(V_GEOMETRIC))
             {
             genomeSize = 1;
             genomeResizeAlgorithm = C_GEOMETRIC;

@@ -245,7 +245,7 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
         return i;
         }
 
-	// included for SteadyState
+    // included for SteadyState
     public void individualReplaced(final SteadyStateEvolutionState state,
         final int subpopulation,
         final int thread,

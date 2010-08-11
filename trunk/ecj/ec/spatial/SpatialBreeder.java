@@ -42,44 +42,44 @@ public class SpatialBreeder extends SimpleBreeder
     {
     public void setup(final EvolutionState state, final Parameter base)
         {
-		super.setup(state, base);
-		
-		// check for elitism and warn about it
-		for(int i = 0 ; i < elite.length; i++)
-			if (elite[i] > 0)
-				{
-				state.output.warning("You're using elitism with SpatialBreeder.  This is unwise as elitism is done by moving individuals around in the population, thus messing up the spatial nature of breeding.",
-					base.push(P_ELITE).push(""+i));
-				break;
-				}
+        super.setup(state, base);
+                
+        // check for elitism and warn about it
+        for(int i = 0 ; i < elite.length; i++)
+            if (elite[i] > 0)
+                {
+                state.output.warning("You're using elitism with SpatialBreeder.  This is unwise as elitism is done by moving individuals around in the population, thus messing up the spatial nature of breeding.",
+                    base.push(P_ELITE).push(""+i));
+                break;
+                }
         }
                 
     protected void breedPopChunk(Population newpop, EvolutionState state,
         int[] numinds, int[] from, int threadnum) 
-		{
+        {
         for(int subpop=0;subpop<newpop.subpops.length;subpop++)
             {
             BreedingPipeline bp = (BreedingPipeline)newpop.subpops[subpop].
                 species.pipe_prototype.clone();
-				
-			if (!(state.population.subpops[subpop] instanceof Space))
+                                
+            if (!(state.population.subpops[subpop] instanceof Space))
                 state.output.fatal("Subpopulation " + subpop + " does not implement the Space interface.");
-			Space space = (Space)(state.population.subpops[subpop]);
-			
+            Space space = (Space)(state.population.subpops[subpop]);
+                        
             // check to make sure that the breeding pipeline produces
             // the right kind of individuals.  Don't want a mistake there! :-)
             if (!bp.produces(state,newpop,subpop,threadnum))
                 state.output.fatal("The Breeding Pipeline of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops[subpop].species.getClass().getName() + " or fitness " + newpop.subpops[subpop].species.f_prototype );
             bp.prepareToProduce(state,subpop,threadnum);
-			
+                        
             // start breedin'!
-			for(int x = from[subpop]; x < from[subpop] + numinds[subpop]; x++)
-				{
-				space.setIndex(threadnum, x);
-				if (bp.produce(1, 1, x, subpop, newpop.subpops[subpop].individuals, state, threadnum) != 1)
+            for(int x = from[subpop]; x < from[subpop] + numinds[subpop]; x++)
+                {
+                space.setIndex(threadnum, x);
+                if (bp.produce(1, 1, x, subpop, newpop.subpops[subpop].individuals, state, threadnum) != 1)
                     state.output.fatal( "The pipelines should produce one individual at a time!" );
-				}
-				
+                }
+                                
             bp.finishProducing(state,subpop,threadnum);
             }
         }

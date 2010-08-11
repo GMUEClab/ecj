@@ -258,8 +258,8 @@ public class RuleIndividual extends Individual
             rulesets[x].reset(state,thread);
         }
 
-	/** Mutates the Individual.  The default implementation simply calls mutate(...) on each of
-		the RuleSets. */
+    /** Mutates the Individual.  The default implementation simply calls mutate(...) on each of
+        the RuleSets. */
     public void mutate(EvolutionState state, int thread)
         {
         for(int x=0;x<rulesets.length;x++) 

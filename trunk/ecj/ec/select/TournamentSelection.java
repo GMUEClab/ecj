@@ -128,12 +128,12 @@ public class TournamentSelection extends SelectionMethod implements SteadyStateB
         return state.random[thread].nextInt(oldinds.length);
         }
 
-	/** Returns true if *first* is a better (fitter, whatever) individual than *second*. */
-	public boolean betterThan(Individual first, Individual second, int subpopulation, EvolutionState state, int thread)
-		{
-		return first.fitness.betterThan(second.fitness);
-		}
-		
+    /** Returns true if *first* is a better (fitter, whatever) individual than *second*. */
+    public boolean betterThan(Individual first, Individual second, int subpopulation, EvolutionState state, int thread)
+        {
+        return first.fitness.betterThan(second.fitness);
+        }
+                
     public int produce(final int subpopulation,
         final EvolutionState state,
         final int thread)
@@ -162,7 +162,7 @@ public class TournamentSelection extends SelectionMethod implements SteadyStateB
         return best;
         }
 
-	// included for SteadyState
+    // included for SteadyState
     public void individualReplaced(final SteadyStateEvolutionState state,
         final int subpopulation,
         final int thread,

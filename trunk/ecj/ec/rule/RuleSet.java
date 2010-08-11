@@ -247,13 +247,13 @@ public class RuleSet implements Prototype
         {
         if (index >= numRules || index < 0 ) return null;
         Rule myrule = rules[index];
-		System.arraycopy(rules, index + 1, rules, index, numRules - index + 1);
-		
-		/*
+        System.arraycopy(rules, index + 1, rules, index, numRules - index + 1);
+                
+        /*
         // swap to the top
         Rule myrule = rules[index];
         rules[index] = rules[numRules-1];
-		*/
+        */
 
         numRules--;
         return myrule; 
@@ -308,28 +308,28 @@ public class RuleSet implements Prototype
         
     /**
        Splits the rule set into n pieces, according to points, which *must* be sorted.
-	   The rules in each piece are cloned and added to the equivalent set.  Sets must be already allocated.
+       The rules in each piece are cloned and added to the equivalent set.  Sets must be already allocated.
        sets.length must be 1+ points.length.  
-	   Comment: This function appends the split rulesets to the existing rulesets already in <i>sets</i>.
+       Comment: This function appends the split rulesets to the existing rulesets already in <i>sets</i>.
     */
     public RuleSet[] split( int[] points, RuleSet[] sets )
         {
-		// Do the first chunk or the whole thing
-		for(int i=0; i < (points.length > 0 ? points[0] : rules.length); i++)
-			sets[0].addRule((Rule)(rules[i].clone()) );
-		
-		if (points.length > 0)
-			{
-			// do the in-between chunks
-			for(int p = 1; p < points.length; p++)
-				for(int i= points[p-1]; i < points[p]; i++)
-					sets[p].addRule((Rule)(rules[i].clone()) );
-		
-			// do the final chunk
-			for(int i=points[points.length - 1]; i < rules.length; i++)
-				sets[points.length].addRule((Rule)(rules[i].clone()) );
-			}
-		return sets;
+        // Do the first chunk or the whole thing
+        for(int i=0; i < (points.length > 0 ? points[0] : rules.length); i++)
+            sets[0].addRule((Rule)(rules[i].clone()) );
+                
+        if (points.length > 0)
+            {
+            // do the in-between chunks
+            for(int p = 1; p < points.length; p++)
+                for(int i= points[p-1]; i < points[p]; i++)
+                    sets[p].addRule((Rule)(rules[i].clone()) );
+                
+            // do the final chunk
+            for(int i=points[points.length - 1]; i < rules.length; i++)
+                sets[points.length].addRule((Rule)(rules[i].clone()) );
+            }
+        return sets;
         }
     
     /**

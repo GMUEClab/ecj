@@ -65,10 +65,10 @@ public class LexicographicTournamentSelection extends TournamentSelection
         return SelectDefaults.base().push(P_TOURNAMENT);
         }
     
-	public boolean betterThan(Individual first, Individual second, int subpopulation, EvolutionState state, int thread)
-		{
-		return (first.fitness.betterThan(second.fitness) ||
-				(first.fitness.equivalentTo(second.fitness) && first.size() < second.size()));
-		}
-		
+    public boolean betterThan(Individual first, Individual second, int subpopulation, EvolutionState state, int thread)
+        {
+        return (first.fitness.betterThan(second.fitness) ||
+            (first.fitness.equivalentTo(second.fitness) && first.size() < second.size()));
+        }
+                
     }

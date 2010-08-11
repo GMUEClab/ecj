@@ -80,11 +80,11 @@ public class ProportionalTournamentSelection extends TournamentSelection
                 base.push(P_PROBABILITY),def.push(P_PROBABILITY));
         }
 
-	public boolean betterThan(Individual first, Individual second, int subpopulation, EvolutionState state, int thread)
-		{
-		if (state.random[thread].nextBoolean(fitnessPressureProb))
-			return first.fitness.betterThan(second.fitness);
-		else
-			return first.size() < second.size();
-		}
-	}
+    public boolean betterThan(Individual first, Individual second, int subpopulation, EvolutionState state, int thread)
+        {
+        if (state.random[thread].nextBoolean(fitnessPressureProb))
+            return first.fitness.betterThan(second.fitness);
+        else
+            return first.size() < second.size();
+        }
+    }

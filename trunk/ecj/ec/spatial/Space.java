@@ -36,14 +36,14 @@ import ec.*;
 public interface Space
     {
     /*
-       The Space should provide a bijectional mapping from locations in space
-       to indexes in the subpopulation.  Returns -1 if error occured.
+      The Space should provide a bijectional mapping from locations in space
+      to indexes in the subpopulation.  Returns -1 if error occured.
     */
     // public int locationToIndex( final Object location );
 
     /*
-       The Space provide a bijectional mapping from indexes in the subpopulation
-       to locations in space.  Returns null if error occured.
+      The Space provide a bijectional mapping from indexes in the subpopulation
+      to locations in space.  Returns null if error occured.
     */
     // public Object indexToLocation( final int index);
 

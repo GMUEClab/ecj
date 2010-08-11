@@ -46,10 +46,10 @@ public class SPEA2Statistics extends SimpleStatistics
 
                 ////all I need to print are the original fitness values, so I'll have to do it myself.
                 MultiObjectiveFitness mof = (MultiObjectiveFitness)individual.fitness;
-                float[] multifitness = mof.multifitness;
+                float[] objectives = mof.getObjectives();
                 String line="";
-                for(int f=0;f<multifitness.length;f++)
-                    line+=multifitness[f]+"\t";
+                for(int f=0;f<objectives.length;f++)
+                    line+=objectives[f]+"\t";
                 state.output.message(line);
                 }               
             }                                       

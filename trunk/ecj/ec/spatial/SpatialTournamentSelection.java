@@ -78,9 +78,9 @@ public class SpatialTournamentSelection extends TournamentSelection
     public static final String P_TYPE = "type";
     public static final String V_UNIFORM = "uniform";
     public static final String V_RANDOM_WALK = "random-walk";
-	public static final int TYPE_UNIFORM = 0;
-	public static final int TYPE_RANDOM_WALK = 1;
-	int type;
+    public static final int TYPE_UNIFORM = 0;
+    public static final int TYPE_RANDOM_WALK = 1;
+    int type;
 
     public void setup(final EvolutionState state, final Parameter base)
         {
@@ -93,13 +93,13 @@ public class SpatialTournamentSelection extends TournamentSelection
             state.output.fatal( "Parameter not found, or its value is < 1.", base.push(P_N_SIZE), defaultBase.push(P_N_SIZE));
 
         if (!state.parameters.exists(base.push(P_TYPE), defaultBase.push(P_TYPE)) ||
-			state.parameters.getString( base.push(P_TYPE), defaultBase.push(P_TYPE)).equals(V_UNIFORM))
-			type = TYPE_UNIFORM;
-		else if (state.parameters.getString( base.push(P_TYPE), defaultBase.push(P_TYPE)).equals(V_RANDOM_WALK))
-			type = TYPE_RANDOM_WALK;
-		else state.output.fatal("Invalid parameter, must be either " + V_RANDOM_WALK + " or " + V_UNIFORM + ".",
-			base.push(P_TYPE), defaultBase.push(P_TYPE));
-		
+            state.parameters.getString( base.push(P_TYPE), defaultBase.push(P_TYPE)).equals(V_UNIFORM))
+            type = TYPE_UNIFORM;
+        else if (state.parameters.getString( base.push(P_TYPE), defaultBase.push(P_TYPE)).equals(V_RANDOM_WALK))
+            type = TYPE_RANDOM_WALK;
+        else state.output.fatal("Invalid parameter, must be either " + V_RANDOM_WALK + " or " + V_UNIFORM + ".",
+            base.push(P_TYPE), defaultBase.push(P_TYPE));
+                
         indCompetes = state.parameters.getBoolean(base.push(P_IND_COMPETES), defaultBase.push(P_IND_COMPETES), false);
         }
 
@@ -111,24 +111,24 @@ public class SpatialTournamentSelection extends TournamentSelection
 
     public int getRandomIndividual(int number, int subpopulation, EvolutionState state, int thread)
         {
-		Subpopulation subpop = state.population.subpops[subpopulation];
-		if (!(subpop instanceof Space))
-			state.output.fatal( "Subpopulation "+subpopulation+" is not a spatially-embedded subpopulation.\n");
-		Space space = (Space)(state.population.subpops[subpopulation]);
-		int index = space.getIndex(thread);
-		
-		if (number==0 && indCompetes) 		// Should we just return the individual?
-			return index;
-		else if (type == TYPE_UNIFORM)		// Should we pick randomly in the space up to the given distance?
-			return space.getIndexRandomNeighbor(state,thread,neighborhoodSize);
-		else // if (type == TYPE_RANDOM_WALK)  // Should we do a random walk?
-			{
-			int oldIndex = index;
-			for(int x=0; x < neighborhoodSize; x++)
-				space.setIndex(thread, space.getIndexRandomNeighbor(state, thread, 1));
-			int val = space.getIndex(thread);
-			space.setIndex(thread,oldIndex);  // just in case we weren't supposed to mess around with that
-			return val;
-			}
+        Subpopulation subpop = state.population.subpops[subpopulation];
+        if (!(subpop instanceof Space))
+            state.output.fatal( "Subpopulation "+subpopulation+" is not a spatially-embedded subpopulation.\n");
+        Space space = (Space)(state.population.subpops[subpopulation]);
+        int index = space.getIndex(thread);
+                
+        if (number==0 && indCompetes)           // Should we just return the individual?
+            return index;
+        else if (type == TYPE_UNIFORM)          // Should we pick randomly in the space up to the given distance?
+            return space.getIndexRandomNeighbor(state,thread,neighborhoodSize);
+        else // if (type == TYPE_RANDOM_WALK)  // Should we do a random walk?
+            {
+            int oldIndex = index;
+            for(int x=0; x < neighborhoodSize; x++)
+                space.setIndex(thread, space.getIndexRandomNeighbor(state, thread, 1));
+            int val = space.getIndex(thread);
+            space.setIndex(thread,oldIndex);  // just in case we weren't supposed to mess around with that
+            return val;
+            }
         }
     }
