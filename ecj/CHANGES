@@ -1640,3 +1640,4 @@ Version		Change Log
 		TournamentSelection facility.  Untested!
 	Likewise for LexicographicTournamentSelection
 	Added README about TeamBots
+	VectorSpecies.setup() now checkes for a null genome size parameter

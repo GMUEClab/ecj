@@ -77,14 +77,14 @@ public class RuleMutationPipeline extends BreedingPipeline
 
             ((RuleIndividual)inds[q]).preprocessIndividual(state,thread);
 
-			/*
-            int len = ((RuleIndividual)inds[q]).rulesets.length;
-            for( int x = 0 ; x < len ; x++ )
-                {
-                ((RuleIndividual)inds[q]).rulesets[x].mutateRules( state, thread );
-                }
-			*/
-			((RuleIndividual)inds[q]).mutate(state, thread);
+            /*
+              int len = ((RuleIndividual)inds[q]).rulesets.length;
+              for( int x = 0 ; x < len ; x++ )
+              {
+              ((RuleIndividual)inds[q]).rulesets[x].mutateRules( state, thread );
+              }
+            */
+            ((RuleIndividual)inds[q]).mutate(state, thread);
             ((RuleIndividual)inds[q]).postprocessIndividual(state,thread);
 
             ((RuleIndividual)inds[q]).evaluated=false;

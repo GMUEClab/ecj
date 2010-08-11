@@ -886,7 +886,7 @@ public class IslandExchange extends Exchanger
         // if synchronous communication, synchronize with the mailbox
         // if( ( state.generation >= offset ) && synchronous &&
         //    ( ( modulo == 0 ) || ( ( ( state.generation - offset ) % modulo ) == 0 ) ) )
-			if (synchronous)
+        if (synchronous)
             {
             state.output.message( "Waiting for synchronization...." );
 
@@ -1722,17 +1722,17 @@ class IslandExchangeServer implements Runnable
             state.output.message( "The communication will be synchronous." );
 
 /*
-            // get the global modulo
-            p = base.push( P_MODULO );
-            global_modulo = state.parameters.getInt( p, null, 1 );
-            if( global_modulo == 0 )
-                state.output.fatal( "Parameter not found, or it has an incorrect value.", p );
+// get the global modulo
+p = base.push( P_MODULO );
+global_modulo = state.parameters.getInt( p, null, 1 );
+if( global_modulo == 0 )
+state.output.fatal( "Parameter not found, or it has an incorrect value.", p );
             
-            // get the global offset
-            p = base.push( P_OFFSET );
-            global_offset = state.parameters.getInt( p, null, 0 );
-            if( global_offset == -1 )
-                state.output.fatal( "Parameter not found, or it has an incorrect value.", p );
+// get the global offset
+p = base.push( P_OFFSET );
+global_offset = state.parameters.getInt( p, null, 0 );
+if( global_offset == -1 )
+state.output.fatal( "Parameter not found, or it has an incorrect value.", p );
 */
             }
         else
@@ -1773,24 +1773,24 @@ class IslandExchangeServer implements Runnable
 
             // if synchronous execution, use the global modulo and offset
             /* if( synchronous )
-                {
-                ieii.modulo = global_modulo;
-                ieii.offset = global_offset;
-                }
-            else
-                {*/
-                // get the modulo of the imigration from the current island
-                p = localBase.push( P_MODULO );
-                ieii.modulo = state.parameters.getInt( p, base.push(P_MODULO), 1 );
-                if( ieii.modulo == 0 )
-                    state.output.fatal( "Parameter not found, or it has an incorrect value.", p , base.push(P_MODULO));
+               {
+               ieii.modulo = global_modulo;
+               ieii.offset = global_offset;
+               }
+               else
+               {*/
+            // get the modulo of the imigration from the current island
+            p = localBase.push( P_MODULO );
+            ieii.modulo = state.parameters.getInt( p, base.push(P_MODULO), 1 );
+            if( ieii.modulo == 0 )
+                state.output.fatal( "Parameter not found, or it has an incorrect value.", p , base.push(P_MODULO));
 
-                // get the offset of the imigration from the current island
-                p = localBase.push( P_OFFSET );
-                ieii.offset = state.parameters.getInt( p, base.push(P_OFFSET), 0 );
-                if( ieii.offset == -1 )
-                    state.output.fatal( "Parameter not found, or it has an incorrect value.", p, base.push(P_OFFSET) );
-           /*     } */
+            // get the offset of the imigration from the current island
+            p = localBase.push( P_OFFSET );
+            ieii.offset = state.parameters.getInt( p, base.push(P_OFFSET), 0 );
+            if( ieii.offset == -1 )
+                state.output.fatal( "Parameter not found, or it has an incorrect value.", p, base.push(P_OFFSET) );
+            /*     } */
 
             // mark as uninitialized
             ieii.port = -1;

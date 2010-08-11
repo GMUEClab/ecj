@@ -51,10 +51,10 @@ import ec.util.*;
 
 public abstract class Fitness implements Prototype
     {
-	/** Auxiliary variable, used by coevolutionary processes, to compute the
-		number of trials used to compute this Fitness value. */
-	public int trials;
-	
+    /** Auxiliary variable, used by coevolutionary processes, to compute the
+        number of trials used to compute this Fitness value. */
+    public int trials;
+        
     /** base parameter for defaults */
     public static final String P_FITNESS = "fitness";
 

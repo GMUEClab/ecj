@@ -14,10 +14,8 @@
 #
 
 JAVAC = javac ${JAVACFLAGS}
-#JAVAC = jikes ${JIKESFLAGS}
 
 JAVACFLAGS = -target 1.4 -source 1.4 ${FLAGS}
-JIKESFLAGS = -target 1.4 +Pno-shadow ${FLAGS}
 FLAGS = -g -Xlint:deprecation
 
 DIRS = \
@@ -61,6 +59,7 @@ ec/gp/*.java \
 ec/gp/breed/*.java \
 ec/gp/build/*.java \
 ec/gp/koza/*.java \
+ec/gp/ge/*.java \
 ec/multiobjective/*.java \
 ec/pso/*.java \
 ec/select/*.java \
@@ -117,7 +116,7 @@ indent:
 	find . -name "*.java" -print -exec emacs --batch --load ~/.emacs --eval='(progn (find-file "{}") (mark-whole-buffer) (setq indent-tabs-mode nil) (untabify (point-min) (point-max)) (indent-region (point-min) (point-max) nil) (save-buffer))' \;
 
 doc:
-	javadoc -classpath . -protected -d docs/classdocs ec ec.breed ec.coevolve ec.de ec.display ec.display.chart ec.display.portrayal ec.es ec.eval ec.evolve ec.exchange ec.gp ec.gp.breed ec.gp.build ec.gp.koza ec.multiobjective ec.multiobjective.spea2 ec.parsimony ec.pso ec.rule ec.rule.breed ec.select ec.simple ec.spatial ec.steadystate ec.util ec.vector ec.vector.breed
+	javadoc -classpath . -protected -d docs/classdocs ec ec.breed ec.coevolve ec.de ec.display ec.display.chart ec.display.portrayal ec.es ec.eval ec.evolve ec.exchange ec.gp ec.gp.breed ec.gp.build ec.gp.koza ec.multiobjective ec.multiobjective.spea2 ec.parsimony ec.pso ec.rule ec.rule.breed ec.select ec.simple ec.spatial ec.steadystate ec.util ec.vector ec.vector.breed ec.gp.ge
 
 
 # Print a help message

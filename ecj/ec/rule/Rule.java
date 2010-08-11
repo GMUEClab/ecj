@@ -104,9 +104,9 @@ public abstract class Rule implements Prototype, Comparable
     /** Unlike the standard form for Java, this function should return true if this
         rule is "genetically identical" to the other rule.  The default calls compareTo() */
     public boolean equals( final Object other )
-		{
-		return compareTo(other) == 0;
-		}
+        {
+        return compareTo(other) == 0;
+        }
 
     /**
        The reset method randomly reinitializes the rule.

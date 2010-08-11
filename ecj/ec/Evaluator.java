@@ -87,7 +87,7 @@ public abstract class Evaluator implements Singleton
         {
         */
         // Am I a master problem and NOT a slave.  Note that the "eval.i-am-slave" parameter
-		// is not set by the user but rather programmatically by the Slave.java class
+        // is not set by the user but rather programmatically by the Slave.java class
         if( state.parameters.exists(base.push(P_MASTERPROBLEM),null) &&  // I am a master (or possibly a slave -- same params)
             !state.parameters.getBoolean(base.push(P_IAMSLAVE),null,false))  // I am NOT a slave
             {

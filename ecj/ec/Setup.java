@@ -31,7 +31,7 @@ import java.io.Serializable;
  * @version 1.0 
  */
 
-public interface Setup extends Serializable
+public strictfp interface Setup extends Serializable
     {
     /** Sets up the object by reading it from the parameters stored
         in <i>state</i>, built off of the parameter base <i>base</i>.

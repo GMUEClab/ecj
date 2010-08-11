@@ -63,26 +63,26 @@ public class Spatial1DSubpopulation extends Subpopulation implements Space
         }
 
     /*
-       1D mapping is identity
+      1D mapping is identity
     */
     /*
-	public int locationToIndex( final Object location )
-        {
-        if( location instanceof Integer )
-            return ((Integer)location).intValue();
-        return -1;
-        }
-	*/
+      public int locationToIndex( final Object location )
+      {
+      if( location instanceof Integer )
+      return ((Integer)location).intValue();
+      return -1;
+      }
+    */
 
     /*
-       1D mapping is identity
+      1D mapping is identity
     */
     /*
-	public Object indexToLocation( final int index)
-        {
-        return new Integer(index);
-        }
-	*/
+      public Object indexToLocation( final int index)
+      {
+      return new Integer(index);
+      }
+    */
 
     public void setIndex( int threadnum, int index )
         {
@@ -124,17 +124,17 @@ public class Spatial1DSubpopulation extends Subpopulation implements Space
             int max = (2*distance+1>size) ? size : (2*distance+1);
             int rand = state.random[threadnum].nextInt(max);
             int val= (index+rand-distance);
-			if (val >= 0 && val < size) return val;
-			val = val % size;
-			if (val >= 0) return val;
-			else return val + size;
+            if (val >= 0 && val < size) return val;
+            val = val % size;
+            if (val >= 0) return val;
+            else return val + size;
             }
         else
             {
             int min = (index-distance<0) ? 0 : (index-distance);
             int max = (index+distance>=size) ? size : (index+distance);
             int val = min + state.random[threadnum].nextInt(max-min+1);
- 			return val;
-           }
+            return val;
+            }
         }
     }

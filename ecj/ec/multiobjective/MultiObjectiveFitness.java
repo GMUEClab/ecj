@@ -40,7 +40,7 @@ import ec.EvolutionState;
  <tr><td valign=top><i>base</i>.<tt>num-objectives</tt><br>
  (else)<tt>multi.num-objectives</tt><br>
  <font size=-1>int &gt;= 1</font></td>
- <td valign=top>(the number of fitnesses in the multifitness array)</td></tr>
+ <td valign=top>(the number of fitnesses in the objectives array)</td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>maximize</tt><br>
  <font size=-1> bool = <tt>true</tt> (default) or <tt>false</tt></font></td>
@@ -74,7 +74,7 @@ public class MultiObjectiveFitness extends Fitness
     public static final String MULTI_FITNESS_POSTAMBLE = "[";
     public static final String FITNESS_POSTAMBLE = "]";
 
-    /** parameter for size of multifitness */
+    /** parameter for size of objectives */
     public static final String P_NUMFITNESSES = "num-objectives"; 
 
     /** parameter for max fitness values */
@@ -93,8 +93,41 @@ public class MultiObjectiveFitness extends Fitness
     public float[] minfitness;
 
     /** The various fitnesses. */
-    public float[] multifitness; // values range from 0 (worst) to 1 INCLUSIVE 
-    public boolean maximize = true;
+    protected float[] objectives; // values range from 0 (worst) to 1 INCLUSIVE 
+    protected boolean maximize = true;
+        
+    public boolean isMaximizing() { return maximize; }
+        
+    /** Returns the fitnesses as an array.  Note that this is the *actual array*.  Though you could
+        set values in this array, you should NOT do this -- rather, set them using setMultifitness(). */
+    public float[] getObjectives() { return objectives; } 
+
+    public float getObjective(int i) { return objectives[i]; }
+
+    public void setObjectives(final EvolutionState state, float[] newObjectives)
+        {
+        if (newObjectives == null)
+            {
+            state.output.fatal("Null objective array provided to MultiObjectiveFitness.");
+            }
+        if (newObjectives.length != objectives.length)
+            {
+            state.output.fatal("New objective array length does not match current length.");
+            }
+        for(int i = 0; i< newObjectives.length; i++)
+            {
+            float _f = newObjectives[i];
+            if (_f == Float.POSITIVE_INFINITY || _f == Float.NEGATIVE_INFINITY || Float.isNaN(_f))
+                {
+                state.output.warning("Bad objective #" + i + ": " + _f + ", setting to worst value for that objective.");
+                if (maximize)
+                    newObjectives[i] = minfitness[i];
+                else
+                    newObjectives[i] = maxfitness[i];
+                }
+            }
+        objectives = newObjectives;
+        }
 
     public Parameter defaultBase()
         {
@@ -104,20 +137,20 @@ public class MultiObjectiveFitness extends Fitness
     public Object clone()
         {
         MultiObjectiveFitness f = (MultiObjectiveFitness)(super.clone());
-        f.multifitness = (float[])(multifitness.clone());  // cloning an array
+        f.objectives = (float[])(objectives.clone());  // cloning an array
 
         // note that we do NOT clone max and min fitness -- they're shared
         return f;
         }
 
-    /** Returns the Max() of multifitnesses, which adheres to Fitness.java's
+    /** Returns the Max() of objectiveses, which adheres to Fitness.java's
         protocol for this method. Though you should not rely on a selection
         or statistics method which requires this.  */
     public float fitness()
         {
-        float fit = multifitness[0];
-        for(int x=1;x<multifitness.length;x++)
-            if (fit < multifitness[x]) fit = multifitness[x];
+        float fit = objectives[0];
+        for(int x=1;x<objectives.length;x++)
+            if (fit < objectives[x]) fit = objectives[x];
         return fit;
         }
 
@@ -139,7 +172,7 @@ public class MultiObjectiveFitness extends Fitness
         maximize = state.parameters.getBoolean(
             base.push(P_MAXIMIZE), def.push(P_MAXIMIZE), true);
 
-        multifitness = new float[numFitnesses];     
+        objectives = new float[numFitnesses];     
         maxfitness = new float[numFitnesses];
         minfitness = new float[numFitnesses];
                 
@@ -181,22 +214,22 @@ public class MultiObjectiveFitness extends Fitness
         boolean bbeatsa = false;
 
         if (maximize != other.maximize) throw new RuntimeException("Attempt made to compare two multiobjective fitnesses; but one expects higher values to be better and the other expectes lower values to be better.");
-        if (multifitness.length != other.multifitness.length) throw new RuntimeException("Attempt made to compare two multiobjective fitnesses; but they have different numbers of objectives.");
+        if (objectives.length != other.objectives.length) throw new RuntimeException("Attempt made to compare two multiobjective fitnesses; but they have different numbers of objectives.");
         if (maximize)
             {
-            for (int x=0;x<multifitness.length; x++)
+            for (int x=0;x<objectives.length; x++)
                 {
-                if (multifitness[x] > other.multifitness[x]) abeatsb = true;
-                if (multifitness[x] < other.multifitness[x]) bbeatsa = true;
+                if (objectives[x] > other.objectives[x]) abeatsb = true;
+                if (objectives[x] < other.objectives[x]) bbeatsa = true;
                 if (abeatsb && bbeatsa) return true;
                 }
             }
         else  // lower is better
             {
-            for (int x=0;x<multifitness.length; x++)
+            for (int x=0;x<objectives.length; x++)
                 {
-                if (multifitness[x] < other.multifitness[x]) abeatsb = true;
-                if (multifitness[x] > other.multifitness[x]) bbeatsa = true;
+                if (objectives[x] < other.objectives[x]) abeatsb = true;
+                if (objectives[x] > other.objectives[x]) bbeatsa = true;
                 if (abeatsb && bbeatsa) return true;
                 }
             }
@@ -213,21 +246,21 @@ public class MultiObjectiveFitness extends Fitness
         MultiObjectiveFitness other = (MultiObjectiveFitness)_fitness;
         boolean abeatsb = false;
         if (maximize != other.maximize) throw new RuntimeException("Attempt made to compare two multiobjective fitnesses; but one expects higher values to be better and the other expectes lower values to be better.");
-        if (multifitness.length != other.multifitness.length) throw new RuntimeException("Attempt made to compare two multiobjective fitnesses; but they have different numbers of objectives.");
+        if (objectives.length != other.objectives.length) throw new RuntimeException("Attempt made to compare two multiobjective fitnesses; but they have different numbers of objectives.");
         if (maximize)
             {
-            for (int x=0;x<multifitness.length;x++)
+            for (int x=0;x<objectives.length;x++)
                 {
-                if (multifitness[x] > other.multifitness[x]) abeatsb = true;
-                if (multifitness[x] < other.multifitness[x]) return false;
+                if (objectives[x] > other.objectives[x]) abeatsb = true;
+                if (objectives[x] < other.objectives[x]) return false;
                 }
             }
         else
             {
-            for (int x=0;x<multifitness.length;x++)
+            for (int x=0;x<objectives.length;x++)
                 {
-                if (multifitness[x] < other.multifitness[x]) abeatsb = true;
-                if (multifitness[x] > other.multifitness[x]) return false;
+                if (objectives[x] < other.objectives[x]) abeatsb = true;
+                if (objectives[x] > other.objectives[x]) return false;
                 }
             }
         return abeatsb;
@@ -238,10 +271,10 @@ public class MultiObjectiveFitness extends Fitness
     public String fitnessToString()
         {
         String s = FITNESS_PREAMBLE + MULTI_FITNESS_POSTAMBLE;
-        for (int x=0;x<multifitness.length;x++)
+        for (int x=0;x<objectives.length;x++)
             {
             if (x>0) s = s + " ";
-            s = s + Code.encode(multifitness[x]);
+            s = s + Code.encode(objectives[x]);
             }
         s = s + " ";
         s = s + Code.encode(maximize);
@@ -252,10 +285,10 @@ public class MultiObjectiveFitness extends Fitness
     public String fitnessToStringForHumans()
         {
         String s = FITNESS_PREAMBLE + MULTI_FITNESS_POSTAMBLE;
-        for (int x=0;x<multifitness.length;x++)
+        for (int x=0;x<objectives.length;x++)
             {
             if (x>0) s = s + " ";
-            s = s + multifitness[x];
+            s = s + objectives[x];
             }
         s = s + " ";
         s = s + (maximize ? "max" : "min");
@@ -267,13 +300,13 @@ public class MultiObjectiveFitness extends Fitness
         throws IOException
         {
         DecodeReturn d = Code.checkPreamble(FITNESS_PREAMBLE + MULTI_FITNESS_POSTAMBLE, state, reader);
-        for(int x=0;x<multifitness.length;x++)
+        for(int x=0;x<objectives.length;x++)
             {
             Code.decode(d);
             if (d.type!=DecodeReturn.T_FLOAT)
                 state.output.fatal("Reading Line " + d.lineNumber + ": " +
-                    "Bad Fitness (multifitness value #" + x + ").");
-            multifitness[x] = (float)d.d;
+                    "Bad Fitness (objectives value #" + x + ").");
+            objectives[x] = (float)d.d;
             }
         Code.decode(d);
         if (d.type!=DecodeReturn.T_BOOLEAN)
@@ -285,9 +318,9 @@ public class MultiObjectiveFitness extends Fitness
     public void writeFitness(final EvolutionState state,
         final DataOutput dataOutput) throws IOException
         {
-        dataOutput.writeInt(multifitness.length);
-        for(int x=0;x<multifitness.length;x++)
-            dataOutput.writeFloat(multifitness[x]);
+        dataOutput.writeInt(objectives.length);
+        for(int x=0;x<objectives.length;x++)
+            dataOutput.writeFloat(objectives[x]);
         dataOutput.writeBoolean(maximize);
         }
 
@@ -295,10 +328,10 @@ public class MultiObjectiveFitness extends Fitness
         final DataInput dataInput) throws IOException
         {
         int len = dataInput.readInt();
-        if (multifitness==null || multifitness.length != len)
-            multifitness = new float[len];
-        for(int x=0;x<multifitness.length;x++)
-            multifitness[x] = dataInput.readFloat();
+        if (objectives==null || objectives.length != len)
+            objectives = new float[len];
+        for(int x=0;x<objectives.length;x++)
+            objectives[x] = dataInput.readFloat();
         maximize = dataInput.readBoolean();
         }
     }

@@ -57,10 +57,10 @@ public class SPEA2MultiObjectiveFitness extends MultiObjectiveFitness
     public float calcDistance(SPEA2MultiObjectiveFitness otherFit)
         {
         float s = 0;
-        for (int i = 0; i < multifitness.length; i++)
+        for (int i = 0; i < objectives.length; i++)
             {
-            s += (multifitness[i] - otherFit.multifitness[i]) *
-                (multifitness[i] - otherFit.multifitness[i]);
+            s += (objectives[i] - otherFit.objectives[i]) *
+                (objectives[i] - otherFit.objectives[i]);
             }
         return s;
         }

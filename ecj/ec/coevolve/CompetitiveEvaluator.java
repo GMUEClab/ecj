@@ -124,11 +124,11 @@ public class CompetitiveEvaluator extends Evaluator
             {
             style = STYLE_N_RANDOM_COMPETITORS_TWOWAY;
             }
-	else if (temp.equalsIgnoreCase( "rand-2-ways" ) )
-     	    {
-	    state.output.fatal("'rand-2-ways' is no longer a valid style name: use 'rand-2-way'",
-		base.push(P_COMPETE_STYLE), null);
-	    }
+        else if (temp.equalsIgnoreCase( "rand-2-ways" ) )
+            {
+            state.output.fatal("'rand-2-ways' is no longer a valid style name: use 'rand-2-way'",
+                base.push(P_COMPETE_STYLE), null);
+            }
         else
             {
             state.output.fatal( "Incorrect value for parameter. Acceptable values: " +
@@ -143,7 +143,7 @@ public class CompetitiveEvaluator extends Evaluator
                 state.output.fatal( "Incorrect value for parameter", base.push( P_GROUP_SIZE ) );
                 }
             }
-		allowOverEvaluation = state.parameters.getBoolean( base.push( P_OVER_EVAL ), null, false );
+        allowOverEvaluation = state.parameters.getBoolean( base.push( P_OVER_EVAL ), null, false );
         }
 
     public boolean runComplete( final EvolutionState state )
@@ -204,13 +204,13 @@ public class CompetitiveEvaluator extends Evaluator
         GroupedProblemForm prob = (GroupedProblemForm)(p_problem.clone());
 
         prob.preprocessPopulation(state,state.population, style == STYLE_SINGLE_ELIMINATION);
-		
+                
         switch(style)
             {
             case STYLE_SINGLE_ELIMINATION:
                 evalSingleElimination( state, state.population.subpops[0].individuals, 0, prob);
                 break;
-           case STYLE_ROUND_ROBIN:
+            case STYLE_ROUND_ROBIN:
                 evalRoundRobin( state, from, numinds, state.population.subpops[0].individuals, 0, prob );
                 break;
             case STYLE_N_RANDOM_COMPETITORS_ONEWAY:
@@ -304,7 +304,7 @@ public class CompetitiveEvaluator extends Evaluator
             
             // gather the threads
             for (int y=0;y<state.evalthreads;y++) 
-				try { t[y].join(); }
+                try { t[y].join(); }
                 catch(InterruptedException e)
                     {
                     state.output.fatal("Whoa! The main evaluation thread got interrupted!  Dying...");
@@ -380,7 +380,7 @@ public class CompetitiveEvaluator extends Evaluator
             
             // gather the threads
             for (int y=0;y<state.evalthreads;y++) 
-				try { t[y].join(); }
+                try { t[y].join(); }
                 catch(InterruptedException e)
                     {
                     state.output.fatal("Whoa! The main evaluation thread got interrupted!  Dying...");
@@ -456,7 +456,7 @@ public class CompetitiveEvaluator extends Evaluator
             
             // gather the threads
             for (int y=0;y<state.evalthreads;y++)
-				try { t[y].join(); }
+                try { t[y].join(); }
                 catch(InterruptedException e)
                     {
                     state.output.fatal("Whoa! The main evaluation thread got interrupted!  Dying...");
