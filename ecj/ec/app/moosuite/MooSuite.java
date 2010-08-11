@@ -35,7 +35,7 @@ import ec.vector.*;
    <p><b>Parameters</b><br>
    <table>
    <tr><td valign=top><i>base</i>.<tt>type</tt><br>
-   <font size=-1>String, one of: zdt-t1, zdt-t2, zdt-t3, zdt-t4, zdt-t6, sphere (aka sch)</font></td>
+   <font size=-1>String, one of: zdt1, zdt2, zdt3, zdt4, zdt6, sphere, sch, fon, qv, pol, kur, f1, f2, unconstrained-f3</font></td>
    <td valign=top>The multi-objective optimization problem to test against. </td></tr>
    
    <tr><td valign=top><i>base</i>.<tt>num-variables</tt><br>
@@ -148,7 +148,7 @@ public class MooSuite extends Problem implements SimpleProblemForm
         double[] genome = temp.genome;
         int numDecisionVars = genome.length;
 
-        float[] fitnesses = ((MultiObjectiveFitness)ind.fitness).multifitness;
+        float[] objectives = ((MultiObjectiveFitness)ind.fitness).getObjectives();
 
         double f, g, h, sum;
                 
@@ -156,87 +156,87 @@ public class MooSuite extends Problem implements SimpleProblemForm
             {
             case PROB_ZDT1:
                 f = genome[0];
-                fitnesses[0] = (float)f;
+                objectives[0] = (float)f;
                 sum = 0;
                 for(int i = 1; i< numDecisionVars; ++i)
                     sum += genome[i];
                 g = 1d+9d*sum/(numDecisionVars-1);
                 h = 1d-Math.sqrt(f/g);
-                fitnesses[1] = (float)(g*h);
+                objectives[1] = (float)(g*h);
                 break;
                 
             case PROB_ZDT2:
                 f = genome[0];
-                fitnesses[0] = (float)f;
+                objectives[0] = (float)f;
                 sum = 0;
                 for(int i = 1; i< numDecisionVars; ++i)
                     sum += genome[i];
                 g = 1d+9d*sum/(numDecisionVars-1);
                 h = 1d-(f/g)*(f/g);
-                fitnesses[1] = (float)(g*h);
+                objectives[1] = (float)(g*h);
                 break;
                         
             case PROB_ZDT3:     
                 f = genome[0];
-                fitnesses[0] = (float)f;
+                objectives[0] = (float)f;
                 sum = 0;
                 for(int i = 1; i< numDecisionVars; ++i)
                     sum += genome[i];
                 g = 1+9*sum/(numDecisionVars-1);
                 double foverg = f/g;
                 h = 1-Math.sqrt(foverg) - foverg * Math.sin(TEN_PI * f);
-                fitnesses[1] = (float)(g*h);
+                objectives[1] = (float)(g*h);
                 break;
             case PROB_ZDT4:
                 f = genome[0];
-                fitnesses[0] = (float)f;
+                objectives[0] = (float)f;
                 sum = 0;
                 for(int i = 1; i< numDecisionVars; ++i)
                     sum += genome[i]*genome[i]- 10*Math.cos(FOUR_PI * genome[i]);
                                 
                 g = 1+10*(numDecisionVars-1)+sum;
                 h = 1-Math.sqrt(f/g);
-                fitnesses[1] = (float)(g*h);
+                objectives[1] = (float)(g*h);
                 break;                
             case PROB_ZDT6:
                 f = 1 - (Math.exp(-4 * genome[0]) * Math.pow(Math.sin(SIX_PI * genome[0]), 6));
-                fitnesses[0] = (float)f;
+                objectives[0] = (float)f;
                 sum = 0;
                 for (int i = 1; i < numDecisionVars; ++i)
                     sum += genome[i];
                 g = 1d + 9 * Math.pow(sum / (numDecisionVars - 1), 0.25);
                 h = 1d - Math.pow(f / g, 2);
-                fitnesses[1] = (float) (g * h);
+                objectives[1] = (float) (g * h);
                 break; 
             case PROB_SPHERE:
-                int numObjectives = fitnesses.length;
+                int numObjectives = objectives.length;
                 for(int j=0; j<numObjectives; ++j)
                     {
                     sum = (genome[j]-1)*(genome[j]-1);
                     for(int i=0; i<numDecisionVars; ++i)
                         if (i!=j)
                             sum += genome[i]*genome[i];
-                    fitnesses[j] = (float)sum;
+                    objectives[j] = (float)sum;
                     }
                 break;
             case PROB_SCH:
                 if(numDecisionVars!=1) throw new RuntimeException("SCH needs exactly 1 decision variable (gene).");
                 double x = genome[0];
-                fitnesses[0]=(float)(x*x);
-                fitnesses[1]=(float)((x-2)*(x-2));
+                objectives[0]=(float)(x*x);
+                objectives[1]=(float)((x-2)*(x-2));
                 break;
             case PROB_F2:
                 if(numDecisionVars!=1) throw new RuntimeException("F2 needs exactly 1 decision variable (gene).");
                 x = genome[0];
-                fitnesses[0]=(float)( x<=1? -x: (x<=3? x-2:(x<=4? 4-x: x-4)));
-                fitnesses[1]=(float)((x-5)*(x-5));
+                objectives[0]=(float)( x<=1? -x: (x<=3? x-2:(x<=4? 4-x: x-4)));
+                objectives[1]=(float)((x-5)*(x-5));
                 break;
             case PROB_F3:
                 if(numDecisionVars!=2) throw new RuntimeException("F3 needs exactly 2 decision variable (gene).");
                 double x1 = genome[0];
                 double x2 = genome[1];
-                fitnesses[0]=(float)((x1-2)*(x1-2)+(x2-1)*(x2-1)+2);
-                fitnesses[1]=(float)(9*x1-(x2-1)*(x2-1));
+                objectives[0]=(float)((x1-2)*(x1-2)+(x2-1)*(x2-1)+2);
+                objectives[1]=(float)(9*x1-(x2-1)*(x2-1));
                 break;
             case PROB_FON:
                 if(numDecisionVars!=3) throw new RuntimeException("FON needs exactly 3 decision variables (genes).");
@@ -249,8 +249,8 @@ public class MooSuite extends Problem implements SimpleProblemForm
                     sum1+=d*d;
                     sum2+=s*s;
                     }
-                fitnesses[0] = (float)Math.exp(-sum1);
-                fitnesses[1] = (float)Math.exp(-sum2);
+                objectives[0] = (float)Math.exp(-sum1);
+                objectives[1] = (float)Math.exp(-sum2);
                 break;
             case PROB_POL:
                 if(numDecisionVars!=2) throw new RuntimeException("POL needs exactly 2 decision variables (genes).");
@@ -258,8 +258,8 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 x2 = genome[1];
                 double b1 = 0.5*Math.sin(x1) - 2*Math.cos(x1) +    Math.sin(x2)- 1.5*Math.cos(x2);
                 double b2 = 1.5*Math.sin(x1) -   Math.cos(x1) + 2* Math.sin(x2)- 0.5*Math.cos(x2);
-                fitnesses[0] = (float)(1+(A1-b1)*(A1-b1)+(A2-b2)*(A2-b2));
-                fitnesses[1] = (float)((x1+3)*(x1+3)+(x2+1)*(x2+1));
+                objectives[0] = (float)(1+(A1-b1)*(A1-b1)+(A2-b2)*(A2-b2));
+                objectives[1] = (float)((x1+3)*(x1+3)+(x2+1)*(x2+1));
                 break;
             case PROB_QV:
                 sum=0;
@@ -268,14 +268,14 @@ public class MooSuite extends Problem implements SimpleProblemForm
                     double xi=genome[i];
                     sum+=xi*xi-10*Math.cos(TWO_PI*xi)+10;
                     }
-                fitnesses[0] = (float)Math.pow(sum/numDecisionVars, 0.25);
+                objectives[0] = (float)Math.pow(sum/numDecisionVars, 0.25);
                 sum=0;
                 for(int i=0;i<numDecisionVars;i++)
                     {
                     double xi=genome[i]-1.5;
                     sum+=xi*xi-10*Math.cos(TWO_PI*xi)+10;
                     }
-                fitnesses[1] = (float)Math.pow(sum/numDecisionVars, 0.25);
+                objectives[1] = (float)Math.pow(sum/numDecisionVars, 0.25);
                 break;
             case PROB_KUR:
                 double nextSquared, thisSquared;
@@ -287,7 +287,7 @@ public class MooSuite extends Problem implements SimpleProblemForm
                     sum += 1d-Math.exp(-0.2*Math.sqrt(thisSquared + nextSquared));
                     thisSquared = nextSquared;
                     }
-                fitnesses[1] = (float)sum;
+                objectives[1] = (float)sum;
                 sum= 0;
                 for(int i = 0; i< numDecisionVars; ++i)
                     {
@@ -298,7 +298,7 @@ public class MooSuite extends Problem implements SimpleProblemForm
                                 
                     sum +=t1+t2+ 3.5828;
                     }
-                fitnesses[0] = (float)sum;
+                objectives[0] = (float)sum;
                 break;
 
             default:
@@ -306,6 +306,7 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 break;
             }
 
+        ((MultiObjectiveFitness)ind.fitness).setObjectives(state, objectives);
         ind.evaluated = true;
         }
     }
