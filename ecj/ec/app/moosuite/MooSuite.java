@@ -245,8 +245,8 @@ public class MooSuite extends Problem implements SimpleProblemForm
                     sum1+=d*d;
                     sum2+=s*s;
                     }
-                objectives[0] = (float)Math.exp(-sum1);
-                objectives[1] = (float)Math.exp(-sum2);
+                objectives[0] = 1 - (float)Math.exp(-sum1);
+                objectives[1] = 1 - (float)Math.exp(-sum2);
                 break;
             case PROB_POL:
                 if(numDecisionVars!=2) throw new RuntimeException("POL needs exactly 2 decision variables (genes).");
