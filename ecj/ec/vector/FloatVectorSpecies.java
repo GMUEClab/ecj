@@ -62,7 +62,7 @@ import ec.util.*;
  * is used, than the standard deviation is scaled to reflect each gene's range. 
  * If the gaussian mutation's standard deviation is too large for the range,
  * than there's a large probability the mutated value will land outside range.
- * We will resample a number of times (100) before giving up and using the 
+ * We will try again a number of times (100) before giving up and using the 
  * previous mutation method.</li>
  * </ul>
  * 
