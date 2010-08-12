@@ -12,59 +12,63 @@ import ec.vector.*;
  */
 
 /**
- * Rand1EitherOrDEBreeder implements the DE/rand/1/either-or Differential Evolution Algorithm,
- * explored recently in the "Differential Evolution: A Practical Approach to Global Optimization"
- * book by Kenneth Price, Rainer Storn, and Jouni Lampinen.
- * The code relies (with permission from the original authors) on the DE algorithms posted at
- * http://www.icsi.berkeley.edu/~storn/code.html .  For more information on
- * Differential Evolution, please refer to the aforementioned webpage and book.
-
- * @author Liviu Panait
- * @version 1.0
+ * Rand1EitherOrDEBreeder is a differential evolution breeding operator.
+ * The code is derived from a DE algorithm, known as DE/rand/1/either-or, 
+ * found on page 141 of
+ * "Differential Evolution: A Practical Approach to Global Optimization"
+ * by Kenneth Price, Rainer Storn, and Jouni Lampinen.
+ *
+ * <p>Rand1EitherOrDEBreeder requires that all individuals be DoubleVectorIndividuals.
+ *
+ * <p>In short, the algorithm is as follows.  For each individual in the population, we produce a child
+ * by selecting three (different) individuals, none the original individual, called r0, r1, and r2.
+ * We then create an individal c, defined either c = r0 + F * (r1 - r2), or as c = r0 + 0.5 * (F+1) * (r1 + r2 - 2 * r0),
+ * depending on a coin flip of probability "PF" (if 'true', the first equation is used, else the second).
+ * Unlike the other DEBreeders in this package, we do *not* cross over the child with the original individual.
+ * In fact, if the crossover probability is specified, Rand1EitherOrDEBreeder will issue a warning that it's
+ * not using it.
+ *
+ * <p>To get the full DE Experience, so to speak, this class should be used in conjunction with 
+ * DEEvaluator, which allows the children to enter the population only if they're superior to their
+ * parents (the original individuals).  If so, they replace their parents.
+ * 
+ * <p><b>Parameters</b><br>
+ * <table>
+ * <tr><td valign=top><i>base.</i><tt>pf</tt><br>
+ * <font size=-1>0.0 &lt;= double &lt;= 1.0 </font></td>
+ * <td valign=top>The "PF" probability of mutation type</td></tr>
+ * </table>
+ *
+ * @author Liviu Panait and Sean Luke
+ * @version 2.0
  */
+
 
 public class Rand1EitherOrDEBreeder extends DEBreeder
     {
-    // Pm is the probability of mutation.
-    public double Pm;
-    // A good default value for K is 0.5 * ( 1 + F )
-    public double F;
-    // F is scale factor
-    public double K;
-    
-    public static final String P_Pm = "Pm";
-    public static final String P_K = "K";
-    public static final String P_F = "F";
-
-    public void setup(final EvolutionState state, final Parameter base) 
+	public double PF = 0.0;
+	
+	public static final String P_PF = "pf";
+	
+	public void setup(final EvolutionState state, final Parameter base) 
         {
         super.setup(state,base);
 
-        Pm = state.parameters.getDouble(base.push(P_Pm),null,0.0);
-        if ( Pm < 0.0 || Pm > 1.0 )
-            state.output.fatal( "Parameter not found, or its value is outside of [0.0,1.0].", base.push(P_Pm), null );
-
-        F = state.parameters.getDouble(base.push(P_F),null,0.0);
-        if ( F < 0.0 || F > 1.0 )
-            state.output.fatal( "Parameter not found, or its value is outside of [0.0,1.0].", base.push(P_F), null );
-
-        if( state.parameters.exists(base.push(P_K)) )
-            {
-            K = state.parameters.getDouble(base.push(P_K),null,0.0);
-            if ( K < 0.0 || K > 1.0 )
-                state.output.fatal( "Parameter has value  outside of [0.0,1.0].", base.push(P_K), null );
-            }
-        else
-            K = 0.5 * ( 1.0 + F ); // default value
-
+        PF = state.parameters.getDouble(base.push(P_PF),null,0.0);
+        if ( PF < 0.0 || PF > 1.0 )
+            state.output.fatal( "Parameter not found, or its value is outside of [0.0,1.0].", base.push(P_PF), null );
+			
+		if (state.parameters.exists(base.push(P_Cr)))
+			state.output.warning("Crossover parameter specified, but Rand1EitherOrDEBreeder does not use crossover.", base.push(P_Cr));
         }
-
+	
     public Individual createIndividual( final EvolutionState state,
         int subpop,
-        Individual[] inds,
         int index,
         int thread )
         {
+		Individual[] inds = state.population.subpops[subpop].individuals;
+
         // select three indexes different from each other and from that of the current parent
         int r0, r1, r2;
         do
@@ -88,27 +92,13 @@ public class Rand1EitherOrDEBreeder extends DEBreeder
         DoubleVectorIndividual g1 = (DoubleVectorIndividual)(inds[r1]);
         DoubleVectorIndividual g2 = (DoubleVectorIndividual)(inds[r2]);
 
-        int dim = v.genome.length;
-        int localIndex = state.random[thread].nextInt(dim);
-        int counter = 0;
+		for(int i = 0; i < v.genome.length; i++)
+			if (state.random[thread].nextBoolean(PF))
+				v.genome[i] = g0.genome[i] + F * (g1.genome[i] - g2.genome[i]);
+			else
+				v.genome[i] = g0.genome[i] + 0.5 * (F+1) * (g1.genome[i] + g2.genome[i] - 2 * g0.genome[i]);
 
-        // create the child
-        do
-            {
-            if( state.random[thread].nextDouble() <= Pm )
-                {
-                v.genome[localIndex] = g0.genome[localIndex] + F * (g1.genome[localIndex] - g2.genome[localIndex]);
-                }
-            else
-                {
-                v.genome[localIndex] = g0.genome[localIndex] + K * (g1.genome[localIndex] + g2.genome[localIndex] - g0.genome[localIndex]);
-                }
-            localIndex = ++localIndex % dim;
-            }
-        while (++counter < dim);
-
-        return v;
-
+		return v;	// no crossover is performed
         }
 
     }

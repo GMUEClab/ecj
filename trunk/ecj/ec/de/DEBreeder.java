@@ -13,33 +13,81 @@ import ec.vector.*;
 
 /**
  * DEBreeder provides a straightforward Differential Evolution (DE) breeder
- * for the ECJ system.  The code relies (with permission from the original
- * authors) on the DE algorithms posted at
- * http://www.icsi.berkeley.edu/~storn/code.html .  For more information on
- * Differential Evolution, please refer to the aforementioned webpage.
-
- * <p>The default breeding code in DEBreeder is a simple adaptive breeder communicated personally
- * by Dr. Kenneth Price.  The algorithm might also be explored in the recent book
+ * for the ECJ system.  The code is derived from the "classic" DE algorithm, known as DE/rand/1/bin, found on page 140 of
  * "Differential Evolution: A Practical Approach to Global Optimization"
  * by Kenneth Price, Rainer Storn, and Jouni Lampinen.
+ *
+ * <p>DEBreeder requires that all individuals be DoubleVectorIndividuals.
+ *
+ * <p>In short, the algorithm is as follows.  For each individual in the population, we produce a child
+ * by selecting three (different) individuals, none the original individual, called r0, r1, and r2.
+ * We then create an individal c, defined as c = r0 + F * (r1 - r2).  Last, we cross over c with the
+ * original individual and produce a single child, using uniform crossover with gene-independent 
+ * crossover probability "Cr".
+ *
+ * <p>To get the full DE Experience, so to speak, this class should be used in conjunction with 
+ * DEEvaluator, which allows the children to enter the population only if they're superior to their
+ * parents (the original individuals).  If so, they replace their parents.
  * 
- * @author Liviu Panait
- * @version 1.0
+ * <p><b>Parameters</b><br>
+ * <table>
+ * <tr><td valign=top><i>base.</i><tt>f</tt><br>
+ * <font size=-1>0.0 &lt;= double &lt;= 1.0 </font></td>
+ * <td valign=top>The "F" mutation scaling factor</td></tr>
+ *
+ * <tr><td valign=top><i>base.</i><tt>cr</tt><br>
+ * <font size=-1>0.0 &lt;= double &lt;= 1.0 </font></td>
+ * <td valign=top>The "Cr" probability of crossing over genes</td></tr>
+ * </table>
+ *
+ * @author Liviu Panait and Sean Luke
+ * @version 2.0
  */
 
 public class DEBreeder extends Breeder
     {
-    // the previous population is stored in order to have parents compete directly with their children
+	public static final double CR_UNSPECIFIED = -1;
+
+	/** Scaling factor for mutation */
+	public double F = 0.0;
+	/** Probability of crossover per gene */
+	public double Cr = CR_UNSPECIFIED;
+	
+	public static final String P_F = "f";
+	public static final String P_Cr = "cr";
+	
+    /** the previous population is stored in order to have parents compete directly with their children */
     public Population previousPopulation = null;
 
-    public void setup(final EvolutionState state, final Parameter base) 
+    /** the best individuals in each population (required by some DE breeders).  It's not required by DEBreeder's algorithm */
+    public int[] bestSoFarIndex = null;
+
+	public void setup(final EvolutionState state, final Parameter base) 
         {
-        // there is nothing to set up by default
+        Cr = state.parameters.getDouble(base.push(P_Cr),null,0.0);
+        if ( Cr < 0.0 || Cr > 1.0 )
+            state.output.fatal( "Parameter not found, or its value is outside of [0.0,1.0].", base.push(P_Cr), null );
+
+        F = state.parameters.getDouble(base.push(P_F),null,0.0);
+        if ( F < 0.0 || F > 1.0 )
+            state.output.fatal( "Parameter not found, or its value is outside of [0.0,1.0].", base.push(P_F), null );
         }
 
-    // this function is called just before chldren are to be bred
+	// this function is called just before chldren are to be bred
     public void prepareDEBreeder(EvolutionState state)
         {
+        // update the bestSoFar for each population
+        if( bestSoFarIndex == null || state.population.subpops.length != bestSoFarIndex.length )
+            bestSoFarIndex = new int[state.population.subpops.length];
+
+        for( int subpop = 0 ; subpop < state.population.subpops.length ; subpop++ )
+            {
+            Individual[] inds = state.population.subpops[subpop].individuals;
+			bestSoFarIndex[subpop] = 0;
+            for( int j = 1 ; j < inds.length ; j++ )
+                if( inds[j].fitness.betterThan(inds[bestSoFarIndex[subpop]].fitness) )
+                    bestSoFarIndex[subpop] = j;
+            }
         }
 
     public Population breedPopulation(EvolutionState state)
@@ -76,7 +124,7 @@ public class DEBreeder extends Breeder
             Individual[] inds = newpop.subpops[subpop].individuals;
             for( int i = 0 ; i < inds.length ; i++ )
                 {
-                newpop.subpops[subpop].individuals[i] = createIndividual( state, subpop, inds, i, 0);  // unthreaded for now
+                newpop.subpops[subpop].individuals[i] = createIndividual( state, subpop, i, 0);  // unthreaded for now
                 }
             }
 
@@ -85,22 +133,12 @@ public class DEBreeder extends Breeder
         return newpop;
         }
 
-    public static final double SCALE_F = 1.9;
-    
     public Individual createIndividual( final EvolutionState state,
         int subpop,
-        Individual[] inds,
         int index,
         int thread)
         {
-        // default value for mutation probability Pm
-        double Pm = 1.0 / inds.length;
-
-        // default value for scaling factor F
-        double F = state.random[thread].nextBoolean() ? 1.0 : ( SCALE_F / Math.sqrt(inds.length) );
-
-        // K is random value distributed N(0,1)
-        double K = state.random[thread].nextGaussian();
+		Individual[] inds = state.population.subpops[subpop].individuals;
 
         // select three indexes different from each other and from that of the current parent
         int r0, r1, r2;
@@ -125,27 +163,38 @@ public class DEBreeder extends Breeder
         DoubleVectorIndividual g1 = (DoubleVectorIndividual)(inds[r1]);
         DoubleVectorIndividual g2 = (DoubleVectorIndividual)(inds[r2]);
 
-        int dim = v.genome.length;
-        int localIndex = state.random[thread].nextInt(dim);
-        int counter = 0;
+		for(int i = 0; i < v.genome.length; i++)
+			v.genome[i] = g0.genome[i] + F * (g1.genome[i] - g2.genome[i]);
 
-        // create the child
-        do
-            {
-            if( state.random[thread].nextDouble() <= Pm )
-                {
-                v.genome[localIndex] = v.genome[localIndex] + F * (g1.genome[localIndex] - g2.genome[localIndex]);
-                }
-            else
-                {
-                v.genome[localIndex] = v.genome[localIndex] + K * (g0.genome[localIndex] - v.genome[localIndex]);
-                }
-            localIndex = (localIndex+1) % dim;
-            }
-        while (++counter < dim);
-
-        return v;
+		return crossover(state, (DoubleVectorIndividual)(inds[index]), v, thread);
         }
 
 
+	/** Crosses over child with target, storing the result in child and returning it.  The default
+		procedure copies each value from the target, with independent probability CROSSOVER, into
+		the child.  The crossover guarantees that at least one child value, chosen at random, will
+		not be overwritten.  Override this method to perform some other kind of crossover. */
+		
+	public DoubleVectorIndividual crossover(EvolutionState state, DoubleVectorIndividual target, DoubleVectorIndividual child, int thread)
+		{
+		if (Cr == CR_UNSPECIFIED)
+			state.output.warnOnce("Differential Evolution Parameter cr unspecified.  Assuming cr = 0.5");
+			
+		// first, hold one value in abeyance
+		int index = state.random[thread].nextInt(child.genome.length);
+		double val = child.genome[index];
+		
+		// do the crossover
+		for(int i = 0; i < child.genome.length; i++)
+			{
+			if (state.random[thread].nextDouble() < Cr)
+				child.genome[i] = target.genome[i];
+			}
+		
+		// reset the one value so it's not just a duplicate copy
+		child.genome[index] = val;
+	
+		return child;
+		}
+			
     }
