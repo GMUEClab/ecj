@@ -1,15 +1,10 @@
 This package implements various Differential Evolution algorithms from
 "Differential Evolution: A Practical Approach to Global Optimization"
-by Kenneth Price, Rainer Storn, and Jouni Lampinen.  Much of the algorithms
-were taken, with permission from the Differential Evolution website 
-http://www.icsi.berkeley.edu/~storn/code.html
+by Kenneth Price, Rainer Storn, and Jouni Lampinen.  
 
 ECJ's implementation of Differential Evolution requires that the
-user specify one of several Breeders, and also that the user include
-a special Statistics object in the Statistics chain.  This Statistics
-object must be the *first* such object in the chain -- other Statistics
-objects must hang off of it.  In the future we may change from using Breeders
-to using BreedingPipelines with a single breeder.
+user specify one of several Breeders, and also that you (optionally but
+highly suggested) use a specific Evaluator.
 
 The Breeder options implement various Differential Evolution Algorithms.
 Options include:
@@ -17,15 +12,10 @@ Options include:
 breed = 	ec.de.DEBreeder
 breed = 	ec.de.Best1BinDEBreeder
 breed = 	ec.de.Rand1EitherOrDEBreeder
-breed = 	ec.de.Rand1ExpDEBreeder
 
-The Statistics object is ec.de.DEStatistics.  To use it in conjunction 
-with ec.simple.SimpleStatistics, for example, we do:
+The Evaluator is ec.de.DEEvaluator:
 
-stat =                                  ec.de.DEStatistics
-stat.num-children =                     1
-stat.child.0 =                          ec.simple.SimpleStatistics
-stat.child.0.file =                     $out.stat
+eval =          ec.de.DEEvaluator
 
 The ec/app/ecsuite/de.params file contains an example.
 
@@ -37,9 +27,17 @@ ECJ implements Differential Evolution by largely by replacing the Breeder.
 The various DE breeders work like this: for each individual i in the 
 population, construct a new individual using a function called 
 createIndividual(..., i, ...).  Then replace the entire population with the
-newly constructed individuals.
+newly constructed individuals only if they are superior to the parents
+from which they were derived.  The "only if" part is implemented by DEEvaluator,
+and if you don't use it, the children will directly replace their parents.
 
 In DE, all individuals are DoubleVectorIndividuals.
+
+DEBreeder has an additional method called crossover(...) which crosses the
+original parent into the child.  Some operators use this method, others
+do not.  You can override the method to perform your own custom kind of crossover;
+the default does a uniform crossover, while guaranteeing that at least one
+gene (chosen at random) from the child will be preserved.
 
 The different breeders differ largely based on how 
 createIndividual(..., i, ...) is implemented.  In all versions,
@@ -47,59 +45,47 @@ createIndividual(..., i, ...) begins by choosing three random individuals
 r0, r1, and r2 which are different from one another and from i.  Let j
 be the new individual.
 
+There are four parameters which may affect the operation below:
+
+F:          scaling factor for mutating individuals
+CR:         the probability, per-gene, of crossing over
+F_NOISE:    Bounds on random noise added to F
+PF:         Probability of picking one of two subalgorithms for mutation
 
 
 The default version, implemented by
 
 	ec.de.DEBreeder
 
-... creates a new individual as follows.  Let Pm be 1 / populationSize, 
-F be (with 1/2 probability) either 1 or 1.9 / Sqrt(populationSize), and
-K be a random gaussian value.  For each gene g in j,
+... creates a new individual as follows.
 
-With Pm probability,  	j[g] <-- i[g] + F * (r1[g] - r2[g])
-Else			j[g] <-- i[g] + K * (r0[g] - i[g])
+j[g] <-- r0[g] + F * (r1[g] - r2[g])
 
-This particular algorithm was communicated personally by Kenneth Price,
-though we probably got it wrong!  :-)
+This is the "classic" DE algorithm
 
 
+The next version, implemented by
 
-The next version is implemented by
+        ec.de.Best1BinDEBreeder
 
-	ec.de.Rand1ExpDEBreeder
+... works like this.  We first determine the best individual in the
+population.  Then we say:
 
-Let Cr and F be constants (Suggestions: F could equal 0.8).  We pick a 
-random starting gene in j, and continue upwards, wrapping around as needed
-(j+1, j+2, ..., 0, 1, ...) until we've done all of them OR a coin flip of 
-probability Cr comes up heads.  Genes are updated as:
-
-	j[g] <-- r0[g] + F * (r1[g] - r2[g])
+j[g] <-- best[g] + (F + random(-F_NOISE / 2, F_NOISE / 2)) * (r1[g] - r2[g])
 
 
-
-An additional version, implemented by
+The final version, implemented by
 
 	ec.de.Rand1EitherOrDEBreeder	`  
 
-... works like this.  Let Pm, F, and K be constants (the default value
-for K is 0.5 * (1 + F) ).  For each gene g we do the following:
+... works like this.  First we flip a coin of probability PF.  If it comes
+up 'true', then we generate the individual as the classic form:
 
-With Pm probability,	j[g] <-- r0[g] + F * (r1[g] - r2[g])
-Else			j[g] <-- r0[g] + K * (r1[g] + r2[g] - r0[g])
+j[g] <-- r0[g] + F * (r1[g] - r2[g])
 
+... else we generate the individual as:
 
-
-A final version, implemented by 
-
-	ec.de.Best1BinDEBreeder
-
-... is a variation of Rand1ExpDEBreeder, which changes only an interval of
-genes just like Rand1ExpDEBreeder does.  Those genes are updated as:
-
-	j[g] <- best[g] + F * (r0[g] - r1[g])
-
-... where 'best' is the best-so-far individual of the run. 
+j[g] <-- r0[g] + 0.5 * (F + 1) * (r1[g] + r2[g] - 2 * r0[g])
 
 
 Don't like any of these?  It should be fairly straightforward to copy an

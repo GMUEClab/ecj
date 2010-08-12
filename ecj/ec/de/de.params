@@ -1,0 +1,27 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../simple/simple.params
+
+eval = ec.de.DEEvaluator
+breed = ec.de.DEBreeder
+# Other breed choices: ec.de.Best1BinDEBreeder, ec.de.Rand1EitherOrDEBreeder
+
+# DE has certain parameters you must set.  Note that these parameters
+# are fairly sensitive to the problem at hand.
+
+# Scaling factor for mutation, used by all breeders:
+breed.f = 0.1
+
+# Gene-independent probability of crossover, used only by
+# DEBreeder and Best1BinDEBreeder
+breed.cr = 0.5
+
+# Scaling factor for noise on F, used only by Best1BinDEBreeder
+breed.f-noise = 0.001
+
+# Probability of picking the "classic" algorithm versus the alternate, 
+# only ud by Rand1EitherOrDEBreeder
+breed.pf = 0.5
+
