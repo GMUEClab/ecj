@@ -1647,3 +1647,15 @@ Version		Change Log
 		Furthermore, various ERC methods no longer call ERC_PREFIX+name()
 		but instead just call name()
 	GPFunctionSet.nodesByName added, and hashes all nodes by name().
+	Heavy revision of the Differential Evoluion system.  DEStatistics is gone,
+		replaced with DEEvaluator.  Rand1ExpBreeder is gone.  The three
+		remaining breeders (DEBreeder, Best1BinDEBreeder, Rand1EitherOrDEBreeder)
+		have had their algorithms entirely revised with new parameters.  A
+		de.params file has been added and the README file has been revised to
+		help you out.  We cannot guarantee that the revisions didn't introduce
+		bugs: but they appear to be working better than the versions before.
+		The new algorithms are based on the Differential Evolution book and not
+		on the authors' website, which has very different algorithms under the
+		same names.
+	Fix to FloatVectorSpecies: it now checks to see if the genome length was defined
+	All examples in ecsuite now run for 1000 generations

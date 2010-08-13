@@ -3,3 +3,4 @@ parent.1 =				ecsuite.params
 
 # See ../../de/de.params for various options.
 
+generations = 1000
