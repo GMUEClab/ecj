@@ -4,3 +4,7 @@
 
 parent.0 = ../../steadystate/steadystate.params
 parent.1 = ecsuite.params
+
+# We're doing this in terms of evaluations, but we could have done it by generations of course
+evaluations = 1000000
+# generations = 1000

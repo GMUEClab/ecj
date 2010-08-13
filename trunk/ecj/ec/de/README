@@ -91,4 +91,6 @@ j[g] <-- r0[g] + 0.5 * (F + 1) * (r1[g] + r2[g] - 2 * r0[g])
 Don't like any of these?  It should be fairly straightforward to copy an
 existing one and modify it.   
 
-
+Note that DEBreeder is a subclass of Breeder and does NOT implement
+multithreaded breeding: but DEEvaluator, as a subclass of SimpleEvaluator,
+DOES implement multithreaded evaluation.

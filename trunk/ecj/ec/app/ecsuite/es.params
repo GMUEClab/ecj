@@ -10,3 +10,5 @@ parent.1 = ecsuite.params
 # which we do below.
 
 pop.subpop.0.species.pipe.source.0 = ec.es.ESSelection
+
+generations = 1000

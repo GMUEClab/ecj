@@ -92,23 +92,10 @@ public class DEBreeder extends Breeder
 
     public Population breedPopulation(EvolutionState state)
         {
-        // keep the better of the previous population and the current one, if there is a previous population.
-        // in case this function has been performed by DEStatistics, this code is skipped
-        if( previousPopulation != null )
-            {
-            if( previousPopulation.subpops.length != state.population.subpops.length )
-                state.output.fatal( "The current population should have the same number of subpopulations as the previous population." );
-            for( int i = 0 ; i < previousPopulation.subpops.length ; i++ )
-                {
-                if( state.population.subpops[i].individuals.length != previousPopulation.subpops[i].individuals.length )
-                    state.output.fatal( "Subpopulation " + i + " should have the same number of individuals in all generations." );
-                for( int j = 0 ; j < state.population.subpops[i].individuals.length ; j++ )
-                    if( previousPopulation.subpops[i].individuals[j].fitness.betterThan( state.population.subpops[i].individuals[j].fitness ) )
-                        state.population.subpops[i].individuals[j] = previousPopulation.subpops[i].individuals[j];
-                }
-            previousPopulation = null;
-            }
-
+		// double check that we're using DEEvaluator
+		if (!(state.evaluator instanceof DEEvaluator))
+			state.output.warnOnce("DEEvaluator not used, but DEBreeder used.  This is almost certainly wrong.");
+		
         // prepare the breeder (some global statistics might need to be computed here)
         prepareDEBreeder(state);
 
