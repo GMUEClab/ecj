@@ -25,7 +25,7 @@ import ec.vector.*;
  * original individual and produce a single child, using uniform crossover with gene-independent 
  * crossover probability "Cr".
  *
- * <p>To get the full DE Experience, so to speak, this class should be used in conjunction with 
+ * <p>This class should be used in conjunction with 
  * DEEvaluator, which allows the children to enter the population only if they're superior to their
  * parents (the original individuals).  If so, they replace their parents.
  * 
@@ -64,10 +64,15 @@ public class DEBreeder extends Breeder
 
 	public void setup(final EvolutionState state, final Parameter base) 
         {
-        Cr = state.parameters.getDouble(base.push(P_Cr),null,0.0);
-        if ( Cr < 0.0 || Cr > 1.0 )
-            state.output.fatal( "Parameter not found, or its value is outside of [0.0,1.0].", base.push(P_Cr), null );
-
+		if (!state.parameters.exists(base.push(P_Cr), null))  // it wasn't specified -- hope we know what we're doing
+			Cr = CR_UNSPECIFIED;
+		else
+			{
+			Cr = state.parameters.getDouble(base.push(P_Cr),null,0.0);
+			if ( Cr < 0.0 || Cr > 1.0 )
+				state.output.fatal( "Parameter not found, or its value is outside of [0.0,1.0].", base.push(P_Cr), null );
+			}
+			
         F = state.parameters.getDouble(base.push(P_F),null,0.0);
         if ( F < 0.0 || F > 1.0 )
             state.output.fatal( "Parameter not found, or its value is outside of [0.0,1.0].", base.push(P_F), null );
@@ -120,7 +125,7 @@ public class DEBreeder extends Breeder
         return newpop;
         }
 
-    public Individual createIndividual( final EvolutionState state,
+    public DoubleVectorIndividual createIndividual(EvolutionState state,
         int subpop,
         int index,
         int thread)

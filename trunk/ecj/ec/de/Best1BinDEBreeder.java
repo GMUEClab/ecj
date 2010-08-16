@@ -24,12 +24,12 @@ import ec.vector.*;
  * by first selecting the best individual in the population, which we call r0.  We then
  * select two more (different) individuals, none the original individual nor r0, called r1 and r2.
  * We then create an individal c, defined as c = r0 + FJitter() * (r1 - r2), where FJitter() is
- * a per-gene independent random number defined as F_NOISE * (random(0,1) - 0.5).  A common value for
+ * a per-gene independent random number defined as F + F_NOISE * (random(0,1) - 0.5).  A common value for
  * F_NOISE is 0.001.  Last, we cross over c with the
  * original individual and produce a single child, using uniform crossover with gene-independent 
  * crossover probability "Cr".
  *
- * <p>To get the full DE Experience, so to speak, this class should be used in conjunction with 
+ * <p>This class should be used in conjunction with 
  * DEEvaluator, which allows the children to enter the population only if they're superior to their
  * parents (the original individuals).  If so, they replace their parents.
  * 
@@ -62,7 +62,7 @@ public class Best1BinDEBreeder extends DEBreeder
         }
 	
 
-    public Individual createIndividual( final EvolutionState state,
+    public DoubleVectorIndividual createIndividual( final EvolutionState state,
         int subpop,
         int index,
         int thread)
