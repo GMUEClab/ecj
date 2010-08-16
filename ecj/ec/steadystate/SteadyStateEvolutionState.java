@@ -158,8 +158,12 @@ public class SteadyStateEvolutionState extends EvolutionState
     public int evolve()
         {
         if (generationBoundary && generation > 0)
+			{
             output.message("Generation " + generation +"\tEvaluations " + evaluations);
-                
+            statistics.generationBoundaryStatistics(this); 
+            statistics.postEvaluationStatistics(this); 
+			}
+		
         if (firstTime) 
             {
             if (statistics instanceof SteadyStateStatisticsForm)
@@ -169,15 +173,6 @@ public class SteadyStateEvolutionState extends EvolutionState
             ((SteadyStateEvaluator)evaluator).prepareToEvaluate(this, 0); // unthreaded 
             firstTime=false; 
             } 
-                
-        // CHECKPOINTING
-        if (checkpoint && generation%checkpointModulo == 0) 
-            {
-            output.message("Checkpointing");
-            statistics.preCheckpointStatistics(this);
-            Checkpoint.setCheckpoint(this);
-            statistics.postCheckpointStatistics(this);
-            }
                 
         whichSubpop = (whichSubpop+1)%population.subpops.length;  // round robin selection
                 
@@ -292,12 +287,15 @@ public class SteadyStateEvolutionState extends EvolutionState
             population = exchanger.postBreedingExchangePopulation(this);
             statistics.postPostBreedingExchangeStatistics(this);
                         
-            // INCREMENT GENERATION 
+        // INCREMENT GENERATION AND CHECKPOINT
             generation++;
-                        
-            // STATISTICS 
-            statistics.generationBoundaryStatistics(this); 
-            statistics.postEvaluationStatistics(this); 
+			if (checkpoint && generation%checkpointModulo == 0) 
+				{
+				output.message("Checkpointing");
+				statistics.preCheckpointStatistics(this);
+				Checkpoint.setCheckpoint(this);
+				statistics.postCheckpointStatistics(this);
+				}
             }
         return R_NOTDONE;
         }

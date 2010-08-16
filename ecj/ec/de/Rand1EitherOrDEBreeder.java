@@ -28,7 +28,7 @@ import ec.vector.*;
  * In fact, if the crossover probability is specified, Rand1EitherOrDEBreeder will issue a warning that it's
  * not using it.
  *
- * <p>To get the full DE Experience, so to speak, this class should be used in conjunction with 
+ * <p>This class should be used in conjunction with 
  * DEEvaluator, which allows the children to enter the population only if they're superior to their
  * parents (the original individuals).  If so, they replace their parents.
  * 
@@ -62,7 +62,7 @@ public class Rand1EitherOrDEBreeder extends DEBreeder
 			state.output.warning("Crossover parameter specified, but Rand1EitherOrDEBreeder does not use crossover.", base.push(P_Cr));
         }
 	
-    public Individual createIndividual( final EvolutionState state,
+    public DoubleVectorIndividual createIndividual( final EvolutionState state,
         int subpop,
         int index,
         int thread )
