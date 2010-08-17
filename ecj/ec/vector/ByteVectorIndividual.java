@@ -309,7 +309,7 @@ public class ByteVectorIndividual extends VectorIndividual
         { return genome; }
     public void setGenome(Object gen)
         { genome = (byte[]) gen; }
-    public long genomeLength()
+    public int genomeLength()
         { return genome.length; }
 
     public void writeGenotype(final EvolutionState state,
@@ -351,7 +351,7 @@ public class ByteVectorIndividual extends VectorIndividual
     public void setGenomeLength(int len)
         {
         byte[] newGenome = new byte[len];
-        System.arraycopy(genome, 0, newGenome, len, 
+        System.arraycopy(genome, 0, newGenome, 0, 
             genome.length < newGenome.length ? genome.length : newGenome.length);
         genome = newGenome;
         }

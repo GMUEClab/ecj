@@ -1,0 +1,8 @@
+parent.0 = ../../gp/ge/ge.params
+parent.1 = ant.params
+
+ge.species.file = ant.grammar
+eval.problem.problem = ec.app.ant.Ant
+eval.problem.problem.data = ec.app.ant.AntData
+eval.problem.problem.moves = 400
+eval.problem.problem.file = santafe.trl

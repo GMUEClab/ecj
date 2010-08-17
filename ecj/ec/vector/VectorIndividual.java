@@ -114,7 +114,7 @@ public abstract class VectorIndividual extends Individual
     public void setGenome(Object gen) { }
 
     /** Returns the length of the gene array.  By default, this method returns 0. */
-    public long genomeLength() { return 0; }
+    public int genomeLength() { return 0; }
 
     /** Initializes the individual to a new size.  Only use this if you need to initialize variable-length individuals. */
     public void reset(EvolutionState state, int thread, int newSize)
@@ -138,6 +138,11 @@ public abstract class VectorIndividual extends Individual
         It should be trivial to implement it
         for your genome -- just like at the other implementations.  */
     public void join(Object[] pieces) { }
+
+    /** Clones the genes in pieces, and replaces the genes with their copies.  Does NOT copy the array, but modifies it in place.
+		If the VectorIndividual holds numbers or booleans etc. instead of genes, nothing is cloned
+		(why bother?). */
+    public void cloneGenes(Object piece) { }  // default does nothing.
     
     public long size() { return genomeLength(); }
     }

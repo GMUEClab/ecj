@@ -1,0 +1,61 @@
+parent.0 = ../koza/koza.params
+
+# Specify the problem
+eval.problem = ec.gp.ge.GEProblem
+
+seed.0 = time
+
+pop.subpop.0.species =                  ec.gp.ge.GESpecies
+
+
+
+pop.subpop.0.species.min-gene = -128
+pop.subpop.0.species.max-gene = 127
+pop.subpop.0.species.mutation-prob = 0.1
+pop.subpop.0.species.crossover-type = one
+pop.subpop.0.species.genome-size = geometric
+pop.subpop.0.species.min-initial-size = 5
+pop.subpop.0.species.geometric-prob = 0.85
+
+pop.subpop.0.species.ind =		ec.gp.ge.GEIndividual
+pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
+pop.subpop.0.species.pipe = ec.breed.MultiBreedingPipeline
+pop.subpop.0.species.pipe.num-sources = 5
+
+pop.subpop.0.species.pipe.source.0 = ec.vector.breed.ListCrossoverPipeline
+pop.subpop.0.species.pipe.source.3 = ec.vector.breed.ListCrossoverPipeline
+pop.subpop.0.species.pipe.source.3.source.0 = ec.gp.ge.breed.GETruncationPipeline
+pop.subpop.0.species.pipe.source.3.source.1 = same
+pop.subpop.0.species.pipe.source.3.source.0.source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.1 = ec.vector.breed.GeneDuplicationPipeline
+pop.subpop.0.species.pipe.source.2 = ec.gp.ge.breed.GETruncationPipeline
+pop.subpop.0.species.pipe.source.0.prob = 0.985
+pop.subpop.0.species.pipe.source.1.prob = 0
+pop.subpop.0.species.pipe.source.2.prob = 0
+pop.subpop.0.species.pipe.source.3.prob = 0.005
+pop.subpop.0.species.pipe.source.4 = ec.vector.breed.GeneDuplicationPipeline
+pop.subpop.0.species.pipe.source.4.source.0 = ec.gp.ge.breed.GETruncationPipeline
+pop.subpop.0.species.pipe.source.4.source.0.source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.4.prob = 0.01
+
+pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.1.source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.2.source.0 = ec.select.TournamentSelection
+
+#breed.elite.0 = 3
+
+pop.subpop.0.species.pipe.source.0.source.1 = ec.select.TournamentSelection
+select.tournament.size = 7
+# Build the dummy GP Individual information
+
+pop.subpop.0.species.gp-species =	ec.gp.GPSpecies
+pop.subpop.0.species.gp-species.fitness = ec.gp.koza.KozaFitness
+pop.subpop.0.species.gp-species.ind = 	ec.gp.GPIndividual
+pop.subpop.0.species.gp-species.ind.numtrees =     1
+pop.subpop.0.species.gp-species.ind.tree.0 =       ec.gp.GPTree
+pop.subpop.0.species.gp-species.ind.tree.0.tc = tc0
+# We'll never use this, so let's set it to Reproduction, which is simple
+pop.subpop.0.species.gp-species.pipe = ec.breed.ReproductionPipeline
+pop.subpop.0.species.gp-species.pipe.num-sources = 1
+pop.subpop.0.species.gp-species.pipe.source.0 = ec.select.TournamentSelection
+

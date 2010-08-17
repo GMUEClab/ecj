@@ -279,9 +279,19 @@ public class GeneVectorIndividual extends VectorIndividual
         { return genome; }
     public void setGenome(Object gen)
         { genome = (VectorGene[]) gen; }
-    public long genomeLength()
+    public int genomeLength()
         { return genome.length; }
 
+	// clone all the genes
+    public void cloneGenes(Object piece)
+		{
+		VectorGene[] genes = (VectorGene[]) piece;
+		for(int i = 0 ; i < genes.length; i++)
+			{
+			if (genes[i] != null) genes[i] = (VectorGene)(genes[i].clone());
+			}
+		}
+    
     public void writeGenotype(final EvolutionState state,
         final DataOutput dataOutput) throws IOException
         {
@@ -294,7 +304,7 @@ public class GeneVectorIndividual extends VectorIndividual
         {
         GeneVectorSpecies s = (GeneVectorSpecies) species;
         VectorGene[] newGenome = new VectorGene[len];
-        System.arraycopy(genome, 0, newGenome, len, 
+        System.arraycopy(genome, 0, newGenome, 0, 
             genome.length < newGenome.length ? genome.length : newGenome.length);
         for(int x=genome.length; x< newGenome.length; x++)
             if (genome[x]==null) genome[x] = (VectorGene)(s.genePrototype.clone());  // not reset

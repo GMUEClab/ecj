@@ -161,12 +161,15 @@ public class VectorSpecies extends Species
     public int chunksize;
     /** How far along the long a child can be located for line or intermediate recombination */
     public double lineDistance;
+	/** Was the initial size determined dynamically? */
+	public boolean dynamicInitialSize = false;
 
+	// we use warned here because it's quite a bit faster than calling warnOnce
     protected boolean warned = false;
     EvolutionState state;
     protected void warnAboutGene(int gene)
         {
-        state.output.warning("Attempt to access maxGene or minGene from IntegerVectorSpecies beyond initial genomeSize.\n" +
+        state.output.warnOnce("Attempt to access maxGene or minGene from IntegerVectorSpecies beyond initial genomeSize.\n" +
             "From now on, maxGene(a) = maxGene(maxGeneIndex) for a >= maxGeneIndex.  Likewise for minGene(...)");
         warned = true;
         }
@@ -192,6 +195,7 @@ public class VectorSpecies extends Species
 			}
 		else if (genomeSizeForm.equals(V_GEOMETRIC))
             {
+			dynamicInitialSize = true;
             genomeSize = 1;
             genomeResizeAlgorithm = C_GEOMETRIC;
             chunksize = state.parameters.getIntWithDefault(base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE),1);
@@ -211,6 +215,7 @@ public class VectorSpecies extends Species
             }
         else if (genomeSizeForm.equals(V_UNIFORM))
             {
+			dynamicInitialSize = true;
             genomeSize = 1;
             genomeResizeAlgorithm = C_UNIFORM;
             chunksize = state.parameters.getIntWithDefault(base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE),1);
