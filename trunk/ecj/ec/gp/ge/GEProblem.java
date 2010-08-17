@@ -143,7 +143,7 @@ public class GEProblem extends Problem implements SimpleProblemForm, GroupedProb
         GPIndividual gpi = species.map(state, indiv, threadnum);
         if (gpi != null)
         {
-            super.describe(state, gpi, subpopulation, threadnum, log);
+            problem.describe(state, gpi, subpopulation, threadnum, log);
 
             // though this is probably not necessary for describe(...),
             // for good measure we're doing the same rigamarole that we
