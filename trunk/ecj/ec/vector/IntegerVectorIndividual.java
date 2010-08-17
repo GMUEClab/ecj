@@ -323,7 +323,7 @@ public class IntegerVectorIndividual extends VectorIndividual
         { return genome; }
     public void setGenome(Object gen)
         { genome = (int[]) gen; }
-    public long genomeLength()
+    public int genomeLength()
         { return genome.length; }
         
     public void writeGenotype(final EvolutionState state,
@@ -365,7 +365,7 @@ public class IntegerVectorIndividual extends VectorIndividual
     public void setGenomeLength(int len)
         {
         int[] newGenome = new int[len];
-        System.arraycopy(genome, 0, newGenome, len, 
+        System.arraycopy(genome, 0, newGenome, 0, 
             genome.length < newGenome.length ? genome.length : newGenome.length);
         genome = newGenome;
         }

@@ -375,7 +375,7 @@ public class FloatVectorIndividual extends VectorIndividual
         genome = (float[]) gen;
         }
 
-    public long genomeLength()
+    public int genomeLength()
         {
         return genome.length;
         }
@@ -421,7 +421,7 @@ public class FloatVectorIndividual extends VectorIndividual
     public void setGenomeLength(int len)
         {
         float[] newGenome = new float[len];
-        System.arraycopy(genome, 0, newGenome, len, 
+        System.arraycopy(genome, 0, newGenome, 0, 
             genome.length < newGenome.length ? genome.length : newGenome.length);
         genome = newGenome;
         }

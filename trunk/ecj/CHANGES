@@ -1659,3 +1659,19 @@ Version		Change Log
 		same names.
 	Fix to FloatVectorSpecies: it now checks to see if the genome length was defined
 	All examples in ecsuite now run for 1000 generations
+	Revisions to SteadyStateEvolutionState's main loop to be more consistent with the
+		SimpleEvolutionState loop:  checkpointing now occurs immediately after
+		increasing the generation; and postEvaluationStatistics and
+		generationBoundaryStatistics now happen at the top of the loop.
+	evolve.RandomRestarts now restarts on either preEvaluationStatistics or
+		generationBoundaryStatistics
+	Bug fix in all VectorIndivdual subclasses' setGenomeLength: was bombing
+	Updates to VectorSpecies, IntegerVectorSpecies, and FloatVectorSpecies which
+		does additional warnings (and reduces certain warnings) when doing
+		min/max gene access when doing dynamic initialization.
+	VectorIndividual.genomeLength() now returns an int
+	Added ec/gp/ge package and ec/gp/ge/breed package.  These packages are initial
+		versions: expect them to be updated
+	Added ec/app/ant/ge.params and ec/app/ant/ant.grammar for GE version of Ant
+	Added ec/app/regression/ge.params and ec/app/regression/regression.grammar for
+		GE version of Regression

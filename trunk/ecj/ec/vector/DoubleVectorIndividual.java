@@ -379,7 +379,7 @@ public class DoubleVectorIndividual extends VectorIndividual
         genome = (double[]) gen;
         }
 
-    public long genomeLength()
+    public int genomeLength()
         {
         return genome.length;
         }
@@ -426,7 +426,7 @@ public class DoubleVectorIndividual extends VectorIndividual
     public void setGenomeLength(int len)
         {
         double[] newGenome = new double[len];
-        System.arraycopy(genome, 0, newGenome, len, 
+        System.arraycopy(genome, 0, newGenome, 0, 
             genome.length < newGenome.length ? genome.length : newGenome.length);
         genome = newGenome;
         }

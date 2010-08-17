@@ -137,7 +137,7 @@ public class IntegerVectorSpecies extends VectorSpecies
         long[] m = maxGenes;
         if (m.length <= gene)
             { 
-            if (!warned) warnAboutGene(gene);
+            if (!dynamicInitialSize && !warned) warnAboutGene(gene);
             gene = m.length - 1;
             }
         return m[gene];
@@ -148,7 +148,7 @@ public class IntegerVectorSpecies extends VectorSpecies
         long[] m = minGenes;
         if (m.length <= gene)
             { 
-            if (!warned) warnAboutGene(gene);
+            if (!dynamicInitialSize && !warned) warnAboutGene(gene);
             gene = m.length - 1;
             }
         return m[gene];
@@ -173,7 +173,6 @@ public class IntegerVectorSpecies extends VectorSpecies
         super.setup(state,base);
         
         Parameter def = defaultBase();
-
 
         // create the arrays
         minGenes = new long[genomeSize];
@@ -206,6 +205,10 @@ public class IntegerVectorSpecies extends VectorSpecies
         // max values) exist
         if (state.parameters.exists(base.push(P_NUM_SEGMENTS), def.push(P_NUM_SEGMENTS)))
             {
+			if (dynamicInitialSize)
+				state.output.warnOnce("Using dynamic initial sizing, but per-segment min/max gene declarations.  This is probably wrong.  You probably want to use global min/max declarations.",
+					base.push(P_NUM_SEGMENTS), def.push(P_NUM_SEGMENTS));
+			
             numSegments = state.parameters.getIntWithDefault(base.push(P_NUM_SEGMENTS), 
                 def.push(P_NUM_SEGMENTS), 0);
                         
@@ -260,6 +263,10 @@ public class IntegerVectorSpecies extends VectorSpecies
                 }
             else 
                 {
+				if (dynamicInitialSize)
+					state.output.warnOnce("Using dynamic initial sizing, but per-gene min/max gene declarations.  This is probably wrong.  You probably want to use global min/max declarations.",
+						base.push(P_MINGENE).push(""+x),base.push(P_MINGENE).push(""+x));
+
                 minGenes[x] = state.parameters.getLongWithDefault(base.push(P_MINGENE).push(""+x),base.push(P_MINGENE).push(""+x),minGene);
                 foundStuff = true;
                 }
@@ -275,6 +282,10 @@ public class IntegerVectorSpecies extends VectorSpecies
                 }
             else 
                 {
+				if (dynamicInitialSize)
+					state.output.warnOnce("Using dynamic initial sizing, but per-gene min/max gene declarations.  This is probably wrong.  You probably want to use global min/max declarations.",
+						base.push(P_MINGENE).push(""+x),base.push(P_MINGENE).push(""+x));
+
                 maxGenes[x] = state.parameters.getLongWithDefault(base.push(P_MAXGENE).push(""+x),base.push(P_MAXGENE).push(""+x),maxGene);
                 foundStuff = true;
                 }

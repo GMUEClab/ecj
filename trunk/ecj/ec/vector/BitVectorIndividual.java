@@ -257,13 +257,13 @@ public class BitVectorIndividual extends VectorIndividual
         { return genome; }
     public void setGenome(Object gen)
         { genome = (boolean[]) gen; }
-    public long genomeLength()
+    public int genomeLength()
         { return genome.length; }
 
     public void setGenomeLength(int len)
         {
         boolean[] newGenome = new boolean[len];
-        System.arraycopy(genome, 0, newGenome, len, 
+        System.arraycopy(genome, 0, newGenome, 0, 
             genome.length < newGenome.length ? genome.length : newGenome.length);
         genome = newGenome;
         }
