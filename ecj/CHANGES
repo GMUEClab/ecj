@@ -1675,3 +1675,4 @@ Version		Change Log
 	Added ec/app/ant/ge.params and ec/app/ant/ant.grammar for GE version of Ant
 	Added ec/app/regression/ge.params and ec/app/regression/regression.grammar for
 		GE version of Regression
+	Added ec/vector/GeneDuplicationPipeline.java
