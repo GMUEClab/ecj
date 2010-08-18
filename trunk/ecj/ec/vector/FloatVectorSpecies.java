@@ -273,10 +273,10 @@ public class FloatVectorSpecies extends VectorSpecies
         // max values) exist
         if (state.parameters.exists(base.push(P_NUM_SEGMENTS), def.push(P_NUM_SEGMENTS)))
             {
-			if (dynamicInitialSize)
-				state.output.warnOnce("Using dynamic initial sizing, but per-segment min/max gene declarations.  This is probably wrong.  You probably want to use global min/max declarations.",
-					base.push(P_NUM_SEGMENTS), def.push(P_NUM_SEGMENTS));
-			
+            if (dynamicInitialSize)
+                state.output.warnOnce("Using dynamic initial sizing, but per-segment min/max gene declarations.  This is probably wrong.  You probably want to use global min/max declarations.",
+                    base.push(P_NUM_SEGMENTS), def.push(P_NUM_SEGMENTS));
+                        
             numSegments = state.parameters.getIntWithDefault(base.push(P_NUM_SEGMENTS), 
                 def.push(P_NUM_SEGMENTS), 0);
                         
@@ -333,9 +333,9 @@ public class FloatVectorSpecies extends VectorSpecies
                 } 
             else
                 {
-				if (dynamicInitialSize)
-					state.output.warnOnce("Using dynamic initial sizing, but per-gene min/max gene declarations.  This is probably wrong.  You probably want to use global min/max declarations.",
-						base.push(P_MINGENE).push(""+x),base.push(P_MINGENE).push(""+x));
+                if (dynamicInitialSize)
+                    state.output.warnOnce("Using dynamic initial sizing, but per-gene min/max gene declarations.  This is probably wrong.  You probably want to use global min/max declarations.",
+                        base.push(P_MINGENE).push(""+x),base.push(P_MINGENE).push(""+x));
 
                 minGenes[x] = state.parameters.getDoubleWithDefault(base.push(P_MINGENE).push("" + x), 
                     def.push(P_MINGENE).push("" + x), minGene);
@@ -355,9 +355,9 @@ public class FloatVectorSpecies extends VectorSpecies
                 } 
             else
                 {
-				if (dynamicInitialSize)
-					state.output.warnOnce("Using dynamic initial sizing, but per-gene min/max gene declarations.  This is probably wrong.  You probably want to use global min/max declarations.",
-						base.push(P_MINGENE).push(""+x),base.push(P_MINGENE).push(""+x));
+                if (dynamicInitialSize)
+                    state.output.warnOnce("Using dynamic initial sizing, but per-gene min/max gene declarations.  This is probably wrong.  You probably want to use global min/max declarations.",
+                        base.push(P_MINGENE).push(""+x),base.push(P_MINGENE).push(""+x));
 
                 maxGenes[x] = state.parameters.getDoubleWithDefault(base.push(P_MAXGENE).push("" + x), 
                     def.push(P_MAXGENE).push("" + x), maxGene);

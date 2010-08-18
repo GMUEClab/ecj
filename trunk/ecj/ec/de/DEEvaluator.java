@@ -30,9 +30,9 @@ import ec.simple.*;
 
 public class DEEvaluator extends SimpleEvaluator
     {
-	public void evaluatePopulation(EvolutionState state)
-		{
-		super.evaluatePopulation(state);
+    public void evaluatePopulation(EvolutionState state)
+        {
+        super.evaluatePopulation(state);
 
         if( state.breeder instanceof DEBreeder )
             {
@@ -50,7 +50,7 @@ public class DEEvaluator extends SimpleEvaluator
                             state.population.subpops[i].individuals[j] = previousPopulation.subpops[i].individuals[j];
                     }
                 }
-			}
-		else state.output.fatal("DEEvaluator requires DEBreeder to be the breeder.");
-		}
-	}
+            }
+        else state.output.fatal("DEEvaluator requires DEBreeder to be the breeder.");
+        }
+    }
