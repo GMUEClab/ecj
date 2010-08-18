@@ -140,8 +140,8 @@ public abstract class VectorIndividual extends Individual
     public void join(Object[] pieces) { }
 
     /** Clones the genes in pieces, and replaces the genes with their copies.  Does NOT copy the array, but modifies it in place.
-		If the VectorIndividual holds numbers or booleans etc. instead of genes, nothing is cloned
-		(why bother?). */
+        If the VectorIndividual holds numbers or booleans etc. instead of genes, nothing is cloned
+        (why bother?). */
     public void cloneGenes(Object piece) { }  // default does nothing.
     
     public long size() { return genomeLength(); }

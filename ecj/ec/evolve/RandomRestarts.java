@@ -49,7 +49,7 @@ public class RandomRestarts extends Statistics implements SteadyStateStatisticsF
     public int countdown;              // what we'll use for the "ticking" clock
     public int upperbound;             // highest possible value on the clock
    
-	String restartType;    // are we doing random or fixed?
+    String restartType;    // are we doing random or fixed?
 
     /** Gets the clock ticking. */
     public void setup( final EvolutionState state, final Parameter base )
@@ -61,7 +61,7 @@ public class RandomRestarts extends Statistics implements SteadyStateStatisticsF
 
         if( upperbound < 1 )
             state.output.fatal("Parameter either not found or invalid (<1).", base.push(P_RESTART_UPPERBOUND));
-			
+                        
         if( !restartType.equals( "random" ) && !restartType.equals( "fixed" ) )
             state.output.fatal("Parameter must be either 'fixed' or 'random'.", base.push(P_RESTART_TYPE));
 
@@ -77,19 +77,19 @@ public class RandomRestarts extends Statistics implements SteadyStateStatisticsF
      */
     public void preEvaluationStatistics( final EvolutionState state )
         {
-		super.preEvaluationStatistics(state);
-		possiblyRestart(state);
+        super.preEvaluationStatistics(state);
+        possiblyRestart(state);
         }
 
-	public void generationBoundaryStatistics(final EvolutionState state)
-		{
-		super.generationBoundaryStatistics(state);
-		possiblyRestart(state);
-		}
-		
-	void possiblyRestart(EvolutionState state)
-		{
-		
+    public void generationBoundaryStatistics(final EvolutionState state)
+        {
+        super.generationBoundaryStatistics(state);
+        possiblyRestart(state);
+        }
+                
+    void possiblyRestart(EvolutionState state)
+        {
+                
         Subpopulation currentSubp;
         File tempFile;
         // time to restart!
@@ -110,7 +110,7 @@ public class RandomRestarts extends Statistics implements SteadyStateStatisticsF
             }
         else
             countdown--;
-		}
+        }
 
     void resetClock( final EvolutionState state )
         {

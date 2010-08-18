@@ -109,8 +109,8 @@ public abstract class ERC extends GPNode
     /** Returns the lowercase "name" of this ERC function class, some
         simple, short name which distinguishes this class from other ERC
         function classes you're using.  If you have more than one ERC function,
-		you need to distinguish them here.  By default the value is "ERC",
-		which works fine for a single ERC function in the function set.
+        you need to distinguish them here.  By default the value is "ERC",
+        which works fine for a single ERC function in the function set.
         Whatever the name is, it should
         generally only have letters, numbers, or hyphens or underscores in it.
         No whitespace or other characters. */
@@ -144,7 +144,7 @@ public abstract class ERC extends GPNode
         { return toString(); }
 
     /** This defaults to simply name() + "[" + encode() + "]".   You probably shouldn't deviate from this. */
-	public String toString() 
+    public String toString() 
         { return name() + "[" + encode() + "]"; }
 
     /** Encodes data from the ERC, using ec.util.Code.  */

@@ -46,39 +46,39 @@ import ec.vector.*;
 
 public class DEBreeder extends Breeder
     {
-	public static final double CR_UNSPECIFIED = -1;
+    public static final double CR_UNSPECIFIED = -1;
 
-	/** Scaling factor for mutation */
-	public double F = 0.0;
-	/** Probability of crossover per gene */
-	public double Cr = CR_UNSPECIFIED;
-	
-	public static final String P_F = "f";
-	public static final String P_Cr = "cr";
-	
+    /** Scaling factor for mutation */
+    public double F = 0.0;
+    /** Probability of crossover per gene */
+    public double Cr = CR_UNSPECIFIED;
+        
+    public static final String P_F = "f";
+    public static final String P_Cr = "cr";
+        
     /** the previous population is stored in order to have parents compete directly with their children */
     public Population previousPopulation = null;
 
     /** the best individuals in each population (required by some DE breeders).  It's not required by DEBreeder's algorithm */
     public int[] bestSoFarIndex = null;
 
-	public void setup(final EvolutionState state, final Parameter base) 
+    public void setup(final EvolutionState state, final Parameter base) 
         {
-		if (!state.parameters.exists(base.push(P_Cr), null))  // it wasn't specified -- hope we know what we're doing
-			Cr = CR_UNSPECIFIED;
-		else
-			{
-			Cr = state.parameters.getDouble(base.push(P_Cr),null,0.0);
-			if ( Cr < 0.0 || Cr > 1.0 )
-				state.output.fatal( "Parameter not found, or its value is outside of [0.0,1.0].", base.push(P_Cr), null );
-			}
-			
+        if (!state.parameters.exists(base.push(P_Cr), null))  // it wasn't specified -- hope we know what we're doing
+            Cr = CR_UNSPECIFIED;
+        else
+            {
+            Cr = state.parameters.getDouble(base.push(P_Cr),null,0.0);
+            if ( Cr < 0.0 || Cr > 1.0 )
+                state.output.fatal( "Parameter not found, or its value is outside of [0.0,1.0].", base.push(P_Cr), null );
+            }
+                        
         F = state.parameters.getDouble(base.push(P_F),null,0.0);
         if ( F < 0.0 || F > 1.0 )
             state.output.fatal( "Parameter not found, or its value is outside of [0.0,1.0].", base.push(P_F), null );
         }
 
-	// this function is called just before chldren are to be bred
+    // this function is called just before chldren are to be bred
     public void prepareDEBreeder(EvolutionState state)
         {
         // update the bestSoFar for each population
@@ -88,7 +88,7 @@ public class DEBreeder extends Breeder
         for( int subpop = 0 ; subpop < state.population.subpops.length ; subpop++ )
             {
             Individual[] inds = state.population.subpops[subpop].individuals;
-			bestSoFarIndex[subpop] = 0;
+            bestSoFarIndex[subpop] = 0;
             for( int j = 1 ; j < inds.length ; j++ )
                 if( inds[j].fitness.betterThan(inds[bestSoFarIndex[subpop]].fitness) )
                     bestSoFarIndex[subpop] = j;
@@ -97,10 +97,10 @@ public class DEBreeder extends Breeder
 
     public Population breedPopulation(EvolutionState state)
         {
-		// double check that we're using DEEvaluator
-		if (!(state.evaluator instanceof DEEvaluator))
-			state.output.warnOnce("DEEvaluator not used, but DEBreeder used.  This is almost certainly wrong.");
-		
+        // double check that we're using DEEvaluator
+        if (!(state.evaluator instanceof DEEvaluator))
+            state.output.warnOnce("DEEvaluator not used, but DEBreeder used.  This is almost certainly wrong.");
+                
         // prepare the breeder (some global statistics might need to be computed here)
         prepareDEBreeder(state);
 
@@ -130,7 +130,7 @@ public class DEBreeder extends Breeder
         int index,
         int thread)
         {
-		Individual[] inds = state.population.subpops[subpop].individuals;
+        Individual[] inds = state.population.subpops[subpop].individuals;
 
         // select three indexes different from each other and from that of the current parent
         int r0, r1, r2;
@@ -155,38 +155,38 @@ public class DEBreeder extends Breeder
         DoubleVectorIndividual g1 = (DoubleVectorIndividual)(inds[r1]);
         DoubleVectorIndividual g2 = (DoubleVectorIndividual)(inds[r2]);
 
-		for(int i = 0; i < v.genome.length; i++)
-			v.genome[i] = g0.genome[i] + F * (g1.genome[i] - g2.genome[i]);
+        for(int i = 0; i < v.genome.length; i++)
+            v.genome[i] = g0.genome[i] + F * (g1.genome[i] - g2.genome[i]);
 
-		return crossover(state, (DoubleVectorIndividual)(inds[index]), v, thread);
+        return crossover(state, (DoubleVectorIndividual)(inds[index]), v, thread);
         }
 
 
-	/** Crosses over child with target, storing the result in child and returning it.  The default
-		procedure copies each value from the target, with independent probability CROSSOVER, into
-		the child.  The crossover guarantees that at least one child value, chosen at random, will
-		not be overwritten.  Override this method to perform some other kind of crossover. */
-		
-	public DoubleVectorIndividual crossover(EvolutionState state, DoubleVectorIndividual target, DoubleVectorIndividual child, int thread)
-		{
-		if (Cr == CR_UNSPECIFIED)
-			state.output.warnOnce("Differential Evolution Parameter cr unspecified.  Assuming cr = 0.5");
-			
-		// first, hold one value in abeyance
-		int index = state.random[thread].nextInt(child.genome.length);
-		double val = child.genome[index];
-		
-		// do the crossover
-		for(int i = 0; i < child.genome.length; i++)
-			{
-			if (state.random[thread].nextDouble() < Cr)
-				child.genome[i] = target.genome[i];
-			}
-		
-		// reset the one value so it's not just a duplicate copy
-		child.genome[index] = val;
-	
-		return child;
-		}
-			
+    /** Crosses over child with target, storing the result in child and returning it.  The default
+        procedure copies each value from the target, with independent probability CROSSOVER, into
+        the child.  The crossover guarantees that at least one child value, chosen at random, will
+        not be overwritten.  Override this method to perform some other kind of crossover. */
+                
+    public DoubleVectorIndividual crossover(EvolutionState state, DoubleVectorIndividual target, DoubleVectorIndividual child, int thread)
+        {
+        if (Cr == CR_UNSPECIFIED)
+            state.output.warnOnce("Differential Evolution Parameter cr unspecified.  Assuming cr = 0.5");
+                        
+        // first, hold one value in abeyance
+        int index = state.random[thread].nextInt(child.genome.length);
+        double val = child.genome[index];
+                
+        // do the crossover
+        for(int i = 0; i < child.genome.length; i++)
+            {
+            if (state.random[thread].nextDouble() < Cr)
+                child.genome[i] = target.genome[i];
+            }
+                
+        // reset the one value so it's not just a duplicate copy
+        child.genome[index] = val;
+        
+        return child;
+        }
+                        
     }

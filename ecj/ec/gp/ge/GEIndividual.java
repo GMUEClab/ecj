@@ -14,15 +14,15 @@ import ec.vector.*;
 
 public class GEIndividual extends ByteVectorIndividual
     {
-	public static final String TREE_PREAMBLE = "Tree: ";
-	public static final String BAD_TREE = "[BAD]";
+    public static final String TREE_PREAMBLE = "Tree: ";
+    public static final String BAD_TREE = "[BAD]";
         
-	public void printIndividualForHumans(EvolutionState state, int log)
-		{
-		super.printIndividualForHumans(state, log);
-		state.output.print(TREE_PREAMBLE, log);
-		GPIndividual ind = (((GESpecies)species).map(state, this, 0));
-		if (ind == null) state.output.println(BAD_TREE, log);
-		else ind.trees[0].printTreeForHumans(state, log);
-		}
+    public void printIndividualForHumans(EvolutionState state, int log)
+        {
+        super.printIndividualForHumans(state, log);
+        state.output.print(TREE_PREAMBLE, log);
+        GPIndividual ind = (((GESpecies)species).map(state, this, 0));
+        if (ind == null) state.output.println(BAD_TREE, log);
+        else ind.trees[0].printTreeForHumans(state, log);
+        }
     }

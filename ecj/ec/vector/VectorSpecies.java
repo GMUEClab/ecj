@@ -161,10 +161,10 @@ public class VectorSpecies extends Species
     public int chunksize;
     /** How far along the long a child can be located for line or intermediate recombination */
     public double lineDistance;
-	/** Was the initial size determined dynamically? */
-	public boolean dynamicInitialSize = false;
+    /** Was the initial size determined dynamically? */
+    public boolean dynamicInitialSize = false;
 
-	// we use warned here because it's quite a bit faster than calling warnOnce
+    // we use warned here because it's quite a bit faster than calling warnOnce
     protected boolean warned = false;
     EvolutionState state;
     protected void warnAboutGene(int gene)
@@ -190,12 +190,12 @@ public class VectorSpecies extends Species
         
         String genomeSizeForm = state.parameters.getString(base.push(P_GENOMESIZE),def.push(P_GENOMESIZE));
         if (genomeSizeForm == null) // clearly an error
-			{
-			state.output.fatal("No genome size specified.", base.push(P_GENOMESIZE),def.push(P_GENOMESIZE));
-			}
-		else if (genomeSizeForm.equals(V_GEOMETRIC))
             {
-			dynamicInitialSize = true;
+            state.output.fatal("No genome size specified.", base.push(P_GENOMESIZE),def.push(P_GENOMESIZE));
+            }
+        else if (genomeSizeForm.equals(V_GEOMETRIC))
+            {
+            dynamicInitialSize = true;
             genomeSize = 1;
             genomeResizeAlgorithm = C_GEOMETRIC;
             chunksize = state.parameters.getIntWithDefault(base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE),1);
@@ -215,7 +215,7 @@ public class VectorSpecies extends Species
             }
         else if (genomeSizeForm.equals(V_UNIFORM))
             {
-			dynamicInitialSize = true;
+            dynamicInitialSize = true;
             genomeSize = 1;
             genomeResizeAlgorithm = C_UNIFORM;
             chunksize = state.parameters.getIntWithDefault(base.push(P_CHUNKSIZE),def.push(P_CHUNKSIZE),1);

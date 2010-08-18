@@ -282,15 +282,15 @@ public class GeneVectorIndividual extends VectorIndividual
     public int genomeLength()
         { return genome.length; }
 
-	// clone all the genes
+    // clone all the genes
     public void cloneGenes(Object piece)
-		{
-		VectorGene[] genes = (VectorGene[]) piece;
-		for(int i = 0 ; i < genes.length; i++)
-			{
-			if (genes[i] != null) genes[i] = (VectorGene)(genes[i].clone());
-			}
-		}
+        {
+        VectorGene[] genes = (VectorGene[]) piece;
+        for(int i = 0 ; i < genes.length; i++)
+            {
+            if (genes[i] != null) genes[i] = (VectorGene)(genes[i].clone());
+            }
+        }
     
     public void writeGenotype(final EvolutionState state,
         final DataOutput dataOutput) throws IOException
