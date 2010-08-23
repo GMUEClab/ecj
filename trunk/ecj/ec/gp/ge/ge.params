@@ -2,7 +2,11 @@
 # Licensed under the Academic Free License version 3.0
 # See the file "LICENSE" for more information
 
-parent.0 = ../koza/koza.params
+# We don't include koza.params as a parent here -- doing so creates
+# lots of parameter file inheritance problems.  Instead you should
+# include this parameter file FIRST, and then include something 
+# which ultimately includes the koza.params parameter file later.
+
 
 # The problem is redefined as a GEProblem.  The ACTUAL problem
 # will be defined in eval.problem.problem

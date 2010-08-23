@@ -13,3 +13,16 @@ eval.problem.problem = ec.app.lawnmower.Lawnmower
 eval.problem.problem.data = ec.app.lawnmower.LawnmowerData
 eval.problem.problem.x = 8
 eval.problem.problem.y = 8
+
+# ec/gp/ge/ge.params defines a dummy individual as only having one tree.
+# This overrides adf.params above, so we need to reset that.
+pop.subpop.0.species.gp-species.ind.numtrees = 3
+
+# Also in GE the trees are in species.gp-species...,
+# So we need to define this as well
+pop.subpop.0.species.gp-species.ind.tree.0 = ec.gp.GPTree
+pop.subpop.0.species.gp-species.ind.tree.0.tc = tc0
+pop.subpop.0.species.gp-species.ind.tree.1 = ec.gp.GPTree
+pop.subpop.0.species.gp-species.ind.tree.1.tc = tc1
+pop.subpop.0.species.gp-species.ind.tree.2 = ec.gp.GPTree
+pop.subpop.0.species.gp-species.ind.tree.2.tc = tc2
