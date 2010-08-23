@@ -4,20 +4,24 @@
   See the file "LICENSE" for more information
 */
 
-
 package ec.gp.ge.breed;
 import ec.gp.ge.*;
 import ec.*;
 import ec.util.*;
 
-/* 
+/**
+ * <p>GETruncationPipeline removes the unused chromosomes from the end to the chromosome vetor.
+ * The number of used chromosomes are tracked by GESpecies' comsumed function. Note: truncaton
+ * only occurs if the number of comsumed chromosomes is greater than 1.</p>
+ *
+ * <p><b>Default Base</b><br>
+ * ec.gp.ge.breed.GETruncationPipeline
+ *
+ * @author Sean Luke, Joseph Zelibor III, and Eric Kangas
+ * @version 1.0
  */
-
 public class GETruncationPipeline extends BreedingPipeline
-    {
-    /**
-     * 
-     */
+{
     public static final String P_TRUNCATION = "truncate";
     public static final int NUM_SOURCES = 1;
 

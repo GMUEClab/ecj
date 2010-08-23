@@ -1,0 +1,15 @@
+# Copyright 2010 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../gp/ge/ge.params
+parent.1 = adf.params
+
+ge.species.file.0 = lawnmower.grammar
+ge.species.file.1 = adf0.grammar
+ge.species.file.2 = adf1.grammar
+
+eval.problem.problem = ec.app.lawnmower.Lawnmower
+eval.problem.problem.data = ec.app.lawnmower.LawnmowerData
+eval.problem.problem.x = 8
+eval.problem.problem.y = 8
