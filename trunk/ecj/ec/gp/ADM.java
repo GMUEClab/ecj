@@ -27,8 +27,6 @@ import ec.*;
 
 public class ADM extends ADF
     {
-    public String toString() { return "ADM" + functionName + "[" +associatedTree + "]"; }
-
     public void eval(final EvolutionState state,
         final int thread,
         final GPData input,

@@ -1,4 +1,4 @@
-# Copyright 2006 by Sean Luke and George Mason University
+ADF# Copyright 2006 by Sean Luke and George Mason University
 # Licensed under the Academic Free License version 3.0
 # See the file "LICENSE" for more information
 
@@ -81,13 +81,13 @@ gp.fs.0.func.6 = ec.gp.ADF
 gp.fs.0.func.6.nc = nc0
 # tree 1 (the "ADF0 body")
 gp.fs.0.func.6.tree = 1
-gp.fs.0.func.6.name = 0
+gp.fs.0.func.6.name = ADF0
 
 gp.fs.0.func.7 = ec.gp.ADF
 gp.fs.0.func.7.nc = nc1
 # tree 1 (the "ADF1 body")
 gp.fs.0.func.7.tree = 2
-gp.fs.0.func.7.name = 1
+gp.fs.0.func.7.name = ADF1
 
 
 
@@ -125,13 +125,14 @@ gp.fs.2.func.5 = ec.app.lawnmower.func.Frog
 gp.fs.2.func.5.nc = nc1
 gp.fs.2.func.6 = ec.gp.ADFArgument
 gp.fs.2.func.6.nc = nc0
+gp.fs.2.func.6.name = ARG0
 # argument 0 of the calling ADF ("ADF1")
 gp.fs.2.func.6.arg = 0
 gp.fs.2.func.7 = ec.gp.ADF
 gp.fs.2.func.7.nc = nc0
 # tree 1 (the "ADF0 body")
 gp.fs.2.func.7.tree = 1
-gp.fs.2.func.7.name = 0
+gp.fs.2.func.7.name = ADF0
 
 
 

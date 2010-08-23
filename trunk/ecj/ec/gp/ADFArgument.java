@@ -48,13 +48,21 @@ public class ADFArgument extends GPNode
     {
     public static final String P_ADFARGUMENT = "adf-argument";
     public final static String P_ARGUMENT = "arg";
-    int argument;
+    public static final String P_FUNCTIONNAME = "name";
+    public int argument;
+	
+	/** The "function name" of the ADFArgument, to distinguish it from other GP
+        functions you might provide.  */
+    public String name;
+	public String name() { return name; }
+
     
     public Parameter defaultBase()
         {
         return GPDefaults.base().push(P_ADFARGUMENT);
         }
 
+    public String toString() { return name(); }
 
     public void setup(final EvolutionState state, final Parameter base)
         {
@@ -70,10 +78,15 @@ public class ADFArgument extends GPNode
         if (argument < 0)
             state.output.fatal("Argument terminal must have a positive argument number.",
                 base.push(P_ARGUMENT),def.push(P_ARGUMENT));
+
+        name = state.parameters.getString(base.push(P_FUNCTIONNAME),def.push(P_FUNCTIONNAME));
+        if (name == null || name.equals(""))
+            {
+            name = "ARG" + argument;
+            state.output.warning("ADFArgument node for argument " + argument + " has no function name.  Using the name " + name(),
+                base.push(P_FUNCTIONNAME),def.push(P_FUNCTIONNAME));
+            }
         }
-
-    public String toString() { return  "ARG[" + argument + "]"; }
-
 
     public void writeNode(final EvolutionState state, final DataOutput dataOutput) throws IOException
         {

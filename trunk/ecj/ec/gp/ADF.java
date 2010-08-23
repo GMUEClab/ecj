@@ -84,9 +84,10 @@ public class ADF extends GPNode
     /** The ADF's associated tree */
     public int associatedTree;
 
-    /** The "function name" of the ADF, to distinguish it from other ADF
+    /** The "function name" of the ADF, to distinguish it from other GP
         functions you might provide.  */
-    public String functionName;
+    public String name;
+	public String name() { return name; }
 
     public Parameter defaultBase()
         {
@@ -96,22 +97,22 @@ public class ADF extends GPNode
     public void writeNode(final EvolutionState state, final DataOutput dataOutput) throws IOException
         {
         dataOutput.writeInt(associatedTree);
-        dataOutput.writeUTF(functionName);
+        dataOutput.writeUTF(name);
         }
          
  
     public void readNode(final EvolutionState state, final DataInput dataInput) throws IOException
         {
         associatedTree = dataInput.readInt();
-        functionName = dataInput.readUTF();
+        name = dataInput.readUTF();
         }
 
-    /** Returns functionName.hashCode() + class.hashCode() + associatedTree.  Hope
+    /** Returns name.hashCode() + class.hashCode() + associatedTree.  Hope
         that's reasonably random. */
 
     public int nodeHashCode()
         {
-        return (this.getClass().hashCode() + functionName.hashCode() + associatedTree);
+        return (this.getClass().hashCode() + name.hashCode() + associatedTree);
         }
 
     /** Determines node equality by comparing the class, associated tree, and
@@ -121,7 +122,7 @@ public class ADF extends GPNode
         if (!this.getClass().equals(node.getClass()) ||
             children.length != node.children.length) return false;
         ADF adf = (ADF)node;
-        return (associatedTree==adf.associatedTree && functionName.equals(adf.functionName));
+        return (associatedTree==adf.associatedTree && name.equals(adf.name));
         }
 
     /** Checks type-compatibility constraints between the ADF, its argument terminals, and the tree type of its associated tree, and also checks to make sure the tree exists, there aren't invalid argument terminals in it, and there are sufficient argument terminals (a warning).  Whew! */
@@ -215,25 +216,31 @@ public class ADF extends GPNode
 
         Parameter def = defaultBase();
 
-        functionName = state.parameters.getString(base.push(P_FUNCTIONNAME),def.push(P_FUNCTIONNAME));
-        if (functionName == null)
-            {
-            state.output.warning("ADF/ADM node has no function name.  Using a blank name.",
-                base.push(P_FUNCTIONNAME),def.push(P_FUNCTIONNAME));
-            functionName = "";
-            }
-
         associatedTree = 
             state.parameters.getInt(base.push(P_ASSOCIATEDTREE),def.push(P_FUNCTIONNAME),0);
         if (associatedTree < 0)
             state.output.fatal(
                 "ADF/ADM node must have a positive-numbered associated tree.",
                 base.push(P_ASSOCIATEDTREE),def.push(P_FUNCTIONNAME));
+
+        name = state.parameters.getString(base.push(P_FUNCTIONNAME),def.push(P_FUNCTIONNAME));
+        if (name == null || name.equals(""))
+            {
+            name = "ADF" + (associatedTree - 1);
+            state.output.warning("ADF/ADM node for Tree " + associatedTree + " has no function name.  Using the name " + name(),
+                base.push(P_FUNCTIONNAME),def.push(P_FUNCTIONNAME));
+            }
+		if (name.length() == 1)
+			{
+			state.output.warning("Using old-style ADF/ADM name.  You should change it to something longer and more descriptive, such as ADF" + name,
+                base.push(P_FUNCTIONNAME),def.push(P_FUNCTIONNAME));
+			}
+
         // now we let our parent set up.  
         super.setup(state,base);
         }
     
-    public String toString() { return "ADF" + functionName + "[" +associatedTree + "]"; }
+    public String toString() { return name(); }
     
     public void eval(final EvolutionState state,
         final int thread,

@@ -74,7 +74,7 @@ gp.fs.0.func.9.nc = nc2
 gp.fs.0.func.10 = ec.gp.ADF
 # tree 1 (the "ADF0 body")
 gp.fs.0.func.10.tree = 1
-gp.fs.0.func.10.name = 0
+gp.fs.0.func.10.name = ADF0
 gp.fs.0.func.10.nc = nc3
 
 
@@ -92,12 +92,15 @@ gp.fs.1.func.3 = ec.app.twobox.func.Div
 gp.fs.1.func.3.nc = nc2
 gp.fs.1.func.4 = ec.gp.ADFArgument
 gp.fs.1.func.4.arg = 0
+gp.fs.1.func.4.name = ARG0
 gp.fs.1.func.4.nc = nc0
 gp.fs.1.func.5 = ec.gp.ADFArgument
 gp.fs.1.func.5.arg = 1
+gp.fs.1.func.5.name = ARG1
 gp.fs.1.func.5.nc = nc0
 gp.fs.1.func.6 = ec.gp.ADFArgument
 gp.fs.1.func.6.arg = 2
+gp.fs.1.func.6.name = ARG2
 gp.fs.1.func.6.nc = nc0
 
 
