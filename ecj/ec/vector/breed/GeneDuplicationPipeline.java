@@ -4,7 +4,6 @@
   See the file "LICENSE" for more information
 */
 
-
 package ec.vector.breed;
 
 import ec.BreedingPipeline;
@@ -14,6 +13,22 @@ import ec.SelectionMethod;
 import ec.util.Parameter;
 import ec.vector.*;
 
+/**
+ * <p>GeneDuplicationPipeline is designed to duplicate a sequence of genes from the chromosome and append
+ * them to the end of the chromosome.  The sequence of genes copied are randomly determined.  That is to
+ * say a random begining index is selected and a random ending index is selected from the chromosome.  Then
+ * this area is then copied (begining inclusive, ending exclusive) and appended to the end of the chromosome.
+ * Since randomness is a factor several checks are performed to make sure the begining and ending indicies are
+ * valid.  For example, since the ending index is exclusive, the ending index cannot equal the begining index (a
+ * new ending index would be randomly seleceted in this case).  Likewise the begining index cannot be larger than the
+ * ending index (they would be swapped in this case).</p>
+ *
+ * <p><b>Default Base</b><br>
+ * ec.vector.breed.GeneDuplicationPipeline
+ *
+ * @author Sean Luke, Joseph Zelibor III, and Eric Kangas
+ * @version 1.0
+ */
 public class GeneDuplicationPipeline extends BreedingPipeline
     {
     public static final String P_DUPLICATION = "duplicate";
@@ -74,7 +89,7 @@ public class GeneDuplicationPipeline extends BreedingPipeline
             // copy the splice into a new array
             Object[] splice = new Object[3];
             ind.split(new int[] {begin, end}, splice);
-                        
+			
             // clone the genes in splice[1] (which we'll concatenate back in) in case we're using GeneVectorIndividual
             ind.cloneGenes(splice[1]);
             

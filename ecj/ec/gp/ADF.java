@@ -230,6 +230,7 @@ public class ADF extends GPNode
             state.output.warning("ADF/ADM node for Tree " + associatedTree + " has no function name.  Using the name " + name(),
                 base.push(P_FUNCTIONNAME),def.push(P_FUNCTIONNAME));
             }
+			
 		if (name.length() == 1)
 			{
 			state.output.warning("Using old-style ADF/ADM name.  You should change it to something longer and more descriptive, such as ADF" + name,

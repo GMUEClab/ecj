@@ -1,7 +1,11 @@
+# Copyright 2010 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
 parent.0 = ../../gp/ge/ge.params
 parent.1 = ant.params
 
-ge.species.file = ant.grammar
+ge.species.file.0 = ant.grammar
 eval.problem.problem = ec.app.ant.Ant
 eval.problem.problem.data = ec.app.ant.AntData
 eval.problem.problem.moves = 400
