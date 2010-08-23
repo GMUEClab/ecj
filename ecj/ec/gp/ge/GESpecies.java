@@ -125,7 +125,6 @@ public class GESpecies extends IntegerVectorSpecies
         ArrayList choices;  //strings
         int numberOfChoices;
 
-        @Override
         public String toString()
         {
             return "Rule [choices=" + choices + ", name=" + name
@@ -443,7 +442,6 @@ public class GESpecies extends IntegerVectorSpecies
         return grammar;
     }
 
-    @Override
     public Object clone()
     {
         GESpecies other = (GESpecies) (super.clone());
@@ -451,7 +449,6 @@ public class GESpecies extends IntegerVectorSpecies
         return other;
     }
 
-    @Override
     public Parameter defaultBase()
     {
         return GEDefaults.base().push(P_GESPECIES);
