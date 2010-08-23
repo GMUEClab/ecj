@@ -265,6 +265,10 @@ public class ADF extends GPNode
         // Now push the context onto the stack.
         stack.push(c);
 
+System.err.println("Individual.trees " + individual.trees);
+System.err.println("associatedTree " + associatedTree);
+System.err.println("indivdiual.trees[associatedTree] " + individual.trees[associatedTree]);
+System.err.println("child "  + individual.trees[associatedTree].child);
         // evaluate the top of the associatedTree
         individual.trees[associatedTree].child.eval(
             state,thread,input,stack,individual,problem);

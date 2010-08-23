@@ -125,6 +125,7 @@ public class GESpecies extends IntegerVectorSpecies
         ArrayList choices;  //strings
         int numberOfChoices;
 
+        @Override
         public String toString()
         {
             return "Rule [choices=" + choices + ", name=" + name
@@ -241,6 +242,10 @@ public class GESpecies extends IntegerVectorSpecies
 
         for (int i = 0; i < trees.length; i++)
         {
+            //cannot complete one of the trees with the given chromosome
+            if(pos < 0)
+                return BIG_TREE_ERROR;
+
             pos = makeTree(state, indiv, trees[i], pos, i, threadnum);
         }
 
@@ -261,7 +266,7 @@ public class GESpecies extends IntegerVectorSpecies
     {
         int[] countNumberOfChromosomesUsed =
         {
-            0
+            pos
         };  //hack, use an array to pass an extra value
         byte[] genome = indiv.genome;
         GPFunctionSet gpfs = tree.constraints((GPInitializer) state.initializer).functionset;
@@ -438,6 +443,7 @@ public class GESpecies extends IntegerVectorSpecies
         return grammar;
     }
 
+    @Override
     public Object clone()
     {
         GESpecies other = (GESpecies) (super.clone());
@@ -445,6 +451,7 @@ public class GESpecies extends IntegerVectorSpecies
         return other;
     }
 
+    @Override
     public Parameter defaultBase()
     {
         return GEDefaults.base().push(P_GESPECIES);
