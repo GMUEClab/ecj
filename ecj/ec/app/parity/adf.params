@@ -80,12 +80,14 @@ gp.fs.0.func.3.nc = nc2
 gp.fs.0.func.4 = ec.gp.ADF
 gp.fs.0.func.4.nc = nc2
 gp.fs.0.func.4.tree = 1
-gp.fs.0.func.4.name = 0
+gp.fs.0.func.4.name = ADF0
+
 # ADF1 (3 arguments, tree 2)
 gp.fs.0.func.5 = ec.gp.ADF
 gp.fs.0.func.5.nc = nc3
 gp.fs.0.func.5.tree = 2
-gp.fs.0.func.5.name = 1
+gp.fs.0.func.5.name = ADF1
+
 gp.fs.0.func.6 = ec.app.parity.func.D0
 gp.fs.0.func.6.nc = nc0
 gp.fs.0.func.7 = ec.app.parity.func.D1
@@ -170,10 +172,14 @@ gp.fs.1.func.3.nc = nc2
 gp.fs.1.func.4 = ec.gp.ADFArgument
 gp.fs.1.func.4.nc = nc0
 gp.fs.1.func.4.arg = 0
+gp.fs.1.func.4.name = ARG0
+
 # ARG1
 gp.fs.1.func.5 = ec.gp.ADFArgument
 gp.fs.1.func.5.nc = nc0
 gp.fs.1.func.5.arg = 1
+gp.fs.1.func.5.name = ARG1
+
 gp.fs.1.func.6 = ec.app.parity.func.D0
 gp.fs.1.func.6.nc = nc0
 gp.fs.1.func.7 = ec.app.parity.func.D1
@@ -260,14 +266,20 @@ gp.fs.2.func.3.nc = nc2
 gp.fs.2.func.4 = ec.gp.ADFArgument
 gp.fs.2.func.4.nc = nc0
 gp.fs.2.func.4.arg = 0
+gp.fs.2.func.4.name = ARG0
+
 # ARG1
 gp.fs.2.func.5 = ec.gp.ADFArgument
 gp.fs.2.func.5.nc = nc0
 gp.fs.2.func.5.arg = 1
+gp.fs.2.func.5.name = ARG1
+
 # ARG2
 gp.fs.2.func.6 = ec.gp.ADFArgument
 gp.fs.2.func.6.nc = nc0
 gp.fs.2.func.6.arg = 2
+gp.fs.2.func.6.name = ARG2
+
 gp.fs.2.func.7 = ec.app.parity.func.D0
 gp.fs.2.func.7.nc = nc0
 gp.fs.2.func.8 = ec.app.parity.func.D1

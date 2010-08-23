@@ -1687,3 +1687,6 @@ Version		Change Log
 		calls name() (rather than what it used to do, which is return 
 		"ARG"+argument).  This 'name' instance is set with the same parameter
 		as ADF's naming mechanism: the 'name' parameter.
+	Major change to ADM naming.  Set to be identical to how ADFs are named.  This
+		means that if you don't provide a name, it'll appear as "ADF0" or whatnot
+		instead of as "ADM0".  You should provide a name.
