@@ -1692,3 +1692,5 @@ Version		Change Log
 		instead of as "ADM0".  You should provide a name.
 	Various updates to ge package to support ADFs
 	GE examples added/revised in ant, regression (with ERCs) and Lawnmower (with ADFs)
+	Updated koza.params to use the default parameter bases for ADFStack and
+		ADFContext

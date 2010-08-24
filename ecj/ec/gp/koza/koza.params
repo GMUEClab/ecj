@@ -135,8 +135,8 @@ gp.koza.grow.max-depth = 5
 # of stack they use, and what kind of context
 #
 
-eval.problem.stack = ec.gp.ADFStack
-eval.problem.stack.context = ec.gp.ADFContext
+gp.problem.stack = ec.gp.ADFStack
+gp.adf-stack.context = ec.gp.ADFContext
 
 # 
 # Here we define the default values for KozaNodeSelection;
