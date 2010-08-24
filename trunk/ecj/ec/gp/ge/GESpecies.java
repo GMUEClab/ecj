@@ -104,7 +104,7 @@ import ec.util.*;
 public class GESpecies extends IntegerVectorSpecies
 {
 
-    private HashMap[] rules;
+	HashMap[] rules;
     public String[] startSymbols;
     public static final String P_FILE = "file";
     public static final String P_GESPECIES = "species";
@@ -112,13 +112,13 @@ public class GESpecies extends IntegerVectorSpecies
     //return value which denotes that the tree has grown too large.
     public static final int BIG_TREE_ERROR = -1;
     public GPSpecies gpspecies;
-    private HashMap ERCBank;
+	HashMap ERCBank;
 
     /*
      * inner class for creating rules.
      * a rule consists of a name and a number of choices.
      */
-    private class Rule
+	class Rule
     {
 
         String name;
@@ -146,7 +146,6 @@ public class GESpecies extends IntegerVectorSpecies
         // check to make sure that our individual prototype is a GPIndividual
         if (!(i_prototype instanceof ByteVectorIndividual))
         {
-
             state.output.fatal("The Individual class for the Species " + getClass().getName() + " is must be a subclass of ec.gp.ge.GEIndividual.", base);
         }
 
@@ -163,7 +162,7 @@ public class GESpecies extends IntegerVectorSpecies
      * @param state
      * @param base
      */
-    public void mapperSetup(EvolutionState state, Parameter base)
+	void mapperSetup(EvolutionState state, Parameter base)
     {
         //Dummy stuff to get the number of trees a GPIndividual has
         GPIndividual gpi = (GPIndividual) (gpspecies.i_prototype);
@@ -235,46 +234,46 @@ public class GESpecies extends IntegerVectorSpecies
         }
     }
 
-    public int makeTrees(EvolutionState state, GEIndividual indiv, GPTree[] trees, int threadnum)
+    public int makeTrees(EvolutionState state, GEIndividual ind, GPTree[] trees, int threadnum)
     {
-        int pos = 0;
+        int position = 0;
 
         for (int i = 0; i < trees.length; i++)
         {
             //cannot complete one of the trees with the given chromosome
-            if(pos < 0)
+            if(position < 0)
                 return BIG_TREE_ERROR;
 
-            pos = makeTree(state, indiv, trees[i], pos, i, threadnum);
+            position = makeTree(state, ind, trees[i], position, i, threadnum);
         }
 
-        return pos;
+        return position;
     }
 
     /**
      * makeTree, edits the tree that its given by adding a root (and all subtrees attached)
      * @param state
-     * @param indiv
+     * @param ind
      * @param tree
-     * @param pos 
+     * @param position 
+     * @param treeNum
      * @param threadnum
-     * @param grammarNum
      * @return the number of chromosomes used, or an BIG_TREE_ERROR sentinel value.
      */
-    public int makeTree(EvolutionState state, GEIndividual indiv, GPTree tree, int pos, int grammarNum, int threadnum)
+    public int makeTree(EvolutionState state, GEIndividual ind, GPTree tree, int position, int treeNum, int threadnum)
     {
         int[] countNumberOfChromosomesUsed =
         {
-            pos
+            position
         };  //hack, use an array to pass an extra value
-        byte[] genome = indiv.genome;
+        byte[] genome = ind.genome;
         GPFunctionSet gpfs = tree.constraints((GPInitializer) state.initializer).functionset;
-        Rule r = ((Rule) (rules[grammarNum].get(startSymbols[grammarNum])));
+        Rule r = ((Rule) (rules[treeNum].get(startSymbols[treeNum])));
         GPNode root;
 
         try //get the tree, or return an error.
         {
-            root = makeSubtree(countNumberOfChromosomesUsed, genome, state, gpfs, r, grammarNum, threadnum);
+            root = makeSubtree(countNumberOfChromosomesUsed, genome, state, gpfs, r, treeNum, threadnum);
         } catch (BigTreeException e)
         {
             return BIG_TREE_ERROR;
@@ -286,16 +285,16 @@ public class GESpecies extends IntegerVectorSpecies
     }
 
     //thrown by makeSubtree when chromosome is not large enough for the generated tree.
-    private class BigTreeException extends RuntimeException
+	class BigTreeException extends RuntimeException
     {
 
-        private static final long serialVersionUID = -8668044916857977687L;
+		static final long serialVersionUID = -8668044916857977687L;
     }
 
     /*
      * returns the tree created from the rules and genome
      */
-    private GPNode makeSubtree(int[] index, byte[] genome, EvolutionState es, GPFunctionSet gpfs, Rule rule, int grammarNum, int threadnum)
+	GPNode makeSubtree(int[] index, byte[] genome, EvolutionState es, GPFunctionSet gpfs, Rule rule, int treeNum, int threadnum)
     {
         //have we exceeded the length of the genome?  No point in going further.
         if (index[0] >= genome.length)
@@ -322,9 +321,9 @@ public class GESpecies extends IntegerVectorSpecies
         // if body is another rule head
         //look up rule
         Rule r;
-        if ((r = (Rule) rules[grammarNum].get(choice)) != null)
+        if ((r = (Rule) rules[treeNum].get(choice)) != null)
         {
-            return makeSubtree(index, genome, es, gpfs, r, grammarNum, threadnum);
+            return makeSubtree(index, genome, es, gpfs, r, treeNum, threadnum);
         } else if (choice.startsWith("(")) //handle terminals and nonterminals
         {
             String[] temparray = choice.substring(1).split(" ");
@@ -349,10 +348,10 @@ public class GESpecies extends IntegerVectorSpecies
             {
                 if ((temparray[j] = temparray[j].replaceAll("\\)", "")).matches("<.*>")) //nonterm
                 {
-                    Rule r2 = (Rule) rules[grammarNum].get(temparray[j]);
+                    Rule r2 = (Rule) rules[treeNum].get(temparray[j]);
 
                     //get and link children to the current GPNode
-                    validNode.children[childNumber] = makeSubtree(index, genome, es, gpfs, r2, grammarNum, threadnum);
+                    validNode.children[childNumber] = makeSubtree(index, genome, es, gpfs, r2, treeNum, threadnum);
                     if (validNode.children[childNumber] == null)
                     {
                         return null;
@@ -404,7 +403,7 @@ public class GESpecies extends IntegerVectorSpecies
     /*
      * reads the grammar file from the given path, returns a String[] where each index is a line in the grammar.
      */
-    private String[] readGrammarFile(File grammarFile)
+	String[] readGrammarFile(File grammarFile)
     {
         String[] grammar;
         List tempGrammar = new ArrayList();  //list of strings

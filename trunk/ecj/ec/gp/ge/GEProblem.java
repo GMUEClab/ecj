@@ -9,12 +9,13 @@ import ec.util.*;
 
 public class GEProblem extends Problem implements SimpleProblemForm, GroupedProblemForm
     {
+    public final static String P_PROBLEM = "problem";
     public Problem problem;
         
     public void setup(EvolutionState state, Parameter base)
         {
-        problem = (Problem)state.parameters.getInstanceForParameter(base.push("problem"), null, GPProblem.class);
-        problem.setup(state, base);
+        problem = (Problem)state.parameters.getInstanceForParameter(base.push(P_PROBLEM), null, GPProblem.class);
+        problem.setup(state, base.push(P_PROBLEM));
         }
         
     public Object clone()
