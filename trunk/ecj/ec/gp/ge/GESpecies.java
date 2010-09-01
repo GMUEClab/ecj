@@ -151,7 +151,7 @@ public class GESpecies extends IntegerVectorSpecies
 
         mapperSetup(state, p);
 
-        System.out.println("Mapping done");
+        System.out.println("Grammar Mapping complete: begining simulation.");
     }
 
     /**
@@ -182,7 +182,16 @@ public class GESpecies extends IntegerVectorSpecies
             String[] grammar;
             Parameter p = base.push(P_FILE);
             Parameter def = defaultBase();
-            grammar = readGrammarFile(state.parameters.getFile(p, def.push(P_FILE).push("" + x)));
+
+            File grammarFile = state.parameters.getFile(p, def.push(P_FILE).push("" + x));
+
+            //files need to be read in ascending order starting at .0
+            if(grammarFile == null)
+            {
+                state.output.fatal("Error retrieving grammar file(s): " + def.toString() + "."+ P_FILE + "." + x + " is undefined.");
+            }
+
+            grammar = readGrammarFile(grammarFile);
             boolean started = false;
 
             //get rest of nonterminals and put them into Rules
@@ -234,6 +243,14 @@ public class GESpecies extends IntegerVectorSpecies
         }
     }
 
+    /**
+     * creates all of an individual's trees
+     * @param state Evolution state
+     * @param trees array of trees for the individual
+     * @param ind the GEIndividual
+     * @param threadnum tread number
+     * @return number of chromosomes consumed
+     */
     public int makeTrees(EvolutionState state, GEIndividual ind, GPTree[] trees, int threadnum)
     {
         int position = 0;
@@ -305,19 +322,35 @@ public class GESpecies extends IntegerVectorSpecies
         //expand the rule with the chromome to get a body element
         int i;
 
-        //key for ERC hashtable look ups is the current index within the genome, increment index for next pass
-        int key = genome[index[0]++];
+        //key for ERC hashtable look ups is the current index within the genome
+        int key = genome[index[0]];
 
-        //more than one rule to consider, pick one based off the genome
+        //non existant rule got passed in
+        if (rule == null)
+        {
+            es.output.fatal("An undefined rule exists within the grammar.");
+        }
+
+        //more than one rule to consider, pick one based off the genome, and consume the current gene
         if (rule.numberOfChoices > 1)
         {
-            i = (key + 128) % rule.numberOfChoices;
-        } //only 1 rule to consider
+            //casting to an int should be ok since the biggest these genes can be is a byte
+            i = ((genome[index[0]]) - ((int)(this.minGene(index[0])))) % rule.numberOfChoices;
+            index[0]++;
+        }
+        //only 1 rule to consider
         else
         {
             i = 0;
         }
         String choice = ((String) (rule.choices.get(i))).trim();
+
+        //choice is a rule, but is not in the set of rules taken from the grammar
+        if (choice.matches("<.*>") && !(rules[treeNum].containsKey(choice)))
+        {
+            es.output.fatal(choice + " is not defined in the grammar.");
+        }
+
         // if body is another rule head
         //look up rule
         Rule r;
@@ -330,14 +363,32 @@ public class GESpecies extends IntegerVectorSpecies
 
             temparray[0] = temparray[0].replaceAll("\\)", "");  //remove the close brace ')'
 
-            //get the GPNode from GPFunctionSet.nodesByName
+            //does this rule map to an existing node in the function set?
+            if (!(gpfs.nodesByName.containsKey(temparray[0])))
+            {
+                es.output.fatal("GPNode " + temparray[0] + " is not defined in the function set.");
+            }
+
+            //Known: node exists in the function set time to get the GPNode from GPFunctionSet.nodesByName
             GPNode validNode = ((GPNode[]) (gpfs.nodesByName.get(temparray[0])))[0];
+            
+            int numChildren = validNode.children.length;
+            //index 0 is the node itself
+            int numChildrenInGrammar = temparray.length -1;
+
+            //does the grammar contain the correct amount of children that the GPNode requires
+            if (numChildren != numChildrenInGrammar)
+            {
+                es.output.fatal("GPNode " + validNode.toStringForHumans() + " requires " + numChildren + " children.  "
+                        + numChildrenInGrammar + " children found in the grammar.");
+            }
 
             //check to see if it is an ERC node
             if (validNode.name().equals("ERC"))
-            {
+            {                
                 validNode = obtainERC(es, key, genome, threadnum, validNode);
-            } //non ERC node
+            }
+            //non ERC node
             else
             {
                 validNode = validNode.lightClone();
@@ -363,6 +414,7 @@ public class GESpecies extends IntegerVectorSpecies
 
             return validNode;
         }
+        
         //handling of extra cases
         return null;
     }
