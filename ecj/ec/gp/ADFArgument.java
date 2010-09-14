@@ -50,11 +50,11 @@ public class ADFArgument extends GPNode
     public final static String P_ARGUMENT = "arg";
     public static final String P_FUNCTIONNAME = "name";
     public int argument;
-	
-	/** The "function name" of the ADFArgument, to distinguish it from other GP
+        
+    /** The "function name" of the ADFArgument, to distinguish it from other GP
         functions you might provide.  */
     public String name;
-	public String name() { return name; }
+    public String name() { return name; }
 
     
     public Parameter defaultBase()

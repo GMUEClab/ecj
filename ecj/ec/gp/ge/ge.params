@@ -43,12 +43,12 @@ pop.subpop.0.species.pipe.source.0 = ec.vector.breed.ListCrossoverPipeline
 pop.subpop.0.species.pipe.source.0.source.0 = ec.gp.ge.breed.GETruncationPipeline
 pop.subpop.0.species.pipe.source.0.source.0.source.0 = ec.select.TournamentSelection
 pop.subpop.0.species.pipe.source.0.source.1 = same
-pop.subpop.0.species.pipe.source.0.prob = 0.9
+pop.subpop.0.species.pipe.source.0.prob = 0.2
 
 pop.subpop.0.species.pipe.source.1 = ec.vector.breed.GeneDuplicationPipeline
 pop.subpop.0.species.pipe.source.1.source.0 = ec.gp.ge.breed.GETruncationPipeline
 pop.subpop.0.species.pipe.source.1.source.0.source.0 = ec.select.TournamentSelection
-pop.subpop.0.species.pipe.source.1.prob = 0.05
+pop.subpop.0.species.pipe.source.1.prob = 0.55
 
 pop.subpop.0.species.pipe.source.2 = ec.vector.breed.VectorMutationPipeline
 pop.subpop.0.species.pipe.source.2.source.0 = ec.select.TournamentSelection
