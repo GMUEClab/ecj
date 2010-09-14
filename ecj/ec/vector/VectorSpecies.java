@@ -279,11 +279,11 @@ public class VectorSpecies extends Species
         if (crossoverType==C_LINE_RECOMB || crossoverType==C_INTERMED_RECOMB)
             {
             if (!(this instanceof IntegerVectorSpecies) && !(this instanceof FloatVectorSpecies))
-                state.output.error("Line and intermediate recombinations are only supported by IntegerVectorSpecies and FloatVectorSpecies");
+                state.output.error("Line and intermediate recombinations are only supported by IntegerVectorSpecies and FloatVectorSpecies", base.push(P_CROSSOVERTYPE), def.push(P_CROSSOVERTYPE));
             lineDistance = state.parameters.getDouble(
                 base.push(P_LINEDISTANCE), def.push(P_LINEDISTANCE), 0.0);
             if (lineDistance==-1.0)
-                state.output.error("If it's going to use line or intermediate recombination, VectorSpecies needs a line distance >= 0.0");
+                state.output.error("If it's going to use line or intermediate recombination, VectorSpecies needs a line extension >= 0.0  (0.25 is common)", base.push(P_LINEDISTANCE), def.push(P_LINEDISTANCE));
             }
         else lineDistance = 0.0;
 
