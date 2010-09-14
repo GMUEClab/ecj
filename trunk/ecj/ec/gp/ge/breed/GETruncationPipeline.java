@@ -21,7 +21,7 @@ import ec.util.*;
  * @version 1.0
  */
 public class GETruncationPipeline extends BreedingPipeline
-{
+    {
     public static final String P_TRUNCATION = "truncate";
     public static final int NUM_SOURCES = 1;
 

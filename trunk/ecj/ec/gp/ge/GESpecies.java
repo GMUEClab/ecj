@@ -1,8 +1,8 @@
 /*
-Copyright 20010 by Sean Luke and George Mason University
-Licensed under the Academic Free License version 3.0
-See the file "LICENSE" for more information
- */
+  Copyright 20010 by Sean Luke and George Mason University
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
+*/
 package ec.gp.ge;
 
 import java.io.BufferedReader;
@@ -102,9 +102,9 @@ import ec.util.*;
  * @version 1.0 
  */
 public class GESpecies extends IntegerVectorSpecies
-{
+    {
 
-	HashMap[] rules;
+    HashMap[] rules;
     public String[] startSymbols;
     public static final String P_FILE = "file";
     public static final String P_GESPECIES = "species";
@@ -112,28 +112,28 @@ public class GESpecies extends IntegerVectorSpecies
     //return value which denotes that the tree has grown too large.
     public static final int BIG_TREE_ERROR = -1;
     public GPSpecies gpspecies;
-	HashMap ERCBank;
+    HashMap ERCBank;
 
     /*
      * inner class for creating rules.
      * a rule consists of a name and a number of choices.
      */
-	class Rule
-    {
+    class Rule
+        {
 
         String name;
         ArrayList choices;  //strings
         int numberOfChoices;
 
         public String toString()
-        {
+            {
             return "Rule [choices=" + choices + ", name=" + name
-                    + ", numberOfChoices=" + numberOfChoices + "]";
+                + ", numberOfChoices=" + numberOfChoices + "]";
+            }
         }
-    }
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state, base);
 
         Parameter p = base;
@@ -145,14 +145,14 @@ public class GESpecies extends IntegerVectorSpecies
 
         // check to make sure that our individual prototype is a GPIndividual
         if (!(i_prototype instanceof ByteVectorIndividual))
-        {
+            {
             state.output.fatal("The Individual class for the Species " + getClass().getName() + " is must be a subclass of ec.gp.ge.GEIndividual.", base);
-        }
+            }
 
         mapperSetup(state, p);
 
         System.out.println("Grammar Mapping complete: begining simulation.");
-    }
+        }
 
     /**
      * Creates a HashMap of rules to be referenced when creating an individual's tree.  The
@@ -162,8 +162,8 @@ public class GESpecies extends IntegerVectorSpecies
      * @param state
      * @param base
      */
-	void mapperSetup(EvolutionState state, Parameter base)
-    {
+    void mapperSetup(EvolutionState state, Parameter base)
+        {
         //Dummy stuff to get the number of trees a GPIndividual has
         GPIndividual gpi = (GPIndividual) (gpspecies.i_prototype);
         GPTree[] trees = gpi.trees;
@@ -176,7 +176,7 @@ public class GESpecies extends IntegerVectorSpecies
 
         //parse each grammar file and create a rule hashmap for each one
         for (int x = 0; x < numGrammars; x++)
-        {
+            {
             rules[x] = new HashMap();
 
             String[] grammar;
@@ -187,27 +187,27 @@ public class GESpecies extends IntegerVectorSpecies
 
             //files need to be read in ascending order starting at .0
             if(grammarFile == null)
-            {
+                {
                 state.output.fatal("Error retrieving grammar file(s): " + def.toString() + "."+ P_FILE + "." + x + " is undefined.");
-            }
+                }
 
             grammar = readGrammarFile(grammarFile);
             boolean started = false;
 
             //get rest of nonterminals and put them into Rules
             for (int i = 0; i < grammar.length; i++)
-            {
+                {
                 //check to see if the line is only whitespace
                 if (grammar[i].trim().equals(""))
-                {
+                    {
                     continue;  //ignore whitespace outside
-                }
+                    }
 
                 //ignore commented line, comments start with a #
                 if (grammar[i].charAt(0) == '#')
-                {
+                    {
                     continue;
-                }
+                    }
 
                 String[] choppedUpString = grammar[i].split("::=");
 
@@ -215,33 +215,33 @@ public class GESpecies extends IntegerVectorSpecies
                 r.name = choppedUpString[0].trim();  //start symbol
 
                 if (started == false) //special case for startSymbol
-                {
+                    {
                     startSymbols[x] = r.name;
                     started = true;
-                }
+                    }
                 r.choices = new ArrayList();  //get choices for each rule
                 String[] choices = choppedUpString[1].split("\\|");
 
                 for (int j = 0; j < choices.length; j++)
-                {
+                    {
                     r.choices.add(choices[j].trim());
-                }
+                    }
 
                 r.numberOfChoices = r.choices.size();
 
                 Rule oldRule;
                 if ((oldRule = (Rule) rules[x].get(r.name)) != null)
-                {
+                    {
                     //for appending rules (ones which already exist)
                     oldRule.numberOfChoices += r.numberOfChoices;
                     oldRule.choices.addAll(r.choices);
-                } else  //new rules
-                {
+                    } else  //new rules
+                    {
                     rules[x].put(r.name, r);
+                    }
                 }
             }
         }
-    }
 
     /**
      * creates all of an individual's trees
@@ -252,20 +252,20 @@ public class GESpecies extends IntegerVectorSpecies
      * @return number of chromosomes consumed
      */
     public int makeTrees(EvolutionState state, GEIndividual ind, GPTree[] trees, int threadnum)
-    {
+        {
         int position = 0;
 
         for (int i = 0; i < trees.length; i++)
-        {
+            {
             //cannot complete one of the trees with the given chromosome
             if(position < 0)
                 return BIG_TREE_ERROR;
 
             position = makeTree(state, ind, trees[i], position, i, threadnum);
-        }
+            }
 
         return position;
-    }
+        }
 
     /**
      * makeTree, edits the tree that its given by adding a root (and all subtrees attached)
@@ -278,46 +278,46 @@ public class GESpecies extends IntegerVectorSpecies
      * @return the number of chromosomes used, or an BIG_TREE_ERROR sentinel value.
      */
     public int makeTree(EvolutionState state, GEIndividual ind, GPTree tree, int position, int treeNum, int threadnum)
-    {
-        int[] countNumberOfChromosomesUsed =
         {
+        int[] countNumberOfChromosomesUsed =
+            {
             position
-        };  //hack, use an array to pass an extra value
+            };  //hack, use an array to pass an extra value
         byte[] genome = ind.genome;
         GPFunctionSet gpfs = tree.constraints((GPInitializer) state.initializer).functionset;
         Rule r = ((Rule) (rules[treeNum].get(startSymbols[treeNum])));
         GPNode root;
 
         try //get the tree, or return an error.
-        {
+            {
             root = makeSubtree(countNumberOfChromosomesUsed, genome, state, gpfs, r, treeNum, threadnum);
-        } catch (BigTreeException e)
-        {
+            } catch (BigTreeException e)
+            {
             return BIG_TREE_ERROR;
-        }
+            }
 
         root.parent = tree;
         tree.child = root;
         return countNumberOfChromosomesUsed[0];
-    }
+        }
 
     //thrown by makeSubtree when chromosome is not large enough for the generated tree.
-	class BigTreeException extends RuntimeException
-    {
+    class BigTreeException extends RuntimeException
+        {
 
-		static final long serialVersionUID = -8668044916857977687L;
-    }
+        static final long serialVersionUID = -8668044916857977687L;
+        }
 
     /*
      * returns the tree created from the rules and genome
      */
-	GPNode makeSubtree(int[] index, byte[] genome, EvolutionState es, GPFunctionSet gpfs, Rule rule, int treeNum, int threadnum)
-    {
+    GPNode makeSubtree(int[] index, byte[] genome, EvolutionState es, GPFunctionSet gpfs, Rule rule, int treeNum, int threadnum)
+        {
         //have we exceeded the length of the genome?  No point in going further.
         if (index[0] >= genome.length)
-        {
+            {
             throw new BigTreeException();
-        }
+            }
 
         //expand the rule with the chromome to get a body element
         int i;
@@ -327,47 +327,47 @@ public class GESpecies extends IntegerVectorSpecies
 
         //non existant rule got passed in
         if (rule == null)
-        {
+            {
             es.output.fatal("An undefined rule exists within the grammar.");
-        }
+            }
 
         //more than one rule to consider, pick one based off the genome, and consume the current gene
         if (rule.numberOfChoices > 1)
-        {
+            {
             //casting to an int should be ok since the biggest these genes can be is a byte
             i = ((genome[index[0]]) - ((int)(this.minGene(index[0])))) % rule.numberOfChoices;
             index[0]++;
-        }
+            }
         //only 1 rule to consider
         else
-        {
+            {
             i = 0;
-        }
+            }
         String choice = ((String) (rule.choices.get(i))).trim();
 
         //choice is a rule, but is not in the set of rules taken from the grammar
         if (choice.matches("<.*>") && !(rules[treeNum].containsKey(choice)))
-        {
+            {
             es.output.fatal(choice + " is not defined in the grammar.");
-        }
+            }
 
         // if body is another rule head
         //look up rule
         Rule r;
         if ((r = (Rule) rules[treeNum].get(choice)) != null)
-        {
+            {
             return makeSubtree(index, genome, es, gpfs, r, treeNum, threadnum);
-        } else if (choice.startsWith("(")) //handle terminals and nonterminals
-        {
+            } else if (choice.startsWith("(")) //handle terminals and nonterminals
+            {
             String[] temparray = choice.substring(1).split(" ");
 
             temparray[0] = temparray[0].replaceAll("\\)", "");  //remove the close brace ')'
 
             //does this rule map to an existing node in the function set?
             if (!(gpfs.nodesByName.containsKey(temparray[0])))
-            {
+                {
                 es.output.fatal("GPNode " + temparray[0] + " is not defined in the function set.");
-            }
+                }
 
             //Known: node exists in the function set time to get the GPNode from GPFunctionSet.nodesByName
             GPNode validNode = ((GPNode[]) (gpfs.nodesByName.get(temparray[0])))[0];
@@ -378,71 +378,71 @@ public class GESpecies extends IntegerVectorSpecies
 
             //does the grammar contain the correct amount of children that the GPNode requires
             if (numChildren != numChildrenInGrammar)
-            {
+                {
                 es.output.fatal("GPNode " + validNode.toStringForHumans() + " requires " + numChildren + " children.  "
-                        + numChildrenInGrammar + " children found in the grammar.");
-            }
+                    + numChildrenInGrammar + " children found in the grammar.");
+                }
 
             //check to see if it is an ERC node
             if (validNode.name().equals("ERC"))
-            {                
+                {                
                 validNode = obtainERC(es, key, genome, threadnum, validNode);
-            }
+                }
             //non ERC node
             else
-            {
+                {
                 validNode = validNode.lightClone();
-            }
+                }
 
             //get the rest.
             for (int j = 1, childNumber = 0; j < temparray.length; j++)
-            {
-                if ((temparray[j] = temparray[j].replaceAll("\\)", "")).matches("<.*>")) //nonterm
                 {
+                if ((temparray[j] = temparray[j].replaceAll("\\)", "")).matches("<.*>")) //nonterm
+                    {
                     Rule r2 = (Rule) rules[treeNum].get(temparray[j]);
 
                     //get and link children to the current GPNode
                     validNode.children[childNumber] = makeSubtree(index, genome, es, gpfs, r2, treeNum, threadnum);
                     if (validNode.children[childNumber] == null)
-                    {
+                        {
                         return null;
-                    }
+                        }
                     childNumber++;
+                    }
+
                 }
 
-            }
-
             return validNode;
-        }
+            }
         
         //handling of extra cases
         return null;
-    }
+        }
 
     //method for obtaining a ERC indepen
     public GPNode obtainERC(EvolutionState state, int key, byte[] genome, int threadnum, GPNode node)
-    {
+        {
         ArrayList ERCList = (ArrayList) (ERCBank.get(new Integer(key)));
 
         if (ERCList == null)
-        {
+            {
             ERCList = new ArrayList();
             ERCBank.put(new Integer(key), ERCList);
-        }
+            }
 
         GPNode dummy = null;
 
         //search array list for an ERC of the same type we want
         for (int i = 0; i < ERCList.size(); i++)
-        {
+            {
             dummy = (GPNode) ERCList.get(i);
 
             //ERC was found inside the arraylist
             if (dummy.nodeEquivalentTo(node))
-            {
+                {
                 return dummy;
+                }
             }
-        }
 
         //erc was not found in the array list lets make one
         node = node.lightClone();
@@ -450,78 +450,78 @@ public class GESpecies extends IntegerVectorSpecies
         ERCList.add(node);
 
         return node;
-    }
+        }
 
     /*
      * reads the grammar file from the given path, returns a String[] where each index is a line in the grammar.
      */
-	String[] readGrammarFile(File grammarFile)
-    {
+    String[] readGrammarFile(File grammarFile)
+        {
         String[] grammar;
         List tempGrammar = new ArrayList();  //list of strings
         BufferedReader br = null;
         try
-        {
+            {
             br = new BufferedReader(new FileReader(grammarFile));
-        } catch (FileNotFoundException e)
-        {
+            } catch (FileNotFoundException e)
+            {
             e.printStackTrace();
             return null;
-        }
+            }
 
         if (br == null)
-        {
+            {
             return null;  //error case
-        }
+            }
         try
-        {
+            {
             String s;
             while ((s = br.readLine()) != null)
-            {
+                {
                 tempGrammar.add(s);
-            }
-        } catch (IOException e)
-        {
+                }
+            } catch (IOException e)
+            {
             e.printStackTrace();
-        }
+            }
 
         grammar = new String[tempGrammar.size()];
         for (int i = 0; i < tempGrammar.size(); i++)
-        {
+            {
             grammar[i] = (String) tempGrammar.get(i);
-        }
+            }
         return grammar;
-    }
+        }
 
     public Object clone()
-    {
+        {
         GESpecies other = (GESpecies) (super.clone());
         other.gpspecies = (GPSpecies) (gpspecies.clone());
         return other;
-    }
+        }
 
     public Parameter defaultBase()
-    {
+        {
         return GEDefaults.base().push(P_GESPECIES);
-    }
+        }
 
     /** Returns the number of elements consumed from the GEIndividual array to produce
-    the tree, else returns -1 if an error occurs, specifically if all elements were
-    consumed and the tree had still not been completed. */
+        the tree, else returns -1 if an error occurs, specifically if all elements were
+        consumed and the tree had still not been completed. */
     public int consumed(EvolutionState state, GEIndividual ind, int threadnum)
-    {
+        {
         // create a dummy individual
         GPIndividual newind = ((GPIndividual) (gpspecies.i_prototype)).lightClone();
 
         // do the mapping and return the number consumed
         return makeTrees(state, ind, newind.trees, threadnum);
-    }
+        }
 
     /** Returns a dummy GPIndividual with a single tree which was built by mapping
-    over the elements of the given GEIndividual.  Null is returned if an error occurs,
-    specifically, if all elements were consumed and the tree had still not been completed. */
+        over the elements of the given GEIndividual.  Null is returned if an error occurs,
+        specifically, if all elements were consumed and the tree had still not been completed. */
     public GPIndividual map(EvolutionState state, GEIndividual ind, int threadnum)
-    {
+        {
         // create a dummy individual
         GPIndividual newind = ((GPIndividual) (gpspecies.i_prototype)).lightClone();
 
@@ -536,11 +536,11 @@ public class GESpecies extends IntegerVectorSpecies
 
         // do the mapping
         if (makeTrees(state, ind, newind.trees, threadnum) < 0)  // error
-        {
+            {
             return null;
-        } else
-        {
+            } else
+            {
             return newind;
+            }
         }
     }
-}

@@ -112,7 +112,6 @@ import ec.*;
 
 public class VectorSpecies extends Species
     {
-
     public static final String P_VECTORSPECIES = "species";
 
     public final static String P_CROSSOVERTYPE = "crossover-type";

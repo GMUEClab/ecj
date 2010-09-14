@@ -60,16 +60,23 @@ public class GeneDuplicationPipeline extends BreedingPipeline
             if (sources[0] instanceof SelectionMethod)
                 inds[q] = (Individual)(inds[q].clone());
 
+            //duplicate from the genome between a random begin and end point,
+            //and put that at the end of the new genome.
             VectorIndividual ind = (VectorIndividual)(inds[q]);
             
-            //duplicate from the genome between a random begin and end point, 
-            //and put that at the end of the new genome.
             int len = ind.genomeLength();
+
+            //zero length individual, just return
+            if (len == 0)
+                {
+                return n;
+                }
+
             int end = 0;
-            int begin = state.random[thread].nextInt(len);
+            int begin = state.random[thread].nextInt(len+1);
             do 
                 {
-                end = state.random[thread].nextInt(len);
+                end = state.random[thread].nextInt(len+1);
                 } 
             while (begin == end);  //because the end is exclusive, start cannot be
             //equal to end.
@@ -89,7 +96,7 @@ public class GeneDuplicationPipeline extends BreedingPipeline
             // copy the splice into a new array
             Object[] splice = new Object[3];
             ind.split(new int[] {begin, end}, splice);
-			
+                        
             // clone the genes in splice[1] (which we'll concatenate back in) in case we're using GeneVectorIndividual
             ind.cloneGenes(splice[1]);
             

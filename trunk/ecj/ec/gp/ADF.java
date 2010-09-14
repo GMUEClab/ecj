@@ -87,7 +87,7 @@ public class ADF extends GPNode
     /** The "function name" of the ADF, to distinguish it from other GP
         functions you might provide.  */
     public String name;
-	public String name() { return name; }
+    public String name() { return name; }
 
     public Parameter defaultBase()
         {
@@ -230,12 +230,12 @@ public class ADF extends GPNode
             state.output.warning("ADF/ADM node for Tree " + associatedTree + " has no function name.  Using the name " + name(),
                 base.push(P_FUNCTIONNAME),def.push(P_FUNCTIONNAME));
             }
-			
-		if (name.length() == 1)
-			{
-			state.output.warning("Using old-style ADF/ADM name.  You should change it to something longer and more descriptive, such as ADF" + name,
+                        
+        if (name.length() == 1)
+            {
+            state.output.warning("Using old-style ADF/ADM name.  You should change it to something longer and more descriptive, such as ADF" + name,
                 base.push(P_FUNCTIONNAME),def.push(P_FUNCTIONNAME));
-			}
+            }
 
         // now we let our parent set up.  
         super.setup(state,base);
