@@ -128,7 +128,7 @@ public class MooSuite extends Problem implements SimpleProblemForm
     private static final double TEN_PI = Math.PI*10;//ZDT3 uses it.
     private static final double FOUR_PI = Math.PI*4;//ZDT4 uses it.
     private static final double SIX_PI = Math.PI*6;//ZDT6 uses it.
-    private static final double ONE_OVER_SQRT_3 = 1d/Math.sqrt(3);//FON uses it.
+    private static final double ONE_OVER_SQRT_3 = 1.0/Math.sqrt(3);//FON uses it.
     private static final double A1 = 0.5*Math.sin(1) - 2*Math.cos(1) +    Math.sin(2)- 1.5*Math.cos(2);//POL uses it
     private static final double A2 = 1.5*Math.sin(1) -   Math.cos(1) + 2* Math.sin(2)- 0.5*Math.cos(2);//POL uses it
 
@@ -156,8 +156,8 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 sum = 0;
                 for(int i = 1; i< numDecisionVars; ++i)
                     sum += genome[i];
-                g = 1d+9d*sum/(numDecisionVars-1);
-                h = 1d-Math.sqrt(f/g);
+                g = 1.0 + 9.0*sum/(numDecisionVars-1);
+                h = 1.0 - Math.sqrt(f/g);
                 objectives[1] = (float)(g*h);
                 break;
                 
@@ -167,8 +167,8 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 sum = 0;
                 for(int i = 1; i< numDecisionVars; ++i)
                     sum += genome[i];
-                g = 1d+9d*sum/(numDecisionVars-1);
-                h = 1d-(f/g)*(f/g);
+                g = 1.0 + 9.0*sum/(numDecisionVars-1);
+                h = 1.0 - (f/g)*(f/g);
                 objectives[1] = (float)(g*h);
                 break;
                         
@@ -178,9 +178,9 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 sum = 0;
                 for(int i = 1; i< numDecisionVars; ++i)
                     sum += genome[i];
-                g = 1+9*sum/(numDecisionVars-1);
+                g = 1.0 + 9.0 * sum/(numDecisionVars-1);
                 double foverg = f/g;
-                h = 1-Math.sqrt(foverg) - foverg * Math.sin(TEN_PI * f);
+                h = 1.0 - Math.sqrt(foverg) - foverg * Math.sin(TEN_PI * f);
                 objectives[1] = (float)(g*h);
                 break;
             case PROB_ZDT4:
@@ -190,18 +190,18 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 for(int i = 1; i< numDecisionVars; ++i)
                     sum += genome[i]*genome[i]- 10*Math.cos(FOUR_PI * genome[i]);
                                 
-                g = 1+10*(numDecisionVars-1)+sum;
-                h = 1-Math.sqrt(f/g);
+                g = 1.0 + 10.0 *(numDecisionVars-1)+sum;
+                h = 1.0 - Math.sqrt(f/g);
                 objectives[1] = (float)(g*h);
                 break;                
             case PROB_ZDT6:
-                f = 1 - (Math.exp(-4 * genome[0]) * Math.pow(Math.sin(SIX_PI * genome[0]), 6));
+                f = 1.0 - (Math.exp(-4.0 * genome[0]) * Math.pow(Math.sin(SIX_PI * genome[0]), 6));
                 objectives[0] = (float)f;
                 sum = 0;
                 for (int i = 1; i < numDecisionVars; ++i)
                     sum += genome[i];
-                g = 1d + 9 * Math.pow(sum / (numDecisionVars - 1), 0.25);
-                h = 1d - Math.pow(f / g, 2);
+                g = 1.0 + 9 * Math.pow(sum / (numDecisionVars - 1), 0.25);
+                h = 1.0 - Math.pow(f / g, 2);
                 objectives[1] = (float) (g * h);
                 break; 
             case PROB_SPHERE:
@@ -252,8 +252,8 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 if(numDecisionVars!=2) throw new RuntimeException("POL needs exactly 2 decision variables (genes).");
                 x1= genome[0];
                 x2 = genome[1];
-                double b1 = 0.5*Math.sin(x1) - 2*Math.cos(x1) +    Math.sin(x2)- 1.5*Math.cos(x2);
-                double b2 = 1.5*Math.sin(x1) -   Math.cos(x1) + 2* Math.sin(x2)- 0.5*Math.cos(x2);
+                double b1 = 0.5 * Math.sin(x1) - 2*Math.cos(x1) +    Math.sin(x2)- 1.5*Math.cos(x2);
+                double b2 = 1.5 * Math.sin(x1) -   Math.cos(x1) + 2* Math.sin(x2)- 0.5*Math.cos(x2);
                 objectives[0] = (float)(1+(A1-b1)*(A1-b1)+(A2-b2)*(A2-b2));
                 objectives[1] = (float)((x1+3)*(x1+3)+(x2+1)*(x2+1));
                 break;
@@ -262,14 +262,14 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 for(int i=0;i<numDecisionVars;i++)
                     {
                     double xi=genome[i];
-                    sum+=xi*xi-10*Math.cos(TWO_PI*xi)+10;
+                    sum+= xi * xi - 10 * Math.cos(TWO_PI*xi)+10;
                     }
                 objectives[0] = (float)Math.pow(sum/numDecisionVars, 0.25);
                 sum=0;
                 for(int i=0;i<numDecisionVars;i++)
                     {
-                    double xi=genome[i]-1.5;
-                    sum+=xi*xi-10*Math.cos(TWO_PI*xi)+10;
+                    double xi=genome[i] - 1.5;
+                    sum+= xi * xi - 10 * Math.cos(TWO_PI*xi)+10;
                     }
                 objectives[1] = (float)Math.pow(sum/numDecisionVars, 0.25);
                 break;
@@ -280,7 +280,7 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 for(int i = 0; i< numDecisionVars-1; ++i)
                     {
                     nextSquared = genome[i+1]*genome[i+1];
-                    sum += 1d-Math.exp(-0.2*Math.sqrt(thisSquared + nextSquared));
+                    sum += 1.0 - Math.exp(-0.2 * Math.sqrt(thisSquared + nextSquared));
                     thisSquared = nextSquared;
                     }
                 objectives[1] = (float)sum;
@@ -289,8 +289,8 @@ public class MooSuite extends Problem implements SimpleProblemForm
                     {
                     double sin_xi = Math.sin(genome[i]);
                                 
-                    double t1 = Math.pow(Math.abs(genome[i]), .8);
-                    double t2 = 5*sin_xi*sin_xi*sin_xi;
+                    double t1 = Math.pow(Math.abs(genome[i]), 0.8);
+                    double t2 = 5.0 * sin_xi*sin_xi*sin_xi;
                                 
                     sum +=t1+t2+ 3.5828;
                     }
