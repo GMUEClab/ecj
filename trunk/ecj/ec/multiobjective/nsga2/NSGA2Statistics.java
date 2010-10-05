@@ -1,16 +1,33 @@
-package ec.multiobjective.spea2;
+/*
+  Copyright 2010 by Sean Luke and George Mason University
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
+*/
 
-import ec.*;
-import ec.util.*;
-import ec.simple.*;
-import ec.multiobjective.*;
-import ec.multiobjective.nsga2.NSGA2MultiObjectiveFitness;
+package ec.multiobjective.nsga2;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import ec.EvolutionState;
+import ec.Individual;
+import ec.Subpopulation;
+import ec.multiobjective.MultiObjectiveFitness;
+import ec.simple.SimpleStatistics;
+import ec.util.QuickSort;
+import ec.util.SortComparator;
+
+/* 
+ * NSGA2Statistics.java
+ * 
+ * Created: Thu Feb 04 2010
+ * By: Faisal Abidi
+ */
 
 /**
  * 
- * @author Gabriel Balan
+ * @author Faisal Abidi
  */
-public class SPEA2Statistics extends SimpleStatistics
+public class NSGA2Statistics extends SimpleStatistics
     {
 
     /** Logs the best individual of the run. */
@@ -18,27 +35,29 @@ public class SPEA2Statistics extends SimpleStatistics
         {
         // super.finalStatistics(state,result);
         // I don't want just a single best fitness
-
+        int i;
+        int j;
+        Individual[] spopInds;
+        Individual individual;
         String s;
         s = "\n-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n Final Front of Run:";
         state.output.message(s);
         for (int sp = 0; sp < state.population.subpops.length; sp++)
             {
-            state.output.println(s = "Subpop " + sp + "'s Final Archive:", statisticslog);
+            state.output.println(s = "Subpop " + sp + "'s Best Front:", statisticslog);
             state.output.message(s);
-            SPEA2Subpopulation spop = (SPEA2Subpopulation) state.population.subpops[sp];
-            int length = spop.individuals.length;
-
-            Individual[] newInds = new Individual[length];
-            SPEA2Breeder.loadElites(state, spop.individuals, newInds, spop.archiveSize);
-
-            Object[] bestFrontSorted = new Object[spop.archiveSize];
-            for (int i = 0; i < spop.archiveSize; i++)
-                {
-                // the archive is at the end, and I read backwards:
-                bestFrontSorted[i] = newInds[length - i - 1];
-                }
-            // sort by objective[0]
+            Subpopulation spop = (Subpopulation) state.population.subpops[sp];
+            spopInds = spop.individuals;
+            ArrayList bestFront = new ArrayList(Arrays.asList(spopInds));
+            i = 0;
+            while (i < bestFront.size())
+                if (((NSGA2MultiObjectiveFitness) ((Individual) bestFront.get(i)).fitness).NSGA2Rank != 0)
+                    bestFront.remove(i);
+                else
+                    i++;
+            
+            Object[] bestFrontSorted = bestFront.toArray();
+            //sort by objective[0]
             QuickSort.qsort(bestFrontSorted, new SortComparator()
                 {
                 
@@ -58,14 +77,14 @@ public class SPEA2Statistics extends SimpleStatistics
                     }
                 });
             state.output.message("Total: " + bestFrontSorted.length + " individuals in Best Front\n");
-            state.output.message("objective1" + "\tobjective2" + "\tSPEA2Fitness\n");
-            for (int i = 0; i < bestFrontSorted.length; i++)
+            state.output.message("objective1" + "\tobjective2" + "\tSparsity\n");
+            for (i = 0; i < bestFront.size(); i++)
                 {
-                // the archive is at the end, and I read backwards:
-                Individual individual = (Individual)bestFrontSorted[i];
+                individual = (Individual) (bestFrontSorted[i]);
+                // newInds = NSGA2Breeder.loadElites(state, spop.individuals);
 
-                // //SPEA2Fitness.fitnessToStringForHumans prints more than I
-                // need, on 2 lines no less;
+                // //NSGA2Fitness.fitnessToStringForHumans prints more than
+                // I need, on 2 lines no less;
 
                 // I include that in the stats log though, just in case:
                 individual.fitness.printFitnessForHumans(state, statisticslog);
@@ -78,26 +97,12 @@ public class SPEA2Statistics extends SimpleStatistics
                 MultiObjectiveFitness mof = (MultiObjectiveFitness) individual.fitness;
                 float[] objectives = mof.getObjectives();
                 String line = "";
+
                 for (int f = 0; f < objectives.length; f++)
                     line += objectives[f] + "\t";
-                // printing the computed SPEA2Fitness may be helpful.
-                line += ((SPEA2MultiObjectiveFitness) individual.fitness).SPEA2Fitness;
+                line += ((NSGA2MultiObjectiveFitness) individual.fitness).NSGA2Sparsity;
                 state.output.message(line);
                 }
             }
-        state.output.flush();
-        }
-
-    /*
-     * super.postEvaluationStatistics prints info on best individual of
-     * generation, which doesn't make sense in the case of multi objective
-     * problems (hence the empty body).
-     * 
-     * At this time the new archive is not ready, all I could print now is the
-     * last generation's archive (the one used for parents for this generation's
-     * inds).
-     */
-    public void postEvaluationStatistics(final EvolutionState state)
-        {
         }
     }
