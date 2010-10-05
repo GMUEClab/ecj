@@ -1,3 +1,10 @@
+/*
+  Copyright 2009 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
+*/
+
+
 package ec.util;
 import java.io.*;
 
@@ -127,6 +134,17 @@ public class DataPipe
         {
         return pull;
         }
-        
+	
+	/** A poor-man's clone for serializable but not cloneable objects:
+		serializes an object to the pipe, then deserializes it. */
+	public static Object copy(Serializable obj) throws IOException, ClassNotFoundException
+		{
+		DataPipe pipe = new DataPipe();
+		ObjectOutputStream s = new ObjectOutputStream(pipe.output);
+		ObjectInputStream u = new ObjectInputStream(pipe.input);
+		s.writeObject(obj);
+		return u.readObject();
+		}
+
     public String toString() { return "DataPipe(" + numWritten() + ", " + numRead() + ", " + size() + ")"; }
     }

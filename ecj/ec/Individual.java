@@ -65,11 +65,14 @@ import ec.util.*;
  * which <i>do</i> create new individuals read from files.  If you're trying to create a brand new individual
  * read from a file, look in Species.
  *
+ * <p> Individuals are Comparable: if you sort Individuals, the FITTER individuals will appear EARLIER in a list or array.
+ *
+ *
  * @author Sean Luke
  * @version 1.0
  */
 
-public abstract class Individual implements Prototype
+public abstract class Individual implements Prototype, Comparable
     {
     /** A reasonable parameter base element for individuals*/
     public static final String P_INDIVIDUAL = "individual";
@@ -363,5 +366,15 @@ public abstract class Individual implements Prototype
         return (equals(otherInd) ? 0 : Double.POSITIVE_INFINITY);
         }
 
+	/**
+		Returns -1 if I am BETTER in some way than the other Individual, 1 if the other Individual is BETTER than me,
+		and 0 if we are equivalent.  The default implementation assumes BETTER means FITTER, by simply calling
+		compareTo on the fitnesses themse.ves
+	*/
+	public int compareTo(Object o)
+		{
+		Individual other = (Individual) o;
+		return fitness.compareTo(other.fitness);
+		}
     }
 

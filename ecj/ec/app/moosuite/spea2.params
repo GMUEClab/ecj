@@ -1,0 +1,6 @@
+parent.0 = ../../multiobjective/spea2/spea2.params
+#note that subpop.size includes the archive!
+breed.elite.0 = 			20
+
+pop.subpop.0.species.crossover-prob	= 0.8
+pop.subpop.0.species.mutation-prob	= 1

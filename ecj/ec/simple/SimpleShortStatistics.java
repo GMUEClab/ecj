@@ -9,6 +9,7 @@ package ec.simple;
 import ec.*;
 import java.io.*;
 import ec.util.*;
+import ec.eval.*;
 
 /* 
  * SimpleShortStatistics.java
@@ -65,16 +66,15 @@ import ec.util.*;
  * @version 1.0 
  */
 
-public class SimpleShortStatistics extends Statistics
+public class SimpleShortStatistics extends Statistics implements ProvidesBestSoFar
     {
+	public Individual[] getBestSoFar() { return best_of_run; }
+	
     /** log file parameter */
     public static final String P_STATISTICS_FILE = "file";
 
     /** The Statistics' log */
     public int statisticslog;
-
-    /* The best individual we've found so far */
-    //public Individual best_of_run;
 
     /** compress? */
     public static final String P_COMPRESS = "gzip";
@@ -83,7 +83,7 @@ public class SimpleShortStatistics extends Statistics
 
     public boolean doFull;
 
-    public Individual[] best_of_run_a;
+    public Individual[] best_of_run;
     public long lengths[];
 
     // timings
@@ -132,7 +132,7 @@ public class SimpleShortStatistics extends Statistics
         
         // set up our best_of_run array -- can't do this in setup, because
         // we don't know if the number of subpopulations has been determined yet
-        best_of_run_a = new Individual[state.population.subpops.length];
+        best_of_run = new Individual[state.population.subpops.length];
         
         // print out our generation number
         state.output.print("0 ", statisticslog);
@@ -238,17 +238,17 @@ public class SimpleShortStatistics extends Statistics
             state.output.print("" + meanFitness + " " + best_i[x].fitness.fitness() + " ",
                 statisticslog);
 
-            // now test to see if it's the new best_of_run_a[x]
-            if (best_of_run_a[x]==null || best_i[x].fitness.betterThan(best_of_run_a[x].fitness))
-                best_of_run_a[x] = (Individual)(best_i[x].clone());
+            // now test to see if it's the new best_of_run[x]
+            if (best_of_run[x]==null || best_i[x].fitness.betterThan(best_of_run[x].fitness))
+                best_of_run[x] = (Individual)(best_i[x].clone());
             
-            state.output.print("" + best_of_run_a[x].fitness.fitness() + " ",
+            state.output.print("" + best_of_run[x].fitness.fitness() + " ",
                 statisticslog);
 
             if( doFull )
                 {
                 state.output.print("" + (double)(best_i[x].size()) + " " +
-                    (double)(best_of_run_a[x].size()) + " ",
+                    (double)(best_of_run[x].size()) + " ",
                     statisticslog);
                 }
             }

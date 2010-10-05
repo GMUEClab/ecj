@@ -638,6 +638,71 @@ public class Code
             }
         }
 
+    /** Finds the next nonblank line, skips past an expected preamble, and reads in a string if there is one, and returns it.
+        Generates an error otherwise. */
+    public static String readStringWithPreamble(String preamble, final EvolutionState state, 
+        final LineNumberReader reader)
+        {
+        DecodeReturn d = checkPreamble(preamble, state, reader);
+        Code.decode(d);
+        if (d.type!=DecodeReturn.T_STRING)
+            state.output.fatal("Line " + d.lineNumber + 
+                " has no string after preamble '" + preamble + "'\n-->" + d.data);
+        return (String)(d.s);
+        }
+
+    /** Finds the next nonblank line, skips past an expected preamble, and reads in a character if there is one, and returns it.
+        Generates an error otherwise. */
+    public static char readCharacterWithPreamble(String preamble, final EvolutionState state, 
+        final LineNumberReader reader)
+        {
+        DecodeReturn d = checkPreamble(preamble, state, reader);
+        Code.decode(d);
+        if (d.type!=DecodeReturn.T_CHAR)
+            state.output.fatal("Line " + d.lineNumber + 
+                " has no character after preamble '" + preamble + "'\n-->" + d.data);
+        return (char)(d.l);
+        }
+
+    /** Finds the next nonblank line, skips past an expected preamble, and reads in a byte if there is one, and returns it.
+        Generates an error otherwise. */
+    public static byte readByteWithPreamble(String preamble, final EvolutionState state, 
+        final LineNumberReader reader)
+        {
+        DecodeReturn d = checkPreamble(preamble, state, reader);
+        Code.decode(d);
+        if (d.type!=DecodeReturn.T_BYTE)
+            state.output.fatal("Line " + d.lineNumber + 
+                " has no byte after preamble '" + preamble + "'\n-->" + d.data);
+        return (byte)(d.l);
+        }
+
+    /** Finds the next nonblank line, skips past an expected preamble, and reads in a short if there is one, and returns it.
+        Generates an error otherwise. */
+    public static short readShortWithPreamble(String preamble, final EvolutionState state, 
+        final LineNumberReader reader)
+        {
+        DecodeReturn d = checkPreamble(preamble, state, reader);
+        Code.decode(d);
+        if (d.type!=DecodeReturn.T_SHORT)
+            state.output.fatal("Line " + d.lineNumber + 
+                " has no short after preamble '" + preamble + "'\n-->" + d.data);
+        return (short)(d.l);
+        }
+
+    /** Finds the next nonblank line, skips past an expected preamble, and reads in a long if there is one, and returns it.
+        Generates an error otherwise. */
+    public static long readLongWithPreamble(String preamble, final EvolutionState state, 
+        final LineNumberReader reader)
+        {
+        DecodeReturn d = checkPreamble(preamble, state, reader);
+        Code.decode(d);
+        if (d.type!=DecodeReturn.T_LONG)
+            state.output.fatal("Line " + d.lineNumber + 
+                " has no long after preamble '" + preamble + "'\n-->" + d.data);
+        return (long)(d.l);
+        }
+	
     /** Finds the next nonblank line, skips past an expected preamble, and reads in an integer if there is one, and returns it.
         Generates an error otherwise. */
     public static int readIntegerWithPreamble(String preamble, final EvolutionState state, 
@@ -665,7 +730,7 @@ public class Code
         return (float)(d.d);
         }
 
-    /** Finds the next nonblank line, skips past an expected preamble, and reads in a float if there is one, and returns it. 
+    /** Finds the next nonblank line, skips past an expected preamble, and reads in a double if there is one, and returns it. 
         Generates an error otherwise. */
     public static double readDoubleWithPreamble(String preamble, final EvolutionState state, 
         final LineNumberReader reader)

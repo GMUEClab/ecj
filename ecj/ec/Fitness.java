@@ -49,7 +49,7 @@ import ec.util.*;
  */
 
 
-public abstract class Fitness implements Prototype
+public abstract class Fitness implements Prototype, Comparable
     {
     /** Auxiliary variable, used by coevolutionary processes, to compute the
         number of trials used to compute this Fitness value. */
@@ -226,5 +226,17 @@ public abstract class Fitness implements Prototype
         {
         // by default does nothing
         }
+
+	/**
+		Returns -1 if I am FITTER than the other Fitness, 1 if I am LESS FIT than the other Fitness,
+		and 0 if we are equivalent.
+	*/
+	public int compareTo(Object o)
+		{
+		Fitness other = (Fitness) o;
+		if (this.betterThan(other)) return -1;
+		if (other.betterThan(this)) return 1;
+		return 0;
+		}
     }
 

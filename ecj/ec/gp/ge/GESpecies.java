@@ -18,6 +18,8 @@ import ec.gp.*;
 import ec.*;
 import ec.vector.*;
 import ec.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <p>GESpecies is used to take a grammar from a file and to create a tree for a GEIndividual based on the rules of the
@@ -192,56 +194,131 @@ public class GESpecies extends IntegerVectorSpecies
                 }
 
             grammar = readGrammarFile(grammarFile);
-            boolean started = false;
+            boolean[] started = {false};
 
             //get rest of nonterminals and put them into Rules
             for (int i = 0; i < grammar.length; i++)
                 {
-                //check to see if the line is only whitespace
-                if (grammar[i].trim().equals(""))
-                    {
-                    continue;  //ignore whitespace outside
-                    }
-
-                //ignore commented line, comments start with a #
-                if (grammar[i].charAt(0) == '#')
-                    {
-                    continue;
-                    }
-
-                String[] choppedUpString = grammar[i].split("::=");
-
-                Rule r = new Rule();
-                r.name = choppedUpString[0].trim();  //start symbol
-
-                if (started == false) //special case for startSymbol
-                    {
-                    startSymbols[x] = r.name;
-                    started = true;
-                    }
-                r.choices = new ArrayList();  //get choices for each rule
-                String[] choices = choppedUpString[1].split("\\|");
-
-                for (int j = 0; j < choices.length; j++)
-                    {
-                    r.choices.add(choices[j].trim());
-                    }
-
-                r.numberOfChoices = r.choices.size();
-
-                Rule oldRule;
-                if ((oldRule = (Rule) rules[x].get(r.name)) != null)
-                    {
-                    //for appending rules (ones which already exist)
-                    oldRule.numberOfChoices += r.numberOfChoices;
-                    oldRule.choices.addAll(r.choices);
-                    } else  //new rules
-                    {
-                    rules[x].put(r.name, r);
-                    }
+                    lexingGrammar(grammar[i], started, x);
                 }
             }
         }
+
+    public void lexingGrammar (String grammarLine, boolean[] started, int grammarIndex)
+    {
+        //check to see if the line is only whitespace
+        if (grammarLine.trim().equals(""))
+            {
+            return;  //ignore whitespace outside
+            }
+
+        //ignore commented line, comments start with a #
+        if (grammarLine.charAt(0) == '#')
+            {
+            return;
+            }
+
+        Pattern grammarPattern = Pattern.compile("^" + //beginning of line
+                                                "\\s*" + //possible whitespace
+                                                "(<.*>)" +  //capturing group 1, rule name
+                                                "\\s*" + //possible whitespace
+                                                "::=" +
+                                                "\\s*(.*)"); //possible whitespace, capture group 2, grab rest.
+
+//               "\\(?" +  //open paren of lisp statement
+//                    		"\\s*" + //possible whitespace
+//                    		"(\\w*)" + //group 2, lisp statement name
+//                    		"\\s*" + //possible whitespace
+//                    		"(.*)" + //group 3, list of rules
+//                    		"\\)?" + //close paren of lisp statement
+//                    		"\\s*" + //possible whitespace
+//                    		"$"); //end of line
+        Matcher matcher = grammarPattern.matcher(grammarLine);
+
+        boolean patternFound =matcher.matches();
+
+        if(patternFound)
+        {
+            Rule r = new Rule();
+            r.name = matcher.group(1);
+
+            if (started[0] == false) //special case for startSymbol
+            {
+            startSymbols[grammarIndex] = r.name;
+            started[0] = true;
+            }
+
+            r.choices = new ArrayList();  //get choices for each rule
+            String[] choices = matcher.group(2).split("\\|");
+
+            for (int j = 0; j < choices.length; j++)
+                {
+                r.choices.add(choices[j].trim());
+                }
+
+            r.numberOfChoices = r.choices.size();
+
+            Rule oldRule;
+            if ((oldRule = (Rule) rules[grammarIndex].get(r.name)) != null)
+                {
+                //for appending rules (ones which already exist)
+                oldRule.numberOfChoices += r.numberOfChoices;
+                oldRule.choices.addAll(r.choices);
+                } else  //new rules
+                {
+                rules[grammarIndex].put(r.name, r);
+                }
+        }       
+    }
+
+    public String[] lexingRules(EvolutionState state, String possibleFunction)
+    {
+        //System.out.println(possibleFunction);
+
+        ArrayList tokens = new ArrayList();
+
+        Pattern pattern = Pattern.compile("\\s*" +
+                                            "\\(" +
+                                            "\\s*" +
+                                            "([^<\\s]*)" +
+                                            "\\s*" +
+                                            "(.*)\\s*\\)");
+                                            
+        Matcher matcher = pattern.matcher(possibleFunction);
+        boolean isValid = matcher.matches();
+
+        if (isValid)
+        {
+            tokens.add(matcher.group(1));
+
+            Pattern pattern2 = Pattern.compile("(\\s*<[^>]*>)");
+            Matcher matcher2 = pattern2.matcher(matcher.group(2));
+
+            Pattern pattern3 = Pattern.compile("\\s*(<[^>]*>\\s*)*");
+            Matcher matcher3 = pattern3.matcher(matcher.group(2));
+
+                if(!matcher3.matches())
+                    state.output.fatal(possibleFunction + " contains invaild data.");
+
+            while(isValid = matcher2.find())
+            {
+                tokens.add(matcher2.group());
+            }
+
+            String[] result = new String[tokens.size()];
+
+            //no generics makes me sad beyond belief
+            //converts our arraylist to a string array :/
+            for (int i = 0; i < tokens.size(); i++)
+            {
+                result[i] = ((String)(tokens.get(i))).trim();
+            }
+
+            return result;
+        }
+
+        return null;
+    }
 
     /**
      * creates all of an individual's trees
@@ -359,9 +436,13 @@ public class GESpecies extends IntegerVectorSpecies
             return makeSubtree(index, genome, es, gpfs, r, treeNum, threadnum);
             } else if (choice.startsWith("(")) //handle terminals and nonterminals
             {
-            String[] temparray = choice.substring(1).split(" ");
+            //String[] temparray = choice.substring(1).split(" ");
 
-            temparray[0] = temparray[0].replaceAll("\\)", "");  //remove the close brace ')'
+                //System.out.println(choice);
+
+            String[] temparray = (String[])(lexingRules(es, choice));
+
+            //temparray[0] = temparray[0].replaceAll("\\)", "");  //remove the close brace ')'
 
             //does this rule map to an existing node in the function set?
             if (!(gpfs.nodesByName.containsKey(temparray[0])))
@@ -397,19 +478,18 @@ public class GESpecies extends IntegerVectorSpecies
             //get the rest.
             for (int j = 1, childNumber = 0; j < temparray.length; j++)
                 {
-                if ((temparray[j] = temparray[j].replaceAll("\\)", "")).matches("<.*>")) //nonterm
-                    {
-                    Rule r2 = (Rule) rules[treeNum].get(temparray[j]);
-
-                    //get and link children to the current GPNode
-                    validNode.children[childNumber] = makeSubtree(index, genome, es, gpfs, r2, treeNum, threadnum);
-                    if (validNode.children[childNumber] == null)
+                    if(temparray[j].trim().matches("<.*>")) //non-terminal
                         {
-                        return null;
-                        }
-                    childNumber++;
-                    }
+                        Rule r2 = (Rule) rules[treeNum].get(temparray[j]);
 
+                        //get and link children to the current GPNode
+                        validNode.children[childNumber] = makeSubtree(index, genome, es, gpfs, r2, treeNum, threadnum);
+                        if (validNode.children[childNumber] == null)
+                            {
+                            return null;
+                            }
+                        childNumber++;
+                        }
                 }
 
             return validNode;

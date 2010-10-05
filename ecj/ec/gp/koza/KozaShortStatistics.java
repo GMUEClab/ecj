@@ -76,6 +76,8 @@ import ec.util.*;
 
 public class KozaShortStatistics extends Statistics
     {
+	public Individual[] getBestSoFar() { return best_of_run; }
+
     /** compress? */
     public static final String P_COMPRESS = "gzip";
 
@@ -83,7 +85,7 @@ public class KozaShortStatistics extends Statistics
 
     public boolean doFull;
 
-    public Individual[] best_of_run_a;
+    public Individual[] best_of_run;
     public long totalNodes[];
     public long totalDepths[];
 
@@ -98,10 +100,6 @@ public class KozaShortStatistics extends Statistics
 
     /** The Statistics' log */
     public int statisticslog;
-
-    /* The best individual we've found so far */
-    //public Individual best_of_run;
-
 
     public KozaShortStatistics() { /*best_of_run = null;*/ statisticslog = 0; /* stdout */ }
 
@@ -143,7 +141,7 @@ public class KozaShortStatistics extends Statistics
         super.postInitializationStatistics(state);
         // set up our best_of_run array -- can't do this in setup, because
         // we don't know if the number of subpopulations has been determined yet
-        best_of_run_a = new Individual[state.population.subpops.length];
+        best_of_run = new Individual[state.population.subpops.length];
         
         // print out our generation number
         state.output.print("0 ", statisticslog);
@@ -316,13 +314,13 @@ public class KozaShortStatistics extends Statistics
                 " " + ((KozaFitness)(best_i[x].fitness)).hits + " ",
                 statisticslog);
 
-            // now test to see if it's the new best_of_run_a[x]
-            if (best_of_run_a[x]==null || best_i[x].fitness.betterThan(best_of_run_a[x].fitness))
-                best_of_run_a[x] = best_i[x];
+            // now test to see if it's the new best_of_run[x]
+            if (best_of_run[x]==null || best_i[x].fitness.betterThan(best_of_run[x].fitness))
+                best_of_run[x] = best_i[x];
             
-            state.output.print("" + ((KozaFitness)(best_of_run_a[x].fitness)).standardizedFitness() +
-                " " + ((KozaFitness)(best_of_run_a[x].fitness)).adjustedFitness() +
-                " " + ((KozaFitness)(best_of_run_a[x].fitness)).hits + " ",
+            state.output.print("" + ((KozaFitness)(best_of_run[x].fitness)).standardizedFitness() +
+                " " + ((KozaFitness)(best_of_run[x].fitness)).adjustedFitness() +
+                " " + ((KozaFitness)(best_of_run[x].fitness)).hits + " ",
                 statisticslog);
             }
         // we're done!
