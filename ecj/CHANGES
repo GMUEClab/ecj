@@ -1682,7 +1682,7 @@ Version		Change Log
 		name().  The 'functionName' instance variable is renamed to 'name', and
 		the name() function is introduced which by default returns just 'name'.
 		The toString() function by default calls name().
-	Major change to ADFArgument nameing.  ADFArgument now has a 'name' instance
+	Major change to ADFArgument naming.  ADFArgument now has a 'name' instance
 		variable and function like ADF does above, and toString() now simply
 		calls name() (rather than what it used to do, which is return 
 		"ARG"+argument).  This 'name' instance is set with the same parameter
@@ -1694,3 +1694,8 @@ Version		Change Log
 	GE examples added/revised in ant, regression (with ERCs) and Lawnmower (with ADFs)
 	Updated koza.params to use the default parameter bases for ADFStack and
 		ADFContext
+	Made Fitness and Individual Comparable
+	Major changes to MultiObjectiveFitness, including new function paretoDominates
+	Additional utility methods added to Code
+	Added NSGA2
+	Large changes to SPEA2 package
