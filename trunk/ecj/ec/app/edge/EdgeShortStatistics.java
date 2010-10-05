@@ -31,7 +31,7 @@ public class EdgeShortStatistics extends KozaShortStatistics
 
         // we have only one population, so this is kosher
         state.output.print(((Edge)(state.evaluator.p_problem.clone())).
-            describeShortGeneralized(best_of_run_a[0], state, 0, 0), 
+            describeShortGeneralized(best_of_run[0], state, 0, 0), 
             statisticslog);
         }
 

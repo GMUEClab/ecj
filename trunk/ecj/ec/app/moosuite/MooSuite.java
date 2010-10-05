@@ -22,12 +22,12 @@ import ec.vector.*;
    <li>ZDT4: Zitzler, Deb & Thiele 
    <li>ZDT6: Zitzler, Deb & Thiele 
    <li>SPHERE: ftp.tik.ee.ethz.ch/pub/people/zitzler/ZLT2001a.pdf 
-   <li>SCH: (Schaffer), (a.k.a. F1 in Srinivas & Deb)
-   <li>F2: (Schaffer), (Srinivas & Deb),  (Coello Coello & Cortes)
-   <li>unconstrained F3: Schaffer, Srinivas & Deb  (Chankong & Haimes)
+   <li>SCH: (Schaffer), (a.k.a. F1 in Srinivas & Deb); requires exactly 1 decision variables (genes)
+   <li>F2: (Schaffer), (Srinivas & Deb),  (Coello Coello & Cortes); requires exactly 1 decision variables (genes)
+   <li>unconstrained F3: Schaffer, Srinivas & Deb  (Chankong & Haimes); requires exactly 2 decision variables (genes)
    <li>QV: Quagliarella & Vicini
-   <li>FON: Fonseca & Fleming
-   <li>POL: Poloni
+   <li>FON: Fonseca & Fleming; requires exactly 3 decision variables (genes)
+   <li>POL: Poloni; requires exactly 2 decision variables (genes)
    <li>KUR: Kursawe from the Errata of Zitzler's TIK-Report 103: "SPEA2: Improving the Strength Pareto Evolutionary Algorithm"
    (note that many different versions are described in the literature).
    </ul>   
@@ -38,14 +38,15 @@ import ec.vector.*;
    <font size=-1>String, one of: zdt1, zdt2, zdt3, zdt4, zdt6, sphere, sch, fon, qv, pol, kur, f1, f2, unconstrained-f3</font></td>
    <td valign=top>The multi-objective optimization problem to test against. </td></tr>
    </table>
-   
-   
    @author Gabriel Catalin Balan 
-
 */
  
 public class MooSuite extends Problem implements SimpleProblemForm
     {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     public static final String P_WHICH_PROBLEM = "type";
     public static final String P_ZDT1 = "zdt1";
     public static final String P_ZDT2 = "zdt2";
@@ -57,10 +58,13 @@ public class MooSuite extends Problem implements SimpleProblemForm
     public static final String P_FON = "fon";
     public static final String P_QV = "qv";
     public static final String P_POL = "pol";
-    public static final String P_KUR = "kur";
+    public static final String P_KUR_NSGA2 = "kur-nsga2";
+    public static final String P_KUR_SPEA2 = "kur-spea2";
     public static final String P_F1 = "f1";    
     public static final String P_F2 = "f2";
     public static final String P_F3 = "unconstrained-f3";
+
+    //Some of the following problems requires an exact number of decision variables (genes). This is mentioned in comment preceding the problem.
 
     public static final int PROB_SPHERE = 0;
     public static final int PROB_ZDT1 = 1;
@@ -70,11 +74,12 @@ public class MooSuite extends Problem implements SimpleProblemForm
     public static final int PROB_ZDT6 = 6;
     public static final int PROB_FON = 7;
     public static final int PROB_POL = 8;
-    public static final int PROB_KUR = 9;
-    public static final int PROB_QV = 10;
-    public static final int PROB_SCH = 11;
-    public static final int PROB_F2 = 12;
-    public static final int PROB_F3 = 13;
+    public static final int PROB_KUR_NSGA2 = 9;
+    public static final int PROB_KUR_SPEA2 = 10;
+    public static final int PROB_QV = 11;
+    public static final int PROB_SCH = 12;
+    public static final int PROB_F2 = 13;
+    public static final int PROB_F3 = 14;
 
     public int problemType = PROB_ZDT1;  // defaults on zdt1
 
@@ -98,8 +103,10 @@ public class MooSuite extends Problem implements SimpleProblemForm
             problemType = PROB_POL;
         else if ( wp.compareTo( P_QV) == 0 )
             problemType = PROB_QV;
-        else if ( wp.compareTo( P_KUR) == 0 )
-            problemType = PROB_KUR;
+        else if ( wp.compareTo( P_KUR_NSGA2) == 0 )
+            problemType = PROB_KUR_NSGA2;
+        else if ( wp.compareTo( P_KUR_SPEA2) == 0 )
+            problemType = PROB_KUR_SPEA2;
         else if( wp.compareTo( P_SPHERE) == 0)
             problemType = PROB_SPHERE;         
         else if( wp.compareTo( P_F2) == 0)
@@ -118,7 +125,8 @@ public class MooSuite extends Problem implements SimpleProblemForm
             "  " + P_ZDT6 + "\n" +
             "  " + P_POL + "\n" +
             "  " + P_FON + "\n" +
-            "  " + P_KUR + "\n" +
+            "  " + P_KUR_NSGA2 + "\n" +
+            "  " + P_KUR_SPEA2 + "\n" +
             "  " + P_SPHERE + "\n" +
             "  " + P_SCH + "(or " + P_F1 + ")\n"+
             "  " + P_F2 + "\n",
@@ -128,7 +136,7 @@ public class MooSuite extends Problem implements SimpleProblemForm
     private static final double TEN_PI = Math.PI*10;//ZDT3 uses it.
     private static final double FOUR_PI = Math.PI*4;//ZDT4 uses it.
     private static final double SIX_PI = Math.PI*6;//ZDT6 uses it.
-    private static final double ONE_OVER_SQRT_3 = 1.0/Math.sqrt(3);//FON uses it.
+    private static final double ONE_OVER_SQRT_3 = 1d/Math.sqrt(3);//FON uses it.
     private static final double A1 = 0.5*Math.sin(1) - 2*Math.cos(1) +    Math.sin(2)- 1.5*Math.cos(2);//POL uses it
     private static final double A2 = 1.5*Math.sin(1) -   Math.cos(1) + 2* Math.sin(2)- 0.5*Math.cos(2);//POL uses it
 
@@ -156,8 +164,8 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 sum = 0;
                 for(int i = 1; i< numDecisionVars; ++i)
                     sum += genome[i];
-                g = 1.0 + 9.0*sum/(numDecisionVars-1);
-                h = 1.0 - Math.sqrt(f/g);
+                g = 1d+9d*sum/(numDecisionVars-1);
+                h = 1d-Math.sqrt(f/g);
                 objectives[1] = (float)(g*h);
                 break;
                 
@@ -165,10 +173,10 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 f = genome[0];
                 objectives[0] = (float)f;
                 sum = 0;
-                for(int i = 1; i< numDecisionVars; ++i)
+                for(int i = 1; i< numDecisionVars; i++)
                     sum += genome[i];
-                g = 1.0 + 9.0*sum/(numDecisionVars-1);
-                h = 1.0 - (f/g)*(f/g);
+                g = 1.0+9.0*sum/(float)(numDecisionVars-1);
+                h = 1.0-(f/g)*(f/g);
                 objectives[1] = (float)(g*h);
                 break;
                         
@@ -176,11 +184,11 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 f = genome[0];
                 objectives[0] = (float)f;
                 sum = 0;
-                for(int i = 1; i< numDecisionVars; ++i)
+                for(int i = 1; i< numDecisionVars; i++)
                     sum += genome[i];
-                g = 1.0 + 9.0 * sum/(numDecisionVars-1);
+                g = 1.0+9.0*sum/(numDecisionVars-1);
                 double foverg = f/g;
-                h = 1.0 - Math.sqrt(foverg) - foverg * Math.sin(TEN_PI * f);
+                h = 1.0-Math.sqrt(foverg) - foverg * Math.sin(TEN_PI * f);
                 objectives[1] = (float)(g*h);
                 break;
             case PROB_ZDT4:
@@ -190,18 +198,18 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 for(int i = 1; i< numDecisionVars; ++i)
                     sum += genome[i]*genome[i]- 10*Math.cos(FOUR_PI * genome[i]);
                                 
-                g = 1.0 + 10.0 *(numDecisionVars-1)+sum;
-                h = 1.0 - Math.sqrt(f/g);
+                g = 1+10*(numDecisionVars-1)+sum;
+                h = 1-Math.sqrt(f/g);
                 objectives[1] = (float)(g*h);
                 break;                
             case PROB_ZDT6:
-                f = 1.0 - (Math.exp(-4.0 * genome[0]) * Math.pow(Math.sin(SIX_PI * genome[0]), 6));
+                f = 1 - (Math.exp(-4 * genome[0]) * Math.pow(Math.sin(SIX_PI * genome[0]), 6));
                 objectives[0] = (float)f;
                 sum = 0;
                 for (int i = 1; i < numDecisionVars; ++i)
                     sum += genome[i];
-                g = 1.0 + 9 * Math.pow(sum / (numDecisionVars - 1), 0.25);
-                h = 1.0 - Math.pow(f / g, 2);
+                g = 1d + 9 * Math.pow(sum / (numDecisionVars - 1), 0.25);
+                h = 1d - Math.pow(f / g, 2);
                 objectives[1] = (float) (g * h);
                 break; 
             case PROB_SPHERE:
@@ -237,7 +245,7 @@ public class MooSuite extends Problem implements SimpleProblemForm
             case PROB_FON:
                 if(numDecisionVars!=3) throw new RuntimeException("FON needs exactly 3 decision variables (genes).");
                 double sum1 = 0, sum2=0;
-                for(int i = 1; i< numDecisionVars; ++i)
+                for(int i = 0; i< numDecisionVars; i++)
                     {
                     double xi = genome[i];
                     double d = xi-ONE_OVER_SQRT_3;
@@ -252,8 +260,8 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 if(numDecisionVars!=2) throw new RuntimeException("POL needs exactly 2 decision variables (genes).");
                 x1= genome[0];
                 x2 = genome[1];
-                double b1 = 0.5 * Math.sin(x1) - 2*Math.cos(x1) +    Math.sin(x2)- 1.5*Math.cos(x2);
-                double b2 = 1.5 * Math.sin(x1) -   Math.cos(x1) + 2* Math.sin(x2)- 0.5*Math.cos(x2);
+                double b1 = 0.5*Math.sin(x1) - 2*Math.cos(x1) +    Math.sin(x2)- 1.5*Math.cos(x2);
+                double b2 = 1.5*Math.sin(x1) -   Math.cos(x1) + 2* Math.sin(x2)- 0.5*Math.cos(x2);
                 objectives[0] = (float)(1+(A1-b1)*(A1-b1)+(A2-b2)*(A2-b2));
                 objectives[1] = (float)((x1+3)*(x1+3)+(x2+1)*(x2+1));
                 break;
@@ -262,39 +270,44 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 for(int i=0;i<numDecisionVars;i++)
                     {
                     double xi=genome[i];
-                    sum+= xi * xi - 10 * Math.cos(TWO_PI*xi)+10;
+                    sum+=xi*xi-10*Math.cos(TWO_PI*xi)+10;
                     }
                 objectives[0] = (float)Math.pow(sum/numDecisionVars, 0.25);
                 sum=0;
                 for(int i=0;i<numDecisionVars;i++)
                     {
-                    double xi=genome[i] - 1.5;
-                    sum+= xi * xi - 10 * Math.cos(TWO_PI*xi)+10;
+                    double xi=genome[i]-1.5;
+                    sum+=xi*xi-10*Math.cos(TWO_PI*xi)+10;
                     }
                 objectives[1] = (float)Math.pow(sum/numDecisionVars, 0.25);
                 break;
-            case PROB_KUR:
+            case PROB_KUR_NSGA2:
                 double nextSquared, thisSquared;
                 thisSquared = genome[0]*genome[0];
                 sum=0;
                 for(int i = 0; i< numDecisionVars-1; ++i)
                     {
                     nextSquared = genome[i+1]*genome[i+1];
-                    sum += 1.0 - Math.exp(-0.2 * Math.sqrt(thisSquared + nextSquared));
+                    //sum += 1d-Math.exp(-0.2*Math.sqrt(thisSquared + nextSquared));
+                    sum += -10-Math.exp(-0.2*Math.sqrt(thisSquared + nextSquared));
                     thisSquared = nextSquared;
                     }
-                objectives[1] = (float)sum;
+                //objectives[1] = (float)sum;
+                objectives[0] = (float)sum;
                 sum= 0;
                 for(int i = 0; i< numDecisionVars; ++i)
                     {
-                    double sin_xi = Math.sin(genome[i]);
-                                
-                    double t1 = Math.pow(Math.abs(genome[i]), 0.8);
-                    double t2 = 5.0 * sin_xi*sin_xi*sin_xi;
-                                
-                    sum +=t1+t2+ 3.5828;
+                    //double sin_xi = Math.sin(genome[i]);          
+                    //double t1 = Math.pow(Math.abs(genome[i]), .8);
+                    //double t2 = 5*sin_xi*sin_xi*sin_xi;
+                    //sum +=t1+t2+ 3.5828;
+                    double xi3 = Math.pow(genome[i], 3);
+                    double t1 = Math.pow(Math.abs(genome[i]), .8);
+                    double t2 = 5*Math.sin(xi3);
+                    sum +=t1+t2;
                     }
-                objectives[0] = (float)sum;
+                //objectives[0] = (float)sum;
+                objectives[1] = (float)sum;
                 break;
 
             default:

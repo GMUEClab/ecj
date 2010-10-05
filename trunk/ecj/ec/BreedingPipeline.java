@@ -69,6 +69,9 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
     /** Indicates that a source is the exact same source as the previous source. */
     public static final String V_SAME = "same";
 
+    /** Indicates the probability that the Breeding Pipeline will perform its mutative action instead of just doing reproduction. */
+    public static final String P_LIKELIHOOD = "likelihood";
+
     /** Indicates that the number of sources is variable and determined by the
         user in the parameter file. */
 
@@ -86,6 +89,8 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
         are useful with it (not deep cloned) */
         
     public Parameter mybase;
+
+	public float likelihood;
 
     /** Array of sources feeding the pipeline */
     public BreedingSource[] sources;
@@ -142,7 +147,14 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
         
         Parameter def = defaultBase();
 
-        int numsources = numSources();
+        likelihood = state.parameters.getFloatWithDefault(base.push(P_LIKELIHOOD), def.push(P_LIKELIHOOD), 1.0f);
+		if (likelihood < 0.0f || likelihood > 1.0f)
+			state.output.fatal("Breeding Pipeline likelihood must be a value between 0.0 and 1.0 inclusive",
+				base.push(P_LIKELIHOOD),
+				def.push(P_LIKELIHOOD));
+
+
+       int numsources = numSources();
         if (numsources <= DYNAMIC_SOURCES)
             {
             // figure it from the file
@@ -206,6 +218,26 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
         return c;
         }
 
+	/** Performs direct reproduction. */
+    public int reproduce(final int min, 
+        final int max, 
+        final int start,
+        final int subpopulation,
+        final Individual[] inds,
+        final EvolutionState state,
+        final int thread,
+		boolean forceClone) 
+        {
+        // grab individuals from our source and stick 'em right into inds.
+        // we'll modify them from there
+        int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
+
+        // now let's reproduce 'em
+        if (forceClone || (sources[0] instanceof SelectionMethod))
+            for(int q=start; q < n+start; q++)
+                inds[q] = (Individual)(inds[q].clone());
+        return n;
+        }
 
 
     public boolean produces(final EvolutionState state,

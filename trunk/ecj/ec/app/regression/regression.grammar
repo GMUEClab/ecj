@@ -1,5 +1,5 @@
-#grammar of the regression problem including ERCs
+# grammar of the regression problem including ERCs
 <start> ::= <op>
-<op> ::= (+ <op><op>) | (- <op> <op>) | (* <op> <op>) | (% <op> <op>) 
-<op> ::= (sin <op>) | (cos <op>) | (exp <op>) | (rlog <op>)
-<op> ::= (x) | (ERC)
+<op> ::= (+ <op><op>)|(-<op><op>) |(* <op> <op>) | (% <op> <op>) 
+<op>::=(sin <op>) | (cos <op>) | (exp <op>) | (rlog <op>)
+<op>::=(x) | (   ERC     )

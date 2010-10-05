@@ -2,7 +2,9 @@
 # Licensed under the Academic Free License version 3.0
 # See the file "LICENSE" for more information
 
-parent.0 = ../../multiobjective/spea2/spea2.params
+#uncomment the desired multiobjective algorithm
+parent.0 = spea2.params
+#parent.0 = nsga2.params
 
 eval.problem = ec.app.moosuite.MooSuite
 eval.problem.type = zdt1
@@ -33,18 +35,9 @@ pop.subpop.0.species.mutation-prob	= 0.01
 pop.subpop.0.archive-size =			20
 #note that subpop.size includes the archive!
 
-
-
-
-stat =	ec.multiobjective.spea2.SPEA2Statistics
-
-pop.subpop.0.species.pipe = 		ec.vector.breed.VectorMutationPipeline
 pop.subpop.0.species.mutation-type = gauss
 pop.subpop.0.species.mutation-stdev = 0.01
 pop.subpop.0.species.mutation-prob = 0.5
-pop.subpop.0.species.pipe.source.0 = 	ec.vector.breed.VectorCrossoverPipeline
-pop.subpop.0.species.pipe.source.0.source.0 = ec.multiobjective.spea2.SPEA2TournamentSelection
-pop.subpop.0.species.pipe.source.0.source.1 = same
 select.tournament.size = 		2
 pop.subpop.0.species.crossover-type = one
 

@@ -437,7 +437,7 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
     public int nextInt(final int n) 
         {
         if (n<=0)
-            throw new IllegalArgumentException("n must be >= 0");
+            throw new IllegalArgumentException("n must be positive, got: " + n);
         
         if ((n & -n) == n)
             return (int)((n * (long)next(31)) >> 31);
@@ -459,7 +459,7 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
     public long nextLong(final long n) 
         {
         if (n<=0)
-            throw new IllegalArgumentException("n must be >= 0");
+            throw new IllegalArgumentException("n must be positive, got: " + n);
         
         long bits, val;
         do 

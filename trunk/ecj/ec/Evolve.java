@@ -127,12 +127,6 @@ public class Evolve
     /** The argument indicating that we're starting fresh from a new parameter file. */
     public static final String A_FILE = "-file";
 
-    /* flush announcements parameter */
-    //public static final String P_FLUSH = "flush";
-
-    /* nostore parameter */
-    //public static final String P_STORE = "store";
-
     /** evalthreads parameter */
     public static final String P_EVALTHREADS = "evalthreads";
 
@@ -282,12 +276,8 @@ public class Evolve
         int x;
 
         // 1. create the output
-//        store = parameters.getBoolean(new Parameter(P_STORE),null,false);
 
         output = new Output(true);
-//        output.setFlush(
-//            parameters.getBoolean(new Parameter(P_FLUSH),null,false));
-
 
         // stdout is always log #0.  stderr is always log #1.
         // stderr accepts announcements, and both are fully verbose 
@@ -298,25 +288,6 @@ public class Evolve
         output.systemMessage(Version.message());
                 
         // 2. set up thread values
-        
-        /*
-          breedthreads = parameters.getInt(
-          new Parameter(P_BREEDTHREADS),null,1);
-
-          else if (parameters.getString(new Parameter(P_BREEDTHREADS),null).equals
-
-          if (breedthreads < 1)
-          output.fatal("Number of breeding threads should be 'auto' or an integer >0.",
-          new Parameter(P_BREEDTHREADS),null);
-
-
-          evalthreads = parameters.getInt(
-          new Parameter(P_EVALTHREADS),null,1);
-
-          if (evalthreads < 1)
-          output.fatal("Number of eval threads should be an integer >0.",
-          new Parameter(P_EVALTHREADS),null);
-        */
         
         breedthreads = Evolve.determineThreads(output, parameters, new Parameter(P_BREEDTHREADS));
         evalthreads = Evolve.determineThreads(output, parameters, new Parameter(P_EVALTHREADS));

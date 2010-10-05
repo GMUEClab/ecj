@@ -109,8 +109,6 @@ public class SimpleBreeder extends Breeder
                 int lastBreedChunkSize = 
                     firstBreedChunkSizes + length - firstBreedChunkSizes * (state.breedthreads);
                 
-                //System.out.println("Sizes " + length + " " + firstBreedChunkSizes + " " + lastBreedChunkSize);
-                
                 // figure numinds
                 if (y < state.breedthreads-1) // not the last one
                     numinds[y][x] = firstBreedChunkSizes;
@@ -204,6 +202,17 @@ public class SimpleBreeder extends Breeder
             { return inds[(int)a].fitness.betterThan(inds[(int)b].fitness); }
         }
 
+	protected void unmarkElitesEvaluated(Population newpop)
+		{
+        for(int sub=0;sub<newpop.subpops.length;sub++)
+			for(int e=0; e < elite[sub]; e++)
+				{
+				int len = newpop.subpops[sub].individuals.length;
+				if (reevaluateElites[sub])
+					newpop.subpops[sub].individuals[len - elite[sub]].evaluated = false;
+				}
+		}
+
     /** A private helper function for breedPopulation which loads elites into
         a subpopulation. */
 
@@ -228,7 +237,6 @@ public class SimpleBreeder extends Breeder
                         best = x;
                 Individual[] inds = newpop.subpops[sub].individuals;
                 inds[inds.length-1] = (Individual)(oldinds[best].clone());
-                if (reevaluateElites[sub]) inds[inds.length-1].evaluated = false;  // force reevaluation
                 }
             else if (elite[sub]>0)  // we'll need to sort
                 {
@@ -242,13 +250,13 @@ public class SimpleBreeder extends Breeder
                 Individual[] inds = newpop.subpops[sub].individuals;
                 Individual[] oldinds = state.population.subpops[sub].individuals;
                 for(int x=inds.length-elite[sub];x<inds.length;x++)
-                    {
                     inds[x] = (Individual)(oldinds[orderedPop[x]].clone());
-                    if (reevaluateElites[sub]) inds[x].evaluated = false;  // force reevaluation
-                    }
                 }
+		
+		// optionally force reevaluation
+		unmarkElitesEvaluated(newpop);
         }
-    }
+	}
 
 
 /** A private helper class for implementing multithreaded breeding */
