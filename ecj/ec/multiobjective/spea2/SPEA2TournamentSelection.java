@@ -8,6 +8,7 @@
 package ec.multiobjective.spea2;
 import ec.*;
 import ec.select.*;
+import ec.simple.*;
 
 /* 
  * SPEA2TournamentSelection.java
@@ -40,38 +41,9 @@ public class SPEA2TournamentSelection extends TournamentSelection
     public int getRandomIndividual(int number, int subpopulation, EvolutionState state, int thread)
         {
         Individual[] oldinds = state.population.subpops[subpopulation].individuals;
-        int archiveSize = ((SPEA2Subpopulation)state.population.subpops[subpopulation]).archiveSize; 
+        int archiveSize = ((SimpleBreeder)(state.breeder)).elite[subpopulation];
         int archiveStart = state.population.subpops[subpopulation].individuals.length - archiveSize;
 
         return archiveStart + state.random[thread].nextInt(archiveSize);
         }
-
-/*      
-        public int produce(final int subpopulation,
-        final EvolutionState state,
-        final int thread)
-        {
-        Individual[] oldinds = state.population.subpops[subpopulation].individuals;
-        int archiveSize = ((SPEA2Subpopulation)state.population.subpops[subpopulation]).archiveSize; 
-        int archiveStart = state.population.subpops[subpopulation].individuals.length - archiveSize;
-
-
-        // the one change from TournamentSelection: we only pick individuals from the archive
-        int i = archiveStart + state.random[thread].nextInt(archiveSize); 
-        int bad = i;
-        
-        for (int x=1;x<size;x++)
-        {
-        int j = archiveStart + state.random[thread].nextInt(archiveSize); 
-        if (pickWorst)
-        { if (!(oldinds[j].fitness.betterThan(oldinds[i].fitness))) { bad = i; i = j; } else bad = j; }
-        else
-        { if (oldinds[j].fitness.betterThan(oldinds[i].fitness)) { bad = i; i = j;} else bad = j; }
-        }
-            
-        if (probabilityOfSelection != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection))
-        i = bad;
-        return i;
-        }
-*/
     }

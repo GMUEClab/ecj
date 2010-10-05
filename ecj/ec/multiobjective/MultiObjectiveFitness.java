@@ -12,6 +12,8 @@ import ec.util.Parameter;
 import ec.util.Code;
 import ec.Fitness;
 import ec.EvolutionState;
+import java.util.*;
+import ec.*;
 
 /* 
  * MultiObjectiveFitness.java
@@ -110,6 +112,16 @@ public class MultiObjectiveFitness extends Fitness
     /** The various fitnesses. */
     protected float[] objectives; // values range from 0 (worst) to 1 INCLUSIVE
     protected boolean maximize = true;
+
+	/** Returns auxilliary fitness value names to be printed by the statistics object.
+		By default, an empty array is returned, but various algorithms may override this to provide additional columns.
+		*/
+	public String[] getAuxilliaryFitnessNames() { return new String[] { }; }
+
+	/** Returns auxilliary fitness values to be printed by the statistics object.
+		By default, an empty array is returned, but various algorithms may override this to provide additional columns.
+		*/
+	public double[] getAuxilliaryFitnessValues() { return new double[] { }; }
 
     public boolean isMaximizing()
         {
@@ -215,7 +227,7 @@ public class MultiObjectiveFitness extends Fitness
             // load specifics if any
             minfitness[i] = state.parameters.getFloatWithDefault(base.push(P_MINFITNESSES).push("" + i), def.push(P_MINFITNESSES).push("" + i), minfitness[i]);
             maxfitness[i] = state.parameters.getFloatWithDefault(base.push(P_MAXFITNESSES).push("" + i), def.push(P_MAXFITNESSES).push("" + i), maxfitness[i]);
-
+            
             // test for validity
             if (minfitness[i] >= maxfitness[i])
                 state.output.error("For objective " + i + "the min fitness must be strictly less than the max fitness.");
@@ -237,7 +249,8 @@ public class MultiObjectiveFitness extends Fitness
      * _fitness. The rule I'm using is this: If one of us is better in one or
      * more criteria, and we are equal in the others, then equivalentTo is
      * false. If each of us is better in one or more criteria each, or we are
-     * equal in all criteria, then equivalentTo is true.
+     * equal in all criteria, then equivalentTo is true.   Multiobjective optimization algorithms may
+	 * choose to override this to do something else.
      */
 
     public boolean equivalentTo(Fitness _fitness)
@@ -282,12 +295,24 @@ public class MultiObjectiveFitness extends Fitness
         }
 
     /**
+     * Returns true if I'm better than _fitness. The DEFAULT rule I'm using is this: if
+     * I am better in one or more criteria, and we are equal in the others, then
+     * betterThan is true, else it is false. Multiobjective optimization algorithms may
+	 * choose to override this to do something else.
+     */
+
+	public boolean betterThan(Fitness _fitness)
+		{
+		return paretoDominates(_fitness);
+		}
+
+    /**
      * Returns true if I'm better than _fitness. The rule I'm using is this: if
      * I am better in one or more criteria, and we are equal in the others, then
      * betterThan is true, else it is false.
      */
 
-    public boolean betterThan(Fitness _fitness)
+    public boolean paretoDominates(Fitness _fitness)
         {
         MultiObjectiveFitness other = (MultiObjectiveFitness) _fitness;
         boolean abeatsb = false;
@@ -319,8 +344,67 @@ public class MultiObjectiveFitness extends Fitness
         return abeatsb;
         }
 
-    // <p><tt> Fitness: [</tt><i>fitness values encoded with ec.util.Code,
-    // separated by spaces</i><tt>]</tt>
+    /**
+     * Divides an array of Individuals into the Pareto front and the "nonFront" (everyone else). 
+	 * The Pareto front is returned.  You may provide ArrayLists for the front and a nonFront.
+	 * If you provide null for the front, an ArrayList will be created for you.  If you provide
+	 * null for the nonFront, non-front individuals will not be added to it.  This algorithm is
+	 * O(n^2).
+     */
+    public static ArrayList partitionIntoParetoFront(Individual[] inds, ArrayList front, ArrayList nonFront)
+        {
+		if (front == null)
+			front = new ArrayList();
+			
+		// put the first guy in the front
+		front.add(inds[0]);
+		
+        for (int i = 1; i < inds.length; i++)
+            {
+            Individual ind = (Individual) (inds[i]);
+
+			boolean noOneWasBetter = true;
+            int frontSize = front.size();
+            for (int j = 0; j < frontSize; j++)
+                {
+                Individual frontmember = (Individual) (front.get(j));
+                if (((MultiObjectiveFitness) (frontmember.fitness)).paretoDominates((MultiObjectiveFitness) (ind.fitness)))
+                    {
+					if (nonFront != null) nonFront.add(ind);
+					noOneWasBetter = false;
+					break;  // failed.  He's not in the front
+                    } 
+				else if (((MultiObjectiveFitness) (ind.fitness)).paretoDominates((MultiObjectiveFitness) (frontmember.fitness)))
+                    {
+                    // a front member is dominated by the new individual.  Replace him
+					front.set(j, ind);
+					if (nonFront != null) nonFront.add(frontmember);
+					noOneWasBetter = false;
+					break;
+                    }
+                }
+			if (noOneWasBetter)
+				front.add(ind);
+            }
+		return front;
+        }
+
+
+    /**
+     * Returns the sum of the squared difference between two Fitnesses in Objective space.
+     */
+    public double sumSquaredObjectiveDistance(MultiObjectiveFitness other)
+        {
+        double s = 0;
+        for (int i = 0; i < objectives.length; i++)
+            {
+			double a = (objectives[i] - other.objectives[i]);
+            s += a * a;
+            }
+        return s;
+        }
+
+
     public String fitnessToString()
         {
         String s = FITNESS_PREAMBLE + MULTI_FITNESS_POSTAMBLE;
@@ -335,8 +419,7 @@ public class MultiObjectiveFitness extends Fitness
         return s + FITNESS_POSTAMBLE;
         }
 
-    // <p><tt> Fitness: [</tt><i>fitness values encoded with ec.util.Code,
-    // separated by spaces</i><tt>]</tt>
+
     public String fitnessToStringForHumans()
         {
         String s = FITNESS_PREAMBLE + MULTI_FITNESS_POSTAMBLE;

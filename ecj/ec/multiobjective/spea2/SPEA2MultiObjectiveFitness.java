@@ -4,13 +4,14 @@
   See the file "LICENSE" for more information
 */
 
-
 package ec.multiobjective.spea2;
+
 import java.io.*;
 import ec.util.DecodeReturn;
 import ec.util.Code;
 import ec.multiobjective.MultiObjectiveFitness;
 import ec.EvolutionState;
+import ec.Fitness;
 
 /* 
  * SPEA2MultiObjectiveFitness.java
@@ -21,91 +22,81 @@ import ec.EvolutionState;
  */
 
 /**
- * SPEA2MultiObjectiveFitness is a subclass of Fitness which implements
- * basic multiobjective fitness functions along with support for the
- * ECJ SPEA2 (Strength Pareto Evolutionary Algorithm) extensions.
- *
- * <p>The object contains two items: an array of floating point values
- * representing the various multiple fitnesses (ranging from 0.0 (worst)
- * to infinity (best)), and a single SPEA2 fitness value which represents
- * the individual's overall fitness ( a function of the number of 
- * individuals it dominates and it's raw score where 0.0 is the best).
- *
+ * SPEA2MultiObjectiveFitness is a subclass of Fitness which implements basic
+ * multiobjective fitness functions along with support for the ECJ SPEA2
+ * (Strength Pareto Evolutionary Algorithm) extensions.
+ * 
+ * <p>
+ * The object contains two items: an array of floating point values representing
+ * the various multiple fitnesses (ranging from 0.0 (worst) to infinity (best)),
+ * and a single SPEA2 fitness value which represents the individual's overall
+ * fitness ( a function of the number of individuals it dominates and it's raw
+ * score where 0.0 is the best).
+ * 
  * @author Robert Hubley (based on MultiObjectiveFitness by Sean Luke)
- * @version 1.0 
+ * @version 1.0
  */
 
 public class SPEA2MultiObjectiveFitness extends MultiObjectiveFitness
     {
-    public static final String SPEA2FIT_PREAMBLE = "SPEA2Fitness: ";
+    public static final String SPEA2_FITNESS_PREAMBLE = "Fitness: ";
+    public static final String SPEA2_STRENGTH_PREAMBLE = "Strength: ";
+    public static final String SPEA2_DISTANCE_PREAMBLE = "Distance: ";
 
-    /** SPEA2 overall fitness */
-    public double SPEA2Fitness;   // F(i)
-
+	public String[] getAuxilliaryFitnessNames() { return new String[] { "Strength", "Raw Fitness", "Kth NN Distance" }; }
+	public double[] getAuxilliaryFitnessValues() { return new double[] { strength, fitness, kthNNDistance }; }
+	
     /** SPEA2 strength (# of nodes it dominates) */
-    public double SPEA2Strength;  // S(i)
-
-    /** SPEA2 RAW fitness */
-    public double SPEA2RawFitness;  // R(i)
+    public double strength; // S(i)
 
     /** SPEA2 NN distance */
-    public double SPEA2kthNNDistance;  // D(i)
+    public double kthNNDistance; // D(i)
 
-    /** Returns the sum of the squared differences between the vector
-        fitness values.
-    */
-    public float calcDistance(SPEA2MultiObjectiveFitness otherFit)
-        {
-        float s = 0;
-        for (int i = 0; i < objectives.length; i++)
-            {
-            s += (objectives[i] - otherFit.objectives[i]) *
-                (objectives[i] - otherFit.objectives[i]);
-            }
-        return s;
-        }
+	/** Final SPEA2 fitness.  Equals the raw fitness R(i) plus the kthNNDistance D(i). */
+    public double fitness;
 
     public String fitnessToString()
         {
-        return super.fitnessToString() + "\n" + SPEA2FIT_PREAMBLE + Code.encode(SPEA2Fitness);
+        return super.fitnessToString() + "\n" + SPEA2_FITNESS_PREAMBLE + Code.encode(fitness) + "\n" + SPEA2_STRENGTH_PREAMBLE + Code.encode(strength) + "\n" + SPEA2_DISTANCE_PREAMBLE + Code.encode(kthNNDistance);
         }
 
     public String fitnessToStringForHumans()
         {
-        return super.fitnessToStringForHumans() + "\n" + 
-            SPEA2FIT_PREAMBLE + "S=" + SPEA2Strength + " R=" + SPEA2RawFitness + 
-            " D= " + SPEA2kthNNDistance + " F=" + SPEA2Fitness;
-        }
-        
-    public void readFitness(final EvolutionState state,
-        final LineNumberReader reader)
-        throws IOException
-        {
-        super.readFitness(state,reader);
-        Code.readDoubleWithPreamble(SPEA2FIT_PREAMBLE, state, reader);
-        // NOTE: At this time I am not reading/writing the SPEA2 strength, raw, 
-        //       and distance values.  These are intermediate values to the 
-        //       overall SPEA2Fitness and so are not really worth preserving.
+        return super.fitnessToStringForHumans() + "\n" + "S=" + strength + " D=" + kthNNDistance + " " + SPEA2_FITNESS_PREAMBLE + fitness;
         }
 
-
-    public void writeFitness(final EvolutionState state,
-        final DataOutput dataOutput) throws IOException
+    public void readFitness(final EvolutionState state, final LineNumberReader reader) throws IOException
         {
-        super.writeFitness(state,dataOutput);
-        dataOutput.writeDouble(SPEA2Fitness);
-        dataOutput.writeDouble(SPEA2Strength);
-        dataOutput.writeDouble(SPEA2RawFitness);
-        dataOutput.writeDouble(SPEA2kthNNDistance);
+        super.readFitness(state, reader);
+        fitness = Code.readDoubleWithPreamble(SPEA2_FITNESS_PREAMBLE, state, reader);
+        strength = Code.readDoubleWithPreamble(SPEA2_STRENGTH_PREAMBLE, state, reader);
+        kthNNDistance = Code.readDoubleWithPreamble(SPEA2_DISTANCE_PREAMBLE, state, reader);
         }
 
-    public void readFitness(final EvolutionState state,
-        final DataInput dataInput) throws IOException
+    public void writeFitness(final EvolutionState state, final DataOutput dataOutput) throws IOException
         {
-        super.readFitness(state,dataInput);
-        SPEA2Fitness = dataInput.readDouble();
-        SPEA2Strength = dataInput.readDouble();
-        SPEA2RawFitness = dataInput.readDouble();
-        SPEA2kthNNDistance = dataInput.readDouble();
+        super.writeFitness(state, dataOutput);
+        dataOutput.writeDouble(fitness);
+        dataOutput.writeDouble(strength);
+        dataOutput.writeDouble(fitness);
+        dataOutput.writeDouble(kthNNDistance);
         }
+
+    public void readFitness(final EvolutionState state, final DataInput dataInput) throws IOException
+        {
+        super.readFitness(state, dataInput);
+        fitness = dataInput.readDouble();
+        strength = dataInput.readDouble();
+        fitness = dataInput.readDouble();
+        kthNNDistance = dataInput.readDouble();
+        }
+
+    /**
+     * The selection criteria in SPEA2 uses the computed fitness, and not
+     * pareto dominance.
+     */
+    public boolean betterThan(Fitness _fitness)
+        {
+		return fitness < ((SPEA2MultiObjectiveFitness)_fitness).fitness;
+		}
     }
