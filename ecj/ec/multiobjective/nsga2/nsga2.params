@@ -1,0 +1,21 @@
+# Copyright 2010 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../simple/simple.params
+parent.1 = ../multiobjective.params
+
+# Be sure to set the multiobjective fitness size as shown in ../multiobjective.params
+
+# We also use a special version of MultiObjectiveFitness
+pop.subpop.0.species.fitness =				ec.multiobjective.nsga2.NSGA2MultiObjectiveFitness
+
+# We have our own evaluator and breeder
+eval =						ec.multiobjective.nsga2.NSGA2Evaluator
+breed =						ec.multiobjective.nsga2.NSGA2Breeder
+
+# Specify the breeding pipeline as follows
+# pop.subpop.0.species.pipe           	      = ec.vector.breed.VectorMutationPipeline
+# pop.subpop.0.species.pipe.source.0          = ec.vector.breed.VectorCrossoverPipeline
+# pop.subpop.0.species.pipe.source.0.source.0 = ec.multiobjective.nsga2.NSGA2TournamentSelection
+# pop.subpop.0.species.pipe.source.0.source.1 = same
