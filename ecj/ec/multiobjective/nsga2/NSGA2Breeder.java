@@ -40,7 +40,7 @@ public class NSGA2Breeder extends SimpleBreeder
         // make sure SimpleBreeder's elites facility isn't being used
         for (int i = 0; i < elite.length; i++)
             if (elite[i] != 0)
-                state.output.fatal("Elites may not be used with NSGA2Breeder");
+                state.output.warning("Elites may not be used with NSGA2Breeder, and will be ignored.");
         }
 
     /**
