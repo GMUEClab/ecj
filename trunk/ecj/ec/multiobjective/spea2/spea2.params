@@ -19,14 +19,14 @@ pop.subpop.0.species.fitness =				ec.multiobjective.spea2.SPEA2MultiObjectiveFit
 # We have our own evaluator, breeder and statistics.
 eval =						ec.multiobjective.spea2.SPEA2Evaluator
 breed =						ec.multiobjective.spea2.SPEA2Breeder
-pop.subpop.0.species.pipe.source.0.source.0 = ec.multiobjective.spea2.SPEA2TournamentSelection
-stat =	ec.multiobjective.MultiObjectiveStatistics
+stat =						ec.multiobjective.MultiObjectiveStatistics
 
 # It's important that you use a modified version of TournamentSelection
 # for all selection functions in your breeding pipeline.  
 # This version is called ec.multiobjective.spea2.SPEA2TournamentSelection
 # For example:
 
-pop.subpop.0.species.pipe           	      = ec.vector.breed.VectorMutationPipeline
-pop.subpop.0.species.pipe.source.0          = ec.vector.breed.VectorCrossoverPipeline
-pop.subpop.0.species.pipe.source.0.source.1 = same
+# pop.subpop.0.species.pipe           	      = ec.vector.breed.VectorMutationPipeline
+# pop.subpop.0.species.pipe.source.0          = ec.vector.breed.VectorCrossoverPipeline
+# pop.subpop.0.species.pipe.source.0.source.0 = ec.multiobjective.spea2.SPEA2TournamentSelection
+# pop.subpop.0.species.pipe.source.0.source.1 = same
