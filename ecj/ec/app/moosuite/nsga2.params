@@ -1,8 +1,0 @@
-parent.0 = ../../multiobjective/nsga2/nsga2.params
-
-#crossover constant from "A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II
-#Deb, Pratap, Agarwal, and Meyarivan
-#IEEE TRANSACTIONS ON EVOLUTIONARY COMPUTATION, VOL. 6, NO. 2, APRIL 2002."
-#
-pop.subpop.0.species.crossover-prob	= 0.9
-pop.subpop.0.species.mutation-prob	= 1
