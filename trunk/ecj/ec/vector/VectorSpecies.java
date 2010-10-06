@@ -289,13 +289,17 @@ public class VectorSpecies extends Species
         if (crossoverType==C_ANY_POINT)
             {
             crossoverProbability = state.parameters.getFloatWithMax(
-                base.push(P_CROSSOVERPROB),def.push(P_CROSSOVERPROB),0.0,1.0);
+                base.push(P_CROSSOVERPROB),def.push(P_CROSSOVERPROB),0.0,0.5);
             if (crossoverProbability==-1.0)
-                state.output.error("If it's going to use any-point crossover, VectorSpecies must have a crossover probability between 0.0 and 1.0 inclusive",
+                state.output.error("If it's going to use any-point crossover, VectorSpecies must have a crossover probability between 0.0 and 0.5 inclusive",
                     base.push(P_CROSSOVERPROB),def.push(P_CROSSOVERPROB));
             }
         else crossoverProbability = 0.0f;
         state.output.exitIfErrors();
+		
+		if (crossoverType != C_ANY_POINT && state.parameters.exists(base.push(P_CROSSOVERPROB),def.push(P_CROSSOVERPROB)))
+			state.output.warning("The 'crossover-prob' parameter may only be used with any-point crossover.  It states the probability that a particular gene will be crossed over.  If you were looking for the probability of crossover happening at *all*, look at the 'likelihood' parameter.",
+				base.push(P_CROSSOVERPROB),def.push(P_CROSSOVERPROB));
         
         // NOW call super.setup(...), which will in turn set up the prototypical individual
         super.setup(state,base);

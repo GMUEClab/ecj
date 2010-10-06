@@ -233,19 +233,32 @@ public class OurMutatorPipeline extends BreedingPipeline
 			a BreedingPipeline too, it already copied the individuals for us (keeping <i>it's</i> guarantee).  If
 		  it's a SelectionMethod, the individuals aren't copies but originals, so we need to copy them.
 
-<p>Copying is done through the <tt>deepClone()</tt> method.  This is a method in Individual which is guaranteed to create a deep clone of the individual, except for its Fitness.  Why not use <tt>clone()</tt> instead?  Well, as it turns out, <tt>clone()</tt> usually but
-			doesn't necessarily deep-clone the object.  It does "whatever is appropriate" for breeding.  In
-	 	   some kinds of Individuals, notably <a href="../../classdocs/ec/gp/GPIndividual.html">GPIndividual</a>s, deep-cloning is very expensive,
-			so the breeding methods call a non-deep-clone <tt>clone()</tt> method, then deep-clone
-	     the rest by hand only as needed. 
-Moral of the story: if an object (particularly Individual) offers <tt>deepClone()</tt> as a method,
-and you need to deep clone, use that method instead of <tt>clone()</tt>.  Here's the relevant code:
+<p>First we need to figure out how many individuals we'll produce.  We can do this in two ways.  First, we could compute how many individuals we want beforehand: for example, Crossover operations typicaly produce two individuals no matter what, unless they're forced to (say) produce a single individual.  But since we're making a mutator, we'll take a different tack: we simply ask our sources to produce some number of individuals (their choice), then we mutate all those individuals and return them.  In this case, we first produce the individuals, and the variable <b>n</b> is set to how many were created:
+
 
 <tt><pre>
         <font color=gray>// grab individuals from our source and stick 'em right into inds.
         // we'll modify them from there</font>
         int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
+</pre></tt>
 
+<p>Next we need to determine if we should bother mutating these individuals at all.  With a certain probability we will just return the individuals unmutated:
+
+<tt><pre>
+	<font color=gray>// should we bother?</font>
+	if (!state.random[thread].nextBoolean(likelihood))
+		<font color=gray>// DON'T produce children from source -- we already did</font>
+		return reproduce(n, start, subpopulation, inds, state, thread, false);
+</pre></tt>
+
+<p>If we've gotten this far, it's time to actually mutate the individuals we got from our source.  We'll first
+copy them if the source isn't a BreedingPipeline.  
+Copying is done through the <tt>clone()</tt> method.  This is a method in Individual which is guaranteed to creat
+e a deep clone of the individual, including its Fitness.  In some situations (such as crossing over GPIndividuals, w
+here cloning the individual is very expensive) you may wish to light clone the Individual, then clone parts of it as
+ necessary.  In that case you can judiciously use <tt>lightClone()</tt> instead.  But that's not very common.
+
+<tt><pre>
         <font color=gray>// clone the individuals if necessary -- if our source is a BreedingPipeline
         // they've already been cloned, but if the source is a SelectionMethod, the
         // individuals are actual individuals from the previous population</font>

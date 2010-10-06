@@ -57,6 +57,12 @@ public class OurMutatorPipeline extends BreedingPipeline
         // we'll modify them from there
         int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
 
+
+		// should we bother?
+		if (!state.random[thread].nextBoolean(likelihood))
+			return reproduce(n, start, subpopulation, inds, state, thread, false);  // DON'T produce children from source -- we already did
+
+
         // clone the individuals if necessary -- if our source is a BreedingPipeline
         // they've already been cloned, but if the source is a SelectionMethod, the
         // individuals are actual individuals from the previous population

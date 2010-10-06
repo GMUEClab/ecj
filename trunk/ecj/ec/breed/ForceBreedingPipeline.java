@@ -68,6 +68,11 @@ public class ForceBreedingPipeline extends BreedingPipeline
         numInds = state.parameters.getInt(base.push(P_NUMINDS),def.push(P_NUMINDS),1);
         if (numInds==0)
             state.output.fatal("ForceBreedingPipeline must produce at least 1 child at a time", base.push(P_NUMINDS),def.push(P_NUMINDS));
+
+		// declare that likelihood isn't used
+		if (likelihood < 1.0f)
+			state.output.warning("ForceBreedingPipeline does not respond to the 'likelihood' parameter.",
+				base.push(P_LIKELIHOOD), def.push(P_LIKELIHOOD));
         }
 
     /** Returns the max of typicalIndsProduced() of all its children */
@@ -88,7 +93,7 @@ public class ForceBreedingPipeline extends BreedingPipeline
         int n = numInds;
         if (n < min) n = min;
         if (n > max) n = max;
-        
+
         int total;
         int numToProduce;
         for(total=0; total<n; )
