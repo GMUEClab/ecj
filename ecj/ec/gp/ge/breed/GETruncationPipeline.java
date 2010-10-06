@@ -43,7 +43,13 @@ public class GETruncationPipeline extends BreedingPipeline
         // grab individuals from our source and stick 'em right into inds.
         // we'll modify them from there
         int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
-        //System.err.println("Truncating");
+
+
+		// should we bother?
+		if (!state.random[thread].nextBoolean(likelihood))
+			return reproduce(n, start, subpopulation, inds, state, thread, false);  // DON'T produce children from source -- we already did
+
+
 
         // now let's mutate 'em
         for(int q=start; q < n+start; q++)

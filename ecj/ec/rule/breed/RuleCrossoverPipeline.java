@@ -113,6 +113,12 @@ public class RuleCrossoverPipeline extends BreedingPipeline
         int n = (tossSecondParent? 1 : INDS_PRODUCED);
         if (n < min) n = min;
         if (n > max) n = max;
+
+		// should we bother?
+		if (!state.random[thread].nextBoolean(likelihood))
+			return reproduce(n, start, subpopulation, inds, state, thread, true);  // DO produce children from source -- we've not done so already
+
+
         RuleInitializer initializer = ((RuleInitializer)state.initializer);
     
         for(int q=start;q<n+start; /* no increment */)  // keep on going until we're filled up

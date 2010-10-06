@@ -1699,3 +1699,7 @@ Version		Change Log
 	Additional utility methods added to Code
 	Added NSGA2
 	Large changes to SPEA2 package
+	Added 'likelihood' parameter to all BreedingPipelines
+	Updated tutorial 2 to reflect the 'likelihood' parameter
+	Added a warning to be output regarding crossover-probability
+	Changed crossover-probability to only be between 0.0 and 0.5

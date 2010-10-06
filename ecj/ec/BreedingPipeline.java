@@ -218,25 +218,21 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
         return c;
         }
 
-	/** Performs direct reproduction. */
-    public int reproduce(final int min, 
-        final int max, 
+	/** Performs direct cloning of n individuals.  if produceChildrenFromSource is true, then */
+    public int reproduce(final int n, 
         final int start,
-        final int subpopulation,
+		final int subpopulation,
         final Individual[] inds,
-        final EvolutionState state,
-        final int thread,
-		boolean forceClone) 
+		final EvolutionState state,
+		final int thread,
+		boolean produceChildrenFromSource) 
         {
-        // grab individuals from our source and stick 'em right into inds.
-        // we'll modify them from there
-        int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
-
-        // now let's reproduce 'em
-        if (forceClone || (sources[0] instanceof SelectionMethod))
+		if (produceChildrenFromSource)
+			sources[0].produce(n,n,start,subpopulation,inds,state,thread);
+        if (sources[0] instanceof SelectionMethod)
             for(int q=start; q < n+start; q++)
                 inds[q] = (Individual)(inds[q].clone());
-        return n;
+		return n;
         }
 
 

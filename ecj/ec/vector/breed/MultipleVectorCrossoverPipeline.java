@@ -101,6 +101,11 @@ public class MultipleVectorCrossoverPipeline extends BreedingPipeline {
         if (n > max) n = max;
 
         
+		// should we bother?
+		if (!state.random[thread].nextBoolean(likelihood))
+			return reproduce(n, start, subpopulation, inds, state, thread, true);  // DO produce children from source -- we've not done so already
+
+
         if(inds[0] instanceof BitVectorIndividual)
             n = multipleBitVectorCrossover(min, max, start, subpopulation, // redundant reassignment
                 inds, state, thread);

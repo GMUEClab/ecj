@@ -75,6 +75,16 @@ public class ReproductionPipeline extends BreedingPipeline
         final EvolutionState state,
         final int thread) 
         {
-		return reproduce(min, max, start, subpopulation, inds, state, thread, mustClone);
+        // grab individuals from our source and stick 'em right into inds.
+        // we'll modify them from there
+        int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
+		
+		// this code is basically the same as BreedingPipeline.reproduce() but we copy it here
+		// because of the 'mustClone' option.
+		
+		if (mustClone || sources[0] instanceof SelectionMethod)
+            for(int q=start; q < n+start; q++)
+                inds[q] = (Individual)(inds[q].clone());
+		return n;
         }
     }

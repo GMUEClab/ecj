@@ -90,6 +90,11 @@ public class BufferedBreedingPipeline extends BreedingPipeline
         
         buffer = new Individual[bufsize];
         currentSize=0; // just in case 
+
+		// declare that likelihood isn't used
+		if (likelihood < 1.0f)
+			state.output.warning("BufferedBreedingPipeline does not respond to the 'likelihood' parameter.",
+				base.push(P_LIKELIHOOD), def.push(P_LIKELIHOOD));
         }
 
 
