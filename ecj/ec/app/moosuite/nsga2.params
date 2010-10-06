@@ -1,13 +1,11 @@
-parent.0 = ../../multiobjective/spea2/spea2.params
+parent.0 = ../../multiobjective/nsga2/nsga2.params
 
-# SPEA2 needs an elitism declaration
-breed.elite.0 = 			20
+# NSGA2's pipeline
 
-# SPEA2's pipeline:
 pop.subpop.0.species.pipe                   = ec.vector.breed.VectorMutationPipeline
 pop.subpop.0.species.pipe.likelihood        = 1.0
 pop.subpop.0.species.pipe.source.0          = ec.vector.breed.VectorCrossoverPipeline
 pop.subpop.0.species.pipe.source.0.likelihood = 0.8
-pop.subpop.0.species.pipe.source.0.source.0 = ec.multiobjective.spea2.SPEA2TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
 pop.subpop.0.species.pipe.source.0.source.1 = same
 
