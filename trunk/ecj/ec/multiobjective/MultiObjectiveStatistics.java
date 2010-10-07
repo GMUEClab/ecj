@@ -13,8 +13,8 @@ import ec.Individual;
 import ec.Subpopulation;
 import ec.multiobjective.MultiObjectiveFitness;
 import ec.simple.SimpleStatistics;
-import ec.util.QuickSort;
-import ec.util.SortComparator;
+import ec.util.*;
+import java.io.*;
 
 /* 
  * MultiObjectiveStatistics.java
@@ -29,6 +29,32 @@ import ec.util.SortComparator;
  */
 public class MultiObjectiveStatistics extends SimpleStatistics
     {   
+    /** front file parameter */
+    public static final String P_PARETO_FRONT_FILE = "front";
+	
+	/** The pareto front log */
+    public int frontLog;
+
+    public void setup(final EvolutionState state, final Parameter base)
+        {
+        super.setup(state,base);
+        
+        File frontFile = state.parameters.getFile(
+            base.push(P_PARETO_FRONT_FILE),null);
+
+        if (frontFile!=null)
+			try
+				{
+				frontLog = state.output.addLog(frontFile, !compress, compress);
+				}
+            catch (IOException i)
+                {
+                state.output.fatal("An IOException occurred while trying to create the log " + frontFile + ":\n" + i);
+                }
+        }
+
+
+
     /** Logs the best individual of the run. */
     public void finalStatistics(final EvolutionState state, final int result)
         {
@@ -91,6 +117,20 @@ public class MultiObjectiveStatistics extends SimpleStatistics
 			// print out front to statistics log
             for (int i = 0; i < sortedFront.length; i++)
                 ((Individual)(sortedFront[i])).printIndividualForHumans(state, statisticslog);
-            }
+		
+			// write short version of front out to disk
+			state.output.println("Subpopulation " + s, frontLog);
+			for (int i = 0; i < sortedFront.length; i++)
+				{
+				Individual ind = (Individual)(sortedFront[i]);
+				MultiObjectiveFitness mof = (MultiObjectiveFitness) (ind.fitness);
+				float[] objectives = mof.getObjectives();
+
+				String line = "";
+				for (int f = 0; f < objectives.length; f++)
+					line += (objectives[f] + " ");
+				state.output.println(line, frontLog);
+				}
+			}
         }
 	}
