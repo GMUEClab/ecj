@@ -30,4 +30,6 @@ generations =				250
 select.tournament.size =                2
 
 pop.subpop.0.species.crossover-type = one
+#pop.subpop.0.species.crossover-type = intermediate
+pop.subpop.0.species.line-extension = 0.25 
 pop.subpop.0.species.mutation-type = gauss

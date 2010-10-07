@@ -165,15 +165,15 @@ public class FloatVectorIndividual extends VectorIndividual
             double t,u,min,max;
             for (int x = 0; x < genome.length; x++)
                 {
-                do
-                    {
                     min = s.minGene(x);
                     max = s.maxGene(x);
                     t = alpha * genome[x] + (1 - alpha) * i.genome[x];
                     u = beta * i.genome[x] + (1 - beta) * genome[x];
-                    } while (t < min || t > max || u < min || u > max);
-                genome[x] = (float)t;
-                i.genome[x] = (float)u; 
+				if (!(t < min || t > max || u < min || u > max))
+					{
+					genome[x] = (float)t;
+					i.genome[x] = (float)u; 
+					}
                 }
             }
             break;
