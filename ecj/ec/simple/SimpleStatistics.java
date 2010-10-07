@@ -66,6 +66,9 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
 
     /** The best individual we've found so far */
     public Individual[] best_of_run;
+	
+	/** Should we compress the file? */
+	public boolean compress;
 
 
     public SimpleStatistics() { best_of_run = null; statisticslog = 0; /* stdout */ }
@@ -74,15 +77,16 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         {
         super.setup(state,base);
         
+		compress = state.parameters.getBoolean(base.push(P_COMPRESS),null,false);
+		
         File statisticsFile = state.parameters.getFile(
             base.push(P_STATISTICS_FILE),null);
 
-        if (statisticsFile!=null) try
-                                      {
-                                      statisticslog = state.output.addLog(statisticsFile,
-                                          !state.parameters.getBoolean(base.push(P_COMPRESS),null,false),
-                                          state.parameters.getBoolean(base.push(P_COMPRESS),null,false));
-                                      }
+        if (statisticsFile!=null)
+			try
+				{
+				statisticslog = state.output.addLog(statisticsFile, !compress, compress);
+				}
             catch (IOException i)
                 {
                 state.output.fatal("An IOException occurred while trying to create the log " + statisticsFile + ":\n" + i);
