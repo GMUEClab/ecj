@@ -327,7 +327,7 @@ public class MultiObjectiveFitness extends Fitness
                 {
                 if (objectives[x] > other.objectives[x])
                     abeatsb = true;
-                if (objectives[x] < other.objectives[x])
+                else if (objectives[x] < other.objectives[x])
                     return false;
                 }
             }
@@ -337,7 +337,7 @@ public class MultiObjectiveFitness extends Fitness
                 {
                 if (objectives[x] < other.objectives[x])
                     abeatsb = true;
-                if (objectives[x] > other.objectives[x])
+                else if (objectives[x] > other.objectives[x])
                     return false;
                 }
             }
@@ -368,7 +368,7 @@ public class MultiObjectiveFitness extends Fitness
 		// put the first guy in the front
 		front.add(inds[0]);
 		
-		// iterate over all the individuals
+		// iterate over all the remaining individuals
         for (int i = 1; i < inds.length; i++)
             {
             Individual ind = (Individual) (inds[i]);
@@ -392,9 +392,10 @@ public class MultiObjectiveFitness extends Fitness
 				// other front members (don't break) because others might be dominated by the individual as well.
 				else if (((MultiObjectiveFitness) (ind.fitness)).paretoDominates((MultiObjectiveFitness) (frontmember.fitness)))
                     {
+					yank(j, front);
                     // a front member is dominated by the new individual.  Replace him
 					frontSize--; // member got removed
-					j++;  // because there's another guy we now need to consider in his place
+					j--;  // because there's another guy we now need to consider in his place
 					if (nonFront != null) nonFront.add(frontmember);
                     }
                 }
