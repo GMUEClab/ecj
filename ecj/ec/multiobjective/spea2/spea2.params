@@ -20,6 +20,7 @@ pop.subpop.0.species.fitness =				ec.multiobjective.spea2.SPEA2MultiObjectiveFit
 eval =						ec.multiobjective.spea2.SPEA2Evaluator
 breed =						ec.multiobjective.spea2.SPEA2Breeder
 stat =						ec.multiobjective.MultiObjectiveStatistics
+stat.front =                                    $front.stat
 
 # It's important that you use a modified version of TournamentSelection
 # for all selection functions in your breeding pipeline.  
