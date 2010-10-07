@@ -344,6 +344,15 @@ public class MultiObjectiveFitness extends Fitness
         return abeatsb;
         }
 
+	// Remove an individual from the ArrayList, shifting the topmost
+	// individual in his place
+	static void yank(int val, ArrayList list)
+		{
+		int size = list.size();
+		list.set(val, list.get(size - 1));
+		list.remove(size - 1);
+		}
+
     /**
      * Divides an array of Individuals into the Pareto front and the "nonFront" (everyone else). 
 	 * The Pareto front is returned.  You may provide ArrayLists for the front and a nonFront.
@@ -359,28 +368,34 @@ public class MultiObjectiveFitness extends Fitness
 		// put the first guy in the front
 		front.add(inds[0]);
 		
+		// iterate over all the individuals
         for (int i = 1; i < inds.length; i++)
             {
             Individual ind = (Individual) (inds[i]);
 
 			boolean noOneWasBetter = true;
             int frontSize = front.size();
+			
+			// iterate over the entire front
             for (int j = 0; j < frontSize; j++)
                 {
                 Individual frontmember = (Individual) (front.get(j));
+				
+				// if the front member is better than the individual, dump the individual and go to the next one
                 if (((MultiObjectiveFitness) (frontmember.fitness)).paretoDominates((MultiObjectiveFitness) (ind.fitness)))
                     {
 					if (nonFront != null) nonFront.add(ind);
 					noOneWasBetter = false;
 					break;  // failed.  He's not in the front
                     } 
+				// if the individual was better than the front member, dump the front member.  But look over the
+				// other front members (don't break) because others might be dominated by the individual as well.
 				else if (((MultiObjectiveFitness) (ind.fitness)).paretoDominates((MultiObjectiveFitness) (frontmember.fitness)))
                     {
                     // a front member is dominated by the new individual.  Replace him
-					front.set(j, ind);
+					frontSize--; // member got removed
+					j++;  // because there's another guy we now need to consider in his place
 					if (nonFront != null) nonFront.add(frontmember);
-					noOneWasBetter = false;
-					break;
                     }
                 }
 			if (noOneWasBetter)

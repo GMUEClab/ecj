@@ -1,7 +1,7 @@
 parent.0 = ../../multiobjective/spea2/spea2.params
 
 # SPEA2 needs an elitism declaration
-breed.elite.0 = 			20
+breed.elite.0 = 			50
 
 # SPEA2's pipeline:
 pop.subpop.0.species.pipe                   = ec.vector.breed.VectorMutationPipeline

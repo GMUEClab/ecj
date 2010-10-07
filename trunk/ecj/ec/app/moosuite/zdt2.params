@@ -6,3 +6,4 @@ pop.subpop.0.species.min-gene = 0
 pop.subpop.0.species.max-gene = 1
 pop.subpop.0.species.genome-size = 30
 pop.subpop.0.species.mutation-stdev = 0.1
+pop.subpop.0.species.mutation-prob = 0.033
