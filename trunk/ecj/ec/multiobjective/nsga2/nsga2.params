@@ -14,6 +14,7 @@ pop.subpop.0.species.fitness =				ec.multiobjective.nsga2.NSGA2MultiObjectiveFit
 eval =						ec.multiobjective.nsga2.NSGA2Evaluator
 breed =						ec.multiobjective.nsga2.NSGA2Breeder
 stat =                                          ec.multiobjective.MultiObjectiveStatistics
+stat.front =					$front.stat
 
 # Specify the breeding pipeline as follows
 # pop.subpop.0.species.pipe           	      = ec.vector.breed.VectorMutationPipeline
