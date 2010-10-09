@@ -3,8 +3,8 @@
 # See the file "LICENSE" for more information
 
 #uncomment the desired multiobjective algorithm
-parent.0 = spea2.params
-#parent.0 = nsga2.params
+#parent.0 = spea2.params
+parent.0 = nsga2.params
 
 eval.problem = ec.app.moosuite.MooSuite
 eval.problem.type = zdt1
