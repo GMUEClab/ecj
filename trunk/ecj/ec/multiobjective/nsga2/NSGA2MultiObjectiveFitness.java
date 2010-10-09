@@ -38,72 +38,44 @@ import ec.Fitness;
 
 public class NSGA2MultiObjectiveFitness extends MultiObjectiveFitness
     {
-    public static final String NSGA2FIT_PREAMBLE = "NSGA2Fitness: ";
+    public static final String NSGA2_RANK_PREAMBLE = "Rank: ";
+    public static final String NSGA2_SPARSITY_PREAMBLE = "Sparsity: ";
 
-    /** NSGA2 rank (# of the Pareto-Front rank it belongs to) */
-    public int NSGA2Rank;
-
-    /**
-     * NSGA2 Sparsity (Manhattan Distance between 2 immediate neighbors in same
-     * rank)
-     */
-    public double NSGA2Sparsity;
-
-    /*
-     * Determines whether this multiobjective fitness Pareto-dominates the other
-     * multiobjective fitness.
-     */
-    public boolean paretoDominates(MultiObjectiveFitness otherFit)
-        {
-        // MultiobjectiveFitness.betterThan() is based on pareto domination
-        return super.betterThan(otherFit);
-        }
-
-    /*
-     * MultiObjectiveFitness other = otherFit; boolean abeatsb = false; if
-     * (maximize != other.isMaximizing()) throw new RuntimeException(
-     * "Attempt made to compare two multiobjective fitnesses; but one expects higher values to be better and the other expectes lower values to be better."
-     * ); float[] other_objectives = other.getObjectives(); if
-     * (objectives.length != other_objectives.length) throw new
-     * RuntimeException(
-     * "Attempt made to compare two multiobjective fitnesses; but they have different numbers of objectives."
-     * ); if (maximize) { for (int x = 0; x < objectives.length; x++) { if
-     * (objectives[x] > other_objectives[x]) abeatsb = true; if (objectives[x] <
-     * other_objectives[x]) return false; } } else { for (int x = 0; x <
-     * objectives.length; x++) { if (objectives[x] < other_objectives[x])
-     * abeatsb = true; if (objectives[x] > other_objectives[x]) return false; }
-     * } return abeatsb; }
-     */
+	public String[] getAuxilliaryFitnessNames() { return new String[] { "Rank", "Sparsity" }; }
+	public double[] getAuxilliaryFitnessValues() { return new double[] { rank, sparsity }; }
+	
+    public int rank;
+	public double sparsity;
 
     public String fitnessToString()
         {
-        return super.fitnessToString() + "\n" + NSGA2FIT_PREAMBLE + Code.encode(NSGA2Rank);
+        return super.fitnessToString() + "\n" + NSGA2_RANK_PREAMBLE + Code.encode(rank) + "\n" + NSGA2_SPARSITY_PREAMBLE + Code.encode(sparsity);
         }
 
     public String fitnessToStringForHumans()
         {
-        return super.fitnessToStringForHumans() + "\n" + NSGA2FIT_PREAMBLE + "R=" + NSGA2Rank + " S= " + NSGA2Sparsity;
+        return super.fitnessToStringForHumans() + "\n" + "R=" + rank + " S=" + sparsity;
         }
 
     public void readFitness(final EvolutionState state, final LineNumberReader reader) throws IOException
         {
         super.readFitness(state, reader);
-        Code.readDoubleWithPreamble(NSGA2FIT_PREAMBLE, state, reader);
-        // NOTE: NSGA2 does not have a composite fitness value.
+        rank = Code.readIntegerWithPreamble(NSGA2_RANK_PREAMBLE, state, reader);
+        sparsity = Code.readDoubleWithPreamble(NSGA2_SPARSITY_PREAMBLE, state, reader);
         }
 
     public void writeFitness(final EvolutionState state, final DataOutput dataOutput) throws IOException
         {
         super.writeFitness(state, dataOutput);
-        dataOutput.writeInt(NSGA2Rank);
-        dataOutput.writeDouble(NSGA2Sparsity);
+        dataOutput.writeInt(rank);
+        dataOutput.writeDouble(sparsity);
         }
 
     public void readFitness(final EvolutionState state, final DataInput dataInput) throws IOException
         {
         super.readFitness(state, dataInput);
-        NSGA2Rank = dataInput.readInt();
-        NSGA2Sparsity = dataInput.readDouble();
+        rank = dataInput.readInt();
+        sparsity = dataInput.readDouble();
         }
 
     /**
@@ -114,16 +86,12 @@ public class NSGA2MultiObjectiveFitness extends MultiObjectiveFitness
         {
         NSGA2MultiObjectiveFitness other = (NSGA2MultiObjectiveFitness) _fitness;
         // Rank should always be minimized.
-        if (NSGA2Rank < ((NSGA2MultiObjectiveFitness) _fitness).NSGA2Rank)
+        if (rank < ((NSGA2MultiObjectiveFitness) _fitness).rank)
             return true;
-        else if (NSGA2Rank == ((NSGA2MultiObjectiveFitness) _fitness).NSGA2Rank)
-            {
-            // Sparsity should always be maximized.
-            long f = Double.doubleToRawLongBits(NSGA2Sparsity);
-            long g = Double.doubleToRawLongBits(other.NSGA2Sparsity);
-            if (NSGA2Sparsity > other.NSGA2Sparsity)
-                return true;
-            }
-        return false;
-        }
+		else if (rank > ((NSGA2MultiObjectiveFitness) _fitness).rank)
+			return false;
+		
+		// otherwise try sparsity
+        return (sparsity > other.sparsity);
+		}
     }
