@@ -1,8 +1,7 @@
 parent.0 = moosuite.params
 
 eval.problem.type = sch
-pop.subpop.0.species.fitness.maximize = false
 pop.subpop.0.species.min-gene = -1000
 pop.subpop.0.species.max-gene = 1000
 pop.subpop.0.species.genome-size = 1
-pop.subpop.0.species.mutation-stdev = 2
+pop.subpop.0.species.mutation-prob = 1

@@ -254,7 +254,6 @@ public class DoubleVectorIndividual extends VectorIndividual
         if (!(s.mutationProbability > 0.0))
             return;
         MersenneTwisterFast rng = state.random[thread];
-
         if (s.mutationType == FloatVectorSpecies.C_GAUSS_MUTATION)
             {
             for (int x = 0; x < genome.length; x++)
@@ -263,7 +262,7 @@ public class DoubleVectorIndividual extends VectorIndividual
                     double val;
                     double min = s.minGene(x);
                     double max = s.maxGene(x);
-                    double stdev = s.gaussMutationStdev(x);
+                    double stdev = s.gaussMutationStdev;
                     int outOfBoundsLeftOverTries = s.outOfRangeRetries;
                     boolean givingUpAllowed = s.outOfRangeRetries != 0;
                     do
@@ -284,6 +283,10 @@ public class DoubleVectorIndividual extends VectorIndividual
                     genome[x] = val;
                     }
             } 
+			else if (s.mutationType == FloatVectorSpecies.C_POLYNOMIAL_MUTATION)
+				{
+				polynomialMutate(state.random[thread], this, s.distributionIndex, s.polynomialIsBounded);
+				}
         else
             {// C_RESET_MUTATION
             for (int x = 0; x < genome.length; x++)
@@ -291,6 +294,67 @@ public class DoubleVectorIndividual extends VectorIndividual
                     genome[x] = s.minGene(x) + rng.nextDouble() * (s.maxGene(x) - s.minGene(x));
             }
         }
+		
+		
+	/** This function is broken out to keep it identical to NSGA-II's mutation.c code. eta_m is the distribution
+		index.  */
+	public void polynomialMutate(MersenneTwisterFast random, DoubleVectorIndividual individual, double eta_m, boolean bounded)
+		{
+        FloatVectorSpecies s = (FloatVectorSpecies) individual.species;
+		double[] ind = individual.genome;
+		double[] min_realvar = s.minGenes;
+		double[] max_realvar = s.maxGenes;
+		
+		double rnd, delta1, delta2, mut_pow, deltaq;
+		double y, yl, yu, val, xy;
+		double y1;
+		for (int j=0; j < ind.length; j++)
+			{
+			if (random.nextBoolean(s.mutationProbability))
+				{
+				y1 = y = ind[j];
+				yl = min_realvar[j];
+				yu = max_realvar[j];
+				delta1 = (y-yl)/(yu-yl);
+				delta2 = (yu-y)/(yu-yl);
+
+				int totalTries = s.outOfRangeRetries;
+				int tries = 0;
+				for(tries = 0; tries < totalTries || totalTries == 0; tries++)  // keep trying until totalTries is reached if it's not zero.  If it's zero, go on forever.
+					{
+					rnd = (random.nextDouble());
+					mut_pow = 1.0/(eta_m+1.0);
+					if (rnd <= 0.5)
+						{
+						xy = 1.0-delta1;
+						val = 2.0*rnd + (bounded ? (1.0-2.0*rnd)*(Math.pow(xy,(eta_m+1.0))) : 0.0);
+						deltaq =  Math.pow(val,mut_pow) - 1.0;
+						}
+					else
+						{
+						xy = 1.0-delta2;
+						val = 2.0*(1.0-rnd) + (bounded ? 2.0*(rnd-0.5)*(Math.pow(xy,(eta_m+1.0))) : 0.0);
+						deltaq = 1.0 - (Math.pow(val,mut_pow));
+						}
+					y1 = y + deltaq*(yu-yl);
+					//if (y1<yl)
+					//	y1 = yl;
+					//if (y1>yu)
+					//	y1 = yu;
+					//break;
+					if (y1 >= yl && y1 <= yu) break;  // yay, found one
+					}
+					
+				// at this point, if tries is totalTries, we failed
+				if (totalTries != 0 && tries == totalTries)
+					{
+					// just randomize
+					y1 = (double)(min_realvar[j] + random.nextDouble() * (max_realvar[j] - min_realvar[j]));
+					}
+				ind[j] = y1;
+				}
+			}
+		}
 
     /**
      * Initializes the individual by randomly choosing doubles uniformly from

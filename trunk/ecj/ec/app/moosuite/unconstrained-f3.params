@@ -1,9 +1,9 @@
 parent.0 = moosuite.params
 
 eval.problem.type = unconstrained-f3
-pop.subpop.0.species.fitness.maximize = false
 pop.subpop.0.species.min-gene = -20
 pop.subpop.0.species.max-gene = 20
 pop.subpop.0.species.genome-size = 2
+pop.subpop.0.species.mutation-prob = 0.5
+
 #Srinivas & Deb uses a bit string representation with 15 bits per variable (30bit genome).
-pop.subpop.0.species.mutation-stdev = 0.04

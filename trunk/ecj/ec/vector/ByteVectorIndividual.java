@@ -154,16 +154,16 @@ public class ByteVectorIndividual extends VectorIndividual
             long min, max;
             for (int x = 0; x < genome.length; x++)
                 {
-                do
-                    {
-                    min = s.minGene(x);
-                    max = s.maxGene(x);
-                    t = (long) Math.floor(alpha * genome[x] + (1 - alpha) * i.genome[x] + 0.5);
-                    u = (long) Math.floor(beta * i.genome[x] + (1 - beta) * genome[x] + 0.5);
-                    } while (t < min || t > max || u < min || u > max);
-                genome[x] = (byte) t;
-                i.genome[x] = (byte) u; 
-                }
+				min = s.minGene(x);
+				max = s.maxGene(x);
+				t = (long) Math.floor(alpha * genome[x] + (1 - alpha) * i.genome[x] + 0.5);
+				u = (long) Math.floor(beta * i.genome[x] + (1 - beta) * genome[x] + 0.5);
+				if (!(t < min || t > max || u < min || u > max))
+					{
+					genome[x] = (byte) t;
+					i.genome[x] = (byte) u; 
+					}
+				}
             }
             break;
             case VectorSpecies.C_INTERMED_RECOMB:

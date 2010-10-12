@@ -17,6 +17,7 @@ eval.problem.type = zdt1
 pop.subpop.0.species = ec.vector.FloatVectorSpecies
 pop.subpop.0.species.ind = ec.vector.DoubleVectorIndividual
 pop.subpop.0.species.fitness.num-objectives = 2
+pop.subpop.0.species.fitness.maximize = false
 seed.0 = time
 
 #constants from  "Zitzler, E., Deb, K., and Thiele, L., 2000,
@@ -30,6 +31,7 @@ generations =				250
 select.tournament.size =                2
 
 pop.subpop.0.species.crossover-type = one
-#pop.subpop.0.species.crossover-type = intermediate
-pop.subpop.0.species.line-extension = 0.25 
-pop.subpop.0.species.mutation-type = gauss
+pop.subpop.0.species.mutation-type = polynomial
+pop.subpop.0.species.distribution-index = 20
+pop.subpop.0.species.bounded = true
+

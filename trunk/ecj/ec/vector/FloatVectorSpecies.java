@@ -54,7 +54,7 @@ import ec.util.*;
  * <p>Any settings for #3 override #2, and both override #1. 
  *
  * <p>
- * FloatVectorSpecies provides support for two ways of mutating a gene:
+ * FloatVectorSpecies provides support for three ways of mutating a gene:
  * <ul>
  * <li>replacing the gene's value with a value uniformly-drawn from the gene's
  * range (the default behavior, legacy from the previous versions).</li>
@@ -64,6 +64,26 @@ import ec.util.*;
  * than there's a large probability the mutated value will land outside range.
  * We will try again a number of times (100) before giving up and using the 
  * previous mutation method.</li>
+ * <li>perturbing the gene's value with noise chosen from a <i>polynomial distribution</i>,
+ * similar to the gaussian distribution.  The polynomial distribution was popularized
+ * by Kalyanmoy Deb and is found in many of his publications (see http://www.iitk.ac.in/kangal/deb.shtml).
+ * The polynomial distribution has two options.  First, there is the <i>index</i>.  This
+ * variable defines the shape of the distribution and is in some sense the equivalent of the
+ * standard deviation in the gaussian distribution.  The index is an integer.  If it is zero,
+ * the polynomial distribution is simply the uniform distribution from [1,-1].  If it is 1, the
+ * polynomial distribution is basically a triangular distribution from [1,-1] peaking at 0.  If
+ * it is 2, the polynomial distribution follows a squared function, again peaking at 0.  Larger
+ * values result in even more peaking and narrowness.  The default values used in nearly all of
+ * the NSGA-II and Deb work is 20.  Second, there is whether or not the value is intended for
+ * <i>bounded</i> genes.  The default polynomial distribution is used when we assume the gene can
+ * take on literally any value, even beyond the min and max values.  For genes which are restricted
+ * to be between min and max, there is an alternative version of the polynomial distribution, used by
+ * Deb's team but not discussed much in the literature, desiged for that situation.  We assume boundedness
+ * by default, and have found it to be somewhat better for NSGA-II and SPEA2 problems.  For a description
+ * of this alternative version, see "A Niched-Penalty Approach for Constraint Handling in Genetic Algorithms"
+ * by Kalyanmoy Deb and Samir Agrawal.  Deb's default implementation bounds the result to min or max;
+ * instead ECJ's implementation of the polynomial distribution retries until it finds a legal value.  This
+ * will be just fine for ranges like [0,1], but for smaller ranges you may be waiting a long time.
  * </ul>
  * 
  * 
@@ -128,7 +148,7 @@ import ec.util.*;
  * 
  * <tr>
  * <td valign=top><i>base</i>.<tt>mutation-type</tt><br>
- * <font size=-1><tt>reset</tt> or <tt>gauss</tt> (default=<tt>reset</tt>)</font></td>
+ * <font size=-1><tt>reset</tt>, <tt>gauss</tt>, or <tt>polynomial</tt> (default=<tt>reset</tt>)</font></td>
  * <td valign=top>(the mutation type)</td>
  * </tr>
  * 
@@ -143,6 +163,18 @@ import ec.util.*;
  *  <font size=-1>int &ge; 0 (default=100)</font></td>
  *  <td valign=top>(number of times the gaussian mutation got the gene out of range 
  *  before we give up and reset the gene's value; 0 means "never give up")</td>
+ * </tr>
+ *
+ * <tr>
+ * <td valign=top><i>base</i>.<tt>distribution-index</tt><br>
+ * <font size=-1>int &ge; 0</font></td>
+ * <td valign=top>(the mutation distribution index for the polynomial mutation distribution)</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td valign=top><i>base</i>.<tt>bounded</tt><br>
+ *  <font size=-1>boolean (default=true)</font></td>
+ *  <td valign=top>(whether to use the "bounded" variation of the polynomial mutation or the standard ("unbounded") version)</td>
  * </tr>
  * 
  * </table>
@@ -159,13 +191,15 @@ public class FloatVectorSpecies extends VectorSpecies
 
     public static String P_STDEV = "mutation-stdev";
 
+    public static String P_DISTRIBUTION_INDEX = "distribution-index";
+
+    public static String P_POLYNOMIAL_BOUNDED = "bounded";
+
     public final static String V_RESET_MUTATION = "reset";
 
     public final static String V_GAUSS_MUTATION = "gauss";
 
-    public final static int C_RESET_MUTATION = 0;
-
-    public final static int C_GAUSS_MUTATION = 1;
+    public final static String V_POLYNOMIAL_MUTATION = "polynomial";
 
     public final static String P_OUTOFBOUNDS_RETRIES = "out-of-bounds-retries";
 
@@ -179,15 +213,24 @@ public class FloatVectorSpecies extends VectorSpecies
 
     public final static String P_SEGMENT = "segment";
 
+    public final static int C_RESET_MUTATION = 0;
+
+    public final static int C_GAUSS_MUTATION = 1;
+
+    public final static int C_POLYNOMIAL_MUTATION = 2;
+
     public double[] minGenes;
     public double[] maxGenes;
 
     /** What kind of mutation do we have? */
     public int mutationType;
-    /** If null, we're not doing gaussian mutation I guess! */
-    public double[] gaussMutationStdevs;
+	
+    public double gaussMutationStdev;
 
     public int outOfRangeRetries=100;
+	
+	public int distributionIndex;
+	public boolean polynomialIsBounded;
 
     private boolean outOfRangeRetriesWarningPrinted = false;
     public void outOfRangeRetryLimitReached(EvolutionState state)
@@ -221,11 +264,6 @@ public class FloatVectorSpecies extends VectorSpecies
             gene = m.length - 1;
             }
         return m[gene];
-        }
-
-    public final double gaussMutationStdev(int gene)
-        {
-        return gaussMutationStdevs[gene];
         }
 
     public boolean inNumericalTypeRange(double geneVal)
@@ -401,7 +439,7 @@ public class FloatVectorSpecies extends VectorSpecies
         
         
         
-        /// OTHER SETUP
+        /// MUTATION
         
 
         String mtype = state.parameters.getStringWithDefault(base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE), null);
@@ -411,27 +449,29 @@ public class FloatVectorSpecies extends VectorSpecies
                 base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE));
         else if (mtype.equalsIgnoreCase(V_RESET_MUTATION))
             mutationType = C_RESET_MUTATION; // redundant
+        else if (mtype.equalsIgnoreCase(V_POLYNOMIAL_MUTATION))
+            mutationType = C_POLYNOMIAL_MUTATION; // redundant
         else if (mtype.equalsIgnoreCase(V_GAUSS_MUTATION))
             mutationType = C_GAUSS_MUTATION;
         else
             state.output.fatal("FloatVectorSpecies given a bad mutation type: "
                 + mtype, base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE));
 
-        if (mutationType == C_GAUSS_MUTATION)
+        if (mutationType == C_POLYNOMIAL_MUTATION)
+			{
+			distributionIndex = state.parameters.getInt(base.push(P_DISTRIBUTION_INDEX), def.push(P_DISTRIBUTION_INDEX), 0);
+			if (distributionIndex < 0)
+				state.output.fatal("If FloatVectorSpecies is going to use polynomial mutation, the distribution index must be defined and >= 0.",
+					base.push(P_DISTRIBUTION_INDEX), def.push(P_DISTRIBUTION_INDEX));
+			polynomialIsBounded = state.parameters.getBoolean(base.push(P_POLYNOMIAL_BOUNDED), def.push(P_POLYNOMIAL_BOUNDED), true);
+			}
+		
+		if (mutationType == C_GAUSS_MUTATION)
             {
-            double gaussMutationStdev = state.parameters.getDouble(base.push(P_STDEV),def.push(P_STDEV), 0);
+			gaussMutationStdev = state.parameters.getDouble(base.push(P_STDEV),def.push(P_STDEV), 0);
             if (gaussMutationStdev <= 0)
                 state.output.fatal("If it's going to use gaussian mutation, FloatvectorSpecies must have a strictly positive standard deviation",
                     base.push(P_STDEV), def.push(P_STDEV));
-
-            gaussMutationStdevs = new double[genomeSize];
-            double defaultRange = maxGene - minGene;
-            double defaultStdev = gaussMutationStdev;
-            double defaultStdevOverRange = defaultStdev/defaultRange;
-            for (int x = 0; x < genomeSize; x++)
-                {
-                gaussMutationStdevs[x] = defaultStdevOverRange *(maxGene(x)-minGene((x)));
-                }
                         
             outOfRangeRetries = state.parameters.getIntWithDefault(base.push(P_OUTOFBOUNDS_RETRIES), def.push(P_OUTOFBOUNDS_RETRIES), outOfRangeRetries);
             if(outOfRangeRetries<0)

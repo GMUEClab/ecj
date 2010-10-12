@@ -4,8 +4,7 @@ eval.problem.type = kur-nsga2
 #Kursawe from 
 #
 #Note that many different versions are described in the literature!
-pop.subpop.0.species.fitness.maximize = false
 pop.subpop.0.species.min-gene = -5
 pop.subpop.0.species.max-gene = 5
 pop.subpop.0.species.genome-size = 3
-pop.subpop.0.species.mutation-stdev = 0.01
+pop.subpop.0.species.mutation-prob = 0.3333

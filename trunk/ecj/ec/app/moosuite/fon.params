@@ -6,4 +6,4 @@ pop.subpop.0.species.fitness.maximize = false
 pop.subpop.0.species.min-gene = -4
 pop.subpop.0.species.max-gene = 4
 pop.subpop.0.species.genome-size = 3
-pop.subpop.0.species.mutation-stdev = 0.008
+pop.subpop.0.species.mutation-prob = 0.3333
