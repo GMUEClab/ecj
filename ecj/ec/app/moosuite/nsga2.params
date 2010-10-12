@@ -2,9 +2,9 @@ parent.0 = ../../multiobjective/nsga2/nsga2.params
 
 # NSGA2's pipeline
 
-pop.subpop.0.species.pipe                   = ec.vector.breed.NSGA2MutationPipeline
+pop.subpop.0.species.pipe		     = ec.vector.breed.VectorMutationPipeline
 pop.subpop.0.species.pipe.likelihood        = 1.0
-pop.subpop.0.species.pipe.source.0          = ec.vector.breed.NSGA2CrossoverPipeline
+pop.subpop.0.species.pipe.source.0	= ec.vector.breed.VectorCrossoverPipeline
 pop.subpop.0.species.pipe.source.0.likelihood = 0.9
 pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
 pop.subpop.0.species.pipe.source.0.source.1 = same

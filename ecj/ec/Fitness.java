@@ -52,8 +52,8 @@ import ec.util.*;
 public abstract class Fitness implements Prototype, Comparable
     {
     /** Auxiliary variable, used by coevolutionary processes, to compute the
-        number of trials used to compute this Fitness value. */
-    public int trials;
+        number of trials used to compute this Fitness value.  By default trials=1. */
+    public int trials = 1;
         
     /** base parameter for defaults */
     public static final String P_FITNESS = "fitness";
@@ -237,6 +237,13 @@ public abstract class Fitness implements Prototype, Comparable
 		if (this.betterThan(other)) return -1;
 		if (other.betterThan(this)) return 1;
 		return 0;
+		}
+	
+	/** Sets the fitness to be the same value as the mean of the provided fitnesses.  The default
+		version of this method exits with an "unimplemented" error; you should override this. */
+	public void setToMeanOf(EvolutionState state, Fitness[] fitnesses)
+		{
+		state.output.fatal("setToMeanOf(EvolutionState, Fitness[]) not implemented in " + this.getClass());
 		}
     }
 

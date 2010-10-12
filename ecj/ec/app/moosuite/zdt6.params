@@ -1,11 +1,8 @@
 parent.0 = moosuite.params
 
 eval.problem.type = zdt6
-pop.subpop.0.species.fitness.maximize = false
 pop.subpop.0.species.min-gene = 0
 pop.subpop.0.species.max-gene = 1
 
 pop.subpop.0.species.genome-size = 10
-pop.subpop.0.species.mutation-stdev = 0.01
 pop.subpop.0.species.mutation-prob = 0.1
-

@@ -2,9 +2,8 @@ parent.0 = moosuite.params
 
 eval.problem.type = f2
 # Carlos Coello Coello & Nareli Cruz Cortes, 2002
-pop.subpop.0.species.fitness.maximize = false
 
 pop.subpop.0.species.min-gene = -5
 pop.subpop.0.species.max-gene = 10
 pop.subpop.0.species.genome-size = 1
-
+pop.subpop.0.species.mutation-prob = 1
