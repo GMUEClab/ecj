@@ -7,7 +7,7 @@ breed.elite.0 = 			50
 pop.subpop.0.species.pipe                   = ec.vector.breed.VectorMutationPipeline
 pop.subpop.0.species.pipe.likelihood        = 1.0
 pop.subpop.0.species.pipe.source.0          = ec.vector.breed.VectorCrossoverPipeline
-pop.subpop.0.species.pipe.source.0.likelihood = 0.8
+pop.subpop.0.species.pipe.source.0.likelihood = 0.9
 pop.subpop.0.species.pipe.source.0.source.0 = ec.multiobjective.spea2.SPEA2TournamentSelection
 pop.subpop.0.species.pipe.source.0.source.1 = same
 
