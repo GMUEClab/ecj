@@ -66,7 +66,7 @@ import ec.eval.*;
  * @version 1.0 
  */
 
-public class SimpleShortStatistics extends Statistics implements ProvidesBestSoFar
+public class SimpleShortStatistics extends Statistics // implements ProvidesBestSoFar
     {
 	public Individual[] getBestSoFar() { return best_of_run; }
 	

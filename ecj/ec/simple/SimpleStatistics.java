@@ -51,7 +51,7 @@ import java.io.File;
  * @version 1.0 
  */
 
-public class SimpleStatistics extends Statistics implements SteadyStateStatisticsForm, ec.eval.ProvidesBestSoFar
+public class SimpleStatistics extends Statistics implements SteadyStateStatisticsForm //, ec.eval.ProvidesBestSoFar
     {
 	public Individual[] getBestSoFar() { return best_of_run; }
 
