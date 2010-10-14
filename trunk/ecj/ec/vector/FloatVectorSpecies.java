@@ -189,11 +189,11 @@ public class FloatVectorSpecies extends VectorSpecies
 
     public final static String P_MUTATIONTYPE = "mutation-type";
 
-    public static String P_STDEV = "mutation-stdev";
+    public final static String P_STDEV = "mutation-stdev";
 
-    public static String P_DISTRIBUTION_INDEX = "distribution-index";
+    public final static String P_MUTATION_DISTRIBUTION_INDEX = "mutation-distribution-index";
 
-    public static String P_POLYNOMIAL_BOUNDED = "bounded";
+    public final static String P_POLYNOMIAL_BOUNDED = "bounded";
 
     public final static String V_RESET_MUTATION = "reset";
 
@@ -229,8 +229,10 @@ public class FloatVectorSpecies extends VectorSpecies
 
     public int outOfRangeRetries=100;
 	
-	public int distributionIndex;
+	public int mutationDistributionIndex;
 	public boolean polynomialIsBounded;
+
+	static final double SIMULATED_BINARY_CROSSOVER_EPS = 1.0e-14;	
 
     private boolean outOfRangeRetriesWarningPrinted = false;
     public void outOfRangeRetryLimitReached(EvolutionState state)
@@ -459,10 +461,10 @@ public class FloatVectorSpecies extends VectorSpecies
 
         if (mutationType == C_POLYNOMIAL_MUTATION)
 			{
-			distributionIndex = state.parameters.getInt(base.push(P_DISTRIBUTION_INDEX), def.push(P_DISTRIBUTION_INDEX), 0);
-			if (distributionIndex < 0)
+			mutationDistributionIndex = state.parameters.getInt(base.push(P_MUTATION_DISTRIBUTION_INDEX), def.push(P_MUTATION_DISTRIBUTION_INDEX), 0);
+			if (mutationDistributionIndex < 0)
 				state.output.fatal("If FloatVectorSpecies is going to use polynomial mutation, the distribution index must be defined and >= 0.",
-					base.push(P_DISTRIBUTION_INDEX), def.push(P_DISTRIBUTION_INDEX));
+					base.push(P_MUTATION_DISTRIBUTION_INDEX), def.push(P_MUTATION_DISTRIBUTION_INDEX));
 			polynomialIsBounded = state.parameters.getBoolean(base.push(P_POLYNOMIAL_BOUNDED), def.push(P_POLYNOMIAL_BOUNDED), true);
 			}
 		

@@ -196,8 +196,107 @@ public class FloatVectorIndividual extends VectorIndividual
                 }
             }
             break;
+			case VectorSpecies.C_SIMULATED_BINARY:
+				{
+				simulatedBinaryCrossover(state.random[thread], i, s.crossoverDistributionIndex);
+				}
+            break;
             }
         }
+
+
+	public void simulatedBinaryCrossover(MersenneTwisterFast random, FloatVectorIndividual other, double eta_c)
+		{
+		final double EPS = FloatVectorSpecies.SIMULATED_BINARY_CROSSOVER_EPS;
+        FloatVectorSpecies s = (FloatVectorSpecies) species;
+		float[] parent1 = genome;
+		float[] parent2 = other.genome;
+		double[] min_realvar = s.minGenes;
+		double[] max_realvar = s.maxGenes;
+		
+		double y1, y2, yl, yu;
+		double c1, c2;
+		double alpha, beta, betaq;
+		double rand;
+		
+		for(int i = 0; i < parent1.length; i++)
+			{
+			if (random.nextBoolean())  // 0.5f
+				{
+				if (Math.abs(parent1[i] - parent2[i]) > EPS)
+					{
+					if (parent1[i] < parent2[i])
+						{
+						y1 = parent1[i];
+						y2 = parent2[i];
+						}
+					else
+						{
+						y1 = parent2[i];
+						y2 = parent1[i];
+						}
+					yl = min_realvar[i];
+					yu = max_realvar[i];	
+					rand = random.nextDouble();
+                    beta = 1.0 + (2.0*(y1-yl)/(y2-y1));
+                    alpha = 2.0 - Math.pow(beta,-(eta_c+1.0));
+                    if (rand <= (1.0/alpha))
+						{
+                        betaq = Math.pow((rand*alpha),(1.0/(eta_c+1.0)));
+						}
+                    else
+						{
+                        betaq = Math.pow((1.0/(2.0 - rand*alpha)),(1.0/(eta_c+1.0)));
+						}
+                    c1 = 0.5*((y1+y2)-betaq*(y2-y1));
+                    beta = 1.0 + (2.0*(yu-y2)/(y2-y1));
+                    alpha = 2.0 - Math.pow(beta,-(eta_c+1.0));
+                    if (rand <= (1.0/alpha))
+                    {
+                        betaq = Math.pow((rand*alpha),(1.0/(eta_c+1.0)));
+                    }
+                    else
+                    {
+                        betaq = Math.pow((1.0/(2.0 - rand*alpha)),(1.0/(eta_c+1.0)));
+                    }
+                    c2 = 0.5*((y1+y2)+betaq*(y2-y1));
+                    if (c1<yl)
+                        c1=yl;
+                    if (c2<yl)
+                        c2=yl;
+                    if (c1>yu)
+                        c1=yu;
+                    if (c2>yu)
+                        c2=yu;
+					if (random.nextBoolean())
+						{
+						parent1[i] = (float)c2;
+						parent2[i] = (float)c1;
+						}
+					else
+						{
+						parent1[i] = (float)c1;
+						parent2[i] = (float)c2;
+						}
+					}
+				else
+					{
+					// do nothing
+					}
+				}
+			else
+				{
+				// do nothing
+				}
+			}
+		}
+
+
+
+
+
+
+
 
     /**
      * Splits the genome into n pieces, according to points, which *must* be
@@ -286,7 +385,7 @@ public class FloatVectorIndividual extends VectorIndividual
             }
 			else if (s.mutationType == FloatVectorSpecies.C_POLYNOMIAL_MUTATION)
 				{
-				polynomialMutate(state.random[thread], this, s.distributionIndex, s.polynomialIsBounded);
+				polynomialMutate(state.random[thread], this, s.mutationDistributionIndex, s.polynomialIsBounded);
 				}
 			else
             {// C_RESET_MUTATION

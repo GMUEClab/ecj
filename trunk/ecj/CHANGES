@@ -1703,3 +1703,12 @@ Version		Change Log
 	Updated tutorial 2 to reflect the 'likelihood' parameter
 	Added a warning to be output regarding crossover-probability
 	Changed crossover-probability to only be between 0.0 and 0.5
+	Bug fix to Line Recombination (all data types), which was going into infinite
+		loops do to a while loop rather than an if-statement
+	REVERSION: FloatVectorIndividual and DoubleVectorIndividual used to adjust the
+		Gaussian Mutation standard deviation according to the max - min
+		difference on a per-gene basis.  This is no longer done: there is now
+		only one standard deviation regardless of gene min/max values.
+	Added Polynomial Mutation to FloatVectorIndividual and DoubleVectorIndividual
+	Added Simulated Binary Crossover (SBX) to FloatVectorIndividual and
+		DoubleVectorIndividual
