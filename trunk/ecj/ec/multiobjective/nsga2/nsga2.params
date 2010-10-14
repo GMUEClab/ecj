@@ -2,10 +2,11 @@
 # Licensed under the Academic Free License version 3.0
 # See the file "LICENSE" for more information
 
-parent.0 = ../../simple/simple.params
-parent.1 = ../multiobjective.params
+parent.0 = ../multiobjective.params
+parent.1 = ../../simple/simple.params
 
 # Be sure to set the multiobjective fitness size as shown in ../multiobjective.params
+# Likewise note tht ../multiobjective.params sets the statistics
 
 # We also use a special version of MultiObjectiveFitness
 pop.subpop.0.species.fitness =				ec.multiobjective.nsga2.NSGA2MultiObjectiveFitness
@@ -13,8 +14,6 @@ pop.subpop.0.species.fitness =				ec.multiobjective.nsga2.NSGA2MultiObjectiveFit
 # We have our own evaluator and breeder
 eval =						ec.multiobjective.nsga2.NSGA2Evaluator
 breed =						ec.multiobjective.nsga2.NSGA2Breeder
-stat =                                          ec.multiobjective.MultiObjectiveStatistics
-stat.front =					$front.stat
 
 # Specify the breeding pipeline as follows
 # pop.subpop.0.species.pipe           	      = ec.vector.breed.VectorMutationPipeline

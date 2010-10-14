@@ -119,7 +119,8 @@ public class MultiObjectiveStatistics extends SimpleStatistics
                 ((Individual)(sortedFront[i])).printIndividualForHumans(state, statisticslog);
 		
 			// write short version of front out to disk
-			//state.output.println("Subpopulation " + s, frontLog);
+			if (state.population.subpops.length > 1)
+				state.output.println("Subpopulation " + s, frontLog);
 			for (int i = 0; i < sortedFront.length; i++)
 				{
 				Individual ind = (Individual)(sortedFront[i]);

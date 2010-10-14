@@ -193,7 +193,7 @@ public class FloatVectorSpecies extends VectorSpecies
 
     public final static String P_MUTATION_DISTRIBUTION_INDEX = "mutation-distribution-index";
 
-    public final static String P_POLYNOMIAL_BOUNDED = "bounded";
+    public final static String P_POLYNOMIAL_BOUNDED = "mutation-bounded";
 
     public final static String V_RESET_MUTATION = "reset";
 

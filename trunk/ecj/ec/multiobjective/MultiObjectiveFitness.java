@@ -95,19 +95,19 @@ public class MultiObjectiveFitness extends Fitness
     public static final String P_NUMOBJECTIVES = "num-objectives";
 
     /** parameter for max fitness values */
-    public static final String P_MAXFITNESSES = "max";
+    public static final String P_MAXOBJECTIVES = "max";
 
     /** parameter for min fitness values */
-    public static final String P_MINFITNESSES = "min";
+    public static final String P_MINOBJECTIVES = "min";
 
     /** Is higher better? */
     public static final String P_MAXIMIZE = "maximize";
 
     /** Desired maximum fitness values. By default these are 1.0. Shared. */
-    public float[] maxfitness;
+    public float[] maxObjective;
 
     /** Desired minimum fitness values. By default these are 0.0. Shared. */
-    public float[] minfitness;
+    public float[] minObjective;
 
     /** The various fitnesses. */
     protected float[] objectives; // values range from 0 (worst) to 1 INCLUSIVE
@@ -160,9 +160,9 @@ public class MultiObjectiveFitness extends Fitness
                 {
                 state.output.warning("Bad objective #" + i + ": " + _f + ", setting to worst value for that objective.");
                 if (maximize)
-                    newObjectives[i] = minfitness[i];
+                    newObjectives[i] = minObjective[i];
                 else
-                    newObjectives[i] = maxfitness[i];
+                    newObjectives[i] = maxObjective[i];
                 }
             }
         objectives = newObjectives;
@@ -215,21 +215,21 @@ public class MultiObjectiveFitness extends Fitness
         maximize = state.parameters.getBoolean(base.push(P_MAXIMIZE), def.push(P_MAXIMIZE), true);
 
         objectives = new float[numFitnesses];
-        maxfitness = new float[numFitnesses];
-        minfitness = new float[numFitnesses];
+        maxObjective = new float[numFitnesses];
+        minObjective = new float[numFitnesses];
 
         for (int i = 0; i < numFitnesses; i++)
             {
             // load default globals
-            minfitness[i] = state.parameters.getFloatWithDefault(base.push(P_MINFITNESSES), def.push(P_MINFITNESSES), 0.0f);
-            maxfitness[i] = state.parameters.getFloatWithDefault(base.push(P_MAXFITNESSES), def.push(P_MAXFITNESSES), 1.0f);
+            minObjective[i] = state.parameters.getFloatWithDefault(base.push(P_MINOBJECTIVES), def.push(P_MINOBJECTIVES), 0.0f);
+            maxObjective[i] = state.parameters.getFloatWithDefault(base.push(P_MAXOBJECTIVES), def.push(P_MAXOBJECTIVES), 1.0f);
 
             // load specifics if any
-            minfitness[i] = state.parameters.getFloatWithDefault(base.push(P_MINFITNESSES).push("" + i), def.push(P_MINFITNESSES).push("" + i), minfitness[i]);
-            maxfitness[i] = state.parameters.getFloatWithDefault(base.push(P_MAXFITNESSES).push("" + i), def.push(P_MAXFITNESSES).push("" + i), maxfitness[i]);
+            minObjective[i] = state.parameters.getFloatWithDefault(base.push(P_MINOBJECTIVES).push("" + i), def.push(P_MINOBJECTIVES).push("" + i), minObjective[i]);
+            maxObjective[i] = state.parameters.getFloatWithDefault(base.push(P_MAXOBJECTIVES).push("" + i), def.push(P_MAXOBJECTIVES).push("" + i), maxObjective[i]);
             
             // test for validity
-            if (minfitness[i] >= maxfitness[i])
+            if (minObjective[i] >= maxObjective[i])
                 state.output.error("For objective " + i + "the min fitness must be strictly less than the max fitness.");
             }
         state.output.exitIfErrors();

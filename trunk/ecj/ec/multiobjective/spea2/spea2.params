@@ -2,10 +2,11 @@
 # Licensed under the Academic Free License version 3.0
 # See the file "LICENSE" for more information
 
-parent.0 = ../../simple/simple.params
-parent.1 = ../multiobjective.params
+parent.0 = ../multiobjective.params
+parent.1 = ../../simple/simple.params
 
 # Be sure to set the multiobjective fitness size as shown in ../multiobjective.params
+# Likewise note tht ../multiobjective.params sets the statistics
 
 # the size of the elitist archive.  This must not be larger
 # than the subpopulation size, and it generally could be roughly
@@ -16,11 +17,9 @@ breed.elite.0 =			128
 # We also use a special version of MultiObjectiveFitness
 pop.subpop.0.species.fitness =				ec.multiobjective.spea2.SPEA2MultiObjectiveFitness
 
-# We have our own evaluator, breeder and statistics.
+# We have our own evaluator and breeder
 eval =						ec.multiobjective.spea2.SPEA2Evaluator
 breed =						ec.multiobjective.spea2.SPEA2Breeder
-stat =						ec.multiobjective.MultiObjectiveStatistics
-stat.front =                                    $front.stat
 
 # It's important that you use a modified version of TournamentSelection
 # for all selection functions in your breeding pipeline.  
