@@ -131,26 +131,15 @@ public class NSGA2Evaluator extends SimpleEvaluator
 		Each front is an ArrayList. */
     public ArrayList assignFrontRanks(Individual[] inds)
         {
-		Individual[] dummy = new Individual[0];
-		
-        ArrayList frontsByRank = new ArrayList();
+		ArrayList frontsByRank = MultiObjectiveFitness.partitionIntoRanks(inds);
 
-		int rank = 0;
-		while(inds.length > 0)
+		int numRanks = frontsByRank.size();
+		for(int rank = 0; rank < numRanks; rank++)
 			{
-			ArrayList front = new ArrayList();
-			ArrayList nonFront = new ArrayList();
-			MultiObjectiveFitness.partitionIntoParetoFront(inds, front, nonFront);
-			
-			// build inds out of remainder
-			inds = (Individual[]) nonFront.toArray(dummy);
-			
-			// label front
-			int len = front.size();
-			for(int i = 0; i < len; i++)
-				((NSGA2MultiObjectiveFitness)(((Individual)(front.get(i))).fitness)).rank = rank;
-			frontsByRank.add(front);
-			rank++;
+			ArrayList front = (ArrayList)(frontsByRank.get(rank));
+			int numInds = front.size();
+			for(int ind = 0; ind < numInds; ind++)
+				((NSGA2MultiObjectiveFitness)(((Individual)(front.get(ind))).fitness)).rank = rank;
 			}
 		return frontsByRank;
 		}

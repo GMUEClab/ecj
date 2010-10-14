@@ -128,6 +128,9 @@ public class MultiObjectiveFitness extends Fitness
         return maximize;
         }
 
+
+	public int getNumObjectives() { return objectives.length; }
+	
     /**
      * Returns the objectives as an array. Note that this is the *actual array*.
      * Though you could set values in this array, you should NOT do this --
@@ -301,9 +304,9 @@ public class MultiObjectiveFitness extends Fitness
 	 * choose to override this to do something else.
      */
 
-	public boolean betterThan(Fitness _fitness)
+	public boolean betterThan(Fitness fitness)
 		{
-		return paretoDominates(_fitness);
+		return paretoDominates((MultiObjectiveFitness)fitness);
 		}
 
     /**
@@ -312,9 +315,8 @@ public class MultiObjectiveFitness extends Fitness
      * betterThan is true, else it is false.
      */
 
-    public boolean paretoDominates(Fitness _fitness)
+    public boolean paretoDominates(MultiObjectiveFitness other)
         {
-        MultiObjectiveFitness other = (MultiObjectiveFitness) _fitness;
         boolean abeatsb = false;
         if (maximize != other.maximize)
             throw new RuntimeException(
@@ -406,6 +408,27 @@ public class MultiObjectiveFitness extends Fitness
         }
 
 
+	/** Divides inds into pareto front ranks (each an ArrayList), and returns them, in order,
+		stored in an ArrayList. */
+    public static ArrayList partitionIntoRanks(Individual[] inds)
+        {
+		Individual[] dummy = new Individual[0];
+        ArrayList frontsByRank = new ArrayList();
+
+		while(inds.length > 0)
+			{
+			ArrayList front = new ArrayList();
+			ArrayList nonFront = new ArrayList();
+			MultiObjectiveFitness.partitionIntoParetoFront(inds, front, nonFront);
+			
+			// build inds out of remainder
+			inds = (Individual[]) nonFront.toArray(dummy);
+			frontsByRank.add(front);
+			}
+		return frontsByRank;
+		}
+
+
     /**
      * Returns the sum of the squared difference between two Fitnesses in Objective space.
      */
@@ -416,6 +439,20 @@ public class MultiObjectiveFitness extends Fitness
             {
 			double a = (objectives[i] - other.objectives[i]);
             s += a * a;
+            }
+        return s;
+        }
+
+
+    /**
+     * Returns the Manhattan difference between two Fitnesses in Objective space.
+     */
+    public double manhattanObjectiveDistance(MultiObjectiveFitness other)
+        {
+        double s = 0;
+        for (int i = 0; i < objectives.length; i++)
+            {
+			s += Math.abs(objectives[i] - other.objectives[i]);
             }
         return s;
         }
