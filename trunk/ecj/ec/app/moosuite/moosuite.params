@@ -3,8 +3,8 @@
 # See the file "LICENSE" for more information
 
 #uncomment the desired multiobjective algorithm
-#parent.0 = spea2.params
-parent.0 = nsga2.params
+parent.0 = spea2.params
+#parent.0 = nsga2.params
 
 eval.problem = ec.app.moosuite.MooSuite
 
@@ -29,6 +29,14 @@ seed.0 = time
 pop.subpop.0.size =			100
 generations =				250
 select.tournament.size =                2
+
+# The multiobjective optimization routines here can use any crossover
+# and mutation pipeline you like, but the literature tends to stick with
+# SBX for crossover and Polynomial Mutation.  And with good reason: our
+# tests indicate that Polynomial Mutation is much better than Gaussian of
+# any setting for these problems.  And for SPEA2 at least, SBX seems to
+# outperform most other crossover operators.  Note that we're using the
+# "bounded" Polynomial Mutation variant, which seems to do a bit better.
 
 pop.subpop.0.species.crossover-type = sbx
 pop.subpop.0.species.crossover-distribution-index = 20
