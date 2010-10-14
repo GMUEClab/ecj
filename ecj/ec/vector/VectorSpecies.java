@@ -121,6 +121,8 @@ public class VectorSpecies extends Species
     public final static String V_ANY_POINT = "any";
     public final static String V_LINE_RECOMB = "line";
     public final static String V_INTERMED_RECOMB = "intermediate";
+    public final static String V_SIMULATED_BINARY = "sbx";
+    public final static String P_CROSSOVER_DISTRIBUTION_INDEX = "crossover-distribution-index";
     public final static String P_MUTATIONPROB = "mutation-prob";
     public final static String P_CROSSOVERPROB = "crossover-prob";
     public final static String P_GENOMESIZE = "genome-size";
@@ -136,6 +138,7 @@ public class VectorSpecies extends Species
     public final static int C_ANY_POINT = 128;
     public final static int C_LINE_RECOMB = 256;
     public final static int C_INTERMED_RECOMB = 512;
+	public final static int C_SIMULATED_BINARY = 1024;
     public final static int C_NONE = 0;
     public final static int C_GEOMETRIC = 1;
     public final static int C_UNIFORM = 2;
@@ -148,6 +151,8 @@ public class VectorSpecies extends Species
     public int crossoverType;
     /** How big of a genome should we create on initialization? */
     public int genomeSize;
+	/** What should the SBX distribution index be? */
+	public int crossoverDistributionIndex;
     /** How should we reset the genome? */
     public int genomeResizeAlgorithm;
     /** What's the smallest legal genome? */
@@ -272,6 +277,8 @@ public class VectorSpecies extends Species
             crossoverType=C_LINE_RECOMB;
         else if (ctype.equalsIgnoreCase(V_INTERMED_RECOMB))
             crossoverType=C_INTERMED_RECOMB;
+        else if (ctype.equalsIgnoreCase(V_SIMULATED_BINARY))
+            crossoverType=C_SIMULATED_BINARY;
         else state.output.error("VectorSpecies given a bad crossover type: " + ctype,
             base.push(P_CROSSOVERTYPE),def.push(P_CROSSOVERTYPE));
     
@@ -295,6 +302,18 @@ public class VectorSpecies extends Species
                     base.push(P_CROSSOVERPROB),def.push(P_CROSSOVERPROB));
             }
         else crossoverProbability = 0.0f;
+
+        if (crossoverType==C_SIMULATED_BINARY)
+            {
+            if (!(this instanceof FloatVectorSpecies))
+                state.output.error("Simulated binary crossover (SBX) is only supported by FloatVectorSpecies", base.push(P_CROSSOVERTYPE), def.push(P_CROSSOVERTYPE));
+			crossoverDistributionIndex = state.parameters.getInt(base.push(P_CROSSOVER_DISTRIBUTION_INDEX), def.push(P_CROSSOVER_DISTRIBUTION_INDEX), 0);
+			if (crossoverDistributionIndex < 0)
+				state.output.fatal("If FloatVectorSpecies is going to use simulated binary crossover (SBX), the distribution index must be defined and >= 0.",
+					base.push(P_CROSSOVER_DISTRIBUTION_INDEX), def.push(P_CROSSOVER_DISTRIBUTION_INDEX));
+            }
+        else crossoverProbability = 0.0f;
+
         state.output.exitIfErrors();
 		
 		if (crossoverType != C_ANY_POINT && state.parameters.exists(base.push(P_CROSSOVERPROB),def.push(P_CROSSOVERPROB)))
