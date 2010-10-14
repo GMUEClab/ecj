@@ -205,7 +205,7 @@ public class NSGA2Evaluator extends SimpleEvaluator
 				NSGA2MultiObjectiveFitness f_jminus1 = (NSGA2MultiObjectiveFitness) (front[j-1].fitness);
 				
                 // store the NSGA2Sparsity in sparsity
-                f_j.sparsity += (f_jplus1.getObjective(o) - f_jminus1.getObjective(o)) / (f_j.maxfitness[o] - f_j.minfitness[o]);
+                f_j.sparsity += (f_jplus1.getObjective(o) - f_jminus1.getObjective(o)) / (f_j.maxObjective[o] - f_j.minObjective[o]);
                 }
             }
         }
