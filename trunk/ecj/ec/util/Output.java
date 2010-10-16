@@ -105,7 +105,7 @@ public class Output implements Serializable
     /** No verbosity at all, not even system messages or fatal errors*/
     public static final int V_TOTALLY_SILENT = 5000;
     
-	public void setFilePrefix(String filePrefix) {
+    public void setFilePrefix(String filePrefix) {
         this.filePrefix = filePrefix;
         }
 

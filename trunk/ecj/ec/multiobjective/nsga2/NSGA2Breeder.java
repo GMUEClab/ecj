@@ -21,6 +21,11 @@ import ec.simple.*;
  * This SimpleBreeder subclass breeds a set of children from the Population, then
  * joins the original Population with the children in a (mu+mu) fashion.   An NSGA2Breeder
  * may have multiple threads for breeding.
+ *
+ * <p>NSGA-II has fixed archive size (the population size), and so ignores the 'elites'
+ * declaration.  However it will adhere to the 'reevaluate-elites' parameter in SimpleBreeder
+ * to determine whether to force fitness reevaluation.
+
  */
 
 public class NSGA2Breeder extends SimpleBreeder

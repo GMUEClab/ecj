@@ -104,10 +104,10 @@ public class VectorCrossoverPipeline extends BreedingPipeline
         int n = typicalIndsProduced();
         if (n < min) n = min;
         if (n > max) n = max;
-		
-		// should we bother?
-		if (!state.random[thread].nextBoolean(likelihood))
-			return reproduce(n, start, subpopulation, inds, state, thread, true);  // DO produce children from source -- we've not done so already
+                
+        // should we bother?
+        if (!state.random[thread].nextBoolean(likelihood))
+            return reproduce(n, start, subpopulation, inds, state, thread, true);  // DO produce children from source -- we've not done so already
 
         for(int q=start;q<n+start; /* no increment */)  // keep on going until we're filled up
             {

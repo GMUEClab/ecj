@@ -208,9 +208,9 @@ public class MutateAllNodesPipeline extends GPBreedingPipeline
         // we'll modify them from there
         int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
 
-		// should we bother?
-		if (!state.random[thread].nextBoolean(likelihood))
-			return reproduce(n, start, subpopulation, inds, state, thread, false);  // DON'T produce children from source -- we already did
+        // should we bother?
+        if (!state.random[thread].nextBoolean(likelihood))
+            return reproduce(n, start, subpopulation, inds, state, thread, false);  // DON'T produce children from source -- we already did
 
 
 

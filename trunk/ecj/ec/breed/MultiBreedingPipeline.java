@@ -90,11 +90,11 @@ public class MultiBreedingPipeline extends BreedingPipeline
 
         generateMax = state.parameters.getBoolean(base.push(P_GEN_MAX),def.push(P_GEN_MAX),true);
         maxGeneratable=0;  // indicates that I don't know what it is yet.  
-		
-		// declare that likelihood isn't used
-		if (likelihood < 1.0f)
-			state.output.warning("MultiBreedingPipeline does not respond to the 'likelihood' parameter.",
-				base.push(P_LIKELIHOOD), def.push(P_LIKELIHOOD));
+                
+        // declare that likelihood isn't used
+        if (likelihood < 1.0f)
+            state.output.warning("MultiBreedingPipeline does not respond to the 'likelihood' parameter.",
+                base.push(P_LIKELIHOOD), def.push(P_LIKELIHOOD));
         }
 
     /** Returns the max of typicalIndsProduced() of all its children */

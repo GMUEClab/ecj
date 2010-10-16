@@ -90,7 +90,7 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
         
     public Parameter mybase;
 
-	public float likelihood;
+    public float likelihood;
 
     /** Array of sources feeding the pipeline */
     public BreedingSource[] sources;
@@ -148,13 +148,13 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
         Parameter def = defaultBase();
 
         likelihood = state.parameters.getFloatWithDefault(base.push(P_LIKELIHOOD), def.push(P_LIKELIHOOD), 1.0f);
-		if (likelihood < 0.0f || likelihood > 1.0f)
-			state.output.fatal("Breeding Pipeline likelihood must be a value between 0.0 and 1.0 inclusive",
-				base.push(P_LIKELIHOOD),
-				def.push(P_LIKELIHOOD));
+        if (likelihood < 0.0f || likelihood > 1.0f)
+            state.output.fatal("Breeding Pipeline likelihood must be a value between 0.0 and 1.0 inclusive",
+                base.push(P_LIKELIHOOD),
+                def.push(P_LIKELIHOOD));
 
 
-       int numsources = numSources();
+        int numsources = numSources();
         if (numsources <= DYNAMIC_SOURCES)
             {
             // figure it from the file
@@ -218,21 +218,21 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
         return c;
         }
 
-	/** Performs direct cloning of n individuals.  if produceChildrenFromSource is true, then */
+    /** Performs direct cloning of n individuals.  if produceChildrenFromSource is true, then */
     public int reproduce(final int n, 
         final int start,
-		final int subpopulation,
+        final int subpopulation,
         final Individual[] inds,
-		final EvolutionState state,
-		final int thread,
-		boolean produceChildrenFromSource) 
+        final EvolutionState state,
+        final int thread,
+        boolean produceChildrenFromSource) 
         {
-		if (produceChildrenFromSource)
-			sources[0].produce(n,n,start,subpopulation,inds,state,thread);
+        if (produceChildrenFromSource)
+            sources[0].produce(n,n,start,subpopulation,inds,state,thread);
         if (sources[0] instanceof SelectionMethod)
             for(int q=start; q < n+start; q++)
                 inds[q] = (Individual)(inds[q].clone());
-		return n;
+        return n;
         }
 
 

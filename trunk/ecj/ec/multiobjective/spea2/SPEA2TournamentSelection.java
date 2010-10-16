@@ -1,5 +1,5 @@
 /*
-  Copyright 2006 by Robert Hubley
+  Portions copyright 2010 by Sean Luke, Robert Hubley, and George Mason University
   Licensed under the Academic Free License version 3.0
   See the file "LICENSE" for more information
 */
@@ -13,26 +13,14 @@ import ec.simple.*;
 /* 
  * SPEA2TournamentSelection.java
  * 
- * Created: Wed Jun 26 11:20:32 PDT 2002
- * By: Robert Hubley, Institute for Systems Biology
- *     (based on TournamentSelection.java by Sean Luke)
+ * Created: Sat Oct 16 11:24:43 EDT 2010
+ * By: Sean Luke
+ * Replaces earlier class by: Robert Hubley, with revisions by Gabriel Balan and Keith Sullivan
  */
 
 /**
- * Following Zitzler's paper, this class performs binary tournament selection 
- * using individuals from the archive.  
- * 
- * Does a simple tournament selection, limited to the subpopulation it's
- * working in at the time and only within the boundry of the SPEA2 archive
- * (between 0-archiveSize).
- *
- * <p>NOTE: The SPEA2Breeder class leaves the individuals
- * vector with only archiveSize number indviduals.  
- * The archive is located at the LAST <code>archiveSize</code> positions of the population.
- * The rest of the positions are null.
- *
- * @author Robert Hubley (based on TournamentSelection by Sean Luke)
- * @version 1.0 
+ * This is a special version of TournamentSelection which restricts the selection to only
+ * the archive region (the top 'archiveSize' elements in the subpopulation).
  */
 
 // This all assumes that the archive is the LAST N INDIVIDUALS in the individuals array

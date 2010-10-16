@@ -227,23 +227,23 @@ public abstract class Fitness implements Prototype, Comparable
         // by default does nothing
         }
 
-	/**
-		Returns -1 if I am FITTER than the other Fitness, 1 if I am LESS FIT than the other Fitness,
-		and 0 if we are equivalent.
-	*/
-	public int compareTo(Object o)
-		{
-		Fitness other = (Fitness) o;
-		if (this.betterThan(other)) return -1;
-		if (other.betterThan(this)) return 1;
-		return 0;
-		}
-	
-	/** Sets the fitness to be the same value as the mean of the provided fitnesses.  The default
-		version of this method exits with an "unimplemented" error; you should override this. */
-	public void setToMeanOf(EvolutionState state, Fitness[] fitnesses)
-		{
-		state.output.fatal("setToMeanOf(EvolutionState, Fitness[]) not implemented in " + this.getClass());
-		}
+    /**
+       Returns -1 if I am FITTER than the other Fitness, 1 if I am LESS FIT than the other Fitness,
+       and 0 if we are equivalent.
+    */
+    public int compareTo(Object o)
+        {
+        Fitness other = (Fitness) o;
+        if (this.betterThan(other)) return -1;
+        if (other.betterThan(this)) return 1;
+        return 0;
+        }
+        
+    /** Sets the fitness to be the same value as the mean of the provided fitnesses.  The default
+        version of this method exits with an "unimplemented" error; you should override this. */
+    public void setToMeanOf(EvolutionState state, Fitness[] fitnesses)
+        {
+        state.output.fatal("setToMeanOf(EvolutionState, Fitness[]) not implemented in " + this.getClass());
+        }
     }
 

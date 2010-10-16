@@ -1,5 +1,5 @@
 /*
-  Copyright 2006 by Robert Hubley
+  Portions copyright 2010 by Sean Luke, Robert Hubley, and George Mason University
   Licensed under the Academic Free License version 3.0
   See the file "LICENSE" for more information
 */
@@ -7,34 +7,25 @@
 package ec.multiobjective.spea2;
 
 import java.io.*;
-import ec.util.DecodeReturn;
-import ec.util.Code;
-import ec.multiobjective.MultiObjectiveFitness;
-import ec.EvolutionState;
-import ec.Fitness;
+import ec.util.*;
+import ec.multiobjective.*;
+import ec.*;
 
 /* 
  * SPEA2MultiObjectiveFitness.java
  * 
- * Created: Wed Jun 26 11:20:32 PDT 2002
- * By: Robert Hubley, Institute for Systems Biology
- *     (based on MultiObjectiveFitness.java by Sean Luke)
+ * Created: Sat Oct 16 11:24:43 EDT 2010
+ * By: Sean Luke
+ * Replaces earlier class by: Robert Hubley, with revisions by Gabriel Balan and Keith Sullivan
  */
 
 /**
- * SPEA2MultiObjectiveFitness is a subclass of Fitness which implements basic
- * multiobjective fitness functions along with support for the ECJ SPEA2
- * (Strength Pareto Evolutionary Algorithm) extensions.
+ * SPEA2MultiObjectiveFitness is a subclass of MultiObjectiveFitness which adds three auxiliary fitness
+ * measures used in SPEA2: strength S(i), kthNNDistance D(i), and a final fitness value R(i) + D(i).  
+ * Note that so-called "raw fitness" (what Sean calls "Wimpiness" in Essentials of Metaheuristics) is 
+ * not retained.
  * 
- * <p>
- * The object contains two items: an array of floating point values representing
- * the various multiple fitnesses (ranging from 0.0 (worst) to infinity (best)),
- * and a single SPEA2 fitness value which represents the individual's overall
- * fitness ( a function of the number of individuals it dominates and it's raw
- * score where 0.0 is the best).
- * 
- * @author Robert Hubley (based on MultiObjectiveFitness by Sean Luke)
- * @version 1.0
+ * <p>The fitness comparison operators solely use the 'fitness' value R(i) + D(i).
  */
 
 public class SPEA2MultiObjectiveFitness extends MultiObjectiveFitness
@@ -43,16 +34,16 @@ public class SPEA2MultiObjectiveFitness extends MultiObjectiveFitness
     public static final String SPEA2_STRENGTH_PREAMBLE = "Strength: ";
     public static final String SPEA2_DISTANCE_PREAMBLE = "Distance: ";
 
-	public String[] getAuxilliaryFitnessNames() { return new String[] { "Strength", "Raw Fitness", "Kth NN Distance" }; }
-	public double[] getAuxilliaryFitnessValues() { return new double[] { strength, fitness, kthNNDistance }; }
-	
+    public String[] getAuxilliaryFitnessNames() { return new String[] { "Strength", "Raw Fitness", "Kth NN Distance" }; }
+    public double[] getAuxilliaryFitnessValues() { return new double[] { strength, fitness, kthNNDistance }; }
+        
     /** SPEA2 strength (# of nodes it dominates) */
     public double strength; // S(i)
 
     /** SPEA2 NN distance */
     public double kthNNDistance; // D(i)
 
-	/** Final SPEA2 fitness.  Equals the raw fitness R(i) plus the kthNNDistance D(i). */
+    /** Final SPEA2 fitness.  Equals the raw fitness R(i) plus the kthNNDistance D(i). */
     public double fitness;
 
     public String fitnessToString()
@@ -95,8 +86,17 @@ public class SPEA2MultiObjectiveFitness extends MultiObjectiveFitness
      * The selection criteria in SPEA2 uses the computed fitness, and not
      * pareto dominance.
      */
+    public boolean equivalentTo(Fitness _fitness)
+        {
+        return fitness == ((SPEA2MultiObjectiveFitness)_fitness).fitness;
+        }
+
+    /**
+     * The selection criteria in SPEA2 uses the computed fitness, and not
+     * pareto dominance.
+     */
     public boolean betterThan(Fitness _fitness)
         {
-		return fitness < ((SPEA2MultiObjectiveFitness)_fitness).fitness;
-		}
+        return fitness < ((SPEA2MultiObjectiveFitness)_fitness).fitness;
+        }
     }

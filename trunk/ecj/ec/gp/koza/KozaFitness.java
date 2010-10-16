@@ -178,22 +178,22 @@ public class KozaFitness extends Fitness
         hits = dataInput.readInt();
         }
 
-	public void setToMeanOf(EvolutionState state, Fitness[] fitnesses)
-		{
-		// this is not numerically stable.  Perhaps we should have a numerically stable algorithm for sums
-		// we're presuming it's not a very large number of elements, so it's probably not a big deal,
-		// since this function is meant to be used mostly for gathering trials together.
-		double f = 0;
-		long h = 0;
-		for(int i = 0; i < fitnesses.length; i++)
-			{
-			KozaFitness fit = (KozaFitness)(fitnesses[i]);
-			f += fit.standardizedFitness;
-			h += fit.hits;
-			}
-		f /= fitnesses.length;
-		h /= fitnesses.length;
-		standardizedFitness = (float)f;
-		hits = (int)h;
-		}
+    public void setToMeanOf(EvolutionState state, Fitness[] fitnesses)
+        {
+        // this is not numerically stable.  Perhaps we should have a numerically stable algorithm for sums
+        // we're presuming it's not a very large number of elements, so it's probably not a big deal,
+        // since this function is meant to be used mostly for gathering trials together.
+        double f = 0;
+        long h = 0;
+        for(int i = 0; i < fitnesses.length; i++)
+            {
+            KozaFitness fit = (KozaFitness)(fitnesses[i]);
+            f += fit.standardizedFitness;
+            h += fit.hits;
+            }
+        f /= fitnesses.length;
+        h /= fitnesses.length;
+        standardizedFitness = (float)f;
+        hits = (int)h;
+        }
     }

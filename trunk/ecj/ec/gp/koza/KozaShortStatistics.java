@@ -76,7 +76,7 @@ import ec.util.*;
 
 public class KozaShortStatistics extends Statistics
     {
-	public Individual[] getBestSoFar() { return best_of_run; }
+    public Individual[] getBestSoFar() { return best_of_run; }
 
     /** compress? */
     public static final String P_COMPRESS = "gzip";

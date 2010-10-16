@@ -1712,3 +1712,4 @@ Version		Change Log
 	Added Polynomial Mutation to FloatVectorIndividual and DoubleVectorIndividual
 	Added Simulated Binary Crossover (SBX) to FloatVectorIndividual and
 		DoubleVectorIndividual
+	Updated copyright information on many parameter files

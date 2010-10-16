@@ -65,7 +65,6 @@ public class RandomSelection extends SelectionMethod implements SteadyStateBSour
 
         for(int q = 0; q < n; q++)
             {
-            // pick size random individuals, then pick the best.
             Individual[] oldinds = state.population.subpops[subpopulation].individuals;
             inds[start+q] = oldinds[state.random[thread].nextInt( state.population.subpops[subpopulation].individuals.length )];
             }
