@@ -14,22 +14,13 @@ import ec.simple.*;
  * NSGA2Breeder.java
  * 
  * Created: Thu Feb 04 2010
- * By: Faisal Abidi
+ * By: Faisal Abidi and Sean Luke
  */
 
 /**
- * Breeds each subpopulation separately, with no inter-population exchange, and
- * using the NSGA2 approach. A NSGA2Breeder may have multiple threads; it divvys
- * up a subpopulation into chunks and hands one chunk to each thread to
- * populate. One array of BreedingPipelines is obtained from a population's
- * Species for each operating breeding thread.
- * <p>
- * The NSGA2 approach: After breeding a new subpopulation of size N from N
- * parents, NSGA2Breeder appends the children to the parents giving a
- * subpopulation of size 2N in a somewhat mu+lambda fashion.
- * 
- * @author Faisal Abidi (based on Breeder.java by Sean Luke)
- * @version 1.0
+ * This SimpleBreeder subclass breeds a set of children from the Population, then
+ * joins the original Population with the children in a (mu+mu) fashion.   An NSGA2Breeder
+ * may have multiple threads for breeding.
  */
 
 public class NSGA2Breeder extends SimpleBreeder

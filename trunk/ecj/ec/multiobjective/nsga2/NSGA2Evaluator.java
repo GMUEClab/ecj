@@ -6,39 +6,33 @@
 
 package ec.multiobjective.nsga2;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import ec.EvolutionState;
-import ec.Individual;
-import ec.Initializer;
-import ec.Population;
-import ec.Subpopulation;
-import ec.multiobjective.MultiObjectiveFitness;
-import ec.simple.SimpleEvaluator;
-import ec.util.MersenneTwisterFast;
-import ec.util.Parameter;
-import ec.util.QuickSort;
-import ec.util.SortComparator;
+import java.util.*;
+import ec.*;
+import ec.multiobjective.*;
+import ec.simple.*;
+import ec.util.*;
+
+/* 
+ * NSGA2Evaluator.java
+ * 
+ * Created: Sat Oct 16 00:19:57 EDT 2010
+ * By: Faisal Abidi and Sean Luke
+ */
+
 
 /**
- * 
- * The NSGA2Evaluator is a simple, non-coevolved generational evaluator which
- * evaluates every single member of every subpopulation individually in its own
- * problem space. One Problem instance is cloned from p_problem for each
- * evaluating thread.
+ * The NSGA2Evaluator is a simple generational evaluator which
+ * evaluates every single member of the population (in a multithreaded fashion).
+ * Then it reduces the population size to an <i>archive</i> consisting of the
+ * best front ranks.  When there isn't enough space to fit another front rank,
+ * individuals in that final front rank vie for the remaining slots in the archive
+ * based on their sparsity.
  * 
  * The evaluator is also responsible for calculating the rank and
- * NSGA2Sparsity values, which are the measures of fitness used by the NSGA2.
- * This function depends on the entire population and so cannot be calculated in
- * the Problem class.
- * 
- * 
- * <p>
- * This is an implementation of Deb2000.
- * 
- * @author Faisal Abidi, Sean Luke (based on Evaluator.java by Sean Luke),
- * @version 1.0
+ * sparsity values stored in the NSGA2MultiObjectiveFitness class and used largely
+ * for statistical information.
  */
+ 
 public class NSGA2Evaluator extends SimpleEvaluator
     {
     public int originalPopSize[];
@@ -75,6 +69,8 @@ public class NSGA2Evaluator extends SimpleEvaluator
         }
 
 
+	/** Build the auxiliary fitness data and reduce the subpopulation to just the archive, which is
+	    returned. */
     public Individual[] computeAuxiliaryData(EvolutionState state, Individual[] inds, int subpop)
 		{
 		Individual[] dummy = new Individual[0];
