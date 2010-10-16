@@ -366,15 +366,15 @@ public abstract class Individual implements Prototype, Comparable
         return (equals(otherInd) ? 0 : Double.POSITIVE_INFINITY);
         }
 
-	/**
-		Returns -1 if I am BETTER in some way than the other Individual, 1 if the other Individual is BETTER than me,
-		and 0 if we are equivalent.  The default implementation assumes BETTER means FITTER, by simply calling
-		compareTo on the fitnesses themse.ves
-	*/
-	public int compareTo(Object o)
-		{
-		Individual other = (Individual) o;
-		return fitness.compareTo(other.fitness);
-		}
+    /**
+       Returns -1 if I am BETTER in some way than the other Individual, 1 if the other Individual is BETTER than me,
+       and 0 if we are equivalent.  The default implementation assumes BETTER means FITTER, by simply calling
+       compareTo on the fitnesses themse.ves
+    */
+    public int compareTo(Object o)
+        {
+        Individual other = (Individual) o;
+        return fitness.compareTo(other.fitness);
+        }
     }
 

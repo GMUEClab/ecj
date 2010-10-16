@@ -224,15 +224,15 @@ public class FloatVectorSpecies extends VectorSpecies
 
     /** What kind of mutation do we have? */
     public int mutationType;
-	
+        
     public double gaussMutationStdev;
 
     public int outOfRangeRetries=100;
-	
-	public int mutationDistributionIndex;
-	public boolean polynomialIsBounded;
+        
+    public int mutationDistributionIndex;
+    public boolean polynomialIsBounded;
 
-	static final double SIMULATED_BINARY_CROSSOVER_EPS = 1.0e-14;	
+    static final double SIMULATED_BINARY_CROSSOVER_EPS = 1.0e-14;   
 
     private boolean outOfRangeRetriesWarningPrinted = false;
     public void outOfRangeRetryLimitReached(EvolutionState state)
@@ -460,17 +460,17 @@ public class FloatVectorSpecies extends VectorSpecies
                 + mtype, base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE));
 
         if (mutationType == C_POLYNOMIAL_MUTATION)
-			{
-			mutationDistributionIndex = state.parameters.getInt(base.push(P_MUTATION_DISTRIBUTION_INDEX), def.push(P_MUTATION_DISTRIBUTION_INDEX), 0);
-			if (mutationDistributionIndex < 0)
-				state.output.fatal("If FloatVectorSpecies is going to use polynomial mutation, the distribution index must be defined and >= 0.",
-					base.push(P_MUTATION_DISTRIBUTION_INDEX), def.push(P_MUTATION_DISTRIBUTION_INDEX));
-			polynomialIsBounded = state.parameters.getBoolean(base.push(P_POLYNOMIAL_BOUNDED), def.push(P_POLYNOMIAL_BOUNDED), true);
-			}
-		
-		if (mutationType == C_GAUSS_MUTATION)
             {
-			gaussMutationStdev = state.parameters.getDouble(base.push(P_STDEV),def.push(P_STDEV), 0);
+            mutationDistributionIndex = state.parameters.getInt(base.push(P_MUTATION_DISTRIBUTION_INDEX), def.push(P_MUTATION_DISTRIBUTION_INDEX), 0);
+            if (mutationDistributionIndex < 0)
+                state.output.fatal("If FloatVectorSpecies is going to use polynomial mutation, the distribution index must be defined and >= 0.",
+                    base.push(P_MUTATION_DISTRIBUTION_INDEX), def.push(P_MUTATION_DISTRIBUTION_INDEX));
+            polynomialIsBounded = state.parameters.getBoolean(base.push(P_POLYNOMIAL_BOUNDED), def.push(P_POLYNOMIAL_BOUNDED), true);
+            }
+                
+        if (mutationType == C_GAUSS_MUTATION)
+            {
+            gaussMutationStdev = state.parameters.getDouble(base.push(P_STDEV),def.push(P_STDEV), 0);
             if (gaussMutationStdev <= 0)
                 state.output.fatal("If it's going to use gaussian mutation, FloatvectorSpecies must have a strictly positive standard deviation",
                     base.push(P_STDEV), def.push(P_STDEV));

@@ -1,5 +1,5 @@
-This is an implementation of the Strength Pareto Evolutionary Algorithm 2
-for ECJ.
+This package contains is an implementation of the Strength Pareto 
+Evolutionary Algorithm 2 (SPEA2).
 
 Details of this approach can be found in the following paper:
 
@@ -31,16 +31,17 @@ archive truncation method. The comparison of SPEA2 with SPEA and two
 other modern elitist methods, PESA and NSGA-II, on different test
 problems yields promising results.
 
-
-Author of ECJ SPEA2 package: Robert Hubley, Insitute for Systems Biology
-With modifications by Sean Luke, Gabriel Balan, and Keith Sullivan
+This package has a significant history.  The early versions of the
+package were donated by Robert Hubley at the Institute for Systems
+Biology.  Major later modifications were made by Sean Luke, Gabriel Balan,
+and Keith Sullivan.  Then the SPEA2 package was almost entirely rewritten
+in 2010 by Faisal Abidi and Sean Luke.
 
 
 EXAMPLES
 --------
 
-There is an example application in ec/app (look for "moo" or 
-"multiobjective") which uses SPEA2.
+The ec.app.moosuite package contains test cases against which to test SPEA2.
 
 
 How ECJ implements SPEA2
@@ -51,45 +52,47 @@ That is, SPEA2 maintains a pool (the "archive") of some N high quality
 individuals which more or less holds the present known pareto front of
 the population.  That archive is carried over from generation to generation.
 
-The archive is the last N individuals in the subpopulation's array.  SPEA2
-has its own subpopulation class:
-
-	ec.multiobjective.spea2.SPEA2Subpopulation
-
-... which extends Subpopulation solely by adding a variable indicating the
-archive size.  To handle SPEA2's breeding complexity, we also have our own
-breeder which knows how work with this kind of subpopulation properly:
-
-	ec.multiobjective.spea2.SPEA2Breeder
-
 SPEA2 has an elaborate fitness setting procedure which involves the 
-computation of several odd variables before setting a final fitness
-based on the various objective results.  This is handled by a revised
-Evaluator class:
+computation of several measures of domination (known as "strength") and
+sparsity.  This computation is performed by a revised SimpleEvaluator subclass:
 
 	ec.multiobjective.spea2.SPEA2Evaluator
 
-These variables are stored in a revised version of MultiobjectiveFitness.
-Such variables are really not necessary to hold; the only one that matters
-is the SPEA2Fitness variable, which holds the final fitness assessment of
-the individual.  This variable exists because SPEA2MultiobjectiveFitness
-subclasses from MultiobjectiveFitness, which subclasses from Fitness rather
-than SimpleFitness: thus there's no "fitness" instance variable like there
-is in SimpleFitness.  We could tweak that in the future, so it's possible
-that this class might go away at some point.
+New children are then bred and an archive is formed by loading the pareto
+front, trimmed by sparsity plus various other "highly fit" children (if there
+is space).  The breeding procedure is handled by a revised version of 
+SimpleBreeder:
 
-	ec.multiobjective.spea2.SPEA2MultiobjectiveFitness
+	ec.multiobjective.spea2.SPEA2Breeder
 
-When SPEA2 needs to do breeding, it does so solely from the archive.
-This means that the ECJ selection operator (TournamentSelection, which 
-SPEA uses) needs to be modified to only consider the archive when
-selecting an individual.  Our modified version is here:
+Because it uses auxiliary fitness measures to perform breeding, SPEA2 requires
+a subclass of MultiObjectiveFitness which stores these auxiliary measures:
+
+	ec.multiobjective.spea2.SPEA2MultiObjectiveFitness
+
+When SPEA2 needs to do breeding, it does so solely from the archive, not from
+the full population.  This means that the selection operator 
+(TournamentSelection, which SPEA uses) needs to be modified to only 
+consider the archive when selecting an individual.  Our modified version is:
 
 	ec.multiobjecive.spea2.SPEA2TournamentSelection
 
-Last we have provided a simple extension of the Statistics class to provide
-a bit more information about what the final archive looks like:
 
-	ec.multiobjective.spea2.SPEA2Statistics
+SPEA2 and NSGA-II have different approaches to building archives which impacts
+on how you need to set your population sizes in order to achieve the same number
+of evaluations.  In ECJ, NSGA-II does not include the archive as part of the basic
+population size.  Rather, it builds the archive separately, then builds the
+population by breeding from the archive, then gloms the two together.  On the
+other hand, SPEA2 uses a (tunable) portion of its population as the archive, and
+breeds individuals into the remainder of the population.  This means that to have
+a "population size" for SPEA2 that's the same as NSGA-II, you need to increase
+SPEA2's population size to NSGA-II's population size plus SPEA2's archive (elites)
+size.  For example, if you have an NSGA-II population size of 100, and SPEA2 is using
+an archive size of 50, to be fair you should make SPEA2's population size be 150.
+
+If you set things so that SPEA2 and NSGA-II must reevaluate the fitness of 
+their archives (which is rare), things are different.  Now you should set SPEA2
+so that its archive size and population size is equal to twice NSGA-II's population
+size (because NSGA-II's archive size is the size of its population).
 
 

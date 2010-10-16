@@ -3,8 +3,8 @@
 # See the file "LICENSE" for more information
 
 #uncomment the desired multiobjective algorithm
-parent.0 = spea2.params
-#parent.0 = nsga2.params
+#parent.0 = spea2.params
+parent.0 = nsga2.params
 
 eval.problem = ec.app.moosuite.MooSuite
 
@@ -20,15 +20,12 @@ pop.subpop.0.species.fitness.num-objectives = 2
 pop.subpop.0.species.fitness.maximize = false
 seed.0 = time
 
-# constants from  "Zitzler, E., Deb, K., and Thiele, L., 2000,
-# Comparison of Multiobjective Evolutionary Algorithms: Empirical Results, 
-# Evolutionary Computation, Vol. 8, No. 2, pp173-195."
-#
-# Before comparing results, note that that paper uses SPEA, not SPEA2.
 
-pop.subpop.0.size =			100
-generations =				250
-select.tournament.size =                2
+# Uncomment this if you'd like to force reevaluation of all archive
+# members each generation.
+#
+# breed.reevaluate-elites.0 = true
+
 
 # The multiobjective optimization routines here can use any crossover
 # and mutation pipeline you like, but the literature tends to stick with

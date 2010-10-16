@@ -68,8 +68,8 @@ import ec.eval.*;
 
 public class SimpleShortStatistics extends Statistics // implements ProvidesBestSoFar
     {
-	public Individual[] getBestSoFar() { return best_of_run; }
-	
+    public Individual[] getBestSoFar() { return best_of_run; }
+        
     /** log file parameter */
     public static final String P_STATISTICS_FILE = "file";
 

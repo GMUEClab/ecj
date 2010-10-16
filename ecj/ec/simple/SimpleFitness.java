@@ -141,21 +141,21 @@ public class SimpleFitness extends Fitness
         isIdeal = dataInput.readBoolean();
         }
 
-	public void setToMeanOf(EvolutionState state, Fitness[] fitnesses)
-		{
-		// this is not numerically stable.  Perhaps we should have a numerically stable algorithm for sums
-		// we're presuming it's not a very large number of elements, so it's probably not a big deal,
-		// since this function is meant to be used mostly for gathering trials together.
-		double f = 0;
-		boolean ideal = true;
-		for(int i = 0; i < fitnesses.length; i++)
-			{
-			SimpleFitness fit = (SimpleFitness)(fitnesses[i]);
-			f += fit.fitness;
-			ideal = ideal && fit.isIdeal;
-			}
-		f /= fitnesses.length;
-		fitness = (float)f;
-		isIdeal = ideal;
-		}
+    public void setToMeanOf(EvolutionState state, Fitness[] fitnesses)
+        {
+        // this is not numerically stable.  Perhaps we should have a numerically stable algorithm for sums
+        // we're presuming it's not a very large number of elements, so it's probably not a big deal,
+        // since this function is meant to be used mostly for gathering trials together.
+        double f = 0;
+        boolean ideal = true;
+        for(int i = 0; i < fitnesses.length; i++)
+            {
+            SimpleFitness fit = (SimpleFitness)(fitnesses[i]);
+            f += fit.fitness;
+            ideal = ideal && fit.isIdeal;
+            }
+        f /= fitnesses.length;
+        fitness = (float)f;
+        isIdeal = ideal;
+        }
     }

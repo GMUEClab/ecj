@@ -57,7 +57,7 @@ import java.io.*;
 
 public class KozaStatistics extends Statistics implements SteadyStateStatisticsForm
     {
-	public Individual[] getBestSoFar() { return best_of_run; }
+    public Individual[] getBestSoFar() { return best_of_run; }
 
     /** log file parameter */
     public static final String P_STATISTICS_FILE = "file";

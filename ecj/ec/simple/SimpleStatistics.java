@@ -53,7 +53,7 @@ import java.io.File;
 
 public class SimpleStatistics extends Statistics implements SteadyStateStatisticsForm //, ec.eval.ProvidesBestSoFar
     {
-	public Individual[] getBestSoFar() { return best_of_run; }
+    public Individual[] getBestSoFar() { return best_of_run; }
 
     /** log file parameter */
     public static final String P_STATISTICS_FILE = "file";
@@ -66,9 +66,9 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
 
     /** The best individual we've found so far */
     public Individual[] best_of_run;
-	
-	/** Should we compress the file? */
-	public boolean compress;
+        
+    /** Should we compress the file? */
+    public boolean compress;
 
 
     public SimpleStatistics() { best_of_run = null; statisticslog = 0; /* stdout */ }
@@ -77,16 +77,16 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         {
         super.setup(state,base);
         
-		compress = state.parameters.getBoolean(base.push(P_COMPRESS),null,false);
-		
+        compress = state.parameters.getBoolean(base.push(P_COMPRESS),null,false);
+                
         File statisticsFile = state.parameters.getFile(
             base.push(P_STATISTICS_FILE),null);
 
         if (statisticsFile!=null)
-			try
-				{
-				statisticslog = state.output.addLog(statisticsFile, !compress, compress);
-				}
+            try
+                {
+                statisticslog = state.output.addLog(statisticsFile, !compress, compress);
+                }
             catch (IOException i)
                 {
                 state.output.fatal("An IOException occurred while trying to create the log " + statisticsFile + ":\n" + i);

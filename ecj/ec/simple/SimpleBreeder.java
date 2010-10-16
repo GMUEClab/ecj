@@ -202,16 +202,16 @@ public class SimpleBreeder extends Breeder
             { return inds[(int)a].fitness.betterThan(inds[(int)b].fitness); }
         }
 
-	protected void unmarkElitesEvaluated(Population newpop)
-		{
+    protected void unmarkElitesEvaluated(Population newpop)
+        {
         for(int sub=0;sub<newpop.subpops.length;sub++)
-			for(int e=0; e < elite[sub]; e++)
-				{
-				int len = newpop.subpops[sub].individuals.length;
-				if (reevaluateElites[sub])
-					newpop.subpops[sub].individuals[len - elite[sub]].evaluated = false;
-				}
-		}
+            for(int e=0; e < elite[sub]; e++)
+                {
+                int len = newpop.subpops[sub].individuals.length;
+                if (reevaluateElites[sub])
+                    newpop.subpops[sub].individuals[len - elite[sub]].evaluated = false;
+                }
+        }
 
     /** A private helper function for breedPopulation which loads elites into
         a subpopulation. */
@@ -252,11 +252,11 @@ public class SimpleBreeder extends Breeder
                 for(int x=inds.length-elite[sub];x<inds.length;x++)
                     inds[x] = (Individual)(oldinds[orderedPop[x]].clone());
                 }
-		
-		// optionally force reevaluation
-		unmarkElitesEvaluated(newpop);
+                
+        // optionally force reevaluation
+        unmarkElitesEvaluated(newpop);
         }
-	}
+    }
 
 
 /** A private helper class for implementing multithreaded breeding */

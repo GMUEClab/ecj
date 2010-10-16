@@ -165,15 +165,15 @@ public class FloatVectorIndividual extends VectorIndividual
             double t,u,min,max;
             for (int x = 0; x < genome.length; x++)
                 {
-                    min = s.minGene(x);
-                    max = s.maxGene(x);
-                    t = alpha * genome[x] + (1 - alpha) * i.genome[x];
-                    u = beta * i.genome[x] + (1 - beta) * genome[x];
-				if (!(t < min || t > max || u < min || u > max))
-					{
-					genome[x] = (float)t;
-					i.genome[x] = (float)u; 
-					}
+                min = s.minGene(x);
+                max = s.maxGene(x);
+                t = alpha * genome[x] + (1 - alpha) * i.genome[x];
+                u = beta * i.genome[x] + (1 - beta) * genome[x];
+                if (!(t < min || t > max || u < min || u > max))
+                    {
+                    genome[x] = (float)t;
+                    i.genome[x] = (float)u; 
+                    }
                 }
             }
             break;
@@ -196,69 +196,69 @@ public class FloatVectorIndividual extends VectorIndividual
                 }
             }
             break;
-			case VectorSpecies.C_SIMULATED_BINARY:
-				{
-				simulatedBinaryCrossover(state.random[thread], i, s.crossoverDistributionIndex);
-				}
+            case VectorSpecies.C_SIMULATED_BINARY:
+            {
+            simulatedBinaryCrossover(state.random[thread], i, s.crossoverDistributionIndex);
+            }
             break;
             }
         }
 
 
-	public void simulatedBinaryCrossover(MersenneTwisterFast random, FloatVectorIndividual other, double eta_c)
-		{
-		final double EPS = FloatVectorSpecies.SIMULATED_BINARY_CROSSOVER_EPS;
+    public void simulatedBinaryCrossover(MersenneTwisterFast random, FloatVectorIndividual other, double eta_c)
+        {
+        final double EPS = FloatVectorSpecies.SIMULATED_BINARY_CROSSOVER_EPS;
         FloatVectorSpecies s = (FloatVectorSpecies) species;
-		float[] parent1 = genome;
-		float[] parent2 = other.genome;
-		double[] min_realvar = s.minGenes;
-		double[] max_realvar = s.maxGenes;
-		
-		double y1, y2, yl, yu;
-		double c1, c2;
-		double alpha, beta, betaq;
-		double rand;
-		
-		for(int i = 0; i < parent1.length; i++)
-			{
-			if (random.nextBoolean())  // 0.5f
-				{
-				if (Math.abs(parent1[i] - parent2[i]) > EPS)
-					{
-					if (parent1[i] < parent2[i])
-						{
-						y1 = parent1[i];
-						y2 = parent2[i];
-						}
-					else
-						{
-						y1 = parent2[i];
-						y2 = parent1[i];
-						}
-					yl = min_realvar[i];
-					yu = max_realvar[i];	
-					rand = random.nextDouble();
+        float[] parent1 = genome;
+        float[] parent2 = other.genome;
+        double[] min_realvar = s.minGenes;
+        double[] max_realvar = s.maxGenes;
+                
+        double y1, y2, yl, yu;
+        double c1, c2;
+        double alpha, beta, betaq;
+        double rand;
+                
+        for(int i = 0; i < parent1.length; i++)
+            {
+            if (random.nextBoolean())  // 0.5f
+                {
+                if (Math.abs(parent1[i] - parent2[i]) > EPS)
+                    {
+                    if (parent1[i] < parent2[i])
+                        {
+                        y1 = parent1[i];
+                        y2 = parent2[i];
+                        }
+                    else
+                        {
+                        y1 = parent2[i];
+                        y2 = parent1[i];
+                        }
+                    yl = min_realvar[i];
+                    yu = max_realvar[i];    
+                    rand = random.nextDouble();
                     beta = 1.0 + (2.0*(y1-yl)/(y2-y1));
                     alpha = 2.0 - Math.pow(beta,-(eta_c+1.0));
                     if (rand <= (1.0/alpha))
-						{
+                        {
                         betaq = Math.pow((rand*alpha),(1.0/(eta_c+1.0)));
-						}
+                        }
                     else
-						{
+                        {
                         betaq = Math.pow((1.0/(2.0 - rand*alpha)),(1.0/(eta_c+1.0)));
-						}
+                        }
                     c1 = 0.5*((y1+y2)-betaq*(y2-y1));
                     beta = 1.0 + (2.0*(yu-y2)/(y2-y1));
                     alpha = 2.0 - Math.pow(beta,-(eta_c+1.0));
                     if (rand <= (1.0/alpha))
-                    {
+                        {
                         betaq = Math.pow((rand*alpha),(1.0/(eta_c+1.0)));
-                    }
+                        }
                     else
-                    {
+                        {
                         betaq = Math.pow((1.0/(2.0 - rand*alpha)),(1.0/(eta_c+1.0)));
-                    }
+                        }
                     c2 = 0.5*((y1+y2)+betaq*(y2-y1));
                     if (c1<yl)
                         c1=yl;
@@ -268,28 +268,28 @@ public class FloatVectorIndividual extends VectorIndividual
                         c1=yu;
                     if (c2>yu)
                         c2=yu;
-					if (random.nextBoolean())
-						{
-						parent1[i] = (float)c2;
-						parent2[i] = (float)c1;
-						}
-					else
-						{
-						parent1[i] = (float)c1;
-						parent2[i] = (float)c2;
-						}
-					}
-				else
-					{
-					// do nothing
-					}
-				}
-			else
-				{
-				// do nothing
-				}
-			}
-		}
+                    if (random.nextBoolean())
+                        {
+                        parent1[i] = (float)c2;
+                        parent2[i] = (float)c1;
+                        }
+                    else
+                        {
+                        parent1[i] = (float)c1;
+                        parent2[i] = (float)c2;
+                        }
+                    }
+                else
+                    {
+                    // do nothing
+                    }
+                }
+            else
+                {
+                // do nothing
+                }
+            }
+        }
 
 
 
@@ -383,79 +383,79 @@ public class FloatVectorIndividual extends VectorIndividual
                     genome[x] = val;
                     }
             }
-			else if (s.mutationType == FloatVectorSpecies.C_POLYNOMIAL_MUTATION)
-				{
-				polynomialMutate(state.random[thread], this, s.mutationDistributionIndex, s.polynomialIsBounded);
-				}
-			else
+        else if (s.mutationType == FloatVectorSpecies.C_POLYNOMIAL_MUTATION)
+            {
+            polynomialMutate(state.random[thread], this, s.mutationDistributionIndex, s.polynomialIsBounded);
+            }
+        else
             {// C_RESET_MUTATION
             for (int x = 0; x < genome.length; x++)
                 if (rng.nextBoolean(s.mutationProbability))
                     genome[x] = (float) ((float) s.minGene(x) + rng.nextFloat() * ((float) s.maxGene(x) - (float) s.minGene(x)));
             }
-			
+                        
         }
 
-	/** This function is broken out to keep it identical to NSGA-II's mutation.c code. eta_m is the distribution
-		index.  */
-	public void polynomialMutate(MersenneTwisterFast random, FloatVectorIndividual individual, double eta_m, boolean bounded)
-		{
+    /** This function is broken out to keep it identical to NSGA-II's mutation.c code. eta_m is the distribution
+        index.  */
+    public void polynomialMutate(MersenneTwisterFast random, FloatVectorIndividual individual, double eta_m, boolean bounded)
+        {
         FloatVectorSpecies s = (FloatVectorSpecies) individual.species;
-		float[] ind = individual.genome;
-		double[] min_realvar = s.minGenes;
-		double[] max_realvar = s.maxGenes;
-		
-		double rnd, delta1, delta2, mut_pow, deltaq;
-		double y, yl, yu, val, xy;
-		double y1;
-		for (int j=0; j < ind.length; j++)
-			{
-			if (random.nextBoolean(s.mutationProbability))
-				{
-				y1 = y = ind[j];
-				yl = min_realvar[j];
-				yu = max_realvar[j];
-				delta1 = (y-yl)/(yu-yl);
-				delta2 = (yu-y)/(yu-yl);
+        float[] ind = individual.genome;
+        double[] min_realvar = s.minGenes;
+        double[] max_realvar = s.maxGenes;
+                
+        double rnd, delta1, delta2, mut_pow, deltaq;
+        double y, yl, yu, val, xy;
+        double y1;
+        for (int j=0; j < ind.length; j++)
+            {
+            if (random.nextBoolean(s.mutationProbability))
+                {
+                y1 = y = ind[j];
+                yl = min_realvar[j];
+                yu = max_realvar[j];
+                delta1 = (y-yl)/(yu-yl);
+                delta2 = (yu-y)/(yu-yl);
 
-				int totalTries = s.outOfRangeRetries;
-				int tries = 0;
-				for(tries = 0; tries < totalTries || totalTries == 0; tries++)  // keep trying until totalTries is reached if it's not zero.  If it's zero, go on forever.
-					{
-					rnd = (random.nextDouble());
-					mut_pow = 1.0/(eta_m+1.0);
-					if (rnd <= 0.5)
-						{
-						xy = 1.0-delta1;
-						val = 2.0*rnd + (bounded ? (1.0-2.0*rnd)*(Math.pow(xy,(eta_m+1.0))) : 0.0);
-						deltaq =  Math.pow(val,mut_pow) - 1.0;
-						}
-					else
-						{
-						xy = 1.0-delta2;
-						val = 2.0*(1.0-rnd) + (bounded ? 2.0*(rnd-0.5)*(Math.pow(xy,(eta_m+1.0))) : 0.0);
-						deltaq = 1.0 - (Math.pow(val,mut_pow));
-						}
-					y1 = y + deltaq*(yu-yl);
-					//if (y1<yl)
-					//	y1 = yl;
-					//if (y1>yu)
-					//	y1 = yu;
-					//break;
-					if (y1 >= yl && y1 <= yu) break;  // yay, found one
-					}
-					
-				// at this point, if tries is totalTries, we failed
-				if (totalTries != 0 && tries == totalTries)
-					{
-					// just randomize
-					y1 = (float)(min_realvar[j] + random.nextFloat() * (max_realvar[j] - min_realvar[j]));
-					}
-				ind[j] = (float) y1;
-				}
-			}
-			
-		}
+                int totalTries = s.outOfRangeRetries;
+                int tries = 0;
+                for(tries = 0; tries < totalTries || totalTries == 0; tries++)  // keep trying until totalTries is reached if it's not zero.  If it's zero, go on forever.
+                    {
+                    rnd = (random.nextDouble());
+                    mut_pow = 1.0/(eta_m+1.0);
+                    if (rnd <= 0.5)
+                        {
+                        xy = 1.0-delta1;
+                        val = 2.0*rnd + (bounded ? (1.0-2.0*rnd)*(Math.pow(xy,(eta_m+1.0))) : 0.0);
+                        deltaq =  Math.pow(val,mut_pow) - 1.0;
+                        }
+                    else
+                        {
+                        xy = 1.0-delta2;
+                        val = 2.0*(1.0-rnd) + (bounded ? 2.0*(rnd-0.5)*(Math.pow(xy,(eta_m+1.0))) : 0.0);
+                        deltaq = 1.0 - (Math.pow(val,mut_pow));
+                        }
+                    y1 = y + deltaq*(yu-yl);
+                    //if (y1<yl)
+                    //      y1 = yl;
+                    //if (y1>yu)
+                    //      y1 = yu;
+                    //break;
+                    if (y1 >= yl && y1 <= yu) break;  // yay, found one
+                    }
+                                        
+                // at this point, if tries is totalTries, we failed
+                if (totalTries != 0 && tries == totalTries)
+                    {
+                    // just randomize
+                    y1 = (float)(min_realvar[j] + random.nextFloat() * (max_realvar[j] - min_realvar[j]));
+                    }
+                ind[j] = (float) y1;
+                }
+            }
+                        
+        }
 
 
     /**

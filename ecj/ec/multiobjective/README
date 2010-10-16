@@ -1,9 +1,40 @@
-This directory contains tools for multiobjective optimization.  The top-level
-package, ec.multiobjective, just contains a basic multiobjective fitness class
-which has multiple fitness values and a flag indicating whether higher
-fitness is "better". (By default, ECJ assumes higher values are better, but
-it is particularly common in multiobjective optimization that lower is better,
-so we've added this rather than tilt at windmills).
+This package, and various subpackages, contain tools for doing multiobjective
+optimization.  In the primary package (ec.multiobjective) are just useful
+top-level classes.  In the subsidiary packages (ec.multiobjective.nsga2
+and ec.multiobjective.spea2) are implementations of two popular multiobjective
+optimization algorithms, NSGA-II and SPEA2, which use these top-level classes.
 
-Actual implementations for multiobjective optimization are in subdirectories.
-At present, ECJ only contains code for the SPEA2 algorithm.
+
+
+
+The top-level classes:
+
+
+ec.multiobjective.MultiObjectiveFitness
+
+This is the superclass of fitness classes involving multiple objectives.  This
+class holds not a single fitness value but some N objective values.  These 
+objective values can be either maximized or minimized depending on the setting
+of the fitness class.  The class can perform Pareto Dominance computation between
+two MultiObjectiveFitness classes, and in fact uses this as the basis of its
+default fitness comparison.  Additionally the class contains utility methods for
+computing Pareto Fronts.
+
+
+ec.multiobjective.MultiObjectiveStatistics
+
+This simple subclass of ec.simple.SimpleStatistics aso outputs the Pareto Front
+in various ways at the end of the run:
+
+	- A summary printed on-screen in a helpful columnar format
+	- The entire front written to the end of the statistics file
+	- The multiple objective results of the front written to a special
+	  auxillary file (nominally called 'front.stat').  This front can
+	  be easily displayed by gnuplot, Excel, or other plotting packages.  
+	  If you have a single subpopulation, for example, you can write:
+
+		echo plot \"front.stat\" | gnuplot -persist
+
+	  and the front will be displayed in gnuplot for you.
+
+

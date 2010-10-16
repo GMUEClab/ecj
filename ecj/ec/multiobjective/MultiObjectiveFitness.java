@@ -31,15 +31,28 @@ import ec.*;
  * The object contains two items: an array of floating point values representing
  * the various multiple fitnesses, and a flag (maximize) indicating whether
  * higher is considered better. By default, isIdealFitness() always returns
- * false; you'll probably want to override that [if appropriate to your
- * problem].
+ * false; you might want to override that, though it'd be unusual -- what is the
+ * ideal fitness from the perspective of a pareto front?
  * 
  * <p>
  * The object also contains maximum and minimum fitness values suggested for the
  * problem, on a per-objective basis. By default the maximum values are all 1.0
  * and the minimum values are all 0.0, but you can change these. Note that
  * maximum does not mean "best" unless maximize is true.
+ *
+ * <p>The class also contains utility methods or computing pareto dominance, 
+ * Pareto Fronts and Pareto Front Ranks, and distance in multiobjective space.
+ * The default comparison operators use Pareto Dominance, though this is often
+ * overridden by subclasses.
+ *
+ * <p>The fitness() method returns the maximum of the fitness values, which is
+ * clearly nonsensical: you should not be using this method.
  * 
+ * <p>Subclasses of this class may add certain auxiliary fitness measures which
+ * are printed out by MultiObjectiveStatistics along with the multiple objectives.
+ * To have these values printed out, override the getAuxiliaryFitnessNames()
+ * and getAuxiliaryFitnessValues() methods.
+ *
  * <p>
  * <b>Parameters</b><br>
  * <table>
@@ -113,15 +126,15 @@ public class MultiObjectiveFitness extends Fitness
     protected float[] objectives; // values range from 0 (worst) to 1 INCLUSIVE
     protected boolean maximize = true;
 
-	/** Returns auxilliary fitness value names to be printed by the statistics object.
-		By default, an empty array is returned, but various algorithms may override this to provide additional columns.
-		*/
-	public String[] getAuxilliaryFitnessNames() { return new String[] { }; }
+    /** Returns auxilliary fitness value names to be printed by the statistics object.
+        By default, an empty array is returned, but various algorithms may override this to provide additional columns.
+    */
+    public String[] getAuxilliaryFitnessNames() { return new String[] { }; }
 
-	/** Returns auxilliary fitness values to be printed by the statistics object.
-		By default, an empty array is returned, but various algorithms may override this to provide additional columns.
-		*/
-	public double[] getAuxilliaryFitnessValues() { return new double[] { }; }
+    /** Returns auxilliary fitness values to be printed by the statistics object.
+        By default, an empty array is returned, but various algorithms may override this to provide additional columns.
+    */
+    public double[] getAuxilliaryFitnessValues() { return new double[] { }; }
 
     public boolean isMaximizing()
         {
@@ -129,8 +142,8 @@ public class MultiObjectiveFitness extends Fitness
         }
 
 
-	public int getNumObjectives() { return objectives.length; }
-	
+    public int getNumObjectives() { return objectives.length; }
+        
     /**
      * Returns the objectives as an array. Note that this is the *actual array*.
      * Though you could set values in this array, you should NOT do this --
@@ -253,7 +266,7 @@ public class MultiObjectiveFitness extends Fitness
      * more criteria, and we are equal in the others, then equivalentTo is
      * false. If each of us is better in one or more criteria each, or we are
      * equal in all criteria, then equivalentTo is true.   Multiobjective optimization algorithms may
-	 * choose to override this to do something else.
+     * choose to override this to do something else.
      */
 
     public boolean equivalentTo(Fitness _fitness)
@@ -301,13 +314,13 @@ public class MultiObjectiveFitness extends Fitness
      * Returns true if I'm better than _fitness. The DEFAULT rule I'm using is this: if
      * I am better in one or more criteria, and we are equal in the others, then
      * betterThan is true, else it is false. Multiobjective optimization algorithms may
-	 * choose to override this to do something else.
+     * choose to override this to do something else.
      */
 
-	public boolean betterThan(Fitness fitness)
-		{
-		return paretoDominates((MultiObjectiveFitness)fitness);
-		}
+    public boolean betterThan(Fitness fitness)
+        {
+        return paretoDominates((MultiObjectiveFitness)fitness);
+        }
 
     /**
      * Returns true if I'm better than _fitness. The rule I'm using is this: if
@@ -346,87 +359,87 @@ public class MultiObjectiveFitness extends Fitness
         return abeatsb;
         }
 
-	// Remove an individual from the ArrayList, shifting the topmost
-	// individual in his place
-	static void yank(int val, ArrayList list)
-		{
-		int size = list.size();
-		list.set(val, list.get(size - 1));
-		list.remove(size - 1);
-		}
+    // Remove an individual from the ArrayList, shifting the topmost
+    // individual in his place
+    static void yank(int val, ArrayList list)
+        {
+        int size = list.size();
+        list.set(val, list.get(size - 1));
+        list.remove(size - 1);
+        }
 
     /**
      * Divides an array of Individuals into the Pareto front and the "nonFront" (everyone else). 
-	 * The Pareto front is returned.  You may provide ArrayLists for the front and a nonFront.
-	 * If you provide null for the front, an ArrayList will be created for you.  If you provide
-	 * null for the nonFront, non-front individuals will not be added to it.  This algorithm is
-	 * O(n^2).
+     * The Pareto front is returned.  You may provide ArrayLists for the front and a nonFront.
+     * If you provide null for the front, an ArrayList will be created for you.  If you provide
+     * null for the nonFront, non-front individuals will not be added to it.  This algorithm is
+     * O(n^2).
      */
     public static ArrayList partitionIntoParetoFront(Individual[] inds, ArrayList front, ArrayList nonFront)
         {
-		if (front == null)
-			front = new ArrayList();
-			
-		// put the first guy in the front
-		front.add(inds[0]);
-		
-		// iterate over all the remaining individuals
+        if (front == null)
+            front = new ArrayList();
+                        
+        // put the first guy in the front
+        front.add(inds[0]);
+                
+        // iterate over all the remaining individuals
         for (int i = 1; i < inds.length; i++)
             {
             Individual ind = (Individual) (inds[i]);
 
-			boolean noOneWasBetter = true;
+            boolean noOneWasBetter = true;
             int frontSize = front.size();
-			
-			// iterate over the entire front
+                        
+            // iterate over the entire front
             for (int j = 0; j < frontSize; j++)
                 {
                 Individual frontmember = (Individual) (front.get(j));
-				
-				// if the front member is better than the individual, dump the individual and go to the next one
+                                
+                // if the front member is better than the individual, dump the individual and go to the next one
                 if (((MultiObjectiveFitness) (frontmember.fitness)).paretoDominates((MultiObjectiveFitness) (ind.fitness)))
                     {
-					if (nonFront != null) nonFront.add(ind);
-					noOneWasBetter = false;
-					break;  // failed.  He's not in the front
+                    if (nonFront != null) nonFront.add(ind);
+                    noOneWasBetter = false;
+                    break;  // failed.  He's not in the front
                     } 
-				// if the individual was better than the front member, dump the front member.  But look over the
-				// other front members (don't break) because others might be dominated by the individual as well.
-				else if (((MultiObjectiveFitness) (ind.fitness)).paretoDominates((MultiObjectiveFitness) (frontmember.fitness)))
+                // if the individual was better than the front member, dump the front member.  But look over the
+                // other front members (don't break) because others might be dominated by the individual as well.
+                else if (((MultiObjectiveFitness) (ind.fitness)).paretoDominates((MultiObjectiveFitness) (frontmember.fitness)))
                     {
-					yank(j, front);
+                    yank(j, front);
                     // a front member is dominated by the new individual.  Replace him
-					frontSize--; // member got removed
-					j--;  // because there's another guy we now need to consider in his place
-					if (nonFront != null) nonFront.add(frontmember);
+                    frontSize--; // member got removed
+                    j--;  // because there's another guy we now need to consider in his place
+                    if (nonFront != null) nonFront.add(frontmember);
                     }
                 }
-			if (noOneWasBetter)
-				front.add(ind);
+            if (noOneWasBetter)
+                front.add(ind);
             }
-		return front;
+        return front;
         }
 
 
-	/** Divides inds into pareto front ranks (each an ArrayList), and returns them, in order,
-		stored in an ArrayList. */
+    /** Divides inds into pareto front ranks (each an ArrayList), and returns them, in order,
+        stored in an ArrayList. */
     public static ArrayList partitionIntoRanks(Individual[] inds)
         {
-		Individual[] dummy = new Individual[0];
+        Individual[] dummy = new Individual[0];
         ArrayList frontsByRank = new ArrayList();
 
-		while(inds.length > 0)
-			{
-			ArrayList front = new ArrayList();
-			ArrayList nonFront = new ArrayList();
-			MultiObjectiveFitness.partitionIntoParetoFront(inds, front, nonFront);
-			
-			// build inds out of remainder
-			inds = (Individual[]) nonFront.toArray(dummy);
-			frontsByRank.add(front);
-			}
-		return frontsByRank;
-		}
+        while(inds.length > 0)
+            {
+            ArrayList front = new ArrayList();
+            ArrayList nonFront = new ArrayList();
+            MultiObjectiveFitness.partitionIntoParetoFront(inds, front, nonFront);
+                        
+            // build inds out of remainder
+            inds = (Individual[]) nonFront.toArray(dummy);
+            frontsByRank.add(front);
+            }
+        return frontsByRank;
+        }
 
 
     /**
@@ -437,7 +450,7 @@ public class MultiObjectiveFitness extends Fitness
         double s = 0;
         for (int i = 0; i < objectives.length; i++)
             {
-			double a = (objectives[i] - other.objectives[i]);
+            double a = (objectives[i] - other.objectives[i]);
             s += a * a;
             }
         return s;
@@ -452,7 +465,7 @@ public class MultiObjectiveFitness extends Fitness
         double s = 0;
         for (int i = 0; i < objectives.length; i++)
             {
-			s += Math.abs(objectives[i] - other.objectives[i]);
+            s += Math.abs(objectives[i] - other.objectives[i]);
             }
         return s;
         }

@@ -702,7 +702,7 @@ public class Code
                 " has no long after preamble '" + preamble + "'\n-->" + d.data);
         return (long)(d.l);
         }
-	
+        
     /** Finds the next nonblank line, skips past an expected preamble, and reads in an integer if there is one, and returns it.
         Generates an error otherwise. */
     public static int readIntegerWithPreamble(String preamble, final EvolutionState state, 

@@ -138,7 +138,7 @@ public class VectorSpecies extends Species
     public final static int C_ANY_POINT = 128;
     public final static int C_LINE_RECOMB = 256;
     public final static int C_INTERMED_RECOMB = 512;
-	public final static int C_SIMULATED_BINARY = 1024;
+    public final static int C_SIMULATED_BINARY = 1024;
     public final static int C_NONE = 0;
     public final static int C_GEOMETRIC = 1;
     public final static int C_UNIFORM = 2;
@@ -151,8 +151,8 @@ public class VectorSpecies extends Species
     public int crossoverType;
     /** How big of a genome should we create on initialization? */
     public int genomeSize;
-	/** What should the SBX distribution index be? */
-	public int crossoverDistributionIndex;
+    /** What should the SBX distribution index be? */
+    public int crossoverDistributionIndex;
     /** How should we reset the genome? */
     public int genomeResizeAlgorithm;
     /** What's the smallest legal genome? */
@@ -307,18 +307,18 @@ public class VectorSpecies extends Species
             {
             if (!(this instanceof FloatVectorSpecies))
                 state.output.error("Simulated binary crossover (SBX) is only supported by FloatVectorSpecies", base.push(P_CROSSOVERTYPE), def.push(P_CROSSOVERTYPE));
-			crossoverDistributionIndex = state.parameters.getInt(base.push(P_CROSSOVER_DISTRIBUTION_INDEX), def.push(P_CROSSOVER_DISTRIBUTION_INDEX), 0);
-			if (crossoverDistributionIndex < 0)
-				state.output.fatal("If FloatVectorSpecies is going to use simulated binary crossover (SBX), the distribution index must be defined and >= 0.",
-					base.push(P_CROSSOVER_DISTRIBUTION_INDEX), def.push(P_CROSSOVER_DISTRIBUTION_INDEX));
+            crossoverDistributionIndex = state.parameters.getInt(base.push(P_CROSSOVER_DISTRIBUTION_INDEX), def.push(P_CROSSOVER_DISTRIBUTION_INDEX), 0);
+            if (crossoverDistributionIndex < 0)
+                state.output.fatal("If FloatVectorSpecies is going to use simulated binary crossover (SBX), the distribution index must be defined and >= 0.",
+                    base.push(P_CROSSOVER_DISTRIBUTION_INDEX), def.push(P_CROSSOVER_DISTRIBUTION_INDEX));
             }
         else crossoverProbability = 0.0f;
 
         state.output.exitIfErrors();
-		
-		if (crossoverType != C_ANY_POINT && state.parameters.exists(base.push(P_CROSSOVERPROB),def.push(P_CROSSOVERPROB)))
-			state.output.warning("The 'crossover-prob' parameter may only be used with any-point crossover.  It states the probability that a particular gene will be crossed over.  If you were looking for the probability of crossover happening at *all*, look at the 'likelihood' parameter.",
-				base.push(P_CROSSOVERPROB),def.push(P_CROSSOVERPROB));
+                
+        if (crossoverType != C_ANY_POINT && state.parameters.exists(base.push(P_CROSSOVERPROB),def.push(P_CROSSOVERPROB)))
+            state.output.warning("The 'crossover-prob' parameter may only be used with any-point crossover.  It states the probability that a particular gene will be crossed over.  If you were looking for the probability of crossover happening at *all*, look at the 'likelihood' parameter.",
+                base.push(P_CROSSOVERPROB),def.push(P_CROSSOVERPROB));
         
         // NOW call super.setup(...), which will in turn set up the prototypical individual
         super.setup(state,base);

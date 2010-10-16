@@ -32,11 +32,14 @@ public class NSGA2MultiObjectiveFitness extends MultiObjectiveFitness
     public static final String NSGA2_RANK_PREAMBLE = "Rank: ";
     public static final String NSGA2_SPARSITY_PREAMBLE = "Sparsity: ";
 
-	public String[] getAuxilliaryFitnessNames() { return new String[] { "Rank", "Sparsity" }; }
-	public double[] getAuxilliaryFitnessValues() { return new double[] { rank, sparsity }; }
-	
+    public String[] getAuxilliaryFitnessNames() { return new String[] { "Rank", "Sparsity" }; }
+    public double[] getAuxilliaryFitnessValues() { return new double[] { rank, sparsity }; }
+        
+    /** Pareto front rank measure (lower ranks are better) */
     public int rank;
-	public double sparsity;
+
+    /** Sparsity along front rank measure (higher sparsity is better) */
+    public double sparsity;
 
     public String fitnessToString()
         {
@@ -73,8 +76,8 @@ public class NSGA2MultiObjectiveFitness extends MultiObjectiveFitness
         {
         NSGA2MultiObjectiveFitness other = (NSGA2MultiObjectiveFitness) _fitness;
         return (rank == ((NSGA2MultiObjectiveFitness) _fitness).rank) &&
-			(sparsity == other.sparsity);
-		}
+            (sparsity == other.sparsity);
+        }
 
     /**
      * We specify the tournament selection criteria, Rank (lower
@@ -86,10 +89,10 @@ public class NSGA2MultiObjectiveFitness extends MultiObjectiveFitness
         // Rank should always be minimized.
         if (rank < ((NSGA2MultiObjectiveFitness) _fitness).rank)
             return true;
-		else if (rank > ((NSGA2MultiObjectiveFitness) _fitness).rank)
-			return false;
-		
-		// otherwise try sparsity
+        else if (rank > ((NSGA2MultiObjectiveFitness) _fitness).rank)
+            return false;
+                
+        // otherwise try sparsity
         return (sparsity > other.sparsity);
-		}
+        }
     }

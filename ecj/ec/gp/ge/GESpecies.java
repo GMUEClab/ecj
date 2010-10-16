@@ -199,13 +199,13 @@ public class GESpecies extends IntegerVectorSpecies
             //get rest of nonterminals and put them into Rules
             for (int i = 0; i < grammar.length; i++)
                 {
-                    lexingGrammar(grammar[i], started, x);
+                lexingGrammar(grammar[i], started, x);
                 }
             }
         }
 
     public void lexingGrammar (String grammarLine, boolean[] started, int grammarIndex)
-    {
+        {
         //check to see if the line is only whitespace
         if (grammarLine.trim().equals(""))
             {
@@ -219,34 +219,34 @@ public class GESpecies extends IntegerVectorSpecies
             }
 
         Pattern grammarPattern = Pattern.compile("^" + //beginning of line
-                                                "\\s*" + //possible whitespace
-                                                "(<.*>)" +  //capturing group 1, rule name
-                                                "\\s*" + //possible whitespace
-                                                "::=" +
-                                                "\\s*(.*)"); //possible whitespace, capture group 2, grab rest.
+            "\\s*" + //possible whitespace
+            "(<.*>)" +  //capturing group 1, rule name
+            "\\s*" + //possible whitespace
+            "::=" +
+            "\\s*(.*)"); //possible whitespace, capture group 2, grab rest.
 
 //               "\\(?" +  //open paren of lisp statement
-//                    		"\\s*" + //possible whitespace
-//                    		"(\\w*)" + //group 2, lisp statement name
-//                    		"\\s*" + //possible whitespace
-//                    		"(.*)" + //group 3, list of rules
-//                    		"\\)?" + //close paren of lisp statement
-//                    		"\\s*" + //possible whitespace
-//                    		"$"); //end of line
+//                              "\\s*" + //possible whitespace
+//                              "(\\w*)" + //group 2, lisp statement name
+//                              "\\s*" + //possible whitespace
+//                              "(.*)" + //group 3, list of rules
+//                              "\\)?" + //close paren of lisp statement
+//                              "\\s*" + //possible whitespace
+//                              "$"); //end of line
         Matcher matcher = grammarPattern.matcher(grammarLine);
 
         boolean patternFound =matcher.matches();
 
         if(patternFound)
-        {
+            {
             Rule r = new Rule();
             r.name = matcher.group(1);
 
             if (started[0] == false) //special case for startSymbol
-            {
-            startSymbols[grammarIndex] = r.name;
-            started[0] = true;
-            }
+                {
+                startSymbols[grammarIndex] = r.name;
+                started[0] = true;
+                }
 
             r.choices = new ArrayList();  //get choices for each rule
             String[] choices = matcher.group(2).split("\\|");
@@ -268,27 +268,27 @@ public class GESpecies extends IntegerVectorSpecies
                 {
                 rules[grammarIndex].put(r.name, r);
                 }
-        }       
-    }
+            }       
+        }
 
     public String[] lexingRules(EvolutionState state, String possibleFunction)
-    {
+        {
         //System.out.println(possibleFunction);
 
         ArrayList tokens = new ArrayList();
 
         Pattern pattern = Pattern.compile("\\s*" +
-                                            "\\(" +
-                                            "\\s*" +
-                                            "([^<\\s]*)" +
-                                            "\\s*" +
-                                            "(.*)\\s*\\)");
+            "\\(" +
+            "\\s*" +
+            "([^<\\s]*)" +
+            "\\s*" +
+            "(.*)\\s*\\)");
                                             
         Matcher matcher = pattern.matcher(possibleFunction);
         boolean isValid = matcher.matches();
 
         if (isValid)
-        {
+            {
             tokens.add(matcher.group(1));
 
             Pattern pattern2 = Pattern.compile("(\\s*<[^>]*>)");
@@ -297,28 +297,28 @@ public class GESpecies extends IntegerVectorSpecies
             Pattern pattern3 = Pattern.compile("\\s*(<[^>]*>\\s*)*");
             Matcher matcher3 = pattern3.matcher(matcher.group(2));
 
-                if(!matcher3.matches())
-                    state.output.fatal(possibleFunction + " contains invaild data.");
+            if(!matcher3.matches())
+                state.output.fatal(possibleFunction + " contains invaild data.");
 
             while(isValid = matcher2.find())
-            {
+                {
                 tokens.add(matcher2.group());
-            }
+                }
 
             String[] result = new String[tokens.size()];
 
             //no generics makes me sad beyond belief
             //converts our arraylist to a string array :/
             for (int i = 0; i < tokens.size(); i++)
-            {
+                {
                 result[i] = ((String)(tokens.get(i))).trim();
-            }
+                }
 
             return result;
-        }
+            }
 
         return null;
-    }
+        }
 
     /**
      * creates all of an individual's trees
@@ -438,7 +438,7 @@ public class GESpecies extends IntegerVectorSpecies
             {
             //String[] temparray = choice.substring(1).split(" ");
 
-                //System.out.println(choice);
+            //System.out.println(choice);
 
             String[] temparray = (String[])(lexingRules(es, choice));
 
@@ -478,18 +478,18 @@ public class GESpecies extends IntegerVectorSpecies
             //get the rest.
             for (int j = 1, childNumber = 0; j < temparray.length; j++)
                 {
-                    if(temparray[j].trim().matches("<.*>")) //non-terminal
-                        {
-                        Rule r2 = (Rule) rules[treeNum].get(temparray[j]);
+                if(temparray[j].trim().matches("<.*>")) //non-terminal
+                    {
+                    Rule r2 = (Rule) rules[treeNum].get(temparray[j]);
 
-                        //get and link children to the current GPNode
-                        validNode.children[childNumber] = makeSubtree(index, genome, es, gpfs, r2, treeNum, threadnum);
-                        if (validNode.children[childNumber] == null)
-                            {
-                            return null;
-                            }
-                        childNumber++;
+                    //get and link children to the current GPNode
+                    validNode.children[childNumber] = makeSubtree(index, genome, es, gpfs, r2, treeNum, threadnum);
+                    if (validNode.children[childNumber] == null)
+                        {
+                        return null;
                         }
+                    childNumber++;
+                    }
                 }
 
             return validNode;

@@ -8,14 +8,14 @@ Elitist Multiobjective Genetic Algorithm: NSGA-II. In IEEE Transactions
 On Evolutionary Computation.  6(2).  2002.
 
 The ec.app.moosuite package contains common multiobjective test cases
-to test NSGA2 against.
+to test NSGA-II against.
 
 
 
-How ECJ implements NSGA2
-------------------------
+How ECJ implements NSGA-II
+--------------------------
 
-NSGA2 is an "archive" elitist method which uses Pareto front ranks 
+NSGA-II is an "archive" elitist method which uses Pareto front ranks 
 instead of composite fitness, and sparsity along the front rank when 
 there is not enough remaining room to fill the archive.
 
@@ -30,6 +30,26 @@ then loaded into the archive.  When there's not enough room left in the
 archive for another full rank, sparsity is used to decide who gets to be
 included.  The archive then forms the next-generation population.
 
+NSGA-II has fixed archive size (the population size), and so ignores the 'elites'
+declaration.  However it will adhere to the 'reevaluate-elites' parameter
+to determine whether to force fitness reevaluation.
+
+SPEA2 and NSGA-II have different approaches to building archives which impacts
+on how you need to set your population sizes in order to achieve the same number
+of evaluations.  In ECJ, NSGA-II does not include the archive as part of the basic 
+population size.  Rather, it builds the archive separately, then builds the
+population by breeding from the archive, then gloms the two together.  On the
+other hand, SPEA2 uses a (tunable) portion of its population as the archive, and
+breeds individuals into the remainder of the population.  This means that to have
+a "population size" for SPEA2 that's the same as NSGA-II, you need to increase
+SPEA2's population size to NSGA-II's population size plus SPEA2's archive (elites)
+size.  For example, if you have an NSGA-II population size of 100, and SPEA2 is using
+an archive size of 50, to be fair you should make SPEA2's population size be 150.
+
+If you set things so that SPEA2 and NSGA-II must reevaluate the fitness of 
+their archives (which is rare), things are different.  Now you should set SPEA2
+so that its archive size and population size is equal to twice NSGA-II's population
+size (because NSGA-II's archive size is the size of its population).
 
 The classes in question:
 

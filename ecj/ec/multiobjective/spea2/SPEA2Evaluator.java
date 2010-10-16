@@ -1,58 +1,36 @@
 /*
-  Copyright 2006 by Robert Hubley
+  Portions copyright 2010 by Sean Luke, Robert Hubley, and George Mason University
   Licensed under the Academic Free License version 3.0
   See the file "LICENSE" for more information
 */
+
 package ec.multiobjective.spea2;
 
 import ec.*;
-import ec.util.MersenneTwisterFast;
-import ec.multiobjective.MultiObjectiveFitness;
+import ec.util.*;
+import ec.multiobjective.*;
 import ec.simple.*; 
+
 /* 
  * SPEA2Evaluator.java
  * 
- * Created: Wed Jun 26 11:20:32 PDT 2002
- * By: Robert Hubley, Institute for Systems Biology
- *    (based on Evaluator.java by Sean Luke)
+ * Created: Sat Oct 16 11:24:43 EDT 2010
+ * By: Faisal Abidi and Sean Luke
+ * Replaces earlier class by: Robert Hubley, with revisions by Gabriel Balan and Keith Sullivan
  */
+ 
 /**
- * 
- * The SPEA2Evaluator is a simple, non-coevolved generational evaluator which
- * evaluates every single member of every subpopulation individually in its
- * own problem space.  One Problem instance is cloned from p_problem for
- * each evaluating thread.
- *
- * The evaluator is also responsible for calculating the customFitnessMetric
- * function.  This function depends on the entire population and so
- * cannot be calculated in the Problem class.
- *
- * 
- * <p>This is actually a modified version of Robert Hubley's SPEA2Evaluator,
- * but this time following Zitzler2001 to the letter. 
- * 
- * Differences: 
- * <nl>
- * <li> kth = sqrt(popsize) -1 instead of  kth = sqrt(popsize-1); "-1" because indices start from 0.
- * <li> density = 1/(kth distance+2) instead of some hypersphere volume formula.
- * <li> In order to find the k'th element, this uses the order statistics algorithm (Cormen p187, O(n) expected time)
- * instead of Hubley's O(n^2) algrithm.
- * </nl>
- * 
- *  <p>Note that the field kthNNDistance in SPEA2MultiObjectiveFitness is supposed to be
- *  "D(i)," the DENSITY = 1/(kth distance+2).  So the fields'name is confusing. In here I 
- *  go with density.
- *  
- * @author Robert Hubley (based on Evaluator.java by Sean Luke), some refactoring by Gabriel Balan
- * @version 1.1
+ * This subclass of SimpleEvaluator evaluates the population, then computes auxiliary fitness
+ * data of each subpopulation.
  */
+
 public class SPEA2Evaluator extends SimpleEvaluator
     {
     public void evaluatePopulation(final EvolutionState state)
         {
         super.evaluatePopulation(state);
-		
-		// build SPEA2 fitness values
+                
+        // build SPEA2 fitness values
         for(int x = 0;x<state.population.subpops.length;x++)
             {
             Individual[] inds = state.population.subpops[x].individuals;
@@ -60,27 +38,12 @@ public class SPEA2Evaluator extends SimpleEvaluator
             }
         }
 
-	/** Returns a matrix of sum squared distances from each individual to each other individual. */
-	public double[][] calculateDistances(EvolutionState state, Individual[] inds)
-		{
-		double[][] distances = new double[inds.length][inds.length];
-        for(int y=0;y<inds.length;y++)
-            {
-            distances[y][y] = 0;
-            for(int z=y+1;z<inds.length;z++)
-                {
-                distances[z][y] = distances[y][z] =
-                    ((SPEA2MultiObjectiveFitness)inds[y].fitness).
-                    sumSquaredObjectiveDistance( (SPEA2MultiObjectiveFitness)inds[z].fitness );
-                }
-            }
-		return distances;
-		}
-
+    /** Computes the strength of individuals, then the raw fitness (wimpiness) and kth-closest sparsity
+        measure.  Finally, computes the final fitness of the individuals.  */
     public void computeAuxiliaryData(EvolutionState state, Individual[] inds)
         {
         double[][] distances = calculateDistances(state, inds);
-		        
+                        
         // For each individual calculate the strength
         for(int y=0;y<inds.length;y++)
             {
@@ -114,7 +77,7 @@ public class SPEA2Evaluator extends SimpleEvaluator
             // Density component
                         
             // calc k-th nearest neighbor distance.
-			// distances are squared, so we need to take the square root.
+            // distances are squared, so we need to take the square root.
             double kthDistance = Math.sqrt(orderStatistics(distances[y], kTH, state.random[0]));
                         
             // Set SPEA2 k-th NN distance value for each individual
@@ -126,8 +89,26 @@ public class SPEA2Evaluator extends SimpleEvaluator
         }
     
         
-	/** Returns the kth smallest element in the array.  Note that here k=1 means the smallest element in the array (not k=0).
-		Uses a randomized sorting technique, hence the need for the random number generator. */
+    /** Returns a matrix of sum squared distances from each individual to each other individual. */
+    public double[][] calculateDistances(EvolutionState state, Individual[] inds)
+        {
+        double[][] distances = new double[inds.length][inds.length];
+        for(int y=0;y<inds.length;y++)
+            {
+            distances[y][y] = 0;
+            for(int z=y+1;z<inds.length;z++)
+                {
+                distances[z][y] = distances[y][z] =
+                    ((SPEA2MultiObjectiveFitness)inds[y].fitness).
+                    sumSquaredObjectiveDistance( (SPEA2MultiObjectiveFitness)inds[z].fitness );
+                }
+            }
+        return distances;
+        }
+
+
+    /** Returns the kth smallest element in the array.  Note that here k=1 means the smallest element in the array (not k=0).
+        Uses a randomized sorting technique, hence the need for the random number generator. */
     double orderStatistics(double[] array, int kth, MersenneTwisterFast rng)
         {
         return randomizedSelect(array, 0, array.length-1, kth, rng);
@@ -152,6 +133,7 @@ public class SPEA2Evaluator extends SimpleEvaluator
     int randomizedPartition(double[] array, int p, int r, MersenneTwisterFast rng)
         {
         int i = rng.nextInt(r-p+1)+p;
+                
         //exchange array[p]<->array[i]
         double tmp = array[i];
         array[i]=array[p];
@@ -164,15 +146,13 @@ public class SPEA2Evaluator extends SimpleEvaluator
     int partition(double[] array, int p, int r)
         {
         double x = array[p];
-        int i=p-1;
-        int j=r+1;
+        int i = p-1;
+        int j = r+1;
         while(true)
             {
-            do{j--;}
-            while(array[j]>x);
-            do{i++;}
-            while(array[i]<x);
-            if(i<j)
+            do j--; while(array[j]>x);
+            do i++; while(array[i]<x);
+            if ( i < j )
                 {
                 //exchange array[i]<->array[j]
                 double tmp = array[i];
