@@ -1,46 +1,50 @@
-This is an implementation of the Non-Dominated Sorting Genetic Algorithm 2
-for ECJ.
+This package contains an implementation of the Non-Dominated Sorting 
+Genetic Algorithm 2 (NSGA-II).
 
 Details of this approach can be found in the following paper:
 
-Kalyanmoy Deb, Amrit Pratap, Sameer Agarwal, and T. Meyarivan. A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II in                                            IEEE Transactions On Evolutionary Computation, Vol. 6, No. 2, April 2002
+Kalyanmoy Deb, Amrit Pratap, Sameer Agarwal, and T. Meyarivan. A Fast and 
+Elitist Multiobjective Genetic Algorithm: NSGA-II. In IEEE Transactions 
+On Evolutionary Computation.  6(2).  2002.
 
-http://sci2s.ugr.es/docencia/doctobio/2002-6-2-DEB-NSGA-II.pdf (PDF)
+The ec.app.moosuite package contains common multiobjective test cases
+to test NSGA2 against.
 
-
-ABSTRACT 
-
-
-Author of ECJ NSGA2 package: Faisal Abidi
-
-
-EXAMPLES
---------
-
-There is an example application in ec/app/moosuite2 which uses NSGA2.
 
 
 How ECJ implements NSGA2
 ------------------------
 
-NSGA2 is an elitist method which uses Pareto front ranks instead of composite fitness, and sparsity values to break ties.
+NSGA2 is an "archive" elitist method which uses Pareto front ranks 
+instead of composite fitness, and sparsity along the front rank when 
+there is not enough remaining room to fill the archive.
 
-We extend SimpleBreeder merely to append the children to the parents. Think of it as mu+lambda, where mu=lambda in the NSGA2 algorithm.
-	ec.multiobjective.nsga2.NSGA2Breeder
+We extend SimpleBreeder merely to build the next-generation population 
+by breeding children from the previous population (the archive) and then
+appending the current archive to the newly-generated children.  This 
+is essentially a version of (mu+mu).
 
-The rank and sparsity values for each individual are handled by a revised
-Evaluator class:
-
-	ec.multiobjective.nsga2.NSGA2Evaluator
-
-These values are stored in a revised version of MultiobjectiveFitness, where we
-also have Pareto dominance comparisons with Rank and Sparsity comparisons. 
-
-	ec.multiobjective.nsga2.NSGA2MultiobjectiveFitness
-
-Last we have provided a simple extension of the Statistics class to provide
-a bit more information about what the final population looks like.
-
-	ec.multiobjective.nsga2.NSGA2Statistics
+Most of the actual work is done in a special version of SimpleEvaluator,
+where the Individuals are evaluated, then broken into Pareto Front Ranks,
+then loaded into the archive.  When there's not enough room left in the
+archive for another full rank, sparsity is used to decide who gets to be
+included.  The archive then forms the next-generation population.
 
 
+The classes in question:
+
+
+ec.multiobjective.nsga2.NSGA2Breeder
+
+The SimpleBreeder subclass.
+
+
+ec.multiobjective.nsga2.NSGA2Evaluator
+
+The SimpleEvaluator subclass.
+
+
+ec.multiobjective.nsga2.NSGA2MultiObjectiveFitness
+
+A special subclass of MultiObjectiveFitness which adds auxillary fitness 
+measures special to NSGA-II (notably rank and sparsity).

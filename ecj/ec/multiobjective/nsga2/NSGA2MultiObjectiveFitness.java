@@ -16,24 +16,15 @@ import ec.Fitness;
  * NSGA2MultiObjectiveFitness.java
  * 
  * Created: Thu Feb 04 2010
- * By: Faisal Abidi
- *     (based on MultiObjectiveFitness.java by Sean Luke)
+ * By: Faisal Abidi and Sean Luke
  */
 
 /**
- * NSGA2MultiObjectiveFitness is a subclass of Fitness which implements basic
- * multiobjective fitness functions along with support for the ECJ NSGA2
- * (Non-Dominated Sorting Genetic Algorithm) extensions.
- * 
- * <p>
- * The object contains three items: an array of floating point values
- * representing the various multiple fitnesses (ranging from 0.0 (worst) to
- * infinity (best) in the case of maximization); a Rank which represents the
- * pareto rank of the individual; and Sparsity value which represents a metric
- * for how far away the neighbors are (See member: <code>NSGA2Sparsity</code>).
- * 
- * @author Faisal Abidi (based on MultiObjectiveFitness by Sean Luke)
- * @version 1.0
+ * NSGA2MultiObjectiveFitness is a subclass of MultiObjeciveFitness which
+ * adds auxiliary fitness measures (sparsity, rank) largely used by MultiObjectiveStatistics.
+ * It also redefines the comparison measures to compare based on rank, and break ties
+ * based on sparsity. 
+ *
  */
 
 public class NSGA2MultiObjectiveFitness extends MultiObjectiveFitness
@@ -78,9 +69,16 @@ public class NSGA2MultiObjectiveFitness extends MultiObjectiveFitness
         sparsity = dataInput.readDouble();
         }
 
+    public boolean equivalentTo(Fitness _fitness)
+        {
+        NSGA2MultiObjectiveFitness other = (NSGA2MultiObjectiveFitness) _fitness;
+        return (rank == ((NSGA2MultiObjectiveFitness) _fitness).rank) &&
+			(sparsity == other.sparsity);
+		}
+
     /**
-     * This is where we specify the tournament selection criteria, Rank (lower
-     * values are better) and Sparsity (higher valuesa are better)
+     * We specify the tournament selection criteria, Rank (lower
+     * values are better) and Sparsity (higher values are better)
      */
     public boolean betterThan(Fitness _fitness)
         {
