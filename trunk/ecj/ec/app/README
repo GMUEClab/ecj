@@ -2,8 +2,7 @@ This is the traditional top-level directory holding ECJ's demo applications.
 When building new apps for research purposes, we find it convenient to stick
 them here as well.
 
-Here's what we've got so far for:
-
+Here's what we've got so far:
 
 
 
@@ -13,18 +12,37 @@ hiff		Hierarchical if-and-only-if Functions
 sat		3CNF boolean satisfiability problems
 nk		N-K Landscapes
 
+
+INTEGER VECTOR REPRESENTATIONS
+
+sum		Simple sum demo
+
+
 FLOATING POINT VECTOR REPRESENTATIONS
 
 ecsuite		A host of common floating-point fitness functions
+			-- includes GA, ES, DE, and steady-state code
+bbob		Black Box Optimization 2010 code converted to ECJ
 
 
 GENETIC PROGRAMMING AND GRAMMATICAL EVOLUTION
 
 ant		Artificial Ant
+			-- includes grammatical evolution code
 edge		Edge Encoding
 lawnmower	Lawnmower
-regression	Symbolic Regression
+			-- includes ADF and non-ADF code
+			-- includes grammatical evolution code
+multiplexer	"Fast" Multiplexer
+multiplexerslow	Easy to understand Multiplexer
+parity		Parity
+			-- includes ADF and non-ADF code
+regression	Various Symbolic Regression examples
+			-- includes ERC and non-ERC code	
+			-- includes steady-state code
+			-- includes grammatical evolution code
 twobox		Two Box
+			-- includes ADF and non-ADF code
 
 
 COMPETITIVE 1-POPULATION COEVOLUTION
@@ -35,6 +53,41 @@ coevolve1	Competitive MaxOnes example
 COOPERATIVE COEVOLUTION
 
 coevolve2	Cooperative Rosenbrock example
+
+
+ASYNCHRONOUS EVOLUTION
+
+async		Asynchronous evolution demo
+
+
+MULTIOBJECTIVE OPTIMIZATION
+
+moosuite	A host of multiobjective optimization benchmarks
+
+
+SPATIAL EVOLUTION
+
+spatial		A simple spatial evolution demonstration
+
+
+TUTORIAL CODE
+
+tutorial1	-- for the tutorials proper, see the ecj/docs/ directory
+tutorial2
+tutorial3
+tutorial4
+
+
+DISTRIBUTED EVALUATION
+
+star		A distributed valuation demo
+
+
+ISLAND MODELS
+
+-- all island model demonstrations are found not here but instead
+   in the ecj/ec/exchange directory (see 2-Island-Server, 3-Island,
+   and 8-Island)
 
 
 
