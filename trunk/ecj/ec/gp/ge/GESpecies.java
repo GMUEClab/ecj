@@ -3,7 +3,6 @@
   Licensed under the Academic Free License version 3.0
   See the file "LICENSE" for more information
 */
-
 package ec.gp.ge;
 
 import java.io.BufferedReader;
@@ -19,6 +18,7 @@ import ec.gp.*;
 import ec.*;
 import ec.vector.*;
 import ec.util.*;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -200,13 +200,13 @@ public class GESpecies extends IntegerVectorSpecies
             //get rest of nonterminals and put them into Rules
             for (int i = 0; i < grammar.length; i++)
                 {
-                lexingGrammar(grammar[i], started, x);
+                    lexTheGrammar(state, grammar[i], started, x);
                 }
             }
         }
 
-    public void lexingGrammar (String grammarLine, boolean[] started, int grammarIndex)
-        {
+    public void lexTheGrammar (EvolutionState state, String grammarLine, boolean[] started, int grammarIndex)
+    {
         //check to see if the line is only whitespace
         if (grammarLine.trim().equals(""))
             {
@@ -220,42 +220,50 @@ public class GESpecies extends IntegerVectorSpecies
             }
 
         Pattern grammarPattern = Pattern.compile("^" + //beginning of line
-            "\\s*" + //possible whitespace
-            "(<.*>)" +  //capturing group 1, rule name
-            "\\s*" + //possible whitespace
-            "::=" +
-            "\\s*(.*)"); //possible whitespace, capture group 2, grab rest.
+                                                "\\s*" + //possible whitespace
+                                                "(<.*>)" +  //capturing group 1, rule name
+                                                "\\s*" + //possible whitespace
+                                                "::=" +
+                                                "\\s*(.*)"); //possible whitespace, capture group 2, grab rest.
 
 //               "\\(?" +  //open paren of lisp statement
-//                              "\\s*" + //possible whitespace
-//                              "(\\w*)" + //group 2, lisp statement name
-//                              "\\s*" + //possible whitespace
-//                              "(.*)" + //group 3, list of rules
-//                              "\\)?" + //close paren of lisp statement
-//                              "\\s*" + //possible whitespace
-//                              "$"); //end of line
+//                    		"\\s*" + //possible whitespace
+//                    		"(\\w*)" + //group 2, lisp statement name
+//                    		"\\s*" + //possible whitespace
+//                    		"(.*)" + //group 3, list of rules
+//                    		"\\)?" + //close paren of lisp statement
+//                    		"\\s*" + //possible whitespace
+//                    		"$"); //end of line
         Matcher matcher = grammarPattern.matcher(grammarLine);
 
         boolean patternFound =matcher.matches();
 
         if(patternFound)
-            {
+        {
             Rule r = new Rule();
             r.name = matcher.group(1);
 
             if (started[0] == false) //special case for startSymbol
-                {
-                startSymbols[grammarIndex] = r.name;
-                started[0] = true;
-                }
+            {
+            startSymbols[grammarIndex] = r.name;
+            started[0] = true;
+            }
 
             r.choices = new ArrayList();  //get choices for each rule
             String[] choices = matcher.group(2).split("\\|");
 
             for (int j = 0; j < choices.length; j++)
                 {
-                r.choices.add(choices[j].trim());
+                String s = choices[j].trim();
+                
+                if (s.charAt(0) == '(' && s.endsWith(")"))
+                    r.choices.add(s);
+                else if(s.charAt(0) == '<' && s.endsWith(">"))
+                    r.choices.add(s);
+                else
+                    state.output.fatal("invalid statement " + s + ".");
                 }
+
 
             r.numberOfChoices = r.choices.size();
 
@@ -269,27 +277,37 @@ public class GESpecies extends IntegerVectorSpecies
                 {
                 rules[grammarIndex].put(r.name, r);
                 }
-            }       
         }
+    }
 
-    public String[] lexingRules(EvolutionState state, String possibleFunction)
-        {
-        //System.out.println(possibleFunction);
+    public String[] lexTheRules(EvolutionState state, String possibleFunction)
+    {
+        //System.err.println(possibleFunction);
 
         ArrayList tokens = new ArrayList();
 
+//        Pattern pattern = Pattern.compile("\\s*" +
+//                                            "\\(" +
+//                                            "\\s*" +
+//                                            "([^<\\s]*)" +
+//                                            "\\s*" +
+//                                            "(.*)\\s*\\)");
+
+
         Pattern pattern = Pattern.compile("\\s*" +
-            "\\(" +
-            "\\s*" +
-            "([^<\\s]*)" +
-            "\\s*" +
-            "(.*)\\s*\\)");
+                                            "\\(" +
+                                            "\\s*" +
+                                            "(\\S+)" +
+                                            "\\s+" +
+                                            "(.*)\\s*\\)");
+                                            
                                             
         Matcher matcher = pattern.matcher(possibleFunction);
         boolean isValid = matcher.matches();
 
+        //group(2) is everything that is not part of the name section of a statement
         if (isValid)
-            {
+        {
             tokens.add(matcher.group(1));
 
             Pattern pattern2 = Pattern.compile("(\\s*<[^>]*>)");
@@ -302,24 +320,45 @@ public class GESpecies extends IntegerVectorSpecies
                 state.output.fatal(possibleFunction + " contains invaild data.");
 
             while(isValid = matcher2.find())
-                {
+            {
                 tokens.add(matcher2.group());
-                }
+            }
 
             String[] result = new String[tokens.size()];
 
             //no generics makes me sad beyond belief
             //converts our arraylist to a string array :/
             for (int i = 0; i < tokens.size(); i++)
-                {
+            {
                 result[i] = ((String)(tokens.get(i))).trim();
-                }
-
-            return result;
             }
 
-        return null;
+            //System.out.println(Arrays.deepToString(result));
+
+            return result;
         }
+
+        //it may be a terminal
+        else
+        {
+            possibleFunction = possibleFunction.trim();
+
+            if(possibleFunction.charAt(0) == '(' && possibleFunction.endsWith(")"))
+            {
+                //remove "("
+                possibleFunction = possibleFunction.replaceFirst("\\(", "");
+                //remove ")"
+                possibleFunction = possibleFunction.substring(0, possibleFunction.length()-1);
+
+                String result[] = {possibleFunction.trim()};
+
+                return result;
+            }
+        }
+
+        //rest of the invalid cases
+        return null;
+    }
 
     /**
      * creates all of an individual's trees
@@ -374,6 +413,11 @@ public class GESpecies extends IntegerVectorSpecies
             return BIG_TREE_ERROR;
             }
 
+        if(root == null)
+        {
+            state.output.fatal("Invalid tree: tree #" + treeNum);
+        }
+
         root.parent = tree;
         tree.child = root;
         return countNumberOfChromosomesUsed[0];
@@ -397,7 +441,7 @@ public class GESpecies extends IntegerVectorSpecies
             throw new BigTreeException();
             }
 
-        //expand the rule with the chromome to get a body element
+        //expand the rule with the chromosome to get a body element
         int i;
 
         //key for ERC hashtable look ups is the current index within the genome
@@ -439,11 +483,20 @@ public class GESpecies extends IntegerVectorSpecies
             {
             //String[] temparray = choice.substring(1).split(" ");
 
-            //System.out.println(choice);
+                //System.out.println(choice);
 
-            String[] temparray = (String[])(lexingRules(es, choice));
+            String[] temparray = (String[])(lexTheRules(es, choice));
+
+            if(temparray == null)
+            {
+                es.output.fatal(choice + " is an invalid statement.");
+            }
 
             //temparray[0] = temparray[0].replaceAll("\\)", "");  //remove the close brace ')'
+
+//            System.err.println("temparray = "+temparray);
+//            System.err.println("temparray[0] = "+temparray[0]);
+//            System.err.println("nodesbyname = " + gpfs.nodesByName);
 
             //does this rule map to an existing node in the function set?
             if (!(gpfs.nodesByName.containsKey(temparray[0])))
@@ -479,18 +532,18 @@ public class GESpecies extends IntegerVectorSpecies
             //get the rest.
             for (int j = 1, childNumber = 0; j < temparray.length; j++)
                 {
-                if(temparray[j].trim().matches("<.*>")) //non-terminal
-                    {
-                    Rule r2 = (Rule) rules[treeNum].get(temparray[j]);
-
-                    //get and link children to the current GPNode
-                    validNode.children[childNumber] = makeSubtree(index, genome, es, gpfs, r2, treeNum, threadnum);
-                    if (validNode.children[childNumber] == null)
+                    if(temparray[j].trim().matches("<.*>")) //non-terminal
                         {
-                        return null;
+                        Rule r2 = (Rule) rules[treeNum].get(temparray[j]);
+
+                        //get and link children to the current GPNode
+                        validNode.children[childNumber] = makeSubtree(index, genome, es, gpfs, r2, treeNum, threadnum);
+                        if (validNode.children[childNumber] == null)
+                            {
+                            return null;
+                            }
+                        childNumber++;
                         }
-                    childNumber++;
-                    }
                 }
 
             return validNode;
