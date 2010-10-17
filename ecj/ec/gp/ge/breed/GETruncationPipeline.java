@@ -9,10 +9,19 @@ import ec.gp.ge.*;
 import ec.*;
 import ec.util.*;
 
+/* 
+ * GEProblem.java
+ * 
+ * Created: Sat Oct 16 23:21:01 EDT 2010
+ * By: Sean Luke, Joseph Zelibor III, and Eric Kangas
+ */
+
+
 /**
- * <p>GETruncationPipeline removes the unused chromosomes from the end to the chromosome vetor.
- * The number of used chromosomes are tracked by GESpecies' comsumed function. Note: truncaton
- * only occurs if the number of comsumed chromosomes is greater than 1.</p>
+ * <p>GETruncationPipeline removes the unused genes from the end of the vector.
+ * The number of used chromosomes are tracked by GESpecies' <b>comsumed(...)</b> function.
+ *
+ * Note: truncaton only occurs if the number of comsumed genes is greater than 1.</p>
  *
  * <p><b>Default Base</b><br>
  * ec.gp.ge.breed.GETruncationPipeline
@@ -20,6 +29,7 @@ import ec.util.*;
  * @author Sean Luke, Joseph Zelibor III, and Eric Kangas
  * @version 1.0
  */
+ 
 public class GETruncationPipeline extends BreedingPipeline
     {
     public static final String P_TRUNCATION = "truncate";
