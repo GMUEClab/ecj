@@ -27,14 +27,16 @@ pop.subpop.0.species.mutation-prob = 0.01
 # This isn't used at all but we include it here to quiet a warning from ECJ
 pop.subpop.0.species.crossover-type = one
 
+
 # Individuals are built using geometric series.  The minimum allowed
-# size is 5.
+# size is 5. 
 pop.subpop.0.species.genome-size = geometric
 pop.subpop.0.species.geometric-prob = 0.85
 pop.subpop.0.species.min-initial-size = 5
 
 
-# The pipeline:
+# The following pipeline is fairly arbitrary.  You may wish to create
+# your own pipeline instead.
 
 pop.subpop.0.species.pipe = ec.breed.MultiBreedingPipeline
 pop.subpop.0.species.pipe.num-sources = 3

@@ -16,7 +16,7 @@ import ec.util.*;
  * GEProblem.java
  * 
  * Created: Sat Oct 16 23:21:01 EDT 2010
- * By: Joseph Zelibor, Eric Kangas, and Sean Luke
+ * By: Joseph Zelibor III, Eric Kangas, and Sean Luke
  */
 
 /** 
