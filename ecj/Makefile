@@ -22,6 +22,7 @@ DIRS = \
 ec/*.java \
 ec/app/ant/*.java \
 ec/app/ant/func/*.java \
+ec/app/bbob/*.java \
 ec/app/ecsuite/*.java \
 ec/app/edge/*.java \
 ec/app/edge/func/*.java \
