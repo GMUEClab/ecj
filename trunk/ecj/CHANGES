@@ -1713,3 +1713,5 @@ Version		Change Log
 	Added Simulated Binary Crossover (SBX) to FloatVectorIndividual and
 		DoubleVectorIndividual
 	Updated copyright information on many parameter files
+	Added BBOB
+	Added The ECJ Owner's Manual
