@@ -34,7 +34,7 @@
 \usepackage{microtype}
 \usepackage{afterpage}
 \usepackage[font=footnotesize,labelsep=quad,labelfont=it]{caption}
-%%% Added in order to use hyperref -- this stuff has to appear before bibentry,
+%%% Added in order to use hyperref -- this stuff has to appear before bibentry,x
 %%% which has a conflict with regard to \bibitem.  See later in this file for more stuff that has
 %%% to be added afterwards
   \makeatletter
@@ -392,6 +392,7 @@ The documentation includes:
 \item An (old) overview of ECJ
 \item An (old) discussion of ECJ's warts
 \item Some (old) graph diagrams of ECJ's structure
+\item This manual
 \end{itemize}
 
 \subsubsection{Tutorials}
@@ -1340,7 +1341,7 @@ Selects and returns an index in the given array which contains the given probabi
 \end{methods}
 
 
-\section{Jobs and the Evolve Top-level}
+\section{Jobs}
 \label{jobs}
 
 Perhaps you need to run ECJ 50 times and collect statistics from all 50 runs.  ECJ's \class{ec.Evolve} class provides a rudimentary but extensible jobs facility to do this.  You specify the number of jobs as follows:
@@ -1348,40 +1349,42 @@ Perhaps you need to run ECJ 50 times and collect statistics from all 50 runs.  E
 \params{%
 jobs = 50
 }
-
 Each job will automatically use a different set of random number generator seeds.  Additionally, if there is more than one job, ECJ will prepend each statistics file with \file{job.\textit{jobnumber}.}  For example, if we ran with just a single job (the default) we'd probably create an output statistics file called \file{out.stat}.  But if we ran with multiple jobs, during the fourth job we'd create the output statistics file as \file{job.3.out.stat} (jobs start with 0).
 
 Jobs are restarted properly from checkpoints: when you resume from a checkpoint, you'll start up right in that job and continue from there. This is accomplished by storing the job parameter, and the runtime arguments, in the \class{ec.EvolutionState} object.  See extended comments in the \class{ec.Evolve} source code for more information.
 
-What if you need more job complexity?  For example, what if you want to run ECJ with 10 different parameter settings?  This is up to you to write.  But it's not that hard: though ECJ's top-level bootstrap code is fairly complex, it needn't be.  It's only like this to provide job facilities and other gizmos.  
+But what if you need more job complexity?  For example, what if you want to run ECJ with 10 different parameter settings and 50 runs per setting?  You'll need to do some coding.  
 
-In fact, to run ECJ you only need to do the following.  First, try to load an \class{ec.EvolutionState} from a checkpoint file and call \method{run(...)} on it.  Failing this, load a parameter database, possibly modify the parameter database to change some parameters, initialize an \class{ec.EvolutionState} from the database, and call \method{run(...)} on it.  In either case, when you're finally done, clean up and exit.
-
-Here's the basic code.  As you can see, it's not very complex.
+For example, let's say we want to run 50 jobs, and each job changes the generation length.  The first job has 20 generations, the second job has 21 generations, etc.  Here's the trick.  After ECJ creates the \class{ec.EvolutionState} object, it calls the \class{startFresh()} method on this object.  The default implementation calls \class{setup(...)} on this object, then starts running the evolutionary loop.  Here's your chance.  Let's say you're using the common EvolutionState \class{ec.simple.SimpleEvolutionState} subclass as your EvolutionState.  Override the \class{startFresh(...)} method in a custom subclass of SimpleEvolutionState along these lines:
 
 \vbox{
 \small\begin{verbatim}
-     public static void main(String[] args)
-             {
-             EvolutionState state = Evolve.possiblyRestoreFromCheckpoint(args);
-             if (state!=null)  // loaded from checkpoint
-                     state.run(EvolutionState.C_STARTED_FROM_CHECKPOINT);
-             else
-                     {
-                     ParameterDatabase parameters = Evolve.loadParameterDatabase(args);
-                     // here you might modify the parameter database, then...
-                     state = Evolve.initialize(parameters, 0);
-                     state.run(EvolutionState.C_STARTED_FRESH);
-                     }
-             Evolve.cleanup(state);
-             System.exit(0);
-             }
+public class ec.app.myexample.MySimpleEvolutionState extends ec.simple.SimpleEvolutionState
+    {
+    public void startFresh()
+        {
+        // setup() hasn't been called yet, so very few instance variables are valid at this point.
+        // Here's what you can access:  parameters, random, output, evalthreads, breedthreads,
+        //                              randomSeedOffset, job, runtimeArguments, checkpointPrefix
+        // Let's modify the 'generations' parameter based on the job number
+        int jobNum = ((Integer)(job[0])).intValue();
+        parameters.set(new ec.util.Parameter("generations"), "" + (jobNum + 20));        
+        
+        // call super.startFresh() here at the end.  It'll call setup() from the parameters
+        super.startFresh();
+        }
+    }
 \end{verbatim}
 }
 
-To handle different parameters, you could put this code in an outer loop which modifies the parameters in the parameter database each time around.  The source code for \class{ec.Evolve} is very heavily commented with examples and ideas along these lines to help you out.  Check it out!
+Now we need to stipulate that this is our EvolutionState, by changing the \parameter{state} parameter:
 
-In truth though, in all my experiments, I have personally {\it always} handled different parameter settings on the command line using a UNIX script.  It's much simpler than mucking with Java code.  For example, to run ten runs each of five different population sizes, perhaps you could do this (in the \file{tcsh} shell language):
+\params{%
+state = ec.app.myexample.MySimpleEvolutionState\\
+jobs = 50
+}
+
+In truth though, in all my experiments, I have personally {\it always} handled different parameter settings in a completely different way: on the command line using a UNIX script.  It's much simpler than mucking with Java code.  For example, to run ten runs each of five different population sizes, perhaps you could do this (in the \file{tcsh} shell language):
 
 \vbox{
 \small\begin{verbatim}
@@ -1400,13 +1403,51 @@ In truth though, in all my experiments, I have personally {\it always} handled d
 
 
 
-\begin{figure}[t]
-\begin{center}
-\includegraphics[width=5in]{Operators.pdf}
-\end{center}
-\caption{Top-Level operators and utility facilities in EvolutionState, and their relationship to certain state objects.  A repeat of Figure \ref{Operators}.  Compare to Figure \ref{SteadyState}.}
-\label{Operators2}
-\end{figure}
+\section{The \class{ec.Evolve} Top-level}
+
+ECJ's Evolve.java class looks complex but that's just because it has various gizmos to do jobs, checkpoint handling, etc.  But in in fact, the top-level loop for ECJ can be quite small.  Here's all you need to do:
+
+\begin{enumerate}
+\item Try to load an \class{ec.EvolutionState} from a checkpoint file.
+\item If it loads call \method{run(...)} on it.
+\item Otherwise...
+	\begin{enumerate}
+	\item Load a parameter database.
+	\item Create a new \class{ec.EvolutionState} from the parameter database.
+	\item Call \method{run(...)} on it.
+	\end{enumerate}
+\item Call \method{cleanup(...)} and exit.
+\end{enumerate}
+
+Here's the basic code.  As you can see, it's not very complex.
+
+\vbox{
+\small\begin{verbatim}
+     public static void main(String[] args)
+             {
+             EvolutionState state = Evolve.possiblyRestoreFromCheckpoint(args);
+             if (state!=null)  // loaded from checkpoint
+                     state.run(EvolutionState.C_STARTED_FROM_CHECKPOINT);
+             else
+                     {
+                     ParameterDatabase parameters = Evolve.loadParameterDatabase(args);
+                     state = Evolve.initialize(parameters, 0);
+                     state.run(EvolutionState.C_STARTED_FRESH);
+                     }
+             Evolve.cleanup(state);
+             System.exit(0);
+             }
+\end{verbatim}
+}
+
+
+The source code for \class{ec.Evolve} is very heavily commented with examples and ideas for customization.  Check it out!
+
+
+
+
+
+
 
 
 \chapter{\class{ec.EvolutionState} and the ECJ Evolutionary Process}
@@ -1415,6 +1456,15 @@ In truth though, in all my experiments, I have personally {\it always} handled d
 As discussed in Section~\ref{ec.Evolve}, the purpose of the \class{ec.Evolve} class is simply to set up an \class{ec.EvolutionState} and get it going.  \class{ec.EvolutionState} is the central object in all of ECJ.
 
 An ECJ process has only one \class{ec.EvolutionState} instance.  Practically everything in ECJ, except for \class{ec.Evolve} itself, is pointed to somehow from \class{ec.EvolutionState}, so if you checkpoint \class{ec.EvolutionState}, the entire ECJ process is written to disk.  Various subclasses of \class{ec.EvolutionState} define the stochastic optimization process.  And a great many methods are handed the \class{ec.EvolutionState} instance, and so have essentially global access to the system.
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=5in]{Operators.pdf}
+\end{center}
+\caption{Top-Level operators and utility facilities in EvolutionState, and their relationship to certain state objects.  A repeat of Figure \ref{Operators}.  Compare to Figure \ref{SteadyState}.}
+\label{Operators2}
+\end{figure}
+
 
 If you peek inside \class{ec.EvolutionState}, you will find a number of objects, as shown in Figure \ref{Operators2}:
 
