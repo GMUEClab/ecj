@@ -1,8 +1,6 @@
 /*
   Copyright 1997 by Tucker Balch and Georgia Tech Research Corporation
   Copyright 1998 by Tucker Balch and Carnegie Mellon University
-  Please see the <a href="http://www.teambots.org">Teambots</a> copyright license
-  and disclaimer for distribution information regarding this file.
 */
 
 
@@ -23,12 +21,10 @@
  * <P>The original TBSim.SimulationCanvas is Copyright
  * <br>(c)1997 Tucker Balch and Georgia Tech Research Corporation
  * <br>(c)1998 Tucker Balch and Carnegie Mellon University
- * <p>Please see the <a href="http://www.teambots.org">Teambots</a> copyright license
- * and disclaimer for distribution information regarding this file.
  *
  * @author Tucker Balch
  * @author Liviu Panait
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 
 package ec.teambots;
@@ -1481,6 +1477,9 @@ public class ECSimulationCanvas extends Canvas implements Runnable
     }
 /*
   $Log: not supported by cvs2svn $
+  Revision 1.2  2010/10/24 19:40:46  feijai
+  yo
+
   Revision 1.1  2006/06/01 00:41:33  feijai
   Moved Teambots
   Issue number:
