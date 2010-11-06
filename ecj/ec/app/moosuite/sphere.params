@@ -7,6 +7,8 @@ parent.0 = moosuite.params
 eval.problem.type = sphere
 pop.subpop.0.species.min-gene = -1000
 pop.subpop.0.species.max-gene = 1000
+#for greater genome-size, 100 generations will not suffice.
+#e.g. for genome-size = 10, try generations >= 1000
 pop.subpop.0.species.genome-size = 2
 pop.subpop.0.species.mutation-prob = 0.2
 pop.supbop.0.species.bounded = true
