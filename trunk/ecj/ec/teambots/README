@@ -1,7 +1,0 @@
-If you are reading this file, the 'teambots' directory is in
-your distribution, and it shouldn't be.  It's a vestige of
-teambots being part of the ECJ distro a long time ago.  Feel
-free to delete this directory.
-
-If you're interested in the original teambots<-->ECJ code,
-it's available in the "contrib" section of the ECJ CVS repository.
