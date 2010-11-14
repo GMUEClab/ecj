@@ -116,14 +116,15 @@ public abstract class ERC extends GPNode
         No whitespace or other characters. */
     public String name() { return "ERC"; }
 
-    /** Checks to make certain that the ERC has no children. */
+    /** Usually ERCs don't have children, and this default implementation makes certain of it. 
+		But if you want to override this, you're welcome to. */
     public void checkConstraints(final EvolutionState state,
         final int tree,
         final GPIndividual typicalIndividual,
         final Parameter individualBase)
         {
         super.checkConstraints(state,tree,typicalIndividual,individualBase);
-        // make sure we don't have any children...
+        // make sure we don't have any children.  This is the typical situation for an ERC.
         if (children.length!= 0) state.output.error("Incorrect number of children for the node " + toStringForError() + " (should be 0)");
         }
 
