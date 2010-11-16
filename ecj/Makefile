@@ -13,7 +13,8 @@
 # Prepare for distribution:		make dist
 #
 
-JAVAC = javac ${JAVACFLAGS}
+JAVAC = javac
+# ${JAVACFLAGS}
 
 JAVACFLAGS = -target 1.4 -source 1.4 ${FLAGS}
 FLAGS = -g -Xlint:deprecation
@@ -61,6 +62,7 @@ ec/gp/breed/*.java \
 ec/gp/build/*.java \
 ec/gp/koza/*.java \
 ec/gp/ge/*.java \
+ec/gp/ge/breed/*.java \
 ec/multiobjective/*.java \
 ec/multiobjective/nsga2/*.java \
 ec/multiobjective/spea2/*.java \
@@ -105,7 +107,7 @@ dist: clean gui indent doc
 	echo --------------------------
 	echo Expect some errors here...
 	echo --------------------------
-	find . -name "CVS" -exec rm -rf {} \; -print | cat
+	find . -name ".svn" -exec rm -rf {} \; -print | cat
 
 indent: 
 	@ echo This uses emacs to indent all of the code.  To indent with
@@ -130,7 +132,7 @@ help:
 	@ echo "make docs     Builds the class documentation, found in docs/classsdocs"
 	@ echo "make doc	(Same thing)"
 	@ echo "make clean    Cleans out all classfiles, checkpoints, and various gunk"
-	@ echo "make dist     Does a make clean, make docs, and make, then deletes CVS dirs"
+	@ echo "make dist     Does a make clean, make docs, and make, then deletes SVN dirs"
 	@ echo "make help     Brings up this message!"
 	@ echo "make indent   Uses emacs to re-indent ECJ java files as you'd prefer"
 	@ echo "make gui      Compiles the GUI and charting (requires JFreeChart and iText,"
