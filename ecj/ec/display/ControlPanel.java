@@ -71,7 +71,6 @@ public class ControlPanel extends JPanel
     JTable seedsTable = null;
     JScrollPane jScrollPane = null;
     JLabel jLabel6 = null;
-    JTextField verbosityField = null;
     JCheckBox checkpointCheckBox = null;
     JPanel checkpointPanel = null;
     JLabel jLabel7 = null;
@@ -112,7 +111,6 @@ public class ControlPanel extends JPanel
         seedFileRadioButton.setEnabled(false);
         seedFileButton.setEnabled(false);
         seedsTable.setEnabled(false);
-        verbosityField.setEnabled(false);
         }
     
     public void enableControls() 
@@ -141,7 +139,6 @@ public class ControlPanel extends JPanel
             seedFileButton.setEnabled(true);
             }
         seedsTable.setEnabled(true);
-        verbosityField.setEnabled(true);
         }
 
     /**
@@ -359,7 +356,14 @@ public class ControlPanel extends JPanel
         {
         return Integer.valueOf(getNumJobsField().getText()).intValue();
         }
-    
+
+	public int getThreadCount(String text)
+		{
+		if (text.toLowerCase().trim().equals("auto"))
+			return Runtime.getRuntime().availableProcessors();
+		else return Integer.valueOf(text).intValue();
+		}
+
 
     /**
      * @throws NumberFormatException
@@ -368,8 +372,8 @@ public class ControlPanel extends JPanel
         throws NumberFormatException 
         {
         int numJobs = Integer.valueOf(numJobsField.getText()).intValue();
-        int breedThreads = Integer.valueOf(breedThreadsField.getText()).intValue();
-        int evalThreads = Integer.valueOf(evalThreadsField.getText()).intValue();
+        int breedThreads = getThreadCount(breedThreadsField.getText());
+        int evalThreads = getThreadCount(evalThreadsField.getText());
         
         int numThreads = Math.max(breedThreads, evalThreads);
         
@@ -437,8 +441,8 @@ public class ControlPanel extends JPanel
         throws NumberFormatException 
         {
         int numJobs = Integer.valueOf(numJobsField.getText()).intValue();
-        int breedThreads = Integer.valueOf(breedThreadsField.getText()).intValue();
-        int evalThreads = Integer.valueOf(evalThreadsField.getText()).intValue();
+        int breedThreads = getThreadCount(breedThreadsField.getText());
+        int evalThreads = getThreadCount(evalThreadsField.getText());
         int numThreads = Math.max(breedThreads, evalThreads);
         
         int seed = (int)(System.currentTimeMillis());
@@ -451,9 +455,18 @@ public class ControlPanel extends JPanel
                 }
             }
         }
+		
     public int getSeed(int experimentNum, int threadNum) 
         {
-        return Integer.valueOf((String)seedsTable.getValueAt(experimentNum, threadNum)).intValue();
+        try { return Integer.valueOf((String)seedsTable.getValueAt(experimentNum, threadNum)).intValue(); }
+		catch (RuntimeException e)
+			{
+			javax.swing.JOptionPane.showMessageDialog(null, "Value of seed for experiment " + experimentNum + 
+				" and thread " + threadNum + " not a fixed number: probably 'time'.  Rebuilding random number seeds.", "Adjusting Seeds", 
+				javax.swing.JOptionPane.INFORMATION_MESSAGE);
+			generateRandomSeeds();
+			return Integer.valueOf((String)seedsTable.getValueAt(experimentNum, threadNum)).intValue();
+			}
         }
     
     public void setSeed(String seed, int experimentNum, int threadNum) 
@@ -761,35 +774,6 @@ public class ControlPanel extends JPanel
             }
         return jScrollPane;
         }
-    /*
-     * This method initializes jTextField7  
-     *      
-     * @return javax.swing.JTextField       
-     */
-    /*
-      JTextField getVerbosityField() 
-      {
-      if (verbosityField == null) 
-      {
-      verbosityField = new JTextField();
-      verbosityField.addKeyListener(new java.awt.event.KeyAdapter() 
-      { 
-      public void keyPressed(java.awt.event.KeyEvent e) 
-      {    
-      if (e.getKeyCode() == KeyEvent.VK_ENTER) 
-      {
-      console.parameters.set(new Parameter(Evolve.P_VERBOSITY), ((JTextField)e.getSource()).getText());
-      } 
-      else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) 
-      {
-      ((JTextField)e.getSource()).setText(console.parameters.getString(new Parameter(Evolve.P_VERBOSITY),null));
-      }
-      }
-      });
-      }
-      return verbosityField;
-      }
-    */
         
     /**
      * @param panel TODO
@@ -944,7 +928,6 @@ public class ControlPanel extends JPanel
         quitOnRunCompleteCheckbox.setSelected(console.parameters.getBoolean(new Parameter(EvolutionState.P_QUITONRUNCOMPLETE),null,true));
         evalThreadsField.setText(console.parameters.getStringWithDefault(new Parameter(Evolve.P_EVALTHREADS),null,"1"));
         breedThreadsField.setText(console.parameters.getStringWithDefault(new Parameter(Evolve.P_BREEDTHREADS),null,"1"));
-        //verbosityField.setText(console.parameters.getStringWithDefault(new Parameter(Evolve.P_VERBOSITY),null,"0"));
         checkpointCheckBox.setSelected(console.parameters.getBoolean(new Parameter(EvolutionState.P_CHECKPOINT),null,false));
         checkpointModuloField.setText(console.parameters.getStringWithDefault(new Parameter(EvolutionState.P_CHECKPOINTMODULO),null,"10"));
         prefixField.setText(console.parameters.getStringWithDefault(new Parameter(EvolutionState.P_CHECKPOINTPREFIX),null,"gc"));
@@ -965,8 +948,8 @@ public class ControlPanel extends JPanel
         // numJobs * numThreads seeds are read.  If there are not enough seeds,
         // print a warning and generate the remaining necessary.
         int numJobs = Integer.valueOf(numJobsField.getText()).intValue();
-        int evalThreads = console.parameters.getInt(new Parameter(Evolve.P_EVALTHREADS),null);
-        int breedThreads = console.parameters.getInt(new Parameter(Evolve.P_BREEDTHREADS),null);
+        int evalThreads = getThreadCount(console.parameters.getString(new Parameter(Evolve.P_EVALTHREADS),null));
+        int breedThreads = getThreadCount(console.parameters.getString(new Parameter(Evolve.P_BREEDTHREADS),null));
         int numThreads = Math.max(evalThreads, breedThreads);
         
         // Read seeds for threads first

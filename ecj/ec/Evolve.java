@@ -206,7 +206,7 @@ public class Evolve
                     invoke(runtime,(Object[])null)).intValue(); }
             catch (Exception e)
                 { 
-                output.fatal("Whoa! This Java version is to old to have the Runtime.availableProcessors() method available.\n" + 
+                output.fatal("Whoa! This Java version is too old to have the Runtime.availableProcessors() method available.\n" + 
                     "This means you can't use 'auto' as a threads option.",threadParameter,null);
                 }
             }

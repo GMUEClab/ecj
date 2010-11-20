@@ -1678,58 +1678,6 @@ public class ParameterDatabase extends Properties implements Serializable
         }
     
     /**
-     * @param l
-     */
-    public synchronized void addListener(ParameterDatabaseListener l) 
-        {
-        listeners.add(l);
-        }
-    
-    /**
-     * @param l
-     */
-    public synchronized void removeListener(ParameterDatabaseListener l) 
-        {
-        listeners.remove(l);
-        }
-    
-    /**
-     * Fires a parameter set event.
-     * 
-     * @param parameter
-     * @param value
-     */
-    public synchronized void fireParameterSet(
-        Parameter parameter, String value) 
-        {
-        Iterator it = listeners.iterator();
-        
-        while (it.hasNext()) 
-            {
-            ParameterDatabaseListener l = (ParameterDatabaseListener)it.next();
-            l.parameterSet(new ParameterDatabaseEvent(this,parameter,value, ParameterDatabaseEvent.SET));
-            }
-        }
-
-    /**
-     * Fires a parameter accessed event.
-     * 
-     * @param parameter
-     * @param value
-     */
-    public synchronized void fireParameterAccessed(
-        Parameter parameter, String value) 
-        {
-        Iterator it = listeners.iterator();
-        
-        while (it.hasNext()) 
-            {
-            ParameterDatabaseListener l = (ParameterDatabaseListener)it.next();
-            l.parameterSet(new ParameterDatabaseEvent(this,parameter,value, ParameterDatabaseEvent.ACCESSED));
-            }
-        }
-
-    /**
      * Sets a parameter in the topmost database to a given value, trimmed of
      * whitespace.
      */
@@ -1737,7 +1685,7 @@ public class ParameterDatabase extends Properties implements Serializable
         {
         String tmp = value.trim();
         put(parameter.param, tmp);
-        fireParameterSet(parameter, tmp);
+        // fireParameterSet(parameter, tmp);
         }
 
     /**
