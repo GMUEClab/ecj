@@ -1054,7 +1054,8 @@ public class Console extends JFrame
                     }
                 catch (Exception e) 
                     {
-                    System.err.println("Exception when running job:\n\t"+e);
+                    System.err.println("Exception when running job:\n\t");
+					e.printStackTrace();
                     }
                 
                 conPanel.enableControls();
