@@ -2125,10 +2125,22 @@ public class ParameterDatabase extends Properties implements Serializable
             return directory;
         }
     
+	/** Returns a String describing the location of the ParameterDatabase holding
+		this parameter, or "" if there is none. */
+	public String getLocation(Parameter parameter)
+		{
+		File file = fileFor(parameter);
+		if (file == null) return "";
+		try { return file.getCanonicalPath(); }
+		catch (IOException e) { return ""; }
+		}
+	
     /**
      * Searches down through databases to find the parameter file 
      * which holds a given parameter. Returns the filename or null if not
      * found.
+	 *
+	 * @deprecated You probably want to use getLocation
      */
 
     public File fileFor(Parameter parameter) 
@@ -2344,7 +2356,13 @@ public class ParameterDatabase extends Properties implements Serializable
         for (int x = 0; x < args.length - 1; x++) 
             {
             if (args[x].equals("-p"))
-                a.parseParameter(args[x + 1]);
+				{
+				String s = args[x+1].trim();
+				if (s.length() > 0) continue;  // failure
+				int eq = s.indexOf('=');  // look for the '='
+				if (eq <= 0) continue; // '=' isn't there, or it's the first char: failure			
+				put(s.substring(0,eq), s.substring(eq+1));  // add the parameter
+				}
             }
 
         // Set me up
@@ -2353,42 +2371,24 @@ public class ParameterDatabase extends Properties implements Serializable
         }
 
     /**
-     * Parses and adds s to the database. Returns true if there was actually
-     * something to parse.
-     */
-    boolean parseParameter(String s) 
-        {
-        s = s.trim();
-        if (s.length() == 0)
-            return false;
-        if (s.charAt(0) == '#')
-            return false;
-        int eq = s.indexOf('=');
-        if (eq < 0)
-            return false;
-        put(s.substring(0, eq), s.substring(eq + 1));
-        return true;
-        }
-
-    /**
      * Prints out all the parameters in the database. Useful for debugging. If
      * listShadowed is true, each parameter is printed with the parameter
      * database it's located in. If listShadowed is false, only active
      * parameters are listed, and they're all given in one big chunk.
      */
-    public void list(PrintStream p, boolean listShadowed) 
-        {
-        list(new PrintWriter(p), listShadowed);
-        }
+    //public void list(PrintStream p, boolean listShadowed) 
+    //    {
+   //     list(new PrintWriter(p), listShadowed);
+    //    }
 
     /**
      * Prints out all the parameters in the database, but not shadowed
      * parameters.
      */
-    public void list(PrintStream p) 
-        {
-        list(new PrintWriter(p), false);
-        }
+   // public void list(PrintStream p) 
+   //     {
+   //     list(new PrintWriter(p), false);
+   //     }
 
     /**
      * Prints out all the parameters in the database, but not shadowed

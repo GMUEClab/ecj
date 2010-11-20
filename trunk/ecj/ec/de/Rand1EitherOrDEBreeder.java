@@ -58,7 +58,7 @@ public class Rand1EitherOrDEBreeder extends DEBreeder
         if ( PF < 0.0 || PF > 1.0 )
             state.output.fatal( "Parameter not found, or its value is outside of [0.0,1.0].", base.push(P_PF), null );
                         
-        if (state.parameters.exists(base.push(P_Cr)))
+        if (state.parameters.exists(base.push(P_Cr), null))
             state.output.warning("Crossover parameter specified, but Rand1EitherOrDEBreeder does not use crossover.", base.push(P_Cr));
         }
         

@@ -122,7 +122,7 @@ public class GPInitializer extends SimpleInitializer
             new GPAtomicType().setup(state,base.push(P_ATOMIC).push(""+y));
         
         // How many set types do we have?
-        if (state.parameters.exists(base.push(P_SET).push(P_SIZE)))
+        if (state.parameters.exists(base.push(P_SET).push(P_SIZE), null))
             {
             x =  state.parameters.getInt(base.push(P_SET).push(P_SIZE),null,1);
             if (x<0) 
@@ -212,7 +212,7 @@ public class GPInitializer extends SimpleInitializer
             {
             GPNodeConstraints c;
             // Figure the constraint class
-            if (state.parameters.exists(base.push(""+y)))
+            if (state.parameters.exists(base.push(""+y), null))
                 c = (GPNodeConstraints)(state.parameters.getInstanceForParameterEq(
                         base.push(""+y),null,GPNodeConstraints.class));
             else
@@ -251,7 +251,7 @@ public class GPInitializer extends SimpleInitializer
             {
             GPFunctionSet c;
             // Figure the GPFunctionSet class
-            if (state.parameters.exists(base.push(""+y)))
+            if (state.parameters.exists(base.push(""+y), null))
                 c = (GPFunctionSet)(state.parameters.getInstanceForParameterEq(
                         base.push(""+y),null,GPFunctionSet.class));
             else
@@ -287,7 +287,7 @@ public class GPInitializer extends SimpleInitializer
             {
             GPTreeConstraints c;
             // Figure the constraint class
-            if (state.parameters.exists(base.push(""+y)))
+            if (state.parameters.exists(base.push(""+y), null))
                 c = (GPTreeConstraints)(state.parameters.getInstanceForParameterEq(
                         base.push(""+y),null,GPTreeConstraints.class));
             else

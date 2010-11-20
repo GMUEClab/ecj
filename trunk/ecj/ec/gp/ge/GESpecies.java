@@ -106,36 +106,16 @@ import java.util.regex.Pattern;
  */
 public class GESpecies extends IntegerVectorSpecies
     {
-
-    HashMap[] rules;
-    public String[] startSymbols;
     public static final String P_FILE = "file";
     public static final String P_GESPECIES = "species";
     public static final String P_GPSPECIES = "gp-species";
     //return value which denotes that the tree has grown too large.
     public static final int BIG_TREE_ERROR = -1;
     public GPSpecies gpspecies;
-    HashMap ERCBank;
-
-    /*
-     * inner class for creating rules.
-     * a rule consists of a name and a number of choices.
-     */
-    class Rule
-        {
-
-        String name;
-        ArrayList choices;  //strings
-        int numberOfChoices;
-
-        public String toString()
-            {
-            return "Rule [choices=" + choices + ", name=" + name
-                + ", numberOfChoices=" + numberOfChoices + "]";
-            }
-        }
-
-    public void setup(final EvolutionState state, final Parameter base)
+	public HashMap ERCBank;
+	public GrammarParser[] grammar;
+	
+	public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state, base);
 
@@ -152,213 +132,33 @@ public class GESpecies extends IntegerVectorSpecies
             state.output.fatal("The Individual class for the Species " + getClass().getName() + " is must be a subclass of ec.gp.ge.GEIndividual.", base);
             }
 
-        mapperSetup(state, p);
+		ERCBank = new HashMap();
 
-        System.out.println("Grammar Mapping complete: begining simulation.");
-        }
-
-    /**
-     * Creates a HashMap of rules to be referenced when creating an individual's tree.  The
-     * readGrammar method is called inorder to fill an array of strings to be parsed into the rules
-     * of the grammar.
-     *
-     * @param state
-     * @param base
-     */
-    void mapperSetup(EvolutionState state, Parameter base)
-        {
-        //Dummy stuff to get the number of trees a GPIndividual has
+		// load the grammars, one per ADF tree
         GPIndividual gpi = (GPIndividual) (gpspecies.i_prototype);
         GPTree[] trees = gpi.trees;
         int numGrammars = trees.length;
-
-        //there is a rule set for each grammar file
-        rules = new HashMap[numGrammars];
-        startSymbols = new String[numGrammars];
-        ERCBank = new HashMap();
-
-        //parse each grammar file and create a rule hashmap for each one
-        for (int x = 0; x < numGrammars; x++)
-            {
-            rules[x] = new HashMap();
-
-            String[] grammar;
-            Parameter p = base.push(P_FILE);
-            Parameter def = defaultBase();
-
-            File grammarFile = state.parameters.getFile(p, def.push(P_FILE).push("" + x));
-
-            //files need to be read in ascending order starting at .0
-            if(grammarFile == null)
-                {
-                state.output.fatal("Error retrieving grammar file(s): " + def.toString() + "."+ P_FILE + "." + x + " is undefined.");
-                }
-
-            grammar = readGrammarFile(grammarFile);
-            boolean[] started = {false};
-
-            //get rest of nonterminals and put them into Rules
-            for (int i = 0; i < grammar.length; i++)
-                {
-                    lexTheGrammar(state, grammar[i], started, x);
-                }
-            }
+		
+		grammar = new GrammarParser[numGrammars];
+		for(int i = 0; i < numGrammars; i++)
+			{
+			File grammarFile = state.parameters.getFile(p, def.push(P_FILE).push("" + i));
+			if(grammarFile == null)
+				{
+				state.output.fatal("Error retrieving grammar file(s): " + def.toString() + "."+ P_FILE + "." + i + " is undefined.");
+				}
+					
+			try
+				{
+				grammar[i] = new GrammarParser(state, grammarFile);
+				}
+			catch (FileNotFoundException e)
+				{
+				state.output.fatal("Error retrieving grammar file(s): " + def.toString() + "."+ P_FILE + "." + i + " does not exist or cannot be opened.");
+				}
+			}
         }
 
-    public void lexTheGrammar (EvolutionState state, String grammarLine, boolean[] started, int grammarIndex)
-    {
-        //check to see if the line is only whitespace
-        if (grammarLine.trim().equals(""))
-            {
-            return;  //ignore whitespace outside
-            }
-
-        //ignore commented line, comments start with a #
-        if (grammarLine.charAt(0) == '#')
-            {
-            return;
-            }
-
-        Pattern grammarPattern = Pattern.compile("^" + //beginning of line
-                                                "\\s*" + //possible whitespace
-                                                "(<.*>)" +  //capturing group 1, rule name
-                                                "\\s*" + //possible whitespace
-                                                "::=" +
-                                                "\\s*(.*)"); //possible whitespace, capture group 2, grab rest.
-
-//               "\\(?" +  //open paren of lisp statement
-//                    		"\\s*" + //possible whitespace
-//                    		"(\\w*)" + //group 2, lisp statement name
-//                    		"\\s*" + //possible whitespace
-//                    		"(.*)" + //group 3, list of rules
-//                    		"\\)?" + //close paren of lisp statement
-//                    		"\\s*" + //possible whitespace
-//                    		"$"); //end of line
-        Matcher matcher = grammarPattern.matcher(grammarLine);
-
-        boolean patternFound =matcher.matches();
-
-        if(patternFound)
-        {
-            Rule r = new Rule();
-            r.name = matcher.group(1);
-
-            if (started[0] == false) //special case for startSymbol
-            {
-            startSymbols[grammarIndex] = r.name;
-            started[0] = true;
-            }
-
-            r.choices = new ArrayList();  //get choices for each rule
-            String[] choices = matcher.group(2).split("\\|");
-
-            for (int j = 0; j < choices.length; j++)
-                {
-                String s = choices[j].trim();
-                
-                if (s.charAt(0) == '(' && s.endsWith(")"))
-                    r.choices.add(s);
-                else if(s.charAt(0) == '<' && s.endsWith(">"))
-                    r.choices.add(s);
-                else
-                    state.output.fatal("invalid statement " + s + ".");
-                }
-
-
-            r.numberOfChoices = r.choices.size();
-
-            Rule oldRule;
-            if ((oldRule = (Rule) rules[grammarIndex].get(r.name)) != null)
-                {
-                //for appending rules (ones which already exist)
-                oldRule.numberOfChoices += r.numberOfChoices;
-                oldRule.choices.addAll(r.choices);
-                } else  //new rules
-                {
-                rules[grammarIndex].put(r.name, r);
-                }
-        }
-    }
-
-    public String[] lexTheRules(EvolutionState state, String possibleFunction)
-    {
-        //System.err.println(possibleFunction);
-
-        ArrayList tokens = new ArrayList();
-
-//        Pattern pattern = Pattern.compile("\\s*" +
-//                                            "\\(" +
-//                                            "\\s*" +
-//                                            "([^<\\s]*)" +
-//                                            "\\s*" +
-//                                            "(.*)\\s*\\)");
-
-
-        Pattern pattern = Pattern.compile("\\s*" +
-                                            "\\(" +
-                                            "\\s*" +
-                                            "(\\S+)" +
-                                            "\\s+" +
-                                            "(.*)\\s*\\)");
-                                            
-                                            
-        Matcher matcher = pattern.matcher(possibleFunction);
-        boolean isValid = matcher.matches();
-
-        //group(2) is everything that is not part of the name section of a statement
-        if (isValid)
-        {
-            tokens.add(matcher.group(1));
-
-            Pattern pattern2 = Pattern.compile("(\\s*<[^>]*>)");
-            Matcher matcher2 = pattern2.matcher(matcher.group(2));
-
-            Pattern pattern3 = Pattern.compile("\\s*(<[^>]*>\\s*)*");
-            Matcher matcher3 = pattern3.matcher(matcher.group(2));
-
-            if(!matcher3.matches())
-                state.output.fatal(possibleFunction + " contains invaild data.");
-
-            while(isValid = matcher2.find())
-            {
-                tokens.add(matcher2.group());
-            }
-
-            String[] result = new String[tokens.size()];
-
-            //no generics makes me sad beyond belief
-            //converts our arraylist to a string array :/
-            for (int i = 0; i < tokens.size(); i++)
-            {
-                result[i] = ((String)(tokens.get(i))).trim();
-            }
-
-            //System.out.println(Arrays.deepToString(result));
-
-            return result;
-        }
-
-        //it may be a terminal
-        else
-        {
-            possibleFunction = possibleFunction.trim();
-
-            if(possibleFunction.charAt(0) == '(' && possibleFunction.endsWith(")"))
-            {
-                //remove "("
-                possibleFunction = possibleFunction.replaceFirst("\\(", "");
-                //remove ")"
-                possibleFunction = possibleFunction.substring(0, possibleFunction.length()-1);
-
-                String result[] = {possibleFunction.trim()};
-
-                return result;
-            }
-        }
-
-        //rest of the invalid cases
-        return null;
-    }
 
     /**
      * creates all of an individual's trees
@@ -396,19 +196,16 @@ public class GESpecies extends IntegerVectorSpecies
      */
     public int makeTree(EvolutionState state, GEIndividual ind, GPTree tree, int position, int treeNum, int threadnum)
         {
-        int[] countNumberOfChromosomesUsed =
-            {
-            position
-            };  //hack, use an array to pass an extra value
+        int[] countNumberOfChromosomesUsed = {  position  };  // hack, use an array to pass an extra value
         byte[] genome = ind.genome;
         GPFunctionSet gpfs = tree.constraints((GPInitializer) state.initializer).functionset;
-        Rule r = ((Rule) (rules[treeNum].get(startSymbols[treeNum])));
         GPNode root;
 
-        try //get the tree, or return an error.
+        try // get the tree, or return an error.
             {
-            root = makeSubtree(countNumberOfChromosomesUsed, genome, state, gpfs, r, treeNum, threadnum);
-            } catch (BigTreeException e)
+            root = makeSubtree(countNumberOfChromosomesUsed, genome, state, gpfs, grammar[treeNum], treeNum, threadnum);
+            } 
+		catch (BigTreeException e)
             {
             return BIG_TREE_ERROR;
             }
@@ -423,137 +220,19 @@ public class GESpecies extends IntegerVectorSpecies
         return countNumberOfChromosomesUsed[0];
         }
 
-    //thrown by makeSubtree when chromosome is not large enough for the generated tree.
-    class BigTreeException extends RuntimeException
-        {
-
-        static final long serialVersionUID = -8668044916857977687L;
-        }
+    // thrown by makeSubtree when chromosome is not large enough for the generated tree.
+    class BigTreeException extends RuntimeException { static final long serialVersionUID = 1L; }
 
     /*
      * returns the tree created from the rules and genome
      */
-    GPNode makeSubtree(int[] index, byte[] genome, EvolutionState es, GPFunctionSet gpfs, Rule rule, int treeNum, int threadnum)
+    GPNode makeSubtree(int[] index, byte[] genome, EvolutionState es, GPFunctionSet gpfs, GrammarParser grammar, int treeNum, int threadnum)
         {
-        //have we exceeded the length of the genome?  No point in going further.
-        if (index[0] >= genome.length)
-            {
-            throw new BigTreeException();
-            }
-
-        //expand the rule with the chromosome to get a body element
-        int i;
-
-        //key for ERC hashtable look ups is the current index within the genome
-        int key = genome[index[0]];
-
-        //non existant rule got passed in
-        if (rule == null)
-            {
-            es.output.fatal("An undefined rule exists within the grammar.");
-            }
-
-        //more than one rule to consider, pick one based off the genome, and consume the current gene
-        if (rule.numberOfChoices > 1)
-            {
-            //casting to an int should be ok since the biggest these genes can be is a byte
-            i = ((genome[index[0]]) - ((int)(this.minGene(index[0])))) % rule.numberOfChoices;
-            index[0]++;
-            }
-        //only 1 rule to consider
-        else
-            {
-            i = 0;
-            }
-        String choice = ((String) (rule.choices.get(i))).trim();
-
-        //choice is a rule, but is not in the set of rules taken from the grammar
-        if (choice.matches("<.*>") && !(rules[treeNum].containsKey(choice)))
-            {
-            es.output.fatal(choice + " is not defined in the grammar.");
-            }
-
-        // if body is another rule head
-        //look up rule
-        Rule r;
-        if ((r = (Rule) rules[treeNum].get(choice)) != null)
-            {
-            return makeSubtree(index, genome, es, gpfs, r, treeNum, threadnum);
-            } else if (choice.startsWith("(")) //handle terminals and nonterminals
-            {
-            //String[] temparray = choice.substring(1).split(" ");
-
-                //System.out.println(choice);
-
-            String[] temparray = (String[])(lexTheRules(es, choice));
-
-            if(temparray == null)
-            {
-                es.output.fatal(choice + " is an invalid statement.");
-            }
-
-            //temparray[0] = temparray[0].replaceAll("\\)", "");  //remove the close brace ')'
-
-//            System.err.println("temparray = "+temparray);
-//            System.err.println("temparray[0] = "+temparray[0]);
-//            System.err.println("nodesbyname = " + gpfs.nodesByName);
-
-            //does this rule map to an existing node in the function set?
-            if (!(gpfs.nodesByName.containsKey(temparray[0])))
-                {
-                es.output.fatal("GPNode " + temparray[0] + " is not defined in the function set.");
-                }
-
-            //Known: node exists in the function set time to get the GPNode from GPFunctionSet.nodesByName
-            GPNode validNode = ((GPNode[]) (gpfs.nodesByName.get(temparray[0])))[0];
-            
-            int numChildren = validNode.children.length;
-            //index 0 is the node itself
-            int numChildrenInGrammar = temparray.length -1;
-
-            //does the grammar contain the correct amount of children that the GPNode requires
-            if (numChildren != numChildrenInGrammar)
-                {
-                es.output.fatal("GPNode " + validNode.toStringForHumans() + " requires " + numChildren + " children.  "
-                    + numChildrenInGrammar + " children found in the grammar.");
-                }
-
-            //check to see if it is an ERC node
-            if (validNode.name().equals("ERC"))
-                {                
-                validNode = obtainERC(es, key, genome, threadnum, validNode);
-                }
-            //non ERC node
-            else
-                {
-                validNode = validNode.lightClone();
-                }
-
-            //get the rest.
-            for (int j = 1, childNumber = 0; j < temparray.length; j++)
-                {
-                    if(temparray[j].trim().matches("<.*>")) //non-terminal
-                        {
-                        Rule r2 = (Rule) rules[treeNum].get(temparray[j]);
-
-                        //get and link children to the current GPNode
-                        validNode.children[childNumber] = makeSubtree(index, genome, es, gpfs, r2, treeNum, threadnum);
-                        if (validNode.children[childNumber] == null)
-                            {
-                            return null;
-                            }
-                        childNumber++;
-                        }
-                }
-
-            return validNode;
-            }
-        
-        //handling of extra cases
-        return null;
+		// IMPLEMENT ME
+		return null;
         }
 
-    //method for obtaining a ERC indepen
+    //method for obtaining an ERC
     public GPNode obtainERC(EvolutionState state, int key, byte[] genome, int threadnum, GPNode node)
         {
         ArrayList ERCList = (ArrayList) (ERCBank.get(new Integer(key)));
@@ -584,47 +263,6 @@ public class GESpecies extends IntegerVectorSpecies
         ERCList.add(node);
 
         return node;
-        }
-
-    /*
-     * reads the grammar file from the given path, returns a String[] where each index is a line in the grammar.
-     */
-    String[] readGrammarFile(File grammarFile)
-        {
-        String[] grammar;
-        List tempGrammar = new ArrayList();  //list of strings
-        BufferedReader br = null;
-        try
-            {
-            br = new BufferedReader(new FileReader(grammarFile));
-            } catch (FileNotFoundException e)
-            {
-            e.printStackTrace();
-            return null;
-            }
-
-        if (br == null)
-            {
-            return null;  //error case
-            }
-        try
-            {
-            String s;
-            while ((s = br.readLine()) != null)
-                {
-                tempGrammar.add(s);
-                }
-            } catch (IOException e)
-            {
-            e.printStackTrace();
-            }
-
-        grammar = new String[tempGrammar.size()];
-        for (int i = 0; i < tempGrammar.size(); i++)
-            {
-            grammar[i] = (String) tempGrammar.get(i);
-            }
-        return grammar;
         }
 
     public Object clone()

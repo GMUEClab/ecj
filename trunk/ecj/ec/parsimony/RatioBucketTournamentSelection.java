@@ -119,8 +119,7 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
         if (size < 1)
             state.output.fatal("Tournament size must be >= 1.",base.push(P_SIZE),def.push(P_SIZE));
 
-        if( state.parameters.exists( base.push(P_RATIO) ) ||
-            state.parameters.exists( def.push(P_RATIO) ) )
+        if( state.parameters.exists( base.push(P_RATIO), def.push(P_RATIO)))
             {
             ratio = state.parameters.getFloat(base.push(P_RATIO),def.push(P_RATIO),2.0f);
             if( ratio<2 )

@@ -525,7 +525,7 @@ public class IslandExchange extends Exchanger
 
             // setup the selection method
             p = base.push( P_SELECT_TO_DIE_METHOD );
-            if( state.parameters.exists( p ) )
+            if( state.parameters.exists( p, null) )
                 indsToDieSelectionMethod = (SelectionMethod)
                     state.parameters.getInstanceForParameter( p, null, ec.SelectionMethod.class );
             else // use RandomSelection
