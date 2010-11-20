@@ -95,9 +95,7 @@ ParamClassLoadException is called:
 The GUI facility of ECJ has additional classes meant to access parameters
 programmatically in Swing.  Generally you wouldn't play with these:
 
-	ec.util.ParameterDatabaseAdaptor
 	ec.util.ParameterDatabaseEvent
-	ec.util.ParameterDatabaseListener
 	ec.util.ParameterDatabaseTreeModel
 	ec.util.ParameterDatabaseTreeNode	
 	ec.util.ReflectedObject
