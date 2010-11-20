@@ -1888,7 +1888,9 @@ public class ParameterDatabase extends Properties implements Serializable
         p.flush();
         }
 
-    /** Returns true if parameter exist in the database */
+    /** Returns true if parameter exist in the database
+		@ deprecated use exists(Parameter, null) 
+	*/
     public synchronized boolean exists(Parameter parameter) 
         {
         printGotten(parameter, null, true);
