@@ -119,15 +119,7 @@ public class ParametersPanel
                         newRow[0] = sBuff.toString();
                         Parameter param = new Parameter(newRow[0]);
                         newRow[1] = console.parameters.getString(param,null);
-                        newRow[2] = "";
-                        try
-                            {
-                            File file = console.parameters.fileFor(param);
-                            if (file != null)
-                                newRow[2] = file.getCanonicalPath();
-                            } catch (IOException ex)
-                            {
-                            }
+                        newRow[2] = console.parameters.getLocation(param);
                         
                         if (newRow[1] != null)
                             {
@@ -150,15 +142,8 @@ public class ParametersPanel
                             childRow[0] = newRow[0]+child;
                             Parameter param = new Parameter(childRow[0]);
                             childRow[1] = console.parameters.getString(param,null);
-                            childRow[2] = "";
-                            try
-                                {
-                                File file = console.parameters.fileFor(param);
-                                if (file != null)
-                                    childRow[2] = file.getCanonicalPath();
-                                } catch (IOException ex)
-                                {
-                                }
+                            childRow[2] = console.parameters.getLocation(param);
+							
                             if (childRow[1] != null)
                                 {
                                 tableModel.addRow(childRow);

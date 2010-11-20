@@ -123,8 +123,7 @@ public class BucketTournamentSelection extends SelectionMethod implements Steady
         if (size < 1)
             state.output.fatal("Tournament size must be >= 1.",base.push(P_SIZE),def.push(P_SIZE));
 
-        if( state.parameters.exists( base.push(P_BUCKETS) ) ||
-            state.parameters.exists( def.push(P_BUCKETS) ) )
+        if( state.parameters.exists( base.push(P_BUCKETS), def.push(P_BUCKETS)))
             {
             nBuckets = state.parameters.getInt(base.push(P_BUCKETS),def.push(P_BUCKETS),1);
             if (nBuckets < 1)

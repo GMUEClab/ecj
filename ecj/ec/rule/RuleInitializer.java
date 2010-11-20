@@ -94,7 +94,7 @@ public class RuleInitializer extends SimpleInitializer
             {
             RuleConstraints c;
             // Figure the constraints class
-            if (state.parameters.exists(base.push(""+y)))
+            if (state.parameters.exists(base.push(""+y), null))
                 c = (RuleConstraints)(state.parameters.getInstanceForParameterEq(
                         base.push(""+y),null,RuleConstraints.class));
             else
@@ -130,7 +130,7 @@ public class RuleInitializer extends SimpleInitializer
             {
             RuleSetConstraints c;
             // Figure the RuleSetConstraints class
-            if (state.parameters.exists(base.push(""+y)))
+            if (state.parameters.exists(base.push(""+y), null))
                 c = (RuleSetConstraints)(state.parameters.getInstanceForParameterEq(
                         base.push(""+y),null,RuleSetConstraints.class));
             else
