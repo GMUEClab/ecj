@@ -1717,3 +1717,8 @@ Version		Change Log
 	Added The ECJ Owner's Manual
 	Migrated to SVN on Google Code
 	Deleted teambots directory
+	Removed ParameterDatabaseListener and ParameterDatabaseAdapter
+	Got GUI working, sort of, with seeds but it's still flakey with jobs
+	Revised code to not use exists(Parameter) anymore, but rather to use
+		exists(Parameter, Parameter)
+	Fixed bug which was preventing -p from working on the command line, oops
