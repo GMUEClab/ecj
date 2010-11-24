@@ -1888,10 +1888,12 @@ public class ParameterDatabase extends Properties implements Serializable
             {
             Parameter p = new Parameter(PRINT_PARAMS);
             String jp = get(p);
+			System.err.println(jp);
             if (jp == null || jp.equalsIgnoreCase("false"))
                 printState = PS_NONE;
             else
                 printState = PS_PRINT_PARAMS;
+			System.err.println(printState);
             uncheck();
             printGotten(p,null,false);
             }
@@ -2308,7 +2310,7 @@ public class ParameterDatabase extends Properties implements Serializable
             if (args[x].equals("-p"))
 				{
 				String s = args[x+1].trim();
-				if (s.length() > 0) continue;  // failure
+				if (s.length() == 0) continue;  // failure
 				int eq = s.indexOf('=');  // look for the '='
 				if (eq <= 0) continue; // '=' isn't there, or it's the first char: failure			
 				put(s.substring(0,eq), s.substring(eq+1));  // add the parameter
