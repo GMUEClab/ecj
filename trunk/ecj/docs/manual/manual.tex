@@ -4841,18 +4841,19 @@ This method is called when the GPNode is being executed in the course of executi
 Execution doesn't have to be just in terms of calling \method{eval(...)} on children, processing the results, and returning a final value.  In fact, for some problems the return value may not matter at all, but simply which nodes are executed.  In this case, likely the nodes themselves are doing things via side effects: moving a robot around, for example.  Execution could also be tentative: an ``if'' node might evaluate one or another of its children and leave it at that.  Execution could also be repetitive: you might make a ``while'' node which repeatedly evaluates a child until some test is true.  Basically you can execute these nodes any way that might appear in a regular programming language.
 
 \subsubsection{GPData} 
+\label{ec.gp.GPData}
 
 The \method{eval(...)} method has several arguments, only two of which should be nonobvious: \class{ec.gp.ADFStack}  and \class{ec.gp.GPData}.  We will discuss ADFStack later in Section~\ref{ec.gp.ADF}.  The GPData object is a simple data object passed around amongst your GPNodes when they execute one another.  It's your opportunity to pass data from node to node. In the example above, it's how the values are passed from the children to their parents: for example, it's how the Sub node returns its value to the Sin node.  It's also possible that the parent needs to pass data to its child: and the GPData object can be used like that as well.
 
 Typically a single GPData object is created and handed to the GPNodes, and then they hand it to one another during execution, reusing it. This avoids making lots of clones of a GPData object during execution.
 
-Our GPData object needs to hold the return value from a child.  You also need to implement a single method which copies the data from your GPData object into another, then returns it:
+Our GPData object needs to hold the return value from a child.  If you are holding a simple piece of data (like a double or an int) also just need to implement a single method, \method{copyTo(...)}, which copies the data from your GPData object into another, then returns it:
 
 \java{%
 public abstract GPData copyTo(GPData other);
 }
 
-All this couldn't be simpler:
+In this case, it's simple:
 
 \vbox{\small
 \begin{verbatim}
@@ -4866,6 +4867,34 @@ public class MyData extends GPData
     }
 \end{verbatim}
 }
+
+Now it might be the case that you need to hold more complex data.  For example, what if you had an array of doubles?  In this case you'd need to either clone or copy the data during the \method{copyTo(...)} operation.  Additionally, GPData is a Prototype and so it needs to implement the \method{clone()} method as a deep clone.  The default implementation just does a light clone.  But with your array of doubles, you'd need to clone that.  Altogether you might have something like this:
+
+\vbox{\small
+\begin{verbatim}
+package ec.app.myapp;
+import ec.gp.*;
+public class MyData extends GPData
+    {
+    public double[15] val = new double[15];
+    public GPData copyTo(GPData other)
+        {
+        System.arraycopy(val, 0, ((MyData)other).val, 0, val.length);
+        return other;  
+        }
+
+    public Object clone()
+        {
+        MyData other = (MyData)(super.clone());
+        other.val = (double[])(val.clone());
+        return other;  
+        }
+    }
+\end{verbatim}
+}
+
+The important thing to note is that when you perform \method{copyTo(...)} or \method{clone()}, the resulting other object should not be sharing any data in common with you except constant (immutable, read-only) data.  Why the two methods?  Certainly most things \method{copyTo(...)} performs could be done with \method{clone()}.  The reason for \method{copyTo(...)} is entirely for efficiency when using Automatically Defined Functions (Section~\ref{ec.gp.ADF}).  Perhaps in the future we might obviate the need for its use.
+
 
 \subsubsection{KozaFitness}
 
@@ -6705,7 +6734,9 @@ public class MyData extends GPData
 \end{verbatim}
 }
 
-We could modify this to include a boolean data type as well, but we'll just use the \variable{val} variable to store both boolean and real-valued data.  Let's define our three new GPNodes.  First our If-statement:
+We could modify this to include a boolean data type as well, but we'll just use the \variable{val} variable to store both boolean and real-valued data.  Before you go about that, re-read Section \ref{ec.gp.GPData} (on GPData) and its discussion about \method{clone()} and \method{copyTo(...)}.  
+
+Now let's define our three new GPNodes.  First our If-statement:
 
 \vbox{\small\begin{verbatim}
 package ec.app.myapp;
