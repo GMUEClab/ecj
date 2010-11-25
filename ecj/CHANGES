@@ -1722,3 +1722,5 @@ Version		Change Log
 	Revised code to not use exists(Parameter) anymore, but rather to use
 		exists(Parameter, Parameter)
 	Fixed bug which was preventing -p from working on the command line, oops
+	Tweaked manual to discuss GPData.copyTo() and GPData.clone() in more
+		detail.  Thanks to Wei He <wei.he.stkm@gmail.com>
