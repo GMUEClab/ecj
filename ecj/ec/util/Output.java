@@ -70,10 +70,6 @@ import java.util.Enumeration;
  *
  -->
  
- * <p>Output by default will automatically flush any log which prints an announcement
- * (or anything printed with Output.println(...).  You can change this behavior with
- * the setFlush() method.
- *
  * <p>Output will also store all announcements in memory by default so as to reproduce
  * them if it's restarted from a checkpoint.  You can change this behavior also by
  *
@@ -86,7 +82,7 @@ public class Output implements Serializable
     boolean errors;
     Vector logs = new Vector();
     Vector announcements = new Vector();
-    boolean flush = true;
+    // boolean flush = true;
     boolean store = true;
     String filePrefix = "";
 
@@ -171,16 +167,21 @@ public class Output implements Serializable
         store = storeAnnouncementsInMemory;
         }
 
-    /** Sets whether the Output flushes its announcements.*/
-    public synchronized void setFlush(boolean v)
+    /** Sets whether the Output flushes its announcements.
+		@deprecated We now always flush 
+		*/
+	public synchronized void setFlush(boolean v)
         {
-        flush = v;
-        }
+        // flush = v;
+		}
     
-    /* Returns the Output's flushing behavior. */
-    public synchronized boolean getFlush()
+    /* Returns the Output's flushing behavior. 
+		@deprecated We now always flush 
+	*/
+	public synchronized boolean getFlush()
         {
-        return flush;
+        // return flush;
+		return true;
         }
     
     /** Sets whether the Output stores its announcements.*/
@@ -627,7 +628,9 @@ public class Output implements Serializable
         // if (verbosity >= _verbosity) return;  // don't write it
         // now write it
         log.writer.println(s);
-        if (flush) log.writer.flush();
+        // if (flush) 
+		// always flush
+			log.writer.flush();
         //...and stash it in memory maybe
         if (store && _announcement && !_reposting)
             announcements.addElement(new Announcement(s));
@@ -635,7 +638,7 @@ public class Output implements Serializable
 
 
     /** Prints a message to a given log, 
-        with a certain verbosity.  If log==ALL_LOGS, posted to all logs. 
+        with a certain verbosity.  If log==ALL_LOGS, posted to all logs which accept announcements. 
         @deprecated Verbosity no longer has an effect
     */
     synchronized void println(String s,
@@ -657,7 +660,7 @@ public class Output implements Serializable
             }
         }
 
-    /** Prints a message to a given log.  If log==ALL_LOGS, posted to all logs. 
+    /** Prints a message to a given log.  If log==ALL_LOGS, posted to all logs which accept announcements. 
      */
     public synchronized void println(String s,
         int log,
@@ -711,11 +714,12 @@ public class Output implements Serializable
         //if (verbosity >= _verbosity) return;  // don't write it
         // now write it
         log.writer.print(s);
+		// do not flush until you get a println
         //if (flush) log.writer.flush();
         }
 
     /** Prints a non-announcement message to a given log, with a
-        certain verbosity. If log==ALL_LOGS, posted to all logs. 
+        certain verbosity. If log==ALL_LOGS, posted to all logs which accept announcements. 
         No '\n' is printed.  */
     public synchronized void print(String s,
         int _verbosity,
@@ -736,7 +740,7 @@ public class Output implements Serializable
         }
 
     /** Prints a non-announcement message to a given log<!--, with a verbosity of V_NO_GENERAL-->.
-        If log==ALL_LOGS, posted to all logs. No '\n' is printed.  */
+        If log==ALL_LOGS, posted to all logs which accept announcements. No '\n' is printed.  */
     public synchronized void print(String s,
         int log) throws OutputException
         {

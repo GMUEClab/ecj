@@ -34,7 +34,9 @@ public abstract class GPData implements Prototype
     public static final String P_GPDATA = "data";
 
     /** Modifies gpd so that gpd is equivalent to us. You may
-        safely assume that gpd is of the same class as we are. */
+        safely assume that gpd is of the same class as we are.
+		Do not share pointers with the other object, except to
+		read-only data: instead, copy any read-write data as necessary. */
     public abstract GPData copyTo(final GPData gpd);
 
     public Parameter defaultBase()
@@ -51,6 +53,4 @@ public abstract class GPData implements Prototype
         catch (CloneNotSupportedException e) 
             { throw new InternalError(); } // never happens
         }
-
-
     }
