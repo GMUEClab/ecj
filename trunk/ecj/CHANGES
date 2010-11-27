@@ -1726,3 +1726,4 @@ Version		Change Log
 	Tweaked manual to discuss GPData.copyTo() and GPData.clone() in more
 		detail.  Thanks to Wei He <wei.he.stkm@gmail.com>
 	Removed flushing as an option in Output
+	Added new initialize method
