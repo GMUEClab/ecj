@@ -118,29 +118,41 @@ public class ECSuite extends Problem implements SimpleProblemForm
         double[] genome = temp.genome;
         int len = genome.length;
 
-		float fit = (float)(function(state, problemType, temp.genome, threadnum));
+
+		// this curious break-out makes it easy to use the isOptimal() and function() methods
+		// for other purposes, such as coevolutionary versions of this class.
 		
+		// compute the fitness on a per-function basis
+		double fit = (function(state, problemType, temp.genome, threadnum));
+		
+		// compute if we're optimal on a per-function basis
+		boolean isOptimal = isOptimal(problemType, fit);
+		
+		// set the fitness appropriately
+		((SimpleFitness)(ind.fitness)).setFitness( state, (float)fit, isOptimal );
+        ind.evaluated = true;
+		}
+	
+	
+	public boolean isOptimal(int function, double fitness)
+		{
 		switch(problemType)
 			{
             case PROB_ROSENBROCK:
             case PROB_RASTRIGIN:
             case PROB_SPHERE:
             case PROB_STEP:
-                ((SimpleFitness)(ind.fitness)).setFitness( state, fit, fit==0.0f );
-            break;
+				return fitness == 0.0f;
 
             case PROB_NOISY_QUARTIC:
             case PROB_BOOTH:
             case PROB_GRIEWANGK:
             case PROB_MEDIAN:
-				((SimpleFitness)(ind.fitness)).setFitness( state, fit, false ); 
-            break;
+			default:
+				return false;
+			
 			}
-
-        ind.evaluated = true;
 		}
-		
-
 
 	public double function(EvolutionState state, int function, double[] genome, int threadnum)
 		{
