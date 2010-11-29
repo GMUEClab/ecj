@@ -14,7 +14,6 @@ import ec.simple.SimpleFitness;
 
 public class CoevolutionaryRosenbrock extends Problem implements GroupedProblemForm
     {
-
     double rosenbrock( double i, double j )
         {
         return - ( 100.0d*(i-j*j)*(i-j*j) + (1.0d-j)*(1.0d-j) );

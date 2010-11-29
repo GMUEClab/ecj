@@ -1,0 +1,61 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../ecsuite/ecsuite.params
+
+eval.problem = ec.app.coevolve2.CoevolutionaryECSuite
+eval.problem.type = rosenbrock
+#rastrigin
+
+#
+# optionally your type could be: rosenbrock, sphere, step, noisy-quartic, 
+# or kdj-f1, kdj-f2, kdj-f3, or kdj-f4		(the kdj-foo names
+# are just aliases for other problems, useful for people who might
+# know them as specific problems in the DeJong test suite)
+# ...or booth, griewangk
+#
+
+eval =                                  ec.coevolve.MultiPopCoevolutionaryEvaluator
+
+eval.num-current=                       4
+eval.num-elites =                       1
+eval.num-prev =                         2
+eval.select-current =                   ec.select.RandomSelection
+eval.select-prev =                      ec.select.RandomSelection
+
+pop.subpops =                           2
+pop.subpop.0 =                          ec.Subpopulation
+pop.subpop.0.duplicate-retries =        10
+pop.subpop.0.size =                     16
+pop.subpop.0.species =                  ec.vector.FloatVectorSpecies
+pop.subpop.0.species.crossover-type =   one
+pop.subpop.0.species.genome-size =      5
+pop.subpop.0.species.fitness =          ec.simple.SimpleFitness
+pop.subpop.0.species.ind =              ec.app.coevolve2.CoevolutionaryDoubleVectorIndividual
+pop.subpop.0.species.min-gene =         -5.12
+pop.subpop.0.species.max-gene =         5.12
+pop.subpop.0.species.pipe =             ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.mutation-type =    gauss
+pop.subpop.0.species.mutation-stdev =   0.25
+pop.subpop.0.species.mutation-prob =    0.95
+pop.subpop.0.species.pipe.source.0 =            ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.size =       2
+
+pop.subpop.1 =                          ec.Subpopulation
+pop.subpop.1.duplicate-retries =        10
+pop.subpop.1.size =                     16
+pop.subpop.1.species =                  ec.vector.FloatVectorSpecies
+pop.subpop.1.species.crossover-type =   one
+pop.subpop.1.species.genome-size =      5
+pop.subpop.1.species.fitness =          ec.simple.SimpleFitness
+pop.subpop.1.species.ind =              ec.app.coevolve2.CoevolutionaryDoubleVectorIndividual
+pop.subpop.1.species.min-gene =         -5.12
+pop.subpop.1.species.max-gene =         5.12
+pop.subpop.1.species.pipe =             ec.vector.breed.VectorMutationPipeline
+pop.subpop.1.species.mutation-type =    gauss
+pop.subpop.1.species.mutation-stdev =   0.25
+pop.subpop.1.species.mutation-prob =    0.95
+pop.subpop.1.species.pipe.source.0 =            ec.select.TournamentSelection
+pop.subpop.1.species.pipe.source.0.size =       2
+
