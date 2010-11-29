@@ -33,7 +33,7 @@ import ec.vector.*;
    <p><b>Parameters</b><br>
    <table>
    <tr><td valign=top><i>base</i>.<tt>type</tt><br>
-   <font size=-1>String, one of: rosenbrock rastrigin sphere step noisy-quartic kdj-f1 kdj-f2 kdj-f3 kdj-f4 booth [or] griewangk</font>/td>
+   <font size=-1>String, one of: rosenbrock rastrigin sphere step noisy-quartic kdj-f1 kdj-f2 kdj-f3 kdj-f4 booth median [or] griewangk</font>/td>
    <td valign=top>(The vector problem to test against.  Some of the types are synonyms: kdj-f1 = sphere, kdj-f2 = rosenbrock, kdj-f3 = step, kdj-f4 = noisy-quartic.  "kdj" stands for "Ken DeJong", and the numbers are the problems in his test suite)</td></tr>
    </table>
 
@@ -55,6 +55,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final String V_F4 = "kdj-f4";
     public static final String V_BOOTH = "booth";
     public static final String V_GRIEWANGK = "griewangk";
+    public static final String V_MEDIAN = "median";
 
     public static final int PROB_ROSENBROCK = 0;
     public static final int PROB_RASTRIGIN = 1;
@@ -63,6 +64,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final int PROB_NOISY_QUARTIC = 4;
     public static final int PROB_BOOTH = 5;
     public static final int PROB_GRIEWANGK = 6;
+    public static final int PROB_MEDIAN = 7;
     
     public int problemType = PROB_ROSENBROCK;  // defaults on Rosenbrock
 
@@ -88,6 +90,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
             problemType = PROB_BOOTH;
         else if( wp.compareTo( V_GRIEWANGK ) == 0 )
             problemType = PROB_GRIEWANGK;           
+        else if( wp.compareTo( V_MEDIAN ) == 0 )
+            problemType = PROB_MEDIAN;           
         else state.output.fatal(
             "Invalid value for parameter, or parameter not found.\n" +
             "Acceptable values are:\n" +
@@ -97,7 +101,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
             "  " + V_STEP + "(or " + V_F3 + ")\n" +
             "  " + V_NOISY_QUARTIC + "(or " + V_F4 + ")\n"+
             "  " + V_BOOTH + "\n" +
-            "  " + V_GRIEWANGK + "\n",
+            "  " + V_GRIEWANGK + "\n" + 
+			"  " + V_MEDIAN + "\n",
             base.push( P_WHICH_PROBLEM ) );
         }
 
@@ -112,58 +117,78 @@ public class ECSuite extends Problem implements SimpleProblemForm
         DoubleVectorIndividual temp = (DoubleVectorIndividual)ind;
         double[] genome = temp.genome;
         int len = genome.length;
-        double value = 0;
-        float fit;
 
-        switch(problemType)
+		float fit = (float)(function(state, problemType, temp.genome, threadnum));
+		
+		switch(problemType)
+			{
+            case PROB_ROSENBROCK:
+            case PROB_RASTRIGIN:
+            case PROB_SPHERE:
+            case PROB_STEP:
+                ((SimpleFitness)(ind.fitness)).setFitness( state, fit, fit==0.0f );
+            break;
+
+            case PROB_NOISY_QUARTIC:
+            case PROB_BOOTH:
+            case PROB_GRIEWANGK:
+            case PROB_MEDIAN:
+				((SimpleFitness)(ind.fitness)).setFitness( state, fit, false ); 
+            break;
+			}
+
+        ind.evaluated = true;
+		}
+		
+
+
+	public double function(EvolutionState state, int function, double[] genome, int threadnum)
+		{
+		double value = 0;
+		int len = genome.length;
+        switch(function)
             {
             case PROB_ROSENBROCK:
                 for( int i = 1 ; i < len ; i++ )
                     value += 100*(genome[i-1]*genome[i-1]-genome[i])*
                         (genome[i-1]*genome[i-1]-genome[i]) +
                         (1-genome[i-1])*(1-genome[i-1]);
-                fit = (float)(-value);
-                ((SimpleFitness)(ind.fitness)).setFitness( state, fit, fit==0.0f );
-            break;
+			return -value;
+
                 
             case PROB_RASTRIGIN:
                 value = len * A;
                 for( int i = 0 ; i < len ; i++ )
                     value += ( genome[i]*genome[i] - A * Math.cos( 2 * Math.PI * genome[i] ) );
-                fit = (float)(-value);
-                ((SimpleFitness)(ind.fitness)).setFitness( state, fit, fit==0.0f );
-            break;
+			return -value;
+
                 
             case PROB_SPHERE:
                 for( int i = 0 ; i < len ; i++ )
                     value += genome[i]*genome[i];
-                fit = (float)(-value);
-                ((SimpleFitness)(ind.fitness)).setFitness( state, fit, fit==0.0f );
-            break;
+			return -value;
+
 
             case PROB_STEP:
                 for( int i = 0 ; i < len ; i++ )
                     value += 6 + Math.floor( genome[i] );
-                fit = (float)(-value);
-                ((SimpleFitness)(ind.fitness)).setFitness( state, fit, fit==0.0f );
-            break;
+			return -value;
+
 
             case PROB_NOISY_QUARTIC:
                 for( int i = 0 ; i < len ; i++ )
                     value += (i+1)*(genome[i]*genome[i]*genome[i]*genome[i]) + // no longer : Math.pow( genome[i], 4 ) +
                         state.random[threadnum].nextDouble();
-                fit = (float)(-value);
-                ((SimpleFitness)(ind.fitness)).setFitness( state, fit, false ); // no solution is ideal for sure due to noise
-            break;
+			return -value;
+
 
             case PROB_BOOTH:
                 if( len != 2 )
                     state.output.fatal( "The Booth problem is defined for only two terms, and as a consequence the genome of the DoubleVectorIndividual should have size 2." );
                 value = (genome[0] + 2*genome[1] - 7) * (genome[0] + 2*genome[1] - 7) +
                     (2*genome[0] + genome[1] - 5) * (2*genome[0] + genome[1] - 5);
-                fit = (float)(-value);
-                ((SimpleFitness)(ind.fitness)).setFitness( state, fit, false ); // no solution is ideal for sure due to noise
-            break;
+			return -value;
+
 
             case PROB_GRIEWANGK:
                 value = 1;
@@ -174,15 +199,18 @@ public class ECSuite extends Problem implements SimpleProblemForm
                     prod *= Math.cos( genome[i] / Math.sqrt(i+1) );
                     }
                 value -= prod;
-                fit = (float)(-value);
-                ((SimpleFitness)(ind.fitness)).setFitness( state, fit, false ); // no solution is ideal for sure due to noise
-            break;
+			return -value;
+
+
+            case PROB_MEDIAN:		// FIXME, need to do a better median-finding algorithm, such as http://www.ics.uci.edu/~eppstein/161/960130.html
+				double[] sorted = new double[genome.length];
+				System.arraycopy(genome, 0, sorted, 0, sorted.length);
+				ec.util.QuickSort.qsort(sorted);
+				return sorted[sorted.length / 2];		// note positive
 
             default:
                 state.output.fatal( "ec.app.ecsuite.ECSuite has an invalid problem -- how on earth did that happen?" );
-                break;
+				return 0;  // never happens
             }
-
-        ind.evaluated = true;
         }
     }
