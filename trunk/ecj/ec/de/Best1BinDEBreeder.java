@@ -69,34 +69,39 @@ public class Best1BinDEBreeder extends DEBreeder
         {
         Individual[] inds = state.population.subpops[subpop].individuals;
                 
-        // select three indexes different from each other and from that of the current parent
-        int r0, r1, r2;
-        // do
-                {
-                r0 = bestSoFarIndex[subpop];
-                }
-        // while( r0 == index );
-        do
-            {
-            r1 = state.random[thread].nextInt(inds.length);
-            }
-        while( r1 == r0 || r1 == index );
-        do
-            {
-            r2 = state.random[thread].nextInt(inds.length);
-            }
-        while( r2 == r1 || r2 == r0 || r2 == index );
-
         DoubleVectorIndividual v = (DoubleVectorIndividual)(inds[index].clone());
-        DoubleVectorIndividual g0 = (DoubleVectorIndividual)(inds[r0]);
-        DoubleVectorIndividual g1 = (DoubleVectorIndividual)(inds[r1]);
-        DoubleVectorIndividual g2 = (DoubleVectorIndividual)(inds[r2]);
 
-        for(int i = 0; i < v.genome.length; i++)
-            v.genome[i] = g0.genome[i] + 
-                (F + state.random[thread].nextDouble() * F_NOISE - (F_NOISE / 2.0)) *
-                (g1.genome[i] - g2.genome[i]);
+		do
+			{
+			// select three indexes different from each other and from that of the current parent
+			int r0, r1, r2;
+			// do
+					{
+					r0 = bestSoFarIndex[subpop];
+					}
+			// while( r0 == index );
+			do
+				{
+				r1 = state.random[thread].nextInt(inds.length);
+				}
+			while( r1 == r0 || r1 == index );
+			do
+				{
+				r2 = state.random[thread].nextInt(inds.length);
+				}
+			while( r2 == r1 || r2 == r0 || r2 == index );
 
+			DoubleVectorIndividual g0 = (DoubleVectorIndividual)(inds[r0]);
+			DoubleVectorIndividual g1 = (DoubleVectorIndividual)(inds[r1]);
+			DoubleVectorIndividual g2 = (DoubleVectorIndividual)(inds[r2]);
+
+			for(int i = 0; i < v.genome.length; i++)
+				v.genome[i] = g0.genome[i] + 
+					(F + state.random[thread].nextDouble() * F_NOISE - (F_NOISE / 2.0)) *
+					(g1.genome[i] - g2.genome[i]);
+			}
+		while(!valid(v));
+					
         return crossover(state, (DoubleVectorIndividual)(inds[index]), v, thread);
         }
 
