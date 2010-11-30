@@ -69,34 +69,39 @@ public class Rand1EitherOrDEBreeder extends DEBreeder
         {
         Individual[] inds = state.population.subpops[subpop].individuals;
 
-        // select three indexes different from each other and from that of the current parent
-        int r0, r1, r2;
-        do
-            {
-            r0 = state.random[thread].nextInt(inds.length);
-            }
-        while( r0 == index );
-        do
-            {
-            r1 = state.random[thread].nextInt(inds.length);
-            }
-        while( r1 == r0 || r1 == index );
-        do
-            {
-            r2 = state.random[thread].nextInt(inds.length);
-            }
-        while( r2 == r1 || r2 == r0 || r2 == index );
-
         DoubleVectorIndividual v = (DoubleVectorIndividual)(inds[index].clone());
-        DoubleVectorIndividual g0 = (DoubleVectorIndividual)(inds[r0]);
-        DoubleVectorIndividual g1 = (DoubleVectorIndividual)(inds[r1]);
-        DoubleVectorIndividual g2 = (DoubleVectorIndividual)(inds[r2]);
 
-        for(int i = 0; i < v.genome.length; i++)
-            if (state.random[thread].nextBoolean(PF))
-                v.genome[i] = g0.genome[i] + F * (g1.genome[i] - g2.genome[i]);
-            else
-                v.genome[i] = g0.genome[i] + 0.5 * (F+1) * (g1.genome[i] + g2.genome[i] - 2 * g0.genome[i]);
+		do
+			{
+			// select three indexes different from each other and from that of the current parent
+			int r0, r1, r2;
+			do
+				{
+				r0 = state.random[thread].nextInt(inds.length);
+				}
+			while( r0 == index );
+			do
+				{
+				r1 = state.random[thread].nextInt(inds.length);
+				}
+			while( r1 == r0 || r1 == index );
+			do
+				{
+				r2 = state.random[thread].nextInt(inds.length);
+				}
+			while( r2 == r1 || r2 == r0 || r2 == index );
+
+			DoubleVectorIndividual g0 = (DoubleVectorIndividual)(inds[r0]);
+			DoubleVectorIndividual g1 = (DoubleVectorIndividual)(inds[r1]);
+			DoubleVectorIndividual g2 = (DoubleVectorIndividual)(inds[r2]);
+
+			for(int i = 0; i < v.genome.length; i++)
+				if (state.random[thread].nextBoolean(PF))
+					v.genome[i] = g0.genome[i] + F * (g1.genome[i] - g2.genome[i]);
+				else
+					v.genome[i] = g0.genome[i] + 0.5 * (F+1) * (g1.genome[i] + g2.genome[i] - 2 * g0.genome[i]);
+			}
+		while(!valid(v));
 
         return v;       // no crossover is performed
         }
