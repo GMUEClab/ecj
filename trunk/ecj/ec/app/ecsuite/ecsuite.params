@@ -36,6 +36,7 @@ pop.subpop.0.species.pipe.source.0.source.1 = same
 
 pop.subpop.0.species.fitness =		ec.simple.SimpleFitness
 pop.subpop.0.species.ind =		ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.mutation-bounded =	true
 
 # you can change these to whatever tickles your fancy
 pop.subpop.0.species.min-gene =	-5.12

@@ -1727,3 +1727,9 @@ Version		Change Log
 		detail.  Thanks to Wei He <wei.he.stkm@gmail.com>
 	Removed flushing as an option in Output
 	Added new initialize method
+	Changed Polynomial bounded mutation parameter to bounded-polynomial-version
+	Added new option to mutate outside of gene bounds for floating-point
+	Made GPData.copyTo() return void
+	Added mutation bounding to the various DE Breeders
+	Modifications to ecsuite to enable its use in coevolutionary contexts.
+	Added CoevolutionaryECSuite.java in coevolve2 to demonstrate the item above.

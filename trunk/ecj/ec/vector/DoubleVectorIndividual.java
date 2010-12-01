@@ -257,6 +257,7 @@ public class DoubleVectorIndividual extends VectorIndividual
         FloatVectorSpecies s = (FloatVectorSpecies) species;
         if (!(s.mutationProbability > 0.0))
             return;
+		boolean mutationIsBounded = s.mutationIsBounded;
         MersenneTwisterFast rng = state.random[thread];
         if (s.mutationType == FloatVectorSpecies.C_GAUSS_MUTATION)
             {
@@ -273,7 +274,7 @@ public class DoubleVectorIndividual extends VectorIndividual
                         {
                         val = rng.nextGaussian() * stdev + genome[x];
                         outOfBoundsLeftOverTries--;
-                        if (val > max || val < min)
+                        if (mutationIsBounded && (val > max || val < min))
                             {
                             if (givingUpAllowed && (outOfBoundsLeftOverTries == 0))
                                 {
@@ -289,7 +290,7 @@ public class DoubleVectorIndividual extends VectorIndividual
             } 
         else if (s.mutationType == FloatVectorSpecies.C_POLYNOMIAL_MUTATION)
             {
-            polynomialMutate(state.random[thread], s.crossoverDistributionIndex, s.polynomialIsBounded);
+            polynomialMutate(state.random[thread], s.crossoverDistributionIndex, s.polynomialIsBounded, s.mutationIsBounded);
             }
         else
             {// C_RESET_MUTATION
@@ -302,7 +303,7 @@ public class DoubleVectorIndividual extends VectorIndividual
                 
     /** This function is broken out to keep it identical to NSGA-II's mutation.c code. eta_m is the distribution
         index.  */
-    public void polynomialMutate(MersenneTwisterFast random, double eta_m, boolean bounded)
+    public void polynomialMutate(MersenneTwisterFast random, double eta_m, boolean boundedPolynomialVersion, boolean mutationIsBounded)
         {
         FloatVectorSpecies s = (FloatVectorSpecies) species;
         double[] ind = genome;
@@ -331,22 +332,17 @@ public class DoubleVectorIndividual extends VectorIndividual
                     if (rnd <= 0.5)
                         {
                         xy = 1.0-delta1;
-                        val = 2.0*rnd + (bounded ? (1.0-2.0*rnd)*(Math.pow(xy,(eta_m+1.0))) : 0.0);
+                        val = 2.0*rnd + (boundedPolynomialVersion ? (1.0-2.0*rnd)*(Math.pow(xy,(eta_m+1.0))) : 0.0);
                         deltaq =  Math.pow(val,mut_pow) - 1.0;
                         }
                     else
                         {
                         xy = 1.0-delta2;
-                        val = 2.0*(1.0-rnd) + (bounded ? 2.0*(rnd-0.5)*(Math.pow(xy,(eta_m+1.0))) : 0.0);
+                        val = 2.0*(1.0-rnd) + (boundedPolynomialVersion ? 2.0*(rnd-0.5)*(Math.pow(xy,(eta_m+1.0))) : 0.0);
                         deltaq = 1.0 - (Math.pow(val,mut_pow));
                         }
                     y1 = y + deltaq*(yu-yl);
-                    //if (y1<yl)
-                    //      y1 = yl;
-                    //if (y1>yu)
-                    //      y1 = yu;
-                    //break;
-                    if (y1 >= yl && y1 <= yu) break;  // yay, found one
+                    if (mutationIsBounded && (y1 >= yl && y1 <= yu)) break;  // yay, found one
                     }
                                         
                 // at this point, if tries is totalTries, we failed

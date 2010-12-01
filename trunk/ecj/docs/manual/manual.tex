@@ -4095,7 +4095,7 @@ Finally, Polynomial mutation is by Kalyanmoy Deb, and uses a distribution chosen
 \params{%
 pop.subpop.0.species.mutation-type = polynomial\\
 pop.subpop.0.species.mutation-distribution-index = 20\\
-pop.subpop.0.species.mutation-bounded = true
+pop.subpop.0.species.bounded-polynomial-version = true
 }
 
 You can use any integer \(\geq 0\) for the distribution index.
@@ -4862,7 +4862,7 @@ import ec.gp.*;
 public class MyData extends GPData
     {
     public double val;
-    public GPData copyTo(GPData other)
+    public void copyTo(GPData other)
         { ((MyData)other).val = val;  return other;  }
     }
 \end{verbatim}
@@ -4877,7 +4877,7 @@ import ec.gp.*;
 public class MyData extends GPData
     {
     public double[15] val = new double[15];
-    public GPData copyTo(GPData other)
+    public void copyTo(GPData other)
         {
         System.arraycopy(val, 0, ((MyData)other).val, 0, val.length);
         return other;  

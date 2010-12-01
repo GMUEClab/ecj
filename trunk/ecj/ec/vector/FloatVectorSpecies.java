@@ -172,9 +172,15 @@ import ec.util.*;
  * </tr>
  * 
  * <tr>
- * <td valign=top><i>base</i>.<tt>bounded</tt><br>
+ * <td valign=top><i>base</i>.<tt>bounded-polynomial-version</tt><br>
  *  <font size=-1>boolean (default=true)</font></td>
  *  <td valign=top>(whether to use the "bounded" variation of the polynomial mutation or the standard ("unbounded") version)</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td valign=top><i>base</i>.<tt>mutation-bounded</tt><br>
+ *  <font size=-1>boolean (default=true)</font></td>
+ *  <td valign=top>(whether mutation is restricted to only being within the min/max gene values.  Does not apply to SimulatedBinaryCrossover (which is always bounded))</td>
  * </tr>
  * 
  * </table>
@@ -193,7 +199,7 @@ public class FloatVectorSpecies extends VectorSpecies
 
     public final static String P_MUTATION_DISTRIBUTION_INDEX = "mutation-distribution-index";
 
-    public final static String P_POLYNOMIAL_BOUNDED = "mutation-bounded";
+    public final static String P_POLYNOMIAL_BOUNDED = "bounded-polynomial-version";
 
     public final static String V_RESET_MUTATION = "reset";
 
@@ -213,6 +219,8 @@ public class FloatVectorSpecies extends VectorSpecies
 
     public final static String P_SEGMENT = "segment";
 
+    public final static String P_MUTATION_BOUNDED = "mutation-bounded";
+
     public final static int C_RESET_MUTATION = 0;
 
     public final static int C_GAUSS_MUTATION = 1;
@@ -226,6 +234,7 @@ public class FloatVectorSpecies extends VectorSpecies
     public int mutationType;
         
     public double gaussMutationStdev;
+    public boolean mutationIsBounded;
 
     public int outOfRangeRetries=100;
         
@@ -244,7 +253,6 @@ public class FloatVectorSpecies extends VectorSpecies
                 "The limit of 'out-of-range' retries for gaussian mutation was reached.");
             }
         }
-    
     
     public double maxGene(int gene)
         {
@@ -444,6 +452,7 @@ public class FloatVectorSpecies extends VectorSpecies
         /// MUTATION
         
 
+		mutationIsBounded = state.parameters.getBoolean(base.push(P_MUTATION_BOUNDED), def.push(P_MUTATION_BOUNDED), true);
         String mtype = state.parameters.getStringWithDefault(base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE), null);
         mutationType = C_RESET_MUTATION;
         if (mtype == null)
