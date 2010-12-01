@@ -118,7 +118,6 @@ public class ECSuite extends Problem implements SimpleProblemForm
         double[] genome = temp.genome;
         int len = genome.length;
 
-
 		// this curious break-out makes it easy to use the isOptimal() and function() methods
 		// for other purposes, such as coevolutionary versions of this class.
 		
@@ -150,7 +149,6 @@ public class ECSuite extends Problem implements SimpleProblemForm
             case PROB_MEDIAN:
 			default:
 				return false;
-			
 			}
 		}
 
@@ -165,33 +163,33 @@ public class ECSuite extends Problem implements SimpleProblemForm
                     value += 100*(genome[i-1]*genome[i-1]-genome[i])*
                         (genome[i-1]*genome[i-1]-genome[i]) +
                         (1-genome[i-1])*(1-genome[i-1]);
-			return -value;
+				return -value;
 
                 
             case PROB_RASTRIGIN:
                 value = len * A;
                 for( int i = 0 ; i < len ; i++ )
                     value += ( genome[i]*genome[i] - A * Math.cos( 2 * Math.PI * genome[i] ) );
-			return -value;
+				return -value;
 
                 
             case PROB_SPHERE:
                 for( int i = 0 ; i < len ; i++ )
                     value += genome[i]*genome[i];
-			return -value;
+				return -value;
 
 
             case PROB_STEP:
                 for( int i = 0 ; i < len ; i++ )
                     value += 6 + Math.floor( genome[i] );
-			return -value;
+				return -value;
 
 
             case PROB_NOISY_QUARTIC:
                 for( int i = 0 ; i < len ; i++ )
                     value += (i+1)*(genome[i]*genome[i]*genome[i]*genome[i]) + // no longer : Math.pow( genome[i], 4 ) +
                         state.random[threadnum].nextDouble();
-			return -value;
+				return -value;
 
 
             case PROB_BOOTH:
@@ -199,7 +197,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
                     state.output.fatal( "The Booth problem is defined for only two terms, and as a consequence the genome of the DoubleVectorIndividual should have size 2." );
                 value = (genome[0] + 2*genome[1] - 7) * (genome[0] + 2*genome[1] - 7) +
                     (2*genome[0] + genome[1] - 5) * (2*genome[0] + genome[1] - 5);
-			return -value;
+				return -value;
 
 
             case PROB_GRIEWANGK:
@@ -211,7 +209,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
                     prod *= Math.cos( genome[i] / Math.sqrt(i+1) );
                     }
                 value -= prod;
-			return -value;
+				return -value;
 
 
             case PROB_MEDIAN:		// FIXME, need to do a better median-finding algorithm, such as http://www.ics.uci.edu/~eppstein/161/960130.html
