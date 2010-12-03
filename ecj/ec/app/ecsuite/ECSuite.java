@@ -4,7 +4,7 @@
   See the file "LICENSE" for more information
 */
 
-
+ 
 package ec.app.ecsuite;
 
 import ec.util.*;
