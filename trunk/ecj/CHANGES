@@ -1733,3 +1733,5 @@ Version		Change Log
 	Added mutation bounding to the various DE Breeders
 	Modifications to ecsuite to enable its use in coevolutionary contexts.
 	Added CoevolutionaryECSuite.java in coevolve2 to demonstrate the item above.
+	Major modifications to GE package, thanks to Houston Mooers
+		<hemooers@gmail.com>

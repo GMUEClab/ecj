@@ -18,9 +18,18 @@ import ec.gp.*;
 import ec.*;
 import ec.vector.*;
 import ec.util.*;
+
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+/*
+ * GrammarParser.java
+ *
+ * Created: Sun Dec  5 11:33:43 EST 2010
+ * By: Eric Kangas, Joseph Zelibor III, Houston Mooers, and Sean Luke
+ *
+ */
 
 /**
  * <p>GESpecies is used to take a grammar from a file and to create a tree for a GEIndividual based on the rules of the
@@ -101,21 +110,33 @@ import java.util.regex.Pattern;
  * <p><b>Default Base</b><br>
  * ec.gp.ge.GESpecies
  *
- * @author Sean Luke, Joseph Zelibor III, and Eric Kangas
+ * @author Joseph Zelibor III, Eric Kangas, Houston Mooers, and Sean Luke
  * @version 1.0 
  */
+ 
 public class GESpecies extends IntegerVectorSpecies
     {
     public static final String P_FILE = "file";
     public static final String P_GESPECIES = "species";
     public static final String P_GPSPECIES = "gp-species";
-    //return value which denotes that the tree has grown too large.
-    public static final int BIG_TREE_ERROR = -1;
-    public GPSpecies gpspecies;
-	public HashMap ERCBank;
-	public GrammarParser[] grammar;
+    public static final String P_PARSER = "parser";
 	
-	public void setup(final EvolutionState state, final Parameter base)
+    /* Return value which denotes that the tree has grown too large. */
+    public static final int BIG_TREE_ERROR = -1;
+	
+	/** The GPSpecies subsidiary to GESpecies. */
+    public GPSpecies gpspecies;
+
+	/** All the ERCs created so far. */
+    public HashMap ERCBank;
+
+	/** The parsed grammars. */
+    public GrammarRuleNode[] grammar;
+
+	/** The prototypical parser used to parse the grammars. */
+    public GrammarParser parser_prototype;
+
+    public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state, base);
 
@@ -132,31 +153,38 @@ public class GESpecies extends IntegerVectorSpecies
             state.output.fatal("The Individual class for the Species " + getClass().getName() + " is must be a subclass of ec.gp.ge.GEIndividual.", base);
             }
 
-		ERCBank = new HashMap();
+        ERCBank = new HashMap();
 
-		// load the grammars, one per ADF tree
+        // load the grammars, one per ADF tree
         GPIndividual gpi = (GPIndividual) (gpspecies.i_prototype);
         GPTree[] trees = gpi.trees;
         int numGrammars = trees.length;
-		
-		grammar = new GrammarParser[numGrammars];
-		for(int i = 0; i < numGrammars; i++)
-			{
-			File grammarFile = state.parameters.getFile(p, def.push(P_FILE).push("" + i));
-			if(grammarFile == null)
-				{
-				state.output.fatal("Error retrieving grammar file(s): " + def.toString() + "."+ P_FILE + "." + i + " is undefined.");
-				}
-					
-			try
-				{
-				grammar[i] = new GrammarParser(state, grammarFile);
-				}
-			catch (FileNotFoundException e)
-				{
-				state.output.fatal("Error retrieving grammar file(s): " + def.toString() + "."+ P_FILE + "." + i + " does not exist or cannot be opened.");
-				}
-			}
+
+        parser_prototype = (GrammarParser) (state.parameters.getInstanceForParameterEq(base.push(P_PARSER), def.push(P_PARSER), GrammarParser.class));
+
+        grammar = new GrammarRuleNode[numGrammars];
+        for(int i = 0; i < numGrammars; i++)
+            {
+            p = base.push(P_FILE);
+            def = defaultBase();
+                        
+            File grammarFile = state.parameters.getFile(p, def.push(P_FILE).push("" + i));
+            if(grammarFile == null)
+                {
+                state.output.fatal("Error retrieving grammar file(s): " + def.toString() + "."+ P_FILE + "." + i + " is undefined.");
+                }
+
+            try
+                {
+                GPFunctionSet gpfs = trees[i].constraints((GPInitializer) state.initializer).functionset;
+                GrammarParser grammarparser = (GrammarParser)(parser_prototype.clone());
+                grammar[i] = grammarparser.parseRules(state, new BufferedReader(new FileReader(grammarFile)), gpfs);
+                }
+            catch (FileNotFoundException e)
+                {
+                state.output.fatal("Error retrieving grammar file(s): " + def.toString() + "."+ P_FILE + "." + i + " does not exist or cannot be opened.");
+                }
+            }
         }
 
 
@@ -205,15 +233,15 @@ public class GESpecies extends IntegerVectorSpecies
             {
             root = makeSubtree(countNumberOfChromosomesUsed, genome, state, gpfs, grammar[treeNum], treeNum, threadnum);
             } 
-		catch (BigTreeException e)
+        catch (BigTreeException e)
             {
             return BIG_TREE_ERROR;
             }
 
         if(root == null)
-        {
+            {
             state.output.fatal("Invalid tree: tree #" + treeNum);
-        }
+            }
 
         root.parent = tree;
         tree.child = root;
@@ -223,16 +251,92 @@ public class GESpecies extends IntegerVectorSpecies
     // thrown by makeSubtree when chromosome is not large enough for the generated tree.
     class BigTreeException extends RuntimeException { static final long serialVersionUID = 1L; }
 
-    /*
-     * returns the tree created from the rules and genome
-     */
-    GPNode makeSubtree(int[] index, byte[] genome, EvolutionState es, GPFunctionSet gpfs, GrammarParser grammar, int treeNum, int threadnum)
+    GPNode makeSubtree(int[] index, byte[] genome, EvolutionState es, GPFunctionSet gpfs, GrammarRuleNode rule, int treeNum, int threadnum)
         {
-		// IMPLEMENT ME
-		return null;
+        //have we exceeded the length of the genome?  No point in going further.
+        if (index[0] >= genome.length)
+            {
+            throw new BigTreeException();
+            }
+
+        //expand the rule with the chromosome to get a body element
+        int i;
+
+        //key for ERC hashtable look ups is the current index within the genome
+        int key = genome[index[0]];
+
+        //non existant rule got passed in
+        if (rule == null)
+            {
+            es.output.fatal("An undefined rule exists within the grammar.");
+            }
+
+        //more than one rule to consider, pick one based off the genome, and consume the current gene
+        if (rule.getNumChoices() > 1)
+            {
+            //casting to an int should be ok since the biggest these genes can be is a byte
+            i = ((genome[index[0]]) - ((int)(this.minGene(index[0])))) % rule.getNumChoices();
+            index[0]++;
+            }
+        //only 1 rule to consider
+        else
+            {
+            i = 0;
+            }               
+        GrammarNode choice = rule.getChoice(i);         
+
+        // if body is another rule head
+        //look up rule
+        if(choice instanceof GrammarRuleNode)
+            {
+            GrammarRuleNode nextrule = (GrammarRuleNode) choice;
+            return makeSubtree(index, genome, es, gpfs, nextrule, treeNum, threadnum);
+            }                               
+        else //handle functions
+            {
+            GrammarFunctionNode funcgrammarnode = (GrammarFunctionNode) choice;
+
+            GPNode validNode = funcgrammarnode.getGPNodePrototype();
+
+            int numChildren = validNode.children.length;
+            //index 0 is the node itself
+            int numChildrenInGrammar = funcgrammarnode.getNumArguments();
+
+            //does the grammar contain the correct amount of children that the GPNode requires
+            if (numChildren != numChildrenInGrammar)
+                {
+                es.output.fatal("GPNode " + validNode.toStringForHumans() + " requires " + numChildren + " children.  "
+                    + numChildrenInGrammar + " children found in the grammar.");
+                }
+
+            //check to see if it is an ERC node
+            if (validNode instanceof ERC)
+                {                
+                validNode = obtainERC(es, key, genome, threadnum, validNode);
+                }
+            //non ERC node
+            else
+                {
+                validNode = validNode.lightClone();
+                }
+
+            //get the rest.
+            for (int j = 0, childNumber = 0; j < funcgrammarnode.getNumArguments(); j++)
+                {
+                //get and link children to the current GPNode
+                validNode.children[childNumber] = makeSubtree(index, genome, es, gpfs, (GrammarRuleNode)funcgrammarnode.getArgument(j), treeNum, threadnum);
+                if (validNode.children[childNumber] == null)
+                    {
+                    return null;
+                    }
+                childNumber++;
+                }
+            return validNode;
+            }
         }
 
-    //method for obtaining an ERC
+    /** Loads an ERC from the ERCBank given the value in the genome.  If there is no such ERC, then one is created and randomized, then added to the bank.
+		The point of this mechanism is to enable ERCs to appear in multiple places in a GPTree. */
     public GPNode obtainERC(EvolutionState state, int key, byte[] genome, int threadnum, GPNode node)
         {
         ArrayList ERCList = (ArrayList) (ERCBank.get(new Integer(key)));
@@ -245,19 +349,19 @@ public class GESpecies extends IntegerVectorSpecies
 
         GPNode dummy = null;
 
-        //search array list for an ERC of the same type we want
+        // search array list for an ERC of the same type we want
         for (int i = 0; i < ERCList.size(); i++)
             {
             dummy = (GPNode) ERCList.get(i);
 
-            //ERC was found inside the arraylist
+            // ERC was found inside the arraylist
             if (dummy.nodeEquivalentTo(node))
                 {
-                return dummy;
+                return dummy.lightClone();
                 }
             }
 
-        //erc was not found in the array list lets make one
+        // erc was not found in the array list lets make one
         node = node.lightClone();
         node.resetNode(state, threadnum);
         ERCList.add(node);
@@ -308,11 +412,8 @@ public class GESpecies extends IntegerVectorSpecies
 
         // do the mapping
         if (makeTrees(state, ind, newind.trees, threadnum) < 0)  // error
-            {
             return null;
-            } else
-            {
-            return newind;
-            }
+        else
+			return newind;
         }
     }

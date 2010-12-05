@@ -19,8 +19,8 @@ import ec.vector.*;
  */
 
 /** 
-	GEIndividual is a simple subclass of ByteVectorIndividual which not only prints out (for humans)
-	the Individual as a byte vector but also prints out the Individual's tree representation.
+    GEIndividual is a simple subclass of ByteVectorIndividual which not only prints out (for humans)
+    the Individual as a byte vector but also prints out the Individual's tree representation.
 */
 
 public class GEIndividual extends ByteVectorIndividual
