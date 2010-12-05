@@ -32,7 +32,7 @@ public class Version
     public static final String contributors = "L. Panait, G. Balan, S. Paus, Z. Skolicki, R. Kicinger, E. Popovici,";
     public static final String contributors2 = "K. Sullivan, J. Harrison, J. Bassett, R. Hubley, A. Desai, A. Chircop,";
     public static final String contributors3 = "J. Compton, W. Haddon, S. Donnelly, B. Jamil, J. Zelibor, E. Kangas,";
-    public static final String contributors4 = "F. Abidi, and J. O'Beirne";
+    public static final String contributors4 = "F. Abidi, H. Mooers, and J. O'Beirne";
     public static final String authorEmail0 = "ecj-help";
     public static final String authorEmail1 = "cs.gmu.edu";
     public static final String authorEmail2 = "(better: join ECJ-INTEREST at URL above)";
