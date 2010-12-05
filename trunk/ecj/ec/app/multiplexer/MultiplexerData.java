@@ -83,13 +83,12 @@ public class MultiplexerData extends GPData
         return dat;
         }
 
-    public GPData copyTo(final GPData gpd)
+    public void copyTo(final GPData gpd)
         { 
         MultiplexerData md = ((MultiplexerData)gpd);
         for(int x=0;x<MULTI_11_NUM_BITSTRINGS;x++)
             md.dat_11[x] = dat_11[x];
         md.dat_6 = dat_6;
         md.status = status;
-        return gpd;
         }
     }

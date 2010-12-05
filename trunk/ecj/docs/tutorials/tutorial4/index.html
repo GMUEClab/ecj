@@ -69,8 +69,8 @@ public class DoubleData extends GPData
     {
     public double x;    <font color=gray>// return value</font>
 
-    public GPData copyTo(final GPData gpd)   <font color=gray>// copy my stuff to another DoubleData</font>
-        { ((DoubleData)gpd).x = x; return gpd; }
+    public void copyTo(final GPData gpd)   <font color=gray>// copy my stuff to another DoubleData</font>
+        { ((DoubleData)gpd).x = x; }
     }
 </pre></tt>
 

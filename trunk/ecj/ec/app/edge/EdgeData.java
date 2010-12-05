@@ -25,6 +25,6 @@ public class EdgeData extends GPData
     // return value
     public int edge;
 
-    public GPData copyTo(final GPData gpd)
-        { ((EdgeData)gpd).edge = edge; return gpd; }
+    public void copyTo(final GPData gpd)
+        { ((EdgeData)gpd).edge = edge; }
     }

@@ -25,6 +25,6 @@ public class TwoBoxData extends GPData
     // return value
     public double x;
 
-    public GPData copyTo(final GPData gpd) 
-        { ((TwoBoxData)gpd).x = x; return gpd; }
+    public void copyTo(final GPData gpd) 
+        { ((TwoBoxData)gpd).x = x; }
     }
