@@ -276,14 +276,14 @@ public class Evolve
         // by default.
         output.addLog(ec.util.Log.D_STDOUT,false);
         output.addLog(ec.util.Log.D_STDERR,true);
-		
-		// now continue intialization
-		return initialize(parameters, randomSeedOffset, output);
-		}
+                
+        // now continue intialization
+        return initialize(parameters, randomSeedOffset, output);
+        }
 
 
     /** Initializes an evolutionary run given the parameters and a random seed adjustment (added to each random seed),
-		with the Output pre-constructed.
+        with the Output pre-constructed.
         The adjustment offers a convenient way to change the seeds of the random number generators each time you
         do a new evolutionary run.  You are of course welcome to replace the random number generators after initialize(...)
         but before startFresh(...) */
@@ -298,7 +298,7 @@ public class Evolve
         boolean store;
         int x;
 
-		// output was already created for us.  
+        // output was already created for us.  
         output.systemMessage(Version.message());
                 
         // 2. set up thread values

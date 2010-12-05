@@ -357,12 +357,12 @@ public class ControlPanel extends JPanel
         return Integer.valueOf(getNumJobsField().getText()).intValue();
         }
 
-	public int getThreadCount(String text)
-		{
-		if (text.toLowerCase().trim().equals("auto"))
-			return Runtime.getRuntime().availableProcessors();
-		else return Integer.valueOf(text).intValue();
-		}
+    public int getThreadCount(String text)
+        {
+        if (text.toLowerCase().trim().equals("auto"))
+            return Runtime.getRuntime().availableProcessors();
+        else return Integer.valueOf(text).intValue();
+        }
 
 
     /**
@@ -455,18 +455,18 @@ public class ControlPanel extends JPanel
                 }
             }
         }
-		
+                
     public int getSeed(int experimentNum, int threadNum) 
         {
         try { return Integer.valueOf((String)seedsTable.getValueAt(experimentNum, threadNum)).intValue(); }
-		catch (RuntimeException e)
-			{
-			javax.swing.JOptionPane.showMessageDialog(null, "Value of seed for experiment " + experimentNum + 
-				" and thread " + threadNum + " not a fixed number: probably 'time'.  Rebuilding random number seeds.", "Adjusting Seeds", 
-				javax.swing.JOptionPane.INFORMATION_MESSAGE);
-			generateRandomSeeds();
-			return Integer.valueOf((String)seedsTable.getValueAt(experimentNum, threadNum)).intValue();
-			}
+        catch (RuntimeException e)
+            {
+            javax.swing.JOptionPane.showMessageDialog(null, "Value of seed for experiment " + experimentNum + 
+                " and thread " + threadNum + " not a fixed number: probably 'time'.  Rebuilding random number seeds.", "Adjusting Seeds", 
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            generateRandomSeeds();
+            return Integer.valueOf((String)seedsTable.getValueAt(experimentNum, threadNum)).intValue();
+            }
         }
     
     public void setSeed(String seed, int experimentNum, int threadNum) 

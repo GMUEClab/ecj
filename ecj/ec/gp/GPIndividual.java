@@ -187,15 +187,22 @@ public class GPIndividual extends Individual
         state.output.exitIfErrors();
         }
 
-    public void printIndividualForHumans(final EvolutionState state, final int log)
+    /** Prints just the trees of the GPIndividual.  Broken out like this to be used by GEIndividual to avoid
+        re-printing the fitness and evaluated premables. */
+    public void printTrees(final EvolutionState state, final int log)
         {
-        state.output.println(EVALUATED_PREAMBLE + (evaluated ? "true" : "false"), log);
-        fitness.printFitnessForHumans(state,log);
         for(int x=0;x<trees.length;x++)
             {
             state.output.println("Tree " + x + ":",log);
             trees[x].printTreeForHumans(state,log);
             }
+        }
+
+    public void printIndividualForHumans(final EvolutionState state, final int log)
+        {
+        state.output.println(EVALUATED_PREAMBLE + (evaluated ? "true" : "false"), log);
+        fitness.printFitnessForHumans(state,log);
+        printTrees(state,log);
         }
 
     public void printIndividual(final EvolutionState state, final int log)
