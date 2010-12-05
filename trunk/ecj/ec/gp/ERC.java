@@ -117,7 +117,7 @@ public abstract class ERC extends GPNode
     public String name() { return "ERC"; }
 
     /** Usually ERCs don't have children, and this default implementation makes certain of it. 
-		But if you want to override this, you're welcome to. */
+        But if you want to override this, you're welcome to. */
     public void checkConstraints(final EvolutionState state,
         final int tree,
         final GPIndividual typicalIndividual,

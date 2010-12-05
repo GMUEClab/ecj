@@ -126,7 +126,7 @@ public class ParametersPanel
                             Parameter param = new Parameter(childRow[0]);
                             childRow[1] = console.parameters.getString(param,null);
                             childRow[2] = console.parameters.getLocation(param);
-							
+                                                        
                             if (childRow[1] != null)
                                 {
                                 tableModel.addRow(childRow);
