@@ -7005,7 +7005,7 @@ Grammatical Evolution (GE) \cite{grammaticalevolution}  is an approach to buildi
 \item The representation is an arbitrarily long list of bytes (See Section \ref{list}), implemented as a special subclass of ByteVectorIndividual called \class{ec.gp.ge.GEIndividual}.
 \item The Fitness is typically a KozaFitness.
 \item The GEIndividual's species is a \class{ec.gp.ge.GESpecies}.
-\item The GESpecies holds a {\bf grammar}, loaded from a file, which we will interpret according to the bytes in the Individual.
+\item The GESpecies holds a {\bf grammar}, loaded from a file and produced via an \class{ec.gp.ge.GrammarParser}, which we will interpret according to the bytes in the Individual.
 \item To assess the fitness of a GEIndividual, we hand it to the GESpecies which interprets it according to the grammar, producing a GPIndividual.
 \item The GPIndividual is then evaluated in the normal ECJ fashion and its Fitness is set.
 \item We then transfer the Fitness to the GEIndividual. 
@@ -7035,10 +7035,11 @@ gp.adf-stack.context = ec.gp.ADFContext
 \subsection{GEIndividuals, GESpecies, and Grammars}
 The reason we use GEIndividual instead of just ByteVectorIndividual is simple: when we print out the GEIndividual we wish to print out the equivalent GPIndividual as well.  That's the {\it only} thing GEIndividual does beyond being just a ByteVectorIndividual.  
 
-The GEProblem doesn't actually do the translation from list to tree.  Instead, it calls on the GESpecies to do this dirty work.  First, let's set the GESpecies, GEIndividual, and KozaFitness of Species 0:
+The GEProblem doesn't actually do the translation from list to tree.  Instead, it calls on the GESpecies to do this dirty work.  First, let's set the GESpecies, GEIndividual, GrammarParser, and Fitness of Species 0:
 
 \params{%
 pop.subpop.0.species = ec.gp.ge.GESpecies\\
+pop.subpop.0.species.parser = ec.gp.ge.GrammarParser\\
 pop.subpop.0.species.ind = ec.gp.ge.GEIndividual\\
 pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
 }
@@ -7233,6 +7234,37 @@ pop.subpop.0.species.gp-species.pipe.source.0 = ec.select.TournamentSelection\\
 
 This is enough to convince the GP system to go along with our bizarre plans.
 
+\subsection{How Parsing is Done}
+
+GESpecies parses the grammar files by running them through an \class{ec.gp.ge.GrammarParser}, a special class which converts the files into parse graphs.  The parse graphs consist of two kinds of nodes: a \class{ec.gp.ge.GrammarFunctionNode} and a \class{ec.gp.ge.GrammarRuleNode}, both subclasses of the abstract class \class{ec.gp.ge.GrammarNode}.  You can replace \class{ec.gp.ge.GrammarParser} with your own subclass if you like, via:
+
+
+\params{%
+pop.subpop.0.species.parser = ec.app.MySpecialGrammarParser
+}
+
+The parse graph produced by a GrammarParser is rooted with a GrammarRuleNode which indicates the initial rule.   For example, reconsider the grammar below.
+
+\vbox{\small\begin{verbatim}
+<start> ::= <op>
+<op> ::= (x) | (y) | (sin <op>) | (* <op> <op>) | (- <op> <op>)
+<op> ::= (if <bool> <op> <op>)
+<bool> ::= (nand <bool> <bool>)
+<bool> ::= (> <op> <op>)
+\end{verbatim}}
+
+The parse graph for this grammar is shown in Figure \ref{geparsegraph}.  
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=4in]{ge.pdf}
+\end{center}
+\caption{Parse graph (orderings among children not shown).}
+\label{geparsegraph}
+\end{figure}
+
+
+
 \subsection{A Complete Example}
 
 We will continue the example given in Section \ref{stronglytyped}.  We don't include the parameters and Java files specified so far in that example, but you'll of course need them.
@@ -7243,6 +7275,7 @@ That example showed how to do a strongly-typed Individual with various functions
 \# Basic parameters that we redefine\\
 eval.problem = ec.gp.ge.GEProblem\\
 pop.subpop.0.species = ec.gp.ge.GESpecies\\
+pop.subpop.0.species.parser = ec.gp.ge.GrammarParser\\
 pop.subpop.0.species.gp-species = ec.gp.GPSpecies\\
 pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness\\
 pop.subpop.0.species.ind = ec.gp.ge.GEIndividual\\
