@@ -351,7 +351,7 @@ public class FloatVectorIndividual extends VectorIndividual
         FloatVectorSpecies s = (FloatVectorSpecies) species;
         if (!(s.mutationProbability > 0.0))
             return;
-		boolean mutationIsBounded = s.mutationIsBounded;
+        boolean mutationIsBounded = s.mutationIsBounded;
         MersenneTwisterFast rng = state.random[thread];
 
         if (s.mutationType == FloatVectorSpecies.C_GAUSS_MUTATION)
