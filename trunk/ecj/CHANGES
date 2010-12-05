@@ -1735,3 +1735,4 @@ Version		Change Log
 	Added CoevolutionaryECSuite.java in coevolve2 to demonstrate the item above.
 	Major modifications to GE package, thanks to Houston Mooers
 		<hemooers@gmail.com>
+	Added GPIndividual.printTrees(...) to help out GE
