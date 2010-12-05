@@ -19,32 +19,32 @@ import ec.gp.*;
  */
 
 public class GrammarFunctionNode extends GrammarNode 
-{
+    {
     GPNode prototype;
 
-	/** Determines the GPNode from the function set by the name.  If there is more than
-		one such node (which shouldn't be the case) then only the first such node is
-		used.  Stores the prototype. */
-		
+    /** Determines the GPNode from the function set by the name.  If there is more than
+        one such node (which shouldn't be the case) then only the first such node is
+        used.  Stores the prototype. */
+                
     public GrammarFunctionNode(GPFunctionSet gpfs, String name)
         {
         super(name);
-		prototype = ((GPNode[]) (gpfs.nodesByName.get(name)))[0];
+        prototype = ((GPNode[]) (gpfs.nodesByName.get(name)))[0];
         }
-	
-	/** Adds a given argument to the node. */
+        
+    /** Adds a given argument to the node. */
     public void addArgument(GrammarNode arg)
         {
         children.add(arg);
         }
-	
-	/** Returns the number of arguments. */
+        
+    /** Returns the number of arguments. */
     public int getNumArguments() { return children.size(); }
 
-	/** Returna given argument. */
+    /** Returna given argument. */
     public GrammarNode getArgument(int index) { return (GrammarNode)(children.get(index)); }       
 
-	/** Returns the prototype without cloning it first.  Be certain to clone before using. */
+    /** Returns the prototype without cloning it first.  Be certain to clone before using. */
     public GPNode getGPNodePrototype() { return prototype; }
 
     public String toString()
