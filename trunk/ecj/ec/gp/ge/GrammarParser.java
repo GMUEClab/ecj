@@ -15,8 +15,8 @@ import ec.util.*;
  */
 
 /**
- * A GrammarParser is the basic class for parsing a GE ruleset into a parse tree of GrammarNodes.
- * This parse tree is then later used to produce a GPIndividual from a GEIndividual in GESpecies.
+ * A GrammarParser is the basic class for parsing a GE ruleset into a parse graph of GrammarNodes.
+ * This parse graph is then later used to produce a GPIndividual from a GEIndividual in GESpecies.
  * It is assumed that the root will represent the first rule given in the grammar.
  * 
  */
@@ -27,9 +27,9 @@ public class GrammarParser implements Prototype
     {
     public static final String P_PARSER = "parser";
 
-	// The parsed rules, hashed by name
+    // The parsed rules, hashed by name
     HashMap rules = new HashMap();
-	// The resulting parse tree
+    // The resulting parse graph
     GrammarRuleNode root = null;
 
     /** The default regular expressions for tokens in the parser.  If you'd
@@ -51,7 +51,7 @@ public class GrammarParser implements Prototype
     "\\p{Blank}*::=",                       // STRING_CONSTANT: does nothing right now, so set to be identical to EQUALS.  Reserved for future use.
     "\\p{Blank}*[^<>()|\\p{Space}]+",       // FUNCTION (must appear after RULE and PIPE): matches a rule of the form foo.  No <, >, (, ), |, or spaces may appear in foo, and foo must have at least one character.
     };
-	
+        
     protected static final int COMMENT = 0;
     protected static final int LPAREN = 1;
     protected static final int RPAREN = 2;
@@ -65,7 +65,7 @@ public class GrammarParser implements Prototype
     // and now we continue with our regularly scheduled program
     protected static final int FUNCTION = 9;
         
-	/** Returns the regular expressions to use for tokenizing these rules.  By default DEFAULT_REGEXES are returned. */
+    /** Returns the regular expressions to use for tokenizing these rules.  By default DEFAULT_REGEXES are returned. */
     public String[] getRegexes() { return DEFAULT_REGEXES; }
         
     public Parameter defaultBase()
@@ -89,9 +89,9 @@ public class GrammarParser implements Prototype
         catch (CloneNotSupportedException e) { return null; } // never happens
         }
 
-	// Returns a rule from the hashmap.  If one does not exist, creates a rule with the
-	// given head and stores, then returns that.
-	GrammarRuleNode getRule(HashMap rules, String head)
+    // Returns a rule from the hashmap.  If one does not exist, creates a rule with the
+    // given head and stores, then returns that.
+    GrammarRuleNode getRule(HashMap rules, String head)
         {
         if (rules.containsKey(head))
             return (GrammarRuleNode)(rules.get(head));
@@ -103,7 +103,7 @@ public class GrammarParser implements Prototype
             }
         }
 
-	// Parses a rule, one rule per line, from the lexer.  Adds to the existing hashmap if there's already a rule there.
+    // Parses a rule, one rule per line, from the lexer.  Adds to the existing hashmap if there's already a rule there.
     GrammarRuleNode parseRule(EvolutionState state, Lexer lexer, GPFunctionSet gpfs)
         {
         GrammarRuleNode retResult = null;
@@ -141,7 +141,7 @@ public class GrammarParser implements Prototype
         // Also return null if you called state.output.error(...).
         }
 
-	// Parses each of a rule's production choices.
+    // Parses each of a rule's production choices.
     void parseProductions(EvolutionState state, GrammarRuleNode retResult, Lexer lexer, GPFunctionSet gpfs) 
         {
         GrammarFunctionNode grammarfuncnode;
@@ -166,12 +166,12 @@ public class GrammarParser implements Prototype
                     }
                 else
                     {
-					if (!(gpfs.nodesByName.containsKey(token)))
-						{
-						state.output.fatal("GPNode " + token + " is not defined in the function set.");
-						}
-					grammarfuncnode = new GrammarFunctionNode(gpfs, token); 
-					token = lexer.nextToken(); 
+                    if (!(gpfs.nodesByName.containsKey(token)))
+                        {
+                        state.output.fatal("GPNode " + token + " is not defined in the function set.");
+                        }
+                    grammarfuncnode = new GrammarFunctionNode(gpfs, token); 
+                    token = lexer.nextToken(); 
                     while(lexer.getMatchingIndex() != RPAREN)
                         {
                         if(lexer.getMatchingIndex() != RULE) //this better be the name of a rule node
@@ -194,7 +194,7 @@ public class GrammarParser implements Prototype
         while(lexer.getMatchingIndex() == PIPE);
         }
 
-	/** Parses the rules from a grammar and returns the resulting GrammarRuleNode root. */
+    /** Parses the rules from a grammar and returns the resulting GrammarRuleNode root. */
     public GrammarRuleNode parseRules(EvolutionState state, BufferedReader reader, GPFunctionSet gpfs)
         {
         rules = new HashMap();
@@ -209,7 +209,7 @@ public class GrammarParser implements Prototype
             }
         catch (IOException e) { } // do nothing
         state.output.exitIfErrors();
-		return root;
+        return root;
         }
 
     public String toString()
@@ -244,7 +244,7 @@ public class GrammarParser implements Prototype
         return false;
         }
 
-	/** A simple testing fcility. */
+    /** A simple testing fcility. */
     public static void main(String args[]) throws  FileNotFoundException
         {
         // make a dummy EvolutionState that just has an output for testing

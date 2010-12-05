@@ -10,7 +10,7 @@ import java.util.*;
  */
 
 /**
- * The abstract superclass of nodes used by GrammarParser to construct a parse tree to generate
+ * The abstract superclass of nodes used by GrammarParser to construct a parse graph to generate
  * GEIndividuals.  GrammarNode has a *head*, which typically holds the name of the node,
  * and an array of *children*, which are themselves GrammarNodes.
  * 

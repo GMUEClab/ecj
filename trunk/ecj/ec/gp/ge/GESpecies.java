@@ -32,11 +32,11 @@ import java.util.regex.Pattern;
  */
 
 /**
- * <p>GESpecies generates GPIndividuals from GEIndividuals through the application of a grammar parse tree
+ * <p>GESpecies generates GPIndividuals from GEIndividuals through the application of a grammar parse graph
  * computed by the GrammarParser.
  *
  * <p>GESpecies uses a <b>GrammarParser</b> to do its dirty work.  This parser's job is to take a grammar (in the form of a BufferedReader) 
- * and convert it to a tree of GrammarNodes which define the parse tree of the grammar. The GESpecies then interprets his parse tree
+ * and convert it to a tree of GrammarNodes which define the parse graph of the grammar. The GESpecies then interprets his parse graph
  * according to the values in the GEIndividual to produce the equivalent GPIndividual, which is then evaluated.
  * 
  * <p>To do this, GESpecies relies on a subsidiary GPSpecies which defines the GPIndividual and various GPFunctionSets from which to
@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  *
  * <p>If you are daring, you can replace the GrammarParser with one of your own to customize the parse structure and grammar.
  * 
- * <p><b>ECJ's Default GE Grammar</b>  GE traditionally can use any grammar, and builds parse trees from that.  For simplicity, and in order to
+ * <p><b>ECJ's Default GE Grammar</b>  GE traditionally can use any grammar, and builds parse graphs from that.  For simplicity, and in order to
  * remain as compatable as possible with ECJ's existing GP facilities (and GP tradition), ECJ only uses a single Lisp-like grammar which
  * generates standard ECJ trees.  This doesn't lose much in generality as the grammar is quite genral.
  * 
@@ -124,20 +124,20 @@ public class GESpecies extends IntegerVectorSpecies
     public static final String P_FILE = "file";
     public static final String P_GPSPECIES = "gp-species";
     public static final String P_PARSER = "parser";
-	
+        
     /* Return value which denotes that the tree has grown too large. */
     public static final int BIG_TREE_ERROR = -1;
-	
-	/** The GPSpecies subsidiary to GESpecies. */
+        
+    /** The GPSpecies subsidiary to GESpecies. */
     public GPSpecies gpspecies;
 
-	/** All the ERCs created so far. */
+    /** All the ERCs created so far. */
     public HashMap ERCBank;
 
-	/** The parsed grammars. */
+    /** The parsed grammars. */
     public GrammarRuleNode[] grammar;
 
-	/** The prototypical parser used to parse the grammars. */
+    /** The prototypical parser used to parse the grammars. */
     public GrammarParser parser_prototype;
 
     public void setup(final EvolutionState state, final Parameter base)
@@ -340,7 +340,7 @@ public class GESpecies extends IntegerVectorSpecies
         }
 
     /** Loads an ERC from the ERCBank given the value in the genome.  If there is no such ERC, then one is created and randomized, then added to the bank.
-		The point of this mechanism is to enable ERCs to appear in multiple places in a GPTree. */
+        The point of this mechanism is to enable ERCs to appear in multiple places in a GPTree. */
     public GPNode obtainERC(EvolutionState state, int key, byte[] genome, int threadnum, GPNode node)
         {
         ArrayList ERCList = (ArrayList) (ERCBank.get(new Integer(key)));
@@ -418,6 +418,6 @@ public class GESpecies extends IntegerVectorSpecies
         if (makeTrees(state, ind, newind.trees, threadnum) < 0)  // error
             return null;
         else
-			return newind;
+            return newind;
         }
     }
