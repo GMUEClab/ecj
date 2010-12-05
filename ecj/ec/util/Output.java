@@ -168,20 +168,20 @@ public class Output implements Serializable
         }
 
     /** Sets whether the Output flushes its announcements.
-		@deprecated We now always flush 
-		*/
-	public synchronized void setFlush(boolean v)
+        @deprecated We now always flush 
+    */
+    public synchronized void setFlush(boolean v)
         {
         // flush = v;
-		}
+        }
     
     /* Returns the Output's flushing behavior. 
-		@deprecated We now always flush 
-	*/
-	public synchronized boolean getFlush()
+       @deprecated We now always flush 
+    */
+    public synchronized boolean getFlush()
         {
         // return flush;
-		return true;
+        return true;
         }
     
     /** Sets whether the Output stores its announcements.*/
@@ -629,8 +629,8 @@ public class Output implements Serializable
         // now write it
         log.writer.println(s);
         // if (flush) 
-		// always flush
-			log.writer.flush();
+        // always flush
+        log.writer.flush();
         //...and stash it in memory maybe
         if (store && _announcement && !_reposting)
             announcements.addElement(new Announcement(s));
@@ -714,7 +714,7 @@ public class Output implements Serializable
         //if (verbosity >= _verbosity) return;  // don't write it
         // now write it
         log.writer.print(s);
-		// do not flush until you get a println
+        // do not flush until you get a println
         //if (flush) log.writer.flush();
         }
 
