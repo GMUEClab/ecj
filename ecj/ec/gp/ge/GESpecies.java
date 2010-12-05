@@ -92,7 +92,7 @@ import java.util.regex.Pattern;
  * look like: 23+128=151, number of choices for &lt;op> = 6, 151%6=1 so we use choices[1] which is: (progn2 &lt;op> &lt;op>).  If all the genes
  * in a genome are used and the tree is still incompete an invalid tree error is returned.
  *
- * <p>Each node in the tree is a GPNode and trees are constructed depth first.
+ * <p>Each node in the tree is a GPNode and trees are constructed depth first. 
  *
  *
  * <p><b>Parameters</b><br>
