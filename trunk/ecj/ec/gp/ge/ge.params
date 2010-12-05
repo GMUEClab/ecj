@@ -13,6 +13,12 @@
 
 eval.problem = ec.gp.ge.GEProblem
 
+# We first define the GESpecies and state that it uses a GrammarParser
+# by default.
+
+pop.subpop.0.species = ec.gp.ge.GESpecies
+pop.subpop.0.species.parser = ec.gp.ge.GrammarParser
+
 # The individual is a GEIndividual
 pop.subpop.0.species = ec.gp.ge.GESpecies
 pop.subpop.0.species.ind = ec.gp.ge.GEIndividual
