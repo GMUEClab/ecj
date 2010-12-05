@@ -26,11 +26,10 @@ public class LawnmowerData extends GPData
     public int x;
     public int y;
 
-    public GPData copyTo(final GPData gpd) 
+    public void copyTo(final GPData gpd) 
         {
         LawnmowerData d = (LawnmowerData)gpd;
         d.x = x;
         d.y = y;
-        return gpd; 
         }
     }
