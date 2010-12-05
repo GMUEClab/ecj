@@ -25,6 +25,6 @@ public class RegressionData extends GPData
     // return value
     public double x;
 
-    public GPData copyTo(final GPData gpd) 
-        { ((RegressionData)gpd).x = x; return gpd; }
+    public void copyTo(final GPData gpd) 
+        { ((RegressionData)gpd).x = x; }
     }

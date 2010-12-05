@@ -25,6 +25,6 @@ public class ParityData extends GPData
     // return value -- should ALWAYS be either 1 or 0
     public int x;
 
-    public GPData copyTo(final GPData gpd) 
-        { ((ParityData)gpd).x = x; return gpd; }
+    public void copyTo(final GPData gpd) 
+        { ((ParityData)gpd).x = x; }
     }

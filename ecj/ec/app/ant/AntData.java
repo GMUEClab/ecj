@@ -25,6 +25,5 @@ import ec.gp.*;
 
 public class AntData extends GPData
     {
-    public GPData copyTo(final GPData gpd) 
-        { return gpd; }
+    public void copyTo(final GPData gpd) { }
     }
