@@ -20,8 +20,8 @@ import java.util.regex.*;
 
 public class Lexer
     {
-	/** An index which indicates that no further tokens were found.  This could be due to the end of the string or due to a bad
-		string.  You'll need to check the index to determine for sure.*/
+    /** An index which indicates that no further tokens were found.  This could be due to the end of the string or due to a bad
+        string.  You'll need to check the index to determine for sure.*/
     public static final int FAILURE = -1;
         
     CharSequence input;
@@ -29,10 +29,10 @@ public class Lexer
     Matcher[] matchers;
     String[] regexps;
     int matchingIndex = FAILURE;
-	
-	/** Builds a Lexer for the given input with the provided regular expressions.  The regular expressions
-		will be checked in order against the input, and the first one which matches will be assumed to be the token.*/
-		
+        
+    /** Builds a Lexer for the given input with the provided regular expressions.  The regular expressions
+        will be checked in order against the input, and the first one which matches will be assumed to be the token.*/
+                
     public Lexer(CharSequence input, String[] regexps)
         {
         this.regexps = regexps;
@@ -42,12 +42,12 @@ public class Lexer
         this.input = input;
         }
         
-	/** Returns the next token as a string.  If *trim* is true, then the string is first trimmed of whitespace. */
+    /** Returns the next token as a string.  If *trim* is true, then the string is first trimmed of whitespace. */
     public String nextToken(boolean trim)
         {
         for(int i = 0 ; i < regexps.length; i++)
             {
-			if (!matchers[i].region(position, input.length()).lookingAt()) continue;
+            if (!matchers[i].region(position, input.length()).lookingAt()) continue;
             position = matchers[i].end();
             matchingIndex = i;
             return ( trim ? matchers[i].group().trim() : matchers[i].group() );
@@ -57,24 +57,24 @@ public class Lexer
         return null; 
         }
 
-	/** Returns the next token as a string.  The string is first trimmed of whitespace. */
+    /** Returns the next token as a string.  The string is first trimmed of whitespace. */
     public String nextToken() { return nextToken(true); }
         
 
-	/** Returns the index of the regular expression which matched the most recent token. */
+    /** Returns the index of the regular expression which matched the most recent token. */
     public int getMatchingIndex() 
         {
         return matchingIndex;
         }
                 
-	/** Returns the regular expression which matched the most recent token. */
+    /** Returns the regular expression which matched the most recent token. */
     public String getMatchingRule()
         {
         if (matchingIndex == -1) return null;
         return regexps[matchingIndex];
         }
                 
-	/** Returns the position in the String just beyond the most recent token. */
+    /** Returns the position in the String just beyond the most recent token. */
     public int getMatchingPosition() 
         {
         return position;
