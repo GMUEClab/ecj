@@ -24,7 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /*
- * GrammarParser.java
+ * GESpecies.java
  *
  * Created: Sun Dec  5 11:33:43 EST 2010
  * By: Eric Kangas, Joseph Zelibor III, Houston Mooers, and Sean Luke
@@ -32,21 +32,33 @@ import java.util.regex.Pattern;
  */
 
 /**
- * <p>GESpecies is used to take a grammar from a file and to create a tree for a GEIndividual based on the rules of the
- * given grammar.  
+ * <p>GESpecies generates GPIndividuals from GEIndividuals through the application of a grammar parse tree
+ * computed by the GrammarParser.
+ *
+ * <p>GESpecies uses a <b>GrammarParser</b> to do its dirty work.  This parser's job is to take a grammar (in the form of a BufferedReader) 
+ * and convert it to a tree of GrammarNodes which define the parse tree of the grammar. The GESpecies then interprets his parse tree
+ * according to the values in the GEIndividual to produce the equivalent GPIndividual, which is then evaluated.
  * 
- * <p><b>Grammar Files:</b>
- * Within the grammar file non-terminals must be enclosed in &lt;> and terminals must be enclosed in ().
- * <p>For example:
+ * <p>To do this, GESpecies relies on a subsidiary GPSpecies which defines the GPIndividual and various GPFunctionSets from which to
+ * build the parser.  This is a grand hack -- the GPSpecies does not know it's being used this way, and so we must provide various dummy
+ * parameters to keep the GPSpecies happy even though they'll never be used.
+ *
+ * <p>If you are daring, you can replace the GrammarParser with one of your own to customize the parse structure and grammar.
+ * 
+ * <p><b>ECJ's Default GE Grammar</b>  GE traditionally can use any grammar, and builds parse trees from that.  For simplicity, and in order to
+ * remain as compatable as possible with ECJ's existing GP facilities (and GP tradition), ECJ only uses a single Lisp-like grammar which
+ * generates standard ECJ trees.  This doesn't lose much in generality as the grammar is quite genral.
+ * 
+ * <p>The grammar assumes that expansion points are enclosed in &lt;> and functions are enclosed in ().  For example:
  *
  * <p><tt>
+ * # This is a comment
  * &lt;prog> ::= &lt;op><br>
  * &lt;op> ::= (if-food-ahead &lt;op> &lt;op>)<br>
  * &lt;op> ::=  (progn2 &lt;op> &lt;op>)<br>
  * &lt;op> ::= (progn3 &lt;op> &lt;op> &lt;op>)<br>
  * &lt;op> ::= (left) | (right) | (move)<br>
  * </tt>
- *
  * 
  * <p>alternatively the grammar could also be writen in the following format:
  * 
@@ -55,29 +67,12 @@ import java.util.regex.Pattern;
  * &lt;op> ::= (if-food-ahead &lt;op> &lt;op>) | (progn2 &lt;op> &lt;op>) | (progn3 &lt;op> &lt;op> &lt;op>) | (left) | (right) | (move)<br>
  * </tt>
  *
- * <p>Rulenames are non-terminals and as such must be enclosed in &lt;> as shown in the above example grammars.  Rulenames
- * must be separated from their corresponding choices by ::= (also shown in the above examples).  If a rule has more that one choice
- * associated with it then one of three ways can be implmented for writing the grammar file: option 1 (example1): each 
- * different choice is writen on a sepearate line with the same rule name, option 2 (example2): each different 
- * choice is writen on the same line seperated by |, or option 3: a combination of option 1 and option 2 (also shown in example1).</p>
+ * <p>Note that you can use several lines to define the same grammar rule: for example, <tt>&lt;op></tt> was defined by several lines when
+ * it could have consisted of several elements separated by vertical pipes ( <tt>|</tt> ).  Either way is fine, or a combination of both.
  *
- * <p>New Addition (8/17/10): ERC's.  If you wish to include ERC's in your grammar use the following format: (ERC).  Note that an ERC is a terminal.</p>
- * <p>New Addition (8/17/10): commented lines can now be placed in the grammar files.  Commented lines start with a #.  For example: #this is a comment.
- * Note: Comments must be on a line by themselves</p>
- *
- * <p>The rules object takes this form:<br>
- * A rule name (String).<br>
- * An array of choices (ArrayList of Strings)<br>
- *
- * <p>Using the above grammar a rule would look like this:
- * <p><tt>
- * rulename = &lt;op><br>
- * choices = {(if-food-ahead &lt;op> &lt;op>), (progn2 &lt;op> &lt;op>), (progn3 &lt;op> &lt;op> &lt;op>), (left), (right), (move)<br>
- * </tt>
- *
- * <p>Each rule is then added to a hashmap of rules to be used for deriving the trees of each GEIndividual.
- *
- * <p>Note: setup() must be run before trying to use any of the other methods in this class.
+ * <p>GPNodes are included in the grammar by using their name.  This includes ERCs, ADFs, ADMs, and ADFArguments, which should all work just fine.
+ * For example, since most ERC GPNodes are simply named "ERC", if you have only one ERC GPNode in your function set, you can just use <tt>(ERC)</tt>
+ * in your grammar.
  *
  * <p>Once the gammar file has been created and setup has been run trees can the be created using the genome (chromosome) of a GEIndividual.
  * A genome of an individual is an array of random integers each of which are one byte long.  These numbers are used when a decision point 
@@ -103,7 +98,16 @@ import java.util.regex.Pattern;
  * <p><b>Parameters</b><br>
  * <table>
  * <tr><td valign=top><i>base.</i><tt>file</tt><br>
+ * <font size=-1>String</font></td>
  * <td valign=top>(the file is where the rules of the gammar are stored)</td></tr>
+ * 
+ * <tr><td valign=top><i>base.</i><tt>gp-species</tt><br>
+ * <font size=-1>classname, inherits and != ec.gp.GPSpecies</font></td>
+ * <td valign=top>(the GPSpecies subservient to the GESpecies)</td></tr>
+ *
+ * <tr><td valign=top><i>base.</i><tt>parser</tt><br>
+ * <font size=-1>classname, inherits and != ec.gp.ge.GrammarParser</font></td>
+ * <td valign=top>(the GrammarParser used by the GESpecies)</td></tr>
  *
  * </table>
  *
@@ -116,8 +120,8 @@ import java.util.regex.Pattern;
  
 public class GESpecies extends IntegerVectorSpecies
     {
-    public static final String P_FILE = "file";
     public static final String P_GESPECIES = "species";
+    public static final String P_FILE = "file";
     public static final String P_GPSPECIES = "gp-species";
     public static final String P_PARSER = "parser";
 	
