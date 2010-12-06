@@ -172,7 +172,7 @@ import ec.util.*;
  * </tr>
  * 
  * <tr>
- * <td valign=top><i>base</i>.<tt>bounded-polynomial-version</tt><br>
+ * <td valign=top><i>base</i>.<tt>alternative-polynomial-version</tt><br>
  *  <font size=-1>boolean (default=true)</font></td>
  *  <td valign=top>(whether to use the "bounded" variation of the polynomial mutation or the standard ("unbounded") version)</td>
  * </tr>
@@ -199,7 +199,7 @@ public class FloatVectorSpecies extends VectorSpecies
 
     public final static String P_MUTATION_DISTRIBUTION_INDEX = "mutation-distribution-index";
 
-    public final static String P_POLYNOMIAL_BOUNDED = "bounded-polynomial-version";
+    public final static String P_POLYNOMIAL_ALTERNATIVE = "alternative-polynomial-version";
 
     public final static String V_RESET_MUTATION = "reset";
 
@@ -236,19 +236,19 @@ public class FloatVectorSpecies extends VectorSpecies
     public double gaussMutationStdev;
     public boolean mutationIsBounded;
 
-    public int outOfRangeRetries=100;
+    public int outOfBoundsRetries=100;
         
     public int mutationDistributionIndex;
-    public boolean polynomialIsBounded;
+    public boolean polynomialIsAlternative;
 
     static final double SIMULATED_BINARY_CROSSOVER_EPS = 1.0e-14;   
 
-    private boolean outOfRangeRetriesWarningPrinted = false;
+    private boolean outOfBoundsRetriesWarningPrinted = false;
     public void outOfRangeRetryLimitReached(EvolutionState state)
         {
-        if(!outOfRangeRetriesWarningPrinted)
+        if(!outOfBoundsRetriesWarningPrinted)
             {
-            outOfRangeRetriesWarningPrinted=true;
+            outOfBoundsRetriesWarningPrinted=true;
             state.output.warning(
                 "The limit of 'out-of-range' retries for gaussian mutation was reached.");
             }
@@ -474,7 +474,17 @@ public class FloatVectorSpecies extends VectorSpecies
             if (mutationDistributionIndex < 0)
                 state.output.fatal("If FloatVectorSpecies is going to use polynomial mutation, the distribution index must be defined and >= 0.",
                     base.push(P_MUTATION_DISTRIBUTION_INDEX), def.push(P_MUTATION_DISTRIBUTION_INDEX));
-            polynomialIsBounded = state.parameters.getBoolean(base.push(P_POLYNOMIAL_BOUNDED), def.push(P_POLYNOMIAL_BOUNDED), true);
+            polynomialIsAlternative = state.parameters.getBoolean(base.push(P_POLYNOMIAL_ALTERNATIVE), def.push(P_POLYNOMIAL_ALTERNATIVE), true);
+
+            outOfBoundsRetries = state.parameters.getIntWithDefault(base.push(P_OUTOFBOUNDS_RETRIES), def.push(P_OUTOFBOUNDS_RETRIES), outOfBoundsRetries);
+            if(outOfBoundsRetries<0)
+                {
+                state.output.fatal(
+                    "If it's going to use polynomial mutation, FloatvectorSpecies must have a positive number of out-of-bounds retries or 0 (for don't give up).  " +
+					"This is even the case if doing so-called \"bounded\" polynomial mutation, which auto-bounds anyway, or if the mutation is unbounded.  " + 
+					"In either case, just provide an arbitrary value, which will be ignored.",
+                    base.push(P_OUTOFBOUNDS_RETRIES), def.push(P_OUTOFBOUNDS_RETRIES));
+                }
             }
                 
         if (mutationType == C_GAUSS_MUTATION)
@@ -484,11 +494,12 @@ public class FloatVectorSpecies extends VectorSpecies
                 state.output.fatal("If it's going to use gaussian mutation, FloatvectorSpecies must have a strictly positive standard deviation",
                     base.push(P_STDEV), def.push(P_STDEV));
                         
-            outOfRangeRetries = state.parameters.getIntWithDefault(base.push(P_OUTOFBOUNDS_RETRIES), def.push(P_OUTOFBOUNDS_RETRIES), outOfRangeRetries);
-            if(outOfRangeRetries<0)
+            outOfBoundsRetries = state.parameters.getIntWithDefault(base.push(P_OUTOFBOUNDS_RETRIES), def.push(P_OUTOFBOUNDS_RETRIES), outOfBoundsRetries);
+            if(outOfBoundsRetries<0)
                 {
                 state.output.fatal(
-                    "If it's going to use gaussian mutation, FloatvectorSpecies must have a positive number of out-of-bounds retries or 0 (for don't give up)",
+                    "If it's going to use gaussian mutation, FloatvectorSpecies must have a positive number of out-of-bounds retries or 0 (for don't give up).  " +
+					"This is even the case if the mutation is unbounded.  In that case, just provide an arbitrary value, which will be ignored.",
                     base.push(P_OUTOFBOUNDS_RETRIES), def.push(P_OUTOFBOUNDS_RETRIES));
                 }
             }           
