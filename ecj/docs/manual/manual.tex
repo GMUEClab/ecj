@@ -2541,7 +2541,6 @@ Some BreedingPipelines, like crossover pipelines, have a very specific number of
 
 BreedingPipeline has default implementations of the \method{produces(...)}, \method{prepareToProduce(...)}, \method{finishProducing(...)}, and \method{preparePipeline(...)} methods, all of which call the same methods on the BreedingPipeline's children.
 
-%%PAUL
 One final option common to most BreedingPipelines which make modifications (mutation, crossover): you can specify the probability that the pipeline will operate at all, or if Individuals will simply be passed through.  For example, let's say you're using a crossover pipeline of some sort, which creates two children from its sources, then crosses them over and returns them.  If you state:
 
 \params{%
@@ -2549,7 +2548,6 @@ One final option common to most BreedingPipelines which make modifications (muta
 }
 
 \noindent ...then with an 0.8 probability crossover will occur as normal.  But with a 0.2 probability two Individuals from the sources will be simply copied and returned, with no crossover occurring.
-%%END PAUL
 
 
 
@@ -3998,9 +3996,7 @@ The types are:
 pop.subpop.0.species.crossover-prob = 0.25
 }
 
-%%PAUL
 (It doesn't make sense to use a probability over 0.5).  It's important to note that the \parameter{crossover-probability} parameter is the the {\it per-gene} crossover probability, not the probability that the {\it entire individual} will be crossed over.  For that, see the \parameter{likelihood} parameter in Section~\ref{breeders}.
-%%END PAUL
 
 \item \parameter{line} performs Line Recombination.  {\LARGE\bf Look up who wrote this}  The two individuals are treated as points in space.  A straight line is drawn through both points, and two children are created along this line.  If the individuals are \(\vec{x}\) and \(\vec{y}\), we draw two random values \(\alpha\) and \(\beta\), each between \(-p\) and \(1+p\) inclusive.  Then the two children are defined as \(\alpha \vec{x} + (1-\alpha) \vec{y}\) and \(\beta \vec{y} + (1-\beta) \vec{x}\) respectively.  For Integer vector individuals, the values of each index are then rounded to the nearest integer. The most common setting of \(p\) is 0.25, which allows children to be somewhat outside the hypercube formed with the parents at corners.  To set the value of \(p\), we state:
 
@@ -4018,7 +4014,6 @@ pop.subpop.0.species.line-extension = 0.25
 
 Intermediate Recombination cannot be performed on BitVectorIndivdiuals or GeneVectorIndividuals.   ECJ's implementation of Intermediate Recombination is also due to William Haddon.
 
-%%PAUL
 \item \parameter{sbx} performs Simulated Binary Crossover.  This crossover, by Kalyanmoy Deb, attempts to simulate the effect of binary crossover on doubles and floats as if they were encoded as bits.  It relies on the Polynomial Distribution and as such has a parameter called the {\it crossover distribution index} which specifies the kind of distribution.  The standard accepted value for this index is 20 (but it's not the ECJ default: you must set it):
 
 \params{%
@@ -4074,36 +4069,10 @@ Different representations have different kinds of mutations.  Specifically:
 
 
 \begin{itemize}
-\item {\bf Floating Point} (\variable{float, double}): allows uniform gene randomization (\parameter{reset}), Gaussian mutation (\parameter{gauss}), or Polynomial mutation(\parameter{polynomial}).  Uniform gene randomization simply sets the gene to a random value between its minimum and maximum legal values.  To use it, you say:
-
-\params{%
-pop.subpop.0.species.mutation-type = reset
-}
-
-Gaussian mutation adds Gaussian noise to the current value.  If the result is outside the bounds of minimum and maximum legal values, another Gaussian noise is tried instead, and so on, until a legal value is found.  You will need to specify a standard deviation for the Gaussian random noise and also the number of times ECJ should attempt to apply Gaussian noise within the minimum and maximum bounds before giving up and simply keeping the original value.  For example:
-
-\params{%
-pop.subpop.0.species.mutation-type = gauss\\
-pop.subpop.0.species.mutation-stdev = 0.1\\
-pop.subpop.0.species.out-of-bounds-retries = 20
-}
-
-Note that if \parameter{out-of-bounds-retries} is 0, then ECJ behaves specially: it never stops retrying.  The default value is 100.
-
-Finally, Polynomial mutation is by Kalyanmoy Deb, and uses a distribution chosen from the Polynomial distribution series rather than a Gaussian distribution.  All Polynomial distributions have a min and max value ranging in [-1, 1], and Polynomial mutation adjusts this to reflect the min and max gene ranges.   The Polynomial distribution used is defined by the {\it distribution index} and by far the most common setting (but not the ECJ default) is 20.  There are at least four different versions of Polynomial mutation in the literature or various common code.  We have implemented two versions: the ``standard'' version, which can produce values outside the min/max range, and an alternative version found in the NSGA-II C code among certain other places (http://www.iitk.ac.in/kangal/codes/nsga/nsgaorig.tar), which modifies the distribution to always mutate values within the min/max range.  In either case ECJ requires a ``retries'' parameter, just to be pedantic.  ECJ calls the ``standard'' version the ``unbounded'' version and the alternative version the ``bounded'' version.  They're differentiated with a variable as shown below.    Note that we've found the ``bounded'' version superior for multiobjective optimization problems.
-
-\params{%
-pop.subpop.0.species.mutation-type = polynomial\\
-pop.subpop.0.species.mutation-distribution-index = 20\\
-pop.subpop.0.species.bounded-polynomial-version = true
-}
-
-You can use any integer \(\geq 0\) for the distribution index.
-%%END PAUL
-
-\item {\bf Integer} (\variable{byte, short, int, long}): the default mutation operator simply randomizes the integer value between the legal minimum and maximum values (with the mutation probability of course).  There are almost certainly smarter approaches than this\,---\,you'll probably want to implement something in a subclass.
 
 \item {\bf Boolean} (\variable{boolean}): the default mutation operator simply flips the boolean value with the given mutation probability.
+
+\item {\bf Integer} (\variable{byte, short, int, long}): the default mutation operator simply randomizes the integer value between the legal minimum and maximum values (with the mutation probability of course).  There are almost certainly smarter approaches than this\,---\,you'll probably want to implement something in a subclass.
 
 \item {\bf Gene}: the default mutation operator for \class{ec.vector.GeneVectorIndividual}, with the given mutation probability, calls the following VectorGene method:
 
@@ -4118,6 +4087,66 @@ public void reset(EvolutionState state, int thread);
 }
 
 \noindent ...on the VectorGene.
+\item {\bf Floating Point} (\variable{float, double}): allows uniform gene randomization (\parameter{reset}), Gaussian mutation (\parameter{gauss}), or Polynomial mutation(\parameter{polynomial}).  
+
+\paragraph{Uniform Mutation}
+Uniform gene randomization simply sets the gene to a random value between its minimum and maximum legal values.  To use it, you say:
+
+\params{%
+pop.subpop.0.species.mutation-type = reset
+}
+
+\paragraph{Gaussian Mutation}
+Gaussian mutation adds Gaussian noise to the current value.  If the result is outside the bounds of minimum and maximum legal values, another Gaussian noise is tried instead, and so on, until a legal value is found.  You will need to specify a standard deviation for the Gaussian random noise and also the number of times ECJ should attempt to apply Gaussian noise within the minimum and maximum bounds before giving up and simply keeping the original value.  For example:
+
+\params{%
+pop.subpop.0.species.mutation-type = gauss\\
+pop.subpop.0.species.mutation-stdev = 0.1\\
+pop.subpop.0.species.out-of-bounds-retries = 20
+}
+
+Note that if \parameter{out-of-bounds-retries} is 0, then ECJ behaves specially: it never stops retrying.  The default value is 100.
+
+Alternatively you can add Gaussian noise to the current values and simply allow the results to freely exceed the min/max gene bounds.  No retries are attempted (and \parameter{out-of-bounds-retries} is ignored): noise is simply added and that's it.  If you do this, be certain that the particular problem you're testing works properly with values outside the stated initial bounds.  To lift the bounds in this way, you say:
+
+\params{%
+pop.subpop.0.species.mutation-bounded = false
+}
+
+This does not affect the use of gene bounds in determining initialization values.  Even if you declare the mutation to be bounded, you'll still need to provide \parameter{out-of-bounds-retries} (though it won't be used).
+
+\paragraph{Polynomial Mutation}
+Finally, Polynomial mutation is by Kalyanmoy Deb, and uses a distribution chosen from the Polynomial distribution series rather than a Gaussian distribution.  All Polynomial distributions have a min and max value ranging in [-1, 1], and Polynomial mutation adjusts this to reflect the min and max gene ranges.   The Polynomial distribution used is defined by the {\it distribution index} and by far the most common setting (but not the ECJ default) is 20.  There are at least four different versions of Polynomial mutation in the literature or various common code.  We have implemented two versions: the {\bf standard} version, which can produce values outside the min/max range, and an {\bf alternative} version found in the NSGA-II C code among certain other places (http://www.iitk.ac.in/kangal/codes/nsga/nsgaorig.tar), which modifies the distribution to always mutate values within the min/max range. Note that we've found the alternative version superior for multiobjective optimization problems.  In ECJ, {\bf the alternative version is the default.} 
+
+To use the {\it alternative} version, you'll need to state something like this.
+
+\params{%
+pop.subpop.0.species.mutation-type = polynomial\\
+pop.subpop.0.species.mutation-distribution-index = 20\\
+pop.subpop.0.species.alternative-polynomial-version = true\\
+pop.subpop.0.species.out-of-bounds-retries = 20
+}
+
+You can use any integer \(\geq 0\) for the distribution index.  Note that even though the alternative version doesn't actually need \parameter{out-of-bounds-retries}, ECJ requires it anyway, so just put something arbitrary there.
+
+To use the {\it standard} version, you'll need to state something along these lines.
+
+\params{%
+pop.subpop.0.species.mutation-type = polynomial\\
+pop.subpop.0.species.mutation-distribution-index = 20\\
+pop.subpop.0.species.alternative-polynomial-version = false\\
+pop.subpop.0.species.out-of-bounds-retries = 20
+}
+
+Here you'll need to provide a rational value for \parameter{out-of-bounds-retries}.
+
+Just as was the case for Gaussian noise, you have the option of lifting the bounds entirely and letting Polynomial Mutation freely exceed the min/max gene bounds.  In this case, no retries are attempted (and \parameter{out-of-bounds-retries} is ignored): noise is simply added and that's it.  Again, if you do this, be certain that the particular problem you're testing works properly with values outside the stated initial bounds.  To lift the bounds in this way, you say:
+
+\params{%
+pop.subpop.0.species.mutation-bounded = false
+}
+
+Once again, this does not affect the use of gene bounds in determining initialization values.  And even if you declare the mutation to be bounded, you'll still need to provide \parameter{out-of-bounds-retries} (though it won't be used).
 \end{itemize}
 
 Numeric representations (integer, floating-point) provide two utility methods which may be useful to you in creating or debugging a custom mutator:
@@ -8956,6 +8985,20 @@ breed.f = 0.6\\
 breed.cr = 0.5
 }
 
+This operator can produce values which are outside the min/max gene range.  You'll need to specify whether or not you wish to force the operator to only produce values bounded to within that range.  For example, to turn of bounding and allow values to be anything, you would say (on a per-Species basis):
+
+\params{%
+pop.subpop.0.species.mutation-bounded = false
+}
+
+Otherwise you'd say:
+
+\params{%
+pop.subpop.0.species.mutation-bounded = true
+}
+
+If you bound the operator, then it will try repeatedly with new values of  \(\vec{r0}, \vec{r1},\) and \(\vec{r2}\), until it produces a valid individual \(d_i\).
+
 
 \subsubsection{The DE/best/1/bin Operator}
 
@@ -8985,6 +9028,21 @@ breed.f = 0.6\\
 breed.cr = 0.5\\
 breed.f-noise = 0.001
 }
+
+This operator can produce values which are outside the min/max gene range.  You'll need to specify whether or not you wish to force the operator to only produce values bounded to within that range.  For example, to turn of bounding and allow values to be anything, you would say (on a per-Species basis):
+
+\params{%
+pop.subpop.0.species.mutation-bounded = false
+}
+
+Otherwise you'd say:
+
+\params{%
+pop.subpop.0.species.mutation-bounded = true
+}
+
+If you bound the operator, then it will try repeatedly with new values of \(\vec{r1}\) and \(\vec{r2}\), until it produces a valid individual \(d_i\).
+
 
 \subsubsection{The DE/rand/1/either-or Operator}
 
@@ -9019,8 +9077,21 @@ breed.pf = 0.5
 Note that the {\it Cr} parameter is not used, since no crossover is performed.
 
 
+This operator can produce values which are outside the min/max gene range.  You'll need to specify whether or not you wish to force the operator to only produce values bounded to within that range.  For example, to turn of bounding and allow values to be anything, you would say (on a per-Species basis):
 
-%%PAUL
+\params{%
+pop.subpop.0.species.mutation-bounded = false
+}
+
+Otherwise you'd say:
+
+\params{%
+pop.subpop.0.species.mutation-bounded = true
+}
+
+If you bound the operator, then it will try repeatedly with new values of  \(\vec{r0}, \vec{r1},\) and \(\vec{r2}\), until it produces a valid individual \(d_i\).
+
+
 
 \section{Multiobjective Optimization (The \package{ec.multiobjective} Package)}
 \label{ec.multiobjective}
@@ -9302,9 +9373,10 @@ pop.subpop.0.species.pipe.source.0 = ec.multiobjective.spea2.SPEA2TournamentSele
 
 \paragraph{Where to get examples}  The package \package{ec.app.moosuite} has SPEA2 implementations of a number of famous multiobjective test problems.  Be sure to read the \file{moosuite.params} file, where you can specify that you want to use SPEA2 for the problems.
 
-%% END PAUL
 
 %\section{Particle Swarm Optimization (The \package{ec.pso} Package)}
+
+%%% So long as PSO is a mess, we shouldn't document it.
 
 
 \section{Other Methods}

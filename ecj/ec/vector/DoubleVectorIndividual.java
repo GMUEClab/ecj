@@ -268,8 +268,8 @@ public class DoubleVectorIndividual extends VectorIndividual
                     double min = s.minGene(x);
                     double max = s.maxGene(x);
                     double stdev = s.gaussMutationStdev;
-                    int outOfBoundsLeftOverTries = s.outOfRangeRetries;
-                    boolean givingUpAllowed = s.outOfRangeRetries != 0;
+                    int outOfBoundsLeftOverTries = s.outOfBoundsRetries;
+                    boolean givingUpAllowed = s.outOfBoundsRetries != 0;
                     do
                         {
                         val = rng.nextGaussian() * stdev + genome[x];
@@ -290,7 +290,7 @@ public class DoubleVectorIndividual extends VectorIndividual
             } 
         else if (s.mutationType == FloatVectorSpecies.C_POLYNOMIAL_MUTATION)
             {
-            polynomialMutate(state.random[thread], s.crossoverDistributionIndex, s.polynomialIsBounded, s.mutationIsBounded);
+            polynomialMutate(state.random[thread], s.crossoverDistributionIndex, s.polynomialIsAlternative, s.mutationIsBounded);
             }
         else
             {// C_RESET_MUTATION
@@ -303,7 +303,7 @@ public class DoubleVectorIndividual extends VectorIndividual
                 
     /** This function is broken out to keep it identical to NSGA-II's mutation.c code. eta_m is the distribution
         index.  */
-    public void polynomialMutate(MersenneTwisterFast random, double eta_m, boolean boundedPolynomialVersion, boolean mutationIsBounded)
+    public void polynomialMutate(MersenneTwisterFast random, double eta_m, boolean alternativePolynomialVersion, boolean mutationIsBounded)
         {
         FloatVectorSpecies s = (FloatVectorSpecies) species;
         double[] ind = genome;
@@ -323,7 +323,7 @@ public class DoubleVectorIndividual extends VectorIndividual
                 delta1 = (y-yl)/(yu-yl);
                 delta2 = (yu-y)/(yu-yl);
 
-                int totalTries = s.outOfRangeRetries;
+                int totalTries = s.outOfBoundsRetries;
                 int tries = 0;
                 for(tries = 0; tries < totalTries || totalTries == 0; tries++)  // keep trying until totalTries is reached if it's not zero.  If it's zero, go on forever.
                     {
@@ -332,13 +332,13 @@ public class DoubleVectorIndividual extends VectorIndividual
                     if (rnd <= 0.5)
                         {
                         xy = 1.0-delta1;
-                        val = 2.0*rnd + (boundedPolynomialVersion ? (1.0-2.0*rnd)*(Math.pow(xy,(eta_m+1.0))) : 0.0);
+                        val = 2.0*rnd + (alternativePolynomialVersion ? (1.0-2.0*rnd)*(Math.pow(xy,(eta_m+1.0))) : 0.0);
                         deltaq =  Math.pow(val,mut_pow) - 1.0;
                         }
                     else
                         {
                         xy = 1.0-delta2;
-                        val = 2.0*(1.0-rnd) + (boundedPolynomialVersion ? 2.0*(rnd-0.5)*(Math.pow(xy,(eta_m+1.0))) : 0.0);
+                        val = 2.0*(1.0-rnd) + (alternativePolynomialVersion ? 2.0*(rnd-0.5)*(Math.pow(xy,(eta_m+1.0))) : 0.0);
                         deltaq = 1.0 - (Math.pow(val,mut_pow));
                         }
                     y1 = y + deltaq*(yu-yl);
