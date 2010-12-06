@@ -1736,3 +1736,7 @@ Version		Change Log
 	Major modifications to GE package, thanks to Houston Mooers
 		<hemooers@gmail.com>
 	Added GPIndividual.printTrees(...) to help out GE
+	Added out of range retries to polynomial mutation.
+	Changed the parameter bounded-polynomial-version to alternative-polynomial-version	
+		in FloatVectorSpecies
+	Changed the variable outOfRangeRetries to outOfBoundsRetries in FloatVectorSpecies
