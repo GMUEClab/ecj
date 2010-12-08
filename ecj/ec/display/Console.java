@@ -910,7 +910,7 @@ public class Console extends JFrame
                             {
                             Output.initialError(Evolve.P_SEED+"."+x+" ("+seeds[x]+") and "+Evolve.P_SEED+"."+y+" ("+seeds[y]+") ought not be the same seed."); 
                             }
-                    random[x] = new MersenneTwisterFast(seeds[x]);
+                    random[x] = Evolve.primeGenerator(new MersenneTwisterFast(seeds[x]));   // we prime the generator to be more sure of randomness.
                     }
                 
                 state = (EvolutionState)parameters.getInstanceForParameter(

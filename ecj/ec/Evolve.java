@@ -224,6 +224,17 @@ public class Evolve
         return thread;
         }
         
+	/** Primes the generator.  Mersenne Twister seeds its first 624 numbers using a basic
+		linear congruential generator; thereafter it uses the MersenneTwister algorithm to
+		build new seeds.  Those first 624 numbers are generally just fine, but to be extra
+		safe, you can prime the generator by calling nextInt() on it some (N>1) * 624 times.
+		This method does exactly that, presently with N=2. */
+	public static MersenneTwisterFast primeGenerator(MersenneTwisterFast generator)
+		{
+		for(int i = 0; i < 624 * 2; i++)
+			generator.nextInt();
+		return generator;
+		}
 
     /** Loads a random generator seed.  First, the seed is loaded from the seedParameter.  If the parameter
         is V_SEED_TIME, the seed is set to the currentTime value.  Then the seed is incremented by the offset. 
@@ -324,7 +335,7 @@ public class Evolve
             for (int y=0;y<x;y++)
                 if (seeds[x]==seeds[y])
                     output.fatal(P_SEED+"."+x+" ("+seeds[x]+") and "+P_SEED+"."+y+" ("+seeds[y]+") ought not be the same seed.",null,null); 
-            random[x] = new MersenneTwisterFast(seeds[x]);
+            random[x] = Evolve.primeGenerator(new MersenneTwisterFast(seeds[x]));    // we prime the generator to be more sure of randomness.
             seedMessage = seedMessage + seeds[x] + " ";
             }
 
