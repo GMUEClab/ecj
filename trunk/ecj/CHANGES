@@ -1740,3 +1740,11 @@ Version		Change Log
 	Changed the parameter bounded-polynomial-version to alternative-polynomial-version	
 		in FloatVectorSpecies
 	Changed the variable outOfRangeRetries to outOfBoundsRetries in FloatVectorSpecies
+	Added Evolve.primeGenerator() to prime the Mersenne Twister a bit.  MT's first
+		624 numbers are generated using a simple linear congruential generator.
+		Only after that does MT go through its first iteration.  Priming the
+		generator pushes it through two iterations to guarantee more randomness.
+		This is almost certainly cargo cult programming -- those first 624 numbers
+		are generally reasonably good, but it doesn't hurt, so we're doing it.  Also
+		modified locations in ECJ which create new MersenneTwisterFast objects to
+		call Evolve.primeGenerator() whenever they do so.

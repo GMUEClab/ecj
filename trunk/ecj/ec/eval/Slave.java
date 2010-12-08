@@ -397,7 +397,7 @@ public class Slave
         
                 int seed = dataIn.readInt();
                 for(int i = 0; i < random.length; i++)
-                    random[i] = new MersenneTwisterFast(seed++);
+                    random[i] = Evolve.primeGenerator(new MersenneTwisterFast(seed++));  // we prime the generator to be more sure of randomness.
 
                 // 4. Set up the evolution state
                 
