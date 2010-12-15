@@ -172,6 +172,17 @@ assumes probabilities are floats, and the other which assumes they are doubles
 	ec.util.RandomChoiceChooserD
 
 
+
+SIMPLE LEXING (TOKENIZING)
+--------------------------
+
+ECJ's Grammatical Evolution facility needs to lex simple rulesets, one per line,
+from a file.  The following class makes regular-expression-based lexing simpler:
+
+	ec.util.Lexer
+
+
+
 ECJ'S VERSION
 -------------
 
