@@ -58,8 +58,10 @@ to pull all this off.  Notably:
 2. The species will be a GESpecies.  It in turn holds onto the "true" GPSpecies
    in a 'gp-species' parameter.
 
-Generally Grammatical Evolution is surprisingly easy to implement in ECJ.  But
-in some cases we'll need to add special GP elements to this subsidiary GPSpecies.
+Generally Grammatical Evolution is surprisingly easy to implement in ECJ.  The 
+ec/gp/ge/ge.params file will do most of the heavy lifting for you if you're dealing
+with just a single tree (no ADFs say).  But in some cases we'll need to add 
+special GP elements to this subsidiary GPSpecies, mostly for additiona trees.
 For example, in the Lawnmower problem, to have three trees, we need to define
 them manually as shown in ec/app/lawnmower/ge.params
 
@@ -76,6 +78,7 @@ integers:
 To this any number of other list crossover and mutation operators could be used.
 NOTE that the pipeline defined in ge.params is pretty arbitrary -- you might want
 to build something better.
+
 
 
 EXAMPLES
@@ -100,6 +103,23 @@ A version of IntegerVectorSpecies which loads the grammar file or files, holds o
 the GPSpecies, and performs the actual mapping prior to evaluation of GEIndividuals.
 
 
+GrammarParser.java
+
+The parser which reads the grammar rules from the provided grammar files and converts
+them into a parse graph.  This parse graph is then what's actually used by GESpecies
+to map GEIndividuals into GPIndividuals.  You can replace this parser with one of your
+own.
+
+
+GrammarNode.java
+GrammarFunctionNode.java
+GrammarRuleNode.java
+
+These form the actual objects in the parse graph.  GrammarNode is an abstract superclass.
+GrammarFunctionNode defines functions with arguments (its children).  GrammarRuleNode
+defines rules with rule options (its children).
+
+
 GEProblem.java
 
 A version of Problem which is inserted in lieu of the GPProblem, and which in turn
@@ -114,4 +134,12 @@ GETruncationPipeline.java
 A special list operator which only works with GEIndividuals.  Truncates from the 
 list all those integers which weren't used during the mapping process.
 
+
+[elsewhere in the ec.vector.breed package]
+
+GeneDuplicationPipeline.java
+
+A special list operator which duplicates genes downstream.  Generally used by
+GEIndividuals but it's available in ec.vector.breed because it can be used by any
+VectorIndividual if you'd really want to.
 
