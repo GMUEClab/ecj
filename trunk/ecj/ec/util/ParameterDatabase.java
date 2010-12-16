@@ -1837,8 +1837,8 @@ public class ParameterDatabase extends Properties implements Serializable
         }
 
     /** Returns true if parameter exist in the database
-		@ deprecated use exists(Parameter, null) 
-	*/
+        @ deprecated use exists(Parameter, null) 
+    */
     public synchronized boolean exists(Parameter parameter) 
         {
         printGotten(parameter, null, true);
@@ -1888,12 +1888,12 @@ public class ParameterDatabase extends Properties implements Serializable
             {
             Parameter p = new Parameter(PRINT_PARAMS);
             String jp = get(p);
-			System.err.println(jp);
+            // System.err.println(jp);
             if (jp == null || jp.equalsIgnoreCase("false"))
                 printState = PS_NONE;
             else
                 printState = PS_PRINT_PARAMS;
-			System.err.println(printState);
+            // System.err.println(printState);
             uncheck();
             printGotten(p,null,false);
             }
@@ -2077,22 +2077,22 @@ public class ParameterDatabase extends Properties implements Serializable
             return directory;
         }
     
-	/** Returns a String describing the location of the ParameterDatabase holding
-		this parameter, or "" if there is none. */
-	public String getLocation(Parameter parameter)
-		{
-		File file = fileFor(parameter);
-		if (file == null) return "";
-		try { return file.getCanonicalPath(); }
-		catch (IOException e) { return ""; }
-		}
-	
+    /** Returns a String describing the location of the ParameterDatabase holding
+        this parameter, or "" if there is none. */
+    public String getLocation(Parameter parameter)
+        {
+        File file = fileFor(parameter);
+        if (file == null) return "";
+        try { return file.getCanonicalPath(); }
+        catch (IOException e) { return ""; }
+        }
+        
     /**
      * Searches down through databases to find the parameter file 
      * which holds a given parameter. Returns the filename or null if not
      * found.
-	 *
-	 * @deprecated You probably want to use getLocation
+     *
+     * @deprecated You probably want to use getLocation
      */
 
     public File fileFor(Parameter parameter) 
@@ -2308,13 +2308,13 @@ public class ParameterDatabase extends Properties implements Serializable
         for (int x = 0; x < args.length - 1; x++) 
             {
             if (args[x].equals("-p"))
-				{
-				String s = args[x+1].trim();
-				if (s.length() == 0) continue;  // failure
-				int eq = s.indexOf('=');  // look for the '='
-				if (eq <= 0) continue; // '=' isn't there, or it's the first char: failure			
-				put(s.substring(0,eq), s.substring(eq+1));  // add the parameter
-				}
+                {
+                String s = args[x+1].trim();
+                if (s.length() == 0) continue;  // failure
+                int eq = s.indexOf('=');  // look for the '='
+                if (eq <= 0) continue; // '=' isn't there, or it's the first char: failure                      
+                put(s.substring(0,eq), s.substring(eq+1));  // add the parameter
+                }
             }
 
         // Set me up
@@ -2330,17 +2330,17 @@ public class ParameterDatabase extends Properties implements Serializable
      */
     //public void list(PrintStream p, boolean listShadowed) 
     //    {
-   //     list(new PrintWriter(p), listShadowed);
+    //     list(new PrintWriter(p), listShadowed);
     //    }
 
     /**
      * Prints out all the parameters in the database, but not shadowed
      * parameters.
      */
-   // public void list(PrintStream p) 
-   //     {
-   //     list(new PrintWriter(p), false);
-   //     }
+    // public void list(PrintStream p) 
+    //     {
+    //     list(new PrintWriter(p), false);
+    //     }
 
     /**
      * Prints out all the parameters in the database, but not shadowed
