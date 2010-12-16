@@ -481,8 +481,8 @@ public class FloatVectorSpecies extends VectorSpecies
                 {
                 state.output.fatal(
                     "If it's going to use polynomial mutation, FloatvectorSpecies must have a positive number of out-of-bounds retries or 0 (for don't give up).  " +
-					"This is even the case if doing so-called \"bounded\" polynomial mutation, which auto-bounds anyway, or if the mutation is unbounded.  " + 
-					"In either case, just provide an arbitrary value, which will be ignored.",
+                    "This is even the case if doing so-called \"bounded\" polynomial mutation, which auto-bounds anyway, or if the mutation is unbounded.  " + 
+                    "In either case, just provide an arbitrary value, which will be ignored.",
                     base.push(P_OUTOFBOUNDS_RETRIES), def.push(P_OUTOFBOUNDS_RETRIES));
                 }
             }
@@ -499,7 +499,7 @@ public class FloatVectorSpecies extends VectorSpecies
                 {
                 state.output.fatal(
                     "If it's going to use gaussian mutation, FloatvectorSpecies must have a positive number of out-of-bounds retries or 0 (for don't give up).  " +
-					"This is even the case if the mutation is unbounded.  In that case, just provide an arbitrary value, which will be ignored.",
+                    "This is even the case if the mutation is unbounded.  In that case, just provide an arbitrary value, which will be ignored.",
                     base.push(P_OUTOFBOUNDS_RETRIES), def.push(P_OUTOFBOUNDS_RETRIES));
                 }
             }           

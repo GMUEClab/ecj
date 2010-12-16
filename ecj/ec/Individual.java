@@ -86,8 +86,11 @@ public abstract class Individual implements Prototype, Comparable
     /** The species of the Individual.*/
     public Species species;
     
+    public static int count = 0;
     /** Has the individual been evaluated and its fitness determined yet? */
     public boolean evaluated;
+        
+    public int birthday = (count++);
 
     public Object clone()
         {
