@@ -2624,10 +2624,10 @@ By default, \parameter{must-clone} is false.
 {\it base}.num-sources = 2
 }
 
-Each source can be accompanied with a probability that this source will be chosen.  For example, to state that the first Source is a ReproductionPipeline, chosen 90\% of the time, and that the second is a Tournament Selection, chosen 10\% of the time, we'd say something like:
+Each source can be accompanied with a probability that this source will be chosen.  For example, to state that the first Source is a ReproductionPipeline, chosen 10\% of the time, and that the second is a VectorCrossoverPipeline, chosen 90\% of the time, we'd say something like:
 
 \params{%
-{\it base}.source.0 = ec.select.TournamentSelection\\
+{\it base}.source.0 = ec.vector.breed.VectorCrossoverPipeline\\
 {\it base}.source.0.prob = 0.90\\
 {\it base}.source.1 = ec.breed.ReproductionPipeline\\
 {\it base}.source.1.prob = 0.10
