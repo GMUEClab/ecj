@@ -1749,3 +1749,9 @@ Version		Change Log
 		modified locations in ECJ which create new MersenneTwisterFast objects to
 		call Evolve.primeGenerator() whenever they do so.
 	Reindented
+
+21	Prerelease?  What Prerelease?
+	Improvement on ParameterDatabase's error messages regarding classes missing
+		no-argument (default) constructors, so they're indicated as such and not as
+		"interfaces" or "abstract classes".  Thanks to J. Alejandro Zepada Cortes
+		<jalejandrozepedac@gmail.com>
