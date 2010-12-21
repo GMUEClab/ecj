@@ -34,7 +34,7 @@ stat.file				$out.stat
 
 select.tournament.size = 2
 
-eval.problem =				ec.app.coevolve1.CompetitiveMaxOne
+eval.problem =				ec.app.coevolve1.CompetitiveMaxOnes
 eval.problem.hist-size =		1
 stat.child.0.hist-size =		1
 stat.child.0.file =			compete.stat

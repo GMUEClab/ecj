@@ -256,14 +256,14 @@ public class CompetitiveEvaluator extends Evaluator
 
             for(int x=0;x<len/2;x++)
                 {
-                // if the second individual is better, than we switch them around
-                if( tourn[len-x-1].fitness.betterThan(tourn[x].fitness) )
+                // if the second individual is better, or coin flip if equal, than we switch them around
+                if( tourn[len-x-1].fitness.betterThan(tourn[x].fitness) ||
+					(tourn[len-x-1].fitness.equivalentTo(tourn[x].fitness) && state.random[0].nextBoolean()))
                     {
                     Individual temp = tourn[x];
                     tourn[x] = tourn[len-x-1];
                     tourn[len-x-1] = temp;
                     }
-
                 }
 
             // last part of the tournament: deal with odd values of len!

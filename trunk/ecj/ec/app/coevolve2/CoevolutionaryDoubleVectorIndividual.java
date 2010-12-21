@@ -21,7 +21,6 @@ public class CoevolutionaryDoubleVectorIndividual extends DoubleVectorIndividual
             for(int i = 0; i < context.length; i++)
                 if (context[i] != null)
                     {
-                    state.output.println("--Collaborator " + i + ":", log);
                     // this is a hack but it should be fine because printing
                     // individuals for humans is essentially always single-threaded
                     context[i].dontPrintContext = true;
