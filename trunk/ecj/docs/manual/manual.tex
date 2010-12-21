@@ -1971,7 +1971,7 @@ The method \method{readFitness(..., LineNumberReader)} reads into ECJ a Fitness 
 Fitnesses have one auxiliary variable:
 
 java{%
-public int trials;
+public ArrayList trials = null;
 }
 
 This variable is used by the coevolutionary processes (see Section \ref{ec.coevolve}) to keep track of the number of trials used to compute the Fitness value.  Outside of coevolution it's presently unused.  Ultimately the variable doesn't matter once the Fitness has been computed.
@@ -8399,22 +8399,14 @@ Called after evaluation of a Population to form final Fitness scores for the ind
 
 Do not assume that Individuals will have the same number of trials: in several versions of Coevolution this will not be the case.
 
-You're going to have to do some work to make sure that your Fitnesses are properly updated, and this depends on the kind of Coevolution you choose to do.  So how do you keep track of trials?  If you're just accumulating scores or wins, then you could use SimpleFitness and just increment it with each new win.  But since different Individuals may have different numbers of trials, it's possible that you may need to keep track of the number of trials, or keep track of each trial result separately.  ECJ provides a variable in Fitness called \variable{trials} which you can use to keep track of the number of trials.  If you need to keep track of separate trial results, you'll need to make a Fitness object something like this:
-
-\vbox{\small\begin{verbatim}
-import ec.*;
-import ec.simple.*;
-public class MyCustomCoevolutionaryFitness extends SimpleFitness {
-    public double[] trialResults;
-    }
-\end{verbatim}}
+You're going to have to do some work to make sure that your Fitnesses are properly updated, and this depends on the kind of Coevolution you choose to do.  So how do you keep track of trials?  If you're just accumulating scores or wins, then you could use SimpleFitness and just increment it with each new win.  But since different Individuals may have different numbers of trials, it's possible that you may need to keep track of the number of trials, or keep track of each trial result separately.  Probably the best approach is to use the auxiliary variable \variable{trials} found in \class{ec.Fitness} to store all your trials in an ArrayList.
 
 You typically use GroupedProblemForm like this:
 
 \begin{enumerate}
-\item In \method{preprocessPopulation(...)}, set the Fitness's  \variable{trials} to 0 for all Individuals, and set the fitness itself to 0.
-\item In \method{evaluate(...)}, increment the trials.  If \variable{countVictoriesOnly}, increment the Fitness of the winner by 1.  Otherwise modify (by the trial result) the Fitness values of the Individuals indicated by \variable{updateFitness}, or by taking the maximum of the Fitness and the new trial result.
-\item In \method{postprocessPopulation(...)}, if \variable{countVictoriesOnly} is false, modify the fitness, typically by dividing it by the number of trials.
+\item In \method{preprocessPopulation(...)}, set the Fitness's  \variable{trials} to a new ArrayList for all Individuals.
+\item In \method{evaluate(...)}, add to \variable{trials} the results of this trial for each Individual for whom \variable{updateFitness} is set.  Then set the Fitness to reflect just the immediate results of the trial (particularly if \variable{countVictoriesOnly} is set).  This allows Single Elimination Tournament\,---\,if you're using that\,---\, to determine who should advance to the next round.  Make certain that whatever you add to \variable{trials} is \class{java.io.Serializable}.
+\item In \method{postprocessPopulation(...)}, set the Fitness to the final result.  For example, you might set it to the average or the maximum of the various trials.  Finally, set the Fitness's \variable{trials} to null to let it GC.
 \end{enumerate}
 
 Notice that unlike in SimpleProblemForm (Section \ref{ec.Problem}) there's no \method{describe(...)} method.  This is because to describe an Individual, you'd need to do so in the context of other Individuals.  So we left it out.
@@ -8434,10 +8426,8 @@ public class MyCoevolutionaryProblem extends Problem implements GroupedProblemFo
                                      boolean countVictoriesOnly) {
         for(int i = 0; i < pop.subpops.length; i++)
             for(int j = 0; j < pop.subpops[i].individuals.length; j++) {
-                SimpleFitness fit = 
-                        (SimpleFitness)(pop.subpops[i].individuals[j].fitness);
-                fit.trials = 0;
-                fit.setFitness(state, 0);
+                SimpleFitness fit = (SimpleFitness)(pop.subpops[i].individuals[j].fitness);
+                fit.trials = new ArrayList();
                 }
         }
 	
@@ -8454,22 +8444,15 @@ public class MyCoevolutionaryProblem extends Problem implements GroupedProblemFo
         MyCoevolutionaryFitness fit1 = (MyCoevolutionaryFitness)(ind[0].fitness);
         MyCoevolutionaryFitness fit2 = (MyCoevolutionaryFitness)(ind[1].fitness);
         
-        if (countVictoriesOnly) {   // were doing Single Elimination.  Just track wins
-            if (product1 > product2 && updateFitness[0]) {
-                fit1.setFitness(state, fit1.fitness() + 1);
-                }
-            else if (updateFitness[1]) {
-                fit2.setFitness(state, fit2.fitness() + 1);
-                }
-        else {                      // add in the trial results
-             if (updateFitness[0]) {
-                fit1.setFitness(state, fit1.fitness() + product1 - product2, false);
-                fit1.trials++;
-                }
-            if (updateFitness[1]) {
-                fit2.setFitness(state, fit2.fitness() + product2 - product1, false);
-                fit2.trials++;
-                }
+         if (updateFitness[0]) {
+            fit1.trials.add(new Double(product1 - product2));
+            // set the fitness in case we're using Single Elimination Tournament
+            fit1.setFitness(state, fit1.fitness() + product1 - product2, false);
+            }
+        if (updateFitness[1]) {
+            fit2.trials.add(new Double(product2 - product1));
+            // set the fitness in case we're using Single Elimination Tournament
+            fit2.setFitness(state, fit2.fitness() + product2 - product1, false);
             }
         }
 
@@ -8477,11 +8460,21 @@ public class MyCoevolutionaryProblem extends Problem implements GroupedProblemFo
                                       boolean countVictoriesOnly) {
         for(int i = 0; i < pop.subpops.length; i++)
             for(int j = 0; j < pop.subpops[i].individuals.length; j++) {
-                SimpleFitness fit = 
-                        (SimpleFitness)(pop.subpops[i].individuals[j].fitness);
-                if (!countVictoriesOnly)
-                    fit.setFitness(state, fit.fitness() / fit.trials, false);
+                SimpleFitness fit = (SimpleFitness)(pop.subpops[i].individuals[j].fitness);
+                
+                // Let's set the fitness to the average of the trials
+                int len = fit.trials.size();
+                double sum = 0;
+                for(int l = 0; l < len; l++)
+                    sum += ((Double)(fit.trials.get(l))).doubleValue();
+                
+                // Alternatively if we were interested in how *many* times we won rather
+                // than by how much, we might set the fitness to, say, how often the doubleValue()
+                // was positive.
+                
+                fit.setFitness(state, (float)(sum / len), false);
                 pop.subpops[i].individuals[j].evaluated = true;
+                fit.trials = null;      // let it garbage collect
                 }
         }
     }
@@ -8493,6 +8486,8 @@ Now we hook it up as so:
 \params{%
 eval.problem = ec.myapp.MyCoevolutionaryProblem
 }
+
+It's important to note that the \variable{trials} variable doesn't have to store an ArrayList of {\it numbers}\,---\,it can store any object reflecting the outcome of a trial that you'd like to invent.  It's available for you to use.
 
 \subsection{One-Population Competitive Coevolution}
 
@@ -8617,34 +8612,27 @@ eval.subpop.0.num-elites = 5
 
 Note that these options enable the ``Parallel'' and ``Parallel Previous'' coevolutionary techniques \cite{Luke2009Metaheuristics}, but not the ``Serial'' (or ``Sequential'') technique whereby each Subpopulation is evaluated in turn. 
 
-For competitive coevolution, you can use the same example as in Section \ref{ec.coevolve.GroupedProblemForm} (GroupedProblemForm).  For Cooperative Coevolution it's typical to base Fitness instead on the {\it maximum} of tests with \(N\) other collaborators.  For example, let's revise the \method{evaluate(...)} and \method{postprocessPopulation(...)} methods to assess trial performance as the sum of all the products of the genomes in the various Individuals: 
+For competitive coevolution, you can use the same example as in Section \ref{ec.coevolve.GroupedProblemForm} (GroupedProblemForm).  For Cooperative Coevolution it's typical to base Fitness instead on the {\it maximum} of tests with \(N\) other collaborators.  For example, let's revise the \method{postprocessPopulation(...)} method to assess trial performance as the sum of all the products of the genomes in the various Individuals: 
 
 
 {
 \small\begin{verbatim}
-    public void evaluate(EvolutionState state, Individual[] ind, boolean[] updateFitness,
-            boolean countVictoriesOnly, int[] subpops, int threadnum) {
-            
-        double sum = 0.0;
-        for(int i = 0; i < ind.length; i++) {
-            int[] genome = ((IntegerVectorIndividual)ind[i]).genome;
-            double product = 1.0;
-            for(int x=0; x<genome.length; x++)
-                product = product * genome[x];
-            sum += product;
-            }
-            
-        for(int i = 0; i < ind.length; i++) {
-            if (updateFitness[i]) {
-                SimpleFitness fit = (SimpleFitness)(ind[i].fitness);
-                fit.setFitness(state, Math.max(fit.fitness(), sum), false);
-            }
-        }
-
-    public void postprocessPopulation(EvolutionState state, Population pop,
-            boolean countVictoriesOnly) {
-        // do nothing
-        }
+    public void postprocessPopulation(EvolutionState state, Population pop
+                                      boolean countVictoriesOnly) {
+        for(int i = 0; i < pop.subpops.length; i++)
+            for(int j = 0; j < pop.subpops[i].individuals.length; j++) {
+                SimpleFitness fit = (SimpleFitness)(pop.subpops[i].individuals[j].fitness);
+                
+                // Let's set the fitness to the maximum of the trials
+                int len = fit.trials.size();
+                double max = Double.MIN_VALUE;
+                for(int l = 0; l < len; l++)
+                    max = Math.max(max, ((Double)(fit.trials.get(l))).doubleValue());
+                
+                fit.setFitness(state, (float)(max), false);
+                pop.subpops[i].individuals[j].evaluated = true;
+                fit.trials = null;      // let it garbage collect
+                }
  \end{verbatim}
 }
 
