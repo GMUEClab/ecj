@@ -8,6 +8,7 @@
 package ec;
 import java.io.*;
 import ec.util.*;
+import java.util.*;
 
 /*
  * Fitness.java
@@ -52,8 +53,8 @@ import ec.util.*;
 public abstract class Fitness implements Prototype, Comparable
     {
     /** Auxiliary variable, used by coevolutionary processes, to compute the
-        number of trials used to compute this Fitness value.  By default trials=1. */
-    public int trials = 1;
+        number of trials used to compute this Fitness value.  By default trials=null. */
+    public ArrayList trials = null;
         
     /** base parameter for defaults */
     public static final String P_FITNESS = "fitness";

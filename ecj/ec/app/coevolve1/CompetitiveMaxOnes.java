@@ -11,18 +11,17 @@ import ec.simple.SimpleFitness;
 import ec.coevolve.*;
 import ec.*;
 import ec.vector.*;
+import java.util.*;
 
-public class CompetitiveMaxOne extends Problem implements GroupedProblemForm
+public class CompetitiveMaxOnes extends Problem implements GroupedProblemForm
     {
-
     public void preprocessPopulation( final EvolutionState state, Population pop, boolean countVictoriesOnly )
         {
         for( int i = 0 ; i < pop.subpops.length ; i++ )
             for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
                 {
                 SimpleFitness sf = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
-                sf.trials = 0;
-                sf.setFitness( state, 0, false );
+                sf.trials = new ArrayList();
                 }
         }
 
@@ -31,12 +30,19 @@ public class CompetitiveMaxOne extends Problem implements GroupedProblemForm
         for( int i = 0 ; i < pop.subpops.length ; i++ )
             for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
                 {
-                if (!countVictoriesOnly)   // gotta average by number of trials
-                    {
-                    SimpleFitness sf = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
-                    sf.setFitness( state, sf.fitness() / sf.trials, false );
-                    }
+				SimpleFitness fit = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
+
+				// average of the trials we got
+				int len = fit.trials.size();
+				double sum = 0;
+				for(int l = 0; l < len; l++)
+					sum += ((Double)(fit.trials.get(l))).doubleValue();
+				sum /= len;
+				
+				// we'll not bother declaring the ideal
+				fit.setFitness(state, (float)(sum / len), false);
                 pop.subpops[i].individuals[j].evaluated = true;
+				fit.trials = null;  // let GC
                 }
         }
 
@@ -69,45 +75,29 @@ public class CompetitiveMaxOne extends Problem implements GroupedProblemForm
         // calculate the function value for the second individual
         temp = (BitVectorIndividual)ind[1];
         for( int i = 0 ; i < temp.genome.length ; i++ )
-            if( temp.genome[i] ) value2 ++;
-
-        boolean firstWinsIfDraw = false;
-        if( value1 == value2 )
-            firstWinsIfDraw = state.random[threadnum].nextBoolean( 0.5 );
+            if( temp.genome[i] ) value2++;
+			
+		double score = value1 - value2;
 
         if( updateFitness[0] )
             {
             SimpleFitness fit = ((SimpleFitness)(ind[0].fitness));
-            fit.trials++;
-            if( countVictoriesOnly )
-                {
-                if( ( value1 > value2 ) || 
-                    ( value1 == value2 && firstWinsIfDraw ) )
-                    {
-                    fit.setFitness( state, (float)(fit.fitness() + 1), false );
-                    }
-                }
-            else
-                fit.setFitness( state, (float)(fit.fitness() + value1 - value2), false );
+            fit.trials.add(new Double(score));
+			
+			// set the fitness because if we're doing Single Elimination Tournament, the tournament
+			// needs to know who won this time around.  Don't bother declaring the ideal here.
+			fit.setFitness(state, (float)score, false);
             }
 
         if( updateFitness[1] )
             {
             SimpleFitness fit = ((SimpleFitness)(ind[1].fitness));
-            fit.trials++;
+			fit.trials.add(new Double(-score));
 
-            if( countVictoriesOnly )
-                {
-                if( ( value2 > value1 ) ||
-                    ( value2 == value1 && !firstWinsIfDraw ) )
-                    {
-                    fit.setFitness( state, (float)(fit.fitness() + 1), false );
-                    }
-                }
-            else
-                fit.setFitness( state, (float)(fit.fitness() + value2 - value1), false );
+			// set the fitness because if we're doing Single Elimination Tournament, the tournament
+			// needs to know who won this time around.
+			fit.setFitness(state, (float)-score, false);
             }
-
         }
 
     }

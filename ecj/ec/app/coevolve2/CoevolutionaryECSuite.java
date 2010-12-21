@@ -19,14 +19,25 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
         {
         for( int i = 0 ; i < pop.subpops.length ; i++ )
             for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
-                ((SimpleFitness)(pop.subpops[i].individuals[j].fitness)).setFitness( state, Integer.MIN_VALUE, false );
+                ((SimpleFitness)(pop.subpops[i].individuals[j].fitness)).trials = new ArrayList();
         }
 
     public void postprocessPopulation(final EvolutionState state, Population pop, boolean countVictoriesOnly)
         {
         for( int i = 0 ; i < pop.subpops.length ; i++ )
             for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
+				{
+                SimpleFitness fit = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
+				
+				// we take the max over the trials
+				double max = Double.MIN_VALUE;
+				for(int l = 0; l < len; l++)
+					max = Math.max(((Double)(fit.trials.get(l))).doubleValue(), max);
+					
+				fit.setFitness(state, (float)(max), false);
                 pop.subpops[i].individuals[j].evaluated = true;
+				fit.trials = null;  // let GC
+				}
         }
 
     public void evaluate(final EvolutionState state,
@@ -57,9 +68,7 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
         int pos = 0;
         for(int i = 0 ; i < ind.length; i++)
             {
-            System.err.println("-->" + i);
             CoevolutionaryDoubleVectorIndividual coind = (CoevolutionaryDoubleVectorIndividual)(ind[i]);
-            System.err.println(coind.genome.length);
             System.arraycopy(coind.genome, 0, vals, pos, coind.genome.length);
             pos += coind.genome.length;
             }
