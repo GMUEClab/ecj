@@ -132,6 +132,7 @@ public class SimpleFitness extends Fitness
         {
         dataOutput.writeFloat(fitness);
         dataOutput.writeBoolean(isIdeal);
+		writeTrials(state, dataOutput);
         }
 
     public void readFitness(final EvolutionState state,
@@ -139,6 +140,7 @@ public class SimpleFitness extends Fitness
         {
         fitness = dataInput.readFloat();
         isIdeal = dataInput.readBoolean();
+		readTrials(state, dataInput);
         }
 
     public void setToMeanOf(EvolutionState state, Fitness[] fitnesses)

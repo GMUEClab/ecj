@@ -71,6 +71,7 @@ public class SPEA2MultiObjectiveFitness extends MultiObjectiveFitness
         dataOutput.writeDouble(strength);
         dataOutput.writeDouble(fitness);
         dataOutput.writeDouble(kthNNDistance);
+		writeTrials(state, dataOutput);
         }
 
     public void readFitness(final EvolutionState state, final DataInput dataInput) throws IOException
@@ -80,6 +81,7 @@ public class SPEA2MultiObjectiveFitness extends MultiObjectiveFitness
         strength = dataInput.readDouble();
         fitness = dataInput.readDouble();
         kthNNDistance = dataInput.readDouble();
+		readTrials(state, dataInput);
         }
 
     /**

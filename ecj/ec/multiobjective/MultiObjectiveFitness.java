@@ -522,6 +522,7 @@ public class MultiObjectiveFitness extends Fitness
         for (int x = 0; x < objectives.length; x++)
             dataOutput.writeFloat(objectives[x]);
         dataOutput.writeBoolean(maximize);
+		writeTrials(state, dataOutput);
         }
 
     public void readFitness(final EvolutionState state, final DataInput dataInput) throws IOException
@@ -532,5 +533,6 @@ public class MultiObjectiveFitness extends Fitness
         for (int x = 0; x < objectives.length; x++)
             objectives[x] = dataInput.readFloat();
         maximize = dataInput.readBoolean();
+		readTrials(state, dataInput);
         }
     }

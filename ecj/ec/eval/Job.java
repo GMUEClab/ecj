@@ -10,6 +10,7 @@ package ec.eval;
 import ec.*;
 import java.io.*;
 import ec.util.*;
+import java.util.*;
 
 /**
  * Job.java
@@ -41,7 +42,7 @@ public class Job
     Individual[] inds;   // original individuals
     Individual[] newinds;  // individuals that were returned -- may be different individuals!
     int[] subPops; 
-    boolean countVictoriesOnly;
+	boolean countVictoriesOnly;
     boolean[] updateFitness;
     
     void copyIndividualsForward()
@@ -51,31 +52,17 @@ public class Job
         for(int i=0; i < inds.length; i++)
             {
             newinds[i] = (Individual)(inds[i].clone());
-            }
+			// delete the trials since they'll get remerged
+			newinds[i].fitness.trials = null;
+			// delete the context, since it'll get remerged
+			newinds[i].fitness.setContext(null);
+			}
         }
         
-    // a ridiculous hack
     void copyIndividualsBack(EvolutionState state)
         {
-        try
-            {
-            DataPipe p = new DataPipe();
-            DataInputStream in = p.input;
-            DataOutputStream out = p.output;
-            
-            for(int i = 0; i < inds.length; i++)
-                {
-                p.reset();
-                newinds[i].writeIndividual(state, out);
-                inds[i].readIndividual(state, in);
-                }
-                
-            newinds = null;
-            }
-        catch (IOException e) 
-            { 
-            e.printStackTrace();
-            state.output.fatal("Caught impossible IOException in Job.copyIndividualsBack()");
-            }
+		for(int i = 0; i < inds.length; i++)
+			inds[i].merge(state, newinds[i]);
+		newinds = null;
         }
     }

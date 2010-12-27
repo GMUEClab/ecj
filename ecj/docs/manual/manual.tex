@@ -51,14 +51,15 @@
 \renewcommand\bottomfraction{1.0}
 
 
-\newcommand\file[1]{\textsf{#1}}
-\newcommand\variable[1]{\textsf{#1}}
-\newcommand\package[1]{\textsf{#1}}
-\newcommand\class[1]{\textsf{#1}}
-\newcommand\method[1]{\textsf{#1}}
-\newcommand\parameter[1]{\texttt{#1}}
+\newcommand\file[1]{\index{#1}\textsf{#1}}
+\newcommand\variable[1]{\index{#1}\textsf{#1}}
+\newcommand\package[1]{\index{#1}\textsf{#1}}
+\newcommand\class[1]{\index{#1}\textsf{#1}}
+\newcommand\method[1]{\index{#1}\textsf{#1}}
+\newcommand\parameter[1]{\index{#1}\texttt{#1}}
 \newcommand\character[1]{\texttt{"{#1}"}}
 \newcommand\textstr[1]{\texttt{"{#1}"}}
+\newcommand\lisp[1]{\textsf{#1}}
 
 
 %%% Hack to allow more spacing before and after an hline
@@ -137,6 +138,9 @@
 
 \newcommand\hsp[1]{{\rule{0pt}{0pt}\hspace{#1}}}
 \newcommand\spc{{\rule{0pt}{0pt}~}}
+
+
+\makeindex
 
 \begin{document}
 
@@ -289,17 +293,17 @@ ECJ allows you to specify any genome representation you like.  Standard represen
 \end{figure}
 
 
-ECJ is perhaps best known for its support of ``Koza''-style tree-structured genetic programming representations.  ECJ represents these individuals as forests of parse-trees, each tree equivalent to a single Lisp s-expression.  Figure \ref{parsetree} shows a parse-tree for a simple robot program, equivalent to the Lisp s-expression \mbox{\class{(if (and on-wall (tick\(>\) 20) (\(\ast\) (ir 3) 6) 2.3).}}  In C this might look like \mbox{\class{ (onWall \&\& tick \(>\) 20) ? ir(3) * 6 : 2.3}.}  This notionally says ``If I'm on the wall and my tick-count is greater than 20, then return the value of my third infrared sensor times six, else return 2.3''.  Such parse-trees are typically evaluated by executing their programs in a test environment, and modified via subtree crossover (swapping subtrees among individuals) or various kinds of mutation (replacing a subtree with a randomly-generated one, perhaps).  
+ECJ is perhaps best known for its support of ``Koza''-style tree-structured genetic programming representations.  ECJ represents these individuals as forests of parse-trees, each tree equivalent to a single Lisp s-expression.  Figure \ref{parsetree} shows a parse-tree for a simple robot program, equivalent to the Lisp s-expression \mbox{\lisp{(if (and on-wall (tick\(>\) 20) (\(\ast\) (ir 3) 6) 2.3).}}  In C this might look like \mbox{\lisp{ (onWall \&\& tick \(>\) 20) ? ir(3) * 6 : 2.3}.}  This notionally says ``If I'm on the wall and my tick-count is greater than 20, then return the value of my third infrared sensor times six, else return 2.3''.  Such parse-trees are typically evaluated by executing their programs in a test environment, and modified via subtree crossover (swapping subtrees among individuals) or various kinds of mutation (replacing a subtree with a randomly-generated one, perhaps).  
 
 ECJ allows multiple subtrees for various experimental needs: Automatically Defined Functions (ADFs\,---\,a mechanism for evolving subroutine calls \cite{koza:gp2}), or parallel program execution, or evolving teams of programs.  Along with ADFs, ECJ provides built-in support for Automatically Defined Macros (ADMs) \cite{adm} and Ephemeral Random Constants (ERCs \cite{koza:book}, such as the numbers 20, 3, 6, and 2.3 in Figure \ref{parsetree}).
 
-Genetic programming trees are constructed out of a ``primorial soup'' of function templates (such as \class{on-wall} or \class{2.3}.  Early forms of genetic programming were typeless: though such templates had a predefined arity (number of arguments), any node could be connected to any other.  Many genetic programming needs require more constraints than this.  For example, the node \class{if} might expect a boolean value in its first argument, and integers or floats in the second and third arguments, and return a float when evaluated.  Similarly \class{and} might take two booleans as arguments and return a boolean, while \class{\(\ast\)} would take ints or floats as arguments and return a float.
+Genetic programming trees are constructed out of a ``primorial soup'' of function templates (such as \lisp{on-wall} or \lisp{2.3}.  Early forms of genetic programming were typeless: though such templates had a predefined arity (number of arguments), any node could be connected to any other.  Many genetic programming needs require more constraints than this.  For example, the node \lisp{if} might expect a boolean value in its first argument, and integers or floats in the second and third arguments, and return a float when evaluated.  Similarly \lisp{and} might take two booleans as arguments and return a boolean, while \lisp{\(\ast\)} would take ints or floats as arguments and return a float.
 
-Such types are often associated with the kinds of data passed from node to node, but they do not have to be.  For example, typing might be used to constrain certain nodes to be evaluated in groups or in a certain order: for example, a function \class{type-block} might insist that its first argument be of type \textit{foo} and its second argument be of type \textit{bar} to make certain that a \textit{foo} node be executed before a \textit{bar} node.
+Such types are often associated with the kinds of data passed from node to node, but they do not have to be.  For example, typing might be used to constrain certain nodes to be evaluated in groups or in a certain order: for example, a function \lisp{type-block} might insist that its first argument be of type \textit{foo} and its second argument be of type \textit{bar} to make certain that a \textit{foo} node be executed before a \textit{bar} node.
 
 ECJ permits a simple static typing mechanism called {\it set-based} typing, which is suitable for many such tasks.  In set-based typing, the return type and argument types of each node are each defined to be  sets of type symbols (for example, \{\textit{bool}\} or \{\textit{foo, bar, baz}\}, or \{\textit{int, float}\}.  The desired return type for the tree's root is similarly defined.  A child node is permitted to fit into the argument slot of a parent node if the child node's return type and type of the that argument slot in the parent are {\it compatible}.  We define types to be compatible if their set intersection is nonempty (that is, they share at least one type symbol).
 
-Set-based typing is sufficient for the typing requirements found in many programming languages, including ones with type hierarchies.  It allows, among other things, for nodes such as \class{\(\ast\)} to accept {\it either} integers or floats.  However there are considerable restrictions on the power of set-based typing.  It's often useful for the return type of a node to {\it change} based on the particular nodes which have plugged into it as arguments. For example, \class{\(\ast\)} might be defined as returning a float if at least one of its arguments returns floats, but returning an integer if both of its arguments return integers.  \class{if} might be similarly defined not to return a particular type, but to simply require that its return type and the second and third argument types must all match.  Such ``polymorphic'' typing is particularly useful in situations such as matrix multiplication, where the operator must place constraints on the width and height of its arguments and the final returned matrix.  In this example, it's also useful to have an infinite number of types (perhaps to represent matrices of varying widths or heights).
+Set-based typing is sufficient for the typing requirements found in many programming languages, including ones with type hierarchies.  It allows, among other things, for nodes such as \lisp{\(\ast\)} to accept {\it either} integers or floats.  However there are considerable restrictions on the power of set-based typing.  It's often useful for the return type of a node to {\it change} based on the particular nodes which have plugged into it as arguments. For example, \lisp{\(\ast\)} might be defined as returning a float if at least one of its arguments returns floats, but returning an integer if both of its arguments return integers.  \lisp{if} might be similarly defined not to return a particular type, but to simply require that its return type and the second and third argument types must all match.  Such ``polymorphic'' typing is particularly useful in situations such as matrix multiplication, where the operator must place constraints on the width and height of its arguments and the final returned matrix.  In this example, it's also useful to have an infinite number of types (perhaps to represent matrices of varying widths or heights).
 
 ECJ does not support polymorphic typing out of the box simply because it is difficult to implement many if not most common tree modification and generation algorithms using polymorphic typing: instead, set-based typing is offered to handle as many common needs as can be easily done. 
 
@@ -1974,7 +1978,7 @@ java{%
 public ArrayList trials = null;
 }
 
-This variable is used by the coevolutionary processes (see Section \ref{ec.coevolve}) to keep track of the number of trials used to compute the Fitness value.  Outside of coevolution it's presently unused.  Ultimately the variable doesn't matter once the Fitness has been computed.
+This variable is used by the coevolutionary processes (see Section \ref{ec.coevolve}) to keep track of the number of trials (in the form of \class{java.lang.Double} used to compute the Fitness value.  Outside of coevolution it's presently unused.  Ultimately the variable doesn't matter once the Fitness has been computed.
 
 \section{Initializers and Finishers}
 \label{ec.Initializer}
@@ -3871,7 +3875,7 @@ The package \package{ec.vector.breed} contains BreedingPipelines which know how 
 \begin{itemize}
 \item \class{ec.vector.breed.VectorMutationPipeline} takes a single source and mutates Individuals from that source by calling the \method{mutate(...)} method on them (discussed later).
 \item \class{ec.vector.breed.VectorCrossoverPipeline} takes a two sources and draws one Individuals at a time each from these sources, then crosses them over by calling the \method{crossover(...)} method on one of them (discussed later).
-\item \class{ec.vector.MultipleVectorCrossoverPipeline}, by Beenish Jamil, a former undergraduate at GMU, takes Individuals from a variable number of sources, then performs uniform crossover between all of them.  For example, imagine if there were three Individuals, \(A, B,\) and \(C\).  For each index \(i\), MultipleVectorCrossoverPipeline randomly shuffles the values among \(A_i, B_i,\) and \(C_i\) with a certain crossoverProbability, described next.
+\item \class{ec.vector.breed.MultipleVectorCrossoverPipeline}, by Beenish Jamil, a former undergraduate at GMU, takes Individuals from a variable number of sources, then performs uniform crossover between all of them.  For example, imagine if there were three Individuals, \(A, B,\) and \(C\).  For each index \(i\), MultipleVectorCrossoverPipeline randomly shuffles the values among \(A_i, B_i,\) and \(C_i\) with a certain crossoverProbability, described next.
 \end{itemize}
 
 \subsubsection{Initialization}
@@ -3990,7 +3994,7 @@ The types are:
 \begin{itemize}
 \item \parameter{one-point} performs standard One-Point crossover.
 \item \parameter{two-point} performs standard Two-Point crossover.
-\item \parameter{uniform} performs parameterized Uniform crossover, where every gene is crossed over independently with a certain probability.  \class{ec.vector.MultipleVectorCrossoverPipeline} also uses this probability.  The probability is stated like this:
+\item \parameter{uniform} performs parameterized Uniform crossover, where every gene is crossed over independently with a certain probability.  \class{ec.vector.breed.MultipleVectorCrossoverPipeline} also uses this probability.  The probability is stated like this:
 
 \params{%
 pop.subpop.0.species.crossover-prob = 0.25
@@ -4041,7 +4045,7 @@ The default value is false.
 
 \subsubsection{Multi-Vector Crossover}
 
-The class \class{ec.vector.MultipleVectorCrossoverPipeline} performs uniform crossover among the Indivdiuals in question as described earlier.  It ignores the \parameter{crossover-type} parameter, but it does respect, and indeed require, the parameter:
+The class \class{ec.vector.breed.MultipleVectorCrossoverPipeline} performs uniform crossover among the Indivdiuals in question as described earlier.  It ignores the \parameter{crossover-type} parameter, but it does respect, and indeed require, the parameter:
 
 \params{%
 pop.subpop.0.species.crossover-prob = 0.25
@@ -4167,8 +4171,8 @@ The first method returns true if all the genes in the representation are within 
 In the Genetic Algorithms section (Section~\ref{ec.simple}), we provided an example for a pipeline for crossing over and mutating VectorIndividuals:
 
 \params{%
-pop.subpop.0.species.pipe = ec.vector.VectorMutationPipeline\\
-pop.subpop.0.species.pipe.source.0 = ec.vector.VectorCrossoverPipeline\\
+pop.subpop.0.species.pipe = ec.vector.breed.VectorMutationPipeline\\
+pop.subpop.0.species.pipe.source.0 = ec.vector.breed.VectorCrossoverPipeline\\
 pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection\\
 pop.subpop.0.species.pipe.source.0.source.1 = same\\
 select.tournament.size = 2
@@ -6260,7 +6264,7 @@ By default, returns the number of nodes in all the trees held by the GPIndividua
 \subsection{Ephemeral Random Constants}
 \label{ec.gp.ERC}
 
-An {\bf Ephemeral Random Constant} or {\bf ERC} \cite{koza:book} is a special GPNode, usually a terminal, which represents a constant such as \variable{3.14159} or \variable{true} or \variable{724} or \variable{complex: 3.24 \(+\) 5i} or \variable{``aegu''}.  Usually ERCs are used to add constants to programs which rely on math (such as Symbolic Regression).
+An {\bf Ephemeral Random Constant} or {\bf ERC} \cite{koza:book} is a special GPNode, usually a terminal, which represents a constant such as \variable{3.14159} or \variable{true} or \variable{724} or \variable{complex: 3.24 $+$ 5i} or \variable{``aegu''}.  Usually ERCs are used to add constants to programs which rely on math (such as Symbolic Regression).
 
 An ERC needs to be able to do three things:
 
@@ -6710,9 +6714,9 @@ Next we'll need to modify the node constraints.  We'll not add a new tree constr
 For the node constraints, let's add three new GPNodeConstraints:
 
 \begin{itemize}
-\item A function which returns a double (nil), has three children, and the first child needs to be a boolean.  The other two children are nil.  This would be for things like the \variable{(if ... ... ...)} node.
-\item A function which takes two booleans and returns a boolean.  This would be for functions like \variable{(nand ... ...)}.
-\item A function which takes two doubles and returns a boolean.  This would be for functions like \variable{(\(>\) ... ...)}.
+\item A function which returns a double (nil), has three children, and the first child needs to be a boolean.  The other two children are nil.  This would be for things like the \lisp{(if ... ... ...)} node.
+\item A function which takes two booleans and returns a boolean.  This would be for functions like \lisp{(nand ... ...)}.
+\item A function which takes two doubles and returns a boolean.  This would be for functions like \lisp{(\(>\) ... ...)}.
 \end{itemize}
 
 These three new GPNodeConstraints would be:
@@ -6787,7 +6791,7 @@ public class If extends GPNode {
 \end{verbatim}
 }
 
-Next, the \variable{nand} node:
+Next, the \lisp{nand} node:
 
 \vbox{\small\begin{verbatim}
 package ec.app.myapp;
@@ -6808,7 +6812,7 @@ public class Nand extends GPNode {
 \end{verbatim}
 }
 
-Next, the \variable{\(>\)} node:
+Next, the \lisp{\(>\)} node:
 
 \vbox{\small\begin{verbatim}
 package ec.app.myapp;
@@ -7093,9 +7097,9 @@ Grammar files are text files consisting of lines.  Each line can be blank whites
 <foo> ::= (hello <bar>) | (yo) | (whoa <bar> <baz>)
 \end{verbatim}}
 
-In this example, \variable{\(<\)foo\(>\)} is the head, and \variable{(hello \(<\)bar\(>\)) \(|\) (yo) \(|\) (whoa \(<\)bar\(>\) \(<\)baz\(>\))} is the body.  The head is always a simple, usually lower-case, symbol surrounded in angle brackets.  The body is a collection of {\bf clauses} separated by the pipe symbol (\ \(|\)\ ).  Each clause is a single GP node in Lisp s-expression form.  For example, \variable{(hello \(<\)bar\(>\))} defines a GP node named \variable{hello}, which has a single child defined by the symbol \variable{\(<\)bar\(>\)}.
+In this example, \lisp{\(<\)foo\(>\)} is the head, and \lisp{(hello \(<\)bar\(>\)) \(|\) (yo) \(|\) (whoa \(<\)bar\(>\) \(<\)baz\(>\))} is the body.  The head is always a simple, usually lower-case, symbol surrounded in angle brackets.  The body is a collection of {\bf clauses} separated by the pipe symbol (\ \(|\)\ ).  Each clause is a single GP node in Lisp s-expression form.  For example, \lisp{(hello \(<\)bar\(>\))} defines a GP node named \lisp{hello}, which has a single child defined by the symbol \lisp{\(<\)bar\(>\)}.
 
-Terminal (leaf-node) GPNodes are defined as S-expressions with no children.  For example, \variable{(yo)} is a terminal GPNode whose name is \variable{yo}.  And a GPNode can have more than one child, such as \mbox{\variable{(whoa \(<\)bar\(>\) \(<\)baz\(>\))}}.
+Terminal (leaf-node) GPNodes are defined as S-expressions with no children.  For example, \lisp{(yo)} is a terminal GPNode whose name is \lisp{yo}.  And a GPNode can have more than one child, such as \mbox{\lisp{(whoa \(<\)bar\(>\) \(<\)baz\(>\))}}.
 
 For each symbol that appears in the body of a rule in angle brackets, there must be at least one such symbol in a head of a rule.  However you can have multiple such heads:
 
@@ -7110,14 +7114,14 @@ This says the exact same thing as the previous rule example.  You are free to us
 <foo> ::= (blah <bar>) | <okay>
 \end{verbatim}}
 
-This says that \variable{\(<\)foo\(>\)} can expand to either the GPNode \variable{blah} or it can expand to whatever \variable{\(<\)okay\(>\)} expands to.  You'd probably want to watch out for recursive definitions.  For example, these wouldn't be great rules:
+This says that \lisp{\(<\)foo\(>\)} can expand to either the GPNode \variable{blah} or it can expand to whatever \lisp{\(<\)okay\(>\)} expands to.  You'd probably want to watch out for recursive definitions.  For example, these wouldn't be great rules:
 
 \vbox{\small\begin{verbatim}
 <foo> ::= (blah <bar>) | <okay>
 <okay> ::= <foo> | (yuck)
 \end{verbatim}}
 
-The {\bf head of the first rule in the file} is the entry point of the grammar and represents the root node of the GPTree.  In all of our examples we have called it \variable{\(<\)start\(>\)}, but it doesn't have to be that.  For example, here is a complete grammar for a very simple tree which produces the same kinds of GPIndividuals as described in the example in Section \ref{definingtherepresentation}:
+The {\bf head of the first rule in the file} is the entry point of the grammar and represents the root node of the GPTree.  In all of our examples we have called it \lisp{\(<\)start\(>\)}, but it doesn't have to be that.  For example, here is a complete grammar for a very simple tree which produces the same kinds of GPIndividuals as described in the example in Section \ref{definingtherepresentation}:
 
 \vbox{\small\begin{verbatim}
 <start> ::= <op>
@@ -7160,7 +7164,7 @@ pop.subpop.0.species.min-gene = -128\\
 pop.subpop.0.species.max-gene = 127
 }
 
-GESpecies starts working through the byte array and the grammar, depth-first. Each time GESpecies comes across a point in the  grammar where multiple expansions are possible, it consults the next byte in the byte array.  Let's say there are four possible expansions of the head \variable{\(<\)foo\(>\)}, and the next byte says 145.  We compute \(145 \mod 4 = 1\) and so pick expansion 1 (the second expansion --- the first one is expansion 0).
+GESpecies starts working through the byte array and the grammar, depth-first. Each time GESpecies comes across a point in the  grammar where multiple expansions are possible, it consults the next byte in the byte array.  Let's say there are four possible expansions of the head \lisp{\(<\)foo\(>\)}, and the next byte says 145.  We compute \(145 \mod 4 = 1\) and so pick expansion 1 (the second expansion --- the first one is expansion 0).
 
 This continues until one of two things happens.  Either the tree is completed, or we run out of bytes.  In the first case, the tree is finished and the GEProblem hands it to the GPProblem to be evaluated.  In the second case,  the fitness is simply set to the worst possible Koza Standardized Fitness (\variable{Float.MAX\_VALUE}).
 
@@ -7481,7 +7485,7 @@ A RuleSet contains an arbitrary number of Rules (\class{ec.rule.Rule}), anywhere
     public int numRules;
 }
 
-Notice that the number of rules in the array may be {\it less} than the array size, that is, \variable{numRules \(\leq\) rules.length}.  The rules themselves run from \variable{rules[0] ... rules[numRules \(-\) 1]}.  This is done because, like ArrayList etc.,  \variable{rules} is variable in size and an grow and shrink.  RuleSet contains a number of utility methods for manipulating the order and number of these rules:
+Notice that the number of rules in the array may be {\it less} than the array size, that is, \variable{numRules $\leq$ rules.length}.  The rules themselves run from \variable{rules[0] ... rules[numRules $-$ 1]}.  This is done because, like ArrayList etc.,  \variable{rules} is variable in size and an grow and shrink.  RuleSet contains a number of utility methods for manipulating the order and number of these rules:
 
 \begin{methods}{ec.rule.RuleSet}
 \mthd{public int numRules()}
@@ -7497,7 +7501,7 @@ Removes a rule located at the given index from the RuleSet and returns it.  All 
 \mthd{public Rule removeRandomRule(EvolutionState \textit{state}, int thread)}
 Removes a random rule returns it.  All rules are shifted down to fill the void.
 \mthd{public RuleSet[] split(int[] \textit{points}, RuleSet[] \textit{sets})}
-Breaks the RuleSet into \(n\) disjoint groups, then clones the rules in those groups and adds them to the respective sets, which must be provided in the given array.  The first group of rules starts at 0 and ends below \variable{points[0]}: this goes into \variable{sets[0]}. Intermediate groups, which go into \variable{sets[i]}, start at \variable{points[i]} and end below \variable{points[i+1]}.  The final group, which goes into \variable{sets[points.length]}, starts at \variable{points[points.length \(-\) 1]} and continues to the end of the rule array.  If \variable{points.length = 0}, then all rules simply get put into \variable{sets[0]}.  Note that the size of \variable{sets} must be one more than the size of \variable{points}.  The sets are returned.
+Breaks the RuleSet into \(n\) disjoint groups, then clones the rules in those groups and adds them to the respective sets, which must be provided in the given array.  The first group of rules starts at 0 and ends below \variable{points[0]}: this goes into \variable{sets[0]}. Intermediate groups, which go into \variable{sets[i]}, start at \variable{points[i]} and end below \variable{points[i+1]}.  The final group, which goes into \variable{sets[points.length]}, starts at \variable{points[points.length $-$ 1]} and continues to the end of the rule array.  If \variable{points.length = 0}, then all rules simply get put into \variable{sets[0]}.  Note that the size of \variable{sets} must be one more than the size of \variable{points}.  The sets are returned.
 \mthd{public RuleSet[] split(EvolutionState \textit{state}, int \textit{thread}, RuleSet[] {\it sets})}
 For each rule in the RuleSet, clones the rule and adds the clone to a randomly chosen RuleSet from \variable{sets}.  Returns \variable{sets}.
 \mthd{public RuleSet[] splitIntoTwo(EvolutionState \textit{state}, int \textit{thread}, RuleSet[] {\it sets}, float {\it probability})}
@@ -8378,30 +8382,27 @@ Evaluation in coevolution involves multiple trials, along these lines:
 
 \begin{enumerate}
 \item Performance scores of Individuals are cleared.
-\item Individuals are tested against each other in various matches (or with one another in various collaborative problems).  These trials cause performance scores of the Individuals to accumulate.
+\item Individuals are tested against each other in various matches (or with one another in various collaborative problems).  These trials cause trial performance scores of the Individuals to accumulate.
 \item The final Fitnesses of the Individuals are set based on the performance scores over all the trials.
 \end{enumerate}
 
-It's up to you to store the trial results and eventually form them into final Fitness values.  GroupedProblemForm will help you by defining three methods to do these various portions of the evaluation process.  You'll need to implement all three methods:
+It's up to you to store the trial results and eventually form them into final Fitness values, as discussed later.  GroupedProblemForm will help you by defining three methods to do these various portions of the evaluation process.  You'll need to implement all three methods:
 
 \begin{methods}{ec.coevolve.GroupedProblemForm}
 \mthd{public abstract void preprocessPopulation(EvolutionState {\it state}, int {\it thread}, boolean {\it countVictoriesOnly})}
-Called prior evaluation of a Population, to clear the performance scores of Individuals.  Note that although this method is not static, you should not assume that this method will be called on the same Problem as is used later for \method{evaluate(...)}.  Thus don't use this method to set any instance variables in the Problem for later use.   If {\it countVictoriesOnly} is true, the method being used is SingleEliminationTournament.  In either case, you should set the Fitness values of all the Individuals to 0.
+Called prior evaluation of a Population, to clear the trials of Individuals.  Note that although this method is not static, you should not assume that this method will be called on the same Problem as is used later for \method{evaluate(...)}.  Thus don't use this method to set any instance variables in the Problem for later use.   If {\it countVictoriesOnly} is true, the method being used is SingleEliminationTournament.  Commonly you'll use this method to create a trials ArrayList.
 \mthd{void evaluate(EvolutionState {\it state},
         Individual[] {\it individuals}, 
         boolean[] {\it updateFitness}, boolean {\it countVictoriesOnly},\hspace{-2em}}
 \hsp{\fill}{\sf int[] {\it subpops}, int {\it thread})}\\
-Evaluates the {\it individuals} in a single trial, setting their performance scores for that trial.  Each individual will be from a certain subpopulation, specified in {\it subpops}. In some versions of coevolution, only certain individuals are supposed to have their performance scores updated (the others are acting as foils).  In this case, the relevant individuals will be indicated in the {\it updateFitness} array.  Fitness is set in different ways depending on the coevolutionary method used: for example, Single-Elimination Tournament requires that Fitness be incremented with every win in a trial; but in other methods you'd build up Fitness gradually as a combination (maximum, average, etc.) of various trials.  You can tell that it's Single-Elimination Tournament because \variable{countVictoriesOnly} will be set.
+Evaluates the {\it individuals} in a single trial, setting their performance scores for that trial.  Each individual will be from a certain subpopulation, specified in {\it subpops}. In some versions of coevolution, only certain individuals are supposed to have their performance scores updated (the others are acting as foils).  In this case, the relevant individuals will be indicated in the {\it updateFitness} array.  Typically you'll update fitness by adding trial results to the trials ArrayList.
 \mthd{public abstract void postprocessPopulation(EvolutionState {\it state}, int {\it thread}, boolean {\it countVictoriesOnly})}
-Called after evaluation of a Population to form final Fitness scores for the individuals based on the various performance scores they accumulated during trials.  Note that although this method is not static, you should not assume that this method will be called on the same Problem as was used earlier for \method{evaluate(...)}.  If {\it countVictoriesOnly} is true, the method being used is SingleEliminationTournament.  In this case, you probably should do nothing except set the Indivdiduals' \variable{evaluated} flags. If it's false, you want to postprocess the Fitness: either by averaging it or taking the maximum over the number of trials.
-
+Called after evaluation of a Population to form final Fitness scores for the individuals based on the various performance scores they accumulated during trials.  Note that although this method is not static, you should not assume that this method will be called on the same Problem as was used earlier for \method{evaluate(...)}.  You'll probably want to set the trials variable to null to let it garbage collect.
 \end{methods}
 
 Do not assume that Individuals will have the same number of trials: in several versions of Coevolution this will not be the case.
 
-You're going to have to do some work to make sure that your Fitnesses are properly updated, and this depends on the kind of Coevolution you choose to do.  So how do you keep track of trials?  If you're just accumulating scores or wins, then you could use SimpleFitness and just increment it with each new win.  But since different Individuals may have different numbers of trials, it's possible that you may need to keep track of the number of trials, or keep track of each trial result separately.  Probably the best approach is to use the auxiliary variable \variable{trials} found in \class{ec.Fitness} to store all your trials in an ArrayList.
-
-You typically use GroupedProblemForm like this:
+You're going to have to do some work to make sure that your Fitnesses are properly updated, and this depends on the kind of Coevolution you choose to do.  So how do you keep track of trials?  If you're just accumulating scores or wins, then you could use SimpleFitness and just increment it with each new win.  But since different Individuals may have different numbers of trials, it's possible that you may need to keep track of the number of trials, or keep track of each trial result separately.  Probably the best approach is to use the auxiliary variable \variable{trials} found in \class{ec.Fitness} to store all your trials in an ArrayList.  Thus you typically use GroupedProblemForm like this:
 
 \begin{enumerate}
 \item In \method{preprocessPopulation(...)}, set the Fitness's  \variable{trials} to a new ArrayList for all Individuals.
@@ -8488,6 +8489,8 @@ eval.problem = ec.myapp.MyCoevolutionaryProblem
 }
 
 It's important to note that the \variable{trials} variable doesn't have to store an ArrayList of {\it numbers}\,---\,it can store any object reflecting the outcome of a trial that you'd like to invent.  It's available for you to use.
+
+Generally the \variable{trials} variable should never need to be cloned\,---\,it'll be set up, used during Evaluation, and then destroyed.  The default implementation of the \method{Fitness.cloneTrials()} method, called by \method{Fitness.clone()}, simply throws an exception if \variable{trials} is null.
 
 \subsection{One-Population Competitive Coevolution}
 
@@ -8641,6 +8644,7 @@ For competitive coevolution, you can use the same example as in Section \ref{ec.
 
 
 \subsubsection{Printing Joint Collaborations}
+\label{printingjointcollaborations}
 At present \class{ec.coevolve.MultiPopCoevolutionaryEvaluator} provides no mechanism for storing the Individuals which collaborated with or competed against a highly fit Individual.  So it's up to you to print out the collaborators or testing competitors of, for example, the fittest Individual of a generation.  This is particularly of concern with cooperative coevolution: printing out an Individual is insufficient since it's only a piece of a joint solution.  Furthermore, though \class{ec.simple.SimpleStatistics} will print out the best Individual of each Subpopulation: it's not necessarily the case that those Individuals happened to become best by working with one another.
 
 To fix this, I suggest keeping them around stored in your Individual.  For example, your Individual might contain an array of collaborators like this:
@@ -8651,11 +8655,33 @@ public Individual[] context;
 
 I'd have one collaborator per Subpopulation; the Individual itself would have its context slot null.  For example, if there were three Subpopulations, and the Individual was in Subpopulation 1, then \variable{context[1]} would be null, but the other two slots would (ultimately) be filled with best collaborators of the Individual. 
 
-During the \method{evaluate(...)} method, each Individual uses this array to keep track of the collaborators which enabled the Individual to perform best.  You could then add to the Individual the following hack:
+During the \method{evaluate(...)} method, each Individual uses this array to keep track of the collaborators which enabled the Individual to perform best.  For example, you might check to see if the most recent trials is the best one so far, and update the context if so:
 
 {
 \small\begin{verbatim}
-boolean dontPrintContext = false;
+// for purposes here let's assume we just added the 
+// recent trial to the end of the 'trials' variable
+
+double trial = ((Double)(trials.get(trials.length - 1))).doubleValue;
+boolean best = true;
+
+for(int i = 0; i < trials.length - 1; i++)
+    {
+    double other =  ((Double)(trials.get(i))).doubleValue;
+    if (other > trial)    // we presume less than is worse than
+       {  best = false;  break; }
+    }
+if (best)  // I'm best, store my context in the Individual
+    {
+    // store context individuals here
+    }
+\end{verbatim}
+}
+
+
+Then you could modify \method{printIndividualForHumans} to print out that best context, with the following hack:
+{
+\small\begin{verbatim}
 public void printIndividualForHumans(EvolutionState state, int log)
     {
     super.printIndividualForHumans(state, log);
@@ -8678,6 +8704,19 @@ public void printIndividualForHumans(EvolutionState state, int log)
 }
 
 The idea is to print the individual and also his collaborators (but prevent them from printing {\it their} collaborators during this process).
+
+
+\subsection{Performing Distributed Evaluation with Coevolution}
+
+Coevolution introduces its own wrinkle to Distributed Evaluation, because it has multiple trials, and each of those trials is a separate job potentially processed on a separate machine.  We need a way to merge all those trials together to compute the final fitness.   Furthermore we may need a way to determine which context (see Section \ref{printingjointcollaborations}) among those merged trials should be retained.
+
+
+
+
+
+
+
+
 
 
 \section{Spatially Embedded Evolutionary Algorithms (The \package{ec.spatial} Package)}
@@ -9397,6 +9436,9 @@ Random Restarts is due to James O'Beirne, a student at GMU.
 
 \bibliographystyle{plain}
 \bibliography{manual}
+
+\printindex
+
 
 \end{document}
 

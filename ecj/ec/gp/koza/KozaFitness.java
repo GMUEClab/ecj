@@ -169,6 +169,7 @@ public class KozaFitness extends Fitness
         {
         dataOutput.writeFloat(standardizedFitness);
         dataOutput.writeInt(hits);
+		writeTrials(state, dataOutput);
         }
 
     public void readFitness(final EvolutionState state,
@@ -176,6 +177,7 @@ public class KozaFitness extends Fitness
         {
         standardizedFitness = dataInput.readFloat();
         hits = dataInput.readInt();
+		readTrials(state, dataInput);
         }
 
     public void setToMeanOf(EvolutionState state, Fitness[] fitnesses)
