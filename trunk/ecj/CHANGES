@@ -1755,3 +1755,9 @@ Version		Change Log
 		no-argument (default) constructors, so they're indicated as such and not as
 		"interfaces" or "abstract classes".  Thanks to J. Alejandro Zepada Cortes
 		<jalejandrozepedac@gmail.com>
+	Deleted some print junk in coevolve2
+	Changed Fitness.trials to an ArrayList pointer
+	Modified CompetitiveEvaluator.evalSingleElimination to consider ties so we don't
+		have to.
+	Updated coevolve1 to revised approach
+	Removed vestigial 'birthday' in Individual
