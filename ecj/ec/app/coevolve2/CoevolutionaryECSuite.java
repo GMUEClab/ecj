@@ -42,6 +42,14 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
                 }
         }
 
+	public void updateContext(CoevolutionaryDoubleVectorIndividual coind, int index, Individual[] ind)
+		{
+		coind.context = new CoevolutionaryDoubleVectorIndividual[ind.length];
+		for(int j = 0; j < ind.length; j++)
+			if (index != j)
+				coind.context[j] = (CoevolutionaryDoubleVectorIndividual)(ind[j]);
+		}
+
     public void evaluate(final EvolutionState state,
         final Individual[] ind,  // the individuals to evaluate together
         final boolean[] updateFitness,  // should this individuals' fitness be updated?
@@ -83,28 +91,22 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
             CoevolutionaryDoubleVectorIndividual coind = (CoevolutionaryDoubleVectorIndividual)(ind[i]);
             if (updateFitness[i])
                 {
-                // Update the context if this is the best trial
-                // it'd be nice and O(1) to just maintain the best trial as trial #0, but it won't work
-                // properly if we're merging Individuals when doing distributed evaluations, so we need
-                // to find the max in O(n) fashion by hunting through the whole collection, sorry.  This needs
-                // to be rethought a bit.
-                double max = Double.MIN_VALUE;
+                // Update the context if this is the best trial.  We're going to assume that the best
+				// trial is trial #0 so we don't have to search through them.
                 int len = coind.fitness.trials.size();
-                for(int l = 0; l < len; l++)
-                    max = Math.max(((Double)(coind.fitness.trials.get(l))).doubleValue(), max);  // it'll be the first one, but whatever
-
-                if (max < trial)  // we've found a new best trial, update the context
-                    {
-                    // update the context
-                    coind.context = new CoevolutionaryDoubleVectorIndividual[ind.length];
-                    for(int j = 0; j < ind.length; j++)
-                        {
-                        if (i != j)
-                            coind.context[j] = (CoevolutionaryDoubleVectorIndividual)(ind[j]);
-                        }
-                    }
-                // add the trial to the individual's list of trials
-                coind.fitness.trials.add(new Double(trial));
+				if (len == 0)  // easy
+					{
+					updateContext(coind, i, ind);
+					coind.fitness.trials.add(new Double(trial));
+					}
+				else if (((Double)(coind.fitness.trials.get(0))).doubleValue() < trial)  // best trial is presently #0
+					{
+					updateContext(coind, i, ind);
+					// put me at position 0
+					Double t = (Double)(coind.fitness.trials.get(0));
+					coind.fitness.trials.set(0, new Double(trial));  // put me at 0
+					coind.fitness.trials.add(t);  // move him to the end
+					}
                                                                         
                 // finally set the fitness for good measure
                 ((SimpleFitness)(coind.fitness)).setFitness(state, (float)trial, false);

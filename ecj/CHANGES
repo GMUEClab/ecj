@@ -1759,5 +1759,9 @@ Version		Change Log
 	Changed Fitness.trials to an ArrayList pointer
 	Modified CompetitiveEvaluator.evalSingleElimination to consider ties so we don't
 		have to.
+	Addition of context to Fitness, and several new methods and revisions in Fitness,
+		Individual, and Job which should make distributed evaluation work 
+		propertly with coevolution.	
 	Updated coevolve1 to revised approach
 	Removed vestigial 'birthday' in Individual
+	Modifications to coevolve2 to keep trial #0 as the "best" trial

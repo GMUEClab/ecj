@@ -308,7 +308,21 @@ public abstract class Fitness implements Prototype, Comparable
             }
         }
 
-    double bestTrial(ArrayList l)
+	/** Given another Fitenss, 
+		returns true if the trial which produced my current context is "better" in fitness than
+		the trial which produced his current context, and thus should be retained in lieu of his.
+		This method by default assumes that trials are Doubles, and that higher Doubles are better.
+		If you are using distributed evaluation and coevolution and your tirals are otherwise, you
+		need to override this method.
+		*/
+	 public boolean contextIsBetterThan(Fitness other)
+		{
+		if (other.trials == null) return true;  // I win
+		else if (trials == null) return false;  // he wins
+		return bestTrial(trials) < bestTrial(other.trials);
+		}
+
+     double bestTrial(ArrayList l)
         {
         if (l == null || l.size() == 0) return Double.MIN_VALUE;
         double best = ((Double)(l.get(0))).doubleValue();
@@ -321,48 +335,40 @@ public abstract class Fitness implements Prototype, Comparable
         return best;
         }
 
-    /** Merges the other fitness into this fitness.  The other fitnessis assumed to be more recent, and
+    /** Merges the other fitness into this fitness.  The other fitness is assumed to be more recent, and
         is assumed to be a clone which will never be used again, so we can steal things from it and
         share data with it.
         This method is typically called by coevolution in combination with distributed evauation where
         the Individual may be sent to various different sites to have trials performed on it, and
-        the results must be merged together to form a relevant fitness.  By default the only thing that
-        is "merged" are the trials arrays, as follows: the portion of 'other' trials which is different from the
-        start of our trials is concatenated to the end of our trials.  For example, if our trials were
-        123456 and the other trials were 123789, then the result would be 123456789.  In coevolution nothing
+        the results must be merged together to form a relevant fitness.  By default merging occurs as follows.
+		First, the trials arrays are concatenated.  Then whoever has the best trial has his context retained:
+		this Fitness is determined by calling contextIsBetterThan(other).  By default that method assumes
+		that trials are Doubles, and that higher values are better.  You will wish to override that method 
+		if trials are different.  In coevolution nothing
         else needs to be merged usually, though you may need to override this to handle other things specially.
+		
+		<p>This method only works properly if the other Fitness had its trials deleted before it was sent off
+		for evaluation on a remote machine: thus all of the trials are new and can be concatenated in.  This
+		is what sim.eval.Job presently does in its method copyIndividualsForward().
     */
     public void merge(EvolutionState state, Fitness other)
         {
         // first let's merge trials.  We assume they're Doubles
                 
-        if (other.trials == null) return;
-        else if (trials == null && other.trials != null)
+        if (other.trials == null) return;  // I win
+        else if (trials == null)  // he wins
             {
-            trials = new ArrayList(other.trials);   // copy him over
-            context = other.getContext();                   // grab the context
+            trials = other.trials;				// just steal him
+            context = other.getContext();       // grab his context
             }
-        else  // gotta look for different strings and concatenate
+        else  // gotta concatenate
             {
             // first question: who has the best context?
-            if (bestTrial(trials) < bestTrial(other.trials)) // other is beter
+            if (contextIsBetterThan(other))	// other is beter
                 context = other.getContext();
                         
-            // now load the trials
-                        
-            // find the common substring
-            int len = Math.min(trials.size(), other.trials.size());
-            int i = 0; 
-            for( ; i < len; i++)
-                if (!trials.get(i).equals(other.trials.get(i)))
-                    break;
-                        
-            // at this point they differ, so we concatenate the rest into us
-            len = other.trials.size();
-            for(int j = i; j < len; j++)
-                { 
-                trials.add(other.trials.get(j));
-                }
+            // now concatenate the trials
+			trials.addAll(other.trials);
             }
         }
                 
