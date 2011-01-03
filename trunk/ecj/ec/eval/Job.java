@@ -42,7 +42,7 @@ public class Job
     Individual[] inds;   // original individuals
     Individual[] newinds;  // individuals that were returned -- may be different individuals!
     int[] subPops; 
-	boolean countVictoriesOnly;
+    boolean countVictoriesOnly;
     boolean[] updateFitness;
     
     void copyIndividualsForward()
@@ -52,17 +52,17 @@ public class Job
         for(int i=0; i < inds.length; i++)
             {
             newinds[i] = (Individual)(inds[i].clone());
-			// delete the trials since they'll get remerged
-			newinds[i].fitness.trials = null;
-			// delete the context, since it'll get remerged
-			newinds[i].fitness.setContext(null);
-			}
+            // delete the trials since they'll get remerged
+            newinds[i].fitness.trials = null;
+            // delete the context, since it'll get remerged
+            newinds[i].fitness.setContext(null);
+            }
         }
         
     void copyIndividualsBack(EvolutionState state)
         {
-		for(int i = 0; i < inds.length; i++)
-			inds[i].merge(state, newinds[i]);
-		newinds = null;
+        for(int i = 0; i < inds.length; i++)
+            inds[i].merge(state, newinds[i]);
+        newinds = null;
         }
     }

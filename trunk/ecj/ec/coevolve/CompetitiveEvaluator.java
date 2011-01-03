@@ -258,7 +258,7 @@ public class CompetitiveEvaluator extends Evaluator
                 {
                 // if the second individual is better, or coin flip if equal, than we switch them around
                 if( tourn[len-x-1].fitness.betterThan(tourn[x].fitness) ||
-					(tourn[len-x-1].fitness.equivalentTo(tourn[x].fitness) && state.random[0].nextBoolean()))
+                    (tourn[len-x-1].fitness.equivalentTo(tourn[x].fitness) && state.random[0].nextBoolean()))
                     {
                     Individual temp = tourn[x];
                     tourn[x] = tourn[len-x-1];
