@@ -1765,3 +1765,5 @@ Version		Change Log
 	Updated coevolve1 to revised approach
 	Removed vestigial 'birthday' in Individual
 	Modifications to coevolve2 to keep trial #0 as the "best" trial
+	Manual updated to reflect new coevolution mechanism
+	CoevolutionaryDoubleVectorIndividual deleted

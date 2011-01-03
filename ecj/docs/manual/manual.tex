@@ -156,9 +156,8 @@ George Mason University}
 \\
 \\
 \\
-\Large\bf Zeroth Edition\\
-\large\rm Online Version 0.2\\
-\large\rm October, 2010\\
+\large\rm {\bf Manual Version 20.1}\\
+\large\rm January, 2011\\
 
 \vspace{5.6in}
 \noindent\Large\bf Where to Obtain ECJ\\
@@ -1972,13 +1971,14 @@ The default implementation of this method calls \method{toString()}, which is al
 
 The method \method{readFitness(..., LineNumberReader)} reads into ECJ a Fitness written by these last two printers.  Finally, the last two methods, \method{writeFitness(...)} and \method{readFitness(..., DataInput)}, read and write the Fitness in a binary fashion.  The default implementation of these methods throws an error, but all standard subclasses of Fitness implement them properly.
 
-Fitnesses have one auxiliary variable:
+Fitnesses have two auxiliary variables:
 
 java{%
 public ArrayList trials = null;
+public Individual[] context = null;
 }
 
-This variable is used by the coevolutionary processes (see Section \ref{ec.coevolve}) to keep track of the number of trials (in the form of \class{java.lang.Double} used to compute the Fitness value.  Outside of coevolution it's presently unused.  Ultimately the variable doesn't matter once the Fitness has been computed.
+These variables are used by coevolutionary processes (see Section \ref{ec.coevolve}) to keep track of the number of trials (in the form of \class{java.lang.Double} used to compute the Fitness value, and to maintain the context (other collaborating Individuals) which produced the best result represented by he Fitness.  Outside of coevolution they're presently unused: leave them null and they won't be printed.
 
 \section{Initializers and Finishers}
 \label{ec.Initializer}
@@ -8373,29 +8373,44 @@ The coevolution package is meant to provide support for three kinds of Coevoluti
 
 Coevolution differs from evolutionary methods largely in how evaluation is handled (and of course, by the fact that there are often multiple subpopulations). Thus the classes in this package are basically Problems and Evaluators.  The first form of Coevolution is provided by the \class{ec.coevolve.CompetitiveEvaluator} class.  The second two are made possible by the \class{ec.coevolve.MultiPopCoevolutionaryEvaluator} class.
 
+\subsection{Coevolutionary Fitness}
+
+Coevolution is distinguished by its evaluation of Individuals not separately but in groups, where the Fitness of an Individual depends on its performance in the {\bf context} of other Individuals (either competing with them or working with them towards a common goal).  For this reason, coevolution typically involves evaluating an Individual multiple times, each time with a different set of other Individuals, and then computing the Fitness based on these multiple {\bf trials}.
+
+To assist in this procedure, the \class{ec.Fitness} class has two auxiliary variables:
+
+java{%
+public ArrayList trials = null;
+public Individual[] context = null;
+}
+
+The first variable (\variable{trials}) is used to maintain the results of each trial performed.  It's only used during evaluation, and then set to \variable{null} again.  Most commonly each trial is stored as a \class{java.lang.Double}, with higher values being considered better.  You can change this but if you do, be sure to read Section \ref{performingdistributedevaluationwithcoevolution} first.  {\bf Even if your trials are not \class{java.lang.Double}, they must be immutable: their internals cannot be modified, so they can be pointer-copied and not just cloned.}
+
+The second variable (\variable{context}) is used to maintain the context of the best trial discovered for the Individual.  It's typically only used by Cooperative Coevolution, where it's important to retain not only the performance of the Individual (his Fitness), but which collaborating Individuals made it possible for him to achieve that Fitness.  If  \variable{context} is used, it's assumed that the slots of \variable{context} hold each collaborator, except for the Individual himself, whose slot is set to null.  Section \ref{maintainingcontext} discusses the issue of context in more detail.
+
 \subsection{Grouped Problems}
 \label{ec.coevolve.GroupedProblemForm}
 
-Coevolution is distinguished by its evaluation of Individuals not separately but in groups, where the Fitness of an Individual depends on its performance in the context of other Individuals (either competing with them or working with them towards a common goal).  Because of this, coevolution requires a new kind of Problem which takes multiple Individuals at a time.  This Problem Form is defined by \class{ec.coevolve.GroupedProblemForm}.
-
-Evaluation in coevolution involves multiple trials, along these lines:
+Since Coevolution involves evaluating multiple Individuals at once, it will require a new kind of Problem which takes multiple Individuals at a time.  This Problem Form is defined by \class{ec.coevolve.GroupedProblemForm}.  Evaluation in coevolution involves multiple trials, along these lines:
 
 \begin{enumerate}
 \item Performance scores of Individuals are cleared.
-\item Individuals are tested against each other in various matches (or with one another in various collaborative problems).  These trials cause trial performance scores of the Individuals to accumulate.
+\item Individuals are tested against each other in various matches (or with one another in various collaborative problems).  These trials cause trial performance scores of the Individuals to accumulate.  If the trials are cooperative, the best trial found for a given Individual (its {\it context}) is maintained.
 \item The final Fitnesses of the Individuals are set based on the performance scores over all the trials.
 \end{enumerate}
 
-It's up to you to store the trial results and eventually form them into final Fitness values, as discussed later.  GroupedProblemForm will help you by defining three methods to do these various portions of the evaluation process.  You'll need to implement all three methods:
+It's up to you to store the trial results and eventually form them into final Fitness values, as discussed later.  It's also up to you to maintain the best context if you find this useful, as discussed later as well (in Section \ref{maintainingcontext}).  GroupedProblemForm will help you by defining three methods to do these various portions of the evaluation process.  You'll need to implement all three methods:
 
 \begin{methods}{ec.coevolve.GroupedProblemForm}
 \mthd{public abstract void preprocessPopulation(EvolutionState {\it state}, int {\it thread}, boolean {\it countVictoriesOnly})}
-Called prior evaluation of a Population, to clear the trials of Individuals.  Note that although this method is not static, you should not assume that this method will be called on the same Problem as is used later for \method{evaluate(...)}.  Thus don't use this method to set any instance variables in the Problem for later use.   If {\it countVictoriesOnly} is true, the method being used is SingleEliminationTournament.  Commonly you'll use this method to create a trials ArrayList.
+Called prior evaluation of a Population, to clear the trials of Individuals.  Note that although this method is not static, you should not assume that this method will be called on the same Problem as is used later for \method{evaluate(...)}.  Thus don't use this method to set any instance variables in the Problem for later use.   If {\it countVictoriesOnly} is true, the method being used is SingleEliminationTournament.  Commonly you'll use this method to create a brand-new trials ArrayList for every Fitness of every Individual in every Subpopulation.
 \mthd{void evaluate(EvolutionState {\it state},
         Individual[] {\it individuals}, 
         boolean[] {\it updateFitness}, boolean {\it countVictoriesOnly},\hspace{-2em}}
 \hsp{\fill}{\sf int[] {\it subpops}, int {\it thread})}\\
 Evaluates the {\it individuals} in a single trial, setting their performance scores for that trial.  Each individual will be from a certain subpopulation, specified in {\it subpops}. In some versions of coevolution, only certain individuals are supposed to have their performance scores updated (the others are acting as foils).  In this case, the relevant individuals will be indicated in the {\it updateFitness} array.  Typically you'll update fitness by adding trial results to the trials ArrayList.
+
+If you're doing cooperative coevolution, in this method you'll also probably want to maintain the context of the trial (the collaborating Individuals) if it's produced the best results so far.  More on that in Section \ref{maintainingcontext}.
 \mthd{public abstract void postprocessPopulation(EvolutionState {\it state}, int {\it thread}, boolean {\it countVictoriesOnly})}
 Called after evaluation of a Population to form final Fitness scores for the individuals based on the various performance scores they accumulated during trials.  Note that although this method is not static, you should not assume that this method will be called on the same Problem as was used earlier for \method{evaluate(...)}.  You'll probably want to set the trials variable to null to let it garbage collect.
 \end{methods}
@@ -8407,6 +8422,8 @@ You're going to have to do some work to make sure that your Fitnesses are proper
 \begin{enumerate}
 \item In \method{preprocessPopulation(...)}, set the Fitness's  \variable{trials} to a new ArrayList for all Individuals.
 \item In \method{evaluate(...)}, add to \variable{trials} the results of this trial for each Individual for whom \variable{updateFitness} is set.  Then set the Fitness to reflect just the immediate results of the trial (particularly if \variable{countVictoriesOnly} is set).  This allows Single Elimination Tournament\,---\,if you're using that\,---\, to determine who should advance to the next round.  Make certain that whatever you add to \variable{trials} is \class{java.io.Serializable}.
+
+If you're doing cooperative coevolution, determine if the new trial is superior to all the existing trials previously found in the \variable{trials} array.  If it is, set the context of this trial using \method{Fitness.setContext(...)}.
 \item In \method{postprocessPopulation(...)}, set the Fitness to the final result.  For example, you might set it to the average or the maximum of the various trials.  Finally, set the Fitness's \variable{trials} to null to let it GC.
 \end{enumerate}
 
@@ -8643,81 +8660,99 @@ For competitive coevolution, you can use the same example as in Section \ref{ec.
 
 
 
-\subsubsection{Printing Joint Collaborations}
-\label{printingjointcollaborations}
-At present \class{ec.coevolve.MultiPopCoevolutionaryEvaluator} provides no mechanism for storing the Individuals which collaborated with or competed against a highly fit Individual.  So it's up to you to print out the collaborators or testing competitors of, for example, the fittest Individual of a generation.  This is particularly of concern with cooperative coevolution: printing out an Individual is insufficient since it's only a piece of a joint solution.  Furthermore, though \class{ec.simple.SimpleStatistics} will print out the best Individual of each Subpopulation: it's not necessarily the case that those Individuals happened to become best by working with one another.
-
-To fix this, I suggest keeping them around stored in your Individual.  For example, your Individual might contain an array of collaborators like this:
+\subsubsection{Maintaining Context}
+\label{maintainingcontext}
+When you do Cooperative Coevolution, you'll probably want to retain information not only on how the Individual performed, but which collaborating Individuals helped him do his best.  It's up to you to maintain this information, but ECJ's Fitness object provides a variable which can help:
 
 \java{%
 public Individual[] context;
 }
 
-I'd have one collaborator per Subpopulation; the Individual itself would have its context slot null.  For example, if there were three Subpopulations, and the Individual was in Subpopulation 1, then \variable{context[1]} would be null, but the other two slots would (ultimately) be filled with best collaborators of the Individual. 
+In this variable store each collaborator, one per Subpopulation, plus one slot set to \variable{null} to represent the Individual himself.  The Fitness object will detect if the context exists (by default it's \variable{null}) and print out the context information when \method{printFitnessForHumans(...)} is called.  Fitness will also handle cloning this array (it calls \method{newFitness.setContext(oldFitness.getContext(context))}) when the Fitness is cloned, etc.  Fitness has some methods you can use rather than playing with the context directly:
 
-During the \method{evaluate(...)} method, each Individual uses this array to keep track of the collaborators which enabled the Individual to perform best.  For example, you might check to see if the most recent trials is the best one so far, and update the context if so:
+\begin{methods}{ec.Fitness}
+\mthd{public void setContext({\it Individual[]} cont, {\it int} index)}
+Sets the context to the Individuals stored in \variable{context}, under the assumption that the slot for the primary Individual is located at \variable{cont[index]}.  Clones the Individuals before adding to them to the context.\mthd{public void setContext({\it Individual[]} cont}
+Sets the context to the Individuals stored in \variable{context}, under the assumption that the slot for the primary Individual can be determined because it has been set to \variable{null}.  Clones the Individuals before adding to them to the context.
+\mthd{public Individual[] getContext()}
+Returns the context.
+\end{methods}
+
+You'll want to update the context during the \method{evaluate(...)} method.  Here's an example Cooperative Coevolution evaluation method:
 
 {
 \small\begin{verbatim}
-// for purposes here let's assume we just added the 
-// recent trial to the end of the 'trials' variable
-
-double trial = ((Double)(trials.get(trials.length - 1))).doubleValue;
-boolean best = true;
-
-for(int i = 0; i < trials.length - 1; i++)
+public void evaluate(EvolutionState state, Individudual[] ind, boolean[] updateFitness, 
+                     boolean countVictoriesOnly, int[] subpops, int threadnum)
     {
-    double other =  ((Double)(trials.get(i))).doubleValue;
-    if (other > trial)    // we presume less than is worse than
-       {  best = false;  break; }
-    }
-if (best)  // I'm best, store my context in the Individual
-    {
-    // store context individuals here
-    }
-\end{verbatim}
-}
-
-
-Then you could modify \method{printIndividualForHumans} to print out that best context, with the following hack:
-{
-\small\begin{verbatim}
-public void printIndividualForHumans(EvolutionState state, int log)
-    {
-    super.printIndividualForHumans(state, log);
-    if (!dontPrintContext && context != null)  // not sure why context would be null...
+    // First compute the value of this trial.  For example, imagine if each Individual was a
+    // DoubleVectorIndividual, and the fitness function was simply their sum.
+    double sum = 0;
+    for(int i = 0; i < ind.length; i++)
         {
-        for(int i = 0; i < context.length; i++)
-            if (context[i] != null)
+        DoubleVectorIndividual dind = (DoubleVectorIndividual)(ind[i]);
+        for(int j = 0; j < dind.genome.length; j++)
+            sum += dind.genome[j];
+        }
+    
+    // next update each Individual to reflect this trial result
+    for(int i = 0; i < ind.length; i++)
+        {
+        if (updateFitness[i])  // need to include this trial for this Individual
+            {
+            // We presume that the best trial found so far has been stored at 
+            // position 0 of the trials array.  This makes it O(1) to determine if
+            // we're the new "best trial".  Heeeere we go!
+
+            ArrayList tr = ind[i].fitness.trials;
+            if (tr.size() == 0)  // we're the first trial to be performed so far
                 {
-                state.output.println("--Collaborator " + i + ":", log);
-                // this is a hack but it should be fine because printing
-                // individuals for humans is essentially always single-threaded
-                context[i].dontPrintContext = true;
-                context[i].printIndividualForHumans(state, log);
-                context[i].dontPrintContext = false;
+                tr.add(new Double(sum));  // just dump us in
+                ind[i].fitness.setContext(ind, i);  // set the context to us
                 }
+            else if (((Double)(tr.get(0))).doubleValue < sum)  // we're the new best
+                {
+                // swap us to the 0th position
+                Double t = (Double)(tr.get(0));
+                tr.set(0, new Double(sum));    // I'm at 0
+                tr.add(t);     // move the old guy to the end of the line
+                ind[i].fitness.setContext(ind, i);  // set the context to us
+                }
+            
+            // don't bother setting the fitness here
             }
         }
     }
 \end{verbatim}
 }
 
-The idea is to print the individual and also his collaborators (but prevent them from printing {\it their} collaborators during this process).
-
-
 \subsection{Performing Distributed Evaluation with Coevolution}
+\label{performingdistributedevaluationwithcoevolution}
 
-Coevolution introduces its own wrinkle to Distributed Evaluation, because it has multiple trials, and each of those trials is a separate job potentially processed on a separate machine.  We need a way to merge all those trials together to compute the final fitness.   Furthermore we may need a way to determine which context (see Section \ref{printingjointcollaborations}) among those merged trials should be retained.
+Coevolution introduces its own wrinkle to Distributed Evaluation, because it has multiple trials, and each of those trials is a separate job potentially processed on a separate machine.  We need a way to merge all those trials together to compute the final fitness.   Furthermore we may need a way to determine which context (see Section \ref{maintainingcontext}) among those merged trials should be retained.  If your trial results are \class{java.lang.Double}, with higher values considered better, you probably don't need to do anything.  Otherwise you'll need to make a tweak.  Here's some details on how the mechanism works.
 
+When ECJ sends off a group of Individuals to a remote site to be evaluated using a \class{ec.coevolve.GroupedProblemForm}, the first thing it does (in \class{ec.eval.Job}) is make clones of them, then strip the clones of both trials and context.  When the Individuals come back, they need to have their trials and context reintegrated with the original Individuals.  This is done by calling the \method{merge(...)} method on the Individuals.
 
+The \method{Individual.merge(...)} method isn't particularly efficient but it gets the job done.  First, it calls \method{Fitness.merge(...)} to handle merging trials and context (actual fitness value isn't bothered with\,---\,at this point it doesn't matter).  However this merging isn't in the direction you think: the {\it old} Fitness is merged into the new Fitness.  Then it copies the entire new Individual, including the merged Fitness, into the old Individual, displacing it.  This way the merged Fitness retains the new fitness value, plus merged trials and context. 
 
+How are trials and context merged?  Keep in mind that when the Individual was cloned and sent to the remote site to be evaluated, the clone's trials and context were stripped.  When the cloned Individual returns and must be merged with the original Individual, the cloned Individual will have a new context and one or more new trials.  \method{Fitness.merge(...)} who has the better trial: accordingly, this is the context that is retained. Then the new trials are appended to the original trials.
 
+\paragraph{The crucial item.}  To determine which group of trials contains a superior trial,  \method{Fitness.merge(...)} calls a method called \method{Fitness.contextIsBetterThan(Fitness other)}.  This method returns true if the given Fitness's trials are superior to the ``other'' Fitness's trials.  {\bf This method assumes that trials are \class{java.lang.Double}.}  If they are not, you'll need to override this method and replace it.   Recall again that {\bf even if your trials are not \class{java.lang.Double}, they must be immutable: their internals cannot be modified, so they can be pointer-copied and not just cloned.}
 
+Here are the relevant methods of interest:
 
+\begin{methods}{ec.Individual}
+\mthd{ public void merge({\it EvolutionState} state, {\it Individual} other)}
+Merges the other Individual into the original Individual, including Fitnesses.  After the merge, (1) the Individual should be a copy of \variable{other} (2) the Fitness's value should be a copy of \variable{other} (3) the Fitness's trials should be a merger of the original trials and those of \variable{other} (4) the higher-quality context of the two Individuals should be retained.  By default this method does this by calling \variable{other.fitness.merge(fitness)} (note the backwards merge), then copying back the entirety of \variable{other} into the original Individual\footnote{How is this magic copying done?  By use of a \class{ec.util.DataPipe}: we first call 
+\variable{other.writeIndividual(...)} into the pipe, then call \variable{readIndividual(...)} from the pipe.  It's a hack but it works, and avoids the need for a custom version of \method{Individual.merge} for every possible genotype.}  You'll rarely need to override this method.
+\end{methods}
 
-
-
+\begin{methods}{ec.Fitness}
+\mthd{ public void merge({\it EvolutionState} state, {\it Fitness} other)}
+Merges the other Fitness into the original Fitness.  The only thing that needs to be merged is trials and context.  If \variable{other} has better trials than the original Individual, its context replaces the original context.  Then the trials are concatenated together.  Calls \method{contextIsBetterThan(...)} to determine which Fitness has the superior trials, and thus context.  You'll not often need to override this method, but may need to override \method{contextIsBetterThan(...)}.
+\mthd{ public boolean contextIsBetterThan({\it Fitness} other)}
+Returns true if the my context is better than the other Fitness's context.  This is computed by comparing our trials: if I have trials and the other does not, or if one of my trials is superior to all of the other's trials, then returns true.  This method assumes that trials are \variable{java.lang.Double}, and that higher values are better.  If this is not the case, you'll need to override this method to customize it.
+\end{methods}
 
 \section{Spatially Embedded Evolutionary Algorithms (The \package{ec.spatial} Package)}
 \label{ec.spatial}

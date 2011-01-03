@@ -53,7 +53,9 @@ import java.util.*;
 public abstract class Fitness implements Prototype, Comparable
     {
     /** Auxiliary variable, used by coevolutionary processes, to compute the
-        number of trials used to compute this Fitness value.  By default trials=null and stays that way. */
+        number of trials used to compute this Fitness value.  By default trials=null and stays that way. 
+		If you set this variable, all of the elements of the ArrayList must be immutable -- once they're
+		set they never change internally.  */
     public ArrayList trials = null;
         
     /** Auxiliary variable, used by coevolutionary processes, to store the individuals
@@ -62,6 +64,14 @@ public abstract class Fitness implements Prototype, Comparable
         circularity when cloning.
     */
     public Individual[] context = null;
+
+	public void setContext(Individual[] cont, int index)
+		{
+		Individual ind = cont[index];
+		cont[index] = null;
+		setContext(cont);
+		cont[index] = ind;
+		}
 
     public void setContext(Individual[] cont)
         {
@@ -335,9 +345,7 @@ public abstract class Fitness implements Prototype, Comparable
         return best;
         }
 
-    /** Merges the other fitness into this fitness.  The other fitness is assumed to be more recent, and
-        is assumed to be a clone which will never be used again, so we can steal things from it and
-        share data with it.
+    /** Merges the other fitness into this fitness.  May destroy the other Fitness in the process.
         This method is typically called by coevolution in combination with distributed evauation where
         the Individual may be sent to various different sites to have trials performed on it, and
         the results must be merged together to form a relevant fitness.  By default merging occurs as follows.
@@ -364,7 +372,7 @@ public abstract class Fitness implements Prototype, Comparable
         else  // gotta concatenate
             {
             // first question: who has the best context?
-            if (contextIsBetterThan(other))	// other is beter
+            if (!contextIsBetterThan(other))	// other is beter
                 context = other.getContext();
                         
             // now concatenate the trials
@@ -378,7 +386,7 @@ public abstract class Fitness implements Prototype, Comparable
         try 
             {
             Fitness f = (Fitness)(super.clone());
-            if (f.trials != null) f.trials = new ArrayList(trials);  // we can do a light clone because trials consist only of Doubles
+            if (f.trials != null) f.trials = new ArrayList(trials);  // we can do a light clone because trials must be immutable
             f.setContext(f.getContext()); // deep-clones and removes context just in case
             return f;
             }
