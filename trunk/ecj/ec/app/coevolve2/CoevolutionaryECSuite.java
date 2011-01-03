@@ -42,14 +42,6 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
                 }
         }
 
-	public void updateContext(CoevolutionaryDoubleVectorIndividual coind, int index, Individual[] ind)
-		{
-		coind.context = new CoevolutionaryDoubleVectorIndividual[ind.length];
-		for(int j = 0; j < ind.length; j++)
-			if (index != j)
-				coind.context[j] = (CoevolutionaryDoubleVectorIndividual)(ind[j]);
-		}
-
     public void evaluate(final EvolutionState state,
         final Individual[] ind,  // the individuals to evaluate together
         final boolean[] updateFitness,  // should this individuals' fitness be updated?
@@ -64,11 +56,11 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
                 
         int size = 0;
         for(int i = 0 ; i < ind.length; i++)
-            if ( ! ( ind[i] instanceof CoevolutionaryDoubleVectorIndividual ) )
-                state.output.error( "Individual " + i + "in coevolution is not a CoevolutionaryDoubleVectorIndividual." );
+            if ( ! ( ind[i] instanceof DoubleVectorIndividual ) )
+                state.output.error( "Individual " + i + "in coevolution is not a DoubleVectorIndividual." );
             else
                 {
-                CoevolutionaryDoubleVectorIndividual coind = (CoevolutionaryDoubleVectorIndividual)(ind[i]);
+                DoubleVectorIndividual coind = (DoubleVectorIndividual)(ind[i]);
                 size += coind.genome.length;
                 }
         state.output.exitIfErrors();
@@ -78,7 +70,7 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
         int pos = 0;
         for(int i = 0 ; i < ind.length; i++)
             {
-            CoevolutionaryDoubleVectorIndividual coind = (CoevolutionaryDoubleVectorIndividual)(ind[i]);
+            DoubleVectorIndividual coind = (DoubleVectorIndividual)(ind[i]);
             System.arraycopy(coind.genome, 0, vals, pos, coind.genome.length);
             pos += coind.genome.length;
             }
@@ -88,7 +80,7 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
         // update individuals to reflect the trial
         for(int i = 0 ; i < ind.length; i++)
             {
-            CoevolutionaryDoubleVectorIndividual coind = (CoevolutionaryDoubleVectorIndividual)(ind[i]);
+            DoubleVectorIndividual coind = (DoubleVectorIndividual)(ind[i]);
             if (updateFitness[i])
                 {
                 // Update the context if this is the best trial.  We're going to assume that the best
@@ -96,12 +88,12 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
                 int len = coind.fitness.trials.size();
 				if (len == 0)  // easy
 					{
-					updateContext(coind, i, ind);
+					coind.fitness.setContext(ind, i);
 					coind.fitness.trials.add(new Double(trial));
 					}
 				else if (((Double)(coind.fitness.trials.get(0))).doubleValue() < trial)  // best trial is presently #0
 					{
-					updateContext(coind, i, ind);
+					coind.fitness.setContext(ind, i);
 					// put me at position 0
 					Double t = (Double)(coind.fitness.trials.get(0));
 					coind.fitness.trials.set(0, new Double(trial));  // put me at 0

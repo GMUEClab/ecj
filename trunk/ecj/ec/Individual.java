@@ -379,8 +379,9 @@ public abstract class Individual implements Prototype, Comparable
                 
                 
     /** Replaces myself with the other Individual, while merging our evaluation results together.  May destroy
-        the other Individual in the process.  By default this procedure calls fitness(merge), then copies
-        my fitness to the other's fitness, then entirely overwrites myself with the other Individual.
+        the other Individual in the process.  By default this procedure calls fitness(merge) to merge the old
+		fitness (backwards) into the new fitness, then entirely overwrites myself with the other Individual
+		(including the merged fitness).
                 
         <p>What is the purpose of this method?   When coevolution is done in combination with distributed evaluation,
         an Individual may be sent to multiple remote sites to be tested in different trials prior to having a completed
@@ -394,12 +395,10 @@ public abstract class Individual implements Prototype, Comparable
     */
     public void merge(EvolutionState state, Individual other)
         {
-        // merge the fitnesses together
-        fitness.merge(state, other.fitness);
-        // copy forward to the other fitness
-        other.fitness = fitness;
-        // now push the Individual back to us
-                
+		// merge the fitnesses backwards:  merge the fitness INTO the other fitness
+        other.fitness.merge(state, fitness);
+
+        // now push the Individual back to us, including the merged fitness
         try             // a ridiculous hack
             {
             DataPipe p = new DataPipe();
