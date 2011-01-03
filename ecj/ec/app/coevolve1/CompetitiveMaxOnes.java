@@ -30,19 +30,19 @@ public class CompetitiveMaxOnes extends Problem implements GroupedProblemForm
         for( int i = 0 ; i < pop.subpops.length ; i++ )
             for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
                 {
-				SimpleFitness fit = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
+                SimpleFitness fit = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
 
-				// average of the trials we got
-				int len = fit.trials.size();
-				double sum = 0;
-				for(int l = 0; l < len; l++)
-					sum += ((Double)(fit.trials.get(l))).doubleValue();
-				sum /= len;
-				
-				// we'll not bother declaring the ideal
-				fit.setFitness(state, (float)(sum / len), false);
+                // average of the trials we got
+                int len = fit.trials.size();
+                double sum = 0;
+                for(int l = 0; l < len; l++)
+                    sum += ((Double)(fit.trials.get(l))).doubleValue();
+                sum /= len;
+                                
+                // we'll not bother declaring the ideal
+                fit.setFitness(state, (float)(sum / len), false);
                 pop.subpops[i].individuals[j].evaluated = true;
-				fit.trials = null;  // let GC
+                fit.trials = null;  // let GC
                 }
         }
 
@@ -76,27 +76,27 @@ public class CompetitiveMaxOnes extends Problem implements GroupedProblemForm
         temp = (BitVectorIndividual)ind[1];
         for( int i = 0 ; i < temp.genome.length ; i++ )
             if( temp.genome[i] ) value2++;
-			
-		double score = value1 - value2;
+                        
+        double score = value1 - value2;
 
         if( updateFitness[0] )
             {
             SimpleFitness fit = ((SimpleFitness)(ind[0].fitness));
             fit.trials.add(new Double(score));
-			
-			// set the fitness because if we're doing Single Elimination Tournament, the tournament
-			// needs to know who won this time around.  Don't bother declaring the ideal here.
-			fit.setFitness(state, (float)score, false);
+                        
+            // set the fitness because if we're doing Single Elimination Tournament, the tournament
+            // needs to know who won this time around.  Don't bother declaring the ideal here.
+            fit.setFitness(state, (float)score, false);
             }
 
         if( updateFitness[1] )
             {
             SimpleFitness fit = ((SimpleFitness)(ind[1].fitness));
-			fit.trials.add(new Double(-score));
+            fit.trials.add(new Double(-score));
 
-			// set the fitness because if we're doing Single Elimination Tournament, the tournament
-			// needs to know who won this time around.
-			fit.setFitness(state, (float)-score, false);
+            // set the fitness because if we're doing Single Elimination Tournament, the tournament
+            // needs to know who won this time around.
+            fit.setFitness(state, (float)-score, false);
             }
         }
 

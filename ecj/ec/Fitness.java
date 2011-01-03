@@ -55,46 +55,46 @@ public abstract class Fitness implements Prototype, Comparable
     /** Auxiliary variable, used by coevolutionary processes, to compute the
         number of trials used to compute this Fitness value.  By default trials=null and stays that way. */
     public ArrayList trials = null;
-	
-	/** Auxiliary variable, used by coevolutionary processes, to store the individuals
-		involved in producing this given Fitness value.  By default context=null and stays that way.
-		Note that individuals stored here may possibly not themselves have Fitness values to avoid
-		circularity when cloning.
-		*/
-	public Individual[] context = null;
+        
+    /** Auxiliary variable, used by coevolutionary processes, to store the individuals
+        involved in producing this given Fitness value.  By default context=null and stays that way.
+        Note that individuals stored here may possibly not themselves have Fitness values to avoid
+        circularity when cloning.
+    */
+    public Individual[] context = null;
 
-	public void setContext(Individual[] cont)
-		{
-		if (cont == null)
-			context = null;
-		else // make sure it's deep-cloned and stripped of context itself
-			{
-			context = new Individual[cont.length];
-			for(int i = 0; i < cont.length; i++)
-				{
-				if (cont[i] == null)
-					context[i] = null;
-				else 
-					{
-					// we first remove context so we don't have any circularity in cloning 
-					Individual[] c = cont[i].fitness.context;
-					cont[i].fitness.context = null;
-					
-					// now clone the individual in place
-					context[i] = (Individual)(cont[i].clone());
-					
-					// now put the context back
-					cont[i].fitness.context = c;
-					}
-				}
-			}
-		}
-	
-	/** Treat the Individual[] you receive from this as read-only. */
-	public Individual[] getContext()
-		{
-		return context;
-		}
+    public void setContext(Individual[] cont)
+        {
+        if (cont == null)
+            context = null;
+        else // make sure it's deep-cloned and stripped of context itself
+            {
+            context = new Individual[cont.length];
+            for(int i = 0; i < cont.length; i++)
+                {
+                if (cont[i] == null)
+                    context[i] = null;
+                else 
+                    {
+                    // we first remove context so we don't have any circularity in cloning 
+                    Individual[] c = cont[i].fitness.context;
+                    cont[i].fitness.context = null;
+                                        
+                    // now clone the individual in place
+                    context[i] = (Individual)(cont[i].clone());
+                                        
+                    // now put the context back
+                    cont[i].fitness.context = c;
+                    }
+                }
+            }
+        }
+        
+    /** Treat the Individual[] you receive from this as read-only. */
+    public Individual[] getContext()
+        {
+        return context;
+        }
 
     /** base parameter for defaults */
     public static final String P_FITNESS = "fitness";
@@ -165,34 +165,34 @@ public abstract class Fitness implements Prototype, Comparable
     /** Should print the fitness out fashion pleasing for humans to read, 
         using state.output.println(...,verbosity,log).  The default version
         of this method calls fitnessToStringForHumans(), adds context (collaborators) if any,
-		and printlns the resultant string.
+        and printlns the resultant string.
         @deprecated Verbosity no longer has meaning
     */
     public void printFitnessForHumans(EvolutionState state, int log, 
         int verbosity)
         {
-		String s = fitnessToStringForHumans();
-		if (context != null)
-			{
-			for(int i = 0; i < context.length; i++)
-				{
-				if (context[i] != null)
-					{
-					s += "\nCollaborator " + i + ": ";
-					// temporarily de-link the context of the collaborator
-					// to avoid loops
-					Individual[] c = context[i].fitness.context;
-					context[i].fitness.context = null;
-					s += context[i].genotypeToStringForHumans();
-					// relink
-					context[i].fitness.context = c;
-					}
-				else // that's me!
-					{
-					// do nothing
-					}
-				}
-			}
+        String s = fitnessToStringForHumans();
+        if (context != null)
+            {
+            for(int i = 0; i < context.length; i++)
+                {
+                if (context[i] != null)
+                    {
+                    s += "\nCollaborator " + i + ": ";
+                    // temporarily de-link the context of the collaborator
+                    // to avoid loops
+                    Individual[] c = context[i].fitness.context;
+                    context[i].fitness.context = null;
+                    s += context[i].genotypeToStringForHumans();
+                    // relink
+                    context[i].fitness.context = c;
+                    }
+                else // that's me!
+                    {
+                    // do nothing
+                    }
+                }
+            }
         state.output.println( s, verbosity, log);
         }
 
@@ -252,7 +252,7 @@ public abstract class Fitness implements Prototype, Comparable
         The fitness and evaluated flag should not be included.  The default form
         simply calls toString(), which is almost certainly wrong, 
         and you'll probably want to override this to something else.  When overriding, you
-		may wish to check to see if the 'trials' variable is non-null, and issue an error if so.  */
+        may wish to check to see if the 'trials' variable is non-null, and issue an error if so.  */
     public String fitnessToString()
         {
         return toString();
@@ -261,7 +261,7 @@ public abstract class Fitness implements Prototype, Comparable
     /** Writes the binary form of an individual out to a DataOutput.  This is not for serialization:
         the object should only write out the data relevant to the object sufficient to rebuild it from a DataInput.
         The default version exits the program with an "unimplemented" error; you should override this, and be
-		certain to also write the 'trials' variable as well.
+        certain to also write the 'trials' variable as well.
     */
     public void writeFitness(final EvolutionState state,
         final DataOutput dataOutput) throws IOException
@@ -270,24 +270,24 @@ public abstract class Fitness implements Prototype, Comparable
         }
 
 
-	/** Writes trials out to DataOutput */
-	public void writeTrials(final EvolutionState state, final DataOutput dataOutput) throws IOException
-		{
-		if (trials == null)
-			dataOutput.writeInt(-1);
-		else
-			{
-			int len = trials.size();
-			dataOutput.writeInt(len);
-			for(int i = 0; i < len; i++)
-				dataOutput.writeDouble(((Double)(trials.get(i))).doubleValue());
-			}
-		}
+    /** Writes trials out to DataOutput */
+    public void writeTrials(final EvolutionState state, final DataOutput dataOutput) throws IOException
+        {
+        if (trials == null)
+            dataOutput.writeInt(-1);
+        else
+            {
+            int len = trials.size();
+            dataOutput.writeInt(len);
+            for(int i = 0; i < len; i++)
+                dataOutput.writeDouble(((Double)(trials.get(i))).doubleValue());
+            }
+        }
 
     /** Reads the binary form of an individual from a DataInput.  This is not for serialization:
         the object should only read in the data written out via printIndividual(state,dataInput).  
         The default version exits the program with an "unimplemented" error; you should override this, and be
-		certain to also write the 'trials' variable as well.
+        certain to also write the 'trials' variable as well.
     */
     public void readFitness(final EvolutionState state,
         final DataInput dataInput) throws IOException
@@ -296,86 +296,86 @@ public abstract class Fitness implements Prototype, Comparable
         }
 
 
-	/** Reads trials in from DataInput. */
-	public void readTrials(final EvolutionState state, final DataInput dataInput) throws IOException
-		{
-		int len = dataInput.readInt();
-		if (len >= 0)
-			{
-			trials = new ArrayList(len);
-			for(int i = 0; i < len; i++)
-				trials.add(new Double(dataInput.readDouble()));
-			}
-		}
+    /** Reads trials in from DataInput. */
+    public void readTrials(final EvolutionState state, final DataInput dataInput) throws IOException
+        {
+        int len = dataInput.readInt();
+        if (len >= 0)
+            {
+            trials = new ArrayList(len);
+            for(int i = 0; i < len; i++)
+                trials.add(new Double(dataInput.readDouble()));
+            }
+        }
 
-	double bestTrial(ArrayList l)
-		{
-		if (l == null || l.size() == 0) return Double.MIN_VALUE;
-		double best = ((Double)(l.get(0))).doubleValue();
-		int len = l.size();
-		for (int i = 1 ; i < len; i ++)
-			{
-			double next = ((Double)(l.get(i))).doubleValue();
-			if (next > best) best = next;
-			}
-		return best;
-		}
+    double bestTrial(ArrayList l)
+        {
+        if (l == null || l.size() == 0) return Double.MIN_VALUE;
+        double best = ((Double)(l.get(0))).doubleValue();
+        int len = l.size();
+        for (int i = 1 ; i < len; i ++)
+            {
+            double next = ((Double)(l.get(i))).doubleValue();
+            if (next > best) best = next;
+            }
+        return best;
+        }
 
-	/** Merges the other fitness into this fitness.  The other fitnessis assumed to be more recent, and
-		is assumed to be a clone which will never be used again, so we can steal things from it and
-		share data with it.
-		This method is typically called by coevolution in combination with distributed evauation where
-		the Individual may be sent to various different sites to have trials performed on it, and
-		the results must be merged together to form a relevant fitness.  By default the only thing that
-		is "merged" are the trials arrays, as follows: the portion of 'other' trials which is different from the
-		start of our trials is concatenated to the end of our trials.  For example, if our trials were
-		123456 and the other trials were 123789, then the result would be 123456789.  In coevolution nothing
-		else needs to be merged usually, though you may need to override this to handle other things specially.
-		*/
-	public void merge(EvolutionState state, Fitness other)
-		{
-		// first let's merge trials.  We assume they're Doubles
-		
-		if (other.trials == null) return;
-		else if (trials == null && other.trials != null)
-			{
-			trials = new ArrayList(other.trials);   // copy him over
-			context = other.getContext();			// grab the context
-			}
-		else  // gotta look for different strings and concatenate
-			{
-			// first question: who has the best context?
-			if (bestTrial(trials) < bestTrial(other.trials)) // other is beter
-				context = other.getContext();
-			
-			// now load the trials
-			
-			// find the common substring
-			int len = Math.min(trials.size(), other.trials.size());
-			int i = 0; 
-			for( ; i < len; i++)
-				if (!trials.get(i).equals(other.trials.get(i)))
-					break;
-			
-			// at this point they differ, so we concatenate the rest into us
-			len = other.trials.size();
-			for(int j = i; j < len; j++)
-				{ 
-				trials.add(other.trials.get(j));
-				}
-			}
-		}
-		
+    /** Merges the other fitness into this fitness.  The other fitnessis assumed to be more recent, and
+        is assumed to be a clone which will never be used again, so we can steal things from it and
+        share data with it.
+        This method is typically called by coevolution in combination with distributed evauation where
+        the Individual may be sent to various different sites to have trials performed on it, and
+        the results must be merged together to form a relevant fitness.  By default the only thing that
+        is "merged" are the trials arrays, as follows: the portion of 'other' trials which is different from the
+        start of our trials is concatenated to the end of our trials.  For example, if our trials were
+        123456 and the other trials were 123789, then the result would be 123456789.  In coevolution nothing
+        else needs to be merged usually, though you may need to override this to handle other things specially.
+    */
+    public void merge(EvolutionState state, Fitness other)
+        {
+        // first let's merge trials.  We assume they're Doubles
+                
+        if (other.trials == null) return;
+        else if (trials == null && other.trials != null)
+            {
+            trials = new ArrayList(other.trials);   // copy him over
+            context = other.getContext();                   // grab the context
+            }
+        else  // gotta look for different strings and concatenate
+            {
+            // first question: who has the best context?
+            if (bestTrial(trials) < bestTrial(other.trials)) // other is beter
+                context = other.getContext();
+                        
+            // now load the trials
+                        
+            // find the common substring
+            int len = Math.min(trials.size(), other.trials.size());
+            int i = 0; 
+            for( ; i < len; i++)
+                if (!trials.get(i).equals(other.trials.get(i)))
+                    break;
+                        
+            // at this point they differ, so we concatenate the rest into us
+            len = other.trials.size();
+            for(int j = i; j < len; j++)
+                { 
+                trials.add(other.trials.get(j));
+                }
+            }
+        }
+                
 
     public Object clone()
         {
         try 
-			{
-			Fitness f = (Fitness)(super.clone());
-			if (f.trials != null) f.trials = new ArrayList(trials);  // we can do a light clone because trials consist only of Doubles
-			f.setContext(f.getContext()); // deep-clones and removes context just in case
-			return f;
-			}
+            {
+            Fitness f = (Fitness)(super.clone());
+            if (f.trials != null) f.trials = new ArrayList(trials);  // we can do a light clone because trials consist only of Doubles
+            f.setContext(f.getContext()); // deep-clones and removes context just in case
+            return f;
+            }
         catch (CloneNotSupportedException e) 
             { throw new InternalError(); } // never happens
         }

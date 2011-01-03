@@ -63,7 +63,7 @@ public class NSGA2MultiObjectiveFitness extends MultiObjectiveFitness
         super.writeFitness(state, dataOutput);
         dataOutput.writeInt(rank);
         dataOutput.writeDouble(sparsity);
-		writeTrials(state, dataOutput);
+        writeTrials(state, dataOutput);
         }
 
     public void readFitness(final EvolutionState state, final DataInput dataInput) throws IOException
@@ -71,7 +71,7 @@ public class NSGA2MultiObjectiveFitness extends MultiObjectiveFitness
         super.readFitness(state, dataInput);
         rank = dataInput.readInt();
         sparsity = dataInput.readDouble();
-		readTrials(state, dataInput);
+        readTrials(state, dataInput);
         }
 
     public boolean equivalentTo(Fitness _fitness)

@@ -376,43 +376,43 @@ public abstract class Individual implements Prototype, Comparable
         Individual other = (Individual) o;
         return fitness.compareTo(other.fitness);
         }
-		
-		
-	/** Replaces myself with the other Individual, while merging our evaluation results together.  May destroy
-		the other Individual in the process.  By default this procedure calls fitness(merge), then copies
-		my fitness to the other's fitness, then entirely overwrites myself with the other Individual.
-		
-		<p>What is the purpose of this method?   When coevolution is done in combination with distributed evaluation,
-		an Individual may be sent to multiple remote sites to be tested in different trials prior to having a completed
-		fitness assessed.  As those trials complete, we need a way to merge them together.  By default this method
-		simply merges the trial arrays (using fitness.merge(...)), then copies the other Individual to me.  But if you
-		store additional trial results outside fitness---for example, if you keep around the best collaborators from
-		coevolution, say---you may need a way to guarantee that this Individual reflects the most up to date information
-		about recent trials arriving via the other Individual.  In this case, override the method and perform merging 
-		by hand.
-	*/
-	public void merge(EvolutionState state, Individual other)
-		{
-		// merge the fitnesses together
-		fitness.merge(state, other.fitness);
-		// copy forward to the other fitness
-		other.fitness = fitness;
-		// now push the Individual back to us
-		
-        try		// a ridiculous hack
+                
+                
+    /** Replaces myself with the other Individual, while merging our evaluation results together.  May destroy
+        the other Individual in the process.  By default this procedure calls fitness(merge), then copies
+        my fitness to the other's fitness, then entirely overwrites myself with the other Individual.
+                
+        <p>What is the purpose of this method?   When coevolution is done in combination with distributed evaluation,
+        an Individual may be sent to multiple remote sites to be tested in different trials prior to having a completed
+        fitness assessed.  As those trials complete, we need a way to merge them together.  By default this method
+        simply merges the trial arrays (using fitness.merge(...)), then copies the other Individual to me.  But if you
+        store additional trial results outside fitness---for example, if you keep around the best collaborators from
+        coevolution, say---you may need a way to guarantee that this Individual reflects the most up to date information
+        about recent trials arriving via the other Individual.  In this case, override the method and perform merging 
+        by hand.
+    */
+    public void merge(EvolutionState state, Individual other)
+        {
+        // merge the fitnesses together
+        fitness.merge(state, other.fitness);
+        // copy forward to the other fitness
+        other.fitness = fitness;
+        // now push the Individual back to us
+                
+        try             // a ridiculous hack
             {
             DataPipe p = new DataPipe();
             DataInputStream in = p.input;
             DataOutputStream out = p.output;
-			other.writeIndividual(state, out);
-			readIndividual(state, in);
-			}
+            other.writeIndividual(state, out);
+            readIndividual(state, in);
+            }
         catch (IOException e) 
             { 
             e.printStackTrace();
             state.output.fatal("Caught impossible IOException in Individual.merge(...).");
             }
-		}
-	
+        }
+        
     }
 
