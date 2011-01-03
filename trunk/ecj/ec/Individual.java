@@ -385,7 +385,8 @@ public abstract class Individual implements Prototype, Comparable
         <p>What is the purpose of this method?   When coevolution is done in combination with distributed evaluation,
         an Individual may be sent to multiple remote sites to be tested in different trials prior to having a completed
         fitness assessed.  As those trials complete, we need a way to merge them together.  By default this method
-        simply merges the trial arrays (using fitness.merge(...)), then copies the other Individual to me.  But if you
+        simply merges the trial arrays (using fitness.merge(...)), and determines the "best" context,
+		then copies the other Individual to me.  But if you
         store additional trial results outside fitness---for example, if you keep around the best collaborators from
         coevolution, say---you may need a way to guarantee that this Individual reflects the most up to date information
         about recent trials arriving via the other Individual.  In this case, override the method and perform merging 
