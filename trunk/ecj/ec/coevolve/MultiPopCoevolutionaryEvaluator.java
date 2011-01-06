@@ -35,12 +35,12 @@ import ec.util.*;
  <table>
  <tr><td valign=top><i>base.</i><tt>subpop.num-current</tt><br>
  <font size=-1> int &gt;= 0</font></td>
- <td valign=top>(the number of random individuals from any given subpopulation to be selected as collaborators)
+ <td valign=top>(the number of random individuals from any given subpopulation fropm the current population to be selected as collaborators)
  </td></tr>
 
  <tr><td valign=top><i>base.</i><tt>subpop.num-elites</tt><br>
  <font size=-1> int &gt;= 0</font></td>
- <td valign=top>(the number of elite individuals from any given subpopulation to be selected as collaborators. For generation 0, random individuals from the current population will be used.  )
+ <td valign=top>(the number of elite individuals from any given subpopulation from the previous population to be selected as collaborators. For generation 0, random individuals from the current population will be used.  )
  </td></tr>
 
  <tr><td valign=top><i>base.</i><tt>subpop.num-prev</tt><br>
