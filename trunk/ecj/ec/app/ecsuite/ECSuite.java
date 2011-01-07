@@ -57,6 +57,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final String V_GRIEWANGK = "griewangk";
     public static final String V_MEDIAN = "median";
     public static final String V_SUM = "sum";
+    public static final String V_PRODUCT = "product";
 
     public static final int PROB_ROSENBROCK = 0;
     public static final int PROB_RASTRIGIN = 1;
@@ -67,6 +68,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final int PROB_GRIEWANGK = 6;
     public static final int PROB_MEDIAN = 7;
     public static final int PROB_SUM = 8;
+    public static final int PROB_PRODUCT = 9;
     
     public int problemType = PROB_ROSENBROCK;  // defaults on Rosenbrock
 
@@ -96,6 +98,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
             problemType = PROB_MEDIAN;           
         else if( wp.compareTo( V_SUM ) == 0 )
             problemType = PROB_SUM;           
+        else if( wp.compareTo( V_PRODUCT ) == 0 )
+            problemType = PROB_PRODUCT;           
         else state.output.fatal(
             "Invalid value for parameter, or parameter not found.\n" +
             "Acceptable values are:\n" +
@@ -107,7 +111,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
             "  " + V_BOOTH + "\n" +
             "  " + V_GRIEWANGK + "\n" + 
             "  " + V_MEDIAN + "\n" + 
-            "  " + V_SUM + "\n",
+            "  " + V_SUM + "\n" +
+            "  " + V_PRODUCT + "\n",
             base.push( P_WHICH_PROBLEM ) );
         }
 
@@ -133,7 +138,20 @@ public class ECSuite extends Problem implements SimpleProblemForm
         boolean isOptimal = isOptimal(problemType, fit);
                 
         // set the fitness appropriately
-        ((SimpleFitness)(ind.fitness)).setFitness( state, (float)fit, isOptimal );
+				if ((float)fit < (0.0f - Float.MAX_VALUE))  // uh oh -- can be caused by Product for example
+					{
+					((SimpleFitness)(ind.fitness)).setFitness( state, 0.0f - Float.MAX_VALUE, isOptimal );
+					state.output.warnOnce("'Product' type used: some fitnesses are negative infinity, setting to lowest legal negative number.");
+					}
+				else if ((float)fit > Float.MAX_VALUE)  // uh oh -- can be caused by Product for example
+					{
+					((SimpleFitness)(ind.fitness)).setFitness( state, Float.MAX_VALUE, isOptimal );
+					state.output.warnOnce("'Product' type used: some fitnesses are negative infinity, setting to lowest legal negative number.");
+					}
+        else
+			{
+			((SimpleFitness)(ind.fitness)).setFitness( state, (float)fit, isOptimal );
+			}
         ind.evaluated = true;
         }
         
@@ -225,9 +243,16 @@ public class ECSuite extends Problem implements SimpleProblemForm
                 return sorted[sorted.length / 2];               // note positive
 
             case PROB_SUM:
+				value = 0.0;
                 for( int i = 0 ; i < len ; i++ )
                     value += genome[i];
-                return value;
+                return value;									// note positive
+
+            case PROB_PRODUCT:
+                value = 1.0;
+				for( int i = 0 ; i < len ; i++ )
+                    value *= genome[i];
+                return value;									// note positive
 
             default:
                 state.output.fatal( "ec.app.ecsuite.ECSuite has an invalid problem -- how on earth did that happen?" );
