@@ -8645,7 +8645,7 @@ For competitive coevolution, you can use the same example as in Section \ref{ec.
                 
                 // Let's set the fitness to the maximum of the trials
                 int len = fit.trials.size();
-                double max = Double.MIN_VALUE;
+                double max = Double.NEGATIVE_INFINITY;
                 for(int l = 0; l < len; l++)
                     max = Math.max(max, ((Double)(fit.trials.get(l))).doubleValue());
                 
