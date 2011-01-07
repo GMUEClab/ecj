@@ -38,7 +38,7 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
 				
                 fit.setFitness(state, (float)(max), isOptimal(problemType, (float)max));
                 pop.subpops[i].individuals[j].evaluated = true;
-                fit.trials = null;  // let GC
+               // fit.trials = null;  // let GC
                 }
         }
 

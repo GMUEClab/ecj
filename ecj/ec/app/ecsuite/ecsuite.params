@@ -6,13 +6,19 @@ parent.0 = ../../ec.params
 
 eval.problem = ec.app.ecsuite.ECSuite
 eval.problem.type = rastrigin
+
+# Here are the possible settings for eval.problem.type
 #
-# optionally your type could be: rosenbrock, sphere, step, noisy-quartic, 
-# or kdj-f1, kdj-f2, kdj-f3, or kdj-f4		(the kdj-foo names
-# are just aliases for other problems, useful for people who might
-# know them as specific problems in the DeJong test suite)
-# ...or booth, griewangk
-#
+# sphere	(or)	kdj-f1
+# rosenbrock	(or)	kdj-f2
+# step		(or)	kdj-f3
+# noisy-quartic	(or)	kdj-f4
+# rastrigin
+# booth
+# griewangk
+# median
+# sum
+# product
 
 
 state = 				ec.simple.SimpleEvolutionState

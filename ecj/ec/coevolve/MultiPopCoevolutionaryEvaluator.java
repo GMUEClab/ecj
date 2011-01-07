@@ -134,7 +134,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         selectionMethodPrev = new SelectionMethod[numSubpopulations];
         if( numPrev < 0 )
             state.output.fatal( "Parameter not found, or it has an incorrect value.", base.push(P_NUM_IND) );
-        else if( numCurrent == 0 )
+        else if( numPrev == 0 )
             state.output.message( "Not testing against previous individuals:  Previous Selection Methods will not be loaded.");
         else if( numPrev > 0 )
             {
