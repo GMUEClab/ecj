@@ -31,16 +31,17 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
                 SimpleFitness fit = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
                                 
                 // we take the max over the trials
-                double max = Double.MIN_VALUE;
+                double max = Double.NEGATIVE_INFINITY;
                 int len = fit.trials.size();
                 for(int l = 0; l < len; l++)
                     max = Math.max(((Double)(fit.trials.get(l))).doubleValue(), max);  // it'll be the first one, but whatever
-                                        
+				
                 fit.setFitness(state, (float)(max), isOptimal(problemType, (float)max));
                 pop.subpops[i].individuals[j].evaluated = true;
                 fit.trials = null;  // let GC
                 }
         }
+
 
     public void evaluate(final EvolutionState state,
         final Individual[] ind,  // the individuals to evaluate together

@@ -83,10 +83,10 @@ public abstract class Fitness implements Prototype, Comparable
             for(int i = 0; i < cont.length; i++)
                 {
                 if (cont[i] == null)
-                    context[i] = null;
+                    { context[i] = null; }
                 else 
                     {
-                    // we first remove context so we don't have any circularity in cloning 
+                    // we first temporarily remove context so we don't have any circularity in cloning 
                     Individual[] c = cont[i].fitness.context;
                     cont[i].fitness.context = null;
                                         
@@ -318,7 +318,7 @@ public abstract class Fitness implements Prototype, Comparable
             }
         }
 
-	/** Given another Fitenss, 
+	/** Given another Fitness, 
 		returns true if the trial which produced my current context is "better" in fitness than
 		the trial which produced his current context, and thus should be retained in lieu of his.
 		This method by default assumes that trials are Doubles, and that higher Doubles are better.
@@ -334,7 +334,7 @@ public abstract class Fitness implements Prototype, Comparable
 
      double bestTrial(ArrayList l)
         {
-        if (l == null || l.size() == 0) return Double.MIN_VALUE;
+        if (l == null || l.size() == 0) return Double.NEGATIVE_INFINITY;
         double best = ((Double)(l.get(0))).doubleValue();
         int len = l.size();
         for (int i = 1 ; i < len; i ++)

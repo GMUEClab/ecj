@@ -80,7 +80,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
     // the number of elite partners selected from the previous generation
     public static final String P_NUM_ELITE = "num-elites";
     protected int numElite;
-    Individual[][] eliteIndividuals;
+    Individual[/*subpopulation*/][/*the elites*/] eliteIndividuals;
 
     // the number of random partners selected from the current and previous generations
     public final static String P_NUM_IND = "num-prev";
@@ -105,8 +105,6 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         if( numSubpopulations <= 0 )
             state.output.fatal( "Parameter not found, or it has a non-positive value.", tempSubpop );
 
-        selectionMethodPrev = new SelectionMethod[numSubpopulations];
-
         numElite = state.parameters.getInt( base.push(P_NUM_ELITE), null, 0 );
         if( numElite < 0 )
             state.output.fatal( "Parameter not found, or it has an incorrect value.", base.push(P_NUM_ELITE) );
@@ -115,6 +113,8 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         selectionMethodCurrent = new SelectionMethod[numSubpopulations];
         if( numCurrent < 0 )
             state.output.fatal( "Parameter not found, or it has an incorrect value.", base.push(P_NUM_RAND_IND) );
+        else if( numCurrent == 0 )
+            state.output.message( "Not testing against current individuals:  Current Selection Methods will not be loaded.");
         else if( numCurrent > 0 )
             {
             for(int i = 0; i < numSubpopulations; i++)
@@ -134,6 +134,8 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         selectionMethodPrev = new SelectionMethod[numSubpopulations];
         if( numPrev < 0 )
             state.output.fatal( "Parameter not found, or it has an incorrect value.", base.push(P_NUM_IND) );
+        else if( numCurrent == 0 )
+            state.output.message( "Not testing against previous individuals:  Previous Selection Methods will not be loaded.");
         else if( numPrev > 0 )
             {
             for(int i = 0; i < numSubpopulations; i++)
@@ -205,18 +207,21 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         {
         inds = new Individual[population.subpops.length];
         updates = new boolean[population.subpops.length];
-                
+
         // we start by warming up the selection methods
-        for( int i = 0 ; i < selectionMethodPrev.length ; i++ )
-            {
-            selectionMethodCurrent[i].prepareToProduce( state, i, 0 );
-                                
-            // do a hack here
-            Population currentPopulation = state.population;
-            state.population = previousPopulation;
-            selectionMethodPrev[i].prepareToProduce( state, i, 0 );
-            state.population = currentPopulation;
-            }
+	    if (numCurrent > 0)
+			for( int i = 0 ; i < selectionMethodCurrent.length; i++)
+				selectionMethodCurrent[i].prepareToProduce( state, i, 0 );
+
+	    if (numPrev > 0)
+			for( int i = 0 ; i < selectionMethodPrev.length ; i++ )
+				{
+				// do a hack here
+				Population currentPopulation = state.population;
+				state.population = previousPopulation;
+				selectionMethodPrev[i].prepareToProduce( state, i, 0 );
+				state.population = currentPopulation;
+				}
 
 
         // build subpopulation array to pass in each time
@@ -228,13 +233,14 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
             // for each individual
             for(int i = 0; i < state.population.subpops[j].individuals.length; i++)
                 {
-                                
+				Individual individual = state.population.subpops[j].individuals[i];
+				
                 // Test against all the elites
                 for(int k = 0; k < eliteIndividuals[j].length; k++)
                     {
                     for(int ind = 0; ind < inds.length; ind++)
                         {
-                        if (ind == j) { inds[ind] = state.population.subpops[j].individuals[i]; updates[ind] = true; }
+                        if (ind == j) { inds[ind] = individual; updates[ind] = true; }
                         else  { inds[ind] = eliteIndividuals[ind][k]; updates[ind] = false; }
                         }
                     prob.evaluate(state,inds,updates, false, subpops, 0);
@@ -245,44 +251,32 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
                     {
                     for(int ind = 0; ind < inds.length; ind++)
                         {
-                        if (ind == j) { inds[ind] = state.population.subpops[j].individuals[i]; updates[ind] = true; }
-                        else { inds[ind] = produce(selectionMethodCurrent[j], j, i, state, 0); updates[ind] = false; }
+                        if (ind == j) { inds[ind] = individual; updates[ind] = true; }
+                        else { inds[ind] = produceCurrent(ind, state, 0); updates[ind] = true; }
                         }
                     prob.evaluate(state,inds,updates, false, subpops, 0);
                     }
 
                 // Test against random individuals of previous population
-                for(int k = 0; k < numCurrent; k++)
+                for(int k = 0; k < numPrev; k++)
                     {
                     for(int ind = 0; ind < inds.length; ind++)
                         {
-                        if (ind == j) { inds[ind] = state.population.subpops[j].individuals[i]; updates[ind] = true; }
-                        else if (state.generation > 0)
-                            { 
-                            // do a hack here
-                            Population currentPopulation = state.population;
-                            state.population = previousPopulation;
-                            inds[ind] = produce(selectionMethodPrev[j], j, i, state, 0); 
-                            state.population = currentPopulation;
-                                                        
-                            updates[ind] = false;
-                            }
-                        else
-                            {
-                            inds[ind] = state.population.subpops[j].individuals[
-                                state.random[0].nextInt(state.population.subpops[j].individuals.length)];
-                            updates[ind] = false;
-                            }
+                        if (ind == j) { inds[ind] = individual; updates[ind] = true; }
+                        else { inds[ind] = producePrevious(ind, state, 0); updates[ind] = false; }
                         }
                     prob.evaluate(state,inds,updates, false, subpops, 0);
                     }
                 }
 
         // now shut down the selection methods
+	    if (numCurrent > 0)
+			for( int i = 0 ; i < selectionMethodCurrent.length; i++)
+				selectionMethodCurrent[i].finishProducing( state, i, 0 );
+
+	    if (numPrev > 0)
         for( int i = 0 ; i < selectionMethodPrev.length ; i++ )
             {
-            selectionMethodCurrent[i].finishProducing( state, i, 0 );
-                                
             // do a hack here
             Population currentPopulation = state.population;
             state.population = previousPopulation;
@@ -292,10 +286,39 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         }
 
 
-    protected Individual produce(SelectionMethod method, int subpopulation, int individual, EvolutionState state, int thread)
+	/** Selects one individual from the previous subpopulation.  If there is no previous
+		population, because we're at generation 0, then an individual from the current
+		population is selected at random. */
+    protected Individual producePrevious(int subpopulation, EvolutionState state, int thread)
         {
-        return state.population.subpops[subpopulation].individuals[method.produce(subpopulation, state, thread)];
+		if (state.generation == 0)  
+			{
+			// pick current at random.  Can't use a selection method because they may not have fitness assigned
+			return state.population.subpops[subpopulation].individuals[
+						state.random[0].nextInt(state.population.subpops[subpopulation].individuals.length)];
+			}
+		else
+			{
+			// do a hack here -- back up population, replace with the previous population, run the selection method, replace again
+			Population currentPopulation = state.population;
+			state.population = previousPopulation;
+			Individual selected =
+				state.population.subpops[subpopulation].individuals[
+						selectionMethodPrev[subpopulation].produce(subpopulation, state, thread)];
+			state.population = currentPopulation;
+			return selected;
+			}
         }
+
+
+	/** Selects one individual from the given subpopulation. */
+    protected Individual produceCurrent(int subpopulation, EvolutionState state, int thread)
+        {
+        return state.population.subpops[subpopulation].individuals[
+						selectionMethodCurrent[subpopulation].produce(subpopulation, state, thread)];
+        }
+
+
 
     protected void afterCoevolutionaryEvaluation( final EvolutionState state,
         final Population population,
