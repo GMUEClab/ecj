@@ -1767,3 +1767,11 @@ Version		Change Log
 	Modifications to coevolve2 to keep trial #0 as the "best" trial
 	Manual updated to reflect new coevolution mechanism
 	CoevolutionaryDoubleVectorIndividual deleted
+	Bug fixes to MultiPopCoevolutionaryEvaluator
+	Bug fix in Fitness.bestTrial would only work properly if trial values were positive
+	Added Sum to ECSuite
+	Deleted CoevolutionaryRosenbrock
+	Modified CoevolutionaryECSuite to use Double.NEGATIVE_INFINITY rather than
+		Double.MIN_VALUE
+	Modifications to coevolve2/ecsuite.params to make parameters equivalent to
+		ecsuite/ecsuite.params

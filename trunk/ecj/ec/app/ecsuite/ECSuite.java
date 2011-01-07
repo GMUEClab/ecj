@@ -56,6 +56,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final String V_BOOTH = "booth";
     public static final String V_GRIEWANGK = "griewangk";
     public static final String V_MEDIAN = "median";
+    public static final String V_SUM = "sum";
 
     public static final int PROB_ROSENBROCK = 0;
     public static final int PROB_RASTRIGIN = 1;
@@ -65,6 +66,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final int PROB_BOOTH = 5;
     public static final int PROB_GRIEWANGK = 6;
     public static final int PROB_MEDIAN = 7;
+    public static final int PROB_SUM = 8;
     
     public int problemType = PROB_ROSENBROCK;  // defaults on Rosenbrock
 
@@ -92,17 +94,20 @@ public class ECSuite extends Problem implements SimpleProblemForm
             problemType = PROB_GRIEWANGK;           
         else if( wp.compareTo( V_MEDIAN ) == 0 )
             problemType = PROB_MEDIAN;           
+        else if( wp.compareTo( V_SUM ) == 0 )
+            problemType = PROB_SUM;           
         else state.output.fatal(
             "Invalid value for parameter, or parameter not found.\n" +
             "Acceptable values are:\n" +
-            "  " + V_ROSENBROCK + "(or " + V_F2 + ")\n" +
+            "  " + V_ROSENBROCK + " (or " + V_F2 + ")\n" +
             "  " + V_RASTRIGIN + "\n" +
-            "  " + V_SPHERE + "(or " + V_F1 + ")\n" +
-            "  " + V_STEP + "(or " + V_F3 + ")\n" +
-            "  " + V_NOISY_QUARTIC + "(or " + V_F4 + ")\n"+
+            "  " + V_SPHERE + " (or " + V_F1 + ")\n" +
+            "  " + V_STEP + " (or " + V_F3 + ")\n" +
+            "  " + V_NOISY_QUARTIC + " (or " + V_F4 + ")\n"+
             "  " + V_BOOTH + "\n" +
             "  " + V_GRIEWANGK + "\n" + 
-            "  " + V_MEDIAN + "\n",
+            "  " + V_MEDIAN + "\n" + 
+            "  " + V_SUM + "\n",
             base.push( P_WHICH_PROBLEM ) );
         }
 
@@ -147,6 +152,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
             case PROB_BOOTH:
             case PROB_GRIEWANGK:
             case PROB_MEDIAN:
+            case PROB_SUM:
             default:
                 return false;
             }
@@ -217,6 +223,11 @@ public class ECSuite extends Problem implements SimpleProblemForm
                 System.arraycopy(genome, 0, sorted, 0, sorted.length);
                 ec.util.QuickSort.qsort(sorted);
                 return sorted[sorted.length / 2];               // note positive
+
+            case PROB_SUM:
+                for( int i = 0 ; i < len ; i++ )
+                    value += genome[i];
+                return value;
 
             default:
                 state.output.fatal( "ec.app.ecsuite.ECSuite has an invalid problem -- how on earth did that happen?" );
