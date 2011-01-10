@@ -1775,3 +1775,8 @@ Version		Change Log
 		Double.MIN_VALUE
 	Modifications to coevolve2/ecsuite.params to make parameters equivalent to
 		ecsuite/ecsuite.params
+	Added Product and Schwefel to ECSuite
+	Modified ECSuite so that Griewangk and Schwefel are scaled to fit into [-5.12, 5.12]
+		so as to be comparable with other fitness functions.
+	Modified Evolve so it doesn't catch errors in jobs; this doesn't work right with
+		the most common error (out of memory)
