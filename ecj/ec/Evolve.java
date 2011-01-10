@@ -607,7 +607,12 @@ public class Evolve
         // it's usually small.
         for(int job = currentJob ; job < numJobs; job++)
             {
-            try
+			// We used to have a try/catch here to catch errors thrown by this job and continue to the next.
+			// But the most common error is an OutOfMemoryException, and printing its stack trace would
+			// just create another OutOfMemoryException!  Which dies anyway and has a worthless stack
+			// trace as a result.
+			
+			// try
                 {
                 // load the parameter database (reusing the very first if it exists)
                 if (parameters == null)
@@ -639,12 +644,14 @@ public class Evolve
                 cleanup(state);  // flush and close various streams, print out parameters if necessary
                 parameters = null;  // so we load a fresh database next time around
                 }
-            catch (Throwable e)  // such as an out of memory error caused by this job
+            /*
+			catch (Throwable e)  // such as an out of memory error caused by this job
                 {
                 e.printStackTrace();
                 state = null;
                 System.gc();  // take a shot!
                 }
+			*/
             }
 
         System.exit(0);

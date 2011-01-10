@@ -15,7 +15,7 @@ import ec.vector.*;
 /* 
  * ECSuite.java
  * 
- * Created: Thu MAr 22 16:27:15 2001
+ * Created: Thu Mar 22 16:27:15 2001
  * By: Liviu Panait and Sean Luke
  */
 
@@ -30,13 +30,16 @@ import ec.vector.*;
    As the SimpleFitness is used for maximization problems, the mapping f(x) --> -f(x) is used to transform
    the problems into maximization ones.
 
+   <p>Most problems have a traditional min/max gene range of [-5.12, 5.12].  Schwefel is traditionally
+	from [-500,500], and has been scaled here to fit properly in [-5.12, 5.12].  Griewangk is
+	traditionally from [-600,600], and has also been scaled to fit in [-5.12, 5.12].
+
    <p><b>Parameters</b><br>
    <table>
    <tr><td valign=top><i>base</i>.<tt>type</tt><br>
-   <font size=-1>String, one of: rosenbrock rastrigin sphere step noisy-quartic kdj-f1 kdj-f2 kdj-f3 kdj-f4 booth median [or] griewangk</font>/td>
+   <font size=-1>String, one of: rosenbrock rastrigin sphere step noisy-quartic kdj-f1 kdj-f2 kdj-f3 kdj-f4 booth median schwefel product [or] griewangk</font>/td>
    <td valign=top>(The vector problem to test against.  Some of the types are synonyms: kdj-f1 = sphere, kdj-f2 = rosenbrock, kdj-f3 = step, kdj-f4 = noisy-quartic.  "kdj" stands for "Ken DeJong", and the numbers are the problems in his test suite)</td></tr>
    </table>
-
 
 */
  
@@ -58,6 +61,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final String V_MEDIAN = "median";
     public static final String V_SUM = "sum";
     public static final String V_PRODUCT = "product";
+    public static final String V_SCHWEFEL = "schwefel";
 
     public static final int PROB_ROSENBROCK = 0;
     public static final int PROB_RASTRIGIN = 1;
@@ -69,6 +73,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final int PROB_MEDIAN = 7;
     public static final int PROB_SUM = 8;
     public static final int PROB_PRODUCT = 9;
+    public static final int PROB_SCHWEFEL = 10;
     
     public int problemType = PROB_ROSENBROCK;  // defaults on Rosenbrock
 
@@ -93,13 +98,15 @@ public class ECSuite extends Problem implements SimpleProblemForm
         else if( wp.compareTo( V_BOOTH ) == 0 )
             problemType = PROB_BOOTH;
         else if( wp.compareTo( V_GRIEWANGK ) == 0 )
-            problemType = PROB_GRIEWANGK;           
+  	    problemType = PROB_GRIEWANGK;  
         else if( wp.compareTo( V_MEDIAN ) == 0 )
             problemType = PROB_MEDIAN;           
         else if( wp.compareTo( V_SUM ) == 0 )
             problemType = PROB_SUM;           
         else if( wp.compareTo( V_PRODUCT ) == 0 )
-            problemType = PROB_PRODUCT;           
+            problemType = PROB_PRODUCT;    
+		else if (wp.compareTo( V_SCHWEFEL ) == 0 )
+			problemType = PROB_SCHWEFEL;
         else state.output.fatal(
             "Invalid value for parameter, or parameter not found.\n" +
             "Acceptable values are:\n" +
@@ -112,7 +119,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
             "  " + V_GRIEWANGK + "\n" + 
             "  " + V_MEDIAN + "\n" + 
             "  " + V_SUM + "\n" +
-            "  " + V_PRODUCT + "\n",
+            "  " + V_PRODUCT + "\n" + 
+			"  " + V_SCHWEFEL + "\n",
             base.push( P_WHICH_PROBLEM ) );
         }
 
@@ -171,6 +179,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
             case PROB_GRIEWANGK:
             case PROB_MEDIAN:
             case PROB_SUM:
+            case PROB_PRODUCT:
+			case PROB_SCHWEFEL:
             default:
                 return false;
             }
@@ -178,6 +188,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
 
     public double function(EvolutionState state, int function, double[] genome, int threadnum)
         {
+	final double GRIEWANGK_SCALE = (600.0 / 5.12);	// see documentation at top of file
+	final double SCHWEFEL_SCALE = (500.0 / 5.12);	// see documentation at top of file
         double value = 0;
         int len = genome.length;
         switch(function)
@@ -229,10 +241,17 @@ public class ECSuite extends Problem implements SimpleProblemForm
                 double prod = 1;
                 for( int i = 0 ; i < len ; i++ )
                     {
-                    value += (genome[i]*genome[i])/4000.0;
+                    value += (genome[i]*GRIEWANGK_SCALE*genome[i]*GRIEWANGK_SCALE)/4000.0;
                     prod *= Math.cos( genome[i] / Math.sqrt(i+1) );
                     }
                 value -= prod;
+                return -value;
+
+
+            case PROB_SCHWEFEL:
+                value = 0;
+                for( int i = 0 ; i < len ; i++ )
+                    value += -genome[i]*SCHWEFEL_SCALE * Math.sin(Math.sqrt(Math.abs(genome[i]*SCHWEFEL_SCALE)));
                 return -value;
 
 

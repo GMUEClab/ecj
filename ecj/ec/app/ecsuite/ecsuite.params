@@ -19,6 +19,7 @@ eval.problem.type = rastrigin
 # median
 # sum
 # product
+# schwefel
 
 
 state = 				ec.simple.SimpleEvolutionState
