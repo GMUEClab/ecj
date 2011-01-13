@@ -27,6 +27,16 @@ import java.util.*;
 
 public class SPEA2Breeder extends SimpleBreeder
     {
+    public void setup(final EvolutionState state, final Parameter base)
+        {
+        super.setup(state, base);
+
+		if (sequentialBreeding) // uh oh, haven't tested with this
+			state.output.fatal("SPEA2Breeder does not support sequential evaluation.",
+				base.push(P_SEQUENTIAL_BREEDING));
+        }
+
+
     protected void loadElites(EvolutionState state, Population newpop)
         {
         // are our elites small enough?

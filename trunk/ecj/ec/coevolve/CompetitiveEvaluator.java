@@ -8,6 +8,7 @@
 package ec.coevolve;
 import ec.*;
 import ec.util.*;
+import ec.simple.*;
 
 /** 
  * CompetitiveEvaluator.java
@@ -106,6 +107,7 @@ public class CompetitiveEvaluator extends Evaluator
     public void setup( final EvolutionState state, final Parameter base )
         {
         super.setup( state, base );
+				
         String temp;
         temp = state.parameters.getStringWithDefault( base.push( P_COMPETE_STYLE ), null, "" );
         if( temp.equalsIgnoreCase( "single-elim-tournament" ) )
@@ -178,6 +180,9 @@ public class CompetitiveEvaluator extends Evaluator
         {
         int numinds[] = new int[state.evalthreads];
         int from[] = new int[state.evalthreads];
+		boolean[] assessFitness = new boolean[state.population.subpops.length];
+		for(int i = 0; i < assessFitness.length; i++)
+			assessFitness[i] = true;					// update everyone's fitness in preprocess and postprocess
         
         for (int y=0;y<state.evalthreads;y++)
             {
@@ -203,7 +208,7 @@ public class CompetitiveEvaluator extends Evaluator
         
         GroupedProblemForm prob = (GroupedProblemForm)(p_problem.clone());
 
-        prob.preprocessPopulation(state,state.population, style == STYLE_SINGLE_ELIMINATION);
+        prob.preprocessPopulation(state,state.population, assessFitness, style == STYLE_SINGLE_ELIMINATION);
                 
         switch(style)
             {
@@ -221,7 +226,7 @@ public class CompetitiveEvaluator extends Evaluator
                 break;
             }
     
-        prob.postprocessPopulation(state, state.population, style == STYLE_SINGLE_ELIMINATION);
+        prob.postprocessPopulation(state, state.population, assessFitness, style == STYLE_SINGLE_ELIMINATION);
         }
     
     public void evalSingleElimination( final EvolutionState state,
@@ -229,7 +234,6 @@ public class CompetitiveEvaluator extends Evaluator
         final int subpop,
         final GroupedProblemForm prob )
         {
-
         // for a single-elimination tournament, the subpop[0] size must be 2^n for
         // some value n.  We don't check that here!  Check it in setup.
         

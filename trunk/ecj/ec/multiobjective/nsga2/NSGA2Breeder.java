@@ -37,6 +37,10 @@ public class NSGA2Breeder extends SimpleBreeder
         for (int i = 0; i < elite.length; i++)
             if (elite[i] != 0)
                 state.output.warning("Elites may not be used with NSGA2Breeder, and will be ignored.");
+
+		if (sequentialBreeding) // uh oh, haven't tested with this
+			state.output.fatal("NSGA2Breeder does not support sequential evaluation.",
+				base.push(P_SEQUENTIAL_BREEDING));
         }
 
     /**

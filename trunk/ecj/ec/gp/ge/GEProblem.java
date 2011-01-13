@@ -105,16 +105,16 @@ public class GEProblem extends Problem implements SimpleProblemForm, GroupedProb
         return problem.canEvaluate();
         }
 
-    public void preprocessPopulation(final EvolutionState state, Population pop, final boolean countVictoriesOnly)
+    public void preprocessPopulation(final EvolutionState state, Population pop, final boolean[] prepareForFitnessAssessment, boolean countVictoriesOnly)
         {
         if (!(problem instanceof GroupedProblemForm))
             state.output.fatal("GEProblem's underlying Problem is not a GroupedProblemForm");
-        ((GroupedProblemForm)problem).preprocessPopulation(state, pop, countVictoriesOnly);
+        ((GroupedProblemForm)problem).preprocessPopulation(state, pop, prepareForFitnessAssessment, countVictoriesOnly);
         }
 
-    public void postprocessPopulation(final EvolutionState state, Population pop, final boolean countVictoriesOnly)
+    public void postprocessPopulation(final EvolutionState state, Population pop, boolean[] assessFitness, final boolean countVictoriesOnly)
         {
-        ((GroupedProblemForm)problem).preprocessPopulation(state, pop, countVictoriesOnly);
+        ((GroupedProblemForm)problem).preprocessPopulation(state, pop, assessFitness, countVictoriesOnly);
         }
         
     /** Default version assumes that every individual is a GEIndividual.

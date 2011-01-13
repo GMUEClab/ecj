@@ -58,6 +58,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final String V_F4 = "kdj-f4";
     public static final String V_BOOTH = "booth";
     public static final String V_GRIEWANGK = "griewangk";
+    public static final String V_GRIEWANK = "griewank";
     public static final String V_MEDIAN = "median";
     public static final String V_SUM = "sum";
     public static final String V_PRODUCT = "product";
@@ -69,7 +70,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final int PROB_STEP = 3;
     public static final int PROB_NOISY_QUARTIC = 4;
     public static final int PROB_BOOTH = 5;
-    public static final int PROB_GRIEWANGK = 6;
+    public static final int PROB_GRIEWANK = 6;
     public static final int PROB_MEDIAN = 7;
     public static final int PROB_SUM = 8;
     public static final int PROB_PRODUCT = 9;
@@ -97,8 +98,13 @@ public class ECSuite extends Problem implements SimpleProblemForm
             problemType = PROB_NOISY_QUARTIC;
         else if( wp.compareTo( V_BOOTH ) == 0 )
             problemType = PROB_BOOTH;
-        else if( wp.compareTo( V_GRIEWANGK ) == 0 )
-  	    problemType = PROB_GRIEWANGK;  
+        else if( wp.compareTo( V_GRIEWANK ) == 0 )
+  	    problemType = PROB_GRIEWANK;  
+	else if (wp.compareTo( V_GRIEWANGK ) == 0 )
+	    { 
+		state.output.warning("Incorrect parameter name (\"griewangk\") used, should be \"griewank\"", base.push( P_WHICH_PROBLEM ), null );
+	    problemType = PROB_GRIEWANK;	
+	}
         else if( wp.compareTo( V_MEDIAN ) == 0 )
             problemType = PROB_MEDIAN;           
         else if( wp.compareTo( V_SUM ) == 0 )
@@ -116,7 +122,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
             "  " + V_STEP + " (or " + V_F3 + ")\n" +
             "  " + V_NOISY_QUARTIC + " (or " + V_F4 + ")\n"+
             "  " + V_BOOTH + "\n" +
-            "  " + V_GRIEWANGK + "\n" + 
+            "  " + V_GRIEWANK + "\n" + 
             "  " + V_MEDIAN + "\n" + 
             "  " + V_SUM + "\n" +
             "  " + V_PRODUCT + "\n" + 
@@ -176,7 +182,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
 
             case PROB_NOISY_QUARTIC:
             case PROB_BOOTH:
-            case PROB_GRIEWANGK:
+            case PROB_GRIEWANK:
             case PROB_MEDIAN:
             case PROB_SUM:
             case PROB_PRODUCT:
@@ -188,7 +194,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
 
     public double function(EvolutionState state, int function, double[] genome, int threadnum)
         {
-	final double GRIEWANGK_SCALE = (600.0 / 5.12);	// see documentation at top of file
+	final double GRIEWANK_SCALE = (600.0 / 5.12);	// see documentation at top of file
 	final double SCHWEFEL_SCALE = (500.0 / 5.12);	// see documentation at top of file
         double value = 0;
         int len = genome.length;
@@ -236,12 +242,12 @@ public class ECSuite extends Problem implements SimpleProblemForm
                 return -value;
 
 
-            case PROB_GRIEWANGK:
+            case PROB_GRIEWANK:
                 value = 1;
                 double prod = 1;
                 for( int i = 0 ; i < len ; i++ )
                     {
-                    value += (genome[i]*GRIEWANGK_SCALE*genome[i]*GRIEWANGK_SCALE)/4000.0;
+                    value += (genome[i]*GRIEWANK_SCALE*genome[i]*GRIEWANK_SCALE)/4000.0;
                     prod *= Math.cos( genome[i] / Math.sqrt(i+1) );
                     }
                 value -= prod;
