@@ -53,18 +53,26 @@ public class SimpleBreeder extends Breeder
     {
     public static final String P_ELITE = "elite";
     public static final String P_REEVALUATE_ELITES = "reevalate-elites";
+	public static final String P_SEQUENTIAL_BREEDING = "sequential";
     /** An array[subpop] of the number of elites to keep for that subpopulation */
     public int[] elite;
     public boolean[] reevaluateElites;
+	public boolean sequentialBreeding;
 
     public void setup(final EvolutionState state, final Parameter base) 
         {
         Parameter p = new Parameter(Initializer.P_POP).push(Population.P_SIZE);
         int size = state.parameters.getInt(p,null,1);  // if size is wrong, we'll let Population complain about it -- for us, we'll just make 0-sized arrays and drop out.
 
+
         elite = new int[size];
         reevaluateElites = new boolean[size];
-                
+		
+		sequentialBreeding =state.parameters.getBoolean(base.push(P_SEQUENTIAL_BREEDING), null, false);
+		if (sequentialBreeding && (size == 1)) // uh oh, this can't be right
+				state.output.fatal("The Breeder is breeding sequentially, but you have only one population.", base.push(P_SEQUENTIAL_BREEDING));
+
+
         for(int x=0;x<size;x++)
             {
             elite[x] = state.parameters.getIntWithDefault(base.push(P_ELITE).push(""+x),null,0);
@@ -142,7 +150,8 @@ public class SimpleBreeder extends Breeder
                 }
                 
             // gather the threads
-            for(int y=0;y<state.breedthreads;y++) try
+            for(int y=0;y<state.breedthreads;y++) 
+				try
                                                       {
                                                       t[y].join();
                                                       }
@@ -154,6 +163,12 @@ public class SimpleBreeder extends Breeder
         return newpop;
         }
 
+	/** Returns true if we're doing sequential breeding and it's the subpopulation's turn (round robin,
+		one subpopulation per generation).*/
+	public boolean shouldBreedSubpop(EvolutionState state, int subpop, int threadnum)
+		{
+		return (!sequentialBreeding || (state.generation % state.population.subpops.length) == subpop);
+		}
 
     /** A private helper function for breedPopulation which breeds a chunk
         of individuals in a subpopulation for a given thread.
@@ -164,31 +179,41 @@ public class SimpleBreeder extends Breeder
     protected void breedPopChunk(Population newpop, EvolutionState state,
         int[] numinds, int[] from, int threadnum) 
         {
-        //System.out.println("Breeding: " + numinds[0] + " Starting at: " + from[0]);
         for(int subpop=0;subpop<newpop.subpops.length;subpop++)
             {
-            BreedingPipeline bp = (BreedingPipeline)newpop.subpops[subpop].
-                species.pipe_prototype.clone();
-                
-            // check to make sure that the breeding pipeline produces
-            // the right kind of individuals.  Don't want a mistake there! :-)
-            int x;
-            if (!bp.produces(state,newpop,subpop,threadnum))
-                state.output.fatal("The Breeding Pipeline of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops[subpop].species.getClass().getName() + " or fitness " + newpop.subpops[subpop].species.f_prototype );
-            bp.prepareToProduce(state,subpop,threadnum);
-                
-            // start breedin'!
-                
-            x=from[subpop];
-            int upperbound = from[subpop]+numinds[subpop];
-            while(x<upperbound)
-                x += bp.produce(1,upperbound-x,x,subpop,
-                    newpop.subpops[subpop].individuals,
-                    state,threadnum);
-            if (x>upperbound) // uh oh!  Someone blew it!
-                state.output.fatal("Whoa!  A breeding pipeline overwrote the space of another pipeline in subpopulation " + subpop + ".  You need to check your breeding pipeline code (in produce() ).");
+			// if it's subpop's turn and we're doing sequential breeding...
+			if (!shouldBreedSubpop(state, subpop, threadnum))  
+				{
+				// instead of breeding, we should just copy forward this subpopulation.  We'll copy the part we're assigned
+				for(int ind=from[subpop] ; ind < numinds[subpop] - from[subpop]; ind++)
+					newpop.subpops[subpop].individuals[ind] = (Individual)(state.population.subpops[subpop].individuals[ind].clone());
+				}
+			else
+				{
+				// do regular breeding of this subpopulation
+				BreedingPipeline bp = (BreedingPipeline)newpop.subpops[subpop].
+					species.pipe_prototype.clone();
+					
+				// check to make sure that the breeding pipeline produces
+				// the right kind of individuals.  Don't want a mistake there! :-)
+				int x;
+				if (!bp.produces(state,newpop,subpop,threadnum))
+					state.output.fatal("The Breeding Pipeline of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops[subpop].species.getClass().getName() + " or fitness " + newpop.subpops[subpop].species.f_prototype );
+				bp.prepareToProduce(state,subpop,threadnum);
+					
+				// start breedin'!
+					
+				x=from[subpop];
+				int upperbound = from[subpop]+numinds[subpop];
+				while(x<upperbound)
+					x += bp.produce(1,upperbound-x,x,subpop,
+						newpop.subpops[subpop].individuals,
+						state,threadnum);
+				if (x>upperbound) // uh oh!  Someone blew it!
+					state.output.fatal("Whoa!  A breeding pipeline overwrote the space of another pipeline in subpopulation " + subpop + ".  You need to check your breeding pipeline code (in produce() ).");
 
-            bp.finishProducing(state,subpop,threadnum);
+				bp.finishProducing(state,subpop,threadnum);
+				}
             }
         }
     
@@ -227,6 +252,10 @@ public class SimpleBreeder extends Breeder
         // we assume that we're only grabbing a small number (say <10%), so
         // it's not being done multithreaded
         for(int sub=0;sub<state.population.subpops.length;sub++) 
+			{
+			if (!shouldBreedSubpop(state, sub, 0))  // don't load the elites for this one, we're not doing breeding of it
+				continue;
+			
             // if the number of elites is 1, then we handle this by just finding the best one.
             if (elite[sub]==1)
                 {
@@ -252,6 +281,7 @@ public class SimpleBreeder extends Breeder
                 for(int x=inds.length-elite[sub];x<inds.length;x++)
                     inds[x] = (Individual)(oldinds[orderedPop[x]].clone());
                 }
+			}
                 
         // optionally force reevaluation
         unmarkElitesEvaluated(newpop);

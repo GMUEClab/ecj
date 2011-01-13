@@ -224,27 +224,27 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
     /* (non-Javadoc)
      * @see ec.coevolve.GroupedProblemForm#preprocessPopulation(ec.EvolutionState, ec.Population)
      */
-    public void preprocessPopulation(EvolutionState state, Population pop, boolean countVictoriesOnly) 
+    public void preprocessPopulation(final EvolutionState state, Population pop, final boolean[] prepareForFitnessAssessment, boolean countVictoriesOnly)
         {
         if (!(problem instanceof GroupedProblemForm)) 
             {
             state.output.fatal("MasterProblem.preprocessPopulation(...) invoked, but the underlying Problem is not of GroupedProblemForm");
             }
                 
-        ((GroupedProblemForm) problem).preprocessPopulation(state, pop, countVictoriesOnly);
+        ((GroupedProblemForm) problem).preprocessPopulation(state, pop, prepareForFitnessAssessment, countVictoriesOnly);
         }
 
     /* (non-Javadoc)
      * @see ec.coevolve.GroupedProblemForm#postprocessPopulation(ec.EvolutionState, ec.Population)
      */
-    public void postprocessPopulation(EvolutionState state, Population pop, boolean countVictoriesOnly) 
+    public void postprocessPopulation(EvolutionState state, Population pop, boolean[] assessFitness, boolean countVictoriesOnly) 
         {
         if (!(problem instanceof GroupedProblemForm)) 
             {
             state.output.fatal("MasterProblem.postprocessPopulation(...) invoked, but the underlying Problem is not of GroupedProblemForm");
             }
                 
-        ((GroupedProblemForm) problem).postprocessPopulation(state, pop, countVictoriesOnly);
+        ((GroupedProblemForm) problem).postprocessPopulation(state, pop, assessFitness, countVictoriesOnly);
         }
 
     // regular coevolutionary evaluation

@@ -90,6 +90,11 @@ public class SteadyStateBreeder extends SimpleBreeder
             }
         state.output.exitIfErrors();
         
+		if (sequentialBreeding) // uh oh
+			state.output.fatal("SteadyStateBreeder does not support sequential evaluation.",
+				base.push(P_SEQUENTIAL_BREEDING));
+
+
         // How often do we retry if we find a duplicate?
         /*
           numDuplicateRetries = state.parameters.getInt(

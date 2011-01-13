@@ -15,7 +15,7 @@ eval.problem.type = rastrigin
 # noisy-quartic	(or)	kdj-f4
 # rastrigin
 # booth
-# griewangk
+# griewank
 # median
 # sum
 # product

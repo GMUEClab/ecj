@@ -1780,3 +1780,13 @@ Version		Change Log
 		so as to be comparable with other fitness functions.
 	Modified Evolve so it doesn't catch errors in jobs; this doesn't work right with
 		the most common error (out of memory)
+	griewangk -> griewank
+	Added sequential breeding to SimpleBreeder, though it's not implemented in most
+		SimpleBreeder subclasses.
+	Removed the deletion of trials in the coevolution examples, and added requirement
+		that in postProcessPopulation the fitness is only updated if the individual
+		doesn't have his evaluated flag set.
+	Added sequential evaluation to the Coevolution system. Modified stats files,
+		evaluators, etc.
+	Modified GroupedProblemForm to require additional parameters to enable sequential
+		evaluation.  Had to be done, sorry.
