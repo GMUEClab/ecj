@@ -29,10 +29,16 @@ import ec.util.*;
  * to each thread to populate.  One array of BreedingPipelines is obtained
  * from a population's Species for each operating breeding thread.
  *
- * Prior to breeding a subpopulation, a SimpleBreeder may first fill part of the new
+ * <p>Prior to breeding a subpopulation, a SimpleBreeder may first fill part of the new
  * subpopulation up with the best <i>n</i> individuals from the old subpopulation.
  * By default, <i>n</i> is 0 for each subpopulation (that is, this "elitism"
  * is not done).  The elitist step is performed by a single thread.
+ *
+ * <p>If the <i>sequential</i> parameter below is true, then breeding is done specially:
+ * instead of breeding all Subpopulations each generation, we only breed one each generation.
+ * The subpopulation index to breed is determined by taking the generation number, modulo the
+ * total number of subpopulations.  Use of this parameter outside of a coevolutionary context
+ * (see ec.coevolve.MultiPopCoevolutionaryEvaluator) is very rare indeed.
  *
  <p><b>Parameters</b><br>
  <table>
@@ -42,6 +48,9 @@ import ec.util.*;
  <tr><td valign=top><tt><i>base</i>.reevalate-elites.<i>i</i></tt><br>
  <font size=-1>boolean (default = false)</font></td>
  <td valign=top>(should we reevaluate the elites of subpopulation <i>i</i> each generation?)</td></tr>
+ <tr><td valign=top><tt><i>base</i>.sequential</tt><br>
+ <font size=-1>boolean (default = false)</font></td>
+ <td valign=top>(should we breed just one subpopulation each generation (as opposed to all of them)?)</td></tr>
  </table>
  *
  *

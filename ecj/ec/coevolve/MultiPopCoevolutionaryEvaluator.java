@@ -32,8 +32,20 @@ import ec.util.*;
  any number of subpopulations (implicitly, any number of individuals being evaluated together). The order of
  individuals in the subpopulation may be changed during the evaluation process.
 
+ <p>Ordinarily MultiPopCoevolutionaryEvaluator does "parallel" coevolution: all subpopulations are evaluated
+simultaneously, then bred simultaneously.  But if you set the "sequential" parameter in the class 
+ec.simple.SimpleBreeder, then MultiPopCoevolutionary behaves in a sequential fashion common in the "classic"
+version of cooperative coevolution: only one subpopulation is evaluated and bred per generation.
+The subpopulation index to breed is determined by taking the generation number, modulo the
+ total number of subpopulations.
+
  <p><b>Parameters</b><br>
  <table>
+ <tr><td valign=top><b>breed</b>.sequential</tt><br>
+ <font size=-1>boolean (default = false)</font></td>
+ <td valign=top>(should we evaluate and breed a single subpopulation each generation?  Note that this is a SimpleBreeder parameter. )
+ </td></tr>
+
  <tr><td valign=top><i>base.</i><tt>subpop.num-current</tt><br>
  <font size=-1> int &gt;= 0</font></td>
  <td valign=top>(the number of random individuals from any given subpopulation fropm the current population to be selected as collaborators)
