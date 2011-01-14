@@ -1810,7 +1810,7 @@ public boolean evaluated;
 \item The representation of the Individual.  This could be anything from an array to a tree structure\,---\,representations of course vary and are defined by subclasses.  We'll talk about them later.
 \end{itemize}
 
-\subsubsection{Implementing an Individual}  For many purposes you can just use one of the standard ``off-the-rack'' individuals\,---\, vector individuals, genetic programming tree individuals, ruleset individuals\,---\, but if you need to implement one yourself, here are some methods you need to be aware of.  First off, Individuals are Prototypes and must override the \method{clone()} method to deep-clone themselves, including deep-cloning their representation and their Fitness, but not their Species (which is just pointer-copied).  Individuals must also implement the \method{setup(...)}, and \method{defaultBase()} methods.  Additionally, Individuals have a number of method which either should or must be overridden.  Let's start with the ``must override'' ones:
+\subsubsection{Implementing an Individual}  For many purposes you can just use one of the standard ``off-the-rack'' individuals\,---\, vector individuals, genetic programming tree individuals, ruleset individuals\,---\, but if you need to implement one yourself, here are some methods you need to be aware of.  First off, Individuals are Prototypes and must override the \method{clone()} method to deep-clone themselves, including deep-cloning their representation and their Fitness, but not their Species (which is just pointer-copied).  Individuals must also implement the \method{setup(...)}, and \method{defaultBase()} methods.  Additionally, Individuals have a number of methods which either should or must be overridden.  Let's start with the ``must override'' ones:
 
 \java{%
 public abstract int hashCode();\\
@@ -1899,7 +1899,7 @@ protected void parseGenotype(EvolutionState state, LineNumberReader reader)\\
 
 This returns a String which can be parsed in again in the next method.  Note that you need to write an individual out so that it can {\it perfectly} be read back in again as an identical individual.  How do you do this?  ECJ's classes by default all use the aging and idiosyncratic package \method{ec.util.Code} package developed long ago for this purpose, but which still works well.  See Section~\ref{ec.util.Code}.  You only need to override this method if you plan on reading individuals in from files (by default the method just throws an error).
 
-\item The last two methods (\method{writeIndividual(...)} and \method{readIndividual(..., DataInput)} read and write an individual, including its representation, fitness and evaluated flag, in a purely binary fashion to a stream.  Don't write the Species.  It's probably best instead to override the following methods to just read and write the genotype:
+\item The last two methods (\method{writeIndividual(...)} and \method{readIndividual(..., DataInput)}) read and write an individual, including its representation, fitness and evaluated flag, in a purely binary fashion to a stream.  Don't write the Species.  It's probably best instead to override the following methods to just read and write the genotype:
 
 \java{%
 public void writeGenotype(EvolutionState state, DataOutput output)\\
@@ -1973,8 +1973,8 @@ The method \method{readFitness(..., LineNumberReader)} reads into ECJ a Fitness 
 
 Fitnesses have two auxiliary variables:
 
-java{%
-public ArrayList trials = null;
+\java{%
+public ArrayList trials = null;\\
 public Individual[] context = null;
 }
 
@@ -3969,8 +3969,7 @@ The rule is: individual gene settings override segment settings, which in turn o
 The class \class{ec.vector.breed.VectorCrossoverPipeline} works by calling the following method on one of the Individuals, passing in the other:
 
 \java{%
-public void defaultCrossover(EvolutionState state, int thread,\\
-\hsp{\fill}VectorIndividual ind);
+public void defaultCrossover(EvolutionState state, int thread, VectorIndividual ind);
 }
 
 The two Individuals must be of the same type.  You could override this method in a custom VectorIndivdual of some sort to do your own crossover type.
@@ -4002,7 +4001,7 @@ pop.subpop.0.species.crossover-prob = 0.25
 
 (It doesn't make sense to use a probability over 0.5).  It's important to note that the \parameter{crossover-probability} parameter is the the {\it per-gene} crossover probability, not the probability that the {\it entire individual} will be crossed over.  For that, see the \parameter{likelihood} parameter in Section~\ref{breeders}.
 
-\item \parameter{line} performs Line Recombination.  {\LARGE\bf Look up who wrote this}  The two individuals are treated as points in space.  A straight line is drawn through both points, and two children are created along this line.  If the individuals are \(\vec{x}\) and \(\vec{y}\), we draw two random values \(\alpha\) and \(\beta\), each between \(-p\) and \(1+p\) inclusive.  Then the two children are defined as \(\alpha \vec{x} + (1-\alpha) \vec{y}\) and \(\beta \vec{y} + (1-\beta) \vec{x}\) respectively.  For Integer vector individuals, the values of each index are then rounded to the nearest integer. The most common setting of \(p\) is 0.25, which allows children to be somewhat outside the hypercube formed with the parents at corners.  To set the value of \(p\), we state:
+\item \parameter{line} performs Line Recombination.  The two individuals are treated as points in space.  A straight line is drawn through both points, and two children are created along this line.  If the individuals are \(\vec{x}\) and \(\vec{y}\), we draw two random values \(\alpha\) and \(\beta\), each between \(-p\) and \(1+p\) inclusive.  Then the two children are defined as \(\alpha \vec{x} + (1-\alpha) \vec{y}\) and \(\beta \vec{y} + (1-\beta) \vec{x}\) respectively.  For Integer vector individuals, the values of each index are then rounded to the nearest integer. The most common setting of \(p\) is 0.25, which allows children to be somewhat outside the hypercube formed with the parents at corners.  To set the value of \(p\), we state:
 
 \params{%
 pop.subpop.0.species.line-extension = 0.25
@@ -8402,17 +8401,18 @@ Since Coevolution involves evaluating multiple Individuals at once, it will requ
 It's up to you to store the trial results and eventually form them into final Fitness values, as discussed later.  It's also up to you to maintain the best context if you find this useful, as discussed later as well (in Section \ref{maintainingcontext}).  GroupedProblemForm will help you by defining three methods to do these various portions of the evaluation process.  You'll need to implement all three methods:
 
 \begin{methods}{ec.coevolve.GroupedProblemForm}
-\mthd{public abstract void preprocessPopulation(EvolutionState {\it state}, int {\it thread}, boolean {\it countVictoriesOnly})}
-Called prior evaluation of a Population, to clear the trials of Individuals.  Note that although this method is not static, you should not assume that this method will be called on the same Problem as is used later for \method{evaluate(...)}.  Thus don't use this method to set any instance variables in the Problem for later use.   If {\it countVictoriesOnly} is true, the method being used is SingleEliminationTournament.  Commonly you'll use this method to create a brand-new trials ArrayList for every Fitness of every Individual in every Subpopulation.
+\mthd{public abstract void preprocessPopulation(EvolutionState {\it state}, int {\it thread}, boolean[] {\it prepareForAssessment,}} \hsp{\fill}{\sf boolean {\it countVictoriesOnly})}\\
+Called prior evaluation of a Population, mostly to clear the trials of Individuals.  Only clear the trials for Individuals in Subpopulations for which {\it prepareForAssessment} is true.  Note that although this method is not static, you should not assume that this method will be called on the same Problem as is used later for \method{evaluate(...)}.  Thus don't use this method to set any instance variables in the Problem for later use.   If {\it countVictoriesOnly} is true, the method being used is SingleEliminationTournament.  Commonly you'll use this method to create a brand-new trials ArrayList for every Fitness of every Individual in every Subpopulation.
 \mthd{void evaluate(EvolutionState {\it state},
         Individual[] {\it individuals}, 
         boolean[] {\it updateFitness}, boolean {\it countVictoriesOnly},\hspace{-2em}}
 \hsp{\fill}{\sf int[] {\it subpops}, int {\it thread})}\\
-Evaluates the {\it individuals} in a single trial, setting their performance scores for that trial.  Each individual will be from a certain subpopulation, specified in {\it subpops}. In some versions of coevolution, only certain individuals are supposed to have their performance scores updated (the others are acting as foils).  In this case, the relevant individuals will be indicated in the {\it updateFitness} array.  Typically you'll update fitness by adding trial results to the trials ArrayList.
+Evaluates the {\it individuals} in a single trial, setting their performance scores for that trial.  Each individual will be from a certain subpopulation, specified in {\it subpops}. In some versions of coevolution, only certain individuals are supposed to have their performance scores updated (the others are acting as foils).  In this case, the relevant individuals will be indicated in the {\it updateFitness} array.  Typically you'll update fitness by adding trial results to the trials ArrayList.  For any individual for whom you're updating trials, also set the Fitness value to reflect that one trial: this allows Single Elimination Tournament to compare Individuals based on this notional Fitness value.  In doing so, do {\it not} set the evaluated flag for Individuals.
 
 If you're doing cooperative coevolution, in this method you'll also probably want to maintain the context of the trial (the collaborating Individuals) if it's produced the best results so far.  More on that in Section \ref{maintainingcontext}.
-\mthd{public abstract void postprocessPopulation(EvolutionState {\it state}, int {\it thread}, boolean {\it countVictoriesOnly})}
-Called after evaluation of a Population to form final Fitness scores for the individuals based on the various performance scores they accumulated during trials.  Note that although this method is not static, you should not assume that this method will be called on the same Problem as was used earlier for \method{evaluate(...)}.  You'll probably want to set the trials variable to null to let it garbage collect.
+\mthd{public abstract void postprocessPopulation(EvolutionState {\it state}, int {\it thread}, boolean[] {\it assessFitness,}}
+\hsp{\fill}{\sf boolean {\it countVictoriesOnly})}\\
+Called after evaluation of a Population to form final Fitness scores for the individuals based on the various performance scores they accumulated during trials; and then to set their evaluated flags to {\it true}.  Only assess the Fitness and set the evaluated flags for Individuals in Subpopulations for which {\it assessFitness} is true. Note that although this method is not static, you should not assume that this method will be called on the same Problem as was used earlier for \method{evaluate(...)}.  You'll probably want to set the trials variable to null to let it garbage collect.
 \end{methods}
 
 Do not assume that Individuals will have the same number of trials: in several versions of Coevolution this will not be the case.
@@ -8440,13 +8440,14 @@ import ec.vector.*;
 import ec.coevolve.*;
 public class MyCoevolutionaryProblem extends Problem implements GroupedProblemForm {
 
-    public void preprocessPopulation(EvolutionState state, Population pop, 
-                                     boolean countVictoriesOnly) {
+    public void preprocessPopulation(EvolutionState state, Population pop,
+                                     boolean[] prepareForAssessment, boolean countVictoriesOnly) {
         for(int i = 0; i < pop.subpops.length; i++)
-            for(int j = 0; j < pop.subpops[i].individuals.length; j++) {
-                SimpleFitness fit = (SimpleFitness)(pop.subpops[i].individuals[j].fitness);
-                fit.trials = new ArrayList();
-                }
+            if (prepareForAssessment[i])
+                for(int j = 0; j < pop.subpops[i].individuals.length; j++) {
+                    SimpleFitness fit = (SimpleFitness)(pop.subpops[i].individuals[j].fitness);
+                    fit.trials = new ArrayList();
+                    }
         }
 	
     public void evaluate(EvolutionState state, Individual[] ind, boolean[] updateFitness,
@@ -8474,26 +8475,26 @@ public class MyCoevolutionaryProblem extends Problem implements GroupedProblemFo
             }
         }
 
-    public void postprocessPopulation(EvolutionState state, Population pop
-                                      boolean countVictoriesOnly) {
+    public void postprocessPopulation(EvolutionState state, Population pop,
+                                      boolean[] assessFitness, boolean countVictoriesOnly) {
         for(int i = 0; i < pop.subpops.length; i++)
-            for(int j = 0; j < pop.subpops[i].individuals.length; j++) {
-                SimpleFitness fit = (SimpleFitness)(pop.subpops[i].individuals[j].fitness);
+            if (assessFitness[i])
+                for(int j = 0; j < pop.subpops[i].individuals.length; j++)  {
+                    SimpleFitness fit = (SimpleFitness)(pop.subpops[i].individuals[j].fitness);
+                 
+                    // Let's set the fitness to the average of the trials
+                    int len = fit.trials.size();
+                    double sum = 0;
+                    for(int l = 0; l < len; l++)
+                        sum += ((Double)(fit.trials.get(l))).doubleValue();
                 
-                // Let's set the fitness to the average of the trials
-                int len = fit.trials.size();
-                double sum = 0;
-                for(int l = 0; l < len; l++)
-                    sum += ((Double)(fit.trials.get(l))).doubleValue();
+                    // Alternatively if we were interested in how *many* times we won rather
+                    // than by how much, we might set the fitness to, say, how often the doubleValue()
+                    // was positive.
                 
-                // Alternatively if we were interested in how *many* times we won rather
-                // than by how much, we might set the fitness to, say, how often the doubleValue()
-                // was positive.
-                
-                fit.setFitness(state, (float)(sum / len), false);
-                pop.subpops[i].individuals[j].evaluated = true;
-                fit.trials = null;      // let it garbage collect
-                }
+                    fit.setFitness(state, (float)(sum / len), false);
+                    pop.subpops[i].individuals[j].evaluated = true;
+                    }
         }
     }
 \end{verbatim}
@@ -8630,35 +8631,50 @@ eval.subpop.0.num-elites = 5
 \end{itemize}
 
 
-Note that these options enable the ``Parallel'' and ``Parallel Previous'' coevolutionary techniques \cite{Luke2009Metaheuristics}, but not the ``Serial'' (or ``Sequential'') technique whereby each Subpopulation is evaluated in turn. 
-
 For competitive coevolution, you can use the same example as in Section \ref{ec.coevolve.GroupedProblemForm} (GroupedProblemForm).  For Cooperative Coevolution it's typical to base Fitness instead on the {\it maximum} of tests with \(N\) other collaborators.  For example, let's revise the \method{postprocessPopulation(...)} method to assess trial performance as the sum of all the products of the genomes in the various Individuals: 
 
 
 {
 \small\begin{verbatim}
-    public void postprocessPopulation(EvolutionState state, Population pop
-                                      boolean countVictoriesOnly) {
+    public void postprocessPopulation(EvolutionState state, Population pop,
+                                      boolean[] assessFitness, boolean countVictoriesOnly) {
         for(int i = 0; i < pop.subpops.length; i++)
-            for(int j = 0; j < pop.subpops[i].individuals.length; j++) {
-                SimpleFitness fit = (SimpleFitness)(pop.subpops[i].individuals[j].fitness);
+            if (assessFitness[i])
+                for(int j = 0; j < pop.subpops[i].individuals.length; j++) 
+                    if (!pop.subpops[i].individuals[j].evaluated) {
+                        SimpleFitness fit = (SimpleFitness)(pop.subpops[i].individuals[j].fitness);
                 
-                // Let's set the fitness to the maximum of the trials
-                int len = fit.trials.size();
-                double max = Double.NEGATIVE_INFINITY;
-                for(int l = 0; l < len; l++)
-                    max = Math.max(max, ((Double)(fit.trials.get(l))).doubleValue());
+                        // Let's set the fitness to the maximum of the trials
+                       int len = fit.trials.size();
+                        double max = Double.NEGATIVE_INFINITY;
+                        for(int l = 0; l < len; l++)
+                            max = Math.max(max, ((Double)(fit.trials.get(l))).doubleValue());
                 
-                fit.setFitness(state, (float)(max), false);
-                pop.subpops[i].individuals[j].evaluated = true;
-                fit.trials = null;      // let it garbage collect
-                }
+                        fit.setFitness(state, (float)(max), false);
+                        pop.subpops[i].individuals[j].evaluated = true;
+                        }
+    }
  \end{verbatim}
 }
 
 \class{ec.coevolve.MultiPopCoevolutionaryEvaluator}  is not at present multithreaded.  It does not respond to the \parameter{evalthreads} parameter.
 
 
+\subsubsection{Parallel and Sequential Coevolution}
+
+Note that the options above enable the ``Parallel'' and ``Parallel Previous'' coevolutionary techniques \cite{Luke2009Metaheuristics}, but not the ``Serial'' (or ``Sequential'') technique whereby each Subpopulation is evaluated in turn.  For Sequential coevolution, there's an additional parameter option in \class{ec.simple.SimpleBreeder}:
+
+\params{%
+breed.sequential = true
+}
+
+Ordinarily SimpleBreeder breeds every Subpopulation every generation. But if this parameter is set, then SimpleBreeder will instead breed only one Subpopulation each generation.  The chosen Subpopulation's index will be the generation number, modulo the number of Subpopulations.\footnote{Note that though SimpleBreeder implements this, a number of subclasses of SimpleBreeder explicitly do {\it not}.}
+
+This parameter is very rarely used outside of sequential cooperative coevolution.  MultiPopCoevolutionaryEvaluator responds to  SimpleBreeder's parameter as well to match the sequential breeding with sequential evaluation.  That is, MultiPopCoevolutionaryEvaluator will only evaluate a single Subpopulation at a time (the same one that's later bred by SimpleBreeder).
+
+Even though the evaluator and breeder are only updating one Subpopulation a generation, the Statistics classes are still doing statistics on {\it every} Subpopulation. However two basic Statistics subclasses (\class{ec.simple.SimpleStatistics} and \class{ec.gp.koza.KozaShortStatistics}, have some tweaks in them to print out the proper information.  Specifically, when these Statistics classes print to screen the Fitnesses of the best individuals of each Subpopulation, they only do so if the individuals in question have their ``evaluated'' flags set.  Otherwise it'll say ``not evaluated''. Recall that in \class{ec.coevolve.GroupedProblemForm} this only happens in \method{postprocessPopulation}, and only to individuals for whom the \variable{assessFitness[]} slot is set.  In sequential cooperative coevolution, that slot is set only for the subpopulation which is being updated that generation.
+
+Okay fine, but what about the Statistics' logs? They'll still have nonsensical ``best of generation'' Individuals right? Yes, but you can tell which ones are valid simply by looking at their evaluated flags.  Only the best individual of the currently-being-updated Subpopulation will have its evaluated flag set to true.
 
 \subsubsection{Maintaining Context}
 \label{maintainingcontext}
