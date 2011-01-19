@@ -68,9 +68,13 @@ The subpopulation index to breed is determined by taking the generation number, 
 
  <tr><td valign=top><i>base.</i><tt>subpop.X.select-current</tt><br>
  <font size=-1> instance of ec.SelectionMethod</font></td>
- <td valign=top>(the SelectionMethod used to select partners from the individuals in subpopulation X at the current generation.  
+ <td valign=top>(the SelectionMethod used to select partners from the individuals in subpopulation X at the current generation.
  <b>WARNING.</b>  This SelectionMethod must not select based on fitness, since fitness hasn't been set yet.
  RandomSelection is a good choice. )
+
+ <tr><td valign=top><i>base.</i><tt>shuffling</tt><br>
+ <font size=-1> boolean (default = false)</font></td>
+ <td valign=top>(instead of selecting individuals from )
  </td></tr>
  
 
@@ -90,6 +94,10 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
     public static final String P_NUM_RAND_IND = "num-current";
     protected int numCurrent;
 
+    // the number of shuffled random partners selected from the current generation
+    public static final String P_NUM_SHUFFLED = "num-shuffled";
+    protected int numShuffled;
+
     // the number of elite partners selected from the previous generation
     public static final String P_NUM_ELITE = "num-elites";
     protected int numElite;
@@ -107,7 +115,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
     // the selection method used to select the other partners from the current generation
     public static final String P_SELECTION_METHOD_CURRENT = "select-current";
     SelectionMethod[] selectionMethodCurrent;
-	
+			
     public void setup( final EvolutionState state, final Parameter base )
         {
         super.setup( state, base );
@@ -126,6 +134,10 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         numElite = state.parameters.getInt( base.push(P_NUM_ELITE), null, 0 );
         if( numElite < 0 )
             state.output.fatal( "Parameter not found, or it has an incorrect value.", base.push(P_NUM_ELITE) );
+
+        numShuffled = state.parameters.getInt( base.push(P_NUM_SHUFFLED), null, 0 );
+        if( numShuffled < 0 )
+            state.output.fatal( "Parameter not found, or it has an incorrect value.", base.push(P_NUM_SHUFFLED) );
 
         numCurrent = state.parameters.getInt( base.push(P_NUM_RAND_IND), null, 0 );
         selectionMethodCurrent = new SelectionMethod[numSubpopulations];
@@ -169,7 +181,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
                 }
             }
                                                                                           
-        if( numElite + numCurrent + numPrev <= 0 )
+        if( numElite + numCurrent + numPrev + numShuffled <= 0 )
             state.output.error( "The total number of partners to be selected should be > 0." );
         state.output.exitIfErrors();
         }
@@ -236,10 +248,28 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
     // which individual should have its fitness updated as a result
     boolean[] updates = null;
         
+
+
+        protected void shuffle(EvolutionState state, int[] a)
+                {
+                MersenneTwisterFast mtf = state.random[0];
+                for(int x = a.length - 1; x >= 1; x--)
+                        {
+                        int rand = mtf.nextInt(x+1);
+                        int obj = a[x];
+                        a[x] = a[rand];
+                        a[rand] = obj;
+                        }
+                }
+
+
+
     public void performCoevolutionaryEvaluation( final EvolutionState state,
         final Population population,
         final GroupedProblemForm prob )
         {
+		int evaluations = 0;
+		
         inds = new Individual[population.subpops.length];
         updates = new boolean[population.subpops.length];
 
@@ -262,12 +292,27 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         // build subpopulation array to pass in each time
         int[] subpops = new int[state.population.subpops.length];
         for(int j = 0; j < subpops.length; j++) subpops[j] = j;
-
+		
         // for each subpopulation
         for(int j = 0; j < state.population.subpops.length; j++)
 			{
 			if (!shouldEvaluateSubpop(state, j, 0)) continue;  // don't evaluate this subpopulation
 			
+			int[/*numCurrent*/][/*subpop*/][/*shuffledIndividualIndexes*/] ordering = null;
+			if (numShuffled > 0)
+				{
+				// build shuffled orderings
+				ordering = new int[numShuffled][state.population.subpops.length][];
+				for(int c = 0; c < numShuffled; c++)
+					for(int m = 1; m < state.population.subpops.length; m++)			// don't bother for subpopulation 0
+						{
+						ordering[c][m] = new int[state.population.subpops[m].individuals.length];
+						for(int i = 0; i < state.population.subpops[m].individuals.length; i++)
+							ordering[c][m][i] = i;
+						shuffle(state, ordering[c][m]);
+						}
+				}
+				
             // for each individual
             for(int i = 0; i < state.population.subpops[j].individuals.length; i++)
                 {
@@ -282,18 +327,35 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
                         else  { inds[ind] = eliteIndividuals[ind][k]; updates[ind] = false; }
                         }
                     prob.evaluate(state,inds,updates, false, subpops, 0);
+					evaluations++;
                     }
                                         
-                // Test against random individuals of currrent population
-                for(int k = 0; k < numCurrent; k++)
-                    {
-                    for(int ind = 0; ind < inds.length; ind++)
-                        {
-                        if (ind == j) { inds[ind] = individual; updates[ind] = true; }
-                        else { inds[ind] = produceCurrent(ind, state, 0); updates[ind] = true; }
-                        }
-                    prob.evaluate(state,inds,updates, false, subpops, 0);
-                    }
+                // Test against shuffled random individuals of currrent population
+                if (numShuffled > 0 && j == 0)  // only evaluate for subpopulation 0, the others are filled in automatically
+					{
+					for(int k = 0; k < numShuffled; k++)
+						{
+						for(int ind = 0; ind < inds.length; ind++)
+							{
+							if (ind == j) { inds[ind] = individual; updates[ind] = true; }
+							else { inds[ind] = state.population.subpops[ind].individuals[ordering[k][ind][i]]; updates[ind] = true; }
+							}
+						prob.evaluate(state,inds,updates, false, subpops, 0);
+					evaluations++;
+						}
+					}
+			
+				// test against random selected individuals of the current population
+				for(int k = 0; k < numCurrent; k++)
+					{
+					for(int ind = 0; ind < inds.length; ind++)
+						{
+						if (ind == j) { inds[ind] = individual; updates[ind] = true; }
+						else { inds[ind] = produceCurrent(ind, state, 0); updates[ind] = true; }
+						}
+					prob.evaluate(state,inds,updates, false, subpops, 0);
+					evaluations++;
+					}
 
                 // Test against random individuals of previous population
                 for(int k = 0; k < numPrev; k++)
@@ -304,6 +366,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
                         else { inds[ind] = producePrevious(ind, state, 0); updates[ind] = false; }
                         }
                     prob.evaluate(state,inds,updates, false, subpops, 0);
+					evaluations++;
                     }
                 }
 			}
@@ -322,6 +385,8 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
             selectionMethodPrev[i].finishProducing( state, i, 0 );
             state.population = currentPopulation;
             }
+		
+		state.output.message("Evaluations: " + evaluations);
         }
 
 
