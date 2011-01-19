@@ -9,7 +9,8 @@ eval.problem.type = rosenbrock
 
 eval =                                  ec.coevolve.MultiPopCoevolutionaryEvaluator
 
-eval.num-current=                       1
+eval.num-shuffled=			0
+eval.num-current=                       0
 eval.num-elites =                       1
 eval.num-prev =                         0
 eval.select-current =                   ec.select.RandomSelection
