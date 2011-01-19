@@ -16,30 +16,31 @@ import java.util.*;
 
 public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
     {
-    public void preprocessPopulation(final EvolutionState state, Population pop, boolean countVictoriesOnly)
+    public void preprocessPopulation(final EvolutionState state, Population pop, boolean[] prepareForAssessment, boolean countVictoriesOnly)
         {
         for( int i = 0 ; i < pop.subpops.length ; i++ )
-            for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
-                ((SimpleFitness)(pop.subpops[i].individuals[j].fitness)).trials = new ArrayList();
+			if (prepareForAssessment[i])
+				for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
+					((SimpleFitness)(pop.subpops[i].individuals[j].fitness)).trials = new ArrayList();
         }
 
-    public void postprocessPopulation(final EvolutionState state, Population pop, boolean countVictoriesOnly)
+    public void postprocessPopulation(final EvolutionState state, Population pop, boolean[] assessFitness, boolean countVictoriesOnly)
         {
         for( int i = 0 ; i < pop.subpops.length ; i++ )
-            for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
-                {
-                SimpleFitness fit = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
-                                
-                // we take the max over the trials
-                double max = Double.NEGATIVE_INFINITY;
-                int len = fit.trials.size();
-                for(int l = 0; l < len; l++)
-                    max = Math.max(((Double)(fit.trials.get(l))).doubleValue(), max);  // it'll be the first one, but whatever
-				
-                fit.setFitness(state, (float)(max), isOptimal(problemType, (float)max));
-                pop.subpops[i].individuals[j].evaluated = true;
-               // fit.trials = null;  // let GC
-                }
+			if (assessFitness[i])
+				for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
+					{
+					SimpleFitness fit = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
+									
+					// we take the max over the trials
+					double max = Double.NEGATIVE_INFINITY;
+					int len = fit.trials.size();
+					for(int l = 0; l < len; l++)
+						max = Math.max(((Double)(fit.trials.get(l))).doubleValue(), max);  // it'll be the first one, but whatever
+					
+					fit.setFitness(state, (float)(max), isOptimal(problemType, (float)max));
+					pop.subpops[i].individuals[j].evaluated = true;
+					}
         }
 
 
@@ -87,6 +88,7 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
                 // Update the context if this is the best trial.  We're going to assume that the best
 				// trial is trial #0 so we don't have to search through them.
                 int len = coind.fitness.trials.size();
+				
 				if (len == 0)  // easy
 					{
 					coind.fitness.setContext(ind, i);
