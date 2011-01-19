@@ -20,6 +20,7 @@ eval.problem.type = rastrigin
 # sum
 # product
 # schwefel
+# ridge		
 
 
 state = 				ec.simple.SimpleEvolutionState
