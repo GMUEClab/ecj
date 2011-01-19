@@ -6,20 +6,11 @@ parent.0 = ../ecsuite/ecsuite.params
 
 eval.problem = ec.app.coevolve2.CoevolutionaryECSuite
 eval.problem.type = rosenbrock
-#rastrigin
-
-#
-# optionally your type could be: rosenbrock, sphere, step, noisy-quartic, 
-# or kdj-f1, kdj-f2, kdj-f3, or kdj-f4		(the kdj-foo names
-# are just aliases for other problems, useful for people who might
-# know them as specific problems in the DeJong test suite)
-# ...or booth, griewangk
-#
 
 eval =                                  ec.coevolve.MultiPopCoevolutionaryEvaluator
 
 eval.num-current=                       1
-eval.num-elites =                       0
+eval.num-elites =                       1
 eval.num-prev =                         0
 eval.select-current =                   ec.select.RandomSelection
 eval.select-prev =                      ec.select.RandomSelection
@@ -34,7 +25,7 @@ pop.subpop.0.size =                     500
 pop.subpop.0.species =                  ec.vector.FloatVectorSpecies
 pop.subpop.0.species.crossover-type =   one
 pop.subpop.0.species.genome-size =      50
-pop.subpop.0.species.fitness =          ec.simple.SimpleFitness
+pop.subpop.0.species.fitness =          ec.coevolve.ICCEAFitness
 pop.subpop.0.species.ind =              ec.vector.DoubleVectorIndividual
 pop.subpop.0.species.min-gene =         -5.12
 pop.subpop.0.species.max-gene =         5.12
@@ -54,7 +45,7 @@ pop.subpop.1.size =                     500
 pop.subpop.1.species =                  ec.vector.FloatVectorSpecies
 pop.subpop.1.species.crossover-type =   one
 pop.subpop.1.species.genome-size =      50
-pop.subpop.1.species.fitness =          ec.simple.SimpleFitness
+pop.subpop.1.species.fitness =          ec.coevolve.ICCEAFitness
 pop.subpop.1.species.ind =              ec.vector.DoubleVectorIndividual
 pop.subpop.1.species.min-gene =         -5.12
 pop.subpop.1.species.max-gene =         5.12
