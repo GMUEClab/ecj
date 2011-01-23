@@ -1790,3 +1790,6 @@ Version		Change Log
 		evaluators, etc.
 	Modified GroupedProblemForm to require additional parameters to enable sequential
 		evaluation.  Had to be done, sorry.
+	Bug fixes to SimpleBreeder's handling of elites when doing sequential breeding
+	Modifications to ECSuite to make its standard ranges more standard, and added
+		San Marino problem 

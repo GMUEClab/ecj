@@ -2,8 +2,6 @@ package ec.app.bbob;
 
 import java.util.HashMap;
 
-import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
-
 import ec.EvolutionState;
 import ec.Individual;
 import ec.Initializer;
