@@ -9,18 +9,24 @@ eval.problem.type = rastrigin
 
 # Here are the possible settings for eval.problem.type
 #
-# sphere	(or)	kdj-f1
-# rosenbrock	(or)	kdj-f2
-# step		(or)	kdj-f3
-# noisy-quartic	(or)	kdj-f4
-# rastrigin
-# booth
-# griewank
-# median
-# sum
-# product
-# schwefel
-# ridge		
+# NAME					EXPECTED MIN-GENE	EXPECTED MAX-GENE
+# 
+# sphere	(or)	kdj-f1		-5.12			5.12
+# rosenbrock	(or)	kdj-f2		-2.048			2.048
+# step		(or)	kdj-f3		-5.12			5.12
+# noisy-quartic	(or)	kdj-f4		-1.28			1.28
+# rastrigin				-5.12			5.12
+# booth					-5.12			5.12
+# griewank				-600			600
+# median				0			1
+# sum					0			1
+# product				0			2
+# schwefel				-512.03			511.97
+# san-marino				0			1
+# min					0			1
+
+
+
 
 
 state = 				ec.simple.SimpleEvolutionState
@@ -46,9 +52,11 @@ pop.subpop.0.species.fitness =		ec.simple.SimpleFitness
 pop.subpop.0.species.ind =		ec.vector.DoubleVectorIndividual
 pop.subpop.0.species.mutation-bounded =	true
 
-# you can change these to whatever tickles your fancy
+# Mind the expected ranges given in ECSuite.java
 pop.subpop.0.species.min-gene =	-5.12
 pop.subpop.0.species.max-gene =	5.12
+
+# You can change this to whatever you want, though Booth requires a genome size of 2
 pop.subpop.0.species.genome-size = 	100
 
 

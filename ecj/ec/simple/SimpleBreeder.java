@@ -95,9 +95,11 @@ public class SimpleBreeder extends Breeder
     /** Elites are often stored in the top part of the subpopulation; this function returns what
         part of the subpopulation contains individuals to replace with newly-bred ones
         (up to but not including the elites). */
-    public int computeSubpopulationLength(Population newpop, int subpopulation)
+    public int computeSubpopulationLength(EvolutionState state, Population newpop, int subpopulation, int threadnum)
         {
-        return newpop.subpops[subpopulation].individuals.length - elite[subpopulation];
+		if (!shouldBreedSubpop(state, subpopulation, threadnum))
+			return newpop.subpops[subpopulation].individuals.length;  // we're not breeding the population, just copy over the whole thing
+        return newpop.subpops[subpopulation].individuals.length - elite[subpopulation];	// we're breeding population, so elitism may have happened 
         }
 
     /** A simple breeder that doesn't attempt to do any cross-
@@ -119,7 +121,7 @@ public class SimpleBreeder extends Breeder
             for(int x=0;x<state.population.subpops.length;x++)
                 {
                 // the number of individuals we need to breed
-                int length = computeSubpopulationLength(newpop, x);
+                int length = computeSubpopulationLength(state, newpop, x, 0);
                 // the size of each breeding chunk except the last one
                 int firstBreedChunkSizes = length/state.breedthreads;
                 // the size of the last breeding chunk
@@ -263,7 +265,9 @@ public class SimpleBreeder extends Breeder
         for(int sub=0;sub<state.population.subpops.length;sub++) 
 			{
 			if (!shouldBreedSubpop(state, sub, 0))  // don't load the elites for this one, we're not doing breeding of it
+				{
 				continue;
+				}
 			
             // if the number of elites is 1, then we handle this by just finding the best one.
             if (elite[sub]==1)

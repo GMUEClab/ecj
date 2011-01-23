@@ -30,10 +30,9 @@ import ec.vector.*;
    As the SimpleFitness is used for maximization problems, the mapping f(x) --> -f(x) is used to transform
    the problems into maximization ones.
 
-   <p>Most problems have a traditional min/max gene range of [-5.12, 5.12].  Schwefel is traditionally
-	from [-500,500], and has been scaled here to fit properly in [-5.12, 5.12].  Griewangk is
-	traditionally from [-600,600], and has also been scaled to fit in [-5.12, 5.12].  Ridge is tradiionally from [-0,0].
-
+   <p>Problems have been set up so that their traditional ranges are scaled so you can use a min-gene of -1.0
+   and a max-gene of 1.0
+   
    <p><b>Parameters</b><br>
    <table>
    <tr><td valign=top><i>base</i>.<tt>type</tt><br>
@@ -41,7 +40,7 @@ import ec.vector.*;
    <td valign=top>(The vector problem to test against.  Some of the types are synonyms: kdj-f1 = sphere, kdj-f2 = rosenbrock, kdj-f3 = step, kdj-f4 = noisy-quartic.  "kdj" stands for "Ken DeJong", and the numbers are the problems in his test suite)</td></tr>
 <td valign=top><i>base</i>.<tt>dropoff</tt><br>
 <font size=-1>double &gt 0<i></font></td>
-<td valign=top>Degree of ridge dropoff in the "ridge" problem.</td></tr>
+<td valign=top>Degree of SAN_MARINO dropoff in the "SAN_MARINO" problem.</td></tr>
    </table>
 
 */
@@ -49,7 +48,6 @@ import ec.vector.*;
 public class ECSuite extends Problem implements SimpleProblemForm
     {
     public static final String P_WHICH_PROBLEM = "type";
-	public static final String P_DROPOFF = "dropoff";
         
     public static final String V_ROSENBROCK = "rosenbrock";
     public static final String V_RASTRIGIN = "rastrigin";
@@ -67,7 +65,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final String V_SUM = "sum";
     public static final String V_PRODUCT = "product";
     public static final String V_SCHWEFEL = "schwefel";
-public static final String V_RIDGE = "ridge";
+	public static final String V_SAN_MARINO = "san-marino";
+	public static final String V_MIN = "min";
 
     public static final int PROB_ROSENBROCK = 0;
     public static final int PROB_RASTRIGIN = 1;
@@ -80,13 +79,89 @@ public static final String V_RIDGE = "ridge";
     public static final int PROB_SUM = 8;
     public static final int PROB_PRODUCT = 9;
     public static final int PROB_SCHWEFEL = 10;
-	public static final int PROB_RIDGE = 11;
-    
+	public static final int PROB_SAN_MARINO = 11;
+    public static final int PROB_MIN = 12;
+	
     public int problemType = PROB_ROSENBROCK;  // defaults on Rosenbrock
 
-    // for RASTRIGIN function
-    public final static float A = 10.0f;
+	public static final String problemName[] = new String[]
+		{
+		"rosenbrock",
+		"rastrigin",
+		"sphere",
+		"step",
+		"noisy-quartic",
+		"booth",
+		"griewank",
+		"median",
+		"sum",
+		"product",
+		"schwefel",
+		"san marino",
+		"min"
+		};
 
+	public static final double minRange[] = new double[]
+		{
+		-2.048,		// rosenbrock
+		-5.12,		// rastrigin
+		-5.12,		// sphere
+		-5.12,		// step
+		-1.28,		// noisy quartic
+		-5.12,		// booth
+		-600.0,		// griewank
+		0.0,		// median
+		0.0,		// sum
+		0.0,		// product
+		-512.03,	// schwefel
+		0.0,		// san marino
+		0.0			// min
+		};
+
+	public static final double maxRange[] = new double[]
+		{
+		2.048,		// rosenbrock
+		5.12,		// rastrigin
+		5.12,		// sphere
+		5.12,		// step
+		1.28,		// noisy quartic
+		5.12,		// booth
+		600.0,		// griewank
+		1.0,		// median
+		1.0,		// sum
+		2.0,		// product
+		511.97,		// schwefel
+		1.0,		// san marino
+		1.0			// min
+		};
+	
+	boolean alreadyChecked = false;
+	public void checkRange(EvolutionState state, int problem)
+		{
+		if (alreadyChecked || state.generation > 0) return;
+		alreadyChecked = true;
+		
+		for(int i = 0; i < state.population.subpops.length; i++)
+			{
+			if (!(state.population.subpops[i].species instanceof FloatVectorSpecies))
+				{
+				state.output.fatal("ECSuite requires species " + i + " to be a FloatVectorSpecies, but it is a: " +  state.population.subpops[i].species);
+				}
+			FloatVectorSpecies species = (FloatVectorSpecies)(state.population.subpops[i].species);
+			for(int k = 0; k < species.minGenes.length; k++)
+				{
+				if (species.minGenes[k] != minRange[problem] ||
+					species.maxGenes[k] != maxRange[problem])
+					{
+					state.output.warning("Gene range is nonstandard for problem " + problemName[problem] + ".\nFirst occurrence: Subpopulation " + i + " Gene " + k + 
+										 " range was [" + species.minGenes[k] + ", " + species.maxGenes[k] + 
+										"], expected [" + minRange[problem] + ", " + maxRange[problem] + "]");
+					return;  // done here
+					}
+				}
+			}
+		}
+    
     // nothing....
     public void setup(final EvolutionState state, final Parameter base)
         {
@@ -119,10 +194,10 @@ public static final String V_RIDGE = "ridge";
             problemType = PROB_PRODUCT;    
 		else if (wp.compareTo( V_SCHWEFEL ) == 0 )
 			problemType = PROB_SCHWEFEL;
-	else if (wp.compareTo( V_RIDGE) == 0)
-		{
-		problemType = PROB_RIDGE;
-		}
+		else if (wp.compareTo( V_SAN_MARINO) == 0)
+			problemType = PROB_SAN_MARINO;
+		else if (wp.compareTo( V_MIN ) == 0 )
+			problemType = PROB_MIN;
         else state.output.fatal(
             "Invalid value for parameter, or parameter not found.\n" +
             "Acceptable values are:\n" +
@@ -136,7 +211,9 @@ public static final String V_RIDGE = "ridge";
             "  " + V_MEDIAN + "\n" + 
             "  " + V_SUM + "\n" +
             "  " + V_PRODUCT + "\n" + 
-			"  " + V_SCHWEFEL + "\n",
+			"  " + V_SCHWEFEL + "\n"+
+			"  " + V_SAN_MARINO + "\n"+
+			"  " + V_MIN + "\n",
             base.push( P_WHICH_PROBLEM ) );
         }
 
@@ -161,17 +238,17 @@ public static final String V_RIDGE = "ridge";
         // compute if we're optimal on a per-function basis
         boolean isOptimal = isOptimal(problemType, fit);
                 
-        // set the fitness appropriately
-				if ((float)fit < (0.0f - Float.MAX_VALUE))  // uh oh -- can be caused by Product for example
-					{
-					((SimpleFitness)(ind.fitness)).setFitness( state, 0.0f - Float.MAX_VALUE, isOptimal );
-					state.output.warnOnce("'Product' type used: some fitnesses are negative infinity, setting to lowest legal negative number.");
-					}
-				else if ((float)fit > Float.MAX_VALUE)  // uh oh -- can be caused by Product for example
-					{
-					((SimpleFitness)(ind.fitness)).setFitness( state, Float.MAX_VALUE, isOptimal );
-					state.output.warnOnce("'Product' type used: some fitnesses are negative infinity, setting to lowest legal negative number.");
-					}
+		// set the fitness appropriately
+		if ((float)fit < (0.0f - Float.MAX_VALUE))  // uh oh -- can be caused by Product for example
+			{
+			((SimpleFitness)(ind.fitness)).setFitness( state, 0.0f - Float.MAX_VALUE, isOptimal );
+			state.output.warnOnce("'Product' type used: some fitnesses are negative infinity, setting to lowest legal negative number.");
+			}
+		else if ((float)fit > Float.MAX_VALUE)  // uh oh -- can be caused by Product for example
+			{
+			((SimpleFitness)(ind.fitness)).setFitness( state, Float.MAX_VALUE, isOptimal );
+			state.output.warnOnce("'Product' type used: some fitnesses are negative infinity, setting to lowest legal negative number.");
+			}
         else
 			{
 			((SimpleFitness)(ind.fitness)).setFitness( state, (float)fit, isOptimal );
@@ -197,6 +274,8 @@ public static final String V_RIDGE = "ridge";
             case PROB_SUM:
             case PROB_PRODUCT:
 			case PROB_SCHWEFEL:
+			case PROB_SAN_MARINO:
+			case PROB_MIN:
             default:
                 return false;
             }
@@ -204,51 +283,67 @@ public static final String V_RIDGE = "ridge";
 
     public double function(EvolutionState state, int function, double[] genome, int threadnum)
         {
-	final double GRIEWANK_SCALE = (600.0 / 5.12);	// see documentation at top of file
-	final double SCHWEFEL_SCALE = (500.0 / 5.12);	// see documentation at top of file
+		checkRange(state, function);
+		
         double value = 0;
         int len = genome.length;
         switch(function)
             {
             case PROB_ROSENBROCK:
                 for( int i = 1 ; i < len ; i++ )
-                    value += 100*(genome[i-1]*genome[i-1]-genome[i])*
-                        (genome[i-1]*genome[i-1]-genome[i]) +
-                        (1-genome[i-1])*(1-genome[i-1]);
+					{
+					double gj = genome[i-1] ;
+					double gi = genome[i] ;
+                    value += 100 * (gj*gj - gj) * (gj*gj - gj) +  (1-gj) * (1-gj);
+					}
                 return -value;
 
                 
             case PROB_RASTRIGIN:
-                value = len * A;
+			   final float A = 10.0f;
+               value = len * A;
                 for( int i = 0 ; i < len ; i++ )
-                    value += ( genome[i]*genome[i] - A * Math.cos( 2 * Math.PI * genome[i] ) );
+					{
+					double gi = genome[i]  ;
+                    value += ( gi*gi - A * Math.cos( 2 * Math.PI * gi ) );
+					}
                 return -value;
 
                 
             case PROB_SPHERE:
                 for( int i = 0 ; i < len ; i++ )
-                    value += genome[i]*genome[i];
+					{
+					double gi = genome[i] ;
+                    value += gi * gi;
+					}
                 return -value;
 
 
             case PROB_STEP:
                 for( int i = 0 ; i < len ; i++ )
-                    value += 6 + Math.floor( genome[i] );
+					{
+					double gi = genome[i] ;
+                    value += 6 + Math.floor( gi );
+					}
                 return -value;
 
 
             case PROB_NOISY_QUARTIC:
                 for( int i = 0 ; i < len ; i++ )
-                    value += (i+1)*(genome[i]*genome[i]*genome[i]*genome[i]) + // no longer : Math.pow( genome[i], 4 ) +
-                        state.random[threadnum].nextDouble();
+					{
+					double gi = genome[i] ;
+                    value += (i+1)*(gi*gi*gi*gi) + state.random[threadnum].nextDouble();
+					}
                 return -value;
 
 
             case PROB_BOOTH:
                 if( len != 2 )
                     state.output.fatal( "The Booth problem is defined for only two terms, and as a consequence the genome of the DoubleVectorIndividual should have size 2." );
-                value = (genome[0] + 2*genome[1] - 7) * (genome[0] + 2*genome[1] - 7) +
-                    (2*genome[0] + genome[1] - 5) * (2*genome[0] + genome[1] - 5);
+                double g0 = genome[0] ;
+				double g1 = genome[1] ;
+				value = (g0 + 2*g1 - 7) * (g0 + 2*g1 - 7) +
+                    (2*g0 + g1 - 5) * (2*g0 + g1 - 5);
                 return -value;
 
 
@@ -257,8 +352,9 @@ public static final String V_RIDGE = "ridge";
                 double prod = 1;
                 for( int i = 0 ; i < len ; i++ )
                     {
-                    value += (genome[i]*GRIEWANK_SCALE*genome[i]*GRIEWANK_SCALE)/4000.0;
-                    prod *= Math.cos( genome[i] / Math.sqrt(i+1) );
+					double gi = genome[i] ;
+                    value += (gi*gi)/4000.0;
+                    prod *= Math.cos( gi / Math.sqrt(i+1) );
                     }
                 value -= prod;
                 return -value;
@@ -267,49 +363,72 @@ public static final String V_RIDGE = "ridge";
             case PROB_SCHWEFEL:
                 value = 0;
                 for( int i = 0 ; i < len ; i++ )
-                    value += -genome[i]*SCHWEFEL_SCALE * Math.sin(Math.sqrt(Math.abs(genome[i]*SCHWEFEL_SCALE)));
+					{
+					double gi = genome[i] ;
+                    value += -gi * Math.sin(Math.sqrt(Math.abs(gi)));
+					}
                 return -value;
 
-
-            case PROB_RIDGE:
+            case PROB_SAN_MARINO:
 				{				
-				value = 0.25;
-                for( int i = 0 ; i < len ; i++ )
-                    value *= genome[i];
-				
+				double v1 = 0.0;
 				double v2 = 0.0;
                 for( int i = 0 ; i < len ; i++ )
+					{
+					double gi = genome[i] ;
+					v1 += gi;
+					
 					for( int j = i + 1; j < len ; j++ )
 						{
-						double z = Math.max(1-genome[i], 1-genome[j]);
-						v2 += Math.pow(Math.abs(genome[i] - genome[j]), z);
+						double gj = genome[j] ;
+						double a = 2.0 * (gi + gj);
+						a = a * a * a * a;
+						double b = gi< gj ? gi * (1.0 - gj) : gj * (1.0 - gi) ;
+						v2 += (a * b);
 						}
-				value -= v2 * 2 / (len * len - len);
+					}
+				value = ( 10 - 20.0 / len) * v1 + 
+						( 2.0 / (len * (len - 1))) * v2;
 				return value;
 				}
 
-
             case PROB_MEDIAN:           // FIXME, need to do a better median-finding algorithm, such as http://www.ics.uci.edu/~eppstein/161/960130.html
-                double[] sorted = new double[genome.length];
+                double[] sorted = new double[len];
                 System.arraycopy(genome, 0, sorted, 0, sorted.length);
                 ec.util.QuickSort.qsort(sorted);
-                return sorted[sorted.length / 2];               // note positive
+                return sorted[sorted.length / 2] ;               // note positive
 
             case PROB_SUM:
 				value = 0.0;
                 for( int i = 0 ; i < len ; i++ )
-                    value += genome[i];
+					{
+					double gi = genome[i] ;
+                    value += gi;
+					}
+                return value;									// note positive
+
+            case PROB_MIN:
+				value = genome[0] ;
+                for( int i = 1 ; i < len ; i++ )
+					{
+					double gi = genome[i] ;
+                    if (value > gi) value = gi;
+					}
                 return value;									// note positive
 
             case PROB_PRODUCT:
                 value = 1.0;
 				for( int i = 0 ; i < len ; i++ )
-                    value *= genome[i];
+					{
+					double gi = genome[i] ;
+                    value *= gi;
+					}
                 return value;									// note positive
 
             default:
                 state.output.fatal( "ec.app.ecsuite.ECSuite has an invalid problem -- how on earth did that happen?" );
                 return 0;  // never happens
             }
+		
         }
     }

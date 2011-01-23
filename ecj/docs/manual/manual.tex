@@ -2268,6 +2268,14 @@ seed.2 =  992341\\
 seed.3 = -16723
 }
 
+Last but not least, certain Breeders allow you to change the subpopulation breeding order to a {\it sequential} one.  Let's say you have 3 subpopulations.  If you turn on the following parameter:
+
+\params{%
+breed.sequential = true
+}
+
+\noindent ... then SimpleBreeder will only breed subpopulation 0 the first generation, then only subpopulation 1 the second generation, then only subpopulation 2 the second generation, then only subpopulation 0 the third generation, and so on.  Obviously if you only have one subpopulation, this parameter has no effect.  Why would you want this?  ECJ only uses it for a common kind of coevolution, discussed later in Section \ref{parallelandsequentialcoevolution}.  Otherwise you should keep this set to \parameter{false}.  The only reason it's mentioned here is so that if you make a Breeder subclass, you can check for this parameter and signal an error if it is \parameter{true}, indicating that your Breeder subclass doesn't support it.
+
 All that remains is the breeding procedure itself, for which SimpleBreeder (and many Breeders) constructs a {\bf Breeding Pipeline}.
 
 \begin{figure}[t]
@@ -8661,6 +8669,7 @@ For competitive coevolution, you can use the same example as in Section \ref{ec.
 
 
 \subsubsection{Parallel and Sequential Coevolution}
+\label{parallelandsequentialcoevolution}
 
 Note that the options above enable the ``Parallel'' and ``Parallel Previous'' coevolutionary techniques \cite{Luke2009Metaheuristics}, but not the ``Serial'' (or ``Sequential'') technique whereby each Subpopulation is evaluated in turn.  For Sequential coevolution, there's an additional parameter option in \class{ec.simple.SimpleBreeder}:
 

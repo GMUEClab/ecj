@@ -191,6 +191,8 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         return false;
         }
 
+	/** Returns true if the subpopulation should be evaluated.  This will happen if the Breeder
+		believes that the subpopulation should be breed afterwards. */
 	public boolean shouldEvaluateSubpop(EvolutionState state, int subpop, int threadnum)
 		{
 		return (state.breeder instanceof SimpleBreeder &&
@@ -238,7 +240,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
                 if( numElite > state.population.subpops[i].individuals.length )
                     state.output.fatal( "Number of elite partners is greater than the size of the subpopulation." );
                 for( int j = 0; j < numElite ; j++ )
-                    eliteIndividuals[i][j] = (Individual)(state.population.subpops[i].individuals[j].clone());
+                    eliteIndividuals[i][j] = (Individual)(state.population.subpops[i].individuals[j].clone());  // just take the first N individuals of each subpopulation
                 }
             }
         }
@@ -325,7 +327,6 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         // for each subpopulation
         for(int j = 0; j < state.population.subpops.length; j++)
 			{
-
 		// now do elites and randoms
 		
 		if (!shouldEvaluateSubpop(state, j, 0)) continue;  // don't evaluate this subpopulation
@@ -433,8 +434,8 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         if( numElite > 0 )
             {
             for(int i = 0 ; i < state.population.subpops.length; i++)
-				if (!shouldEvaluateSubpop(state, i, 0))		// only load elites for subpopulations which are actually changing
-					loadElites( state, state.population.subpops[i], i );
+				if (shouldEvaluateSubpop(state, i, 0))		// only load elites for subpopulations which are actually changing
+					loadElites( state, i );
             }
                                 
         // copy over the previous population
@@ -445,10 +446,10 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         }
 
 
-    void loadElites( final EvolutionState state,
-        final Subpopulation subpop,
-        int whichSubpop )
+    void loadElites( final EvolutionState state, int whichSubpop )
         {
+		Subpopulation subpop = state.population.subpops[whichSubpop];
+		
         if (numElite==1)
             {
             int best = 0;
