@@ -1679,8 +1679,9 @@ Last, a Species contains a {\bf prototypical Breeding Pipeline} to modify indivi
 Since they're Prototypes, Individuals, Fitnesses, and Species all have default bases.  We'll talk about the different kinds of Individuals, Fitnesses, and Species later, plus various default bases for them.
 
 \subsection{Making Large Numbers of Subpopulations}
+\label{default-subpop}
 
-Let's say you're doing an evolutionary experiment (perhaps coevolution) which involves 100 Subpopulations.  It's going to get very tiresome to repeat...
+Let's say you're doing an evolutionary experiment (perhaps coevolution, see Section \ref{ec.coevolve}) which involves 100 Subpopulations.  It's going to get very tiresome to repeat...
 
 \params{%
 pop = ec.Population \\
@@ -8052,7 +8053,7 @@ eval.return-inds = true
 
 There's absolutely no reason the Slave can't have its own evolutionary algorithm that's {\it different} from the Master's evolutionary algorithm\,---\,just specify it differently in the Slave's parameters.  The only thing that'd be required is that the Slave and the Master have exactly the same kinds of Individuals, Fitnesses, and Species in their Subpopulations.
 
- Note that Opportunistic Evolution won't work with coevolution or other procedures which require GroupedProblemForm.  Additionally, although Steady-State Evolution (via Asynchronous Evolution, see Section \ref{asynchronous}) can work with Opportunistic Evolution in {\it theory}, it'd be quite odd to do so.
+Note that Opportunistic Evolution won't work with coevolution or other procedures which require GroupedProblemForm.  Additionally, although Steady-State Evolution (via Asynchronous Evolution, see Section \ref{asynchronous}) can work with Opportunistic Evolution in {\it theory}, it'd be quite odd to do so.
 
 \begin{figure}[f]
 \begin{center}
@@ -8419,8 +8420,12 @@ Last, Internal Island Models tend to be verbose.  To make them less chatty, you 
 exch.chatty = false;
 }
 
+
+\paragraph{Reminder} It's laborious to write a zillion parameters if you have large numbers of subpopulations in your internal island model experiments.  You can greatly simplify this process using the \parameter{pop.default-subpop} parameter (see Section \ref{default-subpop}).
+
+
 \subsection{The Exchanger}
-In Section \ref{ec.Exchanger} we talked about various basic Exchanger methods.  But three were not discussed, mostly becuase they're only used for Island Models (not even Internal Island Models).  They are:
+In Section \ref{ec.Exchanger} we talked about various basic Exchanger methods.  But three were not discussed, mostly because they're only used for Island Models (not even Internal Island Models).  They are:
 
 \java{%
     public void initializeContacts(EvolutionState state);\\
@@ -8665,7 +8670,7 @@ When \class{ec.coevolve.MultiPopCoevolutionaryEvaluator} tests Individuals toget
 \class{ec.coevolve.MultiPopCoevolutionaryEvaluator} tests a given Individual in a Subpopulation in combination with Individuals selected from the other Subpopulations in various ways.  The number of trials of each type that an Individual receives is determined by several associated parameters.
 
 \begin{itemize}
-\item Individuals selected from the current generation.  The number of trials of this type is:
+\item Individuals selected at random, with replacement, from the current generation.  The number of trials of this type is:
 
 \params{%
 eval.num-current = 4
@@ -8684,7 +8689,7 @@ RandomSelection is strongly recommended.  Alternatively you could use the defaul
 eval.select-current = ec.select.RandomSelection
 }
 
-\item Individuals from the previous generation.  You provide the selection method for them; unlike before, this one can be based on Fitness if you like.  For generation 0, Individuals are picked from the current generation and at random.  For example, to specify the number of individuals of this type, and to use TournamentSelection, we might do:
+\item Individuals selected at random, with replacement, from the previous generation.  You provide the selection method for them; unlike before, this one can be based on Fitness if you like.  For generation 0, Individuals are picked from the current generation and at random.  For example, to specify the number of individuals of this type, and to use TournamentSelection, we might do:
 
 \params{%
 eval.num-prev = 6\\
@@ -8704,6 +8709,15 @@ select.tournament.size = 2
 
 \params{%
 eval.subpop.0.num-elites = 5
+}
+
+
+\item Individuals in the current Population are paired up using random shuffling.  For each trial, all the Subpopulations are randomly shuffled\footnote{Not actually shuffled\,---\,just shuffled internal index arrays to them: the effect is the same.}.  Then each Individual \#0 of each Subpopulation is paired together for a trial; likewise each Individual \#1 of each Subpopulation, each Individual \#2, and so on.  This produces one trial for every Individual.  For the next trial, all Subpopulations are randomly shuffled again, and so on.
+
+Note that this procedure makes it possible to guarantee \(N\) trials per Individual with many fewer total trials: you can then use your saved Evaluations towards other things, such as more trials, larger Subpopulation sizes, or longer generations.  To do 4 shuffled trials per Individual, you'd say:
+
+\params{%
+eval.num-shuffled = 4
 }
 
 \end{itemize}
@@ -8737,6 +8751,7 @@ For competitive coevolution, you can use the same example as in Section \ref{ec.
 
 \class{ec.coevolve.MultiPopCoevolutionaryEvaluator}  is not at present multithreaded.  It does not respond to the \parameter{evalthreads} parameter.
 
+\paragraph{Reminder} It's laborious to write a zillion parameters if you have large numbers of subpopulations in your coevolution experiments.  You can greatly simplify this process using the \parameter{pop.default-subpop} parameter (see Section \ref{default-subpop}).
 
 \subsubsection{Parallel and Sequential Coevolution}
 \label{parallelandsequentialcoevolution}
@@ -8820,6 +8835,10 @@ public void evaluate(EvolutionState state, Individudual[] ind, boolean[] updateF
     }
 \end{verbatim}
 }
+
+\paragraph{Warning} Maintaining context in this way is expensive.  If you have \(N\) individuals involved in a trial, you'll likely be updating the context on all \(N\) of them, and each context array is \(N\) size, so you're looking at an \(O(N^2)\) operation for every trial!  If you're doing coevolution with 1000 subpopulations, that's a million array slots for {\it each} trial of {\it each} individual.  Furthermore, if you are using \class{ec.simple.SimpleStatistics}, large contexts will be printed to disk.
+
+In this situation, you probably want to simply avoid setting context: it's just too expensive.
 
 \subsection{Performing Distributed Evaluation with Coevolution}
 \label{performingdistributedevaluationwithcoevolution}
