@@ -1678,6 +1678,76 @@ Last, a Species contains a {\bf prototypical Breeding Pipeline} to modify indivi
 
 Since they're Prototypes, Individuals, Fitnesses, and Species all have default bases.  We'll talk about the different kinds of Individuals, Fitnesses, and Species later, plus various default bases for them.
 
+\subsection{Making Large Numbers of Subpopulations}
+
+Let's say you're doing an evolutionary experiment (perhaps coevolution) which involves 100 Subpopulations.  It's going to get very tiresome to repeat...
+
+\params{%
+pop = ec.Population \\
+pop.subpops = 100\\
+pop.subpop.0 = ec.Subpopulation \\
+pop.subpop.0.size = 100 \\
+pop.subpop.0.species = ec.vector.IntegerVectorSpecies\\
+pop.subpop.0.species.ind = ec.vector.IntegerVectorIndividual\\
+pop.subpop.0.species.fitness = ec.simple.SimpleFitness\\\
+....\\
+pop.subpop.1 = ec.Subpopulation \\
+pop.subpop.1.size = 100 \\
+pop.subpop.1.species = ec.vector.IntegerVectorSpecies\\
+pop.subpop.1.species.ind = ec.vector.IntegerVectorIndividual\\
+pop.subpop.1.species.fitness = ec.simple.SimpleFitness\\\
+....\\
+pop.subpop.2 = ec.Subpopulation \\
+pop.subpop.2.size = 100 \\
+pop.subpop.2.species = ec.vector.IntegerVectorSpecies\\
+pop.subpop.2.species.ind = ec.vector.IntegerVectorIndividual\\
+pop.subpop.2.species.fitness = ec.simple.SimpleFitness\\\
+....\\
+}
+
+\noindent ... and so on some 100 times.  Even with the help of ECJ's default parameters, you'll still be typing an awful lot.  Population has a simple mechanism to make this easier on you: the parameter...
+
+\params{%
+pop.default-subpop = 0
+}
+
+This says that if you {\it do not} specify a Subpopulation in parameters, ECJ will assume its parameters are identical for those of Subpopulation 0.  Thus you could simply say:
+
+\params{%
+pop = ec.Population \\
+pop.subpops = 100\\
+pop.default-subpop = 0 \\
+pop.subpop.0 = ec.Subpopulation \\
+pop.subpop.0.size = 100 \\
+pop.subpop.0.species = ec.vector.IntegerVectorSpecies\\
+pop.subpop.0.species.ind = ec.vector.IntegerVectorIndividual\\
+pop.subpop.0.species.fitness = ec.simple.SimpleFitness\\\
+...
+}
+
+\noindent ... and be done with it.  Note that you can always specify a Subpopulation specially.  For example, suppose all of your Subpopulations were exactly like Subpopulation 0 {\it except} for Subpopulation 19.  You can say:
+
+\params{%
+pop = ec.Population \\
+pop.subpops = 100\\
+pop.default-subpop = 0 \\
+pop.subpop.0 = ec.Subpopulation \\
+pop.subpop.0.size = 100 \\
+pop.subpop.0.species = ec.vector.IntegerVectorSpecies\\
+pop.subpop.0.species.ind = ec.vector.IntegerVectorIndividual\\
+pop.subpop.0.species.fitness = ec.simple.SimpleFitness\\\
+...
+pop.subpop.19 = ec.Subpopulation \\
+pop.subpop.19.size = 25 \\
+pop.subpop.19.species = ec.vector.FloatVectorSpecies\\
+pop.subpop.19.species.ind = ec.vector.DoubleVectorIndividual\\
+pop.subpop.19.species.fitness = ec.simple.SimpleFitness\\\
+...
+}
+
+Note that even though Subpopulation 19 shared the same fitness type as the others, we still had to specify it.  It's an all-or-nothing proposition: either you say {\it nothing} about that particular Subpopulation, or you say {\it everything}.
+
+
 \subsection{How Species Make Individuals}
 \label{ec.Species}
 
