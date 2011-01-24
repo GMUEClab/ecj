@@ -45,9 +45,8 @@ import java.io.*;
  <td valign=top>(the class for subpopulation #<i>n</i>)</td></tr>
 
  <tr><td valign=top><i>base.</i><tt>default-subpop</tt><br>
- <font size=-1>classname, inherits or = ec.Subpopulation</font></td>
- <td valign=top>(the class for subpopulation #<i>n</i> if it wasn't specified with <i>base.</i><tt>subpop</tt><i>.n</i>.  
- Don't use this except in unusual circumstances.  The parameter base is still <i>base.</i><tt>subpop</tt><i>.n</i>.</td></tr>
+ <font size=-1>int &gt;= 0</font></td>
+ <td valign=top>(the default subpopulation index.  The parameter base of this subpopulation will be used as the default base for all subpopulations which do not define one themselves./tr>
  </table>
 
  <p><b>Parameter bases</b><br>
@@ -110,10 +109,12 @@ public class Population implements Group
             if (!state.parameters.exists(p,null))
                 {
                 p = base.push(P_DEFAULT_SUBPOP);
-                if (state.parameters.exists(p, null))
+				int defaultSubpop = state.parameters.getInt(p, null, 0); 
+                if ( defaultSubpop >= 0)
                     {
-                    state.output.warning("Class for subpopulation " + x + " not specified, using provided default: " + state.parameters.getString(p, null));
-                    }
+                    state.output.warning("Using subpopulation " + defaultSubpop + " as the default for subpopulation " + x);
+					p = base.push(P_SUBPOP).push(""+defaultSubpop);
+					}
                 // else an error will occur on the next line anyway.
                 }
             subpops[x] = (Subpopulation)(state.parameters.getInstanceForParameterEq(p,null,Subpopulation.class));  // Subpopulation.class is fine
