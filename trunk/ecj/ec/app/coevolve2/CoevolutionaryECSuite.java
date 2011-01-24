@@ -12,10 +12,22 @@ import ec.app.ecsuite.*;
 import ec.coevolve.*;
 import ec.vector.DoubleVectorIndividual;
 import ec.simple.SimpleFitness;
+import ec.util.*;
 import java.util.*;
 
 public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
     {
+	public static final String P_SHOULD_SET_CONTEXT = "set-context";
+	boolean shouldSetContext;
+	
+    public void setup(final EvolutionState state, final Parameter base) 
+        {
+		super.setup(state, base);
+		
+		// load whether we should set context or not
+		shouldSetContext = state.parameters.getBoolean(base.push(P_SHOULD_SET_CONTEXT), null, true);
+		}
+	
     public void preprocessPopulation(final EvolutionState state, Population pop, boolean[] prepareForAssessment, boolean countVictoriesOnly)
         {
         for( int i = 0 ; i < pop.subpops.length ; i++ )
@@ -91,12 +103,12 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
 				
 				if (len == 0)  // easy
 					{
-					coind.fitness.setContext(ind, i);
+					if (shouldSetContext) coind.fitness.setContext(ind, i);
 					coind.fitness.trials.add(new Double(trial));
 					}
 				else if (((Double)(coind.fitness.trials.get(0))).doubleValue() < trial)  // best trial is presently #0
 					{
-					coind.fitness.setContext(ind, i);
+					if (shouldSetContext) coind.fitness.setContext(ind, i);
 					// put me at position 0
 					Double t = (Double)(coind.fitness.trials.get(0));
 					coind.fitness.trials.set(0, new Double(trial));  // put me at 0
