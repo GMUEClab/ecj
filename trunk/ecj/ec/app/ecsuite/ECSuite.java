@@ -67,6 +67,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final String V_SCHWEFEL = "schwefel";
 	public static final String V_SAN_MARINO = "san-marino";
 	public static final String V_MIN = "min";
+	public static final String V_ROTATED_RASTRIGIN = "rotated-rastrigin";
+	public static final String V_ROTATED_SCHWEFEL = "rotated-schwefel";
 
     public static final int PROB_ROSENBROCK = 0;
     public static final int PROB_RASTRIGIN = 1;
@@ -81,24 +83,30 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final int PROB_SCHWEFEL = 10;
 	public static final int PROB_SAN_MARINO = 11;
     public static final int PROB_MIN = 12;
+    public static final int PROB_ROTATED_RASTRIGIN = 13;
+    public static final int PROB_ROTATED_SCHWEFEL = 14;
 	
     public int problemType = PROB_ROSENBROCK;  // defaults on Rosenbrock
 
+	public static double[][][] rotationMatrix = new double[1][][];  // the actual matrix is stored in rotationMatrix[0] -- a hack
+	
 	public static final String problemName[] = new String[]
 		{
-		"rosenbrock",
-		"rastrigin",
-		"sphere",
-		"step",
-		"noisy-quartic",
-		"booth",
-		"griewank",
-		"median",
-		"sum",
-		"product",
-		"schwefel",
-		"san marino",
-		"min"
+		V_ROSENBROCK,
+		V_RASTRIGIN,
+		V_SPHERE,
+		V_STEP,
+		V_NOISY_QUARTIC,
+		V_BOOTH,
+		V_GRIEWANK,
+		V_MEDIAN,
+		V_SUM,
+		V_PRODUCT,
+		V_SCHWEFEL,
+		V_SAN_MARINO,
+		V_MIN,
+		V_ROTATED_RASTRIGIN,
+		V_ROTATED_SCHWEFEL
 		};
 
 	public static final double minRange[] = new double[]
@@ -115,7 +123,9 @@ public class ECSuite extends Problem implements SimpleProblemForm
 		0.0,		// product
 		-512.03,	// schwefel
 		0.0,		// san marino
-		0.0			// min
+		0.0,		// min
+		-5.12,		// rotated-rastrigin
+		-512.03		// rotated-schwefel
 		};
 
 	public static final double maxRange[] = new double[]
@@ -132,8 +142,11 @@ public class ECSuite extends Problem implements SimpleProblemForm
 		2.0,		// product
 		511.97,		// schwefel
 		1.0,		// san marino
-		1.0			// min
+		1.0,		// min
+		5.12,		// rotated-rastrigin
+		511.97		// rotated-schwefel
 		};
+		
 	
 	boolean alreadyChecked = false;
 	public void checkRange(EvolutionState state, int problem)
@@ -198,6 +211,10 @@ public class ECSuite extends Problem implements SimpleProblemForm
 			problemType = PROB_SAN_MARINO;
 		else if (wp.compareTo( V_MIN ) == 0 )
 			problemType = PROB_MIN;
+		else if (wp.compareTo( V_ROTATED_RASTRIGIN) == 0)
+			problemType = PROB_ROTATED_RASTRIGIN;
+		else if (wp.compareTo( V_ROTATED_SCHWEFEL) == 0)
+			problemType = PROB_ROTATED_SCHWEFEL;
         else state.output.fatal(
             "Invalid value for parameter, or parameter not found.\n" +
             "Acceptable values are:\n" +
@@ -213,7 +230,9 @@ public class ECSuite extends Problem implements SimpleProblemForm
             "  " + V_PRODUCT + "\n" + 
 			"  " + V_SCHWEFEL + "\n"+
 			"  " + V_SAN_MARINO + "\n"+
-			"  " + V_MIN + "\n",
+			"  " + V_MIN + "\n"+
+			"  " + V_ROTATED_RASTRIGIN + "\n" + 
+			"  " + V_ROTATED_SCHWEFEL + "\n",
             base.push( P_WHICH_PROBLEM ) );
         }
 
@@ -286,7 +305,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
 		checkRange(state, function);
 		
         double value = 0;
-        int len = genome.length;
+        double len = genome.length;
         switch(function)
             {
             case PROB_ROSENBROCK:
@@ -387,13 +406,14 @@ public class ECSuite extends Problem implements SimpleProblemForm
 						v2 += (a * b);
 						}
 					}
-				value = ( 10 - 20.0 / len) * v1 + 
-						( 2.0 / (len * (len - 1))) * v2;
+				value = 10 - (20.0 / len) * v1 + 
+							 ( 2.0 / (len * (len - 1))) * v2;
 				return value;
 				}
 
+
             case PROB_MEDIAN:           // FIXME, need to do a better median-finding algorithm, such as http://www.ics.uci.edu/~eppstein/161/960130.html
-                double[] sorted = new double[len];
+                double[] sorted = new double[(int)len];
                 System.arraycopy(genome, 0, sorted, 0, sorted.length);
                 ec.util.QuickSort.qsort(sorted);
                 return sorted[sorted.length / 2] ;               // note positive
@@ -425,10 +445,131 @@ public class ECSuite extends Problem implements SimpleProblemForm
 					}
                 return value;									// note positive
 
+			case PROB_ROTATED_RASTRIGIN:
+				{
+				synchronized(rotationMatrix)		// synchronizations are rare in ECJ.  :-(
+					{
+					if (rotationMatrix[0] == null)
+						rotationMatrix[0] = buildRotationMatrix(ROTATION_SEED, (int)len);
+					}
+
+				// now we know the matrix exists rotate the matrix and return its value
+				double[] val = mul(rotationMatrix[0], genome);
+				return function(state, PROB_RASTRIGIN, val, threadnum);
+				}
+
+			case PROB_ROTATED_SCHWEFEL:
+				{
+				synchronized(rotationMatrix)		// synchronizations are rare in ECJ.  :-(
+					{
+					if (rotationMatrix[0] == null)
+						rotationMatrix[0] = buildRotationMatrix(ROTATION_SEED, (int)len);
+					}
+
+				// now we know the matrix exists rotate the matrix and return its value
+				double[] val = mul(rotationMatrix[0], genome);
+				return function(state, PROB_SCHWEFEL, val, threadnum);
+				}
+
             default:
                 state.output.fatal( "ec.app.ecsuite.ECSuite has an invalid problem -- how on earth did that happen?" );
                 return 0;  // never happens
             }
 		
         }
+		
+		
+	/* rotation facility */
+		
+	/** Dot product between two column vectors.  Does not modify the original vectors. */
+	public static double dot(double[] x, double[] y)
+		{
+		double val = 0;
+		for(int i =0; i < x.length; i++)
+			val += x[i] * y[i];
+		return val;
+		}
+	
+	/** Multiply a column vector against a matrix[row][column].  Does not modify the original vector or matrix. */
+	public static double[] mul(double [/* row */ ][ /* column */] matrix, double[] x)
+		{
+		double[] val = new double[matrix.length];
+		for(int i = 0; i < matrix.length; i++)
+			{
+			double sum = 0.0;
+			double[] m = matrix[i];
+			for(int j = 0; j < m.length; j++)
+				sum += m[j] * x[j];
+			val[i] = sum;
+			}
+		return val;
+		}
+	
+	/** Scalar multiply against a column vector. Does not modify the original vector. */
+	public static double[] scalarMul(double scalar, double[] x)
+		{
+		double[] val = new double[x.length];
+		for(int i =0; i < x.length; i++)
+			val[i] = x[i] * scalar;
+		return val;
+		}
+		
+	/** Subtract two column vectors.  Does not modify the original vectors. */
+	public static double[] sub(double[] x, double[] y)
+		{
+		double[] val = new double[x.length];
+		for(int i =0; i < x.length; i++)
+			val[i] = x[i] - y[i];
+		return val;
+		}
+	
+	/** Normalize a column vector.  Does not modify the original vector. */
+	public static double[] normalize(double[] x)
+		{
+		double[] val = new double[x.length];
+		double sumsq = 0;
+		for(int i =0; i < x.length; i++)
+			sumsq += x[i] * x[i];
+		sumsq = Math.sqrt(sumsq);
+		for(int i =0; i < x.length; i++)
+			val[i] = x[i] / sumsq;
+		return val;
+		}
+	
+
+	/** Fixed rotation seed so all jobs use the same rotation space. */
+	public static final long ROTATION_SEED = 9731297;
+
+	/** Build an NxN rotation matrix[row][column] with a given seed. */
+	public static double[ /* row */ ][ /* column */] buildRotationMatrix(double rotationSeed, int N)
+		{
+		MersenneTwisterFast rand = new MersenneTwisterFast(ROTATION_SEED);
+		double o[ /* row */ ][ /* column */ ] = new double[N][N];
+
+		// make random values
+		for(int i = 0; i < N; i++)
+			for(int k = 0; k < N; k++)
+				o[i][k] = rand.nextGaussian();
+		
+		// build random values
+		for(int i = 0; i < N; i++)
+			{
+			// extract o[i] -> no
+			double[] no = new double[N];
+			for(int k=0; k < N; k++)
+				no[k] = o[i][k];
+			
+			// go through o[i] and o[j], modifying no 
+			for(int j = 0; j < i; j++)
+				{
+				double d = dot(o[i], o[j]);
+				double[] val = scalarMul(d, o[j]);
+				no = sub(no, val);
+				}
+			o[i] = normalize(no);
+			}
+		
+		return o;
+		}
+
     }
