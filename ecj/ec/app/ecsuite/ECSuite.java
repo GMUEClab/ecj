@@ -88,8 +88,6 @@ public class ECSuite extends Problem implements SimpleProblemForm
 	
     public int problemType = PROB_ROSENBROCK;  // defaults on Rosenbrock
 
-	public static double[][][] rotationMatrix = new double[1][][];  // the actual matrix is stored in rotationMatrix[0] -- a hack
-	
 	public static final String problemName[] = new String[]
 		{
 		V_ROSENBROCK,
@@ -294,6 +292,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
             case PROB_PRODUCT:
 			case PROB_SCHWEFEL:
 			case PROB_SAN_MARINO:
+			case PROB_ROTATED_RASTRIGIN:	// not sure
+			case PROB_ROTATED_SCHWEFEL:
 			case PROB_MIN:
             default:
                 return false;
@@ -478,9 +478,30 @@ public class ECSuite extends Problem implements SimpleProblemForm
 		
         }
 		
+	
 		
-	/* rotation facility */
-		
+			
+	
+					
+							
+	/*
+	
+	-----------------
+	Rotation facility
+	-----------------
+	
+	This code is just used by the Rotated Schwefel and Rotated Rastrigin functions to rotate their
+	functions by a certain amount.  The code is largely based on the rotation scheme described in
+	"Completely Derandomized Self-Adaptation in Evolutionary Strategies", 
+	Nikolaus Hansen and Andreas Ostermeier, Evolutionary Computation 9(2): 159--195.
+	
+	We fix a hard-coded rotation matrix which is the same for all problems, in order to guarantee
+	correctness in gathering results over multiple jobs.  But you can change that easily if you like.
+	
+	*/
+
+	public static double[][][] rotationMatrix = new double[1][][];  // the actual matrix is stored in rotationMatrix[0] -- a hack
+
 	/** Dot product between two column vectors.  Does not modify the original vectors. */
 	public static double dot(double[] x, double[] y)
 		{
