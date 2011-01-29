@@ -242,6 +242,19 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
                 for( int j = 0; j < numElite ; j++ )
                     eliteIndividuals[i][j] = (Individual)(state.population.subpops[i].individuals[j].clone());  // just take the first N individuals of each subpopulation
                 }
+			
+			// test for shuffled
+			if (numShuffled > 0)
+				{
+				int size = state.population.subpops[0].individuals.length;
+				for (int i =0; i < state.population.subpops.length; i++)
+					{
+					if (state.population.subpops[i].individuals.length != size)
+						state.output.fatal("Shuffling was requested in MultiPopCoevolutionaryEvaluator, but the subpopulation sizes are not the same.  " +
+						"Specifically, subpopulation 0 has size " + size + " but subpopulation " + i + " has size " + state.population.subpops[i].individuals.length);
+					}
+				}
+				
             }
         }
 
