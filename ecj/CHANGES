@@ -1793,3 +1793,11 @@ Version		Change Log
 	Bug fixes to SimpleBreeder's handling of elites when doing sequential breeding
 	Modifications to ECSuite to make its standard ranges more standard, and added
 		San Marino problem 
+	Major change to SimpleShortStatistics: added the "do-subpops" parameter, which is
+		by default FALSE.  If it is FALSE, then only per-population statistics
+		are printed (this is new).  If it is TRUE, then per-subpopulation statistics
+		are printed, one per subpopulation, followed by the per-population statistics.
+		It used to be that only per-subpopulation statistics were printed.  This
+		enables large numbers of subpopulations (like 100) to use SimpleShortStatistics
+		without generating giant files.
+	Double-check that subpopulations are the right size during sequential breeding
