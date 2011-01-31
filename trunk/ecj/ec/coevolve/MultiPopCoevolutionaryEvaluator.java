@@ -452,10 +452,13 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
             }
                                 
         // copy over the previous population
-        previousPopulation = (Population)(state.population.emptyClone());
-        for( int i = 0 ; i < previousPopulation.subpops.length ; i++ )
-            for( int j = 0 ; j < previousPopulation.subpops[i].individuals.length ; j++ )
-                previousPopulation.subpops[i].individuals[j] = (Individual)(state.population.subpops[i].individuals[j].clone());
+        if (numPrev > 0)
+			{
+			previousPopulation = (Population)(state.population.emptyClone());
+			for( int i = 0 ; i < previousPopulation.subpops.length ; i++ )
+				for( int j = 0 ; j < previousPopulation.subpops[i].individuals.length ; j++ )
+					previousPopulation.subpops[i].individuals[j] = (Individual)(state.population.subpops[i].individuals[j].clone());
+			}
         }
 
 
