@@ -81,27 +81,20 @@ import ec.eval.*;
  * @version 1.0 
  */
 
-public class SimpleShortStatistics extends Statistics // implements ProvidesBestSoFar
+public class SimpleShortStatistics extends Statistics
     {
-    public Individual[] getBestSoFar() { return best_of_run; }
-        
-    /** log file parameter */
-    public static final String P_STATISTICS_FILE = "file";
-
-    /** The Statistics' log */
-    public int statisticslog;
-
-    /** compress? */
+	public static final String P_STATISTICS_MODULUS = "modulus";
     public static final String P_COMPRESS = "gzip";
-
     public static final String P_FULL = "gather-full";
-
     public static final String P_DO_SUBPOPS = "gather-subpops";
-
+    public static final String P_STATISTICS_FILE = "file";
+        
+    public int statisticslog;
+	public int modulus;
     public boolean doFull;
     public boolean doSubpops;
 
-    public Individual[] best_of_run;
+    public Individual[] bestSoFar;
     public long totalSizeSoFar[];
 	public long totalIndsSoFar[];
 
@@ -111,13 +104,15 @@ public class SimpleShortStatistics extends Statistics // implements ProvidesBest
     // usage
     public long lastUsage;
     
-    public SimpleShortStatistics() { /*best_of_run = null;*/ statisticslog = 0; /* stdout */ }
+    public SimpleShortStatistics() { statisticslog = 0; /* stdout */ }
 
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state,base);
         File statisticsFile = state.parameters.getFile(
             base.push(P_STATISTICS_FILE),null);
+
+		modulus = state.parameters.getIntWithDefault(base.push(P_STATISTICS_MODULUS), null, 1);
 
         if (statisticsFile!=null) try
                                       {
@@ -134,11 +129,14 @@ public class SimpleShortStatistics extends Statistics // implements ProvidesBest
         }
 
 
+    public Individual[] getBestSoFar() { return bestSoFar; }
+
     public void preInitializationStatistics(final EvolutionState state)
         {
         super.preInitializationStatistics(state);
-        
-        if (doFull) 
+		boolean output = (state.generation % modulus == 0);
+       
+        if (output && doFull) 
             {
             Runtime r = Runtime.getRuntime();
             lastTime = System.currentTimeMillis();
@@ -149,19 +147,20 @@ public class SimpleShortStatistics extends Statistics // implements ProvidesBest
     public void postInitializationStatistics(final EvolutionState state)
         {
         super.postInitializationStatistics(state);
+		boolean output = (state.generation % modulus == 0);
         
-        // set up our best_of_run array -- can't do this in setup, because
+        // set up our bestSoFar array -- can't do this in setup, because
         // we don't know if the number of subpopulations has been determined yet
-        best_of_run = new Individual[state.population.subpops.length];
+        bestSoFar = new Individual[state.population.subpops.length];
         
         // print out our generation number
-        state.output.print("0 ", statisticslog);
+        if (output) state.output.print("0 ", statisticslog);
 
         // gather timings       
 		totalSizeSoFar = new long[state.population.subpops.length];
 		totalIndsSoFar = new long[state.population.subpops.length];
 
-        if (doFull)
+        if (output && doFull)
             {
             Runtime r = Runtime.getRuntime();
             long curU =  r.totalMemory() - r.freeMemory();          
@@ -173,7 +172,8 @@ public class SimpleShortStatistics extends Statistics // implements ProvidesBest
     public void preBreedingStatistics(final EvolutionState state)
         {
         super.preBreedingStatistics(state);
-        if (doFull) 
+		boolean output = (state.generation % modulus == modulus - 1);
+        if (output && doFull) 
             {
             Runtime r = Runtime.getRuntime();
             lastTime = System.currentTimeMillis();
@@ -184,10 +184,11 @@ public class SimpleShortStatistics extends Statistics // implements ProvidesBest
     public void postBreedingStatistics(final EvolutionState state) 
         {
         super.postBreedingStatistics(state);
-        state.output.print("" + (state.generation + 1) + " ", statisticslog); // 1 because we're putting the breeding info on the same line as the generation it *produces*, and the generation number is increased *after* breeding occurs, and statistics for it
+		boolean output = (state.generation % modulus == modulus - 1);
+        if (output) state.output.print("" + (state.generation + 1) + " ", statisticslog); // 1 because we're putting the breeding info on the same line as the generation it *produces*, and the generation number is increased *after* breeding occurs, and statistics for it
 
         // gather timings
-        if (doFull)
+        if (output && doFull)
             {
             Runtime r = Runtime.getRuntime();
             long curU =  r.totalMemory() - r.freeMemory();          
@@ -199,7 +200,9 @@ public class SimpleShortStatistics extends Statistics // implements ProvidesBest
     public void preEvaluationStatistics(final EvolutionState state)
         {
         super.preEvaluationStatistics(state);
-        if (doFull) 
+		boolean output = (state.generation % modulus == 0);
+
+        if (output && doFull) 
             {
             Runtime r = Runtime.getRuntime();
             lastTime = System.currentTimeMillis();
@@ -214,72 +217,66 @@ public class SimpleShortStatistics extends Statistics // implements ProvidesBest
         this lets overriding methods print additional statistics on the same line */
     protected void _postEvaluationStatistics(final EvolutionState state)
         {
-        // gather timings
-        if (doFull)
-            {
-            Runtime r = Runtime.getRuntime();
-            long curU =  r.totalMemory() - r.freeMemory();          
-            state.output.print("" + (System.currentTimeMillis()-lastTime) + " ",  statisticslog);
-            state.output.print("" + (curU-lastUsage) + " ",  statisticslog);            
-            }
-			
-			
-			
-			
+		boolean output = (state.generation % modulus == 0);
+
 		// gather per-subpopulation statistics
 		int subpops = state.population.subpops.length;				// number of supopulations
 		long[] totalSizeThisGen = new long[subpops];				// per-subpop total size of individuals this generation
-        Individual[] best_i = new Individual[subpops];				// per-subpop best individual this generation
+        Individual[] bestOfGeneration = new Individual[subpops];	// per-subpop best individual this generation
+		double totalFitnessThisGen[] = new double[subpops];			// per-subpop mean fitness this generation
 		double meanFitnessThisGen[] = new double[subpops];			// per-subpop mean fitness this generation
-		
-																	// ALSO THERE IS:
-											// totalIndsSoFar		// total individuals so far per subpopulation
-											// totalSizeSoFar		// total size of individuals so far per subpopulation
-											// best_so_far			// best individual so far per subpopulation
+		long totalIndsThisGen[] = new long[subpops];				// total assessed individuals
 		
         for(int x=0;x<subpops;x++)
-            {
-			int numInds = state.population.subpops[x].individuals.length;
-			
-			totalIndsSoFar[x] += state.population.subpops[x].individuals.length;
-			for(int y=0;y<numInds;y++)
+            {			
+			for(int y=0; y<state.population.subpops[x].individuals.length; y++)
 				{
-				long size = state.population.subpops[x].individuals[y].size();
-				totalSizeThisGen[x] += size;
-				totalSizeSoFar[x] += size;
+				if (state.population.subpops[x].individuals[y].evaluated)		// he's got a valid fitness
+					{
+					// update sizes
+					long size = state.population.subpops[x].individuals[y].size();
+					totalSizeThisGen[x] += size;
+					totalSizeSoFar[x] += size;
+					totalIndsThisGen[x] += 1;
+					totalIndsSoFar[x] += 1;
+					
+					// update fitness
+					if (bestOfGeneration[x]==null ||
+						state.population.subpops[x].individuals[y].fitness.betterThan(bestOfGeneration[x].fitness))
+						bestOfGeneration[x] = state.population.subpops[x].individuals[y];
+
+					// sum up mean fitness for population
+					totalFitnessThisGen[x] += state.population.subpops[x].individuals[y].fitness.fitness();
+					}
 				}
 
-            if (doFull)
-                {
-                if (doSubpops) state.output.print("" + ((double)totalSizeThisGen[x])/numInds + " ",  statisticslog);			// mean size this gen
-                if (doSubpops) state.output.print("" + ((double)totalSizeSoFar[x])/totalIndsSoFar[x] + " ",  statisticslog);	// mean size so far
-                }
-                    
-            for(int y=0;y<numInds;y++)
-                {
-                // find the best individual
-                if (best_i[x]==null ||
-                    state.population.subpops[x].individuals[y].fitness.betterThan(best_i[x].fitness))
-                    best_i[x] = state.population.subpops[x].individuals[y];
+            // compute mean fitness stats
+            meanFitnessThisGen[x] = (totalIndsThisGen[x] > 0 ? totalFitnessThisGen[x] / totalIndsThisGen[x] : 0);
 
-                // sum up mean fitness for population
-                meanFitnessThisGen[x] += state.population.subpops[x].individuals[y].fitness.fitness();
-                }
+            // now test to see we have a new bestSoFar[x]
+            if (bestOfGeneration[x] != null && (bestSoFar[x]==null || bestOfGeneration[x].fitness.betterThan(bestSoFar[x].fitness)))
+                bestSoFar[x] = (Individual)(bestOfGeneration[x].clone());
             
-            // compute fitness stats
-            meanFitnessThisGen[x] /= numInds;
+			// print out optional average size information
+            if (output && doFull && doSubpops)
+                {
+                state.output.print("" + (totalIndsThisGen[x] > 0 ? ((double)totalSizeThisGen[x])/totalIndsThisGen[x] : 0) + " ",  statisticslog);
+                state.output.print("" + (totalIndsSoFar[x] > 0 ? ((double)totalSizeSoFar[x])/totalIndsSoFar[x] : 0) + " ",  statisticslog);
+                }
 			
-            if (doSubpops) state.output.print("" + meanFitnessThisGen[x] + " " + best_i[x].fitness.fitness() + " ", statisticslog);   // mean and best fitness this gen
-
-            // now test to see if it's the new best_of_run[x]
-            if (best_of_run[x]==null || best_i[x].fitness.betterThan(best_of_run[x].fitness))
-                best_of_run[x] = (Individual)(best_i[x].clone());
-            
-            if (doSubpops) state.output.print("" + best_of_run[x].fitness.fitness() + " ", statisticslog);							// best fitness so far
-
-			if( doFull )
+			// print out fitness information
+            if (output && doSubpops)
 				{
-				if (doSubpops) state.output.print("" + (double)(best_i[x].size()) + " " + (double)(best_of_run[x].size()) + " ", statisticslog);		// best size this gen and so far
+				state.output.print("" + meanFitnessThisGen[x] + " ", statisticslog);
+				state.output.print("" + bestOfGeneration[x].fitness.fitness() + " ", statisticslog);
+				state.output.print("" + bestSoFar[x].fitness.fitness() + " ", statisticslog);
+				}
+
+			// print out optional best size information
+			if (output && doFull && doSubpops)
+				{
+				state.output.print("" + (double)(bestOfGeneration[x].size()) + " ", statisticslog);
+				state.output.print("" + (double)(bestSoFar[x].size()) + " ", statisticslog);
 				}
             }
   
@@ -291,32 +288,42 @@ public class SimpleShortStatistics extends Statistics // implements ProvidesBest
 		long popTotalSize = 0;
 		long popTotalSizeSoFar = 0;
 		double popMeanFitness = 0;
-		Individual popBestIndividual = best_i[0];
-		Individual popBestIndividualSoFar = best_of_run[0];
+		double popTotalFitness = 0;
+		Individual popBestIndividual = null;
+		Individual popBestIndividualSoFar = null;
 		
         for(int x=0;x<subpops;x++)
 			{
+			popTotalInds += totalIndsThisGen[x];
 			popTotalIndsSoFar += totalIndsSoFar[x];
-			popTotalInds += state.population.subpops[x].individuals.length;
 			popTotalSize += totalSizeThisGen[x];
 			popTotalSizeSoFar += totalSizeSoFar[x];
-			popMeanFitness += meanFitnessThisGen[x];
-			if (x > 0 && best_i[x].fitness.betterThan(popBestIndividual.fitness))
-				popBestIndividual = best_i[x];
-			if (x > 0 && best_of_run[x].fitness.betterThan(popBestIndividualSoFar.fitness))
-				popBestIndividualSoFar = best_of_run[x];
+			popTotalFitness += totalFitnessThisGen[x];
+			if (bestOfGeneration[x] != null && (popBestIndividual == null || bestOfGeneration[x].fitness.betterThan(popBestIndividual.fitness)))
+				popBestIndividual = bestOfGeneration[x];
+			if (bestSoFar[x] != null && (popBestIndividualSoFar == null || bestSoFar[x].fitness.betterThan(popBestIndividualSoFar.fitness)))
+				popBestIndividualSoFar = bestSoFar[x];
 			}
-		popMeanFitness /= subpops;		// average out
-			
-		if (doFull)
+		// build mean
+		popMeanFitness = (popTotalInds > 0 ? popTotalFitness / popTotalInds : 0);		// average out
+		
+		// optionally print out mean size info
+		if (output && doFull)
 			{
-			state.output.print("" + popTotalSize / popTotalInds  + " " , statisticslog);						// mean size of pop this gen
-			state.output.print("" + popTotalSizeSoFar / popTotalIndsSoFar + " " , statisticslog);				// mean size of pop so far
+			state.output.print("" + (popTotalInds > 0 ? popTotalSize / popTotalInds : 0)  + " " , statisticslog);						// mean size of pop this gen
+			state.output.print("" + (popTotalIndsSoFar > 0 ? popTotalSizeSoFar / popTotalIndsSoFar : 0) + " " , statisticslog);				// mean size of pop so far
 			}
-		state.output.print("" + popMeanFitness + " " , statisticslog);											// mean fitness of pop this gen
-		state.output.print("" + (double)(popBestIndividual.fitness.fitness()) + " " , statisticslog);			// best fitness of pop this gen
-		state.output.print("" + (double)(popBestIndividualSoFar.fitness.fitness()) + " " , statisticslog);		// best fitness of pop so far
-		if (doFull)
+		
+		// print out fitness info
+		if (output)
+			{
+			state.output.print("" + popMeanFitness + " " , statisticslog);											// mean fitness of pop this gen
+			state.output.print("" + (double)(popBestIndividual.fitness.fitness()) + " " , statisticslog);			// best fitness of pop this gen
+			state.output.print("" + (double)(popBestIndividualSoFar.fitness.fitness()) + " " , statisticslog);		// best fitness of pop so far
+			}
+			
+		// optionally print out best size info
+		if (output && doFull)
 			{
 			state.output.print("" + (double)(popBestIndividual.size()) + " " , statisticslog);					// size of best ind of pop this gen
 			state.output.print("" + (double)(popBestIndividualSoFar.size()) + " " , statisticslog);				// size of best ind of pop so far
@@ -324,15 +331,26 @@ public class SimpleShortStatistics extends Statistics // implements ProvidesBest
 		
 		// we're done!
         }
-
-
+		
+		
 
 
     public void postEvaluationStatistics(final EvolutionState state)
         {
         super.postEvaluationStatistics(state);
+		boolean output = (state.generation % modulus == 0);
+
+        // gather timings
+        if (output && doFull)
+            {
+            Runtime r = Runtime.getRuntime();
+            long curU =  r.totalMemory() - r.freeMemory();          
+            state.output.print("" + (System.currentTimeMillis()-lastTime) + " ",  statisticslog);
+            state.output.print("" + (curU-lastUsage) + " ",  statisticslog);            
+            }
+			
         _postEvaluationStatistics(state);
-        state.output.println("", statisticslog);
+        if (output) state.output.println("", statisticslog);
         }
 
     }
