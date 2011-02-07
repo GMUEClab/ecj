@@ -1800,4 +1800,9 @@ Version		Change Log
 		It used to be that only per-subpopulation statistics were printed.  This
 		enables large numbers of subpopulations (like 100) to use SimpleShortStatistics
 		without generating giant files.
-	Double-check that subpopulations are the right size during sequential breeding
+	Also deprecated the "gather-full" parameter and instead include "do-size" and "do-time"
+		in SimpleShortStatistics.
+	Also changed the columns in SimpleShortStatistics.
+	Double-check that subpopulations are the right size during sequential breeding.
+	Fixed error in nsga2.params which erroneously said you had to use 
+		NSGA2TournamentSelection.  Thanks to Vinh Dang <vdang@our.ecu.edu.au>.

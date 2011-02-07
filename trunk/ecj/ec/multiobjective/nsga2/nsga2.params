@@ -18,5 +18,5 @@ breed =						ec.multiobjective.nsga2.NSGA2Breeder
 # Specify the breeding pipeline as follows
 # pop.subpop.0.species.pipe           	      = ec.vector.breed.VectorMutationPipeline
 # pop.subpop.0.species.pipe.source.0          = ec.vector.breed.VectorCrossoverPipeline
-# pop.subpop.0.species.pipe.source.0.source.0 = ec.multiobjective.nsga2.NSGA2TournamentSelection
+# pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
 # pop.subpop.0.species.pipe.source.0.source.1 = same
