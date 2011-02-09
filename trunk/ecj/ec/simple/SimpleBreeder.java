@@ -40,12 +40,16 @@ import ec.util.*;
  * total number of subpopulations.  Use of this parameter outside of a coevolutionary context
  * (see ec.coevolve.MultiPopCoevolutionaryEvaluator) is very rare indeed.
  *
+ * <p>SimpleBreeder adheres to the default-subpop parameter in Population: if either an 'elite'
+ * or 'reevaluate-elites' parameter is missing, it will use the default subpopulation's value
+ * and signal a warning.
+ *
  <p><b>Parameters</b><br>
  <table>
  <tr><td valign=top><tt><i>base</i>.elite.<i>i</i></tt><br>
  <font size=-1>int >= 0 (default=0)</font></td>
  <td valign=top>(the number of elitist individuals for subpopulation <i>i</i>)</td></tr>
- <tr><td valign=top><tt><i>base</i>.reevalate-elites.<i>i</i></tt><br>
+ <tr><td valign=top><tt><i>base</i>.reevaluate-elites.<i>i</i></tt><br>
  <font size=-1>boolean (default = false)</font></td>
  <td valign=top>(should we reevaluate the elites of subpopulation <i>i</i> each generation?)</td></tr>
  <tr><td valign=top><tt><i>base</i>.sequential</tt><br>
@@ -61,7 +65,7 @@ import ec.util.*;
 public class SimpleBreeder extends Breeder
     {
     public static final String P_ELITE = "elite";
-    public static final String P_REEVALUATE_ELITES = "reevalate-elites";
+    public static final String P_REEVALUATE_ELITES = "reevaluate-elites";
 	public static final String P_SEQUENTIAL_BREEDING = "sequential";
     /** An array[subpop] of the number of elites to keep for that subpopulation */
     public int[] elite;
@@ -82,11 +86,34 @@ public class SimpleBreeder extends Breeder
 				state.output.fatal("The Breeder is breeding sequentially, but you have only one population.", base.push(P_SEQUENTIAL_BREEDING));
 
 
+		int defaultSubpop = state.parameters.getInt(new Parameter(Initializer.P_POP).push(Population.P_DEFAULT_SUBPOP), null, 0);
         for(int x=0;x<size;x++)
             {
-            elite[x] = state.parameters.getIntWithDefault(base.push(P_ELITE).push(""+x),null,0);
-            if (elite[x]<0) state.output.error("The number of elites for subpopulation " + x + " must be >= 0",base.push(P_ELITE).push(""+x));
-            reevaluateElites[x] = state.parameters.getBoolean(base.push(P_REEVALUATE_ELITES).push(""+x),null,false);
+			// get elites
+			if (defaultSubpop >= 0 && !state.parameters.exists(base.push(P_ELITE).push(""+x),null))
+				{
+				elite[x] = state.parameters.getIntWithDefault(base.push(P_ELITE).push(""+defaultSubpop),null,0);
+				if (elite[x] > 0)
+					state.output.warning("Elites not specified for subpopulation " + x + ".  Using values for default subpopulation " + defaultSubpop + ": " + elite[x]);
+				}
+            else
+				{
+				elite[x] = state.parameters.getIntWithDefault(base.push(P_ELITE).push(""+x),null,0);
+				}
+			if (elite[x]<0) state.output.error("The number of elites for subpopulation " + x + " must be >= 0",base.push(P_ELITE).push(""+x));
+			
+			
+			// get reevaluation
+			if (defaultSubpop >= 0 && !state.parameters.exists(base.push(P_REEVALUATE_ELITES).push(""+x),null))
+				{
+				reevaluateElites[x] = state.parameters.getBoolean(base.push(P_REEVALUATE_ELITES).push(""+defaultSubpop), null, false);
+				if (reevaluateElites[x])
+					state.output.warning("Elite reevaluation not specified for subpopulation " + x + ".  Using values for default subpopulation " + defaultSubpop + ": " + reevaluateElites[x]);
+				}
+            else
+				{
+				reevaluateElites[x] = state.parameters.getBoolean(base.push(P_REEVALUATE_ELITES).push(""+x), null, false);
+				}
             }
 
         state.output.exitIfErrors();
@@ -197,7 +224,9 @@ public class SimpleBreeder extends Breeder
 				{
 				// instead of breeding, we should just copy forward this subpopulation.  We'll copy the part we're assigned
 				for(int ind=from[subpop] ; ind < numinds[subpop] - from[subpop]; ind++)
-					newpop.subpops[subpop].individuals[ind] = (Individual)(state.population.subpops[subpop].individuals[ind].clone());
+					// newpop.subpops[subpop].individuals[ind] = (Individual)(state.population.subpops[subpop].individuals[ind].clone());
+					// this could get dangerous
+					newpop.subpops[subpop].individuals[ind] = state.population.subpops[subpop].individuals[ind];
 				}
 			else
 				{
@@ -238,15 +267,19 @@ public class SimpleBreeder extends Breeder
             { return inds[(int)a].fitness.betterThan(inds[(int)b].fitness); }
         }
 
-    protected void unmarkElitesEvaluated(Population newpop)
+    protected void unmarkElitesEvaluated(EvolutionState state, Population newpop)
         {
         for(int sub=0;sub<newpop.subpops.length;sub++)
+			{
+			if (!shouldBreedSubpop(state, sub, 0))
+				continue;
             for(int e=0; e < elite[sub]; e++)
                 {
                 int len = newpop.subpops[sub].individuals.length;
                 if (reevaluateElites[sub])
-                    newpop.subpops[sub].individuals[len - elite[sub]].evaluated = false;
+                    newpop.subpops[sub].individuals[len - e - 1].evaluated = false;
                 }
+			}
         }
 
     /** A private helper function for breedPopulation which loads elites into
@@ -297,7 +330,7 @@ public class SimpleBreeder extends Breeder
 			}
                 
         // optionally force reevaluation
-        unmarkElitesEvaluated(newpop);
+        unmarkElitesEvaluated(state, newpop);
         }
     }
 
