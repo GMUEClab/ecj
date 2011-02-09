@@ -1806,3 +1806,8 @@ Version		Change Log
 	Double-check that subpopulations are the right size during sequential breeding.
 	Fixed error in nsga2.params which erroneously said you had to use 
 		NSGA2TournamentSelection.  Thanks to Vinh Dang <vdang@our.ecu.edu.au>.
+	'reevaluate-elites' parameter in SimpleBreeder incorrectly misspelled as
+		'reevalate-elites', oops.
+	Bug fix to SimpleBreeder.markElitesEvaluated to properly unmark more than one elite.
+		Thanks to Jeroen Lappenschaar <jlappenschaar@gmail.com> and Mart Hagenaars
+		<marthagenaars@gmail.com>
