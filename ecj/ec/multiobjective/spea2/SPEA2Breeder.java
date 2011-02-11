@@ -55,7 +55,7 @@ public class SPEA2Breeder extends SimpleBreeder
             }
 
         // optionally force reevaluation
-        unmarkElitesEvaluated(newpop);
+        unmarkElitesEvaluated(state, newpop);
         }
 
     public double[] calculateDistancesFromIndividual(Individual ind, Individual[] inds)
