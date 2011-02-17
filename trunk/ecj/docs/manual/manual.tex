@@ -354,9 +354,9 @@ ECJ was developed near the introduction of Java and so has a lot of historical i
 
 \section{Unpacking ECJ and Using the Tutorials}
 
-ECJ comes as a single tarball, \file{ecj.tar.gz}, or as a ZIP file, \file{ecj.zip}.  After unpacking this, you're left with one directory called \file{ec}.
+ECJ comes as a single tarball, \file{ecj.tar.gz}, or as a ZIP file, \file{ecj.zip}.  After unpacking this, you're left with one directory called \file{ecj}.
 
-In the \file{ec} directory you'll find several items:
+In the \file{ecj} directory you'll find several items:
 
 \begin{itemize}
 \item A top-level \file{README} file, which should be self-explanatory in its importance.
@@ -825,7 +825,6 @@ Unaccessed Parameters\\
 ===================== (Ignore parent.x references) \\
 \\
 gp.fs.2.info = ec.gp.GPFuncInfo\\
-stat.gather-full = true\\
 gp.koza.grow.min-depth = 5\\
 gp.tc.0.init.max = 6\\
 gp.koza.mutate.build.0 = ec.gp.koza.GrowBuilder\\
@@ -2314,6 +2313,15 @@ breed.elite.0 = 10
 
 The default value is no elites.
 
+You don't have to specify the elitism on a per-Subpopulation basis.  If you specified a default subpopulation using the parameter  \parameter{pop.default-subpop} (see Section \ref{default-subpop}), SimpleBreeder will try this instead when it can't find an elitism parameter, and will issue a warning letting you know it's doing so.  For example, if you declared:
+
+\params{%
+pop.default-subpop = 0
+breed.elite.0 = 10
+}
+
+\noindent ... then when SimpleBreeder must determine elitism for (say) Subpopulation 4, and that parameter doesn't exist, it'll use 10 instead (the value for Subpopulation 0).
+
 Ordinarily elites never have their fitness reevaluated.  But if you have a dynamic fitness function, you may wish to reevaluate their fitness each generation to see if it's still the same.  To do this for Subpopulation 0, you say:
 
 \params{%
@@ -2321,6 +2329,8 @@ breed.reevaluate-elites.0 = true
 }
 
 The default value is false.
+
+Again, you don't have to specify the elitism on a per-Subpopulation basis, if you specified a default subpopulation using the parameter  \parameter{pop.default-subpop}. SimpleBreeder will use the default value and issue a warning.
 
 The number of threads (\(M\)) is also a parameter.  To set it to 4, you'd say:
 
@@ -2952,7 +2962,7 @@ Fitness: -185.78166\\
 
 If your Problem implements the \method{describe(...)} method, SimpleStatistics will also ask the best-of-run Individual to describe itself at the very end of the file.
 
-So how do you add additional Statistics objects?  As children of the root, or of one another.  Any Statistics object can have some \(n\) children.  Children are called the same hooks as their parents are.  To add another Statistics object (say, \class{ec.simple.SimpleShortStatistics}, we might add a child to the root:
+\subsection{Creating a Statistics Chain} So how do you add additional Statistics objects?  As children of the root, or of one another.  Any Statistics object can have some \(n\) children.  Children are called the same hooks as their parents are.  To add another Statistics object (say, \class{ec.simple.SimpleShortStatistics}, we might add a child to the root:
 
 \params{%
 stat.num-children = 1\\
@@ -2983,16 +2993,15 @@ stat.child.0.child.0.file = \$out3.stat
 
 The point is, you can hang a Statistics object as a child of any other Statistics object.  Pick your poison.
 
+\subsection{Tabular Statistics} 
+\label{ec.simple.SimpleShortStatistics}
 SimpleShortStatistics writes out a different kind of statistics from SimpleStatistics  In its basic form, for each generation it writes out a line of the following values, each separated by a space.
 
 \begin{enumerate}
 \item The generation number
-\item {\it Once for each subpopulation...}
-\begin{enumerate}
-	\item The mean fitness of the subpopulation for this generation
-	\item The best fitness of the subpopulation for this generation
-	\item The best fitness of the subpopulation so far in the run
-\end{enumerate}
+\item The mean fitness of the entire population for this generation
+\item The best fitness of the entire population for this generation
+\item The best fitness of the entire population so far in the run
 \end{enumerate}
 
 For example, we might have values like this...
@@ -3006,7 +3015,30 @@ For example, we might have values like this...
 5 -1637.332774291992 -1426.798 -1420.0074 
 }
 
-SimpleShortStatistics has an option for including more statistics.  If we turned on the following parameter:
+If you are using more than one subpopulation, you might be interested in knowing the fitness values on a per-subpopulation basis.  This can be done by adding the following parameter:
+
+\params{%
+stat.child.0.gather-subpops = true
+}
+
+With this parameter, we get:
+
+\begin{enumerate}
+\item The generation number
+\item {\it Once for each subpopulation...}
+\begin{enumerate}
+	\item The mean fitness of the subpopulation for this generation
+	\item The best fitness of the subpopulation for this generation
+	\item The best fitness of the subpopulation so far in the run
+\end{enumerate}
+\item The mean fitness of the entire population for this generation
+\item The best fitness of the entire population for this generation
+\item The best fitness of the entire population so far in the run
+\end{enumerate}
+
+A note about subpopulations.  Sometimes after a run certain Individuals will not have been evaluated.  This most often happens in certain coevolution situations, such as coevolution with sequential breeding, where whole subpopulations may not have been evaluated on the first generation.  In this situation, the ``mean fitness of the entire population for this generation'' (for example) will only include those individuals which were actually evaluated.
+
+SimpleShortStatistics has an additional option for including more statistics.  If we turned on the following parameter:
 
 \params{%
 stat.child.0.gather-full = true
@@ -3020,7 +3052,7 @@ stat.child.0.gather-full = true
 \item How many bytes initialization took (for generation 0), or how many bytes the previous generation took to breed to form this generation (for generations \(>0\)).  This is an approximation and in some cases might even be negative due to garbage collection.
 \item How long evaluation took in milliseconds for this generation.
 \item How many bytes evaluation took for this generation.    This is an approximation and in some cases might even be negative due to garbage collection.
-\item {\it Once for each subpopulation...}
+\item (If \parameter{gather-subpops} has been turned on) {\it Once for each subpopulation...}
 \begin{enumerate}
 	\item The average size of an individual this generation (calling Indivdidual's \method{size()} method).
 	\item The average size of an individual so far in the run.
@@ -3030,9 +3062,12 @@ stat.child.0.gather-full = true
 	\item The size of the best individual this generation.
 	\item The size of the best individual so far in the run.
 \end{enumerate}
+\item The mean fitness of the entire population for this generation
+\item The best fitness of the entire population for this generation
+\item The best fitness of the entire population so far in the run
 \end{enumerate}
 
-For example, it might look like this:
+For example, it might look something like this:
 
 \script{%
 0 58 619752 11 0 100.0 100.0 -1851.16737622 -1536.3141 -1536.3141 100.0 100.0 \\
@@ -3937,6 +3972,35 @@ Each of these Individuals has the same crossover operators and support for vecto
 To make matters simple, ECJ has a single set of BreedingPipelines for all of these data types.  To do this, the BreedingPipelines call crossover or mutation functions in the Individuals themselves (or more properly, in their Species).  This is different from other representations and results in some breeding parameters (crossover type, mutation probability) being found in the Species and not in the BreedingPipeline in question.  But as it makes the package much smaller and simpler, so be it.
 
 ECJ does not use generics in this package: each of the data types above has an Individual subclass all its own.  The reason for this is straightforward: generics would be {\it exceptionally} slow.  These are arrays of basic data types, and Java's generics would box and unbox them.  So no generics it is.
+
+Every vector or list has a single array which holds the genes proper.  This array is:
+
+\java{%
+public {\it type}[] genome;
+}
+
+... where {\it type} is the array type of the Vector (review the table above).  You are welcome to read this array as you like, and modify it if you need to (don't replace it or change its length unless you're doing a List, and even then you should use the cover functions discussed in Section \ref{list}).
+
+Many Vector genomes have minimum and maximum acceptable gene values.  These values may be defined for the whole genome, for certain sections of it, or on a per-gene basis.  For this reason, the easiest way to get this information is with the \method{minGene()} and \method{maxGene()} methods defined in the Vector's Species:
+
+\begin{methods}{ec.vector.IntegerVectorSpecies}
+\mthd{public long minGene(int gene)}
+Returns the minimum valid gene value for this gene index.
+\mthd{public long maxGene(int gene)}
+Returns the maximum valid gene value for this gene index.
+\mthd{public boolean inNumericalTypeRange(long geneVal)}
+Returns true if the given gene value is within the numerical type range of the prototypical Individual for this Species.  Note that just because the gene value lies within the type range does {\it not} mean that it's a valid value --- you should use minGene(...) and maxGene(...) to determine this instead.
+\end{methods}
+
+\begin{methods}{ec.vector.FloatVectorSpecies}
+\mthd{public double minGene(int gene)}
+Returns the minimum valid gene value for this gene index.
+\mthd{public double maxGene(int gene)}
+Returns the maximum valid gene value for this gene index.
+\mthd{public boolean inNumericalTypeRange(double geneVal)}
+Returns true if the given gene value is within the numerical type range of the prototypical Individual for this Species.  Note that just because the gene value lies within the type range does {\it not} mean that it's a valid value --- you should use minGene(...) and maxGene(...) to determine this instead.
+\end{methods}
+
 
 \subsection{Vectors}
 \label{vectors}
@@ -6342,7 +6406,7 @@ By default, returns the number of nodes in all the trees held by the GPIndividua
 \subsection{Ephemeral Random Constants}
 \label{ec.gp.ERC}
 
-An {\bf Ephemeral Random Constant} or {\bf ERC} \cite{koza:book} is a special GPNode, usually a terminal, which represents a constant such as \variable{3.14159} or \variable{true} or \variable{724} or \variable{complex: 3.24 $+$ 5i} or \variable{``aegu''}.  Usually ERCs are used to add constants to programs which rely on math (such as Symbolic Regression).
+An {\bf Ephemeral Random Constant} or {\bf ERC} \cite{koza:book} is a special GPNode, usually a terminal, which represents a constant such as \lisp{3.14159} or \lisp{true} or \lisp{724} or \lisp{complex: 3.24 $+$ 5i} or \lisp{``aegu''}.  Usually ERCs are used to add constants to programs which rely on math (such as Symbolic Regression).
 
 An ERC needs to be able to do three things:
 
