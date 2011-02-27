@@ -39,7 +39,7 @@ public class CompetitiveMaxOnes extends Problem implements GroupedProblemForm
 					sum /= len;
 									
 					// we'll not bother declaring the ideal
-					fit.setFitness(state, (float)(sum / len), false);
+					fit.setFitness(state, (float)(sum), false);
 					pop.subpops[i].individuals[j].evaluated = true;
 					}
         }

@@ -146,5 +146,4 @@ eval.problem.data = ec.app.lawnmower.LawnmowerData
 eval.problem.x = 8
 eval.problem.y = 8
 
-stat.gather-full = true
 

@@ -43,7 +43,7 @@ eval.slave-name = my-slave-name
 # on the slave is sufficiently large to support its own evolution.
 # The population size is specified by eval.master-problem.job-size
 # on the Master.
-eval.run-evolve = true
+eval.run-evolve = false
 
 
 # Specifies the length of (wall clock) time, in milliseconds, that the
