@@ -1816,3 +1816,4 @@ Version		Change Log
 	Removed a few references to gather-full in statistics demos
 	Big revisions to SimpleShortStatistics and its relationships to KozaShortStatistics
 	Deleted San Marino Problem
+	Default run-evolve setting for ec/eval/slave.params set to false
