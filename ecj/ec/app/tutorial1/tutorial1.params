@@ -4,8 +4,6 @@
 
 # The parameters that were laid out in Tutorial 1 (see the documentation)
 
-verbosity	= 0
-
 breedthreads	= 1
 evalthreads	= 1
 seed.0		= 4357
