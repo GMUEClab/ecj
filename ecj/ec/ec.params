@@ -66,9 +66,6 @@
 # ec.Evolve
 # ==============================
 
-# This parameter has been deprecated
-# verbosity = 				0
-
 # one thread
 evalthreads = 				1
 breedthreads = 				1
