@@ -38,9 +38,6 @@ import ec.vector.*;
    <tr><td valign=top><i>base</i>.<tt>type</tt><br>
    <font size=-1>String, one of: rosenbrock rastrigin sphere step noisy-quartic kdj-f1 kdj-f2 kdj-f3 kdj-f4 booth median schwefel product [or] griewangk</font></td>
    <td valign=top>(The vector problem to test against.  Some of the types are synonyms: kdj-f1 = sphere, kdj-f2 = rosenbrock, kdj-f3 = step, kdj-f4 = noisy-quartic.  "kdj" stands for "Ken DeJong", and the numbers are the problems in his test suite)</td></tr>
-<td valign=top><i>base</i>.<tt>dropoff</tt><br>
-<font size=-1>double &gt 0<i></font></td>
-<td valign=top>Degree of SAN_MARINO dropoff in the "SAN_MARINO" problem.</td></tr>
    </table>
 
 */
@@ -65,7 +62,6 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final String V_SUM = "sum";
     public static final String V_PRODUCT = "product";
     public static final String V_SCHWEFEL = "schwefel";
-	public static final String V_SAN_MARINO = "san-marino";
 	public static final String V_MIN = "min";
 	public static final String V_ROTATED_RASTRIGIN = "rotated-rastrigin";
 	public static final String V_ROTATED_SCHWEFEL = "rotated-schwefel";
@@ -81,10 +77,9 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final int PROB_SUM = 8;
     public static final int PROB_PRODUCT = 9;
     public static final int PROB_SCHWEFEL = 10;
-	public static final int PROB_SAN_MARINO = 11;
-    public static final int PROB_MIN = 12;
-    public static final int PROB_ROTATED_RASTRIGIN = 13;
-    public static final int PROB_ROTATED_SCHWEFEL = 14;
+    public static final int PROB_MIN = 11;
+    public static final int PROB_ROTATED_RASTRIGIN = 12;
+    public static final int PROB_ROTATED_SCHWEFEL = 13;
 	
     public int problemType = PROB_ROSENBROCK;  // defaults on Rosenbrock
 
@@ -101,7 +96,6 @@ public class ECSuite extends Problem implements SimpleProblemForm
 		V_SUM,
 		V_PRODUCT,
 		V_SCHWEFEL,
-		V_SAN_MARINO,
 		V_MIN,
 		V_ROTATED_RASTRIGIN,
 		V_ROTATED_SCHWEFEL
@@ -120,7 +114,6 @@ public class ECSuite extends Problem implements SimpleProblemForm
 		0.0,		// sum
 		0.0,		// product
 		-512.03,	// schwefel
-		0.0,		// san marino
 		0.0,		// min
 		-5.12,		// rotated-rastrigin
 		-512.03		// rotated-schwefel
@@ -139,7 +132,6 @@ public class ECSuite extends Problem implements SimpleProblemForm
 		1.0,		// sum
 		2.0,		// product
 		511.97,		// schwefel
-		1.0,		// san marino
 		1.0,		// min
 		5.12,		// rotated-rastrigin
 		511.97		// rotated-schwefel
@@ -205,8 +197,6 @@ public class ECSuite extends Problem implements SimpleProblemForm
             problemType = PROB_PRODUCT;    
 		else if (wp.compareTo( V_SCHWEFEL ) == 0 )
 			problemType = PROB_SCHWEFEL;
-		else if (wp.compareTo( V_SAN_MARINO) == 0)
-			problemType = PROB_SAN_MARINO;
 		else if (wp.compareTo( V_MIN ) == 0 )
 			problemType = PROB_MIN;
 		else if (wp.compareTo( V_ROTATED_RASTRIGIN) == 0)
@@ -227,7 +217,6 @@ public class ECSuite extends Problem implements SimpleProblemForm
             "  " + V_SUM + "\n" +
             "  " + V_PRODUCT + "\n" + 
 			"  " + V_SCHWEFEL + "\n"+
-			"  " + V_SAN_MARINO + "\n"+
 			"  " + V_MIN + "\n"+
 			"  " + V_ROTATED_RASTRIGIN + "\n" + 
 			"  " + V_ROTATED_SCHWEFEL + "\n",
@@ -291,7 +280,6 @@ public class ECSuite extends Problem implements SimpleProblemForm
             case PROB_SUM:
             case PROB_PRODUCT:
 			case PROB_SCHWEFEL:
-			case PROB_SAN_MARINO:
 			case PROB_ROTATED_RASTRIGIN:	// not sure
 			case PROB_ROTATED_SCHWEFEL:
 			case PROB_MIN:
@@ -302,6 +290,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
 
     public double function(EvolutionState state, int function, double[] genome, int threadnum)
         {
+		
 		checkRange(state, function);
 		
         double value = 0;
@@ -380,36 +369,12 @@ public class ECSuite extends Problem implements SimpleProblemForm
 
 
             case PROB_SCHWEFEL:
-                value = 0;
                 for( int i = 0 ; i < len ; i++ )
 					{
 					double gi = genome[i] ;
                     value += -gi * Math.sin(Math.sqrt(Math.abs(gi)));
 					}
                 return -value;
-
-            case PROB_SAN_MARINO:
-				{				
-				double v1 = 0.0;
-				double v2 = 0.0;
-                for( int i = 0 ; i < len ; i++ )
-					{
-					double gi = genome[i] ;
-					v1 += gi;
-					
-					for( int j = i + 1; j < len ; j++ )
-						{
-						double gj = genome[j] ;
-						double a = 2.0 * (gi + gj);
-						a = a * a * a * a;
-						double b = gi< gj ? gi * (1.0 - gj) : gj * (1.0 - gi) ;
-						v2 += (a * b);
-						}
-					}
-				value = 10 - (20.0 / len) * v1 + 
-							 ( 2.0 / (len * (len - 1))) * v2;
-				return value;
-				}
 
 
             case PROB_MEDIAN:           // FIXME, need to do a better median-finding algorithm, such as http://www.ics.uci.edu/~eppstein/161/960130.html

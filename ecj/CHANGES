@@ -1811,3 +1811,8 @@ Version		Change Log
 	Bug fix to SimpleBreeder.markElitesEvaluated to properly unmark more than one elite.
 		Thanks to Jeroen Lappenschaar <jlappenschaar@gmail.com> and Mart Hagenaars
 		<marthagenaars@gmail.com>
+	Bug fix to CompetitiveMaxOnes demo, which was dividing too many times to average.
+		Thanks to Joey Harrison <jharri1@gmu.edu>
+	Removed a few references to gather-full in statistics demos
+	Big revisions to SimpleShortStatistics and its relationships to KozaShortStatistics
+	Deleted San Marino Problem

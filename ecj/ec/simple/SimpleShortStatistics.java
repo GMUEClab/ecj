@@ -22,40 +22,38 @@ import ec.eval.*;
  * A Simple-style statistics generator, intended to be easily parseable with
  * awk or other Unix tools.  Prints fitness information,
  * one generation (or pseudo-generation) per line.
- * If gather-full is true, then timing information, number of nodes
- * and depths of trees, etc. are also given.  No final statistics information
- * is given.
+ * If do-time is true, then timing information is also given.  If do-size is true, then size information is also given.
+ * No final statistics information is provided.  You can also set SimpleShortStatistics to only output every *modulus* generations
+ * to keep the tally shorter.  And you can gzip the statistics file.
  *
  * <p> Each line represents a single generation.  
  * The first items on a line are always:
  <ul>
  <li> The generation number
- <li> (if gather-full) how long initialization took in milliseconds, or how long the previous generation took to breed to form this generation
- <li> (if gather-full) how many bytes initialization took, or how how many bytes the previous generation took to breed to form this generation.  This utilization is an approximation only, made by the Java system, and does not take into consideration the possibility of garbage collection (which might make the number negative).
- <li> (if gather-full) How long evaluation took in milliseconds this generation
- <li> (if gather-full) how many bytes evaluation took this generation.  This utilization is an approximation only, made by the Java system, and does not take into consideration the possibility of garbage collection (which might make the number negative).
+ <li> (if do-time) how long initialization took in milliseconds, or how long the previous generation took to breed to form this generation
+ <li> (if do-time) How long evaluation took in milliseconds this generation
  </ul>
 
- <p>Then, (if gather-subpops) the following items appear, per subpopulation:
+ <p>Then, (if do-subpops) the following items appear, once per each subpopulation:
  <ul>
- <li> (if gather-full) The average size of an individual this generation
- <li> (if gather-full) The average size of an individual so far in the run
+ <li> (if do-size) The average size of an individual this generation
+ <li> (if do-size) The average size of an individual so far in the run
+ <li> (if do-size) The size of the best individual this generation
+ <li> (if do-size) The size of the best individual so far in the run
  <li> The mean fitness of the subpopulation this generation
  <li> The best fitness of the subpopulation this generation
  <li> The best fitness of the subpopulation so far in the run
- <li> (if gather-full) The size of the best individual this generation
- <li> (if gather-full) The size of the best individual so far in the run
  </ul>
  
  <p>Then the following items appear, for the whole population:
  <ul>
- <li> (if gather-full) The average size of an individual this generation
- <li> (if gather-full) The average size of an individual so far in the run
+ <li> (if do-size) The average size of an individual this generation
+ <li> (if do-size) The average size of an individual so far in the run
+ <li> (if do-size) The size of the best individual this generation
+ <li> (if do-size) The size of the best individual so far in the run
  <li> The mean fitness this generation
  <li> The best fitness this generation
  <li> The best fitness so far in the run
- <li> (if gather-full) The size of the best individual this generation
- <li> (if gather-full) The size of the best individual so far in the run
  </ul>
 
 
@@ -64,21 +62,27 @@ import ec.eval.*;
 
  <p><b>Parameters</b><br>
  <table>
- <tr><td valign=top><i>base.</i><tt>gzip</tt><br>
- <font size=-1>boolean</font></td>
- <td valign=top>(whether or not to compress the file (.gz suffix added)</td></tr>
  <tr><td valign=top><i>base.</i><tt>file</tt><br>
  <font size=-1>String (a filename), or nonexistant (signifies stdout)</font></td>
  <td valign=top>(the log for statistics)</td></tr>
- <tr><td valign=top><i>base</i>.<tt>gather-full</tt><br>
+ <tr><td valign=top><i>base.</i><tt>gzip</tt><br>
+ <font size=-1>boolean</font></td>
+ <td valign=top>(whether or not to compress the file (.gz suffix added)</td></tr>
+ <tr><td valign=top><i>base.</i><tt>modulus</tt><br>
+ <font size=-1>integer >= 1 (default)</font></td>
+ <td valign=top>(How often (in generations) should we print a statistics line?)</td></tr>
+ <tr><td valign=top><i>base</i>.<tt>do-time</tt><br>
  <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
- <td valign=top>(should we full statistics on individuals (will run slower, though the slowness is due to off-line processing that won't mess up timings)</td></tr>
- <tr><td valign=top><i>base</i>.<tt>gather-subpops</tt><br>
+ <td valign=top>(print timing information?)</td></tr>
+ <tr><td valign=top><i>base</i>.<tt>do-size</tt><br>
  <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
- <td valign=top>(should we full statistics on individuals (will run slower, though the slowness is due to off-line processing that won't mess up timings)</td></tr>
+ <td valign=top>(print sizing information?)</td></tr>
+ <tr><td valign=top><i>base</i>.<tt>do-subpops</tt><br>
+ <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
+ <td valign=top>(print information on a per-subpop basis as well as per-population?)</td></tr>
  </table>
  * @author Sean Luke
- * @version 1.0 
+ * @version 2.0 
  */
 
 public class SimpleShortStatistics extends Statistics
@@ -86,24 +90,28 @@ public class SimpleShortStatistics extends Statistics
 	public static final String P_STATISTICS_MODULUS = "modulus";
     public static final String P_COMPRESS = "gzip";
     public static final String P_FULL = "gather-full";
-    public static final String P_DO_SUBPOPS = "gather-subpops";
+    public static final String P_DO_SIZE = "do-size";
+    public static final String P_DO_TIME = "do-time";
+    public static final String P_DO_SUBPOPS = "do-subpops";
     public static final String P_STATISTICS_FILE = "file";
         
     public int statisticslog;
 	public int modulus;
-    public boolean doFull;
+	public boolean doSize;
+	public boolean doTime;
     public boolean doSubpops;
 
     public Individual[] bestSoFar;
-    public long totalSizeSoFar[];
-	public long totalIndsSoFar[];
-
+    public long[] totalSizeSoFar;
+	public long[] totalIndsSoFar;
+	public long[] totalIndsThisGen;				// total assessed individuals
+	public long[] totalSizeThisGen;				// per-subpop total size of individuals this generation
+	public double[] totalFitnessThisGen;			// per-subpop mean fitness this generation
+	public Individual[] bestOfGeneration;	// per-subpop best individual this generation
+	
     // timings
     public long lastTime;
-    
-    // usage
-    public long lastUsage;
-    
+        
     public SimpleShortStatistics() { statisticslog = 0; /* stdout */ }
 
     public void setup(final EvolutionState state, final Parameter base)
@@ -124,7 +132,15 @@ public class SimpleShortStatistics extends Statistics
                 {
                 state.output.fatal("An IOException occurred while trying to create the log " + statisticsFile + ":\n" + i);
                 }
-        doFull = state.parameters.getBoolean(base.push(P_FULL),null,false);
+        doSize = state.parameters.getBoolean(base.push(P_DO_SIZE),null,false);
+        doTime = state.parameters.getBoolean(base.push(P_DO_TIME),null,false);
+		if (state.parameters.exists(base.push(P_FULL), null))
+			{
+			state.output.warning(P_FULL + " is deprecated.  Use " + P_DO_SIZE + " and " + P_DO_TIME + " instead.  Also be warned that the table columns have been reorganized. ", base.push(P_FULL), null);
+			boolean gather = state.parameters.getBoolean(base.push(P_FULL), null, false);
+			doSize = doSize || gather;
+			doTime = doTime || gather;
+			}
         doSubpops = state.parameters.getBoolean(base.push(P_DO_SUBPOPS),null,false);
         }
 
@@ -136,11 +152,10 @@ public class SimpleShortStatistics extends Statistics
         super.preInitializationStatistics(state);
 		boolean output = (state.generation % modulus == 0);
        
-        if (output && doFull) 
+        if (output && doTime) 
             {
             Runtime r = Runtime.getRuntime();
             lastTime = System.currentTimeMillis();
-            lastUsage = r.totalMemory() - r.freeMemory();
             }
         }
     
@@ -160,12 +175,10 @@ public class SimpleShortStatistics extends Statistics
 		totalSizeSoFar = new long[state.population.subpops.length];
 		totalIndsSoFar = new long[state.population.subpops.length];
 
-        if (output && doFull)
+        if (output && doTime)
             {
             Runtime r = Runtime.getRuntime();
-            long curU =  r.totalMemory() - r.freeMemory();          
             state.output.print("" + (System.currentTimeMillis()-lastTime) + " ",  statisticslog);
-            state.output.print("" + (curU-lastUsage) + " ",  statisticslog);            
             }
         }
 
@@ -173,11 +186,10 @@ public class SimpleShortStatistics extends Statistics
         {
         super.preBreedingStatistics(state);
 		boolean output = (state.generation % modulus == modulus - 1);
-        if (output && doFull) 
+        if (output && doTime) 
             {
             Runtime r = Runtime.getRuntime();
             lastTime = System.currentTimeMillis();
-            lastUsage = r.totalMemory() - r.freeMemory();
             }
         }
 
@@ -188,12 +200,11 @@ public class SimpleShortStatistics extends Statistics
         if (output) state.output.print("" + (state.generation + 1) + " ", statisticslog); // 1 because we're putting the breeding info on the same line as the generation it *produces*, and the generation number is increased *after* breeding occurs, and statistics for it
 
         // gather timings
-        if (output && doFull)
+        if (output && doTime)
             {
             Runtime r = Runtime.getRuntime();
             long curU =  r.totalMemory() - r.freeMemory();          
             state.output.print("" + (System.currentTimeMillis()-lastTime) + " ",  statisticslog);
-            state.output.print("" + (curU-lastUsage) + " ",  statisticslog);            
             }
         }
 
@@ -202,30 +213,50 @@ public class SimpleShortStatistics extends Statistics
         super.preEvaluationStatistics(state);
 		boolean output = (state.generation % modulus == 0);
 
-        if (output && doFull) 
+        if (output && doTime) 
             {
             Runtime r = Runtime.getRuntime();
             lastTime = System.currentTimeMillis();
-            lastUsage = r.totalMemory() - r.freeMemory();
             }
         }
 
 
-
+	protected void prepareStatistics(EvolutionState state) { }
+	protected void gatherExtraSubpopStatistics(EvolutionState state, int subpop, int individual) { }
+	protected void printExtraSubpopStatisticsBefore(EvolutionState state, int subpop) { }
+	protected void printExtraSubpopStatisticsAfter(EvolutionState state, int subpop) { }
+	protected void gatherExtraPopStatistics(EvolutionState state, int subpop) { }
+	protected void printExtraPopStatisticsBefore(EvolutionState state) { }
+	protected void printExtraPopStatisticsAfter(EvolutionState state) { }
+	
+	
+	
 
     /** Prints out the statistics, but does not end with a println --
         this lets overriding methods print additional statistics on the same line */
-    protected void _postEvaluationStatistics(final EvolutionState state)
+    public void postEvaluationStatistics(final EvolutionState state)
         {
 		boolean output = (state.generation % modulus == 0);
 
-		// gather per-subpopulation statistics
+        // gather timings
+        if (output && doTime)
+            {
+            Runtime r = Runtime.getRuntime();
+            long curU =  r.totalMemory() - r.freeMemory();          
+            state.output.print("" + (System.currentTimeMillis()-lastTime) + " ",  statisticslog);
+            }
+			
 		int subpops = state.population.subpops.length;				// number of supopulations
-		long[] totalSizeThisGen = new long[subpops];				// per-subpop total size of individuals this generation
-        Individual[] bestOfGeneration = new Individual[subpops];	// per-subpop best individual this generation
-		double totalFitnessThisGen[] = new double[subpops];			// per-subpop mean fitness this generation
-		double meanFitnessThisGen[] = new double[subpops];			// per-subpop mean fitness this generation
-		long totalIndsThisGen[] = new long[subpops];				// total assessed individuals
+		totalIndsThisGen = new long[subpops];						// total assessed individuals
+		bestOfGeneration = new Individual[subpops];					// per-subpop best individual this generation
+		totalSizeThisGen = new long[subpops];				// per-subpop total size of individuals this generation
+		totalFitnessThisGen = new double[subpops];			// per-subpop mean fitness this generation
+		double[] meanFitnessThisGen = new double[subpops];			// per-subpop mean fitness this generation
+
+
+		prepareStatistics(state);
+
+		// gather per-subpopulation statistics
 		
         for(int x=0;x<subpops;x++)
             {			
@@ -243,25 +274,32 @@ public class SimpleShortStatistics extends Statistics
 					// update fitness
 					if (bestOfGeneration[x]==null ||
 						state.population.subpops[x].individuals[y].fitness.betterThan(bestOfGeneration[x].fitness))
-						bestOfGeneration[x] = state.population.subpops[x].individuals[y];
-
+							{
+							bestOfGeneration[x] = state.population.subpops[x].individuals[y];
+							if (bestSoFar[x]==null || bestOfGeneration[x].fitness.betterThan(bestSoFar[x].fitness))
+								bestSoFar[x] = (Individual)(bestOfGeneration[x].clone());
+							}
+            
 					// sum up mean fitness for population
 					totalFitnessThisGen[x] += state.population.subpops[x].individuals[y].fitness.fitness();
+					
+					// hook for KozaShortStatistics etc.
+					gatherExtraSubpopStatistics(state, x, y);
 					}
 				}
-
             // compute mean fitness stats
             meanFitnessThisGen[x] = (totalIndsThisGen[x] > 0 ? totalFitnessThisGen[x] / totalIndsThisGen[x] : 0);
 
-            // now test to see we have a new bestSoFar[x]
-            if (bestOfGeneration[x] != null && (bestSoFar[x]==null || bestOfGeneration[x].fitness.betterThan(bestSoFar[x].fitness)))
-                bestSoFar[x] = (Individual)(bestOfGeneration[x].clone());
-            
+			// hook for KozaShortStatistics etc.
+			if (output && doSubpops) printExtraSubpopStatisticsBefore(state, x);
+			
 			// print out optional average size information
-            if (output && doFull && doSubpops)
+            if (output && doSize && doSubpops)
                 {
                 state.output.print("" + (totalIndsThisGen[x] > 0 ? ((double)totalSizeThisGen[x])/totalIndsThisGen[x] : 0) + " ",  statisticslog);
                 state.output.print("" + (totalIndsSoFar[x] > 0 ? ((double)totalSizeSoFar[x])/totalIndsSoFar[x] : 0) + " ",  statisticslog);
+				state.output.print("" + (double)(bestOfGeneration[x].size()) + " ", statisticslog);
+				state.output.print("" + (double)(bestSoFar[x].size()) + " ", statisticslog);
                 }
 			
 			// print out fitness information
@@ -272,12 +310,8 @@ public class SimpleShortStatistics extends Statistics
 				state.output.print("" + bestSoFar[x].fitness.fitness() + " ", statisticslog);
 				}
 
-			// print out optional best size information
-			if (output && doFull && doSubpops)
-				{
-				state.output.print("" + (double)(bestOfGeneration[x].size()) + " ", statisticslog);
-				state.output.print("" + (double)(bestSoFar[x].size()) + " ", statisticslog);
-				}
+			// hook for KozaShortStatistics etc.
+			if (output && doSubpops) printExtraSubpopStatisticsAfter(state, x);
             }
   
   
@@ -289,8 +323,8 @@ public class SimpleShortStatistics extends Statistics
 		long popTotalSizeSoFar = 0;
 		double popMeanFitness = 0;
 		double popTotalFitness = 0;
-		Individual popBestIndividual = null;
-		Individual popBestIndividualSoFar = null;
+		Individual popBestOfGeneration = null;
+		Individual popBestSoFar = null;
 		
         for(int x=0;x<subpops;x++)
 			{
@@ -299,58 +333,42 @@ public class SimpleShortStatistics extends Statistics
 			popTotalSize += totalSizeThisGen[x];
 			popTotalSizeSoFar += totalSizeSoFar[x];
 			popTotalFitness += totalFitnessThisGen[x];
-			if (bestOfGeneration[x] != null && (popBestIndividual == null || bestOfGeneration[x].fitness.betterThan(popBestIndividual.fitness)))
-				popBestIndividual = bestOfGeneration[x];
-			if (bestSoFar[x] != null && (popBestIndividualSoFar == null || bestSoFar[x].fitness.betterThan(popBestIndividualSoFar.fitness)))
-				popBestIndividualSoFar = bestSoFar[x];
+			if (bestOfGeneration[x] != null && (popBestOfGeneration == null || bestOfGeneration[x].fitness.betterThan(popBestOfGeneration.fitness)))
+				popBestOfGeneration = bestOfGeneration[x];
+			if (bestSoFar[x] != null && (popBestSoFar == null || bestSoFar[x].fitness.betterThan(popBestSoFar.fitness)))
+				popBestSoFar = bestSoFar[x];
+
+			// hook for KozaShortStatistics etc.
+			gatherExtraPopStatistics(state, x);
 			}
+			
 		// build mean
 		popMeanFitness = (popTotalInds > 0 ? popTotalFitness / popTotalInds : 0);		// average out
 		
+		// hook for KozaShortStatistics etc.
+		if (output) printExtraPopStatisticsBefore(state);
+
 		// optionally print out mean size info
-		if (output && doFull)
+		if (output && doSize)
 			{
 			state.output.print("" + (popTotalInds > 0 ? popTotalSize / popTotalInds : 0)  + " " , statisticslog);						// mean size of pop this gen
 			state.output.print("" + (popTotalIndsSoFar > 0 ? popTotalSizeSoFar / popTotalIndsSoFar : 0) + " " , statisticslog);				// mean size of pop so far
+			state.output.print("" + (double)(popBestOfGeneration.size()) + " " , statisticslog);					// size of best ind of pop this gen
+			state.output.print("" + (double)(popBestSoFar.size()) + " " , statisticslog);				// size of best ind of pop so far
 			}
 		
 		// print out fitness info
 		if (output)
 			{
 			state.output.print("" + popMeanFitness + " " , statisticslog);											// mean fitness of pop this gen
-			state.output.print("" + (double)(popBestIndividual.fitness.fitness()) + " " , statisticslog);			// best fitness of pop this gen
-			state.output.print("" + (double)(popBestIndividualSoFar.fitness.fitness()) + " " , statisticslog);		// best fitness of pop so far
+			state.output.print("" + (double)(popBestOfGeneration.fitness.fitness()) + " " , statisticslog);			// best fitness of pop this gen
+			state.output.print("" + (double)(popBestSoFar.fitness.fitness()) + " " , statisticslog);		// best fitness of pop so far
 			}
 			
-		// optionally print out best size info
-		if (output && doFull)
-			{
-			state.output.print("" + (double)(popBestIndividual.size()) + " " , statisticslog);					// size of best ind of pop this gen
-			state.output.print("" + (double)(popBestIndividualSoFar.size()) + " " , statisticslog);				// size of best ind of pop so far
-			}
-		
+		// hook for KozaShortStatistics etc.
+		if (output) printExtraPopStatisticsAfter(state);
+
 		// we're done!
-        }
-		
-		
-
-
-    public void postEvaluationStatistics(final EvolutionState state)
-        {
-        super.postEvaluationStatistics(state);
-		boolean output = (state.generation % modulus == 0);
-
-        // gather timings
-        if (output && doFull)
-            {
-            Runtime r = Runtime.getRuntime();
-            long curU =  r.totalMemory() - r.freeMemory();          
-            state.output.print("" + (System.currentTimeMillis()-lastTime) + " ",  statisticslog);
-            state.output.print("" + (curU-lastUsage) + " ",  statisticslog);            
-            }
-			
-        _postEvaluationStatistics(state);
         if (output) state.output.println("", statisticslog);
         }
-
     }

@@ -40,7 +40,6 @@ stat.child.0.hist-size =		1
 stat.child.0.file =			compete.stat
 
 stat =					ec.simple.SimpleStatistics
-stat.gather-full =			true
 stat.num-children =			0
 
 breed.elite.0 =				1
