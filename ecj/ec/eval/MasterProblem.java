@@ -287,7 +287,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         {
         if(showDebugInfo)
             state.output.message(Thread.currentThread().getName() + "Spawning the server thread.");
-        monitor = new SlaveMonitor(state, showDebugInfo);
+        monitor = new SlaveMonitor(state, showDebugInfo, this);
         }
 
     /** Reinitialize contacts with the slaves */
@@ -322,4 +322,29 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         {
         return monitor.waitForIndividual();
         }
+		
+	/** Thie method is called from the SlaveMonitor's accept() thread to optionally send additional data to the
+		Slave via the dataOut stream.  By default it does nothing.  If you override this you must also override (and use) 
+		receiveAdditionalData() and transferAdditionalData(). */
+	public void sendAdditionalData(EvolutionState state, DataOutputStream dataOut)
+		{
+		// do nothing
+		}
+
+	/** Thie method is called on a MasterProblem by the Slave.  You should use this method to store away
+		received data via the dataIn method for later transferring to the current EvolutionState via the
+		transferAdditionalData method.  You should NOT expect this MasterProblem to be used for by the Slave
+		for evolution (though it might).  By default this method does nothing, which is the usual situation. */
+	public void receiveAdditionalData(DataInputStream dataIn)
+		{
+		// do nothing
+		}
+
+	/** Thie method is called by a Slave to transfer data previously loaded via receiveAdditionalData() to
+		a running EvolutionState at the beginning of evolution.  It may be called multiple times if multiple
+		EvolutionStates are created. By default this method does nothing, which is the usual situation. */
+	public void transferAdditionalData(EvolutionState state)
+		{
+		// do nothing
+		}
     }
