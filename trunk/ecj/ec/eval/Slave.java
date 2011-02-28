@@ -415,9 +415,11 @@ public class Slave
                 state.setup(state, null);
                 state.population = state.initializer.setupPopulation(state, 0);
                 
-
-                // Is this a Simple or Grouped ProblemForm?
-                int problemType;
+				// 5. Optionally do further loading
+				final MasterProblem storage = (MasterProblem)(state.evaluator.p_problem);
+				storage.receiveAdditionalData(dataIn);
+				storage.transferAdditionalData(state);
+				
                 try
                     {
                     while (true)
@@ -434,11 +436,12 @@ public class Slave
                             newState.startFresh();
                             newState.output.message("Replacing random number generators, ignore above seed message");
                             newState.random = state.random;  // continue with RNG
+							storage.transferAdditionalData(newState);  // load the arbitrary data again
                             }
                         
                         // 0 means to shut down
                         System.err.println("reading next problem");
-                        problemType = dataIn.readByte();
+						int problemType = dataIn.readByte();
                         System.err.println("Read problem: " + (int)problemType);
                         switch (problemType)
                             {
@@ -476,7 +479,7 @@ public class Slave
                 }
             }
         }
-            
+		            
     public static void evaluateSimpleProblemForm( EvolutionState state, boolean returnIndividuals,
         DataInputStream dataIn, DataOutputStream dataOut, String[] args )
         {

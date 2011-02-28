@@ -102,7 +102,7 @@ public class SlaveMonitor
        information that is useful for debugging, and the maximum load per slave (the maximum number of jobs
        that a slave can be entrusted with at each time).
     */
-    public SlaveMonitor( final EvolutionState state, boolean showDebugInfo )
+    public SlaveMonitor( final EvolutionState state, boolean showDebugInfo, final MasterProblem problemPrototype)
         {
         this.showDebugInfo = showDebugInfo;
         this.state = state;
@@ -180,6 +180,10 @@ public class SlaveMonitor
                         // Write random state for eval thread to slave
                         dataOut.flush();
 
+						// write out additional data as necessary
+						problemPrototype.sendAdditionalData(state, dataOut);
+						dataOut.flush();
+						
                         registerSlave(state, slaveName, slaveSock, dataOut, dataIn);
                         state.output.systemMessage( "Slave " + slaveName + " connected successfully." );
                         }
