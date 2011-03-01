@@ -8198,6 +8198,40 @@ MasterProblem also implements all the methods defined in SimpleProblemForm and G
 	Sends all Individuals presently in the queue out in a Job.  Then waits for all slaves to complete evaluation of all Individuals.
 \end{methods}
 
+\paragraph{Sending Initialization Data from the Master to the Slaves}
+
+MasterProblem has one additional feature: three methods you can override such that, whenever a Slave is started up, you are given the chance to send one-time data from the Master to the Slave.  Note that this facility is untested and may be somewhat fragile: we suggest that before you use this facility you consider instead placing the data as a file that each Slave can read.
+
+Here's how it works.  You begin by declaring a special subclass of MasterProblem\,---\,let's call it class{ec.app.myapp.MyMasterProblem}.  Then you must tell ECJ that you're using it (on both sides, master and slave) with something like this:
+
+\params{%
+eval.masterproblem = ec.app.myapp.MyMasterProblem
+}
+
+An instance of this MasterProblem subclass is used by the Master.  When a Slave shows up, the Master will call the method \method{sendAdditionalData(...)} on that instance to give you the chance to send data down the stream to the Slave before any evaluation occurs.  The Slave receives this data by calling the method \method{receiveAdditionalData(...)} on a dummy instance of this same subclass.  This dummy instance will not be used for any purpose except to handle the data reception. That method must store away the transferred data, typically as instance variable in your subclass which you have created for this purpose.  Finally, each time the Slave creates a new EvolutionState (and it may do so many times), it calls \method{transferAdditionalData(...)} on that dummy instance to give it a chance to modify and set up EvolutionState appropriately to reflect the data it had received from the Master.
+
+\method{sendAdditionalData(...)} will be called once on the Master for each Slave that shows up. \method{receiveAdditionalData(...)} will only be called once on the Slave side.  \method{transferAdditionalData(...)} may be called multiple times on the Slave side, every time a new EvolutionState is loaded and set up.  It is entirely up to you to handle the protocol for sending and receiving this data: if you mess up (write more data than you read on the other side, say), it's undefined what'll happen. Probably something bad.
+
+\begin{methods}{ec.eval.MasterProblem}
+\mthd{public void sendAdditionalData(EvolutionState {\it state}, DataOutputStream {\it dataOut})}
+	Called from the SlaveMonitor's \method{accept()} method to optionally send additional data to the
+		Slave via the dataOut stream.  By default it does nothing. 
+\mthd{public void receiveAdditionalData(EvolutionState {\it state}, DataInputStream {\it dataIn})}
+	Called on a dummy MasterProblem by the Slave.  You should use this method to store away
+		received data via the dataIn stream for later transferring to the current EvolutionState via the
+		\method{transferAdditionalData(...)} method.  You should NOT expect this MasterProblem to be used for by the Slave
+		for evolution (though it might).  By default this method does nothing, which is the usual situation. 
+		The EvolutionState is provided solely for you to be able to output warnings and errors: do not rely
+		on it for any other purpose (including access of the random number generator or storing any data).
+\mthd{public void transferAdditionalData(EvolutionState {\it state}}
+	Called on a dummy MasterProblem by the Slave to transfer data previously loaded via 
+		\method{receiveAdditionalData(...)} to
+		a running EvolutionState at the beginning of evolution.  This method may be called multiple times if multiple
+		EvolutionStates are created. By default this method does nothing, which is the usual situation.  Unlike
+		in \method{receiveAdditionalData(...)}, the provided EvolutionState is ``live'' and you can set it up however you like.
+\end{methods}
+
+
 
 \section{Island Models (The \package{ec.exchange} Package)}
 \label{ec.exchange}
