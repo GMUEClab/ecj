@@ -1818,3 +1818,5 @@ Version		Change Log
 	Deleted San Marino Problem
 	Default run-evolve setting for ec/eval/slave.params set to false
 	Removed EdgeShortStatistics
+	Added some code for optionally sending information over a stream to a Slave to set it up
+		from the Master

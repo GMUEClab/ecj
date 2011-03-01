@@ -416,7 +416,7 @@ public class Slave
                 state.population = state.initializer.setupPopulation(state, 0);
                 
 				// 5. Optionally do further loading
-				final MasterProblem storage = (MasterProblem)(state.evaluator.p_problem);
+				final MasterProblem storage = state.evaluator.masterproblem;
 				storage.receiveAdditionalData(dataIn);
 				storage.transferAdditionalData(state);
 				
