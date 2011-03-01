@@ -417,7 +417,7 @@ public class Slave
                 
 				// 5. Optionally do further loading
 				final MasterProblem storage = state.evaluator.masterproblem;
-				storage.receiveAdditionalData(dataIn);
+				storage.receiveAdditionalData(state, dataIn);
 				storage.transferAdditionalData(state);
 				
                 try
