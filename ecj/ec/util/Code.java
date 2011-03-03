@@ -481,7 +481,7 @@ public class Code
                     x++;
                     if ( x >= len )
                         { d.type = DecodeReturn.T_ERROR; d.s = "Unterminated String"; return; }
-                    if (dat.charAt(x)!='u')
+                    if (dat.charAt(x)!='u' && inUnicode)
                         { d.type = DecodeReturn.T_ERROR; d.s = "Escape character in Unicode sequence"; return; }
 
                     switch (dat.charAt(x))

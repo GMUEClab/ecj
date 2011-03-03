@@ -1820,3 +1820,4 @@ Version		Change Log
 	Removed EdgeShortStatistics
 	Added some code for optionally sending information over a stream to a Slave to set it up
 		from the Master
+	Bug fix to escapes in Code.java, thanks to Ben Stabile <bennett.stabile@gmail.som>
