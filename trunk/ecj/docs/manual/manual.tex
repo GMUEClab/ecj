@@ -3012,71 +3012,102 @@ For example, we might have values like this...
 2 -1758.2322434082032 -1513.4955 -1513.4955 \\
 3 -1715.5276463623047 -1420.0074 -1420.0074 \\
 4 -1675.379030883789 -1459.842 -1420.0074 \\
-5 -1637.332774291992 -1426.798 -1420.0074 
+5 -1637.332774291992 -1426.798 -1420.0074 \\
+...
 }
 
-If you are using more than one subpopulation, you might be interested in knowing the fitness values on a per-subpopulation basis.  This can be done by adding the following parameter:
+You can add sizing information as well.  If you set:
 
 \params{%
-stat.child.0.gather-subpops = true
+stat.child.0.do-size = true
 }
 
-With this parameter, we get:
+\noindent ... you'll get
 
 \begin{enumerate}
 \item The generation number
+\item (If \parameter{do-size} is true) The average size of an individual this generation
+\item (If \parameter{do-size} is true) The average size of an individual so far in the run
+\item (If \parameter{do-size} is true) The size of the best individual this generation
+\item (If \parameter{do-size} is true) The size of the best individual so far in the run
+\item The mean fitness of the entire population for this generation
+\item The best fitness of the entire population for this generation
+\item The best fitness of the entire population so far in the run
+\end{enumerate}
+
+You can also turn on timing information.  If you set:
+
+\params{%
+stat.child.0.do-size = true
+stat.child.0.do-time = true
+}
+
+You'll additionally get:
+
+\begin{enumerate}
+\item The generation number
+\item (If \parameter{do-time} is true) How long initialization took in milliseconds, or how long the previous generation took to breed to form this generation
+\item (If \parameter{do-time} is true) How long evaluation took in milliseconds this generation
+\item (If \parameter{do-size} is true) The average size of an individual this generation
+\item (If \parameter{do-size} is true) The average size of an individual so far in the run
+\item (If \parameter{do-size} is true) The size of the best individual this generation
+\item (If \parameter{do-size} is true) The size of the best individual so far in the run
+\item The mean fitness of the entire population for this generation
+\item The best fitness of the entire population for this generation
+\item The best fitness of the entire population so far in the run
+\end{enumerate}
+
+Finally, you can add in per-subpopulation information.  If you set:
+
+\params{%
+stat.child.0.do-size = true
+stat.child.0.do-time = true
+stat.child.0.do-subpops = true
+}
+
+\noindent you get the whole shebang:
+
+\begin{enumerate}
+\item The generation number
+\item (If \parameter{do-time} is true) How long initialization took in milliseconds, or how long the previous generation took to breed to form this generation
+\item (If \parameter{do-time} is true) How long evaluation took in milliseconds this generation
 \item {\it Once for each subpopulation...}
 \begin{enumerate}
+	\item (If \parameter{do-size} is true) The average size of an individual this generation for this subpopulation
+	\item (If \parameter{do-size} is true) The average size of an individual so far in the run for this subpopulation
+	\item (If \parameter{do-size} is true) The size of the best individual this generation for this subpopulation
+	\item (If \parameter{do-size} is true) The size of the best individual so far in the run for this subpopulation
 	\item The mean fitness of the subpopulation for this generation
 	\item The best fitness of the subpopulation for this generation
 	\item The best fitness of the subpopulation so far in the run
 \end{enumerate}
+\item (If \parameter{do-size} is true) The average size of an individual this generation
+\item (If \parameter{do-size} is true) The average size of an individual so far in the run
+\item (If \parameter{do-size} is true) The size of the best individual this generation
+\item (If \parameter{do-size} is true) The size of the best individual so far in the run
 \item The mean fitness of the entire population for this generation
 \item The best fitness of the entire population for this generation
 \item The best fitness of the entire population so far in the run
 \end{enumerate}
 
-A note about subpopulations.  Sometimes after a run certain Individuals will not have been evaluated.  This most often happens in certain coevolution situations, such as coevolution with sequential breeding, where whole subpopulations may not have been evaluated on the first generation.  In this situation, the ``mean fitness of the entire population for this generation'' (for example) will only include those individuals which were actually evaluated.
 
-SimpleShortStatistics has an additional option for including more statistics.  If we turned on the following parameter:
+\paragraph{Restricting Rows with a Modulus}
+If you've got a lot of subpopulations, or very long runs, there's another way you can reduce the size of your file: only output results ever \(n\) generations.  For example, if we had set
 
 \params{%
-stat.child.0.gather-full = true
+stat.child.0.modulus = 2
 }
 
-...we'd have the following values printed out:
-
-\begin{enumerate}
-\item The generation number
-\item How long initialization took in milliseconds (for generation 0), or how long the previous generation took to breed to form this generation (for generations \(>0\)).
-\item How many bytes initialization took (for generation 0), or how many bytes the previous generation took to breed to form this generation (for generations \(>0\)).  This is an approximation and in some cases might even be negative due to garbage collection.
-\item How long evaluation took in milliseconds for this generation.
-\item How many bytes evaluation took for this generation.    This is an approximation and in some cases might even be negative due to garbage collection.
-\item (If \parameter{gather-subpops} has been turned on) {\it Once for each subpopulation...}
-\begin{enumerate}
-	\item The average size of an individual this generation (calling Indivdidual's \method{size()} method).
-	\item The average size of an individual so far in the run.
-	\item The mean fitness of the subpopulation for this generation
-	\item The best fitness of the subpopulation for this generation
-	\item The best fitness of the subpopulation so far in the run
-	\item The size of the best individual this generation.
-	\item The size of the best individual so far in the run.
-\end{enumerate}
-\item The mean fitness of the entire population for this generation
-\item The best fitness of the entire population for this generation
-\item The best fitness of the entire population so far in the run
-\end{enumerate}
-
-For example, it might look something like this:
+\noindent .. then the aforementioned statistics would look like this:
 
 \script{%
-0 58 619752 11 0 100.0 100.0 -1851.16737622 -1536.3141 -1536.3141 100.0 100.0 \\
-1 69 858032 13 8528 100.0 100.0 -1797.0600598 -1517.8112 -1517.8112 100.0 100.0 \\
-2 50 852264 10 0 100.0 100.0 -1747.270633307 -1460.2653 -1460.2653 100.0 100.0 \\
-3 56 -904648 9 6600 100.0 100.0 -1703.4300143 -1423.7004 -1423.7004 100.0 100.0 \\
-4 50 861328 9 0 100.0 100.0 -1659.892714477 -1464.9053 -1423.7004 100.0 100.0 \\
-5 59 -836488 9 0 100.0 100.0 -1619.276935424 -1347.0051 -1347.0051 100.0 100.0
+0 -1851.9916400146485 -1559.68 -1559.68 \\
+2 -1758.2322434082032 -1513.4955 -1513.4955 \\
+4 -1675.379030883789 -1459.842 -1420.0074 \\
+...
 }
+
+An important thing to keep in mind.  Let's say you want to run for 1000 generations and gather the last.  Thus your generations are 0 through 999.  If you did a modulus of 100 (say), your reported results would be for generations 0, 100, 200, 300, 400, 500, 600, 700, 800, and 900.  That is, you'd have lost the last 99 generations, including the final generation.  How might you fix this?  The easiest way is to simply run for 1001 generations.  Then your last reported generation will be 1000.
 
 \subsection{Implementing a Statistics Object}
 
@@ -5266,85 +5297,49 @@ public class Sub extends GPNode {
 }
 \subsubsection{Statistics}
 
-The default statistics class for GP is SimpleStatistics.  However, the GP package has a Statistics subclass  designed for doing the same basic stuff as SimpleShortStatistics, but with some extra GP-specific tree statistics.  You can turn it on like this:
+The default statistics class for GP is SimpleStatistics.  However, the GP package has a Statistics subclass  designed for doing the same basic stuff as SimpleShortStatistics (Section \ref{ec.simple.SimpleShortStatistics}), but with some extra GP-specific tree statistics.  You can turn it on like this:
 
 \params{%
 stat = ec.gp.koza.KozaShortStatistics
 }
 
-In this form, once a generation the statistics will print out a line consisting of the following items (space-delimited):
-
-\begin{enumerate}
-\item The generation number
-\item {\it Once for each subpopulation...}
-\begin{enumerate}
-	\item The mean standardized fitness of the subpopulation for this generation
-	\item The mean adjusted fitness of the subpopulation for this generation
-	\item The mean hits of the subpopulation for this generation
-	\item The best standardized fitness of the subpopulation for this generation
-	\item The best adjusted fitness of the subpopulation for this generation
-	\item The best hits of the subpopulation for this generation
-	\item The best standardized fitness of the subpopulation so far in the run
-	\item The best adjusted fitness of the subpopulation so far in the run
-	\item The best hits of the subpopulation so far in the run
-\end{enumerate}
-\end{enumerate}
-
-For example, we might have values like this...
-
-\script{%
-0 85.52637 0.011589747 3.4736328125 64.0 0.015384615 25 64.0 0.015384615 25 \\
-1 81.93652 0.0121164825 7.0634765625 59.0 0.016666668 30 59.0 0.016666668 30 \\
-2 78.8916 0.012612895 10.1083984375 53.0 0.018518519 36 53.0 0.018518519 36 \\
-3 76.83887 0.012973738 12.1611328125 55.0 0.017857144 34 53.0 0.018518519 36 \\
-4 74.421875 0.013421775 14.578125 51.0 0.01923077 38 51.0 0.01923077 38 \\
-5 71.825195 0.013957807 17.1748046875 49.0 0.02 40 49.0 0.02 40 
-}
-
-KozaShortStatistics has an option for including more statistics.  If we turned on the following parameter:
+This statistics object has all the basic features of SimpleShortStatistics, including the \parameter{do-time}, \parameter{do-size}, \parameter{do-subpops}, and \parameter{modulus} parameters.  Additionally it adds a new parameter which you can turn on like this:
 
 \params{%
-stat.child.0.gather-full = true
+stat.child.0.do-depth = true
 }
 
-...we'd have the following values printed out:
+This parameter enables tree depth information.  
 
+Beyond depth options, the full form of output differs from SimpleShortStatistics in that it reports per-tree information as well, like this:
 
 \begin{enumerate}
 \item The generation number
-\item How long initialization took in milliseconds (for generation 0), or how long the previous generation took to breed to form this generation (for generations \(>0\)).
-\item How many bytes initialization took (for generation 0), or how many bytes the previous generation took to breed to form this generation (for generations \(>0\)).  This is an approximation and in some cases might even be negative due to garbage collection.
-\item How long evaluation took in milliseconds for this generation.
-\item How many bytes evaluation took for this generation.    This is an approximation and in some cases might even be negative due to garbage collection.
+\item (If \parameter{do-time} is true) How long initialization took in milliseconds, or how long the previous generation took to breed to form this generation
+\item (If \parameter{do-time} is true) How long evaluation took in milliseconds this generation
 \item {\it Once for each subpopulation...}
 \begin{enumerate}
-	\item The average number of GPNodes used per individual this generation (its size)
-	\item In the form [a{\textbar}b{\textbar}c...], the average number of GPNodes used for the first tree (a), second tree (b), third tree (c), etc., of individuals this generation.	
-	\item The average number of GPNodes used per individual so far in the run
-	\item The average depth of any tree per individual this generation
-	\item In the form [a{\textbar}b{\textbar}c...], the average depth of the first tree (a), second tree (b), third tree (c), etc., of individuals this generation.	
-	\item The average depth of any tree per individual so far in the run
-	\item The mean standardized fitness of the subpopulation for this generation
-	\item The mean adjusted fitness of the subpopulation for this generation
-	\item The mean hits of the subpopulation for this generation
-	\item The best standardized fitness of the subpopulation for this generation
-	\item The best adjusted fitness of the subpopulation for this generation
-	\item The best hits of the subpopulation for this generation
-	\item The best standardized fitness of the subpopulation so far in the run
-	\item The best adjusted fitness of the subpopulation so far in the run
-	\item The best hits of the subpopulation so far in the run
+	\item (If \parameter{do-depth} is true) Output of the form {\tt [a b c ...]}, representing the average depth of each tree {\it a, b, c,} etc. of an individual this generation for this subpopulation
+	\item (If \parameter{do-size} is true) Output of the form {\tt [a b c ...]}, representing the average size of each tree {\it a, b, c,} etc. of an individual this generation for this subpopulation
+	\item (If \parameter{do-size} is true) The average size of an individual this generation for this subpopulation
+	\item (If \parameter{do-size} is true) The average size of an individual so far in the run for this subpopulation
+	\item (If \parameter{do-size} is true) The size of the best individual this generation for this subpopulation
+	\item (If \parameter{do-size} is true) The size of the best individual so far in the run for this subpopulation
+	\item The mean fitness of the subpopulation for this generation
+	\item The best fitness of the subpopulation for this generation
+	\item The best fitness of the subpopulation so far in the run
 \end{enumerate}
+\item (If \parameter{do-depth} is true) Output of the form {\tt [a b c ...]}, representing the average depth of each tree {\it a, b, c,} etc. of an individual this generation
+\item (If \parameter{do-size} is true) Output of the form {\tt [a b c ...]}, representing the average size of each tree {\it a, b, c,} etc. of an individual this generation
+\item (If \parameter{do-size} is true) The average size of an individual this generation
+\item (If \parameter{do-size} is true) The average size of an individual so far in the run
+\item (If \parameter{do-size} is true) The size of the best individual this generation
+\item (If \parameter{do-size} is true) The size of the best individual so far in the run
+\item The mean fitness of the entire population for this generation
+\item The best fitness of the entire population for this generation
+\item The best fitness of the entire population so far in the run
 \end{enumerate}
 
-It'd look something like this (made tiny to fit one to a line):
-
-{\tiny\begin{verbatim}0 27 -241424 0 0 34.1 [8.9|18.2|7.0] 34.1 3.3 [4.1|2.9|2.9] 9.9 60.0 0.016445229 4.0 53.0 0.018518519 11 53.0 0.018518519 11
-1 1 9680 0 0 36.5 [14.0|15.0|7.5] 35.3 3.9 [5.8|2.8|3.1] 10.8 56.2 0.017573431 7.8 49.0 0.02 15 49.0 0.02 15
-2 0 9680 1 0 28.7 [15.6|3.0|10.1] 33.1 3.966666666666667 [6.3|2.0|3.6] 11.166666666666666 50.4 0.019522537 13.6 46.0 0.021276595 18 46.0 0.021276595 18
-3 1 19352 1 0 39.5 [17.3|3.0|19.2] 34.7 4.666666666666667 [6.6|2.0|5.4] 11.875 47.1 0.02080979 16.9 45.0 0.02173913 19 45.0 0.02173913 19
-4 1 19368 1 0 40.9 [18.6|3.0|19.3] 35.94 4.8 [7.0|2.0|5.4] 12.38 46.2 0.021393415 17.8 40.0 0.024390243 24 40.0 0.024390243 24 
-\end{verbatim}
-}
 
 
 \subsection{Initialization}
