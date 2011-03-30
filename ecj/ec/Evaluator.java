@@ -57,7 +57,7 @@ public abstract class Evaluator implements Singleton
     public static final String P_PROBLEM = "problem";
 
     public Problem p_problem;
-	public MasterProblem masterproblem = null;
+    public MasterProblem masterproblem = null;
 
     public static final String P_MASTERPROBLEM = "masterproblem";
     public static final String P_IAMSLAVE = "i-am-slave";
@@ -82,32 +82,32 @@ public abstract class Evaluator implements Singleton
         // Am I a master problem and NOT a slave.  Note that the "eval.i-am-slave" parameter
         // is not set by the user but rather programmatically by the Slave.java class
         if(state.parameters.exists(base.push(P_MASTERPROBLEM),null)) // there's a master problem to load
-			{
-			// load the masterproblem so it can be accessed by the Slave as well (even though it's not used in its official capacity)
-			masterproblem = (MasterProblem)(state.parameters.getInstanceForParameter(
-				base.push(P_MASTERPROBLEM),null,Problem.class));
-			masterproblem.setup(state,base.push(P_MASTERPROBLEM));
+            {
+            // load the masterproblem so it can be accessed by the Slave as well (even though it's not used in its official capacity)
+            masterproblem = (MasterProblem)(state.parameters.getInstanceForParameter(
+                    base.push(P_MASTERPROBLEM),null,Problem.class));
+            masterproblem.setup(state,base.push(P_MASTERPROBLEM));
 
-			if (!state.parameters.getBoolean(base.push(P_IAMSLAVE),null,false))  // I am a master (or possibly a slave -- same params)
-				{
-				try {
-					Problem masterproblem = (Problem)(state.parameters.getInstanceForParameter(
-							base.push(P_MASTERPROBLEM),null,Problem.class));
-					masterproblem.setup(state,base.push(P_MASTERPROBLEM));
-					 
-					/*
-					 * If a MasterProblem was specified, interpose it between the
-					 * evaluator and the real problem.  This allows seamless use
-					 * of the master problem.
-					 */
-					((MasterProblem)masterproblem).problem = p_problem;
-					p_problem = masterproblem;
-					}
-				catch(ParamClassLoadException e)
-					{
-					state.output.fatal("Parameter has an invalid value: "+base.push(P_MASTERPROBLEM));
-					}
-				}
+            if (!state.parameters.getBoolean(base.push(P_IAMSLAVE),null,false))  // I am a master (or possibly a slave -- same params)
+                {
+                try {
+                    Problem masterproblem = (Problem)(state.parameters.getInstanceForParameter(
+                            base.push(P_MASTERPROBLEM),null,Problem.class));
+                    masterproblem.setup(state,base.push(P_MASTERPROBLEM));
+                                         
+                    /*
+                     * If a MasterProblem was specified, interpose it between the
+                     * evaluator and the real problem.  This allows seamless use
+                     * of the master problem.
+                     */
+                    ((MasterProblem)masterproblem).problem = p_problem;
+                    p_problem = masterproblem;
+                    }
+                catch(ParamClassLoadException e)
+                    {
+                    state.output.fatal("Parameter has an invalid value: "+base.push(P_MASTERPROBLEM));
+                    }
+                }
             }
         }
     

@@ -42,12 +42,12 @@ public interface GroupedProblemForm
         one-population competitive coevolution.
 
         <p> <i>prepareForFitnessAssessment</i> will indicate which subpopulations will have their
-		fitness values updated this time around, during postprocessPopulation.  It may not be
-		the same as updateFitness[] in evaluate(...).
-		
-		<p>If you are basing fitness on trials, this method should create the initial trials
-		<b>if the prepareForFitnessAssessment[...] is true for that
-		subpopulation</b>.
+        fitness values updated this time around, during postprocessPopulation.  It may not be
+        the same as updateFitness[] in evaluate(...).
+                
+        <p>If you are basing fitness on trials, this method should create the initial trials
+        <b>if the prepareForFitnessAssessment[...] is true for that
+        subpopulation</b>.
     */ 
     public void preprocessPopulation(final EvolutionState state, Population pop, final boolean[] prepareForFitnessAssessment, final boolean countVictoriesOnly);
 
@@ -67,12 +67,12 @@ public interface GroupedProblemForm
         as they are here (they've been set and incremented in evaluate(...)), but if it's not set,
         you may want to set the Fitnesses to the maximum or average or the various trials
         performed. 
-		
+                
         <p> <i>assessFitness</i> will indicate which subpopulations should have their final
-		fitness values assessed.  You should <b>not</b> clear the trials of individuals
-		for which assessFitness[] is false.  Instead allow trials to accumulate and
-		ultimately update the fitnesses later when the flag is set.  assessFitness[] may not be
-		the same as updateFitness[] in evaluate(...).
+        fitness values assessed.  You should <b>not</b> clear the trials of individuals
+        for which assessFitness[] is false.  Instead allow trials to accumulate and
+        ultimately update the fitnesses later when the flag is set.  assessFitness[] may not be
+        the same as updateFitness[] in evaluate(...).
     */
     public void postprocessPopulation(final EvolutionState state, Population pop, final boolean[] assessFitness, final boolean countVictoriesOnly);
 
@@ -91,7 +91,7 @@ public interface GroupedProblemForm
         one-population competitive coevolution.  If this is set, you should increment the Fitness of the winner
         each time.  If it's not set, you should update Fitness as you see fit, then set
         the final Fitness in preprocessPopulation. 
-	*/
+    */
     public void evaluate(final EvolutionState state,
         final Individual[] ind,  // the individuals to evaluate together
         final boolean[] updateFitness,  // should this individuals' fitness be updated?

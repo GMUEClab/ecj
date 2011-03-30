@@ -109,12 +109,12 @@ public class Population implements Group
             if (!state.parameters.exists(p,null))
                 {
                 p = base.push(P_DEFAULT_SUBPOP);
-				int defaultSubpop = state.parameters.getInt(p, null, 0); 
+                int defaultSubpop = state.parameters.getInt(p, null, 0); 
                 if ( defaultSubpop >= 0)
                     {
                     state.output.warning("Using subpopulation " + defaultSubpop + " as the default for subpopulation " + x);
-					p = base.push(P_SUBPOP).push(""+defaultSubpop);
-					}
+                    p = base.push(P_SUBPOP).push(""+defaultSubpop);
+                    }
                 // else an error will occur on the next line anyway.
                 }
             subpops[x] = (Subpopulation)(state.parameters.getInstanceForParameterEq(p,null,Subpopulation.class));  // Subpopulation.class is fine

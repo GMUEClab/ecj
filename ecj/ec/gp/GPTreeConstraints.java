@@ -88,7 +88,7 @@ public class GPTreeConstraints implements Clique
 
     /** This must be called <i>after</i> the GPTypes and GPFunctionSets 
         have been set up. */
-    public final void setup(final EvolutionState state, final Parameter base)
+    public void setup(final EvolutionState state, final Parameter base)
         {
         // What's my name?
         name = state.parameters.getString(base.push(P_NAME),null);

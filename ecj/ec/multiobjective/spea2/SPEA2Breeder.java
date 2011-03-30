@@ -31,9 +31,9 @@ public class SPEA2Breeder extends SimpleBreeder
         {
         super.setup(state, base);
 
-		if (sequentialBreeding) // uh oh, haven't tested with this
-			state.output.fatal("SPEA2Breeder does not support sequential evaluation.",
-				base.push(P_SEQUENTIAL_BREEDING));
+        if (sequentialBreeding) // uh oh, haven't tested with this
+            state.output.fatal("SPEA2Breeder does not support sequential evaluation.",
+                base.push(P_SEQUENTIAL_BREEDING));
         }
 
 

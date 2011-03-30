@@ -204,7 +204,10 @@ public class Slave
         
     /** How long we sleep in between attempts to connect to the master (in milliseconds). */
     public static final int SLEEP_TIME = 100;
-        
+	
+	public static ThreadPool pool = new ThreadPool();
+
+	
     public static void main(String[] args)
         {
         EvolutionState state = null;
@@ -415,11 +418,11 @@ public class Slave
                 state.setup(state, null);
                 state.population = state.initializer.setupPopulation(state, 0);
                 
-				// 5. Optionally do further loading
-				final MasterProblem storage = state.evaluator.masterproblem;
-				storage.receiveAdditionalData(state, dataIn);
-				storage.transferAdditionalData(state);
-				
+                // 5. Optionally do further loading
+                final MasterProblem storage = state.evaluator.masterproblem;
+                storage.receiveAdditionalData(state, dataIn);
+                storage.transferAdditionalData(state);
+                                
                 try
                     {
                     while (true)
@@ -436,12 +439,12 @@ public class Slave
                             newState.startFresh();
                             newState.output.message("Replacing random number generators, ignore above seed message");
                             newState.random = state.random;  // continue with RNG
-							storage.transferAdditionalData(newState);  // load the arbitrary data again
+                            storage.transferAdditionalData(newState);  // load the arbitrary data again
                             }
                         
                         // 0 means to shut down
                         System.err.println("reading next problem");
-						int problemType = dataIn.readByte();
+                        int problemType = dataIn.readByte();
                         System.err.println("Read problem: " + (int)problemType);
                         switch (problemType)
                             {
@@ -479,8 +482,8 @@ public class Slave
                 }
             }
         }
-		            
-    public static void evaluateSimpleProblemForm( EvolutionState state, boolean returnIndividuals,
+                            
+    public static void evaluateSimpleProblemForm( final EvolutionState state, boolean returnIndividuals,
         DataInputStream dataIn, DataOutputStream dataOut, String[] args )
         {
         ParameterDatabase params=null; 
@@ -497,7 +500,7 @@ public class Slave
             }
         
         // load the subpops 
-        int[] subpops = new int[numInds];  // subpops desired by each ind
+        final int[] subpops = new int[numInds];  // subpops desired by each ind
         int[] indsPerSubpop = new int[state.population.subpops.length];  // num inds for each subpop
         for(int i = 0; i < numInds; i++)
             {
@@ -515,28 +518,71 @@ public class Slave
             }
         
                 
-        // Read the individual(s) from the stream  and evaluate 
+        // Read the individual(s) from the stream and evaluate 
         
         boolean[] updateFitness = new boolean[numInds];
-        Individual[] inds = new Individual[numInds];
-        try
+        final Individual[] inds = new Individual[numInds];
+			
+		// evaluate the individuals once each
+        if (!runEvolve)
+			{
+			Thread[] threads = new Thread[state.evalthreads];
+			final SimpleProblemForm[] problems = new SimpleProblemForm[state.evalthreads];
+			
+			try
+				{
+				int t = 0;		// thread index
+			
+				// start up all the threads
+				for(int i = 0 ; i < numInds; i++)
+					{
+					// load individual
+					inds[i] = state.population.subpops[subpops[i]].species.newIndividual(state, dataIn);
+					updateFitness[i] = dataIn.readBoolean(); 
+
+					// fire up evaluation thread on individual
+					if (t >= state.evalthreads) t = 0;	 // we can only be here if evalthreads > numInds
+					if (threads[t] != null) pool.joinAndReturn(threads[t]);  // ran out of threads, wait for new ones
+					if (problems[t] == null) problems[t] = ((SimpleProblemForm)(state.evaluator.p_problem.clone()));
+
+					final int j = i;
+					final int s = t;
+					threads[t] = pool.startThread(new Runnable()
+						{
+						public void run() { problems[s].evaluate( state, inds[j], subpops[j], 0 ); }
+						});
+					t++;
+					}
+				
+				// gather everyone
+				for(t = 0; t < state.evalthreads; t++)
+					{
+					if (threads[t] != null) pool.joinAndReturn(threads[t]);
+					threads[t] = null;
+					}
+				}
+			catch (IOException e)
+				{
+				state.output.fatal("Unable to read individual from master." + e);
+				}
+			
+			}
+        else // (runEvolve) 
             {
-            for (int i=0; i < numInds; i++) 
-                { 
-                inds[i] = state.population.subpops[subpops[i]].species.newIndividual(state, dataIn);
-                if (!runEvolve) 
-                    ((SimpleProblemForm)(state.evaluator.p_problem)).evaluate( state, inds[i], subpops[i], 0 );
-                updateFitness[i] = dataIn.readBoolean(); 
-                }
-            }
-        catch (IOException e)
-            {
-            state.output.fatal("Unable to read individual from master." + e);
-            }
-        
-        
-        if (runEvolve) 
-            {
+			try		// load up all the individuals
+				{
+				for (int i=0; i < numInds; i++) 
+					{ 
+					inds[i] = state.population.subpops[subpops[i]].species.newIndividual(state, dataIn);
+					updateFitness[i] = dataIn.readBoolean(); 
+					}
+				}
+			catch (IOException e)
+				{
+				state.output.fatal("Unable to read individual from master." + e);
+				}
+			
+			
             long startTime = System.currentTimeMillis(); 
             long endTime=0; 
 

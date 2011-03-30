@@ -54,8 +54,8 @@ public abstract class Fitness implements Prototype, Comparable
     {
     /** Auxiliary variable, used by coevolutionary processes, to compute the
         number of trials used to compute this Fitness value.  By default trials=null and stays that way. 
-		If you set this variable, all of the elements of the ArrayList must be immutable -- once they're
-		set they never change internally.  */
+        If you set this variable, all of the elements of the ArrayList must be immutable -- once they're
+        set they never change internally.  */
     public ArrayList trials = null;
         
     /** Auxiliary variable, used by coevolutionary processes, to store the individuals
@@ -65,13 +65,13 @@ public abstract class Fitness implements Prototype, Comparable
     */
     public Individual[] context = null;
 
-	public void setContext(Individual[] cont, int index)
-		{
-		Individual ind = cont[index];
-		cont[index] = null;
-		setContext(cont);
-		cont[index] = ind;
-		}
+    public void setContext(Individual[] cont, int index)
+        {
+        Individual ind = cont[index];
+        cont[index] = null;
+        setContext(cont);
+        cont[index] = ind;
+        }
 
     public void setContext(Individual[] cont)
         {
@@ -318,21 +318,21 @@ public abstract class Fitness implements Prototype, Comparable
             }
         }
 
-	/** Given another Fitness, 
-		returns true if the trial which produced my current context is "better" in fitness than
-		the trial which produced his current context, and thus should be retained in lieu of his.
-		This method by default assumes that trials are Doubles, and that higher Doubles are better.
-		If you are using distributed evaluation and coevolution and your tirals are otherwise, you
-		need to override this method.
-		*/
-	 public boolean contextIsBetterThan(Fitness other)
-		{
-		if (other.trials == null) return true;  // I win
-		else if (trials == null) return false;  // he wins
-		return bestTrial(trials) < bestTrial(other.trials);
-		}
+    /** Given another Fitness, 
+        returns true if the trial which produced my current context is "better" in fitness than
+        the trial which produced his current context, and thus should be retained in lieu of his.
+        This method by default assumes that trials are Doubles, and that higher Doubles are better.
+        If you are using distributed evaluation and coevolution and your tirals are otherwise, you
+        need to override this method.
+    */
+    public boolean contextIsBetterThan(Fitness other)
+        {
+        if (other.trials == null) return true;  // I win
+        else if (trials == null) return false;  // he wins
+        return bestTrial(trials) < bestTrial(other.trials);
+        }
 
-     double bestTrial(ArrayList l)
+    double bestTrial(ArrayList l)
         {
         if (l == null || l.size() == 0) return Double.NEGATIVE_INFINITY;
         double best = ((Double)(l.get(0))).doubleValue();
@@ -349,15 +349,15 @@ public abstract class Fitness implements Prototype, Comparable
         This method is typically called by coevolution in combination with distributed evauation where
         the Individual may be sent to various different sites to have trials performed on it, and
         the results must be merged together to form a relevant fitness.  By default merging occurs as follows.
-		First, the trials arrays are concatenated.  Then whoever has the best trial has his context retained:
-		this Fitness is determined by calling contextIsBetterThan(other).  By default that method assumes
-		that trials are Doubles, and that higher values are better.  You will wish to override that method 
-		if trials are different.  In coevolution nothing
+        First, the trials arrays are concatenated.  Then whoever has the best trial has his context retained:
+        this Fitness is determined by calling contextIsBetterThan(other).  By default that method assumes
+        that trials are Doubles, and that higher values are better.  You will wish to override that method 
+        if trials are different.  In coevolution nothing
         else needs to be merged usually, though you may need to override this to handle other things specially.
-		
-		<p>This method only works properly if the other Fitness had its trials deleted before it was sent off
-		for evaluation on a remote machine: thus all of the trials are new and can be concatenated in.  This
-		is what sim.eval.Job presently does in its method copyIndividualsForward().
+                
+        <p>This method only works properly if the other Fitness had its trials deleted before it was sent off
+        for evaluation on a remote machine: thus all of the trials are new and can be concatenated in.  This
+        is what sim.eval.Job presently does in its method copyIndividualsForward().
     */
     public void merge(EvolutionState state, Fitness other)
         {
@@ -366,17 +366,17 @@ public abstract class Fitness implements Prototype, Comparable
         if (other.trials == null) return;  // I win
         else if (trials == null)  // he wins
             {
-            trials = other.trials;				// just steal him
+            trials = other.trials;                              // just steal him
             context = other.getContext();       // grab his context
             }
         else  // gotta concatenate
             {
             // first question: who has the best context?
-            if (!contextIsBetterThan(other))	// other is beter
+            if (!contextIsBetterThan(other))    // other is beter
                 context = other.getContext();
                         
             // now concatenate the trials
-			trials.addAll(other.trials);
+            trials.addAll(other.trials);
             }
         }
                 
