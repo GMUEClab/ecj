@@ -18,30 +18,30 @@ public class CompetitiveMaxOnes extends Problem implements GroupedProblemForm
     public void preprocessPopulation(final EvolutionState state, Population pop, boolean[] updateFitness, boolean countVictoriesOnly)
         {
         for( int i = 0 ; i < pop.subpops.length ; i++ )
-			if (updateFitness[i])
-				for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
-					((SimpleFitness)(pop.subpops[i].individuals[j].fitness)).trials = new ArrayList();
+            if (updateFitness[i])
+                for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
+                    ((SimpleFitness)(pop.subpops[i].individuals[j].fitness)).trials = new ArrayList();
         }
 
     public void postprocessPopulation(final EvolutionState state, Population pop, boolean[] updateFitness, boolean countVictoriesOnly)
         {
         for( int i = 0 ; i < pop.subpops.length ; i++ )
-			if (updateFitness[i])
-				for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
-					{
-					SimpleFitness fit = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
+            if (updateFitness[i])
+                for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
+                    {
+                    SimpleFitness fit = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
 
-					// average of the trials we got
-					int len = fit.trials.size();
-					double sum = 0;
-					for(int l = 0; l < len; l++)
-						sum += ((Double)(fit.trials.get(l))).doubleValue();
-					sum /= len;
-									
-					// we'll not bother declaring the ideal
-					fit.setFitness(state, (float)(sum), false);
-					pop.subpops[i].individuals[j].evaluated = true;
-					}
+                    // average of the trials we got
+                    int len = fit.trials.size();
+                    double sum = 0;
+                    for(int l = 0; l < len; l++)
+                        sum += ((Double)(fit.trials.get(l))).doubleValue();
+                    sum /= len;
+                                                                        
+                    // we'll not bother declaring the ideal
+                    fit.setFitness(state, (float)(sum), false);
+                    pop.subpops[i].individuals[j].evaluated = true;
+                    }
         }
 
     public void evaluate(final EvolutionState state,

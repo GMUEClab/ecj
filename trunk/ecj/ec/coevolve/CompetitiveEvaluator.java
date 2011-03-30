@@ -107,7 +107,7 @@ public class CompetitiveEvaluator extends Evaluator
     public void setup( final EvolutionState state, final Parameter base )
         {
         super.setup( state, base );
-				
+                                
         String temp;
         temp = state.parameters.getStringWithDefault( base.push( P_COMPETE_STYLE ), null, "" );
         if( temp.equalsIgnoreCase( "single-elim-tournament" ) )
@@ -180,9 +180,9 @@ public class CompetitiveEvaluator extends Evaluator
         {
         int numinds[] = new int[state.evalthreads];
         int from[] = new int[state.evalthreads];
-		boolean[] assessFitness = new boolean[state.population.subpops.length];
-		for(int i = 0; i < assessFitness.length; i++)
-			assessFitness[i] = true;					// update everyone's fitness in preprocess and postprocess
+        boolean[] assessFitness = new boolean[state.population.subpops.length];
+        for(int i = 0; i < assessFitness.length; i++)
+            assessFitness[i] = true;                                        // update everyone's fitness in preprocess and postprocess
         
         for (int y=0;y<state.evalthreads;y++)
             {

@@ -380,14 +380,14 @@ public abstract class Individual implements Prototype, Comparable
                 
     /** Replaces myself with the other Individual, while merging our evaluation results together.  May destroy
         the other Individual in the process.  By default this procedure calls fitness(merge) to merge the old
-		fitness (backwards) into the new fitness, then entirely overwrites myself with the other Individual
-		(including the merged fitness).
+        fitness (backwards) into the new fitness, then entirely overwrites myself with the other Individual
+        (including the merged fitness).
                 
         <p>What is the purpose of this method?   When coevolution is done in combination with distributed evaluation,
         an Individual may be sent to multiple remote sites to be tested in different trials prior to having a completed
         fitness assessed.  As those trials complete, we need a way to merge them together.  By default this method
         simply merges the trial arrays (using fitness.merge(...)), and determines the "best" context,
-		then copies the other Individual to me.  But if you
+        then copies the other Individual to me.  But if you
         store additional trial results outside fitness---for example, if you keep around the best collaborators from
         coevolution, say---you may need a way to guarantee that this Individual reflects the most up to date information
         about recent trials arriving via the other Individual.  In this case, override the method and perform merging 
@@ -395,7 +395,7 @@ public abstract class Individual implements Prototype, Comparable
     */
     public void merge(EvolutionState state, Individual other)
         {
-		// merge the fitnesses backwards:  merge the fitness INTO the other fitness
+        // merge the fitnesses backwards:  merge the fitness INTO the other fitness
         other.fitness.merge(state, fitness);
 
         // now push the Individual back to us, including the merged fitness

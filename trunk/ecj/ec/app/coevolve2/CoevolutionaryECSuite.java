@@ -17,42 +17,42 @@ import java.util.*;
 
 public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
     {
-	public static final String P_SHOULD_SET_CONTEXT = "set-context";
-	boolean shouldSetContext;
-	
+    public static final String P_SHOULD_SET_CONTEXT = "set-context";
+    boolean shouldSetContext;
+        
     public void setup(final EvolutionState state, final Parameter base) 
         {
-		super.setup(state, base);
-		
-		// load whether we should set context or not
-		shouldSetContext = state.parameters.getBoolean(base.push(P_SHOULD_SET_CONTEXT), null, true);
-		}
-	
+        super.setup(state, base);
+                
+        // load whether we should set context or not
+        shouldSetContext = state.parameters.getBoolean(base.push(P_SHOULD_SET_CONTEXT), null, true);
+        }
+        
     public void preprocessPopulation(final EvolutionState state, Population pop, boolean[] prepareForAssessment, boolean countVictoriesOnly)
         {
         for( int i = 0 ; i < pop.subpops.length ; i++ )
-			if (prepareForAssessment[i])
-				for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
-					((SimpleFitness)(pop.subpops[i].individuals[j].fitness)).trials = new ArrayList();
+            if (prepareForAssessment[i])
+                for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
+                    ((SimpleFitness)(pop.subpops[i].individuals[j].fitness)).trials = new ArrayList();
         }
 
     public void postprocessPopulation(final EvolutionState state, Population pop, boolean[] assessFitness, boolean countVictoriesOnly)
         {
         for( int i = 0 ; i < pop.subpops.length ; i++ )
-			if (assessFitness[i])
-				for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
-					{
-					SimpleFitness fit = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
-									
-					// we take the max over the trials
-					double max = Double.NEGATIVE_INFINITY;
-					int len = fit.trials.size();
-					for(int l = 0; l < len; l++)
-						max = Math.max(((Double)(fit.trials.get(l))).doubleValue(), max);  // it'll be the first one, but whatever
-					
-					fit.setFitness(state, (float)(max), isOptimal(problemType, (float)max));
-					pop.subpops[i].individuals[j].evaluated = true;
-					}
+            if (assessFitness[i])
+                for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
+                    {
+                    SimpleFitness fit = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
+                                                                        
+                    // we take the max over the trials
+                    double max = Double.NEGATIVE_INFINITY;
+                    int len = fit.trials.size();
+                    for(int l = 0; l < len; l++)
+                        max = Math.max(((Double)(fit.trials.get(l))).doubleValue(), max);  // it'll be the first one, but whatever
+                                        
+                    fit.setFitness(state, (float)(max), isOptimal(problemType, (float)max));
+                    pop.subpops[i].individuals[j].evaluated = true;
+                    }
         }
 
 
@@ -98,22 +98,22 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
             if (updateFitness[i])
                 {
                 // Update the context if this is the best trial.  We're going to assume that the best
-				// trial is trial #0 so we don't have to search through them.
+                // trial is trial #0 so we don't have to search through them.
                 int len = coind.fitness.trials.size();
-				
-				if (len == 0)  // easy
-					{
-					if (shouldSetContext) coind.fitness.setContext(ind, i);
-					coind.fitness.trials.add(new Double(trial));
-					}
-				else if (((Double)(coind.fitness.trials.get(0))).doubleValue() < trial)  // best trial is presently #0
-					{
-					if (shouldSetContext) coind.fitness.setContext(ind, i);
-					// put me at position 0
-					Double t = (Double)(coind.fitness.trials.get(0));
-					coind.fitness.trials.set(0, new Double(trial));  // put me at 0
-					coind.fitness.trials.add(t);  // move him to the end
-					}
+                                
+                if (len == 0)  // easy
+                    {
+                    if (shouldSetContext) coind.fitness.setContext(ind, i);
+                    coind.fitness.trials.add(new Double(trial));
+                    }
+                else if (((Double)(coind.fitness.trials.get(0))).doubleValue() < trial)  // best trial is presently #0
+                    {
+                    if (shouldSetContext) coind.fitness.setContext(ind, i);
+                    // put me at position 0
+                    Double t = (Double)(coind.fitness.trials.get(0));
+                    coind.fitness.trials.set(0, new Double(trial));  // put me at 0
+                    coind.fitness.trials.add(t);  // move him to the end
+                    }
                                                                         
                 // finally set the fitness for good measure
                 ((SimpleFitness)(coind.fitness)).setFitness(state, (float)trial, false);

@@ -322,31 +322,31 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         {
         return monitor.waitForIndividual();
         }
-		
-	/** This method is called from the SlaveMonitor's accept() thread to optionally send additional data to the
-		Slave via the dataOut stream.  By default it does nothing.  If you override this you must also override (and use) 
-		receiveAdditionalData() and transferAdditionalData(). */
-	public void sendAdditionalData(EvolutionState state, DataOutputStream dataOut)
-		{
-		// do nothing
-		}
+                
+    /** This method is called from the SlaveMonitor's accept() thread to optionally send additional data to the
+        Slave via the dataOut stream.  By default it does nothing.  If you override this you must also override (and use) 
+        receiveAdditionalData() and transferAdditionalData(). */
+    public void sendAdditionalData(EvolutionState state, DataOutputStream dataOut)
+        {
+        // do nothing
+        }
 
-	/** This method is called on a MasterProblem by the Slave.  You should use this method to store away
-		received data via the dataIn stream for later transferring to the current EvolutionState via the
-		transferAdditionalData method.  You should NOT expect this MasterProblem to be used for by the Slave
-		for evolution (though it might).  By default this method does nothing, which is the usual situation. 
-		The EvolutionState is provided solely for you to be able to output warnings and errors: do not rely
-		on it for any other purpose (including access of the random number generator or storing any data).  */
-	public void receiveAdditionalData(EvolutionState state, DataInputStream dataIn)
-		{
-		// do nothing
-		}
+    /** This method is called on a MasterProblem by the Slave.  You should use this method to store away
+        received data via the dataIn stream for later transferring to the current EvolutionState via the
+        transferAdditionalData method.  You should NOT expect this MasterProblem to be used for by the Slave
+        for evolution (though it might).  By default this method does nothing, which is the usual situation. 
+        The EvolutionState is provided solely for you to be able to output warnings and errors: do not rely
+        on it for any other purpose (including access of the random number generator or storing any data).  */
+    public void receiveAdditionalData(EvolutionState state, DataInputStream dataIn)
+        {
+        // do nothing
+        }
 
-	/** This method is called by a Slave to transfer data previously loaded via receiveAdditionalData() to
-		a running EvolutionState at the beginning of evolution.  It may be called multiple times if multiple
-		EvolutionStates are created. By default this method does nothing, which is the usual situation. */
-	public void transferAdditionalData(EvolutionState state)
-		{
-		// do nothing
-		}
+    /** This method is called by a Slave to transfer data previously loaded via receiveAdditionalData() to
+        a running EvolutionState at the beginning of evolution.  It may be called multiple times if multiple
+        EvolutionStates are created. By default this method does nothing, which is the usual situation. */
+    public void transferAdditionalData(EvolutionState state)
+        {
+        // do nothing
+        }
     }

@@ -96,7 +96,7 @@ public class GPNodeConstraints implements Clique
     public GPNode zeroChildren[] = new GPNode[0];
 
     /** This must be called <i>after</i> the GPTypes have been set up. */
-    public final void setup(final EvolutionState state, final Parameter base)
+    public void setup(final EvolutionState state, final Parameter base)
         {
         // What's my name?
         name = state.parameters.getString(base.push(P_NAME),null);

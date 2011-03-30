@@ -1821,3 +1821,6 @@ Version		Change Log
 	Added some code for optionally sending information over a stream to a Slave to set it up
 		from the Master
 	Bug fix to escapes in Code.java, thanks to Ben Stabile <bennett.stabile@gmail.som>
+	Made GPNodeConstraints.setup, GPTreeConstraints.setup, and GPNode.verify non-final
+	Added ec.util.ThreadPool
+	Slave now does non-evolve evals in a multithreaded fashion if asked to

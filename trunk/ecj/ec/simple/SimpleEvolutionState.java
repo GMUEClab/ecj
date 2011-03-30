@@ -40,7 +40,6 @@ import ec.util.Checkpoint;
 
 public class SimpleEvolutionState extends EvolutionState
     {
-
     /**
      * 
      */

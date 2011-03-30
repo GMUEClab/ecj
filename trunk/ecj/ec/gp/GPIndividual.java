@@ -171,7 +171,7 @@ public class GPIndividual extends Individual
 
 
     /** Verification of validity of the GPIndividual -- strictly for debugging purposes only */
-    public final void verify(EvolutionState state)
+    public void verify(EvolutionState state)
         {
         if (!(state.initializer instanceof GPInitializer))
             { state.output.error("Initializer is not a GPInitializer"); return; }

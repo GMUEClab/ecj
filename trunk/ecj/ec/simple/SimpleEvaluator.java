@@ -42,46 +42,46 @@ public class SimpleEvaluator extends Evaluator
         one per thread, to various subchunks of a new population. */
     public void evaluatePopulation(final EvolutionState state)
         {
-		if (state.evalthreads==1)
-			{
-			// a minor bit of optimization
-			int numinds[] = new int[state.population.subpops.length];
-			int from[] = new int[state.population.subpops.length];
-			for(int i = 0; i < state.population.subpops.length; i++)
-				{ numinds[i] = state.population.subpops[i].individuals.length; from[i] = 0; }
+        if (state.evalthreads==1)
+            {
+            // a minor bit of optimization
+            int numinds[] = new int[state.population.subpops.length];
+            int from[] = new int[state.population.subpops.length];
+            for(int i = 0; i < state.population.subpops.length; i++)
+                { numinds[i] = state.population.subpops[i].individuals.length; from[i] = 0; }
             evalPopChunk(state,numinds,from,0,(SimpleProblemForm)(p_problem.clone()));  
-			}
-		else
-			{
+            }
+        else
+            {
 
-        int numinds[][] = 
-            new int[state.evalthreads][state.population.subpops.length];
-        int from[][] = 
-            new int[state.evalthreads][state.population.subpops.length];
+            int numinds[][] = 
+                new int[state.evalthreads][state.population.subpops.length];
+            int from[][] = 
+                new int[state.evalthreads][state.population.subpops.length];
         
-        for(int y=0;y<state.evalthreads;y++)
-            for(int x=0;x<state.population.subpops.length;x++)
-                {
-                // figure numinds
-                if (y<state.evalthreads-1) // not last one
-                    numinds[y][x]=
-                        state.population.subpops[x].individuals.length/
-                        state.evalthreads;
-                else // in case we're slightly off in division
-                    numinds[y][x]=
-                        state.population.subpops[x].individuals.length/
-                        state.evalthreads +
+            for(int y=0;y<state.evalthreads;y++)
+                for(int x=0;x<state.population.subpops.length;x++)
+                    {
+                    // figure numinds
+                    if (y<state.evalthreads-1) // not last one
+                        numinds[y][x]=
+                            state.population.subpops[x].individuals.length/
+                            state.evalthreads;
+                    else // in case we're slightly off in division
+                        numinds[y][x]=
+                            state.population.subpops[x].individuals.length/
+                            state.evalthreads +
                         
-                        (state.population.subpops[x].individuals.length -
-                            (state.population.subpops[x].individuals.length /
-                            state.evalthreads)  // note integer division
-                        *state.evalthreads);                    
+                            (state.population.subpops[x].individuals.length -
+                                (state.population.subpops[x].individuals.length /
+                                state.evalthreads)  // note integer division
+                            *state.evalthreads);                    
 
-                // figure from
-                from[y][x]=
-                    (state.population.subpops[x].individuals.length/
-                    state.evalthreads) * y;
-                }
+                    // figure from
+                    from[y][x]=
+                        (state.population.subpops[x].individuals.length/
+                        state.evalthreads) * y;
+                    }
 
             Thread[] t = new Thread[state.evalthreads];
             
@@ -121,20 +121,20 @@ public class SimpleEvaluator extends Evaluator
     protected void evalPopChunk(EvolutionState state, int[] numinds, int[] from,
         int threadnum, SimpleProblemForm p)
         {
-		((ec.Problem)p).prepareToEvaluate(state,threadnum);
+        ((ec.Problem)p).prepareToEvaluate(state,threadnum);
         
-		Subpopulation[] subpops = state.population.subpops;
-		int len = subpops.length;
+        Subpopulation[] subpops = state.population.subpops;
+        int len = subpops.length;
         for(int pop=0;pop<len;pop++)
             {
             // start evaluatin'!
-			int fp = from[pop];
+            int fp = from[pop];
             int upperbound = fp+numinds[pop];
-			Individual[] inds = subpops[pop].individuals;
+            Individual[] inds = subpops[pop].individuals;
             for (int x=fp;x<upperbound;x++)
                 p.evaluate(state,inds[x], pop, threadnum);
             }
-			
+                        
         ((ec.Problem)p).finishEvaluating(state,threadnum);
         }
     

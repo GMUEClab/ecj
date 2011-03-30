@@ -180,10 +180,10 @@ public class SlaveMonitor
                         // Write random state for eval thread to slave
                         dataOut.flush();
 
-						// write out additional data as necessary
-						problemPrototype.sendAdditionalData(state, dataOut);
-						dataOut.flush();
-						
+                        // write out additional data as necessary
+                        problemPrototype.sendAdditionalData(state, dataOut);
+                        dataOut.flush();
+                                                
                         registerSlave(state, slaveName, slaveSock, dataOut, dataIn);
                         state.output.systemMessage( "Slave " + slaveName + " connected successfully." );
                         }
