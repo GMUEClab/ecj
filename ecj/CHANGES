@@ -1824,3 +1824,4 @@ Version		Change Log
 	Made GPNodeConstraints.setup, GPTreeConstraints.setup, and GPNode.verify non-final
 	Added ec.util.ThreadPool
 	Slave now does non-evolve evals in a multithreaded fashion if asked to
+	Reindented

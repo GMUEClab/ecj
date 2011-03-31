@@ -204,10 +204,10 @@ public class Slave
         
     /** How long we sleep in between attempts to connect to the master (in milliseconds). */
     public static final int SLEEP_TIME = 100;
-	
-	public static ThreadPool pool = new ThreadPool();
+        
+    public static ThreadPool pool = new ThreadPool();
 
-	
+        
     public static void main(String[] args)
         {
         EvolutionState state = null;
@@ -522,91 +522,91 @@ public class Slave
         
         boolean[] updateFitness = new boolean[numInds];
         final Individual[] inds = new Individual[numInds];
-			
-			
-			
-			
-		// Either evaluate all the individuals once and return them immediately
-		// (we'll do so in a steady-state-ish fashion, firing off threads as soon as we read in individuals,
-		// and returning them as soon as they come in, albeit in the proper order)
+                        
+                        
+                        
+                        
+        // Either evaluate all the individuals once and return them immediately
+        // (we'll do so in a steady-state-ish fashion, firing off threads as soon as we read in individuals,
+        // and returning them as soon as they come in, albeit in the proper order)
         if (!runEvolve)
-			{
-			Thread[] threads = new Thread[state.evalthreads];
-			final SimpleProblemForm[] problems = new SimpleProblemForm[state.evalthreads];
-			int[] indForThread = new int[state.evalthreads];
-			
-			try
-				{
-				int t = 0;		// thread index
-			
-				// start up all the threads
-				for(int i = 0 ; i < numInds; i++)
-					{
-					// load individual
-					inds[i] = state.population.subpops[subpops[i]].species.newIndividual(state, dataIn);
-					updateFitness[i] = dataIn.readBoolean(); 
+            {
+            Thread[] threads = new Thread[state.evalthreads];
+            final SimpleProblemForm[] problems = new SimpleProblemForm[state.evalthreads];
+            int[] indForThread = new int[state.evalthreads];
+                        
+            try
+                {
+                int t = 0;              // thread index
+                        
+                // start up all the threads
+                for(int i = 0 ; i < numInds; i++)
+                    {
+                    // load individual
+                    inds[i] = state.population.subpops[subpops[i]].species.newIndividual(state, dataIn);
+                    updateFitness[i] = dataIn.readBoolean(); 
 
-					// fire up evaluation thread on individual
-					if (t >= state.evalthreads) t = 0;	 // we can only be here if evalthreads > numInds
-					if (threads[t] != null)
-						{
-						pool.joinAndReturn(threads[t]);  // ran out of threads, wait for new ones
-						returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, indForThread[t]);  // return just that individual
-						}
-					if (problems[t] == null) problems[t] = ((SimpleProblemForm)(state.evaluator.p_problem.clone()));
+                    // fire up evaluation thread on individual
+                    if (t >= state.evalthreads) t = 0;       // we can only be here if evalthreads > numInds
+                    if (threads[t] != null)
+                        {
+                        pool.joinAndReturn(threads[t]);  // ran out of threads, wait for new ones
+                        returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, indForThread[t]);  // return just that individual
+                        }
+                    if (problems[t] == null) problems[t] = ((SimpleProblemForm)(state.evaluator.p_problem.clone()));
 
-					final int j = i;
-					final int s = t;
-					indForThread[t] = i;
-					threads[t] = pool.startThread(new Runnable()
-						{
-						public void run() { problems[s].evaluate( state, inds[j], subpops[j], 0 ); }
-						});
-					t++;
-					}
-				
-				// gather everyone
-				for(t = 0; t < state.evalthreads; t++)
-					{
-					if (threads[t] != null)
-						{
-						pool.joinAndReturn(threads[t]);
-						returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, indForThread[t]);   // return just that individual
-						}
-					}
-				}
-			catch (IOException e)
-				{
-				state.output.fatal("Unable to read individual from master." + e);
-				}
-			try
-				{
-				dataOut.flush();
-				} 
-			catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
-			}
-			
-			
-			
-		
-		// OR we will do some evolution.  Here we'll read in ALL the individuals, do some evolution, then
-		// write them ALL out, very slightly less efficient
+                    final int j = i;
+                    final int s = t;
+                    indForThread[t] = i;
+                    threads[t] = pool.startThread(new Runnable()
+                        {
+                        public void run() { problems[s].evaluate( state, inds[j], subpops[j], 0 ); }
+                        });
+                    t++;
+                    }
+                                
+                // gather everyone
+                for(t = 0; t < state.evalthreads; t++)
+                    {
+                    if (threads[t] != null)
+                        {
+                        pool.joinAndReturn(threads[t]);
+                        returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, indForThread[t]);   // return just that individual
+                        }
+                    }
+                }
+            catch (IOException e)
+                {
+                state.output.fatal("Unable to read individual from master." + e);
+                }
+            try
+                {
+                dataOut.flush();
+                } 
+            catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
+            }
+                        
+                        
+                        
+                
+        // OR we will do some evolution.  Here we'll read in ALL the individuals, do some evolution, then
+        // write them ALL out, very slightly less efficient
         else // (runEvolve) 
             {
-			try		// load up all the individuals
-				{
-				for (int i=0; i < numInds; i++) 
-					{ 
-					inds[i] = state.population.subpops[subpops[i]].species.newIndividual(state, dataIn);
-					updateFitness[i] = dataIn.readBoolean(); 
-					}
-				}
-			catch (IOException e)
-				{
-				state.output.fatal("Unable to read individual from master." + e);
-				}
-			
-			
+            try             // load up all the individuals
+                {
+                for (int i=0; i < numInds; i++) 
+                    { 
+                    inds[i] = state.population.subpops[subpops[i]].species.newIndividual(state, dataIn);
+                    updateFitness[i] = dataIn.readBoolean(); 
+                    }
+                }
+            catch (IOException e)
+                {
+                state.output.fatal("Unable to read individual from master." + e);
+                }
+                        
+                        
             long startTime = System.currentTimeMillis(); 
             long endTime=0; 
 
@@ -642,23 +642,23 @@ public class Slave
             state.finish(result);
             Evolve.cleanup(state);
 
-			// Return the evaluated individual to the master
-			try 
-				{ 
-				returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, -1);	// -1 == write all individuals
-				dataOut.flush();
-				} 
-			catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
-			}
+            // Return the evaluated individual to the master
+            try 
+                { 
+                returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, -1);  // -1 == write all individuals
+                dataOut.flush();
+                } 
+            catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
+            }
         }
     
-	
-	
-	
-	
-	
-	
-	
+        
+        
+        
+        
+        
+        
+        
     public static void evaluateGroupedProblemForm( EvolutionState state, boolean returnIndividuals,
         DataInputStream dataIn, DataOutputStream dataOut )
         {
@@ -715,24 +715,24 @@ public class Slave
                                 
         try 
             {
-            returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, -1); 	// -1 == write all individuals
-			dataOut.flush();
+            returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, -1);      // -1 == write all individuals
+            dataOut.flush();
             } 
         catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
         }
         
-	
-	
-	
-	
-	// if individualInQuestion is -1, all individuals are returned
+        
+        
+        
+        
+    // if individualInQuestion is -1, all individuals are returned
     private static void returnIndividualsToMaster(EvolutionState state, Individual []inds, boolean[] updateFitness,
         DataOutputStream dataOut, boolean returnIndividuals, int individualInQuestion) throws IOException 
         {
         // Return the evaluated individual to the master
         // just write evaluated and fitness
-		int startInd = (individualInQuestion == -1 ? 0 : individualInQuestion);
-		int endInd = (individualInQuestion == -1 ? inds.length : individualInQuestion + 1);
+        int startInd = (individualInQuestion == -1 ? 0 : individualInQuestion);
+        int endInd = (individualInQuestion == -1 ? inds.length : individualInQuestion + 1);
         for(int i = startInd; i<endInd;i++)
             {
             dataOut.writeByte(returnIndividuals ? V_INDIVIDUAL : (updateFitness[i] ? V_FITNESS : V_NOTHING));
