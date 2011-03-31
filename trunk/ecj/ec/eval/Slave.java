@@ -523,11 +523,17 @@ public class Slave
         boolean[] updateFitness = new boolean[numInds];
         final Individual[] inds = new Individual[numInds];
 			
-		// evaluate the individuals once each
+			
+			
+			
+		// Either evaluate all the individuals once and return them immediately
+		// (we'll do so in a steady-state-ish fashion, firing off threads as soon as we read in individuals,
+		// and returning them as soon as they come in, albeit in the proper order)
         if (!runEvolve)
 			{
 			Thread[] threads = new Thread[state.evalthreads];
 			final SimpleProblemForm[] problems = new SimpleProblemForm[state.evalthreads];
+			int[] indForThread = new int[state.evalthreads];
 			
 			try
 				{
@@ -542,11 +548,16 @@ public class Slave
 
 					// fire up evaluation thread on individual
 					if (t >= state.evalthreads) t = 0;	 // we can only be here if evalthreads > numInds
-					if (threads[t] != null) pool.joinAndReturn(threads[t]);  // ran out of threads, wait for new ones
+					if (threads[t] != null)
+						{
+						pool.joinAndReturn(threads[t]);  // ran out of threads, wait for new ones
+						returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, indForThread[t]);  // return just that individual
+						}
 					if (problems[t] == null) problems[t] = ((SimpleProblemForm)(state.evaluator.p_problem.clone()));
 
 					final int j = i;
 					final int s = t;
+					indForThread[t] = i;
 					threads[t] = pool.startThread(new Runnable()
 						{
 						public void run() { problems[s].evaluate( state, inds[j], subpops[j], 0 ); }
@@ -557,16 +568,29 @@ public class Slave
 				// gather everyone
 				for(t = 0; t < state.evalthreads; t++)
 					{
-					if (threads[t] != null) pool.joinAndReturn(threads[t]);
-					threads[t] = null;
+					if (threads[t] != null)
+						{
+						pool.joinAndReturn(threads[t]);
+						returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, indForThread[t]);   // return just that individual
+						}
 					}
 				}
 			catch (IOException e)
 				{
 				state.output.fatal("Unable to read individual from master." + e);
 				}
-			
+			try
+				{
+				dataOut.flush();
+				} 
+			catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
 			}
+			
+			
+			
+		
+		// OR we will do some evolution.  Here we'll read in ALL the individuals, do some evolution, then
+		// write them ALL out, very slightly less efficient
         else // (runEvolve) 
             {
 			try		// load up all the individuals
@@ -617,18 +641,24 @@ public class Slave
                 inds[i] = state.population.subpops[subpops[i]].individuals[counts[subpops[i]]++];
             state.finish(result);
             Evolve.cleanup(state);
-            }
 
-
-        //System.err.println("Returning Individuals ");
-        // Return the evaluated individual to the master
-        try 
-            { 
-            returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals); 
-            } 
-        catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
+			// Return the evaluated individual to the master
+			try 
+				{ 
+				returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, -1);	// -1 == write all individuals
+				dataOut.flush();
+				} 
+			catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
+			}
         }
     
+	
+	
+	
+	
+	
+	
+	
     public static void evaluateGroupedProblemForm( EvolutionState state, boolean returnIndividuals,
         DataInputStream dataIn, DataOutputStream dataOut )
         {
@@ -685,27 +715,30 @@ public class Slave
                                 
         try 
             {
-            returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals); 
+            returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, -1); 	// -1 == write all individuals
+			dataOut.flush();
             } 
         catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
         }
         
+	
+	
+	
+	
+	// if individualInQuestion is -1, all individuals are returned
     private static void returnIndividualsToMaster(EvolutionState state, Individual []inds, boolean[] updateFitness,
-        DataOutputStream dataOut, boolean returnIndividuals) throws IOException 
+        DataOutputStream dataOut, boolean returnIndividuals, int individualInQuestion) throws IOException 
         {
         // Return the evaluated individual to the master
         // just write evaluated and fitness
-        for(int i=0;i<inds.length;i++)
+		int startInd = (individualInQuestion == -1 ? 0 : individualInQuestion);
+		int endInd = (individualInQuestion == -1 ? inds.length : individualInQuestion + 1);
+        for(int i = startInd; i<endInd;i++)
             {
-            //System.err.println("Returning Individual " + i);
-            //System.err.println("writing byte: " + ( returnIndividuals ? V_INDIVIDUAL : (updateFitness[i] ? V_FITNESS : V_NOTHING)));
             dataOut.writeByte(returnIndividuals ? V_INDIVIDUAL : (updateFitness[i] ? V_FITNESS : V_NOTHING));
-            //System.err.println("wrote byte");
             if (returnIndividuals)
                 {
-//              System.err.println("Writing Individual");
                 inds[i].writeIndividual(state, dataOut);
-//              System.err.println("Wrote Individual");
                 }
             else if (updateFitness[i])
                 {
@@ -713,8 +746,5 @@ public class Slave
                 inds[i].fitness.writeFitness(state,dataOut);
                 }
             }
-//      System.err.println("flushing");
-        dataOut.flush();
-//      System.err.println("flushed");
         }
     }
