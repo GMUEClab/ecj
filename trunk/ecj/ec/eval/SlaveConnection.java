@@ -247,7 +247,7 @@ class SlaveConnection
             
             synchronized(jobs) 
                 {
-                job = (Job)(jobs.getFirst());				// NO SUCH ELEMENT EXCEPTION
+                job = (Job)(jobs.getFirst());                           // NO SUCH ELEMENT EXCEPTION
                 }
             debug("Got job: " + job);
             

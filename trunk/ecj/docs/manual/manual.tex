@@ -7323,7 +7323,7 @@ Computes and returns the number of bytes that would be consumed to produce a GPI
 
 \paragraph{Handling ADFs and Multiple Trees}  Recall that the GESpecies maintains a separate grammar for each tree in the GPIndividual (and thus for each separate ADF).  However there's only a single byte array in the GEIndividual.  This is handled straightforwardly the array is used to build the first tree; then the unused remainder of the array is used to build the second tree; and so on.  If not all trees were able to be built, evaluation of the GPIndividual is bypassed and the fitness is set to the (\variable{Float.MAX\_VALUE}).
 
-\paragraph{Grammatical Evolution Does Not Support GroupedProblemForm}  GroupedProblemForm evaluates several Individuals together.  What if at least one of them is a GEIndividual, and the GEIndividual cannot generate a valid GPIndividual?  This creates a number of hassles.  For example, if we're doing cooperative coevolution, and one Individual can't be generated, what's the fitness of the group?  Is it fair to penalize the group thusly?  Likewise if we're doing competitive coevolution, and one of the competitors can't be generated, what's the resulting fitness of the other?  For this reason, at present Grammatical Evolution does not support GroupedProblemForm.
+\paragraph{Grammatical Evolution Does Not Support GroupedProblemForm}  GroupedProblemForm (Section \ref{ec.coevolve.GroupedProblemForm}) evaluates several Individuals together.  What if at least one of them is a GEIndividual, and the GEIndividual cannot generate a valid GPIndividual?  This creates a number of hassles.  For example, if we're doing cooperative coevolution, and one Individual can't be generated, what's the fitness of the group?  Is it fair to penalize the group thusly?  Likewise if we're doing competitive coevolution, and one of the competitors can't be generated, what's the resulting fitness of the other?  For this reason, at present Grammatical Evolution does not support GroupedProblemForm.
 
 \subsection{Initialization and Breeding}
 
@@ -8080,6 +8080,14 @@ eval.return-inds = false
 
 Slaves can come and go at any time dynamically.  If new slaves show up, the Master will immediately start taking advantage of them.  If a Slave disappears, the Individuals it was responsible for will be reassigned to another Slave.
 
+Slaves can be multithreaded: they can process multiple individuals in parallel in the background as they come in.   This is done with the standard parameter:
+
+\params{%
+evalthreads = 4
+}
+
+This will create four threads on the Slave process to evaluate Individuals.  Note that it makes no sense for this parameter to exceed Master's \parameter{eval.masterproblem.job-size} parameter.  Also, if you exceed the actual number of CPUs or cores allocated to your Slave process, it doesn't make much sense either.  Last, Slaves are {\it not} multithreaded when evaluating Individuals with GroupedProblemForm (such as coevolved evaluation, see Section \ref{ec.coevolve.GroupedProblemForm}).
+
 
 \subsection{Opportunistic Evolution}
 
@@ -8110,9 +8118,9 @@ Last, if you're doing opportunistic evolution, you {\bf must} return whole Indiv
 eval.return-inds = true
 }
 
-There's absolutely no reason the Slave can't have its own evolutionary algorithm that's {\it different} from the Master's evolutionary algorithm\,---\,just specify it differently in the Slave's parameters.  The only thing that'd be required is that the Slave and the Master have exactly the same kinds of Individuals, Fitnesses, and Species in their Subpopulations.
+The procedure for evolution is entirely specified by the Slave's parameters just as if it were specified in a regular ECJ process, including breeding and evaluation threads, etc.  There's absolutely no reason the Slave can't have its own evolutionary algorithm that's {\it different} from the Master's evolutionary algorithm\,---\,just specify it differently in the Slave's parameters.  The only thing that'd be required is that the Slave and the Master have exactly the same kinds of Individuals, Fitnesses, and Species in their Subpopulations.
 
-Note that Opportunistic Evolution won't work with coevolution or other procedures which require GroupedProblemForm.  Additionally, although Steady-State Evolution (via Asynchronous Evolution, see Section \ref{asynchronous}) can work with Opportunistic Evolution in {\it theory}, it'd be quite odd to do so.
+Note that Opportunistic Evolution won't work with coevolution or other procedures which require GroupedProblemForm (Section \ref{ec.coevolve.GroupedProblemForm}).  Additionally, although Steady-State Evolution (via Asynchronous Evolution, see Section \ref{asynchronous}) can work with Opportunistic Evolution in {\it theory}, it'd be quite odd to do so.
 
 \begin{figure}[f]
 \begin{center}
@@ -8184,7 +8192,7 @@ MasterProblem also has special methods used only by Steady-State Evolution (and 
 	}
 \end{methods}
 
-MasterProblem also implements all the methods defined in SimpleProblemForm and GroupedProblemForm, in addition to the following two methods normally implemented by Evaluator (and which are called on the MasterProblem from the Evaluator's methods of the same names):
+MasterProblem also implements all the methods defined in SimpleProblemForm and GroupedProblemForm (Section \ref{ec.coevolve.GroupedProblemForm}), in addition to the following two methods normally implemented by Evaluator (and which are called on the MasterProblem from the Evaluator's methods of the same names):
 
 \begin{methods}{ec.eval.MasterProblem}
 \mthd{public void prepareToEvaluate(EvolutionState {\it state}, int {\it threadnum})}
