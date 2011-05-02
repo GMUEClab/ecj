@@ -41,6 +41,9 @@ public class NSGA2Breeder extends SimpleBreeder
         if (sequentialBreeding) // uh oh, haven't tested with this
             state.output.fatal("NSGA2Breeder does not support sequential evaluation.",
                 base.push(P_SEQUENTIAL_BREEDING));
+
+		if (!clonePipelineAndPopulation)
+			state.output.fatal("clonePipelineAndPopulation must be true for NSGA2Breeder.");
         }
 
     /**

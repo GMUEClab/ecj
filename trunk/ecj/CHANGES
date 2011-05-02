@@ -1825,3 +1825,8 @@ Version		Change Log
 	Added ec.util.ThreadPool
 	Slave now does non-evolve evals in a multithreaded fashion if asked to
 	Reindented
+	Added facility for NOT cloning the breeding pipeline, population, or problem, to make
+		single-state evolution faster.  By default you should ignore this parameter
+		(in SimpleBreeder and SimpleEvaluator).  Expect this facility to change over 
+		time before it becomes official.
+	Added Population.clear() and Subpopulation.clear()

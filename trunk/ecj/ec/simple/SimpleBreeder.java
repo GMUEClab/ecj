@@ -67,16 +67,18 @@ public class SimpleBreeder extends Breeder
     public static final String P_ELITE = "elite";
     public static final String P_REEVALUATE_ELITES = "reevaluate-elites";
     public static final String P_SEQUENTIAL_BREEDING = "sequential";
+	public static final String P_CLONE_PIPELINE_AND_POPULATION = "clone-pipeline-and-population";
     /** An array[subpop] of the number of elites to keep for that subpopulation */
     public int[] elite;
     public boolean[] reevaluateElites;
     public boolean sequentialBreeding;
-
+	public boolean clonePipelineAndPopulation;
+	public Population backupPopulation = null;
+	
     public void setup(final EvolutionState state, final Parameter base) 
         {
         Parameter p = new Parameter(Initializer.P_POP).push(Population.P_SIZE);
         int size = state.parameters.getInt(p,null,1);  // if size is wrong, we'll let Population complain about it -- for us, we'll just make 0-sized arrays and drop out.
-
 
         elite = new int[size];
         reevaluateElites = new boolean[size];
@@ -85,6 +87,9 @@ public class SimpleBreeder extends Breeder
         if (sequentialBreeding && (size == 1)) // uh oh, this can't be right
             state.output.fatal("The Breeder is breeding sequentially, but you have only one population.", base.push(P_SEQUENTIAL_BREEDING));
 
+        clonePipelineAndPopulation =state.parameters.getBoolean(base.push(P_CLONE_PIPELINE_AND_POPULATION), null, true);
+        if (!clonePipelineAndPopulation && (state.breedthreads > 1)) // uh oh, this can't be right
+            state.output.fatal("The Breeder is not cloning its pipeline and population, but you have more than one thread.", base.push(P_CLONE_PIPELINE_AND_POPULATION));
 
         int defaultSubpop = state.parameters.getInt(new Parameter(Initializer.P_POP).push(Population.P_DEFAULT_SUBPOP), null, 0);
         for(int x=0;x<size;x++)
@@ -139,7 +144,17 @@ public class SimpleBreeder extends Breeder
         int from[][] = 
             new int[state.breedthreads][state.population.subpops.length];
 
-        Population newpop = (Population) state.population.emptyClone();
+		Population newpop = null;
+		if (clonePipelineAndPopulation)
+			newpop = (Population) state.population.emptyClone();
+		else
+			{
+			if (backupPopulation == null)
+				backupPopulation = (Population) state.population.emptyClone();
+			newpop = backupPopulation;
+			newpop.clear();
+			backupPopulation = state.population;  // swap in
+			}
         
         // load elites into top of newpop
         loadElites(state, newpop);
@@ -198,7 +213,7 @@ public class SimpleBreeder extends Breeder
                     state.output.fatal("Whoa! The main breeding thread got interrupted!  Dying...");
                     }
             }
-        return newpop;
+		return newpop;
         }
 
     /** Returns true if we're doing sequential breeding and it's the subpopulation's turn (round robin,
@@ -231,8 +246,11 @@ public class SimpleBreeder extends Breeder
             else
                 {
                 // do regular breeding of this subpopulation
-                BreedingPipeline bp = (BreedingPipeline)newpop.subpops[subpop].
-                    species.pipe_prototype.clone();
+				BreedingPipeline bp = null;
+                if (clonePipelineAndPopulation)
+					bp = (BreedingPipeline)newpop.subpops[subpop].species.pipe_prototype.clone();
+				else
+					bp = (BreedingPipeline)newpop.subpops[subpop].species.pipe_prototype;
                                         
                 // check to make sure that the breeding pipeline produces
                 // the right kind of individuals.  Don't want a mistake there! :-)

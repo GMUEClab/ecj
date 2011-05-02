@@ -48,6 +48,7 @@ public class NSGA2Evaluator extends SimpleEvaluator
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state, base);
+
         Parameter p = new Parameter(Initializer.P_POP);
         int subpopsLength = state.parameters.getInt(p.push(Population.P_SIZE), null, 1);
         Parameter p_subpop;

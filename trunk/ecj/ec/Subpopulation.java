@@ -125,6 +125,13 @@ public class Subpopulation implements Group
         catch (CloneNotSupportedException e) { throw new InternalError(); } // never happens
         }
 
+	/** Sets all Individuals in the Subpopulation to null, preparing it to be reused. */
+	public void clear()
+		{
+		for(int i = 0 ; i < individuals.length; i++)
+			individuals[i] = null;
+		}
+
     public void setup(final EvolutionState state, final Parameter base)
         {
         Parameter def = defaultBase();

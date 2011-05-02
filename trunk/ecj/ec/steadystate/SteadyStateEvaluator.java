@@ -57,6 +57,8 @@ public class SteadyStateEvaluator extends SimpleEvaluator
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state,base);
+		if (!cloneProblem)
+			state.output.fatal("cloneProblem must be true for SteadyStateEvaluator -- we'll use only one Problem anyway.");
         }
         
     public void prepareToEvaluate(EvolutionState state, int thread) 
