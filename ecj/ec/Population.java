@@ -89,6 +89,13 @@ public class Population implements Group
             }
         catch (CloneNotSupportedException e) { throw new InternalError(); } // never happens
         }
+		
+	/** Sets all Individuals in the Population to null, preparing it to be reused. */
+	public void clear()
+		{
+		for(int i = 0 ; i < subpops.length; i++)
+			subpops[i].clear();
+		}
 
     public void setup(final EvolutionState state, final Parameter base)
         {
