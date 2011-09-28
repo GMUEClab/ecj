@@ -126,6 +126,12 @@ public class Evolve
     
     /** The argument indicating that we're starting fresh from a new parameter file. */
     public static final String A_FILE = "-file";
+    
+    /** The argument indicating that we're starting fresh from a parameter file stored in a jar file or as some resource. */
+    public static final String A_FROM = "-from";
+
+    /** The argument indicating the class where the resource is relative to. */
+    public static final String A_AT = "-at";
 
     /** evalthreads parameter */
     public static final String P_EVALTHREADS = "evalthreads";
@@ -164,11 +170,12 @@ public class Evolve
                 }
         return null;  // should never happen
         }
-                
+    
     /** Loads a ParameterDatabase from checkpoint if "-params" is in the command-line arguments. */
     public static ParameterDatabase loadParameterDatabase(String[] args) 
         {
-        ParameterDatabase parameters = null;
+        // search for a -file
+        ParameterDatabase parameters = null;        
         for(int x=0;x<args.length-1;x++)
             if (args[x].equals(A_FILE))
                 try
@@ -176,15 +183,61 @@ public class Evolve
                     parameters = new ParameterDatabase(
                         new File(new File(args[x+1]).getAbsolutePath()),
                         args);
+                    System.err.println("Using database file location " + parameters.getLabel());
                     break;
                     }
                 catch(Exception e)
                     {
+                    e.printStackTrace();
                     Output.initialError(
                         "An exception was generated upon reading the parameter file \"" +
                         args[x+1] + "\".\nHere it is:\n" + e); 
                     }
-        if (parameters==null)
+                    
+        // search for a resource class (we may or may not use this)
+        Class cls = null;
+        for(int x=0;x<args.length-1;x++)
+            if (args[x].equals(A_AT))
+                try
+                    {
+                    if (parameters != null)  // uh oh
+                        Output.initialError("Both -file and -at arguments provided.  This is not permitted.");
+                    else 
+                        cls = Class.forName(args[x+1]);
+                    break;
+                    }
+                catch (Exception e)
+                    {
+                    e.printStackTrace();
+                    Output.initialError(
+                        "An exception was generated upon extracting the class to load the parameter file relative to: " + args[x+1] + 
+                        "\n Here it is:\n" + e);
+                    }
+                    
+        // search for a resource (we may or may not use this)
+        for(int x=0;x<args.length-1;x++)
+            if (args[x].equals(A_FROM))
+                try
+                    {
+                    if (parameters != null)  // uh oh
+                        Output.initialError("Both -file and -from arguments provided.  This is not permitted.");
+                    else 
+                        {
+                        if (cls == null)  // no -at
+                            cls = Evolve.class;
+                        parameters = new ParameterDatabase(args[x+1], cls, args);
+                        System.err.println("Using database resource location " + parameters.getLabel());
+                        }
+                    break;
+                    }
+                catch (Exception e)
+                    {
+                    e.printStackTrace();
+                    Output.initialError(
+                        "The parameter file is missing at the resource location: " + args[x+1] + " relative to the class: " + cls);
+                    }
+
+        if (parameters == null)
             Output.initialError("No parameter file was specified." );
         return parameters;
         }
@@ -330,7 +383,7 @@ public class Evolve
         int time = (int)(System.currentTimeMillis());
         for (x=0;x<random.length;x++)
             {
-            seeds[x] = determineSeed(output,parameters,new Parameter(P_SEED).push(""+x),
+            seeds[x] = determineSeed(output, parameters, new Parameter(P_SEED).push(""+x),
                 time+x,random.length * randomSeedOffset, auto);
             for (int y=0;y<x;y++)
                 if (seeds[x]==seeds[y])
