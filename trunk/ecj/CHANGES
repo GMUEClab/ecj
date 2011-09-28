@@ -1839,4 +1839,5 @@ Version		Change Log
 	Modified Evolve.loadParameterDatabase to allow -from and -at parameters to specify
 		loading from a parameter file stored as a resource rather than from an
 		explicit file.
-	
+	Added 'make jar' to Makefile
+	Modified ec/app/ant/Ant.java to use new resource loading option

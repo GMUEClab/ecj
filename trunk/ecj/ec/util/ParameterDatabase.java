@@ -7,26 +7,9 @@
 
 package ec.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.Vector;
-
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
+import java.io.*;
+import java.util.*;
+import javax.swing.tree.*;
 
 /* 
 
@@ -386,19 +369,34 @@ import javax.swing.tree.TreeModel;
 public class ParameterDatabase extends Properties implements Serializable 
     {
     public static final String C_HERE = "$";
+    public static final String C_CLASS = "@";
     public static final String UNKNOWN_VALUE = "";
     public static final String PRINT_PARAMS = "print-params";
     public static final int PS_UNKNOWN = -1;
     public static final int PS_NONE = 0;
     public static final int PS_PRINT_PARAMS = 1;
     public int printState = PS_UNKNOWN;
+
+    // A descriptive name of the parameter database
+    String label;
+
+    // the parents of this database
     Vector parents;
+    
+    // If the database was loaded via a file, this holds the directory of the database
     File directory;
-    String filename;
+    
+    // a checkbox (unchecked by uncheck()) for not hitting the same database twice in a graph search
     boolean checked;
+
+    // List of parameters which were requested and ones which furthermore were fulfilled
     Hashtable gotten;
     Hashtable accessed;
-    Vector listeners;
+    
+    // If the database was loaded via getResource(), this holds the class and relative path
+    // used in that load
+    Class relativeClass;
+    String relativePath;
 
     /**
      * Searches down through databases to find a given parameter, whose value
@@ -1570,6 +1568,8 @@ public class ParameterDatabase extends Properties implements Serializable
                 return null;
             if (p.startsWith(C_HERE))
                 return new File(p.substring(C_HERE.length()));
+            else if (p.startsWith(C_CLASS))
+                return null;  // can't start with that.
             else {
                 File f = new File(p);
                 if (f.isAbsolute())
@@ -1580,6 +1580,80 @@ public class ParameterDatabase extends Properties implements Serializable
             } 
         else
             return null;
+        }
+
+    /**
+     * Searches down through the databases to find a given parameter, whose
+     * value must be an absolute or relative path name. If it is absolute, a
+     * file is made based on the path name, and an InputStream is opened on 
+     * the file and returned.  If the path name begins with "$", then an
+     * InputStream is opened on a file relative to the directory where the
+     * system was started.  Otherwise if the path name is relative, an InputStream is made by
+     * resolving the path name with respect to the directory in which the file
+     * was which defined this ParameterDatabase in the ParameterDatabase
+     * hierarchy, be it in the file system or in a jar file.  If the parameter is not found, 
+     * this returns null.  If no such file exists, null is also returned.
+     * The parameter chosen is marked "used" if it exists.
+     */
+
+    public InputStream getResource(Parameter parameter, Parameter defaultParameter)
+        {
+        printGotten(parameter, defaultParameter, false);
+        if (_exists(parameter))
+            return getResource(parameter);
+        else
+            return getResource(defaultParameter);
+        }
+
+    int indexOfFirstWhitespace(String s)
+        {
+        int len = s.length();
+        for(int i =0; i < len; i++)
+            if (Character.isWhitespace(s.charAt(i)))
+                return i;
+        return -1;
+        }
+
+    InputStream getResource(Parameter parameter) 
+        {
+        try
+            {
+            if (_exists(parameter)) 
+                {
+                String p = get(parameter);
+                if (p == null)
+                    return null;
+                if (p.startsWith(C_HERE))
+                    return new FileInputStream(getFile(parameter));
+                else if (p.startsWith(C_CLASS))
+                    {
+                    int i = indexOfFirstWhitespace(p);
+                    if (i == -1)
+                        return null;
+                    String classname = p.substring(0,i);
+                    String filename = p.substring(i).trim();
+                    return Class.forName(classname).getResourceAsStream(filename);
+                    }
+                else 
+                    {
+                    File f = new File(p);
+                    if (f.isAbsolute())
+                        return new FileInputStream(f);
+                    Class c = getLocation(parameter.param).relativeClass;
+                    String rp = getLocation(parameter.param).relativePath;
+                    if (c != null)
+                        {
+                        return c.getResourceAsStream(new File(new File(rp).getParent(), p).getPath());
+                        }
+                    else
+                        return new FileInputStream(new File(directoryFor(parameter), p));
+                    }
+                } 
+            else
+                return null;
+            }
+        catch (FileNotFoundException ex1) { return null; }
+        catch (ClassNotFoundException ex2) { return null; } 
         }
 
     /**
@@ -2002,6 +2076,41 @@ public class ParameterDatabase extends Properties implements Serializable
         return result;
         }
 
+
+    public synchronized ParameterDatabase getLocation(String parameter) 
+        {
+        ParameterDatabase loc = _getLocation(parameter);
+        uncheck();
+        return loc;
+        }
+
+    /** Private helper function */
+    synchronized ParameterDatabase _getLocation(String parameter) 
+        {
+        if (parameter == null)
+            return null;
+        if (checked)
+            return null; // we already searched this path
+        checked = true;
+        String result = getProperty(parameter);
+        if (result == null) 
+            {
+            int size = parents.size();
+            ParameterDatabase loc = null;
+            for (int x = 0; x < size; x++) 
+                {
+                loc = ((ParameterDatabase) (parents.elementAt(x)))._getLocation(parameter);
+                if (loc != null)
+                    {
+                    return loc;
+                    }
+                }
+            return null;
+            } 
+        else return this;
+        }
+
+
     /*protected*/ Set _getShadowedValues(Parameter parameter, Set vals) 
         {
         if (parameter == null) 
@@ -2046,7 +2155,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * found.
      */
 
-    public File directoryFor(Parameter parameter) 
+    File directoryFor(Parameter parameter) 
         {
         File result = _directoryFor(parameter);
         uncheck();
@@ -2066,8 +2175,7 @@ public class ParameterDatabase extends Properties implements Serializable
             int size = parents.size();
             for (int x = 0; x < size; x++) 
                 {
-                result = ((ParameterDatabase) (parents.elementAt(x)))
-                    ._directoryFor(parameter);
+                result = ((ParameterDatabase) (parents.elementAt(x)))._directoryFor(parameter);
                 if (result != null)
                     return result;
                 }
@@ -2079,22 +2187,24 @@ public class ParameterDatabase extends Properties implements Serializable
     
     /** Returns a String describing the location of the ParameterDatabase holding
         this parameter, or "" if there is none. */
-    public String getLocation(Parameter parameter)
+    public String getLabel()
         {
-        File file = fileFor(parameter);
+        return label; 
+/*        File file = fileFor(parameter);
         if (file == null) return "";
         try { return file.getCanonicalPath(); }
         catch (IOException e) { return ""; }
+*/
         }
         
-    /**
+    /*
      * Searches down through databases to find the parameter file 
      * which holds a given parameter. Returns the filename or null if not
      * found.
      *
      * @deprecated You probably want to use getLocation
      */
-
+/*
     public File fileFor(Parameter parameter) 
         {
         File result = _fileFor(parameter);
@@ -2124,6 +2234,7 @@ public class ParameterDatabase extends Properties implements Serializable
         else
             return new File(directory,filename);
         }
+    */
 
     /** Removes a parameter from the topmost database. */
     public synchronized void remove(Parameter parameter) 
@@ -2165,10 +2276,11 @@ public class ParameterDatabase extends Properties implements Serializable
         gotten = new Hashtable();
         directory = new File(new File("").getAbsolutePath()); // uses the user
                                                               // path
-        filename = "";
+        //filename = "";
+        label = "Basic Database";
         parents = new Vector();
         checked = false; // unnecessary
-        listeners = new Vector();
+        //listeners = new Vector();
         }
     
     /** Creates a new parameter database from the given Dictionary.  
@@ -2180,6 +2292,7 @@ public class ParameterDatabase extends Properties implements Serializable
     public ParameterDatabase(java.util.Dictionary map) throws FileNotFoundException, IOException 
         {
         this();
+        label = "Dictionary: " + System.identityHashCode(map);
         java.util.Enumeration keys = map.keys();
         while(keys.hasMoreElements())
             {
@@ -2200,29 +2313,138 @@ public class ParameterDatabase extends Properties implements Serializable
             }
         }
 
-    /** Creates a new parameter database loaded from the given string describing a file in a jar,
-        in the context of a resource location (a class).
+    // Eliminates .. and . from a relative path without converting it
+    // according to the file system. For example,
+    // "hello/there/../how/./are/you/yo/../../hey" becomes
+    // "hello/how/are/hey".  This is useful for making proper
+    // path names for jar files.
+    static String simplifyPath(String pathname)
+        {
+        File path = new File(pathname);
+        ArrayList a = new ArrayList();
+        while(path != null && path.getName() != null)
+            {
+            String n = path.getName();
+            a.add(n);
+            path = path.getParentFile();
+            }
+        
+        ArrayList b = new ArrayList();
+        for(int i = a.size() - 1; i >= 0; i--)
+            {
+            String n = (String)(a.get(i));
+            if (n.equals(".")) { } // do nothing
+            else if (n.equals("..") &&
+                        b.size() != 0 && !b.get(0).equals(".."))
+                            b.remove(b.size() - 1);  
+            else b.add(n);
+            }
+        
+        if (b.size() == 0) return "";
+        
+        path = new File((String)(b.get(0)));
+        for(int i = 1; i < b.size(); i++)
+            {
+            path = new File(path, (String)(b.get(i)));
+            }
+        return path.getPath();
+        }
+
+
+    /**
+     * Creates a new parameter database from a given database file and argv
+     * list. The top-level database is completely empty, pointing to a second
+     * database which contains the parameter entries stored in args, which
+     * points to a tree of databases constructed using
+     * ParameterDatabase(filename).
+     */
+
+    public ParameterDatabase(String pathNameRelativeToClassFile, Class cls, String[] args) throws FileNotFoundException, IOException 
+        {
+        this();
+        label = "" + cls + " : " + pathNameRelativeToClassFile;
+
+        ParameterDatabase files = new ParameterDatabase(pathNameRelativeToClassFile, cls);
+
+        // Create the Parameter Database for the arguments
+        ParameterDatabase a = new ParameterDatabase();
+        a.relativeClass = cls;
+        a.relativePath = simplifyPath(pathNameRelativeToClassFile);
+
+        a.parents.addElement(files);
+        boolean hasArgs = false;
+        for (int x = 0; x < args.length - 1; x++) 
+            {
+            if (args[x].equals("-p"))
+                {
+                String s = args[x+1].trim();
+                if (s.length() == 0) continue;  // failure
+                int eq = s.indexOf('=');  // look for the '='
+                if (eq <= 0) continue; // '=' isn't there, or it's the first char: failure                      
+                put(s.substring(0,eq), s.substring(eq+1));  // add the parameter
+                if (!hasArgs)
+                    {
+                    label = label + "    Args:  ";
+                    hasArgs = true;
+                    }
+                label = label + s + "  ";
+                }
+            }
+
+        // Set me up
+        relativeClass = cls;
+        relativePath = simplifyPath(pathNameRelativeToClassFile);
+
+        parents.addElement(a);
+        //listeners = new Vector();
+        }
+
+
+    /** Creates a new parameter database loaded from a parameter file located relative to a class file,
+        wherever the class file may be (such as in a jar).
         This approach uses resourceLocation.getResourceAsStream() to load the parameter file.
         If parent.n are defined, parents will be attempted to be loaded -- that's 
         the reason for the FileNotFoundException and IOException. */
 
-    public ParameterDatabase(String pathNameInJar, Class jarResourceLocation) throws FileNotFoundException, IOException 
+    public ParameterDatabase(String pathNameRelativeToClassFile, Class cls) throws FileNotFoundException, IOException 
         {
         this();
-        load(jarResourceLocation.getResourceAsStream(pathNameInJar));
+        label = "" + cls + " : " + pathNameRelativeToClassFile;
+        relativeClass = cls;
+        relativePath = simplifyPath(pathNameRelativeToClassFile);
+        load(cls.getResourceAsStream(relativePath));
 
-        listeners = new Vector();
+        //listeners = new Vector();
 
         // load parents
-        for (int x = 0;; x++) 
+        for (int x = 0 ; ; x++) 
             {
             String s = getProperty("parent." + x);
             if (s == null)
                 return; // we're done
 
-            String path = new File(new File(pathNameInJar).getParent(), s).toString();
-
-            parents.addElement(new ParameterDatabase(path, jarResourceLocation));
+            if (new File(s).isAbsolute()) // it's an absolute file definition
+                parents.addElement(new ParameterDatabase(new File(s)));
+            else if (s.startsWith(C_CLASS))
+                {
+                int i = indexOfFirstWhitespace(s);
+                if (i == -1) throw new FileNotFoundException("Could not parse file into filename and classname:\n\tparent." + x + " = " + s);
+                String classname = s.substring(0,i);
+                String filename = s.substring(i).trim();
+                try
+                    {
+                    parents.addElement(new ParameterDatabase(filename, Class.forName(classname)));
+                    }
+                catch (ClassNotFoundException ex)
+                    {
+                    throw new FileNotFoundException("Could not parse file into filename and classname:\n\tparent." + x + " = " + s);
+                    }
+                }
+            else
+                {
+                String path = new File(new File(pathNameRelativeToClassFile).getParent(), s).toString();
+                parents.addElement(new ParameterDatabase(path, cls));
+                }
             }
         }
 
@@ -2234,9 +2456,10 @@ public class ParameterDatabase extends Properties implements Serializable
     public ParameterDatabase(java.io.InputStream stream) throws FileNotFoundException, IOException 
         {
         this();
+        label = "Stream: " + System.identityHashCode(stream);
         load(stream);
 
-        listeners = new Vector();
+        //listeners = new Vector();
 
         // load parents
         for (int x = 0;; x++) 
@@ -2247,7 +2470,22 @@ public class ParameterDatabase extends Properties implements Serializable
 
             if (new File(s).isAbsolute()) // it's an absolute file definition
                 parents.addElement(new ParameterDatabase(new File(s)));
-            else throw new FileNotFoundException("Attempt to load a relative file, but there's no parent file: " + s);
+            else if (s.startsWith(C_CLASS))
+                {
+                int i = indexOfFirstWhitespace(s);
+                if (i == -1) throw new FileNotFoundException("Could not parse file into filename and classname:\n\tparent." + x + " = " + s);
+                String classname = s.substring(0,i);
+                String filename = s.substring(i).trim();
+                try
+                    {
+                    parents.addElement(new ParameterDatabase(filename, Class.forName(classname)));
+                    }
+                catch (ClassNotFoundException ex)
+                    {
+                    throw new FileNotFoundException("Could not parse file into filename and classname:\n\tparent." + x + " = " + s);
+                    }
+                }
+           else throw new FileNotFoundException("Attempt to load a relative file, but there's no parent file: " + s);
             }
         }
 
@@ -2256,16 +2494,16 @@ public class ParameterDatabase extends Properties implements Serializable
      * Creates a new parameter database tree from a given database file and its
      * parent files.
      */
-    public ParameterDatabase(File filename)
-        throws FileNotFoundException, IOException 
+    public ParameterDatabase(File filename) throws FileNotFoundException, IOException 
         {
         this();
-        this.filename = filename.getName();
+        label = "File: " + filename.getPath();
+        //this.filename = filename.getName();
         directory = new File(filename.getParent()); // get the directory
                                                     // filename is in
         load(new FileInputStream(filename));
 
-        listeners = new Vector();
+        //listeners = new Vector();
 
         // load parents
         for (int x = 0;; x++) 
@@ -2276,10 +2514,24 @@ public class ParameterDatabase extends Properties implements Serializable
 
             if (new File(s).isAbsolute()) // it's an absolute file definition
                 parents.addElement(new ParameterDatabase(new File(s)));
+            else if (s.startsWith(C_CLASS))
+                {
+                int i = indexOfFirstWhitespace(s);
+                if (i == -1) throw new FileNotFoundException("Could not parse file into filename and classname:\n\tparent." + x + " = " + s);
+                String classname = s.substring(0,i);
+                String fname = s.substring(i).trim();
+                try
+                    {
+                    parents.addElement(new ParameterDatabase(fname, Class.forName(classname)));
+                    }
+                catch (ClassNotFoundException ex)
+                    {
+                    throw new FileNotFoundException("Could not parse file into filename and classname:\n\tparent." + x + " = " + s);
+                    }
+                }
             else
                 // it's relative to my path
-                parents.addElement(new ParameterDatabase(new File(filename
-                            .getParent(), s)));
+                parents.addElement(new ParameterDatabase(new File(filename.getParent(), s)));
             }
         }
 
@@ -2291,11 +2543,11 @@ public class ParameterDatabase extends Properties implements Serializable
      * ParameterDatabase(filename).
      */
 
-    public ParameterDatabase(File filename, String[] args)
-        throws FileNotFoundException, IOException 
+    public ParameterDatabase(File filename, String[] args) throws FileNotFoundException, IOException 
         {
         this();
-        this.filename = filename.getName();
+        label = "File: " + filename.getPath();
+        //this.filename = filename.getName();
         directory = new File(filename.getParent()); // get the directory
                                                     // filename is in
 
@@ -2305,6 +2557,7 @@ public class ParameterDatabase extends Properties implements Serializable
         // Create the Parameter Database for the arguments
         ParameterDatabase a = new ParameterDatabase();
         a.parents.addElement(files);
+        boolean hasArgs = false;
         for (int x = 0; x < args.length - 1; x++) 
             {
             if (args[x].equals("-p"))
@@ -2314,12 +2567,18 @@ public class ParameterDatabase extends Properties implements Serializable
                 int eq = s.indexOf('=');  // look for the '='
                 if (eq <= 0) continue; // '=' isn't there, or it's the first char: failure                      
                 put(s.substring(0,eq), s.substring(eq+1));  // add the parameter
+                if (!hasArgs)
+                    {
+                    label = label + "    Args:  ";
+                    hasArgs = true;
+                    }
+                label = label + s + "  ";
                 }
             }
 
         // Set me up
         parents.addElement(a);
-        listeners = new Vector();
+        //listeners = new Vector();
         }
 
     /**
@@ -2446,7 +2705,8 @@ public class ParameterDatabase extends Properties implements Serializable
         {
         String sep = System.getProperty("file.separator");
         ParameterDatabaseTreeNode root = new ParameterDatabaseTreeNode(
-            this.directory.getAbsolutePath() + sep + this.filename);
+            //this.directory.getAbsolutePath() + sep + this.filename);
+            label);
         ParameterDatabaseTreeModel model = new ParameterDatabaseTreeModel(root);
 
         _buildTreeModel(model, root);
