@@ -133,15 +133,19 @@ public class Ant extends GPProblem implements SimpleProblemForm
             state.output.error("The number of moves an ant has to make must be >0");
         
         // load our file
-        File filename = state.parameters.getFile(base.push(P_FILE),null);
-        if (filename==null)
-            state.output.fatal("Ant trail file name not provided.");
-
+        //File filename = state.parameters.getFile(base.push(P_FILE),null);
+        //if (filename==null)
+        //    state.output.fatal("Ant trail file name not provided.");
+        InputStream str = state.parameters.getResource(base.push(P_FILE), null);
+        if (str == null)
+            state.output.fatal("Error loading file or resource", base.push(P_FILE), null);
+        
         food = 0;
         try
             {
             LineNumberReader lnr = 
-                new LineNumberReader(new FileReader(filename));
+                //new LineNumberReader(new FileReader(filename));
+                new LineNumberReader(new InputStreamReader(str));
             
             StringTokenizer st = new StringTokenizer(lnr.readLine()); // ugh
             maxx = Integer.parseInt(st.nextToken());
