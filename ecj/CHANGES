@@ -1830,3 +1830,13 @@ Version		Change Log
 		(in SimpleBreeder and SimpleEvaluator).  Expect this facility to change over 
 		time before it becomes official.
 	Added Population.clear() and Subpopulation.clear()
+	Made ParameterDatabase.directoryFor private
+	Deleted ParameterDatabase.fileFor
+	Deleted ParameterDatabase.listeners
+	Deleted ParameterDatase.filename
+	Added ParameterDatsabase.label and getLabel()
+	Redefined getLocation() to return a parameter database rather than a String
+	Modified Evolve.loadParameterDatabase to allow -from and -at parameters to specify
+		loading from a parameter file stored as a resource rather than from an
+		explicit file.
+	
