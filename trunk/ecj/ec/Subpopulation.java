@@ -78,9 +78,10 @@ import ec.util.*;
 
 public class Subpopulation implements Group
     {
-    /** A new subpopulation should be loaded from this file if it is non-null;
+    /* A new subpopulation should be loaded from this resource name if it is non-null;
         otherwise they should be created at random.  */
-    public File loadInds;
+    public boolean loadInds;
+    public Parameter file;
 
     /** The species for individuals in this subpopulation. */
     public Species species;
@@ -139,9 +140,9 @@ public class Subpopulation implements Group
         int size;
 
         // do we load from a file?
-        loadInds = state.parameters.getFile(
-            base.push(P_FILE),null);
-
+        file = base.push(P_FILE);
+        loadInds = state.parameters.exists(file,null);
+        
         // what species do we use?
 
         species = (Species) state.parameters.getInstanceForParameter(
@@ -173,10 +174,17 @@ public class Subpopulation implements Group
     public void populate(EvolutionState state, int thread)
         {
         // should we load individuals from a file? -- duplicates are permitted
-        if (loadInds!=null)
+        if (loadInds)
             {
-            try { readSubpopulation(state, new LineNumberReader(new FileReader(loadInds))); }
-            catch (IOException e) { state.output.fatal("An IOException occurred when trying to read from the file " + loadInds + ".  The IOException was: \n" + e); }
+            InputStream stream = state.parameters.getResource(file,null);
+            if (stream == null)
+                state.output.fatal("Could not load subpopulation from file", file);
+            
+            try { readSubpopulation(state, new LineNumberReader(new InputStreamReader(stream))); }
+            catch (IOException e) { state.output.fatal("An IOException occurred when trying to read from the file " + state.parameters.getString(file, null) + ".  The IOException was: \n" + e,
+                    file, null); }
+            //try { readSubpopulation(state, new LineNumberReader(new FileReader(loadInds))); }
+            //catch (IOException e) { state.output.fatal("An IOException occurred when trying to read from the file " + loadInds + ".  The IOException was: \n" + e); }
             }
         else
             {

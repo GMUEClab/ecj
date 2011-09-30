@@ -91,7 +91,6 @@ public class RandomRestarts extends Statistics implements SteadyStateStatisticsF
         {
                 
         Subpopulation currentSubp;
-        File tempFile;
         // time to restart!
         if( countdown == 0 )
             {
@@ -100,11 +99,11 @@ public class RandomRestarts extends Statistics implements SteadyStateStatisticsF
             for( int subp = 0; subp < state.population.subpops.length; subp++ )
                 {
                 currentSubp = state.population.subpops[subp];
-                tempFile = currentSubp.loadInds;
+                boolean temp = currentSubp.loadInds;
                 // disable loadInds so we generate candidates randomly
-                currentSubp.loadInds = null;
+                currentSubp.loadInds = false;
                 currentSubp.populate( state, 0 );
-                currentSubp.loadInds = tempFile;
+                currentSubp.loadInds = temp;
                 }
             this.resetClock( state );
             }

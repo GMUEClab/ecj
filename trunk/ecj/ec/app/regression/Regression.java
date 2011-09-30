@@ -11,6 +11,8 @@ import ec.*;
 import ec.gp.*;
 import ec.gp.koza.*;
 import ec.simple.*;
+import java.io.*;
+import java.util.*;
 
 /* 
  * Regression.java
@@ -48,9 +50,14 @@ import ec.simple.*;
 public class Regression extends GPProblem implements SimpleProblemForm
     {
     public static final String P_SIZE = "size";
+    public static final String P_FILE = "file";
+    public static final String P_USE_FUNCTION = "use-function";
 
     public double currentValue;
     public int trainingSetSize;
+	//public File file;
+	public boolean useFunction;  // if we have a file, should we use the function to compute the output values?  Or are they also contained?
+	
     
     // these are read-only during evaluation-time, so
     // they can be just light-cloned and not deep cloned.
@@ -85,15 +92,54 @@ public class Regression extends GPProblem implements SimpleProblemForm
         trainingSetSize = state.parameters.getInt(base.push(P_SIZE),null,1);
         if (trainingSetSize<1) state.output.fatal("Training Set Size must be an integer greater than 0", base.push(P_SIZE)); 
 
+		// should we load our x parameters from a file, or generate them randomly?
+		//file = state.parameters.getFile(base.push(P_FILE), null);
+        InputStream inputfile = state.parameters.getResource(base.push(P_FILE), null);
+
+		// *IF* we load from a file, should we generate the output through the function, or load the output as well?
+		useFunction = state.parameters.getBoolean(base.push(P_USE_FUNCTION), null, true);
+
         // Compute our inputs so they can be copied with clone later
-        
         inputs = new double[trainingSetSize];
         outputs = new double[trainingSetSize];
         
-        for(int x=0;x<trainingSetSize;x++)
+		//if (file != null)  // use the file
+        if (inputfile != null)
+			{
+            try
+				{
+				Scanner scan = new Scanner(inputfile);
+				for(int x = 0; x < trainingSetSize; x++)
+					{
+					if (scan.hasNextDouble())
+						inputs[x] = scan.nextDouble();
+					else state.output.fatal("Not enough data points in file: expected " + (trainingSetSize * (useFunction ? 1 : 2)));
+					if (!useFunction)
+						{
+						if (scan.hasNextDouble())
+							outputs[x] = scan.nextDouble();
+						else state.output.fatal("Not enough data points in file: expected " + (trainingSetSize * (useFunction ? 1 : 2)));
+						}
+					}
+				}
+			catch (NumberFormatException e)
+				{
+				state.output.fatal("Some tokens in the file were not numbers.");
+				}
+			//catch (IOException e)
+			//	{
+			//	state.output.fatal("The file could not be read due to an IOException:\n" + e);
+			//	}
+			}
+       else for(int x=0;x<trainingSetSize;x++)
             {
             inputs[x] = state.random[0].nextDouble() * 2.0 - 1.0;
-            outputs[x] = func(inputs[x]);
+			}
+			
+        for(int x=0;x<trainingSetSize;x++)
+			{
+            if (useFunction)
+				outputs[x] = func(inputs[x]);
             state.output.message("{" + inputs[x] + "," + outputs[x] + "},");
             }
 

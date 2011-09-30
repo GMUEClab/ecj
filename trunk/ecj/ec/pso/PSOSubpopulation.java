@@ -110,8 +110,9 @@ public class PSOSubpopulation extends Subpopulation
     public void populate(EvolutionState state, int thread)
         {
         super.populate(state, thread);
-        
-        if (loadInds == null)  // we're generating new individuals, not reading them from a file
+                
+//        if (loadInds == null)  // we're generating new individuals, not reading them from a file
+        if (!loadInds)  // we're generating new individuals, not reading them from a file
             {
             clear(neighborhoodBests);
             clear(personalBests);
