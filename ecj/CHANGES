@@ -1840,4 +1840,8 @@ Version		Change Log
 		loading from a parameter file stored as a resource rather than from an
 		explicit file.
 	Added 'make jar' to Makefile
-	Modified ec/app/ant/Ant.java to use new resource loading option
+        ec/app/regression/Regression.java can now load data points from a file.
+	Modified ec/app/ant/Ant.java, ec/app/edge/Edge.java and ec/app/Regression.java to use
+		the new resource loading option
+	Modified ec/Subpopulation.java, ec/pso/PSOSubpopualtion.java, ec/gp/ge/GESpecies.java,
+		and ec/evolve/RandomRestarts.java to use the new resource loading option

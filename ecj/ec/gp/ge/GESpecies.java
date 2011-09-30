@@ -5,23 +5,15 @@
 */
 package ec.gp.ge;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 import ec.gp.*;
 import ec.*;
 import ec.vector.*;
 import ec.util.*;
 
-import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 /*
  * GESpecies.java
@@ -172,22 +164,25 @@ public class GESpecies extends IntegerVectorSpecies
             p = base.push(P_FILE);
             def = defaultBase();
                         
-            File grammarFile = state.parameters.getFile(p, def.push(P_FILE).push("" + i));
+            //File grammarFile = state.parameters.getFile(p, def.push(P_FILE).push("" + i));
+            InputStream grammarFile = state.parameters.getResource(p, def.push(P_FILE).push("" + i));
+            
             if(grammarFile == null)
                 {
                 state.output.fatal("Error retrieving grammar file(s): " + def.toString() + "."+ P_FILE + "." + i + " is undefined.");
                 }
 
-            try
-                {
+            //try
+            //    {
                 GPFunctionSet gpfs = trees[i].constraints((GPInitializer) state.initializer).functionset;
                 GrammarParser grammarparser = (GrammarParser)(parser_prototype.clone());
-                grammar[i] = grammarparser.parseRules(state, new BufferedReader(new FileReader(grammarFile)), gpfs);
-                }
-            catch (FileNotFoundException e)
-                {
-                state.output.fatal("Error retrieving grammar file(s): " + def.toString() + "."+ P_FILE + "." + i + " does not exist or cannot be opened.");
-                }
+                //grammar[i] = grammarparser.parseRules(state, new BufferedReader(new FileReader(grammarFile)), gpfs);
+                grammar[i] = grammarparser.parseRules(state, new BufferedReader(new InputStreamReader(grammarFile)), gpfs);
+            //    }
+            //catch (FileNotFoundException e)
+            //    {
+            //    state.output.fatal("Error retrieving grammar file(s): " + def.toString() + "."+ P_FILE + "." + i + " does not exist or cannot be opened.");
+            //    }
             }
         }
 
