@@ -427,7 +427,21 @@ java ec.Evolve -file \textit{myParameterFile.params} -p \textit{param=value} -p 
 
 ECJ sets itself up entirely using a {\bf parameter file}.  To this you can add additional {\bf command-line parameters} which override those found in the parameter file.  More on the parameter file will be discussed starting in Section~\ref{parameterdatabase}.
 
-ECJ can also restart from a checkpoint file it created in a previous run, like this:
+The above text assumes that the parameter file is a free-standing file in your filesystem.  But it might not be: you might want to start up from a parameter file stored within a Jar file (for example if your ECJ library is bundled up into a Jar file like \file{ecj.jar}).  To do this you can specify the parameter file as a file resource relative to the \file{.class} file of a class (a-la Java's \method{Class.getResource(...)} method):
+
+ \script{%
+java ec.Evolve -from \textit{myParameterFile.params} -at \textit{relative.to.this.Classname}
+}
+
+You can also say:
+
+ \script{%
+java ec.Evolve -from \textit{myParameterFile.params}
+}
+
+In which case ECJ will assume that the class is \class{ec.Evolve}.  See Section~\ref{parameterdatabase} for more discussion about all this.
+
+Last but hardly least, ECJ can also restart from a checkpoint file it created in a previous run:
 
 \script{%
 java ec.Evolve -checkpoint \textit{myCheckpointFile.gz}
@@ -541,6 +555,41 @@ Furthermore, your program itself can submit parameters to the parameter database
 \item Else the database signals failure.
 \end{enumerate}
 
+\subsubsection{Parameter files in Jar Files}
+
+Parameter files don't have to be just in your file system: they can be bundled up in jar files.  If a parameter file is being read from a jar file, its parents will be generally assumed to be from the same jar file as well if they're relative paths (they don't start with \character{'/'} in UNIX).
+
+So how do you point to a parameter file in a jar file to get things rolling?  You can run ECJ like this: 
+
+\script{%
+java ec.Evolve -from \textit{parameterFile.params} -at \textit{relative.class.Name} ...
+}
+
+This instructs ECJ to look for the \file{.class} file of the class {\it relative.class.Name}, be it in the file system or in a Jar file.  Once ECJ has found it, it looks for the path {\it parameterFile.params} relative to this file.  You can omit the classname, which causes ECJ to assume that the class in question is \class{ec.Evolve}.  For example, to run the Ant demo from ECJ (in a Jar file or unpacked into the file system), you could say:
+
+
+\script{%
+java ec.Evolve -from \textit{app/ant/ant.params}
+}
+
+Notice it does not say {\it ec/app/ant/ant.params}, which is probably what you'd expect if you used \textstr{-file} rather than \textstr{-from}.  This is because ECJ goes to the \file{ec/Evolve.class} file, then from there it searches for the parameter file.  The  path of the parameter file relative to the \file{ec/Evolve.class} file is \file{app/ant/ant.params}.
+
+Once your parameter file is inside a Jar file, you can still define a parent in {\it another} Jar file.  You just need to specify another class for ECJ to start at, and a path relative to it, like this:
+
+\params{%
+parent.0 = @ec.foo.AnotherClass relative/path/to/the/parent.params
+}
+
+See the next section for more explanation of that text format.
+
+Last but not least, once your parameter file is in a Jar file, you can refer to a parent in the file system if you use an absolute path (that is, one which (in UNIX anyway) starts with \character{'/'}).  For example:
+
+\params{%
+parent.0 = /Users/sean/ecj/ec/parent.params
+}
+
+Absolute path names aren't very portable and aren't recommended.
+
 
 \subsection{Kinds of Parameters}
 \label{kindsofparameters}
@@ -572,13 +621,23 @@ pop.subpop.0.perform-injections = true\\
 quit-on-run-complete = whatever\\
 }
 
-\item {\bf File Path Names}.  Paths can be of three types.  {\bf Absolute paths}, which (in UNIX) begin with a \character{/}, stipulate a precise location in the file system.  {\bf Relative paths}, which do not begin with a \character{/}, are defined relative to the parameter file in which the parameter was located.  You've seen relative paths already used for derived parameter files.  Finally, {\bf Execution relative paths} are defined relative to the directory in which the ECJ process was launched.  Execution relative paths look exactly like relative paths except that they begin with the special character \character{\$}.  Examples of all three kinds of paths:
+\item {\bf File or Resource Path Names}.  Paths can be of four types.  
+
+	\begin{itemize}
+	\item{\bf Absolute paths}, which (in UNIX) begin with a \character{/}, stipulate a precise location in the file system.  
+	\item {\bf Relative paths}, which do not begin with a \character{/}, are defined relative to the parameter file in which the parameter was located.  If the parameter file was an actual file in the filesystem, the relative path will also be considered to point to a file.  If the parameter file was in a jar file, then the relative path will be considered to point to a resource inside the same jar file relative to the parameter file location.  You've seen relative paths already used for derived parameter files. 
+	\item {\bf Execution relative paths} are defined relative to the directory in which the ECJ process was launched.  Execution relative paths look exactly like relative paths except that they begin with the special character \character{\$}.  
+	\item {\bf Class relative paths} define a path relative to the class file of a class.  They have two parts: the class in question, and then the path to the resource relative to it.  If the class is stored in a Jar file, then the path to the resource will also be within that Jar file.  Otherwise the path will point to an actual file.  Class relative paths begin with \character{\@}, followed by the full class name, then spaces or tabs, then the relative path.
+	\end{itemize}
+		
+		Examples of all four kinds of paths:
 
 
 \params{%
 stat.file = \$out.stat\\
 eval.prob.map-file = ../dungeon.map\\
-temporary-output-file = /tmp/output.txt
+temporary-output-file = /tmp/output.txt\\
+image = @ec.app.myapp.MyClass images/picture.png
 }
 
 \item {\bf Class Names}.   Class names are defined as the full class name of the class, including the package.  Example:
@@ -740,7 +799,9 @@ If either parameter exists in the database, return true.  Either parameter may b
 \mthd{public String getString(Parameter \textit{parameter}, Parameter \textit{default})}
 Look first in {\it parameter}, then failing that, in {\it default parameter}, and return the result as a String, else null if not found.  Either parameter may be null.
 \mthd{public File getFile(Parameter \textit{parameter}, Parameter \textit{default})}
-Look first in {\it parameter}, then failing that, in {\it default parameter}, and return the result as a File, else null if not found.  Either parameter may be null.
+Look first in {\it parameter}, then failing that, in {\it default parameter}, and return the result as a File, else null if not found.  Either parameter may be null.  {\bf Important Note.}  You should generally only use this method if you are {\it writing} to a file.  Otherwise it's best if you used \method{getResource(...)}.
+\mthd{public InputStream getResource(Parameter \textit{parameter}, Parameter \textit{default})}
+Look first in {\it parameter}, then failing that, in {\it default parameter}, and open an InputStream to the result, else null if not found.  Either parameter may be null.  {\bf Important Note.}  This is distinguished from \method{getFile(...)} in that the object doesn't have to be a file in the file system: it can for example be a location in a jar file.  If the parameter specifies an absolute path or an execution relative path, then a file in the file system will be opened.  If the parameter specifies a relative path, and the parameter database was itself loaded as a file rather than a resource (in a jar file say), then a file will be opened, else a resource will be opened in the same jar file as the parameter file.  You can also specify a resource path directly.
 \mthd{public Object getInstanceForParameterEq(Parameter \textit{parameter}, Parameter \textit{default}, Class \textit{superclass})}
 Look first in {\it parameter}, then failing that, in {\it default parameter}, to find a class.  The class must have {\it superclass} as a superclass, or can be the {\it superclass} itself.  Instantiate one instance of the class using the default (no-argument) constructor, and return the instance.  Throws an \class{ec.util.ParamClassLoadException} if no class is found.
 \mthd{public Object getInstanceForParameter(Parameter \textit{parameter}, Parameter \textit{default}, Class \textit{superclass})}
