@@ -56,6 +56,7 @@ public class ADFArgument extends GPNode
     public String name;
     public String name() { return name; }
 
+    public int expectedChildren() { return 0; }
     
     public Parameter defaultBase()
         {

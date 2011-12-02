@@ -95,8 +95,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
     public static final int NODESEARCH_NONTERMINALS = 2;
     public static final int NODESEARCH_CUSTOM = 3;
 
-    public static final int SITUATION_NEWIND = 0;
-    public static final int SITUATION_MUTATION = 1;
+    public static final int CHILDREN_UNKNOWN = -1;
     
     // beats me if Java compilers will take advantage of the int->byte shortening.
     // They may want everything aligned, in which case they may buffer the object
@@ -146,8 +145,9 @@ public abstract class GPNode implements GPNodeParent, Prototype
         
         You can't check for everything, of course, but you might try some
         obvious checks for blunders.  The default version of this method
-        is empty for now, but you should still call super.checkConstraints(state)
-        just to be certain.
+        simply calls numChildren() if it's defined (it returns something >= 0).
+        If the value doesn't match the current number of children, an error is raised.
+        This is a simple constraints check.
 
         The ultimate caller of this method must guarantee that he will eventually
         call state.output.exitIfErrors(), so you can freely use state.output.error
@@ -160,7 +160,22 @@ public abstract class GPNode implements GPNodeParent, Prototype
         final int tree,
         final GPIndividual typicalIndividual,
         final Parameter individualBase)
-        { }
+        {
+        int numChildren = expectedChildren();
+        if (numChildren >= 0 && children.length != numChildren)  // uh oh
+            state.output.error("Incorrect number of children for node " + toStringForError() + " at " + individualBase);
+        }
+        
+    /** 
+        Returns the number of children this node expects to have.  This method is
+        only called by the default implementation of checkConstraints(...), and by default
+        it returns CHILDREN_UNKNOWN.  You can override this method to return a value >= 0,
+        which will be checked for in the default checkConstraints(...), or you can leave
+        this method alone and override checkConstraints(...) to check for more complex constraints
+        as you see fit.
+        */
+        
+    public int expectedChildren() { return CHILDREN_UNKNOWN; }
 
     /** 
         Sets up a <i>prototypical</i> GPNode with those features all nodes of that

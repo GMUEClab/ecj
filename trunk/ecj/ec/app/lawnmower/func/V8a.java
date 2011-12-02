@@ -29,6 +29,7 @@ public class V8a extends GPNode
 
     public String toString() { return "v8a"; }
 
+/*
     public void checkConstraints(final EvolutionState state,
         final int tree,
         final GPIndividual typicalIndividual,
@@ -40,6 +41,8 @@ public class V8a extends GPNode
                 toStringForError() + " at " +
                 individualBase);
         }
+*/
+    public int expectedChildren() { return 2; }
 
     public void eval(final EvolutionState state,
         final int thread,

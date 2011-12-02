@@ -27,6 +27,7 @@ public class Move extends GPNode implements EvalPrint
     {
     public String toString() { return "move"; }
 
+/*
     public void checkConstraints(final EvolutionState state,
         final int tree,
         final GPIndividual typicalIndividual,
@@ -38,6 +39,8 @@ public class Move extends GPNode implements EvalPrint
                 toStringForError() + " at " +
                 individualBase);
         }
+*/
+    public int expectedChildren() { return 0; }
 
     public void eval(final EvolutionState state,
         final int thread,

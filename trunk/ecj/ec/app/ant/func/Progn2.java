@@ -26,6 +26,7 @@ public class Progn2 extends GPNode implements EvalPrint
     {
     public String toString() { return "progn2"; }
 
+/*
     public void checkConstraints(final EvolutionState state,
         final int tree,
         final GPIndividual typicalIndividual,
@@ -37,6 +38,9 @@ public class Progn2 extends GPNode implements EvalPrint
                 toStringForError() + " at " +
                 individualBase);
         }
+*/
+
+    public int expectedChildren() { return 2; }
 
     public void eval(final EvolutionState state,
         final int thread,

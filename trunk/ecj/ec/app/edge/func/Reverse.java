@@ -27,6 +27,7 @@ public class Reverse extends GPNode
     {
     public String toString() { return "reverse"; }
 
+/*
     public void checkConstraints(final EvolutionState state,
         final int tree,
         final GPIndividual typicalIndividual,
@@ -38,6 +39,8 @@ public class Reverse extends GPNode
                 toStringForError() + " at " +
                 individualBase);
         }
+*/
+    public int expectedChildren() { return 1; }
 
     public void eval(final EvolutionState state,
         final int thread,
