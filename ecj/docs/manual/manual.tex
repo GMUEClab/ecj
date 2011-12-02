@@ -427,7 +427,7 @@ java ec.Evolve -file \textit{myParameterFile.params} -p \textit{param=value} -p 
 
 ECJ sets itself up entirely using a {\bf parameter file}.  To this you can add additional {\bf command-line parameters} which override those found in the parameter file.  More on the parameter file will be discussed starting in Section~\ref{parameterdatabase}.
 
-The above text assumes that the parameter file is a free-standing file in your filesystem.  But it might not be: you might want to start up from a parameter file stored within a Jar file (for example if your ECJ library is bundled up into a Jar file like \file{ecj.jar}).  To do this you can specify the parameter file as a file resource relative to the \file{.class} file of a class (a-la Java's \method{Class.getResource(...)} method):
+This all assumes that the parameter file is a free-standing file in your filesystem.  But it might not be: you might want to start up from a parameter file stored within a Jar file (for example if your ECJ library is bundled up into a Jar file like \file{ecj.jar}).  To do this you can specify the parameter file as a file resource relative to the \file{.class} file of a class (a-la Java's \method{Class.getResource(...)} method):
 
  \script{%
 java ec.Evolve -from \textit{myParameterFile.params} -at \textit{relative.to.this.Classname}
@@ -555,42 +555,6 @@ Furthermore, your program itself can submit parameters to the parameter database
 \item Else the database signals failure.
 \end{enumerate}
 
-\subsubsection{Parameter files in Jar Files}
-
-Parameter files don't have to be just in your file system: they can be bundled up in jar files.  If a parameter file is being read from a jar file, its parents will be generally assumed to be from the same jar file as well if they're relative paths (they don't start with \character{'/'} in UNIX).
-
-So how do you point to a parameter file in a jar file to get things rolling?  You can run ECJ like this: 
-
-\script{%
-java ec.Evolve -from \textit{parameterFile.params} -at \textit{relative.class.Name} ...
-}
-
-This instructs ECJ to look for the \file{.class} file of the class {\it relative.class.Name}, be it in the file system or in a Jar file.  Once ECJ has found it, it looks for the path {\it parameterFile.params} relative to this file.  You can omit the classname, which causes ECJ to assume that the class in question is \class{ec.Evolve}.  For example, to run the Ant demo from ECJ (in a Jar file or unpacked into the file system), you could say:
-
-
-\script{%
-java ec.Evolve -from \textit{app/ant/ant.params}
-}
-
-Notice it does not say {\it ec/app/ant/ant.params}, which is probably what you'd expect if you used \textstr{-file} rather than \textstr{-from}.  This is because ECJ goes to the \file{ec/Evolve.class} file, then from there it searches for the parameter file.  The  path of the parameter file relative to the \file{ec/Evolve.class} file is \file{app/ant/ant.params}.
-
-Once your parameter file is inside a Jar file, you can still define a parent in {\it another} Jar file.  You just need to specify another class for ECJ to start at, and a path relative to it, like this:
-
-\params{%
-parent.0 = @ec.foo.AnotherClass relative/path/to/the/parent.params
-}
-
-See the next section for more explanation of that text format.
-
-Last but not least, once your parameter file is in a Jar file, you can refer to a parent in the file system if you use an absolute path (that is, one which (in UNIX anyway) starts with \character{'/'}).  For example:
-
-\params{%
-parent.0 = /Users/sean/ecj/ec/parent.params
-}
-
-Absolute path names aren't very portable and aren't recommended.
-
-
 \subsection{Kinds of Parameters}
 \label{kindsofparameters}
 
@@ -602,13 +566,13 @@ ECJ supports the following kinds of parameters:
 \params{%
 generations = 500\\
 tournament.size = 3.25\\
-minimum-fitness = -23.45e15\\
+minimum-fitness = -23.45e15
 }
 
 \item {\bf Arbitrary Strings} trimmed of whitespace.  Example:
 
 \params{%
-crossover-type = two-point\\
+crossover-type = two-point
 }
 
 \item {\bf Booleans}.  Any value except for \textstr{false} (case-insensitive) is considered to be {\it true}.  It's best style to use lower-case  \textstr{true}  and  \textstr{false}.  The first two of these examples are {\it false} and the second two are {\it true}:
@@ -618,8 +582,16 @@ print-params = false\\
 %verbose = false\\
 die-silently = fAlSe\\
 pop.subpop.0.perform-injections = true\\
-quit-on-run-complete = whatever\\
+quit-on-run-complete = whatever
 }
+
+\item {\bf Class Names}.   Class names are defined as the full class name of the class, including the package.  Example:
+
+
+\params{%
+pop.subpop.0.species = ec.gp.GPSpecies
+}
+
 
 \item {\bf File or Resource Path Names}.  Paths can be of four types.  
 
@@ -627,7 +599,7 @@ quit-on-run-complete = whatever\\
 	\item{\bf Absolute paths}, which (in UNIX) begin with a \character{/}, stipulate a precise location in the file system.  
 	\item {\bf Relative paths}, which do not begin with a \character{/}, are defined relative to the parameter file in which the parameter was located.  If the parameter file was an actual file in the filesystem, the relative path will also be considered to point to a file.  If the parameter file was in a jar file, then the relative path will be considered to point to a resource inside the same jar file relative to the parameter file location.  You've seen relative paths already used for derived parameter files. 
 	\item {\bf Execution relative paths} are defined relative to the directory in which the ECJ process was launched.  Execution relative paths look exactly like relative paths except that they begin with the special character \character{\$}.  
-	\item {\bf Class relative paths} define a path relative to the class file of a class.  They have two parts: the class in question, and then the path to the resource relative to it.  If the class is stored in a Jar file, then the path to the resource will also be within that Jar file.  Otherwise the path will point to an actual file.  Class relative paths begin with \character{\@}, followed by the full class name, then spaces or tabs, then the relative path.
+	\item {\bf Class relative paths} define a path relative to the class file of a class.  They have two parts: the class in question, and then the path to the resource relative to it.  If the class is stored in a Jar file, then the path to the resource will also be within that Jar file.  Otherwise the path will point to an actual file.  Class relative paths begin with \character{@}, followed by the full class name, then spaces or tabs, then the relative path.
 	\end{itemize}
 		
 		Examples of all four kinds of paths:
@@ -638,13 +610,6 @@ stat.file = \$out.stat\\
 eval.prob.map-file = ../dungeon.map\\
 temporary-output-file = /tmp/output.txt\\
 image = @ec.app.myapp.MyClass images/picture.png
-}
-
-\item {\bf Class Names}.   Class names are defined as the full class name of the class, including the package.  Example:
-
-
-\params{%
-pop.subpop.0.species = ec.gp.GPSpecies
 }
 
 \item {\bf Arrays}.   ECJ doesn't have direct support for loading arrays, but has a convention you should be made aware of.  It's common for arrays to be loaded by first stipulating the number of elements in the array, then stipulating each array element in turn, starting with 0.  The parameter used for the number of elements differs from case to case.  Note the use of periods prior to each number in the following example:
@@ -777,7 +742,43 @@ seed.3 = 12303421
 
 \noindent ...even though there is {\it no object set up} with the \parameter{seed} parameter, and hence no object has \parameter{seed} as its parameter base.  Random number generators are one of the few rare objects in ECJ which are not specified from the parameter file.
 
-\subsection{Loading Parameters}
+\subsection{Parameter Files in Jar Files}
+
+Parameter files don't have to be just in your file system: they can be bundled up in jar files.  If a parameter file is being read from a jar file, its parents will be generally assumed to be from the same jar file as well if they're relative paths (they don't start with \character{'/'} in UNIX).
+
+So how do you point to a parameter file in a jar file to get things rolling?  You can run ECJ like this: 
+
+\script{%
+java ec.Evolve -from \textit{parameterFile.params} -at \textit{relative.class.Name} ...
+}
+
+This instructs ECJ to look for the \file{.class} file of the class {\it relative.class.Name}, be it in the file system or in a Jar file.  Once ECJ has found it, it looks for the path {\it parameterFile.params} relative to this file.  You can omit the classname, which causes ECJ to assume that the class in question is \class{ec.Evolve}.  For example, to run the Ant demo from ECJ (in a Jar file or unpacked into the file system), you could say:
+
+
+\script{%
+java ec.Evolve -from \textit{app/ant/ant.params}
+}
+
+Notice it does not say {\it ec/app/ant/ant.params}, which is probably what you'd expect if you used \textstr{-file} rather than \textstr{-from}.  This is because ECJ goes to the \file{ec/Evolve.class} file, then from there it searches for the parameter file.  The  path of the parameter file relative to the \file{ec/Evolve.class} file is \file{app/ant/ant.params}.
+
+Once your parameter file is inside a Jar file, you can still define a parent in {\it another} Jar file.  You just need to specify another class for ECJ to start at, and a path relative to it, like this:
+
+\params{%
+parent.0 = @ec.foo.AnotherClass relative/path/to/the/parent.params
+}
+
+See the next section for more explanation of that text format.
+
+Last but not least, once your parameter file is in a Jar file, you can refer to a parent in the file system if you use an absolute path (that is, one which (in UNIX anyway) starts with \character{'/'}).  For example:
+
+\params{%
+parent.0 = /Users/sean/ecj/ec/parent.params
+}
+
+Absolute path names aren't very portable and aren't recommended.
+
+
+\subsection{Accessing Parameters}
 
 Parameters are looked up in the \class{ec.util.ParameterDatabase} class, and parameter names are specified using the \class{ec.Parameter} class.  The latter is little more than a cover for Java strings.  To create the parameter \parameter{pop.subpop.0.size}, we say:
 
@@ -5264,6 +5265,7 @@ import ec.*;
 import ec.gp.*;
 public class X extends GPNode {
     public String toString() { return "x" };
+    public int expectedChildren() { return 0; }  // for good measure
     public void eval(EvolutionState state, int thread, GPData input,
               ADFStack stack, GPIndividual indivdiual, GPProblem problem) {
         MyData data = (MyData) input;
@@ -5283,6 +5285,7 @@ import ec.*;
 import ec.gp.*;
 public class Y extends GPNode {
     public String toString() { return "y" };
+    public int expectedChildren() { return 0; }  // for good measure
     public void eval(EvolutionState state, int thread, GPData input,
               ADFStack stack, GPIndividual indivdiual, GPProblem problem) {
         MyData data = (MyData) input;
@@ -5301,6 +5304,7 @@ import ec.*;
 import ec.gp.*;
 public class Sin extends GPNode {
     public String toString() { return "sin" };
+    public int expectedChildren() { return 1; }  // for good measure
     public void eval(EvolutionState state, int thread, GPData input,
               ADFStack stack, GPIndividual indivdiual, GPProblem problem) {
         MyData data = (MyData) input;
@@ -5321,6 +5325,7 @@ import ec.*;
 import ec.gp.*;
 public class Mul extends GPNode {
     public String toString() { return "*" };
+    public int expectedChildren() { return 2; }  // for good measure
     public void eval(EvolutionState state, int thread, GPData input,
               ADFStack stack, GPIndividual indivdiual, GPProblem problem) {
         MyData data = (MyData) input;
@@ -5342,6 +5347,7 @@ import ec.*;
 import ec.gp.*;
 public class Sub extends GPNode {
     public String toString() { return "-" };
+    public int expectedChildren() { return 2; }  // for good measure
     public void eval(EvolutionState state, int thread, GPData input,
               ADFStack stack, GPIndividual indivdiual, GPProblem problem) {
         MyData data = (MyData) input;
@@ -6115,16 +6121,38 @@ public String toString();\\
 
 The first method prints out the node in a human-readable fashion, with no whitspace.  Except for rare cases such as Ephemeral Random Constants (Section~\ref{ec.gp.ERC}), this should be a single simple symbol like ``cos'' or ``if-food-ahead''.  The second method we introduced in Section~\ref{definingtherepresentation}, of course.
 
-One method which is commonly overridden by example applications in ECJ, but it's not necessary for you to do so:
+\paragraph{Sanity Checking}
+ECJ can double-check to make sure that the number of children to a given node, as claimed in the parameter file, is in fact proper.   Other sanity checks might include that the children and parent are of the right \class{GPType}, and so on. The general method for doing this sanity check, which you can override if you like, is;
 
 \java{%
 public void checkConstraints(EvolutionState state,
-        int tree,
-        GPIndividual typicalIndividual,
-        Parameter individualBase)
+        int tree,\\
+\hsp{\fill}GPIndividual typicalIndividual,
+        Parameter individualBase);
 }
 
-This method is called after the prototypical GPNode is loaded into a function set to give it an opportunity to  double-check that everything is okay: that the GPNode has the right number of children, that it {\it has} children, that it has a parent, etc., and issue an error if not.   The primary function of this method is to allow Automatically Defined Functions (Section~\ref{ec.gp.ADF}) a chance to make sure that everything is working.  You don't really need to override this method (if you do, be sure to call \method{super(...)}) but you'll see it often implemented in the examples.
+This method is called after the prototypical GPNode is loaded into a function set, and throws an error if the sanity check fails.  
+The primary purpose of this method is to allow Automatically Defined Functions (Section~\ref{ec.gp.ADF}) a chance to make sure that everything is working.  But you can override this method to do some checking of your own as well.  If you do so, be sure to call \method{super(...)}.
+
+The default implementation of  \method{checkConstraints(...)} just calls a simpler method which I suggest you implement instead.  This method is:
+
+\java{%
+public int expectedChildren();
+}
+
+You can override this method to return the expected number of children to this kind of node, as the most commonly-needed sanity check.  If you override it and provide this value, \method{checkConstraints(...)} will by default call this method, then double-check for you that the number of children attached is indeed the expected number.   By default, \method{expectedChildren()} returns:
+
+\java{%
+public static final int CHILDREN\_UNKNOWN;
+}
+
+This indicates to \method{checkConstraints(...)} that \method{expectedChildren()} is unimplemented and so \method{checkConstraints(...)} won't do anything at all by default.  So you have three options here to help ECJ sanity-check that everything's okay:
+
+\begin{itemize}
+\item Override \method{expectedChildren()} to return the expected number of children to the node.  The default implementation of \method{checkConstraints(...)} will compare this result against the actual number of children.
+\item Override \method{checkConstraints()} to do your own more sophisticated sanity-checking.
+\item Do nothing.  ECJ will do no sanity checking and will rely on the correctness of your parameter file (this is often perfectly fine).
+\end{itemize}
 
 Next come some methods which are usually overridden by Ephemeral Random Constants but rarely by any other kind of GPNode (the default implementation suffices):
 
@@ -6549,6 +6577,8 @@ Finally, the \method{readNode(...)} and \method{writeNode(...)} methods, as usua
         Problem problem);
 }
 
+Note that ERCs by default override the \method{expectedChildren()} method to return 0 (they are usually terminals).  If for some reason your ERC is {\it not} a terminal, you'll want to override this method to return the right number of children.
+
 \paragraph{Example}
 
 Let's create an ERC and add it to our existing example from Section~\ref{gpexample}.  We'll make an ERC which represents constants between 0.0 and 1.0, not including 1.0.  Our mutator will add a little Gaussian noise to the node.  Here's a full class:
@@ -6675,6 +6705,9 @@ public String name;
 
 The \method{name()} method returns the value of the \variable{name} variable.
 
+ADFArguments override the \method{checkConstraints(...)} method to do a lot of custom advanced checking.  If you override this, be sure to call \method{super()}.
+
+
 We'll show how to set up the ADF tree itself in the Example below.
 
 ADFs can also have arguments to the functions.  In Figure \ref{adf2}, we have an ADF with two arguments.  The way this works is as follows: when an ADF function is called, we first evaluate its children, then hold their return values in storage.  We then call the corresponding ADF tree.  In that tree there may be one or more special terminal GPNodes, two different kinds of instances of \class{ec.gp.ADFArgument}.  One group of instances, when evaluated, will return the value of the first child.  The second group return the value of the second child.  This enables the ADF tree to use arguments in its ``function call'' so to speak.
@@ -6698,6 +6731,8 @@ public String name;
 }
 
 Again, the \method{name()} method returns the value of the \variable{name} variable.
+
+ADFArguments are always terminals, and so they override the \method{expectedChildren()} method to return 0.
 
 ECJ also supports {\bf Automatically-Defined Macros} (or ADMs), described in \cite{adm}.  These differ from ADFs only in when the children are evaluated.  When an ADM node is evaluated, its children are not evaluated first; rather the ADM immediately calls its associated tree.  When an argument node in that tree (again, a terminal) is evaluated, we teleport back to the associated child and evaluate it right then and there, then return its value.  Note that this means that children may never be evaluated; or can be evaluated multiple times, as shown in Figure \ref{adm}.
 

@@ -27,6 +27,7 @@ public class Sin extends GPNode
     {
     public String toString() { return "sin"; }
 
+/*
     public void checkConstraints(final EvolutionState state,
         final int tree,
         final GPIndividual typicalIndividual,
@@ -38,6 +39,8 @@ public class Sin extends GPNode
                 toStringForError() + " at " +
                 individualBase);
         }
+*/
+    public int expectedChildren() { return 1; }
 
     public void eval(final EvolutionState state,
         final int thread,

@@ -27,7 +27,7 @@ public class Left extends GPNode implements EvalPrint
     {
     public String toString() { return "left"; }
 
-    public void checkConstraints(final EvolutionState state,
+/*    public void checkConstraints(final EvolutionState state,
         final int tree,
         final GPIndividual typicalIndividual,
         final Parameter individualBase)
@@ -38,6 +38,8 @@ public class Left extends GPNode implements EvalPrint
                 toStringForError() + " at " +
                 individualBase);
         }
+*/
+    public int expectedChildren() { return 0; }
 
     public void eval(final EvolutionState state,
         final int thread,

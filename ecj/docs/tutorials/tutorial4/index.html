@@ -90,6 +90,19 @@ public class Add extends GPNode
     {
     public String toString() { return "+"; }
 
+    public int expectedChildren() { return 2; }
+    }
+</pre></tt>
+
+<p>Add needs to specify its printed form ("+"), and a function (expectedChildren(...) ) which give <b>Add</b> a chance to do a sanity check when first loaded, to verify that the child array size is correct.  Instead of expectedChildren(...), you could have instead written:
+
+<tt><pre>
+    // public int expectedChildren() { return 2; }
+
+    // You could do this instead.  It'd give you a chance to do more verifications
+    // and checks.  The default implementation of checkConstraints just calls
+    // expectedChildren(), which is why you can just implement expectedChildren
+    // instead in most simple cases.
     public void checkConstraints(final EvolutionState state,
                                  final int tree,
                                  final GPIndividual typicalIndividual,
@@ -97,13 +110,13 @@ public class Add extends GPNode
         {
         super.checkConstraints(state,tree,typicalIndividual,individualBase);
         if (children.length!=2)
-            state.output.error("Incorrect number of children for node " + 
+            state.output.error("Incorrect number of children for node " +
                                toStringForError() + " at " +
                                individualBase);
         }
 </pre></tt>
 
-<p>Add needs to specify its printed form ("+"), and a function (checkConstraints(...) ) which give <b>Add</b> a chance to do a sanity check when first loaded.  This is usually used to verify that the child array size is correct.
+ECJ will call the checkConstraints() method, which gives you a chance to do more sophisticated checks.  Above we're doing more or less what the default version of checkConstraints() does anyway, which is just call expectedChildren() and verify that the children.length variable is the same as it.   Thus if you don't need to do anything more than a sanity check on the number of child nodes, just implement expectedChildren() and don't bother with checkConstraints(). 
 
 <p>Next we will define the central function to the GPNode: the <b>eval</b> method, which is called when the GPNode must do its part during the execution of the tree as s-expression computer code.  <b>eval</b> is called by the GPNode's parent to execute the GPNode and get its return value.
 
@@ -145,17 +158,8 @@ public class Sub extends GPNode
     {
     public String toString() { return "-"; }
 
-    public void checkConstraints(final EvolutionState state,
-                                 final int tree,
-                                 final GPIndividual typicalIndividual,
-                                 final Parameter individualBase)
-        {
-        super.checkConstraints(state,tree,typicalIndividual,individualBase);
-        if (children.length!=2)
-            state.output.error("Incorrect number of children for node " + 
-                               toStringForError() + " at " +
-                               individualBase);
-        }
+    public int expectedChildren() { return 2; }
+
     public void eval(final EvolutionState state,
                      final int thread,
                      final GPData input,
@@ -187,17 +191,8 @@ public class Mul extends GPNode
     {
     public String toString() { return "*"; }
 
-    public void checkConstraints(final EvolutionState state,
-                                 final int tree,
-                                 final GPIndividual typicalIndividual,
-                                 final Parameter individualBase)
-        {
-        super.checkConstraints(state,tree,typicalIndividual,individualBase);
-        if (children.length!=2)
-            state.output.error("Incorrect number of children for node " + 
-                               toStringForError() + " at " +
-                               individualBase);
-        }
+    public int expectedChildren() { return 2; }
+
     public void eval(final EvolutionState state,
                      final int thread,
                      final GPData input,
@@ -229,17 +224,8 @@ public class X extends GPNode
     {
     public String toString() { return "x"; }
 
-    public void checkConstraints(final EvolutionState state,
-                                 final int tree,
-                                 final GPIndividual typicalIndividual,
-                                 final Parameter individualBase)
-        {
-        super.checkConstraints(state,tree,typicalIndividual,individualBase);
-        if (children.length!=0)
-            state.output.error("Incorrect number of children for node " + 
-                               toStringForError() + " at " +
-                               individualBase);
-        }
+    public int expectedChildren() { return 0; }
+
 </pre></tt>
 
 <p>Note that there are no children.  Now what we'll do is define in our Problem two public doubles called <b>currentX</b> and <b>currentY</b>.  These are the values that these nodes return when evaluated.  Hence we add:
@@ -270,17 +256,7 @@ public class Y extends GPNode
     {
     public String toString() { return "y"; }
 
-    public void checkConstraints(final EvolutionState state,
-                                 final int tree,
-                                 final GPIndividual typicalIndividual,
-                                 final Parameter individualBase)
-        {
-        super.checkConstraints(state,tree,typicalIndividual,individualBase);
-        if (children.length!=0)
-            state.output.error("Incorrect number of children for node " + 
-                               toStringForError() + " at " +
-                               individualBase);
-        }
+    public int expectedChildren() { return 0; }
 
     public void eval(final EvolutionState state,
                      final int thread,

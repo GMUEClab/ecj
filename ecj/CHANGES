@@ -1845,3 +1845,10 @@ Version		Change Log
 		the new resource loading option
 	Modified ec/Subpopulation.java, ec/pso/PSOSubpopualtion.java, ec/gp/ge/GESpecies.java,
 		and ec/evolve/RandomRestarts.java to use the new resource loading option
+	Modifications to Tutorial 4 to stay current with recent changes in ECJ.
+	Added GPNode.expectedChildren(), and modified GPNode.checkConstraints to call it
+		to simplify the code for making a GPNode.  Modified all the tutorials and
+		demo examples accordingly.  Tweaked ADFArgument and ERC to have an
+		expectedChildren of 0 (ADFArgument always, ERC typically).  Did not add
+		into ADF, which uses checkConstraints on its own.  Modified the manual
+		to describe the new function.

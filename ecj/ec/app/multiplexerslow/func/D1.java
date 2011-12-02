@@ -27,6 +27,7 @@ public class D1 extends GPNode
     {
     public String toString() { return "d1"; }
 
+/*
     public void checkConstraints(final EvolutionState state,
         final int tree,
         final GPIndividual typicalIndividual,
@@ -38,6 +39,8 @@ public class D1 extends GPNode
                 toStringForError() + " at " +
                 individualBase);
         }
+*/
+    public int expectedChildren() { return 0; }
 
     public void eval(final EvolutionState state,
         final int thread,

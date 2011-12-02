@@ -118,15 +118,7 @@ public abstract class ERC extends GPNode
 
     /** Usually ERCs don't have children, and this default implementation makes certain of it. 
         But if you want to override this, you're welcome to. */
-    public void checkConstraints(final EvolutionState state,
-        final int tree,
-        final GPIndividual typicalIndividual,
-        final Parameter individualBase)
-        {
-        super.checkConstraints(state,tree,typicalIndividual,individualBase);
-        // make sure we don't have any children.  This is the typical situation for an ERC.
-        if (children.length!= 0) state.output.error("Incorrect number of children for the node " + toStringForError() + " (should be 0)");
-        }
+    public int expectedChildren() { return 0; }
 
     /** Remember to override this to randomize your ERC after it has been cloned.  The prototype will not ever receive this method call. */
     public abstract void resetNode(final EvolutionState state, int thread);
