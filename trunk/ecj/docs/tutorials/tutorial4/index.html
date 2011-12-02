@@ -562,7 +562,7 @@ Breeding: 1782.4219 KB total, 60932 nodes, 34.184948 nodes/KB
 
 <h3>Print out the trees for LaTeX</h3>
 
-Here's a nifty trick.  GPTrees can be printed out in LaTeX form rather than in s-expression form.  Run the system with the following command: <b>java ec.Evolve -file tutorial4.params -p gp.tree.latex=true</b> and the trees will be outputted in a form that can be stuck into a LaTeX file and printed.
+Here's a nifty trick.  GPTrees can be printed out in LaTeX form rather than in s-expression form.  Run the system with the following command: <b>java ec.Evolve -file tutorial4.params -p gp.tree.print-style=latex</b> and the trees will be outputted in a form that can be stuck into a LaTeX file and printed.
 
 <p>The best individual of the generation now looks like this:
 
@@ -623,11 +623,11 @@ two children are printed as if the node was an operator (+, *, etc.), and nodes 
 
 <p><tt>(sin(4 + cos(x)) - (x * x)) exp x</tt>
 
-<p>We prefer a Lisp style, but this might be easier for you to read.  To do this, you can run the command like this:  <b>java ec.Evolve -file tutorial4.params -p gp.tree.c=true</b>
+<p>We prefer a Lisp style, but this might be easier for you to read.  To do this, you can run the command like this:  <b>java ec.Evolve -file tutorial4.params -p gp.tree.print-style=c</b>
 
 <h3>Print out the trees in Graphviz</h3>
 
-<p><a href="http://www.research.att.com/sw/tools/graphviz/">Graphviz</a> is a graph-layout language and renderer developed by AT&amp;T.  ECJ can generate trees that Graphviz renders quite nicely to PDF and other formats for inclusion in documents as well.  To do this, you can run the command like this:  <b>java ec.Evolve -file tutorial4.params -p gp.tree.graphviz=true</b>
+<p><a href="http://www.research.att.com/sw/tools/graphviz/">Graphviz</a> is a graph-layout language and renderer developed by AT&amp;T.  ECJ can generate trees that Graphviz renders quite nicely to PDF and other formats for inclusion in documents as well.  To do this, you can run the command like this:  <b>java ec.Evolve -file tutorial4.params -p gp.tree.print-style=dot</b>
 
 <h3>Try some Elitism</h3>
 
