@@ -102,7 +102,7 @@ public class SUSSelection extends SelectionMethod
         }
 
     /* Largely stolen from sim.util.Bag.  Shuffles both the indices and the floats */
-    void shuffle(MersenneTwisterFast random)
+    void shuffle(MersenneTwisterFast random, float[] fitnesses, int indices)
         {
         int numObjs = fitnesses.length;
         float[] fitnesses = this.fitnesses;
@@ -133,11 +133,12 @@ public class SUSSelection extends SelectionMethod
         lastIndex = 0;
         steps = 0;
         
+        fitnesses = new float[s.population.subpops[subpopulation].individuals.length];
+
         // compute offset
         offset = (float)(s.random[thread].nextDouble() / fitnesses.length);
         
         // load fitnesses but don't build distribution yet
-        fitnesses = new float[s.population.subpops[subpopulation].individuals.length];
         for(int x=0;x<fitnesses.length;x++)
             {
             fitnesses[x] = ((Individual)(s.population.subpops[subpopulation].individuals[x])).fitness.fitness();
@@ -148,7 +149,7 @@ public class SUSSelection extends SelectionMethod
         // construct and optionally shuffle fitness distribution and indices
         indices = new int[s.population.subpops[subpopulation].individuals.length];
         for(int i=0;i<indices.length;i++) indices[i] = i;
-        if (shuffle) shuffle(s.random[thread]);
+        if (shuffle) shuffle(s.random[thread], fitnesses, indices);
                 
         // organize the distribution.  All zeros in fitness is fine
         RandomChoice.organizeDistribution(fitnesses, true);
