@@ -1,0 +1,8 @@
+parent.0 = ./benchmark.params
+
+gp.fs.0.size = 9
+gp.fs.1.size = 10
+gp.fs.2.size = 11
+gp.fs.3.size = 12
+gp.fs.4.size = 13
+

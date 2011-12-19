@@ -1,0 +1,183 @@
+parent.0 = ../../gp/koza/koza.params
+
+
+gp.fs.size = 5
+
+# ONE variable
+gp.fs.0 = ec.gp.GPFunctionSet
+gp.fs.0.name = f1
+gp.fs.0.size = 10
+gp.fs.0.func.0 = ec.app.regression.func.X1
+gp.fs.0.func.0.nc = nc0
+gp.fs.0.func.1 = ec.app.regression.func.Add
+gp.fs.0.func.1.nc = nc2
+gp.fs.0.func.2 = ec.app.regression.func.Mul
+gp.fs.0.func.2.nc = nc2
+gp.fs.0.func.3 = ec.app.regression.func.Sub
+gp.fs.0.func.3.nc = nc2
+gp.fs.0.func.4 = ec.app.regression.func.Div
+gp.fs.0.func.4.nc = nc2
+gp.fs.0.func.5 = ec.app.regression.func.Sin
+gp.fs.0.func.5.nc = nc1
+gp.fs.0.func.6 = ec.app.regression.func.Cos
+gp.fs.0.func.6.nc = nc1
+gp.fs.0.func.7 = ec.app.regression.func.Exp
+gp.fs.0.func.7.nc = nc1
+gp.fs.0.func.8 = ec.app.regression.func.Log
+gp.fs.0.func.8.nc = nc1
+# placed here at the bottom so noerc.params can skip it
+gp.fs.0.func.9 = ec.app.regression.func.RegERC
+gp.fs.0.func.9.nc = nc0
+
+
+
+# TWO variables
+gp.fs.1 = ec.gp.GPFunctionSet
+gp.fs.1.name = f2
+gp.fs.1.size = 11
+gp.fs.1.func.0 = ec.app.regression.func.X1
+gp.fs.1.func.0.nc = nc0
+gp.fs.1.func.1 = ec.app.regression.func.Add
+gp.fs.1.func.1.nc = nc2
+gp.fs.1.func.2 = ec.app.regression.func.Mul
+gp.fs.1.func.2.nc = nc2
+gp.fs.1.func.3 = ec.app.regression.func.Sub
+gp.fs.1.func.3.nc = nc2
+gp.fs.1.func.4 = ec.app.regression.func.Div
+gp.fs.1.func.4.nc = nc2
+gp.fs.1.func.5 = ec.app.regression.func.Sin
+gp.fs.1.func.5.nc = nc1
+gp.fs.1.func.6 = ec.app.regression.func.Cos
+gp.fs.1.func.6.nc = nc1
+gp.fs.1.func.7 = ec.app.regression.func.Exp
+gp.fs.1.func.7.nc = nc1
+gp.fs.1.func.8 = ec.app.regression.func.Log
+gp.fs.1.func.8.nc = nc1
+gp.fs.1.func.9 = ec.app.regression.func.X2
+gp.fs.1.func.9.nc = nc0
+# placed here at the bottom so noerc.params can skip it
+gp.fs.1.func.10 = ec.app.regression.func.RegERC
+gp.fs.1.func.10.nc = nc0
+
+
+
+# THREE variables
+gp.fs.2 = ec.gp.GPFunctionSet
+gp.fs.2.name = f3
+gp.fs.2.size = 12
+gp.fs.2.func.0 = ec.app.regression.func.X1
+gp.fs.2.func.0.nc = nc0
+gp.fs.2.func.1 = ec.app.regression.func.Add
+gp.fs.2.func.1.nc = nc2
+gp.fs.2.func.2 = ec.app.regression.func.Mul
+gp.fs.2.func.2.nc = nc2
+gp.fs.2.func.3 = ec.app.regression.func.Sub
+gp.fs.2.func.3.nc = nc2
+gp.fs.2.func.4 = ec.app.regression.func.Div
+gp.fs.2.func.4.nc = nc2
+gp.fs.2.func.5 = ec.app.regression.func.Sin
+gp.fs.2.func.5.nc = nc1
+gp.fs.2.func.6 = ec.app.regression.func.Cos
+gp.fs.2.func.6.nc = nc1
+gp.fs.2.func.7 = ec.app.regression.func.Exp
+gp.fs.2.func.7.nc = nc1
+gp.fs.2.func.8 = ec.app.regression.func.Log
+gp.fs.2.func.8.nc = nc1
+gp.fs.2.func.9 = ec.app.regression.func.X2
+gp.fs.2.func.9.nc = nc0
+gp.fs.2.func.10 = ec.app.regression.func.X3
+gp.fs.2.func.10.nc = nc0
+# placed here at the bottom so noerc.params can skip it
+gp.fs.2.func.11 = ec.app.regression.func.RegERC
+gp.fs.2.func.11.nc = nc0
+
+
+
+# FOUR variables
+gp.fs.3 = ec.gp.GPFunctionSet
+gp.fs.3.name = f4
+gp.fs.3.size = 13
+gp.fs.3.func.0 = ec.app.regression.func.X1
+gp.fs.3.func.0.nc = nc0
+gp.fs.3.func.1 = ec.app.regression.func.Add
+gp.fs.3.func.1.nc = nc2
+gp.fs.3.func.2 = ec.app.regression.func.Mul
+gp.fs.3.func.2.nc = nc2
+gp.fs.3.func.3 = ec.app.regression.func.Sub
+gp.fs.3.func.3.nc = nc2
+gp.fs.3.func.4 = ec.app.regression.func.Div
+gp.fs.3.func.4.nc = nc2
+gp.fs.3.func.5 = ec.app.regression.func.Sin
+gp.fs.3.func.5.nc = nc1
+gp.fs.3.func.6 = ec.app.regression.func.Cos
+gp.fs.3.func.6.nc = nc1
+gp.fs.3.func.7 = ec.app.regression.func.Exp
+gp.fs.3.func.7.nc = nc1
+gp.fs.3.func.8 = ec.app.regression.func.Log
+gp.fs.3.func.8.nc = nc1
+gp.fs.3.func.9 = ec.app.regression.func.X2
+gp.fs.3.func.9.nc = nc0
+gp.fs.3.func.10 = ec.app.regression.func.X3
+gp.fs.3.func.10.nc = nc0
+gp.fs.3.func.11 = ec.app.regression.func.X4
+gp.fs.3.func.11.nc = nc0
+# placed here at the bottom so noerc.params can skip it
+gp.fs.3.func.12 = ec.app.regression.func.RegERC
+gp.fs.3.func.12.nc = nc0
+
+
+
+# FIVE variables
+gp.fs.4 = ec.gp.GPFunctionSet
+gp.fs.4.name = f5
+gp.fs.4.size = 14
+gp.fs.4.func.0 = ec.app.regression.func.X1
+gp.fs.4.func.0.nc = nc0
+gp.fs.4.func.1 = ec.app.regression.func.Add
+gp.fs.4.func.1.nc = nc2
+gp.fs.4.func.2 = ec.app.regression.func.Mul
+gp.fs.4.func.2.nc = nc2
+gp.fs.4.func.3 = ec.app.regression.func.Sub
+gp.fs.4.func.3.nc = nc2
+gp.fs.4.func.4 = ec.app.regression.func.Div
+gp.fs.4.func.4.nc = nc2
+gp.fs.4.func.5 = ec.app.regression.func.Sin
+gp.fs.4.func.5.nc = nc1
+gp.fs.4.func.6 = ec.app.regression.func.Cos
+gp.fs.4.func.6.nc = nc1
+gp.fs.4.func.7 = ec.app.regression.func.Exp
+gp.fs.4.func.7.nc = nc1
+gp.fs.4.func.8 = ec.app.regression.func.Log
+gp.fs.4.func.8.nc = nc1
+gp.fs.4.func.9 = ec.app.regression.func.X2
+gp.fs.4.func.9.nc = nc0
+gp.fs.4.func.10 = ec.app.regression.func.X3
+gp.fs.4.func.10.nc = nc0
+gp.fs.4.func.11 = ec.app.regression.func.X4
+gp.fs.4.func.11.nc = nc0
+gp.fs.4.func.12 = ec.app.regression.func.X5
+gp.fs.4.func.12.nc = nc0
+# placed here at the bottom so noerc.params can skip it
+gp.fs.4.func.13 = ec.app.regression.func.RegERC
+gp.fs.4.func.13.nc = nc0
+
+
+
+
+#
+# We specify our problem here
+#
+
+eval.problem = ec.app.regression.Benchmarks
+eval.problem.data = ec.app.regression.RegressionData
+
+
+
+gp.tc.size = 1
+gp.tc.0 = ec.gp.GPTreeConstraints
+gp.tc.0.name = tc0
+gp.tc.0.fset = f1
+gp.tc.0.returns = nil
+
+
+
