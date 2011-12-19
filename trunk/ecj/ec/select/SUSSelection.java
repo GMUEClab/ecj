@@ -102,11 +102,11 @@ public class SUSSelection extends SelectionMethod
         }
 
     /* Largely stolen from sim.util.Bag.  Shuffles both the indices and the floats */
-    void shuffle(MersenneTwisterFast random, float[] fitnesses, int indices)
+    void shuffle(MersenneTwisterFast random, float[] fitnesses, int[] indices)
         {
         int numObjs = fitnesses.length;
-        float[] fitnesses = this.fitnesses;
-        int[] indices = this.indices;
+        //float[] fitnesses = this.fitnesses;
+        //int[] indices = this.indices;
         
         float f;
         int i;
