@@ -4,7 +4,7 @@ import java.io.*;
 
 /** 
  * <h3>MersenneTwister and MersenneTwisterFast</h3>
- * <p><b>Version 16</b>, based on version MT199937(99/10/29)
+ * <p><b>Version 17</b>, based on version MT199937(99/10/29)
  * of the Mersenne Twister algorithm found at 
  * <a href="http://www.math.keio.ac.jp/matumoto/emt.html">
  * The Mersenne Twister Home Page</a>, with the initialization
@@ -37,10 +37,14 @@ import java.io.*;
  * Makato Matsumoto and Takuji Nishimura,
  * "Mersenne Twister: A 623-Dimensionally Equidistributed Uniform
  * Pseudo-Random Number Generator",
- * <i>ACM Transactions on Modeling and Computer Simulation,</i>
+ * <i>ACM Transactions on Modeling and. Computer Simulation,</i>
  * Vol. 8, No. 1, January 1998, pp 3--30.
  *
  * <h3>About this Version</h3>
+ *
+ * <p><b>Changes since V16:<b> Added nextDouble(includeZero, includeOne) and
+ * nextFloat(includeZero, includeOne) to allow for half-open, fully-closed, and
+ * fully-open intervals.
  *
  * <p><b>Changes Since V15:</b> Added serialVersionUID to quiet compiler warnings
  * from Sun's overly verbose compilers as of JDK 1.5.
@@ -52,7 +56,7 @@ import java.io.*;
  *
  * <p><b>Changes Since V13:</b> clone() method CloneNotSupportedException removed.  
  *
- * <p><b>Changes Since V12:</b> clone() method added.
+ * <p><b>Changes Since V12:</b> clone() method added.  
  *
  * <p><b>Changes Since V11:</b> stateEquals(...) method added.  MersenneTwisterFast
  * is equal to other MersenneTwisterFasts with identical state; likewise
@@ -150,7 +154,7 @@ import java.io.*;
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  *
- @version 16
+ @version 17
 */
 
 public strictfp class MersenneTwister extends java.util.Random implements Serializable, Cloneable
@@ -480,6 +484,31 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
             / (double)(1L << 53);
         }
 
+    /** Returns a double in the range from 0.0 to 1.0, possibly inclusive of 0.0 and 1.0 themselves.  Thus:
+
+        <p><table border=0>
+        <th><td>Expression<td>Interval
+        <tr><td>nextDouble(false, false)<td>(0.0, 1.0)
+        <tr><td>nextDouble(true, false)<td>[0.0, 1.0)
+        <tr><td>nextDouble(false, true)<td>(0.0, 1.0]
+        <tr><td>nextDouble(true, true)<td>[0.0, 1.0]
+        </table>
+        
+        <p>This version preserves all possible random values in the double range.
+        */
+    public double nextDouble(boolean includeZero, boolean includeOne)
+        {
+        double d = 0.0;
+        do
+            {
+            d = nextDouble();                           // grab a value, initially from half-open [0.0, 1.0)
+            if (includeOne && nextBoolean()) d += 1.0;  // if includeOne, with 1/2 probability, push to [1.0, 2.0)
+            } 
+        while ( (d > 1.0) ||                            // everything above 1.0 is always invalid
+                (!includeZero && d == 0.0));            // if we're not including zero, 0.0 is invalid
+        return d;
+        }
+
     /** A bug fix for versions of JDK 1.1 and below.  JDK 1.2 fixes
         this for us, but what the heck. */
 
@@ -487,6 +516,35 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
         {
         return next(24) / ((float)(1 << 24));
         }
+
+
+
+    /** Returns a float in the range from 0.0f to 1.0f, possibly inclusive of 0.0f and 1.0f themselves.  Thus:
+
+        <p><table border=0>
+        <th><td>Expression<td>Interval
+        <tr><td>nextFloat(false, false)<td>(0.0f, 1.0f)
+        <tr><td>nextFloat(true, false)<td>[0.0f, 1.0f)
+        <tr><td>nextFloat(false, true)<td>(0.0f, 1.0f]
+        <tr><td>nextFloat(true, true)<td>[0.0f, 1.0f]
+        </table>
+        
+        <p>This version preserves all possible random values in the float range.
+        */
+    public double nextFloat(boolean includeZero, boolean includeOne)
+        {
+        float d = 0.0f;
+        do
+            {
+            d = nextFloat();                            // grab a value, initially from half-open [0.0f, 1.0f)
+            if (includeOne && nextBoolean()) d += 1.0f; // if includeOne, with 1/2 probability, push to [1.0f, 2.0f)
+            } 
+        while ( (d > 1.0f) ||                           // everything above 1.0f is always invalid
+                (!includeZero && d == 0.0f));           // if we're not including zero, 0.0f is invalid
+        return d;
+        }
+
+
 
     /** A bug fix for all versions of the JDK.  The JDK appears to
         use all four bytes in an integer as independent byte values!
