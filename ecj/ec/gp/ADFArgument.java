@@ -71,10 +71,6 @@ public class ADFArgument extends GPNode
         
         Parameter def = defaultBase();
         
-        // make sure we don't have any children...
-        if (children.length!= 0) 
-            state.output.error("Incorrect number of children for ADF Argument terminal -- should be 0.  Check the constraints.",base,def);
-
         argument = state.parameters.getInt(base.push(P_ARGUMENT),def.push(P_ARGUMENT),0);
         if (argument < 0)
             state.output.fatal("Argument terminal must have a positive argument number.",

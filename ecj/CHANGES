@@ -1852,3 +1852,6 @@ Version		Change Log
 		expectedChildren of 0 (ADFArgument always, ERC typically).  Did not add
 		into ADF, which uses checkConstraints on its own.  Modified the manual
 		to describe the new function.
+	Bug fixes to SUSSelection.  Thanks to Uday Kamath <kamathuday@gmail.com>
+	Updated MersenneTwister and MersenneTwisterFast to allow full-open, half-open
+		(both directions) and fully-closed intervals for nextDouble and nextFloat
