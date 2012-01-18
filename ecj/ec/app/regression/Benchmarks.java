@@ -216,7 +216,9 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
 		double[][] d = new double[numPoints][vars];
 		for(int i = 0 ; i < d.length; i++)
 			for(int j = 0; j < vars; j++)
-				d[i][j] = state.random[threadnum].nextDouble() * (max[j] - min[j]) + min[j];
+                // below we're doing nextDouble(true, true), which means to select from the
+                // FULLY CLOSED interval [0.0, 1.0], including both 0.0 and 1.0.
+				d[i][j] = state.random[threadnum].nextDouble(true, true) * (max[j] - min[j]) + min[j];
 		return d;
 		}
 		
