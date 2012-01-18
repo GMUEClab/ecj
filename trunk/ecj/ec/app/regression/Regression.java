@@ -133,7 +133,11 @@ public class Regression extends GPProblem implements SimpleProblemForm
 			}
        else for(int x=0;x<trainingSetSize;x++)
             {
-            inputs[x] = state.random[0].nextDouble() * 2.0 - 1.0;
+            // On p. 242 of Koza-I, he claims that the points are chosen from the
+            // fully-closed interval [-1, 1].  This is likely not true as Koza's lisp
+            // code usually selected stuff from half-open intervals.  But just to be
+            // absurdly exact here, we're allowing 1 as a valid number.
+            inputs[x] = state.random[0].nextDouble(true, true) * 2.0 - 1.0;     // fully closed interval.
 			}
 			
         for(int x=0;x<trainingSetSize;x++)
