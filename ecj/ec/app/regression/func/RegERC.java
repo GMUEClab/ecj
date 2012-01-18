@@ -29,12 +29,12 @@ public class RegERC extends ERC
     {
     public double value;
 
-    // making sure that we don't have any children is already
-    // done in ERC.checkConstraints(), so we don't need to implement that.
+    // Koza claimed to be generating from [-1.0, 1.0] but he wasn't,
+    // given the published simple-lisp code.  It was [-1.0, 1.0).  This is
+    // pretty minor, but we're going to go with the code rather than the
+    // published specs in the books.  If you want to go with [-1.0, 1.0],
+    // just change nextDouble() to nextDouble(true, true)
 
-    // this will produce numbers from [-1.0, 1.0), which is probably
-    // okay but you might want to modify it if you don't like seeing
-    // -1.0's occasionally showing up very rarely.
     public void resetNode(final EvolutionState state, final int thread)
         { value = state.random[thread].nextDouble() * 2 - 1.0; }
 
