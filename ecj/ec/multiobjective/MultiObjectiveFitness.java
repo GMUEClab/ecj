@@ -442,6 +442,35 @@ public class MultiObjectiveFitness extends Fitness
         }
 
 
+    /** Returns the Pareto rank for each individual.  Rank 0 is the best rank, then rank 1, and so on.  This is O(n) but it has a high constant overhead because it
+        allocates a hashmap and does some autoboxing. */
+    public static int[] getRankings(Individual[] inds)
+        {
+        int[] r = new int[inds.length];
+        ArrayList ranks = partitionIntoRanks(inds);  // get all the ranks
+        
+        // build a mapping of Individual -> index in inds array
+        HashMap m = new HashMap();
+        for(int i = 0; i < inds.length; i++)
+            m.put(inds[i], new Integer(i));
+        
+        int numRanks = ranks.size();
+        for(int rank = 0 ; rank < numRanks; rank++)  // for each rank...
+            {
+            ArrayList front = (ArrayList)(ranks.get(rank));
+            int numInds = front.size();
+            for(int ind = 0; ind < numInds; ind++)  // for each individual in that rank ...
+                {
+                // get the index of the individual in the inds array
+                int i = ((Integer)(m.get(front.get(ind)))).intValue();
+                r[i] = rank;  // set the rank in the corresponding ranks array
+                }
+            }
+        return r;
+        }
+
+
+
     /**
      * Returns the sum of the squared difference between two Fitnesses in Objective space.
      */

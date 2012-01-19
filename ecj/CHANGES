@@ -1856,3 +1856,4 @@ Version		Change Log
 	Updated MersenneTwister and MersenneTwisterFast to allow full-open, half-open
 		(both directions) and fully-closed intervals for nextDouble and nextFloat
 	Updated Benchmarks and Regression to generate points from fully-closed intervals
+	Added MultiObjectiveFitness.getRankings(...)
