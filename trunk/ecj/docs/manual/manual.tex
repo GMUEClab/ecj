@@ -9659,7 +9659,7 @@ Returns true if this fitness Pareto-dominates {\it other}.
 
 
 
-\subsubsection{Pareto Ranking} An alternative method, widely used in multiobjective algorithms but not implemented in MultiObjectiveFitness proper, is to perform {\bf Pareto ranking} (sometimes called {\it non-dominated sorting} \cite{nsga}, which works as follows. The {\bf Pareto non-dominated front} (or simply {\bf Pareto front}) is the set of Individuals in a Subpopulation who are dominated by {\it no one else}, including one another.  All members of a Pareto front of a Subpopulation receive a rank of 0.  We then remove those members from consideration in the Subpopulation and form the Pareto front among the remaining members.  These members receive a rank of 1.  We then remove {\it those} members from consideration as well and repeat.  Ultimately every member of the Subpopulation receives a rank.  These ranks become fitness values, where lower ranks are better than higher ranks.  Pareto ranking plays a major part in the NSGA-II algorithm (Section \ref{ec.multiobjective.nsga2}).
+\subsubsection{Pareto Ranking} An alternative method, widely used in multiobjective algorithms but not implemented in MultiObjectiveFitness proper, is to perform {\bf Pareto ranking} (sometimes called {\it non-dominated sorting} \cite{nsga}, which works as follows. The {\bf Pareto non-dominated front} (or simply {\bf Pareto front}) is the set of Individuals in a Subpopulation who are dominated by {\it no one else}, including one another.  All members of a Pareto front of a Subpopulation receive a ranking of 0.  We then remove those members from consideration in the Subpopulation and form the Pareto front among the remaining members.  These members receive a ranking of 1.  We then remove {\it those} members from consideration as well and repeat.  Ultimately every member of the Subpopulation receives a ranking.  These rankings become fitness values, where lower rankings are preferred to higher rankings.  Pareto ranking plays a major part in the NSGA-II algorithm (Section \ref{ec.multiobjective.nsga2}).
 
 Here are methods for extracting the Pareto Front and various Pareto Front Ranks:
 
@@ -9668,6 +9668,8 @@ Here are methods for extracting the Pareto Front and various Pareto Front Ranks:
 Partitions {\it inds} into the front and the non-front Individuals.  If {\it front} is provided, the front Individuals are placed there and returned.  If {\it front} is not provided, a new ArrayList is created, the front is placed there, and it is returned.  If {\it nonFront} is provided, the non-front Individuals are placed in it, else they are discarded.
 \mthd{public static ArrayList partitionIntoRanks(Individual[] {\it inds})}
 Partitions {\it inds} into Pareto Front ranks.  Each rank is an ArrayList of Individuals. The ranks are then placed into an ArrayList in increasing order (worsening rank) starting with rank zero.  This ArrayList is returned.
+\mthd{public static int[] getRankings(Individual[] {\it inds})}
+For each individual, returns the Pareto Front ranking of that individual, starting at 0 (the best ranking) and increasing with worse Pareto Front ranks.   Note that though this function is O(n), it has a high constant overhead because it  does some boxing and hashing.
 \end{methods}
 
 
