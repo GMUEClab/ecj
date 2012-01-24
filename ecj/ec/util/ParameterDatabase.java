@@ -2433,7 +2433,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 String filename = s.substring(i).trim();
                 try
                     {
-                    parents.addElement(new ParameterDatabase(filename, Class.forName(classname)));
+                    parents.addElement(new ParameterDatabase(filename, Class.forName(classname.substring(1).trim())));
                     }
                 catch (ClassNotFoundException ex)
                     {
@@ -2522,7 +2522,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 String fname = s.substring(i).trim();
                 try
                     {
-                    parents.addElement(new ParameterDatabase(fname, Class.forName(classname)));
+                    parents.addElement(new ParameterDatabase(fname, Class.forName(classname.substring(1).trim())));
                     }
                 catch (ClassNotFoundException ex)
                     {
