@@ -711,9 +711,9 @@ ec.subpop.size = 500\\
 pop.subpop.0.size = 1000
 }}
 
-When ECJ looks for subpopulation 0's size, it'll find it as normal (1000).  But when it looks for subpopulation 1 (etc.), it won't find a size parameter in the normal location, so it'll look in the default location, use what it finds there (500).  Only if there's no parameter to be found in either location will ECJ signal an error.
+When ECJ looks for subpopulation 0's size, it'll find it as normal (1000).  But when it looks for subpopulation 1 (etc.), it won't find a size parameter in the normal location, so it'll look in the default location, and use what it finds there (500).  Only if there's no parameter to be found in either location will ECJ signal an error.
 
-It's important to note that if a class is loaded from a default parameter, this doesn't mean that the default parameter will become its parameter base: rather, the original expect location will continue to be the base.  For example, imagine if both of our Species objects were the same class, and we had defined them using the default base.  That is, instead of
+It's important to note that if a class is loaded from a default parameter, this doesn't mean that the default parameter will become its parameter base: rather, the original expected location will continue to be the base.  For example, imagine if both of our Species objects were the same class, and we had defined them using the default base.  That is, instead of
 
 \params{%
 pop.subpop.0.species = ec.vector.VectorSpecies\\
@@ -792,7 +792,7 @@ Of course, usually we don't want to just make a direct parameter, but rather wan
 Parameter param = base.push("size");
 }
 
-Here are some common \class{ec.util.ParameterDatabase} methods:
+Here are some common \class{ec.util.ParameterDatabase} methods.  Note that all of them look in two places to find a parameter value.  This is what we use to handle ``standard'' and ``default'' bases.  Typically you'd pass in the parameter in its standard location, and also (in the ``default parameter'') parameter with its default base configuration.  You can pass in \variable{null} for either, and it'll get ignored.
 
 \begin{methods}{ec.util.ParameterDatabase}
 \mthd{public boolean exists(Parameter \textit{parameter}, Parameter \textit{default})}
@@ -2565,7 +2565,7 @@ state.population.subpops[subpopulation].individuals;
 
 \subsubsection{Implementing a Simple SelectionMethod}
 
-Implementing a SelectionMethod can be as simple as overriding the ``alternative'' form of the \method{produce(...)} method.  You don't have to implement the ``stanard'' form of  \method{produce(...)} because its default implementation calls the alternative form and handles the rest of the work for you.
+Implementing a SelectionMethod can be as simple as overriding the ``alternative'' form of the \method{produce(...)} method.  You don't have to implement the ``standard'' form of  \method{produce(...)} because its default implementation calls the alternative form and handles the rest of the work for you.
 
 To select an individual at random from a Subpopulation, you could simply implement the ``alternative'' form to return a random number between 0 and the size of the subpopulation in question:
 
@@ -2762,7 +2762,7 @@ public int produce(int min, int max, int start, int subpopulation, Individual[] 
     int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
 \end{verbatim}}
 
-The source has taken the liberty of filling slots \variable{inds[start] ... inds[start+n-1]} with \(\text{\variable{min}} \geq \text{\variable{n}} \geq \text{\variable{max}}\) Individuals.  Next we need to decide whether to bother mutating at all, based on the \parameter{likelihood} parameter.  We'll use the following utility method to help us:
+The source has taken the liberty of filling slots \variable{inds[start] ... inds[start+n-1]} with \(\text{\variable{min}} \leq \text{\variable{n}} \leq \text{\variable{max}}\) Individuals.  Next we need to decide whether to bother mutating at all, based on the \parameter{likelihood} parameter.  We'll use the following utility method to help us:
 
 \begin{methods}{ec.BreedingPipeline}
 \mthd{public int reproduce(int \textit{n}, int \textit{start}, int \textit{subpopulation}, Individual[] \textit{inds}, EvolutionState \textit{state}, int \textit{thread},}
@@ -3691,7 +3691,7 @@ We'll use Individuals of the form \class{ec.vector.IntegerVectorIndividual}, dis
 \params{%
 \# Representation\\
 pop.subpops.0.species = ec.vector.IntegerVectorSpecies\\
-pop.subpop.0.species.ind = ec.vector.IntegerVectorIndividual
+pop.subpop.0.species.ind = ec.vector.IntegerVectorIndividual\\
 pop.subpop.0.species.genome-size = 100
 }
 
@@ -3776,9 +3776,11 @@ Evolution Strategies differs from the Genetic Algorithm mostly in that it does {
 ESSelection doesn't have to be the only selection operator in your BreedingPipeline: you can have various other ones.  But you should have at {\it least} one ESSelection operator in your pipeline, else it just isn't Evolution Strategies any more.  Also note that ESSelection always returns the Individual pre-determined by the Breeder: thus if you have multiple ESSelection operators in your pipeline, they will {\it all} return that same Individual.
 
 %\subsubsection{\texorpdfstring{\(\bm{(\mu,\lambda)}\)}{(mu, lambda)}} 
-The \(\mu\) variable stipulates the number of parents left after truncation selection has lopped off the population.  The \(\lambda\) variable stipulates how many children are generated by the \(\mu\) parents in total.  Each Indivdiual in the \(\mu\) gets to produce exactly \(\frac{\lambda}{\mu}\) children.  Obviously \(\mu\) must divide evenly into \(\lambda\).  Often \(\lambda\) is also the initial population size: but this doesn't have to be the case.  If not, it will be the population size of the second and later generations.
+\paragraph{\(\boldsymbol{(\mu, \lambda)}\)}
+This evolution strategy is implemented by the MuCommaLambdaBreeder.  The \(\mu\) variable stipulates the number of parents left after truncation selection has lopped off the population.  The \(\lambda\) variable stipulates how many children are generated by the \(\mu\) parents in total.  Each Indivdiual in the \(\mu\) gets to produce exactly \(\frac{\lambda}{\mu}\) children.  Obviously \(\mu\) must divide evenly into \(\lambda\).  Often \(\lambda\) is also the initial population size: but this doesn't have to be the case.  If not, it will be the population size of the second and later generations.
 
-The MuCommaLambdaBreeder has two parameters, which, not surprisingly, specify the values of \(\mu\) and \(\lambda\) in a given Subpopulation.  For Subpopulation 0, this will provide \(\mu=1\) and \(\lambda=10\), to make a \((10,100)\) Evolution Strategy.
+%\paragraph{\(\boldsymbol\mu\boldsymbol{,} \boldsymbol\lambda\)} 
+This MuCommaLambdaBreeder  has two parameters, which, not surprisingly, specify the values of \(\mu\) and \(\lambda\) in a given Subpopulation.  For Subpopulation 0, this will provide \(\mu=1\) and \(\lambda=10\), to make a \((10,100)\) Evolution Strategy.
 
 \params{%
 breed = ec.es.MuCommaLambdaBreeder\\
@@ -3787,6 +3789,7 @@ es.lambda.0 = 100
 }
 
 %\subsubsection{\texorpdfstring{\(\bm{(\mu+\lambda)}\)}{(mu + lambda)}}  
+\paragraph{\(\boldsymbol{(\mu + \lambda)}\)}
 This algorithm differs from \((\mu,\lambda)\) in that, after creating the children, the \(\mu\) parents join the \(\lambda\) children to form the next generation Population.  Thus the next generation is \(\mu+\lambda\) in size.  Again, the initial population can be any size (traditionally I think it's \(\mu+\lambda\)).  The MuPlusLambdaBreeder subclasses MuCommaLambdaBreeder and adds no new parameters, though you'd change the Breeder of course:
 
 \params{%
@@ -9188,7 +9191,7 @@ SpatialTournamentSelection has three parameter options above and beyond the stan
 \params{%
 pop.subpop.0.species.pipe.source.0 = ec.spatial.SpatialTournamentSelection\\
 pop.subpop.0.species.pipe.source.0.size = 2 \\
-pop.subpop.0.species.pipe.source.0.pick-worst = flase \\
+pop.subpop.0.species.pipe.source.0.pick-worst = false \\
 pop.subpop.0.species.pipe.source.0.neighborhood-size = 3\\
 pop.subpop.0.species.pipe.source.0.ind-competes = false\\
 pop.subpop.0.species.pipe.source.0.type = uniform
