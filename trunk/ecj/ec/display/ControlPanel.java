@@ -728,6 +728,7 @@ public class ControlPanel extends JPanel
             {
             randomSeedsRadioButton = new JRadioButton();
             randomSeedsRadioButton.setText("Random Seeds");
+            randomSeedsRadioButton.setSelected(true);
             randomSeedsRadioButton.addItemListener(new java.awt.event.ItemListener() 
                 { 
                 public void itemStateChanged(java.awt.event.ItemEvent e) 

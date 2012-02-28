@@ -1857,3 +1857,12 @@ Version		Change Log
 		(both directions) and fully-closed intervals for nextDouble and nextFloat
 	Updated Benchmarks and Regression to generate points from fully-closed intervals
 	Added MultiObjectiveFitness.getRankings(...)
+	SteadyStateEvolutionState now calls postEvaluationStatistics at the end of the run
+		if more than zero individuals were evaluated since the last call to the
+		same method.  Thanks to Kenneth Bogert <kbogert@uga.edu>
+	Improvements and bugfixes to PSOBreeder.  Thanks to Kenneth Bogert <kbogert@uga.edu>
+	DoubleVectorIndividual bugfix: intermediate recombination was immediately also
+		calling simulated binary crossover (due to a missing break statement).
+		Thanks to Kenneth Bogert <kbogert@uga.edu>
+	Improvements to the GUI.  Thanks to Kenneth Bogert <kbogert@uga.edu>
+	Document fixes to Tutorial 2 and Tutorial 3

@@ -301,9 +301,9 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
 				return generateRandomSamples(state, new double[] { 0, 0 }, new double[] { 1, 1 }, 100, threadnum);
 			
             case PAGIE1:
-                return generateIntervalSpacedSamples(state, new double[] { -4.0, -4.0 }, new double[] { 4.0, 4.0 }, new double[] { 0.4, 0.4 }, threadnum);
+                return generateIntervalSpacedSamples(state, new double[] { -5.0, -5.0 }, new double[] { 5.0, 5.0 }, new double[] { 0.4, 0.4 }, threadnum);
             case PAGIE2:
-                return generateIntervalSpacedSamples(state, new double[] { -4.0, -4.0, -4.0 }, new double[] { 4.0, 4.0, 4.0 }, new double[] { 0.4, 0.4, 0.4 }, threadnum);
+                return generateIntervalSpacedSamples(state, new double[] { -5.0, -5.0, -5.0 }, new double[] { 5.0, 5.0, 5.0 }, new double[] { 0.4, 0.4, 0.4 }, threadnum);
             
             
 			case KORNS1:

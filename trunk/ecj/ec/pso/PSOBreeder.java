@@ -54,7 +54,7 @@ public class PSOBreeder extends Breeder
         // update particles             
         for (int i = 0; i < subpop.individuals.length; i++)
             {
-            DoubleVectorIndividual ind = (DoubleVectorIndividual)subpop.individuals[i];
+            DoubleVectorIndividual ind = (DoubleVectorIndividual)subpop.individuals[i].clone();
             DoubleVectorIndividual prevInd = (DoubleVectorIndividual)subpop.previousIndividuals[i];
             // the individual's personal best
             DoubleVectorIndividual pBest = (DoubleVectorIndividual)subpop.personalBests[i];
@@ -73,11 +73,12 @@ public class PSOBreeder extends Breeder
                 double pWeight = state.random[0].nextDouble();                          // weight for personal best
                 double nWeight = state.random[0].nextDouble();                          // weight for neighborhood best
                 double gWeight = state.random[0].nextDouble();                          // weight for global best
-                double newDelta = (velocity + pWeight*pDelta + nWeight*nDelta + gWeight*gDelta) / (1+pWeight+nWeight+gWeight);
-                        
-                // update this individual's genome for this dimension
-                ind.genome[j] += newDelta * subpop.velocityMultiplier;     // it's obvious if you think about it
+                
+                ind.genome[j] += velocity* subpop.velocityMultiplier + subpop.pFactor*pWeight*pDelta + subpop.nFactor*nWeight*nDelta + subpop.gFactor*gWeight*gDelta; 
+                
                 }
+
+            subpop.individuals[i] = ind;
             
             if (subpop.clampRange)
                 ind.clamp();                 

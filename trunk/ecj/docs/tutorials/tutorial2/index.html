@@ -264,7 +264,7 @@ here cloning the individual is very expensive) you may wish to light clone the I
         // individuals are actual individuals from the previous population</font>
         if (!(sources[0] instanceof BreedingPipeline))
             for(int q=start;q&lt;n+start;q++)
-                inds[q] = (Individual)(inds[q].deepClone());
+                inds[q] = (Individual)(inds[q].clone());
  </pre></tt>
 
 <p>Next we'll test to make certain that the individuals are in fact IntegerVectorIndividuals.  It's a quick hack of a test, not a complete one, but usually the complete one is unnecessary.  We'll also extract

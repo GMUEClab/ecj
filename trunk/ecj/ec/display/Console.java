@@ -93,8 +93,8 @@ public class Console extends JFrame
     public Console(String[] clArgs) throws HeadlessException 
         {
         super();
-        initialize();
         this.clArgs = clArgs;
+        initialize();
         }
     
     /**
@@ -103,8 +103,8 @@ public class Console extends JFrame
     public Console(GraphicsConfiguration gc, String[] clArgs) 
         {
         super(gc);
-        initialize();
         this.clArgs = clArgs;
+        initialize();
         }
     
     /**
@@ -114,8 +114,8 @@ public class Console extends JFrame
     public Console(String title, String[] clArgs) throws HeadlessException 
         {
         super(title);
-        initialize();
         this.clArgs = clArgs;
+        initialize();
         }
     
     /**
@@ -125,8 +125,8 @@ public class Console extends JFrame
     public Console(String title, GraphicsConfiguration gc, String[] clArgs) 
         {
         super(title, gc);
-        initialize();
         this.clArgs = clArgs;
+        initialize();
         }
     
     /**
@@ -509,6 +509,16 @@ public class Console extends JFrame
         this.setJMenuBar(getJJMenuBar());
         this.setContentPane(getJContentPane());
         this.setTitle("ECJ Console");
+        
+        for (int i = 0; i < clArgs.length; i ++) {
+        	if (clArgs[i].equalsIgnoreCase("file")) {
+        		File file = new File(clArgs[i+1]);
+        		loadParameters(file);
+                playButton.setEnabled(true);
+                stepButton.setEnabled(true);
+                conPanel.enableControls();
+        	}
+        }
         }
     /**
      * This method initializes jContentPane
