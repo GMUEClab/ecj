@@ -195,6 +195,7 @@ public class DoubleVectorIndividual extends VectorIndividual
                 i.genome[x] = u; 
                 }
             }
+            break;
             case VectorSpecies.C_SIMULATED_BINARY:
             {
             simulatedBinaryCrossover(state.random[thread], i, s.crossoverDistributionIndex);

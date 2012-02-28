@@ -87,11 +87,15 @@ eval.problem = ec.app.tutorial3.OddRosenbrock
 # Doubles and floats use the FloatVectorSpecies
 pop.subpop.0.species =                  ec.vector.FloatVectorSpecies
 pop.subpop.0.species.ind =              ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.fitness =          ec.simple.SimpleFitness
+
 # Per-gene mutation probability of 1.0
 pop.subpop.0.species.mutation-prob = 1.0
+
 # Use Gaussian Convolution with a standard deviation of 0.5
 pop.subpop.0.species.mutation-type = gauss
 pop.subpop.0.species.mutation-stdev = 0.5
+
 # One-point crossover
 pop.subpop.0.species.crossover-type = one
 pop.subpop.0.species.genome-size =      5
@@ -105,6 +109,7 @@ pop.subpop.0.species.min-gene.3 = 0
 pop.subpop.0.species.max-gene.3 = 1.0
 pop.subpop.0.species.min-gene.4 = -10.3
 pop.subpop.0.species.max-gene.4 = 2.2
+
 # Because we need default min/max genes even if we don't use them
 pop.subpop.0.species.min-gene = -100
 pop.subpop.0.species.max-gene = 100

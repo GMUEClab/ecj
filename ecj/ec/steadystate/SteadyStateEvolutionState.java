@@ -154,6 +154,7 @@ public class SteadyStateEvolutionState extends EvolutionState
         }
 
 
+    boolean justCalledPostEvaluationStatistics = false;
   
     public int evolve()
         {
@@ -162,6 +163,11 @@ public class SteadyStateEvolutionState extends EvolutionState
             output.message("Generation " + generation +"\tEvaluations " + evaluations);
             statistics.generationBoundaryStatistics(this); 
             statistics.postEvaluationStatistics(this); 
+            justCalledPostEvaluationStatistics = true;
+            }
+        else
+            {
+            justCalledPostEvaluationStatistics = false;
             }
                 
         if (firstTime) 
@@ -307,6 +313,8 @@ public class SteadyStateEvolutionState extends EvolutionState
         {
         /* finish up -- we completed. */
         ((SteadyStateBreeder)breeder).finishPipelines(this);
+        if (!justCalledPostEvaluationStatistics)
+            statistics.postEvaluationStatistics(this);
         statistics.finalStatistics(this,result);
         finisher.finishPopulation(this,result);
         exchanger.closeContacts(this,result);

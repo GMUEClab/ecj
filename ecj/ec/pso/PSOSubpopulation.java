@@ -69,7 +69,16 @@ public class PSOSubpopulation extends Subpopulation
     
     public double velocityMultiplier;
     public static final String P_VELOCITY_MULTIPLIER = "velocity-multiplier";
-        
+
+    public double pFactor;
+    public static final String P_P_FACTOR = "personal-factor";
+
+    public double nFactor;
+    public static final String P_N_FACTOR = "neighborhood-factor";
+
+    public double gFactor;
+    public static final String P_G_FACTOR = "global-factor";
+
     public DoubleVectorIndividual globalBest;
     public DoubleVectorIndividual[] neighborhoodBests;
     public DoubleVectorIndividual[] personalBests;
@@ -100,6 +109,10 @@ public class PSOSubpopulation extends Subpopulation
         clampRange = state.parameters.getBoolean(base.push(P_CLAMP_RANGE), null, false);
         initialVelocityScale = state.parameters.getDouble(base.push(P_INITIAL_VELOCITY_SCALE), null,0);
         velocityMultiplier = state.parameters.getDouble(base.push(P_VELOCITY_MULTIPLIER), null,0.1);
+        pFactor = state.parameters.getDoubleWithDefault(base.push(P_P_FACTOR), null,1);
+        nFactor = state.parameters.getDoubleWithDefault(base.push(P_N_FACTOR), null,1);
+        gFactor = state.parameters.getDoubleWithDefault(base.push(P_G_FACTOR), null,1);
+
         }
     
     void clear(DoubleVectorIndividual[] inds)
