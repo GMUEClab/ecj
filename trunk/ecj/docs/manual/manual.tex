@@ -2190,15 +2190,23 @@ pop.populate(state, 0);
 
 Why break this out?  Because there are a few EvolutionState subclasses which don't want to populate the population immediately or at all\,---\,they just want to set it up.  For example, steady state evolution sets up a Population but may only gradually fill it with initial population members.  In this case, the steady state system will just call \method{setupPopulation(...)} directly, bypassing \method{initialPopulation(...)}.
 
-\item The Population's \method{populate(...)} method is straightforward: it calls \method{populate(...)} in turn on each Subpoulation in the Population's subpopulation array.
+\item The Population's default \method{populate(...)} method is usually straightforward: it calls \method{populate(...)} in turn on each Subpoulation in the Population's subpopulation array.  
 
-\item A Subpopulation's \method{populate(...)} method usually works like this.  First, it determines if it should create new individuals from scratch or if it should fill its array by reading Individuals from a file.  This is determined by (as usual) a parameter!  If Subpopulation 0 should be read in from the file \file{/tmp/population.in}, the parameter setting would be:
+Alternatively, the Population can read an entire population from a file.  This is determined by (as usual) a parameter!  If the Population should be read in from the file \file{/tmp/population.in}, the parameter setting would be:
 
 \params{%
-pop.subpop.0.file = /tmp/population.in
+pop.file = /tmp/population.in
 }
 
-Subpopulation will try to read individuals from this file using their \method{readIndividual(..., LineNumberReader)} method.   However if the number of individuals in the file doesn't match the size of the Subpopulation, the Subpopulation will be resized to match the file, deleting the original Individuals.  Subpopulation will then read individuals using the \method{newIndividual(..., LineNumberReader)} method in \class{ec.Species} (slightly less efficient).  (See Section~\ref{ec.Species}).
+The Population will read Subpopulations, and ultimately Individuals, from this file by calling its \method{readPopulation(..., LineNumberReader)} method.  
+
+\item If the Population has not read from a file, it will call \method{populate(...)} on each of its Subpopulations.  A Subpopulation's \method{populate(...)} method usually works like this.  First, it determines if it should create new individuals from scratch or if it should fill its array by reading Individuals from a file.  This is determined by the same basic procedure!  If Subpopulation 0 should be read in from the file \file{/tmp/subpopulation.in}, the parameter setting would be:
+
+\params{%
+pop.subpop.0.file = /tmp/subpopulation.in
+}
+
+Subpopulations will try to read individuals from files using \method{readSubpopulation(..., LineNumberReader)}.  If the number of individuals in the file doesn't match the size of the Subpopulation, the Subpopulation will be resized to match the file.
 
 If no file is provided, the Subpopulation assumes that it is generating individuals from scratch.  This is by far the most common case.  To do this, Subpopulation generates new individuals using the standard \method{newIndividual(...)} method in \class{ec.Species} (see Section~\ref{ec.Species}).  ECJ can also check to make sure that the Subpopulation does not produce duplicate individuals, if you set the following parameter (in this case, in Subpopulation 0):
 
@@ -2214,18 +2222,38 @@ This says that if the Subpopulation creates a duplicate individual, it will try 
 
 
 
+\subsection{Population Files and Subpopulation Files}
+
+A population file typically starts with a declaration of the number of subpopulations, followed by a declaration of a subpopulation number, then the number of individuals in that subpopulation, then the individuals one by one.  After this come the declaration of the next subpopulation number, and the number of individuals in {\it that} subpopulation, then those individuals.  And so on.  It looks like this:
 
 
+{\small\begin{verbatim}
+Number of Subpopulations: i3|
+Subpopulation Number: i0|
+Number of Individuals: i1024|
+... [the individuals] ...
+Subpopulation Number: i1|
+Number of Individuals: i512|
+... [the individuals] ...
+Subpopulation Number: i2|
+Number of Individuals: i2048|
+... [the individuals] ...
+\end{verbatim}}
 
+In contrast, a subpopulation file usually just has the the number of individuals for the subpopulation, followed by the individuals:
 
+{\small\begin{verbatim}
+Number of Individuals: i512|
+... [the individuals] ...
+\end{verbatim}}
 
+You can typically edit a subpopulation file out of a population file, or build a 1-subpop population file out of a subpopulation file, with some judicious typing.  Note that integers start with an ``i'' and end with a bar, as in:
 
+\begin{verbatim}
+i40|
+\end{verbatim}
 
-
-
-
-
-
+This oddity is due to use of ECJ's Code package (Section~\ref{ec.util.Code}). 
 
 
 

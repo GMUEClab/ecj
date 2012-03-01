@@ -28,8 +28,8 @@ import ec.util.*;
 
 public class SimpleEvaluator extends Evaluator
     {
-	public static final String P_CLONE_PROBLEM = "clone-problem";
-	public boolean cloneProblem;
+    public static final String P_CLONE_PROBLEM = "clone-problem";
+    public boolean cloneProblem;
 
     // checks to make sure that the Problem implements SimpleProblemForm
     public void setup(final EvolutionState state, final Parameter base)
@@ -57,9 +57,9 @@ public class SimpleEvaluator extends Evaluator
             for(int i = 0; i < state.population.subpops.length; i++)
                 { numinds[i] = state.population.subpops[i].individuals.length; from[i] = 0; }
             if (cloneProblem)
-				evalPopChunk(state,numinds,from,0,(SimpleProblemForm)(p_problem.clone()));
-			else
-				evalPopChunk(state,numinds,from,0,(SimpleProblemForm)(p_problem));
+                evalPopChunk(state,numinds,from,0,(SimpleProblemForm)(p_problem.clone()));
+            else
+                evalPopChunk(state,numinds,from,0,(SimpleProblemForm)(p_problem));
             }
         else
             {
@@ -111,10 +111,10 @@ public class SimpleEvaluator extends Evaluator
 
             // gather the threads
             for(int y=0;y<state.evalthreads;y++) 
-				try 
-					{ 
-					t[y].join(); 
-					}
+                try 
+                    { 
+                    t[y].join(); 
+                    }
                 catch(InterruptedException e)
                     {
                     state.output.fatal("Whoa! The main evaluation thread got interrupted!  Dying...");

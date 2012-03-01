@@ -281,41 +281,41 @@ public class Edge extends GPProblem implements SimpleProblemForm
         // load the test examples here
 
         /*
-        File ap = null;
-        File an = null;
-        File tp = null;
-        File tn = null;
-        int restriction;
+          File ap = null;
+          File an = null;
+          File tp = null;
+          File tn = null;
+          int restriction;
 
-        if (generalize)
-            {
-            ap = state.parameters.getFile(base.push(P_ALLPOS),null);
-            an = state.parameters.getFile(base.push(P_ALLNEG),null);
-            }
+          if (generalize)
+          {
+          ap = state.parameters.getFile(base.push(P_ALLPOS),null);
+          an = state.parameters.getFile(base.push(P_ALLNEG),null);
+          }
 
-        tp = state.parameters.getFile(base.push(P_TESTPOS),null);
-        tn = state.parameters.getFile(base.push(P_TESTNEG),null);
+          tp = state.parameters.getFile(base.push(P_TESTPOS),null);
+          tn = state.parameters.getFile(base.push(P_TESTNEG),null);
 
-        if (generalize)
-            {
-            if (ap==null) state.output.error("File doesn't exist", base.push(P_ALLPOS));
-            if (an==null) state.output.error("File doesn't exist", base.push(P_ALLNEG));
-            }
+          if (generalize)
+          {
+          if (ap==null) state.output.error("File doesn't exist", base.push(P_ALLPOS));
+          if (an==null) state.output.error("File doesn't exist", base.push(P_ALLNEG));
+          }
 
-        if (tp==null) state.output.error("File doesn't exist", base.push(P_TESTPOS));
-        if (tn==null) state.output.error("File doesn't exist", base.push(P_TESTNEG));
-        state.output.exitIfErrors();
+          if (tp==null) state.output.error("File doesn't exist", base.push(P_TESTPOS));
+          if (tn==null) state.output.error("File doesn't exist", base.push(P_TESTNEG));
+          state.output.exitIfErrors();
 
-        if (generalize)
-            {
-            if (!ap.canRead()) state.output.error("File cannot be read", base.push(P_ALLPOS));
-            if (!an.canRead()) state.output.error("File cannot be read", base.push(P_ALLNEG));
-            }
+          if (generalize)
+          {
+          if (!ap.canRead()) state.output.error("File cannot be read", base.push(P_ALLPOS));
+          if (!an.canRead()) state.output.error("File cannot be read", base.push(P_ALLNEG));
+          }
 
-        if (!tp.canRead()) state.output.error("File cannot be read", base.push(P_TESTPOS));
-        if (!tn.canRead()) state.output.error("File cannot be read", base.push(P_TESTNEG));
-        state.output.exitIfErrors();
-*/
+          if (!tp.canRead()) state.output.error("File cannot be read", base.push(P_TESTPOS));
+          if (!tn.canRead()) state.output.error("File cannot be read", base.push(P_TESTNEG));
+          state.output.exitIfErrors();
+        */
 
 
         InputStream ap = null;

@@ -1866,3 +1866,7 @@ Version		Change Log
 		Thanks to Kenneth Bogert <kbogert@uga.edu>
 	Improvements to the GUI.  Thanks to Kenneth Bogert <kbogert@uga.edu>
 	Document fixes to Tutorial 2 and Tutorial 3
+	Added new Population option to initialize from a file, just like
+		Subpopulation does.
+	Reindented
+

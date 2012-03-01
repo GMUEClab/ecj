@@ -79,7 +79,7 @@ import ec.util.*;
 public class Subpopulation implements Group
     {
     /* A new subpopulation should be loaded from this resource name if it is non-null;
-        otherwise they should be created at random.  */
+       otherwise they should be created at random.  */
     public boolean loadInds;
     public Parameter file;
 
@@ -126,12 +126,12 @@ public class Subpopulation implements Group
         catch (CloneNotSupportedException e) { throw new InternalError(); } // never happens
         }
 
-	/** Sets all Individuals in the Subpopulation to null, preparing it to be reused. */
-	public void clear()
-		{
-		for(int i = 0 ; i < individuals.length; i++)
-			individuals[i] = null;
-		}
+    /** Sets all Individuals in the Subpopulation to null, preparing it to be reused. */
+    public void clear()
+        {
+        for(int i = 0 ; i < individuals.length; i++)
+            individuals[i] = null;
+        }
 
     public void setup(final EvolutionState state, final Parameter base)
         {

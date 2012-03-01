@@ -173,7 +173,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
         which will be checked for in the default checkConstraints(...), or you can leave
         this method alone and override checkConstraints(...) to check for more complex constraints
         as you see fit.
-        */
+    */
         
     public int expectedChildren() { return CHILDREN_UNKNOWN; }
 

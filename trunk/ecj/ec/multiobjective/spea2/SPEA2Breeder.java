@@ -35,8 +35,8 @@ public class SPEA2Breeder extends SimpleBreeder
             state.output.fatal("SPEA2Breeder does not support sequential evaluation.",
                 base.push(P_SEQUENTIAL_BREEDING));
 
-		if (!clonePipelineAndPopulation)
-			state.output.fatal("clonePipelineAndPopulation must be true for SPEA2Breeder.");
+        if (!clonePipelineAndPopulation)
+            state.output.fatal("clonePipelineAndPopulation must be true for SPEA2Breeder.");
         }
 
 
