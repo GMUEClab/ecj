@@ -174,10 +174,10 @@ public class GESpecies extends IntegerVectorSpecies
 
             //try
             //    {
-                GPFunctionSet gpfs = trees[i].constraints((GPInitializer) state.initializer).functionset;
-                GrammarParser grammarparser = (GrammarParser)(parser_prototype.clone());
-                //grammar[i] = grammarparser.parseRules(state, new BufferedReader(new FileReader(grammarFile)), gpfs);
-                grammar[i] = grammarparser.parseRules(state, new BufferedReader(new InputStreamReader(grammarFile)), gpfs);
+            GPFunctionSet gpfs = trees[i].constraints((GPInitializer) state.initializer).functionset;
+            GrammarParser grammarparser = (GrammarParser)(parser_prototype.clone());
+            //grammar[i] = grammarparser.parseRules(state, new BufferedReader(new FileReader(grammarFile)), gpfs);
+            grammar[i] = grammarparser.parseRules(state, new BufferedReader(new InputStreamReader(grammarFile)), gpfs);
             //    }
             //catch (FileNotFoundException e)
             //    {

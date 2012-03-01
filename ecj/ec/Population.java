@@ -65,9 +65,15 @@ public class Population implements Group
     public static final String P_SIZE = "subpops";
     public static final String P_SUBPOP = "subpop";
     public static final String P_DEFAULT_SUBPOP = "default-subpop";
+    public static final String P_FILE = "file";
     public static final String NUM_SUBPOPS_PREAMBLE = "Number of Subpopulations: ";
     public static final String SUBPOP_INDEX_PREAMBLE = "Subpopulation Number: ";
 
+
+    /* A new population should be loaded from this resource name if it is non-null;
+       otherwise they should be created at random.  */
+    public boolean loadInds;
+    public Parameter file;
 
     /** Returns an instance of Population just like it had been before it was
         populated with individuals. You may need to override this if you override
@@ -89,13 +95,13 @@ public class Population implements Group
             }
         catch (CloneNotSupportedException e) { throw new InternalError(); } // never happens
         }
-		
-	/** Sets all Individuals in the Population to null, preparing it to be reused. */
-	public void clear()
-		{
-		for(int i = 0 ; i < subpops.length; i++)
-			subpops[i].clear();
-		}
+                
+    /** Sets all Individuals in the Population to null, preparing it to be reused. */
+    public void clear()
+        {
+        for(int i = 0 ; i < subpops.length; i++)
+            subpops[i].clear();
+        }
 
     public void setup(final EvolutionState state, final Parameter base)
         {
@@ -103,6 +109,12 @@ public class Population implements Group
 
         Parameter p;
 
+        // do we load from a file?
+        file = base.push(P_FILE);
+        loadInds = state.parameters.exists(file,null);
+        
+        // how many subpopulations do we have?
+        
         p = base.push(P_SIZE);
         int size = state.parameters.getInt(p,null,1);
         if (size==0) // uh oh
@@ -132,9 +144,23 @@ public class Population implements Group
     /** Populates the population with new random individuals. */ 
     public void populate(EvolutionState state, int thread)
         {
-        // let's populate!
-        for(int x=0;x<subpops.length;x++)
-            subpops[x].populate(state, thread);
+        // should we load individuals from a file? -- duplicates are permitted
+        if (loadInds)
+            {
+            InputStream stream = state.parameters.getResource(file,null);
+            if (stream == null)
+                state.output.fatal("Could not load population from file", file);
+            
+            try { readPopulation(state, new LineNumberReader(new InputStreamReader(stream))); }
+            catch (IOException e) { state.output.fatal("An IOException occurred when trying to read from the file " + state.parameters.getString(file, null) + ".  The IOException was: \n" + e,
+                    file, null); }
+            }
+        else
+            {
+            // let's populate!
+            for(int x=0;x<subpops.length;x++)
+                subpops[x].populate(state, thread);
+            }
         }
         
         

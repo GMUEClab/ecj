@@ -511,14 +511,14 @@ public class Console extends JFrame
         this.setTitle("ECJ Console");
         
         for (int i = 0; i < clArgs.length; i ++) {
-        	if (clArgs[i].equalsIgnoreCase("file")) {
-        		File file = new File(clArgs[i+1]);
-        		loadParameters(file);
+            if (clArgs[i].equalsIgnoreCase("file")) {
+                File file = new File(clArgs[i+1]);
+                loadParameters(file);
                 playButton.setEnabled(true);
                 stepButton.setEnabled(true);
                 conPanel.enableControls();
-        	}
-        }
+                }
+            }
         }
     /**
      * This method initializes jContentPane

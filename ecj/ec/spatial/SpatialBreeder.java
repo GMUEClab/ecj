@@ -57,8 +57,8 @@ public class SpatialBreeder extends SimpleBreeder
             state.output.warning("SpationBreeder hasn't been well tested with sequential evaluation, though it should probably work fine.  You're on your own.",
                 base.push(P_SEQUENTIAL_BREEDING));
 
-		if (!clonePipelineAndPopulation)
-			state.output.fatal("clonePipelineAndPopulation must be true for SpatialBreeder.");
+        if (!clonePipelineAndPopulation)
+            state.output.fatal("clonePipelineAndPopulation must be true for SpatialBreeder.");
         }
                 
     protected void breedPopChunk(Population newpop, EvolutionState state,

@@ -28,17 +28,17 @@ public class BLoop extends GPNode
     public String toString() { return "loop2"; }
 
 /*
-    public void checkConstraints(final EvolutionState state,
-        final int tree,
-        final GPIndividual typicalIndividual,
-        final Parameter individualBase)
-        {
-        super.checkConstraints(state,tree,typicalIndividual,individualBase);
-        if (children.length!=2)
-            state.output.error("Incorrect number of children for node " + 
-                toStringForError() + " at " +
-                individualBase);
-        }
+  public void checkConstraints(final EvolutionState state,
+  final int tree,
+  final GPIndividual typicalIndividual,
+  final Parameter individualBase)
+  {
+  super.checkConstraints(state,tree,typicalIndividual,individualBase);
+  if (children.length!=2)
+  state.output.error("Incorrect number of children for node " + 
+  toStringForError() + " at " +
+  individualBase);
+  }
 */
     public int expectedChildren() { return 2; }
 

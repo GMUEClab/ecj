@@ -28,17 +28,17 @@ public class Cos extends GPNode
     public String toString() { return "cos"; }
 
 /*
-    public void checkConstraints(final EvolutionState state,
-        final int tree,
-        final GPIndividual typicalIndividual,
-        final Parameter individualBase)
-        {
-        super.checkConstraints(state,tree,typicalIndividual,individualBase);
-        if (children.length!=1)
-            state.output.error("Incorrect number of children for node " + 
-                toStringForError() + " at " +
-                individualBase);
-        }
+  public void checkConstraints(final EvolutionState state,
+  final int tree,
+  final GPIndividual typicalIndividual,
+  final Parameter individualBase)
+  {
+  super.checkConstraints(state,tree,typicalIndividual,individualBase);
+  if (children.length!=1)
+  state.output.error("Incorrect number of children for node " + 
+  toStringForError() + " at " +
+  individualBase);
+  }
 */
     public int expectedChildren() { return 1; }
 

@@ -2191,9 +2191,9 @@ public class ParameterDatabase extends Properties implements Serializable
         {
         return label; 
 /*        File file = fileFor(parameter);
-        if (file == null) return "";
-        try { return file.getCanonicalPath(); }
-        catch (IOException e) { return ""; }
+          if (file == null) return "";
+          try { return file.getCanonicalPath(); }
+          catch (IOException e) { return ""; }
 */
         }
         
@@ -2205,36 +2205,36 @@ public class ParameterDatabase extends Properties implements Serializable
      * @deprecated You probably want to use getLocation
      */
 /*
-    public File fileFor(Parameter parameter) 
-        {
-        File result = _fileFor(parameter);
-        uncheck();
-        return result;
-        }
+  public File fileFor(Parameter parameter) 
+  {
+  File result = _fileFor(parameter);
+  uncheck();
+  return result;
+  }
 
-    synchronized File _fileFor(Parameter parameter) 
-        {
-        if (checked)
-            return null;
+  synchronized File _fileFor(Parameter parameter) 
+  {
+  if (checked)
+  return null;
         
-        checked = true;
-        File result = null;
-        String p = getProperty(parameter.param);
-        if (p==null) 
-            {
-            int size = parents.size();
-            for(int i = 0; i < size; ++i) 
-                {
-                result = ((ParameterDatabase)parents.elementAt(i))._fileFor(parameter);
-                if (result != null)
-                    return result;
-                }
-            return result;
-            }
-        else
-            return new File(directory,filename);
-        }
-    */
+  checked = true;
+  File result = null;
+  String p = getProperty(parameter.param);
+  if (p==null) 
+  {
+  int size = parents.size();
+  for(int i = 0; i < size; ++i) 
+  {
+  result = ((ParameterDatabase)parents.elementAt(i))._fileFor(parameter);
+  if (result != null)
+  return result;
+  }
+  return result;
+  }
+  else
+  return new File(directory,filename);
+  }
+*/
 
     /** Removes a parameter from the topmost database. */
     public synchronized void remove(Parameter parameter) 
@@ -2335,8 +2335,8 @@ public class ParameterDatabase extends Properties implements Serializable
             String n = (String)(a.get(i));
             if (n.equals(".")) { } // do nothing
             else if (n.equals("..") &&
-                        b.size() != 0 && !b.get(0).equals(".."))
-                            b.remove(b.size() - 1);  
+                b.size() != 0 && !b.get(0).equals(".."))
+                b.remove(b.size() - 1);  
             else b.add(n);
             }
         
@@ -2485,7 +2485,7 @@ public class ParameterDatabase extends Properties implements Serializable
                     throw new FileNotFoundException("Could not parse file into filename and classname:\n\tparent." + x + " = " + s);
                     }
                 }
-           else throw new FileNotFoundException("Attempt to load a relative file, but there's no parent file: " + s);
+            else throw new FileNotFoundException("Attempt to load a relative file, but there's no parent file: " + s);
             }
         }
 

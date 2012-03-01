@@ -28,17 +28,17 @@ public class X2 extends GPNode
     public String toString() { return "x2"; }
 
 /*
-    public void checkConstraints(final EvolutionState state,
-        final int tree,
-        final GPIndividual typicalIndividual,
-        final Parameter individualBase)
-        {
-        super.checkConstraints(state,tree,typicalIndividual,individualBase);
-        if (children.length!=0)
-            state.output.error("Incorrect number of children for node " + 
-                toStringForError() + " at " +
-                individualBase);
-        }
+  public void checkConstraints(final EvolutionState state,
+  final int tree,
+  final GPIndividual typicalIndividual,
+  final Parameter individualBase)
+  {
+  super.checkConstraints(state,tree,typicalIndividual,individualBase);
+  if (children.length!=0)
+  state.output.error("Incorrect number of children for node " + 
+  toStringForError() + " at " +
+  individualBase);
+  }
 */
     public int expectedChildren() { return 0; }
 
@@ -50,10 +50,10 @@ public class X2 extends GPNode
         final Problem problem)
         {
         RegressionData rd = ((RegressionData)(input));
-		double[] c = ((Benchmarks)problem).currentValue;
-		if (c.length >= 2)
-			rd.x = ((Benchmarks)problem).currentValue[1];
-		else rd.x = 0;
+        double[] c = ((Benchmarks)problem).currentValue;
+        if (c.length >= 2)
+            rd.x = ((Benchmarks)problem).currentValue[1];
+        else rd.x = 0;
         }
     }
 

@@ -910,7 +910,7 @@ public strictfp class MersenneTwisterFast implements Serializable, Cloneable
         </table>
         
         <p>This version preserves all possible random values in the double range.
-        */
+    */
     public double nextDouble(boolean includeZero, boolean includeOne)
         {
         double d = 0.0;
@@ -920,7 +920,7 @@ public strictfp class MersenneTwisterFast implements Serializable, Cloneable
             if (includeOne && nextBoolean()) d += 1.0;  // if includeOne, with 1/2 probability, push to [1.0, 2.0)
             } 
         while ( (d > 1.0) ||                            // everything above 1.0 is always invalid
-                (!includeZero && d == 0.0));            // if we're not including zero, 0.0 is invalid
+            (!includeZero && d == 0.0));            // if we're not including zero, 0.0 is invalid
         return d;
         }
 
@@ -1123,7 +1123,7 @@ public strictfp class MersenneTwisterFast implements Serializable, Cloneable
         </table>
         
         <p>This version preserves all possible random values in the float range.
-        */
+    */
     public double nextFloat(boolean includeZero, boolean includeOne)
         {
         float d = 0.0f;
@@ -1133,7 +1133,7 @@ public strictfp class MersenneTwisterFast implements Serializable, Cloneable
             if (includeOne && nextBoolean()) d += 1.0f; // if includeOne, with 1/2 probability, push to [1.0f, 2.0f)
             } 
         while ( (d > 1.0f) ||                           // everything above 1.0f is always invalid
-                (!includeZero && d == 0.0f));           // if we're not including zero, 0.0f is invalid
+            (!includeZero && d == 0.0f));           // if we're not including zero, 0.0f is invalid
         return d;
         }
 

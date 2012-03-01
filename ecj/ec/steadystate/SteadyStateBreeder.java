@@ -71,8 +71,8 @@ public class SteadyStateBreeder extends SimpleBreeder
         {
         super.setup(state,base);
                 
-		if (!clonePipelineAndPopulation)
-			state.output.fatal("clonePipelineAndPopulation must be true for SteadyStateBreeder -- we'll use only one Pipeline anyway.");
+        if (!clonePipelineAndPopulation)
+            state.output.fatal("clonePipelineAndPopulation must be true for SteadyStateBreeder -- we'll use only one Pipeline anyway.");
 
         Parameter p = new Parameter(Initializer.P_POP).push(Population.P_SIZE);
         int size = state.parameters.getInt(p,null,1);  
