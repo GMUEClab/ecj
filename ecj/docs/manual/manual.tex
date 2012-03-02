@@ -4681,7 +4681,7 @@ vector.list-xover.toss = true
 
 The standard vector mutation operator will work fine in list mode: it doesn't care what the length of the array is.
 
-ECJ at present has a single mutation operators special to lists: \class{ec.vector.breed.GeneDuplicationPipeline}.  This pipeline replicates a particular mutation operation common in Grammatical Evolution (Section \ref{ec.gp.ge}).  Specifically: we select two indices in the list at random such that they are not equal to one another.  Then we copy the region between the two indices, and concatenate it to the end of the list.  And that's it!
+ECJ at present has a single mutation operator special to lists: \class{ec.vector.breed.GeneDuplicationPipeline}.  This pipeline replicates a particular mutation operation common in Grammatical Evolution (Section \ref{ec.gp.ge}).  Specifically: we select two indices in the list at random such that they are not equal to one another.  Then we copy the region between the two indices, and concatenate it to the end of the list.  And that's it!
 
 \paragraph{Example}
 
@@ -4879,7 +4879,7 @@ public class TrigGene extends VectorGene {
 \section{Genetic Programming (The \package{ec.gp} Package)}
 \label{ec.gp}
 
-The \package{ec.gp} package is far and away the most developed and tested package in ECJ.  ECJ was largely developed in order to support his package, and much of our existing literature is based on it.
+The \package{ec.gp} package is far and away the most developed and tested package in ECJ.  ECJ was largely developed in order to support this package, and much of our existing literature is based on it.
 
 ECJ's genetic programming package uses ``Koza-style'' tree structures \cite{koza:book,koza:gp2} which represent the parse trees of Lisp s-expressions.   For an introduction to genetic programming, see \cite{poli08:fieldguide}.  Much of ECJ's approach to GP is inspired by {\it lil-gp} \cite{lilgp}, an earlier C-based GP system.  However {\it lil-gp} and many other GP systems pack the parse trees into arrays to save memory.  ECJ does not: the parse trees are stored as tree structures in memory.  This is much more wasteful of memory but it is faster to evaluate and far easier to manipulate.
 
