@@ -4,7 +4,7 @@ import java.util.*;
 
 /** 
  * <h3>MersenneTwister and MersenneTwisterFast</h3>
- * <p><b>Version 17</b>, based on version MT199937(99/10/29)
+ * <p><b>Version 18</b>, based on version MT199937(99/10/29)
  * of the Mersenne Twister algorithm found at 
  * <a href="http://www.math.keio.ac.jp/matumoto/emt.html">
  * The Mersenne Twister Home Page</a>, with the initialization
@@ -41,6 +41,11 @@ import java.util.*;
  * Vol. 8, No. 1, January 1998, pp 3--30.
  *
  * <h3>About this Version</h3>
+ *
+ * <p><b>Changes since V17:</b> Removed vestigial references to &= 0xffffffff
+ * which stemmed from the original C code.  The C code could not guarantee that
+ * ints were 32 bit, hence the masks.  The vestigial references in the Java
+ * code were likely optimized out anyway.
  *
  * <p><b>Changes since V16:</b> Added nextDouble(includeZero, includeOne) and
  * nextFloat(includeZero, includeOne) to allow for half-open, fully-closed, and
@@ -154,8 +159,9 @@ import java.util.*;
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  *
- @version 17
+ @version 18
 */
+
 
 // Note: this class is hard-inlined in all of its methods.  This makes some of
 // the methods well-nigh unreadable in their complexity.  In fact, the Mersenne
@@ -303,7 +309,7 @@ public strictfp class MersenneTwisterFast implements Serializable, Cloneable
             /* In the previous versions, MSBs of the seed affect   */
             /* only MSBs of the array mt[].                        */
             /* 2002/01/09 modified by Makoto Matsumoto             */
-            mt[mti] &= 0xffffffff;
+            // mt[mti] &= 0xffffffff;
             /* for >32 bit machines */
             }
         }
@@ -327,7 +333,7 @@ public strictfp class MersenneTwisterFast implements Serializable, Cloneable
         for (; k!=0; k--) 
             {
             mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >>> 30)) * 1664525)) + array[j] + j; /* non linear */
-            mt[i] &= 0xffffffff; /* for WORDSIZE > 32 machines */
+            // mt[i] &= 0xffffffff; /* for WORDSIZE > 32 machines */
             i++;
             j++;
             if (i>=N) { mt[0] = mt[N-1]; i=1; }
@@ -336,7 +342,7 @@ public strictfp class MersenneTwisterFast implements Serializable, Cloneable
         for (k=N-1; k!=0; k--) 
             {
             mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >>> 30)) * 1566083941)) - i; /* non linear */
-            mt[i] &= 0xffffffff; /* for WORDSIZE > 32 machines */
+            // mt[i] &= 0xffffffff; /* for WORDSIZE > 32 machines */
             i++;
             if (i>=N) 
                 {
