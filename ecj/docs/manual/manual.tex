@@ -1635,7 +1635,7 @@ When implementing \method{setup(...)} always call \method{super.setup(...)} if a
 
 Though Singleton are single objects, Cliques (\class{ec.Clique}) are objects for which only a small number (but usually more than 1) are created.  Cliques are also generally meant to be globally accessible.  Most Cliques have a globally accessible registry of some sort in which all Clique members can be found.
 
-Because they are global, Prototypes and Singletons usually are set up from a single parameter base (the one provided by \method{setup(..)}).
+Because they are global, Prototypes and Singletons usually are set up from a single parameter base (the one provided by \method{setup(...)}).
 
 \subsection{Prototypes}   Prototypes (\class{ec.Prototype}) are by far the most common objects in ECJ.  Prototypes are Setups which follow the following design pattern: only one instance is loaded from the Parameter Database and set up; this object is the {\it prototype}.  Then many objects are created by {\it deep cloning} the prototype.  One example of a Prototype is an Individual (\class{ec.Individual}): a single prototypical Individual is created when ECJ starts up; and further Individuals are deep cloned from this prototype to fill Populations.
 
@@ -4716,7 +4716,7 @@ pop.subpop.0.species.geometric-prob = 0.95
 Last, some discussion should be reserved regarding vectors of ``arbitrary genes''.  The idea behind this is to provide you with maximum flexibility as to what you can create vectors out of.  The classes involved here are:
 
 \begin{itemize}
-\item \class{ec.vector.VectorGene}, the abstract superclass of objects which can fill gene positions.
+\item \class{ec.vector.VectorGene},\footnote{The name \class{ec.vector.VectorGene} is a historical error.  It really ought to have been called \textsf{ec.vector.Gene}.} the abstract superclass of objects which can fill gene positions.
 \item \class{ec.vector.GeneVectorIndividual}, the VectorIndividual which contains nothing but VectorGenes.
 \item \class{ec.vector.GeneVectorSpecies}, the Species for GeneVectorIndividuals.
 \end{itemize}
@@ -4741,7 +4741,7 @@ Furthermore, mutation on GeneVectorIndividuals call this method on each VectorGe
 public abstract void mutate(EvolutionState state, int thread);
 }
 
-The default form of this method just calls \method{reset(...)}.
+The default form of this method just calls \method{reset(...)}.  You'd probably want to make a better mutation function than this.
 
 VectorGene is a Prototype, and so requires \method{setup(...)}, \method{clone(...)}, and \method{defaultBase()}.  Default implementations are already provided for you.  Except for \method{clone(...)} you're unlikely to need to override them.
 

@@ -1869,4 +1869,8 @@ Version		Change Log
 	Added new Population option to initialize from a file, just like
 		Subpopulation does.
 	Reindented
-
+	Removed vestigial references to 0xffffffff in MersenneTwister and
+		MersenneTwisterFast.  Thanks to Bruce Haxton <bruce.haxton@yahoo.com>
+	Bugfix to GeneVectorIndividual.setGenomeLength(...) which was filling
+		the wrong genome when the length was being increased.  Thanks
+		to Ben Stable <bennett.stabile@gmail.com>
