@@ -43,7 +43,7 @@ import ec.util.*;
  * files for inspection, slight modification, then reading back in later on.  <b>readIndividual</b>reads
  * in the fitness and the evaluation flag, then calls <b>parseGenotype</b> to read in the remaining individual.
  * You are responsible for implementing parseGenotype: the Code class is there to help you.
- * <b>printIndividual</b> writes out the fitness and evaluation flag, then calls <b>genotypeToString<b> 
+ * <b>printIndividual</b> writes out the fitness and evaluation flag, then calls <b>genotypeToString</b> 
  * and printlns the resultant string. You are responsible for implementing the genotypeToString method in such
  * a way that parseGenotype can read back in the individual println'd with genotypeToString.  The default form
  * of genotypeToString simply calls <b>toString</b>, which you may override instead if you like.  The default

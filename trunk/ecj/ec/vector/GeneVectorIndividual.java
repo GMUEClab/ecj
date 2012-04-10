@@ -307,7 +307,7 @@ public class GeneVectorIndividual extends VectorIndividual
         System.arraycopy(genome, 0, newGenome, 0, 
             genome.length < newGenome.length ? genome.length : newGenome.length);
         for(int x=genome.length; x< newGenome.length; x++)
-            if (genome[x]==null) genome[x] = (VectorGene)(s.genePrototype.clone());  // not reset
+            newGenome[x] = (VectorGene)(s.genePrototype.clone());  // not reset
         genome = newGenome;
         }
 
