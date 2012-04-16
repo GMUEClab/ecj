@@ -120,13 +120,13 @@ exch		= ec.simple.SimpleExchanger
 generations		= 200
 quit-on-run-complete	= true
 checkpoint		= false
-prefix			= ec
+checkpoint-prefix	= ec
 checkpoint-modulo	= 1
 </pre></tt>
 
 <p><tt>generations</tt> is the number of generations to run.  <tt>quit-on-run-complete</tt> tells us whether or not we should quit ECJ when it finds an ideal individual; otherwise it will continue until it runs out of generations.
 
-<p><tt>checkpoint</tt> tells ECJ that it should perform <i>checkpointing</i>  every <tt>checkpoint-modulo</tt> generations, using a Gzipped checkpoint file whose name begins with the prefix specified in <tt>prefix</tt>.  Checkpointing saves out the state of the entire evolutionary process to a file; you can then start from that point by launching ECJ on that checkpoint file (for more information on how to do this, see the <a href="../../classdocs/ec/Evolve.html">Evolve</a> documentation).  If you have a long run and expect that the power might go out or the system might be shut down, you may want to checkpoint.  Otherwise don't do it, it's an expensive thing to do.  
+<p><tt>checkpoint</tt> tells ECJ that it should perform <i>checkpointing</i>  every <tt>checkpoint-modulo</tt> generations, using a Gzipped checkpoint file whose name begins with the prefix specified in <tt>checkpoint-prefix</tt>.  Checkpointing saves out the state of the entire evolutionary process to a file; you can then start from that point by launching ECJ on that checkpoint file (for more information on how to do this, see the <a href="../../classdocs/ec/Evolve.html">Evolve</a> documentation).  If you have a long run and expect that the power might go out or the system might be shut down, you may want to checkpoint.  Otherwise don't do it, it's an expensive thing to do.  
 
 <h3>Define the Statistics File</h3>
 

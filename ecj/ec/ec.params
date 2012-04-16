@@ -85,7 +85,7 @@ seed.0 =				time
 # generation, and the prefix to all the files would be "ec.*"
 checkpoint =				false
 checkpoint-modulo =                     1
-prefix = 				ec
+checkpoint-prefix = 			ec
 
 
 

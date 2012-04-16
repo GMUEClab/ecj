@@ -1182,8 +1182,16 @@ checkpoint-modulo = 4
 ECJ writes to checkpoint files named \file{ec.\textit{generation}.gz}, where {\it generation} is the current generation number.  If you don't like the \file{ec} prefix for some reason, change it to, say, \file{curmudgeon} like this:
 
 \params{%
-prefix = curmudgeon
+checkpoint-prefix = curmudgeon
 }
+
+By default ECJ writes checkpoints to the directory in which you had run Java.  But you can set a parameter to specify a directory to which checkpoints should be written, such as \file{/tmp/}:
+
+\params{%
+checkpoint-directory = /tmp/
+}
+
+This directory can be an absolute, relative, execution relative, or class relative path (see Section \ref{kindsofparameters} for a refresher).  But it {\it must} be a directory, not a file.
 
 Whenever a checkpoint is written, this fact is also added as an announcement.  Here's the output of a typical run with checkpointing every two generations.
 
@@ -1468,7 +1476,7 @@ public class ec.app.myexample.MySimpleEvolutionState extends ec.simple.SimpleEvo
         {
         // setup() hasn't been called yet, so very few instance variables are valid at this point.
         // Here's what you can access:  parameters, random, output, evalthreads, breedthreads,
-        //                              randomSeedOffset, job, runtimeArguments, checkpointPrefix
+        //                              randomSeedOffset, job, runtimeArguments, checkpointPrefix, checkpointDirectory
         // Let's modify the 'generations' parameter based on the job number
         int jobNum = ((Integer)(job[0])).intValue();
         parameters.set(new ec.util.Parameter("generations"), "" + (jobNum + 20));        
@@ -3396,7 +3404,7 @@ pop.subpop.0.species.ind=ec.vector.DoubleVectorIndividual,
 pop.subpop.0.species.fitness=ec.simple.SimpleFitness, pop.subpop.0.size=1000, 
 eval.problem.type=rastrigin, stat=ec.simple.SimpleStatistics, 
 exch=ec.simple.SimpleExchanger, stat.file=$out.stat} : ({checkpoint-modulo=1, 
-evalthreads=1, checkpoint=false, breedthreads=1, prefix=ec, seed.0=time})))>
+evalthreads=1, checkpoint=false, breedthreads=1, checkpoint-prefix=ec, seed.0=time})))>
 \end{verbatim}
 }
 
@@ -3687,7 +3695,7 @@ seed.0 = time\\
 \# Checkpointing\\
 checkpoint = false\\
 checkpoint-modulo = 1\\
-prefix = ec
+checkpoint-prefix = ec
 }
 
 Next a basic generational setup:
@@ -6002,7 +6010,7 @@ seed.0 = time\\
 \# Checkpointing\\
 checkpoint = false\\
 checkpoint-modulo = 1\\
-prefix = ec\\
+checkpoint-prefix = ec\\
 \\
 \# The basic setup\\
 state = ec.simple.SimpleEvolutionState\\
@@ -8492,7 +8500,13 @@ stat.file = \$statenisland.stat
 If you have multiple Statistics files you'll need to change all of them; the same goes for other files being written out.  Also, if you are checkpointing, and your islands might overwrite each others' checkpoint files, you need to change the checkpoint prefix on a per-island basis.  For example:
 
 \params{%
-prefix = statenisland
+checkpoint-prefix = statenisland
+}
+
+... or alternatively change the directory in which checkpoint files are written on a per-island basis:
+
+\params{%
+checkpoint-directory = /tmp/statenisland/
 }
 
 Last, you can cut down on the verbosity of the islands by setting...
