@@ -1874,3 +1874,10 @@ Version		Change Log
 	Bugfix to GeneVectorIndividual.setGenomeLength(...) which was filling
 		the wrong genome when the length was being increased.  Thanks
 		to Ben Stable <bennett.stabile@gmail.com>
+	Added checkpoint-directory parameter to specify the location of written
+		checkpoints.  At this point this parameter has NOT been added to the GUI,
+		just to the command-line (sorry). 
+	Deprecated 'prefix' as a parameter.  You should instead use 'checkpoint-prefix'.
+		This also hasn't been added to the GUI, just to the command-line.  This
+		is deprecation -- you can still use 'prefix' for now, but you get a warning
+		message.

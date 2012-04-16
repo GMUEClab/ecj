@@ -7,7 +7,7 @@
 
 package ec.util;
 import java.util.zip.*;
-import ec.EvolutionState;
+import ec.*;
 import java.io.*;
 
 /* 
@@ -29,8 +29,13 @@ import java.io.*;
  * also given in ec.EvolutionState.
  * The ".gz" is added because the file is GZIPped to save space.
  *
+ * <p>When writing a checkpoint file, if you have specified a checkpoint directory
+ * in ec.EvolutionState.checkpointDirectory, then this directory will be used to
+ * write the checkpoint files.  Otherwise they will be written in your working
+ * directory (where you ran the Java process).
+ *
  * @author Sean Luke
- * @version 1.0 
+ * @version 1.1
  */
 
 public class Checkpoint
@@ -42,12 +47,19 @@ public class Checkpoint
         {
         try
             {
+            File file = new File("" + state.checkpointPrefix + "." + state.generation + ".gz");
+            
+            if (state.checkpointDirectory != null)
+                {
+                file = new File(state.checkpointDirectory, 
+                    "" + state.checkpointPrefix + "." + state.generation + ".gz");
+                }
             ObjectOutputStream s = 
                 new ObjectOutputStream(
                     new GZIPOutputStream (
                         new BufferedOutputStream(
-                            new FileOutputStream ("" + state.checkpointPrefix + 
-                                "." + state.generation + ".gz"))));
+                            new FileOutputStream(file))));
+                
             s.writeObject(state);
             s.close();
             state.output.message("Wrote out checkpoint file " + 

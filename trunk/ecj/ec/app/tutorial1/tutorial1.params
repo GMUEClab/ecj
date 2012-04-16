@@ -21,7 +21,7 @@ exch		= ec.simple.SimpleExchanger
 generations		= 200
 quit-on-run-complete	= true
 checkpoint		= false
-prefix			= ec
+checkpoint-prefix	= ec
 checkpoint-modulo	= 1
 
 stat.file		= $out.stat

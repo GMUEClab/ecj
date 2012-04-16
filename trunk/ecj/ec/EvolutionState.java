@@ -6,12 +6,9 @@
 
 
 package ec;
-import ec.util.ParameterDatabase;
-import ec.util.Parameter;
-import ec.util.MersenneTwisterFast;
-import ec.util.Output;
-import java.io.IOException;
-import java.util.Vector;
+import ec.util.*;
+import java.util.*;
+import java.io.*;
 
 /* 
  * EvolutionState.java
@@ -92,6 +89,10 @@ import java.util.Vector;
  <font size=-1>String</font></td>
  <td valign=top>(the prefix to prepend to checkpoint files -- see ec.util.Checkpoint)</td></tr>
 
+ <tr><td valign=top><tt>checkpoint-directory</tt><br>
+ <font size=-1>File (default is empty)</td>
+ <td valign=top>(directory where the checkpoint files should be located)</td></tr>
+ 
  <tr><td valign=top><tt>quit-on-run-complete</tt><br>
  <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</td>
  <td valign=top>(do we prematurely quit the run when we find a perfect individual?)</td></tr>
@@ -171,8 +172,11 @@ public class EvolutionState implements Singleton
     /** Should we checkpoint at all? */
     public boolean checkpoint;
 
-    /** The requested prefix start checkpoint filenames, not including a following period.  You probably shouldn't modify this during a run.*/
-    public String checkpointPrefix;  // term to prefix checkpoint filenames
+    /** The requested directory where checkpoints should be located.  This must be a directory, not a file.  You probably shouldn't modify this during a run.*/
+    public File checkpointDirectory = null;
+
+    /** The requested prefix to start checkpoint filenames, not including a following period.  You probably shouldn't modify this during a run.*/
+    public String checkpointPrefix;
 
     /** The requested number of generations that should pass before we write out a checkpoint file. */
     public int checkpointModulo;
@@ -247,8 +251,10 @@ public class EvolutionState implements Singleton
     public final static String P_EXCHANGER = "exch";
     public final static String P_GENERATIONS = "generations";
     public final static String P_QUITONRUNCOMPLETE = "quit-on-run-complete";
-    public final static String P_CHECKPOINTPREFIX = "prefix";
+    public final static String P_CHECKPOINTPREFIX = "checkpoint-prefix";
+    final static String P_CHECKPOINTPREFIX_OLD = "prefix";
     public final static String P_CHECKPOINTMODULO = "checkpoint-modulo";
+    public final static String P_CHECKPOINTDIRECTORY = "checkpoint-directory";
     public final static String P_CHECKPOINT = "checkpoint";
 
     /** This will be called to create your evolution state; immediately
@@ -264,7 +270,6 @@ public class EvolutionState implements Singleton
     */
     public void setup(final EvolutionState state, final Parameter base)
         {
-
         Parameter p;
 
         // we ignore the base, it's worthless anyway for EvolutionState
@@ -275,13 +280,36 @@ public class EvolutionState implements Singleton
         p = new Parameter(P_CHECKPOINTPREFIX);
         checkpointPrefix = parameters.getString(p,null);
         if (checkpointPrefix==null)
-            output.fatal("No checkpoint prefix specified.",p);
+            {
+            // check for the old-style checkpoint prefix parameter
+            Parameter p2 = new Parameter(P_CHECKPOINTPREFIX_OLD);
+            checkpointPrefix = parameters.getString(p2,null);
+            if (checkpointPrefix==null)
+                {
+                output.fatal("No checkpoint prefix specified.",p);  // indicate the new style, not old parameter
+                }
+            else
+                {
+                output.warning("The parameter \"prefix\" is deprecated.  Please use \"checkpoint-prefix\".", p2);
+                }
+            }
 
         p = new Parameter(P_CHECKPOINTMODULO);
         checkpointModulo = parameters.getInt(p,null,1);
         if (checkpointModulo==0)
             output.fatal("The checkpoint modulo must be an integer >0.",p);
         
+        p = new Parameter(P_CHECKPOINTDIRECTORY);
+        if (parameters.exists(p, null))
+            {
+            checkpointDirectory = parameters.getFile(p,null);
+            if (checkpointDirectory==null)
+                output.fatal("The checkpoint directory name is invalid: " + checkpointDirectory, p);
+            if (!checkpointDirectory.isDirectory())
+                output.fatal("The checkpoint directory location is not a directory: " + checkpointDirectory, p);
+            }
+        else checkpointDirectory = null;
+            
         p = new Parameter(P_GENERATIONS);
         numGenerations = parameters.getInt(p,null,1);
         if (numGenerations==0)
