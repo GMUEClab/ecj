@@ -1401,7 +1401,7 @@ MersenneTwisterFast (which ECJ uses) and its sibling MersenneTwisterFast have id
 \subsection{Selecting from Distributions}
 \label{ec.util.RandomChoice}
 
-Selecting from distributions is a common task in stochastic optimization.\footnote{These are just histogram distributions.  If what you need is to pick random numbers under some mathematical distribution (Poisson, say), ECJ doesn't have support for that.  However ECJ's sister package, MASON, has support for it in its utilities.  See MASON's \package{sim.util.distribution} package.  You can remove this package from MASON and just use it with ECJ just fine: it comes with MASON but is independent of it. See http:/\!/cs.gmu.edu/\(\sim\)eclab/projects/mason/} ECJ has a utility class, \class{ec.util.RandomChoice}, which makes it easy to set up and select from histogram-style (arbitrary) distributions, such as selecting randomly from a Population by Fitness.
+Selecting from distributions is a common task in stochastic optimization.\footnote{These are just histogram distributions.  If what you need is to pick random numbers under some mathematical distribution (Poisson, say), ECJ doesn't have support for that.  However ECJ's sister package, MASON, has support for it in its utilities.  See MASON's \package{sim.util.distribution} package.  You can remove this package from MASON and just use it with ECJ with no problems: it comes with MASON but is independent of it. See http:/\!/cs.gmu.edu/\(\sim\)eclab/projects/mason/} ECJ has a utility class, \class{ec.util.RandomChoice}, which makes it easy to set up and select from histogram-style (arbitrary) distributions, such as selecting randomly from a Population by Fitness.
 
 The distributions in question come in the form of arrays of floats, doubles, or special objects which can provide their own float or double values.  The values in these arrays are expected to form a probability density function (PDF).  The objective is to select indexes in this array proportional to their value.  To begin, you call one of the following methods on your array to have RandomChoice convert it into a Cumulative Density Function (CDF) to make selection easier:
 
@@ -2076,7 +2076,7 @@ protected void parseGenotype(EvolutionState state, LineNumberReader reader)\\
 \hsp{\fill}throws IOException;\\
 }
 
-This returns a String which can be parsed in again in the next method.  Note that you need to write an individual out so that it can {\it perfectly} be read back in again as an identical individual.  How do you do this?  ECJ's classes by default all use the aging and idiosyncratic package \method{ec.util.Code} package developed long ago for this purpose, but which still works well.  See Section~\ref{ec.util.Code}.  You only need to override this method if you plan on reading individuals in from files (by default the method just throws an error).
+This modifies the existing Individual's genotype to match the genotype read in from the reader.  The genotype will have been written out using \method{printIndividual(...)}. You only need to override this method if you plan on reading individuals in from files (by default the method just throws an error).
 
 \item The last two methods (\method{writeIndividual(...)} and \method{readIndividual(..., DataInput)}) read and write an individual, including its representation, fitness and evaluated flag, in a purely binary fashion to a stream.  Don't write the Species.  It's probably best instead to override the following methods to just read and write the genotype:
 
@@ -2087,7 +2087,7 @@ public void readGenotype(EvolutionState state, DataInput input)\\
 \hsp{\fill}throws IOException;\\
 }
 
-These methods are probably only important if you plan on using ECJ's distributed facilities (distributed evaluator, island models).  The default implementations of these methods throw exceptions.
+These methods are probably only important to implement if you plan on using ECJ's distributed facilities (distributed evaluator, island models).  The default implementations of these methods simply throw exceptions.
 
 \end{itemize}
 
