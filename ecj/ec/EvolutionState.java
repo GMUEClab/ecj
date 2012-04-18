@@ -293,6 +293,17 @@ public class EvolutionState implements Singleton
                 output.warning("The parameter \"prefix\" is deprecated.  Please use \"checkpoint-prefix\".", p2);
                 }
             }
+        else
+            {
+            // check for the old-style checkpoint prefix parameter as an acciental duplicate
+            Parameter p2 = new Parameter(P_CHECKPOINTPREFIX_OLD);
+            if (parameters.getString(p2,null) != null)
+                {
+                output.warning("You have BOTH the deprecated parameter \"prefix\" and its replacement \"checkpoint-prefix\" defined.  The replacement will be used,  Please remove the \"prefix\" parameter.", p2);
+                }
+            
+            }
+            
 
         p = new Parameter(P_CHECKPOINTMODULO);
         checkpointModulo = parameters.getInt(p,null,1);
