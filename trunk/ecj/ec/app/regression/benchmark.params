@@ -1,169 +1,6 @@
 parent.0 = ../../gp/koza/koza.params
 
 
-gp.fs.size = 5
-
-# ONE variable
-gp.fs.0 = ec.gp.GPFunctionSet
-gp.fs.0.name = f1
-gp.fs.0.size = 10
-gp.fs.0.func.0 = ec.app.regression.func.X1
-gp.fs.0.func.0.nc = nc0
-gp.fs.0.func.1 = ec.app.regression.func.Add
-gp.fs.0.func.1.nc = nc2
-gp.fs.0.func.2 = ec.app.regression.func.Mul
-gp.fs.0.func.2.nc = nc2
-gp.fs.0.func.3 = ec.app.regression.func.Sub
-gp.fs.0.func.3.nc = nc2
-gp.fs.0.func.4 = ec.app.regression.func.Div
-gp.fs.0.func.4.nc = nc2
-gp.fs.0.func.5 = ec.app.regression.func.Sin
-gp.fs.0.func.5.nc = nc1
-gp.fs.0.func.6 = ec.app.regression.func.Cos
-gp.fs.0.func.6.nc = nc1
-gp.fs.0.func.7 = ec.app.regression.func.Exp
-gp.fs.0.func.7.nc = nc1
-gp.fs.0.func.8 = ec.app.regression.func.Log
-gp.fs.0.func.8.nc = nc1
-# placed here at the bottom so noerc.params can skip it
-gp.fs.0.func.9 = ec.app.regression.func.RegERC
-gp.fs.0.func.9.nc = nc0
-
-
-
-# TWO variables
-gp.fs.1 = ec.gp.GPFunctionSet
-gp.fs.1.name = f2
-gp.fs.1.size = 11
-gp.fs.1.func.0 = ec.app.regression.func.X1
-gp.fs.1.func.0.nc = nc0
-gp.fs.1.func.1 = ec.app.regression.func.Add
-gp.fs.1.func.1.nc = nc2
-gp.fs.1.func.2 = ec.app.regression.func.Mul
-gp.fs.1.func.2.nc = nc2
-gp.fs.1.func.3 = ec.app.regression.func.Sub
-gp.fs.1.func.3.nc = nc2
-gp.fs.1.func.4 = ec.app.regression.func.Div
-gp.fs.1.func.4.nc = nc2
-gp.fs.1.func.5 = ec.app.regression.func.Sin
-gp.fs.1.func.5.nc = nc1
-gp.fs.1.func.6 = ec.app.regression.func.Cos
-gp.fs.1.func.6.nc = nc1
-gp.fs.1.func.7 = ec.app.regression.func.Exp
-gp.fs.1.func.7.nc = nc1
-gp.fs.1.func.8 = ec.app.regression.func.Log
-gp.fs.1.func.8.nc = nc1
-gp.fs.1.func.9 = ec.app.regression.func.X2
-gp.fs.1.func.9.nc = nc0
-# placed here at the bottom so noerc.params can skip it
-gp.fs.1.func.10 = ec.app.regression.func.RegERC
-gp.fs.1.func.10.nc = nc0
-
-
-
-# THREE variables
-gp.fs.2 = ec.gp.GPFunctionSet
-gp.fs.2.name = f3
-gp.fs.2.size = 12
-gp.fs.2.func.0 = ec.app.regression.func.X1
-gp.fs.2.func.0.nc = nc0
-gp.fs.2.func.1 = ec.app.regression.func.Add
-gp.fs.2.func.1.nc = nc2
-gp.fs.2.func.2 = ec.app.regression.func.Mul
-gp.fs.2.func.2.nc = nc2
-gp.fs.2.func.3 = ec.app.regression.func.Sub
-gp.fs.2.func.3.nc = nc2
-gp.fs.2.func.4 = ec.app.regression.func.Div
-gp.fs.2.func.4.nc = nc2
-gp.fs.2.func.5 = ec.app.regression.func.Sin
-gp.fs.2.func.5.nc = nc1
-gp.fs.2.func.6 = ec.app.regression.func.Cos
-gp.fs.2.func.6.nc = nc1
-gp.fs.2.func.7 = ec.app.regression.func.Exp
-gp.fs.2.func.7.nc = nc1
-gp.fs.2.func.8 = ec.app.regression.func.Log
-gp.fs.2.func.8.nc = nc1
-gp.fs.2.func.9 = ec.app.regression.func.X2
-gp.fs.2.func.9.nc = nc0
-gp.fs.2.func.10 = ec.app.regression.func.X3
-gp.fs.2.func.10.nc = nc0
-# placed here at the bottom so noerc.params can skip it
-gp.fs.2.func.11 = ec.app.regression.func.RegERC
-gp.fs.2.func.11.nc = nc0
-
-
-
-# FOUR variables
-gp.fs.3 = ec.gp.GPFunctionSet
-gp.fs.3.name = f4
-gp.fs.3.size = 13
-gp.fs.3.func.0 = ec.app.regression.func.X1
-gp.fs.3.func.0.nc = nc0
-gp.fs.3.func.1 = ec.app.regression.func.Add
-gp.fs.3.func.1.nc = nc2
-gp.fs.3.func.2 = ec.app.regression.func.Mul
-gp.fs.3.func.2.nc = nc2
-gp.fs.3.func.3 = ec.app.regression.func.Sub
-gp.fs.3.func.3.nc = nc2
-gp.fs.3.func.4 = ec.app.regression.func.Div
-gp.fs.3.func.4.nc = nc2
-gp.fs.3.func.5 = ec.app.regression.func.Sin
-gp.fs.3.func.5.nc = nc1
-gp.fs.3.func.6 = ec.app.regression.func.Cos
-gp.fs.3.func.6.nc = nc1
-gp.fs.3.func.7 = ec.app.regression.func.Exp
-gp.fs.3.func.7.nc = nc1
-gp.fs.3.func.8 = ec.app.regression.func.Log
-gp.fs.3.func.8.nc = nc1
-gp.fs.3.func.9 = ec.app.regression.func.X2
-gp.fs.3.func.9.nc = nc0
-gp.fs.3.func.10 = ec.app.regression.func.X3
-gp.fs.3.func.10.nc = nc0
-gp.fs.3.func.11 = ec.app.regression.func.X4
-gp.fs.3.func.11.nc = nc0
-# placed here at the bottom so noerc.params can skip it
-gp.fs.3.func.12 = ec.app.regression.func.RegERC
-gp.fs.3.func.12.nc = nc0
-
-
-
-# FIVE variables
-gp.fs.4 = ec.gp.GPFunctionSet
-gp.fs.4.name = f5
-gp.fs.4.size = 14
-gp.fs.4.func.0 = ec.app.regression.func.X1
-gp.fs.4.func.0.nc = nc0
-gp.fs.4.func.1 = ec.app.regression.func.Add
-gp.fs.4.func.1.nc = nc2
-gp.fs.4.func.2 = ec.app.regression.func.Mul
-gp.fs.4.func.2.nc = nc2
-gp.fs.4.func.3 = ec.app.regression.func.Sub
-gp.fs.4.func.3.nc = nc2
-gp.fs.4.func.4 = ec.app.regression.func.Div
-gp.fs.4.func.4.nc = nc2
-gp.fs.4.func.5 = ec.app.regression.func.Sin
-gp.fs.4.func.5.nc = nc1
-gp.fs.4.func.6 = ec.app.regression.func.Cos
-gp.fs.4.func.6.nc = nc1
-gp.fs.4.func.7 = ec.app.regression.func.Exp
-gp.fs.4.func.7.nc = nc1
-gp.fs.4.func.8 = ec.app.regression.func.Log
-gp.fs.4.func.8.nc = nc1
-gp.fs.4.func.9 = ec.app.regression.func.X2
-gp.fs.4.func.9.nc = nc0
-gp.fs.4.func.10 = ec.app.regression.func.X3
-gp.fs.4.func.10.nc = nc0
-gp.fs.4.func.11 = ec.app.regression.func.X4
-gp.fs.4.func.11.nc = nc0
-gp.fs.4.func.12 = ec.app.regression.func.X5
-gp.fs.4.func.12.nc = nc0
-# placed here at the bottom so noerc.params can skip it
-gp.fs.4.func.13 = ec.app.regression.func.RegERC
-gp.fs.4.func.13.nc = nc0
-
-
-
-
 #
 # We specify our problem here
 #
@@ -172,12 +9,432 @@ eval.problem = ec.app.regression.Benchmarks
 eval.problem.data = ec.app.regression.RegressionData
 
 
-
 gp.tc.size = 1
 gp.tc.0 = ec.gp.GPTreeConstraints
 gp.tc.0.name = tc0
 gp.tc.0.fset = f1
 gp.tc.0.returns = nil
 
+
+### Function sets
+# See "Genetic Programming Needs Better Benchmarks", in GECCO 2012,
+# for more information.
+
+
+gp.fs.size = 13
+
+
+# GP Function sets have NAME followed by the number of VARIABLES:
+# Names include koza, nguyen, pagie, korns, keijzer, 
+# vladislavleva-a, vladislavleva-b, vladislavleva-c
+# Note that nguyen1 and koza1 are identical
+
+# Function sets:
+# koza1
+# koza2
+# koza3
+# korns5
+# keijzer1
+# keijzer2
+# keijzer3
+# vladislavleva-a2
+# vladislavleva-a3
+# vladislavleva-a5
+# vladislavleva-b2
+# vladislavleva-c1
+# vladislavleva-c2
+
+
+
+
+# koza1
+# Note: Koza1 has no ERCs
+gp.fs.0 = ec.gp.GPFunctionSet
+gp.fs.0.name = koza1
+gp.fs.0.size = 9
+gp.fs.0.func.0 = ec.app.regression.func.Add
+gp.fs.0.func.0.nc = nc2
+gp.fs.0.func.1 = ec.app.regression.func.Mul
+gp.fs.0.func.1.nc = nc2
+gp.fs.0.func.2 = ec.app.regression.func.Sub
+gp.fs.0.func.2.nc = nc2
+gp.fs.0.func.3 = ec.app.regression.func.Div
+gp.fs.0.func.3.nc = nc2
+gp.fs.0.func.4 = ec.app.regression.func.Sin
+gp.fs.0.func.4.nc = nc1
+gp.fs.0.func.5 = ec.app.regression.func.Cos
+gp.fs.0.func.5.nc = nc1
+gp.fs.0.func.6 = ec.app.regression.func.Exp
+gp.fs.0.func.6.nc = nc1
+gp.fs.0.func.7 = ec.app.regression.func.Log
+gp.fs.0.func.7.nc = nc1
+gp.fs.0.func.8 = ec.app.regression.func.X1
+gp.fs.0.func.8.nc = nc0
+
+
+# koza2
+# Note: koza2 has no ERCs
+gp.fs.1 = ec.gp.GPFunctionSet
+gp.fs.1.name = koza2
+gp.fs.1.size = 10
+gp.fs.1.func.0 = ec.app.regression.func.Add
+gp.fs.1.func.0.nc = nc2
+gp.fs.1.func.1 = ec.app.regression.func.Mul
+gp.fs.1.func.1.nc = nc2
+gp.fs.1.func.2 = ec.app.regression.func.Sub
+gp.fs.1.func.2.nc = nc2
+gp.fs.1.func.3 = ec.app.regression.func.Div
+gp.fs.1.func.3.nc = nc2
+gp.fs.1.func.4 = ec.app.regression.func.Sin
+gp.fs.1.func.4.nc = nc1
+gp.fs.1.func.5 = ec.app.regression.func.Cos
+gp.fs.1.func.5.nc = nc1
+gp.fs.1.func.6 = ec.app.regression.func.Exp
+gp.fs.1.func.6.nc = nc1
+gp.fs.1.func.7 = ec.app.regression.func.Log
+gp.fs.1.func.7.nc = nc1
+gp.fs.1.func.8 = ec.app.regression.func.X1
+gp.fs.1.func.8.nc = nc0
+gp.fs.1.func.9 = ec.app.regression.func.X2
+gp.fs.1.func.9.nc = nc0
+
+
+# koza3
+# Note: koza3 has no ERCs
+gp.fs.2 = ec.gp.GPFunctionSet
+gp.fs.2.name = koza3
+gp.fs.2.size = 11
+gp.fs.2.func.0 = ec.app.regression.func.Add
+gp.fs.2.func.0.nc = nc2
+gp.fs.2.func.1 = ec.app.regression.func.Mul
+gp.fs.2.func.1.nc = nc2
+gp.fs.2.func.2 = ec.app.regression.func.Sub
+gp.fs.2.func.2.nc = nc2
+gp.fs.2.func.3 = ec.app.regression.func.Div
+gp.fs.2.func.3.nc = nc2
+gp.fs.2.func.4 = ec.app.regression.func.Sin
+gp.fs.2.func.4.nc = nc1
+gp.fs.2.func.5 = ec.app.regression.func.Cos
+gp.fs.2.func.5.nc = nc1
+gp.fs.2.func.6 = ec.app.regression.func.Exp
+gp.fs.2.func.6.nc = nc1
+gp.fs.2.func.7 = ec.app.regression.func.Log
+gp.fs.2.func.7.nc = nc1
+gp.fs.2.func.8 = ec.app.regression.func.X1
+gp.fs.2.func.8.nc = nc0
+gp.fs.2.func.9 = ec.app.regression.func.X2
+gp.fs.2.func.9.nc = nc0
+gp.fs.2.func.10 = ec.app.regression.func.X3
+gp.fs.2.func.10.nc = nc0
+
+
+
+# korns5
+gp.fs.3 = ec.gp.GPFunctionSet
+gp.fs.3.name = korns2
+gp.fs.3.size = 19
+gp.fs.3.func.0 = ec.app.regression.func.Add
+gp.fs.3.func.0.nc = nc2
+gp.fs.3.func.1 = ec.app.regression.func.Mul
+gp.fs.3.func.1.nc = nc2
+gp.fs.3.func.2 = ec.app.regression.func.Sub
+gp.fs.3.func.2.nc = nc2
+gp.fs.3.func.3 = ec.app.regression.func.Div
+gp.fs.3.func.3.nc = nc2
+gp.fs.3.func.4 = ec.app.regression.func.Sin
+gp.fs.3.func.4.nc = nc1
+gp.fs.3.func.5 = ec.app.regression.func.Cos
+gp.fs.3.func.5.nc = nc1
+gp.fs.3.func.6 = ec.app.regression.func.Exp
+gp.fs.3.func.6.nc = nc1
+gp.fs.3.func.7 = ec.app.regression.func.Log
+gp.fs.3.func.7.nc = nc1
+gp.fs.3.func.8 = ec.app.regression.func.Square
+gp.fs.3.func.8.nc = nc1
+gp.fs.3.func.9 = ec.app.regression.func.Cube
+gp.fs.3.func.9.nc = nc1
+gp.fs.3.func.10 = ec.app.regression.func.Sqrt
+gp.fs.3.func.10.nc = nc1
+gp.fs.3.func.11 = ec.app.regression.func.Tan
+gp.fs.3.func.11.nc = nc1
+gp.fs.3.func.12 = ec.app.regression.func.Tanh
+gp.fs.3.func.12.nc = nc1
+gp.fs.3.func.13 = ec.app.regression.func.KornsERC
+gp.fs.3.func.13.nc = nc0
+gp.fs.3.func.14 = ec.app.regression.func.X1
+gp.fs.3.func.14.nc = nc0
+gp.fs.3.func.15 = ec.app.regression.func.X2
+gp.fs.3.func.15.nc = nc0
+gp.fs.3.func.16 = ec.app.regression.func.X3
+gp.fs.3.func.16.nc = nc0
+gp.fs.3.func.17 = ec.app.regression.func.X4
+gp.fs.3.func.17.nc = nc0
+gp.fs.3.func.18 = ec.app.regression.func.X5
+gp.fs.3.func.18.nc = nc0
+
+
+# keijzer1
+gp.fs.4 = ec.gp.GPFunctionSet
+gp.fs.4.name = keijzer1
+gp.fs.4.size = 7
+gp.fs.4.func.0 = ec.app.regression.func.Add
+gp.fs.4.func.0.nc = nc2
+gp.fs.4.func.1 = ec.app.regression.func.Mul
+gp.fs.4.func.1.nc = nc2
+gp.fs.4.func.2 = ec.app.regression.func.Inv
+gp.fs.4.func.2.nc = nc1
+gp.fs.4.func.3 = ec.app.regression.func.Neg
+gp.fs.4.func.3.nc = nc1
+gp.fs.4.func.4 = ec.app.regression.func.Sqrt
+gp.fs.4.func.4.nc = nc1
+gp.fs.4.func.5 = ec.app.regression.func.KeijzerERC
+gp.fs.4.func.5.nc = nc0
+gp.fs.4.func.6 = ec.app.regression.func.X1
+gp.fs.4.func.6.nc = nc0
+
+
+
+# keijzer2
+gp.fs.5 = ec.gp.GPFunctionSet
+gp.fs.5.name = keijzer2
+gp.fs.5.size = 8
+gp.fs.5.func.0 = ec.app.regression.func.Add
+gp.fs.5.func.0.nc = nc2
+gp.fs.5.func.1 = ec.app.regression.func.Mul
+gp.fs.5.func.1.nc = nc2
+gp.fs.5.func.2 = ec.app.regression.func.Inv
+gp.fs.5.func.2.nc = nc1
+gp.fs.5.func.3 = ec.app.regression.func.Neg
+gp.fs.5.func.3.nc = nc1
+gp.fs.5.func.4 = ec.app.regression.func.Sqrt
+gp.fs.5.func.4.nc = nc1
+gp.fs.5.func.5 = ec.app.regression.func.KeijzerERC
+gp.fs.5.func.5.nc = nc0
+gp.fs.5.func.6 = ec.app.regression.func.X1
+gp.fs.5.func.6.nc = nc0
+gp.fs.5.func.7 = ec.app.regression.func.X2
+gp.fs.5.func.7.nc = nc0
+
+
+
+# keijzer3
+gp.fs.6 = ec.gp.GPFunctionSet
+gp.fs.6.name = keijzer3
+gp.fs.6.size = 8
+gp.fs.6.func.0 = ec.app.regression.func.Add
+gp.fs.6.func.0.nc = nc2
+gp.fs.6.func.1 = ec.app.regression.func.Mul
+gp.fs.6.func.1.nc = nc2
+gp.fs.6.func.2 = ec.app.regression.func.Inv
+gp.fs.6.func.2.nc = nc1
+gp.fs.6.func.3 = ec.app.regression.func.Neg
+gp.fs.6.func.3.nc = nc1
+gp.fs.6.func.4 = ec.app.regression.func.Sqrt
+gp.fs.6.func.4.nc = nc1
+gp.fs.6.func.5 = ec.app.regression.func.KeijzerERC
+gp.fs.6.func.5.nc = nc0
+gp.fs.6.func.6 = ec.app.regression.func.X1
+gp.fs.6.func.6.nc = nc0
+gp.fs.6.func.7 = ec.app.regression.func.X2
+gp.fs.6.func.7.nc = nc0
+gp.fs.6.func.8 = ec.app.regression.func.X3
+gp.fs.6.func.8.nc = nc0
+
+
+# vladislavleva-a2
+# Note: vladislavleva has three ERCs, all of which are not constants
+#       but rather are one-parameter functions with an embedded constant
+gp.fs.7 = ec.gp.GPFunctionSet
+gp.fs.7.name = vladislavleva-a2
+gp.fs.7.size = 10
+gp.fs.7.func.0 = ec.app.regression.func.Add
+gp.fs.7.func.0.nc = nc2
+gp.fs.7.func.1 = ec.app.regression.func.Mul
+gp.fs.7.func.1.nc = nc2
+gp.fs.7.func.2 = ec.app.regression.func.Sub
+gp.fs.7.func.2.nc = nc2
+gp.fs.7.func.3 = ec.app.regression.func.Div
+gp.fs.7.func.3.nc = nc2
+gp.fs.7.func.4 = ec.app.regression.func.Square
+gp.fs.7.func.4.nc = nc1
+gp.fs.7.func.5 = ec.app.regression.func.VladERCA
+gp.fs.7.func.5.nc = nc0
+gp.fs.7.func.6 = ec.app.regression.func.VladERCB
+gp.fs.7.func.6.nc = nc0
+gp.fs.7.func.7 = ec.app.regression.func.VladERCC
+gp.fs.7.func.7.nc = nc0
+gp.fs.7.func.8 = ec.app.regression.func.X1
+gp.fs.7.func.8.nc = nc0
+gp.fs.7.func.9 = ec.app.regression.func.X2
+gp.fs.7.func.9.nc = nc0
+
+
+
+# vladislavleva-a3
+# Note: vladislavleva has three ERCs, all of which are not constants
+#       but rather are one-parameter functions with an embedded constant
+gp.fs.8 = ec.gp.GPFunctionSet
+gp.fs.8.name = vladislavleva-a3
+gp.fs.8.size = 11
+gp.fs.8.func.0 = ec.app.regression.func.Add
+gp.fs.8.func.0.nc = nc2
+gp.fs.8.func.1 = ec.app.regression.func.Mul
+gp.fs.8.func.1.nc = nc2
+gp.fs.8.func.2 = ec.app.regression.func.Sub
+gp.fs.8.func.2.nc = nc2
+gp.fs.8.func.3 = ec.app.regression.func.Div
+gp.fs.8.func.3.nc = nc2
+gp.fs.8.func.4 = ec.app.regression.func.Square
+gp.fs.8.func.4.nc = nc1
+gp.fs.8.func.5 = ec.app.regression.func.VladERCA
+gp.fs.8.func.5.nc = nc0
+gp.fs.8.func.6 = ec.app.regression.func.VladERCB
+gp.fs.8.func.6.nc = nc0
+gp.fs.8.func.7 = ec.app.regression.func.VladERCC
+gp.fs.8.func.7.nc = nc0
+gp.fs.8.func.8 = ec.app.regression.func.X1
+gp.fs.8.func.8.nc = nc0
+gp.fs.8.func.9 = ec.app.regression.func.X2
+gp.fs.8.func.9.nc = nc0
+gp.fs.8.func.10 = ec.app.regression.func.X3
+gp.fs.8.func.10.nc = nc0
+
+
+# vladislavleva-a5
+# Note: vladislavleva has three ERCs, all of which are not constants
+#       but rather are one-parameter functions with an embedded constant
+gp.fs.9 = ec.gp.GPFunctionSet
+gp.fs.9.name = vladislavleva-a5
+gp.fs.9.size = 13
+gp.fs.9.func.0 = ec.app.regression.func.Add
+gp.fs.9.func.0.nc = nc2
+gp.fs.9.func.1 = ec.app.regression.func.Mul
+gp.fs.9.func.1.nc = nc2
+gp.fs.9.func.2 = ec.app.regression.func.Sub
+gp.fs.9.func.2.nc = nc2
+gp.fs.9.func.3 = ec.app.regression.func.Div
+gp.fs.9.func.3.nc = nc2
+gp.fs.9.func.4 = ec.app.regression.func.Square
+gp.fs.9.func.4.nc = nc1
+gp.fs.9.func.5 = ec.app.regression.func.VladERCA
+gp.fs.9.func.5.nc = nc0
+gp.fs.9.func.6 = ec.app.regression.func.VladERCB
+gp.fs.9.func.6.nc = nc0
+gp.fs.9.func.7 = ec.app.regression.func.VladERCC
+gp.fs.9.func.7.nc = nc0
+gp.fs.9.func.8 = ec.app.regression.func.X1
+gp.fs.9.func.8.nc = nc0
+gp.fs.9.func.9 = ec.app.regression.func.X2
+gp.fs.9.func.9.nc = nc0
+gp.fs.9.func.10 = ec.app.regression.func.X3
+gp.fs.9.func.10.nc = nc0
+gp.fs.9.func.11 = ec.app.regression.func.X4
+gp.fs.9.func.11.nc = nc0
+gp.fs.9.func.12 = ec.app.regression.func.X5
+gp.fs.9.func.12.nc = nc0
+
+
+# vladislavleva-b2
+# Note: vladislavleva has three ERCs, all of which are not constants
+#       but rather are one-parameter functions with an embedded constant
+gp.fs.10 = ec.gp.GPFunctionSet
+gp.fs.10.name = vladislavleva-b2
+gp.fs.10.size = 12
+gp.fs.10.func.0 = ec.app.regression.func.Add
+gp.fs.10.func.0.nc = nc2
+gp.fs.10.func.1 = ec.app.regression.func.Mul
+gp.fs.10.func.1.nc = nc2
+gp.fs.10.func.2 = ec.app.regression.func.Sub
+gp.fs.10.func.2.nc = nc2
+gp.fs.10.func.3 = ec.app.regression.func.Div
+gp.fs.10.func.3.nc = nc2
+gp.fs.10.func.4 = ec.app.regression.func.Square
+gp.fs.10.func.4.nc = nc1
+gp.fs.10.func.5 = ec.app.regression.func.Exp
+gp.fs.10.func.5.nc = nc1
+gp.fs.10.func.6 = ec.app.regression.func.NegExp
+gp.fs.10.func.6.nc = nc1
+gp.fs.10.func.7 = ec.app.regression.func.VladERCA
+gp.fs.10.func.7.nc = nc0
+gp.fs.10.func.8 = ec.app.regression.func.VladERCB
+gp.fs.10.func.8.nc = nc0
+gp.fs.10.func.9 = ec.app.regression.func.VladERCC
+gp.fs.10.func.9.nc = nc0
+gp.fs.10.func.10 = ec.app.regression.func.X1
+gp.fs.10.func.10.nc = nc0
+gp.fs.10.func.11 = ec.app.regression.func.X2
+gp.fs.10.func.11.nc = nc0
+
+
+
+# vladislavleva-c1
+# Note: vladislavleva has three ERCs, all of which are not constants
+#       but rather are one-parameter functions with an embedded constant
+gp.fs.11 = ec.gp.GPFunctionSet
+gp.fs.11.name = vladislavleva-c1
+gp.fs.11.size = 13
+gp.fs.11.func.0 = ec.app.regression.func.Add
+gp.fs.11.func.0.nc = nc2
+gp.fs.11.func.1 = ec.app.regression.func.Mul
+gp.fs.11.func.1.nc = nc2
+gp.fs.11.func.2 = ec.app.regression.func.Sub
+gp.fs.11.func.2.nc = nc2
+gp.fs.11.func.3 = ec.app.regression.func.Div
+gp.fs.11.func.3.nc = nc2
+gp.fs.11.func.4 = ec.app.regression.func.Square
+gp.fs.11.func.4.nc = nc1
+gp.fs.11.func.5 = ec.app.regression.func.Exp
+gp.fs.11.func.5.nc = nc1
+gp.fs.11.func.6 = ec.app.regression.func.NegExp
+gp.fs.11.func.6.nc = nc1
+gp.fs.11.func.7 = ec.app.regression.func.Sin
+gp.fs.11.func.7.nc = nc1
+gp.fs.11.func.8 = ec.app.regression.func.Cos
+gp.fs.11.func.8.nc = nc1
+gp.fs.11.func.9 = ec.app.regression.func.VladERCA
+gp.fs.11.func.9.nc = nc0
+gp.fs.11.func.10 = ec.app.regression.func.VladERCB
+gp.fs.11.func.10.nc = nc0
+gp.fs.11.func.11 = ec.app.regression.func.VladERCC
+gp.fs.11.func.11.nc = nc0
+gp.fs.11.func.12 = ec.app.regression.func.X1
+gp.fs.11.func.12.nc = nc0
+
+
+
+# vladislavleva-c2
+# Note: vladislavleva has three ERCs, all of which are not constants
+#       but rather are one-parameter functions with an embedded constant
+gp.fs.12 = ec.gp.GPFunctionSet
+gp.fs.12.name = vladislavleva-c2
+gp.fs.12.size = 14
+gp.fs.12.func.0 = ec.app.regression.func.Add
+gp.fs.12.func.0.nc = nc2
+gp.fs.12.func.1 = ec.app.regression.func.Mul
+gp.fs.12.func.1.nc = nc2
+gp.fs.12.func.2 = ec.app.regression.func.Sub
+gp.fs.12.func.2.nc = nc2
+gp.fs.12.func.3 = ec.app.regression.func.Div
+gp.fs.12.func.3.nc = nc2
+gp.fs.12.func.4 = ec.app.regression.func.Square
+gp.fs.12.func.4.nc = nc1
+gp.fs.12.func.5 = ec.app.regression.func.Exp
+gp.fs.12.func.5.nc = nc1
+gp.fs.12.func.6 = ec.app.regression.func.NegExp
+gp.fs.12.func.6.nc = nc1
+gp.fs.12.func.7 = ec.app.regression.func.Sin
+gp.fs.12.func.7.nc = nc1
+gp.fs.12.func.8 = ec.app.regression.func.Cos
+gp.fs.12.func.8.nc = nc1
+gp.fs.12.func.9 = ec.app.regression.func.VladERCA
+gp.fs.12.func.9.nc = nc0
+gp.fs.12.func.10 = ec.app.regression.func.VladERCB
+gp.fs.12.func.10.nc = nc0
+gp.fs.12.func.11 = ec.app.regression.func.VladERCC
+gp.fs.12.func.11.nc = nc0
+gp.fs.12.func.12 = ec.app.regression.func.X1
+gp.fs.12.func.12.nc = nc0
+gp.fs.12.func.13 = ec.app.regression.func.X2
+gp.fs.12.func.13.nc = nc0
 
 
