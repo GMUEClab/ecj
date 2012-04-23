@@ -881,8 +881,9 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
                 if (pval.equals(vars[i])) { found = true; break; }
             if (!found)
                 state.output.warning("The number of variables in your problem data (" + trainingInputs[0].length +
-                    "does not match the variables found in the function set " + pval + ".  Hope you know what you're doing.  ",
+                    "does not match the variables found in the function set " + pval + ".  Hope you know what you're doing.",
                     param);
+            else state.output.message("Using function set " + pval);
             }
         else
             {
@@ -893,6 +894,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
                     " but you are using " + pval + ".  Hope you know what you're doing.  "+ 
                     "To correct this, try adding the parameter gp.tc.0.fset=" + fs[benchmark],
                     param);
+            else state.output.message("Using function set " + pval);
             }
                         
         // set up our input -- don't want to use the default base, it's unsafe

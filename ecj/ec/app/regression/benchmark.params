@@ -1,19 +1,23 @@
 parent.0 = ../../gp/koza/koza.params
 
-
-#
-# We specify our problem here
-#
-
 eval.problem = ec.app.regression.Benchmarks
 eval.problem.data = ec.app.regression.RegressionData
-
-
 gp.tc.size = 1
 gp.tc.0 = ec.gp.GPTreeConstraints
 gp.tc.0.name = tc0
-gp.tc.0.fset = f1
 gp.tc.0.returns = nil
+
+
+#
+#
+#
+
+gp.tc.0.fset = korns5
+eval.problem.type = korns-1
+
+# eval.problem.testing-file = $testing.in
+# eval.problem.training-file = $training.in
+
 
 
 ### Function sets
@@ -131,7 +135,7 @@ gp.fs.2.func.10.nc = nc0
 
 # korns5
 gp.fs.3 = ec.gp.GPFunctionSet
-gp.fs.3.name = korns2
+gp.fs.3.name = korns5
 gp.fs.3.size = 19
 gp.fs.3.func.0 = ec.app.regression.func.Add
 gp.fs.3.func.0.nc = nc2
