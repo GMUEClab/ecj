@@ -25,6 +25,11 @@ BENCHMARKS
 	literature.  This class is part of the GP Benchmarks discussion which took
 	place at GECCO 2011 in Dublin.  See the GP Benchmarks Wiki page at:
 		http://groups.csail.mit.edu/EVO-DesignOpt/GPBenchmarks/
+	The official definition of these functions is NOT the ECJ definition, but
+	rather is the paper "Genetic Programming Needs Better Benchmarks", by 
+	James McDermott, David R. White, Sean Luke, Luca MAnzoni, Mauro Castelli,
+	Leonardo Vanneschi, Wojciech Jaskowski, Krzysztof Krawiec, Robin Harper,
+	Kenneth De Jong, and Una-May O'Reilly, found at GECCO 2012.
 
 	THE BENCHMARKS CODE IS IN A STATE OF FLUX.  It may have bugs and will change
 	at any time.  But it's useful for showing advanced approaches in ECJ for handling
@@ -32,25 +37,24 @@ BENCHMARKS
 	input variables.
 
 	Basic class:	Benchmarks.java
-	Additional functions:	X1.java X2.java X3.java X4.java X5.java
-	Koza-1, NO ERCs:	java ec.Evolve -file benchmark.noerc.params -p eval.problem.type=koza-1
-	Koza-1 ERCs:		java ec.Evolve -file benchmark.params -p eval.problem.type=koza-1
+	Using an ERC:	java ec.Evolve -file benchmark.params
 	
-	NOTE: other benchmarks may require different function sets.  So for example, if you say:
+	NOTE: other benchmarks will require different function sets.  So for example, if you say:
 
-		java ec.Evolve -file benchmark.noerc.params -p eval.problem.type=vladislavleva-3 
+		java ec.Evolve -file benchmark.params -p eval.problem.type=vladislavleva-3 
 
 	... you will get the following warning:
 
 		WARNING:
-		The number of variables for the vladislavleva-3 problem (2) is normally handled by the 
-		function set f2 but you are using f1.  Hope you know what you're doing.  To correct 
-		this, try adding the parameter gp.tc.0.fset=f2
+		The number of variables for the vladislavleva-3 problem (2) is normally 
+		handled by the function set vladislavleva-c2 but you are using korns5.  
+		Hope you know what you're doing.  To correct this, try adding the 
+		parameter gp.tc.0.fset=vladislavleva-c2
+
 
 	To fix this, you say:
 
-		java ec.Evolve -file benchmark.noerc.params -p eval.problem.type=vladislavleva-3 -p gp.tc.0.fset=f2
+		java ec.Evolve -file benchmark.params -p eval.problem.type=vladislavleva-3 -p gp.tc.0.fset=vladislavleva-c2
 
-	Note that right now the function sets are wrong for a number of benchmarks -- they're set up
-	for different numbers of input variables, and that's it.  But for some benchmarks there are limitations
-	on the kind of non-variable functions used (like sin, +, etc.).  That's not been handled yet.
+
+
