@@ -188,16 +188,26 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
     // expected function sets.  "fn" means "function set with n terminals x_1 ... x_n"
     public static final String fs[] = 
         {
-        "f1", "f1", "f1",
-        "f1", "f1", "f1", "f1", "f1", "f1", "f1", "f1", "f2", "f2", "f2", "f2",
-        "f2", "f3",
-        "f5", "f5", "f5", "f5", "f5", "f5", "f5", "f5", "f5", "f5", "f5", "f5", "f5", "f5", "f5", 
-        "f1", "f1", "f1", "f1", "f3", "f1", "f1", "f1", "f1", "f2", "f2", "f2", "f2", "f2", "f2",
-        "f2", "f1", "f2", "f5", "f3", "f2", "f2", "f2"
+        "koza1", "koza1", "koza1",
+        "koza1", "koza1", "koza1", "koza1", "koza1", "koza1", "koza1", "koza1", "koza2", "koza2", "koza2", "koza2",
+        "koza2", "koza3",
+        "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", 
+        "keijzer1", "keijzer1", "keijzer2", "keijzer1", "keijzer3", "keijzer1", "keijzer1", "keijzer1", "keijzer1", "keijzer2", "keijzer2", "keijzer2", "keijzer2", "keijzer2", "keijzer2",
+        "vladislavleva-b2", "vladislavleva-c1", "vladislavleva-c2", "vladislavleva-a5", "vladislavleva-a3", "vladislavleva-b2", "vladislavleva-c2", "vladislavleva-a2"
         };
         
+        
+    
     // function sets with various variable lengths
-    public static final String fs_vars[] = { "f1", "f2", "f3", "f4", "f5" };
+    public static final String fs_vars[][] = 
+        {
+        { },
+        { "koza1", "keijzer1", "vladislavleva-c1" },
+        { "koza2", "keijzer2", "vladislavleva-a2", "vladislavleva-b2", "vladislavleva-c2" },
+        { "koza3", "keijzer3", "vladislavleva-a3" },
+        { },
+        { "korns5", "vladislavleva-a5" },
+        };
         
         
     /** Hyperbolic Arc Sin -- not standard in Java Math library */
@@ -819,10 +829,6 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
                     {
                     state.output.fatal("Some tokens in the file were not numbers.");
                     }
-                //catch (IOException e)
-                //      {
-                //      state.output.fatal("A file could not be read due to an IOException:\n" + e);
-                //      }
                 }
             }
         else
@@ -869,11 +875,13 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
         // verify the number of variables match the expected function set
         if (problem == null)  // it's being loaded from file
             {
-            if (!(pval.equals(fs_vars[trainingInputs[0].length - 1])))  // uh oh
+            boolean found = false;
+            String[] vars = fs_vars[trainingInputs[0].length];
+            for(int i = 0; i< vars.length; i++)
+                if (pval.equals(vars[i])) { found = true; break; }
+            if (!found)
                 state.output.warning("The number of variables in your problem data (" + trainingInputs[0].length +
-                    ") is normally handled by the function set " + fs_vars[trainingInputs[0].length - 1] +
-                    " but you are using " + pval + ".  Hope you know what you're doing.  " + 
-                    "To correct this, try adding the parameter gp.tc.0.fset=" + fs_vars[trainingInputs[0].length - 1],
+                    "does not match the variables found in the function set " + pval + ".  Hope you know what you're doing.  ",
                     param);
             }
         else
