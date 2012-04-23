@@ -163,7 +163,8 @@ public abstract class GPNode implements GPNodeParent, Prototype
         {
         int numChildren = expectedChildren();
         if (numChildren >= 0 && children.length != numChildren)  // uh oh
-            state.output.error("Incorrect number of children for node " + toStringForError() + " at " + individualBase);
+            state.output.error("Incorrect number of children for node " + toStringForError() + " at " + individualBase + 
+            ", was expecting " + numChildren + " but got " + children.length);
         }
         
     /** 

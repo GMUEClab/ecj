@@ -1881,3 +1881,4 @@ Version		Change Log
 		This also hasn't been added to the GUI, just to the command-line.  This
 		is deprecation -- you can still use 'prefix' for now, but you get a warning
 		message.
+	RegERC.toStringForHumans() now writes out the value as a double, not a float
