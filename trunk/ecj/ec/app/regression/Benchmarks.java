@@ -202,11 +202,11 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
     public static final String fs_vars[][] = 
         {
         { },
-        { "koza1", "keijzer1", "vladislavleva-c1" },
-        { "koza2", "keijzer2", "vladislavleva-a2", "vladislavleva-b2", "vladislavleva-c2" },
-        { "koza3", "keijzer3", "vladislavleva-a3" },
-        { },
-        { "korns5", "vladislavleva-a5" },
+            { "koza1", "keijzer1", "vladislavleva-c1" },
+            { "koza2", "keijzer2", "vladislavleva-a2", "vladislavleva-b2", "vladislavleva-c2" },
+            { "koza3", "keijzer3", "vladislavleva-a3" },
+            { },
+            { "korns5", "vladislavleva-a5" },
         };
         
         
@@ -273,7 +273,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
         }
                 
                 
-    /** Produce sample points evenly spaced out between min and max in one dimension, with the given spacing interval.  */
+    /** Produce sample points evenly spaced out between min and max in one dimension, with the given spacing interval.  One dimension only. */
     public double[][] generateIntervalSpacedSamples(EvolutionState state, double min, double max, double interval, int threadnum)
         {
         return generateIntervalSpacedSamples(state, new double[] { min }, new double[] { max }, new double[] { interval }, threadnum);

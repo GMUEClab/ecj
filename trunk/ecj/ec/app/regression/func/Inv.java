@@ -21,7 +21,7 @@ import ec.util.*;
  <p>This function appears in the Keijzer function set, and is 1/x.  Note that
  the division is <b>not protected</i>, so 1/0.0 is infinity.
  <p>M. Keijzer. Improving Symbolic Regression with Interval Arithmetic and Linear Scaling. In <i>Proc. EuroGP.</i> 2003.
- */
+*/
 
 /**
  * @author Sean Luke

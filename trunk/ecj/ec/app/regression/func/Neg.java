@@ -19,7 +19,7 @@ import ec.util.*;
 
  <p>This function appears in the Keijzer function set, and is (0 - x)
  <p>M. Keijzer. Improving Symbolic Regression with Interval Arithmetic and Linear Scaling. In <i>Proc. EuroGP.</i> 2003.
- */
+*/
 
 /**
  * @author Sean Luke

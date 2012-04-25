@@ -20,7 +20,7 @@ import ec.util.*;
  <p>This function appears in the Korns function set, and is just x * x * x
  <p>M. F. Korns. Accuracy in Symbolic Regression. In <i>Proc. GPTP.</i> 2011.
  
- */
+*/
 
 /**
  * @author Sean Luke

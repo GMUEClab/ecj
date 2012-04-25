@@ -22,7 +22,7 @@ import java.io.*;
  <p>This ERC appears in the Korns function set.  It is defined as a random finite 65-bit IEEE double.  We achieve this by drawing a random long, then converting it to a double, then rejecting results which are either NaN or infinite.
  
  <p>M. F. Korns. Accuracy in Symbolic Regression. In <i>Proc. GPTP.</i> 2011.
- */
+*/
 
 /**
  * @author Sean Luke
