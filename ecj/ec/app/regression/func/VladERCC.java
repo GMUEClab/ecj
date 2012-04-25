@@ -20,7 +20,7 @@ import java.io.*;
  * By: Sean Luke
 
  <p>This ERC appears all three the Vladislavleva function sets.  It is not a constant but rather a function of one parameter (n) with an internal constant (c) and returns n * c.  Note that the value of c is drawn from the fully-closed range [-5.0, 5.0]. 
- */
+*/
 
 /**
  * @author Sean Luke

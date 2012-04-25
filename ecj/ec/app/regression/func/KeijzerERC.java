@@ -22,7 +22,7 @@ import java.io.*;
  <p>This ERC appears in the Keijzer function set.  It is defined as a random value drawn from a Gaussian distriution with a mean of 0.0 and a standard deviation of 5.0.
 
  <p>M. Keijzer. Improving Symbolic Regression with Interval Arithmetic and Linear Scaling. In <i>Proc. EuroGP.</i> 2003.
- */
+*/
 
 /**
  * @author Sean Luke

@@ -21,7 +21,7 @@ import ec.util.*;
  <p>M. F. Korns. Accuracy in Symbolic Regression. In <i>Proc. GPTP.</i> 2011.
  <p>M. Keijzer. Improving Symbolic Regression with Interval Arithmetic and Linear Scaling. In <i>Proc. EuroGP.</i> 2003.
 
- */
+*/
 
 /**
  * @author Sean Luke
