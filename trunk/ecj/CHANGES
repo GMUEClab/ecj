@@ -1882,3 +1882,6 @@ Version		Change Log
 		is deprecation -- you can still use 'prefix' for now, but you get a warning
 		message.
 	RegERC.toStringForHumans() now writes out the value as a double, not a float
+	Fixed GUI so it works properly again with the revised version of
+		ParameterDatabase.getLocation(...).  Thanks to David White 
+		<david.r.white@glasgow.ac.uk>
