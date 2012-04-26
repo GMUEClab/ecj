@@ -2076,7 +2076,11 @@ public class ParameterDatabase extends Properties implements Serializable
         return result;
         }
 
-
+    public ParameterDatabase getLocation(Parameter parameter)
+        {
+        return getLocation(parameter.param);
+        }
+        
     public synchronized ParameterDatabase getLocation(String parameter) 
         {
         ParameterDatabase loc = _getLocation(parameter);
