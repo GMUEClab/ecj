@@ -311,7 +311,7 @@ gp.fs.5.func.7.nc = nc0
 # keijzer3
 gp.fs.6 = ec.gp.GPFunctionSet
 gp.fs.6.name = keijzer3
-gp.fs.6.size = 8
+gp.fs.6.size = 9
 gp.fs.6.func.0 = ec.app.regression.func.Add
 gp.fs.6.func.0.nc = nc2
 gp.fs.6.func.1 = ec.app.regression.func.Mul
