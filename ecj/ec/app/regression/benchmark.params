@@ -1,42 +1,123 @@
 parent.0 = ../../gp/koza/koza.params
 
-eval.problem = ec.app.regression.Benchmarks
-eval.problem.data = ec.app.regression.RegressionData
-gp.tc.size = 1
-gp.tc.0 = ec.gp.GPTreeConstraints
-gp.tc.0.name = tc0
-gp.tc.0.returns = nil
+
+#### GP Symbolic Regression Benchmark Problems
+#
+# This parameter file provides options for doing a variety of common symbolic regression
+# benchmark problems defined in the paper "Genetic Programming Needs Better Benchmarks",
+# GECCO 2012.  Additionally, one more problem, pagie-2, is provided.
+#
+# There are 54 benchmarks in all.  Benchmarks vary widely in several respects:
+#
+# 1. The target function (of course)
+# 2. The number of variables, ranging from 1 to 5
+# 3. How the training set is generated and the number of test samples.
+# 4. How the generalization/testing set is generated, if there is one, and the
+#    number of test samples.  If no testing set is indicated for a problem, 
+#    ECJ will consider the training and testing sets to be the same.
+# 5. The function set used
+#
+# For ECJ's purposes, items 1, 3, and 4 are determined by the problem name that you
+# specify here.  Items 2 and 5 are determined by the function set name that you 
+# specify.  You have to specify both (sorry), but ECJ knows which problems use which
+# function sets and will warn you when your'e using the wrong one.
+#
+# Here's where you specify the problem and the function set:
 
 
-#
-#
-#
-
-gp.tc.0.fset = korns5
 eval.problem.type = korns-1
+gp.tc.0.fset = korns5
+
+
+# Additionally, you have the option of loading the training and/or test samples from
+# files.  Each of these files has the following format.  First comes a number indicating
+# how many samples there are.  Usually you'd put this on its own line.  After this comes
+# each sample, typically on its own line.  A sample consists of a collection of 
+# whitespace delimited numbers.  The first N numbers are the input variables.  The last
+# number is the expected output variable.  The value of N must match the expected number
+# of variables for the problem.
+#
+# Here's how you'd specify the training and/or testing files.
+
 
 # eval.problem.testing-file = $testing.in
 # eval.problem.training-file = $training.in
 
 
+# Most of this file defines various function sets for the problems in question.  See the
+# paper above for more explanation about these sets.  Here's a table describing the
+# problems and function sets and expected number of variables (you need this last one
+# if you're building your own training and/or testing files).  See further down
+# in this file for an explanation of the naming style of the function sets.
 
-### Function sets
-# See "Genetic Programming Needs Better Benchmarks", in GECCO 2012,
-# for more information.
+# PROBLEM NAME        FUNCTION SET      NUMBER OF VARIABLES, AND USEFUL NOTES
+# koza-1              koza1             1       * no testing set
+# koza-2              koza1             1       * no testing set
+# koza-3              koza1             1       * no testing set
+# nguyen-1            koza1             1       * no testing set
+# nguyen-2            koza1             1       * no testing set; identical to koza-2
+# nguyen-3            koza1             1       * no testing set
+# nguyen-4            koza1             1       * no testing set
+# nguyen-5            koza1             1       * no testing set
+# nguyen-6            koza1             1       * no testing set
+# nguyen-7            koza1             1       * no testing set
+# nguyan-8            koza1             1       * no testing set
+# nguyen-9            koza2             2       * no testing set
+# nguyen-10           koza2             2       * no testing set
+# nguyen-11           koza2             2       * no testing set
+# nguyen-12           koza2             2       * no testing set
+# pagie-1             koza2             2       * no testing set
+# pagie-2             koza3             3       * no testing set; not in GECCO paper
+# korns-1             korns5            5       
+# korns-2             korns5            5
+# korns-3             korns5            5
+# korns-4             korns5            5
+# korns-5             korns5            5
+# korns-6             korns5            5
+# korns-7             korns5            5
+# korns-8             korns5            5
+# korns-9             korns5            5
+# korns-10            korns5            5
+# korns-11            korns5            5
+# korns-12            korns5            5
+# korns-13            korns5            5
+# korns-14            korns5            5
+# korns-15            korns5            5
+# keijzer-1           keijzer1          1
+# keijzer-2           keijzer1          1
+# keijzer-3           keijzer2          2
+# keijzer-4           keijzer1          1
+# keijzer-5           keijzer3          3
+# keijzer-6           keijzer1          1
+# keijzer-7           keijzer1          1
+# keijzer-8           keijzer1          1
+# keijzer-9           keijzer1          1
+# keijzer-10          keijzer2          2
+# keijzer-11          keijzer2          2
+# keijzer-12          keijzer2          2
+# keijzer-13          keijzer2          2
+# keijzer-14          keijzer2          2
+# keijzer-15          keijzer2          2
+# vladislavleva-1     vladislavleva-b2  2
+# vladislavleva-2     vladislavleva-c1  1
+# vladislavleva-3     vladislavleva-c2  2
+# vladislavleva-4     vladislavleva-a5  5
+# vladislavleva-5     vladislavleva-a3  3
+# vladislavleva-6     vladislavleva-b2  2
+# vladislavleva-7     vladislavleva-c2  2
+# vladislavleva-8     vladislavleva-a2  2
 
 
-gp.fs.size = 13
 
-
-# GP Function sets have NAME followed by the number of VARIABLES:
-# Names include koza, nguyen, pagie, korns, keijzer, 
-# vladislavleva-a, vladislavleva-b, vladislavleva-c
-# Note that nguyen1 and koza1 are identical
-
+# GP Function sets have a NAME followed by the number of VARIABLES:
+# Names include koza, korns, keijzer, 
+#               vladislavleva-a, vladislavleva-b, vladislavleva-c
+#
 # Function sets:
-# koza1
-# koza2
-# koza3
+#
+# koza1             * This is standard Koza, without ERCs
+# koza2		    * Also no ERCs
+# koza3		    * Also no ERCs
 # korns5
 # keijzer1
 # keijzer2
@@ -49,6 +130,12 @@ gp.fs.size = 13
 # vladislavleva-c2
 
 
+
+
+
+### Here are all the function set definitions
+
+gp.fs.size = 13
 
 
 # koza1
@@ -440,5 +527,17 @@ gp.fs.12.func.12 = ec.app.regression.func.X1
 gp.fs.12.func.12.nc = nc0
 gp.fs.12.func.13 = ec.app.regression.func.X2
 gp.fs.12.func.13.nc = nc0
+
+
+
+
+
+
+
+### Don't mess with this, it defines our problem and data 
+eval.problem = ec.app.regression.Benchmarks
+eval.problem.data = ec.app.regression.RegressionData
+
+
 
 
