@@ -673,9 +673,9 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
     public Object clone()
         {
         // don't bother copying the inputs and outputs; they're read-only :-)
-        // don't bother copying the currentValue; it's transitory
-        // but we need to copy our regression data
+        // but we need to copy our regression data and currentValue        
         Benchmarks myobj = (Benchmarks) (super.clone());
+        myobj.currentValue = (double[])(currentValue.clone());
         myobj.data = (RegressionData)(data.clone());
         return myobj;
         }
