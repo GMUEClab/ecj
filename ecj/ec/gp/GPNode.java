@@ -992,17 +992,39 @@ public abstract class GPNode implements GPNodeParent, Prototype
        Note that this isn't particularly efficient and should only be used to generate
        occasional trees for display, not for storing individuals or sending them over networks.
     */
-    public String makeLispTree()
+    StringBuffer makeLispTree(StringBuffer buf)
         {
         if (children.length==0)
-            return toStringForHumans();
+            return buf.append(toStringForHumans());
         else
             {
-            String s = "(" + toStringForHumans();
+            buf.append("(");
+            buf.append(toStringForHumans());
+            // String s = "(" + toStringForHumans();
             for(int x=0;x<children.length;x++)
-                s = s + " " + children[x].makeLispTree();
-            return s + ")";
+                {
+                buf.append(" ");
+                children[x].makeLispTree(buf);
+                //s = s + " " + children[x].makeLispTree();
+                }
+            buf.append(")");
+            return buf;
+            //return s + ")";
             }
+        }
+
+    public String makeLispTree()
+        {
+        //if (children.length==0)
+        //    return toStringForHumans();
+        //else
+        //    {
+        //    String s = "(" + toStringForHumans();
+        //    for(int x=0;x<children.length;x++)
+        //        s = s + " " + children[x].makeLispTree();
+        //    return s + ")";
+        //    }
+        return makeLispTree(new StringBuffer()).toString();
         }
 
 

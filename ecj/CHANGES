@@ -1893,3 +1893,4 @@ Version		Change Log
 		the ability to have zero verbosity.  Note that Log.muzzle may
 		be changed at a future date.
 	GPNode.makeLispTree now uses StringBuffers rather than Strings to dump the tree.
+	Output.log(...) -> Output.getLog(...)
