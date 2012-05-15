@@ -323,12 +323,9 @@ public class Evolve
         }
 
 
-    /** Initializes an evolutionary run given the parameters and a random seed adjustment (added to each random seed).
-        The adjustment offers a convenient way to change the seeds of the random number generators each time you
-        do a new evolutionary run.  You are of course welcome to replace the random number generators after initialize(...)
-        but before startFresh(...) */
-                
-    public static EvolutionState initialize(ParameterDatabase parameters, int randomSeedOffset)
+    /** Constructs and sets up an Output object. */
+    
+    public static Output buildOutput()
         {
         Output output;
         // 1. create the output
@@ -341,8 +338,21 @@ public class Evolve
         output.addLog(ec.util.Log.D_STDOUT,false);
         output.addLog(ec.util.Log.D_STDERR,true);
                 
-        // now continue intialization
-        return initialize(parameters, randomSeedOffset, output);
+        return output;
+        }
+
+
+    /** Initializes an evolutionary run given the parameters and a random seed adjustment (added to each random seed).
+        The adjustment offers a convenient way to change the seeds of the random number generators each time you
+        do a new evolutionary run.  You are of course welcome to replace the random number generators after initialize(...)
+        but before startFresh(...) 
+        
+        <p>This method works by first setting up an Output (using buildOutput), then calling initialize(ParameterDatabase, seed, output)
+        */
+                
+    public static EvolutionState initialize(ParameterDatabase parameters, int randomSeedOffset)
+        {
+        return initialize(parameters, randomSeedOffset, buildOutput());
         }
 
 

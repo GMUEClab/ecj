@@ -626,6 +626,7 @@ public class Output implements Serializable
         if (!log.postAnnouncements && _announcement) return;  // don't write it
         // if (log.verbosity >= _verbosity) return;  // don't write it
         // if (verbosity >= _verbosity) return;  // don't write it
+        if (log.muzzle) return;  // don't write it
         // now write it
         log.writer.println(s);
         // if (flush) 
@@ -712,6 +713,7 @@ public class Output implements Serializable
         if (log.writer==null) throw new OutputException("Log with a null writer: " + log);
         //if (log.verbosity >= _verbosity) return;  // don't write it
         //if (verbosity >= _verbosity) return;  // don't write it
+        if (log.muzzle) return;  // don't write it
         // now write it
         log.writer.print(s);
         // do not flush until you get a println
