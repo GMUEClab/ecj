@@ -962,7 +962,7 @@ The least important announcements are simple {\bf messages}.  One special kind o
 
 \subsection{Creating and Writing to Logs}
 
-There are many methods in \class{ec.util.Output} for creating Logs.  Here are the two most common ones:
+There are many methods in \class{ec.util.Output} for creating or accessing Logs.  Here are some common ones:
 
 \begin{methods}{ec.util.Output}
 \mthd{public int addLog(File \textit{file}, boolean \textit{appendOnRestart})}
@@ -972,9 +972,22 @@ If ECJ is restarted from a checkpoint, and \textit{appendOnRestart} is true, the
 Add a log on a given file.
 %, with a verbosity of \variable{ec.util.Output.V\_NO\_GENERAL\(-\)1}.  
 If ECJ is restarted from a checkpoint, and \textit{appendOnRestart} is true, then the log will be appended to the current file contents.  Else they will be replaced.  If \textit{gzip} is true, then the log will be gzipped.  You cannot have both \textit{appendOnRestart} and \textit{gzip} true at the same time.   The Log is registered with \variable{ec.util.Output} and its log number is returned.
+\mthd{public Log getLog(int \textit{index})}
+Returns the log indexed at the given location.
+\mthd{public int numLogs()}
+Returns the total number of logs.
 \end{methods}
 
-Two logs are always made for you automatically: a log to {\bf stdout} (log number 0); and another log to {\bf stderr} (log number 1).  The stderr log prints all announcements, but the stdout log does not.
+Two logs are always made for you automatically: a log to {\bf stdout} (log index 0); and another log to {\bf stderr} (log index 1).  The stderr log prints all announcements, but the stdout log does not.
+
+Logs have various instance variables, but few are important, except for this one:
+
+\java{%
+public boolean muzzle = false;
+}
+
+This is a crude mechanism for changing the verbosity of the log.  If you set this flag to \variable{true}, the log will not print anything at all.   ECJ used to have an elaborate verbosity mechanism inspired from lil-gp.  This has been since deprecated since in all the years that I've used the toolkit, I'd never changed the verbosity once.  Now we have a cruder procedure for those rare cases when you need to guarantee that an ECJ process shuts up completely.  (Note that this is in flux and may change in future versions of the software)
+
 %  Both logs are fully verbose.
 
 To write arbitrary text to a log, here are the most common methods:
@@ -1554,8 +1567,31 @@ Here's the basic code.  As you can see, it's not very complex.
 
 The source code for \class{ec.Evolve} is very heavily commented with examples and ideas for customization.  Check it out!
 
+The \class{ec.Evolve} class is the most common way to start up ECJ but it's just a bootstrapping mechanism and can be completely replaced with code of your own.  However there are a number of useful utility methods in the class which you might want to take advantage of even if you decide to roll your own bootstrapper.
 
-
+\begin{methods}{ec.Evolve}
+\mthd{public static void main(String\protect{[ ]} \textit{args})}
+The top-level.  Starts up ECJ either from a checkpoint file (by calling \method{possiblyRestoreFromCheckpoint(...)}) or from scratch (by calling \method{initialize(...)}, runs the EC process, then finally calls \method{cleanup(...)}.
+\mthd{public static EvolutionState possiblyRestoreFromCheckpoint(String\protect{[ ]} \textit{args})}
+If the command-line arguments indicate that ECJ should load an EvolutionState from a checkpoint file, this method does so and returns it.  Else it returns \variable{null}.
+\mthd{public static ParameterDatabase loadParameterDatabase(String\protect{[ ]} \textit{args})}
+Loads a ParameterDatabase from the file or resource indicated on the command line.
+\mthd{public static EvolutionState initialize(ParameterDatabase \textit{parameters}, int {\it randomSeedOffset})}
+Builds a new EvolutionState and initializes it, using the provided random seed offset.  This method simply calls \method{buildOutput()}, then calls \method{initialize(parameters, randomSeedOffset, output)}.
+\mthd{public static Output buildOutput()}
+Builds a new Output and returns it.
+\mthd{public static EvolutionState initialize(ParameterDatabase \textit{parameters}, int {\it randomSeedOffset}, Output {\it output})}
+Builds a new EvolutionState and initializes it, using the provided Output and random seed offset.  The random seed is determined by first drawing it from the command line, then adding the random seed offset multiplied by the number of random number generators (e.g., threads).  Thus the randomSeedOffset can be used to indicate a job number.  For example, if there are two random number generators and the base seed was 1234, and there are three jobs, then the first (zeroth) job will have generators 1234 and 1235, the second job will have generators 1236 and 1237, and the third job will have 1238 and 1239.  If you're not doing jobs, just pass in 0 for the offset.
+\mthd{public static int determineThreads(Output \textit{output}, ParameterDatabase {\it parameters}, Parameter {\it threadParameter})}
+Looks up the given thread parameter and, using it, determines the number of threads to use.
+\mthd{public static int determineSeed(Output \textit{output}, ParameterDatabase {\it parameters}, Parameter {\it seedParameter},}
+\rule{0pt}{0pt}\hspace{\fill}{\sf long {\it currentTime}, int {\it offset}, boolean {\it auto})}\\
+Computes a random number generator seed.  The seed is computed by first looking up {\it seedParameter} and using this as the base seed.  If the seed parameter is ``time'', or \variable{auto} is true, then the provided current time is used as a base seed (you might wish to change the time each time you call this method).  Otherwise, the base seed is the number value stored in the seed parameter.  Then the base seed plus the offset is returned as the final seed.
+\mthd{public static MersenneTwisterFast primeGenerator(MersenneTwisterFast \textit{generator})}
+Mersenne Twister's first 624 or so random numbers are not as good as its later numbers because they were constructed using a Knuth LCS generator to initialize Mersenne Twister from a seed.  They're acceptable to use but just to be careful, this method ``primes the pump'' by calling \method{nextInt()} 1048 times, then returns the same generator.
+\mthd{public static void cleanup(EvolutionState {\it state})}
+Flushes and closes output buffers and writes out used, accessed, unused, and unaccessed parameters as requested.
+\end{methods}
 
 
 
@@ -3036,8 +3072,7 @@ Besides \method{setup(...)}, Exchangers have three basic functions, called at di
 
 \java{%
 public abstract Population preBreedingExchangePopulation(EvolutionState state);\\
-public abstract Population postBreedingExchangePopulation(\\
-\hsp{\fill}EvolutionState state);\\
+public abstract Population postBreedingExchangePopulation(EvolutionState state);\\
 public abstract String runComplete(EvolutionState state);
 }
 

@@ -411,7 +411,7 @@ public class Output implements Serializable
         }
 
     /** Returns the given log. */
-    public synchronized Log log(int x)
+    public synchronized Log getLog(int x)
         {
         return (Log)logs.elementAt(x);
         }
@@ -419,7 +419,7 @@ public class Output implements Serializable
     /** Removes the given log. */
     public synchronized Log removeLog(int x)
         {
-        Log l = log(x);
+        Log l = getLog(x);
         logs.removeElementAt(x);
         return l;
         }
