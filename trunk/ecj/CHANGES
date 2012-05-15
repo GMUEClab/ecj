@@ -1885,3 +1885,11 @@ Version		Change Log
 	Fixed GUI so it works properly again with the revised version of
 		ParameterDatabase.getLocation(...).  Thanks to David White 
 		<david.r.white@glasgow.ac.uk>
+	Modification to Evolve.java which breaks out initialize() into an
+		initialize() and a buildOutput(), allowing us to customize the
+		output generation.
+	Added a Log.muzzle variable for Log.  ECJ had yanked out all of the
+		verbosity stuff, but we should have probably kept at *least*
+		the ability to have zero verbosity.  Note that Log.muzzle may
+		be changed at a future date.
+	GPNode.makeLispTree now uses StringBuffers rather than Strings to dump the tree.

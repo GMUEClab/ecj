@@ -31,6 +31,8 @@ BENCHMARKS
 	Leonardo Vanneschi, Wojciech Jaskowski, Krzysztof Krawiec, Robin Harper,
 	Kenneth De Jong, and Una-May O'Reilly, found at GECCO 2012.
 
+	See the benchmark.params file for extensive description of your options.
+
 	THE BENCHMARKS CODE IS IN A STATE OF FLUX.  It may have bugs and will change
 	at any time.  But it's useful for showing advanced approaches in ECJ for handling
 	training/test data, different numbers of variables, and distributions of
