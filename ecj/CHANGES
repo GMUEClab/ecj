@@ -1894,3 +1894,9 @@ Version		Change Log
 		be changed at a future date.
 	GPNode.makeLispTree now uses StringBuffers rather than Strings to dump the tree.
 	Output.log(...) -> Output.getLog(...)
+	GEIndividual now prints out a list of ERC mappings for each byte used
+		as an ERC in the genome.
+	Bugfix in GESpecies: ERCs are based on the *next* gene index, not the
+		current one.
+	GEIndividual now prints out "Equivalent GP Individual:" instead of "Equivalent Tree:"
+	Bugfixes in regression/Benchmarks.java
