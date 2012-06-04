@@ -137,7 +137,7 @@ public class GEProblem extends Problem implements SimpleProblemForm, GroupedProb
             GESpecies species = (GESpecies) (ind[i].species);
                 
             // warning: gpi[i] may be null
-            gpi[i] = species.map(state, indiv, threadnum);
+            gpi[i] = species.map(state, indiv, threadnum, null);
             }
                         
         ((GroupedProblemForm)problem).evaluate(state, gpi, updateFitness, countVictoriesOnly, subpops, threadnum);
@@ -164,7 +164,7 @@ public class GEProblem extends Problem implements SimpleProblemForm, GroupedProb
 
         GEIndividual indiv = (GEIndividual) ind;
         GESpecies species = (GESpecies) (ind.species);
-        GPIndividual gpi = species.map(state, indiv, threadnum);
+        GPIndividual gpi = species.map(state, indiv, threadnum, null);
         if (gpi == null)
             {
             KozaFitness fitness = (KozaFitness) (ind.fitness);
@@ -191,7 +191,7 @@ public class GEProblem extends Problem implements SimpleProblemForm, GroupedProb
         {
         GEIndividual indiv = (GEIndividual) ind;
         GESpecies species = (GESpecies) (ind.species);
-        GPIndividual gpi = species.map(state, indiv, threadnum);
+        GPIndividual gpi = species.map(state, indiv, threadnum, null);
         if (gpi != null)
             {
             problem.describe(state, gpi, subpopulation, threadnum, log);
