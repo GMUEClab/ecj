@@ -195,6 +195,28 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
         return generateRandomSamples(state, new double[] { min }, new double[] { max }, numPoints, threadnum);
         }
 
+/*
+
+    // recursive trick to dump the full mesh into a bag.  Enter this by setting variable to 0,  Yuck, expensive.  But O(n).
+    void buildIntervalPoints(EvolutionState state, ArrayList list, double[] min, double[] max, double[] interval, double current[], int variable, int threadnum)
+        {
+        if (variable == min.length)  // we're out of variables, base case
+            {
+            double[] d = new double[min.length];
+            for(int i = 0; i < d.length; i++)
+                d[i] = current[i];      // not sure if System.arraycopy would be faster, probably not in this case 
+            list.add(d);
+            }
+        else
+            {
+            for(double pos = min[variable]; pos <= max[variable]; pos += interval[variable])         // for each interval
+                {
+                current[variable] = pos;
+                buildIntervalPoints(state, list, min, max, interval, current, variable + 1, threadnum);
+                }
+            }
+        }
+*/
 
     // recursive trick to dump the full mesh into a bag.  Enter this by setting variable to 0,  Yuck, expensive.  But O(n).
     void buildIntervalPoints(EvolutionState state, ArrayList list, double[] min, double[] max, double[] interval, double current[], int variable, int threadnum)
@@ -208,13 +230,17 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
             }
         else
             {
-            for(double pos = min[variable]; pos <= max[variable]; pos += interval[variable])         // for each interval
+            int jumps = (int)((max[variable] - min[variable]) / interval[variable]) + 1;
+
+            for(int j = 0; j < jumps; j++)
                 {
-                current[variable] = pos;
+                current[variable] = min[variable] + interval[variable] * j;
                 buildIntervalPoints(state, list, min, max, interval, current, variable + 1, threadnum);
                 }
             }
         }
+
+
 
     /** Produce sample points evenly spaced out between min and max in each dimension, with the given spacing interval per-dimension.  */
     public double[][] generateIntervalSpacedSamples(EvolutionState state, double[] min, double[] max, double[] interval, int threadnum)
@@ -530,7 +556,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
             case KORNS8:
                 return 6.87 + (11.0 * Math.sqrt(7.23 * xs[0] * xs[3] * xs[4]));
             case KORNS9:
-                return ((Math.sqrt(xs[0]) / Math.log(xs[1])) * (Math.exp(xs[2])/(xs[3] * xs[3])));
+                return Math.sqrt(xs[0]) / Math.log(xs[1]) * Math.exp(xs[2] / (xs[3] * xs[3]));
             case KORNS10:
                 return 0.81 + (24.3 * (((2.0 * xs[1]) + (3.0 * (xs[2] * xs[2]))) / ((4.0 * (xs[3]*xs[3]*xs[3])) + (5.0 * (xs[4]*xs[4]*xs[4]*xs[4])))));
             case KORNS11:
@@ -671,9 +697,9 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
     public Object clone()
         {
         // don't bother copying the inputs and outputs; they're read-only :-)
-        // but we need to copy our regression data and currentValue        
+        // don't bother copying the current value, it's only set during evaluation
+        // but we need to copy our regression data        
         Benchmarks myobj = (Benchmarks) (super.clone());
-        myobj.currentValue = (double[])(currentValue.clone());
         myobj.data = (RegressionData)(data.clone());
         return myobj;
         }
