@@ -10,6 +10,7 @@ package ec.gp.ge;
 import ec.*;
 import ec.gp.*;
 import ec.vector.*;
+import java.util.*;
 
 /* 
  * GEIndividual.java
@@ -25,15 +26,31 @@ import ec.vector.*;
 
 public class GEIndividual extends ByteVectorIndividual
     {
-    public static final String TREE_PREAMBLE = "Equivalent Tree: ";
+    public static final String GP_PREAMBLE = "Equivalent GP Individual:";
+    public static final String ERC_PREAMBLE = "ERCs: ";
     public static final String BAD_TREE = "[BAD]";
         
     public void printIndividualForHumans(EvolutionState state, int log)
         {
         super.printIndividualForHumans(state, log);
-        state.output.println(TREE_PREAMBLE, log);
-        GPIndividual ind = (((GESpecies)species).map(state, this, 0));
+        
+        HashMap ERCmap = new HashMap();
+        
+        // print out Trees
+        state.output.println(GP_PREAMBLE, log);
+        GPIndividual ind = (((GESpecies)species).map(state, this, 0, ERCmap));
         if (ind == null) state.output.println(BAD_TREE, log);
         else ind.printTrees(state, log);
+
+        // print out ERC mapping
+        state.output.print(ERC_PREAMBLE, log);
+        Iterator iter = (ERCmap.keySet()).iterator();
+        while(iter.hasNext())
+            {
+            Integer key = (Integer)(iter.next());
+            GPNode val = (GPNode)(ERCmap.get(key));
+            state.output.print("    " + (byte)(key.intValue()) + " -> " + val.toStringForHumans(), log);
+            }
+        state.output.println("", log);
         }
     }
