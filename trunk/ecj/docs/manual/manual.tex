@@ -7382,7 +7382,7 @@ stat.child.0.kill-proportion = 0.2
 Grammatical Evolution (GE) \cite{grammaticalevolution}  is an approach to building genetic programming trees using a grammar interpreted by a list representation.  The trees are then evaluated and tested.  In ECJ the procedure for evaluating Individuals in GE works roughly like this.
 
 \begin{itemize}
-\item The representation is an arbitrarily long list of bytes (See Section \ref{list}), implemented as a special subclass of ByteVectorIndividual called \class{ec.gp.ge.GEIndividual}.
+\item The representation is an arbitrarily long list of bytes (See Section \ref{list}), implemented as a special subclass of ByteVectorIndividual called \class{ec.gp.ge.GEIndividual}.\footnote{A consequence of subclassing ByteVectorIndividual is that a given grammatical rule can have no more than 256 different clauses (choice points).}
 \item The Fitness is typically a KozaFitness.
 \item The GEIndividual's species is a \class{ec.gp.ge.GESpecies}.
 \item The GESpecies holds a {\bf grammar}, loaded from a file and produced via an \class{ec.gp.ge.GrammarParser}, which we will interpret according to the bytes in the Individual.
@@ -7501,6 +7501,7 @@ Each GPNode in the grammar is looked up according to its name.  Thus if you have
 <op> ::= (ERC)
 <op> ::= (ADF1 <op> <op>)
 \end{verbatim}}
+'
 
 \subsection{Translation and Evaluation}
 
@@ -7534,6 +7535,39 @@ Computes and returns the number of bytes that would be consumed to produce a GPI
 \paragraph{Handling ADFs and Multiple Trees}  Recall that the GESpecies maintains a separate grammar for each tree in the GPIndividual (and thus for each separate ADF).  However there's only a single byte array in the GEIndividual.  This is handled straightforwardly the array is used to build the first tree; then the unused remainder of the array is used to build the second tree; and so on.  If not all trees were able to be built, evaluation of the GPIndividual is bypassed and the fitness is set to the (\variable{Float.MAX\_VALUE}).
 
 \paragraph{Grammatical Evolution Does Not Support GroupedProblemForm}  GroupedProblemForm (Section \ref{ec.coevolve.GroupedProblemForm}) evaluates several Individuals together.  What if at least one of them is a GEIndividual, and the GEIndividual cannot generate a valid GPIndividual?  This creates a number of hassles.  For example, if we're doing cooperative coevolution, and one Individual can't be generated, what's the fitness of the group?  Is it fair to penalize the group thusly?  Likewise if we're doing competitive coevolution, and one of the competitors can't be generated, what's the resulting fitness of the other?  For this reason, at present Grammatical Evolution does not support GroupedProblemForm.
+
+\subsection{Printing}
+
+GEIndividual prints itself (via \method{printIndividualForHumans(...)} by first printing itself in the standard way, then translating and printing the GPTrees from equivalent GPIndividual, then finally printing the ERC mappings used by this GEIndividual in the GESpecies ERC hash table.  For example, consider the GEIndividual below:
+
+
+\vbox{\small\begin{verbatim}
+Evaluated: T
+Fitness: Standardized=1.0308193 Adjusted=0.49241206 Hits=5
+ -96 122 -92 -96 -50 -96 122 122 -96 122 -92 -50 -50 -50 -50 111 -50 111 111 -50 -50 111 -50 111
+Equivalent GP Individual:
+Tree 0:
+ (* (+ (exp (* x (* (+ (+ (* (+ (exp x) x)
+     x) x) 0.4099041340133447) 0.25448855944201476)))
+     x) x)
+ERCs:     111 -> 0.25448855944201476    -50 -> 0.4099041340133447
+\end{verbatim}}
+
+In this individual, two ERCs were used, \variable{0.25448855944201476} and \variable{0.4099041340133447}, and they were associated with gene values \variable{111} and \variable{-50} respectively.  Note that in both cases the genome has these genes appearing multiple times: but not all these elements were used as ERCs: some were used as choice points or functions in the grammar, and others (near the end of the string) were ignored.
+
+Individuals don't have to have any ERCs at all of course.  Here is a perfect Symbolic Regression individual:
+
+\vbox{\small\begin{verbatim}
+Evaluated: T
+Fitness: Standardized=0.0 Adjusted=1.0 Hits=20
+ 112 80 -126 -40 112 80 -126 -40 112 80 -126 -40 -40 21 112
+Equivalent GP Individual:
+Tree 0:
+ (+ x (* x (+ x (* x (+ x (* x x))))))
+ERCs: 
+\end{verbatim}}
+
+
 
 \subsection{Initialization and Breeding}
 
@@ -8250,7 +8284,7 @@ You also need to keep the Slaves humming along, ideally by keeping the TCP/IP st
 eval.masterproblem.max-jobs-per-slave = 3
 }
 
-ECJ would prefer to compress the network streams to make them more efficient.  But it can't do it without the jzlib/ZLIB library which you must install separately\footnote{Sure, Java has compression routines. Unfortunately they're entirely broken for network streams: they don't support ``partial flush'', a critical item for sending stuff across networks.  They're only really useful for compressing files on disks.} (see the ECJ main webpage or http:/\!/www.jcraft.com/jzlib).  Once it's installed, you can turn it on like this:
+ECJ would prefer to compress the network streams to make them more efficient.  But it can't do it without the jzlib/ZLIB library, which you must install separately\footnote{Sure, Java has compression routines. Unfortunately they're entirely broken for network streams: they don't support ``partial flush'', a critical item for sending stuff across networks.  They're only really useful for compressing files on disks.  It's a long-standing Java bug, and unlikely to get fixed in the foreseeable future.} (see the ECJ main webpage or http:/\!/www.jcraft.com/jzlib).  Once it's installed, you can turn it on like this:
 
 \java{%
 eval.compression = true
@@ -8657,7 +8691,7 @@ ECJ's Internal Island Model facility simulates islands using separate Subpopulat
 There are four important things to note about this facility:
 
 \begin{itemize}
-\item Obviously each Subpopulation must have an identical Species and Individual and Fitness prototypes.
+\item Obviously each Subpopulation must have identical Species and Individual and Fitness prototypes.
 \item Internal Island Models are always synchronous.
 \item Because they use the Subpopulation facility, Internal Island Models are incompatible with any other ECJ procedure which relies on Subpopulations: notably coevolution.
 \item Because they define an Exchanger, Internal Island Models are incompatible with any other ECJ procedure which uses an Exchanger: in particular, you can't mix Internal Island Models with regular Island Models!
