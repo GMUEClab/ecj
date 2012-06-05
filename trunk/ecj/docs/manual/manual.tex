@@ -7501,7 +7501,7 @@ Each GPNode in the grammar is looked up according to its name.  Thus if you have
 <op> ::= (ERC)
 <op> ::= (ADF1 <op> <op>)
 \end{verbatim}}
-'
+
 
 \subsection{Translation and Evaluation}
 
@@ -7523,9 +7523,9 @@ To do the translation, GESpecies relies on certain methods that may be useful to
 \begin{methods}{ec.gp.ge.GESpecies}
 \mthd{public int makeTree(EvolutionState \textit{state}, GEIndividual \textit{ind}, GPTree \textit{tree}, int \textit{position}, int \textit{treeNum}, int \textit{threadnum,}}
 \hsp{\fill}{\sf HashMap \textit{ERCmap}})\\
-Builds a GPTree from a GEIndividual.  The tree is stored in {\it tree}.  The tree number (and thus the particular grammar to be used) is defined by {\it treeNum}.  Bytes are read from the GEIndivdidual starting at \textit{position}.  When the tree has been generated, the first unread byte position is returned.  If the tree could not be built because there were not enough bytes, then \variable{ec.gp.ge.GESpecies.BIG\_TREE\_ERROR} is returned instead.  If \textit{ERCmap} is non-null, then as the tree is being built, any ERCs appearing the tree are registered in the ERCmap as the key-value \(\langle \text{\it Gene Value} \longrightarrow \text{\it ERC}\rangle\) where \textit{Gene Value} is the gene value used (a byte), and \textit{ERC} is the a \class{ec.gp.ERC} object which has the same value as the actual ERC object used.  You should treat this map as read-only.  If you don't care about any of this, just pass in null.
+Builds a GPTree from a GEIndividual.  The tree is stored in {\it tree}.  The tree number (and thus the particular grammar to be used) is defined by {\it treeNum}.  Bytes are read from the GEIndivdidual starting at \textit{position}.  When the tree has been generated, the first unread byte position is returned.  If the tree could not be built because there were not enough bytes, then \variable{ec.gp.ge.GESpecies.BIG\_TREE\_ERROR} is returned instead.  If \textit{ERCmap} is non-null, then as the tree is being built, any ERCs appearing the tree are registered in the ERCmap as the key-value pair \(\langle \text{\it Gene Value} \longrightarrow \text{\it ERC}\rangle\) where \textit{Gene Value} is the gene value used (a byte), and \textit{ERC} is the a \class{ec.gp.ERC} object which has the same value as the actual ERC object used.  You should treat this map as read-only.  If you don't care about any of this, just pass in null.
 \mthd{public int makeTrees(EvolutionState \textit{state}, GEIndividual \textit{ind}, GPTree[] \textit{trees}, int \textit{threadnum, HashMap \textit{ERCmap}})}
-Builds an entire array of GPTrees, sufficient to create an entire GPIndividual, from a GEIndividual.  The trees are stored in {\it trees}.  Bytes are read from the GEIndivdidual starting at position 0.  When the tree has been generated, the first unread byte position is returned.  If the trees could not be built because there were not enough bytes, then \variable{ec.gp.ge.GESpecies.BIG\_TREE\_ERROR} is returned instead.  If \textit{ERCmap} is non-null, then as the tree is being built, any ERCs appearing the tree are registered in the ERCmap as the key-value \(\langle \text{\it Gene Value} \longrightarrow \text{\it ERC}\rangle\) where \textit{Gene Value} is the gene value used (a byte), and \textit{ERC} is the a \class{ec.gp.ERC} object which has the same value as the actual ERC object used.  You should treat this map as read-only.  If you don't care about any of this, just pass in null.
+Builds an entire array of GPTrees, sufficient to create an entire GPIndividual, from a GEIndividual.  The trees are stored in {\it trees}.  Bytes are read from the GEIndivdidual starting at position 0.  When the tree has been generated, the first unread byte position is returned.  If the trees could not be built because there were not enough bytes, then \variable{ec.gp.ge.GESpecies.BIG\_TREE\_ERROR} is returned instead.  If \textit{ERCmap} is non-null, then as the tree is being built, any ERCs appearing the tree are registered in the ERCmap as the key-value pair \(\langle \text{\it Gene Value} \longrightarrow \text{\it ERC}\rangle\) where \textit{Gene Value} is the gene value used (a byte), and \textit{ERC} is the a \class{ec.gp.ERC} object which has the same value as the actual ERC object used.  You should treat this map as read-only.  If you don't care about any of this, just pass in null.
 \mthd{public int consumed(EvolutionState \textit{state}, GEIndividual \textit{ind}, int \textit{threadnum})}
 Computes and returns the number of bytes that would be consumed to produce a GPIndividual from the given GEIndividual. This is done by actually building an individual, then throwing it away.  If the GPIndividual could not be built because there were not enough bytes, then \variable{ec.gp.ge.GESpecies.BIG\_TREE\_ERROR} is returned instead. 
 \end{methods}
@@ -7911,7 +7911,7 @@ RuleSetConstraints specify a number of constraints which guide the initializatio
 \params{%
 \# RuleSetConstraints 0 will have between 5 and 10 rules inclusive\\
 rule.rsc.0.reset-min-size = 5\\
-rule.rsc.0.reset-min-size = 10\\
+rule.rsc.0.reset-max-size = 10\\
 \\
 \# RuleSetConstraints 1 will have 0 to 4 rules with these probabilities...\\
 rule.rsc.1.reset-num-sizes = 5\\
