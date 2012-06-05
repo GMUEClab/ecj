@@ -8255,7 +8255,7 @@ To set up Distributed Evaluation, you first need to set up the Master.  This is 
 eval.masterproblem = ec.eval.MasterProblem
 }
 
-The MasterProblem is the interface that connects the distributed evaluation system to a regular evolutionary computation loop.  When it is defined, ECJ replaces the Problem prototype with a MasterProblem prototype  The Problem doesn't go away\,---\,it's rehung as a variable in the MasterProblem.  Specifically, you can get it like this:
+The MasterProblem is the interface that connects the distributed evaluation system to a regular evolutionary computation loop.  When it is defined, ECJ replaces the Problem prototype with a MasterProblem prototype.  The original Problem doesn't go away\,---\,it's rehung as a variable in the MasterProblem.  Specifically, you can get to it like this:
 
 \java{%
 Problem originalProblem = ((MasterProblem)(state.evaluator.p\_problem)).problem;
@@ -8297,7 +8297,7 @@ eval.compression = true
 Slaves are started up on separate CPUs, often in different machines from the Master.  You can have as many Slaves as you like: the more the merrier.  The Slave class replaces \class{ec.Evolve} to handle its own startup, so you don't start up a Slave using the standard \class{ec.Evolve} procedure.  Instead you'd type:
 
 \script{%
-java ec.eval.Slave -file \textit{slave.params}
+java ec.eval.Slave -file \textit{slave.params} -p \textit{param=value} ... \hfill{\it (etc.)}
 }
 
 The slave parameters must include all the evolutionary parameters and also all the master parameters (in fact, you might as well say something like...)
@@ -8316,7 +8316,7 @@ eval.master.host = 129.8.2.4
 
 Remember that you'll also need the port (among other Master parameters!)
 
-Next the Slave needs to know whether it should return entire Individuals or just the Fitnesses of those Individuals.  Individuals are generally much bigger than Fitnesses, and if you only return Fitnesses you can cut your network traffic in half.  The problem is that in some custom experiments your fitness evaluation procedure might modify the Individual (it depends on the nature of your experiment).  You'll need to state whether to return entire Individuals or not:
+Next the Slave needs to know whether it should return entire Individuals or just the Fitnesses of those Individuals.  Individuals are generally much bigger than Fitnesses, and if you only return Fitnesses you can cut your network traffic almost in half.  The problem is that in some custom experiments your fitness evaluation procedure might modify the Individual (it depends on the nature of your experiment).  You'll need to state whether to return entire Individuals or not:
 
 \params{%
 eval.return-inds = false
@@ -8330,7 +8330,7 @@ Slaves can be multithreaded: they can process multiple individuals in parallel i
 evalthreads = 4
 }
 
-This will create four threads on the Slave process to evaluate Individuals.  Note that it makes no sense for this parameter to exceed Master's \parameter{eval.masterproblem.job-size} parameter.  Also, if you exceed the actual number of CPUs or cores allocated to your Slave process, it doesn't make much sense either.  Last, Slaves are {\it not} multithreaded when evaluating Individuals with GroupedProblemForm (such as coevolved evaluation, see Section \ref{ec.coevolve.GroupedProblemForm}).
+This will create four threads on the Slave process to evaluate Individuals.  Note that it makes no sense for this parameter to exceed the Master's \parameter{eval.masterproblem.job-size} parameter.  Also, if you exceed the actual number of CPUs or cores allocated to your Slave process, it doesn't make much sense either.  Last, Slaves are {\it not} multithreaded when evaluating Individuals with GroupedProblemForm (such as coevolved evaluation, see Section \ref{ec.coevolve.GroupedProblemForm}).
 
 
 \subsection{Opportunistic Evolution}
@@ -8340,7 +8340,7 @@ Slaves have the option of doing some evolutionary computation of their own, a pr
 \begin{enumerate}
 \item The Master sends the Slave a large Job.
 \item The Slave evaluates the Individuals in the Job.
-\item The Slave has a maximum allotted time to evaluate the Individuals.  If it has not yet exceeded this time, it treats the Job as a Population and does some evolution on the Slaves.
+\item The Slave has a maximum allotted time to evaluate the Individuals.  If it has not yet exceeded this time, it treats the Job as a Population and does some evolution on the Individuals in the Population.
 \item When the time is up, the Slave returns the most recent Individuals in the Population in lieu of the original Individuals.  The new Individuals replace the old ones in the Master's evolutionary process.  This means that the Slave cannot just return Fitnesses, but must return whole Individuals.
 \end{enumerate}
 
@@ -8386,7 +8386,7 @@ At some point the Population will fill up.  At this point the algorithm shifts t
 
 This procedure requires some careful consideration.  First, note that at the point that the algorithm shifts to ``steady state'' mode, there are probably a large number of Individuals being evaluated on Slaves which were not bred from the Population but were created at random.  Until those Individuals have made their way into the Population, we won't be in a true ``steady state''.
 
-Second, Steady-State Evolution assumes the production of one Individual at a time: but distributed evaluation allows more than one individual per Job.  This is reconciled as follows.  when Steady-State Evolution starts up, it calls \method{prepareToEvaluate(...)} on the Problem (the MasterProblem) once.  Thereafter whenever an individual is sent to the Problem to be evaluated, it calls \method{evaluate(...)}.  Recall from Section \ref{ec.Problem} that this process does not require the Problem to immediately assign Fitness\,---\,it can bulk up Individuals for evaluation and is only required to provide Fitness on or prior to a call to \method{finishEvaluating(...)}.  However, Steady-State Evolution {\it never calls \method{finishEvaluating(...)}}.   As a result, the distributed evaluator is free to assess Individuals in any order and any way it likes, and take as long as it wishes to assign them a Fitness.  The distributed evaluator will wait for up to \parameter{job-size} worth of calls to \method{evaluate(...)}, then pack those Individuals together in one Job and ship them out to a remote Slave for evaluation.  In ``steady-state'' mode, when the Individuals come back, they are placed in the Population, killing and replacing other individuals already there.  Depending on the selection process for marking Individuals for death, it's entirely possible that an Individual newly placed into the Population may be immediately marked for death and replaced with another Individual from the same Job!  You can get around this by setting the \parameter{job-size} and \parameter{max-jobs-per-slave} to as low as 1:
+Second, Steady-State Evolution assumes the production of one Individual at a time: but distributed evaluation allows more than one individual per Job.  This is reconciled as follows.  when Steady-State Evolution starts up, it calls \method{prepareToEvaluate(...)} on the Problem (the MasterProblem) once.  Thereafter whenever an individual is sent to the Problem to be evaluated, it calls \method{evaluate(...)}.  Recall from Section \ref{ec.Problem} that this process does not require the Problem to immediately assign Fitness\,---\,it can bulk up Individuals for evaluation and is only required to provide a Fitness on or prior to a call to \method{finishEvaluating(...)}.  However, Steady-State Evolution {\it never calls \method{finishEvaluating(...)}}.   As a result, the distributed evaluator is free to assess Individuals in any order and any way it likes, and to take as long as it likes to assign them a Fitness.  The distributed evaluator will wait for up to \parameter{job-size} worth of calls to \method{evaluate(...)}, then pack those Individuals together in one Job and ship them out to a remote Slave for evaluation.  In ``steady-state'' mode, when the Individuals come back, they are placed in the Population, killing and replacing other individuals already there.  Depending on the selection process for marking Individuals for death, it's entirely possible that an Individual newly placed into the Population may be immediately marked for death and replaced with another Individual from the same Job!  You can get around this by setting the \parameter{job-size} and \parameter{max-jobs-per-slave} to as low as 1:
 
 \java{%
 eval.masterproblem.job-size = 1\\
@@ -8447,9 +8447,9 @@ MasterProblem also implements all the methods defined in SimpleProblemForm and G
 
 \paragraph{Sending Initialization Data from the Master to the Slaves}
 
-MasterProblem has one additional feature: three methods you can override such that, whenever a Slave is started up, you are given the chance to send one-time data from the Master to the Slave.  Note that this facility is untested and may be somewhat fragile: we suggest that before you use this facility you consider instead placing the data as a file that each Slave can read.
+MasterProblem has one additional feature: three methods you can override such that, whenever a Slave is started up, you are given the chance to send one-time data from the Master to the Slave, perhaps to initialize some variables you need your Slave to know.  Note that this facility is untested and may be somewhat fragile: we suggest that before you use this facility you consider instead placing the data in a file that each Slave can read.
 
-Here's how it works.  You begin by declaring a special subclass of MasterProblem\,---\,let's call it class{ec.app.myapp.MyMasterProblem}.  Then you must tell ECJ that you're using it (on both sides, master and slave) with something like this:
+Here's how it works.  You begin by declaring a special subclass of MasterProblem\,---\,let's call it \class{ec.app.myapp.MyMasterProblem}.  Then you must tell ECJ that you're using it (on both sides, master and slave) with something like this:
 
 \params{%
 eval.masterproblem = ec.app.myapp.MyMasterProblem
@@ -8470,7 +8470,7 @@ An instance of this MasterProblem subclass is used by the Master.  When a Slave 
 		for evolution (though it might).  By default this method does nothing, which is the usual situation. 
 		The EvolutionState is provided solely for you to be able to output warnings and errors: do not rely
 		on it for any other purpose (including access of the random number generator or storing any data).
-\mthd{public void transferAdditionalData(EvolutionState {\it state}}
+\mthd{public void transferAdditionalData(EvolutionState {\it state})}
 	Called on a dummy MasterProblem by the Slave to transfer data previously loaded via 
 		\method{receiveAdditionalData(...)} to
 		a running EvolutionState at the beginning of evolution.  This method may be called multiple times if multiple
@@ -8526,13 +8526,20 @@ IslandExchange maintains the island's {\bf mailbox}.  Prior to breeding, the Isl
 exch.select = ec.select.TournamentSelection
 }
 
+Obviously this selection procedure may require its own parameters, such as (in this example):
+
+\params{%
+exch.select.size = 2
+}
+
+
 After breeding, the IslandExchange will empty its own mailbox and introduce into the Population all of the Individuals contained therein.  These Individuals will displace some of the recently-bred Individuals, which never get a chance to be selected.\footnote{Life's not fair.}  The selection method for picking the Individuals to die and be displaced is defined as:
 
 \params{%
 exch.select-to-die = ec.select.RandomSelection
 }
 
-If this parameter isn't defined, individuals are picked at random.
+If this parameter isn't defined, individuals are picked at random.  Again, as this is a selection operator, it may have its own parameters.
 
 An Island needs to know where the Server is so it can register itself, and the socket port on which the server is listening, for example:
 
@@ -8612,7 +8619,7 @@ Each island has some number of connections {\it to} other islands (the islands i
 \params{%
 exch.island.0.num-mig = 1\\
 exch.island.0.mig.0 = ConeyIsland\\
-exch.island.1.num-mig = 2\\
+exch.island.1.num-mig = 1\\
 exch.island.1.mig.0 = EllisIsland\\
 exch.island.2.num-mig = 2\\
 exch.island.2.mig.0 = StatenIsland\\
@@ -8644,7 +8651,7 @@ exch.island.2.mailbox-capacity = 200
 Altenatively you can use a default parameter base of sorts:
 
 \params{%
-exch.mailbox-capacity = 10
+exch.mailbox-capacity = 200
 }
 
 Last you'll need to stipulate two additional parameters on a per-island basis: the {\bf start-generation} (in which generation the island will start sending Individuals out) and {\bf modulus} (how many generations the island will wait before it sends out another batch of Individuals).  These are mostly set to maximize network utilization: perhaps you may wish the islands to send out individuals at different times so as not to clog your network, for example.  Here we'll tell each island to send out individuals every three generations, but to start at different initial generations so to be somewhat staggered:
@@ -8725,6 +8732,17 @@ exch.select = ec.select.TournamentSelection\\
 exch.select-to-die = ec.select.RandomSelection
 }
 
+Remember that these selection operators may have their own parameters.  For example, we may wish to say (for some reason):
+
+\params{%
+exch.subpop.0.select.size = 2\\
+exch.subpop.1.select.size = 2\\
+exch.subpop.2.select.size = 7\\
+exch.subpop.3.select.size = 7
+}
+
+Otherwise the selection operators will rely on their default parameters.  {\bf Note}: recall that these default parameters are {\it not}  based on the Exchanger's default parameter base.  That is, they're \parameter{select.tournament.size} and {\it not} \parameter{exch.select.size}.  I strongly suggest using non-default paramters.
+
 Next you need to state the number of immigrants sent at a time; the first generation in which they'll be sent; and the modulus (the interval, in terms of generations, between successive migrations).  These are basically the same as the standard Island Model.  The parameters might look like this:
 
 \params{%
@@ -8762,7 +8780,7 @@ exch.subpop.2.dest.0 = 0\\
 exch.subpop.2.dest.1= 1\\
 exch.subpop.2.dest.2 = 3\\
 exch.subpop.3.num-dest = 1\\
-exch.subpop.3.dest.0 = 2\\
+exch.subpop.3.dest.0 = 2
 }
 
 Last, Internal Island Models tend to be verbose.  To make them less chatty, you can say:
@@ -8812,8 +8830,9 @@ Coevolution is distinguished by its evaluation of Individuals not separately but
 
 To assist in this procedure, the \class{ec.Fitness} class has two auxiliary variables:
 
-java{%
-public ArrayList trials = null;
+
+\java{%
+public ArrayList trials = null;\\
 public Individual[] context = null;
 }
 
