@@ -139,7 +139,16 @@ public class RuleInitializer extends SimpleInitializer
                 c = new RuleSetConstraints();
                 }
             c.setup(state,base.push(""+y));
-            ruleSetConstraints[y] = c;
             }
+
+        // set our constraints array up
+        Enumeration e = ruleSetConstraintRepository.elements();
+        while(e.hasMoreElements())
+            {
+            RuleSetConstraints c = (RuleSetConstraints)(e.nextElement());
+            c.constraintNumber = numRuleSetConstraints;
+            ruleSetConstraints[numRuleSetConstraints] = c;
+            numRuleSetConstraints++;
+            }            
         }
     }
