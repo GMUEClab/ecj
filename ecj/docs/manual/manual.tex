@@ -5779,15 +5779,19 @@ Here are the breeding pipelines that come with ECJ.  In each case, let's presume
 
 \begin{itemize}
 
-\item \class{ec.gp.koza.CrossoverPipeline} performs standard subtree crossover: it requests a GPIndividual from each of its two sources; then a tree is selected from each GPndividual, then a node is selected in each tree, and finally the two subtrees rooted by those nodes are swapped.  CrossoverPipeline has several parameters.  The first three:
+\item \class{ec.gp.koza.CrossoverPipeline} performs standard subtree crossover: it requests a GPIndividual from each of its two sources; then a tree is selected from each GPndividual, then a node is selected in each tree, and finally the two subtrees rooted by those nodes are swapped.  CrossoverPipeline has several parameters.  The first four:
 
 \params{%
 pop.subpop.0.species.pipe.tries = 1\\
 pop.subpop.0.species.pipe.maxdepth = 17\\
 pop.subpop.0.species.pipe.toss = false
+% This one is undefined initially but you can define it:\\
+% pop.subpop.0.species.pipe.maxsize = ... \\
 }
 
 This tells CrossoverPipeline that children may not have a depth which exceeds 17 (the common value).  The pipeline will to try just one times to find type-valid and depth-legal crossover points before giving up and just returning the parents instead.  This is the most common setting in Genetic Programming.  If \parameter{toss=true} then only one child is returned\,---\,the other is thrown away.  The default value for \parameter{toss} is false.
+
+The CrossoverPipeline also can be set, via the \parameter{maxsize} parameter, to not generate children which exceed some number of nodes in any one tree.  Initially this is unset, meaning that there is no maximum size.
 
 \params{%
 pop.subpop.0.species.pipe.tree.0 = 0\\
@@ -5825,6 +5829,8 @@ pop.subpop.0.species.pipe.tries = 1\\
 pop.subpop.0.species.pipe.maxdepth = 17\\
 pop.subpop.0.species.pipe.tree.0 = 0\\
 pop.subpop.0.species.pipe.ns = ec.gp.koza.KozaNodeSelector
+% This one is undefined initially but you can define it:\\
+% pop.subpop.0.species.pipe.maxsize = ... \\
 }
 
 Note that the node selector is just \parameter{ns}, not \parameter{ns.0}.
@@ -5866,7 +5872,7 @@ gp.koza.mutate.equal = true
 
 \item \class{ec.gp.breed.InternalCrossoverPipeline} selects two GPNodes in the same GPIndividual, such that neither GPNode is in the subtree rooted by the other.  The GPNodes may be in different GPTrees, or they may be in the same GPTree.  It then swaps the two subtrees.
 
-InternalCrossoverPipeline's parameters are essentially identical to those in CrossoverPipeline.  For example:
+InternalCrossoverPipeline's parameters are essentially identical to those in CrossoverPipeline, except for a missing \parameter{maxsize} parameter.  For example:
 
 \params{%
 pop.subpop.0.species.pipe.tries = 1\\
@@ -6637,8 +6643,7 @@ public String toStringForHumans();\\
 public String encode();\\
 public boolean decode(DecodeReturn ret);\\
 public void readNode(EvolutionState state, DataInput input) throws IOException\\
-public void writeNode(EvolutionState state, DataOutput output)\\
-\hsp{\fill}throws IOException\\
+public void writeNode(EvolutionState state, DataOutput output) throws IOException\\
 public abstract void eval(EvolutionState state,
         int thread,
         GPData input,\\
@@ -6995,7 +7000,7 @@ Every GPNode is assigned a type object to represent the ``return type'' of the G
 \begin{center}
 \includegraphics[width=4in]{parsetree.pdf}
 \end{center}
-\caption{A typed genetic programming parse tree.  Types of the form ``int, float'' are set types.  All others are atomic types.  A repeat of Figure \ref{parsetree}.}
+\caption{A typed genetic programming parse tree.  Each edge is labeled with two types.  The ``lower'' type is the return type of the child node.  The ``upper'' type is the type of the argument slot of the parent.  For the child to fit into that particular argument slot, the types must be compatible.  Types of the form ``int, float'' are set types.  All others are atomic types.  Note that the root of the tree plugs into a particular slot of the ``tree'' object (\class{ec.gp.GPTree}) , which itself has a slot type.  A repeat of Figure \ref{parsetree}.}
 \label{parsetree2}
 \end{figure}
 

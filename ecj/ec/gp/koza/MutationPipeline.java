@@ -26,10 +26,11 @@ import ec.gp.*;
  * the maximum tree depth, then the new subtree is rejected and another one is
  * tried.  Similar to how the Crosssover operator is implemented.
  *
- * <p>Mutated trees are restricted to being <tt>maxdepth</tt> depth at most.
- * If in <tt>tries</tt> attemptes, the pipeline cannot come up with a mutated
- * tree within the depth limit, then it simply copies the original individual
- * wholesale with no mutation.
+ * <p>Mutated trees are restricted to being <tt>maxdepth</tt> depth at
+ * most and at most <tt>maxsize</tt> number of nodes.  If in
+ * <tt>tries</tt> attemptes, the pipeline cannot come up with a
+ * mutated tree within the depth limit, then it simply copies the
+ * original individual wholesale with no mutation.
  *
  * <p>One additional feature: if <tt>equal</tt> is true, then MutationPipeline
  * will attempt to replace the subtree with a tree of approximately equal size.
@@ -53,6 +54,10 @@ import ec.gp.*;
  <tr><td valign=top><i>base</i>.<tt>maxdepth</tt><br>
  <font size=-1>int &gt;= 1</font></td>
  <td valign=top>(maximum valid depth of a crossed-over subtree)</td></tr>
+
+ <tr><td valign=top><i>base</i>.<tt>maxsize</tt><br>
+ <font size=-1>int &gt;= 1</font></td>
+ <td valign=top>(maximum valid size, in nodes, of a crossed-over subtree)</td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>ns</tt><br>
  <font size=-1>classname, inherits and != GPNodeSelector</font></td>
@@ -96,11 +101,13 @@ public class MutationPipeline extends GPBreedingPipeline
     {
     public static final String P_NUM_TRIES = "tries";
     public static final String P_MAXDEPTH = "maxdepth";
+    public static final String P_MAXSIZE = "maxsize";        
     public static final String P_MUTATION = "mutate";
     public static final String P_BUILDER = "build";
     public static final String P_EQUALSIZE = "equal";
     public static final int INDS_PRODUCED = 1;
     public static final int NUM_SOURCES = 1;
+    public static final int NO_SIZE_LIMIT = -1;
 
     /** How the pipeline chooses a subtree to mutate */
     public GPNodeSelector nodeselect;
@@ -114,6 +121,9 @@ public class MutationPipeline extends GPBreedingPipeline
     
     /** The maximum depth of a mutated tree */
     int maxDepth;
+
+    /** The largest tree (measured as a nodecount) the pipeline is allowed to form. */
+    public int maxSize;
 
     /** Do we try to replace the subtree with another of the same size? */
     boolean equalSize;
@@ -166,6 +176,14 @@ public class MutationPipeline extends GPBreedingPipeline
         if (maxDepth==0)
             state.output.fatal("The Mutation Pipeline " + base + "has an invalid maximum depth (it must be >= 1).",base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
 
+        maxSize = NO_SIZE_LIMIT;
+        if (state.parameters.exists(base.push(P_MAXSIZE), def.push(P_MAXSIZE)))
+            {
+            maxSize = state.parameters.getInt(base.push(P_MAXSIZE), def.push(P_MAXSIZE), 1);
+            if (maxSize < 1)
+                state.output.fatal("Maximum tree size, if defined, must be >= 1");
+            }
+        
         equalSize = state.parameters.getBoolean(
             base.push(P_EQUALSIZE),def.push(P_EQUALSIZE),false);
 
@@ -190,6 +208,22 @@ public class MutationPipeline extends GPBreedingPipeline
 
         // next check to see if inner1 can fit in inner2's spot
         if (inner1.depth()+inner2.atDepth() > maxDepth) return false;
+
+        // check for size
+        if (maxSize != NO_SIZE_LIMIT)
+            {
+            // first easy check
+            int inner1size = inner1.numNodes(GPNode.NODESEARCH_ALL);
+            int inner2size = inner2.numNodes(GPNode.NODESEARCH_ALL);
+            if (inner1size > inner2size)  // need to test further
+                {
+                // let's keep on going for the more complex test
+                GPNode root2 = ((GPTree)(inner2.rootParent())).child;
+                int root2size = root2.numNodes(GPNode.NODESEARCH_ALL);
+                if (root2size - inner2size + inner1size > maxSize)  // take root2, remove inner2 and swap in inner1.  Is it still small enough?
+                    return false;
+                }
+            }
 
         // checks done!
         return true;

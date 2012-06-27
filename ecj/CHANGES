@@ -1900,3 +1900,11 @@ Version		Change Log
 		current one.
 	GEIndividual now prints out "Equivalent GP Individual:" instead of "Equivalent Tree:"
 	Bugfixes in regression/Benchmarks.java
+	RuleInitializer was not properly setting up the rule set constraints and repository.
+		Thanks to Houston Mooers <hemooers@gmail.com>
+	Updates to certain Crossover and Mutation operators in GP to allow for a maximum 
+		size parameter.
+	Fixes to DEBreeder and related breeders, such that new individuals are cloned from
+		the prototype and not from other individuals.  This was causing evaluated
+		flags to be never cleared.  Thanks to Andreas Meier 
+		<andreas2.meier@st.ovgu.de>
