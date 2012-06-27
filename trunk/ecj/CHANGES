@@ -1908,3 +1908,6 @@ Version		Change Log
 		the prototype and not from other individuals.  This was causing evaluated
 		flags to be never cleared.  Thanks to Andreas Meier 
 		<andreas2.meier@st.ovgu.de>
+	Fixed bug in RuleSet.removeRule() which was crashing because the wrong size array
+		was being copied down to delete a rule.  Thanks to David Gagne
+		<david.gagne1@maine.edu>

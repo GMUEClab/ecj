@@ -247,7 +247,8 @@ public class RuleSet implements Prototype
         {
         if (index >= numRules || index < 0 ) return null;
         Rule myrule = rules[index];
-        System.arraycopy(rules, index + 1, rules, index, numRules - index + 1);
+        if (index < numRules - 1)   // if we've chosen to remove the last rule, leave it where it is
+            System.arraycopy(rules, index+1, rules, index, numRules - (index +1));
                 
         /*
         // swap to the top
