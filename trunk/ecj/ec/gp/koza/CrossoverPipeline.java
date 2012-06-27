@@ -69,6 +69,10 @@ import ec.gp.*;
  <font size=-1>int &gt;= 1</font></td>
  <td valign=top>(maximum valid depth of a crossed-over subtree)</td></tr>
  
+ <tr><td valign=top><i>base</i>.<tt>maxsize</tt><br>
+ <font size=-1>int &gt;= 1</font></td>
+ <td valign=top>(maximum valid size, in nodes, of a crossed-over subtree)</td></tr>
+
  <tr><td valign=top><i>base</i>.<tt>tree.0</tt><br>
  <font size=-1>0 &lt; int &lt; (num trees in individuals), if exists</font></td>
  <td valign=top>(first tree for the crossover; if parameter doesn't exist, tree is picked at random)</td></tr>
@@ -105,10 +109,12 @@ public class CrossoverPipeline extends GPBreedingPipeline
     {
     public static final String P_NUM_TRIES = "tries";
     public static final String P_MAXDEPTH = "maxdepth";
+    public static final String P_MAXSIZE = "maxsize";
     public static final String P_CROSSOVER = "xover";
     public static final String P_TOSS = "toss";
     public static final int INDS_PRODUCED = 2;
     public static final int NUM_SOURCES = 2;
+    public static final int NO_SIZE_LIMIT = -1;
 
     /** How the pipeline selects a node from individual 1 */
     public GPNodeSelector nodeselect1;
@@ -127,6 +133,9 @@ public class CrossoverPipeline extends GPBreedingPipeline
 
     /** The deepest tree the pipeline is allowed to form.  Single terminal trees are depth 1. */
     public int maxDepth;
+
+    /** The largest tree (measured as a nodecount) the pipeline is allowed to form. */
+    public int maxSize;
 
     /** Should the pipeline discard the second parent after crossing over? */
     public boolean tossSecondParent;
@@ -190,6 +199,14 @@ public class CrossoverPipeline extends GPBreedingPipeline
         if (maxDepth==0)
             state.output.fatal("GPCrossover Pipeline has an invalid maximum depth (it must be >= 1).",base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
 
+        maxSize = NO_SIZE_LIMIT;
+        if (state.parameters.exists(base.push(P_MAXSIZE), def.push(P_MAXSIZE)))
+            {
+            maxSize = state.parameters.getInt(base.push(P_MAXSIZE), def.push(P_MAXSIZE), 1);
+            if (maxSize < 1)
+                state.output.fatal("Maximum tree size, if defined, must be >= 1");
+            }
+        
         tree1 = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+0),
                 def.push(P_TREE).push(""+0)))
@@ -232,6 +249,25 @@ public class CrossoverPipeline extends GPBreedingPipeline
 
         // next check to see if inner1 can fit in inner2's spot
         if (inner1.depth()+inner2.atDepth() > maxDepth) return false;
+
+        // check for size
+        // NOTE: this is done twice, which is more costly than it should be.  But
+        // on the other hand it allows us to toss a child without testing both times
+        // and it's simpler to have it all here in the verifyPoints code.  
+        if (maxSize != NO_SIZE_LIMIT)
+            {
+            // first easy check
+            int inner1size = inner1.numNodes(GPNode.NODESEARCH_ALL);
+            int inner2size = inner2.numNodes(GPNode.NODESEARCH_ALL);
+            if (inner1size > inner2size)  // need to test further
+                {
+                // let's keep on going for the more complex test
+                GPNode root2 = ((GPTree)(inner2.rootParent())).child;
+                int root2size = root2.numNodes(GPNode.NODESEARCH_ALL);
+                if (root2size - inner2size + inner1size > maxSize)  // take root2, remove inner2 and swap in inner1.  Is it still small enough?
+                    return false;
+                }
+            }
 
         // checks done!
         return true;
@@ -346,13 +382,13 @@ public class CrossoverPipeline extends GPBreedingPipeline
                 if (res1 && res2) break;
                 }
 
-            // at this point, res1 AND res2 are valid, OR
-            // either res1 OR res2 is valid and we ran out of tries, OR
-            // neither res1 nor res2 is valid and we rand out of tries.
-            // So now we will transfer to a tree which has res1 or res2
-            // valid, otherwise it'll just get replicated.  This is
-            // compatible with both Koza and lil-gp.
-
+            // at this point, res1 AND res2 are valid, OR either res1
+            // OR res2 is valid and we ran out of tries, OR neither is
+            // valid and we ran out of tries.  So now we will transfer
+            // to a tree which has res1 or res2 valid, otherwise it'll
+            // just get replicated.  This is compatible with both Koza
+            // and lil-gp.
+            
 
             // at this point I could check to see if my sources were breeding
             // pipelines -- but I'm too lazy to write that code (it's a little
