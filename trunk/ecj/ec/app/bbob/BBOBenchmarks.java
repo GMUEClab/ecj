@@ -17,7 +17,7 @@ import ec.util.QuickSort;
 import ec.vector.DoubleVectorIndividual;
 
 /* 
- * MultiObjectiveFitness.java
+ * BBOBenchmarks.java
  * 
  * Created: Fri Apr 2 09:00:00 2010
  * By: Faisal Abidi
@@ -34,23 +34,23 @@ import ec.vector.DoubleVectorIndividual;
  * <b>Parameters</b><br>
  * <table>
  * <tr>
+ * <td valign=top><i>base</i>.<tt>type</tt><br>
+ * <font size=-1> String = <tt>none </tt>(default)
+ * <tt>, sphere, ellipsoidal, rastrigin, buch-rastrigin, linear-slope, attractive-sector, step-elipsoidal, rosenbrock, rosenbrock-rotated, ellipsoidal-2, discus, bent-cigar, sharp-ridge, different-powers, rastrigin-2,
+ * weierstrass, schaffers-f7, schaffers-f7-2, griewak-rosenbrock, schwefel, gallagher-gaussian-101me, gallagher-gaussian-21hi, katsuura, lunacek</tt>
+ * </font></td>
+ * <td valign=top>(The particular function)
+ * <tr>
  * <td valign=top><i>base</i>.<tt>noise</tt><br>
  * <font size=-1> String = <tt>none </tt>(default)
  * <tt>, gauss, uniform, cauchy, gauss-moderate, uniform-moderate, cauchy-moderate</tt>
  * </font></td>
  * <td valign=top>(what type of noise (if any) to add to the function value)
  * <tr>
- * <td valign=top><i>base</i>.<tt>genome-size</tt><br>
- * <font size=-1> integer &gt; 0 </tt>
+ * <td valign=top><i>base</i>.<tt>reevaluate-noisy-problems</tt><br>
+ * <font size=-1> boolean = <tt>true</tt>(default)
  * </font></td>
- * <td valign=top>(genome size)
- * <tr>
- * <td valign=top><i>base</i>.<tt>noise</tt><br>
- * <font size=-1> String = <tt>none </tt>(default)
- * <tt>, sphere, ellipsoidal, rastrigin, buch-rastrigin, linear-slope, attractive-sector, step-elipsoidal, rosenbrock, rosenbrock-rotated, ellipsoidal-2, discus, bent-cigar, sharp-ridge, different-powers, rastrigin-2,
- * weierstrass, schaffers-f7, schaffers-f7-2, griewak-rosenbrock, schwefel, gallagher-gaussian-101me, gallagher-gaussian-21hi, katsuura, lunacek</tt>
- * </font></td>
- * <td valign=top>(The particular function)
+ * <td valign=top>(whether to reevaluate noisy problems)
  * </table>
  * 
  * 
@@ -63,6 +63,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
     public static final String P_GENOME_SIZE = "genome-size";
     public static final String P_WHICH_PROBLEM = "type";
     public static final String P_NOISE = "noise";
+    public static final String P_REEVALUATE_NOISY_PROBLEMS = "reevaluate-noisy-problems";
 
     final public String[] problemTypes =
         { "sphere", "ellipsoidal", "rastrigin", "buche-rastrigin", "linear-slope", "attractive-sector", "step-ellipsoidal", "rosenbrock", "rosenbrock-rotated", "ellipsoidal-2", "discus", "bent-cigar", "sharp-ridge", "different-powers", "rastrigin-2",
@@ -108,6 +109,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
     public int problemType = 0; // defaults on SPHERE
 
     public int noise = NONE; // defaults to NONE
+    
+    public boolean reevaluateNoisyProblems;
 
     final public int NHIGHPEAKS21 = 101;
     final public int NHIGHPEAKS22 = 21;
@@ -146,10 +149,12 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
         int i, j, k;
         Parameter p = new Parameter(Initializer.P_POP);
         int genomeSize = state.parameters.getInt(p.push(Population.P_SUBPOP).push("0").push(Subpopulation.P_SPECIES).push(P_GENOME_SIZE), null, 1);
-        String noiseStr = state.parameters.getString(new Parameter(P_NOISE), null);
+        String noiseStr = state.parameters.getString(base.push(P_NOISE), null);
         for (i = 0; i < noiseTypes.length; i++)
             if (noiseStr.equals(noiseTypes[i]))
                 noise = i;
+                
+        reevaluateNoisyProblems = state.parameters.getBoolean(base.push(P_REEVALUATE_NOISY_PROBLEMS), null, true);
                                 
         double condition = 10.0;
         double alpha = 100.0;
@@ -606,6 +611,14 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
 
     public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum)
         {
+        if (noise != NONE)
+            {
+            if (!reevaluateNoisyProblems && ind.evaluated) // don't bother reevaluating
+                return;
+            }
+        else if (ind.evaluated)  // don't bother reevaluating
+            return;
+            
         if (!(ind instanceof DoubleVectorIndividual))
             state.output.fatal("The individuals for this problem should be DoubleVectorIndividuals.");
         DoubleVectorIndividual temp = (DoubleVectorIndividual) ind;
@@ -617,6 +630,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
         double condition, alpha, beta, tmp = 0.0, tmp2, fAdd, fPen = 0.0, x1, fac, a, f = 0.0, f2;
         double[] tmx = new double[genomeSize];
         double[] tmpvect = new double[genomeSize];
+        
         switch (problemType)
             {
             case SPHERE:// f1
@@ -1971,6 +1985,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
             default:
                 break;
             }
+            
+        ind.evaluated = true;
         }
 
 

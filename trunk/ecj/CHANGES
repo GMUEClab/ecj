@@ -1911,3 +1911,15 @@ Version		Change Log
 	Fixed bug in RuleSet.removeRule() which was crashing because the wrong size array
 		was being copied down to delete a rule.  Thanks to David Gagne
 		<david.gagne1@maine.edu>
+	ec/de/de.params no longer has simple.params as a parent.
+	ecsuite/de.params no longer specifies a generations.  It's specified in 
+		ecsuite.params
+	bbob/de.params set up just like ecsuite/de.params
+	bbob/bbob.params revised to work more or less like ecsuite/ecsuite.params
+	BBOB problem now has a new parameter: reevalaute-noisy-individuals, which lets
+		you specify if you want to reevalaute individuals which have noise.
+	Statistics objects now print out fitness values on-screen for the best individual
+		of population even if its evaluated flag wasn't set.
+	BBOB no longer uses "noise" as a global parameter, but rather uses 
+		eval.problem.noise
+	Revisions to bbob/bbob.params documentation

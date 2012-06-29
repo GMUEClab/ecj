@@ -332,10 +332,9 @@ public class KozaStatistics extends Statistics implements SteadyStateStatisticsF
             // print the best-of-generation individual
             state.output.println("\nBest Individual of Generation:",statisticslog);
             best_i[x].printIndividualForHumans(state,statisticslog);
-            if (best_i[x].evaluated)
-                state.output.message("Subpop " + x + " best fitness of generation: " + best_i[x].fitness.fitnessToStringForHumans());
-            else
-                state.output.message("Subpop " + x + " not evaluated.");  // can happen if we're doing sequential coevolution
+            state.output.message("Subpop " + x + " best fitness of generation" + 
+                (best_i[x].evaluated ? " " : " (evaluated flag not set): ") +
+                + best_i[x].fitness.fitnessToStringForHumans());
             }
         }
 

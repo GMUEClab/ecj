@@ -5,9 +5,26 @@
 parent.0 = ../../ec.params
 
 eval.problem = ec.app.bbob.BBOBenchmarks
-eval.problem.type = sphere
-noise		= 	none
 
+
+# Here are the possible settings for eval.problem.type:
+# sphere, ellipsoidal, rastrigin, buch-rastrigin, linear-slope, attractive-sector, 
+# step-elipsoidal, rosenbrock, rosenbrock-rotated, ellipsoidal-2, discus, bent-cigar, 
+# sharp-ridge, different-powers, rastrigin-2, weierstrass, schaffers-f7, schaffers-f7-2, 
+# griewak-rosenbrock, schwefel, gallagher-gaussian-101me, gallagher-gaussian-21hi, 
+# katsuura, lunacek
+
+eval.problem.type = sphere
+
+
+# Here are the possible settings for eval.problem.noise:
+# none, gauss, uniform, cauchy, gauss-moderate, uniform-moderate, cauchy-moderate
+# WARNING: various problems implement noise in various ad-hoc ways due to the BBOB
+# guidelines.  Consult the 2010 Black Box Optimization Benchmarks (BBOB) competition
+# documentation for specifics.
+
+eval.problem.noise = none
+eval.problem.reevalaute-noisy-individuals = true
 
 
 state = 				ec.simple.SimpleEvolutionState
@@ -17,7 +34,7 @@ exch = 					ec.simple.SimpleExchanger
 breed =					ec.simple.SimpleBreeder
 eval =					ec.simple.SimpleEvaluator
 stat =					ec.simple.SimpleStatistics
-generations =				50
+generations =				1000
 quit-on-run-complete =			true
 pop = 					ec.Population
 pop.subpops =				1
@@ -31,16 +48,18 @@ pop.subpop.0.species.pipe.source.0.source.1 = same
 
 pop.subpop.0.species.fitness =		ec.simple.SimpleFitness
 pop.subpop.0.species.ind =		ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.mutation-bounded =	true
 
-# you can change these to whatever tickles your fancy
+# You can change these to whatever tickles your fancy
 pop.subpop.0.species.min-gene =	-5.12
 pop.subpop.0.species.max-gene =	5.12
-pop.subpop.0.species.genome-size = 	50
-
+pop.subpop.0.species.genome-size = 	100
 
 select.tournament.size = 		2
-pop.subpop.0.species.mutation-prob = 0.005
+pop.subpop.0.species.mutation-prob = 1.0
 pop.subpop.0.species.crossover-type = one
+pop.subpop.0.species.mutation-type = gauss
+pop.subpop.0.species.mutation-stdev = 0.01
 
-pop.subpop.0.size =			200
+pop.subpop.0.size =			1000
 stat.file				$out.stat
