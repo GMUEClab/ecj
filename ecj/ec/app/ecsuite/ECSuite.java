@@ -228,6 +228,9 @@ public class ECSuite extends Problem implements SimpleProblemForm
         final int subpopulation,
         final int threadnum)
         {
+        if (ind.evaluated)  // don't bother reevaluating
+            return;
+            
         if( !( ind instanceof DoubleVectorIndividual ) )
             state.output.fatal( "The individuals for this problem should be DoubleVectorIndividuals." );
 

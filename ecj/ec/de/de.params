@@ -2,7 +2,7 @@
 # Licensed under the Academic Free License version 3.0
 # See the file "LICENSE" for more information
 
-parent.0 = ../simple/simple.params
+#parent.0 = ../simple/simple.params
 
 eval = ec.de.DEEvaluator
 breed = ec.de.DEBreeder

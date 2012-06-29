@@ -128,10 +128,9 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
             {
             state.output.println("Subpopulation " + x + ":",statisticslog);
             best_i[x].printIndividualForHumans(state,statisticslog);
-            if (best_i[x].evaluated)
-                state.output.message("Subpop " + x + " best fitness of generation: " + best_i[x].fitness.fitnessToStringForHumans());
-            else
-                state.output.message("Subpop " + x + " not evaluated.");  // can happen if we're doing sequential coevolution
+            state.output.message("Subpop " + x + " best fitness of generation" + 
+                (best_i[x].evaluated ? " " : " (evaluated flag not set): ") +
+                + best_i[x].fitness.fitnessToStringForHumans());
             }
         }
 

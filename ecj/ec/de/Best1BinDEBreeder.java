@@ -69,8 +69,7 @@ public class Best1BinDEBreeder extends DEBreeder
         {
         Individual[] inds = state.population.subpops[subpop].individuals;
                 
-//        DoubleVectorIndividual v = (DoubleVectorIndividual)(inds[index].clone());
-        DoubleVectorIndividual v = (DoubleVectorIndividual)(state.population.subpops[subpop].species.i_prototype.clone());
+        DoubleVectorIndividual v = (DoubleVectorIndividual)(state.population.subpops[subpop].species.newIndividual(state, thread));
 
         do
             {
