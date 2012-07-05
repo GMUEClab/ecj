@@ -5785,8 +5785,8 @@ Here are the breeding pipelines that come with ECJ.  In each case, let's presume
 pop.subpop.0.species.pipe.tries = 1\\
 pop.subpop.0.species.pipe.maxdepth = 17\\
 pop.subpop.0.species.pipe.toss = false
-% This one is undefined initially but you can define it:\\
-% pop.subpop.0.species.pipe.maxsize = ... \\
+\% This one is undefined initially but you can define it:\\
+\% pop.subpop.0.species.pipe.maxsize = ... \\
 }
 
 This tells CrossoverPipeline that children may not have a depth which exceeds 17 (the common value).  The pipeline will to try just one times to find type-valid and depth-legal crossover points before giving up and just returning the parents instead.  This is the most common setting in Genetic Programming.  If \parameter{toss=true} then only one child is returned\,---\,the other is thrown away.  The default value for \parameter{toss} is false.
@@ -5829,8 +5829,8 @@ pop.subpop.0.species.pipe.tries = 1\\
 pop.subpop.0.species.pipe.maxdepth = 17\\
 pop.subpop.0.species.pipe.tree.0 = 0\\
 pop.subpop.0.species.pipe.ns = ec.gp.koza.KozaNodeSelector
-% This one is undefined initially but you can define it:\\
-% pop.subpop.0.species.pipe.maxsize = ... \\
+\% This one is undefined initially but you can define it:\\
+\% pop.subpop.0.species.pipe.maxsize = ... \\
 }
 
 Note that the node selector is just \parameter{ns}, not \parameter{ns.0}.
@@ -6010,7 +6010,7 @@ gp.breed.rehang.tree.0
 
 {\bf Warning: } Because of the complexity of its rehanging process, RehangPipeline ignores all typing information.
 
-\item \class{ec.gp.breed.MutateERCPipeline} works similarly to the {\it Gaussian} algorithm in \cite{chellapilla:1998:piempwsx}.  The algorithm picks a random node in a random tree in the GPIndividual, then for every Ephemeral Random Constant (ERC) in the subtree rooted by that node, it calls \method{mutateERC()} on that ERC.  ERCs are discussed later in Section~\ref{ec.gp.ERC}.  As usual, the two common parameters:s
+\item \class{ec.gp.breed.MutateERCPipeline} works similarly to the {\it Gaussian} algorithm in \cite{chellapilla:1998:piempwsx}.  The algorithm picks a random node in a random tree in the GPIndividual, then for every Ephemeral Random Constant (ERC) in the subtree rooted by that node, it calls \method{mutateERC()} on that ERC.  ERCs are discussed later in Section~\ref{ec.gp.ERC}.  As usual, the two common parameters:
 
 \params{%
 pop.subpop.0.species.pipe.tries = 1\\
@@ -6032,6 +6032,67 @@ gp.breed.mutate-erc.ns.0.terminals = 0.0\\
 gp.breed.mutate-erc.ns.0.nonterminals = 0.0\\
 gp.breed.mutate-erc.ns.0.root = 1.0
 }
+
+
+
+
+
+\item \class{ec.gp.breed.SizeFairCrossoverPipeline}  implements the {\it size fair} and {\it homologous} crossover methods described in \cite{langdon:1999:fairxo}.   SizeFairCrossoverPipeline has many parameters in common with CrossoverPipeline, which should look familiar, something like:
+
+\params{%
+pop.subpop.0.species.pipe.tries = 1\\
+pop.subpop.0.species.pipe.maxdepth = 17\\
+pop.subpop.0.species.pipe.toss = false\\
+\% These are unset by default but you can set them to lock down\\
+\% the trees being crossed over\\
+\% pop.subpop.0.species.pipe.tree.0 = 0\\
+\% pop.subpop.0.species.pipe.tree.1 = 0\\
+pop.subpop.0.species.pipe.ns.0 = ec.gp.koza.KozaNodeSelector\\
+pop.subpop.0.species.pipe.ns.1 = same
+}
+
+The default parameter base versions for all of these would be:
+
+\params{%
+gp.breed.size-fair.tries = 1\\
+gp.breed.size-fair.maxdepth = 17\\
+gp.breed.size-fair.toss = false\\
+\% These are unset by default but you can set them to lock down\\
+\% the trees being crossed over\\
+\% gp.breed.size-fair.tree.0 = ... \\
+\% gp.breed.size-fair.tree.1 = ...\\
+gp.breed.size-fair.ns = ec.gp.koza.KozaNodeSelector
+}
+
+By default SizeFairCrossoverPipeline will perform {\bf size-fair crossover,} defined as follows.  First, it finds a crossover point in the first parent in a fashion identical to CrossoverPipeline.  But to find the crossover point in the second parent, it first computes the size \(s_1\) of the subtree in the first parent.  It then calculates the size of every subtree in the second parent, and discards from consideration any subtrees whose size \(s_2\) is \(s_2 > 1 + 2 s_1\).  From the remainder, it then counts the number of subtrees smaller, equal to, and larger than \(s_1\) (call these \(n_<, n_=\) and \(n_>\)), and likewise the means of the smaller and larger subtrees (call these \(mu_<\) and \(mu_>\)).
+
+If \(n_< = 0\) or if \(n_> = 0\), then a random subtree is selected from among the subtrees exactly the same size as \(s_1\).  Thus terminals are always crossed over with terminals.  Otherwise, we decide on selecting an equal, smaller, or larger subtree with the following probabilities:
+
+\[
+\begin{split}
+p_= &= \frac{1}{s_1}\\
+p_> &= \frac{1-p_=}{n_> \times (1 + \frac{\mu_>}{\mu_<})}\\
+p_< &= 1 - (p_= + p_>)
+\end{split}
+\]
+
+The idea is to select bigger or smaller subtrees randomly such that the mean stays the same.  Once we have decided on bigger or smaller or equal subtrees, we then select a size uniformly from among the sizes of subtrees appearing in that set.  If there is more than one subtree of the selected size, we select uniformly from among them.
+
+Alternatively we can perform a kind of {\bf homologous crossover}, if we turn on the following parameter:
+
+ \params{%
+pop.subpop.0.species.pipe.homologous = true
+}
+
+(or the default...)
+
+\params{%
+gp.breed.size-fair.homologous = true
+}
+
+Homologous crossover is identical to size-fair crossover except for the final detail.  Instead of selecting uniformly from among all subtrees of a chosen size, we instead select the one whose root is ``closest'' to the selected crossover point in the first parent.  Here, distance between crossover points is defined as the depth at which their paths to the root begin to deviate from one another.
+
+Size-fair and homologous crossover is due to Uday Kamath, a PhD student at GMU.
 
 \end{itemize}
 
