@@ -130,7 +130,7 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
             best_i[x].printIndividualForHumans(state,statisticslog);
             state.output.message("Subpop " + x + " best fitness of generation" + 
                 (best_i[x].evaluated ? " " : " (evaluated flag not set): ") +
-                + best_i[x].fitness.fitnessToStringForHumans());
+                best_i[x].fitness.fitnessToStringForHumans());
             }
         }
 
