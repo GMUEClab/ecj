@@ -1923,3 +1923,4 @@ Version		Change Log
 	BBOB no longer uses "noise" as a global parameter, but rather uses 
 		eval.problem.noise
 	Revisions to bbob/bbob.params documentation
+	Changed default GP regression benchmark to Vladislavleva-1

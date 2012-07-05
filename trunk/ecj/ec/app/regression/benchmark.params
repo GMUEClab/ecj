@@ -25,8 +25,8 @@ parent.0 = ../../gp/koza/koza.params
 # Here's where you specify the problem and the function set:
 
 
-eval.problem.type = korns-1
-gp.tc.0.fset = korns5
+eval.problem.type = vladislavleva-1
+gp.tc.0.fset = vladislavleva-b2
 
 
 # Additionally, you have the option of loading the training and/or test samples from
