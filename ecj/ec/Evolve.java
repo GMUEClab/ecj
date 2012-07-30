@@ -348,7 +348,7 @@ public class Evolve
         but before startFresh(...) 
         
         <p>This method works by first setting up an Output (using buildOutput), then calling initialize(ParameterDatabase, seed, output)
-        */
+    */
                 
     public static EvolutionState initialize(ParameterDatabase parameters, int randomSeedOffset)
         {
