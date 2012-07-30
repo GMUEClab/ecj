@@ -1924,3 +1924,10 @@ Version		Change Log
 		eval.problem.noise
 	Revisions to bbob/bbob.params documentation
 	Changed default GP regression benchmark to Vladislavleva-1
+	Added SizeFairCrossoverPipeline.java.  Thanks to Uday Kamath
+		<ukamath@masonlive.gmu.edu>
+	Revised Benchmarks.buildIntervalPoints to handle floating-point error
+		building up in interval calculation.
+	Updated the README, which was far far out of date
+	Added documentation on SimpleEvaluator's clone-problem parameter and on
+		SimpleBreeder's clone-pipeline-and-population parameter

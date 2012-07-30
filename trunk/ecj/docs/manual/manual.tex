@@ -156,8 +156,8 @@ George Mason University}
 \\
 \\
 \\
-\large\rm {\bf Manual Version 20.1}\\
-\large\rm January, 2011\\
+\large\rm {\bf Manual Version 20.2}\\
+\large\rm July, 2012\\
 
 \vspace{5.6in}
 \noindent\Large\bf Where to Obtain ECJ\\
@@ -427,19 +427,40 @@ java ec.Evolve -file \textit{myParameterFile.params} -p \textit{param=value} -p 
 
 ECJ sets itself up entirely using a {\bf parameter file}.  To this you can add additional {\bf command-line parameters} which override those found in the parameter file.  More on the parameter file will be discussed starting in Section~\ref{parameterdatabase}.
 
+For example, if you were presently in the \file{ecj} directory, you could do this:
+
+\script{%
+java ec.Evolve -file ec/app/ecsuite/ecsuite.params
+}
+
+
+
 This all assumes that the parameter file is a free-standing file in your filesystem.  But it might not be: you might want to start up from a parameter file stored within a Jar file (for example if your ECJ library is bundled up into a Jar file like \file{ecj.jar}).  To do this you can specify the parameter file as a file resource relative to the \file{.class} file of a class (a-la Java's \method{Class.getResource(...)} method):
 
  \script{%
-java ec.Evolve -from \textit{myParameterFile.params} -at \textit{relative.to.this.Classname}
+java~ec.Evolve~-from~\textit{myParameterFile.params}~-at \textit{relative.to.Classname}~-p~\textit{param=value}~\hfill{\it (etc.)}
 }
+
+... for example:
+
+ \script{%
+java ec.Evolve -from ecsuite.params -at ec.app.ecsuite.ECSuite
+}
+
 
 You can also say:
 
  \script{%
-java ec.Evolve -from \textit{myParameterFile.params}
+java ec.Evolve -from \textit{myParameterFile.params} -p \textit{param=value} \hfill{\it (etc.)}
 }
 
-In which case ECJ will assume that the class is \class{ec.Evolve}.  See Section~\ref{parameterdatabase} for more discussion about all this.
+In which case ECJ will assume that the class is \class{ec.Evolve}.  In this situation, you'd probably need to specify the parameter file as a path away from \class{ec.Evolve} (which is in the \file{ec} directory), for example:
+
+ \script{%
+java ec.Evolve -from app/ecsuite/ecsuite.params
+}
+
+(Note the missing \file{ec/...}).  See Section~\ref{parameterdatabase} for more discussion about all this.
 
 Last but hardly least, ECJ can also restart from a checkpoint file it created in a previous run:
 
@@ -868,7 +889,7 @@ print-params = true
 	<E: gp.koza.xover.prob
 }
 
-A {\bf P} means that a parameter was used.  An {\bf E} means that a parameter was tested for existence.  An {\bf !} means that the parameter did not exist.  A \(\bm{<}\) means that the parameter existed in the default base as well as the primary base, but the value of the primary base was the one used.  In this last case, the primary base is printed out on the line immediately prior.
+A {\bf P} means that a parameter value was accessed (or attempted to).  An {\bf E} means that a parameter was tested for existence.  An {\bf !} means that the parameter did not exist.  A \(\bm{<}\) means that the parameter existed in the default base as well as the primary base, but the value of the primary base was the one used.  In this last case, the primary base is printed out on the line immediately prior.
 
 There are a few other debugging parameters of less value.  At the end of a run, ECJ can dump all the parameters in the database; all the parameters accessed (retrieved or tested for existence); all the parameters used (retrieved); all the parameters {\it not} accessed; and all the parameters {\it not} used.  Pick your poison. Here are the relevant parameters:
 
@@ -986,7 +1007,7 @@ Logs have various instance variables, but few are important, except for this one
 public boolean muzzle = false;
 }
 
-This is a crude mechanism for changing the verbosity of the log.  If you set this flag to \variable{true}, the log will not print anything at all.   ECJ used to have an elaborate verbosity mechanism inspired from lil-gp.  This has been since deprecated since in all the years that I've used the toolkit, I'd never changed the verbosity once.  Now we have a cruder procedure for those rare cases when you need to guarantee that an ECJ process shuts up completely.  (Note that this is in flux and may change in future versions of the software)
+This is a crude mechanism for changing the verbosity of the log.  If you set this flag to \variable{true}, the log will not print anything at all.   ECJ used to have an elaborate verbosity mechanism inspired from lil-gp.  This has been since deprecated since in all the years that I've used the toolkit, I'd never changed the verbosity once.  Now we have a cruder procedure for those rare cases when you need to guarantee that an ECJ process shuts up completely.  (Note that this is in flux and may change in future versions of the software).
 
 %  Both logs are fully verbose.
 
@@ -1136,7 +1157,7 @@ double result = decodeReturn.s;
 
 To decode the next element out of the String, just call \method{Code.decode(decodeReturn)} again.  Continue doing this until you're satisfied or reach a type of \variable{T\_ERROR}.
 
-\subsubsection{Easier Decoding}
+\subsubsection{Decoding the Easy Way}
 
 One of the most common decoding tasks is reading a decoded number or boolean from a single line, often preceded with a preamble, such as:
 
@@ -1420,21 +1441,21 @@ The distributions in question come in the form of arrays of floats, doubles, or 
 
 \begin{methods}{ec.util.RandomChoice}
 \mthd{public static void organizeDistribution(float\protect{[ ]} \textit{probabilities}, boolean \textit{allowAllZeros})}
-If the array is all zeros, then if \textit{allowAllZeroes} is false, then an ArihmeticException is thrown, else the array is converted to all ones.  Then the array is converted to a CDF.  If the array has negative numbers or is of zero length, an Arithmetic Exception is thrown.
+If the array is all zeros, then if \textit{allowAllZeroes} is false, then an ArithmeticException is thrown, else the array is converted to all ones.  Then the array is converted to a CDF.  If the array has negative numbers or is of zero length, an Arithmetic Exception is thrown.
 \mthd{public static void organizeDistribution(float\protect{[ ]} \textit{probabilities})}
-If the array is all zeros, then if \textit{allowAllZeroes} is false, then an ArihmeticException is thrown.  If not, then the array is converted to a CDF.  If the array has negative numbers or is of zero length, an Arithmetic Exception is thrown.
+If the array is all zeros, then if \textit{allowAllZeroes} is false, then an ArithmeticException is thrown.  If not, then the array is converted to a CDF.  If the array has negative numbers or is of zero length, an Arithmetic Exception is thrown.
 \mthd{public static void organizeDistribution(double\protect{[ ]} \textit{probabilities}, boolean \textit{allowAllZeros})}
-If the array is all zeros, then if \textit{allowAllZeroes} is false, then an ArihmeticException is thrown, else the array is converted to all ones.  Then the array is converted to a CDF.  If the array has negative numbers or is of zero length, an Arithmetic Exception is thrown.
-\mthd{public static void organizeDistribution(float\protect{[ ]} \textit{probabilities})}
-If the array is all zeros, then if \textit{allowAllZeroes} is false, then an ArihmeticException is thrown.  If not, then the array is converted to a CDF.  If the array has negative numbers or is of zero length, an Arithmetic Exception is thrown.
+If the array is all zeros, then if \textit{allowAllZeroes} is false, then an ArithmeticException is thrown, else the array is converted to all ones.  Then the array is converted to a CDF.  If the array has negative numbers or is of zero length, an Arithmetic Exception is thrown.
+\mthd{public static void organizeDistribution(double\protect{[ ]} \textit{probabilities})}
+If the array is all zeros, then if \textit{allowAllZeroes} is false, then an ArithmeticException is thrown.  If not, then the array is converted to a CDF.  If the array has negative numbers or is of zero length, an Arithmetic Exception is thrown.
 \mthd{public static void organizeDistribution(Object\protect{[ ]} \textit{objs}, RandomChoiceChooser \textit{chooser}, boolean \textit{allowAllZeros})}
-The objects in \textit{objs} ae passed to \textit{chooser} to provide their floating-point values (and to set them if needed).  If the array is all zeros, then if \textit{allowAllZeroes} is false, then an ArihmeticException is thrown, else the array is converted to all ones.  Then the array is converted to a CDF.  If the array has negative numbers or is of zero length, an Arithmetic Exception is thrown.
+The objects in \textit{objs} ae passed to \textit{chooser} to provide their floating-point values (and to set them if needed).  If the array is all zeros, then if \textit{allowAllZeroes} is false, then an ArithmeticException is thrown, else the array is converted to all ones.  Then the array is converted to a CDF.  If the array has negative numbers or is of zero length, an Arithmetic Exception is thrown.
 \mthd{public static void organizeDistribution(Object\protect{[ ]} \textit{objs}, RandomChoiceChooser \textit{chooser})}
-The objects in \textit{objs} ae passed to \textit{chooser} to provide their floating-point values (and to set them if needed). If the array is all zeros, then if \textit{allowAllZeroes} is false, then an ArihmeticException is thrown.   Then the array is converted to a CDF.  If the array has negative numbers or is of zero length, an Arithmetic Exception is thrown.
+The objects in \textit{objs} ae passed to \textit{chooser} to provide their floating-point values (and to set them if needed). If the array is all zeros, then if \textit{allowAllZeroes} is false, then an ArithmeticException is thrown.   Then the array is converted to a CDF.  If the array has negative numbers or is of zero length, an Arithmetic Exception is thrown.
 \mthd{public static void organizeDistribution(Object\protect{[ ]} \!\textit{objs}, RandomChoiceChooserD \textit{chooser}, boolean \textit{allowAllZeros})}
-The objects in \textit{objs} ae passed to \textit{chooser} to provide their double-floating-point values (and to set them if needed).  If the array is all zeros, then if \textit{allowAllZeroes} is false, then an ArihmeticException is thrown, else the array is converted to all ones.  Then the array is converted to a CDF.  If the array has negative numbers or is of zero length, an Arithmetic Exception is thrown.
+The objects in \textit{objs} ae passed to \textit{chooser} to provide their double-floating-point values (and to set them if needed).  If the array is all zeros, then if \textit{allowAllZeroes} is false, then an ArithmeticException is thrown, else the array is converted to all ones.  Then the array is converted to a CDF.  If the array has negative numbers or is of zero length, an Arithmetic Exception is thrown.
 \mthd{public static void organizeDistribution(Object\protect{[ ]} \textit{objs}, RandomChoiceChooserD \textit{chooser})}
-The objects in \textit{objs} ae passed to \textit{chooser} to provide their double-floating-point values (and to set them if needed). If the array is all zeros, then if \textit{allowAllZeroes} is false, then an ArihmeticException is thrown.   Then the array is converted to a CDF.  If the array has negative numbers or is of zero length, an Arithmetic Exception is thrown.
+The objects in \textit{objs} ae passed to \textit{chooser} to provide their double-floating-point values (and to set them if needed). If the array is all zeros, then if \textit{allowAllZeroes} is false, then an ArithmeticException is thrown.   Then the array is converted to a CDF.  If the array has negative numbers or is of zero length, an Arithmetic Exception is thrown.
 \end{methods}
 
 These methods rely on two special interfaces, {\bf RandomChoiceChooser} (\class{ec.util.RandomChoiceChooser}) and {\bf RandomChoiceChooserD} (\class{ec.util.RandomChoiceChooserD}).  RandomChoiceChooser requires two method which map between Objects and floating-point values.
@@ -2335,6 +2356,16 @@ seed.3 = -16723
 
 When evaluating a Population, \class{ec.simple.SimpleEvaluator} will construct \(N\) Problems cloned from the Problem prototype.   Then, for each Subpopulation, the Evaluator will break the Subpopulation into \(N\) chunks (one per thread), and assign each chunk to a different Problem instance.  This enables the Population to be evaluated in parallel.  Most commonly, we just set \(N=1\). 
 
+If you do set \(N=1\), you have one further option: to avoid cloning the Problem each time, by setting the following parameter to false:
+
+\params{%
+eval.clone-problem = false
+}
+
+If false, then the same Problem instance (the Prototype, in fact) will be used again and again.  Obviously, this only is allowed if there's a single evaluation thread.  And steady-state evolution (via \class{ec.simple.SteadyStateEvaluator}) does not support it.
+
+The idea of not cloning the population and pipeline is due to Brian Olsen, a GMU PhD Student.
+
 Certain Evaluator methods are required.  The primary method an Evaluator must implement is
 
 \java{%
@@ -2522,7 +2553,7 @@ seed.2 =  992341\\
 seed.3 = -16723
 }
 
-Last but not least, certain Breeders allow you to change the subpopulation breeding order to a {\it sequential} one.  Let's say you have 3 subpopulations.  If you turn on the following parameter:
+Certain Breeders allow you to change the subpopulation breeding order to a {\it sequential} one.  Let's say you have 3 subpopulations.  If you turn on the following parameter:
 
 \params{%
 breed.sequential = true
@@ -2540,9 +2571,22 @@ All that remains is the breeding procedure itself, for which SimpleBreeder (and 
 \label{BreedingPipelineDiagram}
 \end{figure}
 
+Last but not least, if you breed with only one thread (\(M=1\)), you have an additional option: to avoid cloning the Population and Pipeline each time.  Instead, the same Pipeline will be used each generation; and the breeder will swap back and forth between two Populations each time rather than create new ones.  This primarily exists to be a little more efficient in some situations, primarily with small populations.  This is done by setting this parameter to false:
 
+\params{%
+eval.clone-pipeline-and-population = false
+}
 
+Obviously, this only is allowed if there's a single evaluation thread.  And this option is not supported by a number of subclasses, namely:
 
+\begin{itemize}
+\item \class{ec.spatial.SpatialBreeder}
+\item \class{ec.multiobjective.nsga2.NSGA2Breeder}
+\item \class{ec.multiobjective.spea2.SPEA2Breeder}
+\item \class{ec.steadystate.SteadyStateBreeder}
+\end{itemize}
+
+The idea of not cloning the population and pipeline is due to Brian Olsen, a GMU PhD Student.
 
 \subsection{Breeding Pipelines and BreedingSources}
 
