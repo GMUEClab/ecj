@@ -52,3 +52,10 @@ position formerly occupied by N's parent.  And so on, until all parents are
 exhausted.  The remaining open slot is then filled with T.  This technique
 is highly randomizing and really only useful for odd tests here or there.
 It also cannot be used with a typed GP problem.
+
+ec.gp.breed.SizeFairCrossoverPipeline
+
+Crossover is performe using either "Size Fair" or "Homologous" crossover as
+defined in "Size Fair and Homologous Tree Genetic Programming Crossovers" 
+by Bill Langdon (1998).  The explanation behind this code is somewhat
+involved: see the ECJ manual.  This implementation is due to Uday Kamath.

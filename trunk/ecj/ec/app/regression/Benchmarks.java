@@ -195,31 +195,8 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
         return generateRandomSamples(state, new double[] { min }, new double[] { max }, numPoints, threadnum);
         }
 
-/*
-
-    // recursive trick to dump the full mesh into a bag.  Enter this by setting variable to 0,  Yuck, expensive.  But O(n).
-    void buildIntervalPoints(EvolutionState state, ArrayList list, double[] min, double[] max, double[] interval, double current[], int variable, int threadnum)
-        {
-        if (variable == min.length)  // we're out of variables, base case
-            {
-            double[] d = new double[min.length];
-            for(int i = 0; i < d.length; i++)
-                d[i] = current[i];      // not sure if System.arraycopy would be faster, probably not in this case 
-            list.add(d);
-            }
-        else
-            {
-            for(double pos = min[variable]; pos <= max[variable]; pos += interval[variable])         // for each interval
-                {
-                current[variable] = pos;
-                buildIntervalPoints(state, list, min, max, interval, current, variable + 1, threadnum);
-                }
-            }
-        }
-*/
-
-    // recursive trick to dump the full mesh into a bag.  Enter this by setting variable to 0,  Yuck, expensive.  But O(n).
-    void buildIntervalPoints(EvolutionState state, ArrayList list, double[] min, double[] max, double[] interval, double current[], int variable, int threadnum)
+ // recursive trick to dump the full mesh into a bag.  Enter this by setting variable to 0,  Yuck, expensive.  But O(n).
+void buildIntervalPoints(EvolutionState state, ArrayList list, double[] min, double[] max, double[] interval, double current[], int variable, int threadnum)
         {
         if (variable == min.length)  // we're out of variables, base case
             {
