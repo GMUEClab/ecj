@@ -62,16 +62,6 @@ public class Parity extends GPProblem implements SimpleProblemForm
 
     public int bits;  // data bits
 
-    // we'll need to deep clone this one though.
-    public ParityData input;
-
-    public Object clone()
-        {
-        Parity myobj = (Parity) (super.clone());
-        myobj.input = (ParityData)(input.clone());
-        return myobj;
-        }
-
     public void setup(final EvolutionState state,
         final Parameter base)
         {
@@ -80,8 +70,12 @@ public class Parity extends GPProblem implements SimpleProblemForm
 
         // not using a default base here
 
-        // can't use all 32 bits -- Java is signed.  Must use 31 bits.
-        
+        // verify our input is the right class (or subclasses from it)
+        if (!(input instanceof ParityData))
+            state.output.fatal("GPData class must subclass from " + ParityData.class,
+                base.push(P_DATA), null);
+
+        // can't use all 32 bits -- Java is signed.  Must use 31 bits.        
         numBits = state.parameters.getIntWithMax(base.push(P_NUMBITS),null,2,31);
         if (numBits<2)
             state.output.fatal("The number of bits for Parity must be between 2 and 31 inclusive",base.push(P_NUMBITS));
@@ -91,11 +85,6 @@ public class Parity extends GPProblem implements SimpleProblemForm
             totalSize *=2;   // safer than Math.pow()
 
         doEven = state.parameters.getBoolean(base.push(P_EVEN),null,true);
-
-        // set up our input
-        input = (ParityData) state.parameters.getInstanceForParameterEq(
-            base.push(P_DATA),null, ParityData.class);
-        input.setup(state,base.push(P_DATA));
         }
 
 
@@ -106,6 +95,8 @@ public class Parity extends GPProblem implements SimpleProblemForm
         {
         if (!ind.evaluated)  // don't bother reevaluating
             {
+            ParityData input = (ParityData)(this.input);
+
             int sum = 0;
                 
             for(bits=0;bits<totalSize;bits++)

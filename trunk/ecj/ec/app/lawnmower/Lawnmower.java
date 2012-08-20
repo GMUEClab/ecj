@@ -59,9 +59,6 @@ public class Lawnmower extends GPProblem implements SimpleProblemForm
     public static final int O_DOWN = 2;
     public static final int O_RIGHT = 3;
 
-    // We'll deep clone this
-    public LawnmowerData input;
-
     // our map
     public int map[][];
     
@@ -88,7 +85,6 @@ public class Lawnmower extends GPProblem implements SimpleProblemForm
     public Object clone()
         {
         Lawnmower myobj = (Lawnmower) (super.clone());
-        myobj.input = (LawnmowerData)(input.clone());
         myobj.map = new int[map.length][];
         for(int x=0;x<map.length;x++)
             myobj.map[x] = (int[])(map[x].clone());
@@ -104,10 +100,10 @@ public class Lawnmower extends GPProblem implements SimpleProblemForm
         // I'm not using the default base for any of this stuff;
         // it's not safe I think.
 
-        // set up our input
-        input = (LawnmowerData) state.parameters.getInstanceForParameterEq(
-            base.push(P_DATA),null, LawnmowerData.class);
-        input.setup(state,base.push(P_DATA));
+        // verify our input is the right class (or subclasses from it)
+        if (!(input instanceof LawnmowerData))
+            state.output.fatal("GPData class must subclass from " + LawnmowerData.class,
+                base.push(P_DATA), null);
 
         // load our map coordinates
         maxx = state.parameters.getInt(base.push(P_X),null,1);
@@ -135,6 +131,8 @@ public class Lawnmower extends GPProblem implements SimpleProblemForm
         {               
         if (!ind.evaluated)  // don't bother reevaluating
             {
+            LawnmowerData input = (LawnmowerData)(this.input);
+        
             sum = 0;
             moves = 0;
             posx = maxx/2+1;

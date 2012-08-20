@@ -5320,6 +5320,8 @@ public class MyData extends GPData
 
 The important thing to note is that when you perform \method{copyTo(...)} or \method{clone()}, the resulting other object should not be sharing any data in common with you except constant (immutable, read-only) data.  Why the two methods?  Certainly most things \method{copyTo(...)} performs could be done with \method{clone()}.  The reason for \method{copyTo(...)} is entirely for efficiency when using Automatically Defined Functions (Section~\ref{ec.gp.ADF}).  Perhaps in the future we might obviate the need for its use.
 
+There exist some rare problems where you don't need to transfer {\it any} data between nodes: essentially they all take and return ``void'', as it were.  In this case, there's no need to make your own empty GPData subclass: just use GPData directly.
+
 
 \subsubsection{KozaFitness}
 

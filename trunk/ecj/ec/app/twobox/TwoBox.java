@@ -67,30 +67,21 @@ public class TwoBox extends GPProblem implements SimpleProblemForm
     public double inputsh1[];
     public double outputs[];
 
-    // we'll need to deep clone this one though.
-    public TwoBoxData input;
-
     public final double func(final double l0, final double w0, 
         final double h0, final double l1, 
         final double w1, final double h1)
         { return l0*w0*h0-l1*w1*h1; }
-
-    public Object clone()
-        {
-        // don't bother copying the inputs and outputs; they're read-only :-)
-        // don't bother copying the currentIndex; it's transitory
-        // but we need to copy our twobox data
-        TwoBox myobj = (TwoBox) (super.clone());
-
-        myobj.input = (TwoBoxData)(input.clone());
-        return myobj;
-        }
 
     public void setup(final EvolutionState state,
         final Parameter base)
         {
         // very important, remember this
         super.setup(state,base);
+
+        // verify our input is the right class (or subclasses from it)
+        if (!(input instanceof TwoBoxData))
+            state.output.fatal("GPData class must subclass from " + TwoBoxData.class,
+                base.push(P_DATA), null);
 
         trainingSetSize = state.parameters.getInt(base.push(P_SIZE),null,1);
         if (trainingSetSize<1) state.output.fatal("Training Set Size must be an integer greater than 0"); 
@@ -124,11 +115,6 @@ public class TwoBox extends GPProblem implements SimpleProblemForm
                 inputsw1[x]+ "," + inputsh1[x]+ "," +
                 outputs[x] + "},",0);
             }
-
-        // set up our input -- don't want to use the default base, it's unsafe
-        input = (TwoBoxData) state.parameters.getInstanceForParameterEq(
-            base.push(P_DATA), null, TwoBoxData.class);
-        input.setup(state,base.push(P_DATA));
         }
 
 
@@ -139,6 +125,8 @@ public class TwoBox extends GPProblem implements SimpleProblemForm
         {
         if (!ind.evaluated)  // don't bother reevaluating
             {
+            TwoBoxData input = (TwoBoxData)(this.input);
+
             int hits = 0;
             double sum = 0.0;
             double result;
@@ -166,7 +154,8 @@ public class TwoBox extends GPProblem implements SimpleProblemForm
 
                 if (result <= HIT_LEVEL) hits++;  // whatever!
 
-                sum += result;              }
+                sum += result;              
+                }
                 
             // the fitness better be KozaFitness!
             KozaFitness f = ((KozaFitness)ind.fitness);

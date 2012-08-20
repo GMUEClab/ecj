@@ -7,6 +7,8 @@ parent.1 = ant.params
 
 ge.species.file.0 = ant.grammar
 eval.problem.problem = ec.app.ant.Ant
-eval.problem.problem.data = ec.app.ant.AntData
+# Because our GPData is completely empty, we can just use
+# the default rather than a custom subclass
+eval.problem.problem.data = ec.gp.GPData
 eval.problem.problem.moves = 400
 eval.problem.problem.file = santafe.trl

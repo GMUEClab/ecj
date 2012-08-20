@@ -36,7 +36,9 @@ gp.fs.0.func.6.nc = nc4
 #
 
 eval.problem = ec.app.ant.Ant
-eval.problem.data = ec.app.ant.AntData
+# Because our GPData is completely empty, we can just use
+# GPData directly
+eval.problem.data = ec.gp.GPData
 
 # Here we determine what kind of Ant we're doing:
 

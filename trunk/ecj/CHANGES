@@ -1931,3 +1931,17 @@ Version		Change Log
 	Updated the README, which was far far out of date
 	Added documentation on SimpleEvaluator's clone-problem parameter and on
 		SimpleBreeder's clone-pipeline-and-population parameter
+	Simplification of ADFContext.  No longer prebuilds arguments and no longer
+		uses GPData except at runtime.
+	GPData is now no longer abstract, for those problems which define no data
+		at all to transfer between GPNodes (like Artificial Ant)
+	Accordingly, ec/app/ant/AntData.java is deleted
+	Previously the GPProblem held a GPData object called "data", which was cloned
+		to be used by the ADF system.  But at the same time various GPProblem
+		subclasses in applications also created a GPData object, called "input",
+		which was of exactly the same class.  This stupidity is a bit dangerous.
+		Since the "input" convention is so widespread, we have merged these two
+		by calling the GPData instance "input".  Accordingly, the various demo
+		applications have been modified (in their setup and evaluate and
+		describe methods) to verify that "input" is of the right class and to
+		cast it into the proper class at evaluation time.

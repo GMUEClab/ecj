@@ -252,7 +252,7 @@ public class ADF extends GPNode
         {
         // get a context and prepare it
         ADFContext c = stack.get();
-        c.prepareADF(this);
+        c.prepareADF(this, (GPProblem) problem);
 
         // evaluate my arguments and load 'em in 
         for(int x=0;x<children.length;x++)
