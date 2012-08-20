@@ -291,34 +291,21 @@ public class MultiValuedRegression extends GPProblem implements SimpleProblemFor
 
     public double currentX;
 	public double currentY;
-    
-    public DoubleData input;
 
-    public Object clone()
-        {
-        MultiValuedRegression newobj = (MultiValuedRegression) (super.clone());
-        newobj.input = (DoubleData)(input.clone());
-        return newobj;
-        }
-</pre></tt>
-
-<p>Here, after three tutorials of discussion, we're finally implementing the <b>clone</b> method.  We override this method because to clone the MultiValuedRegression class, we must also clone the <b>input</b> variable (it's an object -- DoubleData, so it's not copied in a light clone which is the default for clone()).  Now we add the <b>setup</b> method.
-
-<tt><pre>
     public void setup(final EvolutionState state,
                       final Parameter base)
         {
         <font color=gray>// very important, remember this</font>
         super.setup(state,base);
 
-        <font color=gray>// set up our input -- don't want to use the default base, it's unsafe here</font>
-        input = (DoubleData) state.parameters.getInstanceForParameterEq(
-            base.push(P_DATA), null, DoubleData.class);
-        input.setup(state,base.push(P_DATA));
+        <font color=gray>// verify our input is the right class (or subclasses from it)</font>
+        if (!(input instanceof DoubleData))
+            state.output.fatal("GPData class must subclass from " + DoubleData.class,
+                base.push(P_DATA), null);
         }
 </pre></tt>
 
-<p>Here we're basically using the <b>setup</b> method to load our DoubleData class.  We could have hard-coded the object to be a DoubleData, but that wouldn't be ECJ style.  Instead we load it from the parameter database.  This also allows the user to change the class in case that's useful to him.
+<p>GPProblem defines an instance variable called <b>input</b>, which contains a GPData instance loaded from our parameters.  Here, we get a chance to verify that this instance is of a class we can use.  In our case, we want it to be a DoubleData class or some subclass of that.
 
 <p>Last we need to define the <b>evaluate</b> method, which actually evaluates the individual and sets its fitness.  We will do so by testing the individual against ten data points, then setting its fitness to the sum of how close it got in each case.  Thus 0 is the ideal fitness -- in GP, 0 is the ideal and infinity is worse than the worst possible fitness.  The hit measure (an auxillary measure) is simply how often the system got "reasonably close".
 
@@ -330,6 +317,8 @@ public class MultiValuedRegression extends GPProblem implements SimpleProblemFor
         {
         if (!ind.evaluated)  <font color=gray>// don't bother reevaluating</font>
                 {
+                DoubleData input = (DoubleData)(this.input);
+
                 int hits = 0;
                 double sum = 0.0;
                 double expectedResult;

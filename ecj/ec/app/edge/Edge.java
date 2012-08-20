@@ -59,9 +59,6 @@ public class Edge extends GPProblem implements SimpleProblemForm
     public static final int READING1 = 2;
     public static final int EPSILON = 3;
 
-    // we'll need to deep clone this one though.
-    public EdgeData input;
-
     // building graph
     public boolean[] start;
     public boolean[] accept;
@@ -95,22 +92,9 @@ public class Edge extends GPProblem implements SimpleProblemForm
     // generalize?
     public boolean generalize;
 
-    public Object clone()
-        {
-        // we don't need to copy any of our arrays, they're null until
-        // we actually start using them.
 
-        Edge myobj = (Edge) (super.clone());
-
-        // we also don't need to clone the positive/negative
-        // examples, since they don't change through the course
-        // of our run (I hope!)  Otherwise we'd need to clone them
-        // here.
-
-        // clone our data object
-        myobj.input = (EdgeData)(input.clone());
-        return myobj;
-        }
+    // we don't need to copy any of our arrays, they're null until
+    // we actually start using them.
 
     public static String fill(int num, char c)
         {
@@ -275,6 +259,11 @@ public class Edge extends GPProblem implements SimpleProblemForm
         // very important, remember this
         super.setup(state,base);
 
+        // verify our input is the right class (or subclasses from it)
+        if (!(input instanceof EdgeData))
+            state.output.fatal("GPData class must subclass from " + EdgeData.class,
+                base.push(P_DATA), null);
+
         // do we generalize?
         generalize = state.parameters.getBoolean(base.push(P_GENERALIZE),null,false);
 
@@ -390,12 +379,6 @@ public class Edge extends GPProblem implements SimpleProblemForm
         state.output.message("");
 
         state.output.exitIfErrors();
-            
-
-        // set up our input -- don't want to use the default base, it's unsafe
-        input = (EdgeData) state.parameters.getInstanceForParameterEq(
-            base.push(P_DATA), null, EdgeData.class);
-        input.setup(state,base.push(P_DATA));
         }
 
 
@@ -596,6 +579,8 @@ public class Edge extends GPProblem implements SimpleProblemForm
 
         if (!ind.evaluated)  // don't bother reevaluating
             {
+            EdgeData input = (EdgeData)(this.input);
+
             fullTest(state,ind,threadnum,posT,negT);
             // the fitness better be KozaFitness!
             KozaFitness f = ((KozaFitness)ind.fitness);

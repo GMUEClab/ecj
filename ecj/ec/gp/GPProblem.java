@@ -58,8 +58,8 @@ public abstract class GPProblem extends Problem implements SimpleProblemForm
     /** The GPProblem's stack */
     public ADFStack stack;
 
-    /** The GPProblems' GPData */
-    public GPData data;
+    /** The GPProblem's GPData */
+    public GPData input;
 
     /** GPProblem defines a default base so your subclass doesn't
         absolutely have to. */
@@ -79,10 +79,10 @@ public abstract class GPProblem extends Problem implements SimpleProblemForm
         stack.setup(state,p);
 
         p = base.push(P_DATA);
-        data = (GPData)
+        input = (GPData)
             (state.parameters.getInstanceForParameter(
                 p,def.push(P_DATA),GPData.class));
-        data.setup(state,p);
+        input.setup(state,p);
         }
 
     public Object clone()
@@ -91,6 +91,10 @@ public abstract class GPProblem extends Problem implements SimpleProblemForm
         
         // deep-clone the stack; it's not shared
         prob.stack = (ADFStack)(stack.clone());
+        
+        // deep-clone the data
+        prob.input = (GPData)(input.clone());
+        
         return prob;
         }
     }

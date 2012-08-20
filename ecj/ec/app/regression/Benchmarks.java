@@ -195,8 +195,8 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
         return generateRandomSamples(state, new double[] { min }, new double[] { max }, numPoints, threadnum);
         }
 
- // recursive trick to dump the full mesh into a bag.  Enter this by setting variable to 0,  Yuck, expensive.  But O(n).
-void buildIntervalPoints(EvolutionState state, ArrayList list, double[] min, double[] max, double[] interval, double current[], int variable, int threadnum)
+    // recursive trick to dump the full mesh into a bag.  Enter this by setting variable to 0,  Yuck, expensive.  But O(n).
+    void buildIntervalPoints(EvolutionState state, ArrayList list, double[] min, double[] max, double[] interval, double current[], int variable, int threadnum)
         {
         if (variable == min.length)  // we're out of variables, base case
             {
@@ -668,23 +668,18 @@ void buildIntervalPoints(EvolutionState state, ArrayList list, double[] min, dou
     public double[][] testingInputs;
     public double[] testingOutputs;
 
-    // we'll need to deep clone this one though.
-    public RegressionData data;
-
-    public Object clone()
-        {
-        // don't bother copying the inputs and outputs; they're read-only :-)
-        // don't bother copying the current value, it's only set during evaluation
-        // but we need to copy our regression data        
-        Benchmarks myobj = (Benchmarks) (super.clone());
-        myobj.data = (RegressionData)(data.clone());
-        return myobj;
-        }
+        // don't bother cloning the inputs and outputs; they're read-only :-)
+        // don't bother cloning the current value, it's only set during evaluation
 
     public void setup(EvolutionState state, Parameter base)
         {
         // very important, remember this
         super.setup(state,base);
+
+        // verify our input is the right class (or subclasses from it)
+        if (!(input instanceof RegressionData))
+            state.output.fatal("GPData class must subclass from " + RegressionData.class,
+                base.push(P_DATA), null);
 
         // should we load our x parameters from a file, or generate them randomly?
         InputStream training_file = state.parameters.getResource(base.push(P_TRAINING_FILE), null);
@@ -870,6 +865,8 @@ void buildIntervalPoints(EvolutionState state, ArrayList list, double[] min, dou
         {
         if (!ind.evaluated)  // don't bother reevaluating
             {
+            RegressionData input = (RegressionData)(this.input);
+
             int hits = 0;
             double sum = 0.0;
             for (int y=0;y<trainingInputs.length;y++)
@@ -898,6 +895,8 @@ void buildIntervalPoints(EvolutionState state, ArrayList list, double[] min, dou
 
     public void describe(EvolutionState state, Individual ind, int subpopulation, int threadnum, int log)
         {
+            RegressionData input = (RegressionData)(this.input);
+
         // we do the testing set here
         
         state.output.println("\n\nPerformance of Best Individual on Testing Set:\n", log);

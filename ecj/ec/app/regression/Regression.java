@@ -66,28 +66,22 @@ public class Regression extends GPProblem implements SimpleProblemForm
     public double inputs[];
     public double outputs[];
 
-    // we'll need to deep clone this one though.
-    public RegressionData input;
+    // don't bother cloning the inputs and outputs; they're read-only :-)
+    // don't bother cloning the currentValue; it's transitory
 
     public double func(double x)
         { return x*x*x*x + x*x*x + x*x + x; }
-
-    public Object clone()
-        {
-        // don't bother copying the inputs and outputs; they're read-only :-)
-        // don't bother copying the currentValue; it's transitory
-        // but we need to copy our regression data
-        Regression myobj = (Regression) (super.clone());
-
-        myobj.input = (RegressionData)(input.clone());
-        return myobj;
-        }
 
     public void setup(final EvolutionState state,
         final Parameter base)
         {
         // very important, remember this
         super.setup(state,base);
+
+        // verify our input is the right class (or subclasses from it)
+        if (!(input instanceof RegressionData))
+            state.output.fatal("GPData class must subclass from " + RegressionData.class,
+                base.push(P_DATA), null);
 
         trainingSetSize = state.parameters.getInt(base.push(P_SIZE),null,1);
         if (trainingSetSize<1) state.output.fatal("Training Set Size must be an integer greater than 0", base.push(P_SIZE)); 
@@ -146,11 +140,6 @@ public class Regression extends GPProblem implements SimpleProblemForm
                 outputs[x] = func(inputs[x]);
             state.output.message("{" + inputs[x] + "," + outputs[x] + "},");
             }
-
-        // set up our input -- don't want to use the default base, it's unsafe
-        input = (RegressionData) state.parameters.getInstanceForParameterEq(
-            base.push(P_DATA), null, RegressionData.class);
-        input.setup(state,base.push(P_DATA));
         }
 
 
@@ -161,6 +150,8 @@ public class Regression extends GPProblem implements SimpleProblemForm
         {
         if (!ind.evaluated)  // don't bother reevaluating
             {
+            RegressionData input = (RegressionData)(this.input);
+
             int hits = 0;
             double sum = 0.0;
             double result;

@@ -53,16 +53,6 @@ public class Multiplexer extends GPProblem implements SimpleProblemForm
     public int addressPart;  // the current address part
     public int dataPart;     // the current data part
 
-    // we'll need to deep clone this one though.
-    public MultiplexerData input;
-
-    public Object clone()
-        {
-        Multiplexer myobj = (Multiplexer) (super.clone());
-        myobj.input = (MultiplexerData)(input.clone());
-        return myobj;
-        }
-
     public void setup(final EvolutionState state,
         final Parameter base)
         {
@@ -70,6 +60,11 @@ public class Multiplexer extends GPProblem implements SimpleProblemForm
         super.setup(state,base);
 
         // not using any default base -- it's not safe
+
+        // verify our input is the right class (or subclasses from it)
+        if (!(input instanceof MultiplexerData))
+            state.output.fatal("GPData class must subclass from " + MultiplexerData.class,
+                base.push(P_DATA), null);
 
         // I figure 3 bits is plenty -- otherwise we'd be dealing with
         // REALLY big arrays!
@@ -82,11 +77,6 @@ public class Multiplexer extends GPProblem implements SimpleProblemForm
 
         dmax=1;
         for(int x=0;x<amax;x++) dmax *=2;   // safer than Math.pow(...)
-        
-        // set up our input
-        input = (MultiplexerData) state.parameters.getInstanceForParameterEq(
-            base.push(P_DATA),null, MultiplexerData.class);
-        input.setup(state,base.push(P_DATA));
         }
 
 
@@ -97,6 +87,8 @@ public class Multiplexer extends GPProblem implements SimpleProblemForm
         {
         if (!ind.evaluated)  // don't bother reevaluating
             {
+            MultiplexerData input = (MultiplexerData)(this.input);
+        
             int sum = 0;
                 
             for(addressPart = 0; addressPart < amax; addressPart++)

@@ -28,7 +28,7 @@ import ec.simple.*;
  <p><b>Parameters</b><br>
  <table>
  <tr><td valign=top><i>base</i>.<tt>data</tt><br>
- <font size=-1>classname, inherits or == ec.app.ant.AntData</font></td>
+ <font size=-1>classname, inherits or == ec.gp.GPData</font></td>
  <td valign=top>(the class for the prototypical GPData object for the Ant problem)</td></tr>
  <tr><td valign=top><i>base</i>.<tt>file</tt><br>
  <font size=-1>String</font></td>
@@ -65,10 +65,6 @@ public class Ant extends GPProblem implements SimpleProblemForm
     public static final int O_LEFT = 1;
     public static final int O_DOWN = 2;
     public static final int O_RIGHT = 3;
-
-    // We'll deep clone this anyway, even though we don't
-    // need it by default!
-    public AntData input;
 
     // maximum number of moves
     public int maxMoves;
@@ -107,7 +103,6 @@ public class Ant extends GPProblem implements SimpleProblemForm
     public Object clone()
         {
         Ant myobj = (Ant) (super.clone());
-        myobj.input = (AntData)(input.clone());
         myobj.map = new int[map.length][];
         for(int x=0;x<map.length;x++)
             myobj.map[x] = (int[])(map[x].clone());
@@ -120,12 +115,9 @@ public class Ant extends GPProblem implements SimpleProblemForm
         // very important, remember this
         super.setup(state,base);
 
-        // not using any default base -- it's not safe
+        // No need to verify the GPData object
 
-        // set up our input
-        input = (AntData) state.parameters.getInstanceForParameterEq(
-            base.push(P_DATA),null, AntData.class);
-        input.setup(state,base.push(P_DATA));
+        // not using any default base -- it's not safe
 
         // how many maxMoves?
         maxMoves = state.parameters.getInt(base.push(P_MOVES),null,1);

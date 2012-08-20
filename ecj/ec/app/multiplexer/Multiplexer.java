@@ -49,16 +49,6 @@ public class Multiplexer extends GPProblem implements SimpleProblemForm
 
     public int bits;  // number of bits in the data
 
-    // we'll need to deep clone this one though.
-    public MultiplexerData input;
-
-    public Object clone()
-        {
-        Multiplexer myobj = (Multiplexer) (super.clone());
-        myobj.input = (MultiplexerData)(input.clone());
-        return myobj;
-        }
-
     public void setup(final EvolutionState state,
         final Parameter base)
         {
@@ -67,16 +57,16 @@ public class Multiplexer extends GPProblem implements SimpleProblemForm
 
         // not using any default base -- it's not safe
 
+        // verify our input is the right class (or subclasses from it)
+        if (!(input instanceof MultiplexerData))
+            state.output.fatal("GPData class must subclass from " + MultiplexerData.class,
+                base.push(P_DATA), null);
+
         // I figure 3 bits is plenty -- otherwise we'd be dealing with
         // REALLY big arrays!
         bits = state.parameters.getIntWithMax(base.push(P_NUMBITS),null,1,3);
         if (bits<1)
             state.output.fatal("The number of bits for Multiplexer must be between 1 and 3 inclusive");
-        
-        // set up our input
-        input = (MultiplexerData) state.parameters.getInstanceForParameterEq(
-            base.push(P_DATA),null, MultiplexerData.class);
-        input.setup(state,base.push(P_DATA));
         }
 
 
@@ -85,10 +75,12 @@ public class Multiplexer extends GPProblem implements SimpleProblemForm
         final int subpopulation,
         final int threadnum)
         {
-        input.status = (byte)bits;
-
         if (!ind.evaluated)  // don't bother reevaluating
             {
+            MultiplexerData input = (MultiplexerData)(this.input);
+        
+            input.status = (byte)bits;
+
             int sum = 0;
                 
             ((GPIndividual)ind).trees[0].child.eval(

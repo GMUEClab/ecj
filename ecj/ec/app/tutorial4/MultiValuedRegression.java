@@ -17,27 +17,17 @@ public class MultiValuedRegression extends GPProblem implements SimpleProblemFor
     public double currentX;
     public double currentY;
     
-    public DoubleData input;
-
-    public Object clone()
-        {
-        MultiValuedRegression newobj = (MultiValuedRegression) (super.clone());
-        newobj.input = (DoubleData)(input.clone());
-        return newobj;
-        }
-
     public void setup(final EvolutionState state,
         final Parameter base)
         {
-        // very important, remember this
-        super.setup(state,base);
-
-        // set up our input -- don't want to use the default base, it's unsafe here
-        input = (DoubleData) state.parameters.getInstanceForParameterEq(
-            base.push(P_DATA), null, DoubleData.class);
-        input.setup(state,base.push(P_DATA));
+        super.setup(state, base);
+        
+        // verify our input is the right class (or subclasses from it)
+        if (!(input instanceof DoubleData))
+            state.output.fatal("GPData class must subclass from " + DoubleData.class,
+                base.push(P_DATA), null);
         }
-
+        
     public void evaluate(final EvolutionState state, 
         final Individual ind, 
         final int subpopulation,
@@ -45,6 +35,8 @@ public class MultiValuedRegression extends GPProblem implements SimpleProblemFor
         {
         if (!ind.evaluated)  // don't bother reevaluating
             {
+            DoubleData input = (DoubleData)(this.input);
+        
             int hits = 0;
             double sum = 0.0;
             double expectedResult;
