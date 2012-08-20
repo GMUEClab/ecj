@@ -847,10 +847,6 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
                     param);
             else state.output.message("Using function set " + pval);
             }
-                        
-        // set up our input -- don't want to use the default base, it's unsafe
-        data = (RegressionData) state.parameters.getInstanceForParameterEq(base.push(P_DATA), null, RegressionData.class);
-        data.setup(state,base.push(P_DATA));
         }
 
 
@@ -873,9 +869,9 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
                 {
                 currentValue = trainingInputs[y];
                 ((GPIndividual)ind).trees[0].child.eval(
-                    state,threadnum,data,stack,((GPIndividual)ind),this);
+                    state,threadnum,input,stack,((GPIndividual)ind),this);
 
-                double error = error(data.x, trainingOutputs[y]);
+                double error = error(input.x, trainingOutputs[y]);
                                 
                 // We'll keep the auxillary hits measure for tradition only 
                 final double HIT_LEVEL = 0.01;
@@ -907,9 +903,9 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
             {
             currentValue = testingInputs[y];
             ((GPIndividual)ind).trees[0].child.eval(
-                state,threadnum,data,stack,((GPIndividual)ind),this);
+                state,threadnum,input,stack,((GPIndividual)ind),this);
 
-            double error = error(data.x, testingOutputs[y]);
+            double error = error(input.x, testingOutputs[y]);
                         
             // We'll keep the auxillary hits measure for tradition only 
             final double HIT_LEVEL = 0.01;
