@@ -80,7 +80,7 @@ public abstract class GPProblem extends Problem implements SimpleProblemForm
 
         p = base.push(P_DATA);
         input = (GPData)
-            (state.parameters.getInstanceForParameter(
+            (state.parameters.getInstanceForParameterEq(
                 p,def.push(P_DATA),GPData.class));
         input.setup(state,p);
         }
