@@ -1945,3 +1945,4 @@ Version		Change Log
 		applications have been modified (in their setup and evaluate and
 		describe methods) to verify that "input" is of the right class and to
 		cast it into the proper class at evaluation time.
+	ADFContext parameters now officially deleted.  They'd been long deprecated.
