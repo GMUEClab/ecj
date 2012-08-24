@@ -33,19 +33,13 @@ import ec.util.*;
  * <p>To evaluate an argument number from an ADFContext, call evaluate(...),
  * and the results are evaluated and copied into input.
  *
- <p><b>Parameter bases</b><br>
- <table>
- <tr><td valign=top><i>base</i><tt>.data</tt><br>
- <td valign=top>(the ADFContext's basic GPData type)</td></tr> 
- </table>
  * @author Sean Luke
  * @version 1.0 
  */
 
 public class ADFContext implements Prototype
     {
-    public final static String P_DATA = "data";
-    public final static String P_ADFCONTEXT = "adf-context";
+    public final static String P_ADFCONTEXT = "adf-context";  // deprecated
 
     /** The ADF/ADM node proper */
     public ADF adf;
@@ -78,14 +72,6 @@ public class ADFContext implements Prototype
 
     public void setup(final EvolutionState state, final Parameter base)
         {
-        // load the prototype
-        Parameter p = base.push(P_DATA);
-        Parameter def = defaultBase(); 
-        Parameter d = def.push(P_DATA);
-
-        if (state.parameters.exists(p,d))
-            state.output.warning("ADF Data is deprecated -- this parameter is no longer used.",
-                p, d);
         }
 
 
