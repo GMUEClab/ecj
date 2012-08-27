@@ -13,8 +13,7 @@
 # Prepare for distribution:		make dist
 #
 
-JAVAC = javac
-# ${JAVACFLAGS}
+JAVAC = javac ${JAVACFLAGS}
 
 JAVACFLAGS = -target 1.4 -source 1.4 ${FLAGS}
 FLAGS = -g -Xlint:deprecation
