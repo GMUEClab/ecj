@@ -6142,7 +6142,6 @@ gp.breed.size-fair.ns = ec.gp.koza.KozaNodeSelector
 By default SizeFairCrossoverPipeline will perform {\bf size-fair crossover,} defined as follows.  First, it finds a crossover point in the first parent in a fashion identical to CrossoverPipeline.  But to find the crossover point in the second parent, it first computes the size \(s_1\) of the subtree in the first parent.  It then calculates the size of every subtree in the second parent, and discards from consideration any subtrees whose size \(s_2\) is \(s_2 > 1 + 2 s_1\).  From the remainder, it then counts the number of subtrees smaller, equal to, and larger than \(s_1\) (call these \(n_<, n_=\) and \(n_>\)), and likewise the means of the smaller and larger subtrees (call these \(mu_<\) and \(mu_>\)).
 
 If \(n_< = 0\) or if \(n_> = 0\), then a random subtree is selected from among the subtrees exactly the same size as \(s_1\).  Thus terminals are always crossed over with terminals.  Otherwise, we decide on selecting an equal, smaller, or larger subtree with the following probabilities:
-
 \[
 \begin{split}
 p_= &= \frac{1}{s_1}\\
