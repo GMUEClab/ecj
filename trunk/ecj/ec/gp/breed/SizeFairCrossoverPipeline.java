@@ -554,7 +554,7 @@ public class SizeFairCrossoverPipeline extends GPBreedingPipeline
             }
         // now we have length chosen, but there can be many nodes with that
         //
-        List listOfNodes = (List)sizeToNodes.get(new Integer(mateSublengthSelected));
+        LinkedList listOfNodes = (LinkedList)(sizeToNodes.get(new Integer(mateSublengthSelected)));
         if(listOfNodes == null)
             {
             System.err.println("Nodes for tree length " + mateSublengthSelected + " is null, indicates some serious error");
@@ -637,12 +637,11 @@ public class SizeFairCrossoverPipeline extends GPBreedingPipeline
         NodeInfo nodeInfo = new NodeInfo(node, node.numNodes(GPNode.NODESEARCH_NONTERMINALS));
         nodeToDepth.add(nodeInfo);
         // check to see if there is list in map for that size
-        List listForSize = (List)sizeToNodes.get(new Integer(nodeInfo.numberOfSubTreesBeneath));
+        LinkedList listForSize = (LinkedList)(sizeToNodes.get(new Integer(nodeInfo.numberOfSubTreesBeneath)));
         if (listForSize == null) 
             {
             listForSize = new LinkedList();
-            sizeToNodes.put(new Integer(nodeInfo.numberOfSubTreesBeneath),
-                listForSize);
+            sizeToNodes.put(new Integer(nodeInfo.numberOfSubTreesBeneath), listForSize);
             }
         // add it to the list no matter what
         listForSize.add(nodeInfo);
