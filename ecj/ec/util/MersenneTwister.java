@@ -4,7 +4,7 @@ import java.io.*;
 
 /** 
  * <h3>MersenneTwister and MersenneTwisterFast</h3>
- * <p><b>Version 18</b>, based on version MT199937(99/10/29)
+ * <p><b>Version 19</b>, based on version MT199937(99/10/29)
  * of the Mersenne Twister algorithm found at 
  * <a href="http://www.math.keio.ac.jp/matumoto/emt.html">
  * The Mersenne Twister Home Page</a>, with the initialization
@@ -41,6 +41,9 @@ import java.io.*;
  * Vol. 8, No. 1, January 1998, pp 3--30.
  *
  * <h3>About this Version</h3>
+ *
+ * <p><b>Changes since V18:</b> Removed old final declarations, which used to
+ * potentially speed up the code, but no longer.
  *
  * <p><b>Changes since V17:</b> Removed vestigial references to &= 0xffffffff
  * which stemmed from the original C code.  The C code could not guarantee that
@@ -159,7 +162,7 @@ import java.io.*;
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  *
- @version 18
+ @version 19
 */
 
 public strictfp class MersenneTwister extends java.util.Random implements Serializable, Cloneable
@@ -260,7 +263,7 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
      * Constructor using a given seed.  Though you pass this seed in
      * as a long, it's best to make sure it's actually an integer.
      */
-    public MersenneTwister(final long seed)
+    public MersenneTwister(long seed)
         {
         super(seed);    /* just in case */
         setSeed(seed);
@@ -272,7 +275,7 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
      * in the array are used; if the array is shorter than this then
      * integers are repeatedly used in a wrap-around fashion.
      */
-    public MersenneTwister(final int[] array)
+    public MersenneTwister(int[] array)
         {
         super(System.currentTimeMillis());    /* pick something at random just in case */
         setSeed(array);
@@ -284,7 +287,7 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
      * only uses the first 32 bits for its seed).   
      */
 
-    synchronized public void setSeed(final long seed)
+    synchronized public void setSeed(long seed)
         {
         // it's always good style to call super
         super.setSeed(seed);
@@ -322,7 +325,7 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
      * integers are repeatedly used in a wrap-around fashion.
      */
 
-    synchronized public void setSeed(final int[] array)
+    synchronized public void setSeed(int[] array)
         {
         if (array.length == 0)
             throw new IllegalArgumentException("Array length must be greater than zero");
@@ -357,7 +360,7 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
     /**
      * Returns an integer with <i>bits</i> bits filled with a random number.
      */
-    synchronized protected int next(final int bits)
+    synchronized protected int next(int bits)
         {
         int y;
         
@@ -395,14 +398,14 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
     /* If you've got a truly old version of Java, you can omit these
        two next methods. */
 
-    private synchronized void writeObject(final ObjectOutputStream out)
+    private synchronized void writeObject(ObjectOutputStream out)
         throws IOException
         {
         // just so we're synchronized.
         out.defaultWriteObject();
         }
 
-    private synchronized void readObject (final ObjectInputStream in) 
+    private synchronized void readObject (ObjectInputStream in) 
         throws IOException, ClassNotFoundException
         {
         // just so we're synchronized.
@@ -419,7 +422,7 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
         event as nextBoolean(double), but twice as fast. To explicitly
         use this, remember you may need to cast to float first. */
 
-    public boolean nextBoolean (final float probability)
+    public boolean nextBoolean (float probability)
         {
         if (probability < 0.0f || probability > 1.0f)
             throw new IllegalArgumentException ("probability must be between 0.0 and 1.0 inclusive.");
@@ -432,7 +435,7 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
         of returning true, else returning false. <tt>probability</tt> must
         be between 0.0 and 1.0, inclusive. */
 
-    public boolean nextBoolean (final double probability)
+    public boolean nextBoolean (double probability)
         {
         if (probability < 0.0 || probability > 1.0)
             throw new IllegalArgumentException ("probability must be between 0.0 and 1.0 inclusive.");
@@ -444,7 +447,7 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
     /** This method is missing from JDK 1.1 and below.  JDK 1.2
         includes this for us, but what the heck. */
 
-    public int nextInt(final int n) 
+    public int nextInt(int n) 
         {
         if (n<=0)
             throw new IllegalArgumentException("n must be positive, got: " + n);
@@ -466,7 +469,7 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
         Returns a long drawn uniformly from 0 to n-1.  Suffice it to say,
         n must be > 0, or an IllegalArgumentException is raised. */
     
-    public long nextLong(final long n) 
+    public long nextLong(long n) 
         {
         if (n<=0)
             throw new IllegalArgumentException("n must be positive, got: " + n);
@@ -556,7 +559,7 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
         use all four bytes in an integer as independent byte values!
         Totally wrong. I've submitted a bug report. */
 
-    public void nextBytes(final byte[] bytes)    
+    public void nextBytes(byte[] bytes)    
         {
         for (int x=0;x<bytes.length;x++) bytes[x] = (byte)next(8);
         }

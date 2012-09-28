@@ -1946,3 +1946,4 @@ Version		Change Log
 		describe methods) to verify that "input" is of the right class and to
 		cast it into the proper class at evaluation time.
 	ADFContext parameters now officially deleted.  They'd been long deprecated.
+	Updated MersenneTwister and MersenneTwisterFast
