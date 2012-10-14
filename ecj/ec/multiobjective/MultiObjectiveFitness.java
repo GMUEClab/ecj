@@ -70,6 +70,13 @@ import ec.*;
  * </table>
  * 
  * <tr>
+ * <td valign=top><i>base</i>.<tt>maximize</tt>.<i>i</i<br>
+ * <font size=-1> bool = <tt>true</tt> (default) or <tt>false</tt></font></td>
+ * <td valign=top>(are higher values considered "better"?).  Overrides the
+ * all-objecgive maximization setting.
+ * </table>
+ * 
+ * <tr>
  * <td valign=top><i>base</i>.<tt>max</tt><br>
  * <font size=-1> float (<tt>1.0</tt> default)</font></td>
  * <td valign=top>(maximum fitness value for all objectives)</table>
@@ -122,9 +129,11 @@ public class MultiObjectiveFitness extends Fitness
     /** Desired minimum fitness values. By default these are 0.0. Shared. */
     public float[] minObjective;
 
+    /** Maximization.  Shared. */
+    public boolean[] maximize;
+
     /** The various fitnesses. */
     protected float[] objectives; // values range from 0 (worst) to 1 INCLUSIVE
-    protected boolean maximize = true;
 
     /** Returns auxilliary fitness value names to be printed by the statistics object.
         By default, an empty array is returned, but various algorithms may override this to provide additional columns.
@@ -136,11 +145,19 @@ public class MultiObjectiveFitness extends Fitness
     */
     public double[] getAuxilliaryFitnessValues() { return new double[] { }; }
 
+    /** 
+        @deprecated Use isMaximizing(objective).  This function now just returns whether the first objective is maximizing.
+    */
     public boolean isMaximizing()
         {
-        return maximize;
+        return maximize[0];
         }
 
+    public boolean isMaximizing(int objective)
+        {
+        return maximize[objective];
+        }
+        
 
     public int getNumObjectives() { return objectives.length; }
         
@@ -175,7 +192,7 @@ public class MultiObjectiveFitness extends Fitness
             if (_f == Float.POSITIVE_INFINITY || _f == Float.NEGATIVE_INFINITY || Float.isNaN(_f))
                 {
                 state.output.warning("Bad objective #" + i + ": " + _f + ", setting to worst value for that objective.");
-                if (maximize)
+                if (maximize[i])
                     newObjectives[i] = minObjective[i];
                 else
                     newObjectives[i] = maxObjective[i];
@@ -194,7 +211,7 @@ public class MultiObjectiveFitness extends Fitness
         MultiObjectiveFitness f = (MultiObjectiveFitness) (super.clone());
         f.objectives = (float[]) (objectives.clone()); // cloning an array
 
-        // note that we do NOT clone max and min fitness -- they're shared
+        // note that we do NOT clone max and min fitness, or maximizing -- they're shared
         return f;
         }
 
@@ -228,8 +245,6 @@ public class MultiObjectiveFitness extends Fitness
         if (numFitnesses <= 0)
             state.output.fatal("The number of objectives must be an integer >= 1.", base.push(P_NUMOBJECTIVES), def.push(P_NUMOBJECTIVES));
 
-        maximize = state.parameters.getBoolean(base.push(P_MAXIMIZE), def.push(P_MAXIMIZE), true);
-
         objectives = new float[numFitnesses];
         maxObjective = new float[numFitnesses];
         minObjective = new float[numFitnesses];
@@ -239,10 +254,12 @@ public class MultiObjectiveFitness extends Fitness
             // load default globals
             minObjective[i] = state.parameters.getFloatWithDefault(base.push(P_MINOBJECTIVES), def.push(P_MINOBJECTIVES), 0.0f);
             maxObjective[i] = state.parameters.getFloatWithDefault(base.push(P_MAXOBJECTIVES), def.push(P_MAXOBJECTIVES), 1.0f);
+            maximize[i] = state.parameters.getBoolean(base.push(P_MAXIMIZE), def.push(P_MAXIMIZE), true);
 
             // load specifics if any
             minObjective[i] = state.parameters.getFloatWithDefault(base.push(P_MINOBJECTIVES).push("" + i), def.push(P_MINOBJECTIVES).push("" + i), minObjective[i]);
             maxObjective[i] = state.parameters.getFloatWithDefault(base.push(P_MAXOBJECTIVES).push("" + i), def.push(P_MAXOBJECTIVES).push("" + i), maxObjective[i]);
+            maximize[i] = state.parameters.getBoolean(base.push(P_MAXIMIZE).push("" + i), def.push(P_MAXIMIZE).push("" + i), maximize[i]);
             
             // test for validity
             if (minObjective[i] >= maxObjective[i])
@@ -275,14 +292,17 @@ public class MultiObjectiveFitness extends Fitness
         boolean abeatsb = false;
         boolean bbeatsa = false;
 
-        if (maximize != other.maximize)
-            throw new RuntimeException(
-                "Attempt made to compare two multiobjective fitnesses; but one expects higher values to be better and the other expectes lower values to be better.");
         if (objectives.length != other.objectives.length)
             throw new RuntimeException("Attempt made to compare two multiobjective fitnesses; but they have different numbers of objectives.");
-        if (maximize)
+        
+        for (int x = 0; x < objectives.length; x++)
             {
-            for (int x = 0; x < objectives.length; x++)
+            if (maximize[x] != other.maximize[x])  // uh oh
+                throw new RuntimeException(
+                    "Attempt made to compare two multiobjective fitnesses; but for objective #" + x + 
+                    ", one expects higher values to be better and the other expectes lower values to be better.");
+
+            if (maximize[x])
                 {
                 if (objectives[x] > other.objectives[x])
                     abeatsb = true;
@@ -291,11 +311,7 @@ public class MultiObjectiveFitness extends Fitness
                 if (abeatsb && bbeatsa)
                     return true;
                 }
-            }
-        else
-            // lower is better
-            {
-            for (int x = 0; x < objectives.length; x++)
+            else
                 {
                 if (objectives[x] < other.objectives[x])
                     abeatsb = true;
@@ -331,24 +347,25 @@ public class MultiObjectiveFitness extends Fitness
     public boolean paretoDominates(MultiObjectiveFitness other)
         {
         boolean abeatsb = false;
-        if (maximize != other.maximize)
-            throw new RuntimeException(
-                "Attempt made to compare two multiobjective fitnesses; but one expects higher values to be better and the other expectes lower values to be better.");
+
         if (objectives.length != other.objectives.length)
             throw new RuntimeException("Attempt made to compare two multiobjective fitnesses; but they have different numbers of objectives.");
-        if (maximize)
+            
+        for (int x = 0; x < objectives.length; x++)
             {
-            for (int x = 0; x < objectives.length; x++)
+            if (maximize[x] != other.maximize[x])  // uh oh
+                throw new RuntimeException(
+                    "Attempt made to compare two multiobjective fitnesses; but for objective #" + x + 
+                    ", one expects higher values to be better and the other expectes lower values to be better.");
+
+            if (maximize[x])
                 {
                 if (objectives[x] > other.objectives[x])
                     abeatsb = true;
                 else if (objectives[x] < other.objectives[x])
                     return false;
                 }
-            }
-        else
-            {
-            for (int x = 0; x < objectives.length; x++)
+            else
                 {
                 if (objectives[x] < other.objectives[x])
                     abeatsb = true;
@@ -356,6 +373,7 @@ public class MultiObjectiveFitness extends Fitness
                     return false;
                 }
             }
+            
         return abeatsb;
         }
 
@@ -509,8 +527,6 @@ public class MultiObjectiveFitness extends Fitness
                 s = s + " ";
             s = s + Code.encode(objectives[x]);
             }
-        s = s + " ";
-        s = s + Code.encode(maximize);
         return s + FITNESS_POSTAMBLE;
         }
 
@@ -524,8 +540,6 @@ public class MultiObjectiveFitness extends Fitness
                 s = s + " ";
             s = s + objectives[x];
             }
-        s = s + " ";
-        s = s + (maximize ? "max" : "min");
         return s + FITNESS_POSTAMBLE;
         }
 
@@ -539,10 +553,6 @@ public class MultiObjectiveFitness extends Fitness
                 state.output.fatal("Reading Line " + d.lineNumber + ": " + "Bad Fitness (objectives value #" + x + ").");
             objectives[x] = (float) d.d;
             }
-        Code.decode(d);
-        if (d.type != DecodeReturn.T_BOOLEAN)
-            state.output.fatal("Reading Line " + d.lineNumber + ": " + "Information missing about whether higher is better");
-        maximize = (boolean) (d.l != 0);
         }
 
     public void writeFitness(final EvolutionState state, final DataOutput dataOutput) throws IOException
@@ -550,7 +560,6 @@ public class MultiObjectiveFitness extends Fitness
         dataOutput.writeInt(objectives.length);
         for (int x = 0; x < objectives.length; x++)
             dataOutput.writeFloat(objectives[x]);
-        dataOutput.writeBoolean(maximize);
         writeTrials(state, dataOutput);
         }
 
@@ -561,7 +570,6 @@ public class MultiObjectiveFitness extends Fitness
             objectives = new float[len];
         for (int x = 0; x < objectives.length; x++)
             objectives[x] = dataInput.readFloat();
-        maximize = dataInput.readBoolean();
         readTrials(state, dataInput);
         }
     }

@@ -8976,9 +8976,9 @@ public ArrayList trials = null;\\
 public Individual[] context = null;
 }
 
-The first variable (\variable{trials}) is used to maintain the results of each trial performed.  It's only used during evaluation, and then set to \variable{null} again.  Most commonly each trial is stored as a \class{java.lang.Double}, with higher values being considered better.  You can change this but if you do, be sure to read Section \ref{performingdistributedevaluationwithcoevolution} first.  {\bf Even if your trials are not \class{java.lang.Double}, they must be immutable: their internals cannot be modified, so they can be pointer-copied and not just cloned.}
+The first variable (\variable{trials}) is available for you to maintain the results of each trial performed.  Later on you will be asked to compute the final fitness of an individual, and at this point you can use this variable to do the final calculation.  The variable is initially \variable{null}, and after fitness is assessed it will be reset to \variable{null} again.  You are free to use this variable as you like (or ignore it entirely),  Most commonly you'd store each trial in the \variable{trials} variable as a \class{java.lang.Double}, with higher values being considered better.  You're free to do something else, but if you do, be sure to read Section \ref{performingdistributedevaluationwithcoevolution} first.  {\bf Even if your trials are not \class{java.lang.Double}, they must be immutable: their internals cannot be modified, so they can be pointer-copied and not just cloned.}
 
-The second variable (\variable{context}) is used to maintain the context of the best trial discovered for the Individual.  It's typically only used by Cooperative Coevolution, where it's important to retain not only the performance of the Individual (his Fitness), but which collaborating Individuals made it possible for him to achieve that Fitness.  If  \variable{context} is used, it's assumed that the slots of \variable{context} hold each collaborator, except for the Individual himself, whose slot is set to null.  Section \ref{maintainingcontext} discusses the issue of context in more detail.
+The second variable (\variable{context}) is available for you to maintain the context of the best trial discovered for the Individual.  It's typically only useful when you're doing Cooperative Coevolution, where it's important to retain not only the performance of the Individual (his Fitness), but which collaborating Individuals made it possible for him to achieve that Fitness.  Again, this is an optional variable though often useful.  If  \variable{context} is used, it's assumed that the slots of \variable{context} hold each collaborator, except for the Individual himself, whose slot is set to null.  Section \ref{maintainingcontext} discusses the issue of context in more detail.
 
 \subsection{Grouped Problems}
 \label{ec.coevolve.GroupedProblemForm}
@@ -9211,7 +9211,7 @@ Again, you could use the default parameter base, though be warned that (in this 
 
 \params{%
 eval.num-prev = 6\\
-eval.select-prev = ec.select.TournamentSelection
+eval.select-prev = ec.select.TournamentSelection\\
 select.tournament.size = 2
 }
 
@@ -9359,7 +9359,7 @@ When ECJ sends off a group of Individuals to a remote site to be evaluated using
 
 The \method{Individual.merge(...)} method isn't particularly efficient but it gets the job done.  First, it calls \method{Fitness.merge(...)} to handle merging trials and context (actual fitness value isn't bothered with\,---\,at this point it doesn't matter).  However this merging isn't in the direction you think: the {\it old} Fitness is merged into the new Fitness.  Then it copies the entire new Individual, including the merged Fitness, into the old Individual, displacing it.  This way the merged Fitness retains the new fitness value, plus merged trials and context. 
 
-How are trials and context merged?  Keep in mind that when the Individual was cloned and sent to the remote site to be evaluated, the clone's trials and context were stripped.  When the cloned Individual returns and must be merged with the original Individual, the cloned Individual will have a new context and one or more new trials.  \method{Fitness.merge(...)} who has the better trial: accordingly, this is the context that is retained. Then the new trials are appended to the original trials.
+How are trials and context merged?  Keep in mind that when the Individual was cloned and sent to the remote site to be evaluated, the clone's trials and context were stripped.  When the cloned Individual returns and must be merged with the original Individual, the cloned Individual will have a new context and one or more new trials.  \method{Fitness.merge(...)} retains the \variable{trials} group with the best trial result: accordingly, this is the context that is retained. Then the new trials are appended to the original trials.
 
 \paragraph{The crucial item.}  To determine which group of trials contains a superior trial,  \method{Fitness.merge(...)} calls a method called \method{Fitness.contextIsBetterThan(Fitness other)}.  This method returns true if the given Fitness's trials are superior to the ``other'' Fitness's trials.  {\bf This method assumes that trials are \class{java.lang.Double}.}  If they are not, you'll need to override this method and replace it.   Recall again that {\bf even if your trials are not \class{java.lang.Double}, they must be immutable: their internals cannot be modified, so they can be pointer-copied and not just cloned.}
 

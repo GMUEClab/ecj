@@ -1947,3 +1947,11 @@ Version		Change Log
 		cast it into the proper class at evaluation time.
 	ADFContext parameters now officially deleted.  They'd been long deprecated.
 	Updated MersenneTwister and MersenneTwisterFast
+	MultiobjectiveFitness now specifies objective maximization on a per-objective
+		basis rather than for all objectives.  Accordingly, the maximize variable
+		has been changed to an array, and the isMaximizing() function has been
+		deprecated and replaced with an isMaximizing(objective) function.  A new
+		parameter has ben added to allow maximization on a per-objective basis.
+		The maximization variable is now shared among all instances from the same
+		prototype just like the minimum and maximum variables are.  This doesn't
+		effect either NSGA2 or SPEA2.
