@@ -1,23 +1,20 @@
 This package contains classes for doing certain kinds of coevolution:
 
-	- 1-population competitive coevolution
-	- 2-population parallel/parallel-previous competitive coevolution
-	- N-population parallel/parallel-previous cooperative coevolution
+- 1-population competitive coevolution, where an individual in a population
+  receive its fitness through some M tests against other individuals
+  chosen from that population.  These tests are competitive: if an
+  individual does well in a test, its competitor does poorly.
 
-ECJ does not presently support N-population sequential cooperative coevolution,
-but there's no reason it couldn't -- it'd just need a special Breeder and one
-or two minor tweaks to the MultiPopCoevolutionaryEvaluator.
+- 2-population competitive coevolution, where an individual in population A
+  receives its fitness through some M tests against other individuals
+  chosen from population B (and vice versa).  These tests are competitive:
+  if an individual does well in a test, its competitor does poorly.
 
-"Parallel" methods are ones in which individuals are tested against other
-individuals from the current generation.
-
-"Sequential" methods are ones in which each subpopulation in turn is tested
-against other individuals, then undergoes breeding, before other subpopulations
-are tested against it.
-
-"Parallel-previous" is the term we use to describe coevolutionary methods in
-which individuals are tested against the *previous* generations' individuals
-rather than the current ones.
+- N-population cooperative coevolution, where an individual in population A 
+  receives its fitness through some M tests.  In each test, an individual
+  is joined with N-1 other individuals, one from each of the other
+  populations.  These tests are cooperative: if an individual does well in
+  a test, its collaborators also do well.
 
 Coevolution is largely defined by the form of evaluation, so this package
 contains mostly Evaluators of different kinds.  The coevolution system places
@@ -88,7 +85,7 @@ there is the issue of competition style:
 
 
 
-2 POPULATION PARALLEL/PARALLEL-PREVIOUS COMPETITIVE COEVOLUTION
+2 POPULATION COMPETITIVE COEVOLUTION
 
 Here two subpopulations are pit against one another.  Members from one
 subpopulation are tested against members of the other subpopulation.  ECJ's
