@@ -864,7 +864,8 @@ Look first in {\it parameter}, then failing that, in {\it default parameter}, an
 Look first in {\it parameter}, then failing that, in {\it default parameter}, and return the result as a double, else {\it minValue\(-1\)} if not found, not a double, \(<\) minValue, or \(>\) maxValue.  Either parameter may be null.
 \end{methods}
 
-\subsection{Debugging}
+\subsection{Debugging Your Parameters}
+\label{DebuggingYourParameters}
 
 Your ECJ experiment is loading silently and running, but how do you know you didn't make a mistake in your parameters?  How do you know ECJ is using the parameters you stated rather than some default values?  If you include the following parameter in your collection:
 
@@ -930,6 +931,8 @@ gp.koza.mutate.maxdepth = 17
 Most of these unaccessed parameters are perfectly fine; standard boilerplate stuff for genetic programming that didn't happen to be used by this application.  But then there's the first parameter:  \parameter{gp.fs.2.info~=~ec.gp.GPFuncInfo}, and two others like it later.  I had deleted the GPFuncInfo class from the ECJ distribution well over a {\it year ago}.  But apparently I forgot to remove a vestigial parameter which referred to it.  Oops!
 
 By the way, note the request to ignore ``parent.x references''\,---\,this means to ignore the stuff like \parameter{parent.0~=~../../gp/koza/koza.params} that gets printed out with everything else.
+
+For more on debugging ECJ, see Section \ref{DebuggingAnEvolutionaryProcess}.
 
 \section{Output}
 
@@ -1199,7 +1202,7 @@ Decodes and returns an encoded string from the reader, first skipping past an ex
 \section{Checkpointing}
 \label{checkpointing}
 
-ECJ supports {\bf checkpointing}, meaning the ability to save the state of the stochastic optimization process to a file at any point in time, and later start a new ECJ process resuming in that exact state.  Checkpointing is particularly useful when doing long processes on shared servers or other environments where the process may be killed at any time.  ECJ's checkpointing procedure largely consists of applying Java's serialization mechanism to the \class{ec.EvolutionState} object, which in turn serializes the entire object graph of the current system. 
+ECJ supports {\bf checkpointing}, meaning the ability to save the state of the stochastic optimization process to a file at any point in time, and later start a new ECJ process resuming at that exact state.  Checkpointing is particularly useful when doing long processes on shared servers or other environments where the process may be killed at any time.  ECJ's checkpointing procedure largely consists of applying Java's serialization mechanism to the \class{ec.EvolutionState} object, which in turn serializes the entire object graph of the current system. 
 
 Turn on checkpointing like this:
 
@@ -1500,7 +1503,7 @@ Jobs are restarted properly from checkpoints: when you resume from a checkpoint,
 
 But what if you need more job complexity?  For example, what if you want to run ECJ with 10 different parameter settings and 50 runs per setting?  You'll need to do some coding.  
 
-For example, let's say we want to run 50 jobs, and each job changes the generation length.  The first job has 20 generations, the second job has 21 generations, etc.  Here's the trick.  After ECJ creates the \class{ec.EvolutionState} object, it calls the \class{startFresh()} method on this object.  The default implementation calls \class{setup(...)} on this object, then starts running the evolutionary loop.  Here's your chance.  Let's say you're using the common EvolutionState \class{ec.simple.SimpleEvolutionState} subclass as your EvolutionState.  Override the \class{startFresh(...)} method in a custom subclass of SimpleEvolutionState along these lines:
+For example, let's say we want to run 50 jobs, and each job changes the generation length.  The first job has 20 generations, the second job has 21 generations, etc.  Here's the trick.  After ECJ creates the \class{ec.EvolutionState} object, it calls the \class{startFresh()} method on this object.  The default implementation calls \class{setup(...)} on this object, then starts running the evolutionary loop.  There's your chance.  Let's say you're using the common EvolutionState \class{ec.simple.SimpleEvolutionState} subclass as your EvolutionState.  Override the \class{startFresh(...)} method in a custom subclass of SimpleEvolutionState along these lines:
 
 \vbox{
 \small\begin{verbatim}
@@ -1510,7 +1513,8 @@ public class ec.app.myexample.MySimpleEvolutionState extends ec.simple.SimpleEvo
         {
         // setup() hasn't been called yet, so very few instance variables are valid at this point.
         // Here's what you can access:  parameters, random, output, evalthreads, breedthreads,
-        //                              randomSeedOffset, job, runtimeArguments, checkpointPrefix, checkpointDirectory
+        //                              randomSeedOffset, job, runtimeArguments, checkpointPrefix,
+        //                              checkpointDirectory
         // Let's modify the 'generations' parameter based on the job number
         int jobNum = ((Integer)(job[0])).intValue();
         parameters.set(new ec.util.Parameter("generations"), "" + (jobNum + 20));        
@@ -3401,6 +3405,7 @@ public void postInitializationStatistics(EvolutionState state)
 
 
 \section{Debugging an Evolutionary Process}
+\label{DebuggingAnEvolutionaryProcess}
 
 A hint.  One helpful way to debug ECJ is via BeanShell (http://www.beanshell.org).  This tool is essentially a command-line for Java.  Using it, we can create an ECJ process and get it going quite easily.  Let's say that the parameter file is called "foo.params". We can type the following into BeanShell:
 
@@ -3719,6 +3724,8 @@ Fitness: -1779.4391
 }
 
 Notice that this Individual has been evaluated.  Its Fitness is valid.
+
+For more on debugging ECJ, see Section \ref{DebuggingYourParameters}.
 
 \chapter{Basic Evolutionary Processes}
 
