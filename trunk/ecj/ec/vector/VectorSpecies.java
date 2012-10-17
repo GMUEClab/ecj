@@ -91,7 +91,7 @@ import ec.*;
 
  <tr><td valign=top><i>base</i>.<tt>crossover-prob</tt><br>
  <font size=-1>0.0 &gt;= float &gt;= 1.0 </font></td>
- <td valign=top>(probability that a gene will get crossed over during any-point crossover)</td></tr>
+ <td valign=top>(probability that a gene will get crossed over during any-point or simulated binary crossover)</td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>mutation-prob</tt><br>
  <font size=-1>0.0 &lt;= float &lt;= 1.0 </font></td>
@@ -301,9 +301,7 @@ public class VectorSpecies extends Species
                 state.output.error("If it's going to use any-point crossover, VectorSpecies must have a crossover probability between 0.0 and 0.5 inclusive",
                     base.push(P_CROSSOVERPROB),def.push(P_CROSSOVERPROB));
             }
-        else crossoverProbability = 0.0f;
-
-        if (crossoverType==C_SIMULATED_BINARY)
+        else if (crossoverType==C_SIMULATED_BINARY)
             {
             if (!(this instanceof FloatVectorSpecies))
                 state.output.error("Simulated binary crossover (SBX) is only supported by FloatVectorSpecies", base.push(P_CROSSOVERTYPE), def.push(P_CROSSOVERTYPE));

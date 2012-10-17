@@ -1955,3 +1955,5 @@ Version		Change Log
 		The maximization variable is now shared among all instances from the same
 		prototype just like the minimum and maximum variables are.  This doesn't
 		effect either NSGA2 or SPEA2.
+	Bug fix in VectorSpecies to bug introduced when simulate binary crossover was 
+		added: uniform crossover always has zero probability.
