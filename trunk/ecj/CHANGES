@@ -1958,3 +1958,4 @@ Version		Change Log
 	Bug fix in VectorSpecies to bug introduced when simulate binary crossover was 
 		added: uniform crossover always has zero probability.  Thanks to
 		Peter Lanze <pl@INDAL.DE>.
+	Updated MersenneTwister and MersenneTwisterFast again
