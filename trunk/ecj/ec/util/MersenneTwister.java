@@ -165,7 +165,7 @@ import java.io.*;
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  *
- @version 19
+ @version 20
 */
 
 public strictfp class MersenneTwister extends java.util.Random implements Serializable, Cloneable
