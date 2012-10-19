@@ -1959,3 +1959,6 @@ Version		Change Log
 		added: uniform crossover always has zero probability.  Thanks to
 		Peter Lanze <pl@INDAL.DE>.
 	Updated MersenneTwister and MersenneTwisterFast again
+	Added the gpsemantics, klandscapes, lid, ordertree, and royaltree problems by
+		James McDermott <jamesmichaelmcdermott@gmail.com> and Luca Manzoni
+		<luca.manzoni@disco.unimib.it> as part of http://gpbenchmarks.org/

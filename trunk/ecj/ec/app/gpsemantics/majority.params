@@ -1,0 +1,6 @@
+# Copyright 2012 by James McDermott
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = semantic.params
+eval.problem.problem_name = Majority
