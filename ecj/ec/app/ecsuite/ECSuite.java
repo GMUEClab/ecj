@@ -526,13 +526,13 @@ public class ECSuite extends Problem implements SimpleProblemForm
         }
         
 
-    /** Fixed rotation seed so all jobs use the same rotation space. */
+    /** Fixed rotation seed so all jobs use exactly the same rotation space. */
     public static final long ROTATION_SEED = 9731297;
 
     /** Build an NxN rotation matrix[row][column] with a given seed. */
     public static double[ /* row */ ][ /* column */] buildRotationMatrix(double rotationSeed, int N)
         {
-        MersenneTwisterFast rand = new MersenneTwisterFast(ROTATION_SEED);
+        MersenneTwisterFast rand = new MersenneTwisterFast(ROTATION_SEED);  // it's rare to need to do this, but we need to guarantee the same rotation space
         double o[ /* row */ ][ /* column */ ] = new double[N][N];
 
         // make random values

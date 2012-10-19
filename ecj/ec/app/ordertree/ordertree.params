@@ -1,0 +1,85 @@
+# Copyright 2012 by James McDermott
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+# one simple function set. Can cut it down by setting (eg) gp.fs.0.size = 4
+gp.fs.size = 1
+gp.fs.0.name = f0
+gp.fs.0.size = 20
+gp.fs.0.func.0 = ec.app.ordertree.func.OrderTreeT0
+gp.fs.0.func.0.nc = nc0
+gp.fs.0.func.1 = ec.app.ordertree.func.OrderTreeF0
+gp.fs.0.func.1.nc = nc2
+gp.fs.0.func.2 = ec.app.ordertree.func.OrderTreeT1
+gp.fs.0.func.2.nc = nc0
+gp.fs.0.func.3 = ec.app.ordertree.func.OrderTreeF1
+gp.fs.0.func.3.nc = nc2
+gp.fs.0.func.4 = ec.app.ordertree.func.OrderTreeT2
+gp.fs.0.func.4.nc = nc0
+gp.fs.0.func.5 = ec.app.ordertree.func.OrderTreeF2
+gp.fs.0.func.5.nc = nc2
+gp.fs.0.func.6 = ec.app.ordertree.func.OrderTreeT3
+gp.fs.0.func.6.nc = nc0
+gp.fs.0.func.7 = ec.app.ordertree.func.OrderTreeF3
+gp.fs.0.func.7.nc = nc2
+gp.fs.0.func.8 = ec.app.ordertree.func.OrderTreeT4
+gp.fs.0.func.8.nc = nc0
+gp.fs.0.func.9 = ec.app.ordertree.func.OrderTreeF4
+gp.fs.0.func.9.nc = nc2
+gp.fs.0.func.10 = ec.app.ordertree.func.OrderTreeT5
+gp.fs.0.func.10.nc = nc0
+gp.fs.0.func.11 = ec.app.ordertree.func.OrderTreeF5
+gp.fs.0.func.11.nc = nc2
+gp.fs.0.func.12 = ec.app.ordertree.func.OrderTreeT6
+gp.fs.0.func.12.nc = nc0
+gp.fs.0.func.13 = ec.app.ordertree.func.OrderTreeF6
+gp.fs.0.func.13.nc = nc2
+gp.fs.0.func.14 = ec.app.ordertree.func.OrderTreeT7
+gp.fs.0.func.14.nc = nc0
+gp.fs.0.func.15 = ec.app.ordertree.func.OrderTreeF7
+gp.fs.0.func.15.nc = nc2
+gp.fs.0.func.16 = ec.app.ordertree.func.OrderTreeT8
+gp.fs.0.func.16.nc = nc0
+gp.fs.0.func.17 = ec.app.ordertree.func.OrderTreeF8
+gp.fs.0.func.17.nc = nc2
+gp.fs.0.func.18 = ec.app.ordertree.func.OrderTreeT9
+gp.fs.0.func.18.nc = nc0
+gp.fs.0.func.19 = ec.app.ordertree.func.OrderTreeF9
+gp.fs.0.func.19.nc = nc2
+
+# problem specification
+eval.problem = ec.app.ordertree.OrderTree
+eval.problem.data = ec.gp.GPData
+
+
+# 0 means add a unit for each correct node
+# 1 means add the node's value
+# 2 means add the node's value squared
+# 3 means add 3 ^ node value
+eval.problem.contribution-type = 0
+
+# parameters are as specified in Hoang et al.
+
+# koza.params brings in 90/10 crossover, replication 0.1, ramped half
+# and half initialisation from depths 2 to 6. We override a few koza
+# values.
+
+parent.0 = ../../gp/koza/koza.params
+
+# Tournament selection size
+select.tournament.size = 6
+
+# we switch off replication and use mutation instead with probability 0.1
+pop.subpop.0.species.pipe.source.1 = ec.gp.koza.MutationPipeline
+pop.subpop.0.species.pipe.source.1.prob = 0.1
+
+# override max initialisation depth:
+gp.koza.half.max-depth = 6
+
+pop.subpop.0.species.fitness = ec.simple.SimpleFitness
+
+gp.koza.xover.maxdepth = 20
+gp.koza.mutate.maxdepth = 20
+
+generations = 201
+pop.subpop.0.size = 500

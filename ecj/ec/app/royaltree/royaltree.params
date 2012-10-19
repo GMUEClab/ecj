@@ -1,0 +1,49 @@
+# Copyright 2012 by James McDermott
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+# one simple function set. Can cut it down by setting (eg) gp.fs.0.size = 4
+# for large function set sizes (>3), java -Xmx2Gb or more may be needed.
+gp.fs.size = 1
+gp.fs.0.name = f0
+gp.fs.0.size = 6
+gp.fs.0.func.0 = ec.app.royaltree.func.RoyalTreeX
+gp.fs.0.func.0.nc = nc0
+gp.fs.0.func.1 = ec.app.royaltree.func.RoyalTreeA
+gp.fs.0.func.1.nc = nc1
+gp.fs.0.func.2 = ec.app.royaltree.func.RoyalTreeB
+gp.fs.0.func.2.nc = nc2
+gp.fs.0.func.3 = ec.app.royaltree.func.RoyalTreeC
+gp.fs.0.func.3.nc = nc3
+gp.fs.0.func.4 = ec.app.royaltree.func.RoyalTreeD
+gp.fs.0.func.4.nc = nc4
+gp.fs.0.func.5 = ec.app.royaltree.func.RoyalTreeE
+gp.fs.0.func.5.nc = nc5
+
+# problem specification
+eval.problem = ec.app.royaltree.RoyalTree
+eval.problem.data = ec.gp.GPData
+
+
+# parameters are as specified in Punch et al, except that we don't
+# implement the "over-selection" used there.
+
+# set a max tree-size of 750 nodes as in Punch et al
+gp.koza.xover.maxsize = 750
+gp.koza.mutate.maxsize = 750
+
+# koza.params brings in 90/10 crossover, replication 0.1, ramped half
+# and half initialisation from depths 2 to 6
+parent.0 = ../../gp/koza/koza.params
+
+# override max initialisation depth:
+gp.koza.half.max-depth = 7
+
+# override a few koza.params values
+pop.subpop.0.species.fitness = ec.simple.SimpleFitness
+
+gp.koza.xover.maxdepth = 17
+gp.koza.mutate.maxdepth = 17
+
+generations = 500
+pop.subpop.0.size = 3500

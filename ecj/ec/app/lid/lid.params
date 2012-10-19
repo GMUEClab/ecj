@@ -1,0 +1,52 @@
+# Copyright 2012 by James McDermott
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+# one simple function set.
+gp.fs.size = 1
+gp.fs.0.name = f0
+gp.fs.0.size = 2
+gp.fs.0.func.0 = ec.app.lid.func.LidJ
+gp.fs.0.func.0.nc = nc2
+gp.fs.0.func.1 = ec.app.lid.func.LidX
+gp.fs.0.func.1.nc = nc0
+
+# problem specification
+eval.problem = ec.app.lid.Lid
+eval.problem.data = ec.gp.GPData
+
+# parameters are as specified in Daida et al:
+
+# "crossover rate = 0.9; replication rate = 0.1; population
+# initialization with ramped half-and-half; initialization depth of
+# 2-6 levels; and fitness-proportionate selection. Other parameter
+# values were maximum generations = 200 and the maximum depth = 512
+# [...] crossover for this experiment was biased towards the internal
+# nodes of an individual (i.e., 90% internal, 10% terminals).  The
+# parameters of the Lid problem were as follows: Wdepth = 30 and
+# Wterminals = 70."
+
+# koza.params brings in 90/10 crossover, replication 0.1, ramped half
+# and half initialisation from depths 2 to 6
+parent.0 = ../../gp/koza/koza.params
+
+# override a few koza.params values
+pop.subpop.0.species.fitness = ec.simple.SimpleFitness
+
+gp.koza.xover.maxdepth = 512
+gp.koza.mutate.maxdepth = 512
+
+generations = 200
+pop.subpop.0.size = 500
+
+# weightTerminals + weightDepth = 100 by defn.
+eval.problem.weightDepth = 30
+
+# a hard instance from Daida et al Fig 3
+eval.problem.targetDepth = 200
+eval.problem.targetTerminals = 256
+
+# another hard instance from Daida et al Fig 4 (commented out)
+# eval.problem.targetDepth = 15
+# eval.problem.targetTerminals = 32768
+

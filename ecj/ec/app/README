@@ -30,19 +30,26 @@ GENETIC PROGRAMMING AND GRAMMATICAL EVOLUTION
 ant		Artificial Ant
 			-- includes grammatical evolution code
 edge		Edge Encoding
+gpsemantics     The GP Semantics (Order, Majority) benchmarks
+klandscapes     The K-Landscapes GP benchmark
 lawnmower	Lawnmower
 			-- includes ADF and non-ADF code
 			-- includes grammatical evolution code
+lid		The Lid benchmark
 multiplexer	"Fast" Multiplexer
 multiplexerslow	Easy to understand Multiplexer
+ordertree	The ORDERTREE problem
 parity		Parity
 			-- includes ADF and non-ADF code
 regression	Various Symbolic Regression examples
 			-- includes ERC and non-ERC code	
 			-- includes steady-state code
 			-- includes grammatical evolution code
+			-- includes the GP2012 benchmark suite
+royaltree	The Royal Tree problem
 twobox		Two Box
 			-- includes ADF and non-ADF code
+
 
 
 COMPETITIVE 1-POPULATION COEVOLUTION

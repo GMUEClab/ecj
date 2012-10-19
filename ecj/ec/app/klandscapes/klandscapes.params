@@ -1,0 +1,31 @@
+gp.fs.size = 1
+gp.fs.0.name = f0
+gp.fs.0.size = 6
+gp.fs.0.func.0 = ec.app.klandscapes.func.KLandscapeTreeX
+gp.fs.0.func.0.nc = nc0
+gp.fs.0.func.1 = ec.app.klandscapes.func.KLandscapeTreeY
+gp.fs.0.func.1.nc = nc0
+gp.fs.0.func.2 = ec.app.klandscapes.func.KLandscapeTreeZ
+gp.fs.0.func.2.nc = nc0
+gp.fs.0.func.3 = ec.app.klandscapes.func.KLandscapeTreeW
+gp.fs.0.func.3.nc = nc0
+gp.fs.0.func.4 = ec.app.klandscapes.func.KLandscapeTreeA
+gp.fs.0.func.4.nc = nc2
+gp.fs.0.func.5 = ec.app.klandscapes.func.KLandscapeTreeB
+gp.fs.0.func.5.nc = nc2
+
+eval.problem = ec.app.klandscapes.KLandscapes
+eval.problem.data = ec.gp.GPData
+eval.problem.k-landscapes.k-value = 2
+
+parent.0 = ../../gp/koza/koza.params
+gp.koza.half.max-depth = 3
+
+pop.subpop.0.species.fitness = ec.simple.SimpleFitness
+
+gp.koza.xover.maxdepth = 18
+gp.koza.mutate.maxdepth = 18
+
+generations = 100
+pop.subpop.0.size = 100
+select.tournament.size = 10

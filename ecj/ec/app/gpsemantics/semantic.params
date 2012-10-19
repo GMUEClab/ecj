@@ -1,0 +1,132 @@
+# Copyright 2012 by James McDermott
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../gp/koza/koza.params
+
+# Function sets. Just one set, named gp.fs.0: it has 17 Xi variables
+# and 17 Ni variables. Change the fs.0.size parameter to tune the
+# problem.
+
+gp.fs.size = 1
+gp.fs.0.name = f0
+gp.fs.0.size = 35
+gp.fs.0.func.0 = ec.app.gpsemantics.func.SemanticJ
+gp.fs.0.func.0.nc = nc2
+gp.fs.0.func.1 = ec.app.gpsemantics.func.SemanticX0
+gp.fs.0.func.1.nc = nc0
+gp.fs.0.func.2 = ec.app.gpsemantics.func.SemanticN0
+gp.fs.0.func.2.nc = nc0
+gp.fs.0.func.3 = ec.app.gpsemantics.func.SemanticX1
+gp.fs.0.func.3.nc = nc0
+gp.fs.0.func.4 = ec.app.gpsemantics.func.SemanticN1
+gp.fs.0.func.4.nc = nc0
+gp.fs.0.func.5 = ec.app.gpsemantics.func.SemanticX2
+gp.fs.0.func.5.nc = nc0
+gp.fs.0.func.6 = ec.app.gpsemantics.func.SemanticN2
+gp.fs.0.func.6.nc = nc0
+gp.fs.0.func.7 = ec.app.gpsemantics.func.SemanticX3
+gp.fs.0.func.7.nc = nc0
+gp.fs.0.func.8 = ec.app.gpsemantics.func.SemanticN3
+gp.fs.0.func.8.nc = nc0
+gp.fs.0.func.9 = ec.app.gpsemantics.func.SemanticX4
+gp.fs.0.func.9.nc = nc0
+gp.fs.0.func.10 = ec.app.gpsemantics.func.SemanticN4
+gp.fs.0.func.10.nc = nc0
+gp.fs.0.func.11 = ec.app.gpsemantics.func.SemanticX5
+gp.fs.0.func.11.nc = nc0
+gp.fs.0.func.12 = ec.app.gpsemantics.func.SemanticN5
+gp.fs.0.func.12.nc = nc0
+gp.fs.0.func.13 = ec.app.gpsemantics.func.SemanticX6
+gp.fs.0.func.13.nc = nc0
+gp.fs.0.func.14 = ec.app.gpsemantics.func.SemanticN6
+gp.fs.0.func.14.nc = nc0
+gp.fs.0.func.15 = ec.app.gpsemantics.func.SemanticX7
+gp.fs.0.func.15.nc = nc0
+gp.fs.0.func.16 = ec.app.gpsemantics.func.SemanticN7
+gp.fs.0.func.16.nc = nc0
+gp.fs.0.func.17 = ec.app.gpsemantics.func.SemanticX8
+gp.fs.0.func.17.nc = nc0
+gp.fs.0.func.18 = ec.app.gpsemantics.func.SemanticN8
+gp.fs.0.func.18.nc = nc0
+gp.fs.0.func.19 = ec.app.gpsemantics.func.SemanticX9
+gp.fs.0.func.19.nc = nc0
+gp.fs.0.func.20 = ec.app.gpsemantics.func.SemanticN9
+gp.fs.0.func.20.nc = nc0
+gp.fs.0.func.21 = ec.app.gpsemantics.func.SemanticX10
+gp.fs.0.func.21.nc = nc0
+gp.fs.0.func.22 = ec.app.gpsemantics.func.SemanticN10
+gp.fs.0.func.22.nc = nc0
+gp.fs.0.func.23 = ec.app.gpsemantics.func.SemanticX11
+gp.fs.0.func.23.nc = nc0
+gp.fs.0.func.24 = ec.app.gpsemantics.func.SemanticN11
+gp.fs.0.func.24.nc = nc0
+gp.fs.0.func.25 = ec.app.gpsemantics.func.SemanticX12
+gp.fs.0.func.25.nc = nc0
+gp.fs.0.func.26 = ec.app.gpsemantics.func.SemanticN12
+gp.fs.0.func.26.nc = nc0
+gp.fs.0.func.27 = ec.app.gpsemantics.func.SemanticX13
+gp.fs.0.func.27.nc = nc0
+gp.fs.0.func.28 = ec.app.gpsemantics.func.SemanticN13
+gp.fs.0.func.28.nc = nc0
+gp.fs.0.func.29 = ec.app.gpsemantics.func.SemanticX14
+gp.fs.0.func.29.nc = nc0
+gp.fs.0.func.30 = ec.app.gpsemantics.func.SemanticN14
+gp.fs.0.func.30.nc = nc0
+gp.fs.0.func.31 = ec.app.gpsemantics.func.SemanticX15
+gp.fs.0.func.31.nc = nc0
+gp.fs.0.func.32 = ec.app.gpsemantics.func.SemanticN15
+gp.fs.0.func.32.nc = nc0
+gp.fs.0.func.33 = ec.app.gpsemantics.func.SemanticX16
+gp.fs.0.func.33.nc = nc0
+gp.fs.0.func.34 = ec.app.gpsemantics.func.SemanticN16
+gp.fs.0.func.34.nc = nc0
+
+
+# problem specification
+eval.problem = ec.app.gpsemantics.Semantic
+eval.problem.data = ec.gp.GPData
+
+
+# parameters are as specified in Goldberg and O'Reilly:
+
+# Parameters are specified as follows by Goldberg and O'Reilly: "Our
+# runs use a problem sizeof 16 and the uniform fitness structure of
+# the problem implies that the maximum adjusted fitness is
+# 16+1=17. The height of trees in the initial population is 2. Maximum
+# tree height is 15. The population size is 100.  Tournament selection
+# is used. Runs proceed for a maximum of 50 generations.  Because the
+# distribution of leaf to non-leaf primitives in the primitive set is
+# skewed toward leafs, random tree creation is modified. First a
+# equi-probable random choice is made between using a non-leaf or
+# leaf. Then, if the choice is a leaf, one of the 32 leafs is randomly
+# chosen.  In our simple version of GP, we have GP crossover available
+# with the 90:10 biased node to leaf crossover point selection and
+# with non-biased crossover point selection."
+
+# koza.params brings in 90/10 crossover, replication 0.1, ramped half
+# and half initialisation
+
+# override a few koza.params values
+
+# note that we don't have an initialiser that does exactly what
+# Goldberg and O'Reilly say, ie choosing terminal v non-terminal
+# first, then choosing which terminal if needed. But with ramped
+# half-and-half in [2, 2], setting growp to 0.1 at least assures us we
+# don't get mostly trivial trees.
+
+gp.koza.half.growp = 0.1
+gp.koza.half.min-depth = 2
+gp.koza.half.max-depth = 2
+
+pop.subpop.0.species.fitness = ec.simple.SimpleFitness
+
+gp.koza.xover.maxdepth = 15
+gp.koza.mutate.maxdepth = 15
+
+generations = 50
+pop.subpop.0.size = 100
+
+eval.problem.problem_name = Order
+# alternative, commented out:
+# eval.problem.problem_name = Majority
