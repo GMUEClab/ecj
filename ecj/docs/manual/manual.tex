@@ -61,6 +61,7 @@
 \newcommand\textstr[1]{\texttt{"{#1}"}}
 \newcommand\lisp[1]{\textsf{#1}}
 
+\newcommand\ignore[1]{}
 
 %%% Hack to allow more spacing before and after an hline
 \newcommand\tstrut{\rule{0pt}{2.4ex}}
@@ -932,7 +933,57 @@ Most of these unaccessed parameters are perfectly fine; standard boilerplate stu
 
 By the way, note the request to ignore ``parent.x references''\,---\,this means to ignore the stuff like \parameter{parent.0~=~../../gp/koza/koza.params} that gets printed out with everything else.
 
-For more on debugging ECJ, see Section \ref{DebuggingAnEvolutionaryProcess}.
+For more on debugging ECJ, see Section~\ref{DebuggingAnEvolutionaryProcess}.
+
+\subsection{Building a Parameter Database from Scratch}
+\label{BuildingAParameterDatabaseFromScratch}
+Normally ParameterDatabase is constructed from the Evolve class on your behalf.  But in some unusual situations you may need to build one yourself.  Most notably, if you're attaching ECJ as a sub-module under some application or toolkit (see Section~\ref{integration}), you may need to make a custom ParameterDatabase with which to run ECJ. 
+
+A typical ParameterDatabase is constructed from a file or a resource relative to a class.  When this is done, what you receive is an empty ParameterDatabase which points to another ParameterDatabase,   The empty ParameterDatabase is free for you to modify.  For example, if you call...
+
+\begin{verbatim}
+File file = ...
+String[] commandLineArguments = ... 
+ParameterDatabase db = new ParameterDatabase(file, commandLineArguments);
+\end{verbatim}
+
+... you will get back an empty ParameterDatabase whose parent is a ParameterDatabase holding the commands-line arguments, whose parent is a ParameterDatabase constructed from the file.  That final ParameterDatabase may have further parents as specified in the file itself.
+
+Other ParameterDatabase constructors, particularly ones which do not concern themselves with specific files, will not have this feature.
+
+The particular chain, if there is one at all, varies depending on the constructor you call.  The one in the example above is the most common constructor.
+
+\begin{methods}{ec.util.ParameterDatabase Constructor}
+\mthd{public ParameterDatabase()}
+Creates a simple empty parameter database with no parents.  The database hierarchy is simply: \framebox{\strut empty}
+\mthd{public ParameterDatabase(Dictionary map)}
+Creates a parameter database with the given Dictionary. Both the keys and values will be run through \method{toString()} before adding to the database. Keys are parameters. Values are the values of the parameters. If parents are defined in the map's parameters, they will be attempted to be loaded: only parents which are absolute path names are permitted.  Beware that a ParameterDatabase is itself a Dictionary; but if you pass one in here you will only get the lowest-level elements.    The database hierarchy is : \framebox{\strut map}\(\rightarrow\cdots\)
+\mthd{public ParameterDatabase(InputStream stream)}
+Creates a parameter database by reading parameters from the provided stream. If parents are defined among the parameters, they will be attempted to be loaded: only parents which are absolute path names are permitted.  Beware that a ParameterDatabase is itself a Dictionary; but if you pass one in here you will only get the lowest-level elements.    The database hierarchy is : \framebox{\strut stream}\(\rightarrow\cdots\)
+\mthd{public ParameterDatabase(File file)}
+Creates a new parameter database from the given file (and possibly parent files).  The database hierarchy is: \framebox{\strut empty}\(\rightarrow\)\framebox{\strut file}\(\rightarrow\cdots\)
+\mthd{public ParameterDatabase(File file, String[] args)}
+Creates a new parameter database from the given file (and possibly parent files).  The database hierarchy is: \framebox{\strut empty}\(\rightarrow\)\framebox{\strut args}\(\rightarrow\)\framebox{\strut file}\(\rightarrow\cdots\)
+\mthd{public ParameterDatabase(String pathNameRelativeToClassFile, Class cls)}
+Creates a new parameter database from the given file (and possibly parent files).  The file is located a path name relative to object (\file{.class}) file of the provided class.  For example, if the class were \class{Foo}, and its object file was located at \file{/a/b/Foo.class}, and the path name relative to the class file was \file{../c/bar.params}, then the file would be expected to be located at \file{/a/c/bar.params}.  This also works inside \file{jar} files.  The database hierarchy is: \framebox{\strut empty}\(\rightarrow\)\framebox{\strut pathNameRelativeToClassFile}\(\rightarrow\cdots\)
+\mthd{public ParameterDatabase(String pathNameRelativeToClassFile, Class cls, String[] args)}
+Creates a new parameter database from the given file (and possibly parent files).  The file is located a path name relative to object (\file{.class}) file of the provided class.  For example, if the class were \class{Foo}, and its object file was located at \file{/a/b/Foo.class}, and the path name relative to the class file was \file{../c/bar.params}, then the file would be expected to be located at \file{/a/c/bar.params}.  This also works inside \file{jar} files.  The database hierarchy is: \framebox{\strut empty}\(\rightarrow\)\framebox{\strut args}\(\rightarrow\)\framebox{\strut pathNameRelativeToClassFile}\(\rightarrow\cdots\)
+\end{methods}
+
+Once you have created a ParameterDatabase, you can attach parent ParameterDatabases to it.  You can also set values in the ParameterDatabase, and remove values (though you cannot remove values from its parents without accessing the parents themselves), among other operations.
+
+\begin{methods}{ec.util.ParameterDatabase}
+\mthd{public void addParent(ParameterDatabase database)}
+Adds a parent database to the parameter database.
+\mthd{public void set(Parameter parameter, String value)}
+Sets a parameter in the immediate parameter database.  This overrides settings in parents.  The value is first trimmed of whitespace.
+\mthd{public void remove(Parameter parameter)}
+Removes a parameter from an immediate parameter database (but not from its parents in the hierarchy).
+\mthd{public ParameterDatabase getLocation(Parameter parameter)}
+Returns the parameter database in the parent hierarchy which defined the currently-used value for the given parameter.
+\mthd{public String getLabel()}
+Returns a string describing the location of the ParameterfDatabase (such as the file name from which it was loaded), or the empty string if there is nothing appropriate.
+\end{methods}
 
 \section{Output}
 
@@ -1228,7 +1279,7 @@ By default ECJ writes checkpoints to the directory in which you had run Java.  B
 checkpoint-directory = /tmp/
 }
 
-This directory can be an absolute, relative, execution relative, or class relative path (see Section \ref{kindsofparameters} for a refresher).  But it {\it must} be a directory, not a file.
+This directory can be an absolute, relative, execution relative, or class relative path (see Section~\ref{kindsofparameters} for a refresher).  But it {\it must} be a directory, not a file.
 
 Whenever a checkpoint is written, this fact is also added as an announcement.  Here's the output of a typical run with checkpointing every two generations.
 
@@ -1619,8 +1670,212 @@ Flushes and closes output buffers and writes out used, accessed, unused, and una
 \end{methods}
 
 
+\section{Integrating ECJ with other Applications or Libraries}
+\label{integration}
+
+When integrating ECJ with other applications or libraries, you have to decide who's going to be in the driver's seat \,---\, that is, in control of \method{main(...)}.  There are two common situations:
+
+\begin{itemize}
+\item {\bf ECJ is in control.}  The most common scenario here is ECJ using an external library, such as a simulation toolkit, to assess the fitness of an Individual.
+\item {\bf The other application or library is in control.}  This might arise if you have some external application which wishes to use ECJ as a sub-procedure to do some optimization.
+\end{itemize}
+
+You can of course do both: have Application A control ECJ, which in turn controls Simulation Library B.
+
+\subsection{Control by ECJ}
+
+When ECJ is in control, usually the subordinate library is being used to assess the quality of an Individual, perhaps as a simulation library.  To do this, you'll probably need a place to set up your library, prepare a simulation to test a string of Individuals, reset the simulation for each Individual, and eventually destroy the library.  Note that if you use checkpointing, your library must be serializable.   Note also that if you use distributed evaluation, the library will be run on remote machines.  
+
+Here are some plausible locations for these tasks:
+ 
+\paragraph{Set up the library}
+One option would be to create a custom EvolutionState, overriding the \method{startFresh()} and \method{startFromCheckpoint()}.  See Section~\ref{ec.EvolutionState}.  Let us presume you don't need to distinguish between starting fresh and restarting from a checkpoint.  Then you could do:
+
+\begin{verbatim}
+public class MyEvolutionState extends ec.simple.SimpleEvolutionState  // or whatever...
+    {
+    public void setup(EvolutionState state, Parameter base) 
+        {
+        super.setup(state, base);  // state is obviously the MyEvolutionState itself
+        // do your library setup here
+        }
+    }
+\end{verbatim}
+
+You'd then set this parameter:
+
+\params{%
+state = MyEvolutionState
+}
+
+You could of course override the \method{setup(...)} method of certain other classes, such as \class{ec.Initializer} (see Section~\ref{ec.Initializer}).
+
+\paragraph{Prepare the simulation for evaluation}
+
+Next you'd probably want to set up a simulation object and hold it somewhere, perhaps in your \class{ec.Problem} subclass.  The obvious time to do this is in the \method{prepareToEvaluate(...)} method (see Section~\ref{ec.Problem}):
+
+\begin{verbatim}
+public void prepareToEvaluate(EvolutionState state, int thread) 
+        {
+        super.prepareToEvaluate(state, thread);
+        /// do your preparation here
+        }
+\end{verbatim}
+
+Here you could create a simulation and store it in an instance variable.  If you run ECJ multithreaded, ECJ may make several Problems and run them simultaneously in multiple threads, so be sure that your simulation does not share any data in common (notably non-final static variables).  
+
+\paragraph{Evaluate an Individual}
+
+Whenever \method{evaluate(...)} is called, you can now grab your simulation, reset it as appropriate, and test your individual.  Alternatively you could just delete your existing simulation and create a new fresh one:
+
+\begin{verbatim}
+public void evaluate(EvolutionState state, Individual ind, int subpopulation, int thread) 
+        {
+        super.evaluate(state, ind, subpopulation, thread);
+        /// do your evaluation here
+        }
+\end{verbatim}
+
+Here you take the Individual and test it, returning a Fitness. 
+
+At the end of a run, ECJ may call the \method{describe()} method on your Problem (see Section~\ref{ec.Problem}):
+
+\java{%
+public void describe(EvolutionState state, Individual ind, int subpopulation,\\
+\hsp{\fill}int thread, int log);
+}
+
+... you can do the same trick here, though beware that ECJ will {\it not} call \method{prepareToEvaluate(...)} first, nor call \method{finishEvaluation(...)} afterwards, so you'll need to set up your simulation, run it, and get rid of it all in the \method{describe(...)} itself.
+
+Alternatively if your Problem implements the coevolutionary \class{ec.coevolve.GroupedProblemForm} (see Section~\ref{ec.coevolve.GroupedProblemForm}), you might write this:
+
+\begin{verbatim}
+public void evaluate(EvolutionState state, Individual[] ind, boolean[] updateFitness, 
+                                boolean countVictoriesOnly, int[] subpops, int thread) 
+        {
+        super.evaluate(state, ind, updateFitness, countVictoriesOnly, subpops, thread);
+        /// do your evaluation here
+        }
+\end{verbatim}
+
+At present there is no \method{describe(...)} method for GroupedProblemForm.
+
+\paragraph{Eliminate the Simulation}
+
+After the simulation has been used to evaluate its chunk of individuals, ECJ will call the following method on your Problem subclass, which lets you get rid of the simulation (if you care to):
+
+At the end of a run, ECJ may call the \method{describe()} method on your Problem (not for GroupedProblemForm):
+
+\begin{verbatim}
+public void finishEvaluating(EvolutionState state, int thread) 
+    {
+    super.finishEvaluating(state, thread);
+    /// do your cleanup here
+    }
+\end{verbatim}
+
+See again Section~\ref{ec.Problem}.
+
+\paragraph{Clean up the Library}
+
+Finally at the end of an ECJ run you can clean up the library if you need to: perhaps to flush out logs or close sockets.  A reasonable place to do this is to create a custom \class{ec.Finisher} subclass (see Section~\ref{ec.Finisher}):
+
+\begin{verbatim}
+public class MyFinisher extends SimpleFinisher // or whatever
+    {
+    public void finishPopulation(EvolutionState state, int result)
+        {
+        super.finishPopulation(state, result);
+        // clean up the library here
+        }
+    Œ}
+\end{verbatim}
 
 
+\subsection{Control by another Application or Library}
+
+To set up and run ECJ from an external application or library, you need to get a parameter database, initialize ECJ on it, and start it running.  Most likely you'll be running ECJ multiple times, so it makes sense to construct a single ParameterDatabase, then clone it repeatedly for each time ECJ does an optimization run.
+
+You could create your initial ParameterDatabase by pointing it at a file:
+
+\begin{verbatim}
+File parameterFile = ...
+ParameterDatabase dbase = new ParameterDatabase(parameterFile,
+                             new String[] { "-file", parameterFile.getCanonicalPath() });
+\end{verbatim}
+
+There are other options besides loading from files of course: see Section~\ref{BuildingAParameterDatabaseFromScratch}.  Once you have created your ParameterDatabase, you'll likely want to make copies of it over and over again so you can customize some of its parameters differently each time you run ECJ from the application or library.  You could do this in two ways.  You could just make a ParameterDatabase which uses the original database as its parent:
+
+\begin{verbatim}
+ParameterDatabase child = new ParameterDatabase();
+child.addParent(dbase);
+\end{verbatim}
+
+I instead prefer to first copy the original so as to keep a completely separate version in case there are multithreading issues.  Here we use \class{ec.util.DataPipe} to copy the ParameterDatabase, because it's presently not \class{Cloneable} (this may change later):
+
+\begin{verbatim}
+ParameterDatabase copy = (ParameterDatabase)(DataPipe.copy(dbase));
+ParameterDatabase child = new ParameterDatabase();
+child.addParent(dbase);
+\end{verbatim}
+
+Once you have your ParameterDatabase ready, it's time to add some custom parameters.  Perhaps each time you're setting up ECJ from your application you want it to run in a slightly different way.  Notably you may want to customize the random number seed.  You can do it like this:
+
+\begin{verbatim}
+child.set(...);
+child.set(...);
+child.set(...);
+// ... etc...
+\end{verbatim}
+
+(and so on).   Now you set up the \class{Output} class.  At this point you may wish to muzzle \variable{stdout} and \variable{stderr} if you don't want ECJ polluting them:
+
+\begin{verbatim}
+Output out = Evolve.buildOutput();
+        
+// this stuff is optional
+out.getLog(0).muzzle = true;  // stdout
+out.getLog(1).muzzle = true;  // stderr
+\end{verbatim}
+
+You can shut up the Statistics log with this parameter:
+
+\begin{verbatim}
+stat.file = /dev/null
+\end{verbatim}
+
+Now you initialize ECJ and start it running:
+
+\begin{verbatim}
+EvolutionState evaluatedState = Evolve.initialize(child, 0, out);
+evaluatedState.run(EvolutionState.C_STARTED_FRESH);
+\end{verbatim}
+
+This runs the whole thing from start to end, then returns.  Alternatively to pulse ECJ every generation (maybe so you can test stuff per-generation) you could say:
+
+\begin{verbatim}
+EvolutionState evaluatedState = Evolve.initialize(child, 0, out);
+evaluatedState.startFresh();
+int result = EvolutionState.R_NOTDONE;
+while( result == EvolutionState.R_NOTDONE )
+    result = evaluatedState.evolve();
+\end{verbatim}
+
+At this point you might wish to check the Statistics to see what the results were.  Let's say it's a \class{SimpleStatistics}.  You could then say:
+
+\begin{verbatim}
+// inds is an array, one per subpopulation
+Individual[] inds = ((SimpleStatistics)(evaluatedState.statistics)).getBestSoFar();
+// ... grab the Fitness from these Individuals, etc. ...
+\end{verbatim}
+
+Finally, you clean up.
+
+\begin{verbatim}
+Evolve.cleanup(evaluatedState);
+\end{verbatim}
+
+And you can forget about \variable{evaluatedState} at this point.
 
 \chapter{\class{ec.EvolutionState} and the ECJ Evolutionary Process}
 \label{ec.EvolutionState}
@@ -1850,7 +2105,7 @@ Since they're Prototypes, Individuals, Fitnesses, and Species all have default b
 \subsection{Making Large Numbers of Subpopulations}
 \label{default-subpop}
 
-Let's say you're doing an evolutionary experiment (perhaps coevolution, see Section \ref{ec.coevolve}) which involves 100 Subpopulations.  It's going to get very tiresome to repeat...
+Let's say you're doing an evolutionary experiment (perhaps coevolution, see Section~\ref{ec.coevolve}) which involves 100 Subpopulations.  It's going to get very tiresome to repeat...
 
 \params{%
 pop = ec.Population \\
@@ -2218,7 +2473,7 @@ public ArrayList trials = null;\\
 public Individual[] context = null;
 }
 
-These variables are used by coevolutionary processes (see Section \ref{ec.coevolve}) to keep track of the number of trials (in the form of \class{java.lang.Double} used to compute the Fitness value, and to maintain the context (other collaborating Individuals) which produced the best result represented by he Fitness.  Outside of coevolution they're presently unused: leave them null and they won't be printed.
+These variables are used by coevolutionary processes (see Section~\ref{ec.coevolve}) to keep track of the number of trials (in the form of \class{java.lang.Double} used to compute the Fitness value, and to maintain the context (other collaborating Individuals) which produced the best result represented by he Fitness.  Outside of coevolution they're presently unused: leave them null and they won't be printed.
 
 \section{Initializers and Finishers}
 \label{ec.Initializer}
@@ -2423,7 +2678,7 @@ public void describe(EvolutionState state, Individual ind, int subpopulation,\\
 \hsp{\fill}int threadnum, int log);
 }
 
-When this method is called, the expectation is that the individual will be evaluated for the purpose of writing out interesting descriptive information to the log.  For example, a fit Artificial Ant agent might show the map of the trail it produces as it wanders about eating pellets of food.   If you prefer you don't have to implement this method: and in fact many Problems don't.  The default version (in \class{ec.Problem}) does nothing at all.
+{\bf Note that ECJ will \textit{not} call \method{prepareToEvaluate(...)} before \method{describe(...)}, nor call \method{finishEvaluating(...)} after it.}    When this method is called, the expectation is that the individual will be evaluated for the purpose of writing out interesting descriptive information to the log.  For example, a fit Artificial Ant agent might show the map of the trail it produces as it wanders about eating pellets of food.   If you prefer you don't have to implement this method: and in fact many Problems don't.  The default version (in \class{ec.Problem}) does nothing at all.
 
 Problem is a Prototype, and so it must implement the \method{clone()} (as a deep-clone), \method{setup(...)}, and \method{defaultBase()} methods: although in truth the default base is rarely used.  Problem's ``default'' default base is \parameter{problem}, which is very rarely used.
 
@@ -2521,7 +2776,7 @@ breed.elite.0 = 10
 
 The default value is no elites.
 
-You don't have to specify the elitism on a per-Subpopulation basis.  If you specified a default subpopulation using the parameter  \parameter{pop.default-subpop} (see Section \ref{default-subpop}), SimpleBreeder will try this instead when it can't find an elitism parameter, and will issue a warning letting you know it's doing so.  For example, if you declared:
+You don't have to specify the elitism on a per-Subpopulation basis.  If you specified a default subpopulation using the parameter  \parameter{pop.default-subpop} (see Section~\ref{default-subpop}), SimpleBreeder will try this instead when it can't find an elitism parameter, and will issue a warning letting you know it's doing so.  For example, if you declared:
 
 \params{%
 pop.default-subpop = 0
@@ -2563,7 +2818,7 @@ Certain Breeders allow you to change the subpopulation breeding order to a {\it 
 breed.sequential = true
 }
 
-\noindent ... then SimpleBreeder will only breed subpopulation 0 the first generation, then only subpopulation 1 the second generation, then only subpopulation 2 the second generation, then only subpopulation 0 the third generation, and so on.  Obviously if you only have one subpopulation, this parameter has no effect.  Why would you want this?  ECJ only uses it for a common kind of coevolution, discussed later in Section \ref{parallelandsequentialcoevolution}.  Otherwise you should keep this set to \parameter{false}.  The only reason it's mentioned here is so that if you make a Breeder subclass, you can check for this parameter and signal an error if it is \parameter{true}, indicating that your Breeder subclass doesn't support it.
+\noindent ... then SimpleBreeder will only breed subpopulation 0 the first generation, then only subpopulation 1 the second generation, then only subpopulation 2 the second generation, then only subpopulation 0 the third generation, and so on.  Obviously if you only have one subpopulation, this parameter has no effect.  Why would you want this?  ECJ only uses it for a common kind of coevolution, discussed later in Section~\ref{parallelandsequentialcoevolution}.  Otherwise you should keep this set to \parameter{false}.  The only reason it's mentioned here is so that if you make a Breeder subclass, you can check for this parameter and signal an error if it is \parameter{true}, indicating that your Breeder subclass doesn't support it.
 
 All that remains is the breeding procedure itself, for which SimpleBreeder (and many Breeders) constructs a {\bf Breeding Pipeline}.
 
@@ -3421,7 +3676,7 @@ A hint.  One helpful way to debug ECJ is via BeanShell (http://www.beanshell.org
 \end{verbatim}
 }
 
-This is basically a variation of the \method{main} code found in Section \ref{jobs}.  When \method{state.run(...)} is executed, ECJ will go through the entire evolutionary run.  It turns out that \method{state.run(...)} is really just a cover for three methods (at least, if we're starting from scratch rather than from a checkpoint).  They are: first calling \method{state.startFresh()}, then repeatedly calling \method{state.evolve()}, and when it returns something other than \variable{state.R\_NOTDONE}, finally calling \variable{state.finish(...)}, passing in what was returned.  In other words:
+This is basically a variation of the \method{main} code found in Section~\ref{jobs}.  When \method{state.run(...)} is executed, ECJ will go through the entire evolutionary run.  It turns out that \method{state.run(...)} is really just a cover for three methods (at least, if we're starting from scratch rather than from a checkpoint).  They are: first calling \method{state.startFresh()}, then repeatedly calling \method{state.evolve()}, and when it returns something other than \variable{state.R\_NOTDONE}, finally calling \variable{state.finish(...)}, passing in what was returned.  In other words:
 
 \vbox{
 \small\begin{verbatim}
@@ -3725,7 +3980,7 @@ Fitness: -1779.4391
 
 Notice that this Individual has been evaluated.  Its Fitness is valid.
 
-For more on debugging ECJ, see Section \ref{DebuggingYourParameters}.
+For more on debugging ECJ, see Section~\ref{DebuggingYourParameters}.
 
 \chapter{Basic Evolutionary Processes}
 
@@ -4236,7 +4491,7 @@ Every vector or list has a single array which holds the genes proper.  This arra
 public {\it type}[] genome;
 }
 
-... where {\it type} is the array type of the Vector (review the table above).  You are welcome to read this array as you like, and modify it if you need to (don't replace it or change its length unless you're doing a List, and even then you should use the cover functions discussed in Section \ref{list}).
+... where {\it type} is the array type of the Vector (review the table above).  You are welcome to read this array as you like, and modify it if you need to (don't replace it or change its length unless you're doing a List, and even then you should use the cover functions discussed in Section~\ref{list}).
 
 Many Vector genomes have minimum and maximum acceptable gene values.  These values may be defined for the whole genome, for certain sections of it, or on a per-gene basis.  For this reason, the easiest way to get this information is with the \method{minGene()} and \method{maxGene()} methods defined in the Vector's Species:
 
@@ -4775,7 +5030,7 @@ vector.list-xover.toss = true
 
 The standard vector mutation operator will work fine in list mode: it doesn't care what the length of the array is.
 
-ECJ at present has a single mutation operator special to lists: \class{ec.vector.breed.GeneDuplicationPipeline}.  This pipeline replicates a particular mutation operation common in Grammatical Evolution (Section \ref{ec.gp.ge}).  Specifically: we select two indices in the list at random such that they are not equal to one another.  Then we copy the region between the two indices, and concatenate it to the end of the list.  And that's it!
+ECJ at present has a single mutation operator special to lists: \class{ec.vector.breed.GeneDuplicationPipeline}.  This pipeline replicates a particular mutation operation common in Grammatical Evolution (Section~\ref{ec.gp.ge}).  Specifically: we select two indices in the list at random such that they are not equal to one another.  Then we copy the region between the two indices, and concatenate it to the end of the list.  And that's it!
 
 \paragraph{Example}
 
@@ -5277,7 +5532,7 @@ Execution doesn't have to be just in terms of calling \method{eval(...)} on chil
 
 The \method{eval(...)} method has several arguments, only two of which should be nonobvious: \class{ec.gp.ADFStack}  and \class{ec.gp.GPData}.  We will discuss ADFStack later in Section~\ref{ec.gp.ADF}.  The GPData object is a simple data object passed around amongst your GPNodes when they execute one another.  It's your opportunity to pass data from node to node. In the example above, it's how the values are passed from the children to their parents: for example, it's how the Sub node returns its value to the Sin node.  It's also possible that the parent needs to pass data to its child: and the GPData object can be used like that as well.
 
-Typically a single GPData object is created and handed to the GPNodes, and then they hand it to one another during execution, reusing it. This avoids making lots of clones of a GPData object during execution.  Your prototypical GPData instance normally managed by the GPProblem (Section \ref{GPProblem}, coming up).  We'll see how to specify it in the parameters then.
+Typically a single GPData object is created and handed to the GPNodes, and then they hand it to one another during execution, reusing it. This avoids making lots of clones of a GPData object during execution.  Your prototypical GPData instance normally managed by the GPProblem (Section~\ref{GPProblem}, coming up).  We'll see how to specify it in the parameters then.
 
 In the simplest case, your nodes don't need to pass any data to each other at all.  For example, in the Artificial Ant problem, the nodes are simply executed in a certain order and don't pass or return any data.  In this case, you can simply use GPData itself: there is no need to specify a subclass.  
 
@@ -5366,9 +5621,9 @@ public ADFStack stack;\\
 public GPData input;
 }
 
-The \class{ec.gp.ADFStack|} is the mechanism used to handle Automatically Defined Functions (or ADFs, see Section \ref{ec.gp.ADF}).  You'll usually not bother with this variable, it's handled automatically for you.
+The \class{ec.gp.ADFStack|} is the mechanism used to handle Automatically Defined Functions (or ADFs, see Section~\ref{ec.gp.ADF}).  You'll usually not bother with this variable, it's handled automatically for you.
 
-However, the second variable, \variable{input}, will be of considerable interest to you: it's the GPData object for you to pass among your GPNodes.  It's automatically loaded via this parameter, as mentioned earlier in Section \ref{ec.gp.GPData} (GPData):
+However, the second variable, \variable{input}, will be of considerable interest to you: it's the GPData object for you to pass among your GPNodes.  It's automatically loaded via this parameter, as mentioned earlier in Section~\ref{ec.gp.GPData} (GPData):
 
 \params{%
 eval.problem.data = ec.app.myapp.MyData
@@ -5559,7 +5814,7 @@ public class Sub extends GPNode {
 }
 \subsubsection{Statistics}
 
-The default statistics class for GP is SimpleStatistics.  However, the GP package has a Statistics subclass  designed for doing the same basic stuff as SimpleShortStatistics (Section \ref{ec.simple.SimpleShortStatistics}), but with some extra GP-specific tree statistics.  You can turn it on like this:
+The default statistics class for GP is SimpleStatistics.  However, the GP package has a Statistics subclass  designed for doing the same basic stuff as SimpleShortStatistics (Section~\ref{ec.simple.SimpleShortStatistics}), but with some extra GP-specific tree statistics.  You can turn it on like this:
 
 \params{%
 stat = ec.gp.koza.KozaShortStatistics
@@ -7024,7 +7279,7 @@ eval.problem.stack = ec.gp.ADFStack\\
 eval.problem.stack.context = ec.gp.ADFContext
 }
 
-... but there are advantages in using the default parameters, particularly when getting to Grammatical Evolution (Section \ref{ec.gp.ge}).
+... but there are advantages in using the default parameters, particularly when getting to Grammatical Evolution (Section~\ref{ec.gp.ge}).
 
 \paragraph{Example}
 
@@ -7184,7 +7439,7 @@ What's the point of set types, you might ask.  Why not just atomic types?  Set t
 
 What this typing facility {\it cannot} do is dynamically change types as necessary.  For example, you cannot say that a GPNode like \variable{(+ ... ...)} returns a double if either of its children is of type double, but if both of its children are of type integer, then it returns an integer.
 
-You are also restricted to a finite number of types.  For example, consider a GPNode called \variable{(matrix-multiply ... ...)} which takes two children which return matrices.  You cannot say that if the left child is an \(M x N\) matrix, and your right child is an \(N x P\) matrix, that the return type will be an \(M x P\) matrix.  This is partly because you can't define dynamic typing, but it's also because \(M\), \(N\), and \(P\) can be any of an infinite number of numbers, resulting in an infinite number of types: that would be hard on your fingers.  There exist polymorphic typing systems for genetic programming but they're fairly bleeding-edge.  If you need things like this, I suggest instead to look at Grammatical Evolution (Section \ref{ec.gp.ge}).
+You are also restricted to a finite number of types.  For example, consider a GPNode called \variable{(matrix-multiply ... ...)} which takes two children which return matrices.  You cannot say that if the left child is an \(M x N\) matrix, and your right child is an \(N x P\) matrix, that the return type will be an \(M x P\) matrix.  This is partly because you can't define dynamic typing, but it's also because \(M\), \(N\), and \(P\) can be any of an infinite number of numbers, resulting in an infinite number of types: that would be hard on your fingers.  There exist polymorphic typing systems for genetic programming but they're fairly bleeding-edge.  If you need things like this, I suggest instead to look at Grammatical Evolution (Section~\ref{ec.gp.ge}).
 
 \paragraph{Example}
 
@@ -7261,7 +7516,7 @@ public class MyData extends GPData
 \end{verbatim}
 }
 
-We could modify this to include a boolean data type as well, but we'll just use the \variable{val} variable to store both boolean and real-valued data.  Before you go about that, re-read Section \ref{ec.gp.GPData} (on GPData) and its discussion about \method{clone()} and \method{copyTo(...)}.  
+We could modify this to include a boolean data type as well, but we'll just use the \variable{val} variable to store both boolean and real-valued data.  Before you go about that, re-read Section~\ref{ec.gp.GPData} (on GPData) and its discussion about \method{clone()} and \method{copyTo(...)}.  
 
 Now let's define our three new GPNodes.  First our If-statement:
 
@@ -7529,7 +7784,7 @@ stat.child.0.kill-proportion = 0.2
 Grammatical Evolution (GE) \cite{grammaticalevolution}  is an approach to building genetic programming trees using a grammar interpreted by a list representation.  The trees are then evaluated and tested.  In ECJ the procedure for evaluating Individuals in GE works roughly like this.
 
 \begin{itemize}
-\item The representation is an arbitrarily long list of bytes (See Section \ref{list}), implemented as a special subclass of ByteVectorIndividual called \class{ec.gp.ge.GEIndividual}.\footnote{A consequence of subclassing ByteVectorIndividual is that a given grammatical rule can have no more than 256 different clauses (choice points).}
+\item The representation is an arbitrarily long list of bytes (See Section~\ref{list}), implemented as a special subclass of ByteVectorIndividual called \class{ec.gp.ge.GEIndividual}.\footnote{A consequence of subclassing ByteVectorIndividual is that a given grammatical rule can have no more than 256 different clauses (choice points).}
 \item The Fitness is typically a KozaFitness.
 \item The GEIndividual's species is a \class{ec.gp.ge.GESpecies}.
 \item The GESpecies holds a {\bf grammar}, loaded from a file and produced via an \class{ec.gp.ge.GrammarParser}, which we will interpret according to the bytes in the Individual.
@@ -7615,7 +7870,7 @@ This says that \lisp{\(<\)foo\(>\)} can expand to either the GPNode \variable{bl
 <okay> ::= <foo> | (yuck)
 \end{verbatim}}
 
-The {\bf head of the first rule in the file} is the entry point of the grammar and represents the root node of the GPTree.  In all of our examples we have called it \lisp{\(<\)start\(>\)}, but it doesn't have to be that.  For example, here is a complete grammar for a very simple tree which produces the same kinds of GPIndividuals as described in the example in Section \ref{definingtherepresentation}:
+The {\bf head of the first rule in the file} is the entry point of the grammar and represents the root node of the GPTree.  In all of our examples we have called it \lisp{\(<\)start\(>\)}, but it doesn't have to be that.  For example, here is a complete grammar for a very simple tree which produces the same kinds of GPIndividuals as described in the example in Section~\ref{definingtherepresentation}:
 
 \vbox{\small\begin{verbatim}
 <start> ::= <op>
@@ -7625,7 +7880,7 @@ The {\bf head of the first rule in the file} is the entry point of the grammar a
 
 \subsubsection{Strong Typing}
 
-At this point we don't see a lot of power.  But Grammatical Evolution can define all sorts of typing requirements by specifying which symbols appear where in rules.  For example, we could extend this grammar to handle the Strongly-Typed Genetic Programming example shown in Section \ref{stronglytyped}:
+At this point we don't see a lot of power.  But Grammatical Evolution can define all sorts of typing requirements by specifying which symbols appear where in rules.  For example, we could extend this grammar to handle the Strongly-Typed Genetic Programming example shown in Section~\ref{stronglytyped}:
 
 \vbox{\small\begin{verbatim}
 <start> ::= <op>
@@ -7681,7 +7936,7 @@ Computes and returns the number of bytes that would be consumed to produce a GPI
 
 \paragraph{Handling ADFs and Multiple Trees}  Recall that the GESpecies maintains a separate grammar for each tree in the GPIndividual (and thus for each separate ADF).  However there's only a single byte array in the GEIndividual.  This is handled straightforwardly the array is used to build the first tree; then the unused remainder of the array is used to build the second tree; and so on.  If not all trees were able to be built, evaluation of the GPIndividual is bypassed and the fitness is set to the (\variable{Float.MAX\_VALUE}).
 
-\paragraph{Grammatical Evolution Does Not Support GroupedProblemForm}  GroupedProblemForm (Section \ref{ec.coevolve.GroupedProblemForm}) evaluates several Individuals together.  What if at least one of them is a GEIndividual, and the GEIndividual cannot generate a valid GPIndividual?  This creates a number of hassles.  For example, if we're doing cooperative coevolution, and one Individual can't be generated, what's the fitness of the group?  Is it fair to penalize the group thusly?  Likewise if we're doing competitive coevolution, and one of the competitors can't be generated, what's the resulting fitness of the other?  For this reason, at present Grammatical Evolution does not support GroupedProblemForm.
+\paragraph{Grammatical Evolution Does Not Support GroupedProblemForm}  GroupedProblemForm (Section~\ref{ec.coevolve.GroupedProblemForm}) evaluates several Individuals together.  What if at least one of them is a GEIndividual, and the GEIndividual cannot generate a valid GPIndividual?  This creates a number of hassles.  For example, if we're doing cooperative coevolution, and one Individual can't be generated, what's the fitness of the group?  Is it fair to penalize the group thusly?  Likewise if we're doing competitive coevolution, and one of the competitors can't be generated, what's the resulting fitness of the other?  For this reason, at present Grammatical Evolution does not support GroupedProblemForm.
 
 \subsection{Printing}
 
@@ -7797,7 +8052,7 @@ This is enough to convince the GP system to go along with our bizarre plans.
 
 \subsection{A Complete Example}
 
-We will continue the example given in Section \ref{stronglytyped}.  We don't include the parameters and Java files specified so far in that example, but you'll of course need them.
+We will continue the example given in Section~\ref{stronglytyped}.  We don't include the parameters and Java files specified so far in that example, but you'll of course need them.
 
 That example showed how to do a strongly-typed Individual with various functions, plus an ADF and an ERC.  The ADF points to a tree that contains the same basic functions, plus another ERC and two ADFArguments.  Keep in mind that strong typing just gets in our way, but in this example, it's fairly harmless.  We use all the existing parameters, but change a few.  First, let's do the most of the ones we've discussed so far:
 
@@ -8229,7 +8484,7 @@ Basic Initialization works as follows:
 
 \item The RuleIndividual's \method{reset(...)} by default just calls \method{reset(...)} on each of the RuleSets.
 
-\item A RuleSet's \method{reset(...)} method calls \method{numRulesForReset(...)} on the RuleSetConstraints to pick a random number of rules to generate (see Section \ref{ec.rule.RuleSetConstraints}).  It then produces an array of that size and fills it with rules cloned from the RuleSetConstraint's prototypical Rule.  Then it calls \method{reset(...)} on each of the Rules.
+\item A RuleSet's \method{reset(...)} method calls \method{numRulesForReset(...)} on the RuleSetConstraints to pick a random number of rules to generate (see Section~\ref{ec.rule.RuleSetConstraints}).  It then produces an array of that size and fills it with rules cloned from the RuleSetConstraint's prototypical Rule.  Then it calls \method{reset(...)} on each of the Rules.
 
 \item You are responsible for implementing a Rule's \method{reset(...)} method.
 \end{enumerate}
@@ -8265,7 +8520,7 @@ As in the case in the \package{ec.vector} package, the \class{ec.rule.breed.Rule
 
 \end{enumerate}
 
-The three probabilities (\variable{p\_del}, \variable{p\_add}, and \variable{p\_randorder}), and the minimum and maximum rule sizes, are discussed in Section \ref{ec.rule.RuleSet}, and are determined by RuleSetConstraints parameters, also discussed in that Section.
+The three probabilities (\variable{p\_del}, \variable{p\_add}, and \variable{p\_randorder}), and the minimum and maximum rule sizes, are discussed in Section~\ref{ec.rule.RuleSet}, and are determined by RuleSetConstraints parameters, also discussed in that Section.
 
 \item A Rule's \method{mutate(...)} method by default simply calls \method{reset(...)}, which is probably not what you want.  You'll probably want a much more subtle mutation if any, and so will need to override this method.
 
@@ -8315,7 +8570,7 @@ Unlike RuleMutationPipeline, the \class{ec.rule.breed.RuleCrossoverPipeline} per
 
 \item Each RuleSet \(A\) and \(B\) is split into two pieces, \(A_1\) and \(A_2\) (and \(B_1\) and \(B_2\)) by calling \method{splitIntoTwo(...)}
 \item A new RuleSet \(A'\) is formed from the union of \(A_1\) and \(B_1\), and likewise, a new RuleSet \(B'\) is formed from the union of \(A_2\) and \(B_2\).
-\item If \(A'\) and \(B'\) do not minimum and maximum size constraints (see Section \ref{ec.rule.RuleSetConstraints}), go to (a) and try again.
+\item If \(A'\) and \(B'\) do not minimum and maximum size constraints (see Section~\ref{ec.rule.RuleSetConstraints}), go to (a) and try again.
 \item Else \(A'\) and \(B'\) replace \(A\) and \(B\) respectively in each RuleIndivdiual.
 
 \end{enumerate}
@@ -8365,7 +8620,7 @@ rule.xover.toss = true
 ECJ has various built-in methods for parallelism, and they can be used in combination with one another:
 
 \begin{itemize}
-\item Multiple breeding and evaluation {\bf threads}, already discussed in Section \ref{threads}.
+\item Multiple breeding and evaluation {\bf threads}, already discussed in Section~\ref{threads}.
 \item {\bf Distributed evaluation}: sending chunks of Individuals to remote computers to be evaluated.   This is typically done in a generational fashion, but a variation of this is {\bf asynchronous evolution}, in which Individuals are sent to multiple remote computers in a steady-state fashion.  Additionally, remote computers can (given time) engage in a little evolutionary optimization of their own on the chunks they've received before sending them back.  This is known as {\bf opportunistic evolution}.\footnote{ECJ's built-in distributed evaluation is meant for clusters.  However, Parabon Inc. has developed a grid-computing version, called Origin, which runs on hundreds of thousands or even millions of machines.  See the ECJ main website for more information.}
 \item {\bf Island models}: multiple parallel evolutionary processes occasionally send fit individuals to one another.\footnote{ECJ's built-in island models are meant for clusters.  However, a version of ECJ was ported to run on top of the DR-EA-M system, a peer-to-peer evolutionary computation network facility developed from a grant in Europe. See the ECJ main website for more information.}
 \end{itemize} 
@@ -8477,7 +8732,7 @@ Slaves can be multithreaded: they can process multiple individuals in parallel i
 evalthreads = 4
 }
 
-This will create four threads on the Slave process to evaluate Individuals.  Note that it makes no sense for this parameter to exceed the Master's \parameter{eval.masterproblem.job-size} parameter.  Also, if you exceed the actual number of CPUs or cores allocated to your Slave process, it doesn't make much sense either.  Last, Slaves are {\it not} multithreaded when evaluating Individuals with GroupedProblemForm (such as coevolved evaluation, see Section \ref{ec.coevolve.GroupedProblemForm}).
+This will create four threads on the Slave process to evaluate Individuals.  Note that it makes no sense for this parameter to exceed the Master's \parameter{eval.masterproblem.job-size} parameter.  Also, if you exceed the actual number of CPUs or cores allocated to your Slave process, it doesn't make much sense either.  Last, Slaves are {\it not} multithreaded when evaluating Individuals with GroupedProblemForm (such as coevolved evaluation, see Section~\ref{ec.coevolve.GroupedProblemForm}).
 
 
 \subsection{Opportunistic Evolution}
@@ -8511,7 +8766,7 @@ eval.return-inds = true
 
 The procedure for evolution is entirely specified by the Slave's parameters just as if it were specified in a regular ECJ process, including breeding and evaluation threads, etc.  There's absolutely no reason the Slave can't have its own evolutionary algorithm that's {\it different} from the Master's evolutionary algorithm\,---\,just specify it differently in the Slave's parameters.  The only thing that'd be required is that the Slave and the Master have exactly the same kinds of Individuals, Fitnesses, and Species in their Subpopulations.
 
-Note that Opportunistic Evolution won't work with coevolution or other procedures which require GroupedProblemForm (Section \ref{ec.coevolve.GroupedProblemForm}).  Additionally, although Steady-State Evolution (via Asynchronous Evolution, see Section \ref{asynchronous}) can work with Opportunistic Evolution in {\it theory}, it'd be quite odd to do so.
+Note that Opportunistic Evolution won't work with coevolution or other procedures which require GroupedProblemForm (Section~\ref{ec.coevolve.GroupedProblemForm}).  Additionally, although Steady-State Evolution (via Asynchronous Evolution, see Section~\ref{asynchronous}) can work with Opportunistic Evolution in {\it theory}, it'd be quite odd to do so.
 
 \begin{figure}[f]
 \begin{center}
@@ -8527,13 +8782,13 @@ Note that Opportunistic Evolution won't work with coevolution or other procedure
 
 ECJ's distributed evaluation procedure works intuitively with generational methods (such as \class{ec.simple.SimpleEvolutionState} but it also works nicely with Steady-State evolution (\class{ec.simple.SteadyStateEvolutionState}).  This procedure is called {\bf asynchronous evolution}.  See \cite{opportunistic} for more information.
 
-The procedure is similar to Steady State Evolution, as discussed in Section \ref{ec.steadystate}.  The Population starts initially empty.  Then the algorithm starts creating randomly-generated Individuals and shipping them off to remote Slaves to be evaluated.  If a Slave is available, the algorithm will generate an Individual for it to work on.  When a Slave has finished evaluating an Individual and has returned it (or its Fitness), the Individual is then placed into the Population.
+The procedure is similar to Steady State Evolution, as discussed in Section~\ref{ec.steadystate}.  The Population starts initially empty.  Then the algorithm starts creating randomly-generated Individuals and shipping them off to remote Slaves to be evaluated.  If a Slave is available, the algorithm will generate an Individual for it to work on.  When a Slave has finished evaluating an Individual and has returned it (or its Fitness), the Individual is then placed into the Population.
 
 At some point the Population will fill up.  At this point the algorithm shifts to ``steady state'' mode.  When a Slave returns an Individual, and there's no space in the Population, the algorithm makes room by marking an existing Individual for death and replacing it with the newcomer, just like it's done in Steady State Evolution.  And when a Slave becomes available, an Individual will no longer be created at random to give to it: rather, the Individual will be bred from the existing Population.
 
 This procedure requires some careful consideration.  First, note that at the point that the algorithm shifts to ``steady state'' mode, there are probably a large number of Individuals being evaluated on Slaves which were not bred from the Population but were created at random.  Until those Individuals have made their way into the Population, we won't be in a true ``steady state''.
 
-Second, Steady-State Evolution assumes the production of one Individual at a time: but distributed evaluation allows more than one individual per Job.  This is reconciled as follows.  when Steady-State Evolution starts up, it calls \method{prepareToEvaluate(...)} on the Problem (the MasterProblem) once.  Thereafter whenever an individual is sent to the Problem to be evaluated, it calls \method{evaluate(...)}.  Recall from Section \ref{ec.Problem} that this process does not require the Problem to immediately assign Fitness\,---\,it can bulk up Individuals for evaluation and is only required to provide a Fitness on or prior to a call to \method{finishEvaluating(...)}.  However, Steady-State Evolution {\it never calls \method{finishEvaluating(...)}}.   As a result, the distributed evaluator is free to assess Individuals in any order and any way it likes, and to take as long as it likes to assign them a Fitness.  The distributed evaluator will wait for up to \parameter{job-size} worth of calls to \method{evaluate(...)}, then pack those Individuals together in one Job and ship them out to a remote Slave for evaluation.  In ``steady-state'' mode, when the Individuals come back, they are placed in the Population, killing and replacing other individuals already there.  Depending on the selection process for marking Individuals for death, it's entirely possible that an Individual newly placed into the Population may be immediately marked for death and replaced with another Individual from the same Job!  You can get around this by setting the \parameter{job-size} and \parameter{max-jobs-per-slave} to as low as 1:
+Second, Steady-State Evolution assumes the production of one Individual at a time: but distributed evaluation allows more than one individual per Job.  This is reconciled as follows.  when Steady-State Evolution starts up, it calls \method{prepareToEvaluate(...)} on the Problem (the MasterProblem) once.  Thereafter whenever an individual is sent to the Problem to be evaluated, it calls \method{evaluate(...)}.  Recall from Section~\ref{ec.Problem} that this process does not require the Problem to immediately assign Fitness\,---\,it can bulk up Individuals for evaluation and is only required to provide a Fitness on or prior to a call to \method{finishEvaluating(...)}.  However, Steady-State Evolution {\it never calls \method{finishEvaluating(...)}}.   As a result, the distributed evaluator is free to assess Individuals in any order and any way it likes, and to take as long as it likes to assign them a Fitness.  The distributed evaluator will wait for up to \parameter{job-size} worth of calls to \method{evaluate(...)}, then pack those Individuals together in one Job and ship them out to a remote Slave for evaluation.  In ``steady-state'' mode, when the Individuals come back, they are placed in the Population, killing and replacing other individuals already there.  Depending on the selection process for marking Individuals for death, it's entirely possible that an Individual newly placed into the Population may be immediately marked for death and replaced with another Individual from the same Job!  You can get around this by setting the \parameter{job-size} and \parameter{max-jobs-per-slave} to as low as 1:
 
 \java{%
 eval.masterproblem.job-size = 1\\
@@ -8583,7 +8838,7 @@ MasterProblem also has special methods used only by Steady-State Evolution (and 
 	}
 \end{methods}
 
-MasterProblem also implements all the methods defined in SimpleProblemForm and GroupedProblemForm (Section \ref{ec.coevolve.GroupedProblemForm}), in addition to the following two methods normally implemented by Evaluator (and which are called on the MasterProblem from the Evaluator's methods of the same names):
+MasterProblem also implements all the methods defined in SimpleProblemForm and GroupedProblemForm (Section~\ref{ec.coevolve.GroupedProblemForm}), in addition to the following two methods normally implemented by Evaluator (and which are called on the MasterProblem from the Evaluator's methods of the same names):
 
 \begin{methods}{ec.eval.MasterProblem}
 \mthd{public void prepareToEvaluate(EvolutionState {\it state}, int {\it threadnum})}
@@ -8752,7 +9007,7 @@ Next we need to state how many islands are in the island model graph:
 exch.num-islands = 3
 }
 
-As discussed in Section \ref{islands}, each island has a unique name (id).  Here you will state which island in your graph has which id:
+As discussed in Section~\ref{islands}, each island has a unique name (id).  Here you will state which island in your graph has which id:
 
 \params{%
 exch.island.0.id = StatenIsland\\
@@ -8937,11 +9192,11 @@ exch.chatty = false;
 }
 
 
-\paragraph{Reminder} It's laborious to write a zillion parameters if you have large numbers of subpopulations in your internal island model experiments.  You can greatly simplify this process using the \parameter{pop.default-subpop} parameter (see Section \ref{default-subpop}).
+\paragraph{Reminder} It's laborious to write a zillion parameters if you have large numbers of subpopulations in your internal island model experiments.  You can greatly simplify this process using the \parameter{pop.default-subpop} parameter (see Section~\ref{default-subpop}).
 
 
 \subsection{The Exchanger}
-In Section \ref{ec.Exchanger} we talked about various basic Exchanger methods.  But three were not discussed, mostly because they're only used for Island Models (not even Internal Island Models).  They are:
+In Section~\ref{ec.Exchanger} we talked about various basic Exchanger methods.  But three were not discussed, mostly because they're only used for Island Models (not even Internal Island Models).  They are:
 
 \java{%
     public void initializeContacts(EvolutionState state);\\
@@ -8949,7 +9204,7 @@ In Section \ref{ec.Exchanger} we talked about various basic Exchanger methods.  
     public void closeContacts(EvolutionState state, int result);
 }
 
-If these look similar to the methods in Section \ref{ec.eval.MasterProblem}, it's with good reason.  Their function is to set up networking connections, re-establish networking connections after restarting from a checkpoint, and shut down networking connections in a clean way.  IslandExchange implements them but not InterPopulationExchange.
+If these look similar to the methods in Section~\ref{ec.eval.MasterProblem}, it's with good reason.  Their function is to set up networking connections, re-establish networking connections after restarting from a checkpoint, and shut down networking connections in a clean way.  IslandExchange implements them but not InterPopulationExchange.
 
 
 
@@ -8983,9 +9238,9 @@ public ArrayList trials = null;\\
 public Individual[] context = null;
 }
 
-The first variable (\variable{trials}) is available for you to maintain the results of each trial performed.  Later on you will be asked to compute the final fitness of an individual, and at this point you can use this variable to do the final calculation.  The variable is initially \variable{null}, and after fitness is assessed it will be reset to \variable{null} again.  You are free to use this variable as you like (or ignore it entirely),  Most commonly you'd store each trial in the \variable{trials} variable as a \class{java.lang.Double}, with higher values being considered better.  You're free to do something else, but if you do, be sure to read Section \ref{performingdistributedevaluationwithcoevolution} first.  {\bf Even if your trials are not \class{java.lang.Double}, they must be immutable: their internals cannot be modified, so they can be pointer-copied and not just cloned.}
+The first variable (\variable{trials}) is available for you to maintain the results of each trial performed.  Later on you will be asked to compute the final fitness of an individual, and at this point you can use this variable to do the final calculation.  The variable is initially \variable{null}, and after fitness is assessed it will be reset to \variable{null} again.  You are free to use this variable as you like (or ignore it entirely),  Most commonly you'd store each trial in the \variable{trials} variable as a \class{java.lang.Double}, with higher values being considered better.  You're free to do something else, but if you do, be sure to read Section~\ref{performingdistributedevaluationwithcoevolution} first.  {\bf Even if your trials are not \class{java.lang.Double}, they must be immutable: their internals cannot be modified, so they can be pointer-copied and not just cloned.}
 
-The second variable (\variable{context}) is available for you to maintain the context of the best trial discovered for the Individual.  It's typically only useful when you're doing Cooperative Coevolution, where it's important to retain not only the performance of the Individual (his Fitness), but which collaborating Individuals made it possible for him to achieve that Fitness.  Again, this is an optional variable though often useful.  If  \variable{context} is used, it's assumed that the slots of \variable{context} hold each collaborator, except for the Individual himself, whose slot is set to null.  Section \ref{maintainingcontext} discusses the issue of context in more detail.
+The second variable (\variable{context}) is available for you to maintain the context of the best trial discovered for the Individual.  It's typically only useful when you're doing Cooperative Coevolution, where it's important to retain not only the performance of the Individual (his Fitness), but which collaborating Individuals made it possible for him to achieve that Fitness.  Again, this is an optional variable though often useful.  If  \variable{context} is used, it's assumed that the slots of \variable{context} hold each collaborator, except for the Individual himself, whose slot is set to null.  Section~\ref{maintainingcontext} discusses the issue of context in more detail.
 
 \subsection{Grouped Problems}
 \label{ec.coevolve.GroupedProblemForm}
@@ -8998,7 +9253,7 @@ Since Coevolution involves evaluating multiple Individuals at once, it will requ
 \item The final Fitnesses of the Individuals are set based on the performance scores over all the trials.
 \end{enumerate}
 
-It's up to you to store the trial results and eventually form them into final Fitness values, as discussed later.  It's also up to you to maintain the best context if you find this useful, as discussed later as well (in Section \ref{maintainingcontext}).  GroupedProblemForm will help you by defining three methods to do these various portions of the evaluation process.  You'll need to implement all three methods:
+It's up to you to store the trial results and eventually form them into final Fitness values, as discussed later.  It's also up to you to maintain the best context if you find this useful, as discussed later as well (in Section~\ref{maintainingcontext}).  GroupedProblemForm will help you by defining three methods to do these various portions of the evaluation process.  You'll need to implement all three methods:
 
 \begin{methods}{ec.coevolve.GroupedProblemForm}
 \mthd{public abstract void preprocessPopulation(EvolutionState {\it state}, int {\it thread}, boolean[] {\it prepareForAssessment,}} \hsp{\fill}{\sf boolean {\it countVictoriesOnly})}\\
@@ -9009,7 +9264,7 @@ Called prior evaluation of a Population, mostly to clear the trials of Individua
 \hsp{\fill}{\sf int[] {\it subpops}, int {\it thread})}\\
 Evaluates the {\it individuals} in a single trial, setting their performance scores for that trial.  Each individual will be from a certain subpopulation, specified in {\it subpops}. In some versions of coevolution, only certain individuals are supposed to have their performance scores updated (the others are acting as foils).  In this case, the relevant individuals will be indicated in the {\it updateFitness} array.  Typically you'll update fitness by adding trial results to the trials ArrayList.  For any individual for whom you're updating trials, also set the Fitness value to reflect that one trial: this allows Single Elimination Tournament to compare Individuals based on this notional Fitness value.  In doing so, do {\it not} set the evaluated flag for Individuals.
 
-If you're doing cooperative coevolution, in this method you'll also probably want to maintain the context of the trial (the collaborating Individuals) if it's produced the best results so far.  More on that in Section \ref{maintainingcontext}.
+If you're doing cooperative coevolution, in this method you'll also probably want to maintain the context of the trial (the collaborating Individuals) if it's produced the best results so far.  More on that in Section~\ref{maintainingcontext}.
 \mthd{public abstract void postprocessPopulation(EvolutionState {\it state}, int {\it thread}, boolean[] {\it assessFitness,}}
 \hsp{\fill}{\sf boolean {\it countVictoriesOnly})}\\
 Called after evaluation of a Population to form final Fitness scores for the individuals based on the various performance scores they accumulated during trials; and then to set their evaluated flags to {\it true}.  Only assess the Fitness and set the evaluated flags for Individuals in Subpopulations for which {\it assessFitness} is true. Note that although this method is not static, you should not assume that this method will be called on the same Problem as was used earlier for \method{evaluate(...)}.  You'll probably want to set the trials variable to null to let it garbage collect.
@@ -9027,9 +9282,9 @@ If you're doing cooperative coevolution, determine if the new trial is superior 
 \item In \method{postprocessPopulation(...)}, set the Fitness to the final result.  For example, you might set it to the average or the maximum of the various trials.  Finally, set the Fitness's \variable{trials} to null to let it GC.
 \end{enumerate}
 
-Notice that unlike in SimpleProblemForm (Section \ref{ec.Problem}) there's no \method{describe(...)} method.  This is because to describe an Individual, you'd need to do so in the context of other Individuals.  So we left it out.
+Notice that unlike in SimpleProblemForm (Section~\ref{ec.Problem}) there's no \method{describe(...)} method.  This is because to describe an Individual, you'd need to do so in the context of other Individuals.  So we left it out.
 
-\paragraph{Example} Assume we've replaced the Fitness with our MyCoevolutionaryFitness class.  Let's create a Problem similar to the example in Section \ref{ec.simple}.  In our Problem we take two Individuals, and the trial performance of an Individual is his vector values' product minus that of his opponent.  Obviously this is a stupid example since Individuals are in a total ordering Fitness-wise: so it hardly illustrates the issues in Coevolution.  But it'll suffice for the demonstration here.  What we'll do is set an Individual's fitness to his average score over the trials performed.
+\paragraph{Example} Assume we've replaced the Fitness with our MyCoevolutionaryFitness class.  Let's create a Problem similar to the example in Section~\ref{ec.simple}.  In our Problem we take two Individuals, and the trial performance of an Individual is his vector values' product minus that of his opponent.  Obviously this is a stupid example since Individuals are in a total ordering Fitness-wise: so it hardly illustrates the issues in Coevolution.  But it'll suffice for the demonstration here.  What we'll do is set an Individual's fitness to his average score over the trials performed.
 
 {
 \small\begin{verbatim}
@@ -9114,7 +9369,7 @@ Generally the \variable{trials} variable should never need to be cloned\,---\,it
 
 In One-Population Competitive Coevolution, the whole population (or in ECJ parlance, a whole {\it Subpopulation}) competes in various games.  The outcomes of those games determines the fitness of Individuals in the Subpopulation.  Thus the Fitness of an Individual depends on which other Individuals it plays against.
 
-ECJ does One-Population Competitive Coevolution with a special Evaluator called \class{ec.coevolve.CompetitiveEvaluator}, meant to be used in generational evolutionary methods.  Building on the genetic algorithm example in Section \ref{ec.simple}, we'll replace the Evaluator:
+ECJ does One-Population Competitive Coevolution with a special Evaluator called \class{ec.coevolve.CompetitiveEvaluator}, meant to be used in generational evolutionary methods.  Building on the genetic algorithm example in Section~\ref{ec.simple}, we'll replace the Evaluator:
 
 \params{%
 eval = ec.coevolve.CompetitiveEvaluator
@@ -9193,7 +9448,7 @@ When \class{ec.coevolve.MultiPopCoevolutionaryEvaluator} tests Individuals toget
 eval.num-current = 4
 }
 
-Since Individuals do not yet have their Fitnesses set, the selection procedure should be one which does not consider Fitness.\footnote{What's the point then?  Why bother with a SelectionMethod at all?  Why not just pick Individuals at Random?  The answer is simple: the \package{ec.spatial} package (Section \ref{ec.spatial}) has a variation of Multi-Population Coevolution which uses its special version of TournamentSelection.}  You need to specify the selection procedure for each subpopulation.  For example, if we had two Subpopulations, we could say:  
+Since Individuals do not yet have their Fitnesses set, the selection procedure should be one which does not consider Fitness.\footnote{What's the point then?  Why bother with a SelectionMethod at all?  Why not just pick Individuals at Random?  The answer is simple: the \package{ec.spatial} package (Section~\ref{ec.spatial}) has a variation of Multi-Population Coevolution which uses its special version of TournamentSelection.}  You need to specify the selection procedure for each subpopulation.  For example, if we had two Subpopulations, we could say:  
 
 \params{%
 eval.subpop.0.select-current = ec.select.RandomSelection\\
@@ -9240,7 +9495,7 @@ eval.num-shuffled = 4
 \end{itemize}
 
 
-For competitive coevolution, you can use the same example as in Section \ref{ec.coevolve.GroupedProblemForm} (GroupedProblemForm).  For Cooperative Coevolution it's typical to base Fitness instead on the {\it maximum} of tests with \(N\) other collaborators.  For example, let's revise the \method{postprocessPopulation(...)} method to assess trial performance as the sum of all the products of the genomes in the various Individuals: 
+For competitive coevolution, you can use the same example as in Section~\ref{ec.coevolve.GroupedProblemForm} (GroupedProblemForm).  For Cooperative Coevolution it's typical to base Fitness instead on the {\it maximum} of tests with \(N\) other collaborators.  For example, let's revise the \method{postprocessPopulation(...)} method to assess trial performance as the sum of all the products of the genomes in the various Individuals: 
 
 
 {
@@ -9268,7 +9523,7 @@ For competitive coevolution, you can use the same example as in Section \ref{ec.
 
 \class{ec.coevolve.MultiPopCoevolutionaryEvaluator}  is not at present multithreaded.  It does not respond to the \parameter{evalthreads} parameter.
 
-\paragraph{Reminder} It's laborious to write a zillion parameters if you have large numbers of subpopulations in your coevolution experiments.  You can greatly simplify this process using the \parameter{pop.default-subpop} parameter (see Section \ref{default-subpop}).
+\paragraph{Reminder} It's laborious to write a zillion parameters if you have large numbers of subpopulations in your coevolution experiments.  You can greatly simplify this process using the \parameter{pop.default-subpop} parameter (see Section~\ref{default-subpop}).
 
 \subsubsection{Parallel and Sequential Coevolution}
 \label{parallelandsequentialcoevolution}
@@ -9360,7 +9615,7 @@ In this situation, you probably want to simply avoid setting context: it's just 
 \subsection{Performing Distributed Evaluation with Coevolution}
 \label{performingdistributedevaluationwithcoevolution}
 
-Coevolution introduces its own wrinkle to Distributed Evaluation, because it has multiple trials, and each of those trials is a separate job potentially processed on a separate machine.  We need a way to merge all those trials together to compute the final fitness.   Furthermore we may need a way to determine which context (see Section \ref{maintainingcontext}) among those merged trials should be retained.  If your trial results are \class{java.lang.Double}, with higher values considered better, you probably don't need to do anything.  Otherwise you'll need to make a tweak.  Here's some details on how the mechanism works.
+Coevolution introduces its own wrinkle to Distributed Evaluation, because it has multiple trials, and each of those trials is a separate job potentially processed on a separate machine.  We need a way to merge all those trials together to compute the final fitness.   Furthermore we may need a way to determine which context (see Section~\ref{maintainingcontext}) among those merged trials should be retained.  If your trial results are \class{java.lang.Double}, with higher values considered better, you probably don't need to do anything.  Otherwise you'll need to make a tweak.  Here's some details on how the mechanism works.
 
 When ECJ sends off a group of Individuals to a remote site to be evaluated using a \class{ec.coevolve.GroupedProblemForm}, the first thing it does (in \class{ec.eval.Job}) is make clones of them, then strip the clones of both trials and context.  When the Individuals come back, they need to have their trials and context reintegrated with the original Individuals.  This is done by calling the \method{merge(...)} method on the Individuals.
 
@@ -9401,7 +9656,7 @@ Return the index for the current targert Individual in the Space. (Each thread c
 Return the index of a neighbor in the embedded space, chosen at random, and who is no more than {\it distance} away from the current target individual.
 \end{methods}
 
-This seems convoluted.  Why store indices?  Why you might ask, can't we just pass in the index into the \method{getIndexRandomNeighbor} method?  The answer is: because at the time this method is called (usually during a TournamentSelection method call), the index isn't available.  Another option would be to store the index not in the Space but in a Breeder,\footnote{This is what's done in MuCommaLambdaBreeder (Section \ref{ec.es}) to enable the magic of ESSelection always picking a certain individual.} but it turns out that Spaces can be used not only for breeding but also for Evaluation.  So we're storing the indices in the only logical location left: the Space itself.
+This seems convoluted.  Why store indices?  Why you might ask, can't we just pass in the index into the \method{getIndexRandomNeighbor} method?  The answer is: because at the time this method is called (usually during a TournamentSelection method call), the index isn't available.  Another option would be to store the index not in the Space but in a Breeder,\footnote{This is what's done in MuCommaLambdaBreeder (Section~\ref{ec.es}) to enable the magic of ESSelection always picking a certain individual.} but it turns out that Spaces can be used not only for breeding but also for Evaluation.  So we're storing the indices in the only logical location left: the Space itself.
 
 \subsection{Implementing a Space}
 
@@ -9505,13 +9760,13 @@ SpatialBreeder is very simple: there are no parameters to set up at all.
 
 \subsection{Coevolutionary Spatial Evaluation}
 
-The spatial package also enables one of many\footnote{The other obvious approach would be a variant of \class{ec.coevolve.CompetitiveEvaluator} where competitors to test Individuals in a population are selected based on nearness to the Individual.  Perhaps we might put this together one day.}  possible approaches to doing coevolution in a spatially embedded Subpopulation.  Recall from Section \ref{ec.coevolve.MultiPopCoevolutionaryEvaluator} that the \class{ec.coevolve.MultiPopCoevolutionEvaluator} class performs multi-population coevolution: each Individual is tested \(N\) times, each time by grouping it with one Individual from each of the other Subpopulations.  These other Individuals are called {\bf collaborators}.  The\class{ec.spatial.SpatialMultiPopCoevolutionaryEvaluator} extends this by allowing you to pick those collaborators in a spatial manner: their locations in their respective Subpopulations are near to the position of the target Individual in his Subpopulation:
+The spatial package also enables one of many\footnote{The other obvious approach would be a variant of \class{ec.coevolve.CompetitiveEvaluator} where competitors to test Individuals in a population are selected based on nearness to the Individual.  Perhaps we might put this together one day.}  possible approaches to doing coevolution in a spatially embedded Subpopulation.  Recall from Section~\ref{ec.coevolve.MultiPopCoevolutionaryEvaluator} that the \class{ec.coevolve.MultiPopCoevolutionEvaluator} class performs multi-population coevolution: each Individual is tested \(N\) times, each time by grouping it with one Individual from each of the other Subpopulations.  These other Individuals are called {\bf collaborators}.  The\class{ec.spatial.SpatialMultiPopCoevolutionaryEvaluator} extends this by allowing you to pick those collaborators in a spatial manner: their locations in their respective Subpopulations are near to the position of the target Individual in his Subpopulation:
 
 \params{%
 eval = ec.spatial.SpatialMultiPopCoevolutionaryEvaluator
 }
 
-The way this is done is by using the SpatialTournamentSelection class to pick collaborators, based on the target Individual's index.  Two kinds of collaborators can be picked with a Selection Method in MultiPopCoevolutionEvaluator: members of the current Population, and members of the previous generation's Population.  You need to be careful with the first situation, since the members don't have their Fitnesses set, and so you can't use a Selection Method which is based on Fitness.  In the examples in Section \ref{ec.coevolve.MultiPopCoevolutionaryEvaluator}, we used RandomSelection.  But for spatial coevolution, we can do a ``random'' selection which simply picks a collaborator based on the neighborhood from the target Individual.  We do this by setting the \parameter{size} parameter in SpatialTournamentSelection\,---\,the tournament size\,---\,to 1:
+The way this is done is by using the SpatialTournamentSelection class to pick collaborators, based on the target Individual's index.  Two kinds of collaborators can be picked with a Selection Method in MultiPopCoevolutionEvaluator: members of the current Population, and members of the previous generation's Population.  You need to be careful with the first situation, since the members don't have their Fitnesses set, and so you can't use a Selection Method which is based on Fitness.  In the examples in Section~\ref{ec.coevolve.MultiPopCoevolutionaryEvaluator}, we used RandomSelection.  But for spatial coevolution, we can do a ``random'' selection which simply picks a collaborator based on the neighborhood from the target Individual.  We do this by setting the \parameter{size} parameter in SpatialTournamentSelection\,---\,the tournament size\,---\,to 1:
 
 \params{%
 eval.subpop.0.select-current = ec.spatial.SpatialTournamentSelection\\
@@ -9553,7 +9808,7 @@ eval.subpop.1.select-prev.ind-competes = true\\
 eval.subpop.1.select-prev.type = random-walk
 }
 
-The remaining parameters are basically just like those in MultiPopCoevolutionaryEvaluator (see Section \ref{ec.coevolve.MultiPopCoevolutionaryEvaluator}), for example:
+The remaining parameters are basically just like those in MultiPopCoevolutionaryEvaluator (see Section~\ref{ec.coevolve.MultiPopCoevolutionaryEvaluator}), for example:
 
 \params{%
 eval.num-current = 4\\
@@ -9915,7 +10170,7 @@ Returns an array of doubles, one per auxiliary fitness element, of the current v
 
 ECJ's primary multiobjective algorithms don't use MultiObjectiveFitness directly, but rather subclass it to add per-algorithm gizmos.  But if you're not using these algorithms, you can still use MultiObjectiveFitness in a more ``traditional'' generational algorithm.  This requires some thought: at the end of the day, ECJ needs to select based on this Fitness mechanism.  But if there is more than one objective value, how is this done?
 
-You could just sum the objectives to form a final ``fitness'' value of course.  If your SelectionMethod uses the raw \method{fitness()} value (for example, FitProportionateSelection from Section \ref{selectionmethods}) this is exactly what MultiObjectiveFitness returns.
+You could just sum the objectives to form a final ``fitness'' value of course.  If your SelectionMethod uses the raw \method{fitness()} value (for example, FitProportionateSelection from Section~\ref{selectionmethods}) this is exactly what MultiObjectiveFitness returns.
 
 But the most common approach is instead to use some form of {\bf Pareto domination}.  Pareto domination works like this.  Individual \(A\) {\it Pareto dominates} Individual \(B\) if and only if \(A\) is {\it at least as good} as \(B\) in all objectives, and is {\it superior} to \(B\) in at least one objective.  Notice that there are three cases where \(A\) might {\bf not} Pareto-dominate \(B\):
 
@@ -9939,7 +10194,7 @@ Returns true if this fitness Pareto-dominates {\it other}.
 
 
 
-\subsubsection{Pareto Ranking} An alternative method, widely used in multiobjective algorithms but not implemented in MultiObjectiveFitness proper, is to perform {\bf Pareto ranking} (sometimes called {\it non-dominated sorting} \cite{nsga}, which works as follows. The {\bf Pareto non-dominated front} (or simply {\bf Pareto front}) is the set of Individuals in a Subpopulation who are dominated by {\it no one else}, including one another.  All members of a Pareto front of a Subpopulation receive a ranking of 0.  We then remove those members from consideration in the Subpopulation and form the Pareto front among the remaining members.  These members receive a ranking of 1.  We then remove {\it those} members from consideration as well and repeat.  Ultimately every member of the Subpopulation receives a ranking.  These rankings become fitness values, where lower rankings are preferred to higher rankings.  Pareto ranking plays a major part in the NSGA-II algorithm (Section \ref{ec.multiobjective.nsga2}).
+\subsubsection{Pareto Ranking} An alternative method, widely used in multiobjective algorithms but not implemented in MultiObjectiveFitness proper, is to perform {\bf Pareto ranking} (sometimes called {\it non-dominated sorting} \cite{nsga}, which works as follows. The {\bf Pareto non-dominated front} (or simply {\bf Pareto front}) is the set of Individuals in a Subpopulation who are dominated by {\it no one else}, including one another.  All members of a Pareto front of a Subpopulation receive a ranking of 0.  We then remove those members from consideration in the Subpopulation and form the Pareto front among the remaining members.  These members receive a ranking of 1.  We then remove {\it those} members from consideration as well and repeat.  Ultimately every member of the Subpopulation receives a ranking.  These rankings become fitness values, where lower rankings are preferred to higher rankings.  Pareto ranking plays a major part in the NSGA-II algorithm (Section~\ref{ec.multiobjective.nsga2}).
 
 Here are methods for extracting the Pareto Front and various Pareto Front Ranks:
 
@@ -9957,7 +10212,7 @@ For each individual, returns the Pareto Front ranking of that individual, starti
 
 
 
-\subsubsection{Archives} The most common\,---\,and often most effective\,---\,multiobjective optimization algorithms are very strongly elitist, essentially versions of the \((\mu+\lambda)\) evolution strategy (Section \ref{ec.es}).  Specifically, they split the Population into two groups: the primary Population, and an {\bf archive} consisting largely of the Pareto front of nondominated Individuals discovered so far.  Any time a new Individual is discovered which dominates members of this front, those members are removed from the elitist archive and the Individual is introduced to it.  ECJ has two Pareto archive multiobjective algorithms: NSGA-II and SPEA2.  We discuss them next.
+\subsubsection{Archives} The most common\,---\,and often most effective\,---\,multiobjective optimization algorithms are very strongly elitist, essentially versions of the \((\mu+\lambda)\) evolution strategy (Section~\ref{ec.es}).  Specifically, they split the Population into two groups: the primary Population, and an {\bf archive} consisting largely of the Pareto front of nondominated Individuals discovered so far.  Any time a new Individual is discovered which dominates members of this front, those members are removed from the elitist archive and the Individual is introduced to it.  ECJ has two Pareto archive multiobjective algorithms: NSGA-II and SPEA2.  We discuss them next.
 
 
 
