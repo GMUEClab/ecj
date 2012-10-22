@@ -937,7 +937,7 @@ For more on debugging ECJ, see Section~\ref{DebuggingAnEvolutionaryProcess}.
 
 \subsection{Building a Parameter Database from Scratch}
 \label{BuildingAParameterDatabaseFromScratch}
-Normally ParameterDatabase is constructed from the Evolve class on your behalf.  But in some unusual situations you may need to build one yourself.  Most notably, if you're attaching ECJ as a sub-module under some application or toolkit (see Section~\ref{integration}), you may need to make a custom ParameterDatabase with which to run ECJ. 
+This is starting to get inside-ball, so you may wish to skip it for now.  Normally ParameterDatabase is constructed from the Evolve class on your behalf.  But in some unusual situations you may need to build one yourself.  Most notably, if you're attaching ECJ as a sub-module under some application or toolkit (see Section~\ref{integration}), you may need to make a custom ParameterDatabase with which to run ECJ. 
 
 A typical ParameterDatabase is constructed from a file or a resource relative to a class.  When this is done, what you receive is an empty ParameterDatabase which points to another ParameterDatabase,   The empty ParameterDatabase is free for you to modify.  For example, if you call...
 
