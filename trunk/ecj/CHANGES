@@ -1962,3 +1962,5 @@ Version		Change Log
 	Added the gpsemantics, klandscapes, lid, ordertree, and royaltree problems by
 		James McDermott <jamesmichaelmcdermott@gmail.com> and Luca Manzoni
 		<luca.manzoni@disco.unimib.it> as part of http://gpbenchmarks.org/
+	ParameterDatabase.removeDeeply is now deprecated.
+	New sections added to Manual about integration.

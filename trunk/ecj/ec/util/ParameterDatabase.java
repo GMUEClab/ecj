@@ -2247,7 +2247,10 @@ public class ParameterDatabase extends Properties implements Serializable
         remove(parameter.param);
         }
 
-    /** Removes a parameter from the database and all its parent databases. */
+    /** 
+    Removes a parameter from the database and all its parent databases. 
+    @deprecated  You shouldn't modify parent databases
+    */
     public synchronized void removeDeeply(Parameter parameter) 
         {
         _removeDeeply(parameter);
@@ -2498,14 +2501,14 @@ public class ParameterDatabase extends Properties implements Serializable
      * Creates a new parameter database tree from a given database file and its
      * parent files.
      */
-    public ParameterDatabase(File filename) throws FileNotFoundException, IOException 
+    public ParameterDatabase(File file) throws FileNotFoundException, IOException 
         {
         this();
-        label = "File: " + filename.getPath();
-        //this.filename = filename.getName();
-        directory = new File(filename.getParent()); // get the directory
-                                                    // filename is in
-        load(new FileInputStream(filename));
+        label = "File: " + file.getPath();
+        //this.file = file.getName();
+        directory = new File(file.getParent()); // get the directory
+                                                    // file is in
+        load(new FileInputStream(file));
 
         //listeners = new Vector();
 
@@ -2535,7 +2538,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 }
             else
                 // it's relative to my path
-                parents.addElement(new ParameterDatabase(new File(filename.getParent(), s)));
+                parents.addElement(new ParameterDatabase(new File(file.getParent(), s)));
             }
         }
 
@@ -2544,19 +2547,19 @@ public class ParameterDatabase extends Properties implements Serializable
      * list. The top-level database is completely empty, pointing to a second
      * database which contains the parameter entries stored in args, which
      * points to a tree of databases constructed using
-     * ParameterDatabase(filename).
+     * ParameterDatabase(file).
      */
 
-    public ParameterDatabase(File filename, String[] args) throws FileNotFoundException, IOException 
+    public ParameterDatabase(File file, String[] args) throws FileNotFoundException, IOException 
         {
         this();
-        label = "File: " + filename.getPath();
-        //this.filename = filename.getName();
-        directory = new File(filename.getParent()); // get the directory
-                                                    // filename is in
+        label = "File: " + file.getPath();
+        //this.file = file.getName();
+        directory = new File(file.getParent()); // get the directory
+                                                    // file is in
 
         // Create the Parameter Database tree for the files
-        ParameterDatabase files = new ParameterDatabase(filename);
+        ParameterDatabase files = new ParameterDatabase(file);
 
         // Create the Parameter Database for the arguments
         ParameterDatabase a = new ParameterDatabase();
