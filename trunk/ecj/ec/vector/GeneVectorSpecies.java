@@ -21,7 +21,7 @@ import ec.util.*;
  * constraints for GeneVectorIndividuals.
  *
  * <p>At present there is exactly one item stored in GeneVectorSpecies:
- * the prototypical VectorGene that populates the genome array stored in a
+ * the prototypical Gene that populates the genome array stored in a
  * GeneVectorIndividual.
  *
  * @author Sean Luke
@@ -30,7 +30,7 @@ import ec.util.*;
  <p><b>Parameters</b><br>
  <table>
  <tr><td valign=top><tt>gene</tt><br>
- <font size=-1>classname, inherits and != ec.VectorGene</font></td>
+ <font size=-1>classname, inherits and != ec.Gene</font></td>
  <td valign=top>(the prototypical gene for this kind of individual)</td></tr>
  </table>
 
@@ -45,14 +45,14 @@ import ec.util.*;
 public class GeneVectorSpecies extends VectorSpecies
     {
     public static final String P_GENE = "gene";
-    public VectorGene genePrototype;
+    public Gene genePrototype;
 
     public void setup(final EvolutionState state, final Parameter base)
         {
         Parameter def = defaultBase();
 
-        genePrototype = (VectorGene)(state.parameters.getInstanceForParameterEq(
-                base.push(P_GENE),def.push(P_GENE),VectorGene.class));
+        genePrototype = (Gene)(state.parameters.getInstanceForParameterEq(
+                base.push(P_GENE),def.push(P_GENE),Gene.class));
         genePrototype.setup(state,base.push(P_GENE));
 
         // make sure that super.setup is done AFTER we've loaded our gene prototype.
