@@ -564,7 +564,7 @@ public class MultipleVectorCrossoverPipeline extends BreedingPipeline {
                 for(int j = parents.length-1; j > 0; j--)
                     {                       
                     int swapIndex = state.random[thread].nextInt(j); // not inclusive; don't want to swap with self                     
-                    VectorGene temp = ((GeneVectorIndividual) parents[j]).genome[i]; // modifying genomes directly. it's okay since they're clones
+                    Gene temp = ((GeneVectorIndividual) parents[j]).genome[i]; // modifying genomes directly. it's okay since they're clones
                     ((GeneVectorIndividual)parents[j]).genome[i] = ((GeneVectorIndividual)parents[swapIndex]).genome[i];
                     ((GeneVectorIndividual)parents[swapIndex]).genome[i] = temp;                        
                     }                       

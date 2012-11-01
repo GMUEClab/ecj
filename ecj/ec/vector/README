@@ -36,7 +36,7 @@ IntegerVectorIndividual		IntegerVectorSpecies	int
 LongVectorIndividual		IntegerVectorSpecies	long
 FloatVectorIndividual		FloatVectorSpecies	float
 DoubleVectorIndividual		FloatVectorSpecies	double
-GeneVectorIndividual		GeneVectorSpecies	VectorGene
+GeneVectorIndividual		GeneVectorSpecies	Gene
 
 
 Some items to note about certain species:
@@ -93,10 +93,10 @@ ec.vector.GeneVectorSpecies
 
 This class is a VectorSpecies and so has all of its features.  However the
 atomic type of the vector array isn't a number or boolean, but rather a 
-specific object called a VectorGene; or more specifically, a subclass of
-VectorGene which you specify (with the 'gene' parameter).  The objective
+specific object called a Gene; or more specifically, a subclass of
+Gene which you specify (with the 'gene' parameter).  The objective
 of this Species and GeneVectorIndividual is to enable you to have arbitrary
-genes of any kind you like -- just stick your data in your VectorGene
+genes of any kind you like -- just stick your data in your Gene
 subclass.
 
 
@@ -105,11 +105,11 @@ subclass.
 Other classes of importance:
 
 
-ec.vector.VectorGene
+ec.vector.Gene
 
 This class is used with GeneVectorIndividual and GeneVectorSpecies to give you
 flexibility with regard to the makeup of genes in the individual.  To implement
-a VectorGene subclass, you'll need to provide a few basic methods (equality
+a Gene subclass, you'll need to provide a few basic methods (equality
 testing, hash codes, the reset method, the mutation method) and optionally some
 print facilities, depending on your needs.
 

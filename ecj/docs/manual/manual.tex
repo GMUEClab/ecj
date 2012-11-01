@@ -157,8 +157,8 @@ George Mason University}
 \\
 \\
 \\
-\large\rm {\bf Manual Version 20.2}\\
-\large\rm July, 2012\\
+\large\rm {\bf Manual Version 20.3}\\
+\large\rm October, 2012\\
 
 \vspace{5.6in}
 \noindent\Large\bf Where to Obtain ECJ\\
@@ -3662,7 +3662,7 @@ public void postInitializationStatistics(EvolutionState state)
 \section{Debugging an Evolutionary Process}
 \label{DebuggingAnEvolutionaryProcess}
 
-A hint.  One helpful way to debug ECJ is via BeanShell (http://www.beanshell.org).  This tool is essentially a command-line for Java.  Using it, we can create an ECJ process and get it going quite easily.  Let's say that the parameter file is called "foo.params". We can type the following into BeanShell:
+A hint.  One helpful way to debug ECJ is via BeanShell (http:/\!/www.beanshell.org).  This tool is essentially a command-line for Java.  Using it, we can create an ECJ process and get it going quite easily.  Let's say that the parameter file is called "foo.params". We can type the following into BeanShell:
 
 \vbox{
 \small\begin{verbatim}
@@ -3688,9 +3688,9 @@ This is basically a variation of the \method{main} code found in Section~\ref{jo
         state.startFresh();
         result = EvolutionState.R_NOTDONE;
         while( result == EvolutionState.R_NOTDONE )
-                {
-                result = state.evolve();
-                }
+            {
+            result = state.evolve();
+            }
         state.finish(result);
         Evolve.cleanup(state);
 \end{verbatim}
@@ -4471,13 +4471,13 @@ The \package{ec.vector} package defines one of the most common representations u
 \variable{long}&\class{ec.vector.LongVectorIndividual}&\class{ec.vector.IntegerVectorSpecies}\\
 \variable{float}&\class{ec.vector.DoubleVectorIndividual}&\class{ec.vector.FloatVectorSpecies}\\
 \variable{double}&\class{ec.vector.DoubleVectorIndividual}&\class{ec.vector.FloatVectorSpecies}\\
-Subclasses of \class{ec.vector.VectorGene}&\class{ec.vector.GeneVectorIndividual}&\class{ec.vector.GeneVectorSpecies}\\
+Subclasses of \class{ec.vector.Gene}&\class{ec.vector.GeneVectorIndividual}&\class{ec.vector.GeneVectorSpecies}\\
 \end{tabular}
 \vspace{1em}
 }
 \end{center}
 
-Note that all the integer-type Individuals (byte, short, int, long) share the same species: \class{ec.vector.IntegerVectorSpecies}.  Likewise, all the float-type Individuals (float, double) share \class{ec.vector.FloatVectorSpecies}.  Last, \class{GeneVectorIndividual} holds an array of subclasses of the abstract class \class{ec.vector.VectorGene}, which you can subclass to do or hold any data type.  All these Individuals are subclasses of the abstract class \class{ec.vector.VectorIndividual}; and all Species are subclasses of \class{ec.vector.VectorSpecies}.
+Note that all the integer-type Individuals (byte, short, int, long) share the same species: \class{ec.vector.IntegerVectorSpecies}.  Likewise, all the float-type Individuals (float, double) share \class{ec.vector.FloatVectorSpecies}.  Last, \class{GeneVectorIndividual} holds an array of subclasses of the abstract class \class{ec.vector.Gene}, which you can subclass to do or hold any data type.  All these Individuals are subclasses of the abstract class \class{ec.vector.VectorIndividual}; and all Species are subclasses of \class{ec.vector.VectorSpecies}.
 
 Each of these Individuals has the same crossover operators and support for vector manipulation.  They differ in the default initialization and mutation mechanisms available to them: obviously Gaussian mutation makes little sense on integers, for example.
 
@@ -4547,7 +4547,7 @@ How VectorIndividuals implement this method depends on their type:
 \item {\bf Floating Point} (\variable{float, double}):  each gene is set to a random value between its legal minimum and maximum values, inclusive.
 \item {\bf Integer} (\variable{byte, short, int, long}):  each gene is set to a random value between its legal minimum and maximum values, inclusive.
 \item {\bf Boolean}:  each gene is set to a random value.
-\item {\bf Gene}:  each gene is randomized by calling the following method on its \class{ec.vector.VectorGene}:
+\item {\bf Gene}:  each gene is randomized by calling the following method on its \class{ec.vector.Gene}:
 
 \java{%
 public void reset(EvolutionState state, int thread);
@@ -4732,7 +4732,7 @@ Different representations have different kinds of mutations.  Specifically:
 
 \item {\bf Integer} (\variable{byte, short, int, long}): the default mutation operator simply randomizes the integer value between the legal minimum and maximum values (with the mutation probability of course).  There are almost certainly smarter approaches than this\,---\,you'll probably want to implement something in a subclass.
 
-\item {\bf Gene}: the default mutation operator for \class{ec.vector.GeneVectorIndividual}, with the given mutation probability, calls the following VectorGene method:
+\item {\bf Gene}: the default mutation operator for \class{ec.vector.GeneVectorIndividual}, with the given mutation probability, calls the following Gene method:
 
 \java{%
 public void mutate(EvolutionState state, int thread);
@@ -4744,7 +4744,7 @@ You are responsible for implementing this method.    The default version of the 
 public void reset(EvolutionState state, int thread);
 }
 
-\noindent ...on the VectorGene.
+\noindent ...on the Gene.
 \item {\bf Floating Point} (\variable{float, double}): allows uniform gene randomization (\parameter{reset}), Gaussian mutation (\parameter{gauss}), or Polynomial mutation(\parameter{polynomial}).  
 
 \paragraph{Uniform Mutation}
@@ -4774,7 +4774,7 @@ pop.subpop.0.species.mutation-bounded = false
 This does not affect the use of gene bounds in determining initialization values.  Even if you declare the mutation to be bounded, you'll still need to provide \parameter{out-of-bounds-retries} (though it won't be used).
 
 \paragraph{Polynomial Mutation}
-Finally, Polynomial mutation is by Kalyanmoy Deb, and uses a distribution chosen from the Polynomial distribution series rather than a Gaussian distribution.  All Polynomial distributions have a min and max value ranging in [-1, 1], and Polynomial mutation adjusts this to reflect the min and max gene ranges.   The Polynomial distribution used is defined by the {\it distribution index} and by far the most common setting (but not the ECJ default) is 20.  There are at least four different versions of Polynomial mutation in the literature or various common code.  We have implemented two versions: the {\bf standard} version, which can produce values outside the min/max range, and an {\bf alternative} version found in the NSGA-II C code among certain other places (http://www.iitk.ac.in/kangal/codes/nsga/nsgaorig.tar), which modifies the distribution to always mutate values within the min/max range. Note that we've found the alternative version superior for multiobjective optimization problems.  In ECJ, {\bf the alternative version is the default.} 
+Finally, Polynomial mutation is by Kalyanmoy Deb, and uses a distribution chosen from the Polynomial distribution series rather than a Gaussian distribution.  All Polynomial distributions have a min and max value ranging in [-1, 1], and Polynomial mutation adjusts this to reflect the min and max gene ranges.   The Polynomial distribution used is defined by the {\it distribution index} and by far the most common setting (but not the ECJ default) is 20.  There are at least four different versions of Polynomial mutation in the literature or various common code.  We have implemented two versions: the {\bf standard} version, which can produce values outside the min/max range, and an {\bf alternative} version found in the NSGA-II C code among certain other places (http:/\!/www.iitk.ac.in/kangal/codes/nsga/nsgaorig.tar), which modifies the distribution to always mutate values within the min/max range. Note that we've found the alternative version superior for multiobjective optimization problems.  In ECJ, {\bf the alternative version is the default.} 
 
 To use the {\it alternative} version, you'll need to state something like this.
 
@@ -4909,7 +4909,7 @@ public Object getGenome();\\
 public void setGenome(Object genome);
 }
 
-Second, the genome length can be changed.  If the length is shortened, the array will be truncated.  If the length is lengthened, the extra area will be set as follows: boolean array slots will be set to \variable{false}.  Numeric array slots will be set to 0.  VectorGene array slots will be set to a blank VectorGene cloned from the prototype.  The methods for checking or changing the length are:
+Second, the genome length can be changed.  If the length is shortened, the array will be truncated.  If the length is lengthened, the extra area will be set as follows: boolean array slots will be set to \variable{false}.  Numeric array slots will be set to 0.  Gene array slots will be set to a blank Gene cloned from the prototype.  The methods for checking or changing the length are:
 
 \java{%
 public int size();\\
@@ -4932,7 +4932,7 @@ VectorIndividual can also {\bf join} certain pieces\,---\,concatenate them\,---\
 public void join(Object[] pieces);
 }
 
-Last, VectorIndividual can clone genes in the arrays split off of a genome before joining them again.  This is useful for concatenating genes to an Individual for example.  Obviously, genomes consisting of arrays of numbers or booleans don't need to be ``cloned''\,---\,but the \class{VectorGene}s found in \class{GeneVectorIndividual} need to be copied or else the concatenated gene slots will share pointers with the original genes, which you perhaps didn't want.  Note that the \variable{pieces} array is modified in place.
+Last, VectorIndividual can clone genes in the arrays split off of a genome before joining them again.  This is useful for concatenating genes to an Individual for example.  Obviously, genomes consisting of arrays of numbers or booleans don't need to be ``cloned''\,---\,but the \class{Gene}s found in \class{GeneVectorIndividual} need to be copied or else the concatenated gene slots will share pointers with the original genes, which you perhaps didn't want.  Note that the \variable{pieces} array is modified in place.
 
 \java{%
 public void cloneGenes(Object[] pieces);
@@ -5060,31 +5060,31 @@ pop.subpop.0.species.geometric-prob = 0.95
 
 
 
-\subsection{Arbitrary Genes: \class{ec.vector.VectorGene}}
+\subsection{Arbitrary Genes: \class{ec.vector.Gene}}
 
 Last, some discussion should be reserved regarding vectors of ``arbitrary genes''.  The idea behind this is to provide you with maximum flexibility as to what you can create vectors out of.  The classes involved here are:
 
 \begin{itemize}
-\item \class{ec.vector.VectorGene},\footnote{The name \class{ec.vector.VectorGene} is a historical error.  It really ought to have been called \textsf{ec.vector.Gene}.} the abstract superclass of objects which can fill gene positions.
-\item \class{ec.vector.GeneVectorIndividual}, the VectorIndividual which contains nothing but VectorGenes.
+\item \class{ec.vector.Gene}, the abstract superclass of objects which can fill gene positions.
+\item \class{ec.vector.GeneVectorIndividual}, the VectorIndividual which contains nothing but Genes.
 \item \class{ec.vector.GeneVectorSpecies}, the Species for GeneVectorIndividuals.
 \end{itemize}
 
-To use these classes, you'll not only need to specify the use of GeneVectorIndividual and GeneVectorSpecies, but you'll also need to state which subclass of VectorGene will be used to fill the GeneVectorIndividual.  These three things are done as follows:
+To use these classes, you'll not only need to specify the use of GeneVectorIndividual and GeneVectorSpecies, but you'll also need to state which subclass of Gene will be used to fill the GeneVectorIndividual.  These three things are done as follows:
 
 \params{%
 pop.subpop.0.species = ec.vector.GeneVectorSpecies\\
 pop.subpop.0.species.ind = ec.vector.GeneVectorIndividual\\
-pop.subpop.0.species.gene = ec.app.MySubclassOfVectorGene
+pop.subpop.0.species.gene = ec.app.MySubclassOfGene
 }
 
-As mentioned earlier, GeneVectorIndividual's \method{reset(...)} method, used to initialize the Individual, in turn calls this method on your VectorGene subclass:
+As mentioned earlier, GeneVectorIndividual's \method{reset(...)} method, used to initialize the Individual, in turn calls this method on your Gene subclass:
 
 \java{%
 public abstract void reset(EvolutionState state, int thread);
 }
 
-Furthermore, mutation on GeneVectorIndividuals call this method on each VectorGene (with the mutation probability):
+Furthermore, mutation on GeneVectorIndividuals call this method on each Gene (with the mutation probability):
 
 \java{%
 public abstract void mutate(EvolutionState state, int thread);
@@ -5092,18 +5092,18 @@ public abstract void mutate(EvolutionState state, int thread);
 
 The default form of this method just calls \method{reset(...)}.  You'd probably want to make a better mutation function than this.
 
-VectorGene is a Prototype, and so requires \method{setup(...)}, \method{clone(...)}, and \method{defaultBase()}.  Default implementations are already provided for you.  Except for \method{clone(...)} you're unlikely to need to override them.
+Gene is a Prototype, and so requires \method{setup(...)}, \method{clone(...)}, and \method{defaultBase()}.  Default implementations are already provided for you.  Except for \method{clone(...)} you're unlikely to need to override them.
 
-You do need to provide two additional VectorGene methods:
+You do need to provide two additional Gene methods:
 
 \java{%
 public abstract int hashCode();\\
 public abstract boolean equals(Object other);
 }
 
-The first method should provide an intelligent hash code based on the value of the VectorGene contents.  The second method should test this VectorGene against another for equality and return true if they contain the same thing.
+The first method should provide an intelligent hash code based on the value of the Gene contents.  The second method should test this Gene against another for equality and return true if they contain the same thing.
 
-Technically that's all you need to provide.  But in reality VectorGene is not going to be very useful unless you at least provide a way to describe the gene when it's printed to a log.  The easiest way to do this is to override this method:
+Technically that's all you need to provide.  But in reality Gene is not going to be very useful unless you at least provide a way to describe the gene when it's printed to a log.  The easiest way to do this is to override this method:
 
 \java{%
     public String printGeneToStringForHumans();
@@ -5137,21 +5137,19 @@ The default form simply calls \method{toString()}, which is definitely wrong.  Y
 To write out the gene in a computer-readable fashion, I suggest using ECJ's Code package (Section~\ref{ec.util.Code}), but it's up to you.  This method is called by 
 
 \java{%
-public void readGene(EvolutionState state, LineNumberReader reader)\\
-\hsp{\fill}throws IOException;
+public void readGene(EvolutionState state, LineNumberReader reader) throws IOException;
 }
 
 Finally if you're intending to send your Individual over the network, either for distributed evaluation or island models, you'll need to implement these methods:
 
 \java{%
-    public void writeGene(EvolutionState state, DataOutput output)\\
-\hsp{\fill}throws IOException;\\
+    public void writeGene(EvolutionState state, DataOutput output) throws IOException;\\
     public void readGene(EvolutionState state, DataInput input) throws IOException;
 }
 
 \paragraph{Example}
 
-The following VectorGene contains two doubles and mutates them by performing a random affine rotation on them (why not?).  We'll implement it fully here, though keep in mind that this isn't entirely necessary.  For fun, we'll use an elaborate hash code which XORs all four 32-bit segments of the two doubles together (I hope I wrote that right!).
+The following Gene contains two doubles and mutates them by performing a random affine rotation on them (why not?).  We'll implement it fully here, though keep in mind that this isn't entirely necessary.  For fun, we'll use an elaborate hash code which XORs all four 32-bit segments of the two doubles together (I hope I wrote that right!).
 
 First the parameters:
 
@@ -5167,7 +5165,7 @@ Now the implementation:
 \small\begin{verbatim}
 package ec.app.trig;
 import ec.util.*;
-public class TrigGene extends VectorGene {
+public class TrigGene extends Gene {
     double x;
     double y;
     public void reset(EvolutionState state, int thread) {
@@ -5262,7 +5260,7 @@ Figure \ref{gptrees} shows two example trees of GPNodes (shown as ovals).  The t
     public byte constraints;
 }
 
-The \variable{parent} should be self-explanatory.  The \variable{children[]} is an array holding the children to the GPNode.  Leaf nodes in a GP tree (traditionally called {\bf terminals} are permitted to either have a zero-length array or a null value for \variable{children[]}.
+The \variable{parent} should be self-explanatory.  The \variable{children[]} is an array holding the children to the GPNode.  Leaf nodes in a GP tree (traditionally called {\bf terminals}) are permitted to either have a zero-length array or a null value for \variable{children[]}.
 
 The \variable{argposition} is the position of the node in its {\it parent's} \variable{children[]} array.  The root's \variable{argposition} is 0.  Last, the \variable{constraints} is a tag which refers to the GPNode's GPNodeConstraints object.  It's a byte rather than a full pointer to save a bit of space: GPNodes make up by far the bulk of memory in a genetic programming experiment.  You can get the GPNodeConstraints by calling the following GPNode method:
 
@@ -5270,7 +5268,7 @@ The \variable{argposition} is the position of the node in its {\it parent's} \va
     public final GPNodeConstraints constraints(GPInitializer initializer);
 }
 
-Why the GPInitializer?  Because GPNodeConstraints, GPTreeConstraints, GPTypes, and GPFunctionSets are all accessible via Initializer, which must be a GPInitializer.\footnote{It wasn't a good decision to use the Initializer in this fashion, and one day we may change it to something else.}  More on that later.  Assuming you have access to the EvolutionState (probably called \variable{state}) can call this function like this:
+Why the GPInitializer?  Because GPNodeConstraints, GPTreeConstraints, GPTypes, and GPFunctionSets are all accessible via the Initializer, which must be a GPInitializer.\footnote{It wasn't a good decision to use the Initializer in this fashion, and one day we may change it to something else.}  More on that later.  Assuming you have access to the EvolutionState (probably called \variable{state}) can call this function like this:
 
 \java{%
 	GPNodeConstraints constraints = myGPNode.constraints((GPInitializer)(state.initializer));
@@ -5332,10 +5330,6 @@ The GPNodeConstraints contains several data elements shared by various GPNodes:
 The first element is obvious: it's number of the constraints which the GPNode objects point to.  The next two items hold the return type and children types of the node: more on that later.  Specifically, the return type of a child in slot 0 must be compatible with the child type declared for slot 0.  For now what matters is that you can determine the expected number of children to a GPNode by the length of the \variable{childtypes} array.
 
 The \variable{name} variable holds the name of the GPNodeConstraints ({\it not} the GPNodes which refer to them): we'll define some in the next section.  The \variable{probabilityOfSelection} variable holds an auxiliary variable used by certain tree-building operators.  Last, \variable{zeroChildren[]} holds a blank, zero-length GPNode which terminals are free to use in lieu of null for their children.
-
-\java{%
-    public GPTree[] trees;
-}
 
 \subsubsection{GPTreeConstraints}
 
@@ -5413,7 +5407,7 @@ gp.type.a.0.name = nil\\
 gp.type.s.size = 0
 }
 
-Our GPTreeConstraints object needs to define the GPType of the tree as a whole (the ``root type'').  To se it to our \parameter{nil} type, we'd say:
+Our GPTreeConstraints object needs to define the GPType of the tree as a whole (the ``root type'').  To set it to our \parameter{nil} type, we'd say:
 
 \params{%
 gp.tc.0.returns = nil\\
@@ -6121,7 +6115,8 @@ Here are the breeding pipelines that come with ECJ.  In each case, let's presume
 \params{%
 pop.subpop.0.species.pipe.tries = 1\\
 pop.subpop.0.species.pipe.maxdepth = 17\\
-pop.subpop.0.species.pipe.toss = false
+pop.subpop.0.species.pipe.toss = false\\
+\\
 \% This one is undefined initially but you can define it:\\
 \% pop.subpop.0.species.pipe.maxsize = ... \\
 }
@@ -6165,7 +6160,8 @@ MutationPipeline has many parameters similar to CrossoverPipeline:
 pop.subpop.0.species.pipe.tries = 1\\
 pop.subpop.0.species.pipe.maxdepth = 17\\
 pop.subpop.0.species.pipe.tree.0 = 0\\
-pop.subpop.0.species.pipe.ns = ec.gp.koza.KozaNodeSelector
+pop.subpop.0.species.pipe.ns = ec.gp.koza.KozaNodeSelector\\
+\\
 \% This one is undefined initially but you can define it:\\
 \% pop.subpop.0.species.pipe.maxsize = ... \\
 }
@@ -6380,12 +6376,13 @@ gp.breed.mutate-erc.ns.0.root = 1.0
 pop.subpop.0.species.pipe.tries = 1\\
 pop.subpop.0.species.pipe.maxdepth = 17\\
 pop.subpop.0.species.pipe.toss = false\\
+pop.subpop.0.species.pipe.ns.0 = ec.gp.koza.KozaNodeSelector\\
+pop.subpop.0.species.pipe.ns.1 = same
+\\
 \% These are unset by default but you can set them to lock down\\
 \% the trees being crossed over\\
 \% pop.subpop.0.species.pipe.tree.0 = 0\\
 \% pop.subpop.0.species.pipe.tree.1 = 0\\
-pop.subpop.0.species.pipe.ns.0 = ec.gp.koza.KozaNodeSelector\\
-pop.subpop.0.species.pipe.ns.1 = same
 }
 
 The default parameter base versions for all of these would be:
@@ -6394,11 +6391,12 @@ The default parameter base versions for all of these would be:
 gp.breed.size-fair.tries = 1\\
 gp.breed.size-fair.maxdepth = 17\\
 gp.breed.size-fair.toss = false\\
+gp.breed.size-fair.ns = ec.gp.koza.KozaNodeSelector
+\\
 \% These are unset by default but you can set them to lock down\\
 \% the trees being crossed over\\
 \% gp.breed.size-fair.tree.0 = ... \\
 \% gp.breed.size-fair.tree.1 = ...\\
-gp.breed.size-fair.ns = ec.gp.koza.KozaNodeSelector
 }
 
 By default SizeFairCrossoverPipeline will perform {\bf size-fair crossover,} defined as follows.  First, it finds a crossover point in the first parent in a fashion identical to CrossoverPipeline.  But to find the crossover point in the second parent, it first computes the size \(s_1\) of the subtree in the first parent.  It then calculates the size of every subtree in the second parent, and discards from consideration any subtrees whose size \(s_2\) is \(s_2 > 1 + 2 s_1\).  From the remainder, it then counts the number of subtrees smaller, equal to, and larger than \(s_1\) (call these \(n_<, n_=\) and \(n_>\)), and likewise the means of the smaller and larger subtrees (call these \(mu_<\) and \(mu_>\)).

@@ -31,7 +31,7 @@ import ec.util.Parameter;
  * Species are prototypes.  Fitness objects are prototypes.  Breeding
  * pipelines and selection methods are prototypes.  In the GP section, 
  * GPNodes and GPTrees are prototypes.  In the Rule section, Rulesets and
- * Rules are prototypes.  In the Vector section, VectorGenes are prototypes.
+ * Rules are prototypes.  In the Vector section, Genes are prototypes.
  * And so on.
  *
  * <p>ECJ uses Prototypes almost exclusively instead of calling <tt>new</tt>.

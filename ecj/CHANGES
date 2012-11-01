@@ -1964,3 +1964,9 @@ Version		Change Log
 		<luca.manzoni@disco.unimib.it> as part of http://gpbenchmarks.org/
 	ParameterDatabase.removeDeeply is now deprecated.
 	New sections added to Manual about integration.
+	ec.vector.VectorGene hereby renamed to ec.vector.Vector.  Also the
+		default base for ec.vector.VectorGene changed from
+		"vector.vect-gene" to "vector.gene".  
+		ec.vector.Vector.P_VECTOR_GENE made private and deprecated
+		to force the issue.
+

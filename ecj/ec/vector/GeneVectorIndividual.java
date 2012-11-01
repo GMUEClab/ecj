@@ -17,7 +17,7 @@ import java.io.*;
  */
 
 /**
- * GeneVectorIndividual is a VectorIndividual whose genome is an array of VectorGenes.
+ * GeneVectorIndividual is a VectorIndividual whose genome is an array of Genes.
  * The default mutation method calls the mutate() method on each gene independently
  * with <tt>species.mutationProbability</tt>.  Initialization calls reset(), which
  * should call reset() on each gene.  Do not expect that the genes will actually
@@ -73,7 +73,7 @@ import java.io.*;
 public class GeneVectorIndividual extends VectorIndividual
     {
     public static final String P_GENEVECTORINDIVIDUAL = "gene-vect-ind";
-    public VectorGene[] genome;
+    public Gene[] genome;
     
     public Parameter defaultBase()
         {
@@ -85,9 +85,9 @@ public class GeneVectorIndividual extends VectorIndividual
         GeneVectorIndividual myobj = (GeneVectorIndividual) (super.clone());
 
         // must clone the genome
-        myobj.genome = (VectorGene[])(genome.clone());
+        myobj.genome = (Gene[])(genome.clone());
         for(int x=0;x<genome.length;x++)
-            myobj.genome[x] = (VectorGene)(genome[x].clone());
+            myobj.genome[x] = (Gene)(genome[x].clone());
         
         return myobj;
         }
@@ -108,7 +108,7 @@ public class GeneVectorIndividual extends VectorIndividual
         
         // note that genome isn't initialized with any genes yet -- they're all null.
         // reset() needs
-        genome = new VectorGene[s.genomeSize];
+        genome = new Gene[s.genomeSize];
         reset(state,0);
         }
         
@@ -116,7 +116,7 @@ public class GeneVectorIndividual extends VectorIndividual
         {
         GeneVectorSpecies s = (GeneVectorSpecies) species;
         GeneVectorIndividual i = (GeneVectorIndividual) ind;
-        VectorGene tmp;
+        Gene tmp;
         int point;
 
         if (genome.length != i.genome.length)
@@ -164,7 +164,7 @@ public class GeneVectorIndividual extends VectorIndividual
         point0 = 0; point1 = points[0];
         for(int x=0;x<pieces.length;x++)
             {
-            pieces[x] = new VectorGene[point1-point0];
+            pieces[x] = new Gene[point1-point0];
             System.arraycopy(genome,point0,pieces[x],0,point1-point0);
             point0 = point1;
             if (x >=pieces.length-2)
@@ -178,14 +178,14 @@ public class GeneVectorIndividual extends VectorIndividual
         {
         int sum=0;
         for(int x=0;x<pieces.length;x++)
-            sum += ((VectorGene[])(pieces[x])).length;
+            sum += ((Gene[])(pieces[x])).length;
         
         int runningsum = 0;
-        VectorGene[] newgenome = new VectorGene[sum];
+        Gene[] newgenome = new Gene[sum];
         for(int x=0;x<pieces.length;x++)
             {
-            System.arraycopy(pieces[x], 0, newgenome, runningsum, ((VectorGene[])(pieces[x])).length);
-            runningsum += ((VectorGene[])(pieces[x])).length;
+            System.arraycopy(pieces[x], 0, newgenome, runningsum, ((Gene[])(pieces[x])).length);
+            runningsum += ((Gene[])(pieces[x])).length;
             }
         // set genome
         genome = newgenome;
@@ -210,7 +210,7 @@ public class GeneVectorIndividual extends VectorIndividual
         for(int x=0;x<genome.length;x++)
             {
             // first create the gene if it doesn't exist
-            if (genome[x]==null) genome[x] = (VectorGene)(s.genePrototype.clone());
+            if (genome[x]==null) genome[x] = (Gene)(s.genePrototype.clone());
             // now reset it
             genome[x].reset(state,thread);
             }
@@ -253,12 +253,12 @@ public class GeneVectorIndividual extends VectorIndividual
         Code.decode( d );
         int lll = (int)(d.l);
 
-        genome = new VectorGene[ lll ];
+        genome = new Gene[ lll ];
 
         GeneVectorSpecies _species = (GeneVectorSpecies) species;
         for( int i = 0 ; i < genome.length ; i++ )
             {
-            genome[i] = (VectorGene)(_species.genePrototype.clone());
+            genome[i] = (Gene)(_species.genePrototype.clone());
             genome[i].readGene(state,reader);
             }
         }
@@ -278,17 +278,17 @@ public class GeneVectorIndividual extends VectorIndividual
     public Object getGenome()
         { return genome; }
     public void setGenome(Object gen)
-        { genome = (VectorGene[]) gen; }
+        { genome = (Gene[]) gen; }
     public int genomeLength()
         { return genome.length; }
 
     // clone all the genes
     public void cloneGenes(Object piece)
         {
-        VectorGene[] genes = (VectorGene[]) piece;
+        Gene[] genes = (Gene[]) piece;
         for(int i = 0 ; i < genes.length; i++)
             {
-            if (genes[i] != null) genes[i] = (VectorGene)(genes[i].clone());
+            if (genes[i] != null) genes[i] = (Gene)(genes[i].clone());
             }
         }
     
@@ -303,11 +303,11 @@ public class GeneVectorIndividual extends VectorIndividual
     public void setGenomeLength(int len)
         {
         GeneVectorSpecies s = (GeneVectorSpecies) species;
-        VectorGene[] newGenome = new VectorGene[len];
+        Gene[] newGenome = new Gene[len];
         System.arraycopy(genome, 0, newGenome, 0, 
             genome.length < newGenome.length ? genome.length : newGenome.length);
         for(int x=genome.length; x< newGenome.length; x++)
-            newGenome[x] = (VectorGene)(s.genePrototype.clone());  // not reset
+            newGenome[x] = (Gene)(s.genePrototype.clone());  // not reset
         genome = newGenome;
         }
 
@@ -316,12 +316,12 @@ public class GeneVectorIndividual extends VectorIndividual
         {
         int len = dataInput.readInt();
         if (genome==null || genome.length != len)
-            genome = new VectorGene[len];
+            genome = new Gene[len];
         GeneVectorSpecies _species = (GeneVectorSpecies) species;
 
         for(int x=0;x<genome.length;x++)
             {
-            genome[x] = (VectorGene)(_species.genePrototype.clone());
+            genome[x] = (Gene)(_species.genePrototype.clone());
             genome[x].readGene(state,dataInput);
             }
         }
