@@ -4896,13 +4896,13 @@ With a few changes, the classes in ECJ's \package{ec.vector} package may be used
 \item Useful utility methods for manipulating lists.
 \item List-oriented initialization
 \item List-oriented crossover procedures.
-\item Default vector mutation also works fine for lists.
+\item List-oriented mutation procedures.  Default vector mutation also works fine for lists.
 \end{itemize}
 
 Let's cover each in turn.  But first read the previous section on Vectors (Section~\ref{vectors}).  And note that lists completely ignore the chunk facility: it's to complex.  
 
 \subsubsection{Utility Methods}
-VectorIndividual provides methods for manipulating the genome without knowing the type of the object in question  First, the genome (the array) may be retrieved and set:
+VectorIndividual provides methods for manipulating the genome without knowing the type of the object in question.  First, the genome (the array) may be retrieved and set:
 
 \java{%
 public Object getGenome();\\
@@ -4918,9 +4918,9 @@ public void setGenomeLength(int length);\\
 public void reset(EvolutionState state, int thread, int newSize);
 }
 
-The first to methods are synonymous.  The last method resizes the individual, then resets it entirely (randomizes its values).
+The first two methods are synonymous.  The last method resizes the individual, then resets it entirely (randomizes its values).
 
-Third, VectorIndividual supplies methods for cutting a splicing genome arrays, which is quite useful for manipulating variable-length lists.  For example, you can {\bf split} a genome into some \(n\) pieces.  To do this you provide \(n-1\) split points.  The first piece will start at index 0 and run up to, but not including, the first split point; the second piece will start with the spit point and run up to, but not including, the second split point;  and so on.  The final piece will run to the end of the genome.  The \(n\) pieces are placed into the provided Object array.
+Third, VectorIndividual supplies methods for cutting a splicing genome arrays, which is quite useful for manipulating variable-length lists.  For example, you can {\bf split} a genome into some \(n\) pieces.  To do this you provide \(n-1\) split points.  The first piece will start at index 0 and run up to, but not including, the first split point; the second piece will start with the first spit point and run up to, but not including, the second split point;  and so on.  The final piece will run to the end of the genome.  The \(n\) pieces are placed into the provided Object array.
 
 \java{%
 public void split(int[] points, Object[] pieces);
