@@ -3,6 +3,13 @@ subdirectories contain READMEs of their own for their respective packages.
 If you're looking for overall documentation for ECJ, see the README file
 for the parent directory of this one (that is, the 'ecj' directory).
 
+If you look in the docs directory (next to this directory) you'll also
+find the ECJ manual and tutorials.
+
+
+ABOUT THIS DIRECTORY
+--------------------
+
 The 'ec' package contains top-level abstract classes defining most of the
 major elements of evolutionary or stochastic search processes.  You probably
 don't want abstract classes: instead you may wish to examine the 'simple'
