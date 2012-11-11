@@ -1969,4 +1969,4 @@ Version		Change Log
 		"vector.vect-gene" to "vector.gene".  
 		ec.vector.Vector.P_VECTOR_GENE made private and deprecated
 		to force the issue.
-
+	Added a little double-checking on reading vector individuals from files
