@@ -183,7 +183,6 @@ public class Evolve
                     parameters = new ParameterDatabase(
                         new File(new File(args[x+1]).getAbsolutePath()),
                         args);
-                    System.err.println("Using database file location " + parameters.getLabel());
                     break;
                     }
                 catch(Exception e)
