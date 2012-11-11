@@ -285,13 +285,15 @@ public class Subpopulation implements Group
         if (numIndividuals != individuals.length)
             {
             state.output.warnOnce("On reading subpopulation from text stream, the subpopulation size didn't match.\n" + 
-                "Had to resize and use newIndividual() instead of readIndividual().");
+                "Had to resize and use newIndividual() instead of readIndividual().  There were " + numIndividuals +
+                "\nin the file and " + individuals.length + " individuals expected for the subopulation.");
             individuals = new Individual[numIndividuals];
             for(int i = 0 ; i < individuals.length; i++)
                 {
                 int j = Code.readIntegerWithPreamble(INDIVIDUAL_INDEX_PREAMBLE, state, reader);
                 // sanity check
-                if (j!=i) state.output.warnOnce("On reading subpopulation from text stream, some individual indexes in the subpopulation did not match.");
+                if (j!=i) state.output.warnOnce("On reading subpopulation from text stream, some individual indexes in the subpopulation did not match.\n" +
+                    "The first was individual " + i + ", which is listed in the file as " + j);
                 individuals[i] = species.newIndividual(state, reader);
                 }
             }
@@ -299,7 +301,8 @@ public class Subpopulation implements Group
                  {
                  int j = Code.readIntegerWithPreamble(INDIVIDUAL_INDEX_PREAMBLE, state, reader);
                  // sanity check
-                 if (j!=i) state.output.warnOnce("On reading subpopulation from text stream, some individual indexes in the subpopulation did not match.");
+                if (j!=i) state.output.warnOnce("On reading subpopulation from text stream, some individual indexes in the subpopulation did not match.\n" +
+                    "The first was individual " + i + ", which is listed in the file as " + j);
                  if (individuals[i] != null)
                      individuals[i].readIndividual(state, reader);
                  else
