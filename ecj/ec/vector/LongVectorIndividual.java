@@ -315,6 +315,8 @@ public class LongVectorIndividual extends VectorIndividual
         String s = reader.readLine();
         DecodeReturn d = new DecodeReturn(s);
         Code.decode( d );
+        if (d.type != DecodeReturn.T_INTEGER)  // uh oh
+            state.output.fatal("Individual with genome:\n" + s + "\n... does not have an integer at the beginning indicating the genome count.");
         int lll = (int)(d.l);
 
         genome = new long[ lll ];

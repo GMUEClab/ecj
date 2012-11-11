@@ -2548,8 +2548,7 @@ This says that if the Subpopulation creates a duplicate individual, it will try 
 
 \subsection{Population Files and Subpopulation Files}
 
-A population file typically starts with a declaration of the number of subpopulations, followed by a declaration of a subpopulation number, then the number of individuals in that subpopulation, then the individuals one by one.  After this come the declaration of the next subpopulation number, and the number of individuals in {\it that} subpopulation, then those individuals.  And so on.  It looks like this:
-
+If you write out a population using \method{printPopulation(...)}, the resulting file or print-out typically starts with a declaration of the number of subpopulations, followed by a declaration of a subpopulation number, then the number of individuals in that subpopulation, then the individuals one by one.  After this come the declaration of the next subpopulation number, and the number of individuals in {\it that} subpopulation, then those individuals.  And so on.  It looks like this:
 
 {\small\begin{verbatim}
 Number of Subpopulations: i3|
@@ -2564,20 +2563,28 @@ Number of Individuals: i2048|
 ... [the individuals] ...
 \end{verbatim}}
 
-In contrast, a subpopulation file usually just has the the number of individuals for the subpopulation, followed by the individuals:
+But ECJ doesn't read in entire populations on initialization.  Instead if you want to initialize your population from a file, you do so on a per-{\it subpopulation} basis, as in the parameters:
+
+\params{%
+pop.subpop.0.file = myfile.in
+}
+
+A subpopulation file like this usually just has the the number of individuals for the subpopulation, followed by the individuals:
 
 {\small\begin{verbatim}
 Number of Individuals: i512|
 ... [the individuals] ...
 \end{verbatim}}
 
-You can typically edit a subpopulation file out of a population file, or build a 1-subpop population file out of a subpopulation file, with some judicious typing.  Note that integers start with an ``i'' and end with a bar, as in:
+You can typically edit a subpopulation file out of a population file with some judicious typing: the relevant text is between the relevant  ``{\tt subpopulation Number:}'' lines. 
 
-\begin{verbatim}
-i40|
-\end{verbatim}
+In the example above, there are three subpopulations, because of the line
 
-This oddity is due to use of ECJ's Code package (Section~\ref{ec.util.Code}). 
+{\small\begin{verbatim}
+Number of Subpopulations: i3|
+\end{verbatim}}
+
+This ``i3\(|\)'' oddity is due to use of ECJ's Code package (Section~\ref{ec.util.Code}).  The ``i'' means ``integer'', the ``3'' is the value, and the ``\(|\)'' is a separator.  Likewise subpopulation 0 starts with ``i0\(|\)''.
 
 
 

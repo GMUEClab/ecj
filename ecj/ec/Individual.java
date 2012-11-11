@@ -263,7 +263,7 @@ public abstract class Individual implements Prototype, Comparable
         evaluated = Code.readBooleanWithPreamble(EVALUATED_PREAMBLE, state, reader);
         
         // Next, what's my fitness?
-        fitness.readFitness(state,reader);
+        fitness.readFitness(state, reader);
 
         // next, read me in
         parseGenotype(state, reader);
