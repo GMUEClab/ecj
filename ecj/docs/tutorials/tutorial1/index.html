@@ -76,7 +76,7 @@ seed.0		= 4357
 
 <p>Each thread will be given its own unique random number generator. You should make sure that these generators have different seeds from one another.  The generator seeds are <tt>seed.0</tt>, <tt>seed.1</tt> .... up to <tt>seed.<i>n</i></tt> where n = max(breedthreads,evalthreads) - 1.  Since we have only one thread, we only need one random number generator.  4357 is a good initial seed for the generator: but remember that if you run your evolution twice with the same seed, you'll get the same results!  So change your seed for each run.  If you'd like the system to automatically change the seed to an arbitrary seed each time you run, you can base the seed on the current wall clock time.  You do this by saying <tt>seed.0	= time</tt>
 
-<p>Next let's define our evolution state.  The <a href="../../classdocs/ec/simple/">simple</a> package defines lots of basic generational evolution stuff, and we can borrow liberally from it for most of our purposes.  We'll start by using its EvolutionState subclass, <a href="../../classdocs/ec/simple/SimpleEvolutionState">ec.simple.SimpleEvolutionState</a>.  We do this by defining a final parameter which Evolve uses to set stuff up:
+<p>Next let's define our evolution state.  The <tt><b>simple</b><tt> package defines lots of basic generational evolution stuff, and we can borrow liberally from it for most of our purposes.  We'll start by using its EvolutionState subclass, <a href="../../classdocs/ec/simple/SimpleEvolutionState">ec.simple.SimpleEvolutionState</a>.  We do this by defining a final parameter which Evolve uses to set stuff up:
 
 <tt><pre>
 state		= ec.simple.SimpleEvolutionState
