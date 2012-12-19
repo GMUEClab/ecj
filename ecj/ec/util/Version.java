@@ -26,13 +26,14 @@ import java.util.*;
 public class Version
     {
     public static final String name = "ECJ";
-    public static final String version = "20";
-    public static final String copyright = "2010";
+    public static final String version = "21";
+    public static final String copyright = "2012";
     public static final String author = "Sean Luke";
-    public static final String contributors = "L. Panait, G. Balan, S. Paus, Z. Skolicki, R. Kicinger, E. Popovici,";
-    public static final String contributors2 = "K. Sullivan, J. Harrison, J. Bassett, R. Hubley, A. Desai, A. Chircop,";
-    public static final String contributors3 = "J. Compton, W. Haddon, S. Donnelly, B. Jamil, J. Zelibor, E. Kangas,";
-    public static final String contributors4 = "F. Abidi, H. Mooers, and J. O'Beirne";
+    public static final String contributors = "L. Panait, G. Balan, S. Paus, Z. Skolicki, R. Kicinger,";
+    public static final String contributors2 = "E. Popovici, K. Sullivan, J. Harrison, J. Bassett, R. Hubley,";
+    public static final String contributors3 = "A. Desai, A. Chircop, J. Compton, W. Haddon, S. Donnelly,";
+    public static final String contributors4 = "B. Jamil, J. Zelibor, E. Kangas, F. Abidi, H. Mooers,";
+    public static final String contributors5 = "J. O'Beirne, L. Manzoni, and J. McDermott";
     public static final String authorEmail0 = "ecj-help";
     public static final String authorEmail1 = "cs.gmu.edu";
     public static final String authorEmail2 = "(better: join ECJ-INTEREST at URL above)";
@@ -59,6 +60,7 @@ public class Version
             "\n|               " + contributors2 +
             "\n|               " + contributors3 +
             "\n|               " + contributors4 +
+            "\n|               " + contributors5 +
             "\n| URL: " + authorURL +
             "\n| Mail: " + authorEmail0 + "@" + authorEmail1 +
             "\n|       " + authorEmail2 + 

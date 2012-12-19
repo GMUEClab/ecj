@@ -133,6 +133,9 @@ public class Evolve
     /** The argument indicating the class where the resource is relative to. */
     public static final String A_AT = "-at";
 
+    /** The argument indicating a request to print out the help message. */
+    public static final String A_HELP = "-help";
+
     /** evalthreads parameter */
     public static final String P_EVALTHREADS = "evalthreads";
 
@@ -152,6 +155,46 @@ public class Evolve
     public static final String V_THREADS_AUTO = "auto";
 
 
+
+    /** Optionally prints the help message. */
+    public static void checkForHelp(String[] args) 
+        {
+        for(int x=0;x<args.length;x++)
+            if (args[x].equals(A_HELP))
+                {
+                System.err.println(Version.message());
+                System.err.println(
+                    "Format:\n\n" + 
+                    "    java ec.Evolve -file FILE [-p PARAM=VALUE] [-p PARAM=VALUE] ...\n" +
+                    "    java ec.Evolve -from FILE [-p PARAM=VALUE] [-p PARAM=VALUE] ...\n" + 
+                    "    java ec.Evolve -from FILE -at CLASS [-p PARAM=VALUE] [-p PARAM=VALUE] ...\n" + 
+                    "    java ec.Evolve -checkpoint CHECKPOINT\n" + 
+                    "    java ec.Evolve -help\n\n" +
+                    "-help                   Shows this message and exits.\n\n" +
+                    "-file FILE              Launches ECJ using the provided paramter FILE.\n\n" +
+                    "-from FILE              Launches ECJ using the provided parameter FILE\n" + 
+                    "                        which is defined relative to the directory\n" + 
+                    "                        holding the classfile ec/Evolve.class  If this\n" + 
+                    "                        class file is found inside a Jar file, then the\n" + 
+                    "                        FILE will also be assumed to be in that Jar file,\n" +
+                    "                        at the proper relative location.\n\n" +
+                    "-from FILE -at CLASS    Launches ECJ using the provided parameter FILE\n" + 
+                    "                        which is defined relative to the directory\n" + 
+                    "                        holding the classfile CLASSFILE (for example,\n" + 
+                    "                        ec/ant/ant.class).  If this class file is found\n" +
+                    "                        inside a Jar file, then the FILE will also be\n" + 
+                    "                        assumed to be in that Jar file, at the proper\n" +
+                    "                        relative location.\n\n" +
+                    "-p PARAM=VALUE          Overrides the parameter PARAM in the parameter\n" +
+                    "                        file, setting it to the value VALUE instead.  You\n" + 
+                    "                        can override as many parameters as you like on\n" + 
+                    "                        the command line.\n\n" +
+                    "-checkpoint CHECKPOINT  Launches ECJ from the provided CHECKPOINT file.\n"
+                    );
+                System.exit(1);
+                }
+        }
+
     /** Restores an EvolutionState from checkpoint if "-checkpoint FILENAME" is in the command-line arguments. */
     public static EvolutionState possiblyRestoreFromCheckpoint(String[] args)
         {
@@ -165,7 +208,7 @@ public class Evolve
                     }
                 catch(Exception e)
                     {
-                    Output.initialError("An exception was generated upon starting up from a checkpoint.\nHere it is:\n" + e);
+                    Output.initialError("An exception was generated upon starting up from a checkpoint.\nFor help, try:  java ec.Evolve -help.\n\n" + e);
                     }
                 }
         return null;  // should never happen
@@ -188,9 +231,7 @@ public class Evolve
                 catch(Exception e)
                     {
                     e.printStackTrace();
-                    Output.initialError(
-                        "An exception was generated upon reading the parameter file \"" +
-                        args[x+1] + "\".\nHere it is:\n" + e); 
+                    Output.initialError("An exception was generated upon reading the parameter file \"" + args[x+1] + "\".\nHere it is:\n" + e); 
                     }
                     
         // search for a resource class (we may or may not use this)
@@ -200,7 +241,7 @@ public class Evolve
                 try
                     {
                     if (parameters != null)  // uh oh
-                        Output.initialError("Both -file and -at arguments provided.  This is not permitted.");
+                        Output.initialError("Both -file and -at arguments provided.  This is not permitted.\nFor help, try:  java ec.Evolve -help");
                     else 
                         cls = Class.forName(args[x+1]);
                     break;
@@ -210,7 +251,7 @@ public class Evolve
                     e.printStackTrace();
                     Output.initialError(
                         "An exception was generated upon extracting the class to load the parameter file relative to: " + args[x+1] + 
-                        "\n Here it is:\n" + e);
+                        "\nFor help, try:  java ec.Evolve -help.\n\n" + e);
                     }
                     
         // search for a resource (we may or may not use this)
@@ -219,7 +260,7 @@ public class Evolve
                 try
                     {
                     if (parameters != null)  // uh oh
-                        Output.initialError("Both -file and -from arguments provided.  This is not permitted.");
+                        Output.initialError("Both -file and -from arguments provided.  This is not permitted.\nFor help, try:  java ec.Evolve -help");
                     else 
                         {
                         if (cls == null)  // no -at
@@ -233,11 +274,11 @@ public class Evolve
                     {
                     e.printStackTrace();
                     Output.initialError(
-                        "The parameter file is missing at the resource location: " + args[x+1] + " relative to the class: " + cls);
+                        "The parameter file is missing at the resource location: " + args[x+1] + " relative to the class: " + cls + "\n\nFor help, try:  java ec.Evolve -help.");
                     }
 
         if (parameters == null)
-            Output.initialError("No parameter file was specified." );
+            Output.initialError("No parameter or checkpoint file was specified.\nFor help, try:   java ec.Evolve -help" );
         return parameters;
         }
     
@@ -616,6 +657,9 @@ public class Evolve
         {
         EvolutionState state;
         ParameterDatabase parameters;
+        
+        // should we print the help message and quit?
+        checkForHelp(args);
                 
         // if we're loading from checkpoint, let's finish out the most recent job
         state = possiblyRestoreFromCheckpoint(args);
