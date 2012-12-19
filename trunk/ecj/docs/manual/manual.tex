@@ -463,13 +463,19 @@ java ec.Evolve -from app/ecsuite/ecsuite.params
 
 (Note the missing \file{ec/...}).  See Section~\ref{parameterdatabase} for more discussion about all this.
 
-Last but hardly least, ECJ can also restart from a checkpoint file it created in a previous run:
+ECJ can also restart from a checkpoint file it created in a previous run:
 
 \script{%
 java ec.Evolve -checkpoint \textit{myCheckpointFile.gz}
 }
 
 Checkpointing will be discussed in Section~\ref{checkpointing}.
+
+Last but not least, if you forget this stuff, you can always type this to get some reminders:
+
+\script{%
+java ec.Evolve -help
+}
 
 The purpose of \class{ec.Evolve} is to construct an \class{ec.EvolutionState} instance, or load one from a checkpoint file; then get it running; and finally clean up.  The \class{ec.EvolutionState} class actually performs the evolutionary process.   Most of the stuff \class{ec.EvolutionState} holds is associated with evolutionary algorithms or other stochastic optimization procedures.  However there are certain important utility objects or data which are created by \class{ec.Evolve} prior to creating the \class{ec.EvolutionState}, and are then stored into \class{ec.EvolutionState} after it has been constructed.  These objects are:
 

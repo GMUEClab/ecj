@@ -131,8 +131,8 @@ indent:
 doc:
 	javadoc -classpath . -protected -d docs/classdocs ec ec.breed ec.coevolve ec.de ec.display ec.display.chart ec.display.portrayal ec.es ec.eval ec.evolve ec.exchange ec.gp ec.gp.breed ec.gp.build ec.gp.koza ec.multiobjective ec.multiobjective.spea2 ec.multiobjective.nsga2 ec.parsimony ec.pso ec.rule ec.rule.breed ec.select ec.simple ec.spatial ec.steadystate ec.util ec.vector ec.vector.breed ec.gp.ge
 
-# Build an applet jar file.  Note this collects ALL .class, .png, .jpg, index.html, and simulation.classes
-# files.  you'll probably want to strip this down some.
+# Build a jar file.  Note this collects ALL .class, .png, .jpg, index.html, and application example
+# files.  You'll probably want to strip this down some.
 jar: all
 	touch /tmp/manifest.add
 	rm /tmp/manifest.add

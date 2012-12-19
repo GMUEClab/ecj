@@ -1970,3 +1970,5 @@ Version		Change Log
 		ec.vector.Vector.P_VECTOR_GENE made private and deprecated
 		to force the issue.
 	Added a little double-checking on reading vector individuals from files
+	Added a help message (see  java ec.Evolve -help  )
+	Modified the version message to add new contributors
