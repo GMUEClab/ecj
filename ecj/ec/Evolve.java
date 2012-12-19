@@ -208,7 +208,7 @@ public class Evolve
                     }
                 catch(Exception e)
                     {
-                    Output.initialError("An exception was generated upon starting up from a checkpoint.\nFor help, try:  java ec.Evolve -help.\n\n" + e);
+                    Output.initialError("An exception was generated upon starting up from a checkpoint.\nFor help, try:  java ec.Evolve -help\n\n" + e);
                     }
                 }
         return null;  // should never happen
@@ -251,7 +251,7 @@ public class Evolve
                     e.printStackTrace();
                     Output.initialError(
                         "An exception was generated upon extracting the class to load the parameter file relative to: " + args[x+1] + 
-                        "\nFor help, try:  java ec.Evolve -help.\n\n" + e);
+                        "\nFor help, try:  java ec.Evolve -help\n\n" + e);
                     }
                     
         // search for a resource (we may or may not use this)
@@ -274,7 +274,7 @@ public class Evolve
                     {
                     e.printStackTrace();
                     Output.initialError(
-                        "The parameter file is missing at the resource location: " + args[x+1] + " relative to the class: " + cls + "\n\nFor help, try:  java ec.Evolve -help.");
+                        "The parameter file is missing at the resource location: " + args[x+1] + " relative to the class: " + cls + "\n\nFor help, try:  java ec.Evolve -help");
                     }
 
         if (parameters == null)
