@@ -1972,3 +1972,6 @@ Version		Change Log
 	Added a little double-checking on reading vector individuals from files
 	Added a help message (see  java ec.Evolve -help  )
 	Modified the version message to add new contributors
+	Fixed bug where parameter files could be loaded as resources ("-from ...")
+		only when the resource URL was a file path, not a Java path.  This is
+		due to some stupidity on part of Sun's Java URL code.   
