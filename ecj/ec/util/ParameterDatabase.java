@@ -2322,49 +2322,45 @@ public class ParameterDatabase extends Properties implements Serializable
         }
 
     
-    static boolean isJarFile(URL url) { return url.getProtocol().equalsIgnoreCase("jar"); }
+    //// The following four functions are used to modify the paths inside URLs representing
+    //// the internals of Jar files.  This is because getResource and getResourceAsStream are
+    //// broken with regard to resources in Jar files where the internal path has 
+    //// ../ or ./ in it -- they return null rather than  just normalizing the path.  This 
+    //// *isn't* the case for file: URLs, which is irritatingly inconsistent.  So we have to
+    //// modify Jar file URLs specially.  To do this we need to (1) build a default URL for 
+    //// a class, which is hard because for some reason resource URLs in Java can't be
+    //// pointing to directories, or even to nonexistent files, but have to point to real
+    //// files, grrrr, (2) know if a URL is a jar file URL, (3) takes a default Jar file
+    //// URL, plus a relative path, and figures out what the internal path should be if
+    //// revised using the relative path, and finally (4) takes a default Jar file
+    //// URL, plus a relative path, and builds a new URL using the revised internal path.
+    /// Hence the four functions.
+    
+    // Builds a default resource URL for a given class.  For this URL we use the class file
+    // itself.  For example, if the class Foo were stored as /ec/util/Foo.class inside the
+    // Jar file ecj.jar, we might build a URL of the form
+    // jar:file:ecj.jar!/ec/util/Foo.class
+    // This might break for unusual class file names (like Foo$12.class)
     static URL defaultResourceURL(Class cls) { return cls.getResource(cls.getSimpleName() + ".class"); }
+    
+    // Returns whether or not a URL refers to something inside a Jar file.  We do this by
+    // just checking if the protocol is 'jar'.
+    static boolean isJarFile(URL url) { return url.getProtocol().equalsIgnoreCase("jar"); }
 
-    static URL concatenatedJarResource(URL original, String path)
+    // Given a URL referring to something in a Jar file, removes the final filename from
+    // the end of the existing internal path inside the Jar file, then revises the
+    // path to point to the provided path relative to that path.  Returns the resultant
+    // path.  For example, if the URL was jar:file:/private/tmp/ecj.jar!/ec/app/ant/Ant.class
+    // and the relative path was ../../gp/koza.params then the function would return
+    // /ec/gp/koza.params
+    static String concatenatedJarPath(URL original, String path)
         {
         // A Jar URL looks like this:  jar:URLtoJarFile!/path/to/resource/in/jar
         // For example: jar:file:/private/tmp/ecj.jar!/ec/app/ant/Ant.class
 
         // Given another path to tack on, say ../../gp/koza.params
-        // We need to edit this as follows:
+        // The goal is to return the string  "/ec/gp/koza.params"
 
-        // 1. Identify the path start and extract the path
-        // /ec/app/ant/Ant.class
-        String url = original.toString();
-        int i;
-        for(i = url.length() - 2; i >= 0; i--)
-            if (url.charAt(i) == '!' &&
-                url.charAt(i+1) == '/')  // PROBABLY it
-                {
-                break;
-                }
-
-        if (i < 0) // uh oh
-            return null;
-
-        // see concatenatedJarPath for further procedures...
-        String revisedPath = concatenatedJarPath(original, path);
-
-        // 6. Put back in URL
-        // jar:file:/private/tmp/ecj.jar!/ec/gp/koza.params
-        try
-            {
-            return new URL(url.substring(0, i + 1) + revisedPath);
-            }
-        catch (MalformedURLException e)
-            {
-            return null;
-            }
-        }
-        
-    static String concatenatedJarPath(URL original, String path)
-        {
-        // yes, we're repeating ourselves
         // 1. Identify the path start and extract the path
         // /ec/app/ant/Ant.class
         String url = original.toString();
@@ -2412,12 +2408,57 @@ public class ParameterDatabase extends Properties implements Serializable
         }
 
 
+    // Given a URL referring to something in a Jar file, removes the final filename from
+    // the end of the existing internal path inside the Jar file, then revises the
+    // path to point to the provided path relative to that path.  Returns the resultant
+    // URL.  For example, if the URL was jar:file:/private/tmp/ecj.jar!/ec/app/ant/Ant.class
+    // and the relative path was ../../gp/koza.params then the function would return
+    // the URL jar:file:/private/tmp/ecj.jar!/ec/gp/koza.params
+
+    static URL concatenatedJarResource(URL original, String path)
+        {
+        // A Jar URL looks like this:  jar:URLtoJarFile!/path/to/resource/in/jar
+        // For example: jar:file:/private/tmp/ecj.jar!/ec/app/ant/Ant.class
+
+        // Given another path to tack on, say ../../gp/koza.params
+        // We need to edit this as follows:
+
+        // 0. Identify the path start and extract the path
+        // /ec/app/ant/Ant.class
+        String url = original.toString();
+        int i;
+        for(i = url.length() - 2; i >= 0; i--)
+            if (url.charAt(i) == '!' &&
+                url.charAt(i+1) == '/')  // PROBABLY it
+                {
+                break;
+                }
+
+        if (i < 0) // uh oh
+            return null;
+
+        // see concatenatedJarPath for further procedures...
+        String revisedPath = concatenatedJarPath(original, path);
+
+        // 6. Put back in URL
+        // jar:file:/private/tmp/ecj.jar!/ec/gp/koza.params
+        try
+            {
+            return new URL(url.substring(0, i + 1) + revisedPath);
+            }
+        catch (MalformedURLException e)
+            {
+            return null;
+            }
+        }
+        
+
 
     // Eliminates .. and . from a relative path without converting it
     // according to the file system. For example,
     // "hello/there/../how/./are/you/yo/../../hey" becomes
-    // "hello/how/are/hey".  This is useful for making proper
-    // path names for jar files.
+    // "hello/how/are/hey".  This is useful for cleaning up path names for
+    // URLs.
     static String simplifyPath(String pathname)
         {
         File path = new File(pathname);
