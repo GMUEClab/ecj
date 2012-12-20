@@ -10,6 +10,7 @@ package ec.util;
 import java.io.*;
 import java.util.*;
 import javax.swing.tree.*;
+import java.net.*;
 
 /* 
 
@@ -2248,8 +2249,8 @@ public class ParameterDatabase extends Properties implements Serializable
         }
 
     /** 
-    Removes a parameter from the database and all its parent databases. 
-    @deprecated  You shouldn't modify parent databases
+        Removes a parameter from the database and all its parent databases. 
+        @deprecated  You shouldn't modify parent databases
     */
     public synchronized void removeDeeply(Parameter parameter) 
         {
@@ -2320,6 +2321,98 @@ public class ParameterDatabase extends Properties implements Serializable
             }
         }
 
+    
+    static boolean isJarFile(URL url) { return url.getProtocol().equalsIgnoreCase("jar"); }
+    static URL defaultResourceURL(Class cls) { return cls.getResource(cls.getSimpleName() + ".class"); }
+
+    static URL concatenatedJarResource(URL original, String path)
+        {
+        // A Jar URL looks like this:  jar:URLtoJarFile!/path/to/resource/in/jar
+        // For example: jar:file:/private/tmp/ecj.jar!/ec/app/ant/Ant.class
+
+        // Given another path to tack on, say ../../gp/koza.params
+        // We need to edit this as follows:
+
+        // 1. Identify the path start and extract the path
+        // /ec/app/ant/Ant.class
+        String url = original.toString();
+        int i;
+        for(i = url.length() - 2; i >= 0; i--)
+            if (url.charAt(i) == '!' &&
+                url.charAt(i+1) == '/')  // PROBABLY it
+                {
+                break;
+                }
+
+        if (i < 0) // uh oh
+            return null;
+
+        // see concatenatedJarPath for further procedures...
+        String revisedPath = concatenatedJarPath(original, path);
+
+        // 6. Put back in URL
+        // jar:file:/private/tmp/ecj.jar!/ec/gp/koza.params
+        try
+            {
+            return new URL(url.substring(0, i + 1) + revisedPath);
+            }
+        catch (MalformedURLException e)
+            {
+            return null;
+            }
+        }
+        
+    static String concatenatedJarPath(URL original, String path)
+        {
+        // yes, we're repeating ourselves
+        // 1. Identify the path start and extract the path
+        // /ec/app/ant/Ant.class
+        String url = original.toString();
+        int i;
+        for(i = url.length() - 2; i >= 0; i--)
+            if (url.charAt(i) == '!' &&
+                url.charAt(i+1) == '/')  // PROBABLY it
+                {
+                break;
+                }
+
+        if (i < 0) // uh oh
+            return null;
+
+        String originalPath = url.substring(i+1);  // don't include the !
+
+        if (path.startsWith("/"))  // it's absolute
+            {
+            // 2. If the replacement path is absolute, just use that.
+            originalPath = path;  // just replace it
+            }
+        else
+            {
+            // 3. Else remove the file
+            // /ec/app/ant/
+            int j;
+            for(j = originalPath.length() - 1; j >= 0; j--)
+                if (originalPath.charAt(j) == '/')  // PROBABLY is it
+                    {
+                    break;
+                    }
+            if (j < 0) // uh oh
+                return null;
+
+            originalPath = originalPath.substring(0, j+1);  // include the slash
+
+            // 4. Tack on the replacement path
+            // /ec/app/ant/../../gp/koza.params
+            originalPath += path;
+            }
+
+        // 5. Simplify
+        // /ec/gp/koza.params
+        return simplifyPath(originalPath);
+        }
+
+
+
     // Eliminates .. and . from a relative path without converting it
     // according to the file system. For example,
     // "hello/there/../how/./are/you/yo/../../hey" becomes
@@ -2376,7 +2469,7 @@ public class ParameterDatabase extends Properties implements Serializable
         // Create the Parameter Database for the arguments
         ParameterDatabase a = new ParameterDatabase();
         a.relativeClass = cls;
-        a.relativePath = simplifyPath(pathNameRelativeToClassFile);
+        a.relativePath = files.relativePath;
 
         a.parents.addElement(files);
         boolean hasArgs = false;
@@ -2400,7 +2493,7 @@ public class ParameterDatabase extends Properties implements Serializable
 
         // Set me up
         relativeClass = cls;
-        relativePath = simplifyPath(pathNameRelativeToClassFile);
+        relativePath = files.relativePath;
 
         parents.addElement(a);
         //listeners = new Vector();
@@ -2417,9 +2510,34 @@ public class ParameterDatabase extends Properties implements Serializable
         {
         this();
         label = "" + cls + " : " + pathNameRelativeToClassFile;
+        
+        URL def = defaultResourceURL(cls);
         relativeClass = cls;
-        relativePath = simplifyPath(pathNameRelativeToClassFile);
-        load(cls.getResourceAsStream(relativePath));
+        try
+            {
+            if (isJarFile(def))
+                {
+                // loading from jar file, handle it specially.  This is because
+                // file URLs can handle ../ etc but jar urls CANNOT, stupid Java
+                relativePath = concatenatedJarPath(def, pathNameRelativeToClassFile);
+                load(concatenatedJarResource(def, pathNameRelativeToClassFile).openStream());
+                }
+            else
+                {
+                relativePath = simplifyPath(pathNameRelativeToClassFile);
+                load(cls.getResourceAsStream(relativePath));
+                }
+            }
+        catch (NullPointerException e)
+            {
+            throw new IOException("Could not load database from resource file " + relativePath +
+                " relative to the class " + cls, e);
+            }
+        catch (IOException e)
+            {
+            throw new IOException("Could not load database from resource file " + relativePath +
+                " relative to the class " + cls, e);
+            }
 
         //listeners = new Vector();
 
@@ -2507,7 +2625,7 @@ public class ParameterDatabase extends Properties implements Serializable
         label = "File: " + file.getPath();
         //this.file = file.getName();
         directory = new File(file.getParent()); // get the directory
-                                                    // file is in
+        // file is in
         load(new FileInputStream(file));
 
         //listeners = new Vector();
@@ -2556,7 +2674,7 @@ public class ParameterDatabase extends Properties implements Serializable
         label = "File: " + file.getPath();
         //this.file = file.getName();
         directory = new File(file.getParent()); // get the directory
-                                                    // file is in
+        // file is in
 
         // Create the Parameter Database tree for the files
         ParameterDatabase files = new ParameterDatabase(file);
