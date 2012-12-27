@@ -171,7 +171,7 @@ public class Evolve
                     "    java ec.Evolve -checkpoint CHECKPOINT\n" + 
                     "    java ec.Evolve -help\n\n" +
                     "-help                   Shows this message and exits.\n\n" +
-                    "-file FILE              Launches ECJ using the provided paramter FILE.\n\n" +
+                    "-file FILE              Launches ECJ using the provided parameter FILE.\n\n" +
                     "-from FILE              Launches ECJ using the provided parameter FILE\n" + 
                     "                        which is defined relative to the directory\n" + 
                     "                        holding the classfile ec/Evolve.class  If this\n" + 
@@ -180,7 +180,7 @@ public class Evolve
                     "                        at the proper relative location.\n\n" +
                     "-from FILE -at CLASS    Launches ECJ using the provided parameter FILE\n" + 
                     "                        which is defined relative to the directory\n" + 
-                    "                        holding the classfile CLASSFILE (for example,\n" + 
+                    "                        holding the classfile CLASS (for example,\n" + 
                     "                        ec/ant/ant.class).  If this class file is found\n" +
                     "                        inside a Jar file, then the FILE will also be\n" + 
                     "                        assumed to be in that Jar file, at the proper\n" +
