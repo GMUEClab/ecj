@@ -4324,7 +4324,7 @@ When an individual returns with its fitness assessed, it then is added to the Su
 
 \item {\bf Stage 2: The Steady State}.  One-by-one, individuals are {\it bred} and then sent off to be evaluated.  Again, in Steady-State evolution, this evaluation happens immediately and each individual is returned immediately.  However in Asynchronous Evolution individuals are shipped off to remote sites and may not come back for a while.  In this case evolution does not wait for them, but continues breeding new individuals.
 
-When an individual returns with its fitness assessed, an existing Subpopulation member is marked for death, and is then replaced with the new individual.  Note that if using Asynchronous Evolution, some of these new individuals may be stragglers created during Initialization.
+When an individual returns with its fitness assessed, an existing Subpopulation member is marked for death.  With a certain probability the marked-for-death individual is directly replaced with the new individual; else it is replaced by the new individual only if the new individual's fitness is superior.  Note that if using Asynchronous Evolution, some of these new individuals may be stragglers created during Initialization.
 \end{itemize}
 
 These stages aren't immediately obvious from Figure \ref{SteadyState}: they're distinguished by both ``Is the Subpopulation Full?'' branches.
@@ -4349,6 +4349,27 @@ steady.deselector.0.size = 1
 
 \params{%
 steady.deselector.0 = ec.select.RandomSelection
+}
+
+Once an individual has been selected for death, we determine to what degree the new incoming individual must compete with it for its spot in the population.  This is done with an EvolutionState parameter.  Let's say we want the incoming individual to {\it always} have to compete with the existing individual for the existing individual's spot in the population.  We'd do:
+
+\params{%
+\% No direct replacement -- must always compete\\
+steady.replacement-probability = 0.0
+}
+
+Alternatively we could just dump in the new individual every time, displacing the individual marked for death:
+
+\params{%
+\% No competition.  Always directly replace\\
+steady.replacement-probability = 1.0
+}
+
+This is {\bf the default} if you don't provide a parameter setting, and it's reasonable for ordinary Steady-State Evolution: but it's probably not smart if you're doing Asynchronous Evolution (See Section~\ref{ec.eval}) with a large number of processors relative to the population size.  And of course you could have any probability value in-between:
+
+\params{%
+\% With 0.15 probability, directly replace, and with 0.85, require competition\\
+steady.replacement-probability = 0.15
 }
 
 All BreedingSources in your breeding pipeline, and in particular SelectionMethods, must implement \class{ec.steadystate.SteadyStateBSourceForm}.  This interface contains a method called to update the BreedingSource that a new individual has entered into the population, displacing an old one.  This is important because some SelectionMethods, such as FitProportionateSelection, rely on precomputed statistics which will be no longer correct.  This method is:
