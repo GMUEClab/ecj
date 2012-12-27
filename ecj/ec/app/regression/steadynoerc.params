@@ -5,8 +5,6 @@
 parent.0 = ../../steadystate/steadystate.params
 parent.1 = ./noerc.params
 
-breed.reproduce.source.0 = ec.steadystate.MyDoubleTournamentSelection
-gp.koza.xover.source.0 = ec.steadystate.MyDoubleTournamentSelection
 select.my-double-tournament.do-length-first = true
 select.my-double-tournament.size = 1.4
 select.my-double-tournament.size2 = 7

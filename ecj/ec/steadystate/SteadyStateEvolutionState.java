@@ -48,6 +48,10 @@ import java.util.*;
  <tr><td valign=top><tt>evaluations</tt><br>
  <font size=-1>int &gt;= 1</font></td>
  <td valign=top>(maximal number of evaluations to run.)</td></tr>
+ <tr><td valign=top><tt>steady.replacement-probability</tt><br>
+ <font size=-1>0.0 &lt;= double &lt;= 1.0 (default is 1.0)</font></td>
+ <td valign=top>(probability that an incoming individual will unilaterally replace the individual marked 
+                 for death, as opposed to replacing it only if the incoming individual is superior in fitness)</td></tr>
  </table>
  
  *
@@ -58,8 +62,8 @@ import java.util.*;
 
 public class SteadyStateEvolutionState extends EvolutionState
     {
-    /** base parameter for steady-state */
     public static final String P_NUMEVALUATIONS = "evaluations";
+    public static final String P_REPLACEMENT_PROBABILITY = "replacement-probability";
         
     /** Did we just start a new generation? */
     public boolean generationBoundary;
@@ -70,6 +74,9 @@ public class SteadyStateEvolutionState extends EvolutionState
     public int generationSize;
     /** How many evaluations have we run so far? */
     public long evaluations;
+    /** When a new individual arrives, with what probability should it directly replace the existing
+        "marked for death" individual, as opposed to only replacing it if it's superior? */
+    public double replacementProbability;
         
     /** How many individuals have we added to the initial population? */ 
     int[] individualCount; 
@@ -100,6 +107,19 @@ public class SteadyStateEvolutionState extends EvolutionState
         numEvaluations = parameters.getLong(new Parameter(P_NUMEVALUATIONS),null,1);
         if (numEvaluations == 0)
             output.message("Number of evaluations not defined; using number of generations");
+            
+        if (parameters.exists(SteadyStateDefaults.base().push(P_REPLACEMENT_PROBABILITY),null))
+            {
+            replacementProbability = parameters.getDoubleWithMax(SteadyStateDefaults.base().push(P_REPLACEMENT_PROBABILITY),null,0.0, 1.0);
+            if (replacementProbability < 0.0) // uh oh
+                state.output.error("Replacement probability must be between 0.0 and 1.0 inclusive.",
+                    SteadyStateDefaults.base().push(P_REPLACEMENT_PROBABILITY), null);
+            }
+        else
+            {
+            replacementProbability = 1.0;  // always replace
+            state.output.message("Replacement probability not defined: using 1.0 (always replace)");
+            }
         }
     
     // recursively prints out warnings for all statistics that are not
@@ -237,9 +257,11 @@ public class SteadyStateEvolutionState extends EvolutionState
                 // mark individual for death 
                 int deadIndividual = ((SteadyStateBreeder)breeder).deselectors[subpop].produce(subpop,this,0);
                 Individual deadInd = population.subpops[subpop].individuals[deadIndividual];
-                                
-                // replace dead individual with new individual 
-                population.subpops[subpop].individuals[deadIndividual] = ind; 
+                
+                // maybe replace dead individual with new individual
+                if (ind.fitness.betterThan(deadInd.fitness) ||         // it's better, we want it
+                    random[0].nextDouble() < replacementProbability)      // it's not better but maybe we replace it directly anyway
+                        population.subpops[subpop].individuals[deadIndividual] = ind;
                                 
                 // update duplicate hash table 
                 individualHash[subpop].remove(deadInd); 

@@ -1975,3 +1975,8 @@ Version		Change Log
 	Fixed bug where parameter files could be loaded as resources ("-from ...")
 		only when the resource URL was a file path, not a Java path.  This is
 		due to some stupidity on part of Sun's Java URL code.   
+	Added ability to specify, in Steady State, the probability that an incoming
+		individual will directly replace an individual marked for death as
+		opposed to only replacing it if the incoming individual is superior.
+	Removed spurious references to "MyDoubleTournamentSelection" in
+		regression/steadystatenoerc.params
