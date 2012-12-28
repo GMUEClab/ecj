@@ -148,7 +148,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
         "koza1", "koza1", "koza1", "koza1", "koza1", "koza1", "koza1", "koza1", "koza2", "koza2", "koza2", "koza2",
         "koza2", "koza3",
         "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", 
-        "keijzer1", "keijzer1", "keijzer2", "keijzer1", "keijzer3", "keijzer1", "keijzer1", "keijzer1", "keijzer1", "keijzer2", "keijzer2", "keijzer2", "keijzer2", "keijzer2", "keijzer2",
+        "keijzer1", "keijzer1", "keijzer1"/* revised from GECCO paper */,  "keijzer1", "keijzer3", "keijzer1", "keijzer1", "keijzer1", "keijzer1", "keijzer2", "keijzer2", "keijzer2", "keijzer2", "keijzer2", "keijzer2",
         "vladislavleva-b2", "vladislavleva-c1", "vladislavleva-c2", "vladislavleva-a5", "vladislavleva-a3", "vladislavleva-b2", "vladislavleva-c2", "vladislavleva-a2"
         };
         
@@ -304,8 +304,8 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
             case KEIJZER4:
                 return generateIntervalSpacedSamples(state, 0, 10, 0.05, threadnum);
                                 
-            case KEIJZER5:
-                return generateRandomSamples(state, new double[] { -1, -1, 1 }, new double[] { 1, 1, 2 }, 1000, threadnum);
+            case KEIJZER5:      // revised from GECCO paper
+                return generateRandomSamples(state, new double[] { -1, 1, -1 }, new double[] { 1, 2, 1 }, 1000, threadnum);
                                 
             case KEIJZER6:
                 return generateIntervalSpacedSamples(state, 1, 50, 1, threadnum);
@@ -329,7 +329,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
             case VLADISLAVLEVA1:
                 return generateRandomSamples(state, new double[] { 0.3, 0.3 }, new double[] { 4, 4 }, 100, threadnum);
                                 
-            case VLADISLAVLEVA2:
+            case VLADISLAVLEVA2:      // revised from GECCO paper
                 return generateIntervalSpacedSamples(state, 0.05, 10, 0.1, threadnum);
                                 
             case VLADISLAVLEVA3:
@@ -414,8 +414,8 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
             case KEIJZER4:
                 return generateIntervalSpacedSamples(state, 0.05, 10.05, 0.05, threadnum);
                                 
-            case KEIJZER5:
-                return generateRandomSamples(state, new double[] { -1, -1, 1 }, new double[] { 1, 1, 2 }, 10000, threadnum);  // 10000 cases for testing, different than for training
+            case KEIJZER5:      // revised from GECCO paper
+                return generateRandomSamples(state, new double[] { -1, 1, -1 }, new double[] { 1, 2, 1 }, 10000, threadnum);  // 10000 cases for testing, different than for training
                                 
             case KEIJZER6:
                 return generateIntervalSpacedSamples(state, 1, 120, 1, threadnum);
@@ -436,7 +436,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
             case KEIJZER15:
                 return generateIntervalSpacedSamples(state, new double[] { -3.0, -3.0 }, new double[] { 3.0, 3.0 }, new double[] { 0.01, 0.01 }, threadnum);
                                 
-            case VLADISLAVLEVA1:
+            case VLADISLAVLEVA1:      // revised from GECCO paper
                 return generateIntervalSpacedSamples(state, new double[] { -0.2, -0.2 }, new double[] { 4.2, 4.2 }, new double[] { 0.1, 0.1 }, threadnum);
                                 
             case VLADISLAVLEVA2:
@@ -532,8 +532,8 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
                 return 213.80940889 - (213.80940889 * Math.exp(-0.54723748542 * xs[0]));
             case KORNS8:
                 return 6.87 + (11.0 * Math.sqrt(7.23 * xs[0] * xs[3] * xs[4]));
-            case KORNS9:
-                return Math.sqrt(xs[0]) / Math.log(xs[1]) * Math.exp(xs[2] / (xs[3] * xs[3]));
+            case KORNS9:        // revised from GECCO paper
+                return Math.sqrt(xs[0]) / Math.log(xs[1]) * Math.exp(xs[2]) / (xs[3] * xs[3]);
             case KORNS10:
                 return 0.81 + (24.3 * (((2.0 * xs[1]) + (3.0 * (xs[2] * xs[2]))) / ((4.0 * (xs[3]*xs[3]*xs[3])) + (5.0 * (xs[4]*xs[4]*xs[4]*xs[4])))));
             case KORNS11:
