@@ -230,12 +230,40 @@ public class ShortVectorIndividual extends VectorIndividual
         {
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
         if (s.mutationProbability>0.0)
-            for(int x=0;x<genome.length;x++)
-                if (state.random[thread].nextBoolean(s.mutationProbability))
-                    genome[x] = (short)((int)s.minGene(x) + state.random[thread].nextInt((int)s.maxGene(x)-(int)s.minGene(x)+1));
+            {
+            switch(s.mutationType)
+                {
+                case IntegerVectorSpecies.C_RESET_MUTATION:
+                    for(int x=0;x<genome.length;x++)
+                        if (state.random[thread].nextBoolean(s.mutationProbability))
+                            genome[x] = (short)((int)s.minGene(x) + state.random[thread].nextInt((int)s.maxGene(x)-(int)s.minGene(x)+1));
+                    break;
+                case IntegerVectorSpecies.C_RANDOM_WALK_MUTATION:
+                {
+                double prob = s.randomWalkProbability;
+                for(int x=0;x<genome.length;x++)
+                    if (state.random[thread].nextBoolean(s.mutationProbability))
+                        {
+                        short min = (short)s.minGene(x);
+                        short max = (short)s.maxGene(x);
+                        do
+                            {
+                            short n = (short)(state.random[thread].nextBoolean() ? 1 : -1);
+                            short g = genome[x];
+                            if ((n == 1 && g < max) ||
+                                (n == -1 && g > min))
+                                genome[x] = (short)(g + n);
+                            else if ((n == -1 && g < max) ||
+                                (n == 1 && g > min))
+                                genome[x] = (short)(g - n);    
+                            }
+                        while (state.random[thread].nextBoolean(s.randomWalkProbability));
+                        }
+                }
+                break;
+                }
+            }
         }
-        
-    
 
     /** Initializes the individual by randomly choosing Shorts uniformly from mingene to maxgene. */
     public void reset(EvolutionState state, int thread)

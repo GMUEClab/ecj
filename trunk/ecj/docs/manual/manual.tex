@@ -4762,10 +4762,6 @@ Different representations have different kinds of mutations.  Specifically:
 
 \begin{itemize}
 
-\item {\bf Boolean} (\variable{boolean}): the default mutation operator simply flips the boolean value with the given mutation probability.
-
-\item {\bf Integer} (\variable{byte, short, int, long}): the default mutation operator simply randomizes the integer value between the legal minimum and maximum values (with the mutation probability of course).  There are almost certainly smarter approaches than this\,---\,you'll probably want to implement something in a subclass.
-
 \item {\bf Gene}: the default mutation operator for \class{ec.vector.GeneVectorIndividual}, with the given mutation probability, calls the following Gene method:
 
 \java{%
@@ -4779,6 +4775,28 @@ public void reset(EvolutionState state, int thread);
 }
 
 \noindent ...on the Gene.
+
+\item {\bf Boolean} (\variable{boolean}): the default mutation operator simply flips the boolean value with the given mutation probability.
+
+\item {\bf Integer} (\variable{byte, short, int, long}):  allows uniform gene randomization (\parameter{reset}) and random walk mutation (\parameter{random-walk}).
+
+\paragraph{Uniform Mutation}
+Uniform gene randomization simply sets the gene to a random value between its minimum and maximum legal values.  To use it, you say:
+
+\params{%
+pop.subpop.0.species.mutation-type = reset
+}
+
+\paragraph{Random Walk Mutation}
+Random walk mutation performs a random walk starting at the current gene value.  Each step in the random walk it sets a variable \(n\) to either 1 or \(-1\).  Then it tries adding \(n\) to the current value as long as this does not exceed the minimum and maximum legal values.  If the values were exceeded, it instead tries subtracting \(n\) from the current value as long as this toes not exceed the minimum and maximum values.  Then with a probability value of \parameter{random-walk-probability} it iterates  another step, else it immediately quits the walk.  At the end of the walk, the gene is set to the current value, as modified during the walk.  You will need to specify this probability along with the mutation type, for example:
+
+\params{%
+pop.subpop.0.species.mutation-type = random-walk\\
+\# This is the probability that we will continue the random walk;\\
+\# hence larger probabilities yield longer walks.\\
+pop.subpop.0.species.random-walk-probability = 0.9
+}
+
 \item {\bf Floating Point} (\variable{float, double}): allows uniform gene randomization (\parameter{reset}), Gaussian mutation (\parameter{gauss}), or Polynomial mutation(\parameter{polynomial}).  
 
 \paragraph{Uniform Mutation}

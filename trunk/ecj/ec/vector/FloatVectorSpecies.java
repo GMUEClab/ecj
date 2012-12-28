@@ -187,6 +187,7 @@ import ec.util.*;
  * @author Sean Luke, Gabriel Balan, Rafal Kicinger
  * @version 2.0
  */
+ 
 public class FloatVectorSpecies extends VectorSpecies
     {
     public final static String P_MINGENE = "min-gene";

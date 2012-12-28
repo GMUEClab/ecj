@@ -129,6 +129,21 @@ public class IntegerVectorSpecies extends VectorSpecies
 
     public final static String P_SEGMENT = "segment";
         
+    public final static String P_MUTATIONTYPE = "mutation-type";
+
+    public final static String P_RANDOM_WALK_PROBABILITY = "random-walk-probability";
+
+    public final static String V_RESET_MUTATION = "reset";
+
+    public final static String V_RANDOM_WALK_MUTATION = "random-walk";
+
+    public final static int C_RESET_MUTATION = 0;
+
+    public final static int C_RANDOM_WALK_MUTATION = 1;
+
+    public int mutationType;
+    public double randomWalkProbability;
+        
     public long[] minGenes;
     public long[] maxGenes;
     
@@ -312,6 +327,31 @@ public class IntegerVectorSpecies extends VectorSpecies
             }
 
                 
+ 
+        /// MUTATION
+        
+
+        String mtype = state.parameters.getStringWithDefault(base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE), null);
+        mutationType = C_RESET_MUTATION;
+        if (mtype == null)
+            state.output.warning("No mutation type given for IntegerVectorSpecies, assuming 'reset' mutation",
+                base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE));
+        else if (mtype.equalsIgnoreCase(V_RESET_MUTATION))
+            mutationType = C_RESET_MUTATION; // redundant
+        else if (mtype.equalsIgnoreCase(V_RANDOM_WALK_MUTATION))
+            mutationType = C_RANDOM_WALK_MUTATION;
+        else
+            state.output.fatal("IntegerVectorSpecies given a bad mutation type: "
+                + mtype, base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE));
+
+        if (mutationType == C_RANDOM_WALK_MUTATION)
+            {
+            randomWalkProbability = state.parameters.getDoubleWithMax(base.push(P_RANDOM_WALK_PROBABILITY),def.push(P_RANDOM_WALK_PROBABILITY), 0.0, 1.0);
+            if (randomWalkProbability <= 0)
+                state.output.fatal("If it's going to use random walk mutation, IntegerVectorSpecies must a random walk mutation probability between 0.0 and 1.0.",
+                    base.push(P_RANDOM_WALK_PROBABILITY), def.push(P_RANDOM_WALK_PROBABILITY));
+            }           
+            
         /*
         //Debugging
         for(int i = 0; i < minGenes.length; i++)

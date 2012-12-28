@@ -260,16 +260,49 @@ public class LongVectorIndividual extends VectorIndividual
         else return min + random.nextLong(max - min + 1L);
         }
 
+
     /** Destructively mutates the individual in some default manner.  The default form
         simply randomizes genes to a uniform distribution from the min and max of the gene values. */
     public void defaultMutate(EvolutionState state, int thread)
         {
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
         if (s.mutationProbability>0.0)
-            for(int x=0;x<genome.length;x++)
-                if (state.random[thread].nextBoolean(s.mutationProbability))
-                    genome[x] = randomValueFromClosedInterval(s.minGene(x), s.maxGene(x), state.random[thread]);
+            {
+            switch(s.mutationType)
+                {
+                case IntegerVectorSpecies.C_RESET_MUTATION:
+                    for(int x=0;x<genome.length;x++)
+                        if (state.random[thread].nextBoolean(s.mutationProbability))
+                            genome[x] = randomValueFromClosedInterval(s.minGene(x), s.maxGene(x), state.random[thread]);
+                    break;
+                case IntegerVectorSpecies.C_RANDOM_WALK_MUTATION:
+                {
+                double prob = s.randomWalkProbability;
+                for(int x=0;x<genome.length;x++)
+                    if (state.random[thread].nextBoolean(s.mutationProbability))
+                        {
+                        long min = (long)s.minGene(x);
+                        long max = (long)s.maxGene(x);
+                        do
+                            {
+                            long n = (state.random[thread].nextBoolean() ? 1L : -1L);
+                            long g = genome[x];
+                            if ((n == 1L && g < max) ||
+                                (n == -1L && g > min))
+                                genome[x] = g + n;
+                            else if ((n == -1L && g < max) ||
+                                (n == 1L && g > min))
+                                genome[x] = g - n;     
+                            }
+                        while (state.random[thread].nextBoolean(s.randomWalkProbability));
+                        }
+                }
+                break;
+                }
+            }
         }
+
+
         
     /** Initializes the individual by randomly choosing Longs uniformly from mingene to maxgene. */
     public void reset(EvolutionState state, int thread)
