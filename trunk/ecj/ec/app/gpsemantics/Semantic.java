@@ -193,7 +193,7 @@ public class Semantic extends GPProblem implements SimpleProblemForm
         String retval = "";
         for (int i = 0; i < p.size(); i++) {
             retval += p.get(i).toString() + " ";
-        }
+            }
         return retval;
         }
 
