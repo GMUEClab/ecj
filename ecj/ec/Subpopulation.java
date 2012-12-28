@@ -301,8 +301,8 @@ public class Subpopulation implements Group
                  {
                  int j = Code.readIntegerWithPreamble(INDIVIDUAL_INDEX_PREAMBLE, state, reader);
                  // sanity check
-                if (j!=i) state.output.warnOnce("On reading subpopulation from text stream, some individual indexes in the subpopulation did not match.\n" +
-                    "The first was individual " + i + ", which is listed in the file as " + j);
+                 if (j!=i) state.output.warnOnce("On reading subpopulation from text stream, some individual indexes in the subpopulation did not match.\n" +
+                     "The first was individual " + i + ", which is listed in the file as " + j);
                  if (individuals[i] != null)
                      individuals[i].readIndividual(state, reader);
                  else
