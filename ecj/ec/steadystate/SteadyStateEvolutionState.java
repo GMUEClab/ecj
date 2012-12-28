@@ -51,7 +51,7 @@ import java.util.*;
  <tr><td valign=top><tt>steady.replacement-probability</tt><br>
  <font size=-1>0.0 &lt;= double &lt;= 1.0 (default is 1.0)</font></td>
  <td valign=top>(probability that an incoming individual will unilaterally replace the individual marked 
-                 for death, as opposed to replacing it only if the incoming individual is superior in fitness)</td></tr>
+ for death, as opposed to replacing it only if the incoming individual is superior in fitness)</td></tr>
  </table>
  
  *
@@ -261,7 +261,7 @@ public class SteadyStateEvolutionState extends EvolutionState
                 // maybe replace dead individual with new individual
                 if (ind.fitness.betterThan(deadInd.fitness) ||         // it's better, we want it
                     random[0].nextDouble() < replacementProbability)      // it's not better but maybe we replace it directly anyway
-                        population.subpops[subpop].individuals[deadIndividual] = ind;
+                    population.subpops[subpop].individuals[deadIndividual] = ind;
                                 
                 // update duplicate hash table 
                 individualHash[subpop].remove(deadInd); 
