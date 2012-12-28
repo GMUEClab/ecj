@@ -49,6 +49,11 @@ gp.tc.0.fset = vladislavleva-b2
 # problems and function sets and expected number of variables (you need this last one
 # if you're building your own training and/or testing files).  See further down
 # in this file for an explanation of the naming style of the function sets.
+# 
+# After the GECCO paper was released, we made tweaks to some of the definitions of the
+# problems below due to errors in the paper.  The revised version of the paper has
+# been posted at gpbenchmarks.org and my website, and the problem definitions reflect
+# those changes as of January 1, 2013.
 
 # PROBLEM NAME        FUNCTION SET      NUMBER OF VARIABLES, AND USEFUL NOTES
 # koza-1              koza1             1       * no testing set
@@ -64,8 +69,8 @@ gp.tc.0.fset = vladislavleva-b2
 # nguyan-8            koza1             1       * no testing set
 # nguyen-9            koza2             2       * no testing set
 # nguyen-10           koza2             2       * no testing set
-# nguyen-11           koza2             2       * no testing set
-# nguyen-12           koza2             2       * no testing set
+# nguyen-11           koza2             2       * no testing set; not in REVISED GECCO paper
+# nguyen-12           koza2             2       * no testing set; not in REVISED GECCO paper
 # pagie-1             koza2             2       * no testing set
 # pagie-2             koza3             3       * no testing set; not in GECCO paper
 # korns-1             korns5            5       
@@ -76,7 +81,7 @@ gp.tc.0.fset = vladislavleva-b2
 # korns-6             korns5            5
 # korns-7             korns5            5
 # korns-8             korns5            5
-# korns-9             korns5            5
+# korns-9             korns5            5       * Revised from GECCO paper
 # korns-10            korns5            5
 # korns-11            korns5            5
 # korns-12            korns5            5
@@ -85,9 +90,9 @@ gp.tc.0.fset = vladislavleva-b2
 # korns-15            korns5            5
 # keijzer-1           keijzer1          1
 # keijzer-2           keijzer1          1
-# keijzer-3           keijzer2          2
+# keijzer-3           keijzer2          1       * Revised from GECCO paper
 # keijzer-4           keijzer1          1
-# keijzer-5           keijzer3          3
+# keijzer-5           keijzer3          3       * Revised from GECCO paper
 # keijzer-6           keijzer1          1
 # keijzer-7           keijzer1          1
 # keijzer-8           keijzer1          1
@@ -98,8 +103,8 @@ gp.tc.0.fset = vladislavleva-b2
 # keijzer-13          keijzer2          2
 # keijzer-14          keijzer2          2
 # keijzer-15          keijzer2          2
-# vladislavleva-1     vladislavleva-b2  2
-# vladislavleva-2     vladislavleva-c1  1
+# vladislavleva-1     vladislavleva-b2  2       * Revised from GECCO paper
+# vladislavleva-2     vladislavleva-c1  1       * Revised from GECCO paper
 # vladislavleva-3     vladislavleva-c2  2
 # vladislavleva-4     vladislavleva-a5  5
 # vladislavleva-5     vladislavleva-a3  3
