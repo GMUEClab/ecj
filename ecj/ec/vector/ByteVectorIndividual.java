@@ -230,12 +230,41 @@ public class ByteVectorIndividual extends VectorIndividual
         {
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
         if (s.mutationProbability>0.0)
-            for(int x=0;x<genome.length;x++)
-                if (state.random[thread].nextBoolean(s.mutationProbability))
-                    genome[x] = (byte)((int)s.minGene(x) + state.random[thread].nextInt((int)s.maxGene(x)-(int)s.minGene(x)+1));
+            {
+            switch(s.mutationType)
+                {
+                case IntegerVectorSpecies.C_RESET_MUTATION:
+                    for(int x=0;x<genome.length;x++)
+                        if (state.random[thread].nextBoolean(s.mutationProbability))
+                            genome[x] = (byte)((int)s.minGene(x) + state.random[thread].nextInt((int)s.maxGene(x)-(int)s.minGene(x)+1));
+                    break;
+                case IntegerVectorSpecies.C_RANDOM_WALK_MUTATION:
+                {
+                double prob = s.randomWalkProbability;
+                for(int x=0;x<genome.length;x++)
+                    if (state.random[thread].nextBoolean(s.mutationProbability))
+                        {
+                        byte min = (byte)s.minGene(x);
+                        byte max = (byte)s.maxGene(x);
+                        do
+                            {
+                            byte n = (byte)(state.random[thread].nextBoolean() ? 1 : -1);
+                            byte g = genome[x];
+                            if ((n == 1 && g < max) ||
+                                (n == -1 && g > min))
+                                genome[x] = (byte)(g + n);
+                            else if ((n == -1 && g < max) ||
+                                (n == 1 && g > min))
+                                genome[x] = (byte)(g - n);     
+                            }
+                        while (state.random[thread].nextBoolean(s.randomWalkProbability));
+                        }
+                }
+                break;
+                }
+            }
         }
-        
-    
+
 
     /** Initializes the individual by randomly choosing Bytes uniformly from mingene to maxgene. */
     public void reset(EvolutionState state, int thread)

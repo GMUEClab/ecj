@@ -1980,3 +1980,6 @@ Version		Change Log
 		opposed to only replacing it if the incoming individual is superior.
 	Removed spurious references to "MyDoubleTournamentSelection" in
 		regression/steadystatenoerc.params
+	Added Random Walk mutation to IntegerVectorSpecies, and moved the default
+		mutator to Reset mutation -- it's still the default but you'll get
+		a warning if you don't explicitly set it.

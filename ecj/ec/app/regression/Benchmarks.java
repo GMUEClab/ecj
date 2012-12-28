@@ -668,8 +668,8 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
     public double[][] testingInputs;
     public double[] testingOutputs;
 
-        // don't bother cloning the inputs and outputs; they're read-only :-)
-        // don't bother cloning the current value, it's only set during evaluation
+    // don't bother cloning the inputs and outputs; they're read-only :-)
+    // don't bother cloning the current value, it's only set during evaluation
 
     public void setup(EvolutionState state, Parameter base)
         {
@@ -891,7 +891,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
 
     public void describe(EvolutionState state, Individual ind, int subpopulation, int threadnum, int log)
         {
-            RegressionData input = (RegressionData)(this.input);
+        RegressionData input = (RegressionData)(this.input);
 
         // we do the testing set here
         

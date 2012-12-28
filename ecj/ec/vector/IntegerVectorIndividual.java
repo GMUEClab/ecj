@@ -238,14 +238,43 @@ public class IntegerVectorIndividual extends VectorIndividual
 
     /** Destructively mutates the individual in some default manner.  The default form
         simply randomizes genes to a uniform distribution from the min and max of the gene values. */
-    // notice that we bump to longs to avoid overflow errors
     public void defaultMutate(EvolutionState state, int thread)
         {
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
         if (s.mutationProbability>0.0)
-            for(int x=0;x<genome.length;x++)
-                if (state.random[thread].nextBoolean(s.mutationProbability))
-                    genome[x] = randomValueFromClosedInterval((int)s.minGene(x), (int)s.maxGene(x), state.random[thread]);
+            {
+            switch(s.mutationType)
+                {
+                case IntegerVectorSpecies.C_RESET_MUTATION:
+                    for(int x=0;x<genome.length;x++)
+                        if (state.random[thread].nextBoolean(s.mutationProbability))
+                            genome[x] = randomValueFromClosedInterval((int)s.minGene(x), (int)s.maxGene(x), state.random[thread]);
+                    break;
+                case IntegerVectorSpecies.C_RANDOM_WALK_MUTATION:
+                {
+                double prob = s.randomWalkProbability;
+                for(int x=0;x<genome.length;x++)
+                    if (state.random[thread].nextBoolean(s.mutationProbability))
+                        {
+                        int min = (int)s.minGene(x);
+                        int max = (int)s.maxGene(x);
+                        do
+                            {
+                            int n = (int)(state.random[thread].nextBoolean() ? 1 : -1);
+                            int g = genome[x];
+                            if ((n == 1 && g < max) ||
+                                (n == -1 && g > min))
+                                genome[x] = g + n;
+                            else if ((n == -1 && g < max) ||
+                                (n == 1 && g > min))
+                                genome[x] = g - n;     
+                            }
+                        while (state.random[thread].nextBoolean(s.randomWalkProbability));
+                        }
+                }
+                break;
+                }
+            }
         }
         
     
