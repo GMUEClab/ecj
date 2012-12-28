@@ -122,7 +122,7 @@ public class KLandscapes extends GPProblem implements SimpleProblemForm {
             {
             double score = fitness(((GPIndividual) ind).trees[0].child);
             SimpleFitness f = ((SimpleFitness) ind.fitness);
-            f.setFitness(state,(float) score, false);
+            f.setFitness(state,(float) score, score==1.0);
             ind.evaluated = true;
             }
         

@@ -1983,3 +1983,4 @@ Version		Change Log
 	Added Random Walk mutation to IntegerVectorSpecies, and moved the default
 		mutator to Reset mutation -- it's still the default but you'll get
 		a warning if you don't explicitly set it.
+	Added ideal individual checking to KLandscapes
