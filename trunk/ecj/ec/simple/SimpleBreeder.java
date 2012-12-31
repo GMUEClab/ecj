@@ -139,11 +139,6 @@ public class SimpleBreeder extends Breeder
         one per thread, to various subchunks of a new population. */
     public Population breedPopulation(EvolutionState state) 
         {
-        int numinds[][] = 
-            new int[state.breedthreads][state.population.subpops.length];
-        int from[][] = 
-            new int[state.breedthreads][state.population.subpops.length];
-
         Population newpop = null;
         if (clonePipelineAndPopulation)
             newpop = (Population) state.population.emptyClone();
@@ -159,6 +154,51 @@ public class SimpleBreeder extends Breeder
         // load elites into top of newpop
         loadElites(state, newpop);
 
+
+            // how many threads do we really need?  No more than the maximum number of individuals in any subpopulation
+            int numThreads = 0;
+            for(int x = 0; x < state.population.subpops.length; x++)
+            	numThreads = Math.max(numThreads, state.population.subpops[x].individuals.length);
+            numThreads = Math.min(numThreads, state.breedthreads);
+            if (numThreads < state.breedthreads)
+            	state.output.warnOnce("Largest subpopulation size (" + numThreads +") is smaller than number of breedthreads (" + state.breedthreads +
+            		"), so fewer breedthreads will be created.");
+            
+            int numinds[][] = 
+                new int[numThreads][state.population.subpops.length];
+            int from[][] = 
+                new int[numThreads][state.population.subpops.length];
+        
+            for(int x=0;x<state.population.subpops.length;x++)
+            	{
+            	int length = computeSubpopulationLength(state, newpop, x, 0);
+
+            	// we will have some extra individuals.  We distribute these among the early subpopulations
+            	int individualsPerThread = length / numThreads;  // integer division
+                int slop = length - numThreads * individualsPerThread;
+				int currentFrom = 0;
+				
+            	for(int y=0;y<numThreads;y++)
+                    {
+                    if (slop > 0)
+                    	{
+                    	numinds[y][x] = individualsPerThread + 1;
+                    	slop--;
+                    	}
+                    else
+                    	numinds[y][x] = individualsPerThread;
+                    
+                    if (numinds[y][x] == 0)
+                    	{
+		            	state.output.warnOnce("More threads exist than can be used to breed some subpopulations (first example: subpopulation " + x + ")");
+                    	}
+                    
+            		from[y][x] = currentFrom;
+            		currentFrom += numinds[y][x];
+                    }
+                }
+
+/*
         for(int y=0;y<state.breedthreads;y++)
             for(int x=0;x<state.population.subpops.length;x++)
                 {
@@ -179,17 +219,17 @@ public class SimpleBreeder extends Breeder
                 // figure from
                 from[y][x] = (firstBreedChunkSizes * y);
                 }
-            
-        if (state.breedthreads==1)
+*/            
+        if (numThreads==1)
             {
             breedPopChunk(newpop,state,numinds[0],from[0],0);
             }
         else
             {
-            Thread[] t = new Thread[state.breedthreads];
+            Thread[] t = new Thread[numThreads];
                 
             // start up the threads
-            for(int y=0;y<state.breedthreads;y++)
+            for(int y=0;y<numThreads;y++)
                 {
                 SimpleBreederThread r = new SimpleBreederThread();
                 r.threadnum = y;
@@ -203,7 +243,7 @@ public class SimpleBreeder extends Breeder
                 }
                 
             // gather the threads
-            for(int y=0;y<state.breedthreads;y++) 
+            for(int y=0;y<numThreads;y++) 
                 try
                     {
                     t[y].join();
@@ -234,6 +274,7 @@ public class SimpleBreeder extends Breeder
         {
         for(int subpop=0;subpop<newpop.subpops.length;subpop++)
             {
+        System.err.println("+++ Thread " + threadnum + " from " + from[subpop] + " numinds " + numinds[subpop]);        
             // if it's subpop's turn and we're doing sequential breeding...
             if (!shouldBreedSubpop(state, subpop, threadnum))  
                 {

@@ -219,6 +219,8 @@ public class SimpleShortStatistics extends Statistics
         }
 
 
+	// This stuff is used by KozaShortStatistics
+
     protected void prepareStatistics(EvolutionState state) { }
     protected void gatherExtraSubpopStatistics(EvolutionState state, int subpop, int individual) { }
     protected void printExtraSubpopStatisticsBefore(EvolutionState state, int subpop) { }
@@ -234,6 +236,8 @@ public class SimpleShortStatistics extends Statistics
         this lets overriding methods print additional statistics on the same line */
     public void postEvaluationStatistics(final EvolutionState state)
         {
+        super.postEvaluationStatistics(state);
+        
         boolean output = (state.generation % modulus == 0);
 
         // gather timings

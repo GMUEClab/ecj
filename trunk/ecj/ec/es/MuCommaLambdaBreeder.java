@@ -183,11 +183,6 @@ public class MuCommaLambdaBreeder extends Breeder
         
 
 
-        int numinds[][] = 
-            new int[state.breedthreads][state.population.subpops.length];
-        int from[][] = 
-            new int[state.breedthreads][state.population.subpops.length];
-            
         // sort evaluation to get the Mu best of each subpopulation
         
         for(int x=0;x<state.population.subpops.length;x++)
@@ -223,6 +218,54 @@ public class MuCommaLambdaBreeder extends Breeder
 
         // divvy up the lambda individuals to create
 
+
+
+
+            // how many threads do we really need?  No more than the maximum number of individuals in any subpopulation
+            int numThreads = 0;
+            for(int x = 0; x < state.population.subpops.length; x++)
+            	numThreads = Math.max(numThreads, lambda[x]);
+            numThreads = Math.min(numThreads, state.breedthreads);
+            if (numThreads < state.breedthreads)
+            	state.output.warnOnce("Largest lambda size (" + numThreads +") is smaller than number of breedthreads (" + state.breedthreads +
+            		"), so fewer breedthreads will be created.");
+            
+            int numinds[][] = 
+                new int[numThreads][state.population.subpops.length];
+            int from[][] = 
+                new int[numThreads][state.population.subpops.length];
+        
+            for(int x=0;x<state.population.subpops.length;x++)
+            	{
+            	int length = lambda[x];
+
+            	// we will have some extra individuals.  We distribute these among the early subpopulations
+            	int individualsPerThread = length / numThreads;  // integer division
+                int slop = length - numThreads * individualsPerThread;
+				int currentFrom = 0;
+				
+            	for(int y=0;y<numThreads;y++)
+                    {
+                    if (slop > 0)
+                    	{
+                    	numinds[y][x] = individualsPerThread + 1;
+                    	slop--;
+                    	}
+                    else
+                    	numinds[y][x] = individualsPerThread;
+                    
+                    if (numinds[y][x] == 0)
+                    	{
+		            	state.output.warnOnce("More threads exist than can be used to breed some subpopulations (first example: subpopulation " + x + ")");
+                    	}
+                    
+            		from[y][x] = currentFrom;
+            		currentFrom += numinds[y][x];
+                    }
+                }
+
+/*
+
         for(int y=0;y<state.breedthreads;y++)
             for(int x=0;x<state.population.subpops.length;x++)
                 {
@@ -241,17 +284,17 @@ public class MuCommaLambdaBreeder extends Breeder
                     (lambda[x]/
                     state.breedthreads) * y;
                 }
-            
-        if (state.breedthreads==1)
+*/           
+        if (numThreads==1)
             {
             breedPopChunk(newpop,state,numinds[0],from[0],0);
             }
         else
             {
-            Thread[] t = new Thread[state.breedthreads];
+            Thread[] t = new Thread[numThreads];
                 
             // start up the threads
-            for(int y=0;y<state.breedthreads;y++)
+            for(int y=0;y<numThreads;y++)
                 {
                 MuLambdaBreederThread r = new MuLambdaBreederThread();
                 r.threadnum = y;
@@ -265,7 +308,8 @@ public class MuCommaLambdaBreeder extends Breeder
                 }
                 
             // gather the threads
-            for(int y=0;y<state.breedthreads;y++) try
+            for(int y=0;y<numThreads;y++) 
+            try
                                                       {
                                                       t[y].join();
                                                       }
