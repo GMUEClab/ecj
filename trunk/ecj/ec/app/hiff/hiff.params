@@ -27,5 +27,4 @@ pop.subpop.0.species.fitness = ec.simple.SimpleFitness
 
 select.tournament.size =                2 
 pop.subpop.0.species.mutation-prob = 0.0
-pop.subpop.0.species.crossover-prob = 0.3
 pop.subpop.0.species.crossover-type =two  
