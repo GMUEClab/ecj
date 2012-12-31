@@ -992,6 +992,7 @@ Returns a string describing the location of the ParameterfDatabase (such as the 
 \end{methods}
 
 \section{Output}
+\label{ec.util.Output}
 
 ECJ has its own idiosyncratic logging and output facility called \class{ec.util.Output}.  This is largely historical: ECJ predates any standard logging facilities available in Java.  The facility is in part inspired by a similar facility that existed in the {\bf lil-gp} C-based genetic programming system.  The system has generally worked out well so we've not seen fit to replace it.
 
@@ -3438,6 +3439,13 @@ Fitness: -1503.8322\\
  2.4502202187677815 0.9879236448665667 0.7631586426217085 0.6854305126240172
  }
  
+ If you would like to prevent this per-generational statistics from being written out to the log, you can say:
+ 
+ \params{%
+stat.do-generation = false
+}
+
+ 
  At the end of the run, the SimpleStatistics object prints out the best Individual of the run:
 
 \script{%
@@ -3448,7 +3456,100 @@ Fitness: -185.78166\\
  -1.0393115193403102 -2.006026366200021 -0.03642166362331428 -1.1196984643947918
 }
 
-If your Problem implements the \method{describe(...)} method, SimpleStatistics will also ask the best-of-run Individual to describe itself at the very end of the file.
+If you would like to prevent this information from being written to the log, say:
+
+ \params{%
+stat.do-final = false
+}
+
+At the end of the run, the SimpleStatistics object finally calls the \method{describe(...)} method on the \method{Evaluator} to get it to write out a phenotypical description of the performance of the best individual of the run (see Section \ref{ec.Problem}).  Only some problems implement the \method{describe(...)} method: for example the Artificial Ant problem will use it to print out a map of the food trail by the best discovered ant algorithm, such as:
+
+\vbox{
+\small\begin{verbatim}
+Best Individual's Map
+=====================
+acdgf.......f............m......
+...h........g............l......
+...i........h...........+k##++..
+...j........i.yzabqdefghij...#..
+...k........j.x...pon...#....#..
+...lmnopqrstkvw....tmrqp+....+..
+............l......ul..o.....#..
+............mbazyxwvk..n.....+..
+............n.......j..m.....+..
+............o.......i..l.....#..
+............p.......h..k.....+..
+............q.......g..j.....+..
+............r.......f..i.....#..
+............s.......e..h.....+..
+............t.......d..g++###+..
+............u...+zabc..f........
+............v...vy.....e........
+............w...ux.....d........
+............x...t......c#+++....
+............y...s......b...#....
+............z...r......a...+....
+............a...q......z...+....
+............b...p......y++#+....
+...........tc...o......x........
+.wvuts+####ud...n......w........
+.x...r.....ve...m......v........
+.y...qpo...wf...l......u........
+.z.....n###xghijk......t........
+.a.....m...y...........s........
+.b.....l...z...........r........
+.cdehijk..bcd..........q........
+...fg.......e..........pon......
+\end{verbatim}
+}
+
+If you don't want to see stuff like this at the end of your statistics file, say:
+
+ \params{%
+stat.do-description = false
+}
+
+Finally, SimpleStatistics will also write out a message (see Section \ref{ec.util.Output}) to stdout, which prints to the screen some short statistical information about each generation.  For example:
+
+\vbox{
+\small\begin{verbatim}
+Initializing Generation 0
+Subpop 0 best fitness of generation Fitness: Standardized=63.0 Adjusted=0.015625 Hits=26
+Generation 1
+Subpop 0 best fitness of generation Fitness: Standardized=57.0 Adjusted=0.01724138 Hits=32
+Generation 2
+Subpop 0 best fitness of generation Fitness: Standardized=48.0 Adjusted=0.020408163 Hits=41
+Generation 3
+Subpop 0 best fitness of generation Fitness: Standardized=48.0 Adjusted=0.020408163 Hits=41
+Generation 4
+Subpop 0 best fitness of generation Fitness: Standardized=40.0 Adjusted=0.024390243 Hits=49
+Generation 5
+Subpop 0 best fitness of generation Fitness: Standardized=38.0 Adjusted=0.025641026 Hits=51
+...
+\end{verbatim}
+}
+
+If you would prefer not to see this information, just say:
+
+ \params{%
+stat.do-message = false
+}
+
+... and what you'll get on the screen will be:
+
+
+\vbox{
+\small\begin{verbatim}
+Initializing Generation 0
+Generation 1
+Generation 2
+Generation 3
+Generation 4
+Generation 5
+...
+\end{verbatim}
+}
+
 
 \subsection{Creating a Statistics Chain} So how do you add additional Statistics objects?  As children of the root, or of one another.  Any Statistics object can have some \(n\) children.  Children are called the same hooks as their parents are.  To add another Statistics object (say, \class{ec.simple.SimpleShortStatistics}, we might add a child to the root:
 
