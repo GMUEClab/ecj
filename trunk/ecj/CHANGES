@@ -1984,3 +1984,4 @@ Version		Change Log
 		mutator to Reset mutation -- it's still the default but you'll get
 		a warning if you don't explicitly set it.
 	Added ideal individual checking to KLandscapes
+	Added additional features to SimpleStatistics
