@@ -274,7 +274,6 @@ public class SimpleBreeder extends Breeder
         {
         for(int subpop=0;subpop<newpop.subpops.length;subpop++)
             {
-        System.err.println("+++ Thread " + threadnum + " from " + from[subpop] + " numinds " + numinds[subpop]);        
             // if it's subpop's turn and we're doing sequential breeding...
             if (!shouldBreedSubpop(state, subpop, threadnum))  
                 {

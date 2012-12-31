@@ -156,7 +156,6 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         for(int x=0;x<state.population.subpops.length;x++ )
             {
             if (doFinal) state.output.println("Subpopulation " + x + ":",statisticslog);
-            System.err.println(best_of_run[x]);
             if (doFinal) best_of_run[x].printIndividualForHumans(state,statisticslog);
             if (doMessage) state.output.message("Subpop " + x + " best fitness of run: " + best_of_run[x].fitness.fitnessToStringForHumans());
 
