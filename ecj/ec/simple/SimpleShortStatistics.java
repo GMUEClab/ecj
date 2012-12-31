@@ -95,7 +95,7 @@ public class SimpleShortStatistics extends Statistics
     public static final String P_DO_SUBPOPS = "do-subpops";
     public static final String P_STATISTICS_FILE = "file";
         
-    public int statisticslog;
+    public int statisticslog = 0;  // stdout
     public int modulus;
     public boolean doSize;
     public boolean doTime;
@@ -112,8 +112,6 @@ public class SimpleShortStatistics extends Statistics
     // timings
     public long lastTime;
         
-    public SimpleShortStatistics() { statisticslog = 0; /* stdout */ }
-
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state,base);
