@@ -61,17 +61,23 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
     /** compress? */
     public static final String P_COMPRESS = "gzip";
 
+	public static final String P_DO_FINAL = "do-final";
+	public static final String P_DO_GENERATION = "do-generation";
+	public static final String P_DO_MESSAGE = "do-message";
+	public static final String P_DO_DESCRIPTION = "do-description";
+
     /** The Statistics' log */
-    public int statisticslog;
+    public int statisticslog = 0;  // stdout
 
     /** The best individual we've found so far */
-    public Individual[] best_of_run;
+    public Individual[] best_of_run = null;
         
     /** Should we compress the file? */
     public boolean compress;
-
-
-    public SimpleStatistics() { best_of_run = null; statisticslog = 0; /* stdout */ }
+    public boolean doFinal;
+    public boolean doGeneration;
+    public boolean doMessage;
+    public boolean doDescription;
 
     public void setup(final EvolutionState state, final Parameter base)
         {
@@ -81,6 +87,11 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
                 
         File statisticsFile = state.parameters.getFile(
             base.push(P_STATISTICS_FILE),null);
+
+        doFinal = state.parameters.getBoolean(base.push(P_DO_FINAL),null,true);
+        doGeneration = state.parameters.getBoolean(base.push(P_DO_GENERATION),null,true);
+        doMessage = state.parameters.getBoolean(base.push(P_DO_MESSAGE),null,true);
+        doDescription = state.parameters.getBoolean(base.push(P_DO_DESCRIPTION),null,true);
 
         if (statisticsFile!=null)
             try
@@ -122,13 +133,13 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
             }
         
         // print the best-of-generation individual
-        state.output.println("\nGeneration: " + state.generation,statisticslog);
-        state.output.println("Best Individual:",statisticslog);
+        if (doGeneration) state.output.println("\nGeneration: " + state.generation,statisticslog);
+        if (doGeneration) state.output.println("Best Individual:",statisticslog);
         for(int x=0;x<state.population.subpops.length;x++)
             {
-            state.output.println("Subpopulation " + x + ":",statisticslog);
-            best_i[x].printIndividualForHumans(state,statisticslog);
-            state.output.message("Subpop " + x + " best fitness of generation" + 
+            if (doGeneration) state.output.println("Subpopulation " + x + ":",statisticslog);
+            if (doGeneration) best_i[x].printIndividualForHumans(state,statisticslog);
+            if (doMessage) state.output.message("Subpop " + x + " best fitness of generation" + 
                 (best_i[x].evaluated ? " " : " (evaluated flag not set): ") +
                 best_i[x].fitness.fitnessToStringForHumans());
             }
@@ -141,15 +152,15 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         
         // for now we just print the best fitness 
         
-        state.output.println("\nBest Individual of Run:",statisticslog);
+        if (doFinal) state.output.println("\nBest Individual of Run:",statisticslog);
         for(int x=0;x<state.population.subpops.length;x++ )
             {
-            state.output.println("Subpopulation " + x + ":",statisticslog);
-            best_of_run[x].printIndividualForHumans(state,statisticslog);
-            state.output.message("Subpop " + x + " best fitness of run: " + best_of_run[x].fitness.fitnessToStringForHumans());
+            if (doFinal) state.output.println("Subpopulation " + x + ":",statisticslog);
+            if (doFinal) best_of_run[x].printIndividualForHumans(state,statisticslog);
+            if (doMessage) state.output.message("Subpop " + x + " best fitness of run: " + best_of_run[x].fitness.fitnessToStringForHumans());
 
             // finally describe the winner if there is a description
-            if (state.evaluator.p_problem instanceof SimpleProblemForm)
+            if (doFinal && doDescription) if (state.evaluator.p_problem instanceof SimpleProblemForm)
                 ((SimpleProblemForm)(state.evaluator.p_problem.clone())).describe(state, best_of_run[x], x, 0, statisticslog);      
             }
         }
