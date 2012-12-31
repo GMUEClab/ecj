@@ -1985,3 +1985,8 @@ Version		Change Log
 		a warning if you don't explicitly set it.
 	Added ideal individual checking to KLandscapes
 	Added additional features to SimpleStatistics
+	Modifications to the multithreading of SimpleBreeder, SimpleEvaluator, and
+		MuCommaLambdaBreeder so they properly handle situations when the
+		number of individuals is less than the thread size, and also
+		distribute extra slop among the early threads rather than piling
+		it all up in the final thread.
