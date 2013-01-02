@@ -137,7 +137,7 @@ public class ADF extends GPNode
         
         if (associatedTree < 0 || associatedTree >= typicalIndividual.trees.length)
             state.output.error("The node " + toStringForError() + " of individual " + 
-                individualBase + " must have an associated tree that is >= 0 and < " + typicalIndividual.trees.length);
+                individualBase + " must have an associated tree that is >= 0 and < " + typicalIndividual.trees.length + ".  Value provided was: " + associatedTree);
         else
             {
             
