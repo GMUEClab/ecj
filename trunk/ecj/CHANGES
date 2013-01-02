@@ -1990,3 +1990,5 @@ Version		Change Log
 		number of individuals is less than the thread size, and also
 		distribute extra slop among the early threads rather than piling
 		it all up in the final thread.
+	Fixed double-checking bug in ADF which wasn't checking the right number
+		of trees for the ADF.

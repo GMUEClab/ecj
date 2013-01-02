@@ -135,7 +135,7 @@ public class ADF extends GPNode
         
         // does the associated tree exist?
         
-        if (associatedTree < 0 || associatedTree > typicalIndividual.trees.length)
+        if (associatedTree < 0 || associatedTree >= typicalIndividual.trees.length)
             state.output.error("The node " + toStringForError() + " of individual " + 
                 individualBase + " must have an associated tree that is >= 0 and < " + typicalIndividual.trees.length);
         else
