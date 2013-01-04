@@ -121,7 +121,7 @@ public class Population implements Group
             state.output.fatal("Population size must be >0.\n",base.push(P_SIZE));
         subpops = new Subpopulation[size];
 
-        // Load the subpopulations
+        // Set up the subpopulations
         for (int x=0;x<size;x++)
             {
             p = base.push(P_SUBPOP).push(""+x);

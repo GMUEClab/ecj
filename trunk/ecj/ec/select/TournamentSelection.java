@@ -25,9 +25,9 @@ import ec.steadystate.*;
  * are chosen at random from the population.  Then of those individuals,
  * the one with the best fitness is selected.  
  * 
- * <p><i>size</i> can also be a floating-point value between 1.0 and 2.0,
- * exclusive of them. In this situation, two individuals are chosen at random, and
- * the better one is selected with a probability of <i>size/2</i> 
+ * <p><i>size</i> can be any floating point value >= 1.0.  If it is a non-
+ * integer value <i>x</i> then either a tournament of size ceil(x) is used
+ * (with probability x - floor(x)), else a tournament of size floor(x) is used.
  *
  * <p>Common sizes for <i>size</i> include: 2, popular in Genetic Algorithms
  * circles, and 7, popularized in Genetic Programming by John Koza.
@@ -70,9 +70,6 @@ public class TournamentSelection extends SelectionMethod implements SteadyStateB
 
     /** size parameter */
     public static final String P_SIZE = "size";
-
-    /* Default size */
-    public static final int DEFAULT_SIZE = 7;
 
     /** Base size of the tournament; this may change.  */
     int size;

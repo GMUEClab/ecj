@@ -2531,23 +2531,43 @@ pop.file = /tmp/population.in
 
 The Population will read Subpopulations, and ultimately Individuals, from this file by calling its \method{readPopulation(..., LineNumberReader)} method.  
 
-\item If the Population has not read from a file, it will call \method{populate(...)} on each of its Subpopulations.  A Subpopulation's \method{populate(...)} method usually works like this.  First, it determines if it should create new individuals from scratch or if it should fill its array by reading Individuals from a file.  This is determined by the same basic procedure!  If Subpopulation 0 should be read in from the file \file{/tmp/subpopulation.in}, the parameter setting would be:
-
-\params{%
-pop.subpop.0.file = /tmp/subpopulation.in
-}
-
-Subpopulations will try to read individuals from files using \method{readSubpopulation(..., LineNumberReader)}.  If the number of individuals in the file doesn't match the size of the Subpopulation, the Subpopulation will be resized to match the file.
-
-If no file is provided, the Subpopulation assumes that it is generating individuals from scratch.  This is by far the most common case.  To do this, Subpopulation generates new individuals using the standard \method{newIndividual(...)} method in \class{ec.Species} (see Section~\ref{ec.Species}).  ECJ can also check to make sure that the Subpopulation does not produce duplicate individuals, if you set the following parameter (in this case, in Subpopulation 0):
+\item If the Population has not read from a file, it will call \method{populate(...)} on each of its Subpopulations.  A Subpopulation's \method{populate(...)} method usually works like this.  First, it determines if it should create new individuals from scratch or if it should fill its array by reading Individuals from a file.    If the individuals are to be generated from scratch (the most common case by far), Subpopulation generates new individuals using the standard \method{newIndividual(...)} method in \class{ec.Species} (see Section~\ref{ec.Species}).  ECJ can also check to make sure that the Subpopulation does not produce duplicate individuals while generating from scratch, if you set the following parameter (in this case, in Subpopulation 0):
 
 \params{%
 pop.subpop.0.duplicate-retries = 100
 }
 
-The default value is no retries.
+The default value is no retries.  This says that if the Subpopulation creates a duplicate individual, it will try up to 100 times to replace it with a new, original individual.  After that it will give up and use the duplicate individual. 
 
-This says that if the Subpopulation creates a duplicate individual, it will try up to 100 times to replace it with a new, original individual.  After that it will give up and use the duplicate individual. 
+You can also read Subpopulations directly from files, in a procedure similar to how it's done for Population.  If Subpopulation 0 should be read in from the file \file{/tmp/subpopulation.in}, the parameter setting would be:
+
+\params{%
+pop.subpop.0.file = /tmp/subpopulation.in
+}
+
+Subpopulations will try to read individuals from files using \method{readSubpopulation(..., LineNumberReader)}.  If the number of individuals in the file is greater than the size of the Subpopulation, then the Subpopulation will be resized to match the file.  If the number of individuals is in the file is {\it less} than the size of the Subpopulation, then the Subpopulation will try to do on of three things:
+
+\begin{itemize}
+\item Truncate the Subpopulation to the size of the file.  This the default when reading from a file, but if you want to be explicit, it's specified like so: 
+
+\params{%
+pop.subpop.0.extra-behavior = truncate
+}
+
+\item Wrap copies of the file's individuals repeatedly into the Subpopulation.  For example, if the file had individuals A, B, and C, and the Subpopulation was of size 8, then it'd be filled with A, B, C, A B, C, A, B.  This is particularly useful if you want to fill a file with copies of a single individual.  This is specified like so:
+
+\params{%
+pop.subpop.0.extra-behavior = wrap
+}
+
+\item Fill the remainder of the Subpopulation with random individuals (see below).  This is specified like so:
+
+\params{%
+pop.subpop.0.extra-behavior = fill
+}
+\end{itemize}
+
+These options aren't available if you're reading the whole Population from a file: it always truncates its Subpopulations appropriately.  Note that if you're reading the Population from a file, you can't simultaneously read one of its Subpopulations from a file\,---\,that wouldn't make any sense.
 
 \end{enumerate}
 
@@ -2793,7 +2813,7 @@ The default value is no elites.
 You don't have to specify the elitism on a per-Subpopulation basis.  If you specified a default subpopulation using the parameter  \parameter{pop.default-subpop} (see Section~\ref{default-subpop}), SimpleBreeder will try this instead when it can't find an elitism parameter, and will issue a warning letting you know it's doing so.  For example, if you declared:
 
 \params{%
-pop.default-subpop = 0
+pop.default-subpop = 0\\
 breed.elite.0 = 10
 }
 
@@ -2942,8 +2962,7 @@ The default implementations of \method{prepareToProduce(...)} and \method{finish
 SelectionMethods are sometimes called upon not to produce an Individual but to provide an {\it index} into a subpopulation where the Individual is located\,---\,perhaps to kill that Individual and place another Individual in its stead.  To this end, SelectionMethods have an alternative form of the \method{produce(...)} method:
 
 \java{%
-public abstract int produce(int subpopulation, EvolutionState state,\\
-\hsp{\fill}int thread);
+public abstract int produce(int subpopulation, EvolutionState state, int thread);
 }
 
 This method must return the index of the selected individual in the Subpopulation given by
@@ -3021,17 +3040,6 @@ The default value is false.
 SigmaScalingSelection default base is \parameter{select.sigma-scaling}.
 
 
-\item \class{ec.select.BestSelection} picks among the best or worst \(N\) individuals in the population, depending on a parameter.  The selection procedure among these \(N\) is fitness-proportionate selection.  Thus \class{ec.select.BestSelection} requires that all fitnesses be non-negative.  To make BestSelection pick among the best 5 Individuals, you could say:
-
-\params{%
-{\it base}.pick-worst = false\\
-{\it base}.n = 5
-}
-
-The default value for \parameter{pick-worst} is false; and 1 for \parameter{n}.
-
-BestSelection's default base is \parameter{select.best}.
-
 \item \class{ec.select.BoltzmanSelection} (also written by Jack Compton) works like Fitness-Proportionate Selection, but uses modified fitness values according to a Boltzman (Simulated-Annealing-style) cooling schedule.  Initially BoltzmanSelection has a high {\it temperature} \(T\), and for each successive generation it decreases \(T\) by a {\it cooling rate} \(R\) as \(T \leftarrow T * R\).  Each modified fitness \(g\) is computed as \(g \leftarrow e^{f/T}\), where \(f\) is the original fitness.    Fitnesses must be non-negative.  When the temperature reaches 1.0, BoltzmanSelection reverts to FitnessProportionateSelection.  To set the initial temperature to 1000 and the cooling rate to 0.99, you'd say:
 
 \params{%
@@ -3052,7 +3060,7 @@ BoltzmanSelection's default base is \parameter{select.boltzman}.
 
 GreedyOverselection's default base is \parameter{select.greedy}.
 
-\item \class{ec.select.TournamentSelection} first chooses \(N\) individuals entirely at random with replacement (thus the same Individual may be chosen more than once).  Then from among those \(N\) it returns the fittest (or least fit, a parameter setting) Individual, breaking ties randomly.  \(N\) is often an integer but in fact it doesn't have to be: it can be any real-valued number \(N>0\).  If \(N\) isn't an integer, it's interpreted as follows: with probability \(N-\lfloor N\rfloor\) we choose \(\lceil N \rceil\) individuals at random, else we choose \(\lfloor N\rfloor\) individuals at random.    Fitnesses must be non-negative.  The most common setting for \(N\) is 2.  To use 2, and return the fittest individual rather than the least-fit one, say:
+\item \class{ec.select.TournamentSelection} first chooses \(T\) individuals entirely at random with replacement (thus the same Individual may be chosen more than once).  These individuals are known as the {\it tournament}, and \(T\) is the {\it tournament size}.  Then from among those \(T\) it returns the fittest (or least fit, a parameter setting) Individual, breaking ties randomly.  \(T\) is often an integer but in fact it doesn't have to be: it can be any real-valued number \(N>0\).  If \(T\) isn't an integer, it's interpreted as follows: with probability \(T-\lfloor T\rfloor\) we choose \(\lceil T \rceil\) individuals at random, else we choose \(\lfloor T\rfloor\) individuals at random.    Fitnesses must be non-negative.  The most common setting for \(T\) is 2.  To use 2, and return the fittest individual rather than the least-fit one, say:
 
 \params{%
 {\it base}.size = 2\\
@@ -3062,6 +3070,43 @@ GreedyOverselection's default base is \parameter{select.greedy}.
 By default, \parameter{pick-worst} is false, so the second parameter is redundant here.
 
 TournamentSelection's default base is \parameter{select.tournament}.
+
+\item \class{ec.select.BestSelection}\label{ec.select.BestSelection} gathers the best or worst \(N\) individuals in the population.  It then 
+uses a tournament selection of size \(T\) to select, restricted to just those \(N\).  The tournament selection procedure works just like \class{ec.select.TournamentSelection}. If the \(N\) worst individuals were gathered, then the tournament will pick the worst in the tournament.
+
+This could be used in various ways.  Continuing the example above, to use a value of \(T=2\), selecting among the best 15 individuals in the population (say), we could say:
+
+\params{%
+{\it base}.n = 15\\
+{\it base}.size = 2\\
+{\it base}.pick-worst = false
+}
+
+We could also use this to always pick the single worst individual in the population:
+
+\params{%
+{\it base}.n = 1\\
+{\it base}.size = 1\\
+{\it base}.pick-worst = true
+}
+
+Or we could also use this to pick randomly among the best 100 individuals in the population, in a kind of poor-man's \((\mu, \lambda)\) Evolution Strategy (see Section \ref{ec.es}):
+
+\params{%
+{\it base}.n = 100\\
+{\it base}.size = 1\\
+{\it base}.pick-worst = false
+}
+
+Speaking of Evolution Strategies, you could also do a kind of poor-man's \((\mu + \lambda)\) as well by including those top 100 individuals as elites: 
+
+\params{%
+{\it base}.n = 100\\
+{\it base}.size = 1\\
+{\it base}.pick-worst = false\\
+breed.elite.0 = 100
+}
+
 
 \item Finally, \class{ec.select.MultiSelection} is a special version of a SelectionMethod with \(N\) other SelectionMethods as sources.  Each time it must produce an individual, it picks one of these SelectionMethods at random (using certain probabilities) and has it produce the Individual instead.  To set up MultiSelection with two sources, TournamentSelection (chosen 60\% of the time) and FitnessProportionateSelection (chosen 40\% of the time), you'd say:
 
@@ -3815,6 +3860,7 @@ So how can we use this for debugging?  Well, BeanShell gives us full access to J
 \vbox{
 \small\begin{verbatim}
         show();
+        import ec.*;
         args = new String[] { "-file", "ecsuite.params" };
 \end{verbatim}
 }
@@ -3915,7 +3961,7 @@ The first population has been created.  Let's look at the first Individual:
 
 \vbox{
 \small\begin{verbatim}
-        state.population.subpops[0].individuals[0]
+        state.population.subpops[0].individuals[0];
 \end{verbatim}
 }
 
@@ -4264,7 +4310,7 @@ The \package{ec.es} package implements basic versions of the \((\mu,\lambda)\) a
 
 Evolution Strategies differs from the Genetic Algorithm mostly in that it does {\bf truncation selection}: an entire segment of the Population (all but the best \(\mu\)) is simply lopped off, and breeding occurs among the remainder.  ECJ does this by having ESSelection only select among the best \(\mu\) Individuals in the Population. In truncation selection, each remaining Individual gets the same number of opportunities to breed.  ESSelection works with the two Breeders to guarantee this: each time the BreedingPipeline is pulsed for an individual, the parent has been pre-determined by the Breeder, and ESSelection simply returns that parent.
 
-ESSelection doesn't have to be the only selection operator in your BreedingPipeline: you can have various other ones.  But you should have at {\it least} one ESSelection operator in your pipeline, else it just isn't Evolution Strategies any more.  Also note that ESSelection always returns the Individual pre-determined by the Breeder: thus if you have multiple ESSelection operators in your pipeline, they will {\it all} return that same Individual.
+ESSelection doesn't have to be the only selection operator in your BreedingPipeline: you can have various other ones.  But you should have at {\it least} one ESSelection operator in your pipeline, else it just isn't Evolution Strategies any more.  Also note that ESSelection always returns the Individual pre-determined by the Breeder: thus if you have multiple ESSelection operators in your pipeline, they will {\it all} return that same Individual.\footnote{For fun, note the relationships between these techniques and the options provided in \class{ec.select.BestSelection} (Section \ref{ec.select.BestSelection}).}
 
 %\subsubsection{\texorpdfstring{\(\bm{(\mu,\lambda)}\)}{(mu, lambda)}} 
 \paragraph{\(\boldsymbol{(\mu, \lambda)}\)}

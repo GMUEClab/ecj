@@ -80,9 +80,6 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
     /** size parameter */
     public static final String P_SIZE = "size";
 
-    /** Default size */
-    public static final int DEFAULT_SIZE = 7;
-
     /** Size of the tournament*/
     public int size;
 
