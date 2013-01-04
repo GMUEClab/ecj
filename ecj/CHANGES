@@ -1992,3 +1992,11 @@ Version		Change Log
 		it all up in the final thread.
 	Fixed double-checking bug in ADF which wasn't checking the right number
 		of trees for the ADF.
+	Deleted vestigial DEFAULT_SIZE constant from all tournament selection
+		methods.
+	Complete revision of BestSelection.  Now restricts to the N best or worst,
+		then does a tournament selection among them (picking the best
+		or worst as appropriate).  The default tournament size is 1
+		(picking randomly among the N).
+	Added options to Subpopulation reading from files.
+

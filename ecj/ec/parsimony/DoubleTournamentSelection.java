@@ -77,9 +77,6 @@ public class DoubleTournamentSelection extends SelectionMethod implements Steady
     public static final String P_SIZE = "size";
     public static final String P_SIZE2 = "size2";
 
-    /* Default size */
-    public static final int DEFAULT_SIZE = 7;
-
     /** Size of the tournament*/
     public int size;
     public int size2;

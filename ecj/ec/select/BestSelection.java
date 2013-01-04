@@ -16,19 +16,20 @@ import ec.*;
  */
 
 /**
- * Picks among the best <i>n</i> individuals in a population in 
- * direct proportion to their absolute
- * fitnesses as returned by their fitness() methods relative to the
- * fitnesses of the other "best" individuals in that <i>n</i>.  This is expensive to
- * set up and bring down, so it's not appropriate for steady-state evolution.
+ * Performs a tournament selection restricted to only the best, or worst, <i>n</i>
+ * indivdiuals in the population.  If the best individuals, then tournament selection
+ * will prefer the better among them; if the worst individuals, then tournament selection
+ * will prefer the worse among them.  The procedure for performing restriction is expensive to
+ * set up and bring down, so it's not appropriate for steady-state evolution.  Like
+ * TournamentSelection, the size of the tournament can be any 
  * If you're not familiar with the relative advantages of 
  * selection methods and just want a good one,
  * use TournamentSelection instead.   Not appropriate for
  * multiobjective fitnesses.
  *
- * <p><b><font color=red>
- * Note: Fitnesses must be non-negative.  0 is assumed to be the worst fitness.
- * </font></b>
+ * <p>The tournament <i>size</i> can be any floating point value >= 1.0.  If it is a non-
+ * integer value <i>x</i> then either a tournament of size ceil(x) is used
+ * (with probability x - floor(x)), else a tournament of size floor(x) is used.
  *
  <p><b>Typical Number of Individuals Produced Per <tt>produce(...)</tt> call</b><br>
  Always 1.
@@ -38,6 +39,9 @@ import ec.*;
  <tr><td valign=top><i>base.</i><tt>pick-worst</tt><br>
  <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
  <td valign=top>(should we pick from among the <i>worst n</i> individuals in the tournament instead of the <i>best n</i>?)</td></tr>
+ <tr><td valign=top><i>base.</i><tt>size</tt><br>
+ <font size=-1>float &gt;= 1</font></td>
+ <td valign=top>(the tournament size)</td></tr>
  <tr><td valign=top><i>base.</i><tt>n</tt><br>
  <font size=-1> int > 0 (default is 1)</font></td>
  <td valign=top>(the number of best-individuals to select from)</td></tr>
@@ -54,18 +58,22 @@ public class BestSelection extends SelectionMethod
     {
     /** Default base */
     public static final String P_BEST = "best";
+    
     public static final String P_N = "n";
     public static final String P_PICKWORST = "pick-worst";
-    /** Sorted, normalized, totalized fitnesses for the population */
-    public float[] sortedFit;
-    /** Sorted population -- since I *have* to use an int-sized
-        individual (short gives me only 16K), 
-        I might as well just have pointers to the
-        population itself.  :-( */
-    public int[] sortedPop;
+    public static final String P_SIZE = "size";
 
+    /** Base size of the tournament; this may change.  */
+    public int size;
+
+    /** Probablity of picking the size plus one. */
+    public double probabilityOfPickingSizePlusOne;
+    
     /** Do we pick the worst instead of the best? */
     public boolean pickWorst;
+    
+    /** Sorted, normalized, totalized fitnesses for the population */
+    public int[] sortedPop;
 
     public int bestn;
 
@@ -88,6 +96,20 @@ public class BestSelection extends SelectionMethod
             state.output.fatal("n must be an integer greater than 0", base.push(P_N),def.push(P_N));
         
         pickWorst = state.parameters.getBoolean(base.push(P_PICKWORST),def.push(P_PICKWORST),false);
+
+        double val = state.parameters.getDouble(base.push(P_SIZE),def.push(P_SIZE),1.0);
+        if (val < 1.0)
+            state.output.fatal("Tournament size must be >= 1.",base.push(P_SIZE),def.push(P_SIZE));
+        else if (val == (int) val)  // easy, it's just an integer
+            {
+            size = (int) val;
+            probabilityOfPickingSizePlusOne = 0.0;
+            }
+        else
+            {
+            size = (int) Math.floor(val);
+            probabilityOfPickingSizePlusOne = val - size;  // for example, if we have 5.4, then the probability of picking *6* is 0.4
+            }
         }
 
     public void prepareToProduce(final EvolutionState s,
@@ -117,37 +139,50 @@ public class BestSelection extends SelectionMethod
                     }
                 });
 
-        // load sortedFit
-        sortedFit = new float[Math.min(sortedPop.length,bestn)];
-        if (pickWorst)
-            for(int x=0;x<sortedFit.length;x++)
-                sortedFit[x] = ((Individual)(i[sortedPop[x]])).fitness.fitness();
-        else
-            for(int x=0;x<sortedFit.length;x++)
-                sortedFit[x] = ((Individual)(i[sortedPop[sortedPop.length-x-1]])).fitness.fitness();
-
-        for(int x=0;x<sortedFit.length;x++)
-            {
-            if (sortedFit[x] < 0) // uh oh
-                s.output.fatal("Discovered a negative fitness value.  BestSelection requires that all fitness values be non-negative(offending subpopulation #" + subpopulation + ")");
-            }
+        if (!pickWorst)  // gotta reverse it
+        	for(int x = 0; x < sortedPop.length / 2; x++)
+        		{
+        		int p = sortedPop[x];
+        		sortedPop[x] = sortedPop[sortedPop.length - x - 1];
+        		sortedPop[sortedPop.length - x - 1] = p;
+        		}
+        }
 
 
-        // organize the distributions.  All zeros in fitness is fine
-        RandomChoice.organizeDistribution(sortedFit, true);
+    /** Returns a tournament size to use, at random, based on base size and probability of picking the size plus one. */
+	int getTournamentSizeToUse(MersenneTwisterFast random)
+        {
+        double p = probabilityOfPickingSizePlusOne;   // pulls us to under 35 bytes
+        if (p == 0.0) return size;
+        return size + (random.nextBoolean(p) ? 1 : 0);
         }
 
     public int produce(final int subpopulation,
         final EvolutionState state,
         final int thread)
         {
-        // Pick and return an individual from the population
+        // pick size random individuals, then pick the best.
+        Individual[] oldinds = state.population.subpops[subpopulation].individuals;
+        int best = state.random[thread].nextInt(bestn);  // only among the first N
+        
+        int s = getTournamentSizeToUse(state.random[thread]);
+                
         if (pickWorst)
-            return sortedPop[RandomChoice.pickFromDistribution(
-                    sortedFit,state.random[thread].nextFloat())];
+            for (int x=1;x<s;x++)
+                {
+                int j = state.random[thread].nextInt(bestn);  // only among the first N
+                if (!(oldinds[sortedPop[j]].fitness.betterThan(oldinds[sortedPop[best]].fitness)))  // j isn't better than best
+                    best = j;
+                }
         else
-            return sortedPop[sortedPop.length - RandomChoice.pickFromDistribution(
-                    sortedFit,state.random[thread].nextFloat()) - 1];            
+            for (int x=1;x<s;x++)
+                {
+                int j = state.random[thread].nextInt(bestn);  // only among the first N
+                if (oldinds[sortedPop[j]].fitness.betterThan(oldinds[sortedPop[best]].fitness))  // j is better than best
+                    best = j;
+                }
+        
+        return sortedPop[best];
         }
     
     public void finishProducing(final EvolutionState s,
@@ -156,7 +191,6 @@ public class BestSelection extends SelectionMethod
         {
         // release the distributions so we can quickly 
         // garbage-collect them if necessary
-        sortedFit = null;
         sortedPop = null;
         }    
     }

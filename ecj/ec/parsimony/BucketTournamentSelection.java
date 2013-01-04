@@ -87,9 +87,6 @@ public class BucketTournamentSelection extends SelectionMethod implements Steady
     /** Tournament size parameter */
     public static final String P_SIZE = "size";
 
-    /** Default size */
-    public static final int DEFAULT_SIZE = 7;
-
     /** The number of buckets */
     public static final String P_BUCKETS = "num-buckets";
 
