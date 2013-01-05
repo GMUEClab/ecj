@@ -1999,4 +1999,8 @@ Version		Change Log
 		or worst as appropriate).  The default tournament size is 1
 		(picking randomly among the N).
 	Added options to Subpopulation reading from files.
+	Tweaks to ec/eval/Slave's output
+	Output now has the option of either quitting on an error or fatal, or 
+		instead throwing an Output.OutputExitException
+	Daemon mode added to ec/eval/Slave
 
