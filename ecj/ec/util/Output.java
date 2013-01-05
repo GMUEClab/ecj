@@ -79,12 +79,15 @@ import java.util.Enumeration;
 
 public class Output implements Serializable
     {
+    public static class OutputExitException extends RuntimeException { }
+    
     boolean errors;
     Vector logs = new Vector();
     Vector announcements = new Vector();
     // boolean flush = true;
     boolean store = true;
     String filePrefix = "";
+    boolean throwsErrors = false;
 
     public static final int ALL_LOGS = -1;
 
@@ -105,6 +108,13 @@ public class Output implements Serializable
         this.filePrefix = filePrefix;
         }
 
+	public void setThrowsErrors(boolean val)
+		{
+		throwsErrors = val;
+		}
+	
+	public boolean getThrowsErrors() { return throwsErrors; }
+
     protected void finalize() throws Throwable
         {
         // flush the logs
@@ -114,13 +124,18 @@ public class Output implements Serializable
         super.finalize();
         }
 
-    private void exitWithError()
+    private static void exitWithError(Output output, boolean throwException)
         {
         // flush logs first
-        close();
+        if (output != null) output.close();
+        System.out.flush();
+        System.err.flush();
 
         // exit
-        System.exit(1);
+        if (throwException)
+        	throw new OutputExitException();
+        else
+        	System.exit(1);
         }
 
     /** Closes the logs -- ONLY call this if you are preparing to quit */
@@ -430,10 +445,8 @@ public class Output implements Serializable
         {
         System.err.println("STARTUP ERROR:\n" + s);
 
-        // just in case...
-        System.out.flush();
-        System.err.flush();
-        System.exit(1);
+        //System.exit(1);
+        exitWithError(null, false);
         }
 
     /** Prints an initial error to System.err.  This is only to
@@ -443,10 +456,8 @@ public class Output implements Serializable
         System.err.println("STARTUP ERROR:\n" + s);
         if (p1!=null) System.err.println("PARAMETER: " + p1);
 
-        // just in case...
-        System.out.flush();
-        System.err.flush();
-        System.exit(1);
+        //System.exit(1);
+        exitWithError(null, false);
         }
 
     /** Prints an initial error to System.err.  This is only to
@@ -457,10 +468,8 @@ public class Output implements Serializable
         if (p1!=null) System.err.println("PARAMETER: " + p1);
         if (p2!=null && p1!=null) System.err.println("     ALSO: " + p2);
 
-        // just in case...
-        System.out.flush();
-        System.err.flush();
-        System.exit(1);
+        //System.exit(1);
+        exitWithError(null, false);
         }
 
     /** Prints an initial message to System.err.  This is only to
@@ -481,7 +490,7 @@ public class Output implements Serializable
     public synchronized void fatal(String s)
         {
         println("FATAL ERROR:\n"+s, ALL_LOGS, true);
-        exitWithError();
+        exitWithError(this, throwsErrors);
         }
             
     /** Posts a fatal error.  This causes the system to exit. */
@@ -489,7 +498,7 @@ public class Output implements Serializable
         {
         println("FATAL ERROR:\n"+s, ALL_LOGS, true);
         if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
-        exitWithError();
+        exitWithError(this, throwsErrors);
         }
 
     /** Posts a fatal error.  This causes the system to exit. */
@@ -499,7 +508,7 @@ public class Output implements Serializable
         if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
         if (p2!=null && p1!=null) println("     ALSO: " + p2, ALL_LOGS, true);
         else println("PARAMETER: " + p2, ALL_LOGS, true);
-        exitWithError();
+        exitWithError(this, throwsErrors);
         }
 
     /** Posts a simple error. This causes the error flag to be raised as well. */
@@ -776,7 +785,7 @@ public class Output implements Serializable
         if (errors) 
             {
             println("SYSTEM EXITING FROM ERRORS\n",ALL_LOGS, true);
-            exitWithError();
+            exitWithError(this, throwsErrors);
             }
         }
 

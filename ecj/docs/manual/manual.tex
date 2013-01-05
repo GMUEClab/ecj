@@ -200,7 +200,7 @@ George Mason University}
 
 \chapter{Introduction}
 
-The purpose of this manual is to describe practically every feature of ECJ, an evolutionary computation toolkit.  It's not a good choice to learn the system.  It's very terse, boring, and long, and not organized as a tutorial but rather as an encyclopedia.  Instead, I refer you to ECJ's four tutorials and various other documentation that comes with the system.  But when you need to know about some particular gizmo that ECJ has available, this manual is where to look.
+The purpose of this manual is to describe practically every feature of ECJ, an evolutionary computation toolkit.  It's not a good choice of reading material if your goal is to learn the system from scratch.  It's very terse, boring, and long, and not organized as a tutorial but rather as an encyclopedia.  Instead, I refer you to ECJ's four tutorials and various other documentation that comes with the system.  But when you need to know about some particular gizmo that ECJ has available, this manual is where to look.
 
 \section{About ECJ}
 
@@ -231,6 +231,9 @@ ECJ is a general-purpose evolutionary computation framework which attempts to pe
 
 \paragraph{Top-level Loop}  ECJ hangs the entire state of the evolutionary run off of a single instance of a subclass of \class{EvolutionState}.  This enables ECJ to serialize out the entire state of the system to a checkpoint file and to recover it from the same.  The \class{EvolutionState} subclass chosen defines the kind of top-level evolutionary loop used in the ECJ process.  We provide two such loops: a simple generational loop with optional elitism, and a steady-state loop.
 
+Figure \ref{EvolutionState} shows the top-level loop of the simple generational \class{EvolutionState}.  The loop iterates between breeding and evaluation, with an optional ``exchange'' period after each.  \class{Statistics} hooks are called before and after each period of breeding, evaluation, and exchanging, as well as before and after initialization of the population and ``finishing'' (cleaning up prior to quitting the program).
+
+Breeding and evaluation are handled by singleton objects known as the \class{Breeder} and \class{Evaluator} respectively.  Likewise, population initialization is handled by an \class{Initializer} singleton, and finishing is done by a \class{Finisher}.  Exchanges after breeding and after evaluation are handled by an \class{Exchanger}.  The particular versions of these singleton objects are determined by the experimenter, though we provide versions which perform common tasks.  For example, we provide a traditional-EA \class{SimpleEvaluator}, a steady-state EA \class{SteadyStateEvaluator}, a ``single-population coevolution'' \class{CompetitiveEvaluator}, and a multi-population coevolution \class{MultiPopCoevolutionaryEvaluator}, among others.  There are likewise custom breeders and initializers for different functions.  The \class{Exchanger} provides an opportunity for other hooks, notably internal and external island models.  For example, post-breeding exchange might allow external immigrants to enter the population, while emmigrants might leave the population during post-evaluation exchange.  These singleton operators comprise most of the high-level ``verbs'' in the ECJ system, as shown in Figure \ref{Operators}.
 
 \begin{figure}[t]
 \begin{center}
@@ -240,9 +243,6 @@ ECJ is a general-purpose evolutionary computation framework which attempts to pe
 \label{Operators}
 \end{figure}
 
-Figure \ref{EvolutionState} shows the top-level loop of the simple generational \class{EvolutionState}.  The loop iterates between breeding and evaluation, with an optional ``exchange'' period after each.  \class{Statistics} hooks are called before and after each period of breeding, evaluation, and exchanging, as well as before and after initialization of the population and ``finishing'' (cleaning up prior to quitting the program).
-
-Breeding and evaluation are handled by singleton objects known as the \class{Breeder} and \class{Evaluator} respectively.  Likewise, population initialization is handled by an \class{Initializer} singleton, and finishing is done by a \class{Finisher}.  Exchanges after breeding and after evaluation are handled by an \class{Exchanger}.  The particular versions of these singleton objects are determined by the experimenter, though we provide versions which perform common tasks.  For example, we provide a traditional-EA \class{SimpleEvaluator}, a steady-state EA \class{SteadyStateEvaluator}, a ``single-population coevolution'' \class{CompetitiveEvaluator}, and a multi-population coevolution \class{MultiPopCoevolutionaryEvaluator}, among others.  There are likewise custom breeders and initializers for different functions.  The \class{Exchanger} provides an opportunity for other hooks, notably internal and external island models.  For example, post-breeding exchange might allow external immigrants to enter the population, while emmigrants might leave the population during post-evaluation exchange.  These singleton operators comprise most of the high-level ``verbs'' in the ECJ system, as shown in Figure \ref{Operators}.
 
 \paragraph{Parameterized Construction}  ECJ is unusually heavily parameterized: practically every feature of the system is determined at runtime from a parameter.  Parameters define the classes of objects, the specific subobjects they hold, and all of their initial runtime values.  ECJ does this through a bootstrap class called \class{Evolve}, which loads a \class{ParameterDatabase} from runtime parameter files at startup.  Using this database, \class{Evolve} constructs the top-level \class{EvolutionState} and tells it to ``setup'' itself.  \class{EvolutionState} in turn calls subsidiary classes (such as \class{Evaluator}) and tells them to ``setup'' themselves from the database.  This procedure continues down the chain until the entire system is constructed.
 
@@ -258,7 +258,7 @@ Breeding and evaluation are handled by singleton objects known as the \class{Bre
 
 While running, numerous state objects must be created, destroyed, and recreated.  As ECJ only learns the specific classes of these objects from the user-defined parameter file at runtime, it cannot simply construct them using Java's \class{new} operator.  Instead such objects are created by constructing a {\it prototype} object at startup time, and then using this object to stamp out copies of itself as often as necessary.  For example, \class{Species} contains a prototypical \class{Individual}.  When new \class{Individuals} must be created for a given \class{Subpopulation}, they are copied from the \class{Subpopulation}'s \class{Species} and then customized.  This allows different \class{Subpopulation}s to use different \class{Individual} representations.
 
-In keeping with its philosophy of orthogonality, ECJ defines \class{Fitness}es separate from \class{Individual}s (representations), and provides both single-objective and multi-objective \class{Fitness} subclasses.  For historical reasons, \class{Subpopulation} stores the \class{Fitness} prototype, rather than keeping it in \class{Species}.  Different \class{Subpopulation}s may likewise use different \class{Fitness} forms.
+In keeping with its philosophy of orthogonality, ECJ defines \class{Fitness}es separate from \class{Individual}s (representations), and provides both single-objective and multi-objective \class{Fitness} subclasses.  In addition to holding a prototypical \class{Individual}, Species also hold the prototypical \class{Fitness} to be used with that kid of \class{Individual}.
 
 \paragraph{Breeding} 
 
@@ -312,7 +312,7 @@ ECJ does not support polymorphic typing out of the box simply because it is diff
 ECJ provides support out-of-the-box for a bunch of algorithm options:
 
 \begin{itemize}
-\item Generational algorithms: \((\mu,\lambda)\) and \((\mu+\lambda)\) Evolution Strategies, the Genetic Algorithm, Genetic Programming variants, and Differential Evolution
+\item Generational algorithms: \((\mu,\lambda)\) and \((\mu+\lambda)\) Evolution Strategies, the Genetic Algorithm, Genetic Programming variants, Grammatical Evolution, and Differential Evolution
 \item Steady-State evolution
 %\item Particle Swarm Optimization
 \item Parsimony pressure algorithms
@@ -334,7 +334,7 @@ ECJ also has a GUI, though in truth I nearly universally use the command-line.
 
 \paragraph{Idiosyncracies}
 
-ECJ was developed near the introduction of Java and so has a lot of historical idiosyncracies.\footnote{It used to have a lot more\,---\,I've been weeding out ones that I think are unnecessary nowadays!}.  Some of them exist to this day because of conservatism: refactoring is disruptive.  If you code with ECJ, you'll definitely have to get used to one or more of the following:
+ECJ was developed near the introduction of Java and so has a lot of historical idiosyncracies.\footnote{It used to have a lot more\,---\,I've been weeding out ones that I think are unnecessary nowadays!}  Some of them exist to this day because of conservatism: refactoring is disruptive.  If you code with ECJ, you'll definitely have to get used to one or more of the following:
 
 \begin{itemize}
 \item No generics at all, few iterators or enumerators, no Java features beyond 1.4 (including annotations), and little use of the Java Collections library.  This is part historical, and part my own dislike of Java's byzantine generics implementation, but it's mostly efficiency.  Generics are very slow when used with basic data types, as they require boxing and unboxing.  The Java Collections library is unusually badly written in many places internally: and anyway, for speed we tend to work directly with arrays.  
@@ -552,6 +552,12 @@ Notice the forward slash: ECJ was designed on UNIX systems.  Likewise, imagine i
 parent.0 = ../bar/b.params
 }
 
+You can also define absolute paths, UNIX-style:
+
+\params{%
+parent.0 = /tmp/myproject/foo.params
+}
+
 Long story short: parameter files are declared using traditional UNIX path syntax.
 
 A parameter file can also derive from {\it multiple} parent parameter files, by including each at the beginning of the file, with consecutive numbers, like this:
@@ -567,7 +573,22 @@ This says in effect: ``first look in \file{a.params} for the parameter.  If you 
 
 This is essentially a depth-first search through a tree or DAG, with parents overriding their children (the files they derive from) and earlier siblings overriding later siblings.  Note that this multiple inheritance scheme is not the same as C++ or Lisp/CLOS, which use a distance measure! 
 
-When you fire up ECJ, you point it at a single parameter file, and you can provide additional parameters at the command-line, like this:
+Parent parameter files can be explicit files on your file system (as shown above) or they can be files located in JAR files etc.  But how do you refer to a file inside a JAR file?  It's easy: refer to it using a {\bf class relative path} (see the next Section, \ref{kindsofparameters}), which defines the path relative to the class file of some class.  For example, suppose you're creating a parameter file whose parent is \file{ec/app/ant/ant.params}.  But you're not using ECJ in its unpacked form, but rather bundled up into a JAR file.  Thus \file{ec/app/ant/ant.params} is archived in that JAR file.  Since this file is right next to \file{ec/app/ant/Ant.class}\,---\,the class file for the \class{ec.app.ant.Ant} class\---\,you can refer to it as:
+
+\params{%
+parent.0 = @ec.app.ant.Ant ant.params
+}
+
+If your parameter file is already {\it in} a JAR file, and it uses ordinary relative path names to refer to its parents (like \file{../z.params}), these will be interpreted as other files in the archived file system inside that JAR file.  To escape the JAR file you have to use an absolute path name, such as 
+
+\params{%
+parent.0 = /tmp/foo.params
+}
+
+It's pretty rare to need that though, and hardly good style.  The whole point of JAR files is to encapsulate functionality into one package.
+
+
+\paragraph{Overriding the Parameter File} When you fire up ECJ, you point it at a single parameter file, and you can provide additional parameters at the command-line, like this:
 
 \script{%
 java ec.Evolve -file \textit{parameterFile.params} -p \textit{command-line-parameter=value} \textbackslash \\
@@ -8843,7 +8864,7 @@ There are two kinds of EvolutionState objects which can work with Distributed Ev
 
 \begin{itemize}
 \item SimpleEvolutionState, which sends entire Populations off to be evaluated in parallel.
-\item SteadyStateEvolutionState, which sends individuals off to be evaluated one at a time, in a fashion called {\bf asynchronous evolution}.
+\item SteadyStateEvolutionState, which sends individuals off to be evaluated one at a time, in a fashion called {\bf asynchronous evolution} (discussed later).
 \end{itemize}
 
 \subsection{The Master}
@@ -8864,14 +8885,14 @@ When your evolutionary computation process  wishes to evaluate one or more indiv
 
 Slaves register themselves over the network with an object in the Master process called a \class{ec.eval.SlaveMonitor}, which maintains one \class{ec.eval.SlaveConnection} per Slave to communicate with the remote Slave.  The SlaveMonitor listens in on a specific socket port for incoming Slaves to register themselves.  You'll need to define this port (to something over 2000).  Here's what's standard:
 
-\java{%
+\params{%
 eval.master.port = 15000
 }
 
 
 Your MasterProblem will submit Individuals to the SlaveMonitor, which will in turn direct them to one of the SlaveConnections.  SlaveConnections don't just ship of single Individuals to Slaves\,---\,that would be far too inefficient use of network bandwidth.  Instead, they often batch them up into {\bf jobs} for the Slave to perform.  Here's how you define the size of a job:
 
-\java{%
+\params{%
 eval.masterproblem.job-size = 100
 }
 
@@ -8879,13 +8900,13 @@ The idea is to make the job large enough to pack Individuals into a network pack
 
 You also need to keep the Slaves humming along, ideally by keeping the TCP/IP streams filled with waiting jobs queued up.  Increasing this number can have a significant effect on performance.  Here's a reasonable minumum:
 
-\java{%
+\params{%
 eval.masterproblem.max-jobs-per-slave = 3
 }
 
-ECJ would prefer to compress the network streams to make them more efficient.  But it can't do it without the jzlib/ZLIB library, which you must install separately\footnote{Sure, Java has compression routines. Unfortunately they're entirely broken for network streams: they don't support ``partial flush'', a critical item for sending stuff across networks.  They're only really useful for compressing files on disks.  It's a long-standing Java bug, and unlikely to get fixed in the foreseeable future.} (see the ECJ main webpage or http:/\!/www.jcraft.com/jzlib).  Once it's installed, you can turn it on like this:
+ECJ would prefer to compress the network streams to make them more efficient.  But it can't do it without the jzlib/ZLIB library, which you must install separately\footnote{Sure, Java has built-in compression routines. Unfortunately they're entirely broken for network streams: they don't support ``partial flush'', a critical item for sending stuff across networks.  They're only really useful for compressing files on disks.  It's a long-standing Java bug, and unlikely to get fixed in the foreseeable future.} (see the ECJ main webpage or http:/\!/www.jcraft.com/jzlib).  Once it's installed, you can turn it on like this:
 
-\java{%
+\params{%
 eval.compression = true
 }
 
@@ -8905,7 +8926,12 @@ The slave parameters must include all the evolutionary parameters and also all t
 parent.0 = master.params
 }
 
-Slaves set themselves up with their own nearly complete EvolutionState and Evaluator objects\,---\,enough to evaluate Individuals and also perform evolution if necessary.  A slave distinguishes itself by setting a special internal parameter:  \parameter{eval.i-am-slave~=~true}.  You don't need to set this parameter\,---\,it's set programmatically by \class{ec.eval.Slave} when it's fired up.  But you should be aware of it: it's used by \class{ec.Evaluator} to determine whether to replace the Problem with the MasterProblem (it needs to know if the process is a Master or a Slave, and since your Slave probably included the Master parameters\,---\,including the \parameter{eval.masterproblem} parameter\,---\,it looks confusingly like a Master).
+Slaves set themselves up with their own nearly complete EvolutionState and Evaluator objects\,---\,enough to evaluate Individuals and also perform evolution if necessary.  A slave distinguishes itself by setting a special internal parameter:  \parameter{eval.i-am-slave~=~true}.  You don't need to set this parameter\,---\,it's set programmatically by \class{ec.eval.Slave} when it's fired up.  But you should be aware of it: it's used by \class{ec.Evaluator} to determine whether to replace the Problem with the MasterProblem (it needs to know if the process is a Master or a Slave, and since your Slave probably included the Master parameters\,---\,including the \parameter{eval.masterproblem} parameter\,---\,it looks confusingly like a Master).  You could also use it yourself to determine if your evaluation is being done on a Slave or not, if for some bizarre reason you needed to know this:
+
+\java{%
+	ec.util.Parameter param = new ec.util.Parameter("eval.i-am-slave");\\
+	boolean amIASlave = state.parameters.getBoolean(param, null, false);
+}
 
 The first thing a Slave needs to know is where the Master is so it can set itself up.  This is done with something like this:
 
@@ -8931,6 +8957,15 @@ evalthreads = 4
 
 This will create four threads on the Slave process to evaluate Individuals.  Note that it makes no sense for this parameter to exceed the Master's \parameter{eval.masterproblem.job-size} parameter.  Also, if you exceed the actual number of CPUs or cores allocated to your Slave process, it doesn't make much sense either.  Last, Slaves are {\it not} multithreaded when evaluating Individuals with GroupedProblemForm (such as coevolved evaluation, see Section~\ref{ec.coevolve.GroupedProblemForm}).
 
+When you fire up a Slave, it will repeatedly try to connect to a Master process until it succeeds.  This means you can start Slaves before you start the Master; or you can start them after you start the Master, it doesn't matter.  Ordinarily when the Master dies (it finishes the EC process, or it bombs, or whatever) the Slaves will all terminate.  But you can also set up Slaves to run in a {\bf daemon mode}: when the Master terminates the Slave resets itself and waits for another Master to come online.  Slaves in daemon mode also reset themselves if an error occurs on the Slave: perhaps a Java error in the user's fitness evaluation procedure, say, or if the virtual machine runs out of memory.  In the case of out-fo-memory errors, the Slave will make a good-faith attempt to reset itself, but if it cannot, it will quit. 
+
+By default slaves do not run in daemon mode: they are one-shot.  To run in daemon mode, say:
+
+\params{%
+eval.one-shot = false
+}
+
+One warning.  If you make your slave multithreaded, and run it in daemon mode, and an exception occurs while the slave is doing multithreaded evaluation, then the slave may reset without cleaning up the other threads: they may continue in the background.
 
 \subsection{Opportunistic Evolution}
 
@@ -8999,7 +9034,7 @@ eval.masterproblem.max-jobs-per-slave = 1
 
 The MasterProblem is where much of the magic lies in the interface between ECJ and the distributed evaluator, so it's worth mentioning some of its details.
 
-To start, let's discuss how MasterProblem handles checkpointing.  Evaluators also three methods, which we didn't discuss in Section~\ref{ec.Evaluator}:
+\paragraph{Checkpointing and Synchronization} To start, let's discuss how MasterProblem handles checkpointing.  Evaluators have three methods which we didn't discuss in Section~\ref{ec.Evaluator}:
 
 \java{%
 public void initializeContacts(EvolutionState state);\\
@@ -9007,7 +9042,7 @@ public void reinitializeContacts(EvolutionState state);\\
 public void closeContacts(EvolutionState state, int result);
 }
 
-These methods in turn call similar methods in the prototypical Problem:
+These methods are meant to assist in checkpointing with remote slaves.  They in turn call similar methods in the prototypical Problem:
 
 \java{%
 public void initializeContacts(EvolutionState state);\\
@@ -9019,7 +9054,7 @@ public void closeContacts(EvolutionState state, int result);
 
 The default implementation of these Problem methods does nothing at all.  But in MasterProblem these methods are used to handle reconnection of Slaves after a checkpoint recovery.   The first two methods create both a new SlaveMonitor.  The final method shuts down the monitor cleanly.
 
-MasterProblem also has special methods used only by Steady-State Evolution (and thus Asynchronous Evolution:
+\paragraph{Asynchronous Evolution} MasterProblem also has special methods used only by Steady-State Evolution (and thus Asynchronous Evolution:
 
 \begin{methods}{ec.eval.MasterProblem}
 \mthd{public boolean canEvaluate()}
@@ -9035,14 +9070,23 @@ MasterProblem also has special methods used only by Steady-State Evolution (and 
 	}
 \end{methods}
 
-MasterProblem also implements all the methods defined in SimpleProblemForm and GroupedProblemForm (Section~\ref{ec.coevolve.GroupedProblemForm}), in addition to the following two methods normally implemented by Evaluator (and which are called on the MasterProblem from the Evaluator's methods of the same names):
+\paragraph{Batching up Jobs} 
+MasterProblem implements all the methods defined in SimpleProblemForm and GroupedProblemForm (Section~\ref{ec.coevolve.GroupedProblemForm}).  Additionally, MasterProblem overrides common Problem methods and handles them specially:
 
 \begin{methods}{ec.eval.MasterProblem}
 \mthd{public void prepareToEvaluate(EvolutionState {\it state}, int {\it threadnum})}
 	Creates a new queue of Individuals who are out waiting to be sent to be processed.
 \mthd{public void finishEvaluating(EvolutionState {\it state}, int {\it threadnum})}
-	Sends all Individuals presently in the queue out in a Job.  Then waits for all slaves to complete evaluation of all Individuals.
+	Sends all Individuals presently in the queue out in one or more Jobs.  Then waits for all slaves to complete evaluation of all Individuals.
 \end{methods}
+
+Most Evaluators instruct Problems to evaluate a sequence of Individuals by first calling \method{prepareToEvaluate(...)}, then repeatedly calling \method{evaluate(...)}, then finally calling \method{finishEvaluating(...)}.  MasterProblem takes advantage of this as follows.  When \method{prepareToEvaluate(...)} is called, MasterProblem creates a list in which to put Individuals.   \method{evaluate(...)} does not actually evaluate individuals: instead, individuals are simply added to the list.  When enough individuals have been added to the queue to form one Job, the Job is queued up to be submitted to the next available Slave.  When \method{finishEvaluating(...)} is called, any remaining individuals in the list are bundled together in a final Job and sent to a Slave.  Then \method{finishEvaluating(...)} waits until all the Jobs have been completed before it returns.
+
+When the GroupedProblemForm form of \method{evaluate(...)} is called (such as from a coevolutionary evaluator), the Individuals passed to that call are treated as a single Job and shipped off immediately\,---\.that is, there is no queue.  However, \method{evaluate(...)}  again does not wait for results to come back.  The waiting again happens when \method{finishEvaluating(...)}  is called.
+
+There are certain Evaluators which do call \method{prepareToEvaluate(...)} or \method{finishEvaluating(...)}, but instead just repeatedly call \method{evaluate(...)}.  This is meant for processes which cannot delay the evaluation of individuals in an \method{evaluate(...)} before the next \method{evaluate(...)} is called.  For example, certain competitive coevolutionary processes may require a serial evaluation of this kinds.  In this case, a call to \method{evaluate(...)} will cause MasterProblem to simply ship off the Individual or Individuals to evaluate as a single job, wait for the result, and return it.  Perhaps this isn't the best use of massive parallelism!
+
+
 
 \paragraph{Sending Initialization Data from the Master to the Slaves}
 
@@ -9086,13 +9130,13 @@ In addition to Distributed Evaluation, ECJ supports Island Models: separate ECJ 
 
 Most of the issues in Island models surround the particular topology being chosen.  Which islands will send Individuals to which other islands?  How many at a time?  How often?  Are Individuals sent synchronously or asynchronously?  Etc.  ECJ manages all topology and connection parameters via a special ECJ process called the {\bf island model server}.  Each island will connect to and register itself with the server.  When the islands have all connected, the server will tell them which islands need to hook up to which other islands and how.  After the islands have hooked up, they're given the go-ahead to start their evolutionary processes.  If the islands are acting synchronously, each generation will wait for the server to give them the go-ahead to continue to the next generation; this go-ahead only occurs after all islands have finished the previous generation. Finally, when an island discovers an optimal individual, it will signal the server to let the other islands know (so they can shut down).
 
-As you can see, the server really does little more than tell the islands how to connect and act as a referee.  Thus it's actually a very lightweight process.  You can run the server either as its own process like this:
+As you can see, the server really does little more than tell the islands how to connect and acts as a referee.  Thus it's actually a very lightweight process.  You can run the server either as its own process like this:
 
 \script{%
 java ec.exchange.IslandExchange -file \textit{server.params} -p \textit{param=value} ... \hfill{\it (etc.)}
 }
 
-\noindent ...or an ECJ island can also do double-duty, serving as the server.  All islands, whether ordinary islands or double-duty island-server combos, are fired up in the same standard ECJ fashion:
+\noindent ...or an ECJ island can also do double-duty, serving as the server as well.  All islands, whether ordinary islands or double-duty island-server combos, are fired up in the same standard ECJ fashion:
 
 \script{%
 java ec.Evolve -file \textit{island.params} -p \textit{param=value} -p \textit{param=value} ... \hfill{\it (etc.)}
@@ -9108,7 +9152,7 @@ A double-duty island-server combo would differ from a plain island solely in the
 
 \paragraph{Mixing Island Models, Threading, and Distributed Evaluation}
 
-There's absolutely no reason you create an unholy union of Island Models and Distributed Evaluation.  For example, it's perfectly reasonable to have an Island Model, where each island maintains its own pool of Slaves to do distributed evaluation.  It'd be a lot of parameter files though!  Island Models also work perfectly fine in a multithreaded environment.
+There's absolutely no reason you can't create an unholy union of Island Models and Distributed Evaluation.  For example, it's perfectly reasonable to have an Island Model where each island maintains its own pool of Slaves to do distributed evaluation.  It'd be a lot of parameter files though!  Island Models also work perfectly fine in a multithreaded environment.
 
 \subsection{Islands}
 \label{islands}
@@ -9834,7 +9878,7 @@ Merges the other Individual into the original Individual, including Fitnesses.  
 \mthd{ public void merge({\it EvolutionState} state, {\it Fitness} other)}
 Merges the other Fitness into the original Fitness.  The only thing that needs to be merged is trials and context.  If \variable{other} has better trials than the original Individual, its context replaces the original context.  Then the trials are concatenated together.  Calls \method{contextIsBetterThan(...)} to determine which Fitness has the superior trials, and thus context.  You'll not often need to override this method, but may need to override \method{contextIsBetterThan(...)}.
 \mthd{ public boolean contextIsBetterThan({\it Fitness} other)}
-Returns true if the my context is better than the other Fitness's context.  This is computed by comparing our trials: if I have trials and the other does not, or if one of my trials is superior to all of the other's trials, then returns true.  This method assumes that trials are \variable{java.lang.Double}, and that higher values are better.  If this is not the case, you'll need to override this method to customize it.
+Returns true if my context is better than the other Fitness's context.  This is computed by comparing our trials: if I have trials and the other does not, or if one of my trials is superior to all of the other's trials, then this method returns true.  This method assumes that trials are \variable{java.lang.Double}, and that higher values are better.  If this is not the case, you'll need to override this method to customize it.
 \end{methods}
 
 \section{Spatially Embedded Evolutionary Algorithms (The \package{ec.spatial} Package)}

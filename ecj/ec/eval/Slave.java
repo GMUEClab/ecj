@@ -202,6 +202,11 @@ public class Slave
     public static final String P_RUNEVOLVE = "eval.run-evolve"; 
     public static boolean runEvolve=false; 
         
+    /** Should slave go into an infinite loop looking for new masters after the master has quit, or not? */
+    public static final String P_ONESHOT = "eval.one-shot"; 
+    public static boolean oneShot=false; 
+        
+
     /** How long we sleep in between attempts to connect to the master (in milliseconds). */
     public static final int SLEEP_TIME = 100;
         
@@ -213,7 +218,7 @@ public class Slave
         EvolutionState state = null;
         ParameterDatabase parameters = null;
         Output output = null;
-
+        
         boolean store;
         int x;
                 
@@ -268,6 +273,8 @@ public class Slave
         runTime = parameters.getInt(new Parameter(P_RUNTIME), null, 0); 
                 
         runEvolve = parameters.getBoolean(new Parameter(P_RUNEVOLVE),null,false); 
+
+        oneShot = parameters.getBoolean(new Parameter(P_ONESHOT),null,true); 
         
         if (runEvolve && !returnIndividuals)
             {
@@ -282,11 +289,13 @@ public class Slave
         
         
         // Continue to serve new masters until killed.
+        Socket socket = null;
         while (true)
             {
             try
+            {
+            try
                 {
-                Socket socket;
                 long connectAttemptCount = 0;
                 Output.initialMessage("Connecting to master at "+masterHost+":"+masterPort);
                 while (true)
@@ -319,16 +328,14 @@ public class Slave
                     OutputStream tmpOut = socket.getOutputStream();
                     if (useCompression)
                         {
-                        //Output.initialError("JDK 1.5 has broken compression.  For now, you must set eval.compression=false");
-                        /*
-                          tmpIn = new CompressingInputStream(tmpIn);
-                          tmpOut = new CompressingOutputStream(tmpOut);
-                        */
                         tmpIn = Output.makeCompressingInputStream(tmpIn);
                         tmpOut = Output.makeCompressingOutputStream(tmpOut);
                         if (tmpIn == null || tmpOut == null)
-                            Output.initialError("You do not appear to have JZLib installed on your system, and so must set eval.compression=false.  " +
+                            {
+                            Output.initialMessage("You do not appear to have JZLib installed on your system, and so must set eval.compression=false.  " +
                                 "To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/");
+                            throw new Output.OutputExitException();
+                            }
                         }
                                                 
                     dataIn = new DataInputStream(tmpIn);
@@ -336,7 +343,8 @@ public class Slave
                     }
                 catch (IOException e)
                     {
-                    Output.initialError("Unable to open input stream from socket:\n"+e);
+                    Output.initialMessage("Unable to open input stream from socket:\n"+e);
+                    throw new Output.OutputExitException();
                     }
                                 
                 // specify the slaveName
@@ -353,7 +361,8 @@ public class Slave
                 // store = parameters.getBoolean(new Parameter(P_STORE), null, false);
                 
                 if (output != null) output.close();
-                output = new Output(true);
+                output = new Output(false);		 // do not store messages, just print them
+                output.setThrowsErrors(true);  // don't do System.exit(1);
                 //output.setFlush(
                 //    parameters.getBoolean(new Parameter(P_FLUSH),null,false));
                 
@@ -367,24 +376,6 @@ public class Slave
 
 
                 // 2. set up thread values
-
-/*
-  int breedthreads = parameters.getInt(
-  new Parameter(Evolve.P_BREEDTHREADS),null,1);
-
-  if (breedthreads < 1)
-  output.fatal("Number of breeding threads should be an integer >0.",
-  new Parameter(Evolve.P_BREEDTHREADS),null);
-
-
-  int evalthreads = parameters.getInt(
-  new Parameter(Evolve.P_EVALTHREADS),null,1);
-
-  if (evalthreads < 1)
-  output.fatal("Number of eval threads should be an integer >0.",
-  new Parameter(Evolve.P_EVALTHREADS),null);
-*/
-
                 int breedthreads = Evolve.determineThreads(output, parameters, new Parameter(Evolve.P_BREEDTHREADS));
                 int evalthreads = Evolve.determineThreads(output, parameters, new Parameter(Evolve.P_EVALTHREADS));
 
@@ -443,14 +434,19 @@ public class Slave
                             }
                         
                         // 0 means to shut down
-                        System.err.println("reading next problem");
+                        // System.err.println("reading next problem");
                         int problemType = dataIn.readByte();
-                        System.err.println("Read problem: " + (int)problemType);
+                        // System.err.println("Read problem: " + (int)problemType);
                         switch (problemType)
                             {
                             case V_SHUTDOWN:
+                                {
                                 socket.close();
-                                return;  // we're outa here
+                                if (oneShot)
+                                	return;  // we're outa here
+                                else
+                                	throw new Output.OutputExitException();
+                                }
                             case V_EVALUATESIMPLE:
                                 evaluateSimpleProblemForm(newState, returnIndividuals, dataIn, dataOut, args);
                                 break;
@@ -460,16 +456,16 @@ public class Slave
                             default:
                                 state.output.fatal("Unknown problem form specified: "+problemType);
                             }
-                        //System.err.println("Done Evaluating Individual");
                         }
 
-                    } catch (IOException e)    
+                    } 
+                catch (IOException e)    
                     {
                     // Since an IOException can happen here if the peer closes the socket
                     // on it's end, we don't necessarily have to exit.  Maybe we don't
                     // even need to print a warning, but we'll do so just to indicate
                     // something happened.
-                    state.output.warning("Unable to read type of evaluation from master.  Maybe the master closed its socket and exited?:\n"+e);
+                    state.output.fatal("Unable to read type of evaluation from master.  Maybe the master closed its socket and exited?:\n"+e);
                     }
                 } 
             catch (UnknownHostException e)
@@ -480,6 +476,25 @@ public class Slave
                 {
                 state.output.fatal("Unable to connect to master:\n" + e);
                 }
+            }
+            catch (Output.OutputExitException e)
+            	{
+            	// here we restart if necessary
+            	try { socket.close(); } catch (Exception e2) { }
+            	if (oneShot) System.exit(0);
+            	}
+            catch (OutOfMemoryError e)
+            	{
+            	// Let's try fixing things
+            	state = null;
+            	System.gc();
+            	try { socket.close(); } catch (Exception e2) { }
+            	socket = null;
+            	System.gc();
+            	System.err.println(e);
+            	if (oneShot) System.exit(0);
+            	}
+            System.err.println("\n\nResetting...\n");
             }
         }
                             
