@@ -2003,4 +2003,4 @@ Version		Change Log
 	Output now has the option of either quitting on an error or fatal, or 
 		instead throwing an Output.OutputExitException
 	Daemon mode added to ec/eval/Slave
-
+	Removed some vestigial parameters in ec/eval/Slave

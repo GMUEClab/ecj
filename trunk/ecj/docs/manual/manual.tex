@@ -8967,6 +8967,13 @@ eval.one-shot = false
 
 One warning.  If you make your slave multithreaded, and run it in daemon mode, and an exception occurs while the slave is doing multithreaded evaluation, then the slave may reset without cleaning up the other threads: they may continue in the background.
 
+You can give your slave a name which it and the master will use when printing out connection information.  If you don't it'll just make up a random number.  To assign a name, you say:
+
+\params{%
+eval.slave-name = MyName
+}
+
+
 \subsection{Opportunistic Evolution}
 
 Slaves have the option of doing some evolutionary computation of their own, a procedure known as {\bf opportunistic evolution} \cite{opportunistic}.  The procedure works like this:

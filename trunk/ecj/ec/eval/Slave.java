@@ -104,40 +104,9 @@ import ec.util.*;
  <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default) </font></td>
  <td valign=top>(should we return whole individuals or (if false) just the fitnesses of the individuals?  This must be TRUE if eval.run-evolve is true.)</td></tr>
 
- <!-- 
- <tr><td valign=top><tt>nostore</tt><br>
- <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
- <td valign=top>(should the ec.util.Output facility <i>not</i> store announcements in memory?)</td></tr>
-
- <tr><td valign=top><tt>flush</tt><br>
- <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
- <td valign=top>(should I flush all output as soon as it's printed (useful for debugging when an exception occurs))</td></tr>
- -->
-
- <tr><td valign=top><tt>state</tt><br>
- <font size=-1>classname, inherits and != ec.EvolutionState</font></td>
- <td valign=top>(the EvolutionState object class)</td></tr>
-
- <tr><td valign=top><tt>print-accessed-params</tt><br>
- <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</td>
- <td valign=top>(at the end of a run, do we print out a list of all the parameters requested during the run?)</td></tr>
-
- <tr><td valign=top><tt>print-used-params</tt><br>
- <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</td>
- <td valign=top>(at the end of a run, do we print out a list of all the parameters actually <i>used</i> during the run?)</td></tr>
-
- <tr><td valign=top><tt>print-unaccessed-params</tt><br>
- <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</td>
- <td valign=top>(at the end of a run, do we print out a list of all the parameters NOT requested during the run?)</td></tr>
-
- <tr><td valign=top><tt>print-unused-params</tt><br>
- <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</td>
- <td valign=top>(at the end of a run, do we print out a list of all the parameters NOT actually used during the run?)</td></tr>
-
- <tr><td valign=top><tt>print-all-params</tt><br>
- <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</td>
- <td valign=top>(at the end of a run, do we print out a list of all the parameters stored in the parameter database?)</td></tr>
-
+ <tr><td valign=top><tt>eval.one-shot</tt><br>
+ <font size=-1> bool = <tt>true</tt> (default) or <tt>false</tt></font></td>
+ <td valign=top>(Should the slave quit when the master quits, or loop continuously in the background processing new masters?)</td></tr>
  </table>
  
  * 
@@ -148,16 +117,6 @@ import ec.util.*;
  
 public class Slave 
     {
-    public final static String P_PRINTACCESSEDPARAMETERS = "print-accessed-params";
-        
-    public final static String P_PRINTUSEDPARAMETERS = "print-used-params";
-        
-    public final static String P_PRINTALLPARAMETERS = "print-all-params";
-        
-    public final static String P_PRINTUNUSEDPARAMETERS = "print-unused-params";
-        
-    public final static String P_PRINTUNACCESSEDPARAMETERS = "print-unaccessed-params";
-        
     public final static String P_EVALSLAVENAME = "eval.slave-name";
         
     public final static String P_EVALMASTERHOST = "eval.master.host";
@@ -167,9 +126,7 @@ public class Slave
     public final static String P_EVALCOMPRESSION = "eval.compression";
     
     public final static String P_RETURNINDIVIDUALS = "eval.return-inds";
-        
-    public static final String P_SUBPOP = "pop.subpop";
-    
+            
     public static final byte V_NOTHING = 0;
     public static final byte V_INDIVIDUAL = 1;
     public static final byte V_FITNESS = 2;
@@ -190,9 +147,6 @@ public class Slave
         
     /* nostore parameter */
     // public static final String P_STORE = "store";
-        
-    /** state parameter */
-    public static final String P_STATE = "state";
         
     /** Time to run evolution on the slaves in seconds */ 
     public static final String P_RUNTIME = "eval.runtime"; 
@@ -397,7 +351,7 @@ public class Slave
                 
                 // what evolution state to use?
                 state = (EvolutionState)
-                    parameters.getInstanceForParameter(new Parameter(P_STATE),null,
+                    parameters.getInstanceForParameter(new Parameter(ec.Evolve.P_STATE),null,
                         EvolutionState.class);
                 state.parameters = new ParameterDatabase();
                 state.parameters.addParent(parameters);
