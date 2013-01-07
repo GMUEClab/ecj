@@ -134,19 +134,9 @@ public class Slave
     public static final byte V_SHUTDOWN = 0;
     public static final byte V_EVALUATESIMPLE = 1;
     public static final byte V_EVALUATEGROUPED = 2;
-//    public static final byte V_CHECKPOINT = 3;
-        
-    /* The argument indicating that we're starting up from a checkpoint file. */
-//    public static final String A_CHECKPOINT = "-checkpoint";
-        
+
     /** The argument indicating that we're starting fresh from a new parameter file. */
     public static final String A_FILE = "-file";
-        
-    /* flush announcements parameter */
-    // public static final String P_FLUSH = "flush";
-        
-    /* nostore parameter */
-    // public static final String P_STORE = "store";
         
     /** Time to run evolution on the slaves in seconds */ 
     public static final String P_RUNTIME = "eval.runtime"; 
@@ -160,13 +150,11 @@ public class Slave
     public static final String P_ONESHOT = "eval.one-shot"; 
     public static boolean oneShot=false; 
         
-
     /** How long we sleep in between attempts to connect to the master (in milliseconds). */
     public static final int SLEEP_TIME = 100;
         
     public static ThreadPool pool = new ThreadPool();
 
-        
     public static void main(String[] args)
         {
         EvolutionState state = null;
@@ -286,9 +274,10 @@ public class Slave
                         tmpOut = Output.makeCompressingOutputStream(tmpOut);
                         if (tmpIn == null || tmpOut == null)
                             {
-                            Output.initialMessage("You do not appear to have JZLib installed on your system, and so must set eval.compression=false.  " +
-                                "To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/");
-                            throw new Output.OutputExitException();
+                            String err = "You do not appear to have JZLib installed on your system, and so must set eval.compression=false.  " +
+                                "To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/";
+                            Output.initialMessage(err);
+                            throw new Output.OutputExitException(err);
                             }
                         }
                                                 
@@ -297,13 +286,14 @@ public class Slave
                     }
                 catch (IOException e)
                     {
-                    Output.initialMessage("Unable to open input stream from socket:\n"+e);
-                    throw new Output.OutputExitException();
+                    String err = "Unable to open input stream from socket:\n"+e;
+                    Output.initialMessage(err);
+                    throw new Output.OutputExitException(err);
                     }
                                 
                 // specify the slaveName
                 if (slaveName==null)
-                    {
+                    {                    
                     slaveName = socket.getLocalAddress().toString() + "/" + System.currentTimeMillis();
                     Output.initialMessage("No slave name specified.  Using: " + slaveName);
                     }
@@ -399,7 +389,7 @@ public class Slave
                                 if (oneShot)
                                 	return;  // we're outa here
                                 else
-                                	throw new Output.OutputExitException();
+                                	throw new Output.OutputExitException("SHUTDOWN");
                                 }
                             case V_EVALUATESIMPLE:
                                 evaluateSimpleProblemForm(newState, returnIndividuals, dataIn, dataOut, args);

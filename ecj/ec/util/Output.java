@@ -79,7 +79,13 @@ import java.util.Enumeration;
 
 public class Output implements Serializable
     {
-    public static class OutputExitException extends RuntimeException { }
+    public static class OutputExitException extends RuntimeException 
+    	{
+    	public OutputExitException(String message)
+    		{
+    		super(message);
+    		}
+    	}
     
     boolean errors;
     Vector logs = new Vector();
@@ -89,8 +95,10 @@ public class Output implements Serializable
     String filePrefix = "";
     boolean throwsErrors = false;
 
-    public static final int ALL_LOGS = -1;
-
+    public static final int ALL_MESSAGE_LOGS = -1;
+    /** When passed to print functions, doesn't do any printing */
+	public static final int NO_LOGS = -2;
+	
     /** Total verbosity */
     public static final int V_VERBOSE = 0;
     /** Don't print messages */
@@ -124,7 +132,7 @@ public class Output implements Serializable
         super.finalize();
         }
 
-    private static void exitWithError(Output output, boolean throwException)
+    private static void exitWithError(Output output, String message, boolean throwException)
         {
         // flush logs first
         if (output != null) output.close();
@@ -133,7 +141,7 @@ public class Output implements Serializable
 
         // exit
         if (throwException)
-        	throw new OutputExitException();
+        	throw new OutputExitException(message);
         else
         	System.exit(1);
         }
@@ -443,33 +451,49 @@ public class Output implements Serializable
         be used by ec.Evolve in starting up the system. */
     public static void initialError(String s)
         {
-        System.err.println("STARTUP ERROR:\n" + s);
+        String er = "STARTUP ERROR:\n" + s;
+        System.err.println(er);
 
         //System.exit(1);
-        exitWithError(null, false);
+        exitWithError(null, er, false);
         }
 
     /** Prints an initial error to System.err.  This is only to
         be used by ec.Evolve in starting up the system. */
     public static void initialError(String s, Parameter p1)
         {
-        System.err.println("STARTUP ERROR:\n" + s);
-        if (p1!=null) System.err.println("PARAMETER: " + p1);
+        String er = "STARTUP ERROR:\n" + s;
+        System.err.println(er);
+        if (p1!=null) 
+        	{
+        	er += "PARAMETER: " + p1;
+        	System.err.println("PARAMETER: " + p1);
+        	}
 
         //System.exit(1);
-        exitWithError(null, false);
+        exitWithError(null, er, false);
         }
 
     /** Prints an initial error to System.err.  This is only to
         be used by ec.Evolve in starting up the system. */
     public static void initialError(String s, Parameter p1, Parameter p2)
         {
-        System.err.println("STARTUP ERROR:\n" + s);
-        if (p1!=null) System.err.println("PARAMETER: " + p1);
-        if (p2!=null && p1!=null) System.err.println("     ALSO: " + p2);
+        String er = "STARTUP ERROR:\n" + s;
+        System.err.println(er);
+        if (p1!=null) 
+            {
+        	er += "PARAMETER: " + p1;
+        	System.err.println("PARAMETER: " + p1);
+        	}
+
+        if (p2!=null && p1!=null)
+            {
+        	er += "     ALSO: " + p2;
+			System.err.println("     ALSO: " + p2);
+        	}
 
         //System.exit(1);
-        exitWithError(null, false);
+        exitWithError(null, er, false);
         }
 
     /** Prints an initial message to System.err.  This is only to
@@ -483,79 +507,90 @@ public class Output implements Serializable
     /** Posts a system message. */
     public synchronized void systemMessage(String s)
         {
-        println(s, V_NO_MESSAGES ,ALL_LOGS, true);
+        println(s, V_NO_MESSAGES ,ALL_MESSAGE_LOGS, true);
         }
 
+	StringBuffer error = new StringBuffer();
+	// builds up an error message in case the user wants to throw
+	// an exception rather than quit
+	String a(String str)
+		{
+		error.append(str);
+		error.append("\n");
+		return str;
+		}
+		
     /** Posts a fatal error.  This causes the system to exit. */
     public synchronized void fatal(String s)
         {
-        println("FATAL ERROR:\n"+s, ALL_LOGS, true);
-        exitWithError(this, throwsErrors);
+        StringBuffer error = new StringBuffer();
+        println(a("FATAL ERROR:\n"+s), ALL_MESSAGE_LOGS, true);
+        exitWithError(this, error.toString(), throwsErrors);
         }
             
     /** Posts a fatal error.  This causes the system to exit. */
     public synchronized void fatal(String s, Parameter p1)
         {
-        println("FATAL ERROR:\n"+s, ALL_LOGS, true);
-        if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
-        exitWithError(this, throwsErrors);
+        println(a("FATAL ERROR:\n"+s), ALL_MESSAGE_LOGS, true);
+        if (p1!=null) println(a("PARAMETER: " + p1), ALL_MESSAGE_LOGS, true);
+        exitWithError(this, error.toString(), throwsErrors);
         }
 
     /** Posts a fatal error.  This causes the system to exit. */
     public synchronized void fatal(String s, Parameter p1, Parameter p2)
         {
-        println("FATAL ERROR:\n"+s, ALL_LOGS, true);
-        if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
-        if (p2!=null && p1!=null) println("     ALSO: " + p2, ALL_LOGS, true);
-        else println("PARAMETER: " + p2, ALL_LOGS, true);
-        exitWithError(this, throwsErrors);
+        println(a("FATAL ERROR:\n"+s), ALL_MESSAGE_LOGS, true);
+        if (p1!=null) println(a("PARAMETER: " + p1), ALL_MESSAGE_LOGS, true);
+        if (p2!=null && p1!=null) println(a("     ALSO: " + p2), ALL_MESSAGE_LOGS, true);
+        else println(a("PARAMETER: " + p2), ALL_MESSAGE_LOGS, true);
+        exitWithError(this, error.toString(), throwsErrors);
         }
 
     /** Posts a simple error. This causes the error flag to be raised as well. */
     public synchronized void error(String s)
         {
-        println("ERROR:\n"+s, ALL_LOGS, true);
+        println(a("ERROR:\n"+s), ALL_MESSAGE_LOGS, true);
         errors = true;
         }
             
     /** Posts a simple error. This causes the error flag to be raised as well. */
     public synchronized void error(String s, Parameter p1)
         {
-        println("ERROR:\n"+s, ALL_LOGS, true);
-        if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
+        println(a("ERROR:\n"+s), ALL_MESSAGE_LOGS, true);
+        if (p1!=null) println(a("PARAMETER: " + p1), ALL_MESSAGE_LOGS, true);
         errors = true;
         }
 
     /** Posts a simple error. This causes the error flag to be raised as well. */
     public synchronized void error(String s, Parameter p1, Parameter p2)
         {
-        println("ERROR:\n"+s, ALL_LOGS, true);
-        if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
-        if (p2!=null && p1!=null) println("     ALSO: " + p2, ALL_LOGS, true);
-        else println("PARAMETER: " + p2, ALL_LOGS, true);
+        println(a("ERROR:\n"+s), ALL_MESSAGE_LOGS, true);
+        if (p1!=null) println(a("PARAMETER: " + p1), ALL_MESSAGE_LOGS, true);
+        if (p2!=null && p1!=null) println(a("     ALSO: " + p2), ALL_MESSAGE_LOGS, true);
+        else println(a("PARAMETER: " + p2), ALL_MESSAGE_LOGS, true);
         errors = true;
         }
 
     /** Posts a warning. */
     public synchronized void warning(String s, Parameter p1, Parameter p2)
         {
-        println("WARNING:\n"+s, ALL_LOGS, true);
-        if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
-        if (p2!=null && p1!=null) println("     ALSO: " + p2, ALL_LOGS, true);
-        else println("PARAMETER: " + p2, ALL_LOGS, true);
+        println("WARNING:\n"+s, ALL_MESSAGE_LOGS, true);
+        if (p1!=null) println("PARAMETER: " + p1, ALL_MESSAGE_LOGS, true);
+        if (p2!=null && p1!=null) println("     ALSO: " + p2, ALL_MESSAGE_LOGS, true);
+        else println("PARAMETER: " + p2, ALL_MESSAGE_LOGS, true);
         }
 
     /** Posts a warning. */
     public synchronized void warning(String s, Parameter p1)
         {
-        println("WARNING:\n"+s, ALL_LOGS, true);
-        if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
+        println("WARNING:\n"+s, ALL_MESSAGE_LOGS, true);
+        if (p1!=null) println("PARAMETER: " + p1, ALL_MESSAGE_LOGS, true);
         }
 
     /** Posts a warning. */
     public synchronized void warning(String s)
         {
-        println("WARNING:\n"+s, ALL_LOGS, true);
+        println("WARNING:\n"+s, ALL_MESSAGE_LOGS, true);
         }
     
     java.util.HashSet oneTimeWarnings = new java.util.HashSet();
@@ -565,7 +600,7 @@ public class Output implements Serializable
         if (!oneTimeWarnings.contains(s))
             {
             oneTimeWarnings.add(s);
-            println("ONCE-ONLY WARNING:\n"+s, ALL_LOGS, true);
+            println("ONCE-ONLY WARNING:\n"+s, ALL_MESSAGE_LOGS, true);
             }
         }
         
@@ -574,8 +609,8 @@ public class Output implements Serializable
         if (!oneTimeWarnings.contains(s))
             {
             oneTimeWarnings.add(s);
-            println("ONCE-ONLY WARNING:\n"+s, ALL_LOGS, true);
-            if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
+            println("ONCE-ONLY WARNING:\n"+s, ALL_MESSAGE_LOGS, true);
+            if (p1!=null) println("PARAMETER: " + p1, ALL_MESSAGE_LOGS, true);
             }
         }
         
@@ -584,10 +619,10 @@ public class Output implements Serializable
         if (!oneTimeWarnings.contains(s))
             {
             oneTimeWarnings.add(s);
-            println("ONCE-ONLY WARNING:\n"+s, ALL_LOGS, true);
-            if (p1!=null) println("PARAMETER: " + p1, ALL_LOGS, true);
-            if (p2!=null && p1!=null) println("     ALSO: " + p2, ALL_LOGS, true);
-            else println("PARAMETER: " + p2, ALL_LOGS, true);
+            println("ONCE-ONLY WARNING:\n"+s, ALL_MESSAGE_LOGS, true);
+            if (p1!=null) println("PARAMETER: " + p1, ALL_MESSAGE_LOGS, true);
+            if (p2!=null && p1!=null) println("     ALSO: " + p2, ALL_MESSAGE_LOGS, true);
+            else println("PARAMETER: " + p2, ALL_MESSAGE_LOGS, true);
             }
         }
 
@@ -595,7 +630,7 @@ public class Output implements Serializable
     /** Posts a message. */
     public synchronized void message(String s)
         {
-        println(s, ALL_LOGS, true);
+        println(s, ALL_MESSAGE_LOGS, true);
         }
   
     /** Forces a file-based log to reopen, erasing its previous contents.
@@ -622,6 +657,7 @@ public class Output implements Serializable
 
     /** Prints a message to a given log, with a certain verbosity.  
         <i>_announcement</i> indicates that the message is an announcement. 
+        If the log is null, nothing is printed.
         @deprecated Verbosity no longer has an effect
     */
 
@@ -631,6 +667,7 @@ public class Output implements Serializable
         boolean _announcement,
         boolean _reposting) throws OutputException
         {
+		if (log==null) return;
         if (log.writer==null) throw new OutputException("Log with a null writer: " + log);
         if (!log.postAnnouncements && _announcement) return;  // don't write it
         // if (log.verbosity >= _verbosity) return;  // don't write it
@@ -648,7 +685,8 @@ public class Output implements Serializable
 
 
     /** Prints a message to a given log, 
-        with a certain verbosity.  If log==ALL_LOGS, posted to all logs which accept announcements. 
+        with a certain verbosity.  If log==ALL_MESSAGE_LOGS, posted to all logs which accept announcements. 
+        If the log is NO_LOGS, nothing is printed.
         @deprecated Verbosity no longer has an effect
     */
     synchronized void println(String s,
@@ -656,7 +694,8 @@ public class Output implements Serializable
         int log,
         boolean _announcement) throws OutputException
         {
-        if (log==ALL_LOGS) for (int x = 0; x<logs.size();x++)
+        if (log==NO_LOGS) return;
+        if (log==ALL_MESSAGE_LOGS) for (int x = 0; x<logs.size();x++)
                                {
                                Log l = (Log) logs.elementAt(x);
                                if (l==null) throw new OutputException("Unknown log number" + l);
@@ -670,18 +709,21 @@ public class Output implements Serializable
             }
         }
 
-    /** Prints a message to a given log.  If log==ALL_LOGS, posted to all logs which accept announcements. 
+    /** Prints a message to a given log.  If log==ALL_MESSAGE_LOGS, posted to all logs which accept announcements. 
+        If the log is NO_LOGS, nothing is printed.
      */
     public synchronized void println(String s,
         int log,
         boolean _announcement) throws OutputException
         {
+        if (log==NO_LOGS) return;
         println(s, V_VERBOSE, log, _announcement);
         }
 
 
     /** Prints a non-announcement message to the given logs, 
         with a certain verbosity. 
+        If a log is NO_LOGS, nothing is printed to that log.
         @deprecated Verbosity no longer has an effect
     */
     public synchronized void println(String s,
@@ -689,36 +731,48 @@ public class Output implements Serializable
         int[] _logs) throws OutputException
         {
         for(int x=0;x<_logs.length;x++)
+        	{
+        	if (_logs[x]==NO_LOGS) break;
             println(s,V_VERBOSE,(Log)(logs.elementAt(_logs[x])),false,false);
+            }
         }
 
 
     /** Prints a non-announcement message to the given logs, 
         with a certain verbosity. 
+        If the log is NO_LOGS, nothing is printed.
         @deprecated Verbosity no longer has an effect
     */
     public synchronized void println(String s,
         int _verbosity,
         int log) throws OutputException
         {
+        if (log==NO_LOGS) return;
         println(s,V_VERBOSE,(Log)(logs.elementAt(log)),false,false);
         }
 
 
-    /** Prints a non-announcement message to the given logs, with a verbosity of V_NO_GENERAL. */
+    /** 
+    	Prints a non-announcement message to the given logs, with a verbosity of V_NO_GENERAL. 
+        If the log is NO_LOGS, nothing is printed.
+    */
     public synchronized void println(String s,
         int log) throws OutputException
         {
+        if (log==NO_LOGS) return;
         println(s,V_VERBOSE,log);
         }
 
 
     /** Prints a non-announcement message to a given log, with a 
-        certain verbosity. No '\n' is printed.  */
+        certain verbosity. No '\n' is printed.  
+        If the log is null, nothing is printed.
+        */
     protected synchronized void print(String s,
         int _verbosity,
         Log log) throws OutputException
         {
+        if (log==null) return;
         if (log.writer==null) throw new OutputException("Log with a null writer: " + log);
         //if (log.verbosity >= _verbosity) return;  // don't write it
         //if (verbosity >= _verbosity) return;  // don't write it
@@ -730,13 +784,16 @@ public class Output implements Serializable
         }
 
     /** Prints a non-announcement message to a given log, with a
-        certain verbosity. If log==ALL_LOGS, posted to all logs which accept announcements. 
-        No '\n' is printed.  */
+        certain verbosity. If log==ALL_MESSAGE_LOGS, posted to all logs which accept announcements. 
+        No '\n' is printed.  
+        If the log is NO_LOGS, nothing is printed.
+        */
     public synchronized void print(String s,
         int _verbosity,
         int log) throws OutputException
         {
-        if (log==ALL_LOGS) for (int x = 0; x<logs.size();x++)
+        if (log==NO_LOGS) return;
+        if (log==ALL_MESSAGE_LOGS) for (int x = 0; x<logs.size();x++)
                                {
                                Log l = (Log) logs.elementAt(x);
                                if (l==null) throw new OutputException("Unknown log number" + l);
@@ -751,7 +808,9 @@ public class Output implements Serializable
         }
 
     /** Prints a non-announcement message to a given log<!--, with a verbosity of V_NO_GENERAL-->.
-        If log==ALL_LOGS, posted to all logs which accept announcements. No '\n' is printed.  */
+        If log==ALL_MESSAGE_LOGS, posted to all logs which accept announcements. No '\n' is printed.  
+        If the log is NO_LOGS, nothing is printed.
+        */
     public synchronized void print(String s,
         int log) throws OutputException
         {
@@ -760,6 +819,7 @@ public class Output implements Serializable
 
     /** Prints a non-announcement message to the given logs, 
         with a certain verbosity. No '\n' is printed.  
+        If a log is NO_LOGS, nothing is printed to that log.
         @deprecated Verbosity no longer has any effect 
     */
     public synchronized void print(String s,
@@ -767,11 +827,15 @@ public class Output implements Serializable
         int[] _logs) throws OutputException
         {
         for(int x=0;x<_logs.length;x++)
+        	{
+       		if (_logs[x]==NO_LOGS) return;
             print(s,_logs[x]);
+            }
         }
 
     /** Prints a non-announcement message to the given logs, 
         with a certain verbosity. No '\n' is printed.  
+        If a log is NO_LOGS, nothing is printed to that log.
     */
     public synchronized void print(String s,
         int[] _logs) throws OutputException
@@ -784,8 +848,8 @@ public class Output implements Serializable
         {
         if (errors) 
             {
-            println("SYSTEM EXITING FROM ERRORS\n",ALL_LOGS, true);
-            exitWithError(this, throwsErrors);
+            println(a("SYSTEM EXITING FROM ERRORS\n"), ALL_MESSAGE_LOGS, true);
+            exitWithError(this, error.toString(), throwsErrors);
             }
         }
 

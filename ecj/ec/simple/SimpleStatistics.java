@@ -60,6 +60,8 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
     
     /** compress? */
     public static final String P_COMPRESS = "gzip";
+    
+    public static final String P_MUZZLE = "muzzle";
 
 	public static final String P_DO_FINAL = "do-final";
 	public static final String P_DO_GENERATION = "do-generation";
@@ -79,6 +81,9 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
     public boolean doMessage;
     public boolean doDescription;
 
+	/** Should we even open up a file and write to it at all? */
+	public boolean muzzle;
+
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state,base);
@@ -93,7 +98,13 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         doMessage = state.parameters.getBoolean(base.push(P_DO_MESSAGE),null,true);
         doDescription = state.parameters.getBoolean(base.push(P_DO_DESCRIPTION),null,true);
 
-        if (statisticsFile!=null)
+		muzzle = state.parameters.getBoolean(base.push(P_MUZZLE),null,false);
+
+		if (muzzle)
+			{
+			statisticslog = Output.NO_LOGS;
+			}
+        else if (statisticsFile!=null)
             try
                 {
                 statisticslog = state.output.addLog(statisticsFile, !compress, compress);

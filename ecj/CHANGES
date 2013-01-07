@@ -2004,3 +2004,7 @@ Version		Change Log
 		instead throwing an Output.OutputExitException
 	Daemon mode added to ec/eval/Slave
 	Removed some vestigial parameters in ec/eval/Slave
+	Output.ALL_LOGS changed to Output.ALL_MESSAGE_LOGS
+	Output.NO_LOGS added
+	KozaStatistics is hereby deleted
+
