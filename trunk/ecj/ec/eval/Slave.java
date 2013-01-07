@@ -307,8 +307,6 @@ public class Slave
                 if (output != null) output.close();
                 output = new Output(false);		 // do not store messages, just print them
                 output.setThrowsErrors(true);  // don't do System.exit(1);
-                //output.setFlush(
-                //    parameters.getBoolean(new Parameter(P_FLUSH),null,false));
                 
                 // stdout is always log #0. stderr is always log #1.
                 // stderr accepts announcements, and both are fully verbose
