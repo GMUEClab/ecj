@@ -55,7 +55,7 @@ import java.io.*;
  * to ensure Genes can be printed by ECJ.
  * </ul>
 
- <p><b>Default Base</b><br>Þ
+ <p><b>Default Base</b><br>
  vector.gene
 
  * @author Sean Luke

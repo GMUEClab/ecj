@@ -119,13 +119,6 @@ public abstract class Individual implements Prototype, Comparable
         hash code. */
     public abstract int hashCode();
 
-    /** This should be used to set up only those things which you share in common
-        with all other individuals in your species; individual-specific items
-        which make you <i>you</i> should be filled in by Species.newIndividual(...),
-        and modified by breeders. 
-        @see Prototype#setup(EvolutionState,Parameter)
-    */
-    
     /** Overridden here because hashCode() is not expected to return the pointer
         to the object.  toString() normally uses hashCode() to print a unique identifier,
         and that's no longer the case.   You're welcome to override this anyway you 
@@ -154,6 +147,13 @@ public abstract class Individual implements Prototype, Comparable
         return toString();
         }
               
+    /** This should be used to set up only those things which you share in common
+        with all other individuals in your species; individual-specific items
+        which make you <i>you</i> should be filled in by Species.newIndividual(...),
+        and modified by breeders. 
+        @see Prototype#setup(EvolutionState,Parameter)
+    */
+    
     public void setup(final EvolutionState state, final Parameter base)
         {
         // does nothing by default.

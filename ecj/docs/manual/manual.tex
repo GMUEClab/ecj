@@ -3531,7 +3531,7 @@ stat.do-final = false
 At the end of the run, the SimpleStatistics object finally calls the \method{describe(...)} method on the \method{Evaluator} to get it to write out a phenotypical description of the performance of the best individual of the run (see Section \ref{ec.Problem}).  Only some problems implement the \method{describe(...)} method: for example the Artificial Ant problem will use it to print out a map of the food trail by the best discovered ant algorithm, such as:
 
 \vbox{
-\small\begin{verbatim}
+\footnotesize\begin{verbatim}
 Best Individual's Map
 =====================
 acdgf.......f............m......
@@ -3693,7 +3693,7 @@ stat.child.0.do-size = true
 You can also turn on timing information.  If you set:
 
 \params{%
-stat.child.0.do-size = true
+stat.child.0.do-size = true\\
 stat.child.0.do-time = true
 }
 
@@ -3715,8 +3715,8 @@ You'll additionally get:
 Finally, you can add in per-subpopulation information.  If you set:
 
 \params{%
-stat.child.0.do-size = true
-stat.child.0.do-time = true
+stat.child.0.do-size = true\\
+stat.child.0.do-time = true\\
 stat.child.0.do-subpops = true
 }
 
