@@ -2007,4 +2007,4 @@ Version		Change Log
 	Output.ALL_LOGS changed to Output.ALL_MESSAGE_LOGS
 	Output.NO_LOGS added
 	KozaStatistics is hereby deleted
-
+	Added setToMeanOf, setToMedianOf, and setToBestOf

@@ -2512,6 +2512,19 @@ public Individual[] context = null;
 
 These variables are used by coevolutionary processes (see Section~\ref{ec.coevolve}) to keep track of the number of trials (in the form of \class{java.lang.Double} used to compute the Fitness value, and to maintain the context (other collaborating Individuals) which produced the best result represented by he Fitness.  Outside of coevolution they're presently unused: leave them null and they won't be printed.
 
+Fitnesses have three hooks which can be used to merge multiple Fitness values into one, if appropriate (for example, this doesn't make much sense for multiobjective fitnesses).  Though this could be used to assemble a Fitness over multiple trials, Coevolution uses the different mechanism above to achieve this which preserves contextual information (see Section \ref{ec.coevolve}).    One method \method{setToMeanOf(...)}, is unimplemented in the \class{Fitness} class proper, though it's been implemented in common subclasses in ECJ.  If you make your own Fitness object you might ultimately want to implement this method if appropriate, but it's not necessary in most cases.  The other two methods call \method{setToMeanOf(...)} internally.
+
+\begin{methods}{ec.util.Fitness}
+\mthd{public void setToMeanOf(EvolutionState \textit{state}, Fitness[] \textit{fitnesses})}
+Sets the fitness to the mean of the provided fitness values.  By default this method is unimplemented and generates an error.   Common subclasses (like \class{SimpleFitness} and \class{KozaFitness}) override this method and implement it.  Other classes, such as \class{MultiobjectiveFitness} and its subclasses,, do not, since there is no notion of a ``mean'' in that context.  You do not have to implement this utility method in most situations.
+\mthd{public void setToMedianOf(EvolutionState \textit{state}, Fitness[] \textit{fitnesses})}
+Sets the fitness to the median of the provided fitness values.  This method calls \method{setToMeanOf(...)} in its implementation.
+\mthd{public void setToBestOf(EvolutionState \textit{state}, Fitness[] \textit{fitnesses})}
+Sets the fitness to the best of the provided fitness values.  This method calls \method{setToMeanOf(...)} in its implementation.
+\end{methods}
+
+
+
 \section{Initializers and Finishers}
 \label{ec.Initializer}
 \label{ec.Finisher}
