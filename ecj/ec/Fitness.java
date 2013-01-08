@@ -412,11 +412,37 @@ public abstract class Fitness implements Prototype, Comparable
         return 0;
         }
         
+    /** Sets the fitness to be the same value as the best of the provided fitnesses.  This method calls
+    	setToMeanOf(...), so if that method is unimplemented, this method will also fail.  */
+    public void setToBestOf(EvolutionState state, Fitness[] fitnesses)
+        {
+        Fitness[] f2 = (Fitness[])(fitnesses.clone());
+        Arrays.sort(f2);
+        setToMeanOf(state, new Fitness[] { f2[0] });
+        }
+
     /** Sets the fitness to be the same value as the mean of the provided fitnesses.  The default
         version of this method exits with an "unimplemented" error; you should override this. */
     public void setToMeanOf(EvolutionState state, Fitness[] fitnesses)
         {
         state.output.fatal("setToMeanOf(EvolutionState, Fitness[]) not implemented in " + this.getClass());
         }
+
+    /** Sets the fitness to be the median of the provided fitnesses.  This method calls
+    	setToMeanOf(...), so if that method is unimplemented, this method will also fail. */
+    public void setToMedianOf(EvolutionState state, Fitness[] fitnesses)
+        {
+        Fitness[] f2 = (Fitness[])(fitnesses.clone());
+        Arrays.sort(f2);
+        if (f2.length % 2 == 1)
+        	{
+        	setToMeanOf(state, new Fitness[] { f2[f2.length / 2] });   // for example, 5/2 = 2, and 0, 1, *2*, 3, 4
+        	}
+        else
+        	{
+        	setToMeanOf(state, new Fitness[] { f2[f2.length/2 - 1], f2[f2.length/2] });  // for example, 6/2 = 3, and 0, 1, *2<, *3*, 4, 5
+        	}
+        }
+
     }
 
