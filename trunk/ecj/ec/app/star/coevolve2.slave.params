@@ -4,16 +4,10 @@
 
 parent.0 =      coevolve2.master.params
 
-### NO LONGER NEEDED
-# We tell our slave that he's a slave.
-# eval.i-am-slave = true
-### END NO LONGER NEEDED
-
-
 # You may want to customize each slave by giving it a unique
 # name like this:
 # 
-# eval.slave-name = my-slave-name
+# eval.slave.name = my-slave-name
 #
 # (do this differently for each slave:, slave-2, slave-3, etc.)
 # Otherwise, each slave will give itself an approximately unique name based

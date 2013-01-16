@@ -129,7 +129,7 @@ public class DEBreeder extends Breeder
     public boolean valid(DoubleVectorIndividual ind)
         {
         FloatVectorSpecies species = (FloatVectorSpecies)(ind.species);
-        return (!(species.mutationIsBounded && !ind.isInRange()));
+        return (ind.isInRange());
         }
 
     public DoubleVectorIndividual createIndividual(

@@ -224,53 +224,69 @@ public class ShortVectorIndividual extends VectorIndividual
         genome = newgenome;
         }
 
+    /** Returns a random value from between min and max inclusive.  This method handles
+        overflows that complicate this computation.  Does NOT check that
+        min is less than or equal to max.  You must check this yourself. */
+    public short randomValueFromClosedInterval(short min, short max, MersenneTwisterFast random)
+        {
+        if (max - min < 0) // we had an overflow
+            {
+            short l = 0;
+            do l = (short)random.nextInt();
+            while(l < min || l > max);
+            return l;
+            }
+        else return (short)(min + random.nextInt(max - min + 1));
+        }
+
     /** Destructively mutates the individual in some default manner.  The default form
         simply randomizes genes to a uniform distribution from the min and max of the gene values. */
     public void defaultMutate(EvolutionState state, int thread)
         {
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
-        if (s.mutationProbability>0.0)
-            {
-            switch(s.mutationType)
+        for(int x = 0; x < genome.length; x++)
+            if (state.random[thread].nextBoolean(s.mutationProbability(x)))
                 {
-                case IntegerVectorSpecies.C_RESET_MUTATION:
-                    for(int x=0;x<genome.length;x++)
-                        if (state.random[thread].nextBoolean(s.mutationProbability))
-                            genome[x] = (short)((int)s.minGene(x) + state.random[thread].nextInt((int)s.maxGene(x)-(int)s.minGene(x)+1));
-                    break;
-                case IntegerVectorSpecies.C_RANDOM_WALK_MUTATION:
-                {
-                double prob = s.randomWalkProbability;
-                for(int x=0;x<genome.length;x++)
-                    if (state.random[thread].nextBoolean(s.mutationProbability))
+                switch(s.mutationType(x))
+                    {
+                    case IntegerVectorSpecies.C_RESET_MUTATION:
+                        genome[x] = (short)randomValueFromClosedInterval((short)s.minGene(x), (short)s.maxGene(x), state.random[thread]);
+                        break;
+                    case IntegerVectorSpecies.C_RANDOM_WALK_MUTATION:
+                    {
+                    int min = (int)s.minGene(x);
+                    int max = (int)s.maxGene(x);
+                    if (!s.mutationIsBounded(x))
                         {
-                        short min = (short)s.minGene(x);
-                        short max = (short)s.maxGene(x);
-                        do
-                            {
-                            short n = (short)(state.random[thread].nextBoolean() ? 1 : -1);
-                            short g = genome[x];
-                            if ((n == 1 && g < max) ||
-                                (n == -1 && g > min))
-                                genome[x] = (short)(g + n);
-                            else if ((n == -1 && g < max) ||
-                                (n == 1 && g > min))
-                                genome[x] = (short)(g - n);    
-                            }
-                        while (state.random[thread].nextBoolean(s.randomWalkProbability));
+                        // okay, technically these are still bounds, but we can't go beyond this without weird things happening
+                        max = Short.MAX_VALUE;
+                        min = Short.MIN_VALUE;
                         }
+                    do
+                        {
+                        int n = (int)(state.random[thread].nextBoolean() ? 1 : -1);
+                        int g = genome[x];
+                        if ((n == 1 && g < max) ||
+                            (n == -1 && g > min))
+                            genome[x] = (short)(g + n);
+                        else if ((n == -1 && g < max) ||
+                            (n == 1 && g > min))
+                            genome[x] = (short)(g - n);     
+                        }
+                    while (state.random[thread].nextBoolean(s.randomWalkProbability(x)));
+                    }
+                    }
                 }
-                break;
-                }
-            }
         }
-
-    /** Initializes the individual by randomly choosing Shorts uniformly from mingene to maxgene. */
+        
+    
+    /** Initializes the individual by randomly choosing Integers uniformly from mingene to maxgene. */
+    // notice that we bump to longs to avoid overflow errors
     public void reset(EvolutionState state, int thread)
         {
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
         for(int x=0;x<genome.length;x++)
-            genome[x] = (short)((int)s.minGene(x) + state.random[thread].nextInt((int)s.maxGene(x)-(int)s.minGene(x)+1));
+            genome[x] = (short)randomValueFromClosedInterval((short)s.minGene(x), (short)s.maxGene(x), state.random[thread]);
         }
 
     public int hashCode()

@@ -196,10 +196,9 @@ public class GeneVectorIndividual extends VectorIndividual
     public void defaultMutate(EvolutionState state, int thread)
         {
         GeneVectorSpecies s = (GeneVectorSpecies) species;
-        if (s.mutationProbability>0.0)
-            for(int x=0;x<genome.length;x++)
-                if (state.random[thread].nextBoolean(s.mutationProbability))
-                    genome[x].mutate(state,thread);
+        for(int x=0;x<genome.length;x++)
+            if (state.random[thread].nextBoolean(s.mutationProbability[x]))
+                genome[x].mutate(state,thread);
         }
 
     /** Initializes the individual by calling reset(...) on each gene. */

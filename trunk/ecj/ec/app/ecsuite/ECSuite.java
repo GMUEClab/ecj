@@ -65,6 +65,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final String V_MIN = "min";
     public static final String V_ROTATED_RASTRIGIN = "rotated-rastrigin";
     public static final String V_ROTATED_SCHWEFEL = "rotated-schwefel";
+    public static final String V_ROTATED_GRIEWANK = "rotated-griewank";
 
     public static final int PROB_ROSENBROCK = 0;
     public static final int PROB_RASTRIGIN = 1;
@@ -80,6 +81,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final int PROB_MIN = 11;
     public static final int PROB_ROTATED_RASTRIGIN = 12;
     public static final int PROB_ROTATED_SCHWEFEL = 13;
+    public static final int PROB_ROTATED_GRIEWANK = 14;
         
     public int problemType = PROB_ROSENBROCK;  // defaults on Rosenbrock
 
@@ -98,7 +100,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
     V_SCHWEFEL,
     V_MIN,
     V_ROTATED_RASTRIGIN,
-    V_ROTATED_SCHWEFEL
+    V_ROTATED_SCHWEFEL,
+	V_ROTATED_GRIEWANK
     };
 
     public static final double minRange[] = new double[]
@@ -116,7 +119,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
     -512.03,        // schwefel
     0.0,            // min
     -5.12,          // rotated-rastrigin
-    -512.03         // rotated-schwefel
+    -512.03,        // rotated-schwefel
+    -600.0          // rotated-griewank
     };
 
     public static final double maxRange[] = new double[]
@@ -134,12 +138,13 @@ public class ECSuite extends Problem implements SimpleProblemForm
     511.97,         // schwefel
     1.0,            // min
     5.12,           // rotated-rastrigin
-    511.97          // rotated-schwefel
+    511.97,         // rotated-schwefel
+    600.0			// rotated-griewank
     };
                 
         
     boolean alreadyChecked = false;
-    public void checkRange(EvolutionState state, int problem)
+    public void checkRange(EvolutionState state, int problem, double[] genome)
         {
         if (alreadyChecked || state.generation > 0) return;
         alreadyChecked = true;
@@ -151,13 +156,13 @@ public class ECSuite extends Problem implements SimpleProblemForm
                 state.output.fatal("ECSuite requires species " + i + " to be a FloatVectorSpecies, but it is a: " +  state.population.subpops[i].species);
                 }
             FloatVectorSpecies species = (FloatVectorSpecies)(state.population.subpops[i].species);
-            for(int k = 0; k < species.minGenes.length; k++)
+            for(int k = 0; k < genome.length; k++)
                 {
-                if (species.minGenes[k] != minRange[problem] ||
-                    species.maxGenes[k] != maxRange[problem])
+                if (species.minGene(k) != minRange[problem] ||
+                    species.maxGene(k) != maxRange[problem])
                     {
                     state.output.warning("Gene range is nonstandard for problem " + problemName[problem] + ".\nFirst occurrence: Subpopulation " + i + " Gene " + k + 
-                        " range was [" + species.minGenes[k] + ", " + species.maxGenes[k] + 
+                        " range was [" + species.minGene(k) + ", " + species.maxGene(k) + 
                         "], expected [" + minRange[problem] + ", " + maxRange[problem] + "]");
                     return;  // done here
                     }
@@ -203,6 +208,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
             problemType = PROB_ROTATED_RASTRIGIN;
         else if (wp.compareTo( V_ROTATED_SCHWEFEL) == 0)
             problemType = PROB_ROTATED_SCHWEFEL;
+        else if (wp.compareTo( V_ROTATED_GRIEWANK) == 0)
+            problemType = PROB_ROTATED_GRIEWANK;
         else state.output.fatal(
             "Invalid value for parameter, or parameter not found.\n" +
             "Acceptable values are:\n" +
@@ -219,7 +226,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
             "  " + V_SCHWEFEL + "\n"+
             "  " + V_MIN + "\n"+
             "  " + V_ROTATED_RASTRIGIN + "\n" + 
-            "  " + V_ROTATED_SCHWEFEL + "\n",
+            "  " + V_ROTATED_SCHWEFEL + "\n" +
+            "  " + V_ROTATED_GRIEWANK + "\n",
             base.push( P_WHICH_PROBLEM ) );
         }
 
@@ -285,6 +293,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
             case PROB_SCHWEFEL:
             case PROB_ROTATED_RASTRIGIN:    // not sure
             case PROB_ROTATED_SCHWEFEL:
+            case PROB_ROTATED_GRIEWANK:
             case PROB_MIN:
             default:
                 return false;
@@ -294,7 +303,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public double function(EvolutionState state, int function, double[] genome, int threadnum)
         {
                 
-        checkRange(state, function);
+        checkRange(state, function, genome);
                 
         double value = 0;
         double len = genome.length;
@@ -438,6 +447,20 @@ public class ECSuite extends Problem implements SimpleProblemForm
             double[] val = mul(rotationMatrix[0], genome);
             return function(state, PROB_SCHWEFEL, val, threadnum);
             }
+
+            case PROB_ROTATED_GRIEWANK:
+            {
+            synchronized(rotationMatrix)            // synchronizations are rare in ECJ.  :-(
+                {
+                if (rotationMatrix[0] == null)
+                    rotationMatrix[0] = buildRotationMatrix(ROTATION_SEED, (int)len);
+                }
+
+            // now we know the matrix exists rotate the matrix and return its value
+            double[] val = mul(rotationMatrix[0], genome);
+            return function(state, PROB_GRIEWANK, val, threadnum);
+            }
+
 
             default:
                 state.output.fatal( "ec.app.ecsuite.ECSuite has an invalid problem -- how on earth did that happen?" );

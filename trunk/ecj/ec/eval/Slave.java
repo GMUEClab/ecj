@@ -117,7 +117,7 @@ import ec.util.*;
  
 public class Slave 
     {
-    public final static String P_EVALSLAVENAME = "eval.slave-name";
+    public final static String P_EVALSLAVENAME = "eval.slave.name";
         
     public final static String P_EVALMASTERHOST = "eval.master.host";
         
@@ -126,6 +126,8 @@ public class Slave
     public final static String P_EVALCOMPRESSION = "eval.compression";
     
     public final static String P_RETURNINDIVIDUALS = "eval.return-inds";
+
+    public final static String P_MUZZLE = "eval.slave.muzzle";
             
     public static final byte V_NOTHING = 0;
     public static final byte V_INDIVIDUAL = 1;
@@ -139,15 +141,15 @@ public class Slave
     public static final String A_FILE = "-file";
         
     /** Time to run evolution on the slaves in seconds */ 
-    public static final String P_RUNTIME = "eval.runtime"; 
+    public static final String P_RUNTIME = "eval.slave.runtime"; 
     public static int runTime=0; 
         
     /** Should slave run its own evolutionary process? */ 
-    public static final String P_RUNEVOLVE = "eval.run-evolve"; 
+    public static final String P_RUNEVOLVE = "eval.slave.run-evolve"; 
     public static boolean runEvolve=false; 
         
     /** Should slave go into an infinite loop looking for new masters after the master has quit, or not? */
-    public static final String P_ONESHOT = "eval.one-shot"; 
+    public static final String P_ONESHOT = "eval.slave.one-shot"; 
     public static boolean oneShot=false; 
         
     /** How long we sleep in between attempts to connect to the master (in milliseconds). */
@@ -201,6 +203,9 @@ public class Slave
         
         boolean returnIndividuals = parameters.getBoolean(new Parameter(P_RETURNINDIVIDUALS),null,false);
                 
+		// 5.5 should we muzzle?
+
+        boolean muzzle = parameters.getBoolean(new Parameter(P_MUZZLE), null, false);
                 
         // 6. Open a server socket and listen for requests
         String slaveName = parameters.getString(
@@ -208,8 +213,12 @@ public class Slave
                 
         String masterHost = parameters.getString(
             new Parameter(P_EVALMASTERHOST),null );
+        if (masterHost == null)
+        	Output.initialError("Master Host missing", new Parameter(P_EVALMASTERHOST));
         int masterPort = parameters.getInt(
-            new Parameter(P_EVALMASTERPORT),null);
+            new Parameter(P_EVALMASTERPORT),null, 0);
+        if (masterPort == -1)
+        	Output.initialError("Master Port missing", new Parameter(P_EVALMASTERPORT));
         boolean useCompression = parameters.getBoolean(new Parameter(P_EVALCOMPRESSION),null,false);
                 
         runTime = parameters.getInt(new Parameter(P_RUNTIME), null, 0); 
@@ -224,11 +233,13 @@ public class Slave
                 new Parameter(P_RUNEVOLVE), new Parameter(P_RETURNINDIVIDUALS));
             }
         
-        Output.initialMessage("ECJ Slave");
-        if (runEvolve) Output.initialMessage("Running in Evolve mode, evolve time is " + runTime + " milliseconds");
-        if (returnIndividuals) Output.initialMessage("Whole individuals will be returned");
-        else Output.initialMessage("Only fitnesses will be returned");
-        
+        if (!muzzle) 
+        	{
+        	Output.initialMessage("ECJ Slave");
+       		if (runEvolve) Output.initialMessage("Running in Evolve mode, evolve time is " + runTime + " milliseconds");
+        	if (returnIndividuals) Output.initialMessage("Whole individuals will be returned");
+        	else Output.initialMessage("Only fitnesses will be returned");
+        	}
         
         // Continue to serve new masters until killed.
         Socket socket = null;
@@ -239,7 +250,7 @@ public class Slave
             try
                 {
                 long connectAttemptCount = 0;
-                Output.initialMessage("Connecting to master at "+masterHost+":"+masterPort);
+                if (!muzzle) Output.initialMessage("Connecting to master at "+masterHost+":"+masterPort);
                 while (true)
                     {
                     try
@@ -259,7 +270,7 @@ public class Slave
                             }
                         }
                     }
-                Output.initialMessage("Connected to master after " + (connectAttemptCount * SLEEP_TIME) + " ms");
+                if (!muzzle) Output.initialMessage("Connected to master after " + (connectAttemptCount * SLEEP_TIME) + " ms");
                                 
                 DataInputStream dataIn = null;
                 DataOutputStream dataOut = null;
@@ -276,7 +287,7 @@ public class Slave
                             {
                             String err = "You do not appear to have JZLib installed on your system, and so must set eval.compression=false.  " +
                                 "To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/";
-                            Output.initialMessage(err);
+                            if (!muzzle) Output.initialMessage(err);
                             throw new Output.OutputExitException(err);
                             }
                         }
@@ -287,7 +298,7 @@ public class Slave
                 catch (IOException e)
                     {
                     String err = "Unable to open input stream from socket:\n"+e;
-                    Output.initialMessage(err);
+                    if (!muzzle) Output.initialMessage(err);
                     throw new Output.OutputExitException(err);
                     }
                                 
@@ -295,7 +306,7 @@ public class Slave
                 if (slaveName==null)
                     {                    
                     slaveName = socket.getLocalAddress().toString() + "/" + System.currentTimeMillis();
-                    Output.initialMessage("No slave name specified.  Using: " + slaveName);
+                    if (!muzzle) Output.initialMessage("No slave name specified.  Using: " + slaveName);
                     }
                                 
                 dataOut.writeUTF(slaveName);
@@ -314,7 +325,13 @@ public class Slave
                 output.addLog(ec.util.Log.D_STDOUT, false);
                 output.addLog(ec.util.Log.D_STDERR, true);
 
-                output.systemMessage(Version.message());
+				if (muzzle)
+					{
+					output.getLog(0).muzzle = true;
+					output.getLog(1).muzzle = true;
+					}
+
+                if (!muzzle) output.systemMessage(Version.message());
 
 
                 // 2. set up thread values
@@ -412,11 +429,15 @@ public class Slave
                 } 
             catch (UnknownHostException e)
                 {
-                state.output.fatal(e.getMessage());
+	        	if (state != null)
+	        		state.output.fatal(e.getMessage());
+	        	else if (!muzzle) System.err.println("FATAL ERROR (EvolutionState not created yet): " + e.getMessage());
                 }
             catch (IOException e)
                 {
-                state.output.fatal("Unable to connect to master:\n" + e);
+                if (state != null)
+	                state.output.fatal("Unable to connect to master:\n" + e);
+	            else if (!muzzle) System.err.println("FATAL ERROR (EvolutionState not created yet): " + e);
                 }
             }
             catch (Output.OutputExitException e)
@@ -436,7 +457,7 @@ public class Slave
             	System.err.println(e);
             	if (oneShot) System.exit(0);
             	}
-            System.err.println("\n\nResetting...\n");
+            if (!muzzle) Output.initialMessage("\n\nResetting...");
             }
         }
                             

@@ -59,7 +59,3 @@ eval.compression=true
 eval.master.port = 15000
 
 
-# You do NOT want to set   eval.i-am-slave=true   in this file,
-# because then the master will think it's a slave.  Instead, set
-# that parameter in the slave.params file.
-

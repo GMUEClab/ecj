@@ -9,12 +9,6 @@
 parent.0 = master.params
 
 
-#### This should no longer be set -- it's set automatically by Slave.java
-#### When you run as a slave
-# Lets the slaves know that they're slaves.
-#eval.i-am-slave = true
-#### End deprecation
-
 
 # Specifies the IP address of the master, for the Slaves
 # to connect.  Slaves need to be told this in their
@@ -27,7 +21,8 @@ eval.master.host = 127.0.0.1
 # set (the default), then the system will use an approximately unique
 # name constructed from the IP address and startup time of the
 # slave.  Names don't have to be unique -- it's only for debugging.
-eval.slave-name = my-slave-name
+
+# eval.slave.name = my-slave-name
 
 
 # Specifies the mode the slave runs in.  If false, the slave runs in
@@ -43,12 +38,12 @@ eval.slave-name = my-slave-name
 # on the slave is sufficiently large to support its own evolution.
 # The population size is specified by eval.master-problem.job-size
 # on the Master.
-eval.run-evolve = false
+eval.slave.run-evolve = false
 
 
 # Specifies the length of (wall clock) time, in milliseconds, that the
 # slave should do "evolution" on its individuals if eval.run-evolve = true
-eval.runtime = 6000
+eval.slave.runtime = 6000
 
 
 # Change this to force whole Individuals to be returned by the
@@ -57,4 +52,20 @@ eval.runtime = 6000
 # over the network and should only be done if, for some reason, your
 # Problem class modified the Individuals as it evaluates them.
 eval.return-inds = false
+
+
+# Set this to FALSE (it's true by default) to cause the slave to linger
+# after the Master has terminated.  The slave will then wait for another
+# Master to start up on that port and host and will then connect to it.
+# Essentially we're creating a slave daemon.
+
+# eval.slave.one-shot = false
+
+
+# Set this to TRUE (it's false by default) to cause the slave to
+# muzzle its stdout and stderr logs, effectively eliminating all
+# printing to the screen.
+
+# eval.slave.muzzle = true
+
 
