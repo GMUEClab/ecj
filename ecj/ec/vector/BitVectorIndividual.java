@@ -177,9 +177,9 @@ public class BitVectorIndividual extends VectorIndividual
     public void defaultMutate(EvolutionState state, int thread)
         {
         VectorSpecies s = (VectorSpecies)species;  // where my default info is stored
-        if (s.mutationProbability>0.0)
-            for(int x=0;x<genome.length;x++)
-                if (state.random[thread].nextBoolean(s.mutationProbability))
+        for(int x=0;x<genome.length;x++)
+            if (s.mutationProbability[x]>0.0)
+                if (state.random[thread].nextBoolean(s.mutationProbability[x]))
                     genome[x] = !genome[x];
         }
         

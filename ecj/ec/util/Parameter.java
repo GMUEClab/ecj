@@ -91,11 +91,13 @@ public class Parameter implements Serializable
 
 
 
-    /** Returns a new parameter with s added to the end of the current path items. */ 
+    /** Returns a new parameter with s added to the end of the current path items. 
+    	If s is empty, nothing is pushed on (and no delimiter is added to the end). */ 
     public Parameter push(String s)
         {
         if (s==null)
             throw new BadParameterException("Parameter pushed with null string");
+        if (s.equals("")) return new Parameter(param);
         return new Parameter ( param + delimiter + s );
         }
 

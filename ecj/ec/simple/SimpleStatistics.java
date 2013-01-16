@@ -67,6 +67,7 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
 	public static final String P_DO_GENERATION = "do-generation";
 	public static final String P_DO_MESSAGE = "do-message";
 	public static final String P_DO_DESCRIPTION = "do-description";
+	public static final String P_DO_PER_GENERATION_DESCRIPTION = "do-per-generation-description";
 
     /** The Statistics' log */
     public int statisticslog = 0;  // stdout
@@ -80,6 +81,7 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
     public boolean doGeneration;
     public boolean doMessage;
     public boolean doDescription;
+    public boolean doPerGenerationDescription;
 
 	/** Should we even open up a file and write to it at all? */
 	public boolean muzzle;
@@ -97,6 +99,7 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         doGeneration = state.parameters.getBoolean(base.push(P_DO_GENERATION),null,true);
         doMessage = state.parameters.getBoolean(base.push(P_DO_MESSAGE),null,true);
         doDescription = state.parameters.getBoolean(base.push(P_DO_DESCRIPTION),null,true);
+        doPerGenerationDescription = state.parameters.getBoolean(base.push(P_DO_PER_GENERATION_DESCRIPTION),null,false);
 
 		muzzle = state.parameters.getBoolean(base.push(P_MUZZLE),null,false);
 
@@ -153,6 +156,13 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
             if (doMessage) state.output.message("Subpop " + x + " best fitness of generation" + 
                 (best_i[x].evaluated ? " " : " (evaluated flag not set): ") +
                 best_i[x].fitness.fitnessToStringForHumans());
+
+            // describe the winner if there is a description
+            if (doGeneration && doPerGenerationDescription) 
+            	{
+            	if (state.evaluator.p_problem instanceof SimpleProblemForm)
+                	((SimpleProblemForm)(state.evaluator.p_problem.clone())).describe(state, best_i[x], x, 0, statisticslog);   
+                	}   
             }
         }
 
@@ -171,8 +181,9 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
             if (doMessage) state.output.message("Subpop " + x + " best fitness of run: " + best_of_run[x].fitness.fitnessToStringForHumans());
 
             // finally describe the winner if there is a description
-            if (doFinal && doDescription) if (state.evaluator.p_problem instanceof SimpleProblemForm)
-                ((SimpleProblemForm)(state.evaluator.p_problem.clone())).describe(state, best_of_run[x], x, 0, statisticslog);      
+            if (doFinal && doDescription) 
+            	if (state.evaluator.p_problem instanceof SimpleProblemForm)
+                	((SimpleProblemForm)(state.evaluator.p_problem.clone())).describe(state, best_of_run[x], x, 0, statisticslog);      
             }
         }
     }

@@ -86,7 +86,7 @@ public class OurMutatorPipeline extends BreedingPipeline
             {
             IntegerVectorIndividual i = (IntegerVectorIndividual)inds[q];
             for(int x=0;x<i.genome.length;x++)
-                if (state.random[thread].nextBoolean(species.mutationProbability))
+                if (state.random[thread].nextBoolean(species.mutationProbability(x)))
                     i.genome[x] = -i.genome[x];
             // it's a "new" individual, so it's no longer been evaluated
             i.evaluated=false;
