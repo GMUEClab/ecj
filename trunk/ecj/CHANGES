@@ -2008,3 +2008,29 @@ Version		Change Log
 	Output.NO_LOGS added
 	KozaStatistics is hereby deleted
 	Added setToMeanOf, setToMedianOf, and setToBestOf
+	Bug fix to various FloatVectorIndividual and DoubleVectorIndividual reset
+		and mutation operators, which were using the half-open interval
+		[minVal, maxVal) instead of the full-open interval.
+	Parameter.push("") now does nothing (rather than tacking a "." at the end).
+		This allows situations where you can push nothing on rather than
+		something specific.
+	Bugfix to Polynomial mutation, which now properly uses the mutation index
+		as its eta_m
+	Per-gene and per-segment mutation methods and mutation parameters created
+		for all VectorIndividual subclasses.
+	Gene parameter accessor methods added for all vector species.
+	DoubleVectorIndividual and FloatVectorIndividual can now handle
+		heterogeneous types.
+	Tweak to mutation rate in Sum
+	Due to the addition of per-gene bounding in vectors, DEBreeder now always
+		creates fully bounded individuals.  We might loosen that constraint
+		in the future.
+	Tweaks to Tutorial 2 to reflect per-gene mutation probability
+	Added per-generation description to SimpleStatistics
+	eval.slave-name is renamed to eval.slave.name
+	eval.runtime is renamed to eval.slave.runtime
+	eval.run-evolve is renamed to eval.slave.run-evolve
+	eval.slave.muzzle added to Slave to prevent it from printing to the screen
+	Added rotated Griewank as a problem in ecsuite
+	Population and Subpopulation now properly check for load-inds conflicts
+	Added some flexibility to setting mu and lambda in ES
