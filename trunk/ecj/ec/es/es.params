@@ -37,7 +37,7 @@ parent.0 = ../simple/simple.params
 # ================================================================
 
 es.mu.0 =				1
-#es.lambda.0 =				10
+es.lambda.0 =				10
 breed =					ec.es.MuCommaLambdaBreeder
 
 # you'll need to remember to set up the system so that one, and exactly
