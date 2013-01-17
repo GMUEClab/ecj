@@ -3597,6 +3597,12 @@ If you don't want to see stuff like this at the end of your statistics file, say
 stat.do-description = false
 }
 
+SimpleStatistics can also call \method{describe(...)} to print out stuff like this every generation, for the best individual of that generation. For backwards-compatibility reasons by default it's turned {\it off}.  To turn it on, say:
+
+ \params{%
+stat.do-per-generation-description = true
+}
+
 Finally, SimpleStatistics will also write out a message (see Section \ref{ec.util.Output}) to stdout, which prints to the screen some short statistical information about each generation.  For example:
 
 \vbox{
@@ -3806,7 +3812,7 @@ A basic Statistics object implements one or more of the following hooks:
     public void finalStatistics(EvolutionState state, int result);
 }
 
-When these statistics hooks are called should be self-explanatory from the method name.  Note that the methods marked \variable{Generational} are only called by generational EvolutionState objects\,---\,notably the \class{ec.simple.SimpleEvolutionState} object.  There are also some additional hooks called by the \class{ec.steadystate} package for steady-state evolution (see Section~\ref{ec.steadystate}).
+When these statistics hooks are called should be self-explanatory from the method name.  Note that the methods marked \variable{Generational} are only called by generational EvolutionState objects\,---\,notably the \class{ec.simple.SimpleEvolutionState} object.  There are also some additional hooks called by the \class{ec.steadystate} package for steady-state evolution (see Section~\ref{ec.steadystate.SteadyStateStatisticsForm}).
 
 The \method{finalStatistics(...)} method, called at the end of an evolutionary run, contains one additional argument, \variable{result}.  This argument will be either \variable{ec.EvolutionState.R\_SUCCESS} or
 \variable{ec.EvolutionState.R\_FAILURE}.  Success simply means that the optimal individual was discovered, and nothing more.
@@ -4368,6 +4374,10 @@ es.mu.0 = 10\\
 es.lambda.0 = 100
 }
 
+You have the option of not specifying \(\lambda\).  If you do so, then \(\lambda\) will be set to the subpopulation size.  Furthermore, if \(\mu > \frac{\lambda}{2}\) (the largest possible value of \(\mu\)) then you will receive a warning and \(\mu\) will be set to \(\frac{\lambda}{2}\).
+
+ 
+
 %\subsubsection{\texorpdfstring{\(\bm{(\mu+\lambda)}\)}{(mu + lambda)}}  
 \paragraph{\(\boldsymbol{(\mu + \lambda)}\)}
 This algorithm differs from \((\mu,\lambda)\) in that, after creating the children, the \(\mu\) parents join the \(\lambda\) children to form the next generation Population.  Thus the next generation is \(\mu+\lambda\) in size.  Again, the initial population can be any size (traditionally I think it's \(\mu+\lambda\)).  The MuPlusLambdaBreeder subclasses MuCommaLambdaBreeder and adds no new parameters, though you'd change the Breeder of course:
@@ -4376,13 +4386,15 @@ This algorithm differs from \((\mu,\lambda)\) in that, after creating the childr
 breed = ec.es.MuPlusLambdaBreeder
 }
 
+\((\mu+\lambda)\) has different maximum values of \(\mu\) than \((\mu,\lambda)\) does.  As a result, in \((\mu+\lambda)\), if \(\mu > \lambda\) (the largest possible value of \(\mu\)) then you will receive a warning and \(\mu\) will be set to \(\lambda\).
+
+
 It's common in Evolution Strategies to use a mutation-only pipeline.  Here's one:
 
 \params{%
 pop.subpop.0.pipe = ec.vector.VectorMutation\\
 pop.subpop.0.pipe.source.0 = ec.es.ESSelection
 }
-
 
 Last but not least, \class{ec.es.ESDefaults} provides the package default parameter base. 
 
@@ -4588,44 +4600,6 @@ public void individualReplaced(SteadyStateEvolutionState state,\\
 
 (Yes, it's the same name).  If an Exchanger makes this promise, it gets to implement the \class{ec.steadystate.SteadyStateExchangerForm} interface as a badge of honor.
 
-The steady state nature of evolution requires a different set of Statistics hooks.  These hooks are defined in the interface \class{ec.steadystate.SteadyStateStatisticsForm}.  Note that no ECJ Statistics class presently implements these hooks; but SteadyStateEvolutionState can handle non-SteadyStateStatisticsForm Statistics objects gracefully.
-
-Several hooks you've already seen in Section~\ref{ec.Statistics}:
-
-\java{%
-    public void preCheckpointStatistics(EvolutionState state);\\
-    public void postCheckpointStatistics(EvolutionState state);\\
-    public void prePreBreedingExchangeStatistics(EvolutionState state);\\
-    public void postPreBreedingExchangeStatistics(EvolutionState state);\\
-    public void prePostBreedingExchangeStatistics(EvolutionState state);\\
-    public void postPostBreedingExchangeStatistics(EvolutionState state);\\
-    public void finalStatistics(EvolutionState state, int result);\\
-}
-
-Other hooks are special to steady-state evolution.  First, we have:
-
-\java{%
-    public void enteringInitialPopulationStatistics(\\
-    \hsp{\fill}SteadyStateEvolutionState state);\\
-    public void enteringSteadyStateStatistics(int subpop,\\
-    \hsp{\fill}SteadyStateEvolutionState state);\\
-    public void generationBoundaryStatistics(EvolutionState state); 
-}
-
-The first method is called immediately after the Population has been constructed but before any Individuals have been created.  The second method is called when a Subpopulation enters its ``steady state'', that is, it has been filled with Indivdiuals.  The third method is called whenever a generation boundary is reached, that is, when a Population's worth of individuals has been evaluated.
-
-Last, we have two hooks which are called whenever an individual is bred or evaluated:
-
-\java{%
-    public void individualsBredStatistics(SteadyStateEvolutionState state,\\
-    \hsp{\fill}Individual[] individuals);\\
-    public void individualsEvaluatedStatistics(SteaPodyStateEvolutionState state,\\
-  \hsp{\fill}Individual[] newIndividuals, Individual[] oldIndividuals,\\
-  \hsp{\fill}int[] subpopulations, int[] indices);
-}
-
-The first method is called when one or more Individuals has just been bred (at present only one individual will be bred at a time).  The second method is called when one or more Individuals have just been evaluated and inserted into the Population, dispersing other Individuals (at present, it'll only be one individual evaluated).  The Subpopulations and Individual indices in the Subpopulations where the event occurred are provided as well. 
-
 Last but not least, \class{ec.steady.SteadyStateDefaults} provides the package default parameter base. 
 
 \paragraph{Example}
@@ -4663,7 +4637,47 @@ We'll need to specify a deselector for each supopulation too. Let's do random se
 steady.deselector.0 = ec.select.ec.select.RandomSelection
  }
  
-\noindent ...and we're done!  We don't bother changing the Statistics object.  SimpleStatistics will do in a pinch when we're observing generation boundaries.
+\noindent ...and we're done!  We don't bother changing the Statistics object.  SimpleStatistics will do in a pinch when we're observing generation boundaries.  But if you'd like to create a Statistics subclass which is a bit more useful in the steady-state case, we come to....
+
+\subsection{Steady State Statistics}
+\label{ec.steadystate.SteadyStateStatisticsForm}
+
+The steady state nature of evolution requires a different set of Statistics hooks.  These hooks are defined in the interface \class{ec.steadystate.SteadyStateStatisticsForm}.  Note that no ECJ Statistics class presently implements these hooks; but SteadyStateEvolutionState can handle non-SteadyStateStatisticsForm Statistics objects gracefully.
+
+Several hooks you've already seen in Section~\ref{ec.Statistics}:
+
+\java{%
+    public void preCheckpointStatistics(EvolutionState state);\\
+    public void postCheckpointStatistics(EvolutionState state);\\
+    public void prePreBreedingExchangeStatistics(EvolutionState state);\\
+    public void postPreBreedingExchangeStatistics(EvolutionState state);\\
+    public void prePostBreedingExchangeStatistics(EvolutionState state);\\
+    public void postPostBreedingExchangeStatistics(EvolutionState state);\\
+    public void finalStatistics(EvolutionState state, int result);\\
+}
+
+Other hooks are special to steady-state evolution.  First, we have:
+
+\java{%
+    public void enteringInitialPopulationStatistics(SteadyStateEvolutionState state);\\
+    public void enteringSteadyStateStatistics(int subpop, SteadyStateEvolutionState state);\\
+    public void generationBoundaryStatistics(EvolutionState state); 
+}
+
+The first method is called immediately after the Population has been constructed but before any Individuals have been created.  The second method is called when a Subpopulation enters its ``steady state'', that is, it has been filled with Indivdiuals.  The third method is called whenever a generation boundary is reached, that is, when a Population's worth of individuals has been evaluated.
+
+Last, we have two hooks which are called whenever an individual is bred or evaluated:
+
+\java{%
+    public void individualsBredStatistics(SteadyStateEvolutionState state,\\
+    \hsp{\fill}Individual[] individuals);\\
+    public void individualsEvaluatedStatistics(SteaPodyStateEvolutionState state,\\
+  \hsp{\fill}Individual[] newIndividuals, Individual[] oldIndividuals,\\
+  \hsp{\fill}int[] subpopulations, int[] indices);
+}
+
+The first method is called when one or more Individuals has just been bred (at present only one individual will be bred at a time).  The second method is called when one or more Individuals have just been evaluated and inserted into the Population, dispersing other Individuals (at present, it'll only be one individual evaluated).  The Subpopulations and Individual indices in the Subpopulations where the event occurred are provided as well. 
+
 
 
 
@@ -4758,6 +4772,7 @@ The package \package{ec.vector.breed} contains BreedingPipelines which know how 
 \end{itemize}
 
 \subsubsection{Initialization}
+\label{vectorinitialization}
 
 VectorIndividuals are initialized by being cloned from the prototypical Individual, and then having the following method called on them:
 
@@ -4765,12 +4780,12 @@ VectorIndividuals are initialized by being cloned from the prototypical Individu
 public void reset(EvolutionState state, int thread);
 }
 
-How VectorIndividuals implement this method depends on their type:
+You can override this as you see fit, but how VectorIndividuals implement this method by default depends on their type:
 
 \begin{itemize}
-\item {\bf Floating Point} (\variable{float, double}):  each gene is set to a random value between its legal minimum and maximum values, inclusive.
-\item {\bf Integer} (\variable{byte, short, int, long}):  each gene is set to a random value between its legal minimum and maximum values, inclusive.
 \item {\bf Boolean}:  each gene is set to a random value.
+\item {\bf Integer} (\variable{byte, short, int, long}):  each gene is set to a random value between its legal minimum and maximum values, inclusive.
+\item {\bf Floating Point} (\variable{float, double}):  each gene is set to a random value between its legal minimum and maximum values, inclusive.  {\bf Note:} in some special cases (which you won't normally see) floating point individuals will have their genes set to integer values only.  Section \ref{heterogeneous} (Heterogeneous Individuals) explains when that can happen.
 \item {\bf Gene}:  each gene is randomized by calling the following method on its \class{ec.vector.Gene}:
 
 \java{%
@@ -4886,7 +4901,8 @@ pop.subpop.0.species.crossover-prob = 0.25
 pop.subpop.0.species.line-extension = 0.25
 }
 
-Line Recombination cannot be performed on BitVectorIndivdiuals or GeneVectorIndividuals.   ECJ's implementation of Line Recombination is due to William Haddon, a former student at GMU.
+Line Recombination cannot be performed on BitVectorIndividuals or GeneVectorIndividuals.   And LongVectorIndividuals cannot perform LineRecombination with values outside of $[-2^{53}, 2^{53}]$ (or $[-9007199254740992, 9007199254740992]$).  This is because the floating-point math in Line Recombination involves doubles, whose total integer precision is 53 bits (a long's integer precision is 63 bits).
+ECJ's implementation of Line Recombination is due to William Haddon, a former student at GMU.
 
 \item \parameter{intermediate} performs Intermediate Recombination.  This is very similar to Line Recombination.  The two individuals are again treated as points in space.  Children are created somewhere in the vicinity of the hypercube formed with the two individuals as corners.   If the individuals are \(\vec{x}\) and \(\vec{y}\), {\it for every index \(i\)} we draw two independent random values \(\alpha_i\) and \(\beta_i\), each between \(-p\) and \(1+p\) inclusive.  Then genes at index value \(i\) of the two children are defined as \(\alpha_i x_i + (1-\alpha_i) y_i\) and \(\beta_i y_i + (1-\beta_i) x_i\) respectively.  For Integer vector individuals, the values of each index are then rounded to the nearest integer.  Again, the most common setting of \(p\) is 0.25, which allows children to be somewhat outside the hypercube formed with the parents at corners.  Again, to set the value of \(p\), we state:
 
@@ -4894,7 +4910,8 @@ Line Recombination cannot be performed on BitVectorIndivdiuals or GeneVectorIndi
 pop.subpop.0.species.line-extension = 0.25
 }
 
-Intermediate Recombination cannot be performed on BitVectorIndivdiuals or GeneVectorIndividuals.   ECJ's implementation of Intermediate Recombination is also due to William Haddon.
+Intermediate Recombination cannot be performed on BitVectorIndivdiuals or GeneVectorIndividuals.    And LongVectorIndividuals cannot perform Intermediate Recombination with values outside of $[-2^{53}, 2^{53}]$ (or $[-9007199254740992, 9007199254740992]$).  This is because the floating-point math in Intermediate Recombination involves doubles, whose total integer precision is 53 bits (a long's integer precision is 63 bits).
+ECJ's implementation of Intermediate Recombination is also due to William Haddon.
 
 \item \parameter{sbx} performs Simulated Binary Crossover.  This crossover, by Kalyanmoy Deb, attempts to simulate the effect of binary crossover on doubles and floats as if they were encoded as bits.  It relies on the Polynomial Distribution and as such has a parameter called the {\it crossover distribution index} which specifies the kind of distribution.  The standard accepted value for this index is 20 (but it's not the ECJ default: you must set it):
 
@@ -4920,6 +4937,42 @@ vector.xover.toss = true
 }
 
 The default value is false.
+
+\paragraph{Customizing Crossover}
+
+Assuming you're using VectorCrossoverPipeline, crossover is handled by the method \method{defaultCrossover(...)}:
+
+\begin{methods}{ec.vector.VectorIndividual}
+\mthd{public void defaultCrossover(EvolutionState \textit{state}, int \textit{thread}, VectorIndividual \textit{ind})}
+Crosses over this individual with {\it ind}, modifying both genomes.
+\end{methods}
+
+Simply override this method to set the \variable{genome} array as you like.
+
+Integer and floating-point VectorIndividual subclasses also have minimum and maximum gene bounds.  When you initialize your individual, it's probably wise to keep the gene values inside those bounds.  These are accessed via methods found in the VectorIndividual's species.  For example, FloatVectorIndividual can get the maximum gene bound for gene 5 like this:
+
+\java{%
+double val = ((FloatVectorSpecies)species).minGene(5);
+}
+
+\begin{methods}{ec.vector.FloatVectorSpecies}
+\mthd{public double maxGene(int \textit{gene})}
+Returns the maximum bound on the given gene's value (inclusive) as stipulated by the user.
+\mthd{public double minGene(int \textit{gene})}
+Returns the minimum bound on the given gene's value (inclusive) as stipulated by the user.
+\mthd{public boolean inNumericalTypeRange(double \textit{geneVal})}
+Returns whether the given gene value is the numerical type range of the VectorIndividual (or more specifically, the VectorSpecies' protoypical VectorIndividual).  This range should always be at least as large as the minimum and maximum gene bound.
+\end{methods}
+
+\begin{methods}{ec.vector.IntegerVectorSpecies}
+\mthd{public long maxGene(int \textit{gene})}
+Returns the maximum bound on the given gene's value (inclusive) as stipulated by the user.
+\mthd{public long minGene(int \textit{gene})}
+Returns the minimum bound on the given gene's value (inclusive) as stipulated by the user.
+\mthd{public boolean inNumericalTypeRange(double \textit{geneVal})}
+Returns whether the given gene value is the numerical type range of the VectorIndividual (or more specifically, the VectorSpecies' protoypical VectorIndividual).  This range should always be at least as large as the minimum and maximum gene bound.
+\end{methods}
+
 
 \subsubsection{Multi-Vector Crossover}
 
@@ -4947,6 +5000,23 @@ Every VectorIndivdiual has a default implementation of this method.  Mutation pa
 pop.subpop.0.species.mutation-probability = 0.1
 }
 
+Like min- and max-gene settings (see Section \ref{vectorinitialization}), the mutation probability can be set on a per-segment and/or per-gene basis.  Thus if you have specified gene segments, you can do stuff like:
+
+\params{%
+\# segements...\\
+pop.subpop.0.species.segment.0.mutation-probability = 0.3\\
+pop.subpop.0.species.segment.1.mutation-probability = 1.0\\
+...\\\
+\# genes...\\
+pop.subpop.0.species.mutation-probability.59 = 0.5\\
+pop.subpop.0.species.mutation-probability.72 = 0.0\\
+...
+}
+
+Per-gene settings override per-segment settings, which override global settings.
+
+
+\paragraph{Kinds of Mutations}
 Different representations have different kinds of mutations.  Specifically:
 
 
@@ -4987,6 +5057,37 @@ pop.subpop.0.species.mutation-type = random-walk\\
 pop.subpop.0.species.random-walk-probability = 0.9
 }
 
+Yyou have the option of lifting the bounds entirely and letting Random Walk Mutation freely exceed the min/max gene bounds. If you do this, be certain that the particular problem you're testing works properly with values outside the stated initial bounds.  To lift the bounds in this way, you say:
+
+\params{%
+pop.subpop.0.species.mutation-bounded = false
+}
+
+Once again, this does not affect the use of gene bounds in determining initialization values. 
+
+\paragraph{Mixtures}
+
+Like min- and max-gene settings (see Section \ref{vectorinitialization}), the mutation method and associated parameters can be set on a per-segment and/or per-gene basis.  Thus if you have specified gene segments, you can do stuff like:
+
+\params{%
+\# segements...\\
+pop.subpop.0.species.segment.0.mutation-type = reset\\
+pop.subpop.0.species.segment.1.mutation-type = random-walk\\
+pop.subpop.0.species.segment.1.random-walk-probability = 0.7\\
+pop.subpop.0.species.segment.1.mutation-bounded = true \\
+...\\\
+\# genes...\\
+pop.subpop.0.species.mutation-type.59 = reset\\
+pop.subpop.0.species.mutation-type.72 = random-walk\\
+pop.subpop.0.species.random-walk-probability.72 = 0.34\\
+pop.subpop.0.species.mutation-bounded.72 = false\\
+...
+}
+
+Per-gene settings override per-segment settings, which override global settings.
+
+
+
 \item {\bf Floating Point} (\variable{float, double}): allows uniform gene randomization (\parameter{reset}), Gaussian mutation (\parameter{gauss}), or Polynomial mutation(\parameter{polynomial}).  
 
 \paragraph{Uniform Mutation}
@@ -5016,7 +5117,7 @@ pop.subpop.0.species.mutation-bounded = false
 This does not affect the use of gene bounds in determining initialization values.  Even if you declare the mutation to be bounded, you'll still need to provide \parameter{out-of-bounds-retries} (though it won't be used).
 
 \paragraph{Polynomial Mutation}
-Finally, Polynomial mutation is by Kalyanmoy Deb, and uses a distribution chosen from the Polynomial distribution series rather than a Gaussian distribution.  All Polynomial distributions have a min and max value ranging in [-1, 1], and Polynomial mutation adjusts this to reflect the min and max gene ranges.   The Polynomial distribution used is defined by the {\it distribution index} and by far the most common setting (but not the ECJ default) is 20.  There are at least four different versions of Polynomial mutation in the literature or various common code.  We have implemented two versions: the {\bf standard} version, which can produce values outside the min/max range, and an {\bf alternative} version found in the NSGA-II C code among certain other places (http:/\!/www.iitk.ac.in/kangal/codes/nsga/nsgaorig.tar), which modifies the distribution to always mutate values within the min/max range. Note that we've found the alternative version superior for multiobjective optimization problems.  In ECJ, {\bf the alternative version is the default.} 
+Finally, Polynomial mutation is by Kalyanmoy Deb, and uses a distribution chosen from the Polynomial distribution series rather than a Gaussian distribution.  All Polynomial distributions have a min and max value ranging in [-1, 1], and Polynomial mutation adjusts this to reflect the min and max gene ranges.   The Polynomial distribution used is defined by the {\it distribution index} and by far the most common setting (but not the ECJ default) is 20.  There are at least four different versions of Polynomial mutation in the literature or various common code.  We have implemented two versions: the {\bf standard} version, which can produce values outside the min/max range,\footnote{If you have bounded the mutation, don't worry.  If it goes outside the min/max range, we'll just keep trying again and again until we get a valid mutation within the values, up to \parameter{out-of-bounds-retries} times.  If we've still failed after that, the original gene value is retained.} and an {\bf alternative} version found in the NSGA-II C code among certain other places (http:/\!/www.iitk.ac.in/kangal/codes/nsga/nsgaorig.tar), which modifies the distribution to always mutate values within the min/max range. Note that we've found the alternative version superior for multiobjective optimization problems.  In ECJ, {\bf the alternative version is the default.} 
 
 To use the {\it alternative} version, you'll need to state something like this.
 
@@ -5047,6 +5148,38 @@ pop.subpop.0.species.mutation-bounded = false
 }
 
 Once again, this does not affect the use of gene bounds in determining initialization values.  And even if you declare the mutation to be bounded, you'll still need to provide \parameter{out-of-bounds-retries} (though it won't be used).
+
+
+
+\paragraph{Mixtures}
+
+Like min- and max-gene settings (see Section \ref{vectorinitialization}), the mutation method and associated parameters can be set on a per-segment and/or per-gene basis, except for \parameter{out-of-bounds-retries}, which is global only. Thus if you have specified gene segments, you can do stuff like:
+
+\params{%
+\# segements...\\
+pop.subpop.0.species.segment.0.mutation-type = gauss\\
+pop.subpop.0.species.segment.0.mutation-stddev = 0.2\\
+pop.subpop.0.species.segment.0.bounded = true\\
+pop.subpop.0.species.segment.1.mutation-type = polynomial\\
+pop.subpop..0.species.segment.1.bounded = false \\
+pop.subpop.0.species.segment.1.mutation-distribution-index = 10\\
+pop.subpop.0.species.segment.1.alternative-polynomial-version = false\\
+...\\\
+\# genes...\\
+pop.subpop.0.species.mutation-type.59 = reset\\
+pop.subpop.0.species.mutation-type.72 = gaus\\
+pop.subpop.0.mutation-stddev.72 = 0.0012\\
+pop.subpop.0.bounded.72 = true\\
+...
+}
+
+Per-gene settings override per-segment settings, which override global settings.
+
+
+
+
+
+
 \end{itemize}
 
 Numeric representations (integer, floating-point) provide two utility methods which may be useful to you in creating or debugging a custom mutator:
@@ -5125,12 +5258,91 @@ pop.subpop.0.species.mutation-prob = 0.01
 }
 
 
+\subsubsection{Heterogeneous Vector Individuals}
+\label{heterogeneous}
 
+One common need is individuals which are a mixture of different data types.  Of course, since you have \class{Gene} and \class{GeneVectorIndividual} and \class{GeneVectorSpecies} available to you, you can do whatever crazy individuals you like.  More on that in Section \ref{ec.vector.Gene}.  But it's more common to need individuals which are a mixture of floating-point, integer, and perhaps boolean genes.
+
+ECJ handles this with two extensions to its \class{DoubleVectorIndivdual} and \class{FloatVectorIndividual} classes and their associated species \class{FloatVectorSpecies}.   Specifically: these representations can restrict certain individual genes to just integer values, and mutate them like integers rather than floats.  This is done by including two additional mutation methods:
+
+\begin{itemize} 
+
+\item {\bf Uniform Mutation Restricted to Integer Values}\qquad
+This simply sets the gene to a random integer value between its minimum and maximum legal values.  For obvious reasons, this will nearly always be done on a per-gene or per-segment basis:
+
+\params{%
+\# segements...\\
+pop.subpop.0.species.segment.0.mutation-type = reset\\
+pop.subpop.0.species.segment.4.mutation-type = reset\\
+...\\\
+\# genes...\\
+pop.subpop.0.species.mutation-type.59 = reset\\
+pop.subpop.0.species.mutation-type.72 = reset\\
+...
+}
+
+But if you want the default to be integer uniform mutation, you can do that.
+
+\params{%
+pop.subpop.0.species.mutation-type = integer-reset
+}
+
+Remember that per-gene values override per-segment settings which in turn override global settings.
+
+You should take care to make sure that the min-gene and max-gene values are integers.  Use of this mutation method will also change how initialization is done: this gene will be initialized to only an integer value.
+
+
+\item {\bf Random Walk Mutation}\qquad
+This method works just like Random Walk Mutation for integers, and has similar parameters.  It only does random walks through integer values in the floating point space.  Again, for obvious reasons, this will nearly always be done on a per-gene or per-segment basis:
+
+\params{%
+\# segements...\\
+pop.subpop.0.species.segment.2.mutation-type = integer-random-walk\\
+pop.subpop.0.species.segment.2.random-walk-probability = 0.9\\
+pop.subpop.0.species.segment.2.bounded = true\\
+pop.subpop.0.species.segment.9.mutation-type = integer-random-walk\\
+pop.subpop.0.species.segment.9.random-walk-probability = 0.7\\
+pop.subpop.0.species.segment.9.bounded = false\\
+...\\\
+\# genes...\\
+pop.subpop.0.species.mutation-type.41 = integer-random-walk\\
+pop.subpop.0.random-walk-probability.42 = 0.9\\
+pop.subpop.0.random-walk-probability.bounded.42 = false\\
+pop.subpop.0.species.mutation-type.22 = integer-random-walk\\
+pop.subpop.0.random-walk-probability.22 = 0.95\\
+pop.subpop.0.random-walk-probability.bounded.22 = true\\
+...
+}
+
+But if you want the default to be integer random mutation, you can do that.
+
+\params{%
+pop.subpop.0.species.mutation-type = integer-random-walk\\
+pop.subpop.0.species.random-walk-probability = 0.9
+}
+
+Remember that per-gene values override per-segment settings which in turn override global settings.
+
+Again, you should take care to make sure that the min-gene and max-gene values are integers.  Use of this mutation method will also change how initialization is done: this gene will be initialized to only an integer value.  Random Walk Mutation for integers, this method can be bounded or not. 
+\end{itemize}
+
+\paragraph{What You Can Do}
+
+Using the above mutation methods and their associated automatic initialization procedures,  you can create genes which are:
+
+\begin{itemize}
+\item {\bf Floats}\qquad Just mutate the gene using a normal floating-point mutation method.
+\item {\bf Integers}\qquad Specify one of the two above integer mutation methods and appropriate parameters if not specified as defaults.  Specify a min-gene and max-gene which are integer values.  In your Probem, interpret this gene value (which will always be an integer) as an integer.
+\item {\bf Members of a Fixed Size Set}\qquad Let's say the set holds \(n\) elements.  Specify min-gene to be 0 and max-gene to be \(n-1\).  Choose integer uniform (reset) mutation.  In your Problem, interpret this gene value (which will always be an integer) as a particular set element.
+\item {\bf Booleans}\qquad This is just like Members of a Fixed Size Set, except that \(n=2\).  In your Problem, interpret a gene value of 0.0 as false and a gene value of 1.0 as true.
+\end{itemize}
+
+If you need more complex mixtures (vectors of trees and sets and graphs and Strings, or whatever), you'll need to use \class{GeneVectorIndividual} and customize it as you see fit.
 
 \subsection{Lists}
 \label{list}
 
-While vectors are arrays of fixed length, Lists are arrays of arbitrary and possibly changing length.  List representations are much less common in evolutionary algorithms.  
+While vectors are arrays of fixed length, Lists are arrays of arbitrary and possibly changing length.  List representations are much less common in evolutionary algorithms.  Since they are of arbitrary length, {\bf you should not use per-gene or per-segment parameter specification with lists.} It's global parameters or nothing.
 
 With a few changes, the classes in ECJ's \package{ec.vector} package may be used for lists as well as for vectors.  ECJ supports list representations in four ways:
 
@@ -5303,6 +5515,7 @@ pop.subpop.0.species.geometric-prob = 0.95
 
 
 \subsection{Arbitrary Genes: \class{ec.vector.Gene}}
+\label{ec.vector.Gene}
 
 Last, some discussion should be reserved regarding vectors of ``arbitrary genes''.  The idea behind this is to provide you with maximum flexibility as to what you can create vectors out of.  The classes involved here are:
 
@@ -5829,7 +6042,7 @@ eval.problem.data = ec.app.myapp.MyData
 
 \subsubsection{KozaFitness}
 
-You can use any fitness you like for GP.  But it's common to use a particular fitness function popularized by John Koza \cite{koza:book}.  This fitness object contains a {\it standardized fitness} in which 0 is the ideal result and Infinity is worse than the worst possible result.  Note that this isn't yet the correct fitness according the \class{ec.Fitness}.  Instead, when asked for fitness, the function converts this to an {\it adjusted fitness} in which 1 is the ideal result and 0 is worse than the worst possible result, using the function \(\frac{1}{1 + \text{standardized}}\).  The adjusted fitness makes this a valid Fitness subclass.  The GP fitness also has an auxiliary variable, \variable{hits}, which originally was meant to indicate how many optimal subsolutions were discovered: it's printed out in the statistics and used for nothing else; use it as you like.  This fitness is set as:
+You can use any fitness you like for GP.  But it's common to use a particular fitness function popularized by John Koza \cite{koza:book}.  This fitness object contains a {\it standardized fitness} in which 0 is the ideal result and Infinity is worse than the worst possible result.  Note that this isn't yet the correct fitness according the \class{ec.Fitness}.  Instead, when asked for fitness, the function converts this to an {\it adjusted fitness} in which 1 is the ideal result and 0 is worse than the worst possible result, using the function\ \ \ \(\text{\it adjusted} = \frac{1}{1 + \text{\it standardized}}\).  The adjusted fitness makes this a valid Fitness subclass.  The GP fitness also has an auxiliary variable, \variable{hits}, which originally was meant to indicate how many optimal subsolutions were discovered: it's printed out in the statistics and used for nothing else; use it as you like.  This fitness is set as:
 
 \params{%
 pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
@@ -8932,6 +9145,7 @@ ECJ would prefer to compress the network streams to make them more efficient.  B
 eval.compression = true
 }
 
+\noindent{\bf Warning!\quad} If you turn on compression in your master but not your slave (or vice versa), the slave will connect but then nothing will happen.  You will not get any warning about your error.
 
 
 \subsection{Slaves}
@@ -8984,16 +9198,27 @@ When you fire up a Slave, it will repeatedly try to connect to a Master process 
 By default slaves do not run in daemon mode: they are one-shot.  To run in daemon mode, say:
 
 \params{%
-eval.one-shot = false
+eval.slave.one-shot = false
 }
 
-One warning.  If you make your slave multithreaded, and run it in daemon mode, and an exception occurs while the slave is doing multithreaded evaluation, then the slave may reset without cleaning up the other threads: they may continue in the background.
+The default is ``true'' (that is, {\it not} daemon mode).
+
+\noindent{\bf Warning\quad}  If you make your slave multithreaded, and run it in daemon mode, and an exception occurs while the slave is doing multithreaded evaluation, then the slave may reset without cleaning up the other threads: they may continue in the background.
 
 You can give your slave a name which it and the master will use when printing out connection information.  If you don't it'll just make up a random number.  To assign a name, you say:
 
 \params{%
-eval.slave-name = MyName
+eval.slave.name = MyName
 }
+
+If you would like to prevent the slave from writing anything to the screen, except in the case of a fatal error or exception, you can say:
+
+\params{%
+eval.slave.muzzle = true
+}
+
+The default is ``false''.
+
 
 
 \subsection{Opportunistic Evolution}
@@ -9010,13 +9235,13 @@ Slaves have the option of doing some evolutionary computation of their own, a pr
 This procedure is turned on with:
 
 \params{%
-eval.run-evolve = true
+eval.slave.run-evolve = true
 }
 
 You'll also need to specify the amount of time (in milliseconds) allotted to the Slave.  Here's how you'd set it to six  seconds:
 
 \params{%
-eval.runtime = 6000
+eval.slave.runtime = 6000
 }
 
 Last, if you're doing opportunistic evolution, you {\bf must} return whole Individuals, not just Fitnesses.  After all, you could have entirely different individuals after running on the Slave.  Thus you'll need to set:

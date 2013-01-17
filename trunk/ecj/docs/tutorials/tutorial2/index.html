@@ -268,7 +268,7 @@ here cloning the individual is very expensive) you may wish to light clone the I
  </pre></tt>
 
 <p>Next we'll test to make certain that the individuals are in fact IntegerVectorIndividuals.  It's a quick hack of a test, not a complete one, but usually the complete one is unnecessary.  We'll also extract
-	the IntegerVectorSpecies object the individuals are sharing, so we can get the <tt>mutationProbability</tt>
+	the IntegerVectorSpecies object the individuals are sharing, so we can get the per-gene <tt>mutationProbability</tt>
 	value out of it.
 
 <tt><pre>
@@ -287,7 +287,7 @@ here cloning the individual is very expensive) you may wish to light clone the I
  </pre></tt>
 
 <p>Now we're ready to go through the individuals and mutate them.  For each gene in each individual,
-we'll flip a coin of <tt>mutationProbability</tt>, and change the sign of the gene if it comes up heads.
+we'll flip a coin of per-gene <tt>mutationProbability</tt>, and change the sign of the gene if it comes up heads.
 We set the flag in the individual indicating that its evaluation is invalid and needs to be reevaluated.
 Finally, we'll return the number of individuals we created (<tt>n</tt>), and the class is done:
 
@@ -297,7 +297,7 @@ Finally, we'll return the number of individuals we created (<tt>n</tt>), and the
             {
             IntegerVectorIndividual i = (IntegerVectorIndividual)inds[q];
             for(int x=0;x&lt;i.genome.length;x++)
-                if (state.random[thread].nextBoolean(species.mutationProbability))
+                if (state.random[thread].nextBoolean(species.mutationProbability(x)))
                     i.genome[x] = -i.genome[x];
             <font color=gray>// it's a "new" individual, so it's no longer been evaluated</font>
             i.evaluated=false;
