@@ -2034,3 +2034,4 @@ Version		Change Log
 	Added rotated Griewank as a problem in ecsuite
 	Population and Subpopulation now properly check for load-inds conflicts
 	Added some flexibility to setting mu and lambda in ES
+	Added Langerman to ECSuite
