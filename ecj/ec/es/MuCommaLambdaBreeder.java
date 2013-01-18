@@ -121,8 +121,6 @@ public class MuCommaLambdaBreeder extends Breeder
 				}
             mu[x] = state.parameters.getInt(ESDefaults.base().push(P_MU).push(""+x),null,1);       
             if (mu[x]==0) state.output.error("mu must be an integer >= 1",ESDefaults.base().push(P_MU).push(""+x), null);
-            else if (mu[x] > ppval)
-            	state.output.error("mu must be <= the initial subpopulation size", ESDefaults.base().push(P_MU).push(""+x), null);
             else if (lambda[x] % mu[x] != 0)
             	{
             	if (mu[x] > lambda[x] / maximumMuLambdaDivisor())
@@ -134,6 +132,11 @@ public class MuCommaLambdaBreeder extends Breeder
 				if (lambda[x] % mu[x] != 0)  // check again
                 	state.output.error("mu must be a divisor of lambda", ESDefaults.base().push(P_MU).push(""+x));
                 }
+            else if (mu[x] > ppval)
+            	{
+            	state.output.warning("mu is presently > the initial subpopulation size.  Mu will be set to the subpopulation size, that is, " + ppval + ".", ESDefaults.base().push(P_MU).push(""+x), null);
+            	mu[x] = ppval;
+            	}
             }
         state.output.exitIfErrors();
         }
