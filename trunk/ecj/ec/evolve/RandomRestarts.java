@@ -24,6 +24,9 @@ import java.io.*;
   
  <p><b>Parameters</b><br>
  <table>
+ <tr><td valign=top><i>base</i>.<tt>start</tt><br>
+ <font size=-1>int &gt;= 0 (default = 1)</font></td>
+ <td valign=top>The first generation where the clock may be started.</td></tr>
  <tr><td valign=top><i>base</i>.<tt>restart-type</tt><br>
  <font size=-1>random or fixed</font></td>
  <td valign=top>Either initiates clock at a random value or a fixed one.</td></tr>
@@ -33,21 +36,15 @@ import java.io.*;
  </table>
 */
  
-public class RandomRestarts extends Statistics implements SteadyStateStatisticsForm
-    {
-    /** Two options available here: "fixed" and "random"; "fixed"
-     *  will initate the restart timer at the value specified for
-     *  <i>restart-upper-bound</i>, "random" will initiate the restart
-     *  timer somewhere below the value specified for 
-     *  <i>restart-upper-bound</i> */
+public class RandomRestarts extends Statistics
+ 	{
     public static final String P_RESTART_TYPE = "restart-type";
-
-    /** This is the highest value at which the "ticking" 
-     *  restart clock can initiate at.  */
     public static final String P_RESTART_UPPERBOUND = "restart-upper-bound";
+    public static final String P_START = "start";
 
     public int countdown;              // what we'll use for the "ticking" clock
     public int upperbound;             // highest possible value on the clock
+    public int start;
    
     String restartType;    // are we doing random or fixed?
 
@@ -59,14 +56,19 @@ public class RandomRestarts extends Statistics implements SteadyStateStatisticsF
         restartType = state.parameters.getString(base.push(P_RESTART_TYPE),  null);
         upperbound = state.parameters.getInt( base.push(P_RESTART_UPPERBOUND), null, 1);
 
+		if (state.parameters.exists(base.push(P_START)))
+			{
+			start = state.parameters.getInt(base.push(P_START), null, 0);
+			if (start < 0) 
+				state.output.fatal("Start value must be >= 0", base.push(P_START));
+			}
+		else start = 1;
+
         if( upperbound < 1 )
             state.output.fatal("Parameter either not found or invalid (<1).", base.push(P_RESTART_UPPERBOUND));
                         
         if( !restartType.equals( "random" ) && !restartType.equals( "fixed" ) )
             state.output.fatal("Parameter must be either 'fixed' or 'random'.", base.push(P_RESTART_TYPE));
-
-        // start counting down
-        this.resetClock( state );
         }
 
     /**
@@ -78,23 +80,18 @@ public class RandomRestarts extends Statistics implements SteadyStateStatisticsF
     public void preEvaluationStatistics( final EvolutionState state )
         {
         super.preEvaluationStatistics(state);
-        possiblyRestart(state);
+        if (state.generation == start) resetClock(state); // first time only
+        if (state.generation >= start) possiblyRestart(state);
         }
 
-    public void generationBoundaryStatistics(final EvolutionState state)
-        {
-        super.generationBoundaryStatistics(state);
-        possiblyRestart(state);
-        }
-                
     void possiblyRestart(EvolutionState state)
         {
-                
+        countdown--;
         Subpopulation currentSubp;
         // time to restart!
         if( countdown == 0 )
             {
-            System.out.println( "Restarting the population!" );
+            state.output.message( "Restarting the population prior to evaluating generation " + state.generation );
             // for each subpopulation
             for( int subp = 0; subp < state.population.subpops.length; subp++ )
                 {
@@ -107,8 +104,6 @@ public class RandomRestarts extends Statistics implements SteadyStateStatisticsF
                 }
             this.resetClock( state );
             }
-        else
-            countdown--;
         }
 
     void resetClock( final EvolutionState state )
@@ -117,7 +112,7 @@ public class RandomRestarts extends Statistics implements SteadyStateStatisticsF
             countdown = upperbound;
         else
             // might need to fix random index to support multithreading
-            countdown = state.random[0].nextInt( upperbound + 1 );
+            countdown = state.random[0].nextInt( upperbound) + 1;
         }
     }
 
