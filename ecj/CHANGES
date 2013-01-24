@@ -2035,3 +2035,5 @@ Version		Change Log
 	Population and Subpopulation now properly check for load-inds conflicts
 	Added some flexibility to setting mu and lambda in ES
 	Added Langerman to ECSuite
+	Bug fixes and improvemdnts to RandomRestarts, which also no longer works
+		with Steady State (for the time being).

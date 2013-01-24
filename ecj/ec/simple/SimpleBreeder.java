@@ -348,10 +348,12 @@ public class SimpleBreeder extends Breeder
         // are our elites small enough?
         for(int x=0;x<state.population.subpops.length;x++)
             	{
-            if (elite[x]>state.population.subpops[x].individuals.length)
-                state.output.error("The number of elites for subpopulation " + x + " exceeds the actual size of the subpopulation", new Parameter(EvolutionState.P_BREEDER).push(P_ELITE).push(""+x));
-            if (elite[x]==state.population.subpops[x].individuals.length)
-                state.output.warning("The number of elites for subpopulation " + x + " is the actual size of the subpopulation", new Parameter(EvolutionState.P_BREEDER).push(P_ELITE).push(""+x));
+				if (elite[x]>state.population.subpops[x].individuals.length)
+					state.output.error("The number of elites for subpopulation " + x + " exceeds the actual size of the subpopulation", 
+						new Parameter(EvolutionState.P_BREEDER).push(P_ELITE).push(""+x));
+				if (elite[x]==state.population.subpops[x].individuals.length)
+					state.output.warning("The number of elites for subpopulation " + x + " is the actual size of the subpopulation", 
+						new Parameter(EvolutionState.P_BREEDER).push(P_ELITE).push(""+x));
                 }
         state.output.exitIfErrors();
 

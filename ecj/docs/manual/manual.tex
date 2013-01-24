@@ -10333,7 +10333,24 @@ eval = ec.de.DEEvaluator
 
 
 
-\subsection{Breeding} DEBreeder serves both as the superclass of all DE breeding operators, and also implements the basic ``classic'' Differential Evolution breeding operator, known as DE/rand/1/bin.  We begin by talking about the top-level elements of DEBreeder, then we discuss DEBreeder's specific default operator, followed by other operators.
+\subsection{Breeding} 
+Before we start, note that Differential Evolution does not use ECJ's breeding pipelines.  However, ECJ species still expect some kind of pipeline even though it won't be used.  So you might define a default pipeline for a species like this:
+
+\params{%
+\# This pipeline won't be used, it's just a dummy, pick some simple stuff
+pop.subpop.0.species.pipe = ec.breed.ReproductionPipeline
+pop.subpop.0.species.pipe.source.0 = ec.select.FirstSelection
+}
+
+If you're using DoubleVectorIndividual (and you probably are), you'll need some default mutation and crossover stuff too, though it again won't be used.  Some of this stuff are required (but unused parameters), others are here just to quiet warnngs:
+
+\params{%
+pop.subpop.0.species.mutation-prob = 1.0
+pop.subpop.0.species.mutation-type = reset
+pop.subpop.0.species.crossover-type = one
+}
+
+Okay back to breeding.  DEBreeder serves both as the superclass of all DE breeding operators, and also implements the basic ``classic'' Differential Evolution breeding operator, known as DE/rand/1/bin.  We begin by talking about the top-level elements of DEBreeder, then we discuss DEBreeder's specific default operator, followed by other operators.
 
 Most Differential Evolution breeding operators work as follows.  For each Individual \(\vec a\) in the Population (recall that in Differential Evolution all Individuals are DoubleVectorIndividuals, so we'll treat them as vectors), we will create a single child \(\vec c\). After this is done, we replace each parent with its child if the child is as good or better than the parent (this last part is done in DEEvaluator).
 
@@ -10842,13 +10859,30 @@ Next you need to specify \(N\).  Here we set it to 20.
 stat.child.0.restart-upper-bound = 20
 }
 
-Last you'll need to state whether we reset exactly every \(N\) generations in some random number of generations between \(1\) and \(N\) inclusive (this random value changes every reset).  The options are \parameter{fixed} and \parameter{random}.  Here we set the reset type to \parameter{fixed}:
+You'll also need to state whether we reset exactly every \(N\) generations in some random number of generations between \(1\) and \(N\) inclusive (this random value changes every reset).  The options are \parameter{fixed} and \parameter{random}.  Here we set the reset type to \parameter{fixed}:
 
 \params{%
 stat.child.0.restart-type = fixed
 }
 
-When it happens, population reinitialization occurs immediately after the checkpoint is incremented and checkpointing happens.   In generational statistics, the hook for this is Statistics's \method{preEvaluationStatistics(...)} method call.  In steady state statistics, the hook is \method{generationBoundaryStatistics(...)}.
+Last, you'll need to state the generation in which resetting begins.  By default, this is generation 1 (after all, in generation 0 either the population was randomly generated to start with, or you specifically had loaded it from a file).  But you can set it to any value \(>= 0\).  To set it to generation 4, you'd say:
+
+\params{%
+stat.child.0.start = 4
+}
+
+Resetting occurs just before evaluation.  Thus a new generation may be bred, then entirely thrown away and replaced with a reset population.
+
+One common use for resets is to randomize the population every single generation so as to do random search.  You can do it like this:
+
+\params{%
+%stat.num-children = 1\\
+%stat.child.0 = ec.evolve.RandomRestarts\\
+stat.child.0.restart-upper-bound = 1\\
+stat.child.0.restart-type = fixed\\
+\# This is the default anyway so it's not necessary to state this:\\
+stat.child.0.start = 1 
+}
 
 Random Restarts is due to James O'Beirne, a student at GMU.
 
