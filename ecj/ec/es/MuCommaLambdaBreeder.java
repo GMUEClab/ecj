@@ -70,6 +70,7 @@ import ec.util.*;
 public class MuCommaLambdaBreeder extends Breeder
     {    
     public static final String P_MU = "mu";
+    public static final String P_MU_FRACTION = "mu-fraction";
     public static final String P_LAMBDA = "lambda";
 
     public int[] mu;
@@ -119,24 +120,52 @@ public class MuCommaLambdaBreeder extends Breeder
 				if (lambda[x] == 0)
 					state.output.error("Subpouplation Size must be >= 1", pp, null);
 				}
-            mu[x] = state.parameters.getInt(ESDefaults.base().push(P_MU).push(""+x),null,1);       
-            if (mu[x]==0) state.output.error("mu must be an integer >= 1",ESDefaults.base().push(P_MU).push(""+x), null);
-            else if (lambda[x] % mu[x] != 0)
+				
+			if (state.parameters.exists(ESDefaults.base().push(P_MU).push(""+x),null))  // we defined mu
             	{
-            	if (mu[x] > lambda[x] / maximumMuLambdaDivisor())
-            		{
-            		state.output.warning("mu (" + mu[x] + ") for subpopulation " + x + " is greater than lambda (" + lambda[x] + ") / " + maximumMuLambdaDivisor() + ".  Mu will be set to half of lambda, that is, " + lambda[x] / maximumMuLambdaDivisor() + ".");            		
-	            	mu[x] = lambda[x] / maximumMuLambdaDivisor();
-	            	}
-
-				if (lambda[x] % mu[x] != 0)  // check again
-                	state.output.error("mu must be a divisor of lambda", ESDefaults.base().push(P_MU).push(""+x));
-                }
-            else if (mu[x] > ppval)
-            	{
-            	state.output.warning("mu is presently > the initial subpopulation size.  Mu will be set to the subpopulation size, that is, " + ppval + ".", ESDefaults.base().push(P_MU).push(""+x), null);
-            	mu[x] = ppval;
-            	}
+            	// did we also define a mu-fraction?
+				if (state.parameters.exists(ESDefaults.base().push(P_MU_FRACTION).push(""+x), null))
+					state.output.warning("Defined both a mu and mu-fraction for subpopulation " + x + ".  Only mu will be used. ", 
+									ESDefaults.base().push(P_MU).push(""+x),
+									ESDefaults.base().push(P_MU_FRACTION).push(""+x));
+            	
+            	mu[x] = state.parameters.getInt(ESDefaults.base().push(P_MU).push(""+x),null,1);       
+            	if (mu[x]==0) state.output.error("mu must be an integer >= 1",ESDefaults.base().push(P_MU).push(""+x), null);
+				else if (lambda[x] % mu[x] != 0)
+					{
+					if (mu[x] > lambda[x] / maximumMuLambdaDivisor())
+						{
+						state.output.warning("mu (" + mu[x] + ") for subpopulation " + x + " is greater than lambda (" + lambda[x] + ") / " + maximumMuLambdaDivisor() + ".  Mu will be set to half of lambda, that is, " + lambda[x] / maximumMuLambdaDivisor() + ".");            		
+						mu[x] = lambda[x] / maximumMuLambdaDivisor();
+						}
+	
+					if (lambda[x] % mu[x] != 0)  // check again
+						state.output.error("mu must be a divisor of lambda", ESDefaults.base().push(P_MU).push(""+x));
+					}
+				else if (mu[x] > ppval)
+					{
+					state.output.warning("mu is presently > the initial subpopulation size.  Mu will be set to the subpopulation size, that is, " + ppval + ".", ESDefaults.base().push(P_MU).push(""+x), null);
+					mu[x] = ppval;
+					}
+				}
+			else if (state.parameters.exists(ESDefaults.base().push(P_MU_FRACTION).push(""+x), null))  // we defined mu in terms of a fraction
+				{
+				double mufrac = state.parameters.getDoubleWithMax(ESDefaults.base().push(P_MU_FRACTION).push(""+x), null, 0.0, 1.0 / maximumMuLambdaDivisor());
+				if (mufrac < 0.0)
+					state.output.fatal("Mu-Fraction must be a value between 0.0 and " + 1.0 / maximumMuLambdaDivisor(), ESDefaults.base().push(P_MU_FRACTION).push(""+x), null);
+				
+				int m = (int)Math.max(lambda[x] * mufrac, 1.0);
+				mu[x] = m;
+				// find the largest divisor of lambda[x] which is <= m. This is ugly
+				double val = lambda[x] / (double) mu[x];
+				while (val != (int) val)
+					{
+					mu[x]--;
+					val = lambda[x] / (double) mu[x];
+					}
+				state.output.message("Mu-Fraction " + mufrac + " yields a mu of " + m + ", adjusted to " + mu[x]);
+				}
+			else state.output.fatal("Neither a Mu or a Mu-Fraction was provided for subpopulation " + x, ESDefaults.base().push(P_MU).push(""+x), ESDefaults.base().push(P_MU_FRACTION).push(""+x));
             }
         state.output.exitIfErrors();
         }
