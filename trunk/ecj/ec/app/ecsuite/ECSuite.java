@@ -173,6 +173,13 @@ public class ECSuite extends Problem implements SimpleProblemForm
                     }
                 }
             }
+        
+        if (problemType == PROB_LANGERMAN)
+        	{
+        	// Langerman has a maximum genome size of 10
+        	if (genome.length > 10)
+        		state.output.fatal("The Langerman function requires that the genome size be a value from 1 to 10 inclusive.");
+        	} 
         }
     
     // nothing....
@@ -215,8 +222,9 @@ public class ECSuite extends Problem implements SimpleProblemForm
             problemType = PROB_ROTATED_SCHWEFEL;
         else if (wp.compareTo( V_ROTATED_GRIEWANK) == 0)
             problemType = PROB_ROTATED_GRIEWANK;
-	else if (wp.compareTo(V_LANGERMAN) == 0)
-		problemType = PROB_LANGERMAN ;
+		else if (wp.compareTo(V_LANGERMAN) == 0)
+			problemType = PROB_LANGERMAN ;
+
         else state.output.fatal(
             "Invalid value for parameter, or parameter not found.\n" +
             "Acceptable values are:\n" +
@@ -470,10 +478,10 @@ public class ECSuite extends Problem implements SimpleProblemForm
             return function(state, PROB_GRIEWANK, val, threadnum);
             }
 
-	    case PROB_LANGERMAN:
-	    {
-		return 0.0 - langerman(genome);
-	    }
+			case PROB_LANGERMAN:
+			{
+			return 0.0 - langerman(genome);
+			}
 
 
             default:
@@ -528,28 +536,25 @@ public class ECSuite extends Problem implements SimpleProblemForm
 private double langerman(double genome[])    
 {
 	
-	double 	sum, dist ;	
-	sum = 0;	
+	double 	sum = 0 ;	
+
 	for ( int i = 0 ; i < 30 ; i++ )
 	{
-		dist = euclidDist(genome, afox10[i]);
-	  	sum -= cfox10[i] * (Math.exp(-dist) / Math.PI) * Math.cos(Math.PI * dist);
+		// compute squared distance
+		double distsq = 0.0;
+		double t;
+		double[] afox10i = afox10[i];
+		for(int j = 0; j < genome.length; j++)
+			{
+			t = genome[j] - afox10i[j];
+			distsq += t * t;
+			}
+		
+	  	sum += cfox10[i] * Math.exp(-distsq / Math.PI) * Math.cos(distsq * Math.PI);
 	}
-	return sum;	
+	return 0 - sum;	
 }
 
-private double euclidDist(double x[], double y[])
-{
-	double s = 0.0 ;
-	double t ;
-	for (int i = 0 ; i < x.length ; i++)
-	{
-		t  = (x[i]-y[i]) ;
-		s += t * t;
-	}
-	return Math.sqrt(s);
-}
-                        
         
                                         
                                                         

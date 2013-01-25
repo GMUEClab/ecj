@@ -28,7 +28,7 @@ import java.io.*;
  <font size=-1>int &gt;= 0 (default = 1)</font></td>
  <td valign=top>The first generation where the clock may be started.</td></tr>
  <tr><td valign=top><i>base</i>.<tt>restart-type</tt><br>
- <font size=-1>random or fixed</font></td>
+ <font size=-1>random (default) or fixed</font></td>
  <td valign=top>Either initiates clock at a random value or a fixed one.</td></tr>
  <tr><td valign=top><i>base</i>.<tt>restart-upper-bound</tt><br>
  <font size=-1>1 &lt; int &lt; \inf</font></td>
@@ -54,6 +54,10 @@ public class RandomRestarts extends Statistics
         super.setup( state, base );
 
         restartType = state.parameters.getString(base.push(P_RESTART_TYPE),  null);
+        
+        if (restartType == null)
+        	restartType = "random";
+        
         upperbound = state.parameters.getInt( base.push(P_RESTART_UPPERBOUND), null, 1);
 
 		if (state.parameters.exists(base.push(P_START)))
