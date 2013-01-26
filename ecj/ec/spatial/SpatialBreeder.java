@@ -45,8 +45,8 @@ public class SpatialBreeder extends SimpleBreeder
         super.setup(state, base);
                 
         // check for elitism and warn about it
-        for(int i = 0 ; i < elite.length; i++)
-            if (elite[i] > 0)
+        for(int i = 0 ; i < elite.length; i++)   // we use elite.length here instead of pop.subpops.length because the population hasn't been made yet.
+            if (usingElitism(i))
                 {
                 state.output.warning("You're using elitism with SpatialBreeder.  This is unwise as elitism is done by moving individuals around in the population, thus messing up the spatial nature of breeding.",
                     base.push(P_ELITE).push(""+i));

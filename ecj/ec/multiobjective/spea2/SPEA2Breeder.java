@@ -44,8 +44,8 @@ public class SPEA2Breeder extends SimpleBreeder
         {
         // are our elites small enough?
         for(int x=0;x<state.population.subpops.length;x++)
-            if (elite[x]>state.population.subpops[x].individuals.length)
-                state.output.error("The number of elites for subpopulation " + x + " exceeds the actual size of the subpopulation", new Parameter(EvolutionState.P_BREEDER).push(P_ELITE).push(""+x));
+            if (numElites(state, x)>state.population.subpops[x].individuals.length)
+                state.output.error("The number of elites for subpopulation " + x + " exceeds the actual size of the subpopulation");
         state.output.exitIfErrors();
 
         // do it
@@ -54,7 +54,7 @@ public class SPEA2Breeder extends SimpleBreeder
             Individual[] newInds = newpop.subpops[sub].individuals;  // The new population after we are done picking the elites                 
             Individual[] oldInds = state.population.subpops[sub].individuals;   // The old population from which to pick elites
                         
-            buildArchive(state, oldInds, newInds, elite[sub]);
+            buildArchive(state, oldInds, newInds, numElites(state, sub));
             }
 
         // optionally force reevaluation
