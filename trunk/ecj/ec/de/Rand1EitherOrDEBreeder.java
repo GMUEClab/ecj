@@ -70,9 +70,11 @@ public class Rand1EitherOrDEBreeder extends DEBreeder
         Individual[] inds = state.population.subpops[subpop].individuals;
 
         DoubleVectorIndividual v = (DoubleVectorIndividual)(state.population.subpops[subpop].species.newIndividual(state, thread));
-
+        int retry = -1;
         do
             {
+            retry++;
+            
             // select three indexes different from each other and from that of the current parent
             int r0, r1, r2;
             do
@@ -101,7 +103,12 @@ public class Rand1EitherOrDEBreeder extends DEBreeder
                 else
                     v.genome[i] = g0.genome[i] + 0.5 * (F+1) * (g1.genome[i] + g2.genome[i] - 2 * g0.genome[i]);
             }
-        while(!valid(v));
+        while(!valid(v) && retry < retries);
+        if (retry >= retries && !valid(v))  // we reached our maximum
+        	{
+        	// completely reset and be done with it
+        	v.reset(state, thread);
+        	}
 
         return v;       // no crossover is performed
         }

@@ -52,9 +52,12 @@ public class DEBreeder extends Breeder
     public double F = 0.0;
     /** Probability of crossover per gene */
     public double Cr = CR_UNSPECIFIED;
+    
+    public int retries = 0;
         
     public static final String P_F = "f";
     public static final String P_Cr = "cr";
+    public static final String P_OUT_OF_BOUNDS_RETRIES = "out-of-bounds-retries";
         
     /** the previous population is stored in order to have parents compete directly with their children */
     public Population previousPopulation = null;
@@ -76,6 +79,10 @@ public class DEBreeder extends Breeder
         F = state.parameters.getDouble(base.push(P_F),null,0.0);
         if ( F < 0.0 || F > 1.0 )
             state.output.fatal( "Parameter not found, or its value is outside of [0.0,1.0].", base.push(P_F), null );
+            
+        retries = state.parameters.getInt(base.push(P_OUT_OF_BOUNDS_RETRIES), null, 0);
+        if (retries < 0)
+        	state.output.fatal(" Retries must be a value >= 0.0.", base.push(P_OUT_OF_BOUNDS_RETRIES), null);
         }
 
     // this function is called just before chldren are to be bred
@@ -141,8 +148,11 @@ public class DEBreeder extends Breeder
         Individual[] inds = state.population.subpops[subpop].individuals;
 
         DoubleVectorIndividual v = (DoubleVectorIndividual)(state.population.subpops[subpop].species.newIndividual(state, thread));
+        int retry = -1;
         do
             {
+            retry++;
+            
             // select three indexes different from each other and from that of the current parent
             int r0, r1, r2;
             do
@@ -168,7 +178,12 @@ public class DEBreeder extends Breeder
             for(int i = 0; i < v.genome.length; i++)
                 v.genome[i] = g0.genome[i] + F * (g1.genome[i] - g2.genome[i]);
             }
-        while(!valid(v));
+        while(!valid(v) && retry < retries);
+        if (retry >= retries && !valid(v))  // we reached our maximum
+        	{
+        	// completely reset and be done with it
+        	v.reset(state, thread);
+        	}
 
         return crossover(state, (DoubleVectorIndividual)(inds[index]), v, thread);
         }
