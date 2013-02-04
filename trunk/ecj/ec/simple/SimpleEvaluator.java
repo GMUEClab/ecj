@@ -29,6 +29,19 @@ import ec.util.*;
 public class SimpleEvaluator extends Evaluator
     {
     public static final String P_CLONE_PROBLEM = "clone-problem";
+    public static final String P_NUM_TESTS = "num-tests";
+    public static final String P_MERGE = "merge";
+    
+    public static final String V_MEAN = "mean";
+    public static final String V_MEDIAN = "median";
+    public static final String V_BEST = "best";
+    
+    public static final int MERGE_MEAN = 0;
+    public static final int MERGE_MEDIAN = 1;
+    public static final int MERGE_BEST = 2;
+
+    public int numTests = 1;
+    public int mergeForm = MERGE_MEAN;
     public boolean cloneProblem;
 
     // checks to make sure that the Problem implements SimpleProblemForm
@@ -42,13 +55,93 @@ public class SimpleEvaluator extends Evaluator
         cloneProblem =state.parameters.getBoolean(base.push(P_CLONE_PROBLEM), null, true);
         if (!cloneProblem && (state.breedthreads > 1)) // uh oh, this can't be right
             state.output.fatal("The Evaluator is not cloning its Problem, but you have more than one thread.", base.push(P_CLONE_PROBLEM));
+
+        numTests = state.parameters.getInt(base.push(P_NUM_TESTS), null, 1);
+        if (numTests < 1) numTests = 1;
+        else if (numTests > 1)
+            {
+            String m = state.parameters.getString(base.push(P_MERGE), null);
+            if (m == null)
+                state.output.warning("Merge method not provided to SimpleEvaluator.  Assuming 'mean'");
+            else if (m.equals(V_MEAN))
+                mergeForm = MERGE_MEAN;
+            else if (m.equals(V_MEDIAN))
+                mergeForm = MERGE_MEDIAN;
+            else if (m.equals(V_BEST))
+                mergeForm = MERGE_BEST;
+            else
+                state.output.fatal("Bad merge method: " + m, base.push(P_NUM_TESTS), null);
+            }
         }
-    
+
+    Population oldpop = null;
+    void expand(EvolutionState state)
+        {
+        Population pop = (Population)(state.population.emptyClone());
+        
+        // populate with clones
+        for(int i = 0; i < pop.subpops.length; i++)
+            {
+            pop.subpops[i].individuals = new Individual[numTests * state.population.subpops[i].individuals.length];
+            for(int j = 0; j < state.population.subpops[i].individuals.length; j++)
+                {
+                for (int k=0; k < numTests; k++)
+                    {
+                    pop.subpops[i].individuals[numTests * j + k] =
+                        (Individual)(state.population.subpops[i].individuals[j].clone());
+                    }
+                }
+            }
+        
+        // swap
+        Population oldpop = state.population;
+        state.population = pop;
+        }
+                
+    void contract(EvolutionState state)
+        {
+        // swap back
+        Population pop = state.population;
+        state.population = oldpop;
+        
+        // merge fitnesses again
+        for(int i = 0; i < pop.subpops.length; i++)
+            {
+            Fitness[] fits = new Fitness[numTests];
+            for(int j = 0; j < state.population.subpops[i].individuals.length; j++)
+                {
+                for (int k=0; k < numTests; k++)
+                    {
+                    fits[k] = pop.subpops[i].individuals[numTests * j + k].fitness;
+                    }
+                                
+                if (mergeForm == MERGE_MEAN)
+                    {
+                    state.population.subpops[i].individuals[j].fitness.setToMeanOf(state, fits);
+                    }
+                else if (mergeForm == MERGE_MEDIAN)
+                    {
+                    state.population.subpops[i].individuals[j].fitness.setToMedianOf(state, fits);
+                    }
+                else  // MERGE_BEST
+                    {
+                    state.population.subpops[i].individuals[j].fitness.setToBestOf(state, fits);
+                    }
+                                
+                state.population.subpops[i].individuals[j].evaluated = true;
+                }
+            }
+        }
+
+
     /** A simple evaluator that doesn't do any coevolutionary
         evaluation.  Basically it applies evaluation pipelines,
         one per thread, to various subchunks of a new population. */
     public void evaluatePopulation(final EvolutionState state)
         {
+        if (numTests > 1)
+            expand(state);
+                
         if (state.evalthreads==1)
             {
             // a minor bit of optimization
@@ -132,6 +225,9 @@ public class SimpleEvaluator extends Evaluator
                     }
 
             }
+            
+        if (numTests > 1)
+            contract(state);
         }
 
     /** A private helper function for evaluatePopulation which evaluates a chunk
