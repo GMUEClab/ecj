@@ -121,20 +121,20 @@ public class SimpleShortStatistics extends Statistics
             base.push(P_STATISTICS_FILE),null);
 
         modulus = state.parameters.getIntWithDefault(base.push(P_STATISTICS_MODULUS), null, 1);
-		muzzle = state.parameters.getBoolean(base.push(P_MUZZLE),null,false);
+        muzzle = state.parameters.getBoolean(base.push(P_MUZZLE),null,false);
 
 
-		if (muzzle)
-			{
-			statisticslog = Output.NO_LOGS;
-			}
+        if (muzzle)
+            {
+            statisticslog = Output.NO_LOGS;
+            }
         else if (statisticsFile!=null) 
-        	try
-			  {
-			  statisticslog = state.output.addLog(statisticsFile,
-				  !state.parameters.getBoolean(base.push(P_COMPRESS),null,false),
-				  state.parameters.getBoolean(base.push(P_COMPRESS),null,false));
-			  }
+            try
+                {
+                statisticslog = state.output.addLog(statisticsFile,
+                    !state.parameters.getBoolean(base.push(P_COMPRESS),null,false),
+                    state.parameters.getBoolean(base.push(P_COMPRESS),null,false));
+                }
             catch (IOException i)
                 {
                 state.output.fatal("An IOException occurred while trying to create the log " + statisticsFile + ":\n" + i);
@@ -228,7 +228,7 @@ public class SimpleShortStatistics extends Statistics
         }
 
 
-	// This stuff is used by KozaShortStatistics
+    // This stuff is used by KozaShortStatistics
 
     protected void prepareStatistics(EvolutionState state) { }
     protected void gatherExtraSubpopStatistics(EvolutionState state, int subpop, int individual) { }

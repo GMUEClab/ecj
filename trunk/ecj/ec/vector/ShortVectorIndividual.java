@@ -247,34 +247,40 @@ public class ShortVectorIndividual extends VectorIndividual
         for(int x = 0; x < genome.length; x++)
             if (state.random[thread].nextBoolean(s.mutationProbability(x)))
                 {
-                switch(s.mutationType(x))
+                short old = genome[x];
+                for(int retries = 0; retries < s.duplicateRetries[x]; retries++)
                     {
-                    case IntegerVectorSpecies.C_RESET_MUTATION:
-                        genome[x] = (short)randomValueFromClosedInterval((short)s.minGene(x), (short)s.maxGene(x), state.random[thread]);
-                        break;
-                    case IntegerVectorSpecies.C_RANDOM_WALK_MUTATION:
-                    {
-                    int min = (int)s.minGene(x);
-                    int max = (int)s.maxGene(x);
-                    if (!s.mutationIsBounded(x))
+                    switch(s.mutationType(x))
                         {
-                        // okay, technically these are still bounds, but we can't go beyond this without weird things happening
-                        max = Short.MAX_VALUE;
-                        min = Short.MIN_VALUE;
-                        }
-                    do
+                        case IntegerVectorSpecies.C_RESET_MUTATION:
+                            genome[x] = (short)randomValueFromClosedInterval((short)s.minGene(x), (short)s.maxGene(x), state.random[thread]);
+                            break;
+                        case IntegerVectorSpecies.C_RANDOM_WALK_MUTATION:
                         {
-                        int n = (int)(state.random[thread].nextBoolean() ? 1 : -1);
-                        int g = genome[x];
-                        if ((n == 1 && g < max) ||
-                            (n == -1 && g > min))
-                            genome[x] = (short)(g + n);
-                        else if ((n == -1 && g < max) ||
-                            (n == 1 && g > min))
-                            genome[x] = (short)(g - n);     
+                        int min = (int)s.minGene(x);
+                        int max = (int)s.maxGene(x);
+                        if (!s.mutationIsBounded(x))
+                            {
+                            // okay, technically these are still bounds, but we can't go beyond this without weird things happening
+                            max = Short.MAX_VALUE;
+                            min = Short.MIN_VALUE;
+                            }
+                        do
+                            {
+                            int n = (int)(state.random[thread].nextBoolean() ? 1 : -1);
+                            int g = genome[x];
+                            if ((n == 1 && g < max) ||
+                                (n == -1 && g > min))
+                                genome[x] = (short)(g + n);
+                            else if ((n == -1 && g < max) ||
+                                (n == 1 && g > min))
+                                genome[x] = (short)(g - n);     
+                            }
+                        while (state.random[thread].nextBoolean(s.randomWalkProbability(x)));
                         }
-                    while (state.random[thread].nextBoolean(s.randomWalkProbability(x)));
-                    }
+                        }
+                    if (genome[x] != old) break;
+                    else genome[x] = old;  // try again
                     }
                 }
         }

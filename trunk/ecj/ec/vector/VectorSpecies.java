@@ -194,6 +194,9 @@ public class VectorSpecies extends Species
     public final static String P_SEGMENT_START = "start";
     public final static String P_SEGMENT_END = "end";
     public final static String P_SEGMENT = "segment";
+    public final static String P_DUPLICATE_RETRIES = "duplicate-retries";
+
+
 
     public final static int C_ONE_POINT = 0;
     public final static int C_TWO_POINT = 1;
@@ -204,6 +207,9 @@ public class VectorSpecies extends Species
     public final static int C_NONE = 0;
     public final static int C_GEOMETRIC = 1;
     public final static int C_UNIFORM = 2;
+
+    /** How often do we retry until we get a non-duplicate gene? */
+    protected int[] duplicateRetries;
 
     /** Probability that a gene will mutate, per gene.
         This array is one longer than the standard genome length.
@@ -237,6 +243,14 @@ public class VectorSpecies extends Species
     public double mutationProbability(int gene)
         {
         double[] m = mutationProbability;
+        if (m.length <= gene)
+            gene = m.length - 1;
+        return m[gene];
+        }
+
+    public int duplicateRetries(int gene)
+        {
+        int[] m = duplicateRetries;
         if (m.length <= gene)
             gene = m.length - 1;
         return m[gene];
@@ -336,7 +350,12 @@ public class VectorSpecies extends Species
                 base.push(P_MUTATIONPROB),def.push(P_MUTATIONPROB));
         mutationProbability = fill(new double[genomeSize + 1], _mutationProbability);
 
-
+        int _duplicateRetries = state.parameters.getIntWithDefault(base.push(P_DUPLICATE_RETRIES), def.push(P_DUPLICATE_RETRIES), 0);
+        if (_duplicateRetries < 0)
+            {
+            state.output.fatal("Duplicate Retries, if defined must be a value >= 0", base.push(P_DUPLICATE_RETRIES), def.push(P_DUPLICATE_RETRIES));
+            }
+        duplicateRetries = fill(new int[genomeSize + 1], _duplicateRetries);
         
         // CROSSOVER
 
@@ -481,6 +500,15 @@ public class VectorSpecies extends Species
                 state.output.fatal("Per-gene or per-segment mutation probability must be between 0.0 and 1.0 inclusive",
                     base.push(P_MUTATIONPROB).push(postfix),def.push(P_MUTATIONPROB).push(postfix));
             }
+
+        if (state.parameters.exists(base.push(P_DUPLICATE_RETRIES).push(postfix), def.push(P_DUPLICATE_RETRIES).push(postfix)))
+            {
+            duplicateRetries[index] = state.parameters.getInt(base.push(P_DUPLICATE_RETRIES).push(postfix), def.push(P_DUPLICATE_RETRIES).push(postfix));
+            if (duplicateRetries[index] < 0)
+                state.output.fatal("Duplicate Retries for gene " + index + ", if defined must be a value >= 0", 
+                    base.push(P_DUPLICATE_RETRIES).push(postfix), def.push(P_DUPLICATE_RETRIES).push(postfix));
+            }
+                        
         }            
 
     /** Looks up genome segments using start indices.  Segments run up to the next declared start index.  */
@@ -645,6 +673,14 @@ public class VectorSpecies extends Species
         return array;
         }
 
+    /** Utility method: returns the first array slot which contains the given value, else -1. */
+    protected int contains(boolean[] array, boolean val)
+        {
+        for(int i =0; i < array.length; i++)
+            if (array[i] == val) return i;
+        return -1;
+        }
+        
     /** Utility method: returns the first array slot which contains the given value, else -1. */
     protected int contains(long[] array, long val)
         {

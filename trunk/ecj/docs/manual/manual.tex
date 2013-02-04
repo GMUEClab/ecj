@@ -2851,7 +2851,13 @@ The number of elites (\(N\)) in each Subpopulation is a parameter.  To set 10 el
 breed.elite.0 = 10
 }
 
-The default value is no elites.
+Alternatively you can define the number of elites as a proportion of the Subpouplation:. 
+
+\params{%
+breed.elite-fraction.0 = 0.25
+}
+
+You can't do both, but you can do neither: rhe default value is no elites.
 
 You don't have to specify the elitism on a per-Subpopulation basis.  If you specified a default subpopulation using the parameter  \parameter{pop.default-subpop} (see Section~\ref{default-subpop}), SimpleBreeder will try this instead when it can't find an elitism parameter, and will issue a warning letting you know it's doing so.  For example, if you declared:
 
@@ -3149,6 +3155,22 @@ Speaking of Evolution Strategies, you could also do a kind of poor-man's \((\mu 
 {\it base}.pick-worst = false\\
 breed.elite.0 = 100
 }
+
+If you don't like specifying \(n\) as a fixed value, you also have the option of specifying it as a fraction of the population:
+
+\params{%
+{\it base}.n-fraction = 0.1
+}
+
+You can still use this to do a poor-man's \((\mu + \lambda)\) because elitism can likewise be defined this way:
+
+\params{%
+{\it base}.n-fraction = 0.1\\
+{\it base}.size = 1\\
+{\it base}.pick-worst = false\\
+breed.elite.0 = 0.1
+}
+
 
 
 \item Finally, \class{ec.select.MultiSelection} is a special version of a SelectionMethod with \(N\) other SelectionMethods as sources.  Each time it must produce an individual, it picks one of these SelectionMethods at random (using certain probabilities) and has it produce the Individual instead.  To set up MultiSelection with two sources, TournamentSelection (chosen 60\% of the time) and FitnessProportionateSelection (chosen 40\% of the time), you'd say:
@@ -4376,7 +4398,12 @@ es.lambda.0 = 100
 
 You have the option of not specifying \(\lambda\).  If you do so, then \(\lambda\) will be set to the subpopulation size.  Furthermore, if \(\mu > \frac{\lambda}{2}\) (the largest possible value of \(\mu\)) then you will receive a warning and \(\mu\) will be set to \(\frac{\lambda}{2}\).
 
- 
+If you don't like defining \(\mu\) this way, alternatively you can define \(\mu\) as a fraction of \(\lambda\):
+
+\params{%
+es.mu-fraction = 0.25
+}
+
 
 %\subsubsection{\texorpdfstring{\(\bm{(\mu+\lambda)}\)}{(mu + lambda)}}  
 \paragraph{\(\boldsymbol{(\mu + \lambda)}\)}
@@ -5000,16 +5027,26 @@ Every VectorIndivdiual has a default implementation of this method.  Mutation pa
 pop.subpop.0.species.mutation-probability = 0.1
 }
 
-Like min- and max-gene settings (see Section \ref{vectorinitialization}), the mutation probability can be set on a per-segment and/or per-gene basis.  Thus if you have specified gene segments, you can do stuff like:
+Additionally, you can specify how many times ECJ should try to guarantee that the mutation performed produces a different gene than the original value:
+
+\params{%
+pop.subpop.0.species.duplicate-retries = 5
+}
+
+The default value for this is 0, meaning that ECJ doesn't bother checking.
+
+Like min- and max-gene settings (see Section \ref{vectorinitialization}), the mutation probability and duplicate retries can be set on a per-segment and/or per-gene basis.  Thus if you have specified gene segments, you can do stuff like:
 
 \params{%
 \# segements...\\
 pop.subpop.0.species.segment.0.mutation-probability = 0.3\\
+pop.subpop.0.species.segment.0.duplicate-retries = 4\\
 pop.subpop.0.species.segment.1.mutation-probability = 1.0\\
 ...\\\
 \# genes...\\
 pop.subpop.0.species.mutation-probability.59 = 0.5\\
 pop.subpop.0.species.mutation-probability.72 = 0.0\\
+pop.subpop.0.species.duplicate-retries.14 = 2\\
 ...
 }
 
@@ -5036,7 +5073,44 @@ public void reset(EvolutionState state, int thread);
 
 \noindent ...on the Gene.
 
-\item {\bf Boolean} (\variable{boolean}): the default mutation operator simply flips the boolean value with the given mutation probability.
+\item {\bf Boolean} (\variable{boolean}): allows bit-flip mutation or uniform gene randomization:
+
+\paragraph{Bit-Flip Mutation}
+This mutation simply flips the bit.  To use it, you say 
+
+\params{%
+pop.subpop.0.species.mutation-type = flip
+}
+
+You don't really need to say this: it's the default.
+
+\paragraph{Uniform Mutation}
+This mutation randomizes the bit: it may be reset to its previous value of course.  To use it, you say 
+
+\params{%
+pop.subpop.0.species.mutation-type = reset
+}
+
+\paragraph{Mixtures}
+
+You can specify the mutation method and on a per-segment and/or per-gene basis.  Thus if you have specified gene segments, you can do stuff like:
+
+\params{%
+\# segements...\\
+pop.subpop.0.species.segment.0.mutation-type = reset\\
+pop.subpop.0.species.segment.1.mutation-type = flip\\
+...\\\
+\# genes...\\
+pop.subpop.0.species.mutation-type.59 = flip\\
+pop.subpop.0.species.mutation-type.72 = reset\\
+...
+}
+
+Per-gene settings override per-segment settings, which override global settings.
+
+
+
+
 
 \item {\bf Integer} (\variable{byte, short, int, long}):  allows uniform gene randomization (\parameter{reset}) and random walk mutation (\parameter{random-walk}).
 
@@ -5057,7 +5131,7 @@ pop.subpop.0.species.mutation-type = random-walk\\
 pop.subpop.0.species.random-walk-probability = 0.9
 }
 
-Yyou have the option of lifting the bounds entirely and letting Random Walk Mutation freely exceed the min/max gene bounds. If you do this, be certain that the particular problem you're testing works properly with values outside the stated initial bounds.  To lift the bounds in this way, you say:
+You have the option of lifting the bounds entirely and letting Random Walk Mutation freely exceed the min/max gene bounds. If you do this, be certain that the particular problem you're testing works properly with values outside the stated initial bounds.  To lift the bounds in this way, you say:
 
 \params{%
 pop.subpop.0.species.mutation-bounded = false

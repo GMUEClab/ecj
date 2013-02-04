@@ -82,7 +82,7 @@ public class DEBreeder extends Breeder
             
         retries = state.parameters.getInt(base.push(P_OUT_OF_BOUNDS_RETRIES), null, 0);
         if (retries < 0)
-        	state.output.fatal(" Retries must be a value >= 0.0.", base.push(P_OUT_OF_BOUNDS_RETRIES), null);
+            state.output.fatal(" Retries must be a value >= 0.0.", base.push(P_OUT_OF_BOUNDS_RETRIES), null);
         }
 
     // this function is called just before chldren are to be bred
@@ -180,10 +180,10 @@ public class DEBreeder extends Breeder
             }
         while(!valid(v) && retry < retries);
         if (retry >= retries && !valid(v))  // we reached our maximum
-        	{
-        	// completely reset and be done with it
-        	v.reset(state, thread);
-        	}
+            {
+            // completely reset and be done with it
+            v.reset(state, thread);
+            }
 
         return crossover(state, (DoubleVectorIndividual)(inds[index]), v, thread);
         }

@@ -34,7 +34,7 @@ public class NSGA2Breeder extends SimpleBreeder
         {
         super.setup(state, base);
         // make sure SimpleBreeder's elites facility isn't being used
-        for (int i = 0; i < elite.length; i++)
+        for (int i = 0; i < elite.length; i++)  // we use elite.length here instead of pop.subpops.length because the population hasn't been made yet.
             if (usingElitism(i))
                 state.output.warning("You're using elitism with NSGA2Breeder, which is not permitted and will be ignored.  However the reevaluate-elites parameter *will* bre recognized by NSGAEvaluator.",
                     base.push(P_ELITE).push(""+i));

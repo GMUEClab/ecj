@@ -105,10 +105,10 @@ public class Rand1EitherOrDEBreeder extends DEBreeder
             }
         while(!valid(v) && retry < retries);
         if (retry >= retries && !valid(v))  // we reached our maximum
-        	{
-        	// completely reset and be done with it
-        	v.reset(state, thread);
-        	}
+            {
+            // completely reset and be done with it
+            v.reset(state, thread);
+            }
 
         return v;       // no crossover is performed
         }

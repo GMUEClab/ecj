@@ -29,7 +29,7 @@ import ec.*;
 
 public class MuPlusLambdaBreeder extends MuCommaLambdaBreeder
     {
-	protected int maximumMuLambdaDivisor() { return 1; }
+    public int maximumMuLambdaDivisor() { return 1; }
  
     /** Sets all subpopulations in pop to the expected mu+lambda size.  Does not fill new slots with individuals. */
     public Population setToMuPlusLambda(Population pop, EvolutionState state)

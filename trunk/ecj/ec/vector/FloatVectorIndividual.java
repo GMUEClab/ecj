@@ -262,23 +262,29 @@ public class FloatVectorIndividual extends VectorIndividual
         for(int x = 0; x < genome.length; x++)
             if (rng.nextBoolean(s.mutationProbability(x)))
                 {
-                switch(s.mutationType(x))
+                float old = genome[x];
+                for(int retries = 0; retries < s.duplicateRetries[x]; retries++)
                     {
-                    case FloatVectorSpecies.C_GAUSS_MUTATION:
-                        gaussianMutation(state, rng, s, x);
-                        break;
-                    case FloatVectorSpecies.C_POLYNOMIAL_MUTATION:
-                        polynomialMutation(state, rng, s, x);
-                        break;
-                    case FloatVectorSpecies.C_RESET_MUTATION:
-                        floatResetMutation(rng, s, x);
-                        break;
-                    case FloatVectorSpecies.C_INTEGER_RESET_MUTATION:
-                        integerResetMutation(rng, s, x);
-                        break;
-                    case FloatVectorSpecies.C_INTEGER_RANDOM_WALK_MUTATION:
-                        integerRandomWalkMutation(rng, s, x);
-                        break;
+                    switch(s.mutationType(x))
+                        {
+                        case FloatVectorSpecies.C_GAUSS_MUTATION:
+                            gaussianMutation(state, rng, s, x);
+                            break;
+                        case FloatVectorSpecies.C_POLYNOMIAL_MUTATION:
+                            polynomialMutation(state, rng, s, x);
+                            break;
+                        case FloatVectorSpecies.C_RESET_MUTATION:
+                            floatResetMutation(rng, s, x);
+                            break;
+                        case FloatVectorSpecies.C_INTEGER_RESET_MUTATION:
+                            integerResetMutation(rng, s, x);
+                            break;
+                        case FloatVectorSpecies.C_INTEGER_RANDOM_WALK_MUTATION:
+                            integerRandomWalkMutation(rng, s, x);
+                            break;
+                        }
+                    if (genome[x] != old) break;
+                    else genome[x] = old;  // try again
                     }
                 }
         }

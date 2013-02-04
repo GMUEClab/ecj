@@ -140,9 +140,9 @@ public class Population implements Group
             subpops[x].setup(state,p);
             
             // test for loadinds
-	        if (loadInds && subpops[x].loadInds)  // uh oh
-    			state.output.fatal("Both a subpopulation and its parent population have been told to load from files.  This can't happen.  It's got to be one or the other.",
-    			base.push(P_FILE), null);
+            if (loadInds && subpops[x].loadInds)  // uh oh
+                state.output.fatal("Both a subpopulation and its parent population have been told to load from files.  This can't happen.  It's got to be one or the other.",
+                    base.push(P_FILE), null);
             }
         }
 
