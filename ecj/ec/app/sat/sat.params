@@ -14,7 +14,7 @@ eval.problem.sat-filename = data-1000.cnf
 pop.subpop.0.size = 1000 
 generations = 100 
 
-pop.subpop.0.species = ec.vector.VectorSpecies 
+pop.subpop.0.species = ec.vector.BitVectorSpecies 
 pop.subpop.0.species.pipe = ec.vector.breed.VectorMutationPipeline 
 pop.subpop.0.species.pipe.source.0 = ec.vector.breed.VectorCrossoverPipeline
 pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection

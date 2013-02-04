@@ -92,7 +92,7 @@ public class Parameter implements Serializable
 
 
     /** Returns a new parameter with s added to the end of the current path items. 
-    	If s is empty, nothing is pushed on (and no delimiter is added to the end). */ 
+        If s is empty, nothing is pushed on (and no delimiter is added to the end). */ 
     public Parameter push(String s)
         {
         if (s==null)

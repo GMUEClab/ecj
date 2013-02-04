@@ -289,6 +289,22 @@ class SlaveConnection
 
             // Now we have all the individuals in so we're good.  Copy them back into the original individuals
             job.copyIndividualsBack(state);
+            
+            
+            /// HACK ADDED BY SEAN
+            
+            for(int i = 0; i < job.inds.length; i++)
+                {
+                ec.vector.DoubleVectorIndividual dvi = (ec.vector.DoubleVectorIndividual)(job.inds[i]);
+                double[] g = (dvi.genome);
+                String s = "";
+                for(int j = 0; j < g.length; j++)
+                    s = s + g[j] + " ";
+                s = s + dvi.fitness.fitness();
+                state.output.message(s);
+                }
+            
+            //// END HACK
 
 
             ///// LAST STEP: LET OTHERS KNOW WE'RE DONE AND AVAILABLE FOR ANOTHER JOB

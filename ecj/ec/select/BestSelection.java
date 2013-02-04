@@ -63,7 +63,7 @@ public class BestSelection extends SelectionMethod
     public static final String P_BEST = "best";
     
     public static final String P_N = "n";
-    public static final String P_N_FRAC = "n-frac";
+    public static final String P_N_FRAC = "n-fraction";
     public static final String P_PICKWORST = "pick-worst";
     public static final String P_SIZE = "size";
 
@@ -79,7 +79,7 @@ public class BestSelection extends SelectionMethod
     /** Sorted, normalized, totalized fitnesses for the population */
     public int[] sortedPop;
 
-	public static final int NOT_SET = -1;
+    public static final int NOT_SET = -1;
     public int bestn = NOT_SET;
     public double bestnFrac = NOT_SET;
 
@@ -97,23 +97,23 @@ public class BestSelection extends SelectionMethod
         Parameter def = defaultBase();
         
         if ( state.parameters.exists(base.push(P_N),def.push(P_N)) )
-        	{
-    	    bestn =
-	            state.parameters.getInt(base.push(P_N),def.push(P_N),1);
-        	if (bestn == 0 )
-            	state.output.fatal("n must be an integer greater than 0", base.push(P_N),def.push(P_N));
-        	}
+            {
+            bestn =
+                state.parameters.getInt(base.push(P_N),def.push(P_N),1);
+            if (bestn == 0 )
+                state.output.fatal("n must be an integer greater than 0", base.push(P_N),def.push(P_N));
+            }
         else if (state.parameters.exists(base.push(P_N_FRAC),def.push(P_N_FRAC)) )
-        	{
-        	if (state.parameters.exists(base.push(P_N),def.push(P_N)) )
-        		state.output.fatal("Both n and n-frac specified for BestSelection.", base.push(P_N),def.push(P_N));
-    	    bestnFrac =
-	            state.parameters.getDoubleWithMax(base.push(P_N_FRAC),def.push(P_N_FRAC),0.0,1.0);
-        	if (bestnFrac <= 0.0)
-            	state.output.fatal("n-frac must be a floating-point value greater than 0.0 and <= 1.0", base.push(P_N_FRAC),def.push(P_N_FRAC));
-        	}
+            {
+            if (state.parameters.exists(base.push(P_N),def.push(P_N)) )
+                state.output.fatal("Both n and n-frac specified for BestSelection.", base.push(P_N),def.push(P_N));
+            bestnFrac =
+                state.parameters.getDoubleWithMax(base.push(P_N_FRAC),def.push(P_N_FRAC),0.0,1.0);
+            if (bestnFrac <= 0.0)
+                state.output.fatal("n-frac must be a floating-point value greater than 0.0 and <= 1.0", base.push(P_N_FRAC),def.push(P_N_FRAC));
+            }
         else state.output.fatal("Either n or n-frac must be defined for BestSelection.", base.push(P_N),def.push(P_N));
-        	
+                
         pickWorst = state.parameters.getBoolean(base.push(P_PICKWORST),def.push(P_PICKWORST),false);
 
         double val = state.parameters.getDouble(base.push(P_SIZE),def.push(P_SIZE),1.0);
@@ -159,23 +159,24 @@ public class BestSelection extends SelectionMethod
                 });
 
         if (!pickWorst)  // gotta reverse it
-        	for(int x = 0; x < sortedPop.length / 2; x++)
-        		{
-        		int p = sortedPop[x];
-        		sortedPop[x] = sortedPop[sortedPop.length - x - 1];
-        		sortedPop[sortedPop.length - x - 1] = p;
-        		}
-        		
+            for(int x = 0; x < sortedPop.length / 2; x++)
+                {
+                int p = sortedPop[x];
+                sortedPop[x] = sortedPop[sortedPop.length - x - 1];
+                sortedPop[sortedPop.length - x - 1] = p;
+                }
+                        
         // figure out bestn
         if (bestnFrac != NOT_SET)
-        	{
-        	bestn = (int) Math.max(Math.floor(s.population.subpops[subpopulation].individuals.length * bestnFrac), 1);
-        	}
+            {
+            bestn = (int) Math.max(Math.floor(s.population.subpops[subpopulation].individuals.length * bestnFrac), 1);
+            System.err.println("Bestn is " + bestn);
+            }
         }
 
 
     /** Returns a tournament size to use, at random, based on base size and probability of picking the size plus one. */
-	int getTournamentSizeToUse(MersenneTwisterFast random)
+    int getTournamentSizeToUse(MersenneTwisterFast random)
         {
         double p = probabilityOfPickingSizePlusOne;   // pulls us to under 35 bytes
         if (p == 0.0) return size;

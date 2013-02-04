@@ -89,13 +89,13 @@ public class BitVectorIndividual extends VectorIndividual
         {
         super.setup(state,base);  // actually unnecessary (Individual.setup() is empty)
 
-        VectorSpecies s = (VectorSpecies)species;  // where my default info is stored
+        BitVectorSpecies s = (BitVectorSpecies)species;  // where my default info is stored
         genome = new boolean[s.genomeSize];
         }
 
     public void defaultCrossover(EvolutionState state, int thread, VectorIndividual ind)
         {
-        VectorSpecies s = (VectorSpecies)species;  // where my default info is stored
+        BitVectorSpecies s = (BitVectorSpecies)species;  // where my default info is stored
         BitVectorIndividual i = (BitVectorIndividual) ind;
         boolean tmp;
         int point;
@@ -104,7 +104,7 @@ public class BitVectorIndividual extends VectorIndividual
             state.output.fatal("Genome lengths are not the same for fixed-length vector crossover");
         switch(s.crossoverType)
             {
-            case VectorSpecies.C_ONE_POINT:
+            case BitVectorSpecies.C_ONE_POINT:
                 point = state.random[thread].nextInt((genome.length / s.chunksize)+1);
                 for(int x=0;x<point*s.chunksize;x++)
                     { 
@@ -113,7 +113,7 @@ public class BitVectorIndividual extends VectorIndividual
                     genome[x] = tmp; 
                     }
                 break;
-            case VectorSpecies.C_TWO_POINT: 
+            case BitVectorSpecies.C_TWO_POINT: 
                 int point0 = state.random[thread].nextInt((genome.length / s.chunksize)+1);
                 point = state.random[thread].nextInt((genome.length / s.chunksize)+1);
                 if (point0 > point) { int p = point0; point0 = point; point = p; }
@@ -124,7 +124,7 @@ public class BitVectorIndividual extends VectorIndividual
                     genome[x] = tmp;
                     }
                 break;
-            case VectorSpecies.C_ANY_POINT:
+            case BitVectorSpecies.C_ANY_POINT:
                 for(int x=0;x<genome.length/s.chunksize;x++) 
                     if (state.random[thread].nextBoolean(s.crossoverProbability))
                         for(int y=x*s.chunksize;y<(x+1)*s.chunksize;y++)
@@ -176,11 +176,26 @@ public class BitVectorIndividual extends VectorIndividual
         does a bit-flip with a probability depending on parameters. */
     public void defaultMutate(EvolutionState state, int thread)
         {
-        VectorSpecies s = (VectorSpecies)species;  // where my default info is stored
+        BitVectorSpecies s = (BitVectorSpecies)species;  // where my default info is stored
         for(int x=0;x<genome.length;x++)
-            if (s.mutationProbability[x]>0.0)
-                if (state.random[thread].nextBoolean(s.mutationProbability[x]))
-                    genome[x] = !genome[x];
+            {
+            if (state.random[thread].nextBoolean(s.mutationProbability[x]))
+                {
+                boolean old = genome[x];
+                for(int retries = 0; retries < s.duplicateRetries[x]; retries++)
+                    {
+                    switch(s.mutationType(x))
+                        {
+                        case BitVectorSpecies.C_FLIP_MUTATION:
+                            genome[x] = !genome[x];
+                        case BitVectorSpecies.C_RESET_MUTATION:
+                            genome[x] = state.random[thread].nextBoolean();
+                        }
+                    if (genome[x] != old) break;
+                    else genome[x] = old;  // try again
+                    }
+                }
+            }
         }
         
     /** Initializes the individual by randomly flipping the bits */

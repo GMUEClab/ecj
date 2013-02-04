@@ -104,10 +104,10 @@ public class Best1BinDEBreeder extends DEBreeder
             }
         while(!valid(v) && retry < retries);
         if (retry >= retries && !valid(v))  // we reached our maximum
-        	{
-        	// completely reset and be done with it
-        	v.reset(state, thread);
-        	}
+            {
+            // completely reset and be done with it
+            v.reset(state, thread);
+            }
                                         
         return crossover(state, (DoubleVectorIndividual)(inds[index]), v, thread);
         }

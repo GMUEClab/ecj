@@ -63,11 +63,11 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
     
     public static final String P_MUZZLE = "muzzle";
 
-	public static final String P_DO_FINAL = "do-final";
-	public static final String P_DO_GENERATION = "do-generation";
-	public static final String P_DO_MESSAGE = "do-message";
-	public static final String P_DO_DESCRIPTION = "do-description";
-	public static final String P_DO_PER_GENERATION_DESCRIPTION = "do-per-generation-description";
+    public static final String P_DO_FINAL = "do-final";
+    public static final String P_DO_GENERATION = "do-generation";
+    public static final String P_DO_MESSAGE = "do-message";
+    public static final String P_DO_DESCRIPTION = "do-description";
+    public static final String P_DO_PER_GENERATION_DESCRIPTION = "do-per-generation-description";
 
     /** The Statistics' log */
     public int statisticslog = 0;  // stdout
@@ -83,8 +83,8 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
     public boolean doDescription;
     public boolean doPerGenerationDescription;
 
-	/** Should we even open up a file and write to it at all? */
-	public boolean muzzle;
+    /** Should we even open up a file and write to it at all? */
+    public boolean muzzle;
 
     public void setup(final EvolutionState state, final Parameter base)
         {
@@ -101,12 +101,12 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         doDescription = state.parameters.getBoolean(base.push(P_DO_DESCRIPTION),null,true);
         doPerGenerationDescription = state.parameters.getBoolean(base.push(P_DO_PER_GENERATION_DESCRIPTION),null,false);
 
-		muzzle = state.parameters.getBoolean(base.push(P_MUZZLE),null,false);
+        muzzle = state.parameters.getBoolean(base.push(P_MUZZLE),null,false);
 
-		if (muzzle)
-			{
-			statisticslog = Output.NO_LOGS;
-			}
+        if (muzzle)
+            {
+            statisticslog = Output.NO_LOGS;
+            }
         else if (statisticsFile!=null)
             try
                 {
@@ -159,10 +159,10 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
 
             // describe the winner if there is a description
             if (doGeneration && doPerGenerationDescription) 
-            	{
-            	if (state.evaluator.p_problem instanceof SimpleProblemForm)
-                	((SimpleProblemForm)(state.evaluator.p_problem.clone())).describe(state, best_i[x], x, 0, statisticslog);   
-                	}   
+                {
+                if (state.evaluator.p_problem instanceof SimpleProblemForm)
+                    ((SimpleProblemForm)(state.evaluator.p_problem.clone())).describe(state, best_i[x], x, 0, statisticslog);   
+                }   
             }
         }
 
@@ -182,8 +182,8 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
 
             // finally describe the winner if there is a description
             if (doFinal && doDescription) 
-            	if (state.evaluator.p_problem instanceof SimpleProblemForm)
-                	((SimpleProblemForm)(state.evaluator.p_problem.clone())).describe(state, best_of_run[x], x, 0, statisticslog);      
+                if (state.evaluator.p_problem instanceof SimpleProblemForm)
+                    ((SimpleProblemForm)(state.evaluator.p_problem.clone())).describe(state, best_of_run[x], x, 0, statisticslog);      
             }
         }
     }

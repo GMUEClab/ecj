@@ -29,7 +29,7 @@ The various vector representations and their associated species and basic
 types are:
 
 INDIVIDUAL			SPECIES			BASIC TYPE
-BitVectorIndividual		VectorSpecies		boolean
+BitVectorIndividual		BitVectorSpecies	boolean
 ByteVectorIndividual		IntegerVectorSpecies	byte
 ShortVectorIndividual		IntegerVectorSpecies	short
 IntegerVectorIndividual		IntegerVectorSpecies	int
@@ -49,7 +49,8 @@ crossover: one-point, two-point, and uniform crossover (referred to as 'any'),
 with a per-gene crossover probability for uniform crossover.  Additionally, 
 a mutation probability specifies a per-gene likelihood of performing 
 mutation on that gene (the kind of mutation depends on the particular 
-vector individual being used).
+vector individual being used).  And a per-gene number of retries to guarantee
+different gene values under mutation is also provided.
 
 VectorSpecies also allows you to specify a *chunk size*.  Chunks are regions
 in which no crossover is allowed.  Crossover only occurs on chunk boundaries.
@@ -57,23 +58,11 @@ This allows you, for example, to indicate that an individual consists of
 chunks 12 boolean values long (say), and that they are to be treated as atomic
 units by the crossover operator -- it can't cross over within the chunk.
 
-VectorSpecies is the species for BitVectorIndividual, as BitVectorIndividual
-doesn't need any special features.
 
+ec.vector.BitVectorSpecies
 
-ec.vector.IntegerVectorSpecies
-
-IntegerVectorSpecies is a VectorSpecies and so has all the same features as it.
-Also, it allows you to specify min and max gene values for each 
-gene in three different ways.  First, you can specify a global min and max
-value for all genes.  Second, you can specify _segments_ (regions in the
-genome) which all share the same min and max values.  Third, you can specify
-individual min and max values for each independent gene.  These three methods
-can be mixed as well: independent gene values override segments, which override
-global values.  Note that segments are not the same thing as chunks.
-
-The default mutation procedure for IntegerVectorSpecies genes is gene
-randomization.  Override this as you see fit.
+BitVectorSpecies is a VectorSpecies and has all of its feature.  Additionally
+you can specify two kinds of mutation: bit-flip or reset.
 
 
 ec.vector.FloatVectorSpecies

@@ -2037,7 +2037,12 @@ Version		Change Log
 	Added Langerman to ECSuite
 	Bug fixes and improvemdnts to RandomRestarts, which also no longer works
 		with Steady State (for the time being).
-	Added elite.frac to Subpopulation, and a method for determining the number
+	Added elite-frac to Subpopulation, and a method for determining the number
 		of elites in general.
 	Added fraction mechanism to BestSelection
-
+	elite-frac changed to elite-fraction in SimpleBreeder
+	n-frac changed to n-fraction in BestSelection
+	BitVectorSpecies added.  It is now the species for BitVectorIndividual
+	BitVectorIndividual now has TWO kinds of mutation: flip and reset. Flip
+		is the default (as it was before, when it had no name).
+	Duplicate retries to vector gene mutation.  

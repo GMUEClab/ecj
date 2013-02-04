@@ -197,8 +197,26 @@ public class GeneVectorIndividual extends VectorIndividual
         {
         GeneVectorSpecies s = (GeneVectorSpecies) species;
         for(int x=0;x<genome.length;x++)
+            {
             if (state.random[thread].nextBoolean(s.mutationProbability[x]))
-                genome[x].mutate(state,thread);
+                {
+                if (s.duplicateRetries[x] <= 0)  // a little optimization
+                    {
+                    genome[x].mutate(state,thread);
+                    }
+                else    // argh
+                    {
+                    Gene old = (Gene)(genome[x].clone());
+                    for(int retries = 0; retries < s.duplicateRetries[x]; retries++)
+                        {
+                        genome[x].mutate(state,thread);
+                        if (!genome[x].equals(old)) break;
+                        else genome[x] = old;  // try again
+                        }
+                        
+                    }
+                }
+            }
         }
 
     /** Initializes the individual by calling reset(...) on each gene. */

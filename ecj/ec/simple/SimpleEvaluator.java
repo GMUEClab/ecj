@@ -66,11 +66,11 @@ public class SimpleEvaluator extends Evaluator
             // how many threads do we really need?  No more than the maximum number of individuals in any subpopulation
             int numThreads = 0;
             for(int x = 0; x < state.population.subpops.length; x++)
-            	numThreads = Math.max(numThreads, state.population.subpops[x].individuals.length);
+                numThreads = Math.max(numThreads, state.population.subpops[x].individuals.length);
             numThreads = Math.min(numThreads, state.evalthreads);
             if (numThreads < state.breedthreads)
-            	state.output.warnOnce("Largest subpopulation size (" + numThreads +") is smaller than number of evalthreads (" + state.breedthreads +
-            		"), so fewer evalthreads will be created.");
+                state.output.warnOnce("Largest subpopulation size (" + numThreads +") is smaller than number of evalthreads (" + state.breedthreads +
+                    "), so fewer evalthreads will be created.");
             
             int numinds[][] = 
                 new int[numThreads][state.population.subpops.length];
@@ -78,29 +78,29 @@ public class SimpleEvaluator extends Evaluator
                 new int[numThreads][state.population.subpops.length];
         
             for(int x=0;x<state.population.subpops.length;x++)
-            	{
-            	// we will have some extra individuals.  We distribute these among the early subpopulations
-            	int individualsPerThread = state.population.subpops[x].individuals.length / numThreads;  // integer division
+                {
+                // we will have some extra individuals.  We distribute these among the early subpopulations
+                int individualsPerThread = state.population.subpops[x].individuals.length / numThreads;  // integer division
                 int slop = state.population.subpops[x].individuals.length - numThreads * individualsPerThread;
-				int currentFrom = 0;
-				
-            	for(int y=0;y<numThreads;y++)
+                int currentFrom = 0;
+                                
+                for(int y=0;y<numThreads;y++)
                     {
                     if (slop > 0)
-                    	{
-                    	numinds[y][x] = individualsPerThread + 1;
-                    	slop--;
-                    	}
+                        {
+                        numinds[y][x] = individualsPerThread + 1;
+                        slop--;
+                        }
                     else
-                    	numinds[y][x] = individualsPerThread;
+                        numinds[y][x] = individualsPerThread;
                     
                     if (numinds[y][x] == 0)
-                    	{
-		            	state.output.warnOnce("More threads exist than can be used to evaluate some subpopulations (first example: subpopulation " + x + ")");
-                    	}
+                        {
+                        state.output.warnOnce("More threads exist than can be used to evaluate some subpopulations (first example: subpopulation " + x + ")");
+                        }
 
-            		from[y][x] = currentFrom;
-            		currentFrom += numinds[y][x];
+                    from[y][x] = currentFrom;
+                    currentFrom += numinds[y][x];
                     }
                 }
 

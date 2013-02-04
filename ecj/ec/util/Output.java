@@ -80,12 +80,12 @@ import java.util.Enumeration;
 public class Output implements Serializable
     {
     public static class OutputExitException extends RuntimeException 
-    	{
-    	public OutputExitException(String message)
-    		{
-    		super(message);
-    		}
-    	}
+        {
+        public OutputExitException(String message)
+            {
+            super(message);
+            }
+        }
     
     boolean errors;
     Vector logs = new Vector();
@@ -97,8 +97,8 @@ public class Output implements Serializable
 
     public static final int ALL_MESSAGE_LOGS = -1;
     /** When passed to print functions, doesn't do any printing */
-	public static final int NO_LOGS = -2;
-	
+    public static final int NO_LOGS = -2;
+        
     /** Total verbosity */
     public static final int V_VERBOSE = 0;
     /** Don't print messages */
@@ -116,12 +116,12 @@ public class Output implements Serializable
         this.filePrefix = filePrefix;
         }
 
-	public void setThrowsErrors(boolean val)
-		{
-		throwsErrors = val;
-		}
-	
-	public boolean getThrowsErrors() { return throwsErrors; }
+    public void setThrowsErrors(boolean val)
+        {
+        throwsErrors = val;
+        }
+        
+    public boolean getThrowsErrors() { return throwsErrors; }
 
     protected void finalize() throws Throwable
         {
@@ -141,9 +141,9 @@ public class Output implements Serializable
 
         // exit
         if (throwException)
-        	throw new OutputExitException(message);
+            throw new OutputExitException(message);
         else
-        	System.exit(1);
+            System.exit(1);
         }
 
     /** Closes the logs -- ONLY call this if you are preparing to quit */
@@ -465,10 +465,10 @@ public class Output implements Serializable
         String er = "STARTUP ERROR:\n" + s;
         System.err.println(er);
         if (p1!=null) 
-        	{
-        	er += "PARAMETER: " + p1;
-        	System.err.println("PARAMETER: " + p1);
-        	}
+            {
+            er += "PARAMETER: " + p1;
+            System.err.println("PARAMETER: " + p1);
+            }
 
         //System.exit(1);
         exitWithError(null, er, false);
@@ -482,15 +482,15 @@ public class Output implements Serializable
         System.err.println(er);
         if (p1!=null) 
             {
-        	er += "PARAMETER: " + p1;
-        	System.err.println("PARAMETER: " + p1);
-        	}
+            er += "PARAMETER: " + p1;
+            System.err.println("PARAMETER: " + p1);
+            }
 
         if (p2!=null && p1!=null)
             {
-        	er += "     ALSO: " + p2;
-			System.err.println("     ALSO: " + p2);
-        	}
+            er += "     ALSO: " + p2;
+            System.err.println("     ALSO: " + p2);
+            }
 
         //System.exit(1);
         exitWithError(null, er, false);
@@ -510,16 +510,16 @@ public class Output implements Serializable
         println(s, V_NO_MESSAGES ,ALL_MESSAGE_LOGS, true);
         }
 
-	StringBuffer error = new StringBuffer();
-	// builds up an error message in case the user wants to throw
-	// an exception rather than quit
-	String a(String str)
-		{
-		error.append(str);
-		error.append("\n");
-		return str;
-		}
-		
+    StringBuffer error = new StringBuffer();
+    // builds up an error message in case the user wants to throw
+    // an exception rather than quit
+    String a(String str)
+        {
+        error.append(str);
+        error.append("\n");
+        return str;
+        }
+                
     /** Posts a fatal error.  This causes the system to exit. */
     public synchronized void fatal(String s)
         {
@@ -667,7 +667,7 @@ public class Output implements Serializable
         boolean _announcement,
         boolean _reposting) throws OutputException
         {
-		if (log==null) return;
+        if (log==null) return;
         if (log.writer==null) throw new OutputException("Log with a null writer: " + log);
         if (!log.postAnnouncements && _announcement) return;  // don't write it
         // if (log.verbosity >= _verbosity) return;  // don't write it
@@ -696,11 +696,11 @@ public class Output implements Serializable
         {
         if (log==NO_LOGS) return;
         if (log==ALL_MESSAGE_LOGS) for (int x = 0; x<logs.size();x++)
-                               {
-                               Log l = (Log) logs.elementAt(x);
-                               if (l==null) throw new OutputException("Unknown log number" + l);
-                               println(s,_verbosity,l,_announcement,false);
-                               }
+                                       {
+                                       Log l = (Log) logs.elementAt(x);
+                                       if (l==null) throw new OutputException("Unknown log number" + l);
+                                       println(s,_verbosity,l,_announcement,false);
+                                       }
         else
             {
             Log l = (Log) logs.elementAt(log);
@@ -711,7 +711,7 @@ public class Output implements Serializable
 
     /** Prints a message to a given log.  If log==ALL_MESSAGE_LOGS, posted to all logs which accept announcements. 
         If the log is NO_LOGS, nothing is printed.
-     */
+    */
     public synchronized void println(String s,
         int log,
         boolean _announcement) throws OutputException
@@ -731,8 +731,8 @@ public class Output implements Serializable
         int[] _logs) throws OutputException
         {
         for(int x=0;x<_logs.length;x++)
-        	{
-        	if (_logs[x]==NO_LOGS) break;
+            {
+            if (_logs[x]==NO_LOGS) break;
             println(s,V_VERBOSE,(Log)(logs.elementAt(_logs[x])),false,false);
             }
         }
@@ -753,7 +753,7 @@ public class Output implements Serializable
 
 
     /** 
-    	Prints a non-announcement message to the given logs, with a verbosity of V_NO_GENERAL. 
+        Prints a non-announcement message to the given logs, with a verbosity of V_NO_GENERAL. 
         If the log is NO_LOGS, nothing is printed.
     */
     public synchronized void println(String s,
@@ -767,7 +767,7 @@ public class Output implements Serializable
     /** Prints a non-announcement message to a given log, with a 
         certain verbosity. No '\n' is printed.  
         If the log is null, nothing is printed.
-        */
+    */
     protected synchronized void print(String s,
         int _verbosity,
         Log log) throws OutputException
@@ -787,18 +787,18 @@ public class Output implements Serializable
         certain verbosity. If log==ALL_MESSAGE_LOGS, posted to all logs which accept announcements. 
         No '\n' is printed.  
         If the log is NO_LOGS, nothing is printed.
-        */
+    */
     public synchronized void print(String s,
         int _verbosity,
         int log) throws OutputException
         {
         if (log==NO_LOGS) return;
         if (log==ALL_MESSAGE_LOGS) for (int x = 0; x<logs.size();x++)
-                               {
-                               Log l = (Log) logs.elementAt(x);
-                               if (l==null) throw new OutputException("Unknown log number" + l);
-                               print(s,V_VERBOSE,l);
-                               }
+                                       {
+                                       Log l = (Log) logs.elementAt(x);
+                                       if (l==null) throw new OutputException("Unknown log number" + l);
+                                       print(s,V_VERBOSE,l);
+                                       }
         else
             {
             Log l = (Log) logs.elementAt(log);
@@ -810,7 +810,7 @@ public class Output implements Serializable
     /** Prints a non-announcement message to a given log<!--, with a verbosity of V_NO_GENERAL-->.
         If log==ALL_MESSAGE_LOGS, posted to all logs which accept announcements. No '\n' is printed.  
         If the log is NO_LOGS, nothing is printed.
-        */
+    */
     public synchronized void print(String s,
         int log) throws OutputException
         {
@@ -827,8 +827,8 @@ public class Output implements Serializable
         int[] _logs) throws OutputException
         {
         for(int x=0;x<_logs.length;x++)
-        	{
-       		if (_logs[x]==NO_LOGS) return;
+            {
+            if (_logs[x]==NO_LOGS) return;
             print(s,_logs[x]);
             }
         }

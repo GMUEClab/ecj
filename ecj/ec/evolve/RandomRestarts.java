@@ -37,7 +37,7 @@ import java.io.*;
 */
  
 public class RandomRestarts extends Statistics
- 	{
+    {
     public static final String P_RESTART_TYPE = "restart-type";
     public static final String P_RESTART_UPPERBOUND = "restart-upper-bound";
     public static final String P_START = "start";
@@ -56,17 +56,17 @@ public class RandomRestarts extends Statistics
         restartType = state.parameters.getString(base.push(P_RESTART_TYPE),  null);
         
         if (restartType == null)
-        	restartType = "random";
+            restartType = "random";
         
         upperbound = state.parameters.getInt( base.push(P_RESTART_UPPERBOUND), null, 1);
 
-		if (state.parameters.exists(base.push(P_START)))
-			{
-			start = state.parameters.getInt(base.push(P_START), null, 0);
-			if (start < 0) 
-				state.output.fatal("Start value must be >= 0", base.push(P_START));
-			}
-		else start = 1;
+        if (state.parameters.exists(base.push(P_START)))
+            {
+            start = state.parameters.getInt(base.push(P_START), null, 0);
+            if (start < 0) 
+                state.output.fatal("Start value must be >= 0", base.push(P_START));
+            }
+        else start = 1;
 
         if( upperbound < 1 )
             state.output.fatal("Parameter either not found or invalid (<1).", base.push(P_RESTART_UPPERBOUND));
