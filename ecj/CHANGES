@@ -2046,3 +2046,5 @@ Version		Change Log
 	BitVectorIndividual now has TWO kinds of mutation: flip and reset. Flip
 		is the default (as it was before, when it had no name).
 	Duplicate retries to vector gene mutation.  
+	Added merge and num-tests to SimpleEvaluator, and discussion of
+		noisy distributed problems

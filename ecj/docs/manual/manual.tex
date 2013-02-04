@@ -9449,7 +9449,34 @@ An instance of this MasterProblem subclass is used by the Master.  When a Slave 
 		in \method{receiveAdditionalData(...)}, the provided EvolutionState is ``live'' and you can set it up however you like.
 \end{methods}
 
+\subsection{Noisy Distributed Problems}
+\label{noisydistributedproblems}
 
+Sometimes your fitness function is noisy: the same individual will get different fitness values depending on some degree of randomness.  An easy way to deal with this is to run the same individual for some \(N\) trials inside your Problem instance and to take the median or mean or whatnot, and use that as your fitness.
+
+This works fine in a single-CPU setting, but in a parallel setting there's a gotcha.  Let's say you have 100 parallel machines available to you but you have a population size of 20.  You'd like to do 5 trials for each individual, and trials are not cheap.  If you farmed out individuals using the distributed evaluator and a Problem subclass which did 5 trials internally, only 20 machines would be used, and they'd be expected to run 5 trials each.  What you want to do is run one trial on each of the machines.  But because of the way MasterProblem is set up, this won't work.
+
+ECJ has a hack that you can use in this situation.  SimpleEvaluator has some additional parameters:
+
+\params{%
+eval.num-tests = 5\\
+eval.merge = mean
+}
+
+This tells the SimpleEvaluator to test each individual 5 times and set their fitness values to the mean.  How does it do this?  By temporarily modifying the Subpopulation.  
+
+If your Subpopulation presently has 20 individuals in it, and you want to test each 5 times,  SimpleEvaluator will replace this Subpopulation with a copy which has 100 individual in it.  These 100 individuals are 5 clones each of the original 20.  Then SimpleEvaluator evaluates this new population (which causes the distributed evaluation system to farm them out to 100 machines).  
+
+After all the fitnesses have come back, SimpleEvaluator merges the fitnesses of the 5 clones together to form a single fitness and sets the original individual's fitness to that merged value.  The legal merge settings are \parameter{mean}, \parameter{median}, and \parameter{best}.  Finally, SimpleEvaluator restores the original Subpopulation.
+
+This means that if you have a custom Subpopulation subclass, it needs to deal gracefully with being copied and having its individuals array extended.  In general this is probably the case but you should be warned.
+
+Also, in this situation, the number of individuals being evaluated is {\it smaller} than the number of machines available.  Thus you will need to turn off ECJ features which bulk up multiple individuals per job, and multiple jobs per slave.  Set these to 1:
+
+\params{%
+eval.masterproblem.job-size = 1\\
+eval.masterproblem.max-jobs-per-slave = 1
+}
 
 \section{Island Models (The \package{ec.exchange} Package)}
 \label{ec.exchange}
