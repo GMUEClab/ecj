@@ -388,7 +388,7 @@ public class FloatVectorIndividual extends VectorIndividual
                 deltaq = 1.0 - (Math.pow(val,mut_pow));
                 }
             y1 = y + deltaq*(yu-yl);
-            if (species.mutationIsBounded(index) && (y1 >= yl && y1 <= yu)) break;  // yay, found one
+            if (!species.mutationIsBounded(index) || (y1 >= yl && y1 <= yu)) break;  // yay, found one
             }
                                                                 
         // at this point, if tries is totalTries, we failed
@@ -443,7 +443,7 @@ public class FloatVectorIndividual extends VectorIndividual
                         deltaq = 1.0 - (Math.pow(val,mut_pow));
                         }
                     y1 = y + deltaq*(yu-yl);
-                    if (mutationIsBounded && (y1 >= yl && y1 <= yu)) break;  // yay, found one
+                    if (!mutationIsBounded || (y1 >= yl && y1 <= yu)) break;  // yay, found one
                     }
                                         
                 // at this point, if tries is totalTries, we failed
