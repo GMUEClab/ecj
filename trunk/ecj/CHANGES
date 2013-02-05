@@ -2048,3 +2048,5 @@ Version		Change Log
 	Duplicate retries to vector gene mutation.  
 	Added merge and num-tests to SimpleEvaluator, and discussion of
 		noisy distributed problems
+	Fixed bug in Polynomial Mutation which only arises when the gene is
+		*unbounded*.  Thanks to Mark Coletti <mcoletti@gmail.com>
