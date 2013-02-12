@@ -5091,6 +5091,15 @@ This mutation randomizes the bit: it may be reset to its previous value of cours
 pop.subpop.0.species.mutation-type = reset
 }
 
+If you set the duplicate-retries to a high value, then this is more or less equivalent to bit-flip mutation:
+
+\params{%
+pop.subpop.0.species.mutation-type = reset\\
+pop.subpop.0.species.duplicate-retries = 100000
+}
+
+... but of course why bother doing this?  It's resetting over and over again until it successfully flips the bit.   In actuality the usefulness of uniform mutation for boolean vectors is questionable.  It's mostly here to be consistent with the integer and float versions.
+
 \paragraph{Mixtures}
 
 You can specify the mutation method and on a per-segment and/or per-gene basis.  Thus if you have specified gene segments, you can do stuff like:
@@ -5106,7 +5115,7 @@ pop.subpop.0.species.mutation-type.72 = reset\\
 ...
 }
 
-Per-gene settings override per-segment settings, which override global settings.
+Per-gene settings override per-segment settings, which override global settings.  Again, not sure why you'd do it though.
 
 
 

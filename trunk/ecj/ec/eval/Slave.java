@@ -536,7 +536,7 @@ public class Slave
                     final int j = i;
                     final int s = t;
                     indForThread[t] = i;
-                    threads[t] = pool.startThread(new Runnable()
+                    threads[t] = pool.startThread("Evaluation of individual " + i, new Runnable()
                         {
                         public void run() { problems[s].evaluate( state, inds[j], subpops[j], 0 ); }
                         });

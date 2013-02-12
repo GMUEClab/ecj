@@ -89,9 +89,10 @@ public class ThreadPool
             }
         }
                 
-    /** Starts and provides a thread on the given runnable.  If no thread was avaialble in the pool, creates a new one. */ 
-    public Thread startThread(Runnable run)
-        {
+    /** Starts and provides a thread on the given runnable, with the provided name.
+    	If no thread was avaialble in the pool, creates a new one. */ 
+    public Thread startThread(String name, Runnable run)
+    	{
         if (run == null)
             throw new RuntimeException("Request to start a thread on a null runnable");
         PoolThread p = null;
@@ -102,8 +103,16 @@ public class ThreadPool
             }
         if (p == null)
             p = new PoolThread();   // couldn't get one from list
+        if (name == null) name = "";
+        p.setName(name);
         p.go(run);
         return p;
+    	}
+    	
+    /** Starts and provides a thread on the given runnable.  If no thread was avaialble in the pool, creates a new one. */ 
+    public Thread startThread(Runnable run)
+        {
+        return startThread(null, run);
         }
         
 
