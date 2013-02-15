@@ -160,3 +160,14 @@ variety of easily parsed statistical information, one line per generation.
 Both are located in the 'koza' directory.
 
 
+OTHER GP APPROACHES
+-------------------
+
+Two subdirectories contain other GP approaches which rely on the GP code to work
+with ECJ.  These are the ge directory, which contains Grammatical Evolution code,
+and the push directory, which contains a PUSH implementation.  Note that the
+PUSH implementation does not directly compile -- you will need to install the
+psh.jar file from the ECJ website and, if you're using the Makefile, you need
+to run it as   make push
+
+
