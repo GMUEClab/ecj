@@ -10,8 +10,9 @@ do so by saying    make push
 
 The code works by creating a GPIndividual consisting solely of
 two kinds of nodes: dummy nonterminal nodes (ec.gp.push.Nonterminal)
-and operator leaf nodes (ec.gp.push.Operator).  The nonterminals
-do nothing at all, all that matters are the operators.  An operator
+and leaf nodes holding Push instructions (ec.gp.push.Terminal).  
+The nonterminals
+do nothing at all, all that matters are the leaf nodes.  A leaf
 node is a GP ERC which contains a single randomly-chosen Push
 instruction.  Push instructions can be one of three possible types:
 
@@ -48,15 +49,14 @@ WEAKNESSES
 
 This is just an experimental approach, though it does work fine.
 
-1. Slow.  A lot of time is spent in parsing the program string
-   in the interpreter.
+1. Slow.  Psh isn't super fast.
 
 2. There's no code (yet) for taking push programs and rebuilding
    the GP tree to reflect the program after evaluation.  This is
    a common Push task, so it'd be nice to do it at some point.
 
-3. At present push ERC operators must be hard-coded in the
-   Operator.java file.  Right now we have float.erc and integer.erc
+3. At present push ERC instructions must be hard-coded in the
+   Terminal.java file.  Right now we have float.erc and integer.erc
    If necessary we could break out ERCs into custom classes though
    I suspect there wouldn't be much return on investment there.
 
@@ -71,7 +71,7 @@ This is just an experimental approach, though it does work fine.
 
 
 
-BUILT-IN PUSH OPERATORS IN THE PSH INTERPRETER
+BUILT-IN PUSH INSTRUCTIONS IN THE PSH INTERPRETER
 
 integer.+
 integer.-

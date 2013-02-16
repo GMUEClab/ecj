@@ -1,15 +1,31 @@
-/**
-   This is how you make custom Push instructions.  Instruction requires
-   that you implement the Execute(...) method which gives you access to the
-   underlying push stacks etc.  You may with also to override setup() 
-   to set up your instruction initially.
-*/
-
-
 package ec.gp.push;
 import org.spiderland.Psh.*;
 import ec.*;
 import ec.util.*;
+
+/* 
+ * PushInstruction.java
+ * 
+ * Created: Fri Feb 15 23:00:04 EST 2013
+ * By: Sean Luke
+ */
+
+
+/** 
+	PushInstruction encapsulates a custom Push instruction.  This
+	class requires that you implement a Psh method called <b><tt>Execute(...)</tt></b>.
+	You will need to consult Psh to understand what you can do, and how to do it.  But
+	for some examples, see the <b>Atan.java</b> and <b>Print.java</b> classes in
+	<b>ec/app/push/</b>.
+	
+   <p>PushInstruction is a Prototype, so you may with also to override setup() 
+   to set up your instruction initially.
+
+ <p><b>Default Base</b><br>
+ gp.push.func
+*/
+
+
 
 public abstract class PushInstruction extends Instruction implements Prototype
     {

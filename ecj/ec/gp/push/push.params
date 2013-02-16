@@ -1,37 +1,39 @@
 parent.0 = ../koza/koza.params
 
 # Push trees only have two kinds of GPNodes,
-# Nonterminals and Operators.  Don't fool with this.
+# Nonterminals and Terminal.  Don't fool with this.
+# Note that Nonterminal is listed as having arity
+# 1, but this is ignored by PushBuilder, which 
+# uses any arity it likes.
 gp.fs.size = 1
 gp.fs.0.name = f0
 gp.fs.0.size = 2
 gp.fs.0.func.0 = ec.gp.push.Nonterminal
-# In fact, Nonterminal has arbitrary arity.
-# but we're lying to ECJ and saying it's 1-arity here.
-# We'll handle the arbitrary arity bit using PushBuilder.
 gp.fs.0.func.0.nc = nc1
-gp.fs.0.func.1 = ec.gp.push.Operator
+gp.fs.0.func.1 = ec.gp.push.Terminal
 gp.fs.0.func.1.nc = nc0
-
 
 # We won't use the data object
 eval.problem.data = ec.gp.GPData
 
 # Push uses a custom builder designed for nonterminal
-# nodes of arbitrary arity.
+# nodes of arbitrary arity.  We use 20 as our default
+# maximum size and 10 as our default minimum. 
 gp.tc.0.init = ec.gp.push.PushBuilder
+gp.tc.0.init.min-size = 10
+gp.tc.0.init.max-size = 40
 
 
 # Here are some default settings for float and int ercs
-push.op.float.min = -10
-push.op.float.max = 10
-push.op.int.min = -10
-push.op.int.max = 10
+push.erc.float.min = -10
+push.erc.float.max = 10
+push.erc.int.min = -10
+push.erc.int.max = 10
 
 
 # You will need to specify your problem
 # eval.problem = ...
 
-# You will also need to specify the push operators
+# You will also need to specify the push instructions
 # being used.  See the README file for the full list
-# of available built-in operators.
+# of available built-in instructions.
