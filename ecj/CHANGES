@@ -2050,6 +2050,7 @@ Version		Change Log
 		noisy distributed problems
 	Fixed bug in Polynomial Mutation which only arises when the gene is
 		*unbounded*.  Thanks to Mark Coletti <mcoletti@gmail.com>
-	StringBuffer replaced wiht StringBuilder in GPNode
+	StringBuffer replaced with StringBuilder in GPNode
 	Documenation fixes to PTC2 and Uniform
 	Added the push facility and the ec/app/push example app
+	Modified the Makefile to add a "make push" option
