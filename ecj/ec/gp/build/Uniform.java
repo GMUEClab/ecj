@@ -128,7 +128,7 @@ import java.io.*;
    </table>
 
    <p><b>Default Base</b><br>
-   gp.breed.uniform
+   gp.build.uniform
 
 */
 

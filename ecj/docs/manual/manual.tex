@@ -8726,7 +8726,350 @@ The parse graph for this grammar is shown in Figure \ref{geparsegraph}.  Once th
 GrammarFunctionNodes hold GPNode prototypes and represent them.   Their children are arguments to the node in question. GrammarRuleNodes hold choice points in the rule, and their children are the choices (only one choice will be made).
 
 
+\section{Push (The \package{ec.gp.push} Package)}
 
+Push is a stack-based programming language developed by Lee Spector \cite{push,push3}.  The language is designed to allow the evolution of self-modifying programs, and this allows all manner of experimentation.  ECJ has an {\bf experimental} simple implementation of Push which uses a Push interpreter called Psh.\footnote{https:/\!/github.com/jonklein/Psh/}
+
+The Push interpreter has several stacks on which data of different types can be pushed, popped, or otherwise manipulated.  Built-in Push instructions designed to manipulate certain stacks usually have the name of the stack at the beginning of the instruction name, for convenience.  For example, \method{float.+} is an instruction which adds floating-point numbers found on the \variable{float} stack.  The Psh interpreter has a large number of built-in instructions: but you can also create your own instructions in ECJ to do whatever you like, and add them to Psh's vocabulary.
+
+Push programs take the form of Lisp lists of arbitrary size and nesting.  For example, here is an uninteresting Push program consisting entirely of instructions which use the \variable{float} stack:
+
+\vbox{\small\begin{verbatim}
+ ((float.swap ((float.swap float.dup))) float.dup float.* (float.+ float.-) float.dup)
+\end{verbatim}}
+
+Parentheses define blocks of code, but if you don't have any code-manipulation instructions then parentheses don't mean much.  This code does the following:
+
+\begin{enumerate}
+\item Swap the top two elements of the float stack
+\item Swap the top two elements of the float stack
+\item Duplicate the top item of the float stack and push it on the float stack
+\item Duplicate the top item of the float stack and push it on the float stack
+\item Multiply the top two items of the float stack and push the result on the float stack
+\item Add the top two items of the float stack and push the result on the float stack
+\item Subtract the top two items of the float stack and push the result on the float stack
+\item Duplicate the top item of the float stack and push it on the float stack
+\end{enumerate}
+
+Like I said, an uninteresting program.
+
+Note that unlike in Lisp or GP tradition, the first element in each list in Psh isn't special: it doesn't define a function.  Indeed it could just be another list.    All lists do is set apart blocks of code, which might be useful in manipulation by special code-modifying instructions.  
+
+Because Push lists don't start with a function symbol, their parse trees are different from GP program tree, and so while ECJ uses the GPNode and GPTree classes to encode Push trees, it does so in an unusual way.  All the symbols in the Push program are leaf nodes in the tree.  Dummy nonleaf nodes define the list and sublist structure of the tree.  Furthermote, nonleaf nodes can have {\it arbitrary arity}, which is something not normally done in ECJ's GP trees.  For example, the previous Push program looks like this in tree form:
+
+\vspace{1em}
+{
+\Tree [.$\Box$ [.$\Box$ float.swap [.$\Box$ [.$\Box$ float.swap float.dup ] ] !\qsetw{1em} ] float.dup !\qsetw{1em}  float.$*$ !\qsetw{1em}  [.$\Box$ float.$+$ float.$-$ ] !\qsetw{1em}  float.dup  ] 
+}
+
+\vspace{1em}
+
+Thus ECJ creates Push programs using its GPTree facility with only two kinds of nodes: {\it dummy nonterminals} (the class \class{ec.gp.push.Nonterminal}) and {\it instructions} (the class \class{ec.gp.push.Terminal}), which is a special ECJ ERC that handles leaf nodes in the tree.  The dummy nonterminals are shown in the figure above with the symbol~\(\Box\).
+
+
+\paragraph{Evaluation} Push trees are evaluated by submitting them to an interpreter, in this case the Psh interpreter.  But there's a problem.  Psh, like every other Push interpreter out there, has its own notions of the objects used to construct a Push tree.  It's obviously not compatible with ECJ's GPNode, GPTree, and GPIndividual objects.  As a result, ECJ evaluates its Push trees by first writing them out to strings in Lisp form.  It then sets up an interpreter, gives it the string program, and lets it parse the program into its own internal structure and evaluate it.  This is circuitous but doesn't really slow things down very much as it turns out.
+
+\paragraph{Some Caveats} Much of the current Psh work is being done on a Clojure-based interpreter instead, and perhaps in the future we may move to that instead.  Long story short, this is an experimental package.
+
+Additionally, much of the Push literature involves individuals which modify themselves and then pass these modifications onto successive generations.  At present ECJ does not do this: once an individual is entered into the interpreter, it stays there.  Any changes made in the interpreter are ignored when the fitness evaluation is complete.  We may change that in the future.
+
+
+\subsection{Push and GP}
+
+ECJ's Push package only uses two GPNode classes, \class{ec.gp.push.Nonterminal} (for dummy nonleaf nodes) and \class{ec.gp.push.Terminal} (to define all possible leaf nodes).  This means that, for all intents and purposes, the GP function set, from ECJ's perspective, is hard-coded.  But of course you still have the {\it Push} ``function set'' to set up: these are the actual instructions and instructions that Terminal can be set to (it's an ERC which displays Strings) and can be submitted to the Psh interpreter.  Setting these instructions up is discussed in Section \ref{PushInstruction} coming next; for now, keep in mind that the Push ``function set'' is {\it not the same thing} as the GP function set.
+
+This ``hard-coded'' GP function set is defined as follows in the \file{ec/gp/push/push.params} file:
+
+\params{%
+gp.fs.size = 1\\
+gp.fs.0.name = f0\\
+gp.fs.0.size = 2\\
+gp.fs.0.func.0 = ec.gp.push.Nonterminal\\
+gp.fs.0.func.0.nc = nc1\\
+gp.fs.0.func.1 = ec.gp.push.Terminal\\
+gp.fs.0.func.1.nc = nc0
+}
+
+Note that Nonterminal is listed as having an arity of 1 even though it has an arbitrary arity.  Because \class{ec.gp.push.Nonterminal} can have variable number of children, Push uses its own special tree builder to allow this.  The class is called \class{ec.gp.push.PushBuilder}.  PushBuilder follows the following program:
+
+\vspace{1em}
+{
+\sf\begin{algorithmic}[1]
+\Function{Build-Tree~}{{\it int} size}
+\If{size = 1}
+	\State \textbf{return} a terminal (of the class \class{ec.gp.push.Terminal})
+\ElsIf
+	\State \(p \leftarrow\) a nonterminal (of the class \class{ec.gp.push.Nonterminal})
+	\While{size \(>\) 0}
+		\State \(a \leftarrow\) a random number from 1 to {\it size} inclusive
+		\State {\it size} \(\leftarrow\) {\it size} \(- a\)
+		\State \(c \leftarrow\) Build-Tree(\(a\))
+		\State Add \(c\) as a child of \(p\)
+	\EndWhile
+\EndIf
+\State Randomly shuffle the order of children of \(p\)
+\State {\bf return} \(p\)
+\EndFunction
+\end{algorithmic}
+}
+
+\vspace{1em}
+
+PushBuilder must choose a size, and this is done in the usual GPNodeBuilder way.  To set up PushBuilder as the default initialization builder, and define it to pick sizes uniformly between 4 and 10 inclusive, you'd say:
+
+\params{%
+gp.tc.0.init = ec.gp.push.PushBuilder\\
+gp.tc.0.init.min-size = 4\\
+gp.tc.0.init.max-size = 10
+}
+
+You can of course define the size distribution directly too, to describe a more complicated distribution:
+
+\params{%
+gp.tc.0.init = ec.gp.push.PushBuilder\\
+gp.tc.0.init.num-sizes = 10\\
+gp.tc.0.init.size.0 = 0.0\\
+gp.tc.0.init.size.1 = 0.0\\
+gp.tc.0.init.size.2 = 0.0\\
+gp.tc.0.init.size.3 = 0.0\\
+gp.tc.0.init.size.4 = 0.5\\
+gp.tc.0.init.size.5 = 0.25\\
+gp.tc.0.init.size.6 = 0.125\\
+gp.tc.0.init.size.7 = 0.0625\\
+gp.tc.0.init.size.8 = 0.03125\\
+gp.tc.0.init.size.9 = 0.015625\\
+gp.tc.0.init.size.10 = 0.015625
+}
+
+Because ECJ's Push package only uses two GPNode classes, you can basically use any GP crossover or mutation method you like, as long as it doesn't rely on a fixed arity (\class{ec.gp.push.Nonterminal} has a variable number of children).  None of the built-in ECJ GP breeding pipelines will cause any problem.  However if you're using a breeding pipeline which creates random subtrees (such as \class{ec.gp.koza.MutationPipeline}) you will want to make sure it uses the \class{ec.gp.push.PushBuilder} tree builder to generate those subtrees.
+
+\subsection{Defining the Push Instruction Set}
+\label{PushInstruction}
+
+Though the GP function set used by ECJ's GP facility is hard-coded for Push, you still of course have to specify the instructions  which can form a Push program.  This is done via the \class{ec.gp.push.Terminal}.  
+
+Let's say you wanted to do a symbolic regression problem and had settled on the following seven Push instructions: \variable{float.* float.+ float.\% float.- float.dup float.swap float.pop}.  You''d set it up like this:
+
+\params{%
+\# The Instruction Set\\
+push.in.size = 7\\
+push.in.0 = float.*\\
+push.in.1 = float.+\\
+push.in.2 = float.\%\\
+push.in.3 = float.-\\
+push.in.4 = float.dup\\
+push.in.5 = float.swap\\
+push.in.6 = float.pop
+}
+
+This is, in effect, the Push equivalent of a GP Function Set.  Psh also supports a limited number of Ephemeral Random Constants, or ERCs.  Keep in mind that these are {\it not} GP ERCs, though they operate similarly inside the Push interpreter.  ECJ defines these with the names \variable{float.erc} and \variable{int.erc}, one for Push's float stack and one for the integer stack.  So if you'd like to add an ERC to your instruction set, you might say:
+
+\params{%
+push.in.size = 8\\
+push.in.0 = float.*\\
+push.in.1 = float.+\\
+push.in.2 = float.\%\\
+push.in.3 = float.-\\
+push.in.4 = float.dup\\
+push.in.5 = float.swap\\
+push.in.6 = float.pop\\
+push.in.7 = float.erc
+}
+
+If you use an ERC, you should also set its minimum and maximum values.  ECJ defines the following defaults in the \file{push.params} file:
+
+\params{%
+push.erc.float.min = -10.0\\
+push.erc.float.max = 10.0\\
+push.erc.int.min = -10\\
+push.erc.int.max = 10\\
+}
+
+
+The following instructions are built into the Psh interpreter.\\
+
+\noindent{\small
+\begin{tabular}{@{}p{1.5in}@{}p{1.1in}@{}p{1.5in}@{}p{1.25in}@{}p{1.25in}@{}}
+{\tt
+integer.+\newline
+integer.-\newline
+integer./\newline
+integer.\%\newline
+integer.*\newline
+integer.pow\newline
+integer.log\newline
+integer.=\newline
+integer.>\newline
+integer.<\newline
+integer.min\newline
+integer.max\newline
+integer.abs\newline
+integer.neg\newline
+integer.ln\newline
+integer.fromfloat\newline
+integer.fromboolean\newline
+integer.rand\newline
+}
+&
+{\tt
+float.+\newline
+float.-\newline
+float./\newline
+float.\%\newline
+float.*\newline
+float.pow\newline
+float.log\newline
+float.=\newline
+float.>\newline
+float.<\newline
+float.min\newline
+float.max\newline
+float.sin\newline
+float.cos\newline
+float.tan\newline
+float.exp\newline
+float.abs\newline
+float.neg\newline
+float.ln\newline
+float.frominteger\newline
+float.fromboolean\newline
+float.rand\newline
+}
+&
+{\tt 
+boolean.=\newline
+boolean.not\newline
+boolean.and\newline
+boolean.or\newline
+boolean.xor\newline
+boolean.frominteger\newline
+boolean.fromfloat\newline
+boolean.rand\newline
+\newline
+true\newline
+false\newline
+}
+&
+{\tt 
+code.quote\newline
+code.fromboolean\newline
+code.frominteger\newline
+code.fromfloat\newline
+code.noop\newline
+code.do*times\newline
+code.do*count\newline
+code.do*range\newline
+code.=\newline
+code.if\newline
+code.rand\newline
+\newline
+exec.k\newline
+exec.s\newline
+exec.y\newline
+exec.noop\newline
+exec.do*times\newline
+exec.do*count\newline
+exec.do*range\newline
+exec.=\newline
+exec.if\newline
+exec.rand\newline
+}
+&
+{\tt
+input.index\newline
+input.inall\newline
+input.inallrev\newline
+input.stackdepth\newline
+\newline
+frame.push\newline
+frame.pop\newline
+}
+\end{tabular}
+}
+
+
+\subsection{Creating a Push Problem}
+
+Push Problems are created by subclassing from \class{ec.gp.push.PushProblem}.
+Building a Push Problem is more complex than other ECJ Problems because you may have to interact with the Psh interpreter.  We have provided some cover functions to enable you to keep your hands relatively clean.
+
+One common way a Push program is evaluated (such as in Symbolic Regression) is along these lines:
+
+\begin{enumerate}
+\item A Push Program is created from the GPIndividual.
+\item An Interpreter is created or reset.
+\item Certain stacks in the interpreter are loaded with some data
+\item The program is run on the interpreter
+\item The tops of certain stacks in the interpreter are inspected to determine the return value, and thus the fitness.
+\end{enumerate}
+
+To create a Push Program, you'd call \method{getProgram(...)}, passing in the individual in question.  This will return a \class{Program} object (this is a class used in Psh).
+
+To create an interpreter, you'd call \method{getInterpreter(...)}, again passing in the individual in question.  This will return an \class{Interpreter} object (another class used in Psh).  You can also call \method{resetInterpreter(...)} to reset the interpreter to a pristine state so you can reuse it.
+
+Let's say your approach is to push a number on the float stack of the interpreter, run the program, and then examine what's left on the float stack to determine fitness.  PushProblem has utility methods for pushing, and examining the float and integer stacks.  If you want to do more sophisticated stuff than this, you're welcome to but will have to consult Psh directly.
+
+Finally, to run the program on the interpreter, you can call \method{executeProgram(...)}.
+
+
+\begin{methods}{ec.gp.push.PushProblem}
+\mthd{public org.spiderland.Psh.Program getProgram({\it EvolutionState} state, {\it GPIndividual} ind)}
+Builds and returns a new Program object from the provided individual.
+\mthd{public org.spiderland.Psh.Interpreter getInterpreter({\it EvolutionState} state, {\it GPIndividual} ind, int thread)}
+Builds and returns a new, empty Interpreter object.
+\mthd{public void  resetInterpreter({\it org.spiderland.Psh.Interpreter} interpreter)}
+Resets the interpreter's stack so it can execute a new program.
+\mthd{public void  executeProgram({\it org.spiderland.Psh.Program} program, {\it org.spiderland.Psh.Interpreter} interpreter, {\it int} maxSteps)}
+Runs the provided program on the given interpreter for up to {\it maxSteps} steps.
+\mthd{public void pushOntoFloatStack({\it org.spiderland.Psh.Interpreter} interpreter, {\it float} val)}
+Pushes the given value onto the interpreter's float stack.
+\mthd{public void pushOntoIntStack({\it org.spiderland.Psh.Interpreter} interpreter, {\it int} val)}
+Pushes the given value onto the interpreter's integer stack.
+\mthd{public boolean isFloatStackEmpty({\it org.spiderland.Psh.Interpreter} interpreter)}
+Returns whether the interpreter's float stack is emtpy.
+\mthd{public boolean isIntStackEmpty({\it org.spiderland.Psh.Interpreter} interpreter)}
+Returns whether the interpreter's integer stack is emtpy.
+\mthd{public float topOfFloatStack({\it org.spiderland.Psh.Interpreter} interpreter)}
+Returns the top element on the interpreter's float stack.  You ought to check to see if the stack is empty first.
+\mthd{public int topOfIntStack({\it org.spiderland.Psh.Interpreter} interpreter)}
+Returns the top element on the interpreter's stack.  You ought to check to see if the stack is empty first.
+\end{methods}
+
+You will define your PushProblem in the usual ECJ fashion.  Furthermore, since Push uses the GP facility, you also need to provide a GPData object, though it'll never be used:
+
+\params{%
+eval.problem = ec.app.myapp.MyPushProblem\\
+eval.problem.data = ec.gp.GPData
+}
+
+\subsection{Building a Custom Instruction}
+
+It's often the case that Psh's built-in instructions aren't enough for you.   Perhaps you want an instruction which prints the top of the float stack.  Perhaps you want an instruction which does more interesting math, or which reads from a file, or moves an ant.  To do this you need to be able to create a class which you can submit as an instruction.  This is what \class{ec.gp.push.PushInstruction} does for you.
+
+PushInstruction is a \class{org.spiderland.Psh.Instruction} subclass which also implements ECJ's \class{ec.Prototype} interface and so is properly cloneable and serializable.  Since it's a Prototype, it has a \method{setup(...)} method which you can take advantage of to get things ready, and a \method{clone()} method you might need to override.  But critically it has an \method{Execute(...)} method which the interpreter uses to run the instruction.  Note the unusual spelling: this is a Psh method name.  
+
+To implement a PushInstruction you'll need to know how Psh works so you can manipulate its stacks according to the needs of the instruction.  Two examples (\class{Atan} and \class{Print}) are provided in the \package{ec/app/Push} application example.
+
+\begin{methods}{ec.gp.push.PushInstruction}
+\mthd{public void Execute({\it org.spiderland.Psh.Interpreter} interpreter)}
+Executes the given instruction.
+\end{methods}
+
+Once you have constructed your custom instruction, you need to add it to your instruction set.  To do this you give it a name and also specify the PushInstruction class which defines the instruction.   The presence of this class specification informs ECJ that this isn't a built-in Psh instruction.  For example, we might add to the end of our existing instruction set like so:
+
+\params{%
+push.in.size = 9\\
+push.in.0 = float.*\\
+push.in.1 = float.+\\
+push.in.2 = float.\%\\
+push.in.3 = float.-\\
+push.in.4 = float.dup\\
+push.in.5 = float.swap\\
+push.in.6 = float.pop\\
+push.in.7 = float.erc\\
+push.in.8 = my.instruction.name\\
+push.in.8.func = ec.app.myapp.MyInstruction
+}
 
 
 \section{Rulesets and Collections (The \package{ec.rule} Package)}
@@ -10948,11 +11291,10 @@ pop.subpop.0.species.pipe.source.0 = ec.multiobjective.spea2.SPEA2TournamentSele
 
 %\section{Particle Swarm Optimization (The \package{ec.pso} Package)}
 
-%%% So long as PSO is a mess, we shouldn't document it.
+%%% So long as PSO is a mess, we shouldn't document it.?
 
 
-\section{Other Methods}
-\subsection{Resets (The \package{ec.evolve} Package)}
+\section{Resets (The \package{ec.evolve} Package)}
 
 The \package{ec.evolve} package presently contains a single class, \class{ec.evolve.RandomRestarts}.  This is a subclass of Statistics which performs random or timed restarts.  RandmRestarts reinitializes your entire Population either once every fixed \(N\) generations or once every \(M\) generations where \(M\) is a random integer between \(1\) and \(N\) inclusive.  The value of \(M\) is randomized each reset.
 

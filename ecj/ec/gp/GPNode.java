@@ -992,7 +992,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
        Note that this isn't particularly efficient and should only be used to generate
        occasional trees for display, not for storing individuals or sending them over networks.
     */
-    StringBuffer makeLispTree(StringBuffer buf)
+    public StringBuilder makeLispTree(StringBuilder buf)
         {
         if (children.length==0)
             return buf.append(toStringForHumans());
@@ -1000,12 +1000,10 @@ public abstract class GPNode implements GPNodeParent, Prototype
             {
             buf.append("(");
             buf.append(toStringForHumans());
-            // String s = "(" + toStringForHumans();
             for(int x=0;x<children.length;x++)
                 {
                 buf.append(" ");
                 children[x].makeLispTree(buf);
-                //s = s + " " + children[x].makeLispTree();
                 }
             buf.append(")");
             return buf;
@@ -1015,16 +1013,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
 
     public String makeLispTree()
         {
-        //if (children.length==0)
-        //    return toStringForHumans();
-        //else
-        //    {
-        //    String s = "(" + toStringForHumans();
-        //    for(int x=0;x<children.length;x++)
-        //        s = s + " " + children[x].makeLispTree();
-        //    return s + ")";
-        //    }
-        return makeLispTree(new StringBuffer()).toString();
+        return makeLispTree(new StringBuilder()).toString();
         }
 
 
@@ -1263,7 +1252,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
         // if I've found a ')', complain
         if (dret.data.charAt(dret.pos) == ')')
             {
-            StringBuffer sb = new StringBuffer(dret.data);
+            StringBuilder sb = new StringBuilder(dret.data);
             sb.setCharAt(dret.pos,REPLACEMENT_CHAR);
             dret.data = sb.toString();
             state.output.fatal("Reading line " + linenumber + ": " + "Premature ')' which I have replaced with a '" + REPLACEMENT_CHAR + "', in tree:\n" + dret.data);
@@ -1287,7 +1276,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
         // check again if I found a ')'
         if (dret.data.charAt(dret.pos) == ')')
             {
-            StringBuffer sb = new StringBuffer(dret.data);
+            StringBuilder sb = new StringBuilder(dret.data);
             sb.setCharAt(dret.pos,REPLACEMENT_CHAR);
             dret.data = sb.toString();
             state.output.fatal("Reading line " + linenumber + ": " + "Premature ')' which I have replaced with a '" + REPLACEMENT_CHAR + "', in tree:\n" + dret.data);
@@ -1309,7 +1298,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
             {
             if (dret.pos!=0) 
                 {
-                StringBuffer sb = new StringBuffer(dret.data);
+                StringBuilder sb = new StringBuilder(dret.data);
                 sb.setCharAt(dret.pos,REPLACEMENT_CHAR);
                 dret.data = sb.toString();
                 }
@@ -1340,7 +1329,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
                 {
                 if (dret.pos!=0) 
                     {
-                    StringBuffer sb = new StringBuffer(dret.data);
+                    StringBuilder sb = new StringBuilder(dret.data);
                     sb.setCharAt(dret.pos,REPLACEMENT_CHAR);
                     dret.data = sb.toString();
                     }

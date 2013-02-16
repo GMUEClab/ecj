@@ -10,7 +10,7 @@ eval.problem = ec.app.push.Regression
 eval.problem.max-steps = 1000
 
 
-# The .in.rator set"
+# The "instruction set"
 
 push.in.size = 8
 push.in.0 = float.*
@@ -23,7 +23,7 @@ push.in.6 = float.pop
 push.in.7 = float.erc
 
 
-# For grins,.in.ionally we could do:
+# For grins, optionally we could do:
 # push.in.4 = float.print
 # push.in.4.func = ec.app.push.Print
 # push.in.5 = float.atan
