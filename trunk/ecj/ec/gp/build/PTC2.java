@@ -62,7 +62,7 @@ import ec.util.*;
  </table>
 
  <p><b>Default Base</b><br>
- gp.breed.ptc2
+ gp.build.ptc2
 
  * @author Sean Luke
  * @version 1.0 
@@ -180,8 +180,7 @@ public class PTC2 extends GPNodeBuilder
 
         // pick a size from the distribution
         if (requestedSize==NOSIZEGIVEN)
-            requestedSize = 
-                pickSize(state,thread);
+            requestedSize = pickSize(state,thread);
 
         GPNode root;
 

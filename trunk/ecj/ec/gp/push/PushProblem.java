@@ -47,7 +47,10 @@ public abstract class PushProblem extends GPProblem
         else buffer.delete(0, buffer.length());  // StringBuffer stupidly doesn't have a clear() method
         try
             {
-            return new Program("(" + ind.trees[0].child.makeLispTree(buffer) + ")");
+            String prog = ind.trees[0].child.makeLispTree(buffer).toString();
+            if (!prog.startsWith("("))
+            	prog = "(" + prog + ")";
+            return new Program(prog);
             }
         catch (Exception e)
             {
@@ -72,7 +75,6 @@ public abstract class PushProblem extends GPProblem
         for(int i = 0; i < terminals.length; i++)
             if (terminals[i] instanceof Terminal)  // maybe has some instructions?
             	{
-            	System.err.println("ho");
             	// This code is here rather than (more appropriately) in Terminal so that we can
             	// free up Terminal from being reliant on the underlying library.
             	Terminal op = (Terminal)(terminals[i]);
