@@ -7,7 +7,7 @@
 # To build the documentation:		make docs
 # To auto-indent using Emacs:		make indent
 # To build everything + GUI:		make gui 
-# To build everything + PUSH:		make push
+# To build everything + Push:		make push
 #	(requires JFreeChart: www.jfree.org/jfreechart/)
 #	(requires iText: www.lowagie.com/iText/)
 # [also, used here at GMU, you can ignore it...]
@@ -104,7 +104,7 @@ gui:
 	${JAVAC} ${DIRS} ec/display/chart/*.java ec/app/gui/*.java ec/display/*.java ec/display/portrayal/*.java
 
 push:
-	@ echo This builds the base code and the PUSH code
+	@ echo This builds the base code and the Push code
 	@ echo -- requires Psh:  https://github.com/jonklein/Psh
 	@ echo
 	${JAVAC} ${DIRS} ec/gp/push/*.java ec/app/push/*.java
@@ -162,6 +162,6 @@ help:
 	@ echo "make indent   Uses emacs to re-indent ECJ java files as you'd prefer"
 	@ echo "make gui      Compiles the GUI and charting (requires JFreeChart and iText,"
 	@ echo "                see www.jfree.org/jfreechart/ and www.lowagie.com/iText/"
-	@ echo "make push     Compiles ECJ, including the PUSH code (requires Psh,"
+	@ echo "make push     Compiles ECJ, including the Push code (requires Psh,"
 	@ echo "                see https://github.com/jonklein/Psh"
 
