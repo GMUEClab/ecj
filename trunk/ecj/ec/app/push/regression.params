@@ -17,15 +17,15 @@ push.in.0 = float.*
 push.in.1 = float.+
 push.in.2 = float.%
 push.in.3 = float.-
-#push.in.4 = float.dup
+push.in.4 = float.dup
 push.in.5 = float.swap
 push.in.6 = float.pop
 push.in.7 = float.erc
 
 
 # For grins,.in.ionally we could do:
- push.in.4 = float.print
- push.in.4.func = ec.app.push.Print
+# push.in.4 = float.print
+# push.in.4.func = ec.app.push.Print
 # push.in.5 = float.atan
 # push.in.5.func = ec.app.push.Atan
 
