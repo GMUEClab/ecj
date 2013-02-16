@@ -137,7 +137,7 @@ public class Regression extends PushProblem implements SimpleProblemForm
                 // my knowledge.
 
                 final double HIT_LEVEL = 0.01;
-                final double PROBABLY_ZERO = 1.11E-15;
+                final double PROBABLY_ZERO = 1E-6;  // The Psh interpreter seems less accurate, not sure why
                 final double BIG_NUMBER = 1.0e15;  // the same as lilgp uses
 
                 result = Math.abs(outputs[y] - topOfFloatStack(interpreter));  // will be 0 if float stack is empty
@@ -157,7 +157,8 @@ public class Regression extends PushProblem implements SimpleProblemForm
                     
                 if (result <= HIT_LEVEL) hits++;  // whatever!
 
-                sum += result;              }
+                sum += result;              
+                }
                 
             // the fitness better be KozaFitness!
             KozaFitness f = ((KozaFitness)ind.fitness);
