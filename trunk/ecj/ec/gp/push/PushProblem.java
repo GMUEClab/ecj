@@ -1,12 +1,3 @@
-/**
-   All a Push Problem does is create an interpreter, write out the
-   tree to a string and build a Push Program out of it, load the
-   interpreter with all your custom instructions, and run the program
-   on the interpreter.  This is all done in the execute() procedure
-   which you call from your evaluate() procedure.  
-   Then your job is to inspect the results of the interpreter's stack etc.
-*/
-
 package ec.gp.push;
 
 import ec.*;
@@ -17,20 +8,52 @@ import ec.coevolve.*;
 import ec.util.*;
 import org.spiderland.Psh.*;
 
+
+/* 
+ * PushProblem.java
+ * 
+ * Created: Fri Feb 15 23:00:04 EST 2013
+ * By: Sean Luke
+ */
+
+/**
+   A PushProblem contains useful methods to help you create an
+   interpreter, write out the ECJ GP tree to a string, build a Push Program
+   around this string, load the interpreter with all your custom instructions, 
+   and run the Push Program on the interpreter.  
+     
+   <p>Commonly you'd also set up the interpreter's data stacks with some initial
+   data, then after running the program you might inspect the stacks to determine
+   the return value. PushProblem also contains some helpful methods to make it easy
+   for you to set up and modify these stacks.
+*/
+
+
 public abstract class PushProblem extends GPProblem
     {
+    StringBuilder buffer;
+    
+    public Object clone()
+    	{
+    	PushProblem other = (PushProblem)(super.clone());
+    	other.buffer = null;  // do not share
+    	return other;
+    	}
+    	
     /** Produces a Push Program from the provided GP Individual's tree. */
     public Program getProgram(EvolutionState state, GPIndividual ind)
         {
+        if (buffer == null) buffer = new StringBuilder();
+        else buffer.delete(0, buffer.length());  // StringBuffer stupidly doesn't have a clear() method
         try
             {
-            return new Program("(" + ind.trees[0].child.makeLispTree() + ")");
+            return new Program("(" + ind.trees[0].child.makeLispTree(buffer) + ")");
             }
         catch (Exception e)
             {
             // do nothing for the moment
             state.output.fatal("Push exception encountered while parsing program from GP Tree:\n" +
-                ind.trees[0].child.makeLispTree() + "\n" + e);
+                ind.trees[0].child.makeLispTree(buffer) + "\n" + e);
             }
         return null;  // unreachable
         }
@@ -47,16 +70,20 @@ public abstract class PushProblem extends GPProblem
         
         // dump the additional instructions into the interpreter
         for(int i = 0; i < terminals.length; i++)
-            if (terminals[i] instanceof Operator)  // maybe has some instructions?
+            if (terminals[i] instanceof Terminal)  // maybe has some instructions?
             	{
-            	// This code is here rather than (more appropriately) in Operator so that we can
-            	// free up Operator from being reliant on the underlying library.
-            	Operator op = (Operator)(terminals[i]);
-            	PushInstruction[] instructions =  op.instructions;
+            	System.err.println("ho");
+            	// This code is here rather than (more appropriately) in Terminal so that we can
+            	// free up Terminal from being reliant on the underlying library.
+            	Terminal op = (Terminal)(terminals[i]);
+            	PushInstruction[] customInstructions =  op.customInstructions;
             	int[] indices = op.indices;
-            	String[] ops = op.ops;
-        		for(int j = 0; j < instructions.length; j++)
-            		interpreter.AddInstruction(ops[indices[j]], (PushInstruction)(instructions[j].clone()));   // or should this be DefineInstruction?
+            	String[] instructions = op.instructions;
+        		for(int j = 0; j < customInstructions.length; j++)
+        			{
+        			System.err.println(instructions[indices[j]]);
+            		interpreter.AddInstruction(instructions[indices[j]], (PushInstruction)(customInstructions[j].clone()));   // or should this be DefineInstruction?
+            		}
                 }
 
         // all done
