@@ -1,5 +1,5 @@
-This directory contains an experimental version of the PUSH/PUSHGP
-facility running on top of a java-based PUSH interpreter called
+This directory contains an experimental version of the Push/PushGP
+facility running on top of a java-based Push interpreter called
 "Psh".  To use it you will need to install the psh.jar file which
 comes with ECJ's library jar files (see the ECJ website).  Do not
 use the version on the Psh website, as it has the wrong kind of
