@@ -121,7 +121,7 @@ public class Code
         {
         boolean inUnicode = false;
         int l = s.length();
-        StringBuffer sb = new StringBuffer(l);
+        StringBuilder sb = new StringBuilder(l);
         sb.append("\"");
         for(int x=0;x<l;x++)
             {
@@ -459,7 +459,7 @@ public class Code
 
             case '"':  // string
             {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             boolean inUnicode = false;
             
             x++;

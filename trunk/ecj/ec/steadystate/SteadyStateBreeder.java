@@ -50,6 +50,8 @@ import java.util.*;
 
 public class SteadyStateBreeder extends SimpleBreeder
     {
+    private static final long serialVersionUID = 1;
+
     /** If st.firstTimeAround, this acts exactly like SimpleBreeder.
         Else, it only breeds one new individual per subpopulation, to 
         place in position 0 of the subpopulation.  

@@ -2054,3 +2054,10 @@ Version		Change Log
 	Documenation fixes to PTC2 and Uniform
 	Added the push facility and the ec/app/push example app
 	Modified the Makefile to add a "make push" option
+	Updated MersenneTwisterFast and MersenneTwister to version 21
+	Added serialVersionUID to various classes
+	Increased minimum java version to 1.5
+	Added null checking to multiple equals() methods
+	Changed usage of StringBuffer to StringBuilder
+	Speeded up genotypeToString in various VectorIndividuals
+	Fixed fall-through on new BitVectorIndividual mutation mechanism

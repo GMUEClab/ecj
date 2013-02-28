@@ -44,6 +44,8 @@ import ec.util.*;
  
 public class GeneVectorSpecies extends VectorSpecies
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_GENE = "gene";
     public Gene genePrototype;
 

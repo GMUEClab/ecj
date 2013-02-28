@@ -4,7 +4,7 @@ import java.io.*;
 
 /** 
  * <h3>MersenneTwister and MersenneTwisterFast</h3>
- * <p><b>Version 20</b>, based on version MT199937(99/10/29)
+ * <p><b>Version 21</b>, based on version MT199937(99/10/29)
  * of the Mersenne Twister algorithm found at 
  * <a href="http://www.math.keio.ac.jp/matumoto/emt.html">
  * The Mersenne Twister Home Page</a>, with the initialization
@@ -41,6 +41,12 @@ import java.io.*;
  * Vol. 8, No. 1, January 1998, pp 3--30.
  *
  * <h3>About this Version</h3>
+ *
+ * <p><b>Changes since V20:</b> Added clearGuassian().  Modified stateEquals()
+ * to be synchronizd on both objects for MersenneTwister, and changed its 
+ * documentation.  Added synchronization to both setSeed() methods, to 
+ * writeState(), and to readState() in MersenneTwister.  Removed synchronization
+ * from readObject() in MersenneTwister. 
  *
  * <p><b>Changes since V19:</b> nextFloat(boolean, boolean) now returns float,
  * not double.
@@ -165,7 +171,7 @@ import java.io.*;
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  *
- @version 20
+ @version 21
 */
 
 public strictfp class MersenneTwister extends java.util.Random implements Serializable, Cloneable
@@ -211,22 +217,30 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
         catch (CloneNotSupportedException e) { throw new InternalError(); } // should never happen
         }
 
-    public boolean stateEquals(Object o)
+	/** Returns true if the MersenneTwister's current internal state is equal to another MersenneTwister. 
+		This is roughly the same as equals(other), except that it compares based on value but does not
+		guarantee the contract of immutability (obviously random number generators are immutable).
+		Note that this does NOT check to see if the internal gaussian storage is the same
+		for both.  You can guarantee that the internal gaussian storage is the same (and so the
+		nextGaussian() methods will return the same values) by calling clearGaussian() on both
+		objects. */
+    public synchronized boolean stateEquals(MersenneTwister other)
         {
-        if (o==this) return true;
-        if (o == null || !(o instanceof MersenneTwister))
-            return false;
-        MersenneTwister other = (MersenneTwister) o;
-        if (mti != other.mti) return false;
-        for(int x=0;x<mag01.length;x++)
-            if (mag01[x] != other.mag01[x]) return false;
-        for(int x=0;x<mt.length;x++)
-            if (mt[x] != other.mt[x]) return false;
-        return true;
+        if (other == this) return true;
+        if (other == null)return false;
+        synchronized(other)
+        	{
+			if (mti != other.mti) return false;
+			for(int x=0;x<mag01.length;x++)
+				if (mag01[x] != other.mag01[x]) return false;
+			for(int x=0;x<mt.length;x++)
+				if (mt[x] != other.mt[x]) return false;
+			return true;
+			}
         }
 
     /** Reads the entire state of the MersenneTwister RNG from the stream */
-    public void readState(DataInputStream stream) throws IOException
+    public synchronized void readState(DataInputStream stream) throws IOException
         {
         int len = mt.length;
         for(int x=0;x<len;x++) mt[x] = stream.readInt();
@@ -240,7 +254,7 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
         }
         
     /** Writes the entire state of the MersenneTwister RNG to the stream */
-    public void writeState(DataOutputStream stream) throws IOException
+    public synchronized void writeState(DataOutputStream stream) throws IOException
         {
         int len = mt.length;
         for(int x=0;x<len;x++) stream.writeInt(mt[x]);
@@ -408,10 +422,9 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
         out.defaultWriteObject();
         }
 
-    private synchronized void readObject (ObjectInputStream in) 
+    private void readObject (ObjectInputStream in)   // readObject never needs to be Synchronized
         throws IOException, ClassNotFoundException
         {
-        // just so we're synchronized.
         in.defaultReadObject();
         }    
 
@@ -589,6 +602,12 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
         return (byte)(next(8));
         }
 
+	/** 
+		Clears the internal gaussian variable from the RNG.  You only need to do this
+		in the rare case that you need to guarantee that two RNGs have identical internal
+		state.  Otherwise, disregard this method. See stateEquals(other).
+	*/
+	public synchronized void clearGaussian() { __haveNextNextGaussian = false; }
 
     /** A bug fix for all JDK code including 1.2.  nextGaussian can theoretically
         ask for the log of 0 and divide it by 0! See Java bug 
@@ -646,7 +665,7 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
 
         // SPEED TEST
 
-        final long SEED = 4357;
+        final long SEED = 4357L;
 
         int xx; long ms;
         System.out.println("\nTime to test grabbing 100000000 ints");

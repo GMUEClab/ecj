@@ -28,6 +28,8 @@ import java.util.zip.*;
 
 public class Log implements Serializable
     {
+    private static final long serialVersionUID = 1;
+
     // basic log features
     
     /** Should we write to this log at all? */

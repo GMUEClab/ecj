@@ -47,6 +47,8 @@ import ec.simple.*;
 
 public class Lawnmower extends GPProblem implements SimpleProblemForm
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_X = "x";
     public static final String P_Y = "y";
 

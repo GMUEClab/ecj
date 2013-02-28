@@ -112,6 +112,8 @@ import java.util.regex.*;
  
 public class GESpecies extends IntegerVectorSpecies
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_GESPECIES = "species";
     public static final String P_FILE = "file";
     public static final String P_GPSPECIES = "gp-species";

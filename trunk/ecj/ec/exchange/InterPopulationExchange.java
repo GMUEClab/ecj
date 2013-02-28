@@ -117,6 +117,8 @@ import java.io.*;
 
 public class InterPopulationExchange extends Exchanger
     {
+    private static final long serialVersionUID = 1;
+
     // static inner classes don't need SerialVersionUIDs
     static class IPEInformation implements Serializable
         {

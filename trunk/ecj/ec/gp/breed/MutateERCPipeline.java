@@ -64,6 +64,8 @@ import ec.gp.*;
 
 public class MutateERCPipeline extends GPBreedingPipeline
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_MUTATEERC = "mutate-erc";
     public static final int NUM_SOURCES = 1;
     

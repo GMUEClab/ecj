@@ -83,7 +83,7 @@ public class ParametersPanel
 
                     TreePath path = e.getPath();
                     Object[] oPath = path.getPath();
-                    StringBuffer sBuff = new StringBuffer();
+                    StringBuilder sBuff = new StringBuilder();
                     // Ignore the root node.
                     for (int i = 1; i < oPath.length; ++i)
                         {

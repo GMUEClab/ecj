@@ -60,6 +60,8 @@ import java.util.*;
 
 public class GPFunctionSet implements Clique
     {
+    private static final long serialVersionUID = 1;
+
     public final static String P_NAME = "name";
     public final static String P_FUNC = "func";
     public final static String P_SIZE = "size";

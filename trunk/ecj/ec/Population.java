@@ -61,6 +61,8 @@ import java.io.*;
 
 public class Population implements Group
     {
+    private static final long serialVersionUID = 1;
+
     public Subpopulation[] subpops;
     public static final String P_SIZE = "subpops";
     public static final String P_SUBPOP = "subpop";

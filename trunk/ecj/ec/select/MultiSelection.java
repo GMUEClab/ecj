@@ -52,6 +52,8 @@ import ec.util.*;
 
 public class MultiSelection extends SelectionMethod
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_NUMSELECTS = "num-selects";
     public static final String P_SELECT = "select";
     public static final String P_MULTISELECT = "multiselect";

@@ -89,6 +89,8 @@ import java.io.*;
  */
 public class RuleIndividual extends Individual
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_RULESET = "ruleset";
     public static final String P_NUMRULESETS = "num-rulesets";
     
@@ -129,6 +131,7 @@ public class RuleIndividual extends Individual
         
     public boolean equals(Object ind)
         {
+        if (ind == null) return false;
         // My loose definition: ind must be a 
         if (!getClass().equals(ind.getClass()))  // not the same class, I'm conservative that way
             return false;

@@ -10,6 +10,7 @@ package ec.vector;
 import ec.*;
 import ec.util.*;
 import java.io.*;
+import java.util.*;
 
 /*
  * BitVectorIndividual.java
@@ -188,8 +189,10 @@ public class BitVectorIndividual extends VectorIndividual
                         {
                         case BitVectorSpecies.C_FLIP_MUTATION:
                             genome[x] = !genome[x];
+                            break;
                         case BitVectorSpecies.C_RESET_MUTATION:
                             genome[x] = state.random[thread].nextBoolean();
+                            break;
                         }
                     if (genome[x] != old) break;
                     else genome[x] = old;  // try again
@@ -210,27 +213,27 @@ public class BitVectorIndividual extends VectorIndividual
         // stolen from GPIndividual.  It's a decent algorithm.
         int hash = this.getClass().hashCode();
 
-        hash = ( hash << 1 | hash >>> 31 ) ^ genome.hashCode();
+        hash = ( hash << 1 | hash >>> 31 ) ^ Arrays.hashCode(genome);
 
         return hash;
         }
 
     public String genotypeToStringForHumans()
         {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for( int i = 0 ; i < genome.length ; i++ )
             {
             if( genome[i] )
-                s = s + " 1";
+                s.append("1");
             else
-                s = s + " 0";
+                s.append("0");
             }
-        return s;
+        return s.toString();
         }
         
     public String genotypeToString()
         {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append( Code.encode( genome.length ) );
         for( int i = 0 ; i < genome.length ; i++ )
             s.append( Code.encode( genome[i] ) );
@@ -260,6 +263,7 @@ public class BitVectorIndividual extends VectorIndividual
 
     public boolean equals(Object ind)
         {
+        if (ind==null) return false;
         if (!(this.getClass().equals(ind.getClass()))) return false; // SimpleRuleIndividuals are special.
         BitVectorIndividual i = (BitVectorIndividual)ind;
         if( genome.length != i.genome.length )
