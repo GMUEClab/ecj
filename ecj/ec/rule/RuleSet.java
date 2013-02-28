@@ -493,6 +493,7 @@ public class RuleSet implements Prototype
 
     public boolean equals( final Object _other )
         {
+        if (_other == null) return false;
         if (!getClass().equals(_other.getClass()))  // not the same class, I'm conservative that way
             return false;
             

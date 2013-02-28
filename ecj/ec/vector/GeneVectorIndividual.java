@@ -247,7 +247,7 @@ public class GeneVectorIndividual extends VectorIndividual
 
     public String genotypeToStringForHumans()
         {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         for( int i = 0 ; i < genome.length ; i++ )
             { s.append(" "); s.append(genome[i].printGeneToStringForHumans()); }
         return s.toString();
@@ -255,7 +255,7 @@ public class GeneVectorIndividual extends VectorIndividual
         
     public String genotypeToString()
         {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         for( int i = 0 ; i < genome.length ; i++ )
             { s.append(" "); s.append(genome[i].printGeneToString()); }
         return s.toString();
@@ -284,6 +284,7 @@ public class GeneVectorIndividual extends VectorIndividual
 
     public boolean equals(Object ind)
         {
+        if (ind == null) return false;
         if (!(this.getClass().equals(ind.getClass()))) return false;
         GeneVectorIndividual i = (GeneVectorIndividual)ind;
         if( genome.length != i.genome.length )

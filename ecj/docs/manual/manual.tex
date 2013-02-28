@@ -8755,7 +8755,7 @@ Like I said, an uninteresting program.
 
 Note that unlike in Lisp or GP tradition, the first element in each list in Psh isn't special: it doesn't define a function.  Indeed it could just be another list.    All lists do is set apart blocks of code, which might be useful in manipulation by special code-modifying instructions.  
 
-Because Push lists don't start with a function symbol, their parse trees are different from GP program tree, and so while ECJ uses the GPNode and GPTree classes to encode Push trees, it does so in an unusual way.  All the symbols in the Push program are leaf nodes in the tree.  Dummy nonleaf nodes define the list and sublist structure of the tree.  Furthermote, nonleaf nodes can have {\it arbitrary arity}, which is something not normally done in ECJ's GP trees.  For example, the previous Push program looks like this in tree form:
+Because Push lists don't start with a function symbol, their parse trees are different from GP program trees, and so while ECJ uses the GPNode and GPTree classes to encode Push trees, it does so in an unusual way.  All the symbols in the Push program are leaf nodes in the tree.  Dummy nonleaf nodes define the list and sublist structure of the tree.  Furthermote, nonleaf nodes can have {\it arbitrary arity}, which is something not normally done in ECJ's GP trees.  For example, the previous Push program looks like this in tree form:
 
 \vspace{1em}
 {
@@ -8764,7 +8764,7 @@ Because Push lists don't start with a function symbol, their parse trees are dif
 
 \vspace{1em}
 
-Thus ECJ creates Push programs using its GPTree facility with only two kinds of nodes: {\it dummy nonterminals} (the class \class{ec.gp.push.Nonterminal}) and {\it instructions} (the class \class{ec.gp.push.Terminal}), which is a special ECJ ERC that handles leaf nodes in the tree.  The dummy nonterminals are shown in the figure above with the symbol~\(\Box\).
+Thus ECJ creates Push programs using its GPTree facility with only two kinds of nodes: {\it dummy nonterminals} (the class \class{ec.gp.push.Nonterminal}) and {\it instructions} (the class \class{ec.gp.push.Terminal}, which is a special ECJ ERC that handles leaf nodes in the tree).  The dummy nonterminals are shown in the figure above with the symbol~\(\Box\).
 
 
 \paragraph{Evaluation} Push trees are evaluated by submitting them to an interpreter, in this case the Psh interpreter.  But there's a problem.  Psh, like every other Push interpreter out there, has its own notions of the objects used to construct a Push tree.  It's obviously not compatible with ECJ's GPNode, GPTree, and GPIndividual objects.  As a result, ECJ evaluates its Push trees by first writing them out to strings in Lisp form.  It then sets up an interpreter, gives it the string program, and lets it parse the program into its own internal structure and evaluate it.  This is circuitous but doesn't really slow things down very much as it turns out.
@@ -10205,7 +10205,7 @@ It's up to you to store the trial results and eventually form them into final Fi
 
 \begin{methods}{ec.coevolve.GroupedProblemForm}
 \mthd{public abstract void preprocessPopulation(EvolutionState {\it state}, int {\it thread}, boolean[] {\it prepareForAssessment,}} \hsp{\fill}{\sf boolean {\it countVictoriesOnly})}\\
-Called prior evaluation of a Population, mostly to clear the trials of Individuals.  Only clear the trials for Individuals in Subpopulations for which {\it prepareForAssessment} is true.  Note that although this method is not static, you should not assume that this method will be called on the same Problem as is used later for \method{evaluate(...)}.  Thus don't use this method to set any instance variables in the Problem for later use.   If {\it countVictoriesOnly} is true, the method being used is SingleEliminationTournament.  Commonly you'll use this method to create a brand-new trials ArrayList for every Fitness of every Individual in every Subpopulation.
+Called prior to the evaluation of a Population, mostly to clear the trials of Individuals.  Only clear the trials for Individuals in Subpopulations for which {\it prepareForAssessment} is true.  Note that although this method is not static, you should not assume that this method will be called on the same Problem as is used later for \method{evaluate(...)}.  Thus don't use this method to set any instance variables in the Problem for later use.   If {\it countVictoriesOnly} is true, the method being used is SingleEliminationTournament.  Commonly you'll use this method to create a brand-new trials ArrayList for every Fitness of every Individual in every Subpopulation.
 \mthd{void evaluate(EvolutionState {\it state},
         Individual[] {\it individuals}, 
         boolean[] {\it updateFitness}, boolean {\it countVictoriesOnly},\hspace{-2em}}
@@ -10577,7 +10577,7 @@ Here are the relevant methods of interest:
 
 \begin{methods}{ec.Individual}
 \mthd{ public void merge({\it EvolutionState} state, {\it Individual} other)}
-Merges the other Individual into the original Individual, including Fitnesses.  After the merge, (1) the Individual should be a copy of \variable{other} (2) the Fitness's value should be a copy of \variable{other} (3) the Fitness's trials should be a merger of the original trials and those of \variable{other} (4) the higher-quality context of the two Individuals should be retained.  By default this method does this by calling \variable{other.fitness.merge(fitness)} (note the backwards merge), then copying back the entirety of \variable{other} into the original Individual\footnote{How is this magic copying done?  By use of a \class{ec.util.DataPipe}: we first call 
+Merges the other Individual into the original Individual, including Fitnesses.  After the merge, (1) the Individual should be a copy of \variable{other} (2) the Fitness's value should be a copy of \variable{other} (3) the Fitness's trials should be a merger of the original trials and those of \variable{other} (4) the higher-quality context of the two Individuals should be retained.  By default this method does this by calling \variable{other.fitness.merge(fitness)} (note the backwards merge), then copying back the entirety of \variable{other} into the original Individual.\footnote{How is this magic copying done?  By use of a \class{ec.util.DataPipe}: we first call 
 \variable{other.writeIndividual(...)} into the pipe, then call \variable{readIndividual(...)} from the pipe.  It's a hack but it works, and avoids the need for a custom version of \method{Individual.merge} for every possible genotype.}  You'll rarely need to override this method.
 \end{methods}
 

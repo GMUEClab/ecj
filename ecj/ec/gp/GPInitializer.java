@@ -48,6 +48,8 @@ import ec.EvolutionState;
 
 public class GPInitializer extends SimpleInitializer 
     {
+    private static final long serialVersionUID = 1;
+
     // used just here, so far as I know :-)
     public static final int SIZE_OF_BYTE = 256;
     public final static String P_TYPE = "type";

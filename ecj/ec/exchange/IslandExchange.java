@@ -258,6 +258,7 @@ import ec.util.*;
 
 public class IslandExchange extends Exchanger
     {
+    private static final long serialVersionUID = 1;
 
     //// Client information
 

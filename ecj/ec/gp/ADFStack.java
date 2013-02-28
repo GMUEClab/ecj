@@ -74,6 +74,8 @@ import ec.util.*;
 
 public class ADFStack implements Prototype 
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_ADFSTACK = "adf-stack";
     public static final String P_ADF = "adf";
     public static final String P_CONTEXT = "context";

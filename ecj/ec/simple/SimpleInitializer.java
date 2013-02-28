@@ -29,6 +29,8 @@ import ec.Population;
 
 public class SimpleInitializer extends Initializer
     {
+    private static final long serialVersionUID = 1;
+
     public void setup(final EvolutionState state, final Parameter base)
         { 
         }

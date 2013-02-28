@@ -52,6 +52,8 @@ import java.util.*;
  */
 public class Benchmarks extends GPProblem implements SimpleProblemForm
     {
+    private static final long serialVersionUID = 1;
+
     //////////////////////////// problem tags
         
     // From GP-1 and GP-2

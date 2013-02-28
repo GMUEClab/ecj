@@ -88,6 +88,8 @@ import java.io.*;
 
 public class GPIndividual extends Individual
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_NUMTREES = "numtrees";
     public static final String P_TREE = "tree";
     
@@ -100,6 +102,7 @@ public class GPIndividual extends Individual
 
     public boolean equals(Object ind)
         {
+        if (ind == null) return false;
         if (!(this.getClass().equals(ind.getClass()))) return false;  // GPIndividuals are special.
         GPIndividual i = (GPIndividual)ind;
         if (trees.length != i.trees.length) return false;

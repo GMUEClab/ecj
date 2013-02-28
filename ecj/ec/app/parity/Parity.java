@@ -53,6 +53,8 @@ import ec.simple.*;
 
 public class Parity extends GPProblem implements SimpleProblemForm
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_NUMBITS = "bits";
     public static final String P_EVEN = "even";
 

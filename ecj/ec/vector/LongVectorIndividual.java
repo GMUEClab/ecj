@@ -295,28 +295,27 @@ public class LongVectorIndividual extends VectorIndividual
                             genome[x] = randomValueFromClosedInterval((long)s.minGene(x), (long)s.maxGene(x), state.random[thread]);
                             break;
                         case IntegerVectorSpecies.C_RANDOM_WALK_MUTATION:
-                        {
-                        long min = (long)s.minGene(x);
-                        long max = (long)s.maxGene(x);
-                        if (!s.mutationIsBounded(x))
-                            {
-                            // okay, technically these are still bounds, but we can't go beyond this without weird things happening
-                            max = Long.MAX_VALUE;
-                            min = Long.MIN_VALUE;
-                            }
-                        do
-                            {
-                            long n = (state.random[thread].nextBoolean() ? 1L : -1L);
-                            long g = genome[x];
-                            if ((n == 1L && g < max) ||
-                                (n == -1L && g > min))
-                                genome[x] = g + n;
-                            else if ((n == -1L && g < max) ||
-                                (n == 1L && g > min))
-                                genome[x] = g - n;     
-                            }
-                        while (state.random[thread].nextBoolean(s.randomWalkProbability(x)));
-                        }
+							long min = (long)s.minGene(x);
+							long max = (long)s.maxGene(x);
+							if (!s.mutationIsBounded(x))
+								{
+								// okay, technically these are still bounds, but we can't go beyond this without weird things happening
+								max = Long.MAX_VALUE;
+								min = Long.MIN_VALUE;
+								}
+							do
+								{
+								long n = (state.random[thread].nextBoolean() ? 1L : -1L);
+								long g = genome[x];
+								if ((n == 1L && g < max) ||
+									(n == -1L && g > min))
+									genome[x] = g + n;
+								else if ((n == -1L && g < max) ||
+									(n == 1L && g > min))
+									genome[x] = g - n;     
+								}
+							while (state.random[thread].nextBoolean(s.randomWalkProbability(x)));
+							break;
                         }
                     if (genome[x] != old) break;
                     else genome[x] = old;  // try again
@@ -347,15 +346,15 @@ public class LongVectorIndividual extends VectorIndividual
 
     public String genotypeToStringForHumans()
         {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for( int i = 0 ; i < genome.length ; i++ )
-            s = s + " " + genome[i];
-        return s;
+            { s.append(" "); s.append(genome[i]); }
+        return s.toString();
         }
         
     public String genotypeToString()
         {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append( Code.encode( genome.length ) );
         for( int i = 0 ; i < genome.length ; i++ )
             s.append( Code.encode( genome[i] ) );
@@ -385,6 +384,7 @@ public class LongVectorIndividual extends VectorIndividual
 
     public boolean equals(Object ind)
         {
+        if (ind == null) return false;
         if (!(this.getClass().equals(ind.getClass()))) return false; // SimpleRuleIndividuals are special.
         LongVectorIndividual i = (LongVectorIndividual)ind;
         if( genome.length != i.genome.length )

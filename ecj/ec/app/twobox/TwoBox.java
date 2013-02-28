@@ -48,6 +48,8 @@ import ec.simple.*;
 
 public class TwoBox extends GPProblem implements SimpleProblemForm
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_SIZE = "size";
     public static final String P_RANGE= "range";
 

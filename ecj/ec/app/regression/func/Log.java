@@ -25,6 +25,8 @@ import ec.util.*;
 
 public class Log extends GPNode
     {
+    private static final long serialVersionUID = 1;
+
     public String toString() { return "rlog"; }
 
 /*

@@ -44,6 +44,8 @@ import ec.simple.*;
 
 public class Edge extends GPProblem implements SimpleProblemForm
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_GENERALIZE = "generalize";
     public static final String P_ALLPOS = "allpos";
     public static final String P_ALLNEG = "allneg";
@@ -240,10 +242,10 @@ public class Edge extends GPProblem implements SimpleProblemForm
 
     public void printBits(final EvolutionState state, final boolean[][] bits)
         {
-        StringBuffer s;
+        StringBuilder s;
         for(int x=0;x<bits.length;x++)
             {
-            s = new StringBuffer();
+            s = new StringBuilder();
             for(int y=0;y<bits[x].length;y++)
                 if (bits[x][y]) s.append('1');
                 else s.append('0');

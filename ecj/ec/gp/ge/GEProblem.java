@@ -59,6 +59,8 @@ import ec.util.*;
 
 public class GEProblem extends Problem implements SimpleProblemForm, GroupedProblemForm
     {
+    private static final long serialVersionUID = 1;
+
     public final static String P_PROBLEM = "problem";
     public GPProblem problem;
         

@@ -49,6 +49,8 @@ import java.util.*;
 
 public class Regression extends GPProblem implements SimpleProblemForm
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_SIZE = "size";
     public static final String P_FILE = "file";
     public static final String P_USE_FUNCTION = "use-function";

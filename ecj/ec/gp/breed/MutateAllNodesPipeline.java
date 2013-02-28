@@ -61,6 +61,8 @@ import ec.gp.*;
 
 public class MutateAllNodesPipeline extends GPBreedingPipeline
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_MUTATEALLNODES = "mutate-all-nodes";
     public static final int NUM_SOURCES = 1;
 

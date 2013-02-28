@@ -600,8 +600,7 @@ public class DoubleVectorIndividual extends VectorIndividual
         for (int x = 0; x < genome.length; x++)
             {
             long l = Double.doubleToLongBits(genome[x]);
-            hash = (hash << 1 | hash >>> 31) ^ (int) ((l >>> 16) & 0xFFFFFFF)
-                ^ (int) (l & 0xFFFF);
+            hash = (hash << 1 | hash >>> 31) ^ (int) ((l >>> 16) & 0xFFFFFFF) ^ (int) (l & 0xFFFF);
             }
 
         return hash;
@@ -609,15 +608,15 @@ public class DoubleVectorIndividual extends VectorIndividual
 
     public String genotypeToStringForHumans()
         {
-        String s = "";
-        for (int i = 0; i < genome.length; i++)
-            s = s + " " + genome[i];
-        return s;
+        StringBuilder s = new StringBuilder();
+        for( int i = 0 ; i < genome.length ; i++ )
+            { s.append(" "); s.append(genome[i]); }
+        return s.toString();
         }
 
     public String genotypeToString()
         {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append(Code.encode(genome.length));
         for (int i = 0; i < genome.length; i++)
             s.append(Code.encode(genome[i]));
@@ -647,6 +646,7 @@ public class DoubleVectorIndividual extends VectorIndividual
 
     public boolean equals(Object ind)
         {
+        if (ind == null) return false;
         if (!(this.getClass().equals(ind.getClass())))
             return false; // SimpleRuleIndividuals are special.
         DoubleVectorIndividual i = (DoubleVectorIndividual) ind;

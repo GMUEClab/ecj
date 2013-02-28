@@ -86,6 +86,8 @@ import java.util.*;
 
 public class SizeFairCrossoverPipeline extends GPBreedingPipeline 
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_NUM_TRIES = "tries";
     public static final String P_MAXDEPTH = "maxdepth";
     public static final String P_SIZEFAIR = "size-fair";

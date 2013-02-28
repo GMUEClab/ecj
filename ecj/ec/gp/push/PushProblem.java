@@ -44,7 +44,7 @@ public abstract class PushProblem extends GPProblem
     public Program getProgram(EvolutionState state, GPIndividual ind)
         {
         if (buffer == null) buffer = new StringBuilder();
-        else buffer.delete(0, buffer.length());  // StringBuffer stupidly doesn't have a clear() method
+        else buffer.delete(0, buffer.length());  // StringBuilder stupidly doesn't have a clear() method
         try
             {
             String prog = ind.trees[0].child.makeLispTree(buffer).toString();

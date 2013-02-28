@@ -16,7 +16,7 @@
 
 JAVAC = javac ${JAVACFLAGS}
 
-JAVACFLAGS = -target 1.4 -source 1.4 ${FLAGS}
+JAVACFLAGS = -target 1.5 -source 1.5 ${FLAGS}
 FLAGS = -g -Xlint:deprecation
 
 DIRS = \

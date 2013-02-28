@@ -44,6 +44,8 @@ import ec.simple.*;
 
 public class Multiplexer extends GPProblem implements SimpleProblemForm
     {
+    private static final long serialVersionUID = 1;
+
     public static final int NUMINPUTS = 20;
     public static final String P_NUMBITS = "bits";
 

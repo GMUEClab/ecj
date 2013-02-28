@@ -87,6 +87,8 @@ import ec.util.*;
 
 public class MultiPopCoevolutionaryEvaluator extends Evaluator
     {
+    private static final long serialVersionUID = 1;
+
     // the preamble for selecting partners from each subpopulation
     public static final String P_SUBPOP = "subpop";
 

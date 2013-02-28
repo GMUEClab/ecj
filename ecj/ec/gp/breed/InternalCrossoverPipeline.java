@@ -80,6 +80,8 @@ import ec.gp.*;
 
 public class InternalCrossoverPipeline extends GPBreedingPipeline
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_INTERNALCROSSOVER = "internal-xover";
     public static final String P_NUM_TRIES = "tries";
     public static final String P_MAXDEPTH = "maxdepth";

@@ -70,6 +70,8 @@ import ec.util.*;
 
 public class Statistics implements Singleton
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_NUMCHILDREN = "num-children";
     public static final String P_CHILD = "child"; 
     public Statistics[] children;

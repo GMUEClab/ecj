@@ -79,6 +79,8 @@ import java.util.Enumeration;
 
 public class Output implements Serializable
     {
+    private static final long serialVersionUID = 1;
+
     public static class OutputExitException extends RuntimeException 
         {
         public OutputExitException(String message)
@@ -510,7 +512,7 @@ public class Output implements Serializable
         println(s, V_NO_MESSAGES ,ALL_MESSAGE_LOGS, true);
         }
 
-    StringBuffer error = new StringBuffer();
+    StringBuilder error = new StringBuilder();
     // builds up an error message in case the user wants to throw
     // an exception rather than quit
     String a(String str)
@@ -523,7 +525,7 @@ public class Output implements Serializable
     /** Posts a fatal error.  This causes the system to exit. */
     public synchronized void fatal(String s)
         {
-        StringBuffer error = new StringBuffer();
+        StringBuilder error = new StringBuilder();
         println(a("FATAL ERROR:\n"+s), ALL_MESSAGE_LOGS, true);
         exitWithError(this, error.toString(), throwsErrors);
         }

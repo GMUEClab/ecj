@@ -89,6 +89,8 @@ import ec.util.*;
 */
 public class RuleSetConstraints implements Clique
     {
+    private static final long serialVersionUID = 1;
+
     /** The size of a byte */
 //    public static final int SIZE_OF_BYTE = 256;
     public final static String P_NAME = "name";

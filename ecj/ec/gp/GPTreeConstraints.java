@@ -63,6 +63,8 @@ import java.util.Enumeration;
 
 public class GPTreeConstraints implements Clique
     {
+    private static final long serialVersionUID = 1;
+
     public static final int SIZE_OF_BYTE = 256;
     public final static String P_NAME = "name";
     public final static String P_SIZE = "size";

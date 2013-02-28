@@ -78,6 +78,8 @@ import ec.util.*;
 
 public class Subpopulation implements Group
     {
+    private static final long serialVersionUID = 1;
+
     /* A new subpopulation should be loaded from this resource name if it is non-null;
        otherwise they should be created at random.  */
     public boolean loadInds;
