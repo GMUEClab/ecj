@@ -2061,3 +2061,16 @@ Version		Change Log
 	Changed usage of StringBuffer to StringBuilder
 	Speeded up genotypeToString in various VectorIndividuals
 	Fixed fall-through on new BitVectorIndividual mutation mechanism
+	Tweak to all VectorIndividuals, removing useless code that copies the
+		gene value back during mutation.
+	Evolve.primeGenerator pulses one more time (624 * 2 + 1) for good
+		measure.  This will cause results to differ from previous
+		versions.
+	Added ec.eval.MetaProblem
+	Promoted 'evaluations' as a parameter for EvolutionState; now both
+		SimpleEvolutionState and SteadyStateEvolutionState understand it
+	In SteadyStateEvolution, the minimum number of evaluations must be
+		equal to the sum of all individuals in the population (it
+		used to be, incorrectly, just subpopulation 0).
+	Bug fixes to comments of PAGIE1 and to implementation of PAGIE2.
+		Thanks to Tom Helmuth <thelmuth@cs.umass.edu>
