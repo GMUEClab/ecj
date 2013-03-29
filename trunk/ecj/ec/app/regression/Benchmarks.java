@@ -513,11 +513,11 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
             case NGUYEN12:
                 return x*x*x*x - x*x*x + (y*y)/2.0 - y;
             case PAGIE1:
-                // otherwise known as 1 / (1 + Math.pow(x,-4)) + 1 / (1 + Math.pow(y,-1))
+                // otherwise known as 1 / (1 + Math.pow(x, -4)) + 1 / (1 + Math.pow(y, -4))
                 return 1.0 / (1.0 + 1.0 / (x * x * x * x)) + 1.0 / (1.0 + 1.0 / (y * y * y * y)); 
             case PAGIE2:
                 // otherwise known as (1 / (1 + Math.pow(x, -4)) + 1 / (1 + Math.pow(y, -4)) + 1 / (1 + Math.pow(z, -4)));
-                return 1.0 / (1.0 + 10 / ( x * x * x * x)) + 1.0 / (1.0 + 1.0 / (y * y * y * y)) + 1.0 / (1.0 + 1.0 / (z * z * z * z));
+                return 1.0 / (1.0 + 1.0 / ( x * x * x * x)) + 1.0 / (1.0 + 1.0 / (y * y * y * y)) + 1.0 / (1.0 + 1.0 / (z * z * z * z));
             case KORNS1:
                 return 1.57 + (24.3 * xs[3]);
             case KORNS2:
