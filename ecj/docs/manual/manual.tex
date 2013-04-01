@@ -312,7 +312,7 @@ ECJ does not support polymorphic typing out of the box simply because it is diff
 ECJ provides support out-of-the-box for a bunch of algorithm options:
 
 \begin{itemize}
-\item Generational algorithms: \((\mu,\lambda)\) and \((\mu+\lambda)\) Evolution Strategies, the Genetic Algorithm, Genetic Programming variants, Grammatical Evolution, and Differential Evolution
+\item Generational algorithms: \((\mu,\lambda)\) and \((\mu+\lambda)\) Evolution Strategies, the Genetic Algorithm, Genetic Programming variants, Grammatical Evolution, PushGP, and Differential Evolution
 \item Steady-State evolution
 %\item Particle Swarm Optimization
 \item Parsimony pressure algorithms
@@ -327,6 +327,7 @@ ECJ provides support out-of-the-box for a bunch of algorithm options:
 \item Asynchronous Evolution, a version of steady-state evolution with massive parallel fitness evaluation on remote slave machines.
 \item Opportunistic Evolution, where remote slave machines run their own mini-evolutionary processes for a while before sending individuals back to the master process.
 \item Internal synchronous Island Models internally in a single ECJ process.
+\item Meta-Evolution
 \item A large number of selection and breeding operators
 \end{itemize}
 
@@ -339,7 +340,7 @@ ECJ was developed near the introduction of Java and so has a lot of historical i
 \begin{itemize}
 \item No generics at all, few iterators or enumerators, no Java features beyond 1.4 (including annotations), and little use of the Java Collections library.  This is part historical, and part my own dislike of Java's byzantine generics implementation, but it's mostly efficiency.  Generics are very slow when used with basic data types, as they require boxing and unboxing.  The Java Collections library is unusually badly written in many places internally: and anyway, for speed we tend to work directly with arrays.  
 
-\item Hand-rolled socket code.  ECJ's parallel facility doesn't rely on other libraries.
+\item Hand-rolled socket code.  With one exception (optional compression), ECJ's parallel facility doesn't rely on other libraries.
 
 \item ECJ loads nearly every object from its parameter database.  This means that you'll rarely see the \variable{new} keyword in ECJ, nor any constructors.  Instead ECJ's usual ``constructor'' method is a method called \method{setup(...)}, which sets up an object from the database.
 
@@ -964,7 +965,7 @@ For more on debugging ECJ, see Section~\ref{DebuggingAnEvolutionaryProcess}.
 
 \subsection{Building a Parameter Database from Scratch}
 \label{BuildingAParameterDatabaseFromScratch}
-This is starting to get inside-ball, so you may wish to skip it for now.  Normally ParameterDatabase is constructed from the Evolve class on your behalf.  But in some unusual situations you may need to build one yourself.  Most notably, if you're attaching ECJ as a sub-module under some application or toolkit (see Section~\ref{integration}), you may need to make a custom ParameterDatabase with which to run ECJ. 
+This is starting to get inside-baseball, so you may wish to skip it for now.  Normally ParameterDatabase is constructed from the Evolve class on your behalf.  But in some unusual situations you may need to build one yourself.  Most notably, if you're attaching ECJ as a sub-module under some application or toolkit (see Section~\ref{integration}), you may need to make a custom ParameterDatabase with which to run ECJ. 
 
 A typical ParameterDatabase is constructed from a file or a resource relative to a class.  When this is done, what you receive is an empty ParameterDatabase which points to another ParameterDatabase,   The empty ParameterDatabase is free for you to modify.  For example, if you call...
 
@@ -976,6 +977,7 @@ ParameterDatabase db = new ParameterDatabase(file, commandLineArguments);
 
 ... you will get back an empty ParameterDatabase whose parent is a ParameterDatabase holding the commands-line arguments, whose parent is a ParameterDatabase constructed from the file.  That final ParameterDatabase may have further parents as specified in the file itself.
 
+
 Other ParameterDatabase constructors, particularly ones which do not concern themselves with specific files, will not have this feature.
 
 The particular chain, if there is one at all, varies depending on the constructor you call.  The one in the example above is the most common constructor.
@@ -984,9 +986,10 @@ The particular chain, if there is one at all, varies depending on the constructo
 \mthd{public ParameterDatabase()}
 Creates a simple empty parameter database with no parents.  The database hierarchy is simply: \framebox{\strut empty}
 \mthd{public ParameterDatabase(Dictionary map)}
-Creates a parameter database with the given Dictionary. Both the keys and values will be run through \method{toString()} before adding to the database. Keys are parameters. Values are the values of the parameters. If parents are defined in the map's parameters, they will be attempted to be loaded: only parents which are absolute path names are permitted.  Beware that a ParameterDatabase is itself a Dictionary; but if you pass one in here you will only get the lowest-level elements.    The database hierarchy is : \framebox{\strut map}\(\rightarrow\cdots\)
+Creates a parameter database with the given Dictionary. Both the keys and values will be run through \method{toString()} before adding to the database. Keys are parameters. Values are the values of the parameters. If parents are defined in the map's parameters, they will be attempted to be loaded: only parents which are absolute path names are permitted.  Beware that a ParameterDatabase is itself a Dictionary; but if you pass one in here you will only get the lowest-level elements.    The database hierarchy is : \framebox{\strut map}\(\rightarrow\cdots\)\quad Note that unlike other methods, this method does not create an empty base parameter database.  If you want a hierarchy like \framebox{\strut empty}\(\rightarrow\)\framebox{\strut map}\(\rightarrow\cdots\) you can achieve this with {\tt new ParameterDatabase().addParent(new ParameterDatabase(myMap))}
+
 \mthd{public ParameterDatabase(InputStream stream)}
-Creates a parameter database by reading parameters from the provided stream. If parents are defined among the parameters, they will be attempted to be loaded: only parents which are absolute path names are permitted.  Beware that a ParameterDatabase is itself a Dictionary; but if you pass one in here you will only get the lowest-level elements.    The database hierarchy is : \framebox{\strut stream}\(\rightarrow\cdots\)
+Creates a parameter database by reading parameters from the provided stream. If parents are defined among the parameters, they will be attempted to be loaded: only parents which are absolute path names are permitted.  Beware that a ParameterDatabase is itself a Dictionary; but if you pass one in here you will only get the lowest-level elements.    The database hierarchy is : \framebox{\strut stream}\(\rightarrow\cdots\)\quad Note that unlike other methods, this method does not create an empty base parameter database.  If you want a hierarchy like \framebox{\strut empty}\(\rightarrow\)\framebox{\strut stream}\(\rightarrow\cdots\) you can achieve this with {\tt new ParameterDatabase().addParent(new ParameterDatabase(myStream))}
 \mthd{public ParameterDatabase(File file)}
 Creates a new parameter database from the given file (and possibly parent files).  The database hierarchy is: \framebox{\strut empty}\(\rightarrow\)\framebox{\strut file}\(\rightarrow\cdots\)
 \mthd{public ParameterDatabase(File file, String[] args)}
@@ -1943,13 +1946,16 @@ public int breedthreads;\\
 public int evalthreads;
 }
 
-\item A {\bf Population}, which holds the individuals in the evolutionary process; plus the current {\bf generation} (iteration) of the evolutionary process and the total {\bf number of generations} to run (how or whether these last two variables are used depends on the evolutionary process in question):
+\item A {\bf Population}, which holds the individuals in the evolutionary process; plus the current {\bf generation} (iteration) of the evolutionary process and the total {\bf number of generations} to run, or alternatively the total {\bf number of evaluations} to run.  How or whether these last three variables are used depends on the evolutionary process in question.
 
 \java{%is 
 public ec.Population population;\\
 public int generation;\\
-public int numGenerations;
+public int numGenerations = UNDEFINED;\\
+public int numEvaluations = UNDEFINED;
 }
+
+Some notes.  The default setting for \variable{numEvaluations} and \variable{numGenerations} is \variable{EvolutionState.UNDEFINED} (0).  One of these two variables will be set at parameter-loading time. The other will stay, initially, at \variable{UNDEFINED}.  If \variable{numEvaluations} was set, and generational evolution is being used, then \variable{numGenerations} will will eventually be set to a real value after the initial population has been created but before it has been evaluated.  We'll get to how these are set later, in the Generational and Steady-State sections (Sections \ref{generational} and \ref{ec.steadystate}). 
 
 \item An {\bf Initializer}, whose job is to create the initial \class{ec.Population} at the beginning of the run, and a {\bf Finalizer}, whose job is to clean up at the very end of the run.
 
@@ -2690,9 +2696,17 @@ seed.2 =  992341\\
 seed.3 = -16723
 }
 
-When evaluating a Population, \class{ec.simple.SimpleEvaluator} will construct \(N\) Problems cloned from the Problem prototype.   Then, for each Subpopulation, the Evaluator will break the Subpopulation into \(N\) chunks (one per thread), and assign each chunk to a different Problem instance.  This enables the Population to be evaluated in parallel.  Most commonly, we just set \(N=1\). 
+When evaluating a Population, \class{ec.simple.SimpleEvaluator} will construct \(N\) Problems cloned from the Problem prototype, and assign one to each thread.   Then, for each Subpopulation, the Evaluator will use these threads to evaluate the individuals in the Subpopulation.  By default SimpleEvaluator simply breaks each Subpopulation into \(N\) even chunks and assigns each chunk to a different thread and its Problem.  This enables the Population to be evaluated in parallel.
 
-If you do set \(N=1\), you have one further option: to avoid cloning the Problem each time, by setting the following parameter to false:
+The problem with this approach to parallelism is that it's not fine-grained: and so if some individuals take much longer to evaluate, then some threads will sit around waiting for a thread to finish its chunk.  You can fix this by specifying the chunk size, all the way own to chunks of a single individual each.  When an individual has finished its chunk, it will request another chunk to work on, and if it has exhausted on all the chunks in a Subpopulation, it'll grab chunks from the next Subpopulation.  For example, the extreme of fine-grained parallelism would be:
+
+\params{%
+eval.chunk-size=1
+}
+
+The disadvantage of a small chunk size is that it involves a lot of locking to get each chunk.  This is a small but significant overhead: so we suggest using the default (large automatic chunks) unless your evaluations are costly and of high variance in evaluation time.
+
+Of course, you probably most often don't do parallelism at all: you'll just have a single thread (that is, \(N=1\)).  In this case you have one further option: to avoid cloning the Problem each time, by setting the following parameter to false:
 
 \params{%
 eval.clone-problem = false
@@ -4225,8 +4239,34 @@ For more on debugging ECJ, see Section~\ref{DebuggingYourParameters}.
 \afterpage{\clearpage}
 
 \section{Generational Evolution}
+\label{generational}
 
 ECJ is most commonly used for generational evolution: where a whole Population is evaluated, then updated, at a time.  There are a number of packages which use generational evolution, but the two most common are the \package{ec.simple} package, which does Genetic Algorithm style generational evolution, and the \package{ec.es} package which does Evolution Strategies.
+
+\paragraph{Generations and Evaluations}
+
+Generational Evolution, of course, has {\it generations}.  The maximum number of generations to run can be selected in one of two ways.  First, you could explicitly state the desired maximum number of generations:
+
+\begin{verbatim}
+generations = 100
+\end{verbatim}
+
+This will cause generational evolution to evaluate 1000 generations' worth of individuals, including the initial generation, which is considered generation 1.  This will cause the \variable{EvolutionState.numGenerations} variable to be set to this value.  Alternatively, you can define generations like this:
+
+\begin{verbatim}
+evaluations = 10000
+\end{verbatim}
+
+This will cause the \variable{EvolutionState.numEvaluations} variable to be set to this value. After the initial Population has been created, but before it has been evaluated, ECJ will determine the number of generations to run based on this number.  It's done as follows:
+
+\begin{enumerate}
+\item Let \(p\) be the total number of individuals in the initial Population, including all Subpopulations.
+\item If \variable{evaluations} is less than \(p\), it is set to \(p\).
+\item Else if \(p\) does not divide evenly into \variable{evaluations}, then \variable{evaluations} is reduced to the largest smaller value which \(p\) divides evenly into.
+\item The number of generations is set to \variable{evaluations} divided by \(p\).
+\end{enumerate}
+
+This mechanism allows us to create, in parameters, a trade-off of generations versus population size which is useful in some later methods, such as Meta-EAs (Section \ref{metaea}). 
 
 \subsection{The Genetic Algorithm (The \package{ec.simple} Package)}
 \label{ec.simple}
@@ -4255,7 +4295,7 @@ public void describe(EvolutionState state, Individual ind,\\
 \item \class{ec.simple.SimpleDefaults} implements \class{ec.DefaultsForm} and provides the package default parameter base.
 \end{itemize}
 
-\paragraph{Example}
+\paragraph{An Example}
 Let's put these together to do a simple genetic algorithm.  We start with the basic parameters:
 
 \params{%
@@ -4514,6 +4554,7 @@ java ec.Evolve -file es.params
 \afterpage{\clearpage}
 
 
+
 \section{Steady-State Evolution (The \package{ec.steadystate} Package)}
 \label{ec.steadystate}
 
@@ -4536,13 +4577,22 @@ evalthreads = 1\\
 breedthreads = 1
 }
 
-SteadyStateEvolutionState can either run until some \(n\) evaluations have been processed, or until some \(m\) ``generations'' have been processed.  Normally SteadyStateEvolutionState uses generations.  If you'd prefer to work in evaluations, you can say something like this:
+SteadyStateEvolutionState can either run until some \(n\) evaluations have been processed, or until some \(m\) ``generations'' have been processed, like this:
+
+\params{%
+generations = 100
+}
+
+What does a ``generation'' mean in this context?  ECJ sums up the sizes of all of the subpopulations to form the {\it total population size} \(p\).  Whenever \(p\) individuals have been evaluated, that's a new generation.
+
+Normally SteadyStateEvolutionState uses generations.  If you'd prefer to work in evaluations, you can say something like this:
 
 \params{%
 evaluations = 10000
 }
 
-What does a ``generation'' mean in this context?  ECJ sums up the sizes of all of the subpopulations to form the {\it total population size} \(p\).  Whenever \(p\) individuals have been evaluated, that's a new generation.
+ECJ will still treat a ``generation'' as \(p\) worth of individuals being evaluated.  Note that, unlike was the case for generational evolution, the number of evaluations does not have to be a multiple of \(p\): when \parameter{evaluations} number of individuals have been evaluated, the process terminates.  However, \parameter{evaluations}, if you set it, does have to be at least as big as the total initial population size.
+
 
 Steady-State evolution in ECJ works in two stages:
 
@@ -8769,14 +8819,14 @@ Thus ECJ creates Push programs using its GPTree facility with only two kinds of 
 
 \paragraph{Evaluation} Push trees are evaluated by submitting them to an interpreter, in this case the Psh interpreter.  But there's a problem.  Psh, like every other Push interpreter out there, has its own notions of the objects used to construct a Push tree.  It's obviously not compatible with ECJ's GPNode, GPTree, and GPIndividual objects.  As a result, ECJ evaluates its Push trees by first writing them out to strings in Lisp form.  It then sets up an interpreter, gives it the string program, and lets it parse the program into its own internal structure and evaluate it.  This is circuitous but doesn't really slow things down very much as it turns out.
 
-\paragraph{Some Caveats} Much of the current Psh work is being done on a Clojure-based interpreter instead, and perhaps in the future we may move to that instead.  Long story short, this is an experimental package.
+\paragraph{Some Caveats} Much of the modern Push work is being done on a Clojure-based interpreter (Clojush) rather than Psh, and perhaps in the future we may move to that instead.  Long story short, this is an experimental package.
 
-Additionally, much of the Push literature involves individuals which modify themselves and then pass these modifications onto successive generations.  At present ECJ does not do this: once an individual is entered into the interpreter, it stays there.  Any changes made in the interpreter are ignored when the fitness evaluation is complete.  We may change that in the future.
+Also, much of the Push literature involves individuals which modify themselves and then pass these modifications onto successive generations.  At present ECJ does not do this: once an individual is entered into the interpreter, it stays there.  Any changes made in the interpreter are ignored when the fitness evaluation is complete.  We may change that in the future.
 
 
 \subsection{Push and GP}
 
-ECJ's Push package only uses two GPNode classes, \class{ec.gp.push.Nonterminal} (for dummy nonleaf nodes) and \class{ec.gp.push.Terminal} (to define all possible leaf nodes).  This means that, for all intents and purposes, the GP function set, from ECJ's perspective, is hard-coded.  But of course you still have the {\it Push} ``function set'' to set up: these are the actual instructions and instructions that Terminal can be set to (it's an ERC which displays Strings) and can be submitted to the Psh interpreter.  Setting these instructions up is discussed in Section \ref{PushInstruction} coming next; for now, keep in mind that the Push ``function set'' is {\it not the same thing} as the GP function set.
+ECJ's Push package only uses two GPNode classes, \class{ec.gp.push.Nonterminal} (for dummy nonleaf nodes) and \class{ec.gp.push.Terminal} (to define all possible leaf nodes).  This means that, for all intents and purposes, the GP function set, from ECJ's perspective, is hard-coded.  But of course you still have the {\it Push} ``function set'' to set up: these are the actual instructions that  \class{ec.gp.push.Terminal} can be set to (it's an ERC which displays Strings) and that can be submitted to the Psh interpreter.  Setting these instructions up is discussed in Section \ref{PushInstruction} coming next; for now, keep in mind that the Push ``function set'' is {\it not the same thing} as the GP function set.
 
 This ``hard-coded'' GP function set is defined as follows in the \file{ec/gp/push/push.params} file:
 
@@ -8790,7 +8840,7 @@ gp.fs.0.func.1 = ec.gp.push.Terminal\\
 gp.fs.0.func.1.nc = nc0
 }
 
-Note that Nonterminal is listed as having an arity of 1 even though it has an arbitrary arity.  Because \class{ec.gp.push.Nonterminal} can have variable number of children, Push uses its own special tree builder to allow this.  The class is called \class{ec.gp.push.PushBuilder}.  PushBuilder follows the following program:
+Note that Nonterminal is listed as having an arity of 1 even though it has an arbitrary arity.  Because \class{ec.gp.push.Nonterminal} can have variable number of children, Push uses its own special tree builder to allow this.  The class is called \class{ec.gp.push.PushBuilder}.  PushBuilder follows the following algorithm:
 
 \vspace{1em}
 {
@@ -8798,7 +8848,7 @@ Note that Nonterminal is listed as having an arity of 1 even though it has an ar
 \Function{Build-Tree~}{{\it int} size}
 \If{size = 1}
 	\State \textbf{return} a terminal (of the class \class{ec.gp.push.Terminal})
-\ElsIf
+\Else
 	\State \(p \leftarrow\) a nonterminal (of the class \class{ec.gp.push.Nonterminal})
 	\While{size \(>\) 0}
 		\State \(a \leftarrow\) a random number from 1 to {\it size} inclusive
@@ -9001,6 +9051,7 @@ One common way a Push program is evaluated (such as in Symbolic Regression) is a
 \item Certain stacks in the interpreter are loaded with some data
 \item The program is run on the interpreter
 \item The tops of certain stacks in the interpreter are inspected to determine the return value, and thus the fitness.
+\item The GPIndividual's fitness is set to this fitness.
 \end{enumerate}
 
 To create a Push Program, you'd call \method{getProgram(...)}, passing in the individual in question.  This will return a \class{Program} object (this is a class used in Psh).
@@ -9048,7 +9099,7 @@ It's often the case that Psh's built-in instructions aren't enough for you.   Pe
 
 PushInstruction is a \class{org.spiderland.Psh.Instruction} subclass which also implements ECJ's \class{ec.Prototype} interface and so is properly cloneable and serializable.  Since it's a Prototype, it has a \method{setup(...)} method which you can take advantage of to get things ready, and a \method{clone()} method you might need to override.  But critically it has an \method{Execute(...)} method which the interpreter uses to run the instruction.  Note the unusual spelling: this is a Psh method name.  
 
-To implement a PushInstruction you'll need to know how Psh works so you can manipulate its stacks according to the needs of the instruction.  Two examples (\class{Atan} and \class{Print}) are provided in the \package{ec/app/Push} application example.
+To implement a PushInstruction you'll need to know how Psh works so you can manipulate its stacks according to the needs of the instruction.  Two examples (\class{Atan} and \class{Print}) are provided in the \package{ec/app/push} application example.
 
 \begin{methods}{ec.gp.push.PushInstruction}
 \mthd{public void Execute({\it org.spiderland.Psh.Interpreter} interpreter)}
@@ -10776,7 +10827,7 @@ The \package{ec.de} package provides a Differential Evolution framework and some
 
 Differential Evolution does not have a traditional selection mechanism: instead, children are created entirely at random but then must compete with their parents for survival.  Additionally, Differential Evolution breeding operators are somewhat opaque and not particularly amenable to mixing and matching.  Because of this, we have eschewed the Breeding Pipeline approach for doing breeding.  Instead, Differential Evolution simply has different Breeders for each of its breeding operator approaches.  Differential Evolution operators are defined by creating a subclass of \class{ec.de.DEBreeder}.  We have three such operators implemented, including the default in \class{ec.de.DEBreeder} itself: more on them in a moment.  
 
-\subsubsection{The Evaluator}  We implement DE's unusual selection procedure through a custom SimpleEvaluator called \class{ec.de.DEEvaluator}.  It turns out this code could have been done in \class{ec.de.DEBreeder} (making the package simpler) but then various Statistics objects wouldn't report the right values.  So we made a simple Evaluator to do the job.  DEEvaluator is very simple subclass of SimpleEvaluator and works just like it, including multithreaded evaluation.  You specify it as follows:
+\subsection{Evaluation}  We implement DE's unusual selection procedure through a custom SimpleEvaluator called \class{ec.de.DEEvaluator}.  It turns out this code could have been done in \class{ec.de.DEBreeder} (making the package simpler) but then various Statistics objects wouldn't report the right values.  So we made a simple Evaluator to do the job.  DEEvaluator is very simple subclass of SimpleEvaluator and works just like it, including multithreaded evaluation.  You specify it as follows:
 
 \params{%
 eval = ec.de.DEEvaluator
@@ -11292,6 +11343,425 @@ pop.subpop.0.species.pipe.source.0 = ec.multiobjective.spea2.SPEA2TournamentSele
 %\section{Particle Swarm Optimization (The \package{ec.pso} Package)}
 
 %%% So long as PSO is a mess, we shouldn't document it.?
+
+
+\section{Meta-Evolutionary Algorithms}
+\label{metaea}
+
+A Meta-Evolutionary Algorithm (or Meta-EA) is an evolutionary algorithm used to optimize the parameters of a second evolutionary algorithm.  Meta-EAs were originally called ``Meta-GAs'' (for obvious reasons), and are closely related to the concept of hyperheuristics.  ECJ implements Meta-EAs in a surprisingly clean fashion, using a single subclass of Problem called \class{ec.eval.MetaProblem}.  Surprisingly, that is the {\it only} class in the Meta-EA package!
+
+In ECJ, a Meta-EA works like this.  We create an ordinary evolutionary process which evolves individuals in the form of DoubleVectorIndividuals.  These individuals' genomes notionally contain parameter values for other ECJ processes.  To test an individual, we hand it to MetaProblem, which fires up another ECJ system (in the same Java process) using those parameter values and runs it.  This happens some \(N\) times, and the mean best fitness over those \(N\) runs becomes the fitness of the DoubleVectorIndividual holding those parameter values.  
+
+Note that there are at least two levels of evolution.\footnote{You can of course have an EA which optimizes the parameters for an EA which optimizes the parameters for an EA, and so on.  MetaProblem can handle this without much issue.  But it's a pretty rare need!  So we'll go with ``two'' for purposes of this discussion.}  First there is the evolutionary process which is optimizing the parameters.  We will refer to this process as the {\bf meta-level process}.  Then there is the evolutionary process whose parameters are being optimized.  We will refer to this process as the {\bf base-level process}.  
+
+Within certain constraints, you can use pretty much any EA at the meta-level or at the base level.  But there are some rules.  First off, the meta-level individual must be a \class{DoubleVectorIndividual}.  We will treat this individual as a {\bf heterogeneous individual} (see Section \ref{heterogeneous}), which allows the Meta-EA system to have genes of different types: integers, floats, booleans, and the like.  Second the meta-level fitness must be one which can respond to \method{setToMeanOf(...)}, and typically should be of the same kind of fitness as the base-level fitness.  Generally this means: no multiobjective fitness at either level; and coevolutionary fitness might be a bit tricky.  SimpleFitness is fine, as is KozaFitness.
+
+Meta-EAs also work very well in combination with ECJ's distributed evaluator, which is good news because it's the natural setting for using them.  The idea here is to have the meta-level process as a master process, distributing meta-level individuals out to slaves, where they're tested by firing up a base-level ECJ process to be tested.  And Meta-EAs also work nicely in multiple threads.  This magic all works fine in ECJ because ECJ is self-contained: ECJ processes do not interact with other ECJ processes even in the same thread.
+
+
+\subsection{The Two Parameter Files}
+
+Generally speaking, you'll create two parameter files: a base-level parameter file and a meta-level parameter file.  The base-level parameter file tells ECJ what the default parameters are for the base-level process (some of these parameters will be modified to reflect the meta-level individual being tested).  The meta-level parameter file defines the meta-level process.
+
+The first step in constructing a Meta-EA is to get the base level working on its own without any parameter optimization.  This is straightforward: it's just a standard ECJ process.
+
+Generally you want an ordinary EA at the base level.  You'll probably want to stay away from multiobjective optimization at the base level (how do you define ``best individual of run'', and its fitness, in a multiobjective setting?).  You can use coevolution in some cases, but note that the best individual of run, whose fitness is extracted, will be only the best individual of Subpopulation 0.  This means that cooperative coevolution doesn't make much sense, though 2-population competitive coevolution might make sense assuming that the primary (non-foil) subpopulation is 0.
+
+So for example, we might have a base-level EA like this:
+
+\begin{verbatim}
+#### BASE-LEVEL FILE
+evalthreads =                                   1
+breedthreads =                                  1
+seed.0 =                                        time
+checkpoint =                                    false
+checkpoint-modulo =                             1
+checkpoint-prefix =                             ec
+state =                                         ec.simple.SimpleEvolutionState
+init =                                          ec.simple.SimpleInitializer
+finish =                                        ec.simple.SimpleFinisher
+exch =                                          ec.simple.SimpleExchanger
+breed =                                         ec.simple.SimpleBreeder
+eval =                                          ec.simple.SimpleEvaluator
+eval.problem =                                  MyTestProblem
+stat =                                          ec.simple.SimpleStatistics
+stat.file                                       $out.stat
+generations =                                   1000
+quit-on-run-complete =                          true
+pop =                                           ec.Population
+pop.subpops =                                   1
+pop.subpop.0 =                                  ec.Subpopulation
+pop.subpop.0.size =                             1000
+pop.subpop.0.duplicate-retries =                2
+pop.subpop.0.species =                          ec.vector.FloatVectorSpecies
+pop.subpop.0.species.pipe =                     ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0 =            ec.vector.breed.VectorCrossoverPipeline
+pop.subpop.0.species.pipe.source.0.source.0 =   ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.1 =   same
+pop.subpop.0.species.fitness =                  ec.simple.SimpleFitness
+pop.subpop.0.species.ind =                      ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.mutation-bounded =         true
+pop.subpop.0.species.min-gene =                 -5.12
+pop.subpop.0.species.max-gene =                 5.12
+pop.subpop.0.species.genome-size =              100
+pop.subpop.0.species.mutation-prob =            1.0
+pop.subpop.0.species.crossover-type =           one
+pop.subpop.0.species.mutation-type =            gauss
+pop.subpop.0.species.mutation-stdev =           0.01
+select.tournament.size =                        2
+\end{verbatim}
+
+Let's call this file {\bf base.params}.  It's nothing special.  Assuming you have a Problem subclass called \class{MyTestProblem}, ECJ should run this file without incident.
+
+Next you need to create the meta-level file.  Let's call this file {\bf meta.params}.   Here's one possibility.  We'll start with certain basic items (it won't run yet):
+
+\begin{verbatim}
+#### META-LEVEL FILE
+evalthreads =                                   1
+breedthreads =                                  1
+seed.0 =                                        time
+checkpoint =                                    false
+checkpoint-modulo =                             1
+checkpoint-prefix =                             ec
+state =                                         ec.simple.SimpleEvolutionState
+init =                                          ec.simple.SimpleInitializer
+finish =                                        ec.simple.SimpleFinisher
+exch =                                          ec.simple.SimpleExchanger
+breed =                                         ec.simple.SimpleBreeder
+eval =                                          ec.simple.SimpleEvaluator
+stat =                                          ec.simple.SimpleStatistics
+generations =                                   50
+quit-on-run-complete =                          true
+pop =                                           ec.Population
+pop.subpops =                                   1
+pop.subpop.0 =                                  ec.Subpopulation
+pop.subpop.0.size =                             50
+pop.subpop.0.duplicate-retries =                2
+
+
+# Stuff special to meta-evolution
+eval.problem =                                  ec.eval.MetaProblem
+eval.problem.file =                             base.params
+eval.problem.set-random =                       true
+eval.problem.reevaluate =                       true
+eval.problem.runs =                             1
+stat.file                                       $meta.stat
+
+\end{verbatim}
+
+Notice that we have set apart six parameters (so far) special to meta-evolution:
+
+\begin{itemize}
+
+\item The Problem which must be an \class{ec.eval.MetaProblem}.
+\item MetaProblem has a \parameter{file} parameter which points to the \file{base.params} file (wherever it is).  This is how the MetaProblem identifies what file to use to set up base-level evolutionary processes. 
+\item The \parameter{reevaluate} parameter, typically set to \parameter{true}.  This tells MetaProblem to reevaluate individuals even if their \variable{evaluated} flag has been set.  This is because meta-level evolution of individuals is stochastic\,---\,it involves firing up an ECJ process underneath,\,---\,and so next time an individual is evaluated it could be entirely different.
+\item The \parameter{set-random} parameter, typically set to \parameter{true}.  This tells MetaProblem to override the random number seeds of the ECJ processes it constructs and instead seed them with random numbers.\footnote{Seeding a random number generator using random numbers from another number generator can be perilous, particularly for random number generators with simple internal seeds.  But it's probably fine in this case, because the way MersenneTwister uses its seed is to build an array of 624 random numbers from that seed using a Knuth generator; we then pulse the MersenneTwister \(624 \times 2 + 1\) times to prime it, at which point these numbers have been throughly converted and cleaned out.}  Alternatively, you could tell the base process to seed itself using the wall clock time.  This is slightly less safe as it runs the (very small) risk of having multiple parallel base processes having the same seed.  To do this second option, instead of setting \parameter{set-random} to \parameter{true}, you'd say:
+
+\begin{verbatim}
+### In the Base Parameter File
+seed.0 = time
+\end{verbatim}
+
+\item The \parameter{runs} parameter is set to the number of times you want to run a base-level ECJ process to test a certain meta-level individual.  Because base-level processes are stochastic, the fitness at the meta-level is potentially very noisy.  If you set this to 1, then only a single test is done: the meta-level individual's fitness is set to the best fitness of run of the base process which was run using its parameters.  Otherwise multiple tests are done and the fitness of the meta-level individual is set to the mean best fitness of run of all the multiple runs performed using those parameters. {\bf Based on our experiments, we suggest using a single test.}
+
+\item The \parameter{stat.file} file is set to \parameter{\$meta.stat}, not \parameter{\$out.stat} as usual.  This is because the base-level process has \parameter{\$out.stat} as its statistics file, and even if the base-level process is instructed not to write anything out to it, it'd probably be best if the two ECJ processes not write to the same file!  So we renamed it to another filename. 
+\end{itemize}
+
+
+\subsection{Defining the Parameters}
+
+Next you'll need to specify the parameters whose values we will evolve at the meta-level.  In ECJ's Meta-EA facility, every parameter value is stored as a double in a heterogeneous (Section \ref{heterogeneous}) DoubleVectorIndividual.  However there are a variety of ways these doubles are interpreted:
+
+\begin{itemize}
+\item {\it Type: float}\quad As a double (of course) between some min value and max value inclusive.
+\item {\it Type: integer}\quad As an integer between some min value and max value inclusive.
+\item {\it Type: boolean}\quad As a boolean (treated as a 0 or 1).
+\item {\it (no type name)}\quad As one of \(M\) strings, represented in the genome by the values 0 ... \(M-1\).
+\end{itemize}
+
+A great many, though not all, ECJ parameters can be represented by one of the above options.  To represent a parameter, you'll need to specify its gene form for the heterogeneous DoubleVectorIndividual, and you'll also need to specify the parameter name and other information about how the parameter is to be interpreted.
+
+Let's say that you have chosen to evolve the following parameters:
+
+\begin{itemize}
+\item \parameter{pop.subpop.0.species.mutation-prob}\quad A double-valued number ranging from 0.0 to 1.0 inclusive.
+\item \parameter{pop.subpop.0.species.mutation-type}\quad One of the following strings: \parameter{reset} \parameter{gauss} \parameter{polynomial}
+\item \parameter{pop.subpop.0.species.mutation-stdev}\quad A double-valued number ranging from (let's say) 0.0 to 1.0 inclusive.
+\item \parameter{pop.subpop.0.species.mutation-distribution-index}\quad An integer ranging from 0 to 10 inclusive.
+\item \parameter{pop.subpop.0.species.alternative-polynomial-version}\quad A boolean value, that is, one of the strings \parameter{true} \parameter{false}
+\end{itemize}
+
+Let's start by defining our meta-level individual to be a DoubleVectorIndividual, of 5 numbers (for the 5 parameters above), with some default mutation and crossover information:
+
+\begin{verbatim}
+### In the Meta Parameter File
+pop.subpop.0.species = ec.vector.FloatVectorSpecies
+pop.subpop.0.species.ind = ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.genome-size = 5
+pop.subpop.0.species.min-gene = 0.0
+pop.subpop.0.species.max-gene = 1.0
+pop.subpop.0.species.mutation-prob = 0.25
+pop.subpop.0.species.mutation-type = gauss
+pop.subpop.0.species.mutation-stdev = 0.1
+pop.subpop.0.species.mutation-bounded = true
+pop.subpop.0.species.out-of-bounds-retries = 100
+pop.subpop.0.species.crossover-type = one
+\end{verbatim}
+
+Now we need to define information about each of the parameters.  Note that in each case we define the {\it name} of the parameter, and the {\it type} of the parameter.  We also define some mutation features; different parameter types should be mutated in the appropriate way.
+
+We start with the number of parameters and the genome size (which will be the same thing):
+
+\begin{verbatim}
+### In the Meta Parameter File
+pop.subpop.0.species.genome-size = 5
+eval.problem.num-params = 5
+\end{verbatim}
+
+We start with the first parameter.  It's a double, so its type is \parameter{float} (for ``floating-point type'').  We'll use the default mutation settings for this gene, so we don't specify anything special.
+
+\begin{verbatim}
+### In the Meta Parameter File
+eval.problem.param.0 = pop.subpop.0.species.mutation-prob
+eval.problem.param.0.type = float
+\end{verbatim}
+
+Next the mutation-type parameter is one of 3 possible strings, represented in the genome as the integers 0 ... 2.  For this kind of parameter we don't declare a type, but instead declare the number of values it can take on and what those values are.  Additionally, since it's represented as an integer internally, we define the maximum gene to be 2 (the minimum gene was already declared in the defaults as 0).  And we use integer-reset mutation, which is the appropriate mutation for genes of this type.
+
+\begin{verbatim}
+### In the Meta Parameter File
+eval.problem.param.1 = pop.subpop.0.species.mutation-type
+eval.problem.param.1.num-vals = 3
+eval.problem.param.1.val.0 = reset
+eval.problem.param.1.val.1 = gauss
+eval.problem.param.1.val.2 = polynomial
+pop.subpop.0.species.max-gene.1 = 2
+pop.subpop.0.species.mutation-type.1 = integer-reset
+\end{verbatim}
+
+The standard deviation parameter is also a floating-point type like the first parameter was.
+
+\begin{verbatim}
+### In the Meta Parameter File
+eval.problem.param.2 = pop.subpop.0.species.mutation-stdev
+eval.problem.param.2.type = float
+\end{verbatim}
+
+The mutation distribution index parameter is an integer which can range from 0 to 10, hence our max gene value below (remember that the min gene value was declared in the defaults already to be 0).  Unlike the mutation-type parameter, which has three unrelated strings, here the integers have an explicit ordering: 5 is closer to 6 than it is to 9.  For integer values of this kind it's more appropriate to use something like integer-random-walk mutation than integer-reset mutation.
+
+\begin{verbatim}
+### In the Meta Parameter File
+eval.problem.param.3 = pop.subpop.0.species.mutation-distribution-index
+eval.problem.param.3.type = integer
+pop.subpop.0.species.max-gene.3 = 10
+pop.subpop.0.species.mutation-type.3 = integer-random-walk
+pop.subpop.0.species.random-walk-probability.3 = 0.8
+\end{verbatim}
+
+Finally, the alternative polynomial version parameter is a boolean value.  Booleans will be represented internally as integers (0 or 1), and integer-reset is the most appropriate form.  Since the default min and max values are already 0.0 and 1.0, there's no need to define them.
+
+\begin{verbatim}
+### In the Meta Parameter File
+eval.problem.param.4 = pop.subpop.0.species.alternative-polynomial-version
+eval.problem.param.4.type = boolean
+pop.subpop.0.species.mutation-type.4 = integer-reset
+\end{verbatim}
+
+In every case, note that we define both parameters (\parameter{eval.problem.\textit{n}....}) and corresponding gene information (\parameter{pop.subpop.0.species...\textit{n}}).  You need to make sure that the right kind of parameter types match up with the right kinds of gene types.
+
+
+
+\subsection{Statistics and Messages}
+
+Meta-EAs can be chatty: you're running lots of base-level ECJ processes and they're writing out all sorts of messages to the screen.  Furthermore, these processes are probably writing statistics files that are unnecessary and significantly slow them down.  Once you've got things debugged and working well, it's probably best to shut the base-level ECJ processes up before doing your big run.
+
+Let's start with eliminating the base-level ECJ statistics file.  If you're using SimpleStatistics, it normally creates a file and starts writing it.  Buf if you say:
+
+\begin{verbatim}
+### In the Base Parameter File
+stat.muzzle = true
+\end{verbatim}
+
+\noindent ... this will prevent this behavior even if the file name was defined in the base-level parameters.
+
+Next, your base-level ECJ process will write all sorts of things to the screen.  The aforementioned \parameter{stat.muzzle} parameter will quiet some of them but not all of them.  To completely shut the base-level ECJ process up, you can set up things so that the stdout and stderr logs of the base-level ECJ process are completely muzzled.  This is defined at the meta-level:
+
+\begin{verbatim}
+### In the Meta Parameter File
+eval.problem.muzzle = true
+\end{verbatim}
+
+In addition to the best fitnesses of \(N\) runs, used to determine the fitness of a meta-level individual, the Meta-EA system also keeps track of the best base-level individual discovered in any run each meta-level generation, and ultimately the best base-level individual ever discovered.
+
+The best base-level individual is printed out via the MetaProblem's \method{describe(...)} method.  Ordinarily such individuals are only printed out to the statistics file at the very end of the run; but you also have the option of printing them out once every generation (which we suggest you do) with:
+
+\begin{verbatim}
+### In the Meta Parameter File
+stat.do-per-generation-description = true
+\end{verbatim}
+
+See Section \ref{ec.Statistics} for more information on this parameter.
+
+
+\subsection{Populations Versus Generations} 
+
+One very common parameter setting you may wish to make with a Meta-EA is how big you'd like your Population to be, where the number of generations shrinks as the Population grows so as to maintain a constant number of evaluations.  Unfortunately by default ECJ treats the population size (or more properly, subpopulation sizes) and the number of generations as separate parameters.
+
+But there's an easy way around that.  All you do is define your evolution in terms of number of evaluations rather than generations.  Let's say that you have a fixed budget of 64K (65536) evaluations.  You can set various population sizes and let ECJ modify the generations appropriately like this:
+
+\begin{verbatim}
+### In the Base Parameter File
+evaluations = 65536
+\end{verbatim}
+
+\vspace{1em}
+
+\begin{verbatim}
+### In the Meta Parameter File
+eval.problem.param.3 = pop.subpop.0.size
+eval.problem.param.3.num-vals = 5
+eval.problem.param.3.val.0 = 16
+eval.problem.param.3.val.1 = 32
+eval.problem.param.3.val.2 = 64
+eval.problem.param.3.val.3 = 128
+eval.problem.param.3.val.4 = 256
+pop.subpop.0.species.mutation-type.3 = integer-random-walk
+pop.subpop.0.species.random-walk-probability.3 = 0.5
+\end{verbatim}
+
+Because we've fixed the \parameter{evaluations} parameter, and are varying the \parameter{pop.subpop.0.size} parameter, the \parameter{generations} parameter is automatically inferred from the other two.
+
+Note that we've set the population sizes to numbers which divide evenly into the desired number of evaluations (in this case, powers of 2).  This is important so that when the number of generations is chosen, the total number of evaluations stays constant (ECJ rounds the evaluations down if it can't divide the population size evenly into them).  Also note that even though the parameters are strings, we've chosen to still use integer-random-walk, with a low probability, rather than reset mutation.  You might ponder why.
+
+
+\subsection{Using Meta-Evolution with Distributed Evaluation} 
+
+Because of its high cost, almost certainly the most common usage of a Meta-EA is in a massively parallel setting.  The general idea is to farm out the base-level processes to remote slaves.  To do this, we take advantage of ECJ's master-slave evaluator.  Before we go further, you should familiarize yourself with the master-slave distributed evaluator, in Section \ref{ec.eval}.
+
+The meta-level evolution will take place on the master.  The master will then ship meta-level individuals to slaves, which will then hand them to the MetaProblem to fire up a base-level process to test them:
+
+\begin{verbatim}
+### In the Meta Parameter File
+eval.masterproblem = ec.eval.MasterProblem
+eval.master.port = 5000
+eval.masterproblem.job-size = 1
+eval.masterproblem.max-jobs-per-slave = 1
+eval.compression = true
+eval.master.host = my.machine.ip.address
+\end{verbatim}
+
+Some notes.  First note that you must replace \parameter{my.machine.ip.address} in \parameter{eval.master.host} with the ip address of your master computer.  Second, notice the job size and maximum number of jobs per slave are both set to 1.  You almost certainly want this because the evaluation time is so long on the slaves: it's an entire evolutionary process.  You probably don't want to bulk up multiple jobs per slave, though you could if your evolutionary processes were very short.
+
+Your slave's parameter file is a new file called, let's say, {\bf slave.params}.  Note that it points to {\bf meta.params} in order to grab some of the master's parameters.  
+
+\begin{verbatim}
+### In the Slave Parameter File
+# This file is run like this:
+# java ec.eval.Slave -file slave.params
+parent.0 = meta.params
+\end{verbatim}
+
+Not complicated!  However, in addition to various muzzling parameters (\parameter{stat.muzzle}, \parameter{eval.problem.muzzle}, etc) you probably had added to your meta parameter file, you might also want to add the following to your slave parameter file:
+
+\begin{verbatim}
+### In the Slave Parameter File
+eval.slave.muzzle = true
+\end{verbatim}
+
+This tells the slave to be completely silent when starting up and printing slave information.  It's often a good idea.  Once again, you'd do this only when you've got debugging working well.
+
+There is one important gotcha involved with combining meta-EAs with distributed evaluation, and that is the matter of tests.  The meta-EA does some \(N\) tests of a single meta-level individual in order to assess its fitness, and each test is a base-level evolutionary run.  The problem is that these tests are performed by the MetaProblem.
+
+Here's the issue.  Let's say you have 1000 machines at your disposal.  You want to distribute an entire generation to these 1000 machines, and so you have decided to do 10 tests per meta-level individual, and to have a population of 100.  So in the meta parameter file, we've set \parameter{eval.problem.runs = 10} to turn on those tests.
+
+Sounds great, right?  Not so fast.  The master-slave evaluator will distribute your 100 individuals out to 100 machines.  Because the MetaProblem resides on the {\it slave machines}, each of those 100 machines will do 10 tests, while the other 900 machines stand by idle.  
+
+The problem is that distributing the tests happens {\it after} the distribution out to the slaves.  We need a way to break up the tests before slave distribution.  The simplest way to do this is to use a different way of doing tests: SimpleEvaluator's \parameter{num-tests} mechanism.  We turn off tests in the MetaProblem (set it to 1) and instead turn on tests in the SimpleEvaluator.  SimpleEvaluator also gives us options about how to merge those tests: we'll stick with averaging like before:
+
+\begin{verbatim}
+### In the Meta Parameter File
+eval.problem.runs = 1
+eval.num-tests = 10
+eval.merge = mean
+\end{verbatim}
+
+What's going on here exactly?  When the SimpleEvaluator is told to evaluate its population, what it will do in this case is create a {\it new population} that is ten times the size of the old one.  It then clones all the old population members ten times each and inserts them in the new population.  Then it evaluates this new population.  Finally, it gathers each of the ten clones and merges their fitnesses and reinserts the resulting fitness back into the original individual.
+
+This hack helps us because when SimpleEvaluator has already made ten copies of each individual before it starts evaluating them.  Thus each copy will get shipped off to a separate slave machine.  Problem solved!
+
+If you aren't using SimpleEvaluator at the meta-level, you're out of luck with this approach.  But it's not hard to code a similar procedure in your own Evaluator subclass.  For hints, see SimpleEvaluator's private \method{expand(...)} and \method{contract(...)} methods.
+
+
+\subsection{Customization}
+
+It may be the case that the four parameter types aren't sufficient for your purposes.  Never fear!  You can override certain protected methods in MetaProblem to customize how parameters are mapped from the genome to parameter strings in the base-level database.   
+
+For each parameter, MetaProblem needs to store the name of the parameter and the kinds of values which the parameter may be to set to.  MetaProblem performs mapping as follows.  During \method{setup(...)}, it calls a protected method called \method{loadDomain(...)}, which reads the parameters and stores the type of the values for of each parameter, storing them all in a instance variable:
+
+\begin{verbatim}
+public Object[] domain;
+\end{verbatim}
+
+Once built, this array does not change, and is shared among all instances of MetaProblem cloned from the same prototype.  The array contains, for each parameter (and hence each gene in the genome), an object which indicates the parameter's value type:
+
+\begin{itemize}
+\item \variable{double[0]}\qquad Double floating-point values.
+\item \variable{int[0]}\qquad Integer values.
+\item \variable{boolean[0]} \qquad Boolean values (mapped to 0 and 1 for false and true)
+\item \variable{String[...]} \qquad An array of strings which are valid parameter values.  These are mapped to the integers 0 ... String.length \(-\) 1
+\end{itemize}
+
+The first three cases simply identify the type as being a double, an int, or a boolean.  The last case actually identifies all the valid strings the parameter may take on.  In the case of a double or an int, we also need to know the minimum and maximum values.  The minimum and maximum values for parameter number \(i\) are determined by the \method{minGene(...)} and \method{maxGene(...)} values called on the Species of the corresponding genome, passing in \(i\).
+
+During \method{setup(...)}, the MetaProblem also loads a ParameterDatabase from the base parameter file.  To evaluate a meta-level individual, it will copy this ParameterDatabase and then modify some of its parameters to reflect the settings in the meta-level individual.  The modification procedure is done via the method \method{modifyParameters(...)}, which is passed the individual and the database to modify.
+
+
+To modify the database, \method{modifyParameters(...)}, must first map this individual into the proper parameter value strings.  It does this by repeatedly calling the method \method{map(...)}, passing in the EvolutionState, the genome, the index of the gene of interest, and the Species (a FloatVectorSpecies).  The Species is passed in to enable \method{map(...)} to call \method{minGene(...)} and \method{maxGene(...)} if necessary.  \method{map(...)} will also certainly use the \variable{domain} instance variable, of course.  This method returns a String which holds the parameter value corresponding to the gene's numerical value. 
+
+
+\method{modifyParameters(...)} also must identify the parameter names: it does this by consulting the meta-level ParameterDatabase to identify the parameter names.  To do this, \method{modifyParameters(...)} must know the parameter base underlying the parameter names.  This is stored in the variable:
+
+\begin{verbatim}
+public Parameter base;
+\end{verbatim}
+
+(Forgive the overriding of the terms ``base'' and ``parameter'' here).  For example, the name of base parameter 1 is:
+
+\begin{verbatim}
+base.push(P_PARAM).push("1")
+\end{verbatim}
+
+All of these are opportunities for you to customize the parameter loading facility.  For example, if you need another kind of parameter type, you'd override \method{loadDomain(...)} to load new kinds of information into the \variable{domain} array, and then override \method{map(...)} to map genes using this new kind of parameter to appropriate strings.  
+
+Finally, \method{modifyParameters(...)} gives you nearly full control over the mapping process.  But note that if you override \method{modifyParameters(...)}, you'll also need to override \method{describe(...)} in a similar fashion.  See the source code for MetaProblem to work through this, including certain locks.  \method{describe(...)} normally prints out the parameters and values corresponding to the given Individual, then also prints out the best underlying (base-level) individual discovered, which is stored in the array...
+
+\begin{verbatim}
+public Individual bestUnderlyingIndividual[];  // per subpopulation
+\end{verbatim}
+
+One last method you might be interested in overriding: \method{combine(...)}.  This method is responsible for taking multiple fitness results and combining them into a final fitness for a meta-level individual.  The default form calls \method{fitness.setToMeanOf(...)} to combine them using their average.  But you can change this if you like.
+
+\begin{methods}{ec.eval.MetaProblem}
+\mthd{protected void loadDomain(EvolutionState \textit{state}, Parameter \textit{base})}
+Constucts the \variable{domain} array from the given parameter database.
+
+\mthd{public void modifyParameters(EvolutionState \textit{state}, ParameterDatabase \textit{database}, int \textit{run}, Individual \textit{metaIndividual})}
+Given a ParameterDatabase to modify, and an Individual, extracts the parameters from the individual and sets them in the database.  The Individual is normally a DoubleVectorIndividual.
+
+\mthd{public void describe(EvolutionState \textit{state}, Individual \textit{ind}, int \textit{subpopulation}, int \textit{threadnum}, int \textit{log})}
+Given an Individual, extracts the parameters from the individual and prints them and their values to the log.  Then prints the best ``underlying individual'' so far (the fittest base-level Individual discovered).  The Individual is normally a DoubleVectorIndividual.
+
+\mthd{protected String map(EvolutionState \textit{state}, double[] \textit{genome}, FloatVectorSpecies \textit{species}, int \textit{index})}  Given a genome and gene index, maps the gene into a String value corresponding to a base-level parameter and returns it.
+
+\mthd{public void combine(EvolutionState \textit{state}, Fitness[] \textit{runs}, Fitness \textit{finalFitness})}
+Combines multiple fitness values into a single final fitness, typically by setting it to their mean.
+
+\end{methods}
+
+
+
+
 
 
 \section{Resets (The \package{ec.evolve} Package)}
