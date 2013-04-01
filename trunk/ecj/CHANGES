@@ -2074,3 +2074,7 @@ Version		Change Log
 		used to be, incorrectly, just subpopulation 0).
 	Bug fixes to comments of PAGIE1 and to implementation of PAGIE2.
 		Thanks to Tom Helmuth <thelmuth@cs.umass.edu>
+	Revision to SimpleEvaluator to allow for fine-grained multithreaded
+		evaluation.  Thanks to Ralf Buschermöhle 
+		<lobequadrat@googlemail.com> for the idea and impetus.
+
