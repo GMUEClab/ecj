@@ -492,6 +492,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
         }
                 
         
+    // magic arrays for the Langerman problem    
+        
     private double[][] afox10 = {
         {9.681, 0.667, 4.783, 9.095, 3.517, 9.325, 6.544, 0.211, 5.122, 2.020},
             {9.400, 2.041, 3.788, 7.931, 2.882, 2.672, 3.568, 1.284, 7.033, 7.374},

@@ -9,6 +9,14 @@ parent.1 = ecsuite.params
 # to state that the pipeline will be just mutation plus ESSelection,
 # which we do below.
 
-pop.subpop.0.species.pipe.source.0 = ec.es.ESSelection
+es.mu.0 =                               250
+es.lambda.0 =                           1000
+
+# Since we're sharing ecsuite.params, this version just does
+# crossover followed by mutation.  The inputs to the crossover
+# operator are ESSelection and a standard tournament selector
+
+pop.subpop.0.species.pipe.source.0.source.0 = ec.es.ESSelection
+pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
 
 generations = 1000
