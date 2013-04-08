@@ -1,0 +1,216 @@
+parent.0 = ../../gp/koza/koza.params
+
+
+
+
+
+#### FUNCTION SET
+
+gp.fs.size = 3
+
+### Function set for the result producing branch
+gp.fs.0 = ec.gp.GPFunctionSet
+gp.fs.0.name = f0
+gp.fs.0.size = 16
+gp.fs.0.func.0 = ec.app.majority.func.X
+gp.fs.0.func.0.nc = nc0
+gp.fs.0.func.1 = ec.app.majority.func.E
+gp.fs.0.func.1.nc = nc0
+gp.fs.0.func.2 = ec.app.majority.func.EE
+gp.fs.0.func.2.nc = nc0
+gp.fs.0.func.3 = ec.app.majority.func.EEE
+gp.fs.0.func.3.nc = nc0
+gp.fs.0.func.4 = ec.app.majority.func.W
+gp.fs.0.func.4.nc = nc0
+gp.fs.0.func.5 = ec.app.majority.func.WW
+gp.fs.0.func.5.nc = nc0
+gp.fs.0.func.6 = ec.app.majority.func.WWW
+gp.fs.0.func.6.nc = nc0
+gp.fs.0.func.7 = ec.app.majority.func.And
+gp.fs.0.func.7.nc = nc2
+gp.fs.0.func.8 = ec.app.majority.func.Or
+gp.fs.0.func.8.nc = nc2
+gp.fs.0.func.9 = ec.app.majority.func.Nand
+gp.fs.0.func.9.nc = nc2
+gp.fs.0.func.10 = ec.app.majority.func.Nor
+gp.fs.0.func.10.nc = nc2
+gp.fs.0.func.11 = ec.app.majority.func.Not
+gp.fs.0.func.11.nc = nc1
+gp.fs.0.func.12 = ec.app.majority.func.If
+gp.fs.0.func.12.nc = nc3
+gp.fs.0.func.13 = ec.app.majority.func.Xor
+gp.fs.0.func.13.nc = nc2
+# The ADF0 Tree
+gp.fs.0.func.14 = ec.gp.ADF
+gp.fs.0.func.14.nc = nc2
+gp.fs.0.func.14.tree = 1
+gp.fs.0.func.14.name = ADF0
+# The ADF1 Tree
+gp.fs.0.func.15 = ec.gp.ADF
+gp.fs.0.func.15.nc = nc3
+gp.fs.0.func.15.tree = 2
+gp.fs.0.func.15.name = ADF1
+
+
+### Function set for ADF 0
+gp.fs.1 = ec.gp.GPFunctionSet
+gp.fs.1.name = f1
+gp.fs.1.size = 16
+gp.fs.1.func.0 = ec.app.majority.func.X
+gp.fs.1.func.0.nc = nc0
+gp.fs.1.func.1 = ec.app.majority.func.E
+gp.fs.1.func.1.nc = nc0
+gp.fs.1.func.2 = ec.app.majority.func.EE
+gp.fs.1.func.2.nc = nc0
+gp.fs.1.func.3 = ec.app.majority.func.EEE
+gp.fs.1.func.3.nc = nc0
+gp.fs.1.func.4 = ec.app.majority.func.W
+gp.fs.1.func.4.nc = nc0
+gp.fs.1.func.5 = ec.app.majority.func.WW
+gp.fs.1.func.5.nc = nc0
+gp.fs.1.func.6 = ec.app.majority.func.WWW
+gp.fs.1.func.6.nc = nc0
+gp.fs.1.func.7 = ec.app.majority.func.And
+gp.fs.1.func.7.nc = nc2
+gp.fs.1.func.8 = ec.app.majority.func.Or
+gp.fs.1.func.8.nc = nc2
+gp.fs.1.func.9 = ec.app.majority.func.Nand
+gp.fs.1.func.9.nc = nc2
+gp.fs.1.func.10 = ec.app.majority.func.Nor
+gp.fs.1.func.10.nc = nc2
+gp.fs.1.func.11 = ec.app.majority.func.Not
+gp.fs.1.func.11.nc = nc1
+gp.fs.1.func.12 = ec.app.majority.func.If
+gp.fs.1.func.12.nc = nc3
+gp.fs.1.func.13 = ec.app.majority.func.Xor
+gp.fs.1.func.13.nc = nc2
+# The ARG0 argument
+gp.fs.1.func.14 = ec.gp.ADFArgument
+gp.fs.1.func.14.nc = nc0
+gp.fs.1.func.14.name = ARG0
+gp.fs.1.func.14.arg = 0
+# The ARG1 argument
+gp.fs.1.func.15 = ec.gp.ADFArgument
+gp.fs.1.func.15.nc = nc0
+gp.fs.1.func.15.name = ARG1
+gp.fs.1.func.15.arg = 1
+
+
+
+### Function set for ADF 1
+gp.fs.2 = ec.gp.GPFunctionSet
+gp.fs.2.name = f2
+gp.fs.2.size = 18
+gp.fs.2.func.0 = ec.app.majority.func.X
+gp.fs.2.func.0.nc = nc0
+gp.fs.2.func.1 = ec.app.majority.func.E
+gp.fs.2.func.1.nc = nc0
+gp.fs.2.func.2 = ec.app.majority.func.EE
+gp.fs.2.func.2.nc = nc0
+gp.fs.2.func.3 = ec.app.majority.func.EEE
+gp.fs.2.func.3.nc = nc0
+gp.fs.2.func.4 = ec.app.majority.func.W
+gp.fs.2.func.4.nc = nc0
+gp.fs.2.func.5 = ec.app.majority.func.WW
+gp.fs.2.func.5.nc = nc0
+gp.fs.2.func.6 = ec.app.majority.func.WWW
+gp.fs.2.func.6.nc = nc0
+gp.fs.2.func.7 = ec.app.majority.func.And
+gp.fs.2.func.7.nc = nc2
+gp.fs.2.func.8 = ec.app.majority.func.Or
+gp.fs.2.func.8.nc = nc2
+gp.fs.2.func.9 = ec.app.majority.func.Nand
+gp.fs.2.func.9.nc = nc2
+gp.fs.2.func.10 = ec.app.majority.func.Nor
+gp.fs.2.func.10.nc = nc2
+gp.fs.2.func.11 = ec.app.majority.func.Not
+gp.fs.2.func.11.nc = nc1
+gp.fs.2.func.12 = ec.app.majority.func.If
+gp.fs.2.func.12.nc = nc3
+gp.fs.2.func.13 = ec.app.majority.func.Xor
+gp.fs.2.func.13.nc = nc2
+# The ARG0 argument
+gp.fs.2.func.14 = ec.gp.ADFArgument
+gp.fs.2.func.14.nc = nc0
+gp.fs.2.func.14.name = ARG0
+gp.fs.2.func.14.arg = 0
+# The ARG1 argument
+gp.fs.2.func.15 = ec.gp.ADFArgument
+gp.fs.2.func.15.nc = nc0
+gp.fs.2.func.15.name = ARG1
+gp.fs.2.func.15.arg = 1
+# The ARG2 argument
+gp.fs.2.func.16 = ec.gp.ADFArgument
+gp.fs.2.func.16.nc = nc0
+gp.fs.2.func.16.name = ARG2
+gp.fs.2.func.16.arg = 2
+# The ADF0 Tree
+gp.fs.2.func.17 = ec.gp.ADF
+gp.fs.2.func.17.nc = nc2
+gp.fs.2.func.17.tree = 1
+gp.fs.2.func.17.name = ADF0
+
+
+
+# We need three tree constraints because we have
+# three different function sets
+
+gp.tc.size = 3
+
+gp.tc.0 = ec.gp.GPTreeConstraints
+gp.tc.0.name = tc0
+gp.tc.0.fset = f0
+gp.tc.0.returns = nil
+gp.tc.0.init = ec.gp.koza.HalfBuilder
+gp.tc.0.init.growp = 0.5
+gp.tc.0.init.min = 2
+gp.tc.0.init.max = 6
+
+gp.tc.1 = ec.gp.GPTreeConstraints
+gp.tc.1.name = tc1
+gp.tc.1.fset = f1
+gp.tc.1.returns = nil
+gp.tc.1.init = ec.gp.koza.HalfBuilder
+gp.tc.1.init.growp = 0.5
+gp.tc.1.init.min = 2
+gp.tc.1.init.max = 6
+
+gp.tc.2 = ec.gp.GPTreeConstraints
+gp.tc.2.name = tc2
+gp.tc.2.fset = f2
+gp.tc.2.returns = nil
+gp.tc.2.init = ec.gp.koza.HalfBuilder
+gp.tc.2.init.growp = 0.5
+gp.tc.2.init.min = 2
+gp.tc.2.init.max = 6
+
+
+### We specify our trees here
+
+# "The result-producing branch" (RPB)
+pop.subpop.0.species.ind.numtrees = 3
+pop.subpop.0.species.ind.tree.0 = ec.gp.GPTree
+pop.subpop.0.species.ind.tree.0.tc = tc0
+# "ADF0 body" (ADF0)
+pop.subpop.0.species.ind.tree.1 = ec.gp.GPTree
+pop.subpop.0.species.ind.tree.1.tc = tc1
+# "ADF1 body" (ADF1)
+pop.subpop.0.species.ind.tree.2 = ec.gp.GPTree
+pop.subpop.0.species.ind.tree.2.tc = tc2
+
+
+
+#
+# We specify our problem here
+#
+
+eval.problem = ec.app.majority.MajorityGP
+eval.problem.data = ec.app.majority.MajorityData
+
+# 
+# We use SimpleFitness to be consistent with the GA version
+#
+pop.subpop.0.species.fitness = ec.simple.SimpleFitness
+
+stat.do-per-generation-description = true
+
