@@ -1,0 +1,16 @@
+parent.0 = ./mastermeta.params
+
+
+# This file is run like this:
+# java ec.eval.Slave -file slavemeta.params -p eval.one-shot=false -p eval.master.host=... 
+
+# If you'd like to assign a name, which makes debugging happier, a nice way to do it is
+# java ec.eval.Slave -file slavemeta.params -p eval.one-shot=false -p eval.slave.name=`hostname -s` -p eval.master.host=...
+
+# This shuts up the slave 100%, though it doesn't get rid of stat files
+eval.slave.muzzle = true
+
+# eliminate the slave's statistics file (it won't really matter anyway)
+stat.file = /dev/null
+stat.muzzle=true
+

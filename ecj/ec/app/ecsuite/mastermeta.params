@@ -1,0 +1,24 @@
+parent.0 = meta.params
+
+
+
+# RUN THIS LIKE THIS:
+# java ec.Evolve -file mastermeta.params
+
+
+
+
+# MASTERPROBLEM STUFF
+# These parameters are used to set up the master/slave evaluator.
+# One missing parameter is eval.master.host which should point to
+# the master.  Typically I specify eval.master.host at the command
+# line with the slave but you can hard-code it here if you like.
+
+eval.masterproblem = ec.eval.MasterProblem
+eval.master.port = 5000
+eval.masterproblem.job-size=1
+eval.masterproblem.max-jobs-per-slave=1
+eval.compression=true
+# eval.master.host = ...
+
+

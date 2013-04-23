@@ -1,0 +1,34 @@
+parent.0 = ecsuite.params
+
+# LOWER LEVEL STUFF IN META
+# This tells us not to write out to a statistics file
+stat.file = /dev/null
+stat.muzzle=true
+
+# TWEAKS TO THE PROBLEM
+eval.problem.type = rotated-griewank
+pop.subpop.0.species.min-gene =         -600
+pop.subpop.0.species.max-gene =         600
+pop.subpop.0.species.genome-size =      100
+pop.subpop.0.species.pipe =             ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0 =    ec.es.ESSelection
+pop.subpop.0.species.crossover-type =   one
+breed =                                 ec.es.MuCommaLambdaBreeder
+
+evaluations = 10000	
+
+# ARBITRARY DEFAULTS
+# This stuff will get overridden at the meta-level but we define it
+# here mostly for testing purposes
+
+generations = 500
+pop.subpop.0.species.mutation-prob = 1.0
+pop.subpop.0.species.mutation-type = gauss
+pop.subpop.0.species.mutation-stdev = 0.01
+pop.subpop.0.species.alternative-polynomial-version = false
+pop.subpop.0.species.mutation-distribution-index = 2
+pop.subpop.0.size = 100
+es.mu-fraction.0 = 0.2
+
+
+
