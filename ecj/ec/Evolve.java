@@ -324,7 +324,8 @@ public class Evolve
         This method does exactly that, presently with N=2. */
     public static MersenneTwisterFast primeGenerator(MersenneTwisterFast generator)
         {
-        for(int i = 0; i < 624 * 2; i++)
+        // 624 = MersenneTwisterFast.N  which is private duh
+        for(int i = 0; i < 624 * 2 + 1; i++)
             generator.nextInt();
         return generator;
         }

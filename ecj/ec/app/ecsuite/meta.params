@@ -5,6 +5,11 @@
 parent.0 = ../../ec.params
 
 
+### IMPORTANT NOTE.  A one-machine meta-level evolution is kind
+### of silly.  The real deal is master-slave.  See the ec/app/star/
+### directory an example of this.
+
+
 # We define the meta problem and its underlying EA parameter file
 
 eval.problem = ec.eval.MetaProblem

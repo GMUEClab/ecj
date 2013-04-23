@@ -1,4 +1,9 @@
-parent.0 = meta.params
+# Copyright 2013 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+
+parent.0 = ../ecsuite/meta.params
 
 
 
@@ -19,6 +24,3 @@ eval.master.port = 5000
 eval.masterproblem.job-size=1
 eval.masterproblem.max-jobs-per-slave=1
 eval.compression=true
-# eval.master.host = ...
-
-

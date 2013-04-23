@@ -60,7 +60,7 @@ public class RandomRestarts extends Statistics
         
         upperbound = state.parameters.getInt( base.push(P_RESTART_UPPERBOUND), null, 1);
 
-        if (state.parameters.exists(base.push(P_START)))
+        if (state.parameters.exists(base.push(P_START), null))
             {
             start = state.parameters.getInt(base.push(P_START), null, 0);
             if (start < 0) 

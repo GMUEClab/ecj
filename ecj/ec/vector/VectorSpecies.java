@@ -353,7 +353,7 @@ public class VectorSpecies extends Species
         int _duplicateRetries = state.parameters.getIntWithDefault(base.push(P_DUPLICATE_RETRIES), def.push(P_DUPLICATE_RETRIES), 0);
         if (_duplicateRetries < 0)
             {
-            state.output.fatal("Duplicate Retries, if defined must be a value >= 0", base.push(P_DUPLICATE_RETRIES), def.push(P_DUPLICATE_RETRIES));
+            state.output.fatal("Duplicate Retries, if defined, must be a value >= 0", base.push(P_DUPLICATE_RETRIES), def.push(P_DUPLICATE_RETRIES));
             }
         duplicateRetries = fill(new int[genomeSize + 1], _duplicateRetries);
         

@@ -62,15 +62,11 @@ import java.util.*;
 
 public class SteadyStateEvolutionState extends EvolutionState
     {
-    public static final String P_NUMEVALUATIONS = "evaluations";
     public static final String P_REPLACEMENT_PROBABILITY = "replacement-probability";
         
     /** Did we just start a new generation? */
     public boolean generationBoundary;
-    /** How many evaluations should we run for?  If set to UNDEFINED (0), we run for the number of generations instead. */
-    public long numEvaluations;
-    public static long UNDEFINED = 0;
-    /** how big is a generation? Set to the size of subpopulation 0 of the initial population. */
+  /** how big is a generation? Set to the size of subpopulation 0 of the initial population. */
     public int generationSize;
     /** How many evaluations have we run so far? */
     public long evaluations;
@@ -104,10 +100,6 @@ public class SteadyStateEvolutionState extends EvolutionState
         
         checkStatistics(state, statistics, base);
         
-        numEvaluations = parameters.getLong(new Parameter(P_NUMEVALUATIONS),null,1);
-        if (numEvaluations == 0)
-            output.message("Number of evaluations not defined; using number of generations");
-            
         if (parameters.exists(SteadyStateDefaults.base().push(P_REPLACEMENT_PROBABILITY),null))
             {
             replacementProbability = parameters.getDoubleWithMax(SteadyStateDefaults.base().push(P_REPLACEMENT_PROBABILITY),null,0.0, 1.0);
@@ -148,8 +140,6 @@ public class SteadyStateEvolutionState extends EvolutionState
         population = initializer.setupPopulation(this, 0);  // unthreaded.  We're NOT initializing here, just setting up.
 
         // INITIALIZE VARIABLES
-        if (numEvaluations > 0 && numEvaluations < population.subpops[0].individuals.length)
-            output.fatal("Number of evaluations desired is smaller than the initial population of individuals");
         generationSize = 0;
         generationBoundary = false;
         firstTime = true; 
@@ -165,6 +155,9 @@ public class SteadyStateEvolutionState extends EvolutionState
             individualCount[sub]=0;
             generationSize += population.subpops[sub].individuals.length;  // so our sum total 'generationSize' will be the initial total number of individuals
             }
+
+        if (numEvaluations > UNDEFINED && numEvaluations < generationSize)
+            output.fatal("Number of evaluations desired is smaller than the initial population of individuals");
 
         // INITIALIZE CONTACTS -- done after initialization to allow
         // a hook for the user to do things in Initializer before
@@ -289,8 +282,8 @@ public class SteadyStateEvolutionState extends EvolutionState
             return R_SUCCESS;
             }
                 
-        if ((numEvaluations > 0 && evaluations >= numEvaluations) ||  // using numEvaluations
-            (numEvaluations <= 0 && generationBoundary && generation == numGenerations -1))  // not using numEvaluations
+        if ((numEvaluations > UNDEFINED && evaluations >= numEvaluations) ||  // using numEvaluations
+            (numEvaluations <= UNDEFINED && generationBoundary && generation == numGenerations -1))  // not using numEvaluations
             {
             return R_FAILURE;
             }

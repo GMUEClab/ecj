@@ -2075,6 +2075,15 @@ Version		Change Log
 	Bug fixes to comments of PAGIE1 and to implementation of PAGIE2.
 		Thanks to Tom Helmuth <thelmuth@cs.umass.edu>
 	Revision to SimpleEvaluator to allow for fine-grained multithreaded
-		evaluation.  Thanks to Ralf Buschermöhle 
+		evaluation.  Slight tweaks to SteadyStateEvaluator to be
+		consistent with it.  Thanks to Ralf Buschermöhle 
 		<lobequadrat@googlemail.com> for the idea and impetus.
-
+	Fixed minor documentation errors
+	Added Khaled Talukder as a major contributor
+	Added majority problem
+	n-frac changed to n-fraction in BestSelection documentation and errors
+	Removed hack in SlaveConnection
+	Made parameters.exists(param) deprecated.  Updated RandomRestarts
+	Fixed bug in duplicate retries on all vector individuals	
+	KozaFitness checks for negative fitnesses now even though it should
+		be impossible.

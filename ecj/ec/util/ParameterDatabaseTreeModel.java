@@ -49,9 +49,6 @@ public class ParameterDatabaseTreeModel
         this.visibleLeaves = visibleLeaves;
         }
     
-    /**
-     * @return
-     */
     public boolean getVisibleLeaves() {
         return visibleLeaves;
         }

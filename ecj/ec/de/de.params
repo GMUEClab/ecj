@@ -25,3 +25,5 @@ breed.f-noise = 0.001
 # only ud by Rand1EitherOrDEBreeder
 breed.pf = 0.5
 
+# How often we should attempt to create something within valid bounds
+breed.out-of-bounds-retries = 10

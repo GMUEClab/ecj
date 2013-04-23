@@ -135,7 +135,7 @@ public abstract class Problem implements Prototype
         return;
         }
 
-    /** @deprecated.  Use the version without verbosity */
+    /** @deprecated  Use the version without verbosity */
     public final void describe(final Individual ind, 
         final EvolutionState state, 
         final int subpopulation,

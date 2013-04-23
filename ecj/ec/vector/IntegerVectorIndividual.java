@@ -245,7 +245,7 @@ public class IntegerVectorIndividual extends VectorIndividual
             if (state.random[thread].nextBoolean(s.mutationProbability[x]))
                 {
                 int old = genome[x];
-                for(int retries = 0; retries < s.duplicateRetries[x]; retries++)
+                for(int retries = 0; retries < s.duplicateRetries(x) + 1; retries++)
                     {
                     switch(s.mutationType(x))
                         {
@@ -276,7 +276,7 @@ public class IntegerVectorIndividual extends VectorIndividual
 							break;
                         }
                     if (genome[x] != old) break;
-                    else genome[x] = old;  // try again
+                    // else genome[x] = old;  // try again
                     }
                 }
         }
@@ -307,7 +307,7 @@ public class IntegerVectorIndividual extends VectorIndividual
         {
         StringBuilder s = new StringBuilder();
         for( int i = 0 ; i < genome.length ; i++ )
-            { s.append(" "); s.append(genome[i]); }
+            { if (i > 0) s.append(" "); s.append(genome[i]); }
         return s.toString();
         }
         

@@ -183,7 +183,7 @@ public class BitVectorIndividual extends VectorIndividual
             if (state.random[thread].nextBoolean(s.mutationProbability[x]))
                 {
                 boolean old = genome[x];
-                for(int retries = 0; retries < s.duplicateRetries[x]; retries++)
+                for(int retries = 0; retries < s.duplicateRetries(x) + 1; retries++)
                     {
                     switch(s.mutationType(x))
                         {
@@ -195,7 +195,7 @@ public class BitVectorIndividual extends VectorIndividual
                             break;
                         }
                     if (genome[x] != old) break;
-                    else genome[x] = old;  // try again
+                    // else genome[x] = old;  // try again
                     }
                 }
             }

@@ -45,7 +45,7 @@ import ec.*;
  <tr><td valign=top><i>base.</i><tt>n</tt><br>
  <font size=-1> int > 0 </font></td>
  <td valign=top>(the number of best-individuals to select from)</td></tr>
- <tr><td valign=top><i>base.</i><tt>n-frac</tt><br>
+ <tr><td valign=top><i>base.</i><tt>n-fraction</tt><br>
  <font size=-1> 0.0 <= float < 1.0 (default is 1)</font></td>
  <td valign=top>(the number of best-individuals to select from, as a fraction of the total population)</td></tr>
  </table>
@@ -63,7 +63,7 @@ public class BestSelection extends SelectionMethod
     public static final String P_BEST = "best";
     
     public static final String P_N = "n";
-    public static final String P_N_FRAC = "n-fraction";
+    public static final String P_N_FRACTION = "n-fraction";
     public static final String P_PICKWORST = "pick-worst";
     public static final String P_SIZE = "size";
 
@@ -103,16 +103,16 @@ public class BestSelection extends SelectionMethod
             if (bestn == 0 )
                 state.output.fatal("n must be an integer greater than 0", base.push(P_N),def.push(P_N));
             }
-        else if (state.parameters.exists(base.push(P_N_FRAC),def.push(P_N_FRAC)) )
+        else if (state.parameters.exists(base.push(P_N_FRACTION),def.push(P_N_FRACTION)) )
             {
             if (state.parameters.exists(base.push(P_N),def.push(P_N)) )
-                state.output.fatal("Both n and n-frac specified for BestSelection.", base.push(P_N),def.push(P_N));
+                state.output.fatal("Both n and n-fraction specified for BestSelection.", base.push(P_N),def.push(P_N));
             bestnFrac =
-                state.parameters.getDoubleWithMax(base.push(P_N_FRAC),def.push(P_N_FRAC),0.0,1.0);
+                state.parameters.getDoubleWithMax(base.push(P_N_FRACTION),def.push(P_N_FRACTION),0.0,1.0);
             if (bestnFrac <= 0.0)
-                state.output.fatal("n-frac must be a floating-point value greater than 0.0 and <= 1.0", base.push(P_N_FRAC),def.push(P_N_FRAC));
+                state.output.fatal("n-fraction must be a floating-point value greater than 0.0 and <= 1.0", base.push(P_N_FRACTION),def.push(P_N_FRACTION));
             }
-        else state.output.fatal("Either n or n-frac must be defined for BestSelection.", base.push(P_N),def.push(P_N));
+        else state.output.fatal("Either n or n-fraction must be defined for BestSelection.", base.push(P_N),def.push(P_N));
                 
         pickWorst = state.parameters.getBoolean(base.push(P_PICKWORST),def.push(P_PICKWORST),false);
 
@@ -170,7 +170,6 @@ public class BestSelection extends SelectionMethod
         if (bestnFrac != NOT_SET)
             {
             bestn = (int) Math.max(Math.floor(s.population.subpops[subpopulation].individuals.length * bestnFrac), 1);
-            System.err.println("Bestn is " + bestn);
             }
         }
 

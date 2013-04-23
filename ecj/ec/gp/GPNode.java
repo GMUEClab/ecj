@@ -1032,7 +1032,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
     /** Prints out the tree on a single line, with no ending \n, in a fashion that can
         be read in later by computer. O(n).  
         You should call this method with printbytes == 0. 
-        @Deprecated Verbosity no longer has an effect.
+        @deprecated Verbosity no longer has an effect.
     */
     
     public int printRootedTree(final EvolutionState state,
