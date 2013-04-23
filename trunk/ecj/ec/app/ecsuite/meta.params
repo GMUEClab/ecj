@@ -1,0 +1,147 @@
+# Copyright 2013 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../ec.params
+
+
+# We define the meta problem and its underlying EA parameter file
+
+eval.problem = ec.eval.MetaProblem
+eval.problem.file = base.params
+
+
+# We're only doing one test per meta-individual to assess its fitness.
+# This can be done in one of two ways.  Either we have the MetaProblem
+# test some N times (eval.problem.runs), or we have the Evaluator 
+# create some N temporary copies of the individual and test them all,
+# then re-merge their fitnesses (eval.num-tests and eval.merge).
+# The second approach is somewhat more costly but it's the only
+# way to do it properly in a parallel environment -- see the Manual.
+# at any rate, below we're only doing on test, so it doesn't matter:
+
+eval.num-tests = 1
+eval.merge = mean
+eval.problem.runs = 1
+
+
+# Meta-individuals are stochastic, so we always want to reevaluate them
+eval.problem.reevaluate = true
+
+
+# We'll muzzle the problem to be a bit cleaner
+eval.problem.muzzle = true
+
+
+# Meta-individuals are costly, so we might as well do N threads
+evalthreads = auto
+
+
+# Here's our standard meta-level EC.  You can change this to whatever
+# you want.  Here we're doing a kind of (mu,lambda) using a trick with
+# elitism and BestSelection.
+
+state = 				ec.simple.SimpleEvolutionState
+init = 					ec.simple.SimpleInitializer
+finish = 	        		ec.simple.SimpleFinisher
+exch = 					ec.simple.SimpleExchanger
+breed =					ec.simple.SimpleBreeder
+breed.elite-frac.0 =			0.125
+breed.reevaluate-elites.0 =		true
+eval =					ec.simple.SimpleEvaluator
+stat =					ec.simple.SimpleStatistics
+generations =				100
+quit-on-run-complete =			true
+pop = 					ec.Population
+pop.subpop.0.size =                     30
+pop.subpops =				1
+pop.subpop.0 = 				ec.Subpopulation
+pop.subpop.0.duplicate-retries =	0
+pop.subpop.0.species =                  ec.vector.FloatVectorSpecies
+pop.subpop.0.species.pipe = 		ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0 = 	ec.select.BestSelection
+# we're basically doing 1/8 mu
+pop.subpop.0.species.pipe.source.0.n-fraction =     0.125
+pop.subpop.0.species.pipe.source.0.size =       1
+pop.subpop.0.species.fitness =		ec.simple.SimpleFitness
+pop.subpop.0.species.ind =		ec.vector.DoubleVectorIndividual
+# this is not used but is included to quiet a warning
+pop.subpop.0.species.crossover-type = one
+
+
+# Our statistics are being written out to $meta.stat rather than $out.stat,
+# in case we forgot to muzzle the underlying base evolutionary algorithm,
+# which is then likely writing to $out.stat.
+stat.file                               $meta.stat
+
+# We would like to print out the parameters of the best individual each
+# generation, and this is how it's done.
+stat.do-per-generation-description =    true
+
+
+
+
+# Here are the default mutation parameters for our meta-level individuals
+# In many cases we override these anyway
+
+pop.subpop.0.species.mutation-prob = 0.25
+pop.subpop.0.species.mutation-type = gauss
+pop.subpop.0.species.mutation-stdev = 0.1
+pop.subpop.0.species.mutation-bounded = true
+pop.subpop.0.species.min-gene = 0.0
+pop.subpop.0.species.max-gene = 1.0
+
+
+
+# We're doing seven parameters
+
+pop.subpop.0.species.genome-size = 7
+eval.problem.num-params = 7
+
+eval.problem.param.0 = pop.subpop.0.species.mutation-prob
+eval.problem.param.0.type = float
+
+eval.problem.param.1 = pop.subpop.0.species.mutation-stdev
+eval.problem.param.1.type = float
+
+eval.problem.param.2 = pop.subpop.0.species.mutation-type
+eval.problem.param.2.num-vals = 3
+eval.problem.param.2.val.0 = reset
+eval.problem.param.2.val.1 = gauss
+eval.problem.param.2.val.2 = polynomial
+pop.subpop.0.species.min-gene.2 = 0
+pop.subpop.0.species.max-gene.2 = 2
+pop.subpop.0.species.mutation-type.2 = integer-reset
+
+eval.problem.param.3 = pop.subpop.0.species.mutation-distribution-index
+eval.problem.param.3.type = integer
+pop.subpop.0.species.min-gene.3 = 0
+pop.subpop.0.species.max-gene.3 = 30
+pop.subpop.0.species.mutation-type.3 = integer-random-walk
+pop.subpop.0.species.random-walk-probability.3 = 0.5
+
+eval.problem.param.4 = pop.subpop.0.species.alternative-polynomial-version
+eval.problem.param.4.type = boolean
+pop.subpop.0.species.mutation-type.4 = integer-reset
+
+eval.problem.param.5 = pop.subpop.0.size
+eval.problem.param.5.num-vals = 9
+eval.problem.param.5.val.0 = 1000
+eval.problem.param.5.val.1 = 500
+eval.problem.param.5.val.2 = 200
+eval.problem.param.5.val.3 = 100
+eval.problem.param.5.val.4 = 50
+eval.problem.param.5.val.5 = 20
+eval.problem.param.5.val.6 = 10
+eval.problem.param.5.val.7 = 5
+eval.problem.param.5.val.8 = 2
+pop.subpop.0.species.min-gene.5 = 0
+pop.subpop.0.species.max-gene.5 = 8
+pop.subpop.0.species.mutation-type.5 = integer-random-walk
+pop.subpop.0.species.random-walk-probability.5 = 0.5
+
+eval.problem.param.6 = es.mu-fraction.0
+eval.problem.param.6.type = float
+pop.subpop.0.species.min-gene.6 = 0.0
+pop.subpop.0.species.max-gene.6 = 0.5
+
