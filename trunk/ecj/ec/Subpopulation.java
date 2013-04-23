@@ -166,6 +166,7 @@ public class Subpopulation implements Group
         species.setup(state,base.push(P_SPECIES));
 
         // how big should our subpopulation be?
+        // Note that EvolutionState.setup() has similar code, so if you change this, change it there too.
         
         size = state.parameters.getInt(
             base.push(P_SUBPOPSIZE),def.push(P_SUBPOPSIZE),1);

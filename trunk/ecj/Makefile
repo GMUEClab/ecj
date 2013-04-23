@@ -36,6 +36,8 @@ ec/app/lawnmower/*.java \
 ec/app/lawnmower/func/*.java \
 ec/app/lid/*.java \
 ec/app/lid/func/*.java \
+ec/app/majority/*.java \
+ec/app/majority/func/*.java \
 ec/app/moosuite/*.java \
 ec/app/multiplexer/*.java \
 ec/app/multiplexer/func/*.java \

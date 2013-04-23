@@ -467,7 +467,6 @@ public class SizeFairCrossoverPipeline extends GPBreedingPipeline
      * @param tree2 Tree of parent2
      * @param state Evolution State passed for getting access to Random Object of MersenneTwiser
      * @param thread thread number
-     * @return
      */
     protected GPNode findFairSizeNode(ArrayList nodeToSubtrees,
         HashMap sizeToNodes,

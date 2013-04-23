@@ -1,3 +1,8 @@
+# Copyright 2013 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+
 parent.0 = ./mastermeta.params
 
 
@@ -13,4 +18,8 @@ eval.slave.muzzle = true
 # eliminate the slave's statistics file (it won't really matter anyway)
 stat.file = /dev/null
 stat.muzzle=true
+
+
+# Change this to the right host
+eval.master.host = 127.0.0.1
 

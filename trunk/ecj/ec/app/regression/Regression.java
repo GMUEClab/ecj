@@ -188,7 +188,8 @@ public class Regression extends GPProblem implements SimpleProblemForm
                     
                 if (result <= HIT_LEVEL) hits++;  // whatever!
 
-                sum += result;              }
+                sum += result;              
+                }
                 
             // the fitness better be KozaFitness!
             KozaFitness f = ((KozaFitness)ind.fitness);

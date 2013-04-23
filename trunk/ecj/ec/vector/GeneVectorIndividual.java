@@ -200,18 +200,18 @@ public class GeneVectorIndividual extends VectorIndividual
             {
             if (state.random[thread].nextBoolean(s.mutationProbability[x]))
                 {
-                if (s.duplicateRetries[x] <= 0)  // a little optimization
+                if (s.duplicateRetries(x) <= 0)  // a little optimization
                     {
                     genome[x].mutate(state,thread);
                     }
                 else    // argh
                     {
                     Gene old = (Gene)(genome[x].clone());
-                    for(int retries = 0; retries < s.duplicateRetries[x]; retries++)
+                    for(int retries = 0; retries < s.duplicateRetries(x) + 1; retries++)
                         {
                         genome[x].mutate(state,thread);
                         if (!genome[x].equals(old)) break;
-                        else genome[x] = old;  // try again
+                        else genome[x] = old;  // try again.  Note that we're copying back just in case.
                         }
                         
                     }
@@ -249,7 +249,7 @@ public class GeneVectorIndividual extends VectorIndividual
         {
         StringBuilder s = new StringBuilder();
         for( int i = 0 ; i < genome.length ; i++ )
-            { s.append(" "); s.append(genome[i].printGeneToStringForHumans()); }
+            { if (i > 0) s.append(" "); s.append(genome[i].printGeneToStringForHumans()); }
         return s.toString();
         }
         

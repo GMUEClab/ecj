@@ -72,8 +72,12 @@ import java.io.*;
  <p><b>Parameters</b><br>
  <table>
  <tr><td valign=top><tt>generations</tt><br>
- <font size=-1>int &gt;= 1</font></td>
- <td valign=top>(maximal number of generations to run.)</td></tr>
+ <font size=-1>int &gt;= 1</font> or undefined</td>
+ <td valign=top>(maximal number of generations to run.  Either this or evaluations must be set, but not both.)</td></tr>
+
+ <tr><td valign=top><tt>evaluations</tt><br>
+ <font size=-1>int &gt;= 1</font> or undefined</td>
+ <td valign=top>(maximal number of evaluations to run (in subpopulation 0).    Either this or generations must be set, but not both.)</td></tr>
 
  <tr><td valign=top><tt>checkpoint-modulo</tt><br>
  <font size=-1>int &gt;= 1</font></td>
@@ -206,8 +210,16 @@ public class EvolutionState implements Singleton
     
     /** The current generation of the population in the run.  For non-generational approaches, this probably should represent some kind of incrementing value, perhaps the number of individuals evaluated so far.  You probably shouldn't modify this. */
     public int generation;
-    /** The number of generations the evolutionary computation system will run until it ends.  If after the population has been evaluated the Evaluator returns true for runComplete(...), and quitOnRunComplete is true, then the system will quit.  You probably shouldn't modify this.  */
+    /** The number of generations the evolutionary computation system will run until it ends.
+    	If the user has specified a desired number of evaluations instead of generations, then
+    	this value will not be valid until after the first generation has been created (but before
+    	it has bene evaluated).
+    	If after the population has been evaluated the Evaluator returns true for runComplete(...), and quitOnRunComplete is true, then the system will quit.  You probably shouldn't modify this.  */
     public int numGenerations;
+
+    public static final int UNDEFINED = 0;
+    /** How many evaluations should we run for?  If set to UNDEFINED (0), we run for the number of generations instead. */
+    public long numEvaluations = UNDEFINED;
 
     /** The current population.  This is <i>not</i> a singleton object, and may be replaced after every generation in a generational approach. You should only access this in a read-only fashion.  */
     public Population population;
@@ -252,12 +264,13 @@ public class EvolutionState implements Singleton
     public final static String P_STATISTICS = "stat";
     public final static String P_EXCHANGER = "exch";
     public final static String P_GENERATIONS = "generations";
+    public static final String P_EVALUATIONS = "evaluations";
     public final static String P_QUITONRUNCOMPLETE = "quit-on-run-complete";
     public final static String P_CHECKPOINTPREFIX = "checkpoint-prefix";
-    final static String P_CHECKPOINTPREFIX_OLD = "prefix";
     public final static String P_CHECKPOINTMODULO = "checkpoint-modulo";
     public final static String P_CHECKPOINTDIRECTORY = "checkpoint-directory";
     public final static String P_CHECKPOINT = "checkpoint";
+    final static String P_CHECKPOINTPREFIX_OLD = "prefix";
 
     /** This will be called to create your evolution state; immediately
         after the constructor is called,
@@ -323,10 +336,34 @@ public class EvolutionState implements Singleton
             }
         else checkpointDirectory = null;
             
-        p = new Parameter(P_GENERATIONS);
-        numGenerations = parameters.getInt(p,null,1);
-        if (numGenerations==0)
-            output.fatal("The number of generations must be an integer >0.",p);
+        
+        // load evaluations, or generations, or both
+            
+        p = new Parameter(P_EVALUATIONS);
+        if (parameters.exists(p, null))
+        	{
+       		numEvaluations = parameters.getInt(p, null, 1);  // 0 would be UNDEFINED
+       		if (numEvaluations <= 0)
+       			output.fatal("If defined, the number of evaluations must be an integer >= 1", p, null);
+       		}
+		
+		p = new Parameter(P_GENERATIONS);
+		if (parameters.exists(p, null))
+			{
+			numGenerations = parameters.getInt(p, null, 1);  // 0 would be UDEFINED			
+				
+			if (numGenerations <= 0)
+				output.fatal("If defined, the number of generations must be an integer >= 1.", p, null);
+
+			if (numEvaluations != UNDEFINED)  // both defined
+				{
+				state.output.warning("Both generations and evaluations defined: generations will be ignored and computed from the evaluations.");
+				numGenerations = UNDEFINED;
+				}
+			}
+		else if (numEvaluations == UNDEFINED)  // uh oh, something must be defined
+			output.fatal("Either evaluations or generations must be defined.", new Parameter(P_GENERATIONS), new Parameter(P_EVALUATIONS));
+
         
         p=new Parameter(P_QUITONRUNCOMPLETE);
         quitOnRunComplete = parameters.getBoolean(p,null,false);

@@ -33,7 +33,7 @@ public class ThreadPool
         public PoolThread()
             {
             super();
-            this.setDaemon(true);                           // we make sure the thread dies when the 
+            this.setDaemon(true);                           // we make sure the thread dies when the program dies
             state = STATE_FINISHED;
             start();
             }
@@ -103,6 +103,7 @@ public class ThreadPool
             }
         if (p == null)
             p = new PoolThread();   // couldn't get one from list
+
         if (name == null) name = "";
         p.setName(name);
         p.go(run);

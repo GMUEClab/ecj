@@ -420,7 +420,7 @@ public class MuCommaLambdaBreeder extends Breeder
                 state.output.fatal("The Breeding Pipeline of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops[subpop].species.getClass().getName() + " or fitness " + newpop.subpops[subpop].species.f_prototype );
             bp.prepareToProduce(state,subpop,threadnum);
             if (count[threadnum] == 0)  // the ESSelection didn't set it to nonzero to inform us of his existence
-                state.output.warning("Whoa!  Breeding Pipeline for subpop " + subpop + " doesn't have an ESSelection, but is being used by MuCommaLambdaBreeder or MuPlusLambdaBreeder.  That's probably not right.");
+                state.output.warnOnce("Whoa!  Breeding Pipeline for subpop " + subpop + " doesn't have an ESSelection, but is being used by MuCommaLambdaBreeder or MuPlusLambdaBreeder.  That's probably not right.");
             // reset again
             count[threadnum] = 0;
         

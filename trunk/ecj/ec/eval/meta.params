@@ -1,0 +1,78 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../ec.params
+
+# Top level EA class
+eval.problem = ec.eval.MetaProblem
+
+# Bottom level EA algorithm whose optimized parameters that we are going to find out.
+# eval.problem.file = ../app/ecsuite/ecsuite.params
+eval.problem.file = metaec.params
+
+# Each parameter settings will be tested for 10 times
+eval.problem.runs = 1
+
+# Because evaluations are noisy and random, you will probably want to guarantee that individuals
+# are reevaluated if they show up again in a later generation. 
+eval.problem.reevaluate = false
+
+# Warnings, messages, and errors generated from the second-level system are ordinarily not printed
+# to the screen because it is so costly.  This may make it problematic to debug initially.  To force
+# such errors to be printed as normal, you can set (in the top-level parameters):
+eval.problem.muzzle = true
+
+# ???
+evalthreads = auto
+
+state = 					ec.simple.SimpleEvolutionState
+init = 						ec.simple.SimpleInitializer
+finish = 	        			ec.simple.SimpleFinisher
+exch = 						ec.simple.SimpleExchanger
+breed =						ec.simple.SimpleBreeder
+breed.elite.0 =					1
+# breed.reevaluate-elites.0 =			true
+eval =						ec.simple.SimpleEvaluator
+stat =						ec.simple.SimpleShortStatistics
+generations =					20
+quit-on-run-complete =				true
+pop = 						ec.Population
+pop.subpops =					1
+pop.subpop.0 = 					ec.Subpopulation
+pop.subpop.0.duplicate-retries =		0
+pop.subpop.0.species =              		ec.vector.FloatVectorSpecies
+pop.subpop.0.species.pipe = 			ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0 = 		ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.size = 	20
+
+pop.subpop.0.species.fitness =			ec.simple.SimpleFitness
+pop.subpop.0.species.ind =			ec.vector.DoubleVectorIndividual
+
+# you can change these to whatever tickles your fancy
+# Here we are optimizing only two parameters, namely mutation probablities and its std deviation.
+pop.subpop.0.species.min-gene =		0.0
+pop.subpop.0.species.max-gene =		1.0
+pop.subpop.0.species.genome-size = 	2
+eval.problem.num-params = 		2
+
+eval.problem.param.0 =			pop.subpop.0.species.mutation-prob
+eval.problem.param.0.d-min = 		0
+eval.problem.param.0.d-max = 		1
+
+eval.problem.param.1 =			pop.subpop.0.species.mutation-stdev
+eval.problem.param.1.d-min = 	0
+eval.problem.param.1.d-max = 	1
+
+# Fixed parameters for the upper level meta EA
+pop.subpop.0.species.mutation-prob = 1.0
+pop.subpop.0.species.mutation-type = gauss
+pop.subpop.0.species.mutation-stdev = 0.05
+# this is not used but is included to quiet a warning
+pop.subpop.0.species.crossover-type = one
+
+# Population has 2 individuals, i.e. 2 underlying EC
+pop.subpop.0.size =	11
+
+# Meta EA statistics
+stat.file =		$meta.stat

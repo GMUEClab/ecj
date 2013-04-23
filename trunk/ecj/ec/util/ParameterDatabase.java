@@ -1912,7 +1912,7 @@ public class ParameterDatabase extends Properties implements Serializable
         }
 
     /** Returns true if parameter exist in the database
-        @ deprecated use exists(Parameter, null) 
+        @deprecated use exists(Parameter, null) 
     */
     public synchronized boolean exists(Parameter parameter) 
         {
@@ -2865,7 +2865,6 @@ public class ParameterDatabase extends Properties implements Serializable
 
     /**
      * Builds a TreeModel from the available property keys.   
-     * @return
      */
     public TreeModel buildTreeModel() 
         {

@@ -1,4 +1,4 @@
-This directory contains two examples for the ECJ master/slave evaluator.
+This directory contains three examples for the ECJ master/slave evaluator.
 See ec/eval/README for more information on how to run the evaluator
 and the ec/eval/master.params file for more parameter information and
 options.
@@ -44,3 +44,14 @@ MASTER:         java ec.Evolve -file coevolve2.master.params
 EACH SLAVE:     java ec.eval.Slave -file coevolve2.slave.params
 
 
+
+Meta-level Evolution -- an example of combining the meta-level
+evolutionary facility with the master-slave architecture.  You
+will need to change eval.master.host in slavemeta.params to the
+appropriate IP of the master machine.  By default it's
+127.0.0.1, which only works if all the slaves are on the
+same machine as the host; this configuration is likely only
+useful for testing purposes.
+
+MASTER:		java ec.Evolve -file mastermeta.params
+EACH SLAVE:	java ec.eval.Slave -file slavemeta.params

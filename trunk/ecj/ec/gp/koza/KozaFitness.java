@@ -120,7 +120,7 @@ public class KozaFitness extends Fitness
     
     public final boolean isIdealFitness()
         {
-        return standardizedFitness == 0.0f;
+        return standardizedFitness <= 0.0f;  // should always be == 0.0f, <0.0f is illegal, but just in case...
         }
     
     public boolean equivalentTo(final Fitness _fitness)
