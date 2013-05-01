@@ -2094,4 +2094,5 @@ Version		Change Log
 		nguyen-10 corrected in terms of range and sample points
 	lunacek added to ecsuite
 	Added mona
-
+	NSGA2Fitness and SPEA2Fitness printing changed so auxillary elements
+		are on their own lines and properly set up with preambles
