@@ -25,18 +25,14 @@ import ec.vector.*;
  */
 
 /**
-   Several standard Evolutionary Computation functions are implemented: Rastrigin, De Jong's test suite
-   F1-F4 problems (Sphere, Rosenbrock, Step, Noisy-Quartic), Booth (from [Schwefel, 1995]), and Griewangk.
+   Several standard Evolutionary Computation functions are implemented.
    As the SimpleFitness is used for maximization problems, the mapping f(x) --> -f(x) is used to transform
    the problems into maximization ones.
-
-   <p>Problems have been set up so that their traditional ranges are scaled so you can use a min-gene of -1.0
-   and a max-gene of 1.0
    
    <p><b>Parameters</b><br>
    <table>
    <tr><td valign=top><i>base</i>.<tt>type</tt><br>
-   <font size=-1>String, one of: rosenbrock rastrigin sphere step noisy-quartic kdj-f1 kdj-f2 kdj-f3 kdj-f4 booth median schwefel product [or] griewangk</font></td>
+   <font size=-1>String, one of: rosenbrock rastrigin sphere step noisy-quartic kdj-f1 kdj-f2 kdj-f3 kdj-f4 booth griewank median sum product schwefel min rotated-rastrigin rotated-schwefel rotated-griewank langerman lennard-jones</font></td>
    <td valign=top>(The vector problem to test against.  Some of the types are synonyms: kdj-f1 = sphere, kdj-f2 = rosenbrock, kdj-f3 = step, kdj-f4 = noisy-quartic.  "kdj" stands for "Ken DeJong", and the numbers are the problems in his test suite)</td></tr>
    </table>
 
@@ -67,6 +63,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final String V_ROTATED_SCHWEFEL = "rotated-schwefel";
     public static final String V_ROTATED_GRIEWANK = "rotated-griewank";
     public static final String V_LANGERMAN = "langerman" ;
+    public static final String V_LENNARDJONES = "lennard-jones" ;
 
     public static final int PROB_ROSENBROCK = 0;
     public static final int PROB_RASTRIGIN = 1;
@@ -84,6 +81,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final int PROB_ROTATED_SCHWEFEL = 13;
     public static final int PROB_ROTATED_GRIEWANK = 14;
     public static final int PROB_LANGERMAN = 15 ;
+    public static final int PROB_LENNARDJONES = 16 ;
+    
         
     public int problemType = PROB_ROSENBROCK;  // defaults on Rosenbrock
 
@@ -104,7 +103,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
     V_ROTATED_RASTRIGIN,
     V_ROTATED_SCHWEFEL,
     V_ROTATED_GRIEWANK,   
-    V_LANGERMAN
+    V_LANGERMAN,
+    V_LENNARDJONES
     };
 
     public static final double minRange[] = new double[]
@@ -124,7 +124,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
     -5.12,          // rotated-rastrigin
     -512.03,        // rotated-schwefel
     -600.0,         // rotated-griewank  
-    0               // langerman
+    0,              // langerman
+    -3.0			// lennard-jones
     };
 
     public static final double maxRange[] = new double[]
@@ -144,7 +145,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
     5.12,           // rotated-rastrigin
     511.97,         // rotated-schwefel
     600.0,          // rotated-griewank
-    10              // langerman
+    10,             // langerman
+    3.0				// lennard-jones
     };
                 
         
@@ -224,6 +226,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
             problemType = PROB_ROTATED_GRIEWANK;
         else if (wp.compareTo(V_LANGERMAN) == 0)
             problemType = PROB_LANGERMAN ;
+        else if (wp.compareTo(V_LENNARDJONES) == 0)
+            problemType = PROB_LENNARDJONES ;
 
         else state.output.fatal(
             "Invalid value for parameter, or parameter not found.\n" +
@@ -243,7 +247,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
             "  " + V_ROTATED_RASTRIGIN + "\n" + 
             "  " + V_ROTATED_SCHWEFEL + "\n" +
             "  " + V_ROTATED_GRIEWANK + "\n" +
-            "  " + V_LANGERMAN + "\n",
+            "  " + V_LANGERMAN + "\n" +
+            "  " + V_LENNARDJONES + "\n",
             base.push( P_WHICH_PROBLEM ) );
         }
 
@@ -312,6 +317,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
             case PROB_ROTATED_GRIEWANK:
             case PROB_MIN:
             case PROB_LANGERMAN:        // may be around -1.4
+            case PROB_LENNARDJONES:
             default:
                 return false;
             }
@@ -483,6 +489,32 @@ public class ECSuite extends Problem implements SimpleProblemForm
             return 0.0 - langerman(genome);
             }
 
+            case PROB_LENNARDJONES:
+            {
+	        int numAtoms = genome.length / 3;
+        	double v = 0.0 ;
+        	
+    	    for(int i = 0 ; i < numAtoms - 1 ; i++ )
+    	        {
+    	        for(int j = i + 1 ; j < numAtoms ; j++ )
+    	            {
+//    	            double d = dist(genome, i, j);
+					double a = genome[i * 3] - genome[j * 3];
+					double b = genome[i * 3 + 1] - genome[j * 3 + 1];
+					double c = genome[i * 3 + 2] - genome[j * 3 + 2];
+					
+					double d = Math.sqrt(a * a + b * b + c * c);
+
+    	            double r12 = Math.pow(d, -12.0);
+    	            double r6 = Math.pow(d, -6.0);
+   	    	     	double e = r12 - r6 ;
+    	            v += e ;
+              	 	}
+        	    }
+       	 	v *= -4.0 ;             
+			return v;
+            }
+
 
             default:
                 state.output.fatal( "ec.app.ecsuite.ECSuite has an invalid problem -- how on earth did that happen?" );
@@ -490,8 +522,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
             }
                 
         }
-                
-        
+    
     // magic arrays for the Langerman problem    
         
     private double[][] afox10 = {
