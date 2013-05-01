@@ -2090,3 +2090,5 @@ Version		Change Log
 	missing maximize[] array restored in MultiobjectiveFitness
 	missing randomWalkProbability[] array restored in IntegerVectorSpecies
 	Added Lennard-Jones problem to ecsuite	
+	nguyen-11 and nguyen-12 removed from Benchmarks, and nguyen-9 and
+		nguyen-10 corrected in terms of range and sample points
