@@ -248,7 +248,8 @@ public class MultiObjectiveFitness extends Fitness
         objectives = new float[numFitnesses];
         maxObjective = new float[numFitnesses];
         minObjective = new float[numFitnesses];
-
+		maximize = new boolean[numFitnesses];
+		
         for (int i = 0; i < numFitnesses; i++)
             {
             // load default globals
