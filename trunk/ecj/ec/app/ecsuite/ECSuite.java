@@ -20,8 +20,8 @@ import ec.vector.*;
  */
 
 /*
- * @author Liviu Panait and Sean Luke
- * @version 1.0
+ * @author Liviu Panait and Sean Luke and Khaled Talukder
+ * @version 2.0
  */
 
 /**
