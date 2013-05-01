@@ -2087,3 +2087,6 @@ Version		Change Log
 	Fixed bug in duplicate retries on all vector individuals	
 	KozaFitness checks for negative fitnesses now even though it should
 		be impossible.
+	missing maximize[] array restored in MultiobjectiveFitness
+	missing randomWalkProbability[] array restored in IntegerVectorSpecies
+	Added Lennard-Jones problem to ecsuite	
