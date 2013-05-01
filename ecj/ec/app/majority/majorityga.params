@@ -1,0 +1,47 @@
+parent.0 = ../../ec.params
+
+eval.problem = ec.app.majority.MajorityGA
+
+state = 				ec.simple.SimpleEvolutionState
+init = 					ec.simple.SimpleInitializer
+finish = 	        		ec.simple.SimpleFinisher
+exch = 					ec.simple.SimpleExchanger
+breed =					ec.simple.SimpleBreeder
+eval =					ec.simple.SimpleEvaluator
+stat =					ec.simple.SimpleStatistics
+#app.majority.MajorityStatistics
+generations =				80
+quit-on-run-complete =			true
+pop = 					ec.Population
+pop.subpops =				1
+pop.subpop.0 = 				ec.Subpopulation
+pop.subpop.0.duplicate-retries =	2
+pop.subpop.0.species =                  ec.vector.BitVectorSpecies
+pop.subpop.0.species.pipe = 		ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0 = 	ec.vector.breed.VectorCrossoverPipeline
+pop.subpop.0.species.pipe.source.0.source.0 = ec.select.BestSelection
+pop.subpop.0.species.pipe.source.0.source.0.n = 100
+pop.subpop.0.species.pipe.source.0.source.0.size = 1
+pop.subpop.0.species.pipe.source.0.source.1 = same
+
+pop.subpop.0.species.fitness =		ec.simple.SimpleFitness
+pop.subpop.0.species.ind =		ec.vector.BitVectorIndividual
+pop.subpop.0.species.mutation-bounded =	true
+pop.subpop.0.species.mutation-type = flip
+
+# It has to be 128 in order to include all the rules for a 7-neighborhood CA
+pop.subpop.0.species.genome-size = 	128
+quit-on-run-complete =				false
+
+# average of 2 flips
+pop.subpop.0.species.mutation-prob = 0.015625
+pop.subpop.0.species.crossover-type = one
+
+pop.subpop.0.size =			1000
+breed.elite.0 =				100
+
+stat.do-per-generation-description = true
+
+breed.reevaluate-elites.0 = true
+stat.file				$out.stat
+evalthreads = auto
