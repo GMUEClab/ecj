@@ -180,8 +180,16 @@ public class ECSuite extends Problem implements SimpleProblemForm
             {
             // Langerman has a maximum genome size of 10
             if (genome.length > 10)
-                state.output.fatal("The Langerman function requires that the genome size be a value from 1 to 10 inclusive.");
+                state.output.fatal("The Langerman function requires that the genome size be a value from 1 to 10 inclusive.  It is presently " + genome.length);
             } 
+
+        else if (problemType == PROB_LENNARDJONES)
+            {
+            // Lennard-Jones requires that its genomes be multiples of 3
+            if (genome.length % 3 != 0)
+                state.output.fatal("The Lennard-Jones function requires that the genome size be a multiple of 3.  It is presently " + genome.length);
+            } 
+
         }
     
     // nothing....
