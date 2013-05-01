@@ -1,0 +1,87 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../es/es.params
+
+# The mona problem takes two pictures: an input target picture to
+# approximate, and an output picture to write the approximation.
+# The input can be various formats (jpg is common) but the output
+# must be png.  Furthermore Mona won't just write out one output
+# file but multiple files with different numbers (1-MonaLisaOut.png,
+# 2-MonaLisaOut.png, etc.)
+eval.problem = ec.app.mona.Mona
+eval.problem.in = $MonaLisaSmall.jpg
+eval.problem.out = $MonaLisaOut.png
+
+# The number of vertices for each polygon is 6.  This affects two
+# parameters below which must be also adjusted of you change this,
+# so be careful.
+eval.problem.num-vertices = 6
+
+state = 				ec.simple.SimpleEvolutionState
+init = 					ec.simple.SimpleInitializer
+finish = 	        		ec.simple.SimpleFinisher
+exch = 					ec.simple.SimpleExchanger
+eval =					ec.simple.SimpleEvaluator
+stat =					ec.simple.SimpleStatistics
+breed = 				ec.es.MuPlusLambdaBreeder
+
+# Mona will run for an arbirarily long time (many hours).   So we make
+# a very big number here. 
+generations =				1000000
+quit-on-run-complete =			true
+pop = 					ec.Population
+pop.subpops =				1
+pop.subpop.0 = 				ec.Subpopulation
+pop.subpop.0.duplicate-retries =	2
+pop.subpop.0.species =                  ec.vector.FloatVectorSpecies
+
+
+# Though we won't do gaussian convolution (MonaVectorIndividual overrides the
+# mutation operator), we do need to specify a mutation type.  We WILL use the
+# standard deviation though.
+pop.subpop.0.species.mutation-type =	gauss
+pop.subpop.0.species.mutation-bounded = true
+pop.subpop.0.species.mutation-prob = 	0.001
+pop.subpop.0.species.mutation-stdev =   0.1
+pop.subpop.0.species.pipe = 		ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0 =             ec.vector.breed.VectorCrossoverPipeline
+pop.subpop.0.species.pipe.source.0.source.0 =	ec.es.ESSelection
+pop.subpop.0.species.pipe.source.0.source.1 = 	ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.1.size = 1
+pop.subpop.0.species.fitness =		ec.simple.SimpleFitness
+
+# Unused
+pop.subpop.0.species.crossover-type = any
+pop.subpop.0.species.crossover-prob =	0.1
+
+
+# We override DoubleVectorIndividual here in order to create a point mutation
+# operator special to the Mona problem.
+pop.subpop.0.species.ind =		ec.app.mona.MonaVectorIndividual
+pop.subpop.0.species.min-gene =	0.0
+pop.subpop.0.species.max-gene =	1.0
+
+
+# This number must be a 
+pop.subpop.0.species.genome-size =      800
+
+# Each unique polygon requires 4 genes for color, plus 2 genes for each vertex.
+# Since num-vertices is 6 above, 6 * 2 + 4 = 16, hence the chunk size below.
+
+pop.subpop.0.species.chunk-size =	16
+
+
+# We're doing (a 8+1) evolution strategy, but you might get better results
+# with as little as (1+1).
+pop.subpop.0.size =			32
+es.mu.0 = 				1
+es.lambda.0 = 				32
+stat.file =				$out.stat
+stat.num-children = 1
+stat.child.0 =				ec.app.mona.MonaStatistics
+
+
+evalthreads = auto
+eval.chunk-size = 1
