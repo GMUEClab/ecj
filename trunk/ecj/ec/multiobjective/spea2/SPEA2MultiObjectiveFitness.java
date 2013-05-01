@@ -53,7 +53,7 @@ public class SPEA2MultiObjectiveFitness extends MultiObjectiveFitness
 
     public String fitnessToStringForHumans()
         {
-        return super.fitnessToStringForHumans() + "\n" + "S=" + strength + " D=" + kthNNDistance + " " + SPEA2_FITNESS_PREAMBLE + fitness;
+        return super.fitnessToStringForHumans() + "\n" + SPEA2_STRENGTH_PREAMBLE + strength + "\n" + SPEA2_DISTANCE_PREAMBLE + kthNNDistance + " " + SPEA2_FITNESS_PREAMBLE + fitness;
         }
 
     public void readFitness(final EvolutionState state, final LineNumberReader reader) throws IOException

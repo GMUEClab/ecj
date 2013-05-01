@@ -110,11 +110,6 @@ import ec.*;
  * <p>The only parameter which can be specified this way in VectorSpecies is at present
  * <tt>mutation-probability</tt>.  However a number of parameters are specified this way
  * in subclasses. 
- *
- * <p>VectorSpecies is the native species for BitVectorIndividual.  It performs
- * mutations on BitVectorIndividual genes by simply randomizing (resetting).  Likewise, it performs
- * per-gene initialization through the same randomization procedure.
- *
  
  <p><b>Parameters</b><br>
  <table>

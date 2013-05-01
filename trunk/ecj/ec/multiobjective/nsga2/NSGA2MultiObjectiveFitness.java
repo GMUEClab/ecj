@@ -48,7 +48,7 @@ public class NSGA2MultiObjectiveFitness extends MultiObjectiveFitness
 
     public String fitnessToStringForHumans()
         {
-        return super.fitnessToStringForHumans() + "\n" + "R=" + rank + " S=" + sparsity;
+        return super.fitnessToStringForHumans() + "\n" + NSGA2_RANK_PREAMBLE + rank + "\n" + NSGA2_SPARSITY_PREAMBLE + sparsity;
         }
 
     public void readFitness(final EvolutionState state, final LineNumberReader reader) throws IOException
