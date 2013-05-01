@@ -29,8 +29,6 @@ import ec.vector.*;
 
 public class MajorityGA extends Problem implements SimpleProblemForm
     {
-
-
     CA ca = null;
 
     // How many trials in our training set
@@ -42,7 +40,6 @@ public class MajorityGA extends Problem implements SimpleProblemForm
     
     // How long can I run the CA if it's not converging?
     public static final int STEPS = 200;
-
 
     int[][] trials = new int[NUM_TRIALS][CA_WIDTH];
     int[] majorities = new int[NUM_TRIALS];
