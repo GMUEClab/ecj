@@ -25,11 +25,11 @@ public class Picture implements Cloneable, Serializable
     int[] xpoints = new int[0];
     int[] ypoints = new int[0];
 	
-	// This allows genes from 0...1 to go to -0.25 ... +1.25.
+	// This allows genes from 0...1 to go to -0.025 ... +1.025.
 	// which in turn makes it easy for polygons to have points off-screen
 	double extend(double value)
 		{
-		return (value * 1.5) - 0.25;
+		return (value * 1.05) - 0.025;
 		}
 
     // this is small enough to be inlined
