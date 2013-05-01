@@ -447,7 +447,7 @@ public class FloatVectorSpecies extends VectorSpecies
             _mutationType == C_INTEGER_RANDOM_WALK_MUTATION )
             {
             if (!state.parameters.exists(base.push(P_MUTATION_BOUNDED), def.push(P_MUTATION_BOUNDED)))
-                state.output.warning("FloatVectorSpecies is using gaussian, polynomial, or integer randomwalk mutation as its global mutation type, but " + P_MUTATION_BOUNDED + " is not defined.  Assuming 'true'");
+                state.output.warning("FloatVectorSpecies is using gaussian, polynomial, or integer random walk mutation as its global mutation type, but " + P_MUTATION_BOUNDED + " is not defined.  Assuming 'true'");
             boolean _mutationIsBounded = state.parameters.getBoolean(base.push(P_MUTATION_BOUNDED), def.push(P_MUTATION_BOUNDED), true);
             fill(mutationIsBounded, _mutationIsBounded);
             mutationIsBoundedDefined = true;
