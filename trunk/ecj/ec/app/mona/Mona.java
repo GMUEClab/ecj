@@ -1,3 +1,9 @@
+/*
+  Copyright 2013 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
+*/
+
 package ec.app.mona; 
 
 import ec.*; 

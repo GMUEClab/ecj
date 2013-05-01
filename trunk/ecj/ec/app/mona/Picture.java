@@ -1,3 +1,9 @@
+/*
+  Copyright 2013 by Sean Luke
+  Licensed under the Academic Free License version 3.0
+  See the file "LICENSE" for more information
+*/
+
 package ec.app.mona; 
 
 import java.awt.*;
@@ -8,11 +14,7 @@ import java.io.*;
 
 /** Picture contains two images: an ORIGINAL image which is loaded from a file, and
     writable IMAGE, which you scribble on and try to make as similar to the ORIGINAL.
-    Once the original is loaded, you can get the graphics for your scribbling image and
-    scribble to your heart's content.  For convenience we've added a mechanism for you
-    to just dump a triangle straight into the image too. You can also clear the scribbling image.  Then
-    you can get the error between the two images.  Finally, you can save the scribbling
-    image out to a PNG file or display the two side-by-side. */
+    */
 
 public class Picture implements Cloneable, Serializable
     {
@@ -108,7 +110,7 @@ public class Picture implements Cloneable, Serializable
         int[] data = new int[width * height];
         int len = data.length;
         for(int i = 0; i < len; i++)
-//        0xFFFFFFFF; 
+		// you could do opaque white also:        0xFFFFFFFF; 
             data[i] = 0xFF000000;  // totally opaque, but black
         image.getRaster().setDataElements(0,0,width,height, data);  // clears it out
         }
