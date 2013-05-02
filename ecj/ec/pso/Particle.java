@@ -5,6 +5,33 @@ import ec.vector.*;
 import ec.util.*;
 import java.util.* ;
 
+/*
+ * Particle.java
+ * Created: Thu May  2 17:09:40 EDT 2013
+ */
+
+/**
+ * Particle is a DoubleVectorIndividual with additional statistical information
+ * necessary to perform Particle Swarm Optimization.  Specifically, it has a 
+ * VELOCITY, a NEIGHBORHOOD of indexes of individuals, a NEIGHBORHOOD BEST genome
+ * and fitness, and a PERSONAL BEST genome and fitness.  These elements, plus the
+ * GLOBAL BEST genome and fitness found in PSOBreeder, are used to collectively
+ * update the particle's location in space.
+ *
+ * <p> Particle updates its location in two steps.  First, it gathers current
+ * neighborhood and personal best statistics via the update(...) method.  Then
+ * it updates the particle's velocity and location (genome) according to these
+ * statistics in the tweak(...) method.  Notice that neither of these methods is
+ * the defaultMutate(...) method used in DoubleVectorIndividual: this means that
+ * in *theory* you could rig up Particles to also be mutated if you thought that
+ * was a good reason.
+ * 
+ * <p> Many of the parameters passed into the tweak(...) method are based on
+ * weights determined by the PSOBreeder.
+ *
+ * @author Khaled Ahsan Talukder
+ */
+
 
 public class Particle extends DoubleVectorIndividual
     {
@@ -49,15 +76,15 @@ public class Particle extends DoubleVectorIndividual
             }
         
         // initialize neighborhood if it's not been created yet
-        if (neighborhood == null)
+        PSOBreeder psob = (PSOBreeder)(state.breeder);
+        if (neighborhood == null || psob.neighborhood == psob.C_NEIGHBORHOOD_RANDOM_EACH_TIME)
             {
-            PSOBreeder psob = (PSOBreeder)(state.breeder);
-            if(psob.neighborhood == psob.C_NEIGHBORHOOD_RANDOM) // "random" scheme is the only thing that is available for now
-                neighborhood = createRandomPattern(state.population.subpops[subpop].individuals.length,
-                    psob.neighborhoodSize, state.random[thread]);
-            else if(psob.neighborhood == psob.C_NEIGHBORHOOD_TOROIDAL)
-                neighborhood = createToroidalPattern(myindex, state.population.subpops[subpop].individuals.length,
-                    psob.neighborhoodSize);
+            if (psob.neighborhood == psob.C_NEIGHBORHOOD_RANDOM) // "random" scheme is the only thing that is available for now
+                neighborhood = createRandomPattern(myindex, psob.includeSelf, 
+                		state.population.subpops[subpop].individuals.length, psob.neighborhoodSize, state, thread);
+            else if (psob.neighborhood == psob.C_NEIGHBORHOOD_TOROIDAL || psob.neighborhood == psob.C_NEIGHBORHOOD_RANDOM_EACH_TIME)
+                neighborhood = createToroidalPattern(myindex, psob.includeSelf,
+                		state.population.subpops[subpop].individuals.length, psob.neighborhoodSize);
             else // huh?
                 state.output.fatal("internal error: invalid PSO neighborhood style: " + psob.neighborhood);
             }
@@ -109,13 +136,23 @@ public class Particle extends DoubleVectorIndividual
         }
 
     // Creates a toroidal neighborhood pattern for the individual
-    int[] createRandomPattern(int popsize, int neighborhoodSize, MersenneTwisterFast mtf)
+    int[] createRandomPattern(int myIndex, boolean includeSelf, int popsize, int neighborhoodSize, EvolutionState state, int threadnum)
         {
+        MersenneTwisterFast mtf = state.random[threadnum];
         HashSet already = new HashSet();
-        int[] neighbors = new int[neighborhoodSize];
+        int[] neighbors = null;
+        
+        if (includeSelf)
+        	{
+        	neighbors = new int[neighborhoodSize + 1];
+        	neighbors[neighborhoodSize] = myIndex;  // put me at the top
+        	already.add(new Integer(myIndex));
+        	}
+        else
+    		neighbors = new int[neighborhoodSize];
         
         Integer n = null;
-        for(int i = 1; i < neighborhoodSize; i++)
+        for(int i = 0; i < neighborhoodSize; i++)
             {
             do
                 {
@@ -127,24 +164,32 @@ public class Particle extends DoubleVectorIndividual
             }
         return neighbors;
 
-        /*
-          ArrayList indices = new ArrayList();
-          int[] neighbours = new int[neighborhoodSize] ;
-          for(int i = 0 ; i < popsize ; i++) indices.add(new Integer(i)); // O(N)
-          for(int i = 0 ; i < neighborhoodSize ; i++)                                // O(K) ??
-          neighbours[i] = ((Integer)indices.remove(mtf.nextInt(indices.size()))).intValue(); // O(1) ??
-          return neighbours;
-        */
         }
 
     // Creates a toroidal neighborhood pattern for the individual indexed by 'myindex'
-    int[] createToroidalPattern(int myindex, int popsize, int neighborhoodSize)
+    int[] createToroidalPattern(int myindex, boolean includeSelf, int popsize, int neighborhoodSize)
         {
-        int[] neighbours = new int[neighborhoodSize] ;
-        int start = myindex - neighborhoodSize/2;
-        if(start < 0) start += popsize ;
-        for(int i = 0 ; i < neighborhoodSize ; i++)
-            neighbours[i] = (start + i) % popsize ;
-        return neighbours;
+        int[] neighbors = null;
+
+        if (includeSelf)
+        	{
+        	neighbors = new int[neighborhoodSize + 1];
+        	neighbors[neighborhoodSize] = myindex;  // put me at the top
+        	}
+        else
+    		neighbors = new int[neighborhoodSize];
+        
+        int pos = 0;
+		for(int i = myindex - neighborhoodSize / 2; i < myindex; i++)
+			{
+			neighbors[pos++] = ((i % popsize) + popsize) % popsize;
+			}
+		
+		for(int i = myindex + 1; i < neighborhoodSize - (neighborhoodSize / 2) + 1; i++)
+			{
+			neighbors[pos++] = ((i % popsize) + popsize) % popsize;
+			}
+
+        return neighbors;
         }
     }

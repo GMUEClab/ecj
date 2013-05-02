@@ -10866,6 +10866,8 @@ PSO has a special breeder called \class{ec.pso.PSOBreeder}.  This breeder holds 
     public Fitness[] globalBestFitness = null;
 \end{verbatim}
 
+Note that PSOBreeder is {\bf single-threaded} for now, though that may change in the future.
+
 Each timestep, all particles simultaneously compute three vectors: the difference between the particle's personal best and the particle's genome (that is, a vector {\it towards} the personal best), the difference between the particle's neighborhood best and the particle's genome, and finally the difference between the global best and the particle's genome.  These vectors essentially act to move the particle towards the personal best, neighborhood best, and global best.
 
 Then the particle updates its velocity as the weighted sum of its old velocity and these three vectors.  The four weights are global values and are defined in PSOBreeder as:
@@ -10888,20 +10890,40 @@ breed.informant-coefficient = 0.4 \\
 breed.global-coefficient = 0.0
 }
 
-PSO determines the {\it neighbors} or {\it informants} of a particle in one of two ways.  Both require that you specify a {\it neighborhood size} (the number of informants to the individual), for example:
+Notice that the global-coefficient is set to 0 in the example above: we've found it's not very good and best left out.  And we're not alone\,---\,a lot of current PSO practice does this as well.  
+
+PSO determines the {\it neighbors} or {\it informants} of a particle in one of three ways.  Both require that you specify a {\it neighborhood size} (the number of informants to the individual), for example:
 
 \params{%
-breed.neighborhood-size = 11
+\# We strongly suggest this be an even number if you're doing toroidal (see below)
+breed.neighborhood-size = 10
 }
 
-Then you can either have ECJ select informants at {\it random without replacement}, or select the informants toroidally closest (on both sides) to the individual's position in the subpopulation:
+Then you can either have ECJ:
+
+\begin{itemize}
+\item Select informants at {\it random without replacement} for each particle at the beginning of the run (not including the particle itself).
+\item Select informants at {\it random without replacement} for each particle, not including the particle itself.  This is done every single generation.
+\item Select the \(\lfloor N/2 \rfloor\) informants immediately below the of the particle's position in the population, and the \(\lceil N/2 \rceil\) informants immediately above the particle's position.  This is toroidal (wrap-around), is done at the beginning of the run, and does not include the particle itself.
+\end{itemize}
+
+These three options are \parameter{random}, \parameter{random-each-time}, and \parameter{toroidal} respectively:
 
 \params{%
 breed.neighborhood-style = random\\
+\#breed.neighborhood-style = random-each-time\\
 \#breed.neighborhood-style = toroidal
 }
 
-You'll also need to specify the breeder and individual:
+(Note that the 2007 PSO C standard suggests that it's using random-each-time, but we've informally found random or toroidal to perform better.)  To this collection of informants, you can also add the particle itself with:
+
+\params{%
+breed.include-self = true
+}
+
+The default is false in ECJ, but in historical forms of PSO this was set to true.  
+
+Finally, you'll also need to specify the breeder and individual:
 
 \params{%
 breed = ec.pso.PSOBreeder\\
@@ -10909,7 +10931,7 @@ pop.subpop.0.species = ec.vector.FloatVectorSpecies\\
 pop.subpop.0.species.ind = ec.pso.Particle
 }
 
-The rest of the paramters are fairly standard, though since we're using FloatVectorSpecies, we'll need to specify a pipeline and various mutation and crossover methods even though we don't use them.  We can pick dummy stuff for this.  Here's an example of a full working PSO parameter file:
+The rest of the parameters are fairly standard, though since we're using FloatVectorSpecies, we'll need to specify a pipeline and various mutation and crossover methods even though we don't use them.  We can pick dummy stuff for this.  Here's an example of a full working PSO parameter file:
 
 \params{%
 state =                                 ec.simple.SimpleEvolutionState\\
@@ -10963,9 +10985,9 @@ breed.velocity-coefficient = 0.7\\
 breed.personal-coefficient = 0.4\\
 breed.informant-coefficient = 0.4\\
 breed.global-coefficient = 0.0\\
-breed.neighborhood-size = 11\\
+breed.neighborhood-size = 10\\
 breed.neighborhood-style = random\\
-\#breed.neighborhood-style = toroidal\\
+breed.include-self = false
 }
 
 

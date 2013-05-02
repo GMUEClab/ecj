@@ -12,7 +12,9 @@ breed.velocity-coefficient = 0.7
 breed.personal-coefficient = 0.4
 breed.informant-coefficient = 0.4
 breed.global-coefficient = 0.0
-breed.neighborhood-size = 11
+breed.neighborhood-size = 10
+breed.include-self = true
+#breed.neighborhood-style = random-each-time
 breed.neighborhood-style = random
 #breed.neighborhood-style = toroidal
 
