@@ -34,7 +34,7 @@ public class MajorityGA extends Problem implements SimpleProblemForm
     // How many trials in our training set
     public static final int NUM_TRIALS = 128;
 
-	// CA description
+    // CA description
     public static final int CA_WIDTH = 149;
     public static final int NEIGHBORHOOD = 7;
     
@@ -45,7 +45,7 @@ public class MajorityGA extends Problem implements SimpleProblemForm
     int[] majorities = new int[NUM_TRIALS];
     
 
-	// kinds of trial types
+    // kinds of trial types
     static final int MAJORITY_ZERO = 0;
     static final int MAJORITY_ONE = 1;
     static final int RANDOM = -1;
@@ -53,31 +53,31 @@ public class MajorityGA extends Problem implements SimpleProblemForm
     boolean makeTrial(EvolutionState state, int thread, int[] trial, int trialType)
         {
         if (trialType == RANDOM)
-        	{
-        	int count = 0;
-			for(int i = 0; i < CA_WIDTH; i++)
-				{
-				trial[i] = state.random[thread].nextInt(2);
-				count += trial[i];
-				}  
- 	       return (count > CA_WIDTH / 2.0);  // > 74
- 	       }
- 	   else if (trialType == MAJORITY_ONE)
- 	   	{
- 	   	while(!makeTrial(state, thread, trial, RANDOM));
- 	   	return true;
-		} 	   	
- 	   else if (trialType == MAJORITY_ZERO) // uniform selection
- 	   	{
- 	   	while(makeTrial(state, thread, trial, RANDOM));
- 	   	return false;
-        }
+            {
+            int count = 0;
+            for(int i = 0; i < CA_WIDTH; i++)
+                {
+                trial[i] = state.random[thread].nextInt(2);
+                count += trial[i];
+                }  
+            return (count > CA_WIDTH / 2.0);  // > 74
+            }
+        else if (trialType == MAJORITY_ONE)
+            {
+            while(!makeTrial(state, thread, trial, RANDOM));
+            return true;
+            }               
+        else if (trialType == MAJORITY_ZERO) // uniform selection
+            {
+            while(makeTrial(state, thread, trial, RANDOM));
+            return false;
+            }
         else
-        	{
-        	state.output.fatal("This should never happen");
-        	return false;
-        	}
-    }
+            {
+            state.output.fatal("This should never happen");
+            return false;
+            }
+        }
         
 
     public void generateTrials(EvolutionState state, int thread)
@@ -89,7 +89,7 @@ public class MajorityGA extends Problem implements SimpleProblemForm
         for(int i = 0; i < NUM_TRIALS / 4; i++)
             {
             majorities[i] = makeTrial(state, thread, trials[i], MAJORITY_ZERO) ? 1 : 0;
-        }
+            }
         
         for(int i = NUM_TRIALS / 4; i < NUM_TRIALS / 2; i++)
             {
@@ -111,8 +111,8 @@ public class MajorityGA extends Problem implements SimpleProblemForm
 
 
 
-	// the purpose of this code is to guarantee that I regenerate trials each generation
-	// and make sure that nobody is using them at the moment.
+    // the purpose of this code is to guarantee that I regenerate trials each generation
+    // and make sure that nobody is using them at the moment.
 
     int lockCount = 0;
     private Object[] lock = new Object[0];
@@ -229,33 +229,33 @@ public class MajorityGA extends Problem implements SimpleProblemForm
         density = (sum / NUM_TESTS);
         
         if (state.output == null)  // can happen if we call from main() below
-        	System.err.println("Generalization Accuracy: " + density);
+            System.err.println("Generalization Accuracy: " + density);
         else
-        	{
-	        state.output.println("Generalization Accuracy: " + density, 1);  // stderr
-	        state.output.println("Generalization Accuracy: " + density, log);
-	        }
+            {
+            state.output.println("Generalization Accuracy: " + density, 1);  // stderr
+            state.output.println("Generalization Accuracy: " + density, log);
+            }
         }
 
 
     public static void main(String[] args)
         {
-       	// tests the ABK rule 
+        // tests the ABK rule 
         
-          int[] ABK = new int[] {
-          0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,1,0,0,0,0,0,1,0,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1
-          };
-          EvolutionState state = new EvolutionState();
-          state.random = new MersenneTwisterFast[] { new MersenneTwisterFast(500) };
-          MajorityGA ga = new MajorityGA();
-          ga.setup(state, new Parameter(""));
-          BitVectorIndividual bvi = new BitVectorIndividual();
-          bvi.fitness = new ec.simple.SimpleFitness();
-          bvi.genome = new boolean[128];
-          for(int i = 0; i < 128; i++)
-          	bvi.genome[i] = (ABK[i] == 0 ? false : true);
-          ga.evaluate(state, bvi, 0, 0);
-          System.err.println("ABK Rule");
-          ga.describe(state, bvi, 0, 0, 1);
+        int[] ABK = new int[] {
+            0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,1,0,0,0,0,0,1,0,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1
+            };
+        EvolutionState state = new EvolutionState();
+        state.random = new MersenneTwisterFast[] { new MersenneTwisterFast(500) };
+        MajorityGA ga = new MajorityGA();
+        ga.setup(state, new Parameter(""));
+        BitVectorIndividual bvi = new BitVectorIndividual();
+        bvi.fitness = new ec.simple.SimpleFitness();
+        bvi.genome = new boolean[128];
+        for(int i = 0; i < 128; i++)
+            bvi.genome[i] = (ABK[i] == 0 ? false : true);
+        ga.evaluate(state, bvi, 0, 0);
+        System.err.println("ABK Rule");
+        ga.describe(state, bvi, 0, 0, 1);
         }
     }

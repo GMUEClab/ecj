@@ -257,27 +257,27 @@ public class ByteVectorIndividual extends VectorIndividual
                             genome[x] = (byte)randomValueFromClosedInterval((byte)s.minGene(x), (byte)s.maxGene(x), state.random[thread]);
                             break;
                         case IntegerVectorSpecies.C_RANDOM_WALK_MUTATION:
-							int min = (int)s.minGene(x);
-							int max = (int)s.maxGene(x);
-							if (!s.mutationIsBounded(x))
-								{
-								// okay, technically these are still bounds, but we can't go beyond this without weird things happening
-								max = Byte.MAX_VALUE;
-								min = Byte.MIN_VALUE;
-								}
-							do
-								{
-								int n = (int)(state.random[thread].nextBoolean() ? 1 : -1);
-								int g = genome[x];
-								if ((n == 1 && g < max) ||
-									(n == -1 && g > min))
-									genome[x] = (byte)(g + n);
-								else if ((n == -1 && g < max) ||
-									(n == 1 && g > min))
-									genome[x] = (byte)(g - n);     
-								}
-							while (state.random[thread].nextBoolean(s.randomWalkProbability(x)));
-							break;
+                            int min = (int)s.minGene(x);
+                            int max = (int)s.maxGene(x);
+                            if (!s.mutationIsBounded(x))
+                                {
+                                // okay, technically these are still bounds, but we can't go beyond this without weird things happening
+                                max = Byte.MAX_VALUE;
+                                min = Byte.MIN_VALUE;
+                                }
+                            do
+                                {
+                                int n = (int)(state.random[thread].nextBoolean() ? 1 : -1);
+                                int g = genome[x];
+                                if ((n == 1 && g < max) ||
+                                    (n == -1 && g > min))
+                                    genome[x] = (byte)(g + n);
+                                else if ((n == -1 && g < max) ||
+                                    (n == 1 && g > min))
+                                    genome[x] = (byte)(g - n);     
+                                }
+                            while (state.random[thread].nextBoolean(s.randomWalkProbability(x)));
+                            break;
                         }
                     if (genome[x] != old) break;
                     // else genome[x] = old;  // try again

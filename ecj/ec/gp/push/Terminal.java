@@ -12,8 +12,8 @@ import ec.util.*;
 
 
 /** 
-	Terminal is the leaf node in Push trees and is used to represent Push
-	instructions of all types.
+    Terminal is the leaf node in Push trees and is used to represent Push
+    instructions of all types.
 
     <p>ECJ implements Push's s-expressions as trees of nonterminals
     and terminals.  The nonterminals are all dummy instances of the Nonterminal class.
@@ -61,114 +61,114 @@ import ec.util.*;
     
     The full list of Psh instructions is:
     
-<p><tt>
-integer.+<br>
-integer.-<br>
-integer./<br>
-integer.\%<br>
-integer.*<br>
-integer.pow<br>
-integer.log<br>
-integer.=<br>
-integer.><br>
-integer.*lt;<br>
-integer.min<br>
-integer.max<br>
-integer.abs<br>
-integer.neg<br>
-integer.ln<br>
-integer.fromfloat<br>
-integer.fromboolean<br>
-integer.rand<br>
-float.+<br>
-float.-<br>
-float./<br>
-float.\%<br>
-float.*<br>
-float.pow<br>
-float.log<br>
-float.=<br>
-float.><br>
-float.&lt;<br>
-float.min<br>
-float.max<br>
-float.sin<br>
-float.cos<br>
-float.tan<br>
-float.exp<br>
-float.abs<br>
-float.neg<br>
-float.ln<br>
-float.frominteger<br>
-float.fromboolean<br>
-float.rand<br>
-boolean.=<br>
-boolean.not<br>
-boolean.and<br>
-boolean.or<br>
-boolean.xor<br>
-boolean.frominteger<br>
-boolean.fromfloat<br>
-boolean.rand<br>
-true<br>
-false<br>
-code.quote<br>
-code.fromboolean<br>
-code.frominteger<br>
-code.fromfloat<br>
-code.noop<br>
-code.do*times<br>
-code.do*count<br>
-code.do*range<br>
-code.=<br>
-code.if<br>
-code.rand<br>
-exec.k<br>
-exec.s<br>
-exec.y<br>
-exec.noop<br>
-exec.do*times<br>
-exec.do*count<br>
-exec.do*range<br>
-exec.=<br>
-exec.if<br>
-exec.rand<br>
-input.index<br>
-input.inall<br>
-input.inallrev<br>
-input.stackdepth<br>
-frame.push<br>
-frame.pop<br>
-</tt>
+    <p><tt>
+    integer.+<br>
+    integer.-<br>
+    integer./<br>
+    integer.\%<br>
+    integer.*<br>
+    integer.pow<br>
+    integer.log<br>
+    integer.=<br>
+    integer.><br>
+    integer.*lt;<br>
+    integer.min<br>
+    integer.max<br>
+    integer.abs<br>
+    integer.neg<br>
+    integer.ln<br>
+    integer.fromfloat<br>
+    integer.fromboolean<br>
+    integer.rand<br>
+    float.+<br>
+    float.-<br>
+    float./<br>
+    float.\%<br>
+    float.*<br>
+    float.pow<br>
+    float.log<br>
+    float.=<br>
+    float.><br>
+    float.&lt;<br>
+    float.min<br>
+    float.max<br>
+    float.sin<br>
+    float.cos<br>
+    float.tan<br>
+    float.exp<br>
+    float.abs<br>
+    float.neg<br>
+    float.ln<br>
+    float.frominteger<br>
+    float.fromboolean<br>
+    float.rand<br>
+    boolean.=<br>
+    boolean.not<br>
+    boolean.and<br>
+    boolean.or<br>
+    boolean.xor<br>
+    boolean.frominteger<br>
+    boolean.fromfloat<br>
+    boolean.rand<br>
+    true<br>
+    false<br>
+    code.quote<br>
+    code.fromboolean<br>
+    code.frominteger<br>
+    code.fromfloat<br>
+    code.noop<br>
+    code.do*times<br>
+    code.do*count<br>
+    code.do*range<br>
+    code.=<br>
+    code.if<br>
+    code.rand<br>
+    exec.k<br>
+    exec.s<br>
+    exec.y<br>
+    exec.noop<br>
+    exec.do*times<br>
+    exec.do*count<br>
+    exec.do*range<br>
+    exec.=<br>
+    exec.if<br>
+    exec.rand<br>
+    input.index<br>
+    input.inall<br>
+    input.inallrev<br>
+    input.stackdepth<br>
+    frame.push<br>
+    frame.pop<br>
+    </tt>
     
     
- <p><b>Parameters</b><br>
- <table>
- <tr><td valign=top><i>base</i>.<tt>op.size</tt><br>
- <font size=-1>int >= 1</font></td>
- <td valign=top>(Number of instructions in Push's internal "instruction set")</td></tr>
- <tr><td valign=top><i>base</i>.<tt>op</tt>.<i>i</i><br>
- <font size=-1>String</font></td>
- <td valign=top>(Name of instruction <i>i</i>)</td></tr>
- <tr><td valign=top><i>base</i>.<tt>op</tt>.<i>i</i>.<tt>func</tt><br>
- <font size=-1>classname, inherits and != ec.gp.push.PushInstruction</font></td>
- <td valign=top>(PushInstruction corresponding to instruction <i>i</i>, if it is a custom instruction)</td></tr>
- <tr><td valign=top><i>base</i>.<tt>op.float.min</tt><br>
- <font size=-1>float</font></td>
- <td valign=top>(Minimum value for a Push floating-point ERC)</td></tr>
- <tr><td valign=top><i>base</i>.<tt>op.float.max</tt><br>
- <font size=-1>float</font></td>
- <td valign=top>(Maximum value for a Push floating-point ERC)</td></tr>
- <tr><td valign=top><i>base</i>.<tt>op.int.min</tt><br>
- <font size=-1>int</font></td>
- <td valign=top>(Minimum value for a Push integer ERC)</td></tr>
- <tr><td valign=top><i>base</i>.<tt>op.int.max</tt><br>
- <font size=-1>int</font></td>
- <td valign=top>(Maximum value for a Push integer ERC)</td></tr>
- </table>
+    <p><b>Parameters</b><br>
+    <table>
+    <tr><td valign=top><i>base</i>.<tt>op.size</tt><br>
+    <font size=-1>int >= 1</font></td>
+    <td valign=top>(Number of instructions in Push's internal "instruction set")</td></tr>
+    <tr><td valign=top><i>base</i>.<tt>op</tt>.<i>i</i><br>
+    <font size=-1>String</font></td>
+    <td valign=top>(Name of instruction <i>i</i>)</td></tr>
+    <tr><td valign=top><i>base</i>.<tt>op</tt>.<i>i</i>.<tt>func</tt><br>
+    <font size=-1>classname, inherits and != ec.gp.push.PushInstruction</font></td>
+    <td valign=top>(PushInstruction corresponding to instruction <i>i</i>, if it is a custom instruction)</td></tr>
+    <tr><td valign=top><i>base</i>.<tt>op.float.min</tt><br>
+    <font size=-1>float</font></td>
+    <td valign=top>(Minimum value for a Push floating-point ERC)</td></tr>
+    <tr><td valign=top><i>base</i>.<tt>op.float.max</tt><br>
+    <font size=-1>float</font></td>
+    <td valign=top>(Maximum value for a Push floating-point ERC)</td></tr>
+    <tr><td valign=top><i>base</i>.<tt>op.int.min</tt><br>
+    <font size=-1>int</font></td>
+    <td valign=top>(Minimum value for a Push integer ERC)</td></tr>
+    <tr><td valign=top><i>base</i>.<tt>op.int.max</tt><br>
+    <font size=-1>int</font></td>
+    <td valign=top>(Maximum value for a Push integer ERC)</td></tr>
+    </table>
 
- <p><b>Default Base</b><br>
- gp.push
+    <p><b>Default Base</b><br>
+    gp.push
 */
 
 
@@ -196,11 +196,11 @@ public class Terminal extends ERC
     /** Names of all the Push instructions I can be set to.  This includes names for custom PushInstructions. */
     public String[] instructions;
 
-	/** A list of custom PushInstructions I can be set to. */
+    /** A list of custom PushInstructions I can be set to. */
     public PushInstruction[] customInstructions;
     /** For each PushInstruction, a pointer into instructions which gives the name of that instruction. 
-    	Note that some instructions in instructions are built-in Push instructions and will have nothing
-    	pointing to them. */
+        Note that some instructions in instructions are built-in Push instructions and will have nothing
+        pointing to them. */
     public int[] indices;  // point to locations in instructions
     
     /** The current name of the Push Terminal I am set to. */
@@ -340,24 +340,24 @@ public class Terminal extends ERC
         }
         
     public String encode()
-    	{
-    	return Code.encode(value);
-    	}
+        {
+        return Code.encode(value);
+        }
     
     public boolean decode(final DecodeReturn dret)
-    	{
-    	Code.decode(dret);
-    	if (dret.type == DecodeReturn.T_STRING)
-    		{
-    		value = dret.s;
-    		// verify
-    		for(int i = 0; i < instructions.length; i++)
-    			if (instructions[i].equals(value))
-    				return true;
-    		}
-    	// otherwise, uh oh
-    	return false;
-    	}
+        {
+        Code.decode(dret);
+        if (dret.type == DecodeReturn.T_STRING)
+            {
+            value = dret.s;
+            // verify
+            for(int i = 0; i < instructions.length; i++)
+                if (instructions[i].equals(value))
+                    return true;
+            }
+        // otherwise, uh oh
+        return false;
+        }
     
     public void resetNode(EvolutionState state, int thread)
         {

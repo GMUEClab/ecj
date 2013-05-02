@@ -263,8 +263,8 @@ public class SimpleEvaluator extends Evaluator
         }
 
 
-	// computes the chunk size if 'auto' is set.  This may be different depending on the subpopulation,
-	// which is backward-compatible with previous ECJ approaches.
+    // computes the chunk size if 'auto' is set.  This may be different depending on the subpopulation,
+    // which is backward-compatible with previous ECJ approaches.
     int computeChunkSizeForSubpopulation(EvolutionState state, int subpop, int threadnum)
         {
         int numThreads = state.evalthreads;
@@ -294,14 +294,14 @@ public class SimpleEvaluator extends Evaluator
             int[] numinds = new int[subpops.length];
             int[] from = new int[subpops.length];
 
-			int count = 1;
-			int start = 0;
-			int subpop = 0;
+            int count = 1;
+            int start = 0;
+            int subpop = 0;
 
             while (true)
                 {
-				// We need to grab the information about the next chunk we're responsible for.  This stays longer
-				// in the lock than I'd like :-(
+                // We need to grab the information about the next chunk we're responsible for.  This stays longer
+                // in the lock than I'd like :-(
                 synchronized(lock)
                     {
                     // has everyone done all the jobs?

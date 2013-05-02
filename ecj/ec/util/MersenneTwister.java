@@ -217,26 +217,26 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
         catch (CloneNotSupportedException e) { throw new InternalError(); } // should never happen
         }
 
-	/** Returns true if the MersenneTwister's current internal state is equal to another MersenneTwister. 
-		This is roughly the same as equals(other), except that it compares based on value but does not
-		guarantee the contract of immutability (obviously random number generators are immutable).
-		Note that this does NOT check to see if the internal gaussian storage is the same
-		for both.  You can guarantee that the internal gaussian storage is the same (and so the
-		nextGaussian() methods will return the same values) by calling clearGaussian() on both
-		objects. */
+    /** Returns true if the MersenneTwister's current internal state is equal to another MersenneTwister. 
+        This is roughly the same as equals(other), except that it compares based on value but does not
+        guarantee the contract of immutability (obviously random number generators are immutable).
+        Note that this does NOT check to see if the internal gaussian storage is the same
+        for both.  You can guarantee that the internal gaussian storage is the same (and so the
+        nextGaussian() methods will return the same values) by calling clearGaussian() on both
+        objects. */
     public synchronized boolean stateEquals(MersenneTwister other)
         {
         if (other == this) return true;
         if (other == null)return false;
         synchronized(other)
-        	{
-			if (mti != other.mti) return false;
-			for(int x=0;x<mag01.length;x++)
-				if (mag01[x] != other.mag01[x]) return false;
-			for(int x=0;x<mt.length;x++)
-				if (mt[x] != other.mt[x]) return false;
-			return true;
-			}
+            {
+            if (mti != other.mti) return false;
+            for(int x=0;x<mag01.length;x++)
+                if (mag01[x] != other.mag01[x]) return false;
+            for(int x=0;x<mt.length;x++)
+                if (mt[x] != other.mt[x]) return false;
+            return true;
+            }
         }
 
     /** Reads the entire state of the MersenneTwister RNG from the stream */
@@ -602,12 +602,12 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
         return (byte)(next(8));
         }
 
-	/** 
-		Clears the internal gaussian variable from the RNG.  You only need to do this
-		in the rare case that you need to guarantee that two RNGs have identical internal
-		state.  Otherwise, disregard this method. See stateEquals(other).
-	*/
-	public synchronized void clearGaussian() { __haveNextNextGaussian = false; }
+    /** 
+        Clears the internal gaussian variable from the RNG.  You only need to do this
+        in the rare case that you need to guarantee that two RNGs have identical internal
+        state.  Otherwise, disregard this method. See stateEquals(other).
+    */
+    public synchronized void clearGaussian() { __haveNextNextGaussian = false; }
 
     /** A bug fix for all JDK code including 1.2.  nextGaussian can theoretically
         ask for the log of 0 and divide it by 0! See Java bug 

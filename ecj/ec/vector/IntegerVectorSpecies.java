@@ -231,7 +231,7 @@ public class IntegerVectorSpecies extends VectorSpecies
         maxGene = new long[genomeSize + 1];
         mutationType = fill(new int[genomeSize + 1], -1);
         mutationIsBounded = new boolean[genomeSize + 1];
-       	randomWalkProbability = new double[genomeSize + 1];
+        randomWalkProbability = new double[genomeSize + 1];
         
 
         // LOADING GLOBAL MIN/MAX GENES

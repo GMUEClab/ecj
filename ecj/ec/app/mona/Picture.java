@@ -14,7 +14,7 @@ import java.io.*;
 
 /** Picture contains two images: an ORIGINAL image which is loaded from a file, and
     writable IMAGE, which you scribble on and try to make as similar to the ORIGINAL.
-    */
+*/
 
 public class Picture implements Cloneable, Serializable
     {
@@ -24,13 +24,13 @@ public class Picture implements Cloneable, Serializable
 
     int[] xpoints = new int[0];
     int[] ypoints = new int[0];
-	
-	// This allows genes from 0...1 to go to -0.025 ... +1.025.
-	// which in turn makes it easy for polygons to have points off-screen
-	double extend(double value)
-		{
-		return (value * 1.05) - 0.025;
-		}
+        
+    // This allows genes from 0...1 to go to -0.025 ... +1.025.
+    // which in turn makes it easy for polygons to have points off-screen
+    double extend(double value)
+        {
+        return (value * 1.05) - 0.025;
+        }
 
     // this is small enough to be inlined
     int discretize(double value, int max)
@@ -54,29 +54,29 @@ public class Picture implements Cloneable, Serializable
     public void addPolygon(double[] vals, int offset, int numVertices)
         {
 
-		// RGB
+        // RGB
         double c1 = (vals[offset]);
         double c2 = (vals[offset+1]);
         double c3 = (vals[offset+2]);
         double c4 = (vals[offset+3]);
         int r = discretize(c1, 255);
         int b = discretize(c2, 255);
-    	int g = discretize(c3, 255);
+        int g = discretize(c3, 255);
         int a = discretize(c4, 255);
         Color color = new Color(r,b,g,a);
 
 /*
-        // HSB (or HSV)
-        double c1 = (vals[offset]);
-        double c2 = (vals[offset+1]);
-        double c3 = (vals[offset+2]);
-        double c4 = (vals[offset+3]);
-        int r = discretize(c1, 255);
-        int b = discretize(c2, 255);
-    	int g = discretize(c3, 255);
-        int a = discretize(c4, 255);
-        int rgb = Color.HSBtoRGB((float)c1, (float)c2, (float)c3);
-        Color color = new Color((rgb) & 0xFF, (rgb >> 8) & 0xFF, (rgb >> 16) & 0xFF, a);
+// HSB (or HSV)
+double c1 = (vals[offset]);
+double c2 = (vals[offset+1]);
+double c3 = (vals[offset+2]);
+double c4 = (vals[offset+3]);
+int r = discretize(c1, 255);
+int b = discretize(c2, 255);
+int g = discretize(c3, 255);
+int a = discretize(c4, 255);
+int rgb = Color.HSBtoRGB((float)c1, (float)c2, (float)c3);
+Color color = new Color((rgb) & 0xFF, (rgb >> 8) & 0xFF, (rgb >> 16) & 0xFF, a);
 */
         
         if (graphics == null) graphics =  image.getGraphics();
@@ -110,7 +110,7 @@ public class Picture implements Cloneable, Serializable
         int[] data = new int[width * height];
         int len = data.length;
         for(int i = 0; i < len; i++)
-		// you could do opaque white also:        0xFFFFFFFF; 
+            // you could do opaque white also:        0xFFFFFFFF; 
             data[i] = 0xFF000000;  // totally opaque, but black
         image.getRaster().setDataElements(0,0,width,height, data);  // clears it out
         }
@@ -184,8 +184,8 @@ public class Picture implements Cloneable, Serializable
     static JLabel left = new JLabel();
     static JLabel right = new JLabel();
 
-	int count = 0;
-	
+    int count = 0;
+        
     /** For debugging only.  */
     public void display(String title)
         {           

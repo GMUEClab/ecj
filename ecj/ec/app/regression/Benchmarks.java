@@ -502,10 +502,10 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
                 return Math.sin(x) + Math.sin(y*y);
             case NGUYEN10:
                 return 2 * Math.sin(x) * Math.cos(y);
-            //case NGUYEN11:
-            //    return Math.pow(x, y);
-            //case NGUYEN12:
-            //    return x*x*x*x - x*x*x + (y*y)/2.0 - y;
+                //case NGUYEN11:
+                //    return Math.pow(x, y);
+                //case NGUYEN12:
+                //    return x*x*x*x - x*x*x + (y*y)/2.0 - y;
             case PAGIE1:
                 // otherwise known as 1 / (1 + Math.pow(x, -4)) + 1 / (1 + Math.pow(y, -4))
                 return 1.0 / (1.0 + 1.0 / (x * x * x * x)) + 1.0 / (1.0 + 1.0 / (y * y * y * y)); 

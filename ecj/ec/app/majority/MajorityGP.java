@@ -28,7 +28,7 @@ public class MajorityGP extends GPProblem implements SimpleProblemForm
     // How many trials in our training set
     public static final int NUM_TRIALS = 128;
 
-	// CA description
+    // CA description
     public static final int CA_WIDTH = 149;
     public static final int NEIGHBORHOOD = 7;
     
@@ -39,7 +39,7 @@ public class MajorityGP extends GPProblem implements SimpleProblemForm
     int[][] trials = new int[NUM_TRIALS][CA_WIDTH];
     int[] majorities = new int[NUM_TRIALS];
     
-	// kinds of trial types
+    // kinds of trial types
     static final int MAJORITY_ZERO = 0;
     static final int MAJORITY_ONE = 1;
     static final int RANDOM = -1;
@@ -47,31 +47,31 @@ public class MajorityGP extends GPProblem implements SimpleProblemForm
     boolean makeTrial(EvolutionState state, int thread, int[] trial, int trialType)
         {
         if (trialType == RANDOM)
-        	{
-        	int count = 0;
-			for(int i = 0; i < CA_WIDTH; i++)
-				{
-				trial[i] = state.random[thread].nextInt(2);
-				count += trial[i];
-				}  
- 	       return (count > CA_WIDTH / 2.0);  // > 74
- 	       }
- 	   else if (trialType == MAJORITY_ONE)
- 	   	{
- 	   	while(!makeTrial(state, thread, trial, RANDOM));
- 	   	return true;
-		} 	   	
- 	   else if (trialType == MAJORITY_ZERO) // uniform selection
- 	   	{
- 	   	while(makeTrial(state, thread, trial, RANDOM));
- 	   	return false;
-        }
+            {
+            int count = 0;
+            for(int i = 0; i < CA_WIDTH; i++)
+                {
+                trial[i] = state.random[thread].nextInt(2);
+                count += trial[i];
+                }  
+            return (count > CA_WIDTH / 2.0);  // > 74
+            }
+        else if (trialType == MAJORITY_ONE)
+            {
+            while(!makeTrial(state, thread, trial, RANDOM));
+            return true;
+            }               
+        else if (trialType == MAJORITY_ZERO) // uniform selection
+            {
+            while(makeTrial(state, thread, trial, RANDOM));
+            return false;
+            }
         else
-        	{
-        	state.output.fatal("This should never happen");
-        	return false;
-        	}
-    }
+            {
+            state.output.fatal("This should never happen");
+            return false;
+            }
+        }
 
 
     public void generateTrials(EvolutionState state, int thread)
@@ -83,7 +83,7 @@ public class MajorityGP extends GPProblem implements SimpleProblemForm
         for(int i = 0; i < NUM_TRIALS / 4; i++)
             {
             majorities[i] = makeTrial(state, thread, trials[i], MAJORITY_ZERO) ? 1 : 0;
-        }
+            }
         
         for(int i = NUM_TRIALS / 4; i < NUM_TRIALS / 2; i++)
             {
@@ -106,8 +106,8 @@ public class MajorityGP extends GPProblem implements SimpleProblemForm
 
 
 
-	// the purpose of this code is to guarantee that I regenerate trials each generation
-	// and make sure that nobody is using them at the moment.
+    // the purpose of this code is to guarantee that I regenerate trials each generation
+    // and make sure that nobody is using them at the moment.
 
     int lockCount = 0;
     private Object[] lock = new Object[0];
@@ -158,38 +158,38 @@ public class MajorityGP extends GPProblem implements SimpleProblemForm
         
         // we always reevaluate         
         //if (!ind.evaluated)  // don't bother reevaluating
-            {
-            MajorityData input = (MajorityData)(this.input);
+                {
+                MajorityData input = (MajorityData)(this.input);
 
-            int sum = 0;
+                int sum = 0;
             
-            // extract the rule
-            ((GPIndividual)ind).trees[0].child.eval(
-                state,threadnum,input,stack,((GPIndividual)ind),this);
+                // extract the rule
+                ((GPIndividual)ind).trees[0].child.eval(
+                    state,threadnum,input,stack,((GPIndividual)ind),this);
 
-            int[] rule = ca.getRule();
-            for(int i = 0; i < 64; i++)
-                rule[i] = (int)(((input.data0) >> i) & 0x1);
-            for(int i = 64; i < 128; i++)
-                rule[i] = (int)(((input.data1) >> (i - 64)) & 0x1);
-            ca.setRule(rule);  // for good measure though it doesn't matter
+                int[] rule = ca.getRule();
+                for(int i = 0; i < 64; i++)
+                    rule[i] = (int)(((input.data0) >> i) & 0x1);
+                for(int i = 64; i < 128; i++)
+                    rule[i] = (int)(((input.data1) >> (i - 64)) & 0x1);
+                ca.setRule(rule);  // for good measure though it doesn't matter
                         
 
-            for(int i = 0; i < NUM_TRIALS; i++)
-                {
-                // set up and run the CA
-                ca.setVals(trials[i]);
-                ca.step(STEPS, true);
+                for(int i = 0; i < NUM_TRIALS; i++)
+                    {
+                    // set up and run the CA
+                    ca.setVals(trials[i]);
+                    ca.step(STEPS, true);
                 
-                // extract the fitness
-                if (all(ca.getVals(), majorities[i]))
-                	sum ++;
-                }
+                    // extract the fitness
+                    if (all(ca.getVals(), majorities[i]))
+                        sum ++;
+                    }
                                 
-            SimpleFitness f = ((SimpleFitness)ind.fitness);
-            f.setFitness(state, (float)sum / (float)NUM_TRIALS, (sum == NUM_TRIALS));
-            ind.evaluated = true;
-            }
+                SimpleFitness f = ((SimpleFitness)ind.fitness);
+                f.setFitness(state, (float)sum / (float)NUM_TRIALS, (sum == NUM_TRIALS));
+                ind.evaluated = true;
+                }
         }
 
 
@@ -206,27 +206,27 @@ public class MajorityGP extends GPProblem implements SimpleProblemForm
         if (ca == null)
             ca = new CA(CA_WIDTH, NEIGHBORHOOD);
 
-         int[] trial = new int[CA_WIDTH];
+        int[] trial = new int[CA_WIDTH];
 
-           MajorityData input = (MajorityData)(this.input);
+        MajorityData input = (MajorityData)(this.input);
 
-            // extract the rule
-            ((GPIndividual)ind).trees[0].child.eval(
-                state,threadnum,input,stack,((GPIndividual)ind),this);
+        // extract the rule
+        ((GPIndividual)ind).trees[0].child.eval(
+            state,threadnum,input,stack,((GPIndividual)ind),this);
                 
-            int[] rule = ca.getRule();
-            for(int i = 0; i < 64; i++)
-                rule[i] = (int)(((input.data0) >> i) & 0x1);
-            for(int i = 64; i < 128; i++)
-                rule[i] = (int)(((input.data1) >> (i - 64)) & 0x1);
-            ca.setRule(rule);  // for good measure though it doesn't matter
+        int[] rule = ca.getRule();
+        for(int i = 0; i < 64; i++)
+            rule[i] = (int)(((input.data0) >> i) & 0x1);
+        for(int i = 64; i < 128; i++)
+            rule[i] = (int)(((input.data1) >> (i - 64)) & 0x1);
+        ca.setRule(rule);  // for good measure though it doesn't matter
 
-			// print rule                
-            String s = "Rule: ";
-            for(int i = 0; i < rule.length; i++)
-            	s += rule[i];
-			state.output.println(s, log);
-			
+        // print rule                
+        String s = "Rule: ";
+        for(int i = 0; i < rule.length; i++)
+            s += rule[i];
+        state.output.println(s, log);
+                        
         double sum = 0;
         for(int i = 0; i < NUM_TESTS; i++)
             {

@@ -66,7 +66,7 @@ public class SteadyStateEvolutionState extends EvolutionState
         
     /** Did we just start a new generation? */
     public boolean generationBoundary;
-  /** how big is a generation? Set to the size of subpopulation 0 of the initial population. */
+    /** how big is a generation? Set to the size of subpopulation 0 of the initial population. */
     public int generationSize;
     /** How many evaluations have we run so far? */
     public long evaluations;

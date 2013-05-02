@@ -19,9 +19,9 @@ public class MonaVectorIndividual extends DoubleVectorIndividual
         int vertexSkip = numVertices * 2 + 4;  // for four colors
                 
         for (int x = 3; x < genome.length; x+=vertexSkip)
-			// Alsing originally just set all his colors to 0 alpha.
-			// Here I divide the alpha by 10 so they're initially very
-			// transparent
-            genome[x] /= 10;    	
+            // Alsing originally just set all his colors to 0 alpha.
+            // Here I divide the alpha by 10 so they're initially very
+            // transparent
+            genome[x] /= 10;            
         }
     }
