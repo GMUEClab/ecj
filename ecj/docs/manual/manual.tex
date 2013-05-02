@@ -10818,6 +10818,155 @@ eval.subpop.0.num-elites = 5
 {\bf Warning:}  Just like was the case for Spatial Breeding, Spatial Multi-Population Coevolution requires that Subpopulations not change in size from generation to generation.
 
 
+\section{Particle Swarm Optimization (The \package{ec.pso} Package)}
+\label{ec.pso}
+
+The \package{ec.pso} package provides a basic framework for Particle Swarm Optimization (PSO).
+
+PSO differs from most other population-based optimization methods in that the individuals never die, never are selected, and never breed.  Instead they just undergo a directed mutation influenced by personal best results, neighborhood (``informant'') best results, and global best results.
+
+ECJ's PSO algorithm works like this.  Each individual is an instance of the class \class{ec.pso.Particle}, which is itself a subclass of \class{ec.vector.DoubleVectorIndividual}.  Because it's a DoubleVectorIndividual, you should use the associated species \class{ec.vector.FloatVectorspecies}.
+
+Particles hold various information:
+
+\begin{itemize}
+\item The particle's (real-valued) {\it genome} (or, in PSO parlance, its ``location'').
+\item The particle's {\it velocity}.  This is equal to the Particle's present genome, minus the genome it had last generation.
+\item The best genome the particle has ever had (its {\it personal best})
+\item The fitness the particle had when it held its personal best genome.
+\item The best genome ever discovered from among the {\it neighbors} or {\it informants} of the particle.
+\item The fitness assigned to the best-of-neighbors genome
+\item The indexes into the subpopulation array of the members of the subpopulation comprising the neighbors (or informants) of the particle.
+\end{itemize}
+
+The genome is stored in the DoubleVectorIndividual superclass.  Other items are stored like this:
+
+\begin{verbatim}
+    // my velocity
+    public double[] velocity ;
+        
+    // the individuals in my neighborhood
+    public int[] neighborhood = null ;
+
+    // the best genome and fitness members of my neighborhood ever achieved
+    public double[] neighborhoodBestGenome = null;
+    public Fitness neighborhoodBestFitness = null;
+
+    // the best genome and fitness *I* personally ever achieved
+    public double[] personalBestGenome = null;
+    public Fitness personalBestFitness = null;
+\end{verbatim}
+
+Notice that some values are initially null, and will be set when the particle discovers proper values for them.  The velocity is at present initially all zero.
+
+PSO has a special breeder called \class{ec.pso.PSOBreeder}.  This breeder holds the {\it global best genome} ever discovered by the subpopulation, and its associated fitness:
+
+\begin{verbatim}
+    public double[][] globalBest = null ; // one for each subpopulation
+    public Fitness[] globalBestFitness = null;
+\end{verbatim}
+
+Each timestep, all particles simultaneously compute three vectors: the difference between the particle's personal best and the particle's genome (that is, a vector {\it towards} the personal best), the difference between the particle's neighborhood best and the particle's genome, and finally the difference between the global best and the particle's genome.  These vectors essentially act to move the particle towards the personal best, neighborhood best, and global best.
+
+Then the particle updates its velocity as the weighted sum of its old velocity and these three vectors.  The four weights are global values and are defined in PSOBreeder as:
+
+\begin{verbatim}
+    public double velCoeff;           //  coefficient for the velocity
+    public double personalCoeff;      //  coefficient for self
+    public double informantCoeff;     //  coefficient for informants/neighbors
+    public double globalCoeff;        //  coefficient for global best
+\end{verbatim}
+
+Finally, each particle updates its location (genome) as the sum of the old genome and the new velocity, effectively moving the particle ``towards'' these respective values.
+
+These coefficients are specified fairly straightforwardly.
+
+\params{%
+breed.velocity-coefficient = 0.7 \\
+breed.personal-coefficient = 0.4 \\
+breed.informant-coefficient = 0.4 \\
+breed.global-coefficient = 0.0
+}
+
+PSO determines the {\it neighbors} or {\it informants} of a particle in one of two ways.  Both require that you specify a {\it neighborhood size} (the number of informants to the individual), for example:
+
+\params{%
+breed.neighborhood-size = 11
+}
+
+Then you can either have ECJ select informants at {\it random without replacement}, or select the informants toroidally closest (on both sides) to the individual's position in the subpopulation:
+
+\params{%
+breed.neighborhood-style = random\\
+\#breed.neighborhood-style = toroidal
+}
+
+You'll also need to specify the breeder and individual:
+
+\params{%
+breed = ec.pso.PSOBreeder\\
+pop.subpop.0.species = ec.vector.FloatVectorSpecies\\
+pop.subpop.0.species.ind = ec.pso.Particle
+}
+
+The rest of the paramters are fairly standard, though since we're using FloatVectorSpecies, we'll need to specify a pipeline and various mutation and crossover methods even though we don't use them.  We can pick dummy stuff for this.  Here's an example of a full working PSO parameter file:
+
+\params{%
+state =                                 ec.simple.SimpleEvolutionState\\
+init =                                  ec.simple.SimpleInitializer\\
+finish =                                ec.simple.SimpleFinisher\\
+exch =                                  ec.simple.SimpleExchanger\\
+breed =                                 ec.pso.PSOBreeder\\
+eval =                                  ec.simple.SimpleEvaluator\\
+stat =                                  ec.simple.SimpleStatistics\\
+stat.file                               \$out.stat\\
+\\
+breedthreads =                          auto\\
+evalthreads =                           auto\\
+checkpoint =                            false\\
+checkpoint-modulo =                     1\\
+checkpoint-prefix =                     ec\\
+generations =                           1000\\
+quit-on-run-complete =                  true\\
+pop =                                   ec.Population\\
+pop.subpops =                           1\\
+pop.subpop.0 =                          ec.Subpopulation\\
+pop.subpop.0.size =                     1000\\
+pop.subpop.0.duplicate-retries =        2\\
+pop.subpop.0.species =                  ec.vector.FloatVectorSpecies\\
+pop.subpop.0.species.ind =              ec.pso.Particle\\
+pop.subpop.0.species.fitness =          ec.simple.SimpleFitness\\
+\\
+\# You have to specify some kind of dummy pipeline even though we won't use it\\
+pop.subpop.0.species.pipe =             ec.vector.breed.VectorMutationPipeline\\
+pop.subpop.0.species.pipe.source.0 =    ec.select.TournamentSelection\\
+select.tournament.size =                2\\
+\\
+\# You also have to specify a few dummy mutation parameters we won't use either\\
+pop.subpop.0.species.mutation-prob = 0.01\\
+pop.subpop.0.species.mutation-stdev = 0.05\\
+pop.subpop.0.species.mutation-type = gauss\\
+pop.subpop.0.species.crossover-type = one\\
+\\
+\# Here you specify your individual in the usual way\\
+pop.subpop.0.species.genome-size =      100\\
+pop.subpop.0.species.min-gene = -5.12\\
+pop.subpop.0.species.max-gene = 5.12\\
+\\
+\# Problem.  Here we're using ECSuite's rastrigin function\\
+eval.problem = ec.app.ecsuite.ECSuite\\
+eval.problem.type = rastrigin\\
+\\
+\# PSO  parameters\\
+\\
+breed.velocity-coefficient = 0.7\\
+breed.personal-coefficient = 0.4\\
+breed.informant-coefficient = 0.4\\
+breed.global-coefficient = 0.0\\
+breed.neighborhood-size = 11\\
+breed.neighborhood-style = random\\
+\#breed.neighborhood-style = toroidal\\
+}
 
 
 \section{Differential Evolution (The \package{ec.de} Package)}
@@ -11339,10 +11488,6 @@ pop.subpop.0.species.pipe.source.0 = ec.multiobjective.spea2.SPEA2TournamentSele
 
 \paragraph{Where to get examples}  The package \package{ec.app.moosuite} has SPEA2 implementations of a number of famous multiobjective test problems.  Be sure to read the \file{moosuite.params} file, where you can specify that you want to use SPEA2 for the problems.
 
-
-%\section{Particle Swarm Optimization (The \package{ec.pso} Package)}
-
-%%% So long as PSO is a mess, we shouldn't document it.?
 
 
 \section{Meta-Evolutionary Algorithms}
