@@ -11,6 +11,8 @@ BOOLEAN VECTOR REPRESENTATIONS
 hiff		Hierarchical if-and-only-if Functions
 sat		3CNF boolean satisfiability problems
 nk		N-K Landscapes
+majority	Majority Classification problem
+			-- both GA and GP versions
 
 
 INTEGER VECTOR REPRESENTATIONS
@@ -22,6 +24,7 @@ FLOATING POINT VECTOR REPRESENTATIONS
 
 ecsuite		A host of common floating-point fitness functions
 			-- includes GA, ES, DE, and steady-state code
+			-- includes a meta-evolution example
 bbob		Black Box Optimization 2010 code converted to ECJ
 
 
@@ -36,6 +39,9 @@ lawnmower	Lawnmower
 			-- includes ADF and non-ADF code
 			-- includes grammatical evolution code
 lid		The Lid benchmark
+majority	Majority Classification problem
+			-- both GA and GP versions
+mona		Mona Lisa problem
 multiplexer	"Fast" Multiplexer
 multiplexerslow	Easy to understand Multiplexer
 ordertree	The ORDERTREE problem
@@ -49,7 +55,6 @@ regression	Various Symbolic Regression examples
 royaltree	The Royal Tree problem
 twobox		Two Box
 			-- includes ADF and non-ADF code
-
 
 
 COMPETITIVE 1-POPULATION COEVOLUTION
@@ -87,8 +92,11 @@ tutorial4
 
 DISTRIBUTED EVALUATION
 
-star		A distributed valuation demo
-
+star		A distributed evaluation demo
+			-- Also includes both cooperative and competitive
+			   coevolution examples
+			-- also includes a distributed meta-evolution
+			   example
 
 ISLAND MODELS
 
