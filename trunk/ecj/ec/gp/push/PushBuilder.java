@@ -11,33 +11,33 @@ import java.util.*;
  * By: Sean Luke
  */
  
- /**
-  *
-  * PushBuilder implements the Push-style tree building algorithm, which permits nonterminals of arbitrary arity.
-  * This algorithm is as follows:
+/**
+ *
+ * PushBuilder implements the Push-style tree building algorithm, which permits nonterminals of arbitrary arity.
+ * This algorithm is as follows:
 
-  <p><tt><pre>
-   BUILD-TREE(size)
-   If size == 1, return a terminal
-   Else
-   .... Make a parent nonterminal p
-   .... while (size > 0)
-   .... .... a <- random number from 1 to size
-   .... .... size <- size - a
-   .... .... c <- BUILD-TREE(a)
-   .... .... Add c as a child of p
-   shuffle order of children of p
-   return p
-   </pre></tt>
+ <p><tt><pre>
+ BUILD-TREE(size)
+ If size == 1, return a terminal
+ Else
+ .... Make a parent nonterminal p
+ .... while (size > 0)
+ .... .... a <- random number from 1 to size
+ .... .... size <- size - a
+ .... .... c <- BUILD-TREE(a)
+ .... .... Add c as a child of p
+ shuffle order of children of p
+ return p
+ </pre></tt>
    
-   <p>You must specify a size distribution for PushBuilder.
+ <p>You must specify a size distribution for PushBuilder.
   
  <p><b>Default Base</b><br>
  gp.push.builder
 
  * @author Sean Luke
  * @version 1.0 
-  */
+ */
 
 
 public class PushBuilder extends GPNodeBuilder

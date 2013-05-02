@@ -12,17 +12,17 @@ import ec.util.*;
 
 
 /** 
-	PushInstruction encapsulates a custom Push instruction.  This
-	class requires that you implement a Psh method called <b><tt>Execute(...)</tt></b>.
-	You will need to consult Psh to understand what you can do, and how to do it.  But
-	for some examples, see the <b>Atan.java</b> and <b>Print.java</b> classes in
-	<b>ec/app/push/</b>.
-	
-   <p>PushInstruction is a Prototype, so you may with also to override setup() 
-   to set up your instruction initially.
+    PushInstruction encapsulates a custom Push instruction.  This
+    class requires that you implement a Psh method called <b><tt>Execute(...)</tt></b>.
+    You will need to consult Psh to understand what you can do, and how to do it.  But
+    for some examples, see the <b>Atan.java</b> and <b>Print.java</b> classes in
+    <b>ec/app/push/</b>.
+        
+    <p>PushInstruction is a Prototype, so you may with also to override setup() 
+    to set up your instruction initially.
 
- <p><b>Default Base</b><br>
- gp.push.func
+    <p><b>Default Base</b><br>
+    gp.push.func
 */
 
 

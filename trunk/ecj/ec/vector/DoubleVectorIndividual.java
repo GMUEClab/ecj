@@ -246,15 +246,15 @@ public class DoubleVectorIndividual extends VectorIndividual
         }
         
                 
-      /**
-      * Destructively mutates the individual in some default manner. The default
-      * form simply randomizes genes to a uniform distribution from the min and
-      * max of the gene values. It can also add gaussian noise to the genes, if
-      * so directed in the FloatVectorSpecies. If the gaussian noise pushes the
-      * gene out of range, a new noise value is generated.
-      * 
-      * @author Sean Luke, Liviu Panait and Gabriel Balan
-      */
+    /**
+     * Destructively mutates the individual in some default manner. The default
+     * form simply randomizes genes to a uniform distribution from the min and
+     * max of the gene values. It can also add gaussian noise to the genes, if
+     * so directed in the FloatVectorSpecies. If the gaussian noise pushes the
+     * gene out of range, a new noise value is generated.
+     * 
+     * @author Sean Luke, Liviu Panait and Gabriel Balan
+     */
     public void defaultMutate(EvolutionState state, int thread)
         {
         FloatVectorSpecies s = (FloatVectorSpecies) species;

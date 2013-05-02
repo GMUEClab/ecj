@@ -21,7 +21,7 @@ import java.util.*;
  * By: Sean Luke
  */
  
- /**
+/**
  * <p>MetaProblem is a special class for implenting so-called "Meta-Evolutionary Algorithms",
  * a topic related to "HyperHeuristics".  In a Meta-EA, an evolutionary system is used to
  * optimize the parameters for another evolutionary system.
@@ -258,7 +258,7 @@ import java.util.*;
  <tr><td valign=top><tt><i>base</i>.param.<i>number</i>.val.<i>val-number</i></tt><br>
  <font size=-1>String</td>
  <td valign=top>(A possible value that a parameter may take on, if it is a multi-string type)</td></tr>
-</table>
+ </table>
 
  </table>
  * 
@@ -541,17 +541,17 @@ public class MetaProblem extends Problem implements SimpleProblemForm
                 
                 // should we override the seeds?
                 if (setRandom)
-                	{
-                	// we use the random number generator to seed the generators
-                	// of the underlying process.  This isn't optimal but it should
-                	// probably do okay.  To be extra careful we prime the generators.
-                	
-                	for(int i = 0; i < evaluatedState.random.length; i++)
-                		{
-                		int seed = state.random[threadnum].nextInt();
-                		evaluatedState.random[i] = Evolve.primeGenerator(new MersenneTwisterFast(seed));
-                		}
-                	}
+                    {
+                    // we use the random number generator to seed the generators
+                    // of the underlying process.  This isn't optimal but it should
+                    // probably do okay.  To be extra careful we prime the generators.
+                        
+                    for(int i = 0; i < evaluatedState.random.length; i++)
+                        {
+                        int seed = state.random[threadnum].nextInt();
+                        evaluatedState.random[i] = Evolve.primeGenerator(new MersenneTwisterFast(seed));
+                        }
+                    }
                 
                 evaluatedState.run(EvolutionState.C_STARTED_FRESH);
             
@@ -656,9 +656,9 @@ public class MetaProblem extends Problem implements SimpleProblemForm
     /** Combines fitness results from multiple runs into a final Fitness.  By default this
         is done by using setToMeanOf. */
     public void combine(EvolutionState state, Fitness[] runs, Fitness finalFitness)
-    	{
+        {
         finalFitness.setToMeanOf(state, runs);
-    	}
+        }
 
     public void describe(EvolutionState state, Individual ind, int subpopulation, int threadnum, int log) 
         {

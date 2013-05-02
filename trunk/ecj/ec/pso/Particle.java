@@ -81,10 +81,10 @@ public class Particle extends DoubleVectorIndividual
             {
             if (psob.neighborhood == psob.C_NEIGHBORHOOD_RANDOM) // "random" scheme is the only thing that is available for now
                 neighborhood = createRandomPattern(myindex, psob.includeSelf, 
-                		state.population.subpops[subpop].individuals.length, psob.neighborhoodSize, state, thread);
+                    state.population.subpops[subpop].individuals.length, psob.neighborhoodSize, state, thread);
             else if (psob.neighborhood == psob.C_NEIGHBORHOOD_TOROIDAL || psob.neighborhood == psob.C_NEIGHBORHOOD_RANDOM_EACH_TIME)
                 neighborhood = createToroidalPattern(myindex, psob.includeSelf,
-                		state.population.subpops[subpop].individuals.length, psob.neighborhoodSize);
+                    state.population.subpops[subpop].individuals.length, psob.neighborhoodSize);
             else // huh?
                 state.output.fatal("internal error: invalid PSO neighborhood style: " + psob.neighborhood);
             }
@@ -143,13 +143,13 @@ public class Particle extends DoubleVectorIndividual
         int[] neighbors = null;
         
         if (includeSelf)
-        	{
-        	neighbors = new int[neighborhoodSize + 1];
-        	neighbors[neighborhoodSize] = myIndex;  // put me at the top
-        	already.add(new Integer(myIndex));
-        	}
+            {
+            neighbors = new int[neighborhoodSize + 1];
+            neighbors[neighborhoodSize] = myIndex;  // put me at the top
+            already.add(new Integer(myIndex));
+            }
         else
-    		neighbors = new int[neighborhoodSize];
+            neighbors = new int[neighborhoodSize];
         
         Integer n = null;
         for(int i = 0; i < neighborhoodSize; i++)
@@ -172,23 +172,23 @@ public class Particle extends DoubleVectorIndividual
         int[] neighbors = null;
 
         if (includeSelf)
-        	{
-        	neighbors = new int[neighborhoodSize + 1];
-        	neighbors[neighborhoodSize] = myindex;  // put me at the top
-        	}
+            {
+            neighbors = new int[neighborhoodSize + 1];
+            neighbors[neighborhoodSize] = myindex;  // put me at the top
+            }
         else
-    		neighbors = new int[neighborhoodSize];
+            neighbors = new int[neighborhoodSize];
         
         int pos = 0;
-		for(int i = myindex - neighborhoodSize / 2; i < myindex; i++)
-			{
-			neighbors[pos++] = ((i % popsize) + popsize) % popsize;
-			}
-		
-		for(int i = myindex + 1; i < neighborhoodSize - (neighborhoodSize / 2) + 1; i++)
-			{
-			neighbors[pos++] = ((i % popsize) + popsize) % popsize;
-			}
+        for(int i = myindex - neighborhoodSize / 2; i < myindex; i++)
+            {
+            neighbors[pos++] = ((i % popsize) + popsize) % popsize;
+            }
+                
+        for(int i = myindex + 1; i < neighborhoodSize - (neighborhoodSize / 2) + 1; i++)
+            {
+            neighbors[pos++] = ((i % popsize) + popsize) % popsize;
+            }
 
         return neighbors;
         }

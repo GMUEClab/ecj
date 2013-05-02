@@ -34,12 +34,12 @@ public abstract class PushProblem extends GPProblem
     StringBuilder buffer;
     
     public Object clone()
-    	{
-    	PushProblem other = (PushProblem)(super.clone());
-    	other.buffer = null;  // do not share
-    	return other;
-    	}
-    	
+        {
+        PushProblem other = (PushProblem)(super.clone());
+        other.buffer = null;  // do not share
+        return other;
+        }
+        
     /** Produces a Push Program from the provided GP Individual's tree. */
     public Program getProgram(EvolutionState state, GPIndividual ind)
         {
@@ -49,7 +49,7 @@ public abstract class PushProblem extends GPProblem
             {
             String prog = ind.trees[0].child.makeLispTree(buffer).toString();
             if (!prog.startsWith("("))
-            	prog = "(" + prog + ")";
+                prog = "(" + prog + ")";
             return new Program(prog);
             }
         catch (Exception e)
@@ -74,18 +74,18 @@ public abstract class PushProblem extends GPProblem
         // dump the additional instructions into the interpreter
         for(int i = 0; i < terminals.length; i++)
             if (terminals[i] instanceof Terminal)  // maybe has some instructions?
-            	{
-            	// This code is here rather than (more appropriately) in Terminal so that we can
-            	// free up Terminal from being reliant on the underlying library.
-            	Terminal op = (Terminal)(terminals[i]);
-            	PushInstruction[] customInstructions =  op.customInstructions;
-            	int[] indices = op.indices;
-            	String[] instructions = op.instructions;
-        		for(int j = 0; j < customInstructions.length; j++)
-        			{
-        			System.err.println(instructions[indices[j]]);
-            		interpreter.AddInstruction(instructions[indices[j]], (PushInstruction)(customInstructions[j].clone()));   // or should this be DefineInstruction?
-            		}
+                {
+                // This code is here rather than (more appropriately) in Terminal so that we can
+                // free up Terminal from being reliant on the underlying library.
+                Terminal op = (Terminal)(terminals[i]);
+                PushInstruction[] customInstructions =  op.customInstructions;
+                int[] indices = op.indices;
+                String[] instructions = op.instructions;
+                for(int j = 0; j < customInstructions.length; j++)
+                    {
+                    System.err.println(instructions[indices[j]]);
+                    interpreter.AddInstruction(instructions[indices[j]], (PushInstruction)(customInstructions[j].clone()));   // or should this be DefineInstruction?
+                    }
                 }
 
         // all done
