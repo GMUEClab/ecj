@@ -1,0 +1,18 @@
+# Copyright 2013 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+breed = ec.pso.PSOBreeder
+pop.subpop.0.species = ec.vector.FloatVectorSpecies
+pop.subpop.0.species.ind = ec.pso.Particle
+
+# PSO Parameters
+
+breed.velocity-coefficient = 0.7
+breed.personal-coefficient = 0.4
+breed.informant-coefficient = 0.4
+breed.global-coefficient = 0.0
+breed.neighborhood-size = 11
+breed.neighborhood-style = random
+#breed.neighborhood-style = toroidal
+

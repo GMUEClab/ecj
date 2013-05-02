@@ -2096,3 +2096,6 @@ Version		Change Log
 	Added mona
 	NSGA2Fitness and SPEA2Fitness printing changed so auxillary elements
 		are on their own lines and properly set up with preambles
+	Revised pso package
+	Added pso.params to ecsuite
+	Added PSO section to the manual
