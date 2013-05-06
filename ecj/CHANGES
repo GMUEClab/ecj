@@ -2107,4 +2107,6 @@ Version		Change Log
 	Added reading/writing to Particle.  One gotcha is that because the global
 		data is stored not in Particle but in PSOBreeder, it can't get
 		written or read.
-
+	FloatVectorIndividual.reset() had cases mixed up, resulting in integer
+		resets being made.  Thanks to Brendan Poole 
+		<brendan.poole@googlemail.com>
