@@ -576,13 +576,13 @@ public class FloatVectorIndividual extends VectorIndividual
             if (type == FloatVectorSpecies.C_INTEGER_RESET_MUTATION || 
                 type == FloatVectorSpecies.C_INTEGER_RANDOM_WALK_MUTATION)  // integer type
                 {
-                genome[x] = (float)(s.minGene(x) + random.nextDouble(true, true) * (s.maxGene(x) - s.minGene(x)));
-                }
-            else
-                {
                 int minGene = (int)Math.floor(s.minGene(x));
                 int maxGene = (int)Math.floor(s.maxGene(x));
                 genome[x] = randomValueFromClosedInterval(minGene, maxGene, random); //minGene + random.nextInt(maxGene - minGene + 1);
+                }
+            else
+                {
+                genome[x] = (float)(s.minGene(x) + random.nextDouble(true, true) * (s.maxGene(x) - s.minGene(x)));
                 }
             }
         }
