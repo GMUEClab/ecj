@@ -4,6 +4,7 @@ import ec.* ;
 import ec.vector.*;
 import ec.util.*;
 import java.util.* ;
+import java.io.*;
 
 /*
  * Particle.java
@@ -35,6 +36,8 @@ import java.util.* ;
 
 public class Particle extends DoubleVectorIndividual
     {
+    public static final String AUXILLARY_PREAMBLE = "Auxillary: ";
+    	
     // my velocity
     public double[] velocity ;
         
@@ -133,6 +136,9 @@ public class Particle extends DoubleVectorIndividual
             }
                 
         evaluated = false ;
+        
+        printIndividual(state, 0);
+        
         }
 
     // Creates a toroidal neighborhood pattern for the individual
@@ -192,4 +198,374 @@ public class Particle extends DoubleVectorIndividual
 
         return neighbors;
         }
+        
+        
+        
+        
+    /// The following methods handle modifying the auxillary data when the
+    /// genome is messed around with.
+    
+    void resetAuxillaryInformation()
+    	{
+    	neighborhood = null;
+    	neighborhoodBestGenome = null;
+    	neighborhoodBestFitness = null;
+    	personalBestGenome = null;
+    	personalBestFitness = null;
+    	for(int i = 0; i < velocity.length; i++)
+    		velocity[i] = 0.0;
+    	}
+        
+    public void reset(EvolutionState state, int thread)
+    	{
+    	super.reset(state, thread);
+    	if (genome.length != velocity.length)
+	    	velocity = new double[genome.length];
+    	resetAuxillaryInformation();
+    	}
+    
+    // This would be exceptionally weird to use in a PSO context, but for
+    // consistency's sake...
+    public void setGenomeLength(int len)
+    	{
+    	super.setGenomeLength(len);
+    	
+    	// we always reset regardless of whether the length is the same
+    	if (genome.length != velocity.length)
+	    	velocity = new double[genome.length];
+	    resetAuxillaryInformation();
+    	}
+    	
+    // This would be exceptionally weird to use in a PSO context, but for
+    // consistency's sake...
+    public void setGenome(Object gen)
+    	{
+    	super.setGenome(gen);
+    	
+    	// we always reset regardless of whether the length is the same
+    	if (genome.length != velocity.length)
+	    	velocity = new double[genome.length];
+	    resetAuxillaryInformation();
+    	}
+
+    // This would be exceptionally weird to use in a PSO context, but for
+    // consistency's sake...
+    public void join(Object[] pieces)
+    	{
+    	super.join(pieces);
+    	
+    	// we always reset regardless of whether the length is the same
+    	if (genome.length != velocity.length)
+	    	velocity = new double[genome.length];
+	    resetAuxillaryInformation();
+    	}
+    	
+    	
+    
+    
+    /// gunk for reading and writing, but trying to preserve some of the 
+    /// auxillary information
+    	
+    StringBuilder encodeAuxillary()
+    	{
+        StringBuilder s = new StringBuilder();
+        s.append(AUXILLARY_PREAMBLE);
+        s.append(Code.encode(true));
+        s.append(Code.encode(neighborhood!=null));
+        s.append(Code.encode(neighborhoodBestGenome != null));
+        s.append(Code.encode(neighborhoodBestFitness != null));
+        s.append(Code.encode(personalBestGenome != null));
+        s.append(Code.encode(personalBestFitness != null));
+        s.append("\n");
+        
+        // velocity
+        s.append(Code.encode(velocity.length));
+        for(int i = 0; i < velocity.length; i++)
+        	s.append(Code.encode(velocity[i]));
+        s.append("\n");
+        
+        // neighborhood	
+        if (neighborhood != null)
+        	{
+        	s.append(Code.encode(neighborhood.length));
+	        for(int i = 0; i < neighborhood.length; i++)
+	        	s.append(Code.encode(neighborhood[i]));
+	        s.append("\n");
+	        }
+
+        // neighborhood	best
+        if (neighborhoodBestGenome != null)
+        	{
+        	s.append(Code.encode(neighborhoodBestGenome.length));
+	        for(int i = 0; i < neighborhoodBestGenome.length; i++)
+	        	s.append(Code.encode(neighborhoodBestGenome[i]));
+	        s.append("\n");
+	        }
+
+		if (neighborhoodBestFitness != null)
+			s.append(neighborhoodBestFitness.fitnessToString());
+
+        // personal	best
+        if (personalBestGenome != null)
+        	{
+        	s.append(Code.encode(personalBestGenome.length));
+	        for(int i = 0; i < personalBestGenome.length; i++)
+	        	s.append(Code.encode(personalBestGenome[i]));
+	        s.append("\n");
+	        }
+
+		if (personalBestFitness != null)
+			s.append(personalBestFitness.fitnessToString());
+		s.append("\n");
+		
+		return s;
+    	}
+    
+    public void printIndividual(final EvolutionState state, final int log)
+        {
+        super.printIndividual(state, log);
+        state.output.println(encodeAuxillary().toString(), log);
+        }
+
+    public void printIndividual(final EvolutionState state, final PrintWriter writer)
+        {
+        super.printIndividual(state, writer);
+        writer.println(encodeAuxillary().toString());
+        }
+
+    public void readIndividual(final EvolutionState state, 
+        final LineNumberReader reader)
+        throws IOException
+        {
+        super.readIndividual(state, reader);
+        
+        // Next, read auxillary header.
+        DecodeReturn d = new DecodeReturn(Code.readStringWithPreamble(AUXILLARY_PREAMBLE, state, reader));
+        Code.decode(d);
+        if (d.type != DecodeReturn.T_BOOLEAN)
+        	state.output.fatal("Line " + d.lineNumber + " should have six boolean values but seems to have fewer.");
+		boolean v = (d.l != 0);
+        Code.decode(d);
+        if (d.type != DecodeReturn.T_BOOLEAN)
+        	state.output.fatal("Line " + d.lineNumber + " should have six boolean values but seems to have fewer.");
+		boolean n = (d.l != 0);
+        Code.decode(d);
+        if (d.type != DecodeReturn.T_BOOLEAN)
+        	state.output.fatal("Line " + d.lineNumber + " should have six boolean values but seems to have fewer.");
+		boolean nb = (d.l != 0);
+        Code.decode(d);
+        if (d.type != DecodeReturn.T_BOOLEAN)
+        	state.output.fatal("Line " + d.lineNumber + " should have six boolean values but seems to have fewer.");
+		boolean nbf = (d.l != 0);
+        Code.decode(d);
+        if (d.type != DecodeReturn.T_BOOLEAN)
+        	state.output.fatal("Line " + d.lineNumber + " should have six boolean values but seems to have fewer.");
+		boolean pb = (d.l != 0);
+        Code.decode(d);
+        if (d.type != DecodeReturn.T_BOOLEAN)
+        	state.output.fatal("Line " + d.lineNumber + " should have six boolean values but seems to have fewer.");
+		boolean pbf = (d.l != 0);
+
+        // Next, read auxillary arrays.
+        if (v)
+        	{
+       		String s = reader.readLine();
+        	d = new DecodeReturn(s);
+        	Code.decode(d);
+        	if (d.type != DecodeReturn.T_INT)
+        		state.output.fatal("Velocity length missing.");
+        	velocity = new double[(int)(d.l)];
+        	for(int i = 0; i < velocity.length; i++)
+        		{
+        		Code.decode(d);
+        		if (d.type != DecodeReturn.T_DOUBLE)
+        			state.output.fatal("Velocity information not long enough");
+        		velocity[i] = d.d;
+        		}
+        	}
+        else velocity = new double[genome.length];
+
+        if (n)
+        	{
+       		String s = reader.readLine();
+        	d = new DecodeReturn(s);
+        	Code.decode(d);
+        	if (d.type != DecodeReturn.T_INT)
+        		state.output.fatal("Neighborhood length missing.");
+        	neighborhood = new int[(int)(d.l)];
+        	for(int i = 0; i < neighborhood.length; i++)
+        		{
+        		Code.decode(d);
+        		if (d.type != DecodeReturn.T_INT)
+        			state.output.fatal("Neighborhood information not long enough");
+        		neighborhood[i] = (int)(d.l);
+        		}
+        	}
+        else neighborhood = null;
+
+        if (nb)
+        	{
+       		String s = reader.readLine();
+        	d = new DecodeReturn(s);
+        	Code.decode(d);
+        	if (d.type != DecodeReturn.T_INT)
+        		state.output.fatal("Neighborhood-Best length missing.");
+        	neighborhoodBestGenome = new double[(int)(d.l)];
+        	for(int i = 0; i < neighborhoodBestGenome.length; i++)
+        		{
+        		Code.decode(d);
+        		if (d.type != DecodeReturn.T_DOUBLE)
+        			state.output.fatal("Neighborhood-Best genome not long enough");
+        		neighborhoodBestGenome[i] = d.d;
+        		}
+        	}
+        else neighborhoodBestGenome = null;
+
+		if (nbf)
+			{
+			// here we don't know what kind of fitness it is.  So we'll do our best and guess
+			// that it's the same fitness as our own Particle 
+			neighborhoodBestFitness = (Fitness)(fitness.clone());
+			neighborhoodBestFitness.readFitness(state, reader);
+			}
+
+        if (pb)
+        	{
+       		String s = reader.readLine();
+        	d = new DecodeReturn(s);
+        	Code.decode(d);
+        	if (d.type != DecodeReturn.T_INT)
+        		state.output.fatal("Personal-Best length missing.");
+        	personalBestGenome = new double[(int)(d.l)];
+        	for(int i = 0; i < personalBestGenome.length; i++)
+        		{
+        		Code.decode(d);
+        		if (d.type != DecodeReturn.T_DOUBLE)
+        			state.output.fatal("Personal-Best genome not long enough");
+        		personalBestGenome[i] = d.d;
+        		}
+        	}
+        else personalBestGenome = null;
+
+		if (pbf)
+			{
+			// here we don't know what kind of fitness it is.  So we'll do our best and guess
+			// that it's the same fitness as our own Particle 
+			personalBestFitness = (Fitness)(fitness.clone());
+			personalBestFitness.readFitness(state, reader);
+			}
+        }
+
+    public void writeIndividual(final EvolutionState state,
+        final DataOutput dataOutput) throws IOException
+    	{
+    	super.writeIndividual(state, dataOutput);
+    	
+    	if (velocity != null)  // it's always non-null
+    		{
+    		dataOutput.writeBoolean(true);
+    		dataOutput.writeInt(velocity.length);
+        	for(int i = 0; i < velocity.length; i++)
+        		dataOutput.writeDouble(velocity[i]);
+    		}
+    	else dataOutput.writeBoolean(false);  // this will never happen
+ 
+ 
+    	if (neighborhood != null)
+    		{
+    		dataOutput.writeBoolean(true);
+    		dataOutput.writeInt(neighborhood.length);
+        	for(int i = 0; i < neighborhood.length; i++)
+        		dataOutput.writeDouble(neighborhood[i]);
+    		}
+    	else dataOutput.writeBoolean(false);
+
+
+    	if (neighborhoodBestGenome != null)
+    		{
+    		dataOutput.writeBoolean(true);
+    		dataOutput.writeInt(neighborhoodBestGenome.length);
+        	for(int i = 0; i < neighborhoodBestGenome.length; i++)
+        		dataOutput.writeDouble(neighborhoodBestGenome[i]);
+    		}
+    	else dataOutput.writeBoolean(false);
+
+
+		if (neighborhoodBestFitness != null)
+			{
+			dataOutput.writeBoolean(true);
+			neighborhoodBestFitness.writeFitness(state, dataOutput);
+			}
+		else dataOutput.writeBoolean(false);
+
+
+    	if (personalBestGenome != null)  // it's always non-null
+    		{
+    		dataOutput.writeBoolean(true);
+    		dataOutput.writeInt(personalBestGenome.length);
+        	for(int i = 0; i < personalBestGenome.length; i++)
+        		dataOutput.writeDouble(personalBestGenome[i]);
+    		}
+    	else dataOutput.writeBoolean(false);
+
+
+		if (personalBestFitness != null)
+			{
+			dataOutput.writeBoolean(true);
+			personalBestFitness.writeFitness(state, dataOutput);
+			}
+		else dataOutput.writeBoolean(false);
+    	}
+
+    public void readIndividual(final EvolutionState state,
+        final DataInput dataInput) throws IOException
+        	{
+        	super.readIndividual(state, dataInput);
+        
+        // Next, read auxillary arrays.
+        if (dataInput.readBoolean())
+        	{
+        	velocity = new double[dataInput.readInt()];
+        	for(int i = 0; i < velocity.length; i++)
+        		velocity[i] = dataInput.readDouble();
+        	}
+        else velocity = new double[genome.length];
+
+        if (dataInput.readBoolean())
+        	{
+        	neighborhood = new int[dataInput.readInt()];
+        	for(int i = 0; i < neighborhood.length; i++)
+        		neighborhood[i] = dataInput.readInt();
+        	}
+        else neighborhood = null;
+        
+        if (dataInput.readBoolean())
+        	{
+        	neighborhoodBestGenome = new double[dataInput.readInt()];
+        	for(int i = 0; i < neighborhoodBestGenome.length; i++)
+        		neighborhoodBestGenome[i] = dataInput.readDouble();
+        	}
+        else neighborhoodBestGenome = null;
+
+		if (dataInput.readBoolean())
+			{
+			neighborhoodBestFitness = (Fitness)(fitness.clone());
+			neighborhoodBestFitness.readFitness(state, dataInput);
+			}
+
+        if (dataInput.readBoolean())
+        	{
+        	personalBestGenome = new double[dataInput.readInt()];
+        	for(int i = 0; i < personalBestGenome.length; i++)
+        		personalBestGenome[i] = dataInput.readDouble();
+        	}
+        else personalBestGenome = null;
+
+		if (dataInput.readBoolean())
+			{
+			personalBestFitness = (Fitness)(fitness.clone());
+			personalBestFitness.readFitness(state, dataInput);
+			}
+        }
+
     }

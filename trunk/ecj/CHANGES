@@ -2100,3 +2100,11 @@ Version		Change Log
 	Added pso.params to ecsuite
 	Added PSO section to the manual
 	Reindented
+
+22 Prerelease, Shmerelease
+
+	A deprecated form of Individual.printIndividual(...) had an infinite loop
+	Added reading/writing to Particle.  One gotcha is that because the global
+		data is stored not in Particle but in PSOBreeder, it can't get
+		written or read.
+

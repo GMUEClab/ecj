@@ -5513,16 +5513,18 @@ Third, VectorIndividual supplies methods for cutting a splicing genome arrays, w
 public void split(int[] points, Object[] pieces);
 }
 
+Note that each of the pieces is an array of the proper type. For example, in DoubleVectorIndividual, each piece is a \variable{double[]}. 
+
 VectorIndividual can also {\bf join} certain pieces\,---\,concatenate them\,---\,to form the genome, replacing the original genome.
 
 \java{%
 public void join(Object[] pieces);
 }
 
-Last, VectorIndividual can clone genes in the arrays split off of a genome before joining them again.  This is useful for concatenating genes to an Individual for example.  Obviously, genomes consisting of arrays of numbers or booleans don't need to be ``cloned''\,---\,but the \class{Gene}s found in \class{GeneVectorIndividual} need to be copied or else the concatenated gene slots will share pointers with the original genes, which you perhaps didn't want.  Note that the \variable{pieces} array is modified in place.
+Last, VectorIndividual can clone all the genes in a given piece, setting that piece to the cloned values.  This is useful for concatenating genes to an Individual for example.  Obviously, genomes consisting of arrays of numbers or booleans don't need to be ``cloned''\,---\,but the \class{Gene}s found in \class{GeneVectorIndividual} need to be copied or else the concatenated gene slots will share pointers with the original genes, which you perhaps didn't want.  Note that the \variable{pieces} array is modified in place.
 
 \java{%
-public void cloneGenes(Object[] pieces);
+public void cloneGenes(Object piece);
 }
 
 
@@ -10868,6 +10870,15 @@ PSO has a special breeder called \class{ec.pso.PSOBreeder}.  This breeder holds 
 
 Note that PSOBreeder is {\bf single-threaded} for now, though that may change in the future.
 
+\paragraph{Reading and Writing}
+Particles have a lot of data, and this impacts on their ability to read and write to files, streams, etc.  Some notes:
+
+\begin{itemize}
+\item If you are writing a Particle for human consumption (using \method{printIndividualForHumans()}), it will write out just like a DoubleVectorIndividual: velocity information, neighborhood information, personal information, etc.
+\item If you are writing a Particle meant to be read by a computer (using \method{printIndividual() or writeIndividual()}), it will write out the DoubleVectorIndividual information, followed by all the auxiliary information {\it except} for global best information, which is stored in PSOBreeder and not Particle.
+\end{itemize}
+
+\paragraph{Updating}
 Each timestep, all particles simultaneously compute three vectors: the difference between the particle's personal best and the particle's genome (that is, a vector {\it towards} the personal best), the difference between the particle's neighborhood best and the particle's genome, and finally the difference between the global best and the particle's genome.  These vectors essentially act to move the particle towards the personal best, neighborhood best, and global best.
 
 Then the particle updates its velocity as the weighted sum of its old velocity and these three vectors.  The four weights are global values and are defined in PSOBreeder as:
@@ -10989,6 +11000,7 @@ breed.neighborhood-size = 10\\
 breed.neighborhood-style = random\\
 breed.include-self = false
 }
+
 
 
 \section{Differential Evolution (The \package{ec.de} Package)}
