@@ -12,7 +12,7 @@ import java.util.*;
    Mostly to allow code which is still compatable with 1.4, that's all.
 **/
 
-public class ThreadPool
+public class ThreadPool implements java.io.Serializable
     {
     // This list holds all the unused threads in the pool
     LinkedList list = new LinkedList();

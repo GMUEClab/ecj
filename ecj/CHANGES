@@ -2110,3 +2110,6 @@ Version		Change Log
 	FloatVectorIndividual.reset() had cases mixed up, resulting in integer
 		resets being made.  Thanks to Brendan Poole 
 		<brendan.poole@googlemail.com>
+	ThreadPool now serializable (d'oh!).  Thanks to Brendan Poole
+		<brendan.poole@googlemail.com>
+
