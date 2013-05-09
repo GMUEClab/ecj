@@ -9618,13 +9618,15 @@ You also need to keep the Slaves humming along, ideally by keeping the TCP/IP st
 eval.masterproblem.max-jobs-per-slave = 3
 }
 
+\paragraph{Warning!} If you set these two parameters wrong, you may wind up sending all your individuals to just a few slaves, while the others sit by idly. Let's say that the value \(N\) is equal to the floor of the number of individuals in a subpopulation divided by the number of slaves.  For example, if you have 100 individuals and 45 slaves, then \(N=2\).  In general, you never want your \parameter{job-size} to be greater than \(N\).  Furthermore, if your \parameter{job-size} is set to some value \(M\), you never want your \parameter{max-jobs-per-slave} to be greater than \(\lfloor N / M \rfloor\).  The safe (but potentially network-inefficient) settings are always 1 and 1 respectively.
+
 ECJ would prefer to compress the network streams to make them more efficient.  But it can't do it without the jzlib/ZLIB library, which you must install separately\footnote{Sure, Java has built-in compression routines. Unfortunately they're entirely broken for network streams: they don't support ``partial flush'', a critical item for sending stuff across networks.  They're only really useful for compressing files on disks.  It's a long-standing Java bug, and unlikely to get fixed in the foreseeable future.} (see the ECJ main webpage or http:/\!/www.jcraft.com/jzlib).  Once it's installed, you can turn it on like this:
 
 \params{%
 eval.compression = true
 }
 
-\noindent{\bf Warning!\quad} If you turn on compression in your master but not your slave (or vice versa), the slave will connect but then nothing will happen.  You will not get any warning about your error.
+\noindent{\bf Another warning!\quad} If you turn on compression in your master but not your slave (or vice versa), the slave will connect but then nothing will happen.  You will not get any warning about your error.
 
 
 \subsection{Slaves}
@@ -9865,6 +9867,7 @@ ECJ has a hack that you can use in this situation.  SimpleEvaluator has some add
 
 \params{%
 eval.num-tests = 5\\
+\% Other options are: median,  best
 eval.merge = mean
 }
 
@@ -9882,6 +9885,8 @@ Also, in this situation, the number of individuals being evaluated is {\it small
 eval.masterproblem.job-size = 1\\
 eval.masterproblem.max-jobs-per-slave = 1
 }
+
+A note about merging and multiobjective optimization.  Multiobjective Fitness classes can do merging, but only using \parameter{mean}.  The \parameter{median} and \parameter{best} options will throw exceptions.  When a multiobjective fitness undergoes merging, it's essentially forming the centroid of the merged fitnesses.  Merging is okay for subclasses like SPEA2 or NSGA-II's fitness classes because it'd done {\it before} their auxiliary fitness information is computed.
 
 \section{Island Models (The \package{ec.exchange} Package)}
 \label{ec.exchange}

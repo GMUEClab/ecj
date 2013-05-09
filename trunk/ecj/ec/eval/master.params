@@ -27,9 +27,10 @@ eval.masterproblem.debug-info = false
 # likely to be more efficient.  Note that once a job is
 # committed to a slave, a brand new slave coming on-line cannot
 # take it -- it'll have to sit and wait, which isn't particularly
-# efficient.  At the very least, it's probably helpful to have 2
+# efficient.  If you have a lot more individuals than slaves,
+# and so can afford stuffing the queues, t's probably helpful to have 2
 # or 3 jobs in the queue.
-eval.masterproblem.max-jobs-per-slave = 3
+eval.masterproblem.max-jobs-per-slave = 1
 
 
 # How large should our job be?  If you're doing ordinary
@@ -44,7 +45,7 @@ eval.masterproblem.max-jobs-per-slave = 3
 # evolving.  This works for both steady-state and generational evolution,
 # but if you're doing coevolution, the job size is ignored -- instead
 # the job will consist of the individuals to be coevolved together.
-eval.masterproblem.job-size = 100
+eval.masterproblem.job-size = 1
 
 
 # This compresses the streams between the master and slaves.

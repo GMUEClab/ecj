@@ -8,6 +8,12 @@ evaluator -- they evaluate rapidly and so the time is CONSUMED by
 transfering over the net.  The examples are only here to give you 
 the idea of how to get your own jobs up and running.
 
+NOTE ABOUT JOBS: ECJ has recently had its job-size parameter set to
+1 by default (it used to be 100).  Likewise the max-jobs-per-slave
+parameter is now 1 by default (it used to be 3).  These are safer
+default settings but they may slow you down.  Consult the manual
+about how and when to increase these values.
+
 
 Artificial Ant (change the eval.master.host in ant.slave.params to the
 	appropriate IP of the master's machine.  By default it's

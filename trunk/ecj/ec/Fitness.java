@@ -440,7 +440,7 @@ public abstract class Fitness implements Prototype, Comparable
             }
         else
             {
-            setToMeanOf(state, new Fitness[] { f2[f2.length/2 - 1], f2[f2.length/2] });  // for example, 6/2 = 3, and 0, 1, *2<, *3*, 4, 5
+            setToMeanOf(state, new Fitness[] { f2[f2.length/2 - 1], f2[f2.length/2] });  // for example, 6/2 = 3, and 0, 1, *2*, *3*, 4, 5
             }
         }
 
