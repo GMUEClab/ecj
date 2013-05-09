@@ -573,4 +573,30 @@ public class MultiObjectiveFitness extends Fitness
             objectives[x] = dataInput.readFloat();
         readTrials(state, dataInput);
         }
+
+
+    public void setToBestOf(EvolutionState state, Fitness[] fitnesses)
+        {
+        state.output.fatal("setToBestOf(EvolutionState, Fitness[]) not implemented in " + this.getClass());
+        }
+
+    public void setToMeanOf(EvolutionState state, Fitness[] fitnesses)
+        {
+		// basically we compute the centroid of the fitnesses
+		double sum = 0.0;
+		for(int i = 0; i < objectives.length; i++)
+			{
+			for(int k = 0; k < fitnesses.length; k++)
+				{
+				MultiObjectiveFitness f = (MultiObjectiveFitness) fitnesses[k];
+				sum += f.objectives[i];
+				}
+			objectives[i] = (float)(sum / fitnesses.length);
+			}
+		}
+
+    public void setToMedianOf(EvolutionState state, Fitness[] fitnesses)
+        {
+        state.output.fatal("setToMedianOf(EvolutionState, Fitness[]) not implemented in " + this.getClass());
+        }
     }

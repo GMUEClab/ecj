@@ -2112,4 +2112,7 @@ Version		Change Log
 		<brendan.poole@googlemail.com>
 	ThreadPool now serializable (d'oh!).  Thanks to Brendan Poole
 		<brendan.poole@googlemail.com>
-
+	Added MultiObjectiveFitness.setToMeanOf and turned off setToBestOf
+		and setToMedianOf
+	job-size and max-jobs-per-slave parameters in MasterProblem have been
+		both set to 1 by default.
