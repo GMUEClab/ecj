@@ -2118,4 +2118,5 @@ Version		Change Log
 		both set to 1 by default.
 	Further modifications to get Threadpool serialization working.
 		PoolThread is now no longer an inner class, and the LinkedList
-		of PoolThreads is officially transient
+		of PoolThreads is officially transient  Thanks to J. Alejandro 
+		Zepeda Cortes <jalejandrozepedac@gmail.com>
