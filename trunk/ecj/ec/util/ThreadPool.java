@@ -15,9 +15,59 @@ import java.util.*;
 public class ThreadPool implements java.io.Serializable
     {
     // This list holds all the unused threads in the pool
-    LinkedList list = new LinkedList();
+    transient LinkedList list = new LinkedList();
+                    
+    /** Starts and provides a thread on the given runnable, with the provided name.
+        If no thread was avaialble in the pool, creates a new one. */ 
+    public Thread startThread(String name, Runnable run)
+        {
+        if (run == null)
+            throw new RuntimeException("Request to start a thread on a null runnable");
+        PoolThread p = null;
+        synchronized(this)
+            {
+            if (list == null) 
+            	list = new LinkedList();
+            if (!list.isEmpty())
+                p = (PoolThread)(list.removeLast());    // use the hot thread if you can
+            }
+        if (p == null)
+            p = new PoolThread();   // couldn't get one from list
+
+        if (name == null) name = "";
+        p.setName(name);
+        p.go(run);
+        return p;
+        }
         
+    /** Starts and provides a thread on the given runnable.  If no thread was avaialble in the pool, creates a new one. */ 
+    public Thread startThread(Runnable run)
+        {
+        return startThread(null, run);
+        }
         
+
+    /** Waits until the thread has finished the user's runnable, then adds it back to the pool to await further use.
+        You cannot submit a thread via this method which was not provided via startThread() -- it'll generate an error. */ 
+    public void joinAndReturn(Thread thread)
+        {
+        if (thread != null && thread instanceof PoolThread)
+            {
+            PoolThread p = (PoolThread) thread;
+            p.finish();
+            synchronized(this)
+                {
+                list.add(p);                                                    // this adds to the end, so the end is the hot thread
+                }
+            }
+        else if (thread == null)
+            throw new RuntimeException("Thread is null.");
+        else
+            throw new RuntimeException("Thread was not produced by ThreadPool: " + thread);
+        }
+    }
+        
+
     // These are our threads.  They have a run() method which handles the outer loop of
     // waiting for a new runnable, running it, then informing outsiders that we're finished
     class PoolThread extends Thread
@@ -88,54 +138,5 @@ public class ThreadPool implements java.io.Serializable
                 }
             }
         }
-                
-    /** Starts and provides a thread on the given runnable, with the provided name.
-        If no thread was avaialble in the pool, creates a new one. */ 
-    public Thread startThread(String name, Runnable run)
-        {
-        if (run == null)
-            throw new RuntimeException("Request to start a thread on a null runnable");
-        PoolThread p = null;
-        synchronized(list)
-            {
-            if (!list.isEmpty())
-                p = (PoolThread)(list.removeLast());    // use the hot thread if you can
-            }
-        if (p == null)
-            p = new PoolThread();   // couldn't get one from list
 
-        if (name == null) name = "";
-        p.setName(name);
-        p.go(run);
-        return p;
-        }
-        
-    /** Starts and provides a thread on the given runnable.  If no thread was avaialble in the pool, creates a new one. */ 
-    public Thread startThread(Runnable run)
-        {
-        return startThread(null, run);
-        }
-        
-
-    /** Waits until the thread has finished the user's runnable, then adds it back to the pool to await further use.
-        You cannot submit a thread via this method which was not provided via startThread() -- it'll generate an error. */ 
-    public void joinAndReturn(Thread thread)
-        {
-        if (thread != null && thread instanceof PoolThread)
-            {
-            PoolThread p = (PoolThread) thread;
-            p.finish();
-            synchronized(list)
-                {
-                list.add(p);                                                    // this adds to the end, so the end is the hot thread
-                }
-            }
-        else if (thread == null)
-            throw new RuntimeException("Thread is null.");
-        else
-            throw new RuntimeException("Thread was not produced by ThreadPool: " + thread);
-        }
-    }
-        
-        
         
