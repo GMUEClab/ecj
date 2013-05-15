@@ -98,7 +98,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
     int jobSize;
     boolean showDebugInfo;
     public boolean batchMode;
-    public transient SlaveMonitor monitor;
+    public transient SlaveMonitor monitor;		 // note transient.  We rebuild it.
     public Problem problem;
 
     // except for the problem, everything else is shallow-cloned
