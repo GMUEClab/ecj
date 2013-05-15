@@ -2120,3 +2120,13 @@ Version		Change Log
 		PoolThread is now no longer an inner class, and the LinkedList
 		of PoolThreads is officially transient  Thanks to J. Alejandro 
 		Zepeda Cortes <jalejandrozepedac@gmail.com>
+	Changes to the vector crossover procedures.  Previously we were
+		permitting crossover at any locus including at either end.
+		Now by default we permit crossover only at the beginning,
+		and have a new option ("nonempty") to deny crossover at the
+		b<eginning as well.
+	MasterProblem had incorrect serialization, resulting in improper
+		number of individuals being sent after recovering from
+		checkpoint.  Also Evaluator was setting up two MasterProblems
+		and only needed to set up one.  Thanks to Ralf Buschermöhle 
+		<lobequadrat@GOOGLEMAIL.COM>
