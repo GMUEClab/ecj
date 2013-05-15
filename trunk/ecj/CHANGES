@@ -2130,3 +2130,5 @@ Version		Change Log
 		checkpoint.  Also Evaluator was setting up two MasterProblems
 		and only needed to set up one.  Thanks to Ralf Buschermöhle 
 		<lobequadrat@GOOGLEMAIL.COM>
+	Fix to ParameterDatabse to properly allow files to be loaded relative
+		to classes.  Thanks to Brendan Poole <<brendan.poole@googlemail.com>
