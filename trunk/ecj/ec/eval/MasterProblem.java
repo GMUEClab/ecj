@@ -94,12 +94,12 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
     {
     public static final String P_DEBUG_INFO = "debug-info";
     public static final String P_JOB_SIZE = "job-size";
-        
+    
     int jobSize;
     boolean showDebugInfo;
-    public Problem problem;
     public boolean batchMode;
-    public SlaveMonitor monitor;
+    public transient SlaveMonitor monitor;
+    public Problem problem;
 
     // except for the problem, everything else is shallow-cloned
     public Object clone()
@@ -110,6 +110,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         c.monitor = monitor;
         c.batchMode = batchMode;
         c.jobSize = jobSize; 
+        
         c.showDebugInfo = showDebugInfo;
 
         // deep-cloned stuff
@@ -270,17 +271,17 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
             state.output.message("Finished the GroupedProblemForm evaluation.");
         }
 
-    /** Custom serialization */
-    private void writeObject(ObjectOutputStream out) throws IOException
-        {
-        out.writeObject(problem);
-        }
+    /* Custom serialization */
+    //private void writeObject(ObjectOutputStream out) throws IOException
+    //    {
+    //    out.writeObject(problem);
+    //    }
 
-    /** Custom serialization */
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
-        {
-        problem = (Problem) in.readObject();
-        }
+    /* Custom serialization */
+    //private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    //    {
+    //    problem = (Problem) in.readObject();
+    //    }
 
     /** Initialize contacts with the slaves */
     public void initializeContacts( final EvolutionState state )
