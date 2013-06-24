@@ -4962,8 +4962,10 @@ pop.subpop.0.species.crossover-type = one-point
 The types are:
 
 \begin{itemize}
-\item \parameter{one-point} performs standard One-Point crossover.
-\item \parameter{two-point} performs standard Two-Point crossover.
+\item \parameter{one-point} performs standard One-Point crossover, where we select a value \(0 \leq c < l\) (\(l\) is the vector length), then swap elements whose indices \(i\) are \( i < c\).   Notice that the top element in the vector is never swapped (which is fine) and that if \(c=0\) then nothing is crossed over.
+\item \parameter{one-point-nonempty} performs standard One-Point crossover as above, but with the restriction that \(c\neq 0\), thus the crossover cannot be empty (or a ``no-op'').  This allows you to control the occurrence of ``no-op'' crossovers in some other way, such as through an \class{ec.breed.MultiBreedingPipeline}.
+\item \parameter{two-point} performs standard Two-Point crossover, where we select two values \( 0 \leq a \leq b < l\) (\(l\) is the vector length), then swap elements whose indices \(i\) are \(a \leq i < b\).  Notice that if \(a=b\) then nothing is crossed over.
+\item \parameter{two-point-nonempty} performs standard Two-Point crossover as above, but with the restriction that \(a\neq b\), thus the crossover cannot be empty (or a ``no-op'').  This allows you to control the occurrence of ``no-op'' crossovers in some other way, such as through an \class{ec.breed.MultiBreedingPipeline}.
 \item \parameter{uniform} performs parameterized Uniform crossover, where every gene is crossed over independently with a certain probability.  \class{ec.vector.breed.MultipleVectorCrossoverPipeline} also uses this probability.  The probability is stated like this:
 
 \params{%
@@ -6000,8 +6002,10 @@ gp.type.s.size = 0
 Our GPTreeConstraints object needs to define the GPType of the tree as a whole (the ``root type'').  To set it to our \parameter{nil} type, we'd say:
 
 \params{%
-gp.tc.0.returns = nil\\
+gp.tc.0.returns = nil
 }
+
+This means that the root GPNode of the tree must have its return type compatible with \parameter{nil}.
 
 Last, we need to define some GPNodeConstraints.  A GPNodeConstraint object describes three things about the GPNodes related to them via the Flyweight pattern:
 
@@ -6011,7 +6015,7 @@ Last, we need to define some GPNodeConstraints.  A GPNodeConstraint object descr
 \item The GPType of that the parent of the GPNode must be consistent with.
 \end{itemize}
 
-More on types later.  But for now we'll define a few GPNodeConstraints for nodes with zero, one, and two children.  Since we only have one type, the types of all the children and the parent are all going to be \parameter{nil}.  We'll call these GPNodeConstraints \parameter{nc0}, \parameter{nc1}, and \parameter{nc2}.
+More on types later.  But for now we'll define a few GPNodeConstraints for nodes with zero, one, and two children.  Since we only have one type, the types of all the children and the return type are all going to be \parameter{nil}.  We'll call these GPNodeConstraints \parameter{nc0}, \parameter{nc1}, and \parameter{nc2}.
 
 \params{%
 gp.nc.size = 3\\
@@ -6288,7 +6292,7 @@ public class MyProblem extends GPProblem implements SimpleProblemForm {
 
 \subsubsection{GPNode Subclasses}
 
-Now let's implement our five GPNode subclasses.  Each will implement \method{toString()} to print out the node name, and also \method{eval(...)} discussed earlier.  It's also common to implement the method \method{checkConstraints()} to do a final sanity-check on the node (whether it has the right number of children, etc.) but it's not necessary, and we'll omit it here.
+Now let's implement our five GPNode subclasses.  Each will implement \method{toString()} to print out the node name, and also \method{eval(...)} discussed earlier.  It's also common to implement the method \method{checkConstraints()} to do a final sanity-check on the node (whether it has the right number of children, etc.) but it's not necessary, and we'll omit it here.  Instead we implement the simpler \method{expectedChildren()} method, which is called by the default \method{checkConstraints()} implementation.  \method{expectedChildren()}  simply returns the expected number of children to the node, or a negative number, which means ``the number of children could be anything''.  The value returned by \method{expectedChildren()} is checked against the type constraints of this node as a sanity check.
 
 First the terminals:
 
@@ -6299,7 +6303,7 @@ import ec.*;
 import ec.gp.*;
 public class X extends GPNode {
     public String toString() { return "x" };
-    public int expectedChildren() { return 0; }  // for good measure
+    public int expectedChildren() { return 0; }  
     public void eval(EvolutionState state, int thread, GPData input,
               ADFStack stack, GPIndividual indivdiual, GPProblem problem) {
         MyData data = (MyData) input;
@@ -6319,7 +6323,7 @@ import ec.*;
 import ec.gp.*;
 public class Y extends GPNode {
     public String toString() { return "y" };
-    public int expectedChildren() { return 0; }  // for good measure
+    public int expectedChildren() { return 0; }  
     public void eval(EvolutionState state, int thread, GPData input,
               ADFStack stack, GPIndividual indivdiual, GPProblem problem) {
         MyData data = (MyData) input;
@@ -6338,7 +6342,7 @@ import ec.*;
 import ec.gp.*;
 public class Sin extends GPNode {
     public String toString() { return "sin" };
-    public int expectedChildren() { return 1; }  // for good measure
+    public int expectedChildren() { return 1; }  
     public void eval(EvolutionState state, int thread, GPData input,
               ADFStack stack, GPIndividual indivdiual, GPProblem problem) {
         MyData data = (MyData) input;
@@ -6359,7 +6363,7 @@ import ec.*;
 import ec.gp.*;
 public class Mul extends GPNode {
     public String toString() { return "*" };
-    public int expectedChildren() { return 2; }  // for good measure
+    public int expectedChildren() { return 2; }  
     public void eval(EvolutionState state, int thread, GPData input,
               ADFStack stack, GPIndividual indivdiual, GPProblem problem) {
         MyData data = (MyData) input;
@@ -6381,7 +6385,7 @@ import ec.*;
 import ec.gp.*;
 public class Sub extends GPNode {
     public String toString() { return "-" };
-    public int expectedChildren() { return 2; }  // for good measure
+    public int expectedChildren() { return 2; }  
     public void eval(EvolutionState state, int thread, GPData input,
               ADFStack stack, GPIndividual indivdiual, GPProblem problem) {
         MyData data = (MyData) input;
@@ -6526,7 +6530,7 @@ gp.koza.grow.min-depth = 2\\
 gp.koza.grow.max-depth = 6
 }
 
-\item \class{ec.gp.koza.HalfBuilder} generates arbitrary trees depth-first using Koza's RAMPED HALF-AND-HALF algorithm.  You cannot request a size. This is nothing more than flipping a coin to decide whether to use GROW or FULL.  HalfBuilder is the default builder for creating GP trees in ECJ, but it's not particularly good.  It requires a minimum and maximum depth, and the probability of doing GROW, for example:
+\item \class{ec.gp.koza.HalfBuilder} generates arbitrary trees depth-first using Koza's RAMPED HALF-AND-HALF algorithm.  You cannot request a size. This is nothing more than flipping a coin of probability \parameter{growp} to decide whether to use GROW or FULL.  HalfBuilder is the default builder for creating GP trees in ECJ, but it's not particularly good.  It requires a minimum and maximum depth, and the probability of doing GROW, for example:
 
 \params{%
 gp.tc.0.init = ec.gp.koza.HalfBuilder\\
@@ -8046,9 +8050,21 @@ gp.type.s.0.member.0 = boolean\\
 gp.type.s.0.member.1 = nil
 }
 
-Next we'll need to modify the node constraints.  We'll not add a new tree constraints because we don't want any trees which return booleans.
+Next we need to say what kinds of nodes are permitted as the root of the tree.  We do this by specifying the tree's return type.  For a node to be permitted as the root of the tree, it must have a return type compatible with this tree return type.  Let's say that we want our tree to only have root nodes which have a return type of nil (no boolean allowed):
 
-For the node constraints, let's add three new GPNodeConstraints:
+\params{%
+gp.tc.size = 1\\
+gp.tc.0 = ec.gp.GPTreeConstraints\\
+gp.tc.0.name = tc0\\
+gp.tc.0.fset = f0\\
+\\
+\# Here we define the return type of this GPTreeConstraints\\
+gp.tc.0.returns = nil
+}
+
+As it so happens, this is what we already have by default, so putting it all here is a bit redundant.
+
+Next we'll need to modify the node constraints for each GPNode, so we specify the return type of each of our nodes and also the expected child types of their child slots.  For the node constraints, let's add three new GPNodeConstraints:
 
 \begin{itemize}
 \item A function which returns a double (nil), has three children, and the first child needs to be a boolean.  The other two children are nil.  This would be for things like the \lisp{(if ... ... ...)} node.

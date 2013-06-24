@@ -174,17 +174,16 @@ public class GESpecies extends IntegerVectorSpecies
                 state.output.fatal("Error retrieving grammar file(s): " + def.toString() + "."+ P_FILE + "." + i + " is undefined.");
                 }
 
-            // try
-            //    {
             GPFunctionSet gpfs = trees[i].constraints((GPInitializer) state.initializer).functionset;
             GrammarParser grammarparser = (GrammarParser)(parser_prototype.clone());
             // grammar[i] = grammarparser.parseRules(state, new BufferedReader(new FileReader(grammarFile)), gpfs);
-            grammar[i] = grammarparser.parseRules(state, new BufferedReader(new InputStreamReader(grammarFile)), gpfs);
-            //    }
-            // catch (FileNotFoundException e)
-            //    {
-            //    state.output.fatal("Error retrieving grammar file(s): " + def.toString() + "."+ P_FILE + "." + i + " does not exist or cannot be opened.");
-            //    }
+            BufferedReader br = new BufferedReader(new InputStreamReader(grammarFile));
+            grammar[i] = grammarparser.parseRules(state, br, gpfs);
+            try { br.close(); }
+            catch (IOException e)
+            	{
+            	// do nothing
+            	}
             }
         }
 
