@@ -238,8 +238,7 @@ public class SimpleEvaluator extends Evaluator
     /** A private helper function for evaluatePopulation which evaluates a chunk
         of individuals in a subpopulation for a given thread.
         Although this method is declared
-        public (for the benefit of a private helper class in this file),
-        you should not call it. */
+        protected, you should not call it. */
 
     protected void evalPopChunk(EvolutionState state, int[] numinds, int[] from,
         int threadnum, SimpleProblemForm p)

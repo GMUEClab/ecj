@@ -135,7 +135,7 @@ import ec.*;
 
  <tr><td valign=top><i>base</i>.<tt>crossover-type</tt><br>
  <font size=-1>string, one of: one, two, any</font></td>
- <td valign=top>(default crossover type (one-point, two-point, any-point (uniform), line, or intermediate)</td></tr>
+ <td valign=top>(default crossover type (one-point, one-point-nonempty, two-point, two-point-nonempty, any-point (uniform), line, or intermediate)</td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>crossover-prob</tt><br>
  <font size=-1>0.0 &gt;= float &gt;= 1.0 </font></td>
@@ -169,7 +169,9 @@ public class VectorSpecies extends Species
     public final static String P_CROSSOVERTYPE = "crossover-type";
     public final static String P_CHUNKSIZE = "chunk-size";
     public final static String V_ONE_POINT = "one";
+    public final static String V_ONE_POINT_NO_NOP = "one-nonempty";
     public final static String V_TWO_POINT = "two";
+    public final static String V_TWO_POINT_NO_NOP = "two-nonempty";
     public final static String V_ANY_POINT = "any";
     public final static String V_LINE_RECOMB = "line";
     public final static String V_INTERMED_RECOMB = "intermediate";
@@ -194,11 +196,14 @@ public class VectorSpecies extends Species
 
 
     public final static int C_ONE_POINT = 0;
-    public final static int C_TWO_POINT = 1;
+    public final static int C_ONE_POINT_NO_NOP = 2;
+    public final static int C_TWO_POINT = 4;
+    public final static int C_TWO_POINT_NO_NOP = 8;
     public final static int C_ANY_POINT = 128;
     public final static int C_LINE_RECOMB = 256;
     public final static int C_INTERMED_RECOMB = 512;
     public final static int C_SIMULATED_BINARY = 1024;
+    
     public final static int C_NONE = 0;
     public final static int C_GEOMETRIC = 1;
     public final static int C_UNIFORM = 2;
@@ -361,8 +366,12 @@ public class VectorSpecies extends Species
                 base.push(P_CROSSOVERTYPE),def.push(P_CROSSOVERTYPE));
         else if (ctype.equalsIgnoreCase(V_ONE_POINT))
             crossoverType=C_ONE_POINT;  // redundant
+        else if (ctype.equalsIgnoreCase(V_ONE_POINT_NO_NOP))
+            crossoverType=C_ONE_POINT_NO_NOP;
         else if (ctype.equalsIgnoreCase(V_TWO_POINT))
             crossoverType=C_TWO_POINT;
+        else if (ctype.equalsIgnoreCase(V_TWO_POINT_NO_NOP))
+            crossoverType=C_TWO_POINT_NO_NOP;
         else if (ctype.equalsIgnoreCase(V_ANY_POINT))
             crossoverType=C_ANY_POINT;
         else if (ctype.equalsIgnoreCase(V_LINE_RECOMB))

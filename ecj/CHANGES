@@ -2132,3 +2132,5 @@ Version		Change Log
 		<lobequadrat@GOOGLEMAIL.COM>
 	Fix to ParameterDatabse to properly allow files to be loaded relative
 		to classes.  Thanks to Brendan Poole <<brendan.poole@googlemail.com>
+	GESpecies wasn't closing the stream used to read in grammars.  Thanks
+		to Robert Baruch <robertbaruch@google.com>
