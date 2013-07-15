@@ -2134,3 +2134,5 @@ Version		Change Log
 		to classes.  Thanks to Brendan Poole <<brendan.poole@googlemail.com>
 	GESpecies wasn't closing the stream used to read in grammars.  Thanks
 		to Robert Baruch <robertbaruch@google.com>
+	Fix to tutorial1 documentation and parameter file, which was using
+		crossover-prob incorrectly and not specifying the mutation-type
