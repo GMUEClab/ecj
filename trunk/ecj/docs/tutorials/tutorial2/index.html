@@ -127,11 +127,11 @@ pop.subpop.0.species.max-gene 	= 2341212
 </pre>
 			</tt>
 			<p>
-			VectorSpecies requires some parameters: the genome size, the chunk size (which specifies crossover boundaries -- usually it's just 1), the crossover type (if we do crossover), the probability that uniform crossover (if we use it) will cross over a gene, and the probability that a gene will get mutated (if we do mutation). We enter them as follows: <tt>
+			VectorSpecies requires some parameters: the genome size, the chunk size (which specifies crossover boundaries -- usually it's just 1), the crossover type (if we do crossover), the mutation type (we'll pick "reset", which just randomizes the gene), and the probability that a gene will get mutated (if we do mutation). We enter them as follows: <tt>
 			<pre>
 pop.subpop.0.species.genome-size	= 20
 pop.subpop.0.species.crossover-type	= two
-pop.subpop.0.species.crossover-prob	= 1.0
+pop.subpop.0.species.mutation-type      = reset
 pop.subpop.0.species.mutation-prob	= 0.05
 </pre>
 			</tt>
