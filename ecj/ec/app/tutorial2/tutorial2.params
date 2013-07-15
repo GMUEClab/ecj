@@ -13,7 +13,7 @@ pop.subpop.0.species.min-gene	= -12312
 pop.subpop.0.species.max-gene 	= 2341212	
 pop.subpop.0.species.genome-size	= 20
 pop.subpop.0.species.crossover-type	= two
-pop.subpop.0.species.crossover-prob	= 1.0
+pop.subpop.0.species.mutation-type	= reset
 pop.subpop.0.species.mutation-prob	= 0.05
 
 # Use our own custom mutation class
