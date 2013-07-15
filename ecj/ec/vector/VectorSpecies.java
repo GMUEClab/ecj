@@ -139,7 +139,7 @@ import ec.*;
 
  <tr><td valign=top><i>base</i>.<tt>crossover-prob</tt><br>
  <font size=-1>0.0 &gt;= float &gt;= 1.0 </font></td>
- <td valign=top>(probability that a gene will get crossed over during any-point or simulated binary crossover)</td></tr>
+ <td valign=top>(probability that a gene will get crossed over during any-point (uniform) or simulated binary crossover)</td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>line-extension</tt><br>
  <font size=-1>float &gt;= 0.0 </font></td>
