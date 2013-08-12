@@ -94,14 +94,12 @@ public class SimpleShortStatistics extends Statistics
     public static final String P_DO_TIME = "do-time";
     public static final String P_DO_SUBPOPS = "do-subpops";
     public static final String P_STATISTICS_FILE = "file";
-    public static final String P_MUZZLE = "muzzle";
         
     public int statisticslog = 0;  // stdout by default
     public int modulus;
     public boolean doSize;
     public boolean doTime;
     public boolean doSubpops;
-    public boolean muzzle;
 
     public Individual[] bestSoFar;
     public long[] totalSizeSoFar;
@@ -121,14 +119,14 @@ public class SimpleShortStatistics extends Statistics
             base.push(P_STATISTICS_FILE),null);
 
         modulus = state.parameters.getIntWithDefault(base.push(P_STATISTICS_MODULUS), null, 1);
-        muzzle = state.parameters.getBoolean(base.push(P_MUZZLE),null,false);
 
 
-        if (muzzle)
+        if (silentFile)
             {
             statisticslog = Output.NO_LOGS;
             }
         else if (statisticsFile!=null) 
+        	{
             try
                 {
                 statisticslog = state.output.addLog(statisticsFile,
@@ -139,6 +137,9 @@ public class SimpleShortStatistics extends Statistics
                 {
                 state.output.fatal("An IOException occurred while trying to create the log " + statisticsFile + ":\n" + i);
                 }
+            }
+        else state.output.warning("No statistics file specified, printing to stdout at end.", base.push(P_STATISTICS_FILE));
+
         doSize = state.parameters.getBoolean(base.push(P_DO_SIZE),null,false);
         doTime = state.parameters.getBoolean(base.push(P_DO_TIME),null,false);
         if (state.parameters.exists(base.push(P_FULL), null))

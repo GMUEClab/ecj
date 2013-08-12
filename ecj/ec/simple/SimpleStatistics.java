@@ -61,8 +61,6 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
     /** compress? */
     public static final String P_COMPRESS = "gzip";
     
-    public static final String P_MUZZLE = "muzzle";
-
     public static final String P_DO_FINAL = "do-final";
     public static final String P_DO_GENERATION = "do-generation";
     public static final String P_DO_MESSAGE = "do-message";
@@ -83,9 +81,6 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
     public boolean doDescription;
     public boolean doPerGenerationDescription;
 
-    /** Should we even open up a file and write to it at all? */
-    public boolean muzzle;
-
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state,base);
@@ -101,13 +96,12 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         doDescription = state.parameters.getBoolean(base.push(P_DO_DESCRIPTION),null,true);
         doPerGenerationDescription = state.parameters.getBoolean(base.push(P_DO_PER_GENERATION_DESCRIPTION),null,false);
 
-        muzzle = state.parameters.getBoolean(base.push(P_MUZZLE),null,false);
-
-        if (muzzle)
+        if (silentFile)
             {
             statisticslog = Output.NO_LOGS;
             }
         else if (statisticsFile!=null)
+        	{
             try
                 {
                 statisticslog = state.output.addLog(statisticsFile, !compress, compress);
@@ -116,6 +110,8 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
                 {
                 state.output.fatal("An IOException occurred while trying to create the log " + statisticsFile + ":\n" + i);
                 }
+            }
+        else state.output.warning("No statistics file specified, printing to stdout at end.", base.push(P_STATISTICS_FILE));
         }
 
     public void postInitializationStatistics(final EvolutionState state)
@@ -153,7 +149,7 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
             {
             if (doGeneration) state.output.println("Subpopulation " + x + ":",statisticslog);
             if (doGeneration) best_i[x].printIndividualForHumans(state,statisticslog);
-            if (doMessage) state.output.message("Subpop " + x + " best fitness of generation" + 
+            if (doMessage && !silentPrint) state.output.message("Subpop " + x + " best fitness of generation" + 
                 (best_i[x].evaluated ? " " : " (evaluated flag not set): ") +
                 best_i[x].fitness.fitnessToStringForHumans());
 
@@ -165,6 +161,11 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
                 }   
             }
         }
+
+	/** Allows MultiObjectiveStatistics etc. to call super.super.finalStatistics(...) without
+		calling super.finalStatistics(...) */
+	protected void bypassFinalStatistics(EvolutionState state, int result)
+		{ super.finalStatistics(state, result); }
 
     /** Logs the best individual of the run. */
     public void finalStatistics(final EvolutionState state, final int result)
@@ -178,7 +179,7 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
             {
             if (doFinal) state.output.println("Subpopulation " + x + ":",statisticslog);
             if (doFinal) best_of_run[x].printIndividualForHumans(state,statisticslog);
-            if (doMessage) state.output.message("Subpop " + x + " best fitness of run: " + best_of_run[x].fitness.fitnessToStringForHumans());
+            if (doMessage && !silentPrint) state.output.message("Subpop " + x + " best fitness of run: " + best_of_run[x].fitness.fitnessToStringForHumans());
 
             // finally describe the winner if there is a description
             if (doFinal && doDescription) 

@@ -56,20 +56,7 @@ import java.util.Enumeration;
  * benefit of the user.
  * </ol>
  *
- <!--
- * <p>The default verbosity values for different kinds of announcements are
- * given below:
- *
- <table><tr><td>0</td><td>V_VERBOSE</td><td>(totally verbose)</td>
- </tr><tr><td>1000</td><td>V_NO_MESSAGES</td><td>(don't print messages or system messages)</td>
- </tr><tr><td>2000</td><td>V_NO_WARNINGS</td><td>(don't print warnings, messages, or system messages)</td>
- </tr><tr><td>3000</td><td>V_NO_GENERAL</td><td>(don't print warnings, messages, system messages, or other "general info" stuff that might come along (like statistics maybe))</td>
- </tr><tr><td>4000</td><td>V_NO_ERRORS</td><td>(don't even print errors)</td>
- </tr><tr><td>5000</td><td>V_TOTALLY_SILENT</td><td>(be totally silent)</td>
- </tr></table>
- *
- -->
- 
+ * 
  * <p>Output will also store all announcements in memory by default so as to reproduce
  * them if it's restarted from a checkpoint.  You can change this behavior also by
  *
@@ -97,10 +84,6 @@ public class Output implements Serializable
     String filePrefix = "";
     boolean throwsErrors = false;
 
-    public static final int ALL_MESSAGE_LOGS = -1;
-    /** When passed to print functions, doesn't do any printing */
-    public static final int NO_LOGS = -2;
-        
     /** Total verbosity */
     public static final int V_VERBOSE = 0;
     /** Don't print messages */
@@ -113,7 +96,11 @@ public class Output implements Serializable
     public static final int V_NO_ERRORS = 4000;
     /** No verbosity at all, not even system messages or fatal errors*/
     public static final int V_TOTALLY_SILENT = 5000;
-    
+
+    public static final int ALL_MESSAGE_LOGS = -1;
+    /** When passed to print functions, doesn't do any printing */
+    public static final int NO_LOGS = -2;
+        
     public void setFilePrefix(String filePrefix) {
         this.filePrefix = filePrefix;
         }
@@ -674,7 +661,7 @@ public class Output implements Serializable
         if (!log.postAnnouncements && _announcement) return;  // don't write it
         // if (log.verbosity >= _verbosity) return;  // don't write it
         // if (verbosity >= _verbosity) return;  // don't write it
-        if (log.muzzle) return;  // don't write it
+        if (log.silent) return;  // don't write it
         // now write it
         log.writer.println(s);
         // if (flush) 
@@ -778,7 +765,7 @@ public class Output implements Serializable
         if (log.writer==null) throw new OutputException("Log with a null writer: " + log);
         //if (log.verbosity >= _verbosity) return;  // don't write it
         //if (verbosity >= _verbosity) return;  // don't write it
-        if (log.muzzle) return;  // don't write it
+        if (log.silent) return;  // don't write it
         // now write it
         log.writer.print(s);
         // do not flush until you get a println

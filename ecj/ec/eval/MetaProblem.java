@@ -37,20 +37,11 @@ import java.util.*;
  *
  * <p>The way it works is as follows. First, you set up the base-level ECJ system as normal, with a
  * parameter file defining all of its parameters (ideally including default settings for the
- * parameters you'll be optimizing).  You will probably also want to redirect statistics reporting
- * to /dev/null (on UNIX), as it'll make the system very slow and won't give you anything:
+ * parameters you'll be optimizing).  You probabliy ultimately want to prevent statistics from writing
+ * anything to files or printing anything to the screen, which would be very inefficient when
+ * doing meta-level stuff.
  *
- * <tt><pre>    stat.file = /dev/null    </pre></tt>
- *
- * <p>Or better still, just say
- *
- * <p><pre>     stat.muzzle = true       </pre></tt>
- *
- * Warnings, messages, and errors generated from the base-level system are ordinarily not printed
- * to the screen because it is so costly.  This may make it problematic to debug initially.  To force
- * such errors to be printed as normal, you can set (in the meta-level parameters):
- *
- * <tt><pre>    eval.problem.muzzle = false    </pre></tt>
+ * <p><pre>     stat.silent = true       </pre></tt>
  *
  * <p>Next you set up the meta-level ECJ system.  Here you define the problem class as a MetaProblem:
  *
@@ -196,6 +187,12 @@ import java.util.*;
  *     sure, if only to turn it off.
  * </ul>
  *
+ * <p><b>Preparing for the final run</b> Once you've got everything working, you probably want
+ * to eliminate all output at the base level before starting the big meta-level run.  You can
+ * do this in a base-level parameter file like this:
+ *
+ * <tt><pre>    silent = true    </pre></tt>
+ *
  * <p><b>Caveats.</b> A meta-level individual is tested by setting a base-level EA with its
  * parameters, then running the base-level EA, then extracting the best individual of the run and
  * getting its fitness.  This is done some N times, and the fitness is combined from these
@@ -235,10 +232,7 @@ import java.util.*;
  <td valign=top>(when a meta individual has its evaluated flag set, should we reevaluate it anyway?)</td></tr>
  <tr><td valign=top><tt><i>base</i>.set-random</tt><br>
  <font size=-1>boolean (default=false)</font></td>
- <td valign=top>(Should we override the random seed settings in the base parameter file and seed the base EA generators with random values?)</td></tr>
- <tr><td valign=top><tt><i>base</i>.muzzle</tt><br>
- <font size=-1>boolean (default=false)</font></td>
- <td valign=top>(Should we muzzle the stdout and stderr logs of the Output of the base EA?)</td></tr>
+ <td valign=top>(Should we silence the stdout and stderr logs of the Output of the base EA?)</td></tr>
  <tr><td valign=top><tt><i>base</i>.num-params</tt><br>
  <font size=-1>int >= 1</td>
  <td valign=top>(How many parameters are being evolved?  This should match the genome length of the meta-level EA individuals)</td></tr>
@@ -300,10 +294,6 @@ public class MetaProblem extends Problem implements SimpleProblemForm
     /** Whether to reevaluate individuals if and when they appear for evaluation in the future.  */
     public boolean reevaluateIndividuals;
     
-    /** Whether to muzzle the stdout and stderr logs of the underlying base-level evolutionary computation system. */
-    public boolean muzzle;
-    
-    
     
     /** The best underlying individual array, one per subpopulation.
         We retain the best underlying individual here rather than
@@ -362,7 +352,8 @@ public class MetaProblem extends Problem implements SimpleProblemForm
                 base.push(P_RUNS));
 
         reevaluateIndividuals = state.parameters.getBoolean(base.push(P_REEVALUATE_INDIVIDUALS), null, true);
-        muzzle = state.parameters.getBoolean(base.push(P_MUZZLE), null, false);
+        if (state.parameters.exists(base.push(P_MUZZLE), null))
+        	state.output.warning("" + base.push(P_MUZZLE) + " no longer exists.  Use 'silent' in the lower-level EA parameters instead.");
 
         Parameter pop = new Parameter(Initializer.P_POP);
         int subpopsLength = state.parameters.getInt(pop.push(Population.P_SIZE), null, 1);
@@ -528,11 +519,6 @@ public class MetaProblem extends Problem implements SimpleProblemForm
             out.addLog(ec.util.Log.D_STDOUT,false);
             out.addLog(ec.util.Log.D_STDERR,true);
             out.setThrowsErrors(true);  // don't do System.exit(1);
-            if (muzzle)
-                {
-                out.getLog(0).muzzle = true;
-                out.getLog(1).muzzle = true;
-                }
                             
             EvolutionState evaluatedState = null;
             try

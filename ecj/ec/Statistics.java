@@ -74,7 +74,13 @@ public class Statistics implements Singleton
 
     public static final String P_NUMCHILDREN = "num-children";
     public static final String P_CHILD = "child"; 
+    public static final String P_SILENT = "silent";
+    public static final String P_MUZZLE = "muzzle";  // deprecated
+    public static final String P_SILENT_PRINT = "silent.print";
+    public static final String P_SILENT_FILE = "silent.file";
     public Statistics[] children;
+    public boolean silentFile;
+    public boolean silentPrint;
     
     public void setup(final EvolutionState state, final Parameter base)
         {
@@ -82,6 +88,16 @@ public class Statistics implements Singleton
         if (t < 0) 
             state.output.fatal("A Statistics object cannot have negative number of children",
                 base.push(P_NUMCHILDREN));
+        
+        silentFile = silentPrint = state.parameters.getBoolean(base.push(P_SILENT), null, false);
+        // yes, we're stating them a second time.  It's correct logic.
+        silentFile = state.parameters.getBoolean(base.push(P_SILENT_FILE), null, silentFile);
+        silentPrint = state.parameters.getBoolean(base.push(P_SILENT_PRINT), null, silentPrint);
+        
+        if (state.parameters.exists(base.push(P_MUZZLE), null))
+        	state.output.warning("" + base.push(P_MUZZLE) + " has been deprecated.  We suggest you use " + 
+        		base.push(P_SILENT) + " or similar newer options.");
+        silentFile = silentFile || state.parameters.getBoolean(base.push(P_MUZZLE), null, false);
 
         // load the trees
         children = new Statistics[t];

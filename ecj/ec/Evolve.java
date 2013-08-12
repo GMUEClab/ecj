@@ -153,6 +153,12 @@ public class Evolve
     
     /** 'auto' thread parameter value */
     public static final String V_THREADS_AUTO = "auto";
+    
+    /** Should we muzzle stdout and stderr? */
+    public static final String P_SILENT = "silent";
+
+    /** Should we muzzle stdout and stderr? [deprecated] */
+	static final String P_MUZZLE = "muzzle";
 
 
 
@@ -412,6 +418,19 @@ public class Evolve
         int evalthreads = 1;
         boolean store;
         int x;
+        
+        // Should we muzzle stdout and stderr?
+        
+        if (parameters.exists(new Parameter(P_MUZZLE), null))
+        	output.warning("" + new Parameter(P_MUZZLE) + " has been deprecated.  We suggest you use " + 
+        		new Parameter(P_SILENT) + " or similar newer options.");
+        
+        if (parameters.getBoolean(new Parameter(P_SILENT), null, false) ||
+        	parameters.getBoolean(new Parameter(P_MUZZLE), null, false))
+        	{
+        	output.getLog(0).silent = true;
+        	output.getLog(1).silent = true;
+        	}
 
         // output was already created for us.  
         output.systemMessage(Version.message());

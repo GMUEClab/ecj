@@ -50,20 +50,29 @@ public class MultiObjectiveStatistics extends SimpleStatistics
     {   
     /** front file parameter */
     public static final String P_PARETO_FRONT_FILE = "front";
+    public static final String P_SILENT_FRONT_FILE = "silent.front";
         
+    public boolean silentFront;
+
     /** The pareto front log */
-        
-    public static final int NO_FRONT_LOG = -1;
-        
-    public int frontLog;
+    public int frontLog = 0;  // stdout by default
 
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state,base);
+
+        silentFront = state.parameters.getBoolean(base.push(P_SILENT), null, false);
+        // yes, we're stating it a second time.  It's correct logic.
+        silentFront = state.parameters.getBoolean(base.push(P_SILENT_FRONT_FILE), null, silentFront);
         
         File frontFile = state.parameters.getFile(base.push(P_PARETO_FRONT_FILE),null);
 
-        if (frontFile!=null)
+		if (silentFront)
+			{
+			frontLog = Output.NO_LOGS;
+			}
+        else if (frontFile!=null)
+        	{
             try
                 {
                 frontLog = state.output.addLog(frontFile, !compress, compress);
@@ -72,7 +81,8 @@ public class MultiObjectiveStatistics extends SimpleStatistics
                 {
                 state.output.fatal("An IOException occurred while trying to create the log " + frontFile + ":\n" + i);
                 }
-        else state.output.warning("No Pareto Front statistics file specified.", base.push(P_PARETO_FRONT_FILE));
+            }
+        else state.output.warning("No Pareto Front statistics file specified, printing to stdout at end.", base.push(P_PARETO_FRONT_FILE));
         }
 
 
@@ -80,14 +90,13 @@ public class MultiObjectiveStatistics extends SimpleStatistics
     /** Logs the best individual of the run. */
     public void finalStatistics(final EvolutionState state, final int result)
         {
-        // super.finalStatistics(state,result);
-        // I don't want just a single best fitness
+        bypassFinalStatistics(state, result);  // just call super.super.finalStatistics(...)
 
-        state.output.println("\n\n\n PARETO FRONTS", statisticslog);
+		if (doFinal) state.output.println("\n\n\n PARETO FRONTS", statisticslog);
         for (int s = 0; s < state.population.subpops.length; s++)
             {
             MultiObjectiveFitness typicalFitness = (MultiObjectiveFitness)(state.population.subpops[s].individuals[0].fitness);
-            state.output.println("\n\nPareto Front of Subpopulation " + s, statisticslog);
+            if (doFinal) state.output.println("\n\nPareto Front of Subpopulation " + s, statisticslog);
 
             // build front
             ArrayList front = typicalFitness.partitionIntoParetoFront(state.population.subpops[s].individuals, null, null);
@@ -109,54 +118,28 @@ public class MultiObjectiveStatistics extends SimpleStatistics
                     }
                 });
                         
-            // print out header
-            state.output.message("Pareto Front Summary: " + sortedFront.length + " Individuals");
-            String message = "Ind";
-            int numObjectives = typicalFitness.getObjectives().length;
-            for(int i = 0; i < numObjectives; i++) 
-                message += ("\t" + "Objective " + i);
-            String[] names = typicalFitness.getAuxilliaryFitnessNames();
-            for(int i = 0; i < names.length; i++) 
-                message += ("\t" + names[i]);
-            state.output.message(message);
-                        
-            // write front to screen
-            for (int i = 0; i < sortedFront.length; i++)
-                {
-                Individual individual = (Individual) (sortedFront[i]);
-
-                float[] objectives = ((MultiObjectiveFitness) individual.fitness).getObjectives();
-                String line = "" + i;
-                for (int f = 0; f < objectives.length; f++)
-                    line += ("\t" + objectives[f]);
-
-                double[] vals = ((MultiObjectiveFitness) individual.fitness).getAuxilliaryFitnessValues();
-                for(int f = 0; f < vals.length; f++) 
-                    line += ("\t" + vals[f]);
-                state.output.message(line);
-                }
-                        
             // print out front to statistics log
-            for (int i = 0; i < sortedFront.length; i++)
-                ((Individual)(sortedFront[i])).printIndividualForHumans(state, statisticslog);
+            if (doFinal)
+				for (int i = 0; i < sortedFront.length; i++)
+           		     ((Individual)(sortedFront[i])).printIndividualForHumans(state, statisticslog);
                 
             // write short version of front out to disk
-            if (frontLog >= 0)
-                {
-                if (state.population.subpops.length > 1)
-                    state.output.println("Subpopulation " + s, frontLog);
-                for (int i = 0; i < sortedFront.length; i++)
-                    {
-                    Individual ind = (Individual)(sortedFront[i]);
-                    MultiObjectiveFitness mof = (MultiObjectiveFitness) (ind.fitness);
-                    float[] objectives = mof.getObjectives();
-
-                    String line = "";
-                    for (int f = 0; f < objectives.length; f++)
-                        line += (objectives[f] + " ");
-                    state.output.println(line, frontLog);
-                    }
-                }
+				if (!silentFront)
+					{
+					if (state.population.subpops.length > 1)
+						state.output.println("Subpopulation " + s, frontLog);
+					for (int i = 0; i < sortedFront.length; i++)
+						{
+						Individual ind = (Individual)(sortedFront[i]);
+						MultiObjectiveFitness mof = (MultiObjectiveFitness) (ind.fitness);
+						float[] objectives = mof.getObjectives();
+	
+						String line = "";
+						for (int f = 0; f < objectives.length; f++)
+							line += (objectives[f] + " ");
+						state.output.println(line, frontLog);
+						}
+					}
+				}
             }
         }
-    }

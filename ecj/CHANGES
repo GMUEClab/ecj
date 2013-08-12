@@ -2137,3 +2137,7 @@ Version		Change Log
 	Fix to tutorial1 and tutorial2 documentation and parameter file, which 
 		was using crossover-prob incorrectly and not specifying the 
 		mutation-type
+	Revisions to the verbosity system.  'muzzle' is renamed to 'silent'
+		everywhere.  Various statistics objects have additional new
+		options for quieting them.  The MetaProblem and Slave objects
+		have had their options revised as well, as has Evolve.
