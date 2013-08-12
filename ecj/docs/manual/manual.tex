@@ -1118,10 +1118,7 @@ public int ALL\_MESSAGE\_LOGS;\\
 public int NO\_LOGS;
 }
 
-\variable{NO\_LOGS} is a special log value meaning ``don't bother printing this''.  It's sometimes used to turn off printing to certain logs temporarily.  \variable{ALL\_MESSAGE\_LOGS} will cause printing to be sent to all logs for which message logging is turned on.  By default that's just stderr (1).  This is not commonly used.
-
-
-\noindent To post a message or generate a warning or error (all of which ordinarily go to the stderr log, and are also stored in memory):
+\variable{NO\_LOGS} is a special log value meaning ``don't bother printing this''.  It's sometimes used to turn off printing to certain logs temporarily.  \variable{ALL\_MESSAGE\_LOGS} will cause printing to be sent to all logs for which message logging is turned on.  By default that's just stderr (1).  This is not commonly used.  To post a message or generate a warning or error (all of which ordinarily go to the stderr log, and are also stored in memory):
 
 \begin{methods}{ec.util.Output}
 \mthd{public void message(String \textit{text})}
