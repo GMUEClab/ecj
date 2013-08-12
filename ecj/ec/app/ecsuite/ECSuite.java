@@ -383,6 +383,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
                 for( int i = 0 ; i < len ; i++ )
                     {
                     double gi = genome[i] ;
+                    // The reason for the 6 is that this is the equation De Jong used in the De Jong Test Suite
                     value += 6 + Math.floor( gi );
                     }
                 return -value;
