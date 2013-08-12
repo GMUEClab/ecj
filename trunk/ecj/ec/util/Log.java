@@ -33,7 +33,7 @@ public class Log implements Serializable
     // basic log features
     
     /** Should we write to this log at all? */
-    public boolean muzzle = false;
+    public boolean silent = false;
 
     /** The log's writer */
     public transient PrintWriter writer;   // the actual writer.

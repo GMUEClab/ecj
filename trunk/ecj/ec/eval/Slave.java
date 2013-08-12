@@ -127,6 +127,7 @@ public class Slave
     
     public final static String P_RETURNINDIVIDUALS = "eval.return-inds";
 
+    public final static String P_SILENT = "eval.slave.silent";
     public final static String P_MUZZLE = "eval.slave.muzzle";
             
     public static final byte V_NOTHING = 0;
@@ -203,9 +204,15 @@ public class Slave
         
         boolean returnIndividuals = parameters.getBoolean(new Parameter(P_RETURNINDIVIDUALS),null,false);
                 
-        // 5.5 should we muzzle?
+        // 5.5 should we silence the whole thing?
 
-        boolean muzzle = parameters.getBoolean(new Parameter(P_MUZZLE), null, false);
+        boolean silent = parameters.getBoolean(new Parameter(P_SILENT), null, false);
+
+        if (state.parameters.exists(new Parameter(P_MUZZLE), null))
+        	state.output.warning("" + new Parameter(P_MUZZLE) + " has been deprecated.  We suggest you use " + 
+        		new Parameter(P_SILENT) + " or similar newer options.");
+        silent = silent || state.parameters.getBoolean(new Parameter(P_MUZZLE), null, false);
+
                 
         // 6. Open a server socket and listen for requests
         String slaveName = parameters.getString(
@@ -233,7 +240,7 @@ public class Slave
                 new Parameter(P_RUNEVOLVE), new Parameter(P_RETURNINDIVIDUALS));
             }
         
-        if (!muzzle) 
+        if (!silent) 
             {
             Output.initialMessage("ECJ Slave");
             if (runEvolve) Output.initialMessage("Running in Evolve mode, evolve time is " + runTime + " milliseconds");
@@ -250,7 +257,7 @@ public class Slave
                 try
                     {
                     long connectAttemptCount = 0;
-                    if (!muzzle) Output.initialMessage("Connecting to master at "+masterHost+":"+masterPort);
+                    if (!silent) Output.initialMessage("Connecting to master at "+masterHost+":"+masterPort);
                     while (true)
                         {
                         try
@@ -270,7 +277,7 @@ public class Slave
                                 }
                             }
                         }
-                    if (!muzzle) Output.initialMessage("Connected to master after " + (connectAttemptCount * SLEEP_TIME) + " ms");
+                    if (!silent) Output.initialMessage("Connected to master after " + (connectAttemptCount * SLEEP_TIME) + " ms");
                                 
                     DataInputStream dataIn = null;
                     DataOutputStream dataOut = null;
@@ -287,7 +294,7 @@ public class Slave
                                 {
                                 String err = "You do not appear to have JZLib installed on your system, and so must set eval.compression=false.  " +
                                     "To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/";
-                                if (!muzzle) Output.initialMessage(err);
+                                if (!silent) Output.initialMessage(err);
                                 throw new Output.OutputExitException(err);
                                 }
                             }
@@ -298,7 +305,7 @@ public class Slave
                     catch (IOException e)
                         {
                         String err = "Unable to open input stream from socket:\n"+e;
-                        if (!muzzle) Output.initialMessage(err);
+                        if (!silent) Output.initialMessage(err);
                         throw new Output.OutputExitException(err);
                         }
                                 
@@ -306,7 +313,7 @@ public class Slave
                     if (slaveName==null)
                         {                    
                         slaveName = socket.getLocalAddress().toString() + "/" + System.currentTimeMillis();
-                        if (!muzzle) Output.initialMessage("No slave name specified.  Using: " + slaveName);
+                        if (!silent) Output.initialMessage("No slave name specified.  Using: " + slaveName);
                         }
                                 
                     dataOut.writeUTF(slaveName);
@@ -325,13 +332,13 @@ public class Slave
                     output.addLog(ec.util.Log.D_STDOUT, false);
                     output.addLog(ec.util.Log.D_STDERR, true);
 
-                    if (muzzle)
+                    if (silent)
                         {
-                        output.getLog(0).muzzle = true;
-                        output.getLog(1).muzzle = true;
+                        output.getLog(0).silent = true;
+                        output.getLog(1).silent = true;
                         }
 
-                    if (!muzzle) output.systemMessage(Version.message());
+                    if (!silent) output.systemMessage(Version.message());
 
 
                     // 2. set up thread values
@@ -431,13 +438,13 @@ public class Slave
                     {
                     if (state != null)
                         state.output.fatal(e.getMessage());
-                    else if (!muzzle) System.err.println("FATAL ERROR (EvolutionState not created yet): " + e.getMessage());
+                    else if (!silent) System.err.println("FATAL ERROR (EvolutionState not created yet): " + e.getMessage());
                     }
                 catch (IOException e)
                     {
                     if (state != null)
                         state.output.fatal("Unable to connect to master:\n" + e);
-                    else if (!muzzle) System.err.println("FATAL ERROR (EvolutionState not created yet): " + e);
+                    else if (!silent) System.err.println("FATAL ERROR (EvolutionState not created yet): " + e);
                     }
                 }
             catch (Output.OutputExitException e)
@@ -457,7 +464,7 @@ public class Slave
                 System.err.println(e);
                 if (oneShot) System.exit(0);
                 }
-            if (!muzzle) Output.initialMessage("\n\nResetting...");
+            if (!silent) Output.initialMessage("\n\nResetting...");
             }
         }
                             
