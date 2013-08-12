@@ -3684,6 +3684,7 @@ The point is, you can hang a Statistics object as a child of any other Statistic
 
 \subsection{Tabular Statistics} 
 \label{ec.simple.SimpleShortStatistics}
+
 SimpleShortStatistics writes out a different kind of statistics from SimpleStatistics  In its basic form, for each generation it writes out a line of the following values, each separated by a space.
 
 \begin{enumerate}
@@ -3840,6 +3841,10 @@ stat.child.0.silent.file = true\\
 \# Do both of the above\\
 stat.child.0.silent = true
 }
+
+You should be made aware of the important difference between these parameters and the ``do-...'' parameters discussed earlier in Sections \ref{ec.Statistics} and \ref{ec.simple.SimpleShortStatistics}.  The ``do-...'' parameters control what {\it kinds} of messages will be written out to logs or to the screen.  Whereas the ``silent'' parameters are much cruder: they control whether {\it anything} will be written at all.  Note that the ``do-...'' parameters don't prevent statistics files from being opened or created, even if nothing is written to them.  However the ``silent'' parameters will stop the files from even being opened or created in the first place.
+
+Also note the relationship between these ``silent'' parameters and the \parameter{silent} parameter from Section \ref{quieting}.  That second parameter cuts off the stderr and stdout streams entirely, preventing anything from being written to the screen; it takes precedence over the settings of the ``silent'' parameters in this section.
 
 
 \subsection{Implementing a Statistics Object}
@@ -6415,6 +6420,7 @@ public class Sub extends GPNode {
 \end{verbatim}
 }
 \subsubsection{Statistics}
+\label{ec.Statistics}
 
 The default statistics class for GP is SimpleStatistics.  However, the GP package has a Statistics subclass  designed for doing the same basic stuff as SimpleShortStatistics (Section~\ref{ec.simple.SimpleShortStatistics}), but with some extra GP-specific tree statistics.  You can turn it on like this:
 
