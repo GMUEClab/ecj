@@ -137,7 +137,7 @@ public class Particle extends DoubleVectorIndividual
                 
         evaluated = false ;
         
-        printIndividual(state, 0);
+        // printIndividual(state, 0);
         
         }
 

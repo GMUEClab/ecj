@@ -2141,3 +2141,9 @@ Version		Change Log
 		everywhere.  Various statistics objects have additional new
 		options for quieting them.  The MetaProblem and Slave objects
 		have had their options revised as well, as has Evolve.
+	Added Output.initialWarning(...)
+	When a slave disconnects, the SlaveConnection now does a join on the
+		read and write threads to the remote slave rather than letting
+		them die on their own.
+	Removed a spurious print statement in Particle.java which was causing
+		every single individual to get printed to the screen in PSO.
