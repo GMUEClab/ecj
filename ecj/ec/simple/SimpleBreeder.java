@@ -79,6 +79,8 @@ public class SimpleBreeder extends Breeder
         
     public static final int NOT_SET = -1;
     
+    public ThreadPool pool = new ThreadPool();
+
     public boolean usingElitism(int subpopulation)
         {
         return (elite[subpopulation] != NOT_SET ) || (eliteFrac[subpopulation] != NOT_SET);
@@ -287,6 +289,7 @@ public class SimpleBreeder extends Breeder
             }
         else
             {
+            /*
             Thread[] t = new Thread[numThreads];
                 
             // start up the threads
@@ -313,6 +316,23 @@ public class SimpleBreeder extends Breeder
                     {
                     state.output.fatal("Whoa! The main breeding thread got interrupted!  Dying...");
                     }
+            */
+
+
+            // start up the threads
+            for(int y=0;y<numThreads;y++)
+                {
+                SimpleBreederThread r = new SimpleBreederThread();
+                r.threadnum = y;
+                r.newpop = newpop;
+                r.numinds = numinds[y];
+                r.from = from[y];
+                r.me = this;
+                r.state = state;
+                pool.start(r, "ECJ Breeding Thread " + y );
+                }
+                
+            pool.joinAll();
             }
         return newpop;
         }

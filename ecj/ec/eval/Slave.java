@@ -208,10 +208,10 @@ public class Slave
 
         boolean silent = parameters.getBoolean(new Parameter(P_SILENT), null, false);
 
-        if (state.parameters.exists(new Parameter(P_MUZZLE), null))
-        	state.output.warning("" + new Parameter(P_MUZZLE) + " has been deprecated.  We suggest you use " + 
+        if (parameters.exists(new Parameter(P_MUZZLE), null))
+        	Output.initialWarning("" + new Parameter(P_MUZZLE) + " has been deprecated.  We suggest you use " + 
         		new Parameter(P_SILENT) + " or similar newer options.");
-        silent = silent || state.parameters.getBoolean(new Parameter(P_MUZZLE), null, false);
+        silent = silent || parameters.getBoolean(new Parameter(P_MUZZLE), null, false);
 
                 
         // 6. Open a server socket and listen for requests
@@ -464,7 +464,7 @@ public class Slave
                 System.err.println(e);
                 if (oneShot) System.exit(0);
                 }
-            if (!silent) Output.initialMessage("\n\nResetting...");
+            if (!silent) Output.initialMessage("\n\nResetting Slave");
             }
         }
                             
@@ -516,7 +516,7 @@ public class Slave
         // and returning them as soon as they come in, albeit in the proper order)
         if (!runEvolve)
             {
-            Thread[] threads = new Thread[state.evalthreads];
+            ThreadPool.Worker[] threads = new ThreadPool.Worker[state.evalthreads];
             final SimpleProblemForm[] problems = new SimpleProblemForm[state.evalthreads];
             int[] indForThread = new int[state.evalthreads];
                         
@@ -535,7 +535,7 @@ public class Slave
                     if (t >= state.evalthreads) t = 0;       // we can only be here if evalthreads > numInds
                     if (threads[t] != null)
                         {
-                        pool.joinAndReturn(threads[t]);  // ran out of threads, wait for new ones
+                        pool.join(threads[t]);  // ran out of threads, wait for new ones
                         returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, indForThread[t]);  // return just that individual
                         }
                     if (problems[t] == null) problems[t] = ((SimpleProblemForm)(state.evaluator.p_problem.clone()));
@@ -543,10 +543,10 @@ public class Slave
                     final int j = i;
                     final int s = t;
                     indForThread[t] = i;
-                    threads[t] = pool.startThread("Evaluation of individual " + i, new Runnable()
+                    threads[t] = pool.start(new Runnable()
                         {
                         public void run() { problems[s].evaluate( state, inds[j], subpops[j], 0 ); }
-                        });
+                        }, "Evaluation of individual " + i);
                     t++;
                     }
                                 
@@ -555,7 +555,7 @@ public class Slave
                     {
                     if (threads[t] != null)
                         {
-                        pool.joinAndReturn(threads[t]);
+                        pool.join(threads[t]);
                         returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, indForThread[t]);   // return just that individual
                         }
                     }
@@ -711,7 +711,7 @@ public class Slave
         
         
     // if individualInQuestion is -1, all individuals are returned
-    private static void returnIndividualsToMaster(EvolutionState state, Individual []inds, boolean[] updateFitness,
+     static void returnIndividualsToMaster(EvolutionState state, Individual []inds, boolean[] updateFitness,
         DataOutputStream dataOut, boolean returnIndividuals, int individualInQuestion) throws IOException 
         {
         // Return the evaluated individual to the master

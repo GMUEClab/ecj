@@ -199,19 +199,18 @@ public class SimpleEvaluator extends Evaluator
             }
         else
             {
-            Thread[] threads = new Thread[state.evalthreads];
+            ThreadPool.Worker[] threads = new ThreadPool.Worker[state.evalthreads];
             for(int i = 0; i < threads.length; i++)
                 {
-                SimpleEvaluatorThreadCG run = new SimpleEvaluatorThreadCG();
+                SimpleEvaluatorThread run = new SimpleEvaluatorThread();
                 run.threadnum = i;
                 run.state = state;
                 run.prob = (SimpleProblemForm)(p_problem.clone());
-                threads[i] = pool.startThread("ECJ Evaluation Thread " + i, run);
+                threads[i] = pool.start(run, "ECJ Evaluation Thread " + i);
                 }
                         
             // join
-            for(int i = 0; i < threads.length; i++)
-                pool.joinAndReturn(threads[i]);
+            pool.joinAll();
             }
 
         if (numTests > 1)
@@ -280,7 +279,7 @@ public class SimpleEvaluator extends Evaluator
 
 
 /** A helper class for implementing multithreaded evaluation */
-    class SimpleEvaluatorThreadCG implements Runnable
+    class SimpleEvaluatorThread implements Runnable
         {
         public int threadnum;
         public EvolutionState state;

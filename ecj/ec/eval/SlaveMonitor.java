@@ -46,6 +46,8 @@ public class SlaveMonitor
 
     public EvolutionState state;
     
+ 	ThreadPool pool;
+    
     /**
      *  The socket where slaves connect.
      */
@@ -80,10 +82,10 @@ public class SlaveMonitor
         }
 
     // the slaves (not really a queue)
-    private LinkedList allSlaves = new LinkedList();
+     LinkedList allSlaves = new LinkedList();
 
     // the available slaves
-    private LinkedList availableSlaves = new LinkedList();
+     LinkedList availableSlaves = new LinkedList();
 
     // the maximum number of jobs per slave
     int maxJobsPerSlave;
@@ -106,6 +108,8 @@ public class SlaveMonitor
         {
         this.showDebugInfo = showDebugInfo;
         this.state = state;
+        
+        pool = new ThreadPool();
                 
         int port = state.parameters.getInt(
             new Parameter( P_EVALMASTERPORT ),null);
@@ -435,7 +439,7 @@ public class SlaveMonitor
      * @param s checkpoint file output stream
      * @throws IOException
      */
-    private void writeObject(ObjectOutputStream out) throws IOException
+     void writeObject(ObjectOutputStream out) throws IOException
         {
         state.output.fatal("Not implemented yet: SlaveMonitor.writeObject");
         }
@@ -445,7 +449,7 @@ public class SlaveMonitor
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+     void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
         {
         state.output.fatal("Not implemented yet: SlaveMonitor.readObject");
         }
