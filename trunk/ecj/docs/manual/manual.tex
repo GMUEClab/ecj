@@ -811,7 +811,15 @@ java ec.Evolve -from \textit{app/ant/ant.params}
 
 Notice it does not say {\it ec/app/ant/ant.params}, which is probably what you'd expect if you used \textstr{-file} rather than \textstr{-from}.  This is because ECJ goes to the \file{ec/Evolve.class} file, then from there it searches for the parameter file.  The  path of the parameter file relative to the \file{ec/Evolve.class} file is \file{app/ant/ant.params}.
 
-Once your parameter file is inside a Jar file, you can still define a parent in {\it another} Jar file.  You just need to specify another class for ECJ to start at, and a path relative to it, like this:
+There are similar rules regarding file references (such as parent references) within a parameter file.  Let's say that your parameter file is inside a jar file.  If you say something like:
+
+\params{%
+parent.0 =  ../path/to/the/parent.params
+}
+
+... then ECJ will look around {\it inside the same Jar file} for this file, rather than externally in the operating system's file system or in some other Jar file.
+
+You can escape this however.  For example, once your parameter file is inside a Jar file, you can still define a parent in {\it another} Jar file, or in the file system, if you know a another class file it's located relative to.  You just need to specify another class for ECJ to start at, and a path relative to it, like this:
 
 \params{%
 parent.0 = @ec.foo.AnotherClass relative/path/to/the/parent.params
@@ -1493,10 +1501,7 @@ MersenneTwisterFast (which ECJ uses) and its sibling MersenneTwisterFast have id
 \end{methods}
 
 
-
-
-
-\subsection{Selecting from Distributions}
+\subsection{Selecting Randomly from Distributions}
 \label{ec.util.RandomChoice}
 
 Selecting from distributions is a common task in stochastic optimization.\footnote{These are just histogram distributions.  If what you need is to pick random numbers under some mathematical distribution (Poisson, say), ECJ doesn't have support for that.  However ECJ's sister package, MASON, has support for it in its utilities.  See MASON's \package{sim.util.distribution} package.  You can remove this package from MASON and just use it with ECJ with no problems: it comes with MASON but is independent of it. See http:/\!/cs.gmu.edu/\(\sim\)eclab/projects/mason/} ECJ has a utility class, \class{ec.util.RandomChoice}, which makes it easy to set up and select from histogram-style (arbitrary) distributions, such as selecting randomly from a Population by Fitness.
@@ -1547,6 +1552,40 @@ Selects and returns an index in the given array which contains the given probabi
 Selects and returns an index in the given array which contains the given probability.  The \textit{chooser} will provide the floating-point values of each element in the array.
  \mthd{public static int pickFromDistribution(Object\protect{[ ]} \textit{objs}, RandomChoiceChooserD \textit{chooser}, double \textit{probability})}
 Selects and returns an index in the given array which contains the given probability.  The \textit{chooser} will provide the floating-point values of each element in the array.
+\end{methods}
+
+\subsection{Multithreading Support}
+
+ECJ not only can evaluate and breed individuals in a multithreaded fashion, but it also uses multiple threads in other areas, such as handling island models or distributed parallel evaluation on remote machines.  Many of these ECJ modules take advantage of a {\it thread pool}, essentially a cache of hot threads, so they don't have to create new ones on-the-fly all the time.  This could have been done with Java's concurrency package; but ECJ has its own lightweight thread pool called \class{ec.util.ThreadPool}.
+
+You can hand the ThreadPool a \class{java.lang.Runnable}, and it will fire off this Runnable in a separate thread, either drawn from the ThreadPool or (if none are available) created new.  ThreadPool returns to you a \class{ec.util.ThreadPool.Worker} which represents that thread.  When your Runnable has completed its task, the Worker will return to the ThreadPool to be used later.  You can also wait for a specific Worker to complete its Runnable (a task known as {\it joining}); or wait for all currently running Workers to complete their Runnables.  You can also kill Workers not presently running a Runnable, or join all Workers and then kill everyone.  Overall it's a very simple, lightweight API.
+
+\begin{methods}{ec.util.ThreadPool}
+\mthd{public Worker start(Runnable \textit{run})}
+Starts a Worker's thread on a given Runnable and returns that Worker.  This Worker and its thread are drawn from the pool, or if there is no available Worker, it is created new (with a new thread).
+\mthd{public Worker start(Runnable \textit{run}, String \textit{name})}
+Starts a Worker's thread on a given Runnable and returns that Worker.  The thread will be named with the given name so it is easily recognized in a debugger.  This Worker and its thread are drawn from the pool, or if there is no available Worker, it is created new (with a new thread).
+\mthd{public int getTotalWorkers()}
+Returns the total number of workers either waiting in the pool or presently working on some Runnable.
+\mthd{public int getPooledWorkers()}
+Returns the total number of workers waiting in the pool (not working on some Runnable).
+\mthd{public boolean join(Worker {\it thread}, Runnable {\it run})}
+Blocks until the given Worker has completed running the given Runnable, then returns true.  If the Worker is not running this Runnable, returns false immediately.
+\mthd{public boolean join(Worker {\it thread})}
+Blocks until the given Worker has completed running any current Runnable, then returns true.  If the Worker is not any Runnable, returns false immediately.
+\mthd{public void joinAll()}
+Blocks until all Workers have completed running any current Runnables.
+\mthd{public void killPooled()}
+Destroys all currently pooled Workers (that is, ones which are not running a Runnable).
+\mthd{public void killAll()}
+Blocks until all Workers have completed running any current Runnables.  Then destroys all Workers.
+\end{methods}
+
+A Worker encapsulates a running thread, and is intentionally very opaque.  However you can send an interrupt to the underlying thread if you need to (a rare need):
+
+\begin{methods}{ec.util.ThreadPool.Worker}
+\mthd{public void interrupt()}
+Calls \method{interrupt()} on the Worker's underlying thread.
 \end{methods}
 
 
@@ -1610,7 +1649,6 @@ In truth though, in all my experiments, I have personally {\it always} handled d
      end
 \end{verbatim}
 }
-
 
 
 \section{The \class{ec.Evolve} Top-level}
@@ -1821,7 +1859,7 @@ ParameterDatabase child = new ParameterDatabase();
 child.addParent(dbase);
 \end{verbatim}
 
-I instead prefer to first copy the original so as to keep a completely separate version in case there are multithreading issues.  Here we use \class{ec.util.DataPipe} to copy the ParameterDatabase, because it's presently not \class{Cloneable} (this may change later):
+I instead prefer to first copy the original so as to keep a completely separate version in case there are multithreading issues.  Here we use \class{ec.util.DataPipe} to copy the ParameterDatabase, because it's  not \class{Cloneable}:\footnote{This isn't ECJ's fault.  It's because ParameterDatabase is a subclass of \class{java.util.Properties}, which is Cloneable only in the most recent versions of Java.}
 
 \begin{verbatim}
 ParameterDatabase copy = (ParameterDatabase)(DataPipe.copy(dbase));
@@ -9631,7 +9669,7 @@ The MasterProblem is the interface that connects the distributed evaluation syst
 Problem originalProblem = ((MasterProblem)(state.evaluator.p\_problem)).problem;
 }
 
-When your evolutionary computation process  wishes to evaluate one or more individuals, it hands them to the MasterProblem, which it thinks is the Problem for the application.  But the MasterProblem doesn't send them to a clone of your underlying Problem but rather routes them to the Slave.  
+When your evolutionary computation process  wishes to evaluate one or more individuals, it hands them to the MasterProblem, which it thinks is the Problem for the application.  But the MasterProblem doesn't send them to a clone of your underlying Problem but rather routes them to a Slave.  
 
 Slaves register themselves over the network with an object in the Master process called a \class{ec.eval.SlaveMonitor}, which maintains one \class{ec.eval.SlaveConnection} per Slave to communicate with the remote Slave.  The SlaveMonitor listens in on a specific socket port for incoming Slaves to register themselves.  You'll need to define this port (to something over 2000).  Here's what's standard:
 
@@ -9640,19 +9678,21 @@ eval.master.port = 15000
 }
 
 
-Your MasterProblem will submit Individuals to the SlaveMonitor, which will in turn direct them to one of the SlaveConnections.  SlaveConnections don't just ship of single Individuals to Slaves\,---\,that would be far too inefficient use of network bandwidth.  Instead, they often batch them up into {\bf jobs} for the Slave to perform.  Here's how you define the size of a job:
+Your MasterProblem will submit Individuals to the SlaveMonitor, which will in turn direct them to one of the SlaveConnections.  SlaveConnections don't just ship off single Individuals to Slaves\,---\,that would be far too inefficient a use of network bandwidth.  Instead, they often batch them up into {\bf jobs} for the Slave to perform.  Here's how you define the size of a job:
 
 \params{%
-eval.masterproblem.job-size = 100
+eval.masterproblem.job-size = 10
 }
 
-The idea is to make the job large enough to pack Individuals into a network packet without wasting space.  If your Individuals are large, then a large job size won't have any efficiency benefit.  If they're very small, the job size will have a huge benefit.
+The default is 1, which is safe but maximally inefficient.  The idea is to make the job large enough to pack Individuals into a network packet without wasting space.  If your Individuals are large, then a large job size won't have any efficiency benefit.  If they're very small, the job size will have a huge benefit.
 
 You also need to keep the Slaves humming along, ideally by keeping the TCP/IP streams filled with waiting jobs queued up.  Increasing this number can have a significant effect on performance.  Here's a reasonable minumum:
 
 \params{%
 eval.masterproblem.max-jobs-per-slave = 3
 }
+
+Again, the default is 1, which is safe but inefficient.
 
 \paragraph{Warning!} If you set these two parameters wrong, you may wind up sending all your individuals to just a few slaves, while the others sit by idly. Let's say that the value \(N\) is equal to the floor of the number of individuals in a subpopulation divided by the number of slaves.  For example, if you have 100 individuals and 45 slaves, then \(N=2\).  In general, you never want your \parameter{job-size} to be greater than \(N\).  Furthermore, if your \parameter{job-size} is set to some value \(M\), you never want your \parameter{max-jobs-per-slave} to be greater than \(\lfloor N / M \rfloor\).  The safe (but potentially network-inefficient) settings are always 1 and 1 respectively.
 
@@ -9664,6 +9704,13 @@ eval.compression = true
 
 \noindent{\bf Another warning!\quad} If you turn on compression in your master but not your slave (or vice versa), the slave will connect but then nothing will happen.  You will not get any warning about your error.
 
+\paragraph{Keep Your Master Single-Threaded} Multi-threaded breeding is fine.  But evaluation should be kept single-threaded, that is,
+
+\params{%
+evalthreads = 1
+}
+
+Single-threaded evaluation wil {\it probably} work fine: but I'm not absolutely positive of it, and there's no use to multithreading when all you're doing is shipping jobs off-site.  Play it safe.
 
 \subsection{Slaves}
 
@@ -9694,7 +9741,7 @@ eval.master.host = 129.8.2.4
 
 Remember that you'll also need the port (among other Master parameters!)
 
-Next the Slave needs to know whether it should return entire Individuals or just the Fitnesses of those Individuals.  Individuals are generally much bigger than Fitnesses, and if you only return Fitnesses you can cut your network traffic almost in half.  The problem is that in some custom experiments your fitness evaluation procedure might modify the Individual (it depends on the nature of your experiment).  You'll need to state whether to return entire Individuals or not:
+Next the Slave needs to know whether it should return entire Individuals or just the Fitnesses of those Individuals.  Individuals are generally much bigger than Fitnesses, and if you only return Fitnesses you can cut your network traffic almost in half.  The problem is that in some custom experiments your fitness evaluation procedure might modify the Individual (it depends on the nature of your experiment), and so you'd need to return it in that case.  You'll need to state whether to return entire Individuals or not:
 
 \params{%
 eval.return-inds = false
@@ -9783,11 +9830,12 @@ Note that Opportunistic Evolution won't work with coevolution or other procedure
 \subsection{Asynchronous Evolution}
 \label{asynchronous}
 
-ECJ's distributed evaluation procedure works intuitively with generational methods (such as \class{ec.simple.SimpleEvolutionState} but it also works nicely with Steady-State evolution (\class{ec.simple.SteadyStateEvolutionState}).  This procedure is called {\bf asynchronous evolution}.  See \cite{opportunistic} for more information.
+ECJ's distributed evaluation procedure works intuitively with generational methods (such as \class{ec.simple.SimpleEvolutionState}) but it also works nicely with Steady-State evolution (\class{ec.simple.SteadyStateEvolutionState}).  This procedure is called {\bf asynchronous evolution}.  See \cite{opportunistic} for more information.
 
 The procedure is similar to Steady State Evolution, as discussed in Section~\ref{ec.steadystate}.  The Population starts initially empty.  Then the algorithm starts creating randomly-generated Individuals and shipping them off to remote Slaves to be evaluated.  If a Slave is available, the algorithm will generate an Individual for it to work on.  When a Slave has finished evaluating an Individual and has returned it (or its Fitness), the Individual is then placed into the Population.
 
-At some point the Population will fill up.  At this point the algorithm shifts to ``steady state'' mode.  When a Slave returns an Individual, and there's no space in the Population, the algorithm makes room by marking an existing Individual for death and replacing it with the newcomer, just like it's done in Steady State Evolution.  And when a Slave becomes available, an Individual will no longer be created at random to give to it: rather, the Individual will be bred from the existing Population.
+At some point the Population will fill up.  At this point the algorithm shifts to ``steady state'' mode.  When a Slave returns an Individual, and there's no space in the Population, the algorithm makes room by marking an existing Individual for death and possibly replacing it with the newcomer, just like it's done in Steady State Evolution (see Section 
+\ref{ec.steadystate} for details).  And when a Slave becomes available, an Individual will no longer be created at random to give to it: rather, the Individual will be bred from the existing Population.
 
 This procedure requires some careful consideration.  First, note that at the point that the algorithm shifts to ``steady state'' mode, there are probably a large number of Individuals being evaluated on Slaves which were not bred from the Population but were created at random.  Until those Individuals have made their way into the Population, we won't be in a true ``steady state''.
 
@@ -9899,17 +9947,17 @@ Sometimes your fitness function is noisy: the same individual will get different
 
 This works fine in a single-CPU setting, but in a parallel setting there's a gotcha.  Let's say you have 100 parallel machines available to you but you have a population size of 20.  You'd like to do 5 trials for each individual, and trials are not cheap.  If you farmed out individuals using the distributed evaluator and a Problem subclass which did 5 trials internally, only 20 machines would be used, and they'd be expected to run 5 trials each.  What you want to do is run one trial on each of the machines.  But because of the way MasterProblem is set up, this won't work.
 
-ECJ has a hack that you can use in this situation.  SimpleEvaluator has some additional parameters:
+ECJ has a hack that you can use in this situation.  SimpleEvaluator has the parameters:
 
 \params{%
 eval.num-tests = 5\\
-\% Other options are: median,  best
+\% Other options are: median,  best\\
 eval.merge = mean
 }
 
-This tells the SimpleEvaluator to test each individual 5 times and set their fitness values to the mean.  How does it do this?  By temporarily modifying the Subpopulation.  
+This tells the SimpleEvaluator to test each individual 5 times and set its fitness value to their mean.  How does it do this?  By temporarily modifying the Subpopulation.  
 
-If your Subpopulation presently has 20 individuals in it, and you want to test each 5 times,  SimpleEvaluator will replace this Subpopulation with a copy which has 100 individual in it.  These 100 individuals are 5 clones each of the original 20.  Then SimpleEvaluator evaluates this new population (which causes the distributed evaluation system to farm them out to 100 machines).  
+If your Subpopulation presently has 20 individuals in it, and you want to test each 5 times,  SimpleEvaluator will replace this Subpopulation with a copy which has 100 individual in it.  These 100 individuals are 5 clones each of the original 20.  Then SimpleEvaluator evaluates this new population (which causes the distributed evaluation system to farm them out to potentially 100 machines).  
 
 After all the fitnesses have come back, SimpleEvaluator merges the fitnesses of the 5 clones together to form a single fitness and sets the original individual's fitness to that merged value.  The legal merge settings are \parameter{mean}, \parameter{median}, and \parameter{best}.  Finally, SimpleEvaluator restores the original Subpopulation.
 
@@ -9923,6 +9971,8 @@ eval.masterproblem.max-jobs-per-slave = 1
 }
 
 A note about merging and multiobjective optimization.  Multiobjective Fitness classes can do merging, but only using \parameter{mean}.  The \parameter{median} and \parameter{best} options will throw exceptions.  When a multiobjective fitness undergoes merging, it's essentially forming the centroid of the merged fitnesses.  Merging is okay for subclasses like SPEA2 or NSGA-II's fitness classes because it'd done {\it before} their auxiliary fitness information is computed.
+
+There's no equivalent to this hack in Asynchronous Evolution: you'll just have to ask a machine to test the individual 5 times.
 
 \section{Island Models (The \package{ec.exchange} Package)}
 \label{ec.exchange}
@@ -10540,7 +10590,7 @@ eval.num-shuffled = 4
 For competitive coevolution, you can use the same example as in Section~\ref{ec.coevolve.GroupedProblemForm} (GroupedProblemForm).  For Cooperative Coevolution it's typical to base Fitness instead on the {\it maximum} of tests with \(N\) other collaborators.  For example, let's revise the \method{postprocessPopulation(...)} method to assess trial performance as the sum of all the products of the genomes in the various Individuals: 
 
 
-{
+\vbox{
 \small\begin{verbatim}
     public void postprocessPopulation(EvolutionState state, Population pop,
                                       boolean[] assessFitness, boolean countVictoriesOnly) {
@@ -11578,7 +11628,7 @@ pop.subpop.0.species.pipe.source.0 = ec.multiobjective.spea2.SPEA2TournamentSele
 \section{Meta-Evolutionary Algorithms}
 \label{metaea}
 
-A Meta-Evolutionary Algorithm (or Meta-EA) is an evolutionary algorithm used to optimize the parameters of a second evolutionary algorithm.  Meta-EAs were originally called ``Meta-GAs'' (for obvious reasons), and are closely related to the concept of hyperheuristics.  ECJ implements Meta-EAs in a surprisingly clean fashion, using a single subclass of Problem called \class{ec.eval.MetaProblem}.  Surprisingly, that is the {\it only} class in the Meta-EA package!
+A Meta-Evolutionary Algorithm (or Meta-EA) is an evolutionary algorithm used to optimize the parameters of a second evolutionary algorithm.  Meta-EAs were originally called ``Meta-GAs'' (for obvious reasons), and are closely related to the concept of hyperheuristics.  ECJ implements Meta-EAs in a surprisingly clean fashion, using a single subclass of Problem called \class{ec.eval.MetaProblem}.  Interestingly, that is the {\it only} class in the Meta-EA facility!  The Meta-EA package was developed through collaboration with Khaled Ahsan Talukder, a GMU graduate student.
 
 In ECJ, a Meta-EA works like this.  We create an ordinary evolutionary process which evolves individuals in the form of DoubleVectorIndividuals.  These individuals' genomes notionally contain parameter values for other ECJ processes.  To test an individual, we hand it to MetaProblem, which fires up another ECJ system (in the same Java process) using those parameter values and runs it.  This happens some \(N\) times, and the mean best fitness over those \(N\) runs becomes the fitness of the DoubleVectorIndividual holding those parameter values.  
 
@@ -11591,7 +11641,7 @@ Meta-EAs also work very well in combination with ECJ's distributed evaluator, wh
 
 \subsection{The Two Parameter Files}
 
-Generally speaking, you'll create two parameter files: a base-level parameter file and a meta-level parameter file.  The base-level parameter file tells ECJ what the default parameters are for the base-level process (some of these parameters will be modified to reflect the meta-level individual being tested).  The meta-level parameter file defines the meta-level process.
+Generally speaking, you'll create two parameter files: a base-level parameter file and a meta-level parameter file.  The base-level parameter file tells ECJ what the default parameters are for the base-level EA process (some of these parameters will be modified to reflect the meta-level individual being tested).  The meta-level parameter file defines the meta-level EA process.
 
 The first step in constructing a Meta-EA is to get the base level working on its own without any parameter optimization.  This is straightforward: it's just a standard ECJ process.
 
@@ -11685,13 +11735,15 @@ Notice that we have set apart six parameters (so far) special to meta-evolution:
 
 \item The Problem which must be an \class{ec.eval.MetaProblem}.
 \item MetaProblem has a \parameter{file} parameter which points to the \file{base.params} file (wherever it is).  This is how the MetaProblem identifies what file to use to set up base-level evolutionary processes. 
-\item The \parameter{reevaluate} parameter, typically set to \parameter{true}.  This tells MetaProblem to reevaluate individuals even if their \variable{evaluated} flag has been set.  This is because meta-level evolution of individuals is stochastic\,---\,it involves firing up an ECJ process underneath,\,---\,and so next time an individual is evaluated it could be entirely different.
-\item The \parameter{set-random} parameter, typically set to \parameter{true}.  This tells MetaProblem to override the random number seeds of the ECJ processes it constructs and instead seed them with random numbers.\footnote{Seeding a random number generator using random numbers from another number generator can be perilous, particularly for random number generators with simple internal seeds.  But it's probably fine in this case, because the way MersenneTwister uses its seed is to build an array of 624 random numbers from that seed using a Knuth generator; we then pulse the MersenneTwister \(624 \times 2 + 1\) times to prime it, at which point these numbers have been throughly converted and cleaned out.}  Alternatively, you could tell the base process to seed itself using the wall clock time.  This is slightly less safe as it runs the (very small) risk of having multiple parallel base processes having the same seed.  To do this second option, instead of setting \parameter{set-random} to \parameter{true}, you'd say:
+\item The \parameter{reevaluate} parameter, typically set to \parameter{true}.  This tells MetaProblem to reevaluate individuals even if their \variable{evaluated} flag has been set.  This is because meta-level evolution of individuals is stochastic\,---\,it involves firing up an ECJ process underneath,\,---\,and so next time an individual is evaluated its fitness could be entirely different.
+\item The \parameter{set-random} parameter, typically set to \parameter{true}.  This tells MetaProblem to override the random number seeds of the base ECJ processes it constructs and instead seed them with random numbers.\footnote{Seeding a random number generator using random numbers from another number generator can be perilous, particularly for random number generators with simple internal seeds.  But it's probably fine in this case, because the way MersenneTwister uses its seed is to build an array of 624 random numbers from that seed using a Knuth generator; we then pulse the MersenneTwister \(624 \times 2 + 1\) times to prime it, at which point these numbers have been throughly converted and cleaned out.}  Alternatively, you could tell the base process to seed itself using the wall clock time.  This is slightly less safe as it runs the (very small) risk of having multiple parallel base processes having the same seed.  To do this second option, instead of setting \parameter{set-random} to \parameter{true}, you'd say:
 
 \begin{verbatim}
 ### In the Base Parameter File
 seed.0 = time
 \end{verbatim}
+
+I don't suggest it though.
 
 \item The \parameter{runs} parameter is set to the number of times you want to run a base-level ECJ process to test a certain meta-level individual.  Because base-level processes are stochastic, the fitness at the meta-level is potentially very noisy.  If you set this to 1, then only a single test is done: the meta-level individual's fitness is set to the best fitness of run of the base process which was run using its parameters.  Otherwise multiple tests are done and the fitness of the meta-level individual is set to the mean best fitness of run of all the multiple runs performed using those parameters. {\bf Based on our experiments, we suggest using a single test.}
 
@@ -11798,7 +11850,9 @@ eval.problem.param.4.type = boolean
 pop.subpop.0.species.mutation-type.4 = integer-reset
 \end{verbatim}
 
-In every case, note that we define both parameters (\parameter{eval.problem.\textit{n}....}) and corresponding gene information (\parameter{pop.subpop.0.species...\textit{n}}).  You need to make sure that the right kind of parameter types match up with the right kinds of gene types.
+Note that \parameter{integer-reset} randomizes the value.  This isn't very efficient if you only have boolean values (just 0 or 1): there's a 50\% chance that \parameter{integer-reset} does nothing at all, right?  Nope.  Recall that we set \parameter{pop.subpop.0.species.out-of-bounds-retries = 100}.  This means that if we're presently a 0, then ECJ will try resetting the gene up to 100 times until it sets it to a 1.  So in this case \parameter{integer-reset}  is more or less bit-flip mutation.
+
+{\bf In every case,} note that we define both parameters (\parameter{eval.problem.\textit{n}....}) and corresponding gene information (\parameter{pop.subpop.0.species...\textit{n}}).  You need to make sure that the right kind of parameter types match up with the right kinds of gene types.
 
 
 
