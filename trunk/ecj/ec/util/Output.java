@@ -436,6 +436,39 @@ public class Output implements Serializable
         return l;
         }
     
+    /** Prints an initial warning to System.err.  This is only to
+        be used by ec.Evolve in starting up the system. */
+    public static void initialWarning(String s)
+        {
+        initialWarning(s, null, null);
+        }
+
+    /** Prints an initial warning to System.err.  This is only to
+        be used by ec.Evolve in starting up the system. */
+    public static void initialWarning(String s, Parameter p1)
+        {
+        initialWarning(s, p1, null);
+        }
+
+    /** Prints an initial warning to System.err.  This is only to
+        be used by ec.Evolve in starting up the system. */
+    public static void initialWarning(String s, Parameter p1, Parameter p2)
+        {
+        String er = "STARTUP WARNING:\n" + s;
+        System.err.println(er);
+        if (p1!=null) 
+            {
+            er += "PARAMETER: " + p1;
+            System.err.println("PARAMETER: " + p1);
+            }
+
+        if (p2!=null && p1!=null)
+            {
+            er += "     ALSO: " + p2;
+            System.err.println("     ALSO: " + p2);
+            }
+        }
+
     /** Prints an initial error to System.err.  This is only to
         be used by ec.Evolve in starting up the system. */
     public static void initialError(String s)
