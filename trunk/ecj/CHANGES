@@ -2147,3 +2147,9 @@ Version		Change Log
 		them die on their own.
 	Removed a spurious print statement in Particle.java which was causing
 		every single individual to get printed to the screen in PSO.
+	SimpleEvaluatorThreadCG renamed to SimpleEvaluatorThread
+	ec.util.ThreadPool added, and various threading methods now use it. 
+		This cuts down on the threads created, which causes ECJ to
+		be less likely to tickle bugs in the underlying Java or
+		operating system due to too many constructed threads.
+		Thanks to Ralf Buschermöhle <lobequadrat@googlemail.com>
