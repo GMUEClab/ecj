@@ -8578,9 +8578,9 @@ pop.subpop.0.species.max-gene = 127
 
 GESpecies starts working through the byte array and the grammar, depth-first. Each time GESpecies comes across a point in the  grammar where multiple expansions are possible, it consults the next byte in the byte array.  Let's say there are four possible expansions of the head \lisp{\(<\)foo\(>\)}, and the next byte says 145.  We compute \(145 \mod 4 = 1\) and so pick expansion 1 (the second expansion --- the first one is expansion 0).
 
-This continues until one of two things happens.  Either the tree is completed, or we run out of bytes.  In the first case, the tree is finished and the GEProblem hands it to the GPProblem to be evaluated.  In the second case,  the fitness is simply set to the worst possible Koza Standardized Fitness (\variable{Float.MAX\_VALUE}).
+This continues until one of two things happens.  Either the tree is completed, or we run out of bytes.  In the first case, the tree is finished.  In the second case, this translation process is halted and the fitness is simply set to the worst possible Koza Standardized Fitness (\variable{Float.MAX\_VALUE}).
 
-If the GEIndividual is valid and the GPIndividual is then set to the GPProblem to be evaluated, after evaluation, the GEIndividual's fitness is set to the GPIndividual's fitness, the GEIndividal's \variable{evaluated} flag is set to the GPIndividual's flag, and evaluation of the GEIndividual is completed.
+Once a tree is completed, we record the position in the byte array where we had stopped.  If there are more trees yet to produce for the GPIndividual (for ADFs for example), we build the next one starting at that position, and so on, until the GPIndividual is completed.  Then we send the GPIndividual to the GPProblem to be evaluated, and after evaluation the GEIndividual's fitness is set to the GPIndividual's fitness, the GEIndividal's \variable{evaluated} flag is set to the GPIndividual's flag, and evaluation of the GEIndividual is now done.
 
 To do the translation, GESpecies relies on certain methods that may be useful to you:
 
@@ -8602,7 +8602,7 @@ Computes and returns the number of bytes that would be consumed to produce a GPI
 
 \subsection{Printing}
 
-GEIndividual prints itself (via \method{printIndividualForHumans(...)} by first printing itself in the standard way, then translating and printing the GPTrees from equivalent GPIndividual, then finally printing the ERC mappings used by this GEIndividual in the GESpecies ERC hash table.  For example, consider the GEIndividual below:
+GEIndividual prints itself (via \method{printIndividualForHumans(...)}) by first printing itself in the standard way, then translating and printing the GPTrees from equivalent GPIndividual, then finally printing the ERC mappings used by this GEIndividual in the GESpecies ERC hash table.  For example, consider the GEIndividual below:
 
 
 \vbox{\small\begin{verbatim}
