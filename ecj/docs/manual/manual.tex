@@ -5541,7 +5541,7 @@ With a few changes, the classes in ECJ's \package{ec.vector} package may be used
 \begin{itemize}
 \item Useful utility methods for manipulating lists.
 \item List-oriented initialization
-\item List-oriented crossover procedures.
+\item List-oriented crossover procedures.  Default vector crossover also can work for lists.
 \item List-oriented mutation procedures.  Default vector mutation also works fine for lists.
 \end{itemize}
 
@@ -5612,8 +5612,9 @@ pop.subpop.0.species.geometric-prob = 0.95
 }
 
 \subsubsection{Crossover}
+The standard vector crossover procedures will work fine for lists: but they will only perform crossover in the first \(n\) indices of the lists, where \(n\) is the minimum length of either list.  For example, one-point crossover will pick a crossover point \(p<n\), then swap elements \(0\) through \(p-1\), leaving the rest of the lists alone.
 
-In the \package{ec.vector.breed} package is one special pipeline made for crossing over lists, called, not surprisingly, \class{ec.vector.breed.ListCrossoverPipeline}.  This class was developed by Stephen Donnelly, then an undergraduate at GMU.
+There are more options.  In the \package{ec.vector.breed} package is one special pipeline made for crossing over lists, called, not surprisingly, \class{ec.vector.breed.ListCrossoverPipeline}.  This class was developed by Stephen Donnelly, then an undergraduate at GMU.
 
 ListCrossoverPipeline performs either one-point or two-point list crossover.  In one-point list crossover, we pick random indexes \(i\) and \(j\) in each of two individuals \(A\) and \(B\) (which may have different lengths).  We then swap the string of genes \(A_i, ..., A_{\textit{end}}\) and \(B_j, ..., B_{\textit{end}}\).  It's possible for these strings to be all of the Individual, or entirely empty.
 
@@ -8854,7 +8855,7 @@ GrammarFunctionNodes hold GPNode prototypes and represent them.   Their children
 
 \section{Push (The \package{ec.gp.push} Package)}
 
-Push is a stack-based programming language developed by Lee Spector \cite{push,push3}.  The language is designed to allow the evolution of self-modifying programs, and this allows all manner of experimentation.  ECJ has an {\bf experimental} simple implementation of Push which uses a Push interpreter called Psh.\footnote{https:/\!/github.com/jonklein/Psh/}
+Push is a stack-based programming language developed by Lee Spector \cite{push,push3}.  The language is designed to allow the evolution of self-modifying programs, and this allows all manner of experimentation.  ECJ has an {\bf experimental} simple implementation of Push which uses a Push interpreter called Psh.\footnote{https:/\!/github.com/jonklein/Psh/\qquad Note that ECJ uses a modified version of Psh which comes with the ECJ distribution: don't use the GitHub version.}
 
 The Push interpreter has several stacks on which data of different types can be pushed, popped, or otherwise manipulated.  Built-in Push instructions designed to manipulate certain stacks usually have the name of the stack at the beginning of the instruction name, for convenience.  For example, \method{float.+} is an instruction which adds floating-point numbers found on the \variable{float} stack.  The Psh interpreter has a large number of built-in instructions: but you can also create your own instructions in ECJ to do whatever you like, and add them to Psh's vocabulary.
 
@@ -11347,7 +11348,7 @@ The number of objectives is the length of this array.
 You create a MultiObjectiveFitness and define its objectives along these lines:
 
 \params{%
-pop.subpop.0.species.fitness = ec.multiobjective.MultiObjectiveFitness
+pop.subpop.0.species.fitness = ec.multiobjective.MultiObjectiveFitness\\
 pop.subpop.0.species.fitness.num-objectives = 3
 }
 
@@ -11357,13 +11358,23 @@ Though ECJ tends to assume that higher Fitness values are better, many multiobje
 pop.subpop.0.species.fitness.maximize = false
 }
 
-\parameter{true} is the default value.  This value is stored in the variable:
+You can also state maximization (versus minimization) on a per-objective basis, for example:
 
-\java{%
-public boolean maximize;
+\params{%
+pop.subpop.0.species.fitness.maximize.0 = false\\
+pop.subpop.0.species.fitness.maximize.1 = true
 }
 
-You can also set the minimum and maximum objective values on a per-objective basis:
+
+Per-objective settings override global settings.
+
+In any event, \parameter{true} is the default setting.  Maximization settings are stored in the variable:
+
+\java{%
+public boolean[] maximize;
+}
+
+Similarly, you can also set the minimum and maximum objective values on a per-objective basis:
 
 \params{%
 pop.subpop.0.species.fitness.min.0 = 0.0\\
@@ -11374,12 +11385,14 @@ pop.subpop.0.species.fitness.min.2 = -10\\
 pop.subpop.0.species.fitness.max.2 = 0
 }
 
+
 The default minimum is 0.0 and the default maximum is 1.0.  If you like you can set global minimum and maximum values instead:
 
 \params{%
 pop.subpop.0.species.fitness.min = 0.0\\
 pop.subpop.0.species.fitness.max = 2.0
 }
+
 
 Local min/max values, if set, override the global values.  The resulting minimum and maximum values are stored in the following arrays:
 
@@ -11412,6 +11425,7 @@ Since MultiObjectiveFitness is a Prototype, of course you can define these param
 \params{%
 pop.subpop.0.species.fitness = ec.multiobjective.MultiObjectiveFitness\\
 multi.fitness.num-objectives = 3\\
+multi.fitness.maximize = false\\
 \\
 \# Global objectives\\
 multi.fitness.min = 0.0\\
