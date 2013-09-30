@@ -1963,7 +1963,7 @@ public int numGenerations = UNDEFINED;\\
 public int numEvaluations = UNDEFINED;
 }
 
-Some notes.  The default setting for \variable{numEvaluations} and \variable{numGenerations} is \variable{EvolutionState.UNDEFINED} (0).  One of these two variables will be set at parameter-loading time. The other will stay, initially, at \variable{UNDEFINED}.  If \variable{numEvaluations} was set, and generational evolution is being used, then \variable{numGenerations} will will eventually be set to a real value after the initial population has been created but before it has been evaluated.  We'll get to how these are set later, in the Generational and Steady-State sections (Sections \ref{generational} and \ref{ec.steadystate}). 
+Some notes.  The default setting for \variable{numEvaluations} and \variable{numGenerations} is \variable{EvolutionState.UNDEFINED} (0).  One of these two variables will be set at parameter-loading time. The other will stay, initially, at \variable{UNDEFINED}.  If \variable{numEvaluations} was set, and generational evolution is being used, then \variable{numGenerations} will eventually be set to a real value after the initial population has been created but before it has been evaluated.  We'll get to how these are set later, in the Generational and Steady-State sections (Sections \ref{generational} and \ref{ec.steadystate}). 
 
 \item An {\bf Initializer}, whose job is to create the initial \class{ec.Population} at the beginning of the run, and a {\bf Finalizer}, whose job is to clean up at the very end of the run.
 
@@ -2014,7 +2014,7 @@ Because they are global, Prototypes and Singletons usually are set up from a sin
 
 \subsection{Prototypes}   Prototypes (\class{ec.Prototype}) are by far the most common objects in ECJ.  Prototypes are Setups which follow the following design pattern: only one instance is loaded from the Parameter Database and set up; this object is the {\it prototype}.  Then many objects are created by {\it deep cloning} the prototype.  One example of a Prototype is an Individual (\class{ec.Individual}): a single prototypical Individual is created when ECJ starts up; and further Individuals are deep cloned from this prototype to fill Populations.
 
-Because they can are deep cloned, Prototypes implement the \class{java.lang.Cloneable} interface, so you must implement the method:
+Because they can be deep cloned, Prototypes implement the \class{java.lang.Cloneable} interface, so you must implement the method:
 
 \begin{methods}{ec.Prototype}
 \mthd{public Object clone()}
