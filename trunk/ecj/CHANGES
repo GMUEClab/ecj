@@ -2153,3 +2153,6 @@ Version		Change Log
 		be less likely to tickle bugs in the underlying Java or
 		operating system due to too many constructed threads.
 		Thanks to Ralf Buschermöhle <lobequadrat@googlemail.com>
+	Bugfix to Subpopulation.populate(...), which wasn't reading
+		subpopulations from files properly if they were precisely the
+		right size.  Thanks to Doug <doug1@ten-13.org>

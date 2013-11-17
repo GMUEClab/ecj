@@ -226,8 +226,7 @@ public class Subpopulation implements Group
                 state.output.message("Old subpopulation was of size " + len + ", expanding to size " + individuals.length);
                 return;
                 }
-            
-            if (len > individuals.length)   // the population was shrunk, there's more space yet
+            else if (len > individuals.length)   // the population was shrunk, there's more space yet
                 {
                 // What do we do with the remainder?
                 if (extraBehavior == TRUNCATE)
@@ -265,6 +264,10 @@ public class Subpopulation implements Group
                     // now go on to fill the rest below...
                     }                       
                 }
+            else // exactly right number, we're dont
+            	{
+            	return;
+            	}
             }
 
         // populating the remainder with random individuals
