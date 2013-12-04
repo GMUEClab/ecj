@@ -45,10 +45,13 @@ import java.util.*;
  * their underlying threads (perhaps to clean up in preparation for quitting your program)
  * by calling killAll(...).
  *
-*/
+ * <p>ThreadPool is java.io.Serializable: if it is serialized out, it won't serialize
+ * out its worker threads, so when it is deserialized back in, the threads will be
+ * gone.
+ */
 
 
-public class ThreadPool
+public class ThreadPool implements java.io.Serializable
 	{
 	/** A Worker is a special kind of object which represents an underlying
 		Worker usable in the ThreadPool. */
@@ -56,11 +59,12 @@ public class ThreadPool
 	
 	// The current collection of available threads in the pool
 	// (not including the threads presently working on jobs)
-	LinkedList workers = new LinkedList();
+	transient LinkedList workers = new LinkedList();
+	Object workersLock = new Object[0];  // arrays are serializable
  	
  	// The total number of threads which exist, including those
  	// in the pool and those outstanding working on jobs
- 	int totalWorkers = 0;
+ 	transient int totalWorkers = 0;  // resets to 0 on deserialization
  	
  	/** Start a thread on the given Runnable and returns it. */
  	public Worker start(Runnable run) { return start(run, "" + this); }
@@ -70,8 +74,9 @@ public class ThreadPool
 		{
 		Node node;
 		// ensure we have at least one thread
-		synchronized(workers) 
+		synchronized(workersLock) 
 			{
+			if (workers == null) workers = new LinkedList();  // deserialized
 			if (workers.isEmpty())
 				{
 				node = new Node(name + " Thread " + totalWorkers);
@@ -94,17 +99,59 @@ public class ThreadPool
 
 		return node;
 		}
+
+ 	/** Start a thread on the given Runnable and returns it. 
+ 		This method blocks and does not start the thread as long
+ 		as doing so would cause the number of outstanding workers to
+ 		exceed the provided maximum number.  This method can be used
+ 		to limit the number of jobs processed by the ThreadPool at
+ 		any one time.  */ 
+	public Worker startWhenAvailable(Runnable run, int maximumOutstandingWorkers)
+		{
+		return startWhenAvailable(run, maximumOutstandingWorkers, "" + this);
+		}
+
+ 	/** Start a thread on the given Runnable with a given thread name 
+ 		(for debugging purposes) and returns it. 
+ 		This method blocks and does not start the thread as long
+ 		as doing so would cause the number of outstanding workers to
+ 		exceed the provided maximum number.  This method can be used
+ 		to limit the number of jobs processed by the ThreadPool at
+ 		any one time.  */ 
+	public Worker startWhenAvailable(Runnable run, int maximumOutstandingWorkers, String name)
+		{
+		synchronized(workersLock)
+			{
+			if (workers == null) workers = new LinkedList();  // deserialized
+			while (getOutstandingWorkers() >= maximumOutstandingWorkers)  // too many outstanding jobs
+				{
+				try { workers.wait(); }
+				catch (InterruptedException e) { Thread.interrupted(); }
+				}
+			return start(run, name);
+			}
+		}
 	
 	/** Returns the total number of workers, both pooled and outstanding (working on something). */
 	public int getTotalWorkers()
 		{
-		synchronized(workers) { return totalWorkers; }
+		synchronized(workersLock) { return totalWorkers; }
 		}
 		
 	/** Returns the total number of pooled workers (those not working on something right now). */
 	public int getPooledWorkers()
 		{
-		synchronized(workers) { return workers.size(); }
+		synchronized(workersLock) 
+			{
+			if (workers == null) workers = new LinkedList();  // deserialized
+			return workers.size();
+			}
+		}
+	
+	/** Returns the total number of outstanding workers (those working on something right now). */
+	public int getOutstandingWorkers()
+		{
+		synchronized(workersLock) { return getTotalWorkers() - getPooledWorkers(); }
 		}
 	
 	/** Joins the given thread running the given Runnable.  If the thread is not presently running
@@ -126,22 +173,26 @@ public class ThreadPool
 	/** Waits until there are no outstanding workers: all pool workers are in the pool. */
 	public void joinAll()
 		{
-            synchronized(workers)
+            synchronized(workersLock)
                 {
+                if (workers == null) workers = new LinkedList();  // deserialized
                 if (totalWorkers > workers.size())  // there are still outstanding workers
                     try { workers.wait(); }
                     catch (InterruptedException e) { Thread.interrupted(); }  // ignore
                 }
 		}
-		
+	
+	
+	
 	/** Kills all unused workers in the pool.  This can be used to reduce the pool
 		to a manageable size if the number of workers in it has grown too large
 		(an unlikely scenario).  You can still use the
 		ThreadPool after calling this function; but it will have to build new workers. */
 	public void killPooled()
 		{
-		synchronized(workers)
+		synchronized(workersLock)
 			{
+			if (workers == null) workers = new LinkedList();  // deserialized
 			while(!workers.isEmpty())
 				{
 				Node node = (Node)(workers.remove()); // removes from front
@@ -159,7 +210,7 @@ public class ThreadPool
 		ThreadPool after calling this function; but it will have to build new workers. */
 	public void killAll()
 		{
-		synchronized(workers)
+		synchronized(workersLock)
 			{
 			joinAll();
 			killPooled();
@@ -176,6 +227,9 @@ public class ThreadPool
 		
 		// Thread which is running me
 		Thread thread;
+		
+		// My Thread Pool
+		//ThreadPool pool;
 		
 		// My underlying runnable, or null if I'm not doing a job right now
 	 	Runnable toRun = null;
@@ -257,10 +311,11 @@ public class ThreadPool
 				setRun(null);
 								
 				// add myself back in the list
-				synchronized(workers)
+				synchronized(workersLock)
 					{
 					synchronized(runLock)
 						{
+						if (workers == null) workers = new LinkedList();  // deserialized
 						workers.add(this);  // adds at end
 						
 						if (totalWorkers == workers.size())  // we're all in the bag, let the pool know if it's joining
@@ -272,7 +327,7 @@ public class ThreadPool
 				}
 			}
 		}
-		
+	
 	public static void main(String[] args)
 		{
 		ThreadPool p = new ThreadPool();

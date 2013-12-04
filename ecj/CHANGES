@@ -2159,3 +2159,5 @@ Version		Change Log
 	Bugfix to documentation for Tutorial1, which was still using
 		VectorSpecies instead of BitVectorSpecies.  Thanks to
 		Fabian Kostadinov <fk@avaco.ch>
+	Fixes to ThreadPool to make it serializable again (it got deserializable
+		when we moved it into its own class in ec/util)
