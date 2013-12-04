@@ -156,7 +156,7 @@ pop.subpop.0		= ec.Subpopulation
 <tt><pre>
 pop.subpop.0.size 		= 100
 pop.subpop.0.duplicate-retries 	= 0
-pop.subpop.0.species 		= ec.vector.VectorSpecies
+pop.subpop.0.species 		= ec.vector.BitVectorSpecies
 </pre></tt>
 
 <p>We've first stated that the size of the subpopulation is going to be 100 individuals.  Also, when initializing themselves, subpopulations can guarantee that they won't duplicate individuals: they do this by generating an individual over and over again until it's different from its peers.  By default we're telling the system not to bother to do this, duplicates are fine.
