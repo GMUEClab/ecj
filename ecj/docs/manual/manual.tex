@@ -11496,7 +11496,10 @@ But the most common approach is instead to use some form of {\bf Pareto dominati
 
 MultiObjectiveFitness implements the \method{betterThan} and \method{equivalentTo}\footnote{Perhaps now it might make sense why the method is called \method{equivalentTo} and not \method{equalTo}.} methods to return pareto domination results: \method{betterThan} is true if the Individual Pareto-dominates the one passed in.  \method{equivalentTo} returns true if neither Pareto-dominates the other (either of the last two cases above).
 
-If your SelectionMethod relies entirely on the \method{betterThan} and \method{equivalentTo} methods (such as TournamentSelection), it'll use Pareto domination to sort Individuals.  Note however that this method has problems, not the least of which is that there are cycles in Pareto domination.  That is, it's easy to construct Individuals \(A, B,\) and \(C\) such that \(A\) Pareto-dominates \(B\), which Pareto-dominates \(C\), which Pareto-dominates \(A\)!
+If your SelectionMethod relies entirely on the \method{betterThan} and \method{equivalentTo} methods (such as TournamentSelection), it'll use Pareto domination to sort Individuals.  
+
+% -- THIS IS WRONG
+%Note however that this method has problems, not the least of which is that there are cycles in Pareto domination.  That is, it's easy to construct Individuals \(A, B,\) and \(C\) such that \(A\) Pareto-dominates \(B\), which Pareto-dominates \(C\), which Pareto-dominates \(A\)!
 
 Various subclasses of MultiObjectiveFitness for different kinds of algorithms override the \method{betterThan} and \method{equivalentTo} methods to measure fitness differently.  However you can still determine Pareto Domination with the following method:
 

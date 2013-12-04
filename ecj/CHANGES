@@ -2156,3 +2156,5 @@ Version		Change Log
 	Bugfix to Subpopulation.populate(...), which wasn't reading
 		subpopulations from files properly if they were precisely the
 		right size.  Thanks to Doug <doug1@ten-13.org>
+	Bugfix to documentation for Tutorial1, which was still using
+		VectorSpecies instead of BitVectorSpecies
