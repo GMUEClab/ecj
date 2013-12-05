@@ -299,7 +299,7 @@ ECJ allows multiple subtrees for various experimental needs: Automatically Defin
 
 Genetic programming trees are constructed out of a ``primorial soup'' of function templates (such as \lisp{on-wall} or \lisp{2.3}.  Early forms of genetic programming were typeless: though such templates had a predefined arity (number of arguments), any node could be connected to any other.  Many genetic programming needs require more constraints than this.  For example, the node \lisp{if} might expect a boolean value in its first argument, and integers or floats in the second and third arguments, and return a float when evaluated.  Similarly \lisp{and} might take two booleans as arguments and return a boolean, while \lisp{\(\ast\)} would take ints or floats as arguments and return a float.
 
-Such types are often associated with the kinds of data passed from node to node, but they do not have to be.  For example, typing might be used to constrain certain nodes to be evaluated in groups or in a certain order: for example, a function \lisp{type-block} might insist that its first argument be of type \textit{foo} and its second argument be of type \textit{bar} to make certain that a \textit{foo} node be executed before a \textit{bar} node.
+Such types are often associated with the kinds of data passed from node to node, but they do not have to be.  Typing might be used to constrain certain nodes to be evaluated in groups or in a certain order: for example, a function \lisp{type-block} might insist that its first argument be of type \textit{foo} and its second argument be of type \textit{bar} to make certain that a \textit{foo} node be executed before a \textit{bar} node.
 
 ECJ permits a simple static typing mechanism called {\it set-based} typing, which is suitable for many such tasks.  In set-based typing, the return type and argument types of each node are each defined to be  sets of type symbols (for example, \{\textit{bool}\} or \{\textit{foo, bar, baz}\}, or \{\textit{int, float}\}.  The desired return type for the tree's root is similarly defined.  A child node is permitted to fit into the argument slot of a parent node if the child node's return type and type of the that argument slot in the parent are {\it compatible}.  We define types to be compatible if their set intersection is nonempty (that is, they share at least one type symbol).
 
@@ -1048,7 +1048,7 @@ There are many methods in \class{ec.util.Output} for creating or accessing Logs.
 
 \begin{methods}{ec.util.Output}
 \mthd{public int addLog(File \textit{file}, boolean \textit{appendOnRestart})}
-Add a log on a given file.%, with a verbosity of \variable{ec.util.Output.V\_NO\_GENERAL\(-\)1}.
+Add a log on a given file. %, with a verbosity of \variable{ec.util.Output.V\_NO\_GENERAL\(-\)1}.
 If ECJ is restarted from a checkpoint, and \textit{appendOnRestart} is true, then the log will be appended to the current file contents.  Else they will be replaced.  The Log is registered with \variable{ec.util.Output} and its log number is returned.
 \mthd{public int addLog(File \textit{file}, boolean \textit{appendOnRestart}, boolean \textit{gzip})}
 Add a log on a given file.
@@ -7883,8 +7883,8 @@ ADFArguments add one additional parameter: the child number associated with the 
 \params{%
 gp.fs.1.func.6 = ec.gp.ADFArgument\\
 gp.fs.1.func.6.nc = nc0\\
-gp.fs.1.func.5.arg = 0\\
-gp.fs.1.func.5.name = ARG0
+gp.fs.1.func.6.arg = 0\\
+gp.fs.1.func.6.name = ARG0
 }
 
 If you don't specify a name, ECJ will set the name to ``ARG'' \(+\) arg number, which is usually right anyway.  It'll also issue a warning.
@@ -7987,7 +7987,7 @@ gp.fs.1.func.6.arg = 0\\
 gp.fs.1.func.6.name = ARG0\\
 gp.fs.1.func.7 = ec.gp.ADFArgument\\
 gp.fs.1.func.7.nc = nc0\\
-gp.fs.1.func.7.arg = 1
+gp.fs.1.func.7.arg = 1\\
 gp.fs.1.func.7.name = ARG1\\
 }
 
@@ -8101,7 +8101,7 @@ First the boolean type:
 \params{%
 gp.type.a.size = 2\\
 gp.type.a.0.name = boolean\\
-gp.type.a.1.name = nil
+gp.type.a.1.name = nil\\
 gp.type.s.size = 1\\
 gp.type.s.0.name = boolean-or-nil\\
 gp.type.s.0.size = 2\\
