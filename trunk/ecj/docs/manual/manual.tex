@@ -1993,20 +1993,20 @@ public ec.Statistics statistics;
 
 Most of ECJ's classes follow certain patterns which you'll see many times, so it's useful to review them here.
 
-\subsection{Setup}  Nearly all classes adhere to the \class{ec.Setup} interface.  This interface is \class{java.io.Serializable} (which is why ECJ can serialize all its objects) and defines a single additional method:
+\subsection{Setup}  Nearly all classes adhere to the \class{ec.Setup} interface.  This interface is \class{java.io.Serializable} (which is why ECJ can serialize all its objects) and defines a single method:
 
 \begin{methods}{ec.Setup}
 \mthd{public void setup(EvolutionState {\it state}, Parameter {\it base})}
 Constructs the Setup object from the Parameter Database using {\it base} as the primary parameter base.  Nearly all ECJ classes implement this method.
 \end{methods}
 
-ECJ objects are born from ECJ's Parameter Database, which constructs them with the default (no-argument) constructor.  Then they have \method{setup(...)} called on them, and are expected to construct themselves by loading parameters as necessary from the Parameter Database (\method{state.parameters}), using the provided Parameter base.  Thus the \method{setup(...)} method is, for all intents and purposes, the constructor.
+ECJ objects are born from ECJ's Parameter Database, which constructs them with the default (no-argument) constructor.  Then they have \method{setup(...)} called on them, and are expected to construct themselves by loading parameters as necessary from the Parameter Database (\method{state.parameters}), using the provided Parameter base.  {\bf Thus the \method{setup(...)} method is, for all intents and purposes, the constructor for nearly all ECJ objects.}
 
 When implementing \method{setup(...)} always call \method{super.setup(...)} if a superclass exists.
 
 \subsection{Singletons and Cliques}
 \label{clique}
-  Singletons (\class{ec.Singleton}) are Setups which create a single instance and that's it.  For example, \class{ec.EvolutionState} is a Singleton, as are \class{ec.Initializer}, \class{ec.Finalizer}, \class{ec.Evaluator}, \class{ec.Breeder}, \class{ec.Exchanger}, and \class{ec.Statistics}.  Singletons are generally meant to be globally accessible.
+  Singletons (\class{ec.Singleton}) are Setups which create a single instance per evolutionary run, and that's it.  For example, \class{ec.EvolutionState} is a Singleton, as are \class{ec.Initializer}, \class{ec.Finalizer}, \class{ec.Evaluator}, \class{ec.Breeder}, \class{ec.Exchanger}, and \class{ec.Statistics}.  Singletons are generally meant to be globally accessible.
 
 Though Singleton are single objects, Cliques (\class{ec.Clique}) are objects for which only a small number (but usually more than 1) are created.  Cliques are also generally meant to be globally accessible.  Most Cliques have a globally accessible registry of some sort in which all Clique members can be found.
 
