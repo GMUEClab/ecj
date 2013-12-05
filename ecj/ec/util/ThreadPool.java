@@ -53,8 +53,10 @@ import java.util.*;
 
 public class ThreadPool implements java.io.Serializable
 	{
+	private static final long serialVersionUID = 1;
+
 	/** A Worker is a special kind of object which represents an underlying
-		Worker usable in the ThreadPool. */
+		Worker thread usable in the ThreadPool. */
 	public interface Worker { public void interrupt(); }
 	
 	// The current collection of available threads in the pool
@@ -79,7 +81,7 @@ public class ThreadPool implements java.io.Serializable
 			if (workers == null) workers = new LinkedList();  // deserialized
 			if (workers.isEmpty())
 				{
-				node = new Node(name + " Thread " + totalWorkers);
+				node = new Node(name + " (" + totalWorkers + ")");
 				node.thread.start();  // build a new thread
 				totalWorkers++;
 				}
@@ -182,8 +184,6 @@ public class ThreadPool implements java.io.Serializable
                 }
 		}
 	
-	
-	
 	/** Kills all unused workers in the pool.  This can be used to reduce the pool
 		to a manageable size if the number of workers in it has grown too large
 		(an unlikely scenario).  You can still use the
@@ -218,8 +218,12 @@ public class ThreadPool implements java.io.Serializable
 		}
 	
 	// This is the underlying class for Worker.
+	// Not serializable (Thread is not serializable), but it shouldn't
+	// be a problem since the worker list is transient.
 	class Node implements Runnable, Worker
 		{
+		private static final long serialVersionUID = 1;
+
 		// have I been asked to die?
 		boolean die = false;
 		// have I been asked to start working?
@@ -227,9 +231,6 @@ public class ThreadPool implements java.io.Serializable
 		
 		// Thread which is running me
 		Thread thread;
-		
-		// My Thread Pool
-		//ThreadPool pool;
 		
 		// My underlying runnable, or null if I'm not doing a job right now
 	 	Runnable toRun = null;
@@ -246,9 +247,9 @@ public class ThreadPool implements java.io.Serializable
 			{
 			synchronized(runLock) 
 				{
-				if (toRun == null) return;  // don't interrupt a thread that's pooled
+				if (toRun != null)  // don't interrupt a thread that's pooled
+					thread.interrupt();
 				}
-			thread.interrupt();
 			}
 
 		// Sets the runnable to a new job and notifies any waiting processes trying to join on the old thread
