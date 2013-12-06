@@ -2163,3 +2163,4 @@ Version		Change Log
 		when we moved it into its own class in ec/util)
 	Minor fixes to documentation.  Thanks to J. Alejandro Zepeda Cortes 
 		<jalejandrozepedac@gmail.com>
+	Fixed ThreadPool monitor state bug introduced when refactoring, oops

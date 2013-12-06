@@ -127,7 +127,7 @@ public class ThreadPool implements java.io.Serializable
 			if (workers == null) workers = new LinkedList();  // deserialized
 			while (getOutstandingWorkers() >= maximumOutstandingWorkers)  // too many outstanding jobs
 				{
-				try { workers.wait(); }
+				try { workersLock.wait(); }
 				catch (InterruptedException e) { Thread.interrupted(); }
 				}
 			return start(run, name);
@@ -179,7 +179,7 @@ public class ThreadPool implements java.io.Serializable
                 {
                 if (workers == null) workers = new LinkedList();  // deserialized
                 if (totalWorkers > workers.size())  // there are still outstanding workers
-                    try { workers.wait(); }
+                    try { workersLock.wait(); }
                     catch (InterruptedException e) { Thread.interrupted(); }  // ignore
                 }
 		}
@@ -320,7 +320,7 @@ public class ThreadPool implements java.io.Serializable
 						workers.add(this);  // adds at end
 						
 						if (totalWorkers == workers.size())  // we're all in the bag, let the pool know if it's joining
-							workers.notify();  // let joinAll know someone's back in the pool
+							workersLock.notify();  // let joinAll know someone's back in the pool
 					
 						runLock.notify(); // let joinRunnable know I'm done
 						}
