@@ -32,11 +32,16 @@ import java.util.*;
  * the underlying Worker; otherwise you shouldn't really play around with the underlying
  * Worker even if you can obtain it (via Worker.currentWorker() for example).  
  *
- * <p>If there are no Workers presently available when you request one, a new Worker, and
+ * <p>If there are no Workers presently available in the pool when you request one, a new Worker, and
  * an associated underlying thread, will be created on the fly.  When this Worker is done,
  * it will enter the Pool with the others.  Thus the total number of Workers will never shrink,
  * tough it may stay the same size.  If you want to trim the number of Workers presently in
  * the Pool, you can call killPooled(), though it's not a common need.
+ *
+ * <p>You might wish to control the total number of workers at any particular time.  You
+ * can do this by using a version of start() which takes a maximum number of workers.  This
+ * version will block as long as the number of current working threads is greater than
+ * or equal to the desired maximum, then start() afterwards. 
  *
  * <p>You can wait for an outstanding Worker to finish its task by calling join(...).  You can wait for
  * all outstanding Workers to finish their tasks by calling joinAll(...).  This is useful
@@ -108,9 +113,9 @@ public class ThreadPool implements java.io.Serializable
  		exceed the provided maximum number.  This method can be used
  		to limit the number of jobs processed by the ThreadPool at
  		any one time.  */ 
-	public Worker startWhenAvailable(Runnable run, int maximumOutstandingWorkers)
+	public Worker start(Runnable run, int maximumOutstandingWorkers)
 		{
-		return startWhenAvailable(run, maximumOutstandingWorkers, "" + this);
+		return start(run, maximumOutstandingWorkers, "" + this);
 		}
 
  	/** Start a thread on the given Runnable with a given thread name 
@@ -120,7 +125,7 @@ public class ThreadPool implements java.io.Serializable
  		exceed the provided maximum number.  This method can be used
  		to limit the number of jobs processed by the ThreadPool at
  		any one time.  */ 
-	public Worker startWhenAvailable(Runnable run, int maximumOutstandingWorkers, String name)
+	public Worker start(Runnable run, int maximumOutstandingWorkers, String name)
 		{
 		synchronized(workersLock)
 			{
