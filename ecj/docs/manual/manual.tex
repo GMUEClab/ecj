@@ -5612,7 +5612,7 @@ pop.subpop.0.species.geometric-prob = 0.95
 }
 
 \subsubsection{Crossover}
-The standard vector crossover procedures will work fine for lists: but they will only perform crossover in the first \(n\) indices of the lists, where \(n\) is the minimum length of either list.  For example, one-point crossover will pick a crossover point \(p<n\), then swap elements \(0\) through \(p-1\), leaving the rest of the lists alone.
+The standard vector crossover procedures will work fine for lists: but they will only perform crossover in the first \(n\) indices of the lists, where \(n\) is the minimum length of either list.  For example, one-point crossover will pick a crossover point \(p<n\), then swap elements \(0\) through \(p-1\), leaving the rest of the lists alone.  Additionally, a warning will be issued letting you know when this happens.
 
 There are more options.  In the \package{ec.vector.breed} package is one special pipeline made for crossing over lists, called, not surprisingly, \class{ec.vector.breed.ListCrossoverPipeline}.  This class was developed by Stephen Donnelly, then an undergraduate at GMU.
 
