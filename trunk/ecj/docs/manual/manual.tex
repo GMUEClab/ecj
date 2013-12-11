@@ -2080,9 +2080,9 @@ This method is normally implemented by cloning the object, cleaning out the clon
 
 Populations, Subpopulations, and Individuals are the ``nouns'' of an evolutionary system, and Fitnesses are the ``adjectives''.  They're pretty central to the operation of any evolutionary or sample-based stochastic search algorithm.
 
-In ECJ, an {\bf individual} is a candidate solution to a problem.  Some \(M\) Individuals are grouped together into a sample of solutions known as a {\bf subpopulation}.  Some \(N\) subpopulations are grouped together into the system's {\bf population}.  There's only one population per evolutionary process.  The most common scenario is for ECJ to have \(M\) individuals grouped into a single subpopulation, which then is the sole member of ECJ's population.  However, coevolutionary algorithms (Section~\ref{ec.coevolve}) typically have \(N>1\) subpopulations: as do a special and little-used internal island model scheme (see Section~\ref{ec.exchange}).\footnote{Because these two techniques use the subpopulations in different ways, they cannot be used together (a rare situation in ECJ).}
+In ECJ, an {\bf individual} is a candidate solution to a problem.  Some \(M\) Individuals are grouped together into a sample of solutions known as a {\bf subpopulation}.  Some \(N\) subpopulations are grouped together into the system's {\bf population}.  There's only one population per evolutionary process.  The most common scenario is for ECJ to have \(M\) individuals grouped into a single subpopulation, which then is the sole member of ECJ's population.  However, coevolutionary algorithms (Section~\ref{ec.coevolve}) typically have \(N>1\) subpopulations: as does a special and little-used internal island model scheme (see Section~\ref{ec.exchange}).\footnote{Because these two techniques use the subpopulations in different ways, they cannot be used together (a rare situation in ECJ).}
 
-Usually ECJ's population is an instance of the class \class{ec.Population} and its subpopulations are instances of the class \class{ec.Subpopulation}.  Both of these are Groups. Let's say that there's a single subpopulation, which must contain 100 individuals.  We're express this as follows:
+Usually ECJ's population is an instance of the class \class{ec.Population} and its subpopulations are instances of the class \class{ec.Subpopulation}.  Both of these are Groups. Let's say that there's a single subpopulation, which must contain 100 individuals.  We can express this as follows:
 
 \params{%
 pop = ec.Population\\
@@ -10299,9 +10299,14 @@ In Section~\ref{ec.Exchanger} we talked about various basic Exchanger methods.  
 
 If these look similar to the methods in Section~\ref{ec.eval.MasterProblem}, it's with good reason.  Their function is to set up networking connections, re-establish networking connections after restarting from a checkpoint, and shut down networking connections in a clean way.  IslandExchange implements them but not InterPopulationExchange.
 
+Additionally, prior to introducing an Individual into a population, Exchangers typically call a hook you can override to modify that Individual or replace it with some other Individual:
 
+\java{%
+    protected Individual process(EvolutionState state, int thread, Individual ind,\\
+\rule{0pt}{0pt}\hspace{\fill}int subpopulation, int index);
+}
 
-
+This might be used if the Individuals coming in are different (perhaps a different representation or fitness object) than the ones in your Subpopulation and you need to convert them into the appropriate form.  The default form of this method just returns the Individual provided.
 
 
 \chapter{Additional Evolutionary Algorithms}

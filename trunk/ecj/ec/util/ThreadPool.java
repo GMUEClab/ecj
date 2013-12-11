@@ -66,6 +66,9 @@ public class ThreadPool implements java.io.Serializable
 	
 	// The current collection of available threads in the pool
 	// (not including the threads presently working on jobs)
+	// This object is transient so it's not written out when serialized
+	// out, and so when deserialized it becomes null (which we detect).
+	// This is important because Thread is not serializable.
 	transient LinkedList workers = new LinkedList();
 	Object workersLock = new Object[0];  // arrays are serializable
  	
