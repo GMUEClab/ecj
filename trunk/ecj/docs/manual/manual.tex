@@ -5712,7 +5712,9 @@ pop.subpop.0.species.geometric-prob = 0.95
 \subsection{Arbitrary Genes: \class{ec.vector.Gene}}
 \label{ec.vector.Gene}
 
-Last, some discussion should be reserved regarding vectors of ``arbitrary genes''.  The idea behind this is to provide you with maximum flexibility as to what you can create vectors out of.  The classes involved here are:
+Last, some discussion should be reserved regarding vectors of ``arbitrary genes''.  The idea behind this is to provide you with maximum flexibility as to what you can create vectors out of.  Before we start, note that if your goal is just to do some heterogeneity within the standard classes (a vector consisting of a boolean, an int, and ten floats, say) you'd be better off with ECJ's heterogeneous gene facility (see Section \ref{heterogeneous}), which will require much less coding.  But if you need something {\it completely arbitrary}, such as vectors of trees or vectors of finite-state automata, you've come to the right place.
+
+So.  The classes involved here are:
 
 \begin{itemize}
 \item \class{ec.vector.Gene}, the abstract superclass of objects which can fill gene positions.
