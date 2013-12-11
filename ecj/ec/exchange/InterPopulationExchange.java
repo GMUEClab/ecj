@@ -359,7 +359,7 @@ public class InterPopulationExchange extends Exchanger
         return state.population;
 
         }
-
+        
 
     public Population postBreedingExchangePopulation(EvolutionState state)
         {
@@ -383,16 +383,16 @@ public class InterPopulationExchange extends Exchanger
                     len +").  This would cause an infinite loop in the selection-to-die procedure.");
 
             boolean[] selected = new boolean[ len ];
-            int[] indeces = new int[ nImmigrants[x] ];
+            int[] indices = new int[ nImmigrants[x] ];
             for( int i = 0 ; i < selected.length ; i++ )
                 selected[i] = false;
             exchangeInformation[x].indsToDieSelectionMethod.prepareToProduce( state, x, 0 );
             for( int i = 0 ; i < nImmigrants[x] ; i++ )
                 {
                 do {
-                    indeces[i] = exchangeInformation[x].indsToDieSelectionMethod.produce( x, state, 0 );
-                    } while( selected[indeces[i]] );
-                selected[indeces[i]] = true;
+                    indices[i] = exchangeInformation[x].indsToDieSelectionMethod.produce( x, state, 0 );
+                    } while( selected[indices[i]] );
+                selected[indices[i]] = true;
                 }
             exchangeInformation[x].indsToDieSelectionMethod.finishProducing( state, x, 0 );
 
@@ -400,10 +400,10 @@ public class InterPopulationExchange extends Exchanger
                 {
 
                 // read the individual
-                state.population.subpops[x].individuals[ indeces[y] ] = immigrants[x][y];
+                state.population.subpops[x].individuals[ indices[y] ] = process(state, 0, immigrants[x][y], x, indices[y]);
 
                 // reset the evaluated flag (the individuals are not evaluated in the current island */
-                state.population.subpops[x].individuals[ indeces[y] ].evaluated = false;
+                state.population.subpops[x].individuals[ indices[y] ].evaluated = false;
 
                 }
 
@@ -415,6 +415,8 @@ public class InterPopulationExchange extends Exchanger
         return state.population;
 
         }
+
+
 
     /** Called after preBreedingExchangePopulation(...) to evaluate whether or not
         the exchanger wishes the run to shut down (with ec.EvolutionState.R_FAILURE).

@@ -940,16 +940,16 @@ public class IslandExchange extends Exchanger
                     if (chatty) state.output.message( "Immigrating " +  mailbox.nImmigrants[x] + " individuals from mailbox for subpopulation " + x );
 
                     boolean[] selected = new boolean[ state.population.subpops[x].individuals.length ];
-                    int[] indeces = new int[ mailbox.nImmigrants[x] ];
+                    int[] indices = new int[ mailbox.nImmigrants[x] ];
                     for( int i = 0 ; i < selected.length ; i++ )
                         selected[i] = false;
                     indsToDieSelectionMethod.prepareToProduce( state, x, 0 );
                     for( int i = 0 ; i < mailbox.nImmigrants[x] ; i++ )
                         {
                         do {
-                            indeces[i] = indsToDieSelectionMethod.produce( x, state, 0 );
-                            } while( selected[indeces[i]] );
-                        selected[indeces[i]] = true;
+                            indices[i] = indsToDieSelectionMethod.produce( x, state, 0 );
+                            } while( selected[indices[i]] );
+                        selected[indices[i]] = true;
                         }
                     indsToDieSelectionMethod.finishProducing( state, x, 0 );
 
@@ -960,11 +960,11 @@ public class IslandExchange extends Exchanger
 
                         // read the individual
                         state.population.subpops[x].
-                            individuals[ indeces[y] ] = mailbox.immigrants[x][y];
+                            individuals[ indices[y] ] = process(state, 0, mailbox.immigrants[x][y], x, indices[y]);
 
                         // reset the evaluated flag (the individuals are not evaluated in the current island */
                         state.population.subpops[x].
-                            individuals[ indeces[y] ].evaluated = false;
+                            individuals[ indices[y] ].evaluated = false;
 
                         }
 

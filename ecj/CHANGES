@@ -2164,3 +2164,7 @@ Version		Change Log
 	Minor fixes to documentation.  Thanks to J. Alejandro Zepeda Cortes 
 		<jalejandrozepedac@gmail.com>
 	Fixed ThreadPool monitor state bug introduced when refactoring, oops
+	Minor renaming in ThreadPool
+	Added Exchanger.process(...) method to allow incoming individuals
+		to be processed by the user in some custom fashion prior to being
+		accepted into the population.
