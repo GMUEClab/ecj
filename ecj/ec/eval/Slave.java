@@ -507,8 +507,7 @@ public class Slave
         
         boolean[] updateFitness = new boolean[numInds];
         final Individual[] inds = new Individual[numInds];
-                        
-                        
+        
                         
                         
         // Either evaluate all the individuals once and return them immediately
