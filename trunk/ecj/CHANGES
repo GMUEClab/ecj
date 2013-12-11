@@ -2168,3 +2168,8 @@ Version		Change Log
 	Added Exchanger.process(...) method to allow incoming individuals
 		to be processed by the user in some custom fashion prior to being
 		accepted into the population.
+	All VectorIndividual subclasses now check to see if the individuals
+		are the same length when doing crossover.  If not, a warning
+		is issued and crossover is only done up to the minimum length
+		in common.
+
