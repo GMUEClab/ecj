@@ -103,21 +103,6 @@ public abstract class Species implements Prototype
             { throw new InternalError(); } // never happens
         } 
 
-
-
-    // deprecate the old ones
-/*    final private Individual newIndividual(final EvolutionState state,
-        final Subpopulation _population, 
-        final Fitness _fitness) throws IOException { return null; }
-    final private Individual newIndividual(final EvolutionState state,
-        final Subpopulation _population,
-        final Fitness _fitness,
-        final LineNumberReader reader) throws IOException  { return null; }
-    final private Individual newIndividual(final EvolutionState state,
-        final Subpopulation _population,
-        final Fitness _fitness,
-        final DataInput input) throws IOException  { return null; }
-*/
    
     /** Provides a brand-new individual to fill in a population.  The default form
         simply calls clone(), creates a fitness, sets evaluated to false, and sets

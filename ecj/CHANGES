@@ -2173,3 +2173,4 @@ Version		Change Log
 		is issued and crossover is only done up to the minimum length
 		in common.
 	Added ec.breed.InitializationPipeline
+	Removed old deprecated methods in Species
