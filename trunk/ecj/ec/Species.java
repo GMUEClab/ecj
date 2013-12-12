@@ -106,7 +106,7 @@ public abstract class Species implements Prototype
 
 
     // deprecate the old ones
-    final private Individual newIndividual(final EvolutionState state,
+/*    final private Individual newIndividual(final EvolutionState state,
         final Subpopulation _population, 
         final Fitness _fitness) throws IOException { return null; }
     final private Individual newIndividual(final EvolutionState state,
@@ -117,7 +117,8 @@ public abstract class Species implements Prototype
         final Subpopulation _population,
         final Fitness _fitness,
         final DataInput input) throws IOException  { return null; }
-    
+*/
+   
     /** Provides a brand-new individual to fill in a population.  The default form
         simply calls clone(), creates a fitness, sets evaluated to false, and sets
         the species.  If you need to make a more custom genotype (as is the case
