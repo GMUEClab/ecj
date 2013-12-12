@@ -3356,6 +3356,8 @@ You can also state that the number of Individuals returned by any source must be
 
 By default, \parameter{generate-max} is true, so this is redundant.
 
+\item \class{ec.breed.InitializationPipeline} takes no sources at all: instead it simply generates new random individuals and returns them.  It always generates the maximum number requested by its parent.  This pipeline is useful for doing random search, for example.
+
 \item \class{ec.breed.BufferedBreedingPipeline} buffers up Individual requests and then hands them out one by one.  When you first call \method{produce()} on a BufferedBreedingPipeline, regardless of the number of Individuals requested, it will in turn demand some \(N\) children from its single source.  It then stores them in a buffer and hands them to this and later \method{produce()} requests until they are depleted, at which time it requests \(N\) more, and so on.  This value of \(N\) is set like this:
 
 \params{%

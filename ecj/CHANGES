@@ -2172,4 +2172,4 @@ Version		Change Log
 		are the same length when doing crossover.  If not, a warning
 		is issued and crossover is only done up to the minimum length
 		in common.
-
+	Added ec.breed.InitializationPipeline
