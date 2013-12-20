@@ -2177,3 +2177,5 @@ Version		Change Log
 	Added ec/app/coevolve2/coevolve2.params (which was broken) and removed
 		ec/app/coevolve2/ecsuite.params.  Thanks to David Pinheiro 
 		<davidsantospinheiro@gmail.com>
+	GEProblem can now handle either GPIndividuals or GEIndividuals. Yes,
+		that's an exceptionally unusual and rare need.
