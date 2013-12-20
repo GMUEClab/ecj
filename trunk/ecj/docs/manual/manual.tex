@@ -8717,6 +8717,8 @@ pop.subpop.0.species.gp-species.pipe.source.0 = ec.select.TournamentSelection\\
 
 This is enough to convince the GP system to go along with our bizarre plans.
 
+\paragraph{One Last Note} There are some unusual and very rare cases where you may need to run GPIndividuals and GEIndividuals using the same problem class.  To assist in this, GEProblem can recognize that GPIndividuals are being passed to it rather than GEIndividuals, in which case it simply evaluates them directly in the subsidiary GPProblem.  You will receive a once-only warning if this happens.  No other kinds of Individuals can be given to GEProblem: it'll issue an error.
+
 \subsection{A Complete Example}
 
 We will continue the example given in Section~\ref{stronglytyped}.  We don't include the parameters and Java files specified so far in that example, but you'll of course need them.
@@ -10652,14 +10654,15 @@ When you do Cooperative Coevolution, you'll probably want to retain information 
 public Individual[] context;
 }
 
-In this variable store each collaborator, one per Subpopulation, plus one slot set to \variable{null} to represent the Individual himself.  The Fitness object will detect if the context exists (by default it's \variable{null}) and print out the context information when \method{printFitnessForHumans(...)} is called.  Fitness will also handle cloning this array (it calls \method{newFitness.setContext(oldFitness.getContext(context))}) when the Fitness is cloned, etc.  Fitness has some methods you can use rather than playing with the context directly:
+You can use this variable to store each collaborator, one per Subpopulation, plus one slot set to \variable{null} to represent the Individual himself.  The Fitness object will detect if this variable exists (by default it's \variable{null}) and print out the context information when \method{printFitnessForHumans(...)} is called.  Fitness will also handle cloning this array (it calls \method{newFitness.setContext(oldFitness.getContext(context))}) when the Fitness is cloned, etc.  Fitness has some methods you can use rather than playing with the context directly:
 
 \begin{methods}{ec.Fitness}
 \mthd{public void setContext({\it Individual[]} cont, {\it int} index)}
-Sets the context to the Individuals stored in \variable{context}, under the assumption that the slot for the primary Individual is located at \variable{cont[index]}.  Clones the Individuals before adding to them to the context.\mthd{public void setContext({\it Individual[]} cont}
-Sets the context to the Individuals stored in \variable{context}, under the assumption that the slot for the primary Individual can be determined because it has been set to \variable{null}.  Clones the Individuals before adding to them to the context.
+Sets the Fitness's context according to the information provided.  The context is set to the clones of the individuals provided, except that \variable{context[index]} is set to null.  The \variable{cont} array is not stored: rather, a new array is created for \variable{context}.
+\mthd{public void setContext({\it Individual[]} cont)}
+Sets the Fitness's context according to the information provided.  The context is set to the clones of the individuals provided.  The Fitness's individual must be set to \variable{null} in the \variable{cont} array.  The \variable{cont} array is not stored: rather, a new array is created for \variable{context}.  Alternatively, if \variable{cont} is null, then the Fitness's context is eliminated and set to null.
 \mthd{public Individual[] getContext()}
-Returns the context.
+Returns the context, which may be null.
 \end{methods}
 
 You'll want to update the context during the \method{evaluate(...)} method.  Here's an example Cooperative Coevolution evaluation method:
