@@ -2174,3 +2174,6 @@ Version		Change Log
 		in common.
 	Added ec.breed.InitializationPipeline
 	Removed old deprecated methods in Species
+	Added ec/app/coevolve2/coevolve2.params (which was broken) and removed
+		ec/app/coevolve2/ecsuite.params.  Thanks to David Pinheiro 
+		<davidsantospinheiro@gmail.com>
