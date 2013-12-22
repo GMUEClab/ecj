@@ -62,7 +62,7 @@ public class KozaFitness extends Fitness
        value than setFitness() sets, ugh.
        @deprecated
     */
-    public final void setFitness(final EvolutionState state, final float _f)
+    public void setFitness(final EvolutionState state, final float _f)
         {
         setStandardizedFitness(state,_f);
         }
@@ -73,7 +73,7 @@ public class KozaFitness extends Fitness
         This is the GP tradition.  The fitness() function instead will output
         the equivalent of Adjusted Fitness.
     */
-    public final void setStandardizedFitness(final EvolutionState state, final float _f)
+    public void setStandardizedFitness(final EvolutionState state, final float _f)
         {
         if (_f < 0.0f || _f == Float.POSITIVE_INFINITY || Float.isNaN(_f))
             {
@@ -87,7 +87,7 @@ public class KozaFitness extends Fitness
         fitness to the half-open interval (0,1], where 1 is ideal and
         0 is worst.  Same as adjustedFitness().  */
 
-    public final float fitness()
+    public float fitness()
         {
         return 1.0f/(1.0f+standardizedFitness);     
         }
@@ -95,14 +95,14 @@ public class KozaFitness extends Fitness
     /** Returns the raw fitness metric.  
         @deprecated use standardizedFitness()
     */
-    public final float rawFitness()
+    public float rawFitness()
         {
         return standardizedFitness();
         }
 
     /** Returns the standardized fitness metric. */
 
-    public final float standardizedFitness()
+    public float standardizedFitness()
         {
         return standardizedFitness;
         }
@@ -111,14 +111,14 @@ public class KozaFitness extends Fitness
         to the half-open interval (0,1], where 1 is ideal and 0 is worst.
         This metric is used when printing the fitness out. */
 
-    public final float adjustedFitness()
+    public float adjustedFitness()
         {
         return fitness();
         }
 
     public void setup(final EvolutionState state, final Parameter base) { }
     
-    public final boolean isIdealFitness()
+    public boolean isIdealFitness()
         {
         return standardizedFitness <= 0.0f;  // should always be == 0.0f, <0.0f is illegal, but just in case...
         }
@@ -143,7 +143,7 @@ public class KozaFitness extends Fitness
         return FITNESS_PREAMBLE + "Standardized=" + standardizedFitness + " Adjusted=" + adjustedFitness() + " Hits=" + hits;
         }
             
-    public final void readFitness(final EvolutionState state, 
+    public void readFitness(final EvolutionState state, 
         final LineNumberReader reader)
         throws IOException
         {
