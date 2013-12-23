@@ -2180,3 +2180,4 @@ Version		Change Log
 	GEProblem can now handle either GPIndividuals or GEIndividuals. Yes,
 		that's an exceptionally unusual and rare need.
 	De-finalized methods in KozaFitness.  Thanks to Doug <doug1@ten-13.org>
+	InterPopulationExchange now clones its migrants

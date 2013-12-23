@@ -347,7 +347,7 @@ public class InterPopulationExchange extends Exchanger
                         // copy the individual to the mailbox of the destination subpopulation
                         immigrants[ exchangeInformation[i].destinations[x] ]
                             [ nImmigrants[ exchangeInformation[i].destinations[x] ] ] =
-                            state.population.subpops[ i ].individuals[ index ];
+                            (Individual) state.population.subpops[ i ].individuals[ index ].clone();
                         // increment the counter with the number of individuals in the mailbox
                         nImmigrants[ exchangeInformation[i].destinations[x] ]++;
                         }
@@ -391,14 +391,14 @@ public class InterPopulationExchange extends Exchanger
                 {
                 do {
                     indices[i] = exchangeInformation[x].indsToDieSelectionMethod.produce( x, state, 0 );
-                    } while( selected[indices[i]] );
+                    }
+                while( selected[indices[i]] );
                 selected[indices[i]] = true;
                 }
             exchangeInformation[x].indsToDieSelectionMethod.finishProducing( state, x, 0 );
 
             for( int y = 0 ; y < nImmigrants[x] ; y++ )
                 {
-
                 // read the individual
                 state.population.subpops[x].individuals[ indices[y] ] = process(state, 0, immigrants[x][y], x, indices[y]);
 
