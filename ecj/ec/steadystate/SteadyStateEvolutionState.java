@@ -285,6 +285,10 @@ public class SteadyStateEvolutionState extends EvolutionState
         if ((numEvaluations > UNDEFINED && evaluations >= numEvaluations) ||  // using numEvaluations
             (numEvaluations <= UNDEFINED && generationBoundary && generation == numGenerations -1))  // not using numEvaluations
             {
+            // we are not exchanging again, but we might wish to increment the generation
+            // one last time if we hit a generation boundary
+            if (generationBoundary)
+            	generation++;
             return R_FAILURE;
             }
                 
@@ -329,7 +333,10 @@ public class SteadyStateEvolutionState extends EvolutionState
         /* finish up -- we completed. */
         ((SteadyStateBreeder)breeder).finishPipelines(this);
         if (!justCalledPostEvaluationStatistics)
+        	{
+            output.message("Generation " + generation +"\tEvaluations " + evaluations);
             statistics.postEvaluationStatistics(this);
+            }
         statistics.finalStatistics(this,result);
         finisher.finishPopulation(this,result);
         exchanger.closeContacts(this,result);

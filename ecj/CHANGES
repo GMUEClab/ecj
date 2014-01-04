@@ -2181,3 +2181,5 @@ Version		Change Log
 		that's an exceptionally unusual and rare need.
 	De-finalized methods in KozaFitness.  Thanks to Doug <doug1@ten-13.org>
 	InterPopulationExchange now clones its migrants
+	Tweaks to SteadyStateEvolutionState to properly print the last statistics
+		information out for the final generation
