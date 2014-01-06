@@ -67,7 +67,8 @@ public class ReproductionPipeline extends BreedingPipeline
                 def.push(P_LIKELIHOOD));
         }
         
-    public int produce(final int min, 
+    public int produce(
+        final int min, 
         final int max, 
         final int start,
         final int subpopulation,
@@ -78,9 +79,6 @@ public class ReproductionPipeline extends BreedingPipeline
         // grab individuals from our source and stick 'em right into inds.
         // we'll modify them from there
         int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
-                
-        // this code is basically the same as BreedingPipeline.reproduce() but we copy it here
-        // because of the 'mustClone' option.
                 
         if (mustClone || sources[0] instanceof SelectionMethod)
             for(int q=start; q < n+start; q++)
