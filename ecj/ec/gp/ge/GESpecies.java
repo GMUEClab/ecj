@@ -79,13 +79,13 @@ import java.util.regex.*;
  * | (left) | (right) | (move)<br>
  * Since the rule &lt;op> has more than one choice that it can map to, we must consult the genome to decide which choice to take.  In this case
  * the number of chromosomes used is 0 so genome[0] is used and number of chromosomes used is incremented.  Since values in the genome can
- * be negitive values they are offset by 128 (max negitive of a byte) giving us a value from 0-255.  A modulus is performed on this resulting 
+ * be negative values they are offset by 128 (max negative of a byte) giving us a value from 0-255.  A modulus is performed on this resulting 
  * number by the number of choices present for the given rule.  In the above example since we are using genome[0] the resulting operation would 
  * look like: 23+128=151, number of choices for &lt;op> = 6, 151%6=1 so we use choices[1] which is: (progn2 &lt;op> &lt;op>).  If all the genes
- * in a genome are used and the tree is still incompete an invalid tree error is returned.
+ * in a genome are used, we start again at the beginning of the genome, and do so up to <i>passes - 1</i> times (a parameter).
+ * If the tree still hasn't been fully built, an invalid tree error is returned.
  *
  * <p>Each node in the tree is a GPNode and trees are constructed depth first. 
- *
  *
  * <p><b>Parameters</b><br>
  * <table>
@@ -100,6 +100,10 @@ import java.util.regex.*;
  * <tr><td valign=top><i>base.</i><tt>parser</tt><br>
  * <font size=-1>classname, inherits and != ec.gp.ge.GrammarParser</font></td>
  * <td valign=top>(the GrammarParser used by the GESpecies)</td></tr>
+ *
+ * <tr><td valign=top><i>base.</i><tt>passes</tt><br>
+ * <font size=-1>1 &lt;= integer &lt;=1024, must be a power of two</font></td>
+ * <td valign=top>(the maximum number of passes through the genome permitted until failure)</td></tr>
  *
  * </table>
  *
@@ -118,7 +122,11 @@ public class GESpecies extends IntegerVectorSpecies
     public static final String P_FILE = "file";
     public static final String P_GPSPECIES = "gp-species";
     public static final String P_PARSER = "parser";
+    public static final String P_PASSES = "passes";
         
+    /** The maximum number of passes permitted.  Don't fool with this. */
+    public static final int MAXIMUM_PASSES = 1024;
+
     /* Return value which denotes that the tree has grown too large. */
     public static final int BIG_TREE_ERROR = -1;
         
@@ -130,6 +138,9 @@ public class GESpecies extends IntegerVectorSpecies
 
     /** The parsed grammars. */
     public GrammarRuleNode[] grammar;
+    
+    /** The number of passes permitted through the genome if we're wrapping.   Must be >= 1. */
+    public int passes;
 
     /** The prototypical parser used to parse the grammars. */
     public GrammarParser parser_prototype;
@@ -181,22 +192,73 @@ public class GESpecies extends IntegerVectorSpecies
             grammar[i] = grammarparser.parseRules(state, br, gpfs);
             try { br.close(); }
             catch (IOException e)
-            	{
-            	// do nothing
-            	}
+                {
+                // do nothing
+                }
             }
+                
+        passes = state.parameters.getInt(base.push(P_PASSES), def.push(P_PASSES), 1);
+        if (passes < 1 || passes > MAXIMUM_PASSES)
+            state.output.fatal("Number of allowed passes must be >= 1 and <=" + MAXIMUM_PASSES + ", likely small, such as <= 16.", base.push(P_PASSES), def.push(P_PASSES));
+        
+        int oldpasses = passes;
+        passes = nextPowerOfTwo(passes);
+        if (oldpasses != passes)
+            state.output.warning("Number of allowed passes must be a power of 2.  Bumping from " + oldpasses + " to " + passes, base.push(P_PASSES), def.push(P_PASSES));
         }
 
+    int nextPowerOfTwo(int v)  // if negative or 0, couldn't bump.  See http://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
+        {
+        v--;
+        v |= v >> 1;
+        v |= v >> 2;
+        v |= v >> 4;
+        v |= v >> 8;
+        v |= v >> 16;
+        v++;
+        return v;
+        }
+
+    /**
+     * creates all of an individual's trees.  Allows for wrapping.
+     * @param state Evolution state
+     * @param trees array of trees for the individual
+     * @param ind the GEIndividual
+     * @param threadnum tread number
+     * @return number of chromosomes consumed, or BIG_TREE_ERROR
+     */
+    public int makeTrees(EvolutionState state, GEIndividual ind, GPTree[] trees, int threadnum, HashMap ERCmappings)
+        {
+        byte[] genome = ind.genome;
+        int position = 0;
+        
+        // We start with one pass, then repeatedly double the genome length and try again until it's big enough.
+        // This is simple but very costly in terms of memory so our maximum pass size is MAXIMUM_PASSES, which should be small enough
+        // to allow for even pretty long genomes.
+        for(int i = 1; i <= passes; i *= 2)  // note i starts at 1
+            {
+            position = makeTrees(state, genome, trees, threadnum, ERCmappings);
+            if (position < 0 && i < passes)  // gotta try again
+                {
+                // this is a total hack
+                byte[] old = genome;
+                genome = new byte[old.length * 2];
+                System.arraycopy(old, 0, genome, 0, old.length);
+                System.arraycopy(old, 0, genome, old.length, old.length);  // duplicate
+                }
+            }
+        return (Math.min(position, ind.genome.length));
+        }
 
     /**
      * creates all of an individual's trees
      * @param state Evolution state
      * @param trees array of trees for the individual
-     * @param ind the GEIndividual
+     * @param genome
      * @param threadnum tread number
-     * @return number of chromosomes consumed
+     * @return number of chromosomes consumed, or BIG_TREE_ERROR
      */
-    public int makeTrees(EvolutionState state, GEIndividual ind, GPTree[] trees, int threadnum, HashMap ERCmappings)
+     public int makeTrees(EvolutionState state, byte[] genome, GPTree[] trees, int threadnum, HashMap ERCmappings)
         {
         int position = 0;
 
@@ -206,7 +268,7 @@ public class GESpecies extends IntegerVectorSpecies
             if(position < 0)
                 return BIG_TREE_ERROR;
 
-            position = makeTree(state, ind, trees[i], position, i, threadnum, ERCmappings);
+            position = makeTree(state, genome, trees[i], position, i, threadnum, ERCmappings);
             }
 
         return position;
@@ -215,17 +277,16 @@ public class GESpecies extends IntegerVectorSpecies
     /**
      * makeTree, edits the tree that its given by adding a root (and all subtrees attached)
      * @param state
-     * @param ind
+     * @param genome
      * @param tree
      * @param position 
      * @param treeNum
      * @param threadnum
      * @return the number of chromosomes used, or an BIG_TREE_ERROR sentinel value.
      */
-    public int makeTree(EvolutionState state, GEIndividual ind, GPTree tree, int position, int treeNum, int threadnum, HashMap ERCmappings)
+    public int makeTree(EvolutionState state, byte[] genome, GPTree tree, int position, int treeNum, int threadnum, HashMap ERCmappings)
         {
         int[] countNumberOfChromosomesUsed = {  position  };  // hack, use an array to pass an extra value
-        byte[] genome = ind.genome;
         GPFunctionSet gpfs = tree.constraints((GPInitializer) state.initializer).functionset;
         GPNode root;
 
@@ -234,6 +295,10 @@ public class GESpecies extends IntegerVectorSpecies
             root = makeSubtree(countNumberOfChromosomesUsed, genome, state, gpfs, grammar[treeNum], treeNum, threadnum, ERCmappings);
             } 
         catch (BigTreeException e)
+            {
+            return BIG_TREE_ERROR;
+            }
+        catch (java.lang.StackOverflowError e)
             {
             return BIG_TREE_ERROR;
             }
