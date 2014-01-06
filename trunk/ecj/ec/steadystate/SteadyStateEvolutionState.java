@@ -288,7 +288,7 @@ public class SteadyStateEvolutionState extends EvolutionState
             // we are not exchanging again, but we might wish to increment the generation
             // one last time if we hit a generation boundary
             if (generationBoundary)
-            	generation++;
+                generation++;
             return R_FAILURE;
             }
                 
@@ -333,7 +333,7 @@ public class SteadyStateEvolutionState extends EvolutionState
         /* finish up -- we completed. */
         ((SteadyStateBreeder)breeder).finishPipelines(this);
         if (!justCalledPostEvaluationStatistics)
-        	{
+            {
             output.message("Generation " + generation +"\tEvaluations " + evaluations);
             statistics.postEvaluationStatistics(this);
             }
