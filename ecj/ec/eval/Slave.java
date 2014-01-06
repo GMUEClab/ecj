@@ -209,8 +209,8 @@ public class Slave
         boolean silent = parameters.getBoolean(new Parameter(P_SILENT), null, false);
 
         if (parameters.exists(new Parameter(P_MUZZLE), null))
-        	Output.initialWarning("" + new Parameter(P_MUZZLE) + " has been deprecated.  We suggest you use " + 
-        		new Parameter(P_SILENT) + " or similar newer options.");
+            Output.initialWarning("" + new Parameter(P_MUZZLE) + " has been deprecated.  We suggest you use " + 
+                new Parameter(P_SILENT) + " or similar newer options.");
         silent = silent || parameters.getBoolean(new Parameter(P_MUZZLE), null, false);
 
                 
@@ -710,7 +710,7 @@ public class Slave
         
         
     // if individualInQuestion is -1, all individuals are returned
-     static void returnIndividualsToMaster(EvolutionState state, Individual []inds, boolean[] updateFitness,
+    static void returnIndividualsToMaster(EvolutionState state, Individual []inds, boolean[] updateFitness,
         DataOutputStream dataOut, boolean returnIndividuals, int individualInQuestion) throws IOException 
         {
         // Return the evaluated individual to the master
