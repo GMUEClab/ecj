@@ -31,44 +31,36 @@ pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
 pop.subpop.0.species.min-gene = -128
 pop.subpop.0.species.max-gene = 127
 pop.subpop.0.species.mutation-prob = 0.01
-# This isn't used at all but we include it here to quiet a warning from ECJ
 pop.subpop.0.species.crossover-type = one
 
 
-# Individuals are built using geometric series.  The minimum allowed
-# size is 5. 
+# Individuals are built using geometric series.  The minimum allowed size is 5. 
 pop.subpop.0.species.genome-size = geometric
 pop.subpop.0.species.geometric-prob = 0.85
 pop.subpop.0.species.min-initial-size = 5
 
 
-# The following pipeline is fairly arbitrary.  You may wish to create
-# your own pipeline instead.
+# The following pipeline is relatively common in GE.
+# The BufferedBreedingPipeline forces two individuals at a time
+# in the steady state case (see the manual on steady state evolution),
+# but otherwise is relatively harmless for generational unless for
+# some insane reason you have a population with an odd numbered size.
 
-pop.subpop.0.species.pipe = ec.breed.MultiBreedingPipeline
-pop.subpop.0.species.pipe.num-sources = 3
-
-pop.subpop.0.species.pipe.source.0 = ec.vector.breed.ListCrossoverPipeline
-pop.subpop.0.species.pipe.source.0.source.0 = ec.gp.ge.breed.GETruncationPipeline
+pop.subpop.0.species.pipe = ec.breed.BufferedBreedingPipeline
+pop.subpop.0.species.pipe.num-inds = 2
+pop.subpop.0.species.pipe.likelihood = 1.0
+pop.subpop.0.species.pipe.source.0 = ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0.likelihood = 1.0
+pop.subpop.0.species.pipe.source.0.source.0 = ec.gp.ge.breed.GECrossoverPipeline
+pop.subpop.0.species.pipe.source.0.source.0.likelihood = 0.9
 pop.subpop.0.species.pipe.source.0.source.0.source.0 = ec.select.TournamentSelection
-pop.subpop.0.species.pipe.source.0.source.1 = same
-pop.subpop.0.species.pipe.source.0.prob = 0.2
-
-pop.subpop.0.species.pipe.source.1 = ec.vector.breed.GeneDuplicationPipeline
-pop.subpop.0.species.pipe.source.1.source.0 = ec.gp.ge.breed.GETruncationPipeline
-pop.subpop.0.species.pipe.source.1.source.0.source.0 = ec.select.TournamentSelection
-pop.subpop.0.species.pipe.source.1.prob = 0.55
-
-pop.subpop.0.species.pipe.source.2 = ec.vector.breed.VectorMutationPipeline
-pop.subpop.0.species.pipe.source.2.source.0 = ec.select.TournamentSelection
-pop.subpop.0.species.pipe.source.2.prob = 0.05
-
-# This does a nice job but we're getting rid of it for now
-#breed.elite.0 = 1
-
+pop.subpop.0.species.pipe.source.0.source.0.source.1 = same
 select.tournament.size = 7
 
 
+
+# By default we don't allow wrapping
+ge.species.passes = 1
 
 
 
