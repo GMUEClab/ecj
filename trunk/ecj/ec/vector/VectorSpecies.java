@@ -336,7 +336,7 @@ public class VectorSpecies extends Species
         {
         Parameter def = defaultBase();        
 
-		// We do NOT do this first, instead we do it last.  See end of this method        
+        // We do NOT do this first, instead we do it last.  See end of this method        
         //super.setup(state, base);
         
         // this might get called twice, I don't think it's a big deal
