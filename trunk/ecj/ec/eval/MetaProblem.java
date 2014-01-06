@@ -353,7 +353,7 @@ public class MetaProblem extends Problem implements SimpleProblemForm
 
         reevaluateIndividuals = state.parameters.getBoolean(base.push(P_REEVALUATE_INDIVIDUALS), null, true);
         if (state.parameters.exists(base.push(P_MUZZLE), null))
-        	state.output.warning("" + base.push(P_MUZZLE) + " no longer exists.  Use 'silent' in the lower-level EA parameters instead.");
+            state.output.warning("" + base.push(P_MUZZLE) + " no longer exists.  Use 'silent' in the lower-level EA parameters instead.");
 
         Parameter pop = new Parameter(Initializer.P_POP);
         int subpopsLength = state.parameters.getInt(pop.push(Population.P_SIZE), null, 1);
