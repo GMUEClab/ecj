@@ -59,7 +59,7 @@ class SlaveConnection
 
     // given that we expect the slave to return the evaluated individuals in the exact same order,
     // the jobs need to be represented as a queue.
-     LinkedList jobs = new LinkedList();
+    LinkedList jobs = new LinkedList();
 
     /**
        The constructor also creates the queue storing the jobs that the slave
@@ -142,14 +142,14 @@ class SlaveConnection
     void buildThreads()
         {
         reader = slaveMonitor.pool.start(new Runnable()
-        	{
-        	public void run() { while (readLoop()); }
-        	});
+            {
+            public void run() { while (readLoop()); }
+            });
 
         writer = slaveMonitor.pool.start(new Runnable()
-        	{
-        	public void run() { while (writeLoop()); }
-        	});
+            {
+            public void run() { while (writeLoop()); }
+            });
         }
     
     
@@ -189,10 +189,10 @@ class SlaveConnection
                     // failed -- wait and drop out of the loop and come in again
                     debug("" + Thread.currentThread().getName() + "Waiting for a job to send" );
                     if (!slaveMonitor.waitOnMonitor(jobs))
-                    	{
-        				shutdown(state);
-                    	return false; 
-                    	}
+                        {
+                        shutdown(state);
+                        return false; 
+                        }
                     }
                 }
             if (job != null)  // we got a job inside our synchronized wait
@@ -232,10 +232,10 @@ class SlaveConnection
                 }
             }
         catch (Exception e) 
-        	{
-        	shutdown(state);
-        	return false; 
-        	}
+            {
+            shutdown(state);
+            return false; 
+            }
         return true;
         }
         
