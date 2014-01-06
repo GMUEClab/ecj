@@ -16,8 +16,8 @@ import ec.vector.*;
 /**
  * <p>GeneDuplicationPipeline is designed to duplicate a sequence of genes from the chromosome and append
  * them to the end of the chromosome.  The sequence of genes copied are randomly determined.  That is to
- * say a random begining index is selected and a random ending index is selected from the chromosome.  Then
- * this area is then copied (begining inclusive, ending exclusive) and appended to the end of the chromosome.
+ * say, a random begining index is selected and a random ending index is selected from the chromosome.  Then
+ * this area is copied (begining inclusive, ending exclusive) and appended to the end of the chromosome.
  * Since randomness is a factor several checks are performed to make sure the begining and ending indicies are
  * valid.  For example, since the ending index is exclusive, the ending index cannot equal the begining index (a
  * new ending index would be randomly seleceted in this case).  Likewise the begining index cannot be larger than the
