@@ -265,9 +265,9 @@ public class Subpopulation implements Group
                     }                       
                 }
             else // exactly right number, we're dont
-            	{
-            	return;
-            	}
+                {
+                return;
+                }
             }
 
         // populating the remainder with random individuals
