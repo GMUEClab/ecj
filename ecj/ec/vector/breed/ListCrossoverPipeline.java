@@ -89,7 +89,7 @@ public class ListCrossoverPipeline extends BreedingPipeline
     public float minCrossoverPercentage;
     public float maxCrossoverPercentage;
     
-    VectorIndividual parents[];
+    protected VectorIndividual parents[];
     
     public ListCrossoverPipeline() { parents = new VectorIndividual[2]; }
     public Parameter defaultBase() { return VectorDefaults.base().push(P_LIST_CROSSOVER); }
@@ -236,19 +236,18 @@ public class ListCrossoverPipeline extends BreedingPipeline
                     parents[1] = (VectorIndividual)(parents[1].clone());
                 }
                 
-                
             // determines size of parents, in terms of chunks
             int chunk_size = ((VectorSpecies)(parents[0].species)).chunksize;  
-            int[] size = new int[2];
+            int[] size = new int[2];  // sizes of parents
             size[0] = (int)parents[0].genomeLength();
             size[1] = (int)parents[1].genomeLength();      
-            int[] size_in_chunks = new int[2];
+            int[] size_in_chunks = new int[2];   // sizes of parents by chunk (if chunk == 1, this is just size[])
             size_in_chunks[0] = size[0]/chunk_size;
             size_in_chunks[1] = size[1]/chunk_size;
             
             // variables used to split & join the children
-            int[] min_chunks = new int[2];
-            int[] max_chunks = new int[2];
+            int[] min_chunks = new int[2];  // the minimum number of chunks permitted 
+            int[] max_chunks = new int[2];  // the maximum number of chunks permitted
             int[][] split = new int[2][2];
             Object[][] pieces = new Object[2][3];
             
@@ -285,22 +284,37 @@ public class ListCrossoverPipeline extends BreedingPipeline
                         }
                     }
                
-                // generate split indices for two-point (both indicies have randomized positions)
-                else if(crossoverType == VectorSpecies.C_TWO_POINT)
+                else if(crossoverType == VectorSpecies.C_TWO_POINT)  // Note that NOOPs are permissible
                     {
                     for(int i = 0; i < 2; i++)
                         {
-                        // select first split index randomly
-                        split[i][0] = state.random[thread].nextInt(size_in_chunks[i] - min_chunks[i]);
-                        // second index must be at least 'min_chunks' after the first index
-                        split[i][1] = split[i][0] + min_chunks[i];
-                        // add a random value up to max crossover size, without exceeding size of the parent
-                        split[i][1] += state.random[thread].nextInt(Math.min(max_chunks[i] - min_chunks[i], size_in_chunks[i] - split[i][0]));
-                        // convert split from chunk numbers to array indices
-                        split[i][0] *= chunk_size;
-                        split[i][1] *= chunk_size;
+                        while(true)  // we'll do rejection sampling for two point.  It's slower, maybe much slower, but uniform
+                            {
+                            split[i][0] = state.random[thread].nextInt(size_in_chunks[i] + 1);  // can go clear to end
+                            split[i][1] = state.random[thread].nextInt(size_in_chunks[i] + 1);  // likewise
+                                
+                            if (split[i][0] > split[i][1])  // swap so 0 is before 1
+                                {
+                                int temp = split[i][0];
+                                split[i][0] = split[i][1];
+                                split[i][1] = temp;
+                                }
+                                        
+                            int len = split[i][0] - split[i][1];
+                            if (len >= min_chunks[i] && len <= max_chunks[i])  // okay
+                                {
+                                split[i][0] *= chunk_size;
+                                split[i][1] *= chunk_size;
+                                break;
+                                }
+                            attempts++;
+                            if (attempts > numTries) break;  // uh oh
+                            }
                         }
                     }
+                else state.output.fatal("Unknown crossover type specified: " + crossoverType);  // shouldn't ever happen
+               
+                if (attempts >= numTries) break;  // failed in two-point selection
                
                 // use the split indices generated above to split the parents into pieces
                 parents[0].split(split[0], pieces[0]);
@@ -349,8 +363,7 @@ public class ListCrossoverPipeline extends BreedingPipeline
             } 
         
         return n;
-        }
-    
+        }    
     }
     
     
