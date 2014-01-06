@@ -46,7 +46,7 @@ public class SlaveMonitor
 
     public EvolutionState state;
     
- 	ThreadPool pool;
+    ThreadPool pool;
     
     /**
      *  The socket where slaves connect.
@@ -82,10 +82,10 @@ public class SlaveMonitor
         }
 
     // the slaves (not really a queue)
-     LinkedList allSlaves = new LinkedList();
+    LinkedList allSlaves = new LinkedList();
 
     // the available slaves
-     LinkedList availableSlaves = new LinkedList();
+    LinkedList availableSlaves = new LinkedList();
 
     // the maximum number of jobs per slave
     int maxJobsPerSlave;
@@ -439,7 +439,7 @@ public class SlaveMonitor
      * @param s checkpoint file output stream
      * @throws IOException
      */
-     void writeObject(ObjectOutputStream out) throws IOException
+    void writeObject(ObjectOutputStream out) throws IOException
         {
         state.output.fatal("Not implemented yet: SlaveMonitor.writeObject");
         }
@@ -449,7 +449,7 @@ public class SlaveMonitor
      * @throws IOException
      * @throws ClassNotFoundException
      */
-     void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
         {
         state.output.fatal("Not implemented yet: SlaveMonitor.readObject");
         }
