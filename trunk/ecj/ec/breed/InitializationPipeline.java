@@ -47,6 +47,11 @@ public class InitializationPipeline extends BreedingPipeline
         {
         super.setup(state,base);
         Parameter def = defaultBase();
+
+        if (likelihood != 1.0)
+            state.output.warning("InitializationPipeline given a likelihood other than 1.0.  This is nonsensical and will be ignored.",
+                base.push(P_LIKELIHOOD),
+                def.push(P_LIKELIHOOD));
         }
         
     public int produce(final int min, 
@@ -59,9 +64,9 @@ public class InitializationPipeline extends BreedingPipeline
         {
         Species s = state.population.subpops[subpopulation].species;
         for(int q = start; q < start + max; q++)
-        	{
-        	inds[q] = s.newIndividual(state, thread);
-        	}
+            {
+            inds[q] = s.newIndividual(state, thread);
+            }
         return max;
         }
     }
