@@ -96,18 +96,18 @@ public abstract class Evaluator implements Singleton
                 //            base.push(P_MASTERPROBLEM),null,Problem.class));
                 //    masterproblem.setup(state,base.push(P_MASTERPROBLEM));
                                          
-                    /*
-                     * If a MasterProblem was specified, interpose it between the
-                     * evaluator and the real problem.  This allows seamless use
-                     * of the master problem.
-                     */
-                    masterproblem.problem = p_problem;
-                    p_problem = masterproblem;
-               //     }
-               // catch(ParamClassLoadException e)
-               //     {
-               //     state.output.fatal("Parameter has an invalid value: "+base.push(P_MASTERPROBLEM));
-               //     }
+                /*
+                 * If a MasterProblem was specified, interpose it between the
+                 * evaluator and the real problem.  This allows seamless use
+                 * of the master problem.
+                 */
+                masterproblem.problem = p_problem;
+                p_problem = masterproblem;
+                //     }
+                // catch(ParamClassLoadException e)
+                //     {
+                //     state.output.fatal("Parameter has an invalid value: "+base.push(P_MASTERPROBLEM));
+                //     }
                 }
             }
         }
