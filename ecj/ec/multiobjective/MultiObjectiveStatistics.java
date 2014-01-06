@@ -67,12 +67,12 @@ public class MultiObjectiveStatistics extends SimpleStatistics
         
         File frontFile = state.parameters.getFile(base.push(P_PARETO_FRONT_FILE),null);
 
-		if (silentFront)
-			{
-			frontLog = Output.NO_LOGS;
-			}
+        if (silentFront)
+            {
+            frontLog = Output.NO_LOGS;
+            }
         else if (frontFile!=null)
-        	{
+            {
             try
                 {
                 frontLog = state.output.addLog(frontFile, !compress, compress);
@@ -92,7 +92,7 @@ public class MultiObjectiveStatistics extends SimpleStatistics
         {
         bypassFinalStatistics(state, result);  // just call super.super.finalStatistics(...)
 
-		if (doFinal) state.output.println("\n\n\n PARETO FRONTS", statisticslog);
+        if (doFinal) state.output.println("\n\n\n PARETO FRONTS", statisticslog);
         for (int s = 0; s < state.population.subpops.length; s++)
             {
             MultiObjectiveFitness typicalFitness = (MultiObjectiveFitness)(state.population.subpops[s].individuals[0].fitness);
@@ -120,26 +120,26 @@ public class MultiObjectiveStatistics extends SimpleStatistics
                         
             // print out front to statistics log
             if (doFinal)
-				for (int i = 0; i < sortedFront.length; i++)
-           		     ((Individual)(sortedFront[i])).printIndividualForHumans(state, statisticslog);
+                for (int i = 0; i < sortedFront.length; i++)
+                    ((Individual)(sortedFront[i])).printIndividualForHumans(state, statisticslog);
                 
             // write short version of front out to disk
-				if (!silentFront)
-					{
-					if (state.population.subpops.length > 1)
-						state.output.println("Subpopulation " + s, frontLog);
-					for (int i = 0; i < sortedFront.length; i++)
-						{
-						Individual ind = (Individual)(sortedFront[i]);
-						MultiObjectiveFitness mof = (MultiObjectiveFitness) (ind.fitness);
-						float[] objectives = mof.getObjectives();
-	
-						String line = "";
-						for (int f = 0; f < objectives.length; f++)
-							line += (objectives[f] + " ");
-						state.output.println(line, frontLog);
-						}
-					}
-				}
+            if (!silentFront)
+                {
+                if (state.population.subpops.length > 1)
+                    state.output.println("Subpopulation " + s, frontLog);
+                for (int i = 0; i < sortedFront.length; i++)
+                    {
+                    Individual ind = (Individual)(sortedFront[i]);
+                    MultiObjectiveFitness mof = (MultiObjectiveFitness) (ind.fitness);
+                    float[] objectives = mof.getObjectives();
+        
+                    String line = "";
+                    for (int f = 0; f < objectives.length; f++)
+                        line += (objectives[f] + " ");
+                    state.output.println(line, frontLog);
+                    }
+                }
             }
         }
+    }
