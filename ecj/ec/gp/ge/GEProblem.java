@@ -136,22 +136,22 @@ public class GEProblem extends Problem implements SimpleProblemForm, GroupedProb
         for(int i = 0; i < gpi.length; i++)
             {
             if (ind[i] instanceof GEIndividual)
-            	{
-				GEIndividual indiv = (GEIndividual) ind[i];
-				GESpecies species = (GESpecies) (ind[i].species);
-					
-				// warning: gpi[i] may be null
-				gpi[i] = species.map(state, indiv, threadnum, null);
-				}
-			else if (ind[i] instanceof GPIndividual)
-				{
-				state.output.warnOnce("GPIndividual provided to GEProblem.  Hope that's correct.");
-				gpi[i] = ind[i];
-				}
-			else
-				{
-				state.output.fatal("Individual " + i + " passed to Grouped evaluate(...) was neither a GP nor GE Individual: " + ind[i]);
-				}
+                {
+                GEIndividual indiv = (GEIndividual) ind[i];
+                GESpecies species = (GESpecies) (ind[i].species);
+                                        
+                // warning: gpi[i] may be null
+                gpi[i] = species.map(state, indiv, threadnum, null);
+                }
+            else if (ind[i] instanceof GPIndividual)
+                {
+                state.output.warnOnce("GPIndividual provided to GEProblem.  Hope that's correct.");
+                gpi[i] = ind[i];
+                }
+            else
+                {
+                state.output.fatal("Individual " + i + " passed to Grouped evaluate(...) was neither a GP nor GE Individual: " + ind[i]);
+                }
             }
                         
         ((GroupedProblemForm)problem).evaluate(state, gpi, updateFitness, countVictoriesOnly, subpops, threadnum);
@@ -175,38 +175,38 @@ public class GEProblem extends Problem implements SimpleProblemForm, GroupedProb
         {
         if (!(problem instanceof SimpleProblemForm))
             state.output.fatal("GEProblem's underlying Problem is not a SimpleProblemForm");
-	
-		if (ind instanceof GEIndividual)
-			{
-			GEIndividual indiv = (GEIndividual) ind;
-			GESpecies species = (GESpecies) (ind.species);
-			GPIndividual gpi = species.map(state, indiv, threadnum, null);
-			if (gpi == null)
-				{
-				KozaFitness fitness = (KozaFitness) (ind.fitness);
-				fitness.setStandardizedFitness(state, Float.MAX_VALUE);
-				} 
-			else
-				{
-				((SimpleProblemForm)problem).evaluate(state, gpi, subpopulation, threadnum);
-				// Now we need to move the evaluated flag from the GPIndividual
-				// to the GEIndividual, and also for good measure, let's copy over
-				// the GPIndividual's fitness because even though the mapping function
-				// set the two Individuals to share the same fitness, it's possible
-				// that the evaluation function may have replaced the fitness.
-				ind.fitness = gpi.fitness;
-				ind.evaluated = gpi.evaluated;
-				}
-			}
-		else if (ind instanceof GPIndividual)
-			{
-			state.output.warnOnce("GPIndividual provided to GEProblem.  Hope that's correct.");
-			((SimpleProblemForm)problem).evaluate(state, ind, subpopulation, threadnum);  // just evaluate directly
-			}
-		else
-			{
-			state.output.fatal("Individual passed to evaluate(...) was neither a GP nor GE Individual: " + ind);
-			}
+        
+        if (ind instanceof GEIndividual)
+            {
+            GEIndividual indiv = (GEIndividual) ind;
+            GESpecies species = (GESpecies) (ind.species);
+            GPIndividual gpi = species.map(state, indiv, threadnum, null);
+            if (gpi == null)
+                {
+                KozaFitness fitness = (KozaFitness) (ind.fitness);
+                fitness.setStandardizedFitness(state, Float.MAX_VALUE);
+                } 
+            else
+                {
+                ((SimpleProblemForm)problem).evaluate(state, gpi, subpopulation, threadnum);
+                // Now we need to move the evaluated flag from the GPIndividual
+                // to the GEIndividual, and also for good measure, let's copy over
+                // the GPIndividual's fitness because even though the mapping function
+                // set the two Individuals to share the same fitness, it's possible
+                // that the evaluation function may have replaced the fitness.
+                ind.fitness = gpi.fitness;
+                ind.evaluated = gpi.evaluated;
+                }
+            }
+        else if (ind instanceof GPIndividual)
+            {
+            state.output.warnOnce("GPIndividual provided to GEProblem.  Hope that's correct.");
+            ((SimpleProblemForm)problem).evaluate(state, ind, subpopulation, threadnum);  // just evaluate directly
+            }
+        else
+            {
+            state.output.fatal("Individual passed to evaluate(...) was neither a GP nor GE Individual: " + ind);
+            }
         }
 
     public void describe(final EvolutionState state,
@@ -215,30 +215,30 @@ public class GEProblem extends Problem implements SimpleProblemForm, GroupedProb
         final int threadnum,
         final int log)
         {
-		if (ind instanceof GEIndividual)
-			{
-			GEIndividual indiv = (GEIndividual) ind;
-			GESpecies species = (GESpecies) (ind.species);
-			GPIndividual gpi = species.map(state, indiv, threadnum, null);
-			if (gpi != null)
-				{
-				problem.describe(state, gpi, subpopulation, threadnum, log);
-	
-				// though this is probably not necessary for describe(...),
-				// for good measure we're doing the same rigamarole that we
-				// did for evaluate(...) above.
-				ind.fitness = gpi.fitness;
-				ind.evaluated = gpi.evaluated;
-				}
-			}
-		else if (ind instanceof GPIndividual)
-			{
-			state.output.warnOnce("GPIndividual provided to GEProblem.  Hope that's correct.");
-			((SimpleProblemForm)problem).describe(state, ind, subpopulation, threadnum, log);  // just describe directly
-			}
-		else
-			{
-			state.output.fatal("Individual passed to describe(...) was neither a GP nor GE Individual: " + ind);
-			}
+        if (ind instanceof GEIndividual)
+            {
+            GEIndividual indiv = (GEIndividual) ind;
+            GESpecies species = (GESpecies) (ind.species);
+            GPIndividual gpi = species.map(state, indiv, threadnum, null);
+            if (gpi != null)
+                {
+                problem.describe(state, gpi, subpopulation, threadnum, log);
+        
+                // though this is probably not necessary for describe(...),
+                // for good measure we're doing the same rigamarole that we
+                // did for evaluate(...) above.
+                ind.fitness = gpi.fitness;
+                ind.evaluated = gpi.evaluated;
+                }
+            }
+        else if (ind instanceof GPIndividual)
+            {
+            state.output.warnOnce("GPIndividual provided to GEProblem.  Hope that's correct.");
+            ((SimpleProblemForm)problem).describe(state, ind, subpopulation, threadnum, log);  // just describe directly
+            }
+        else
+            {
+            state.output.fatal("Individual passed to describe(...) was neither a GP nor GE Individual: " + ind);
+            }
         }
     }
