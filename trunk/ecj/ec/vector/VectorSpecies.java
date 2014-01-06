@@ -335,8 +335,9 @@ public class VectorSpecies extends Species
     public void setup(final EvolutionState state, final Parameter base)
         {
         Parameter def = defaultBase();        
-        
-        super.setup(state, base);
+
+		// We do NOT do this first, instead we do it last.  See end of this method        
+        //super.setup(state, base);
         
         // this might get called twice, I don't think it's a big deal
         setupGenome(state, base);
