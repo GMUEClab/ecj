@@ -126,7 +126,7 @@ public class SimpleShortStatistics extends Statistics
             statisticslog = Output.NO_LOGS;
             }
         else if (statisticsFile!=null) 
-        	{
+            {
             try
                 {
                 statisticslog = state.output.addLog(statisticsFile,
