@@ -2183,3 +2183,7 @@ Version		Change Log
 	InterPopulationExchange now clones its migrants
 	Tweaks to SteadyStateEvolutionState to properly print the last statistics
 		information out for the final generation
+	Removed a vestigial setup() call in VectorSpecies
+	ListCrossoverPipeline handles 2-point crossover with more uniform choices
+		of loci (using rejection sampling).
+	GE now can handle wrapping of genomes when they produce oversize trees

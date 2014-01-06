@@ -4815,14 +4815,53 @@ Last, we have two hooks which are called whenever an individual is bred or evalu
 The first method is called when one or more Individuals has just been bred (at present only one individual will be bred at a time).  The second method is called when one or more Individuals have just been evaluated and inserted into the Population, dispersing other Individuals (at present, it'll only be one individual evaluated).  The Subpopulations and Individual indices in the Subpopulations where the event occurred are provided as well. 
 
 
+\subsection{Producing More than One Individual at a Time}
 
+The Steady-State system is at present designed to breed, evaluate, and replace one individual at a time.  This makes perfect sense if you're doing asynchronous evolution, for example, but traditionally steady state evolution bred perhaps two individuals (via crossover), evaluated both of them, and introduced both of them into the population.  How can you do this?
 
+If you're using plane-jane steady-state (not asynchronous evolution), one way is to use \class{ec.breed.BufferedBreedingPipeline}.  The idea here is that the breeding pipeline will still be asked to produce only one individual at a time; but it will in fact produce {\it two} individuals, return one of them, and store the other.  When asked again for another single individual, it'll return the stored individual.  It'll repeat this process as necessary.
 
+For example, consider the following pipeline:
 
+\params{%
+pop.subpop.0.species.pipe = ec.vector.breed.VectorMutationPipeline\\
+pop.subpop.0.species.pipe.likelihood = 1.0\\
+pop.subpop.0.species.pipe.source.0 = ec.vector.breed.VectorCrossoverPipeline\\
+pop.subpop.0.species.pipe.source.0.likelihood = 0.9 \\
+pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection \\
+pop.subpop.0.species.pipe.source.0.source.1 = same 
+}
 
+If we used this pipeline in Steady-State evolution, the pipeline would be forced to generate only a {\it single} individual at a time, even though by default it'd make two individuals (due to the crossover) and return them.  The other individual would simply be discarded.
 
+We can change this to retain that second individual like this:
 
+\params{%
+pop.subpop.0.species.pipe = ec.breed.BufferedBreedingPipeline\\
+pop.subpop.0.species.pipe.num-inds = 2\\
+pop.subpop.0.species.pipe.likelihood = 1.0\\
+pop.subpop.0.species.pipe.source.0 = ec.vector.breed.VectorMutationPipeline\\
+pop.subpop.0.species.pipe.source.0.likelihood = 1.0\\
+pop.subpop.0.species.pipe.source.0.source.0 = ec.vector.breed.VectorCrossoverPipeline\\
+pop.subpop.0.species.pipe.source.0.source.0.likelihood = 0.9 \\
+pop.subpop.0.species.pipe.source.0.source.0.source.0 = ec.select.TournamentSelection \\
+pop.subpop.0.species.pipe.source.0.source.0.source.1 = same 
+}
 
+This pipeline would only return one individual at a time, but in the process it would build two individuals (from crossover), and put one aside, returning the other.  When asked again for another individual, it'd return the stored individual, then repeat.
+
+All fine and good, but there's a catch.  Recall that steady-state evolution first breeds {\it one} individual (storing it in abeyance); then it evaluates that {\it one} individual and inserts it into the population.  This means that using this revised pipeline, things would go like this (two interations):
+
+\begin{enumerate}
+\item The pipeline would be requested to return an individual.
+\item Two individuals A and B would be generated.  B would be stored and A would be returned.
+\item A would be evaluated, and replace some individual in the population.
+\item The pipeline would be again requested to return an individual.
+\item B would be immediately returned.
+\item B would be evaluated, and replace some individual in the population.  {\bf That individual might be A}.
+\end{enumerate}
+
+It's a small probability: 1/{\it subpopsize}.  But it can happen.  If you don't like this, we'd need to significantly modify Steady-State evolution.  We can do it but it's not high on the list.  If you need it higher on the list, send us mail.
 
 \chapter{Representations}
 
@@ -8583,20 +8622,38 @@ pop.subpop.0.species.max-gene = 127
 
 GESpecies starts working through the byte array and the grammar, depth-first. Each time GESpecies comes across a point in the  grammar where multiple expansions are possible, it consults the next byte in the byte array.  Let's say there are four possible expansions of the head \lisp{\(<\)foo\(>\)}, and the next byte says 145.  We compute \(145 \mod 4 = 1\) and so pick expansion 1 (the second expansion --- the first one is expansion 0).
 
-This continues until one of two things happens.  Either the tree is completed, or we run out of bytes.  In the first case, the tree is finished.  In the second case, this translation process is halted and the fitness is simply set to the worst possible Koza Standardized Fitness (\variable{Float.MAX\_VALUE}).
+This continues until one of two things happens.  Either the tree (or tree forest) is completed, or we run out of bytes.  In the first case, the tree is finished.  In the second case, processing continues again at the first byte (so-called {\bf wrapping}).  If after some number of wrapping iterations the tree is still not completed, the translation process is halted and the fitness is simply set to the worst possible Koza Standardized Fitness (\variable{Float.MAX\_VALUE}).
 
-Once a tree is completed, we record the position in the byte array where we had stopped.  If there are more trees yet to produce for the GPIndividual (for ADFs for example), we build the next one starting at that position, and so on, until the GPIndividual is completed.  Then we send the GPIndividual to the GPProblem to be evaluated, and after evaluation the GEIndividual's fitness is set to the GPIndividual's fitness, the GEIndividal's \variable{evaluated} flag is set to the GPIndividual's flag, and evaluation of the GEIndividual is now done.
+You specify the number of wrappings using the following parameter:
+
+\params{%
+pop.subpop.0.species.passes = 4
+}
+
+or alternatively 
+
+\params{%
+ge.species.passes = 4
+}
+
+This tells ECJ that it may pass through the genome no more than 4 times (including the original pass).  At present this value must be a {\bf power of two}, and should be less than \variable{MAXIMUM\_PASSES}, presently set to 1024.  In fact you should make it much smaller than this, perhaps 8 or 16, because with large genomes, if you have many passes, the recursion stack depth of the tree generator can be easily exceeded, which will throw an error internally and eventually result in (once again) the fitness being set to \variable{Float.MAX\_Value}.
+
+This scheme allows ECJ to do both of the common GE approaches to handling over-size genomes: either killing them immediately or wrapping around some \(N\) number of times.   I prefer the first approach, and so by default have \parameter{passes} set to 1.
+
+At any rate, once a tree or tree forest is completed, we record the position in the byte array where we had stopped.  If there are more trees yet to produce for the GPIndividual (for ADFs for example), we build the next one starting at that position, and so on, until the GPIndividual is completed.  Then we send the GPIndividual to the GPProblem to be evaluated, and after evaluation the GEIndividual's fitness is set to the GPIndividual's fitness, the GEIndividal's \variable{evaluated} flag is set to the GPIndividual's flag, and evaluation of the GEIndividual is now done.
 
 To do the translation, GESpecies relies on certain methods that may be useful to you:
 
 \begin{methods}{ec.gp.ge.GESpecies}
-\mthd{public int makeTree(EvolutionState \textit{state}, GEIndividual \textit{ind}, GPTree \textit{tree}, int \textit{position}, int \textit{treeNum}, int \textit{threadnum,}}
+\mthd{public int makeTree(EvolutionState \textit{state}, byte[] \textit{genome}, GPTree \textit{tree}, int \textit{position}, int \textit{treeNum}, int \textit{threadnum,}}
 \hsp{\fill}{\sf HashMap \textit{ERCmap}})\\
-Builds a GPTree from a GEIndividual.  The tree is stored in {\it tree}.  The tree number (and thus the particular grammar to be used) is defined by {\it treeNum}.  Bytes are read from the GEIndivdidual starting at \textit{position}.  When the tree has been generated, the first unread byte position is returned.  If the tree could not be built because there were not enough bytes, then \variable{ec.gp.ge.GESpecies.BIG\_TREE\_ERROR} is returned instead.  If \textit{ERCmap} is non-null, then as the tree is being built, any ERCs appearing the tree are registered in the ERCmap as the key-value pair \(\langle \text{\it Gene Value} \longrightarrow \text{\it ERC}\rangle\) where \textit{Gene Value} is the gene value used (a byte), and \textit{ERC} is the a \class{ec.gp.ERC} object which has the same value as the actual ERC object used.  You should treat this map as read-only.  If you don't care about any of this, just pass in null.
+Builds a GPTree from the genome of a GEIndividual.  The tree is stored in {\it tree}.  The tree number (and thus the particular grammar to be used) is defined by {\it treeNum}.  Bytes are read from the GEIndivdidual's genome starting at \textit{position}.  When the tree has been generated, the first unread byte position is returned.  If the tree could not be built because there were not enough bytes, then \variable{ec.gp.ge.GESpecies.BIG\_TREE\_ERROR} is returned instead.  If \textit{ERCmap} is non-null, then as the tree is being built, any ERCs appearing the tree are registered in the ERCmap as the key-value pair \(\langle \text{\it Gene Value} \longrightarrow \text{\it ERC}\rangle\) where \textit{Gene Value} is the gene value used (a byte), and \textit{ERC} is the a \class{ec.gp.ERC} object which has the same value as the actual ERC object used.  You should treat this map as read-only.  If you don't care about any of this, just pass in null.
+\mthd{public int makeTrees(EvolutionState \textit{state}, byte[] \textit{genome}, GPTree[] \textit{trees}, int \textit{threadnum, HashMap \textit{ERCmap}})}
+Builds an entire array of GPTrees, sufficient to create an entire GPIndividual, from the genome of a GEIndividual.  The trees are stored in {\it trees}.  Bytes are read from the GEIndivdidual's genome starting at position 0.  When the tree has been generated, the first unread byte position is returned.  If the trees could not be built because there were not enough bytes, then \variable{ec.gp.ge.GESpecies.BIG\_TREE\_ERROR} is returned instead.  If \textit{ERCmap} is non-null, then as the tree is being built, any ERCs appearing the tree are registered in the ERCmap as the key-value pair \(\langle \text{\it Gene Value} \longrightarrow \text{\it ERC}\rangle\) where \textit{Gene Value} is the gene value used (a byte), and \textit{ERC} is the a \class{ec.gp.ERC} object which has the same value as the actual ERC object used.  You should treat this map as read-only.  If you don't care about any of this, just pass in null.
 \mthd{public int makeTrees(EvolutionState \textit{state}, GEIndividual \textit{ind}, GPTree[] \textit{trees}, int \textit{threadnum, HashMap \textit{ERCmap}})}
-Builds an entire array of GPTrees, sufficient to create an entire GPIndividual, from a GEIndividual.  The trees are stored in {\it trees}.  Bytes are read from the GEIndivdidual starting at position 0.  When the tree has been generated, the first unread byte position is returned.  If the trees could not be built because there were not enough bytes, then \variable{ec.gp.ge.GESpecies.BIG\_TREE\_ERROR} is returned instead.  If \textit{ERCmap} is non-null, then as the tree is being built, any ERCs appearing the tree are registered in the ERCmap as the key-value pair \(\langle \text{\it Gene Value} \longrightarrow \text{\it ERC}\rangle\) where \textit{Gene Value} is the gene value used (a byte), and \textit{ERC} is the a \class{ec.gp.ERC} object which has the same value as the actual ERC object used.  You should treat this map as read-only.  If you don't care about any of this, just pass in null.
+Builds an entire array of GPTrees, sufficient to create an entire GPIndividual, from a GEIndividual, possibly performing wrapping.  The trees are stored in {\it trees}.  Bytes are read from the GEIndivdidual starting at position 0.  When the tree has been generated, the first unread byte position is returned.  {\bf If we have run out of bytes and the trees are not completed, then processing continues at position 0 again.  This is done some \textit{passes \(\bf -1\)} times (specified in the individual's species).  If the trees have still not been completely built, then \variable{ec.gp.ge.GESpecies.BIG\_TREE\_ERROR} is returned instead.}  If \textit{ERCmap} is non-null, then as the tree is being built, any ERCs appearing the tree are registered in the ERCmap as the key-value pair \(\langle \text{\it Gene Value} \longrightarrow \text{\it ERC}\rangle\) where \textit{Gene Value} is the gene value used (a byte), and \textit{ERC} is the a \class{ec.gp.ERC} object which has the same value as the actual ERC object used.  You should treat this map as read-only.  If you don't care about any of this, just pass in null.
 \mthd{public int consumed(EvolutionState \textit{state}, GEIndividual \textit{ind}, int \textit{threadnum})}
-Computes and returns the number of bytes that would be consumed to produce a GPIndividual from the given GEIndividual. This is done by actually building an individual, then throwing it away.  If the GPIndividual could not be built because there were not enough bytes, then \variable{ec.gp.ge.GESpecies.BIG\_TREE\_ERROR} is returned instead. 
+Computes and returns the number of bytes that would be consumed to produce a GPIndividual from the given GEIndividual, including wrapping as discussed in the previous method.  This is done by actually building an individual, then throwing it away.  If the GPIndividual could not be built because there were not enough bytes, then \variable{ec.gp.ge.GESpecies.BIG\_TREE\_ERROR} is returned instead. 
 \end{methods}
 
 \paragraph{Handling ERCs}  When the GESpecies needs to produce an ERC from the grammar, it consults the next byte in the array.  If the byte is 27, it looks up 27 in a special hash table stored in GESpecies.  If it finds that 27 has hashed to an existing ERC, it clones this ERC and uses the clone.  Else, it creates a new ERC, calls \method{reset()} on it, stores it in the hash table with 27, clones it, and uses the clone.  This way all ERCs whose byte is 27 are the same value.
