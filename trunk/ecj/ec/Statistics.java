@@ -95,8 +95,8 @@ public class Statistics implements Singleton
         silentPrint = state.parameters.getBoolean(base.push(P_SILENT_PRINT), null, silentPrint);
         
         if (state.parameters.exists(base.push(P_MUZZLE), null))
-        	state.output.warning("" + base.push(P_MUZZLE) + " has been deprecated.  We suggest you use " + 
-        		base.push(P_SILENT) + " or similar newer options.");
+            state.output.warning("" + base.push(P_MUZZLE) + " has been deprecated.  We suggest you use " + 
+                base.push(P_SILENT) + " or similar newer options.");
         silentFile = silentFile || state.parameters.getBoolean(base.push(P_MUZZLE), null, false);
 
         // load the trees
