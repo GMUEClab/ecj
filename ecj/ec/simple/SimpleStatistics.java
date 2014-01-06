@@ -101,7 +101,7 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
             statisticslog = Output.NO_LOGS;
             }
         else if (statisticsFile!=null)
-        	{
+            {
             try
                 {
                 statisticslog = state.output.addLog(statisticsFile, !compress, compress);
@@ -152,7 +152,7 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
             if (doMessage && !silentPrint) state.output.message("Subpop " + x + " best fitness of generation" + 
                 (best_i[x].evaluated ? " " : " (evaluated flag not set): ") +
                 best_i[x].fitness.fitnessToStringForHumans());
-
+                
             // describe the winner if there is a description
             if (doGeneration && doPerGenerationDescription) 
                 {
@@ -162,10 +162,10 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
             }
         }
 
-	/** Allows MultiObjectiveStatistics etc. to call super.super.finalStatistics(...) without
-		calling super.finalStatistics(...) */
-	protected void bypassFinalStatistics(EvolutionState state, int result)
-		{ super.finalStatistics(state, result); }
+    /** Allows MultiObjectiveStatistics etc. to call super.super.finalStatistics(...) without
+        calling super.finalStatistics(...) */
+    protected void bypassFinalStatistics(EvolutionState state, int result)
+        { super.finalStatistics(state, result); }
 
     /** Logs the best individual of the run. */
     public void finalStatistics(final EvolutionState state, final int result)

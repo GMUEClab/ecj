@@ -290,32 +290,32 @@ public class SimpleBreeder extends Breeder
         else
             {
             /*
-            Thread[] t = new Thread[numThreads];
+              Thread[] t = new Thread[numThreads];
                 
-            // start up the threads
-            for(int y=0;y<numThreads;y++)
-                {
-                SimpleBreederThread r = new SimpleBreederThread();
-                r.threadnum = y;
-                r.newpop = newpop;
-                r.numinds = numinds[y];
-                r.from = from[y];
-                r.me = this;
-                r.state = state;
-                t[y] = new Thread(r);
-                t[y].start();
-                }
+              // start up the threads
+              for(int y=0;y<numThreads;y++)
+              {
+              SimpleBreederThread r = new SimpleBreederThread();
+              r.threadnum = y;
+              r.newpop = newpop;
+              r.numinds = numinds[y];
+              r.from = from[y];
+              r.me = this;
+              r.state = state;
+              t[y] = new Thread(r);
+              t[y].start();
+              }
                 
-            // gather the threads
-            for(int y=0;y<numThreads;y++) 
-                try
-                    {
-                    t[y].join();
-                    }
-                catch(InterruptedException e)
-                    {
-                    state.output.fatal("Whoa! The main breeding thread got interrupted!  Dying...");
-                    }
+              // gather the threads
+              for(int y=0;y<numThreads;y++) 
+              try
+              {
+              t[y].join();
+              }
+              catch(InterruptedException e)
+              {
+              state.output.fatal("Whoa! The main breeding thread got interrupted!  Dying...");
+              }
             */
 
 
