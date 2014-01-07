@@ -292,7 +292,7 @@ public class GESpecies extends IntegerVectorSpecies
 
         try // get the tree, or return an error.
             {
-            root = makeSubtree(countNumberOfChromosomesUsed, genome, state, gpfs, grammar[treeNum], treeNum, threadnum, ERCmappings);
+            root = makeSubtree(countNumberOfChromosomesUsed, genome, state, gpfs, grammar[treeNum], treeNum, threadnum, ERCmappings, tree, (byte)0);
             } 
         catch (BigTreeException e)
             {
@@ -316,7 +316,9 @@ public class GESpecies extends IntegerVectorSpecies
     // thrown by makeSubtree when chromosome is not large enough for the generated tree.
     class BigTreeException extends RuntimeException { static final long serialVersionUID = 1L; }
 
-    GPNode makeSubtree(int[] index, byte[] genome, EvolutionState es, GPFunctionSet gpfs, GrammarRuleNode rule, int treeNum, int threadnum, HashMap ERCmappings)
+    GPNode makeSubtree(int[] index, byte[] genome, EvolutionState es, GPFunctionSet gpfs, 
+    				   GrammarRuleNode rule, int treeNum, int threadnum, HashMap ERCmappings,
+    				   GPNodeParent parent, byte argposition)
         {
         // have we exceeded the length of the genome?  No point in going further.
         if (index[0] >= genome.length)
@@ -347,12 +349,11 @@ public class GESpecies extends IntegerVectorSpecies
             }               
         GrammarNode choice = rule.getChoice(i);         
 
-        // if body is another rule head
-        // look up rule
+        // if body is another rule head, look up the rule
         if(choice instanceof GrammarRuleNode)
             {
             GrammarRuleNode nextrule = (GrammarRuleNode) choice;
-            return makeSubtree(index, genome, es, gpfs, nextrule, treeNum, threadnum, ERCmappings);
+            return makeSubtree(index, genome, es, gpfs, nextrule, treeNum, threadnum, ERCmappings, parent, argposition);
             }                               
         else // handle functions
             {
@@ -397,13 +398,17 @@ public class GESpecies extends IntegerVectorSpecies
             for (int j = 0, childNumber = 0; j < funcgrammarnode.getNumArguments(); j++)
                 {
                 // get and link children to the current GPNode
-                validNode.children[childNumber] = makeSubtree(index, genome, es, gpfs, (GrammarRuleNode)funcgrammarnode.getArgument(j), treeNum, threadnum, ERCmappings);
+                /// WARNING: Casting an int into a byte because argposition is supposed to be a byte
+                validNode.children[childNumber] = makeSubtree(index, genome, es, gpfs, (GrammarRuleNode)funcgrammarnode.getArgument(j), treeNum, threadnum, ERCmappings, validNode, (byte)childNumber);
                 if (validNode.children[childNumber] == null)
                     {
                     return null;
                     }
                 childNumber++;
                 }
+            
+            validNode.argposition = argposition;
+            validNode.parent = parent;
             return validNode;
             }
         }
