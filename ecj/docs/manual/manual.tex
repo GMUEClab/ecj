@@ -3321,6 +3321,7 @@ Now we can mutate the Individuals.  How mutation occurs depends on the represent
 
 
 \subsubsection{Standard Classes}
+\label{standardbreedingpipelines}
 
 Most BreedingPipelines are custom for your representation: vectors and trees etc. all have their own special ways of being crossed over or mutated.  However there are some utility BreedingPipelines you should be aware of, all stored in the \package{ec.breed} package:
 
@@ -4817,9 +4818,9 @@ The first method is called when one or more Individuals has just been bred (at p
 
 \subsection{Producing More than One Individual at a Time}
 
-The Steady-State system is at present designed to breed, evaluate, and replace one individual at a time.  This makes perfect sense if you're doing asynchronous evolution, for example, but traditionally steady state evolution bred perhaps two individuals (via crossover), evaluated both of them, and introduced both of them into the population.  How can you do this?
+The Steady-State system is at present designed to breed, evaluate, and replace one individual at a time.  This is the typical scenario, and it also makes perfect sense if you're doing Asynchronous Evolution (Section~\ref{ec.eval}).  But let's say you're using some form of crossover to breed this individual.  Crossover makes two children, and you're throwing one away.  What if you want to insert both kids into the population?  How can you do this?
 
-If you're using plane-jane steady-state (not asynchronous evolution), one way is to use \class{ec.breed.BufferedBreedingPipeline}.  The idea here is that the breeding pipeline will still be asked to produce only one individual at a time; but it will in fact produce {\it two} individuals, return one of them, and store the other.  When asked again for another single individual, it'll return the stored individual.  It'll repeat this process as necessary.
+One way is to use \class{ec.breed.BufferedBreedingPipeline} (see Section \ref{standardbreedingpipelines}).  The idea here is that the breeding pipeline will still be asked to produce only one individual at a time; but it will in fact produce {\it two} individuals, return one of them, and store the other.  When asked again for another single individual, it'll return the stored individual.  It'll repeat this process as necessary.
 
 For example, consider the following pipeline:
 
@@ -4850,7 +4851,7 @@ pop.subpop.0.species.pipe.source.0.source.0.source.1 = same
 
 This pipeline would only return one individual at a time, but in the process it would build two individuals (from crossover), and put one aside, returning the other.  When asked again for another individual, it'd return the stored individual, then repeat.
 
-All fine and good, but there's a catch.  Recall that steady-state evolution first breeds {\it one} individual (storing it in abeyance); then it evaluates that {\it one} individual and inserts it into the population.  This means that using this revised pipeline, things would go like this (two interations):
+All fine and good, but there's a catch.  Recall that steady-state evolution first breeds {\it one} individual (storing it in abeyance); then it evaluates that {\it one} individual and inserts it into the population.  This means that using this revised pipeline, things would go like this (two iterations):
 
 \begin{enumerate}
 \item The pipeline would be requested to return an individual.
@@ -4862,6 +4863,8 @@ All fine and good, but there's a catch.  Recall that steady-state evolution firs
 \end{enumerate}
 
 It's a small probability: 1/{\it subpopsize}.  But it can happen.  If you don't like this, we'd need to significantly modify Steady-State evolution.  We can do it but it's not high on the list.  If you need it higher on the list, send us mail.
+
+It's worth noting that this is all possible because, unlike generational evolution, steady-state evolution only generates one breeding pipeline and continues to use it throughout the run.  Were we to try this trick with generational evolution, the BufferedBreedingPipeline would be destroyed each generation, including any kids presently in its buffer.
 
 \chapter{Representations}
 
@@ -8073,7 +8076,7 @@ An important note: because the main GP Tree and the ADF have different function 
 
 Sometimes it's useful to constrain which GPNodes may serve as children of other GPNodes, or the root of the GPTree.  For example, consider a GPNode called \variable{(if \textit{test} \textit{then} \textit{else})}.  This node evaluates {\it test}, and based on its result (true or false) it either evaluates and returns {\it then} or {\it else}.  Let's presume that {\it then} and {\it else} (and {\it if}) return doubles.  On the other hand, {\it test} is intended to return a boolean.  So you'll need to have some GPNodes in your function set which return doubles and others which return booleans; the \variable{(if ...)} node itself returns a double.
 
-The problem is not that you have nodes which return different values\,---\,this is easily handled by hacking your GPData object.  The problem is that you now have constraints on valid tree structures: you can't plug a node which returns a double (say, \variable{(sin ...)}) into the {\it test} slot of your \variable{(if ...)} node, which is expecting a boolean.\footnote{Well, you {\it could} if you assumed that 0.0 was false and anything else was true.  But this is a hack.  The right way to do it is to constrain things properly}.  This is where strong typing comes in.
+The problem is not that you have nodes which return different values\,---\,this is easily handled by hacking your GPData object.  The problem is that you now have constraints on valid tree structures: you can't plug a node which returns a double (say, \variable{(sin ...)}) into the {\it test} slot of your \variable{(if ...)} node, which is expecting a boolean.\footnote{Well, you {\it could} if you assumed that 0.0 was false and anything else was true.  But this is a hack.  The right way to do it is to constrain things properly}  This is where strong typing comes in.
 
 ECJ's typing system is simple but sufficient for many common uses.    It's not as sophisticated as a full polymorphic typing system but it also doesn't have the hair-raising complexity that such a system requires.  ECJ is complex enough as it is thank you very much!
 
@@ -8133,7 +8136,7 @@ What's the point of set types, you might ask.  Why not just atomic types?  Set t
 
 What this typing facility {\it cannot} do is dynamically change types as necessary.  For example, you cannot say that a GPNode like \variable{(+ ... ...)} returns a double if either of its children is of type double, but if both of its children are of type integer, then it returns an integer.
 
-You are also restricted to a finite number of types.  For example, consider a GPNode called \variable{(matrix-multiply ... ...)} which takes two children which return matrices.  You cannot say that if the left child is an \(M x N\) matrix, and your right child is an \(N x P\) matrix, that the return type will be an \(M x P\) matrix.  This is partly because you can't define dynamic typing, but it's also because \(M\), \(N\), and \(P\) can be any of an infinite number of numbers, resulting in an infinite number of types: that would be hard on your fingers.  There exist polymorphic typing systems for genetic programming but they're fairly bleeding-edge.  If you need things like this, I suggest instead to look at Grammatical Evolution (Section~\ref{ec.gp.ge}).
+You are also restricted to a finite number of types.  For example, consider a GPNode called \variable{(matrix-multiply ... ...)} which takes two children which return matrices.  You cannot say that if the left child is an \(M x N\) matrix, and your right child is an \(N x P\) matrix, that the return type will be an \(M x P\) matrix.  This is partly because you can't define dynamic typing, but it's also because \(M\), \(N\), and \(P\) can be any of an infinite number of numbers, resulting in an infinite number of types: specifying an infinite number of types would be hard on your fingers.  There exist polymorphic typing systems for genetic programming but they're fairly bleeding-edge.  If you need things like this, I suggest instead to look at Grammatical Evolution (Section~\ref{ec.gp.ge}).
 
 \paragraph{Example}
 
