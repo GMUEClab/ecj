@@ -10365,14 +10365,13 @@ In Section~\ref{ec.Exchanger} we talked about various basic Exchanger methods.  
 
 If these look similar to the methods in Section~\ref{ec.eval.MasterProblem}, it's with good reason.  Their function is to set up networking connections, re-establish networking connections after restarting from a checkpoint, and shut down networking connections in a clean way.  IslandExchange implements them but not InterPopulationExchange.
 
-Additionally, prior to introducing an Individual into a population, Exchangers typically call a hook you can override to modify that Individual or replace it with some other Individual:
+Additionally, prior to migrating an Individual to another island, Exchangers typically call a hook you can override to modify that Individual or replace it with some other Individual:
 
 \java{%
-    protected Individual process(EvolutionState state, int thread, Individual ind,\\
-\rule{0pt}{0pt}\hspace{\fill}int subpopulation, int index);
+    protected Individual process(EvolutionState state, int thread, Individual ind);
 }
 
-This might be used if the Individuals coming in are different (perhaps a different representation or fitness object) than the ones in your Subpopulation and you need to convert them into the appropriate form.  The default form of this method just returns the Individual provided.
+This might be used if the Individuals being migrated are different (perhaps a different representation or fitness object) than the ones in the remote island and you need to convert them into the appropriate form.  The default form of this method just returns the Individual provided.
 
 
 \chapter{Additional Evolutionary Algorithms}

@@ -860,8 +860,8 @@ public class IslandExchange extends Exchanger
                             for( int y = 0 ; y < size ; y++ ) // send all necesary individuals
                                 {
                                 int index = immigrantsSelectionMethod.produce( subpop, state, 0 );
-                                state.population.subpops[subpop].individuals[index].
-                                    writeIndividual( state, outWriters[x] );
+                                process(state, 0, state.population.subpops[subpop].individuals[index]).writeIndividual( state, outWriters[x] );
+                                // TODO -- should we move this to the end?
                                 outWriters[x].flush();  // just in case the individuals didn't do a println
                                 }
                             immigrantsSelectionMethod.finishProducing( state, subpop, 0 ); // end the selection step
@@ -960,7 +960,7 @@ public class IslandExchange extends Exchanger
 
                         // read the individual
                         state.population.subpops[x].
-                            individuals[ indices[y] ] = process(state, 0, mailbox.immigrants[x][y], x, indices[y]);
+                            individuals[ indices[y] ] = mailbox.immigrants[x][y];
 
                         // reset the evaluated flag (the individuals are not evaluated in the current island */
                         state.population.subpops[x].

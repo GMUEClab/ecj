@@ -41,13 +41,10 @@ public abstract class Exchanger implements Singleton
         once every generation (or pseudogeneration). */
     public abstract Population postBreedingExchangePopulation(EvolutionState state);
 
-    /** Typically called by postBreedingExchangePopulation prior to adding individuals to
-        the population.
-        Override this method to process the immigrant, or provide a different Individual,
-        prior to accepting it into the population. 
-        The subpopulation and subpopulation index are provided, which indicate where it will 
-        eventually be placed.  The default simply returns the individual.  */
-    protected Individual process(EvolutionState state, int thread, Individual ind, int subpopulation, int index)
+    /** Typically called by preBreedingExchangePopulation prior to migrating an individual.
+        Override this method to process the migrant, or provide a different Individual to migrate.
+        The default simply returns the individual.  */
+    protected Individual process(EvolutionState state, int thread, Individual ind)
         {
         return ind;
         }
