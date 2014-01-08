@@ -2190,3 +2190,5 @@ Version		Change Log
 	Fixed problem where GE mapping wasn't bothering to set the argposition or
 		parent of the GPnodes.  This didn't cause problems unless we were
 		doing strongly typed GP.
+	Changes to Exchanger.process(...) so it does processing on migration 
+		rather than on IMmigration.
