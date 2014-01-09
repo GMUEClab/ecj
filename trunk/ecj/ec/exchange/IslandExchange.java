@@ -858,7 +858,7 @@ public class IslandExchange extends Exchanger
                             for( int y = 0 ; y < size ; y++ ) // send all necesary individuals
                                 {
                                 int index = immigrantsSelectionMethod.produce( subpop, state, 0 );
-                                process(state, 0, state.population.subpops[subpop].individuals[index]).writeIndividual( state, outWriters[x] );
+                                process(state, 0, outgoingIds[x], subpop, state.population.subpops[subpop].individuals[index]).writeIndividual( state, outWriters[x] );
                                 // TODO -- should we move this to the end?
                                 outWriters[x].flush();  // just in case the individuals didn't do a println
                                 }
@@ -2280,7 +2280,7 @@ state.output.fatal( "Parameter not found, or it has an incorrect value.", p );
 		islands.  No, it's not fast, but with a small number of islands, it's not a big
 		deal.
 		*/ 
-	public int islandIndex(EvolutionState state, String id)
+	public int getIslandIndex(EvolutionState state, String id)
 		{
 		int num = state.parameters.getInt(islandIndexNumIslands, null, 0);
 		if (num < 0) // uh oh

@@ -21,7 +21,6 @@ pop.subpop.0.species = ec.gp.ge.GESpecies
 pop.subpop.0.species.parser = ec.gp.ge.GrammarParser
 
 # The individual is a GEIndividual
-pop.subpop.0.species = ec.gp.ge.GESpecies
 pop.subpop.0.species.ind = ec.gp.ge.GEIndividual
 pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
 
