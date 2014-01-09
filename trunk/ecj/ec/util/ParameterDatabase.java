@@ -582,7 +582,7 @@ public class ParameterDatabase extends Properties implements Serializable
      * not found, the defaultParameter is used. The parameter chosen is marked
      * "used".
      */
-    public Object getClassForParameter(Parameter parameter,
+    public Class getClassForParameter(Parameter parameter,
         Parameter defaultParameter, Class mustCastTosuperclass)
         throws ParamClassLoadException 
         {

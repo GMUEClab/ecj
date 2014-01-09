@@ -2192,3 +2192,6 @@ Version		Change Log
 		doing strongly typed GP.
 	Changes to Exchanger.process(...) so it does processing on migration 
 		rather than on IMmigration.
+	ParameterDatabase.getClassForParameter(...) now returns Classes, not
+		Objects, as its return type.
+
