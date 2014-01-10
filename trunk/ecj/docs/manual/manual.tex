@@ -10368,11 +10368,76 @@ If these look similar to the methods in Section~\ref{ec.eval.MasterProblem}, it'
 Additionally, prior to migrating an Individual to another island, Exchangers typically call a hook you can override to modify that Individual or replace it with some other Individual:
 
 \java{%
-    protected Individual process(EvolutionState state, int thread, Individual ind);
+    protected Individual process(EvolutionState state, int thread, String island,\\\rule{0pt}{0pt}\hspace{\fill}int subpop, Individual ind);
 }
 
-This might be used if the Individuals being migrated are different (perhaps a different representation or fitness object) than the ones in the remote island and you need to convert them into the appropriate form.  The default form of this method just returns the Individual provided.
+There are various reasons you might do this: perhaps the islands have different representations for their individuals or fitness classes, for example, requiring a conversion before you send migrants off.
 
+This method has two parameters which require explanation.  The \variable{island} is the id of the island that will receive the Individual, or \variable{null} if there is no such island (as is the case for InterPopulationExchange).  The \variable{subpop} is the destination subpopulation of the Individual (particularly important in InterPopulationExchange).
+
+To assist you in your processing, IslandExchange provides an additional method which is useful to call inside the \method{process} method:
+
+\java{%
+    public int getIslandIndex(EvolutionState state, String island);
+}
+
+This method returns the index in the parameter database of the island referred to by \variable{id}, or \variable{IslandExchange.ISLAND\_INDEX\_LOOKUP\_FAILED}.
+
+The purpose of this method is to allow islands to look up information, typically stored in a parameter database, about the islands they're about to send migrants to, so as to convert individuals in a way appropriate to those islands, perhaps.  To take advantage of this method, you'd need to make sure that the server's island exchange parameters are also in each client's database.  For example, let's say that your id is ``GilligansIsland'', and in the parameter database (which again the client must have) we have the following parameters in the server database file:
+
+\params{%
+exch.num-islands = 8\\
+...\\
+exch.island.1.id = GilligansIsland\\
+exch.island.1.num-mig = 3\\
+exch.island.1.mig.0 = SurvivorIsland\\
+exch.island.1.mig.1 = EllisIsland\\
+exch.island.1.mig.2 = FantasyIsland\\
+exch.island.1.size = 4\\
+exch.island.1.mod = 4\\
+exch.island.1.start = 2\\
+exch.island.1.mailbox-capacity = 20\\
+\# this is just made up \\
+exch.island.1.is-gp-island = true\\
+...
+}
+
+(Note the last nonstandard parameter, which I made up for purposes of this example.)  We begin by also including these parameters in each island's database file.  We are about to send some migrants to GilligansIsland (the name passed into \method{process(...)}.  To look up information about this island, we can use \method{getIslandIndex(...)} to discover that GilligansIsland is island number 1 in our parameter database.  This makes it easy for us to look up other information we've stashed there to tell us how we should process our island:
+
+{
+\small\begin{verbatim}
+protected Individual process(EvolutionState state, int thread, String island, int subpop, Individual ind)
+    {
+    int index = getIslandIndex(state, island);
+    if (index == ISLAND_INDEX_LOOKUP_FAILED)  // uh oh
+        state.output.fatal("Missing island index for " + island);
+        
+    Parameter param = new Parameter("exch.island." + index + ".is-gp-island");
+    if (!state.parameters.exists(param))  // uh oh
+        state.output.fatal("Missing parameter for island!", param, null);
+    
+    boolean isGPIsland = getBoolean(param, null, false);
+    if (isGPIsland)
+        {
+        // process the individual in some way because it's going to a "GP Island" or whatever
+        }
+    }
+\end{verbatim}
+}
+
+This method isn't necessary (nor provided) for \class{InterPopulationExchange} since it doesn't really do ``islands'' per se so much as exchanges between subpopulations.  In this case, the \method{process(...)} method has told us what subpopulation we'll be sending the individual to and we have direct access to it.  For example, we might do this: 
+
+{
+\small\begin{verbatim}
+protected Individual process(EvolutionState state, int thread, String island, int subpop, Individual ind)
+    {
+    if (state.population.subpops[subpop].species instanceof ec.gp.GPSpecies)
+        {
+        // convert to a GP individual, or whatever
+        }
+    }
+\end{verbatim}
+}
 
 \chapter{Additional Evolutionary Algorithms}
 
