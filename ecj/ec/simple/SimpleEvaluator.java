@@ -125,7 +125,7 @@ public class SimpleEvaluator extends Evaluator
             }
 
         // swap
-        Population oldpop = state.population;
+        oldpop = state.population;
         state.population = pop;
         }
 

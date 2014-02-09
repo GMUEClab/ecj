@@ -2194,4 +2194,7 @@ Version		Change Log
 		rather than on IMmigration.
 	ParameterDatabase.getClassForParameter(...) now returns Classes, not
 		Objects, as its return type.
-
+	Bug fix to SimpleEvaluator.expand(), which was setting a local variable
+		rather than an instance variable, resulting in a null pointer
+		exception on contract().  Thanks to Eric 'Siggy' Scott 
+		<escott8@gmu.edu>
