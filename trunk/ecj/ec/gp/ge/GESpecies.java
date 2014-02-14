@@ -258,7 +258,7 @@ public class GESpecies extends IntegerVectorSpecies
      * @param threadnum tread number
      * @return number of chromosomes consumed, or BIG_TREE_ERROR
      */
-     public int makeTrees(EvolutionState state, byte[] genome, GPTree[] trees, int threadnum, HashMap ERCmappings)
+    public int makeTrees(EvolutionState state, byte[] genome, GPTree[] trees, int threadnum, HashMap ERCmappings)
         {
         int position = 0;
 
@@ -317,8 +317,8 @@ public class GESpecies extends IntegerVectorSpecies
     class BigTreeException extends RuntimeException { static final long serialVersionUID = 1L; }
 
     GPNode makeSubtree(int[] index, byte[] genome, EvolutionState es, GPFunctionSet gpfs, 
-    				   GrammarRuleNode rule, int treeNum, int threadnum, HashMap ERCmappings,
-    				   GPNodeParent parent, byte argposition)
+        GrammarRuleNode rule, int treeNum, int threadnum, HashMap ERCmappings,
+        GPNodeParent parent, byte argposition)
         {
         // have we exceeded the length of the genome?  No point in going further.
         if (index[0] >= genome.length)
