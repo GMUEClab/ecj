@@ -2198,3 +2198,7 @@ Version		Change Log
 		rather than an instance variable, resulting in a null pointer
 		exception on contract().  Thanks to Eric 'Siggy' Scott 
 		<escott8@gmu.edu>
+	KozaFitness now uses standardized rather than adjusted fitness to do
+		comparison (equivalentTo, betterthan), to reduce floating point
+		errors.  Thanks to Raymond Shpeley <rshpeley@ualberta.ca>
+

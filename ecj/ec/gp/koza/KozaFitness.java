@@ -125,12 +125,18 @@ public class KozaFitness extends Fitness
     
     public boolean equivalentTo(final Fitness _fitness)
         {
-        return _fitness.fitness() == fitness();
+        // We're comparing standardized fitness because adjusted fitness can
+        // loose some precision in the division.
+        return (KozaFitness)(_fitness.standardizedFitness() == standardizedFitness);
         }
 
     public boolean betterThan(final Fitness _fitness)
         {
-        return _fitness.fitness() < fitness();
+        // I am better than you if my standardized fitness is LOWER than you
+        // (that is, closer to zero, which is optimal)
+        // We're comparing standardized fitness because adjusted fitness can
+        // loose some precision in the division.
+        return (KozaFitness)(_fitness.standardizedFitness() > standardizedFitness);
         }
  
     public String fitnessToString()
