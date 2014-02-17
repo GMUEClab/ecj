@@ -24,7 +24,9 @@ import ec.gp.*;
  * Koza-style "Subtree Crossover".  Two individuals are selected,
  * then a single tree is chosen in each such that the two trees
  * have the same GPTreeConstraints.  Then a random node is chosen
- * in each tree such that the two nodes have the same return type.
+ * in each tree such that each node's return type is type-compatible
+ * with the argument type of the slot in the parent which contains 
+ * the other node.
  * If by swapping subtrees at these nodes the two trees will not
  * violate maximum depth constraints, then the trees perform the
  * swap, otherwise, they repeat the hunt for random nodes.
