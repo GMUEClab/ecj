@@ -6303,6 +6303,8 @@ You can get (or set) the hits as:
 int hits = myKozaFitness.hits;
 }
 
+Note that though the {\it adjusted} fitness is returned by the \method{fitness()} method, and is thus used by selection methods such as \class{ec.select.FitProportionateSelection}, the {\it standardized} fitness is what's used in the comparison methods \method{betterThan()} and \method{equivalentTo()}, as well as \method{isIdealFitness()}.  This is because it's possible to convert different standardized fitness values into the adjusted fitness and have them come out equal due to floating point inaccuracy in division.  
+
 
 \subsubsection{GPProblem} 
 
