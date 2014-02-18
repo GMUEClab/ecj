@@ -878,7 +878,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
                 
             // the fitness better be KozaFitness!
             KozaFitness f = ((KozaFitness)ind.fitness);
-            f.setStandardizedFitness(state,(float)sum);
+            f.setStandardizedFitness(state, sum);
             f.hits = hits;
             ind.evaluated = true;
             }
@@ -912,7 +912,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
                         
         // the fitness better be KozaFitness!
         KozaFitness f = (KozaFitness)(ind.fitness.clone());     // make a copy, we're just printing it out
-        f.setStandardizedFitness(state,(float)sum);
+        f.setStandardizedFitness(state, sum);
         f.hits = hits;
                 
         f.printFitnessForHumans(state, log);

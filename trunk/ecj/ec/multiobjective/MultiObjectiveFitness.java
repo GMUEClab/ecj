@@ -78,23 +78,23 @@ import ec.*;
  * 
  * <tr>
  * <td valign=top><i>base</i>.<tt>max</tt><br>
- * <font size=-1> float (<tt>1.0</tt> default)</font></td>
+ * <font size=-1> double (<tt>1.0</tt> default)</font></td>
  * <td valign=top>(maximum fitness value for all objectives)</table>
  * 
  * <tr>
  * <td valign=top><i>base</i>.<tt>max</tt>.<i>i</i><br>
- * <font size=-1> float (<tt>1.0</tt> default)</font></td>
+ * <font size=-1> double (<tt>1.0</tt> default)</font></td>
  * <td valign=top>(maximum fitness value for objective <i>i</i>. Overrides the
  * all-objective maximum fitness.)</table>
  * 
  * <tr>
  * <td valign=top><i>base</i>.<tt>min</tt><br>
- * <font size=-1> float (<tt>0.0</tt> (default)</font></td>
+ * <font size=-1> double (<tt>0.0</tt> (default)</font></td>
  * <td valign=top>(minimum fitness value for all objectives)</table>
  * 
  * <tr>
  * <td valign=top><i>base</i>.<tt>min</tt>.<i>i</i><br>
- * <font size=-1> float = <tt>0.0</tt> (default)</font></td>
+ * <font size=-1> double = <tt>0.0</tt> (default)</font></td>
  * <td valign=top>(minimum fitness value for objective <i>i</i>. Overrides the
  * all-objective minimum fitness.)</table>
  * 
@@ -124,16 +124,16 @@ public class MultiObjectiveFitness extends Fitness
     public static final String P_MAXIMIZE = "maximize";
 
     /** Desired maximum fitness values. By default these are 1.0. Shared. */
-    public float[] maxObjective;
+    public double[] maxObjective;
 
     /** Desired minimum fitness values. By default these are 0.0. Shared. */
-    public float[] minObjective;
+    public double[] minObjective;
 
     /** Maximization.  Shared. */
     public boolean[] maximize;
 
     /** The various fitnesses. */
-    protected float[] objectives; // values range from 0 (worst) to 1 INCLUSIVE
+    protected double[] objectives; // values range from 0 (worst) to 1 INCLUSIVE
 
     /** Returns auxilliary fitness value names to be printed by the statistics object.
         By default, an empty array is returned, but various algorithms may override this to provide additional columns.
@@ -166,17 +166,17 @@ public class MultiObjectiveFitness extends Fitness
      * Though you could set values in this array, you should NOT do this --
      * rather, set them using setObjectives().
      */
-    public float[] getObjectives()
+    public double[] getObjectives()
         {
         return objectives;
         }
 
-    public float getObjective(int i)
+    public double getObjective(int i)
         {
         return objectives[i];
         }
 
-    public void setObjectives(final EvolutionState state, float[] newObjectives)
+    public void setObjectives(final EvolutionState state, double[] newObjectives)
         {
         if (newObjectives == null)
             {
@@ -188,8 +188,8 @@ public class MultiObjectiveFitness extends Fitness
             }
         for (int i = 0; i < newObjectives.length; i++)
             {
-            float _f = newObjectives[i];
-            if (_f == Float.POSITIVE_INFINITY || _f == Float.NEGATIVE_INFINITY || Float.isNaN(_f))
+            double _f = newObjectives[i];
+            if (_f >= Double.POSITIVE_INFINITY || _f <= Double.NEGATIVE_INFINITY || Double.isNaN(_f))
                 {
                 state.output.warning("Bad objective #" + i + ": " + _f + ", setting to worst value for that objective.");
                 if (maximize[i])
@@ -209,7 +209,7 @@ public class MultiObjectiveFitness extends Fitness
     public Object clone()
         {
         MultiObjectiveFitness f = (MultiObjectiveFitness) (super.clone());
-        f.objectives = (float[]) (objectives.clone()); // cloning an array
+        f.objectives = (double[]) (objectives.clone()); // cloning an array
 
         // note that we do NOT clone max and min fitness, or maximizing -- they're shared
         return f;
@@ -220,9 +220,9 @@ public class MultiObjectiveFitness extends Fitness
      * for this method. Though you should not rely on a selection or statistics
      * method which requires this.
      */
-    public float fitness()
+    public double fitness()
         {
-        float fit = objectives[0];
+        double fit = objectives[0];
         for (int x = 1; x < objectives.length; x++)
             if (fit < objectives[x])
                 fit = objectives[x];
@@ -245,21 +245,21 @@ public class MultiObjectiveFitness extends Fitness
         if (numFitnesses <= 0)
             state.output.fatal("The number of objectives must be an integer >= 1.", base.push(P_NUMOBJECTIVES), def.push(P_NUMOBJECTIVES));
 
-        objectives = new float[numFitnesses];
-        maxObjective = new float[numFitnesses];
-        minObjective = new float[numFitnesses];
+        objectives = new double[numFitnesses];
+        maxObjective = new double[numFitnesses];
+        minObjective = new double[numFitnesses];
         maximize = new boolean[numFitnesses];
                 
         for (int i = 0; i < numFitnesses; i++)
             {
             // load default globals
-            minObjective[i] = state.parameters.getFloatWithDefault(base.push(P_MINOBJECTIVES), def.push(P_MINOBJECTIVES), 0.0f);
-            maxObjective[i] = state.parameters.getFloatWithDefault(base.push(P_MAXOBJECTIVES), def.push(P_MAXOBJECTIVES), 1.0f);
+            minObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_MINOBJECTIVES), def.push(P_MINOBJECTIVES), 0.0);
+            maxObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_MAXOBJECTIVES), def.push(P_MAXOBJECTIVES), 1.0);
             maximize[i] = state.parameters.getBoolean(base.push(P_MAXIMIZE), def.push(P_MAXIMIZE), true);
 
             // load specifics if any
-            minObjective[i] = state.parameters.getFloatWithDefault(base.push(P_MINOBJECTIVES).push("" + i), def.push(P_MINOBJECTIVES).push("" + i), minObjective[i]);
-            maxObjective[i] = state.parameters.getFloatWithDefault(base.push(P_MAXOBJECTIVES).push("" + i), def.push(P_MAXOBJECTIVES).push("" + i), maxObjective[i]);
+            minObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_MINOBJECTIVES).push("" + i), def.push(P_MINOBJECTIVES).push("" + i), minObjective[i]);
+            maxObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_MAXOBJECTIVES).push("" + i), def.push(P_MAXOBJECTIVES).push("" + i), maxObjective[i]);
             maximize[i] = state.parameters.getBoolean(base.push(P_MAXIMIZE).push("" + i), def.push(P_MAXIMIZE).push("" + i), maximize[i]);
             
             // test for validity
@@ -550,9 +550,9 @@ public class MultiObjectiveFitness extends Fitness
         for (int x = 0; x < objectives.length; x++)
             {
             Code.decode(d);
-            if (d.type != DecodeReturn.T_FLOAT)
+            if (d.type != DecodeReturn.T_DOUBLE)
                 state.output.fatal("Reading Line " + d.lineNumber + ": " + "Bad Fitness (objectives value #" + x + ").");
-            objectives[x] = (float) d.d;
+            objectives[x] = (double) d.d;
             }
         }
 
@@ -560,7 +560,7 @@ public class MultiObjectiveFitness extends Fitness
         {
         dataOutput.writeInt(objectives.length);
         for (int x = 0; x < objectives.length; x++)
-            dataOutput.writeFloat(objectives[x]);
+            dataOutput.writeDouble(objectives[x]);
         writeTrials(state, dataOutput);
         }
 
@@ -568,9 +568,9 @@ public class MultiObjectiveFitness extends Fitness
         {
         int len = dataInput.readInt();
         if (objectives == null || objectives.length != len)
-            objectives = new float[len];
+            objectives = new double[len];
         for (int x = 0; x < objectives.length; x++)
-            objectives[x] = dataInput.readFloat();
+            objectives[x] = dataInput.readDouble();
         readTrials(state, dataInput);
         }
 
@@ -591,7 +591,7 @@ public class MultiObjectiveFitness extends Fitness
                 MultiObjectiveFitness f = (MultiObjectiveFitness) fitnesses[k];
                 sum += f.objectives[i];
                 }
-            objectives[i] = (float)(sum / fitnesses.length);
+            objectives[i] = (double)(sum / fitnesses.length);
             }
         }
 

@@ -120,10 +120,10 @@ public class BoltzmannSelection extends FitProportionateSelection
         final int thread)
         {
         // load fitnesses
-        fitnesses = new float[s.population.subpops[subpopulation].individuals.length];
+        fitnesses = new double[s.population.subpops[subpopulation].individuals.length];
         for(int x=0;x<fitnesses.length;x++)
             {
-            fitnesses[x] = (float) boltzmannExpectedValue(
+            fitnesses[x] = (double) boltzmannExpectedValue(
                 ((Individual)(s.population.subpops[subpopulation].individuals[x])).fitness.fitness(), 
                 s); // adjust the fitness proportion according to current temperature.
             if (fitnesses[x] < 0) // uh oh
@@ -134,7 +134,7 @@ public class BoltzmannSelection extends FitProportionateSelection
         RandomChoice.organizeDistribution(fitnesses, true);
         }
 
-    private double boltzmannExpectedValue(double fitness, final EvolutionState s)
+	double boltzmannExpectedValue(double fitness, final EvolutionState s)
         {
         double current_temperature = startingTemperature - (coolingRate * s.generation);
         if (current_temperature < 1.0)

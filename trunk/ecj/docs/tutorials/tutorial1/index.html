@@ -301,7 +301,7 @@ public class MaxOnes extends Problem implements SimpleProblemForm
 
         ((SimpleFitness)ind2.fitness).setFitness(state,
                 <font color=gray>// ...the fitness...</font>
-                (float)(((double)sum)/ind2.genome.length),
+                ((double)sum)/ind2.genome.length,
                 <font color=gray>///... is the individual ideal?  Indicate here...</font>
                 sum == ind2.genome.length);
         ind2.evaluated = true;

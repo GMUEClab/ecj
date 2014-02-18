@@ -77,12 +77,12 @@ public class SUSSelection extends SelectionMethod
     /** An array of pointers to individuals in the population, shuffled along with the fitnesses array. */
     public int[] indices;
     /** The distribution of fitnesses. */
-    public float[] fitnesses;
+    public double[] fitnesses;
     
     /** Should we shuffle first? */
     public boolean shuffle = true;
     /** The floating point value to consider for the next selected individual. */
-    public float offset = 0.0f;
+    public double offset = 0.0;
     /** The index in the array of the last individual selected. */
     public int lastIndex;
     /** How many samples have been done?  */
@@ -101,14 +101,14 @@ public class SUSSelection extends SelectionMethod
         shuffle = state.parameters.getBoolean(base.push(P_SHUFFLE),def.push(P_SHUFFLE),true);
         }
 
-    /* Largely stolen from sim.util.Bag.  Shuffles both the indices and the floats */
-    void shuffle(MersenneTwisterFast random, float[] fitnesses, int[] indices)
+    /* Largely stolen from sim.util.Bag.  Shuffles both the indices and the doubles */
+    void shuffle(MersenneTwisterFast random, double[] fitnesses, int[] indices)
         {
         int numObjs = fitnesses.length;
-        //float[] fitnesses = this.fitnesses;
+        //double[] fitnesses = this.fitnesses;
         //int[] indices = this.indices;
         
-        float f;
+        double f;
         int i;
         int rand;
         
@@ -133,10 +133,10 @@ public class SUSSelection extends SelectionMethod
         lastIndex = 0;
         steps = 0;
         
-        fitnesses = new float[s.population.subpops[subpopulation].individuals.length];
+        fitnesses = new double[s.population.subpops[subpopulation].individuals.length];
 
         // compute offset
-        offset = (float)(s.random[thread].nextDouble() / fitnesses.length);
+        offset = (double)(s.random[thread].nextDouble() / fitnesses.length);
         
         // load fitnesses but don't build distribution yet
         for(int x=0;x<fitnesses.length;x++)
@@ -173,7 +173,7 @@ public class SUSSelection extends SelectionMethod
             if ((lastIndex == 0 || offset >= fitnesses[lastIndex - 1]) && offset < fitnesses[lastIndex])
                 break;
 
-        offset += (float)(1.0 / fitnesses.length);  // update for next time
+        offset += (double)(1.0 / fitnesses.length);  // update for next time
         steps++;
         return indices[lastIndex];
         }

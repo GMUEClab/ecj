@@ -54,7 +54,7 @@ public class RoyalTree extends GPProblem implements SimpleProblemForm
             double score = fitness(((GPIndividual) ind).trees[0].child, state);
 
             SimpleFitness f = ((SimpleFitness) ind.fitness);
-            f.setFitness(state, (float) score, false);
+            f.setFitness(state, score, false);
             ind.evaluated = true;
             }
         }

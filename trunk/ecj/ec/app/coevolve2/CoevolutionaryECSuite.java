@@ -50,7 +50,7 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
                     for(int l = 0; l < len; l++)
                         max = Math.max(((Double)(fit.trials.get(l))).doubleValue(), max);  // it'll be the first one, but whatever
                                         
-                    fit.setFitness(state, (float)(max), isOptimal(problemType, (float)max));
+                    fit.setFitness(state, max, isOptimal(problemType, max));
                     pop.subpops[i].individuals[j].evaluated = true;
                     }
         }
@@ -116,7 +116,7 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
                     }
                                                                         
                 // finally set the fitness for good measure
-                ((SimpleFitness)(coind.fitness)).setFitness(state, (float)trial, false);
+                ((SimpleFitness)(coind.fitness)).setFitness(state, trial, false);
                 }
             }
         }

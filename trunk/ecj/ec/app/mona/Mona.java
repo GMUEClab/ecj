@@ -52,7 +52,7 @@ public class Mona extends Problem implements SimpleProblemForm
             pic.addPolygon(_ind.genome, i, numVertices);
 
         double error = pic.error();
-        ((SimpleFitness)(_ind.fitness)).setFitness(state, (float)(1.0 - error), error == 0);
+        ((SimpleFitness)(_ind.fitness)).setFitness(state, (1.0 - error), error == 0);
         ind.evaluated = true;
         }
         

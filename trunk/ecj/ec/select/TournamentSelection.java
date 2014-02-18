@@ -44,7 +44,7 @@ import ec.steadystate.*;
  <p><b>Parameters</b><br>
  <table>
  <tr><td valign=top><i>base.</i><tt>size</tt><br>
- <font size=-1>float &gt;= 1</font></td>
+ <font size=-1>double &gt;= 1</font></td>
  <td valign=top>(the tournament size)</td></tr>
 
  <tr><td valign=top><i>base.</i><tt>pick-worst</tt><br>

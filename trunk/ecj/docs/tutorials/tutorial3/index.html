@@ -159,7 +159,7 @@ public class OddRosenbrock extends Problem implements SimpleProblemForm
         // This is the Koza style of doing it:</font>
 
         value = 1.0 / ( 1.0 + value );
-        ((SimpleFitness)(ind.fitness)).setFitness( state, (float)value, value==1.0 );
+        ((SimpleFitness)(ind.fitness)).setFitness( state, value, value==1.0 );
     
         ind.evaluated = true;
         }

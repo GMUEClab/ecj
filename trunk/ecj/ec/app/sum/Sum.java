@@ -66,7 +66,7 @@ public class Sum extends Problem implements SimpleProblemForm
         // assume we're using SimpleFitness
         ((SimpleFitness)ind2.fitness).setFitness(state,
             /// ...the fitness...
-            (float)(((double)sum)), 
+            sum, 
             ///... our definition of the ideal individual
             sum == max);
                 

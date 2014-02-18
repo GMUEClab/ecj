@@ -625,7 +625,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
         double[] genome = temp.genome;
         int genomeSize = genome.length;
         double value = 0;
-        float fit;
+        double fit;
         int i, j;
         double condition, alpha, beta, tmp = 0.0, tmp2, fAdd, fPen = 0.0, x1, fac, a, f = 0.0, f2;
         double[] tmx = new double[genomeSize];
@@ -684,8 +684,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                         break;
                     }
                 value += fAdd;
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -759,8 +759,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                         break;
                     }
                 value += fAdd;
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -793,8 +793,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 value = 10 * (genomeSize - tmp) + tmp2;
                 value += fAdd;
 
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -836,8 +836,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 value = 10 * (genomeSize - tmp) + tmp2;
                 value += fAdd;
 
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -872,8 +872,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                     }
                 value += fAdd;
 
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -914,8 +914,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                     }
                 value = Math.pow(value, 0.9);
                 value += fAdd;
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -997,8 +997,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                         break;
                     }
                 value += fAdd;
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -1078,8 +1078,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                         
                 value += fAdd;
 
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
 
                         
@@ -1115,8 +1115,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                     }
 
                 value += fAdd;
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -1145,8 +1145,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                     fAdd += Math.pow(condition, ((double) i) / ((double) (genomeSize - 1))) * tmx[i] * tmx[i];
                     }
                 value = fAdd;
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -1176,8 +1176,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                     value += tmx[i] * tmx[i];
                     }
                 value += fAdd; /* without noise */
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -1219,8 +1219,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                     value += condition * tmx[i] * tmx[i];
                     }
                 value += fAdd;
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -1251,8 +1251,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 value = alpha * Math.sqrt(value);
                 value += tmx[0] * tmx[0];
                 value += fAdd;
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -1312,8 +1312,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                         break;
                     }
                 value += fAdd;
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -1359,8 +1359,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                     }
                 value = 10. * ((double) genomeSize - tmp) + tmp2;
                 value += fAdd;
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -1416,8 +1416,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 value += fAdd;
                 ;
 
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -1492,8 +1492,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                         break;
                     }
                 value += fAdd;
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -1548,8 +1548,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                     }
                 value = Math.pow(value / (double) (genomeSize - 1), 2.);
                 value += fAdd;
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -1631,8 +1631,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                         break;
                     }
                 value += fAdd;
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -1682,8 +1682,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                     }
                 value = 0.01 * ((418.9828872724339) - value / (double) genomeSize);
                 value += fAdd;/* without noise */
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -1786,8 +1786,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 value += fAdd;
                 ; /* without noise */
 
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -1856,8 +1856,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 value += fAdd;
                 ; /* without noise */
 
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -1925,8 +1925,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                     }
                 value = 10. / (double) genomeSize / (double) genomeSize * (-1. + Math.pow(prod, 10. / Math.pow((double) genomeSize, 1.2)));
                 value += fAdd;
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
                         
                         
@@ -1979,8 +1979,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                     }
                 value = Math.min(tmp2, d * (double) genomeSize + s * tmp3) + 10. * ((double) genomeSize - tmp);
                 value += fAdd;
-                fit = (float) (-value);
-                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0f);
+                fit = (-value);
+                ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
             break;
             default:
                 break;

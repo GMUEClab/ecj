@@ -44,7 +44,7 @@ public class KozaFitness extends Fitness
 
     /** This ranges from 0 (best) to infinity (worst).    I
         define it here as equivalent to the standardized fitness. */
-    protected float standardizedFitness;
+    protected double standardizedFitness;
 
     /** This auxillary measure is used in some problems for additional
         information.  It's a traditional feature of Koza-style GP, and so
@@ -62,7 +62,7 @@ public class KozaFitness extends Fitness
        value than setFitness() sets, ugh.
        @deprecated
     */
-    public void setFitness(final EvolutionState state, final float _f)
+    public void setFitness(final EvolutionState state, final double _f)
         {
         setStandardizedFitness(state,_f);
         }
@@ -73,9 +73,9 @@ public class KozaFitness extends Fitness
         This is the GP tradition.  The fitness() function instead will output
         the equivalent of Adjusted Fitness.
     */
-    public void setStandardizedFitness(final EvolutionState state, final float _f)
+    public void setStandardizedFitness(final EvolutionState state, final double _f)
         {
-        if (_f < 0.0f || _f == Float.POSITIVE_INFINITY || Float.isNaN(_f))
+        if (_f < 0.0 || _f >= Double.POSITIVE_INFINITY || Double.isNaN(_f))
             {
             state.output.warning("Bad fitness (may not be < 0, NaN, or infinity): " + _f  + ", setting to 0.");
             standardizedFitness = 0;
@@ -87,22 +87,22 @@ public class KozaFitness extends Fitness
         fitness to the half-open interval (0,1], where 1 is ideal and
         0 is worst.  Same as adjustedFitness().  */
 
-    public float fitness()
+    public double fitness()
         {
-        return 1.0f/(1.0f+standardizedFitness);     
+        return 1.0/(1.0 + standardizedFitness);     
         }
 
     /** Returns the raw fitness metric.  
         @deprecated use standardizedFitness()
     */
-    public float rawFitness()
+    public double rawFitness()
         {
         return standardizedFitness();
         }
 
     /** Returns the standardized fitness metric. */
 
-    public float standardizedFitness()
+    public double standardizedFitness()
         {
         return standardizedFitness;
         }
@@ -111,7 +111,7 @@ public class KozaFitness extends Fitness
         to the half-open interval (0,1], where 1 is ideal and 0 is worst.
         This metric is used when printing the fitness out. */
 
-    public float adjustedFitness()
+    public double adjustedFitness()
         {
         return fitness();
         }
@@ -120,14 +120,14 @@ public class KozaFitness extends Fitness
     
     public boolean isIdealFitness()
         {
-        return standardizedFitness <= 0.0f;  // should always be == 0.0f, <0.0f is illegal, but just in case...
+        return standardizedFitness <= 0.0;  // should always be == 0.0, <0.0 is illegal, but just in case...
         }
     
     public boolean equivalentTo(final Fitness _fitness)
         {
         // We're comparing standardized fitness because adjusted fitness can
         // loose some precision in the division.
-        return (KozaFitness)(_fitness.standardizedFitness() == standardizedFitness);
+        return ((KozaFitness)_fitness).standardizedFitness() == standardizedFitness;
         }
 
     public boolean betterThan(final Fitness _fitness)
@@ -136,7 +136,7 @@ public class KozaFitness extends Fitness
         // (that is, closer to zero, which is optimal)
         // We're comparing standardized fitness because adjusted fitness can
         // loose some precision in the division.
-        return (KozaFitness)(_fitness.standardizedFitness() > standardizedFitness);
+        return ((KozaFitness)_fitness).standardizedFitness() > standardizedFitness;
         }
  
     public String fitnessToString()
@@ -157,10 +157,10 @@ public class KozaFitness extends Fitness
         
         // extract fitness
         Code.decode(d);
-        if (d.type!=DecodeReturn.T_FLOAT)
+        if (d.type!=DecodeReturn.T_DOUBLE)
             state.output.fatal("Reading Line " + d.lineNumber + ": " +
                 "Bad Fitness.");
-        standardizedFitness = (float)d.d;
+        standardizedFitness = (double)d.d;
         
         // extract hits
         Code.decode(d);
@@ -173,7 +173,7 @@ public class KozaFitness extends Fitness
     public void writeFitness(final EvolutionState state,
         final DataOutput dataOutput) throws IOException
         {
-        dataOutput.writeFloat(standardizedFitness);
+        dataOutput.writeDouble(standardizedFitness);
         dataOutput.writeInt(hits);
         writeTrials(state, dataOutput);
         }
@@ -181,7 +181,7 @@ public class KozaFitness extends Fitness
     public void readFitness(final EvolutionState state,
         final DataInput dataInput) throws IOException
         {
-        standardizedFitness = dataInput.readFloat();
+        standardizedFitness = dataInput.readDouble();
         hits = dataInput.readInt();
         readTrials(state, dataInput);
         }
@@ -201,7 +201,7 @@ public class KozaFitness extends Fitness
             }
         f /= fitnesses.length;
         h /= fitnesses.length;
-        standardizedFitness = (float)f;
+        standardizedFitness = (double)f;
         hits = (int)h;
         }
     }

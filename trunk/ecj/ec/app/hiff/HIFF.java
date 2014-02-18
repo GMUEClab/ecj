@@ -62,7 +62,7 @@ public class HIFF extends Problem implements SimpleProblemForm
             genes[i] = ((ind2.genome[i]) ? 1 : 0); 
         double fitness = H(genes); 
                 
-        ((SimpleFitness)(ind2.fitness)).setFitness( state, (float) fitness, false);
+        ((SimpleFitness)(ind2.fitness)).setFitness( state, fitness, false);
         ind2.evaluated = true; 
         }
                 

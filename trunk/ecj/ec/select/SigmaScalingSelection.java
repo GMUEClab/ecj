@@ -62,7 +62,7 @@ public class SigmaScalingSelection extends FitProportionateSelection
     public static final String P_SCALED_FITNESS_FLOOR = "scaled-fitness-floor";     
                 
     /** Floor for sigma scaled fitnesses **/
-    private float fitnessFloor;
+    double fitnessFloor;
                 
     public Parameter defaultBase()
         {
@@ -75,7 +75,7 @@ public class SigmaScalingSelection extends FitProportionateSelection
                         
         Parameter def = defaultBase();
                         
-        fitnessFloor = state.parameters.getFloatWithDefault(base.push(P_SCALED_FITNESS_FLOOR),def.push(P_SCALED_FITNESS_FLOOR),0.1); // default scaled fitness floor of 0.1 according to Tanese (1989)
+        fitnessFloor = state.parameters.getDoubleWithDefault(base.push(P_SCALED_FITNESS_FLOOR),def.push(P_SCALED_FITNESS_FLOOR),0.1); // default scaled fitness floor of 0.1 according to Tanese (1989)
                         
         if (fitnessFloor < 0)
             {
@@ -90,7 +90,7 @@ public class SigmaScalingSelection extends FitProportionateSelection
         final int thread)
         {
         // load fitnesses
-        fitnesses = new float[s.population.subpops[subpopulation].individuals.length];
+        fitnesses = new double[s.population.subpops[subpopulation].individuals.length];
         
         double sigma;
         double meanFitness;
@@ -121,7 +121,7 @@ public class SigmaScalingSelection extends FitProportionateSelection
         // Fill fitnesses[] with sigma scaled fitness values
         for(int x=0;x<fitnesses.length;x++)
             {
-            fitnesses[x] = (float)sigmaScaledValue(fitnesses[x], meanFitness, sigma, s); // adjust the fitness proportion according to sigma scaling.
+            fitnesses[x] = (double)sigmaScaledValue(fitnesses[x], meanFitness, sigma, s); // adjust the fitness proportion according to sigma scaling.
                                 
             // Sigma scaling formula can return negative values, this is unacceptable for fitness proportionate style selection...
             // so we must substitute the fitnessFloor (some value >= 0) when a sigma scaled fitness <= fitnessFloor is encountered.

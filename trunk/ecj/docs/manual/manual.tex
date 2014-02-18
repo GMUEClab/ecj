@@ -2469,7 +2469,7 @@ There are other Fitness objects.  For example, there are various multiobjective 
 You probably won't need to implement a Fitness object.  But you may need to use some of the methods below.  Fitnesses are Prototypes and so must implement the \method{clone()} (as a deep-clone), \method{setup(...)}, and \method{defaultBase()} methods.  Fitness has four additional required methods:
 
 \java{%
-public abstract float fitness();\\
+public abstract double fitness();\\
 public abstract boolean isIdealFitness();\\
 public abstract boolean equivalentTo(Fitness other);\\
 public abstract boolean betterThan(Fitness other);
@@ -4337,7 +4337,7 @@ We've pretty much covered everything in the \package{ec.simple} package througho
 \item \class{ec.simple.SimpleEvolutionState} subclasses \class{ec.EvolutionState} to provide the generational top-level loop shown in Figure \ref{EvolutionState2}.  Each generation the entire Population is handed to the Evaluator, then the Breeder.  The class adds no new parameters beyond those defined in EvolutionState. 
 \item \class{ec.simple.SimpleBreeder} subclasses \class{ec.Breeder} to provide multithreaded breeding and elitism.  SimpleBreeder was discussed at length in Section~\ref{breeders}.
 \item \class{ec.simple.SimpleEvaluator} subclasses \class{ec.Evaluator} to provide multithreaded evaluation.  SimpleEvaluator adds no new parameters beyond those defined in Evaluator, and was discussed at length in Section~\ref{ec.Evaluator}.
-\item \class{ec.simple.SimpleFitness} subclasses \class{ec.Fitness} to provide a simple fitness consisting of a single floating-point number, where higher fitness values are preferred.  SimpleFitness also holds a boolean flag indicating whether the fitness assigned is the optimal fitness.  SimpleFitness adds no new parameters beyond those defined in Fitness, and was discussed at length in Section~\ref{ec.Fitness}.
+\item \class{ec.simple.SimpleFitness} subclasses \class{ec.Fitness} to provide a simple fitness consisting of a double floating-point number, where higher fitness values are preferred.  SimpleFitness also holds a boolean flag indicating whether the fitness assigned is the optimal fitness.  SimpleFitness adds no new parameters beyond those defined in Fitness, and was discussed at length in Section~\ref{ec.Fitness}.
 \item \class{ec.simple.SimpleProblemForm} defines the kind of methods which must be implemented by Problems used by a SimpleEvaluator, and was discussed at length in Section~\ref{ec.Problem}.  As a reminder, the two methods defined by SimpleProblemForm are \method{evaluate(...)}, which evaluates an individual and sets its fitness; and \method{describe(...)}, which evaluates an individual solely for the purpose of writing a detailed description about the individual's performance out to a stream. They look like this:
 
 \java{%
@@ -6294,7 +6294,7 @@ pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
 The standard fitness-setting function for this class is:
 
 \java{%
-public final void setStandardizedFitness(EvolutionState state, float value);
+public final void setStandardizedFitness(EvolutionState state, double value);
 }
 
 You can get (or set) the hits as:
@@ -6672,7 +6672,7 @@ gp.build.ptc1.max-depth = 6
 PTC1 requires that its function sets adhere to the interface \class{ec.gp.build.PTCFunctionSetForm}.  This interface contains three tables of probabilities for your GPNodes to be selected:
 
 \java{%
-    public float[] terminalProbabilities(int type);\\
+    public [] terminalProbabilities(int type);\\
     public float[] nonterminalProbabilities(int type);\\
     public float[] nonterminalSelectionProbabilities(int expectedTreeSize);
 }
@@ -10577,7 +10577,7 @@ public class MyCoevolutionaryProblem extends Problem implements GroupedProblemFo
                     // than by how much, we might set the fitness to, say, how often the doubleValue()
                     // was positive.
                 
-                    fit.setFitness(state, (float)(sum / len), false);
+                    fit.setFitness(state, sum / len, false);
                     pop.subpops[i].individuals[j].evaluated = true;
                     }
         }
@@ -10744,7 +10744,7 @@ For competitive coevolution, you can use the same example as in Section~\ref{ec.
                         for(int l = 0; l < len; l++)
                             max = Math.max(max, ((Double)(fit.trials.get(l))).doubleValue());
                 
-                        fit.setFitness(state, (float)(max), false);
+                        fit.setFitness(state, max, false);
                         pop.subpops[i].individuals[j].evaluated = true;
                         }
     }
@@ -11478,7 +11478,7 @@ ECJ has three packages which handle multiobjective optimization: the \package{ec
 \subsubsection{The MultiObjectiveFitness class} The \package{ec.multiobjective} package contains a single new kind of Fitness.  Multiobjective optimization differs from other optimization algorithms in that the Fitness of an Individual is not a single value but rather consists of some \(N\) {\bf objectives}, separate values describing the quality of the Individual on various aspects of the Problem.   Thus the primary class overridden by multiobjective algorithms is a special version of Fitness called \class{ec.multiobjective.MultiObjectiveFitness}.  Internally in this class the objective results are stored in an array of floats:
 
 \java{%
-public float[] objectives;
+public double[] objectives;
 }
 
 The number of objectives is the length of this array.
@@ -11535,8 +11535,8 @@ pop.subpop.0.species.fitness.max = 2.0
 Local min/max values, if set, override the global values.  The resulting minimum and maximum values are stored in the following arrays:
 
 \java{%
-public float[] minObjectives;\\
-public float[] maxObjectives;
+public double[] minObjectives;\\
+public double[] maxObjectives;
 }
 
 Note that these min/max arrays are {\it shared}\,\footnote{Why doesn't Fitness store them in the Species or something?  Because Fitness, for historical and not particularly good reasons, does not have a Flyweight relationship with any object.}\! among all Fitness objects cloned from the same Prototype.  So you should treat them as read-only.
@@ -11546,11 +11546,11 @@ You can get and set objectives via functions, which have the added benefit of do
 \begin{methods}{ec.multiobjective.MultiObjectiveFitness}
 \mthd{public int getNumObjectives()}
 Returns the number of objectives.
-\mthd{public float[] getObjectives()}
+\mthd{public double[] getObjectives()}
 Returns all the current objective values.
-\mthd{public float getObjective(int {\it index})}
+\mthd{public double getObjective(int {\it index})}
 Returns a given objective value.
-\mthd{public void setObjectives(EvolutionState {\it state}, float[] {\it objectives})}
+\mthd{public void setObjectives(EvolutionState {\it state}, double[] {\it objectives})}
 Sets the objective values to the ones provided, double-checking that they are within valid minimum and maximum ranges (discussed in a moment)
 \mthd{public double sumSquaredObjectiveDistance(MultiObjectiveFitness {\it other})}
 Returns the sum squared distance in objective space between this Fitness and the other.  That is, if for a given objective \(i\), this fitness has value \(A_i\) and the other has value \(B_i\), this function will return \(\sum_i (A_i - B_i)^2\).
