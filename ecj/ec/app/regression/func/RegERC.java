@@ -91,7 +91,7 @@ public class RegERC extends ERC
         }
 
     public String toStringForHumans()
-        { return "" + (double)value; }
+        { return "" + value; }
 
     public void eval(final EvolutionState state,
         final int thread,

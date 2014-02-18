@@ -84,7 +84,7 @@ public class OrderTree extends GPProblem implements SimpleProblemForm
             nodeCal(((GPIndividual) ind).trees[0].child, state);
 
             SimpleFitness f = ((SimpleFitness) ind.fitness);
-            f.setFitness(state, (float) fitness, false);
+            f.setFitness(state, fitness, false);
             ind.evaluated = true;
             }
         }

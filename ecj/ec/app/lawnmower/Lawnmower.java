@@ -152,7 +152,7 @@ public class Lawnmower extends GPProblem implements SimpleProblemForm
 
             // the fitness better be KozaFitness!
             KozaFitness f = ((KozaFitness)ind.fitness);
-            f.setStandardizedFitness(state,(float)(maxx*maxy - sum));
+            f.setStandardizedFitness(state, maxx*maxy - sum);
             f.hits = sum;
             ind.evaluated = true;
             }

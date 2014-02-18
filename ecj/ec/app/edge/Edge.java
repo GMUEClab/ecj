@@ -590,17 +590,17 @@ public class Edge extends GPProblem implements SimpleProblemForm
             // this is an awful fitness metric, but it's the standard
             // one used for these problems.  :-(
                 
-            f.setStandardizedFitness(state,(float)
+            f.setStandardizedFitness(state,
                     (1.0 - ((double)(totpos + totneg)) / 
                     (posT.length + negT.length)));
 
             // here are two other more reasonable fitness metrics
             /*
-              f.setStandardizedFitness(state,(float)
+              f.setStandardizedFitness(state,
               (1.0 - Math.min(((double)totpos)/posT.length,
               ((double)totneg)/negT.length)));
 
-              f.setStandardizedFitness(state,(float)
+              f.setStandardizedFitness(state,
               (1.0 - (((double)totpos)/posT.length +
               ((double)totneg)/negT.length)/2.0));
             */
@@ -644,13 +644,13 @@ public class Edge extends GPProblem implements SimpleProblemForm
                 "Pos: " + totpos + "/" + posA.length + 
                 " Neg: " + totneg + "/" + negA.length + 
                 "\n(pos+neg)/(allpos+allneg):     " + 
-                (float)
+                
                 (((double)(totpos+totneg))/(posA.length+negA.length)) +
                 "\n((pos/allpos)+(neg/allneg))/2: " + 
-                (float)
+                
                 (((((double)totpos)/posA.length)+(((double)totneg)/negA.length))/2) +
                 "\nMin(pos/allpos,neg/allneg):    " +
-                (float)Math.min((((double)totpos)/posA.length),(((double)totneg)/negA.length)),
+                Math.min((((double)totpos)/posA.length),(((double)totneg)/negA.length)),
                 log);
                 
         state.output.println("\nBest Individual's NFA\n=====================\n",

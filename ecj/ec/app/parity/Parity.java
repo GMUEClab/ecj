@@ -119,7 +119,7 @@ public class Parity extends GPProblem implements SimpleProblemForm
                 
             // the fitness better be KozaFitness!
             KozaFitness f = ((KozaFitness)ind.fitness);
-            f.setStandardizedFitness(state,(float)(totalSize - sum));
+            f.setStandardizedFitness(state, (totalSize - sum));
             f.hits = sum;
             ind.evaluated = true;
             }

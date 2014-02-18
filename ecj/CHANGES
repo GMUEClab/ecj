@@ -2201,4 +2201,8 @@ Version		Change Log
 	KozaFitness now uses standardized rather than adjusted fitness to do
 		comparison (equivalentTo, betterthan), to reduce floating point
 		errors.  Thanks to Raymond Shpeley <rshpeley@ualberta.ca>
-
+	MAJOR BACKWARD-INCOMPATIBLE CHANGE: we have updated all use of floats
+		in ECJ fitnesses to doubles.  This involved changing not only
+		the fitness classes but certain selection methods and all of
+		the application demos so they don't unnecessarily cast into
+		floats in the first place.

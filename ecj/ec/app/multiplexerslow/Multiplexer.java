@@ -111,7 +111,7 @@ public class Multiplexer extends GPProblem implements SimpleProblemForm
                 
             // the fitness better be KozaFitness!
             KozaFitness f = ((KozaFitness)ind.fitness);
-            f.setStandardizedFitness(state,(float)(amax*dmax - sum));
+            f.setStandardizedFitness(state, (amax*dmax - sum));
             f.hits = sum;
             ind.evaluated = true;
             }

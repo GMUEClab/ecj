@@ -187,7 +187,7 @@ public class MajorityGP extends GPProblem implements SimpleProblemForm
                     }
                                 
                 SimpleFitness f = ((SimpleFitness)ind.fitness);
-                f.setFitness(state, (float)sum / (float)NUM_TRIALS, (sum == NUM_TRIALS));
+                f.setFitness(state, sum / (double)NUM_TRIALS, (sum == NUM_TRIALS));
                 ind.evaluated = true;
                 }
         }

@@ -99,7 +99,7 @@ public class Semantic extends GPProblem implements SimpleProblemForm
                 }
 
             SimpleFitness f = ((SimpleFitness) ind.fitness);
-            f.setFitness(state, (float) score, false);
+            f.setFitness(state, score, false);
             ind.evaluated = true;
             }
         }

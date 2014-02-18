@@ -210,7 +210,7 @@ public class Ant extends GPProblem implements SimpleProblemForm
                 
             // the fitness better be KozaFitness!
             KozaFitness f = ((KozaFitness)ind.fitness);
-            f.setStandardizedFitness(state,(float)(food - sum));
+            f.setStandardizedFitness(state,(food - sum));
             f.hits = sum;
             ind.evaluated = true;
 

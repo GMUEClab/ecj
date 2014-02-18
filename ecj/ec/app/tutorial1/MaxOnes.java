@@ -32,7 +32,7 @@ public class MaxOnes extends Problem implements SimpleProblemForm
             state.output.fatal("Whoa!  It's not a SimpleFitness!!!",null);
         ((SimpleFitness)ind2.fitness).setFitness(state,
             /// ...the fitness...
-            (float)(((double)sum)/ind2.genome.length),
+            sum/(double)ind2.genome.length,
             ///... is the individual ideal?  Indicate here...
             sum == ind2.genome.length);
         ind2.evaluated = true;

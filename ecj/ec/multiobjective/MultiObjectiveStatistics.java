@@ -132,7 +132,7 @@ public class MultiObjectiveStatistics extends SimpleStatistics
                     {
                     Individual ind = (Individual)(sortedFront[i]);
                     MultiObjectiveFitness mof = (MultiObjectiveFitness) (ind.fitness);
-                    float[] objectives = mof.getObjectives();
+                    double[] objectives = mof.getObjectives();
         
                     String line = "";
                     for (int f = 0; f < objectives.length; f++)

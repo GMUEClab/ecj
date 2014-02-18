@@ -40,13 +40,13 @@ import ec.*;
  <font size=-1> bool = <tt>true</tt> or <tt>false</tt> (default)</font></td>
  <td valign=top>(should we pick from among the <i>worst n</i> individuals in the tournament instead of the <i>best n</i>?)</td></tr>
  <tr><td valign=top><i>base.</i><tt>size</tt><br>
- <font size=-1>float &gt;= 1</font></td>
+ <font size=-1>double &gt;= 1</font></td>
  <td valign=top>(the tournament size)</td></tr>
  <tr><td valign=top><i>base.</i><tt>n</tt><br>
  <font size=-1> int > 0 </font></td>
  <td valign=top>(the number of best-individuals to select from)</td></tr>
  <tr><td valign=top><i>base.</i><tt>n-fraction</tt><br>
- <font size=-1> 0.0 <= float < 1.0 (default is 1)</font></td>
+ <font size=-1> 0.0 <= double < 1.0 (default is 1)</font></td>
  <td valign=top>(the number of best-individuals to select from, as a fraction of the total population)</td></tr>
  </table>
 

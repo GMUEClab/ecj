@@ -184,7 +184,7 @@ public class MajorityGA extends Problem implements SimpleProblemForm
                         sum ++;
                     }
                 SimpleFitness f = ((SimpleFitness)ind.fitness);
-                f.setFitness(state, (sum / (float)NUM_TRIALS), false);
+                f.setFitness(state, sum / (double)NUM_TRIALS, false);
                 ind.evaluated = true;
                 }
         }

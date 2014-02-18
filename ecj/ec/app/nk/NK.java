@@ -96,7 +96,7 @@ public class NK extends Problem implements SimpleProblemForm
             }
                                 
         fitness /= n;
-        ((SimpleFitness)(ind2.fitness)).setFitness( state, (float) fitness, false);
+        ((SimpleFitness)(ind2.fitness)).setFitness( state, fitness, false);
         ind2.evaluated = true; 
         }
     }

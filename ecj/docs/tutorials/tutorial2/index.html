@@ -354,9 +354,8 @@ public class AddSubtract extends Problem implements SimpleProblemForm
         if (!(ind2.fitness instanceof SimpleFitness))
             state.output.fatal("Whoa!  It's not a SimpleFitness!!!",null);
         ((SimpleFitness)ind2.fitness).setFitness(state,
-                <font color= gray >// what the heck, lets normalize the fitness for genome length
-                // so it's within float range</font>
-                (float)(((double)rawfitness)/ind2.genome.length),
+                <font color= gray >// what the heck, lets normalize the fitness for genome length</font>
+                ((double)rawfitness)/ind2.genome.length,
                 <font color= gray >//... is the individual ideal?  Indicate here...</font>
                 false);
         ind2.evaluated = true;
@@ -378,7 +377,7 @@ eval.problem            = ec.app.tutorial2.AddSubtract
 java ec.Evolve -file tutorial2.params
 </pre></tt>
 
-<p>Because Java no longer guarantees exact floating point results, the final result may vary from platform to platform, but as far as I am aware, the only JVM which gives different results from the others is Microsoft's JVM.  On a non-Microsoft JVM the last few lines of the out.stat file says
+<p>Because Java no longer guarantees exact floating point results, the final result may vary from platform to platform, but as far as I am aware, the only JVM which gives different results from the others is Microsoft's older JVM.  On a non-Microsoft JVM the last few lines of the out.stat file says
 
 <tt><pre>
 Best Individual of Run:

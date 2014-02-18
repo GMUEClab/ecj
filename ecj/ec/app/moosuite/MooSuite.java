@@ -152,7 +152,7 @@ public class MooSuite extends Problem implements SimpleProblemForm
         double[] genome = temp.genome;
         int numDecisionVars = genome.length;
 
-        float[] objectives = ((MultiObjectiveFitness)ind.fitness).getObjectives();
+        double[] objectives = ((MultiObjectiveFitness)ind.fitness).getObjectives();
 
         double f, g, h, sum;
                 
@@ -160,57 +160,57 @@ public class MooSuite extends Problem implements SimpleProblemForm
             {
             case PROB_ZDT1:
                 f = genome[0];
-                objectives[0] = (float)f;
+                objectives[0] = f;
                 sum = 0;
                 for(int i = 1; i< numDecisionVars; ++i)
                     sum += genome[i];
-                g = 1d+9d*sum/(numDecisionVars-1);
+                g = 1d+9d*sum/(numDecisionVars - 1.0);
                 h = 1d-Math.sqrt(f/g);
-                objectives[1] = (float)(g*h);
+                objectives[1] = (g*h);
                 break;
                 
             case PROB_ZDT2:
                 f = genome[0];
-                objectives[0] = (float)f;
+                objectives[0] = f;
                 sum = 0;
                 for(int i = 1; i< numDecisionVars; i++)
                     sum += genome[i];
-                g = 1.0+9.0*sum/(float)(numDecisionVars-1);
+                g = 1.0+9.0*sum/(numDecisionVars - 1.0);
                 h = 1.0-(f/g)*(f/g);
-                objectives[1] = (float)(g*h);
+                objectives[1] = (g*h);
                 break;
                         
             case PROB_ZDT3:     
                 f = genome[0];
-                objectives[0] = (float)f;
+                objectives[0] = f;
                 sum = 0;
                 for(int i = 1; i< numDecisionVars; i++)
                     sum += genome[i];
-                g = 1.0+9.0*sum/(numDecisionVars-1);
+                g = 1.0+9.0*sum/(numDecisionVars - 1.0);
                 double foverg = f/g;
                 h = 1.0-Math.sqrt(foverg) - foverg * Math.sin(TEN_PI * f);
-                objectives[1] = (float)(g*h);
+                objectives[1] = (g*h);
                 break;
             case PROB_ZDT4:
                 f = genome[0];
-                objectives[0] = (float)f;
+                objectives[0] = f;
                 sum = 0;
                 for(int i = 1; i< numDecisionVars; ++i)
                     sum += genome[i]*genome[i]- 10*Math.cos(FOUR_PI * genome[i]);
                                 
-                g = 1+10*(numDecisionVars-1)+sum;
+                g = 1+10*(numDecisionVars - 1.0)+sum;
                 h = 1-Math.sqrt(f/g);
-                objectives[1] = (float)(g*h);
+                objectives[1] = (g*h);
                 break;                
             case PROB_ZDT6:
                 f = 1 - (Math.exp(-4 * genome[0]) * Math.pow(Math.sin(SIX_PI * genome[0]), 6));
-                objectives[0] = (float)f;
+                objectives[0] = f;
                 sum = 0;
                 for (int i = 1; i < numDecisionVars; ++i)
                     sum += genome[i];
-                g = 1d + 9 * Math.pow(sum / (numDecisionVars - 1), 0.25);
+                g = 1d + 9 * Math.pow(sum / (numDecisionVars - 1.0), 0.25);
                 h = 1d - Math.pow(f / g, 2);
-                objectives[1] = (float) (g * h);
+                objectives[1] = (g * h);
                 break; 
             case PROB_SPHERE:
                 int numObjectives = objectives.length;
@@ -220,27 +220,27 @@ public class MooSuite extends Problem implements SimpleProblemForm
                     for(int i=0; i<numDecisionVars; ++i)
                         if (i!=j)
                             sum += genome[i]*genome[i];
-                    objectives[j] = (float)sum;
+                    objectives[j] = sum;
                     }
                 break;
             case PROB_SCH:
                 if(numDecisionVars!=1) throw new RuntimeException("SCH needs exactly 1 decision variable (gene).");
                 double x = genome[0];
-                objectives[0]=(float)(x*x);
-                objectives[1]=(float)((x-2)*(x-2));
+                objectives[0]=(x*x);
+                objectives[1]=((x-2)*(x-2));
                 break;
             case PROB_F2:
                 if(numDecisionVars!=1) throw new RuntimeException("F2 needs exactly 1 decision variable (gene).");
                 x = genome[0];
-                objectives[0]=(float)( x<=1? -x: (x<=3? x-2:(x<=4? 4-x: x-4)));
-                objectives[1]=(float)((x-5)*(x-5));
+                objectives[0]=( x<=1? -x: (x<=3? x-2:(x<=4? 4-x: x-4)));
+                objectives[1]=((x-5)*(x-5));
                 break;
             case PROB_F3:
                 if(numDecisionVars!=2) throw new RuntimeException("F3 needs exactly 2 decision variable (gene).");
                 double x1 = genome[0];
                 double x2 = genome[1];
-                objectives[0]=(float)((x1-2)*(x1-2)+(x2-1)*(x2-1)+2);
-                objectives[1]=(float)(9*x1-(x2-1)*(x2-1));
+                objectives[0]=((x1-2)*(x1-2)+(x2-1)*(x2-1)+2);
+                objectives[1]=(9*x1-(x2-1)*(x2-1));
                 break;
             case PROB_FON:
                 if(numDecisionVars!=3) throw new RuntimeException("FON needs exactly 3 decision variables (genes).");
@@ -253,8 +253,8 @@ public class MooSuite extends Problem implements SimpleProblemForm
                     sum1+=d*d;
                     sum2+=s*s;
                     }
-                objectives[0] = 1 - (float)Math.exp(-sum1);
-                objectives[1] = 1 - (float)Math.exp(-sum2);
+                objectives[0] = 1 - Math.exp(-sum1);
+                objectives[1] = 1 - Math.exp(-sum2);
                 break;
             case PROB_POL:
                 if(numDecisionVars!=2) throw new RuntimeException("POL needs exactly 2 decision variables (genes).");
@@ -262,8 +262,8 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 x2 = genome[1];
                 double b1 = 0.5*Math.sin(x1) - 2*Math.cos(x1) +    Math.sin(x2)- 1.5*Math.cos(x2);
                 double b2 = 1.5*Math.sin(x1) -   Math.cos(x1) + 2* Math.sin(x2)- 0.5*Math.cos(x2);
-                objectives[0] = (float)(1+(A1-b1)*(A1-b1)+(A2-b2)*(A2-b2));
-                objectives[1] = (float)((x1+3)*(x1+3)+(x2+1)*(x2+1));
+                objectives[0] = (1+(A1-b1)*(A1-b1)+(A2-b2)*(A2-b2));
+                objectives[1] = ((x1+3)*(x1+3)+(x2+1)*(x2+1));
                 break;
             case PROB_QV:
                 sum=0;
@@ -272,14 +272,14 @@ public class MooSuite extends Problem implements SimpleProblemForm
                     double xi=genome[i];
                     sum+=xi*xi-10*Math.cos(TWO_PI*xi)+10;
                     }
-                objectives[0] = (float)Math.pow(sum/numDecisionVars, 0.25);
+                objectives[0] = Math.pow(sum/numDecisionVars, 0.25);
                 sum=0;
                 for(int i=0;i<numDecisionVars;i++)
                     {
                     double xi=genome[i]-1.5;
                     sum+=xi*xi-10*Math.cos(TWO_PI*xi)+10;
                     }
-                objectives[1] = (float)Math.pow(sum/numDecisionVars, 0.25);
+                objectives[1] = Math.pow(sum/numDecisionVars, 0.25);
                 break;
             case PROB_KUR_NSGA2:
                 double nextSquared, thisSquared;
@@ -292,8 +292,8 @@ public class MooSuite extends Problem implements SimpleProblemForm
                     sum += -10-Math.exp(-0.2*Math.sqrt(thisSquared + nextSquared));
                     thisSquared = nextSquared;
                     }
-                //objectives[1] = (float)sum;
-                objectives[0] = (float)sum;
+                //objectives[1] = sum;
+                objectives[0] = sum;
                 sum= 0;
                 for(int i = 0; i< numDecisionVars; ++i)
                     {
@@ -306,8 +306,8 @@ public class MooSuite extends Problem implements SimpleProblemForm
                     double t2 = 5*Math.sin(xi3);
                     sum +=t1+t2;
                     }
-                //objectives[0] = (float)sum;
-                objectives[1] = (float)sum;
+                //objectives[0] = sum;
+                objectives[1] = sum;
                 break;
 
             default:

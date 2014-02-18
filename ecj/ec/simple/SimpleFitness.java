@@ -19,7 +19,7 @@ import java.io.*;
  */
 
 /**
- * A simple default fitness, consisting of a single floating-point value
+ * A simple default fitness, consisting of a double floating-point value
  * where fitness A is superior to fitness B if and only if A > B.  
  * Fitness values may range from (-infinity,infinity) exclusive -- that is,
  * you may not have infinite fitnesses.  
@@ -39,7 +39,7 @@ import java.io.*;
 
 public class SimpleFitness extends Fitness
     {
-    protected float fitness;
+    private double fitness;
     protected boolean isIdeal;
 
     public Parameter defaultBase()
@@ -50,18 +50,18 @@ public class SimpleFitness extends Fitness
     /**
        Deprecated -- now redefined to set the fitness but ALWAYS say that it's not ideal.
        If you need to specify that it's ideal, you should use the new function 
-       setFitness(final EvolutionState state, float _f, boolean _isIdeal).
+       setFitness(final EvolutionState state, double _f, boolean _isIdeal).
        @deprecated
     */
-    public void setFitness(final EvolutionState state, float _f)
+    public void setFitness(final EvolutionState state, double _f)
         {
         setFitness(state,_f,false);
         }
         
-    public void setFitness(final EvolutionState state, float _f, boolean _isIdeal)
+    public void setFitness(final EvolutionState state, double _f, boolean _isIdeal)
         {
         // we now allow f to be *any* value, positive or negative
-        if (_f == Float.POSITIVE_INFINITY || _f == Float.NEGATIVE_INFINITY || Float.isNaN(_f))
+        if (_f >= Double.POSITIVE_INFINITY || _f <= Double.NEGATIVE_INFINITY || Double.isNaN(_f))
             {
             state.output.warning("Bad fitness: " + _f + ", setting to 0.");
             fitness = 0;
@@ -70,7 +70,7 @@ public class SimpleFitness extends Fitness
         isIdeal = _isIdeal;
         }
 
-    public float fitness()
+    public double fitness()
         {
         return fitness;
         }
@@ -87,12 +87,12 @@ public class SimpleFitness extends Fitness
 
     public boolean equivalentTo(final Fitness _fitness)
         {
-        return ((SimpleFitness)_fitness.fitness()) == fitness();
+        return ((SimpleFitness)_fitness).fitness() == fitness();
         }
 
     public boolean betterThan(final Fitness _fitness)
         {
-        return ((SimpleFitness)_fitness.fitness()) < fitness();
+        return ((SimpleFitness)_fitness).fitness() < fitness();
         }
 
     public String fitnessToString()
@@ -110,27 +110,13 @@ public class SimpleFitness extends Fitness
         final LineNumberReader reader)
         throws IOException
         {
-        setFitness(state, Code.readFloatWithPreamble(FITNESS_PREAMBLE, state, reader));
-
-/*
-  int linenumber = reader.getLineNumber();
-  String s = reader.readLine();
-  if (s==null || s.length() < FITNESS_PREAMBLE.length()) // uh oh
-  state.output.fatal("Reading Line " + linenumber + ": " +
-  "Bad Fitness.");
-  DecodeReturn d = new DecodeReturn(s, FITNESS_PREAMBLE.length());
-  Code.decode(d);
-  if (d.type!=DecodeReturn.T_FLOAT)
-  state.output.fatal("Reading Line " + linenumber + ": " +
-  "Bad Fitness.");
-  setFitness(state,(float)d.d,false);
-*/
+        setFitness(state, Code.readDoubleWithPreamble(FITNESS_PREAMBLE, state, reader));
         }
 
     public void writeFitness(final EvolutionState state,
         final DataOutput dataOutput) throws IOException
         {
-        dataOutput.writeFloat(fitness);
+        dataOutput.writeDouble(fitness);
         dataOutput.writeBoolean(isIdeal);
         writeTrials(state, dataOutput);
         }
@@ -138,7 +124,7 @@ public class SimpleFitness extends Fitness
     public void readFitness(final EvolutionState state,
         final DataInput dataInput) throws IOException
         {
-        fitness = dataInput.readFloat();
+        fitness = dataInput.readDouble();
         isIdeal = dataInput.readBoolean();
         readTrials(state, dataInput);
         }
@@ -157,7 +143,7 @@ public class SimpleFitness extends Fitness
             ideal = ideal && fit.isIdeal;
             }
         f /= fitnesses.length;
-        fitness = (float)f;
+        fitness = (double)f;
         isIdeal = ideal;
         }
     }

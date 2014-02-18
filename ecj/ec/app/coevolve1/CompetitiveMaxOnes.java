@@ -39,7 +39,7 @@ public class CompetitiveMaxOnes extends Problem implements GroupedProblemForm
                     sum /= len;
                                                                         
                     // we'll not bother declaring the ideal
-                    fit.setFitness(state, (float)(sum), false);
+                    fit.setFitness(state, sum, false);
                     pop.subpops[i].individuals[j].evaluated = true;
                     }
         }
@@ -84,7 +84,7 @@ public class CompetitiveMaxOnes extends Problem implements GroupedProblemForm
                         
             // set the fitness because if we're doing Single Elimination Tournament, the tournament
             // needs to know who won this time around.  Don't bother declaring the ideal here.
-            fit.setFitness(state, (float)score, false);
+            fit.setFitness(state, score, false);
             }
 
         if( updateFitness[1] )
@@ -94,7 +94,7 @@ public class CompetitiveMaxOnes extends Problem implements GroupedProblemForm
 
             // set the fitness because if we're doing Single Elimination Tournament, the tournament
             // needs to know who won this time around.
-            fit.setFitness(state, (float)-score, false);
+            fit.setFitness(state, -score, false);
             }
         }
 

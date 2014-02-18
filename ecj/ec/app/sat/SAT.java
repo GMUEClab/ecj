@@ -75,7 +75,7 @@ public class SAT extends Problem implements SimpleProblemForm
         for (int i=0; i < formula.length; i++)                  
             fitness += formula[i].eval(ind2); 
                 
-        ((SimpleFitness)(ind2.fitness)).setFitness( state, (float) fitness, false);
+        ((SimpleFitness)(ind2.fitness)).setFitness( state, fitness, false);
         ind2.evaluated = true; 
         }
         

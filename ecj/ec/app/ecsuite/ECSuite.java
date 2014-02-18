@@ -293,19 +293,19 @@ public class ECSuite extends Problem implements SimpleProblemForm
         boolean isOptimal = isOptimal(problemType, fit);
 
         // set the fitness appropriately
-        if ((float)fit < (0.0f - Float.MAX_VALUE))  // uh oh -- can be caused by Product for example
+        if (fit < (0.0 - Double.MAX_VALUE))  // uh oh -- can be caused by Product for example
             {
-            ((SimpleFitness)(ind.fitness)).setFitness( state, 0.0f - Float.MAX_VALUE, isOptimal );
+            ((SimpleFitness)(ind.fitness)).setFitness( state, 0.0 - Double.MAX_VALUE, isOptimal );
             state.output.warnOnce("'Product' type used: some fitnesses are negative infinity, setting to lowest legal negative number.");
             }
-        else if ((float)fit > Float.MAX_VALUE)  // uh oh -- can be caused by Product for example
+        else if (fit > Double.MAX_VALUE)  // uh oh -- can be caused by Product for example
             {
-            ((SimpleFitness)(ind.fitness)).setFitness( state, Float.MAX_VALUE, isOptimal );
+            ((SimpleFitness)(ind.fitness)).setFitness( state, Double.MAX_VALUE, isOptimal );
             state.output.warnOnce("'Product' type used: some fitnesses are negative infinity, setting to lowest legal negative number.");
             }
         else
             {
-            ((SimpleFitness)(ind.fitness)).setFitness( state, (float)fit, isOptimal );
+            ((SimpleFitness)(ind.fitness)).setFitness( state, fit, isOptimal );
             }
         ind.evaluated = true;
         }
@@ -319,7 +319,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
             case PROB_RASTRIGIN:
             case PROB_SPHERE:
             case PROB_STEP:
-                return fitness == 0.0f;
+                return fitness == 0.0;
 
             case PROB_NOISY_QUARTIC:
             case PROB_BOOTH:
@@ -360,7 +360,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
 
 
             case PROB_RASTRIGIN:
-                final float A = 10.0f;
+                final double A = 10.0;
                 value = len * A;
                 for( int i = 0 ; i < len ; i++ )
                     {

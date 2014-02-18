@@ -140,7 +140,7 @@ public abstract class Fitness implements Prototype, Comparable
         a single positive value (for example, MultiObjectiveFitness), you should 
         perform some reasonable translation.
     */
-    public abstract float fitness();
+    public abstract double fitness();
 
     /** Should return true if this is a good enough fitness to end the run */
     public abstract boolean isIdealFitness();

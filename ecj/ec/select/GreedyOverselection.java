@@ -49,10 +49,10 @@ import ec.util.*;
  <p><b>Parameters</b><br>
  <table>
  <tr><td valign=top><i>base.</i><tt>top</tt><br>
- <font size=-1>0.0 &lt;= float &lt;= 1.0</font></td>
+ <font size=-1>0.0 &lt;= double &lt;= 1.0</font></td>
  <td valign=top>(the percentage of the population going into the "good" (top) group)</td></tr>
  <tr><td valign=top><i>base.</i><tt>gets</tt><br>
- <font size=-1>0.0 &lt;= float &lt;= 1.0</font></td>
+ <font size=-1>0.0 &lt;= double &lt;= 1.0</font></td>
  <td valign=top>(the likelihood that an individual will be picked from the "good" group)</td></tr>
  </table>
 
@@ -64,8 +64,8 @@ import ec.util.*;
 
 public class GreedyOverselection extends SelectionMethod
     {
-    public float[] sortedFitOver;
-    public float[] sortedFitUnder;
+    public double[] sortedFitOver;
+    public double[] sortedFitUnder;
     /** Sorted population -- since I *have* to use an int-sized
         individual (short gives me only 16K), 
         I might as well just have pointers to the
@@ -76,8 +76,8 @@ public class GreedyOverselection extends SelectionMethod
     public static final String P_TOP = "top";
     public static final String P_GETS = "gets";
 
-    public float top_n_percent;
-    public float gets_n_percent;
+    public double top_n_percent;
+    public double gets_n_percent;
 
     public Parameter defaultBase()
         {
@@ -91,12 +91,12 @@ public class GreedyOverselection extends SelectionMethod
         Parameter def = defaultBase();
         
         top_n_percent =
-            state.parameters.getFloatWithMax(base.push(P_TOP),def.push(P_TOP),0.0,1.0);
+            state.parameters.getDoubleWithMax(base.push(P_TOP),def.push(P_TOP),0.0,1.0);
         if (top_n_percent < 0.0)
             state.output.fatal("Top-n-percent must be between 0.0 and 1.0", base.push(P_TOP),def.push(P_TOP));
         
         gets_n_percent =
-            state.parameters.getFloatWithMax(base.push(P_GETS),def.push(P_GETS),0.0,1.0);
+            state.parameters.getDoubleWithMax(base.push(P_GETS),def.push(P_GETS),0.0,1.0);
         if (gets_n_percent < 0.0)
             state.output.fatal("Gets-n-percent must be between 0.0 and 1.0", base.push(P_GETS),def.push(P_GETS));
         
@@ -140,7 +140,7 @@ public class GreedyOverselection extends SelectionMethod
             s.output.fatal("Greedy Overselection can only be done with a population of size 2 or more (offending subpopulation #" + subpopulation + ")");
         
         // load sortedFitOver
-        sortedFitOver = new float[boundary];
+        sortedFitOver = new double[boundary];
         int y=0;
         for(int x=sortedPop.length-boundary;x<sortedPop.length;x++)
             {
@@ -151,7 +151,7 @@ public class GreedyOverselection extends SelectionMethod
             }
         
         // load sortedFitUnder
-        sortedFitUnder = new float[sortedPop.length-boundary];
+        sortedFitUnder = new double[sortedPop.length-boundary];
         y=0;
         for(int x=0;x<sortedPop.length-boundary;x++)
             {
@@ -175,11 +175,11 @@ public class GreedyOverselection extends SelectionMethod
             // over -- sortedFitUnder.length to sortedPop.length
             return sortedPop[
                 sortedFitUnder.length + RandomChoice.pickFromDistribution(
-                    sortedFitOver,state.random[thread].nextFloat())];
+                    sortedFitOver,state.random[thread].nextDouble())];
         else
             // under -- 0 to sortedFitUnder.length
             return sortedPop[RandomChoice.pickFromDistribution(
-                    sortedFitUnder,state.random[thread].nextFloat())];
+                    sortedFitUnder,state.random[thread].nextDouble())];
         }
 
     public void finishProducing(final EvolutionState s,

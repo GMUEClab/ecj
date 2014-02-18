@@ -103,7 +103,7 @@ public class Lid extends GPProblem implements SimpleProblemForm
             double score = scoreTerminals + scoreDepth;
 
             SimpleFitness f = ((SimpleFitness) ind.fitness);
-            f.setFitness(state, (float) score, false);
+            f.setFitness(state, score, false);
             ind.evaluated = true;
             }
         }
