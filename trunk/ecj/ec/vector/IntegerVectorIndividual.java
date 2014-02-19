@@ -289,7 +289,7 @@ public class IntegerVectorIndividual extends VectorIndividual
         {
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
         for(int x = 0; x < genome.length; x++)
-            if (state.random[thread].nextBoolean(s.mutationProbability[x]))
+            if (state.random[thread].nextBoolean(s.mutationProbability(x)))
                 {
                 int old = genome[x];
                 for(int retries = 0; retries < s.duplicateRetries(x) + 1; retries++)
