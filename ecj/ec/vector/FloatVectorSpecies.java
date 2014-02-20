@@ -77,7 +77,7 @@ import ec.util.*;
  <tr><td valign=top style="white-space: nowrap"><i>base</i>.<tt>min-gene</tt>&nbsp;&nbsp;&nbsp;<i>or</i><br>
  <tr><td valign=top style="white-space: nowrap"><i>base</i>.<tt>segment</tt>.<i>segment-number</i>.<tt>min-gene</tt>&nbsp;&nbsp;&nbsp;<i>or</i><br>
  <tr><td valign=top style="white-space: nowrap"><i>base</i>.<tt>min-gene</tt>.<i>gene-number</i><br>
- <font size=-1>0.0 &lt;= float &lt;= 1.0 </font></td>
+ <font size=-1>0.0 &lt;= double &lt;= 1.0 </font></td>
  <td valign=top>(probability that a gene will get mutated over default mutation)</td></tr>
  * <font size=-1>double (default=0.0)</font></td>
  * <td valign=top>(the minimum gene value)</td>
@@ -87,7 +87,7 @@ import ec.util.*;
  <tr><td valign=top style="white-space: nowrap"><i>base</i>.<tt>max-gene</tt>&nbsp;&nbsp;&nbsp;<i>or</i><br>
  <tr><td valign=top style="white-space: nowrap"><i>base</i>.<tt>segment</tt>.<i>segment-number</i>.<tt>max-gene</tt>&nbsp;&nbsp;&nbsp;<i>or</i><br>
  <tr><td valign=top style="white-space: nowrap"><i>base</i>.<tt>max-gene</tt>.<i>gene-number</i><br>
- <font size=-1>0.0 &lt;= float &lt;= 1.0 </font></td>
+ <font size=-1>0.0 &lt;= double &lt;= 1.0 </font></td>
  <td valign=top>(probability that a gene will get mutated over default mutation)</td></tr>
  * <font size=-1>double &gt;= <i>base</i>.min-gene</font></td>
  * <td valign=top>(the maximum gene value)</td>
@@ -129,7 +129,7 @@ import ec.util.*;
  <tr><td valign=top style="white-space: nowrap"><i>base</i>.<tt>random-walk-probability</tt>&nbsp;&nbsp;&nbsp;<i>or</i><br>
  <tr><td valign=top style="white-space: nowrap"><i>base</i>.<tt>segment</tt>.<i>segment-number</i>.<tt>random-walk-probability</tt>&nbsp;&nbsp;&nbsp;<i>or</i><br>
  <tr><td valign=top style="white-space: nowrap"><i>base</i>.<tt>random-walk-probability</tt>.<i>gene-number</i><br>
- <font size=-1>0.0 &lt;= float &lt;= 1.0 </font></td>
+ <font size=-1>0.0 &lt;= double &lt;= 1.0 </font></td>
  *  <td valign=top>(the probability that a random walk will continue.  Random walks go up or down by 1.0 until the coin flip comes up false.)</td>
  * </tr>
  * 

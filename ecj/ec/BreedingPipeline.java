@@ -90,7 +90,7 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
         
     public Parameter mybase;
 
-    public float likelihood;
+    public double likelihood;
 
     /** Array of sources feeding the pipeline */
     public BreedingSource[] sources;
@@ -147,8 +147,8 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
         
         Parameter def = defaultBase();
 
-        likelihood = state.parameters.getFloatWithDefault(base.push(P_LIKELIHOOD), def.push(P_LIKELIHOOD), 1.0f);
-        if (likelihood < 0.0f || likelihood > 1.0f)
+        likelihood = state.parameters.getDoubleWithDefault(base.push(P_LIKELIHOOD), def.push(P_LIKELIHOOD), 1.0);
+        if (likelihood < 0.0 || likelihood > 1.0)
             state.output.fatal("Breeding Pipeline likelihood must be a value between 0.0 and 1.0 inclusive",
                 base.push(P_LIKELIHOOD),
                 def.push(P_LIKELIHOOD));

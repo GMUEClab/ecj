@@ -137,7 +137,7 @@ public class PTC1 extends GPNodeBuilder
         final int argposition,
         final GPFunctionSet set,
         final PTCFunctionSetForm pset, // same as set
-        final float[] nonterminalSelectionProbabilities) 
+        final double[] nonterminalSelectionProbabilities) 
         
         {
         // ptc1 can mess up if there are no available terminals for a given type.  If this occurs,
@@ -165,7 +165,7 @@ public class PTC1 extends GPNodeBuilder
             GPNode n = (GPNode)
                 terminals[RandomChoice.pickFromDistribution(
                     pset.terminalProbabilities(t),
-                    state.random[thread].nextFloat())].lightClone();
+                    state.random[thread].nextDouble())].lightClone();
             n.resetNode(state,thread);  // give ERCs a chance to randomize
             n.argposition = (byte)argposition;
             n.parent = parent;
@@ -178,7 +178,7 @@ public class PTC1 extends GPNodeBuilder
             GPNode n = (GPNode)
                 nonterminals[RandomChoice.pickFromDistribution(
                     pset.nonterminalProbabilities(t),
-                    state.random[thread].nextFloat())].lightClone();
+                    state.random[thread].nextDouble())].lightClone();
             n.resetNode(state,thread);  // give ERCs a chance to randomize
             n.argposition = (byte)argposition;
             n.parent = parent;

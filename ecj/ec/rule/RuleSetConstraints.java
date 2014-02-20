@@ -70,19 +70,19 @@ import ec.util.*;
  <td valign=top>(for rule set constraint <i>n</i>, the number of sizes in the size distribution for initializtion, see discussion above)</td></tr>
 
  <tr><td valign=top><i>base.n</i>.<tt>reset-size</tt>.<i>i</i><br>
- <font size=-1>0.0 <= float <= 1.0</font></td>
+ <font size=-1>0.0 &lt; double &lt; 1.0</font></td>
  <td valign=top>(for rule set constraint <i>n</i>, the probability that <i>i</i> will be chosen as the number of rules upon initialization, see discussion above)</td></tr>
 
  <tr><td valign=top><i>base.n</i>.<tt>p-add</tt><br>
- <font size=-1>0.0 <= float <= 1.0</font></td>
+ <font size=-1>0.0 &lt; double &lt; 1.0</font></td>
  <td valign=top>(the probability that a new rule will be added, see discussion)</td></tr>
 
  <tr><td valign=top><i>base.n</i>.<tt>p-del</tt><br>
- <font size=-1>0.0 <= float <= 1.0</font></td>
+ <font size=-1>0.0 &lt; double &lt; 1.0</font></td>
  <td valign=top>(the probability that a rule will be deleted, see discussion)</td></tr>
 
  <tr><td valign=top><i>base.n</i>.<tt>p-rand-order</tt><br>
- <font size=-1>0.0 <= float <= 1.0</font></td>
+ <font size=-1>0.0 &lt; double &lt; 1.0</font></td>
  <td valign=top>(the probability that the rules' order will be randomized, see discussion)</td></tr>
  </table>
 
@@ -111,19 +111,19 @@ public class RuleSetConstraints implements Clique
 
     public int resetMinSize;  // the minium possible size -- if unused, it's 0, but 0 is also a valid number, so check sizeDistribution==null
     public int resetMaxSize;  // the maximum possible size -- if unused, it's 0, but 0 is also a valid number, so check sizeDistribution==null
-    public float[] sizeDistribution;
+    public double[] sizeDistribution;
 
     // probability of adding a random rule to the rule set
     public static final String P_ADD_PROB = "p-add";
-    public float p_add;
+    public double p_add;
 
     // probability of removing a random rule from the rule set
     public static final String P_DEL_PROB = "p-del";
-    public float p_del;
+    public double p_del;
 
     // probability of randomizing the rule order in the rule set
     public static final String P_RAND_ORDER_PROB = "p-rand-order";
-    public float p_randorder;
+    public double p_randorder;
 
     /** Assuming that either resetMinSize and resetMaxSize, or sizeDistribution, is defined,
         picks a random size from resetMinSize...resetMaxSize inclusive, or randomly
@@ -134,7 +134,7 @@ public class RuleSetConstraints implements Clique
             // pick from distribution
             return RandomChoice.pickFromDistribution(
                 sizeDistribution,
-                state.random[thread].nextFloat());
+                state.random[thread].nextDouble());
         else
             // pick from resetMinSize...resetMaxSize
             return state.random[thread].nextInt(resetMaxSize-resetMinSize+1) + resetMinSize;
@@ -202,20 +202,20 @@ public class RuleSetConstraints implements Clique
         rulePrototype = (Rule)(state.parameters.getInstanceForParameter(base.push(P_RULE),null,Rule.class));
         rulePrototype.setup(state,base.push(P_RULE));
 
-        p_add = state.parameters.getFloat( base.push( P_ADD_PROB ), null, 0 );
+        p_add = state.parameters.getDouble( base.push( P_ADD_PROB ), null, 0 );
         if( p_add < 0 || p_add > 1 )
             {
             state.output.fatal( "Parameter not found, or its value is outside of allowed range [0..1].",
                 base.push( P_ADD_PROB ) );
             }
-        p_del = state.parameters.getFloat( base.push( P_DEL_PROB ), null, 0 );
+        p_del = state.parameters.getDouble( base.push( P_DEL_PROB ), null, 0 );
         if( p_del < 0 || p_del > 1 )
             {
             state.output.fatal( "Parameter not found, or its value is outside of allowed range [0..1].",
                 base.push( P_DEL_PROB ) );
             }
 
-        p_randorder = state.parameters.getFloat( base.push( P_RAND_ORDER_PROB ), null, 0 );
+        p_randorder = state.parameters.getDouble( base.push( P_RAND_ORDER_PROB ), null, 0 );
         if( p_randorder < 0 || p_randorder > 1 )
             {
             state.output.fatal( "Parameter not found, or its value is outside of allowed range [0..1].",
@@ -262,19 +262,19 @@ public class RuleSetConstraints implements Clique
                 base.push(P_NUMSIZES), null,1);
             if (siz==0)
                 state.output.fatal("The number of sizes in the RuleSetConstraints's distribution must be >= 1. ");
-            sizeDistribution = new float[siz];
+            sizeDistribution = new double[siz];
             
-            float sum = 0.0f;
+            double sum = 0.0;
             for(int x=0;x<siz;x++)
                 {
-                sizeDistribution[x] = state.parameters.getFloat(
-                    base.push(P_RESETSIZE).push(""+x),null, 0.0f);
+                sizeDistribution[x] = state.parameters.getDouble(
+                    base.push(P_RESETSIZE).push(""+x),null, 0.0);
                 if (sizeDistribution[x]<0.0)
                     {
                     state.output.warning(
                         "Distribution value #" + x + " negative or not defined, assumed to be 0.0",
                         base.push(P_RESETSIZE).push(""+x),null);
-                    sizeDistribution[x] = 0.0f;
+                    sizeDistribution[x] = 0.0;
                     }
                 sum += sizeDistribution[x];
                 }

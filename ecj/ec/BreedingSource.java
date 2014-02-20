@@ -42,17 +42,17 @@ import ec.util.*;
  <p><b>Parameters</b><br>
  <table>
  <tr><td valign=top><i>base</i><tt>.prob</tt><br>
- <font size=-1>0.0 &lt;= float &lt;= 1.0, or undefined</font></td>
+ <font size=-1>0.0 &lt;= double &lt;= 1.0, or undefined</font></td>
  <td valign=top>(probability this BreedingSource gets chosen.  Undefined is only valid if the caller of this BreedingSource doesn't need a probability)</td></tr>
  </table>
  * @author Sean Luke
  * @version 1.0 
  */
 
-public abstract class BreedingSource implements Prototype, RandomChoiceChooser
+public abstract class BreedingSource implements Prototype, RandomChoiceChooserD
     {
     public static final String P_PROB = "prob";
-    public static final float NO_PROBABILITY = -1.0f;
+    public static final double NO_PROBABILITY = -1.0;
     
     /** The probability that this BreedingSource will be chosen 
         to breed over other BreedingSources.  This may or may
@@ -71,7 +71,7 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooser
         as: {0.3, 0.5, 0.6, 1.0}.
     */
 
-    public float probability;
+	public double probability;
 
     /** Sets up the BreedingPipeline.  You can use state.output.error here
         because the top-level caller promises to call exitIfErrors() after calling
@@ -98,17 +98,17 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooser
             probability = NO_PROBABILITY;
         else
             {
-            probability = state.parameters.getFloat(base.push(P_PROB),def.push(P_PROB),0.0);
-            if (probability<0.0) state.output.error("Breeding Source's probability must be a floating point value >= 0.0, or empty, which represents NO_PROBABILITY.",base.push(P_PROB),def.push(P_PROB));
+            probability = state.parameters.getDouble(base.push(P_PROB),def.push(P_PROB),0.0);
+            if (probability<0.0) state.output.error("Breeding Source's probability must be a double floating point value >= 0.0, or empty, which represents NO_PROBABILITY.",base.push(P_PROB),def.push(P_PROB));
             }
         }
 
-    public final float getProbability(final Object obj)
+    public final double getProbability(final Object obj)
         {
         return ((BreedingSource)obj).probability;
         }
 
-    public final void setProbability(final Object obj, final float prob)
+    public final void setProbability(final Object obj, final double prob)
         {
         ((BreedingSource)obj).probability = prob;
         }
@@ -121,7 +121,7 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooser
         they should get normalized and summed by the outside owners
         as: {0.3, 0.5, 0.6, 1.0}. */
 
-    public static int pickRandom(final BreedingSource[] sources,final float prob)
+    public static int pickRandom(final BreedingSource[] sources, final double prob)
         {
         return RandomChoice.pickFromDistribution(sources,sources[0], prob);
         }

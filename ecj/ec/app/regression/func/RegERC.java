@@ -41,7 +41,10 @@ public class RegERC extends ERC
     public int nodeHashCode()
         {
         // a reasonable hash code
-        return this.getClass().hashCode() + Float.floatToIntBits((float)value);
+        long l = Double.doubleToLongBits(value);
+        int iUpper = (int)(l & 0x00000000FFFFFFFF);
+        int iLower = (int)(l >>> 32);
+        return this.getClass().hashCode() + iUpper + iLower;
         }
 
     public boolean nodeEquals(final GPNode node)

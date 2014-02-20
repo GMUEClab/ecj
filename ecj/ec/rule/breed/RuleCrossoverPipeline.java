@@ -40,7 +40,7 @@ import ec.util.*;
  <font size=-1>bool = <tt>true</tt> or <tt>false</tt> (default)</font>/td>
  <td valign=top>(after crossing over with the first new individual, should its second sibling individual be thrown away instead of adding it to the population?)</td></tr>
  <tr><td valign=top><i>base</i>.<tt>prob</tt><br>
- <font size=-1>0.0 &lt;= float &lt; 1.0, or 0.5 (default)</font>/td>
+ <font size=-1>0.0 &lt;= double &lt; 1.0, or 0.5 (default)</font>/td>
  <td valign=top>(probability that a rule will cross over from one individual to the other)</td></tr>
  </table>
 
@@ -63,7 +63,7 @@ public class RuleCrossoverPipeline extends BreedingPipeline
     public boolean tossSecondParent;
     
     /** What is the probability of a rule migrating? */
-    public float ruleCrossProbability;
+    public double ruleCrossProbability;
 
     /** Temporary holding place for parents */
     RuleIndividual parents[];
@@ -90,7 +90,7 @@ public class RuleCrossoverPipeline extends BreedingPipeline
         Parameter def = defaultBase();
         tossSecondParent = state.parameters.getBoolean(base.push(P_TOSS),
             def.push(P_TOSS),false);
-        ruleCrossProbability = state.parameters.getFloatWithDefault(base.push(P_CROSSOVERPROB),
+        ruleCrossProbability = state.parameters.getDoubleWithDefault(base.push(P_CROSSOVERPROB),
             def.push(P_CROSSOVERPROB),0.5f);
         if (ruleCrossProbability > 1.0 || ruleCrossProbability < 0.0) 
             state.output.fatal("Rule cross probability must be between 0 and 1",base.push(P_CROSSOVERPROB),

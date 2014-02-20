@@ -110,7 +110,7 @@ public class BestSelection extends SelectionMethod
             bestnFrac =
                 state.parameters.getDoubleWithMax(base.push(P_N_FRACTION),def.push(P_N_FRACTION),0.0,1.0);
             if (bestnFrac <= 0.0)
-                state.output.fatal("n-fraction must be a floating-point value greater than 0.0 and <= 1.0", base.push(P_N_FRACTION),def.push(P_N_FRACTION));
+                state.output.fatal("n-fraction must be a double floating-point value greater than 0.0 and <= 1.0", base.push(P_N_FRACTION),def.push(P_N_FRACTION));
             }
         else state.output.fatal("Either n or n-fraction must be defined for BestSelection.", base.push(P_N),def.push(P_N));
                 

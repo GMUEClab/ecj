@@ -57,11 +57,11 @@ import ec.util.*;
    <td valign=top>(the minimum allowed size of a child)</td></tr>
 
    <tr><td valign=top><i>base</i>.<tt>min-crossover-percent</tt><br>
-   <font size=-1>0 (default) &lt;= float &lt;= 1</font></td>
+   <font size=-1>0 (default) &lt;= double &lt;= 1</font></td>
    <td valign=top>(the minimum percentage of an individual that may be removed during crossover)</td></tr>
 
    <tr><td valign=top><i>base</i>.<tt>max-crossover-percent</tt><br>
-   <font size=-1>0 &lt;= float &lt;= 1 (default)</font></td>
+   <font size=-1>0 &lt;= double &lt;= 1 (default)</font></td>
    <td valign=top>(the maximum percentage of an individual that may be removed during crossover)</td></tr>
 
    </table>
@@ -86,8 +86,8 @@ public class ListCrossoverPipeline extends BreedingPipeline
     public int crossoverType;
     public int minChildSize;
     public int numTries;
-    public float minCrossoverPercentage;
-    public float maxCrossoverPercentage;
+    public double minCrossoverPercentage;
+    public double maxCrossoverPercentage;
     
     protected VectorIndividual parents[];
     
@@ -118,9 +118,9 @@ public class ListCrossoverPipeline extends BreedingPipeline
         numTries = state.parameters.getIntWithDefault(base.push(P_NUM_TRIES),
             def.push(P_NUM_TRIES), 1);
                                                          
-        minCrossoverPercentage = state.parameters.getFloatWithDefault(base.push(P_MIN_CROSSOVER_PERCENT),
+        minCrossoverPercentage = state.parameters.getDoubleWithDefault(base.push(P_MIN_CROSSOVER_PERCENT),
             def.push(P_MIN_CROSSOVER_PERCENT), 0.0);
-        maxCrossoverPercentage = state.parameters.getFloatWithDefault(base.push(P_MAX_CROSSOVER_PERCENT),
+        maxCrossoverPercentage = state.parameters.getDoubleWithDefault(base.push(P_MAX_CROSSOVER_PERCENT),
             def.push(P_MAX_CROSSOVER_PERCENT), 1.0);
                                                          
 
@@ -163,14 +163,14 @@ public class ListCrossoverPipeline extends BreedingPipeline
         if(minCrossoverPercentage < 0.0 || minCrossoverPercentage > 1.0)
             {
             state.output.error("ListCrossoverPipeline:\n" +
-                "   Parameter min-crossover-percent is currently equal to: " + Float.toString(minCrossoverPercentage) + "\n" +
-                "   min-crossover-percent must be either a real-value float between [0.0, 1.0] or left unspecified\n");
+                "   Parameter min-crossover-percent is currently equal to: " + Double.toString(minCrossoverPercentage) + "\n" +
+                "   min-crossover-percent must be either a real-value double float between [0.0, 1.0] or left unspecified\n");
             }
         if(maxCrossoverPercentage < 0.0 || maxCrossoverPercentage > 1.0)
             {
             state.output.error("ListCrossoverPipeline:\n" +
-                "   Parameter max-crossover-percent is currently equal to: " + Float.toString(maxCrossoverPercentage) + "\n" +
-                "   max-crossover-percent must be either a real-value float between [0.0, 1.0] or left unspecified\n");
+                "   Parameter max-crossover-percent is currently equal to: " + Double.toString(maxCrossoverPercentage) + "\n" +
+                "   max-crossover-percent must be either a real-value double float between [0.0, 1.0] or left unspecified\n");
             }
         if(minCrossoverPercentage > maxCrossoverPercentage)
             {
@@ -181,7 +181,7 @@ public class ListCrossoverPipeline extends BreedingPipeline
             {
             state.output.warning("ListCrossoverPipeline:\n" +
                 "   Parameter min-crossover-percent and max-crossover-percent are currently equal to: " + 
-                Float.toString(minCrossoverPercentage) + "\n" +
+                Double.toString(minCrossoverPercentage) + "\n" +
                 "   This effectively prevents any crossover from occurring\n");
             }
         }

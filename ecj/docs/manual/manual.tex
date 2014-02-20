@@ -157,8 +157,8 @@ George Mason University}
 \\
 \\
 \\
-\large\rm {\bf Manual Version 20.3}\\
-\large\rm October, 2012\\
+\large\rm {\bf Manual Version 20.4}\\
+\large\rm February, 2014\\
 
 \vspace{5.6in}
 \noindent\Large\bf Where to Obtain ECJ\\
@@ -6019,7 +6019,7 @@ The GPNodeConstraints contains several data elements shared by various GPNodes:
     public GPType returntype;\\
     public GPType[] childtypes;\\
     public String name;\\
-    public float probabilityOfSelection;\\
+    public double probabilityOfSelection;\\
     public GPNode zeroChildren[] = new GPNode[0];
 }
 
@@ -6673,8 +6673,8 @@ PTC1 requires that its function sets adhere to the interface \class{ec.gp.build.
 
 \java{%
     public [] terminalProbabilities(int type);\\
-    public float[] nonterminalProbabilities(int type);\\
-    public float[] nonterminalSelectionProbabilities(int expectedTreeSize);
+    public double[] nonterminalProbabilities(int type);\\
+    public double[] nonterminalSelectionProbabilities(int expectedTreeSize);
 }
 
 The first function returns, for a given GPType number, a distribution of desired selection probabilities for terminals of that type.  The order of the terminals is the same as the following array in GPFunctionSet:
@@ -8627,7 +8627,7 @@ pop.subpop.0.species.max-gene = 127
 
 GESpecies starts working through the byte array and the grammar, depth-first. Each time GESpecies comes across a point in the  grammar where multiple expansions are possible, it consults the next byte in the byte array.  Let's say there are four possible expansions of the head \lisp{\(<\)foo\(>\)}, and the next byte says 145.  We compute \(145 \mod 4 = 1\) and so pick expansion 1 (the second expansion --- the first one is expansion 0).
 
-This continues until one of two things happens.  Either the tree (or tree forest) is completed, or we run out of bytes.  In the first case, the tree is finished.  In the second case, processing continues again at the first byte (so-called {\bf wrapping}).  If after some number of wrapping iterations the tree is still not completed, the translation process is halted and the fitness is simply set to the worst possible Koza Standardized Fitness (\variable{Float.MAX\_VALUE}).
+This continues until one of two things happens.  Either the tree (or tree forest) is completed, or we run out of bytes.  In the first case, the tree is finished.  In the second case, processing continues again at the first byte (so-called {\bf wrapping}).  If after some number of wrapping iterations the tree is still not completed, the translation process is halted and the fitness is simply set to the worst possible Koza Standardized Fitness (\variable{Double.MAX\_VALUE}).
 
 You specify the number of wrappings using the following parameter:
 
@@ -8641,7 +8641,7 @@ or alternatively
 ge.species.passes = 4
 }
 
-This tells ECJ that it may pass through the genome no more than 4 times (including the original pass).  At present this value must be a {\bf power of two}, and should be less than \variable{MAXIMUM\_PASSES}, presently set to 1024.  In fact you should make it much smaller than this, perhaps 8 or 16, because with large genomes, if you have many passes, the recursion stack depth of the tree generator can be easily exceeded, which will throw an error internally and eventually result in (once again) the fitness being set to \variable{Float.MAX\_Value}.
+This tells ECJ that it may pass through the genome no more than 4 times (including the original pass).  At present this value must be a {\bf power of two}, and should be less than \variable{MAXIMUM\_PASSES}, presently set to 1024.  In fact you should make it much smaller than this, perhaps 8 or 16, because with large genomes, if you have many passes, the recursion stack depth of the tree generator can be easily exceeded, which will throw an error internally and eventually result in (once again) the fitness being set to \variable{Double.MAX\_Value}.
 
 This scheme allows ECJ to do both of the common GE approaches to handling over-size genomes: either killing them immediately or wrapping around some \(N\) number of times.   I prefer the first approach, and so by default have \parameter{passes} set to 1.
 
@@ -8663,7 +8663,7 @@ Computes and returns the number of bytes that would be consumed to produce a GPI
 
 \paragraph{Handling ERCs}  When the GESpecies needs to produce an ERC from the grammar, it consults the next byte in the array.  If the byte is 27, it looks up 27 in a special hash table stored in GESpecies.  If it finds that 27 has hashed to an existing ERC, it clones this ERC and uses the clone.  Else, it creates a new ERC, calls \method{reset()} on it, stores it in the hash table with 27, clones it, and uses the clone.  This way all ERCs whose byte is 27 are the same value.
 
-\paragraph{Handling ADFs and Multiple Trees}  Recall that the GESpecies maintains a separate grammar for each tree in the GPIndividual (and thus for each separate ADF).  However there's only a single byte array in the GEIndividual.  This is handled straightforwardly the array is used to build the first tree; then the unused remainder of the array is used to build the second tree; and so on.  If not all trees were able to be built, evaluation of the GPIndividual is bypassed and the fitness is set to the (\variable{Float.MAX\_VALUE}).
+\paragraph{Handling ADFs and Multiple Trees}  Recall that the GESpecies maintains a separate grammar for each tree in the GPIndividual (and thus for each separate ADF).  However there's only a single byte array in the GEIndividual.  This is handled straightforwardly the array is used to build the first tree; then the unused remainder of the array is used to build the second tree; and so on.  If not all trees were able to be built, evaluation of the GPIndividual is bypassed and the fitness is set to the (\variable{Double.MAX\_VALUE}).
 
 \paragraph{Grammatical Evolution Does Not Support GroupedProblemForm}  GroupedProblemForm (Section~\ref{ec.coevolve.GroupedProblemForm}) evaluates several Individuals together.  What if at least one of them is a GEIndividual, and the GEIndividual cannot generate a valid GPIndividual?  This creates a number of hassles.  For example, if we're doing cooperative coevolution, and one Individual can't be generated, what's the fitness of the group?  Is it fair to penalize the group thusly?  Likewise if we're doing competitive coevolution, and one of the competitors can't be generated, what's the resulting fitness of the other?  For this reason, at present Grammatical Evolution does not support GroupedProblemForm.
 
@@ -9362,7 +9362,7 @@ Removes a random rule returns it.  All rules are shifted down to fill the void.
 Breaks the RuleSet into \(n\) disjoint groups, then clones the rules in those groups and adds them to the respective sets, which must be provided in the given array.  The first group of rules starts at 0 and ends below \variable{points[0]}: this goes into \variable{sets[0]}. Intermediate groups, which go into \variable{sets[i]}, start at \variable{points[i]} and end below \variable{points[i+1]}.  The final group, which goes into \variable{sets[points.length]}, starts at \variable{points[points.length $-$ 1]} and continues to the end of the rule array.  If \variable{points.length = 0}, then all rules simply get put into \variable{sets[0]}.  Note that the size of \variable{sets} must be one more than the size of \variable{points}.  The sets are returned.
 \mthd{public RuleSet[] split(EvolutionState \textit{state}, int \textit{thread}, RuleSet[] {\it sets})}
 For each rule in the RuleSet, clones the rule and adds the clone to a randomly chosen RuleSet from \variable{sets}.  Returns \variable{sets}.
-\mthd{public RuleSet[] splitIntoTwo(EvolutionState \textit{state}, int \textit{thread}, RuleSet[] {\it sets}, float {\it probability})}
+\mthd{public RuleSet[] splitIntoTwo(EvolutionState \textit{state}, int \textit{thread}, RuleSet[] {\it sets}, double {\it probability})}
 For each rule in the RuleSet, clones the rule and, with the given probability, adds the clone to \variable{sets[0]}, else \variable{sets[1]}.  Note that \variable{sets} must be two in length.
 \mthd{public void join(RuleSet \textit{other})}
 Copies the rules in the other RuleSet, then adds them to the end of this RuleSet.
@@ -9443,9 +9443,9 @@ Additionally, the various addition, deletion, and randomization probabilities ca
 
 \java{%
 RuleSetConstraints rsc = myRuleSet.ruleSetConstraints((RuleInitializer)(state.init));\\
-float addition = rsc.p\_add;\\
-float deletion = rsc.p\_del;\\
-float shuffling = rsc.p\_randorder;
+double addition = rsc.p\_add;\\
+double deletion = rsc.p\_del;\\
+double shuffling = rsc.p\_randorder;
 }
 
 RuleSets also contain all the standard reading and writing methods, none of which you'll need to override unless you're making a custom RuleSet.
@@ -11475,7 +11475,7 @@ If you bound the operator, then it will try repeatedly with new values of  \(\ve
 
 ECJ has three packages which handle multiobjective optimization: the \package{ec.multiobjective} package, and two concrete implementations (SPEA2 and NSGA-II): the \package{ec.multiobjective.spea2} and \package{ec.multiobjective.nsga2} packages respectively.
 
-\subsubsection{The MultiObjectiveFitness class} The \package{ec.multiobjective} package contains a single new kind of Fitness.  Multiobjective optimization differs from other optimization algorithms in that the Fitness of an Individual is not a single value but rather consists of some \(N\) {\bf objectives}, separate values describing the quality of the Individual on various aspects of the Problem.   Thus the primary class overridden by multiobjective algorithms is a special version of Fitness called \class{ec.multiobjective.MultiObjectiveFitness}.  Internally in this class the objective results are stored in an array of floats:
+\subsubsection{The MultiObjectiveFitness class} The \package{ec.multiobjective} package contains a single new kind of Fitness.  Multiobjective optimization differs from other optimization algorithms in that the Fitness of an Individual is not a single value but rather consists of some \(N\) {\bf objectives}, separate values describing the quality of the Individual on various aspects of the Problem.   Thus the primary class overridden by multiobjective algorithms is a special version of Fitness called \class{ec.multiobjective.MultiObjectiveFitness}.  Internally in this class the objective results are stored in an array of doubles:
 
 \java{%
 public double[] objectives;

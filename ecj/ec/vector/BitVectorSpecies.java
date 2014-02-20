@@ -37,7 +37,7 @@ import ec.*;
  * BitVectorSpecies provides support for two ways of initializing a gene.  The initialization procedure
  * is determined by the choice of mutation procedure as described above.  If the mutation is floating-point
  * (<tt>reset, gauss, polynomial</tt>), then initialization will be done by resetting the gene
- * to uniformly chosen floating-point value between the minimum and maximum legal gene values, inclusive.
+ * to uniformly chosen double floating-point value between the minimum and maximum legal gene values, inclusive.
  * If the mutation is integer (<tt>integer-reset, integer-random-walk</tt>), then initialization will be done
  * by performing the same kind of reset, but restricting values to integers only.
  * 

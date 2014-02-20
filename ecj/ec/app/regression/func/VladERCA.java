@@ -41,7 +41,7 @@ public class VladERCA extends RegERC
         }
 
     public String toStringForHumans()
-        { return "n^" + (float)value; }
+        { return "n^" + value; }
 
     public void eval(final EvolutionState state,
         final int thread,

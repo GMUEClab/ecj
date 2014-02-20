@@ -53,7 +53,7 @@ import ec.util.*;
  <td valign=top>(name of type for child argument <i>m</i> of node constraint <i>n</i>)</td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>prob</tt><br>
- <font size=-1>float &gt;= 0.0</font></td>
+ <font size=-1>double &gt;= 0.0</font></td>
  <td valign=top>(auxillary probability of selection -- used by ec.gp.build.PTC1 and ec.gp.build.PTC2)</td></tr>
 
  </table>
@@ -70,11 +70,11 @@ public class GPNodeConstraints implements Clique
     public final static String P_CHILD = "child";
     public final static String P_SIZE = "size";
     public final static String P_PROBABILITY = "prob";
-    public final static float DEFAULT_PROBABILITY = 1.0f;
+    public final static double DEFAULT_PROBABILITY = 1.0;
 
     /** Probability of selection -- an auxillary measure mostly used by PTC1/PTC2
         right now */
-    public float probabilityOfSelection;
+    public double probabilityOfSelection;
 
     /** The byte value of the constraints -- we can only have 256 of them */
     public byte constraintNumber;
@@ -119,7 +119,7 @@ public class GPNodeConstraints implements Clique
 
         if (state.parameters.exists(base.push(P_PROBABILITY),null))
             {
-            float f = state.parameters.getFloat(base.push(P_PROBABILITY),null,0);
+            double f = state.parameters.getDouble(base.push(P_PROBABILITY),null,0);
             if (f < 0)
                 state.output.fatal("The probability of selection is < 0, which is not valid.",base.push(P_PROBABILITY),null);
             probabilityOfSelection = f;
