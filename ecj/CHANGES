@@ -2206,3 +2206,7 @@ Version		Change Log
 		the fitness classes but certain selection methods and all of
 		the application demos so they don't unnecessarily cast into
 		floats in the first place.
+	Updates to tutorial4
+	Bug fix to IntegerVectorIndividual, which properly handles mutation
+		probabilities in random sized individuals
+	Same for BitVectorIndividual and GeneVectorIndividual
