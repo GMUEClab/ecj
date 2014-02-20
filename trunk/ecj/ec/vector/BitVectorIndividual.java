@@ -230,7 +230,7 @@ public class BitVectorIndividual extends VectorIndividual
         BitVectorSpecies s = (BitVectorSpecies)species;  // where my default info is stored
         for(int x=0;x<genome.length;x++)
             {
-            if (state.random[thread].nextBoolean(s.mutationProbability[x]))
+            if (state.random[thread].nextBoolean(s.mutationProbability(x)))
                 {
                 boolean old = genome[x];
                 for(int retries = 0; retries < s.duplicateRetries(x) + 1; retries++)

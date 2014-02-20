@@ -245,7 +245,7 @@ public class GeneVectorIndividual extends VectorIndividual
         GeneVectorSpecies s = (GeneVectorSpecies) species;
         for(int x=0;x<genome.length;x++)
             {
-            if (state.random[thread].nextBoolean(s.mutationProbability[x]))
+            if (state.random[thread].nextBoolean(s.mutationProbability(x)))
                 {
                 if (s.duplicateRetries(x) <= 0)  // a little optimization
                     {
