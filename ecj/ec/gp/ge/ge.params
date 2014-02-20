@@ -14,13 +14,13 @@
 
 eval.problem = ec.gp.ge.GEProblem
 
-# We first define the GESpecies and state that it uses a GrammarParser
-# by default.
+pop.subpop.0.duplicate-retries = 100
 
 pop.subpop.0.species = ec.gp.ge.GESpecies
 pop.subpop.0.species.parser = ec.gp.ge.GrammarParser
 
 # The individual is a GEIndividual
+pop.subpop.0.species = ec.gp.ge.GESpecies
 pop.subpop.0.species.ind = ec.gp.ge.GEIndividual
 pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
 
@@ -32,12 +32,10 @@ pop.subpop.0.species.max-gene = 127
 pop.subpop.0.species.mutation-prob = 0.01
 pop.subpop.0.species.crossover-type = one
 
-
 # Individuals are built using geometric series.  The minimum allowed size is 5. 
-pop.subpop.0.species.genome-size = geometric
-pop.subpop.0.species.geometric-prob = 0.85
-pop.subpop.0.species.min-initial-size = 5
-
+pop.subpop.0.species.genome-size = uniform
+pop.subpop.0.species.min-initial-size = 15
+pop.subpop.0.species.max-initial-size = 25
 
 # The following pipeline is relatively common in GE.
 # The BufferedBreedingPipeline forces two individuals at a time
@@ -46,7 +44,7 @@ pop.subpop.0.species.min-initial-size = 5
 # some insane reason you have a population with an odd numbered size.
 
 pop.subpop.0.species.pipe = ec.breed.BufferedBreedingPipeline
-pop.subpop.0.species.pipe.num-inds = 2
+pop.subpop.0.species.pipe.num-inds = 1
 pop.subpop.0.species.pipe.likelihood = 1.0
 pop.subpop.0.species.pipe.source.0 = ec.vector.breed.VectorMutationPipeline
 pop.subpop.0.species.pipe.source.0.likelihood = 1.0
@@ -56,11 +54,10 @@ pop.subpop.0.species.pipe.source.0.source.0.source.0 = ec.select.TournamentSelec
 pop.subpop.0.species.pipe.source.0.source.0.source.1 = same
 select.tournament.size = 7
 
-
-
 # By default we don't allow wrapping
 ge.species.passes = 1
-
+# init-scheme
+ge.species.init-scheme = default
 
 
 # Build the dummy GP Individual information.  This stuff is necessary to convince
@@ -78,3 +75,4 @@ pop.subpop.0.species.gp-species.pipe = ec.breed.ReproductionPipeline
 pop.subpop.0.species.gp-species.pipe.num-sources = 1
 pop.subpop.0.species.gp-species.pipe.source.0 = ec.select.TournamentSelection
 
+# stat = ec.simple.SimpleShortStatistics
