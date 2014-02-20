@@ -59,7 +59,7 @@ to pull all this off.  Notably:
    in a 'gp-species' parameter.
 
 Generally Grammatical Evolution is surprisingly easy to implement in ECJ.  The 
-ec/gp/ge/ge.params file will do most of the heavy lifting for you if you're dealing
+ge/ge.params file will do most of the heavy lifting for you if you're dealing
 with just a single tree (no ADFs say).  But in some cases we'll need to add 
 special GP elements to this subsidiary GPSpecies, mostly for additiona trees.
 For example, in the Lawnmower problem, to have three trees, we need to define
@@ -127,7 +127,7 @@ holds onto the GPProblem.  The GEProblem first maps the GEIndividual into a GPIn
 using the GESpecies.  It then hands the GPIndividual to the GPProblem to be evaluated.
 
 
-[in the ec.gp.ge.breed subpackage] 
+[in the ge.breed subpackage] 
 
 GETruncationPipeline.java
 
