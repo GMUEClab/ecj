@@ -2219,3 +2219,5 @@ Version		Change Log
 	Added ec/gp/ge/breed/GECrossoverPipeline.java
 	Added hooks to ListCrossoverPipeline to simplify and unify
 		GECrossoverPipeline
+	Heavy revisions to GE package to allow conversions back and forth
+		between GE and GP trees
