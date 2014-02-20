@@ -47,7 +47,7 @@ import ec.util.*;
  </td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>size</tt>.<i>n</i><br>
- <font size=-1>0.0 &lt;= float &lt;= 1.0</font>, or undefined</td>
+ <font size=-1>0.0 &lt;= double &lt;= 1.0</font>, or undefined</td>
  <td valign=top>(probability of choosing size <i>n</i>.  See discussion above)
  </td></tr>
  </table>
@@ -85,7 +85,7 @@ public abstract class GPNodeBuilder implements Prototype
 
     public int minSize;  /** the minium possible size  -- if unused, it's 0 */
     public int maxSize;  /** the maximum possible size  -- if unused, it's 0 */
-    public float[] sizeDistribution;  /* sizeDistribution[x] represents
+    public double[] sizeDistribution;  /* sizeDistribution[x] represents
                                          the likelihood of size x appearing 
                                          -- if unused, it's null */
                         
@@ -111,7 +111,7 @@ public abstract class GPNodeBuilder implements Prototype
             // pick from distribution
             return RandomChoice.pickFromDistribution(
                 sizeDistribution,
-                state.random[thread].nextFloat()) + 1 ;
+                state.random[thread].nextDouble()) + 1 ;
             }
         else throw new InternalError("Neither minSize nor sizeDistribution is defined in GPNodeBuilder");
         }
@@ -124,7 +124,7 @@ public abstract class GPNodeBuilder implements Prototype
             GPNodeBuilder c = (GPNodeBuilder)(super.clone());
 
             if (sizeDistribution != null) c.sizeDistribution = 
-                                              (float[]) (sizeDistribution.clone());
+                                              (double[]) (sizeDistribution.clone());
 
             return c;
             }
@@ -181,7 +181,7 @@ public abstract class GPNodeBuilder implements Prototype
                 base.push(P_NUMSIZES), def.push(P_NUMSIZES),1);
             if (siz==0)
                 state.output.fatal("The number of sizes in the GPNodeBuilder's distribution must be >= 1. ");
-            sizeDistribution = new float[siz];
+            sizeDistribution = new double[siz];
             if (state.parameters.exists(base.push(P_SIZE).push("0"),
                     def.push(P_SIZE).push("0")))
                 state.output.warning(
@@ -189,19 +189,19 @@ public abstract class GPNodeBuilder implements Prototype
                     base.push(P_SIZE).push("0"),
                     def.push(P_SIZE).push("0"));
             
-            float sum = 0.0f;
+            double sum = 0.0;
             for(int x=0;x<siz;x++)
                 {
-                sizeDistribution[x] = state.parameters.getFloat(
+                sizeDistribution[x] = state.parameters.getDouble(
                     base.push(P_SIZE).push(""+(x+1)), 
-                    def.push(P_SIZE).push(""+(x+1)), 0.0f);
+                    def.push(P_SIZE).push(""+(x+1)), 0.0);
                 if (sizeDistribution[x]<0.0)
                     {
                     state.output.warning(
                         "Distribution value #" + x + " negative or not defined, assumed to be 0.0",
                         base.push(P_SIZE).push(""+(x+1)), 
                         def.push(P_SIZE).push(""+(x+1)));
-                    sizeDistribution[x] = 0.0f;
+                    sizeDistribution[x] = 0.0;
                     }
                 sum += sizeDistribution[x];
                 }

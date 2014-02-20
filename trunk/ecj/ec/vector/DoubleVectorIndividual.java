@@ -382,7 +382,7 @@ public class DoubleVectorIndividual extends VectorIndividual
                 {
                 if (givingUpAllowed && (outOfBoundsLeftOverTries == 0))
                     {
-                    val = min + random.nextFloat() * (max - min);
+                    val = min + random.nextDouble() * (max - min);
                     species.outOfRangeRetryLimitReached(state);// it better get inlined
                     break;
                     }

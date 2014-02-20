@@ -98,7 +98,7 @@ import ec.util.*;
     <p><b>Parameters</b><br>
     <table>
     <tr><td valign=top><i>base</i>.<tt>growp</tt><br>
-    <font size=-1>0.0 &lt;= float &lt;= 1.0</font></td>
+    <font size=-1>0.0 &lt;= double &lt;= 1.0</font></td>
     <td valign=top>(the likelihood of choosing GROW (as opposed to FULL)></tr>
 
     <tr><td valign=top><i>base</i>.<tt>min-depth</tt><br>
@@ -124,7 +124,7 @@ public class HalfBuilder extends KozaBuilder
     public static final String P_PICKGROWPROBABILITY = "growp";
 
     /** The likelihood of using GROW over FULL. */
-    public float pickGrowProbability;
+    public double pickGrowProbability;
     
     public Parameter defaultBase()
         {
@@ -137,11 +137,11 @@ public class HalfBuilder extends KozaBuilder
 
         Parameter def = defaultBase();
 
-        pickGrowProbability = state.parameters.getFloatWithMax(
+        pickGrowProbability = state.parameters.getDoubleWithMax(
             base.push(P_PICKGROWPROBABILITY),
-            def.push(P_PICKGROWPROBABILITY),0.0f,1.0f);
-        if (pickGrowProbability < 0.0f)
-            state.output.fatal("The Pick-Grow Probability for HalfBuilder must be a floating-point value between 0.0 and 1.0 inclusive.", base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
+            def.push(P_PICKGROWPROBABILITY),0.0,1.0);
+        if (pickGrowProbability < 0.0)
+            state.output.fatal("The Pick-Grow Probability for HalfBuilder must be a double floating-point value between 0.0 and 1.0 inclusive.", base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
         }
     
     public GPNode newRootedTree(final EvolutionState state,
@@ -152,7 +152,7 @@ public class HalfBuilder extends KozaBuilder
         final int argposition,
         final int requestedSize)
         {
-        if (state.random[thread].nextFloat() < pickGrowProbability)
+        if (state.random[thread].nextDouble() < pickGrowProbability)
             return growNode(state,0,state.random[thread].nextInt(maxDepth-minDepth+1) + minDepth,type,thread,parent,argposition,set);
         else
             return fullNode(state,0,state.random[thread].nextInt(maxDepth-minDepth+1) + minDepth,type,thread,parent,argposition,set);

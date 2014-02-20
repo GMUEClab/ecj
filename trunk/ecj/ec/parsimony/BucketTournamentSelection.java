@@ -161,8 +161,8 @@ public class BucketTournamentSelection extends SelectionMethod implements Steady
         // how many individuals in current bucket
         int nInd;
 
-        float averageBuck = ((float)state.population.subpops[subpopulation].individuals.length)/
-            ((float)nBuckets);
+        double averageBuck = ((double)state.population.subpops[subpopulation].individuals.length)/
+            ((double)nBuckets);
 
         // first individual goes into first bucket
         bucketValues[0] = 0;

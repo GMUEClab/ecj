@@ -89,7 +89,7 @@ public class GenerationSwitchPipeline extends BreedingPipeline
         maxGeneratable=0;  // indicates that I don't know what it is yet.  
 
         // declare that likelihood isn't used
-        if (likelihood < 1.0f)
+        if (likelihood < 1.0)
             state.output.warning("GenerationSwitchPipeline does not respond to the 'likelihood' parameter.",
                 base.push(P_LIKELIHOOD), def.push(P_LIKELIHOOD));
         }

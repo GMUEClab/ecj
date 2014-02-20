@@ -42,17 +42,17 @@ import ec.util.*;
  <p><b>Parameters</b><br>
  <table>
  <tr><td valign=top><i>base</i>.<tt>terminals</tt><br>
- <font size=-1>0.0 &lt;= float &lt;= 1.0,<br>
+ <font size=-1>0.0 &lt;= double &lt;= 1.0,<br>
  nonterminals + terminals + root <= 1.0</font></td>
  <td valign=top>(the probability we must pick a terminal)</td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>nonterminals</tt><br>
- <font size=-1>0.0 &lt;= float &lt;= 1.0,<br>
+ <font size=-1>0.0 &lt;= double &lt;= 1.0,<br>
  nonterminals + terminals + root <= 1.0</font></td>
  <td valign=top>(the probability we must pick a nonterminal if possible)</td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>root</tt><br>
- <font size=-1>0.0 &lt;= float &lt;= 1.0,<br>
+ <font size=-1>0.0 &lt;= double &lt;= 1.0,<br>
  nonterminals + terminals + root <= 1.0</font></td>
  <td valign=top>(the probability we must pick the root)</td></tr>
 
@@ -73,13 +73,13 @@ public class KozaNodeSelector implements GPNodeSelector
     public static final String P_ROOT_PROBABILITY = "root";
 
     /** The probability the root must be chosen */
-    public float rootProbability;
+    public double rootProbability;
     
     /** The probability a terminal must be chosen */
-    public float terminalProbability;
+    public double terminalProbability;
 
     /** The probability a nonterminal must be chosen. */
-    public float nonterminalProbability;
+    public double nonterminalProbability;
 
     /** The number of nonterminals in the tree, -1 if unknown. */
     public int nonterminals;
@@ -123,7 +123,7 @@ public class KozaNodeSelector implements GPNodeSelector
         {
         Parameter def = defaultBase();
 
-        terminalProbability = state.parameters.getFloatWithMax(
+        terminalProbability = state.parameters.getDoubleWithMax(
             base.push(P_TERMINAL_PROBABILITY),
             def.push(P_TERMINAL_PROBABILITY), 0.0, 1.0);
         if (terminalProbability==-1.0)
@@ -131,7 +131,7 @@ public class KozaNodeSelector implements GPNodeSelector
                 base.push(P_TERMINAL_PROBABILITY),
                 def.push(P_TERMINAL_PROBABILITY));
         
-        nonterminalProbability = state.parameters.getFloatWithMax(
+        nonterminalProbability = state.parameters.getDoubleWithMax(
             base.push(P_NONTERMINAL_PROBABILITY), 
             def.push(P_NONTERMINAL_PROBABILITY),0.0, 1.0);
         if (nonterminalProbability==-1.0)
@@ -139,7 +139,7 @@ public class KozaNodeSelector implements GPNodeSelector
                 base.push(P_NONTERMINAL_PROBABILITY), 
                 def.push(P_NONTERMINAL_PROBABILITY));
 
-        rootProbability = state.parameters.getFloatWithMax(
+        rootProbability = state.parameters.getDoubleWithMax(
             base.push(P_ROOT_PROBABILITY),
             def.push(P_ROOT_PROBABILITY),0.0, 1.0);
         
@@ -166,7 +166,7 @@ public class KozaNodeSelector implements GPNodeSelector
         final GPIndividual ind,
         final GPTree tree)
         {
-        float rnd = s.random[thread].nextFloat();
+        double rnd = s.random[thread].nextDouble();
         
         if (rnd > nonterminalProbability + terminalProbability + rootProbability)  // pick anyone
             {

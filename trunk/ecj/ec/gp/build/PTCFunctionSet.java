@@ -37,19 +37,19 @@ import ec.gp.*;
 public class PTCFunctionSet extends GPFunctionSet implements PTCFunctionSetForm
     {
     /** terminal probabilities[type][thenodes], in organized form */
-    public float q_ty[][];
+    public double q_ty[][];
     /** nonterminal probabilities[type][thenodes], in organized form */
-    public float q_ny[][];
+    public double q_ny[][];
 
     public static final int CACHE_SIZE = 1024;
     /** cache of nonterminal selection probabilities -- dense array 
         [size-1][type].  If any items are null, they're not in the dense cache. */
-    public float p_y[][];
+    public double p_y[][];
 
-    public float[] terminalProbabilities(final int type)
+    public double[] terminalProbabilities(final int type)
         { return q_ty[type]; }
 
-    public float[] nonterminalProbabilities(final int type)
+    public double[] nonterminalProbabilities(final int type)
         { return q_ny[type]; }
 
     public void setup(final EvolutionState state, final Parameter base)
@@ -58,8 +58,8 @@ public class PTCFunctionSet extends GPFunctionSet implements PTCFunctionSetForm
 
         // load our probabilities here.
         
-        q_ny = new float[nonterminals.length][];
-        q_ty = new float[terminals.length][];
+        q_ny = new double[nonterminals.length][];
+        q_ty = new double[terminals.length][];
         
         boolean allOnes = true;
         boolean noOnes = true;
@@ -68,7 +68,7 @@ public class PTCFunctionSet extends GPFunctionSet implements PTCFunctionSetForm
 
         for(int type=0;type<nonterminals.length;type++)
             {
-            q_ny[type] = new float[nonterminals[type].length];
+            q_ny[type] = new double[nonterminals[type].length];
             for(int x=0;x<nonterminals[type].length;x++)
                 {
                 q_ny[type][x] = nonterminals[type][x].constraints(initializer).probabilityOfSelection;
@@ -84,7 +84,7 @@ public class PTCFunctionSet extends GPFunctionSet implements PTCFunctionSetForm
 
         for(int type=0;type<terminals.length;type++)
             {
-            q_ty[type] = new float[terminals[type].length];
+            q_ty[type] = new double[terminals[type].length];
             for(int x=0;x<terminals[type].length;x++)
                 {
                 q_ty[type][x] = terminals[type][x].constraints(initializer).probabilityOfSelection;
@@ -110,10 +110,10 @@ public class PTCFunctionSet extends GPFunctionSet implements PTCFunctionSetForm
             }
 
         // set up cache
-        p_y = new float[CACHE_SIZE][];
+        p_y = new double[CACHE_SIZE][];
         }
     
-    public float[] nonterminalSelectionProbabilities(final int expectedTreeSize)
+    public double[] nonterminalSelectionProbabilities(final int expectedTreeSize)
         {
         // check cache first
         if (expectedTreeSize<CACHE_SIZE)
@@ -128,9 +128,9 @@ public class PTCFunctionSet extends GPFunctionSet implements PTCFunctionSetForm
         }
 
     
-    public float[] computeNonterminalSelectionProbabilities(final int expectedTreeSize)
+    public double[] computeNonterminalSelectionProbabilities(final int expectedTreeSize)
         {
-        float[] p = new float[q_ny.length];
+        double[] p = new double[q_ny.length];
 
         // for each type...
         for(int x=0;x<q_ny.length;x++)
@@ -141,7 +141,7 @@ public class PTCFunctionSet extends GPFunctionSet implements PTCFunctionSetForm
                 count += (y==0 ? q_ny[x][y] : q_ny[x][y]-q_ny[x][y-1]) // it's organized
                     * nonterminals[x][y].children.length;
 
-            p[x] = (float)((1.0-(1.0/expectedTreeSize))/count);
+            p[x] = (double)((1.0-(1.0/expectedTreeSize))/count);
             }
         return p;
         }

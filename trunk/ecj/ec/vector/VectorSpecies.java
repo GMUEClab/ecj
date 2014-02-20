@@ -122,7 +122,7 @@ import ec.*;
  <td valign=top>(the chunk size for crossover (crossover will only occur on chunk boundaries))</td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>geometric-prob</tt><br>
- <font size=-1>0.0 &lt;= float &lt; 1.0</font></td>
+ <font size=-1>0.0 &lt;= double &lt; 1.0</font></td>
  <td valign=top>(the coin-flip probability for increasing the initial size using the geometric distribution)</td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>min-initial-size</tt><br>
@@ -138,11 +138,11 @@ import ec.*;
  <td valign=top>(default crossover type (one-point, one-point-nonempty, two-point, two-point-nonempty, any-point (uniform), line, or intermediate)</td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>crossover-prob</tt><br>
- <font size=-1>0.0 &gt;= float &gt;= 1.0 </font></td>
+ <font size=-1>0.0 &gt;= double &gt;= 1.0 </font></td>
  <td valign=top>(probability that a gene will get crossed over during any-point (uniform) or simulated binary crossover)</td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>line-extension</tt><br>
- <font size=-1>float &gt;= 0.0 </font></td>
+ <font size=-1>double &gt;= 0.0 </font></td>
  <td valign=top>(for line and intermediate recombination, how far along the line or outside of the hypercube children can be. If this value is zero, all children must be within the hypercube.)
 
 
@@ -150,7 +150,7 @@ import ec.*;
  <tr><td valign=top style="white-space: nowrap"><i>base</i>.<tt>mutation-prob</tt>&nbsp;&nbsp;&nbsp;<i>or</i><br>
  <tr><td valign=top style="white-space: nowrap"><i>base</i>.<tt>segment</tt>.<i>segment-number</i>.<tt>mutation-prob</tt>&nbsp;&nbsp;&nbsp;<i>or</i><br>
  <tr><td valign=top style="white-space: nowrap"><i>base</i>.<tt>mutation-prob</tt>.<i>gene-number</i><br>
- <font size=-1>0.0 &lt;= float &lt;= 1.0 </font></td>
+ <font size=-1>0.0 &lt;= double &lt;= 1.0 </font></td>
  <td valign=top>(probability that a gene will get mutated over default mutation)</td></tr>
 
  </table>
@@ -218,7 +218,7 @@ public class VectorSpecies extends Species
     protected double[] mutationProbability;
     
     /** Probability that a gene will cross over -- ONLY used in V_ANY_POINT crossover */
-    public float crossoverProbability;
+    public double crossoverProbability;
     /** What kind of crossover do we have? */
     public int crossoverType;
     /** How big of a genome should we create on initialization? */
@@ -232,7 +232,7 @@ public class VectorSpecies extends Species
     /** What's the largest legal genome? */
     public int maxInitialSize;
     /** With what probability would our genome be at least 1 larger than it is now during initialization? */
-    public float genomeIncreaseProbability;
+    public double genomeIncreaseProbability;
     /** How big of chunks should we define for crossover? */
     public int chunksize;
     /** How far along the long a child can be located for line or intermediate recombination */
@@ -286,7 +286,7 @@ public class VectorSpecies extends Species
                 state.output.warning("Gemoetric size initialization used, but no minimum initial size provided.  Assuming minimum is 0.");
                 minInitialSize = 0;
                 }
-            genomeIncreaseProbability = state.parameters.getFloatWithMax(base.push(P_GEOMETRIC_PROBABILITY),def.push(P_GEOMETRIC_PROBABILITY),0.0, 1.0);
+            genomeIncreaseProbability = state.parameters.getDoubleWithMax(base.push(P_GEOMETRIC_PROBABILITY),def.push(P_GEOMETRIC_PROBABILITY),0.0, 1.0);
             if (genomeIncreaseProbability < 0.0 || genomeIncreaseProbability >= 1.0)  // note >=
                 state.output.fatal("To use Gemoetric size initialization, the genome increase probability must be >= 0.0 and < 1.0",
                     base.push(P_GEOMETRIC_PROBABILITY),def.push(P_GEOMETRIC_PROBABILITY));
@@ -397,7 +397,7 @@ public class VectorSpecies extends Species
 
         if (crossoverType==C_ANY_POINT)
             {
-            crossoverProbability = state.parameters.getFloatWithMax(
+            crossoverProbability = state.parameters.getDoubleWithMax(
                 base.push(P_CROSSOVERPROB),def.push(P_CROSSOVERPROB),0.0,0.5);
             if (crossoverProbability==-1.0)
                 state.output.fatal("If it's going to use any-point crossover, VectorSpecies must have a crossover probability between 0.0 and 0.5 inclusive",
@@ -412,7 +412,7 @@ public class VectorSpecies extends Species
                 state.output.fatal("If FloatVectorSpecies is going to use simulated binary crossover (SBX), the distribution index must be defined and >= 0.",
                     base.push(P_CROSSOVER_DISTRIBUTION_INDEX), def.push(P_CROSSOVER_DISTRIBUTION_INDEX));
             }
-        else crossoverProbability = 0.0f;
+        else crossoverProbability = 0.0;
 
         state.output.exitIfErrors();
                 

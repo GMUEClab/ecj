@@ -60,7 +60,7 @@ import ec.select.*;
  <td valign=top>(should we pick the <i>worst</i> individual in the tournament instead of the <i>best</i>?)</td></tr>
 
  <tr><td valign=top><i>base.</i><tt>ratio</tt><br>
- <font size=-1>float &gt;= 2 (default)</font></td>
+ <font size=-1>double &gt;= 2 (default)</font></td>
  <td valign=top>(the ratio of worst out of remaining individuals that go in the next bucket)</td></tr>
  </table>
 
@@ -93,10 +93,10 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
     public static final String P_RATIO = "ratio";
 
     /** The default value for RATIO */
-    static float defaultRATIO = 2;
+    static double defaultRATIO = 2;
 
     /** The value of RATIO */
-    public float ratio;
+    public double ratio;
 
     // the indexes of the buckets where the individuals should go (will be used instead of fitness)
     int[] bucketValues;
@@ -118,7 +118,7 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
 
         if( state.parameters.exists( base.push(P_RATIO), def.push(P_RATIO)))
             {
-            ratio = state.parameters.getFloat(base.push(P_RATIO),def.push(P_RATIO),2.0f);
+            ratio = state.parameters.getDouble(base.push(P_RATIO),def.push(P_RATIO),2.0f);
             if( ratio<2 )
                 {
                 state.output.fatal("The value of b must be >= 2.",base.push(P_RATIO),def.push(P_RATIO));
@@ -156,8 +156,8 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
         // how many individuals in current bucket
         int nInd;
 
-        float totalInds = ((float)state.population.subpops[subpopulation].individuals.length);
-        float averageBuck = Math.max( totalInds/ratio, 1 );
+        double totalInds = ((double)state.population.subpops[subpopulation].individuals.length);
+        double averageBuck = Math.max( totalInds/ratio, 1 );
 
         // first individual goes into first bucket
         bucketValues[0] = 0;

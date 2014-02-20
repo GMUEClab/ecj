@@ -387,127 +387,95 @@ eval.problem.data = ec.app.tutorial4.DoubleData
 
 <h3>Run the Problem</h3>
 
-<p>Save the files and close them.  Compile the java files.  The run the problem with <b>java ec.Evolve -file tutorial4.params -p stat.gather-full=true</b> (because we'd like to see maximal information, and it's not that expensive to compute).
+<p>Save the files and close them.  Compile the java files.  The run the problem with <b>java ec.Evolve -file tutorial4.params</b>
 
-<p>On most Java VM's ECJ should discover the solution in four generations (it's an easy problem).  The out.stat file looks like this:
+<p>On most Java VM's ECJ should discover the solution in about five generations (it's an easy problem).  The out.stat file looks something like this:
 
 <tt><font size=-2><pre>
-Generation 0
-================
-
-Subpopulation 0
-----------------
-Avg Nodes: 24.11328125
-Nodes/tree: [24.11328125]
-Avg Depth: 4.5029296875
-Depth/tree: [4.5029296875]
-Mean fitness raw: 10.727137 adjusted: 0.12187841 hits: 0.2705078125
-
-Best Individual of Generation:
+Generation: 0
+Best Individual:
+Subpopulation 0:
 Evaluated: true
-Fitness: Raw=0.73517203 Adjusted=0.5763117 Hits=2
+Fitness: Standardized=0.9386781035892474 Adjusted=0.5158153889233138 Hits=1
 Tree 0:
- (* (+ (- (+ (- y x) (+ x x)) (+ (- x y) (*
-     y y))) (* (+ (* y y) (* y y)) (+ (- y y)
-     (- y y)))) (+ (+ (+ (+ x y) (* x x)) (* (*
-     y y) (- x x))) (+ (* (- y y) (+ x y)) (*
-     (- y y) (* y y)))))
+ (- (+ (- y x) (+ x x)) (* (* y y) (- x x)))
 
-
-
-Generation 1
-================
-
-Subpopulation 0
-----------------
-Avg Nodes: 19.060546875
-Nodes/tree: [19.060546875]
-Avg Depth: 4.416015625
-Depth/tree: [4.416015625]
-Mean fitness raw: 6.279509 adjusted: 0.18087758 hits: 0.541015625
-
-Best Individual of Generation:
+Generation: 1
+Best Individual:
+Subpopulation 0:
 Evaluated: true
-Fitness: Raw=0.41414043 Adjusted=0.7071433 Hits=6
+Fitness: Standardized=0.7946952005080066 Adjusted=0.5571976788687795 Hits=1
 Tree 0:
- (* (+ (- (+ (- y x) (+ x x)) (+ (- x y) (*
-     y y))) (* (+ (* y y) (* y y)) (+ (- y y)
-     (- y y)))) (+ (+ (+ (+ x y) (* x x)) (* (*
-     y (* x y)) (- x x))) (+ (* (- y y) (+ x y))
-     (* (- y y) (* y y)))))
+ (- (+ y x) (* x x))
 
-
-
-Generation 2
-================
-
-Subpopulation 0
-----------------
-Avg Nodes: 18.21484375
-Nodes/tree: [18.21484375]
-Avg Depth: 4.4716796875
-Depth/tree: [4.4716796875]
-Mean fitness raw: 5.1355796 adjusted: 0.21912025 hits: 0.6796875
-
-Best Individual of Generation:
+Generation: 2
+Best Individual:
+Subpopulation 0:
 Evaluated: true
-Fitness: Raw=0.42874238 Adjusted=0.69991624 Hits=5
+Fitness: Standardized=0.24641565477086902 Adjusted=0.8023005777986895 Hits=6
 Tree 0:
- (- (+ (- (* (* x x) (+ y y)) (* (- y y) (-
-     x y))) (* (- (* x x) (+ y x)) (- (* y x)
-     (+ y x)))) (* (- (- (* y x) (+ y (* x y)))
-     (+ (* y y) (+ x y))) (* (+ (- x x) (* y x))
-     (* (- x y) (- y y)))))
+ (+ (* (* y x) (* x y)) (- (+ (* y x) x) (-
+     x y)))
 
-
-
-Generation 3
-================
-
-Subpopulation 0
-----------------
-Avg Nodes: 22.228515625
-Nodes/tree: [22.228515625]
-Avg Depth: 4.9208984375
-Depth/tree: [4.9208984375]
-Mean fitness raw: 4.6831636 adjusted: 0.25266612 hits: 0.8662109375
-
-Best Individual of Generation:
+Generation: 3
+Best Individual:
+Subpopulation 0:
 Evaluated: true
-Fitness: Raw=0.0 Adjusted=1.0 Hits=10
+Fitness: Standardized=0.24641565477086902 Adjusted=0.8023005777986895 Hits=6
 Tree 0:
- (+ y (+ (* x y) (* y (* x x))))
+ (+ (* (* y x) (* x y)) (- (+ (* y x) x) (-
+     x y)))
 
+Generation: 4
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.3860104397332161 Adjusted=0.7214952869997743 Hits=4
+Tree 0:
+ (- (+ (* x y) y) (* (* y y) (- x x)))
 
-
-Final Statistics
-================
-Total Individuals Evaluated: 4096
+Generation: 5
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.0 Adjusted=1.0 Hits=10
+Tree 0:
+ (+ (* x (+ y (* x y))) y)
 
 Best Individual of Run:
+Subpopulation 0:
 Evaluated: true
-Fitness: Raw=0.0 Adjusted=1.0 Hits=10
+Fitness: Standardized=0.0 Adjusted=1.0 Hits=10
 Tree 0:
- (+ y (+ (* x y) (* y (* x x))))
-
-
-
-Timings
-=======
-Initialization: 0.312 secs total, 24692 nodes, 79141.02 nodes/sec
-Evaluating: 0.221 secs total, 85624 nodes, 387438.9 nodes/sec
-Breeding: 0.614 secs total, 60932 nodes, 99237.78 nodes/sec
-
-
-
-Memory Usage
-==============
-Initialization: 1109.9062 KB total, 24692 nodes, 22.246923 nodes/KB
-Evaluating: 1.6875 KB total, 85624 nodes, 50740.15 nodes/KB
-Breeding: 1782.4219 KB total, 60932 nodes, 34.184948 nodes/KB
+ (+ (* x (+ y (* x y))) y)
 </pre></font></tt>
 
-<p>Wow, only 34.14948 nodes fit in a KB!  That's 30 bytes per node!  Compare this to lil-gp, which uses 4 bytes per node, or 17 bytes for an Ephemeral Random Constant.  And DGPC uses only 1 byte per node.  These are packed array approaches, and compared to them, ECJ is a memory hog.  This is partially due to Java, and partially due to ECJ using a tree structure rather than a packed array structure. The upside is that ECJ's trees are <b>far</b> easier to modify and customize than packed arrays of simple numbers.
+<p>Another option is to print out tabular statistics.  
+We'll change the statistics from the default <a href="../../classdocs/ec/gp/koza/KozaStatistics.html">KozaStatistics</a> to the line-by-line data format of <a href="../../classdocs/ec/gp/koza/KozaShortStatistics.html">KozaShortStatistics</a>.  
+Run the system as <b>java ec.Evolve -file tutorial4.params -p stat=ec.gp.koza.KozaShortStatistics</b> and we might get something like:
+
+<tt><font size=-2><pre>
+0 0.11815579608850547 0.5106663312374864 0.5106663312374864 
+1 0.16516424252767573 0.7553260554636446 0.7553260554636446 
+2 0.2032414840372659 0.6840854153019551 0.7553260554636446 
+3 0.23092182973239558 1.0 1.0 
+</pre></font></tt>
+
+The four columns show the generation number, the mean fitness for the population each generation, the best fitness for the population each generation, and the best fitness so far in the run.  You can extend this with additional statistical columns (describing time and space usage) by saying:  <b>java ec.Evolve -file tutorial4.params -p stat=ec.gp.koza.KozaShortStatistics -p stat.do-size=true -p stat.do-time-true</b>  As a result, you might get something like this:
+
+<tt><font size=-2><pre>
+0 67 22 [ 23.740234375 ] 23 23 9.0 9.0 0.12096272693400785 0.6076038106112858 0.6076038106112858 
+1 14 2 [ 16.232421875 ] 16 19 7.0 7.0 0.17651978477818045 0.6208479277810929 0.6208479277810929 
+2 7 1 [ 13.9375 ] 13 17 13.0 13.0 0.2093994867069308 0.623960607294017 0.623960607294017 
+3 4 1 [ 13.740234375 ] 13 16 11.0 11.0 0.23955326657131645 0.9999999999999998 0.9999999999999998 
+4 5 1 [ 14.25390625 ] 14 16 11.0 11.0 0.2636658620971829 0.9999999999999998 0.9999999999999998 
+5 4 1 [ 13.8359375 ] 13 15 11.0 11.0 0.28518720248196483 1.0 1.0 
+6 3 2 [ 14.99609375 ] 14 15 9.0 9.0 0.3058538096982688 1.0 1.0 
+</pre></font></tt>
+
+<p>Consult the class documentation for <a href="../../classdocs/ec/gp/koza/KozaStatistics.html">KozaStatistics</a>, or more usefully, the ECJ Owner's Manual, to understand these column.  
+
+<p>GPNodes are the dominant part of an ECJ GP process.  If you run this process under memory profiling, you'll find that in Java 7 it takes up about 1500K of space.  That's not a lot but at about 14 GPNodes per individual in generation 3, or about 14300 GPNodes per population, or about 28600 GPNodes in memory at a time during breeding (the prior and current generations), this comes to about 50 bytes per node.  This ignores the non-GPNode memory usage of course: in my experience ECJ takes up about 30 bytes per GPNode.  Compare this to lil-gp, which uses 4 bytes per node, or 17 bytes for an Ephemeral Random Constant.  This is a packed array approach, and compared it, ECJ is a memory hog.  This is partially due to Java, and partially due to ECJ using a tree structure rather than a packed array structure. The upside is that ECJ's trees are <b>far</b> easier to modify and customize than packed arrays of simple numbers.
 
 <p>Since GPNodes absolutely dominate the memory usage, we only bother looking at them.  Here's where the memory goes:
 
@@ -521,9 +489,7 @@ Breeding: 1782.4219 KB total, 60932 nodes, 34.184948 nodes/KB
 <li> 1 byte for the constraints
 </ul>
 
-<p>If you've been counting, that totals to 34 bytes.  HotSpot is clever when dealing with zero-sized arrays, which I believe accounts for the slight lowering in usage.  PLUS: to evolve a population, ECJ must keep around the old population to breed into it.  That doubles your expected memory (GPSYS, another Java-based GP system, jumps through hoops to avoid this necessity).
-
-<p>The net result of this is that GP runs which work fine in 8MB on lil-gp can require 64MB on ECJ.  This was a design decision tradeoff: I decided to run fast and to be highly flexible and powerful rather than be highly compact.  Besides...memory is cheap nowadays!  :-)
+<p>If you've been counting, that totals to 34 bytes.  HotSpot is clever when dealing with zero-sized arrays, which I believe accounts for the slight lowering in usage.  PLUS: to evolve a population, ECJ must keep around the old population to breed into it.  That doubles your expected memory.
 
 <h3>Print out the trees for LaTeX</h3>
 
@@ -532,10 +498,6 @@ Here's a nifty trick.  GPTrees can be printed out in LaTeX form rather than in s
 <p>The best individual of the generation now looks like this:
 
 <tt><pre>
-Final Statistics
-================
-Total Individuals Evaluated: 4096
-
 Best Individual of Run:
 Evaluated: true
 Fitness: Raw=0.0 Adjusted=1.0 Hits=10
@@ -596,18 +558,7 @@ two children are printed as if the node was an operator (+, *, etc.), and nodes 
 
 <h3>Try some Elitism</h3>
 
-Let's add two more gizmos.  First, we'll make the model elitist, which in this case wil be keeping the two best individuals in the subpopulation 0 of the population (you can specify different elitism values for each subpopulation).  Second, we'll change the statistics from the default <a href="../../classdocs/ec/gp/koza/KozaStatistics.html">KozaStatistics</a> to the line-by-line data format of <a href="../../classdocs/ec/gp/koza/KozaShortStatistics.html">KozaShortStatistics</a>.  We can change both on the command line.  <a href="../../classdocs/ec/simple/SimpleBreeder.html">SimpleBreeder</a> has an elitist feature.  Run the system as <b>java ec.Evolve -file tutorial4.params -p breed.elite.0=2 -p stat=ec.gp.koza.KozaShortStatistics -p stat.gather-full=true</b>
-
-<p>The results are very similar in this case.  Here's the statistics file:
-
-<tt><font size=-2><pre>
-0 377 1137264 99 648 24.11328125 [24.11328125] 24.11328125 4.5029296875 [4.5029296875] 4.5029296875 10.727137 0.12187841 0.2705078125 0.73517203 0.5763117 2 0.73517203 0.5763117 2 
-1 297 929120 80 360 19.060546875 [19.060546875] 21.5869140625 4.416015625 [4.416015625] 4.45947265625 6.279509 0.18087758 0.541015625 0.41414043 0.7071433 6 0.41414043 0.7071433 6 
-2 188 901176 36 360 18.21484375 [18.21484375] 20.462890625 4.4716796875 [4.4716796875] 4.463541666666667 5.1355796 0.21912025 0.6796875 0.42874238 0.69991624 5 0.41414043 0.7071433 6 
-3 273 -783656 40 360 22.228515625 [22.228515625] 20.904296875 4.9208984375 [4.9208984375] 4.577880859375 4.6831636 0.25266612 0.8662109375 0.0 1.0 10 0.0 1.0 10 
-</pre></font></tt>
-
-<p>For information on the specifics of these columns, consult the <a href="../../classdoocs/ec/gp/koza/KozaShortStatistics.html">KozaShortStatistics</a> documentation.
+Now we'll make the model elitist, which in this case will be keeping the two best individuals in the subpopulation 0 of the population (you can specify different elitism values for each subpopulation).  <a href="../../classdocs/ec/simple/SimpleBreeder.html">SimpleBreeder</a> has an elitist feature.  Run the system as <b>java ec.Evolve -file tutorial4.params -p breed.elite.0=2</b>
 
 <p>The symbolic regression example here is fairly simple.  More sophisticated (but one-variable) versions can be found in the <b>ec.app.regression</b> package.  At this point understanding them should be pretty easy.
 
