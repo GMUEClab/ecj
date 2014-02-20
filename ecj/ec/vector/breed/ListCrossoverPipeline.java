@@ -262,6 +262,8 @@ public class ListCrossoverPipeline extends BreedingPipeline
                     }
                 max_chunks[i] = (int)(size_in_chunks[i]*maxCrossoverPercentage);
                 }
+
+			Object validationData = computeValidationData(state, parents, thread);
             
             // attempt 'num-tries' times to produce valid children (which are bigger than min-child-size)
             boolean valid_children = false;
@@ -337,7 +339,7 @@ public class ListCrossoverPipeline extends BreedingPipeline
                     
                 children[0].join(pieces[0]);
                 children[1].join(pieces[1]);
-                if(children[0].genomeLength() > minChildSize && children[1].genomeLength() > minChildSize)
+                if(children[0].genomeLength() > minChildSize && children[1].genomeLength() > minChildSize && isValidated(split, validationData))
                     {
                     valid_children = true;
                     }
@@ -364,6 +366,21 @@ public class ListCrossoverPipeline extends BreedingPipeline
         
         return n;
         }    
+    
+    /** A hook called by ListCrossoverPipeline to allow subclasses to prepare for additional validation testing. 
+    	Primarily used by GECrossoverPipeline.  */ 
+    public Object computeValidationData(EvolutionState state, VectorIndividual[] parents, int thread)
+    	{
+    	return null;
+    	}
+
+    /** A hook called by ListCrossoverPipeline to allow subclasses to further validate children crossover points. 
+    	Primarily used by GECrossoverPipeline.  */ 
+	public boolean isValidated(int[][] split, Object validationData)
+		{
+		return true;
+		}
+
     }
     
     

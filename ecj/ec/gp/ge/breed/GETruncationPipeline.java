@@ -24,7 +24,7 @@ import ec.util.*;
  * Note: truncaton only occurs if the number of comsumed genes is greater than 1.</p>
  *
  * <p><b>Default Base</b><br>
- * ge.breed.GETruncationPipeline
+ * ge.truncation
  *
  * @author Sean Luke, Joseph Zelibor III, and Eric Kangas
  * @version 1.0
@@ -32,7 +32,7 @@ import ec.util.*;
 
 public class GETruncationPipeline extends BreedingPipeline
 {
-	public static final String P_TRUNCATION = "truncate";
+	public static final String P_TRUNCATION = "truncation";
 	public static final int NUM_SOURCES = 1;
 
 	public int numSources()
