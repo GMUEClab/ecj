@@ -2214,3 +2214,8 @@ Version		Change Log
 	MAJOR BACKWARD-INCOMPATIBLE CHANGE: further updates of floats to
 		doubles, this time in most other cases (random distributions,
 		etc.) throughout ECJ.
+	P_TRUNCATION in ec/gp/ge/breed/GETruncationPipeline now set to
+		"truncation" rather than "truncate"
+	Added ec/gp/ge/breed/GECrossoverPipeline.java
+	Added hooks to ListCrossoverPipeline to simplify and unify
+		GECrossoverPipeline
