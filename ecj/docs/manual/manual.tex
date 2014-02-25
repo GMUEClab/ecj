@@ -86,7 +86,7 @@
 \vspace{-0.25em}
 \begin{description}
 \small}
-{\end{description}\hrule\vspace{1.5em}}
+{\end{description}\vspace{-0.5em}\rule{0pt}{0pt}\xfill[0ex]\vspace{1em}}
 
 \newcommand{\mthd}[1]{\item[{\sf #1}]~\newline}
 
@@ -3389,6 +3389,22 @@ Now {myCrossover} requests one child from {BufferedBreedingPipeline}, which in t
 \item \class{ec.breed.ForceBreedingPipeline} takes a single source.  In response for a request for \(N\) individuals, ForceBreedingPipeline in turn requests up to some \(M\) Individuals from its source.  If \(M>N\), then ForceBreedingPipeline requests exactly \(N\) indivdiuals.  If \(M<N\), then ForceBreedingPipeline repeatedly requests \(M\) individuals to fill the \(N\), until possibly the last request, where it requests the remainder.  For example, if \(N=15\) and \(M=4\), then ForceBreedingPipeline will request 4, then 4, then 4, then 3 Individuals and return them all.
 
 This trick is sort of the counterpart to BufferedBreedingPipeline: it gives you a way of demanding a certain number of individuals from a pipeline (like a CrossoverPipeline) which doesn't normally return that number.  It's only occasionally useful in practice though.
+
+
+\item \class{ec.breed.CheckingBreedingPipeline} takes two sources, and some \(N\) times to produce ``valid'' individuals from source 0.  To verify validity, it calls the method \method{allValid(...)}, which you override.  If it fails after \(N\) attempts, it instead produces individuals from source 1 and returns them.  The value of \(N\) is determined with the parameter:
+
+\params{%
+{\it base}.num-times = 20
+}
+
+The \method{allValid(...)} method is defined as:
+
+\begin{methods}{ec.breed.CheckingBreedingPipeline}
+\mthd{public boolean allValid(Individual[] inds, int numInds, int subpopulation, EvolutionState state, int thread)}
+Returns whether all of the individuals in {\it inds[0] ... inds[numInds - 1]} are valid.  Override this to customize how CheckingBreedingPipeline checks individuals.  By default, this method simply returns true.
+\end{methods}
+
+It may be the case that you wish to produce some \(N\) individuals which are checked for validity independently of one another.  Probably the easiest way to do this is to set the CheckingBreedingPipeline as a child of ForceBreedingPipeline whose \parameter{num-inds} parameter has been set to 1.
 
 \item Last, \class{ec.breed.GenerationSwitchPipeline} takes two sources.  In response to a request for individuals, for generations 1 through \(N-1\) GenerationSwitchPipeline will request Indivduals from source 0.  For generations \(N\) and on,  GenerationSwitchPipeline will request Individuals from source 1.  You specify the switch-generation \(N\) as:
 
