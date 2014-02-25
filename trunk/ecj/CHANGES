@@ -2221,3 +2221,4 @@ Version		Change Log
 		GECrossoverPipeline
 	Heavy revisions to GE package to allow conversions back and forth
 		between GE and GP trees
+	Added CheckingPipeline.java
