@@ -3373,7 +3373,9 @@ pop.subpop.0.pipe.0.source.0 = ec.app.myOtherCrossover\\
 pop.subpop.0.pipe.0.source.1 = same
 }
 
-Looks good, right?  Not so fast.  The {myCrossover} class will request exactly one individual from each of its sources.  First it'll request from source 0, which will cross over two children, return one, {\it and throw away the other}.  Then it'll request from source 1, which will do exactly the same thing again even though it's the same object.  As a result you're not crossing over two individuals twice.  You're crossing over individuals which are the result of separate earlier crossovers.  But if you did it instead like this:
+Looks good, right?  Not so fast.  The {myCrossover} class will request exactly one individual from each of its sources.  First it'll request from source 0, which will cross over two children, return one, {\it and throw away the other}.  Then it'll request from source 1, which will again produce two children, return one, and throw away the other.  As a result you're not crossing over two individuals twice.  You're crossing over different individuals which are the result of separate earlier crossovers.  
+
+But if you did it instead like this:
 
 \params{%
 pop.subpop.0.pipe.0 = ec.app.myCrossover\\
@@ -3509,7 +3511,7 @@ pop.subpop.0.species.pipe.source.1 = ec.gp.koza.CrossoverPipeline\\
 pop.subpop.0.species.pipe.source.1.prob = 0.90
 }
 
-In Genetic Programming normally we'd use Tournament Selection for all selectors.  But we'll do various selectors as shown in the Figure.  First the Fitness Proportionate Selection source for the ReproductionPipeline:
+In Genetic Programming nearly {\it always} we'd use Tournament Selection for all selectors.  But we'll do various selectors as shown in the Figure.  First the Fitness Proportionate Selection source for the ReproductionPipeline:
 
 \params{%
 pop.subpop.0.species.pipe.source.0.source.0 = ec.select.FitProportionateSelection
@@ -7426,30 +7428,43 @@ Returns the sum of all paths from all nodes in the GPNode's subtree to the GPNod
 Returns the number of nodes in the subtree rooted by GPNode.  The {\it nodesearch} parameter allows us to restrict which nodes are included in the total, using the constants above.
 \mthd{public int meanDepth(int \textit{nodesearch})}
 Returns the path length divided by the number of nodes.The {\it nodesearch} parameter allows us to restrict which nodes are included in the total, using the constants above.
-\end{methods}
-
-Two methods permit even more flexibility in filtering exactly which GPNodes you want to consider, by using a \class{ec.gp.GPNodeGatherer} object.  This object contains a single method which you may override:
-
-\java{%
- public boolean test(GPNode thisNode);
-}
-
-In a subclass, override this method to return true if the node provided is one which you'd like to include.  The default form simply returns true for all nodes.  Armed with a GPNodeGatherer you've constructed, you can then call one of the two GPNode methods:
-
-\begin{methods}{ec.gp.GPNode}
-\mthd{public int numNodes(GPNodeGatherer \textit{gatherer})}
-Returns the number of nodes (filtered by the GPNodeGatherer) in the subtree rooted by the GPNode.
-\mthd{public int nodeInPosition(int \textit{p}, GPNodeGatherer \textit{gatherer}, int \textit{nodesearch})}
-returns the \(p\)th node in the subtree, filtered either by one of the following node search constants (note there are four here, whereas there were three in the previous methods):
+\mthd{public java.util.Iterator iterator(int \textit{nodesearch})}
+Returns a depth-first, left-to-right Iterator over all the nodes rooted by the GPNode.  The {\it nodesearch} parameter allows us to restrict which nodes are iterated over, and may be one of:
 
 \java{%
     public static final int \textit{GPNode.}NODESEARCH\_ALL;\\
     public static final int \textit{GPNode.}NODESEARCH\_TERMINALS;\\
-    public static final int \textit{GPNode.}NODESEARCH\_NONTERMINALS;\\
-    public static final int \textit{GPNode.}NODESEARCH\_CUSTOM;
+    public static final int \textit{GPNode.}NODESEARCH\_NONTERMINALS;
 }
 
-In the case of the first three constants, the GPNodeGatherer should be \variable{null}.  The fourth constant indicates that we should use the GPNodeGatherer instead (and it must be provided).
+\mthd{public java.util.Iterator iterator()}
+Returns a depth-first, left-to-right Iterator over all the nodes rooted by the GPNode.  Equivalent to \method{iterator(\textit{GPNode.}NODESEARCH\_ALL)}.
+\mthd{public GPNode nodeInPosition(int \textit{p},  int \textit{nodesearch})}
+Returns the \(p\)th node in the subtree rooted by the GPNode, using left-to-right depth-first search, and only considering those nodes specified by {\it nodesearch}, which can be one of:  
+
+\java{%
+    public static final int \textit{GPNode.}NODESEARCH\_ALL;\\
+    public static final int \textit{GPNode.}NODESEARCH\_TERMINALS;\\
+    public static final int \textit{GPNode.}NODESEARCH\_NONTERMINALS;
+}
+\end{methods}
+
+Three methods permit even more flexibility in filtering exactly which GPNodes you want to consider, by using a \class{ec.gp.GPNodeGatherer} object.  This object contains a single method, which you should override, and a single instance variable:
+
+\java{%
+GPNode node;  // used internally only\\
+public abstract boolean test(GPNode thisNode);
+}
+
+You can ignore the variable: it's used by GPNode's recursion.  As far as you are concerned, GPNodeGatherer provides a filter: override the \method{test(...)} method to specify whether certain GPNodes fit your needs.  Armed with a GPNodeGatherer you've constructed, you can then call one of the two GPNode methods:
+
+\begin{methods}{ec.gp.GPNode}
+\mthd{public int numNodes(GPNodeGatherer \textit{gatherer})}
+Returns the number of nodes (filtered by the GPNodeGatherer) in the subtree rooted by the GPNode.
+\mthd{public GPNode nodeInPosition(int \textit{p}, GPNodeGatherer \textit{gatherer})}
+Returns the \(p\)th node in the subtree rooted by the GPNode, using left-to-right depth-first search, and only considering those nodes filtered by the provided GPNodeGatherer.  
+\mthd{public java.util.Iterator iterator(GPNodeGatherer \textit{gatherer})}
+Returns a depth-first, left-to-right Iterator over all the nodes rooted by the GPNode, filtered by the GPNodeGatherer.
 \end{methods}
 
 And now we come to rigamarole which should look familiar to you if you've trudged through the Vector chapter.

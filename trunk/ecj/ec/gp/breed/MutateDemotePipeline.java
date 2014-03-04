@@ -104,11 +104,6 @@ public class MutateDemotePipeline extends GPBreedingPipeline
     /** Is our tree fixed?  If not, this is -1 */
     int tree;
 
-    /** Temporary Node Gatherer */
-    private GPNodeGatherer gatherer;
-
-    public MutateDemotePipeline() { gatherer = new GPNodeGatherer(); }
-
     public Parameter defaultBase() { return GPBreedDefaults.base().push(P_MUTATEDEMOTE); }
 
     public int numSources() { return NUM_SOURCES; }
@@ -139,14 +134,6 @@ public class MutateDemotePipeline extends GPBreedingPipeline
                 state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
         }
-
-    public Object clone()
-        { 
-        MutateDemotePipeline obj = (MutateDemotePipeline)(super.clone());
-        obj.gatherer = new GPNodeGatherer();  // make sure they're different
-        return obj;
-        }
-
 
     private boolean demotable(final GPInitializer initializer,
         final GPNode node, final GPFunctionSet set)
@@ -384,11 +371,7 @@ public class MutateDemotePipeline extends GPBreedingPipeline
         if (initializer.numAtomicTypes + 
             initializer.numSetTypes == 1)
             {
-            gatherer.node = null;
-            root.nodeInPosition(num,gatherer,GPNode.NODESEARCH_ALL);
-            if (gatherer.node==null) // uh oh
-                throw new InternalError("Internal error in pickDemotableNode, nodeInPosition didn't find a node!"); // should never happen
-            demotableNode = gatherer.node;
+            demotableNode = root.nodeInPosition(num,GPNode.NODESEARCH_ALL);
             return -1; // what _pickDemotableNode() returns...
             }
         // otherwise, I gotta do the dirty work
