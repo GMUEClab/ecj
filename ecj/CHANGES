@@ -2222,3 +2222,9 @@ Version		Change Log
 	Heavy revisions to GE package to allow conversions back and forth
 		between GE and GP trees
 	Added CheckingPipeline.java
+	Removed GPNode.nodeInPosition(int, GPNodeGatherer, int).  It is now
+		private, and certain more rational cover functions are
+		available in its place.
+	Added GPNode.iterator(...) methods
+	Added new GPNode.numNodes(...) method.
+	GPNodeGatherer is now abstract.

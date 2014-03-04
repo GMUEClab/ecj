@@ -88,10 +88,6 @@ public class KozaNodeSelector implements GPNodeSelector
     /** The number of nodes in the tree, -1 if unknown. */
     public int nodes;
 
-    /** Used internally to look for a node.  This is threadsafe as long as
-        an instance of KozaNodeSelector is used by only one thread. */
-    protected GPNodeGatherer gatherer;
-
     public Parameter defaultBase()
         {
         return GPKozaDefaults.base().push(P_NODESELECTOR);
@@ -99,7 +95,6 @@ public class KozaNodeSelector implements GPNodeSelector
 
     public KozaNodeSelector() 
         {
-        gatherer = new GPNodeGatherer(); 
         reset();
         }
 
@@ -108,8 +103,6 @@ public class KozaNodeSelector implements GPNodeSelector
         try
             {
             KozaNodeSelector s = (KozaNodeSelector)(super.clone());
-            // allocate a new gatherer, so we're always threadsafe
-            s.gatherer = new GPNodeGatherer();
             s.reset();
             return s;
             }
@@ -170,13 +163,9 @@ public class KozaNodeSelector implements GPNodeSelector
         
         if (rnd > nonterminalProbability + terminalProbability + rootProbability)  // pick anyone
             {
-            if (nodes==-1) nodes= 
-                               tree.child.numNodes(GPNode.NODESEARCH_ALL);
+            if (nodes==-1) nodes=tree.child.numNodes(GPNode.NODESEARCH_ALL);
                     {
-                    tree.child.nodeInPosition(s.random[thread].nextInt(nodes),
-                        gatherer,
-                        GPNode.NODESEARCH_ALL);
-                    return gatherer.node;
+                    return tree.child.nodeInPosition(s.random[thread].nextInt(nodes), GPNode.NODESEARCH_ALL);
                     }
             }
         else if (rnd > nonterminalProbability + terminalProbability)  // pick the root
@@ -185,24 +174,15 @@ public class KozaNodeSelector implements GPNodeSelector
             }
         else if (rnd > nonterminalProbability)  // pick terminals
             {
-            if (terminals==-1) terminals = 
-                                   tree.child.numNodes(GPNode.NODESEARCH_TERMINALS);
-            
-            tree.child.nodeInPosition(s.random[thread].nextInt(terminals),
-                gatherer,
-                GPNode.NODESEARCH_TERMINALS);
-            return gatherer.node;
+            if (terminals==-1) terminals = tree.child.numNodes(GPNode.NODESEARCH_TERMINALS);
+            return tree.child.nodeInPosition(s.random[thread].nextInt(terminals), GPNode.NODESEARCH_TERMINALS);
             }
         else  // pick nonterminals if you can
             {
-            if (nonterminals==-1)
-                nonterminals = tree.child.numNodes(GPNode.NODESEARCH_NONTERMINALS);
+            if (nonterminals==-1) nonterminals = tree.child.numNodes(GPNode.NODESEARCH_NONTERMINALS);
             if (nonterminals > 0) // there are some nonterminals
                 {
-                tree.child.nodeInPosition(s.random[thread].nextInt(nonterminals),
-                    gatherer,
-                    GPNode.NODESEARCH_NONTERMINALS);
-                return gatherer.node;
+                return tree.child.nodeInPosition(s.random[thread].nextInt(nonterminals), GPNode.NODESEARCH_NONTERMINALS);
                 }
             else // there ARE no nonterminals!  It must be the root node
                 {

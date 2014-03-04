@@ -120,9 +120,7 @@ public class Semantic extends GPProblem implements SimpleProblemForm
         int nterminals = t.child.numNodes(GPNode.NODESEARCH_TERMINALS);
         for (int i = 0; i < nterminals; i++)
             {
-            GPNodeGatherer g = new GPNodeGatherer();
-            t.child.nodeInPosition(i, g, GPNode.NODESEARCH_TERMINALS);
-            nodes.add(g.node);
+            nodes.add(t.child.nodeInPosition(i, GPNode.NODESEARCH_TERMINALS));
             }
 
         if (problemName.equals(P_ORDER))

@@ -7,9 +7,9 @@
 
 package ec.gp;
 import ec.*;
-import java.io.*;
 import ec.util.*;
-import ec.EvolutionState;
+import java.io.*;
+import java.util.*;
 
 /* 
  * GPNode.java
@@ -93,7 +93,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
     public static final int NODESEARCH_ALL = 0;
     public static final int NODESEARCH_TERMINALS = 1;
     public static final int NODESEARCH_NONTERMINALS = 2;
-    public static final int NODESEARCH_CUSTOM = 3;
+    static final int NODESEARCH_CUSTOM = 3;  // should not be public
 
     public static final int CHILDREN_UNKNOWN = -1;
     
@@ -399,7 +399,160 @@ public abstract class GPNode implements GPNodeParent, Prototype
         */
         }
 
+	/** Returns an iterator over all the GPNodes in the subtree rooted by this GPNode,
+		filtered by the provided GPNodeGatherer. */
+	public Iterator iterator(final GPNodeGatherer g)
+		{
+		return new Iterator()
+			{
+			GPNode current;
+			Iterator iter = iterator();
+			
+			void fill()
+				{
+				if (current == null)
+					while(iter.hasNext())
+						{
+						GPNode node = (GPNode)(iter.next());
+						if (g.test(node))
+							{
+							current = node;
+							break;
+							}
+						}
+				}
+			
+			public boolean hasNext()
+				{
+				fill();
+				return (current != null);
+				}
+				
+			public Object next()
+				{
+				fill();
+				Object obj = current;
+				current = null;
+				return obj;
+				}
+				
+			public void remove()
+				{
+				throw new UnsupportedOperationException();
+				}
+			};
+		}
+
+	/** Returns an iterator over all the GPNodes in the subtree rooted by this GPNode,
+		filtered by the provided nodesearch option (either NODSEARCH_TERMINALS, NODESEARCH_NONTERMINALS, 
+		or NODESEARCH_ALL) */
+	public Iterator iterator(final int nodesearch)
+		{
+		return iterator(new GPNodeGatherer()
+			{
+			public boolean test(GPNode node)
+				{
+				return (nodesearch==NODESEARCH_ALL ||
+					(nodesearch==NODESEARCH_TERMINALS && node.children.length==0) ||
+					(nodesearch==NODESEARCH_NONTERMINALS && node.children.length>0));
+				}
+			});
+		}
+		
+	/** Returns an iterator over all the GPNodes in the subtree rooted by this GPNode. */
+	public Iterator iterator()
+		{
+		return new Iterator()
+			{
+			GPNode current = GPNode.this;
+			boolean used = false;
+			
+			void fill()
+				{
+				if (used && current != null)
+					{ 
+					// are we at a terminal node?
+					if (current.children == null || current.children.length == 0)
+						{
+						GPNode node = current;
+					
+						while(true)  // look for a valid parent
+							{
+							if (node == GPNode.this)  // no parent, give up
+								{
+								current = null;
+								break;
+								}
+							else
+								{
+								GPNode par = (GPNode)(node.parent);  // this is safe because we're not the root at this point
+						
+								if (node.argposition + 1 < par.children.length)  // go here
+									{
+									current = par.children[node.argposition + 1];
+									break;
+									}
+								else  // find another parent
+									{
+									node = par;
+									}
+								}
+							}
+						}
+					else  // go down to first child
+						{
+						current = current.children[0];
+						}
+					used = false;
+					}
+				}
+				
+			public boolean hasNext()
+				{
+				fill();
+				return (current != null);
+				}
+				
+			public Object next()
+				{
+				fill();
+				used = true;
+				return current;
+				}
+				
+			public void remove()
+				{
+				throw new UnsupportedOperationException();
+				}
+			};
+		}
+
     /** Returns the p'th node, constrained by nodesearch,
+        in the subtree for which this GPNode is root.
+        Use numNodes(nodesearch) to determine the total number.  
+        g.test(...) is used as the constraining predicate.
+        p ranges from 0 to this number minus 1. O(n). The
+        resultant node is returned in <i>g</i>.*/
+	public GPNode nodeInPosition(int p, GPNodeGatherer g)
+		{
+		nodeInPosition(p, g, NODESEARCH_CUSTOM);
+		return g.node;
+		}
+
+     /** Returns the p'th node, constrained by nodesearch,
+        in the subtree for which this GPNode is root.
+        Use numNodes(nodesearch) to determine the total number.  
+        g.test(...) is used as the constraining predicate.
+        p ranges from 0 to this number minus 1. O(n). The
+        resultant node is returned in <i>g</i>.*/
+	public GPNode nodeInPosition(int p, int nodesearch)
+		{
+		GPNodeGatherer g = new GPNodeGatherer() { public boolean test(GPNode node) { return true; } };
+		nodeInPosition(p, g , nodesearch);
+		return g.node;
+		}
+
+    /* Returns the p'th node, constrained by nodesearch,
         in the subtree for which this GPNode is root.
         Use numNodes(nodesearch) to determine the total number.  Or if
         you used numNodes(g), then when
@@ -407,7 +560,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
         as the constraining predicate.
         p ranges from 0 to this number minus 1. O(n). The
         resultant node is returned in <i>g</i>.*/
-    public int nodeInPosition(int p, final GPNodeGatherer g, final int nodesearch)
+    int nodeInPosition(int p, final GPNodeGatherer g, final int nodesearch)
         {
         // am I of the type I'm looking for?
         if (nodesearch==NODESEARCH_ALL ||
