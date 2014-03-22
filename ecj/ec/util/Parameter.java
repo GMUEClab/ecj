@@ -108,8 +108,6 @@ public class Parameter implements Serializable
         return new Parameter(param,s);
         }
 
-
-
     /** Returns a new parameter with one path item popped off the end.  If this would result in a parameter with an empty collection of path items, null is returned. */ 
     public Parameter pop()
         {

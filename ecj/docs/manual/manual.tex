@@ -7428,6 +7428,14 @@ Returns the sum of all paths from all nodes in the GPNode's subtree to the GPNod
 Returns the number of nodes in the subtree rooted by GPNode.  The {\it nodesearch} parameter allows us to restrict which nodes are included in the total, using the constants above.
 \mthd{public int meanDepth(int \textit{nodesearch})}
 Returns the path length divided by the number of nodes.The {\it nodesearch} parameter allows us to restrict which nodes are included in the total, using the constants above.
+\mthd{public GPNode nodeInPosition(int \textit{p},  int \textit{nodesearch})}
+Returns the \(p\)th node in the subtree rooted by the GPNode, using left-to-right depth-first search, and only considering those nodes specified by {\it nodesearch}, which can be one of:  
+
+\java{%
+    public static final int \textit{GPNode.}NODESEARCH\_ALL;\\
+    public static final int \textit{GPNode.}NODESEARCH\_TERMINALS;\\
+    public static final int \textit{GPNode.}NODESEARCH\_NONTERMINALS;
+}
 \mthd{public java.util.Iterator iterator(int \textit{nodesearch})}
 Returns a depth-first, left-to-right Iterator over all the nodes rooted by the GPNode.  The {\it nodesearch} parameter allows us to restrict which nodes are iterated over, and may be one of:
 
@@ -7439,14 +7447,6 @@ Returns a depth-first, left-to-right Iterator over all the nodes rooted by the G
 
 \mthd{public java.util.Iterator iterator()}
 Returns a depth-first, left-to-right Iterator over all the nodes rooted by the GPNode.  Equivalent to \method{iterator(\textit{GPNode.}NODESEARCH\_ALL)}.
-\mthd{public GPNode nodeInPosition(int \textit{p},  int \textit{nodesearch})}
-Returns the \(p\)th node in the subtree rooted by the GPNode, using left-to-right depth-first search, and only considering those nodes specified by {\it nodesearch}, which can be one of:  
-
-\java{%
-    public static final int \textit{GPNode.}NODESEARCH\_ALL;\\
-    public static final int \textit{GPNode.}NODESEARCH\_TERMINALS;\\
-    public static final int \textit{GPNode.}NODESEARCH\_NONTERMINALS;
-}
 \end{methods}
 
 Three methods permit even more flexibility in filtering exactly which GPNodes you want to consider, by using a \class{ec.gp.GPNodeGatherer} object.  This object contains a single method, which you should override, and a single instance variable:
@@ -7705,7 +7705,7 @@ This code works with the \LaTeX{} ecltree and fancybox packages to produce a tre
  % each other horizontally quite right, so watch out.
  \newcommand{\gpbox}[1]{\Ovalbox{#1\rule[-.7ex]{0ex}{2.7ex}}}
 
-% And now the code
+% And now the code.  Note that % has been replaced with \%
 \begin{bundle}{\gpbox{*}}\chunk{\begin{bundle}{\gpbox{+}}\chunk{\gpbox{x}}
 \chunk{\begin{bundle}{\gpbox{-}}\chunk{\begin{bundle}{\gpbox{\%}}
 \chunk{\gpbox{x}}\chunk{\gpbox{x}}\end{bundle}}\chunk{\begin{bundle}

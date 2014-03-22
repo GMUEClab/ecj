@@ -424,7 +424,7 @@ public class ParameterDatabase extends Properties implements Serializable
                     + defaultParameter));
         try 
             {
-            Class c = Class.forName(get(p));
+            Class c = Class.forName(get(p), true, ClassLoader.getSystemClassLoader());
             if (!mustCastTosuperclass.isAssignableFrom(c))
                 throw new ParamClassLoadException("The class "
                     + c.getName()
@@ -514,7 +514,7 @@ public class ParameterDatabase extends Properties implements Serializable
                     + defaultParameter));
         try
             {
-            Class c = Class.forName(get(p));
+            Class c = Class.forName(get(p), true, ClassLoader.getSystemClassLoader());
             if (!mustCastTosuperclass.isAssignableFrom(c))
                 throw new ParamClassLoadException("The class "
                     + c.getName()
@@ -601,7 +601,7 @@ public class ParameterDatabase extends Properties implements Serializable
                     + defaultParameter));
         try
             {
-            Class c = Class.forName(get(p));
+            Class c = Class.forName(get(p), true, ClassLoader.getSystemClassLoader());
             if (!mustCastTosuperclass.isAssignableFrom(c))
                 throw new ParamClassLoadException("The class "
                     + c.getName()
@@ -1633,7 +1633,7 @@ public class ParameterDatabase extends Properties implements Serializable
                         return null;
                     String classname = p.substring(C_CLASS.length(),i);
                     String filename = p.substring(i).trim();
-                    return Class.forName(classname).getResourceAsStream(filename);
+                    return Class.forName(classname, true, ClassLoader.getSystemClassLoader()).getResourceAsStream(filename);
                     }
                 else 
                     {
@@ -2590,7 +2590,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 String filename = s.substring(i).trim();
                 try
                     {
-                    parents.addElement(new ParameterDatabase(filename, Class.forName(classname)));
+                    parents.addElement(new ParameterDatabase(filename, Class.forName(classname, true, ClassLoader.getSystemClassLoader())));
                     }
                 catch (ClassNotFoundException ex)
                     {
@@ -2633,7 +2633,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 String filename = s.substring(i).trim();
                 try
                     {
-                    parents.addElement(new ParameterDatabase(filename, Class.forName(classname)));
+                    parents.addElement(new ParameterDatabase(filename, Class.forName(classname, true, ClassLoader.getSystemClassLoader())));
                     }
                 catch (ClassNotFoundException ex)
                     {
@@ -2675,7 +2675,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 String fname = s.substring(i).trim();
                 try
                     {
-                    parents.addElement(new ParameterDatabase(fname, Class.forName(classname)));
+                    parents.addElement(new ParameterDatabase(fname, Class.forName(classname, true, ClassLoader.getSystemClassLoader())));
                     }
                 catch (ClassNotFoundException ex)
                     {
