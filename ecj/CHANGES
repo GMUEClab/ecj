@@ -2229,8 +2229,8 @@ Version		Change Log
 	Added new GPNode.numNodes(...) method.
 	GPNodeGatherer is now abstract.
 	Whenever ParameterDatabase loads a class using Class.forName(...),
-		it now instead uses 
-		Class.forName(..., , true, ClassLoader.getSystemClassLoader().
+		it now instead uses Class.forName(..., , true, 
+			Thread.currentThread().getContextClassLoader()).
 		This solves an obscure and rare bug where, if you place the
 		ecj.jar file in the Extension Classes location on your
 		computer (such as /Library/Java/Extension/ on a Mac) rather
