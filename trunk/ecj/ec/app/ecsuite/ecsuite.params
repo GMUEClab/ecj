@@ -27,6 +27,11 @@ eval.problem.type = rastrigin
 
 
 
+# Rotation Seed is the default.  But you can set it to an explicit value
+# here, like this:
+#
+# seed = 9234123
+
 
 
 state = 				ec.simple.SimpleEvolutionState
