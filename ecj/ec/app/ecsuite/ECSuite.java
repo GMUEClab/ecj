@@ -34,12 +34,16 @@ import ec.vector.*;
    <tr><td valign=top><i>base</i>.<tt>type</tt><br>
    <font size=-1>String, one of: rosenbrock rastrigin sphere step noisy-quartic kdj-f1 kdj-f2 kdj-f3 kdj-f4 booth griewank median sum product schwefel min rotated-rastrigin rotated-schwefel rotated-griewank langerman lennard-jones lunacek</font></td>
    <td valign=top>(The vector problem to test against.  Some of the types are synonyms: kdj-f1 = sphere, kdj-f2 = rosenbrock, kdj-f3 = step, kdj-f4 = noisy-quartic.  "kdj" stands for "Ken DeJong", and the numbers are the problems in his test suite)</td></tr>
+   <tr><td valign=top><i>base</i>.<tt>seed</tt><br>
+   <font size=-1>int > 0</font></td>
+   <td valign=top>(Random number seed for rotated problems)</td></tr>
    </table>
 
 */
 
 public class ECSuite extends Problem implements SimpleProblemForm
     {
+    public static final String P_SEED = "seed";
     public static final String P_WHICH_PROBLEM = "type";
 
     public static final String V_ROSENBROCK = "rosenbrock";
@@ -154,6 +158,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
     5.0                 // lunacek
     };
 
+	public long seed;  // rotation seed for rotation problems
 
     boolean alreadyChecked = false;
     public void checkRange(EvolutionState state, int problem, double[] genome)
@@ -266,6 +271,10 @@ public class ECSuite extends Problem implements SimpleProblemForm
             "  " + V_LENNARDJONES + "\n" +
             "  " + V_LUNACEK + "\n",
             base.push( P_WHICH_PROBLEM ) );
+        
+        seed = state.parameters.getLongWithDefault( base.push( P_SEED ), null, ROTATION_SEED );
+        if (seed <= 0)
+        	state.output.fatal("If a rotation seed is provided, it must be > 0", base.push( P_SEED ), null);
         }
 
     public void evaluate(final EvolutionState state,
@@ -468,7 +477,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
             synchronized(rotationMatrix)            // synchronizations are rare in ECJ.  :-(
                 {
                 if (rotationMatrix[0] == null)
-                    rotationMatrix[0] = buildRotationMatrix(ROTATION_SEED, (int)len);
+                    rotationMatrix[0] = buildRotationMatrix(state, seed, (int)len);
                 }
 
             // now we know the matrix exists rotate the matrix and return its value
@@ -481,7 +490,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
             synchronized(rotationMatrix)            // synchronizations are rare in ECJ.  :-(
                 {
                 if (rotationMatrix[0] == null)
-                    rotationMatrix[0] = buildRotationMatrix(ROTATION_SEED, (int)len);
+                    rotationMatrix[0] = buildRotationMatrix(state, seed, (int)len);
                 }
 
             // now we know the matrix exists rotate the matrix and return its value
@@ -494,7 +503,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
             synchronized(rotationMatrix)            // synchronizations are rare in ECJ.  :-(
                 {
                 if (rotationMatrix[0] == null)
-                    rotationMatrix[0] = buildRotationMatrix(ROTATION_SEED, (int)len);
+                    rotationMatrix[0] = buildRotationMatrix(state, seed, (int)len);
                 }
 
             // now we know the matrix exists rotate the matrix and return its value
@@ -720,9 +729,15 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static final long ROTATION_SEED = 9731297;
 
     /** Build an NxN rotation matrix[row][column] with a given seed. */
-    public static double[ /* row */ ][ /* column */] buildRotationMatrix(double rotationSeed, int N)
+    public static double[ /* row */ ][ /* column */] buildRotationMatrix(EvolutionState state, long rotationSeed, int N)
         {
-        MersenneTwisterFast rand = new MersenneTwisterFast(ROTATION_SEED);  // it's rare to need to do this, but we need to guarantee the same rotation space
+        if (rotationSeed == ROTATION_SEED)
+        	state.output.warnOnce("Default rotation seed being used (" + rotationSeed + ")");
+        	
+        MersenneTwisterFast rand = new MersenneTwisterFast(rotationSeed);  // it's rare to need to do this, but we need to guarantee the same rotation space
+        for(int i = 0; i < 624 * 4; i++) // prime the MT for 4 full sample iterations to get it warmed up
+        	rand.nextInt();
+        
         double o[ /* row */ ][ /* column */ ] = new double[N][N];
 
         // make random values

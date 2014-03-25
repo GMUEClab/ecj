@@ -2238,3 +2238,4 @@ Version		Change Log
 		classes normally found in the CLASSPATH because it has been
 		assigned a different ClassLoader than they have.  Java's
 		class loading model is bizarre and arcane.
+	ECSuite now allows you to specify the rotation seed
