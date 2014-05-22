@@ -2239,3 +2239,6 @@ Version		Change Log
 		assigned a different ClassLoader than they have.  Java's
 		class loading model is bizarre and arcane.
 	ECSuite now allows you to specify the rotation seed
+	Fix to NSGA2Breeder, which was breeding the wrong individuals if
+		multiple subpopulations were used (an unusual case).  Thanks
+		to Torsten Hildebrandt <hil@biba.uni-bremen.de>

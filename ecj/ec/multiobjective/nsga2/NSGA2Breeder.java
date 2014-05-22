@@ -69,8 +69,8 @@ public class NSGA2Breeder extends SimpleBreeder
             oldSubpop = oldPop.subpops[i];
             newSubpop = newPop.subpops[i];
             combinedInds = new Individual[oldSubpop.individuals.length + newSubpop.individuals.length];
-            System.arraycopy(newSubpop.individuals, i, combinedInds, i,  newSubpop.individuals.length);
-            System.arraycopy(oldSubpop.individuals, i, combinedInds,  newSubpop.individuals.length, oldSubpop.individuals.length);
+            System.arraycopy(newSubpop.individuals, 0, combinedInds, 0,  newSubpop.individuals.length);
+            System.arraycopy(oldSubpop.individuals, 0, combinedInds,  newSubpop.individuals.length, oldSubpop.individuals.length);
             newSubpop.individuals = combinedInds;
             }
         return newPop;
