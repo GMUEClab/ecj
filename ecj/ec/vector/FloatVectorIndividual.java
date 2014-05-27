@@ -90,8 +90,7 @@ public class FloatVectorIndividual extends VectorIndividual
 
     public void setup(final EvolutionState state, final Parameter base)
         {
-        super.setup(state, base); // actually unnecessary (Individual.setup()
-        // is empty)
+        super.setup(state, base); // actually unnecessary (Individual.setup() is empty)
 
         // since VectorSpecies set its constraint values BEFORE it called
         // super.setup(...) [which in turn called our setup(...)], we know that
