@@ -158,7 +158,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
     5.0                 // lunacek
     };
 
-	public long seed;  // rotation seed for rotation problems
+    public long seed;  // rotation seed for rotation problems
 
     boolean alreadyChecked = false;
     public void checkRange(EvolutionState state, int problem, double[] genome)
@@ -274,7 +274,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
         
         seed = state.parameters.getLongWithDefault( base.push( P_SEED ), null, ROTATION_SEED );
         if (seed <= 0)
-        	state.output.fatal("If a rotation seed is provided, it must be > 0", base.push( P_SEED ), null);
+            state.output.fatal("If a rotation seed is provided, it must be > 0", base.push( P_SEED ), null);
         }
 
     public void evaluate(final EvolutionState state,
@@ -732,11 +732,11 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public static double[ /* row */ ][ /* column */] buildRotationMatrix(EvolutionState state, long rotationSeed, int N)
         {
         if (rotationSeed == ROTATION_SEED)
-        	state.output.warnOnce("Default rotation seed being used (" + rotationSeed + ")");
-        	
+            state.output.warnOnce("Default rotation seed being used (" + rotationSeed + ")");
+                
         MersenneTwisterFast rand = new MersenneTwisterFast(rotationSeed);  // it's rare to need to do this, but we need to guarantee the same rotation space
         for(int i = 0; i < 624 * 4; i++) // prime the MT for 4 full sample iterations to get it warmed up
-        	rand.nextInt();
+            rand.nextInt();
         
         double o[ /* row */ ][ /* column */ ] = new double[N][N];
 

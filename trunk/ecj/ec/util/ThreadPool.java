@@ -292,7 +292,10 @@ public class ThreadPool implements java.io.Serializable
                     catch (InterruptedException e) { }
                     return true;
                     }
-                else return false;
+                else 
+                    {
+                    return false;
+                    }
                 }
             }
                 
@@ -317,8 +320,6 @@ public class ThreadPool implements java.io.Serializable
                     }
                 catch (Exception e) { Thread.interrupted(); } // resets interrupted flag.  Note ANY exception.
 
-                setRun(null);
-                                                                
                 // add myself back in the list
                 synchronized(workersLock)
                     {
@@ -329,8 +330,8 @@ public class ThreadPool implements java.io.Serializable
                                                 
                         if (totalWorkers == workers.size())  // we're all in the bag, let the pool know if it's joining
                             workersLock.notify();  // let joinAll know someone's back in the pool
-                                        
-                        runLock.notify(); // let joinRunnable know I'm done
+                        toRun = null;
+                        runLock.notifyAll(); // let joinRunnable know I'm done
                         }
                     }
                 }

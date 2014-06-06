@@ -2266,41 +2266,41 @@ state.output.fatal( "Parameter not found, or it has an incorrect value.", p );
         return thread;
         }
 
-	
-	public static final int ISLAND_INDEX_LOOKUP_FAILED = -1;
-	public static final Parameter islandIndexBase = new Parameter("exch.island");
-	public static final Parameter islandIndexNumIslands = new Parameter("exch.num-islands");
+        
+    public static final int ISLAND_INDEX_LOOKUP_FAILED = -1;
+    public static final Parameter islandIndexBase = new Parameter("exch.island");
+    public static final Parameter islandIndexNumIslands = new Parameter("exch.num-islands");
 
-	/** Looks up the island id in the parameter database, assuming something like
-		exch.island.1.id = GilligansIsland
-		Then returns the index number (in the example before, this would be 1).
-		If there is no such island in the parameter database using this parameter
-		format, then returns ISLAND_INDEX_LOOKUP_FAILED and issues a one-time warning.  
-		NOTE: This algorithm is O(n) for the number of
-		islands.  No, it's not fast, but with a small number of islands, it's not a big
-		deal.
-		*/ 
-	public int getIslandIndex(EvolutionState state, String id)
-		{
-		int num = state.parameters.getInt(islandIndexNumIslands, null, 0);
-		if (num < 0) // uh oh
-			{
-			state.output.warnOnce("IslandExchange.islandIndex could not find the number of islands", islandIndexNumIslands, null );
-			return ISLAND_INDEX_LOOKUP_FAILED;
-			}
-			
-		for(int i = 0; i < num; i++)
-			{
-			Parameter b = islandIndexBase.push("" + i).push("id");
-			String island = state.parameters.getString(b, null);
-			if (island == null)
-				state.output.warnOnce("IslandExchange.islandIndex could not find island number " + i, b, null);
-			else if (island.equals(id))
-				return i;
-			}
-			
-		state.output.warnOnce("IslandExchange.islandIndex could not find any island called " + id);
-		return ISLAND_INDEX_LOOKUP_FAILED;
-		}
+    /** Looks up the island id in the parameter database, assuming something like
+        exch.island.1.id = GilligansIsland
+        Then returns the index number (in the example before, this would be 1).
+        If there is no such island in the parameter database using this parameter
+        format, then returns ISLAND_INDEX_LOOKUP_FAILED and issues a one-time warning.  
+        NOTE: This algorithm is O(n) for the number of
+        islands.  No, it's not fast, but with a small number of islands, it's not a big
+        deal.
+    */ 
+    public int getIslandIndex(EvolutionState state, String id)
+        {
+        int num = state.parameters.getInt(islandIndexNumIslands, null, 0);
+        if (num < 0) // uh oh
+            {
+            state.output.warnOnce("IslandExchange.islandIndex could not find the number of islands", islandIndexNumIslands, null );
+            return ISLAND_INDEX_LOOKUP_FAILED;
+            }
+                        
+        for(int i = 0; i < num; i++)
+            {
+            Parameter b = islandIndexBase.push("" + i).push("id");
+            String island = state.parameters.getString(b, null);
+            if (island == null)
+                state.output.warnOnce("IslandExchange.islandIndex could not find island number " + i, b, null);
+            else if (island.equals(id))
+                return i;
+            }
+                        
+        state.output.warnOnce("IslandExchange.islandIndex could not find any island called " + id);
+        return ISLAND_INDEX_LOOKUP_FAILED;
+        }
     }
 

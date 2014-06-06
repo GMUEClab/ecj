@@ -58,7 +58,7 @@ public class CheckingPipeline extends BreedingPipeline
 
     public int numSources() { return NUM_SOURCES; }
 
-	int numTimes = 0;
+    int numTimes = 0;
 
     public void setup(final EvolutionState state, final Parameter base)
         {
@@ -66,9 +66,9 @@ public class CheckingPipeline extends BreedingPipeline
         Parameter def = defaultBase();
         numTimes = state.parameters.getInt(base.push(P_NUMTIMES), def.push(P_NUMTIMES),1);
         if (numTimes < 1)
-        	state.output.fatal("CheckingPipeline must have a num-times value >= 1.", 
-        		base.push(P_NUMTIMES),
-        		def.push(P_NUMTIMES));
+            state.output.fatal("CheckingPipeline must have a num-times value >= 1.", 
+                base.push(P_NUMTIMES),
+                def.push(P_NUMTIMES));
         if (likelihood != 1.0)
             state.output.warning("CheckingPipeline given a likelihood other than 1.0.  This is nonsensical and will be ignored.",
                 base.push(P_LIKELIHOOD),
@@ -76,10 +76,10 @@ public class CheckingPipeline extends BreedingPipeline
         }
     
     public boolean allValid(Individual[] inds, int numInds, int subpopulation, EvolutionState state, int thread)
-    	{
-    	return true;
-    	}
-    	
+        {
+        return true;
+        }
+        
     public int produce(
         final int min, 
         final int max, 
@@ -92,28 +92,28 @@ public class CheckingPipeline extends BreedingPipeline
         Individual[] inds2 = new Individual[max];
         
         for(int i = 0; i < numTimes; i++)
-        	{
-			// grab individuals from our source and stick 'em into inds2 at position 0
-			int n = sources[0].produce(min,max,0,subpopulation,inds2,state,thread);
-			
-			// check for validity
-			if (!allValid(inds2, n, subpopulation, state, thread))
-				continue;  // failure, try again
-				
-			// success!  Copy to inds and possibly clone
-			System.arraycopy(inds2, 0, inds, start, n);
-			if (sources[0] instanceof SelectionMethod)
-				for(int q=start; q < n+start; q++)
-					inds[q] = (Individual)(inds[q].clone());
-			return n;
-			}
-			
-		// big-time failure!  Grab from the other source
-		int n = sources[1].produce(min,max,start,subpopulation,inds,state,thread);
-		if (sources[0] instanceof SelectionMethod)
-			for(int q=start; q < n+start; q++)
-				inds[q] = (Individual)(inds[q].clone());
-		return n;
+            {
+            // grab individuals from our source and stick 'em into inds2 at position 0
+            int n = sources[0].produce(min,max,0,subpopulation,inds2,state,thread);
+                        
+            // check for validity
+            if (!allValid(inds2, n, subpopulation, state, thread))
+                continue;  // failure, try again
+                                
+            // success!  Copy to inds and possibly clone
+            System.arraycopy(inds2, 0, inds, start, n);
+            if (sources[0] instanceof SelectionMethod)
+                for(int q=start; q < n+start; q++)
+                    inds[q] = (Individual)(inds[q].clone());
+            return n;
+            }
+                        
+        // big-time failure!  Grab from the other source
+        int n = sources[1].produce(min,max,start,subpopulation,inds,state,thread);
+        if (sources[0] instanceof SelectionMethod)
+            for(int q=start; q < n+start; q++)
+                inds[q] = (Individual)(inds[q].clone());
+        return n;
         }
     }
 

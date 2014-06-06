@@ -38,21 +38,21 @@ import ec.gp.ge.*;
 public class GECrossoverPipeline extends ListCrossoverPipeline
     {
     public Object computeValidationData(EvolutionState state, VectorIndividual[] parents, int thread)
-    	{
-    	if (!(parents[0] instanceof GEIndividual) ||
-    		!(parents[1] instanceof GEIndividual))
-    		state.output.fatal("Non GEIndividuals used with GECrossoverPipeline.", null, null);
-    	
-    	return new int[] { 	((GESpecies)(parents[0].species)).consumed(state, ((GEIndividual)(parents[0])), thread),
-            				((GESpecies)(parents[1].species)).consumed(state, ((GEIndividual)(parents[1])), thread) } ;
-    	}
+        {
+        if (!(parents[0] instanceof GEIndividual) ||
+            !(parents[1] instanceof GEIndividual))
+            state.output.fatal("Non GEIndividuals used with GECrossoverPipeline.", null, null);
+        
+        return new int[] {      ((GESpecies)(parents[0].species)).consumed(state, ((GEIndividual)(parents[0])), thread),
+            ((GESpecies)(parents[1].species)).consumed(state, ((GEIndividual)(parents[1])), thread) } ;
+        }
 
-	public boolean isValidated(int[][] split, Object validationData)
-		{
-		int[] consumed = (int[]) validationData;
-		
-		return split[0][0] < consumed[0] && split[1][0] < consumed[1];
-		}    
+    public boolean isValidated(int[][] split, Object validationData)
+        {
+        int[] consumed = (int[]) validationData;
+                
+        return split[0][0] < consumed[0] && split[1][0] < consumed[1];
+        }    
     }
     
     

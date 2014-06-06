@@ -134,7 +134,7 @@ public class BoltzmannSelection extends FitProportionateSelection
         RandomChoice.organizeDistribution(fitnesses, true);
         }
 
-	double boltzmannExpectedValue(double fitness, final EvolutionState s)
+    double boltzmannExpectedValue(double fitness, final EvolutionState s)
         {
         double current_temperature = startingTemperature - (coolingRate * s.generation);
         if (current_temperature < 1.0)

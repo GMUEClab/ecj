@@ -26,12 +26,12 @@ import ec.*;
  */
 
 public final class GEDefaults implements DefaultsForm
-{
-	public static final String P_GE = "ge";
+    {
+    public static final String P_GE = "ge";
 
-	/** Returns the default base. */
-	public static final Parameter base()
-	{
-		return new Parameter(P_GE);
-	}
-}
+    /** Returns the default base. */
+    public static final Parameter base()
+        {
+        return new Parameter(P_GE);
+        }
+    }
