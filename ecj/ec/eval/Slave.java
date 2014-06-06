@@ -157,6 +157,9 @@ public class Slave
     public static final int SLEEP_TIME = 100;
         
     public static ThreadPool pool = new ThreadPool();
+    
+    /** My unique slave number. At present this is just used to define a unique name. */
+    public static int slaveNum = -1;
 
     public static void main(String[] args)
         {
@@ -308,11 +311,14 @@ public class Slave
                         if (!silent) Output.initialMessage(err);
                         throw new Output.OutputExitException(err);
                         }
+                        
+                    // read the unique number assigned to me
+                    slaveNum = dataIn.readInt();
                                 
                     // specify the slaveName
                     if (slaveName==null)
                         {                    
-                        slaveName = socket.getLocalAddress().toString() + "/" + System.currentTimeMillis();
+                        slaveName = socket.getLocalAddress().toString() + "/" + slaveNum;
                         if (!silent) Output.initialMessage("No slave name specified.  Using: " + slaveName);
                         }
                                 

@@ -45,12 +45,12 @@ public abstract class Exchanger implements Singleton
         Override this method to process the migrant, or provide a different Individual to migrate.
         The default simply returns the individual.  "island" refers to the island id of the
         destination island for this individual, or null if there is no island (as is the case
-    	in InterPopulationExchange).  "subpop" refers the expected subpopulation of the individual
-    	in the destination island, or the subpopulation the indivdiual is migrating to in InterPopulationExchange.
-    	Hint: if you are using IslandExchange and your island has access to the server exchange parameters 
-    	("exch.num-islands" and all parameters starting with "exch.island."), you can can call
-    	IslandExchange.getIslandIndex(state, island) to retrieve the island number in the parameters,
-    	from which you can then determine additional useful information about the destination island. */
+        in InterPopulationExchange).  "subpop" refers the expected subpopulation of the individual
+        in the destination island, or the subpopulation the indivdiual is migrating to in InterPopulationExchange.
+        Hint: if you are using IslandExchange and your island has access to the server exchange parameters 
+        ("exch.num-islands" and all parameters starting with "exch.island."), you can can call
+        IslandExchange.getIslandIndex(state, island) to retrieve the island number in the parameters,
+        from which you can then determine additional useful information about the destination island. */
     protected Individual process(EvolutionState state, int thread, String island, int subpop, Individual ind)
         {
         return ind;

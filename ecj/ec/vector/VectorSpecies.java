@@ -336,19 +336,19 @@ public class VectorSpecies extends Species
         {
         Parameter def = defaultBase();        
 
-		// We will construct, but NOT set up, a sacrificial individual here.
-		// Actual setup is done at the end of this method (in super.setup(...) )
-		// The purpose of this sacrificial individual is to enable methods such
-		// as inNumericalTypeRange() to run properly, since they require knowledge
-		// of which KIND of individual it is.
-		
-		i_prototype = (Individual)(state.parameters.getInstanceForParameter(
+        // We will construct, but NOT set up, a sacrificial individual here.
+        // Actual setup is done at the end of this method (in super.setup(...) )
+        // The purpose of this sacrificial individual is to enable methods such
+        // as inNumericalTypeRange() to run properly, since they require knowledge
+        // of which KIND of individual it is.
+                
+        i_prototype = (Individual)(state.parameters.getInstanceForParameter(
                 base.push(P_INDIVIDUAL),def.push(P_INDIVIDUAL),
                 Individual. class));
 
-		// this will get thrown away and replaced with a new one during super.setup(...).
-		
-		
+        // this will get thrown away and replaced with a new one during super.setup(...).
+                
+                
         
         // this might get called twice, I don't think it's a big deal
         setupGenome(state, base);

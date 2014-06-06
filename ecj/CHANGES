@@ -2242,3 +2242,13 @@ Version		Change Log
 	Fix to NSGA2Breeder, which was breeding the wrong individuals if
 		multiple subpopulations were used (an unusual case).  Thanks
 		to Torsten Hildebrandt <hil@biba.uni-bremen.de>
+	Parallel slaves now construct names for themselves using unique
+		numbers.
+	Fixed a bug in SlaveConnection which was causing slaves to hang
+		on quitting.  This was because the writeLoop thread was
+		waiting on the jobs monitor, but when interrupted it couldn't
+		retrieve all of its previous mutexes, so it would block;
+		but the method which had interrupted it, and was holding
+		on to the mutexes, then did a join on the thread, so they
+		were waiting for each other.  Thanks to Eric Scott
+		<escott8@gmu.edu>

@@ -86,8 +86,8 @@ public abstract class GPNodeBuilder implements Prototype
     public int minSize;  /** the minium possible size  -- if unused, it's 0 */
     public int maxSize;  /** the maximum possible size  -- if unused, it's 0 */
     public double[] sizeDistribution;  /* sizeDistribution[x] represents
-                                         the likelihood of size x appearing 
-                                         -- if unused, it's null */
+                                          the likelihood of size x appearing 
+                                          -- if unused, it's null */
                         
     /** Returns true if some size distribution (either minSize and maxSize,
         or sizeDistribution) is set up by the user in order to pick sizes randomly. */

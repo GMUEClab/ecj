@@ -71,7 +71,7 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooserD
         as: {0.3, 0.5, 0.6, 1.0}.
     */
 
-	public double probability;
+    public double probability;
 
     /** Sets up the BreedingPipeline.  You can use state.output.error here
         because the top-level caller promises to call exitIfErrors() after calling

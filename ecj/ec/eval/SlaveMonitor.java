@@ -48,6 +48,10 @@ public class SlaveMonitor
     
     ThreadPool pool;
     
+    /** A counter used to give slaves unique numbers so they can construct
+        useful unique names for themselves. */
+    int slaveNum = 0;
+    
     /**
      *  The socket where slaves connect.
      */
@@ -70,7 +74,11 @@ public class SlaveMonitor
         {
         try
             {
-            monitor.wait();
+            if (Thread.interrupted()) { return false; }
+            else synchronized(monitor)
+                     {
+                     monitor.wait();
+                     }
             }
         catch (InterruptedException e) { return false; }
         return true;
@@ -176,6 +184,12 @@ public class SlaveMonitor
                                                                                                         
                         dataIn = new DataInputStream(tmpIn);
                         dataOut = new DataOutputStream(tmpOut);
+                        
+                        // write unique integer
+                        dataOut.writeInt(slaveNum++);
+                        dataOut.flush();
+                        
+                        // read slave name
                         String slaveName = dataIn.readUTF();
 
                         dataOut.writeInt(randomSeed);
@@ -260,7 +274,8 @@ public class SlaveMonitor
             {
             while( !allSlaves.isEmpty() )
                 {
-                ((SlaveConnection)(allSlaves.removeFirst())).shutdown(state);
+                SlaveConnection sc = (SlaveConnection)(allSlaves.removeFirst());
+                sc.shutdown(state);
                 }
             notifyMonitor(allSlaves);
             }

@@ -2714,6 +2714,8 @@ eval.chunk-size=1
 
 The disadvantage of a small chunk size is that it involves a lot of locking to get each chunk.  This is a small but significant overhead: so we suggest using the default (large automatic chunks) unless your evaluations are costly and of high variance in evaluation time.
 
+Another disadvantage of a nonstandard chunk size is that threads run at different speeds and are no longer asynchronous: as a result, different runs with the same seeds could produce different results if evaluation is stochastic.
+
 Of course, you probably most often don't do parallelism at all: you'll just have a single thread (that is, \(N=1\)).  In this case you have one further option: to avoid cloning the Problem each time, by setting the following parameter to false:
 
 \params{%
@@ -9810,7 +9812,7 @@ eval.compression = true
 evalthreads = 1
 }
 
-Single-threaded evaluation wil {\it probably} work fine: but I'm not absolutely positive of it, and there's no use to multithreading when all you're doing is shipping jobs off-site.  Play it safe.
+Multi-threaded evaluation will {\it probably} work fine: but I'm not absolutely positive of it, and there's no use to multithreading when all you're doing is shipping jobs off-site.  Play it safe.
 
 \subsection{Slaves}
 
@@ -9869,7 +9871,7 @@ The default is ``true'' (that is, {\it not} daemon mode).
 
 \noindent{\bf Warning\quad}  If you make your slave multithreaded, and run it in daemon mode, and an exception occurs while the slave is doing multithreaded evaluation, then the slave may reset without cleaning up the other threads: they may continue in the background.
 
-You can give your slave a name which it and the master will use when printing out connection information.  If you don't it'll just make up a random number.  To assign a name, you say:
+You can give your slave a name which it and the master will use when printing out connection information.  It's not at all necessary: you don't have to, in which case it'll make up a name consisting of its IP address and a unique number .  To assign a name, you say:
 
 \params{%
 eval.slave.name = MyName
@@ -11816,13 +11818,13 @@ pop.subpop.0.species.pipe.source.0 = ec.multiobjective.spea2.SPEA2TournamentSele
 
 A Meta-Evolutionary Algorithm (or Meta-EA) is an evolutionary algorithm used to optimize the parameters of a second evolutionary algorithm.  Meta-EAs were originally called ``Meta-GAs'' (for obvious reasons), and are closely related to the concept of hyperheuristics.  ECJ implements Meta-EAs in a surprisingly clean fashion, using a single subclass of Problem called \class{ec.eval.MetaProblem}.  Interestingly, that is the {\it only} class in the Meta-EA facility!  The Meta-EA package was developed through collaboration with Khaled Ahsan Talukder, a GMU graduate student.
 
-In ECJ, a Meta-EA works like this.  We create an ordinary evolutionary process which evolves individuals in the form of DoubleVectorIndividuals.  These individuals' genomes notionally contain parameter values for other ECJ processes.  To test an individual, we hand it to MetaProblem, which fires up another ECJ system (in the same Java process) using those parameter values and runs it.  This happens some \(N\) times, and the mean best fitness over those \(N\) runs becomes the fitness of the DoubleVectorIndividual holding those parameter values.  
+In ECJ, a Meta-EA works like this.  We create an ordinary evolutionary process which evolves individuals in the form of DoubleVectorIndividuals.  These individuals' genomes notionally contain parameter values for a second ECJ system.  To test an individual, we hand it to MetaProblem, which fires up another ECJ system (in the same Java process) using those parameter values and runs it.  This happens some \(N\) times, and the mean best fitness over those \(N\) runs becomes the fitness of the DoubleVectorIndividual holding those parameter values.  
 
 Note that there are at least two levels of evolution.\footnote{You can of course have an EA which optimizes the parameters for an EA which optimizes the parameters for an EA, and so on.  MetaProblem can handle this without much issue.  But it's a pretty rare need!  So we'll go with ``two'' for purposes of this discussion.}  First there is the evolutionary process which is optimizing the parameters.  We will refer to this process as the {\bf meta-level process}.  Then there is the evolutionary process whose parameters are being optimized.  We will refer to this process as the {\bf base-level process}.  
 
 Within certain constraints, you can use pretty much any EA at the meta-level or at the base level.  But there are some rules.  First off, the meta-level individual must be a \class{DoubleVectorIndividual}.  We will treat this individual as a {\bf heterogeneous individual} (see Section \ref{heterogeneous}), which allows the Meta-EA system to have genes of different types: integers, floats, booleans, and the like.  Second the meta-level fitness must be one which can respond to \method{setToMeanOf(...)}, and typically should be of the same kind of fitness as the base-level fitness.  Generally this means: no multiobjective fitness at either level; and coevolutionary fitness might be a bit tricky.  SimpleFitness is fine, as is KozaFitness.
 
-Meta-EAs also work very well in combination with ECJ's distributed evaluator, which is good news because it's the natural setting for using them.  The idea here is to have the meta-level process as a master process, distributing meta-level individuals out to slaves, where they're tested by firing up a base-level ECJ process to be tested.  And Meta-EAs also work nicely in multiple threads.  This magic all works fine in ECJ because ECJ is self-contained: ECJ processes do not interact with other ECJ processes even in the same thread.
+Meta-EAs work very well in combination with ECJ's distributed evaluator, which is good news because it's the natural setting for using them!  The idea here is to have the meta-level process as a master process, distributing meta-level individuals out to slaves, where they're tested by firing up a base-level ECJ process to be tested.  And Meta-EAs also work nicely in multiple threads.  This magic all works fine in ECJ because ECJ is self-contained: ECJ processes do not interact with other ECJ processes even within the same thread.
 
 
 \subsection{The Two Parameter Files}
@@ -11879,7 +11881,7 @@ select.tournament.size =                        2
 
 Let's call this file {\bf base.params}.  It's nothing special.  Assuming you have a Problem subclass called \class{MyTestProblem}, ECJ should run this file without incident.
 
-Next you need to create the meta-level file.  Let's call this file {\bf meta.params}.   Here's one possibility.  We'll start with certain basic items (it won't run yet):
+Next you need to create the meta-level file, where we set up evolution of a DoubleVectorIndividual.  Let's call this file {\bf meta.params}.   Here's one possibility.  We'll start with certain basic items (it won't run yet):
 
 \begin{verbatim}
 #### META-LEVEL FILE
@@ -11903,6 +11905,8 @@ pop.subpops =                                   1
 pop.subpop.0 =                                  ec.Subpopulation
 pop.subpop.0.size =                             50
 pop.subpop.0.duplicate-retries =                2
+pop.subpop.0.species =                          ec.vector.FloatVectorSpecies
+pop.subpop.0.species.ind =                      ec.vector.DoubleVectorIndividual
 
 
 # Stuff special to meta-evolution
@@ -11960,13 +11964,10 @@ Let's say that you have chosen to evolve the following parameters:
 \item \parameter{pop.subpop.0.species.alternative-polynomial-version}\quad A boolean value, that is, one of the strings \parameter{true} \parameter{false}
 \end{itemize}
 
-Let's start by defining our meta-level individual to be a DoubleVectorIndividual, of 5 numbers (for the 5 parameters above), with some default mutation and crossover information:
+Let's start by setting up some some default mutation and crossover information for our meta-level individuals:
 
 \begin{verbatim}
 ### In the Meta Parameter File
-pop.subpop.0.species = ec.vector.FloatVectorSpecies
-pop.subpop.0.species.ind = ec.vector.DoubleVectorIndividual
-pop.subpop.0.species.genome-size = 5
 pop.subpop.0.species.min-gene = 0.0
 pop.subpop.0.species.max-gene = 1.0
 pop.subpop.0.species.mutation-prob = 0.25
@@ -11979,7 +11980,7 @@ pop.subpop.0.species.crossover-type = one
 
 Now we need to define information about each of the parameters.  Note that in each case we define the {\it name} of the parameter, and the {\it type} of the parameter.  We also define some mutation features; different parameter types should be mutated in the appropriate way.
 
-We start with the number of parameters and the genome size (which will be the same thing):
+We start with the number of parameters and the genome size (which will be the same thing, namely 5):
 
 \begin{verbatim}
 ### In the Meta Parameter File
@@ -11987,7 +11988,7 @@ pop.subpop.0.species.genome-size = 5
 eval.problem.num-params = 5
 \end{verbatim}
 
-We start with the first parameter.  It's a double, so its type is \parameter{float} (for ``floating-point type'').  We'll use the default mutation settings for this gene, so we don't specify anything special.
+Now the first parameter.  It's a double, so its type is \parameter{float} (for ``floating-point type'').  We'll use the default mutation settings (gaussian, 0.25 probability, 0.1 standard deviation, bounded to 0...1) for this gene, so we don't specify anything special.
 
 \begin{verbatim}
 ### In the Meta Parameter File
@@ -11995,7 +11996,7 @@ eval.problem.param.0 = pop.subpop.0.species.mutation-prob
 eval.problem.param.0.type = float
 \end{verbatim}
 
-Next the mutation-type parameter is one of 3 possible strings, represented in the genome as the integers 0 ... 2.  For this kind of parameter we don't declare a type, but instead declare the number of values it can take on and what those values are.  Additionally, since it's represented as an integer internally, we define the maximum gene to be 2 (the minimum gene was already declared in the defaults as 0).  And we use integer-reset mutation, which is the appropriate mutation for genes of this type.
+Next the mutation-type parameter is one of 3 possible strings, represented in the genome as the integers 0 ... 2.  For this kind of parameter we don't declare a type, but instead declare the number of values it can take on and what those values (as strings) are.  Additionally, since it's represented as an integer internally, we define the maximum gene to be 2 (the minimum gene was already declared in the defaults as 0).  And we use integer-reset mutation, which is the appropriate mutation for genes of this type.
 
 \begin{verbatim}
 ### In the Meta Parameter File
@@ -12008,7 +12009,7 @@ pop.subpop.0.species.max-gene.1 = 2
 pop.subpop.0.species.mutation-type.1 = integer-reset
 \end{verbatim}
 
-The standard deviation parameter is also a floating-point type like the first parameter was.
+The standard deviation parameter is also floating-point, ranging from 0...1, like the first parameter was.
 
 \begin{verbatim}
 ### In the Meta Parameter File
@@ -12016,7 +12017,7 @@ eval.problem.param.2 = pop.subpop.0.species.mutation-stdev
 eval.problem.param.2.type = float
 \end{verbatim}
 
-The mutation distribution index parameter is an integer which can range from 0 to 10, hence our max gene value below (remember that the min gene value was declared in the defaults already to be 0).  Unlike the mutation-type parameter, which has three unrelated strings, here the integers have an explicit ordering: 5 is closer to 6 than it is to 9.  For integer values of this kind it's more appropriate to use something like integer-random-walk mutation than integer-reset mutation.
+The mutation distribution index parameter is an integer which can range from 0 to 10 inclusive, hence our max gene value below (remember that the min gene value was declared in the defaults already to be 0).  Unlike the mutation-type parameter, which has three unrelated strings, here the integers have an explicit ordering: 5 is closer to 6 than it is to 9.  For integer values of this kind it's probably more appropriate to use something like integer-random-walk mutation than integer-reset mutation.
 
 \begin{verbatim}
 ### In the Meta Parameter File
@@ -12076,7 +12077,7 @@ See Section \ref{ec.Statistics} for more information on this parameter.
 
 \subsection{Populations Versus Generations} 
 
-One very common parameter setting you may wish to make with a Meta-EA is how big you'd like your Population to be, where the number of generations shrinks as the Population grows so as to maintain a constant number of evaluations.  Unfortunately by default ECJ treats the population size (or more properly, subpopulation sizes) and the number of generations as separate parameters.
+One very common parameter setting you may wish to evolve with a Meta-EA is how big you'd like your Population to be, where the number of generations shrinks as the Population grows so as to maintain a constant number of evaluations.  Unfortunately by default ECJ treats the population size (or more properly, subpopulation sizes) and the number of generations as separate parameters.
 
 But there's an easy way around that.  All you do is define your evolution in terms of number of evaluations rather than generations.  Let's say that you have a fixed budget of 64K (65536) evaluations.  You can set various population sizes and let ECJ modify the generations appropriately like this:
 
@@ -12121,7 +12122,7 @@ eval.compression = true
 eval.master.host = my.machine.ip.address
 \end{verbatim}
 
-Some notes.  First note that you must replace \parameter{my.machine.ip.address} in \parameter{eval.master.host} with the ip address of your master computer.  Second, notice the job size and maximum number of jobs per slave are both set to 1.  You almost certainly want this because the evaluation time is so long on the slaves: it's an entire evolutionary process.  You probably don't want to bulk up multiple jobs per slave, though you could if your evolutionary processes were very short.
+Some notes.  First note that you must replace \parameter{my.machine.ip.address} in \parameter{eval.master.host} with the ip address of your master computer.  Second, notice the job size and maximum number of jobs per slave are both set to 1.  You almost certainly want this because the evaluation time is so long on the slaves: it's an entire evolutionary process.  You probably don't want to bulk up multiple jobs per slave, though you theoretically could if your evolutionary processes were very short.
 
 Your slave's parameter file is a new file called, let's say, {\bf slave.params}.  Note that it points to {\bf meta.params} in order to grab some of the master's parameters.  
 
@@ -12147,7 +12148,7 @@ Here's the issue.  Let's say you have 1000 machines at your disposal.  You want 
 
 Sounds great, right?  Not so fast.  The master-slave evaluator will distribute your 100 individuals out to 100 machines.  Because the MetaProblem resides on the {\it slave machines}, each of those 100 machines will do 10 tests, while the other 900 machines stand by idle.  
 
-The problem is that distributing the tests happens {\it after} the distribution out to the slaves.  We need a way to break up the tests before slave distribution.  The simplest way to do this is to use a different way of doing tests: SimpleEvaluator's \parameter{num-tests} mechanism.  We turn off tests in the MetaProblem (set it to 1) and instead turn on tests in the SimpleEvaluator.  SimpleEvaluator also gives us options about how to merge those tests: we'll stick with averaging like before:
+The problem is that ECJ is distributing the tests happens {\it after} the distribution out to the slaves.  We need a way to break up the tests before slave distribution.  The simplest way to do this is to use a different way of doing tests: SimpleEvaluator's \parameter{num-tests} mechanism.  We turn off tests in the MetaProblem (set it to 1) and instead turn on tests in the SimpleEvaluator.  SimpleEvaluator also gives us options about how to merge those tests: we'll stick with averaging like before:
 
 \begin{verbatim}
 ### In the Meta Parameter File
