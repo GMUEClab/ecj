@@ -98,7 +98,7 @@ public class SteadyStateEvolutionState extends EvolutionState
         if (!(exchanger instanceof SteadyStateExchangerForm))
             state.output.error("You've chosen to use Steady-State Evolution, but your exchanger does not implement the SteadyStateExchangerForm.",base);
         
-        checkStatistics(state, statistics, base);
+        checkStatistics(state, statistics, new Parameter(P_STATISTICS));
         
         if (parameters.exists(SteadyStateDefaults.base().push(P_REPLACEMENT_PROBABILITY),null))
             {
