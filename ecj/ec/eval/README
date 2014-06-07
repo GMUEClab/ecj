@@ -363,7 +363,14 @@ http://www.jcraft.com/jzlib/  and ECJ will detect and use it automatically.
 
 
 <On Connection>
+-> unique number (starting at 0, progressing with new slaves)	writeInt
+-> FLUSH
 <- slave name							readUTF
+	(note: the slave name can be anything, it doesn't have
+	 to be unique.  However if you did not specify a slave
+	 name in the parameter files, the slave will construct
+	 one out of the concatenation of its IP address and
+	 the unique number given it just now.)
 -> random number generator seed					writeInt
 	(note: the seed then increments by SEED_INCREMENT (7919)
 	 and the Slave is free to use any integer values between
