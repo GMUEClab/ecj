@@ -203,9 +203,9 @@ public class SlaveMonitor
                         dataOut.flush();
                                                 
                         if (registerSlave(state, slaveName, slaveSock, dataOut, dataIn))
-	                        state.output.systemMessage( "Slave " + slaveName + " connected successfully." );
-	                    else
-	                        state.output.systemMessage( "Slave " + slaveName + " not permitted to connect." );
+                            state.output.systemMessage( "Slave " + slaveName + " connected successfully." );
+                        else
+                            state.output.systemMessage( "Slave " + slaveName + " not permitted to connect." );
                         }
                     catch (IOException e) {  }
                     }
@@ -222,26 +222,26 @@ public class SlaveMonitor
     public boolean registerSlave( EvolutionState state, String name, Socket socket, DataOutputStream out, DataInputStream in)
         {
         if (isShutdownInProgress())  // no more registrations.  Kill the socket
-        	{
-        	try { out.writeByte(Slave.V_SHUTDOWN); } catch (Exception e) { }  // exception, not IOException, because JZLib throws some array exceptions
-        	try { out.flush(); } catch (Exception e) { }
-        	try { out.close(); } catch (Exception e) { }
-        	try { in.close(); } catch (Exception e) { }
-        	try { socket.close(); } catch (IOException e) { }
-        	return false;
-        	}
+            {
+            try { out.writeByte(Slave.V_SHUTDOWN); } catch (Exception e) { }  // exception, not IOException, because JZLib throws some array exceptions
+            try { out.flush(); } catch (Exception e) { }
+            try { out.close(); } catch (Exception e) { }
+            try { in.close(); } catch (Exception e) { }
+            try { socket.close(); } catch (IOException e) { }
+            return false;
+            }
         
         SlaveConnection newSlave = new SlaveConnection( state, name, socket, out, in, this );
         
         synchronized(allSlaves)
             {
-	            allSlaves.addLast(newSlave);
-	            notifyMonitor(allSlaves);
+            allSlaves.addLast(newSlave);
+            notifyMonitor(allSlaves);
             }
         synchronized(availableSlaves)
             {
-            	availableSlaves.addLast(newSlave);
-            	notifyMonitor(availableSlaves);
+            availableSlaves.addLast(newSlave);
+            notifyMonitor(availableSlaves);
             }
         return true;
         }
@@ -254,18 +254,18 @@ public class SlaveMonitor
         synchronized(allSlaves)
             {
             if (allSlaves.contains(slave))  // could have been removed if shutdown is in progress
-				{
-	            allSlaves.remove(slave);
-	            notifyMonitor(allSlaves);
-	            }
+                {
+                allSlaves.remove(slave);
+                notifyMonitor(allSlaves);
+                }
             }
         synchronized(availableSlaves)
             {
             if (availableSlaves.contains(slave))  // could have been removed if shutdown is in progress
-				{
-	            availableSlaves.remove(slave);
-	            notifyMonitor(availableSlaves);
-	            }
+                {
+                availableSlaves.remove(slave);
+                notifyMonitor(availableSlaves);
+                }
             }
         }
 
@@ -291,24 +291,24 @@ public class SlaveMonitor
         // gather all the slaves
         
         while(true)
-        	{
-        	SlaveConnection sc = null;
-        	synchronized(allSlaves)
-        		{
-        		if (allSlaves.isEmpty()) break;
-        		sc = (SlaveConnection)(allSlaves.removeFirst());
-        		}
-			debug("Shutting Down Slave" + sc);
-			if (sc != null) 
-				sc.shutdown(state);  // it better not be null!
-			debug("Shut Down Slave" + sc);
-        	}
+            {
+            SlaveConnection sc = null;
+            synchronized(allSlaves)
+                {
+                if (allSlaves.isEmpty()) break;
+                sc = (SlaveConnection)(allSlaves.removeFirst());
+                }
+            debug("Shutting Down Slave" + sc);
+            if (sc != null) 
+                sc.shutdown(state);  // it better not be null!
+            debug("Shut Down Slave" + sc);
+            }
         synchronized(allSlaves)
-        	{
+            {
             notifyMonitor(allSlaves);
-        	}
+            }
 
-		debug("Shut Down Completed");
+        debug("Shut Down Completed");
         }
 
     /**
