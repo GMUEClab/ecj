@@ -281,7 +281,7 @@ public class Slave
                             }
                         }
                     if (!silent) Output.initialMessage("Connected to master after " + (connectAttemptCount * SLEEP_TIME) + " ms");
-                                
+                    
                     DataInputStream dataIn = null;
                     DataOutputStream dataOut = null;
 

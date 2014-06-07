@@ -268,17 +268,28 @@ public class SlaveMonitor
         try { thread.join(); }
         catch (InterruptedException e) { }
         
+        debug("Main Monitor Thread Shut Down");
         // gather all the slaves
         
+        while(true)
+        	{
+        	SlaveConnection sc = null;
+        	synchronized(allSlaves)
+        		{
+        		if (allSlaves.isEmpty()) break;
+        		sc = (SlaveConnection)(allSlaves.removeFirst());
+        		}
+			debug("Shutting Down Slave" + sc);
+			if (sc != null) 
+				sc.shutdown(state);  // it better not be null!
+			debug("Shut Down Slave" + sc);
+        	}
         synchronized(allSlaves)
-            {
-            while( !allSlaves.isEmpty() )
-                {
-                SlaveConnection sc = (SlaveConnection)(allSlaves.removeFirst());
-                sc.shutdown(state);
-                }
+        	{
             notifyMonitor(allSlaves);
-            }
+        	}
+
+		debug("Shut Down Completed");
         }
 
     /**

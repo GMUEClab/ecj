@@ -2250,7 +2250,9 @@ Version		Change Log
 		retrieve all of its previous mutexes, so it would block;
 		but the method which had interrupted it, and was holding
 		on to the mutexes, then did a join on the thread, so they
-		were waiting for each other.  Thanks to Eric Scott
-		<escott8@gmu.edu>
+		were waiting for each other.  Similarly, in readLoop
+		the code synchronized on allSlaves, which the shutdown
+		thread was potentially inside when trying to kill the 
+		readLoop.  Thanks to Eric Scott <escott8@gmu.edu>
 	SteadyStateEvolutionState now properly checks for steady state
 		statistics objects.  Thanks to Eric Scott <escott8@gmu.edu>
