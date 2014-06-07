@@ -308,7 +308,7 @@ class SlaveConnection
                 {
                 jobs.removeFirst();
                 }
-        
+
             // And let the slave monitor we just finished a job
             slaveMonitor.notifySlaveAvailability( SlaveConnection.this, job, state );
             }
