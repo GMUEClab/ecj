@@ -2256,3 +2256,5 @@ Version		Change Log
 		readLoop.  Thanks to Eric Scott <escott8@gmu.edu>
 	SteadyStateEvolutionState now properly checks for steady state
 		statistics objects.  Thanks to Eric Scott <escott8@gmu.edu>
+	Asynchronous Evolution now can forget about lost jobs when
+		slaves drop out of sight.
