@@ -42,9 +42,17 @@ public class SlaveMonitor
     public static final String P_EVALMASTERPORT = "eval.master.port";
     public static final String P_EVALCOMPRESSION = "eval.compression";
     public static final String P_MAXIMUMNUMBEROFCONCURRENTJOBSPERSLAVE = "eval.masterproblem.max-jobs-per-slave";
+    public static final String P_RESCHEDULELOSTJOBS = "eval.masterproblem.reschedule-lost-jobs";
     public static final int SEED_INCREMENT = 7919; // a large value (prime for fun) bigger than expected number of threads per slave
 
     public EvolutionState state;
+    
+    // set to true if slave connections should reschedule jobs before they are
+    // completely shut down due to a lost slave.  We might not want this to
+    // happen if we're doing asynchronous evolution, for example.  Do NOT
+    // set this to true if you're doing generational evolution, it'll just
+    // hang waiting for a (now-un-rescheduled) lost job.
+    boolean rescheduleLostJobs;
     
     ThreadPool pool;
     
@@ -124,6 +132,8 @@ public class SlaveMonitor
                 
         maxJobsPerSlave = state.parameters.getInt(
             new Parameter( P_MAXIMUMNUMBEROFCONCURRENTJOBSPERSLAVE ),null);
+
+		rescheduleLostJobs = state.parameters.getBoolean(new Parameter(P_RESCHEDULELOSTJOBS), null, true);
 
         useCompression = state.parameters.getBoolean(new Parameter(P_EVALCOMPRESSION),null,false);
                 
