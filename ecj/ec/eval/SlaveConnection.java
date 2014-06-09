@@ -124,7 +124,8 @@ class SlaveConnection
         writerRun = null;  // let GC
 
         state.output.systemMessage("Slave " + slaveName + " shut down." );
-        rescheduleJobs(state);  // AFTER we've shut down the slave
+        if (slaveMonitor.rescheduleLostJobs)
+        	rescheduleJobs(state);  // AFTER we've shut down the slave
         }
 
     public String toString() { return "Slave(" + slaveName + ")"; }

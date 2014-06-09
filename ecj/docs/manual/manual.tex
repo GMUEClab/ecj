@@ -9859,7 +9859,7 @@ evalthreads = 4
 
 This will create four threads on the Slave process to evaluate Individuals.  Note that it makes no sense for this parameter to exceed the Master's \parameter{eval.masterproblem.job-size} parameter.  Also, if you exceed the actual number of CPUs or cores allocated to your Slave process, it doesn't make much sense either.  Last, Slaves are {\it not} multithreaded when evaluating Individuals with GroupedProblemForm (such as coevolved evaluation, see Section~\ref{ec.coevolve.GroupedProblemForm}).
 
-When you fire up a Slave, it will repeatedly try to connect to a Master process until it succeeds.  This means you can start Slaves before you start the Master; or you can start them after you start the Master, it doesn't matter.  Ordinarily when the Master dies (it finishes the EC process, or it bombs, or whatever) the Slaves will all terminate.  But you can also set up Slaves to run in a {\bf daemon mode}: when the Master terminates the Slave resets itself and waits for another Master to come online.  Slaves in daemon mode also reset themselves if an error occurs on the Slave: perhaps a Java error in the user's fitness evaluation procedure, say, or if the virtual machine runs out of memory.  In the case of out-fo-memory errors, the Slave will make a good-faith attempt to reset itself, but if it cannot, it will quit. 
+When you fire up a Slave, it will repeatedly try to connect to a Master process until it succeeds.  This means you can start Slaves before you start the Master; or you can start them after you start the Master, it doesn't matter.  Ordinarily when the Master dies (it finishes the EC process, or it bombs, or whatever) the Slaves will all terminate.  But you can also set up Slaves to run in a {\bf daemon mode}: when the Master terminates the Slave resets itself and waits for another Master to come online.  Slaves in daemon mode also reset themselves if an error occurs on the Slave: perhaps a Java error in the user's fitness evaluation procedure, say, or if the virtual machine runs out of memory.  In the case of out-of-memory errors, the Slave will make a good-faith attempt to reset itself, but if it cannot, it will quit. 
 
 By default slaves do not run in daemon mode: they are one-shot.  To run in daemon mode, say:
 
@@ -9949,6 +9949,17 @@ eval.masterproblem.max-jobs-per-slave = 1
 }
 
 \noindent ...but of course this will make the network utilization poor.
+
+\paragraph{Rescheduling Lost Jobs}
+
+If you're doing generational evolution, then if a slave disappears you need the SlaveMonitor to reschedule the lost jobs, or else your population won't be fully evaluated.  But that's not necessarily the case for Asynchronous Evolution.  Here, if slave disappears along with its jobs, well, that's life.  No big loss.  Indeed, this is probably the {\it desired} behavior.
+
+By default the SlaveMonitor reschedules its lost jobs.  But you can turn off this behavior, so lost jobs just disappear into the ether, with:
+
+\java{%
+eval.masterproblem.reschedule-lost-jobs = false
+}
+
 
 \subsection{The MasterProblem}
 \label{ec.eval.MasterProblem}
