@@ -26,8 +26,8 @@ import java.util.*;
 public class Version
     {
     public static final String name = "ECJ";
-    public static final String version = "21";
-    public static final String copyright = "2013";
+    public static final String version = "22";
+    public static final String copyright = "2014";
     public static final String author = "Sean Luke";
     public static final String contributors = "L. Panait, G. Balan, S. Paus, Z. Skolicki, R. Kicinger,";
     public static final String contributors2 = "E. Popovici, K. Sullivan, J. Harrison, J. Bassett, R. Hubley,";
@@ -38,7 +38,7 @@ public class Version
     public static final String authorEmail1 = "cs.gmu.edu";
     public static final String authorEmail2 = "(better: join ECJ-INTEREST at URL above)";
     public static final String authorURL = "http://cs.gmu.edu/~eclab/projects/ecj/";
-    public static final String date = "May 1, 2013";
+    public static final String date = "August 1, 2014";
     public static final String minimumJavaVersion = "1.5";
 
     public static final String message()
