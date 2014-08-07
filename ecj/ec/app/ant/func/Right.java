@@ -28,19 +28,19 @@ public class Right extends GPNode implements EvalPrint
     {
     public String toString() { return "right"; }
 
-/*
-  public void checkConstraints(final EvolutionState state,
-  final int tree,
-  final GPIndividual typicalIndividual,
-  final Parameter individualBase)
-  {
-  super.checkConstraints(state,tree,typicalIndividual,individualBase);
-  if (children.length!=0)
-  state.output.error("Incorrect number of children for node " + 
-  toStringForError() + " at " +
-  individualBase);
-  }
-*/
+    /*
+      public void checkConstraints(final EvolutionState state,
+      final int tree,
+      final GPIndividual typicalIndividual,
+      final Parameter individualBase)
+      {
+      super.checkConstraints(state,tree,typicalIndividual,individualBase);
+      if (children.length!=0)
+      state.output.error("Incorrect number of children for node " + 
+      toStringForError() + " at " +
+      individualBase);
+      }
+    */
     public int expectedChildren() { return 0; }
 
     public void eval(final EvolutionState state,

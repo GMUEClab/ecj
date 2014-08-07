@@ -125,7 +125,7 @@ class SlaveConnection
 
         state.output.systemMessage("Slave " + slaveName + " shut down." );
         if (slaveMonitor.rescheduleLostJobs)
-        	rescheduleJobs(state);  // AFTER we've shut down the slave
+            rescheduleJobs(state);  // AFTER we've shut down the slave
         }
 
     public String toString() { return "Slave(" + slaveName + ")"; }

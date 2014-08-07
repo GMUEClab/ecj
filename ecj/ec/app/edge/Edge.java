@@ -209,7 +209,7 @@ public class Edge extends GPProblem implements SimpleProblemForm
 
 
 
-//    public boolean[][] slurp(final File f) throws IOException
+    //    public boolean[][] slurp(final File f) throws IOException
     public boolean[][] slurp(final InputStream f) throws IOException
         {
         //LineNumberReader r = new LineNumberReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(f))));
@@ -387,7 +387,7 @@ public class Edge extends GPProblem implements SimpleProblemForm
     public boolean test(final boolean[] sample)
         {
         final boolean STATE_1 = false;
-//        final boolean STATE_2 = true;
+        //        final boolean STATE_2 = true;
         boolean st = STATE_1;
         
         // set initial state
