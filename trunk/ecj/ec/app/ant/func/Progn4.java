@@ -26,19 +26,19 @@ public class Progn4 extends GPNode implements EvalPrint
     {
     public String toString() { return "progn4"; }
 
-/*
-  public void checkConstraints(final EvolutionState state,
-  final int tree,
-  final GPIndividual typicalIndividual,
-  final Parameter individualBase)
-  {
-  super.checkConstraints(state,tree,typicalIndividual,individualBase);
-  if (children.length!=4)
-  state.output.error("Incorrect number of children for node " + 
-  toStringForError() + " at " +
-  individualBase);
-  }
-*/
+    /*
+      public void checkConstraints(final EvolutionState state,
+      final int tree,
+      final GPIndividual typicalIndividual,
+      final Parameter individualBase)
+      {
+      super.checkConstraints(state,tree,typicalIndividual,individualBase);
+      if (children.length!=4)
+      state.output.error("Incorrect number of children for node " + 
+      toStringForError() + " at " +
+      individualBase);
+      }
+    */
     public int expectedChildren() { return 4; }
 
     public void eval(final EvolutionState state,
