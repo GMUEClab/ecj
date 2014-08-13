@@ -90,6 +90,8 @@ public class Code
                     case 2:  s = "'\\u00" + s + "'"; break;
                     case 3:  s = "'\\u0" + s + "'"; break;
                     case 4:  s = "'\\u" + s + "'"; break;
+                    default:
+                        throw new RuntimeException("Default case should never occur");
                     }
                 return s;
                 }
@@ -176,6 +178,8 @@ public class Code
                         case 2:  sb.append("00" + ss); break;
                         case 3: sb.append("0" + ss); break;
                         case 4: sb.append(ss); break;
+                        default:
+                            throw new RuntimeException("Default case should never occur");
                         }
                     }
                 }

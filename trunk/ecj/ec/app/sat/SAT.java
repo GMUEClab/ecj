@@ -23,7 +23,8 @@ import java.util.*;
 
 public class SAT extends Problem implements SimpleProblemForm 
     { 
-        
+    private static final long serialVersionUID = 1;
+    
     public static final String P_FILENAME = "sat-filename"; 
         
     Clause formula[];
@@ -50,7 +51,7 @@ public class SAT extends Problem implements SimpleProblemForm
                 if (line.startsWith("p")) 
                     { 
                     start = true;
-                    line.trim(); 
+                    line = line.trim(); 
                     int index = line.lastIndexOf(" "); 
                     formula = new Clause[Integer.parseInt(line.substring(index+1))]; 
                     }
@@ -84,8 +85,9 @@ public class SAT extends Problem implements SimpleProblemForm
        Private helper class holding a single clause in the boolean formula. Each clause 
        is a disjunction of boolean variables (or their negation).
     */
-    public class Clause 
+    public static class Clause implements java.io.Serializable
         { 
+        private static final long serialVersionUID = 1;
                 
         int[] variables; 
         public Clause(String c) 

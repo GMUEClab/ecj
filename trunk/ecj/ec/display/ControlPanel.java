@@ -354,14 +354,19 @@ public class ControlPanel extends JPanel
     
     public int getNumJobs() 
         {
-        return Integer.valueOf(getNumJobsField().getText()).intValue();
+        try { return Integer.parseInt(getNumJobsField().getText()); } 
+        catch (NumberFormatException e) { return 0; }
         }
 
     public int getThreadCount(String text)
         {
-        if (text.toLowerCase().trim().equals("auto"))
-            return Runtime.getRuntime().availableProcessors();
-        else return Integer.valueOf(text).intValue();
+        try
+            {
+            if (text.toLowerCase().trim().equals("auto"))
+                return Runtime.getRuntime().availableProcessors();
+            else return Integer.parseInt(text);
+            }
+        catch (NumberFormatException e) { return 0; }
         }
 
 
@@ -371,7 +376,7 @@ public class ControlPanel extends JPanel
     void resizeSeedTable()
         throws NumberFormatException 
         {
-        int numJobs = Integer.valueOf(numJobsField.getText()).intValue();
+        int numJobs = Integer.parseInt(numJobsField.getText());
         int breedThreads = getThreadCount(breedThreadsField.getText());
         int evalThreads = getThreadCount(evalThreadsField.getText());
         
@@ -440,7 +445,7 @@ public class ControlPanel extends JPanel
     void generateRandomSeeds()
         throws NumberFormatException 
         {
-        int numJobs = Integer.valueOf(numJobsField.getText()).intValue();
+        int numJobs = Integer.parseInt(numJobsField.getText());
         int breedThreads = getThreadCount(breedThreadsField.getText());
         int evalThreads = getThreadCount(evalThreadsField.getText());
         int numThreads = Math.max(breedThreads, evalThreads);
@@ -458,7 +463,7 @@ public class ControlPanel extends JPanel
                 
     public int getSeed(int experimentNum, int threadNum) 
         {
-        try { return Integer.valueOf((String)seedsTable.getValueAt(experimentNum, threadNum)).intValue(); }
+        try { return Integer.parseInt((String)seedsTable.getValueAt(experimentNum, threadNum)); }
         catch (RuntimeException e)
             {
             javax.swing.JOptionPane.showMessageDialog(null, "Value of seed for experiment " + experimentNum + 
@@ -941,58 +946,68 @@ public class ControlPanel extends JPanel
     void loadSeeds(File f)
         throws IOException 
         {
-        LineNumberReader in = new LineNumberReader(new InputStreamReader(new FileInputStream(f)));
-        
-        seedFileField.setText(f.getAbsolutePath());
-        // whether a seed is used for a particular thread or job depends
-        // upon how many of each there are.  Just read seeds, one per line, until
-        // numJobs * numThreads seeds are read.  If there are not enough seeds,
-        // print a warning and generate the remaining necessary.
-        int numJobs = Integer.valueOf(numJobsField.getText()).intValue();
-        int evalThreads = getThreadCount(console.parameters.getString(new Parameter(Evolve.P_EVALTHREADS),null));
-        int breedThreads = getThreadCount(console.parameters.getString(new Parameter(Evolve.P_BREEDTHREADS),null));
-        int numThreads = Math.max(evalThreads, breedThreads);
-        
-        // Read seeds for threads first
-        // TODO Make this more robust (i.e. ensure we're reading integers).
-        int job = 0;
-        int thread = 0;
-        String lastSeed = null;
-        for (; job < numJobs; ++job) 
+        LineNumberReader in = null;
+        try
             {
-            String seed = null;
-            for (; thread < numThreads; ++thread) 
+            in = new LineNumberReader(new InputStreamReader(new FileInputStream(f)));
+        
+            seedFileField.setText(f.getAbsolutePath());
+            // whether a seed is used for a particular thread or job depends
+            // upon how many of each there are.  Just read seeds, one per line, until
+            // numJobs * numThreads seeds are read.  If there are not enough seeds,
+            // print a warning and generate the remaining necessary.
+            int numJobs = 0;
+            try { numJobs = Integer.parseInt(numJobsField.getText()); }
+            catch(NumberFormatException e) { }
+            int evalThreads = getThreadCount(console.parameters.getString(new Parameter(Evolve.P_EVALTHREADS),null));
+            int breedThreads = getThreadCount(console.parameters.getString(new Parameter(Evolve.P_BREEDTHREADS),null));
+            int numThreads = Math.max(evalThreads, breedThreads);
+        
+            // Read seeds for threads first
+            // TODO Make this more robust (i.e. ensure we're reading integers).
+            int job = 0;
+            int thread = 0;
+            String lastSeed = null;
+            for (; job < numJobs; ++job) 
                 {
-                seed = in.readLine();
-                if (seed != null) 
+                String seed = null;
+                for (; thread < numThreads; ++thread) 
                     {
-                    setSeed(seed, job, thread);
-                    lastSeed = seed;
+                    seed = in.readLine();
+                    if (seed != null) 
+                        {
+                        setSeed(seed, job, thread);
+                        lastSeed = seed;
+                        }
+                    else                   break;
                     }
-                else                   break;
-                }
-            if (seed == null)
-                break;
-            thread = 0;
-            }
-
-        // Finish filling out the table with sequential numbers starting from
-        // the last good seed.
-        // TODO Determine if this is reasonable.  Should we instead generate
-        // random seeds?  Alternatively, should we indicate this as an error
-        // to the user and abort?
-        if ((job)*(thread) != (numJobs)*(numThreads)) 
-            {
-            int seedNum = Integer.valueOf(lastSeed).intValue();
-            for (;job < numJobs; ++job) 
-                {
-                for (;thread < numThreads; ++thread) 
-                    {
-                    String seed = ""+(++seedNum);
-                    setSeed(seed,job,thread);
-                    }
+                if (seed == null)
+                    break;
                 thread = 0;
                 }
+
+            // Finish filling out the table with sequential numbers starting from
+            // the last good seed.
+            // TODO Determine if this is reasonable.  Should we instead generate
+            // random seeds?  Alternatively, should we indicate this as an error
+            // to the user and abort?
+            if ((job)*(thread) != (numJobs)*(numThreads)) 
+                {
+                int seedNum = Integer.valueOf(lastSeed).intValue();
+                for (;job < numJobs; ++job) 
+                    {
+                    for (;thread < numThreads; ++thread) 
+                        {
+                        String seed = ""+(++seedNum);
+                        setSeed(seed,job,thread);
+                        }
+                    thread = 0;
+                    }
+                }
+            }
+        finally 
+            {
+            if (in != null) try { in.close(); } catch (IOException e) { }
             }
         }
     /**

@@ -74,7 +74,7 @@ public class SPEA2Breeder extends SimpleBreeder
 
     public void buildArchive(EvolutionState state, Individual[] oldInds, Individual[] newInds, int archiveSize)
         {
-        Individual[] dummy = new Individual[0];
+        //Individual[] dummy = new Individual[0];
                 
         // step 1: load the archive with the pareto-nondominated front
         ArrayList archive = new ArrayList();
@@ -97,8 +97,9 @@ public class SPEA2Breeder extends SimpleBreeder
 
         // step 3: if the archive is OVERFULL, iterate as follows:
         //              step 3a: remove the k-closest individual in the archive
-        SPEA2Evaluator evaluator = ((SPEA2Evaluator)(state.evaluator));
-        Individual[] inds = (Individual[])(archive.toArray(dummy));
+
+        //SPEA2Evaluator evaluator = ((SPEA2Evaluator)(state.evaluator));
+        // Individual[] inds = (Individual[])(archive.toArray(dummy));
                 
         while(currentArchiveSize > archiveSize)
             {

@@ -2038,10 +2038,8 @@ public class ParameterDatabase extends Properties implements Serializable
         uncheck();
 
         // set hashtable appropriately
-        if (parameter != null)
-            accessed.put(parameter.param, Boolean.TRUE);
-        if (parameter != null)
-            gotten.put(parameter.param, Boolean.TRUE);
+        accessed.put(parameter.param, Boolean.TRUE);
+        gotten.put(parameter.param, Boolean.TRUE);
         return result;
         }
 
@@ -2116,7 +2114,7 @@ public class ParameterDatabase extends Properties implements Serializable
         }
 
 
-    /*protected*/ Set _getShadowedValues(Parameter parameter, Set vals) 
+    /*protected*/ synchronized Set _getShadowedValues(Parameter parameter, Set vals) 
         {
         if (parameter == null) 
             {
@@ -2559,7 +2557,9 @@ public class ParameterDatabase extends Properties implements Serializable
             else
                 {
                 relativePath = simplifyPath(pathNameRelativeToClassFile);
-                load(cls.getResourceAsStream(relativePath));
+                InputStream f = cls.getResourceAsStream(relativePath);
+                load(f);
+                try { f.close(); } catch (IOException e) { }
                 }
             }
         catch (NullPointerException e)
@@ -2656,8 +2656,10 @@ public class ParameterDatabase extends Properties implements Serializable
         //this.file = file.getName();
         directory = new File(file.getParent()); // get the directory
         // file is in
-        load(new FileInputStream(file));
-
+        FileInputStream f = new FileInputStream(file);
+        load(f);
+        try { f.close(); } catch (IOException e) { }
+                
         // load parents
         for (int x = 0;; x++) 
             {
@@ -2785,8 +2787,11 @@ public class ParameterDatabase extends Properties implements Serializable
         if (listShadowed) 
             {
             // Print out my header
-            if (p!=null) p.println("\n########" + prefix);
-            super.list(p);
+            if (p!=null)
+                {
+                p.println("\n########" + prefix);
+                super.list(p);
+                }
             int size = parents.size();
             for (int x = 0; x < size; x++)
                 ((ParameterDatabase) (parents.elementAt(x)))._list(p,
@@ -2830,7 +2835,7 @@ public class ParameterDatabase extends Properties implements Serializable
      */
     public TreeModel buildTreeModel() 
         {
-        String sep = System.getProperty("file.separator");
+        //String sep = System.getProperty("file.separator");
         ParameterDatabaseTreeNode root = new ParameterDatabaseTreeNode(
             //this.directory.getAbsolutePath() + sep + this.filename);
             label);

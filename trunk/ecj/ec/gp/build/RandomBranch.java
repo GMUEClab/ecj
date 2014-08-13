@@ -98,6 +98,7 @@ public class RandomBranch extends GPNodeBuilder
 
         if ((   maxLength == 1 ||                                                       // if the desired length is 1
                 warnAboutNonterminal(nonterminals.length==0, type, false, state)) &&    // OR if there are NO nonterminals!
+            // this will freak out the static checkers
             (triedTerminals = true) &&                                                  // [first set triedTerminals]
             terminals.length != 0)                                                      // AND if there are available terminals
             {

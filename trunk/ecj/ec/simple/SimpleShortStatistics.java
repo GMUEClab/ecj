@@ -162,7 +162,7 @@ public class SimpleShortStatistics extends Statistics
        
         if (output && doTime) 
             {
-            Runtime r = Runtime.getRuntime();
+            // Runtime r = Runtime.getRuntime();
             lastTime = System.currentTimeMillis();
             }
         }
@@ -185,7 +185,7 @@ public class SimpleShortStatistics extends Statistics
 
         if (output && doTime)
             {
-            Runtime r = Runtime.getRuntime();
+            //Runtime r = Runtime.getRuntime();
             state.output.print("" + (System.currentTimeMillis()-lastTime) + " ",  statisticslog);
             }
         }
@@ -196,7 +196,7 @@ public class SimpleShortStatistics extends Statistics
         boolean output = (state.generation % modulus == modulus - 1);
         if (output && doTime) 
             {
-            Runtime r = Runtime.getRuntime();
+            //Runtime r = Runtime.getRuntime();
             lastTime = System.currentTimeMillis();
             }
         }
@@ -210,8 +210,8 @@ public class SimpleShortStatistics extends Statistics
         // gather timings
         if (output && doTime)
             {
-            Runtime r = Runtime.getRuntime();
-            long curU =  r.totalMemory() - r.freeMemory();          
+            //Runtime r = Runtime.getRuntime();
+            //long curU =  r.totalMemory() - r.freeMemory();          
             state.output.print("" + (System.currentTimeMillis()-lastTime) + " ",  statisticslog);
             }
         }
@@ -223,7 +223,7 @@ public class SimpleShortStatistics extends Statistics
 
         if (output && doTime) 
             {
-            Runtime r = Runtime.getRuntime();
+            //Runtime r = Runtime.getRuntime();
             lastTime = System.currentTimeMillis();
             }
         }

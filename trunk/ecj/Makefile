@@ -19,6 +19,8 @@ JAVAC = javac ${JAVACFLAGS}
 JAVACFLAGS = -target 1.5 -source 1.5 ${FLAGS}
 FLAGS = -g -Xlint:deprecation
 
+VERSION = 22
+
 DIRS = \
 ec/*.java \
 ec/app/ant/*.java \
@@ -121,7 +123,7 @@ clean:
 	rm -rf ec/app/moobenchmarks
 
 
-dist: clean gui push indent doc 
+dist: clean gui push indent doc jar
 	find . -name "*.stat" -exec rm rf {} \; -print
 	echo --------------------------
 	echo Expect some errors here...
@@ -147,7 +149,7 @@ jar: all
 	touch /tmp/manifest.add
 	rm /tmp/manifest.add
 	echo "Main-Class: ec.Evolve" > /tmp/manifest.add
-	jar -cvfm ecj.jar /tmp/manifest.add `find ec -name "*.class"` `find ec -name "*.params"` `find ec -name "*.trl"` `find ec -name "*.out.gz"` `find ec -name "*.grammar"` `find ec -name "*.cnf"` 
+	jar -cvfm jar/ecj.${VERSION}.jar /tmp/manifest.add `find ec -name "*.class"` `find ec -name "*.params"` `find ec -name "*.trl"` `find ec -name "*.out.gz"` `find ec -name "*.grammar"` `find ec -name "*.cnf"` 
 
 
 

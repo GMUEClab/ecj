@@ -156,7 +156,7 @@ public class Slave
     /** How long we sleep in between attempts to connect to the master (in milliseconds). */
     public static final int SLEEP_TIME = 100;
         
-    public static ThreadPool pool = new ThreadPool();
+    public static final ThreadPool pool = new ThreadPool();
     
     /** My unique slave number. At present this is just used to define a unique name. */
     public static int slaveNum = -1;

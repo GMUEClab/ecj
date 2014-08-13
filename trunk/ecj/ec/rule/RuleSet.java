@@ -219,7 +219,7 @@ public class RuleSet implements Prototype
     */
     public void addRule( Rule rule )
         {
-        if( ( rules == null && numRules == 0 ) || ( numRules == rules.length ) )
+        if( rules == null  || ( numRules == rules.length ) )
             {
             Rule[] tempRules;
             if( rules == null )

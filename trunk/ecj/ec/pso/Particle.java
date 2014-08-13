@@ -52,6 +52,93 @@ public class Particle extends DoubleVectorIndividual
     public double[] personalBestGenome = null;
     public Fitness personalBestFitness = null;
 
+    public int hashCode()
+        {
+        int hash = super.hashCode();
+        // no need to change anything I think
+        return hash;
+        }
+
+
+    public boolean equals(Object ind)
+        {
+        if (!super.equals(ind)) return false;
+        Particle i = (Particle) ind;
+
+        if ((velocity == null && i.velocity != null) ||
+            (velocity != null && i.velocity == null))
+            return false;
+                        
+        if (velocity != null)
+            {
+            if (velocity.length != i.velocity.length)
+                return false;
+            for (int j = 0; j < velocity.length; j++)
+                if (velocity[j] != i.velocity[j])
+                    return false;
+            }
+                        
+        if ((neighborhood == null && i.neighborhood != null) ||
+            (neighborhood != null && i.neighborhood == null))
+            return false;
+                        
+        if (neighborhood != null)
+            {
+            if (neighborhood.length != i.neighborhood.length)
+                return false;
+            for (int j = 0; j < neighborhood.length; j++)
+                if (neighborhood[j] != i.neighborhood[j])
+                    return false;
+            }
+
+        if ((neighborhoodBestGenome == null && i.neighborhoodBestGenome != null) ||
+            (neighborhoodBestGenome != null && i.neighborhoodBestGenome == null))
+            return false;
+                        
+        if (neighborhoodBestGenome != null)
+            {
+            if (neighborhoodBestGenome.length != i.neighborhoodBestGenome.length)
+                return false;
+            for (int j = 0; j < neighborhoodBestGenome.length; j++)
+                if (neighborhoodBestGenome[j] != i.neighborhoodBestGenome[j])
+                    return false;
+            }
+                        
+        if ((neighborhoodBestFitness == null && i.neighborhoodBestFitness != null) ||
+            (neighborhoodBestFitness != null && i.neighborhoodBestFitness == null))
+            return false;
+                        
+        if (neighborhoodBestFitness != null)
+            {
+            if (!neighborhoodBestFitness.equals(i.neighborhoodBestFitness))
+                return false;
+            }
+
+        if ((personalBestGenome == null && i.personalBestGenome != null) ||
+            (personalBestGenome != null && i.personalBestGenome == null))
+            return false;
+                        
+        if (personalBestGenome != null)
+            {
+            if (personalBestGenome.length != i.personalBestGenome.length)
+                return false;
+            for (int j = 0; j < personalBestGenome.length; j++)
+                if (personalBestGenome[j] != i.personalBestGenome[j])
+                    return false;
+            }
+
+        if ((personalBestFitness == null && i.personalBestFitness != null) ||
+            (personalBestFitness != null && i.personalBestFitness == null))
+            return false;
+                        
+        if (personalBestFitness != null)
+            {
+            if (!personalBestFitness.equals(i.personalBestFitness))
+                return false;
+            }
+
+        return true;
+        }
 
     public void setup(final EvolutionState state, final Parameter base)
         {
@@ -152,7 +239,7 @@ public class Particle extends DoubleVectorIndividual
             {
             neighbors = new int[neighborhoodSize + 1];
             neighbors[neighborhoodSize] = myIndex;  // put me at the top
-            already.add(new Integer(myIndex));
+            already.add(Integer.valueOf(myIndex));
             }
         else
             neighbors = new int[neighborhoodSize];
@@ -163,7 +250,7 @@ public class Particle extends DoubleVectorIndividual
             do
                 {
                 neighbors[i] = mtf.nextInt(popsize);
-                n = new Integer(neighbors[i]);
+                n = Integer.valueOf(neighbors[i]);
                 }
             while (already.contains(n));
             already.add(n);

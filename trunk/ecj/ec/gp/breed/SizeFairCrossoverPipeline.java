@@ -555,10 +555,10 @@ public class SizeFairCrossoverPipeline extends GPBreedingPipeline
             }
         // now we have length chosen, but there can be many nodes with that
         //
-        LinkedList listOfNodes = (LinkedList)(sizeToNodes.get(new Integer(mateSublengthSelected)));
+        LinkedList listOfNodes = (LinkedList)(sizeToNodes.get(Integer.valueOf(mateSublengthSelected)));
         if(listOfNodes == null)
             {
-            System.err.println("Nodes for tree length " + mateSublengthSelected + " is null, indicates some serious error");
+            state.output. fatal("In SizeFairCrossoverPipeline, nodes for tree length " + mateSublengthSelected + " is null, indicates some serious error");
             }
         // in size fair we choose the elements at random for given length
         int chosenNode = 0;
@@ -638,7 +638,7 @@ public class SizeFairCrossoverPipeline extends GPBreedingPipeline
         NodeInfo nodeInfo = new NodeInfo(node, node.numNodes(GPNode.NODESEARCH_NONTERMINALS));
         nodeToDepth.add(nodeInfo);
         // check to see if there is list in map for that size
-        LinkedList listForSize = (LinkedList)(sizeToNodes.get(new Integer(nodeInfo.numberOfSubTreesBeneath)));
+        LinkedList listForSize = (LinkedList)(sizeToNodes.get(Integer.valueOf(nodeInfo.numberOfSubTreesBeneath)));
         if (listForSize == null) 
             {
             listForSize = new LinkedList();
@@ -663,7 +663,7 @@ public class SizeFairCrossoverPipeline extends GPBreedingPipeline
      * Inner class to do a quick Roulette Wheel Selection
      *  
      */
-    class RouletteWheelSelector 
+    static class RouletteWheelSelector 
         {
         int[] length;
         double[] probability;
@@ -736,7 +736,7 @@ public class SizeFairCrossoverPipeline extends GPBreedingPipeline
      *Used for O(1) information of number of subtrees
      *
      */
-    class NodeInfo 
+    static class NodeInfo 
         {
         // numberOfSubTrees beneath
         int numberOfSubTreesBeneath;

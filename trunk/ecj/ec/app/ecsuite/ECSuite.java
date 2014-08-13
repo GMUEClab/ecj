@@ -290,7 +290,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
 
         DoubleVectorIndividual temp = (DoubleVectorIndividual)ind;
         double[] genome = temp.genome;
-        int len = genome.length;
+        //int len = genome.length;
 
         // this curious break-out makes it easy to use the isOptimal() and function() methods
         // for other purposes, such as coevolutionary versions of this class.

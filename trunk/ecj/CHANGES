@@ -2259,3 +2259,41 @@ Version		Change Log
 	Asynchronous Evolution now can forget about lost jobs when
 		slaves drop out of sight.
 	Reindented
+	ecj.jar is now generated in jar/ecj.${VERSION}.jar
+	ec.app.majority.CA now serializable
+	ec.app.mona.Picture.readObject() and writeObject() made private
+	ec.app.sat.SAT.setup() was not properly trimming a string
+	ec.app.sat.SAT.Clause now serializable and static
+	Removed ec.coevolve.CompetitiveEvaluator.IndividualAndVictories
+	ControlPanel.getNumJobs() now catches a NumberFormatException
+	ControlPanel.getThreadCount(...) now catches a NumberFormatException
+	ControlPanel.loadSeeds() now catches a NumberFormatException
+	IslandExchange.setupServerFromDatabase() null check removed 
+	IslandExchange.IslandExchangeIslandInfo made static
+	ADFContext was checking for ADFs vs. ADMs using instanceof ADF; but
+		an ADM is an instanceof ADF
+	SizeFairCrossoverPipeline.NodeInfo made static
+	SizeFairCrossoverPipeline.RouletteWheelSelector made static
+	RandTree.ArityObject made static and public
+	Extensions to Particle.equals(...)
+	GESpecies.BigTreeException made static
+	Added (essentially empty) Particle.hashCode()
+	Ruleset.addRule no longer checks if numRules == 0
+	SimpleBreeder.EliteComparator made static
+	Output.println and Output.print now indicate the correct log
+		number when throwing exceptions
+	Output.getThrowsErrors() made synchronized
+	Output.Announcement made static
+	ParameterDatabase._getShadowedValues made synchronized
+	ThreadPool.joinAll() if changed to while for wait()
+	Minor fixes kicked up by FindBugs.  FindBugs finds a lot of non-bugs.
+		For future reference, command was:
+		./fb analyze -sortByClass ~/java/ecj/jar/ecj.22.jar |& \
+		grep -v "Unchecked/unconfirmed cast" | \
+		grep -v "default encoding" | \
+		grep -v "may expose internal representation" | \
+		grep -v "isn't final but should be refactored to be so" | \
+		grep -v "+ in a loop" | \
+		grep -v "should be package protected"
+	All bad default cases now throw fatal just in case
+	Reindented

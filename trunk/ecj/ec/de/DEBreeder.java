@@ -135,7 +135,7 @@ public class DEBreeder extends Breeder
     /** Tests the Individual to see if its values are in range. */
     public boolean valid(DoubleVectorIndividual ind)
         {
-        FloatVectorSpecies species = (FloatVectorSpecies)(ind.species);
+        //FloatVectorSpecies species = (FloatVectorSpecies)(ind.species);
         return (ind.isInRange());
         }
 

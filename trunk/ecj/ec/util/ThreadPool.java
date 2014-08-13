@@ -186,7 +186,7 @@ public class ThreadPool implements java.io.Serializable
         synchronized(workersLock)
             {
             if (workers == null) workers = new LinkedList();  // deserialized
-            if (totalWorkers > workers.size())  // there are still outstanding workers
+            while (totalWorkers > workers.size())  // there are still outstanding workers
                 try { workersLock.wait(); }
                 catch (InterruptedException e) { Thread.interrupted(); }  // ignore
             }

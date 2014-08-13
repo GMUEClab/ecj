@@ -92,9 +92,10 @@ public class ADFContext implements Prototype
             }
 
         // Am I an ADM or an ADF?
-        if (adf==null)
-            state.output.fatal("ADF is null for " + adf.errorInfo());
-        else if (adf instanceof ADF)  // it's an ADF
+        //if (adf==null)
+        //    state.output.fatal("ADF is null for " + adf.errorInfo());
+        // else 
+        if (!(adf instanceof ADM))  // it's an ADF
             arguments[argument].copyTo(input);
         else // it's an ADM
             {

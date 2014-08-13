@@ -179,7 +179,7 @@ public class GPIndividual extends Individual
         if (!(state.initializer instanceof GPInitializer))
             { state.output.error("Initializer is not a GPInitializer"); return; }
             
-        GPInitializer initializer = (GPInitializer)(state.initializer);
+        // GPInitializer initializer = (GPInitializer)(state.initializer);
 
         if (trees==null) 
             { state.output.error("Null trees in GPIndividual."); return; }

@@ -139,12 +139,11 @@ public class BitVectorSpecies extends VectorSpecies
         super.loadParametersForGene(state, index, base, def, postfix);
 
         String mtype = state.parameters.getStringWithDefault(base.push(P_MUTATIONTYPE).push(postfix), def.push(P_MUTATIONTYPE).push(postfix), null);
-        int mutType = -1;
         if (mtype == null) { }  // we're cool
         else if (mtype.equalsIgnoreCase(V_RESET_MUTATION))
-            mutType = mutationType[index] = C_RESET_MUTATION; 
+            mutationType[index] = C_RESET_MUTATION; 
         else if (mtype.equalsIgnoreCase(V_FLIP_MUTATION))
-            mutType = mutationType[index] = C_FLIP_MUTATION;
+            mutationType[index] = C_FLIP_MUTATION;
         else
             state.output.fatal("BitVectorSpecies given a bad mutation type: " + mtype, 
                 base.push(P_MUTATIONTYPE).push(postfix), def.push(P_MUTATIONTYPE).push(postfix));

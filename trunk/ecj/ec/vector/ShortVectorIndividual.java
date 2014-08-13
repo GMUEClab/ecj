@@ -324,6 +324,9 @@ public class ShortVectorIndividual extends VectorIndividual
                                 }
                             while (state.random[thread].nextBoolean(s.randomWalkProbability(x)));
                             break;
+                        default:
+                            state.output.fatal("In ShortVectorIndividual.defaultMutate, default case occurred when it shouldn't have");
+                            break;
                         }
                     if (genome[x] != old) break;
                     // else genome[x] = old;  // try again

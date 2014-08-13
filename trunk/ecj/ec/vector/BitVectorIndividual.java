@@ -243,6 +243,9 @@ public class BitVectorIndividual extends VectorIndividual
                         case BitVectorSpecies.C_RESET_MUTATION:
                             genome[x] = state.random[thread].nextBoolean();
                             break;
+                        default:
+                            state.output.fatal("In BitVectorIndividual.defaultMutate, default case occurred when it shouldn't have");
+                            break;
                         }
                     if (genome[x] != old) break;
                     // else genome[x] = old;  // try again

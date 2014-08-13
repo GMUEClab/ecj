@@ -100,6 +100,7 @@ public abstract class KozaBuilder extends GPNodeBuilder
         // pick a terminal when we're at max depth or if there are NO nonterminals
         if ((  current+1 >= max ||                                                      // Now pick if we're at max depth
                 warnAboutNonterminal(nonterminals.length==0, type, false, state)) &&     // OR if there are NO nonterminals!
+            // this will freak out the static checkers
             (triedTerminals = true) &&                                                  // [first set triedTerminals]
             terminals.length != 0)                                                      // AND if there are available terminals
             {
@@ -153,7 +154,7 @@ public abstract class KozaBuilder extends GPNodeBuilder
 
         int t = type.type;
         GPNode[] terminals = set.terminals[t];
-        GPNode[] nonterminals = set.nonterminals[t];
+        // GPNode[] nonterminals = set.nonterminals[t];
         GPNode[] nodes = set.nodes[t];          
 
         if (nodes.length == 0)
@@ -161,6 +162,7 @@ public abstract class KozaBuilder extends GPNodeBuilder
 
         // pick a terminal when we're at max depth or if there are NO nonterminals
         if ((current+1 >= max) &&                                                       // Now pick if we're at max depth
+            // this will freak out the static checkers
             (triedTerminals = true) &&                                                  // [first set triedTerminals]
             terminals.length != 0)                                                      // AND if there are available terminals
             {
