@@ -235,7 +235,7 @@ class SlaveConnection
                 dataOut.flush();
                 }
             }
-        catch (Exception e) 
+        catch (Exception e)     // just in case RuntimeException is thrown
             {
             shutdown(state);
             return false; 

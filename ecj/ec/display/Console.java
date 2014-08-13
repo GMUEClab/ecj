@@ -1062,7 +1062,7 @@ public class Console extends JFrame
                         currentJob++;
                         }
                     }
-                catch (Exception e) 
+                catch (Exception e) // just in case there's a RuntimeException thrown
                     {
                     System.err.println("Exception when running job:\n\t");
                     e.printStackTrace();

@@ -471,7 +471,7 @@ public class MultiObjectiveFitness extends Fitness
         // build a mapping of Individual -> index in inds array
         HashMap m = new HashMap();
         for(int i = 0; i < inds.length; i++)
-            m.put(inds[i], new Integer(i));
+            m.put(inds[i], Integer.valueOf(i));
         
         int numRanks = ranks.size();
         for(int rank = 0 ; rank < numRanks; rank++)  // for each rank...

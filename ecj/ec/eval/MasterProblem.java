@@ -92,6 +92,8 @@ import java.io.*;
 
 public class MasterProblem extends Problem implements SimpleProblemForm, GroupedProblemForm 
     {
+    private static final long serialVersionUID = 1;
+    
     public static final String P_DEBUG_INFO = "debug-info";
     public static final String P_JOB_SIZE = "job-size";
     

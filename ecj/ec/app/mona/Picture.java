@@ -218,7 +218,7 @@ Color color = new Color((rgb) & 0xFF, (rgb >> 8) & 0xFF, (rgb >> 16) & 0xFF, a);
         }
 
     // for serialization, 'cause (grrr) BufferedImage isn't serializable for some reason
-    void writeObject(java.io.ObjectOutputStream out) throws IOException
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException
         {
         int width = image.getWidth(null);
         int height = image.getHeight(null);
@@ -231,7 +231,7 @@ Color color = new Color((rgb) & 0xFF, (rgb >> 8) & 0xFF, (rgb >> 16) & 0xFF, a);
         }
 
     // for serialization, 'cause (grrr) BufferedImage isn't serializable for some reason
-    void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
         {
         int type = in.readInt();
         int width = in.readInt();

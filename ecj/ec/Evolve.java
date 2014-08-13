@@ -748,7 +748,7 @@ public class Evolve
                 state = initialize(parameters, job);                // pass in job# as the seed increment
                 state.output.systemMessage("Job: " + job);
                 state.job = new Object[1];                                  // make the job argument storage
-                state.job[0] = new Integer(job);                    // stick the current job in our job storage
+                state.job[0] = Integer.valueOf(job);                    // stick the current job in our job storage
                 state.runtimeArguments = args;                              // stick the runtime arguments in our storage
                 if (numJobs > 1)                                                    // only if iterating (so we can be backwards-compatible),
                     {

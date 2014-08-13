@@ -28,7 +28,7 @@ public class SPEA2TournamentSelection extends TournamentSelection
     {
     public int getRandomIndividual(int number, int subpopulation, EvolutionState state, int thread)
         {
-        Individual[] oldinds = state.population.subpops[subpopulation].individuals;
+        //Individual[] oldinds = state.population.subpops[subpopulation].individuals;
         int archiveSize = ((SimpleBreeder)(state.breeder)).numElites(state, subpopulation);
         int archiveStart = state.population.subpops[subpopulation].individuals.length - archiveSize;
 

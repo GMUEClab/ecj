@@ -197,6 +197,7 @@ public class PTC2 extends GPNodeBuilder
         // return a terminal
         if ((   requestedSize==1 ||                                                          // Now pick a terminal if our size is 1
                 warnAboutNonterminal(nonterminals.length==0, type, false, state)) &&         // OR if there are NO nonterminals!
+            // (this will freak out the static checkers)
             (triedTerminals = true) &&                                                       // [first set triedTerminals]
             terminals.length != 0)                                                           // AND if there are available terminals
             {
@@ -251,6 +252,7 @@ public class PTC2 extends GPNodeBuilder
                 if ((   s_size + s >= requestedSize ||                                        // if we need no more nonterminal nodes
                         dequeue_depth==maxDepth ||                                            // OR if we're at max depth and must pick a terminal
                         warnAboutNonterminal(nonterminals.length==0, type, false, state)) &&  // OR if there are NO nonterminals!
+                    // (this will freak out the static checkers)
                     (triedTerminals = true) &&                                                // [first set triedTerminals]
                     terminals.length != 0)                                                    // AND if there are available terminals
                     {

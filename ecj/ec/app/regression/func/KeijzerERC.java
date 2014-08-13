@@ -31,8 +31,8 @@ import java.io.*;
 
 public class KeijzerERC extends RegERC
     {
-    public static double MEAN = 0.0;
-    public static double STANDARD_DEVIATION = 5.0;
+    public static final double MEAN = 0.0;
+    public static final double STANDARD_DEVIATION = 5.0;
     
     public String name() { return "KeijzerERC"; }
 

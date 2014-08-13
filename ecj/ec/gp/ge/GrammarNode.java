@@ -16,7 +16,7 @@ import java.util.*;
  *
  */
 
-public abstract class GrammarNode
+public abstract class GrammarNode implements java.io.Serializable
     {
     String head;
     // may be empty but it's not very expensive

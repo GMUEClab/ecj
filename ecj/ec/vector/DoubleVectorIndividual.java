@@ -240,6 +240,9 @@ public class DoubleVectorIndividual extends VectorIndividual
             simulatedBinaryCrossover(state.random[thread], i, s.crossoverDistributionIndex);
             }
             break;
+            default:
+                state.output.fatal("In DoubleVectorIndividual.defaultCrossover, default case occurred when it shouldn't have");
+                break;
             }
         }
 
@@ -320,6 +323,9 @@ public class DoubleVectorIndividual extends VectorIndividual
                             break;
                         case FloatVectorSpecies.C_INTEGER_RANDOM_WALK_MUTATION:
                             integerRandomWalkMutation(rng, s, x);
+                            break;
+                        default:
+                            state.output.fatal("In DoubleVectorIndividual.defaultMutate, default case occurred when it shouldn't have");
                             break;
                         }
                     if (genome[x] != old) break;

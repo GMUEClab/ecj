@@ -350,7 +350,7 @@ public class GrammarParser implements Prototype
                 }
             }
         // Now to the absolute index to relative index mapping
-        String oldHead = ((GrammarNode)indexToRule.get(new Integer(0))).getHead();
+        String oldHead = ((GrammarNode)indexToRule.get(Integer.valueOf(0))).getHead();
         absIndexToRelIndex.put(new Integer(0), new Integer(0));
         for(int absIndex = 1, relIndex = 1 ; absIndex < indexToRule.size() ; absIndex++)
             {

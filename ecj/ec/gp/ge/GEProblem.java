@@ -173,6 +173,8 @@ public class GEProblem extends Problem implements SimpleProblemForm, GroupedProb
         final int subpopulation,
         final int threadnum)
         {
+        // this shouldn't ever happen because GEProblem's Problems are ALWAYS
+        // SimpleProblemForm, but we include it here to be future-proof
         if (!(problem instanceof SimpleProblemForm))
             state.output.fatal("GEProblem's underlying Problem is not a SimpleProblemForm");
 

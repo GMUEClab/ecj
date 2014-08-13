@@ -118,8 +118,9 @@ public class SteadyStateBreeder extends SimpleBreeder
         {
         for(int x=0;x<breedingPipelines.length;x++)
             {
-            if (!(breedingPipelines[x] instanceof SteadyStateBSourceForm))
-                state.output.error("Breeding Pipeline of subpopulation " + x + " is not of SteadyStateBSourceForm");
+            // all breeding pipelines are SteadyStateBSourceForm
+            //if (!(breedingPipelines[x] instanceof SteadyStateBSourceForm))
+            //    state.output.error("Breeding Pipeline of subpopulation " + x + " is not of SteadyStateBSourceForm");
             ((SteadyStateBSourceForm)(breedingPipelines[x])).sourcesAreProperForm(state);
             }
         }
@@ -173,7 +174,7 @@ public class SteadyStateBreeder extends SimpleBreeder
         
     public Individual breedIndividual(final EvolutionState state, int subpop, int thread)
         {
-        final SteadyStateEvolutionState st = (SteadyStateEvolutionState) state;
+        //final SteadyStateEvolutionState st = (SteadyStateEvolutionState) state;
         Individual[] newind = new Individual[1]; 
                 
         // breed a single individual 

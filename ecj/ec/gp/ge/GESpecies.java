@@ -369,7 +369,7 @@ public class GESpecies extends IntegerVectorSpecies
         }
 
     // thrown by makeSubtree when chromosome is not large enough for the generated tree.
-    class BigTreeException extends RuntimeException
+    static class BigTreeException extends RuntimeException
         {
         static final long serialVersionUID = 1L;
         }
@@ -476,7 +476,7 @@ public class GESpecies extends IntegerVectorSpecies
     */
     public GPNode obtainERC(EvolutionState state, int genomeVal, int threadnum, GPNode node, HashMap ercMapsForFancyPrint)
         {
-        ArrayList ERCList = (ArrayList) (ERCBank.get(new Integer(genomeVal)));
+        ArrayList ERCList = (ArrayList) (ERCBank.get(Integer.valueOf(genomeVal)));
 
         // No such ERC, create a new ERCList.
         if (ERCList == null)
@@ -637,7 +637,7 @@ public class GESpecies extends IntegerVectorSpecies
             // otherwise use the minGene[0] value.
             int minIndex = 0 ; if(index < minGene.length) minIndex = index ;
             // now generate a new key
-            Integer key = new Integer((int)minGene[minIndex] 
+            Integer key = Integer.valueOf((int)minGene[minIndex] 
                 + state.random[threadnum].nextInt(
                     (int)(maxGene[minIndex] - minGene[minIndex] + 1)));
             ArrayList list = new ArrayList();
@@ -675,7 +675,7 @@ public class GESpecies extends IntegerVectorSpecies
                     if(token.equals("ERC"))
                         {
                         token = (String)input.remove();
-                        intList.add(new Integer(Integer.valueOf(token)));
+                        intList.add(Integer.valueOf(token));
                         }
                     break;
                     }

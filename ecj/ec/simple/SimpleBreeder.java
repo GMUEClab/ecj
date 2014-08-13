@@ -396,7 +396,7 @@ public class SimpleBreeder extends Breeder
             }
         }
     
-    class EliteComparator implements SortComparatorL
+    static class EliteComparator implements SortComparatorL
         {
         Individual[] inds;
         public EliteComparator(Individual[] inds) {super(); this.inds = inds;}

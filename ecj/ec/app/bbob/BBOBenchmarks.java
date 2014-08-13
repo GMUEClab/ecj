@@ -112,8 +112,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
     
     public boolean reevaluateNoisyProblems;
 
-    final public int NHIGHPEAKS21 = 101;
-    final public int NHIGHPEAKS22 = 21;
+    public static final int NHIGHPEAKS21 = 101;
+    public static final int NHIGHPEAKS22 = 21;
 
     // DO NOT MODIFY THESE VARIABLES except in the setup method: global
     // variables are not threadsafe.

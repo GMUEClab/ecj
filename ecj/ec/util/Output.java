@@ -101,16 +101,16 @@ public class Output implements Serializable
     /** When passed to print functions, doesn't do any printing */
     public static final int NO_LOGS = -2;
         
-    public void setFilePrefix(String filePrefix) {
+    public synchronized void setFilePrefix(String filePrefix) {
         this.filePrefix = filePrefix;
         }
 
-    public void setThrowsErrors(boolean val)
+    public synchronized void setThrowsErrors(boolean val)
         {
         throwsErrors = val;
         }
         
-    public boolean getThrowsErrors() { return throwsErrors; }
+    public synchronized boolean getThrowsErrors() { return throwsErrors; }
 
     protected void finalize() throws Throwable
         {
@@ -454,17 +454,14 @@ public class Output implements Serializable
         be used by ec.Evolve in starting up the system. */
     public static void initialWarning(String s, Parameter p1, Parameter p2)
         {
-        String er = "STARTUP WARNING:\n" + s;
-        System.err.println(er);
+        System.err.println("STARTUP WARNING:\n" + s);
         if (p1!=null) 
             {
-            er += "PARAMETER: " + p1;
             System.err.println("PARAMETER: " + p1);
             }
 
         if (p2!=null && p1!=null)
             {
-            er += "     ALSO: " + p2;
             System.err.println("     ALSO: " + p2);
             }
         }
@@ -726,7 +723,7 @@ public class Output implements Serializable
         else
             {
             Log l = (Log) logs.elementAt(log);
-            if (l==null) throw new OutputException("Unknown log number" + l);
+            if (l==null) throw new OutputException("Unknown log number" + log);
             println(s,_verbosity,l,_announcement,false);
             }
         }
@@ -824,7 +821,7 @@ public class Output implements Serializable
         else
             {
             Log l = (Log) logs.elementAt(log);
-            if (l==null) throw new OutputException("Unknown log number" + l);
+            if (l==null) throw new OutputException("Unknown log number" + log);
             print(s,V_VERBOSE,l);
             }
         }
@@ -924,6 +921,7 @@ public class Output implements Serializable
             {
             return (InputStream)(Class.forName("com.jcraft.jzlib.ZInputStream").getConstructor(new Class[] { InputStream.class } ).newInstance(new Object[] { in }));
             }
+        // just in case of RuntimeExceptions
         catch (Exception e) { return null; }  // failed, probably doesn't have JZLib on the system
         }
 
@@ -943,15 +941,16 @@ public class Output implements Serializable
             int Z_SYNC_FLUSH = outz.getField("Z_SYNC_FLUSH").getInt(null);
             
             Class outc = Class.forName("com.jcraft.jzlib.ZOutputStream");
-            Object outi = outc.getConstructor(new Class[] { OutputStream.class, Integer.TYPE }).newInstance(new Object[] { out, new Integer(Z_BEST_SPEED) });
+            Object outi = outc.getConstructor(new Class[] { OutputStream.class, Integer.TYPE }).newInstance(new Object[] { out, Integer.valueOf(Z_BEST_SPEED) });
             outc.getMethod("setFlushMode", new Class[] { Integer.TYPE }).invoke(outi, new Object[] { new Integer(Z_SYNC_FLUSH) });
             return (OutputStream) outi;
             }
+        // just in case of RuntimeExceptions
         catch (Exception e) { return null; } // failed, probably doesn't have JZLib on the system
         }
 
 
-    class Announcement implements Serializable
+    static class Announcement implements Serializable
         {
         /** The announcement's...anouncement.*/
         public String text;

@@ -131,7 +131,7 @@ public class KLandscapes extends GPProblem implements SimpleProblemForm {
     double fitness(GPNode root)
         {
         // Compute the penality (it increases with the difference in depth between the tree and k.
-        double penalty = 1/(1+Math.abs(k+1-root.depth()));
+        double penalty = 1.0/(1+Math.abs(k+1-root.depth()));
         return penalty*fitnessHelper(root)/bestFitness;
         }
 

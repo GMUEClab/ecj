@@ -1012,7 +1012,7 @@ public class IslandExchange extends Exchanger
             // (this is the only message the server sends right now), and it should set the flag
             // for exiting next time when in this procedure
             String ww = fromServer.readUTF();
-            if( ww != null || alreadyReadGoodBye ) // FOUND message sent from the server
+            if( alreadyReadGoodBye ) // FOUND message sent from the server
                 {
                 // we should exit because some other individual has
                 // found the perfect fit individual
@@ -1200,7 +1200,7 @@ class IslandExchangeMailbox implements Runnable
     EvolutionState state;
 
     // synchronization variable
-    Boolean syncVar;
+    boolean[] syncVar = new boolean[1];
 
     // My ID
     String myId;
@@ -1245,7 +1245,7 @@ class IslandExchangeMailbox implements Runnable
         nImmigrants = new int[ numsubpops ];
 
         // set the synchronization variable to false (it will be set to true to signal exiting the waiting loop)
-        syncVar = Boolean.FALSE;
+        syncVar[0] = false;
 
         // create the ServerSocket to listen to incoming messages
         try
@@ -1463,7 +1463,7 @@ class IslandExchangeMailbox implements Runnable
             synchronized( syncVar )
                 {
                 // get the value of the syncVar. If it is true, we should exit.
-                shouldExit = syncVar.booleanValue();
+                shouldExit = syncVar[0];
                 }
             }
         while( !shouldExit );
@@ -1504,7 +1504,7 @@ class IslandExchangeMailbox implements Runnable
         // (hopefully, the information from the server was correct
         synchronized( syncVar )
             {
-            syncVar = Boolean.TRUE;
+            syncVar[0] = true;
             }
 
         }
@@ -1614,7 +1614,7 @@ class IslandExchangeServer implements Runnable
 /** A class indicating all the information the server knows about
     a given island, including its mod, size, offset, and all the
     migrating islands it hooks to, etc. */
-    public class IslandExchangeIslandInfo
+    public static class IslandExchangeIslandInfo
         {
         /** how often to send individuals */
         public int modulo;
@@ -1843,10 +1843,10 @@ state.output.fatal( "Parameter not found, or it has an incorrect value.", p );
                         Integer integer = (Integer)info_immigrants.get( ieii.migrating_island_ids[y] );
                         if( integer == null )
                             info_immigrants.put( ieii.migrating_island_ids[y],
-                                new Integer(1) );
+                                Integer.valueOf(1));
                         else
                             info_immigrants.put( ieii.migrating_island_ids[y],
-                                new Integer( integer.intValue() + 1 ) );
+                                Integer.valueOf( integer.intValue() + 1 ) );
                         }
                     }
                 }
@@ -2179,21 +2179,25 @@ state.output.fatal( "Parameter not found, or it has an incorrect value.", p );
                         continue;
                         }
 
-                    if ( ww == null )  // the connection has been broken
-                        {
-                        state.output.message("Server: Island " + island_ids[x] + " dropped connection");
-                        clientRunning[x] = false;
-                        try
-                            {
-                            dataIn[x].close();
-                            dataOut[x].close();
-                            con[x].close();
-                            }
-                        catch( IOException e )
-                            {
-                            }
-                        }
-                    else if( ww.equals( FOUND ) ) // he found it!
+                    // this will always be non-null
+                    /*
+                      if ( ww == null )  // the connection has been broken
+                      {
+                      state.output.message("Server: Island " + island_ids[x] + " dropped connection");
+                      clientRunning[x] = false;
+                      try
+                      {
+                      dataIn[x].close();
+                      dataOut[x].close();
+                      con[x].close();
+                      }
+                      catch( IOException e )
+                      {
+                      }
+                      }
+                      else 
+                    */
+                    if( ww.equals( FOUND ) ) // he found it!
                         {
                         // inform everyone that they need to shut down --
                         // we do not need to wrap

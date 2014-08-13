@@ -102,7 +102,7 @@ public class SubpopulationPanel
             DefaultListModel model = new DefaultListModel();
             for (int i = 0; i < size; ++i)
                 {
-                model.add(i,new Integer(i));
+                model.add(i,Integer.valueOf(i));
                 }
             individualsList.setModel(model);
             individualsList.addListSelectionListener(new ListSelectionListener()

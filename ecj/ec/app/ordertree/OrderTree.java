@@ -53,10 +53,10 @@ public class OrderTree extends GPProblem implements SimpleProblemForm
 
     double fitness;
     static final String P_CONTRIBUTION_TYPE = "contribution-type";
-    final int CONTRIBUTION_UNIT = 0;
-    final int CONTRIBUTION_VALUE = 1;
-    final int CONTRIBUTION_SQUARE = 2;
-    final int CONTRIBUTION_EXPONENTIAL = 3;
+    final static int CONTRIBUTION_UNIT = 0;
+    final static int CONTRIBUTION_VALUE = 1;
+    final static int CONTRIBUTION_SQUARE = 2;
+    final static int CONTRIBUTION_EXPONENTIAL = 3;
     
     int fitnessContributionType;
     

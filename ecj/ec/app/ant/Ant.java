@@ -133,9 +133,10 @@ public class Ant extends GPProblem implements SimpleProblemForm
             state.output.fatal("Error loading file or resource", base.push(P_FILE), null);
         
         food = 0;
+        LineNumberReader lnr = null;
         try
             {
-            LineNumberReader lnr = 
+            lnr = 
                 //new LineNumberReader(new FileReader(filename));
                 new LineNumberReader(new InputStreamReader(str));
             
@@ -179,6 +180,10 @@ public class Ant extends GPProblem implements SimpleProblemForm
         catch (IOException e)
             {
             state.output.fatal("The Ant trail file could not be read due to an IOException:\n" + e);
+            }
+        finally
+            {
+            try { if (lnr != null) lnr.close(); } catch (IOException e) { }
             }
         state.output.exitIfErrors();
 

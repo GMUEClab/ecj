@@ -224,6 +224,8 @@ public class CompetitiveEvaluator extends Evaluator
             case STYLE_N_RANDOM_COMPETITORS_TWOWAY:
                 evalNRandomTwoWay( state, from, numinds, state.population.subpops[0].individuals, 0, prob );
                 break;
+            default:
+                state.output.fatal("Invalid competition style in CompetitiveEvaluator.evaluatePopulation()");
             }
     
         prob.postprocessPopulation(state, state.population, assessFitness, style == STYLE_SINGLE_ELIMINATION);
@@ -606,17 +608,19 @@ class EncapsulatedIndividual
         }
     };
 
+/*
 // used by the Single-Elimination-Tournament, (Double-Elimination-Tournament and World-Cup) evaluations
 class IndividualAndVictories
-    {
-    public Individual ind;
-    public int victories;
-    public IndividualAndVictories( Individual ind_, int value_ )
-        {
-        ind = ind_;
-        victories = value_;
-        }
-    };
+{
+public Individual ind;
+public int victories;
+public IndividualAndVictories( Individual ind_, int value_ )
+{
+ind = ind_;
+victories = value_;
+}
+};
+*/
 
 class IndComparator implements SortComparator
     {

@@ -535,6 +535,9 @@ public class Edge extends GPProblem implements SimpleProblemForm
                 case EPSILON:
                     epsilon[from[y]][epsilon_l[from[y]]++]=to[y];
                     break;
+                default:
+                    state.output.fatal("Invalid case " + reading[y] + " in Edge.fullTest()");
+                    break;
                 }
         
         // create the states
@@ -581,7 +584,7 @@ public class Edge extends GPProblem implements SimpleProblemForm
 
         if (!ind.evaluated)  // don't bother reevaluating
             {
-            EdgeData input = (EdgeData)(this.input);
+            //EdgeData input = (EdgeData)(this.input);
 
             fullTest(state,ind,threadnum,posT,negT);
             // the fitness better be KozaFitness!

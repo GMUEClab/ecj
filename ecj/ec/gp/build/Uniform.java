@@ -240,7 +240,7 @@ public class Uniform extends GPNodeBuilder
         while(e.hasMoreElements())
             {
             GPFunctionSet set = (GPFunctionSet)(e.nextElement());
-            _functionsets.put(set,new Integer(count));
+            _functionsets.put(set,Integer.valueOf(count));
             functionsets[count++] = set;
             }
         
