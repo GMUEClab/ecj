@@ -29,6 +29,9 @@ pop.subpop.0.species.genome-size = 10
 pop.subpop.0.species.crossover-type = one
 pop.subpop.0.species.mutation-prob = 0.01
 
+# This could obviously be improved upon
+pop.subpop.0.species.mutation-type = reset
+
 pop.subpop.0.species.pipe = ec.vector.breed.VectorMutationPipeline
 pop.subpop.0.species.pipe.source.0 = ec.vector.breed.VectorCrossoverPipeline
 

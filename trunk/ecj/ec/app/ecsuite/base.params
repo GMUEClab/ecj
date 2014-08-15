@@ -3,7 +3,8 @@ parent.0 = ecsuite.params
 # LOWER LEVEL STUFF IN META
 # This tells us not to write out to a statistics file
 stat.file = /dev/null
-stat.muzzle=true
+stat.silent=true
+silent = true
 
 # TWEAKS TO THE PROBLEM
 eval.problem.type = rotated-griewank

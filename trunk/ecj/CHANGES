@@ -2309,3 +2309,5 @@ Version		Change Log
 	Added bit-flip mutation to SAT
 	SAT now properly loads filenames, not strings, from the parameters
 	spatialcoevolve.params now runs using default subpops
+	Various bugfixes to ecsuite/es.params
+	Changes "muzzle" to "silent" in various params files
