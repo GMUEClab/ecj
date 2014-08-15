@@ -98,7 +98,19 @@ public class SubpopulationPanel
             {
             individualsList = new JList();
             individualsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-            int size = console.parameters.getInt(new Parameter("pop.subpop."+subPopNum+".size"),null);
+            int size = -1;
+            if (console.parameters.exists(new Parameter("pop.subpop."+subPopNum+".size"),null))
+            	{
+            	size = console.parameters.getInt(new Parameter("pop.subpop."+subPopNum+".size"),null);
+            	}
+            else if (console.parameters.exists(new Parameter("pop.default-subpop"), null));
+            	{
+            	int defaultsub = console.parameters.getInt(new Parameter("pop.default-subpop"), null);
+            	if (defaultsub >= 0)
+            		{
+            		size = console.parameters.getInt(new Parameter("pop.subpop." + defaultsub + ".size"), null);
+            		}
+            	}
             DefaultListModel model = new DefaultListModel();
             for (int i = 0; i < size; ++i)
                 {

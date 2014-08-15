@@ -11,8 +11,8 @@ parent.0 = ../../es/es.params
 # file but multiple files with different numbers (1-MonaLisaOut.png,
 # 2-MonaLisaOut.png, etc.)
 eval.problem = ec.app.mona.Mona
-eval.problem.in = $MonaLisaSmall.jpg
-eval.problem.out = $MonaLisaOut.png
+eval.problem.in = MonaLisaSmall.jpg
+eval.problem.out = MonaLisaOut.png
 
 # The number of vertices for each polygon is 6.  This affects two
 # parameters below which must be also adjusted of you change this,

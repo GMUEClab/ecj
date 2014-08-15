@@ -41,10 +41,12 @@ pop.subpop.0.species.pipe.source.0.size = 		2
 pop.subpop.0.species.pipe.source.0.neighborhood-size = 	2
 pop.subpop.0.species.pipe.source.0.ind-competes = 	true
 
-pop.subpop.1 = 						ec.spatial.Spatial1DSubpopulation
-pop.subpop.1.size = 					32
-pop.subpop.1.species.pipe.source.0 = 			ec.spatial.SpatialTournamentSelection
-pop.subpop.1.species.pipe.source.0.size = 		2
-pop.subpop.1.species.pipe.source.0.neighborhood-size = 	2
-pop.subpop.1.species.pipe.source.0.ind-competes = 	true
+# We do NOT say the following because in coevolve2.params
+# we defines subpop0 to be the default subpop.
+#pop.subpop.1 = 						ec.spatial.Spatial1DSubpopulation
+#pop.subpop.1.size = 					32
+#pop.subpop.1.species.pipe.source.0 = 			ec.spatial.SpatialTournamentSelection
+#pop.subpop.1.species.pipe.source.0.size = 		2
+#pop.subpop.1.species.pipe.source.0.neighborhood-size = 	2
+#pop.subpop.1.species.pipe.source.0.ind-competes = 	true
 

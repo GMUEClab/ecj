@@ -83,7 +83,7 @@ public class SimpleBreeder extends Breeder
 
     public boolean usingElitism(int subpopulation)
         {
-        return (elite[subpopulation] != NOT_SET ) || (eliteFrac[subpopulation] != NOT_SET);
+        return (elite[subpopulation] > 0 ) || (eliteFrac[subpopulation] > 0);
         }
                 
     public int numElites(EvolutionState state, int subpopulation)

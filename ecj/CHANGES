@@ -2297,3 +2297,15 @@ Version		Change Log
 		grep -v "should be package protected"
 	All bad default cases now throw fatal just in case
 	Reindented
+	ec/app/async removed
+	ec/app/coevolve2/coevolve1.params renamed to coevolve2.params
+	Typo fix to ec/app/coevolve2/coevolve2.params
+	GUI should now properly handle default subpopulations
+	Bug fix to mona.params, which was using "$" file names for its images
+	Modified SimpleBreeder.usingElites method so it considers elites of
+		0 number as "not using" (which is correct)
+	Fix to over-zealous default inclusion in RandTree.java
+	Bug fixes to some errors in the byte->int revision of the ge package
+	Added bit-flip mutation to SAT
+	SAT now properly loads filenames, not strings, from the parameters
+	spatialcoevolve.params now runs using default subpops
