@@ -34,10 +34,6 @@ eval.problem.runs = 1
 eval.problem.reevaluate = true
 
 
-# We'll muzzle the problem to be a bit cleaner
-eval.problem.muzzle = true
-
-
 # Meta-individuals are costly, so we might as well do N threads
 evalthreads = auto
 
