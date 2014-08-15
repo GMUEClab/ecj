@@ -32,11 +32,13 @@ public class SAT extends Problem implements SimpleProblemForm
     public void setup(EvolutionState state, Parameter base) 
         {
         super.setup(state, base); 
-        String fileName = state.parameters.getString(base.push(P_FILENAME), null); 
+        File filename = state.parameters.getFile(base.push(P_FILENAME), null); 
+        if (filename == null)  // uh oh
+        	state.output.fatal("Filename must be provided", base.push(P_FILENAME));
                 
         try 
             { 
-            BufferedReader inFile = new BufferedReader(new FileReader(new File(fileName))); 
+            BufferedReader inFile = new BufferedReader(new FileReader(filename)); 
             String line=""; 
             int cnt=0;
             boolean start = false; 
@@ -60,7 +62,7 @@ public class SAT extends Problem implements SimpleProblemForm
             } 
         catch (IOException e) 
             { 
-            state.output.fatal("Error in SAT setup, while loading from file " + fileName +
+            state.output.fatal("Error in SAT setup, while loading from file " + filename +
                 "\nFrom parameter " + base.push(P_FILENAME) + "\nError:\n" + e);  
             }
         }

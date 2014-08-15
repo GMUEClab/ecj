@@ -347,7 +347,6 @@ public class RandTree extends GPNodeBuilder
                     break;
                 default:  // cannot happen
                     throw new RuntimeException("default case should never be able to occur");
-                    break;
                 }
             counter++;
             }

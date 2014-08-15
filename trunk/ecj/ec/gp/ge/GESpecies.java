@@ -546,7 +546,7 @@ public class GESpecies extends IntegerVectorSpecies
 
         // Do NOT initialize its trees
 
-        // Set the fitness to the ByteVectorIndividual's fitness
+        // Set the fitness to the IntegerVectorIndividual's fitness
         newind.fitness = ind.fitness;
         newind.evaluated = false;
 

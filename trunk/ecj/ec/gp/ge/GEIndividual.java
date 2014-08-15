@@ -21,8 +21,8 @@ import java.util.*;
  */
 
 /**
-   GEIndividual is a simple subclass of ByteVectorIndividual which not only prints out (for humans)
-   the Individual as a byte vector but also prints out the Individual's tree representation.
+   GEIndividual is a simple subclass of IntegerVectorIndividual which not only prints out (for humans)
+   the Individual as a int vector but also prints out the Individual's tree representation.
 */
 
 public class GEIndividual extends IntegerVectorIndividual
@@ -48,9 +48,9 @@ public class GEIndividual extends IntegerVectorIndividual
         Iterator iter = (ERCmapsForFancyPrint.keySet()).iterator();
         while(iter.hasNext())
             {
-            Byte key = (Byte)(iter.next());
+            Integer key = (Integer)(iter.next());
             GPNode val = (GPNode)(ERCmapsForFancyPrint.get(key));
-            state.output.print("    " + (byte)(key.byteValue()) + " -> " + val.toStringForHumans(), log);
+            state.output.print("    " + (byte)(key.intValue()) + " -> " + val.toStringForHumans(), log);
             }
         state.output.println("", log);
         }

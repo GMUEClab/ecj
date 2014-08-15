@@ -26,4 +26,5 @@ pop.subpop.0.species.fitness = ec.simple.SimpleFitness
 select.tournament.size =                2 
 pop.subpop.0.species.mutation-prob = 0.05
 pop.subpop.0.species.crossover-type =two  
+pop.subpop.0.species.mutation-type = flip
 
