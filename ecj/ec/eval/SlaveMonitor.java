@@ -318,6 +318,7 @@ public class SlaveMonitor
             notifyMonitor(allSlaves);
             }
 
+		pool.killAll();  // clean up the thread pool
         debug("Shut Down Completed");
         }
 
