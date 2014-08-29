@@ -8,6 +8,7 @@
 package ec.util;
 
 import java.util.*;
+import java.io.*;
 
 /**
  * ThreadPool.java
@@ -69,13 +70,34 @@ public class ThreadPool implements java.io.Serializable
     // This object is transient so it's not written out when serialized
     // out, and so when deserialized it becomes null (which we detect).
     // This is important because Thread is not serializable.
-    transient LinkedList workers = new LinkedList();
+ 	LinkedList workers = new LinkedList();
     Object workersLock = new Object[0];  // arrays are serializable
         
     // The total number of threads which exist, including those
     // in the pool and those outstanding working on jobs
-    transient int totalWorkers = 0;  // resets to 0 on deserialization
+    int totalWorkers = 0;  // resets to 0 on deserialization
         
+    private void writeObject(java.io.ObjectOutputStream stream) throws IOException 
+		{
+		// DO NOTHING
+		// This is because we will be rebuilding ALL THREE variables
+		// (workers, workersLock, and totalWorkers) during readObject.
+		// We can't accomplish this with 'transient' because workersLock has
+		// to be actually rebuilt as an object rather than set to null
+		// Further, having an empty writeObject method here prevents Java
+		// from attempting to serialize these non-transient objects while some
+		// thread might be accessing them.
+		}
+
+    private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException
+    	{
+    	// REBUILD THE WHOLE INSTANCE
+    	workers = new LinkedList();
+    	workersLock = new Object[0];
+    	totalWorkers = 0;
+    	}
+
+
     /** Start a thread on the given Runnable and returns it. */
     public Worker start(Runnable run) { return start(run, "" + this); }
 
@@ -86,7 +108,7 @@ public class ThreadPool implements java.io.Serializable
         // ensure we have at least one thread
         synchronized(workersLock) 
             {
-            if (workers == null) workers = new LinkedList();  // deserialized
+            // if (workers == null) workers = new LinkedList();  // deserialized
             if (workers.isEmpty())
                 {
                 node = new Node(name + " (" + totalWorkers + ")");
@@ -132,7 +154,7 @@ public class ThreadPool implements java.io.Serializable
         {
         synchronized(workersLock)
             {
-            if (workers == null) workers = new LinkedList();  // deserialized
+            // if (workers == null) workers = new LinkedList();  // deserialized
             while (getOutstandingWorkers() >= maximumOutstandingWorkers)  // too many outstanding jobs
                 {
                 try { workersLock.wait(); }
@@ -153,7 +175,7 @@ public class ThreadPool implements java.io.Serializable
         {
         synchronized(workersLock) 
             {
-            if (workers == null) workers = new LinkedList();  // deserialized
+            // if (workers == null) workers = new LinkedList();  // deserialized
             return workers.size();
             }
         }
@@ -185,7 +207,7 @@ public class ThreadPool implements java.io.Serializable
         {
         synchronized(workersLock)
             {
-            if (workers == null) workers = new LinkedList();  // deserialized
+            // if (workers == null) workers = new LinkedList();  // deserialized
             while (totalWorkers > workers.size())  // there are still outstanding workers
                 try { workersLock.wait(); }
                 catch (InterruptedException e) { Thread.interrupted(); }  // ignore
@@ -200,7 +222,7 @@ public class ThreadPool implements java.io.Serializable
         {
         synchronized(workersLock)
             {
-            if (workers == null) workers = new LinkedList();  // deserialized
+            // if (workers == null) workers = new LinkedList();  // deserialized
             while(!workers.isEmpty())
                 {
                 Node node = (Node)(workers.remove()); // removes from front
@@ -325,7 +347,7 @@ public class ThreadPool implements java.io.Serializable
                     {
                     synchronized(runLock)
                         {
-                        if (workers == null) workers = new LinkedList();  // deserialized
+                        // if (workers == null) workers = new LinkedList();  // deserialized
                         workers.add(this);  // adds at end
                                                 
                         if (totalWorkers == workers.size())  // we're all in the bag, let the pool know if it's joining

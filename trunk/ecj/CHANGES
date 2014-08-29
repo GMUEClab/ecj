@@ -2315,4 +2315,5 @@ Version		Change Log
 23 Ecco la Prerelease!
 	SlaveMonitor.shutdown() now kills all the threads in the thread pool.
 		Thanks to Eric 'Siggy' Scott <escott8@gmu.edu>
-
+	Modified serialization mechanism for ThreadPool so that it's a bit more
+		threadsafe.
