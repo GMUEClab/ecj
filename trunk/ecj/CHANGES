@@ -2311,3 +2311,8 @@ Version		Change Log
 	spatialcoevolve.params now runs using default subpops
 	Various bugfixes to ecsuite/es.params
 	Changes "muzzle" to "silent" in various params files
+
+23 Ecco la Prerelease!
+	SlaveMonitor.shutdown() now kills all the threads in the thread pool.
+		Thanks to Eric 'Siggy' Scott <escott8@gmu.edu>
+
