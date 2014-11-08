@@ -1,0 +1,83 @@
+#  Copyright 2014 by Xiaomeng Ye
+#  Licensed under the Academic Free License version 3.0
+#  See the file "LICENSE" for more information
+
+#this should be fine, overriding many params in koza.params
+parent.0 = ../koza/koza.params
+
+tomi.levelWeight = 1
+tomi.boundFreeWeight = 2
+
+#some overwriting
+generations =				300
+pop.subpop.0.species.ind.tree.0 = ec.gp.lambda.LambdaTree
+
+pop.subpop.0.species = ec.gp.lambda.LambdaSpecies
+pop.subpop.0.species.ind = ec.gp.lambda.LambdaIndividual
+
+#gp.type.a.size = 3
+#gp.type.a.0.name = L
+#gp.type.a.1.name = P
+#gp.type.a.2.name = I
+#gp.type.s.size = 0
+
+gp.fs.size = 1
+gp.fs.0.name = f0
+gp.fs.0.size = 3
+gp.fs.0.func.0 = ec.gp.lambda.LNode
+gp.fs.0.func.0.nc = ncL
+gp.fs.0.func.1 = ec.gp.lambda.PNode
+gp.fs.0.func.1.nc = ncP
+gp.fs.0.func.2 = ec.gp.lambda.IndexNode
+gp.fs.0.func.2.nc = ncI
+#IMPORTANT, the range of index node will be 1 to indexMax-1
+gp.fs.0.func.2.indexMax = 4
+
+gp.nc.size = 3
+
+gp.nc.0 = ec.gp.GPNodeConstraints
+gp.nc.0.name = ncL
+gp.nc.0.returns = nil
+gp.nc.0.size = 1
+gp.nc.0.child.0 = nil
+
+gp.nc.1 = ec.gp.GPNodeConstraints
+gp.nc.1.name = ncP
+gp.nc.1.returns = nil
+gp.nc.1.size = 2
+gp.nc.1.child.0 = nil
+gp.nc.1.child.1 = nil
+
+gp.nc.2 = ec.gp.GPNodeConstraints
+gp.nc.2.name = ncI
+gp.nc.2.returns = nil
+#not sure allowing children for index node is ok? Don't think it really matters.
+gp.nc.2.size = 0 
+
+#problem 1
+#eval.problem = ec.gp.lambda.app.churchNumerals.SuccessorProblem
+#eval.problem.data = ec.gp.lambda.app.churchNumerals.SuccessorProblemData
+#eval.problem.size = 10
+#eval.problem.inputMax = 10
+
+#problem 2
+eval.problem = ec.gp.lambda.app.churchNumerals.MultiplicationByTwoProblem
+eval.problem.data = ec.gp.lambda.app.churchNumerals.SuccessorProblemData
+
+#default is false
+eval.problem.inputRandom = false
+
+#eval.problem.indexMax = 5
+
+#changes made in accommodation of small heap memory
+#size 20 works
+pop.subpop.0.size =	1024
+#13
+gp.koza.xover.maxdepth = 15
+
+gp.koza.mutate.maxdepth = 15
+#some override
+#breed.elite.0 = 			1
+generations = 1000
+#gp.tree.print-style=latex
+pop.subpop.0.species.ind.tree.0.brm = 500
