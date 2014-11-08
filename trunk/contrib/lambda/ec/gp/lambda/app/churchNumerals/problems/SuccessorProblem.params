@@ -1,0 +1,9 @@
+#  Copyright 2014 by Xiaomeng Ye
+#  Licensed under the Academic Free License version 3.0
+#  See the file "LICENSE" for more information
+parent.0 = ../../../lambda.params
+
+eval.problem = ec.gp.lambda.app.churchNumerals.problems.SuccessorProblem
+eval.problem.data = ec.gp.lambda.app.churchNumerals.problems.SuccessorProblemData
+eval.problem.size = 10
+eval.problem.inputMax = 10
