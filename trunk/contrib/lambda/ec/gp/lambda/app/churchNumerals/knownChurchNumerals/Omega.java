@@ -12,7 +12,7 @@ import ec.gp.lambda.LambdaIndividual;
 import ec.gp.GPNode;
 import ec.gp.lambda.*;
 /**
- * The LambdaIndividual whose lambda tree represents (¦Ëx.xx) 
+ * The LambdaIndividual whose lambda tree represents (lambda x.xx) 
  */
 public class Omega extends LambdaIndividual implements Serializable {
 	private static final long serialVersionUID = 1;
