@@ -14,7 +14,7 @@ import ec.gp.lambda.*;
 
 /**
  * the hard-coded version of the successor function.
- * ¦Ën.¦Ëf.¦Ëx.f (n f x)
+ * lambda n.lambda f.lambda x.f (n f x)
  */
 public class TrueSuccessor extends LambdaIndividual implements Serializable{
 	private static final long serialVersionUID = 1;
