@@ -16,7 +16,7 @@ import ec.gp.lambda.PNode;
 
 /**
  * the hard-coded version of the addition function.
- * The LambdaIndividual whose lambda tree represents ¦Ëm.¦Ën.¦Ëf.¦Ëx.m f (n f x)
+ * The LambdaIndividual whose lambda tree represents "lambda m.lambda n.lambda f.lambda x.m f (n f x)"
  */
 public class Summer extends LambdaIndividual implements Serializable{
 	private static final long serialVersionUID = 1;
