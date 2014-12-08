@@ -2317,3 +2317,4 @@ Version		Change Log
 		Thanks to Eric 'Siggy' Scott <escott8@gmu.edu>
 	Modified serialization mechanism for ThreadPool so that it's a bit more
 		threadsafe.
+	Updates to the manual to discuss multithreaded simulation
