@@ -1390,6 +1390,53 @@ Subpop 0 best fitness of generation: Fitness: -1302.0063
 \end{verbatim}
 }
 
+\subsection{Implementing Checkpointable Code}
+
+ECJ's checkpoint facility relies on Java's serialization package.  When ECJ checkpoints, it serializes the EvolutionState.  Since {\it everything} in an ECJ run is hanging off of the EvolutionState somewhere, the entire ECJ run is serialized out to disk.
+
+Checkpointing is fragile.  When you write your code, here are some good practices you should follow:
+
+\begin{itemize}
+\item Add to each of your classes the following instance variable:
+\begin{verbatim}
+    private static final long serialVersionUID = 1;
+\end{verbatim}
+\item Try to avoid non-static inner classes.  But if you must have one, it should also have the aforementioned instance variable in {\it its} variables as well.
+\item All static variables should be final and should be simple types, such as Strings, ints, floats, etc.  If you need to store global information, it should be stored as an instance variable in your subclass of EvolutionState.
+\item Don't allocate your own threads or locks.
+\item If you make a special object, it must be \class{java.io.Serializable}.  Most ECJ classes are already serializable, so you inherit this by just subclassing from them.
+\end{itemize}
+
+Checkpointing is normally done after breeding has occurred, and the generation number has been incremented.  Three things typically happen:
+
+\begin{enumerate}
+\item The \method{preCheckpointStatistics(...)} method is called on the statistics object.
+\item The \method{setCheckpoint(...)} method is called on the checkpoint object.  This causes the checkpoint object to serialize out the current EvolutionState to a gzipped checkpoint file.
+\item The \method{postCheckpointStatistics(...)} method is called on the statistics object.
+\end{enumerate}
+
+When the system is restored from a checkpoint, the following happens:
+\begin{enumerate}
+\item The \method{restoreFromCheckpoint(...)} method is called on the Checkpoint class.
+\item This method then unserializes the EvolutionState from the checkpoint file.
+\item This method then calls \method{resetFromCheckpoint(...)} on the EvolutionState.  The resetFromCheckpoint method normally does two things:
+	\begin{enumerate}
+	\item \method{restart(...)} is called on the Output.  This allows it to set up output logs again.
+	\item \method{reinitializeContacts(...)} is called on the Exchanger, then on the Evaluator, to allow them to reestablish network connections for distributed evaluation and for island models.
+	\end{enumerate}
+\item Evolution is resumed by calling the \method{run(...)} method on the EvolutionState.
+\item This method then calls \method{startFromCheckpoint(...)} on the EvolutionState.  This is a simple hook method you can use to set up things before evolution starts again.
+\end{enumerate}
+
+At this point, evolution continues.
+
+In general you have two hooks available to you to set up after resuming from a checkpoint.  First, you can override the method EvolutionState.resetFromCheckpoint().  This method is called before EvolutionState.run(...) is called to resume running.  You would override this method to reopen files or sockets (it optionally throws an IOException).
+
+Second, you could override the method EvolutionState.startFromCheckpoint().  This method is called during EvolutionState.run(...), typically immediately before the run resumes.   You would typically override this method to do internal setup that doesn't involve external communication.
+
+In either case, be sure to call the supermethod first.
+
+
 \section{Threads and Random Number Generation}
 \label{threads}
 
@@ -1758,6 +1805,12 @@ state = MyEvolutionState
 
 You could of course override the \method{setup(...)} method of certain other classes, such as \class{ec.Initializer} (see Section~\ref{ec.Initializer}).
 
+I'd also use the \method{setup(...)} method to create an array of simulators to keep track of them.  Let's say your simulation is of class \class{Simulation}.  In your \class{MyEvolutionState} class you might add the instance variable:
+
+\begin{verbatim}
+Simulation simulations = null;
+\end{verbatim}
+
 \paragraph{Prepare the simulation for evaluation}
 
 Next you'd probably want to set up a simulation object and hold it somewhere, perhaps in your \class{ec.Problem} subclass.  The obvious time to do this is in the \method{prepareToEvaluate(...)} method (see Section~\ref{ec.Problem}):
@@ -1771,6 +1824,28 @@ public void prepareToEvaluate(EvolutionState state, int thread)
 \end{verbatim}
 
 Here you could create a simulation and store it in an instance variable.  If you run ECJ multithreaded, ECJ may make several Problems and run them simultaneously in multiple threads, so be sure that your simulation does not share any data in common (notably non-final static variables).  
+
+For example, you might construct or reset each simulation as appropriate like this:
+
+\begin{verbatim}
+for(int simID = 0; simID < state.evalthreads; simID++)
+    {
+    if (simulations[simID] == null) // simulator doesn't exist
+        simulations[simID] = new Simulation(..., simID, ...);
+    else 
+        simulations[simID].reset(...);  // or whatever
+    }
+\end{verbatim}
+
+Notice that to construct the simulation, we're passing in \variable{simID} because if we're dealing with a multithreaded environment, each simulator needs to know what unique ID it'll be working with (and in ECJ your simulator unique ID will correspond to the thread number, from 0 ... \variable{state.evalthreads}).   You also want to take care that your simulator do random number generation properly.  Here's the order of quality:
+
+\begin{enumerate}
+\item The best would be for simulator \#\variable{simID} to use \variable{state.random[simID]} as its only random number generator.
+\item If this is not possible, next best would be for each simulator to use a {\it unique} random number generator object.  This may not result in replicable results.
+\item If this is not possible, next best would be for each simulator to use a {\it shared} random number generator object which is  synchronized for multithreading.  This will {\it definitely} not result in replicable results, and may also not be properly serializable.
+\item If your simulator is using \class{java.util.Random} or (heaven forbid) \class{Math.random(...)}, then it's time for a rewrite of your simulator.
+\end{enumerate}
+
 
 \paragraph{Evaluate an Individual}
 
@@ -1808,11 +1883,17 @@ public void evaluate(EvolutionState state, Individual[] ind, boolean[] updateFit
 
 At present there is no \method{describe(...)} method for GroupedProblemForm.
 
-\paragraph{Eliminate the Simulation}
+To identify which simulator you're working with, I'd say (in the \method{evaluate(...)} and \method{describe(...)} methods):
 
-After the simulation has been used to evaluate its chunk of individuals, ECJ will call the following method on your Problem subclass, which lets you get rid of the simulation (if you care to):
+\begin{verbatim}
+Simulation mySimulation = state.simulations[thread];
+// work with mySimulation to evaluate the individual
+\end{verbatim}
 
-At the end of a run, ECJ may call the \method{describe()} method on your Problem (not for GroupedProblemForm):
+
+\paragraph{Optionally Delete the Simulation each Generation}
+
+After a thread has been used to evaluate a chunk of individuals (commonly once per generation), ECJ calls a special method you might use to delete and clean up all of your simulators in preparation for the next generation.  This is an unusual need: I wouldn't do this: instead, I'd just let them reset as discussed earlier and reuse them.  But if you must, here's where it'd go:
 
 \begin{verbatim}
 public void finishEvaluating(EvolutionState state, int thread) 
@@ -1823,6 +1904,17 @@ public void finishEvaluating(EvolutionState state, int thread)
 \end{verbatim}
 
 See again Section~\ref{ec.Problem}.
+
+For example, you might write:
+
+\begin{verbatim}
+if (simulations[thread] != null)
+    {
+    // clean up simulations[thread] as you wish, then...
+    simulations[thread] == null;
+       // frankly I'd not do this.
+        }
+\end{verbatim}
 
 \paragraph{Clean up the Library}
 
@@ -1836,9 +1928,21 @@ public class MyFinisher extends SimpleFinisher // or whatever
         super.finishPopulation(state, result);
         // clean up the library here
         }
-    Œ}
+    }
 \end{verbatim}
 
+Most commonly you want to shut the simulators down.  I'd do it this way:
+
+\begin{verbatim}
+for(int simID = 0; simID < state.evalthreads; simID++)
+    {
+    if (simulations[simID] != null)
+        {
+        // clean up simulations[simID] as you wish, then...
+        simulations[simID] == null;
+        }
+    }
+\end{verbatim}
 
 \subsection{Control by another Application or Library}
 
