@@ -156,9 +156,9 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
         if (numsources == DYNAMIC_SOURCES)
             {
             // figure it from the file
-            numsources = state.parameters.getInt(base.push(P_NUMSOURCES), def.push(P_NUMSOURCES),1);
-            if (numsources==0)
-                state.output.fatal("Breeding pipeline num-sources value must be > 0", base.push(P_NUMSOURCES), def.push(P_NUMSOURCES)); 
+            numsources = state.parameters.getInt(base.push(P_NUMSOURCES), def.push(P_NUMSOURCES),0);
+            if (numsources==-1)
+                state.output.fatal("Breeding pipeline num-sources value must exist and be >= 0", base.push(P_NUMSOURCES), def.push(P_NUMSOURCES)); 
             }
         else if (numsources <= DYNAMIC_SOURCES)  // it's negative
         	{
@@ -167,7 +167,7 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
         else
         	{
         	if (state.parameters.exists(base.push(P_NUMSOURCES), def.push(P_NUMSOURCES))) // uh oh
-        		state.output.warning("Breeding pipeline num-sources was given for a pipeline with a hard-coded number of sources.  num-sources will not be used.",
+        		state.output.warning("Breeding pipeline's number of sources is hard-coded to " + numsources + " yet num-sources was provided: num-sources will be ignored.",
         			base.push(P_NUMSOURCES), def.push(P_NUMSOURCES));
         	}
 
