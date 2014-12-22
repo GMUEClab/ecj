@@ -2320,7 +2320,8 @@ Version		Change Log
 	Updates to the manual to discuss multithreaded simulation
 	DEFAULT_SOURCES changed from 0 to -1, to allow for pipeline which have
 		zero sources (like InitializationPipeline).  Do not know why
-		InitializationPipeline worked in the past. :-)
+		InitializationPipeline worked in the past. :-)  Thanks to
+		rcbarros@gmail.com
 	MultiVectorCrossoverPipeline and MultiBreedingPipeline updated to check
 		for proper number of sources in the wake of the change to
 		DEFAULT_SOURCES
