@@ -75,7 +75,7 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
     /** Indicates that the number of sources is variable and determined by the
         user in the parameter file. */
 
-    public static final int DYNAMIC_SOURCES = 0;
+    public static final int DYNAMIC_SOURCES = -1;
 
     /** Standard parameter for number of sources (only used if numSources
         returns DYNAMIC_SOURCES */
@@ -155,16 +155,23 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
 
 
         int numsources = numSources();
-        if (numsources <= DYNAMIC_SOURCES)
+        if (numsources == DYNAMIC_SOURCES)
             {
             // figure it from the file
-            numsources = state.parameters.getInt(
-                base.push(P_NUMSOURCES), def.push(P_NUMSOURCES),1);
+            numsources = state.parameters.getInt(base.push(P_NUMSOURCES), def.push(P_NUMSOURCES),1);
             if (numsources==0)
-                state.output.fatal("Breeding pipeline num-sources value must be > 0",
-                    base.push(P_NUMSOURCES),
-                    def.push(P_NUMSOURCES)); 
+                state.output.fatal("Breeding pipeline num-sources value must be > 0", base.push(P_NUMSOURCES), def.push(P_NUMSOURCES)); 
             }
+        else if (numsources <= DYNAMIC_SOURCES)  // it's negative
+        	{
+        	throw new RuntimeException("In " + this + " numSources() returned < DYNAMIC_SOURCES (that is, < -1)");
+        	}
+        else
+        	{
+        	if (state.parameters.exists(base.push(P_NUMSOURCES), def.push(P_NUMSOURCES))) // uh oh
+        		state.output.warning("Breeding pipeline num-sources was given for a pipeline with a hard-coded number of sources.  num-sources will not be used.",
+        			base.push(P_NUMSOURCES), def.push(P_NUMSOURCES));
+        	}
 
         sources = new BreedingSource[numsources];
 

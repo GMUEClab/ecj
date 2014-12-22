@@ -3322,13 +3322,15 @@ MultiSelection's default base is \parameter{select.multiselect}.
 public abstract int numSources();
 }
 
-This method must return a value \(>0\), or it can return the value \variable{BreedingPipeline.DYNAMIC\_SOURCES}, which indicates that the BreedingPipeline can vary its number of sources, and that the user must specify the number of sources with the parameter like this:
+This method must return a value \(>=0\), or it can return the value \variable{BreedingPipeline.DYNAMIC\_SOURCES}, which indicates that the BreedingPipeline can vary its number of sources, and that the user must specify the number of sources with the parameter like this:
 
 \params{%
 {\it base}.num-sources = 3
 }
 
-You specify each source with a parameter.  For example, to stipulate sources 0, 1, and 2, you might say:
+Note: if you use \variable{BreedingPipeline.DYNAMIC\_SOURCES}, in the BreedingPipeline's \method{setup(...)} method, you probably will want to check that the number of sources specified by the user is acceptable.  You can do this by checking the size of \variable{sources.length}.  For example, the user can specify 0 as a number of sources, which for most pipelines will make little sense.
+
+At any rate, the user specifies each source with a parameter.  For example, to stipulate sources 0, 1, and 2, you might say:
 
 \params{%
 {\it base}.source.0 = ec.select.TournamentSelection\\

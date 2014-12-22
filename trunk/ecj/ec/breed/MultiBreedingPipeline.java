@@ -68,7 +68,11 @@ public class MultiBreedingPipeline extends BreedingPipeline
         Parameter def = defaultBase();
 
         double total = 0.0;
-
+        
+        if (sources.length == 0)  // uh oh
+        	state.output.fatal("num-sources must be provided and > 0 for MultiBreedingPipeline",
+        		base.push(P_NUMSOURCES), def.push(P_NUMSOURCES));
+        
         for(int x=0;x<sources.length;x++)
             {
             // make sure the sources are actually breeding pipelines

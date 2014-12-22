@@ -2318,3 +2318,9 @@ Version		Change Log
 	Modified serialization mechanism for ThreadPool so that it's a bit more
 		threadsafe.
 	Updates to the manual to discuss multithreaded simulation
+	DEFAULT_SOURCES changed from 0 to -1, to allow for pipeline which have
+		zero sources (like InitializationPipeline).  Do not know why
+		InitializationPipeline worked in the past. :-)
+	MultiVectorCrossoverPipeline and MultiBreedingPipeline updated to check
+		for proper number of sources in the wake of the change to
+		DEFAULT_SOURCES

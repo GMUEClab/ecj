@@ -72,7 +72,14 @@ public class MultipleVectorCrossoverPipeline extends BreedingPipeline {
 
     public void setup(final EvolutionState state, final Parameter base)
         {
-        super.setup(state,base);        
+        super.setup(state,base);
+        
+        Parameter def = defaultBase(); 
+
+        if (sources.length <= 2)  // uh oh
+        	state.output.fatal("num-sources must be provided and > 2 for MultipleVectorCrossoverPipeline",
+        		base.push(P_NUMSOURCES), def.push(P_NUMSOURCES));
+
         parents = new VectorIndividual[sources.length];
         }
         
@@ -140,12 +147,6 @@ public class MultipleVectorCrossoverPipeline extends BreedingPipeline {
 
         else // default crossover -- shouldn't need this unless a new vector type is added
             {
-            // check how many sources are provided
-            if(sources.length <= 2)
-                // this method shouldn't be called for just two parents 
-                state.output.error("Only two parents specified!"); 
-
-
             // fill up parents: 
             for(int i = 0;i<parents.length; i++) // parents.length == sources.length
                 {               
