@@ -2325,3 +2325,4 @@ Version		Change Log
 	MultiVectorCrossoverPipeline and MultiBreedingPipeline updated to check
 		for proper number of sources in the wake of the change to
 		DEFAULT_SOURCES
+	Documentation fixes
