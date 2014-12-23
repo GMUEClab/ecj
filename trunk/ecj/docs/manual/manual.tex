@@ -3188,6 +3188,7 @@ Next we select \(n\) individuals from the old subpopulation and place them into 
 
 
 \subsubsection{Standard Classes}
+\label{ec.select}
 
 There are a number of standard SelectionMethods available in ECJ, all found in the \package{ec.select} package.
 
@@ -3434,7 +3435,7 @@ Now we can mutate the Individuals.  How mutation occurs depends on the represent
 Most BreedingPipelines are custom for your representation: vectors and trees etc. all have their own special ways of being crossed over or mutated.  However there are some utility BreedingPipelines you should be aware of, all stored in the \package{ec.breed} package:
 
 \begin{itemize}
-\item \class{ec.breed.ReproductionPipeline} is by the most common utility BreedingPipeline.  In response to a request for \(N\) individuals, ReproductionPipeline requests the same number from its single source, then simply returns them (copying if necessary). ReproductionPipeline has one rarely-used parameter, which indicates if it {\it must} copy the indivdiuals even if it's not required to maintain the copy-forward protocol:
+\item \class{ec.breed.ReproductionPipeline} is by the most common utility BreedingPipeline.  In response to a request for \(N\) individuals, ReproductionPipeline requests the same number from its single source, then simply returns them (copying if necessary). ReproductionPipeline has one rarely-used parameter, which indicates if it {\it must} copy the individuals even if it's not required to maintain the copy-forward protocol:
 
 \params{%
 {\it base}.must-clone = true
@@ -3487,7 +3488,7 @@ But if you did it instead like this:
 
 \params{%
 pop.subpop.0.pipe.0 = ec.app.myCrossover\\
-pop.subpop.0.pipe.0.source.0 = ec.select.BufferedBreedingPipeline\\
+pop.subpop.0.pipe.0.source.0 = ec.breed.BufferedBreedingPipeline\\
 pop.subpop.0.pipe.0.source.1 = same\\
 pop.subpop.0.pipe.0.source.0.num-inds = 2\\
 pop.subpop.0.pipe.0.source.0.source.0 = ec.app.myOtherCrossover\\
@@ -3496,9 +3497,15 @@ pop.subpop.0.pipe.0.source.0.source.1 = same
 
 Now {myCrossover} requests one child from {BufferedBreedingPipeline}, which in turn demands {\it two} children from {myOtherCrossover}, which crosses over two Individuals and returns them.  {BufferedBreedingPipeline} returns one of the Individuals.  Then {myOtherCrossover} requests the second child, and {BufferedBreedingPipeline} returns the other Individual out of its buffer.  Problem solved.
 
-\item \class{ec.breed.ForceBreedingPipeline} takes a single source.  In response for a request for \(N\) individuals, ForceBreedingPipeline in turn requests up to some \(M\) Individuals from its source.  If \(M>N\), then ForceBreedingPipeline requests exactly \(N\) indivdiuals.  If \(M<N\), then ForceBreedingPipeline repeatedly requests \(M\) individuals to fill the \(N\), until possibly the last request, where it requests the remainder.  For example, if \(N=15\) and \(M=4\), then ForceBreedingPipeline will request 4, then 4, then 4, then 3 Individuals and return them all.
+\item \class{ec.breed.ForceBreedingPipeline} takes a single source and a parameter \variable{num-inds}.  In response for a request for at least \(N\) individuals (minimum), ForceBreedingPipeline will return \(N\) individuals, or \variable{num-inds} individuals, whichever is larger.  If \variable{num-inds} is equal to or larger than \(N\), ForceBreedingPipeline will demand exactly \variable{num-inds} children from its breeding source, then copy (if necessary) and return them.  If \(N\) is larger, ForceBreedingPipeline will repeatedly request \variable{num-inds} children, or (for the final request) fewer than \variable{num-inds}, in order to satisfy the request for \(N\).  For example, if \(N=15\) and \variable{num-inds}\(=4\), then ForceBreedingPipeline will request 4, then 4, then 4, then 3 Individuals, then return them all.  The parameter of interest is set to some value like:
 
-This trick is sort of the counterpart to BufferedBreedingPipeline: it gives you a way of demanding a certain number of individuals from a pipeline (like a CrossoverPipeline) which doesn't normally return that number.  It's only occasionally useful in practice though.
+
+\params{%
+{\it base}.num-inds = 5
+}
+
+
+This pipeline gives you a way of either forcing the child pipeline to provide an exact number of individuals at a time.  This trick is sort of the counterpart to BufferedBreedingPipeline: it gives you a way of demanding a certain number of individuals from a pipeline (like a CrossoverPipeline) which doesn't normally return that number.
 
 
 \item \class{ec.breed.CheckingBreedingPipeline} takes two sources, and some \(N\) times to produce ``valid'' individuals from source 0.  To verify validity, it calls the method \method{allValid(...)}, which you override.  If it fails after \(N\) attempts, it instead produces individuals from source 1 and returns them.  The value of \(N\) is determined with the parameter:
@@ -3514,7 +3521,18 @@ The \method{allValid(...)} method is defined as:
 Returns whether all of the individuals in {\it inds[0] ... inds[numInds - 1]} are valid.  Override this to customize how CheckingBreedingPipeline checks individuals.  By default, this method simply returns true.
 \end{methods}
 
-It may be the case that you wish to produce some \(N\) individuals which are checked for validity independently of one another.  Probably the easiest way to do this is to set the CheckingBreedingPipeline as a child of ForceBreedingPipeline whose \parameter{num-inds} parameter has been set to 1.
+It may be the case that you wish to produce some \(N\) individuals which are checked for validity independently of one another.  Probably the easiest way to do this is to set the CheckingBreedingPipeline as a child of ForceBreedingPipeline whose \parameter{num-inds} parameter has been set to 1.  For example, you might do something like:
+
+
+\params{%
+pop.subpop.0.pipe.0 = ec.app.myMutation\\
+pop.subpop.0.pipe.0.source.0 = ec.breed.ForceBreedingPipeline\\
+pop.subpop.0.pipe.0.source.0.num-inds = 1\\
+pop.subpop.0.pipe.0.source.0.source.0 = ec.app.myCheckingBreedingPipeline\\
+pop.subpop.0.pipe.0.source.0.source.0.num-times = 20\\
+pop.subpop.0.pipe.0.source.0.source.0.source.0 = ...
+}
+
 
 \item Last, \class{ec.breed.GenerationSwitchPipeline} takes two sources.  In response to a request for individuals, for generations 1 through \(N-1\) GenerationSwitchPipeline will request Indivduals from source 0.  For generations \(N\) and on,  GenerationSwitchPipeline will request Individuals from source 1.  You specify the switch-generation \(N\) as:
 
@@ -4852,7 +4870,23 @@ public void sourcesAreProperForm(SteadyStateEvolutionState state);
 
 This method should likewise call its namesake on all sources.  If the sources are not of SteadyStateBSourceForm, it should then issue an ordinary Output ``error'' (not a fatal error) indicating this problem.
 
-SteadyStateBSourceForm is implemented by TournamentSelection and its variations; and also by FirstSelection (of course), and by RandomSelection.  You can implement SteadyStateBSourceForm for FitProportionateSelection and its ilk but it's not implemented by default because they'd be so inefficient.  I strongly suggest sticking with TournamentSelection.
+SteadyStateBSourceForm is implemented by all BreedingPipelines.  Further, it is implemented by the following SelectionMethods:
+
+{
+\begin{center}
+\small\renewcommand{\arraystretch}{1.2} 
+\begin{tabular}{@{}r@{\hspace{1em}}l@{}}
+{\tt ec.select.RandomSelection}&Random Selection (Section \ref{ec.select})\\
+{\tt ec.select.TournamentSelection}&Tournament Selection (Section \ref{ec.select})\\
+{\tt ec.select.FirstSelection}&First Selection (Section \ref{ec.select})\\
+{\tt ec.parsimony.BucketTournamentSelection}&Bucket Tournament Selection (Section \ref{ec.parsimony})\\
+{\tt ec.parsimony.DoubleTournamentSelection}&Double Tournament Selection (Section \ref{ec.parsimony})\\
+{\tt ec.parsimony.RatioTournamentSelection}&Ratio Tournament Selection (Section \ref{ec.parsimony})\\
+\end{tabular}
+\end{center}
+}
+
+You can implement SteadyStateBSourceForm for other SelectionMethods, such as FitProportionateSelection and its ilk, but it's not implemented by default because they'd be so inefficient.  I strongly suggest sticking with TournamentSelection.
 
 Exchangers are called every {\it generation} worth of evaluations.  Since Exchangers also modify individuals in the population, they also need to update the BreedingSources of this fact.  This is done by having them call the following method in the Breeder, which lets all the relevant BreedingSources know:
 
