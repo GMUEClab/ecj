@@ -5685,7 +5685,7 @@ pop.subpop.0.species.mutation-type = integer-reset
 
 Remember that per-gene values override per-segment settings which in turn override global settings.
 
-You should take care to make sure that the min-gene and max-gene values are integers.  Use of this mutation method will also change how initialization is done: this gene will be initialized to only an integer value.
+You should take care to make sure that the min-gene and max-gene values are integers.  {\bf Use of this mutation method will also change how initialization is done: this gene will be initialized to only an integer value.}
 
 
 \item {\bf Random Walk Mutation}\qquad
@@ -5719,7 +5719,7 @@ pop.subpop.0.species.random-walk-probability = 0.9
 
 Remember that per-gene values override per-segment settings which in turn override global settings.
 
-Again, you should take care to make sure that the min-gene and max-gene values are integers.  Use of this mutation method will also change how initialization is done: this gene will be initialized to only an integer value.  Random Walk Mutation for integers, this method can be bounded or not. 
+Again, you should take care to make sure that the min-gene and max-gene values are integers.  {\bf Use of this mutation method will also change how initialization is done: this gene will be initialized to only an integer value.}
 \end{itemize}
 
 \paragraph{What You Can Do}
@@ -7764,7 +7764,7 @@ Again, whether this will be useful to you is based on exactly what kind of probl
 \label{printedtrees}
 \end{figure}
 
-\item \file{.dot} format: used by GraphViz to produce high-quality trees and graphs.  The code below produces the tree shown at left in Figure \ref{printedtrees}:{\small\begin{verbatim}digraph g {
+\item \file{.dot} format: used by dot/GraphViz to produce high-quality trees and graphs.  The code below produces the tree shown at left in Figure \ref{printedtrees}:{\small\begin{verbatim}digraph g {
 node [shape=rectangle];
 n[label = "*"];
 n0[label = "+"];
