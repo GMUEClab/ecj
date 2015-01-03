@@ -3377,11 +3377,27 @@ One final option common to most BreedingPipelines which make modifications (muta
 
 \subsubsection{Implementing a Simple BreedingPipeline}
 
-To implement a BreedingPipeline, at a minimum, you'll need to override two methods: \method{numSources()} and \method{produce(...)}.  \method{numSources()} is easy.  Just return the number of sources your BreedingPipeline requires, or \variable{BreedingPipeline.DYNAMIC\_SOURCES} if the number can be any size specified by the user.  For example, to make a mutation pipeline, we probably want a single source, which we'll extract Individuals from and mutate:
+To implement a BreedingPipeline, at a minimum, you'll need to override two methods: \method{numSources()} and \method{produce(...)}.  \method{numSources()} is easy.  Just return the number of sources your BreedingPipeline requires, or \variable{BreedingPipeline.DYNAMIC\_SOURCES} if the number can be any size specified by the user (0 and greater).  For example, to make a mutation pipeline, we probably want a single source, which we'll extract Individuals from and mutate:
 
 {\small\begin{verbatim}
 public int numSources() { return 1;}
 \end{verbatim}}
+
+If you have chosen to return \variable{BreedingPipeline.DYNAMIC\_SOURCES}, you probably want to double-check that the number of sources the user has specified in his parameter file is valid for your pipeline.  You can do this in \method{setup(...)}.  For example, the example below verifies that the value is not zero:
+
+{\small\begin{verbatim}
+public void setup(final EvolutionState state, final Parameter base)
+    {
+    super.setup(state,base);
+    Parameter def = defaultBase();
+    if (sources.length == 0)  // uh oh
+        state.output.fatal("num-sources must be > 0 for MyPipeline",
+            base.push(P_NUMSOURCES), def.push(P_NUMSOURCES));
+    ...
+    }
+\end{verbatim}}
+
+Similarly if you have certain unusual constraints on the nature of your sources (that they are certain classes, for example), you can double-check that in \method{setup(...)} too.
 
 Now we need to implement the \method{produce(...)} method.  Most mutation procedures ask their sources to produce some number of Individuals for them (however many the source prefers), and then mutate those Indviduals and return them.  We can ask our source to produce sources like this:
 
@@ -11971,11 +11987,11 @@ A Meta-Evolutionary Algorithm (or Meta-EA) is an evolutionary algorithm used to 
 
 In ECJ, a Meta-EA works like this.  We create an ordinary evolutionary process which evolves individuals in the form of DoubleVectorIndividuals.  These individuals' genomes notionally contain parameter values for a second ECJ system.  To test an individual, we hand it to MetaProblem, which fires up another ECJ system (in the same Java process) using those parameter values and runs it.  This happens some \(N\) times, and the mean best fitness over those \(N\) runs becomes the fitness of the DoubleVectorIndividual holding those parameter values.  
 
-Note that there are at least two levels of evolution.\footnote{You can of course have an EA which optimizes the parameters for an EA which optimizes the parameters for an EA, and so on.  MetaProblem can handle this without much issue.  But it's a pretty rare need!  So we'll go with ``two'' for purposes of this discussion.}  First there is the evolutionary process which is optimizing the parameters.  We will refer to this process as the {\bf meta-level process}.  Then there is the evolutionary process whose parameters are being optimized.  We will refer to this process as the {\bf base-level process}.  
+Note that there are at least two levels of evolution.\footnote{You can of course have an EA which optimizes the parameters for an EA which optimizes the parameters for an EA, and so on.  MetaProblem can handle this without much issue.  But it's a pretty rare need!  So we'll go with ``two'' for purposes of this discussion.}  First there is the evolutionary process which is optimizing the parameters.  We will refer to this process as the {\bf meta-level process}.  Then there is the evolutionary process whose being run with these parameters.  We will refer to this process as the {\bf base-level process}.  
 
-Within certain constraints, you can use pretty much any EA at the meta-level or at the base level.  But there are some rules.  First off, the meta-level individual must be a \class{DoubleVectorIndividual}.  We will treat this individual as a {\bf heterogeneous individual} (see Section \ref{heterogeneous}), which allows the Meta-EA system to have genes of different types: integers, floats, booleans, and the like.  Second the meta-level fitness must be one which can respond to \method{setToMeanOf(...)}, and typically should be of the same kind of fitness as the base-level fitness.  Generally this means: no multiobjective fitness at either level; and coevolutionary fitness might be a bit tricky.  SimpleFitness is fine, as is KozaFitness.
+Within certain constraints, you can use pretty much any EA at the meta-level or at the base level.  But there are some rules.  First off, the meta-level individual must be a \class{DoubleVectorIndividual}.  We will treat this individual as a {\bf heterogeneous individual} (see Section \ref{heterogeneous}), which allows the Meta-EA system to use genes of different types: integers, floats, booleans, and the like.  Second the meta-level fitness must be one which can respond to \method{setToMeanOf(...)}, and typically should be of the same kind of fitness as the base-level fitness.  Generally this means: no multiobjective fitness at either level; and coevolutionary fitness might be a bit tricky.  SimpleFitness is fine, as is KozaFitness.
 
-Meta-EAs work very well in combination with ECJ's distributed evaluator, which is good news because it's the natural setting for using them!  The idea here is to have the meta-level process as a master process, distributing meta-level individuals out to slaves, where they're tested by firing up a base-level ECJ process to be tested.  And Meta-EAs also work nicely in multiple threads.  This magic all works fine in ECJ because ECJ is self-contained: ECJ processes do not interact with other ECJ processes even within the same thread.
+Meta-EAs work very well in combination with ECJ's distributed evaluator, which is good news because it's the natural setting for using them!  The idea here is to have the meta-level process as a master process, distributing meta-level individuals out to slaves, where each is tested by firing up a base-level ECJ process to assess it.  And Meta-EAs also work nicely in multiple threads.  This magic all works because ECJ is self-contained: ECJ processes do not interact with other ECJ processes even within the same thread.
 
 
 \subsection{The Two Parameter Files}
@@ -12030,7 +12046,7 @@ pop.subpop.0.species.mutation-stdev =           0.01
 select.tournament.size =                        2
 \end{verbatim}
 
-Let's call this file {\bf base.params}.  It's nothing special.  Assuming you have a Problem subclass called \class{MyTestProblem}, ECJ should run this file without incident.
+Let's call this file {\bf base.params}.  It's nothing special.  Assuming you have a Problem subclass called \class{MyTestProblem}, ECJ should run this file all by itself (independent of any meta stuff) without incident.
 
 Next you need to create the meta-level file, where we set up evolution of a DoubleVectorIndividual.  Let's call this file {\bf meta.params}.   Here's one possibility.  We'll start with certain basic items (it won't run yet):
 
@@ -12074,9 +12090,9 @@ Notice that we have set apart six parameters (so far) special to meta-evolution:
 
 \begin{itemize}
 
-\item The Problem which must be an \class{ec.eval.MetaProblem}.
+\item The Problem must be an \class{ec.eval.MetaProblem}.
 \item MetaProblem has a \parameter{file} parameter which points to the \file{base.params} file (wherever it is).  This is how the MetaProblem identifies what file to use to set up base-level evolutionary processes. 
-\item The \parameter{reevaluate} parameter, typically set to \parameter{true}.  This tells MetaProblem to reevaluate individuals even if their \variable{evaluated} flag has been set.  This is because meta-level evolution of individuals is stochastic\,---\,it involves firing up an ECJ process underneath,\,---\,and so next time an individual is evaluated its fitness could be entirely different.
+\item The \parameter{reevaluate} parameter, typically set to \parameter{true}.  This tells MetaProblem to reevaluate individuals even if their \variable{evaluated} flag has been set.  This is because meta-level evolution of individuals is stochastic\,---\,it involves firing up an ECJ process underneath\,---\,and so every time an individual is evaluated its fitness is likely to be different.
 \item The \parameter{set-random} parameter, typically set to \parameter{true}.  This tells MetaProblem to override the random number seeds of the base ECJ processes it constructs and instead seed them with random numbers.\footnote{Seeding a random number generator using random numbers from another number generator can be perilous, particularly for random number generators with simple internal seeds.  But it's probably fine in this case, because the way MersenneTwister uses its seed is to build an array of 624 random numbers from that seed using a Knuth generator; we then pulse the MersenneTwister \(624 \times 2 + 1\) times to prime it, at which point these numbers have been throughly converted and cleaned out.}  Alternatively, you could tell the base process to seed itself using the wall clock time.  This is slightly less safe as it runs the (very small) risk of having multiple parallel base processes having the same seed.  To do this second option, instead of setting \parameter{set-random} to \parameter{true}, you'd say:
 
 \begin{verbatim}
@@ -12086,7 +12102,7 @@ seed.0 = time
 
 I don't suggest it though.
 
-\item The \parameter{runs} parameter is set to the number of times you want to run a base-level ECJ process to test a certain meta-level individual.  Because base-level processes are stochastic, the fitness at the meta-level is potentially very noisy.  If you set this to 1, then only a single test is done: the meta-level individual's fitness is set to the best fitness of run of the base process which was run using its parameters.  Otherwise multiple tests are done and the fitness of the meta-level individual is set to the mean best fitness of run of all the multiple runs performed using those parameters. {\bf Based on our experiments, we suggest using a single test.}
+\item The \parameter{runs} parameter is set to the number of times you want to run a base-level ECJ process to test a certain meta-level individual.  Because base-level processes are stochastic, the fitness at the meta-level is potentially very noisy.  If you set this to 1, then only a single test is done: the meta-level individual's fitness is set to the best fitness of run of the base process which was run using its parameters.  Otherwise multiple tests are done and the fitness of the meta-level individual is set to the mean best fitness of run of all the multiple runs performed using those parameters. {\bf Based on our experiments~\cite{Luke2013MetaEA}, we suggest using a single test.}
 
 \item The \parameter{stat.file} file is set to \parameter{\$meta.stat}, not \parameter{\$out.stat} as usual.  This is because the base-level process has \parameter{\$out.stat} as its statistics file, and even if the base-level process is instructed not to write anything out to it, it'd probably be best if the two ECJ processes not write to the same file!  So we renamed it to another filename. 
 \end{itemize}
@@ -12099,7 +12115,7 @@ Next you'll need to specify the parameters whose values we will evolve at the me
 \begin{itemize}
 \item {\it Type: float}\quad As a double (of course) between some min value and max value inclusive.
 \item {\it Type: integer}\quad As an integer between some min value and max value inclusive.
-\item {\it Type: boolean}\quad As a boolean (treated as a 0 or 1).
+\item {\it Type: boolean}\quad As a boolean (either the string \parameter{true} or \parameter{false}), represented in the genome by the values 0 and 1.
 \item {\it (no type name)}\quad As one of \(M\) strings, represented in the genome by the values 0 ... \(M-1\).
 \end{itemize}
 
@@ -12179,7 +12195,7 @@ pop.subpop.0.species.mutation-type.3 = integer-random-walk
 pop.subpop.0.species.random-walk-probability.3 = 0.8
 \end{verbatim}
 
-Finally, the alternative polynomial version parameter is a boolean value.  Booleans will be represented internally as integers (0 or 1), and integer-reset is the most appropriate form.  Since the default min and max values are already 0.0 and 1.0, there's no need to define them.
+Finally, the alternative polynomial version parameter is a boolean value (a string of the form \parameter{true} or \parameter{false}).  Booleans will be represented internally as integers (0 or 1), and integer-reset is the most appropriate form.  Since the default min and max values are already 0.0 and 1.0, there's no need to define them.
 
 \begin{verbatim}
 ### In the Meta Parameter File
@@ -12273,7 +12289,7 @@ eval.compression = true
 eval.master.host = my.machine.ip.address
 \end{verbatim}
 
-Some notes.  First note that you must replace \parameter{my.machine.ip.address} in \parameter{eval.master.host} with the ip address of your master computer.  Second, notice the job size and maximum number of jobs per slave are both set to 1.  You almost certainly want this because the evaluation time is so long on the slaves: it's an entire evolutionary process.  You probably don't want to bulk up multiple jobs per slave, though you theoretically could if your evolutionary processes were very short.
+Some notes.  First note that you must replace \parameter{my.machine.ip.address} in \parameter{eval.master.host} with the IP address of your master computer.  Second, notice the job size and maximum number of jobs per slave are both set to 1.  You almost certainly want this because the evaluation time is so long on the slaves: it's an entire evolutionary process.  You probably don't want to bulk up multiple jobs per slave, though you theoretically could if your evolutionary processes were very short.
 
 Your slave's parameter file is a new file called, let's say, {\bf slave.params}.  Note that it points to {\bf meta.params} in order to grab some of the master's parameters.  
 
@@ -12291,7 +12307,7 @@ Not complicated!  However, in addition to various muzzling parameters (\paramete
 eval.slave.silent = true
 \end{verbatim}
 
-This tells the slave to be completely silent when starting up and printing slave information.  It's often a good idea.  Once again, you'd do this only when you've got debugging working well.
+This tells the slave to be completely silent when starting up and printing slave information.  It's often a good idea.  Once again, you'd do this only when you've got everything debugged.
 
 There is one important gotcha involved with combining meta-EAs with distributed evaluation, and that is the matter of tests.  The meta-EA does some \(N\) tests of a single meta-level individual in order to assess its fitness, and each test is a base-level evolutionary run.  The problem is that these tests are performed by the MetaProblem.
 
