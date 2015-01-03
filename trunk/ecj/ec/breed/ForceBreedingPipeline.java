@@ -99,10 +99,10 @@ public class ForceBreedingPipeline extends BreedingPipeline
         for(total=0; total<n; )
             {
             numToProduce = n - total;
-            if (numToProduce > numInds) numToProduce = numInds;
+            if (numToProduce > numInds)
+            	numToProduce = numInds;
 
-            total += sources[0].produce(numToProduce,numToProduce,start+total,
-                subpopulation,inds,state,thread);
+            total += sources[0].produce(numToProduce,numToProduce,start+total,subpopulation,inds,state,thread);
             }
         
         // clone if necessary
