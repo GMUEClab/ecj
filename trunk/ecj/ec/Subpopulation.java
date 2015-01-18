@@ -326,7 +326,9 @@ public class Subpopulation implements Group
         for(int i = 0 ; i < individuals.length; i++)
             {
             state.output.println(INDIVIDUAL_INDEX_PREAMBLE + Code.encode(i), log);
-            individuals[i].printIndividualForHumans(state, log);
+            if (individuals[i] != null)
+            	individuals[i].printIndividualForHumans(state, log);
+            else state.output.warnOnce("Null individuals found in subpopulation");
             }
         }
         

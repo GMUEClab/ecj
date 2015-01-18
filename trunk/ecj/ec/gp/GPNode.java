@@ -1067,7 +1067,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
         occasional trees for display, not for storing individuals or sending them over networks. */
     public String makeGraphvizTree()
         {
-        return "digraph g {\nnode [shape=rectangle];\n" + makeGraphvizSubtree("n") + "}\n";
+        return "digraph g {\ngraph [ordering=out];\nnode [shape=rectangle];\n" + makeGraphvizSubtree("n") + "}\n";
         }
     
     /** Produces the inner code for a graphviz subtree.  Called from makeGraphvizTree(). 

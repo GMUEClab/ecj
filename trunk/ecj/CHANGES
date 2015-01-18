@@ -2326,3 +2326,9 @@ Version		Change Log
 		for proper number of sources in the wake of the change to
 		DEFAULT_SOURCES
 	Documentation fixes
+	ECJ now treats "\" as the file separator for Windows.  Thanks to
+		Brendan Poole <brendan.poole@googlemail.com>
+	SteadyStateEvolutionState.individualCount now public
+	Subpopulation and SimpleStatistics now permit null individuals in the
+		population but provide a warning.
+	GPNode adds ordering constraints to Graphviz output
