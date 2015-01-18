@@ -74,8 +74,8 @@ public class SteadyStateEvolutionState extends EvolutionState
         "marked for death" individual, as opposed to only replacing it if it's superior? */
     public double replacementProbability;
         
-    /** How many individuals have we added to the initial population? */ 
-    int[] individualCount; 
+    /** How many individuals have we added to the initial population so far? */ 
+    public int[] individualCount; 
         
     /** Hash table to check for duplicate individuals */ 
     HashMap[] individualHash; 
