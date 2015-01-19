@@ -68,7 +68,7 @@ public class Sum extends Problem implements SimpleProblemForm
             /// ...the fitness...
             sum, 
             ///... our definition of the ideal individual
-            sum == max);
+            sum >= max);  // it shouldn't ever be >, but just in case.
                 
         ind2.evaluated = true;
         }

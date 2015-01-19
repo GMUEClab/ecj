@@ -2332,3 +2332,4 @@ Version		Change Log
 	Subpopulation and SimpleStatistics now permit null individuals in the
 		population but provide a warning.
 	GPNode adds ordering constraints to Graphviz output
+	Sum.java now checks for >= rather than > just in case
