@@ -39,6 +39,10 @@ public class NSGA2Breeder extends SimpleBreeder
                 state.output.warning("You're using elitism with NSGA2Breeder, which is not permitted and will be ignored.  However the reevaluate-elites parameter *will* bre recognized by NSGAEvaluator.",
                     base.push(P_ELITE).push(""+i));
 
+		for (int i = 0; i < state.population.subpops.length; i++)
+			if (reduceBy[i] != 0)
+				state.output.fatal("NSGA2Breeder does not support population reduction.", base.push(P_REDUCE_BY).push(""+i), null);
+			
         if (sequentialBreeding) // uh oh, haven't tested with this
             state.output.fatal("NSGA2Breeder does not support sequential evaluation.",
                 base.push(P_SEQUENTIAL_BREEDING));

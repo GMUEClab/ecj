@@ -74,8 +74,8 @@ public class SteadyStateEvolutionState extends EvolutionState
         "marked for death" individual, as opposed to only replacing it if it's superior? */
     public double replacementProbability;
         
-    /** How many individuals have we added to the initial population so far? */ 
-    public int[] individualCount; 
+    /** How many individuals have we added to the initial population? */ 
+    int[] individualCount; 
         
     /** Hash table to check for duplicate individuals */ 
     HashMap[] individualHash; 
@@ -276,7 +276,7 @@ public class SteadyStateEvolutionState extends EvolutionState
             }
 
         // SHOULD WE QUIT?
-        if (!partiallyFullSubpop && evaluator.runComplete(this) && quitOnRunComplete)
+        if (!partiallyFullSubpop && ((SteadyStateEvaluator)evaluator).runComplete(this, ind) && quitOnRunComplete)
             { 
             output.message("Found Ideal Individual"); 
             return R_SUCCESS;

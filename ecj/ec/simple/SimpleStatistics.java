@@ -124,6 +124,7 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         }
 
     /** Logs the best individual of the generation. */
+    boolean warned = false;
     public void postEvaluationStatistics(final EvolutionState state)
         {
         super.postEvaluationStatistics(state);
@@ -136,11 +137,23 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
             for(int y=1;y<state.population.subpops[x].individuals.length;y++)
             	{
             	if (state.population.subpops[x].individuals[y] == null)
-            		state.output.warnOnce("Null individuals found in subpopulation");
+            		{
+            		if (!warned)
+            			{
+            			state.output.warnOnce("Null individuals found in subpopulation");
+            			warned = true;  // we do this rather than relying on warnOnce because it is much faster in a tight loop
+            			}
+            		}
 	            else if (best_i[x] == null || state.population.subpops[x].individuals[y].fitness.betterThan(best_i[x].fitness))
                     best_i[x] = state.population.subpops[x].individuals[y];
 	            if (best_i[x] == null)
-            		state.output.warnOnce("Null individuals found in subpopulation");
+	            	{
+	            	if (!warned)
+	            		{
+            			state.output.warnOnce("Null individuals found in subpopulation");
+            			warned = true;  // we do this rather than relying on warnOnce because it is much faster in a tight loop
+            			}
+            		}
                 }
         
             // now test to see if it's the new best_of_run
