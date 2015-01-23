@@ -3006,6 +3006,15 @@ The default value is false.
 
 Again, you don't have to specify the elitism on a per-Subpopulation basis, if you specified a default subpopulation using the parameter  \parameter{pop.default-subpop}. SimpleBreeder will use the default value and issue a warning.
 
+SimpleBreeder has options for reducing the size of each subpopulation with each generation.  If you would like Subpopulation 0 (say) to reduce by 50 individuals per generation, down to no less than 100 individuals, you can say:
+
+\params{%
+breed.reduce-by.0 = 50
+breed.minimum-size.0 = 100
+}
+
+Regardless of what you provide for the minimum size, the reduction facility will never reduce to less than is necessary to fill the subpopulation with elites.  However, it may reduce to exactly the elites themselves, with no room for children (which probably isn't too useful).  So you need to make sure you set the minimum size to something appropriate.
+
 The number of threads (\(M\)) is also a parameter.  To set it to 4, you'd say:
 
 \params{%

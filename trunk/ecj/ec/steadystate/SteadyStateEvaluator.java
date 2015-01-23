@@ -120,6 +120,18 @@ public class SteadyStateEvaluator extends SimpleEvaluator
         {
         return subpopulationBeingEvaluated;
         }
+        
+    /** The SimpleEvaluator determines that a run is complete by asking
+        each individual in each population if he's optimal; if he 
+        finds an individual somewhere that's optimal,
+        he signals that the run is complete. */
+    public boolean runComplete(final EvolutionState state, final Individual ind)
+        {
+        if (ind.fitness.isIdealFitness())
+        	return true;
+        return false;
+        }
+
     }
 
 
