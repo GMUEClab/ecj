@@ -2335,3 +2335,6 @@ Version		Change Log
 	Sum.java now checks for >= rather than > just in case
 	SimpleBreeder now can reduce the population size gradually.
 	Added some efficiency improvements to SteadyStateEvolutionState
+	Added UniquePipeline
+	Fix to error message in FloatVectorSpecies.  Thanks to Eric 
+		'Siggy' Scott <escott8@gmu.edu>
