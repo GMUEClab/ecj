@@ -613,7 +613,7 @@ public class FloatVectorSpecies extends VectorSpecies
                         base.push(P_STDEV).push(postfix), def.push(P_STDEV).push(postfix));
                 }
             else if (gaussMutationStdev[index] != gaussMutationStdev[index])
-                state.output.fatal("If FloatVectorSpecies is going to use polynomial mutation as a per-gene or per-segment type, either the global or per-gene/per-segment standard deviation must be defined.",
+                state.output.fatal("If FloatVectorSpecies is going to use gaussian mutation as a per-gene or per-segment type, either the global or per-gene/per-segment standard deviation must be defined.",
                     base.push(P_STDEV).push(postfix), def.push(P_STDEV).push(postfix));
             }
         if (mutType == C_INTEGER_RANDOM_WALK_MUTATION)
