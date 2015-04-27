@@ -3454,7 +3454,7 @@ Now we can mutate the Individuals.  How mutation occurs depends on the represent
 \end{verbatim}}
 
 
-\subsubsection{Standard Classes}
+\subsubsection{Standard Utility Pipelines}
 \label{standardbreedingpipelines}
 
 Most BreedingPipelines are custom for your representation: vectors and trees etc. all have their own special ways of being crossed over or mutated.  However there are some utility BreedingPipelines you should be aware of, all stored in the \package{ec.breed} package:
@@ -3556,6 +3556,22 @@ pop.subpop.0.pipe.0.source.0.num-inds = 1\\
 pop.subpop.0.pipe.0.source.0.source.0 = ec.app.myCheckingBreedingPipeline\\
 pop.subpop.0.pipe.0.source.0.source.0.num-times = 20\\
 pop.subpop.0.pipe.0.source.0.source.0.source.0 = ...
+}
+
+
+
+\item \class{ec.breed.UniquePipeline} tries hard to guarantee that all individuals it produces are different from individual in the past generation's subpopulation.  It does each generation by building a set of individuals in the previous generation's subpopulation, then checks newly generated individuals against this set.  If they match, it discards them and tries again.
+
+UniquePipeline will try \(N\) times to fill a certain requested number of individuals.  If it fails after \(N\) attempts, it will fill the remaining number with non-unique generated individuals.  The value of \(N\) is determined with the parameter:
+
+\params{%
+{\it base}.duplicate-retries = 20
+}
+
+How may individuals must be generated for UniquePipeline to be satisfied?  If the following parameter is true, then UniquePipeline will always fill to the maximum number permitted; else it will fill to at least the minimum number, or whatever its subsidiary pipeline provides it.  The default is \parameter{false}:
+
+\params{%
+{\it base}.generate-max = true
 }
 
 
@@ -8571,7 +8587,7 @@ gp.koza.xover.tries = 1\\
 gp.koza.xover.maxdepth = 17
 }
 
-Here if the crossover operation produces a child greater than 17, it is not forwarded on; but rather its (presumably smaller) parent is forwarded on in its stead.  This is a fairly crude approach to parsimony pressure, but it's fairly effective.  Another approach\,---\,which can be done at the same time\,---\,is to modify the selection operator to favor smaller individuals.  This notion is called {\bf parsimony pressure}.
+Here if the crossover operation produces a child greater than 17, it is not forwarded on; but rather its (presumably smaller) parent is forwarded on in its stead.  This is a fairly crude approach, but it's fairly effective.  Another approach\,---\,which can be done at the same time\,---\,is to modify the selection operator to favor smaller individuals.  This notion is called {\bf parsimony pressure}.
 
 In the \package{ec.parsimony} package, ECJ has several SelectionMethods which select both based on fitness and on size (smaller size being preferred).  These methods compute size based on GPNode's \method{size()} function.  Many of these selection methods were compared and discussed at length in \cite{Luke:2006:EC}.  Here they are:
 
@@ -8755,7 +8771,7 @@ Grammar files are text files consisting of lines.  Each line can be blank whites
 <foo> ::= (hello <bar>) | (yo) | (whoa <bar> <baz>)
 \end{verbatim}}
 
-In this example, \lisp{\(<\)foo\(>\)} is the head, and \lisp{(hello \(<\)bar\(>\)) \(|\) (yo) \(|\) (whoa \(<\)bar\(>\) \(<\)baz\(>\))} is the body.  The head is always a simple, usually lower-case, symbol surrounded in angle brackets.  The body is a collection of {\bf clauses} separated by the pipe symbol (\ \(|\)\ ).  Each clause is a single GP node in Lisp s-expression form.  For example, \lisp{(hello \(<\)bar\(>\))} defines a GP node named \lisp{hello}, which has a single child defined by the symbol \lisp{\(<\)bar\(>\)}.
+In this example, \lisp{\(<\)foo\(>\)} is the head, and \lisp{(hello \(<\)bar\(>\)) \(|\) (yo) \(|\) (whoa \(<\)bar\(>\) \(<\)baz\(>\))} is the body.  The head is always a simple, usually lower-case, symbol surrounded in angle brackets.  The body is a collection of {\bf clauses} separated by the pipe symbol (\ \(|\)\ ).  Each clause is a single GP node in Lisp s-expression form.\footnote{Traditionally, Gramamtical Evolution does not restrict the language for which the grammar is designed: you could plausibly have the system output a C program, for example.  However to maintain compatibility with ECJ's GP package, and thus greatly simplify the complexity of the system, ECJ's GE system only outputs in the pseudo-lisp form typical of GP.  There's no loss of generality however.}  For example, \lisp{(hello \(<\)bar\(>\))} defines a GP node named \lisp{hello}, which has a single child defined by the symbol \lisp{\(<\)bar\(>\)}.
 
 Terminal (leaf-node) GPNodes are defined as S-expressions with no children.  For example, \lisp{(yo)} is a terminal GPNode whose name is \lisp{yo}.  And a GPNode can have more than one child, such as \mbox{\lisp{(whoa \(<\)bar\(>\) \(<\)baz\(>\))}}.
 
@@ -8813,6 +8829,13 @@ Each GPNode in the grammar is looked up according to its name.  Thus if you have
 <op> ::= (ADF1 <op> <op>)
 \end{verbatim}}
 
+\noindent Then a second grammar file for ADF1 might have something like:
+
+\vbox{\small\begin{verbatim}
+<start> ::= <op>
+<op> ::= (x) | (y) | (cos <op>) | (+ <op> <op>)
+<op> := (ARG0) | (ARG1)
+\end{verbatim}}
 
 \subsection{Translation and Evaluation}
 
@@ -11194,7 +11217,7 @@ Individual \(i\) in the new Subpopulation to fill:
 	\item SpatialTournamentSelection methods in that Pipeline use this index to compute distances and pick Individuals
 \end{enumerate}  
 
-{\bf Warning:}  Note that although SpatialBreeder is enumerating over the {\it new Subpopulation}, the SpatialTournamentSelection operator is using the target index to pick Individuals the {\it old Subpopulation}.  This means that Subpopulations must not change in size from generation to generation.
+{\bf Warning:}  Note that although SpatialBreeder is enumerating over the {\it new Subpopulation}, the SpatialTournamentSelection operator is using the target index to pick Individuals from the {\it old Subpopulation}.  This means that Subpopulations must not change in size from generation to generation.
 
 SpatialBreeder is very simple: there are no parameters to set up at all.
 
