@@ -1601,6 +1601,16 @@ Selects and returns an index in the given array which contains the given probabi
 Selects and returns an index in the given array which contains the given probability.  The \textit{chooser} will provide the floating-point values of each element in the array.
 \end{methods}
 
+\subsection{Thread-Local Storage}
+
+In certain rare cases you might need your threads to be able to stash away temporary information on a per-thread basis.  To do this, ECJ has an array of hash tables, one per thread number (indexed just like the random number generators are).  You can use these as you like, though we suggest you use them to store information you need hashed under a unique string name special to your task.  The hash tables are located in \class{EvolutionState} and are called:
+
+\begin{verbatim}
+public HashMap[] data;    // one hash table per thread number
+\end{verbatim}
+
+These serve roughly the same purpose as Java's \class{ThreadLocal} variables, but we can use an array here instead of a ThreadLocal  because we know beforehand how many threads we have.
+
 \subsection{Multithreading Support}
 
 ECJ not only can evaluate and breed individuals in a multithreaded fashion, but it also uses multiple threads in other areas, such as handling island models or distributed parallel evaluation on remote machines.  Many of these ECJ modules take advantage of a {\it thread pool}, essentially a cache of hot threads, so they don't have to create new ones on-the-fly all the time.  This could have been done with Java's concurrency package; but ECJ has its own lightweight thread pool called \class{ec.util.ThreadPool}.
@@ -1779,20 +1789,83 @@ You can of course do both: have Application A control ECJ, which in turn control
 
 \subsection{Control by ECJ}
 
-When ECJ is in control, usually the subordinate library is being used to assess the quality of an Individual, perhaps as a simulation library.  To do this, you'll probably need a place to set up your library, prepare a simulation to test a string of Individuals, reset the simulation for each Individual, and eventually destroy the library.  Note that if you use checkpointing, your library must be serializable.   Note also that if you use distributed evaluation, the library will be run on remote machines, so you'd want to do this stuff on the {\bf slave}, not on the {\bf master}.
+When ECJ is in control, usually the subordinate library is being used to assess the quality of an Individual, perhaps as a simulation library.  To do this, you'll probably need a place to set up your library, prepare a simulation to test a string of Individuals, reset the simulation for each Individual, and eventually destroy the library.  Note that if you use checkpointing, your library must be serializable.   
+
+Let's do the simplest case: it may well be the case that all you need to do is create a simulation, run it, and destroy it each time an individual is evaluated. in this case, you just do this inside the \method{evaluate()} method in your \class{Problem}, along these lines:
+
+\begin{verbatim}
+public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum)
+    {
+    if (!ind.evaluated)  // don't bother reevaluating
+        {
+        // Build the simulation
+        Simulation mySimulation = new Simulation(state.random[threadnum], threadnum, ...);
+        
+        // use the simulation, then get rid of it
+        // then set the fitness of the individual
+        }
+    }
+\end{verbatim}
+
+Notice that in this example, to construct our simulation, we're passing in the random number generator for the thread, which would be the best practice.  We're also passing in the thread number, which is a unique integer from 0 ... \variable{state.evalthreads}), which might be useful for the simulation to distinguish itself from others (for example, so it can write out some kind of statistics file as \file{"foo.threadnumber.out"} or whatever so none of the simulations overwrite each other).
+
+You need to be careful about random number generators.  The best thing to do would be to use ECJ's generator.  But here's the order of options, from best to least good.
+
+\begin{enumerate}
+\item The best would be for simulator \#\variable{thread} to use \variable{state.random[thread]} as its only random number generator.
+\item If this is not possible, next best would be for each simulator to use a {\it unique} random number generator object.  This may not result in replicable results.
+\item If this is not possible, next best would be for each simulator to use a {\it shared} random number generator object which is  synchronized for multithreading.  This will {\it definitely} not result in replicable results, and may also not be properly serializable.
+\item If your simulator is using \class{java.util.Random} or (heaven forbid) \class{Math.random(...)}, then it's time for a rewrite of your simulator.
+\end{enumerate}
+
+Note also that if you use distributed evaluation, this code will be run on remote machines, so you'd want to do this stuff on the {\bf slave}, not on the {\bf master}.
+
+Finally, remember that if you run multithreaded, you'll have multiple simulations running in parallel, and you'll want to make sure that these simulations don't share any global (static) data in common that would create race conditions.
+
+This approach is plausible but it's a bit inflexible and inefficient.  You are given no opportunity to globally set up the simulation system, and furthermore you're constructing and destroying an entire simulation each time\,---\,perhaps it would be better to:
+
+\begin{enumerate}
+\item Load and set up the simulation library once
+\item Use this to construct some \(N\) simulations, one per thread, once, or perhaps once per generation
+\item Reuse these simulations multiple times by resetting them (rather than destroying and recreating them) when new individuals need to be assessed
+\item Clean up before quitting
+\end{enumerate}
 
 Here are some plausible locations for these tasks:
  
 \paragraph{Set up the library}
-One option would be to create a custom EvolutionState, overriding the \method{startFresh()} and \method{startFromCheckpoint()}.  See Section~\ref{ec.EvolutionState}.  Let us presume you don't need to distinguish between starting fresh and restarting from a checkpoint.  Then perhaps you could do in \method{setup()} like this:
+
+I would create a custom EvolutionState, and override \method{setup()} to create a blank array of simulations, one per evaluation thread.  This would also be the spot to set up the library as appropriate.  Note that \method{setup()} is called even on the master when you're doing distributed evaluation, but in that case you'd not want to set up since you're not doing any simulations on the master.  So the code below checks for that.
 
 \begin{verbatim}
 public class MyEvolutionState extends ec.simple.SimpleEvolutionState  // or whatever...
     {
+    public Simulation[] simulations;
+    
     public void setup(EvolutionState state, Parameter base) 
         {
         super.setup(state, base);  // state is obviously the MyEvolutionState itself
-        // do your library setup here
+        
+        // there are two cases where we'd want to set this up:
+        // 1. I am running ECJ in a single process, and am NOT running with 
+        //    distributed (master/slave) evaluation
+        // 2. I am running with distributed evaluation, and I am a slave (not the master).
+        // So we check for those cases here:
+        
+        // the code below verifies that I'm running on a slave, not the master
+        ec.util.Parameter param = new ec.util.Parameter("eval.i-am-slave");        boolean amASlave = state.parameters.getBoolean(param, null, false);
+        
+        // the code below verifies that I'm doing distributed evaluation
+        boolean doingDistributedEvaluation = (Evaluator.masterProblem == null);
+        
+        // okay here we go
+        if (!doingDistributedEvaluation || amASlave)
+                {
+                simulations = new Simulation[state.evalthreads];
+                
+                // do your library setup here
+                // now create the simulation array
+                }
         }
     }
 \end{verbatim}
@@ -1805,124 +1878,78 @@ state = MyEvolutionState
 
 You could of course override the \method{setup(...)} method of certain other classes, such as \class{ec.Initializer} (see Section~\ref{ec.Initializer}).
 
-I'd also use the \method{setup(...)} method to create an array of simulators to keep track of them.  Let's say your simulation is of class \class{Simulation}.  In your \class{MyEvolutionState} class you might add the following instance variable to hold one simulation per eval thread:
+It's possible that you might need to differentiate between setting up from a fresh run and setting up due to recovering from checkpoint.  In this case, you might instead override the methods \method{startFresh()} and \method{startFromCheckpoint()}.  See Section~\ref{ec.EvolutionState}.  
 
-\begin{verbatim}
-Simulation[] simulations = new Simulation[state.evalthreads];
-\end{verbatim}
-
-\paragraph{Prepare the simulation for evaluation}
-
-Next you'd probably want to set up a simulation object in your thread.  The obvious time to do this is in the \method{prepareToEvaluate(...)} method (see Section~\ref{ec.Problem}):
-
-\begin{verbatim}
-public void prepareToEvaluate(EvolutionState state, int thread) 
-        {
-        super.prepareToEvaluate(state, thread);
-        /// do your preparation here
-        }
-\end{verbatim}
-
-Here you could create a simulation for your thread and store it.  Here'd be a good place to create and/or reset your simulation:
-
-\begin{verbatim}
-    if (simulations[thread] == null) // simulator doesn't exist
-        simulations[thread] = new Simulation(state.random[thread], thread, ...);
-\end{verbatim}
-
-If you run ECJ multithreaded, ECJ may make several Problems and run them simultaneously in multiple threads, so be sure that your simulation does not share any data in common (notably non-final static variables).  
-
-If you're running with distributed evaluation, this method will only get called on the slave (which is where you want it).
-
-Notice that to construct the simulation, we're passing in the random number generator for the thread, which would be the best practice.  We're also passing in the thread number, which is a unique integer from 0 ... \variable{state.evalthreads}), which might be useful for the simulation to distinguish itself from others (for example, so it can write out some kind of statistics file as "foo.threadnumber.out" or whatever so none of the simulations overwrite each other).
-
-You need to be careful about random number generators.  The best thing to do would be to use ECJ's generator.  But here's the order of options, from best to least good.
-
-\begin{enumerate}
-\item The best would be for simulator \#\variable{thread} to use \variable{state.random[thread]} as its only random number generator.
-\item If this is not possible, next best would be for each simulator to use a {\it unique} random number generator object.  This may not result in replicable results.
-\item If this is not possible, next best would be for each simulator to use a {\it shared} random number generator object which is  synchronized for multithreading.  This will {\it definitely} not result in replicable results, and may also not be properly serializable.
-\item If your simulator is using \class{java.util.Random} or (heaven forbid) \class{Math.random(...)}, then it's time for a rewrite of your simulator.
-\end{enumerate}
-
-
-\paragraph{Evaluate an Individual}
+\paragraph{Prepare the simulation and evaluate an individual}
 
 Whenever \method{evaluate(...)} is called, you can now grab your simulation, reset it as appropriate, and test your individual.  Alternatively you could just delete your existing simulation and create a new fresh one:
 
 \begin{verbatim}
 public void evaluate(EvolutionState state, Individual ind, int subpopulation, int thread) 
-        {
-        super.evaluate(state, ind, subpopulation, thread);
-        /// do your evaluation here
-        }
-\end{verbatim}
-
-\begin{itemize}
-\item Build a new simulator each time an individual is evaluated.  If this is the case, you could say:
-
-\begin{verbatim}
+    {
+    if (simulations[thread] == null) // simulator doesn't exist
         simulations[thread] = new Simulation(state.random[thread], thread, ...);
+    else simulations[thread].reset();  // reset your simulator somehow
+    
+    // run the simulation with your individual and assess the individual
+    // now set its fitness here
+    }
 \end{verbatim}
 
-In this case, don't bother creating the Simulation in \method{prepareToEvaluate(...)} like we did above.
-
-\item ``Reset'' your already-build simulator.  This is what I suggest you do, it's probably much cheaper than constructing one from scratch.  So you'd say something like
-
-\begin{verbatim}
-        simulations[thread].reset(...);
-\end{verbatim}
-
-\end{itemize}
+Alternatively of course you could always just make a new simulation if that's not terribly inefficient.
 
 Now you'd set up the simulation with your ECJ individual, pulse it multiple times until you're finished, and then determine the Individual's Fitness and return.
 
-At the end of a run, ECJ may call the \method{describe()} method on your Problem (see Section~\ref{ec.Problem}):
-
-\java{%
-public void describe(EvolutionState state, Individual ind, int subpopulation,\\
-\hsp{\fill}int thread, int log);
-}
-
-... you can do the same trick here, though beware that ECJ will {\it not} call \method{prepareToEvaluate(...)} first, nor call \method{finishEvaluation(...)} afterwards, so you'll need to set up your simulation, run it, and get rid of it all in the \method{describe(...)} itself.
 
 Alternatively if your Problem implements the coevolutionary \class{ec.coevolve.GroupedProblemForm} (see Section~\ref{ec.coevolve.GroupedProblemForm}), you might write this:
 
 \begin{verbatim}
 public void evaluate(EvolutionState state, Individual[] ind, boolean[] updateFitness, 
                                 boolean countVictoriesOnly, int[] subpops, int thread) 
-        {
-        super.evaluate(state, ind, updateFitness, countVictoriesOnly, subpops, thread);
-        /// do your evaluation here
-        }
+    {
+    if (simulations[thread] == null) // simulator doesn't exist
+        simulations[thread] = new Simulation(state.random[thread], thread, ...);
+    else simulations[thread].reset();  // reset your simulator somehow
+    
+    // run the simulation with all individuals in ind[] and assess them
+    // now set their fitnesses here
+    }
+\end{verbatim}
+
+
+
+At the end of a run, ECJ may call the \method{describe()} method on your Problem (see Section~\ref{ec.Problem}).  I'd do things similarly:
+
+\begin{verbatim}
+public void describe(EvolutionState state, Individual ind, int subpopulation, int thread, int log)
+    {
+    if (simulations[thread] == null) // simulator doesn't exist
+        simulations[thread] = new Simulation(state.random[thread], thread, ...);
+    else simulations[thread].reset();  // reset your simulator somehow
+    
+    // run the simulation with your individual and write out to the log interesting facts
+    }
 \end{verbatim}
 
 At present there is no \method{describe(...)} method for GroupedProblemForm.
 
+
 \paragraph{Optionally Delete the Simulation each Generation}
 
-After a thread has been used to evaluate a chunk of individuals (commonly once per generation), ECJ calls a special method you might use to delete and clean up all of your simulators in preparation for the next generation.  This is an unusual need: I wouldn't do this: instead, I'd just let them reset as discussed earlier and reuse them.  But if you must, here's where it'd go:
+It's possible that you might want to clean delete your simulation or clean it up somehow after a generation has transpired.  This is an unusual need: I wouldn't do this.  But if you must, you could do this in your \class{Problem} class:
 
 \begin{verbatim}
 public void finishEvaluating(EvolutionState state, int thread) 
     {
     super.finishEvaluating(state, thread);
-    /// do your cleanup here
+    
+    // do your cleanup here of simulations[thread], then...
+    simulations[thread] = null; 
     }
 \end{verbatim}
 
 See again Section~\ref{ec.Problem}.
 
-For example, you might write:
-
-\begin{verbatim}
-if (simulations[thread] != null)
-    {
-    // clean up simulations[thread] as you wish, then...
-    simulations[thread] == null;
-       // frankly I'd not do this.
-        }
-\end{verbatim}
 
 \paragraph{Clean up the Library}
 
@@ -1934,23 +1961,22 @@ public class MyFinisher extends SimpleFinisher // or whatever
     public void finishPopulation(EvolutionState state, int result)
         {
         super.finishPopulation(state, result);
-        // clean up the library here
-        }
-    }
-\end{verbatim}
-
-Most commonly you want to shut the simulators down.  I'd do it this way:
-
-\begin{verbatim}
-for(int simID = 0; simID < state.evalthreads; simID++)
-    {
-    if (simulations[simID] != null)
+        
+        // clean up the simulations
+        
+    for(int simID = 0; simID < state.evalthreads; simID++)
         {
-        // clean up simulations[simID] as you wish, then...
-        simulations[simID] == null;
+        if (simulations[simID] != null)
+            {
+            // clean up simulations[simID] as you wish, then...
+            simulations[simID] == null;
+            }
+            
+        // finally clean up the whole library here
         }
     }
 \end{verbatim}
+
 
 \subsection{Control by another Application or Library}
 
@@ -10028,7 +10054,7 @@ Slaves set themselves up with their own nearly complete EvolutionState and Evalu
 
 \java{%
 	ec.util.Parameter param = new ec.util.Parameter("eval.i-am-slave");\\
-	boolean amIASlave = state.parameters.getBoolean(param, null, false);
+	boolean amASlave = state.parameters.getBoolean(param, null, false);
 }
 
 The first thing a Slave needs to know is where the Master is so it can set itself up.  This is done with something like this:

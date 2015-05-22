@@ -2338,3 +2338,6 @@ Version		Change Log
 	Added UniquePipeline
 	Fix to error message in FloatVectorSpecies.  Thanks to Eric 
 		'Siggy' Scott <escott8@gmu.edu>
+	Documentation updates about using ECJ with a simulator (2.7.1)
+	Removed incorrect gunk in steadynoerc.params
+	Added threadlocal storage
