@@ -387,8 +387,7 @@ public class SimpleBreeder extends Breeder
         public (for the benefit of a private helper class in this file),
         you should not call it. */
 
-    protected void breedPopChunk(Population newpop, EvolutionState state,
-        int[] numinds, int[] from, int threadnum) 
+    protected void breedPopChunk(Population newpop, EvolutionState state, int[] numinds, int[] from, int threadnum) 
         {
         for(int subpop=0;subpop<newpop.subpops.length;subpop++)
             {

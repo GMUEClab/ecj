@@ -163,8 +163,11 @@ public class EvolutionState implements Singleton
         Nonetheless, you should generally try to treat this database as read-only. */
     public ParameterDatabase parameters;
 
-    /** An array of random number generators, indexed by the thread number you were given (or, if you're not in a multithreaded area, use 0).  These generators are not threadsafe in and of themselves, but if you only use the random number generator assigned to your thread, as was intended, then you get random numbers in a threadsafe way.  These generators must each have a different seed, of course.v*/
+    /** An array of random number generators, indexed by the thread number you were given (or, if you're not in a multithreaded area, use 0).  These generators are not threadsafe in and of themselves, but if you only use the random number generator assigned to your thread, as was intended, then you get random numbers in a threadsafe way.  These generators must each have a different seed, of course.*/
     public MersenneTwisterFast[] random;
+
+    /** An array of HashMaps, indexed by the thread number you were given (or, if you're not in a multithreaded area, use 0).  This allows you to store per-thread specialized information (typically keyed with a string).  */
+    public HashMap[] data;
 
     /** The output and logging facility (threadsafe).  Keep in mind that output in Java is expensive. */
     public Output output;
@@ -286,6 +289,11 @@ public class EvolutionState implements Singleton
     public void setup(final EvolutionState state, final Parameter base)
         {
         Parameter p;
+        
+        // set up the per-thread data
+        data = new HashMap[random.length];
+        for(int i = 0; i < data.length; i++)
+        	data[i] = new HashMap();
 
         // we ignore the base, it's worthless anyway for EvolutionState
 
