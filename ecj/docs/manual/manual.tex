@@ -1779,12 +1779,12 @@ You can of course do both: have Application A control ECJ, which in turn control
 
 \subsection{Control by ECJ}
 
-When ECJ is in control, usually the subordinate library is being used to assess the quality of an Individual, perhaps as a simulation library.  To do this, you'll probably need a place to set up your library, prepare a simulation to test a string of Individuals, reset the simulation for each Individual, and eventually destroy the library.  Note that if you use checkpointing, your library must be serializable.   Note also that if you use distributed evaluation, the library will be run on remote machines.  
+When ECJ is in control, usually the subordinate library is being used to assess the quality of an Individual, perhaps as a simulation library.  To do this, you'll probably need a place to set up your library, prepare a simulation to test a string of Individuals, reset the simulation for each Individual, and eventually destroy the library.  Note that if you use checkpointing, your library must be serializable.   Note also that if you use distributed evaluation, the library will be run on remote machines, so you'd want to do this stuff on the {\bf slave}, not on the {\bf master}.
 
 Here are some plausible locations for these tasks:
  
 \paragraph{Set up the library}
-One option would be to create a custom EvolutionState, overriding the \method{startFresh()} and \method{startFromCheckpoint()}.  See Section~\ref{ec.EvolutionState}.  Let us presume you don't need to distinguish between starting fresh and restarting from a checkpoint.  Then you could do:
+One option would be to create a custom EvolutionState, overriding the \method{startFresh()} and \method{startFromCheckpoint()}.  See Section~\ref{ec.EvolutionState}.  Let us presume you don't need to distinguish between starting fresh and restarting from a checkpoint.  Then perhaps you could do in \method{setup()} like this:
 
 \begin{verbatim}
 public class MyEvolutionState extends ec.simple.SimpleEvolutionState  // or whatever...
@@ -1805,15 +1805,15 @@ state = MyEvolutionState
 
 You could of course override the \method{setup(...)} method of certain other classes, such as \class{ec.Initializer} (see Section~\ref{ec.Initializer}).
 
-I'd also use the \method{setup(...)} method to create an array of simulators to keep track of them.  Let's say your simulation is of class \class{Simulation}.  In your \class{MyEvolutionState} class you might add the instance variable:
+I'd also use the \method{setup(...)} method to create an array of simulators to keep track of them.  Let's say your simulation is of class \class{Simulation}.  In your \class{MyEvolutionState} class you might add the following instance variable to hold one simulation per eval thread:
 
 \begin{verbatim}
-Simulation simulations = null;
+Simulation[] simulations = new Simulation[state.evalthreads];
 \end{verbatim}
 
 \paragraph{Prepare the simulation for evaluation}
 
-Next you'd probably want to set up a simulation object and hold it somewhere, perhaps in your \class{ec.Problem} subclass.  The obvious time to do this is in the \method{prepareToEvaluate(...)} method (see Section~\ref{ec.Problem}):
+Next you'd probably want to set up a simulation object in your thread.  The obvious time to do this is in the \method{prepareToEvaluate(...)} method (see Section~\ref{ec.Problem}):
 
 \begin{verbatim}
 public void prepareToEvaluate(EvolutionState state, int thread) 
@@ -1823,24 +1823,21 @@ public void prepareToEvaluate(EvolutionState state, int thread)
         }
 \end{verbatim}
 
-Here you could create a simulation and store it in an instance variable.  If you run ECJ multithreaded, ECJ may make several Problems and run them simultaneously in multiple threads, so be sure that your simulation does not share any data in common (notably non-final static variables).  
-
-For example, you might construct or reset each simulation as appropriate like this:
+Here you could create a simulation for your thread and store it.  Here'd be a good place to create and/or reset your simulation:
 
 \begin{verbatim}
-for(int simID = 0; simID < state.evalthreads; simID++)
-    {
-    if (simulations[simID] == null) // simulator doesn't exist
-        simulations[simID] = new Simulation(..., simID, ...);
-    else 
-        simulations[simID].reset(...);  // or whatever
-    }
+    if (simulations[thread] == null) // simulator doesn't exist
+        simulations[thread] = new Simulation(state.random[thread], thread, ...);
 \end{verbatim}
 
-Notice that to construct the simulation, we're passing in \variable{simID} because if we're dealing with a multithreaded environment, each simulator needs to know what unique ID it'll be working with (and in ECJ your simulator unique ID will correspond to the thread number, from 0 ... \variable{state.evalthreads}).   You also want to take care that your simulator do random number generation properly.  Here's the order of quality:
+If you run ECJ multithreaded, ECJ may make several Problems and run them simultaneously in multiple threads, so be sure that your simulation does not share any data in common (notably non-final static variables).  
+
+Notice that to construct the simulation, we're passing in the random number generator for the thread, which would be the best practice.  We're also passing in the thread number, which is a unique integer from 0 ... \variable{state.evalthreads}), which might be useful for the simulation to distinguish itself from others (for example, so it can write out some kind of statistics file as "foo.threadnumber.out" or whatever so none of the simulations overwrite each other).
+
+You need to be careful about random number generators.  The best thing to do would be to use ECJ's generator.  But here's the order of options, from best to least good.
 
 \begin{enumerate}
-\item The best would be for simulator \#\variable{simID} to use \variable{state.random[simID]} as its only random number generator.
+\item The best would be for simulator \#\variable{thread} to use \variable{state.random[thread]} as its only random number generator.
 \item If this is not possible, next best would be for each simulator to use a {\it unique} random number generator object.  This may not result in replicable results.
 \item If this is not possible, next best would be for each simulator to use a {\it shared} random number generator object which is  synchronized for multithreading.  This will {\it definitely} not result in replicable results, and may also not be properly serializable.
 \item If your simulator is using \class{java.util.Random} or (heaven forbid) \class{Math.random(...)}, then it's time for a rewrite of your simulator.
@@ -1859,7 +1856,24 @@ public void evaluate(EvolutionState state, Individual ind, int subpopulation, in
         }
 \end{verbatim}
 
-Here you take the Individual and test it, returning a Fitness. 
+\begin{itemize}
+\item Build a new simulator each time an individual is evaluated.  If this is the case, you could say:
+
+\begin{verbatim}
+        simulations[thread] = new Simulation(state.random[thread], thread, ...);
+\end{verbatim}
+
+In this case, don't bother creating the Simulation in \method{prepareToEvaluate(...)} like we did above.
+
+\item ``Reset'' your already-build simulator.  This is what I suggest you do, it's probably much cheaper than constructing one from scratch.  So you'd say something like
+
+\begin{verbatim}
+        simulations[thread].reset(...);
+\end{verbatim}
+
+\end{itemize}
+
+Now you'd set up the simulation with your ECJ individual, pulse it multiple times until you're finished, and then determine the Individual's Fitness and return.
 
 At the end of a run, ECJ may call the \method{describe()} method on your Problem (see Section~\ref{ec.Problem}):
 
@@ -1882,14 +1896,6 @@ public void evaluate(EvolutionState state, Individual[] ind, boolean[] updateFit
 \end{verbatim}
 
 At present there is no \method{describe(...)} method for GroupedProblemForm.
-
-To identify which simulator you're working with, I'd say (in the \method{evaluate(...)} and \method{describe(...)} methods):
-
-\begin{verbatim}
-Simulation mySimulation = state.simulations[thread];
-// work with mySimulation to evaluate the individual
-\end{verbatim}
-
 
 \paragraph{Optionally Delete the Simulation each Generation}
 
