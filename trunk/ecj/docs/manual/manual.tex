@@ -1832,6 +1832,8 @@ Here you could create a simulation for your thread and store it.  Here'd be a go
 
 If you run ECJ multithreaded, ECJ may make several Problems and run them simultaneously in multiple threads, so be sure that your simulation does not share any data in common (notably non-final static variables).  
 
+If you're running with distributed evaluation, this method will only get called on the slave (which is where you want it).
+
 Notice that to construct the simulation, we're passing in the random number generator for the thread, which would be the best practice.  We're also passing in the thread number, which is a unique integer from 0 ... \variable{state.evalthreads}), which might be useful for the simulation to distinguish itself from others (for example, so it can write out some kind of statistics file as "foo.threadnumber.out" or whatever so none of the simulations overwrite each other).
 
 You need to be careful about random number generators.  The best thing to do would be to use ECJ's generator.  But here's the order of options, from best to least good.
@@ -10022,7 +10024,7 @@ The slave parameters must include all the evolutionary parameters and also all t
 parent.0 = master.params
 }
 
-Slaves set themselves up with their own nearly complete EvolutionState and Evaluator objects\,---\,enough to evaluate Individuals and also perform evolution if necessary.  A slave distinguishes itself by setting a special internal parameter:  \parameter{eval.i-am-slave~=~true}.  You don't need to set this parameter\,---\,it's set programmatically by \class{ec.eval.Slave} when it's fired up.  But you should be aware of it: it's used by \class{ec.Evaluator} to determine whether to replace the Problem with the MasterProblem (it needs to know if the process is a Master or a Slave, and since your Slave probably included the Master parameters\,---\,including the \parameter{eval.masterproblem} parameter\,---\,it looks confusingly like a Master).  You could also use it yourself to determine if your evaluation is being done on a Slave or not, if for some bizarre reason you needed to know this:
+Slaves set themselves up with their own nearly complete EvolutionState and Evaluator objects\,---\,enough to evaluate Individuals and also perform evolution if necessary.  A slave distinguishes itself by setting a special internal parameter:  \parameter{eval.i-am-slave~=~true}.  You don't need to set this parameter\,---\,it's set programmatically by \class{ec.eval.Slave} when it's fired up.  But you should be aware of it: it's used by \class{ec.Evaluator} to determine whether to replace the Problem with the MasterProblem (it needs to know if the process is a Master or a Slave, and since your Slave probably included the Master parameters\,---\,including the \parameter{eval.masterproblem} parameter\,---\,it looks confusingly like a Master).  You could also use it yourself to determine if your code is presently being run on a Slave or not.  This is occasionally useful:
 
 \java{%
 	ec.util.Parameter param = new ec.util.Parameter("eval.i-am-slave");\\
