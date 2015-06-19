@@ -293,7 +293,7 @@ public class EvolutionState implements Singleton
         // set up the per-thread data
         data = new HashMap[random.length];
         for(int i = 0; i < data.length; i++)
-        	data[i] = new HashMap();
+            data[i] = new HashMap();
 
         // we ignore the base, it's worthless anyway for EvolutionState
 

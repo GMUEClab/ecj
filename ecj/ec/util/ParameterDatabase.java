@@ -2482,7 +2482,7 @@ public class ParameterDatabase extends Properties implements Serializable
             }
 
 
-		// Convert to "\" for windows
+        // Convert to "\" for windows
         String returnPath;
         if(File.separatorChar != '/')
             returnPath = path.getPath().replace(File.separatorChar, '/');

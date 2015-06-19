@@ -34,7 +34,7 @@ public class SAT extends Problem implements SimpleProblemForm
         super.setup(state, base); 
         File filename = state.parameters.getFile(base.push(P_FILENAME), null); 
         if (filename == null)  // uh oh
-        	state.output.fatal("Filename must be provided", base.push(P_FILENAME));
+            state.output.fatal("Filename must be provided", base.push(P_FILENAME));
                 
         try 
             { 

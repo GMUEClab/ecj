@@ -141,9 +141,9 @@ public class Subpopulation implements Group
         }
         
     /** Resizes the Subpopulation to a new size.  If the size is smaller, then
-    	the Subpopulation is truncated such that the higher indexed individuals
-    	may be deleted.  If the size is larger, then the resulting Subpopulation will have
-    	null individuals (this almost certainly is not what you will want).
+        the Subpopulation is truncated such that the higher indexed individuals
+        may be deleted.  If the size is larger, then the resulting Subpopulation will have
+        null individuals (this almost certainly is not what you will want).
     */
     
     public void resize(int toThis)
@@ -342,12 +342,12 @@ public class Subpopulation implements Group
             {
             state.output.println(INDIVIDUAL_INDEX_PREAMBLE + Code.encode(i), log);
             if (individuals[i] != null)
-            	individuals[i].printIndividualForHumans(state, log);
+                individuals[i].printIndividualForHumans(state, log);
             else if (!warned)
-            	{
-            	state.output.warnOnce("Null individuals found in subpopulation");
-            	warned = true;  // we do this rather than relying on warnOnce because it is much faster in a tight loop
-            	}
+                {
+                state.output.warnOnce("Null individuals found in subpopulation");
+                warned = true;  // we do this rather than relying on warnOnce because it is much faster in a tight loop
+                }
             }
         }
         

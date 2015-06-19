@@ -77,8 +77,8 @@ public class MultipleVectorCrossoverPipeline extends BreedingPipeline {
         Parameter def = defaultBase(); 
 
         if (sources.length <= 2)  // uh oh
-        	state.output.fatal("num-sources must be provided and > 2 for MultipleVectorCrossoverPipeline",
-        		base.push(P_NUMSOURCES), def.push(P_NUMSOURCES));
+            state.output.fatal("num-sources must be provided and > 2 for MultipleVectorCrossoverPipeline",
+                base.push(P_NUMSOURCES), def.push(P_NUMSOURCES));
 
         parents = new VectorIndividual[sources.length];
         }

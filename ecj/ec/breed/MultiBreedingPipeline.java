@@ -70,8 +70,8 @@ public class MultiBreedingPipeline extends BreedingPipeline
         double total = 0.0;
         
         if (sources.length == 0)  // uh oh
-        	state.output.fatal("num-sources must be provided and > 0 for MultiBreedingPipeline",
-        		base.push(P_NUMSOURCES), def.push(P_NUMSOURCES));
+            state.output.fatal("num-sources must be provided and > 0 for MultiBreedingPipeline",
+                base.push(P_NUMSOURCES), def.push(P_NUMSOURCES));
         
         for(int x=0;x<sources.length;x++)
             {

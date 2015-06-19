@@ -161,15 +161,15 @@ public abstract class BreedingPipeline extends BreedingSource implements SteadyS
                 state.output.fatal("Breeding pipeline num-sources value must exist and be >= 0", base.push(P_NUMSOURCES), def.push(P_NUMSOURCES)); 
             }
         else if (numsources <= DYNAMIC_SOURCES)  // it's negative
-        	{
-        	throw new RuntimeException("In " + this + " numSources() returned < DYNAMIC_SOURCES (that is, < -1)");
-        	}
+            {
+            throw new RuntimeException("In " + this + " numSources() returned < DYNAMIC_SOURCES (that is, < -1)");
+            }
         else
-        	{
-        	if (state.parameters.exists(base.push(P_NUMSOURCES), def.push(P_NUMSOURCES))) // uh oh
-        		state.output.warning("Breeding pipeline's number of sources is hard-coded to " + numsources + " yet num-sources was provided: num-sources will be ignored.",
-        			base.push(P_NUMSOURCES), def.push(P_NUMSOURCES));
-        	}
+            {
+            if (state.parameters.exists(base.push(P_NUMSOURCES), def.push(P_NUMSOURCES))) // uh oh
+                state.output.warning("Breeding pipeline's number of sources is hard-coded to " + numsources + " yet num-sources was provided: num-sources will be ignored.",
+                    base.push(P_NUMSOURCES), def.push(P_NUMSOURCES));
+            }
 
         sources = new BreedingSource[numsources];
 

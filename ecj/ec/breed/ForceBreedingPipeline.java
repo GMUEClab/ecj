@@ -100,7 +100,7 @@ public class ForceBreedingPipeline extends BreedingPipeline
             {
             numToProduce = n - total;
             if (numToProduce > numInds)
-            	numToProduce = numInds;
+                numToProduce = numInds;
 
             total += sources[0].produce(numToProduce,numToProduce,start+total,subpopulation,inds,state,thread);
             }

@@ -70,7 +70,7 @@ public class ThreadPool implements java.io.Serializable
     // This object is transient so it's not written out when serialized
     // out, and so when deserialized it becomes null (which we detect).
     // This is important because Thread is not serializable.
- 	LinkedList workers = new LinkedList();
+    LinkedList workers = new LinkedList();
     Object workersLock = new Object[0];  // arrays are serializable
         
     // The total number of threads which exist, including those
@@ -78,24 +78,24 @@ public class ThreadPool implements java.io.Serializable
     int totalWorkers = 0;  // resets to 0 on deserialization
         
     private void writeObject(java.io.ObjectOutputStream stream) throws IOException 
-		{
-		// DO NOTHING
-		// This is because we will be rebuilding ALL THREE variables
-		// (workers, workersLock, and totalWorkers) during readObject.
-		// We can't accomplish this with 'transient' because workersLock has
-		// to be actually rebuilt as an object rather than set to null
-		// Further, having an empty writeObject method here prevents Java
-		// from attempting to serialize these non-transient objects while some
-		// thread might be accessing them.
-		}
+        {
+        // DO NOTHING
+        // This is because we will be rebuilding ALL THREE variables
+        // (workers, workersLock, and totalWorkers) during readObject.
+        // We can't accomplish this with 'transient' because workersLock has
+        // to be actually rebuilt as an object rather than set to null
+        // Further, having an empty writeObject method here prevents Java
+        // from attempting to serialize these non-transient objects while some
+        // thread might be accessing them.
+        }
 
     private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException
-    	{
-    	// REBUILD THE WHOLE INSTANCE
-    	workers = new LinkedList();
-    	workersLock = new Object[0];
-    	totalWorkers = 0;
-    	}
+        {
+        // REBUILD THE WHOLE INSTANCE
+        workers = new LinkedList();
+        workersLock = new Object[0];
+        totalWorkers = 0;
+        }
 
 
     /** Start a thread on the given Runnable and returns it. */

@@ -96,24 +96,24 @@ public class UniquePipeline extends BreedingPipeline
         {
         set.clear();
         Individual[] inds = state.population.subpops[subpopulation].individuals;
-		for(int i = 0; i < inds.length; i++)
-			set.add(inds[i]);
+        for(int i = 0; i < inds.length; i++)
+            set.add(inds[i]);
         }
 
- 	int removeDuplicates(Individual[] inds, int start, int num)
-		{
-		for(int i = start; i < start + num; i++)
-			{
-			if (set.contains(inds[i]))  // swap in from top
-				{
-				inds[i] = inds[start+num - 1];
-				inds[start+num-1] = null;
-				num--;
-				i--;  // try again
-				}
-			}
-		return num;
-		}
+    int removeDuplicates(Individual[] inds, int start, int num)
+        {
+        for(int i = start; i < start + num; i++)
+            {
+            if (set.contains(inds[i]))  // swap in from top
+                {
+                inds[i] = inds[start+num - 1];
+                inds[start+num-1] = null;
+                num--;
+                i--;  // try again
+                }
+            }
+        return num;
+        }
 
     public int produce(
         final int min, 
@@ -138,7 +138,7 @@ public class UniquePipeline extends BreedingPipeline
             }
         
         if (n < remainder)  // never succeeded to build unique individuals, just make some non-unique ones
-	        n += sources[0].produce(remainder - n,max - n,start + n,subpopulation,inds,state,thread);
+            n += sources[0].produce(remainder - n,max - n,start + n,subpopulation,inds,state,thread);
 
         return n;
         }

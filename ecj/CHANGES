@@ -2341,3 +2341,5 @@ Version		Change Log
 	Documentation updates about using ECJ with a simulator (2.7.1)
 	Removed incorrect gunk in steadynoerc.params
 	Added threadlocal storage
+	Updated version information
+	Reindented

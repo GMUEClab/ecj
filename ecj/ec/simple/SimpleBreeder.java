@@ -130,7 +130,7 @@ public class SimpleBreeder extends Breeder
         reduceBy = new int[size];  // all zero
         minimumSize = new int[size];
         for(int i = 0; i < size; i++)
-        	minimumSize[i] = 2;
+            minimumSize[i] = 2;
                 
         sequentialBreeding = state.parameters.getBoolean(base.push(P_SEQUENTIAL_BREEDING), null, false);
         if (sequentialBreeding && (size == 1)) // uh oh, this can't be right
@@ -143,15 +143,15 @@ public class SimpleBreeder extends Breeder
         int defaultSubpop = state.parameters.getInt(new Parameter(Initializer.P_POP).push(Population.P_DEFAULT_SUBPOP), null, 0);
         for(int x=0;x<size;x++)
             {
-	        reduceBy[x] = state.parameters.getIntWithDefault(base.push(P_REDUCE_BY).push(""+x), null, 0);
-	        if (reduceBy[x] < 0)
-	            state.output.fatal("reduce-by must be set to an integer >= 0.", base.push(P_REDUCE_BY).push(""+x));
+            reduceBy[x] = state.parameters.getIntWithDefault(base.push(P_REDUCE_BY).push(""+x), null, 0);
+            if (reduceBy[x] < 0)
+                state.output.fatal("reduce-by must be set to an integer >= 0.", base.push(P_REDUCE_BY).push(""+x));
 
- 	        minimumSize[x] = state.parameters.getIntWithDefault(base.push(P_MINIMUM_SIZE).push(""+x), null, 2);
-	        if (minimumSize[x] < 2)
-	            state.output.fatal("minimum-size must be set to an integer >= 2.", base.push(P_MINIMUM_SIZE).push(""+x));
+            minimumSize[x] = state.parameters.getIntWithDefault(base.push(P_MINIMUM_SIZE).push(""+x), null, 2);
+            if (minimumSize[x] < 2)
+                state.output.fatal("minimum-size must be set to an integer >= 2.", base.push(P_MINIMUM_SIZE).push(""+x));
 
-           // get elites
+            // get elites
             if (state.parameters.exists(base.push(P_ELITE).push(""+x),null))
                 {
                 if (state.parameters.exists(base.push(P_ELITE_FRAC).push(""+x),null))
@@ -238,19 +238,19 @@ public class SimpleBreeder extends Breeder
             
         // maybe resize?
         for(int i = 0; i < state.population.subpops.length; i++)
-        	{
-        	if (reduceBy[i] > 0)
-        		{
-        		int prospectiveSize = Math.max(
-        								Math.max(state.population.subpops[i].individuals.length - reduceBy[i], minimumSize[i]),
-        									numElites(state, i));
-        		if (prospectiveSize < state.population.subpops[i].individuals.length)  // let's resize!
-        			{
-        			state.output.message("Subpop " + i + " reduced " + state.population.subpops[i].individuals.length + " -> " + prospectiveSize);
-        			newpop.subpops[i].resize(prospectiveSize);
-        			}
-        		}
-        	}
+            {
+            if (reduceBy[i] > 0)
+                {
+                int prospectiveSize = Math.max(
+                    Math.max(state.population.subpops[i].individuals.length - reduceBy[i], minimumSize[i]),
+                    numElites(state, i));
+                if (prospectiveSize < state.population.subpops[i].individuals.length)  // let's resize!
+                    {
+                    state.output.message("Subpop " + i + " reduced " + state.population.subpops[i].individuals.length + " -> " + prospectiveSize);
+                    newpop.subpops[i].resize(prospectiveSize);
+                    }
+                }
+            }
         
         // load elites into top of newpop
         loadElites(state, newpop);
