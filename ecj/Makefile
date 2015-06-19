@@ -19,7 +19,7 @@ JAVAC = javac ${JAVACFLAGS}
 JAVACFLAGS = -target 1.5 -source 1.5 ${FLAGS}
 FLAGS = -g -Xlint:deprecation
 
-VERSION = 22
+VERSION = 23
 
 DIRS = \
 ec/*.java \
@@ -125,7 +125,7 @@ clean:
 
 dist: clean gui push indent doc jar
 	echo If the version is being updated, change it here:
-	echo 1. ec.util.Version
+	echo 1. ec.util.Version (including dates)
 	echo 2. manual.tex frontmatter (including copyright year)
 	echo 3. Makefile VERSION variable
 	find . -name "*.stat" -exec rm rf {} \; -print
