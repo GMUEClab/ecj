@@ -124,6 +124,10 @@ clean:
 
 
 dist: clean gui push indent doc jar
+	echo If the version is being updated, change it here:
+	echo 1. ec.util.Version
+	echo 2. manual.tex frontmatter (including copyright year)
+	echo 3. Makefile VERSION variable
 	find . -name "*.stat" -exec rm rf {} \; -print
 	echo --------------------------
 	echo Expect some errors here...
