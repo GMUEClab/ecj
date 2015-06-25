@@ -206,7 +206,7 @@ The purpose of this manual is to describe practically every feature of ECJ, an e
 
 ECJ is an evolutionary computation framework written in Java.  The system was designed for large, heavyweight experimental needs and provides tools which provide many popular EC algorithms and conventions of EC algorithms, but with a particular emphasis towards genetic programming. ECJ is free open-source with a BSD-style academic license (AFL 3.0).
 
-ECJ is now well over ten years old and is a mature, stable framework which has (fortunately) exhibited relatively few serious bugs over the years.  Its design has readily accommodated many later additions, including multiobjective optimization algorithms, island models, master/slave evaluation facilities, coevolution, steady-state and evolution strategies methods, parsimony pressure techniques, and various new individual representations (for example, rule-sets). The system is widely used in the genetic programming community and is reasonably popular in the EC community at large. I myself have used it in over thirty or forty publications.
+ECJ is now well over fifteen years old and is a mature, stable framework which has (fortunately) exhibited relatively few serious bugs over the years.  Its design has readily accommodated many later additions, including multiobjective optimization algorithms, island models, master/slave evaluation facilities, coevolution, steady-state and evolution strategies methods, parsimony pressure techniques, and various new individual representations (for example, rule-sets). The system is widely used in the genetic programming community and is reasonably popular in the EC community at large. I myself have used it in over thirty or forty publications.
 
 A toolkit such as this is not for everyone.  ECJ was designed for big projects and to provide many facilities, and this comes with a relatively steep learning curve.  We provide tutorials and many example applications, but this only partly mitigates ECJ's imposing nature.  Further, while ECJ is {\it extremely} ``hackable'', the initial development overhead for starting a new project is relatively large.  As a result, while I feel ECJ is an excellent tool for many projects, other tools might be more apropos for quick-and-dirty experimental work.
 
@@ -1417,15 +1417,17 @@ Checkpointing is normally done after breeding has occurred, and the generation n
 
 When the system is restored from a checkpoint, the following happens:
 \begin{enumerate}
-\item The \method{restoreFromCheckpoint(...)} method is called on the Checkpoint class.
-\item This method then unserializes the EvolutionState from the checkpoint file.
-\item This method then calls \method{resetFromCheckpoint(...)} on the EvolutionState.  The resetFromCheckpoint method normally does two things:
+\item The \method{restoreFromCheckpoint(...)} method is called on the Checkpoint class.  This method does the following:
+\begin{enumerate}
+\item It first unserializes the EvolutionState from the checkpoint file.
+\item It then calls \method{resetFromCheckpoint(...)} on the EvolutionState.  The resetFromCheckpoint method normally does two things:
 	\begin{enumerate}
 	\item \method{restart(...)} is called on the Output.  This allows it to set up output logs again.
 	\item \method{reinitializeContacts(...)} is called on the Exchanger, then on the Evaluator, to allow them to reestablish network connections for distributed evaluation and for island models.
 	\end{enumerate}
-\item Evolution is resumed by calling the \method{run(...)} method on the EvolutionState.
-\item This method then calls \method{startFromCheckpoint(...)} on the EvolutionState.  This is a simple hook method you can use to set up things before evolution starts again.
+\end{enumerate}
+\item Evolution is resumed by calling the \method{run(...)} method on the unserialized EvolutionState.
+\item \method{startFromCheckpoint(...)} is then called on the EvolutionState.  This is a simple hook method you can use to set up things before evolution starts again.
 \end{enumerate}
 
 At this point, evolution continues.
@@ -12471,7 +12473,7 @@ Combines multiple fitness values into a single final fitness, typically by setti
 
 \section{Resets (The \package{ec.evolve} Package)}
 
-The \package{ec.evolve} package presently contains a single class, \class{ec.evolve.RandomRestarts}.  This is a subclass of Statistics which performs random or timed restarts.  RandmRestarts reinitializes your entire Population either once every fixed \(N\) generations or once every \(M\) generations where \(M\) is a random integer between \(1\) and \(N\) inclusive.  The value of \(M\) is randomized each reset.
+The \package{ec.evolve} package presently contains a single class, \class{ec.evolve.RandomRestarts}.  This is a subclass of Statistics which performs random or timed restarts.  RandomRestarts reinitializes your entire Population either once every fixed \(N\) generations or once every \(M\) generations where \(M\) is a random integer between \(1\) and \(N\) inclusive.  The value of \(M\) is randomized each reset.
 
 To use RandomRestarts, include it as part of your Statistics chain.  For example, if you have a single Statistics object at present, you could say:
 
