@@ -1,0 +1,30 @@
+# Copyright 2015 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+# We have to use simple here because we're using DoubleVectorIndividuals
+parent.0 = ../simple/simple.params
+
+breed =					ec.eda.CMAESBreeder
+pop.subpops =				1
+pop.subpop.0.species = 			ec.eda.CMAESSpecies
+pop.subpop.0.size = 			1024
+pop.subpop.0.species.genome-size =	100
+pop.subpop.0.species.min-gene = 	-5.12
+pop.subpop.0.species.max-gene = 	5.12
+pop.subpop.0.species.ind = 		ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.fitness = 		ec.simple.SimpleFitness
+pop.default-subpop = 			0
+
+
+# a random test problem
+eval.problem = ec.app.ecsuite.ECSuite
+eval.problem.type = rastrigin
+
+
+# This junk has to be specified or else 
+# DoubleVectorSpecies/DoubleVectorIndividual will complain.  So we 
+# stub in random stuff here.
+
+pop.subpop.0.species.mutation-prob = 	0
+pop.subpop.0.species.pipe = 		ec.breed.InitializationPipeline	
