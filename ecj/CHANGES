@@ -2343,3 +2343,6 @@ Version		Change Log
 	Added threadlocal storage
 	Updated version information
 	Reindented
+	
+24 Watch Out, It's the Prerelease!
+	Fixed an error in Rosenbrock in ecsuite.  Thanks to Sam McKay <smckay2@masonlive.gmu.edu>

@@ -7815,7 +7815,9 @@ gp.tree.c-operators = false
 
 This results in the following: \begin{verbatim}*(+(x, -(%(x, x), cos(x))), exp(x))\end{verbatim}
 
-This doesn't seem useful for the example here (Symbolic Regression) but for other problems it's probably the right thing to do, particularly if all the GPNodes aren't operators.  Additionally, by default ECJ prints out zero-child GPNodes as constants, as in \textstr{a}, rather than as zero-argument functions, as in \textstr{a()}.  If you'd prefer zero-argument functions, you might say:
+This doesn't seem useful for the example here (Symbolic Regression) but for other problems it's probably the right thing to do, particularly if all the GPNodes aren't operators.  
+
+Second, by default ECJ prints out zero-child GPNodes as constants, as in \textstr{a}, rather than as zero-argument functions, as in \textstr{a()}.  If you'd prefer zero-argument functions, you might say:
 
 \params{%
 pop.subpop.0.species.ind.tree.0.c-variables = false
@@ -8649,7 +8651,7 @@ select.lexicographic-tournament.pick-worst = false
 
 The problem with this method is that bloat control only comes into effect for problems where lots of fitness ties occur.  This problem lead us to two modifications of the basic idea:
 
-\item \class{ec,parsimony.BucketTournamentSelection} is like LexicographicTournamentSelection, except that first individuals are placed into \(N\) classes (``buckets'') based on fitness. The subpopulation is first sorted by fitness.  Then the bottom \(\frac{\text{subpopulation size}}{N}\) individuals are placed in the worst bucket, plus any individuals remaining in the subpopulation with the same fitness as the best individual in that bucket.  Next the bottom remaining \(\frac{\text{subpopulation size}}{N}\) are placed in the second worst bucket, plus any individuals remaining in the population with the same fitness as the best individual in that bucket.  This continues until all the individuals are exhausted.  BucketTournamentSelection then works like LexicographicTournamentSelection except that instead of comparing based on fitness, it compares based on the bucket the individual is in.  The number of buckets is defined by \parameter{num-buckets}:
+\item \class{ec,parsimony.BucketTournamentSelection} is like LexicographicTournamentSelection, except that first individuals are placed into \(N\) classes (``buckets'') based on fitness. The subpopulation is first sorted by fitness.  Then the bottom \(\frac{\text{\it subpopulation size}}{N}\) individuals are placed in the worst bucket, plus any individuals remaining in the subpopulation with the same fitness as the best individual in that bucket.  Next the bottom remaining \(\frac{\text{\it subpopulation size}}{N}\) are placed in the second worst bucket, plus any individuals remaining in the population with the same fitness as the best individual in that bucket.  This continues until all the individuals are exhausted.  BucketTournamentSelection then works like LexicographicTournamentSelection except that instead of comparing based on fitness, it compares based on the bucket the individual is in.  The number of buckets is defined by \parameter{num-buckets}:
 
 \params{%
 pop.subpop.0.species.pipe.source.0 = ec.parsimony.BucketTournamentSelection\\
@@ -10094,7 +10096,7 @@ eval.slave.one-shot = false
 
 The default is ``true'' (that is, {\it not} daemon mode).
 
-\noindent{\bf Warning\quad}  If you make your slave multithreaded, and run it in daemon mode, and an exception occurs while the slave is doing multithreaded evaluation, then the slave may reset without cleaning up the other threads: they may continue in the background.
+\paragraph{Warning!} If you make your slave multithreaded, and run it in daemon mode, and an exception occurs while the slave is doing multithreaded evaluation, then the slave may reset without cleaning up the other threads: they may continue in the background.
 
 You can give your slave a name which it and the master will use when printing out connection information.  It's not at all necessary: you don't have to, in which case it'll make up a name consisting of its IP address and a unique number .  To assign a name, you say:
 
@@ -10295,7 +10297,7 @@ eval.merge = mean
 
 This tells the SimpleEvaluator to test each individual 5 times and set its fitness value to their mean.  How does it do this?  By temporarily modifying the Subpopulation.  
 
-If your Subpopulation presently has 20 individuals in it, and you want to test each 5 times,  SimpleEvaluator will replace this Subpopulation with a copy which has 100 individual in it.  These 100 individuals are 5 clones each of the original 20.  Then SimpleEvaluator evaluates this new population (which causes the distributed evaluation system to farm them out to potentially 100 machines).  
+If your Subpopulation presently has 20 individuals in it, and you want to test each 5 times,  SimpleEvaluator will replace this Subpopulation with a copy which has 100 individuals in it.  These 100 individuals are 5 clones each of the original 20.  Then SimpleEvaluator evaluates this new population (which causes the distributed evaluation system to farm them out to potentially 100 machines).  
 
 After all the fitnesses have come back, SimpleEvaluator merges the fitnesses of the 5 clones together to form a single fitness and sets the original individual's fitness to that merged value.  The legal merge settings are \parameter{mean}, \parameter{median}, and \parameter{best}.  Finally, SimpleEvaluator restores the original Subpopulation.
 
