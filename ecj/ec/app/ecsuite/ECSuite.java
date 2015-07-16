@@ -363,7 +363,7 @@ import ec.vector.*;
                         {
                         double gj = genome[i-1] ;
                         double gi = genome[i] ;
-                        value += 100 * (gi*gi - gj) * (gi*gi - gj) +  (1-gj) * (1-gj);
+                        value += (1 - gj) * (1 - gj) + 100 * (gi - gj*gj) * (gi - gj*gj);
                         }
                     return -value;
 
