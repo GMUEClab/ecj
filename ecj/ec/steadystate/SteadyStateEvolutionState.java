@@ -232,10 +232,13 @@ public class SteadyStateEvolutionState extends EvolutionState
             }
         
         Individual ind = ((SteadyStateEvaluator)evaluator).getNextEvaluatedIndividual();
+        int whichInd = -1;
+        int whichSubpop = -1;
         if (ind != null)   // do we have an evaluated individual? 
             {
             int subpop = ((SteadyStateEvaluator)evaluator).getSubpopulationOfEvaluatedIndividual(); 
-                                                
+            whichSubpop = subpop;
+                                             
             if ( partiallyFullSubpop ) // is subpopulation full? 
                 {  
                 population.subpops[subpop].individuals[individualCount[subpop]++]=ind; 
@@ -254,7 +257,10 @@ public class SteadyStateEvolutionState extends EvolutionState
                 // maybe replace dead individual with new individual
                 if (ind.fitness.betterThan(deadInd.fitness) ||         // it's better, we want it
                     random[0].nextDouble() < replacementProbability)      // it's not better but maybe we replace it directly anyway
+                    {
                     population.subpops[subpop].individuals[deadIndividual] = ind;
+                    whichInd = deadIndividual;
+                    }
                                 
                 // update duplicate hash table 
                 individualHash[subpop].remove(deadInd); 
@@ -276,11 +282,20 @@ public class SteadyStateEvolutionState extends EvolutionState
             }
 
         // SHOULD WE QUIT?
-        if (!partiallyFullSubpop && ((SteadyStateEvaluator)evaluator).runComplete(this, ind) && quitOnRunComplete)
+        if (!partiallyFullSubpop && 
+        	ind != null &&
+        	((SteadyStateEvaluator)evaluator).isIdealFitness(this, ind) && 
+        	quitOnRunComplete)
             { 
-            output.message("Found Ideal Individual"); 
+            output.message("Individual " + whichInd + " of subpopulation " + whichSubpop + " has an ideal fitness."); 
             return R_SUCCESS;
             }
+        
+        if (evaluator.runComplete != null)
+        	{
+            output.message(evaluator.runComplete);
+            return R_SUCCESS; 
+        	}
                 
         if ((numEvaluations > UNDEFINED && evaluations >= numEvaluations) ||  // using numEvaluations
             (numEvaluations <= UNDEFINED && generationBoundary && generation == numGenerations -1))  // not using numEvaluations

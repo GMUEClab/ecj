@@ -125,11 +125,9 @@ public class SteadyStateEvaluator extends SimpleEvaluator
         each individual in each population if he's optimal; if he 
         finds an individual somewhere that's optimal,
         he signals that the run is complete. */
-    public boolean runComplete(final EvolutionState state, final Individual ind)
+    public boolean isIdealFitness(final EvolutionState state, final Individual ind)
         {
-        if (ind.fitness.isIdealFitness())
-            return true;
-        return false;
+        return (ind.fitness.isIdealFitness());
         }
 
     }

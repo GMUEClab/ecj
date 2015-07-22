@@ -2345,4 +2345,13 @@ Version		Change Log
 	Reindented
 	
 24 Watch Out, It's the Prerelease!
-	Fixed an error in Rosenbrock in ecsuite.  Thanks to Sam McKay <smckay2@masonlive.gmu.edu>
+	Fixed an error in Rosenbrock and Noisy Quartic in ecsuite.  
+		Thanks to Sam McKay <smckay2@masonlive.gmu.edu>
+	Modified runComplete everywhere to return a String rather than a
+		boolean.  This is a non-backward-compatible change.  The
+		goal here is for runComplete to provide a REASON for why
+		the run has been completed.  If the run has not been
+		completed, it returns null.
+	Added Evaluator.setRunComplete, which gives the user an ability to
+		request that ECJ quit at its earliest convenience for some
+		reason of the user's choosing (a message is provided).

@@ -997,7 +997,6 @@ public class IslandExchange extends Exchanger
         shutdown, where checkpoints are working properly and save all needed information. */
     public String runComplete(EvolutionState state)
         {
-
         // first test the flag, and exit if it was previously set
         if( message != null ) // if an error occured earlier
             {
@@ -1019,7 +1018,7 @@ public class IslandExchange extends Exchanger
                 if( state.quitOnRunComplete )
                     {
                     message = "Exit: Another island found the perfect individual.";
-                    state.output.message( "Another island found the perfect individual. Exiting...." );
+                    //state.output.message( "Another island found the perfect individual. Exiting...." );
                     toServer.writeUTF( OKAY );
                     toServer.flush();
                     }
@@ -1033,7 +1032,7 @@ public class IslandExchange extends Exchanger
                 // we should exit, because we cannot communicate with the
                 // server anyway
                 message = "Exit: Could not communicate with the server.";
-                state.output.warning( "Could not communicate with the server. Exiting...." );
+                //state.output.warning( "Could not communicate with the server. Exiting...." );
                 }
             }
         catch( InterruptedIOException e )

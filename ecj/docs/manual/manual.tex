@@ -2876,10 +2876,16 @@ public abstract void evaluatePopulation(EvolutionState state);
 This method must take the Population (that is, \variable{state.population}) and evaluate all the individuals in it in the fashion expected by the stochastic search algorithm being employed.   Additionally, an Evaluator must implement the method
 
 \java{%
-public abstract boolean runComplete(EvolutionState state);
+public abstract String runComplete(EvolutionState state);
 }
 
-\noindent ... which returns \variable{true} if the Evaluator believes the process has reached a terminating state.  Typically this is done by scanning through the Population and determining if any of the Individuals have ideal fitnesses.  If you don't want to be bothered, it's fine to have this method always return \variable{false}.
+\noindent ... which returns a non-\variable{null} String if the Evaluator believes the process has reached a terminating state.  Typically this is done by scanning through the Population and determining if any of the Individuals have ideal fitnesses.  The String provides a message for the user as to why the run terminated early (typically because the ideal individual was discovered). If you don't want to be bothered, it's fine to have this method always return \variable{null}.
+
+If you would like to terminate the run early for some other reason\,---\,perhaps you have run out of resources or got stuck somehow\,---\, you can call the following method to request that ECJ terminate its run at its earliest convenience.  You provide a String which tells the user why you've decided to quit.
+
+\java{%
+public void setRunComplete(String message);
+}
 
 \subsection{Problems}
 \label{ec.Problem}

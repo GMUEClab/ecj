@@ -402,7 +402,7 @@ import ec.vector.*;
                     for( int i = 0 ; i < len ; i++ )
                         {
                         double gi = genome[i] ;
-                        value += (i+1)*(gi*gi*gi*gi) + state.random[threadnum].nextDouble();
+                        value += (i+1)*(gi*gi*gi*gi) + state.random[threadnum].nextGaussian();  // gauss(0,1)
                         }
                     return -value;
 

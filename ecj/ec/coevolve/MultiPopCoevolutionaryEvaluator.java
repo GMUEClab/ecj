@@ -188,9 +188,9 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         state.output.exitIfErrors();
         }
 
-    public boolean runComplete( final EvolutionState state )
+    public String runComplete( final EvolutionState state )
         {
-        return false;
+        return null;
         }
 
     /** Returns true if the subpopulation should be evaluated.  This will happen if the Breeder

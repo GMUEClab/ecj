@@ -222,14 +222,16 @@ public class SimpleEvaluator extends Evaluator
         each individual in each population if he's optimal; if he 
         finds an individual somewhere that's optimal,
         he signals that the run is complete. */
-    public boolean runComplete(final EvolutionState state)
+    public String runComplete(final EvolutionState state)
         {
         for(int x = 0;x<state.population.subpops.length;x++)
             for(int y=0;y<state.population.subpops[x].individuals.length;y++)
                 if (state.population.subpops[x].
                     individuals[y].fitness.isIdealFitness())
-                    return true;
-        return false;
+                    return "Individual " + y + " of subpopulation " + x + " has an ideal fitness." ;
+        
+        if (runComplete != null) return runComplete;
+        else return null;
         }
 
 

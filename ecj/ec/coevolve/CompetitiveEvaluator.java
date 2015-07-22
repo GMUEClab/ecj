@@ -148,9 +148,9 @@ public class CompetitiveEvaluator extends Evaluator
         allowOverEvaluation = state.parameters.getBoolean( base.push( P_OVER_EVAL ), null, false );
         }
 
-    public boolean runComplete( final EvolutionState state )
+    public String runComplete( final EvolutionState state )
         {
-        return false;
+        return null;
         }
 
     public void randomizeOrder(final EvolutionState state, final Individual[] individuals)

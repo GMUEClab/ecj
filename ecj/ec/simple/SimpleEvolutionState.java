@@ -40,9 +40,6 @@ import ec.util.Checkpoint;
 
 public class SimpleEvolutionState extends EvolutionState
     {
-    /**
-     * 
-     */
     public void startFresh() 
         {
         output.message("Setting up");
@@ -99,9 +96,10 @@ public class SimpleEvolutionState extends EvolutionState
         statistics.postEvaluationStatistics(this);
 
         // SHOULD WE QUIT?
-        if (evaluator.runComplete(this) && quitOnRunComplete)
+        String runCompleteMessage = evaluator.runComplete(this);
+        if ((runCompleteMessage != null) && quitOnRunComplete)
             {
-            output.message("Found Ideal Individual");
+            output.message(runCompleteMessage);
             return R_SUCCESS;
             }
 
@@ -120,18 +118,6 @@ public class SimpleEvolutionState extends EvolutionState
         if (exchangerWantsToShutdown!=null)
             { 
             output.message(exchangerWantsToShutdown);
-            /*
-             * Don't really know what to return here.  The only place I could
-             * find where runComplete ever returns non-null is 
-             * IslandExchange.  However, that can return non-null whether or
-             * not the ideal individual was found (for example, if there was
-             * a communication error with the server).
-             * 
-             * Since the original version of this code didn't care, and the
-             * result was initialized to R_SUCCESS before the while loop, I'm 
-             * just going to return R_SUCCESS here. 
-             */
-            
             return R_SUCCESS;
             }
 
