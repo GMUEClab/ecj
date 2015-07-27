@@ -2355,3 +2355,7 @@ Version		Change Log
 	Added Evaluator.setRunComplete, which gives the user an ability to
 		request that ECJ quit at its earliest convenience for some
 		reason of the user's choosing (a message is provided).
+	Fixed an error in Lunacek in ecsuite.  Thanks to Sam McKay
+		<smckay2@masonlive.gmu.edu> and Khaled Ahsan Talukder
+		<talukde1@msu.edu>
+
