@@ -547,30 +547,28 @@ import ec.vector.*;
                 // Lunacek function: for more information, please see --
                 // http://arxiv.org/pdf/1207.4318.pdf
                 // http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.154.1657
-                // // // //
-                double s = 0.7 ; // The shape of the boundary of the double sphere, 
-                // could be like [0.2 - 1.4] but not 0.0.
-                // > 1.0 or < 1.0 means a parabolic shape, 1.0 means a linear boundary.
-                double d = 1.0 ; // depth of the sphere, could be 1, 2, 3, or 4. 1 is deeper than 4
+				// http://www.cs.unm.edu/~neal.holts/dga/benchmarkFunction/lunacek.html
+				// http://www.cs.colostate.edu/sched/pubs/ppsn08impact.pdf
+				
+                double s = 1.0 - (1.0 / (2.0 * Math.sqrt(genome.length + 20.0) - 8.2)) ;
+                
+				// depth of the sphere, could be 1, 2, 3, or 4. 1 is deeper than 4
                 // this could be also be a fraction I guess.
-                double mu1 = 0.0 ;
-                for(int i = 0 ; i < genome.length ; i++)
-                    mu1 = genome[i] ;
-                double mu2 = -1.0 * Math.sqrt(((mu1 * mu1) - d)/s);
-                double sigma1 = 0.0;
-                double sigma2 = 0.0 ;
+				double d = 1.0 ; 
+                double mu1 = 2.5 ;
+                double mu2 = -1.0 * Math.sqrt(Math.abs((mu1 * mu1 - d) / s));  // probably don't need the abs
+                double sum1 = 0.0;
+                double sum2 = 0.0;
+                double sum3 = 0.0;
+
                 for(int i = 0 ; i < genome.length ; i++)
                     {
-                    sigma1 = (genome[i] - mu1) * (genome[i] - mu1); 
-                    sigma2 = (genome[i] - mu2) * (genome[i] - mu2); 
+                    double genomei = genome[i];
+					sum1 += (genomei - mu1)*(genomei - mu1) ;
+					sum2 += (genomei - mu2)*(genomei - mu2) ;
+					sum3 += 1.0 - Math.cos(2.0 * Math.PI * (genomei - mu1));
                     }
-                sigma2 = d * genome.length + s * sigma1 ;
-                double sphere = Math.min(sigma1, sigma2);
-                double rastrigin = function(state, PROB_RASTRIGIN, genome, threadnum);
-                // + or - ? not sure, I always get confused.
-                // Lunacek function is a combination of Rastrigin and a Double Sphere.
-                // As the Rastrigin is -, so this function should be.
-                return -1.0 * (sphere + rastrigin) ; 
+				return Math.min(sum1, d * genome.length + s * sum2) + 10.0 * sum3 ;
                 }
                         
                 default:
