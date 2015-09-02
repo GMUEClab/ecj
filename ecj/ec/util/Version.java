@@ -26,19 +26,19 @@ import java.util.*;
 public class Version
     {
     public static final String name = "ECJ";
-    public static final String version = "23";
+    public static final String version = "24";
     public static final String copyright = "2015";
     public static final String author = "Sean Luke";
     public static final String contributors = "L. Panait, G. Balan, S. Paus, Z. Skolicki, R. Kicinger,";
     public static final String contributors2 = "E. Popovici, K. Sullivan, J. Harrison, J. Bassett, R. Hubley,";
     public static final String contributors3 = "A. Desai, A. Chircop, J. Compton, W. Haddon, S. Donnelly,";
     public static final String contributors4 = "B. Jamil, J. Zelibor, E. Kangas, F. Abidi, H. Mooers,";
-    public static final String contributors5 = "J. O'Beirne, L. Manzoni, K. Talukder, and J. McDermott";
+    public static final String contributors5 = "J. O'Beirne, L. Manzoni, K. Talukder, S. McKay, J. McDermott";
     public static final String authorEmail0 = "ecj-help";
     public static final String authorEmail1 = "cs.gmu.edu";
     public static final String authorEmail2 = "(better: join ECJ-INTEREST at URL above)";
     public static final String authorURL = "http://cs.gmu.edu/~eclab/projects/ecj/";
-    public static final String date = "June 15, 2015";
+    public static final String date = "September 1, 2015";
     public static final String minimumJavaVersion = "1.5";
 
     public static final String message()
