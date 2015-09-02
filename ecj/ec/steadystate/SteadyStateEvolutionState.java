@@ -283,19 +283,19 @@ public class SteadyStateEvolutionState extends EvolutionState
 
         // SHOULD WE QUIT?
         if (!partiallyFullSubpop && 
-        	ind != null &&
-        	((SteadyStateEvaluator)evaluator).isIdealFitness(this, ind) && 
-        	quitOnRunComplete)
+            ind != null &&
+            ((SteadyStateEvaluator)evaluator).isIdealFitness(this, ind) && 
+            quitOnRunComplete)
             { 
             output.message("Individual " + whichInd + " of subpopulation " + whichSubpop + " has an ideal fitness."); 
             return R_SUCCESS;
             }
         
         if (evaluator.runComplete != null)
-        	{
+            {
             output.message(evaluator.runComplete);
             return R_SUCCESS; 
-        	}
+            }
                 
         if ((numEvaluations > UNDEFINED && evaluations >= numEvaluations) ||  // using numEvaluations
             (numEvaluations <= UNDEFINED && generationBoundary && generation == numGenerations -1))  // not using numEvaluations

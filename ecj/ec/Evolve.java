@@ -314,6 +314,8 @@ public class Evolve
             try
                 {
                 thread = parameters.getInt(threadParameter,null);
+                if (thread <= 0)
+                    output.fatal("Threads value must be > 0", threadParameter, null);
                 }
             catch (NumberFormatException e)
                 {

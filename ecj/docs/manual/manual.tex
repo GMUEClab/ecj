@@ -190,6 +190,9 @@ George Mason University}
 	\end{itemize}
 	This summary is just informational: if there is any conflict in interpretation between the summary and the actual license, the actual license always takes precedence.
 
+\vspace{0.15in}
+
+\noindent {\Large\bf This document is was produced} in part through funding from grants 0916870 and 1317813 from the National Science Foundation.
 
 \normalsize
 \cleardoublepage
@@ -12056,6 +12059,143 @@ pop.subpop.0.species.pipe.source.0 = ec.multiobjective.spea2.SPEA2TournamentSele
 \paragraph{Where to get examples}  The package \package{ec.app.moosuite} has SPEA2 implementations of a number of famous multiobjective test problems.  Be sure to read the \file{moosuite.params} file, where you can specify that you want to use SPEA2 for the problems.
 
 
+\section{Estimation of Distribution Algorithms}
+\label{eda}
+
+An estimation of distribution algorithm is similar to an evolutionary algorithm in that it periodically produces individuals and assesses their fitness.  However, the manner in which individuals are generated is quite different.  Rather than producing individuals from a previous generation of individuals, an estimation of distribution algorithm typically maintains some kind of {\bf distribution} from which individuals are sampled.  After individuals have their fitnesses assessed, the distribution is revised to reflect the better quality individuals, and then the next generation is sampled from this revised distribution, and so on.
+
+ECJ's estimation of distribution package is \package{ec.eda}.  In it there is presently one estimation of distribution algorithm: the \((\mu / \mu_W, \lambda)\) Covariance Adaptation Evolution Strategy, or CMA-ES for short.
+
+CMA-ES maintains a distribution in the form of a multivariate Gaussian distribution.  There is significant standardized source code available for CMA-ES (see https:/\!/www.lri.fr/\(\sim\)hansen/cmaes\_inmatlab.html), and although it is a clean rewrite, ECJ's implementation tries to be fairly faithful to that code.
+
+\subsection{CMA-ES}
+
+The CMA-ES facility in ECJ consists of three classes: \class{ec.eda.CMAESSpecies}, \class{ec.eda.CMAESBreeder}, and \class{ec.eda.CMAESInitializer}.  The critical class is \class{ec.eda.CMAESSpecies}, which does all the hard work.  The other two largely call it to initialize the initial population (and set up the CMA-ES distribution), and to resample a subpopulation for the next generation.
+
+As such, \class{ec.eda.CMAESSpecies} has two methods of note: \method{newIndividual(...)} and \method{updateDistribution(...)}.  The first samples a random individual from the distribution.  The second updates the distribution to reflect the fitness values among individuals in a given subpopulation.  The other big method is \method{setup(...)}, which does a lot of work because CMA-ES, unusually for a metaheuristic algorithm, has default values for many of its parameters determined not by constant numbers but by equations.
+
+CMA-ES is single-threaded only.
+
+CMA-ES only uses real-valued vector individuals, and so is restricted to using \class{ec.vector.DoubleVectorIndividual}.  Furthermore, it does not use the population size parameter at all, preferring instead to use a (possibly computed) lambda parameter similar to other ES algorithms.  You'll still have to provide a population size as it's required by ECJ: but CMA-ES will entirely ignore it.  There are a few other required parameters that will be ignored as well, so we have:
+
+\begin{verbatim}
+## Standard ECJ Stuff
+evalthreads =                                  auto
+breedthreads =                                 auto
+checkpoint-prefix =                            ec
+checkpoint-modulo =                            1
+state =                                        ec.simple.SimpleEvolutionState
+finish =                                       ec.simple.SimpleFinisher
+eval =                                         ec.simple.SimpleEvaluator
+stat =                                         ec.simple.SimpleStatistics
+stat.file =                                    $out.stat
+exch =                                         ec.simple.SimpleExchanger
+pop =                                          ec.Population
+pop.default-subpop =                           0
+pop.subpop.0 =                                 ec.Subpopulation
+
+## CMA-ES Specific Stuff
+init =                                         ec.eda.CMAESInitializer
+breed =                                        ec.eda.CMAESBreeder
+pop.subpop.0.species =                         ec.eda.CMAESSpecies
+pop.subpop.0.species.ind =                     ec.vector.DoubleVectorIndividual
+
+## This gunk must be set even though we don't use it.  We set the population
+## size to 1 (we gotta set it to something) even though it'll be ignored.
+
+pop.subpop.0.size =                            1
+pop.subpop.0.species.mutation-prob =           0
+pop.subpop.0.species.pipe =                    ec.breed.InitializationPipeline
+pop.subpop.0.species.mutation-type =           reset
+pop.subpop.0.species.crossover-type =          one
+# CMA-ES will almost certainly not generate duplicate individuals
+pop.subpop.0.duplicate-retries =               0
+\end{verbatim}
+
+In order to get CMA-ES running, we also will need to provide at least an initial mean for our distribution.  ECJ provides a few options for this.  First, you can set the mean to the {\it center} of the space (defined by the min and max gene values of your genome).  Second, you could set the mean to the origin (\(\vec 0\)) of the space.  Third, you could set the mean to a random position somewhere within the space:
+
+\begin{verbatim}
+pop.subpop.0.species.mean =                    center 
+# other options:  zero   random
+\end{verbatim}
+
+Alternatively, you can specify the precise initial mean position like this: 
+
+\begin{verbatim}
+pop.subpop.0.species.mean.0 =                    0.762 
+pop.subpop.0.species.mean.1 =                    -0.932 
+pop.subpop.0.species.mean.2 =                    1.234 
+# ... etc.
+\end{verbatim}
+
+
+\paragraph{Warning} Beware of \parameter{random}: if you have a high-dimensional individual, it's likely to pick a mean fairly close to several edges in the space.  This in turn will cause CMA-ES to, at least initially, generate a high number of invalid individuals, which it must reject and resample.  This in turn will cause ECJ to sit and wait for quite a while before starting evolution.
+
+\paragraph{}
+To finish things, we need to provide some generations, genome information, fitnesses,  and an evaluation problem, for example:
+
+\begin{verbatim}
+pop.subpop.0.species.genome-size =             11
+pop.subpop.0.species.min-gene =                -2.048
+pop.subpop.0.species.max-gene =                2.048
+pop.subpop.0.species.fitness =                 ec.simple.SimpleFitness
+generations =                                  1000
+
+eval.problem =                                 ec.app.ecsuite.ECSuite
+eval.problem.type =                            rosenbrock
+\end{verbatim}
+ 
+You can use whatever fitness method you wish, but it must be comparable and sortable.  Generally speaking, this means, don't use a multiobjective fitness.
+
+\subsubsection{Parameters}
+
+CMA-ES has a large number of parameters: but nearly all of them are set to default values.  More importantly, and unusually, nearly all of them are set to values which are {\it computed at runtime} based on your genome size and other choices.  This means that you may not know what values are being used internally when running CMA-ES: so it will print out these parameters when it runs so you know what you're getting into.
+
+Let's start with parameters you may wish to play with.  First, there's the \parameter{sigma}, which defines the value of \(\sigma\), a standard CMA-ES parameter which specifies the scaling of the covariance matrix.  By default this is set to 1.0, but you can change it as shown below.  Second, there's the question of how CMA-ES should terminate.  Normally ECJ terminates when it has run out of generations or evaluations, or when it has found the ideal individual.  But CMA-ES has a new wrinkle: when the eigenvalues of its covariance matrix get too small, floating-point error can cause them to go negative, at which point the whole thing goes up in smoke.  ECJ will terminate when that happens and let you know.  You can alternatively terminate early when the eigenvalues get very small, by setting \parameter{alternative-termination} to true, for example: 
+
+\begin{verbatim}
+pop.subpop.0.species.alternative-termination = true
+pop.subpop.0.species.sigma =                   0.5
+\end{verbatim}
+
+Next, we have \parameter{lambda} and \parameter{mu}.  These define the \(\lambda\) and \(\mu\) parameters, just as in a standard evolution strategy.  However in CMA-ES, they are normally computed automatically if you don't specify them.  \(\lambda\) is by default set to \(4 + \left\lfloor 3 \ln n \right\rfloor\), where \(n\) is the genome size.  And \(\mu\) is by default set to \(\lfloor \frac{\lambda}{2} \rfloor\).  Note that this means that \(\lambda\) doesn't have to be a multiple of \(\mu\).
+
+We also have various {\bf weights} \(w_0 ... w_{\mu-1}\).  These are values used instead of the fitness values for the (sorted) best \(\mu\) individuals in the subpopulation, and affect the resulting distribution.  The default settings for each weight are \(\forall i: w_i \leftarrow \frac{\ln\left(\!\frac{\lambda + 1}{2 (i+1)}\!\right)}{\sum_{j=0}^{\mu-1} \ln\left(\!\frac{\lambda + 1}{2 (j+1)}\!\right)}\).
+
+If you don't specify weights, ECJ will use the equation above.  Otherwise you have to specify {\it every single weight}.  Furthermore, ECJ will then renormalize your weights to guarantee that they sum to 1.
+
+\newcommand\uf{\mu_{\text{\it eff\,}}}
+
+Using the weights, ECJ will compute a value called \(\uf = \frac{1}{\sum_{i=0}^{\mu-1} w_i^2}\), which is used in internal computation and also in the default values of additional parameters.  Those include:
+
+Additional parameters include:
+
+\begin{itemize}
+\item \parameter{cmu}: \ \ \ \ or \(c_\mu \leq 1 - c_1\).  This is the so-called {\it rank-\(\mu\)} update learning rate, and is by default set to  \(\min\left(1-c_1,\ 2\, \frac{\uf - 2 + 1/\uf}{(n+2)^2 + \uf}\right)\).
+\item \parameter{c1}: \ \ \ \ or \(c_1 \leq 1 - c_\mu\).  This is the so-called {\it rank-1} update learning rate, and is by default set to  \(\frac{2}{(n + 1.3)^2 + \uf}\).
+\item \parameter{cc}: \ \ \ \ or \(c_c \leq 1 \).  This is the so-called {\it rank-1} evolution path cumulation learning rate, and is by default set to  \(\frac{4 + \uf / n}{n + 4 + 2 \uf / n}\).
+\item \parameter{cs}: \ \ \ \ or \(c_\sigma \leq 1 \).  This is the so-called step-size control cumulation, and is by default set to  \(\frac{\uf + 2}{n + \uf + 5}\).
+\item \parameter{damps}: \ \ \ \ or \(d_\sigma \leq 1 \).  This is the so-called update dampening of the step-size control, and is by default set to  \(c_\sigma + 2 \max\left(1,\  \sqrt{\frac{\uf - 1}{n + 1}}\right) - 1\).
+\end{itemize}
+
+Normally you wouldn't play with any of these parameters, but if you wanted to set them, you can as:
+
+\begin{verbatim}
+# pop.subpop.0.species.lambda = 
+# pop.subpop.0.species.mu =
+# pop.subpop.0.species.cc =     
+# pop.subpop.0.species.cs =     
+# pop.subpop.0.species.c1 =     
+# pop.subpop.0.species.cmu =    
+# pop.subpop.0.species.damps =  
+
+# pop.subpop.0.species.weight.0 =       
+# pop.subpop.0.species.weight.1 = 
+# ... and so on ...
+\end{verbatim}
+
+There is an example parameter file, \file{ec/app/ecsuite/cmaes.params}, located in the \file{ecsuite} application, which you can try.
+
 
 \section{Meta-Evolutionary Algorithms}
 \label{metaea}
@@ -12069,7 +12209,6 @@ Note that there are at least two levels of evolution.\footnote{You can of course
 Within certain constraints, you can use pretty much any EA at the meta-level or at the base level.  But there are some rules.  First off, the meta-level individual must be a \class{DoubleVectorIndividual}.  We will treat this individual as a {\bf heterogeneous individual} (see Section \ref{heterogeneous}), which allows the Meta-EA system to use genes of different types: integers, floats, booleans, and the like.  Second the meta-level fitness must be one which can respond to \method{setToMeanOf(...)}, and typically should be of the same kind of fitness as the base-level fitness.  Generally this means: no multiobjective fitness at either level; and coevolutionary fitness might be a bit tricky.  SimpleFitness is fine, as is KozaFitness.
 
 Meta-EAs work very well in combination with ECJ's distributed evaluator, which is good news because it's the natural setting for using them!  The idea here is to have the meta-level process as a master process, distributing meta-level individuals out to slaves, where each is tested by firing up a base-level ECJ process to assess it.  And Meta-EAs also work nicely in multiple threads.  This magic all works because ECJ is self-contained: ECJ processes do not interact with other ECJ processes even within the same thread.
-
 
 \subsection{The Two Parameter Files}
 

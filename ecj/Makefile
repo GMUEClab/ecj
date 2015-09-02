@@ -68,6 +68,7 @@ ec/app/twobox/func/*.java \
 ec/breed/*.java \
 ec/coevolve/*.java \
 ec/de/*.java \
+ec/eda/*.java \
 ec/es/*.java \
 ec/eval/*.java \
 ec/evolve/*.java \
@@ -145,7 +146,7 @@ indent:
 	find . -name "*.java" -print -exec emacs --batch --load ~/.emacs --eval='(progn (find-file "{}") (mark-whole-buffer) (setq indent-tabs-mode nil) (untabify (point-min) (point-max)) (indent-region (point-min) (point-max) nil) (save-buffer))' \;
 
 doc:
-	javadoc -classpath . -protected -d docs/classdocs ec ec.breed ec.coevolve ec.de ec.display ec.display.chart ec.display.portrayal ec.es ec.eval ec.evolve ec.exchange ec.gp ec.gp.breed ec.gp.build ec.gp.koza ec.multiobjective ec.multiobjective.spea2 ec.multiobjective.nsga2 ec.parsimony ec.pso ec.rule ec.rule.breed ec.select ec.simple ec.spatial ec.steadystate ec.util ec.vector ec.vector.breed ec.gp.ge ec.gp.push
+	javadoc -classpath . -protected -d docs/classdocs ec ec.breed ec.coevolve ec.de ec.display ec.display.chart ec.display.portrayal ec.eda ec.es ec.eval ec.evolve ec.exchange ec.gp ec.gp.breed ec.gp.build ec.gp.koza ec.multiobjective ec.multiobjective.spea2 ec.multiobjective.nsga2 ec.parsimony ec.pso ec.rule ec.rule.breed ec.select ec.simple ec.spatial ec.steadystate ec.util ec.vector ec.vector.breed ec.gp.ge ec.gp.push
 
 # Build a jar file.  Note this collects ALL .class, .png, .jpg, index.html, and application example
 # files.  You'll probably want to strip this down some.
