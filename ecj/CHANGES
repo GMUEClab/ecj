@@ -2361,3 +2361,7 @@ Version		Change Log
 	breedthreads and evalthreads must now be > 0
 	Added ec/eda package
 	Added CMAES facility, including cmaes.params in ec/app/ecsuite/
+	Updated MersenneTwister and MersenneTwisterFast to Version 22
+	Revised NSGABreeder to not throw a NullPointerException if the
+		subpopulations have not yet been set.  Thanks to
+		Renzo Massobrio <renzomassobrio@gmail.com>

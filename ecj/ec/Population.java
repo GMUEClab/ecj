@@ -119,7 +119,7 @@ public class Population implements Group
         
         p = base.push(P_SIZE);
         int size = state.parameters.getInt(p,null,1);
-        if (size==0) // uh oh
+        if (size<=0) // uh oh
             state.output.fatal("Population size must be >0.\n",base.push(P_SIZE));
         subpops = new Subpopulation[size];
 
