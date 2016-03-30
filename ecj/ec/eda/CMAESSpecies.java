@@ -143,6 +143,31 @@ import java.util.Arrays;
  Where mueff is defined in the variables below, and n is the genome size
  </td></tr>
 
+ <tr><td valign=top><i>base</i>.<tt>covariance</tt><br>
+ <font size=-1>String, either "identity" (default) or "scaled"</td>
+ <td valign=top>Covariance matrix initialization procedure.<br>
+ If "identity", then the covariance matrix is initialized to the
+ identity matrix.  If "scaled", then the covariance matrix is
+ initialized to a diagonal matrix whose values are squares of
+ each gene range (max - min).
+ </td></tr>
+
+ <tr><td valign=top><i>base</i>.<tt>alternative-generator</tt><br>
+ <font size=-1>true or false (default)</td>
+ <td valign=top>Whether or not to use the alternative indivdiual-generation procedure.<br>
+ If "true", then if, in the process of generating an individual, we have failed 
+ alternative-generator-tries times to create an individual which falls within the min and
+ max gene values for each gene, then whenever a gene value violates those constraints
+ we will simply randomize it to something uniformly chosen between the min and max.
+ If "false", then whenever an individual violates constraints, we will try again as
+ necessary.
+ </td></tr>
+
+ <tr><td valign=top><i>base</i>.<tt>alternative-generator-tries</tt><br>
+ <font size=-1>Integer > 1 (default is 100)</td>
+ <td valign=top>How many times we try to generate a valid individual before
+ possibly using the alternative-generator approach.
+ </td></tr>
 
  </table>
 
@@ -175,7 +200,13 @@ public class CMAESSpecies extends FloatVectorSpecies
     public static final String V_ZERO = "zero";
     public static final String V_RANDOM = "random";
 
+    public static final String P_COVARIANCE = "covariance";
+    public static final String V_IDENTITY = "identity";
+    public static final String V_SCALED = "scaled";
+
     public static final String P_ALTERNATIVE_TERMINATION = "alternative-termination";
+    public static final String P_ALTERNATIVE_GENERATOR = "alternative-generator";
+    public static final String P_ALTERNATIVE_GENERATOR_TRIES = "alternative-generator-tries";
 
     /** The individuals generated from the distribution. 
         If not specified in the parameters, by default 
@@ -259,10 +290,6 @@ public class CMAESSpecies extends FloatVectorSpecies
     
     /** C^{-1/2}.  This is equal to B x D^{-1} x B^T */
     public SimpleMatrix invsqrtC;
-    
-    /** D^{-1}.  This is a diagonal matrix whose elements are 1/d_1, ..., 1/d_n,
-        when D's diagonal elements are d_1, ..., d_n. */
-    public SimpleMatrix invD;
 
     /** The p_{\sigma} evolution path vector. */
     public SimpleMatrix ps;
@@ -280,6 +307,18 @@ public class CMAESSpecies extends FloatVectorSpecies
 
     /** Should we terminate when the eigenvalues get too small?  If we don't, they might go negative and the eigendecomposition will fail. */
     public boolean useAltTermination;
+    
+    /** If, after trying altGeneratorTries to build an indiviual, we are still building one which violates min/max gene constraints, should
+        we instead fill those violated genes with uniformly-selected values between the min and max? */
+    public boolean useAltGenerator;
+
+	/** How many times should we try to generate a valid individual before we give up and use the useAltGenerator approach? */
+	public int altGeneratorTries = DEFAULT_ALT_GENERATOR_TRIES;
+
+	/** Default value (100) for altGeneratorTries. */
+	public static final int DEFAULT_ALT_GENERATOR_TRIES = 100;
+	
+
 
     public Parameter defaultBase()
         {
@@ -296,15 +335,84 @@ public class CMAESSpecies extends FloatVectorSpecies
         Parameter subpopBase = base.pop();
         Parameter subpopDefaultBase =  ECDefaults.base().push(Subpopulation.P_SUBPOPULATION);
 
+        if(!state.parameters.exists(base.push(P_SIGMA), def.push(P_SIGMA)))
+            {
+            state.output.message("CMA-ES sigma was not provided, defaulting to 1.0");
+            sigma = 1.0;
+            }
+        else
+            {
+            sigma = state.parameters.getDouble(base.push(P_SIGMA), def.push(P_SIGMA),0.0);
+            if (sigma <= 0) 
+                state.output.fatal("If CMA-ES sigma is provided, it must be > 0.0", base.push(P_SIGMA), def.push(P_SIGMA));
+            }
+
+		double[] cvals = new double[genomeSize];
+		String covariance_initialization = state.parameters.getString(base.push(P_COVARIANCE), def.push(P_COVARIANCE));
+		String covs = "Initial Covariance: <";
+		for(int i = 0; i < genomeSize; i++)
+			{
+			if (i > 0) covs += ", ";
+			if (covariance_initialization.equals(V_SCALED))
+				{
+				cvals[i] = (maxGene(i) - minGene(i));
+				}
+			else if (covariance_initialization.equals(V_IDENTITY))
+				{
+				cvals[i] = 1.0;
+				}
+			else 
+				{
+				state.output.fatal("Invalid covariance initialization type " + covariance_initialization,
+					base.push(P_COVARIANCE), def.push(P_COVARIANCE));
+				}
+				
+			// cvals is standard deviations, so we change them to variances now
+			cvals[i] *= cvals[i];
+			covs += cvals[i];
+			}
+		state.output.message(covs + ">");
+		
         // set myself up and define my initial distribution here
         int n = genomeSize;
         b = SimpleMatrix.identity(n);
-        c = SimpleMatrix.identity(n);
+        c = new SimpleMatrix(CommonOps.diag(cvals));
+        
         d = SimpleMatrix.identity(n);
         bd = CommonOps.identity(n,n);
         sbd = CommonOps.identity(n,n);
         invsqrtC = SimpleMatrix.identity(n);
-        invD = SimpleMatrix.identity(n);
+
+        
+        // Here we do one FIRST round of eigendecomposition, because newIndividual needs
+        // a valid version of sbd.  If c is initially the identity matrix (and sigma = 1), 
+		// then sbd is too, and we're done.  But if c is scaled in any way, we need to compute
+		// the proper value of sbd.  Along the way we'll wind up computing b, d, bd, and invsqrtC
+		
+        EigenDecomposition<DenseMatrix64F> eig = DecompositionFactory.eig(genomeSize,true,true);
+    	if( eig.decompose(c.copy().getMatrix())) 
+            {
+            SimpleMatrix dinv = new SimpleMatrix(genomeSize,genomeSize);
+            for(int i = 0; i < genomeSize; i++)
+                {
+            	double eigrt = Math.sqrt(eig.getEigenvalue(i).real);
+                d.set(i,i,eigrt);
+                dinv.set(i,i,1/eigrt);
+                CommonOps.insert(eig.getEigenVector(i), b.getMatrix(),0,i);
+                }
+
+            invsqrtC = b.mult(dinv.mult(b.transpose()));
+            CommonOps.mult(b.getMatrix(),d.getMatrix(), bd);
+            }
+        else
+            {
+            state.output.fatal("CMA-ES eigendecomposition failed. ");
+            }
+        CommonOps.scale(sigma, bd, sbd);
+                
+        // End FIRST round of eigendecomposition
+        
+        
 
         // Initialize dynamic (internal) strategy parameters and constants
         pc = new SimpleMatrix(n,1);
@@ -376,18 +484,6 @@ public class CMAESSpecies extends FloatVectorSpecies
             mes = mes + xmean.get(i,0) + ", ";
         mes = mes + xmean.get(genomeSize-1, 0) + ">";
         state.output.message(mes);              
-
-        if(!state.parameters.exists(base.push(P_SIGMA), def.push(P_SIGMA)))
-            {
-            state.output.message("CMA-ES sigma was not provided, defaulting to 1.0");
-            sigma = 1.0;
-            }
-        else
-            {
-            sigma = state.parameters.getDouble(base.push(P_SIGMA), def.push(P_SIGMA),0.0);
-            if (sigma <= 0) 
-                state.output.fatal("If CMA-ES sigma is provided, it must be > 0.0", base.push(P_SIGMA), def.push(P_SIGMA));
-            }
 
         if(!state.parameters.exists(base.push(P_LAMBDA), def.push(P_LAMBDA)))
             {
@@ -464,6 +560,11 @@ public class CMAESSpecies extends FloatVectorSpecies
         state.output.message(mes);              
         
         useAltTermination = state.parameters.getBoolean(base.push(P_ALTERNATIVE_TERMINATION), def.push(P_ALTERNATIVE_TERMINATION),false);
+        useAltGenerator = state.parameters.getBoolean(base.push(P_ALTERNATIVE_GENERATOR), def.push(P_ALTERNATIVE_GENERATOR),false);
+        altGeneratorTries = state.parameters.getIntWithDefault(base.push(P_ALTERNATIVE_GENERATOR_TRIES), def.push(P_ALTERNATIVE_GENERATOR_TRIES), DEFAULT_ALT_GENERATOR_TRIES);
+        if (altGeneratorTries < 1)
+        	state.output.fatal("If specified (the default is " + DEFAULT_ALT_GENERATOR_TRIES + "), alt-generation-tries must be >= 1", 
+        		base.push(P_ALTERNATIVE_GENERATOR_TRIES), def.push(P_ALTERNATIVE_GENERATOR_TRIES));
 
         if(!state.parameters.exists(base.push(P_CC), def.push(P_CC)))
             {
@@ -553,7 +654,6 @@ public class CMAESSpecies extends FloatVectorSpecies
         myobj.bd = bd.copy();
         myobj.sbd = sbd.copy();
         myobj.invsqrtC = invsqrtC.copy();
-        myobj.invD = invD.copy();
     
         myobj.xmean = xmean.copy();
         myobj.ps = ps.copy();
@@ -563,7 +663,8 @@ public class CMAESSpecies extends FloatVectorSpecies
         } 
 
 
-
+	public static final int MAX_TRIES_BEFORE_WARNING = 100000;
+	
     public Individual newIndividual(final EvolutionState state, int thread)
         {
         Individual newind = super.newIndividual(state, thread);
@@ -579,9 +680,9 @@ public class CMAESSpecies extends FloatVectorSpecies
 
         // arz(:,k) = randn(N,1); % standard normally distributed vector
         // arx(:,k) = xmean + sigma*(B*D*arz(:,k));
+        int tries = 0;
         while(true)
             {           
-
             for( int i = 0; i < genomeSize; i++ ) 
                 dvind.genome[i] = random.nextGaussian();
 
@@ -589,14 +690,35 @@ public class CMAESSpecies extends FloatVectorSpecies
             CommonOps.add(temp,xmean.getMatrix(),genome); // genome = temp + xmean;
 
             boolean invalid_value = false;
-            for(int i = 0; i < genomeSize; i++)
-                if(dvind.genome[i] < minGene(i) || dvind.genome[i] > maxGene(i))
+            for (int i = 0; i < genomeSize; i++)
+                if (dvind.genome[i] < minGene(i) || dvind.genome[i] > maxGene(i))
                     {
-                    invalid_value = true;
-                    break;
+                    if (useAltGenerator && tries > altGeneratorTries)
+                    	{
+                    	// instead of just failing, we're going to select uniformly from
+                    	// possible values for this particular gene.
+                    	dvind.genome[i] = state.random[thread].nextDouble() * (maxGene(i) - minGene(i)) + minGene(i);
+                    	}
+                    else
+                    	{
+                    	invalid_value = true;
+	                    break;
+	                    }
                     }
 
-            if(invalid_value) continue;
+            if (invalid_value) 
+            	{
+            	if (++tries > MAX_TRIES_BEFORE_WARNING)
+            		state.output.warnOnce("CMA-ES may be slow because many individuals are being generated which\n" +
+            			"are outside the min/max gene bounds.  If an individual violates a single\n" +
+            			"gene bounds, it is rejected, so as the number of genes grows, the\n" +
+            			"probability of this happens increases exponentially.  You can deal\n" +
+            			"with this by decreasing sigma.  Alternatively you can use set\n" +
+            			"pop.subpop.0.alternative-generation=true (see the manual).\n" +
+            			"Finally, if this is happening during initialization, you might also\n" + 
+            			"change pop.subpop.0.species.covariance=scaled.\n");
+            	continue;
+            	}
 
             return newind;
             }
