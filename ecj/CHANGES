@@ -2371,3 +2371,4 @@ Version		Change Log
 	Added a bit of documentation
 	Added READMEs about unencrypted sockets
 	Reindented
+	Updated version number in makefile and Version.java

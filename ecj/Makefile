@@ -19,7 +19,7 @@ JAVAC = javac ${JAVACFLAGS}
 JAVACFLAGS = -target 1.5 -source 1.5 ${FLAGS}
 FLAGS = -g -Xlint:deprecation
 
-VERSION = 23
+VERSION = 24
 
 DIRS = \
 ec/*.java \
