@@ -28,15 +28,15 @@ import java.io.*;
  * that is, when its run() method exits, the Worker will automatically rejoin the ThreadPool
  * and become available for use in future.
  *
- * <p>A Worker manages a Worker underneath in which the Runnable is run. The Worker has a
+ * <p>A Worker manages a Thread underneath in which the Runnable is run. The Worker has a
  * method called interrupt() which you can call if you wish to have interrupt() called on
- * the underlying Worker; otherwise you shouldn't really play around with the underlying
- * Worker even if you can obtain it (via Worker.currentWorker() for example).  
+ * the underlying Thread; otherwise you shouldn't really play around with the underlying
+ * thread even if you can obtain it (via Thread.currentThread() for example).  
  *
  * <p>If there are no Workers presently available in the pool when you request one, a new Worker, and
  * an associated underlying thread, will be created on the fly.  When this Worker is done,
  * it will enter the Pool with the others.  Thus the total number of Workers will never shrink,
- * tough it may stay the same size.  If you want to trim the number of Workers presently in
+ * though it may stay the same size.  If you want to trim the number of Workers presently in
  * the Pool, you can call killPooled(), though it's not a common need.
  *
  * <p>You might wish to control the total number of workers at any particular time.  You
@@ -51,7 +51,7 @@ import java.io.*;
  * their underlying threads (perhaps to clean up in preparation for quitting your program)
  * by calling killAll(...).
  *
- * <p>ThreadPool is java.io.Serializable: if it is serialized out, it won't serialize
+ * <p>ThreadPool is java.io.Serializable: but if it is serialized out, it won't serialize
  * out its worker threads, so when it is deserialized back in, the threads will be
  * gone.
  */
