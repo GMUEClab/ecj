@@ -67,6 +67,21 @@ import java.util.Arrays;
  * alternatively set the initial mean values by hand.  But you must do one of
  * the two.
  *
+ * <p>Initializing the covariance matrix can be a problem in in CMA-ES, particularly
+ * if it is large relative to the gene bounds.  If CMA-ES generates a random individual
+ * under its current distribution and that individual violates the bounds of just a 
+ * single gene, it is invalid and must be regenerated.  If you have a lot of genes,
+ * and the covariance matrix is large relative to their bounds, then the probability
+ * that this will occur rapidly approaches 1.0, so CMA-ES will be trapped in an effectively
+ * infinite loop endlessly producing invalid individuals.
+ *
+ * <p>This can be remedied in a few ways.  First there is an option available to force
+ * the initial covariance matrix to NOT be the identity matrix (the default) but instead
+ * be scaled according to the gene bounds.  That may help.  You can also of course reduce
+ * sigma.  Last, you can turn on an alternative individual generation mechanism; here,
+ * if a specific gene bound is violated, then *for that gene only* the value is chosen at
+ * random uniformly from within the gene bounds.
+ *
  * <p>CMAESSpecies relies on the EJML matrix library, available at 
  * <a href="http://ejml.org/">http://ejml.org/</a>
 

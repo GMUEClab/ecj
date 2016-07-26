@@ -1,3 +1,13 @@
+[WARNING.  Some facilities in this package use network sockets to transfer
+individuals over a network.  The individuals are not serialized, but 
+individual pieces of them (ints, etc.) are written in binary format.
+However, these sockets are not at present encrypted, which makes ECJ
+theoretically vulnerable to injection hacks.  If you plan to use this
+facility in more distributed form than a local cluster, you should
+add an encrypted socket or VPN facility to be safe.]
+
+
+
 This directory contains the code for running the ECJ master/slave
 evaluator.  The master/slave evaluator allows you to connect one ECJ
 evolution process with some N remote slave processes.  These processes

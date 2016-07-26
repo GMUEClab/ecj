@@ -10010,6 +10010,11 @@ ECJ has various built-in methods for parallelism, and they can be used in combin
 \item {\bf Island models}: multiple parallel evolutionary processes occasionally send fit individuals to one another.\footnote{ECJ's built-in island models are meant for clusters.  However, a version of ECJ was ported to run on top of the DR-EA-M system, a peer-to-peer evolutionary computation network facility developed from a grant in Europe. See the ECJ main website for more information.}
 \end{itemize} 
 
+\paragraph{Warning}  ECJ's distributed evaluation and island models facilities use unencrypted network sockets to transfer
+individuals over a network.  The individuals are not serialized, but individual pieces of them (ints, etc.) are written in binary format.
+Thus ECJ theoretically vulnerable to injection hacks, and so if you plan to use this facility in more distributed form than a local cluster, you might consider adding an encrypted socket or using a VPN facility to be safe.
+
+
 
 \begin{figure}[t]
 \begin{center}

@@ -2368,3 +2368,6 @@ Version		Change Log
 	Updates to CMA-ES to fix a bug which could cause near-infinite
 		loops in generating individuals in the first generation.
 		Thanks to Eric 'Siggy' Scott <escott8@gmu.edu>
+	Added a bit of documentation
+	Added READMEs about unencrypted sockets
+	Reindented
