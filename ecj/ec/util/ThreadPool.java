@@ -340,7 +340,7 @@ public class ThreadPool implements java.io.Serializable
                     {
                     toRun.run();  // do the job
                     }
-                catch (Exception e) { Thread.interrupted(); } // resets interrupted flag.  Note ANY exception.
+                catch (Exception e) { e.printStackTrace(); Thread.interrupted(); } // resets interrupted flag.  Note ANY exception.
 
                 // add myself back in the list
                 synchronized(workersLock)

@@ -2372,3 +2372,4 @@ Version		Change Log
 	Added READMEs about unencrypted sockets
 	Reindented
 	Updated version number in makefile and Version.java
+	ThreadPool now prints out exceptions
