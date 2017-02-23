@@ -36,7 +36,24 @@ public class CMAESInitializer extends SimpleInitializer
         for(int i = 0; i < p.subpops.length; i++)
             {
             if (p.subpops[i].species instanceof CMAESSpecies)
-                p.subpops[i].individuals = new Individual[(int)(((CMAESSpecies)p.subpops[i].species).lambda)];
+            	{
+            	int lambda = (int)(((CMAESSpecies)p.subpops[i].species).lambda);
+            	if (lambda < p.subpops[i].individuals.length)  // need to reduce
+            		{
+	               	Individual[] newInds = new Individual[(int)(((CMAESSpecies)p.subpops[i].species).lambda)];
+	               	System.arraycopy(p.subpops[i].individuals, 0, newInds, 0, lambda);
+	               	p.subpops[i].individuals = newInds;
+	               	}
+	            else if (lambda > p.subpops[i].individuals.length)  // need to increase
+	            	{
+	               	Individual[] newInds = new Individual[(int)(((CMAESSpecies)p.subpops[i].species).lambda)];
+	               	System.arraycopy(p.subpops[i].individuals, 0, newInds, 0, p.subpops[i].individuals.length);
+	               	for(int j = p.subpops[i].individuals.length; j < lambda; j++)
+	               		newInds[j] =  p.subpops[i].species.newIndividual(state, thread);
+	               	p.subpops[i].individuals = newInds;
+	            	}
+                }
+            else state.output.fatal("Species of subpopulation " + i + " is not a CMAESSpecies.  It's a " + p.subpops[i].species);
 
             state.output.message("Size of Subpopulation " + i + " changed to " + p.subpops[i].individuals.length);        
             }
