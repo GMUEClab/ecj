@@ -2373,3 +2373,5 @@ Version		Change Log
 	Reindented
 	Updated version number in makefile and Version.java
 	ThreadPool now prints out exceptions
+	Added more exception-handling in Slave's reading of sockets.
+		Thanks to Seb Gonzolez <gonzo222@hotmail.fr>
