@@ -178,7 +178,7 @@ public class Console extends JFrame
         if (playButton == null) 
             {
             playButton = new JButton();
-            playButton.setIcon(new ImageIcon(getClass().getResource("/ec/display/Play.png")));
+            playButton.setIcon(new ImageIcon(getClass().getResource("Play.png")));
             playButton.setEnabled(false);
             playButton.setToolTipText("Play");
             playButton.addActionListener(new java.awt.event.ActionListener() 
@@ -221,7 +221,7 @@ public class Console extends JFrame
         if (pauseButton == null) 
             {
             pauseButton = new JButton();
-            pauseButton.setIcon(new ImageIcon(getClass().getResource("/ec/display/Pause.png")));
+            pauseButton.setIcon(new ImageIcon(getClass().getResource("Pause.png")));
             pauseButton.setEnabled(false);
             pauseButton.setToolTipText("Pause");
             pauseButton.addActionListener(new java.awt.event.ActionListener() 
@@ -256,7 +256,7 @@ public class Console extends JFrame
             stopButton = new JButton();
             stopButton.setIcon(
                 new ImageIcon(
-                    getClass().getResource("/ec/display/Stop.png")));
+                    getClass().getResource("Stop.png")));
             stopButton.setEnabled(false);
             stopButton.setToolTipText("Stop");
             stopButton.addActionListener(new java.awt.event.ActionListener() 
@@ -293,8 +293,8 @@ public class Console extends JFrame
             {
             stepButton = new JButton();
             stepButton.setEnabled(false);
-            stepButton.setIcon(new ImageIcon(getClass().getResource("/ec/display/Step.png")));
-            stepButton.setPressedIcon(new ImageIcon(getClass().getResource("/ec/display/Stepping.png")));
+            stepButton.setIcon(new ImageIcon(getClass().getResource("Step.png")));
+            stepButton.setPressedIcon(new ImageIcon(getClass().getResource("Stepping.png")));
             stepButton.setToolTipText("Step");
             stepButton.addActionListener(new java.awt.event.ActionListener() 
                 { 

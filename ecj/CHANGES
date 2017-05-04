@@ -2375,3 +2375,11 @@ Version		Change Log
 	ThreadPool now prints out exceptions
 	Added more exception-handling in Slave's reading of sockets.
 		Thanks to Seb Gonzolez <gonzo222@hotmail.fr>
+	Fixed Makefile bugs: wasn't building gui to build jar, and
+		wasn't including png files
+	Fixed bug in ec.display.Console: wasn't loading png files
+		properly
+	Fixed bug in ec.display.SubpopulationPanel: a test for an if-
+		expression had a semicolon, the test for the existence
+		of pop.default-subpop was moot.
+	

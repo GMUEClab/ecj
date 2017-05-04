@@ -103,7 +103,7 @@ public class SubpopulationPanel
                 {
                 size = console.parameters.getInt(new Parameter("pop.subpop."+subPopNum+".size"),null);
                 }
-            else if (console.parameters.exists(new Parameter("pop.default-subpop"), null));
+            else if (console.parameters.exists(new Parameter("pop.default-subpop"), null))
                     {
                     int defaultsub = console.parameters.getInt(new Parameter("pop.default-subpop"), null);
                     if (defaultsub >= 0)
