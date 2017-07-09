@@ -114,9 +114,9 @@ public class GEProblem extends Problem implements SimpleProblemForm, GroupedProb
         ((GroupedProblemForm)problem).preprocessPopulation(state, pop, prepareForFitnessAssessment, countVictoriesOnly);
         }
 
-    public void postprocessPopulation(final EvolutionState state, Population pop, boolean[] assessFitness, final boolean countVictoriesOnly)
+    public int postprocessPopulation(final EvolutionState state, Population pop, boolean[] assessFitness, final boolean countVictoriesOnly)
         {
-        ((GroupedProblemForm)problem).preprocessPopulation(state, pop, assessFitness, countVictoriesOnly);
+        return ((GroupedProblemForm)problem).postprocessPopulation(state, pop, assessFitness, countVictoriesOnly);
         }
 
     /** Default version assumes that every individual is a GEIndividual.

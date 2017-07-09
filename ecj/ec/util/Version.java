@@ -62,7 +62,7 @@ public class Version
             "\n|               " + contributors3 +
             "\n|               " + contributors4 +
             "\n|               " + contributors5 +
-	    "\n|               " + contributors6 +
+            "\n|               " + contributors6 +
             "\n| URL: " + authorURL +
             "\n| Mail: " + authorEmail0 + "@" + authorEmail1 +
             "\n|       " + authorEmail2 + 

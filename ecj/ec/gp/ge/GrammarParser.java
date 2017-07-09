@@ -447,42 +447,42 @@ public class GrammarParser implements Prototype
         {
         return;
         }
-/*
-// calculate the predict sets
-gatherPredictSets(gn, null);
-// now make the predictive parse table
-predictiveParseTable = new int[ruleHeadToIndex.size()][functionHeadToIndex.size()] ;
-Iterator it = ruleToPredictSet.entrySet().iterator();
-while(it.hasNext())
-{
-Map.Entry pairs = (Map.Entry)it.next();
-GrammarNode action = (GrammarNode)pairs.getKey();
-String ruleHead = action.getHead();
-int ruleIndex = ((Integer)ruleHeadToIndex.get(ruleHead)).intValue();
-ArrayList functionHeads = (ArrayList)pairs.getValue();
-for(int i = 0 ; i < functionHeads.size(); i++)
-{
-String functionHead = (String)functionHeads.get(i);
-int functionHeadIndex = ((Integer)functionHeadToIndex.get(functionHead)).intValue();
-predictiveParseTable[ruleIndex][functionHeadIndex] 
-= ((Integer)ruleToIndex.get(action)).intValue() ;
-}
-}
-}
-*/
+    /*
+    // calculate the predict sets
+    gatherPredictSets(gn, null);
+    // now make the predictive parse table
+    predictiveParseTable = new int[ruleHeadToIndex.size()][functionHeadToIndex.size()] ;
+    Iterator it = ruleToPredictSet.entrySet().iterator();
+    while(it.hasNext())
+    {
+    Map.Entry pairs = (Map.Entry)it.next();
+    GrammarNode action = (GrammarNode)pairs.getKey();
+    String ruleHead = action.getHead();
+    int ruleIndex = ((Integer)ruleHeadToIndex.get(ruleHead)).intValue();
+    ArrayList functionHeads = (ArrayList)pairs.getValue();
+    for(int i = 0 ; i < functionHeads.size(); i++)
+    {
+    String functionHead = (String)functionHeads.get(i);
+    int functionHeadIndex = ((Integer)functionHeadToIndex.get(functionHead)).intValue();
+    predictiveParseTable[ruleIndex][functionHeadIndex] 
+    = ((Integer)ruleToIndex.get(action)).intValue() ;
+    }
+    }
+    }
+    */
 
-        /** A simple testing facility. */
-        public static void main(String args[]) throws  FileNotFoundException
-            {
-            // make a dummy EvolutionState that just has an output for testing
-            EvolutionState state = new EvolutionState();
-            state.output = new Output(true);
-            state.output.addLog(ec.util.Log.D_STDOUT,false);
-            state.output.addLog(ec.util.Log.D_STDERR,true);
+    /** A simple testing facility. */
+    public static void main(String args[]) throws  FileNotFoundException
+        {
+        // make a dummy EvolutionState that just has an output for testing
+        EvolutionState state = new EvolutionState();
+        state.output = new Output(true);
+        state.output.addLog(ec.util.Log.D_STDOUT,false);
+        state.output.addLog(ec.util.Log.D_STDERR,true);
 
-            GrammarParser gp = new GrammarParser();
-            gp.parseRules(state, new BufferedReader(new FileReader(new File(args[0]))), null);
-            gp.validateRules();
-            System.err.println(gp);
-            }
+        GrammarParser gp = new GrammarParser();
+        gp.parseRules(state, new BufferedReader(new FileReader(new File(args[0]))), null);
+        gp.validateRules();
+        System.err.println(gp);
+        }
     }
