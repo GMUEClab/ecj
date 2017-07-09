@@ -227,11 +227,11 @@ public class Code
                 //break;
 
             case 'T': // boolean (true)
-            { d.type = DecodeReturn.T_BOOLEAN; d.l = 1; d.pos = x+1; return; }
+                { d.type = DecodeReturn.T_BOOLEAN; d.l = 1; d.pos = x+1; return; }
             //break;
                     
             case 'F': // boolean (false)
-            { d.type = DecodeReturn.T_BOOLEAN; d.l = 0; d.pos = x+1; return; }
+                { d.type = DecodeReturn.T_BOOLEAN; d.l = 0; d.pos = x+1; return; }
             //break;
                     
 
@@ -293,47 +293,47 @@ public class Code
 
             case 'd': // double
                 
-            {
-            boolean readHuman = false;
-            String sf = null;
-            int initial = x+1;
+                {
+                boolean readHuman = false;
+                String sf = null;
+                int initial = x+1;
                         
-            // look for next '|'
-            for ( ; x < len; x++)
-                if (dat.charAt(x)=='|') break;
+                // look for next '|'
+                for ( ; x < len; x++)
+                    if (dat.charAt(x)=='|') break;
             
-            if (x==initial) readHuman=true;
+                if (x==initial) readHuman=true;
                         
-            if ( x >= len )
-                { d.type = DecodeReturn.T_ERROR; d.s = "Expected a double"; return; }
+                if ( x >= len )
+                    { d.type = DecodeReturn.T_ERROR; d.s = "Expected a double"; return; }
 
-            if (!readHuman)
-                sf = dat.substring(initial,x);
-            x++;
+                if (!readHuman)
+                    sf = dat.substring(initial,x);
+                x++;
             
-            // look for next '|'
-            int initial2 = x;  // x is now just past first |
-            for ( ; x < len; x++)
-                if (dat.charAt(x)=='|') break;
+                // look for next '|'
+                int initial2 = x;  // x is now just past first |
+                for ( ; x < len; x++)
+                    if (dat.charAt(x)=='|') break;
             
-            if ( x >= len )
-                { d.type = DecodeReturn.T_ERROR; d.s = "Expected a double"; return; }
-            if (readHuman) 
-                sf = dat.substring(initial2,x);
+                if ( x >= len )
+                    { d.type = DecodeReturn.T_ERROR; d.s = "Expected a double"; return; }
+                if (readHuman) 
+                    sf = dat.substring(initial2,x);
             
-            double f;
-            try 
-                { 
-                if (readHuman) f = Double.parseDouble(sf);
-                else f = Double.longBitsToDouble(Long.parseLong(sf)); 
+                double f;
+                try 
+                    { 
+                    if (readHuman) f = Double.parseDouble(sf);
+                    else f = Double.longBitsToDouble(Long.parseLong(sf)); 
+                    }
+                catch (NumberFormatException e)
+                    { d.type = DecodeReturn.T_ERROR; d.s = "Expected a double"; return; }
+                d.type = DecodeReturn.T_DOUBLE;
+                d.d = f;
+                d.pos = x+1;
+                return;
                 }
-            catch (NumberFormatException e)
-                { d.type = DecodeReturn.T_ERROR; d.s = "Expected a double"; return; }
-            d.type = DecodeReturn.T_DOUBLE;
-            d.d = f;
-            d.pos = x+1;
-            return;
-            }
             // break;
                         
                         
@@ -345,27 +345,27 @@ public class Code
 
             case 'b': // byte
                 
-            {
-            int initial = x+1;
+                {
+                int initial = x+1;
                         
-            // look for next '|'
-            for ( ; x < len; x++)
-                if (dat.charAt(x)=='|') break;
+                // look for next '|'
+                for ( ; x < len; x++)
+                    if (dat.charAt(x)=='|') break;
                         
-            if ( x >= len )
-                { d.type = DecodeReturn.T_ERROR; d.s = "Expected a byte"; return; }
-            String sf = dat.substring(initial,x);
+                if ( x >= len )
+                    { d.type = DecodeReturn.T_ERROR; d.s = "Expected a byte"; return; }
+                String sf = dat.substring(initial,x);
                                             
-            byte f;
-            try 
-                { f = Byte.parseByte(sf); }
-            catch (NumberFormatException e)
-                { d.type = DecodeReturn.T_ERROR; d.s = "Expected a byte"; return; }
-            d.type = DecodeReturn.T_BYTE;
-            d.l = f;
-            d.pos = x+1;
-            return;
-            }
+                byte f;
+                try 
+                    { f = Byte.parseByte(sf); }
+                catch (NumberFormatException e)
+                    { d.type = DecodeReturn.T_ERROR; d.s = "Expected a byte"; return; }
+                d.type = DecodeReturn.T_BYTE;
+                d.l = f;
+                d.pos = x+1;
+                return;
+                }
             // break;
 
 
@@ -375,27 +375,27 @@ public class Code
 
             case 's': // short
                 
-            {
-            int initial = x+1;
+                {
+                int initial = x+1;
                         
-            // look for next '|'
-            for ( ; x < len; x++)
-                if (dat.charAt(x)=='|') break;
+                // look for next '|'
+                for ( ; x < len; x++)
+                    if (dat.charAt(x)=='|') break;
                         
-            if ( x >= len )
-                { d.type = DecodeReturn.T_ERROR; d.s = "Expected a short"; return; }
-            String sf = dat.substring(initial,x);
+                if ( x >= len )
+                    { d.type = DecodeReturn.T_ERROR; d.s = "Expected a short"; return; }
+                String sf = dat.substring(initial,x);
                                             
-            short f;
-            try 
-                { f = Short.parseShort(sf); }
-            catch (NumberFormatException e)
-                { d.type = DecodeReturn.T_ERROR; d.s = "Expected a short"; return; }
-            d.type = DecodeReturn.T_SHORT;
-            d.l = f;
-            d.pos = x+1;
-            return;
-            }
+                short f;
+                try 
+                    { f = Short.parseShort(sf); }
+                catch (NumberFormatException e)
+                    { d.type = DecodeReturn.T_ERROR; d.s = "Expected a short"; return; }
+                d.type = DecodeReturn.T_SHORT;
+                d.l = f;
+                d.pos = x+1;
+                return;
+                }
             // break;
 
 
@@ -403,27 +403,27 @@ public class Code
 
             case 'i': // int
                 
-            {
-            int initial = x+1;
+                {
+                int initial = x+1;
                         
-            // look for next '|'
-            for ( ; x < len; x++)
-                if (dat.charAt(x)=='|') break;
+                // look for next '|'
+                for ( ; x < len; x++)
+                    if (dat.charAt(x)=='|') break;
                         
-            if ( x >= len )
-                { d.type = DecodeReturn.T_ERROR; d.s = "Expected an int"; return; }
-            String sf = dat.substring(initial,x);
+                if ( x >= len )
+                    { d.type = DecodeReturn.T_ERROR; d.s = "Expected an int"; return; }
+                String sf = dat.substring(initial,x);
                                             
-            int f;
-            try 
-                { f = Integer.parseInt(sf); }
-            catch (NumberFormatException e)
-                { d.type = DecodeReturn.T_ERROR; d.s = "Expected an int"; return; }
-            d.type = DecodeReturn.T_INT;
-            d.l = f;
-            d.pos = x+1;
-            return;
-            }
+                int f;
+                try 
+                    { f = Integer.parseInt(sf); }
+                catch (NumberFormatException e)
+                    { d.type = DecodeReturn.T_ERROR; d.s = "Expected an int"; return; }
+                d.type = DecodeReturn.T_INT;
+                d.l = f;
+                d.pos = x+1;
+                return;
+                }
             // break;
 
 
@@ -433,27 +433,27 @@ public class Code
 
             case 'l': // long
                 
-            {
-            int initial = x+1;
+                {
+                int initial = x+1;
                         
-            // look for next '|'
-            for ( ; x < len; x++)
-                if (dat.charAt(x)=='|') break;
+                // look for next '|'
+                for ( ; x < len; x++)
+                    if (dat.charAt(x)=='|') break;
                         
-            if ( x >= len )
-                { d.type = DecodeReturn.T_ERROR; d.s = "Expected a long"; return; }
-            String sf = dat.substring(initial,x);
+                if ( x >= len )
+                    { d.type = DecodeReturn.T_ERROR; d.s = "Expected a long"; return; }
+                String sf = dat.substring(initial,x);
                                             
-            long f;
-            try 
-                { f = Long.parseLong(sf); }
-            catch (NumberFormatException e)
-                { d.type = DecodeReturn.T_ERROR; d.s = "Expected a long"; return; }
-            d.type = DecodeReturn.T_LONG;
-            d.l = f;
-            d.pos = x+1;
-            return;
-            }
+                long f;
+                try 
+                    { f = Long.parseLong(sf); }
+                catch (NumberFormatException e)
+                    { d.type = DecodeReturn.T_ERROR; d.s = "Expected a long"; return; }
+                d.type = DecodeReturn.T_LONG;
+                d.l = f;
+                d.pos = x+1;
+                return;
+                }
             // break;
 
 
@@ -462,65 +462,65 @@ public class Code
 
 
             case '"':  // string
-            {
-            StringBuilder sb = new StringBuilder();
-            boolean inUnicode = false;
-            
-            x++;
-            for ( ; x < len; x++)
                 {
-                char c = dat.charAt(x);
-                if (c=='"') 
+                StringBuilder sb = new StringBuilder();
+                boolean inUnicode = false;
+            
+                x++;
+                for ( ; x < len; x++)
                     {
-                    // done with the string
-                    if (inUnicode)  // uh oh
-                        { d.type = DecodeReturn.T_ERROR; d.s = "Forgot to terminate Unicode with a '\\u' in the string"; return; }
-                    d.type = DecodeReturn.T_STRING; 
-                    d.s = sb.toString(); 
-                    d.pos = x+1;
-                    return;
-                    }
-                else if (c=='\\')  // escape
-                    {
-                    x++;
-                    if ( x >= len )
-                        { d.type = DecodeReturn.T_ERROR; d.s = "Unterminated String"; return; }
-                    if (dat.charAt(x)!='u' && inUnicode)
-                        { d.type = DecodeReturn.T_ERROR; d.s = "Escape character in Unicode sequence"; return; }
+                    char c = dat.charAt(x);
+                    if (c=='"') 
+                        {
+                        // done with the string
+                        if (inUnicode)  // uh oh
+                            { d.type = DecodeReturn.T_ERROR; d.s = "Forgot to terminate Unicode with a '\\u' in the string"; return; }
+                        d.type = DecodeReturn.T_STRING; 
+                        d.s = sb.toString(); 
+                        d.pos = x+1;
+                        return;
+                        }
+                    else if (c=='\\')  // escape
+                        {
+                        x++;
+                        if ( x >= len )
+                            { d.type = DecodeReturn.T_ERROR; d.s = "Unterminated String"; return; }
+                        if (dat.charAt(x)!='u' && inUnicode)
+                            { d.type = DecodeReturn.T_ERROR; d.s = "Escape character in Unicode sequence"; return; }
 
-                    switch (dat.charAt(x))
-                        {
-                        case 'u': inUnicode = !inUnicode; break;
-                        case 'b': sb.append('\b'); break;
-                        case 'n': sb.append('\n'); break;
-                        case '"': sb.append('"'); break;
-                        case '\'': sb.append('\''); break;
-                        case 't': sb.append('\t'); break;
-                        case '\\': sb.append('\\'); break;
-                        case '0': sb.append('\0'); break;
-                        default: 
-                        { d.type = DecodeReturn.T_ERROR; d.s = "Bad escape char in String"; return; }
+                        switch (dat.charAt(x))
+                            {
+                            case 'u': inUnicode = !inUnicode; break;
+                            case 'b': sb.append('\b'); break;
+                            case 'n': sb.append('\n'); break;
+                            case '"': sb.append('"'); break;
+                            case '\'': sb.append('\''); break;
+                            case 't': sb.append('\t'); break;
+                            case '\\': sb.append('\\'); break;
+                            case '0': sb.append('\0'); break;
+                            default: 
+                                { d.type = DecodeReturn.T_ERROR; d.s = "Bad escape char in String"; return; }
+                            }
                         }
-                    }
-                else if (inUnicode)
-                    {
-                    if ( x + 3 >= len )
-                        { d.type = DecodeReturn.T_ERROR; d.s = "Unterminated String"; return; }
-                    try
+                    else if (inUnicode)
                         {
-                        sb.append((char)(Integer.decode("0x" + c +
-                                    dat.charAt(x+1) +
-                                    dat.charAt(x+2) +
-                                    dat.charAt(x+3)).intValue()));;
-                        x+=3;
+                        if ( x + 3 >= len )
+                            { d.type = DecodeReturn.T_ERROR; d.s = "Unterminated String"; return; }
+                        try
+                            {
+                            sb.append((char)(Integer.decode("0x" + c +
+                                        dat.charAt(x+1) +
+                                        dat.charAt(x+2) +
+                                        dat.charAt(x+3)).intValue()));;
+                            x+=3;
+                            }
+                        catch (NumberFormatException e)
+                            { d.type = DecodeReturn.T_ERROR; d.s = "Bad Unicode in String"; return; }
                         }
-                    catch (NumberFormatException e)
-                        { d.type = DecodeReturn.T_ERROR; d.s = "Bad Unicode in String"; return; }
+                    else sb.append(c);
                     }
-                else sb.append(c);
+                d.type = DecodeReturn.T_ERROR; d.s = "Unterminated String"; return;
                 }
-            d.type = DecodeReturn.T_ERROR; d.s = "Unterminated String"; return;
-            }
             //break;
 
 
@@ -537,66 +537,66 @@ public class Code
 
 
             case '\'': // char
-            {
-            x++;
-            if ( x >= len )
-                { d.type = DecodeReturn.T_ERROR; d.s = "Unterminated char"; return; }
-            char c = dat.charAt(x);
-            if (c=='\\')
-                {
-                x++;
-                if (x>=len)
-                    { d.type = DecodeReturn.T_ERROR; d.s = "Unterminated char"; return; }
-                switch (dat.charAt(x))
-                    {
-                    case 'u':
-                        if ( x + 4 >= len )
-                            { d.type = DecodeReturn.T_ERROR; d.s = "Unterminated char"; return; }
-                        try
-                            {
-                            c = (char)(Integer.decode("0x" + 
-                                    dat.charAt(x+1) +
-                                    dat.charAt(x+2) +
-                                    dat.charAt(x+3) +
-                                    dat.charAt(x+4)).intValue());
-                            }
-                        catch (NumberFormatException e)
-                            { d.type = DecodeReturn.T_ERROR; d.s = "Bad Unicode in char"; return; }
-                        x+=5;
-                        break;
-                    
-                    case 'b': c = '\b'; x++; break;
-                    case 'n': c = '\n'; x++; break;
-                    case '"': c = '"'; x++; break;
-                    case '\'': c = '\''; x++; break;
-                    case 't':  c = '\t'; x++; break;
-                    case '\\': c = '\\'; x++; break;
-                    case '0': c = '\0';  x++; break;
-                    default: 
-                    { d.type = DecodeReturn.T_ERROR; d.s = "Bad escape char in char"; return; }
-                    }
-                if (dat.charAt(x)!='\'')
-                    { d.type = DecodeReturn.T_ERROR; d.s = "Bad char"; return; }
-                d.type = DecodeReturn.T_CHAR;
-                d.l = c;
-                d.pos = x+1;
-                return;
-                }
-            else
                 {
                 x++;
                 if ( x >= len )
                     { d.type = DecodeReturn.T_ERROR; d.s = "Unterminated char"; return; }
-                if (dat.charAt(x)!='\'')
-                    { d.type = DecodeReturn.T_ERROR; d.s = "Bad char"; return; }
-                d.type = DecodeReturn.T_CHAR;
-                d.l = c;
-                d.pos = x + 1;
-                return;
+                char c = dat.charAt(x);
+                if (c=='\\')
+                    {
+                    x++;
+                    if (x>=len)
+                        { d.type = DecodeReturn.T_ERROR; d.s = "Unterminated char"; return; }
+                    switch (dat.charAt(x))
+                        {
+                        case 'u':
+                            if ( x + 4 >= len )
+                                { d.type = DecodeReturn.T_ERROR; d.s = "Unterminated char"; return; }
+                            try
+                                {
+                                c = (char)(Integer.decode("0x" + 
+                                        dat.charAt(x+1) +
+                                        dat.charAt(x+2) +
+                                        dat.charAt(x+3) +
+                                        dat.charAt(x+4)).intValue());
+                                }
+                            catch (NumberFormatException e)
+                                { d.type = DecodeReturn.T_ERROR; d.s = "Bad Unicode in char"; return; }
+                            x+=5;
+                            break;
+                    
+                        case 'b': c = '\b'; x++; break;
+                        case 'n': c = '\n'; x++; break;
+                        case '"': c = '"'; x++; break;
+                        case '\'': c = '\''; x++; break;
+                        case 't':  c = '\t'; x++; break;
+                        case '\\': c = '\\'; x++; break;
+                        case '0': c = '\0';  x++; break;
+                        default: 
+                            { d.type = DecodeReturn.T_ERROR; d.s = "Bad escape char in char"; return; }
+                        }
+                    if (dat.charAt(x)!='\'')
+                        { d.type = DecodeReturn.T_ERROR; d.s = "Bad char"; return; }
+                    d.type = DecodeReturn.T_CHAR;
+                    d.l = c;
+                    d.pos = x+1;
+                    return;
+                    }
+                else
+                    {
+                    x++;
+                    if ( x >= len )
+                        { d.type = DecodeReturn.T_ERROR; d.s = "Unterminated char"; return; }
+                    if (dat.charAt(x)!='\'')
+                        { d.type = DecodeReturn.T_ERROR; d.s = "Bad char"; return; }
+                    d.type = DecodeReturn.T_CHAR;
+                    d.l = c;
+                    d.pos = x + 1;
+                    return;
+                    }
+
+
                 }
-
-
-            }
             //break;
 
 

@@ -164,9 +164,9 @@ public class KozaNodeSelector implements GPNodeSelector
         if (rnd > nonterminalProbability + terminalProbability + rootProbability)  // pick anyone
             {
             if (nodes==-1) nodes=tree.child.numNodes(GPNode.NODESEARCH_ALL);
-                    {
-                    return tree.child.nodeInPosition(s.random[thread].nextInt(nodes), GPNode.NODESEARCH_ALL);
-                    }
+                {
+                return tree.child.nodeInPosition(s.random[thread].nextInt(nodes), GPNode.NODESEARCH_ALL);
+                }
             }
         else if (rnd > nonterminalProbability + terminalProbability)  // pick the root
             {

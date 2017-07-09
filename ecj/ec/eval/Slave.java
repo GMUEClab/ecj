@@ -412,13 +412,13 @@ public class Slave
                             switch (problemType)
                                 {
                                 case V_SHUTDOWN:
-                                {
-                                socket.close();
-                                if (oneShot)
-                                    return;  // we're outa here
-                                else
-                                    throw new Output.OutputExitException("SHUTDOWN");
-                                }
+                                    {
+                                    socket.close();
+                                    if (oneShot)
+                                        return;  // we're outa here
+                                    else
+                                        throw new Output.OutputExitException("SHUTDOWN");
+                                    }
                                 case V_EVALUATESIMPLE:
                                     evaluateSimpleProblemForm(newState, returnIndividuals, dataIn, dataOut, args);
                                     break;

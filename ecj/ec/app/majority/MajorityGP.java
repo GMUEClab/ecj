@@ -158,38 +158,38 @@ public class MajorityGP extends GPProblem implements SimpleProblemForm
         
         // we always reevaluate         
         //if (!ind.evaluated)  // don't bother reevaluating
-                {
-                MajorityData input = (MajorityData)(this.input);
+            {
+            MajorityData input = (MajorityData)(this.input);
 
-                int sum = 0;
+            int sum = 0;
             
-                // extract the rule
-                ((GPIndividual)ind).trees[0].child.eval(
-                    state,threadnum,input,stack,((GPIndividual)ind),this);
+            // extract the rule
+            ((GPIndividual)ind).trees[0].child.eval(
+                state,threadnum,input,stack,((GPIndividual)ind),this);
 
-                int[] rule = ca.getRule();
-                for(int i = 0; i < 64; i++)
-                    rule[i] = (int)(((input.data0) >> i) & 0x1);
-                for(int i = 64; i < 128; i++)
-                    rule[i] = (int)(((input.data1) >> (i - 64)) & 0x1);
-                ca.setRule(rule);  // for good measure though it doesn't matter
+            int[] rule = ca.getRule();
+            for(int i = 0; i < 64; i++)
+                rule[i] = (int)(((input.data0) >> i) & 0x1);
+            for(int i = 64; i < 128; i++)
+                rule[i] = (int)(((input.data1) >> (i - 64)) & 0x1);
+            ca.setRule(rule);  // for good measure though it doesn't matter
                         
 
-                for(int i = 0; i < NUM_TRIALS; i++)
-                    {
-                    // set up and run the CA
-                    ca.setVals(trials[i]);
-                    ca.step(STEPS, true);
+            for(int i = 0; i < NUM_TRIALS; i++)
+                {
+                // set up and run the CA
+                ca.setVals(trials[i]);
+                ca.step(STEPS, true);
                 
-                    // extract the fitness
-                    if (all(ca.getVals(), majorities[i]))
-                        sum ++;
-                    }
-                                
-                SimpleFitness f = ((SimpleFitness)ind.fitness);
-                f.setFitness(state, sum / (double)NUM_TRIALS, (sum == NUM_TRIALS));
-                ind.evaluated = true;
+                // extract the fitness
+                if (all(ca.getVals(), majorities[i]))
+                    sum ++;
                 }
+                                
+            SimpleFitness f = ((SimpleFitness)ind.fitness);
+            f.setFitness(state, sum / (double)NUM_TRIALS, (sum == NUM_TRIALS));
+            ind.evaluated = true;
+            }
         }
 
 

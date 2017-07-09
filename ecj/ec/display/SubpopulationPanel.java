@@ -104,13 +104,13 @@ public class SubpopulationPanel
                 size = console.parameters.getInt(new Parameter("pop.subpop."+subPopNum+".size"),null);
                 }
             else if (console.parameters.exists(new Parameter("pop.default-subpop"), null))
+                {
+                int defaultsub = console.parameters.getInt(new Parameter("pop.default-subpop"), null);
+                if (defaultsub >= 0)
                     {
-                    int defaultsub = console.parameters.getInt(new Parameter("pop.default-subpop"), null);
-                    if (defaultsub >= 0)
-                        {
-                        size = console.parameters.getInt(new Parameter("pop.subpop." + defaultsub + ".size"), null);
-                        }
+                    size = console.parameters.getInt(new Parameter("pop.subpop." + defaultsub + ".size"), null);
                     }
+                }
             DefaultListModel model = new DefaultListModel();
             for (int i = 0; i < size; ++i)
                 {

@@ -158,11 +158,11 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
     public static final String fs_vars[][] = 
         {
         { },
-            { "koza1", "keijzer1", "vladislavleva-c1" },
-            { "koza2", "keijzer2", "vladislavleva-a2", "vladislavleva-b2", "vladislavleva-c2" },
-            { "koza3", "keijzer3", "vladislavleva-a3" },
-            { },
-            { "korns5", "vladislavleva-a5" },
+        { "koza1", "keijzer1", "vladislavleva-c1" },
+        { "koza2", "keijzer2", "vladislavleva-a2", "vladislavleva-b2", "vladislavleva-c2" },
+        { "koza3", "keijzer3", "vladislavleva-a3" },
+        { },
+        { "korns5", "vladislavleva-a5" },
         };
         
         
@@ -551,13 +551,13 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
             case KEIJZER5:
                 return (30.0 * x * z) / ((x - 10.0) * y * y);
             case KEIJZER6:
-            { 
-            double sum = 0;
-            double fx = Math.floor(x);
-            for(int i = 1; i < fx + 1; i++)  // up to and including floor(x)
-                sum += (1.0 / i);
-            return sum; 
-            }
+                { 
+                double sum = 0;
+                double fx = Math.floor(x);
+                for(int i = 1; i < fx + 1; i++)  // up to and including floor(x)
+                    sum += (1.0 / i);
+                return sum; 
+                }
             case KEIJZER7:                          // Note this presumes you don't have log(x) in your function set!
                 return Math.log(x);
             case KEIJZER8:                          // same as NGUYEN8
@@ -583,12 +583,12 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
             case VLADISLAVLEVA3:
                 return Math.exp(-x)*x*x*x*Math.cos(x)*Math.sin(x)*(Math.cos(x)*Math.sin(x)*Math.sin(x) - 1) * (y - 5);
             case VLADISLAVLEVA4:
-            {
-            double sum = 0;
-            for(int i = 0; i < 5; i++)
-                sum += (xs[i] - 3) * (xs[i] - 3);
-            return 10.0 / (5.0 + sum);
-            }
+                {
+                double sum = 0;
+                for(int i = 0; i < 5; i++)
+                    sum += (xs[i] - 3) * (xs[i] - 3);
+                return 10.0 / (5.0 + sum);
+                }
             case VLADISLAVLEVA5:
                 return (30.0 * (x - 1.0) * (z - 1.0)) / (y * y * (x - 10.0));
             case VLADISLAVLEVA6:

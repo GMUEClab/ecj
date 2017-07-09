@@ -162,31 +162,31 @@ public class MajorityGA extends Problem implements SimpleProblemForm
 
         // we always reevaluate         
         //if (!ind.evaluated)  // don't bother reevaluating
-                {
-                int sum = 0;
+            {
+            int sum = 0;
             
-                boolean[] genome = ((BitVectorIndividual)ind).genome;
+            boolean[] genome = ((BitVectorIndividual)ind).genome;
             
-                // extract the rule
-                int[] rule = ca.getRule();
-                for(int i = 0; i < 128; i++)
-                    rule[i] = (genome[i] ? 1 : 0);
-                ca.setRule(rule);  // for good measure though it doesn't matter
+            // extract the rule
+            int[] rule = ca.getRule();
+            for(int i = 0; i < 128; i++)
+                rule[i] = (genome[i] ? 1 : 0);
+            ca.setRule(rule);  // for good measure though it doesn't matter
                         
-                for(int i = 0; i < NUM_TRIALS; i++)
-                    {
-                    // set up and run the CA
-                    ca.setVals(trials[i]);
-                    ca.step(STEPS, true);
+            for(int i = 0; i < NUM_TRIALS; i++)
+                {
+                // set up and run the CA
+                ca.setVals(trials[i]);
+                ca.step(STEPS, true);
                 
-                    // extract the fitness
-                    if (all(ca.getVals(), majorities[i]))
-                        sum ++;
-                    }
-                SimpleFitness f = ((SimpleFitness)ind.fitness);
-                f.setFitness(state, sum / (double)NUM_TRIALS, false);
-                ind.evaluated = true;
+                // extract the fitness
+                if (all(ca.getVals(), majorities[i]))
+                    sum ++;
                 }
+            SimpleFitness f = ((SimpleFitness)ind.fitness);
+            f.setFitness(state, sum / (double)NUM_TRIALS, false);
+            ind.evaluated = true;
+            }
         }
       
     

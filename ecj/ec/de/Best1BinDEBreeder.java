@@ -78,9 +78,9 @@ public class Best1BinDEBreeder extends DEBreeder
             // select three indexes different from each other and from that of the current parent
             int r0, r1, r2;
             // do
-                    {
-                    r0 = bestSoFarIndex[subpop];
-                    }
+                {
+                r0 = bestSoFarIndex[subpop];
+                }
             // while( r0 == index );
             do
                 {

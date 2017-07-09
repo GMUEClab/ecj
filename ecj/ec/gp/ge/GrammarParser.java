@@ -148,20 +148,21 @@ public class GrammarParser implements Prototype
         {
         GrammarRuleNode retResult = null;
 
-        String token = lexer.nextToken();
-        if(lexer.getMatchingIndex() == COMMENT) return null; //ignore the comment
-        if(lexer.getMatchingIndex() == RULE) //rule head, good, as expected...
+        String token = lexer.nextToken().trim();
+        if (token.length() ==  0) return null;  // empty line
+        if(lexer.getMatchingIndex() == COMMENT) return null; // ignore the comment
+        state.output.message("Parsing Rule: " + token);
+        if(lexer.getMatchingIndex() == RULE) // rule head, good, as expected...
             {
             lexer.nextToken();
             if(lexer.getMatchingIndex() != EQUALS)
-                state.output.fatal("GE Grammar Error: " 
-                    + "Expecting equal sign after rule head: " + token);
+                state.output.fatal("GE Grammar Error.  Expecting equal sign after rule head: " + token);
             retResult = getRule(rules, token);
             parseProductions(state, retResult, lexer, gpfs);
             }
         else
             {
-            state.output.fatal("GE Grammar Error - Unexpected token:" 
+            state.output.fatal("GE Grammar Error.  Unexpected token:" 
                 + " Expecting rule head.: " + token);
             }
         return retResult;
@@ -243,8 +244,7 @@ public class GrammarParser implements Prototype
             String line;
             while ((line = reader.readLine()) != null)
                 {
-                GrammarRuleNode rule = parseRule(state, 
-                    new Lexer(line.trim(), DEFAULT_REGEXES), gpfs);
+                GrammarRuleNode rule = parseRule(state, new Lexer(line.trim(), DEFAULT_REGEXES), gpfs);
                 if (rule != null && root == null) root = rule;
                 }
             }
@@ -445,40 +445,44 @@ public class GrammarParser implements Prototype
      */
     public void populatePredictiveParseTable(GrammarNode gn)
         {
-        // calculate the predict sets
-        gatherPredictSets(gn, null);
-        // now make the predictive parse table
-        predictiveParseTable = new int[ruleHeadToIndex.size()][functionHeadToIndex.size()] ;
-        Iterator it = ruleToPredictSet.entrySet().iterator();
-        while(it.hasNext())
+        return;
+        }
+/*
+// calculate the predict sets
+gatherPredictSets(gn, null);
+// now make the predictive parse table
+predictiveParseTable = new int[ruleHeadToIndex.size()][functionHeadToIndex.size()] ;
+Iterator it = ruleToPredictSet.entrySet().iterator();
+while(it.hasNext())
+{
+Map.Entry pairs = (Map.Entry)it.next();
+GrammarNode action = (GrammarNode)pairs.getKey();
+String ruleHead = action.getHead();
+int ruleIndex = ((Integer)ruleHeadToIndex.get(ruleHead)).intValue();
+ArrayList functionHeads = (ArrayList)pairs.getValue();
+for(int i = 0 ; i < functionHeads.size(); i++)
+{
+String functionHead = (String)functionHeads.get(i);
+int functionHeadIndex = ((Integer)functionHeadToIndex.get(functionHead)).intValue();
+predictiveParseTable[ruleIndex][functionHeadIndex] 
+= ((Integer)ruleToIndex.get(action)).intValue() ;
+}
+}
+}
+*/
+
+        /** A simple testing facility. */
+        public static void main(String args[]) throws  FileNotFoundException
             {
-            Map.Entry pairs = (Map.Entry)it.next();
-            GrammarNode action = (GrammarNode)pairs.getKey();
-            String ruleHead = action.getHead();
-            int ruleIndex = ((Integer)ruleHeadToIndex.get(ruleHead)).intValue();
-            ArrayList functionHeads = (ArrayList)pairs.getValue();
-            for(int i = 0 ; i < functionHeads.size(); i++)
-                {
-                String functionHead = (String)functionHeads.get(i);
-                int functionHeadIndex = ((Integer)functionHeadToIndex.get(functionHead)).intValue();
-                predictiveParseTable[ruleIndex][functionHeadIndex] 
-                    = ((Integer)ruleToIndex.get(action)).intValue() ;
-                }
+            // make a dummy EvolutionState that just has an output for testing
+            EvolutionState state = new EvolutionState();
+            state.output = new Output(true);
+            state.output.addLog(ec.util.Log.D_STDOUT,false);
+            state.output.addLog(ec.util.Log.D_STDERR,true);
+
+            GrammarParser gp = new GrammarParser();
+            gp.parseRules(state, new BufferedReader(new FileReader(new File(args[0]))), null);
+            gp.validateRules();
+            System.err.println(gp);
             }
-        }
-
-    /** A simple testing facility. */
-    public static void main(String args[]) throws  FileNotFoundException
-        {
-        // make a dummy EvolutionState that just has an output for testing
-        EvolutionState state = new EvolutionState();
-        state.output = new Output(true);
-        state.output.addLog(ec.util.Log.D_STDOUT,false);
-        state.output.addLog(ec.util.Log.D_STDERR,true);
-
-        GrammarParser gp = new GrammarParser();
-        gp.parseRules(state, new BufferedReader(new FileReader(new File(args[0]))), null);
-        gp.validateRules();
-        System.err.println(gp);
-        }
     }
