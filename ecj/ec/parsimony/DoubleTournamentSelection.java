@@ -7,6 +7,9 @@
 
 package ec.parsimony;
 import ec.select.*;
+
+import java.util.ArrayList;
+
 import ec.*;
 import ec.util.*;
 import ec.steadystate.*;
@@ -153,7 +156,7 @@ public class DoubleTournamentSelection extends SelectionMethod implements Steady
         if (!doLengthFirst)
             {
             // pick size random individuals, then pick the best.
-            Individual[] oldinds = state.population.subpops[subpopulation].individuals;
+            ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
             int i = inds[0];
             int bad = i;
             
@@ -161,9 +164,9 @@ public class DoubleTournamentSelection extends SelectionMethod implements Steady
                 {
                 int j = inds[x];
                 if (pickWorst2)
-                    { if (oldinds[j].size() > oldinds[i].size()) { bad = i; i = j; } else bad = j; }
+                    { if (oldinds.get(j).size() > oldinds.get(i).size()) { bad = i; i = j; } else bad = j; }
                 else
-                    { if (oldinds[j].size() < oldinds[i].size()) { bad = i; i = j;} else bad = j; }
+                    { if (oldinds.get(j).size() < oldinds.get(i).size()) { bad = i; i = j;} else bad = j; }
                 }
             
             if (probabilityOfSelection2 != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection2))
@@ -173,7 +176,7 @@ public class DoubleTournamentSelection extends SelectionMethod implements Steady
         else 
             {
             // pick size random individuals, then pick the best.
-            Individual[] oldinds = state.population.subpops[subpopulation].individuals;
+            ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
             int i = inds[0];
             int bad = i;
             
@@ -181,9 +184,9 @@ public class DoubleTournamentSelection extends SelectionMethod implements Steady
                 {
                 int j = inds[x];
                 if (pickWorst2)
-                    { if (!(oldinds[j].fitness.betterThan(oldinds[i].fitness))) { bad = i; i = j; } else bad = j; }
+                    { if (!(oldinds.get(j).fitness.betterThan(oldinds.get(i).fitness))) { bad = i; i = j; } else bad = j; }
                 else
-                    { if (oldinds[j].fitness.betterThan(oldinds[i].fitness)) { bad = i; i = j;} else bad = j; }
+                    { if (oldinds.get(j).fitness.betterThan(oldinds.get(i).fitness)) { bad = i; i = j;} else bad = j; }
                 }
             
             if (probabilityOfSelection2 != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection2))
@@ -204,17 +207,17 @@ public class DoubleTournamentSelection extends SelectionMethod implements Steady
         if (doLengthFirst) // if length first, the first tournament is based on size
             {
             // pick size random individuals, then pick the best.
-            Individual[] oldinds = state.population.subpops[subpopulation].individuals;
-            int i = state.random[thread].nextInt(oldinds.length) ;
+            ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
+            int i = state.random[thread].nextInt(oldinds.size()) ;
             int bad = i;
             
             for (int x=1;x<size;x++)
                 {
-                int j = state.random[thread].nextInt(oldinds.length);
+                int j = state.random[thread].nextInt(oldinds.size());
                 if (pickWorst)
-                    { if (oldinds[j].size() > oldinds[i].size()) { bad = i; i = j; } else bad = j; }
+                    { if (oldinds.get(j).size() > oldinds.get(i).size()) { bad = i; i = j; } else bad = j; }
                 else
-                    { if (oldinds[j].size() < oldinds[i].size()) { bad = i; i = j;} else bad = j; }
+                    { if (oldinds.get(j).size() < oldinds.get(i).size()) { bad = i; i = j;} else bad = j; }
                 }
             
             if (probabilityOfSelection != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection))
@@ -224,17 +227,17 @@ public class DoubleTournamentSelection extends SelectionMethod implements Steady
         else
             {
             // pick size random individuals, then pick the best.
-            Individual[] oldinds = state.population.subpops[subpopulation].individuals;
-            int i = state.random[thread].nextInt(oldinds.length) ;
+            ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
+            int i = state.random[thread].nextInt(oldinds.size()) ;
             int bad = i;
             
             for (int x=1;x<size;x++)
                 {
-                int j = state.random[thread].nextInt(oldinds.length);
+                int j = state.random[thread].nextInt(oldinds.size());
                 if (pickWorst)
-                    { if (!(oldinds[j].fitness.betterThan(oldinds[i].fitness))) { bad = i; i = j; } else bad = j; }
+                    { if (!(oldinds.get(j).fitness.betterThan(oldinds.get(i).fitness))) { bad = i; i = j; } else bad = j; }
                 else
-                    { if (oldinds[j].fitness.betterThan(oldinds[i].fitness)) { bad = i; i = j;} else bad = j; }
+                    { if (oldinds.get(j).fitness.betterThan(oldinds.get(i).fitness)) { bad = i; i = j;} else bad = j; }
                 }
             
             if (probabilityOfSelection != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection))

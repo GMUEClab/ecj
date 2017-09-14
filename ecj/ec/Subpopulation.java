@@ -9,6 +9,8 @@
 package ec;
 import java.util.*;
 import java.io.*;
+import java.lang.reflect.Array;
+
 import ec.util.*;
 
 /* 
@@ -76,7 +78,7 @@ import ec.util.*;
  */
 
 
-public class Subpopulation implements Group
+public class Subpopulation implements Cloneable, Setup
     {
     private static final long serialVersionUID = 1;
 
@@ -88,8 +90,13 @@ public class Subpopulation implements Group
     /** The species for individuals in this subpopulation. */
     public Species species;
 
+    public IntBag[] parents;
+        
     /** The subpopulation's individuals. */
-    public Individual[] individuals;
+    public ArrayList<Individual> individuals;
+    
+    /** initial expected size of the subpopulation*/
+    public int initialSize;
 
     /** Do we allow duplicates? */
     public int numDuplicateRetries;
@@ -125,47 +132,41 @@ public class Subpopulation implements Group
         Subpopulation.   <b>IMPORTANT NOTE</b>: if the size of the array in
         Subpopulation has been changed, then the clone will take on the new array
         size.  This helps some evolution strategies.
-        @see Group#emptyClone()
     */
     
-    public Group emptyClone()
+    public Subpopulation emptyClone()
         {
         try
             {
             Subpopulation p = (Subpopulation)clone();
             p.species = species;  // don't throw it away...maybe this is a bad idea...
-            p.individuals = new Individual[individuals.length];  // empty
+            p.individuals = new ArrayList<Individual>();  // empty
             return p;   
             }
         catch (CloneNotSupportedException e) { throw new InternalError(); } // never happens
         }
         
-    /** Resizes the Subpopulation to a new size.  If the size is smaller, then
-        the Subpopulation is truncated such that the higher indexed individuals
-        may be deleted.  If the size is larger, then the resulting Subpopulation will have
-        null individuals (this almost certainly is not what you will want).
+    /** Truncates the Subpopulation to a new size. The Subpopulation is truncated such that 
+        the higher indexed individuals may be deleted.  
     */
     
-    public void resize(int toThis)
+    public void truncate(int toThis)
         {
-        Individual[] temp = new Individual[toThis];
-        System.arraycopy(individuals, 0, temp, 0, toThis);
-        individuals = temp;
+        //Individual[] temp = (Individual[]) (individuals.subList(0, toThis).toArray(new Individual[0]));
+        //individuals = new ArrayList<Individual>(Arrays.asList(temp));
+        int length = individuals.size();
+        individuals.subList(toThis, length).clear();
         }
-
 
     /** Sets all Individuals in the Subpopulation to null, preparing it to be reused. */
     public void clear()
         {
-        for(int i = 0 ; i < individuals.length; i++)
-            individuals[i] = null;
+        individuals.clear();
         }
 
     public void setup(final EvolutionState state, final Parameter base)
         {
         Parameter def = defaultBase();
-
-        int size;
 
         // do we load from a file?
         file = base.push(P_FILE);
@@ -182,9 +183,8 @@ public class Subpopulation implements Group
         // how big should our subpopulation be?
         // Note that EvolutionState.setup() has similar code, so if you change this, change it there too.
         
-        size = state.parameters.getInt(
-            base.push(P_SUBPOPSIZE),def.push(P_SUBPOPSIZE),1);
-        if (size<=0)
+        initialSize = state.parameters.getInt(base.push(P_SUBPOPSIZE),def.push(P_SUBPOPSIZE),1);
+        if (initialSize<=0)
             state.output.fatal(
                 "Subpopulation size must be an integer >= 1.\n",
                 base.push(P_SUBPOPSIZE),def.push(P_SUBPOPSIZE));
@@ -196,7 +196,7 @@ public class Subpopulation implements Group
             "The number of retries for duplicates must be an integer >= 0.\n",
             base.push(P_RETRIES),def.push(P_RETRIES));
         
-        individuals = new Individual[size];
+        individuals = new ArrayList<Individual>();
         
         extraBehavior = TRUNCATE;
         if (loadInds)
@@ -221,8 +221,8 @@ public class Subpopulation implements Group
 
     public void populate(EvolutionState state, int thread)
         {
-        int len = individuals.length;           // original length of individual array
-        int start = 0;                                          // where to start filling new individuals in -- may get modified if we read some individuals in
+        int len = initialSize;                         // original length of individual ArrayList
+        int start = 0;                          // where to start filling new individuals in -- may get modified if we read some individuals in
         
         // should we load individuals from a file? -- duplicates are permitted
         if (loadInds)
@@ -235,50 +235,43 @@ public class Subpopulation implements Group
             catch (IOException e) { state.output.fatal("An IOException occurred when trying to read from the file " + state.parameters.getString(file, null) + ".  The IOException was: \n" + e,
                     file, null); }
             
-            if (len < individuals.length)
+            if (len < individuals.size())
                 {
-                state.output.message("Old subpopulation was of size " + len + ", expanding to size " + individuals.length);
+                state.output.message("Old subpopulation was of size " + len + ", expanding to size " + individuals.size());
                 return;
                 }
-            else if (len > individuals.length)   // the population was shrunk, there's more space yet
+            else if (len > individuals.size())   // the population was shrunk, there's more space yet
                 {
                 // What do we do with the remainder?
                 if (extraBehavior == TRUNCATE)
                     {
-                    state.output.message("Old subpopulation was of size " + len + ", truncating to size " + individuals.length);
+                    state.output.message("Old subpopulation was of size " + len + ", truncating to size " + individuals.size());
                     return;  // we're done
                     }
                 else if (extraBehavior == WRAP)
                     {
-                    state.output.message("Only " + individuals.length + " individuals were read in.  Subpopulation will stay size " + len + 
+                    state.output.message("Only " + individuals.size() + " individuals were read in.  Subpopulation will stay size " + len + 
                         ", and the rest will be filled with copies of the read-in individuals.");
-                        
-                    Individual[] oldInds = individuals;
-                    individuals = new Individual[len];
-                    System.arraycopy(oldInds, 0, individuals, 0, oldInds.length);
-                    start = oldInds.length;
-                                
+                    start = individuals.size();
                     int count = 0;
-                    for(int i = start; i < individuals.length; i++)
+                    for(int i = start; i < len; ++i)
                         {
-                        individuals[i] = (Individual)(individuals[count].clone());
-                        if (++count >= start) count = 0;
+                        individuals.add((Individual) individuals.get(count).clone());
+                        if(++count >= start) count = 0;
                         }
                     return;
                     }
                 else // if (extraBehavior == FILL)
                     {
-                    state.output.message("Only " + individuals.length + " individuals were read in.  Subpopulation will stay size " + len + 
+                    state.output.message("Only " + individuals.size() + " individuals were read in.  Subpopulation will stay size " + len + 
                         ", and the rest will be filled using randomly generated individuals.");
-                        
-                    Individual[] oldInds = individuals;
-                    individuals = new Individual[len];
-                    System.arraycopy(oldInds, 0, individuals, 0, oldInds.length);
-                    start = oldInds.length;
+                    
+                    // mark the start position for filling in
+                    start = individuals.size();
                     // now go on to fill the rest below...
                     }                       
                 }
-            else // exactly right number, we're dont
+            else // exactly right number, we're done
                 {
                 return;
                 }
@@ -287,30 +280,33 @@ public class Subpopulation implements Group
         // populating the remainder with random individuals
         HashMap h = null;
         if (numDuplicateRetries >= 1)
-            h = new HashMap((individuals.length - start) / 2);  // seems reasonable
+            h = new HashMap((len - start) / 2);  // seems reasonable
 
-        for(int x=start;x<individuals.length;x++) 
+        for(int x=start;x<len;x++) 
             {
+            Individual newInd = null;
             for(int tries=0; 
                 tries <= /* Yes, I see that*/ numDuplicateRetries; 
                 tries++)
                 {
-                individuals[x] = species.newIndividual(state, thread);
-
+                newInd = species.newIndividual(state, thread);
+                
                 if (numDuplicateRetries >= 1)
                     {
                     // check for duplicates
-                    Object o = h.get(individuals[x]);
+                    Object o = h.get(newInd);
                     if (o == null) // found nothing, we're safe
                         // hash it and go
                         {
-                        h.put(individuals[x],individuals[x]);
+                        h.put(newInd,newInd);
                         break;
                         }
                     }
                 }  // oh well, we tried to cut down the duplicates
+            individuals.add(newInd);
             }
         }
+    
         
     /** Prints an entire subpopulation in a form readable by humans. 
         @deprecated Verbosity no longer has meaning
@@ -337,12 +333,12 @@ public class Subpopulation implements Group
     public void printSubpopulationForHumans(final EvolutionState state,
         final int log)
         {
-        state.output.println(NUM_INDIVIDUALS_PREAMBLE + individuals.length, log);
-        for(int i = 0 ; i < individuals.length; i++)
+        state.output.println(NUM_INDIVIDUALS_PREAMBLE + individuals.size(), log);
+        for(int i = 0 ; i < individuals.size(); i++)
             {
             state.output.println(INDIVIDUAL_INDEX_PREAMBLE + Code.encode(i), log);
-            if (individuals[i] != null)
-                individuals[i].printIndividualForHumans(state, log);
+            if (individuals.get(i) != null)
+                individuals.get(i).printIndividualForHumans(state, log);
             else if (!warned)
                 {
                 state.output.warnOnce("Null individuals found in subpopulation");
@@ -352,14 +348,13 @@ public class Subpopulation implements Group
         }
         
     /** Prints an entire subpopulation in a form readable by humans but also parseable by the computer using readSubpopulation(EvolutionState, LineNumberReader) with a verbosity of Output.V_NO_GENERAL. */
-    public void printSubpopulation(final EvolutionState state,
-        final int log)
+    public void printSubpopulation(final EvolutionState state, final int log)
         {
-        state.output.println(NUM_INDIVIDUALS_PREAMBLE + Code.encode(individuals.length), log);
-        for(int i = 0 ; i < individuals.length; i++)
+        state.output.println(NUM_INDIVIDUALS_PREAMBLE + Code.encode(individuals.size()), log);
+        for(int i = 0 ; i < individuals.size(); i++)
             {
             state.output.println(INDIVIDUAL_INDEX_PREAMBLE + Code.encode(i), log);
-            individuals[i].printIndividual(state, log);
+            individuals.get(i).printIndividual(state, log);
             }
         }
         
@@ -367,11 +362,11 @@ public class Subpopulation implements Group
     public void printSubpopulation(final EvolutionState state,
         final PrintWriter writer)
         {
-        writer.println(NUM_INDIVIDUALS_PREAMBLE + Code.encode(individuals.length));
-        for(int i = 0 ; i < individuals.length; i++)
+        writer.println(NUM_INDIVIDUALS_PREAMBLE + Code.encode(individuals.size()));
+        for(int i = 0 ; i < individuals.size(); i++)
             {
             writer.println(INDIVIDUAL_INDEX_PREAMBLE + Code.encode(i));
-            individuals[i].printIndividual(state, writer);
+            individuals.get(i).printIndividual(state, writer);
             }
         }
     
@@ -387,45 +382,30 @@ public class Subpopulation implements Group
             state.output.fatal("On reading subpopulation from text stream, the subpopulation size must be >= 1.  The provided value was: " + numIndividuals + ".");
 
         // read in individuals
-        if (numIndividuals != individuals.length)
+        if (numIndividuals != individuals.size())
             {
-            state.output.warnOnce("On reading subpopulation from text stream, the current subpopulation size didn't match the number of individuals in the file.  " + 
-                "The size of the subpopulation will be revised accordingly.  There were " + numIndividuals +
-                " individuals in the file and " + individuals.length + " individuals expected for the subopulation.");
-            individuals = new Individual[numIndividuals];
-            for(int i = 0 ; i < individuals.length; i++)
-                {
-                int j = Code.readIntegerWithPreamble(INDIVIDUAL_INDEX_PREAMBLE, state, reader);
-                // sanity check
-                if (j!=i) state.output.warnOnce("On reading subpopulation from text stream, some individual indexes in the subpopulation did not match.  " +
-                    "The first was individual " + i + ", which is listed in the file as " + j);
-                individuals[i] = species.newIndividual(state, reader);
-                }
+            state.output.warnOnce("On reading subpopulation from text stream, the current subpopulation size (" + individuals.size() + " didn't match the number of individuals in the file (" + numIndividuals +
+                ") and so the subpopulation size will change.");
             }
-        else for (int i = 0 ; i < individuals.length; i++)
-                 {
-                 int j = Code.readIntegerWithPreamble(INDIVIDUAL_INDEX_PREAMBLE, state, reader);
-                 // sanity check
-                 if (j!=i) state.output.warnOnce("On reading subpopulation from text stream, some individual indexes in the subpopulation did not match.  " +
-                     "The first was individual " + i + ", which is listed in the file as " + j);
-                 if (individuals[i] != null)
-                     individuals[i].readIndividual(state, reader);
-                 else
-                     {
-                     state.output.warnOnce("On reading subpopulation from text stream, some of the preexisting subpopulation's slots were null.  " +
-                         "If you're starting an evolutionary run by reading an existing population from a file, this is expected -- ignore this message.");
-                     individuals[i] = species.newIndividual(state, reader);
-                     }
-                 }
+                
+        individuals = new ArrayList<Individual>();
+        for(int i = 0 ; i < numIndividuals; i++)
+            {
+            int j = Code.readIntegerWithPreamble(INDIVIDUAL_INDEX_PREAMBLE, state, reader);
+            // sanity check
+            if (j!=i) state.output.warnOnce("On reading subpopulation from text stream, some individual indexes in the subpopulation did not match.  " +
+                "The first was individual " + i + ", which is listed in the file as " + j);
+            individuals.add(species.newIndividual(state, reader));
+            }
         }
         
     /** Writes a subpopulation in binary form, in a format readable by readSubpopulation(EvolutionState, DataInput). */
     public void writeSubpopulation(final EvolutionState state,
         final DataOutput dataOutput) throws IOException
         {
-        dataOutput.writeInt(individuals.length);
-        for(int i = 0 ; i < individuals.length; i++)
-            individuals[i].writeIndividual(state, dataOutput);
+        dataOutput.writeInt(individuals.size());
+        for(int i = 0 ; i < individuals.size(); i++)
+            individuals.get(i).writeIndividual(state, dataOutput);
         }
     
     /** Reads a subpopulation in binary form, from the format generated by writeSubpopulation(...).  If the number of individuals is not identical, the individuals array will
@@ -435,15 +415,16 @@ public class Subpopulation implements Group
         final DataInput dataInput) throws IOException
         {
         int numIndividuals = dataInput.readInt();
-        if (numIndividuals != individuals.length)
+        if (numIndividuals != individuals.size())
             {
             state.output.warnOnce("On reading subpopulation from binary stream, the subpopulation size was incorrect.\n" + 
                 "Had to resize and use newIndividual() instead of readIndividual().");
-            individuals = new Individual[numIndividuals];
-            for(int i = 0 ; i < individuals.length; i++)
-                individuals[i] = species.newIndividual(state, dataInput);
+            
+            individuals = new ArrayList<Individual>();
+            for(int i = 0 ; i < numIndividuals; i++)
+                individuals.add(species.newIndividual(state, dataInput));
             }
-        else for(int i = 0 ; i < individuals.length; i++)
-                 individuals[i].readIndividual(state, dataInput);
+        else for(int i = 0 ; i < individuals.size(); i++)
+                 individuals.get(i).readIndividual(state, dataInput);
         }
     }

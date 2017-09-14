@@ -382,7 +382,7 @@ public class IslandExchange extends Exchanger
     boolean[] running;
 
     // the capacity of the mailboxes
-//    int mailboxCapacity;
+    //    int mailboxCapacity;
 
     // the socket to the server
     Socket serverSocket;
@@ -496,7 +496,7 @@ public class IslandExchange extends Exchanger
         compressedCommunication = state.parameters.getBoolean(base.push(P_COMPRESSED_COMMUNICATION),null,false);
         if( compressedCommunication )
             {
-//            state.output.fatal("JDK 1.5 has broken compression.  For now, you must set " + base.push(P_COMPRESSED_COMMUNICATION) + "=false");
+            //            state.output.fatal("JDK 1.5 has broken compression.  For now, you must set " + base.push(P_COMPRESSED_COMMUNICATION) + "=false");
             state.output.message( "Communication will be compressed" ); 
             }
             
@@ -843,7 +843,7 @@ public class IslandExchange extends Exchanger
                         if (chatty) state.output.message( "Sending " + size + " immigrants to island " + outgoingIds[x] );
 
                         // for each of the subpopulations
-                        for( int subpop = 0 ; subpop < state.population.subpops.length ; subpop++ )
+                        for(int subpop = 0; subpop < state.population.subpops.size(); subpop++ )
                             {
                             // send the subpopulation
                             outWriters[x].writeInt( subpop );
@@ -858,7 +858,7 @@ public class IslandExchange extends Exchanger
                             for( int y = 0 ; y < size ; y++ ) // send all necesary individuals
                                 {
                                 int index = immigrantsSelectionMethod.produce( subpop, state, 0 );
-                                process(state, 0, outgoingIds[x], subpop, state.population.subpops[subpop].individuals[index]).writeIndividual( state, outWriters[x] );
+                                process(state, 0, outgoingIds[x], subpop, state.population.subpops.get(subpop).individuals.get(index)).writeIndividual( state, outWriters[x] );
                                 // TODO -- should we move this to the end?
                                 outWriters[x].flush();  // just in case the individuals didn't do a println
                                 }
@@ -937,7 +937,7 @@ public class IslandExchange extends Exchanger
                     {
                     if (chatty) state.output.message( "Immigrating " +  mailbox.nImmigrants[x] + " individuals from mailbox for subpopulation " + x );
 
-                    boolean[] selected = new boolean[ state.population.subpops[x].individuals.length ];
+                    boolean[] selected = new boolean[ state.population.subpops.get(x).individuals.size() ];
                     int[] indices = new int[ mailbox.nImmigrants[x] ];
                     for( int i = 0 ; i < selected.length ; i++ )
                         selected[i] = false;
@@ -957,12 +957,12 @@ public class IslandExchange extends Exchanger
                         {
 
                         // read the individual
-                        state.population.subpops[x].
-                            individuals[ indices[y] ] = mailbox.immigrants[x][y];
+                        state.population.subpops.get(x).
+                            individuals.set(indices[y],mailbox.immigrants[x][y]);
 
                         // reset the evaluated flag (the individuals are not evaluated in the current island */
-                        state.population.subpops[x].
-                            individuals[ indices[y] ].evaluated = false;
+                        state.population.subpops.get(x).
+                            individuals.get(indices[y]).evaluated = false;
 
                         }
 
@@ -1392,7 +1392,7 @@ class IslandExchangeMailbox implements Runnable
                                     try
                                         {
                                         // read the immigrant in the storage
-                                        immigrants[subpop][nextIndexPosition[subpop]] = state.population.subpops[subpop].species.newIndividual( state, dataInput[x] );
+                                        immigrants[subpop][nextIndexPosition[subpop]] = state.population.subpops.get(subpop).species.newIndividual( state, dataInput[x] );
 
                                         //state.output.message( "Individual received." );
                                         
@@ -1610,9 +1610,9 @@ class IslandExchangeServer implements Runnable
     /** The synchronize message */
     public static final String SYNC = IslandExchange.SYNC;
 
-/** A class indicating all the information the server knows about
-    a given island, including its mod, size, offset, and all the
-    migrating islands it hooks to, etc. */
+    /** A class indicating all the information the server knows about
+        a given island, including its mod, size, offset, and all the
+        migrating islands it hooks to, etc. */
     public static class IslandExchangeIslandInfo
         {
         /** how often to send individuals */
@@ -1716,19 +1716,19 @@ class IslandExchangeServer implements Runnable
             {
             state.output.message( "The communication will be synchronous." );
 
-/*
-// get the global modulo
-p = base.push( P_MODULO );
-global_modulo = state.parameters.getInt( p, null, 1 );
-if( global_modulo == 0 )
-state.output.fatal( "Parameter not found, or it has an incorrect value.", p );
+            /*
+            // get the global modulo
+            p = base.push( P_MODULO );
+            global_modulo = state.parameters.getInt( p, null, 1 );
+            if( global_modulo == 0 )
+            state.output.fatal( "Parameter not found, or it has an incorrect value.", p );
             
-// get the global offset
-p = base.push( P_OFFSET );
-global_offset = state.parameters.getInt( p, null, 0 );
-if( global_offset == -1 )
-state.output.fatal( "Parameter not found, or it has an incorrect value.", p );
-*/
+            // get the global offset
+            p = base.push( P_OFFSET );
+            global_offset = state.parameters.getInt( p, null, 0 );
+            if( global_offset == -1 )
+            state.output.fatal( "Parameter not found, or it has an incorrect value.", p );
+            */
             }
         else
             {

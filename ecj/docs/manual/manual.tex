@@ -33,6 +33,7 @@
 \usepackage{multicol}
 \usepackage{microtype}
 \usepackage{afterpage}
+\usepackage{color}
 \usepackage[font=footnotesize,labelsep=quad,labelfont=it]{caption}
 %%% Added in order to use hyperref -- this stuff has to appear before bibentry,x
 %%% which has a conflict with regard to \bibitem.  See later in this file for more stuff that has
@@ -913,6 +914,40 @@ Look first in {\it parameter}, then failing that, in {\it default parameter}, an
 Look first in {\it parameter}, then failing that, in {\it default parameter}, and return the result as a double, else {\it minValue\(-1\)} if not found, not a double, or \(<\) minValue.  Either parameter may be null.
 \mthd{public double getDoubleWithMax(Parameter \textit{parameter}, Parameter \textit{default}, double \textit{minValue}, double \textit{maxValue})}
 Look first in {\it parameter}, then failing that, in {\it default parameter}, and return the result as a double, else {\it minValue\(-1\)} if not found, not a double, \(<\) minValue, or \(>\) maxValue.  Either parameter may be null.
+
+
+
+\mthd{public double getDoubles(Parameter \textit{parameter}, Parameter \textit{default}, double \textit{minValue})}
+Look first in {\it parameter}, then failing that, in {\it default parameter}, for a space- or tab-delimited list of
+double values, and return the result as an array of doubles, else null if they are improperly formatted
+or if any of them is \(<\) minValue, or if the list is zero in length, or if it has garbage
+at the end of it.   Either parameter may be null.
+\mthd{public double getDoubles(Parameter \textit{parameter}, Parameter \textit{default}, double \textit{minValue}, int \textit{expectedLength})}
+Look first in {\it parameter}, then failing that, in {\it default parameter}, for a space- or tab-delimited list of
+double values, and return the result as an array of doubles, else null if they are improperly formatted
+or if any of them is \(<\) minValue, or if the list is not expectedLength \((>0)\) long, 
+or if it has garbage at the end of it.   Either parameter may be null.
+\mthd{public double getDoublesWithMax(Parameter \textit{parameter}, Parameter \textit{default}, double \textit{minValue}, double \textit{maxValue})}
+Look first in {\it parameter}, then failing that, in {\it default parameter}, for a space- or tab-delimited list of
+double values, and return the result as an array of doubles, else null if they are improperly formatted
+or if any of them is \(<\) minValue, or \(>\) maxValue, or if the list is zero in length, or if it has garbage
+at the end of it.   Either parameter may be null.
+\mthd{public double getDoublesWithMax(Parameter \textit{parameter}, Parameter \textit{default}, double \textit{minValue}, double \textit{maxValue},}
+\rule{0pt}{0pt}\hspace{\fill} {\sf int \textit{expectedLength})}\\
+Look first in {\it parameter}, then failing that, in {\it default parameter}, for a space- or tab-delimited list of
+double values, and return the result as an array of doubles, else null if they are improperly formatted
+or if any of them is \(<\) minValue, or \(>\) maxValue, or if the list is not expectedLength \((>0)\) long, 
+or if it has garbage at the end of it.   Either parameter may be null.
+\mthd{public double getDoublesUnconstrained(Parameter \textit{parameter}, Parameter \textit{default})}
+Look first in {\it parameter}, then failing that, in {\it default parameter}, for a space- or tab-delimited list of
+double values, and return the result as an array of doubles, else null if they are improperly formatted, 
+or if the list is zero in length, or if it has garbage
+at the end of it.   Either parameter may be null.
+\mthd{public double getDoublesUnconstrained(Parameter \textit{parameter}, Parameter \textit{default}, int \textit{expectedLength})}
+Look first in {\it parameter}, then failing that, in {\it default parameter}, for a space- or tab-delimited list of
+double values, and return the result as an array of doubles, else null if they are improperly formatted,
+or if the list is not expectedLength \((>0)\) long, 
+or if it has garbage at the end of it.   Either parameter may be null.
 \end{methods}
 
 \subsection{Debugging Your Parameters}
@@ -2255,13 +2290,13 @@ Obviously further subpopulations would be \parameter{pop.subpop.1}, \parameter{p
 The Population is little more than an array of Subpopulations.  To get Subpopulation 0, with the EvolutionState being \variable{state}, you'd say:
 
 \java{
-Subpopulation theSubpop = state.population.subpops[0];
+Subpopulation theSubpop = state.population.subpops.get(0);
 }
 
 Subpopulations themselves contain arrays of individuals.  To get Individual 15 of Subpopulation 0, you'd say:
 
 \java{
-Individual theIndividual = state.population.subpops[0].individuals[15];
+Individual theIndividual = state.population.subpops.get(0).individuals.get(15);
 }
 
 In addition to an array of individuals, each subpopulation contains a {\bf species} which defines the individuals used to fill the subpopulation, as well as their fitness and the means by which they are modified.  Subpopulations also contain some basic parameters for creating initial individuals, though the procedure is largely handled by Species.\footnote{You might be asking: if Species are responsible for making individuals, why are Subpopulations involved at all?  A very good question indeed.}  We'll get to creation and modification later.
@@ -2269,14 +2304,14 @@ In addition to an array of individuals, each subpopulation contains a {\bf speci
 Species have an odd relationship to Individuals and to Subpopulations.  First recall the Flyweight pattern in Section~\ref{flyweight}.  Individuals are related to a common Species using the Flyweight pattern: they use Species to store a lot of common information (how to modify themselves, for example).  Ordinarily you'd think that the Subpopulation would be a good place for this storage.  However different Subpopulations can share the same Species.  This allows you to, for example, have one Species guide an entire evolutionary run that might have twenty Subpoulations in it.\footnote{Granted, this isn't very common.}  The species of Subpopulation 0 may be found here:
 
 \java{
-Species theSpecies = state.population.subpops[0].species;
+Species theSpecies = state.population.subpops.get(0).species;
 }
 
 A Species contains three major elements: first, the {\bf prototypical Individual} for Subpopulations which use that Species. Recall that Individuals are Prototypes and new ones are formed by cloning from a prototypical individual held in reserve.  This ``queen bee'' individual, so to speak, is found here:
 
 \indent\hspace{1.25em}\vbox{
 \small\begin{verbatim}
-Individual theProto = state.population.subpops[0].species.i_prototype;
+Individual theProto = state.population.subpops.get(0).species.i_prototype;
 \end{verbatim}
 }
 
@@ -2284,7 +2319,7 @@ A Species also contains a {\bf prototypical Fitness} object.  In ECJ {\it fitnes
 
 \indent\hspace{1.25em}\vbox{
 \small\begin{verbatim}
-Fitness theProtoFitness = state.population.subpops[0].species.f_prototype;
+Fitness theProtoFitness = state.population.subpops.get(0).species.f_prototype;
 \end{verbatim}
 }
 
@@ -2300,7 +2335,7 @@ By way of explanation, \class{IntegerVectorIndividual}, along with various other
 
 \indent\hspace{1.25em}\vbox{
 \small\begin{verbatim}
-Fitness theFitness = state.population.subpops[0].individuals[15].fitness;
+Fitness theFitness = state.population.subpops.get(0).individuals.get(15).fitness;
 \end{verbatim}
 }
 
@@ -2743,7 +2778,7 @@ pop.file = /tmp/population.in
 
 The Population will read Subpopulations, and ultimately Individuals, from this file by calling its \method{readPopulation(..., LineNumberReader)} method.  
 
-\item If the Population has not read from a file, it will call \method{populate(...)} on each of its Subpopulations.  A Subpopulation's \method{populate(...)} method usually works like this.  First, it determines if it should create new individuals from scratch or if it should fill its array by reading Individuals from a file.    If the individuals are to be generated from scratch (the most common case by far), Subpopulation generates new individuals using the standard \method{newIndividual(...)} method in \class{ec.Species} (see Section~\ref{ec.Species}).  ECJ can also check to make sure that the Subpopulation does not produce duplicate individuals while generating from scratch, if you set the following parameter (in this case, in Subpopulation 0):
+\item If the Population is not reading from a file, it will call \method{populate(...)} on each of its Subpopulations.  A Subpopulation's \method{populate(...)} method usually works like this.  First, it determines if it should create new individuals from scratch or if it should fill its array by reading Individuals from a file.    If the individuals are to be generated from scratch (the most common case by far), Subpopulation generates new individuals using the standard \method{newIndividual(...)} method in \class{ec.Species} (see Section~\ref{ec.Species}).  ECJ can also check to make sure that the Subpopulation does not produce duplicate individuals while generating from scratch, if you set the following parameter (in this case, in Subpopulation 0):
 
 \params{%
 pop.subpop.0.duplicate-retries = 100
@@ -3157,11 +3192,13 @@ The idea of not cloning the population and pipeline is due to Brian Olsen, a GMU
 
 A Breeding Pipeline is a chain of selection and breeding operators whose function is to draw from Individuals in an old Subpopulation to produce individuals in a new Subpopulation.
 
-Breeding Pipelines consist of two kinds of objects.  First there are {\bf Selection Methods}, which select Individuals from the old Subpopulation and return them.  Then there are {\bf Breeding Pipelines} (what would have better been called \textit{\textbf{Breeding Operators}}), which take Individuals from Selection Methods or from other Breeding Pipelines, modify them in some way, and return them.
+Breeding Pipelines consist of two kinds of objects.  First there are {\bf Selection Methods}, which select Individuals from the old Subpopulation and return copies of them.  Then there are {\bf Breeding Pipelines} (what would have better been called \textit{\textbf{Breeding Operators}}), which take Individuals from Selection Methods or from other Breeding Pipelines, modify them in some way, and return them.
 
 The Breeding Pipeline structure isn't actually a {\it pipeline}: it's really a tree (or in some situations, a directed acyclic graph).    The leaf nodes in the graph tree are the Selection Methods (subclasses of \class{ec.SelectionMethod}, and the nonleaf nodes are the Breeding Pipeline objects (subclasses of \class{ec.BreedingPipeline}). 
 
 Each BreedingPipeline object can have some \(N\) {\bf sources} (children) from which it draws Individuals.  Both \class{ec.SelectionMethod} and \class{ec.BreedingPipeline} are subclasses of the abstract superclass \class{ec.BreedingSource}, and so can function as sources for BreedingPipelines.  SelectionMethods do not have sources: rather, they draw Individuals directly from the old Subpopulation.
+
+Breeding Pipelines implement a {\bf copy-forward} protocol: the leaf nodes (SelectionMethods) build clones of individuals selected from the original population, and the non-leaf BreedingPipeline objects modify those clones.  This way every Breeding Pipeline has its own copies of individuals from which it generates children, and so no locks are required on the original population when doing multithreaded breeding.
 
 BreedingSources (and BreedingPipeline, and SelectionMethods) are Prototypes, and so must implement the \method{clone()}, \method{defaultBase()}, and \method{setup(...)} methods.  BreedingSources also implement three special methods which perform the actual selection and breeding, which we describe here.  When a Breeder wishes to produce a series of new Individuals from an old Subpopulation, it begins by calling the method
 
@@ -3175,11 +3212,12 @@ This instructs the BreedingSource to prepare for a number of requests for Indivi
 Next, the Breeder calls the following zero or more times to actually produce the Individuals:
 
 \java{%
-public abstract int produce(int min, int max, int start, int subpopulation,\\
-\hsp{\fill}Individual[] inds, EvolutionState state, int thread);
+public abstract int produce(int min, int max, int subpopulation,\\
+\hsp{\fill}java.util.ArrayList<Individual> inds, EvolutionState state,\\
+\hsp{\fill}int thread, java.util.HashMap<String, Object> misc);
 }
 
-This instructs the BreedingSource to produce between \variable{min} and \variable{max} Individuals drawn from subpopulation number \variable{subpopulation}.  The Individuals are to be placed in the \variable{inds} array at slots \variable{inds[start],~inds[start+1],~...}  Finally the method returns the actual number of Individuals produced.
+This instructs the BreedingSource to produce between \variable{min} and \variable{max} Individuals drawn from subpopulation number \variable{subpopulation}.  The Individuals are to added to the end of the ArrayList \variable{inds}.  Auxiliary information may be found (or placed in) the HashMap \variable{misc}: see Section \ref{auxiliaryinformation}.  Finally the method returns the actual number of Individuals produced.
 
 Last, the Breeder calls the following method to give the BreedingSource an opportunity to clean up.  The BreedingSource in turn, at a minimum, will call the same method on each of its sources.
 
@@ -3203,7 +3241,7 @@ public abstract boolean produces(EvolutionState state, Population newpop,\\
 \hsp{\fill}int subpopulation, int thread);
 }
 
-\noindent ... returns \variable{true} if the BreedingSource believes it can validly produce Individuals of the type described by  the given Species, that is, by \variable{newpop.subpops[subpopulation].species}.  This is basically a sanity check.  At the minimum, the BreedingSource should call this method on each of its sources and return \variable{false} if any of them return \variable{false}.
+\noindent ... returns \variable{true} if the BreedingSource believes it can validly produce Individuals of the type described by  the given Species, that is, by \variable{newpop.subpops.get(subpopulation).species}.  This is basically a sanity check.  At the minimum, the BreedingSource should call this method on each of its sources and return \variable{false} if any of them return \variable{false}.
 
 Last, we have the hook...
 
@@ -3214,7 +3252,28 @@ public void preparePipeline(Object hook);
 You don't have to implement this at all.  ECJ does not call this method nor implement it in any of its BreedingSources beyond the default implementation (which in BreedingPipeline calls the method in turn on each of its sources).  This method simply exists in the case that you need a way to communicate with all the methods of a BreedingPipeline at some unusual time.
 
 
+\subsubsection{Auxiliary Data}
+\label{auxiliaryinformation}
+ 
+In addition to Individuals, Breeding Sources can also return various {\bf auxiliary data} associated with them.  This is an elaborate hook which lets you do much more sophisticated things with Breeding Sources are your needs may require.  This data is stored in the \variable{misc} variable passed into the \method{produce(...)} method of a Breeding Source.
 
+A Breeder may set \variable{misc} to \variable{null}, in which case Breeding Sources should simply ignore it.  Otherwise \variable{misc} holds a HashMap which maps {\bf keyword strings} to {\bf custom objects}, and is created immediately before any call to \method{produce(...)} by calling the following method in \method{ec.Species}:
+ 
+ \java{%
+	public HashMap<String, Object> buildMisc(EvolutionState state, int subpopIndex,\\
+\hsp{\fill}int thread);
+}
+
+By default this method just builds an empty HashMap.
+
+You can put whatever you want in this HashMap.  But ECJ currently reserves exactly one keyword string, defined in \method{SelectionMethod.java}:
+
+\java{%
+public static final String KEY\_PARENTS = "parents";
+}
+
+Associated with this string in the HashMap is an array of \class{ec.util.IntBag} objects.  An IntBag is very much like an ArrayList but it holds ordinary integers, not objects.\footnote{IntBag comes from ECJ's sister project, MASON https:/\!/cs.gmu.edu/\(\sim\)eclab/projects/mason}.  For a given individual number \(x\) returned in the ArrayList, the IntBag number \(x\) in the parents array holds indexes to all the parents of that Individual in the old Subpopulation.
+ 
 \subsection{SelectionMethods}
 \label{selectionmethods}
 
@@ -3227,21 +3286,36 @@ public abstract boolean produces(EvolutionState state, Population newpop,\\
 \hsp{\fill}int subpopulation, int thread);
 }
 
-\noindent ...just returns \variable{true}.  But you may wish to use this method to check to make sure that your SelectionMethod knows how to work with the kind of Fitnesses found in the given subpopulation, that is, \variable{state.population[subpopulation].f\_prototype}.
+\noindent ...just returns \variable{true}.  But you may wish to use this method to check to make sure that your SelectionMethod knows how to work with the kind of Fitnesses found in the given subpopulation, that is, \variable{state.population.subpops.get(subpopulation).f\_prototype}.
 
 The default implementations of \method{prepareToProduce(...)} and \method{finishProducing(...)} do nothing at all; though some kinds of SelectionMethods, such as Fitness Proportionate Selection (\class{ec.select.FitProportionateSelection}), use \method{prepareToProduce(...)} to prepare probability distributions based on the Subpopulation in order to select properly.
 
-SelectionMethods are sometimes called upon not to produce an Individual but to provide an {\it index} into a subpopulation where the Individual is located\,---\,perhaps to kill that Individual and place another Individual in its stead.  To this end, SelectionMethods have an alternative form of the \method{produce(...)} method:
+SelectionMethods are sometimes called upon not to produce a cloned Individual but to provide an {\it index} into a subpopulation where the Individual is located\,---\,perhaps to kill that Individual and place another Individual in its stead.  To this end, SelectionMethods have an {\bf alternative form} of the \method{produce(...)} method:
 
 \java{%
 public abstract int produce(int subpopulation, EvolutionState state, int thread);
 }
 
-This method must return the index of the selected individual in the Subpopulation given by
+
+This method must return the index of the selected individual in the Subpopulation given by:
 
 \java{%
-state.population.subpops[subpopulation].individuals;
+state.population.subpops.get(subpopulation).individuals;
 }
+
+Furthermore, SelectionMethods have a special version of \method{produce(...)} called \method{produceWithoutCloning(...)}, which selects individuals (using the alternative form of \method{produce(...)} as described earlier) and sticks them directly into the ArrayList without cloning them. 
+
+\java{%
+public int produceWithoutCloning(int min, int max, int subpopulation,\\
+\hsp{\fill}java.util.ArrayList<Individual> inds, EvolutionState state,\\
+\hsp{\fill}int thread, java.util.HashMap<String, Object> misc);
+}
+
+At present, \method{produceWithoutCloning()} does exactly one thing with the \variable{misc} variable: it creates a {\bf parents bag} for each produced child, and places in it the index of the original individual in the old subpopulation.
+
+The default implementation of the full \method{produce(...)} method just calls \method{producewithoutCloning(...)}, then replaces with clones each of the individuals placed in the ArrayList.  All this means that {\bf you don't have to implement the full \method{produce(...)} method}.  You typically just implement the alternative form (which you have to implement anyway).
+
+
 
 \subsubsection{Implementing a Simple SelectionMethod}
 
@@ -3253,16 +3327,18 @@ To select an individual at random from a Subpopulation, you could simply impleme
 public int produce(int subpopulation, EvolutionState state, int thread)
     {
     return state.random[thread.next(
-            state.population.subpops[subpopulation].individuals.length)];
+            state.population.subpops.get(subpopulation).individuals.size())];
     }
 \end{verbatim}}
 
-You'll want to always implement the alternative form of \method{produce(...)}.  But in some cases you may wish to also reimplement the ``standard'' form of \method{produce(...)} for some special reason.\footnote{Many ECJ selection methods implement the ``standard'' form in addition to the ``alternative'' simply to be pedantic\,---\,it's very slightly faster\,---\,but that's not a good reason nowadays.}  It's a bit more involved but not too hard.  We start by determining how many individuals we'll produce, defaulting with 1:
+You'll want to always implement the alternative form of \method{produce(...)}.  But in some cases you may wish to also reimplement the ``standard'' form of \method{produce(...)}  for some reason (you'll still have to implement the alternative form)\,---,\ perhaps you want to play with the \variable{misc} variable, for example.  In this case it's best to implement the \method{produceWithoutCloning(...)} version.  We start by determining how many individuals we'll produce, defaulting with 1:
 
 {\small\begin{verbatim}
-public int produce(int min, int max, int start, int subpopulation, Individual[] inds,
-                   EvolutionState state, int thread)
+public int produceWithoutCloning(int min, int max, int subpopulation, java.util.ArrayList<Individual> inds,
+                   EvolutionState state, int thread, java.util.HashMap<String, Object> misc)
     {
+    	int start = inds.size();
+	
         int n = 1;
         if (n>max) n = max;
         if (n<min) n = min;
@@ -3273,9 +3349,23 @@ Next we select \(n\) individuals from the old subpopulation and place them into 
 {\small\begin{verbatim}
         for(int q = 0; q < n; q++)
             {
-            Individual[] oldinds = state.population.subpops[subpopulation].individuals;
-            inds[start+q] = oldinds[state.random[thread].nextInt(
-                    state.population.subpops[subpopulation].individuals.length )];
+            int index = produce(subpopulation,state,thread);
+            inds.add(state.population.subpops.get(subpopulation).individuals.get(index));
+
+            // here we will create a parents IntBag for each selected individual, and place 
+            // the index of that selected individual directly in this IntBag.  An array of
+            // IntBags are stored associated with KEY_PARENTS. 
+            // Note that misc could be null, that's perfectly legitimate.
+            if (misc!=null && misc.get(KEY_PARENTS)!=null)
+                {
+                ec.util.IntBag bag = new ec.util.IntBag(1);
+                bag.add(index);
+                ((IntBag[])misc.get(KEY_PARENTS))[start+q] = bag;
+                }
+                
+            // Here is where you could play around some more with the misc variable,
+            // for example...
+            
             }
         return n;
         }
@@ -3291,6 +3381,34 @@ There are a number of standard SelectionMethods available in ECJ, all found in t
 \item \class{ec.select.FirstSelection} always returns the first individual in the Subpopulation.  This is largely used for testing purposes.
 
 \item \class{ec.select.RandomSelection} returns an Individual chosen uniformly at random.  Basically it does the same thing as the example given above.
+
+\item \class{ec.select.TopSelection} always returns the very best individual in the Subpopulation, breaking ties randomly.  You can optionally {\it cache} this individual so TopSelection doesn't hunt for him every time it's called.  To do this, you set:
+
+\params{%
+{\it base}.cache = true
+}
+
+The default value is false.  Note that if multiple individuals are tied for best, only one will be selected for the cache, and the others will never be returned.  The cache is reset when the method \method{prepareToProduce(...)} is called.  Warning: in steady-state evolution, this method is only called once, at the beginning of the run.  In generational evolution, the method is called at the start of every generation.
+
+\item \class{ec.select.AnnealedSelection} is used for doing Simulated Annealing.  It works as follows. If there is only one individual in the population, it is selected.  Otherwise we choose a random individual that is {\it not} the first individual.  If that random individual is fitter than the first individual, it is selected.  Otherwise if that random individual is {\it as fit as} (has a fitness equivalent to) the first individual, one of the two is selected at random.  Otherwise if the random individual is  {\it not as fit} as the first individual, it is selected with a probability \(P=e^\frac{\text{{\it Fitness}(the random individual)} - \text{{\it Fitness}(the first individual)}}{t}\), where \(t\) is a
+{\it temperature}.  Otherwise the first individual is selected.
+
+The temperature starts at a high value \(\gg 0\), and is slowly cut down by multiplying it by a {\it cutdown} value every generation.  When the temperature reaches 0, then the first individual is always selected.  The initial temperature and cutdown are set like this:
+
+\params{%
+{\it base}.temperature = 10000\\
+{\it base}.cutdown = 0.95
+}
+
+(You don't have to provide a cutdown, in which case its default is 0.95.)
+
+Like TopSelection, AnnealedSelection also has a caching option.  The selected individual can be  {\it cached} so the same individual is returned repeatedly without being recomputed.  This cache is cleared after a call to \method{prepareToProduce(...)}.  Again, note that this option is not appropriate for Steady State Evolution, which only calls \method{prepareToProduce(...)} once.  To do this, you set:
+
+\params{%
+{\it base}.cache = true
+}
+
+The default value is false.
 
 \item \class{ec.select.FitProportionateSelection}\footnote{It's called FitProportionateSelection rather than FitnessProportionateSelection for a historical reason: MacOS 9 didn't allow filenames longer than 32 characters, and {\tt FitnessProportionateSelection.class} is 35 characters long.} uses {\bf Fitness-Proportionate Selection}, sometimes called {\bf Roulette Selection}, to pick individuals. Thus \class{ec.select.BestSelection} requires that all fitnesses be non-negative.
 
@@ -3434,7 +3552,7 @@ At any rate, the user specifies each source with a parameter.  For example, to s
 {\it base}.source.2 = ec.select.GreedyOverselection
 }
 
-One trick available to you is to state that a source is the same source as a previous one using a special value called \parameter{same}.  For example, in the example above {\it two} TournamentSelection operators are created.  But if you said the following instead:
+A diversion.  One trick available to you is to state that a source is the same source as a previous one using a special value called \parameter{same}.  For example, in the example above {\it two} TournamentSelection operators are created.  But if you said the following instead:
 
 \params{%
 {\it base}.source.0 = ec.select.TournamentSelection\\
@@ -3442,14 +3560,22 @@ One trick available to you is to state that a source is the same source as a pre
 {\it base}.source.2 = ec.select.GreedyOverselection
 }
 
-\noindent ...then sources 0 and 1 will be the exact same object.  At any rate, the sources are then stored in the following instance variable:
+\noindent ...then sources 0 and 1 will be the exact same object.    This allows you to create a (very simple) Directed Acyclic Graph, or DAG, rather than a tree.  There is an even more sophisticated facility for creating DAGs called StubPipeline in Section \ref{standardbreedingpipelines}.  We will not talk about it further here except to say that there is an additional option available to say:
+
+\params{%
+{\it base}.source.0 = ec.select.TournamentSelection\\
+{\it base}.source.1 = stub\\
+{\it base}.source.2 = ec.select.GreedyOverselection
+}
+
+... and StubPipeline will fill the stub in with a pointer to a different pipeline.  Note that if you see \parameter{stub}, it {\it must} be the case that StubPipeline is somewhere in the ancestors of that parameter's BreedingPipeline.
+
+
+Getting back on track now.  At any rate, the sources are then stored in the following instance variable:
 
 \java{%
     public BreedingSource[] sources;
 }
-
-
-Unlike SelectionMethods, BreedingPipelines guarantee a {\bf copy-forward protocol}: any Individual produced by a BreedingPipeline will be unique to that thread.  The protocol is simple:  if a BreedingPipeline requests an Individual from a source, and that source is a SelectionMethod, the BreedingPipeline will copy the Individual and modify and hand off the copy.  But if the source is another BreedingPipeline, the BreedingPipeline will not copy the Individual but instead will just modify it directly and hand it off.  What's the point of this?  It enables multiple BreedingPipelines, one per thread, to be attached to an old Population and have {\it all} of them selecting Individuals out of that Population, modifying them, and generating new Individuals without the need for any locking.
 
 Some BreedingPipelines, like crossover pipelines, have a very specific number of children they produce by default (the value returned by \method{typicalIndsProduced()}).  However many others (mutation operators, etc.) simply return whatever Individuals they receive from their sources.  For these, BreedingPipeline has a default implementation of \method{typicalIndsProduced()} which should work fine: it simply calls \method{typicalIndsProduced()} on all of its sources, and returns the minimum.   This computation is done via a simple utility function, \method{minChildProduction()}, one of two such methods which might be useful to you:
 
@@ -3497,43 +3623,30 @@ Similarly if you have certain unusual constraints on the nature of your sources 
 Now we need to implement the \method{produce(...)} method.  Most mutation procedures ask their sources to produce some number of Individuals for them (however many the source prefers), and then mutate those Indviduals and return them.  We can ask our source to produce sources like this:
 
 {\small\begin{verbatim}
-public int produce(int min, int max, int start, int subpopulation, Individual[] inds,
-                   EvolutionState state, int thread)
+public int produce(int min, int max, int subpopulation, ArrayList<Individual> inds,
+                   EvolutionState state, int thread, HashMap<String, Object> misc)
     {
-    int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
+    int start = inds.size();  // this tells us where we started adding individuals
+    int n = sources[0].produce(min,max,subpopulation,inds,state,thread,misc);
 \end{verbatim}}
 
-The source has taken the liberty of filling slots \variable{inds[start] ... inds[start+n-1]} with \(\text{\variable{min}} \leq \text{\variable{n}} \leq \text{\variable{max}}\) Individuals.  Next we need to decide whether to bother mutating at all, based on the \parameter{likelihood} parameter.  We'll use the following utility method to help us:
-
-\begin{methods}{ec.BreedingPipeline}
-\mthd{public int reproduce(int \textit{n}, int \textit{start}, int \textit{subpopulation}, Individual[] \textit{inds}, EvolutionState \textit{state}, int \textit{thread},}
-\hsp{\fill}{\sf boolean \textit{produceChildrenFromSource})}\\
-If {\it produceChildrenFromSource} is true, extracts \(n\) Individuals from Source 0 of the BreedingPipeline, and places them in locations \variable{inds[start] ... inds[start+n-1]}, else works with the existing Individuals in those slots. If Source 0 is a SelectionMethod, the individuals in \variable{inds[start] ... inds[start+n-1]} are replaced with clones. Then \(n\) is returned.
-\end{methods}
-
-We do a coin-flip to determine whether or not to use this method to just clone some individuals from the Source or to go ahead and mutate them.  If the former, since our Source has already produced the children, we call this method, passing in {\it false} for the last argument:
+The source has taken the liberty of adding some \(n\) individuals to the \variable{inds} ArrayList.  Next we need to decide whether to bother mutating at all, based on the \parameter{likelihood} parameter. We do a coin-flip to determine this:
 
 {\small\begin{verbatim}
-    // should we bother mutating at all, or just reproduce?
+    // should we bother mutating at all?
     if (!state.random[thread].nextBoolean(likelihood))
-        return reproduce(n, start, subpopulation, inds, state, thread, false); 
+        return n; 
 \end{verbatim}}
 
-At this point we're committed to mutating the \(n\) Individuals.  First we need to clone them if Source 0 (our only Source) was a SelectionMethod, since it doesn't clone them for us:
-
-{\small\begin{verbatim}
-    // clone the individuals if necessary
-    if (!(sources[0] instanceof BreedingPipeline))
-        for(int q=start;q<n+start;q++)
-            inds[q] = (Individual)(inds[q].clone());
-\end{verbatim}}
-
-Now we can mutate the Individuals.  How mutation occurs depends on the representation of the Individual of course, so we'll fake it with a comment:
+At this point we're committed to mutating the \(n\) Individuals.  How mutation occurs depends on the representation of the Individual of course, so we'll fake it with a comment:
 
 {\small\begin{verbatim}
     for(int q=start;q<n+start;q++)
         {
-        // modify inds[q] somehow
+        // modify Individual inds.get(q) somehow
+        
+        // we probably now want to turn off its evaluated flag now since he's not like his parent
+        inds.get(q).evaluated = false;
         }
     return n;
     }
@@ -3609,6 +3722,9 @@ pop.subpop.0.pipe.0.source.0.source.1 = same
 
 Now {myCrossover} requests one child from {BufferedBreedingPipeline}, which in turn demands {\it two} children from {myOtherCrossover}, which crosses over two Individuals and returns them.  {BufferedBreedingPipeline} returns one of the Individuals.  Then {myOtherCrossover} requests the second child, and {BufferedBreedingPipeline} returns the other Individual out of its buffer.  Problem solved.
 
+\item \class{ec.breed.RepeatPipeline} takes a single source.  After the method \method{prepareToProduce(...)} has been called, it will request a single individual from its source.  It will then provide only copies of that individual in response to \method{produce(...)} requests.  This is useful for selecting a single individual and then (for example) mutating him many times to form children, as is often done in hill-climbing techniques.  Warning: in steady-state evolution,  \method{prepareToProduce(...)}  is only called once, at the beginning of the run.  In generational evolution, the method is called at the start of every generation.
+
+
 \item \class{ec.breed.ForceBreedingPipeline} takes a single source and a parameter \variable{num-inds}.  In response for a request for at least \(N\) individuals (minimum), ForceBreedingPipeline will return \(N\) individuals, or \variable{num-inds} individuals, whichever is larger.  If \variable{num-inds} is equal to or larger than \(N\), ForceBreedingPipeline will demand exactly \variable{num-inds} children from its breeding source, then copy (if necessary) and return them.  If \(N\) is larger, ForceBreedingPipeline will repeatedly request \variable{num-inds} children, or (for the final request) fewer than \variable{num-inds}, in order to satisfy the request for \(N\).  For example, if \(N=15\) and \variable{num-inds}\(=4\), then ForceBreedingPipeline will request 4, then 4, then 4, then 3 Individuals, then return them all.  The parameter of interest is set to some value like:
 
 
@@ -3620,7 +3736,7 @@ Now {myCrossover} requests one child from {BufferedBreedingPipeline}, which in t
 This pipeline gives you a way of either forcing the child pipeline to provide an exact number of individuals at a time.  This trick is sort of the counterpart to BufferedBreedingPipeline: it gives you a way of demanding a certain number of individuals from a pipeline (like a CrossoverPipeline) which doesn't normally return that number.
 
 
-\item \class{ec.breed.CheckingBreedingPipeline} takes two sources, and some \(N\) times to produce ``valid'' individuals from source 0.  To verify validity, it calls the method \method{allValid(...)}, which you override.  If it fails after \(N\) attempts, it instead produces individuals from source 1 and returns them.  The value of \(N\) is determined with the parameter:
+\item \class{ec.breed.CheckingPipeline} takes two sources, and some \(N\) times to produce ``valid'' individuals from source 0.  To verify validity, it calls the method \method{allValid(...)}, which you override.  If it fails after \(N\) attempts, it instead produces individuals from source 1 and returns them.  The value of \(N\) is determined with the parameter:
 
 \params{%
 {\it base}.num-times = 20
@@ -3628,7 +3744,7 @@ This pipeline gives you a way of either forcing the child pipeline to provide an
 
 The \method{allValid(...)} method is defined as:
 
-\begin{methods}{ec.breed.CheckingBreedingPipeline}
+\begin{methods}{ec.breed.CheckingPipeline}
 \mthd{public boolean allValid(Individual[] inds, int numInds, int subpopulation, EvolutionState state, int thread)}
 Returns whether all of the individuals in {\it inds[0] ... inds[numInds - 1]} are valid.  Override this to customize how CheckingBreedingPipeline checks individuals.  By default, this method simply returns true.
 \end{methods}
@@ -3662,7 +3778,7 @@ How may individuals must be generated for UniquePipeline to be satisfied?  If th
 }
 
 
-\item Last, \class{ec.breed.GenerationSwitchPipeline} takes two sources.  In response to a request for individuals, for generations 1 through \(N-1\) GenerationSwitchPipeline will request Indivduals from source 0.  For generations \(N\) and on,  GenerationSwitchPipeline will request Individuals from source 1.  You specify the switch-generation \(N\) as:
+\item \class{ec.breed.GenerationSwitchPipeline} takes two sources.  In response to a request for individuals, for generations 1 through \(N-1\) GenerationSwitchPipeline will request Indivduals from source 0.  For generations \(N\) and on,  GenerationSwitchPipeline will request Individuals from source 1.  You specify the switch-generation \(N\) as:
 
 \params{%
 {\it base}.switch-at = 15
@@ -3676,6 +3792,53 @@ Like ReproductionPipeline, GenerationSwitchPipeline can guarantee that both of i
 
 By default, \parameter{generate-max} is true, so this example is redundant.
 
+
+
+
+\item \class{ec.breed.FirstCopyPipeline} is a version of ReproductionPipeline but has two sources.  Whenever \method{prepareToProduce(...)} is called, FirstCopyPipeline is reset.  the immediate next time \method{produce(...)} is called, FirstCopyPipeline will use source \#0 to fulfill the very first child produced.  Thereafter it use source \#1 for all future children (and all future \method{produce(...)} calls.  \method{prepareToProduce(...)} resets it again.  This is useful for performing a simple elitism in a pipeline rather than doing it at the Breeder level.  
+
+
+\item Last, \class{ec.breed.StubPipeline} is a version of ReproductionPipeline but includes a special subsidiary pipeline called a {\it stub pipeline}.  If some BreedingPipeline which feeds into StubPipeline's source \#0 itself contains a source simply called \parameter{stub}, then that source location is filled with that StubPipeline's stub pipeline.  Each breeding thread gets its own copy of the stub pipeline, but within a thread stub pipelines are not copied.  Using StubPipeline you can construct elaborate Directed Acyclic Graphs in your Pipeline.
+
+
+\begin{figure}[t]
+\includegraphics[width=3.5in]{stubbefore}\hspace{\fill}
+\includegraphics[width=2.5in]{stubafter}
+\caption{Stub Pipeline before (as specified in the parameter file) and after (as constructed). See text.}
+\label{stubpipeline}
+\end{figure}
+
+For example, if we had:
+
+\params{%
+pop.subpop.0.pipe.0 = ec.breed.StubPipeline\\
+\# Here's the stub:\\
+pop.subpop.0.pipe.0.stub-source = ec.breed.ReproductionPipeline\\
+pop.subpop.0.pipe.0.stub-source.source.0 = ec.select.TournamentSelection\\
+\\
+pop.subpop.0.pipe.0.source.0 = ec.vector.VectorCrossoverPipeline\\
+pop.subpop.0.pipe.0.source.0.source.0 = stub\\
+pop.subpop.0.pipe.0.source.0.source.1 = ec.vector.VectorMutationPipeline\\
+pop.subpop.0.pipe.0.source.0.source.1.source.0 = stub
+}
+
+... then the ECJ would fill the two stubs such that the stub lines would be more or less like this:
+
+\params{%
+\# First stub
+pop.subpop.0.pipe.0.source.0.source.0 = ec.breed.ReproductionPipeline\\
+pop.subpop.0.pipe.0.source.0.source.0.source.0 = ec.select.TournamentSelection\\
+\\
+\# Second stub -- note that these are the EXACT SAME OBJECTS as in the first stub!\\
+pop.subpop.0.pipe.0.source.0.source.1.source.0 = ec.breed.ReproductionPipeline\\
+pop.subpop.0.pipe.0.source.0.source.1.source.0.source.0 = ec.select.TournamentSelection
+}
+
+Figure \ref{stubpipeline} shows the process of building this pipeline from the stub declarations.  The critical feature is that the two stubs are replaced with {\it the same object}, not copies, and thus it's a Directed Acyclic Graph.  
+
+The procedure is as follows. During \method{setup(...)} sources declared as a ``stub'' are not filled: they're set to \variable{null}.  Then after a pipeline has been cloned and handed to a thread to begin breeding, but before \method{produce(...)} commences, the method \method{BreedingSource.fillStubs(...)} is called.  This recursively traverses through the tree: whenever a StubPipeline receives this method, it fills all the \variable{null} references in its children with its stub pipeline.  
+
+StubPipelines replace all the stubs down to the next StubPipeline (which gets to replace stubs of its own subtree).  Additionally it's possible that a stub-pipeline itself contains stubs.  In this case, if a StubPipeline A contains a child or descendent StubPipeline B whose stub-pipeline contains stubs, they are filled with StubPipeline A's stub-pipeline before control is handed off to StubPipeline B to start filling.
 
 
 \end{itemize}
@@ -4192,7 +4355,7 @@ Whenever you override one of these methods, make certain to call \method{super(.
 public void postInitializationStatistics(EvolutionState state)
     {
     super.postInitializationStatistics(state);  // always call this
-    state.output.println(state.population.subpops[0].individuals[0].size(), 0);  // stdout
+    state.output.println(state.population.subpops.get(0).individuals.get(0).size(), 0);  // stdout
     }
 \end{verbatim}
 }
@@ -4229,7 +4392,7 @@ Now we can write out to the log:
 public void postInitializationStatistics(EvolutionState state)
     {
     super.postInitializationStatistics(state);  // always call this
-    state.output.println(state.population.subpops[0].individuals[0].size(), log);
+    state.output.println(state.population.subpops.get(0).individuals.get(0).size(), log);
     }
 \end{verbatim}
 }
@@ -4378,7 +4541,7 @@ The first population has been created.  Let's look at the first Individual:
 
 \vbox{
 \small\begin{verbatim}
-        state.population.subpops[0].individuals[0];
+        state.population.subpops.get(0).individuals.get(0);
 \end{verbatim}
 }
 
@@ -4394,7 +4557,7 @@ Not very helpful.  Instead, let's have it printed:
 
 \vbox{
 \small\begin{verbatim}
-        state.population.subpops[0].individuals[0].printIndividualForHumans(state, 0);
+        state.population.subpops.get(0).individuals.get(0).printIndividualForHumans(state, 0);
 \end{verbatim}
 }
 
@@ -4436,8 +4599,8 @@ Now we're getting somewhere.  You could print out all the individuals like this:
 
 \vbox{
 \small\begin{verbatim}
-        for(int i = 0; i < state.population.subpops[0].individuals.length; i++ )
-                state.population.subpops[0].individuals[i].printIndividualForHumans(state, 0);
+        for(int i = 0; i < state.population.subpops.get(0).individuals.size(); i++ )
+                state.population.subpops.get(0).individuals.get(i).printIndividualForHumans(state, 0);
 \end{verbatim}
 }
 
@@ -4464,7 +4627,7 @@ Let's look at that first individual again:
 
 \vbox{
 \small\begin{verbatim}
-        state.population.subpops[0].individuals[0].printIndividualForHumans(state, 0);
+        state.population.subpops.get(0).individuals.get(0).printIndividualForHumans(state, 0);
 \end{verbatim}
 }
 
@@ -4517,7 +4680,7 @@ Now \variable{p} holds the old Population, filled with now-evaluated Individuals
 
 \vbox{
 \small\begin{verbatim}
-        p.subpops[0].individuals[0].printIndividualForHumans(state, 0);
+        p.subpops[0].individuals.get(0).printIndividualForHumans(state, 0);
 \end{verbatim}
 }
 
@@ -4577,28 +4740,36 @@ ECJ is most commonly used for generational evolution: where a whole Population i
 
 \paragraph{Generations and Evaluations}
 
-Generational Evolution, of course, has {\it generations}.  The maximum number of generations to run can be selected in one of two ways.  First, you could explicitly state the desired maximum number of generations:
+Generational Evolution, of course, has {\it generations}.  A generation is one iteration of the top-level evolutionary loop.  It also has {\it evaluations}, which is the number of times an individual has been (potentially) assigned a fitness.  By {\it potentially} we mean that if an individual could have been tested, but the Problem chose not to because the individual had already been assessed (its \variable{evaluated} flag was raised), this {\it still counts as an evaluation.}
+
+When the population does not change in size (which is often the case), the number of generations transpired is equal to the number of evaluations times the total size of the population.  But when the population size changes, this relationship is no longer necessarily true.
+
+The generational facility will run until one of two events has happened:
+
+\begin{itemize}
+\item The {\it maximum number of generations} has been exceeded. 
+\item The {\it maximum number of evaluations} has been exceeded.  ECJ will then continue evaluating individuals until it hits the next generation boundary, at which point it quits.  For example, let's say that your system is supposed to run for seven evaluations, but in fact you a total population size of four, so your generation boundary is every four individuals.  When seven evaluations has been reached, there's still one more individual left in the population to be evaluated before the next generation boundary.  ECJ will thus evaluate {\it eight} individuals.  
+\end{itemize}
+
+You specify the maximum number of generations as:
 
 \begin{verbatim}
 generations = 100
 \end{verbatim}
 
-This will cause generational evolution to evaluate 1000 generations' worth of individuals, including the initial generation, which is considered generation 1.  This will cause the \variable{EvolutionState.numGenerations} variable to be set to this value.  Alternatively, you can define generations like this:
+ECJ will set the \variable{SimpleEvolutionState.numGenerations} variable to be set to this value (100). 
+
+You specify the maximum number of evaluations as:
 
 \begin{verbatim}
 evaluations = 10000
 \end{verbatim}
 
-This will cause the \variable{EvolutionState.numEvaluations} variable to be set to this value. After the initial Population has been created, but before it has been evaluated, ECJ will determine the number of generations to run based on this number.  It's done as follows:
+ECJ will set the \variable{SimpleEvolutionState.numEvaluations} variable to this value (10000).  
 
-\begin{enumerate}
-\item Let \(p\) be the total number of individuals in the initial Population, including all Subpopulations.
-\item If \variable{evaluations} is less than \(p\), it is set to \(p\).
-\item Else if \(p\) does not divide evenly into \variable{evaluations}, then \variable{evaluations} is reduced to the largest smaller value which \(p\) divides evenly into.
-\item The number of generations is set to \variable{evaluations} divided by \(p\).
-\end{enumerate}
+You must specify one or the other of these.  If you specify {\it both} of them, then you will get a warning that either event could occur and ECJ can't predict which one will happen first.
 
-This mechanism allows us to create, in parameters, a trade-off of generations versus population size which is useful in some later methods, such as Meta-EAs (Section \ref{metaea}). 
+The current generation is stored in the variable \variable{EvolutionState.generation}, and is updated on a generation boundary.  The current number of evaluations is stored in the variable \variable{EvolutionState.evaluation}, and is updated .  Note that these variables will only be updated on a generation boundary. 
 
 \subsection{The Genetic Algorithm (The \package{ec.simple} Package)}
 \label{ec.simple}
@@ -5153,6 +5324,274 @@ All fine and good, but there's a catch.  Recall that steady-state evolution firs
 It's a small probability: 1/{\it subpopsize}.  But it can happen.  If you don't like this, we'd need to significantly modify Steady-State evolution.  We can do it but it's not high on the list.  If you need it higher on the list, send us mail.
 
 It's worth noting that this is all possible because, unlike generational evolution, steady-state evolution only generates one breeding pipeline and continues to use it throughout the run.  Were we to try this trick with generational evolution, the BufferedBreedingPipeline would be destroyed each generation, including any kids presently in its buffer.
+
+
+
+\section{Single-State Methods (The \package{ec.singlestate} Package)}
+\label{ec.singlestate}
+
+In contrast to evolutionary methods, which maintain a Population of Individuals at a time, Single-State methods typically maintain just one or two individuals.  Though they may spawn many individuals at a time, they'll whittle them back down to just one or two.  Examples of single-state methods include variations on Hill-Climbing and Simulated Annealing.
+
+You can of course implement single-state methods in a population context, and so you {\it could} just use SimpleEvolutionState and be done with it.  However, SimpleEvolutionState has a lot of overhead per iteration.  The goal in the SingleState package is to reduce this overhead considerably because iterations are numerous.
+
+To implement a Single-State method you will need a special EvolutionState and a special Breeder.  You can have multithreaded evaluation (if you use SteadyStateEvaluator for example) but you can only have single-threaded breeding.
+
+\params{%
+state = ec.singlestate.SingleStateEvolutionState\\
+breed = ec.singlestate.SingleStateBreeder\\
+breedthreads = 1
+}
+
+In a SingleState method you'd most commonly use generations as your measure of progress, though you could also use evaluations.  One chief difference is that, like checkpoints, statistics and exchanges are also only performed once every \(n\) generations.  Additionally, this modulo value for the exchanges and checkpoints should be a multiple of the value for the statistics.  For example, if you have statistics performed every 5 generations, exchanges must be done every 10, 15, or 20 generations (etc.) but not 7 or 3.   Typically you'd set these to pretty high values:
+
+\params{%
+stats-modulo = 1000\\
+checkpoint-modulo = 10000\\
+exchange-modulo = 10000
+}
+
+A number of single-state methods have an elitism of 1: the original best individual is propagated forward.  SingleStateBreeder supports elitism but only for 1, not for larger numbers.  To turn on elitism in subpopulation 0 you'd say:
+
+\params{%
+breed.elite.0 = true
+}
+
+Additionally, some single-state methods begin with an initial subpopulation of a given size, then change it to a different size for future generations.  SingleStateBreeder supports this.  For example, if you had a single subpopulation initially of size 1 but then changing to size 2, you could do this
+
+\params{%
+pop.subpop.0.size = 1\\
+breed.expanded-subpop-size.0 = 2
+}
+
+SingleStateBreeder also supports the same {\bf default subpopulation} mechanism as SimpleBreeder; and both of these parameters will be looked up in the default subpopulation if they do not appear for a given subpopulation.
+
+\subsection{Simple Hill-Climbing and (1+1)}
+
+Hill-climbing works as follows:
+
+\begin{enumerate}
+\item Build a subpopulation of size 1
+\item Loop \(g\) times:
+	\begin{enumerate}
+		\item Test all individuals in the subpopulation
+		\item Create the next subpopulation, of size 2
+		\item Select the best individual in the old subpopulation, and add to the next subpopulation
+		\item Fill the remaining slot with an individual copied and mutated from the best individual
+	\end{enumerate}
+\end{enumerate} 
+
+The Evolution Strategies method \((1+1)\) is the same, with the caveat that the mutation is global: it must in theory be able to produce any child from any parent. 
+
+Note that this method (1) starts with a subpopulation of size 1 but changes it to 2 later (2) has elitism and (3) breeds a child from the elitist individual.  We will do these things as follows.  First, we handle the change of subpopulation size:
+
+\params{%
+pop.subpop.0.size = 1\\
+breed.expanded-subpop-size.0 = 2
+}
+
+Next we add elitism:
+
+\params{%
+breed.elite.0 = true
+}
+
+Finally, to grab the best individual from the previous subpopulation efficiently, we use \class{ec.select.TopSelection}, for example, something like:
+
+\params{%
+pop.subpop.0.species.pipe =             ec.vector.breed.VectorMutationPipeline\\
+pop.subpop.0.species.pipe.source.0 =    ec.select.TopSelection
+}
+
+We'll make the modulos big and run for, say, 100000 generations:
+
+\params{%
+generations = 100000\\
+checkpoint-modulo =             10000\\
+stats-modulo =                  10000\\
+exchange-modulo =               10000
+}
+
+For a complete example, try the file \file{ec/app/ecsuite/hc.params}
+
+%\texorpdfstring{(1+1), (1+$\lambda$), and (1, $\lambda$)}{(1 + 1), (1 + lambda), and (1, lambda)}]{Adjusting the Modification Procedure: (1+1), (1+$\bm\lambda$), and ($\bm{1, \lambda$})}
+
+\subsection[\texorpdfstring{Steepest Ascent Hill-Climbing and (1+$\lambda$)}{Steepest Ascent Hill-Climbing and (1 + lambda)}]{Steepest Ascent Hill-Climbing and (1+$\bm\lambda$)}
+
+Steepest Ascent Hill-Climbing is similar to Simple Hill-Climbing, except that some \(\lambda\) children are generated at one time; they're then whittled down to 1 again (or more specifically, only the best is selected from them).  We can do it this way:
+
+\begin{enumerate}
+\item Build a subpopulation of size 1
+\item Loop \(g\) times:
+	\begin{enumerate}
+		\item Test all individuals in the subpopulation
+		\item Create the next subpopulation, of size \(1 + \lambda\)
+		\item Select the best individual in the old subpopulation, and add to the next subpopulation
+		\item Fill the remaining \(\lambda\) slots with individuals copied and mutated from the best individual
+	\end{enumerate}
+\end{enumerate} 
+
+The Evolution Strategies method \((1+\lambda)\) is the same, with the caveat that the mutation is global: it must in theory be able to produce any child from any parent. 
+
+Note again that this method (1) starts with a subpopulation of size 1 but changes it to \(1 + \lambda\) later (2) has elitism and (3) breeds children only from the elitist individual.  We will do these things as follows.  First, we handle the change of subpopulation size:
+
+\params{%
+pop.subpop.0.size = 1\\
+\# let's say lambda is 10\\
+breed.expanded-subpop-size.0 = 11
+}
+
+Next we add elitism:
+
+\params{%
+breed.elite.0 = true
+}
+
+Finally, to grab the best individual from the previous subpopulation efficiently, we use \class{ec.select.TopSelection}, for example, something like:
+
+\params{%
+pop.subpop.0.species.pipe =             ec.vector.breed.VectorMutationPipeline\\
+pop.subpop.0.species.pipe.source.0 =    ec.select.TopSelection
+}
+
+Because our population is 10x larger than our simple hillclimbing example, we'll run for 1/10 the generations, and adjust the modulos accordingly:
+
+
+\params{%
+generations = 10000\\
+checkpoint-modulo =             1000\\
+stats-modulo =                  1000\\
+exchange-modulo =               1000
+}
+
+For a complete example, try the file \file{ec/app/ecsuite/hcsteep.params}
+
+%\texorpdfstring{(1+1), (1+$\lambda$), and (1, $\lambda$)}{(1 + 1), (1 + lambda), and (1, lambda)}]{Adjusting the Modification Procedure: (1+1), (1+$\bm\lambda$), and ($\bm{1, \lambda$})}
+
+
+
+\subsection[\texorpdfstring{Steepest Ascent Hill-Climbing With Replacement and (1, $\lambda$)}{Steepest Ascent Hill-Climbing With Replacement and (1, lambda)}]{Steepest Ascent Hill-Climbing With Replacement and (1, $\bm\lambda$)}
+
+Steepest Ascent Hill-Climbing With Replacement is similar to Simple Hill-Climbing, except that there is no elitism: the parent is not propagated forward into the next generation, so there are only \(\lambda\) children in the next subpopulation.  We can do it like this:
+
+\begin{enumerate}
+\item Build a subpopulation of size 1
+\item Loop \(g\) times:
+	\begin{enumerate}
+		\item Test all individuals in the subpopulation
+		\item Create the next subpopulation, of size \(\lambda\)
+		\item Fill the \(\lambda\) slots with individuals copied and mutated from the best individual in the old population
+	\end{enumerate}
+\end{enumerate} 
+
+The Evolution Strategies method \((1, \lambda)\) is the same, with the caveat that the mutation is global: it must in theory be able to produce any child from any parent. 
+
+Note that this method (1) starts with a subpopulation of size 1 but changes it to \(\lambda\) later (2) does {\it not} have elitism and (3) breeds children only from the best individual.  We will do these things as follows.  First, we handle the change of subpopulation size:
+
+\params{%
+pop.subpop.0.size = 1\\
+\# let's say lambda is 10\\
+breed.expanded-subpop-size.0 = 10
+}
+
+No elitism:
+
+\params{%
+breed.elite.0 = false
+}
+
+Finally, to grab the best individual from the previous subpopulation efficiently, we use \class{ec.select.TopSelection}, for example, something like:
+
+\params{%
+pop.subpop.0.species.pipe =             ec.vector.breed.VectorMutationPipeline\\
+pop.subpop.0.species.pipe.source.0 =    ec.select.TopSelection
+}
+
+Because our population is 10x larger than our simple hillclimbing example, we'll run for 1/10 the generations, and adjust the modulos accordingly:
+
+
+\params{%
+generations = 10000\\
+checkpoint-modulo =             1000\\
+stats-modulo =                  1000\\
+exchange-modulo =               1000
+}
+
+For a complete example, try the file \file{ec/app/ecsuite/hcsteepwr.params}
+
+
+
+\subsection{Simulated Annealing}
+
+Simulated Annealing is a bit tricky for ECJ because Simulated Annealing is {\it sometimes} doing elitism on the {\it best} individual, and sometimes doing it on some {\it other} individual.  This means we can't use our standard elitism trick but have to handle it though elaborate manipulation of the Breeding Pipelines.  Here's the general algorithm we'll be using:
+
+\begin{enumerate}
+\item Build a subpopulation of size 1
+\item Loop \(g\) times:
+	\begin{enumerate}
+		\item Test all individuals in the subpopulation
+		\item Create the next subpopulation, of size \(\lambda\) (normally 2)
+		\item We need to choose a {\it parent}: If there's only one individual in the old subpopulation, it's the parent.  Otherwise we select a random individual other than the first individual as a {\it candidate} and...
+			\begin{enumerate}
+			\item If the candidate is fitter than the first individual, it becomes the parent.
+			\item Else the candidate is as fit as the first individual, one of them becomes the parent (chosen at random).
+			\item Else if the candidate is less fit than the first individual, the candidate becomes the parent with probability \(P=e^\frac{\text{{\it Fitness}(candidate)} - \text{{\it Fitness}(the first individual)}}{t}\)	
+			\item Else the first individual becomes the parent.
+			\end{enumerate}
+		\item Copy the parent to the first slot of the next subpopulation.
+		\item Fill the remaining \(\lambda-1\) slots of the next subpopulation with mutated copies of the parent.
+	\item Decrease \(t\), staying \(\geq 0\).
+	\end{enumerate}
+\end{enumerate}
+
+Notice that elitism is on the ``parent'', and the parent can be the best individual or it can be some other individual, so we'll handle this through special Breeding Pipelines as follows.  We select the parent using \class{ec.select.AnnealedSelection}. We'll turn its caching on so it always returns the same parent in a given generation.   This parent is passed through \class{ec.vector.breed.VectorMutationPipeline} to make mutated children, and both are {\it also} hooked up to a \class{ec.breed.FirstCopyPipeline}. The FirstCopyPipeline will start by reproducing directly from the AnnealedSelection for the first individual, then calling the VectorMutationPipeline to fill out the remaining individuals.
+
+To pull this off, we need AnnealedSelection to serve as a source both to FirstCopyPipeline {\it and} to VectorMutationPipeline.  This is done using {\bf stubs} (so the top-level pipeline is an \class{ec.breed.StubPipeline}.
+
+We begin with the population sizes:
+
+\params{%
+pop.subpop.0.size = 1\\
+\# Lambda is 2 here
+breed.expanded-subpop-size.0 = 2
+}
+
+No elitism, basic checkpoint mechanisms
+
+\params{%
+breed.elite.0 = false\\
+checkpoint-modulo =             10000\\
+stats-modulo =                  10000\\
+exchange-modulo =               10000
+}
+
+Now we define the pipeline structure:
+
+\params{%
+pop.subpop.0.species.pipe =                                     ec.breed.StubPipeline\\
+pop.subpop.0.species.pipe.stub-source =                 ec.select.AnnealedSelection\\
+pop.subpop.0.species.pipe.source.0 =                    ec.breed.FirstCopyPipeline\\
+pop.subpop.0.species.pipe.source.0.source.0 =   stub\\
+pop.subpop.0.species.pipe.source.0.source.1 =   ec.vector.breed.VectorMutationPipeline\\
+pop.subpop.0.species.pipe.source.0.source.1.source.0 = stub
+}
+
+Finally, we define the caching, annealed temperature, and cutdown for the AnnealedSelection:
+
+\params{%
+pop.subpop.0.species.pipe.stub-source.cache = true\\
+pop.subpop.0.species.pipe.stub-source.temperature = 3000.0\\
+pop.subpop.0.species.pipe.stub-source.cutdown = 0.995
+}
+
+For a complete example, try the file \file{ec/app/ecsuite/sa.params}
+
+
+
+
+
+
+
+
 
 \chapter{Representations}
 
@@ -9578,6 +10017,383 @@ push.in.8.func = ec.app.myapp.MyInstruction
 }
 
 
+\section{NEAT (The \package{ec.neat} Package)}
+\label{ec.neat}
+
+
+NEAT \cite{neat} is a direct-encoding\footnote{This means that the genome explicitly contains every single node and edge.  As opposed to {\it indirect encoding}, where the genome contains a set of (possibly very compact) rules for how to ``grow'' a complex neural network.} representation for neural networks and related graph structures.  ECJ's NEAT implementation tries to stay fairly faithful to the original.  ECJ does not at support NEAT extensions, such as HyperNEAT.  Note that NEAT is not a simple representation, and this manual is not a place to learn about how NEAT works.  You would do well to read up on NEAT first to get your head wrapped around the stuff discussed here.
+
+A NEAT individual consists of two vectors: a vector of {\it genes} and a vector of {\it nodes}.  ECJ represents NEAT individuals with the class \class{ec.neat.NEATIndivdiual}, which is a subclass of \class{ec.vector.GeneVectorIndividual}.  Neat's genes are stored in the genome inherited from GeneVectorIndividual, and the nodes are stored in a separate ArrayList called \variable{nodes}.  All NEATIndividuals belong to the species \class{ec.neat.NEATSpecies}.  Genes are represented by the class \class{ec.neat.NEATGene}, which naturally extends \class{ec.vector.Gene}.    Nodes are represented by the class \class{ec.neat.NEATNode}.  
+
+NEAT uses the term {\bf species} to refer to individuals tagged to belong to a special subgroup.  This obviously conflicts with ECJ's usage of the term.  To refer to a NEAT species, ECJ uses the term {\bf subspecies}, represented by the class \class{ec.neat.NEATSubspecies}.  
+
+The phenotype of a NEAT individual is a graph structure which represents the individual's neural network.  It is represented by \class{ec.neat.NEATNetwork} and is built up out of NEATNodes.
+
+One of NEAT's, um, innovations, is its use of the {\it innovation number}.  This is a unique birthday number which distinguishes and orders NeatGenes.  Innovation numbers are particularly prevalent (and complex) among links between nodes, and ECJ represents those innovation values with a special class called \class{ec.neat.NEATInnovation}.
+
+Finally, NEAT has a custom breeding procedure and so has its own \class{ec.neat.NEATBreeder}, as well as a custom \class{ec.neat.NEATInitializer}.
+
+
+\paragraph{A Warning on NEAT Breeding}
+
+NEAT has a custom breeding procedure.  For the time being ECJ is hard-coding that breeding procedure in NEATBreeder (no BreedingPipelines) to make sure that it's 100\% faithful to the original NEAT code.  But after we have verified this, eventually ECJ will carefully break this out into a Breeding Pipeline model, and NEATBreeder will go away.  Stay tuned.
+
+\subsection{Building a NEAT Application}
+
+We'll use the \package{simple} package as our default, and begin by specifying all of the above classes:
+
+\params{%
+parent.0 = ../simple/simple.params\\
+~\\
+init =                                         ec.neat.NEATInitializer\\
+breed =                                        ec.neat.NEATBreeder\\
+pop.subpop.0.species =                         ec.neat.NEATSpecies\\
+pop.subpop.0.species.fitness =                     ec.simple.SimpleFitness\\
+pop.subpop.0.species.ind =                     ec.neat.NEATIndividual\\
+pop.subpop.0.species.network =             ec.neat.NEATNetwork\\
+pop.subpop.0.species.gene =                    ec.neat.NEATGene\\
+pop.subpop.0.species.node =                      ec.neat.NEATNode\\
+pop.subpop.0.species.subspecies =              ec.neat.NEATSubspecies\\
+pop.subpop.0.species.innovation =              ec.neat.NEATInnovation
+} 
+
+Note that NEATIndividual is a subset of VectorIndividual, though it does some things differently.  This means we'll need a few dummy parameters that VectorIndividual is expecting, even though we won't use them.  Notably:
+
+\begin{itemize}
+\item NEAT builds genomes from templates loaded from a file, so the \parameter{genome-size} parameter isn't used.
+
+\item NEAT has its own mutation and crossover mechanisms, so \parameter{crossover-type} and \parameter{mutation-prob} aren't used (for now).
+
+\item ECJ's NEAT package doesn't use a pipeline for the time being, so we need to stub that out.
+\end{itemize}
+
+So here we go:
+
+\params{%
+\# Dummy parameters to satisfy VectorSpecies\\
+pop.subpop.0.species.genome-size = 20\\
+pop.subpop.0.species.crossover-type = one\\
+pop.subpop.0.species.mutation-prob = 0.01\\
+pop.subpop.0.species.pipe = ec.breed.InitializationPipeline     
+}
+
+\subsubsection{Breeding}
+
+Next we'll go through all the NEAT breeding parameters.
+
+NEAT Breeding is an elaborate process involving fitness-sharing within subspecies, ``innovation numbers'' (birthdays) aging, population stagnation checks, ``champions'', ``stolen babies'' (we kid you not), and other stuff.  But in short: each subspecies compete to produce some number of individuals based on various factors.  Within a subspecies, individuals are selected for breeding using various fitness-sharing metrics.   Breeding can involve mutation or crossover or both.   Newly-generated individuals are assigned a species which is most genome-compatible with themselves.  Finally, empty subspecies are deleted and the remainder are aged.
+
+\paragraph{NEAT Genome Compatibility and Speciation}
+
+NEAT uses three factors which determine the degree to which individual are genetically compatible: the amount of disjoint genes, the amount of excess genes, and the mutational difference within matching genes.  Here are the relative weights of those factors:
+
+\params{%
+neat.species.disjoint-coeff = 1.0\\
+neat.species.excess-coeff = 1.0\\
+neat.species.mutdiff-coeff = 0.4
+}
+
+An individual must meet a ``compatibility threshold'' in order to join a subspecies:
+
+\params{%
+neat.species.compat-thresh = 3.0
+}
+
+Individuals within a subspecies are fitness-penalized for being too old once they reach a certain age:
+
+\params{%
+neat.species.dropoff-age = 15
+}
+
+Finally, species can take offspring from other species (``steal their babies'') when this parameter is \(> 0\) (the default is 0):
+
+\params{%
+neat.species.babies-stolen = 0
+}
+
+
+\paragraph{Survival, Mutation, and Crossover}
+
+Once NEAT has determined which individuals will be permitted to breed, breeding commences.  Here are the default probabilities:
+
+\params{%
+\# Percentage of subspecies that is permitted to reproduce into the next generation\\
+neat.species.survival-thresh = 0.20\\
+\\
+\# Probability that mutation will occur only, no crossover\\
+neat.species.mutate-only-prob = 0.25\\
+\\
+\# Probability that crossover will occur only, no mutation (if mutate-only-prob fails)\\
+neat.species.mate-only-prob = 0.2
+} 
+
+The probabilities for mutation and crossover are a bit screwy.  The general procedure is as follows:
+
+\begin{enumerate}
+\item With probability \parameter{mutate-only-prob}, mutate
+\item Else
+\begin{enumerate}
+\item cross over
+\item With probability \((1 - \text{\parameter{mate-only-prob}})\), mutate
+\end{enumerate}
+\end{enumerate}
+
+Obviously, this means that \parameter{mate-only-probability} doesn't really mean ``mate-only probability''.  It means ``mate-only probability assuming you're not just doing mutating''.
+
+Crossover can be with members of your own species, or with other species.  There are three kinds of crossover available in NEAT:
+
+\params{%
+\# Probability of mating with another subspecies\\
+neat.species.interspecies-mate-prob = 0.001\\
+\\
+\# Various probabilities of crossover types\\
+neat.species.mate-multipoint-prob = 0.6\\
+neat.species.mate-multipoint-avg-prob = 0.4\\
+\# Don't change this one -- it's usually unused
+neat.species.mate-singlepoint-prob = 0.0\\
+}
+
+Crossover yields a single child and works as follows.  In mate-multipoint, every gene up to the length of the more fit parent is matched with its corresponding gene in the less fit parent.  For each pair of genes, with 50\% probability we select the gene in the fitter parent, else the other.  When one parent is longer than the other, the excess genes are included only if from the fitter parent.  Mate-multipoint-average is similar, except that the gene weights of the two genes in the pair are averaged to form the gene weight in the final gene.  Mate-singlepoint is somewhat like traditional single-point crossover: we pick a gene locus.  Genes less than that locus come from one parent and genes greater than the locus come from the other parent.  However in NEAT the locus falls {\it on} a gene: that gene has an averaging performed on it like mate-multipoint-average.  Excess is always included as well.
+
+MateSinglePoint is generally left unused.
+
+Mutation can involve changing the values of {\bf links} (the genes) in the genome, enabling or disabling them, or adding new links.  Newly added links can be feed-forward or recurrent in the network.
+
+\params{%
+\#\# MUTATING LINK WEIGHTS\\
+\# Probability of mutating each and every one of the weights of the links in the genome\\
+neat.species.mutate-link-weight-prob = 0.9\\
+\\
+\# Factor which influences how much a link is mutated\\
+neat.species.weight-mut-power = 2.5\\
+\\
+\\
+\#\# ENABLING AND DISABLING LINKS\\
+\# Probability of randomly enabling or disabling a single gene (link) in the genome\\
+neat.species.mutate-toggle-enable-prob = 0.0\\
+\\
+\# Probability of reenabling a gene (link)\\
+neat.species.mutate-gene-reenable-prob = 0.0\\
+\\
+\\
+\#\# ADDING NEW LINKS\\
+\# Probability of adding a single new gene (link)\\
+neat.species.mutate-add-link-prob = 0.05\\
+\\
+\# Probability that this link will be recurrent rather than feed-forward.\\
+\# If recurrent, 50\% of the time it will be a self-link, and 50\% of the\\
+\# time it will be a reversed link\\
+neat.species.recur-only-prob = 0.0\\
+\\
+\# How many times we're willing to try adding a valid new link before giving up\\
+neat.species.new-link-tries = 20
+}
+
+Mutation can also involve adding a new random {\bf node} in the genome.  Adding a node involves splitting an existing link into two links and putting the node in-between them.  The choice of link is biased in certain ways when the genome is small; otherwise it is a randomly-selected link:
+
+\params{%
+\# Probability of adding a single new node\\
+neat.species.mutate-add-node-prob = 0.03\\
+\\
+\# How many times we're willing to try adding a new node before giving up\\
+neat.species.new-node-tries = 20\\
+\\
+\# In genomes this size or greater, mutateAddNode will do a pure random split\\
+neat.species.add-node-max-genome-length = 15
+}
+
+\subsubsection{Evaluation}
+
+NEAT works by interpreting its two genomes (the Node array and the Gene (Link) array) to build a neural network or other graph structure.  This network is a NEATNetwork.  You then evaluate NEATNetwork to see how it performs, and set the NEATIndividual's fitness appropriately.
+
+To build a network from an existing individual, you call:
+
+\begin{methods}{ec.neat.NEATIndividual}
+\mthd{public NEATNetwork createNetwork()}
+Returns a NEATNetwork generated from the current genome of the individual.
+\end{methods}
+
+Like many neural networks, a NEATNetwork consists of {\bf input nodes} (some of which may be hard-coded {\bf bias units}, {\bf output nodes}, and {\bf hidden nodes}.  The general procedure is to load the non-bias unit input nodes with values, then pulse the network until information has flowed to the output nodes, then read the result off of the output nodes and compare with the desired output.  Finally, we'll {\bf flush} the network to clear it and reuse it.
+
+You'll need to pulse the network at least as many times as the {\bf depth} of the network so the information can flow all the way through.  To do all these things, we'll need a few methods:
+
+\begin{methods}{ec.neat.NEATNetwork}
+\mthd{public int maxDepth()}
+Returns the maximum depth of the network.
+\mthd{public void loadSensors(double[] values)}
+Given \(n\) sensor (input) nodes, sets each to emit a corresponding value.
+\mthd{public void activate(EvolutionState state)}
+Pulses the network once, flowing information forward one step.
+\mthd{public double[] getOutputResults()}
+Returns an array of activation values, one per output node.
+\mthd{public void flush()}
+Clears the network and prepares it for reuse.
+\end{methods}
+
+\paragraph{Example}
+
+Let's take the XOR example as shown in the package \package{ec.app.xor}.  We first create the file \file{XOR.java} which contains the class \class{XOR}.  In the \method{evaluate(...)} method we'll start with the usual pleasantries:
+
+{
+\small\begin{verbatim}
+public class XOR extends Problem implements SimpleProblemForm
+    {
+    public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum)
+        {
+        if (ind.evaluated) return;
+
+        if (!(ind instanceof NEATIndividual))
+            state.output.fatal("Whoa! It's not a NEATIndividual!!!", null);
+        
+        NEATIndividual neatInd = (NEATIndividual)ind;
+        
+        if (!(neatInd.fitness instanceof SimpleFitness))
+            state.output.fatal("Whoa! It's not a SimpleFitness!!!", null);       		
+\end{verbatim}
+}
+
+At this point we're ready to do evaluation.  Our NEAT neural network takes three inputs (the first input is a bias unit) in one of four combinations and produces one of four outputs, for each combination, following the standard XOR rule.  The inputs and outputs are:
+
+{
+\small\begin{verbatim}
+        // The four possible input combinations to xor
+        // The first number is for biasing
+        double[][] in=
+        	   {
+               {1.0, 0.0, 0.0},   //  output 0
+               {1.0, 0.0, 1.0},   //  1
+               {1.0, 1.0, 0.0},   //  1
+               {1.0, 1.0, 1.0}    //  0
+        	   };
+
+        // we'll put the results here
+        double[] out = new double[4];
+
+        // here's what we WANT the results to be:
+       	double[] expectedOut = new double[] { 0.0, 1.0, 1.0, 0.0 };
+\end{verbatim}
+}
+
+Now we build our network.
+        
+{
+\small\begin{verbatim}
+       NEATNetwork net = neatInd.createNetwork();
+        int netDepth = net.maxDepth();
+\end{verbatim}
+}
+
+At this point we're ready to test it.  We'll go through all combinations and see what the network produces:
+
+{
+\small\begin{verbatim}
+        // Load and activate the network on each input
+        for(int i = 0; i < in.length ;i++) 
+            {
+            net.loadSensors(in[i]);
+            
+            for(int relax = 0; relax < netDepth; relax++) 
+                {
+                net.activate(state);
+                }
+                
+            // we only have one output, at position 0, so let's get it
+            out[i] = net.getOutputResults()[0];
+
+            net.flush();
+            }
+\end{verbatim}
+}
+
+Finally we need to calculate the fitness.  The NEAT XOR example actually has several different fitness-calculation methods.  For our purposes we'll use sum squared error.  And an ideal individual will be considered one in which all four of the results is less than 0.5 error.
+
+{
+\small\begin{verbatim}
+        double errorSum = 0;
+        for(int i = 0; i < out.length; i++)
+             errorSum += (out[i] - expectedOut[i]) * (out[i] - expectedOut[i]);
+
+        double fitness = 4.0 - errorSum;
+
+        boolean ideal = true;
+        for(int i = 0; i < out.length; i++)
+            if (Math.abs(out[i] - expectedOut[i]) > 0.5)
+                { ideal = false; break; }
+                
+        ((SimpleFitness)neatInd.fitness).setFitness(state, fitness, ideal);
+        neatInd.evaluated = true;
+        }
+     }
+\end{verbatim}
+}
+
+Note that in this example, the measurement for the ideal individual is not the same as the measurement for fitness.  This means that ideal individuals may vary in fitness.  It also means that if we quit when we find an ideal individual, the end of run fitness may vary, which could really screw up statistical results if you're doing an experiment.  You might add the parameter:
+
+\params{quit-on-run-complete = false}
+
+... to run until generations are terminated rather than when an ideal individual is discovered.
+
+Next we need to specify a seed individual: recall that NEAT individuals are typically loaded from a seed.  We do this as:
+
+
+\begin{enumerate}
+\item Whether the individual is evaluated: the boolean false (F)
+\item The fitness for the individual: a double 0.0 (d0{\textbar}0.0{\textbar})
+\item The size of the link (gene) genome: an integer 3 (i3{\textbar})
+\item Three link genes.  Each gene contains:
+\begin{enumerate}
+	\item An input node ID as an integer, 1, 2, or 3 (i1{\textbar}\quad i2{\textbar}\quad i3{\textbar})
+	\item An output node id as an integer: 4 (i4{\textbar})
+	\item A weight as a double: 0.0 (d0{\textbar}0.0{\textbar})
+	\item Whether the link is recurrent: false (F)
+	\item An innovation number as an integer, 1, 2, or 3 (i1{\textbar}\quad i2{\textbar}\quad i3{\textbar})
+	\item A mutation number as a double: 0.0 (d0{\textbar}0.0{\textbar})
+	\item Whether the link is enabled: true (T)
+\end{enumerate}
+\item Four node genes.  Each gene contains:
+\begin{enumerate}
+	\item A node ID as an integer:
+	\item A node type as an integer.   Node types can be NEURON=0 or SENSOR=1  (i0{\textbar}\quad i1{\textbar})
+	\item A node place as an integer.  Node places can be HIDDEN = 0, INPUT = 1, OUTPUT=2, or BIAS=3 (i0{\textbar}\quad i1{\textbar}\quad i2{\textbar}\quad i3{\textbar})
+	\end{enumerate}
+\end{enumerate}
+
+Our default individual is stored as a subpopulation of size 1 and looks like this, stored in the file \file{start.neatind}.  See if you can understand it:
+
+{
+\small\begin{verbatim}
+Number of Individuals: i1|
+Individual Number: i0|
+Evaluated: F
+Fitness: d0|0.0|
+i3|
+i1|i4|d0|0.0|Fi1|d0|0.0|T
+i2|i4|d0|0.0|Fi2|d0|0.0|T
+i3|i4|d0|0.0|Fi3|d0|0.0|T
+i4|
+i1|i1|i1|
+i2|i1|i1|
+i3|i1|i3|
+i4|i0|i2|
+\end{verbatim}
+}
+
+Now we finish out with a parameter file.  The file \file{ec/neat/neat.params} contains all the parameters we've discussed so far: we'll have that as our parent.  So we make the file \file{ec/app/xor.params} like this as follows:
+
+\params{%
+parent.0 = ../../neat/neat.params\\
+\\
+pop.subpop.0.species.genome-size = 3\\
+pop.subpop.0.file = start.neatind\\
+pop.subpop.0.extra-behavior = wrap\\
+eval.problem = ec.app.xor.XOR\\
+pop.subpop.0.size =     150\\
+generations = 100
+}
+
+Two parameters need explanation.  To load the NEAT template (seed) individual, ECJ does this by loading the subpopulation.   The subpopulation file, as discussed earlier, contains a single individual: but the subpopulation is 150 in size!  This is handled by turning on the \parameter{wrap} option, which causes the individual in the file to be copied to the whole subpopulation.  Thereafter NEAT will mutate that individual a bit, so they're all different.
+
+
 \section{Rulesets and Collections (The \package{ec.rule} Package)}
 
 Let's get one thing out of the way right now.  Though we had rulesets in mind when we developed it, the \package{ec.rule} package isn't {\it really} for rulesets.  Not only can the package be used for things other than rules, but it's not even sets: it's {\it collections} (or ``bags'' or ``multisets'') of arbitrary objects.  
@@ -10242,6 +11058,8 @@ By default the SlaveMonitor reschedules its lost jobs.  But you can turn off thi
 eval.masterproblem.reschedule-lost-jobs = false
 }
 
+\paragraph{An Example}  For an example Asynchronous Evolution in action, see the files\\ \file{ec/app/regression/asyncmaster.params} and \file{ec/app/regression/asyncslave.params}
+
 
 \subsection{The MasterProblem}
 \label{ec.eval.MasterProblem}
@@ -10759,7 +11577,7 @@ This method isn't necessary (nor provided) for \class{InterPopulationExchange} s
 \small\begin{verbatim}
 protected Individual process(EvolutionState state, int thread, String island, int subpop, Individual ind)
     {
-    if (state.population.subpops[subpop].species instanceof ec.gp.GPSpecies)
+    if (state.population.subpops.get(subpop).species instanceof ec.gp.GPSpecies)
         {
         // convert to a GP individual, or whatever
         }
@@ -10853,10 +11671,10 @@ public class MyCoevolutionaryProblem extends Problem implements GroupedProblemFo
 
     public void preprocessPopulation(EvolutionState state, Population pop,
                                      boolean[] prepareForAssessment, boolean countVictoriesOnly) {
-        for(int i = 0; i < pop.subpops.length; i++)
+        for(int i = 0; i < pop.subpops.size(); i++)
             if (prepareForAssessment[i])
-                for(int j = 0; j < pop.subpops[i].individuals.length; j++) {
-                    SimpleFitness fit = (SimpleFitness)(pop.subpops[i].individuals[j].fitness);
+                for(int j = 0; j < pop.subpops.get(i).individuals.size(); j++) {
+                    SimpleFitness fit = (SimpleFitness)(pop.subpops.get(i).individuals.get(j).fitness);
                     fit.trials = new ArrayList();
                     }
         }
@@ -10888,10 +11706,10 @@ public class MyCoevolutionaryProblem extends Problem implements GroupedProblemFo
 
     public void postprocessPopulation(EvolutionState state, Population pop,
                                       boolean[] assessFitness, boolean countVictoriesOnly) {
-        for(int i = 0; i < pop.subpops.length; i++)
+        for(int i = 0; i < pop.subpops.size(); i++)
             if (assessFitness[i])
-                for(int j = 0; j < pop.subpops[i].individuals.length; j++)  {
-                    SimpleFitness fit = (SimpleFitness)(pop.subpops[i].individuals[j].fitness);
+                for(int j = 0; j < pop.subpops.get(i).individuals.size(); j++)  {
+                    SimpleFitness fit = (SimpleFitness)(pop.subpops.get(i).individuals.get(j).fitness);
                  
                     // Let's set the fitness to the average of the trials
                     int len = fit.trials.size();
@@ -10904,7 +11722,7 @@ public class MyCoevolutionaryProblem extends Problem implements GroupedProblemFo
                     // was positive.
                 
                     fit.setFitness(state, sum / len, false);
-                    pop.subpops[i].individuals[j].evaluated = true;
+                    pop.subpops.get(i).individuals.get(j).evaluated = true;
                     }
         }
     }
@@ -11058,11 +11876,11 @@ For competitive coevolution, you can use the same example as in Section~\ref{ec.
 \small\begin{verbatim}
     public void postprocessPopulation(EvolutionState state, Population pop,
                                       boolean[] assessFitness, boolean countVictoriesOnly) {
-        for(int i = 0; i < pop.subpops.length; i++)
+        for(int i = 0; i < pop.subpops.size(); i++)
             if (assessFitness[i])
-                for(int j = 0; j < pop.subpops[i].individuals.length; j++) 
-                    if (!pop.subpops[i].individuals[j].evaluated) {
-                        SimpleFitness fit = (SimpleFitness)(pop.subpops[i].individuals[j].fitness);
+                for(int j = 0; j < pop.subpops.get(i).individuals.size(); j++)
+                    if (!pop.subpops.get(i).individuals.get(j).evaluated) {
+                        SimpleFitness fit = (SimpleFitness)(pop.subpops.get(i).individuals.get(j).fitness);
                 
                         // Let's set the fitness to the maximum of the trials
                        int len = fit.trials.size();
@@ -11071,7 +11889,7 @@ For competitive coevolution, you can use the same example as in Section~\ref{ec.
                             max = Math.max(max, ((Double)(fit.trials.get(l))).doubleValue());
                 
                         fit.setFitness(state, max, false);
-                        pop.subpops[i].individuals[j].evaluated = true;
+                        pop.subpops.get(i).individuals.get(j).evaluated = true;
                         }
     }
  \end{verbatim}
@@ -11243,7 +12061,7 @@ Now we need to implement the \method{getIndexRandomNeighbor} method.  We'll defi
 
 {\small\begin{verbatim}
     public int getIndexRandomNeighbor(EvolutionState state, int thread, int distance) {
-        if (individuals.length != 100)
+        if (individuals.size() != 100)
             state.output.fatal("This ridiculous example requires that the Subpopulation" +
                                "be exactly 100 in size.")
 
@@ -11603,7 +12421,7 @@ The whole creation process is handled by a single method:
 
 \begin{methods}{ec.de.DEBreeder}
 \mthd{public DoubleVectorIndividual createIndividual(EvolutionState \textit{state}, int  \textit{subpop}, int \textit{index}, int \textit{thread})}
-Creates and returns a new Individual derived from the parent Individual found in \variable{state.population.subpops[subpop].individuals[index]}, using other individuals chosen from \variable{state.population.subpops[subpop]} as necessary. \end{methods}
+Creates and returns a new Individual derived from the parent Individual found in \variable{state.population.subpops.get(subpop).individuals.get(index)}, using other individuals chosen from \variable{state.population.subpops.get(subpop)} as necessary. \end{methods}
 
 The default implementation performs the DE/rand/1/bin operation, discussed later.  If you want to create a whole new breeding operator, you'll largely need to override this individual-creation method.
 
@@ -11655,7 +12473,7 @@ For example, you can get the fittest Individual in Subpopulation 0 as:
 
 \java{%
 DoubleVectorIndividual bestForSubpopZero = (DoubleVectorIndividual)\\
-\hsp{\fill}(state.population.subpops[0].individuals[bestSoFarIndex[0]]);
+\hsp{\fill}(state.population.subpops.get(0).individuals.get(bestSoFarIndex[0]));
 }
 
 Last but not least, DEBreeder must store away the old Population before it is overwritten by the new child Individuals.  This is because in DEEvaluator the original parents in the old Population get a chance to displace the children if the children are not sufficiently fit.  So we need to keep the parents around until then.  The parents are stored in DEBreeder as:
@@ -12110,13 +12928,16 @@ pop.subpop.0.species.pipe.source.0 = ec.multiobjective.spea2.SPEA2TournamentSele
 
 An estimation of distribution algorithm is similar to an evolutionary algorithm in that it periodically produces individuals and assesses their fitness.  However, the manner in which individuals are generated is quite different.  Rather than producing individuals from a previous generation of individuals, an estimation of distribution algorithm typically maintains some kind of {\bf distribution} from which individuals are sampled.  After individuals have their fitnesses assessed, the distribution is revised to reflect the better quality individuals, and then the next generation is sampled from this revised distribution, and so on.
 
-ECJ's estimation of distribution package is \package{ec.eda}.  In it there is presently one estimation of distribution algorithm: the \((\mu / \mu_W, \lambda)\) Covariance Adaptation Evolution Strategy, or CMA-ES for short.
+ECJ's estimation of distribution package is \package{ec.eda}.  In it there are presently two estimation of distribution algorithms:
 
-CMA-ES maintains a distribution in the form of a multivariate Gaussian distribution.  There is significant standardized source code available for CMA-ES (see https:/\!/www.lri.fr/\(\sim\)hansen/cmaes\_inmatlab.html), and although it is a clean rewrite, ECJ's implementation tries to be fairly faithful to that code.
+\begin{itemize}
+\item CMA-ES
+\item  DOvS
+\end{itemize}
 
 \subsection{CMA-ES}
 
-The CMA-ES facility in ECJ consists of three classes: \class{ec.eda.CMAESSpecies}, \class{ec.eda.CMAESBreeder}, and \class{ec.eda.CMAESInitializer}.  The critical class is \class{ec.eda.CMAESSpecies}, which does all the hard work.  The other two largely call it to initialize the initial population (and set up the CMA-ES distribution), and to resample a subpopulation for the next generation.
+The \((\mu / \mu_W, \lambda)\) Covariance Adaptation Evolution Strategy, or CMA-ES, maintains a distribution in the form of a multivariate Gaussian distribution.\footnote{There is significant standardized source code available for CMA-ES (see https:/\!/www.lri.fr/\(\sim\)hansen/cmaes\_inmatlab.html), and although it is a clean rewrite, ECJ's implementation tries to be fairly faithful to that code.}  The CMA-ES facility in ECJ consists of three classes: \class{ec.eda.CMAESSpecies}, \class{ec.eda.CMAESBreeder}, and \class{ec.eda.CMAESInitializer}.  The critical class is \class{ec.eda.CMAESSpecies}, which does all the hard work.  The other two largely call it to initialize the initial population (and set up the CMA-ES distribution), and to resample a subpopulation for the next generation.
 
 As such, \class{ec.eda.CMAESSpecies} has two methods of note: \method{newIndividual(...)} and \method{updateDistribution(...)}.  The first samples a random individual from the distribution.  The second updates the distribution to reflect the fitness values among individuals in a given subpopulation.  The other big method is \method{setup(...)}, which does a lot of work because CMA-ES, unusually for a metaheuristic algorithm, has default values for many of its parameters determined not by constant numbers but by equations.
 
@@ -12257,6 +13078,108 @@ Normally you wouldn't play with any of these parameters, but if you wanted to se
 
 There is an example parameter file, \file{ec/app/ecsuite/cmaes.params}, located in the \file{ecsuite} application, which you can try.
 
+
+\subsection{DOvS}
+
+\paragraph{WARNING:} {\color{red} EJC's DOvS code is in early preview and is not ready for serious use yet.}
+
+Discrete Optimization via Simulation, or DOvS \cite{dovs1, dovs2}, increasingly divides up the space into smaller and smaller regions in the search for regions with high-performing samples.  Obviously this implies that the original space is bounded (and DOvS assumes it's closed and convex).
+
+DOvS is designed for scenarios with high degrees of noise in fitness assessment, and thus where individuals must be tested many times to obtain an accurate reading.  The question is which individuals are worth assessing more times than others.  Additionally, DOvS is meant for {\it discrete vector} spaces, rather than continuous ones, where the gradient is not likely to be assessable.  Finally, DOvS assumes a {\it constrained} space, where each individual \(\vec x\) must meet the constraint \(A\vec x \leq \vec b\) for some matrix \(A\) and vector \(\vec b\).
+
+The DOvS family is conceptually simple and closely related to an EDA: it maintains {\it most promising area} (MPA) subset of the search space, as well as an {\it active set} consisting of those individuals tested in the past which happen to fall within the MPA, including the {\it best known individual}.  The algorithm works as follows.  We start with an initial user-provided individual as a starting point: this individual is assessed and forms both the best known individual the active set.  We build an MPA around this individual (perhaps infinite in size).  We then repeat as follows.  From within the MPA we sample a new {\it population} of individuals. We then assess the population as well as members of the active set.  This may produce a new best individual.  From the current results of the active set and population we build a new MPA.  We then update the active set according to this new MPA, and repeat.
+
+There are several DOvS methods for building the MPA: the one ECJ implements is the {\it Adaptive Hyperbox} algorithm.  Here the MPA is a hyperbox built as follows.  For each dimension \(d\), let \(x_d\) be the value of dimension \(d\) in individual \(x\).  Also let the best individual be \(x^*\).  The {\it lower bound} for \(d\) is the maximum value of \(d\) over all individuals \(x\) in the active set or population, except for \(x^*\).  If this value is equal to or greater than \(x^*_d\), it is revised to \(-\infty\).  Similarly, the {\it upper bound} for \(d\) is the minimum value of \(d\) over all individuals \(x\) in the active set or population, except for \(x^*\).  If this value is equal to or less than \(x^*_d\), it is revised to \(+\infty\).  Collectively these bounds form the edges of a hyperbox surrounding \(x^*\), but not touching it.   This hyperbox is the new MPA.  We sample uniformly from within it to form the next-generation population.
+
+Adaptive Hyperbox is extremely aggressive in its exploitation\,---\,it would be hard to call it a global search algorithm\,---\,and so is probably best used after searching globally using another method.
+
+To use DOvs, you'd include the file \file{ec/eda/dovs/dovs.params}.  This parameter file defines many of the basic elements for you.  Let's go through them.  First off, we define certain special evolutionary objects:
+
+\params{%
+init = ec.eda.dovs.DOVSInitializer\\
+breed = ec.eda.dovs.DOVSBreeder\\
+eval = ec.eda.dovs.DOVSEvaluator\\
+pop.subpop.0.species = ec.eda.dovs.HyperboxSpecies\\
+pop.subpop.0.species.ind =                     ec.vector.IntegerVectorIndividual\\
+pop.subpop.0.species.fitness =                 ec.eda.dovs.DOVSFitness
+}
+
+Your species must be some subset of \class{ec.eda.dovs.DOVSSpecies}: at present \class{ec.eda.dovs.HyperboxSpecies} is the only option.
+
+Now we need to set up some basic parameters.  First we need to specify the minimum number of evaluations an individual will receive in order to get a basic idea of fitness.  Good individuals which stay within the MPA will receive more evaluations that this. 
+
+\params{%
+pop.subpop.0.species.initial-reps =            1
+}
+
+Next we state whether the fitness assessments are stochastic.  By default we'll assume not:
+
+\params{%
+pop.subpop.0.species.stochastic =              false
+}
+
+The following parameter specifies how often the best individual is mutated and resampled as part of breeding.  It is essentially part of \(\lambda\) from an Evolution Strategies perspective:
+
+\params{%
+pop.subpop.0.species.warmup =                  10
+}
+
+Now we need to specify the constraints for our problem.  For example, in the \package{ec/app/highdimension} example, there are ten constraints on a genome of size 5, which looks like this:
+
+\params{%
+pop.subpop.0.species.constraints-size =      10\\
+pop.subpop.0.species.constraints-A.0 =       1  0  0  0  0\\
+pop.subpop.0.species.constraints-A.1 =      -1  0  0  0  0\\
+pop.subpop.0.species.constraints-A.2 =       0  1  0  0  0\\
+pop.subpop.0.species.constraints-A.3 =       0 -1  0  0  0\\
+pop.subpop.0.species.constraints-A.4 =       0  0  1  0  0\\
+pop.subpop.0.species.constraints-A.5 =       0  0 -1  0  0\\
+pop.subpop.0.species.constraints-A.6 =       0  0  0  1  0\\
+pop.subpop.0.species.constraints-A.7 =       0  0  0 -1  0\\
+pop.subpop.0.species.constraints-A.8 =       0  0  0  0  1\\
+pop.subpop.0.species.constraints-A.9 =       0  0  0  0 -1\\
+pop.subpop.0.species.constraints-b = -5000 -5000 -5000 -5000 -5000 -5000 -5000 -5000 -5000 -5000 
+}
+
+Last, we'll need to specify the initial individual(s) with which to populate the population. In the  \package{ec/app/highdimension} example this individual looks like this:
+
+\begin{verbatim}
+Number of Individuals: i1|
+Individual Number: i0|
+Evaluated: F
+Fitness: d0|0.0|
+i5|i25|i25|i25|i25|i25|
+\end{verbatim}
+
+We include this individual (assuming he's in a file called \file{start.in}) as:
+
+\params{%
+pop.subpop.0.file = start.in
+}
+
+We include a few more parameters and we're ready to go, perhaps:
+
+\params{%
+pop.subpop.0.species.genome-size = 5\\
+pop.subpop.0.species.min-gene = 0\\
+pop.subpop.0.species.max-gene = 100\\
+pop.subpop.0.size =                                10\\
+generations =                                                              500\\
+eval.problem = ec.app.OurTestProblem
+}
+
+\paragraph{Evaluating}
+
+Evaluating an individual is straightforward, but with two differences.  First, we never use the \variable{evaluated} flag to prematurely terminate evaluation: we always evaluate the individuals (because they're often stochastic).
+
+Second, instead of setting the fitness, we'll {\it record an observation} like this:
+
+\java{%
+// g is our evaluated value, higher values are better:
+((DOVSFitness) ind.fitness).recordObservation(state, g);
+}
+
+Two examples using DOvS are \package{ec/app/singular} and \package{ec/app/highdimension}
 
 \section{Meta-Evolutionary Algorithms}
 \label{metaea}

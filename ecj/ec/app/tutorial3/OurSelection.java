@@ -6,6 +6,8 @@
 
 
 package ec.app.tutorial3;
+import java.util.ArrayList;
+
 import ec.*;
 import ec.util.*;
 
@@ -41,24 +43,24 @@ public class OurSelection extends SelectionMethod
         if (state.random[thread].nextBoolean(middleProbability))
             {
             //pick three individuals, return the middle one
-            Individual[] inds = state.population.subpops[subpopulation].individuals;
-            int one = state.random[thread].nextInt(inds.length);
-            int two = state.random[thread].nextInt(inds.length);
-            int three = state.random[thread].nextInt(inds.length);
+            ArrayList<Individual> inds = state.population.subpops.get(subpopulation).individuals;
+            int one = state.random[thread].nextInt(inds.size());
+            int two = state.random[thread].nextInt(inds.size());
+            int three = state.random[thread].nextInt(inds.size());
             // generally the betterThan(...) method imposes an ordering,
             // so you shouldn't see any cycles here except in very unusual domains...
-            if (inds[two].fitness.betterThan(inds[one].fitness))
+            if (inds.get(two).fitness.betterThan(inds.get(one).fitness))
                 {
-                if (inds[three].fitness.betterThan(inds[two].fitness)) //  1 < 2 < 3
+                if (inds.get(three).fitness.betterThan(inds.get(two).fitness)) //  1 < 2 < 3
                     return two;
-                else if (inds[three].fitness.betterThan(inds[one].fitness)) //  1 < 3 < 2
+                else if (inds.get(three).fitness.betterThan(inds.get(one).fitness)) //  1 < 3 < 2
                     return three;
                 else //  3 < 1 < 2
                     return one;
                 }
-            else if (inds[three].fitness.betterThan(inds[one].fitness)) //  2 < 1 < 3
+            else if (inds.get(three).fitness.betterThan(inds.get(one).fitness)) //  2 < 1 < 3
                 return one;
-            else if (inds[three].fitness.betterThan(inds[two].fitness)) //  2 < 3 < 1
+            else if (inds.get(three).fitness.betterThan(inds.get(two).fitness)) //  2 < 3 < 1
                 return three;
             else //  3 < 2 < 1
                 return two;
@@ -66,7 +68,7 @@ public class OurSelection extends SelectionMethod
         else        //select a random individual's index
             {
             return state.random[thread].nextInt(
-                state.population.subpops[subpopulation].individuals.length);
+                state.population.subpops.get(subpopulation).individuals.size());
             }
         }
     }  // close the class

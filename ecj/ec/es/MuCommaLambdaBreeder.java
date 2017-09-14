@@ -6,6 +6,9 @@
 
 
 package ec.es;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import ec.*;
 import ec.util.*;
 
@@ -83,6 +86,11 @@ public class MuCommaLambdaBreeder extends Breeder
     public static final byte C_UNDER_ONE_FIFTH_BETTER = -1;
     public static final byte C_EXACTLY_ONE_FIFTH_BETTER = 0;
    
+    // This is a DOUBLE ARRAY of ARRAYLISTS of <INDIVIDUALS>
+    // Individuals are stored here by the breed pop chunk methods, and afterwards
+    // we coalesce them into the new population. 
+    public ArrayList newIndividuals[/*subpop*/][/*thread*/];
+        
     /** Modified by multiple threads, don't fool with this */
     public int[] count;
 
@@ -173,25 +181,28 @@ public class MuCommaLambdaBreeder extends Breeder
 
 
     /** Sets all subpopulations in pop to the expected lambda size.  Does not fill new slots with individuals. */
-    public Population setToLambda(Population pop, EvolutionState state)
-        {
-        for(int x=0;x<pop.subpops.length;x++)
-            {
-            int s = lambda[x];
-            
-            // check to see if the array's not the right size
-            if (pop.subpops[x].individuals.length != s)
-                // need to increase
-                {
-                Individual[] newinds = new Individual[s];
-                System.arraycopy(pop.subpops[x].individuals,0,newinds,0,
-                    s < pop.subpops[x].individuals.length ? 
-                    s : pop.subpops[x].individuals.length);
-                pop.subpops[x].individuals = newinds;
-                }
-            }
-        return pop;
-        }
+//    public Population setToLambda(Population pop, EvolutionState state)
+//        {
+//        for(int x = 0; x< pop.subpops.size(); x++)
+//            {
+//            int s = lambda[x];
+//            
+//            System.out.println("size of s is "+s);
+//            System.out.println("size of size is "+pop.subpops.get(x).individuals.size());
+//            
+//            // check to see if the array's not the right size
+//            if (pop.subpops.get(x).individuals.size() != s)
+//                // need to increase
+//                {
+//                Individual[] newinds = new Individual[s];
+//                System.arraycopy(pop.subpops.get(x).individuals,0,newinds,0,
+//                    s < pop.subpops.get(x).individuals.size() ?
+//                    s : pop.subpops.get(x).individuals.size());
+//                pop.subpops.get(x).individuals = new ArrayList<Individual>(Arrays.asList(newinds));
+//                }
+//            }
+//        return pop;
+//        }
                 
 
     public Population breedPopulation(EvolutionState state) 
@@ -202,14 +213,14 @@ public class MuCommaLambdaBreeder extends Breeder
             {
             // Only go from 0 to lambda-1, as the remaining individuals may be parents.
             // A child C's parent's index I is equal to C / mu[subpopulation].
-            for (int x=0;x<state.population.subpops.length;x++)
+            for (int x = 0; x< state.population.subpops.size(); x++)
                 {
                 int numChildrenBetter = 0;
                 for (int i = 0; i < lambda[x]; i++)
                     {
                     int parent = i / (lambda[x] / mu[x]);  // note integer division
-                    if (state.population.subpops[x].individuals[i].fitness.betterThan(
-                            parentPopulation.subpops[x].individuals[parent].fitness))
+                    if (state.population.subpops.get(x).individuals.get(i).fitness.betterThan(
+                            parentPopulation.subpops.get(x).individuals.get(parent).fitness))
                         numChildrenBetter++;
                     }
                 if (numChildrenBetter > lambda[x] / 5.0)  // note double division
@@ -231,13 +242,13 @@ public class MuCommaLambdaBreeder extends Breeder
         // the first issue is: is the number of subpopulations
         // equal to the number of mu's?
 
-        if (mu.length!=state.population.subpops.length) // uh oh
+        if (mu.length!= state.population.subpops.size()) // uh oh
             state.output.fatal("For some reason the number of subpops is different than was specified in the file (conflicting with Mu and Lambda storage).",null);
 
         // next, load our population, make sure there are no subpopulations smaller than the mu's
-        for(int x=0;x<state.population.subpops.length;x++)
+        for(int x = 0; x< state.population.subpops.size(); x++)
             {
-            if (state.population.subpops[0].individuals.length < mu[x])
+            if (state.population.subpops.get(0).individuals.size() < mu[x])
                 state.output.error("Subpopulation " + x + " must be a multiple of the equivalent mu (that is, "+ mu[x]+").");
             }
         state.output.exitIfErrors();
@@ -247,17 +258,17 @@ public class MuCommaLambdaBreeder extends Breeder
 
         // sort evaluation to get the Mu best of each subpopulation
         
-        for(int x=0;x<state.population.subpops.length;x++)
+        for(int x = 0; x< state.population.subpops.size(); x++)
             {
-            final Individual[] i = state.population.subpops[x].individuals;
+            final ArrayList<Individual> i = state.population.subpops.get(x).individuals;
 
-            java.util.Arrays.sort(i,
-                new java.util.Comparator()
+            java.util.Collections.sort(i,
+                new java.util.Comparator<Individual>()
                     {
-                    public int compare(Object o1, Object o2)
+                    public int compare(Individual i1, Individual i2)
                         {
-                        Individual a = (Individual) o1;
-                        Individual b = (Individual) o2;
+                        Individual a = i1;
+                        Individual b = i2;
                         // return 1 if should appear after object b in the array.
                         // This is the case if a has WORSE fitness.
                         if (b.fitness.betterThan(a.fitness)) return 1;
@@ -273,8 +284,10 @@ public class MuCommaLambdaBreeder extends Breeder
         // now the subpops are sorted so that the best individuals
         // appear in the lowest indexes.
 
-        Population newpop = setToLambda((Population) state.population.emptyClone(),state);
-
+        // by Ermo, it seems we no longer need setToLambda, so I am comment them out, if it works, we will delete them later
+        //Population newpop = setToLambda((Population) state.population.emptyClone(),state);
+        Population newpop = (Population) state.population.emptyClone();
+        
         // create the count array
         count = new int[state.breedthreads];
 
@@ -285,20 +298,28 @@ public class MuCommaLambdaBreeder extends Breeder
 
         // how many threads do we really need?  No more than the maximum number of individuals in any subpopulation
         int numThreads = 0;
-        for(int x = 0; x < state.population.subpops.length; x++)
+        for(int x = 0; x < state.population.subpops.size(); x++)
             numThreads = Math.max(numThreads, lambda[x]);
         numThreads = Math.min(numThreads, state.breedthreads);
         if (numThreads < state.breedthreads)
             state.output.warnOnce("Largest lambda size (" + numThreads +") is smaller than number of breedthreads (" + state.breedthreads +
                 "), so fewer breedthreads will be created.");
             
+        newIndividuals = new ArrayList[state.population.subpops.size()][numThreads];
+        for(int subpop = 0; subpop < state.population.subpops.size(); subpop++)
+            for(int thread = 0; thread < numThreads; thread++)
+                newIndividuals[subpop][thread] = new ArrayList<Individual>();
+            
         int numinds[][] = 
-            new int[numThreads][state.population.subpops.length];
+            new int[numThreads][state.population.subpops.size()];
         int from[][] = 
-            new int[numThreads][state.population.subpops.length];
+            new int[numThreads][state.population.subpops.size()];
         
-        for(int x=0;x<state.population.subpops.length;x++)
+        for(int x = 0; x< state.population.subpops.size(); x++)
             {
+            for(int thread = 0; thread < numThreads; thread++)
+                newIndividuals[x][thread].clear();
+
             int length = lambda[x];
 
             // we will have some extra individuals.  We distribute these among the early subpopulations
@@ -326,27 +347,27 @@ public class MuCommaLambdaBreeder extends Breeder
                 }
             }
 
-/*
+        /*
 
-  for(int y=0;y<state.breedthreads;y++)
-  for(int x=0;x<state.population.subpops.length;x++)
-  {
-  // figure numinds
-  if (y<state.breedthreads-1) // not last one
-  numinds[y][x]=
-  lambda[x]/state.breedthreads;
-  else // in case we're slightly off in division
-  numinds[y][x]=
-  lambda[x]/state.breedthreads +
-  (lambda[x] - (lambda[x] / state.breedthreads)  // note integer division
-  *state.breedthreads);                   
+          for(int y=0;y<state.breedthreads;y++)
+          for(int x=0;x<state.population.subpops.length;x++)
+          {
+          // figure numinds
+          if (y<state.breedthreads-1) // not last one
+          numinds[y][x]=
+          lambda[x]/state.breedthreads;
+          else // in case we're slightly off in division
+          numinds[y][x]=
+          lambda[x]/state.breedthreads +
+          (lambda[x] - (lambda[x] / state.breedthreads)  // note integer division
+          *state.breedthreads);                   
                 
-  // figure from
-  from[y][x]=
-  (lambda[x]/
-  state.breedthreads) * y;
-  }
-*/           
+          // figure from
+          from[y][x]=
+          (lambda[x]/
+          state.breedthreads) * y;
+          }
+        */           
         if (numThreads==1)
             {
             breedPopChunk(newpop,state,numinds[0],from[0],0);
@@ -380,6 +401,16 @@ public class MuCommaLambdaBreeder extends Breeder
                     state.output.fatal("Whoa! The main breeding thread got interrupted!  Dying...");
                     }
             }
+            
+        // Coalesce
+        for(int subpop = 0; subpop < state.population.subpops.size(); subpop++)
+            {
+            ArrayList<Individual> newpopindividuals = newpop.subpops.get(subpop).individuals;
+            for(int thread = 0; thread < numThreads; thread++)
+                {
+                newpopindividuals.addAll(newIndividuals[subpop][thread]);
+                }
+            }
 
         return postProcess(newpop,state.population,state);
         }
@@ -402,25 +433,26 @@ public class MuCommaLambdaBreeder extends Breeder
         public (for the benefit of a private helper class in this file),
         you should not call it. */
     
-    public void breedPopChunk(Population newpop, EvolutionState state, 
-        int[] numinds, int[] from, int threadnum) 
+    public void breedPopChunk(Population newpop, EvolutionState state, int[] numinds, int[] from, int threadnum) 
         {
-        for(int subpop=0;subpop<newpop.subpops.length;subpop++)
+        for(int subpop = 0; subpop< newpop.subpops.size(); subpop++)
             {
+            ArrayList<Individual> putHere = (ArrayList<Individual>)newIndividuals[subpop][threadnum];
+
             // reset the appropriate count slot  -- this used to be outside the for-loop, a bug
             // I believe
             count[threadnum]=0;
         
-            BreedingPipeline bp = (BreedingPipeline) newpop.subpops[subpop].
+            BreedingSource bp = (BreedingSource) newpop.subpops.get(subpop).
                 species.pipe_prototype.clone();
             
             // check to make sure that the breeding pipeline produces
             // the right kind of individuals.  Don't want a mistake there! :-)
             if (!bp.produces(state,newpop,subpop,threadnum))
-                state.output.fatal("The Breeding Pipeline of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops[subpop].species.getClass().getName() + " or fitness " + newpop.subpops[subpop].species.f_prototype );
+                state.output.fatal("The Breeding Source of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops.get(subpop).species.getClass().getName() + " or fitness " + newpop.subpops.get(subpop).species.f_prototype );
             bp.prepareToProduce(state,subpop,threadnum);
             if (count[threadnum] == 0)  // the ESSelection didn't set it to nonzero to inform us of his existence
-                state.output.warnOnce("Whoa!  Breeding Pipeline for subpop " + subpop + " doesn't have an ESSelection, but is being used by MuCommaLambdaBreeder or MuPlusLambdaBreeder.  That's probably not right.");
+                state.output.warnOnce("Whoa!  Breeding Source for subpop " + subpop + " doesn't have an ESSelection, but is being used by MuCommaLambdaBreeder or MuPlusLambdaBreeder.  That's probably not right.");
             // reset again
             count[threadnum] = 0;
         
@@ -429,9 +461,8 @@ public class MuCommaLambdaBreeder extends Breeder
             int upperbound = from[subpop]+numinds[subpop];
             for(int x=from[subpop];x<upperbound;x++)
                 {
-                if (bp.produce(1,1,x,subpop, newpop.subpops[subpop].individuals,
-                        state,threadnum) != 1)
-                    state.output.fatal("Whoa! Breeding Pipeline for subpop " + subpop + " is not producing one individual at a time, as is required by the MuLambda strategies.");
+                if (bp.produce(1,1,subpop, putHere, state,threadnum, newpop.subpops.get(subpop).species.buildMisc(state, subpop, threadnum)) != 1)
+                    state.output.fatal("Whoa! Breeding Source for subpop " + subpop + " is not producing one individual at a time, as is required by the MuLambda strategies.");
 
                 // increment the count
                 count[threadnum]++;

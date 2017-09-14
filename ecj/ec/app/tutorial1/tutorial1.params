@@ -3,10 +3,11 @@
 # See the file "LICENSE" for more information
 
 # The parameters that were laid out in Tutorial 1 (see the documentation)
+print-unaccessed-params = true
 
 breedthreads	= 1
 evalthreads	= 1
-seed.0		= 4357
+seed.0		= time
 
 state		= ec.simple.SimpleEvolutionState
 

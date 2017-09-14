@@ -142,22 +142,22 @@ public class PSOBreeder extends Breeder
         // initialize the global best
         if (globalBest == null)
             {
-            globalBest = new double[state.population.subpops.length][];
-            globalBestFitness = new Fitness[state.population.subpops.length];
+            globalBest = new double[state.population.subpops.size()][];
+            globalBestFitness = new Fitness[state.population.subpops.size()];
             }
                 
         // update global best, neighborhood best, and personal best 
-        for(int subpop = 0 ; subpop < state.population.subpops.length ; subpop++)
+        for(int subpop = 0; subpop < state.population.subpops.size(); subpop++)
             {
-            for(int ind = 0 ; ind < state.population.subpops[subpop].individuals.length ; ind++)
+            for(int ind = 0; ind < state.population.subpops.get(subpop).individuals.size() ; ind++)
                 {
                 if (globalBestFitness[subpop] == null ||
-                    state.population.subpops[subpop].individuals[ind].fitness.betterThan(globalBestFitness[subpop]))
+                    state.population.subpops.get(subpop).individuals.get(ind).fitness.betterThan(globalBestFitness[subpop]))
                     {
-                    globalBest[subpop] = ((DoubleVectorIndividual)state.population.subpops[subpop].individuals[ind]).genome;
-                    globalBestFitness[subpop] = state.population.subpops[subpop].individuals[ind].fitness;
+                    globalBest[subpop] = ((DoubleVectorIndividual) state.population.subpops.get(subpop).individuals.get(ind)).genome;
+                    globalBestFitness[subpop] = state.population.subpops.get(subpop).individuals.get(ind).fitness;
                     }
-                ((Particle)state.population.subpops[subpop].individuals[ind]).update(state, subpop, ind, 0);
+                ((Particle) state.population.subpops.get(subpop).individuals.get(ind)).update(state, subpop, ind, 0);
                 }
             // clone global best
             globalBest[subpop] = (double[])(globalBest[subpop].clone());
@@ -166,11 +166,11 @@ public class PSOBreeder extends Breeder
 
 
         // now move the particles
-        for(int subpop = 0 ; subpop < state.population.subpops.length ; subpop++)
+        for(int subpop = 0; subpop < state.population.subpops.size(); subpop++)
             {
-            for(int ind = 0 ; ind < state.population.subpops[subpop].individuals.length ; ind++)
+            for(int ind = 0; ind < state.population.subpops.get(subpop).individuals.size() ; ind++)
                 // tweak in place, destructively
-                ((Particle)state.population.subpops[subpop].individuals[ind]).tweak(state, globalBest[subpop],
+                ((Particle) state.population.subpops.get(subpop).individuals.get(ind)).tweak(state, globalBest[subpop],
                     velCoeff, personalCoeff, informantCoeff, globalCoeff, 0);
             }
                 

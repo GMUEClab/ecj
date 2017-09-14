@@ -7,9 +7,11 @@
 
 package ec.steadystate;
 import ec.simple.*;
+
+import java.util.ArrayList;
+
 import ec.*;
 import ec.util.*;
-import java.util.*;
 
 /* 
  * SteadyStateBreeder.java
@@ -56,7 +58,7 @@ public class SteadyStateBreeder extends SimpleBreeder
         Else, it only breeds one new individual per subpopulation, to 
         place in position 0 of the subpopulation.  
     */
-    BreedingPipeline[] bp;
+    BreedingSource[] bp;
     
     public static final String P_DESELECTOR = "deselector";
     // public static final String P_RETRIES = "duplicate-retries";
@@ -114,14 +116,14 @@ public class SteadyStateBreeder extends SimpleBreeder
         use this method, you must call state.output.exitIfErrors() immediately 
         afterwards. */
     public void sourcesAreProperForm(final SteadyStateEvolutionState state,
-        final BreedingPipeline[] breedingPipelines)
+        final BreedingSource[] breedingSources)
         {
-        for(int x=0;x<breedingPipelines.length;x++)
+        for(int x=0;x<breedingSources.length;x++)
             {
             // all breeding pipelines are SteadyStateBSourceForm
-            //if (!(breedingPipelines[x] instanceof SteadyStateBSourceForm))
+            //if (!(breedingSources[x] instanceof SteadyStateBSourceForm))
             //    state.output.error("Breeding Pipeline of subpopulation " + x + " is not of SteadyStateBSourceForm");
-            ((SteadyStateBSourceForm)(breedingPipelines[x])).sourcesAreProperForm(state);
+            ((SteadyStateBSourceForm)(breedingSources[x])).sourcesAreProperForm(state);
             }
         }
     
@@ -152,12 +154,13 @@ public class SteadyStateBreeder extends SimpleBreeder
         {
         final SteadyStateEvolutionState st = (SteadyStateEvolutionState) state;
         // set up the breeding pipelines
-        bp = new BreedingPipeline[st.population.subpops.length];
+        bp = new BreedingSource[st.population.subpops.size()];
         for(int pop=0;pop<bp.length;pop++)
             {
-            bp[pop] = (BreedingPipeline)st.population.subpops[pop].species.pipe_prototype.clone();
+            bp[pop] = (BreedingSource) st.population.subpops.get(pop).species.pipe_prototype.clone();
             if (!bp[pop].produces(st,st.population,pop,0))
-                st.output.error("The Breeding Pipeline of subpopulation " + pop + " does not produce individuals of the expected species " + st.population.subpops[pop].species.getClass().getName() + " and with the expected Fitness class " + st.population.subpops[pop].species.f_prototype.getClass().getName());
+                st.output.error("The Breeding Source of subpopulation " + pop + " does not produce individuals of the expected species " + st.population.subpops.get(pop).species.getClass().getName() + " and with the expected Fitness class " + st.population.subpops.get(pop).species.f_prototype.getClass().getName());
+            bp[pop].fillStubs(state, null);
             }
         // are they of the proper form?
         sourcesAreProperForm(st,bp);
@@ -174,11 +177,11 @@ public class SteadyStateBreeder extends SimpleBreeder
         
     public Individual breedIndividual(final EvolutionState state, int subpop, int thread)
         {
-        //final SteadyStateEvolutionState st = (SteadyStateEvolutionState) state;
-        Individual[] newind = new Individual[1]; 
-                
+        // this is inefficient but whatever...
+        
+        ArrayList<Individual> newind = new ArrayList<Individual>();
         // breed a single individual 
-        bp[subpop].produce(1,1,0,subpop,newind,state,thread);
-        return newind[0]; 
+        bp[subpop].produce(1,1,subpop,newind, state,thread, state.population.subpops.get(subpop).species.buildMisc(state, subpop, thread));
+        return newind.get(0); 
         }
     }

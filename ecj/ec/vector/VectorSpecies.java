@@ -193,8 +193,6 @@ public class VectorSpecies extends Species
     public final static String P_SEGMENT = "segment";
     public final static String P_DUPLICATE_RETRIES = "duplicate-retries";
 
-
-
     public final static int C_ONE_POINT = 0;
     public final static int C_ONE_POINT_NO_NOP = 2;
     public final static int C_TWO_POINT = 4;
@@ -335,12 +333,11 @@ public class VectorSpecies extends Species
     public void setup(final EvolutionState state, final Parameter base)
         {
         Parameter def = defaultBase();        
-
         // We will construct, but NOT set up, a sacrificial individual here.
         // Actual setup is done at the end of this method (in super.setup(...) )
         // The purpose of this sacrificial individual is to enable methods such
         // as inNumericalTypeRange() to run properly, since they require knowledge
-        // of which KIND of individual it is.
+        // of which KIND of individual it is
                 
         i_prototype = (Individual)(state.parameters.getInstanceForParameter(
                 base.push(P_INDIVIDUAL),def.push(P_INDIVIDUAL),
@@ -374,7 +371,7 @@ public class VectorSpecies extends Species
         String ctype = state.parameters.getStringWithDefault(base.push(P_CROSSOVERTYPE), def.push(P_CROSSOVERTYPE), null);
         crossoverType = C_ONE_POINT;
         if (ctype==null)
-            state.output.warning("No crossover type given for VectorSpecies, assuming one-point crossover",
+            state.output.warning("No crossover type given for VectorSpecies, assuming one-point crossover (\"one\")",
                 base.push(P_CROSSOVERTYPE),def.push(P_CROSSOVERTYPE));
         else if (ctype.equalsIgnoreCase(V_ONE_POINT))
             crossoverType=C_ONE_POINT;  // redundant
@@ -494,6 +491,7 @@ public class VectorSpecies extends Species
             
         // NOW call super.setup(...), which will in turn set up the prototypical individual
         super.setup(state,base);
+                
         }
 
 

@@ -122,7 +122,7 @@ public class FloatVectorIndividual extends VectorIndividual
         switch (s.crossoverType)
             {
             case VectorSpecies.C_ONE_POINT:
-//                point = state.random[thread].nextInt((len / s.chunksize)+1);
+                //                point = state.random[thread].nextInt((len / s.chunksize)+1);
                 // we want to go from 0 ... len-1 
                 // so that there is only ONE case of NO-OP crossover, not TWO
                 point = state.random[thread].nextInt((len / s.chunksize));
@@ -144,8 +144,8 @@ public class FloatVectorIndividual extends VectorIndividual
                 break;
             case VectorSpecies.C_TWO_POINT: 
                 {
-//                int point0 = state.random[thread].nextInt((len / s.chunksize)+1);
-//                point = state.random[thread].nextInt((len / s.chunksize)+1);
+                //                int point0 = state.random[thread].nextInt((len / s.chunksize)+1);
+                //                point = state.random[thread].nextInt((len / s.chunksize)+1);
                 // we want to go from 0 to len-1
                 // so that the only NO-OP crossover possible is point == point0
                 // example; len = 4
@@ -451,8 +451,8 @@ public class FloatVectorIndividual extends VectorIndividual
         {
         FloatVectorSpecies s = (FloatVectorSpecies) species;
         float[] ind = genome;
-//        double[] min_realvar = s.minGenes;
-//        double[] max_realvar = s.maxGenes;
+        //        double[] min_realvar = s.minGenes;
+        //        double[] max_realvar = s.maxGenes;
                 
         double rnd, delta1, delta2, mut_pow, deltaq;
         double y, yl, yu, val, xy;
@@ -510,8 +510,8 @@ public class FloatVectorIndividual extends VectorIndividual
         FloatVectorSpecies s = (FloatVectorSpecies) species;
         float[] parent1 = genome;
         float[] parent2 = other.genome;
-//        double[] min_realvar = s.minGenes;
-//        double[] max_realvar = s.maxGenes;
+        //        double[] min_realvar = s.minGenes;
+        //        double[] max_realvar = s.maxGenes;
                 
                 
         double y1, y2, yl, yu;

@@ -116,7 +116,7 @@ public class Spatial1DSubpopulation extends Subpopulation implements Space
         {
         int index = indexes[threadnum];
 
-        int size = individuals.length;
+        int size = individuals.size();
         if( size == 0 )
             return index;
         if( toroidal )

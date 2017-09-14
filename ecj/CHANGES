@@ -2375,7 +2375,7 @@ Version		Change Log
 	ThreadPool now prints out exceptions
 	Added more exception-handling in Slave's reading of sockets.
 		Thanks to Seb Gonzolez <gonzo222@hotmail.fr>
-        Fixed bug in GEProblem.postProcesssPopulation
+	Fixed bug in GEProblem.postProcesssPopulation
 	Fixed Makefile bugs: wasn't building gui to build jar, and
 		wasn't including png files
 	Fixed bug in ec.display.Console: wasn't loading png files
@@ -2383,4 +2383,43 @@ Version		Change Log
 	Fixed bug in ec.display.SubpopulationPanel: a test for an if-
 		expression had a semicolon, the test for the existence
 		of pop.default-subpop was moot.
-	Indented
+
+25 What the Prerelease...
+	This version has numerous non-backward-compatible changes which
+		have been made to the code, only some of which will be
+		listed here:
+	ECJ has been heavily modified to replace arrays with arraylists
+		in Population and Subpopulation.  This required very
+		major modification of a large number of files and we're
+		still testing it, but it seems to be working correctly.
+	ECJ SelectionMethods now clone the objects they return, and so
+		don't have to be special cased in BreedingPipeline, and
+		can also serve as the root in a breeding pipeline.
+	BreedingSource.produce(...) modified in two ways.  First, we
+		have removed the "start" argument since it makes no
+		sense with arraylists now.  Second, we have added a
+		"misc" argument where a hashtable of "miscellaneous"
+		additional information may be passed in or passed
+		back.  By default this misc hashtable will contain
+		one item -- the parents involved in producing the
+		children in question (as an array of arraylists).
+	Added ec/select/TopSelection.java
+	Added ec/select/AnnealedSelection.java
+	Added ec/breed/RepeatPipeline.java
+	Added ec/breed/StubPipeline.java
+	Added ec/breed/FirstCopyPipeline.java
+	Added ec/singlestate package: Single State
+	Added ec/app/ecsuite/hc.params
+	Added ec/app/ecsuite/hcsteep.params
+	Added ec/app/ecsuite/hcsteepwr.params
+	Added ec/app/ecsuite/sa.params
+	Moved eda cmaes code to eda/cmaes
+	Added eda/dovs package: DOvS
+	Added ec/app/singular package
+	Added ec/app/highdimension package
+	Added ec/neat package: NEAT
+	Added ec/app/xor package
+	Added ec/app/cartpole package
+	Heavy revision to manual
+	Added various READMEs
+

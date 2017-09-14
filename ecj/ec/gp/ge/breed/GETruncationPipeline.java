@@ -9,6 +9,9 @@ import ec.gp.ge.*;
 import ec.*;
 import ec.util.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /*
  * GEProblem.java
  *
@@ -47,30 +50,29 @@ public class GETruncationPipeline extends BreedingPipeline
 
     public int produce(final int min,
         final int max,
-        final int start,
         final int subpopulation,
-        final Individual[] inds,
+        final ArrayList<Individual> inds,
         final EvolutionState state,
-        final int thread)
+        final int thread, HashMap<String, Object> misc)
         {
+        int start = inds.size();
+        
         // grab individuals from our source and stick 'em right into inds.
         // we'll modify them from there
-        int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
+        int n = sources[0].produce(min,max,subpopulation,inds, state,thread, misc);
 
 
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
-            return reproduce(n, start, subpopulation, inds, state, thread, false);  // DON'T produce children from source -- we already did
-
+            {
+            return n;
+            }
 
 
         // now let's mutate 'em
         for(int q=start; q < n+start; q++)
             {
-            if (sources[0] instanceof SelectionMethod)
-                inds[q] = (Individual)(inds[q].clone());
-
-            GEIndividual ind = (GEIndividual)(inds[q]);
+            GEIndividual ind = (GEIndividual)(inds.get(q));
             GESpecies species = (GESpecies) (ind.species);
 
             int consumed = species.consumed(state, ind, thread);

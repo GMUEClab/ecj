@@ -65,19 +65,19 @@ public class Picture implements Cloneable, Serializable
         int a = discretize(c4, 255);
         Color color = new Color(r,b,g,a);
 
-/*
-// HSB (or HSV)
-double c1 = (vals[offset]);
-double c2 = (vals[offset+1]);
-double c3 = (vals[offset+2]);
-double c4 = (vals[offset+3]);
-int r = discretize(c1, 255);
-int b = discretize(c2, 255);
-int g = discretize(c3, 255);
-int a = discretize(c4, 255);
-int rgb = Color.HSBtoRGB((float)c1, (float)c2, (float)c3);
-Color color = new Color((rgb) & 0xFF, (rgb >> 8) & 0xFF, (rgb >> 16) & 0xFF, a);
-*/
+        /*
+        // HSB (or HSV)
+        double c1 = (vals[offset]);
+        double c2 = (vals[offset+1]);
+        double c3 = (vals[offset+2]);
+        double c4 = (vals[offset+3]);
+        int r = discretize(c1, 255);
+        int b = discretize(c2, 255);
+        int g = discretize(c3, 255);
+        int a = discretize(c4, 255);
+        int rgb = Color.HSBtoRGB((float)c1, (float)c2, (float)c3);
+        Color color = new Color((rgb) & 0xFF, (rgb >> 8) & 0xFF, (rgb >> 16) & 0xFF, a);
+        */
         
         if (graphics == null) graphics =  image.getGraphics();
 

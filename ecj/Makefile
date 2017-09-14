@@ -4,7 +4,7 @@
 #
 # To compile everything but GUI:	make 
 # To delete class files:		make clean
-# To build the documentation:		make docs
+# To build the documentation:		make doc
 # To auto-indent using Emacs:		make indent
 # To build everything + GUI:		make gui 
 # To build everything + Push:		make push
@@ -19,19 +19,21 @@ JAVAC = javac ${JAVACFLAGS}
 JAVACFLAGS = -target 1.5 -source 1.5 ${FLAGS}
 FLAGS = -g -Xlint:deprecation
 
-VERSION = 24
+VERSION = 25
 
 DIRS = \
 ec/*.java \
 ec/app/ant/*.java \
 ec/app/ant/func/*.java \
 ec/app/bbob/*.java \
+ec/app/cartpole/*.java \
 ec/app/ecsuite/*.java \
 ec/app/edge/*.java \
 ec/app/edge/func/*.java \
 ec/app/gpsemantics/*.java \
 ec/app/gpsemantics/func/*.java \
 ec/app/hiff/*.java \
+ec/app/highdimension/*.java \
 ec/app/klandscapes/*.java \
 ec/app/klandscapes/func/*.java \
 ec/app/lawnmower/*.java \
@@ -56,6 +58,7 @@ ec/app/regression/func/*.java \
 ec/app/royaltree/*.java \
 ec/app/royaltree/func/*.java \
 ec/app/sat/*.java \
+ec/app/singular/*.java \
 ec/app/sum/*.java \
 ec/app/tutorial1/*.java \
 ec/app/tutorial2/*.java \
@@ -65,10 +68,12 @@ ec/app/coevolve1/*.java \
 ec/app/coevolve2/*.java \
 ec/app/twobox/*.java \
 ec/app/twobox/func/*.java \
+ec/app/xor/*.java \
 ec/breed/*.java \
 ec/coevolve/*.java \
 ec/de/*.java \
-ec/eda/*.java \
+ec/eda/dovs/*.java \
+ec/eda/cmaes/*.java \
 ec/es/*.java \
 ec/eval/*.java \
 ec/evolve/*.java \
@@ -82,9 +87,11 @@ ec/gp/ge/breed/*.java \
 ec/multiobjective/*.java \
 ec/multiobjective/nsga2/*.java \
 ec/multiobjective/spea2/*.java \
+ec/neat/*.java \
 ec/pso/*.java \
 ec/select/*.java \
 ec/simple/*.java \
+ec/singlestate/*.java \
 ec/spatial/*.java \
 ec/steadystate/*.java \
 ec/util/*.java \
@@ -93,6 +100,7 @@ ec/vector/breed/*.java \
 ec/parsimony/*.java\
 ec/rule/*.java \
 ec/rule/breed/*.java \
+
 
 all: base
 
@@ -133,7 +141,7 @@ dist: clean gui push indent doc jar
 	echo --------------------------
 	echo Expect some errors here...
 	echo --------------------------
-	find . -name ".svn" -exec rm -rf {} \; -print | cat
+	find . -name ".hg" -exec rm -rf {} \; -print | cat
 
 indent: 
 	@ echo This uses emacs to indent all of the code.  To indent with
@@ -146,7 +154,7 @@ indent:
 	find . -name "*.java" -print -exec emacs --batch --load ~/.emacs --eval='(progn (find-file "{}") (mark-whole-buffer) (setq indent-tabs-mode nil) (untabify (point-min) (point-max)) (indent-region (point-min) (point-max) nil) (save-buffer))' \;
 
 doc:
-	javadoc -classpath . -protected  -Xdoclint:none -Xmaxwarns 10000 -Xmaxerrs 10000 -d docs/classdocs ec ec.breed ec.coevolve ec.de ec.display ec.display.chart ec.display.portrayal ec.eda ec.es ec.eval ec.evolve ec.exchange ec.gp ec.gp.breed ec.gp.build ec.gp.koza ec.multiobjective ec.multiobjective.spea2 ec.multiobjective.nsga2 ec.parsimony ec.pso ec.rule ec.rule.breed ec.select ec.simple ec.spatial ec.steadystate ec.util ec.vector ec.vector.breed ec.gp.ge ec.gp.push
+	javadoc -classpath . -protected -Xdoclint:none -Xmaxwarns 10000 -Xmaxerrs 10000 -d docs/classdocs ec ec.breed ec.coevolve ec.de ec.display ec.display.chart ec.display.portrayal ec.eda ec.es ec.eval ec.evolve ec.exchange ec.gp ec.gp.breed ec.gp.build ec.gp.koza ec.multiobjective ec.multiobjective.spea2 ec.multiobjective.nsga2 ec.parsimony ec.pso ec.rule ec.rule.breed ec.select ec.simple ec.spatial ec.steadystate ec.util ec.vector ec.vector.breed ec.gp.ge ec.gp.push ec.neat ec.dovs
 
 # Build a jar file.  Note this collects ALL .class, .png, .jpg, index.html, and application example
 # files.  You'll probably want to strip this down some.
@@ -154,7 +162,7 @@ jar: all gui
 	touch /tmp/manifest.add
 	rm /tmp/manifest.add
 	echo "Main-Class: ec.Evolve" > /tmp/manifest.add
-	jar -cvfm jar/ecj.${VERSION}.jar /tmp/manifest.add `find ec -name "*.class"` `find ec -name "*.params"` `find ec -name "*.trl"` `find ec -name "*.out.gz"` `find ec -name "*.grammar"` `find ec -name "*.cnf"` `find ec -name "*.png"`
+	jar -cvfm jar/ecj.${VERSION}.jar /tmp/manifest.add `find ec -name "*.class"` `find ec -name "*.params"` `find ec -name "*.trl"` `find ec -name "*.out.gz"` `find ec -name "*.grammar"` `find ec -name "*.cnf"` 
 
 
 

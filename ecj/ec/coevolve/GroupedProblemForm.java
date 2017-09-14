@@ -73,8 +73,11 @@ public interface GroupedProblemForm
         for which assessFitness[] is false.  Instead allow trials to accumulate and
         ultimately update the fitnesses later when the flag is set.  assessFitness[] may not be
         the same as updateFitness[] in evaluate(...).
+        
+        <p>Should return the number of individuals evaluated (not tested: but actually had their
+        fitnesses modified -- or would have if the evaluated flag wasn't set).
     */
-    public void postprocessPopulation(final EvolutionState state, Population pop, final boolean[] assessFitness, final boolean countVictoriesOnly);
+    public int postprocessPopulation(final EvolutionState state, Population pop, final boolean[] assessFitness, final boolean countVictoriesOnly);
 
     /** Evaluates the individuals found in ind together.  If updateFitness[i] is true,
         then you should use this evaluation to update the fitness of the individual in

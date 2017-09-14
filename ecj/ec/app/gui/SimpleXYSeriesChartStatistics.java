@@ -38,10 +38,10 @@ public class SimpleXYSeriesChartStatistics
     public void postEvaluationStatistics(EvolutionState state) {
         super.postEvaluationStatistics(state);
         
-        for (int subPop = 0; subPop < state.population.subpops.length; ++subPop) {
-            Fitness bestFit = state.population.subpops[subPop].individuals[0].fitness;
-            for (int i = 1; i < state.population.subpops[subPop].individuals.length; ++i) {
-                Fitness fit = state.population.subpops[subPop].individuals[i].fitness;
+        for (int subPop = 0; subPop < state.population.subpops.size(); ++subPop) {
+            Fitness bestFit = state.population.subpops.get(subPop).individuals.get(0).fitness;
+            for (int i = 1; i < state.population.subpops.get(subPop).individuals.size(); ++i) {
+                Fitness fit = state.population.subpops.get(subPop).individuals.get(i).fitness;
                 if (fit.betterThan(bestFit))
                     bestFit = fit;
                 }

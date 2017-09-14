@@ -6,9 +6,13 @@
 
 
 package ec.select;
+import java.util.ArrayList;
+
 import ec.*;
 import ec.util.*;
 import ec.steadystate.*;
+
+import java.util.HashMap;
 
 /* 
  * RandomSelection.java
@@ -46,18 +50,18 @@ public class RandomSelection extends SelectionMethod implements SteadyStateBSour
         final EvolutionState state,
         final int thread)
         {
-        return state.random[thread].nextInt( state.population.subpops[subpopulation].individuals.length );
+        return state.random[thread].nextInt( state.population.subpops.get(subpopulation).individuals.size() );
         }
 
     // I hard-code both produce(...) methods for efficiency's sake
 
-    public int produce(final int min, 
-        final int max, 
+    public int produce(final int min,
+        final int max,
         final int start,
         final int subpopulation,
         final Individual[] inds,
         final EvolutionState state,
-        final int thread) 
+        final int thread, HashMap<String, Object> misc)
         {
         int n = 1;
         if (n>max) n = max;
@@ -65,8 +69,15 @@ public class RandomSelection extends SelectionMethod implements SteadyStateBSour
 
         for(int q = 0; q < n; q++)
             {
-            Individual[] oldinds = state.population.subpops[subpopulation].individuals;
-            inds[start+q] = oldinds[state.random[thread].nextInt( state.population.subpops[subpopulation].individuals.length )];
+            ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
+            int index = state.random[thread].nextInt( state.population.subpops.get(subpopulation).individuals.size() );
+            inds[start+q] = oldinds.get(index);
+            if(misc!=null&&misc.get(KEY_PARENTS)!=null)
+                {
+                IntBag parent = new IntBag(1);
+                parent.add(index);
+                ((IntBag[])misc.get(KEY_PARENTS))[start+q] = parent;
+                }
             }
         return n;
         }

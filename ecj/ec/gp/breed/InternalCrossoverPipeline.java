@@ -10,6 +10,9 @@ import ec.*;
 import ec.util.*;
 import ec.gp.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /* 
  * InternalCrossoverPipeline.java
  * 
@@ -86,6 +89,7 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
     public static final String P_NUM_TRIES = "tries";
     public static final String P_MAXDEPTH = "maxdepth";
     public static final int NUM_SOURCES = 1;
+    public static final String KEY_PARENTS = "parents";
 
     
     /** How the pipeline chooses the first subtree */
@@ -216,23 +220,34 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
         }
 
 
-    public int produce(final int min, 
-        final int max, 
-        final int start,
+    public int produce(final int min,
+        final int max,
         final int subpopulation,
-        final Individual[] inds,
+        final ArrayList<Individual> inds,
         final EvolutionState state,
-        final int thread) 
+        final int thread, HashMap<String, Object> misc)
 
         {
-        // grab n individuals from our source and stick 'em right into inds.
+        int start = inds.size();
+                
         // we'll modify them from there
-        int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
+        int n = sources[0].produce(min,max,subpopulation,inds, state,thread, misc);
 
-
+        
+        IntBag[] parentparents = null;
+        IntBag[] preserveParents = null;
+        if (misc!=null&&misc.get(KEY_PARENTS) != null)
+            {
+            preserveParents = (IntBag[])misc.get(KEY_PARENTS);
+            parentparents = new IntBag[2];
+            misc.put(KEY_PARENTS, parentparents);
+            }
+        
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
-            return reproduce(n, start, subpopulation, inds, state, thread, false);  // DON'T produce children from source -- we already did
+            {
+            return n;
+            }
 
 
 
@@ -240,7 +255,7 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
 
         for(int q=start;q<n+start; q++)
             {
-            GPIndividual i = (GPIndividual)inds[q];
+            GPIndividual i = (GPIndividual)inds.get(q);
                     
             if (tree1!=TREE_UNFIXED && (tree1<0 || tree1 >= i.trees.length))
                 // uh oh
@@ -249,29 +264,6 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
             if (tree2!=TREE_UNFIXED && (tree2<0 || tree2 >= i.trees.length))
                 // uh oh
                 state.output.fatal("Internal Crossover Pipeline attempted to fix tree.0 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
-
-            GPIndividual j;
-            if (sources[0] instanceof BreedingPipeline)
-                // it's already a copy, so just smash the tree in
-                {
-                j=i;
-                }
-            else // need to copy it
-                {
-                j = (GPIndividual)(i.lightClone());
-                
-                // Fill in various tree information that didn't get filled in there
-                j.trees = new GPTree[i.trees.length];
-                
-                for(int x=0;x<j.trees.length;x++)
-                    {
-                    j.trees[x] = (GPTree)(i.trees[x].lightClone());  // light clone
-                    j.trees[x].owner = j;
-                    j.trees[x].child = (GPNode)(i.trees[x].child.clone());
-                    j.trees[x].child.parent = j.trees[x];
-                    j.trees[x].child.argposition = 0;
-                    }
-                }
 
 
             int t1=0; int t2=0;
@@ -318,10 +310,10 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
             for(int x=0;x<numTries;x++)
                 {
                 // pick a node in individual 1
-                p1 = nodeselect0.pickNode(state,subpopulation,thread,j,j.trees[t1]);
+                p1 = nodeselect0.pickNode(state,subpopulation,thread,i,i.trees[t1]);
                 
                 // pick a node in individual 2
-                p2 = nodeselect1.pickNode(state,subpopulation,thread,j,j.trees[t2]);
+                p2 = nodeselect1.pickNode(state,subpopulation,thread,i,i.trees[t2]);
                 
                 // make sure they're not the same node
                 res = (p1!=p2 &&
@@ -351,11 +343,17 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
                     ((GPNode)(p2.parent)).children[p2.argposition] = p2;
                 else ((GPTree)(p2.parent)).child = p2;
 
-                j.evaluated = false;  // we've modified it
+                i.evaluated = false;  // we've modified it
                 }
             
             // add the individuals to the population
-            inds[q] = j;
+            //inds.set(q,i);
+            inds.add(i);
+            if (preserveParents != null)
+                {
+                parentparents[0].addAll(parentparents[1]);
+                preserveParents[q] = new IntBag(parentparents[0]);
+                }
             }
         return n;
         }

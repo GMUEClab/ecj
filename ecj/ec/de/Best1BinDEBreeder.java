@@ -67,9 +67,10 @@ public class Best1BinDEBreeder extends DEBreeder
         int index,
         int thread)
         {
-        Individual[] inds = state.population.subpops[subpop].individuals;
+        Individual[] inds = new Individual[state.population.subpops.get(subpop).individuals.size()];
+        state.population.subpops.get(subpop).individuals.toArray(inds);
                 
-        DoubleVectorIndividual v = (DoubleVectorIndividual)(state.population.subpops[subpop].species.newIndividual(state, thread));
+        DoubleVectorIndividual v = (DoubleVectorIndividual)(state.population.subpops.get(subpop).species.newIndividual(state, thread));
         int retry = -1;
         do
             {

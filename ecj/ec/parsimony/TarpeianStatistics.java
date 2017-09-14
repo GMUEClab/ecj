@@ -64,21 +64,21 @@ public class TarpeianStatistics extends Statistics
     */
     public void preEvaluationStatistics(final EvolutionState state)
         {
-        for( int subpopulation = 0 ; subpopulation < state.population.subpops.length ; subpopulation++ )
+        for(int subpopulation = 0; subpopulation < state.population.subpops.size(); subpopulation++ )
             {
             double averageSize = 0;
 
-            for( int i = 0 ; i < state.population.subpops[subpopulation].individuals.length ; i++ )
-                averageSize += state.population.subpops[subpopulation].individuals[i].size();
+            for(int i = 0; i < state.population.subpops.get(subpopulation).individuals.size() ; i++ )
+                averageSize += state.population.subpops.get(subpopulation).individuals.get(i).size();
 
-            averageSize /= state.population.subpops[subpopulation].individuals.length;
+            averageSize /= state.population.subpops.get(subpopulation).individuals.size();
 
-            for( int i = 0 ; i < state.population.subpops[subpopulation].individuals.length ; i++ )
+            for(int i = 0; i < state.population.subpops.get(subpopulation).individuals.size() ; i++ )
                 {
-                if( ( state.population.subpops[subpopulation].individuals[i].size() > averageSize ) &&
+                if( ( state.population.subpops.get(subpopulation).individuals.get(i).size() > averageSize ) &&
                     ( state.random[0].nextDouble() < killProportion ) )
                     {
-                    Individual ind = state.population.subpops[subpopulation].individuals[i];
+                    Individual ind = state.population.subpops.get(subpopulation).individuals.get(i);
                     setMinimumFitness( state, subpopulation, ind );
                     ind.evaluated = true;
                     }

@@ -219,7 +219,6 @@ public class OurMutatorPipeline extends BreedingPipeline
     // right there.  produce(...) returns the number of individuals actually put into inds[]</font>
     public int produce(final int min, 
 		       final int max, 
-		       final int start,
 		       final int subpopulation,
 		       final Individual[] inds,
 		       final EvolutionState state,
@@ -237,37 +236,25 @@ public class OurMutatorPipeline extends BreedingPipeline
 
 
 <tt><pre>
+        int start = inds.size();  // the index of the first individual we'll be adding (for later reference)
+        
         <font color=gray>// grab individuals from our source and stick 'em right into inds.
         // we'll modify them from there</font>
-        int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
+        int n = sources[0].produce(min,max,subpopulation,inds,state,thread);
 </pre></tt>
 
 <p>Next we need to determine if we should bother mutating these individuals at all.  With a certain probability we will just return the individuals unmutated:
 
 <tt><pre>
-	<font color=gray>// should we bother?</font>
+	<font color=gray>// should we bother?<font>
 	if (!state.random[thread].nextBoolean(likelihood))
-		<font color=gray>// DON'T produce children from source -- we already did</font>
-		return reproduce(n, start, subpopulation, inds, state, thread, false);
+		{
+		return n;
+		}
 </pre></tt>
 
-<p>If we've gotten this far, it's time to actually mutate the individuals we got from our source.  We'll first
-copy them if the source isn't a BreedingPipeline.  
-Copying is done through the <tt>clone()</tt> method.  This is a method in Individual which is guaranteed to creat
-e a deep clone of the individual, including its Fitness.  In some situations (such as crossing over GPIndividuals, w
-here cloning the individual is very expensive) you may wish to light clone the Individual, then clone parts of it as
- necessary.  In that case you can judiciously use <tt>lightClone()</tt> instead.  But that's not very common.
-
-<tt><pre>
-        <font color=gray>// clone the individuals if necessary -- if our source is a BreedingPipeline
-        // they've already been cloned, but if the source is a SelectionMethod, the
-        // individuals are actual individuals from the previous population</font>
-        if (!(sources[0] instanceof BreedingPipeline))
-            for(int q=start;q&lt;n+start;q++)
-                inds[q] = (Individual)(inds[q].clone());
- </pre></tt>
-
-<p>Next we'll test to make certain that the individuals are in fact IntegerVectorIndividuals.  It's a quick hack of a test, not a complete one, but usually the complete one is unnecessary.  We'll also extract
+<p>If we've gotten this far, it's time to actually mutate the individuals we got from our source. 
+   We first test to make certain that the individuals are in fact IntegerVectorIndividuals.  It's a quick hack of a test, not a complete one, but usually the complete one is unnecessary.  We'll also extract
 	the IntegerVectorSpecies object the individuals are sharing, so we can get the per-gene <tt>mutationProbability</tt>
 	value out of it.
 

@@ -9,6 +9,9 @@ package ec.breed;
 import ec.*;
 import ec.util.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /* 
  * InitializationPipeline.java
  * 
@@ -54,18 +57,17 @@ public class InitializationPipeline extends BreedingPipeline
                 def.push(P_LIKELIHOOD));
         }
         
-    public int produce(final int min, 
-        final int max, 
-        final int start,
+    public int produce(final int min,
+        final int max,
         final int subpopulation,
-        final Individual[] inds,
+        final ArrayList<Individual> inds,
         final EvolutionState state,
-        final int thread) 
+        final int thread, HashMap<String, Object> misc)
         {
-        Species s = state.population.subpops[subpopulation].species;
-        for(int q = start; q < start + max; q++)
+        Species s = state.population.subpops.get(subpopulation).species;
+        for(int q = 0; q < max; q++)
             {
-            inds[q] = s.newIndividual(state, thread);
+            inds.add(s.newIndividual(state, thread));
             }
         return max;
         }

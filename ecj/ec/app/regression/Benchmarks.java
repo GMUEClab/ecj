@@ -607,7 +607,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
 
 
 
-/////// Computation of delta error between expected value and provided value
+    /////// Computation of delta error between expected value and provided value
 
 
 
@@ -646,7 +646,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
 
 
 
-///// Setup
+    ///// Setup
 
     // parameters
     public static final String P_TESTING_FILE = "testing-file";
@@ -850,7 +850,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
 
 
 
-///// Evaluation.  evaluate(...) uses training cases, and describe(...) uses testing cases
+    ///// Evaluation.  evaluate(...) uses training cases, and describe(...) uses testing cases
 
 
     public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum)

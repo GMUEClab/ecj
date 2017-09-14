@@ -171,10 +171,10 @@ public class Particle extends DoubleVectorIndividual
             {
             if (psob.neighborhood == psob.C_NEIGHBORHOOD_RANDOM) // "random" scheme is the only thing that is available for now
                 neighborhood = createRandomPattern(myindex, psob.includeSelf, 
-                    state.population.subpops[subpop].individuals.length, psob.neighborhoodSize, state, thread);
+                    state.population.subpops.get(subpop).individuals.size(), psob.neighborhoodSize, state, thread);
             else if (psob.neighborhood == psob.C_NEIGHBORHOOD_TOROIDAL || psob.neighborhood == psob.C_NEIGHBORHOOD_RANDOM_EACH_TIME)
                 neighborhood = createToroidalPattern(myindex, psob.includeSelf,
-                    state.population.subpops[subpop].individuals.length, psob.neighborhoodSize);
+                    state.population.subpops.get(subpop).individuals.size(), psob.neighborhoodSize);
             else // huh?
                 state.output.fatal("internal error: invalid PSO neighborhood style: " + psob.neighborhood);
             }
@@ -185,10 +185,10 @@ public class Particle extends DoubleVectorIndividual
         for(int i = 0 ; i < neighborhood.length ; i++)
             {
             int ind = neighborhood[i] ;
-            if (state.population.subpops[subpop].individuals[ind].fitness.betterThan(fitness))
+            if (state.population.subpops.get(subpop).individuals.get(ind).fitness.betterThan(fitness))
                 {
-                neighborhoodBestFitness = state.population.subpops[subpop].individuals[ind].fitness;
-                neighborhoodBestGenome = ((DoubleVectorIndividual)(state.population.subpops[subpop].individuals[ind])).genome;
+                neighborhoodBestFitness = state.population.subpops.get(subpop).individuals.get(ind).fitness;
+                neighborhoodBestGenome = ((DoubleVectorIndividual)(state.population.subpops.get(subpop).individuals.get(ind))).genome;
                 }
             }
                 

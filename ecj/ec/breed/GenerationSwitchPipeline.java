@@ -9,6 +9,9 @@ package ec.breed;
 import ec.*;
 import ec.util.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /* 
  * GenerationSwitchPipeline.java
  * 
@@ -103,17 +106,17 @@ public class GenerationSwitchPipeline extends BreedingPipeline
         }
 
 
-    public int produce(final int min, 
-        final int max, 
-        final int start,
+    public int produce(final int min,
+        final int max,
         final int subpopulation,
-        final Individual[] inds,
+        final ArrayList<Individual> inds,
         final EvolutionState state,
-        final int thread) 
+        final int thread, HashMap<String, Object> misc)
 
         {
-        BreedingSource s = (state.generation < generationSwitch ?
-            sources[0] : sources[1] );
+        int start = inds.size();
+
+        BreedingSource s = (state.generation < generationSwitch ? sources[0] : sources[1] );
         int total;
 
         if (generateMax)
@@ -124,20 +127,13 @@ public class GenerationSwitchPipeline extends BreedingPipeline
             if (n < min) n = min;
             if (n > max) n = max;
 
-            total = s.produce(
-                n,n,start,subpopulation,inds,state,thread);
+            total = s.produce(n,n,subpopulation,inds, state,thread, misc);
             }
         else
             {
-            total = s.produce(
-                min,max,start,subpopulation,inds,state,thread);
+            total = s.produce(min,max,subpopulation,inds, state,thread, misc);
             }
             
-        // clone if necessary
-        if (s instanceof SelectionMethod)
-            for(int q=start; q < total+start; q++)
-                inds[q] = (Individual)(inds[q].clone());
-        
         return total;
         }
     }

@@ -9,6 +9,9 @@ package ec.select;
 import ec.*;
 import ec.util.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /* 
  * MultiSelection.java
  * 
@@ -160,6 +163,8 @@ public class MultiSelection extends SelectionMethod
         final int subpopulation,
         final int thread)
         {
+        super.prepareToProduce(s, subpopulation, thread);
+
         for(int x=0;x<selects.length;x++)
             selects[x].prepareToProduce(s,subpopulation,thread);
         }
@@ -171,23 +176,26 @@ public class MultiSelection extends SelectionMethod
         {
         return selects[BreedingSource.pickRandom(
                 selects,state.random[thread].nextDouble())].produce(
-                    subpopulation,state,thread);
+                    subpopulation,state,thread); 
         }
+     
+    // Proposed change in semantics: MultiSelection now picks randomly EVERY time it select an
+    // individual, not just a group of individuals
+/*
+  public int produce(final int min,
+  final int max,
+  final int start,
+  final int subpopulation,
+  final ArrayList<Individual> inds,
+  final EvolutionState state,
+  final int thread, HashMap<String, Object> misc)
 
-    public int produce(final int min, 
-        final int max, 
-        final int start,
-        final int subpopulation,
-        final Individual[] inds,
-        final EvolutionState state,
-        final int thread) 
-
-        {
-        return selects[BreedingSource.pickRandom(
-                selects,state.random[thread].nextDouble())].produce(
-                    min,max,start,subpopulation,inds,state,thread);
-        }
-
+  {
+  return selects[BreedingSource.pickRandom(
+  selects,state.random[thread].nextDouble())].produce(
+  min,max,start,subpopulation,inds, state,thread, misc);
+  }
+*/
     public void preparePipeline(Object hook)
         {
         // the default form calls this on all the selects.

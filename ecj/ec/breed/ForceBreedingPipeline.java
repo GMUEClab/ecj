@@ -9,6 +9,9 @@ package ec.breed;
 import ec.*;
 import ec.util.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /* 
  * ForceBreedingPipeline.java
  * 
@@ -81,35 +84,31 @@ public class ForceBreedingPipeline extends BreedingPipeline
         return numInds;
         }
 
-    public int produce(final int min, 
-        final int max, 
-        final int start,
+    public int produce(final int min,
+        final int max,
         final int subpopulation,
-        final Individual[] inds,
+        final ArrayList<Individual> inds,
         final EvolutionState state,
-        final int thread) 
+        final int thread, HashMap<String, Object> misc)
 
         {
+        int start = inds.size();
+
         int n = numInds;
         if (n < min) n = min;
         if (n > max) n = max;
 
         int total;
         int numToProduce;
-        for(total=0; total<n; )
+        for(total=0; total<n; )  // note empty term
             {
             numToProduce = n - total;
             if (numToProduce > numInds)
                 numToProduce = numInds;
 
-            total += sources[0].produce(numToProduce,numToProduce,start+total,subpopulation,inds,state,thread);
+            total += sources[0].produce(numToProduce, numToProduce, subpopulation, inds, state, thread, misc);
             }
         
-        // clone if necessary
-        if (sources[0] instanceof SelectionMethod)
-            for(int q=start; q < total+start; q++)
-                inds[q] = (Individual)(inds[q].clone());
-                
         return total;
         }
     }

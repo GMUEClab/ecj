@@ -17,19 +17,20 @@ public class CompetitiveMaxOnes extends Problem implements GroupedProblemForm
     {
     public void preprocessPopulation(final EvolutionState state, Population pop, boolean[] updateFitness, boolean countVictoriesOnly)
         {
-        for( int i = 0 ; i < pop.subpops.length ; i++ )
+        for(int i = 0; i < pop.subpops.size(); i++ )
             if (updateFitness[i])
-                for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
-                    ((SimpleFitness)(pop.subpops[i].individuals[j].fitness)).trials = new ArrayList();
+                for(int j = 0; j < pop.subpops.get(i).individuals.size() ; j++ )
+                    ((SimpleFitness)(pop.subpops.get(i).individuals.get(j).fitness)).trials = new ArrayList();
         }
 
-    public void postprocessPopulation(final EvolutionState state, Population pop, boolean[] updateFitness, boolean countVictoriesOnly)
+    public int postprocessPopulation(final EvolutionState state, Population pop, boolean[] updateFitness, boolean countVictoriesOnly)
         {
-        for( int i = 0 ; i < pop.subpops.length ; i++ )
+        int total = 0;
+        for(int i = 0; i < pop.subpops.size(); i++ )
             if (updateFitness[i])
-                for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
+                for(int j = 0; j < pop.subpops.get(i).individuals.size() ; j++ )
                     {
-                    SimpleFitness fit = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
+                    SimpleFitness fit = ((SimpleFitness)(pop.subpops.get(i).individuals.get(j).fitness));
 
                     // average of the trials we got
                     int len = fit.trials.size();
@@ -40,8 +41,10 @@ public class CompetitiveMaxOnes extends Problem implements GroupedProblemForm
                                                                         
                     // we'll not bother declaring the ideal
                     fit.setFitness(state, sum, false);
-                    pop.subpops[i].individuals[j].evaluated = true;
+                    pop.subpops.get(i).individuals.get(j).evaluated = true;
+                    total++;
                     }
+        return total;
         }
 
     public void evaluate(final EvolutionState state,

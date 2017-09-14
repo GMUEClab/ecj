@@ -6,6 +6,8 @@
 
 
 package ec.select;
+import java.util.ArrayList;
+
 import ec.*;
 import ec.util.*;
 
@@ -109,10 +111,12 @@ public class GreedyOverselection extends SelectionMethod
         final int subpopulation,
         final int thread)
         {
-        // load sortedPop integers
-        final Individual[] i = s.population.subpops[subpopulation].individuals;
+        super.prepareToProduce(s, subpopulation, thread);
 
-        sortedPop = new int[i.length];
+        // load sortedPop integers
+        final ArrayList<Individual> i = s.population.subpops.get(subpopulation).individuals;
+
+        sortedPop = new int[i.size()];
         for(int x=0;x<sortedPop.length;x++) sortedPop[x] = x;
         
         // sort sortedPop in increasing fitness order
@@ -121,16 +125,19 @@ public class GreedyOverselection extends SelectionMethod
                 {
                 public boolean lt(long a, long b)
                     {
-                    return ((Individual)(i[(int)b])).fitness.betterThan(
-                        ((Individual)(i[(int)a])).fitness);
+                    return ((Individual)(i.get((int)b))).fitness.betterThan(
+                        ((Individual)(i.get((int)a))).fitness);
                     }
 
                 public boolean gt(long a, long b)
                     {
-                    return ((Individual)(i[(int)a])).fitness.betterThan(
-                        ((Individual)(i[(int)b])).fitness);
+                    return ((Individual)(i.get((int)a))).fitness.betterThan(
+                        ((Individual)(i.get((int)b))).fitness);
                     }
                 });
+        
+        
+        
         
         // determine my boundary -- must be at least 1 and must leave 1 over
         int boundary = (int)(sortedPop.length * top_n_percent);
@@ -144,7 +151,7 @@ public class GreedyOverselection extends SelectionMethod
         int y=0;
         for(int x=sortedPop.length-boundary;x<sortedPop.length;x++)
             {
-            sortedFitOver[y] = (i[sortedPop[x]]).fitness.fitness();
+            sortedFitOver[y] = (i.get(sortedPop[x])).fitness.fitness();
             if (sortedFitOver[y] < 0) // uh oh
                 s.output.fatal("Discovered a negative fitness value.  Greedy Overselection requires that all fitness values be non-negative (offending subpopulation #" + subpopulation + ")");
             y++;
@@ -155,7 +162,7 @@ public class GreedyOverselection extends SelectionMethod
         y=0;
         for(int x=0;x<sortedPop.length-boundary;x++)
             {
-            sortedFitUnder[y] = (i[sortedPop[x]]).fitness.fitness();
+            sortedFitUnder[y] = (i.get(sortedPop[x])).fitness.fitness();
             if (sortedFitUnder[y] < 0) // uh oh
                 s.output.fatal("Discovered a negative fitness value.  Greedy Overselection requires that all fitness values be non-negative (offending subpopulation #" + subpopulation + ")");
             y++;
@@ -186,6 +193,8 @@ public class GreedyOverselection extends SelectionMethod
         final int subpopulation,
         final int thread)
         {
+        super.finishProducing(s, subpopulation, thread);
+        
         // release the distributions so we can quickly 
         // garbage-collect them if necessary
         sortedFitUnder = null;

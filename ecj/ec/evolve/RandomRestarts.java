@@ -1,9 +1,7 @@
 package ec.evolve;
 
 import ec.*;
-import ec.steadystate.*;
 import ec.util.*;
-import java.io.*;
 
 /**
  * A special Statistics class which performs random restarts on the population,
@@ -97,9 +95,9 @@ public class RandomRestarts extends Statistics
             {
             state.output.message( "Restarting the population prior to evaluating generation " + state.generation );
             // for each subpopulation
-            for( int subp = 0; subp < state.population.subpops.length; subp++ )
+            for(int subp = 0; subp < state.population.subpops.size(); subp++ )
                 {
-                currentSubp = state.population.subpops[subp];
+                currentSubp = state.population.subpops.get(subp);
                 boolean temp = currentSubp.loadInds;
                 // disable loadInds so we generate candidates randomly
                 currentSubp.loadInds = false;

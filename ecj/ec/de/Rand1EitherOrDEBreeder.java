@@ -1,5 +1,7 @@
 package ec.de;
 
+import java.util.ArrayList;
+
 import ec.*;
 import ec.util.*;
 import ec.vector.*;
@@ -67,9 +69,9 @@ public class Rand1EitherOrDEBreeder extends DEBreeder
         int index,
         int thread )
         {
-        Individual[] inds = state.population.subpops[subpop].individuals;
+        ArrayList<Individual> inds = state.population.subpops.get(subpop).individuals;
 
-        DoubleVectorIndividual v = (DoubleVectorIndividual)(state.population.subpops[subpop].species.newIndividual(state, thread));
+        DoubleVectorIndividual v = (DoubleVectorIndividual)(state.population.subpops.get(subpop).species.newIndividual(state, thread));
         int retry = -1;
         do
             {
@@ -79,23 +81,23 @@ public class Rand1EitherOrDEBreeder extends DEBreeder
             int r0, r1, r2;
             do
                 {
-                r0 = state.random[thread].nextInt(inds.length);
+                r0 = state.random[thread].nextInt(inds.size());
                 }
             while( r0 == index );
             do
                 {
-                r1 = state.random[thread].nextInt(inds.length);
+                r1 = state.random[thread].nextInt(inds.size());
                 }
             while( r1 == r0 || r1 == index );
             do
                 {
-                r2 = state.random[thread].nextInt(inds.length);
+                r2 = state.random[thread].nextInt(inds.size());
                 }
             while( r2 == r1 || r2 == r0 || r2 == index );
 
-            DoubleVectorIndividual g0 = (DoubleVectorIndividual)(inds[r0]);
-            DoubleVectorIndividual g1 = (DoubleVectorIndividual)(inds[r1]);
-            DoubleVectorIndividual g2 = (DoubleVectorIndividual)(inds[r2]);
+            DoubleVectorIndividual g0 = (DoubleVectorIndividual)(inds.get(r0));
+            DoubleVectorIndividual g1 = (DoubleVectorIndividual)(inds.get(r1));
+            DoubleVectorIndividual g2 = (DoubleVectorIndividual)(inds.get(r2));
 
             for(int i = 0; i < v.genome.length; i++)
                 if (state.random[thread].nextBoolean(PF))

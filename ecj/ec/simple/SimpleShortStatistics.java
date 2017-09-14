@@ -9,7 +9,6 @@ package ec.simple;
 import ec.*;
 import java.io.*;
 import ec.util.*;
-import ec.eval.*;
 
 /* 
  * SimpleShortStatistics.java
@@ -174,14 +173,14 @@ public class SimpleShortStatistics extends Statistics
         
         // set up our bestSoFar array -- can't do this in setup, because
         // we don't know if the number of subpopulations has been determined yet
-        bestSoFar = new Individual[state.population.subpops.length];
+        bestSoFar = new Individual[state.population.subpops.size()];
         
         // print out our generation number
         if (output) state.output.print("0 ", statisticslog);
 
         // gather timings       
-        totalSizeSoFar = new long[state.population.subpops.length];
-        totalIndsSoFar = new long[state.population.subpops.length];
+        totalSizeSoFar = new long[state.population.subpops.size()];
+        totalIndsSoFar = new long[state.population.subpops.size()];
 
         if (output && doTime)
             {
@@ -258,7 +257,7 @@ public class SimpleShortStatistics extends Statistics
             state.output.print("" + (System.currentTimeMillis()-lastTime) + " ",  statisticslog);
             }
                         
-        int subpops = state.population.subpops.length;                          // number of supopulations
+        int subpops = state.population.subpops.size();                          // number of supopulations
         totalIndsThisGen = new long[subpops];                                           // total assessed individuals
         bestOfGeneration = new Individual[subpops];                                     // per-subpop best individual this generation
         totalSizeThisGen = new long[subpops];                           // per-subpop total size of individuals this generation
@@ -272,12 +271,12 @@ public class SimpleShortStatistics extends Statistics
                 
         for(int x=0;x<subpops;x++)
             {                   
-            for(int y=0; y<state.population.subpops[x].individuals.length; y++)
+            for(int y = 0; y< state.population.subpops.get(x).individuals.size(); y++)
                 {
-                if (state.population.subpops[x].individuals[y].evaluated)               // he's got a valid fitness
+                if (state.population.subpops.get(x).individuals.get(y).evaluated)               // he's got a valid fitness
                     {
                     // update sizes
-                    long size = state.population.subpops[x].individuals[y].size();
+                    long size = state.population.subpops.get(x).individuals.get(y).size();
                     totalSizeThisGen[x] += size;
                     totalSizeSoFar[x] += size;
                     totalIndsThisGen[x] += 1;
@@ -285,15 +284,15 @@ public class SimpleShortStatistics extends Statistics
                                         
                     // update fitness
                     if (bestOfGeneration[x]==null ||
-                        state.population.subpops[x].individuals[y].fitness.betterThan(bestOfGeneration[x].fitness))
+                        state.population.subpops.get(x).individuals.get(y).fitness.betterThan(bestOfGeneration[x].fitness))
                         {
-                        bestOfGeneration[x] = state.population.subpops[x].individuals[y];
+                        bestOfGeneration[x] = state.population.subpops.get(x).individuals.get(y);
                         if (bestSoFar[x]==null || bestOfGeneration[x].fitness.betterThan(bestSoFar[x].fitness))
                             bestSoFar[x] = (Individual)(bestOfGeneration[x].clone());
                         }
             
                     // sum up mean fitness for population
-                    totalFitnessThisGen[x] += state.population.subpops[x].individuals[y].fitness.fitness();
+                    totalFitnessThisGen[x] += state.population.subpops.get(x).individuals.get(y).fitness.fitness();
                                         
                     // hook for KozaShortStatistics etc.
                     gatherExtraSubpopStatistics(state, x, y);

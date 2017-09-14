@@ -7,6 +7,9 @@
 
 package ec.select;
 import ec.util.*;
+
+import java.util.ArrayList;
+
 import ec.*;
 /* 
  * BestSelection.java
@@ -135,10 +138,12 @@ public class BestSelection extends SelectionMethod
         final int subpopulation,
         final int thread)
         {
-        // load sortedPop integers
-        final Individual[] i = s.population.subpops[subpopulation].individuals;
+        super.prepareToProduce(s, subpopulation, thread);
 
-        sortedPop = new int[i.length];
+        // load sortedPop integers
+        final ArrayList<Individual> i = s.population.subpops.get(subpopulation).individuals;
+
+        sortedPop = new int[i.size()];
         for(int x=0;x<sortedPop.length;x++) sortedPop[x] = x;
 
         // sort sortedPop in increasing fitness order
@@ -147,14 +152,14 @@ public class BestSelection extends SelectionMethod
                 {
                 public boolean lt(long a, long b)
                     {
-                    return ((Individual)(i[(int)b])).fitness.betterThan(
-                        ((Individual)(i[(int)a])).fitness);
+                    return ((Individual)(i.get((int)b))).fitness.betterThan(
+                        ((Individual)(i.get((int)a))).fitness);
                     }
 
                 public boolean gt(long a, long b)
                     {
-                    return ((Individual)(i[(int)a])).fitness.betterThan(
-                        ((Individual)(i[(int)b])).fitness);
+                    return ((Individual)(i.get((int)a))).fitness.betterThan(
+                        ((Individual)(i.get((int)b))).fitness);
                     }
                 });
 
@@ -169,7 +174,7 @@ public class BestSelection extends SelectionMethod
         // figure out bestn
         if (bestnFrac != NOT_SET)
             {
-            bestn = (int) Math.max(Math.floor(s.population.subpops[subpopulation].individuals.length * bestnFrac), 1);
+            bestn = (int) Math.max(Math.floor(s.population.subpops.get(subpopulation).individuals.size() * bestnFrac), 1);
             }
         }
 
@@ -187,23 +192,23 @@ public class BestSelection extends SelectionMethod
         final int thread)
         {
         // pick size random individuals, then pick the best.
-        Individual[] oldinds = state.population.subpops[subpopulation].individuals;
+        //Individual[] oldinds = state.population.subpops.get(subpopulation).individuals;
+        ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
         int best = state.random[thread].nextInt(bestn);  // only among the first N
-        
         int s = getTournamentSizeToUse(state.random[thread]);
                 
         if (pickWorst)
             for (int x=1;x<s;x++)
                 {
                 int j = state.random[thread].nextInt(bestn);  // only among the first N
-                if (!(oldinds[sortedPop[j]].fitness.betterThan(oldinds[sortedPop[best]].fitness)))  // j isn't better than best
+                if (!(oldinds.get(sortedPop[j]).fitness.betterThan(oldinds.get(sortedPop[best]).fitness)))  // j isn't better than best
                     best = j;
                 }
         else
             for (int x=1;x<s;x++)
                 {
                 int j = state.random[thread].nextInt(bestn);  // only among the first N
-                if (oldinds[sortedPop[j]].fitness.betterThan(oldinds[sortedPop[best]].fitness))  // j is better than best
+                if (oldinds.get(sortedPop[j]).fitness.betterThan(oldinds.get(sortedPop[best]).fitness))  // j is better than best
                     best = j;
                 }
         
@@ -214,6 +219,8 @@ public class BestSelection extends SelectionMethod
         final int subpopulation,
         final int thread)
         {
+        super.finishProducing(s, subpopulation, thread);
+
         // release the distributions so we can quickly 
         // garbage-collect them if necessary
         sortedPop = null;

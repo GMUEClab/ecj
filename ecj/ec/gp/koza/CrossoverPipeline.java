@@ -10,6 +10,10 @@ import ec.*;
 import ec.util.*;
 import ec.gp.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
 /* 
  * CrossoverPipeline.java
  * 
@@ -119,6 +123,7 @@ public class CrossoverPipeline extends GPBreedingPipeline
     public static final int INDS_PRODUCED = 2;
     public static final int NUM_SOURCES = 2;
     public static final int NO_SIZE_LIMIT = -1;
+    public static final String KEY_PARENTS = "parents";
 
     /** How the pipeline selects a node from individual 1 */
     public GPNodeSelector nodeselect1;
@@ -145,9 +150,12 @@ public class CrossoverPipeline extends GPBreedingPipeline
     public boolean tossSecondParent;
 
     /** Temporary holding place for parents */
-    public GPIndividual parents[];
+    public ArrayList<Individual> parents;
 
-    public CrossoverPipeline() { parents = new GPIndividual[2]; }
+    public CrossoverPipeline()
+        {
+        parents = new ArrayList<Individual>();
+        }
 
     public Parameter defaultBase() { return GPKozaDefaults.base().push(P_CROSSOVER); }
 
@@ -160,7 +168,7 @@ public class CrossoverPipeline extends GPBreedingPipeline
         // deep-cloned stuff
         c.nodeselect1 = (GPNodeSelector)(nodeselect1.clone());
         c.nodeselect2 = (GPNodeSelector)(nodeselect2.clone());
-        c.parents = (GPIndividual[]) parents.clone();
+        c.parents = new ArrayList<Individual>(parents);
 
         return c;
         }
@@ -278,46 +286,61 @@ public class CrossoverPipeline extends GPBreedingPipeline
         }
 
 
-    public int produce(final int min, 
-        final int max, 
-        final int start,
+    public int produce(final int min,
+        final int max,
         final int subpopulation,
-        final Individual[] inds,
+        final ArrayList<Individual> inds,
         final EvolutionState state,
-        final int thread) 
+        final int thread, HashMap<String, Object> misc)
 
         {
+        int start = inds.size();
+                
         // how many individuals should we make?
         int n = typicalIndsProduced();
         if (n < min) n = min;
         if (n > max) n = max;
 
+
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
-            return reproduce(n, start, subpopulation, inds, state, thread, true);  // DO produce children from source -- we've not done so already
+            {
+            // just load from source 0 and clone 'em
+            sources[0].produce(n,n,subpopulation,inds, state,thread,misc);
+            return n;
+            }
 
-
+        IntBag[] parentparents = null;
+        IntBag[] preserveParents = null;
+        if (misc!=null&&misc.get(KEY_PARENTS) != null)
+            {
+            preserveParents = (IntBag[])misc.get(KEY_PARENTS);
+            parentparents = new IntBag[2];
+            misc.put(KEY_PARENTS, parentparents);
+            }
 
         GPInitializer initializer = ((GPInitializer)state.initializer);
         
         for(int q=start;q<n+start; /* no increment */)  // keep on going until we're filled up
             {
+            parents.clear();
+            
             // grab two individuals from our sources
             if (sources[0]==sources[1])  // grab from the same source
-                sources[0].produce(2,2,0,subpopulation,parents,state,thread);
+                sources[0].produce(2,2,subpopulation, parents, state,thread, misc);
             else // grab from different sources
                 {
-                sources[0].produce(1,1,0,subpopulation,parents,state,thread);
-                sources[1].produce(1,1,1,subpopulation,parents,state,thread);
+                sources[0].produce(1,1,subpopulation, parents, state,thread, misc);
+                sources[1].produce(1,1,subpopulation, parents, state,thread, misc);
                 }
             
             // at this point, parents[] contains our two selected individuals
             
             // are our tree values valid?
-            if (tree1!=TREE_UNFIXED && (tree1<0 || tree1 >= parents[0].trees.length))
+            if (tree1!=TREE_UNFIXED && (tree1<0 || tree1 >= ((GPIndividual)(parents.get(0))).trees.length))
                 // uh oh
                 state.output.fatal("GP Crossover Pipeline attempted to fix tree.0 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
-            if (tree2!=TREE_UNFIXED && (tree2<0 || tree2 >= parents[1].trees.length))
+            if (tree2!=TREE_UNFIXED && (tree2<0 || tree2 >= ((GPIndividual)(parents.get(1))).trees.length))
                 // uh oh
                 state.output.fatal("GP Crossover Pipeline attempted to fix tree.1 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
 
@@ -328,25 +351,25 @@ public class CrossoverPipeline extends GPBreedingPipeline
                     // pick random trees  -- their GPTreeConstraints must be the same
                     {
                     if (tree1==TREE_UNFIXED) 
-                        if (parents[0].trees.length > 1)
-                            t1 = state.random[thread].nextInt(parents[0].trees.length);
+                        if (((GPIndividual)(parents.get(0))).trees.length > 1)
+                            t1 = state.random[thread].nextInt(((GPIndividual)(parents.get(0))).trees.length);
                         else t1 = 0;
                     else t1 = tree1;
 
                     if (tree2==TREE_UNFIXED) 
-                        if (parents[1].trees.length>1)
-                            t2 = state.random[thread].nextInt(parents[1].trees.length);
+                        if (((GPIndividual)(parents.get(1))).trees.length>1)
+                            t2 = state.random[thread].nextInt(((GPIndividual)(parents.get(1))).trees.length);
                         else t2 = 0;
                     else t2 = tree2;
-                    } while (parents[0].trees[t1].constraints(initializer) != parents[1].trees[t2].constraints(initializer));
+                    } while (((GPIndividual)(parents.get(0))).trees[t1].constraints(initializer) != ((GPIndividual)(parents.get(1))).trees[t2].constraints(initializer));
                 }
             else
                 {
                 t1 = tree1;
                 t2 = tree2;
                 // make sure the constraints are okay
-                if (parents[0].trees[t1].constraints(initializer) 
-                    != parents[1].trees[t2].constraints(initializer)) // uh oh
+                if (((GPIndividual)(parents.get(0))).trees[t1].constraints(initializer)
+                    != ((GPIndividual)(parents.get(1))).trees[t2].constraints(initializer)) // uh oh
                     state.output.fatal("GP Crossover Pipeline's two tree choices are both specified by the user -- but their GPTreeConstraints are not the same");
                 }
 
@@ -370,10 +393,10 @@ public class CrossoverPipeline extends GPBreedingPipeline
             for(int x=0;x<numTries;x++)
                 {
                 // pick a node in individual 1
-                p1 = nodeselect1.pickNode(state,subpopulation,thread,parents[0],parents[0].trees[t1]);
+                p1 = nodeselect1.pickNode(state,subpopulation,thread,((GPIndividual)(parents.get(0))),((GPIndividual)(parents.get(0))).trees[t1]);
                 
                 // pick a node in individual 2
-                p2 = nodeselect2.pickNode(state,subpopulation,thread,parents[1],parents[1].trees[t2]);
+                p2 = nodeselect2.pickNode(state,subpopulation,thread,((GPIndividual)(parents.get(1))),((GPIndividual)(parents.get(1))).trees[t2]);
                 
                 // check for depth and swap-compatibility limits
                 res1 = verifyPoints(initializer,p2,p1);  // p2 can fill p1's spot -- order is important!
@@ -408,13 +431,13 @@ public class CrossoverPipeline extends GPBreedingPipeline
             // should change this to proto off of the main species prototype, but
             // we have to then copy so much stuff over; it's not worth it.
                     
-            GPIndividual j1 = (GPIndividual)(parents[0].lightClone());
+            GPIndividual j1 = (GPIndividual)(((GPIndividual)(parents.get(0))).lightClone());
             GPIndividual j2 = null;
-            if (n-(q-start)>=2 && !tossSecondParent) j2 = (GPIndividual)(parents[1].lightClone());
+            if (n-(q-start)>=2 && !tossSecondParent) j2 = (GPIndividual)(((GPIndividual)(parents.get(1))).lightClone());
             
             // Fill in various tree information that didn't get filled in there
-            j1.trees = new GPTree[parents[0].trees.length];
-            if (n-(q-start)>=2 && !tossSecondParent) j2.trees = new GPTree[parents[1].trees.length];
+            j1.trees = new GPTree[((GPIndividual)(parents.get(0))).trees.length];
+            if (n-(q-start)>=2 && !tossSecondParent) j2.trees = new GPTree[((GPIndividual)(parents.get(1))).trees.length];
             
             // at this point, p1 or p2, or both, may be null.
             // If not, swap one in.  Else just copy the parent.
@@ -423,18 +446,18 @@ public class CrossoverPipeline extends GPBreedingPipeline
                 {
                 if (x==t1 && res1)  // we've got a tree with a kicking cross position!
                     { 
-                    j1.trees[x] = (GPTree)(parents[0].trees[x].lightClone());
+                    j1.trees[x] = (GPTree)(((GPIndividual)(parents.get(0))).trees[x].lightClone());
                     j1.trees[x].owner = j1;
-                    j1.trees[x].child = parents[0].trees[x].child.cloneReplacing(p2,p1); 
+                    j1.trees[x].child = ((GPIndividual)(parents.get(0))).trees[x].child.cloneReplacing(p2,p1);
                     j1.trees[x].child.parent = j1.trees[x];
                     j1.trees[x].child.argposition = 0;
                     j1.evaluated = false; 
                     }  // it's changed
                 else 
                     {
-                    j1.trees[x] = (GPTree)(parents[0].trees[x].lightClone());
+                    j1.trees[x] = (GPTree)(((GPIndividual)(parents.get(0))).trees[x].lightClone());
                     j1.trees[x].owner = j1;
-                    j1.trees[x].child = (GPNode)(parents[0].trees[x].child.clone());
+                    j1.trees[x].child = (GPNode)(((GPIndividual)(parents.get(0))).trees[x].child.clone());
                     j1.trees[x].child.parent = j1.trees[x];
                     j1.trees[x].child.argposition = 0;
                     }
@@ -445,29 +468,41 @@ public class CrossoverPipeline extends GPBreedingPipeline
                     {
                     if (x==t2 && res2)  // we've got a tree with a kicking cross position!
                         { 
-                        j2.trees[x] = (GPTree)(parents[1].trees[x].lightClone());           
+                        j2.trees[x] = (GPTree)(((GPIndividual)(parents.get(1))).trees[x].lightClone());
                         j2.trees[x].owner = j2;
-                        j2.trees[x].child = parents[1].trees[x].child.cloneReplacing(p1,p2); 
+                        j2.trees[x].child = ((GPIndividual)(parents.get(1))).trees[x].child.cloneReplacing(p1,p2);
                         j2.trees[x].child.parent = j2.trees[x];
                         j2.trees[x].child.argposition = 0;
                         j2.evaluated = false; 
                         } // it's changed
                     else 
                         {
-                        j2.trees[x] = (GPTree)(parents[1].trees[x].lightClone());           
+                        j2.trees[x] = (GPTree)(((GPIndividual)(parents.get(1))).trees[x].lightClone());
                         j2.trees[x].owner = j2;
-                        j2.trees[x].child = (GPNode)(parents[1].trees[x].child.clone());
+                        j2.trees[x].child = (GPNode)(((GPIndividual)(parents.get(1))).trees[x].child.clone());
                         j2.trees[x].child.parent = j2.trees[x];
                         j2.trees[x].child.argposition = 0;
                         }
                     }
             
             // add the individuals to the population
-            inds[q] = j1;
+            //inds.set(q, j1);
+            inds.add(j1);
+            if (preserveParents != null)
+                {
+                parentparents[0].addAll(parentparents[1]);
+                preserveParents[q] = parentparents[0];
+                }
             q++;
             if (q<n+start && !tossSecondParent)
                 {
-                inds[q] = j2;
+                //inds.set(q, j2);
+                inds.add(j2);
+                if (preserveParents != null)
+                    {
+                    parentparents[0].addAll(parentparents[1]);
+                    preserveParents[q] = parentparents[0];
+                    }
                 q++;
                 }
             }

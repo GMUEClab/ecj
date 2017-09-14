@@ -6,6 +6,9 @@
 
 
 package ec.simple;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import ec.*;
 import ec.util.*;
 
@@ -102,32 +105,33 @@ public class SimpleEvaluator extends Evaluator
             if (chunkSize == 0)  // uh oh
                 state.output.fatal("Chunk Size must be either an integer >= 1 or 'auto'", base.push(P_CHUNK_SIZE), null);
             }
+
         } 
 
     Population oldpop = null;
+    
     // replace the population with one that has some N copies of the original individuals
     void expand(EvolutionState state)
         {
         Population pop = (Population)(state.population.emptyClone());
-
+        
         // populate with clones
-        for(int i = 0; i < pop.subpops.length; i++)
+        for(int i = 0;i<pop.subpops.size();++i)
             {
-            pop.subpops[i].individuals = new Individual[numTests * state.population.subpops[i].individuals.length];
-            for(int j = 0; j < state.population.subpops[i].individuals.length; j++)
+            for(int j = 0;j<state.population.subpops.get(i).individuals.size();++j)
                 {
-                for (int k=0; k < numTests; k++)
+                for(int k=0;k<numTests;++k)
                     {
-                    pop.subpops[i].individuals[numTests * j + k] =
-                        (Individual)(state.population.subpops[i].individuals[j].clone());
+                    pop.subpops.get(i).individuals.add((Individual) state.population.subpops.get(i).individuals.get(j).clone());
                     }
                 }
             }
-
+        
         // swap
         oldpop = state.population;
         state.population = pop;
         }
+    
 
     // Take the N copies of the original individuals and fold their fitnesses back into the original
     // individuals, replacing them with the original individuals in the process.  See expand(...)
@@ -138,30 +142,30 @@ public class SimpleEvaluator extends Evaluator
         state.population = oldpop;
 
         // merge fitnesses again
-        for(int i = 0; i < pop.subpops.length; i++)
+        for(int i = 0; i < pop.subpops.size(); i++)
             {
             Fitness[] fits = new Fitness[numTests];
-            for(int j = 0; j < state.population.subpops[i].individuals.length; j++)
+            for(int j = 0; j < state.population.subpops.get(i).individuals.size(); j++)
                 {
                 for (int k=0; k < numTests; k++)
                     {
-                    fits[k] = pop.subpops[i].individuals[numTests * j + k].fitness;
+                    fits[k] = pop.subpops.get(i).individuals.get(numTests * j + k).fitness;
                     }
 
                 if (mergeForm == MERGE_MEAN)
                     {
-                    state.population.subpops[i].individuals[j].fitness.setToMeanOf(state, fits);
+                    state.population.subpops.get(i).individuals.get(j).fitness.setToMeanOf(state, fits);
                     }
                 else if (mergeForm == MERGE_MEDIAN)
                     {
-                    state.population.subpops[i].individuals[j].fitness.setToMedianOf(state, fits);
+                    state.population.subpops.get(i).individuals.get(j).fitness.setToMedianOf(state, fits);
                     }
                 else  // MERGE_BEST
                     {
-                    state.population.subpops[i].individuals[j].fitness.setToBestOf(state, fits);
+                    state.population.subpops.get(i).individuals.get(j).fitness.setToBestOf(state, fits);
                     }
 
-                state.population.subpops[i].individuals[j].evaluated = true;
+                state.population.subpops.get(i).individuals.get(j).evaluated = true;
                 }
             }
         }
@@ -181,12 +185,12 @@ public class SimpleEvaluator extends Evaluator
         // start up if single-threaded?
         if (state.evalthreads == 1)
             {
-            int[] numinds = new int[state.population.subpops.length];
+            int[] numinds = new int[state.population.subpops.size()];
             int[] from = new int[numinds.length];
                         
             for(int i = 0; i < numinds.length; i++)
                 {
-                numinds[i] =  state.population.subpops[i].individuals.length;
+                numinds[i] =  state.population.subpops.get(i).individuals.size();
                 from[i] = 0;
                 }
                                 
@@ -215,6 +219,7 @@ public class SimpleEvaluator extends Evaluator
 
         if (numTests > 1)
             contract(state);
+
         }
 
 
@@ -224,10 +229,10 @@ public class SimpleEvaluator extends Evaluator
         he signals that the run is complete. */
     public String runComplete(final EvolutionState state)
         {
-        for(int x = 0;x<state.population.subpops.length;x++)
-            for(int y=0;y<state.population.subpops[x].individuals.length;y++)
-                if (state.population.subpops[x].
-                    individuals[y].fitness.isIdealFitness())
+        for(int x = 0; x< state.population.subpops.size(); x++)
+            for(int y = 0; y< state.population.subpops.get(x).individuals.size(); y++)
+                if (state.population.subpops.get(x).
+                    individuals.get(y).fitness.isIdealFitness())
                     return "Individual " + y + " of subpopulation " + x + " has an ideal fitness." ;
         
         if (runComplete != null) return runComplete;
@@ -236,27 +241,28 @@ public class SimpleEvaluator extends Evaluator
 
 
 
+
     /** A private helper function for evaluatePopulation which evaluates a chunk
         of individuals in a subpopulation for a given thread.
         Although this method is declared
         protected, you should not call it. */
 
-    protected void evalPopChunk(EvolutionState state, int[] numinds, int[] from,
-        int threadnum, SimpleProblemForm p)
+    protected void evalPopChunk(EvolutionState state, int[] numinds, int[] from, int threadnum, SimpleProblemForm p)
         {
         ((ec.Problem)p).prepareToEvaluate(state,threadnum);
         
-        Subpopulation[] subpops = state.population.subpops;
-        int len = subpops.length;
+        ArrayList<Subpopulation> subpops = state.population.subpops;
+        int len = subpops.size();
         
         for(int pop=0;pop<len;pop++)
             {
             // start evaluatin'!
             int fp = from[pop];
             int upperbound = fp+numinds[pop];
-            Individual[] inds = subpops[pop].individuals;
+            ArrayList<Individual> inds = subpops.get(pop).individuals;
             for (int x=fp;x<upperbound;x++)
-                p.evaluate(state,inds[x], pop, threadnum);
+                p.evaluate(state,inds.get(x), pop, threadnum);
+            state.incrementEvaluations(upperbound - fp);
             }
                         
         ((ec.Problem)p).finishEvaluating(state,threadnum);
@@ -270,8 +276,8 @@ public class SimpleEvaluator extends Evaluator
         int numThreads = state.evalthreads;
                 
         // we will have some extra individuals.  We distribute these among the early subpopulations
-        int individualsPerThread = state.population.subpops[subpop].individuals.length / numThreads;  // integer division
-        int slop = state.population.subpops[subpop].individuals.length - numThreads * individualsPerThread;
+        int individualsPerThread = state.population.subpops.get(subpop).individuals.size() / numThreads;  // integer division
+        int slop = state.population.subpops.get(subpop).individuals.size() - numThreads * individualsPerThread;
                 
         if (threadnum >= slop) // beyond the slop
             return individualsPerThread;
@@ -280,7 +286,7 @@ public class SimpleEvaluator extends Evaluator
 
 
 
-/** A helper class for implementing multithreaded evaluation */
+    /** A helper class for implementing multithreaded evaluation */
     class SimpleEvaluatorThread implements Runnable
         {
         public int threadnum;
@@ -289,10 +295,10 @@ public class SimpleEvaluator extends Evaluator
         
         public void run() 
             {
-            Subpopulation[] subpops = state.population.subpops;
+            ArrayList<Subpopulation> subpops = state.population.subpops;
 
-            int[] numinds = new int[subpops.length];
-            int[] from = new int[subpops.length];
+            int[] numinds = new int[subpops.size()];
+            int[] from = new int[subpops.size()];
 
             int count = 1;
             int start = 0;
@@ -305,17 +311,17 @@ public class SimpleEvaluator extends Evaluator
                 synchronized(lock)
                     {
                     // has everyone done all the jobs?
-                    if (subPopCounter >= subpops.length) // all done
+                    if (subPopCounter >= subpops.size()) // all done
                         return;
                                         
                     // has everyone finished the jobs for this subpopulation?
-                    if (individualCounter >= subpops[subPopCounter].individuals.length)  // try again, jump to next subpop
+                    if (individualCounter >= subpops.get(subPopCounter).individuals.size())  // try again, jump to next subpop
                         {
                         individualCounter = 0; 
                         subPopCounter++;
                                         
                         // has everyone done all the jobs?  Check again.
-                        if (subPopCounter >= subpops.length) // all done
+                        if (subPopCounter >= subpops.size()) // all done
                             return;
                         }
 
@@ -329,8 +335,8 @@ public class SimpleEvaluator extends Evaluator
                     }
                 
                 // Modify the true count
-                if (count >= subpops[subpop].individuals.length - start)
-                    count = subpops[subpop].individuals.length - start;
+                if (count >= subpops.get(subpop).individuals.size() - start)
+                    count = subpops.get(subpop).individuals.size() - start;
 
                 // Load into arrays to reuse evalPopChunk
                 for(int i = 0; i < from.length; i++)

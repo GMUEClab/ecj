@@ -31,7 +31,7 @@ public class SPEA2Breeder extends SimpleBreeder
         {
         super.setup(state, base);
 
-        for (int i = 0; i < state.population.subpops.length; i++)
+        for (int i = 0; i < state.population.subpops.size(); i++)
             if (reduceBy[i] != 0)
                 state.output.fatal("SPEA2Breeder does not support population reduction.", base.push(P_REDUCE_BY).push(""+i), null);
                         
@@ -47,16 +47,16 @@ public class SPEA2Breeder extends SimpleBreeder
     protected void loadElites(EvolutionState state, Population newpop)
         {
         // are our elites small enough?
-        for(int x=0;x<state.population.subpops.length;x++)
-            if (numElites(state, x)>state.population.subpops[x].individuals.length)
+        for(int x = 0; x< state.population.subpops.size(); x++)
+            if (numElites(state, x)> state.population.subpops.get(x).individuals.size())
                 state.output.error("The number of elites for subpopulation " + x + " exceeds the actual size of the subpopulation");
         state.output.exitIfErrors();
 
         // do it
-        for (int sub = 0; sub < state.population.subpops.length; sub++)
+        for (int sub = 0; sub < state.population.subpops.size(); sub++)
             {
-            Individual[] newInds = newpop.subpops[sub].individuals;  // The new population after we are done picking the elites                 
-            Individual[] oldInds = state.population.subpops[sub].individuals;   // The old population from which to pick elites
+            ArrayList<Individual> newInds = newpop.subpops.get(sub).individuals;  // The new population after we are done picking the elites
+            ArrayList<Individual> oldInds = state.population.subpops.get(sub).individuals;   // The old population from which to pick elites
                         
             buildArchive(state, oldInds, newInds, numElites(state, sub));
             }
@@ -65,24 +65,24 @@ public class SPEA2Breeder extends SimpleBreeder
         unmarkElitesEvaluated(state, newpop);
         }
 
-    public double[] calculateDistancesFromIndividual(Individual ind, Individual[] inds)
+    public double[] calculateDistancesFromIndividual(Individual ind, ArrayList<Individual> inds)
         {
-        double[] d = new double[inds.length];
-        for(int i = 0; i < inds.length; i++)
-            d[i] = ((SPEA2MultiObjectiveFitness)ind.fitness).sumSquaredObjectiveDistance((SPEA2MultiObjectiveFitness)inds[i].fitness);
+        double[] d = new double[inds.size()];
+        for(int i = 0; i < inds.size(); i++)
+            d[i] = ((SPEA2MultiObjectiveFitness)ind.fitness).sumSquaredObjectiveDistance((SPEA2MultiObjectiveFitness)inds.get(i).fitness);
         // now sort
         Arrays.sort(d);
         return d;
         }
 
 
-    public void buildArchive(EvolutionState state, Individual[] oldInds, Individual[] newInds, int archiveSize)
+    public void buildArchive(EvolutionState state, ArrayList<Individual> oldInds, ArrayList<Individual> newInds, int archiveSize)
         {
         //Individual[] dummy = new Individual[0];
                 
         // step 1: load the archive with the pareto-nondominated front
-        ArrayList archive = new ArrayList();
-        ArrayList nonFront = new ArrayList();
+        ArrayList<Individual> archive = new ArrayList<Individual>();
+        ArrayList<Individual> nonFront = new ArrayList<Individual>();
         MultiObjectiveFitness.partitionIntoParetoFront(oldInds, archive, nonFront);
         int currentArchiveSize = archive.size();
                 
@@ -116,7 +116,7 @@ public class SPEA2Breeder extends SimpleBreeder
                 Individual competitor = (Individual)(archive.get(i));
                 double[] competitorD = calculateDistancesFromIndividual(competitor, oldInds);
                                 
-                for(int k = 0; k < oldInds.length; k++)
+                for(int k = 0; k < oldInds.size(); k++)
                     {
                     if (closestD[i] > competitorD[i])
                         { closest = competitor ; closestD = competitorD;  closestIndex = k; break; }
@@ -135,6 +135,6 @@ public class SPEA2Breeder extends SimpleBreeder
         // step 4: put clones of the archive in the new individuals
         Object[] obj = archive.toArray();
         for(int i = 0; i < archiveSize; i++)
-            newInds[newInds.length - archiveSize + i] = (Individual)(((Individual)obj[i]).clone());
+            newInds.set(newInds.size() - archiveSize + i, (Individual)(((Individual)obj[i]).clone()));
         }
     }

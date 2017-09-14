@@ -9,8 +9,6 @@ package ec.steadystate;
 import ec.*;
 import ec.util.Parameter;
 import ec.util.Checkpoint;
-import ec.util.Output;
-import ec.simple.*;
 //import ec.eval.MasterProblem;
 import java.util.*; 
 
@@ -66,16 +64,15 @@ public class SteadyStateEvolutionState extends EvolutionState
         
     /** Did we just start a new generation? */
     public boolean generationBoundary;
+    
     /** how big is a generation? Set to the size of subpopulation 0 of the initial population. */
     public int generationSize;
-    /** How many evaluations have we run so far? */
-    public long evaluations;
+    
     /** When a new individual arrives, with what probability should it directly replace the existing
         "marked for death" individual, as opposed to only replacing it if it's superior? */
     public double replacementProbability;
         
-    /** How many individuals have we added to the initial population? */ 
-    int[] individualCount; 
+    //int[] individualCount; 
         
     /** Hash table to check for duplicate individuals */ 
     HashMap[] individualHash; 
@@ -146,15 +143,11 @@ public class SteadyStateEvolutionState extends EvolutionState
         evaluations=0; 
         whichSubpop=-1; 
                 
-        individualHash = new HashMap[population.subpops.length];
-        for(int i=0;i<population.subpops.length; i++) individualHash[i] = new HashMap();
-                
-        individualCount = new int[population.subpops.length];
-        for (int sub=0; sub < population.subpops.length; sub++)  
-            { 
-            individualCount[sub]=0;
-            generationSize += population.subpops[sub].individuals.length;  // so our sum total 'generationSize' will be the initial total number of individuals
-            }
+        individualHash = new HashMap[population.subpops.size()];
+        for(int i = 0; i< population.subpops.size(); i++) individualHash[i] = new HashMap();
+        
+        for (int sub = 0; sub < population.subpops.size(); sub++)
+            generationSize += population.subpops.get(sub).initialSize;
 
         if (numEvaluations > UNDEFINED && numEvaluations < generationSize)
             output.fatal("Number of evaluations desired is smaller than the initial population of individuals");
@@ -167,20 +160,12 @@ public class SteadyStateEvolutionState extends EvolutionState
         }
 
 
-    boolean justCalledPostEvaluationStatistics = false;
-  
     public int evolve()
         {
         if (generationBoundary && generation > 0)
             {
-            output.message("Generation " + generation +"\tEvaluations " + evaluations);
+            output.message("Generation " + generation +"\tEvaluations So Far " + evaluations);
             statistics.generationBoundaryStatistics(this); 
-            statistics.postEvaluationStatistics(this); 
-            justCalledPostEvaluationStatistics = true;
-            }
-        else
-            {
-            justCalledPostEvaluationStatistics = false;
             }
                 
         if (firstTime) 
@@ -193,22 +178,22 @@ public class SteadyStateEvolutionState extends EvolutionState
             firstTime=false; 
             } 
                 
-        whichSubpop = (whichSubpop+1)%population.subpops.length;  // round robin selection
+        whichSubpop = (whichSubpop+1)% population.subpops.size();  // round robin selection
                 
         // is the current subpop full? 
-        boolean partiallyFullSubpop = (individualCount[whichSubpop] < population.subpops[whichSubpop].individuals.length);  
-                
+        boolean partiallyFullSubpop = (population.subpops.get(whichSubpop).individuals.size() < population.subpops.get(whichSubpop).initialSize);
+  
         // MAIN EVOLVE LOOP 
         if (((SteadyStateEvaluator) evaluator).canEvaluate())   // are we ready to evaluate? 
             {
             Individual ind=null; 
-            int numDuplicateRetries = population.subpops[whichSubpop].numDuplicateRetries; 
+            int numDuplicateRetries = population.subpops.get(whichSubpop).numDuplicateRetries;
 
             for (int tries=0; tries <= numDuplicateRetries; tries++)  // see Subpopulation
                 { 
                 if ( partiallyFullSubpop )   // is population full?
                     {
-                    ind = population.subpops[whichSubpop].species.newIndividual(this, 0);  // unthreaded 
+                    ind = population.subpops.get(whichSubpop).species.newIndividual(this, 0);  // unthreaded
                     }
                 else  
                     { 
@@ -231,35 +216,43 @@ public class SteadyStateEvolutionState extends EvolutionState
             ((SteadyStateEvaluator)evaluator).evaluateIndividual(this, ind, whichSubpop);
             }
         
-        Individual ind = ((SteadyStateEvaluator)evaluator).getNextEvaluatedIndividual();
-        int whichInd = -1;
+        Individual ind = ((SteadyStateEvaluator)evaluator).getNextEvaluatedIndividual(this);
+        int whichIndIndex = -1;
         int whichSubpop = -1;
         if (ind != null)   // do we have an evaluated individual? 
             {
+            // COMPUTE GENERATION BOUNDARY
+            generationBoundary = (evaluations % generationSize == 0);
+            
+            if (generationBoundary)
+                {
+                statistics.preEvaluationStatistics(this);
+                }
+
             int subpop = ((SteadyStateEvaluator)evaluator).getSubpopulationOfEvaluatedIndividual(); 
             whichSubpop = subpop;
                                              
             if ( partiallyFullSubpop ) // is subpopulation full? 
                 {  
-                population.subpops[subpop].individuals[individualCount[subpop]++]=ind; 
+                population.subpops.get(subpop).individuals.add(ind);
                                 
                 // STATISTICS FOR GENERATION ZERO 
-                if ( individualCount[subpop] == population.subpops[subpop].individuals.length ) 
+                if (population.subpops.get(subpop).individuals.size() == population.subpops.get(subpop).initialSize)
                     if (statistics instanceof SteadyStateStatisticsForm)
                         ((SteadyStateStatisticsForm)statistics).enteringSteadyStateStatistics(subpop, this); 
                 }
             else 
                 { 
                 // mark individual for death 
-                int deadIndividual = ((SteadyStateBreeder)breeder).deselectors[subpop].produce(subpop,this,0);
-                Individual deadInd = population.subpops[subpop].individuals[deadIndividual];
+                int deadIndividualIndex = ((SteadyStateBreeder)breeder).deselectors[subpop].produce(subpop,this,0);
+                Individual deadInd = population.subpops.get(subpop).individuals.get(deadIndividualIndex);
                 
                 // maybe replace dead individual with new individual
                 if (ind.fitness.betterThan(deadInd.fitness) ||         // it's better, we want it
                     random[0].nextDouble() < replacementProbability)      // it's not better but maybe we replace it directly anyway
                     {
-                    population.subpops[subpop].individuals[deadIndividual] = ind;
-                    whichInd = deadIndividual;
+                    population.subpops.get(subpop).individuals.set(deadIndividualIndex, ind);
+                    whichIndIndex = deadIndividualIndex;
                     }
                                 
                 // update duplicate hash table 
@@ -267,14 +260,13 @@ public class SteadyStateEvolutionState extends EvolutionState
                                 
                 if (statistics instanceof SteadyStateStatisticsForm) 
                     ((SteadyStateStatisticsForm)statistics).individualsEvaluatedStatistics(this, 
-                        new Individual[]{ind}, new Individual[]{deadInd}, new int[]{subpop}, new int[]{deadIndividual}); 
+                        new Individual[]{ind}, new Individual[]{deadInd}, new int[]{subpop}, new int[]{deadIndividualIndex}); 
                 }
                                                 
-            // INCREMENT NUMBER OF COMPLETED EVALUATIONS
-            evaluations++;
-            
-            // COMPUTE GENERATION BOUNDARY
-            generationBoundary = (evaluations % generationSize == 0);
+            if (generationBoundary)
+                {
+                statistics.postEvaluationStatistics(this);
+                }
             }
         else
             {
@@ -287,31 +279,31 @@ public class SteadyStateEvolutionState extends EvolutionState
             ((SteadyStateEvaluator)evaluator).isIdealFitness(this, ind) && 
             quitOnRunComplete)
             { 
-            output.message("Individual " + whichInd + " of subpopulation " + whichSubpop + " has an ideal fitness."); 
+            output.message("Individual " + whichIndIndex + " of subpopulation " + whichSubpop + " has an ideal fitness."); 
+            finishEvaluationStatistics();
             return R_SUCCESS;
             }
         
         if (evaluator.runComplete != null)
             {
             output.message(evaluator.runComplete);
+            finishEvaluationStatistics();
             return R_SUCCESS; 
             }
-                
-        if ((numEvaluations > UNDEFINED && evaluations >= numEvaluations) ||  // using numEvaluations
-            (numEvaluations <= UNDEFINED && generationBoundary && generation == numGenerations -1))  // not using numEvaluations
+        
+        if ((generationBoundary && numGenerations != UNDEFINED && generation >= numGenerations - 1) ||
+            (numEvaluations != UNDEFINED && evaluations >= numEvaluations))
             {
-            // we are not exchanging again, but we might wish to increment the generation
-            // one last time if we hit a generation boundary
-            if (generationBoundary)
-                generation++;
+            finishEvaluationStatistics();
             return R_FAILURE;
             }
-                
-                
-        // EXCHANGING
+            
         if (generationBoundary)
             {
-            // PRE-BREED EXCHANGE 
+            // INCREMENT GENERATION AND CHECKPOINT
+            generation++;
+
+            // PRE-BREEDING EXCHANGING
             statistics.prePreBreedingExchangeStatistics(this);
             population = exchanger.preBreedingExchangePopulation(this);
             statistics.postPreBreedingExchangeStatistics(this);
@@ -319,39 +311,44 @@ public class SteadyStateEvolutionState extends EvolutionState
             if (exchangerWantsToShutdown!=null)
                 { 
                 output.message(exchangerWantsToShutdown); 
+                finishEvaluationStatistics();
                 return R_SUCCESS;
                 }
                         
-            // POST BREED EXCHANGE
+            // POST-BREEDING EXCHANGING
             statistics.prePostBreedingExchangeStatistics(this);
             population = exchanger.postBreedingExchangePopulation(this);
             statistics.postPostBreedingExchangeStatistics(this);
-                        
-            // INCREMENT GENERATION AND CHECKPOINT
-            generation++;
-            if (checkpoint && generation%checkpointModulo == 0) 
-                {
-                output.message("Checkpointing");
-                statistics.preCheckpointStatistics(this);
-                Checkpoint.setCheckpoint(this);
-                statistics.postCheckpointStatistics(this);
-                }
             }
+
+        if (checkpoint && generationBoundary && (generation - 1) % checkpointModulo == 0) 
+            {
+            output.message("Checkpointing");
+            statistics.preCheckpointStatistics(this);
+            Checkpoint.setCheckpoint(this);
+            statistics.postCheckpointStatistics(this);
+            }
+
         return R_NOTDONE;
         }
         
+    public void finishEvaluationStatistics()
+        {
+        boolean generationBoundary = (evaluations % generationSize == 0);
+        if (!generationBoundary)
+            {
+            statistics.postEvaluationStatistics(this);
+            output.message("Generation " + generation + " Was Partial");
+            }
+        }
+
     /**
      * @param result
      */
     public void finish(int result)
         {
-        /* finish up -- we completed. */
+        output.message("Total Evaluations " + evaluations);
         ((SteadyStateBreeder)breeder).finishPipelines(this);
-        if (!justCalledPostEvaluationStatistics)
-            {
-            output.message("Generation " + generation +"\tEvaluations " + evaluations);
-            statistics.postEvaluationStatistics(this);
-            }
         statistics.finalStatistics(this,result);
         finisher.finishPopulation(this,result);
         exchanger.closeContacts(this,result);

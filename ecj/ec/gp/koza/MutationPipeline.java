@@ -10,6 +10,9 @@ import ec.*;
 import ec.util.*;
 import ec.gp.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /* 
  * MutationPipeline.java
  * 
@@ -234,29 +237,31 @@ public class MutationPipeline extends GPBreedingPipeline
 
 
 
-    public int produce(final int min, 
-        final int max, 
-        final int start,
+    public int produce(final int min,
+        final int max,
         final int subpopulation,
-        final Individual[] inds,
+        final ArrayList<Individual> inds,
         final EvolutionState state,
-        final int thread) 
+        final int thread, HashMap<String, Object> misc)
         {
+        int start = inds.size();
+                
         // grab individuals from our source and stick 'em right into inds.
         // we'll modify them from there
-        int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
+        int n = sources[0].produce(min,max,subpopulation,inds, state,thread, misc);
 
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
-            return reproduce(n, start, subpopulation, inds, state, thread, false);  // DON'T produce children from source -- we already did
-
+            {
+            return n;
+            }
 
         GPInitializer initializer = ((GPInitializer)state.initializer);
 
         // now let's mutate 'em
         for(int q=start; q < n+start; q++)
             {
-            GPIndividual i = (GPIndividual)inds[q];
+            GPIndividual i = (GPIndividual)inds.get(q);
 
             if (tree!=TREE_UNFIXED && (tree<0 || tree >= i.trees.length))
                 // uh oh
@@ -307,55 +312,19 @@ public class MutationPipeline extends GPBreedingPipeline
                 if (res) break;
                 }
             
-            GPIndividual j;
-
-            if (sources[0] instanceof BreedingPipeline)
-                // it's already a copy, so just smash the tree in
+            if (res)  // we're in business
                 {
-                j=i;
-                if (res)  // we're in business
-                    {
-                    p2.parent = p1.parent;
-                    p2.argposition = p1.argposition;
-                    if (p2.parent instanceof GPNode)
-                        ((GPNode)(p2.parent)).children[p2.argposition] = p2;
-                    else ((GPTree)(p2.parent)).child = p2;
-                    j.evaluated = false;  // we've modified it
-                    }
-                }
-            else // need to clone the individual
-                {
-                j = (GPIndividual)(i.lightClone());
-                
-                // Fill in various tree information that didn't get filled in there
-                j.trees = new GPTree[i.trees.length];
-                
-                // at this point, p1 or p2, or both, may be null.
-                // If not, swap one in.  Else just copy the parent.
-                for(int x=0;x<j.trees.length;x++)
-                    {
-                    if (x==t && res)  // we've got a tree with a kicking cross position!
-                        {
-                        j.trees[x] = (GPTree)(i.trees[x].lightClone());
-                        j.trees[x].owner = j;
-                        j.trees[x].child = i.trees[x].child.cloneReplacingNoSubclone(p2,p1);
-                        j.trees[x].child.parent = j.trees[x];
-                        j.trees[x].child.argposition = 0;
-                        j.evaluated = false; 
-                        } // it's changed
-                    else 
-                        {
-                        j.trees[x] = (GPTree)(i.trees[x].lightClone());
-                        j.trees[x].owner = j;
-                        j.trees[x].child = (GPNode)(i.trees[x].child.clone());
-                        j.trees[x].child.parent = j.trees[x];
-                        j.trees[x].child.argposition = 0;                   
-                        }
-                    }
+                p2.parent = p1.parent;
+                p2.argposition = p1.argposition;
+                if (p2.parent instanceof GPNode)
+                    ((GPNode)(p2.parent)).children[p2.argposition] = p2;
+                else ((GPTree)(p2.parent)).child = p2;
+                i.evaluated = false;  // we've modified it
                 }
             
             // add the new individual, replacing its previous source
-            inds[q] = j;
+            inds.set(q, i);
+             
             }
         return n;
         }
