@@ -1,0 +1,46 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 =	../../es/es.params
+
+#                    ...the default option is ec.es.MuCommaLambdaBreeder
+breed =              ec.singlestate.SingleStateBreeder
+#es.mu.0 =            1 
+#es.lambda.0 =        20
+pop.subpop.0.size =  3
+generations =        2000
+
+pop.subpop.0.species.pipe = ec.singlestate.breed.DefaultSimulatedAnnealingPipeline
+pop.subpop.0.species.pipe.source.0 = ec.select.BestSelection
+pop.subpop.0.species.pipe.source.0.n = 1
+pop.subpop.0.species.pipe.source.0.size = 1
+# Use our own custom selection operator class
+
+eval.problem = ec.app.nullproblem.NullProblem
+# Doubles and floats use the FloatVectorSpecies
+pop.subpop.0.species =                  ec.vector.FloatVectorSpecies
+pop.subpop.0.species.ind =              ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.fitness = 		ec.simple.SimpleFitness
+
+# never mutate
+pop.subpop.0.species.mutation-prob = 1.0
+# Use Gaussian Convolution with a standard deviation of 0.5
+pop.subpop.0.species.mutation-type = gauss
+pop.subpop.0.species.mutation-stdev = 0.5
+pop.subpop.0.species.mutation-bounded = true
+
+
+# we need to specify a crossover type 
+pop.subpop.0.species.crossover-type = one
+pop.subpop.0.species.genome-size =     1
+
+# Because we need default min/max genes even if we don't use them
+pop.subpop.0.species.min-gene = -1
+pop.subpop.0.species.max-gene = 1
+
+
+
+# if we are trying to measure overhead, we shouldn't include prints
+#stat.silent = true
+#silent  = true

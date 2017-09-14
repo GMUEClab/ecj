@@ -10,6 +10,9 @@ import ec.*;
 import ec.util.*;
 import ec.gp.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /* 
  * MutateERCPipeline.java
  * 
@@ -125,26 +128,29 @@ public class MutateERCPipeline extends GPBreedingPipeline
             mutateERCs(node.children[x],state,thread);
         }
 
-    public int produce(final int min, 
-        final int max, 
-        final int start,
+    public int produce(final int min,
+        final int max,
         final int subpopulation,
-        final Individual[] inds,
+        final ArrayList<Individual> inds,
         final EvolutionState state,
-        final int thread) 
+        final int thread, HashMap<String, Object> misc)
         {
+        int start = inds.size();
+                
         // grab n individuals from our source and stick 'em right into inds.
         // we'll modify them from there
-        int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
+        int n = sources[0].produce(min,max,subpopulation,inds, state,thread, misc);
 
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
-            return reproduce(n, start, subpopulation, inds, state, thread, false);  // DON'T produce children from source -- we already did
+            {
+            return n;
+            }
 
         // now let's mutate 'em
         for(int q=start; q < n+start; q++)
             {
-            GPIndividual i = (GPIndividual)inds[q];
+            GPIndividual i = (GPIndividual)inds.get(q);
             
             if (tree!=TREE_UNFIXED && (tree<0 || tree >= i.trees.length))
                 // uh oh
@@ -157,43 +163,22 @@ public class MutateERCPipeline extends GPBreedingPipeline
                 else t = 0;
             else t = tree;
             
-            GPIndividual j;
-            if (sources[0] instanceof BreedingPipeline)
-                // it's already a copy, so just smash the tree in
-                {
-                j=i;
-                }
-            else // need to copy it
-                {
-                j = (GPIndividual)(i.lightClone());
-                
-                // Fill in various tree information that didn't get filled in there
-                j.trees = new GPTree[i.trees.length];
-                
-                for(int x=0;x<j.trees.length;x++)
-                    {
-                    j.trees[x] = (GPTree)(i.trees[x].lightClone());
-                    j.trees[x].owner = j;
-                    j.trees[x].child = (GPNode)(i.trees[x].child.clone());
-                    j.trees[x].child.parent = j.trees[x];
-                    j.trees[x].child.argposition = 0;
-                    }
-                }
-            j.evaluated = false;
+            i.evaluated = false;
 
             // prepare the nodeselector
             nodeselect.reset();
 
             // Now pick a random node
             
-            GPNode p = nodeselect.pickNode(state,subpopulation,thread,j,j.trees[t]);
+            GPNode p = nodeselect.pickNode(state,subpopulation,thread,i,i.trees[t]);
 
             // mutate all the ERCs in p1's subtree
 
             mutateERCs(p,state,thread);
             
             // add the new individual, replacing its previous source
-            inds[q] = j;
+            inds.set(q,i);
+            
             }
         return n;
         }

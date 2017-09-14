@@ -11,6 +11,9 @@ import ec.vector.*;
 import ec.*;
 import ec.util.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /* 
  * VectorMutationPipeline.java
  * 
@@ -49,32 +52,30 @@ public class VectorMutationPipeline extends BreedingPipeline
     /** Returns 1 */
     public int numSources() { return NUM_SOURCES; }
 
-    public int produce(final int min, 
-        final int max, 
-        final int start,
+    public int produce(final int min,
+        final int max,
         final int subpopulation,
-        final Individual[] inds,
+        final ArrayList<Individual> inds,
         final EvolutionState state,
-        final int thread) 
+        final int thread, HashMap<String, Object> misc)
         {
+        int start = inds.size();
+        
         // grab individuals from our source and stick 'em right into inds.
         // we'll modify them from there
-        int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
+        int n = sources[0].produce(min,max,subpopulation,inds, state,thread, misc);
 
-        // should we bother?
+        // should we use them straight?
         if (!state.random[thread].nextBoolean(likelihood))
-            return reproduce(n, start, subpopulation, inds, state, thread, false);  // DON'T produce children from source -- we already did
+            {
+            return n;
+            }
 
-        // clone the individuals if necessary
-        if (!(sources[0] instanceof BreedingPipeline))
-            for(int q=start;q<n+start;q++)
-                inds[q] = (Individual)(inds[q].clone());
-
-        // mutate 'em
+        // else mutate 'em
         for(int q=start;q<n+start;q++)
             {
-            ((VectorIndividual)inds[q]).defaultMutate(state,thread);
-            ((VectorIndividual)inds[q]).evaluated=false;
+            ((VectorIndividual)inds.get(q)).defaultMutate(state,thread);
+            ((VectorIndividual)inds.get(q)).evaluated=false;
             }
 
         return n;

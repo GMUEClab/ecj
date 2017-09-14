@@ -8,6 +8,7 @@
 package ec;
 import ec.util.*;
 import java.io.*;
+import java.util.ArrayList;
 
 /* 
  * Population.java
@@ -59,11 +60,11 @@ import java.io.*;
  * @version 1.0 
  */
 
-public class Population implements Group
+public class Population implements Cloneable, Setup
     {
     private static final long serialVersionUID = 1;
 
-    public Subpopulation[] subpops;
+    public ArrayList<Subpopulation> subpops = new ArrayList<Subpopulation>();
     public static final String P_SIZE = "subpops";
     public static final String P_SUBPOP = "subpop";
     public static final String P_DEFAULT_SUBPOP = "default-subpop";
@@ -82,27 +83,25 @@ public class Population implements Group
         Population. <b>IMPORTANT NOTE</b>: if the size of the array in
         Population has been changed, then the clone will take on the new array
         size.  This helps some evolution strategies.
-        @see Group#emptyClone()
     */
 
-    public Group emptyClone()
+    public Population emptyClone()
         {
         try
             {
             Population p = (Population)clone();
-            p.subpops = new Subpopulation[subpops.length];
-            for(int x=0;x<subpops.length;x++)
-                p.subpops[x] = (Subpopulation)(subpops[x].emptyClone());
+            p.subpops = new ArrayList<Subpopulation>(subpops.size());
+            for(int x = 0; x< subpops.size(); x++)
+                p.subpops.add( (Subpopulation) (subpops.get(x).emptyClone()));
             return p;   
             }
         catch (CloneNotSupportedException e) { throw new InternalError(); } // never happens
         }
                 
-    /** Sets all Individuals in the Population to null, preparing it to be reused. */
     public void clear()
         {
-        for(int i = 0 ; i < subpops.length; i++)
-            subpops[i].clear();
+        for(int x = 0; x< subpops.size(); x++)
+            ((Subpopulation)(subpops.get(x))).clear();
         }
 
     public void setup(final EvolutionState state, final Parameter base)
@@ -121,7 +120,7 @@ public class Population implements Group
         int size = state.parameters.getInt(p,null,1);
         if (size<=0) // uh oh
             state.output.fatal("Population size must be >0.\n",base.push(P_SIZE));
-        subpops = new Subpopulation[size];
+        subpops = new ArrayList<Subpopulation>(subpops.size());
 
         // Set up the subpopulations
         for (int x=0;x<size;x++)
@@ -138,11 +137,11 @@ public class Population implements Group
                     }
                 // else an error will occur on the next line anyway.
                 }
-            subpops[x] = (Subpopulation)(state.parameters.getInstanceForParameterEq(p,null,Subpopulation.class));  // Subpopulation.class is fine
-            subpops[x].setup(state,p);
+            subpops.add((Subpopulation) (state.parameters.getInstanceForParameterEq(p, null, Subpopulation.class)));  // Subpopulation.class is fine
+            subpops.get(x).setup(state,p);
             
             // test for loadinds
-            if (loadInds && subpops[x].loadInds)  // uh oh
+            if (loadInds && subpops.get(x).loadInds)  // uh oh
                 state.output.fatal("Both a subpopulation and its parent population have been told to load from files.  This can't happen.  It's got to be one or the other.",
                     base.push(P_FILE), null);
             }
@@ -165,8 +164,8 @@ public class Population implements Group
         else
             {
             // let's populate!
-            for(int x=0;x<subpops.length;x++)
-                subpops[x].populate(state, thread);
+            for(int x = 0; x< subpops.size(); x++)
+                subpops.get(x).populate(state, thread);
             }
         }
         
@@ -195,11 +194,11 @@ public class Population implements Group
     public void printPopulationForHumans(final EvolutionState state,
         final int log)
         {
-        state.output.println(NUM_SUBPOPS_PREAMBLE + subpops.length,  log);
-        for(int i = 0 ; i < subpops.length; i++)
+        state.output.println(NUM_SUBPOPS_PREAMBLE + subpops.size(),  log);
+        for(int i = 0; i < subpops.size(); i++)
             {
             state.output.println(SUBPOP_INDEX_PREAMBLE + i,  log);
-            subpops[i].printSubpopulationForHumans(state, log);
+            subpops.get(i).printSubpopulationForHumans(state, log);
             }
         }
         
@@ -207,11 +206,11 @@ public class Population implements Group
     public void printPopulation(final EvolutionState state,
         final int log)
         {
-        state.output.println(NUM_SUBPOPS_PREAMBLE + Code.encode(subpops.length),  log);
-        for(int i = 0 ; i < subpops.length; i++)
+        state.output.println(NUM_SUBPOPS_PREAMBLE + Code.encode(subpops.size()),  log);
+        for(int i = 0; i < subpops.size(); i++)
             {
             state.output.println(SUBPOP_INDEX_PREAMBLE + Code.encode(i),  log);
-            subpops[i].printSubpopulation(state, log);
+            subpops.get(i).printSubpopulation(state, log);
             }
         }
         
@@ -219,11 +218,11 @@ public class Population implements Group
     public void printPopulation(final EvolutionState state,
         final PrintWriter writer)
         {
-        writer.println(NUM_SUBPOPS_PREAMBLE + Code.encode(subpops.length));
-        for(int i = 0 ; i < subpops.length; i++)
+        writer.println(NUM_SUBPOPS_PREAMBLE + Code.encode(subpops.size()));
+        for(int i = 0; i < subpops.size(); i++)
             {
             writer.println(SUBPOP_INDEX_PREAMBLE + Code.encode(i));         
-            subpops[i].printSubpopulation(state, writer);
+            subpops.get(i).printSubpopulation(state, writer);
             }
         }
     
@@ -235,15 +234,15 @@ public class Population implements Group
         int numSubpops = Code.readIntegerWithPreamble(NUM_SUBPOPS_PREAMBLE, state, reader);
         
         // read in subpops
-        if (numSubpops != subpops.length)  // definitely wrong
+        if (numSubpops != subpops.size())  // definitely wrong
             state.output.fatal("On reading population from text stream, the number of subpopulations was wrong.");
 
-        for(int i = 0 ; i < subpops.length; i++)
+        for(int i = 0; i < subpops.size(); i++)
             {
             int j = Code.readIntegerWithPreamble(SUBPOP_INDEX_PREAMBLE, state, reader);
             // sanity check
             if (j!=i) state.output.warnOnce("On reading population from text stream, some subpopulation indexes in the population did not match.");
-            subpops[i].readSubpopulation(state, reader);
+            subpops.get(i).readSubpopulation(state, reader);
             }
         }
     
@@ -251,9 +250,9 @@ public class Population implements Group
     public void writePopulation(final EvolutionState state,
         final DataOutput dataOutput) throws IOException
         {
-        dataOutput.writeInt(subpops.length);
-        for(int i = 0 ; i < subpops.length; i++)
-            subpops[i].writeSubpopulation(state, dataOutput);
+        dataOutput.writeInt(subpops.size());
+        for(int i = 0; i < subpops.size(); i++)
+            subpops.get(i).writeSubpopulation(state, dataOutput);
         }
     
     /** Reads a population in binary form, from the format generated by writePopulation(...). The number of subpopulations and the species information must be identical. */
@@ -261,11 +260,11 @@ public class Population implements Group
         final DataInput dataInput) throws IOException
         {
         int numSubpopulations = dataInput.readInt();
-        if (numSubpopulations != subpops.length)
+        if (numSubpopulations != subpops.size())
             state.output.fatal("On reading subpopulation from binary stream, the number of subpopulations was wrong.");
 
-        for(int i = 0 ; i < subpops.length; i++)
-            subpops[i].readSubpopulation(state, dataInput);
+        for(int i = 0; i < subpops.size(); i++)
+            subpops.get(i).readSubpopulation(state, dataInput);
         }
 
 

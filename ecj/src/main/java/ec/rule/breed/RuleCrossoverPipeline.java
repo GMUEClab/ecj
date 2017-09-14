@@ -11,6 +11,10 @@ import ec.rule.*;
 import ec.*;
 import ec.util.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
 /* 
  * RuleCrossoverPipeline.java
  * 
@@ -58,6 +62,7 @@ public class RuleCrossoverPipeline extends BreedingPipeline
     public static final String P_CROSSOVERPROB = "crossover-prob";
     public static final int INDS_PRODUCED = 2;
     public static final int NUM_SOURCES = 2;
+    public static final String KEY_PARENTS = "parents";
 
     /** Should the pipeline discard the second parent after crossing over? */
     public boolean tossSecondParent;
@@ -66,9 +71,14 @@ public class RuleCrossoverPipeline extends BreedingPipeline
     public double ruleCrossProbability;
 
     /** Temporary holding place for parents */
-    RuleIndividual parents[];
+    ArrayList<Individual> parents;
 
-    public RuleCrossoverPipeline() { parents = new RuleIndividual[2]; }
+    public RuleCrossoverPipeline() 
+        {
+        // by Ermo. get rid of asList
+        //parents = new ArrayList<Individual>(Arrays.asList(new RuleIndividual[2]));
+        parents = new ArrayList<Individual>();
+        }
     public Parameter defaultBase() { return RuleDefaults.base().push(P_CROSSOVER); }
 
     /** Returns 2 */
@@ -79,7 +89,7 @@ public class RuleCrossoverPipeline extends BreedingPipeline
         RuleCrossoverPipeline c = (RuleCrossoverPipeline)(super.clone());
 
         // deep-cloned stuff
-        c.parents = (RuleIndividual[]) parents.clone();
+        c.parents = new ArrayList<Individual>(parents);
 
         return c;
         }
@@ -100,15 +110,16 @@ public class RuleCrossoverPipeline extends BreedingPipeline
     /** Returns 2 (unless tossing the second sibling, in which case it returns 1) */
     public int typicalIndsProduced() { return (tossSecondParent? 1: INDS_PRODUCED); }
 
-    public int produce(final int min, 
-        final int max, 
-        final int start,
+    public int produce(final int min,
+        final int max,
         final int subpopulation,
-        final Individual[] inds,
+        final ArrayList<Individual> inds,
         final EvolutionState state,
-        final int thread) 
+        final int thread, HashMap<String, Object> misc)
 
         {
+        int start = inds.size();
+        
         // how many individuals should we make?
         int n = (tossSecondParent? 1 : INDS_PRODUCED);
         if (n < min) n = min;
@@ -116,31 +127,37 @@ public class RuleCrossoverPipeline extends BreedingPipeline
 
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
-            return reproduce(n, start, subpopulation, inds, state, thread, true);  // DO produce children from source -- we've not done so already
+            {
+            // just load from source 0 and clone 'em
+            sources[0].produce(n,n,subpopulation,inds, state,thread,misc);
+            return n;
+            }
 
+
+        IntBag[] parentparents = null;
+        IntBag[] preserveParents = null;
+        if (misc!=null && misc.get(KEY_PARENTS) != null)
+            {
+            preserveParents = (IntBag[])misc.get(KEY_PARENTS);
+            parentparents = new IntBag[2];
+            misc.put(KEY_PARENTS, parentparents);
+            }
 
         RuleInitializer initializer = ((RuleInitializer)state.initializer);
     
         for(int q=start;q<n+start; /* no increment */)  // keep on going until we're filled up
             {
+            parents.clear();
+            
             // grab two individuals from our sources
             if (sources[0]==sources[1])  // grab from the same source
                 {
-                sources[0].produce(2,2,0,subpopulation,parents,state,thread);
-                if (!(sources[0] instanceof BreedingPipeline))  // it's a selection method probably
-                    { 
-                    parents[0] = (RuleIndividual)(parents[0].clone());
-                    parents[1] = (RuleIndividual)(parents[1].clone());
-                    }
+                sources[0].produce(2,2,subpopulation, parents, state,thread, misc);
                 }
             else // grab from different sources
                 {
-                sources[0].produce(1,1,0,subpopulation,parents,state,thread);
-                sources[1].produce(1,1,1,subpopulation,parents,state,thread);
-                if (!(sources[0] instanceof BreedingPipeline))  // it's a selection method probably
-                    parents[0] = (RuleIndividual)(parents[0].clone());
-                if (!(sources[1] instanceof BreedingPipeline)) // it's a selection method probably
-                    parents[1] = (RuleIndividual)(parents[1].clone());
+                sources[0].produce(1,1,subpopulation, parents, state,thread, misc);
+                sources[1].produce(1,1,subpopulation, parents, state,thread, misc);
                 }
 
             // at this point, parents[] contains our two selected individuals,
@@ -149,18 +166,18 @@ public class RuleCrossoverPipeline extends BreedingPipeline
 
             // so we'll cross them over now.
 
-            parents[0].preprocessIndividual(state,thread);
-            parents[1].preprocessIndividual(state,thread);
+            ((RuleIndividual) parents.get(0)).preprocessIndividual(state,thread);
+            ((RuleIndividual) parents.get(1)).preprocessIndividual(state,thread);
 
-            if( parents[0].rulesets.length != parents[1].rulesets.length )
+            if( ((RuleIndividual) parents.get(0)).rulesets.length != ((RuleIndividual) parents.get(1)).rulesets.length )
                 {
                 state.output.fatal( "The number of rule sets should be identical in both parents ( " +
-                    parents[0].rulesets.length + " : " +
-                    parents[1].rulesets.length + " )." );
+                    ((RuleIndividual) parents.get(0)).rulesets.length + " : " +
+                    ((RuleIndividual) parents.get(1)).rulesets.length + " )." );
                 }
 
             // for each set of rules (assume both individuals have the same number of rule sets)
-            for( int x = 0 ; x < parents[0].rulesets.length ; x++ )
+            for(int x = 0; x < ((RuleIndividual) parents.get(0)).rulesets.length ; x++ )
                 {
                 RuleSet[] temp = new RuleSet[2];
                 while(true)
@@ -169,40 +186,53 @@ public class RuleCrossoverPipeline extends BreedingPipeline
                     for( int i = 0 ; i < 2 ; i++ )
                         temp[i] = new RuleSet();
                     // split the ruleset indexed x in parent 1
-                    temp = parents[0].rulesets[x].splitIntoTwo( state, thread, temp,ruleCrossProbability);
+                    temp = ((RuleIndividual) parents.get(0)).rulesets[x].splitIntoTwo( state, thread, temp,ruleCrossProbability);
                     // now temp[0] contains rules to that must go to parent[1]
                                         
                     // split the ruleset indexed x in parent 2 (append after the split results from previous operation)
-                    temp = parents[1].rulesets[x].splitIntoTwo( state, thread, temp, 1 - ruleCrossProbability);
+                    temp = ((RuleIndividual) parents.get(1)).rulesets[x].splitIntoTwo( state, thread, temp, 1 - ruleCrossProbability);
                     // now temp[1] contains rules that must go to parent[0]
                     
                     // ensure that there are enough rules
-                    if (temp[0].numRules >= parents[0].rulesets[x].constraints(initializer).minSize &&
-                        temp[0].numRules <= parents[0].rulesets[x].constraints(initializer).maxSize &&
-                        temp[1].numRules >= parents[1].rulesets[x].constraints(initializer).minSize &&
-                        temp[1].numRules <= parents[1].rulesets[x].constraints(initializer).maxSize)
+                    if (temp[0].numRules >= ((RuleIndividual) parents.get(0)).rulesets[x].constraints(initializer).minSize &&
+                        temp[0].numRules <= ((RuleIndividual) parents.get(0)).rulesets[x].constraints(initializer).maxSize &&
+                        temp[1].numRules >= ((RuleIndividual) parents.get(1)).rulesets[x].constraints(initializer).minSize &&
+                        temp[1].numRules <= ((RuleIndividual) parents.get(1)).rulesets[x].constraints(initializer).maxSize)
                         break;
                         
                     temp = new RuleSet[2];
                     }
                     
                 // copy the results in the rulesets of the parents
-                parents[0].rulesets[x].copyNoClone(temp[1]);
-                parents[1].rulesets[x].copyNoClone(temp[0]);
+                ((RuleIndividual) parents.get(0)).rulesets[x].copyNoClone(temp[1]);
+                ((RuleIndividual) parents.get(1)).rulesets[x].copyNoClone(temp[0]);
                 }
             
-            parents[0].postprocessIndividual(state,thread);
-            parents[1].postprocessIndividual(state,thread);
+            ((RuleIndividual) parents.get(0)).postprocessIndividual(state,thread);
+            ((RuleIndividual) parents.get(1)).postprocessIndividual(state,thread);
     
-            parents[0].evaluated=false;
-            parents[1].evaluated=false;
+            ((RuleIndividual) parents.get(0)).evaluated=false;
+            ((RuleIndividual) parents.get(1)).evaluated=false;
             
             // add 'em to the population
-            inds[q] = parents[0];
+            // by Ermo. This is use add instead of set as inds could be empty
+            // Yes -- Sean
+            inds.add(parents.get(0));
+            if (preserveParents != null)
+                {
+                parentparents[0].addAll(parentparents[1]);
+                preserveParents[q] = parentparents[0];
+                }
             q++;
             if (q<n+start && !tossSecondParent)
                 {
-                inds[q] = parents[1];
+                // by Ermo. same reason, see comments above
+                inds.add(parents.get(1));
+                if (preserveParents != null)
+                    {
+                    parentparents[0].addAll(parentparents[1]);
+                    preserveParents[q] = parentparents[0];
+                    }
                 q++;
                 }
             }

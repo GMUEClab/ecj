@@ -6,9 +6,10 @@
 
 
 package ec.coevolve;
+import java.util.ArrayList;
+
 import ec.*;
 import ec.util.*;
-import ec.simple.*;
 
 /** 
  * CompetitiveEvaluator.java
@@ -153,18 +154,19 @@ public class CompetitiveEvaluator extends Evaluator
         return null;
         }
 
-    public void randomizeOrder(final EvolutionState state, final Individual[] individuals)
+    public void randomizeOrder(final EvolutionState state, final ArrayList<Individual> individuals)
         {
         // copy the inds into a new array, then dump them randomly into the
         // subpopulation again
-        Individual[] queue = new Individual[individuals.length];
+        Individual[] queue = new Individual[individuals.size()];
         int len = queue.length;
-        System.arraycopy(individuals,0,queue,0,len);
-
+        individuals.toArray(queue);
+        
+        
         for(int x=len;x>0;x--)
             {
             int i = state.random[0].nextInt(x);
-            individuals[x-1] = queue[i];
+            individuals.set(x-1, queue[i]);
             // get rid of queue[i] by swapping the highest guy there and then
             // decreasing the highest value  :-)
             queue[i] = queue[x-1];
@@ -180,7 +182,7 @@ public class CompetitiveEvaluator extends Evaluator
         {
         int numinds[] = new int[state.evalthreads];
         int from[] = new int[state.evalthreads];
-        boolean[] assessFitness = new boolean[state.population.subpops.length];
+        boolean[] assessFitness = new boolean[state.population.subpops.size()];
         for(int i = 0; i < assessFitness.length; i++)
             assessFitness[i] = true;                                        // update everyone's fitness in preprocess and postprocess
         
@@ -188,23 +190,23 @@ public class CompetitiveEvaluator extends Evaluator
             {
             // figure numinds
             if (y<state.evalthreads-1) // not last one
-                numinds[y] = state.population.subpops[0].individuals.length/
+                numinds[y] = state.population.subpops.get(0).individuals.size()/
                     state.evalthreads;
             else
                 numinds[y] = 
-                    state.population.subpops[0].individuals.length/
+                    state.population.subpops.get(0).individuals.size()/
                     state.evalthreads +
                     
-                    (state.population.subpops[0].individuals.length -
-                        (state.population.subpops[0].individuals.length /
+                    (state.population.subpops.get(0).individuals.size() -
+                        (state.population.subpops.get(0).individuals.size() /
                         state.evalthreads)
                     *state.evalthreads);
             // figure from
-            from[y] = (state.population.subpops[0].individuals.length/
+            from[y] = (state.population.subpops.get(0).individuals.size()/
                 state.evalthreads) * y;
             }
         
-        randomizeOrder( state, state.population.subpops[0].individuals );
+        randomizeOrder( state, state.population.subpops.get(0).individuals );
         
         GroupedProblemForm prob = (GroupedProblemForm)(p_problem.clone());
 
@@ -213,26 +215,26 @@ public class CompetitiveEvaluator extends Evaluator
         switch(style)
             {
             case STYLE_SINGLE_ELIMINATION:
-                evalSingleElimination( state, state.population.subpops[0].individuals, 0, prob);
+                evalSingleElimination( state, state.population.subpops.get(0).individuals, 0, prob);
                 break;
             case STYLE_ROUND_ROBIN:
-                evalRoundRobin( state, from, numinds, state.population.subpops[0].individuals, 0, prob );
+                evalRoundRobin( state, from, numinds, state.population.subpops.get(0).individuals, 0, prob );
                 break;
             case STYLE_N_RANDOM_COMPETITORS_ONEWAY:
-                evalNRandomOneWay( state, from, numinds, state.population.subpops[0].individuals, 0, prob );
+                evalNRandomOneWay( state, from, numinds, state.population.subpops.get(0).individuals, 0, prob );
                 break;
             case STYLE_N_RANDOM_COMPETITORS_TWOWAY:
-                evalNRandomTwoWay( state, from, numinds, state.population.subpops[0].individuals, 0, prob );
+                evalNRandomTwoWay( state, from, numinds, state.population.subpops.get(0).individuals, 0, prob );
                 break;
             default:
                 state.output.fatal("Invalid competition style in CompetitiveEvaluator.evaluatePopulation()");
             }
     
-        prob.postprocessPopulation(state, state.population, assessFitness, style == STYLE_SINGLE_ELIMINATION);
+        state.incrementEvaluations(prob.postprocessPopulation(state, state.population, assessFitness, style == STYLE_SINGLE_ELIMINATION));
         }
     
     public void evalSingleElimination( final EvolutionState state,
-        final Individual[] individuals,
+        final ArrayList<Individual> individuals,
         final int subpop,
         final GroupedProblemForm prob )
         {
@@ -240,8 +242,8 @@ public class CompetitiveEvaluator extends Evaluator
         // some value n.  We don't check that here!  Check it in setup.
         
         // create the tournament array
-        Individual[] tourn = new Individual[individuals.length];
-        System.arraycopy( individuals, 0, tourn, 0, individuals.length );
+        Individual[] tourn = individuals.toArray(new Individual[individuals.size()]);
+
         int len = tourn.length;
         Individual[] competition = new Individual[2];
         int[] subpops = new int[] { subpop, subpop };
@@ -283,7 +285,7 @@ public class CompetitiveEvaluator extends Evaluator
 
     public void evalRoundRobin( final EvolutionState state,
         int[] from, int[] numinds,
-        final Individual[] individuals, int subpop,
+        final ArrayList<Individual> individuals, int subpop,
         final GroupedProblemForm prob )
         {
         if (state.evalthreads==1)
@@ -334,7 +336,7 @@ public class CompetitiveEvaluator extends Evaluator
      */
     public void evalRoundRobinPopChunk(final EvolutionState state,
         int from, int numinds, int threadnum, 
-        final Individual[] individuals, int subpop,
+        final ArrayList<Individual> individuals, int subpop,
         final GroupedProblemForm prob)
         {
         Individual[] competition = new Individual[2];
@@ -348,10 +350,10 @@ public class CompetitiveEvaluator extends Evaluator
         // other individuals <x in other threads, only evaluate it against
         // individuals >x in this thread.
         for(int x=from;x<upperBound;x++)
-            for(int y=x+1;y<individuals.length;y++)
+            for(int y=x+1;y<individuals.size();y++)
                 {
-                competition[0] = individuals[x];
-                competition[1] = individuals[y];
+                competition[0] = individuals.get(x);
+                competition[1] = individuals.get(y);
                 prob.evaluate(state,competition,updates,false, subpops, 0);
                 }
         }
@@ -359,7 +361,7 @@ public class CompetitiveEvaluator extends Evaluator
 
     public void evalNRandomOneWay( final EvolutionState state, 
         int[] from, int[] numinds, 
-        final Individual[] individuals, int subpop, 
+        final ArrayList<Individual> individuals, int subpop, 
         final GroupedProblemForm prob )
         {
         if (state.evalthreads==1)
@@ -396,13 +398,13 @@ public class CompetitiveEvaluator extends Evaluator
     
     public void evalNRandomOneWayPopChunk( final EvolutionState state,
         int from, int numinds, int threadnum,
-        final Individual[] individuals,
+        final ArrayList<Individual> individuals,
         final int subpop,
         final GroupedProblemForm prob )
         {
-        Individual[] queue = new Individual[individuals.length];
+        Individual[] queue = individuals.toArray(new Individual[individuals.size()]);
         int len = queue.length;
-        System.arraycopy(individuals,0,queue,0,len);
+        
 
         Individual[] competition = new Individual[2];
         int subpops[] = new int[] { subpop, subpop };
@@ -413,7 +415,7 @@ public class CompetitiveEvaluator extends Evaluator
         
         for(int x=from;x<upperBound;x++)
             {
-            competition[0] = individuals[x];
+            competition[0] = individuals.get(x);
             // fill up our tournament
             for(int y=0;y<groupSize;)
                 {
@@ -424,7 +426,7 @@ public class CompetitiveEvaluator extends Evaluator
                 queue[len-y-1] = competition[1];
                 // if the opponent is not the actual individual, we can
                 // have a competition
-                if( competition[1] != individuals[x] )
+                if( competition[1] != individuals.get(x) )
                     {
                     prob.evaluate(state,competition,updates,false,subpops, 0);
                     y++;
@@ -435,7 +437,7 @@ public class CompetitiveEvaluator extends Evaluator
 
     public void evalNRandomTwoWay( final EvolutionState state,
         int[] from, int[] numinds,
-        final Individual[] individuals, int subpop, 
+        final ArrayList<Individual> individuals, int subpop, 
         final GroupedProblemForm prob )
         {
         if (state.evalthreads==1)
@@ -472,16 +474,16 @@ public class CompetitiveEvaluator extends Evaluator
     
     public void evalNRandomTwoWayPopChunk( final EvolutionState state,
         int from, int numinds, int threadnum,
-        final Individual[] individuals,
+        final ArrayList<Individual> individuals,
         final int subpop,
         final GroupedProblemForm prob )
         {
 
         // the number of games played for each player
-        EncapsulatedIndividual[] individualsOrdered = new EncapsulatedIndividual[individuals.length];
-        EncapsulatedIndividual[] queue = new EncapsulatedIndividual[individuals.length];
-        for( int i = 0 ; i < individuals.length ; i++ )
-            individualsOrdered[i] = new EncapsulatedIndividual( individuals[i], 0 );
+        EncapsulatedIndividual[] individualsOrdered = new EncapsulatedIndividual[individuals.size()];
+        EncapsulatedIndividual[] queue = new EncapsulatedIndividual[individuals.size()];
+        for( int i = 0 ; i < individuals.size() ; i++ )
+            individualsOrdered[i] = new EncapsulatedIndividual( individuals.get(i), 0 );
 
         Individual[] competition = new Individual[2];
         int[] subpops = new int[] { subpop, subpop }; 
@@ -507,7 +509,7 @@ public class CompetitiveEvaluator extends Evaluator
             // not for the opponents' (unless allowOverEvaluations is set to true)
 
             // if true, it means that he has to play against all opponents with greater index
-            if( individuals.length - x - 1 <= groupSize - queue[x].nOpponentsMet )
+            if( individuals.size() - x - 1 <= groupSize - queue[x].nOpponentsMet )
                 {
                 for( int y = x+1 ; y < queue.length ; y++ )
                     {
@@ -639,7 +641,7 @@ abstract class CompetitiveEvaluatorThread implements Runnable
     public int threadnum;
     public GroupedProblemForm p;
     public int subpop;
-    public Individual[] inds;
+    public ArrayList<Individual> inds;
     }
 
 class RoundRobinCompetitiveEvaluatorThread extends CompetitiveEvaluatorThread

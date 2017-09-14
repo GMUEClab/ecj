@@ -1,5 +1,7 @@
 package ec.de;
 
+import java.util.ArrayList;
+
 import ec.*;
 import ec.util.*;
 import ec.vector.*;
@@ -89,15 +91,15 @@ public class DEBreeder extends Breeder
     public void prepareDEBreeder(EvolutionState state)
         {
         // update the bestSoFar for each population
-        if( bestSoFarIndex == null || state.population.subpops.length != bestSoFarIndex.length )
-            bestSoFarIndex = new int[state.population.subpops.length];
+        if( bestSoFarIndex == null || state.population.subpops.size() != bestSoFarIndex.length )
+            bestSoFarIndex = new int[state.population.subpops.size()];
 
-        for( int subpop = 0 ; subpop < state.population.subpops.length ; subpop++ )
+        for(int subpop = 0; subpop < state.population.subpops.size(); subpop++ )
             {
-            Individual[] inds = state.population.subpops[subpop].individuals;
+            ArrayList<Individual> inds = state.population.subpops.get(subpop).individuals;
             bestSoFarIndex[subpop] = 0;
-            for( int j = 1 ; j < inds.length ; j++ )
-                if( inds[j].fitness.betterThan(inds[bestSoFarIndex[subpop]].fitness) )
+            for( int j = 1 ; j < inds.size() ; j++ )
+                if( inds.get(j).fitness.betterThan(inds.get(bestSoFarIndex[subpop]).fitness) )
                     bestSoFarIndex[subpop] = j;
             }
         }
@@ -115,15 +117,23 @@ public class DEBreeder extends Breeder
         Population newpop = (Population) state.population.emptyClone();
 
         // breed the children
-        for( int subpop = 0 ; subpop < state.population.subpops.length ; subpop++ )
+        for(int subpop = 0; subpop < state.population.subpops.size(); subpop++ )
             {
-            if (state.population.subpops[subpop].individuals.length < 4)  // Magic number, sorry.  createIndividual() requires at least 4 individuals in the pop
+
+            if (state.population.subpops.get(subpop).individuals.size() < 4)  // Magic number, sorry.  createIndividual() requires at least 4 individuals in the pop
                 state.output.fatal("Subpopulation " + subpop + " has fewer than four individuals, and so cannot be used with DEBreeder.");
+            // by Ermo. We should use add instead of set in here
+//            ArrayList<Individual> inds = newpop.subpops.get(subpop).individuals;
+//            for( int i = 0 ; i < inds.size() ; i++ )
+//                {
+//                newpop.subpops.get(subpop).individuals.set(i, createIndividual( state, subpop, i, 0));  // unthreaded for now
+//                }
             
-            Individual[] inds = newpop.subpops[subpop].individuals;
-            for( int i = 0 ; i < inds.length ; i++ )
+            ArrayList<Individual> inds = newpop.subpops.get(subpop).individuals;
+            int size = state.population.subpops.get(subpop).individuals.size();
+            for( int i = 0 ; i < size ; i++ )
                 {
-                newpop.subpops[subpop].individuals[i] = createIndividual( state, subpop, i, 0);  // unthreaded for now
+                newpop.subpops.get(subpop).individuals.add(createIndividual( state, subpop, i, 0));  // unthreaded for now
                 }
             }
 
@@ -145,9 +155,9 @@ public class DEBreeder extends Breeder
         int index,
         int thread)
         {
-        Individual[] inds = state.population.subpops[subpop].individuals;
-
-        DoubleVectorIndividual v = (DoubleVectorIndividual)(state.population.subpops[subpop].species.newIndividual(state, thread));
+        //Individual[] inds = state.population.subpops.get(subpop).individuals;
+        ArrayList<Individual> inds = state.population.subpops.get(subpop).individuals;
+        DoubleVectorIndividual v = (DoubleVectorIndividual)(state.population.subpops.get(subpop).species.newIndividual(state, thread));
         int retry = -1;
         do
             {
@@ -157,23 +167,23 @@ public class DEBreeder extends Breeder
             int r0, r1, r2;
             do
                 {
-                r0 = state.random[thread].nextInt(inds.length);
+                r0 = state.random[thread].nextInt(inds.size());
                 }
             while( r0 == index );
             do
                 {
-                r1 = state.random[thread].nextInt(inds.length);
+                r1 = state.random[thread].nextInt(inds.size());
                 }
             while( r1 == r0 || r1 == index );
             do
                 {
-                r2 = state.random[thread].nextInt(inds.length);
+                r2 = state.random[thread].nextInt(inds.size());
                 }
             while( r2 == r1 || r2 == r0 || r2 == index );
 
-            DoubleVectorIndividual g0 = (DoubleVectorIndividual)(inds[r0]);
-            DoubleVectorIndividual g1 = (DoubleVectorIndividual)(inds[r1]);
-            DoubleVectorIndividual g2 = (DoubleVectorIndividual)(inds[r2]);
+            DoubleVectorIndividual g0 = (DoubleVectorIndividual)(inds.get(r0));
+            DoubleVectorIndividual g1 = (DoubleVectorIndividual)(inds.get(r1));
+            DoubleVectorIndividual g2 = (DoubleVectorIndividual)(inds.get(r2));
 
             for(int i = 0; i < v.genome.length; i++)
                 v.genome[i] = g0.genome[i] + F * (g1.genome[i] - g2.genome[i]);
@@ -185,7 +195,7 @@ public class DEBreeder extends Breeder
             v.reset(state, thread);
             }
 
-        return crossover(state, (DoubleVectorIndividual)(inds[index]), v, thread);
+        return crossover(state, (DoubleVectorIndividual)(inds.get(index)), v, thread);
         }
 
 

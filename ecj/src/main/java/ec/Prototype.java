@@ -68,7 +68,7 @@ public interface Prototype extends Cloneable, Setup
         <li>If you hold objects which were given to you as a gesture
         of kindness, and aren't owned by you, you probably shouldn't clone
         them.
-        <li> DON'T attempt to clone: Singletons, Cliques, or Groups.
+        <li> DON'T attempt to clone: Singletons, Cliques, or Populations, or Subpopulation.
         <li>Arrays are not cloned automatically; you may need to
         clone an array if you're not sharing it with other instances.
         Arrays have the nice feature of being copyable by calling clone()

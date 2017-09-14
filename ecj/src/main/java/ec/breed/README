@@ -8,6 +8,10 @@ ec.breed.ReproductionPipeline
 	makes a copy of it and returns the copy.  Largely used in the
 	genetic programming package.
 
+ec.breed.RepeatPipeline
+	Requests an individual from its sole source pipeline a single
+	time, then repeatedly makes that copy and returns the copy.
+
 ec.breed.MultiBreedingPipeline
 	When asked to create one or more children, selects from among
 	some N source pipelines attached to it, requests indivdiuals

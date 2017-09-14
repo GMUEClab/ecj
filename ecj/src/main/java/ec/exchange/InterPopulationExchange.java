@@ -347,7 +347,7 @@ public class InterPopulationExchange extends Exchanger
                         // copy the individual to the mailbox of the destination subpopulation
                         immigrants[ exchangeInformation[i].destinations[x] ]
                             [ nImmigrants[ exchangeInformation[i].destinations[x] ] ] =
-                            process(state, 0, null, exchangeInformation[i].destinations[x], (Individual) state.population.subpops[ i ].individuals[ index ].clone());
+                            process(state, 0, null, exchangeInformation[i].destinations[x], (Individual) state.population.subpops.get(i).individuals.get(index).clone());
                         // increment the counter with the number of individuals in the mailbox
                         nImmigrants[ exchangeInformation[i].destinations[x] ]++;
                         }
@@ -375,9 +375,9 @@ public class InterPopulationExchange extends Exchanger
                     " individuals from mailbox for subpopulation " + x );
                 }
                 
-            int len = state.population.subpops[x].individuals.length;
+            int len = state.population.subpops.get(x).individuals.size();
             // double check that we won't go into an infinite loop!
-            if ( nImmigrants[x] >= state.population.subpops[x].individuals.length )
+            if ( nImmigrants[x] >= state.population.subpops.get(x).individuals.size() )
                 state.output.fatal("Number of immigrants ("+nImmigrants[x] +
                     ") is larger than subpopulation #" + x + "'s size (" +
                     len +").  This would cause an infinite loop in the selection-to-die procedure.");
@@ -400,10 +400,10 @@ public class InterPopulationExchange extends Exchanger
             for( int y = 0 ; y < nImmigrants[x] ; y++ )
                 {
                 // read the individual
-                state.population.subpops[x].individuals[ indices[y] ] = immigrants[x][y];
+                state.population.subpops.get(x).individuals.set( indices[y] ,immigrants[x][y]);
 
                 // reset the evaluated flag (the individuals are not evaluated in the current island */
-                state.population.subpops[x].individuals[ indices[y] ].evaluated = false;
+                state.population.subpops.get(x).individuals.get(indices[y]).evaluated = false;
 
                 }
 

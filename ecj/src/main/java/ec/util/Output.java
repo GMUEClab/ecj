@@ -213,7 +213,7 @@ public class Output implements Serializable
     */
     public synchronized void setVerbosity(int v)
         {
-//        verbosity = v;
+        //        verbosity = v;
         }
     
     /** Returns the Output object's general verbosity

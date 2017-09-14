@@ -8,6 +8,9 @@
 package ec;
 import ec.util.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /* 
  * BreedingSource.java
  * 
@@ -158,16 +161,12 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooserD
         only.  May be called again to reset the BreedingSource for a whole
         'nuther subpopulation. */
 
-    public abstract void prepareToProduce(final EvolutionState state,
-        final int subpopulation,
-        final int thread);
+    public abstract void prepareToProduce( EvolutionState state, int subpopulation, int thread);
 
     /** Called after produce(...), usually once a generation, or maybe only
         once if you're doing steady-state evolution (at the end of the run). */
         
-    public abstract void finishProducing(final EvolutionState s,
-        final int subpopulation,
-        final int thread);
+    public abstract void finishProducing(EvolutionState state, int subpopulation, int thread);
 
     /** Produces <i>n</i> individuals from the given subpopulation
         and puts them into inds[start...start+n-1],
@@ -176,13 +175,14 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooserD
         <i>n</i>.  max must be >= min, and min must be >= 1. For example, crossover
         might typically produce two individuals, tournament selection might typically
         produce a single individual, etc. */
-    public abstract int produce(final int min, 
-        final int max, 
-        final int start,
-        final int subpopulation,
-        final Individual[] inds,
-        final EvolutionState state,
-        final int thread) ;        
+    public abstract int produce(
+        int min,
+        int max,
+        int subpopulation,
+        ArrayList<Individual> inds,
+        EvolutionState state,
+        int thread, 
+        HashMap<String, Object> misc) ;
 
     public Object clone()
         {
@@ -191,6 +191,7 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooserD
             { throw new InternalError(); } // never happens
         }
 
+    public void fillStubs(final EvolutionState state, BreedingSource source) { }
 
     /** A hook which should be passed to all your subsidiary breeding
         sources.  The default does this for you already, so ordinarily

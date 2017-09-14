@@ -119,12 +119,14 @@ public class BoltzmannSelection extends FitProportionateSelection
         final int subpopulation,
         final int thread)
         {
+        super.prepareToProduce(s, subpopulation, thread);
+
         // load fitnesses
-        fitnesses = new double[s.population.subpops[subpopulation].individuals.length];
+        fitnesses = new double[s.population.subpops.get(subpopulation).individuals.size()];
         for(int x=0;x<fitnesses.length;x++)
             {
             fitnesses[x] = (double) boltzmannExpectedValue(
-                ((Individual)(s.population.subpops[subpopulation].individuals[x])).fitness.fitness(), 
+                ((Individual)(s.population.subpops.get(subpopulation).individuals.get(x))).fitness.fitness(),
                 s); // adjust the fitness proportion according to current temperature.
             if (fitnesses[x] < 0) // uh oh
                 s.output.fatal("Discovered a negative fitness value.  BoltzmannnSelection requires that all fitness values be non-negative(offending subpopulation #" + subpopulation + ")");

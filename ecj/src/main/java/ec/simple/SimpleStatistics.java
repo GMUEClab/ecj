@@ -120,7 +120,7 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         
         // set up our best_of_run array -- can't do this in setup, because
         // we don't know if the number of subpopulations has been determined yet
-        best_of_run = new Individual[state.population.subpops.length];
+        best_of_run = new Individual[state.population.subpops.size()];
         }
 
     /** Logs the best individual of the generation. */
@@ -130,13 +130,13 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         super.postEvaluationStatistics(state);
         
         // for now we just print the best fitness per subpopulation.
-        Individual[] best_i = new Individual[state.population.subpops.length];  // quiets compiler complaints
-        for(int x=0;x<state.population.subpops.length;x++)
+        Individual[] best_i = new Individual[state.population.subpops.size()];  // quiets compiler complaints
+        for(int x = 0; x< state.population.subpops.size(); x++)
             {
-            best_i[x] = state.population.subpops[x].individuals[0];
-            for(int y=1;y<state.population.subpops[x].individuals.length;y++)
+            best_i[x] = state.population.subpops.get(x).individuals.get(0);
+            for(int y = 1; y< state.population.subpops.get(x).individuals.size(); y++)
                 {
-                if (state.population.subpops[x].individuals[y] == null)
+                if (state.population.subpops.get(x).individuals.get(y) == null)
                     {
                     if (!warned)
                         {
@@ -144,8 +144,8 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
                         warned = true;  // we do this rather than relying on warnOnce because it is much faster in a tight loop
                         }
                     }
-                else if (best_i[x] == null || state.population.subpops[x].individuals[y].fitness.betterThan(best_i[x].fitness))
-                    best_i[x] = state.population.subpops[x].individuals[y];
+                else if (best_i[x] == null || state.population.subpops.get(x).individuals.get(y).fitness.betterThan(best_i[x].fitness))
+                    best_i[x] = state.population.subpops.get(x).individuals.get(y);
                 if (best_i[x] == null)
                     {
                     if (!warned)
@@ -164,7 +164,7 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         // print the best-of-generation individual
         if (doGeneration) state.output.println("\nGeneration: " + state.generation,statisticslog);
         if (doGeneration) state.output.println("Best Individual:",statisticslog);
-        for(int x=0;x<state.population.subpops.length;x++)
+        for(int x = 0; x< state.population.subpops.size(); x++)
             {
             if (doGeneration) state.output.println("Subpopulation " + x + ":",statisticslog);
             if (doGeneration) best_i[x].printIndividualForHumans(state,statisticslog);
@@ -194,12 +194,12 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         // for now we just print the best fitness 
         
         if (doFinal) state.output.println("\nBest Individual of Run:",statisticslog);
-        for(int x=0;x<state.population.subpops.length;x++ )
+        for(int x = 0; x< state.population.subpops.size(); x++ )
             {
             if (doFinal) state.output.println("Subpopulation " + x + ":",statisticslog);
             if (doFinal) best_of_run[x].printIndividualForHumans(state,statisticslog);
             if (doMessage && !silentPrint) state.output.message("Subpop " + x + " best fitness of run: " + best_of_run[x].fitness.fitnessToStringForHumans());
-
+            
             // finally describe the winner if there is a description
             if (doFinal && doDescription) 
                 if (state.evaluator.p_problem instanceof SimpleProblemForm)

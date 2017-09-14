@@ -1,0 +1,43 @@
+This package contains code to do NeuroEvolution of Augmenting Topologies, or
+NEAT.  NEAT is a direct-encoded graph representation meant to encode neural
+networks and other graph structures.
+
+The ECJ NEAT code is in the first of two planned stages.  In the first stage,
+the code is meant to work more or less exactly the same as the original NEAT
+C++ code here:
+
+	https://github.com/FernandoTorres/NEAT/
+
+In this stage, the NEAT implementation is not ECJ-ish at all: it has a
+custom breeder, no breeding pipelines, a custom evaluator and initializer,
+and so on.  It's single-threaded breeding only.
+
+In the planned second stage, we will carefully make NEAT more ECJ-like.  This
+will take work and time as NEAT has a lot of custom and unusual features and
+warts.  
+
+You can run NEAT with two applications, both in ec/app:  xor and cartpole
+
+The code here is:
+
+NEATDefaults.java		Package defaults
+NEATIndividual.java		Subclass of IntegerVectorIndividual with an
+				additional list of "node" genes.
+NEATSpecies.java		Special species for NEATIndividual, does a lot
+				of the custom heavy-lifting in the package
+NEATNode.java			Node genes
+NEATGene.java			Edge ("Link") genes
+NEATSubspecies.java		NEAT "species" speciation groups.  Called
+				Subspecies to differentiate them from ECJ
+				Species objects
+NEATInnovation.java		Handles NEAT-style "innovation" information
+NEATNetwork.java		Phenotype arising from the Node/Gene genotype
+NEATInitializer.java		Custom initializer, loads the population from
+				a single seed individual in a file.
+NEATBreeder.java		Custom breeder, handles speciation and special
+				breeding mechanisms.
+
+
+Parameter files:
+
+neat.params			Abstract top-level parameters for NEAT

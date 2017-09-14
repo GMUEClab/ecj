@@ -6,6 +6,8 @@
 
 package ec.multiobjective.spea2;
 
+import java.util.ArrayList;
+
 import ec.*;
 import ec.util.*;
 import ec.multiobjective.*;
@@ -31,48 +33,48 @@ public class SPEA2Evaluator extends SimpleEvaluator
         super.evaluatePopulation(state);
                 
         // build SPEA2 fitness values
-        for(int x = 0;x<state.population.subpops.length;x++)
+        for(int x = 0; x< state.population.subpops.size(); x++)
             {
-            Individual[] inds = state.population.subpops[x].individuals;
+            ArrayList<Individual> inds = state.population.subpops.get(x).individuals;
             computeAuxiliaryData(state, inds);
             }
         }
 
     /** Computes the strength of individuals, then the raw fitness (wimpiness) and kth-closest sparsity
         measure.  Finally, computes the final fitness of the individuals.  */
-    public void computeAuxiliaryData(EvolutionState state, Individual[] inds)
+    public void computeAuxiliaryData(EvolutionState state, ArrayList<Individual> inds)
         {
         double[][] distances = calculateDistances(state, inds);
                         
         // For each individual calculate the strength
-        for(int y=0;y<inds.length;y++)
+        for(int y=0;y<inds.size();y++)
             {
             // Calculate the node strengths
             int myStrength = 0;
-            for(int z=0;z<inds.length;z++)
-                if (((SPEA2MultiObjectiveFitness)inds[y].fitness).paretoDominates((MultiObjectiveFitness)inds[z].fitness)) 
+            for(int z=0;z<inds.size();z++)
+                if (((SPEA2MultiObjectiveFitness)inds.get(y).fitness).paretoDominates((MultiObjectiveFitness)inds.get(z).fitness)) 
                     myStrength++;
-            ((SPEA2MultiObjectiveFitness)inds[y].fitness).strength = myStrength;
+            ((SPEA2MultiObjectiveFitness)inds.get(y).fitness).strength = myStrength;
             } //For each individual y calculate the strength
                 
         // calculate k value
-        int kTH = (int) Math.sqrt(inds.length);  // note that the first element is k=1, not k=0 
+        int kTH = (int) Math.sqrt(inds.size());  // note that the first element is k=1, not k=0 
         
         // For each individual calculate the Raw fitness and kth-distance
-        for(int y=0;y<inds.length;y++)
+        for(int y=0;y<inds.size();y++)
             {
             double fitness = 0;
-            for(int z=0;z<inds.length;z++)
+            for(int z=0;z<inds.size();z++)
                 {
                 // Raw fitness 
-                if ( ((SPEA2MultiObjectiveFitness)inds[z].fitness).paretoDominates((MultiObjectiveFitness)inds[y].fitness) )
+                if ( ((SPEA2MultiObjectiveFitness)inds.get(z).fitness).paretoDominates((MultiObjectiveFitness)inds.get(y).fitness) )
                     {
-                    fitness += ((SPEA2MultiObjectiveFitness)inds[z].fitness).strength;
+                    fitness += ((SPEA2MultiObjectiveFitness)inds.get(z).fitness).strength;
                     }
                 } // For each individual z calculate RAW fitness distances
             // Set SPEA2 raw fitness value for each individual
                                     
-            SPEA2MultiObjectiveFitness indYFitness = ((SPEA2MultiObjectiveFitness)inds[y].fitness);
+            SPEA2MultiObjectiveFitness indYFitness = ((SPEA2MultiObjectiveFitness)inds.get(y).fitness);
                         
             // Density component
                         
@@ -90,17 +92,17 @@ public class SPEA2Evaluator extends SimpleEvaluator
     
         
     /** Returns a matrix of sum squared distances from each individual to each other individual. */
-    public double[][] calculateDistances(EvolutionState state, Individual[] inds)
+    public double[][] calculateDistances(EvolutionState state, ArrayList<Individual> inds)
         {
-        double[][] distances = new double[inds.length][inds.length];
-        for(int y=0;y<inds.length;y++)
+        double[][] distances = new double[inds.size()][inds.size()];
+        for(int y=0;y<inds.size();y++)
             {
             distances[y][y] = 0;
-            for(int z=y+1;z<inds.length;z++)
+            for(int z=y+1;z<inds.size();z++)
                 {
                 distances[z][y] = distances[y][z] =
-                    ((SPEA2MultiObjectiveFitness)inds[y].fitness).
-                    sumSquaredObjectiveDistance( (SPEA2MultiObjectiveFitness)inds[z].fitness );
+                    ((SPEA2MultiObjectiveFitness)inds.get(y).fitness).
+                    sumSquaredObjectiveDistance( (SPEA2MultiObjectiveFitness)inds.get(z).fitness );
                 }
             }
         return distances;

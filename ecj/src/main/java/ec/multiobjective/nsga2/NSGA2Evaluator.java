@@ -67,49 +67,43 @@ public class NSGA2Evaluator extends SimpleEvaluator
     public void evaluatePopulation(final EvolutionState state)
         {
         super.evaluatePopulation(state);
-        for (int x = 0; x < state.population.subpops.length; x++)
-            state.population.subpops[x].individuals = 
+        for (int x = 0; x < state.population.subpops.size(); x++)
+            state.population.subpops.get(x).individuals =
                 buildArchive(state, x);
         }
 
 
     /** Build the auxiliary fitness data and reduce the subpopulation to just the archive, which is
         returned. */
-    public Individual[] buildArchive(EvolutionState state, int subpop)
+    public ArrayList<Individual> buildArchive(EvolutionState state, int subpop)
         {
-        Individual[] dummy = new Individual[0];
-        ArrayList ranks = assignFrontRanks(state.population.subpops[subpop]);
+        //Individual[] dummy = new Individual[0];
+        ArrayList<ArrayList<Individual>> ranks = assignFrontRanks(state.population.subpops.get(subpop));
                 
-        ArrayList newSubpopulation = new ArrayList();
+        ArrayList<Individual> newSubpopulation = new ArrayList<Individual>();
         int size = ranks.size();
         for(int i = 0; i < size; i++)
             {
-            Individual[] rank = (Individual[])((ArrayList)(ranks.get(i))).toArray(dummy);
+            //Individual[] rank = (Individual[])(ranks.get(i)).toArray(dummy);
+            ArrayList<Individual> rank = ranks.get(i);
+                
             assignSparsity(rank);
-            if (rank.length + newSubpopulation.size() >= originalPopSize[subpop])
+            if (rank.size() + newSubpopulation.size() >= originalPopSize[subpop])
                 {
                 // first sort the rank by sparsity
-                ec.util.QuickSort.qsort(rank, new SortComparator()
-                    {
-                    public boolean lt(Object a, Object b)
+                // decreasing order
+                Collections.sort(rank, new Comparator<Individual>(){
+                    public int compare(Individual i1, Individual i2)
                         {
-                        Individual i1 = (Individual) a;
-                        Individual i2 = (Individual) b;
-                        return (((NSGA2MultiObjectiveFitness) i1.fitness).sparsity > ((NSGA2MultiObjectiveFitness) i2.fitness).sparsity);
-                        }
-
-                    public boolean gt(Object a, Object b)
-                        {
-                        Individual i1 = (Individual) a;
-                        Individual i2 = (Individual) b;
-                        return (((NSGA2MultiObjectiveFitness) i1.fitness).sparsity < ((NSGA2MultiObjectiveFitness) i2.fitness).sparsity);
+                        return Double.compare(((NSGA2MultiObjectiveFitness) i2.fitness).sparsity, 
+                            (((NSGA2MultiObjectiveFitness) i1.fitness).sparsity));
                         }
                     });
 
                 // then put the m sparsest individuals in the new population
                 int m = originalPopSize[subpop] - newSubpopulation.size();
                 for(int j = 0 ; j < m; j++)
-                    newSubpopulation.add(rank[j]);
+                    newSubpopulation.add(rank.get(j));
                                 
                 // and bail
                 break;
@@ -117,18 +111,18 @@ public class NSGA2Evaluator extends SimpleEvaluator
             else
                 {
                 // dump in everyone
-                for(int j = 0 ; j < rank.length; j++)
-                    newSubpopulation.add(rank[j]);
+                for(int j = 0 ; j < rank.size(); j++)
+                    newSubpopulation.add(rank.get(j));
                 }
             }
 
-        Individual[] archive = (Individual[])(newSubpopulation.toArray(dummy));
+        ArrayList<Individual> archive = new ArrayList<Individual>(newSubpopulation);
                 
         // maybe force reevaluation
         NSGA2Breeder breeder = (NSGA2Breeder)(state.breeder);
         if (breeder.reevaluateElites[subpop])
-            for(int i = 0 ; i < archive.length; i++)
-                archive[i].evaluated = false;
+            for(int i = 0 ; i < archive.size(); i++)
+                archive.get(i).evaluated = false;
 
         return archive;
         }
@@ -137,18 +131,18 @@ public class NSGA2Evaluator extends SimpleEvaluator
 
     /** Divides inds into ranks and assigns each individual's rank to be the rank it was placed into.
         Each front is an ArrayList. */
-    public ArrayList assignFrontRanks(Subpopulation subpop)
+    public ArrayList<ArrayList<Individual>> assignFrontRanks(Subpopulation subpop)
         {
-        Individual[] inds = subpop.individuals;
-        ArrayList frontsByRank = MultiObjectiveFitness.partitionIntoRanks(inds);
+        ArrayList<Individual> inds = subpop.individuals;
+        ArrayList<ArrayList<Individual>> frontsByRank = MultiObjectiveFitness.partitionIntoRanks(inds);
 
         int numRanks = frontsByRank.size();
         for(int rank = 0; rank < numRanks; rank++)
             {
-            ArrayList front = (ArrayList)(frontsByRank.get(rank));
+            ArrayList<Individual> front = frontsByRank.get(rank);
             int numInds = front.size();
             for(int ind = 0; ind < numInds; ind++)
-                ((NSGA2MultiObjectiveFitness)(((Individual)(front.get(ind))).fitness)).rank = rank;
+                ((NSGA2MultiObjectiveFitness)front.get(ind).fitness).rank = rank;
             }
         return frontsByRank;
         }
@@ -158,12 +152,12 @@ public class NSGA2Evaluator extends SimpleEvaluator
     /**
      * Computes and assigns the sparsity values of a given front.
      */
-    public void assignSparsity(Individual[] front)
+    public void assignSparsity(ArrayList<Individual> front)
         {
-        int numObjectives = ((NSGA2MultiObjectiveFitness) front[0].fitness).getObjectives().length;
+        int numObjectives = ((NSGA2MultiObjectiveFitness) front.get(0).fitness).getObjectives().length;
                 
-        for (int i = 0; i < front.length; i++)
-            ((NSGA2MultiObjectiveFitness) front[i].fitness).sparsity = 0;
+        for (int i = 0; i < front.size(); i++)
+            ((NSGA2MultiObjectiveFitness) front.get(i).fitness).sparsity = 0;
 
         for (int i = 0; i < numObjectives; i++)
             {
@@ -175,32 +169,25 @@ public class NSGA2Evaluator extends SimpleEvaluator
             // first and last individuals will always be the same (they maybe
             // interchanged though). This is because a Pareto front's
             // objective values are strictly increasing/decreasing.
-            ec.util.QuickSort.qsort(front, new SortComparator()
-                {
-                public boolean lt(Object a, Object b)
-                    {
-                    Individual i1 = (Individual) a;
-                    Individual i2 = (Individual) b;
-                    return (((NSGA2MultiObjectiveFitness) i1.fitness).getObjective(o) < ((NSGA2MultiObjectiveFitness) i2.fitness).getObjective(o));
-                    }
 
-                public boolean gt(Object a, Object b)
+            // increasing order
+            Collections.sort(front, new Comparator<Individual>(){
+                public int compare(Individual i1, Individual i2)
                     {
-                    Individual i1 = (Individual) a;
-                    Individual i2 = (Individual) b;
-                    return (((NSGA2MultiObjectiveFitness) i1.fitness).getObjective(o) > ((NSGA2MultiObjectiveFitness) i2.fitness).getObjective(o));
+                    return Double.compare(((NSGA2MultiObjectiveFitness) i1.fitness).getObjective(o), 
+                        ((NSGA2MultiObjectiveFitness) i2.fitness).getObjective(o));
                     }
                 });
 
             // Compute and assign sparsity.
             // the first and last individuals are the sparsest.
-            ((NSGA2MultiObjectiveFitness) front[0].fitness).sparsity = Double.POSITIVE_INFINITY;
-            ((NSGA2MultiObjectiveFitness) front[front.length - 1].fitness).sparsity = Double.POSITIVE_INFINITY;
-            for (int j = 1; j < front.length - 1; j++)
+            ((NSGA2MultiObjectiveFitness) front.get(0).fitness).sparsity = Double.POSITIVE_INFINITY;
+            ((NSGA2MultiObjectiveFitness) front.get(front.size() - 1).fitness).sparsity = Double.POSITIVE_INFINITY;
+            for (int j = 1; j < front.size() - 1; j++)
                 {
-                NSGA2MultiObjectiveFitness f_j = (NSGA2MultiObjectiveFitness) (front[j].fitness);
-                NSGA2MultiObjectiveFitness f_jplus1 = (NSGA2MultiObjectiveFitness) (front[j+1].fitness);
-                NSGA2MultiObjectiveFitness f_jminus1 = (NSGA2MultiObjectiveFitness) (front[j-1].fitness);
+                NSGA2MultiObjectiveFitness f_j = (NSGA2MultiObjectiveFitness) (front.get(j).fitness);
+                NSGA2MultiObjectiveFitness f_jplus1 = (NSGA2MultiObjectiveFitness) (front.get(j+1).fitness);
+                NSGA2MultiObjectiveFitness f_jminus1 = (NSGA2MultiObjectiveFitness) (front.get(j-1).fitness);
                                 
                 // store the NSGA2Sparsity in sparsity
                 f_j.sparsity += (f_jplus1.getObjective(o) - f_jminus1.getObjective(o)) / (f_j.maxObjective[o] - f_j.minObjective[o]);

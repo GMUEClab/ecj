@@ -1,0 +1,25 @@
+This is ECJ's DOvS package.  To see this package in action, try the application
+examples ec/app/highdimension and ec/app/singular
+
+WARNING: DOvS doesn't work quite right yet.  We're including it as a preview
+but you should not rely on it (you'll notice that highdimension has strange
+fitness results for example).
+
+DOvS has a custom breeder, evaluator, and initializer, though this may change
+in the future.  DOvS individuals are presently IntegerVectorIndividual, but
+this may be broadened later.  DOvS has an abstract species called DOVSSpecies
+and one concrete subclass called HyperboxSpecies (for the moment). 
+
+DOVSDefauls.java		Package Defaults
+DOVSEvaluator.java		Custom evaluator
+DOVSBreeder.java		Custom breeder
+DOVSInitializer.java		Custom initializer
+DOVSFitness.java		Special fitness which includes "observations"
+				(trials) which make up the fitness.
+DOVSSpecies.java		Abstract species for DOVS
+HyperboxSpecies.java		Concrete subclass where the area of "interest"					is a hyperbox.
+CornerMap.java			Data structure to compute the hyperbox and
+				membership.
+
+
+dovs.params			top-level parameter file

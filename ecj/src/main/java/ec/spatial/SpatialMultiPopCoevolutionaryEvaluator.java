@@ -7,7 +7,6 @@
 package ec.spatial;
 
 import ec.*;
-import ec.util.*;
 import ec.coevolve.*;
 
 /* 
@@ -30,12 +29,12 @@ public class SpatialMultiPopCoevolutionaryEvaluator extends MultiPopCoevolutiona
     {
     protected Individual produce(SelectionMethod method, int subpopulation, int individual, EvolutionState state, int thread)
         {
-        if (!(state.population.subpops[subpopulation] instanceof Space))
+        if (!(state.population.subpops.get(subpopulation) instanceof Space))
             state.output.fatal("Subpopulation " + subpopulation + " is not a Space.");
                         
-        Space space = (Space)(state.population.subpops[subpopulation]);
+        Space space = (Space)(state.population.subpops.get(subpopulation));
         space.setIndex(thread, individual);
                 
-        return state.population.subpops[subpopulation].individuals[method.produce(subpopulation, state, thread)];
+        return state.population.subpops.get(subpopulation).individuals.get(method.produce(subpopulation, state, thread));
         }
     }

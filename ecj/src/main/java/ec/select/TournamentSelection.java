@@ -6,6 +6,8 @@
 
 
 package ec.select;
+import java.util.ArrayList;
+
 import ec.*;
 import ec.util.*;
 import ec.steadystate.*;
@@ -121,8 +123,8 @@ public class TournamentSelection extends SelectionMethod implements SteadyStateB
         to fill the tournament.  <i>number</> is the position of the individual in the tournament.  */
     public int getRandomIndividual(int number, int subpopulation, EvolutionState state, int thread)
         {
-        Individual[] oldinds = state.population.subpops[subpopulation].individuals;
-        return state.random[thread].nextInt(oldinds.length);
+        ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
+        return state.random[thread].nextInt(oldinds.size());
         }
 
     /** Returns true if *first* is a better (fitter, whatever) individual than *second*. */
@@ -136,7 +138,7 @@ public class TournamentSelection extends SelectionMethod implements SteadyStateB
         final int thread)
         {
         // pick size random individuals, then pick the best.
-        Individual[] oldinds = state.population.subpops[subpopulation].individuals;
+        ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
         int best = getRandomIndividual(0, subpopulation, state, thread);
         
         int s = getTournamentSizeToUse(state.random[thread]);
@@ -145,14 +147,14 @@ public class TournamentSelection extends SelectionMethod implements SteadyStateB
             for (int x=1;x<s;x++)
                 {
                 int j = getRandomIndividual(x, subpopulation, state, thread);
-                if (!betterThan(oldinds[j], oldinds[best], subpopulation, state, thread))  // j is at least as bad as best
+                if (!betterThan(oldinds.get(j), oldinds.get(best), subpopulation, state, thread))  // j is at least as bad as best
                     best = j;
                 }
         else
             for (int x=1;x<s;x++)
                 {
                 int j = getRandomIndividual(x, subpopulation, state, thread);
-                if (betterThan(oldinds[j], oldinds[best], subpopulation, state, thread))  // j is better than best
+                if (betterThan(oldinds.get(j), oldinds.get(best), subpopulation, state, thread))  // j is better than best
                     best = j;
                 }
             

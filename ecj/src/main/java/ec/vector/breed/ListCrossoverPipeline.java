@@ -17,6 +17,10 @@ import ec.vector.*;
 import ec.*;
 import ec.util.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
 
 /**
    ListCrossoverPipeline is a crossover pipeline for vector individuals whose length
@@ -81,6 +85,7 @@ public class ListCrossoverPipeline extends BreedingPipeline
     public static final String P_MIN_CROSSOVER_PERCENT = "min-crossover-percent";
     public static final String P_MAX_CROSSOVER_PERCENT = "max-crossover-percent";
     public static final int NUM_SOURCES = 2;
+    public static final String KEY_PARENTS = "parents";
     
     public boolean tossSecondParent;
     public int crossoverType;
@@ -89,9 +94,14 @@ public class ListCrossoverPipeline extends BreedingPipeline
     public double minCrossoverPercentage;
     public double maxCrossoverPercentage;
     
-    protected VectorIndividual parents[];
-    
-    public ListCrossoverPipeline() { parents = new VectorIndividual[2]; }
+    protected ArrayList<Individual> parents;
+
+    public ListCrossoverPipeline() 
+        { 
+        // by Ermo. Get rid of asList
+        //parents = new ArrayList<Individual>(Arrays.asList(new VectorIndividual[2]));
+        parents = new ArrayList<Individual>();
+        }
     public Parameter defaultBase() { return VectorDefaults.base().push(P_LIST_CROSSOVER); }
 
     public int numSources() { return NUM_SOURCES; }
@@ -99,11 +109,11 @@ public class ListCrossoverPipeline extends BreedingPipeline
     public Object clone()
         {
         ListCrossoverPipeline c = (ListCrossoverPipeline)(super.clone());
-        c.parents = (VectorIndividual[]) parents.clone();
+        c.parents = new ArrayList<Individual>(parents); 
         return c;
         }
    
-
+    //
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state,base);
@@ -194,53 +204,57 @@ public class ListCrossoverPipeline extends BreedingPipeline
         
     
     
-    public int produce(final int min, 
-        final int max, 
-        final int start,
+    public int produce(final int min,
+        final int max,
         final int subpopulation,
-        final Individual[] inds,
+        final ArrayList<Individual> inds,
         final EvolutionState state,
-        final int thread) 
+        final int thread, HashMap<String, Object> misc)
 
         {
-       
+        int start = inds.size();
+                       
         // how many individuals should we make?
         int n = typicalIndsProduced();
         if (n < min) n = min;
         if (n > max) n = max;
              
-
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
-            return reproduce(n, start, subpopulation, inds, state, thread, true);  // DO produce children from source -- we've not done so already
-
+            {
+            // just load from source 0 and clone 'em
+            sources[0].produce(n,n,subpopulation,inds, state,thread,misc);
+            return n;
+            }
+        
+        IntBag[] parentparents = null;
+        IntBag[] preserveParents = null;
+        if (misc!=null&&misc.get(KEY_PARENTS) != null)
+            {
+            preserveParents = (IntBag[])misc.get(KEY_PARENTS);
+            parentparents = new IntBag[2];
+            misc.put(KEY_PARENTS, parentparents);
+            }
         for(int q=start;q<n+start; /* no increment */)  // keep on going until we're filled up
             {
+            parents.clear();
+            
             // grab two individuals from our sources
             if (sources[0]==sources[1])  // grab from the same source
                 {
-                sources[0].produce(2,2,0,subpopulation,parents,state,thread);
-                if (!(sources[0] instanceof BreedingPipeline))  // it's a selection method probably
-                    { 
-                    parents[0] = (VectorIndividual)(parents[0].clone());
-                    parents[1] = (VectorIndividual)(parents[1].clone());
-                    }
+                sources[0].produce(2,2,subpopulation, parents, state,thread, misc);
                 }
             else // grab from different sources
                 {
-                sources[0].produce(1,1,0,subpopulation,parents,state,thread);
-                sources[1].produce(1,1,1,subpopulation,parents,state,thread);
-                if (!(sources[0] instanceof BreedingPipeline))  // it's a selection method probably
-                    parents[0] = (VectorIndividual)(parents[0].clone());
-                if (!(sources[1] instanceof BreedingPipeline)) // it's a selection method probably
-                    parents[1] = (VectorIndividual)(parents[1].clone());
+                sources[0].produce(1,1,subpopulation, parents, state,thread, misc);
+                sources[1].produce(1,1,subpopulation, parents, state,thread, misc);
                 }
                 
             // determines size of parents, in terms of chunks
-            int chunk_size = ((VectorSpecies)(parents[0].species)).chunksize;  
+            int chunk_size = ((VectorSpecies)(parents.get(0).species)).chunksize;
             int[] size = new int[2];  // sizes of parents
-            size[0] = (int)parents[0].genomeLength();
-            size[1] = (int)parents[1].genomeLength();      
+            size[0] = (int)((VectorIndividual)(parents.get(0))).genomeLength();
+            size[1] = (int)((VectorIndividual)(parents.get(1))).genomeLength();
             int[] size_in_chunks = new int[2];   // sizes of parents by chunk (if chunk == 1, this is just size[])
             size_in_chunks[0] = size[0]/chunk_size;
             size_in_chunks[1] = size[1]/chunk_size;
@@ -319,8 +333,8 @@ public class ListCrossoverPipeline extends BreedingPipeline
                 if (attempts >= numTries) break;  // failed in two-point selection
                
                 // use the split indices generated above to split the parents into pieces
-                parents[0].split(split[0], pieces[0]);
-                parents[1].split(split[1], pieces[1]);         
+                ((VectorIndividual)(parents.get(0))).split(split[0], pieces[0]);
+                ((VectorIndividual)(parents.get(1))).split(split[1], pieces[1]);
                
                 // create copies of the parents, swap the middle segment, and then rejoin the pieces
                 // - this is done to test whether or not the resulting children are of a valid size,
@@ -330,8 +344,8 @@ public class ListCrossoverPipeline extends BreedingPipeline
                 // - instead, we use the join method on copies, and let each vector type figure out its own
                 //   length with the genomeLength() method
                 VectorIndividual[] children = new VectorIndividual[2];
-                children[0] = (VectorIndividual)(parents[0].clone());
-                children[1] = (VectorIndividual)(parents[1].clone());
+                children[0] = (VectorIndividual)(parents.get(0).clone());
+                children[1] = (VectorIndividual)(parents.get(1).clone());
                
                 Object swap = pieces[0][1];
                 pieces[0][1] = pieces[1][1];
@@ -349,17 +363,31 @@ public class ListCrossoverPipeline extends BreedingPipeline
             // if the children produced were valid, updates the parents
             if(valid_children == true)
                 {
-                parents[0].join(pieces[0]);
-                parents[1].join(pieces[1]);
-                parents[0].evaluated=false;
-                parents[1].evaluated=false;
+                ((VectorIndividual)(parents.get(0))).join(pieces[0]);
+                ((VectorIndividual)(parents.get(1))).join(pieces[1]);
+                parents.get(0).evaluated=false;
+                parents.get(1).evaluated=false;
                 }
-            // insert parents back into the population
-            inds[q] = parents[0];
+                
+            // add parents to the population
+            // by Ermo. is this wrong?
+            // -- Okay Sean
+            inds.add(parents.get(0));
+            if (preserveParents != null)
+                {
+                parentparents[0].addAll(parentparents[1]);
+                preserveParents[q] = parentparents[0];
+                }
             q++;
             if(q < n + start && tossSecondParent == false)
                 {
-                inds[q] = parents[1];
+                // by Ermo. also this is wrong?
+                inds.add(parents.get(1));
+                if (preserveParents != null)
+                    {
+                    parentparents[0].addAll(parentparents[1]);
+                    preserveParents[q] = parentparents[0];
+                    }
                 q++;
                 }
             } 
@@ -369,7 +397,7 @@ public class ListCrossoverPipeline extends BreedingPipeline
     
     /** A hook called by ListCrossoverPipeline to allow subclasses to prepare for additional validation testing. 
         Primarily used by GECrossoverPipeline.  */ 
-    public Object computeValidationData(EvolutionState state, VectorIndividual[] parents, int thread)
+    public Object computeValidationData(EvolutionState state, ArrayList<Individual> parents, int thread)
         {
         return null;
         }

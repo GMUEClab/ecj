@@ -9,6 +9,10 @@ package ec.breed;
 import ec.*;
 import ec.util.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
 /* 
  * CheckingPipeline.java
  * 
@@ -75,44 +79,41 @@ public class CheckingPipeline extends BreedingPipeline
                 def.push(P_LIKELIHOOD));
         }
     
-    public boolean allValid(Individual[] inds, int numInds, int subpopulation, EvolutionState state, int thread)
+    public boolean allValid(ArrayList<Individual> inds, int numInds, int subpopulation, EvolutionState state, int thread)
         {
         return true;
         }
         
     public int produce(
-        final int min, 
-        final int max, 
-        final int start,
+        final int min,
+        final int max,
         final int subpopulation,
-        final Individual[] inds,
+        final ArrayList<Individual> inds,
         final EvolutionState state,
-        final int thread) 
+        final int thread, HashMap<String, Object> misc)
         {
-        Individual[] inds2 = new Individual[max];
+        ArrayList<Individual> inds2 = new ArrayList<Individual>();
         
         for(int i = 0; i < numTimes; i++)
             {
+            
             // grab individuals from our source and stick 'em into inds2 at position 0
-            int n = sources[0].produce(min,max,0,subpopulation,inds2,state,thread);
+            int n = sources[0].produce(min,max,subpopulation,inds2, state,thread, misc);
                         
             // check for validity
             if (!allValid(inds2, n, subpopulation, state, thread))
+                {
+                inds2.clear();
                 continue;  // failure, try again
-                                
-            // success!  Copy to inds and possibly clone
-            System.arraycopy(inds2, 0, inds, start, n);
-            if (sources[0] instanceof SelectionMethod)
-                for(int q=start; q < n+start; q++)
-                    inds[q] = (Individual)(inds[q].clone());
+                }
+            
+            inds.addAll(inds2); 
             return n;
             }
                         
         // big-time failure!  Grab from the other source
-        int n = sources[1].produce(min,max,start,subpopulation,inds,state,thread);
-        if (sources[0] instanceof SelectionMethod)
-            for(int q=start; q < n+start; q++)
-                inds[q] = (Individual)(inds[q].clone());
+        int n = sources[1].produce(min,max,subpopulation,inds, state,thread, misc);
+        
         return n;
         }
     }

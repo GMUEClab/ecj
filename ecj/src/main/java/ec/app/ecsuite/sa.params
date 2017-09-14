@@ -1,0 +1,79 @@
+# Copyright 2017 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../singlestate/singlestate.params
+parent.1 = ecsuite.params
+
+
+#### The following parameter file is designed to illustrate
+#### how to create a simulated annealing hill-climber.
+#### The simulated annealing hill-climber works as follows:
+####
+#### A single subpopulation where:
+#### 1 Individual is created initially  (pop.subpop.0.size)
+#### Loop many times:		(generations)
+####    Test all individuals in subpopulation
+####    Create the next subpopulation, of size 2 (breed.expanded-subpop-size.0)
+#### *  Select the best individual, add to next subpopulation
+#### *  Fill the remaining slots with individuals bred from best individual
+####
+#### Every 1000 iterations we do a checkpoint, dump statistics, and do
+#### an exchange
+####
+#### We do the starred (*) procedures not using elitism but a different
+#### way.  We're going to create a pipeline like this:
+####
+#### <-- First Copy Pipeline <---------------------------- AnnealedSelection
+####                            \                      /
+####                             --- Mutate Pipeline---
+#### 
+#### FirstCopyPipeline is going to FIRST just select an individual from
+#### TopSelection and return it.  THEN it is going to select individuals
+#### from MutatePipeline, whose source is that SAME individual from
+#### AnnealedSelection (this is done by turning on AnnealedSelection's cache).
+#### AnnealedSelection in turn is going to use an annealing procedure: it
+#### returns either the FIRST individual or (if later individuals are
+#### superior or with a simulated annealing probability comparing those
+#### individuals to the first individual) it returns a LATER individual.
+#### Note that FirstCopy will put the direct copy into the FIRST slot so
+#### later generations will have AnnealedSelection treat that as the FIRST
+#### individual rather than the mutated child.
+
+
+generations = 100000
+pop.subpop.0.size = 1
+breed.expanded-subpop-size.0 = 2
+breed.elite.0 = false
+
+checkpoint-modulo = 		10000
+stats-modulo =                  10000
+exchange-modulo =               10000
+
+
+pop.subpop.0.species.pipe = 					ec.breed.StubPipeline
+pop.subpop.0.species.pipe.stub-source = 		ec.select.AnnealedSelection
+pop.subpop.0.species.pipe.stub-source.cache = true
+
+# Initially the biggest differences are no more than 20000.  To
+# Achieve 99% of the individuals being accepted initially, we use
+# the equation 0.99 = e^(-df/n) where df=20000.  Solving for n gets
+# us about 2 million
+# I note that the original Simulated Annealing Paper (Kirkpatrick et al)
+# used temperature = 10 ! 
+
+pop.subpop.0.species.pipe.stub-source.temperature = 3000.0
+pop.subpop.0.species.pipe.stub-source.cutdown = 0.995
+pop.subpop.0.species.pipe.source.0 = 			ec.breed.FirstCopyPipeline
+pop.subpop.0.species.pipe.source.0.source.0 = 	stub
+pop.subpop.0.species.pipe.source.0.source.1 = 	ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0.source.1.source.0 = stub
+
+
+pop.subpop.0.species.mutation-prob = 0.016984963036159526
+pop.subpop.0.species.mutation-stdev = 0.8892889554415008
+pop.subpop.0.species.mutation-type = polynomial
+pop.subpop.0.species.mutation-distribution-index = 21
+pop.subpop.0.species.alternative-polynomial-version = false
+
+

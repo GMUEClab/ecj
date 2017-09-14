@@ -68,17 +68,17 @@ public class MyStatistics extends Statistics
 
         // print out best genome #3 individual in subpop 0
         int best = 0;
-        double best_val = ((DoubleVectorIndividual)state.population.subpops[0].individuals[0]).genome[3];
-        for(int y=1;y<state.population.subpops[0].individuals.length;y++)
+        double best_val = ((DoubleVectorIndividual) state.population.subpops.get(0).individuals.get(0)).genome[3];
+        for(int y = 1; y< state.population.subpops.get(0).individuals.size(); y++)
             {
             // We'll be unsafe and assume the individual is a DoubleVectorIndividual
-            double val = ((DoubleVectorIndividual)state.population.subpops[0].individuals[y]).genome[3];
+            double val = ((DoubleVectorIndividual) state.population.subpops.get(0).individuals.get(y)).genome[3];
             if (val > best_val)
                 {
                 best = y;
                 best_val = val;
                 }
             }
-        state.population.subpops[0].individuals[best].printIndividualForHumans(state,infoLog);
+        state.population.subpops.get(0).individuals.get(best).printIndividualForHumans(state,infoLog);
         }
     }

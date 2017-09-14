@@ -95,19 +95,19 @@ public class UniquePipeline extends BreedingPipeline
         final int thread)
         {
         set.clear();
-        Individual[] inds = state.population.subpops[subpopulation].individuals;
-        for(int i = 0; i < inds.length; i++)
-            set.add(inds[i]);
+        ArrayList<Individual> inds = state.population.subpops.get(subpopulation).individuals;
+        for(int i = 0; i < inds.size(); i++)
+            set.add(inds.get(i));
         }
 
-    int removeDuplicates(Individual[] inds, int start, int num)
+    int removeDuplicates(ArrayList<Individual> inds, int start, int num)
         {
         for(int i = start; i < start + num; i++)
             {
-            if (set.contains(inds[i]))  // swap in from top
+            if (set.contains(inds.get(i)))  // swap in from top
                 {
-                inds[i] = inds[start+num - 1];
-                inds[start+num-1] = null;
+                inds.set(i, inds.get(start+num - 1));
+                inds.set(start+num-1, null);
                 num--;
                 i--;  // try again
                 }
@@ -116,14 +116,15 @@ public class UniquePipeline extends BreedingPipeline
         }
 
     public int produce(
-        final int min, 
-        final int max, 
-        final int start,
+        final int min,
+        final int max,
         final int subpopulation,
-        final Individual[] inds,
+        final ArrayList<Individual> inds,
         final EvolutionState state,
-        final int thread) 
+        final int thread, HashMap<String, Object> misc)
         {
+        int start = 0;
+        
         int n = 0;  // unique individuals we've built so far
         int remainder = (generateMax ? max : min);
         for(int retry = 0; retry < numDuplicateRetries + 1; retry++)
@@ -131,14 +132,14 @@ public class UniquePipeline extends BreedingPipeline
             // grab individuals from our source and stick 'em right into inds.
             // we'll verify them from there
             int newmin = Math.min(Math.max(min - n, 1), max - n);
-            int num = sources[0].produce(newmin,max - n,start + n,subpopulation,inds,state,thread);
+            int num = sources[0].produce(newmin,max - n,subpopulation,inds, state,thread, misc);
             
             int total = removeDuplicates(inds, start + n, num);  // unique individuals out of the num
             n += total;  // we'll keep those
             }
         
         if (n < remainder)  // never succeeded to build unique individuals, just make some non-unique ones
-            n += sources[0].produce(remainder - n,max - n,start + n,subpopulation,inds,state,thread);
+            n += sources[0].produce(remainder - n,max - n,subpopulation,inds, state,thread, misc);
 
         return n;
         }

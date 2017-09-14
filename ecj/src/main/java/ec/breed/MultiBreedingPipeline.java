@@ -9,6 +9,9 @@ package ec.breed;
 import ec.*;
 import ec.util.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /* 
  * MultiBreedingPipeline.java
  * 
@@ -75,10 +78,7 @@ public class MultiBreedingPipeline extends BreedingPipeline
         
         for(int x=0;x<sources.length;x++)
             {
-            // make sure the sources are actually breeding pipelines
-            if (!(sources[x] instanceof BreedingPipeline))
-                state.output.error("Source #" + x + "is not a BreedingPipeline",base);
-            else if (sources[x].probability<0.0) // null checked from state.output.error above
+            if (sources[x].probability<0.0) // null checked from state.output.error above
                 state.output.error("Pipe #" + x + " must have a probability >= 0.0",base);  // convenient that NO_PROBABILITY is -1...
             else total += sources[x].probability;
             }
@@ -110,17 +110,17 @@ public class MultiBreedingPipeline extends BreedingPipeline
         }
 
 
-    public int produce(final int min, 
-        final int max, 
-        final int start,
+    public int produce(final int min,
+        final int max,
         final int subpopulation,
-        final Individual[] inds,
+        final ArrayList<Individual> inds,
         final EvolutionState state,
-        final int thread) 
+        final int thread, HashMap<String, Object> misc)
 
         {
-        BreedingSource s = sources[BreedingSource.pickRandom(
-                sources,state.random[thread].nextDouble())];
+        int start = inds.size();
+
+        BreedingSource s = sources[BreedingSource.pickRandom(sources,state.random[thread].nextDouble())];
         int total;
         
         if (generateMax)
@@ -131,20 +131,13 @@ public class MultiBreedingPipeline extends BreedingPipeline
             if (n < min) n = min;
             if (n > max) n = max;
 
-            total = s.produce(
-                n,n,start,subpopulation,inds,state,thread);
+            total = s.produce(n,n,subpopulation,inds, state,thread, misc);
             }
         else
             {
-            total = s.produce(
-                min,max,start,subpopulation,inds,state,thread);
+            total = s.produce(min,max,subpopulation,inds, state,thread, misc);
             }
             
-        // clone if necessary
-        if (s instanceof SelectionMethod)
-            for(int q=start; q < total+start; q++)
-                inds[q] = (Individual)(inds[q].clone());
-        
         return total;
         }
     }

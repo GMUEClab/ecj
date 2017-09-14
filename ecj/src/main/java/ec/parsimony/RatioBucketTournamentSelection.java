@@ -7,6 +7,10 @@
 
 package ec.parsimony;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 import ec.*;
 import ec.util.*;
 import ec.steadystate.*;
@@ -135,16 +139,12 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
     /** Prepare to produce: create the buckets!!!! */
     public void prepareToProduce(final EvolutionState state, final int subpopulation, final int thread) 
         {
-        bucketValues = new int[ state.population.subpops[subpopulation].individuals.length ];
+        bucketValues = new int[ state.population.subpops.get(subpopulation).individuals.size() ];
         
         // correct?
-        java.util.Arrays.sort(state.population.subpops[subpopulation].individuals,
-            new java.util.Comparator()
-                {
-                public int compare(Object o1, Object o2)
-                    {
-                    Individual a = (Individual) o1;
-                    Individual b = (Individual) o2;
+        Collections.sort(state.population.subpops.get(subpopulation).individuals,
+            new Comparator<Individual>() {
+                public int compare(Individual a, Individual b) {
                     if (a.fitness.betterThan(b.fitness))
                         return 1;
                     if (b.fitness.betterThan(a.fitness))
@@ -156,7 +156,7 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
         // how many individuals in current bucket
         int nInd;
 
-        double totalInds = ((double)state.population.subpops[subpopulation].individuals.length);
+        double totalInds = ((double) state.population.subpops.get(subpopulation).individuals.size());
         double averageBuck = Math.max( totalInds/ratio, 1 );
 
         // first individual goes into first bucket
@@ -166,7 +166,7 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
         nInd = 1;
         totalInds--;
 
-        for( int i = 1 ; i < state.population.subpops[subpopulation].individuals.length ; i++ )
+        for(int i = 1; i < state.population.subpops.get(subpopulation).individuals.size() ; i++ )
             {
             // if there is still some place left in the current bucket, throw the current individual there too
             if( nInd < averageBuck )
@@ -176,8 +176,8 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
                 }
             else // check if it has the same fitness as last individual
                 {
-                if( ((Individual)state.population.subpops[subpopulation].individuals[i]).fitness.equivalentTo(
-                        ((Individual)state.population.subpops[subpopulation].individuals[i-1]).fitness ) )
+                if( ((Individual) state.population.subpops.get(subpopulation).individuals.get(i)).fitness.equivalentTo(
+                        ((Individual) state.population.subpops.get(subpopulation).individuals.get(i - 1)).fitness ) )
                     {
                     // now the individual has exactly the same fitness as previous one,
                     // so we just put it in the same bucket as the previous one(s)
@@ -202,13 +202,13 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
         final int thread)
         {
         // pick size random individuals, then pick the best.
-        Individual[] oldinds = (state.population.subpops[subpopulation].individuals);
-        int i = state.random[thread].nextInt(oldinds.length);
+        ArrayList<Individual> oldinds = (state.population.subpops.get(subpopulation).individuals);
+        int i = state.random[thread].nextInt(oldinds.size());
         long si = 0;
 
         for (int x=1;x<size;x++)
             {
-            int j = state.random[thread].nextInt(oldinds.length);
+            int j = state.random[thread].nextInt(oldinds.size());
             if (pickWorst)
                 {
                 if( bucketValues[j]>bucketValues[i] ) { i = j; si = 0; }
@@ -216,8 +216,8 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
                 else
                     {
                     if (si==0)
-                        si = oldinds[i].size();
-                    long sj = oldinds[j].size();
+                        si = oldinds.get(i).size();
+                    long sj = oldinds.get(j).size();
 
                     if (sj >= si) // sj's got worse lookin' trees
                         { i = j; si = sj; }
@@ -230,8 +230,8 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
                 else
                     {
                     if (si==0)
-                        si = oldinds[i].size();
-                    long sj = oldinds[j].size();
+                        si = oldinds.get(i).size();
+                    long sj = oldinds.get(j).size();
 
                     if (sj < si) // sj's got better lookin' trees
                         { i = j; si = sj; }

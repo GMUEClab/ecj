@@ -8,9 +8,6 @@ package ec.app.mona;
 
 import ec.*;
 import ec.simple.*;
-import java.io.IOException;
-import ec.util.*;
-import java.io.File;
 
 public class MonaStatistics extends Statistics
     {
@@ -22,11 +19,11 @@ public class MonaStatistics extends Statistics
         super.postEvaluationStatistics(state);
 
         boolean newBest = false;
-        for(int y=0;y<state.population.subpops[0].individuals.length;y++)
+        for(int y = 0; y< state.population.subpops.get(0).individuals.size(); y++)
             if (best_of_run==null || 
-                state.population.subpops[0].individuals[y].fitness.betterThan(best_of_run.fitness))
+                state.population.subpops.get(0).individuals.get(y).fitness.betterThan(best_of_run.fitness))
                 {
-                best_of_run = (Individual)(state.population.subpops[0].individuals[y].clone());
+                best_of_run = (Individual)(state.population.subpops.get(0).individuals.get(y).clone());
                 newBest = true;
                 }
 

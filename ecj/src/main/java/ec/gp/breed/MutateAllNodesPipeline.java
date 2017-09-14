@@ -10,6 +10,9 @@ import ec.*;
 import ec.util.*;
 import ec.gp.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /* 
  * MutateAllNodesPipeline.java
  * 
@@ -65,6 +68,8 @@ public class MutateAllNodesPipeline extends GPBreedingPipeline
 
     public static final String P_MUTATEALLNODES = "mutate-all-nodes";
     public static final int NUM_SOURCES = 1;
+    
+    public static final String KEY_PARENTS = "parents";
 
     /** How the pipeline chooses a subtree to mutate */
     public GPNodeSelector nodeselect;
@@ -198,31 +203,42 @@ public class MutateAllNodesPipeline extends GPBreedingPipeline
 
 
 
-    public int produce(final int min, 
-        final int max, 
-        final int start,
+    public int produce(final int min,
+        final int max,
         final int subpopulation,
-        final Individual[] inds,
+        final ArrayList<Individual> inds,
         final EvolutionState state,
-        final int thread) 
+        final int thread, HashMap<String, Object> misc)
         {
+        int start = inds.size();
+                
         // grab n individuals from our source and stick 'em right into inds.
         // we'll modify them from there
-        int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
+        int n = sources[0].produce(min,max,subpopulation,inds, state,thread, misc);
 
+        
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
-            return reproduce(n, start, subpopulation, inds, state, thread, false);  // DON'T produce children from source -- we already did
+            {
+            return n;
+            }
 
 
-
+        IntBag[] parentparents = null;
+        IntBag[] preserveParents = null;
+        if (misc!=null&&misc.get(KEY_PARENTS) != null)
+            {
+            preserveParents = (IntBag[])misc.get(KEY_PARENTS);
+            parentparents = new IntBag[2];
+            misc.put(KEY_PARENTS, parentparents);
+            }
 
         GPInitializer initializer = ((GPInitializer)state.initializer);
 
         // now let's mutate 'em
         for(int q=start; q < n+start; q++)
             {
-            GPIndividual i = (GPIndividual)inds[q];
+            GPIndividual i = (GPIndividual)inds.get(q);
             
             if (tree!=TREE_UNFIXED && (tree<0 || tree >= i.trees.length))
                 // uh oh
@@ -255,51 +271,20 @@ public class MutateAllNodesPipeline extends GPBreedingPipeline
             p2 = generateCompatibleTree(p1,i.trees[t].constraints(initializer).functionset,state,type,thread);
             // we'll need to set p2.argposition and p2.parent further down
 
-            
-            GPIndividual j;
-
-            if (sources[0] instanceof BreedingPipeline)
-                // it's already a copy, so just smash the tree in
-                {
-                j=i;
-                p2.parent = p1.parent;
-                p2.argposition = p1.argposition;
-                if (p2.parent instanceof GPNode)
-                    ((GPNode)(p2.parent)).children[p2.argposition] = p2;
-                else ((GPTree)(p2.parent)).child = p2;
-                j.evaluated = false;  // we've modified it
-                }
-            else  // need to copy it in
-                {
-                j = (GPIndividual)(i.lightClone());
-                
-                // Fill in various tree information that didn't get filled in there
-                j.trees = new GPTree[i.trees.length];
-                
-                for(int x=0;x<j.trees.length;x++)
-                    {
-                    if (x==t)  // we've got a tree with a kicking cross position!
-                        { 
-                        j.trees[x] = (GPTree)(i.trees[x].lightClone());
-                        j.trees[x].owner = j;
-                        j.trees[x].child = i.trees[x].child.cloneReplacingNoSubclone(p2,p1);
-                        j.trees[x].child.parent = j.trees[x];
-                        j.trees[x].child.argposition = 0;
-                        j.evaluated = false; 
-                        } // it's changed
-                    else 
-                        {
-                        j.trees[x] = (GPTree)(i.trees[x].lightClone());
-                        j.trees[x].owner = j;
-                        j.trees[x].child = (GPNode)(i.trees[x].child.clone());
-                        j.trees[x].child.parent = j.trees[x];
-                        j.trees[x].child.argposition = 0;
-                        }
-                    }
-                }
+            p2.parent = p1.parent;
+            p2.argposition = p1.argposition;
+            if (p2.parent instanceof GPNode)
+                ((GPNode)(p2.parent)).children[p2.argposition] = p2;
+            else ((GPTree)(p2.parent)).child = p2;
+            i.evaluated = false;  // we've modified it
 
             // add the new individual, replacing its previous source
-            inds[q] = j;
+            inds.set(q,i);
+            if (preserveParents != null)
+                {
+                parentparents[0].addAll(parentparents[1]);
+                preserveParents[q] = new IntBag(parentparents[0]);
+                }
             }
         return n;
         }

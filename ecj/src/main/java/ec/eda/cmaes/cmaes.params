@@ -2,11 +2,11 @@
 # Licensed under the Academic Free License version 3.0
 # See the file "LICENSE" for more information
 
-parent.0 = ../simple/simple.params
+parent.0 = ../../simple/simple.params
 
-init =	                                       ec.eda.CMAESInitializer
-breed =                                        ec.eda.CMAESBreeder
-pop.subpop.0.species =                         ec.eda.CMAESSpecies
+init =	                                       ec.eda.cmaes.CMAESInitializer
+breed =                                        ec.eda.cmaes.CMAESBreeder
+pop.subpop.0.species =                         ec.eda.cmaes.CMAESSpecies
 
 
 #### CMA-EA must use double vector individuals

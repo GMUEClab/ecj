@@ -25,6 +25,10 @@ FLOATING POINT VECTOR REPRESENTATIONS
 ecsuite		A host of common floating-point fitness functions
 			-- includes GA, ES, DE, and steady-state code
 			-- includes a meta-evolution example
+			-- includes a CMA-ES example
+			-- includes a hill-climbing example, a
+			   steepest-ascent hill-climbing example, and
+			   a simulated annealing example
 bbob		Black Box Optimization 2010 code converted to ECJ
 
 
@@ -81,6 +85,22 @@ SPATIAL EVOLUTION
 
 spatial		A simple spatial evolution demonstration
 
+
+PUSH
+
+push		Push regression example
+
+
+NEAT
+
+xor		XOR neural network example
+cartpole	Cart-Pole neural network example
+
+
+DOvS
+
+highdimension	High-dimensional search example
+singular	Singular search example
 
 TUTORIAL CODE
 

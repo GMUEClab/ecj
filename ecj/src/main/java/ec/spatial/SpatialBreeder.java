@@ -6,15 +6,13 @@
 
 package ec.spatial;
 
-import ec.Initializer;
 import ec.Individual;
-import ec.BreedingPipeline;
-import ec.Breeder;
+import ec.*;
 import ec.simple.*;
 import ec.EvolutionState;
 import ec.Population;
 import ec.util.Parameter;
-import ec.util.*;
+import java.util.*;
 
 /* 
  * SpatialBreeder.java
@@ -28,7 +26,7 @@ import ec.util.*;
  * Breeds each subpopulation separately, with no inter-population exchange,
  * and using a generational approach.  A SpatialBreeder may have multiple
  * threads; it divvys up a subpopulation into chunks and hands one chunk
- * to each thread to populate.  One array of BreedingPipelines is obtained
+ * to each thread to populate.  One array of BreedingSources is obtained
  * from a population's Species for each operating breeding thread.
  *
  *
@@ -61,39 +59,40 @@ public class SpatialBreeder extends SimpleBreeder
             state.output.fatal("clonePipelineAndPopulation must be true for SpatialBreeder.");
         }
                 
-    protected void breedPopChunk(Population newpop, EvolutionState state,
-        int[] numinds, int[] from, int threadnum) 
+    protected void breedPopChunk(Population newpop, EvolutionState state, int[] numinds, int[] from, int threadnum) 
         {
-        for(int subpop=0;subpop<newpop.subpops.length;subpop++)
+        for(int subpop = 0; subpop< newpop.subpops.size(); subpop++)
             {
+            ArrayList<Individual> putHere = (ArrayList<Individual>)newIndividuals[subpop][threadnum];
+
             // if it's subpop's turn and we're doing sequential breeding...
             if (!shouldBreedSubpop(state, subpop, threadnum))  
                 {
                 // instead of breeding, we should just copy forward this subpopulation.  We'll copy the part we're assigned
                 for(int ind=from[subpop] ; ind < numinds[subpop] - from[subpop]; ind++)
-                    newpop.subpops[subpop].individuals[ind] = (Individual)(state.population.subpops[subpop].individuals[ind].clone());
+                    newpop.subpops.get(subpop).individuals.set(ind, (Individual)(state.population.subpops.get(subpop).individuals.get(ind).clone()));
                 }
             else
                 {
-                BreedingPipeline bp = (BreedingPipeline)newpop.subpops[subpop].
+                BreedingSource bp = (BreedingSource) newpop.subpops.get(subpop).
                     species.pipe_prototype.clone();
                                                                         
-                if (!(state.population.subpops[subpop] instanceof Space))
+                if (!(state.population.subpops.get(subpop) instanceof Space))
                     state.output.fatal("Subpopulation " + subpop + " does not implement the Space interface.");
-                Space space = (Space)(state.population.subpops[subpop]);
+                Space space = (Space)(state.population.subpops.get(subpop));
                                                         
                 // check to make sure that the breeding pipeline produces
                 // the right kind of individuals.  Don't want a mistake there! :-)
                 if (!bp.produces(state,newpop,subpop,threadnum))
-                    state.output.fatal("The Breeding Pipeline of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops[subpop].species.getClass().getName() + " or fitness " + newpop.subpops[subpop].species.f_prototype );
+                    state.output.fatal("The Breeding Source of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops.get(subpop).species.getClass().getName() + " or fitness " + newpop.subpops.get(subpop).species.f_prototype );
                 bp.prepareToProduce(state,subpop,threadnum);
                                                         
                 // start breedin'!
                 for(int x = from[subpop]; x < from[subpop] + numinds[subpop]; x++)
                     {
                     space.setIndex(threadnum, x);
-                    if (bp.produce(1, 1, x, subpop, newpop.subpops[subpop].individuals, state, threadnum) != 1)
-                        state.output.fatal( "The pipelines should produce one individual at a time!" );
+                    if (bp.produce(1, 1, subpop, putHere, state, threadnum, newpop.subpops.get(subpop).species.buildMisc(state, subpop, threadnum)) != 1)
+                        state.output.fatal( "The sources should produce one individual at a time!" );
                     }
                                                                         
                 bp.finishProducing(state,subpop,threadnum);

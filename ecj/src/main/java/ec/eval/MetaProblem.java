@@ -542,7 +542,7 @@ public class MetaProblem extends Problem implements SimpleProblemForm
                 evaluatedState.run(EvolutionState.C_STARTED_FRESH);
             
                 // Issue a warning if there's more than one subpopulation
-                if (evaluatedState.population.subpops.length > 1)
+                if (evaluatedState.population.subpops.size() > 1)
                     state.output.warnOnce("MetaProblem used, but underlying evolution state has more than one subpopulation: only the results from subpopulation 0 will be considered.");
             
             

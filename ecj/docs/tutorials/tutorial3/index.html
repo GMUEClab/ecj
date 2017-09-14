@@ -236,7 +236,7 @@ We'll explain the <a href="../../classdocs/ec/util/Parameter.html">ec.util.Param
         if (state.random[thread].nextBoolean(middleProbability))
             {
             <font color=gray>//pick three individuals, return the middle one</font>
-            Individual[] inds = state.population.subpops[subpopulation].individuals;
+            Individual[] inds = state.population.subpops.get(subpopulation).individuals;
             int one = state.random[thread].nextInt(inds.length);
             int two = state.random[thread].nextInt(inds.length);
             int three = state.random[thread].nextInt(inds.length);
@@ -261,7 +261,7 @@ We'll explain the <a href="../../classdocs/ec/util/Parameter.html">ec.util.Param
         else        <font color=gray>//select a random individual's index</font>
             {
             return state.random[thread].nextInt(
-                state.population.subpops[subpopulation].individuals.length);
+                state.population.subpops.get(subpopulation).individuals.size());
             }
         }
     } <font color=gray> // close the class</font>
@@ -406,18 +406,18 @@ it's threadsafe.
 <tt><pre>
         <font color=gray>// print out best genome #3 individual in subpop 0</font>
         int best = 0;
-        double best_val = ((DoubleVectorIndividual)state.population.subpops[0].individuals[0]).genome[3];
-            for(int y=1;y&lt;state.population.subpops[0].individuals.length;y++)
+        double best_val = ((DoubleVectorIndividual)state.population.subpops.get(0).individuals.get(0)).genome[3];
+            for(int y=1;y&lt;state.population.subpops.get(0).individuals.size();y++)
                 {
                 <font color=gray>// We'll be unsafe and assume the individual is a DoubleVectorIndividual</font>
-                double val = ((DoubleVectorIndividual)state.population.subpops[0].individuals[y]).genome[3];
+                double val = ((DoubleVectorIndividual)state.population.subpops.get(0).individuals.get(y)).genome[3];
                 if (val > best_val)
                     {
                     best = y;
                     best_val = val;
                     }
                 }
-        state.population.subpops[0].individuals[best].printIndividualForHumans(state,infoLog);
+        state.population.subpops.get(0).individuals.get(best).printIndividualForHumans(state,infoLog);
         }
     }
 

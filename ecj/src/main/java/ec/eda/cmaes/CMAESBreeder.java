@@ -5,7 +5,9 @@
 */
 
 
-package ec.eda;
+package ec.eda.cmaes;
+
+import java.util.ArrayList;
 
 import ec.*;
 import ec.util.*;
@@ -41,9 +43,9 @@ public class CMAESBreeder extends Breeder
     public Population breedPopulation(final EvolutionState state)
         {
         Population pop = state.population;
-        for(int i = 0; i < pop.subpops.length; i++)
+        for(int i = 0; i < pop.subpops.size(); i++)
             {
-            Subpopulation subpop = pop.subpops[i];
+            Subpopulation subpop = pop.subpops.get(i);
             if (!(subpop.species instanceof CMAESSpecies))  // uh oh
                 state.output.fatal("To use CMAESBreeder, subpopulation " + i + " must contain a CMAESSpecies.  But it contains a " + subpop.species);
                         
@@ -53,9 +55,9 @@ public class CMAESBreeder extends Breeder
             species.updateDistribution(state, subpop);
                 
             // overwrite individuals
-            Individual[] inds = subpop.individuals;
-            for(int j = 0; j < inds.length; j++)
-                inds[j] = species.newIndividual(state, 0);
+            ArrayList<Individual> inds = subpop.individuals;
+            for(int j = 0; j < inds.size(); j++)
+                inds.set(j, species.newIndividual(state, 0));
             }
                 
         return pop;

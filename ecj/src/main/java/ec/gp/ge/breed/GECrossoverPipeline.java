@@ -18,6 +18,7 @@ import ec.vector.breed.*;
 import ec.*;
 import ec.util.*;
 import ec.gp.ge.*;
+import java.util.*;
 
 
 /**
@@ -37,14 +38,17 @@ import ec.gp.ge.*;
 
 public class GECrossoverPipeline extends ListCrossoverPipeline
     {
-    public Object computeValidationData(EvolutionState state, VectorIndividual[] parents, int thread)
+    public Object computeValidationData(EvolutionState state, ArrayList<Individual> parents, int thread)
         {
-        if (!(parents[0] instanceof GEIndividual) ||
-            !(parents[1] instanceof GEIndividual))
+        if (!(parents.get(0) instanceof GEIndividual) ||
+            !(parents.get(1) instanceof GEIndividual))
             state.output.fatal("Non GEIndividuals used with GECrossoverPipeline.", null, null);
         
-        return new int[] {      ((GESpecies)(parents[0].species)).consumed(state, ((GEIndividual)(parents[0])), thread),
-            ((GESpecies)(parents[1].species)).consumed(state, ((GEIndividual)(parents[1])), thread) } ;
+        return new int[] 
+            {      
+            ((GESpecies)(parents.get(0).species)).consumed(state, ((GEIndividual)(parents.get(0))), thread),
+            ((GESpecies)(parents.get(1).species)).consumed(state, ((GEIndividual)(parents.get(1))), thread) 
+            };
         }
 
     public boolean isValidated(int[][] split, Object validationData)

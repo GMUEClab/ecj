@@ -130,10 +130,12 @@ public class SUSSelection extends SelectionMethod
         final int subpopulation,
         final int thread)
         {
+        super.prepareToProduce(s, subpopulation, thread);
+
         lastIndex = 0;
         steps = 0;
         
-        fitnesses = new double[s.population.subpops[subpopulation].individuals.length];
+        fitnesses = new double[s.population.subpops.get(subpopulation).individuals.size()];
 
         // compute offset
         offset = (double)(s.random[thread].nextDouble() / fitnesses.length);
@@ -141,13 +143,13 @@ public class SUSSelection extends SelectionMethod
         // load fitnesses but don't build distribution yet
         for(int x=0;x<fitnesses.length;x++)
             {
-            fitnesses[x] = ((Individual)(s.population.subpops[subpopulation].individuals[x])).fitness.fitness();
+            fitnesses[x] = ((Individual)(s.population.subpops.get(subpopulation).individuals.get(x))).fitness.fitness();
             if (fitnesses[x] < 0) // uh oh
                 s.output.fatal("Discovered a negative fitness value.  SUSSelection requires that all fitness values be non-negative(offending subpopulation #" + subpopulation + ")");
             }
 
         // construct and optionally shuffle fitness distribution and indices
-        indices = new int[s.population.subpops[subpopulation].individuals.length];
+        indices = new int[s.population.subpops.get(subpopulation).individuals.size()];
         for(int i=0;i<indices.length;i++) indices[i] = i;
         if (shuffle) shuffle(s.random[thread], fitnesses, indices);
                 

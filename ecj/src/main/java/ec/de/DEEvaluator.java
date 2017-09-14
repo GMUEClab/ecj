@@ -39,15 +39,15 @@ public class DEEvaluator extends SimpleEvaluator
             Population previousPopulation = ((DEBreeder)(state.breeder)).previousPopulation; // for faster access
             if( previousPopulation != null )
                 {
-                if( previousPopulation.subpops.length != state.population.subpops.length )
+                if( previousPopulation.subpops.size() != state.population.subpops.size())
                     state.output.fatal( "DEEvaluator requires that the population have the same number of subpopulations every generation.");
-                for( int i = 0 ; i < previousPopulation.subpops.length ; i++ )
+                for(int i = 0; i < previousPopulation.subpops.size(); i++ )
                     {
-                    if( state.population.subpops[i].individuals.length != previousPopulation.subpops[i].individuals.length )
+                    if( state.population.subpops.get(i).individuals.size() != previousPopulation.subpops.get(i).individuals.size() )
                         state.output.fatal( "DEEvaluator requires that subpopulation " + i + " should have the same number of individuals in all generations." );
-                    for( int j = 0 ; j < state.population.subpops[i].individuals.length ; j++ )
-                        if( previousPopulation.subpops[i].individuals[j].fitness.betterThan( state.population.subpops[i].individuals[j].fitness ) )
-                            state.population.subpops[i].individuals[j] = previousPopulation.subpops[i].individuals[j];
+                    for(int j = 0; j < state.population.subpops.get(i).individuals.size() ; j++ )
+                        if( previousPopulation.subpops.get(i).individuals.get(j).fitness.betterThan( state.population.subpops.get(i).individuals.get(j).fitness ) )
+                            state.population.subpops.get(i).individuals.set(j, previousPopulation.subpops.get(i).individuals.get(j));
                     }
                 }
             }

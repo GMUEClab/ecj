@@ -1321,6 +1321,206 @@ public class ParameterDatabase extends Properties implements Serializable
             return defaultValue;
         }
 
+
+
+
+    static final int ARRAY_NO_EXPECTED_LENGTH = (-1);
+    double[] getDoublesWithMax(Parameter parameter, double minValue, double maxValue, int expectedLength)
+        {
+        if (_exists(parameter)) 
+            {
+            DoubleBag bag = new DoubleBag();
+            Scanner scanner = new Scanner(get(parameter));
+            while(scanner.hasNextDouble())
+                {
+                if (expectedLength != ARRAY_NO_EXPECTED_LENGTH && bag.size() >= expectedLength)
+                    return null;  // too big
+                                
+                double val = scanner.nextDouble();
+                if (val != val || val > maxValue || val < minValue)
+                    return null;
+                else
+                    { bag.add(val); }
+                }
+            if (scanner.hasNext())
+                return null;  // too long, or garbage afterwards
+            if (expectedLength != ARRAY_NO_EXPECTED_LENGTH && bag.size() != expectedLength)
+                return null;
+            if (bag.size() == 0)
+                return null;            // 0 lengths not permitted
+            return bag.toArray();
+            } 
+        else
+            {
+            return null;
+            }
+        }
+
+    double[] getDoublesWithMax(Parameter parameter, double minValue, double maxValue)
+        {
+        return getDoublesWithMax(parameter, minValue, maxValue, ARRAY_NO_EXPECTED_LENGTH);
+        }
+        
+    double[] getDoubles(Parameter parameter, double minValue, int expectedLength)
+        {
+        return getDoublesWithMax(parameter, minValue, Double.POSITIVE_INFINITY, expectedLength);
+        }
+
+    double[] getDoubles(Parameter parameter, double minValue)
+        {
+        return getDoublesWithMax(parameter, minValue, Double.POSITIVE_INFINITY, ARRAY_NO_EXPECTED_LENGTH);
+        }
+
+    double[] getDoublesUnconstrained(Parameter parameter, int expectedLength)
+        {
+        return getDoublesWithMax(parameter, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, expectedLength);
+        }
+
+    double[] getDoublesUnconstrained(Parameter parameter)
+        {
+        return getDoublesWithMax(parameter, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, ARRAY_NO_EXPECTED_LENGTH);
+        }
+
+
+
+    /**
+     * Searches down through databases to find a given parameter, whose value
+     * must be a space- or tab-delimited list of doubles, each of which is >= minValue and <= maxValue,
+     * and which must be exactly expectedLength (> 0) long.  If the parameter does not exist,
+     * or any of its doubles are out of bounds, or the list is not long enough or is  
+     * too long or has garbage at the end of it, then this method returns null.
+     * Otherwise the method returns the doubles in question.  The doubles may not
+     * be NaN, +Infinity, or -Infinity. The parameter chosen is
+     * marked "used" if it exists.
+     */
+
+    public double[] getDoublesWithMax(Parameter parameter, Parameter defaultParameter, double minValue, double maxValue, int expectedLength)
+        {
+        printGotten(parameter, defaultParameter, false);
+        if (_exists(parameter))
+            return getDoublesWithMax(parameter, minValue, maxValue, expectedLength);
+        else
+            return getDoublesWithMax(defaultParameter, minValue, maxValue, expectedLength);
+        }
+
+    /**
+     * Searches down through databases to find a given parameter, whose value
+     * must be a space- or tab-delimited list of doubles, each of which is >= minValue and <= maxValue,
+     * and which must be at least 1 number long.  If the parameter does not exist,
+     * or any of its doubles are out of bounds, or the list is not long enough or is  
+     * too long or has garbage at the end of it, then this method returns null.
+     * Otherwise the method returns the doubles in question.  The doubles may not
+     * be NaN, +Infinity, or -Infinity. The parameter chosen is
+     * marked "used" if it exists.
+     */
+
+    public double[] getDoublesWithMax(Parameter parameter, Parameter defaultParameter, double minValue, double maxValue)
+        {
+        printGotten(parameter, defaultParameter, false);
+        if (_exists(parameter))
+            return getDoublesWithMax(parameter, minValue, maxValue);
+        else
+            return getDoublesWithMax(defaultParameter, minValue, maxValue);
+        }
+        
+    /**
+     * Searches down through databases to find a given parameter, whose value
+     * must be a space- or tab-delimited list of doubles, each of which is >= minValue,
+     * and which must be exactly expectedLength (> 0) long.  If the parameter does not exist,
+     * or any of its doubles are out of bounds, or the list is not long enough or is  
+     * too long or has garbage at the end of it, then this method returns null.
+     * Otherwise the method returns the doubles in question.  The doubles may not
+     * be NaN, +Infinity, or -Infinity. The parameter chosen is
+     * marked "used" if it exists.
+     */
+
+    public double[] getDoubles(Parameter parameter, Parameter defaultParameter, double minValue, int expectedLength)
+        {
+        printGotten(parameter, defaultParameter, false);
+        if (_exists(parameter))
+            return getDoubles(parameter, minValue, expectedLength);
+        else
+            return getDoubles(defaultParameter, minValue, expectedLength);
+        }
+
+    /**
+     * Searches down through databases to find a given parameter, whose value
+     * must be a space- or tab-delimited list of doubles, each of which is >= minValue,
+     * and which must be at least 1 number long.  If the parameter does not exist,
+     * or any of its doubles are out of bounds, or the list is not long enough or is  
+     * too long or has garbage at the end of it, then this method returns null.
+     * Otherwise the method returns the doubles in question.  The doubles may not
+     * be NaN, +Infinity, or -Infinity. The parameter chosen is
+     * marked "used" if it exists.
+     */
+
+    public double[] getDoubles(Parameter parameter, Parameter defaultParameter, double minValue)
+        {
+        printGotten(parameter, defaultParameter, false);
+        if (_exists(parameter))
+            return getDoubles(parameter, minValue);
+        else
+            return getDoubles(defaultParameter, minValue);
+        }
+
+    /**
+     * Searches down through databases to find a given parameter, whose value
+     * must be a space- or tab-delimited list of doubles,
+     * and which must be exactly expectedLength (> 0) long.  If the parameter does not exist,
+     * or the list is not long enough or is  
+     * too long or has garbage at the end of it, then this method returns null.
+     * Otherwise the method returns the doubles in question.  The doubles may not
+     * be NaN, +Infinity, or -Infinity. The parameter chosen is
+     * marked "used" if it exists.
+     */
+
+    public double[] getDoublesUnconstrained(Parameter parameter, Parameter defaultParameter, int expectedLength)
+        {
+        printGotten(parameter, defaultParameter, false);
+        if (_exists(parameter))
+            return getDoublesUnconstrained(parameter, expectedLength);
+        else
+            return getDoublesUnconstrained(defaultParameter, expectedLength);
+        }
+
+    /**
+     * Searches down through databases to find a given parameter, whose value
+     * must be a space- or tab-delimited list of doubles,
+     * and which must be at least 1 number long.  If the parameter does not exist,
+     * or the list is not long enough or is  
+     * too long or has garbage at the end of it, then this method returns null.
+     * Otherwise the method returns the doubles in question.  The doubles may not
+     * be NaN, +Infinity, or -Infinity. The parameter chosen is
+     * marked "used" if it exists.
+     */
+
+    public double[] getDoublesUnconstrained(Parameter parameter, Parameter defaultParameter)
+        {
+        printGotten(parameter, defaultParameter, false);
+        if (_exists(parameter))
+            return getDoublesUnconstrained(parameter);
+        else
+            return getDoublesUnconstrained(defaultParameter);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Searches down through databases to find a given parameter, whose value
      * must be a long. It returns the value, else throws a NumberFormatException
@@ -1947,15 +2147,15 @@ public class ParameterDatabase extends Properties implements Serializable
         }
 
 
-/*
-  P: Successfully retrieved parameter
-  !P: Unsuccessfully retrieved parameter
-  <P: Would have retrieved parameter
+    /*
+      P: Successfully retrieved parameter
+      !P: Unsuccessfully retrieved parameter
+      <P: Would have retrieved parameter
 
-  E: Successfully tested for existence of parameter
-  !E: Unsuccessfully tested for existence of parameter
-  <E: Would have tested for exidstence of parameter
-*/
+      E: Successfully tested for existence of parameter
+      !E: Unsuccessfully tested for existence of parameter
+      <E: Would have tested for exidstence of parameter
+    */
 
     /*protected*/ void printGotten(Parameter parameter, Parameter defaultParameter, boolean exists)
         {
@@ -2202,37 +2402,37 @@ public class ParameterDatabase extends Properties implements Serializable
      *
      * @deprecated You probably want to use getLocation
      */
-/*
-  public File fileFor(Parameter parameter) 
-  {
-  File result = _fileFor(parameter);
-  uncheck();
-  return result;
-  }
+    /*
+      public File fileFor(Parameter parameter) 
+      {
+      File result = _fileFor(parameter);
+      uncheck();
+      return result;
+      }
 
-  synchronized File _fileFor(Parameter parameter) 
-  {
-  if (checked)
-  return null;
+      synchronized File _fileFor(Parameter parameter) 
+      {
+      if (checked)
+      return null;
         
-  checked = true;
-  File result = null;
-  String p = getProperty(parameter.param);
-  if (p==null) 
-  {
-  int size = parents.size();
-  for(int i = 0; i < size; ++i) 
-  {
-  result = ((ParameterDatabase)parents.elementAt(i))._fileFor(parameter);
-  if (result != null)
-  return result;
-  }
-  return result;
-  }
-  else
-  return new File(directory,filename);
-  }
-*/
+      checked = true;
+      File result = null;
+      String p = getProperty(parameter.param);
+      if (p==null) 
+      {
+      int size = parents.size();
+      for(int i = 0; i < size; ++i) 
+      {
+      result = ((ParameterDatabase)parents.elementAt(i))._fileFor(parameter);
+      if (result != null)
+      return result;
+      }
+      return result;
+      }
+      else
+      return new File(directory,filename);
+      }
+    */
 
     /** Removes a parameter from the topmost database. */
     public synchronized void remove(Parameter parameter) 

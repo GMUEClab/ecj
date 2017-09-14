@@ -1,0 +1,17 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../neat/neat.params
+
+pop.subpop.0.size =     150
+generations = 100
+
+# start genome size
+pop.subpop.0.species.genome-size = 3
+pop.subpop.0.file = start.neatind
+pop.subpop.0.extra-behavior = wrap
+
+eval.problem = ec.app.cartpole.CartPole
+quit-on-run-complete = false
+#seed.0=8000

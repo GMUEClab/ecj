@@ -6,6 +6,8 @@
 
 package ec.multiobjective.nsga2;
 
+import java.util.ArrayList;
+
 import ec.*;
 import ec.util.*;
 import ec.simple.*;
@@ -62,19 +64,19 @@ public class NSGA2Breeder extends SimpleBreeder
         {
         Population oldPop = (Population) state.population;
         Population newPop = super.breedPopulation(state);
-        Individual[] combinedInds;
-        Subpopulation[] subpops = oldPop.subpops;
+        ArrayList<Individual> combinedInds;
+        ArrayList<Subpopulation> subpops = oldPop.subpops;
         Subpopulation oldSubpop;
         Subpopulation newSubpop;
-        int subpopsLength = subpops.length;
+        int subpopsLength = subpops.size();
 
         for (int i = 0; i < subpopsLength; i++)
             {
-            oldSubpop = oldPop.subpops[i];
-            newSubpop = newPop.subpops[i];
-            combinedInds = new Individual[oldSubpop.individuals.length + newSubpop.individuals.length];
-            System.arraycopy(newSubpop.individuals, 0, combinedInds, 0,  newSubpop.individuals.length);
-            System.arraycopy(oldSubpop.individuals, 0, combinedInds,  newSubpop.individuals.length, oldSubpop.individuals.length);
+            oldSubpop = oldPop.subpops.get(i);
+            newSubpop = newPop.subpops.get(i);
+            combinedInds = new ArrayList<Individual>(oldSubpop.individuals.size() + newSubpop.individuals.size());
+            combinedInds.addAll(newSubpop.individuals);
+            combinedInds.addAll(oldSubpop.individuals);
             newSubpop.individuals = combinedInds;
             }
         return newPop;

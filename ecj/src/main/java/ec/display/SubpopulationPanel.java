@@ -125,8 +125,8 @@ public class SubpopulationPanel
                         {
                         JList source = (JList)evt.getSource();
                         int idx = source.getSelectedIndex();
-                        inspectionTree.setModel(new ReflectedObject(console.state.population.subpops[subPopNum].individuals[idx]));
-                        portrayal.portrayIndividual(console.state,console.state.population.subpops[subPopNum].individuals[idx]);
+                        inspectionTree.setModel(new ReflectedObject(console.state.population.subpops.get(subPopNum).individuals.get(idx)));
+                        portrayal.portrayIndividual(console.state,console.state.population.subpops.get(subPopNum).individuals.get(idx));
                         }
                     }
                 });
@@ -139,8 +139,8 @@ public class SubpopulationPanel
         int idx = individualsList.getSelectedIndex();
         if (idx >= 0)
             {
-            inspectionTree.setModel(new ReflectedObject(console.state.population.subpops[subPopNum].individuals[idx]));
-            portrayal.portrayIndividual(console.state,console.state.population.subpops[subPopNum].individuals[idx]);
+            inspectionTree.setModel(new ReflectedObject(console.state.population.subpops.get(subPopNum).individuals.get(idx)));
+            portrayal.portrayIndividual(console.state,console.state.population.subpops.get(subPopNum).individuals.get(idx));
             }
         }
     /**

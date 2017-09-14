@@ -8,7 +8,10 @@
 package ec.gp.breed;
 import ec.*;
 import ec.util.*;
-import ec.gp.*; 
+import ec.gp.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /* 
  * MutateSwapPipeline.java
@@ -240,57 +243,35 @@ public class MutateSwapPipeline extends GPBreedingPipeline
         }
     
 
-    public int produce(final int min, 
-        final int max, 
-        final int start,
+    public int produce(final int min,
+        final int max,
         final int subpopulation,
-        final Individual[] inds,
+        final ArrayList<Individual> inds,
         final EvolutionState state,
-        final int thread) 
+        final int thread, HashMap<String, Object> misc)
         {
+        int start = inds.size();
+                
         // grab n individuals from our source and stick 'em right into inds.
         // we'll modify them from there
-        int n = sources[0].produce(min,max,start,subpopulation,inds,state,thread);
-
+        int n = sources[0].produce(min,max,subpopulation,inds, state,thread, misc);
 
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
-            return reproduce(n, start, subpopulation, inds, state, thread, false);  // DON'T produce children from source -- we already did
+            {
+            return n;
+            }
 
 
 
         // now let's mutate 'em
         for(int q=start; q < n+start; q++)
             {
-            GPIndividual i = (GPIndividual)inds[q];
+            GPIndividual i = (GPIndividual)inds.get(q);
             
             if (tree!=TREE_UNFIXED && (tree<0 || tree >= i.trees.length))
                 // uh oh
                 state.output.fatal("MutateSwapPipeline attempted to fix tree.0 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
-            
-            
-            GPIndividual j;
-            if (sources[0] instanceof BreedingPipeline)
-                // it's already a copy, so just smash the tree in
-                {
-                j=i;
-                }
-            else // need to copy it
-                {
-                j = (GPIndividual)(i.lightClone());
-                
-                // Fill in various tree information that didn't get filled in there
-                j.trees = new GPTree[i.trees.length];
-                
-                for(int x=0;x<j.trees.length;x++)
-                    {
-                    j.trees[x] = (GPTree)(i.trees[x].lightClone());
-                    j.trees[x].owner = j;
-                    j.trees[x].child = (GPNode)(i.trees[x].child.clone());
-                    j.trees[x].child.parent = j.trees[x];
-                    j.trees[x].child.argposition = 0;
-                    }
-                }
             
             
             for (int x=0;x<numTries;x++)
@@ -304,21 +285,22 @@ public class MutateSwapPipeline extends GPBreedingPipeline
                 
                 // is the tree swappable?      
                 GPInitializer initializer = ((GPInitializer)state.initializer);
-                int numswap = numSwappableNodes(initializer, j.trees[t].child,0);
+                int numswap = numSwappableNodes(initializer, i.trees[t].child,0);
                 if (numswap==0) continue; // uh oh, try again
                 
                 // swap the node, or if we're unsuccessful, just leave it alone
-                pickSwappableNode(initializer, j.trees[t].child,state.random[thread].nextInt(numswap));
+                pickSwappableNode(initializer, i.trees[t].child,state.random[thread].nextInt(numswap));
                 
                 // node is now in swappableNode, swap it
                 swapSomething(swappableNode,state,thread);
 
-                j.evaluated = false;
+                i.evaluated = false;
                 break;
                 }
 
             // add the new individual, replacing its previous source
-            inds[q] = j;
+            inds.set(q,i);
+            
             }
         return n;
         }

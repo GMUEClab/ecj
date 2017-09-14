@@ -1,0 +1,47 @@
+# Copyright 2015 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../simple/simple.params
+
+init =	                                       ec.eda.dovs.DOVSInitializer
+breed =                                        ec.eda.dovs.DOVSBreeder
+eval =                                         ec.eda.dovs.DOVSEvaluator
+pop.subpop.0.species =                         ec.eda.dovs.HyperboxSpecies
+generations =								   500
+
+
+#### DOvS must use integer vector individuals
+pop.subpop.0.species.ind =                     ec.vector.IntegerVectorIndividual
+pop.subpop.0.species.fitness =		       ec.eda.dovs.DOVSFitness
+
+# parameter for controlling the algorithm
+pop.subpop.0.species.initial-reps =            1
+pop.subpop.0.species.stochastic =              false
+# this parameters used for sampling MPA
+pop.subpop.0.species.warmup =                  10
+pop.subpop.0.size =	                           10
+
+
+# this command set the constraint Ax>=b
+# pop.subpop.0.species.constraints-size =      1
+# pop.subpop.0.species.constraints.A.0 =       1 1
+# pop.subpop.0.species.constraints.b.0 =       4
+
+# this command set the start point to search
+# pop.subpop.0.file = start.in
+
+# these command is for future use
+# pop.subpop.0.species.backtracking =            false
+# pop.subpop.0.species.budget =                  100000
+
+
+
+# the following command are used to avoid some compatible issue with IntegerVectorIndividual
+# they are not necessary for the dovs package, see CMAES package
+pop.subpop.0.species.mutation-prob =           0
+pop.subpop.0.species.pipe =                    ec.breed.InitializationPipeline	
+pop.subpop.0.species.mutation-type =           reset
+pop.subpop.0.species.crossover-type =          one
+
+

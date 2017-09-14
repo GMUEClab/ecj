@@ -5,7 +5,7 @@
 */
 
 
-package ec.eda;
+package ec.eda.cmaes;
 import ec.*;
 import ec.vector.*;
 import ec.util.*;
@@ -338,7 +338,7 @@ public class CMAESSpecies extends FloatVectorSpecies
 
     public Parameter defaultBase()
         {
-        return EDADefaults.base().push(P_CMAES_SPECIES);
+        return CMAESDefaults.base().push(P_CMAES_SPECIES);
         }
 
     public void setup(final EvolutionState state, final Parameter base)
@@ -365,7 +365,6 @@ public class CMAESSpecies extends FloatVectorSpecies
 
         double[] cvals = new double[genomeSize];
         String covarianceInitialization = state.parameters.getStringWithDefault(base.push(P_COVARIANCE), def.push(P_COVARIANCE), V_IDENTITY);
-        System.err.println(covarianceInitialization);
         String covs = "Initial Covariance: <";
         for(int i = 0; i < genomeSize; i++)
             {
@@ -751,7 +750,7 @@ public class CMAESSpecies extends FloatVectorSpecies
         // counteval += lambda;
 
         // only need partial sort?
-        Arrays.sort(subpop.individuals);
+        Collections.sort(subpop.individuals);
 
         SimpleMatrix artmp = new SimpleMatrix(genomeSize,mu);
         SimpleMatrix xold = xmean;
@@ -759,7 +758,7 @@ public class CMAESSpecies extends FloatVectorSpecies
 
         for(int i = 0; i < mu; i++)
             {
-            DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals[i]);
+            DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
 
             // won't modify the genome
             SimpleMatrix arz = new SimpleMatrix(genomeSize,1,true,dvind.genome);

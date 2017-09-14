@@ -46,7 +46,7 @@ public abstract class GPBreedingPipeline extends BreedingPipeline
         if (!super.produces(state,newpop,subpopulation,thread)) return false;
 
         // we produce individuals which are owned by subclasses of GPSpecies
-        if (newpop.subpops[subpopulation].species instanceof GPSpecies)
+        if (newpop.subpops.get(subpopulation).species instanceof GPSpecies)
             return true;
         return false;
         }

@@ -20,11 +20,11 @@ import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import ec.*;
 import ec.coevolve.GroupedProblemForm;
 import ec.simple.SimpleProblemForm;
-import ec.simple.SimpleEvolutionState;
 import ec.util.*;
 
 /**
@@ -437,7 +437,7 @@ public class Slave
                         // on it's end, we don't necessarily have to exit.  Maybe we don't
                         // even need to print a warning, but we'll do so just to indicate
                         // something happened.
-                        state.output.fatal("Unable to read type of evaluation from master.  Maybe the master closed its socket and exited?:\n"+e);
+                        state.output.fatal("Unable to read type of evaluation from master.  Maybe the master closed its socket and exited?:\n" + e);
                         }
                     } 
                 catch (UnknownHostException e)
@@ -492,13 +492,13 @@ public class Slave
         
         // load the subpops 
         final int[] subpops = new int[numInds];  // subpops desired by each ind
-        int[] indsPerSubpop = new int[state.population.subpops.length];  // num inds for each subpop
+        int[] indsPerSubpop = new int[state.population.subpops.size()];  // num inds for each subpop
         for(int i = 0; i < numInds; i++)
             {
             try
                 {
                 subpops[i] = dataIn.readInt();
-                if (subpops[i] < 0 || subpops[i] >= state.population.subpops.length)
+                if (subpops[i] < 0 || subpops[i] >= state.population.subpops.size())
                     state.output.fatal("Bad subpop number for individual #" + i + ": " + subpops[i]);
                 indsPerSubpop[subpops[i]]++;
                 }
@@ -533,7 +533,7 @@ public class Slave
                 for(int i = 0 ; i < numInds; i++)
                     {
                     // load individual
-                    inds[i] = state.population.subpops[subpops[i]].species.newIndividual(state, dataIn);
+                    inds[i] = state.population.subpops.get(subpops[i]).species.newIndividual(state, dataIn);
                     updateFitness[i] = dataIn.readBoolean(); 
 
                     // fire up evaluation thread on individual
@@ -573,7 +573,7 @@ public class Slave
                 {
                 dataOut.flush();
                 } 
-            catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
+            catch( IOException e ) { state.output.fatal("Caught fatal IOException:\n"+e ); }
             }
                         
                         
@@ -587,7 +587,7 @@ public class Slave
                 {
                 for (int i=0; i < numInds; i++) 
                     { 
-                    inds[i] = state.population.subpops[subpops[i]].species.newIndividual(state, dataIn);
+                    inds[i] = state.population.subpops.get(subpops[i]).species.newIndividual(state, dataIn);
                     updateFitness[i] = dataIn.readBoolean(); 
                     }
                 }
@@ -604,16 +604,16 @@ public class Slave
             // classes, Species, etc. in state.setup(), so all we need to do is modify the number
             // of individuals in each subpopulation.
         
-            for(int subpop = 0; subpop < state.population.subpops.length; subpop++)
+            for(int subpop = 0; subpop < state.population.subpops.size(); subpop++)
                 {
-                if (state.population.subpops[subpop].individuals.length != indsPerSubpop[subpop])
-                    state.population.subpops[subpop].individuals = new Individual[indsPerSubpop[subpop]];
+                if (state.population.subpops.get(subpop).individuals.size() != indsPerSubpop[subpop])
+                    state.population.subpops.get(subpop).individuals = new ArrayList<Individual>(indsPerSubpop[subpop]);
                 }
             
             // Disperse into the population
-            int[] counts = new int[state.population.subpops.length];
+            int[] counts = new int[state.population.subpops.size()];
             for(int i =0; i < numInds; i++)
-                state.population.subpops[subpops[i]].individuals[counts[subpops[i]]++] = inds[i];
+                state.population.subpops.get(subpops[i]).individuals.set(counts[subpops[i]]++,inds[i]);
             
             // Evaluate the population until time is up, or the evolution stops
             int result = state.R_NOTDONE; 
@@ -626,9 +626,9 @@ public class Slave
                 }
                 
             // re-gather from population in the same order
-            counts = new int[state.population.subpops.length];
+            counts = new int[state.population.subpops.size()];
             for(int i =0; i < numInds; i++)
-                inds[i] = state.population.subpops[subpops[i]].individuals[counts[subpops[i]]++];
+                inds[i] = state.population.subpops.get(subpops[i]).individuals.get(counts[subpops[i]]++);
             state.finish(result);
             Evolve.cleanup(state);
 
@@ -661,20 +661,20 @@ public class Slave
             countVictoriesOnly = dataIn.readBoolean();
             numInds = dataIn.readInt();
             }
-        catch (IOException e)
+        catch (Exception e)
             {
             state.output.fatal("Unable to read the number of individuals from the master:\n"+e);
             }
 
         // load the subpops 
         int[] subpops = new int[numInds];  // subpops desired by each ind
-        int[] indsPerSubpop = new int[state.population.subpops.length];  // num inds for each subpop
+        int[] indsPerSubpop = new int[state.population.subpops.size()];  // num inds for each subpop
         for(int i = 0; i < numInds; i++)
             {
             try
                 {
                 subpops[i] = dataIn.readInt();
-                if (subpops[i] < 0 || subpops[i] >= state.population.subpops.length)
+                if (subpops[i] < 0 || subpops[i] >= state.population.subpops.size())
                     state.output.fatal("Bad subpop number for individual #" + i + ": " + subpops[i]);
                 indsPerSubpop[subpops[i]]++;
                 }
@@ -691,13 +691,13 @@ public class Slave
             {
             for(int i=0;i<inds.length;++i)
                 {
-                inds[i] = state.population.subpops[subpops[i]].species.newIndividual( state, dataIn );
+                inds[i] = state.population.subpops.get(subpops[i]).species.newIndividual( state, dataIn );
                 updateFitness[i] = dataIn.readBoolean();
                 }
             }
         catch (Exception e)
             {
-            state.output.fatal("Unable to read individual from master:\n"+e);
+            state.output.fatal("Unable to read individual from master:\n" + e);
             }
                 
         // Evaluate the individuals together

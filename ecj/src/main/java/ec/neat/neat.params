@@ -1,0 +1,125 @@
+# Copyright 2015 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../simple/simple.params
+
+init =	                                       ec.neat.NEATInitializer
+breed =                                        ec.neat.NEATBreeder
+pop.subpop.0.species =                         ec.neat.NEATSpecies
+pop.subpop.0.species.fitness =		           ec.simple.SimpleFitness
+pop.subpop.0.species.ind =                     ec.neat.NEATIndividual
+pop.subpop.0.species.gene =                    ec.neat.NEATGene
+pop.subpop.0.species.node = 				   ec.neat.NEATNode
+pop.subpop.0.species.subspecies =              ec.neat.NEATSubspecies
+pop.subpop.0.species.network =             ec.neat.NEATNetwork
+pop.subpop.0.species.innovation =              ec.neat.NEATInnovation
+
+
+
+##### Genome Compatibility and NEAT-style Speciation
+# There are three factors which determine the degree to which individuals
+# are genetically compatible: the amount of disjoint genes, the amount of
+# excess genes, and the mutational difference within matching genes.  Here
+# are the relative weights of those factors:
+
+neat.species.disjoint-coeff = 1.0
+neat.species.excess-coeff = 1.0
+neat.species.mutdiff-coeff = 0.4
+
+# This compatibility threshold is used for determining if an individual belongs in a "NEAT species" (subspecies)
+neat.species.compat-thresh = 3.0
+
+# The system can take expected offspring away from
+# worse "NEAT species" (subspecies) and give them to superior subspecies depending on
+# the system parameter babies-stolen (when babies-stolen > 0)
+neat.species.babies-stolen = 0
+
+# Individuals are age-penalized in their fitness after a certain dropoff-age.
+neat.species.dropoff-age = 15
+
+
+
+
+
+
+###### GENERAL BREEDING PARAMETERS
+
+# Percentage of subspecies that is permitted to reproduce into the next generation
+neat.species.survival-thresh = 0.20
+
+# Probability that mutation will occur only, no crossover
+neat.species.mutate-only-prob = 0.25
+
+# Probability that crossover will occur only, no mutation
+neat.species.mate-only-prob = 0.2
+
+
+
+
+
+
+
+
+##### CROSSOVER PARAMETERS
+
+# Probability of mating with another subspecies
+neat.species.interspecies-mate-prob = 0.001
+
+# Various probabilities of crossover types
+neat.species.mate-multipoint-prob = 0.6
+neat.species.mate-multipoint-avg-prob = 0.4
+
+# This is deprecated and should stay zero
+neat.species.mate-singlepoint-prob = 0.0
+
+
+
+
+#### Mutation probabilities
+
+
+# Probability of mutating each and every one of the weights of the links in the genome
+neat.species.mutate-link-weight-prob = 0.9
+# Factor which influences how much a link is mutated
+neat.species.weight-mut-power = 2.5
+
+# Proability of randomly enabling or disabling a single gene (link) in the genome
+neat.species.mutate-toggle-enable-prob = 0.0
+
+# Probability to reenable a gene (link)
+neat.species.mutate-gene-reenable-prob = 0.0
+
+# Probability of adding a single new node
+neat.species.mutate-add-node-prob = 0.03
+# How many times we're willing to try adding a new node before giving up
+neat.species.new-node-tries = 20
+# In genomes this size or greater, mutateAddNode will do a pure random split
+neat.species.add-node-max-genome-length = 15
+
+# Probability of adding a single new gene (link)
+neat.species.mutate-add-link-prob = 0.05
+# Probability that this link will be recurrent rather than feed-forward.
+# If recurrent, 50% of the time it will be a self-link, and 50% of the
+# time it will be a reversed link
+neat.species.recur-only-prob = 0.0
+# How many times we're willing to try adding a valid new link before giving up
+neat.species.new-link-tries = 20
+
+
+
+# this command set the template genome file
+# pop.subpop.0.file = start-genome
+
+
+# Dummy parameters to satisfy VectorSpecies
+pop.subpop.0.species.genome-size = 20
+pop.subpop.0.species.crossover-type = one
+pop.subpop.0.species.mutation-prob = 0.01
+pop.subpop.0.species.pipe = ec.breed.InitializationPipeline	
+
+
+
+
+
+
