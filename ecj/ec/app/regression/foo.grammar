@@ -1,0 +1,7 @@
+<start> ::= <exp>
+<exp> ::=  (* <coef> <var>) | (% <coef> <var>) | (+ <coef> <var>) | (- <coef> <var>) | (sin <exp>) | (cos <exp>) | <var> | (rlog <exp>) 
+<exp> ::=  (+ <exp> <exp>) |  (- <exp> <exp>)  
+#| (* <exp> <exp>) | (% <coef> <var> ) 
+#| (rlog <exp>) | (cos <exp>) | (sin <exp>)
+<coef> ::= (ERC)
+<var> ::= (x)

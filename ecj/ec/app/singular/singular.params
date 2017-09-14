@@ -1,0 +1,33 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../eda/dovs/dovs.params
+
+
+
+# subpop parameters
+pop.subpop.0.species.min-gene = 0
+pop.subpop.0.species.max-gene = 100
+pop.subpop.0.species.genome-size = 4
+pop.subpop.0.file = start.in
+pop.subpop.0.species.constraints-size =      8
+pop.subpop.0.species.constraints-A.0 =       1  0  0  0
+pop.subpop.0.species.constraints-A.1 =      -1  0  0  0
+pop.subpop.0.species.constraints-A.2 =       0  1  0  0
+pop.subpop.0.species.constraints-A.3 =       0 -1  0  0
+pop.subpop.0.species.constraints-A.4 =       0  0  1  0
+pop.subpop.0.species.constraints-A.5 =       0  0 -1  0
+pop.subpop.0.species.constraints-A.6 =       0  0  0  1
+pop.subpop.0.species.constraints-A.7 =       0  0  0 -1
+pop.subpop.0.species.constraints-b.0 =      -100
+pop.subpop.0.species.constraints-b.1 =      -100
+pop.subpop.0.species.constraints-b.2 =      -100
+pop.subpop.0.species.constraints-b.3 =      -100
+pop.subpop.0.species.constraints-b.4 =      -100
+pop.subpop.0.species.constraints-b.5 =      -100
+pop.subpop.0.species.constraints-b.6 =      -100
+pop.subpop.0.species.constraints-b.7 =      -100
+
+
+eval.problem = ec.app.singular.Singular

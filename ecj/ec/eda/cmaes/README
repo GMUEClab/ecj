@@ -1,0 +1,15 @@
+This is ECJ's CMA-ES package.  To see this package in action, try running ECJ
+on the file "ec/app/ecsuite/cmaes.params"
+
+CMA-ES has a custom breeder and initialzier and no breeding pipelines.  However
+you will find that nearly all the work for CMA-ES takes place inside 
+CMAESSpecies.java, and the breeder and initializer are little more than wrappers
+to call methods there.  So we have:
+
+CMAESDefaults.java		Package Defaults
+CMAESSpecies.java		CMAES's species object.  CMAES uses
+				DoubleVectorIndividuals for its representation.
+CMAESBreeder.java		Custom breeder for CMAES, largely calls
+				code in CMAESSpecies
+CMAESInitializer.java		Custom initializer for CMAES, largely calls
+				code in CMAESSpecies

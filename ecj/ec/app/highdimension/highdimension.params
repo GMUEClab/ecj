@@ -1,0 +1,27 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../eda/dovs/dovs.params
+
+
+
+# subpop parameters
+pop.subpop.0.species.min-gene = 0
+pop.subpop.0.species.max-gene = 100
+pop.subpop.0.species.genome-size = 5
+pop.subpop.0.file = start.in
+pop.subpop.0.species.constraints-size =      10
+pop.subpop.0.species.constraints-A.0 =       1  0  0  0  0
+pop.subpop.0.species.constraints-A.1 =      -1  0  0  0  0
+pop.subpop.0.species.constraints-A.2 =       0  1  0  0  0
+pop.subpop.0.species.constraints-A.3 =       0 -1  0  0  0
+pop.subpop.0.species.constraints-A.4 =       0  0  1  0  0
+pop.subpop.0.species.constraints-A.5 =       0  0 -1  0  0
+pop.subpop.0.species.constraints-A.6 =       0  0  0  1  0
+pop.subpop.0.species.constraints-A.7 =       0  0  0 -1  0
+pop.subpop.0.species.constraints-A.8 =       0  0  0  0  1
+pop.subpop.0.species.constraints-A.9 =       0  0  0  0 -1
+pop.subpop.0.species.constraints-b = -5000 -5000 -5000 -5000 -5000 -5000 -5000 -5000 -5000 -5000 
+
+eval.problem = ec.app.highdimension.HighDimension

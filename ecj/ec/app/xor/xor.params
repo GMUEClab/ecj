@@ -1,0 +1,40 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../neat/neat.params
+
+pop.subpop.0.size =     150
+generations = 100
+
+# start genome size
+pop.subpop.0.species.genome-size = 3
+pop.subpop.0.file = start.neatind
+pop.subpop.0.extra-behavior = wrap
+
+eval.problem = ec.app.xor.XOR
+quit-on-run-complete = false
+#seed.0=8000
+# following is the specification for start-genome file
+# i1| represent integer with value 1, thus we have 1 individual
+# Number of Individuals: i1|
+# Individual Number: i0|
+# F represent false, thus our individual is not evaluated
+# Evaluated: F
+# d0|0.0| represent a double with value 0.0, thus the value of fitness is 0.0
+# Fitness: d0|0.0|
+# i3| means we have three gene
+# i3|
+# the form of gene can be divide into piece i1| i4| d0|0.0| F i1| d0|0.0| T
+# which represent inNode, outNode, weight, isRecur, innovation number, mutation number, enable
+# i1|i4|d0|0.0|Fi1|d0|0.0|T
+# i2|i4|d0|0.0|Fi2|d0|0.0|T
+# i3|i4|d0|0.0|Fi3|d0|0.0|T
+# i4| means we have four nodes
+# i4|
+# the form of nodes can be divide into piece i1| i1| i1|
+# which represent node_id, type of node, and genetic_node_label
+# i1|i1|i1|
+# i2|i1|i1|
+# i3|i1|i3|
+# i4|i0|i2|

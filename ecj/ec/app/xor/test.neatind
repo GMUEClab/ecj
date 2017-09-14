@@ -1,0 +1,13 @@
+Number of Individuals: i1|
+Individual Number: i0|
+Evaluated: F
+Fitness: d0|0.0|
+i3|
+i1|i4|d-4616421436341977669|-0.974263|Fi1|d0|0.0|T
+i2|i4|d-4635564982754353537|-0.0530564|Fi2|d0|0.0|T
+i3|i4|d-4622295886659923470|-0.411034|Fi3|d0|0.0|T
+i4|
+i1|i1|i3|
+i2|i1|i1|
+i3|i1|i1|
+i4|i0|i2|

@@ -1,0 +1,45 @@
+ec/singlestate/ contains typical implementations of the abstract forms found in ec/
+for purposes of "Single-State" metaheuristics -- that is, ones where children
+are all generated from a single individual.  Examples include variations on
+hill-climbing, simulated annealing, and tabu search.
+
+These methods can be done using small populations and ec/simple, but there is
+considerable overhead.  ec/singlestate is meant to reduce this overhead, though
+we may roll its overhead reductions into ec/simple eventually.  At present
+ec/singlestate can do these algorithms significantly faster than ec/simple can.
+
+Classes not found in this package will probably be the implementations in the
+ec/simple package.
+
+If you'd like to try it out, try the files:
+
+ec/app/ecsuite/hc.params		Hill-Climbing
+ec/app/ecsuite/hcsteep.params		Steepest Ascent Hill-Climbing
+ec/app/ecsuite/hcsteepwr.params		Steepest Ascent Hill-Climbing with Replacement
+ec/app/ecsuite/sa.params		Simulated Annealing
+
+
+The classes in ec/singlestate/ are:
+
+
+
+ec.singlestate.SingleStateEvolutionState
+
+Performs single-state evolution.
+
+
+ec.singlestate.SingleStateBreeder
+
+Performs a lightweight, single-threaded breeding meant for very small populations.
+
+
+ec.singlestate.SingleStateDefaults
+
+Package defaults
+
+
+
+
+singlestate.params
+
+Top-level parameter file.

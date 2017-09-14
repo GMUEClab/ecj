@@ -1,0 +1,48 @@
+# Copyright 2015 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../simple/simple.params
+
+init =	                                       ec.eda.cmaes.CMAESInitializer
+breed =                                        ec.eda.cmaes.CMAESBreeder
+pop.subpop.0.species =                         ec.eda.cmaes.CMAESSpecies
+
+
+#### CMA-EA must use double vector individuals
+pop.subpop.0.species.ind =                     ec.vector.DoubleVectorIndividual
+
+
+#### This gunk must be set even though we don't use it.  Notably
+#### CMA-ES DOES NOT USE THE POPULATION SIZE, but rather relies on lambda.
+#### So we set it to, I dunno, 1 here.
+
+pop.subpop.0.size =                            1
+pop.subpop.0.species.mutation-prob =           0
+pop.subpop.0.species.pipe =                    ec.breed.InitializationPipeline	
+pop.subpop.0.species.mutation-type =           reset
+pop.subpop.0.species.crossover-type =          one
+
+
+#### Some default settings.  You may wish to change them.
+
+pop.subpop.0.species.alternative-termination = false
+pop.subpop.0.species.mean =                    center	
+pop.subpop.0.species.sigma =                   0.5
+
+
+#### These are possible values which you may set, but if you don't then 
+#### CMA-ES will use internal functions to compute appropriate default
+#### values for them.
+
+# pop.subpop.0.species.lambda = 
+# pop.subpop.0.species.mu =
+# pop.subpop.0.species.cc =	
+# pop.subpop.0.species.cs =	
+# pop.subpop.0.species.c1 =	
+# pop.subpop.0.species.cmu =	
+# pop.subpop.0.species.damps =	
+#
+# pop.subpop.0.species.weight.0 =	
+# pop.subpop.0.species.weight.1 =	
+# ...

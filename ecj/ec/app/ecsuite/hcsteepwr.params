@@ -1,0 +1,45 @@
+# Copyright 2017 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../singlestate/singlestate.params
+parent.1 = ecsuite.params
+
+
+#### The following parameter file is designed to illustrate
+#### how to create a simple hill-climber.  The hillclimber
+#### works as follows:
+####
+#### A single subpopulation where:
+#### 1 Individual is created initially  (pop.subpop.0.size)
+#### Loop 10000 times:		(generations)
+####    Test all individuals in subpopulation
+####    Create the next subpopulation, of size 2 (breed.expanded-subpop-size.0)
+####    Select the best individual, add to next subpopulation (breed.elite.0)
+####    Fill the remaining slots with individuals bred from best individual
+####    			(ec.select.TopSelection)
+####
+#### Every 1000 iterations we do a checkpoint, dump statistics, and do
+#### an exchange
+
+
+generations = 10000
+pop.subpop.0.size = 1
+breed.expanded-subpop-size.0 = 10
+breed.elite.0 = false
+
+checkpoint-modulo = 		1000
+stats-modulo =                  1000
+exchange-modulo =               1000
+
+
+pop.subpop.0.species.pipe =             ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0 =    ec.select.TopSelection
+
+pop.subpop.0.species.mutation-prob = 0.016984963036159526
+pop.subpop.0.species.mutation-stdev = 0.8892889554415008
+pop.subpop.0.species.mutation-type = polynomial
+pop.subpop.0.species.mutation-distribution-index = 21
+pop.subpop.0.species.alternative-polynomial-version = false
+
+

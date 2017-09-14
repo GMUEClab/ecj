@@ -1,0 +1,25 @@
+Number of Individuals: i1|
+Individual Number: i0|
+Evaluated: F
+Fitness: d0|0.0|
+i10|
+i1|i6|d0|0.0|Fi1|d0|0.0|T
+i2|i6|d0|0.0|Fi2|d0|0.0|T
+i3|i6|d0|0.0|Fi3|d0|0.0|T
+i4|i6|d0|0.0|Fi4|d0|0.0|T
+i5|i6|d0|0.0|Fi5|d0|0.0|T
+i1|i7|d0|0.0|Fi6|d0|0.0|T
+i2|i7|d0|0.0|Fi7|d0|0.0|T
+i3|i7|d0|0.0|Fi8|d0|0.0|T
+i4|i7|d0|0.0|Fi9|d0|0.0|T
+i5|i7|d0|0.0|Fi10|d0|0.0|T
+i7|
+i1|i1|i3|
+i2|i1|i1|
+i3|i1|i1|
+i4|i1|i1|
+i5|i1|i1|
+i6|i0|i2|
+i7|i0|i2|
+
+
