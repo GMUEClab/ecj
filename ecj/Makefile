@@ -162,7 +162,7 @@ jar: all gui
 	touch /tmp/manifest.add
 	rm /tmp/manifest.add
 	echo "Main-Class: ec.Evolve" > /tmp/manifest.add
-	jar -cvfm jar/ecj.${VERSION}.jar /tmp/manifest.add `find ec -name "*.class"` `find ec -name "*.params"` `find ec -name "*.trl"` `find ec -name "*.out.gz"` `find ec -name "*.grammar"` `find ec -name "*.cnf"` 
+	jar -cvfm jar/ecj.${VERSION}.jar /tmp/manifest.add `find ec -name "*.class"` `find ec -name "*.params"` `find ec -name "*.trl"` `find ec -name "*.out.gz"` `find ec -name "*.grammar"` `find ec -name "*.cnf"` `find ec -name "*.png"` `find ec -name "*.jpg"`
 
 
 
