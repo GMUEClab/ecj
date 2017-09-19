@@ -439,18 +439,22 @@ public class ControlPanel extends JPanel
             {
             int seed;
             int i = 0;
-            for (int thread = 0; thread < numThreads; ++thread) 
+            try 
                 {
-                try 
+                for (int thread = 0; thread < numThreads; ++thread) 
                     {
                     seed = console.parameters.getInt(new Parameter("seed."+thread),null);
+                    for (int job = 0; job < numJobs; ++job)
+                        setSeed(""+(seed+(i++)),job,thread);
                     }
-                catch (NumberFormatException ex) 
-                    {
-                    seed = getSeed(0,thread-1)+1;
-                    }
-                for (int job = 0; job < numJobs; ++job)
-                    setSeed(""+(seed+(i++)),job,thread);
+                }
+            catch (NumberFormatException ex) 
+                {
+                javax.swing.JOptionPane.showMessageDialog(null, "The seed parameter for at least one thread not a fixed number (perhaps it's set to 'time'?), so sequential seeds cannot be used.\n"
+                        + "Reverting to random number seeds for all threads.", "Adjusting Seeds", 
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                randomSeedsRadioButton.setSelected(true);
+                generateRandomSeeds();
                 }
             }
         else
@@ -494,8 +498,7 @@ public class ControlPanel extends JPanel
         try { return Integer.parseInt((String)seedsTable.getValueAt(experimentNum, threadNum)); }
         catch (RuntimeException e)
             {
-            javax.swing.JOptionPane.showMessageDialog(null, "Value of seed for experiment " + experimentNum + 
-                " and thread " + threadNum + " not a fixed number: probably 'time'.  Rebuilding random number seeds.", "Adjusting Seeds", 
+            javax.swing.JOptionPane.showMessageDialog(null, "Error reading from seed table. Rebuilding random number seeds.", "Adjusting Seeds", 
                 javax.swing.JOptionPane.INFORMATION_MESSAGE);
             generateRandomSeeds();
             return Integer.valueOf((String)seedsTable.getValueAt(experimentNum, threadNum)).intValue();
