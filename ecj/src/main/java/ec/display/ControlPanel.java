@@ -43,6 +43,8 @@ import javax.swing.table.DefaultTableModel;
 import ec.EvolutionState;
 import ec.Evolve;
 import ec.util.Parameter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 /**
  * @author spaus
@@ -303,6 +305,18 @@ public class ControlPanel extends JPanel
                         }
                     }
                 });
+            numGensField.addFocusListener(new FocusListener()
+                {
+                public void focusGained(final FocusEvent e)
+                    {
+                    }
+
+                public void focusLost(final FocusEvent e)
+                    {
+                    console.parameters.set(new Parameter(EvolutionState.P_GENERATIONS), ((JTextField)e.getSource()).getText());
+                    resizeSeedTable();
+                    }
+                });
             }
         return numGensField;
         }
@@ -346,6 +360,18 @@ public class ControlPanel extends JPanel
                         {
                         resizeSeedTable();
                         }
+                    }
+                });
+            
+            numJobsField.addFocusListener(new FocusListener()
+                {
+                public void focusGained(final FocusEvent e)
+                    {
+                    }
+
+                public void focusLost(final FocusEvent e)
+                    {
+                    resizeSeedTable();
                     }
                 });
             }
@@ -446,8 +472,10 @@ public class ControlPanel extends JPanel
         throws NumberFormatException 
         {
         int numJobs = Integer.parseInt(numJobsField.getText());
-        int breedThreads = getThreadCount(breedThreadsField.getText());
-        int evalThreads = getThreadCount(evalThreadsField.getText());
+        int evalThreads = console.parameters.getInt(new Parameter(Evolve.P_EVALTHREADS),null);
+        int breedThreads = console.parameters.getInt(new Parameter(Evolve.P_BREEDTHREADS),null);
+        assert(evalThreads == getThreadCount(evalThreadsField.getText()));
+        assert(breedThreads == getThreadCount(breedThreadsField.getText()));
         int numThreads = Math.max(breedThreads, evalThreads);
         
         int seed = (int)(System.currentTimeMillis());
@@ -503,6 +531,18 @@ public class ControlPanel extends JPanel
                         }
                     }
                 });
+            evalThreadsField.addFocusListener(new FocusListener()
+                {
+                public void focusGained(final FocusEvent e)
+                    {
+                    }
+
+                public void focusLost(final FocusEvent e)
+                    {
+                    console.parameters.set(new Parameter(Evolve.P_EVALTHREADS), ((JTextField)e.getSource()).getText());
+                    resizeSeedTable();
+                    }
+                });
             }
         return evalThreadsField;
         }
@@ -529,6 +569,19 @@ public class ControlPanel extends JPanel
                         {
                         ((JTextField)e.getSource()).setText(console.parameters.getString(new Parameter(Evolve.P_BREEDTHREADS),null));
                         }
+                    }
+                });
+            
+            breedThreadsField.addFocusListener(new FocusListener()
+                {
+                public void focusGained(final FocusEvent e)
+                    {
+                    }
+
+                public void focusLost(final FocusEvent e)
+                    {
+                    console.parameters.set(new Parameter(Evolve.P_BREEDTHREADS), ((JTextField)e.getSource()).getText());
+                    resizeSeedTable();
                     }
                 });
             }
@@ -896,6 +949,18 @@ public class ControlPanel extends JPanel
                         }
                     }
                 });
+            
+            checkpointModuloField.addFocusListener(new FocusListener()
+                {
+                public void focusGained(final FocusEvent e)
+                    {
+                    }
+
+                public void focusLost(final FocusEvent e)
+                    {
+                    console.parameters.set(new Parameter(EvolutionState.P_CHECKPOINTMODULO), ((JTextField)e.getSource()).getText());
+                    }
+                });
             }
         return checkpointModuloField;
         }
@@ -922,6 +987,18 @@ public class ControlPanel extends JPanel
                         {
                         ((JTextField)e.getSource()).setText(console.parameters.getString(new Parameter(EvolutionState.P_CHECKPOINTPREFIX),null));
                         }
+                    }
+                });
+            
+            prefixField.addFocusListener(new FocusListener()
+                {
+                public void focusGained(final FocusEvent e)
+                    {
+                    }
+
+                public void focusLost(final FocusEvent e)
+                    {
+                    console.parameters.set(new Parameter(EvolutionState.P_CHECKPOINTPREFIX), ((JTextField)e.getSource()).getText());
                     }
                 });
             }
