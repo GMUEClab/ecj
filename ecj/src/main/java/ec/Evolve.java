@@ -7,8 +7,6 @@
 
 package ec;
 import ec.util.*;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.io.File;
 import java.io.PrintWriter;
 
