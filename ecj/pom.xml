@@ -5,11 +5,12 @@
     <artifactId>ecj</artifactId>
     <version>25</version>
     <packaging>jar</packaging>
+
     <dependencies>
         <dependency>
             <groupId>com.googlecode.efficient-java-matrix-library</groupId>
-            <artifactId>ejml</artifactId>
-            <version>0.25</version>
+            <artifactId>core</artifactId>
+            <version>0.26</version>
         </dependency>
         <dependency>
             <groupId>jfree</groupId>
@@ -38,8 +39,25 @@
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
     </properties>
-<build><plugins>
+<build>
+
+<plugins>
+  <plugin>
+    <!-- Set main class in the Jar. -->
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-jar-plugin</artifactId>
+    <configuration>
+      <archive>
+	<manifest>
+	  <mainClass>ec.Evolve</mainClass>
+	  <addClasspath>true</addClasspath>
+	  <classpathPrefix>dependency/</classpathPrefix>
+	  </manifest>
+	</archive>
+      </configuration>
+    </plugin>
     <plugin>
+      <!-- PushGP is not in the Maven respository, so we manually install the dependency to the user's local repository. -->
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-install-plugin</artifactId>
       <version>2.5.2</version>
@@ -59,6 +77,21 @@
         </execution>
       </executions>
     </plugin>
+    <!-- Copy dependency jars into the target directory. -->
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.0.2</version>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 </plugins>
 </build>
 </project>
