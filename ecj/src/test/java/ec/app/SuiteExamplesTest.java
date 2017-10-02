@@ -4,7 +4,7 @@
   See the file "LICENSE" for more information
 */
 
-package ec.app.ecsuite;
+package ec.app;
 
 import ec.EvolutionState;
 import ec.Evolve;
@@ -72,26 +72,26 @@ public class SuiteExamplesTest {
         
         final List<String> exclude = Arrays.asList(new String[] {
             // Parent files; can't be run directly
-            new File("src/main/java/ec/app/moosuite/moosuite.params").getAbsolutePath(),
-            new File("src/main/java/ec/app/moosuite/nsga2.params").getAbsolutePath(),
-            new File("src/main/java/ec/app/moosuite/spea2.params").getAbsolutePath(),
+            new File("src/main/resources/ec/app/moosuite/moosuite.params").getAbsolutePath(),
+            new File("src/main/resources/ec/app/moosuite/nsga2.params").getAbsolutePath(),
+            new File("src/main/resources/ec/app/moosuite/spea2.params").getAbsolutePath(),
             
             // Distributed examples; need their own test runner.
-            new File("src/main/java/ec/app/star/ant.master.params").getAbsolutePath(),
-            new File("src/main/java/ec/app/star/ant.slave.params").getAbsolutePath(),
-            new File("src/main/java/ec/app/star/coevolve1.master.params").getAbsolutePath(),
-            new File("src/main/java/ec/app/star/coevolve1.slave.params").getAbsolutePath(),
-            new File("src/main/java/ec/app/star/coevolve2.master.params").getAbsolutePath(),
-            new File("src/main/java/ec/app/star/coevolve2.slave.params").getAbsolutePath(),
-            new File("src/main/java/ec/app/star/mastermeta.params").getAbsolutePath(),
-            new File("src/main/java/ec/app/star/slavemeta.params").getAbsolutePath(),
+            new File("src/main/resources/ec/app/star/ant.master.params").getAbsolutePath(),
+            new File("src/main/resources/ec/app/star/ant.slave.params").getAbsolutePath(),
+            new File("src/main/resources/ec/app/star/coevolve1.master.params").getAbsolutePath(),
+            new File("src/main/resources/ec/app/star/coevolve1.slave.params").getAbsolutePath(),
+            new File("src/main/resources/ec/app/star/coevolve2.master.params").getAbsolutePath(),
+            new File("src/main/resources/ec/app/star/coevolve2.slave.params").getAbsolutePath(),
+            new File("src/main/resources/ec/app/star/mastermeta.params").getAbsolutePath(),
+            new File("src/main/resources/ec/app/star/slavemeta.params").getAbsolutePath(),
             
              // XXX A broken test; needs to be fixed and removed from exclude list.
-            new File("src/main/java/ec/app/moosuite/kur-spea2.params").getAbsolutePath()
+            new File("src/main/resources/ec/app/moosuite/kur-spea2.params").getAbsolutePath()
         });
         
         // Test all the parameter files inside each app directory
-        final File appsRoot = new File("src/main/java/ec/app/");
+        final File appsRoot = new File("src/main/resources/ec/app/");
         final List<File> appDirs = getSubdirectories(appsRoot);
         for (File d : appDirs) {
             paramFiles.addAll(getParamFiles(d, exclude));
