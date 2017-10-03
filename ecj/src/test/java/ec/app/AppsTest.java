@@ -32,7 +32,7 @@ import org.junit.runners.Parameterized;
  * @author Eric O. Scott
  */
 @RunWith(Parameterized.class)
-public class SuiteExamplesTest {
+public class AppsTest {
     
     /** List the subdirectories of a directory. */
     private static List<File> getSubdirectories(final File dir) {
