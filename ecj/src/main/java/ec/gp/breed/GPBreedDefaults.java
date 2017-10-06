@@ -28,12 +28,12 @@ import ec.*;
  */
 
 public final class GPBreedDefaults implements DefaultsForm
-    {
+{
     public static final String P_BREED = "breed";
 
     /** Returns the default base, which is built off of the GPDefaults base. */
     public static final Parameter base()
-        {
+    {
         return GPDefaults.base().push(P_BREED);
-        }
     }
+}

@@ -83,7 +83,7 @@ import java.io.*;
  * @version 1.0 
  */
 public abstract class Rule implements Prototype, Comparable
-    {
+{
     public static final String P_RULE = "rule";
     public static final String P_CONSTRAINTS = "constraints";
     /**
@@ -93,9 +93,9 @@ public abstract class Rule implements Prototype, Comparable
 
     /* Returns the Rule's constraints.  A good JIT compiler should inline this. */
     public final RuleConstraints constraints(final RuleInitializer initializer) 
-        { 
+    { 
         return initializer.ruleConstraints[constraints]; 
-        }
+    }
 
     /** Rulerates a hash code for this rule -- the rule for this is that the hash code
         must be the same for two rules that are equal to each other genetically. */
@@ -104,9 +104,9 @@ public abstract class Rule implements Prototype, Comparable
     /** Unlike the standard form for Java, this function should return true if this
         rule is "genetically identical" to the other rule.  The default calls compareTo() */
     public boolean equals( final Object other )
-        {
+    {
         return compareTo(other) == 0;
-        }
+    }
 
     /**
        The reset method randomly reinitializes the rule.
@@ -117,16 +117,16 @@ public abstract class Rule implements Prototype, Comparable
        Mutate the rule.  The default form just resets the rule.
     */
     public void mutate(final EvolutionState state, final int thread)
-        {
+    {
         reset(state,thread);
-        }
+    }
 
     /**
        Nice printing.  The default form simply calls printRuleToStringForHumans and prints the result,
        but you might want to override this.
     */
     public void printRuleForHumans( final EvolutionState state, final int log )
-        { printRuleForHumans(state, log, Output.V_VERBOSE); }
+    { printRuleForHumans(state, log, Output.V_VERBOSE); }
                 
     /**
        Nice printing.  The default form simply calls printRuleToStringForHumans and prints the result,
@@ -134,29 +134,29 @@ public abstract class Rule implements Prototype, Comparable
        @deprecated Verbosity no longer has an effect
     */
     public void printRuleForHumans( final EvolutionState state, final int log, final int verbosity )
-        { state.output.println(printRuleToStringForHumans(),log);}
+    { state.output.println(printRuleToStringForHumans(),log);}
 
     /** Nice printing to a string. The default form calls toString().  */
     public String printRuleToStringForHumans()
-        { return toString(); }
+    { return toString(); }
         
     /** Prints the rule to a string in a fashion readable by readRuleFromString.
         The default form calls printRuleToString().
         @deprecated */
     public String printRuleToString(final EvolutionState state)
-        { return printRuleToString(); }
+    { return printRuleToString(); }
         
     /** Prints the rule to a string in a fashion readable by readRuleFromString.
         The default form simply calls toString() -- you should just override toString() 
         if you don't need the EvolutionState. */
     public String printRuleToString()
-        { return toString(); }
+    { return toString(); }
         
 
     /** Reads a rule from a string, which may contain a final '\n'.
         Override this method.  The default form generates an error. */
     public void readRuleFromString(final String string, final EvolutionState state)
-        { state.output.error("readRuleFromString(string,state) unimplemented in " + this.getClass()); }
+    { state.output.error("readRuleFromString(string,state) unimplemented in " + this.getClass()); }
 
     /**
        Prints the rule in a way that can be read by readRule().  The default form simply
@@ -164,7 +164,7 @@ public abstract class Rule implements Prototype, Comparable
        or just override printRuleToString(...), which is probably easier to do.
     */
     public void printRule( final EvolutionState state, final int log )
-        { printRule(state, log, Output.V_VERBOSE); }
+    { printRule(state, log, Output.V_VERBOSE); }
 
     /**
        Prints the rule in a way that can be read by readRule().  The default form simply
@@ -173,7 +173,7 @@ public abstract class Rule implements Prototype, Comparable
        @deprecated Verbosity no longer has an effect
     */
     public void printRule( final EvolutionState state, final int log, final int verbosity )
-        { state.output.println(printRuleToString(state),log); }
+    { state.output.println(printRuleToString(state),log); }
 
     /**
        Prints the rule in a way that can be read by readRule().  The default form simply
@@ -181,7 +181,7 @@ public abstract class Rule implements Prototype, Comparable
        or just override printRuleToString(...), which is probably easier to do.
     */
     public void printRule( final EvolutionState state, final PrintWriter writer )
-        { writer.println(printRuleToString(state)); }
+    { writer.println(printRuleToString(state)); }
 
     /**
        Reads a rule printed by printRule(...).  The default form simply reads a line into
@@ -189,50 +189,50 @@ public abstract class Rule implements Prototype, Comparable
        custom reading, or just override readRuleFromString(...), which is probably easier to do.
     */
     public void readRule(final EvolutionState state,
-        final LineNumberReader reader)
+                         final LineNumberReader reader)
         throws IOException
-        { readRuleFromString(reader.readLine(),state); }
+    { readRuleFromString(reader.readLine(),state); }
 
 
     /** Override this if you need to write rules out to a binary stream */
     public void writeRule(final EvolutionState state,
-        final DataOutput dataOutput) throws IOException
-        {
+                          final DataOutput dataOutput) throws IOException
+    {
         state.output.fatal("writeRule(EvolutionState, DataOutput) not implemented in " + this.getClass());
-        }
+    }
 
     /** Override this if you need to read rules in from a binary stream */
     public void readRule(final EvolutionState state,
-        final DataInput dataInput) throws IOException
-        {
+                         final DataInput dataInput) throws IOException
+    {
         state.output.fatal("readRule(EvolutionState, DataInput) not implemented in " + this.getClass());
-        }
+    }
 
 
     public Parameter defaultBase()
-        {
+    {
         return RuleDefaults.base().push(P_RULE);
-        }
+    }
 
     public Object clone()
-        {
+    {
         try { return super.clone(); }
         catch (CloneNotSupportedException e) 
             { throw new InternalError(); } // never happens
-        }
+    }
 
 
     public void setup(EvolutionState state, Parameter base)
-        {
+    {
         String constraintname = state.parameters.getString(
-            base.push( P_CONSTRAINTS ),defaultBase().push(P_CONSTRAINTS));
+                                                           base.push( P_CONSTRAINTS ),defaultBase().push(P_CONSTRAINTS));
         if (constraintname == null)
             state.output.fatal("No RuleConstraints name given",
-                base.push( P_CONSTRAINTS ),defaultBase().push(P_CONSTRAINTS));
+                               base.push( P_CONSTRAINTS ),defaultBase().push(P_CONSTRAINTS));
 
         constraints = RuleConstraints.constraintsFor(constraintname,state).constraintNumber;
         state.output.exitIfErrors();
-        }
+    }
     
     /** This function replaces the old gt and lt functions that Rule used to require
         as it implemented the SortComparator interface.  If you had implemented those
@@ -248,4 +248,4 @@ public abstract class Rule implements Prototype, Comparable
         </pre></tt>
     */
     public abstract int compareTo(Object o);
-    }
+}

@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class IfFoodAhead extends GPNode implements EvalPrint
-    {
+{
     public String toString() { return "if-food-ahead"; }
 
     /*
@@ -43,12 +43,12 @@ public class IfFoodAhead extends GPNode implements EvalPrint
     public int expectedChildren() { return 2; }
 
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         Ant p = (Ant)problem;
         switch (p.orientation)
             {
@@ -76,17 +76,17 @@ public class IfFoodAhead extends GPNode implements EvalPrint
                 state.output.fatal("Whoa, somehow I got a bad orientation! (" + p.orientation + ")");
                 break;
             }
-        }
+    }
 
 
     public void evalPrint(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem,
-        final int[][] map2)
-        {
+                          final int thread,
+                          final GPData input,
+                          final ADFStack stack,
+                          final GPIndividual individual,
+                          final Problem problem,
+                          final int[][] map2)
+    {
         Ant p = (Ant)problem;
         switch (p.orientation)
             {
@@ -114,8 +114,8 @@ public class IfFoodAhead extends GPNode implements EvalPrint
                 state.output.fatal("Whoa, somehow I got a bad orientation! (" + p.orientation + ")");
                 break;
             }
-        }
     }
+}
 
 
 

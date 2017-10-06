@@ -62,7 +62,7 @@ import java.util.Enumeration;
  */
 
 public class GPTreeConstraints implements Clique
-    {
+{
     private static final long serialVersionUID = 1;
 
     public static final int SIZE_OF_BYTE = 256;
@@ -91,12 +91,12 @@ public class GPTreeConstraints implements Clique
     /** This must be called <i>after</i> the GPTypes and GPFunctionSets 
         have been set up. */
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         // What's my name?
         name = state.parameters.getString(base.push(P_NAME),null);
         if (name==null)
             state.output.fatal("No name was given for this function set.",
-                base.push(P_NAME));
+                               base.push(P_NAME));
 
         // Register me
         GPTreeConstraints old_constraints = 
@@ -133,22 +133,22 @@ public class GPTreeConstraints implements Clique
         Enumeration e = typ.elements();
         while (e.hasMoreElements())
             {
-            GPType t = (GPType)(e.nextElement());
-            GPNode[] i = functionset.nodes[t.type];
-            if (i.length==0) // yeesh
-                state.output.error("In function set " + functionset + " for the GPTreeConstraints " + this + ", no nodes at all are given with the return type " + t + " which is required by other functions in the function set or by the tree's return type.  This almost certainly indicates a serious typing error.", base);
-            else
-                {
-                i = functionset.terminals[t.type];
-                if (i.length==0) // uh oh
-                    state.output.warning("In function set " + functionset + " for the GPTreeConstraints " + this + ", no terminals are given with the return type " + t + " which is required by other functions in the function set or by the tree's return type.  Nearly all tree-builders in ECJ require the ability to add a terminal of any type for which there is a nonterminal, and at any time.  Without terminals, your code may not work.  One common indication that a tree-builder has failed due to this problem is if you get the MersenneTwister error 'n must be positive'.", base);
-                i = functionset.nonterminals[t.type];
-                if (i.length==0) // uh oh
-                    state.output.warning("In function set " + functionset + " for the GPTreeConstraints " + this + ", no *nonterminals* are given with the return type " + t + " which is required by other functions in the function set or by the tree's return type.  This may or may not be a problem for you.", base);
-                }
+                GPType t = (GPType)(e.nextElement());
+                GPNode[] i = functionset.nodes[t.type];
+                if (i.length==0) // yeesh
+                    state.output.error("In function set " + functionset + " for the GPTreeConstraints " + this + ", no nodes at all are given with the return type " + t + " which is required by other functions in the function set or by the tree's return type.  This almost certainly indicates a serious typing error.", base);
+                else
+                    {
+                        i = functionset.terminals[t.type];
+                        if (i.length==0) // uh oh
+                            state.output.warning("In function set " + functionset + " for the GPTreeConstraints " + this + ", no terminals are given with the return type " + t + " which is required by other functions in the function set or by the tree's return type.  Nearly all tree-builders in ECJ require the ability to add a terminal of any type for which there is a nonterminal, and at any time.  Without terminals, your code may not work.  One common indication that a tree-builder has failed due to this problem is if you get the MersenneTwister error 'n must be positive'.", base);
+                        i = functionset.nonterminals[t.type];
+                        if (i.length==0) // uh oh
+                            state.output.warning("In function set " + functionset + " for the GPTreeConstraints " + this + ", no *nonterminals* are given with the return type " + t + " which is required by other functions in the function set or by the tree's return type.  This may or may not be a problem for you.", base);
+                    }
             }
         state.output.exitIfErrors();
-        }
+    }
 
     // When completed, done will hold all the types which are needed
     // in the function set -- you can then check to make sure that
@@ -156,9 +156,9 @@ public class GPTreeConstraints implements Clique
     // one nonterminal.
 
     private void checkFunctionSetValidity(final EvolutionState state,
-        final Hashtable done, 
-        final GPType type)
-        {
+                                          final Hashtable done, 
+                                          final GPType type)
+    {
         // put type in the hashtable -- it's being used
         done.put(type,type);
         
@@ -172,10 +172,10 @@ public class GPTreeConstraints implements Clique
             for (int y=0;y<i[x].constraints(initializer).childtypes.length;y++)
                 if (done.get(i[x].constraints(initializer).childtypes[y])==null)
                     {
-                    checkFunctionSetValidity(
-                        state, done, i[x].constraints(initializer).childtypes[y]);
+                        checkFunctionSetValidity(
+                                                 state, done, i[x].constraints(initializer).childtypes[y]);
                     }
-        }
+    }
 
 
 
@@ -183,11 +183,11 @@ public class GPTreeConstraints implements Clique
         several times, you call state.output.exitIfErrors() once. */
 
     public static GPTreeConstraints constraintsFor(final String constraintsName,
-        final EvolutionState state)
-        {
+                                                   final EvolutionState state)
+    {
         GPTreeConstraints myConstraints = (GPTreeConstraints)(((GPInitializer)state.initializer).treeConstraintRepository.get(constraintsName));
         if (myConstraints==null)
             state.output.error("The GP tree constraint \"" + constraintsName + "\" could not be found.");
         return myConstraints;
-        }
     }
+}

@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class V8a extends GPNode
-    {
+{
     public final static int MODULO = 8;  // odd that it doesn't change with map size
 
     public String toString() { return "v8a"; }
@@ -45,12 +45,12 @@ public class V8a extends GPNode
     public int expectedChildren() { return 2; }
 
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         int resultx;
         int resulty;
 
@@ -63,8 +63,8 @@ public class V8a extends GPNode
         children[1].eval(state,thread,input,stack,individual,problem);
         rd.x = (resultx + rd.x) % MODULO;
         rd.y = (resulty + rd.y) % MODULO;
-        }
     }
+}
 
 
 

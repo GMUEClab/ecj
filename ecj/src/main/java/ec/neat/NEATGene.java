@@ -20,7 +20,7 @@ import ec.vector.*;
  *
  */
 public class NEATGene extends Gene
-    {
+{
     public final static String P_GENE = "gene";
 
     /** The weight of link this gene is represent. */
@@ -75,7 +75,7 @@ public class NEATGene extends Gene
      * any connection.
      */
     public void setup(EvolutionState state, Parameter base)
-        {
+    {
         weight = 0.0;
         // node id 1-indexed
         inNodeId = 0;
@@ -88,25 +88,25 @@ public class NEATGene extends Gene
         timeDelay = false;
         enable = true;
         frozen = false;
-        }
+    }
 
     public Parameter defaultBase()
-        {
+    {
         return NEATDefaults.base().push(P_GENE);
-        }
+    }
 
     @Override
-    public void reset(EvolutionState state, int thread)
-        {
+        public void reset(EvolutionState state, int thread)
+    {
         // frozen and timeDelay are not read from template genome, we set it
         // here
         frozen = false;
         timeDelay = false;
-        }
+    }
 
     /** Reset the gene with given parameters. */
     public void reset(double w, int iNodeId, int oNodeId, boolean recur, int innov, double mutNum)
-        {
+    {
         // Gene::Gene(double w, NNode *inode, NNode *onode, bool recur, double
         // innov, double mnum)
         weight = w;
@@ -120,11 +120,11 @@ public class NEATGene extends Gene
         timeDelay = false;
         enable = true;
         frozen = false;
-        }
+    }
 
     @Override
-    public Object clone()
-        {
+        public Object clone()
+    {
         // Gene::Gene(Gene *g,Trait *tp,NNode *inode,NNode *onode)
         // we do not clone the inNode and outNode instance
         NEATGene myobj = (NEATGene) (super.clone());
@@ -139,19 +139,19 @@ public class NEATGene extends Gene
         myobj.timeDelay = timeDelay;
 
         return myobj;
-        }
+    }
 
     public String printGeneToStringForHumans()
-        {
+    {
         return printGeneToString();
-        }
+    }
 
     /**
      * This method convert the gene in to human readable format. It can be
      * useful in debugging.
      */
     public String toString()
-        {
+    {
         StringBuffer stringBuffer = new StringBuffer();
         String mask03 = " 0.00000000000000000;-0.00000000000000000";
         DecimalFormat fmt03 = new DecimalFormat(mask03);
@@ -175,14 +175,14 @@ public class NEATGene extends Gene
             stringBuffer.append(" -RECUR-");
 
         return stringBuffer.toString();
-        }
+    }
 
     /**
      * This method is used to output a gene that is same as the format in start
      * genome file.
      */
     public String printGeneToString()
-        {
+    {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(Code.encode(inNode.nodeId));
         stringBuilder.append(Code.encode(outNode.nodeId));
@@ -193,7 +193,7 @@ public class NEATGene extends Gene
         stringBuilder.append(Code.encode(enable));
 
         return stringBuilder.toString();
-        }
+    }
 
     /**
      * This method is used to read a gene in start genome from file. Example :
@@ -202,7 +202,7 @@ public class NEATGene extends Gene
      * mutationNumber enable
      */
     public void readGeneFromString(String string, EvolutionState state)
-        {
+    {
         // Gene::Gene(const char *argline, std::vector<Trait*> &traits,
         // std::vector<NNode*> &nodes)
         DecodeReturn dr = new DecodeReturn(string);
@@ -220,7 +220,7 @@ public class NEATGene extends Gene
         mutationNumber = dr.d;
         Code.decode(dr);
         enable = (dr.l == (long) 1);
-        }
+    }
 
     /**
      * "Placeholder" method for generating a hashcode. The algorithm is stolen
@@ -228,7 +228,7 @@ public class NEATGene extends Gene
      * by no means "good" and is subject for improvement.
      */
     public int hashCode()
-        {
+    {
         int hash = innovationNumber;
         hash = (hash * 31 + 17 + inNodeId);
         hash = (hash * 31 + 17 + outNodeId);
@@ -237,11 +237,11 @@ public class NEATGene extends Gene
         if (enable) hash = (hash * 31 + 17);
         if (isRecurrent) hash = (hash * 31 + 13);  // different value
         return hash;
-        }
+    }
 
     @Override
-    public boolean equals(Object o)
-        {
+        public boolean equals(Object o)
+    {
         NEATGene g = (NEATGene) o;
         if (inNodeId != g.inNodeId)
             return false;
@@ -257,6 +257,6 @@ public class NEATGene extends Gene
             return false;
         return enable == g.enable;
 
-        }
-
     }
+
+}

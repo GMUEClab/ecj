@@ -49,7 +49,7 @@ import ec.simple.*;
  */
 
 public class Ant extends GPProblem implements SimpleProblemForm
-    {
+{
     public static final String P_FILE = "file";
     public static final String P_MOVES = "moves";
 
@@ -101,17 +101,17 @@ public class Ant extends GPProblem implements SimpleProblemForm
     public int pmod;
 
     public Object clone()
-        {
+    {
         Ant myobj = (Ant) (super.clone());
         myobj.map = new int[map.length][];
         for(int x=0;x<map.length;x++)
             myobj.map[x] = (int[])(map[x].clone());
         return myobj;
-        }
+    }
 
     public void setup(final EvolutionState state,
-        final Parameter base)
-        {
+                      final Parameter base)
+    {
         // very important, remember this
         super.setup(state,base);
 
@@ -136,54 +136,54 @@ public class Ant extends GPProblem implements SimpleProblemForm
         LineNumberReader lnr = null;
         try
             {
-            lnr = 
-                //new LineNumberReader(new FileReader(filename));
-                new LineNumberReader(new InputStreamReader(str));
+                lnr = 
+                    //new LineNumberReader(new FileReader(filename));
+                    new LineNumberReader(new InputStreamReader(str));
             
-            StringTokenizer st = new StringTokenizer(lnr.readLine()); // ugh
-            maxx = Integer.parseInt(st.nextToken());
-            maxy = Integer.parseInt(st.nextToken());
-            map = new int[maxx][maxy];
-            int y;
-            for(y=0;y<maxy;y++)
-                {
-                String s = lnr.readLine();
-                if (s==null)
+                StringTokenizer st = new StringTokenizer(lnr.readLine()); // ugh
+                maxx = Integer.parseInt(st.nextToken());
+                maxy = Integer.parseInt(st.nextToken());
+                map = new int[maxx][maxy];
+                int y;
+                for(y=0;y<maxy;y++)
                     {
-                    state.output.warning("Ant trail file ended prematurely");
-                    break;
+                        String s = lnr.readLine();
+                        if (s==null)
+                            {
+                                state.output.warning("Ant trail file ended prematurely");
+                                break;
+                            }
+                        int x;
+                        for(x=0;x<s.length();x++)
+                            {
+                                if (s.charAt(x)==' ')
+                                    map[x][y]=EMPTY;
+                                else if (s.charAt(x)=='#')
+                                    { map[x][y]=FOOD; food++; }
+                                else if (s.charAt(x)=='.')
+                                    map[x][y]=TRAIL;
+                                else state.output.error("Bad character '" + s.charAt(x) + "' on line number " + lnr.getLineNumber() + " of the Ant trail file.");
+                            }
+                        // fill out rest of X's
+                        for(int z=x;z<maxx;z++)
+                            map[z][y]=EMPTY;
                     }
-                int x;
-                for(x=0;x<s.length();x++)
-                    {
-                    if (s.charAt(x)==' ')
-                        map[x][y]=EMPTY;
-                    else if (s.charAt(x)=='#')
-                        { map[x][y]=FOOD; food++; }
-                    else if (s.charAt(x)=='.')
-                        map[x][y]=TRAIL;
-                    else state.output.error("Bad character '" + s.charAt(x) + "' on line number " + lnr.getLineNumber() + " of the Ant trail file.");
-                    }
-                // fill out rest of X's
-                for(int z=x;z<maxx;z++)
-                    map[z][y]=EMPTY;
-                }
-            // fill out rest of Y's
-            for (int z=y;z<maxy;z++)
-                for(int x=0;x<maxx;x++)
-                    map[x][z]=EMPTY;
+                // fill out rest of Y's
+                for (int z=y;z<maxy;z++)
+                    for(int x=0;x<maxx;x++)
+                        map[x][z]=EMPTY;
             }
         catch (NumberFormatException e)
             {
-            state.output.fatal("The Ant trail file does not begin with x and y integer values.");
+                state.output.fatal("The Ant trail file does not begin with x and y integer values.");
             }
         catch (IOException e)
             {
-            state.output.fatal("The Ant trail file could not be read due to an IOException:\n" + e);
+                state.output.fatal("The Ant trail file could not be read due to an IOException:\n" + e);
             }
         finally
             {
-            try { if (lnr != null) lnr.close(); } catch (IOException e) { }
+                try { if (lnr != null) lnr.close(); } catch (IOException e) { }
             }
         state.output.exitIfErrors();
 
@@ -195,44 +195,44 @@ public class Ant extends GPProblem implements SimpleProblemForm
             for(int y=0;y<map[0].length;y++)
                 if (map[x][y]==FOOD) 
                     { foodx[tmpf] = x; foody[tmpf] = y; tmpf++; }
-        }
+    }
 
     public void evaluate(final EvolutionState state, 
-        final Individual ind, 
-        final int subpopulation,
-        final int threadnum)
-        {
+                         final Individual ind, 
+                         final int subpopulation,
+                         final int threadnum)
+    {
         if (!ind.evaluated)  // don't bother reevaluating
             {
-            sum = 0;            
-            posx = 0;
-            posy = 0;
-            orientation = O_RIGHT;
+                sum = 0;            
+                posx = 0;
+                posy = 0;
+                orientation = O_RIGHT;
 
-            for(moves=0;moves<maxMoves && sum<food; )
-                ((GPIndividual)ind).trees[0].child.eval(
-                    state,threadnum,input,stack,((GPIndividual)ind),this);
+                for(moves=0;moves<maxMoves && sum<food; )
+                    ((GPIndividual)ind).trees[0].child.eval(
+                                                            state,threadnum,input,stack,((GPIndividual)ind),this);
                 
-            // the fitness better be KozaFitness!
-            KozaFitness f = ((KozaFitness)ind.fitness);
-            f.setStandardizedFitness(state,(food - sum));
-            f.hits = sum;
-            ind.evaluated = true;
+                // the fitness better be KozaFitness!
+                KozaFitness f = ((KozaFitness)ind.fitness);
+                f.setStandardizedFitness(state,(food - sum));
+                f.hits = sum;
+                ind.evaluated = true;
 
-            // clean up array
-            for(int y=0;y<food;y++)
-                map[foodx[y]][foody[y]] = FOOD;
+                // clean up array
+                for(int y=0;y<food;y++)
+                    map[foodx[y]][foody[y]] = FOOD;
             }
-        }
+    }
 
     public void describe(
-        final EvolutionState state, 
-        final Individual ind, 
-        final int subpopulation, 
-        final int threadnum,
-        final int log)
+                         final EvolutionState state, 
+                         final Individual ind, 
+                         final int subpopulation, 
+                         final int threadnum,
+                         final int log)
 
-        {
+    {
         state.output.println("\n\nBest Individual's Map\n=====================", log);
 
         sum = 0;
@@ -248,34 +248,34 @@ public class Ant extends GPProblem implements SimpleProblemForm
         map2[posx][posy] = pmod; pmod++;
         for(moves=0; moves<maxMoves && sum<food; )
             ((EvalPrint)(((GPIndividual)ind).trees[0].child)).evalPrint(
-                state,threadnum,input,stack,((GPIndividual)ind),this,
-                map2);
+                                                                        state,threadnum,input,stack,((GPIndividual)ind),this,
+                                                                        map2);
         // print out the map
         for(int y=0;y<map2.length;y++)
             {
-            for(int x=0;x<map2.length;x++)
-                {
-                switch(map2[x][y])
+                for(int x=0;x<map2.length;x++)
                     {
-                    case FOOD: 
-                        state.output.print("#",log);
-                        break;
-                    case EMPTY: 
-                        state.output.print(".",log);
-                        break;
-                    case TRAIL: 
-                        state.output.print("+",log);
-                        break;
-                    case ATE:
-                        state.output.print("?",log);
-                        break;
-                    default:
-                        state.output.print(""+((char)map2[x][y]),log);
-                        break;
+                        switch(map2[x][y])
+                            {
+                            case FOOD: 
+                                state.output.print("#",log);
+                                break;
+                            case EMPTY: 
+                                state.output.print(".",log);
+                                break;
+                            case TRAIL: 
+                                state.output.print("+",log);
+                                break;
+                            case ATE:
+                                state.output.print("?",log);
+                                break;
+                            default:
+                                state.output.print(""+((char)map2[x][y]),log);
+                                break;
+                            }
                     }
-                }
-            state.output.println("",log);
+                state.output.println("",log);
             }
 
-        }
     }
+}

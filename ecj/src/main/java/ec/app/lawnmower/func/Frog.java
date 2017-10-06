@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class Frog extends GPNode
-    {
+{
     public String toString() { return "frog"; }
 
     /*
@@ -43,12 +43,12 @@ public class Frog extends GPNode
     public int expectedChildren() { return 1; }
 
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         Lawnmower p = (Lawnmower)problem;
         LawnmowerData d = (LawnmowerData)input;
 
@@ -98,13 +98,13 @@ public class Frog extends GPNode
         p.moves++;
         if (p.map[p.posx][p.posy]==Lawnmower.UNMOWED)
             {
-            p.sum++;
-            p.map[p.posx][p.posy] = p.moves;
+                p.sum++;
+                p.map[p.posx][p.posy] = p.moves;
             }
 
         // return [x,y] -- to do this, simply don't modify input
-        }
     }
+}
 
 
 

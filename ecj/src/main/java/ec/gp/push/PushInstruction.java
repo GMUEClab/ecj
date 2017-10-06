@@ -28,26 +28,26 @@ import ec.util.*;
 
 
 public abstract class PushInstruction extends Instruction implements Prototype
-    {
+{
     public static final String P_INSTRUCTION = "func";
     public Parameter defaultBase() 
-        { 
+    { 
         return PushDefaults.base().push(P_INSTRUCTION);
-        }
+    }
         
     public void setup(EvolutionState state, Parameter base) { }
     
     public Object clone() 
-        {
+    {
         try
             { 
-            PushInstruction myobj = (PushInstruction) (super.clone());
+                PushInstruction myobj = (PushInstruction) (super.clone());
     
-            return myobj;
+                return myobj;
             }
         catch (CloneNotSupportedException e)
             { throw new InternalError(); } // never happens
-        } 
+    } 
         
     public abstract void Execute(Interpreter interpreter);
-    }
+}

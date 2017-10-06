@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class If extends GPNode
-    {
+{
     public String toString() { return "if"; }
 
     /*
@@ -43,12 +43,12 @@ public class If extends GPNode
     public int expectedChildren() { return 3; }
 
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         MultiplexerData md = (MultiplexerData)input;
         long[] dat_11_1=null;  // quiets compiler complaints
         long[] dat_11_2=null;  // quiets compiler complaints
@@ -66,10 +66,10 @@ public class If extends GPNode
             dat_6_1 = md.dat_6;
         else // md.status == MultiplexerData.STATUS_11
             {
-            dat_11_1 = md.popDat11();
-            System.arraycopy(md.dat_11,0,
-                dat_11_1,0,
-                MultiplexerData.MULTI_11_NUM_BITSTRINGS);
+                dat_11_1 = md.popDat11();
+                System.arraycopy(md.dat_11,0,
+                                 dat_11_1,0,
+                                 MultiplexerData.MULTI_11_NUM_BITSTRINGS);
             }
 
         children[1].eval(state,thread,input,stack,individual,problem);
@@ -80,10 +80,10 @@ public class If extends GPNode
             dat_6_2  = md.dat_6;
         else // md.status == MultiplexerData.STATUS_11
             {
-            dat_11_2 = md.popDat11();
-            System.arraycopy(md.dat_11,0,
-                dat_11_2,0,
-                MultiplexerData.MULTI_11_NUM_BITSTRINGS);
+                dat_11_2 = md.popDat11();
+                System.arraycopy(md.dat_11,0,
+                                 dat_11_2,0,
+                                 MultiplexerData.MULTI_11_NUM_BITSTRINGS);
             }
 
         // tweak -- if a then b else c is equivalent to
@@ -95,8 +95,8 @@ public class If extends GPNode
 
         if (md.status == MultiplexerData.STATUS_3)
             md.dat_3 = (byte)(
-                ((dat_3_1 ^ (byte)(-1)) | dat_3_2 ) &
-                ((dat_3_1 | md.dat_3)));
+                              ((dat_3_1 ^ (byte)(-1)) | dat_3_2 ) &
+                              ((dat_3_1 | md.dat_3)));
 
         else if (md.status == MultiplexerData.STATUS_6)
             md.dat_6 = 
@@ -105,15 +105,15 @@ public class If extends GPNode
 
         else // md.status == MultiplexerData.STATUS_11
             {
-            for(int x=0;x<MultiplexerData.MULTI_11_NUM_BITSTRINGS;x++)
-                md.dat_11[x] = 
-                    ((dat_11_1[x] ^ (-1L)) | dat_11_2[x] ) &
-                    ((dat_11_1[x] | md.dat_11[x]));
-            md.pushDat11(dat_11_2);
-            md.pushDat11(dat_11_1);
+                for(int x=0;x<MultiplexerData.MULTI_11_NUM_BITSTRINGS;x++)
+                    md.dat_11[x] = 
+                        ((dat_11_1[x] ^ (-1L)) | dat_11_2[x] ) &
+                        ((dat_11_1[x] | md.dat_11[x]));
+                md.pushDat11(dat_11_2);
+                md.pushDat11(dat_11_1);
             }
-        }
     }
+}
 
 
 

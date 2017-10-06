@@ -67,7 +67,7 @@ import ec.steadystate.*;
  */
 
 public class DoubleTournamentSelection extends SelectionMethod implements SteadyStateBSourceForm
-    {
+{
     /** default base */
     public static final String P_TOURNAMENT = "double-tournament";
 
@@ -94,12 +94,12 @@ public class DoubleTournamentSelection extends SelectionMethod implements Steady
     public boolean doLengthFirst;
 
     public Parameter defaultBase()
-        {
+    {
         return SelectDefaults.base().push(P_TOURNAMENT);
-        }
+    }
     
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
         
         Parameter def = defaultBase();
@@ -109,15 +109,15 @@ public class DoubleTournamentSelection extends SelectionMethod implements Steady
             state.output.fatal("Tournament size must be >= 1.",base.push(P_SIZE),def.push(P_SIZE));
         else if (val > 1 && val < 2) // pick with probability
             {
-            size = 2;
-            probabilityOfSelection = (val/2);
+                size = 2;
+                probabilityOfSelection = (val/2);
             }
         else if (val != (int)val)  // it's not an integer
             state.output.fatal("If >= 2, Tournament size must be an integer.", base.push(P_SIZE), def.push(P_SIZE));
         else
             {
-            size = (int)val;
-            probabilityOfSelection = 1.0;
+                size = (int)val;
+                probabilityOfSelection = 1.0;
             }
 
         val = state.parameters.getDouble(base.push(P_SIZE2),def.push(P_SIZE2),1.0);
@@ -125,21 +125,21 @@ public class DoubleTournamentSelection extends SelectionMethod implements Steady
             state.output.fatal("Tournament size2 must be >= 1.",base.push(P_SIZE2),def.push(P_SIZE2));
         else if (val > 1 && val < 2) // pick with probability
             {
-            size2 = 2;
-            probabilityOfSelection2 = (val/2);
+                size2 = 2;
+                probabilityOfSelection2 = (val/2);
             }
         else if (val != (int)val)  // it's not an integer
             state.output.fatal("If >= 2, Tournament size2 must be an integer.", base.push(P_SIZE2), def.push(P_SIZE2));
         else
             {
-            size2 = (int)val;
-            probabilityOfSelection2 = 1.0;
+                size2 = (int)val;
+                probabilityOfSelection2 = 1.0;
             }
 
         doLengthFirst = state.parameters.getBoolean(base.push(P_DOLENGTHFIRST),def.push(P_DOLENGTHFIRST),true);
         pickWorst = state.parameters.getBoolean(base.push(P_PICKWORST),def.push(P_PICKWORST),false);
         pickWorst2 = state.parameters.getBoolean(base.push(P_PICKWORST2),def.push(P_PICKWORST2),false);
-        }
+    }
 
     /**
        Produces the index of a person selected from among several by a tournament.
@@ -147,53 +147,53 @@ public class DoubleTournamentSelection extends SelectionMethod implements Steady
        otherwise the size of the individuals.
     */
     public int produce(final int subpopulation,
-        final EvolutionState state,
-        final int thread)
-        {
+                       final EvolutionState state,
+                       final int thread)
+    {
         int[] inds = new int[size2];
         for(int x=0;x<size2;x++) inds[x] = make(subpopulation,state,thread);
 
         if (!doLengthFirst)
             {
-            // pick size random individuals, then pick the best.
-            ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
-            int i = inds[0];
-            int bad = i;
+                // pick size random individuals, then pick the best.
+                ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
+                int i = inds[0];
+                int bad = i;
             
-            for (int x=1;x<size2;x++)
-                {
-                int j = inds[x];
-                if (pickWorst2)
-                    { if (oldinds.get(j).size() > oldinds.get(i).size()) { bad = i; i = j; } else bad = j; }
-                else
-                    { if (oldinds.get(j).size() < oldinds.get(i).size()) { bad = i; i = j;} else bad = j; }
-                }
+                for (int x=1;x<size2;x++)
+                    {
+                        int j = inds[x];
+                        if (pickWorst2)
+                            { if (oldinds.get(j).size() > oldinds.get(i).size()) { bad = i; i = j; } else bad = j; }
+                        else
+                            { if (oldinds.get(j).size() < oldinds.get(i).size()) { bad = i; i = j;} else bad = j; }
+                    }
             
-            if (probabilityOfSelection2 != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection2))
-                i = bad;
-            return i;
+                if (probabilityOfSelection2 != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection2))
+                    i = bad;
+                return i;
             }
         else 
             {
-            // pick size random individuals, then pick the best.
-            ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
-            int i = inds[0];
-            int bad = i;
+                // pick size random individuals, then pick the best.
+                ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
+                int i = inds[0];
+                int bad = i;
             
-            for (int x=1;x<size2;x++)
-                {
-                int j = inds[x];
-                if (pickWorst2)
-                    { if (!(oldinds.get(j).fitness.betterThan(oldinds.get(i).fitness))) { bad = i; i = j; } else bad = j; }
-                else
-                    { if (oldinds.get(j).fitness.betterThan(oldinds.get(i).fitness)) { bad = i; i = j;} else bad = j; }
-                }
+                for (int x=1;x<size2;x++)
+                    {
+                        int j = inds[x];
+                        if (pickWorst2)
+                            { if (!(oldinds.get(j).fitness.betterThan(oldinds.get(i).fitness))) { bad = i; i = j; } else bad = j; }
+                        else
+                            { if (oldinds.get(j).fitness.betterThan(oldinds.get(i).fitness)) { bad = i; i = j;} else bad = j; }
+                    }
             
-            if (probabilityOfSelection2 != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection2))
-                i = bad;
-            return i;
+                if (probabilityOfSelection2 != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection2))
+                    i = bad;
+                return i;
             }
-        }
+    }
 
     /**
        Produces the index of a person selected from among several by a tournament.
@@ -201,59 +201,59 @@ public class DoubleTournamentSelection extends SelectionMethod implements Steady
        otherwise the fitness of the individuals.
     */
     public int make(final int subpopulation,
-        final EvolutionState state,
-        final int thread)
-        {
+                    final EvolutionState state,
+                    final int thread)
+    {
         if (doLengthFirst) // if length first, the first tournament is based on size
             {
-            // pick size random individuals, then pick the best.
-            ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
-            int i = state.random[thread].nextInt(oldinds.size()) ;
-            int bad = i;
+                // pick size random individuals, then pick the best.
+                ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
+                int i = state.random[thread].nextInt(oldinds.size()) ;
+                int bad = i;
             
-            for (int x=1;x<size;x++)
-                {
-                int j = state.random[thread].nextInt(oldinds.size());
-                if (pickWorst)
-                    { if (oldinds.get(j).size() > oldinds.get(i).size()) { bad = i; i = j; } else bad = j; }
-                else
-                    { if (oldinds.get(j).size() < oldinds.get(i).size()) { bad = i; i = j;} else bad = j; }
-                }
+                for (int x=1;x<size;x++)
+                    {
+                        int j = state.random[thread].nextInt(oldinds.size());
+                        if (pickWorst)
+                            { if (oldinds.get(j).size() > oldinds.get(i).size()) { bad = i; i = j; } else bad = j; }
+                        else
+                            { if (oldinds.get(j).size() < oldinds.get(i).size()) { bad = i; i = j;} else bad = j; }
+                    }
             
-            if (probabilityOfSelection != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection))
-                i = bad;
-            return i;
+                if (probabilityOfSelection != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection))
+                    i = bad;
+                return i;
             }
         else
             {
-            // pick size random individuals, then pick the best.
-            ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
-            int i = state.random[thread].nextInt(oldinds.size()) ;
-            int bad = i;
+                // pick size random individuals, then pick the best.
+                ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
+                int i = state.random[thread].nextInt(oldinds.size()) ;
+                int bad = i;
             
-            for (int x=1;x<size;x++)
-                {
-                int j = state.random[thread].nextInt(oldinds.size());
-                if (pickWorst)
-                    { if (!(oldinds.get(j).fitness.betterThan(oldinds.get(i).fitness))) { bad = i; i = j; } else bad = j; }
-                else
-                    { if (oldinds.get(j).fitness.betterThan(oldinds.get(i).fitness)) { bad = i; i = j;} else bad = j; }
-                }
+                for (int x=1;x<size;x++)
+                    {
+                        int j = state.random[thread].nextInt(oldinds.size());
+                        if (pickWorst)
+                            { if (!(oldinds.get(j).fitness.betterThan(oldinds.get(i).fitness))) { bad = i; i = j; } else bad = j; }
+                        else
+                            { if (oldinds.get(j).fitness.betterThan(oldinds.get(i).fitness)) { bad = i; i = j;} else bad = j; }
+                    }
             
-            if (probabilityOfSelection != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection))
-                i = bad;
-            return i;
+                if (probabilityOfSelection != 1.0 && !state.random[thread].nextBoolean(probabilityOfSelection))
+                    i = bad;
+                return i;
             }
-        }
+    }
 
 
     public void individualReplaced(final SteadyStateEvolutionState state,
-        final int subpopulation,
-        final int thread,
-        final int individual)
-        { return; }
+                                   final int subpopulation,
+                                   final int thread,
+                                   final int individual)
+    { return; }
     
     public void sourcesAreProperForm(final SteadyStateEvolutionState state)
-        { return; }
+    { return; }
     
-    }
+}

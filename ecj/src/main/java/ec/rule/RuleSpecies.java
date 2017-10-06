@@ -32,29 +32,29 @@ import java.io.*;
  */
 
 public class RuleSpecies extends Species
-    {
+{
     public static final String P_RULESPECIES = "species";
 
     public Parameter defaultBase()
-        {
+    {
         return RuleDefaults.base().push(P_RULESPECIES);
-        }
+    }
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
 
         // check to make sure that our individual prototype is a RuleIndividual
         if (!(i_prototype instanceof RuleIndividual))
             state.output.fatal("The Individual class for the Species " + getClass().getName() + " is must be a subclass of ec.rule.RuleIndividual.", base );
-        }    
+    }    
 
     public Individual newIndividual(EvolutionState state, int thread) 
-        {
+    {
         RuleIndividual newind = (RuleIndividual)(super.newIndividual(state, thread));
         
         newind.reset( state, thread);
 
         return newind;
-        }
     }
+}

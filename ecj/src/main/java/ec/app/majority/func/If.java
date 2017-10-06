@@ -11,18 +11,18 @@ import ec.gp.*;
 import ec.util.*;
 
 public class If extends GPNode
-    {
+{
     public String toString() { return "if"; }
 
     public int expectedChildren() { return 3; }
     
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         children[0].eval(state,thread,input,stack,individual,problem);
 
         MajorityData md = (MajorityData) input;
@@ -40,8 +40,8 @@ public class If extends GPNode
         // (!Y v Z) ^ (Y v MD)
         md.data0 = (~y0 | z0) & (y0 | (md.data0));
         md.data1 = (~y1 | z1) & (y1 | (md.data1));
-        }
     }
+}
 
 
 

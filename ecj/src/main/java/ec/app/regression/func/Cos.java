@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class Cos extends GPNode
-    {
+{
     public String toString() { return "cos"; }
 
     /*
@@ -43,18 +43,18 @@ public class Cos extends GPNode
     public int expectedChildren() { return 1; }
 
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         RegressionData rd = ((RegressionData)(input));
 
         children[0].eval(state,thread,input,stack,individual,problem);
         rd.x = /*Strict*/Math.cos(rd.x);
-        }
     }
+}
 
 
 

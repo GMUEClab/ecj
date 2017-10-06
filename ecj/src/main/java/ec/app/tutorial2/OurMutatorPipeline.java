@@ -32,7 +32,7 @@ import java.util.HashMap;
 
 
 public class OurMutatorPipeline extends BreedingPipeline
-    {
+{
     public static final String P_OURMUTATION = "our-mutation";
 
     // We have to specify a default base, even though we never use it 
@@ -49,12 +49,12 @@ public class OurMutatorPipeline extends BreedingPipeline
     // source to stick those individuals into inds[] and then mutating them
     // right there.
     public int produce(final int min,
-        final int max,
-        final int subpopulation,
-        final ArrayList<Individual> inds,
-        final EvolutionState state,
-        final int thread, HashMap<String, Object> misc)
-        {
+                       final int max,
+                       final int subpopulation,
+                       final ArrayList<Individual> inds,
+                       final EvolutionState state,
+                       final int thread, HashMap<String, Object> misc)
+    {
         int start = inds.size();
         
         // grab individuals from our source and stick 'em right into inds.
@@ -64,7 +64,7 @@ public class OurMutatorPipeline extends BreedingPipeline
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
             {
-            return n;
+                return n;
             }
 
         // Check to make sure that the individuals are IntegerVectorIndividuals and
@@ -75,23 +75,23 @@ public class OurMutatorPipeline extends BreedingPipeline
 
         if (!(inds.get(start) instanceof IntegerVectorIndividual)) // uh oh, wrong kind of individual
             state.output.fatal("OurMutatorPipeline didn't get an IntegerVectorIndividual." +
-                "The offending individual is in subpopulation " + subpopulation + " and it's:" + inds.get(start));
+                               "The offending individual is in subpopulation " + subpopulation + " and it's:" + inds.get(start));
         IntegerVectorSpecies species = (IntegerVectorSpecies)(inds.get(start).species);
 
         // mutate 'em!
         for(int q=start;q<n+start;q++)
             {
-            IntegerVectorIndividual i = (IntegerVectorIndividual)inds.get(q);
-            for(int x=0;x<i.genome.length;x++)
-                if (state.random[thread].nextBoolean(species.mutationProbability(x)))
-                    i.genome[x] = -i.genome[x];
-            // it's a "new" individual, so it's no longer been evaluated
-            i.evaluated=false;
+                IntegerVectorIndividual i = (IntegerVectorIndividual)inds.get(q);
+                for(int x=0;x<i.genome.length;x++)
+                    if (state.random[thread].nextBoolean(species.mutationProbability(x)))
+                        i.genome[x] = -i.genome[x];
+                // it's a "new" individual, so it's no longer been evaluated
+                i.evaluated=false;
             }
 
         return n;
-        }
-
     }
+
+}
     
     

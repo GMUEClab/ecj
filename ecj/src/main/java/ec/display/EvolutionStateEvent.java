@@ -19,13 +19,13 @@ import java.util.EventObject;
  */
 public class EvolutionStateEvent
     extends EventObject 
-    {
+{
 
     /**
      * @param source
      */
     public EvolutionStateEvent(Object source) 
-        {
+    {
         super(source);
-        }
     }
+}

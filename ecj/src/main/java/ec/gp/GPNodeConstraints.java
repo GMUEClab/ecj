@@ -63,7 +63,7 @@ import ec.util.*;
  */
 
 public class GPNodeConstraints implements Clique
-    {
+{
     public static final int SIZE_OF_BYTE = 256;
     public final static String P_NAME = "name";
     public final static String P_RETURNS = "returns";
@@ -97,12 +97,12 @@ public class GPNodeConstraints implements Clique
 
     /** This must be called <i>after</i> the GPTypes have been set up. */
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         // What's my name?
         name = state.parameters.getString(base.push(P_NAME),null);
         if (name==null)
             state.output.fatal("No name was given for this node constraints.",
-                base.push(P_NAME));
+                               base.push(P_NAME));
 
         // Register me
         GPNodeConstraints old_constraints = (GPNodeConstraints)(((GPInitializer)state.initializer).nodeConstraintRepository.put(name,this));
@@ -119,10 +119,10 @@ public class GPNodeConstraints implements Clique
 
         if (state.parameters.exists(base.push(P_PROBABILITY),null))
             {
-            double f = state.parameters.getDouble(base.push(P_PROBABILITY),null,0);
-            if (f < 0)
-                state.output.fatal("The probability of selection is < 0, which is not valid.",base.push(P_PROBABILITY),null);
-            probabilityOfSelection = f;
+                double f = state.parameters.getDouble(base.push(P_PROBABILITY),null,0);
+                if (f < 0)
+                    state.output.fatal("The probability of selection is < 0, which is not valid.",base.push(P_PROBABILITY),null);
+                probabilityOfSelection = f;
             }
         else probabilityOfSelection = DEFAULT_PROBABILITY;
 
@@ -139,25 +139,25 @@ public class GPNodeConstraints implements Clique
         // Load my children
         for (x=0;x<childtypes.length;x++)
             {
-            s = state.parameters.getString(p.push(""+x),null);
-            if (s==null)
-                state.output.fatal("Type #" + x + " is not defined for the GPNodeConstraints " + name +  ".", base.push(""+x));
-            childtypes[x] = GPType.typeFor(s,state);
+                s = state.parameters.getString(p.push(""+x),null);
+                if (s==null)
+                    state.output.fatal("Type #" + x + " is not defined for the GPNodeConstraints " + name +  ".", base.push(""+x));
+                childtypes[x] = GPType.typeFor(s,state);
             }
         // ...because I promised when I called typeFor(...)
         state.output.exitIfErrors();    
-        }
+    }
 
 
     /** You must guarantee that after calling constraintsFor(...) one or
         several times, you call state.output.exitIfErrors() once. */
 
     public static GPNodeConstraints constraintsFor(final String constraintsName,
-        final EvolutionState state)
-        {
+                                                   final EvolutionState state)
+    {
         GPNodeConstraints myConstraints = (GPNodeConstraints)(((GPInitializer)state.initializer).nodeConstraintRepository.get(constraintsName));
         if (myConstraints==null)
             state.output.error("The GP node constraint \"" + constraintsName + "\" could not be found.");
         return myConstraints;
-        }
     }
+}

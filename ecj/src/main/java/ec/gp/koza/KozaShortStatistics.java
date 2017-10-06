@@ -76,7 +76,7 @@ import ec.simple.*;
  */
 
 public class KozaShortStatistics extends SimpleShortStatistics
-    {
+{
     public static final String P_DO_DEPTH = "do-depth";
 
     public boolean doDepth;
@@ -88,13 +88,13 @@ public class KozaShortStatistics extends SimpleShortStatistics
 
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
         doDepth = state.parameters.getBoolean(base.push(P_DO_DEPTH),null,false);
-        }
+    }
 
     public void postInitializationStatistics(final EvolutionState state)
-        {
+    {
         super.postInitializationStatistics(state);
                 
         totalDepthSoFarTree = new long[state.population.subpops.size()][];
@@ -102,65 +102,65 @@ public class KozaShortStatistics extends SimpleShortStatistics
 
         for(int x = 0; x < state.population.subpops.size(); x++)
             {
-            // check to make sure they're the right class
-            if ( !(state.population.subpops.get(x).species instanceof GPSpecies ))
-                state.output.fatal("Subpopulation " + x +
-                    " is not of the species form GPSpecies." + 
-                    "  Cannot do timing statistics with KozaShortStatistics.");
+                // check to make sure they're the right class
+                if ( !(state.population.subpops.get(x).species instanceof GPSpecies ))
+                    state.output.fatal("Subpopulation " + x +
+                                       " is not of the species form GPSpecies." + 
+                                       "  Cannot do timing statistics with KozaShortStatistics.");
                 
-            GPIndividual i = (GPIndividual)(state.population.subpops.get(x).individuals.get(0));
-            totalDepthSoFarTree[x] = new long[i.trees.length];
-            totalSizeSoFarTree[x] = new long[i.trees.length];
+                GPIndividual i = (GPIndividual)(state.population.subpops.get(x).individuals.get(0));
+                totalDepthSoFarTree[x] = new long[i.trees.length];
+                totalSizeSoFarTree[x] = new long[i.trees.length];
             }
-        }
+    }
 
 
     protected void prepareStatistics(EvolutionState state)
-        {
+    {
         totalDepthThisGenTree = new long[state.population.subpops.size()][];
         totalSizeThisGenTree = new long[state.population.subpops.size()][];
 
         for(int x = 0; x < state.population.subpops.size(); x++)
             {
-            GPIndividual i = (GPIndividual)(state.population.subpops.get(x).individuals.get(0));
-            totalDepthThisGenTree[x] = new long[i.trees.length];
-            totalSizeThisGenTree[x] = new long[i.trees.length];
+                GPIndividual i = (GPIndividual)(state.population.subpops.get(x).individuals.get(0));
+                totalDepthThisGenTree[x] = new long[i.trees.length];
+                totalSizeThisGenTree[x] = new long[i.trees.length];
             }
-        }
+    }
 
 
     protected void gatherExtraSubpopStatistics(EvolutionState state, int subpop, int individual)
-        {
+    {
         GPIndividual i = (GPIndividual)(state.population.subpops.get(subpop).individuals.get(individual));
         for(int z =0; z < i.trees.length; z++)
             {
-            totalDepthThisGenTree[subpop][z] += i.trees[z].child.depth();
-            totalDepthSoFarTree[subpop][z] += totalDepthThisGenTree[subpop][z];
-            totalSizeThisGenTree[subpop][z] += i.trees[z].child.numNodes(GPNode.NODESEARCH_ALL);
-            totalSizeSoFarTree[subpop][z] += totalSizeThisGenTree[subpop][z];
+                totalDepthThisGenTree[subpop][z] += i.trees[z].child.depth();
+                totalDepthSoFarTree[subpop][z] += totalDepthThisGenTree[subpop][z];
+                totalSizeThisGenTree[subpop][z] += i.trees[z].child.numNodes(GPNode.NODESEARCH_ALL);
+                totalSizeSoFarTree[subpop][z] += totalSizeThisGenTree[subpop][z];
             }
-        }
+    }
 
     protected void printExtraSubpopStatisticsBefore(EvolutionState state, int subpop)
-        {
+    {
         if (doDepth)
             {
-            state.output.print("[ ", statisticslog);
-            for(int z = 0 ; z < totalDepthThisGenTree[subpop].length; z++)
-                state.output.print("" + (totalIndsThisGen[subpop] > 0 ? ((double)totalDepthThisGenTree[subpop][z])/totalIndsThisGen[subpop] : 0) + " ",  statisticslog);
-            state.output.print("] ", statisticslog);
+                state.output.print("[ ", statisticslog);
+                for(int z = 0 ; z < totalDepthThisGenTree[subpop].length; z++)
+                    state.output.print("" + (totalIndsThisGen[subpop] > 0 ? ((double)totalDepthThisGenTree[subpop][z])/totalIndsThisGen[subpop] : 0) + " ",  statisticslog);
+                state.output.print("] ", statisticslog);
             }
         if (doSize)
             {
-            state.output.print("[ ", statisticslog);
-            for(int z = 0 ; z < totalSizeThisGenTree[subpop].length; z++)
-                state.output.print("" + (totalIndsThisGen[subpop] > 0 ? ((double)totalSizeThisGenTree[subpop][z])/totalIndsThisGen[subpop] : 0) + " ",  statisticslog);
-            state.output.print("] ", statisticslog);
+                state.output.print("[ ", statisticslog);
+                for(int z = 0 ; z < totalSizeThisGenTree[subpop].length; z++)
+                    state.output.print("" + (totalIndsThisGen[subpop] > 0 ? ((double)totalSizeThisGenTree[subpop][z])/totalIndsThisGen[subpop] : 0) + " ",  statisticslog);
+                state.output.print("] ", statisticslog);
             }
-        }
+    }
 
     protected void printExtraPopStatisticsBefore(EvolutionState state)
-        {
+    {
         long[] totalDepthThisGenTreePop = new long[totalDepthSoFarTree[0].length];
         long[] totalSizeThisGenTreePop = new long[totalSizeSoFarTree[0].length];                // will assume each subpop has the same tree size
         long totalIndsThisGenPop = 0;
@@ -171,27 +171,27 @@ public class KozaShortStatistics extends SimpleShortStatistics
 
         for(int y = 0; y < subpops; y++)
             {
-            totalIndsThisGenPop += totalIndsThisGen[y];
-            for(int z =0; z < totalSizeThisGenTreePop.length; z++)
-                totalSizeThisGenTreePop[z] += totalSizeThisGenTree[y][z];
-            for(int z =0; z < totalDepthThisGenTreePop.length; z++)
-                totalDepthThisGenTreePop[z] += totalDepthThisGenTree[y][z];
+                totalIndsThisGenPop += totalIndsThisGen[y];
+                for(int z =0; z < totalSizeThisGenTreePop.length; z++)
+                    totalSizeThisGenTreePop[z] += totalSizeThisGenTree[y][z];
+                for(int z =0; z < totalDepthThisGenTreePop.length; z++)
+                    totalDepthThisGenTreePop[z] += totalDepthThisGenTree[y][z];
             }
 
         if (doDepth)
             {
-            state.output.print("[ ", statisticslog);
-            for(int z = 0 ; z < totalDepthThisGenTreePop.length; z++)
-                state.output.print("" + (totalIndsThisGenPop > 0 ? ((double)totalDepthThisGenTreePop[z])/totalIndsThisGenPop : 0) + " ",  statisticslog);
-            state.output.print("] ", statisticslog);
+                state.output.print("[ ", statisticslog);
+                for(int z = 0 ; z < totalDepthThisGenTreePop.length; z++)
+                    state.output.print("" + (totalIndsThisGenPop > 0 ? ((double)totalDepthThisGenTreePop[z])/totalIndsThisGenPop : 0) + " ",  statisticslog);
+                state.output.print("] ", statisticslog);
             }
         if (doSize)
             {
-            state.output.print("[ ", statisticslog);
-            for(int z = 0 ; z < totalSizeThisGenTreePop.length; z++)
-                state.output.print("" + (totalIndsThisGenPop > 0 ? ((double)totalSizeThisGenTreePop[z])/totalIndsThisGenPop : 0) + " ",  statisticslog);
-            state.output.print("] ", statisticslog);
+                state.output.print("[ ", statisticslog);
+                for(int z = 0 ; z < totalSizeThisGenTreePop.length; z++)
+                    state.output.print("" + (totalIndsThisGenPop > 0 ? ((double)totalSizeThisGenTreePop[z])/totalIndsThisGenPop : 0) + " ",  statisticslog);
+                state.output.print("] ", statisticslog);
             }
-        }
     }
+}
         

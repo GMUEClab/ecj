@@ -12,7 +12,7 @@ import ec.*;
 import ec.util.*;
 
 public class OurSelection extends SelectionMethod
-    {
+{
     // We have to specify a default base
     public static final String P_OURSELECTION = "our-selection";
     public Parameter defaultBase() { return new Parameter(P_OURSELECTION); }
@@ -22,7 +22,7 @@ public class OurSelection extends SelectionMethod
     public double middleProbability;
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);   // always call super.setup(...) first if it exists!
 
         Parameter def = defaultBase();
@@ -31,44 +31,44 @@ public class OurSelection extends SelectionMethod
         // database, returning a value of min-1 (-1.0) if the parameter doesn't exist or was 
         // outside this range.
         middleProbability = state.parameters.getDoubleWithMax(base.push(P_MIDDLEPROBABILITY),
-            def.push(P_MIDDLEPROBABILITY),0.0,1.0);
+                                                              def.push(P_MIDDLEPROBABILITY),0.0,1.0);
         if (middleProbability < 0.0)
             state.output.fatal("Middle-Probability must be between 0.0 and 1.0",
-                base.push(P_MIDDLEPROBABILITY),def.push(P_MIDDLEPROBABILITY));
-        } 
+                               base.push(P_MIDDLEPROBABILITY),def.push(P_MIDDLEPROBABILITY));
+    } 
 
     public int produce(final int subpopulation, final EvolutionState state, final int thread)
-        {
+    {
         //toss a coin
         if (state.random[thread].nextBoolean(middleProbability))
             {
-            //pick three individuals, return the middle one
-            ArrayList<Individual> inds = state.population.subpops.get(subpopulation).individuals;
-            int one = state.random[thread].nextInt(inds.size());
-            int two = state.random[thread].nextInt(inds.size());
-            int three = state.random[thread].nextInt(inds.size());
-            // generally the betterThan(...) method imposes an ordering,
-            // so you shouldn't see any cycles here except in very unusual domains...
-            if (inds.get(two).fitness.betterThan(inds.get(one).fitness))
-                {
-                if (inds.get(three).fitness.betterThan(inds.get(two).fitness)) //  1 < 2 < 3
-                    return two;
-                else if (inds.get(three).fitness.betterThan(inds.get(one).fitness)) //  1 < 3 < 2
-                    return three;
-                else //  3 < 1 < 2
+                //pick three individuals, return the middle one
+                ArrayList<Individual> inds = state.population.subpops.get(subpopulation).individuals;
+                int one = state.random[thread].nextInt(inds.size());
+                int two = state.random[thread].nextInt(inds.size());
+                int three = state.random[thread].nextInt(inds.size());
+                // generally the betterThan(...) method imposes an ordering,
+                // so you shouldn't see any cycles here except in very unusual domains...
+                if (inds.get(two).fitness.betterThan(inds.get(one).fitness))
+                    {
+                        if (inds.get(three).fitness.betterThan(inds.get(two).fitness)) //  1 < 2 < 3
+                            return two;
+                        else if (inds.get(three).fitness.betterThan(inds.get(one).fitness)) //  1 < 3 < 2
+                            return three;
+                        else //  3 < 1 < 2
+                            return one;
+                    }
+                else if (inds.get(three).fitness.betterThan(inds.get(one).fitness)) //  2 < 1 < 3
                     return one;
-                }
-            else if (inds.get(three).fitness.betterThan(inds.get(one).fitness)) //  2 < 1 < 3
-                return one;
-            else if (inds.get(three).fitness.betterThan(inds.get(two).fitness)) //  2 < 3 < 1
-                return three;
-            else //  3 < 2 < 1
-                return two;
+                else if (inds.get(three).fitness.betterThan(inds.get(two).fitness)) //  2 < 3 < 1
+                    return three;
+                else //  3 < 2 < 1
+                    return two;
             }
         else        //select a random individual's index
             {
-            return state.random[thread].nextInt(
-                state.population.subpops.get(subpopulation).individuals.size());
+                return state.random[thread].nextInt(
+                                                    state.population.subpops.get(subpopulation).individuals.size());
             }
-        }
-    }  // close the class
+    }
+}  // close the class

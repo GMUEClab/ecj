@@ -66,7 +66,7 @@ import java.util.HashMap;
  */
 
 public class MutateERCPipeline extends GPBreedingPipeline
-    {
+{
     private static final long serialVersionUID = 1;
 
     public static final String P_MUTATEERC = "mutate-erc";
@@ -83,16 +83,16 @@ public class MutateERCPipeline extends GPBreedingPipeline
     public int numSources() { return NUM_SOURCES; }
 
     public Object clone()
-        {
+    {
         MutateERCPipeline c = (MutateERCPipeline)(super.clone());
         
         // deep-cloned stuff
         c.nodeselect = (GPNodeSelector)(nodeselect.clone());
         return c;
-        }
+    }
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
 
         Parameter p = base.push(P_NODESELECTOR).push(""+0);
@@ -100,25 +100,25 @@ public class MutateERCPipeline extends GPBreedingPipeline
 
         nodeselect = (GPNodeSelector)
             (state.parameters.getInstanceForParameter(
-                p,def.push(P_NODESELECTOR).push(""+0),
-                GPNodeSelector.class));
+                                                      p,def.push(P_NODESELECTOR).push(""+0),
+                                                      GPNodeSelector.class));
         nodeselect.setup(state,p);
 
         tree = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+0),
-                def.push(P_TREE).push(""+0)))
+                                    def.push(P_TREE).push(""+0)))
             {
-            tree = state.parameters.getInt(base.push(P_TREE).push(""+0),
-                def.push(P_TREE).push(""+0),0);
-            if (tree==-1)
-                state.output.fatal("Tree fixed value, if defined, must be >= 0");
+                tree = state.parameters.getInt(base.push(P_TREE).push(""+0),
+                                               def.push(P_TREE).push(""+0),0);
+                if (tree==-1)
+                    state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
-        }
+    }
 
 
     public final void mutateERCs(final GPNode node, 
-        final EvolutionState state, final int thread)
-        {
+                                 final EvolutionState state, final int thread)
+    {
         // is node an erc?
         if (node instanceof ERC)
             ((ERC)node).mutateERC(state,thread);
@@ -126,15 +126,15 @@ public class MutateERCPipeline extends GPBreedingPipeline
         // mutate children
         for(int x=0;x<node.children.length;x++)
             mutateERCs(node.children[x],state,thread);
-        }
+    }
 
     public int produce(final int min,
-        final int max,
-        final int subpopulation,
-        final ArrayList<Individual> inds,
-        final EvolutionState state,
-        final int thread, HashMap<String, Object> misc)
-        {
+                       final int max,
+                       final int subpopulation,
+                       final ArrayList<Individual> inds,
+                       final EvolutionState state,
+                       final int thread, HashMap<String, Object> misc)
+    {
         int start = inds.size();
                 
         // grab n individuals from our source and stick 'em right into inds.
@@ -144,42 +144,42 @@ public class MutateERCPipeline extends GPBreedingPipeline
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
             {
-            return n;
+                return n;
             }
 
         // now let's mutate 'em
         for(int q=start; q < n+start; q++)
             {
-            GPIndividual i = (GPIndividual)inds.get(q);
+                GPIndividual i = (GPIndividual)inds.get(q);
             
-            if (tree!=TREE_UNFIXED && (tree<0 || tree >= i.trees.length))
-                // uh oh
-                state.output.fatal("MutateERCPipeline attempted to fix tree.0 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
+                if (tree!=TREE_UNFIXED && (tree<0 || tree >= i.trees.length))
+                    // uh oh
+                    state.output.fatal("MutateERCPipeline attempted to fix tree.0 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
             
-            int t;
-            // pick random tree
-            if (tree==TREE_UNFIXED)
-                if (i.trees.length>1) t = state.random[thread].nextInt(i.trees.length);
-                else t = 0;
-            else t = tree;
+                int t;
+                // pick random tree
+                if (tree==TREE_UNFIXED)
+                    if (i.trees.length>1) t = state.random[thread].nextInt(i.trees.length);
+                    else t = 0;
+                else t = tree;
             
-            i.evaluated = false;
+                i.evaluated = false;
 
-            // prepare the nodeselector
-            nodeselect.reset();
+                // prepare the nodeselector
+                nodeselect.reset();
 
-            // Now pick a random node
+                // Now pick a random node
             
-            GPNode p = nodeselect.pickNode(state,subpopulation,thread,i,i.trees[t]);
+                GPNode p = nodeselect.pickNode(state,subpopulation,thread,i,i.trees[t]);
 
-            // mutate all the ERCs in p1's subtree
+                // mutate all the ERCs in p1's subtree
 
-            mutateERCs(p,state,thread);
+                mutateERCs(p,state,thread);
             
-            // add the new individual, replacing its previous source
-            inds.set(q,i);
+                // add the new individual, replacing its previous source
+                inds.set(q,i);
             
             }
         return n;
-        }
     }
+}

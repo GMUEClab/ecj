@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class Mow extends GPNode
-    {
+{
     public String toString() { return "mow"; }
 
     /*
@@ -43,12 +43,12 @@ public class Mow extends GPNode
     public int expectedChildren() { return 0; }
 
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         Lawnmower p = (Lawnmower)problem;
         LawnmowerData d = (LawnmowerData)input;
 
@@ -78,15 +78,15 @@ public class Mow extends GPNode
         p.moves++;
         if (p.map[p.posx][p.posy]==Lawnmower.UNMOWED)
             {
-            p.sum++;
-            p.map[p.posx][p.posy] = p.moves;
+                p.sum++;
+                p.map[p.posx][p.posy] = p.moves;
             }
 
         // return [0,0]
         d.x = 0;
         d.y = 0;
-        }
     }
+}
 
 
 

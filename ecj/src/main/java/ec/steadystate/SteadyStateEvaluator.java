@@ -45,7 +45,7 @@ import ec.eval.MasterProblem;
  */
 
 public class SteadyStateEvaluator extends SimpleEvaluator
-    {
+{
     LinkedList queue = new LinkedList();
     
     /** Holds the subpopulation currently being evaluated.  */ 
@@ -55,14 +55,14 @@ public class SteadyStateEvaluator extends SimpleEvaluator
     SimpleProblemForm problem; 
         
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
         if (!cloneProblem)
             state.output.fatal("cloneProblem must be true for SteadyStateEvaluator -- we'll use only one Problem anyway.");
-        }
+    }
         
     public void prepareToEvaluate(EvolutionState state, int thread) 
-        {
+    {
         problem = (SimpleProblemForm)p_problem.clone();
                 
         /* 
@@ -70,23 +70,23 @@ public class SteadyStateEvaluator extends SimpleEvaluator
         */
         if (problem instanceof MasterProblem) 
             ((MasterProblem)problem).prepareToEvaluate(state, thread); 
-        }
+    }
         
     /** Submits an individual to be evaluated by the Problem, and adds it and its subpopulation to the queue. */
     public void evaluateIndividual(final EvolutionState state, Individual ind, int subpop)
-        {
+    {
         problem.evaluate(state, ind, subpop, 0);
         queue.addLast(new QueueIndividual(ind, subpop));
-        }
+    }
     
     /** Returns true if we're ready to evaluate an individual.  Ordinarily this is ALWAYS true,
         except in the asynchronous evolution situation, where we may not have a processor ready yet. */
     public boolean canEvaluate() 
-        {
+    {
         if (problem instanceof MasterProblem)
             return ((MasterProblem)problem).canEvaluate();
         else return true;
-        }
+    }
         
     /** Returns an evaluated individual is in the queue and ready to come back to us.  
         Ordinarily this is ALWAYS true at the point that we call it, except in the asynchronous 
@@ -95,17 +95,17 @@ public class SteadyStateEvaluator extends SimpleEvaluator
         be returned until the system is ready to provide us with another one.  NULL will
         be returned otherwise.  */
     public Individual getNextEvaluatedIndividual(EvolutionState state)
-        {
+    {
         QueueIndividual qind = null;
         
         if (problem instanceof MasterProblem)
             {
-            if (((MasterProblem)problem).evaluatedIndividualAvailable())
-                qind = ((MasterProblem)problem).getNextEvaluatedIndividual();
+                if (((MasterProblem)problem).evaluatedIndividualAvailable())
+                    qind = ((MasterProblem)problem).getNextEvaluatedIndividual();
             }
         else
             {
-            qind = (QueueIndividual)(queue.removeFirst());
+                qind = (QueueIndividual)(queue.removeFirst());
             }
         
         if (qind == null) return null;
@@ -113,24 +113,24 @@ public class SteadyStateEvaluator extends SimpleEvaluator
         subpopulationBeingEvaluated = qind.subpop;
         state.incrementEvaluations(1);
         return qind.ind;
-        }
+    }
     
     /** Returns the subpopulation of the last evaluated individual returned by getNextEvaluatedIndividual, or potentially -1 if
         getNextEvaluatedIndividual was never called or hasn't returned an individual yet. */
     public int getSubpopulationOfEvaluatedIndividual()
-        {
+    {
         return subpopulationBeingEvaluated;
-        }
+    }
         
     /** The SimpleEvaluator determines that a run is complete by asking
         each individual in each population if he's optimal; if he 
         finds an individual somewhere that's optimal,
         he signals that the run is complete. */
     public boolean isIdealFitness(final EvolutionState state, final Individual ind)
-        {
+    {
         return (ind.fitness.isIdealFitness());
-        }
-
     }
+
+}
 
 

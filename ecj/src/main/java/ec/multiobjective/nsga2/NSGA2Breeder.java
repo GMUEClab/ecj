@@ -31,15 +31,15 @@ import ec.simple.*;
  */
 
 public class NSGA2Breeder extends SimpleBreeder
-    {
+{
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state, base);
         // make sure SimpleBreeder's elites facility isn't being used
         for (int i = 0; i < elite.length; i++)  // we use elite.length here instead of pop.subpops.length because the population hasn't been made yet.
             if (usingElitism(i))
                 state.output.warning("You're using elitism with NSGA2Breeder, which is not permitted and will be ignored.  However the reevaluate-elites parameter *will* bre recognized by NSGAEvaluator.",
-                    base.push(P_ELITE).push(""+i));
+                                     base.push(P_ELITE).push(""+i));
 
         for (int i = 0; i < reduceBy.length; i++)
             if (reduceBy[i] != 0)
@@ -47,11 +47,11 @@ public class NSGA2Breeder extends SimpleBreeder
                         
         if (sequentialBreeding) // uh oh, haven't tested with this
             state.output.fatal("NSGA2Breeder does not support sequential evaluation.",
-                base.push(P_SEQUENTIAL_BREEDING));
+                               base.push(P_SEQUENTIAL_BREEDING));
 
         if (!clonePipelineAndPopulation)
             state.output.fatal("clonePipelineAndPopulation must be true for NSGA2Breeder.");
-        }
+    }
 
     /**
      * Override breedPopulation(). We take the result from the super method in
@@ -61,7 +61,7 @@ public class NSGA2Breeder extends SimpleBreeder
      * population of 2x<code>originalPopSize</code> individuals.
      */
     public Population breedPopulation(EvolutionState state)
-        {
+    {
         Population oldPop = (Population) state.population;
         Population newPop = super.breedPopulation(state);
         ArrayList<Individual> combinedInds;
@@ -72,13 +72,13 @@ public class NSGA2Breeder extends SimpleBreeder
 
         for (int i = 0; i < subpopsLength; i++)
             {
-            oldSubpop = oldPop.subpops.get(i);
-            newSubpop = newPop.subpops.get(i);
-            combinedInds = new ArrayList<Individual>(oldSubpop.individuals.size() + newSubpop.individuals.size());
-            combinedInds.addAll(newSubpop.individuals);
-            combinedInds.addAll(oldSubpop.individuals);
-            newSubpop.individuals = combinedInds;
+                oldSubpop = oldPop.subpops.get(i);
+                newSubpop = newPop.subpops.get(i);
+                combinedInds = new ArrayList<Individual>(oldSubpop.individuals.size() + newSubpop.individuals.size());
+                combinedInds.addAll(newSubpop.individuals);
+                combinedInds.addAll(oldSubpop.individuals);
+                newSubpop.individuals = combinedInds;
             }
         return newPop;
-        }
     }
+}

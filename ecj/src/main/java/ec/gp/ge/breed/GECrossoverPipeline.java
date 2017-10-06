@@ -37,27 +37,27 @@ import java.util.*;
 **/
 
 public class GECrossoverPipeline extends ListCrossoverPipeline
-    {
+{
     public Object computeValidationData(EvolutionState state, ArrayList<Individual> parents, int thread)
-        {
+    {
         if (!(parents.get(0) instanceof GEIndividual) ||
             !(parents.get(1) instanceof GEIndividual))
             state.output.fatal("Non GEIndividuals used with GECrossoverPipeline.", null, null);
         
         return new int[] 
             {      
-            ((GESpecies)(parents.get(0).species)).consumed(state, ((GEIndividual)(parents.get(0))), thread),
-            ((GESpecies)(parents.get(1).species)).consumed(state, ((GEIndividual)(parents.get(1))), thread) 
+                ((GESpecies)(parents.get(0).species)).consumed(state, ((GEIndividual)(parents.get(0))), thread),
+                ((GESpecies)(parents.get(1).species)).consumed(state, ((GEIndividual)(parents.get(1))), thread) 
             };
-        }
+    }
 
     public boolean isValidated(int[][] split, Object validationData)
-        {
+    {
         int[] consumed = (int[]) validationData;
                 
         return split[0][0] < consumed[0] && split[1][0] < consumed[1];
-        }    
-    }
+    }    
+}
     
     
     

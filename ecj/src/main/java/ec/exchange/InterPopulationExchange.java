@@ -116,12 +116,12 @@ import java.io.*;
 
 
 public class InterPopulationExchange extends Exchanger
-    {
+{
     private static final long serialVersionUID = 1;
 
     // static inner classes don't need SerialVersionUIDs
     static class IPEInformation implements Serializable
-        {
+    {
         // the selection method
         SelectionMethod immigrantsSelectionMethod;
 
@@ -142,7 +142,7 @@ public class InterPopulationExchange extends Exchanger
 
         // the size
         int size;
-        }
+    }
 
 
     /** The subpopulation delimiter */
@@ -194,16 +194,16 @@ public class InterPopulationExchange extends Exchanger
 
     // sets up the Island Exchanger
     public void setup( final EvolutionState state, final Parameter _base )
-        {
+    {
         base = _base;
 
         Parameter p_numsubpops = new Parameter( ec.Initializer.P_POP ).push( ec.Population.P_SIZE );
         int numsubpops = state.parameters.getInt(p_numsubpops,null,1);
         if ( numsubpops == 0 )
             {
-            // later on, Population will complain with this fatally, so don't
-            // exit here, just deal with it and assume that you'll soon be shut
-            // down
+                // later on, Population will complain with this fatally, so don't
+                // exit here, just deal with it and assume that you'll soon be shut
+                // down
             }
 
         // how many individuals (maximally) would each of the mailboxes have to hold
@@ -224,56 +224,56 @@ public class InterPopulationExchange extends Exchanger
         for( int i = 0 ; i < numsubpops ; i++ )
             {
 
-            // update the parameter for the new context
-            p = localBase.push( "" + i );
+                // update the parameter for the new context
+                p = localBase.push( "" + i );
 
-            // read the selection method
-            exchangeInformation[i].immigrantsSelectionMethod = (SelectionMethod)
-                state.parameters.getInstanceForParameter( p.push( P_SELECT_METHOD ), base.push(P_SELECT_METHOD), ec.SelectionMethod.class );
-            if( exchangeInformation[i].immigrantsSelectionMethod == null )
-                state.output.fatal( "Invalid parameter.",  p.push( P_SELECT_METHOD ), base.push(P_SELECT_METHOD) );
-            exchangeInformation[i].immigrantsSelectionMethod.setup( state, p.push(P_SELECT_METHOD) );
+                // read the selection method
+                exchangeInformation[i].immigrantsSelectionMethod = (SelectionMethod)
+                    state.parameters.getInstanceForParameter( p.push( P_SELECT_METHOD ), base.push(P_SELECT_METHOD), ec.SelectionMethod.class );
+                if( exchangeInformation[i].immigrantsSelectionMethod == null )
+                    state.output.fatal( "Invalid parameter.",  p.push( P_SELECT_METHOD ), base.push(P_SELECT_METHOD) );
+                exchangeInformation[i].immigrantsSelectionMethod.setup( state, p.push(P_SELECT_METHOD) );
 
-            // read the selection method
-            if( state.parameters.exists( p.push( P_SELECT_TO_DIE_METHOD ), base.push(P_SELECT_TO_DIE_METHOD ) ) )
-                exchangeInformation[i].indsToDieSelectionMethod = (SelectionMethod)
-                    state.parameters.getInstanceForParameter( p.push( P_SELECT_TO_DIE_METHOD ), base.push( P_SELECT_TO_DIE_METHOD ), ec.SelectionMethod.class );
-            else // use RandomSelection
-                exchangeInformation[i].indsToDieSelectionMethod = new ec.select.RandomSelection();
-            exchangeInformation[i].indsToDieSelectionMethod.setup( state, p.push(P_SELECT_TO_DIE_METHOD));
+                // read the selection method
+                if( state.parameters.exists( p.push( P_SELECT_TO_DIE_METHOD ), base.push(P_SELECT_TO_DIE_METHOD ) ) )
+                    exchangeInformation[i].indsToDieSelectionMethod = (SelectionMethod)
+                        state.parameters.getInstanceForParameter( p.push( P_SELECT_TO_DIE_METHOD ), base.push( P_SELECT_TO_DIE_METHOD ), ec.SelectionMethod.class );
+                else // use RandomSelection
+                    exchangeInformation[i].indsToDieSelectionMethod = new ec.select.RandomSelection();
+                exchangeInformation[i].indsToDieSelectionMethod.setup( state, p.push(P_SELECT_TO_DIE_METHOD));
 
-            // get the modulo
-            exchangeInformation[i].modulo = state.parameters.getInt( p.push( P_MODULO ), base.push(P_MODULO ), 1 );
-            if( exchangeInformation[i].modulo == 0 )
-                state.output.fatal( "Parameter not found, or it has an incorrect value.", p.push( P_MODULO ), base.push( P_MODULO ) );
+                // get the modulo
+                exchangeInformation[i].modulo = state.parameters.getInt( p.push( P_MODULO ), base.push(P_MODULO ), 1 );
+                if( exchangeInformation[i].modulo == 0 )
+                    state.output.fatal( "Parameter not found, or it has an incorrect value.", p.push( P_MODULO ), base.push( P_MODULO ) );
             
-            // get the offset
-            exchangeInformation[i].offset = state.parameters.getInt( p.push( P_OFFSET ), base.push( P_OFFSET ), 0 );
-            if( exchangeInformation[i].offset == -1 )
-                state.output.fatal( "Parameter not found, or it has an incorrect value.", p.push( P_OFFSET ), base.push( P_OFFSET ) );
+                // get the offset
+                exchangeInformation[i].offset = state.parameters.getInt( p.push( P_OFFSET ), base.push( P_OFFSET ), 0 );
+                if( exchangeInformation[i].offset == -1 )
+                    state.output.fatal( "Parameter not found, or it has an incorrect value.", p.push( P_OFFSET ), base.push( P_OFFSET ) );
             
-            // get the size
-            exchangeInformation[i].size = state.parameters.getInt( p.push( P_SIZE ), base.push( P_SIZE ), 1 );
-            if( exchangeInformation[i].size == 0 )
-                state.output.fatal( "Parameter not found, or it has an incorrect value.", p.push( P_SIZE ), base.push( P_SIZE ) );
+                // get the size
+                exchangeInformation[i].size = state.parameters.getInt( p.push( P_SIZE ), base.push( P_SIZE ), 1 );
+                if( exchangeInformation[i].size == 0 )
+                    state.output.fatal( "Parameter not found, or it has an incorrect value.", p.push( P_SIZE ), base.push( P_SIZE ) );
 
-            // get the number of destinations
-            exchangeInformation[i].numDest = state.parameters.getInt( p.push( P_DEST_FOR_SUBPOP ), null, 0 );
-            if( exchangeInformation[i].numDest == -1 )
-                state.output.fatal( "Parameter not found, or it has an incorrect value.", p.push( P_DEST_FOR_SUBPOP ) );
+                // get the number of destinations
+                exchangeInformation[i].numDest = state.parameters.getInt( p.push( P_DEST_FOR_SUBPOP ), null, 0 );
+                if( exchangeInformation[i].numDest == -1 )
+                    state.output.fatal( "Parameter not found, or it has an incorrect value.", p.push( P_DEST_FOR_SUBPOP ) );
 
-            exchangeInformation[i].destinations = new int[ exchangeInformation[i].numDest ];
-            // read the destinations
-            for( int j = 0 ; j < exchangeInformation[i].numDest ; j++ )
-                {
-                exchangeInformation[i].destinations[j] =
-                    state.parameters.getInt( p.push( P_DEST ).push( "" + j ), null, 0 );
-                if( exchangeInformation[i].destinations[j] == -1 ||
-                    exchangeInformation[i].destinations[j] >= numsubpops )
-                    state.output.fatal( "Parameter not found, or it has an incorrect value.", p.push( P_DEST ).push( "" + j ) );
-                // update the maximum number of incoming individuals for the destination island
-                incoming[ exchangeInformation[i].destinations[j] ] += exchangeInformation[i].size;
-                }
+                exchangeInformation[i].destinations = new int[ exchangeInformation[i].numDest ];
+                // read the destinations
+                for( int j = 0 ; j < exchangeInformation[i].numDest ; j++ )
+                    {
+                        exchangeInformation[i].destinations[j] =
+                            state.parameters.getInt( p.push( P_DEST ).push( "" + j ), null, 0 );
+                        if( exchangeInformation[i].destinations[j] == -1 ||
+                            exchangeInformation[i].destinations[j] >= numsubpops )
+                            state.output.fatal( "Parameter not found, or it has an incorrect value.", p.push( P_DEST ).push( "" + j ) );
+                        // update the maximum number of incoming individuals for the destination island
+                        incoming[ exchangeInformation[i].destinations[j] ] += exchangeInformation[i].size;
+                    }
 
             }
             
@@ -287,7 +287,7 @@ public class InterPopulationExchange extends Exchanger
         // set up the mailboxes
         immigrants = new Individual[ numsubpops ][ max ];
 
-        }    
+    }    
 
 
     /**
@@ -296,21 +296,21 @@ public class InterPopulationExchange extends Exchanger
        It doesn't do anything, as this exchanger works on only 1 computer.
     */
     public void initializeContacts(EvolutionState state)
-        {
-        }
+    {
+    }
 
     /**
        Initializes contacts with other processes, if that's what you're doing.  Called after restarting from a checkpoint.
        It doesn't do anything, as this exchanger works on only 1 computer.
     */
     public void reinitializeContacts(EvolutionState state)
-        {
-        }
+    {
+    }
 
 
 
     public Population preBreedingExchangePopulation(EvolutionState state)
-        {
+    {
         // exchange individuals between subpopulations
         // BUT ONLY if the modulo and offset are appropriate for this
         // generation (state.generation)
@@ -322,99 +322,99 @@ public class InterPopulationExchange extends Exchanger
         for( int i = 0 ; i < exchangeInformation.length ; i++ )
             {
 
-            // else, check whether the emigrants need to be sent
-            if( ( state.generation >= exchangeInformation[i].offset ) &&
+                // else, check whether the emigrants need to be sent
+                if( ( state.generation >= exchangeInformation[i].offset ) &&
                     ( ( exchangeInformation[i].modulo == 0 ) ||
-                    ( ( ( state.generation - exchangeInformation[i].offset ) % exchangeInformation[i].modulo ) == 0 ) ) )
-                {
-
-                // send the individuals!!!!
-
-                // for each of the islands where we have to send individuals
-                for( int x = 0 ; x < exchangeInformation[i].numDest ; x++ )
+                      ( ( ( state.generation - exchangeInformation[i].offset ) % exchangeInformation[i].modulo ) == 0 ) ) )
                     {
 
-                    if (chatty) state.output.message( "Sending the emigrants from subpopulation " +
-                        i + " to subpopulation " +
-                        exchangeInformation[i].destinations[x] );
+                        // send the individuals!!!!
 
-                    // select "size" individuals and send then to the destination as emigrants
-                    exchangeInformation[i].immigrantsSelectionMethod.prepareToProduce( state, i, 0 );
-                    for( int y = 0 ; y < exchangeInformation[i].size ; y++ ) // send all necesary individuals
-                        {
-                        // get the index of the immigrant
-                        int index = exchangeInformation[i].immigrantsSelectionMethod.produce( i, state, 0 );
-                        // copy the individual to the mailbox of the destination subpopulation
-                        immigrants[ exchangeInformation[i].destinations[x] ]
-                            [ nImmigrants[ exchangeInformation[i].destinations[x] ] ] =
-                            process(state, 0, null, exchangeInformation[i].destinations[x], (Individual) state.population.subpops.get(i).individuals.get(index).clone());
-                        // increment the counter with the number of individuals in the mailbox
-                        nImmigrants[ exchangeInformation[i].destinations[x] ]++;
-                        }
-                    exchangeInformation[i].immigrantsSelectionMethod.finishProducing( state, i, 0 ); // end the selection step
+                        // for each of the islands where we have to send individuals
+                        for( int x = 0 ; x < exchangeInformation[i].numDest ; x++ )
+                            {
+
+                                if (chatty) state.output.message( "Sending the emigrants from subpopulation " +
+                                                                  i + " to subpopulation " +
+                                                                  exchangeInformation[i].destinations[x] );
+
+                                // select "size" individuals and send then to the destination as emigrants
+                                exchangeInformation[i].immigrantsSelectionMethod.prepareToProduce( state, i, 0 );
+                                for( int y = 0 ; y < exchangeInformation[i].size ; y++ ) // send all necesary individuals
+                                    {
+                                        // get the index of the immigrant
+                                        int index = exchangeInformation[i].immigrantsSelectionMethod.produce( i, state, 0 );
+                                        // copy the individual to the mailbox of the destination subpopulation
+                                        immigrants[ exchangeInformation[i].destinations[x] ]
+                                            [ nImmigrants[ exchangeInformation[i].destinations[x] ] ] =
+                                            process(state, 0, null, exchangeInformation[i].destinations[x], (Individual) state.population.subpops.get(i).individuals.get(index).clone());
+                                        // increment the counter with the number of individuals in the mailbox
+                                        nImmigrants[ exchangeInformation[i].destinations[x] ]++;
+                                    }
+                                exchangeInformation[i].immigrantsSelectionMethod.finishProducing( state, i, 0 ); // end the selection step
+                            }
                     }
-                }
             }
 
         return state.population;
 
-        }
+    }
         
 
     public Population postBreedingExchangePopulation(EvolutionState state)
-        {
+    {
         // receiving individuals from other islands
         // same situation here of course.
 
         for( int x = 0 ; x < nImmigrants.length ; x++ )
             {
 
-            if( nImmigrants[x] > 0 && chatty )
-                {
-                state.output.message( "Immigrating " +  nImmigrants[x] +
-                    " individuals from mailbox for subpopulation " + x );
-                }
-                
-            int len = state.population.subpops.get(x).individuals.size();
-            // double check that we won't go into an infinite loop!
-            if ( nImmigrants[x] >= state.population.subpops.get(x).individuals.size() )
-                state.output.fatal("Number of immigrants ("+nImmigrants[x] +
-                    ") is larger than subpopulation #" + x + "'s size (" +
-                    len +").  This would cause an infinite loop in the selection-to-die procedure.");
-
-            boolean[] selected = new boolean[ len ];
-            int[] indices = new int[ nImmigrants[x] ];
-            for( int i = 0 ; i < selected.length ; i++ )
-                selected[i] = false;
-            exchangeInformation[x].indsToDieSelectionMethod.prepareToProduce( state, x, 0 );
-            for( int i = 0 ; i < nImmigrants[x] ; i++ )
-                {
-                do {
-                    indices[i] = exchangeInformation[x].indsToDieSelectionMethod.produce( x, state, 0 );
+                if( nImmigrants[x] > 0 && chatty )
+                    {
+                        state.output.message( "Immigrating " +  nImmigrants[x] +
+                                              " individuals from mailbox for subpopulation " + x );
                     }
-                while( selected[indices[i]] );
-                selected[indices[i]] = true;
-                }
-            exchangeInformation[x].indsToDieSelectionMethod.finishProducing( state, x, 0 );
+                
+                int len = state.population.subpops.get(x).individuals.size();
+                // double check that we won't go into an infinite loop!
+                if ( nImmigrants[x] >= state.population.subpops.get(x).individuals.size() )
+                    state.output.fatal("Number of immigrants ("+nImmigrants[x] +
+                                       ") is larger than subpopulation #" + x + "'s size (" +
+                                       len +").  This would cause an infinite loop in the selection-to-die procedure.");
 
-            for( int y = 0 ; y < nImmigrants[x] ; y++ )
-                {
-                // read the individual
-                state.population.subpops.get(x).individuals.set( indices[y] ,immigrants[x][y]);
+                boolean[] selected = new boolean[ len ];
+                int[] indices = new int[ nImmigrants[x] ];
+                for( int i = 0 ; i < selected.length ; i++ )
+                    selected[i] = false;
+                exchangeInformation[x].indsToDieSelectionMethod.prepareToProduce( state, x, 0 );
+                for( int i = 0 ; i < nImmigrants[x] ; i++ )
+                    {
+                        do {
+                            indices[i] = exchangeInformation[x].indsToDieSelectionMethod.produce( x, state, 0 );
+                        }
+                        while( selected[indices[i]] );
+                        selected[indices[i]] = true;
+                    }
+                exchangeInformation[x].indsToDieSelectionMethod.finishProducing( state, x, 0 );
 
-                // reset the evaluated flag (the individuals are not evaluated in the current island */
-                state.population.subpops.get(x).individuals.get(indices[y]).evaluated = false;
+                for( int y = 0 ; y < nImmigrants[x] ; y++ )
+                    {
+                        // read the individual
+                        state.population.subpops.get(x).individuals.set( indices[y] ,immigrants[x][y]);
 
-                }
+                        // reset the evaluated flag (the individuals are not evaluated in the current island */
+                        state.population.subpops.get(x).individuals.get(indices[y]).evaluated = false;
 
-            // reset the number of immigrants in the mailbox for the current subpopulation
-            // this doesn't need another synchronization, because the thread is already synchronized
-            nImmigrants[x] = 0;
+                    }
+
+                // reset the number of immigrants in the mailbox for the current subpopulation
+                // this doesn't need another synchronization, because the thread is already synchronized
+                nImmigrants[x] = 0;
             }
 
         return state.population;
 
-        }
+    }
 
 
 
@@ -429,13 +429,13 @@ public class InterPopulationExchange extends Exchanger
         message, to remember next time to exit. This is due to a need for a graceful
         shutdown, where checkpoints are working properly and save all needed information. */
     public String runComplete(EvolutionState state)
-        {
+    {
         return null;
-        }
+    }
 
     /** Closes contacts with other processes, if that's what you're doing.  Called at the end of an evolutionary run. result is either ec.EvolutionState.R_SUCCESS or ec.EvolutionState.R_FAILURE, indicating whether or not an ideal individual was found. */
     public void closeContacts(EvolutionState state, int result)
-        {
-        }
-
+    {
     }
+
+}

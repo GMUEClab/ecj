@@ -26,11 +26,11 @@ import ec.Setup;
 public abstract class IndividualPortrayal
     extends JPanel
     implements Setup
-    {
+{
     IndividualPortrayal(LayoutManager layout)
-        {
+    {
         super(layout);
-        }
+    }
     
     public abstract void portrayIndividual(EvolutionState state, Individual individual);
-    }
+}

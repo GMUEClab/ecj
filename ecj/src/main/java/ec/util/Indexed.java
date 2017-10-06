@@ -9,7 +9,7 @@ package ec.util;
 /** A simple interface (simpler than List) for accessing random-access objects without changing their size.  Adhered to by Bag, IntBag, and DoubleBag */
 
 public interface Indexed
-    {
+{
     /** Should return the base component type for this Indexed object, or
         null if the component type should be queried via getValue(index).getClass.getComponentType() */
     public Class componentType();
@@ -22,4 +22,4 @@ public interface Indexed
         this would conflict with get() methods in IntBag etc. which don't return objects. */
     public Object getValue(final int index)
         throws IndexOutOfBoundsException;
-    }
+}

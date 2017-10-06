@@ -34,7 +34,7 @@ package ec.util;
  */
 
 public class DecodeReturn 
-    {
+{
     /** The actual error is stored in the String slot */
     public static final byte T_ERROR = -1;
 
@@ -82,14 +82,14 @@ public class DecodeReturn
 
     /** Sets the DecodeReturn to begin scanning at _pos, which should be valid. */
     public DecodeReturn scanAt(int _pos) 
-        {
+    {
         pos = Math.min(Math.max(_pos,0),data.length());
         return this;
-        }
+    }
 
     /** Use this to reuse your DecodeReturn for another string */
     public DecodeReturn reset(final String _data) { data = _data; pos = 0; return this; }
     
     /** Use this to reuse your DecodeReturn for another string */
     public DecodeReturn reset(final String _data, int _pos) { data = _data; pos = _pos; return this; }
-    }
+}

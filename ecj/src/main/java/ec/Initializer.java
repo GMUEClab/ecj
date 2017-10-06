@@ -37,7 +37,7 @@ package ec;
  */
 
 public abstract class Initializer implements Singleton
-    {
+{
     /** parameter for a new population */
     public static final String P_POP = "pop";
 
@@ -49,4 +49,4 @@ public abstract class Initializer implements Singleton
         
     /** Loads a Population from the parameter file, sets it up, and returns it. */
     public abstract Population setupPopulation(final EvolutionState state, int thread); 
-    }
+}

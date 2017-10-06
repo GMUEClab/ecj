@@ -31,7 +31,7 @@ import ec.*;
  */
 
 public interface SteadyStateStatisticsForm 
-    {
+{
     /** Called when we created an empty initial Population. */
     public void enteringInitialPopulationStatistics(SteadyStateEvolutionState state);
     /** Called when we have filled the initial population and are entering the steady state. */
@@ -42,7 +42,7 @@ public interface SteadyStateStatisticsForm
     /** Called each time new individuals are evaluated during the steady-state
         process, NOT including the initial generation's individuals. */
     public void individualsEvaluatedStatistics(SteadyStateEvolutionState state, Individual[] newIndividuals, 
-        Individual[] oldIndividuals, int[] subpopulations, int[] indices);
+                                               Individual[] oldIndividuals, int[] subpopulations, int[] indices);
     /** Called when the generation count increments */ 
     public void generationBoundaryStatistics(final EvolutionState state); 
     /** Called immediately before checkpointing occurs. */
@@ -62,4 +62,4 @@ public interface SteadyStateStatisticsForm
         was not found, or <tt>state.R_SUCCESS</tt>, indicating that an ideal
         individual <i>was</i> found. */
     public void finalStatistics(final EvolutionState state, final int result);
-    }
+}

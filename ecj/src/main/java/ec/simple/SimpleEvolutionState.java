@@ -39,9 +39,9 @@ import ec.util.Checkpoint;
  */
 
 public class SimpleEvolutionState extends EvolutionState
-    {
+{
     public void startFresh() 
-        {
+    {
         output.message("Setting up");
         setup(this,null);  // a garbage Parameter
 
@@ -56,10 +56,10 @@ public class SimpleEvolutionState extends EvolutionState
         // an attempt is made to connect to island models etc.
         exchanger.initializeContacts(this);
         evaluator.initializeContacts(this);
-        }
+    }
 
     public int evolve()
-        {
+    {
         if (generation > 0) 
             output.message("Generation " + generation +"\tEvaluations So Far " + evaluations);
 
@@ -72,15 +72,15 @@ public class SimpleEvolutionState extends EvolutionState
         String runCompleteMessage = evaluator.runComplete(this);
         if ((runCompleteMessage != null) && quitOnRunComplete)
             {
-            output.message(runCompleteMessage);
-            return R_SUCCESS;
+                output.message(runCompleteMessage);
+                return R_SUCCESS;
             }
 
         // SHOULD WE QUIT?
         if ((numGenerations != UNDEFINED && generation >= numGenerations-1) ||
             (numEvaluations != UNDEFINED && evaluations >= numEvaluations))
             {
-            return R_FAILURE;
+                return R_FAILURE;
             }
  
         // INCREMENT GENERATION AND CHECKPOINT
@@ -94,8 +94,8 @@ public class SimpleEvolutionState extends EvolutionState
         String exchangerWantsToShutdown = exchanger.runComplete(this);
         if (exchangerWantsToShutdown!=null)
             { 
-            output.message(exchangerWantsToShutdown);
-            return R_SUCCESS;
+                output.message(exchangerWantsToShutdown);
+                return R_SUCCESS;
             }
 
         
@@ -112,26 +112,26 @@ public class SimpleEvolutionState extends EvolutionState
 
         if (checkpoint && (generation - 1) % checkpointModulo == 0) 
             {
-            output.message("Checkpointing");
-            statistics.preCheckpointStatistics(this);
-            Checkpoint.setCheckpoint(this);
-            statistics.postCheckpointStatistics(this);
+                output.message("Checkpointing");
+                statistics.preCheckpointStatistics(this);
+                Checkpoint.setCheckpoint(this);
+                statistics.postCheckpointStatistics(this);
             }
 
         return R_NOTDONE;
-        }
+    }
 
     /**
      * @param result
      */
     public void finish(int result) 
-        {
+    {
         output.message("Total Evaluations " + evaluations);
         /* finish up -- we completed. */
         statistics.finalStatistics(this,result);
         finisher.finishPopulation(this,result);
         exchanger.closeContacts(this,result);
         evaluator.closeContacts(this,result);
-        }
-
     }
+
+}

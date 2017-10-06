@@ -58,7 +58,7 @@ import ec.*;
  */
 
 public class BoltzmannSelection extends FitProportionateSelection
-    {
+{
     /** Default base */
     public static final String P_BOLTZMANN = "boltzmann";
                 
@@ -75,12 +75,12 @@ public class BoltzmannSelection extends FitProportionateSelection
     private double coolingRate;
                 
     public Parameter defaultBase()
-        {
+    {
         return SelectDefaults.base().push(P_BOLTZMANN);
-        }
+    }
                 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
                         
         Parameter def = defaultBase();
@@ -90,58 +90,58 @@ public class BoltzmannSelection extends FitProportionateSelection
                         
         if (coolingRate <= 0)
             {
-            //Hey! you gotta cool! Set your cooling rate to a positive value!
-            state.output.fatal("Cooling rate should be a positive value.",base.push(P_COOLING_RATE),def.push(P_COOLING_RATE));
+                //Hey! you gotta cool! Set your cooling rate to a positive value!
+                state.output.fatal("Cooling rate should be a positive value.",base.push(P_COOLING_RATE),def.push(P_COOLING_RATE));
             }
                         
         if ((startingTemperature - coolingRate) <= 0) {
             // C'mon, you should cool slowly if you want boltzmann selection to be effective.
             state.output.fatal("For best results, try to set your temperature to cool to 0 a more slowly. This can be acheived by increasing your starting-temperature and/or decreasing your cooling rate.\nstarting-temperatire/cooling-rate: " + startingTemperature + " / " + coolingRate);                             
-            }
+        }
                         
         int total_generations = state.numGenerations;
         if (total_generations == 0)
             {
-            //Load from parameter database!!
-            state.output.fatal("Hey now, we gotta load the total_generations from the param DB");
+                //Load from parameter database!!
+                state.output.fatal("Hey now, we gotta load the total_generations from the param DB");
             }
                         
         if ((startingTemperature - (coolingRate * total_generations)) > 0)
             {
-            //Either your cooling rate is to low, or your starting temp is too high, because at this rate you will never cool to 0! (kind of essential to reaping the benefits of boltzmann selection)
-            state.output.warning("If you want BoltzmannnSelection to be effective, your temperature should cool to 0 before all generations have passed. Make sure that (starting-temperature - (cooling-rate * generations)) <= 0.");
+                //Either your cooling rate is to low, or your starting temp is too high, because at this rate you will never cool to 0! (kind of essential to reaping the benefits of boltzmann selection)
+                state.output.warning("If you want BoltzmannnSelection to be effective, your temperature should cool to 0 before all generations have passed. Make sure that (starting-temperature - (cooling-rate * generations)) <= 0.");
             }
         
-        }
+    }
 
     // completely override FitProportionateSelection.prepareToProduce
     public void prepareToProduce(final EvolutionState s,
-        final int subpopulation,
-        final int thread)
-        {
+                                 final int subpopulation,
+                                 final int thread)
+    {
         super.prepareToProduce(s, subpopulation, thread);
 
         // load fitnesses
         fitnesses = new double[s.population.subpops.get(subpopulation).individuals.size()];
         for(int x=0;x<fitnesses.length;x++)
             {
-            fitnesses[x] = (double) boltzmannExpectedValue(
-                ((Individual)(s.population.subpops.get(subpopulation).individuals.get(x))).fitness.fitness(),
-                s); // adjust the fitness proportion according to current temperature.
-            if (fitnesses[x] < 0) // uh oh
-                s.output.fatal("Discovered a negative fitness value.  BoltzmannnSelection requires that all fitness values be non-negative(offending subpopulation #" + subpopulation + ")");
+                fitnesses[x] = (double) boltzmannExpectedValue(
+                                                               ((Individual)(s.population.subpops.get(subpopulation).individuals.get(x))).fitness.fitness(),
+                                                               s); // adjust the fitness proportion according to current temperature.
+                if (fitnesses[x] < 0) // uh oh
+                    s.output.fatal("Discovered a negative fitness value.  BoltzmannnSelection requires that all fitness values be non-negative(offending subpopulation #" + subpopulation + ")");
             }
         
         // organize the distribution.  All zeros in fitness is fine
         RandomChoice.organizeDistribution(fitnesses, true);
-        }
+    }
 
     double boltzmannExpectedValue(double fitness, final EvolutionState s)
-        {
+    {
         double current_temperature = startingTemperature - (coolingRate * s.generation);
         if (current_temperature < 1.0)
             return fitness;
         return Math.exp(fitness/current_temperature);
-        }
-        
     }
+        
+}

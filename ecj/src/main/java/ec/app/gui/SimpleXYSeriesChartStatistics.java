@@ -32,8 +32,8 @@ public class SimpleXYSeriesChartStatistics
         
         for (int i = 0; i < numSubPops; ++i) {
             seriesID[i] = addSeries("SubPop "+i);
-            }
         }
+    }
     
     public void postEvaluationStatistics(EvolutionState state) {
         super.postEvaluationStatistics(state);
@@ -44,9 +44,9 @@ public class SimpleXYSeriesChartStatistics
                 Fitness fit = state.population.subpops.get(subPop).individuals.get(i).fitness;
                 if (fit.betterThan(bestFit))
                     bestFit = fit;
-                }
+            }
 
             addDataPoint(seriesID[subPop], state.generation, bestFit.fitness());
-            }
         }
     }
+}

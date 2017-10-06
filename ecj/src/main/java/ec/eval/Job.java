@@ -34,7 +34,7 @@ import java.util.*;
  */
 
 public class Job
-    {
+{
     // either Slave.V_EVALUATESIMPLE or Slave.V_EVALUATEGROUPED
     int type;
 
@@ -46,23 +46,23 @@ public class Job
     boolean[] updateFitness;
     
     void copyIndividualsForward()
-        {
+    {
         if (newinds == null || newinds.length != inds.length)
             newinds = new Individual[inds.length];
         for(int i=0; i < inds.length; i++)
             {
-            newinds[i] = (Individual)(inds[i].clone());
-            // delete the trials since they'll get remerged
-            newinds[i].fitness.trials = null;
-            // delete the context, since it'll get remerged
-            newinds[i].fitness.setContext(null);
+                newinds[i] = (Individual)(inds[i].clone());
+                // delete the trials since they'll get remerged
+                newinds[i].fitness.trials = null;
+                // delete the context, since it'll get remerged
+                newinds[i].fitness.setContext(null);
             }
-        }
+    }
         
     void copyIndividualsBack(EvolutionState state)
-        {
+    {
         for(int i = 0; i < inds.length; i++)
             inds[i].merge(state, newinds[i]);
         newinds = null;
-        }
     }
+}

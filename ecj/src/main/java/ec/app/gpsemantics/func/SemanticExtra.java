@@ -20,10 +20,10 @@ import ec.util.*;
  */
 
 public class SemanticExtra extends SemanticNode
-    {
+{
     char value;
     int index;
     public SemanticExtra(char v, int i) { value = v; index = i; }
     public char value() { return value; }
     public int index() { return index; }
-    }
+}

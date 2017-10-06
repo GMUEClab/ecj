@@ -56,19 +56,19 @@ import ec.select.*;
  */
 
 public class LexicographicTournamentSelection extends TournamentSelection
-    {
+{
     /** default base */
     public static final String P_TOURNAMENT = "lexicographic-tournament";
 
     public Parameter defaultBase()
-        {
+    {
         return SelectDefaults.base().push(P_TOURNAMENT);
-        }
+    }
     
     public boolean betterThan(Individual first, Individual second, int subpopulation, EvolutionState state, int thread)
-        {
+    {
         return (first.fitness.betterThan(second.fitness) ||
-            (first.fitness.equivalentTo(second.fitness) && first.size() < second.size()));
-        }
-                
+                (first.fitness.equivalentTo(second.fitness) && first.size() < second.size()));
     }
+                
+}

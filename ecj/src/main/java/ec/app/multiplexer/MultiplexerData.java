@@ -26,7 +26,7 @@ import ec.gp.*;
  */
 
 public class MultiplexerData extends GPData
-    {
+{
     /** A stack of available long arrays for popDat11/pushDat11 */
     public Stack tmp;
 
@@ -56,39 +56,39 @@ public class MultiplexerData extends GPData
 
     /** Pops a dat_11 off of the stack; if the stack is empty, creates a new dat_11 and returns that. */
     public long[] popDat11()
-        {
+    {
         if (tmp.empty())
             return new long[MULTI_11_NUM_BITSTRINGS];
         else return (long[])(tmp.pop());
-        }
+    }
 
     /** Pushes a dat_11 onto the stack */
     public void pushDat11(long[] l)
-        {
+    {
         tmp.push(l);
-        }
+    }
 
     public MultiplexerData() 
-        { 
+    { 
         dat_11 = new long[MULTI_11_NUM_BITSTRINGS]; 
         tmp = new Stack();
-        }
+    }
 
     public Object clone()
-        {
+    {
         MultiplexerData dat = (MultiplexerData)(super.clone());
         dat.dat_11 = new long[MULTI_11_NUM_BITSTRINGS];
         System.arraycopy(dat_11,0,dat.dat_11,0,MULTI_11_NUM_BITSTRINGS);
         dat.tmp = new Stack();
         return dat;
-        }
+    }
 
     public void copyTo(final GPData gpd)
-        { 
+    { 
         MultiplexerData md = ((MultiplexerData)gpd);
         for(int x=0;x<MULTI_11_NUM_BITSTRINGS;x++)
             md.dat_11[x] = dat_11[x];
         md.dat_6 = dat_6;
         md.status = status;
-        }
     }
+}

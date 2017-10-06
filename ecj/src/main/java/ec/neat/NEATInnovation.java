@@ -20,7 +20,7 @@ import ec.util.*;
  */
 
 public class NEATInnovation implements Prototype
-    {
+{
     public final static String P_INNOVATION = "innovation";
 
     /** Either NEWNODE (0) or NEWLINK (1). */
@@ -63,8 +63,8 @@ public class NEATInnovation implements Prototype
     public boolean recurFlag;
 
     @Override
-    public void setup(EvolutionState state, Parameter base)
-        {
+        public void setup(EvolutionState state, Parameter base)
+    {
         innovationType = 0;
         inNodeId = 0;
         outNodeId = 0;
@@ -74,13 +74,13 @@ public class NEATInnovation implements Prototype
         oldInnovationNum = 0;
         newWeight = 0;
         recurFlag = false;
-        }
+    }
 
     @Override
-    public Parameter defaultBase()
-        {
+        public Parameter defaultBase()
+    {
         return NEATDefaults.base().push(P_INNOVATION);
-        }
+    }
 
     /**
      * When we have a new innovation, we clone an existing NEATInnovation
@@ -88,7 +88,7 @@ public class NEATInnovation implements Prototype
      * method.
      */
     public void reset(int inNode, int outNode, int innovNum1, int innovNum2, int newId, int oldInnov)
-        {
+    {
         innovationType = 0;
         inNodeId = inNode;
         outNodeId = outNode;
@@ -100,7 +100,7 @@ public class NEATInnovation implements Prototype
         // unused parameters set to zero
         newWeight = 0;
         recurFlag = false;
-        }
+    }
 
     /**
      * When we have a new innovation, we clone an existing NEATInnovation
@@ -108,7 +108,7 @@ public class NEATInnovation implements Prototype
      * method.
      */
     public void reset(int inNode, int outNode, int oldInnov)
-        {
+    {
         innovationType = 0;
         inNodeId = inNode;
         outNodeId = outNode;
@@ -120,7 +120,7 @@ public class NEATInnovation implements Prototype
         newNodeId = 0;
         newWeight = 0;
         recurFlag = false;
-        }
+    }
 
     /**
      * When we have a new innovation, we clone an existing NEATInnovation
@@ -128,7 +128,7 @@ public class NEATInnovation implements Prototype
      * method.
      */
     public void reset(int inNode, int outNode, int innovNum, double weight, boolean recur)
-        {
+    {
         innovationType = 1;
         inNodeId = inNode;
         outNodeId = outNode;
@@ -140,7 +140,7 @@ public class NEATInnovation implements Prototype
         innovationNum2 = 0;
         oldInnovationNum = 0;
         newNodeId = 0;
-        }
+    }
 
     /**
      * When we have a new innovation, we clone an existing NEATInnovation
@@ -148,7 +148,7 @@ public class NEATInnovation implements Prototype
      * method.
      */
     public void reset(int inNode, int outNode, boolean recur)
-        {
+    {
         innovationType = 1;
         inNodeId = inNode;
         outNodeId = outNode;
@@ -161,33 +161,33 @@ public class NEATInnovation implements Prototype
         oldInnovationNum = 0;
         newNodeId = 0;
 
-        }
+    }
 
     public Object clone()
-        {
+    {
         NEATInnovation myobj = null;
         try
             {
-            myobj = (NEATInnovation) (super.clone());
-            myobj.innovationType = innovationType;
-            myobj.inNodeId = inNodeId;
-            myobj.outNodeId = outNodeId;
-            myobj.innovationNum1 = innovationNum1;
-            myobj.innovationNum2 = innovationNum2;
-            myobj.newWeight = newWeight;
-            myobj.newNodeId = newNodeId;
-            myobj.oldInnovationNum = oldInnovationNum;
-            myobj.recurFlag = recurFlag;
+                myobj = (NEATInnovation) (super.clone());
+                myobj.innovationType = innovationType;
+                myobj.inNodeId = inNodeId;
+                myobj.outNodeId = outNodeId;
+                myobj.innovationNum1 = innovationNum1;
+                myobj.innovationNum2 = innovationNum2;
+                myobj.newWeight = newWeight;
+                myobj.newNodeId = newNodeId;
+                myobj.oldInnovationNum = oldInnovationNum;
+                myobj.recurFlag = recurFlag;
             } catch (CloneNotSupportedException e) // never happens
             {
-            throw new InternalError();
+                throw new InternalError();
             }
         return myobj;
-        }
+    }
 
     @Override
-    public int hashCode()
-        {
+        public int hashCode()
+    {
         int result = innovationType;
         result = result * 31 + 17 + inNodeId;
         result = result * 31 + 17 + outNodeId;
@@ -196,11 +196,11 @@ public class NEATInnovation implements Prototype
             result = result + 13;
 
         return result;
-        }
+    }
 
     @Override
-    public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj)
+    {
         NEATInnovation inno = (NEATInnovation) obj;
         if (innovationType != inno.innovationType)
             return false;
@@ -211,6 +211,6 @@ public class NEATInnovation implements Prototype
         if (oldInnovationNum != inno.oldInnovationNum)
             return false;
         return recurFlag == inno.recurFlag;
-        }
-
     }
+
+}

@@ -22,7 +22,7 @@ import ec.vector.*;
  * @author spaus
  */
 public class SimpleBarChartStatistics extends BarChartStatistics 
-    { //Hovden
+{ //Hovden
 
     private int[] seriesID;
     
@@ -34,8 +34,8 @@ public class SimpleBarChartStatistics extends BarChartStatistics
         
         for (int i = 0; i < numSubPops; ++i) {
             seriesID[i] = i; //series id identifies each sub pop
-            }
         }
+    }
     
     public void postEvaluationStatistics(EvolutionState state) {
         super.postEvaluationStatistics(state);
@@ -49,7 +49,7 @@ public class SimpleBarChartStatistics extends BarChartStatistics
                 
                 //Best individual is found, make a bar graph
                 makeBar(seriesID[subPop], ((DoubleVectorIndividual) state.population.subpops.get(subPop).individuals.get(i)).genome);
-                }
             }
         }
     }
+}

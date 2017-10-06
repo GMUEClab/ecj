@@ -30,36 +30,36 @@ import ec.util.*;
  */
 
 public class CMAESBreeder extends Breeder
-    {
+{
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         // nothing to setup
-        }
+    }
 
     /** Updates the CMA-ES distribution given the current population, then 
         replaces the population with new samples generated from the distribution.
         Returns the revised population. */
 
     public Population breedPopulation(final EvolutionState state)
-        {
+    {
         Population pop = state.population;
         for(int i = 0; i < pop.subpops.size(); i++)
             {
-            Subpopulation subpop = pop.subpops.get(i);
-            if (!(subpop.species instanceof CMAESSpecies))  // uh oh
-                state.output.fatal("To use CMAESBreeder, subpopulation " + i + " must contain a CMAESSpecies.  But it contains a " + subpop.species);
+                Subpopulation subpop = pop.subpops.get(i);
+                if (!(subpop.species instanceof CMAESSpecies))  // uh oh
+                    state.output.fatal("To use CMAESBreeder, subpopulation " + i + " must contain a CMAESSpecies.  But it contains a " + subpop.species);
                         
-            CMAESSpecies species = (CMAESSpecies)(subpop.species);
+                CMAESSpecies species = (CMAESSpecies)(subpop.species);
                 
-            // update distribution[i] for subpop
-            species.updateDistribution(state, subpop);
+                // update distribution[i] for subpop
+                species.updateDistribution(state, subpop);
                 
-            // overwrite individuals
-            ArrayList<Individual> inds = subpop.individuals;
-            for(int j = 0; j < inds.size(); j++)
-                inds.set(j, species.newIndividual(state, 0));
+                // overwrite individuals
+                ArrayList<Individual> inds = subpop.individuals;
+                for(int j = 0; j < inds.size(); j++)
+                    inds.set(j, species.newIndividual(state, 0));
             }
                 
         return pop;
-        }
     }
+}

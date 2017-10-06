@@ -43,23 +43,23 @@ import ec.util.*;
 */
  
 public class GeneVectorSpecies extends VectorSpecies
-    {
+{
     private static final long serialVersionUID = 1;
 
     public static final String P_GENE = "gene";
     public Gene genePrototype;
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         Parameter def = defaultBase();
 
         genePrototype = (Gene)(state.parameters.getInstanceForParameterEq(
-                base.push(P_GENE),def.push(P_GENE),Gene.class));
+                                                                          base.push(P_GENE),def.push(P_GENE),Gene.class));
         genePrototype.setup(state,base.push(P_GENE));
 
         // make sure that super.setup is done AFTER we've loaded our gene prototype.
         super.setup(state,base);
-        }
-        
     }
+        
+}
 

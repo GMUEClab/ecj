@@ -13,14 +13,14 @@ import ec.simple.*;
 import ec.vector.*;
 
 public class OddRosenbrock extends Problem implements SimpleProblemForm
-    {
+{
     public void setup(final EvolutionState state, final Parameter base) { }
 
     public void evaluate(final EvolutionState state,
-        final Individual ind,
-        final int subpopulation,
-        final int threadnum)
-        {
+                         final Individual ind,
+                         final int subpopulation,
+                         final int threadnum)
+    {
         if( !( ind instanceof DoubleVectorIndividual ) )
             state.output.fatal( "The individuals for this problem should be DoubleVectorIndividuals." );
 
@@ -43,5 +43,5 @@ public class OddRosenbrock extends Problem implements SimpleProblemForm
         ((SimpleFitness)(ind.fitness)).setFitness( state, value, value==1.0 );
     
         ind.evaluated = true;
-        }
     }
+}

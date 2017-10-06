@@ -41,76 +41,76 @@ import javax.imageio.stream.*;
  */
 
 public class RoyalTree extends GPProblem implements SimpleProblemForm
-    {
+{
 
     public void evaluate(final EvolutionState state,
-        final Individual ind,
-        final int subpopulation,
-        final int threadnum)
-        {
+                         final Individual ind,
+                         final int subpopulation,
+                         final int threadnum)
+    {
         if (!ind.evaluated)  // don't bother reevaluating
             {
-            // trees[0].child is the root
-            double score = fitness(((GPIndividual) ind).trees[0].child, state);
+                // trees[0].child is the root
+                double score = fitness(((GPIndividual) ind).trees[0].child, state);
 
-            SimpleFitness f = ((SimpleFitness) ind.fitness);
-            f.setFitness(state, score, false);
-            ind.evaluated = true;
+                SimpleFitness f = ((SimpleFitness) ind.fitness);
+                f.setFitness(state, score, false);
+                ind.evaluated = true;
             }
-        }
+    }
 
     double fitness(GPNode node, EvolutionState state)
-        {
+    {
         double completeBonus = 2.0, partialBonus = 1.0,
             fullBonus = 2.0, penalty = 1.0 / 3;
         
         char node_fn = ((RoyalTreeNode) node).value();
         if (node_fn == 'X')
             {
-            return 1.0;
+                return 1.0;
             }
 
         double retval = 0.0;
         boolean nodeIsPerfect = true;
         for (int i = 0; i < node.children.length; i++)
             {
-            GPNode child = node.children[i];
-            char child_fn = ((RoyalTreeNode) child).value();
+                GPNode child = node.children[i];
+                char child_fn = ((RoyalTreeNode) child).value();
             
-            if (isPerfect(node_fn, child, state))
-                {
-                retval += fullBonus * fitness(child, state);
-                }
-            else if (isSuccessor(node_fn, child_fn, state))
-                {
-                retval += partialBonus * fitness(child, state);
-                nodeIsPerfect = false;
-                }
-            else
-                {
-                retval += penalty * fitness(child, state);
-                nodeIsPerfect = false;
-                }
+                if (isPerfect(node_fn, child, state))
+                    {
+                        retval += fullBonus * fitness(child, state);
+                    }
+                else if (isSuccessor(node_fn, child_fn, state))
+                    {
+                        retval += partialBonus * fitness(child, state);
+                        nodeIsPerfect = false;
+                    }
+                else
+                    {
+                        retval += penalty * fitness(child, state);
+                        nodeIsPerfect = false;
+                    }
             }
         
         // Only if every child is a perfect subtree of the appropriate
         // type does this node get completeBonus.
         if (nodeIsPerfect)
             {
-            retval *= completeBonus;
+                retval *= completeBonus;
             }
         return retval;
-        }
+    }
 
 
     // doesn't need to be cloned
     char[] successors = new char[256];  // we assume we only have letters, and 0 means "no sucessor"
     public RoyalTree()
-        {            
+    {            
         String SUCCESSORS = "XABCDEFGHIJ";
         for(int i = 0; i < SUCCESSORS.length() - 1 ; i++)
             successors[SUCCESSORS.charAt(i)] = SUCCESSORS.charAt(i+1);
-        }
+    }
 
     /**
      * @param p parent
@@ -118,9 +118,9 @@ public class RoyalTree extends GPProblem implements SimpleProblemForm
      * @return whether q is the correct "successor", eg p = B and q = A
      */
     boolean isSuccessor(char p, char q, EvolutionState state)
-        {
+    {
         return successors[p] == q;
-        }
+    }
 
     /**
      * Calculate whether the tree rooted at n is a perfect subtree
@@ -130,20 +130,20 @@ public class RoyalTree extends GPProblem implements SimpleProblemForm
      * @return whether it is a perfect subtree of the right type.
      */
     boolean isPerfect(char parent, GPNode node, EvolutionState state)
-        {
+    {
         char node_fn = ((RoyalTreeNode) node).value();
         if (!isSuccessor(parent, node_fn, state))
             {
-            return false;
+                return false;
             }
         for (int i = 0; i < node.children.length; i++)
             {
-            GPNode child = node.children[i];
-            if (!isPerfect(node_fn, child, state))
-                {
-                return false;
-                }
+                GPNode child = node.children[i];
+                if (!isPerfect(node_fn, child, state))
+                    {
+                        return false;
+                    }
             }
         return true;
-        }
     }
+}

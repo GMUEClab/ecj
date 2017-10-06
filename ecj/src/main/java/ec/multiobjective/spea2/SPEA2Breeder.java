@@ -26,9 +26,9 @@ import java.util.*;
  */
 
 public class SPEA2Breeder extends SimpleBreeder
-    {
+{
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state, base);
 
         for (int i = 0; i < state.population.subpops.size(); i++)
@@ -37,15 +37,15 @@ public class SPEA2Breeder extends SimpleBreeder
                         
         if (sequentialBreeding) // uh oh, haven't tested with this
             state.output.fatal("SPEA2Breeder does not support sequential evaluation.",
-                base.push(P_SEQUENTIAL_BREEDING));
+                               base.push(P_SEQUENTIAL_BREEDING));
 
         if (!clonePipelineAndPopulation)
             state.output.fatal("clonePipelineAndPopulation must be true for SPEA2Breeder.");
-        }
+    }
 
 
     protected void loadElites(EvolutionState state, Population newpop)
-        {
+    {
         // are our elites small enough?
         for(int x = 0; x< state.population.subpops.size(); x++)
             if (numElites(state, x)> state.population.subpops.get(x).individuals.size())
@@ -55,29 +55,29 @@ public class SPEA2Breeder extends SimpleBreeder
         // do it
         for (int sub = 0; sub < state.population.subpops.size(); sub++)
             {
-            ArrayList<Individual> newInds = newpop.subpops.get(sub).individuals;  // The new population after we are done picking the elites
-            ArrayList<Individual> oldInds = state.population.subpops.get(sub).individuals;   // The old population from which to pick elites
+                ArrayList<Individual> newInds = newpop.subpops.get(sub).individuals;  // The new population after we are done picking the elites
+                ArrayList<Individual> oldInds = state.population.subpops.get(sub).individuals;   // The old population from which to pick elites
                         
-            buildArchive(state, oldInds, newInds, numElites(state, sub));
+                buildArchive(state, oldInds, newInds, numElites(state, sub));
             }
 
         // optionally force reevaluation
         unmarkElitesEvaluated(state, newpop);
-        }
+    }
 
     public double[] calculateDistancesFromIndividual(Individual ind, ArrayList<Individual> inds)
-        {
+    {
         double[] d = new double[inds.size()];
         for(int i = 0; i < inds.size(); i++)
             d[i] = ((SPEA2MultiObjectiveFitness)ind.fitness).sumSquaredObjectiveDistance((SPEA2MultiObjectiveFitness)inds.get(i).fitness);
         // now sort
         Arrays.sort(d);
         return d;
-        }
+    }
 
 
     public void buildArchive(EvolutionState state, ArrayList<Individual> oldInds, ArrayList<Individual> newInds, int archiveSize)
-        {
+    {
         //Individual[] dummy = new Individual[0];
                 
         // step 1: load the archive with the pareto-nondominated front
@@ -89,13 +89,13 @@ public class SPEA2Breeder extends SimpleBreeder
         // step 2: if the archive isn't full, load the remainder with the fittest individuals (using customFitnessMetric) that aren't in the archive yet
         if (currentArchiveSize < archiveSize)
             {
-            Collections.sort(nonFront);  // the fitter individuals will be earlier
-            int len = (archiveSize - currentArchiveSize);
-            for(int i = 0; i < len; i++)
-                {
-                archive.add(nonFront.get(i));
-                currentArchiveSize++;
-                }
+                Collections.sort(nonFront);  // the fitter individuals will be earlier
+                int len = (archiveSize - currentArchiveSize);
+                for(int i = 0; i < len; i++)
+                    {
+                        archive.add(nonFront.get(i));
+                        currentArchiveSize++;
+                    }
             }
                         
 
@@ -107,34 +107,34 @@ public class SPEA2Breeder extends SimpleBreeder
                 
         while(currentArchiveSize > archiveSize)
             {
-            Individual closest = (Individual)(archive.get(0));
-            int closestIndex = 0;
-            double[] closestD = calculateDistancesFromIndividual(closest, oldInds);
+                Individual closest = (Individual)(archive.get(0));
+                int closestIndex = 0;
+                double[] closestD = calculateDistancesFromIndividual(closest, oldInds);
                         
-            for(int i = 1; i < currentArchiveSize; i++)
-                {
-                Individual competitor = (Individual)(archive.get(i));
-                double[] competitorD = calculateDistancesFromIndividual(competitor, oldInds);
-                                
-                for(int k = 0; k < oldInds.size(); k++)
+                for(int i = 1; i < currentArchiveSize; i++)
                     {
-                    if (closestD[i] > competitorD[i])
-                        { closest = competitor ; closestD = competitorD;  closestIndex = k; break; }
-                    else if (closestD[i] < competitorD[i])
-                        { break; }
+                        Individual competitor = (Individual)(archive.get(i));
+                        double[] competitorD = calculateDistancesFromIndividual(competitor, oldInds);
+                                
+                        for(int k = 0; k < oldInds.size(); k++)
+                            {
+                                if (closestD[i] > competitorD[i])
+                                    { closest = competitor ; closestD = competitorD;  closestIndex = k; break; }
+                                else if (closestD[i] < competitorD[i])
+                                    { break; }
+                            }
                     }
-                }
                         
-            // remove him destructively -- put the top guy in his place and remove the top guy.  This is O(1)
-            archive.set(closestIndex, archive.get(archive.size()-1));
-            archive.remove(archive.size()-1);
+                // remove him destructively -- put the top guy in his place and remove the top guy.  This is O(1)
+                archive.set(closestIndex, archive.get(archive.size()-1));
+                archive.remove(archive.size()-1);
                         
-            currentArchiveSize--;
+                currentArchiveSize--;
             }
                                                 
         // step 4: put clones of the archive in the new individuals
         Object[] obj = archive.toArray();
         for(int i = 0; i < archiveSize; i++)
             newInds.set(newInds.size() - archiveSize + i, (Individual)(((Individual)obj[i]).clone()));
-        }
     }
+}

@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class Nand extends GPNode
-    {
+{
     public String toString() { return "nand"; }
 
     /*
@@ -43,12 +43,12 @@ public class Nand extends GPNode
     public int expectedChildren() { return 2; }
 
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         ParityData d = ((ParityData)input);
         // shortcutting NAND
         children[0].eval(state,thread,input,stack,individual,problem);
@@ -58,8 +58,8 @@ public class Nand extends GPNode
 
         // invert
         d.x ^= 1;
-        }
     }
+}
 
 
 

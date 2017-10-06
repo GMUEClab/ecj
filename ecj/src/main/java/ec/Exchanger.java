@@ -26,7 +26,7 @@ package ec;
  */
 
 public abstract class Exchanger implements Singleton
-    {
+{
     /** Initializes contacts with other processes, if that's what you're doing. Called at the beginning of an evolutionary run, before a population is set up. */
     public void initializeContacts(EvolutionState state) { }
 
@@ -52,9 +52,9 @@ public abstract class Exchanger implements Singleton
         IslandExchange.getIslandIndex(state, island) to retrieve the island number in the parameters,
         from which you can then determine additional useful information about the destination island. */
     protected Individual process(EvolutionState state, int thread, String island, int subpop, Individual ind)
-        {
+    {
         return ind;
-        }
+    }
 
     /** Called after preBreedingExchangePopulation(...) to evaluate whether or not
         the exchanger wishes the run to shut down (with ec.EvolutionState.R_FAILURE) --
@@ -71,4 +71,4 @@ public abstract class Exchanger implements Singleton
 
     /** Closes contacts with other processes, if that's what you're doing.  Called at the end of an evolutionary run. result is either ec.EvolutionState.R_SUCCESS or ec.EvolutionState.R_FAILURE, indicating whether or not an ideal individual was found. */
     public void closeContacts(EvolutionState state, int result) { }
-    }
+}

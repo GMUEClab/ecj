@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class Accept extends GPNode
-    {
+{
     public String toString() { return "a"; }
 
     /*
@@ -43,12 +43,12 @@ public class Accept extends GPNode
     public int expectedChildren() { return 1; }
 
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         int edge = ((EdgeData)(input)).edge;
         Edge prob = (Edge)problem;
 
@@ -57,8 +57,8 @@ public class Accept extends GPNode
         // pass the edge down
 
         children[0].eval(state,thread,input,stack,individual,problem);
-        }
     }
+}
 
 
 

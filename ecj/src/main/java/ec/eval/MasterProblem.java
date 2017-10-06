@@ -91,7 +91,7 @@ import java.io.*;
  */
 
 public class MasterProblem extends Problem implements SimpleProblemForm, GroupedProblemForm 
-    {
+{
     private static final long serialVersionUID = 1;
     
     public static final String P_DEBUG_INFO = "debug-info";
@@ -105,7 +105,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
 
     // except for the problem, everything else is shallow-cloned
     public Object clone()
-        {
+    {
         MasterProblem c = (MasterProblem)(super.clone());
 
         // shallow-cloned stuff
@@ -119,11 +119,11 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         c.problem = (Problem)(problem.clone());
 
         return c;
-        }
+    }
 
     // setup
     public void setup(final EvolutionState state, final Parameter base) 
-        {
+    {
         Thread.currentThread().setName("MainThread: ");
         super.setup(state, base);
         showDebugInfo = state.parameters.getBoolean(base.push(P_DEBUG_INFO),null,false);
@@ -133,18 +133,18 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
             state.output.fatal("The job size must be an integer > 0.", base.push(P_JOB_SIZE));
 
         batchMode = false;
-        }
+    }
 
     // prepare for a batch of evaluations
     public void prepareToEvaluate(final EvolutionState state, final int threadnum)
-        {
+    {
         if (jobSize > 1) queue = new ArrayList();
         batchMode = true;
-        }
+    }
 
     // wait until a batch of evaluations is finished
     public void finishEvaluating(final EvolutionState state, final int threadnum)
-        {
+    {
         if(showDebugInfo)
             state.output.message(Thread.currentThread().getName() + "Waiting for all slaves to finish.");
         flush(state, threadnum);
@@ -154,45 +154,45 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         batchMode = false;
         if(showDebugInfo)
             state.output.message(Thread.currentThread().getName() + "All slaves have finished their jobs.");
-        }
+    }
 
     // evaluate a regular individual
     public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum)
-        {
+    {
         if (jobSize > 1 && batchMode == true)    // chunked evaluation mechanism
             {
-            queue.add(new QueueIndividual(ind, subpopulation));
-            if (queue.size() >= jobSize)
-                flush(state, threadnum);
+                queue.add(new QueueIndividual(ind, subpopulation));
+                if (queue.size() >= jobSize)
+                    flush(state, threadnum);
             }
         else    /// ordinary evaluation mechanism  
             evaluate(state, new Individual[] { ind }, new int[] { subpopulation }, threadnum);           
-        }
+    }
         
         
     ArrayList queue;
     void flush(EvolutionState state, int threadnum)
-        {
+    {
         int subpopulation;
         if (queue!=null && queue.size() > 0 )
             {
-            Individual[] inds = new Individual[queue.size()];
-            int[] subpopulations = new int[queue.size()];
-            for(int i = 0; i < queue.size(); i++)
-                {
-                QueueIndividual qind = (QueueIndividual)(queue.get(i));
-                inds[i] = qind.ind;
-                subpopulations[i] = qind.subpop; 
-                }
-            evaluate(state, inds, subpopulations, threadnum);
+                Individual[] inds = new Individual[queue.size()];
+                int[] subpopulations = new int[queue.size()];
+                for(int i = 0; i < queue.size(); i++)
+                    {
+                        QueueIndividual qind = (QueueIndividual)(queue.get(i));
+                        inds[i] = qind.ind;
+                        subpopulations[i] = qind.subpop; 
+                    }
+                evaluate(state, inds, subpopulations, threadnum);
             }
         queue = new ArrayList();
-        }
+    }
 
 
     // send a group of individuals to one slave for evaluation 
     void evaluate(EvolutionState state, Individual inds[], int[] subpopulations, int threadnum)
-        {
+    {
         if(showDebugInfo)
             state.output.message(Thread.currentThread().getName() + "Starting a " + (batchMode ? "batched " : "") + "SimpleProblemForm evaluation.");
 
@@ -208,7 +208,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         if( !batchMode )
             monitor.waitForAllSlavesToFinishEvaluating( state );
         if(showDebugInfo) state.output.message(Thread.currentThread().getName() + "Finished a " + (batchMode ? "batched " : "") + "SimpleProblemForm evaluation.");
-        }
+    }
         
         
         
@@ -217,43 +217,43 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
      * @see ec.simple.SimpleProblemForm#describe(ec.EvolutionState, ec.Individual, int, int)
      */
     public void describe(EvolutionState state, Individual ind, int subpopulation, int threadnum, int log) 
-        {
+    {
         if ((problem instanceof SimpleProblemForm)) 
             {
-            ((SimpleProblemForm)problem).describe(state, ind, subpopulation, threadnum, log);
+                ((SimpleProblemForm)problem).describe(state, ind, subpopulation, threadnum, log);
             }
-        }
+    }
 
     /* (non-Javadoc)
      * @see ec.coevolve.GroupedProblemForm#preprocessPopulation(ec.EvolutionState, ec.Population)
      */
     public void preprocessPopulation(final EvolutionState state, Population pop, final boolean[] prepareForFitnessAssessment, boolean countVictoriesOnly)
-        {
+    {
         if (!(problem instanceof GroupedProblemForm)) 
             {
-            state.output.fatal("MasterProblem.preprocessPopulation(...) invoked, but the underlying Problem is not of GroupedProblemForm");
+                state.output.fatal("MasterProblem.preprocessPopulation(...) invoked, but the underlying Problem is not of GroupedProblemForm");
             }
                 
         ((GroupedProblemForm) problem).preprocessPopulation(state, pop, prepareForFitnessAssessment, countVictoriesOnly);
-        }
+    }
 
     /* (non-Javadoc)
      * @see ec.coevolve.GroupedProblemForm#postprocessPopulation(ec.EvolutionState, ec.Population)
      */
     public int postprocessPopulation(EvolutionState state, Population pop, boolean[] assessFitness, boolean countVictoriesOnly) 
-        {
+    {
         if (!(problem instanceof GroupedProblemForm)) 
             {
-            state.output.fatal("MasterProblem.postprocessPopulation(...) invoked, but the underlying Problem is not of GroupedProblemForm");
+                state.output.fatal("MasterProblem.postprocessPopulation(...) invoked, but the underlying Problem is not of GroupedProblemForm");
             }
                 
         return ((GroupedProblemForm) problem).postprocessPopulation(state, pop, assessFitness, countVictoriesOnly);
-        }
+    }
 
     // regular coevolutionary evaluation
     public void evaluate(EvolutionState state, Individual[] inds,
-        boolean[] updateFitness, boolean countVictoriesOnly, int[] subpops, int threadnum)
-        {
+                         boolean[] updateFitness, boolean countVictoriesOnly, int[] subpops, int threadnum)
+    {
         if(showDebugInfo)
             state.output.message("Starting a GroupedProblemForm evaluation.");
 
@@ -271,7 +271,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
 
         if(showDebugInfo)
             state.output.message("Finished the GroupedProblemForm evaluation.");
-        }
+    }
 
     /* Custom serialization */
     //private void writeObject(ObjectOutputStream out) throws IOException
@@ -287,52 +287,52 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
 
     /** Initialize contacts with the slaves */
     public void initializeContacts( final EvolutionState state )
-        {
+    {
         if(showDebugInfo)
             state.output.message(Thread.currentThread().getName() + "Spawning the server thread.");
         monitor = new SlaveMonitor(state, showDebugInfo, this);
-        }
+    }
 
     /** Reinitialize contacts with the slaves */
     public void reinitializeContacts( final EvolutionState state )
-        {
+    {
         initializeContacts(state);
-        }
+    }
 
     /** Gracefully close contacts with the slaves */
     public void closeContacts(EvolutionState state, int result)
-        {
+    {
         monitor.shutdown();
-        }
+    }
         
     public boolean canEvaluate() 
-        {
+    {
         return (monitor.numAvailableSlaves() != 0); 
-        }
+    }
         
     /** This will only return true if (1) the EvolutionState is a SteadyStateEvolutionState and
         (2) an individual has returned from the system.  If you're not doing steady state evolution,
         you should not call this method.  */
     public boolean evaluatedIndividualAvailable()
-        {
+    {
         return monitor.evaluatedIndividualAvailable();
-        }
+    }
     
     /** This method blocks until an individual is available from the slaves (which will cause evaluatedIndividualAvailable()
         to return true), at which time it returns the individual.  You should only call this method
         if you're doing steady state evolution -- otherwise, the method will block forever. */
     public QueueIndividual getNextEvaluatedIndividual()
-        {
+    {
         return monitor.waitForIndividual();
-        }
+    }
                 
     /** This method is called from the SlaveMonitor's accept() thread to optionally send additional data to the
         Slave via the dataOut stream.  By default it does nothing.  If you override this you must also override (and use) 
         receiveAdditionalData() and transferAdditionalData(). */
     public void sendAdditionalData(EvolutionState state, DataOutputStream dataOut)
-        {
+    {
         // do nothing
-        }
+    }
 
     /** This method is called on a MasterProblem by the Slave.  You should use this method to store away
         received data via the dataIn stream for later transferring to the current EvolutionState via the
@@ -341,15 +341,15 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         The EvolutionState is provided solely for you to be able to output warnings and errors: do not rely
         on it for any other purpose (including access of the random number generator or storing any data).  */
     public void receiveAdditionalData(EvolutionState state, DataInputStream dataIn)
-        {
+    {
         // do nothing
-        }
+    }
 
     /** This method is called by a Slave to transfer data previously loaded via receiveAdditionalData() to
         a running EvolutionState at the beginning of evolution.  It may be called multiple times if multiple
         EvolutionStates are created. By default this method does nothing, which is the usual situation. */
     public void transferAdditionalData(EvolutionState state)
-        {
+    {
         // do nothing
-        }
     }
+}

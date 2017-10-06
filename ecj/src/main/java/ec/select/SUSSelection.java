@@ -69,7 +69,7 @@ import ec.*;
  */
 
 public class SUSSelection extends SelectionMethod
-    {
+{
     /** Default base */
     public static final String P_SUS = "sus";
     public static final String P_SHUFFLE = "shuffle";
@@ -89,21 +89,21 @@ public class SUSSelection extends SelectionMethod
     public int steps;
     
     public Parameter defaultBase()
-        {
+    {
         return SelectDefaults.base().push(P_SUS);
-        }
+    }
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
         
         Parameter def = defaultBase();
         shuffle = state.parameters.getBoolean(base.push(P_SHUFFLE),def.push(P_SHUFFLE),true);
-        }
+    }
 
     /* Largely stolen from sim.util.Bag.  Shuffles both the indices and the doubles */
     void shuffle(MersenneTwisterFast random, double[] fitnesses, int[] indices)
-        {
+    {
         int numObjs = fitnesses.length;
         //double[] fitnesses = this.fitnesses;
         //int[] indices = this.indices;
@@ -114,22 +114,22 @@ public class SUSSelection extends SelectionMethod
         
         for(int x=numObjs-1; x >= 1 ; x--)
             {
-            rand = random.nextInt(x+1);
-            f = fitnesses[x];
-            fitnesses[x] = fitnesses[rand];
-            fitnesses[rand] = f;
+                rand = random.nextInt(x+1);
+                f = fitnesses[x];
+                fitnesses[x] = fitnesses[rand];
+                fitnesses[rand] = f;
 
-            i = indices[x];
-            indices[x] = indices[rand];
-            indices[rand] = i;
+                i = indices[x];
+                indices[x] = indices[rand];
+                indices[rand] = i;
             }
-        }
+    }
 
     // don't need clone etc. 
     public void prepareToProduce(final EvolutionState s,
-        final int subpopulation,
-        final int thread)
-        {
+                                 final int subpopulation,
+                                 final int thread)
+    {
         super.prepareToProduce(s, subpopulation, thread);
 
         lastIndex = 0;
@@ -143,9 +143,9 @@ public class SUSSelection extends SelectionMethod
         // load fitnesses but don't build distribution yet
         for(int x=0;x<fitnesses.length;x++)
             {
-            fitnesses[x] = ((Individual)(s.population.subpops.get(subpopulation).individuals.get(x))).fitness.fitness();
-            if (fitnesses[x] < 0) // uh oh
-                s.output.fatal("Discovered a negative fitness value.  SUSSelection requires that all fitness values be non-negative(offending subpopulation #" + subpopulation + ")");
+                fitnesses[x] = ((Individual)(s.population.subpops.get(subpopulation).individuals.get(x))).fitness.fitness();
+                if (fitnesses[x] < 0) // uh oh
+                    s.output.fatal("Discovered a negative fitness value.  SUSSelection requires that all fitness values be non-negative(offending subpopulation #" + subpopulation + ")");
             }
 
         // construct and optionally shuffle fitness distribution and indices
@@ -155,19 +155,19 @@ public class SUSSelection extends SelectionMethod
                 
         // organize the distribution.  All zeros in fitness is fine
         RandomChoice.organizeDistribution(fitnesses, true);
-        }
+    }
 
     public int produce(final int subpopulation,
-        final EvolutionState state,
-        final int thread)
-        {
+                       final EvolutionState state,
+                       final int thread)
+    {
         if (steps >= fitnesses.length)  // we've gone too far, clearly an error
             {
-            state.output.warning("SUSSelection was asked for too many individuals, so we're re-shuffling.  This will give you proper results, but it might suggest an error in your code.");
-            boolean s = shuffle;
-            shuffle = true;
-            prepareToProduce(state, subpopulation, thread);  // rebuild
-            shuffle = s; // just in case
+                state.output.warning("SUSSelection was asked for too many individuals, so we're re-shuffling.  This will give you proper results, but it might suggest an error in your code.");
+                boolean s = shuffle;
+                shuffle = true;
+                prepareToProduce(state, subpopulation, thread);  // rebuild
+                shuffle = s; // just in case
             }
             
         // find the next index
@@ -178,5 +178,5 @@ public class SUSSelection extends SelectionMethod
         offset += (double)(1.0 / fitnesses.length);  // update for next time
         steps++;
         return indices[lastIndex];
-        }
     }
+}

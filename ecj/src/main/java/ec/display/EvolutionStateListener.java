@@ -16,9 +16,9 @@ package ec.display;
  * @author spaus
  */
 public interface EvolutionStateListener 
-    {
+{
     /**
      * @param evt
      */
     public void postEvolution(EvolutionStateEvent evt);
-    }
+}

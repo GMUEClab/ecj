@@ -44,7 +44,7 @@ import ec.*;
  */
 
 public class TopSelection extends SelectionMethod 
-    {
+{
     /** Default base */
     public static final String P_TOP = "top";
     public static final String P_CACHE = "cache";
@@ -53,35 +53,35 @@ public class TopSelection extends SelectionMethod
     int best;
     
     public Parameter defaultBase()
-        {
+    {
         return SelectDefaults.base().push(P_TOP);
-        }
+    }
 
     // don't need clone etc. 
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
         
         Parameter def = defaultBase();
         
         cache = state.parameters.getBoolean(base.push(P_CACHE),def.push(P_CACHE), false);
-        }
+    }
 
     public void prepareToProduce(final EvolutionState s,
-        final int subpopulation,
-        final int thread)
-        {
+                                 final int subpopulation,
+                                 final int thread)
+    {
         super.prepareToProduce(s, subpopulation, thread);
         
         if (cache) 
             best = -1;
-        }
+    }
         
     public void cacheBest(final int subpopulation,
-        final EvolutionState state,
-        final int thread)
-        {
+                          final EvolutionState state,
+                          final int thread)
+    {
         ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
         int len = oldinds.size();
 
@@ -91,41 +91,41 @@ public class TopSelection extends SelectionMethod
                                 
         for (int i = 1; i < len; i++)
             {
-            Individual ni = oldinds.get(i);
+                Individual ni = oldinds.get(i);
                         
-            // if he's better, definitely adopt him and reset the ties
-            if (ni.fitness.betterThan(bi.fitness))
-                { 
-                bi = ni; 
-                b = i; 
-                ties = 1;
-                }
-            // if he's the same, adopt him with 1/n probability
-            else if (ni.fitness.equivalentTo(bi.fitness))
-                {
-                ties++;
-                if (state.random[thread].nextBoolean(1.0 / ties))
-                    {
-                    bi = ni;
-                    b = i;
+                // if he's better, definitely adopt him and reset the ties
+                if (ni.fitness.betterThan(bi.fitness))
+                    { 
+                        bi = ni; 
+                        b = i; 
+                        ties = 1;
                     }
-                }
+                // if he's the same, adopt him with 1/n probability
+                else if (ni.fitness.equivalentTo(bi.fitness))
+                    {
+                        ties++;
+                        if (state.random[thread].nextBoolean(1.0 / ties))
+                            {
+                                bi = ni;
+                                b = i;
+                            }
+                    }
             }
         best = b;
-        }
+    }
 
     public int produce(final int subpopulation,
-        final EvolutionState state,
-        final int thread)
-        {
+                       final EvolutionState state,
+                       final int thread)
+    {
         if (cache && best >= 0)
             {
-            // do nothing, it's cached
+                // do nothing, it's cached
             }
         else
             {
-            cacheBest(subpopulation, state, thread);
+                cacheBest(subpopulation, state, thread);
             }
         return best;
-        }
     }
+}

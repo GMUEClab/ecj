@@ -58,7 +58,7 @@ import ec.util.*;
  */
 
 public abstract class GPNodeBuilder implements Prototype
-    {
+{
     /** Produces a new rooted tree of GPNodes whose root's return type is
         swap-compatible with <i>type</i>.  When you build a brand-new
         tree out of GPNodes cloned from the
@@ -92,196 +92,196 @@ public abstract class GPNodeBuilder implements Prototype
     /** Returns true if some size distribution (either minSize and maxSize,
         or sizeDistribution) is set up by the user in order to pick sizes randomly. */
     public boolean canPick()
-        {
+    {
         return (minSize!=0 || sizeDistribution !=null);
-        }
+    }
     
     /** Assuming that either minSize and maxSize, or sizeDistribution, is defined,
         picks a random size from minSize...maxSize inclusive, or randomly
         from sizeDistribution. */ 
     public int pickSize(final EvolutionState state, final int thread)
-        {
+    {
         if (minSize>0)
             {
-            // pick from minSize...maxSize
-            return state.random[thread].nextInt(maxSize-minSize+1) + minSize;
+                // pick from minSize...maxSize
+                return state.random[thread].nextInt(maxSize-minSize+1) + minSize;
             }
         else if (sizeDistribution!=null)
             {
-            // pick from distribution
-            return RandomChoice.pickFromDistribution(
-                sizeDistribution,
-                state.random[thread].nextDouble()) + 1 ;
+                // pick from distribution
+                return RandomChoice.pickFromDistribution(
+                                                         sizeDistribution,
+                                                         state.random[thread].nextDouble()) + 1 ;
             }
         else throw new InternalError("Neither minSize nor sizeDistribution is defined in GPNodeBuilder");
-        }
+    }
 
 
     public Object clone()
-        {
+    {
         try
             {
-            GPNodeBuilder c = (GPNodeBuilder)(super.clone());
+                GPNodeBuilder c = (GPNodeBuilder)(super.clone());
 
-            if (sizeDistribution != null) c.sizeDistribution = 
-                                              (double[]) (sizeDistribution.clone());
+                if (sizeDistribution != null) c.sizeDistribution = 
+                                                  (double[]) (sizeDistribution.clone());
 
-            return c;
+                return c;
             }
         catch (CloneNotSupportedException e)
             { throw new InternalError(); } // never happens
-        }
+    }
 
 
 
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         Parameter def = defaultBase();
 
         // min and max size
 
         if (state.parameters.exists(base.push(P_MINSIZE),
-                def.push(P_MINSIZE)))
+                                    def.push(P_MINSIZE)))
             {
-            if (!(state.parameters.exists(base.push(P_MAXSIZE),
-                        def.push(P_MAXSIZE))))
-                state.output.fatal("This GPNodeBuilder has a " + 
-                    P_MINSIZE + " but not a " + P_MAXSIZE + ".");
+                if (!(state.parameters.exists(base.push(P_MAXSIZE),
+                                              def.push(P_MAXSIZE))))
+                    state.output.fatal("This GPNodeBuilder has a " + 
+                                       P_MINSIZE + " but not a " + P_MAXSIZE + ".");
            
-            minSize = state.parameters.getInt(
-                base.push(P_MINSIZE), def.push(P_MINSIZE),1);
-            if (minSize==0) 
-                state.output.fatal("The GPNodeBuilder must have a min size >= 1.",
-                    base.push(P_MINSIZE), def.push(P_MINSIZE));
+                minSize = state.parameters.getInt(
+                                                  base.push(P_MINSIZE), def.push(P_MINSIZE),1);
+                if (minSize==0) 
+                    state.output.fatal("The GPNodeBuilder must have a min size >= 1.",
+                                       base.push(P_MINSIZE), def.push(P_MINSIZE));
             
-            maxSize = state.parameters.getInt(
-                base.push(P_MAXSIZE), def.push(P_MAXSIZE),1);
-            if (maxSize==0) 
-                state.output.fatal("The GPNodeBuilder must have a max size >= 1.",
-                    base.push(P_MAXSIZE), def.push(P_MAXSIZE));
+                maxSize = state.parameters.getInt(
+                                                  base.push(P_MAXSIZE), def.push(P_MAXSIZE),1);
+                if (maxSize==0) 
+                    state.output.fatal("The GPNodeBuilder must have a max size >= 1.",
+                                       base.push(P_MAXSIZE), def.push(P_MAXSIZE));
 
-            if (minSize > maxSize)
-                state.output.fatal(
-                    "The GPNodeBuilder must have min size <= max size.",
-                    base.push(P_MINSIZE), def.push(P_MINSIZE));
+                if (minSize > maxSize)
+                    state.output.fatal(
+                                       "The GPNodeBuilder must have min size <= max size.",
+                                       base.push(P_MINSIZE), def.push(P_MINSIZE));
             }
         else if (state.parameters.exists(base.push(P_MAXSIZE),
-                def.push(P_MAXSIZE)))
+                                         def.push(P_MAXSIZE)))
             state.output.fatal("This GPNodeBuilder has a " + 
-                P_MAXSIZE + " but not a " + P_MINSIZE + ".",
-                base.push(P_MAXSIZE), def.push(P_MAXSIZE));
+                               P_MAXSIZE + " but not a " + P_MINSIZE + ".",
+                               base.push(P_MAXSIZE), def.push(P_MAXSIZE));
 
         // load sizeDistribution
 
         else if (state.parameters.exists(base.push(P_NUMSIZES),
-                def.push(P_NUMSIZES)))
+                                         def.push(P_NUMSIZES)))
             {
-            int siz = state.parameters.getInt(
-                base.push(P_NUMSIZES), def.push(P_NUMSIZES),1);
-            if (siz==0)
-                state.output.fatal("The number of sizes in the GPNodeBuilder's distribution must be >= 1. ");
-            sizeDistribution = new double[siz];
-            if (state.parameters.exists(base.push(P_SIZE).push("0"),
-                    def.push(P_SIZE).push("0")))
-                state.output.warning(
-                    "GPNodeBuilder does not use size #0 in the distribution",
-                    base.push(P_SIZE).push("0"),
-                    def.push(P_SIZE).push("0"));
-            
-            double sum = 0.0;
-            for(int x=0;x<siz;x++)
-                {
-                sizeDistribution[x] = state.parameters.getDouble(
-                    base.push(P_SIZE).push(""+(x+1)), 
-                    def.push(P_SIZE).push(""+(x+1)), 0.0);
-                if (sizeDistribution[x]<0.0)
-                    {
+                int siz = state.parameters.getInt(
+                                                  base.push(P_NUMSIZES), def.push(P_NUMSIZES),1);
+                if (siz==0)
+                    state.output.fatal("The number of sizes in the GPNodeBuilder's distribution must be >= 1. ");
+                sizeDistribution = new double[siz];
+                if (state.parameters.exists(base.push(P_SIZE).push("0"),
+                                            def.push(P_SIZE).push("0")))
                     state.output.warning(
-                        "Distribution value #" + x + " negative or not defined, assumed to be 0.0",
-                        base.push(P_SIZE).push(""+(x+1)), 
-                        def.push(P_SIZE).push(""+(x+1)));
-                    sizeDistribution[x] = 0.0;
-                    }
-                sum += sizeDistribution[x];
-                }
-            if (sum>1.0)
-                state.output.warning(
-                    "Distribution sums to greater than 1.0",
-                    base.push(P_SIZE),
-                    def.push(P_SIZE));
-            if (sum==0.0)
-                state.output.fatal(
-                    "Distribution is all 0's",
-                    base.push(P_SIZE),
-                    def.push(P_SIZE));
+                                         "GPNodeBuilder does not use size #0 in the distribution",
+                                         base.push(P_SIZE).push("0"),
+                                         def.push(P_SIZE).push("0"));
             
-            // normalize and prepare
-            RandomChoice.organizeDistribution(sizeDistribution);
+                double sum = 0.0;
+                for(int x=0;x<siz;x++)
+                    {
+                        sizeDistribution[x] = state.parameters.getDouble(
+                                                                         base.push(P_SIZE).push(""+(x+1)), 
+                                                                         def.push(P_SIZE).push(""+(x+1)), 0.0);
+                        if (sizeDistribution[x]<0.0)
+                            {
+                                state.output.warning(
+                                                     "Distribution value #" + x + " negative or not defined, assumed to be 0.0",
+                                                     base.push(P_SIZE).push(""+(x+1)), 
+                                                     def.push(P_SIZE).push(""+(x+1)));
+                                sizeDistribution[x] = 0.0;
+                            }
+                        sum += sizeDistribution[x];
+                    }
+                if (sum>1.0)
+                    state.output.warning(
+                                         "Distribution sums to greater than 1.0",
+                                         base.push(P_SIZE),
+                                         def.push(P_SIZE));
+                if (sum==0.0)
+                    state.output.fatal(
+                                       "Distribution is all 0's",
+                                       base.push(P_SIZE),
+                                       def.push(P_SIZE));
+            
+                // normalize and prepare
+                RandomChoice.organizeDistribution(sizeDistribution);
             }
-        }
+    }
 
     public abstract GPNode newRootedTree(final EvolutionState state,
-        final GPType type,
-        final int thread,
-        final GPNodeParent parent,
-        final GPFunctionSet set,
-        final int argposition,
-        final int requestedSize);
+                                         final GPType type,
+                                         final int thread,
+                                         final GPNodeParent parent,
+                                         final GPFunctionSet set,
+                                         final int argposition,
+                                         final int requestedSize);
         
     /** Issues a warning that no terminal was found with a return type of the given type, and that an algorithm
         had requested one.  If fail is true, then a fatal is issued rather than a warning.  The warning takes
         the form of a one-time big explanatory message, followed by a one-time-per-type message. */
     protected void warnAboutNoTerminalWithType(GPType type, boolean fail, EvolutionState state)
-        {
+    {
         // big explanation -- appears only once
         state.output.warnOnce("A GPNodeBuilder has been requested at least once to generate a one-node tree with " +
-            "a return value type-compatable with a certain type; but there is no TERMINAL which is type-compatable " +
-            "in this way.  As a result, the algorithm was forced to use a NON-TERMINAL, making the tree larger than " +
-            "requested, and exposing more child slots to fill, which if not carefully considered, could " +
-            "recursively repeat this problem and eventually fill all memory.");
+                              "a return value type-compatable with a certain type; but there is no TERMINAL which is type-compatable " +
+                              "in this way.  As a result, the algorithm was forced to use a NON-TERMINAL, making the tree larger than " +
+                              "requested, and exposing more child slots to fill, which if not carefully considered, could " +
+                              "recursively repeat this problem and eventually fill all memory.");
                 
         // shorter explanation -- appears for each node builder and type combo
         if (fail)
             state.output.fatal("" + this.getClass() + " can't find a terminal type-compatable with " + type + 
-                " and cannot replace it with a nonterminal.  You may need to try a different node-builder algorithm.");
+                               " and cannot replace it with a nonterminal.  You may need to try a different node-builder algorithm.");
         else
             state.output.warnOnce("" + this.getClass() + " can't find a terminal type-compatable with " + type);
-        }
+    }
                 
     /** If the given test is true, issues a warning that no terminal was found with a return type of the given type, and that an algorithm
         had requested one.  If fail is true, then a fatal is issued rather than a warning.  The warning takes
         the form of a one-time big explanatory message, followed by a one-time-per-type message. Returns the value of the test.
         This form makes it easy to insert warnings into if-statements.  */
     protected boolean warnAboutNonterminal(boolean test, GPType type, boolean fail, EvolutionState state)
-        {
+    {
         if (test) warnAboutNonTerminalWithType(type, fail, state);
         return test;
-        }
+    }
          
     /** Issues a warning that no nonterminal was found with a return type of the given type, and that an algorithm
         had requested one.  If fail is true, then a fatal is issued rather than a warning.  The warning takes
         the form of a one-time big explanatory message, followed by a one-time-per-type message. */
     protected void warnAboutNonTerminalWithType(GPType type, boolean fail, EvolutionState state)
-        {
+    {
         // big explanation -- appears only once
         state.output.warnOnce("A GPNodeBuilder has been requested at least once to generate a tree with " +
-            "a return value type-compatable with a certain type; but there is no NON-TERMINAL which is type-compatable " +
-            "in this way.  As a result, the algorithm was forced to use a TERMINAL, making the tree smaller than " +
-            "requested.");
+                              "a return value type-compatable with a certain type; but there is no NON-TERMINAL which is type-compatable " +
+                              "in this way.  As a result, the algorithm was forced to use a TERMINAL, making the tree smaller than " +
+                              "requested.");
                 
         // shorter explanation -- appears for each node builder and type combo
         if (fail)
             state.output.fatal("" + this.getClass() + " can't find a non-terminal type-compatable with " + type + 
-                " and cannot replace it with a terminal.  You may need to try a different node-builder algorithm.");
+                               " and cannot replace it with a terminal.  You may need to try a different node-builder algorithm.");
         else
             state.output.warnOnce("" + this.getClass() + " can't find a non-terminal type-compatable with " + type);
-        }
+    }
 
     /** Issues a fatal error that no node (nonterminal or terminal) was found with a return type of the given type, and that an algorithm
         had requested one.  */
     protected void errorAboutNoNodeWithType(GPType type, EvolutionState state)
-        {
+    {
         state.output.fatal("" + this.getClass() + " could find no terminal or nonterminal type-compatable with " + type);
-        }
     }
+}

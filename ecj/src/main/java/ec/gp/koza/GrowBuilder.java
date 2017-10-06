@@ -121,25 +121,25 @@ import ec.util.*;
 
 
 public class GrowBuilder extends KozaBuilder
-    {
+{
     public static final String P_GROWBUILDER = "grow";
 
     public Parameter defaultBase()
-        {
+    {
         return GPKozaDefaults.base().push(P_GROWBUILDER); 
-        }
+    }
 
     public GPNode newRootedTree(final EvolutionState state,
-        final GPType type,
-        final int thread,
-        final GPNodeParent parent,
-        final GPFunctionSet set,
-        final int argposition,
-        final int requestedSize)
-        {
+                                final GPType type,
+                                final int thread,
+                                final GPNodeParent parent,
+                                final GPFunctionSet set,
+                                final int argposition,
+                                final int requestedSize)
+    {
         GPNode n = growNode(state,0,state.random[thread].nextInt(maxDepth-minDepth+1) + minDepth,type,thread,parent,argposition,set);
         return n;
-        }
     }
+}
 
 

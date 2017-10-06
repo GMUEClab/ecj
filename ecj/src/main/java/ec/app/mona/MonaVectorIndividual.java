@@ -10,9 +10,9 @@ import ec.vector.*;
 import ec.*;
 
 public class MonaVectorIndividual extends DoubleVectorIndividual
-    {      
+{      
     public void reset(EvolutionState state, int thread)
-        {
+    {
         super.reset(state, thread);
 
         int numVertices = ((Mona)(state.evaluator.p_problem)).numVertices;
@@ -23,5 +23,5 @@ public class MonaVectorIndividual extends DoubleVectorIndividual
             // Here I divide the alpha by 10 so they're initially very
             // transparent
             genome[x] /= 10;            
-        }
     }
+}

@@ -73,7 +73,7 @@ import ec.util.*;
  */
 
 public abstract class Individual implements Prototype, Comparable
-    {
+{
     /** A reasonable parameter base element for individuals*/
     public static final String P_INDIVIDUAL = "individual";
 
@@ -90,16 +90,16 @@ public abstract class Individual implements Prototype, Comparable
     public boolean evaluated;
 
     public Object clone()
-        {
+    {
         try 
             { 
-            Individual myobj = (Individual) (super.clone());
-            if (myobj.fitness != null) myobj.fitness = (Fitness)(fitness.clone());
-            return myobj; 
+                Individual myobj = (Individual) (super.clone());
+                if (myobj.fitness != null) myobj.fitness = (Fitness)(fitness.clone());
+                return myobj; 
             }
         catch (CloneNotSupportedException e) 
             { throw new InternalError(); } // never happens
-        }
+    }
 
    
     /** Returns the "size" of the individual.  This is used for things like
@@ -124,18 +124,18 @@ public abstract class Individual implements Prototype, Comparable
         and that's no longer the case.   You're welcome to override this anyway you 
         like to make the individual print out in a more lucid fashion. */
     public String toString()
-        {
+    {
         return "" + this.getClass().getName() + "@" + 
             System.identityHashCode(this) + "{" + hashCode() + "}";
-        }
+    }
         
     /** Print to a string the genotype of the Individual in a fashion readable by humans, and not intended
         to be parsed in again.  The fitness and evaluated flag should not be included.  The default form
         simply calls toString(), but you'll probably want to override this to something else. */
     public String genotypeToStringForHumans()
-        {
+    {
         return toString();
-        }
+    }
         
     /** Print to a string the genotype of the Individual in a fashion intended
         to be parsed in again via parseGenotype(...).
@@ -143,9 +143,9 @@ public abstract class Individual implements Prototype, Comparable
         simply calls toString(), which is almost certainly wrong, and you'll probably want to override
         this to something else. */
     public String genotypeToString()
-        {
+    {
         return toString();
-        }
+    }
               
     /** This should be used to set up only those things which you share in common
         with all other individuals in your species; individual-specific items
@@ -155,23 +155,23 @@ public abstract class Individual implements Prototype, Comparable
     */
     
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         // does nothing by default.
         // So where is the species set?  The Species does so after it
         // loads me but before it calls setup on me.
-        }
+    }
 
     /** Should print the individual out in a pleasing way for humans,
         with a verbosity of Output.V_NO_GENERAL.
     */
 
     public void printIndividualForHumans(final EvolutionState state,
-        final int log)
-        {
+                                         final int log)
+    {
         state.output.println(EVALUATED_PREAMBLE + Code.encode(evaluated), log);
         fitness.printFitnessForHumans(state,log);
         state.output.println( genotypeToStringForHumans(), log );
-        }
+    }
                 
     /** Should print the individual out in a pleasing way for humans,
         including its
@@ -187,23 +187,23 @@ public abstract class Individual implements Prototype, Comparable
     */
 
     public final void printIndividualForHumans(final EvolutionState state,
-        final int log, 
-        final int verbosity)
-        {
+                                               final int log, 
+                                               final int verbosity)
+    {
         printIndividualForHumans(state, log);
-        }
+    }
 
     /** Should print the individual in a way that can be read by computer,
         including its fitness, with a verbosity of Output.V_NO_GENERAL.
     */
 
     public void printIndividual(final EvolutionState state,
-        final int log)
-        {
+                                final int log)
+    {
         state.output.println(EVALUATED_PREAMBLE + Code.encode(evaluated), log);
         fitness.printFitness(state,log);
         state.output.println( genotypeToString(), log );
-        }
+    }
 
 
     /** Should print the individual in a way that can be read by computer,
@@ -219,11 +219,11 @@ public abstract class Individual implements Prototype, Comparable
     */
 
     public final void printIndividual(final EvolutionState state,
-        final int log, 
-        final int verbosity)
-        {
+                                      final int log, 
+                                      final int verbosity)
+    {
         printIndividual( state, log);
-        }
+    }
 
     /** Should print the individual in a way that can be read by computer,
         including its fitness.  You can get fitness to print itself at the
@@ -239,12 +239,12 @@ public abstract class Individual implements Prototype, Comparable
     */
 
     public void printIndividual(final EvolutionState state,
-        final PrintWriter writer)
-        {
+                                final PrintWriter writer)
+    {
         writer.println(EVALUATED_PREAMBLE + Code.encode(evaluated));
         fitness.printFitness(state,writer);
         writer.println( genotypeToString() );
-        }
+    }
 
     /** Reads in the individual from a form printed by printIndividual(), erasing the previous
         information stored in this Individual.  If you are trying to <i>create</i> an Individual
@@ -257,9 +257,9 @@ public abstract class Individual implements Prototype, Comparable
         though it is rare to need to -- instead you could just override parseGenotype(). */ 
 
     public void readIndividual(final EvolutionState state, 
-        final LineNumberReader reader)
+                               final LineNumberReader reader)
         throws IOException
-        {
+    {
         evaluated = Code.readBooleanWithPreamble(EVALUATED_PREAMBLE, state, reader);
         
         // Next, what's my fitness?
@@ -267,7 +267,7 @@ public abstract class Individual implements Prototype, Comparable
 
         // next, read me in
         parseGenotype(state, reader);
-        }
+    }
 
     /** This method is used only by the default version of readIndividual(state,reader),
         and it is intended to be overridden to parse in that part of the individual that
@@ -275,10 +275,10 @@ public abstract class Individual implements Prototype, Comparable
         exits the program with an "unimplemented" error.  You'll want to override this method,
         or to override readIndividual(...) to not use this method. */
     protected void parseGenotype(final EvolutionState state,
-        final LineNumberReader reader) throws IOException
-        {
+                                 final LineNumberReader reader) throws IOException
+    {
         state.output.fatal("parseGenotype(EvolutionState, LineNumberReader) not implemented in " + this.getClass());
-        }
+    }
         
     /** Writes the binary form of an individual out to a DataOutput.  This is not for serialization:
         the object should only write out the data relevant to the object sufficient to rebuild it from a DataInput.
@@ -288,12 +288,12 @@ public abstract class Individual implements Prototype, Comparable
         though it is rare to need to -- instead you could just override writeGenotype(). 
     */
     public void writeIndividual(final EvolutionState state,
-        final DataOutput dataOutput) throws IOException
-        {
+                                final DataOutput dataOutput) throws IOException
+    {
         dataOutput.writeBoolean(evaluated);
         fitness.writeFitness(state,dataOutput);
         writeGenotype(state,dataOutput);
-        }
+    }
     
     
     /** Writes the genotypic information to a DataOutput.  Largely called by writeIndividual(), and
@@ -308,10 +308,10 @@ public abstract class Individual implements Prototype, Comparable
         * </tt></pre>
         */ 
     public void writeGenotype(final EvolutionState state,
-        final DataOutput dataOutput) throws IOException
-        {
+                              final DataOutput dataOutput) throws IOException
+    {
         state.output.fatal("writeGenotype(EvolutionState, DataOutput) not implemented in " + this.getClass());
-        }
+    }
 
     /** Reads in the genotypic information from a DataInput, erasing the previous genotype
         of this Individual.  Largely called by readIndividual(), and nothing else.  
@@ -330,10 +330,10 @@ public abstract class Individual implements Prototype, Comparable
         */
 
     public void readGenotype(final EvolutionState state,
-        final DataInput dataInput) throws IOException
-        {
+                             final DataInput dataInput) throws IOException
+    {
         state.output.fatal("readGenotype(EvolutionState, DataOutput) not implemented in " + this.getClass());
-        }
+    }
 
     /** Reads the binary form of an individual from a DataInput, erasing the previous
         information stored in this Individual.  This is not for serialization:
@@ -348,12 +348,12 @@ public abstract class Individual implements Prototype, Comparable
         just override readGenotype().
     */
     public void readIndividual(final EvolutionState state,
-        final DataInput dataInput) throws IOException
-        {
+                               final DataInput dataInput) throws IOException
+    {
         evaluated = dataInput.readBoolean();
         fitness.readFitness(state,dataInput);
         readGenotype(state,dataInput);
-        }
+    }
     
     /** Returns the metric distance to another individual, if such a thing can be measured.
         Subclassess of Individual should implement this if it exists for their representation.
@@ -362,9 +362,9 @@ public abstract class Individual implements Prototype, Comparable
     */
 
     public double distanceTo(Individual otherInd)
-        {
+    {
         return (equals(otherInd) ? 0 : Double.POSITIVE_INFINITY);
-        }
+    }
 
     /**
        Returns -1 if I am BETTER in some way than the other Individual, 1 if the other Individual is BETTER than me,
@@ -372,10 +372,10 @@ public abstract class Individual implements Prototype, Comparable
        compareTo on the fitnesses themse.ves
     */
     public int compareTo(Object o)
-        {
+    {
         Individual other = (Individual) o;
         return fitness.compareTo(other.fitness);
-        }
+    }
                 
                 
     /** Replaces myself with the other Individual, while merging our evaluation results together.  May destroy
@@ -394,25 +394,25 @@ public abstract class Individual implements Prototype, Comparable
         by hand.
     */
     public void merge(EvolutionState state, Individual other)
-        {
+    {
         // merge the fitnesses backwards:  merge the fitness INTO the other fitness
         other.fitness.merge(state, fitness);
 
         // now push the Individual back to us, including the merged fitness
         try             // a ridiculous hack
             {
-            DataPipe p = new DataPipe();
-            DataInputStream in = p.input;
-            DataOutputStream out = p.output;
-            other.writeIndividual(state, out);
-            readIndividual(state, in);
+                DataPipe p = new DataPipe();
+                DataInputStream in = p.input;
+                DataOutputStream out = p.output;
+                other.writeIndividual(state, out);
+                readIndividual(state, in);
             }
         catch (IOException e) 
             { 
-            e.printStackTrace();
-            state.output.fatal("Caught impossible IOException in Individual.merge(...).");
+                e.printStackTrace();
+                state.output.fatal("Caught impossible IOException in Individual.merge(...).");
             }
-        }
-        
     }
+        
+}
 

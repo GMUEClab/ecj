@@ -52,7 +52,7 @@ import ec.simple.*;
  */
 
 public class Parity extends GPProblem implements SimpleProblemForm
-    {
+{
     private static final long serialVersionUID = 1;
 
     public static final String P_NUMBITS = "bits";
@@ -65,8 +65,8 @@ public class Parity extends GPProblem implements SimpleProblemForm
     public int bits;  // data bits
 
     public void setup(final EvolutionState state,
-        final Parameter base)
-        {
+                      final Parameter base)
+    {
         // very important, remember this
         super.setup(state,base);
 
@@ -75,7 +75,7 @@ public class Parity extends GPProblem implements SimpleProblemForm
         // verify our input is the right class (or subclasses from it)
         if (!(input instanceof ParityData))
             state.output.fatal("GPData class must subclass from " + ParityData.class,
-                base.push(P_DATA), null);
+                               base.push(P_DATA), null);
 
         // can't use all 32 bits -- Java is signed.  Must use 31 bits.        
         numBits = state.parameters.getIntWithMax(base.push(P_NUMBITS),null,2,31);
@@ -87,41 +87,41 @@ public class Parity extends GPProblem implements SimpleProblemForm
             totalSize *=2;   // safer than Math.pow()
 
         doEven = state.parameters.getBoolean(base.push(P_EVEN),null,true);
-        }
+    }
 
 
     public void evaluate(final EvolutionState state, 
-        final Individual ind, 
-        final int subpopulation,
-        final int threadnum)
-        {
+                         final Individual ind, 
+                         final int subpopulation,
+                         final int threadnum)
+    {
         if (!ind.evaluated)  // don't bother reevaluating
             {
-            ParityData input = (ParityData)(this.input);
+                ParityData input = (ParityData)(this.input);
 
-            int sum = 0;
+                int sum = 0;
                 
-            for(bits=0;bits<totalSize;bits++)
-                {
-                int tb = 0;
-                // first, is #bits even or odd?
-                for(int b=0;b<numBits;b++)
-                    tb += (bits >>> b) & 1;
-                tb &= 1;  // now tb is 1 if we're odd, 0 if we're even
+                for(bits=0;bits<totalSize;bits++)
+                    {
+                        int tb = 0;
+                        // first, is #bits even or odd?
+                        for(int b=0;b<numBits;b++)
+                            tb += (bits >>> b) & 1;
+                        tb &= 1;  // now tb is 1 if we're odd, 0 if we're even
 
-                ((GPIndividual)ind).trees[0].child.eval(
-                    state,threadnum,input,stack,((GPIndividual)ind),this);
+                        ((GPIndividual)ind).trees[0].child.eval(
+                                                                state,threadnum,input,stack,((GPIndividual)ind),this);
 
-                if ((doEven && ((input.x & 1) != tb)) ||
-                    ((!doEven) && ((input.x & 1) == tb)))
-                    sum++;
-                }
+                        if ((doEven && ((input.x & 1) != tb)) ||
+                            ((!doEven) && ((input.x & 1) == tb)))
+                            sum++;
+                    }
                 
-            // the fitness better be KozaFitness!
-            KozaFitness f = ((KozaFitness)ind.fitness);
-            f.setStandardizedFitness(state, (totalSize - sum));
-            f.hits = sum;
-            ind.evaluated = true;
+                // the fitness better be KozaFitness!
+                KozaFitness f = ((KozaFitness)ind.fitness);
+                f.setStandardizedFitness(state, (totalSize - sum));
+                f.hits = sum;
+                ind.evaluated = true;
             }
-        }
     }
+}

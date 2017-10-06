@@ -88,7 +88,7 @@ import java.io.*;
  * @version 1.0 
  */
 public class RuleIndividual extends Individual
-    {
+{
     private static final long serialVersionUID = 1;
 
     public static final String P_RULESET = "ruleset";
@@ -98,39 +98,39 @@ public class RuleIndividual extends Individual
     public RuleSet[] rulesets;
     
     public Parameter defaultBase()
-        {
+    {
         return RuleDefaults.base().push(P_INDIVIDUAL);
-        }
+    }
 
     public Object clone()
-        {
+    {
         RuleIndividual myobj = (RuleIndividual) (super.clone());   
         myobj.rulesets = new RuleSet[rulesets.length];
         for(int x=0;x<rulesets.length;x++) 
             myobj.rulesets[x] = (RuleSet)(rulesets[x].clone());
         return myobj;
-        } 
+    } 
 
     /** Called by pipelines before they've modified the individual and
         it might need to be "fixed"  -- basically a hook for you to override.
         By default, calls validateRules on each ruleset. */
     public void preprocessIndividual(final EvolutionState state, final int thread)
-        {
+    {
         for (int x=0;x<rulesets.length;x++)
             rulesets[x].preprocessRules(state,thread);
-        }
+    }
 
     /** Called by pipelines after they've modified the individual and
         it might need to be "fixed"  -- basically a hook for you to override.
         By default, calls validateRules on each ruleset. */
     public void postprocessIndividual(final EvolutionState state, final int thread)
-        {
+    {
         for (int x=0;x<rulesets.length;x++)
             rulesets[x].postprocessRules(state,thread);
-        }
+    }
         
     public boolean equals(Object ind)
-        {
+    {
         if (ind == null) return false;
         // My loose definition: ind must be a 
         if (!getClass().equals(ind.getClass()))  // not the same class, I'm conservative that way
@@ -141,132 +141,132 @@ public class RuleIndividual extends Individual
         for(int x=0;x<rulesets.length;x++)
             if (!rulesets[x].equals(other.rulesets[x])) return false;
         return true;
-        }
+    }
 
     public int hashCode()
-        {
+    {
         int hash = this.getClass().hashCode();
         for(int x=0;x<rulesets.length;x++)
             // rotate hash and XOR
             hash =
                 (hash << 1 | hash >>> 31 ) ^ rulesets[x].hashCode();
         return hash;
-        }
+    }
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);  // actually unnecessary (Individual.setup() is empty)
 
         // I'm the top-level setup, I guess
         int numrulesets = state.parameters.getInt(
-            base.push(P_NUMRULESETS), defaultBase().push(P_NUMRULESETS),
-            1);  // need at least 1 ruleset!
+                                                  base.push(P_NUMRULESETS), defaultBase().push(P_NUMRULESETS),
+                                                  1);  // need at least 1 ruleset!
         if (numrulesets == 0)
             state.output.fatal("RuleIndividual needs at least one RuleSet!",
-                base.push(P_NUMRULESETS), defaultBase().push(P_NUMRULESETS));
+                               base.push(P_NUMRULESETS), defaultBase().push(P_NUMRULESETS));
 
         rulesets  = new RuleSet[numrulesets];
 
         for(int x=0;x<numrulesets;x++)
             {
-            rulesets[x] = (RuleSet)(state.parameters.getInstanceForParameterEq(
-                    base.push(P_RULESET).push(""+x),defaultBase().push(P_RULESET),
-                    RuleSet.class));
-            rulesets[x].setup(state,base.push(P_RULESET).push(""+x));
+                rulesets[x] = (RuleSet)(state.parameters.getInstanceForParameterEq(
+                                                                                   base.push(P_RULESET).push(""+x),defaultBase().push(P_RULESET),
+                                                                                   RuleSet.class));
+                rulesets[x].setup(state,base.push(P_RULESET).push(""+x));
             }
-        }
+    }
 
     public void printIndividualForHumans(final EvolutionState state,
-        final int log)
-        {
+                                         final int log)
+    {
         state.output.println(EVALUATED_PREAMBLE + (evaluated ? "true" : "false"), log);
         fitness.printFitnessForHumans(state,log);
         for(int x=0;x<rulesets.length;x++)
             {
-            state.output.println("Ruleset " + x + ":", log);
-            rulesets[x].printRuleSetForHumans(state, log);
+                state.output.println("Ruleset " + x + ":", log);
+                rulesets[x].printRuleSetForHumans(state, log);
             }
-        }
+    }
 
     public void printIndividual(final EvolutionState state,
-        final int log)
-        {
+                                final int log)
+    {
         state.output.println(EVALUATED_PREAMBLE + Code.encode(evaluated), log);
         fitness.printFitness(state, log);
         for(int x=0;x<rulesets.length;x++)
             {
-            state.output.println("Ruleset " + x + ":", log);
-            rulesets[x].printRuleSet(state,log);
+                state.output.println("Ruleset " + x + ":", log);
+                rulesets[x].printRuleSet(state,log);
             }
-        }
+    }
 
     /** Overridden for the RuleIndividual genotype, writing each ruleset in turn. */
     public void printIndividual(final EvolutionState state,
-        final PrintWriter writer)
-        {
+                                final PrintWriter writer)
+    {
         writer.println(EVALUATED_PREAMBLE + Code.encode(evaluated));
         fitness.printFitness(state,writer);
         for(int x=0;x<rulesets.length;x++)
             {
-            writer.println("Ruleset " + x + ":");
-            rulesets[x].printRuleSet(state,writer);
+                writer.println("Ruleset " + x + ":");
+                rulesets[x].printRuleSet(state,writer);
             }
-        }
+    }
     
     /** Overridden for the RuleIndividual genotype, writing each ruleset in turn. */
     public void writeGenotype(final EvolutionState state,
-        final DataOutput dataOutput) throws IOException
-        {
+                              final DataOutput dataOutput) throws IOException
+    {
         dataOutput.writeInt(rulesets.length);
         for(int x=0;x<rulesets.length;x++)
             rulesets[x].writeRuleSet(state,dataOutput);
-        }
+    }
 
     /** Overridden for the RuleIndividual genotype. */
     public void readGenotype(final EvolutionState state,
-        final DataInput dataInput) throws IOException
-        {
+                             final DataInput dataInput) throws IOException
+    {
         int len = dataInput.readInt();
         if (rulesets==null || rulesets.length != len)
             state.output.fatal("Number of RuleSets differ in RuleIndividual when reading from readGenotype(EvolutionState, DataInput).");
         for(int x=0;x<rulesets.length;x++)
             rulesets[x].readRuleSet(state,dataInput);
-        }
+    }
 
 
     /** Overridden for the RuleIndividual genotype. */
     public void parseGenotype(final EvolutionState state, 
-        final LineNumberReader reader)
+                              final LineNumberReader reader)
         throws IOException
-        {
+    {
         // read my ruleset
         for(int x=0;x<rulesets.length;x++)
             {
-            reader.readLine();  // throw it away -- it's the ruleset# indicator
-            rulesets[x].readRuleSet(state,reader);
+                reader.readLine();  // throw it away -- it's the ruleset# indicator
+                rulesets[x].readRuleSet(state,reader);
             }
-        }
+    }
 
     public long size() 
-        { 
+    { 
         long size=0;
         for(int x=0;x<rulesets.length;x++) 
             size+= rulesets[x].numRules();
         return size;
-        }
+    }
     
     public void reset(EvolutionState state, int thread)
-        {
+    {
         for(int x=0;x<rulesets.length;x++) 
             rulesets[x].reset(state,thread);
-        }
+    }
 
     /** Mutates the Individual.  The default implementation simply calls mutate(...) on each of
         the RuleSets. */
     public void mutate(EvolutionState state, int thread)
-        {
+    {
         for(int x=0;x<rulesets.length;x++) 
             rulesets[x].mutate(state,thread);
-        }
     }
+}
 

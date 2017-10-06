@@ -28,7 +28,7 @@ import ec.simple.*;
 */
 
 public class HIFF extends Problem implements SimpleProblemForm 
-    {
+{
 
     public static final String P_K = "k";
     public static final String P_P = "p"; 
@@ -37,7 +37,7 @@ public class HIFF extends Problem implements SimpleProblemForm
     int K, P, Rc; 
                 
     public void setup(EvolutionState state, Parameter base) 
-        {
+    {
         super.setup(state, base); 
                 
         K = state.parameters.getInt(base.push(P_K), null, 0); 
@@ -51,10 +51,10 @@ public class HIFF extends Problem implements SimpleProblemForm
         Rc = state.parameters.getInt(base.push(P_RC), null, 0); 
         if (Rc < 0) 
             state.output.fatal("rc must be > 0", base.push(P_RC)); 
-        }
+    }
         
     public void evaluate(final EvolutionState state, final Individual ind, final int subpopulation, final int threadnum)
-        {
+    {
         BitVectorIndividual ind2 = (BitVectorIndividual) ind; 
                 
         double genes[] = new double[ind2.genome.length];
@@ -64,10 +64,10 @@ public class HIFF extends Problem implements SimpleProblemForm
                 
         ((SimpleFitness)(ind2.fitness)).setFitness( state, fitness, false);
         ind2.evaluated = true; 
-        }
+    }
                 
     double H(double genes[]) 
-        {
+    {
         double bonus=1, F=0; 
         int last = genes.length;
                 
@@ -76,34 +76,34 @@ public class HIFF extends Problem implements SimpleProblemForm
                 
         for (int i=1; i <= P; i++) 
             { 
-            last /= K; 
-            bonus *= Rc; 
-            for (int j=0; j < last; j++) 
-                { 
-                genes[j] = t(genes, j*K); 
-                F += f(genes[j]) * bonus; 
-                }
+                last /= K; 
+                bonus *= Rc; 
+                for (int j=0; j < last; j++) 
+                    { 
+                        genes[j] = t(genes, j*K); 
+                        F += f(genes[j]) * bonus; 
+                    }
             }
                 
         return F;
-        }
+    }
         
     double t(double transform[], int first) 
-        {
+    {
         int s=0; 
         for (int i=first+1; i < first+K; i++) 
             { 
-            if (transform[first] == transform[i]) 
-                s++; 
+                if (transform[first] == transform[i]) 
+                    s++; 
             }
         if (s == (K-1)) return transform[first]; 
                 
         return -1; 
-        }
+    }
         
     double f(double b) 
-        {
+    {
         if (b != -1) return 1; 
         return 0;
-        }
     }
+}

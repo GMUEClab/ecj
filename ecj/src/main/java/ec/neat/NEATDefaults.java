@@ -15,11 +15,11 @@ import ec.*;
  */
 
 public final class NEATDefaults implements DefaultsForm
-    {
+{
     public static final String P_NEAT = "neat";
 
     public static final Parameter base()
-        {
+    {
         return new Parameter(P_NEAT);
-        }
     }
+}

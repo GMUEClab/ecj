@@ -156,7 +156,7 @@ import java.io.*;
  */
 
 public class EvolutionState implements Singleton
-    {
+{
     private static final long serialVersionUID = 1;
 
     /** The parameter database (threadsafe).  Parameter objects are also threadsafe.
@@ -294,7 +294,7 @@ public class EvolutionState implements Singleton
         @see Prototype#setup(EvolutionState,Parameter)
     */
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         Parameter p;
         
         // set up the per-thread data
@@ -311,26 +311,26 @@ public class EvolutionState implements Singleton
         checkpointPrefix = parameters.getString(p,null);
         if (checkpointPrefix==null)
             {
-            // check for the old-style checkpoint prefix parameter
-            Parameter p2 = new Parameter(P_CHECKPOINTPREFIX_OLD);
-            checkpointPrefix = parameters.getString(p2,null);
-            if (checkpointPrefix==null)
-                {
-                output.fatal("No checkpoint prefix specified.",p);  // indicate the new style, not old parameter
-                }
-            else
-                {
-                output.warning("The parameter \"prefix\" is deprecated.  Please use \"checkpoint-prefix\".", p2);
-                }
+                // check for the old-style checkpoint prefix parameter
+                Parameter p2 = new Parameter(P_CHECKPOINTPREFIX_OLD);
+                checkpointPrefix = parameters.getString(p2,null);
+                if (checkpointPrefix==null)
+                    {
+                        output.fatal("No checkpoint prefix specified.",p);  // indicate the new style, not old parameter
+                    }
+                else
+                    {
+                        output.warning("The parameter \"prefix\" is deprecated.  Please use \"checkpoint-prefix\".", p2);
+                    }
             }
         else
             {
-            // check for the old-style checkpoint prefix parameter as an acciental duplicate
-            Parameter p2 = new Parameter(P_CHECKPOINTPREFIX_OLD);
-            if (parameters.getString(p2,null) != null)
-                {
-                output.warning("You have BOTH the deprecated parameter \"prefix\" and its replacement \"checkpoint-prefix\" defined.  The replacement will be used,  Please remove the \"prefix\" parameter.", p2);
-                }
+                // check for the old-style checkpoint prefix parameter as an acciental duplicate
+                Parameter p2 = new Parameter(P_CHECKPOINTPREFIX_OLD);
+                if (parameters.getString(p2,null) != null)
+                    {
+                        output.warning("You have BOTH the deprecated parameter \"prefix\" and its replacement \"checkpoint-prefix\" defined.  The replacement will be used,  Please remove the \"prefix\" parameter.", p2);
+                    }
             
             }
             
@@ -343,34 +343,34 @@ public class EvolutionState implements Singleton
         p = new Parameter(P_CHECKPOINTDIRECTORY);
         if (parameters.exists(p, null))
             {
-            checkpointDirectory = parameters.getFile(p,null);
-            if (checkpointDirectory==null)
-                output.fatal("The checkpoint directory name is invalid: " + checkpointDirectory, p);
-            if (!checkpointDirectory.isDirectory())
-                output.fatal("The checkpoint directory location is not a directory: " + checkpointDirectory, p);
+                checkpointDirectory = parameters.getFile(p,null);
+                if (checkpointDirectory==null)
+                    output.fatal("The checkpoint directory name is invalid: " + checkpointDirectory, p);
+                if (!checkpointDirectory.isDirectory())
+                    output.fatal("The checkpoint directory location is not a directory: " + checkpointDirectory, p);
             }
         else checkpointDirectory = null;
             
         p = new Parameter(P_EVALUATIONS);
         if (parameters.exists(p, null))
             {
-            numEvaluations = parameters.getInt(p, null, 1);  // 0 would be UNDEFINED
-            if (numEvaluations <= 0)
-                output.fatal("If defined, the number of evaluations must be an integer >= 1", p, null);
+                numEvaluations = parameters.getInt(p, null, 1);  // 0 would be UNDEFINED
+                if (numEvaluations <= 0)
+                    output.fatal("If defined, the number of evaluations must be an integer >= 1", p, null);
             }
                 
         p = new Parameter(P_GENERATIONS);
         if (parameters.exists(p, null))
             {
-            numGenerations = parameters.getInt(p, null, 1);  // 0 would be UDEFINED                 
+                numGenerations = parameters.getInt(p, null, 1);  // 0 would be UDEFINED                 
                                 
-            if (numGenerations <= 0)
-                output.fatal("If defined, the number of generations must be an integer >= 1.", p, null);
+                if (numGenerations <= 0)
+                    output.fatal("If defined, the number of generations must be an integer >= 1.", p, null);
             }
                         
         if (numEvaluations != UNDEFINED && numGenerations != UNDEFINED)
             {
-            state.output.warning("Both generations and evaluations defined: whichever happens first is when ECJ will stop.");
+                state.output.warning("Both generations and evaluations defined: whichever happens first is when ECJ will stop.");
             }
         else if (numEvaluations == UNDEFINED && numGenerations == UNDEFINED)  // uh oh, something must be defined
             output.fatal("Either evaluations or generations must be defined.", new Parameter(P_GENERATIONS), new Parameter(P_EVALUATIONS));
@@ -414,18 +414,18 @@ public class EvolutionState implements Singleton
         innovationNumber = parameters.getLong(p, null, Long.MIN_VALUE);
                 
         generation = 0;
-        }
+    }
 
     /** This method is called after a checkpoint
         is restored from but before the run starts up again.  You might use this
         to set up file pointers that were lost, etc. */
  
     public void resetFromCheckpoint() throws IOException
-        {
+    {
         output.restart();   // may throw an exception if there's a bad file
         exchanger.reinitializeContacts(this);
         evaluator.reinitializeContacts(this);
-        }
+    }
 
     public void finish(int result) {}
 
@@ -440,22 +440,22 @@ public class EvolutionState implements Singleton
     // This is broken out like this so that incrementEvaluations can get inlined
     Object[] lock = new Object[0];
     void synchronizedIncrementEvaluations(int val)
-        {
+    {
         synchronized(lock)
             {
-            evaluations++;
+                evaluations++;
             }
-        }
+    }
                                 
     public void incrementEvaluations(int val)
-        {
+    {
         if (evalthreads == 1)
             evaluations += val;
         else
             {
-            synchronizedIncrementEvaluations(val);
+                synchronizedIncrementEvaluations(val);
             }
-        }
+    }
 
     /** Starts the run. <i>condition</i> indicates whether or not the
         run was restarted from a checkpoint (C_STARTED_FRESH vs
@@ -465,23 +465,23 @@ public class EvolutionState implements Singleton
         Output facility.  This method should call this.setup(...) to
         set up the EvolutionState object if condition equals C_STARTED_FRESH. */
     public void run(int condition)
-        {
+    {
         if (condition == C_STARTED_FRESH)
             {
-            startFresh();
+                startFresh();
             }
         else // condition == C_STARTED_FROM_CHECKPOINT
             {
-            startFromCheckpoint();
+                startFromCheckpoint();
             }
         
         /* the big loop */
         int result = R_NOTDONE;
         while ( result == R_NOTDONE )
             {
-            result = evolve();
+                result = evolve();
             }
         
         finish(result);
-        }
     }
+}

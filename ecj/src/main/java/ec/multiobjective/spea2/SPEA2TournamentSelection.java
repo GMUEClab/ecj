@@ -25,13 +25,13 @@ import ec.simple.*;
 
 // This all assumes that the archive is the LAST N INDIVIDUALS in the individuals array
 public class SPEA2TournamentSelection extends TournamentSelection
-    {
+{
     public int getRandomIndividual(int number, int subpopulation, EvolutionState state, int thread)
-        {
+    {
         //Individual[] oldinds = state.population.subpops.get(subpopulation).individuals;
         int archiveSize = ((SimpleBreeder)(state.breeder)).numElites(state, subpopulation);
         int archiveStart = state.population.subpops.get(subpopulation).individuals.size() - archiveSize;
 
         return archiveStart + state.random[thread].nextInt(archiveSize);
-        }
     }
+}

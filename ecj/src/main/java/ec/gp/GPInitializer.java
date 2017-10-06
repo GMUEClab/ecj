@@ -47,7 +47,7 @@ import ec.EvolutionState;
  */
 
 public class GPInitializer extends SimpleInitializer 
-    {
+{
     private static final long serialVersionUID = 1;
 
     // used just here, so far as I know :-)
@@ -80,7 +80,7 @@ public class GPInitializer extends SimpleInitializer
     public byte numTreeConstraints;
     
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
 
         /**
@@ -94,20 +94,20 @@ public class GPInitializer extends SimpleInitializer
         // This is done in a very specific order, don't change it or things
         // will break.
         setupNodeConstraints(
-            state,GPDefaults.base().push(P_NODECONSTRAINTS));
+                             state,GPDefaults.base().push(P_NODECONSTRAINTS));
         setupFunctionSets(
-            state,GPDefaults.base().push(P_FUNCTIONSETS));
+                          state,GPDefaults.base().push(P_FUNCTIONSETS));
         setupTreeConstraints(
-            state,GPDefaults.base().push(P_TREECONSTRAINTS));
-        }
+                             state,GPDefaults.base().push(P_TREECONSTRAINTS));
+    }
 
     /** Sets up all the types, loading them from the parameter file.  This
         must be called before anything is called which refers to a type by
         name. */
 
     public void setupTypes(final EvolutionState state,
-        final Parameter base)
-        {
+                           final Parameter base)
+    {
         state.output.message("Processing GP Types");
         
         typeRepository = new Hashtable();
@@ -126,9 +126,9 @@ public class GPInitializer extends SimpleInitializer
         // How many set types do we have?
         if (state.parameters.exists(base.push(P_SET).push(P_SIZE), null))
             {
-            x =  state.parameters.getInt(base.push(P_SET).push(P_SIZE),null,1);
-            if (x<0) 
-                state.output.fatal("The number of GP set types must be at least 0.",base.push(P_SET).push(P_SIZE));
+                x =  state.parameters.getInt(base.push(P_SET).push(P_SIZE),null,1);
+                if (x<0) 
+                    state.output.fatal("The number of GP set types must be at least 0.",base.push(P_SET).push(P_SIZE));
             }
         else // no set types
             x = 0;
@@ -140,7 +140,7 @@ public class GPInitializer extends SimpleInitializer
         
         // Postprocess the types
         postProcessTypes();
-        }
+    }
     
     /** Assigns unique integers to each atomic type, and sets up compatibility
         arrays for set types.  If you add new types (heaven forbid), you
@@ -148,15 +148,15 @@ public class GPInitializer extends SimpleInitializer
         However, you will have to set up the function sets again as well,
         as their arrays are based on these type numbers. */
     public void postProcessTypes()
-        {
+    {
         // assign positive integers and 0 to atomic types
         int x = 0;
         Enumeration e = typeRepository.elements();
         while(e.hasMoreElements())
             {
-            GPType t = (GPType)(e.nextElement());
-            if (t instanceof GPAtomicType)
-                { t.type = x; x++; }
+                GPType t = (GPType)(e.nextElement());
+                if (t instanceof GPAtomicType)
+                    { t.type = x; x++; }
             }
         
         // at this point, x holds the number of atomic types.
@@ -167,12 +167,12 @@ public class GPInitializer extends SimpleInitializer
         e = typeRepository.elements();
         while(e.hasMoreElements())
             {
-            GPType t = (GPType)(e.nextElement());
-            if (t instanceof GPSetType)
-                {
-                ((GPSetType)t).postProcessSetType(numAtomicTypes);
-                t.type = x; x++;
-                }
+                GPType t = (GPType)(e.nextElement());
+                if (t instanceof GPSetType)
+                    {
+                        ((GPSetType)t).postProcessSetType(numAtomicTypes);
+                        t.type = x; x++;
+                    }
             }
         
         // at this point, x holds the number of set types + atomic types
@@ -183,10 +183,10 @@ public class GPInitializer extends SimpleInitializer
         e = typeRepository.elements();
         while(e.hasMoreElements())
             {
-            GPType t = (GPType)(e.nextElement());
-            types[t.type] = t;
+                GPType t = (GPType)(e.nextElement());
+                types[t.type] = t;
             }
-        }
+    }
     
     
     /** Sets up all the GPNodeConstraints, loading them from the parameter
@@ -194,9 +194,9 @@ public class GPInitializer extends SimpleInitializer
         to a type by name. */
     
     public void setupNodeConstraints(
-        final EvolutionState state,
-        final Parameter base)
-        {
+                                     final EvolutionState state,
+                                     final Parameter base)
+    {
         state.output.message("Processing GP Node Constraints");
         
         nodeConstraintRepository = new Hashtable();
@@ -207,39 +207,39 @@ public class GPInitializer extends SimpleInitializer
         int x = state.parameters.getInt(base.push(P_SIZE),null,1);
         if (x<=0) 
             state.output.fatal("The number of GP node constraints must be at least 1.",
-                base.push(P_SIZE));
+                               base.push(P_SIZE));
         
         // Load our constraints
         for (int y=0;y<x;y++)
             {
-            GPNodeConstraints c;
-            // Figure the constraint class
-            if (state.parameters.exists(base.push(""+y), null))
-                c = (GPNodeConstraints)(state.parameters.getInstanceForParameterEq(
-                        base.push(""+y),null,GPNodeConstraints.class));
-            else
-                {
-                state.output.message("No GP Node Constraints specified, assuming the default class: ec.gp.GPNodeConstraints for " +  base.push(""+y));
-                c = new GPNodeConstraints();
-                }
-            c.setup(state,base.push(""+y));
+                GPNodeConstraints c;
+                // Figure the constraint class
+                if (state.parameters.exists(base.push(""+y), null))
+                    c = (GPNodeConstraints)(state.parameters.getInstanceForParameterEq(
+                                                                                       base.push(""+y),null,GPNodeConstraints.class));
+                else
+                    {
+                        state.output.message("No GP Node Constraints specified, assuming the default class: ec.gp.GPNodeConstraints for " +  base.push(""+y));
+                        c = new GPNodeConstraints();
+                    }
+                c.setup(state,base.push(""+y));
             }
         
         // set our constraints array up
         Enumeration e = nodeConstraintRepository.elements();
         while(e.hasMoreElements())
             {
-            GPNodeConstraints c = (GPNodeConstraints)(e.nextElement());
-            c.constraintNumber = numNodeConstraints;
-            nodeConstraints[numNodeConstraints] = c;
-            numNodeConstraints++;
+                GPNodeConstraints c = (GPNodeConstraints)(e.nextElement());
+                c.constraintNumber = numNodeConstraints;
+                nodeConstraints[numNodeConstraints] = c;
+                numNodeConstraints++;
             }
-        }
+    }
     
     
     public void setupFunctionSets(final EvolutionState state,
-        final Parameter base)
-        {
+                                  final Parameter base)
+    {
         state.output.message("Processing GP Function Sets");
         
         functionSetRepository = new Hashtable();
@@ -251,19 +251,19 @@ public class GPInitializer extends SimpleInitializer
         // Load our FunctionSet
         for (int y=0;y<x;y++)
             {
-            GPFunctionSet c;
-            // Figure the GPFunctionSet class
-            if (state.parameters.exists(base.push(""+y), null))
-                c = (GPFunctionSet)(state.parameters.getInstanceForParameterEq(
-                        base.push(""+y),null,GPFunctionSet.class));
-            else
-                {
-                state.output.message("No GPFunctionSet specified, assuming the default class: ec.gp.GPFunctionSet for " + base.push(""+y));
-                c = new GPFunctionSet();
-                }
-            c.setup(state,base.push(""+y));
+                GPFunctionSet c;
+                // Figure the GPFunctionSet class
+                if (state.parameters.exists(base.push(""+y), null))
+                    c = (GPFunctionSet)(state.parameters.getInstanceForParameterEq(
+                                                                                   base.push(""+y),null,GPFunctionSet.class));
+                else
+                    {
+                        state.output.message("No GPFunctionSet specified, assuming the default class: ec.gp.GPFunctionSet for " + base.push(""+y));
+                        c = new GPFunctionSet();
+                    }
+                c.setup(state,base.push(""+y));
             }
-        }
+    }
         
 
     /** Sets up all the GPTreeConstraints, loading them from the parameter
@@ -271,9 +271,9 @@ public class GPInitializer extends SimpleInitializer
         to a type by name. */
         
     public void setupTreeConstraints(
-        final EvolutionState state,
-        final Parameter base)
-        {
+                                     final EvolutionState state,
+                                     final Parameter base)
+    {
         state.output.message("Processing GP Tree Constraints");
             
         treeConstraintRepository = new Hashtable();
@@ -287,27 +287,27 @@ public class GPInitializer extends SimpleInitializer
         // Load our constraints
         for (int y=0;y<x;y++)
             {
-            GPTreeConstraints c;
-            // Figure the constraint class
-            if (state.parameters.exists(base.push(""+y), null))
-                c = (GPTreeConstraints)(state.parameters.getInstanceForParameterEq(
-                        base.push(""+y),null,GPTreeConstraints.class));
-            else
-                {
-                state.output.message("No GP Tree Constraints specified, assuming the default class: ec.gp.GPTreeConstraints for " + base.push(""+y));
-                c = new GPTreeConstraints();
-                }
-            c.setup(state,base.push(""+y));
+                GPTreeConstraints c;
+                // Figure the constraint class
+                if (state.parameters.exists(base.push(""+y), null))
+                    c = (GPTreeConstraints)(state.parameters.getInstanceForParameterEq(
+                                                                                       base.push(""+y),null,GPTreeConstraints.class));
+                else
+                    {
+                        state.output.message("No GP Tree Constraints specified, assuming the default class: ec.gp.GPTreeConstraints for " + base.push(""+y));
+                        c = new GPTreeConstraints();
+                    }
+                c.setup(state,base.push(""+y));
             }
             
         // set our constraints array up
         Enumeration e = treeConstraintRepository.elements();
         while(e.hasMoreElements())
             {
-            GPTreeConstraints c = (GPTreeConstraints)(e.nextElement());
-            c.constraintNumber = numTreeConstraints;
-            treeConstraints[numTreeConstraints] = c;
-            numTreeConstraints++;
+                GPTreeConstraints c = (GPTreeConstraints)(e.nextElement());
+                c.constraintNumber = numTreeConstraints;
+                treeConstraints[numTreeConstraints] = c;
+                numTreeConstraints++;
             }
-        }
     }
+}

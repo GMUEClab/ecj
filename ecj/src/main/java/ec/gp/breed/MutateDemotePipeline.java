@@ -91,7 +91,7 @@ import java.util.HashMap;
  */
 
 public class MutateDemotePipeline extends GPBreedingPipeline
-    {
+{
     public static final String P_MUTATEDEMOTE = "mutate-demote";
     public static final String P_NUM_TRIES = "tries";
     public static final String P_MAXDEPTH = "maxdepth";
@@ -112,35 +112,35 @@ public class MutateDemotePipeline extends GPBreedingPipeline
     public int numSources() { return NUM_SOURCES; }
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
         
         Parameter def = defaultBase();
 
         numTries = state.parameters.getInt(base.push(P_NUM_TRIES),
-            def.push(P_NUM_TRIES),1);
+                                           def.push(P_NUM_TRIES),1);
         if (numTries == 0)
             state.output.fatal("MutateDemotePipeline has an invalid number of tries (it must be >= 1).",base.push(P_NUM_TRIES),def.push(P_NUM_TRIES));
     
         maxDepth = state.parameters.getInt(base.push(P_MAXDEPTH),
-            def.push(P_MAXDEPTH),1);
+                                           def.push(P_MAXDEPTH),1);
         if (maxDepth==0)
             state.output.fatal("The MutateDemotePipeline " + base + "has an invalid maximum depth (it must be >= 1).",base.push(P_MAXDEPTH),def.push(P_MAXDEPTH));
 
         tree = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+0),
-                def.push(P_TREE).push(""+0)))
+                                    def.push(P_TREE).push(""+0)))
             {
-            tree = state.parameters.getInt(base.push(P_TREE).push(""+0),
-                def.push(P_TREE).push(""+0),0);
-            if (tree==-1)
-                state.output.fatal("Tree fixed value, if defined, must be >= 0");
+                tree = state.parameters.getInt(base.push(P_TREE).push(""+0),
+                                               def.push(P_TREE).push(""+0),0);
+                if (tree==-1)
+                    state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
-        }
+    }
 
     private boolean demotable(final GPInitializer initializer,
-        final GPNode node, final GPFunctionSet set)
-        {
+                              final GPNode node, final GPFunctionSet set)
+    {
         GPType t;
 
         if (node.parent instanceof GPNode)  // ugh, expensive
@@ -159,22 +159,22 @@ public class MutateDemotePipeline extends GPBreedingPipeline
                     compatibleWith(initializer,node.constraints(initializer).returntype))
                     return true;
         return false;
-        }
+    }
     
 
     private void demoteSomething(final GPNode node, final EvolutionState state, final int thread, final GPFunctionSet set) 
-        {
+    {
         // if I have just one type, do it the easy way
         if (((GPInitializer)state.initializer).numAtomicTypes + 
             ((GPInitializer)state.initializer).numSetTypes == 1)
             _demoteSomethingTypeless(node,state,thread,set);
         // otherwise, I gotta do the dirty work
         else _demoteSomething(node,state,thread,set);
-        }
+    }
 
 
     private void _demoteSomething(final GPNode node, final EvolutionState state, final int thread, final GPFunctionSet set) 
-        {
+    {
         int numDemotable = 0;
 
         GPType t;
@@ -197,7 +197,7 @@ public class MutateDemotePipeline extends GPBreedingPipeline
                 if (set.nonterminals[t.type][x].constraints(initializer).childtypes[y].
                     compatibleWith(initializer,node.constraints(initializer).returntype))
                     {
-                    numDemotable++; break; // breaks out to enclosing for
+                        numDemotable++; break; // breaks out to enclosing for
                     }
 
         // pick a random item to demote -- numDemotable is assumed to be > 0
@@ -212,84 +212,84 @@ public class MutateDemotePipeline extends GPBreedingPipeline
                 if (set.nonterminals[t.type][x].constraints(initializer).childtypes[y].
                     compatibleWith(initializer,node.constraints(initializer).returntype))
                     {
-                    if (numDemotable==demoteItem)
-                        {
-                        // clone the node
-                        GPNode cnode = (GPNode)(set.nonterminals[t.type][x].lightClone());
+                        if (numDemotable==demoteItem)
+                            {
+                                // clone the node
+                                GPNode cnode = (GPNode)(set.nonterminals[t.type][x].lightClone());
 
-                        // choose a spot to hang the old parent under
-                        int numSpots=0;
-                        GPType retyp = node.constraints(initializer).returntype;
-                        GPType[] chityp = cnode.constraints(initializer).childtypes;
+                                // choose a spot to hang the old parent under
+                                int numSpots=0;
+                                GPType retyp = node.constraints(initializer).returntype;
+                                GPType[] chityp = cnode.constraints(initializer).childtypes;
 
-                        for(int z=0;z<cnode.children.length;z++)
-                            if (chityp[z].compatibleWith(initializer,retyp))
-                                numSpots++;
-                        int choice = state.random[thread].nextInt(numSpots);
+                                for(int z=0;z<cnode.children.length;z++)
+                                    if (chityp[z].compatibleWith(initializer,retyp))
+                                        numSpots++;
+                                int choice = state.random[thread].nextInt(numSpots);
 
-                        numSpots=0;
-                        for(int z=0;z<cnode.children.length;z++)
-                            if (chityp[z].compatibleWith(initializer,retyp))
-                                {
-                                if (numSpots==choice)
-                                    {
-                                    // demote the parent, inserting cnode
-                                    cnode.parent = node.parent;
-                                    cnode.argposition = node.argposition;
-                                    cnode.children[z] = node;
-                                    node.parent = cnode;
-                                    node.argposition = (byte)z;
-                                    if (cnode.parent instanceof GPNode)
-                                        ((GPNode)(cnode.parent)).
-                                            children[cnode.argposition] = cnode;
-                                    else ((GPTree)(cnode.parent)).child = cnode;
+                                numSpots=0;
+                                for(int z=0;z<cnode.children.length;z++)
+                                    if (chityp[z].compatibleWith(initializer,retyp))
+                                        {
+                                            if (numSpots==choice)
+                                                {
+                                                    // demote the parent, inserting cnode
+                                                    cnode.parent = node.parent;
+                                                    cnode.argposition = node.argposition;
+                                                    cnode.children[z] = node;
+                                                    node.parent = cnode;
+                                                    node.argposition = (byte)z;
+                                                    if (cnode.parent instanceof GPNode)
+                                                        ((GPNode)(cnode.parent)).
+                                                            children[cnode.argposition] = cnode;
+                                                    else ((GPTree)(cnode.parent)).child = cnode;
 
-                                    // this is important to ensure that the
-                                    // demotion only happens once!  Otherwise
-                                    // you'll get really nasty bugs
-                                    numSpots++;  // notice no break
-                                    }
-                                else 
-                                    {
-                                    // hang a randomly-generated terminal off of cnode
-                                    GPNode term = (GPNode)(set.terminals[chityp[z].type][
-                                            state.random[thread].nextInt(
-                                                set.terminals[chityp[z].type].length)].lightClone());
-                                    cnode.children[z] = term;
-                                    term.parent = cnode; // just in case
-                                    term.argposition = (byte)z;  // just in case
-                                    term.resetNode(state,thread);  // let it randomize itself if necessary
+                                                    // this is important to ensure that the
+                                                    // demotion only happens once!  Otherwise
+                                                    // you'll get really nasty bugs
+                                                    numSpots++;  // notice no break
+                                                }
+                                            else 
+                                                {
+                                                    // hang a randomly-generated terminal off of cnode
+                                                    GPNode term = (GPNode)(set.terminals[chityp[z].type][
+                                                                                                         state.random[thread].nextInt(
+                                                                                                                                      set.terminals[chityp[z].type].length)].lightClone());
+                                                    cnode.children[z] = term;
+                                                    term.parent = cnode; // just in case
+                                                    term.argposition = (byte)z;  // just in case
+                                                    term.resetNode(state,thread);  // let it randomize itself if necessary
 
-                                    // increase numSpots
-                                    numSpots++;  // notice no break
-                                    }
-                                }
-                            else
-                                {
-                                // hang a randomly-generated terminal off of cnode
-                                GPNode term = (GPNode)(set.terminals[chityp[z].type][
-                                        state.random[thread].nextInt(
-                                            set.terminals[chityp[z].type].length)].lightClone());
-                                cnode.children[z] = term;
-                                term.parent = cnode; // just in case
-                                term.argposition = (byte)z;  // just in case
-                                term.resetNode(state,thread);  // let it randomize itself if necessary
-                                }
-                        return;
-                        }
-                    else 
-                        {
-                        numDemotable++; break; // breaks out to enclosing for
-                        }
+                                                    // increase numSpots
+                                                    numSpots++;  // notice no break
+                                                }
+                                        }
+                                    else
+                                        {
+                                            // hang a randomly-generated terminal off of cnode
+                                            GPNode term = (GPNode)(set.terminals[chityp[z].type][
+                                                                                                 state.random[thread].nextInt(
+                                                                                                                              set.terminals[chityp[z].type].length)].lightClone());
+                                            cnode.children[z] = term;
+                                            term.parent = cnode; // just in case
+                                            term.argposition = (byte)z;  // just in case
+                                            term.resetNode(state,thread);  // let it randomize itself if necessary
+                                        }
+                                return;
+                            }
+                        else 
+                            {
+                                numDemotable++; break; // breaks out to enclosing for
+                            }
                     }
         // should never reach here
         throw new InternalError("Bug in demoteSomething -- should never be able to reach the end of the function");
-        }
+    }
 
 
 
     private void _demoteSomethingTypeless(final GPNode node, final EvolutionState state, final int thread, final GPFunctionSet set) 
-        {
+    {
         int numDemotable = 0;
 
         // since we're typeless, we can demote under any nonterminal
@@ -312,37 +312,37 @@ public class MutateDemotePipeline extends GPBreedingPipeline
         for(int z=0;z<cnode.children.length;z++)
             if (z==choice)
                 {
-                // demote the parent, inserting cnode
-                cnode.parent = node.parent;
-                cnode.argposition = node.argposition;
-                cnode.children[z] = node;
-                node.parent = cnode;
-                node.argposition = (byte)z;
-                if (cnode.parent instanceof GPNode)
-                    ((GPNode)(cnode.parent)).
-                        children[cnode.argposition] = cnode;
-                else ((GPTree)(cnode.parent)).child = cnode;
+                    // demote the parent, inserting cnode
+                    cnode.parent = node.parent;
+                    cnode.argposition = node.argposition;
+                    cnode.children[z] = node;
+                    node.parent = cnode;
+                    node.argposition = (byte)z;
+                    if (cnode.parent instanceof GPNode)
+                        ((GPNode)(cnode.parent)).
+                            children[cnode.argposition] = cnode;
+                    else ((GPTree)(cnode.parent)).child = cnode;
                 }
             else 
                 {
-                // hang a randomly-generated terminal off of cnode
-                GPNode term = (GPNode)(
-                    set.terminals[chityp[z].type][
-                        state.random[thread].nextInt(
-                            set.terminals[chityp[z].type].length)].lightClone());
-                cnode.children[z] = term;
-                term.parent = cnode; // just in case
-                term.argposition = (byte)z;  // just in case
-                term.resetNode(state,thread);  // let it randomize itself if necessary
+                    // hang a randomly-generated terminal off of cnode
+                    GPNode term = (GPNode)(
+                                           set.terminals[chityp[z].type][
+                                                                         state.random[thread].nextInt(
+                                                                                                      set.terminals[chityp[z].type].length)].lightClone());
+                    cnode.children[z] = term;
+                    term.parent = cnode; // just in case
+                    term.argposition = (byte)z;  // just in case
+                    term.resetNode(state,thread);  // let it randomize itself if necessary
                 }
-        }
+    }
 
 
 
 
     private int numDemotableNodes(final GPInitializer initializer,
-        final GPNode root, int soFar, final GPFunctionSet set)
-        {
+                                  final GPNode root, int soFar, final GPFunctionSet set)
+    {
         // if I have just one type, skip this and just return
         // the number of nonterminals in the tree
         if (initializer.numAtomicTypes + 
@@ -350,64 +350,64 @@ public class MutateDemotePipeline extends GPBreedingPipeline
             return root.numNodes(GPNode.NODESEARCH_ALL);
         // otherwise, I gotta do the dirty work
         else return _numDemotableNodes(initializer,root,soFar,set);
-        }
+    }
 
 
     private int _numDemotableNodes(final GPInitializer initializer,
-        final GPNode root, int soFar, final GPFunctionSet set)
-        {
+                                   final GPNode root, int soFar, final GPFunctionSet set)
+    {
         if (demotable(initializer,root, set)) soFar++;
         for(int x=0;x<root.children.length;x++) 
             soFar = _numDemotableNodes(initializer,root.children[x],soFar, set);
         return soFar;
-        }
+    }
 
 
     private GPNode demotableNode;
 
 
     private int pickDemotableNode(final GPInitializer initializer,
-        final GPNode root, int num, final GPFunctionSet set)
-        {
+                                  final GPNode root, int num, final GPFunctionSet set)
+    {
         // if I have just one type, skip this and just 
         // the num-th nonterminal
         if (initializer.numAtomicTypes + 
             initializer.numSetTypes == 1)
             {
-            demotableNode = root.nodeInPosition(num,GPNode.NODESEARCH_ALL);
-            return -1; // what _pickDemotableNode() returns...
+                demotableNode = root.nodeInPosition(num,GPNode.NODESEARCH_ALL);
+                return -1; // what _pickDemotableNode() returns...
             }
         // otherwise, I gotta do the dirty work
         else return _pickDemotableNode(initializer,root,num,set);
-        }
+    }
     
 
     // sticks the node in 
     private int _pickDemotableNode(final GPInitializer initializer,
-        final GPNode root, int num, final GPFunctionSet set)
-        {
+                                   final GPNode root, int num, final GPFunctionSet set)
+    {
         if (demotable(initializer,root, set))
             {
-            num--;
-            if (num==-1)  // found it
-                {
-                demotableNode = root;
-                return num;
-                }
+                num--;
+                if (num==-1)  // found it
+                    {
+                        demotableNode = root;
+                        return num;
+                    }
             }
         for(int x=0;x<root.children.length;x++)
             {
-            num = _pickDemotableNode(initializer, root.children[x],num,set);
-            if (num==-1) break;  // someone found it
+                num = _pickDemotableNode(initializer, root.children[x],num,set);
+                if (num==-1) break;  // someone found it
             }
         return num;     
-        }
+    }
     
 
     /** Returns true if inner1's depth + atdepth +1 is within the depth bounds */
 
     private boolean verifyPoint(GPNode inner1)
-        {
+    {
         // We know they're swap-compatible since we generated inner1
         // to be exactly that.  So don't bother.
 
@@ -416,17 +416,17 @@ public class MutateDemotePipeline extends GPBreedingPipeline
 
         // checks done!
         return true;
-        }
+    }
 
 
 
     public int produce(final int min,
-        final int max,
-        final int subpopulation,
-        final ArrayList<Individual> inds,
-        final EvolutionState state,
-        final int thread, HashMap<String, Object> misc)
-        {
+                       final int max,
+                       final int subpopulation,
+                       final ArrayList<Individual> inds,
+                       final EvolutionState state,
+                       final int thread, HashMap<String, Object> misc)
+    {
         int start = inds.size();
                 
         // grab n individuals from our source and stick 'em right into inds.
@@ -436,7 +436,7 @@ public class MutateDemotePipeline extends GPBreedingPipeline
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
             {
-            return n;
+                return n;
             }
 
 
@@ -445,41 +445,41 @@ public class MutateDemotePipeline extends GPBreedingPipeline
         // now let's mutate 'em
         for(int q=start; q < n+start; q++)
             {
-            GPIndividual i = (GPIndividual)inds.get(q);
+                GPIndividual i = (GPIndividual)inds.get(q);
             
-            if (tree!=TREE_UNFIXED && (tree<0 || tree >= i.trees.length))
-                // uh oh
-                state.output.fatal("MutateDemotePipeline attempted to fix tree.0 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
+                if (tree!=TREE_UNFIXED && (tree<0 || tree >= i.trees.length))
+                    // uh oh
+                    state.output.fatal("MutateDemotePipeline attempted to fix tree.0 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
             
-            for (int x=0;x<numTries;x++)
-                {
-                int t;
-                // pick random tree
-                if (tree==TREE_UNFIXED)
-                    if (i.trees.length>1) t = state.random[thread].nextInt(i.trees.length);
-                    else t = 0;
-                else t = tree;
+                for (int x=0;x<numTries;x++)
+                    {
+                        int t;
+                        // pick random tree
+                        if (tree==TREE_UNFIXED)
+                            if (i.trees.length>1) t = state.random[thread].nextInt(i.trees.length);
+                            else t = 0;
+                        else t = tree;
                 
-                // is the tree demotable?
-                int numdemote = numDemotableNodes(initializer, i.trees[t].child,0,i.trees[t].constraints(initializer).functionset);
-                if (numdemote==0) continue; // uh oh, try again
+                        // is the tree demotable?
+                        int numdemote = numDemotableNodes(initializer, i.trees[t].child,0,i.trees[t].constraints(initializer).functionset);
+                        if (numdemote==0) continue; // uh oh, try again
                 
-                // demote the node, or if we're unsuccessful, just leave it alone
-                pickDemotableNode(initializer, i.trees[t].child,state.random[thread].nextInt(numdemote),i.trees[t].constraints(initializer).functionset);
+                        // demote the node, or if we're unsuccessful, just leave it alone
+                        pickDemotableNode(initializer, i.trees[t].child,state.random[thread].nextInt(numdemote),i.trees[t].constraints(initializer).functionset);
                 
-                // does this node exceed the maximum depth limits?
-                if (!verifyPoint(demotableNode)) continue; // uh oh, try again
+                        // does this node exceed the maximum depth limits?
+                        if (!verifyPoint(demotableNode)) continue; // uh oh, try again
                 
-                // demote it
-                demoteSomething(demotableNode,state,thread,i.trees[t].constraints(initializer).functionset);
-                i.evaluated = false;
-                break;
-                }
+                        // demote it
+                        demoteSomething(demotableNode,state,thread,i.trees[t].constraints(initializer).functionset);
+                        i.evaluated = false;
+                        break;
+                    }
 
-            // add the new individual, replacing its previous source
-            inds.set(q,i);
+                // add the new individual, replacing its previous source
+                inds.set(q,i);
             
             }
         return n;
-        }
     }
+}

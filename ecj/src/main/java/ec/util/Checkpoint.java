@@ -39,43 +39,43 @@ import java.io.*;
  */
 
 public class Checkpoint
-    {
+{
 
     /** Writes the evolution state out to a file. */
 
     public static void setCheckpoint(EvolutionState state)
-        {
+    {
         try
             {
-            File file = new File("" + state.checkpointPrefix + "." + state.generation + ".gz");
+                File file = new File("" + state.checkpointPrefix + "." + state.generation + ".gz");
             
-            if (state.checkpointDirectory != null)
-                {
-                file = new File(state.checkpointDirectory, 
-                    "" + state.checkpointPrefix + "." + state.generation + ".gz");
-                }
-            ObjectOutputStream s = 
-                new ObjectOutputStream(
-                    new GZIPOutputStream (
-                        new BufferedOutputStream(
-                            new FileOutputStream(file))));
+                if (state.checkpointDirectory != null)
+                    {
+                        file = new File(state.checkpointDirectory, 
+                                        "" + state.checkpointPrefix + "." + state.generation + ".gz");
+                    }
+                ObjectOutputStream s = 
+                    new ObjectOutputStream(
+                                           new GZIPOutputStream (
+                                                                 new BufferedOutputStream(
+                                                                                          new FileOutputStream(file))));
                 
-            s.writeObject(state);
-            s.close();
-            state.output.message("Wrote out checkpoint file " + 
-                state.checkpointPrefix + "." + 
-                state.generation + ".gz");
+                s.writeObject(state);
+                s.close();
+                state.output.message("Wrote out checkpoint file " + 
+                                     state.checkpointPrefix + "." + 
+                                     state.generation + ".gz");
             }
         catch (IOException e)
             {
-            state.output.warning("Unable to create the checkpoint file " + 
-                state.checkpointPrefix + "." +
-                state.generation + ".gz" + 
-                "because of an IOException:\n--EXCEPTION--\n" +
-                e + 
-                "\n--EXCEPTION-END--\n");
+                state.output.warning("Unable to create the checkpoint file " + 
+                                     state.checkpointPrefix + "." +
+                                     state.generation + ".gz" + 
+                                     "because of an IOException:\n--EXCEPTION--\n" +
+                                     e + 
+                                     "\n--EXCEPTION-END--\n");
             }
-        }
+    }
 
 
     /** Returns an EvolutionState object read from a checkpoint file
@@ -86,13 +86,13 @@ public class Checkpoint
     public static EvolutionState restoreFromCheckpoint(String checkpoint)
         throws IOException, ClassNotFoundException, OptionalDataException
     /* must throw something if error -- NEVER return null */
-        { 
+    { 
         // load from the file
         ObjectInputStream s = 
             new ObjectInputStream(
-                new GZIPInputStream (
-                    new BufferedInputStream (
-                        new FileInputStream (checkpoint))));
+                                  new GZIPInputStream (
+                                                       new BufferedInputStream (
+                                                                                new FileInputStream (checkpoint))));
 
         EvolutionState e = (EvolutionState) s.readObject();
         s.close();
@@ -101,6 +101,6 @@ public class Checkpoint
     
         e.resetFromCheckpoint();
         return e; 
-        }
     }
+}
 

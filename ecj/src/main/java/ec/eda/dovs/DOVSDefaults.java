@@ -16,12 +16,12 @@ import ec.*;
  */
 
 public final class DOVSDefaults implements DefaultsForm
-    {
+{
     public static final String P_DOVS = "dovs";
 
     /** Returns the default base. */
     public static final Parameter base()
-        {
+    {
         return new Parameter(P_DOVS);
-        }
     }
+}

@@ -53,7 +53,7 @@ import ec.*;
  */
 
 public class SigmaScalingSelection extends FitProportionateSelection
-    {
+{
     /** Default base */
     public static final String P_SIGMA_SCALING = "sigma-scaling";
                 
@@ -65,12 +65,12 @@ public class SigmaScalingSelection extends FitProportionateSelection
     double fitnessFloor;
                 
     public Parameter defaultBase()
-        {
+    {
         return SelectDefaults.base().push(P_SIGMA_SCALING);
-        }
+    }
         
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
                         
         Parameter def = defaultBase();
@@ -79,16 +79,16 @@ public class SigmaScalingSelection extends FitProportionateSelection
                         
         if (fitnessFloor < 0)
             {
-            //Hey! you gotta cool!  Set your cooling rate to a positive value!
-            state.output.fatal("The scaled-fitness-floor must be a non-negative value.",base.push(P_SCALED_FITNESS_FLOOR),def.push(P_SCALED_FITNESS_FLOOR));
+                //Hey! you gotta cool!  Set your cooling rate to a positive value!
+                state.output.fatal("The scaled-fitness-floor must be a non-negative value.",base.push(P_SCALED_FITNESS_FLOOR),def.push(P_SCALED_FITNESS_FLOOR));
             }
-        }
+    }
                 
     // completely override FitProportionateSelection.prepareToProduce
     public void prepareToProduce(final EvolutionState s,
-        final int subpopulation,
-        final int thread)
-        {
+                                 final int subpopulation,
+                                 final int thread)
+    {
         super.prepareToProduce(s, subpopulation, thread);
 
         // load fitnesses
@@ -101,45 +101,45 @@ public class SigmaScalingSelection extends FitProportionateSelection
                 
         for(int x=0;x<fitnesses.length;x++)
             {
-            fitnesses[x] = ((Individual)(s.population.subpops.get(subpopulation).individuals.get(x))).fitness.fitness();
-            if (fitnesses[x] < 0) // uh oh
-                s.output.fatal("Discovered a negative fitness value.  SigmaScalingSelection requires that all fitness values be non-negative(offending subpopulation #" + subpopulation + ")");
+                fitnesses[x] = ((Individual)(s.population.subpops.get(subpopulation).individuals.get(x))).fitness.fitness();
+                if (fitnesses[x] < 0) // uh oh
+                    s.output.fatal("Discovered a negative fitness value.  SigmaScalingSelection requires that all fitness values be non-negative(offending subpopulation #" + subpopulation + ")");
             }
                         
         // Calculate meanFitness
         for(int x=0;x<fitnesses.length;x++)
             {
-            meanSum = meanSum + fitnesses[x];
+                meanSum = meanSum + fitnesses[x];
             }
         meanFitness = meanSum/fitnesses.length;
                         
         // Calculate sum of squared deviations
         for(int x=0;x<fitnesses.length;x++)
             {
-            squaredDeviationsSum = squaredDeviationsSum + Math.pow(fitnesses[x]-meanFitness,2);
+                squaredDeviationsSum = squaredDeviationsSum + Math.pow(fitnesses[x]-meanFitness,2);
             }
         sigma = Math.sqrt(squaredDeviationsSum/(fitnesses.length-1));
                 
         // Fill fitnesses[] with sigma scaled fitness values
         for(int x=0;x<fitnesses.length;x++)
             {
-            fitnesses[x] = (double)sigmaScaledValue(fitnesses[x], meanFitness, sigma, s); // adjust the fitness proportion according to sigma scaling.
+                fitnesses[x] = (double)sigmaScaledValue(fitnesses[x], meanFitness, sigma, s); // adjust the fitness proportion according to sigma scaling.
                                 
-            // Sigma scaling formula can return negative values, this is unacceptable for fitness proportionate style selection...
-            // so we must substitute the fitnessFloor (some value >= 0) when a sigma scaled fitness <= fitnessFloor is encountered.
-            if (fitnesses[x] < fitnessFloor)  
-                fitnesses[x] = fitnessFloor; 
+                // Sigma scaling formula can return negative values, this is unacceptable for fitness proportionate style selection...
+                // so we must substitute the fitnessFloor (some value >= 0) when a sigma scaled fitness <= fitnessFloor is encountered.
+                if (fitnesses[x] < fitnessFloor)  
+                    fitnesses[x] = fitnessFloor; 
             }
         
         // organize the distribution.  All zeros in fitness is fine
         RandomChoice.organizeDistribution(fitnesses, true);
-        }
+    }
 
     private double sigmaScaledValue(double fitness, double meanFitness, double sigma, final EvolutionState s)
-        {
+    {
         if (sigma != 0)
             return 1+(fitness-meanFitness)/(2*sigma);
         return 1.0;
-        }
-        
     }
+        
+}

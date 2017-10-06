@@ -175,7 +175,7 @@ import ec.util.*;
 
 
 public class Terminal extends ERC
-    {
+{
     public static final String P_INSTRUCTION = "in";
     public static final String P_NUM_INSTRUCTIONS = "size";
     public static final String P_FUNC = "func";
@@ -213,12 +213,12 @@ public class Terminal extends ERC
     public String toStringForHumans() { return value; }
     
     public Parameter defaultBase()
-        {
+    {
         return PushDefaults.base().push(P_INSTRUCTION);
-        }
+    }
         
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state, base);
         
         Parameter def = defaultBase();
@@ -233,23 +233,23 @@ public class Terminal extends ERC
         
         for(int i =0; i < len; i++)
             {
-            instructions[i] = state.parameters.getString(base.push(P_INSTRUCTION).push("" + i), def.push("" + i));
-            if (instructions[i] == null)
-                state.output.fatal("Terminal number " + i + " is missing.", base.push(P_INSTRUCTION).push("" + i), def.push("" + i));
+                instructions[i] = state.parameters.getString(base.push(P_INSTRUCTION).push("" + i), def.push("" + i));
+                if (instructions[i] == null)
+                    state.output.fatal("Terminal number " + i + " is missing.", base.push(P_INSTRUCTION).push("" + i), def.push("" + i));
 
-            // load Instruction if there is one
-            Parameter bb = base.push(P_INSTRUCTION).push("" + i).push(P_FUNC);
-            Parameter dd = def.push("" + i).push(P_FUNC);
-            if (state.parameters.exists(bb, dd))  // got one
-                {
-                String s = state.parameters.getString(bb, dd);
-                state.output.message("Adding Instruction " + instructions[i] + " --> " + s);
-                PushInstruction inst = (PushInstruction)(state.parameters.getInstanceForParameter(bb, dd, PushInstruction.class));
-                if (inst == null)  // uh oh
-                    state.output.fatal("Terminal number " + i + ", named " + instructions[i] + ", has an invalid function class: " + s);
-                // load that sucker
-                insts[i] = inst;
-                }
+                // load Instruction if there is one
+                Parameter bb = base.push(P_INSTRUCTION).push("" + i).push(P_FUNC);
+                Parameter dd = def.push("" + i).push(P_FUNC);
+                if (state.parameters.exists(bb, dd))  // got one
+                    {
+                        String s = state.parameters.getString(bb, dd);
+                        state.output.message("Adding Instruction " + instructions[i] + " --> " + s);
+                        PushInstruction inst = (PushInstruction)(state.parameters.getInstanceForParameter(bb, dd, PushInstruction.class));
+                        if (inst == null)  // uh oh
+                            state.output.fatal("Terminal number " + i + ", named " + instructions[i] + ", has an invalid function class: " + s);
+                        // load that sucker
+                        insts[i] = inst;
+                    }
             }
             
         // compress instruction list
@@ -264,9 +264,9 @@ public class Terminal extends ERC
         for(int i=0; i<len;i++)
             if (insts[i] != null)
                 {
-                customInstructions[count] = insts[i];
-                indices[count] = i;
-                count++;
+                    customInstructions[count] = insts[i];
+                    indices[count] = i;
+                    count++;
                 }
                 
         final double NaN = 0.0 / 0.0;
@@ -279,10 +279,10 @@ public class Terminal extends ERC
             state.output.warning("No " + ERC_NAMES[FLOAT_ERC] + " min value provided, using " + minFloatERC, b, d);
         else
             {
-            double min = state.parameters.getDoubleWithDefault(b,d, NaN);
-            if (min != min)  // it's NaN
-                state.output.fatal("Malformed " + ERC_NAMES[FLOAT_ERC] + " min value", b, d);
-            else minFloatERC = min;
+                double min = state.parameters.getDoubleWithDefault(b,d, NaN);
+                if (min != min)  // it's NaN
+                    state.output.fatal("Malformed " + ERC_NAMES[FLOAT_ERC] + " min value", b, d);
+                else minFloatERC = min;
             }
 
         b = base.push(P_FLOAT).push(P_MAX);
@@ -292,10 +292,10 @@ public class Terminal extends ERC
             state.output.warning("No " + ERC_NAMES[FLOAT_ERC] + " max value provided, using " + maxFloatERC, b, d);
         else
             {
-            double max = state.parameters.getDoubleWithDefault(b, d, NaN);
-            if (max != max)  // it's NaN
-                state.output.fatal("Malformed " + ERC_NAMES[FLOAT_ERC] + " max value", b, d);
-            else maxFloatERC = max;
+                double max = state.parameters.getDoubleWithDefault(b, d, NaN);
+                if (max != max)  // it's NaN
+                    state.output.fatal("Malformed " + ERC_NAMES[FLOAT_ERC] + " max value", b, d);
+                else maxFloatERC = max;
             }
         if (minFloatERC > maxFloatERC)  // uh oh
             state.output.fatal("" + ERC_NAMES[FLOAT_ERC] + " min value is greater than max value.\nMin: " + minFloatERC +"\nMax: " + maxFloatERC);
@@ -308,10 +308,10 @@ public class Terminal extends ERC
             state.output.warning("No " + ERC_NAMES[INTEGER_ERC] + " min value provided, using " + minIntegerERC, b, d);
         else
             {
-            double min = state.parameters.getDoubleWithDefault(b, d, NaN);
-            if ((min != min) || (min != (int)min))  // it's NaN or invalid
-                state.output.fatal("Malformed " + ERC_NAMES[INTEGER_ERC] + " min value", b, d);
-            minIntegerERC = (int)min;
+                double min = state.parameters.getDoubleWithDefault(b, d, NaN);
+                if ((min != min) || (min != (int)min))  // it's NaN or invalid
+                    state.output.fatal("Malformed " + ERC_NAMES[INTEGER_ERC] + " min value", b, d);
+                minIntegerERC = (int)min;
             }
 
         b = base.push(P_INTEGER).push(P_MAX);
@@ -321,86 +321,86 @@ public class Terminal extends ERC
             state.output.warning("No " + ERC_NAMES[INTEGER_ERC] + " max value provided, using " + maxIntegerERC, b, d);
         else
             {
-            double max = state.parameters.getDoubleWithDefault(b, d, NaN);
-            if ((max != max) || (max != (int)max))  // it's NaN or invalid
-                state.output.fatal("Malformed " + ERC_NAMES[INTEGER_ERC] + " max value", b, d);
-            else maxIntegerERC = (int)max;
+                double max = state.parameters.getDoubleWithDefault(b, d, NaN);
+                if ((max != max) || (max != (int)max))  // it's NaN or invalid
+                    state.output.fatal("Malformed " + ERC_NAMES[INTEGER_ERC] + " max value", b, d);
+                else maxIntegerERC = (int)max;
             }
         if (minIntegerERC > maxIntegerERC)  // uh oh
             state.output.fatal("" + ERC_NAMES[INTEGER_ERC] + " min value is greater than max value.\nMin: " + minIntegerERC +"\nMax: " + maxIntegerERC);
 
-        }
+    }
 
     public boolean nodeEquals(GPNode other)
-        {
+    {
         if (other == null) return false;
         if (!(other instanceof Terminal)) return false;
         Terminal o = (Terminal) other;
         return (o.value == value); 
-        }
+    }
         
     public String encode()
-        {
+    {
         return Code.encode(value);
-        }
+    }
     
     public boolean decode(final DecodeReturn dret)
-        {
+    {
         Code.decode(dret);
         if (dret.type == DecodeReturn.T_STRING)
             {
-            value = dret.s;
-            // verify
-            for(int i = 0; i < instructions.length; i++)
-                if (instructions[i].equals(value))
-                    return true;
+                value = dret.s;
+                // verify
+                for(int i = 0; i < instructions.length; i++)
+                    if (instructions[i].equals(value))
+                        return true;
             }
         // otherwise, uh oh
         return false;
-        }
+    }
     
     public void resetNode(EvolutionState state, int thread)
-        {
+    {
         int i = state.random[thread].nextInt(instructions.length);
         if (instructions[i].endsWith("erc")) // it's an erc
             {
-            // we'll assume we don't have a lot of ercs
-            for(int j = 0 ; j < ERC_NAMES.length; j++)
-                {
-                if (instructions[i].equals(ERC_NAMES[j]))
+                // we'll assume we don't have a lot of ercs
+                for(int j = 0 ; j < ERC_NAMES.length; j++)
                     {
-                    switch(j)
-                        {
-                        case FLOAT_ERC:
-                            value = "" + (state.random[thread].nextDouble(true, true) * (maxFloatERC - minFloatERC) + minFloatERC);
-                            break;
-                        case INTEGER_ERC:
-                            value = "" + (state.random[thread].nextInt(maxIntegerERC - minIntegerERC + 1) + minIntegerERC);
-                            break;
-                        default:
-                            state.output.fatal("The following PUSH ERC is unknown: " + instructions[i]);
-                            break;
-                        }
-                    break;  // break from for-loop
+                        if (instructions[i].equals(ERC_NAMES[j]))
+                            {
+                                switch(j)
+                                    {
+                                    case FLOAT_ERC:
+                                        value = "" + (state.random[thread].nextDouble(true, true) * (maxFloatERC - minFloatERC) + minFloatERC);
+                                        break;
+                                    case INTEGER_ERC:
+                                        value = "" + (state.random[thread].nextInt(maxIntegerERC - minIntegerERC + 1) + minIntegerERC);
+                                        break;
+                                    default:
+                                        state.output.fatal("The following PUSH ERC is unknown: " + instructions[i]);
+                                        break;
+                                    }
+                                break;  // break from for-loop
+                            }
                     }
-                }
             }
         else // it's an instruction
             {
-            value = instructions[i];
+                value = instructions[i];
             }
-        }
+    }
 
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         // do nothing
-        }
     }
+}
 
 
 

@@ -64,7 +64,7 @@ import java.util.HashMap;
  */
 
 public class MutateOneNodePipeline extends GPBreedingPipeline
-    {
+{
     private static final long serialVersionUID = 1;
 
     public static final String P_MUTATEONENODE = "mutate-one-node";
@@ -81,16 +81,16 @@ public class MutateOneNodePipeline extends GPBreedingPipeline
     public int numSources() { return NUM_SOURCES; }
 
     public Object clone()
-        {
+    {
         MutateOneNodePipeline c = (MutateOneNodePipeline)(super.clone());
         
         // deep-cloned stuff
         c.nodeselect = (GPNodeSelector)(nodeselect.clone());
         return c;
-        }
+    }
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
 
         Parameter p = base.push(P_NODESELECTOR).push(""+0);
@@ -98,20 +98,20 @@ public class MutateOneNodePipeline extends GPBreedingPipeline
 
         nodeselect = (GPNodeSelector)
             (state.parameters.getInstanceForParameter(
-                p,def.push(P_NODESELECTOR).push(""+0),GPNodeSelector.class));
+                                                      p,def.push(P_NODESELECTOR).push(""+0),GPNodeSelector.class));
         nodeselect.setup(state,p);
 
 
         tree = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+0),
-                def.push(P_TREE).push(""+0)))
+                                    def.push(P_TREE).push(""+0)))
             {
-            tree = state.parameters.getInt(base.push(P_TREE).push(""+0),
-                def.push(P_TREE).push(""+0),0);
-            if (tree==-1)
-                state.output.fatal("Tree fixed value, if defined, must be >= 0");
+                tree = state.parameters.getInt(base.push(P_TREE).push(""+0),
+                                               def.push(P_TREE).push(""+0),0);
+                if (tree==-1)
+                    state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
-        }
+    }
 
 
 
@@ -120,7 +120,7 @@ public class MutateOneNodePipeline extends GPBreedingPipeline
 
 
     private GPNode pickCompatibleNode(final GPNode original, final GPFunctionSet set, final EvolutionState state, final GPType returntype, final int thread)
-        {
+    {
         // an expensive procedure: we will linearly search for a valid node
         int numValidNodes = 0;
         
@@ -133,13 +133,13 @@ public class MutateOneNodePipeline extends GPBreedingPipeline
             numValidNodes = set.nodesByArity[type][len].length;
         else for(int x=0;x<set.nodesByArity[type][len].length;x++) // ugh, the hard way -- nodes swap-compatible with type, and of arity len
                  {
-                 failed = false;
-                 for(int y=0;y<set.nodesByArity[type][len][x].constraints(initializer).childtypes.length;y++)
-                     if (!set.nodesByArity[type][len][x].constraints(initializer).
-                         childtypes[y].compatibleWith(initializer,original.children[y].
-                             constraints(initializer).returntype))
-                         { failed = true; break; }
-                 if (!failed) numValidNodes++;
+                     failed = false;
+                     for(int y=0;y<set.nodesByArity[type][len][x].constraints(initializer).childtypes.length;y++)
+                         if (!set.nodesByArity[type][len][x].constraints(initializer).
+                             childtypes[y].compatibleWith(initializer,original.children[y].
+                                                          constraints(initializer).returntype))
+                             { failed = true; break; }
+                     if (!failed) numValidNodes++;
                  }
         
         // we must have at least success -- the node itself.  Otherwise we're
@@ -155,32 +155,32 @@ public class MutateOneNodePipeline extends GPBreedingPipeline
             return set.nodesByArity[type][len][nodenum];
         else for(int x=0;x<set.nodesByArity[type][len].length;x++) // ugh, the hard way -- nodes swap-compatible with type, and of arity len
                  {
-                 failed = false;
-                 for(int y=0;y<set.nodesByArity[type][len][x].constraints(initializer).childtypes.length;y++)
-                     if (!set.nodesByArity[type][len][x].constraints(initializer).
-                         childtypes[y].compatibleWith(initializer,original.children[y].
-                             constraints(initializer).returntype))
-                         { failed = true; break; }
-                 if (!failed) 
-                     {
-                     if (prosnode == nodenum)  // got it!
-                         return set.nodesByArity[type][len][x];
-                     prosnode++;
-                     }
+                     failed = false;
+                     for(int y=0;y<set.nodesByArity[type][len][x].constraints(initializer).childtypes.length;y++)
+                         if (!set.nodesByArity[type][len][x].constraints(initializer).
+                             childtypes[y].compatibleWith(initializer,original.children[y].
+                                                          constraints(initializer).returntype))
+                             { failed = true; break; }
+                     if (!failed) 
+                         {
+                             if (prosnode == nodenum)  // got it!
+                                 return set.nodesByArity[type][len][x];
+                             prosnode++;
+                         }
                  }
 
         // should never be able to get here
         throw new InternalError();  // whoops!
-        }
+    }
 
 
     public int produce(final int min,
-        final int max,
-        final int subpopulation,
-        final ArrayList<Individual> inds,
-        final EvolutionState state,
-        final int thread, HashMap<String, Object> misc)
-        {
+                       final int max,
+                       final int subpopulation,
+                       final ArrayList<Individual> inds,
+                       final EvolutionState state,
+                       final int thread, HashMap<String, Object> misc)
+    {
         int start = inds.size();
                 
         // grab n individuals from our source and stick 'em right into inds.
@@ -190,7 +190,7 @@ public class MutateOneNodePipeline extends GPBreedingPipeline
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
             {
-            return n;
+                return n;
             }
 
 
@@ -199,50 +199,50 @@ public class MutateOneNodePipeline extends GPBreedingPipeline
         // now let's mutate 'em
         for(int q=start; q < n+start; q++)
             {
-            GPIndividual i = (GPIndividual)inds.get(q);
+                GPIndividual i = (GPIndividual)inds.get(q);
             
-            if (tree!=TREE_UNFIXED && (tree<0 || tree >= i.trees.length))
-                // uh oh
-                state.output.fatal("MutateOneNodePipeline attempted to fix tree.0 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
+                if (tree!=TREE_UNFIXED && (tree<0 || tree >= i.trees.length))
+                    // uh oh
+                    state.output.fatal("MutateOneNodePipeline attempted to fix tree.0 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
 
-            int t;
-            // pick random tree
-            if (tree==TREE_UNFIXED)
-                if (i.trees.length>1) t = state.random[thread].nextInt(i.trees.length);
-                else t = 0;
-            else t = tree;
+                int t;
+                // pick random tree
+                if (tree==TREE_UNFIXED)
+                    if (i.trees.length>1) t = state.random[thread].nextInt(i.trees.length);
+                    else t = 0;
+                else t = tree;
                     
-            // prepare the nodeselector
-            nodeselect.reset();
+                // prepare the nodeselector
+                nodeselect.reset();
             
-            // pick a node
+                // pick a node
             
-            GPNode p1=null;  // the node we pick
-            GPNode p2=null;
+                GPNode p1=null;  // the node we pick
+                GPNode p2=null;
             
-            // pick a node in individual 1
-            p1 = nodeselect.pickNode(state,subpopulation,thread,i,i.trees[t]);
+                // pick a node in individual 1
+                p1 = nodeselect.pickNode(state,subpopulation,thread,i,i.trees[t]);
             
-            // generate a tree with a new root but the same children,
-            // which we will replace p1 with
+                // generate a tree with a new root but the same children,
+                // which we will replace p1 with
             
-            GPType type;
-            type = p1.parentType(initializer);
+                GPType type;
+                type = p1.parentType(initializer);
             
-            p2 = (GPNode)(pickCompatibleNode(p1,i.trees[t].constraints(initializer).functionset,state,type,thread)).lightClone();
+                p2 = (GPNode)(pickCompatibleNode(p1,i.trees[t].constraints(initializer).functionset,state,type,thread)).lightClone();
 
-            // if it's an ERC, let it set itself up
-            p2.resetNode(state,thread);
+                // if it's an ERC, let it set itself up
+                p2.resetNode(state,thread);
             
-            // p2's parent and argposition will be set automatically below
+                // p2's parent and argposition will be set automatically below
 
-            p1.replaceWith(p2);
-            i.evaluated = false;
+                p1.replaceWith(p2);
+                i.evaluated = false;
 
-            // add the new individual, replacing its previous source
-            inds.set(q,i);
+                // add the new individual, replacing its previous source
+                inds.set(q,i);
             
             }
         return n;
-        }
     }
+}

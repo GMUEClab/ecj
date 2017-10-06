@@ -21,10 +21,10 @@ import ec.gp.*;
  */
 
 public class RegressionData extends GPData
-    {
+{
     // return value
     public double x;
 
     public void copyTo(final GPData gpd) 
-        { ((RegressionData)gpd).x = x; }
-    }
+    { ((RegressionData)gpd).x = x; }
+}

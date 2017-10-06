@@ -59,15 +59,15 @@ import ec.vector.DoubleVectorIndividual;
  */
 
 public class BBOBenchmarks extends Problem implements SimpleProblemForm
-    {
+{
     public static final String P_GENOME_SIZE = "genome-size";
     public static final String P_WHICH_PROBLEM = "type";
     public static final String P_NOISE = "noise";
     public static final String P_REEVALUATE_NOISY_PROBLEMS = "reevaluate-noisy-problems";
 
     final public String[] problemTypes =
-        { "sphere", "ellipsoidal", "rastrigin", "buche-rastrigin", "linear-slope", "attractive-sector", "step-ellipsoidal", "rosenbrock", "rosenbrock-rotated", "ellipsoidal-2", "discus", "bent-cigar", "sharp-ridge", "different-powers", "rastrigin-2",
-          "weierstrass", "schaffers-f7", "schaffers-f7-2", "griewank-rosenbrock", "schwefel", "gallagher-gaussian-101me", "gallagher-gaussian-21hi", "katsuura", "lunacek" };
+    { "sphere", "ellipsoidal", "rastrigin", "buche-rastrigin", "linear-slope", "attractive-sector", "step-ellipsoidal", "rosenbrock", "rosenbrock-rotated", "ellipsoidal-2", "discus", "bent-cigar", "sharp-ridge", "different-powers", "rastrigin-2",
+      "weierstrass", "schaffers-f7", "schaffers-f7-2", "griewank-rosenbrock", "schwefel", "gallagher-gaussian-101me", "gallagher-gaussian-21hi", "katsuura", "lunacek" };
 
     final static public int SPHERE = 0;
     final static public int ELLIPSOIDAL = 1;
@@ -96,7 +96,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
 
     // Noise types
     final public String[] noiseTypes =
-        { "none", "gauss", "uniform", "cauchy", "gauss-moderate", "uniform-moderate", "cauchy-moderate" };
+    { "none", "gauss", "uniform", "cauchy", "gauss-moderate", "uniform-moderate", "cauchy-moderate" };
 
     final static public int NONE = 0;
     final static public int GAUSSIAN = 1;
@@ -143,7 +143,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
 
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state, base);
         String wp = state.parameters.getStringWithDefault(base.push(P_WHICH_PROBLEM), null, "");
         int i, j, k;
@@ -184,8 +184,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 computeRotation(rotation, state.random[0], genomeSize);
                 if (noise != NONE)
                     {
-                    rot2 = new double[genomeSize][genomeSize];
-                    computeRotation(rot2, state.random[0], genomeSize);
+                        rot2 = new double[genomeSize][genomeSize];
+                        computeRotation(rot2, state.random[0], genomeSize);
                     }
                 break;
                         
@@ -203,16 +203,16 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 computeXopt(xOpt, state.random[0]);
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp = Math.pow(Math.sqrt(alpha), ((double) i) / ((double) (genomeSize - 1)));
-                    if (xOpt[i] > 0)
-                        {
-                        xOpt[i] = 5.;
-                        }
-                    else if (xOpt[i] < 0)
-                        {
-                        xOpt[i] = -5.;
-                        }
-                    fAdd_Init += 5. * tmp;
+                        tmp = Math.pow(Math.sqrt(alpha), ((double) i) / ((double) (genomeSize - 1)));
+                        if (xOpt[i] > 0)
+                            {
+                                xOpt[i] = 5.;
+                            }
+                        else if (xOpt[i] < 0)
+                            {
+                                xOpt[i] = -5.;
+                            }
+                        fAdd_Init += 5. * tmp;
                     }
                 break;
                         
@@ -226,14 +226,14 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* decouple scaling from function definition */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        linearTF[i][j] = 0.0;
-                        for (k = 0; k < genomeSize; k++)
+                        for (j = 0; j < genomeSize; j++)
                             {
-                            linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
+                                linearTF[i][j] = 0.0;
+                                for (k = 0; k < genomeSize; k++)
+                                    {
+                                        linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
+                                    }
                             }
-                        }
                     }
                 break;
                         
@@ -262,8 +262,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 scales = Math.max(1.0, Math.sqrt(genomeSize) / 8.);
                 for (i = 0; i < genomeSize; i++)
                     {
-                    for (j = 0; j < genomeSize; j++)
-                        linearTF[i][j] = scales * rotation[i][j];
+                        for (j = 0; j < genomeSize; j++)
+                            linearTF[i][j] = scales * rotation[i][j];
                     }
                 break;
                         
@@ -294,14 +294,14 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 computeRotation(rot2, state.random[0], genomeSize);
                 for (i = 0; i < genomeSize; i++)
                     {
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        linearTF[i][j] = 0.0;
-                        for (k = 0; k < genomeSize; k++)
+                        for (j = 0; j < genomeSize; j++)
                             {
-                            linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
+                                linearTF[i][j] = 0.0;
+                                for (k = 0; k < genomeSize; k++)
+                                    {
+                                        linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
+                                    }
                             }
-                        }
                     }
                 break;
                         
@@ -320,14 +320,14 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 computeRotation(rot2, state.random[0], genomeSize);
                 for (i = 0; i < genomeSize; i++)
                     {
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        linearTF[i][j] = 0.0;
-                        for (k = 0; k < genomeSize; k++)
+                        for (j = 0; j < genomeSize; j++)
                             {
-                            linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
+                                linearTF[i][j] = 0.0;
+                                for (k = 0; k < genomeSize; k++)
+                                    {
+                                        linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
+                                    }
                             }
-                        }
                     }
                 break;
                         
@@ -343,14 +343,14 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
 
                 for (i = 0; i < genomeSize; i++)
                     {
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        linearTF[i][j] = 0.0;
-                        for (k = 0; k < genomeSize; k++)
+                        for (j = 0; j < genomeSize; j++)
                             {
-                            linearTF[i][j] += rotation[i][k] * Math.pow(1.0 / Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
+                                linearTF[i][j] = 0.0;
+                                for (k = 0; k < genomeSize; k++)
+                                    {
+                                        linearTF[i][j] += rotation[i][k] * Math.pow(1.0 / Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
+                                    }
                             }
-                        }
                     }
 
                 f0 = 0.0;
@@ -359,9 +359,9 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                                           * saves 30% of time
                                           */
                     {
-                    aK[i] = Math.pow(0.5, (double) i);
-                    bK[i] = Math.pow(3., (double) i);
-                    f0 += aK[i] * Math.cos(2 * Math.PI * bK[i] * 0.5);
+                        aK[i] = Math.pow(0.5, (double) i);
+                        bK[i] = Math.pow(3., (double) i);
+                        f0 += aK[i] * Math.cos(2 * Math.PI * bK[i] * 0.5);
                     }
                 break;
                         
@@ -388,27 +388,27 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 computeRotation(rotation, state.random[0], genomeSize);
                 if (noise == NONE)
                     {
-                    rot2 = new double[genomeSize][genomeSize];
-                    linearTF = new double[genomeSize][genomeSize];
-                    for (i = 0; i < genomeSize; i++)
-                        {
-                        for (j = 0; j < genomeSize; j++)
+                        rot2 = new double[genomeSize][genomeSize];
+                        linearTF = new double[genomeSize][genomeSize];
+                        for (i = 0; i < genomeSize; i++)
                             {
-                            linearTF[i][j] = scales * rotation[i][j];
+                                for (j = 0; j < genomeSize; j++)
+                                    {
+                                        linearTF[i][j] = scales * rotation[i][j];
+                                    }
                             }
-                        }
-                    for (i = 0; i < genomeSize; i++)
-                        {
-                        xOpt[i] = 0.0;
-                        for (j = 0; j < genomeSize; j++)
+                        for (i = 0; i < genomeSize; i++)
                             {
-                            xOpt[i] += linearTF[j][i] * 0.5 / scales / scales;
+                                xOpt[i] = 0.0;
+                                for (j = 0; j < genomeSize; j++)
+                                    {
+                                        xOpt[i] += linearTF[j][i] * 0.5 / scales / scales;
+                                    }
                             }
-                        }
                     }
                 else
                     {
-                    // TODO
+                        // TODO
                     }
                 break;
                         
@@ -420,9 +420,9 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                     tmpvect[i] = nextDoubleClosedInterval(state.random[0]);
                 for (i = 0; i < genomeSize; i++)
                     {
-                    xOpt[i] = 0.5 * 4.2096874633;
-                    if (tmpvect[i] - 0.5 < 0)
-                        xOpt[i] *= -1.;
+                        xOpt[i] = 0.5 * 4.2096874633;
+                        if (tmpvect[i] - 0.5 < 0)
+                            xOpt[i] *= -1.;
                     }
                 break;
                         
@@ -451,22 +451,22 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 peakvalues[0] = 10;
                 for (i = 1; i < NHIGHPEAKS21; i++)
                     {
-                    arrCondition[i] = Math.pow(maxCondition, (double) (rperm[i - 1]) / ((double) (NHIGHPEAKS21 - 2)));
-                    peakvalues[i] = (double) (i - 1) / (double) (NHIGHPEAKS21 - 2) * (fitValues[1] - fitValues[0]) + fitValues[0];
+                        arrCondition[i] = Math.pow(maxCondition, (double) (rperm[i - 1]) / ((double) (NHIGHPEAKS21 - 2)));
+                        peakvalues[i] = (double) (i - 1) / (double) (NHIGHPEAKS21 - 2) * (fitValues[1] - fitValues[0]) + fitValues[0];
                     }
                 arrScales = arrScales21;
                 for (i = 0; i < NHIGHPEAKS21; i++)
                     {
-                    for (j = 0; j < genomeSize; j++)
-                        peaks[j] = nextDoubleClosedInterval(state.random[0]);
-                    for (j = 0; j < genomeSize; j++)
-                        rperm[j] = j;
-                    // qsort(rperm, genomeSize, sizeof(int), compare_doubles);
-                    QuickSort.qsort(rperm);
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        arrScales[i][j] = Math.pow(arrCondition[i], ((double) rperm[j]) / ((double) (genomeSize - 1)) - 0.5);
-                        }
+                        for (j = 0; j < genomeSize; j++)
+                            peaks[j] = nextDoubleClosedInterval(state.random[0]);
+                        for (j = 0; j < genomeSize; j++)
+                            rperm[j] = j;
+                        // qsort(rperm, genomeSize, sizeof(int), compare_doubles);
+                        QuickSort.qsort(rperm);
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                arrScales[i][j] = Math.pow(arrCondition[i], ((double) rperm[j]) / ((double) (genomeSize - 1)) - 0.5);
+                            }
                     }
 
                 for (i = 0; i < genomeSize * NHIGHPEAKS21; i++)
@@ -474,17 +474,17 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 xLocal = xLocal21;
                 for (i = 0; i < genomeSize; i++)
                     {
-                    xOpt[i] = 0.8 * (10. * peaks[i] - 5.);
-                    for (j = 0; j < NHIGHPEAKS21; j++)
-                        {
-                        xLocal[i][j] = 0.0;
-                        for (k = 0; k < genomeSize; k++)
+                        xOpt[i] = 0.8 * (10. * peaks[i] - 5.);
+                        for (j = 0; j < NHIGHPEAKS21; j++)
                             {
-                            xLocal[i][j] += rotation[i][k] * (10. * peaks[j * genomeSize + k] - 5.);
+                                xLocal[i][j] = 0.0;
+                                for (k = 0; k < genomeSize; k++)
+                                    {
+                                        xLocal[i][j] += rotation[i][k] * (10. * peaks[j * genomeSize + k] - 5.);
+                                    }
+                                if (j == 0)
+                                    xLocal[i][j] *= 0.8;
                             }
-                        if (j == 0)
-                            xLocal[i][j] *= 0.8;
-                        }
                     }
                 break;
                         
@@ -512,23 +512,23 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 peakvalues[0] = 10;
                 for (i = 1; i < NHIGHPEAKS22; i++)
                     {
-                    arrCondition[i] = Math.pow(maxCondition, (double) (rperm[i - 1]) / ((double) (NHIGHPEAKS22 - 2)));
-                    peakvalues[i] = (double) (i - 1) / (double) (NHIGHPEAKS22 - 2) * (fitValues[1] - fitValues[0]) + fitValues[0];
+                        arrCondition[i] = Math.pow(maxCondition, (double) (rperm[i - 1]) / ((double) (NHIGHPEAKS22 - 2)));
+                        peakvalues[i] = (double) (i - 1) / (double) (NHIGHPEAKS22 - 2) * (fitValues[1] - fitValues[0]) + fitValues[0];
                     }
                 arrScales = arrScales22;
                 for (i = 0; i < NHIGHPEAKS22; i++)
                     {
-                    for (j = 0; j < genomeSize; j++)
-                        peaks[j] = nextDoubleClosedInterval(state.random[0]);
-                    for (j = 0; j < genomeSize; j++)
-                        rperm[j] = j;
-                    // qsort(rperm, genomeSize, sizeof(int), compare_doubles);
-                    // NOTE: confirm if converted correctly
-                    QuickSort.qsort(rperm);
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        arrScales[i][j] = Math.pow(arrCondition[i], ((double) rperm[j]) / ((double) (genomeSize - 1)) - 0.5);
-                        }
+                        for (j = 0; j < genomeSize; j++)
+                            peaks[j] = nextDoubleClosedInterval(state.random[0]);
+                        for (j = 0; j < genomeSize; j++)
+                            rperm[j] = j;
+                        // qsort(rperm, genomeSize, sizeof(int), compare_doubles);
+                        // NOTE: confirm if converted correctly
+                        QuickSort.qsort(rperm);
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                arrScales[i][j] = Math.pow(arrCondition[i], ((double) rperm[j]) / ((double) (genomeSize - 1)) - 0.5);
+                            }
                     }
 
                 for (i = 0; i < genomeSize * NHIGHPEAKS22; i++)
@@ -536,17 +536,17 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 xLocal = xLocal22;
                 for (i = 0; i < genomeSize; i++)
                     {
-                    xOpt[i] = 0.8 * (9.8 * peaks[i] - 4.9);
-                    for (j = 0; j < NHIGHPEAKS22; j++)
-                        {
-                        xLocal[i][j] = 0.0;
-                        for (k = 0; k < genomeSize; k++)
+                        xOpt[i] = 0.8 * (9.8 * peaks[i] - 4.9);
+                        for (j = 0; j < NHIGHPEAKS22; j++)
                             {
-                            xLocal[i][j] += rotation[i][k] * (9.8 * peaks[j * genomeSize + k] - 4.9);
+                                xLocal[i][j] = 0.0;
+                                for (k = 0; k < genomeSize; k++)
+                                    {
+                                        xLocal[i][j] += rotation[i][k] * (9.8 * peaks[j * genomeSize + k] - 4.9);
+                                    }
+                                if (j == 0)
+                                    xLocal[i][j] *= 0.8;
                             }
-                        if (j == 0)
-                            xLocal[i][j] *= 0.8;
-                        }
                     }
                 break;
                         
@@ -559,14 +559,14 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 computeRotation(rot2, state.random[0], genomeSize);
                 for (i = 0; i < genomeSize; i++)
                     {
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        linearTF[i][j] = 0.0;
-                        for (k = 0; k < genomeSize; k++)
+                        for (j = 0; j < genomeSize; j++)
                             {
-                            linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / (double) (genomeSize - 1)) * rot2[k][j];
+                                linearTF[i][j] = 0.0;
+                                for (k = 0; k < genomeSize; k++)
+                                    {
+                                        linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / (double) (genomeSize - 1)) * rot2[k][j];
+                                    }
                             }
-                        }
                     }
                 break;
                         
@@ -582,21 +582,21 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 gauss(tmpvect, state.random[0]);
                 for (i = 0; i < genomeSize; i++)
                     {
-                    xOpt[i] = 0.5 * mu1;
-                    if (tmpvect[i] < 0.)
-                        xOpt[i] *= -1.;
+                        xOpt[i] = 0.5 * mu1;
+                        if (tmpvect[i] < 0.)
+                            xOpt[i] *= -1.;
                     }
 
                 for (i = 0; i < genomeSize; i++)
                     {
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        linearTF[i][j] = 0.0;
-                        for (k = 0; k < genomeSize; k++)
+                        for (j = 0; j < genomeSize; j++)
                             {
-                            linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
+                                linearTF[i][j] = 0.0;
+                                for (k = 0; k < genomeSize; k++)
+                                    {
+                                        linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
+                                    }
                             }
-                        }
                     }
                 break;
                         
@@ -607,14 +607,14 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 state.output.fatal(outputStr, base.push(P_WHICH_PROBLEM));
             }
 
-        }
+    }
 
     public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum)
-        {
+    {
         if (noise != NONE)
             {
-            if (!reevaluateNoisyProblems && ind.evaluated) // don't bother reevaluating
-                return;
+                if (!reevaluateNoisyProblems && ind.evaluated) // don't bother reevaluating
+                    return;
             }
         else if (ind.evaluated)  // don't bother reevaluating
             return;
@@ -638,21 +638,21 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 fAdd = fOpt;
                 if (noise != NONE)
                     {
-                    for (i = 0; i < genomeSize; i++)
-                        {
-                        tmp = Math.abs(genome[i]) - 5.;
-                        if (tmp > 0.0)
+                        for (i = 0; i < genomeSize; i++)
                             {
-                            fPen += tmp * tmp;
+                                tmp = Math.abs(genome[i]) - 5.;
+                                if (tmp > 0.0)
+                                    {
+                                        fPen += tmp * tmp;
+                                    }
                             }
-                        }
-                    fAdd += 100. * fPen;
+                        fAdd += 100. * fPen;
                     }
                 /* COMPUTATION core */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp = genome[i] - xOpt[i];
-                    value += tmp * tmp;
+                        tmp = genome[i] - xOpt[i];
+                        value += tmp * tmp;
                     }
                 switch (noise)
                     {
@@ -686,7 +686,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 value += fAdd;
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -698,44 +698,44 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 fAdd = fOpt;
                 if (noise == NONE)
                     {
-                    condition = 1e6;
-                    for (i = 0; i < genomeSize; i++)
-                        {
-                        tmx[i] = genome[i] - xOpt[i];
-                        }
+                        condition = 1e6;
+                        for (i = 0; i < genomeSize; i++)
+                            {
+                                tmx[i] = genome[i] - xOpt[i];
+                            }
                     }
                 else
                     {
-                    condition = 1e4;
-                    fAdd = fOpt;
+                        condition = 1e4;
+                        fAdd = fOpt;
 
-                    /* BOUNDARY HANDLING */
-                    for (i = 0; i < genomeSize; i++)
-                        {
-                        tmp = Math.abs(genome[i]) - 5.;
-                        if (tmp > 0.)
+                        /* BOUNDARY HANDLING */
+                        for (i = 0; i < genomeSize; i++)
                             {
-                            fPen += tmp * tmp;
+                                tmp = Math.abs(genome[i]) - 5.;
+                                if (tmp > 0.)
+                                    {
+                                        fPen += tmp * tmp;
+                                    }
                             }
-                        }
-                    fAdd += 100. * fPen;
+                        fAdd += 100. * fPen;
 
-                    /* TRANSFORMATION IN SEARCH SPACE */
-                    for (i = 0; i < genomeSize; i++)
-                        {
-                        tmx[i] = 0.;
-                        for (j = 0; j < genomeSize; j++)
+                        /* TRANSFORMATION IN SEARCH SPACE */
+                        for (i = 0; i < genomeSize; i++)
                             {
-                            tmx[i] += rotation[i][j] * (genome[j] - xOpt[j]);
+                                tmx[i] = 0.;
+                                for (j = 0; j < genomeSize; j++)
+                                    {
+                                        tmx[i] += rotation[i][j] * (genome[j] - xOpt[j]);
+                                    }
                             }
-                        }
                     }
 
                 monotoneTFosc(tmx);
                 /* COMPUTATION core */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    value += Math.pow(condition, ((double) i) / ((double) (genomeSize - 1))) * tmx[i] * tmx[i];
+                        value += Math.pow(condition, ((double) i) / ((double) (genomeSize - 1))) * tmx[i] * tmx[i];
                     }
 
                 switch (noise)
@@ -761,7 +761,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 value += fAdd;
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
 
@@ -772,30 +772,30 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 fAdd = fOpt;
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] = genome[i] - xOpt[i];
+                        tmx[i] = genome[i] - xOpt[i];
                     }
                 monotoneTFosc(tmx);
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp = ((double) i) / ((double) (genomeSize - 1));
-                    if (tmx[i] > 0)
-                        tmx[i] = Math.pow(tmx[i], 1 + beta * tmp * Math.sqrt(tmx[i]));
-                    tmx[i] = Math.pow(Math.sqrt(condition), tmp) * tmx[i];
+                        tmp = ((double) i) / ((double) (genomeSize - 1));
+                        if (tmx[i] > 0)
+                            tmx[i] = Math.pow(tmx[i], 1 + beta * tmp * Math.sqrt(tmx[i]));
+                        tmx[i] = Math.pow(Math.sqrt(condition), tmp) * tmx[i];
                     }
                 /* COMPUTATION core */
                 tmp = 0;
                 tmp2 = 0;
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp += Math.cos(2 * Math.PI * tmx[i]);
-                    tmp2 += tmx[i] * tmx[i];
+                        tmp += Math.cos(2 * Math.PI * tmx[i]);
+                        tmp2 += tmx[i] * tmx[i];
                     }
                 value = 10 * (genomeSize - tmp) + tmp2;
                 value += fAdd;
 
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -806,39 +806,39 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 fAdd = fOpt;
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp = Math.abs(genome[i]) - 5.;
-                    if (tmp > 0.)
-                        fPen += tmp * tmp;
+                        tmp = Math.abs(genome[i]) - 5.;
+                        if (tmp > 0.)
+                            fPen += tmp * tmp;
                     }
                 fPen *= 1e2;
                 fAdd += fPen;
 
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] = genome[i] - xOpt[i];
+                        tmx[i] = genome[i] - xOpt[i];
                     }
 
                 monotoneTFosc(tmx);
                 for (i = 0; i < genomeSize; i++)
                     {
-                    if (i % 2 == 0 && tmx[i] > 0)
-                        tmx[i] = Math.sqrt(alpha) * tmx[i];
-                    tmx[i] = Math.pow(Math.sqrt(condition), ((double) i) / ((double) (genomeSize - 1))) * tmx[i];
+                        if (i % 2 == 0 && tmx[i] > 0)
+                            tmx[i] = Math.sqrt(alpha) * tmx[i];
+                        tmx[i] = Math.pow(Math.sqrt(condition), ((double) i) / ((double) (genomeSize - 1))) * tmx[i];
                     }
                 /* COMPUTATION core */
                 tmp = 0.0;
                 tmp2 = 0.0;
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp += Math.cos(2 * Math.PI * tmx[i]);
-                    tmp2 += tmx[i] * tmx[i];
+                        tmp += Math.cos(2 * Math.PI * tmx[i]);
+                        tmp2 += tmx[i] * tmx[i];
                     }
                 value = 10 * (genomeSize - tmp) + tmp2;
                 value += fAdd;
 
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -850,31 +850,31 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* move "too" good coordinates back into domain */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    if ((xOpt[i] == 5.) && (genome[i] > 5))
-                        tmx[i] = 5.;
-                    else if ((xOpt[i] == -5.) && (genome[i] < -5))
-                        tmx[i] = -5.;
-                    else
-                        tmx[i] = genome[i];
+                        if ((xOpt[i] == 5.) && (genome[i] > 5))
+                            tmx[i] = 5.;
+                        else if ((xOpt[i] == -5.) && (genome[i] < -5))
+                            tmx[i] = -5.;
+                        else
+                            tmx[i] = genome[i];
                     }
 
                 /* COMPUTATION core */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    if (xOpt[i] > 0)
-                        {
-                        value -= Math.pow(Math.sqrt(alpha), ((double) i) / ((double) (genomeSize - 1))) * tmx[i];
-                        }
-                    else
-                        {
-                        value += Math.pow(Math.sqrt(alpha), ((double) i) / ((double) (genomeSize - 1))) * tmx[i];
-                        }
+                        if (xOpt[i] > 0)
+                            {
+                                value -= Math.pow(Math.sqrt(alpha), ((double) i) / ((double) (genomeSize - 1))) * tmx[i];
+                            }
+                        else
+                            {
+                                value += Math.pow(Math.sqrt(alpha), ((double) i) / ((double) (genomeSize - 1))) * tmx[i];
+                            }
                     }
                 value += fAdd;
 
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -888,35 +888,35 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 for (i = 0; i < genomeSize; i++)
                     {
 
-                    tmx[i] = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmx[i] += linearTF[i][j] * (genome[j] - xOpt[j]);
-                        }
+                        tmx[i] = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmx[i] += linearTF[i][j] * (genome[j] - xOpt[j]);
+                            }
                     }
 
                 /* COMPUTATION core */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    if (tmx[i] * xOpt[i] > 0)
-                        tmx[i] *= alpha;
-                    value += tmx[i] * tmx[i];
+                        if (tmx[i] * xOpt[i] > 0)
+                            tmx[i] *= alpha;
+                        value += tmx[i] * tmx[i];
                     }
 
                 /* monotoneTFosc... */
                 if (value > 0)
                     {
-                    value = Math.pow(Math.exp(Math.log(value) / 0.1 + 0.49 * (Math.sin(Math.log(value) / 0.1) + Math.sin(0.79 * Math.log(value) / 0.1))), 0.1);
+                        value = Math.pow(Math.exp(Math.log(value) / 0.1 + 0.49 * (Math.sin(Math.log(value) / 0.1) + Math.sin(0.79 * Math.log(value) / 0.1))), 0.1);
                     }
                 else if (value < 0)
                     {
-                    value = -Math.pow(Math.exp(Math.log(-value) / 0.1 + 0.49 * (Math.sin(0.55 * Math.log(-value) / 0.1) + Math.sin(0.31 * Math.log(-value) / 0.1))), 0.1);
+                        value = -Math.pow(Math.exp(Math.log(-value) / 0.1 + 0.49 * (Math.sin(0.55 * Math.log(-value) / 0.1) + Math.sin(0.31 * Math.log(-value) / 0.1))), 0.1);
                     }
                 value = Math.pow(value, 0.9);
                 value += fAdd;
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -928,11 +928,11 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* BOUNDARY HANDLING */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp = Math.abs(genome[i]) - 5.0;
-                    if (tmp > 0.0)
-                        {
-                        fPen += tmp * tmp;
-                        }
+                        tmp = Math.abs(genome[i]) - 5.0;
+                        if (tmp > 0.0)
+                            {
+                                fPen += tmp * tmp;
+                            }
                     }
                 if (noise == NONE)
                     fAdd += fPen;
@@ -943,37 +943,37 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 for (i = 0; i < genomeSize; i++)
                     {
 
-                    tmpvect[i] = 0.0;
-                    tmp = Math.sqrt(Math.pow(condition / 10., ((double) i) / ((double) (genomeSize - 1))));
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmpvect[i] += tmp * rot2[i][j] * (genome[j] - xOpt[j]);
-                        }
+                        tmpvect[i] = 0.0;
+                        tmp = Math.sqrt(Math.pow(condition / 10., ((double) i) / ((double) (genomeSize - 1))));
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmpvect[i] += tmp * rot2[i][j] * (genome[j] - xOpt[j]);
+                            }
 
                     }
                 x1 = tmpvect[0];
 
                 for (i = 0; i < genomeSize; i++)
                     {
-                    if (Math.abs(tmpvect[i]) > 0.5)
-                        tmpvect[i] = Math.round(tmpvect[i]);
-                    else
-                        tmpvect[i] = Math.round(alpha * tmpvect[i]) / alpha;
+                        if (Math.abs(tmpvect[i]) > 0.5)
+                            tmpvect[i] = Math.round(tmpvect[i]);
+                        else
+                            tmpvect[i] = Math.round(alpha * tmpvect[i]) / alpha;
                     }
 
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmx[i] += rotation[i][j] * tmpvect[j];
-                        }
+                        tmx[i] = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmx[i] += rotation[i][j] * tmpvect[j];
+                            }
                     }
 
                 /* COMPUTATION core */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    value += Math.pow(condition, ((double) i) / ((double) (genomeSize - 1))) * tmx[i] * tmx[i];
+                        value += Math.pow(condition, ((double) i) / ((double) (genomeSize - 1))) * tmx[i] * tmx[i];
                     }
                 value = 0.1 * Math.max(1e-4 * Math.abs(x1), value);
                 switch (noise)
@@ -999,7 +999,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 value += fAdd;
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -1008,42 +1008,42 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 fAdd = fOpt;
                 if (noise == NONE)
                     {
-                    /* TRANSFORMATION IN SEARCH SPACE */
-                    for (i = 0; i < genomeSize; i++)
-                        {
-                        tmx[i] = scales * (genome[i] - xOpt[i]) + 1;
-                        }
+                        /* TRANSFORMATION IN SEARCH SPACE */
+                        for (i = 0; i < genomeSize; i++)
+                            {
+                                tmx[i] = scales * (genome[i] - xOpt[i]) + 1;
+                            }
                     }
                 else
                     {
-                    /* BOUNDARY HANDLING */
-                    for (i = 0; i < genomeSize; i++)
-                        {
-                        tmp = Math.abs(genome[i]) - 5.;
-                        if (tmp > 0.)
+                        /* BOUNDARY HANDLING */
+                        for (i = 0; i < genomeSize; i++)
                             {
-                            fPen += tmp * tmp;
+                                tmp = Math.abs(genome[i]) - 5.;
+                                if (tmp > 0.)
+                                    {
+                                        fPen += tmp * tmp;
+                                    }
                             }
-                        }
-                    fAdd += 100.0 * fPen;
-                    /* TRANSFORMATION IN SEARCH SPACE */
-                    for (i = 0; i < genomeSize; i++)
-                        {
-                        tmx[i] = scales * (genome[i] - 0.75 * xOpt[i]) + 1;
-                        }
+                        fAdd += 100.0 * fPen;
+                        /* TRANSFORMATION IN SEARCH SPACE */
+                        for (i = 0; i < genomeSize; i++)
+                            {
+                                tmx[i] = scales * (genome[i] - 0.75 * xOpt[i]) + 1;
+                            }
                     }
 
                 /* COMPUTATION core */
                 for (i = 0; i < genomeSize - 1; i++)
                     {
-                    tmp = (tmx[i] * tmx[i] - tmx[i + 1]);
-                    value += tmp * tmp;
+                        tmp = (tmx[i] * tmx[i] - tmx[i + 1]);
+                        value += tmp * tmp;
                     }
                 value *= 1e2;
                 for (i = 0; i < genomeSize - 1; i++)
                     {
-                    tmp = (tmx[i] - 1.);
-                    value += tmp * tmp;
+                        tmp = (tmx[i] - 1.);
+                        value += tmp * tmp;
                     }
 
                 switch (noise)
@@ -1080,7 +1080,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
 
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
 
                         
                         
@@ -1094,30 +1094,30 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* TRANSFORMATION IN SEARCH SPACE */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] = 0.5;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmx[i] += linearTF[i][j] * genome[j];
-                        }
+                        tmx[i] = 0.5;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmx[i] += linearTF[i][j] * genome[j];
+                            }
                     }
 
                 /* COMPUTATION core */
                 for (i = 0; i < genomeSize - 1; i++)
                     {
-                    tmp = (tmx[i] * tmx[i] - tmx[i + 1]);
-                    value += tmp * tmp;
+                        tmp = (tmx[i] * tmx[i] - tmx[i + 1]);
+                        value += tmp * tmp;
                     }
                 value *= 1e2;
                 for (i = 0; i < genomeSize - 1; i++)
                     {
-                    tmp = (tmx[i] - 1.);
-                    value += tmp * tmp;
+                        tmp = (tmx[i] - 1.);
+                        value += tmp * tmp;
                     }
 
                 value += fAdd;
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -1131,23 +1131,23 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* TRANSFORMATION IN SEARCH SPACE */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmx[i] += rotation[i][j] * (genome[j] - xOpt[j]);
-                        }
+                        tmx[i] = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmx[i] += rotation[i][j] * (genome[j] - xOpt[j]);
+                            }
                     }
 
                 monotoneTFosc(tmx);
                 /* COMPUTATION core */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    fAdd += Math.pow(condition, ((double) i) / ((double) (genomeSize - 1))) * tmx[i] * tmx[i];
+                        fAdd += Math.pow(condition, ((double) i) / ((double) (genomeSize - 1))) * tmx[i] * tmx[i];
                     }
                 value = fAdd;
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -1160,11 +1160,11 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* TRANSFORMATION IN SEARCH SPACE */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmx[i] += rotation[i][j] * (genome[j] - xOpt[j]);
-                        }
+                        tmx[i] = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmx[i] += rotation[i][j] * (genome[j] - xOpt[j]);
+                            }
                     }
 
                 monotoneTFosc(tmx);
@@ -1173,12 +1173,12 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 value = condition * tmx[0] * tmx[0];
                 for (i = 1; i < genomeSize; i++)
                     {
-                    value += tmx[i] * tmx[i];
+                        value += tmx[i] * tmx[i];
                     }
                 value += fAdd; /* without noise */
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -1192,36 +1192,36 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* TRANSFORMATION IN SEARCH SPACE */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmpvect[i] = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmpvect[i] += rotation[i][j] * (genome[j] - xOpt[j]);
-                        }
-                    if (tmpvect[i] > 0)
-                        {
-                        tmpvect[i] = Math.pow(tmpvect[i], 1 + beta * ((double) i) / ((double) (genomeSize - 1)) * Math.sqrt(tmpvect[i]));
-                        }
+                        tmpvect[i] = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmpvect[i] += rotation[i][j] * (genome[j] - xOpt[j]);
+                            }
+                        if (tmpvect[i] > 0)
+                            {
+                                tmpvect[i] = Math.pow(tmpvect[i], 1 + beta * ((double) i) / ((double) (genomeSize - 1)) * Math.sqrt(tmpvect[i]));
+                            }
                     }
 
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmx[i] += rotation[i][j] * tmpvect[j];
-                        }
+                        tmx[i] = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmx[i] += rotation[i][j] * tmpvect[j];
+                            }
                     }
 
                 /* COMPUTATION core */
                 value = tmx[0] * tmx[0];
                 for (i = 1; i < genomeSize; i++)
                     {
-                    value += condition * tmx[i] * tmx[i];
+                        value += condition * tmx[i] * tmx[i];
                     }
                 value += fAdd;
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -1236,24 +1236,24 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* TRANSFORMATION IN SEARCH SPACE */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmx[i] += linearTF[i][j] * (genome[j] - xOpt[j]);
-                        }
+                        tmx[i] = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmx[i] += linearTF[i][j] * (genome[j] - xOpt[j]);
+                            }
                     }
 
                 /* COMPUTATION core */
                 for (i = 1; i < genomeSize; i++)
                     {
-                    value += tmx[i] * tmx[i];
+                        value += tmx[i] * tmx[i];
                     }
                 value = alpha * Math.sqrt(value);
                 value += tmx[0] * tmx[0];
                 value += fAdd;
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -1263,32 +1263,32 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 fAdd = fOpt;
                 if (noise != NONE)
                     {
-                    /* BOUNDARY HANDLING */
-                    for (i = 0; i < genomeSize; i++)
-                        {
-                        tmp = Math.abs(genome[i]) - 5.;
-                        if (tmp > 0.)
+                        /* BOUNDARY HANDLING */
+                        for (i = 0; i < genomeSize; i++)
                             {
-                            fPen += tmp * tmp;
+                                tmp = Math.abs(genome[i]) - 5.;
+                                if (tmp > 0.)
+                                    {
+                                        fPen += tmp * tmp;
+                                    }
                             }
-                        }
-                    fAdd += 100. * fPen;
+                        fAdd += 100. * fPen;
                     }
 
                 /* TRANSFORMATION IN SEARCH SPACE */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmx[i] += rotation[i][j] * (genome[j] - xOpt[j]);
-                        }
+                        tmx[i] = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmx[i] += rotation[i][j] * (genome[j] - xOpt[j]);
+                            }
                     }
 
                 /* COMPUTATION core */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    value += Math.pow(Math.abs(tmx[i]), 2. + alpha * ((double) i) / ((double) (genomeSize - 1)));
+                        value += Math.pow(Math.abs(tmx[i]), 2. + alpha * ((double) i) / ((double) (genomeSize - 1)));
                     }
                 value = Math.sqrt(value);
                 switch (noise)
@@ -1314,7 +1314,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 value += fAdd;
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -1330,38 +1330,38 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* TRANSFORMATION IN SEARCH SPACE */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmpvect[i] = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmpvect[i] += rotation[i][j] * (genome[j] - xOpt[j]);
-                        }
+                        tmpvect[i] = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmpvect[i] += rotation[i][j] * (genome[j] - xOpt[j]);
+                            }
                     }
 
                 monotoneTFosc(tmpvect);
                 for (i = 0; i < genomeSize; i++)
                     {
-                    if (tmpvect[i] > 0)
-                        tmpvect[i] = Math.pow(tmpvect[i], 1 + beta * ((double) i) / ((double) (genomeSize - 1)) * Math.sqrt(tmpvect[i]));
+                        if (tmpvect[i] > 0)
+                            tmpvect[i] = Math.pow(tmpvect[i], 1 + beta * ((double) i) / ((double) (genomeSize - 1)) * Math.sqrt(tmpvect[i]));
                     }
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmx[i] += linearTF[i][j] * tmpvect[j];
-                        }
+                        tmx[i] = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmx[i] += linearTF[i][j] * tmpvect[j];
+                            }
                     }
                 /* COMPUTATION core */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp += Math.cos(2. * Math.PI * tmx[i]);
-                    tmp2 += tmx[i] * tmx[i];
+                        tmp += Math.cos(2. * Math.PI * tmx[i]);
+                        tmp2 += tmx[i] * tmx[i];
                     }
                 value = 10. * ((double) genomeSize - tmp) + tmp2;
                 value += fAdd;
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -1375,42 +1375,42 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* BOUNDARY HANDLING */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp = Math.abs(genome[i]) - 5.;
-                    if (tmp > 0.)
-                        {
-                        fPen += tmp * tmp;
-                        }
+                        tmp = Math.abs(genome[i]) - 5.;
+                        if (tmp > 0.)
+                            {
+                                fPen += tmp * tmp;
+                            }
                     }
                 fAdd += 10. / (double) genomeSize * fPen;
 
                 /* TRANSFORMATION IN SEARCH SPACE */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmpvect[i] = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmpvect[i] += rotation[i][j] * (genome[j] - xOpt[j]);
-                        }
+                        tmpvect[i] = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmpvect[i] += rotation[i][j] * (genome[j] - xOpt[j]);
+                            }
                     }
 
                 monotoneTFosc(tmpvect);
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmx[i] += linearTF[i][j] * tmpvect[j];
-                        }
+                        tmx[i] = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmx[i] += linearTF[i][j] * tmpvect[j];
+                            }
                     }
                 /* COMPUTATION core */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp = 0.0;
-                    for (j = 0; j < 12; j++)
-                        {
-                        tmp += Math.cos(2 * Math.PI * (tmx[i] + 0.5) * bK[j]) * aK[j];
-                        }
-                    value += tmp;
+                        tmp = 0.0;
+                        for (j = 0; j < 12; j++)
+                            {
+                                tmp += Math.cos(2 * Math.PI * (tmx[i] + 0.5) * bK[j]) * aK[j];
+                            }
+                        value += tmp;
                     }
                 value = 10. * Math.pow(value / (double) genomeSize - f0, 3.);
                 value += fAdd;
@@ -1418,7 +1418,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
 
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -1434,41 +1434,41 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* BOUNDARY HANDLING */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp = Math.abs(genome[i]) - 5.;
-                    if (tmp > 0.)
-                        {
-                        fPen += tmp * tmp;
-                        }
+                        tmp = Math.abs(genome[i]) - 5.;
+                        if (tmp > 0.)
+                            {
+                                fPen += tmp * tmp;
+                            }
                     }
                 fAdd += 10. * fPen;
 
                 /* TRANSFORMATION IN SEARCH SPACE */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmpvect[i] = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmpvect[i] += rotation[i][j] * (genome[j] - xOpt[j]);
-                        }
-                    if (tmpvect[i] > 0)
-                        tmpvect[i] = Math.pow(tmpvect[i], 1 + beta * ((double) i) / ((double) (genomeSize - 1)) * Math.sqrt(tmpvect[i]));
+                        tmpvect[i] = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmpvect[i] += rotation[i][j] * (genome[j] - xOpt[j]);
+                            }
+                        if (tmpvect[i] > 0)
+                            tmpvect[i] = Math.pow(tmpvect[i], 1 + beta * ((double) i) / ((double) (genomeSize - 1)) * Math.sqrt(tmpvect[i]));
                     }
 
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] = 0.0;
-                    tmp = Math.pow(Math.sqrt(condition), ((double) i) / ((double) (genomeSize - 1)));
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmx[i] += tmp * rot2[i][j] * tmpvect[j];
-                        }
+                        tmx[i] = 0.0;
+                        tmp = Math.pow(Math.sqrt(condition), ((double) i) / ((double) (genomeSize - 1)));
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmx[i] += tmp * rot2[i][j] * tmpvect[j];
+                            }
                     }
 
                 /* COMPUTATION core */
                 for (i = 0; i < genomeSize - 1; i++)
                     {
-                    tmp = tmx[i] * tmx[i] + tmx[i + 1] * tmx[i + 1];
-                    value += Math.pow(tmp, 0.25) * (Math.pow(Math.sin(50 * Math.pow(tmp, 0.1)), 2.0) + 1.0);
+                        tmp = tmx[i] * tmx[i] + tmx[i + 1] * tmx[i + 1];
+                        value += Math.pow(tmp, 0.25) * (Math.pow(Math.sin(50 * Math.pow(tmp, 0.1)), 2.0) + 1.0);
                     }
                 value = Math.pow(value / (double) (genomeSize - 1), 2.);
                 switch (noise)
@@ -1494,7 +1494,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 value += fAdd;
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -1510,47 +1510,47 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* BOUNDARY HANDLING */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp = Math.abs(genome[i]) - 5.;
-                    if (tmp > 0.)
-                        {
-                        fPen += tmp * tmp;
-                        }
+                        tmp = Math.abs(genome[i]) - 5.;
+                        if (tmp > 0.)
+                            {
+                                fPen += tmp * tmp;
+                            }
                     }
                 fAdd += 10. * fPen;
 
                 /* TRANSFORMATION IN SEARCH SPACE */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmpvect[i] = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmpvect[i] += rotation[i][j] * (genome[j] - xOpt[j]);
-                        }
-                    if (tmpvect[i] > 0)
-                        tmpvect[i] = Math.pow(tmpvect[i], 1. + beta * ((double) i) / ((double) (genomeSize - 1)) * Math.sqrt(tmpvect[i]));
+                        tmpvect[i] = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmpvect[i] += rotation[i][j] * (genome[j] - xOpt[j]);
+                            }
+                        if (tmpvect[i] > 0)
+                            tmpvect[i] = Math.pow(tmpvect[i], 1. + beta * ((double) i) / ((double) (genomeSize - 1)) * Math.sqrt(tmpvect[i]));
                     }
 
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] = 0.0;
-                    tmp = Math.pow(Math.sqrt(condition), ((double) i) / ((double) (genomeSize - 1)));
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmx[i] += tmp * rot2[i][j] * tmpvect[j];
-                        }
+                        tmx[i] = 0.0;
+                        tmp = Math.pow(Math.sqrt(condition), ((double) i) / ((double) (genomeSize - 1)));
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmx[i] += tmp * rot2[i][j] * tmpvect[j];
+                            }
                     }
 
                 /* COMPUTATION core */
                 for (i = 0; i < genomeSize - 1; i++)
                     {
-                    tmp = tmx[i] * tmx[i] + tmx[i + 1] * tmx[i + 1];
-                    value += Math.pow(tmp, 0.25) * (Math.pow(Math.sin(50. * Math.pow(tmp, 0.1)), 2.) + 1.);
+                        tmp = tmx[i] * tmx[i] + tmx[i + 1] * tmx[i + 1];
+                        value += Math.pow(tmp, 0.25) * (Math.pow(Math.sin(50. * Math.pow(tmp, 0.1)), 2.) + 1.);
                     }
                 value = Math.pow(value / (double) (genomeSize - 1), 2.);
                 value += fAdd;
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -1559,56 +1559,56 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 fAdd = fOpt;
                 if (noise == NONE)
                     {
-                    /* TRANSFORMATION IN SEARCH SPACE */
-                    for (i = 0; i < genomeSize; i++)
-                        {
-                        tmx[i] = 0.5;
-                        for (j = 0; j < genomeSize; j++)
+                        /* TRANSFORMATION IN SEARCH SPACE */
+                        for (i = 0; i < genomeSize; i++)
                             {
-                            tmx[i] += linearTF[i][j] * genome[j];
+                                tmx[i] = 0.5;
+                                for (j = 0; j < genomeSize; j++)
+                                    {
+                                        tmx[i] += linearTF[i][j] * genome[j];
+                                    }
                             }
-                        }
-                    /* COMPUTATION core */
-                    for (i = 0; i < genomeSize - 1; i++)
-                        {
-                        tmp2 = tmx[i] * tmx[i] - tmx[i + 1];
-                        f2 = 100. * tmp2 * tmp2;
-                        tmp2 = 1 - tmx[i];
-                        f2 += tmp2 * tmp2;
-                        tmp += f2 / 4000. - Math.cos(f2);
-                        }
-                    value = 10. + 10. * tmp / (double) (genomeSize - 1);
+                        /* COMPUTATION core */
+                        for (i = 0; i < genomeSize - 1; i++)
+                            {
+                                tmp2 = tmx[i] * tmx[i] - tmx[i + 1];
+                                f2 = 100. * tmp2 * tmp2;
+                                tmp2 = 1 - tmx[i];
+                                f2 += tmp2 * tmp2;
+                                tmp += f2 / 4000. - Math.cos(f2);
+                            }
+                        value = 10. + 10. * tmp / (double) (genomeSize - 1);
                     }
                 else
                     {
-                    /* BOUNDARY HANDLING */
-                    for (i = 0; i < genomeSize; i++)
-                        {
-                        tmp = Math.abs(genome[i]) - 5.0;
-                        if (tmp > 0.0)
+                        /* BOUNDARY HANDLING */
+                        for (i = 0; i < genomeSize; i++)
                             {
-                            fPen += tmp * tmp;
+                                tmp = Math.abs(genome[i]) - 5.0;
+                                if (tmp > 0.0)
+                                    {
+                                        fPen += tmp * tmp;
+                                    }
                             }
-                        }
-                    fAdd += 100.0 * fPen;
+                        fAdd += 100.0 * fPen;
 
-                    /* TRANSFORMATION IN SEARCH SPACE */
-                    for (i = 0; i < genomeSize; i++)
-                        {
-                        tmx[i] = 0.5;
-                        for (j = 0; j < genomeSize; j++)
+                        /* TRANSFORMATION IN SEARCH SPACE */
+                        for (i = 0; i < genomeSize; i++)
                             {
-                            tmx[i] += scales * rotation[i][j] * genome[j];
+                                tmx[i] = 0.5;
+                                for (j = 0; j < genomeSize; j++)
+                                    {
+                                        tmx[i] += scales * rotation[i][j] * genome[j];
+                                    }
                             }
-                        }
-                    /* COMPUTATION core */
-                    tmp = 0.;
-                    for (i = 0; i < genomeSize - 1; i++)
-                        {
-                        f2 = 100. * (tmx[i] * tmx[i] - tmx[i + 1]) * (tmx[i] * tmx[i] - tmx[i + 1]) + (1 - tmx[i]) * (1 - tmx[i]);
-                        tmp += f2 / 4000. - Math.cos(f2);
-                        }
-                    value = 1. + 1. * tmp / (double) (genomeSize - 1);
+                        /* COMPUTATION core */
+                        tmp = 0.;
+                        for (i = 0; i < genomeSize - 1; i++)
+                            {
+                                f2 = 100. * (tmx[i] * tmx[i] - tmx[i + 1]) * (tmx[i] * tmx[i] - tmx[i + 1]) + (1 - tmx[i]) * (1 - tmx[i]);
+                                tmp += f2 / 4000. - Math.cos(f2);
+                            }
+                        value = 1. + 1. * tmp / (double) (genomeSize - 1);
                     }
                 switch (noise)
                     {
@@ -1633,7 +1633,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 value += fAdd;
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -1646,45 +1646,45 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* TRANSFORMATION IN SEARCH SPACE */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmpvect[i] = 2. * genome[i];
-                    if (xOpt[i] < 0.)
-                        tmpvect[i] *= -1.;
+                        tmpvect[i] = 2. * genome[i];
+                        if (xOpt[i] < 0.)
+                            tmpvect[i] *= -1.;
                     }
 
                 tmx[0] = tmpvect[0];
                 for (i = 1; i < genomeSize; i++)
                     {
-                    tmx[i] = tmpvect[i] + 0.25 * (tmpvect[i - 1] - 2. * Math.abs(xOpt[i - 1]));
+                        tmx[i] = tmpvect[i] + 0.25 * (tmpvect[i - 1] - 2. * Math.abs(xOpt[i - 1]));
                     }
 
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] -= 2 * Math.abs(xOpt[i]);
-                    tmx[i] *= Math.pow(Math.sqrt(condition), ((double) i) / ((double) (genomeSize - 1)));
-                    tmx[i] = 100. * (tmx[i] + 2 * Math.abs(xOpt[i]));
+                        tmx[i] -= 2 * Math.abs(xOpt[i]);
+                        tmx[i] *= Math.pow(Math.sqrt(condition), ((double) i) / ((double) (genomeSize - 1)));
+                        tmx[i] = 100. * (tmx[i] + 2 * Math.abs(xOpt[i]));
                     }
 
                 /* BOUNDARY HANDLING */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp = Math.abs(tmx[i]) - 500.0;
-                    if (tmp > 0.)
-                        {
-                        fPen += tmp * tmp;
-                        }
+                        tmp = Math.abs(tmx[i]) - 500.0;
+                        if (tmp > 0.)
+                            {
+                                fPen += tmp * tmp;
+                            }
                     }
                 fAdd += 0.01 * fPen;
 
                 /* COMPUTATION core */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    value += tmx[i] * Math.sin(Math.sqrt(Math.abs(tmx[i])));
+                        value += tmx[i] * Math.sin(Math.sqrt(Math.abs(tmx[i])));
                     }
                 value = 0.01 * ((418.9828872724339) - value / (double) genomeSize);
                 value += fAdd;/* without noise */
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -1700,11 +1700,11 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* BOUNDARY HANDLING */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp = Math.abs(genome[i]) - 5.;
-                    if (tmp > 0.)
-                        {
-                        fPen += tmp * tmp;
-                        }
+                        tmp = Math.abs(genome[i]) - 5.;
+                        if (tmp > 0.)
+                            {
+                                fPen += tmp * tmp;
+                            }
                     }
                 if (noise == NONE)
                     fAdd += fPen;
@@ -1714,50 +1714,50 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* TRANSFORMATION IN SEARCH SPACE */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmx[i] += rotation[i][j] * genome[j];
-                        }
+                        tmx[i] = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmx[i] += rotation[i][j] * genome[j];
+                            }
                     }
 
                 /* COMPUTATION core */
                 if (noise == NONE)
                     for (i = 0; i < NHIGHPEAKS21; i++)
                         {
-                        tmp2 = 0.0;
-                        for (j = 0; j < genomeSize; j++)
-                            {
-                            tmp = (tmx[j] - xLocal[j][i]);
-                            tmp2 += arrScales[i][j] * tmp * tmp;
-                            }
-                        tmp2 = peakvalues[i] * Math.exp(fac * tmp2);
-                        f = Math.max(f, tmp2);
+                            tmp2 = 0.0;
+                            for (j = 0; j < genomeSize; j++)
+                                {
+                                    tmp = (tmx[j] - xLocal[j][i]);
+                                    tmp2 += arrScales[i][j] * tmp * tmp;
+                                }
+                            tmp2 = peakvalues[i] * Math.exp(fac * tmp2);
+                            f = Math.max(f, tmp2);
                         }
                 else
                     /* COMPUTATION core */
                     for (i = 0; i < NHIGHPEAKS21; i++)
                         {
-                        tmp2 = 0.;
-                        for (j = 0; j < genomeSize; j++)
-                            {
-                            tmp2 += arrScales[i][j] * (tmx[j] - xLocal[j][i]) * (tmx[j] - xLocal[j][i]);
-                            }
-                        tmp2 = peakvalues[i] * Math.exp(fac * tmp2);
-                        f = Math.max(f, tmp2);
+                            tmp2 = 0.;
+                            for (j = 0; j < genomeSize; j++)
+                                {
+                                    tmp2 += arrScales[i][j] * (tmx[j] - xLocal[j][i]) * (tmx[j] - xLocal[j][i]);
+                                }
+                            tmp2 = peakvalues[i] * Math.exp(fac * tmp2);
+                            f = Math.max(f, tmp2);
                         }
 
                 f = 10.0 - f;
                 /* monotoneTFosc */
                 if (f > 0)
                     {
-                    value = Math.log(f) / a;
-                    value = Math.pow(Math.exp(value + 0.49 * (Math.sin(value) + Math.sin(0.79 * value))), a);
+                        value = Math.log(f) / a;
+                        value = Math.pow(Math.exp(value + 0.49 * (Math.sin(value) + Math.sin(0.79 * value))), a);
                     }
                 else if (f < 0)
                     {
-                    value = Math.log(-f) / a;
-                    value = -Math.pow(Math.exp(value + 0.49 * (Math.sin(0.55 * value) + Math.sin(0.31 * value))), a);
+                        value = Math.log(-f) / a;
+                        value = -Math.pow(Math.exp(value + 0.49 * (Math.sin(0.55 * value) + Math.sin(0.31 * value))), a);
                     }
                 else
                     value = f;
@@ -1788,7 +1788,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
 
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -1807,47 +1807,47 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* BOUNDARY HANDLING */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp = Math.abs(genome[i]) - 5.;
-                    if (tmp > 0.)
-                        {
-                        fPen += tmp * tmp;
-                        }
+                        tmp = Math.abs(genome[i]) - 5.;
+                        if (tmp > 0.)
+                            {
+                                fPen += tmp * tmp;
+                            }
                     }
                 fAdd += fPen;
 
                 /* TRANSFORMATION IN SEARCH SPACE */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmx[i] += rotation[i][j] * genome[j];
-                        }
+                        tmx[i] = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmx[i] += rotation[i][j] * genome[j];
+                            }
                     }
 
                 /* COMPUTATION core */
                 for (i = 0; i < NHIGHPEAKS22; i++)
                     {
-                    tmp2 = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmp = (tmx[j] - xLocal[j][i]);
-                        tmp2 += arrScales[i][j] * tmp * tmp;
-                        }
-                    tmp2 = peakvalues[i] * Math.exp(fac * tmp2);
-                    f = Math.max(f, tmp2);
+                        tmp2 = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmp = (tmx[j] - xLocal[j][i]);
+                                tmp2 += arrScales[i][j] * tmp * tmp;
+                            }
+                        tmp2 = peakvalues[i] * Math.exp(fac * tmp2);
+                        f = Math.max(f, tmp2);
                     }
 
                 f = 10. - f;
                 if (f > 0)
                     {
-                    value = Math.log(f) / a;
-                    value = Math.pow(Math.exp(value + 0.49 * (Math.sin(value) + Math.sin(0.79 * value))), a);
+                        value = Math.log(f) / a;
+                        value = Math.pow(Math.exp(value + 0.49 * (Math.sin(value) + Math.sin(0.79 * value))), a);
                     }
                 else if (f < 0)
                     {
-                    value = Math.log(-f) / a;
-                    value = -Math.pow(Math.exp(value + 0.49 * (Math.sin(0.55 * value) + Math.sin(0.31 * value))), a);
+                        value = Math.log(-f) / a;
+                        value = -Math.pow(Math.exp(value + 0.49 * (Math.sin(0.55 * value) + Math.sin(0.31 * value))), a);
                     }
                 else
                     value = f;
@@ -1858,7 +1858,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
 
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -1878,11 +1878,11 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* BOUNDARY HANDLING */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp = Math.abs(genome[i]) - 5.;
-                    if (tmp > 0.)
-                        {
-                        fPen += tmp * tmp;
-                        }
+                        tmp = Math.abs(genome[i]) - 5.;
+                        if (tmp > 0.)
+                            {
+                                fPen += tmp * tmp;
+                            }
                     }
                 fAdd += fPen;
 
@@ -1893,15 +1893,15 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                     tmpvect[j] = genome[j] - xOpt[j];
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] = 0.0;
-                    ptmx = tmx;
-                    plinTF = linearTF[i];
-                    ptmp = tmpvect;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        // *ptmx += *plinTF++ * *ptmp++;
-                        ptmx[j] += plinTF[j] * ptmp[j];
-                        }
+                        tmx[i] = 0.0;
+                        ptmx = tmx;
+                        plinTF = linearTF[i];
+                        ptmp = tmpvect;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                // *ptmx += *plinTF++ * *ptmp++;
+                                ptmx[j] += plinTF[j] * ptmp[j];
+                            }
                     }
 
                 /*
@@ -1913,21 +1913,21 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* COMPUTATION core */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp = 0.0;
-                    for (j = 1; j < 33; j++)
-                        {
-                        tmp2 = Math.pow(2., (double) j);
-                        arr = tmx[i] * tmp2;
-                        tmp += Math.abs(arr - Math.round(arr)) / tmp2;
-                        }
-                    tmp = 1. + tmp * (double) (i + 1);
-                    prod *= tmp;
+                        tmp = 0.0;
+                        for (j = 1; j < 33; j++)
+                            {
+                                tmp2 = Math.pow(2., (double) j);
+                                arr = tmx[i] * tmp2;
+                                tmp += Math.abs(arr - Math.round(arr)) / tmp2;
+                            }
+                        tmp = 1. + tmp * (double) (i + 1);
+                        prod *= tmp;
                     }
                 value = 10. / (double) genomeSize / (double) genomeSize * (-1. + Math.pow(prod, 10. / Math.pow((double) genomeSize, 1.2)));
                 value += fAdd;
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
                         
                         
                         
@@ -1948,52 +1948,52 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 /* BOUNDARY HANDLING */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp = Math.abs(genome[i]) - 5.;
-                    if (tmp > 0.)
-                        {
-                        fPen += tmp * tmp;
-                        }
+                        tmp = Math.abs(genome[i]) - 5.;
+                        if (tmp > 0.)
+                            {
+                                fPen += tmp * tmp;
+                            }
                     }
                 fAdd += 1e4 * fPen;
 
                 /* TRANSFORMATION IN SEARCH SPACE */
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmx[i] = 2. * genome[i];
-                    if (xOpt[i] < 0.)
-                        tmx[i] *= -1.;
+                        tmx[i] = 2. * genome[i];
+                        if (xOpt[i] < 0.)
+                            tmx[i] *= -1.;
                     }
 
                 /* COMPUTATION core */
                 tmp = 0.0;
                 for (i = 0; i < genomeSize; i++)
                     {
-                    tmp2 += (tmx[i] - mu1) * (tmx[i] - mu1);
-                    tmp3 += (tmx[i] - mu2) * (tmx[i] - mu2);
-                    tmp4 = 0.0;
-                    for (j = 0; j < genomeSize; j++)
-                        {
-                        tmp4 += linearTF[i][j] * (tmx[j] - mu1);
-                        }
-                    tmp += Math.cos(2 * Math.PI * tmp4);
+                        tmp2 += (tmx[i] - mu1) * (tmx[i] - mu1);
+                        tmp3 += (tmx[i] - mu2) * (tmx[i] - mu2);
+                        tmp4 = 0.0;
+                        for (j = 0; j < genomeSize; j++)
+                            {
+                                tmp4 += linearTF[i][j] * (tmx[j] - mu1);
+                            }
+                        tmp += Math.cos(2 * Math.PI * tmp4);
                     }
                 value = Math.min(tmp2, d * (double) genomeSize + s * tmp3) + 10. * ((double) genomeSize - tmp);
                 value += fAdd;
                 fit = (-value);
                 ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-            break;
+                break;
             default:
                 break;
             }
             
         ind.evaluated = true;
-        }
+    }
 
 
     final static public double TOL = 1e-8;
 
     void gauss(double[] g, MersenneTwisterFast random)
-        {
+    {
         /*
          * samples N standard normally distributed numbers being the same for a
          * given seed.
@@ -2005,15 +2005,15 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
         for (i = 0; i < g.length; i++)
             {
 
-            g[i] = Math.sqrt(-2 * Math.log(uniftmp[i])) * Math.cos(2 * Math.PI * uniftmp[g.length + i]);
-            if (g[i] == 0.0)
-                g[i] = 1e-99;
+                g[i] = Math.sqrt(-2 * Math.log(uniftmp[i])) * Math.cos(2 * Math.PI * uniftmp[g.length + i]);
+                if (g[i] == 0.0)
+                    g[i] = 1e-99;
             }
         return;
-        }
+    }
 
     void gauss(double[] g, MersenneTwisterFast random, int n)
-        {
+    {
         /*
          * samples N standard normally distributed numbers being the same for a
          * given seed.
@@ -2024,60 +2024,60 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
             uniftmp[i] = nextDoubleClosedInterval(random);
         for (i = 0; i < n; i++)
             {
-            g[i] = Math.sqrt(-2 * Math.log(uniftmp[i])) * Math.cos(2 * Math.PI * uniftmp[n + i]);
-            if (g[i] == 0.0)
-                g[i] = 1e-99;
+                g[i] = Math.sqrt(-2 * Math.log(uniftmp[i])) * Math.cos(2 * Math.PI * uniftmp[n + i]);
+                if (g[i] == 0.0)
+                    g[i] = 1e-99;
             }
         return;
-        }
+    }
 
     void computeXopt(double[] xOpt, MersenneTwisterFast random)
-        {
+    {
         int i;
         int n = xOpt.length;
         for (i = 0; i < n; i++)
             {
-            xOpt[i] = 8 * (int) Math.floor(1e4 * nextDoubleClosedInterval(random)) / 1e4 - 4;
-            if (xOpt[i] == 0.0)
-                xOpt[i] = -1e-5;
+                xOpt[i] = 8 * (int) Math.floor(1e4 * nextDoubleClosedInterval(random)) / 1e4 - 4;
+                if (xOpt[i] == 0.0)
+                    xOpt[i] = -1e-5;
             }
-        }
+    }
 
     void monotoneTFosc(double[] f)
-        {
+    {
         double a = 0.1;
         int i;
         int n = f.length;
         for (i = 0; i < n; i++)
             {
-            if (f[i] > 0)
-                {
-                f[i] = Math.log(f[i]) / a;
-                f[i] = Math.pow(Math.exp(f[i] + 0.49 * (Math.sin(f[i]) + Math.sin(0.79 * f[i]))), a);
-                }
-            else if (f[i] < 0)
-                {
-                f[i] = Math.log(-f[i]) / a;
-                f[i] = -Math.pow(Math.exp(f[i] + 0.49 * (Math.sin(0.55 * f[i]) + Math.sin(0.31 * f[i]))), a);
-                }
+                if (f[i] > 0)
+                    {
+                        f[i] = Math.log(f[i]) / a;
+                        f[i] = Math.pow(Math.exp(f[i] + 0.49 * (Math.sin(f[i]) + Math.sin(0.79 * f[i]))), a);
+                    }
+                else if (f[i] < 0)
+                    {
+                        f[i] = Math.log(-f[i]) / a;
+                        f[i] = -Math.pow(Math.exp(f[i] + 0.49 * (Math.sin(0.55 * f[i]) + Math.sin(0.31 * f[i]))), a);
+                    }
             }
-        }
+    }
 
     double[][] reshape(double[][] b, double[] vector, int m, int n)
-        {
+    {
         int i, j;
         for (i = 0; i < m; i++)
             {
-            for (j = 0; j < n; j++)
-                {
-                b[i][j] = vector[j * m + i];
-                }
+                for (j = 0; j < n; j++)
+                    {
+                        b[i][j] = vector[j * m + i];
+                    }
             }
         return b;
-        }
+    }
 
     void computeRotation(double[][] b, MersenneTwisterFast random, int genomeSize)
-        {
+    {
         double[] gvect = new double[genomeSize * genomeSize];
         double prod;
         int i, j, k; /* Loop over pairs of column vectors */
@@ -2088,54 +2088,54 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
 
         for (i = 0; i < genomeSize; i++)
             {
-            for (j = 0; j < i; j++)
-                {
+                for (j = 0; j < i; j++)
+                    {
+                        prod = 0;
+                        for (k = 0; k < genomeSize; k++)
+                            {
+                                prod += b[k][i] * b[k][j];
+                            }
+                        for (k = 0; k < genomeSize; k++)
+                            {
+                                b[k][i] -= prod * b[k][j];
+                            }
+                    }
                 prod = 0;
                 for (k = 0; k < genomeSize; k++)
                     {
-                    prod += b[k][i] * b[k][j];
+                        prod += b[k][i] * b[k][i];
                     }
                 for (k = 0; k < genomeSize; k++)
                     {
-                    b[k][i] -= prod * b[k][j];
+                        b[k][i] /= Math.sqrt(prod);
                     }
-                }
-            prod = 0;
-            for (k = 0; k < genomeSize; k++)
-                {
-                prod += b[k][i] * b[k][i];
-                }
-            for (k = 0; k < genomeSize; k++)
-                {
-                b[k][i] /= Math.sqrt(prod);
-                }
             }
-        }
+    }
 
     double fGauss(double fTrue, double beta, MersenneTwisterFast random)
-        {
+    {
         double fVal = fTrue * Math.exp(beta * nextDoubleClosedInterval(random));
         fVal += 1.01 * TOL;
         if (fTrue < TOL)
             {
-            fVal = fTrue;
+                fVal = fTrue;
             }
         return fVal;
-        }
+    }
 
     double fUniform(double fTrue, double alpha, double beta, MersenneTwisterFast random)
-        {
+    {
         double fVal = Math.pow(nextDoubleClosedInterval(random), beta) * fTrue * Math.max(1.0, Math.pow(1e9 / (fTrue + 1e-99), alpha * nextDoubleClosedInterval(random)));
         fVal += 1.01 * TOL;
         if (fTrue < TOL)
             {
-            fVal = fTrue;
+                fVal = fTrue;
             }
         return fVal;
-        }
+    }
 
     double fCauchy(double fTrue, double alpha, double p, MersenneTwisterFast random)
-        {
+    {
         double fVal;
         double tmp = nextDoubleClosedInterval(random) / Math.abs(nextDoubleClosedInterval(random) + 1e-199);
         /*
@@ -2150,25 +2150,25 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
         fVal += 1.01 * TOL;
         if (fTrue < TOL)
             {
-            fVal = fTrue;
+                fVal = fTrue;
             }
         return fVal;
-        }
+    }
 
     double computeFopt(MersenneTwisterFast random)
-        {
+    {
         double[] gval = new double[1];
         double[] gval2 = new double[1];
         gauss(gval, random, 1);
         gauss(gval2, random, 1);
         return Math.min(1000.0, Math.max(-1000.0, (Math.round(100.0 * 100.0 * gval[0] / gval2[0]) / 100.0)));
-        }
+    }
 
     double nextDoubleClosedInterval(MersenneTwisterFast random)
-        {
+    {
         double tmp = random.nextDouble() * 2.0;
         while (tmp > 1.0)
             tmp = random.nextDouble() * 2.0;
         return tmp;
-        }
     }
+}

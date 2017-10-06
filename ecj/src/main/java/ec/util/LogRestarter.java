@@ -27,7 +27,7 @@ import java.io.Serializable;
  */
 
 public abstract class LogRestarter implements Serializable
-    {
+{
     /* recreate the writer for, and properly reopen a log
        upon a system restart from a checkpoint */
     public abstract Log restart(Log l) throws IOException;
@@ -36,4 +36,4 @@ public abstract class LogRestarter implements Serializable
        if that' appropriate for this kind of log.  Otherwise,
        don't do anything. */
     public abstract Log reopen(Log l) throws IOException;
-    }
+}

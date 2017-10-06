@@ -25,16 +25,16 @@ import ec.*;
  */
 
 public interface SimpleProblemForm
-    {
+{
     /** Evaluates the individual in ind, if necessary (perhaps
         not evaluating them if their evaluated flags are true),
         and sets their fitness appropriately. 
     */
 
     public void evaluate(final EvolutionState state,
-        final Individual ind,
-        final int subpopulation,
-        final int threadnum);
+                         final Individual ind,
+                         final int subpopulation,
+                         final int threadnum);
 
     /** "Reevaluates" an individual,
         for the purpose of printing out
@@ -43,9 +43,9 @@ public interface SimpleProblemForm
         facts about the best individual in the population, for example.  */
     
     public void describe(
-        final EvolutionState state, 
-        final Individual ind, 
-        final int subpopulation,
-        final int threadnum,
-        final int log);
-    }
+                         final EvolutionState state, 
+                         final Individual ind, 
+                         final int subpopulation,
+                         final int threadnum,
+                         final int log);
+}

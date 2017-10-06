@@ -34,7 +34,7 @@ import ec.*;
  */
 
 public interface Space
-    {
+{
     /*
       The Space should provide a bijectional mapping from locations in space
       to indexes in the subpopulation.  Returns -1 if error occured.
@@ -70,4 +70,4 @@ public interface Space
     */
     public int getIndexRandomNeighbor( final EvolutionState state, int threadnum, int distance );
 
-    }
+}

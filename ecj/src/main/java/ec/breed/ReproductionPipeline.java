@@ -37,7 +37,7 @@ import java.util.HashMap;
  */
 
 public class ReproductionPipeline extends BreedingPipeline
-    {
+{
     public static final String P_REPRODUCE = "reproduce";
     public static final int NUM_SOURCES = 1;
     
@@ -46,29 +46,29 @@ public class ReproductionPipeline extends BreedingPipeline
     public int numSources() { return NUM_SOURCES; }
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
         Parameter def = defaultBase();
                 
         if (likelihood != 1.0)
             state.output.warning("ReproductionPipeline given a likelihood other than 1.0.  This is nonsensical and will be ignored.",
-                base.push(P_LIKELIHOOD),
-                def.push(P_LIKELIHOOD));
-        }
+                                 base.push(P_LIKELIHOOD),
+                                 def.push(P_LIKELIHOOD));
+    }
         
     public int produce(
-        final int min,
-        final int max,
-        final int subpopulation,
-        final ArrayList<Individual> inds,
-        final EvolutionState state,
-        final int thread, HashMap<String, Object> misc)
-        {
+                       final int min,
+                       final int max,
+                       final int subpopulation,
+                       final ArrayList<Individual> inds,
+                       final EvolutionState state,
+                       final int thread, HashMap<String, Object> misc)
+    {
         int start = inds.size();
 
         // grab individuals from our source and stick 'em right into inds.
         // we'll modify them from there
         int n = sources[0].produce(min,max,subpopulation,inds, state,thread, misc);
         return n;
-        }
     }
+}

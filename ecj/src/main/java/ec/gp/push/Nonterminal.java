@@ -39,7 +39,7 @@ import ec.*;
 */
 
 public class Nonterminal extends GPNode
-    {
+{
     public String toString() { return "."; }   // display a "." when being printed in computer-readable fashion
     public String toStringForHumans() { return ""; }  // don't print it when being displayed
     
@@ -47,15 +47,15 @@ public class Nonterminal extends GPNode
     // which results in arbitrary arity.
 
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         // do nothing at all
-        }
     }
+}
 
 
 

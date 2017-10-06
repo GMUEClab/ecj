@@ -20,7 +20,7 @@ import ec.util.*;
  */
 
 public abstract class SemanticNode extends GPNode
-    {
+{
     public String toString() { return (("" + value()) + index()); }
 
     public abstract char value();
@@ -28,12 +28,12 @@ public abstract class SemanticNode extends GPNode
     public int expectedChildren() { return 0; } // will be overridden by J
  
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         // No need to evaluate or look at children.
-        }
     }
+}

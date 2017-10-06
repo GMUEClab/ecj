@@ -63,7 +63,7 @@ import ec.*;
  */
 
 public class AnnealedSelection extends SelectionMethod 
-    {
+{
     /** Default base */
     public static final String P_ANNEALED = "annealed";
     public static final String P_CACHE = "cache";
@@ -79,12 +79,12 @@ public class AnnealedSelection extends SelectionMethod
     double cutdown;
     
     public Parameter defaultBase()
-        {
+    {
         return SelectDefaults.base().push(P_ANNEALED);
-        }
+    }
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
         
         Parameter def = defaultBase();
@@ -93,31 +93,31 @@ public class AnnealedSelection extends SelectionMethod
         temperature = state.parameters.getDoubleWithDefault(base.push(P_TEMPERATURE),def.push(P_TEMPERATURE), 0);
         if (temperature < 0)
             {
-            state.output.fatal("TopSelection temperature, if defined, must be >= 0", 
-                base.push(P_TEMPERATURE),def.push(P_TEMPERATURE));
+                state.output.fatal("TopSelection temperature, if defined, must be >= 0", 
+                                   base.push(P_TEMPERATURE),def.push(P_TEMPERATURE));
             }
         cutdown = state.parameters.getDoubleWithDefault(base.push(P_CUTDOWN),def.push(P_CUTDOWN), 0.95);
         if (cutdown < 0 || cutdown > 1)
             {
-            state.output.fatal("TopSelection cutdown, if defined, must be between 0 and 1.  Default is 0.95.", 
-                base.push(P_TEMPERATURE),def.push(P_TEMPERATURE));
+                state.output.fatal("TopSelection cutdown, if defined, must be between 0 and 1.  Default is 0.95.", 
+                                   base.push(P_TEMPERATURE),def.push(P_TEMPERATURE));
             }
-        }
+    }
 
     public void prepareToProduce(final EvolutionState s,
-        final int subpopulation,
-        final int thread)
-        {
+                                 final int subpopulation,
+                                 final int thread)
+    {
         super.prepareToProduce(s, subpopulation, thread);
         
         if (cache) 
             best = -1;
-        }
+    }
         
     public void cacheBest(final int subpopulation,
-        final EvolutionState state,
-        final int thread)
-        {
+                          final EvolutionState state,
+                          final int thread)
+    {
         ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
         int len = oldinds.size();
                 
@@ -125,42 +125,42 @@ public class AnnealedSelection extends SelectionMethod
             best = 0;
         else
             {
-            int candidate = state.random[thread].nextInt(len - 1) + 1;
+                int candidate = state.random[thread].nextInt(len - 1) + 1;
                 
-            Individual first = oldinds.get(0);
-            Individual next = oldinds.get(candidate);
+                Individual first = oldinds.get(0);
+                Individual next = oldinds.get(candidate);
                 
-            if (next.fitness.betterThan(first.fitness))
-                best = candidate;
+                if (next.fitness.betterThan(first.fitness))
+                    best = candidate;
                         
-            else if (next.fitness.equivalentTo(first.fitness) && state.random[thread].nextBoolean())
-                best = candidate;
+                else if (next.fitness.equivalentTo(first.fitness) && state.random[thread].nextBoolean())
+                    best = candidate;
 
-            // he's worse           
-            else if (state.random[thread].nextBoolean(Math.exp((next.fitness.fitness() - first.fitness.fitness()) / t)))
-                best = candidate;
+                // he's worse           
+                else if (state.random[thread].nextBoolean(Math.exp((next.fitness.fitness() - first.fitness.fitness()) / t)))
+                    best = candidate;
                         
-            else best = 0;
+                else best = 0;
             }
 
         // note that we do NOT do temperature = temperature * cutdown,
         // which would ordinarily make perfect sense, except that we're
         // cloning from a prototype.
         t = temperature * Math.pow(cutdown, state.generation);
-        }
+    }
 
     public int produce(final int subpopulation,
-        final EvolutionState state,
-        final int thread)
-        {
+                       final EvolutionState state,
+                       final int thread)
+    {
         if (cache && best >= 0)
             {
-            // do nothing, it's cached
+                // do nothing, it's cached
             }
         else
             {
-            cacheBest(subpopulation, state, thread);
+                cacheBest(subpopulation, state, thread);
             }
         return best;
-        }
     }
+}

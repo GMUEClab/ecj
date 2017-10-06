@@ -21,15 +21,15 @@ import ec.gp.*;
  */
 
 public class LawnmowerData extends GPData
-    {
+{
     // return value
     public int x;
     public int y;
 
     public void copyTo(final GPData gpd) 
-        {
+    {
         LawnmowerData d = (LawnmowerData)gpd;
         d.x = x;
         d.y = y;
-        }
     }
+}

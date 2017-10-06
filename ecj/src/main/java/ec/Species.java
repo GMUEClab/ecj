@@ -76,7 +76,7 @@ import java.util.*;
  */
 
 public abstract class Species implements Prototype
-    {
+{
     public static final String P_INDIVIDUAL = "ind";
     public static final String P_PIPE = "pipe";
     public static final String P_FITNESS = "fitness";
@@ -91,25 +91,25 @@ public abstract class Species implements Prototype
     public Fitness f_prototype;    
 
     public Object clone()
-        {
+    {
         try
             {
-            Species myobj = (Species) (super.clone());
-            myobj.i_prototype = (Individual) i_prototype.clone();
-            myobj.f_prototype = (Fitness) f_prototype.clone();
-            myobj.pipe_prototype = (BreedingSource) pipe_prototype.clone();
-            return myobj;
+                Species myobj = (Species) (super.clone());
+                myobj.i_prototype = (Individual) i_prototype.clone();
+                myobj.f_prototype = (Fitness) f_prototype.clone();
+                myobj.pipe_prototype = (BreedingSource) pipe_prototype.clone();
+                return myobj;
             }
         catch (CloneNotSupportedException e)
             { throw new InternalError(); } // never happens
-        } 
+    } 
         
     /** Called whenever the Breeder calls produce(...) on a BreedingPipeline, in order to pass
         a new "misc" object.  Customize this as you see fit: the default just builds an empty hashmap. */
     public HashMap<String, Object> buildMisc(EvolutionState state, int subpopIndex, int thread)
-        {
+    {
         return new HashMap<String,Object>();
-        }
+    }
    
     /** Provides a brand-new individual to fill in a population.  The default form
         simply calls clone(), creates a fitness, sets evaluated to false, and sets
@@ -119,7 +119,7 @@ public abstract class Species implements Prototype
     */
     
     public Individual newIndividual(final EvolutionState state, int thread)
-        {
+    {
         Individual newind = (Individual)(i_prototype.clone());
 
         // Set the fitness
@@ -131,7 +131,7 @@ public abstract class Species implements Prototype
 
         // ...and we're ready!
         return newind;
-        }
+    }
     
     /**
        Provides an individual read from a stream, including
@@ -144,9 +144,9 @@ public abstract class Species implements Prototype
     */
 
     public Individual newIndividual(final EvolutionState state,
-        final LineNumberReader reader)
+                                    final LineNumberReader reader)
         throws IOException
-        {
+    {
         Individual newind = (Individual)(i_prototype.clone());
         
         // Set the fitness
@@ -161,7 +161,7 @@ public abstract class Species implements Prototype
 
         // and we're ready!
         return newind;  
-        }
+    }
 
     /**
        Provides an individual read from a DataInput source, including
@@ -173,9 +173,9 @@ public abstract class Species implements Prototype
     */
 
     public Individual newIndividual(final EvolutionState state,
-        final DataInput dataInput)
+                                    final DataInput dataInput)
         throws IOException
-        {
+    {
         Individual newind = (Individual)(i_prototype.clone());
         
         // Set the fitness
@@ -190,7 +190,7 @@ public abstract class Species implements Prototype
 
         // and we're ready!
         return newind;  
-        }
+    }
         
         
     /** The default version of setup(...) loads requested pipelines and calls setup(...) on them and normalizes their probabilities.  
@@ -201,13 +201,13 @@ public abstract class Species implements Prototype
     */
  
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         Parameter def = defaultBase();
 
         // load the breeding pipeline
         pipe_prototype = (BreedingSource)(
-            state.parameters.getInstanceForParameter(
-                base.push(P_PIPE),def.push(P_PIPE),BreedingSource.class));
+                                          state.parameters.getInstanceForParameter(
+                                                                                   base.push(P_PIPE),def.push(P_PIPE),BreedingSource.class));
         pipe_prototype.setup(state,base.push(P_PIPE));
 
         // I promised over in BreedingSource.java that this method would get called.
@@ -215,18 +215,18 @@ public abstract class Species implements Prototype
 
         // load our individual prototype
         i_prototype = (Individual)(state.parameters.getInstanceForParameter(
-                base.push(P_INDIVIDUAL),def.push(P_INDIVIDUAL),
-                Individual. class));
+                                                                            base.push(P_INDIVIDUAL),def.push(P_INDIVIDUAL),
+                                                                            Individual. class));
         // set the species to me before setting up the individual, so they know who I am
         i_prototype.species = this;
         i_prototype.setup(state,base.push(P_INDIVIDUAL));
         
         // load our fitness
         f_prototype = (Fitness) state.parameters.getInstanceForParameter(
-            base.push(P_FITNESS),def.push(P_FITNESS),
-            Fitness.class);
+                                                                         base.push(P_FITNESS),def.push(P_FITNESS),
+                                                                         Fitness.class);
         f_prototype.setup(state,base.push(P_FITNESS));
-        }
     }
+}
 
 

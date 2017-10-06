@@ -26,7 +26,7 @@ import java.io.*;
  */
 
 public class RegERC extends ERC
-    {
+{
     public double value;
 
     // Koza claimed to be generating from [-1.0, 1.0] but he wasn't,
@@ -36,42 +36,42 @@ public class RegERC extends ERC
     // just change nextDouble() to nextDouble(true, true)
 
     public void resetNode(final EvolutionState state, final int thread)
-        { value = state.random[thread].nextDouble() * 2 - 1.0; }
+    { value = state.random[thread].nextDouble() * 2 - 1.0; }
 
     public int nodeHashCode()
-        {
+    {
         // a reasonable hash code
         long l = Double.doubleToLongBits(value);
         int iUpper = (int)(l & 0x00000000FFFFFFFF);
         int iLower = (int)(l >>> 32);
         return this.getClass().hashCode() + iUpper + iLower;
-        }
+    }
 
     public boolean nodeEquals(final GPNode node)
-        {
+    {
         // check first to see if we're the same kind of ERC -- 
         // won't work for subclasses; in that case you'll need
         // to change this to isAssignableTo(...)
         if (this.getClass() != node.getClass()) return false;
         // now check to see if the ERCs hold the same value
         return (((RegERC)node).value == value);
-        }
+    }
 
     public void readNode(final EvolutionState state, final DataInput dataInput) throws IOException
-        {
+    {
         value = dataInput.readDouble();
-        }
+    }
 
     public void writeNode(final EvolutionState state, final DataOutput dataOutput) throws IOException
-        {
+    {
         dataOutput.writeDouble(value);
-        }
+    }
 
     public String encode()
-        { return Code.encode(value); }
+    { return Code.encode(value); }
 
     public boolean decode(DecodeReturn dret)
-        {
+    {
         // store the position and the string in case they
         // get modified by Code.java
         int pos = dret.pos;
@@ -82,31 +82,31 @@ public class RegERC extends ERC
 
         if (dret.type != DecodeReturn.T_DOUBLE) // uh oh!
             {
-            // restore the position and the string; it was an error
-            dret.data = data;
-            dret.pos = pos;
-            return false;
+                // restore the position and the string; it was an error
+                dret.data = data;
+                dret.pos = pos;
+                return false;
             }
 
         // store the data
         value = dret.d;
         return true;
-        }
+    }
 
     public String toStringForHumans()
-        { return "" + value; }
+    { return "" + value; }
 
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         RegressionData rd = ((RegressionData)(input));
         rd.x = value;
-        }
     }
+}
 
 
 

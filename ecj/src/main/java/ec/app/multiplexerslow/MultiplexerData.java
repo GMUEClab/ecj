@@ -21,10 +21,10 @@ import ec.gp.*;
  */
 
 public class MultiplexerData extends GPData
-    {
+{
     // return value -- should ALWAYS be either 1 or 0
     public int x;
 
     public void copyTo(final GPData gpd) 
-        { ((MultiplexerData)gpd).x = x; }
-    }
+    { ((MultiplexerData)gpd).x = x; }
+}

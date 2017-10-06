@@ -7,16 +7,16 @@ import ec.util.*;
 import ec.vector.*;
 
 public class HighDimension extends Problem implements SimpleProblemForm
-    {
+{
     public static final String P_HIGHDIMENSION = "high-dimension";
 
     public Parameter defaultBase()
-        {
+    {
         return super.defaultBase().push(P_HIGHDIMENSION);
-        }
+    }
 
     public void evaluate(final EvolutionState state, final Individual ind, final int subpopulation, final int threadnum)
-        {
+    {
 
         if (!(ind instanceof IntegerVectorIndividual))
             // TODO : the output text may need to change
@@ -35,7 +35,7 @@ public class HighDimension extends Problem implements SimpleProblemForm
         double sum = 0;
         for(int j = 0;j<genome.length;++j)
             {
-            sum += (genome[j] - xi) * (genome[j] - xi) * gamma;
+                sum += (genome[j] - xi) * (genome[j] - xi) * gamma;
             }
         
         g = beta * Math.exp(-sum);
@@ -48,7 +48,7 @@ public class HighDimension extends Problem implements SimpleProblemForm
         // Since we are try to maximize our fitness value, not find a min -g solution
         ((DOVSFitness) ind.fitness).recordObservation(state, g);
         ind.evaluated = true;
-        }
-
     }
+
+}
 

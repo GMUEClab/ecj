@@ -32,25 +32,25 @@ import java.io.*;
  */
 
 public class GPSpecies extends Species
-    {
+{
     public static final String P_GPSPECIES = "species";
 
     public Parameter defaultBase()
-        {
+    {
         return GPDefaults.base().push(P_GPSPECIES);
-        }
+    }
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
 
         // check to make sure that our individual prototype is a GPIndividual
         if (!(i_prototype instanceof GPIndividual))
             state.output.fatal("The Individual class for the Species " + getClass().getName() + " is must be a subclass of ec.gp.GPIndividual.", base );
-        }    
+    }    
 
     public Individual newIndividual(EvolutionState state, int thread) 
-        {
+    {
         GPIndividual newind = ((GPIndividual)(i_prototype)).lightClone();
         
         // Initialize the trees
@@ -66,15 +66,15 @@ public class GPSpecies extends Species
                 
         // ...and we're ready!
         return newind;
-        }
+    }
 
 
     // A custom version of newIndividual() which guarantees that the
     // prototype is light-cloned before readIndividual is issued
     public Individual newIndividual(final EvolutionState state,
-        final LineNumberReader reader)
+                                    final LineNumberReader reader)
         throws IOException
-        {
+    {
         GPIndividual newind = ((GPIndividual)i_prototype).lightClone();
                 
         // Set the fitness -- must be done BEFORE loading!
@@ -89,15 +89,15 @@ public class GPSpecies extends Species
 
         // and we're ready!
         return newind;  
-        }
+    }
 
 
     // A custom version of newIndividual() which guarantees that the
     // prototype is light-cloned before readIndividual is issued
     public Individual newIndividual(final EvolutionState state,
-        final DataInput dataInput)
+                                    final DataInput dataInput)
         throws IOException
-        {
+    {
         GPIndividual newind = ((GPIndividual)i_prototype).lightClone();
         
         // Set the fitness -- must be done BEFORE loading!
@@ -112,6 +112,6 @@ public class GPSpecies extends Species
 
         // and we're ready!
         return newind;  
-        }
-
     }
+
+}

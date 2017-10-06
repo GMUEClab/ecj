@@ -33,48 +33,48 @@ import ec.steadystate.*;
  */
 
 public final class SimpleExchanger extends Exchanger implements SteadyStateExchangerForm
-    {
+{
     public void setup(final EvolutionState state, final Parameter base) { }
 
     /** Doesn't do anything. */
     public void initializeContacts(final EvolutionState state)
-        {
+    {
         // don't care
         return;
-        }
+    }
 
     /** Doesn't do anything. */
     public void reinitializeContacts(final EvolutionState state)
-        {
+    {
         // don't care
         return;
-        }
+    }
 
     /** Simply returns state.population. */
     public Population preBreedingExchangePopulation(final EvolutionState state)
-        {
+    {
         // don't care
         return state.population;
-        }
+    }
 
     /** Simply returns state.population. */
     public Population postBreedingExchangePopulation(final EvolutionState state)
-        {
+    {
         // don't care
         return state.population;
-        }
+    }
 
     /** Doesn't do anything. */
     public void closeContacts(final EvolutionState state, final int result)
-        {
+    {
         // don't care
         return;
-        }
+    }
 
     /** Always returns null */
     public String runComplete(final EvolutionState state)
-        {
+    {
         return null;
-        }
-
     }
+
+}

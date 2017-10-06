@@ -29,7 +29,7 @@ import java.util.*;
 
 
 public class NK extends Problem implements SimpleProblemForm 
-    { 
+{ 
     public static final String P_N = "n"; 
     public static final String P_K = "k"; 
     public static final String P_ADJACENT="adjacent"; 
@@ -39,7 +39,7 @@ public class NK extends Problem implements SimpleProblemForm
     HashMap oldValues; 
         
     public void setup(final EvolutionState state, final Parameter base) 
-        {
+    {
         super.setup(state, base); 
                 
         k = state.parameters.getInt(base.push(P_K), null, 1); 
@@ -48,55 +48,55 @@ public class NK extends Problem implements SimpleProblemForm
                 
         adjacentNeighborhoods = state.parameters.getBoolean(base.push(P_ADJACENT), null, true); 
         oldValues = new HashMap(); 
-        }
+    }
         
     public void evaluate(final EvolutionState state, final Individual ind, final int subpopulation, final int threadnum)
-        {
+    {
         BitVectorIndividual ind2 = (BitVectorIndividual) ind; 
         double fitness =0; 
         int n = ind2.genome.length; 
                 
         for (int i=0; i < n; i++) 
             { 
-            boolean tmpInd[] = new boolean[k+1]; 
-            tmpInd[0] = ind2.genome[i];
+                boolean tmpInd[] = new boolean[k+1]; 
+                tmpInd[0] = ind2.genome[i];
                         
-            double val=0;
-            if (adjacentNeighborhoods) 
-                { 
-                int offset = n - k/2; 
-                for (int j=0; j < k; j++) 
-                    {
-                    tmpInd[j+1] = ind2.genome[(j+i + offset) % n]; 
-                    }
-                }
-            else 
-                { 
-                int j;
-                for (int l=0; l < k; l++) 
+                double val=0;
+                if (adjacentNeighborhoods) 
                     { 
-                    while ((j = state.random[0].nextInt(k)) == i);
-                    tmpInd[l+1] = ind2.genome[j]; 
+                        int offset = n - k/2; 
+                        for (int j=0; j < k; j++) 
+                            {
+                                tmpInd[j+1] = ind2.genome[(j+i + offset) % n]; 
+                            }
                     }
-                }
+                else 
+                    { 
+                        int j;
+                        for (int l=0; l < k; l++) 
+                            { 
+                                while ((j = state.random[0].nextInt(k)) == i);
+                                tmpInd[l+1] = ind2.genome[j]; 
+                            }
+                    }
                         
-            if (oldValues.containsKey(tmpInd))
-                val = ((Double)oldValues.get(tmpInd)).doubleValue(); 
-            else 
-                { 
-                double tmp=0; 
-                for (int j=0; j < tmpInd.length; j++)  
-                    if (tmpInd[j]) tmp += 1 << j; 
-                val = tmp /  Integer.MAX_VALUE; 
+                if (oldValues.containsKey(tmpInd))
+                    val = ((Double)oldValues.get(tmpInd)).doubleValue(); 
+                else 
+                    { 
+                        double tmp=0; 
+                        for (int j=0; j < tmpInd.length; j++)  
+                            if (tmpInd[j]) tmp += 1 << j; 
+                        val = tmp /  Integer.MAX_VALUE; 
                                                                 
-                oldValues.put(tmpInd, new Double(val)); 
-                }
+                        oldValues.put(tmpInd, new Double(val)); 
+                    }
                         
-            fitness += val; 
+                fitness += val; 
             }
                                 
         fitness /= n;
         ((SimpleFitness)(ind2.fitness)).setFitness( state, fitness, false);
         ind2.evaluated = true; 
-        }
     }
+}

@@ -54,7 +54,7 @@ import java.util.HashMap;
  */
 
 public class MultiSelection extends SelectionMethod
-    {
+{
     private static final long serialVersionUID = 1;
 
     public static final String P_NUMSELECTS = "num-selects";
@@ -65,12 +65,12 @@ public class MultiSelection extends SelectionMethod
     public SelectionMethod selects[];
 
     public Parameter defaultBase()
-        {
+    {
         return SelectDefaults.base().push(P_MULTISELECT);
-        }
+    }
 
     public Object clone()
-        {
+    {
         MultiSelection c = (MultiSelection)(super.clone());
         
         // make a new array
@@ -84,19 +84,19 @@ public class MultiSelection extends SelectionMethod
             c.selects[x] = (SelectionMethod)(selects[x].clone());
 
         return c;
-        }
+    }
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
 
         Parameter def = defaultBase();
 
         int numSelects = state.parameters.getInt(
-            base.push(P_NUMSELECTS),def.push(P_NUMSELECTS),1);
+                                                 base.push(P_NUMSELECTS),def.push(P_NUMSELECTS),1);
         if (numSelects==0)
             state.output.fatal("The number of MultiSelection sub-selection methods must be >= 1).",
-                base.push(P_NUMSELECTS),def.push(P_NUMSELECTS));
+                               base.push(P_NUMSELECTS),def.push(P_NUMSELECTS));
 
         // make our arrays
         selects = new SelectionMethod[numSelects];
@@ -105,21 +105,21 @@ public class MultiSelection extends SelectionMethod
 
         for(int x=0;x<numSelects;x++)
             {
-            Parameter p = base.push(P_SELECT).push(""+x);
-            Parameter d = def.push(P_SELECT).push(""+x);
+                Parameter p = base.push(P_SELECT).push(""+x);
+                Parameter d = def.push(P_SELECT).push(""+x);
 
-            selects[x] = (SelectionMethod)
-                (state.parameters.getInstanceForParameter(
-                    p,d, SelectionMethod.class));       
-            selects[x].setup(state,p);
+                selects[x] = (SelectionMethod)
+                    (state.parameters.getInstanceForParameter(
+                                                              p,d, SelectionMethod.class));       
+                selects[x].setup(state,p);
             
-            // now check probability
-            if (selects[x].probability<0.0)
-                state.output.error(
-                    "MultiSelection select #" + x + 
-                    " must have a probability >= 0.0",
-                    p.push(P_PROB),d.push(P_PROB));
-            else total += selects[x].probability;
+                // now check probability
+                if (selects[x].probability<0.0)
+                    state.output.error(
+                                       "MultiSelection select #" + x + 
+                                       " must have a probability >= 0.0",
+                                       p.push(P_PROB),d.push(P_PROB));
+                else total += selects[x].probability;
             }
 
         state.output.exitIfErrors();
@@ -130,25 +130,25 @@ public class MultiSelection extends SelectionMethod
 
         if (total != 1.0)
             {
-            state.output.message("Must normalize probabilities for " + base);
-            for(int x=0;x<numSelects;x++) selects[x].probability /= total;
+                state.output.message("Must normalize probabilities for " + base);
+                for(int x=0;x<numSelects;x++) selects[x].probability /= total;
             }
 
         // totalize
         double tmp = 0.0;
         for(int x=0;x<numSelects-1;x++) // yes, it's off by one
             { 
-            tmp += selects[x].probability; 
-            selects[x].probability = tmp;
+                tmp += selects[x].probability; 
+                selects[x].probability = tmp;
             }
         selects[numSelects-1].probability = 1.0;
-        }
+    }
 
     public boolean produces(final EvolutionState state,
-        final Population newpop,
-        final int subpopulation,
-        final int thread)
-        {
+                            final Population newpop,
+                            final int subpopulation,
+                            final int thread)
+    {
         if (!super.produces(state,newpop,subpopulation,thread))
             return false;
 
@@ -156,53 +156,53 @@ public class MultiSelection extends SelectionMethod
             if (!selects[x].produces(state,newpop,subpopulation,thread))
                 return false;
         return true;
-        }
+    }
 
 
     public void prepareToProduce(final EvolutionState s,
-        final int subpopulation,
-        final int thread)
-        {
+                                 final int subpopulation,
+                                 final int thread)
+    {
         super.prepareToProduce(s, subpopulation, thread);
 
         for(int x=0;x<selects.length;x++)
             selects[x].prepareToProduce(s,subpopulation,thread);
-        }
+    }
 
 
     public int produce(final int subpopulation,
-        final EvolutionState state,
-        final int thread)
-        {
+                       final EvolutionState state,
+                       final int thread)
+    {
         return selects[BreedingSource.pickRandom(
-                selects,state.random[thread].nextDouble())].produce(
-                    subpopulation,state,thread); 
-        }
+                                                 selects,state.random[thread].nextDouble())].produce(
+                                                                                                     subpopulation,state,thread); 
+    }
      
     // Proposed change in semantics: MultiSelection now picks randomly EVERY time it select an
     // individual, not just a group of individuals
-/*
-  public int produce(final int min,
-  final int max,
-  final int start,
-  final int subpopulation,
-  final ArrayList<Individual> inds,
-  final EvolutionState state,
-  final int thread, HashMap<String, Object> misc)
+    /*
+      public int produce(final int min,
+      final int max,
+      final int start,
+      final int subpopulation,
+      final ArrayList<Individual> inds,
+      final EvolutionState state,
+      final int thread, HashMap<String, Object> misc)
 
-  {
-  return selects[BreedingSource.pickRandom(
-  selects,state.random[thread].nextDouble())].produce(
-  min,max,start,subpopulation,inds, state,thread, misc);
-  }
-*/
+      {
+      return selects[BreedingSource.pickRandom(
+      selects,state.random[thread].nextDouble())].produce(
+      min,max,start,subpopulation,inds, state,thread, misc);
+      }
+    */
     public void preparePipeline(Object hook)
-        {
+    {
         // the default form calls this on all the selects.
         // note that it follows all the source paths even if they're
         // duplicates
         for(int x=0; x<selects.length;x++) 
             selects[x].preparePipeline(hook);
-        }
-        
     }
+        
+}

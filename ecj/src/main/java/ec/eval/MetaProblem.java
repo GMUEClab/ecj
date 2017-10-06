@@ -262,7 +262,7 @@ import java.util.*;
  */
 
 public class MetaProblem extends Problem implements SimpleProblemForm
-    {
+{
     public static final String P_FILE = "file";
     public static final String P_RUNS = "runs";
     public static final String P_REEVALUATE_INDIVIDUALS = "reevaluate";
@@ -333,23 +333,23 @@ public class MetaProblem extends Problem implements SimpleProblemForm
     
     // default form does nothing
     public void setup(final EvolutionState state, final Parameter base) 
-        {
+    {
         super.setup(state,base);
         this.base = base;
         File file = state.parameters.getFile(base.push(P_FILE),null);
         try
             {
-            p_database = new ParameterDatabase(file, new String[] { "-file", file.getCanonicalPath() });  // command line has just the parameter database
+                p_database = new ParameterDatabase(file, new String[] { "-file", file.getCanonicalPath() });  // command line has just the parameter database
             }
         catch (IOException e)
             {
-            state.output.fatal("Exception loading meta-parameter-database:\n" + e,
-                base.push(P_FILE));
+                state.output.fatal("Exception loading meta-parameter-database:\n" + e,
+                                   base.push(P_FILE));
             }
         runs = state.parameters.getInt(base.push(P_RUNS), null, 1);
         if (runs < 1)
             state.output.fatal("Number of runs must be >= 1",
-                base.push(P_RUNS));
+                               base.push(P_RUNS));
 
         reevaluateIndividuals = state.parameters.getBoolean(base.push(P_REEVALUATE_INDIVIDUALS), null, true);
         if (state.parameters.exists(base.push(P_MUZZLE), null))
@@ -362,74 +362,74 @@ public class MetaProblem extends Problem implements SimpleProblemForm
         setRandom = state.parameters.getBoolean(base.push(P_SET_RANDOM), null, false);
         
         loadDomain(state, base);
-        }
+    }
     
     
     protected void loadDomain(EvolutionState state, Parameter base)
-        {
+    {
         // Load domain and check for parameters
         
         int numParams = state.parameters.getInt(base.push(P_NUM_PARAMS), null, 1);
         if (numParams < 1)
             state.output.fatal("Number of parameters must be >= 1",
-                base.push(P_NUM_PARAMS));
+                               base.push(P_NUM_PARAMS));
                 
         domain = new Object[numParams];
 
         Parameter pb = base.push(P_PARAM);
         for(int i = 0; i < numParams ; i++)  // just keep rising
             {
-            // check parameter
-            Parameter p = pb.push("" + i);
-            if (!state.parameters.exists(p, null))  // guess that's it
-                break;
+                // check parameter
+                Parameter p = pb.push("" + i);
+                if (!state.parameters.exists(p, null))  // guess that's it
+                    break;
                 
-            // load parameter domain
-            else if (state.parameters.exists(p.push(P_TYPE), null))
-                {
-                String type = state.parameters.getString(p.push(P_TYPE), null);
-                if (type.equalsIgnoreCase(V_INTEGER))
+                // load parameter domain
+                else if (state.parameters.exists(p.push(P_TYPE), null))
                     {
-                    domain[i] = new int[0];
-                    }
-                else if (type.equalsIgnoreCase(V_FLOAT))
-                    {
-                    domain[i] = new double[0];
-                    }
-                else if (type.equalsIgnoreCase(V_BOOLEAN))
-                    {
-                    domain[i] = new boolean[0];
-                    }
-                else
-                    state.output.fatal("Meta parameter number " + i + " has a malformed type declaration.", p.push(P_TYPE), null);
+                        String type = state.parameters.getString(p.push(P_TYPE), null);
+                        if (type.equalsIgnoreCase(V_INTEGER))
+                            {
+                                domain[i] = new int[0];
+                            }
+                        else if (type.equalsIgnoreCase(V_FLOAT))
+                            {
+                                domain[i] = new double[0];
+                            }
+                        else if (type.equalsIgnoreCase(V_BOOLEAN))
+                            {
+                                domain[i] = new boolean[0];
+                            }
+                        else
+                            state.output.fatal("Meta parameter number " + i + " has a malformed type declaration.", p.push(P_TYPE), null);
                 
-                // double-check
-                if (state.parameters.exists(p.push(P_NUM_VALS), null))
-                    state.output.fatal("Meta parameter number " + i + " has both a type declaration and a num-vals declaration.", p.push(P_TYPE),  p.push(P_NUM_VALS));
-                }
-            else if (state.parameters.exists(p.push(P_NUM_VALS), null))
-                {
-                int len = state.parameters.getInt(p.push(P_NUM_VALS), null, 1);
-                if (len > 0)
-                    {
-                    String[] tags = new String[len];
-                    for (int j = 0; j < len; j++)
-                        {
-                        tags[j] = state.parameters.getString(p.push(P_VAL).push("" + j), null);
-                        if (tags[j] == null)
-                            state.output.fatal("Meta parameter number " + i + " is missing value number " + j + ".", p.push(P_VAL).push("" + j));
-                        }
-                    domain[i] = tags;
+                        // double-check
+                        if (state.parameters.exists(p.push(P_NUM_VALS), null))
+                            state.output.fatal("Meta parameter number " + i + " has both a type declaration and a num-vals declaration.", p.push(P_TYPE),  p.push(P_NUM_VALS));
                     }
-                else state.output.fatal("Meta parameter number " + i + " has a malformed domain.", p.push(P_NUM_VALS));
-                }
-            else state.output.fatal("Meta parameter number " + i + " has no type declaration or num-vals declaration.", p.push(P_TYPE), p.push(P_NUM_VALS));
+                else if (state.parameters.exists(p.push(P_NUM_VALS), null))
+                    {
+                        int len = state.parameters.getInt(p.push(P_NUM_VALS), null, 1);
+                        if (len > 0)
+                            {
+                                String[] tags = new String[len];
+                                for (int j = 0; j < len; j++)
+                                    {
+                                        tags[j] = state.parameters.getString(p.push(P_VAL).push("" + j), null);
+                                        if (tags[j] == null)
+                                            state.output.fatal("Meta parameter number " + i + " is missing value number " + j + ".", p.push(P_VAL).push("" + j));
+                                    }
+                                domain[i] = tags;
+                            }
+                        else state.output.fatal("Meta parameter number " + i + " has a malformed domain.", p.push(P_NUM_VALS));
+                    }
+                else state.output.fatal("Meta parameter number " + i + " has no type declaration or num-vals declaration.", p.push(P_TYPE), p.push(P_NUM_VALS));
             }
-        }
+    }
 
 
     protected String map(EvolutionState state, double[] genome, FloatVectorSpecies species, int index)
-        {
+    {
         if (index < 0 || index >= domain.length)
             state.output.fatal("No domain provided for meta parameter number " + index + ".");
 
@@ -440,39 +440,39 @@ public class MetaProblem extends Problem implements SimpleProblemForm
          
         if (d instanceof boolean[])
             {
-            if (gene < min || gene > max)
-                state.output.fatal("Gene index " + index + " has a value (" + gene + ") outside the min-max range (from " + min + " to " + max + " inclusive).  Did you forget to bound the mutation?");
-            else if (gene < (min + max) / 2.0) return "false";
-            else return "true";
+                if (gene < min || gene > max)
+                    state.output.fatal("Gene index " + index + " has a value (" + gene + ") outside the min-max range (from " + min + " to " + max + " inclusive).  Did you forget to bound the mutation?");
+                else if (gene < (min + max) / 2.0) return "false";
+                else return "true";
             }
         else if (d instanceof int[])
             {
-            return "" + (int)(Math.floor(gene));
+                return "" + (int)(Math.floor(gene));
             }
         else if (d instanceof double[])
             {
-            return "" + gene;
+                return "" + gene;
             }
         else if (d instanceof String[])
             {
-            String[] dom = (String[]) d;
-            if (min != 0)
-                state.output.fatal("Invalid min-gene value (" + min + ") for a string type in MetaProblem.  Gene index was " + index + ".  Should have been 0.");
-            else if (max != dom.length - 1)
-                state.output.fatal("Invalid max-gene value (" + max + ") for a string type in MetaProblem.  Gene index was " + index + ".  Should have been " + (dom.length - 1) + ", that is, the number of vals - 1.");
-            else if (gene < min || gene > max)
-                state.output.fatal("Gene index " + index + " has a value (" + gene + ") outside the min-max range (from " + min + " to " + max + " inclusive).  Did you forget to bound the mutation?");
-            else return dom[(int)(Math.floor(gene))];
+                String[] dom = (String[]) d;
+                if (min != 0)
+                    state.output.fatal("Invalid min-gene value (" + min + ") for a string type in MetaProblem.  Gene index was " + index + ".  Should have been 0.");
+                else if (max != dom.length - 1)
+                    state.output.fatal("Invalid max-gene value (" + max + ") for a string type in MetaProblem.  Gene index was " + index + ".  Should have been " + (dom.length - 1) + ", that is, the number of vals - 1.");
+                else if (gene < min || gene > max)
+                    state.output.fatal("Gene index " + index + " has a value (" + gene + ") outside the min-max range (from " + min + " to " + max + " inclusive).  Did you forget to bound the mutation?");
+                else return dom[(int)(Math.floor(gene))];
             }
         else state.output.fatal("INTERNAL ERROR.  Invalid mapping for domain of meta parameter number " + index + " in MetaProblem.");
         return null;  // never happens
-        }
+    }
 
 
     /** Override this method to revise the provided parameter database to reflect the "parameters" specified in the 
         given meta-individual.  'Run' is the current run number for this individual's evaluation.  */
     public void modifyParameters(EvolutionState state, ParameterDatabase database, int run, Individual metaIndividual)
-        {
+    {
         if (!(metaIndividual instanceof DoubleVectorIndividual))
             state.output.fatal("Meta-individual is not a DoubleVectorIndividual.");
         DoubleVectorIndividual individual = (DoubleVectorIndividual)metaIndividual;
@@ -482,21 +482,21 @@ public class MetaProblem extends Problem implements SimpleProblemForm
         Parameter pb = base.push(P_PARAM);
         for(int i = 0; i < genome.length; i++)
             {
-            Parameter p = pb.push("" + i);
-            String param = state.parameters.getString(p, null);
-            if (param == null) 
-                state.output.fatal("Meta parameter number " + i + " missing.", p);
-            // load it
-            database.set(new Parameter(param), "" + map(state, genome, species, i));
+                Parameter p = pb.push("" + i);
+                String param = state.parameters.getString(p, null);
+                if (param == null) 
+                    state.output.fatal("Meta parameter number " + i + " missing.", p);
+                // load it
+                database.set(new Parameter(param), "" + map(state, genome, species, i));
             }
-        }
+    }
 
 
     public void evaluate(EvolutionState state,
-        Individual ind,
-        int subpopulation,
-        int threadnum)
-        {
+                         Individual ind,
+                         int subpopulation,
+                         int threadnum)
+    {
         if (ind.evaluated && !reevaluateIndividuals) return;
         
         ArrayList fits = new ArrayList();
@@ -504,116 +504,116 @@ public class MetaProblem extends Problem implements SimpleProblemForm
         Individual bestOfRuns = null;
         for(int run = 0; run < runs; run++)
             {
-            // too annoying
-            //state.output.message("Thread " + threadnum + " Run " + run);
-            try {
-                currentDatabase = (ParameterDatabase)(DataPipe.copy(p_database));  // ugly hack
+                // too annoying
+                //state.output.message("Thread " + threadnum + " Run " + run);
+                try {
+                    currentDatabase = (ParameterDatabase)(DataPipe.copy(p_database));  // ugly hack
                 }
-            catch (Exception e)
-                {
-                state.output.fatal("Exception copying database.\n" + e);
-                }
-            modifyParameters(state, currentDatabase, run, ind);
+                catch (Exception e)
+                    {
+                        state.output.fatal("Exception copying database.\n" + e);
+                    }
+                modifyParameters(state, currentDatabase, run, ind);
             
-            Output out = new Output(false);          // do not store messages, just print them
-            out.addLog(ec.util.Log.D_STDOUT,false);
-            out.addLog(ec.util.Log.D_STDERR,true);
-            out.setThrowsErrors(true);  // don't do System.exit(1);
+                Output out = new Output(false);          // do not store messages, just print them
+                out.addLog(ec.util.Log.D_STDOUT,false);
+                out.addLog(ec.util.Log.D_STDERR,true);
+                out.setThrowsErrors(true);  // don't do System.exit(1);
                             
-            EvolutionState evaluatedState = null;
-            try
-                {
-                evaluatedState = Evolve.initialize(currentDatabase, 0, out);
-                
-                // should we override the seeds?
-                if (setRandom)
+                EvolutionState evaluatedState = null;
+                try
                     {
-                    // we use the random number generator to seed the generators
-                    // of the underlying process.  This isn't optimal but it should
-                    // probably do okay.  To be extra careful we prime the generators.
-                        
-                    for(int i = 0; i < evaluatedState.random.length; i++)
-                        {
-                        int seed = state.random[threadnum].nextInt();
-                        evaluatedState.random[i] = Evolve.primeGenerator(new MersenneTwisterFast(seed));
-                        }
-                    }
+                        evaluatedState = Evolve.initialize(currentDatabase, 0, out);
                 
-                evaluatedState.run(EvolutionState.C_STARTED_FRESH);
-            
-                // Issue a warning if there's more than one subpopulation
-                if (evaluatedState.population.subpops.size() > 1)
-                    state.output.warnOnce("MetaProblem used, but underlying evolution state has more than one subpopulation: only the results from subpopulation 0 will be considered.");
-            
-            
-                // Identify the best fitness of the underlying EvolutionState run, 
+                        // should we override the seeds?
+                        if (setRandom)
+                            {
+                                // we use the random number generator to seed the generators
+                                // of the underlying process.  This isn't optimal but it should
+                                // probably do okay.  To be extra careful we prime the generators.
                         
-                // we can only easily detect if the underlying EvolutionState has a proper Statistics
-                // object we can use AFTER we've run it because the Statistics object is set up during
-                // run().  We could modify this but I'm too lazy to do so, so...
+                                for(int i = 0; i < evaluatedState.random.length; i++)
+                                    {
+                                        int seed = state.random[threadnum].nextInt();
+                                        evaluatedState.random[i] = Evolve.primeGenerator(new MersenneTwisterFast(seed));
+                                    }
+                            }
+                
+                        evaluatedState.run(EvolutionState.C_STARTED_FRESH);
+            
+                        // Issue a warning if there's more than one subpopulation
+                        if (evaluatedState.population.subpops.size() > 1)
+                            state.output.warnOnce("MetaProblem used, but underlying evolution state has more than one subpopulation: only the results from subpopulation 0 will be considered.");
+            
+            
+                        // Identify the best fitness of the underlying EvolutionState run, 
+                        
+                        // we can only easily detect if the underlying EvolutionState has a proper Statistics
+                        // object we can use AFTER we've run it because the Statistics object is set up during
+                        // run().  We could modify this but I'm too lazy to do so, so...
         
-                Individual[] inds = null;  // will get set, don't worry
-                if (evaluatedState.statistics != null && 
-                        (evaluatedState.statistics instanceof SimpleStatistics ||
-                        evaluatedState.statistics instanceof SimpleShortStatistics))
-                    {
-                    inds = null;
+                        Individual[] inds = null;  // will get set, don't worry
+                        if (evaluatedState.statistics != null && 
+                            (evaluatedState.statistics instanceof SimpleStatistics ||
+                             evaluatedState.statistics instanceof SimpleShortStatistics))
+                            {
+                                inds = null;
                 
-                    // obviously we need an interface here rather than this nonsense
-                    if (evaluatedState.statistics instanceof SimpleStatistics)
-                        inds = ((SimpleStatistics)(evaluatedState.statistics)).getBestSoFar();
-                    else inds = ((SimpleShortStatistics)(evaluatedState.statistics)).getBestSoFar();
-                    if (inds == null)
-                        state.output.fatal("Underlying evolution state has a Statistics object which provides a null best-so-far array.  Can't extract fitness.");
-                    fits.add((Fitness)(inds[0].fitness));
-                    //System.err.println("" + inds[0] + " " + inds[0].fitness);
-                    }
-                else if (evaluatedState.statistics == null)
-                    state.output.fatal("Underlying evolution state has a null Statistics object.  Can't extract fitness.");
-                else 
-                    state.output.fatal("Underlying evolution state has a Statistics object which doesn't implement ProvidesBestSoFar.  Can't extract fitness.");
+                                // obviously we need an interface here rather than this nonsense
+                                if (evaluatedState.statistics instanceof SimpleStatistics)
+                                    inds = ((SimpleStatistics)(evaluatedState.statistics)).getBestSoFar();
+                                else inds = ((SimpleShortStatistics)(evaluatedState.statistics)).getBestSoFar();
+                                if (inds == null)
+                                    state.output.fatal("Underlying evolution state has a Statistics object which provides a null best-so-far array.  Can't extract fitness.");
+                                fits.add((Fitness)(inds[0].fitness));
+                                //System.err.println("" + inds[0] + " " + inds[0].fitness);
+                            }
+                        else if (evaluatedState.statistics == null)
+                            state.output.fatal("Underlying evolution state has a null Statistics object.  Can't extract fitness.");
+                        else 
+                            state.output.fatal("Underlying evolution state has a Statistics object which doesn't implement ProvidesBestSoFar.  Can't extract fitness.");
                                     
                         
-                // Now we need to suck out the best individual discovered so far.  If the underlying
-                // evoluationary system itself has a MetaProblem, we need to do this recursively.
-                // We presume that the MetaProblem exists in subpopulation 0.
+                        // Now we need to suck out the best individual discovered so far.  If the underlying
+                        // evoluationary system itself has a MetaProblem, we need to do this recursively.
+                        // We presume that the MetaProblem exists in subpopulation 0.
             
-                if (evaluatedState.evaluator.p_problem instanceof MetaProblem)
-                    {
-                    MetaProblem mp = (MetaProblem)(evaluatedState.evaluator.p_problem);
-                    synchronized(mp.lock)
-                        {
-                        Individual bestind = mp.bestUnderlyingIndividual[0];
+                        if (evaluatedState.evaluator.p_problem instanceof MetaProblem)
+                            {
+                                MetaProblem mp = (MetaProblem)(evaluatedState.evaluator.p_problem);
+                                synchronized(mp.lock)
+                                    {
+                                        Individual bestind = mp.bestUnderlyingIndividual[0];
                     
-                        if (bestOfRuns == null || bestind.fitness.betterThan(bestOfRuns.fitness))
-                            bestOfRuns = (Individual)(bestind.clone());
-                        }
-                    }
-                // otherwise we grab the best individual found in the underlying evolutionary run,
-                // gathered from the inds array we used earlier.
-                else
-                    {
-                    // gather the best individual found during the runs
-                    if (bestOfRuns == null || inds[0].fitness.betterThan(bestOfRuns.fitness))
-                        bestOfRuns = (Individual)(inds[0].clone());
-                    }
+                                        if (bestOfRuns == null || bestind.fitness.betterThan(bestOfRuns.fitness))
+                                            bestOfRuns = (Individual)(bestind.clone());
+                                    }
+                            }
+                        // otherwise we grab the best individual found in the underlying evolutionary run,
+                        // gathered from the inds array we used earlier.
+                        else
+                            {
+                                // gather the best individual found during the runs
+                                if (bestOfRuns == null || inds[0].fitness.betterThan(bestOfRuns.fitness))
+                                    bestOfRuns = (Individual)(inds[0].clone());
+                            }
                 
             
-                // now clean up
-                Evolve.cleanup(evaluatedState);
-                }
-            catch (Output.OutputExitException e)
-                {
-                // looks like an error occurred.
-                state.output.warning("Error occurred in underlying evolutionary run.  NOTE: multiple threads may still be running:\n" + e.getMessage());
-                }
-            catch (OutOfMemoryError e)
-                {
-                // Let's try fixing things
-                evaluatedState = null;
-                System.gc();
-                state.output.warning("An Out of Memory error occurred in underlying evolutionary run.  Attempting to recover and reset.  NOTE: multiple threads may still be running:\n" + e.getMessage());
-                }
+                        // now clean up
+                        Evolve.cleanup(evaluatedState);
+                    }
+                catch (Output.OutputExitException e)
+                    {
+                        // looks like an error occurred.
+                        state.output.warning("Error occurred in underlying evolutionary run.  NOTE: multiple threads may still be running:\n" + e.getMessage());
+                    }
+                catch (OutOfMemoryError e)
+                    {
+                        // Let's try fixing things
+                        evaluatedState = null;
+                        System.gc();
+                        state.output.warning("An Out of Memory error occurred in underlying evolutionary run.  Attempting to recover and reset.  NOTE: multiple threads may still be running:\n" + e.getMessage());
+                    }
             }
         
         
@@ -629,25 +629,25 @@ public class MetaProblem extends Problem implements SimpleProblemForm
         // bestUnderlyingIndividual array is shared among MetaProblem instances
         synchronized(lock)
             {
-            if (bestOfRuns != null &&
+                if (bestOfRuns != null &&
                     (bestUnderlyingIndividual[subpopulation] == null ||
-                    bestOfRuns.fitness.betterThan(bestUnderlyingIndividual[subpopulation].fitness)))
-                {
-                bestUnderlyingIndividual[subpopulation] = bestOfRuns;  // no clone necessary
-                }
+                     bestOfRuns.fitness.betterThan(bestUnderlyingIndividual[subpopulation].fitness)))
+                    {
+                        bestUnderlyingIndividual[subpopulation] = bestOfRuns;  // no clone necessary
+                    }
             }
 
-        }
+    }
         
     /** Combines fitness results from multiple runs into a final Fitness.  By default this
         is done by using setToMeanOf. */
     public void combine(EvolutionState state, Fitness[] runs, Fitness finalFitness)
-        {
+    {
         finalFitness.setToMeanOf(state, runs);
-        }
+    }
 
     public void describe(EvolutionState state, Individual ind, int subpopulation, int threadnum, int log) 
-        {
+    {
         // the default implementation works just like the default implementation of modifyParameters(...)
         
         state.output.println("\nParameters:", log);
@@ -660,12 +660,12 @@ public class MetaProblem extends Problem implements SimpleProblemForm
         Parameter pb = base.push(P_PARAM);
         for(int i = 0; i < genome.length; i++)
             {
-            Parameter p = pb.push("" + i);
-            String param = state.parameters.getString(p, null);
-            if (param == null) 
-                state.output.fatal("Meta parameter number " + i + " missing.", p);
-            // print it
-            state.output.println("" + param + " = " + map(state, genome, species, i), log);
+                Parameter p = pb.push("" + i);
+                String param = state.parameters.getString(p, null);
+                if (param == null) 
+                    state.output.fatal("Meta parameter number " + i + " missing.", p);
+                // print it
+                state.output.println("" + param + " = " + map(state, genome, species, i), log);
             }
 
 
@@ -673,13 +673,13 @@ public class MetaProblem extends Problem implements SimpleProblemForm
         // bestUnderlyingIndividual array is shared among MetaProblem instances
         synchronized(lock)
             {
-            if (bestUnderlyingIndividual[subpopulation] != null)
-                {
-                state.output.println("\nUnderlying Individual:", log);
-                bestUnderlyingIndividual[subpopulation].printIndividualForHumans(state, log);
-                }
+                if (bestUnderlyingIndividual[subpopulation] != null)
+                    {
+                        state.output.println("\nUnderlying Individual:", log);
+                        bestUnderlyingIndividual[subpopulation].printIndividualForHumans(state, log);
+                    }
             }
-        }
     }
+}
 
 

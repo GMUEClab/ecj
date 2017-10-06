@@ -22,12 +22,12 @@ import ec.*;
  */
 
 public final class BreedDefaults implements DefaultsForm 
-    {
+{
     public static final String P_BREED = "breed";
 
     /** Returns the default base. */
     public static final Parameter base()
-        {
+    {
         return new Parameter(P_BREED);
-        }
     }
+}

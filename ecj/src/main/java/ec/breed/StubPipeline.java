@@ -53,7 +53,7 @@ import java.util.HashMap;
  */
 
 public class StubPipeline extends ReproductionPipeline
-    {
+{
     public static final String P_STUB = "stub";
     public static final String P_STUB_PIPELINE = "stub-source";
     
@@ -62,30 +62,30 @@ public class StubPipeline extends ReproductionPipeline
     public Parameter defaultBase() { return BreedDefaults.base().push(P_STUB); }
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
         Parameter def = defaultBase();
 
         // load the breeding pipeline
         stubPipeline = (BreedingSource)(
-            state.parameters.getInstanceForParameter(
-                base.push(P_STUB_PIPELINE), def.push(P_STUB_PIPELINE), BreedingSource.class));
+                                        state.parameters.getInstanceForParameter(
+                                                                                 base.push(P_STUB_PIPELINE), def.push(P_STUB_PIPELINE), BreedingSource.class));
         stubPipeline.setup(state,base.push(P_STUB_PIPELINE));
-        }
+    }
 
     public Object clone()
-        {
+    {
         StubPipeline other = (StubPipeline)(super.clone());
         other.stubPipeline = (BreedingSource)(other.stubPipeline.clone());
         return other;
-        }
+    }
 
     public void fillStubs(final EvolutionState state, BreedingSource source)
-        {
+    {
         // fill the stubs in my stub-pipeline first with my parent source
         stubPipeline.fillStubs(state, source);
         
         // fill subsidiary stubs with my stubpipeline, including my immediate source
         super.fillStubs(state, stubPipeline);
-        }
     }
+}

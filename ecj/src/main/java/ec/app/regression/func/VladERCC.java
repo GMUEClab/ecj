@@ -28,26 +28,26 @@ import java.io.*;
  */
 
 public class VladERCC extends VladERCA
-    {
+{
     public String name() { return "VladERCC"; }
 
     public String toStringForHumans()
-        { return "n*" + value; }
+    { return "n*" + value; }
 
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         RegressionData rd = ((RegressionData)(input));
 
         children[0].eval(state,thread,input,stack,individual,problem);
         rd.x = rd.x * value;
-        }
-
     }
+
+}
 
 
 

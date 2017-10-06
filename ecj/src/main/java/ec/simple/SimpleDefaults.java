@@ -22,12 +22,12 @@ import ec.*;
  */
 
 public final class SimpleDefaults implements DefaultsForm 
-    {
+{
     public static final String P_SIMPLE = "simple";
 
     /** Returns the default base. */
     public static final Parameter base()
-        {
+    {
         return new Parameter(P_SIMPLE);
-        }
     }
+}

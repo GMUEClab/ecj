@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class Bud extends GPNode
-    {
+{
     public String toString() { return "bud"; }
 
     /*
@@ -43,36 +43,36 @@ public class Bud extends GPNode
     public int expectedChildren() { return 2; }
 
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         int edge = ((EdgeData)(input)).edge;
         Edge prob = (Edge)problem;
 
         if (prob.from.length==prob.numEdges)  // we're full, need to expand
             {
-            int[] from_ = new int[prob.numEdges*2];
-            int[] to_ = new int[prob.numEdges*2];
-            int[] reading_ = new int[prob.numEdges*2];
-            System.arraycopy(prob.from,0,from_,0,prob.from.length);
-            System.arraycopy(prob.to,0,to_,0,prob.to.length);
-            System.arraycopy(prob.reading,0,reading_,0,prob.reading.length);
-            prob.from = from_;
-            prob.to = to_;
-            prob.reading = reading_;
+                int[] from_ = new int[prob.numEdges*2];
+                int[] to_ = new int[prob.numEdges*2];
+                int[] reading_ = new int[prob.numEdges*2];
+                System.arraycopy(prob.from,0,from_,0,prob.from.length);
+                System.arraycopy(prob.to,0,to_,0,prob.to.length);
+                System.arraycopy(prob.reading,0,reading_,0,prob.reading.length);
+                prob.from = from_;
+                prob.to = to_;
+                prob.reading = reading_;
             }
 
         if (prob.start.length==prob.numNodes)  // we're full, need to expand
             {
-            boolean[] start_ = new boolean[prob.numNodes*2];
-            boolean[] accept_ = new boolean[prob.numNodes*2];
-            System.arraycopy(prob.start,0,start_,0,prob.start.length);
-            System.arraycopy(prob.accept,0,accept_,0,prob.accept.length);
-            prob.start = start_;
-            prob.accept = accept_;
+                boolean[] start_ = new boolean[prob.numNodes*2];
+                boolean[] accept_ = new boolean[prob.numNodes*2];
+                System.arraycopy(prob.start,0,start_,0,prob.start.length);
+                System.arraycopy(prob.accept,0,accept_,0,prob.accept.length);
+                prob.start = start_;
+                prob.accept = accept_;
             }
 
         int newedge = prob.numEdges;
@@ -99,8 +99,8 @@ public class Bud extends GPNode
         // pass the new edge down the right child
         
         children[1].eval(state,thread,input,stack,individual,problem);
-        }
     }
+}
 
 
 

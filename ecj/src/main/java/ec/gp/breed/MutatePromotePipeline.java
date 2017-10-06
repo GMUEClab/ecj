@@ -71,7 +71,7 @@ import java.util.HashMap;
  */
 
 public class MutatePromotePipeline extends GPBreedingPipeline
-    {
+{
     public static final String P_MUTATEPROMOTE = "mutate-promote";
     public static final String P_NUM_TRIES = "tries";
     public static final int NUM_SOURCES = 1;
@@ -89,30 +89,30 @@ public class MutatePromotePipeline extends GPBreedingPipeline
     public int numSources() { return NUM_SOURCES; }
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);
         
         Parameter def = defaultBase();
 
         numTries = state.parameters.getInt(base.push(P_NUM_TRIES),
-            def.push(P_NUM_TRIES),1);
+                                           def.push(P_NUM_TRIES),1);
         if (numTries == 0)
             state.output.fatal("MutatePromotePipeline has an invalid number of tries (it must be >= 1).",base.push(P_NUM_TRIES),def.push(P_NUM_TRIES));
 
         tree = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+0),
-                def.push(P_TREE).push(""+0)))
+                                    def.push(P_TREE).push(""+0)))
             {
-            tree = state.parameters.getInt(base.push(P_TREE).push(""+0),
-                def.push(P_TREE).push(""+0),0);
-            if (tree==-1)
-                state.output.fatal("Tree fixed value, if defined, must be >= 0");
+                tree = state.parameters.getInt(base.push(P_TREE).push(""+0),
+                                               def.push(P_TREE).push(""+0),0);
+                if (tree==-1)
+                    state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
-        }
+    }
 
     private boolean promotable(final GPInitializer initializer,
-        final GPNode node)
-        {
+                               final GPNode node)
+    {
         // A node is promotable if:
         // 1: its parent is a GPNode
         if (!(node.parent instanceof GPNode))
@@ -127,11 +127,11 @@ public class MutatePromotePipeline extends GPBreedingPipeline
 
         // 2: the node's returntype is type-compatible with its GRANDparent's return slot
         return (node.constraints(initializer).returntype.compatibleWith(initializer,t));
-        }
+    }
     
     
     private void promoteSomething(final GPNode node)
-        {
+    {
         // the node's parent MUST be a GPNode -- we've checked that already
         GPNode parent = (GPNode)(node.parent);
 
@@ -142,49 +142,49 @@ public class MutatePromotePipeline extends GPBreedingPipeline
             ((GPNode)(parent.parent)).children[parent.argposition] = node;
         else ((GPTree)(parent.parent)).child = node;
         return;
-        }
+    }
 
     private int numPromotableNodes(final GPInitializer initializer,
-        final GPNode root, int soFar)
-        {
+                                   final GPNode root, int soFar)
+    {
         if (promotable(initializer,root)) soFar++;
         for(int x=0;x<root.children.length;x++) 
             soFar = numPromotableNodes(initializer,root.children[x],soFar);
         return soFar;
-        }
+    }
 
 
     private GPNode promotableNode;
 
     // sticks the node in 
     private int pickPromotableNode(final GPInitializer initializer,
-        final GPNode root, int num)
-        {
+                                   final GPNode root, int num)
+    {
         if (promotable(initializer,root))
             {
-            num--;
-            if (num==-1)  // found it
-                {
-                promotableNode = root;
-                return num;
-                }
+                num--;
+                if (num==-1)  // found it
+                    {
+                        promotableNode = root;
+                        return num;
+                    }
             }
         for(int x=0;x<root.children.length;x++)
             {
-            num = pickPromotableNode(initializer,root.children[x],num);
-            if (num==-1) break;  // someone found it
+                num = pickPromotableNode(initializer,root.children[x],num);
+                if (num==-1) break;  // someone found it
             }
         return num;     
-        }
+    }
     
 
     public int produce(final int min,
-        final int max,
-        final int subpopulation,
-        final ArrayList<Individual> inds,
-        final EvolutionState state,
-        final int thread, HashMap<String, Object> misc)
-        {
+                       final int max,
+                       final int subpopulation,
+                       final ArrayList<Individual> inds,
+                       final EvolutionState state,
+                       final int thread, HashMap<String, Object> misc)
+    {
         int start = inds.size();
                 
         // grab n individuals from our source and stick 'em right into inds.
@@ -195,7 +195,7 @@ public class MutatePromotePipeline extends GPBreedingPipeline
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
             {
-            return n;
+                return n;
             }
 
 
@@ -205,40 +205,40 @@ public class MutatePromotePipeline extends GPBreedingPipeline
         // now let's mutate 'em
         for(int q=start; q < n+start; q++)
             {
-            GPIndividual i = (GPIndividual)inds.get(q);
+                GPIndividual i = (GPIndividual)inds.get(q);
                     
-            if (tree!=TREE_UNFIXED && (tree<0 || tree >= i.trees.length))
-                // uh oh
-                state.output.fatal("MutatePromotePipeline attempted to fix tree.0 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
+                if (tree!=TREE_UNFIXED && (tree<0 || tree >= i.trees.length))
+                    // uh oh
+                    state.output.fatal("MutatePromotePipeline attempted to fix tree.0 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
 
-            for (int x=0;x<numTries;x++)
-                {
-                int t;
-                // pick random tree
-                if (tree==TREE_UNFIXED)
-                    if (i.trees.length>1) t = state.random[thread].nextInt(i.trees.length);
-                    else t = 0;
-                else t = tree;
+                for (int x=0;x<numTries;x++)
+                    {
+                        int t;
+                        // pick random tree
+                        if (tree==TREE_UNFIXED)
+                            if (i.trees.length>1) t = state.random[thread].nextInt(i.trees.length);
+                            else t = 0;
+                        else t = tree;
                 
-                // is the tree promotable?
-                int numpromote = numPromotableNodes(initializer, i.trees[t].child,0);
-                if (numpromote==0) continue; // uh oh, try again
+                        // is the tree promotable?
+                        int numpromote = numPromotableNodes(initializer, i.trees[t].child,0);
+                        if (numpromote==0) continue; // uh oh, try again
                 
-                // promote the node, or if we're unsuccessful, just leave it alone
-                pickPromotableNode(initializer, i.trees[t].child,state.random[thread].
-                    nextInt(numpromote));
+                        // promote the node, or if we're unsuccessful, just leave it alone
+                        pickPromotableNode(initializer, i.trees[t].child,state.random[thread].
+                                           nextInt(numpromote));
                 
-                // promote it
-                promoteSomething(promotableNode );
-                i.evaluated = false;
-                break;
-                }
+                        // promote it
+                        promoteSomething(promotableNode );
+                        i.evaluated = false;
+                        break;
+                    }
 
             
-            // add the new individual, replacing its previous source
-            inds.set(q,i);
+                // add the new individual, replacing its previous source
+                inds.set(q,i);
            
             }
         return n;
-        }
     }
+}

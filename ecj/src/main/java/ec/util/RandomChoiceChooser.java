@@ -22,9 +22,9 @@ package ec.util;
  */
 
 public interface RandomChoiceChooser
-    {
+{
     /** Returns obj's probability */
     public float getProbability(final Object obj);
     /** Sets obj's probability */
     public void setProbability(final Object obj, final float prob);
-    }
+}

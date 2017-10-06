@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class A2 extends GPNode
-    {
+{
     final static int bitpos = 2;  /* A2 */
 
     public String toString() { return "a2"; }
@@ -45,12 +45,12 @@ public class A2 extends GPNode
     public int expectedChildren() { return 0; }
 
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         MultiplexerData md = (MultiplexerData)input;
 
         if (md.status == MultiplexerData.STATUS_3)
@@ -59,10 +59,10 @@ public class A2 extends GPNode
             md.dat_6 = Fast.M_6[bitpos];
         else // md.status == MultiplexerData.STATUS_11
             System.arraycopy(Fast.M_11[bitpos],0,
-                md.dat_11,0,
-                MultiplexerData.MULTI_11_NUM_BITSTRINGS);
-        }
+                             md.dat_11,0,
+                             MultiplexerData.MULTI_11_NUM_BITSTRINGS);
     }
+}
 
 
 

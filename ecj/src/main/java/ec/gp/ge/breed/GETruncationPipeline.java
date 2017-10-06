@@ -34,27 +34,27 @@ import java.util.HashMap;
  */
 
 public class GETruncationPipeline extends BreedingPipeline
-    {
+{
     public static final String P_TRUNCATION = "truncation";
     public static final int NUM_SOURCES = 1;
 
     public int numSources()
-        {
+    {
         return NUM_SOURCES;
-        }
+    }
 
     public Parameter defaultBase()
-        {
+    {
         return GEDefaults.base().push(P_TRUNCATION);
-        }
+    }
 
     public int produce(final int min,
-        final int max,
-        final int subpopulation,
-        final ArrayList<Individual> inds,
-        final EvolutionState state,
-        final int thread, HashMap<String, Object> misc)
-        {
+                       final int max,
+                       final int subpopulation,
+                       final ArrayList<Individual> inds,
+                       final EvolutionState state,
+                       final int thread, HashMap<String, Object> misc)
+    {
         int start = inds.size();
         
         // grab individuals from our source and stick 'em right into inds.
@@ -65,26 +65,26 @@ public class GETruncationPipeline extends BreedingPipeline
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
             {
-            return n;
+                return n;
             }
 
 
         // now let's mutate 'em
         for(int q=start; q < n+start; q++)
             {
-            GEIndividual ind = (GEIndividual)(inds.get(q));
-            GESpecies species = (GESpecies) (ind.species);
+                GEIndividual ind = (GEIndividual)(inds.get(q));
+                GESpecies species = (GESpecies) (ind.species);
 
-            int consumed = species.consumed(state, ind, thread);
-            if (consumed > 1)
-                {
-                Object[] pieces = new Object[2];
-                //System.err.println(consumed);
-                ind.split(new int[] { consumed }, pieces);
-                ind.join(new Object[] {pieces[0]});
-                }
+                int consumed = species.consumed(state, ind, thread);
+                if (consumed > 1)
+                    {
+                        Object[] pieces = new Object[2];
+                        //System.err.println(consumed);
+                        ind.split(new int[] { consumed }, pieces);
+                        ind.join(new Object[] {pieces[0]});
+                    }
             }
         return n;
-        }
-
     }
+
+}

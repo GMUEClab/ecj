@@ -19,10 +19,10 @@ import ec.util.*;
  */
 
 public class SemanticJ extends SemanticNode
-    {
+{
     public String toString() { return "J"; }
     public int expectedChildren() { return 2; }
 
     public int index() { return -1; }
     public char value() { return 'J'; }
-    }
+}

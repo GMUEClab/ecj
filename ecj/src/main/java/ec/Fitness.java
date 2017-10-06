@@ -51,7 +51,7 @@ import java.util.*;
 
 
 public abstract class Fitness implements Prototype, Comparable
-    {
+{
     /** Auxiliary variable, used by coevolutionary processes, to compute the
         number of trials used to compute this Fitness value.  By default trials=null and stays that way. 
         If you set this variable, all of the elements of the ArrayList must be immutable -- once they're
@@ -66,45 +66,45 @@ public abstract class Fitness implements Prototype, Comparable
     public Individual[] context = null;
 
     public void setContext(Individual[] cont, int index)
-        {
+    {
         Individual ind = cont[index];
         cont[index] = null;
         setContext(cont);
         cont[index] = ind;
-        }
+    }
 
     public void setContext(Individual[] cont)
-        {
+    {
         if (cont == null)
             context = null;
         else // make sure it's deep-cloned and stripped of context itself
             {
-            context = new Individual[cont.length];
-            for(int i = 0; i < cont.length; i++)
-                {
-                if (cont[i] == null)
-                    { context[i] = null; }
-                else 
+                context = new Individual[cont.length];
+                for(int i = 0; i < cont.length; i++)
                     {
-                    // we first temporarily remove context so we don't have any circularity in cloning 
-                    Individual[] c = cont[i].fitness.context;
-                    cont[i].fitness.context = null;
+                        if (cont[i] == null)
+                            { context[i] = null; }
+                        else 
+                            {
+                                // we first temporarily remove context so we don't have any circularity in cloning 
+                                Individual[] c = cont[i].fitness.context;
+                                cont[i].fitness.context = null;
                                         
-                    // now clone the individual in place
-                    context[i] = (Individual)(cont[i].clone());
+                                // now clone the individual in place
+                                context[i] = (Individual)(cont[i].clone());
                                         
-                    // now put the context back
-                    cont[i].fitness.context = c;
+                                // now put the context back
+                                cont[i].fitness.context = c;
+                            }
                     }
-                }
             }
-        }
+    }
         
     /** Treat the Individual[] you receive from this as read-only. */
     public Individual[] getContext()
-        {
+    {
         return context;
-        }
+    }
 
     /** base parameter for defaults */
     public static final String P_FITNESS = "fitness";
@@ -168,9 +168,9 @@ public abstract class Fitness implements Prototype, Comparable
         with a verbosity of Output.V_NO_GENERAL.
     */
     public void printFitnessForHumans(EvolutionState state, int log)
-        {
+    {
         printFitnessForHumans( state, log, Output.V_NO_GENERAL);
-        }
+    }
 
     /** Should print the fitness out fashion pleasing for humans to read, 
         using state.output.println(...,verbosity,log).  The default version
@@ -179,40 +179,40 @@ public abstract class Fitness implements Prototype, Comparable
         @deprecated Verbosity no longer has meaning
     */
     public void printFitnessForHumans(EvolutionState state, int log, 
-        int verbosity)
-        {
+                                      int verbosity)
+    {
         String s = fitnessToStringForHumans();
         if (context != null)
             {
-            for(int i = 0; i < context.length; i++)
-                {
-                if (context[i] != null)
+                for(int i = 0; i < context.length; i++)
                     {
-                    s += "\nCollaborator " + i + ": ";
-                    // temporarily de-link the context of the collaborator
-                    // to avoid loops
-                    Individual[] c = context[i].fitness.context;
-                    context[i].fitness.context = null;
-                    s += context[i].genotypeToStringForHumans();
-                    // relink
-                    context[i].fitness.context = c;
+                        if (context[i] != null)
+                            {
+                                s += "\nCollaborator " + i + ": ";
+                                // temporarily de-link the context of the collaborator
+                                // to avoid loops
+                                Individual[] c = context[i].fitness.context;
+                                context[i].fitness.context = null;
+                                s += context[i].genotypeToStringForHumans();
+                                // relink
+                                context[i].fitness.context = c;
+                            }
+                        else // that's me!
+                            {
+                                // do nothing
+                            }
                     }
-                else // that's me!
-                    {
-                    // do nothing
-                    }
-                }
             }
         state.output.println( s, verbosity, log);
-        }
+    }
 
     /** Should print the fitness out in a computer-readable fashion, 
         with a verbosity of Output.V_NO_GENERAL.
     */
     public void printFitness(EvolutionState state, int log)
-        {
+    {
         printFitness( state, log, Output.V_NO_GENERAL);
-        }
+    }
 
     /** Should print the fitness out in a computer-readable fashion, 
         using state.output.println(...,verbosity,log).  You might use
@@ -222,10 +222,10 @@ public abstract class Fitness implements Prototype, Comparable
         @deprecated Verbosity no longer has meaning
     */
     public void printFitness(EvolutionState state, int log, 
-        int verbosity)
-        {
+                             int verbosity)
+    {
         state.output.println( fitnessToString(), verbosity, log);
-        }
+    }
     
     /** Should print the fitness out in a computer-readable fashion, 
         using writer.println(...).  You might use
@@ -234,28 +234,28 @@ public abstract class Fitness implements Prototype, Comparable
         resultant string.
     */
     public void printFitness(final EvolutionState state,
-        final PrintWriter writer)
-        {
+                             final PrintWriter writer)
+    {
         writer.println( fitnessToString() );
-        }
+    }
 
     /** Reads in the fitness from a form outputted by fitnessToString() and thus
         printFitnessForHumans(...).  The default version of this method
         exits the program with an "unimplemented" error. */ 
     public void readFitness(final EvolutionState state, 
-        final LineNumberReader reader)
+                            final LineNumberReader reader)
         throws IOException
-        {
+    {
         state.output.fatal("readFitness(EvolutionState, DataOutput)  not implemented in " + this.getClass());
-        }
+    }
         
     /** Print to a string the fitness in a fashion readable by humans, and not intended
         to be parsed in again.  The default form
         simply calls toString(), but you'll probably want to override this to something else. */
     public String fitnessToStringForHumans()
-        {
+    {
         return toString();
-        }
+    }
         
     /** Print to a string the fitness in a fashion intended
         to be parsed in again via readFitness(...).
@@ -264,9 +264,9 @@ public abstract class Fitness implements Prototype, Comparable
         and you'll probably want to override this to something else.  When overriding, you
         may wish to check to see if the 'trials' variable is non-null, and issue an error if so.  */
     public String fitnessToString()
-        {
+    {
         return toString();
-        }
+    }
         
     /** Writes the binary form of an individual out to a DataOutput.  This is not for serialization:
         the object should only write out the data relevant to the object sufficient to rebuild it from a DataInput.
@@ -274,25 +274,25 @@ public abstract class Fitness implements Prototype, Comparable
         certain to also write the 'trials' variable as well.
     */
     public void writeFitness(final EvolutionState state,
-        final DataOutput dataOutput) throws IOException
-        {
+                             final DataOutput dataOutput) throws IOException
+    {
         state.output.fatal("writeFitness(EvolutionState, DataOutput) not implemented in " + this.getClass());
-        }
+    }
 
 
     /** Writes trials out to DataOutput */
     public void writeTrials(final EvolutionState state, final DataOutput dataOutput) throws IOException
-        {
+    {
         if (trials == null)
             dataOutput.writeInt(-1);
         else
             {
-            int len = trials.size();
-            dataOutput.writeInt(len);
-            for(int i = 0; i < len; i++)
-                dataOutput.writeDouble(((Double)(trials.get(i))).doubleValue());
+                int len = trials.size();
+                dataOutput.writeInt(len);
+                for(int i = 0; i < len; i++)
+                    dataOutput.writeDouble(((Double)(trials.get(i))).doubleValue());
             }
-        }
+    }
 
     /** Reads the binary form of an individual from a DataInput.  This is not for serialization:
         the object should only read in the data written out via printIndividual(state,dataInput).  
@@ -300,23 +300,23 @@ public abstract class Fitness implements Prototype, Comparable
         certain to also write the 'trials' variable as well.
     */
     public void readFitness(final EvolutionState state,
-        final DataInput dataInput) throws IOException
-        {
+                            final DataInput dataInput) throws IOException
+    {
         state.output.fatal("readFitness(EvolutionState, DataOutput) not implemented in " + this.getClass());
-        }
+    }
 
 
     /** Reads trials in from DataInput. */
     public void readTrials(final EvolutionState state, final DataInput dataInput) throws IOException
-        {
+    {
         int len = dataInput.readInt();
         if (len >= 0)
             {
-            trials = new ArrayList(len);
-            for(int i = 0; i < len; i++)
-                trials.add(new Double(dataInput.readDouble()));
+                trials = new ArrayList(len);
+                for(int i = 0; i < len; i++)
+                    trials.add(new Double(dataInput.readDouble()));
             }
-        }
+    }
 
     /** Given another Fitness, 
         returns true if the trial which produced my current context is "better" in fitness than
@@ -326,24 +326,24 @@ public abstract class Fitness implements Prototype, Comparable
         need to override this method.
     */
     public boolean contextIsBetterThan(Fitness other)
-        {
+    {
         if (other.trials == null) return true;  // I win
         else if (trials == null) return false;  // he wins
         return bestTrial(trials) < bestTrial(other.trials);
-        }
+    }
 
     double bestTrial(ArrayList l)
-        {
+    {
         if (l == null || l.size() == 0) return Double.NEGATIVE_INFINITY;
         double best = ((Double)(l.get(0))).doubleValue();
         int len = l.size();
         for (int i = 1 ; i < len; i ++)
             {
-            double next = ((Double)(l.get(i))).doubleValue();
-            if (next > best) best = next;
+                double next = ((Double)(l.get(i))).doubleValue();
+                if (next > best) best = next;
             }
         return best;
-        }
+    }
 
     /** Merges the other fitness into this fitness.  May destroy the other Fitness in the process.
         This method is typically called by coevolution in combination with distributed evauation where
@@ -360,89 +360,89 @@ public abstract class Fitness implements Prototype, Comparable
         is what sim.eval.Job presently does in its method copyIndividualsForward().
     */
     public void merge(EvolutionState state, Fitness other)
-        {
+    {
         // first let's merge trials.  We assume they're Doubles
                 
         if (other.trials == null) return;  // I win
         else if (trials == null)  // he wins
             {
-            trials = other.trials;                              // just steal him
-            context = other.getContext();       // grab his context
+                trials = other.trials;                              // just steal him
+                context = other.getContext();       // grab his context
             }
         else  // gotta concatenate
             {
-            // first question: who has the best context?
-            if (!contextIsBetterThan(other))    // other is beter
-                context = other.getContext();
+                // first question: who has the best context?
+                if (!contextIsBetterThan(other))    // other is beter
+                    context = other.getContext();
                         
-            // now concatenate the trials
-            trials.addAll(other.trials);
+                // now concatenate the trials
+                trials.addAll(other.trials);
             }
-        }
+    }
                 
 
     public Object clone()
-        {
+    {
         try 
             {
-            Fitness f = (Fitness)(super.clone());
-            if (f.trials != null) f.trials = new ArrayList(trials);  // we can do a light clone because trials must be immutable
-            f.setContext(f.getContext()); // deep-clones and removes context just in case
-            return f;
+                Fitness f = (Fitness)(super.clone());
+                if (f.trials != null) f.trials = new ArrayList(trials);  // we can do a light clone because trials must be immutable
+                f.setContext(f.getContext()); // deep-clones and removes context just in case
+                return f;
             }
         catch (CloneNotSupportedException e) 
             { throw new InternalError(); } // never happens
-        }
+    }
 
 
     public void setup(EvolutionState state, Parameter base)
-        {
+    {
         // by default does nothing
-        }
+    }
 
     /**
        Returns -1 if I am FITTER than the other Fitness, 1 if I am LESS FIT than the other Fitness,
        and 0 if we are equivalent.
     */
     public int compareTo(Object o)
-        {
+    {
         Fitness other = (Fitness) o;
         if (this.betterThan(other)) return -1;
         if (other.betterThan(this)) return 1;
         return 0;
-        }
+    }
         
     /** Sets the fitness to be the same value as the best of the provided fitnesses.  This method calls
         setToMeanOf(...), so if that method is unimplemented, this method will also fail.  */
     public void setToBestOf(EvolutionState state, Fitness[] fitnesses)
-        {
+    {
         Fitness[] f2 = (Fitness[])(fitnesses.clone());
         Arrays.sort(f2);
         setToMeanOf(state, new Fitness[] { f2[0] });
-        }
+    }
 
     /** Sets the fitness to be the same value as the mean of the provided fitnesses.  The default
         version of this method exits with an "unimplemented" error; you should override this. */
     public void setToMeanOf(EvolutionState state, Fitness[] fitnesses)
-        {
+    {
         state.output.fatal("setToMeanOf(EvolutionState, Fitness[]) not implemented in " + this.getClass());
-        }
+    }
 
     /** Sets the fitness to be the median of the provided fitnesses.  This method calls
         setToMeanOf(...), so if that method is unimplemented, this method will also fail. */
     public void setToMedianOf(EvolutionState state, Fitness[] fitnesses)
-        {
+    {
         Fitness[] f2 = (Fitness[])(fitnesses.clone());
         Arrays.sort(f2);
         if (f2.length % 2 == 1)
             {
-            setToMeanOf(state, new Fitness[] { f2[f2.length / 2] });   // for example, 5/2 = 2, and 0, 1, *2*, 3, 4
+                setToMeanOf(state, new Fitness[] { f2[f2.length / 2] });   // for example, 5/2 = 2, and 0, 1, *2*, 3, 4
             }
         else
             {
-            setToMeanOf(state, new Fitness[] { f2[f2.length/2 - 1], f2[f2.length/2] });  // for example, 6/2 = 3, and 0, 1, *2*, *3*, 4, 5
+                setToMeanOf(state, new Fitness[] { f2[f2.length/2 - 1], f2[f2.length/2] });  // for example, 6/2 = 3, and 0, 1, *2*, *3*, 4, 5
             }
-        }
-
     }
+
+}
 

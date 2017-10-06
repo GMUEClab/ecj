@@ -35,7 +35,7 @@ import ec.util.*;
 */
  
 public class RandomRestarts extends Statistics
-    {
+{
     public static final String P_RESTART_TYPE = "restart-type";
     public static final String P_RESTART_UPPERBOUND = "restart-upper-bound";
     public static final String P_START = "start";
@@ -48,7 +48,7 @@ public class RandomRestarts extends Statistics
 
     /** Gets the clock ticking. */
     public void setup( final EvolutionState state, final Parameter base )
-        {
+    {
         super.setup( state, base );
 
         restartType = state.parameters.getString(base.push(P_RESTART_TYPE),  null);
@@ -60,9 +60,9 @@ public class RandomRestarts extends Statistics
 
         if (state.parameters.exists(base.push(P_START), null))
             {
-            start = state.parameters.getInt(base.push(P_START), null, 0);
-            if (start < 0) 
-                state.output.fatal("Start value must be >= 0", base.push(P_START));
+                start = state.parameters.getInt(base.push(P_START), null, 0);
+                if (start < 0) 
+                    state.output.fatal("Start value must be >= 0", base.push(P_START));
             }
         else start = 1;
 
@@ -71,7 +71,7 @@ public class RandomRestarts extends Statistics
                         
         if( !restartType.equals( "random" ) && !restartType.equals( "fixed" ) )
             state.output.fatal("Parameter must be either 'fixed' or 'random'.", base.push(P_RESTART_TYPE));
-        }
+    }
 
     /**
      * Checks the clock; if it's time to restart, we repopulate the population. 
@@ -80,41 +80,41 @@ public class RandomRestarts extends Statistics
      * If it's not time yet, the clock goes tick.
      */
     public void preEvaluationStatistics( final EvolutionState state )
-        {
+    {
         super.preEvaluationStatistics(state);
         if (state.generation == start) resetClock(state); // first time only
         if (state.generation >= start) possiblyRestart(state);
-        }
+    }
 
     void possiblyRestart(EvolutionState state)
-        {
+    {
         countdown--;
         Subpopulation currentSubp;
         // time to restart!
         if( countdown == 0 )
             {
-            state.output.message( "Restarting the population prior to evaluating generation " + state.generation );
-            // for each subpopulation
-            for(int subp = 0; subp < state.population.subpops.size(); subp++ )
-                {
-                currentSubp = state.population.subpops.get(subp);
-                boolean temp = currentSubp.loadInds;
-                // disable loadInds so we generate candidates randomly
-                currentSubp.loadInds = false;
-                currentSubp.populate( state, 0 );
-                currentSubp.loadInds = temp;
-                }
-            this.resetClock( state );
+                state.output.message( "Restarting the population prior to evaluating generation " + state.generation );
+                // for each subpopulation
+                for(int subp = 0; subp < state.population.subpops.size(); subp++ )
+                    {
+                        currentSubp = state.population.subpops.get(subp);
+                        boolean temp = currentSubp.loadInds;
+                        // disable loadInds so we generate candidates randomly
+                        currentSubp.loadInds = false;
+                        currentSubp.populate( state, 0 );
+                        currentSubp.loadInds = temp;
+                    }
+                this.resetClock( state );
             }
-        }
+    }
 
     void resetClock( final EvolutionState state )
-        {
+    {
         if(restartType.equals( "fixed" ))
             countdown = upperbound;
         else
             // might need to fix random index to support multithreading
             countdown = state.random[0].nextInt( upperbound) + 1;
-        }
     }
+}
 

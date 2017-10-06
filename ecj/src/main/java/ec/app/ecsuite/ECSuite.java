@@ -42,7 +42,7 @@ import ec.vector.*;
 */
 
 public class ECSuite extends Problem implements SimpleProblemForm
-    {
+{
     public static final String P_SEED = "seed";
     public static final String P_WHICH_PROBLEM = "type";
 
@@ -93,118 +93,118 @@ public class ECSuite extends Problem implements SimpleProblemForm
     public int problemType = PROB_ROSENBROCK;  // defaults on Rosenbrock
 
     public static final String problemName[] = new String[]
-    {
-    V_ROSENBROCK,
-    V_RASTRIGIN,
-    V_SPHERE,
-    V_STEP,
-    V_NOISY_QUARTIC,
-    V_BOOTH,
-    V_GRIEWANK,
-    V_MEDIAN,
-    V_SUM,
-    V_PRODUCT,
-    V_SCHWEFEL,
-    V_MIN,
-    V_ROTATED_RASTRIGIN,
-    V_ROTATED_SCHWEFEL,
-    V_ROTATED_GRIEWANK,
-    V_LANGERMAN,
-    V_LENNARDJONES,
-    V_LUNACEK
-    };
+        {
+            V_ROSENBROCK,
+            V_RASTRIGIN,
+            V_SPHERE,
+            V_STEP,
+            V_NOISY_QUARTIC,
+            V_BOOTH,
+            V_GRIEWANK,
+            V_MEDIAN,
+            V_SUM,
+            V_PRODUCT,
+            V_SCHWEFEL,
+            V_MIN,
+            V_ROTATED_RASTRIGIN,
+            V_ROTATED_SCHWEFEL,
+            V_ROTATED_GRIEWANK,
+            V_LANGERMAN,
+            V_LENNARDJONES,
+            V_LUNACEK
+        };
 
     public static final double minRange[] = new double[]
-    {
-    -2.048,         // rosenbrock
-    -5.12,          // rastrigin
-    -5.12,          // sphere
-    -5.12,          // step
-    -1.28,          // noisy quartic
-    -5.12,          // booth
-    -600.0,         // griewank
-    0.0,            // median
-    0.0,            // sum
-    0.0,            // product
-    -512.03,        // schwefel
-    0.0,            // min
-    -5.12,          // rotated-rastrigin
-    -512.03,        // rotated-schwefel
-    -600.0,         // rotated-griewank
-    0,              // langerman
-    -3.0,           // lennard-jones
-    -5.0,       // lunacek
-    };
+        {
+            -2.048,         // rosenbrock
+            -5.12,          // rastrigin
+            -5.12,          // sphere
+            -5.12,          // step
+            -1.28,          // noisy quartic
+            -5.12,          // booth
+            -600.0,         // griewank
+            0.0,            // median
+            0.0,            // sum
+            0.0,            // product
+            -512.03,        // schwefel
+            0.0,            // min
+            -5.12,          // rotated-rastrigin
+            -512.03,        // rotated-schwefel
+            -600.0,         // rotated-griewank
+            0,              // langerman
+            -3.0,           // lennard-jones
+            -5.0,       // lunacek
+        };
 
     public static final double maxRange[] = new double[]
-    {
-    2.048,          // rosenbrock
-    5.12,           // rastrigin
-    5.12,           // sphere
-    5.12,           // step
-    1.28,           // noisy quartic
-    5.12,           // booth
-    600.0,          // griewank
-    1.0,            // median
-    1.0,            // sum
-    2.0,            // product
-    511.97,         // schwefel
-    1.0,            // min
-    5.12,           // rotated-rastrigin
-    511.97,         // rotated-schwefel
-    600.0,          // rotated-griewank
-    10,             // langerman
-    3.0,                                // lennard-jones
-    5.0                 // lunacek
-    };
+        {
+            2.048,          // rosenbrock
+            5.12,           // rastrigin
+            5.12,           // sphere
+            5.12,           // step
+            1.28,           // noisy quartic
+            5.12,           // booth
+            600.0,          // griewank
+            1.0,            // median
+            1.0,            // sum
+            2.0,            // product
+            511.97,         // schwefel
+            1.0,            // min
+            5.12,           // rotated-rastrigin
+            511.97,         // rotated-schwefel
+            600.0,          // rotated-griewank
+            10,             // langerman
+            3.0,                                // lennard-jones
+            5.0                 // lunacek
+        };
 
     public long seed;  // rotation seed for rotation problems
 
     boolean alreadyChecked = false;
     public void checkRange(EvolutionState state, int problem, double[] genome)
-        {
+    {
         if (alreadyChecked || state.generation > 0) return;
         alreadyChecked = true;
 
         for(int i = 0; i < state.population.subpops.size(); i++)
             {
-            if (!(state.population.subpops.get(i).species instanceof FloatVectorSpecies))
-                {
-                state.output.fatal("ECSuite requires species " + i + " to be a FloatVectorSpecies, but it is a: " +  state.population.subpops.get(i).species);
-                }
-            FloatVectorSpecies species = (FloatVectorSpecies)(state.population.subpops.get(i).species);
-            for(int k = 0; k < genome.length; k++)
-                {
-                if (species.minGene(k) != minRange[problem] ||
-                    species.maxGene(k) != maxRange[problem])
+                if (!(state.population.subpops.get(i).species instanceof FloatVectorSpecies))
                     {
-                    state.output.warning("Gene range is nonstandard for problem " + problemName[problem] + ".\nFirst occurrence: Subpopulation " + i + " Gene " + k +
-                        " range was [" + species.minGene(k) + ", " + species.maxGene(k) +
-                        "], expected [" + minRange[problem] + ", " + maxRange[problem] + "]");
-                    return;  // done here
+                        state.output.fatal("ECSuite requires species " + i + " to be a FloatVectorSpecies, but it is a: " +  state.population.subpops.get(i).species);
                     }
-                }
+                FloatVectorSpecies species = (FloatVectorSpecies)(state.population.subpops.get(i).species);
+                for(int k = 0; k < genome.length; k++)
+                    {
+                        if (species.minGene(k) != minRange[problem] ||
+                            species.maxGene(k) != maxRange[problem])
+                            {
+                                state.output.warning("Gene range is nonstandard for problem " + problemName[problem] + ".\nFirst occurrence: Subpopulation " + i + " Gene " + k +
+                                                     " range was [" + species.minGene(k) + ", " + species.maxGene(k) +
+                                                     "], expected [" + minRange[problem] + ", " + maxRange[problem] + "]");
+                                return;  // done here
+                            }
+                    }
             }
 
         if (problemType == PROB_LANGERMAN)
             {
-            // Langerman has a maximum genome size of 10
-            if (genome.length > 10)
-                state.output.fatal("The Langerman function requires that the genome size be a value from 1 to 10 inclusive.  It is presently " + genome.length);
+                // Langerman has a maximum genome size of 10
+                if (genome.length > 10)
+                    state.output.fatal("The Langerman function requires that the genome size be a value from 1 to 10 inclusive.  It is presently " + genome.length);
             }
 
         else if (problemType == PROB_LENNARDJONES)
             {
-            // Lennard-Jones requires that its genomes be multiples of 3
-            if (genome.length % 3 != 0)
-                state.output.fatal("The Lennard-Jones function requires that the genome size be a multiple of 3.  It is presently " + genome.length);
+                // Lennard-Jones requires that its genomes be multiples of 3
+                if (genome.length % 3 != 0)
+                    state.output.fatal("The Lennard-Jones function requires that the genome size be a multiple of 3.  It is presently " + genome.length);
             }
 
-        }
+    }
 
     // nothing....
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state, base);
         String wp = state.parameters.getStringWithDefault( base.push( P_WHICH_PROBLEM ), null, "" );
         if( wp.compareTo( V_ROSENBROCK ) == 0 || wp.compareTo (V_F2)==0 )
@@ -223,8 +223,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
             problemType = PROB_GRIEWANK;
         else if (wp.compareTo( V_GRIEWANGK ) == 0 )
             {
-            state.output.warning("Incorrect parameter name (\"griewangk\") used, should be \"griewank\"", base.push( P_WHICH_PROBLEM ), null );
-            problemType = PROB_GRIEWANK;
+                state.output.warning("Incorrect parameter name (\"griewangk\") used, should be \"griewank\"", base.push( P_WHICH_PROBLEM ), null );
+                problemType = PROB_GRIEWANK;
             }
         else if( wp.compareTo( V_MEDIAN ) == 0 )
             problemType = PROB_MEDIAN;
@@ -250,38 +250,38 @@ public class ECSuite extends Problem implements SimpleProblemForm
             problemType = PROB_LUNACEK ;
 
         else state.output.fatal(
-            "Invalid value for parameter, or parameter not found.\n" +
-            "Acceptable values are:\n" +
-            "  " + V_ROSENBROCK + " (or " + V_F2 + ")\n" +
-            "  " + V_RASTRIGIN + "\n" +
-            "  " + V_SPHERE + " (or " + V_F1 + ")\n" +
-            "  " + V_STEP + " (or " + V_F3 + ")\n" +
-            "  " + V_NOISY_QUARTIC + " (or " + V_F4 + ")\n"+
-            "  " + V_BOOTH + "\n" +
-            "  " + V_GRIEWANK + "\n" +
-            "  " + V_MEDIAN + "\n" +
-            "  " + V_SUM + "\n" +
-            "  " + V_PRODUCT + "\n" +
-            "  " + V_SCHWEFEL + "\n"+
-            "  " + V_MIN + "\n"+
-            "  " + V_ROTATED_RASTRIGIN + "\n" +
-            "  " + V_ROTATED_SCHWEFEL + "\n" +
-            "  " + V_ROTATED_GRIEWANK + "\n" +
-            "  " + V_LANGERMAN + "\n" +
-            "  " + V_LENNARDJONES + "\n" +
-            "  " + V_LUNACEK + "\n",
-            base.push( P_WHICH_PROBLEM ) );
+                                "Invalid value for parameter, or parameter not found.\n" +
+                                "Acceptable values are:\n" +
+                                "  " + V_ROSENBROCK + " (or " + V_F2 + ")\n" +
+                                "  " + V_RASTRIGIN + "\n" +
+                                "  " + V_SPHERE + " (or " + V_F1 + ")\n" +
+                                "  " + V_STEP + " (or " + V_F3 + ")\n" +
+                                "  " + V_NOISY_QUARTIC + " (or " + V_F4 + ")\n"+
+                                "  " + V_BOOTH + "\n" +
+                                "  " + V_GRIEWANK + "\n" +
+                                "  " + V_MEDIAN + "\n" +
+                                "  " + V_SUM + "\n" +
+                                "  " + V_PRODUCT + "\n" +
+                                "  " + V_SCHWEFEL + "\n"+
+                                "  " + V_MIN + "\n"+
+                                "  " + V_ROTATED_RASTRIGIN + "\n" +
+                                "  " + V_ROTATED_SCHWEFEL + "\n" +
+                                "  " + V_ROTATED_GRIEWANK + "\n" +
+                                "  " + V_LANGERMAN + "\n" +
+                                "  " + V_LENNARDJONES + "\n" +
+                                "  " + V_LUNACEK + "\n",
+                                base.push( P_WHICH_PROBLEM ) );
         
         seed = state.parameters.getLongWithDefault( base.push( P_SEED ), null, ROTATION_SEED );
         if (seed <= 0)
             state.output.fatal("If a rotation seed is provided, it must be > 0", base.push( P_SEED ), null);
-        }
+    }
 
     public void evaluate(final EvolutionState state,
-        final Individual ind,
-        final int subpopulation,
-        final int threadnum)
-        {
+                         final Individual ind,
+                         final int subpopulation,
+                         final int threadnum)
+    {
         if (ind.evaluated)  // don't bother reevaluating
             return;
 
@@ -304,24 +304,24 @@ public class ECSuite extends Problem implements SimpleProblemForm
         // set the fitness appropriately
         if (fit < (0.0 - Double.MAX_VALUE))  // uh oh -- can be caused by Product for example
             {
-            ((SimpleFitness)(ind.fitness)).setFitness( state, 0.0 - Double.MAX_VALUE, isOptimal );
-            state.output.warnOnce("'Product' type used: some fitnesses are negative infinity, setting to lowest legal negative number.");
+                ((SimpleFitness)(ind.fitness)).setFitness( state, 0.0 - Double.MAX_VALUE, isOptimal );
+                state.output.warnOnce("'Product' type used: some fitnesses are negative infinity, setting to lowest legal negative number.");
             }
         else if (fit > Double.MAX_VALUE)  // uh oh -- can be caused by Product for example
             {
-            ((SimpleFitness)(ind.fitness)).setFitness( state, Double.MAX_VALUE, isOptimal );
-            state.output.warnOnce("'Product' type used: some fitnesses are negative infinity, setting to lowest legal negative number.");
+                ((SimpleFitness)(ind.fitness)).setFitness( state, Double.MAX_VALUE, isOptimal );
+                state.output.warnOnce("'Product' type used: some fitnesses are negative infinity, setting to lowest legal negative number.");
             }
         else
             {
-            ((SimpleFitness)(ind.fitness)).setFitness( state, fit, isOptimal );
+                ((SimpleFitness)(ind.fitness)).setFitness( state, fit, isOptimal );
             }
         ind.evaluated = true;
-        }
+    }
 
 
     public boolean isOptimal(int function, double fitness)
-        {
+    {
         switch(problemType)
             {
             case PROB_ROSENBROCK:
@@ -347,10 +347,10 @@ public class ECSuite extends Problem implements SimpleProblemForm
             default:
                 return false;
             }
-        }
+    }
 
     public double function(EvolutionState state, int function, double[] genome, int threadnum)
-        {
+    {
 
         checkRange(state, function, genome);
 
@@ -361,9 +361,9 @@ public class ECSuite extends Problem implements SimpleProblemForm
             case PROB_ROSENBROCK:
                 for( int i = 1 ; i < len ; i++ )
                     {
-                    double gj = genome[i-1] ;
-                    double gi = genome[i] ;
-                    value += (1 - gj) * (1 - gj) + 100 * (gi - gj*gj) * (gi - gj*gj);
+                        double gj = genome[i-1] ;
+                        double gi = genome[i] ;
+                        value += (1 - gj) * (1 - gj) + 100 * (gi - gj*gj) * (gi - gj*gj);
                     }
                 return -value;
 
@@ -373,8 +373,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
                 value = len * A;
                 for( int i = 0 ; i < len ; i++ )
                     {
-                    double gi = genome[i]  ;
-                    value += ( gi*gi - A * Math.cos( 2 * Math.PI * gi ) );
+                        double gi = genome[i]  ;
+                        value += ( gi*gi - A * Math.cos( 2 * Math.PI * gi ) );
                     }
                 return -value;
 
@@ -382,8 +382,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
             case PROB_SPHERE:
                 for( int i = 0 ; i < len ; i++ )
                     {
-                    double gi = genome[i] ;
-                    value += gi * gi;
+                        double gi = genome[i] ;
+                        value += gi * gi;
                     }
                 return -value;
 
@@ -391,9 +391,9 @@ public class ECSuite extends Problem implements SimpleProblemForm
             case PROB_STEP:
                 for( int i = 0 ; i < len ; i++ )
                     {
-                    double gi = genome[i] ;
-                    // The reason for the 6 is that this is the equation De Jong used in the De Jong Test Suite
-                    value += 6 + Math.floor( gi );
+                        double gi = genome[i] ;
+                        // The reason for the 6 is that this is the equation De Jong used in the De Jong Test Suite
+                        value += 6 + Math.floor( gi );
                     }
                 return -value;
 
@@ -401,8 +401,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
             case PROB_NOISY_QUARTIC:
                 for( int i = 0 ; i < len ; i++ )
                     {
-                    double gi = genome[i] ;
-                    value += (i+1)*(gi*gi*gi*gi) + state.random[threadnum].nextGaussian();  // gauss(0,1)
+                        double gi = genome[i] ;
+                        value += (i+1)*(gi*gi*gi*gi) + state.random[threadnum].nextGaussian();  // gauss(0,1)
                     }
                 return -value;
 
@@ -422,9 +422,9 @@ public class ECSuite extends Problem implements SimpleProblemForm
                 double prod = 1;
                 for( int i = 0 ; i < len ; i++ )
                     {
-                    double gi = genome[i] ;
-                    value += (gi*gi)/4000.0;
-                    prod *= Math.cos( gi / Math.sqrt(i+1) );
+                        double gi = genome[i] ;
+                        value += (gi*gi)/4000.0;
+                        prod *= Math.cos( gi / Math.sqrt(i+1) );
                     }
                 value -= prod;
                 return -value;
@@ -433,8 +433,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
             case PROB_SCHWEFEL:
                 for( int i = 0 ; i < len ; i++ )
                     {
-                    double gi = genome[i] ;
-                    value += -gi * Math.sin(Math.sqrt(Math.abs(gi)));
+                        double gi = genome[i] ;
+                        value += -gi * Math.sin(Math.sqrt(Math.abs(gi)));
                     }
                 return -value;
 
@@ -449,8 +449,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
                 value = 0.0;
                 for( int i = 0 ; i < len ; i++ )
                     {
-                    double gi = genome[i] ;
-                    value += gi;
+                        double gi = genome[i] ;
+                        value += gi;
                     }
                 return value;                                                                   // note positive
 
@@ -458,8 +458,8 @@ public class ECSuite extends Problem implements SimpleProblemForm
                 value = genome[0] ;
                 for( int i = 1 ; i < len ; i++ )
                     {
-                    double gi = genome[i] ;
-                    if (value > gi) value = gi;
+                        double gi = genome[i] ;
+                        if (value > gi) value = gi;
                     }
                 return value;                                                                   // note positive
 
@@ -467,108 +467,108 @@ public class ECSuite extends Problem implements SimpleProblemForm
                 value = 1.0;
                 for( int i = 0 ; i < len ; i++ )
                     {
-                    double gi = genome[i] ;
-                    value *= gi;
+                        double gi = genome[i] ;
+                        value *= gi;
                     }
                 return value;                                                                   // note positive
 
             case PROB_ROTATED_RASTRIGIN:
                 {
-                synchronized(rotationMatrix)            // synchronizations are rare in ECJ.  :-(
-                    {
-                    if (rotationMatrix[0] == null)
-                        rotationMatrix[0] = buildRotationMatrix(state, seed, (int)len);
-                    }
+                    synchronized(rotationMatrix)            // synchronizations are rare in ECJ.  :-(
+                        {
+                            if (rotationMatrix[0] == null)
+                                rotationMatrix[0] = buildRotationMatrix(state, seed, (int)len);
+                        }
 
-                // now we know the matrix exists rotate the matrix and return its value
-                double[] val = mul(rotationMatrix[0], genome);
-                return function(state, PROB_RASTRIGIN, val, threadnum);
+                    // now we know the matrix exists rotate the matrix and return its value
+                    double[] val = mul(rotationMatrix[0], genome);
+                    return function(state, PROB_RASTRIGIN, val, threadnum);
                 }
 
             case PROB_ROTATED_SCHWEFEL:
                 {
-                synchronized(rotationMatrix)            // synchronizations are rare in ECJ.  :-(
-                    {
-                    if (rotationMatrix[0] == null)
-                        rotationMatrix[0] = buildRotationMatrix(state, seed, (int)len);
-                    }
+                    synchronized(rotationMatrix)            // synchronizations are rare in ECJ.  :-(
+                        {
+                            if (rotationMatrix[0] == null)
+                                rotationMatrix[0] = buildRotationMatrix(state, seed, (int)len);
+                        }
 
-                // now we know the matrix exists rotate the matrix and return its value
-                double[] val = mul(rotationMatrix[0], genome);
-                return function(state, PROB_SCHWEFEL, val, threadnum);
+                    // now we know the matrix exists rotate the matrix and return its value
+                    double[] val = mul(rotationMatrix[0], genome);
+                    return function(state, PROB_SCHWEFEL, val, threadnum);
                 }
 
             case PROB_ROTATED_GRIEWANK:
                 {
-                synchronized(rotationMatrix)            // synchronizations are rare in ECJ.  :-(
-                    {
-                    if (rotationMatrix[0] == null)
-                        rotationMatrix[0] = buildRotationMatrix(state, seed, (int)len);
-                    }
+                    synchronized(rotationMatrix)            // synchronizations are rare in ECJ.  :-(
+                        {
+                            if (rotationMatrix[0] == null)
+                                rotationMatrix[0] = buildRotationMatrix(state, seed, (int)len);
+                        }
 
-                // now we know the matrix exists rotate the matrix and return its value
-                double[] val = mul(rotationMatrix[0], genome);
-                return function(state, PROB_GRIEWANK, val, threadnum);
+                    // now we know the matrix exists rotate the matrix and return its value
+                    double[] val = mul(rotationMatrix[0], genome);
+                    return function(state, PROB_GRIEWANK, val, threadnum);
                 }
 
             case PROB_LANGERMAN:
                 {
-                return 0.0 - langerman(genome);
+                    return 0.0 - langerman(genome);
                 }
 
             case PROB_LENNARDJONES:
                 {
-                int numAtoms = genome.length / 3;
-                double v = 0.0 ;
+                    int numAtoms = genome.length / 3;
+                    double v = 0.0 ;
 
-                for(int i = 0 ; i < numAtoms - 1 ; i++ )
-                    {
-                    for(int j = i + 1 ; j < numAtoms ; j++ )
+                    for(int i = 0 ; i < numAtoms - 1 ; i++ )
                         {
-                        // double d = dist(genome, i, j);
-                        double a = genome[i * 3] - genome[j * 3];
-                        double b = genome[i * 3 + 1] - genome[j * 3 + 1];
-                        double c = genome[i * 3 + 2] - genome[j * 3 + 2];
+                            for(int j = i + 1 ; j < numAtoms ; j++ )
+                                {
+                                    // double d = dist(genome, i, j);
+                                    double a = genome[i * 3] - genome[j * 3];
+                                    double b = genome[i * 3 + 1] - genome[j * 3 + 1];
+                                    double c = genome[i * 3 + 2] - genome[j * 3 + 2];
 
-                        double d = Math.sqrt(a * a + b * b + c * c);
+                                    double d = Math.sqrt(a * a + b * b + c * c);
 
-                        double r12 = Math.pow(d, -12.0);
-                        double r6 = Math.pow(d, -6.0);
-                        double e = r12 - r6 ;
-                        v += e ;
+                                    double r12 = Math.pow(d, -12.0);
+                                    double r6 = Math.pow(d, -6.0);
+                                    double e = r12 - r6 ;
+                                    v += e ;
+                                }
                         }
-                    }
-                v *= -4.0 ;
-                return v;
+                    v *= -4.0 ;
+                    return v;
                 }
 
             case PROB_LUNACEK:
                 {
-                // Lunacek function: for more information, please see --
-                // http://arxiv.org/pdf/1207.4318.pdf
-                // http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.154.1657
-                // http://www.cs.unm.edu/~neal.holts/dga/benchmarkFunction/lunacek.html
-                // http://www.cs.colostate.edu/sched/pubs/ppsn08impact.pdf
+                    // Lunacek function: for more information, please see --
+                    // http://arxiv.org/pdf/1207.4318.pdf
+                    // http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.154.1657
+                    // http://www.cs.unm.edu/~neal.holts/dga/benchmarkFunction/lunacek.html
+                    // http://www.cs.colostate.edu/sched/pubs/ppsn08impact.pdf
                                 
-                double s = 1.0 - (1.0 / (2.0 * Math.sqrt(genome.length + 20.0) - 8.2)) ;
+                    double s = 1.0 - (1.0 / (2.0 * Math.sqrt(genome.length + 20.0) - 8.2)) ;
                 
-                // depth of the sphere, could be 1, 2, 3, or 4. 1 is deeper than 4
-                // this could be also be a fraction I guess.
-                double d = 1.0 ; 
-                double mu1 = 2.5 ;
-                double mu2 = -1.0 * Math.sqrt(Math.abs((mu1 * mu1 - d) / s));  // probably don't need the abs
-                double sum1 = 0.0;
-                double sum2 = 0.0;
-                double sum3 = 0.0;
+                    // depth of the sphere, could be 1, 2, 3, or 4. 1 is deeper than 4
+                    // this could be also be a fraction I guess.
+                    double d = 1.0 ; 
+                    double mu1 = 2.5 ;
+                    double mu2 = -1.0 * Math.sqrt(Math.abs((mu1 * mu1 - d) / s));  // probably don't need the abs
+                    double sum1 = 0.0;
+                    double sum2 = 0.0;
+                    double sum3 = 0.0;
 
-                for(int i = 0 ; i < genome.length ; i++)
-                    {
-                    double genomei = genome[i];
-                    sum1 += (genomei - mu1)*(genomei - mu1) ;
-                    sum2 += (genomei - mu2)*(genomei - mu2) ;
-                    sum3 += 1.0 - Math.cos(2.0 * Math.PI * (genomei - mu1));
-                    }
-                return Math.min(sum1, d * genome.length + s * sum2) + 10.0 * sum3 ;
+                    for(int i = 0 ; i < genome.length ; i++)
+                        {
+                            double genomei = genome[i];
+                            sum1 += (genomei - mu1)*(genomei - mu1) ;
+                            sum2 += (genomei - mu2)*(genomei - mu2) ;
+                            sum3 += 1.0 - Math.cos(2.0 * Math.PI * (genomei - mu1));
+                        }
+                    return Math.min(sum1, d * genome.length + s * sum2) + 10.0 * sum3 ;
                 }
                         
             default:
@@ -576,12 +576,12 @@ public class ECSuite extends Problem implements SimpleProblemForm
                 return 0;  // never happens
             }
 
-        }
+    }
 
     // magic arrays for the Langerman problem
 
     private double[][] afox10 =
-        {
+    {
         {9.681, 0.667, 4.783, 9.095, 3.517, 9.325, 6.544, 0.211, 5.122, 2.020},
         {9.400, 2.041, 3.788, 7.931, 2.882, 2.672, 3.568, 1.284, 7.033, 7.374},
         {8.025, 9.152, 5.114, 7.621, 4.564, 4.711, 2.996, 6.126, 0.734, 4.982},
@@ -612,39 +612,39 @@ public class ECSuite extends Problem implements SimpleProblemForm
         {4.263, 1.074, 7.286, 5.599, 8.291, 5.200, 9.214, 8.272, 4.398, 4.506},
         {9.496, 4.830, 3.150, 8.270, 5.079, 1.231, 5.731, 9.494, 1.883, 9.732},
         {4.138, 2.562, 2.532, 9.661, 5.611, 5.500, 6.886, 2.341, 9.699, 6.500}
-        };
+    };
 
     private double[] cfox10 =
-        {
+    {
         0.806,  0.517,  1.5,    0.908,  0.965,
         0.669,  0.524,  0.902,  0.531,  0.876,
         0.462,  0.491,  0.463,  0.714,  0.352,
         0.869,  0.813,  0.811,  0.828,  0.964,
         0.789,  0.360,  0.369,  0.992,  0.332,
         0.817,  0.632,  0.883,  0.608,  0.326
-        };
+    };
 
     private double langerman(double genome[])
-        {
+    {
 
         double  sum = 0 ;
 
         for ( int i = 0 ; i < 30 ; i++ )
             {
-            // compute squared distance
-            double distsq = 0.0;
-            double t;
-            double[] afox10i = afox10[i];
-            for(int j = 0; j < genome.length; j++)
-                {
-                t = genome[j] - afox10i[j];
-                distsq += t * t;
-                }
+                // compute squared distance
+                double distsq = 0.0;
+                double t;
+                double[] afox10i = afox10[i];
+                for(int j = 0; j < genome.length; j++)
+                    {
+                        t = genome[j] - afox10i[j];
+                        distsq += t * t;
+                    }
 
-            sum += cfox10[i] * Math.exp(-distsq / Math.PI) * Math.cos(distsq * Math.PI);
+                sum += cfox10[i] * Math.exp(-distsq / Math.PI) * Math.cos(distsq * Math.PI);
             }
         return 0 - sum;
-        }
+    }
 
 
 
@@ -669,49 +669,49 @@ public class ECSuite extends Problem implements SimpleProblemForm
 
     /** Dot product between two column vectors.  Does not modify the original vectors. */
     public static double dot(double[] x, double[] y)
-        {
+    {
         double val = 0;
         for(int i =0; i < x.length; i++)
             val += x[i] * y[i];
         return val;
-        }
+    }
 
     /** Multiply a column vector against a matrix[row][column].  Does not modify the original vector or matrix. */
     public static double[] mul(double [/* row */ ][ /* column */] matrix, double[] x)
-        {
+    {
         double[] val = new double[matrix.length];
         for(int i = 0; i < matrix.length; i++)
             {
-            double sum = 0.0;
-            double[] m = matrix[i];
-            for(int j = 0; j < m.length; j++)
-                sum += m[j] * x[j];
-            val[i] = sum;
+                double sum = 0.0;
+                double[] m = matrix[i];
+                for(int j = 0; j < m.length; j++)
+                    sum += m[j] * x[j];
+                val[i] = sum;
             }
         return val;
-        }
+    }
 
     /** Scalar multiply against a column vector. Does not modify the original vector. */
     public static double[] scalarMul(double scalar, double[] x)
-        {
+    {
         double[] val = new double[x.length];
         for(int i =0; i < x.length; i++)
             val[i] = x[i] * scalar;
         return val;
-        }
+    }
 
     /** Subtract two column vectors.  Does not modify the original vectors. */
     public static double[] sub(double[] x, double[] y)
-        {
+    {
         double[] val = new double[x.length];
         for(int i =0; i < x.length; i++)
             val[i] = x[i] - y[i];
         return val;
-        }
+    }
 
     /** Normalize a column vector.  Does not modify the original vector. */
     public static double[] normalize(double[] x)
-        {
+    {
         double[] val = new double[x.length];
         double sumsq = 0;
         for(int i =0; i < x.length; i++)
@@ -720,7 +720,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
         for(int i =0; i < x.length; i++)
             val[i] = x[i] / sumsq;
         return val;
-        }
+    }
 
 
     /** Fixed rotation seed so all jobs use exactly the same rotation space. */
@@ -728,7 +728,7 @@ public class ECSuite extends Problem implements SimpleProblemForm
 
     /** Build an NxN rotation matrix[row][column] with a given seed. */
     public static double[ /* row */ ][ /* column */] buildRotationMatrix(EvolutionState state, long rotationSeed, int N)
-        {
+    {
         if (rotationSeed == ROTATION_SEED)
             state.output.warnOnce("Default rotation seed being used (" + rotationSeed + ")");
                 
@@ -746,22 +746,22 @@ public class ECSuite extends Problem implements SimpleProblemForm
         // build random values
         for(int i = 0; i < N; i++)
             {
-            // extract o[i] -> no
-            double[] no = new double[N];
-            for(int k=0; k < N; k++)
-                no[k] = o[i][k];
+                // extract o[i] -> no
+                double[] no = new double[N];
+                for(int k=0; k < N; k++)
+                    no[k] = o[i][k];
 
-            // go through o[i] and o[j], modifying no
-            for(int j = 0; j < i; j++)
-                {
-                double d = dot(o[i], o[j]);
-                double[] val = scalarMul(d, o[j]);
-                no = sub(no, val);
-                }
-            o[i] = normalize(no);
+                // go through o[i] and o[j], modifying no
+                for(int j = 0; j < i; j++)
+                    {
+                        double d = dot(o[i], o[j]);
+                        double[] val = scalarMul(d, o[j]);
+                        no = sub(no, val);
+                    }
+                o[i] = normalize(no);
             }
 
         return o;
-        }
-
     }
+
+}

@@ -49,7 +49,7 @@ import java.util.ArrayList;
  */
 
 public class Semantic extends GPProblem implements SimpleProblemForm
-    {
+{
 
     final static String P_PROBLEM_NAME = "problem_name";
     final static String P_SIZE = "size";
@@ -60,8 +60,8 @@ public class Semantic extends GPProblem implements SimpleProblemForm
     int problemSize;
     
     public void setup(final EvolutionState state,
-        final Parameter base)
-        {
+                      final Parameter base)
+    {
         // very important, remember this
         super.setup(state,base);
         Parameter fsSize = new Parameter(GPDefaults.P_GP).push(GPInitializer.P_FUNCTIONSETS).push("" + 0).push(GPFunctionSet.P_SIZE);
@@ -70,46 +70,46 @@ public class Semantic extends GPProblem implements SimpleProblemForm
         problemName = state.parameters.getString(base.push(P_PROBLEM_NAME), base.push(P_ORDER));
         if (!problemName.equals(P_ORDER) && !problemName.equals(P_MAJORITY))
             state.output.error("The problem name is unrecognized",
-                base.push(P_PROBLEM_NAME));
+                               base.push(P_PROBLEM_NAME));
 
         System.out.println("Problem name " + problemName);
         System.out.println("Problem size " + problemSize);
         state.output.exitIfErrors();
-        }
+    }
 
     public void evaluate(final EvolutionState state,
-        final Individual ind,
-        final int subpopulation,
-        final int threadnum)
-        {
+                         final Individual ind,
+                         final int subpopulation,
+                         final int threadnum)
+    {
         if (!ind.evaluated)  // don't bother reevaluating
             {
-            // trees[0].child is the root
+                // trees[0].child is the root
                 
-            ArrayList output = getSemanticOutput(((GPIndividual) ind).trees[0]);
+                ArrayList output = getSemanticOutput(((GPIndividual) ind).trees[0]);
                 
-            double score = 0.0;
-            for (int i = 0; i < output.size(); i++)
-                {
-                SemanticNode n = (SemanticNode) output.get(i);
-                if (n.value() == 'X')
+                double score = 0.0;
+                for (int i = 0; i < output.size(); i++)
                     {
-                    score += 1;
+                        SemanticNode n = (SemanticNode) output.get(i);
+                        if (n.value() == 'X')
+                            {
+                                score += 1;
+                            }
                     }
-                }
 
-            SimpleFitness f = ((SimpleFitness) ind.fitness);
-            f.setFitness(state, score, false);
-            ind.evaluated = true;
+                SimpleFitness f = ((SimpleFitness) ind.fitness);
+                f.setFitness(state, score, false);
+                ind.evaluated = true;
             }
-        }
+    }
 
     /**
      * @param t Tree to be "executed"
      * @return expressed output
      */
     ArrayList getSemanticOutput(GPTree t)
-        {
+    {
         ArrayList p = new ArrayList();
         ArrayList nodes = new ArrayList();
         
@@ -120,50 +120,50 @@ public class Semantic extends GPProblem implements SimpleProblemForm
         int nterminals = t.child.numNodes(GPNode.NODESEARCH_TERMINALS);
         for (int i = 0; i < nterminals; i++)
             {
-            nodes.add(t.child.nodeInPosition(i, GPNode.NODESEARCH_TERMINALS));
+                nodes.add(t.child.nodeInPosition(i, GPNode.NODESEARCH_TERMINALS));
             }
 
         if (problemName.equals(P_ORDER))
             {
-            // Order: first occurence counts
-            for (int i = 0; i < nodes.size(); i++)
-                {
-                SemanticNode node = (SemanticNode) nodes.get(i);
-                if (!nodeSameIndexExists(p, node.index()))
+                // Order: first occurence counts
+                for (int i = 0; i < nodes.size(); i++)
                     {
-                    p.add(node);
+                        SemanticNode node = (SemanticNode) nodes.get(i);
+                        if (!nodeSameIndexExists(p, node.index()))
+                            {
+                                p.add(node);
+                            }
                     }
-                }
             }
         else
             {
-            // Majority: most common counts
-            for (int n = 0; n < problemSize; n++)
-                {
-                int xCount = 0;
-                int nCount = 0;
-                int lastXNode = -1;
-                for (int i = 0; i < nodes.size(); i++)
+                // Majority: most common counts
+                for (int n = 0; n < problemSize; n++)
                     {
-                    SemanticNode node = (SemanticNode) nodes.get(i);
-                    if (node.value() == 'X' && node.index() == n)
-                        {
-                        xCount += 1;
-                        lastXNode = i;
-                        }
-                    else if (node.value() == 'N' && node.index() == n)
-                        {
-                        nCount += 1;
-                        }
+                        int xCount = 0;
+                        int nCount = 0;
+                        int lastXNode = -1;
+                        for (int i = 0; i < nodes.size(); i++)
+                            {
+                                SemanticNode node = (SemanticNode) nodes.get(i);
+                                if (node.value() == 'X' && node.index() == n)
+                                    {
+                                        xCount += 1;
+                                        lastXNode = i;
+                                    }
+                                else if (node.value() == 'N' && node.index() == n)
+                                    {
+                                        nCount += 1;
+                                    }
+                            }
+                        if (xCount >= nCount && xCount > 0)
+                            {
+                                p.add((SemanticNode) nodes.get(lastXNode));
+                            }
                     }
-                if (xCount >= nCount && xCount > 0)
-                    {
-                    p.add((SemanticNode) nodes.get(lastXNode));
-                    }
-                }
             }
         return p;
-        }
+    }
 
     
     /**
@@ -175,38 +175,38 @@ public class Semantic extends GPProblem implements SimpleProblemForm
      * @return whether node of index n exists in p.
      */
     boolean nodeSameIndexExists(ArrayList p, int n)
-        {
+    {
         for (int i = 0; i < p.size(); i++)
             {
-            if (((SemanticNode) p.get(i)).index() == n)
-                {
-                return true;
-                }
+                if (((SemanticNode) p.get(i)).index() == n)
+                    {
+                        return true;
+                    }
             }
         return false;
-        }
+    }
 
     String phenotypeToString(ArrayList p)
-        {
+    {
         String retval = "";
         for (int i = 0; i < p.size(); i++) {
             retval += p.get(i).toString() + " ";
-            }
-        return retval;
         }
+        return retval;
+    }
 
     // In one paper, there is a parameter for scaling, ie the fitness
     // contribution of each Xi can be uniform, or linearly or
     // exponentially scaled. We don't do that in this version.
     
     public void describe(
-        final EvolutionState state,
-        final Individual ind,
-        final int subpopulation,
-        final int threadnum,
-        final int log)
-        {
+                         final EvolutionState state,
+                         final Individual ind,
+                         final int subpopulation,
+                         final int threadnum,
+                         final int log)
+    {
         state.output.println("\n\nBest Individual: output = " + phenotypeToString(getSemanticOutput(((GPIndividual) ind).trees[0])), log);
-        }
     }
+}
 

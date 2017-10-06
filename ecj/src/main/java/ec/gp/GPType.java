@@ -125,7 +125,7 @@ import ec.util.*;
  */
 
 public abstract class GPType implements Clique
-    {
+{
     public final static String P_NAME = "name";
 
     /** The name of the type */
@@ -145,29 +145,29 @@ public abstract class GPType implements Clique
     public String toString() { return name; }
     
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         // What's my name?
         name = state.parameters.getString(base.push(P_NAME),null);
         if (name==null)
             state.output.fatal("No name was given for this GP type.",
-                base.push(P_NAME));
+                               base.push(P_NAME));
 
         // Register me
         GPType old_type = (GPType)(((GPInitializer)state.initializer).typeRepository.put(name,this));
         if (old_type != null)
             state.output.fatal("The GP type \"" + name + "\" has been defined multiple times.", base.push(P_NAME));     
-        }
+    }
 
     /** Returns a type for a given name.
         You must guarantee that after calling typeFor(...) one or
         several times, you call state.output.exitIfErrors() once. */
 
     public static GPType typeFor(final String typeName,
-        final EvolutionState state)
-        {
+                                 final EvolutionState state)
+    {
         GPType myType = (GPType)(((GPInitializer)state.initializer).typeRepository.get(typeName));
         if (myType==null)
             state.output.error("The GP type \"" + typeName + "\" could not be found.");
         return myType;
-        }
     }
+}

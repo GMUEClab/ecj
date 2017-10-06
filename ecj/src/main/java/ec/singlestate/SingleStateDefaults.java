@@ -23,12 +23,12 @@ import ec.*;
  */
 
 public final class SingleStateDefaults implements DefaultsForm
-    {
+{
     public static final String P_SINGLE = "single";
 
     /** Returns the default base. */
     public static final Parameter base()
-        {
+    {
         return new Parameter(P_SINGLE);
-        }
     }
+}

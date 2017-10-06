@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class D5 extends GPNode
-    {
+{
     public String toString() { return "D5"; }
 
     /*
@@ -43,16 +43,16 @@ public class D5 extends GPNode
     public int expectedChildren() { return 0; }
 
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         ((ParityData)input).x = 
             ((((Parity)problem).bits >>> 5 ) & 1);
-        }
     }
+}
 
 
 

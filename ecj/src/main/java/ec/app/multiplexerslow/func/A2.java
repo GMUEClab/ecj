@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class A2 extends GPNode
-    {
+{
     public String toString() { return "a2"; }
 
     /*
@@ -43,16 +43,16 @@ public class A2 extends GPNode
     public int expectedChildren() { return 0; }
 
     public void eval(final EvolutionState state,
-        final int thread,
-        final GPData input,
-        final ADFStack stack,
-        final GPIndividual individual,
-        final Problem problem)
-        {
+                     final int thread,
+                     final GPData input,
+                     final ADFStack stack,
+                     final GPIndividual individual,
+                     final Problem problem)
+    {
         ((MultiplexerData)input).x = 
             ((((Multiplexer)problem).addressPart >>> 2 ) & 1);
-        }
     }
+}
 
 
 

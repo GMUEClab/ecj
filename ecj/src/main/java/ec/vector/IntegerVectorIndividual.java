@@ -68,27 +68,27 @@ import java.io.*;
  */
 
 public class IntegerVectorIndividual extends VectorIndividual
-    {
+{
     public static final String P_INTEGERVECTORINDIVIDUAL = "int-vect-ind";
     public int[] genome;
     
     public Parameter defaultBase()
-        {
+    {
         return VectorDefaults.base().push(P_INTEGERVECTORINDIVIDUAL);
-        }
+    }
 
     public Object clone()
-        {
+    {
         IntegerVectorIndividual myobj = (IntegerVectorIndividual) (super.clone());
 
         // must clone the genome
         myobj.genome = (int[])(genome.clone());
         
         return myobj;
-        } 
+    } 
 
     public void setup(final EvolutionState state, final Parameter base)
-        {
+    {
         super.setup(state,base);  // actually unnecessary (Individual.setup() is empty)
 
         Parameter def = defaultBase();
@@ -98,10 +98,10 @@ public class IntegerVectorIndividual extends VectorIndividual
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
         
         genome = new int[s.genomeSize];
-        }
+    }
                 
     public void defaultCrossover(EvolutionState state, int thread, VectorIndividual ind)
-        {
+    {
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
         IntegerVectorIndividual i = (IntegerVectorIndividual) ind;
         int tmp;
@@ -120,137 +120,137 @@ public class IntegerVectorIndividual extends VectorIndividual
                 point = state.random[thread].nextInt((len / s.chunksize));
                 for(int x=0;x<point*s.chunksize;x++)
                     { 
-                    tmp = i.genome[x];
-                    i.genome[x] = genome[x]; 
-                    genome[x] = tmp; 
+                        tmp = i.genome[x];
+                        i.genome[x] = genome[x]; 
+                        genome[x] = tmp; 
                     }
                 break;
             case VectorSpecies.C_ONE_POINT_NO_NOP:
                 point = state.random[thread].nextInt((len / s.chunksize) - 1) + 1;  // so it goes from 1 .. len-1
                 for(int x=0;x<point*s.chunksize;x++)
                     { 
-                    tmp = i.genome[x];
-                    i.genome[x] = genome[x]; 
-                    genome[x] = tmp; 
+                        tmp = i.genome[x];
+                        i.genome[x] = genome[x]; 
+                        genome[x] = tmp; 
                     }
                 break;
             case VectorSpecies.C_TWO_POINT: 
                 {
-                //                int point0 = state.random[thread].nextInt((len / s.chunksize)+1);
-                //                point = state.random[thread].nextInt((len / s.chunksize)+1);
-                // we want to go from 0 to len-1
-                // so that the only NO-OP crossover possible is point == point0
-                // example; len = 4
-                // possibilities: a=0 b=0       NOP                             [0123]
-                //                                a=0 b=1       swap 0                  [for 1, 2, 3]
-                //                                a=0 b=2       swap 0, 1               [for 2, 3]
-                //                                a=0 b=3       swap 0, 1, 2    [for 3]
-                //                                a=1 b=1       NOP                             [1230]
-                //                                a=1 b=2       swap 1                  [for 2, 3, 0]
-                //                                a=1 b=3       swap 1, 2               [for 3, 0]
-                //                                a=2 b=2       NOP                             [2301]
-                //                                a=2 b=3       swap 2                  [for 3, 0, 1]
-                //                                a=3 b=3   NOP                         [3012]
-                // All intervals: 0, 01, 012, 0123, 1, 12, 123, 1230, 2, 23, 230, 2301, 3, 30, 301, 3012
-                point = state.random[thread].nextInt((len / s.chunksize));
-                int point0 = state.random[thread].nextInt((len / s.chunksize));
-                if (point0 > point) { int p = point0; point0 = point; point = p; }
-                for(int x=point0*s.chunksize;x<point*s.chunksize;x++)
-                    {
-                    tmp = i.genome[x];
-                    i.genome[x] = genome[x];
-                    genome[x] = tmp;
-                    }
+                    //                int point0 = state.random[thread].nextInt((len / s.chunksize)+1);
+                    //                point = state.random[thread].nextInt((len / s.chunksize)+1);
+                    // we want to go from 0 to len-1
+                    // so that the only NO-OP crossover possible is point == point0
+                    // example; len = 4
+                    // possibilities: a=0 b=0       NOP                             [0123]
+                    //                                a=0 b=1       swap 0                  [for 1, 2, 3]
+                    //                                a=0 b=2       swap 0, 1               [for 2, 3]
+                    //                                a=0 b=3       swap 0, 1, 2    [for 3]
+                    //                                a=1 b=1       NOP                             [1230]
+                    //                                a=1 b=2       swap 1                  [for 2, 3, 0]
+                    //                                a=1 b=3       swap 1, 2               [for 3, 0]
+                    //                                a=2 b=2       NOP                             [2301]
+                    //                                a=2 b=3       swap 2                  [for 3, 0, 1]
+                    //                                a=3 b=3   NOP                         [3012]
+                    // All intervals: 0, 01, 012, 0123, 1, 12, 123, 1230, 2, 23, 230, 2301, 3, 30, 301, 3012
+                    point = state.random[thread].nextInt((len / s.chunksize));
+                    int point0 = state.random[thread].nextInt((len / s.chunksize));
+                    if (point0 > point) { int p = point0; point0 = point; point = p; }
+                    for(int x=point0*s.chunksize;x<point*s.chunksize;x++)
+                        {
+                            tmp = i.genome[x];
+                            i.genome[x] = genome[x];
+                            genome[x] = tmp;
+                        }
                 }
-            break;
+                break;
             case VectorSpecies.C_TWO_POINT_NO_NOP: 
                 {
-                point = state.random[thread].nextInt((len / s.chunksize));
-                int point0 = 0;
-                do { point0 = state.random[thread].nextInt((len / s.chunksize)); }
-                while (point0 == point);  // NOP
-                if (point0 > point) { int p = point0; point0 = point; point = p; }
-                for(int x=point0*s.chunksize;x<point*s.chunksize;x++)
-                    {
-                    tmp = i.genome[x];
-                    i.genome[x] = genome[x];
-                    genome[x] = tmp;
-                    }
+                    point = state.random[thread].nextInt((len / s.chunksize));
+                    int point0 = 0;
+                    do { point0 = state.random[thread].nextInt((len / s.chunksize)); }
+                    while (point0 == point);  // NOP
+                    if (point0 > point) { int p = point0; point0 = point; point = p; }
+                    for(int x=point0*s.chunksize;x<point*s.chunksize;x++)
+                        {
+                            tmp = i.genome[x];
+                            i.genome[x] = genome[x];
+                            genome[x] = tmp;
+                        }
                 }
-            break;
+                break;
             case VectorSpecies.C_ANY_POINT:
                 for(int x=0;x<len/s.chunksize;x++) 
                     if (state.random[thread].nextBoolean(s.crossoverProbability))
                         for(int y=x*s.chunksize;y<(x+1)*s.chunksize;y++)
                             {
-                            tmp = i.genome[y];
-                            i.genome[y] = genome[y];
-                            genome[y] = tmp;
+                                tmp = i.genome[y];
+                                i.genome[y] = genome[y];
+                                genome[y] = tmp;
                             }
                 break;
             case VectorSpecies.C_LINE_RECOMB:
                 {
-                double alpha = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
-                double beta = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
-                long t,u;
-                long min, max;
-                for (int x = 0; x < len; x++)
-                    {
-                    min = s.minGene(x);
-                    max = s.maxGene(x);
-                    t = (long) Math.floor(alpha * genome[x] + (1 - alpha) * i.genome[x] + 0.5);
-                    u = (long) Math.floor(beta * i.genome[x] + (1 - beta) * genome[x] + 0.5);
-                    if (!(t < min || t > max || u < min || u > max))
+                    double alpha = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
+                    double beta = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
+                    long t,u;
+                    long min, max;
+                    for (int x = 0; x < len; x++)
                         {
-                        genome[x] = (int) t;
-                        i.genome[x] = (int) u; 
+                            min = s.minGene(x);
+                            max = s.maxGene(x);
+                            t = (long) Math.floor(alpha * genome[x] + (1 - alpha) * i.genome[x] + 0.5);
+                            u = (long) Math.floor(beta * i.genome[x] + (1 - beta) * genome[x] + 0.5);
+                            if (!(t < min || t > max || u < min || u > max))
+                                {
+                                    genome[x] = (int) t;
+                                    i.genome[x] = (int) u; 
+                                }
                         }
-                    }
                 }
-            break;
+                break;
             case VectorSpecies.C_INTERMED_RECOMB:
                 {
-                long t,u;
-                long min, max;
-                for (int x = 0; x < len; x++)
-                    {
-                    do
+                    long t,u;
+                    long min, max;
+                    for (int x = 0; x < len; x++)
                         {
-                        double alpha = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
-                        double beta = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
-                        min = s.minGene(x);
-                        max = s.maxGene(x);
-                        t = (long) Math.floor(alpha * genome[x] + (1 - alpha) * i.genome[x] + 0.5);
-                        u = (long) Math.floor(beta * i.genome[x] + (1 - beta) * genome[x] + 0.5);
-                        } while (t < min || t > max || u < min || u > max);
-                    genome[x] = (int) t;
-                    i.genome[x] = (int) u; 
-                    }
+                            do
+                                {
+                                    double alpha = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
+                                    double beta = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
+                                    min = s.minGene(x);
+                                    max = s.maxGene(x);
+                                    t = (long) Math.floor(alpha * genome[x] + (1 - alpha) * i.genome[x] + 0.5);
+                                    u = (long) Math.floor(beta * i.genome[x] + (1 - beta) * genome[x] + 0.5);
+                                } while (t < min || t > max || u < min || u > max);
+                            genome[x] = (int) t;
+                            i.genome[x] = (int) u; 
+                        }
                 }
-            break;
+                break;
             }
-        }
+    }
 
     /** Splits the genome into n pieces, according to points, which *must* be sorted. 
         pieces.length must be 1 + points.length */
     public void split(int[] points, Object[] pieces)
-        {
+    {
         int point0, point1;
         point0 = 0; point1 = points[0];
         for(int x=0;x<pieces.length;x++)
             {
-            pieces[x] = new int[point1-point0];
-            System.arraycopy(genome,point0,pieces[x],0,point1-point0);
-            point0 = point1;
-            if (x >=pieces.length-2)
-                point1 = genome.length;
-            else point1 = points[x+1];
+                pieces[x] = new int[point1-point0];
+                System.arraycopy(genome,point0,pieces[x],0,point1-point0);
+                point0 = point1;
+                if (x >=pieces.length-2)
+                    point1 = genome.length;
+                else point1 = points[x+1];
             }
-        }
+    }
     
     /** Joins the n pieces and sets the genome to their concatenation.*/
     public void join(Object[] pieces)
-        {
+    {
         int sum=0;
         for(int x=0;x<pieces.length;x++)
             sum += ((int[])(pieces[x])).length;
@@ -259,90 +259,90 @@ public class IntegerVectorIndividual extends VectorIndividual
         int[] newgenome = new int[sum];
         for(int x=0;x<pieces.length;x++)
             {
-            System.arraycopy(pieces[x], 0, newgenome, runningsum, ((int[])(pieces[x])).length);
-            runningsum += ((int[])(pieces[x])).length;
+                System.arraycopy(pieces[x], 0, newgenome, runningsum, ((int[])(pieces[x])).length);
+                runningsum += ((int[])(pieces[x])).length;
             }
         // set genome
         genome = newgenome;
-        }
+    }
 
 
     /** Returns a random value from between min and max inclusive.  This method handles
         overflows that complicate this computation.  Does NOT check that
         min is less than or equal to max.  You must check this yourself. */
     public int randomValueFromClosedInterval(int min, int max, MersenneTwisterFast random)
-        {
+    {
         if (max - min < 0) // we had an overflow
             {
-            int l = 0;
-            do l = random.nextInt();
-            while(l < min || l > max);
-            return l;
+                int l = 0;
+                do l = random.nextInt();
+                while(l < min || l > max);
+                return l;
             }
         else return min + random.nextInt(max - min + 1);
-        }
+    }
 
 
     /** Destructively mutates the individual in some default manner.  The default form
         simply randomizes genes to a uniform distribution from the min and max of the gene values. */
     public void defaultMutate(EvolutionState state, int thread)
-        {
+    {
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
         for(int x = 0; x < genome.length; x++)
             if (state.random[thread].nextBoolean(s.mutationProbability(x)))
                 {
-                int old = genome[x];
-                for(int retries = 0; retries < s.duplicateRetries(x) + 1; retries++)
-                    {
-                    switch(s.mutationType(x))
+                    int old = genome[x];
+                    for(int retries = 0; retries < s.duplicateRetries(x) + 1; retries++)
                         {
-                        case IntegerVectorSpecies.C_RESET_MUTATION:
-                            genome[x] = randomValueFromClosedInterval((int)s.minGene(x), (int)s.maxGene(x), state.random[thread]);
-                            break;
-                        case IntegerVectorSpecies.C_RANDOM_WALK_MUTATION:
-                            int min = (int)s.minGene(x);
-                            int max = (int)s.maxGene(x);
-                            if (!s.mutationIsBounded(x))
+                            switch(s.mutationType(x))
                                 {
-                                // okay, technically these are still bounds, but we can't go beyond this without weird things happening
-                                max = Integer.MAX_VALUE;
-                                min = Integer.MIN_VALUE;
+                                case IntegerVectorSpecies.C_RESET_MUTATION:
+                                    genome[x] = randomValueFromClosedInterval((int)s.minGene(x), (int)s.maxGene(x), state.random[thread]);
+                                    break;
+                                case IntegerVectorSpecies.C_RANDOM_WALK_MUTATION:
+                                    int min = (int)s.minGene(x);
+                                    int max = (int)s.maxGene(x);
+                                    if (!s.mutationIsBounded(x))
+                                        {
+                                            // okay, technically these are still bounds, but we can't go beyond this without weird things happening
+                                            max = Integer.MAX_VALUE;
+                                            min = Integer.MIN_VALUE;
+                                        }
+                                    do
+                                        {
+                                            int n = (int)(state.random[thread].nextBoolean() ? 1 : -1);
+                                            int g = genome[x];
+                                            if ((n == 1 && g < max) ||
+                                                (n == -1 && g > min))
+                                                genome[x] = g + n;
+                                            else if ((n == -1 && g < max) ||
+                                                     (n == 1 && g > min))
+                                                genome[x] = g - n;     
+                                        }
+                                    while (state.random[thread].nextBoolean(s.randomWalkProbability(x)));
+                                    break;
+                                default:
+                                    state.output.fatal("In IntegerVectorIndividual.defaultMutate, default case occurred when it shouldn't have");
+                                    break;
                                 }
-                            do
-                                {
-                                int n = (int)(state.random[thread].nextBoolean() ? 1 : -1);
-                                int g = genome[x];
-                                if ((n == 1 && g < max) ||
-                                    (n == -1 && g > min))
-                                    genome[x] = g + n;
-                                else if ((n == -1 && g < max) ||
-                                    (n == 1 && g > min))
-                                    genome[x] = g - n;     
-                                }
-                            while (state.random[thread].nextBoolean(s.randomWalkProbability(x)));
-                            break;
-                        default:
-                            state.output.fatal("In IntegerVectorIndividual.defaultMutate, default case occurred when it shouldn't have");
-                            break;
+                            if (genome[x] != old) break;
+                            // else genome[x] = old;  // try again
                         }
-                    if (genome[x] != old) break;
-                    // else genome[x] = old;  // try again
-                    }
                 }
-        }
+    }
         
     
     /** Initializes the individual by randomly choosing Integers uniformly from mingene to maxgene. */
     // notice that we bump to longs to avoid overflow errors
     public void reset(EvolutionState state, int thread)
-        {
+    {
         IntegerVectorSpecies s = (IntegerVectorSpecies) species;
         for(int x=0;x<genome.length;x++)
             genome[x] = randomValueFromClosedInterval((int)s.minGene(x), (int)s.maxGene(x), state.random[thread]);
-        }
+    }
 
     public int hashCode()
-        {
+    {
         // stolen from GPIndividual.  It's a decent algorithm.
         int hash = this.getClass().hashCode();
 
@@ -351,28 +351,28 @@ public class IntegerVectorIndividual extends VectorIndividual
             hash = ( hash << 1 | hash >>> 31 ) ^ genome[x];
 
         return hash;
-        }
+    }
 
     public String genotypeToStringForHumans()
-        {
+    {
         StringBuilder s = new StringBuilder();
         for( int i = 0 ; i < genome.length ; i++ )
             { if (i > 0) s.append(" "); s.append(genome[i]); }
         return s.toString();
-        }
+    }
         
     public String genotypeToString()
-        {
+    {
         StringBuilder s = new StringBuilder();
         s.append( Code.encode( genome.length ) );
         for( int i = 0 ; i < genome.length ; i++ )
             s.append( Code.encode( genome[i] ) );
         return s.toString();
-        }
+    }
                 
     protected void parseGenotype(final EvolutionState state,
-        final LineNumberReader reader) throws IOException
-        {
+                                 final LineNumberReader reader) throws IOException
+    {
         // read in the next line.  The first item is the number of genes
         String s = reader.readLine();
         DecodeReturn d = new DecodeReturn(s);
@@ -388,13 +388,13 @@ public class IntegerVectorIndividual extends VectorIndividual
         // read in the genes
         for( int i = 0 ; i < genome.length ; i++ )
             {
-            Code.decode( d );
-            genome[i] = (int)(d.l);
+                Code.decode( d );
+                genome[i] = (int)(d.l);
             }
-        }
+    }
 
     public boolean equals(Object ind)
-        {
+    {
         if (ind == null) return false;
         if (!(this.getClass().equals(ind.getClass()))) return false; // SimpleRuleIndividuals are special.
         IntegerVectorIndividual i = (IntegerVectorIndividual)ind;
@@ -404,71 +404,71 @@ public class IntegerVectorIndividual extends VectorIndividual
             if( genome[j] != i.genome[j] )
                 return false;
         return true;
-        }
+    }
 
     public Object getGenome()
-        { return genome; }
+    { return genome; }
     public void setGenome(Object gen)
-        { genome = (int[]) gen; }
+    { genome = (int[]) gen; }
     public int genomeLength()
-        { return genome.length; }
+    { return genome.length; }
         
     public void writeGenotype(final EvolutionState state,
-        final DataOutput dataOutput) throws IOException
-        {
+                              final DataOutput dataOutput) throws IOException
+    {
         dataOutput.writeInt(genome.length);
         for(int x=0;x<genome.length;x++)
             dataOutput.writeInt(genome[x]);
-        }
+    }
 
     public void readGenotype(final EvolutionState state,
-        final DataInput dataInput) throws IOException
-        {
+                             final DataInput dataInput) throws IOException
+    {
         int len = dataInput.readInt();
         if (genome==null || genome.length != len)
             genome = new int[len];
         for(int x=0;x<genome.length;x++)
             genome[x] = dataInput.readInt();
-        }
+    }
 
     /** Clips each gene value to be within its specified [min,max] range. */
     public void clamp() 
-        {
+    {
         IntegerVectorSpecies _species = (IntegerVectorSpecies)species;
         for (int i = 0; i < genomeLength(); i++)
             {
-            int minGene = (int)_species.minGene(i);
-            if (genome[i] < minGene)
-                genome[i] = minGene;
-            else 
-                {
-                int maxGene = (int)_species.maxGene(i);
-                if (genome[i] > maxGene)
-                    genome[i] = maxGene;
-                }
+                int minGene = (int)_species.minGene(i);
+                if (genome[i] < minGene)
+                    genome[i] = minGene;
+                else 
+                    {
+                        int maxGene = (int)_species.maxGene(i);
+                        if (genome[i] > maxGene)
+                            genome[i] = maxGene;
+                    }
             }
-        }
+    }
                 
     public void setGenomeLength(int len)
-        {
+    {
         int[] newGenome = new int[len];
         System.arraycopy(genome, 0, newGenome, 0, 
-            genome.length < newGenome.length ? genome.length : newGenome.length);
+                         genome.length < newGenome.length ? genome.length : newGenome.length);
         genome = newGenome;
-        }
+    }
 
     /** Returns true if each gene value is within is specified [min,max] range. */
     public boolean isInRange() 
-        {
+    {
         IntegerVectorSpecies _species = (IntegerVectorSpecies)species;
         for (int i = 0; i < genomeLength(); i++)
             if (genome[i] < _species.minGene(i) ||
                 genome[i] > _species.maxGene(i)) return false;
         return true;
-        }
+    }
 
     public double distanceTo(Individual otherInd)
-        {               
+    {               
         if (!(otherInd instanceof IntegerVectorIndividual)) 
             return super.distanceTo(otherInd);  // will return infinity!
                 
@@ -477,9 +477,9 @@ public class IntegerVectorIndividual extends VectorIndividual
         double sumSquaredDistance =0.0;
         for(int i=0; i < other.genomeLength(); i++)
             {
-            long dist = this.genome[i] - (long)otherGenome[i];
-            sumSquaredDistance += dist*dist;
+                long dist = this.genome[i] - (long)otherGenome[i];
+                sumSquaredDistance += dist*dist;
             }
         return StrictMath.sqrt(sumSquaredDistance);
-        }
     }
+}
