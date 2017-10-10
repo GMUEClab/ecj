@@ -40,12 +40,12 @@ public class AppsTest {
     
     @BeforeClass
     public static void beforeClass () {
-        final File testDir = new File("testResults");
+        /*final File testDir = new File("testResults");
         if (!testDir.isDirectory())
             testDir.mkdir();
         final File r = new File("testResults/appResults.csv");
         if (r.isFile())
-            r.delete();
+            r.delete();*/
     }
     
     /** List the subdirectories of a directory. */
@@ -135,7 +135,7 @@ public class AppsTest {
             fail(e.toString());
         }
     }
-    
+    /*
     @Test
     public void antTest() {
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Testing " + examplePath);
@@ -174,5 +174,5 @@ public class AppsTest {
             {
             fail(e.toString());
             }
-    }
+    }*/
 }

@@ -152,7 +152,7 @@ public class TestStatistics extends Statistics {
                 {
                 if (state.evaluator.p_problem instanceof SimpleProblemForm)
                     ((SimpleProblemForm)(state.evaluator.p_problem.clone())).describe(state, best_i[x], x, 0, statisticslog);   
-                }   
+                }
             }
         }
 
@@ -165,24 +165,9 @@ public class TestStatistics extends Statistics {
     public void finalStatistics(final EvolutionState state, final int result)
         {
         super.finalStatistics(state,result);
-        
-        // for now we just print the best fitness 
-        
-        if (doFinal) state.output.println("\nBest Individual of Run:",statisticslog);
-        for(int x = 0; x< state.population.subpops.size(); x++ )
-            {
-            if (doFinal) state.output.println("Subpopulation " + x + ":",statisticslog);
-            if (doFinal) best_of_run[x].printIndividualForHumans(state,statisticslog);
-            if (doMessage && !silentPrint)
-                {
-                state.output.message("Subpop " + x + " best fitness of run: " + best_of_run[x].fitness.fitnessToStringForHumans());
-                state.output.message("Best individual found at generation " + generation_of_best_of_run[x]);
-                }
-            
-            // finally describe the winner if there is a description
-            if (doFinal && doDescription) 
-                if (state.evaluator.p_problem instanceof SimpleProblemForm)
-                    ((SimpleProblemForm)(state.evaluator.p_problem.clone())).describe(state, best_of_run[x], x, 0, statisticslog);      
-            }
+        if (!doFinal)
+             return;
+        for (int i = 0; i < state.population.subpops.size(); i++)
+            System.out.println(String.format("%d, %s, %s", i, best_of_run[i].fitness.fitness(), generation_of_best_of_run[i]));
         }
 }
