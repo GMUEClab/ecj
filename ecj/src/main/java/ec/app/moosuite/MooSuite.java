@@ -314,7 +314,7 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 break;
 
             default:
-                state.output.fatal( "ec.app.ecsuite.ECSuite has an invalid problem -- how on earth did that happen?" );
+                state.output.fatal( this.getClass().getSimpleName() + " has an invalid problem -- how on earth did that happen?" );
                 break;
             }
 
