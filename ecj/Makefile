@@ -16,7 +16,7 @@
 
 JAVAC = javac ${JAVACFLAGS}
 
-CLASSROOT = target/classes_makefile
+CLASSROOT = classes
 JAVACFLAGS = -target 1.5 -source 1.5 ${FLAGS} -d ${CLASSROOT}
 FLAGS = -g -Xlint:deprecation
 
@@ -136,6 +136,7 @@ clean:
 	find . -name ".DS_Store" -exec rm -rf {} \;
 	find . -name "*.java*~" -exec rm -rf {} \;
 	rm -rf ${CLASSROOT}
+	rm -rf jar/
 	rm -rf docs/classdocs/*
 	rm -rf ${SRCROOT}ec/app/moobenchmarks
 
@@ -169,6 +170,7 @@ jar: all gui
 	touch /tmp/manifest.add
 	rm /tmp/manifest.add
 	echo "Main-Class: ec.Evolve" > /tmp/manifest.add
+	mkdir -p jar/
 	jar cvfm jar/ecj.${VERSION}.jar /tmp/manifest.add -C ${CLASSROOT} . 
 	jar uvf jar/ecj.${VERSION}.jar -C ${RSRCROOT} .
 
