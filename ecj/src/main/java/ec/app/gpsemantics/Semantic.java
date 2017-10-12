@@ -72,8 +72,8 @@ public class Semantic extends GPProblem implements SimpleProblemForm
             state.output.error("The problem name is unrecognized",
                                base.push(P_PROBLEM_NAME));
 
-        System.out.println("Problem name " + problemName);
-        System.out.println("Problem size " + problemSize);
+        state.output.message("Problem name " + problemName);
+        state.output.message("Problem size " + problemSize);
         state.output.exitIfErrors();
     }
 
