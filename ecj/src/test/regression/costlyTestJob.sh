@@ -1,4 +1,18 @@
 #!/bin/bash
+#
+# Copyright 2017 by Sean Luke
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+#
+# This script launches a job on a SLURM cluster that executes the specified ECJ app
+# 100 times and collects data on the algorithm's performance distribution.
+# 
+# An array job is used here so that up to 20 independent runs may run
+# at the same time in parallel.  This is useful for especially expensive regression
+# tests.
+#
+# Author: Eric O. Scott
+#
 #SBATCH --nodes=1
 #SBATCH --ntasks=1 # How many jobs you want to run on each node
 #SBATCH --cpus-per-task=2 # Optional. Number of cores you’ll be given

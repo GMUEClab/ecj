@@ -1,8 +1,15 @@
 # !/bin/bash
+#
+# Copyright 2017 by Sean Luke
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+#
 # Simple regression tests for ECJ apps.
 #
 # This script finds every parameter file in the ec/apps directories and,
 # if it isn't on the list of files to exclude, launches a job to collect data on their behavior.
+#
+# Author: Eric O. Scott
 
 ROOT=../../..
 RSRCROOT=${ROOT}/src/main/resources

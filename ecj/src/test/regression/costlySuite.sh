@@ -1,4 +1,13 @@
 # !/bin/bash
+#
+# Copyright 2017 by Sean Luke
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+#
+# Launches a regression tests for some especially expensive example apps
+# on a SLURM cluster.
+#
+# Author: Eric O. Scott
 
 ROOT=../../..
 RSRCROOT=${ROOT}/src/main/resources

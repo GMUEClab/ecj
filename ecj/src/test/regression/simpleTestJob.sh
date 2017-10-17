@@ -1,4 +1,14 @@
 #!/bin/bash
+#
+# Copyright 2017 by Sean Luke
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+#
+# SLURM cluster scheduler script for a job that executes an ECJ app $RUNS times in
+# sequence, and collects data on the algorithm's performance distribution.
+#
+# Author: Eric O. Scott
+#
 #SBATCH --nodes=1
 #SBATCH --ntasks=1 # How many jobs you want to run on each node
 #SBATCH --cpus-per-task=2 # Optional. Number of cores you’ll be given
