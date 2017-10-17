@@ -1,5 +1,5 @@
 /*
-  Copyright 2017 by Sean Luke
+  Copyright 2006 by Sean Luke
   Licensed under the Academic Free License version 3.0
   See the file "LICENSE" for more information
 */
@@ -33,9 +33,12 @@ public class TestStatistics extends Statistics {
     public static final String P_DO_MESSAGE = "do-message";
     public static final String P_DO_DESCRIPTION = "do-description";
     public static final String P_DO_PER_GENERATION_DESCRIPTION = "do-per-generation-description";
+    
+    public static final String P_STATISTICS_ROW_PREFIX = "row-prefix";
 
     /** The Statistics' log */
     public int statisticslog = 0;  // stdout
+    public String rowPrefix;
 
     /** The best individual we've found so far */
     public Individual[] best_of_run = null;
@@ -63,6 +66,7 @@ public class TestStatistics extends Statistics {
         doMessage = state.parameters.getBoolean(base.push(P_DO_MESSAGE),null,true);
         doDescription = state.parameters.getBoolean(base.push(P_DO_DESCRIPTION),null,true);
         doPerGenerationDescription = state.parameters.getBoolean(base.push(P_DO_PER_GENERATION_DESCRIPTION),null,false);
+        rowPrefix = state.parameters.getStringWithDefault(base.push(P_STATISTICS_ROW_PREFIX), null, "");
 
         if (silentFile)
             {
@@ -168,6 +172,6 @@ public class TestStatistics extends Statistics {
         if (!doFinal)
              return;
         for (int i = 0; i < state.population.subpops.size(); i++)
-            System.out.println(String.format("%d, %s, %s", i, best_of_run[i].fitness.fitness(), generation_of_best_of_run[i]));
+            System.out.println(String.format("%s, %d, %s, %s", rowPrefix, i, best_of_run[i].fitness.fitness(), generation_of_best_of_run[i]));
         }
 }

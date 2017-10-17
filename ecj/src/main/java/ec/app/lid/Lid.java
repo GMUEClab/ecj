@@ -74,7 +74,6 @@ public class Lid extends GPProblem implements SimpleProblemForm
             state.output.error("The depth-weighting must be in [0, maxWeight]",
                                base.push(P_WEIGHT_DEPTH));
         weightTerminals = maxWeight - weightDepth;
-        System.out.println("target depth " + targetDepth + " targetTerminals " + targetTerminals);
         state.output.exitIfErrors();
     }
 
