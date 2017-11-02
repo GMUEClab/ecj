@@ -215,11 +215,11 @@ public class SimpleBreeder extends Breeder
             backupPopulation = state.population;  // swap in
             }
 
-		int[] newSubpopSize = new int[state.population.subpops.size()];
-		for(int i = 0; i < newSubpopSize.length; i++)
-			{
-			newSubpopSize[i] = nextSubpopulationSize(state, i);
-			}
+        int[] newSubpopSize = new int[state.population.subpops.size()];
+        for(int i = 0; i < newSubpopSize.length; i++)
+            {
+            newSubpopSize[i] = nextSubpopulationSize(state, i);
+            }
 
         // load elites into the front of newpop
         loadElites(state, newpop);
@@ -231,53 +231,58 @@ public class SimpleBreeder extends Breeder
         numThreads = Math.min(numThreads, state.breedthreads);
         if (numThreads < state.breedthreads)
             state.output.warnOnce("Largest subpopulation size (" + numThreads +") is smaller than number of breedthreads (" + state.breedthreads + "), so fewer breedthreads will be created.");
-
-		int numinds[][] = new int[numThreads][newpop.subpops.size()];
-		int from[][] = new int[numThreads][newpop.subpops.size()];
+        
+        newIndividuals = new ArrayList[state.population.subpops.size()][numThreads];
+        for(int subpop = 0; subpop < state.population.subpops.size(); subpop++)
+            for(int thread = 0; thread < numThreads; thread++)
+                newIndividuals[subpop][thread] = new ArrayList<Individual>();
+        
+        int numinds[][] = new int[numThreads][newpop.subpops.size()];
+        int from[][] = new int[numThreads][newpop.subpops.size()];
 		
         // determine numinds and from
         for(int x = 0; x< newpop.subpops.size(); x++)
             {
-			 newIndividuals[x] = new ArrayList[numThreads];
-			 for(int i = 0; i < numThreads; i++) 
-			 	newIndividuals[x][i] = new ArrayList<Individual>();
+            newIndividuals[x] = new ArrayList[numThreads];
+            for(int i = 0; i < numThreads; i++) 
+                   newIndividuals[x][i] = new ArrayList<Individual>();
 
             if (!shouldBreedSubpop(state, x, 0))
-            	{
+                {
             	// just copy over
             	newpop.subpops.get(x).individuals.addAll(state.population.subpops.get(x).individuals);
             	continue;
-				}
-			else
-				{
-				int numElites = numElites(state, x);
-				int length = newpop.subpops.get(x).individuals.size() - numElites;
-				
-				// we will have some extra individuals.  We distribute these among the early subpopulations
-				int individualsPerThread = length / numThreads;  // integer division
-				int slop = length - numThreads * individualsPerThread;
-				int currentFrom = 0;
-				
-				for(int y=0;y<numThreads;y++)
-					{
-					if (slop > 0)
-						{
-						numinds[y][x] = individualsPerThread + 1;
-						slop--;
-						}
-					else
-						numinds[y][x] = individualsPerThread;
+                }
+            else
+                {
+                int numElites = numElites(state, x);
+                int length = newSubpopSize[x] - numElites;
 
-					from[y][x] = currentFrom;
-					currentFrom += numinds[y][x];
-					
-					if (numinds[y][x] == 0)
-						{
-						state.output.warnOnce("More threads exist than can be used to breed some subpopulations (first example: subpopulation " + x + ")");
-						}
-					}
-				}
-			}
+                // we will have some extra individuals.  We distribute these among the early subpopulations
+                int individualsPerThread = length / numThreads;  // integer division
+                int slop = length - numThreads * individualsPerThread;
+                int currentFrom = 0;
+
+                for(int y=0;y<numThreads;y++)
+                    {
+                    if (slop > 0)
+                            {
+                            numinds[y][x] = individualsPerThread + 1;
+                            slop--;
+                            }
+                    else
+                            numinds[y][x] = individualsPerThread;
+
+                    from[y][x] = currentFrom;
+                    currentFrom += numinds[y][x];
+
+                    if (numinds[y][x] == 0)
+                            {
+                            state.output.warnOnce("More threads exist than can be used to breed some subpopulations (first example: subpopulation " + x + ")");
+                            }
+                    }
+                }
+            }
 
 		// spawn threads
 
