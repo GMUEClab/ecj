@@ -12,7 +12,6 @@ parent.1 = ../../simple/simple.params
 pop.subpop.0.species.fitness =				ec.multiobjective.nsga2.NSGA2MultiObjectiveFitness
 
 # We have our own evaluator and breeder
-eval =						ec.multiobjective.nsga2.NSGA2Evaluator
 breed =						ec.multiobjective.nsga2.NSGA2Breeder
 
 # Specify the breeding pipeline as follows

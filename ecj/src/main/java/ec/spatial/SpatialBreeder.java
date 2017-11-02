@@ -37,69 +37,64 @@ import java.util.*;
  */
 
 public class SpatialBreeder extends SimpleBreeder
-{
-    public void setup(final EvolutionState state, final Parameter base)
     {
+    public void setup(final EvolutionState state, final Parameter base)
+        {
         super.setup(state, base);
                 
         // check for elitism and warn about it
         for(int i = 0 ; i < elite.length; i++)   // we use elite.length here instead of pop.subpops.length because the population hasn't been made yet.
             if (usingElitism(i))
                 {
-                    state.output.warning("You're using elitism with SpatialBreeder.  This is unwise as elitism is done by moving individuals around in the population, thus messing up the spatial nature of breeding.",
-                                         base.push(P_ELITE).push(""+i));
-                    break;
+                state.output.warning("You're using elitism with SpatialBreeder.  This is unwise as elitism is done by moving individuals around in the population, thus messing up the spatial nature of breeding.",
+                    base.push(P_ELITE).push(""+i));
+                break;
                 }
 
         if (sequentialBreeding) // uh oh, untested
             state.output.warning("SpationBreeder hasn't been well tested with sequential evaluation, though it should probably work fine.  You're on your own.",
-                                 base.push(P_SEQUENTIAL_BREEDING));
+                base.push(P_SEQUENTIAL_BREEDING));
 
         if (!clonePipelineAndPopulation)
             state.output.fatal("clonePipelineAndPopulation must be true for SpatialBreeder.");
-    }
+        }
                 
     protected void breedPopChunk(Population newpop, EvolutionState state, int[] numinds, int[] from, int threadnum) 
-    {
+        {
         for(int subpop = 0; subpop< newpop.subpops.size(); subpop++)
             {
-                ArrayList<Individual> putHere = (ArrayList<Individual>)newIndividuals[subpop][threadnum];
+            ArrayList<Individual> putHere = (ArrayList<Individual>)newIndividuals[subpop][threadnum];
 
-                // if it's subpop's turn and we're doing sequential breeding...
-                if (!shouldBreedSubpop(state, subpop, threadnum))  
-                    {
-                        // instead of breeding, we should just copy forward this subpopulation.  We'll copy the part we're assigned
-                        for(int ind=from[subpop] ; ind < numinds[subpop] - from[subpop]; ind++)
-                            newpop.subpops.get(subpop).individuals.set(ind, (Individual)(state.population.subpops.get(subpop).individuals.get(ind).clone()));
-                    }
-                else
-                    {
-                        BreedingSource bp = (BreedingSource) newpop.subpops.get(subpop).
-                            species.pipe_prototype.clone();
-                                                                        
-                        if (!(state.population.subpops.get(subpop) instanceof Space))
-                            state.output.fatal("Subpopulation " + subpop + " does not implement the Space interface.");
-                        Space space = (Space)(state.population.subpops.get(subpop));
-                                                        
-                        // check to make sure that the breeding pipeline produces
-                        // the right kind of individuals.  Don't want a mistake there! :-)
-                        if (!bp.produces(state,newpop,subpop,threadnum))
-                            state.output.fatal("The Breeding Source of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops.get(subpop).species.getClass().getName() + " or fitness " + newpop.subpops.get(subpop).species.f_prototype );
-                        bp.prepareToProduce(state,subpop,threadnum);
-                                                        
-                        // start breedin'!
-                        for(int x = from[subpop]; x < from[subpop] + numinds[subpop]; x++)
-                            {
-                                space.setIndex(threadnum, x);
-                                if (bp.produce(1, 1, subpop, putHere, state, threadnum, newpop.subpops.get(subpop).species.buildMisc(state, subpop, threadnum)) != 1)
-                                    state.output.fatal( "The sources should produce one individual at a time!" );
-                            }
-                                                                        
-                        bp.finishProducing(state,subpop,threadnum);
-                    }
-            }
+			// do regular breeding of this subpopulation
+			BreedingSource bp = null;
+			if (clonePipelineAndPopulation)
+				bp = (BreedingSource) newpop.subpops.get(subpop).species.pipe_prototype.clone();
+			else
+				bp = (BreedingSource) newpop.subpops.get(subpop).species.pipe_prototype;
+			bp.fillStubs(state, null);
+									
+			if (!(state.population.subpops.get(subpop) instanceof Space))
+				state.output.fatal("Subpopulation " + subpop + " does not implement the Space interface.");
+			Space space = (Space)(state.population.subpops.get(subpop));
+													
+			// check to make sure that the breeding pipeline produces
+			// the right kind of individuals.  Don't want a mistake there! :-)
+			if (!bp.produces(state,newpop,subpop,threadnum))
+				state.output.fatal("The Breeding Source of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops.get(subpop).species.getClass().getName() + " or fitness " + newpop.subpops.get(subpop).species.f_prototype );
+			bp.prepareToProduce(state,subpop,threadnum);
+									
+			// start breedin'!
+			for(int x = from[subpop]; x < from[subpop] + numinds[subpop]; x++)
+				{
+				space.setIndex(threadnum, x);
+				if (bp.produce(1, 1, subpop, putHere, state, threadnum, newpop.subpops.get(subpop).species.buildMisc(state, subpop, threadnum)) != 1)
+					state.output.fatal( "The sources should produce one individual at a time!" );
+				}
+																	
+			bp.finishProducing(state,subpop,threadnum);
+			}
+        }
+
     }
-
-}
 
 

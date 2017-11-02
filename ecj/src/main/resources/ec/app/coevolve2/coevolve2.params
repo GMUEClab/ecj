@@ -11,7 +11,7 @@ eval =                                  ec.coevolve.MultiPopCoevolutionaryEvalua
 
 eval.num-shuffled=			1
 eval.num-current=                       0
-eval.num-elites =                       0
+eval.num-gurus =                       0
 eval.num-prev =                         0
 eval.select-current =                   ec.select.RandomSelection
 eval.select-prev =                      ec.select.RandomSelection
