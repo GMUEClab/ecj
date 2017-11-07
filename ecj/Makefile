@@ -141,7 +141,7 @@ clean:
 	rm -rf ${SRCROOT}ec/app/moobenchmarks
 
 
-dist: clean gui push indent doc jar
+dist: clean gui push doc jar
 	@ echo If the version is being updated, change it here:
 	@ echo "1. ec.util.Version"
 	@ echo "2. manual.tex frontmatter (including copyright year)"

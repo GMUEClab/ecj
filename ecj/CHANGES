@@ -2422,4 +2422,8 @@ Version		Change Log
 	Added ec/app/cartpole package
 	Heavy revision to manual
 	Added various READMEs
+	Fixed bug in Makefile: make jar failed to include GUI icons in archive.
+	Fixed bug in ec.display.ControlPanel: GUI did not update parameters and PRNG seed table properly.
+	Remove erroneous app/nullproblem and app/tutorial3copy directories.
+	Fixed bug in Makefile: make doc failed to utilize the $CLASSPATH variable
 
