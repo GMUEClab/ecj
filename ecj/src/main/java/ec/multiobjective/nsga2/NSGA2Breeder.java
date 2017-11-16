@@ -49,30 +49,42 @@ public class NSGA2Breeder extends SimpleBreeder
             state.output.fatal("clonePipelineAndPopulation must be true for NSGA2Breeder.");
         }
 
+	int[] numElites = null;
+	
+	// This method is called AFTER loadElites.  We could just 
+    public int numElites(EvolutionState state, int subpopulation)
+    	{
+    	return numElites[subpopulation];
+    	}
+
     protected void loadElites(EvolutionState state, Population newpop)
     	{
+    	numElites = new int[newpop.subpops.size()];
+    	
     	for(int i = 0; i < newpop.subpops.size(); i++)
     		{
-	    	newpop.subpops.get(i).individuals.addAll(buildArchive(state, i));
+    		ArrayList list = buildArchive(state, i);
+    		numElites[i] = list.size();
+	    	newpop.subpops.get(i).individuals.addAll(list);
 	    	}
     	}
 
-    /** Build the auxiliary fitness data and reduce the subpopulation to just the archive, which is
-        returned. */
+    /** Build the auxiliary fitness data and reduce the subpopulation to just the archive, which is returned. */
     public ArrayList<Individual> buildArchive(EvolutionState state, int subpop)
         {
         ArrayList<ArrayList<Individual>> ranks = assignFrontRanks(state.population.subpops.get(subpop));
                 
         ArrayList<Individual> newSubpopulation = new ArrayList<Individual>();
         int size = ranks.size();
+        int originalPopSize = state.population.subpops.get(subpop).individuals.size();
+
         for(int i = 0; i < size; i++)
             {
-            int originalPopSize = state.population.subpops.get(subpop).individuals.size();
             ArrayList<Individual> rank = ranks.get(i);
-                
-            assignSparsity(rank);
             if (rank.size() + newSubpopulation.size() >= originalPopSize)
                 {
+	            assignSparsity(rank);
+
                 // first sort the rank by sparsity
                 // decreasing order
                 Collections.sort(rank, new Comparator<Individual>(){
@@ -94,8 +106,7 @@ public class NSGA2Breeder extends SimpleBreeder
             else
                 {
                 // dump in everyone
-                for(int j = 0 ; j < rank.size(); j++)
-                    newSubpopulation.add(rank.get(j));
+                newSubpopulation.addAll(rank);
                 }
             }
 

@@ -250,6 +250,7 @@ public class SimpleBreeder extends Breeder
             if (!shouldBreedSubpop(state, x, 0))
                 {
             	// just copy over
+            	newpop.subpops.get(x).individuals.clear();  // get rid of elites, we're just copying everyone
             	newpop.subpops.get(x).individuals.addAll(state.population.subpops.get(x).individuals);
             	continue;
                 }
