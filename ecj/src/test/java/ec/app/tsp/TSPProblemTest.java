@@ -8,6 +8,7 @@ package ec.app.tsp;
 import ec.EvolutionState;
 import ec.simple.SimpleEvolutionState;
 import ec.util.Output;
+import ec.util.Output.OutputExitException;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
 import org.junit.Before;
@@ -40,7 +41,7 @@ public class TSPProblemTest
         state.output.setThrowsErrors(true);
     }
     
-    @Test(expected = java.lang.IllegalStateException.class)
+    @Test(expected = OutputExitException.class)
     public void testSetup()
     {
         System.out.println("setup (bad file)");

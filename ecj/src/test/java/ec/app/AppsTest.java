@@ -7,12 +7,12 @@ package ec.app;
 
 import ec.EvolutionState;
 import ec.Evolve;
+import ec.util.Output;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -100,7 +100,7 @@ public class AppsTest {
             new File("src/main/resources/ec/app/cartpole/cartpole.params").getAbsolutePath(),
             
              // XXX A broken test; needs to be fixed and removed from exclude list.
-            //new File("src/main/resources/ec/app/moosuite/kur-spea2.params").getAbsolutePath()
+            //new File("src/main/resources/ec/app/moosuite/kur-spea2.params").getAbsolutePath(),
         });
         
         // Test all the parameter files inside each app directory
@@ -122,9 +122,10 @@ public class AppsTest {
             final ParameterDatabase parameters = new ParameterDatabase(new File(examplePath));
             parameters.set(new Parameter(EvolutionState.P_GENERATIONS), "2");
             parameters.set(new Parameter(Evolve.P_SILENT), "true");
-            // Can't use Evolve.main() because it calls System.exit()
-            final EvolutionState state = Evolve.initialize(parameters, 0);
-            state.output.setThrowsErrors(true);
+             // Manually construct an Output and state so we can tell it not to call System.exit()
+            final Output output = Evolve.buildOutput();
+            output.setThrowsErrors(true);
+            final EvolutionState state = Evolve.initialize(parameters, 0, output);
             state.run(EvolutionState.C_STARTED_FRESH);
             // No exception is success.
         }
