@@ -7,16 +7,12 @@ package ec.app;
 
 import ec.EvolutionState;
 import ec.Evolve;
-import ec.test.TestStatistics;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -104,7 +100,7 @@ public class AppsTest {
             new File("src/main/resources/ec/app/cartpole/cartpole.params").getAbsolutePath(),
             
              // XXX A broken test; needs to be fixed and removed from exclude list.
-            new File("src/main/resources/ec/app/moosuite/kur-spea2.params").getAbsolutePath()
+            //new File("src/main/resources/ec/app/moosuite/kur-spea2.params").getAbsolutePath()
         });
         
         // Test all the parameter files inside each app directory
@@ -128,51 +124,12 @@ public class AppsTest {
             parameters.set(new Parameter(Evolve.P_SILENT), "true");
             // Can't use Evolve.main() because it calls System.exit()
             final EvolutionState state = Evolve.initialize(parameters, 0);
+            state.output.setThrowsErrors(true);
             state.run(EvolutionState.C_STARTED_FRESH);
             // No exception is success.
         }
-        catch (IOException e) {
+        catch (Exception e) {
             fail(e.toString());
         }
     }
-    /*
-    @Test
-    public void antTest() {
-        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Testing " + examplePath);
-        final int NUM_RUNS = 100;
-        final List<Double> best_fitnesses = new ArrayList();
-        final List<Integer> convergence_gen = new ArrayList();
-        final File exampleFile = new File(examplePath);
-        final String appName = exampleFile.getName();
-        
-        final Writer resultsWriter;
-        try {
-            resultsWriter = new BufferedWriter(new FileWriter("testResults/appResults.csv", true));
-            for (int i = 0; i < NUM_RUNS; i++)
-                {
-                    final ParameterDatabase parameters = new ParameterDatabase(exampleFile);
-                    parameters.set(new Parameter(EvolutionState.P_STATISTICS), "ec.test.TestStatistics");
-                    //parameters.set(new Parameter(EvolutionState.P_GENERATIONS), "2");
-                    parameters.set(new Parameter(Evolve.P_SILENT), "true");
-
-                    // Can't use Evolve.main() because it calls System.exit()
-                    final EvolutionState state = Evolve.initialize(parameters, 0);
-                    state.run(EvolutionState.C_STARTED_FRESH);
-
-                    // Collect best individual and the generaiton that individual was found at
-                    final double best = ((TestStatistics)state.statistics).getBestSoFar()[0].fitness.fitness();
-                    best_fitnesses.add(best);
-                    final int best_gen = ((TestStatistics)state.statistics).getGenerationOfBestSoFar()[0];
-                    convergence_gen.add(best_gen);
-                    resultsWriter.append(String.format("%s, %d, %f, %d\n", appName, i, best, best_gen));
-                    resultsWriter.flush();
-                }
-
-            assert(best_fitnesses.size() == convergence_gen.size());
-            resultsWriter.close();
-        } catch (IOException e)
-            {
-            fail(e.toString());
-            }
-    }*/
 }
