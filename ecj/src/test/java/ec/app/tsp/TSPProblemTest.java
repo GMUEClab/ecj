@@ -6,8 +6,8 @@
 package ec.app.tsp;
 
 import ec.EvolutionState;
+import ec.Evolve;
 import ec.simple.SimpleEvolutionState;
-import ec.util.Output;
 import ec.util.Output.OutputExitException;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
@@ -36,15 +36,15 @@ public class TSPProblemTest
         params.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/att532.tsp");
         state = new SimpleEvolutionState();
         state.parameters = params;
-        state.output = new Output(true);
-        state.output.addLog(ec.util.Log.D_STDERR,true);
+        state.output = Evolve.buildOutput();
+        state.output.getLog(0).silent = true;
+        state.output.getLog(1).silent = true;
         state.output.setThrowsErrors(true);
     }
     
     @Test(expected = OutputExitException.class)
     public void testSetup()
     {
-        System.out.println("setup (bad file)");
         state.parameters.set(BASE.push(TSPProblem.P_FILE), "/dev/null");
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
@@ -53,7 +53,6 @@ public class TSPProblemTest
     @Test
     public void testDesireability1()
     {
-        System.out.println("desireability");
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
         double result = instance.desireability(1, 2);
@@ -64,7 +63,6 @@ public class TSPProblemTest
     @Test
     public void testDesireability2()
     {
-        System.out.println("desireability");
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
         double result = instance.desireability(532, 2);
@@ -75,7 +73,6 @@ public class TSPProblemTest
     @Test
     public void testNumComponents()
     {
-        System.out.println("numComponents");
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
         assertEquals(532, instance.numComponents());

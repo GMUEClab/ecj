@@ -18,8 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Implements a Traveling Salesmen Problem loaded from a file.  The format used
- * for the file is similar to the TSPLIB format (https://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/tsp95.pdf),
+ * Implements a Traveling Salesmen Problem loaded from a file.
+ * 
+ * The format used for the file is similar to the TSPLIB format
+ * (https://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/tsp95.pdf),
  * though we don't support all of TSPLIB's features.
  * 
  * @author Eric O. Scott
@@ -47,7 +49,8 @@ public class TSPProblem extends Problem implements ConstructiveProblemForm {
             }
         assert(repOK());
     }
-        
+    
+    /** Load a TSP problem from a file and store it as a Map from IDs to points. */
     private static Map<Integer, double[]> loadNodes(final File file) throws IOException
     {
         assert(file != null);
@@ -73,6 +76,8 @@ public class TSPProblem extends Problem implements ConstructiveProblemForm {
         return nodes;
     }
     
+    /** Read the dimensionality of problem from a file in TSPLIB formate by
+     * looking for the 'DIMENSION' attribute. */
     private static int readDimension(final BufferedReader tspReader) throws IOException
     {
         assert(tspReader != null);
@@ -122,7 +127,10 @@ public class TSPProblem extends Problem implements ConstructiveProblemForm {
         return nodes.size();
     }
     
-    /** Representation invariant.  Used for verification. */
+    /** Representation invariant, used for verification.
+     * 
+     * @return true if the class is found to be in an erroneous state.
+     */
     public final boolean repOK()
     {
         return nodes != null

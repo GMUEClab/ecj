@@ -89,8 +89,8 @@ public class AntBreederTest
         System.out.println("getPheremoneMatrix");
         int i = 0;
         AntBreeder instance = new AntBreeder();
-        PheremoneMatrix expResult = null;
-        PheremoneMatrix result = instance.getPheremoneMatrix(i);
+        PheromoneMatrix expResult = null;
+        PheromoneMatrix result = instance.getPheremoneMatrix(i);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
