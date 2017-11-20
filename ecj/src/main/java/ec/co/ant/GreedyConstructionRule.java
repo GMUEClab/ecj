@@ -58,9 +58,7 @@ public class GreedyConstructionRule implements ConstructionRule
         // Prepare data structures
         final int length = pheromones.numNodes();
         final List<Integer> path = new ArrayList<Integer>();
-        final Collection<Integer> allowedMoves = new HashSet<Integer>();
-        for (int i = 0; i < length; i++)
-            allowedMoves.add(i);
+        final Collection<Integer> allowedMoves = problem.componentSet();
         
         // Constructively build a new individual
         int currentNode = startNode;
@@ -74,7 +72,7 @@ public class GreedyConstructionRule implements ConstructionRule
             }
         
         final IntegerVectorIndividual ind = (IntegerVectorIndividual) species.newIndividual(state, 0);
-        ind.setGenome(path.toArray());
+        ind.setGenome(listToIntArray(path));
         assert(repOK());
         return ind;
     }
@@ -112,5 +110,15 @@ public class GreedyConstructionRule implements ConstructionRule
     {
         return P_MINIMIZE != null
                 && !P_MINIMIZE.isEmpty();
+    }
+    
+    private static int[] listToIntArray(final List<Integer> l)
+    {
+        assert(l != null);
+        assert(!Misc.containsNulls(l));
+        final int[] a = new int[l.size()];
+        for (int i = 0; i < l.size(); i++)
+            a[i] = l.get(i);
+        return a;
     }
 }

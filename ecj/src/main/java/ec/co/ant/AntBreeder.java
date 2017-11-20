@@ -25,8 +25,10 @@ public class AntBreeder extends Breeder
     public final static String P_UPDATE_RULE = "updateRule";
     public final static String P_CONSTRUCTION_RULE = "constructionRule";
     public final static String P_NUM_ANTS = "numAnts";
+    public final static String P_NUM_NODES = "numNodes";
 
     private int numAnts;
+    private int numNodes;
     private ConstructionRule constructionRule;
     private UpdateRule updateRule;
     private List<PheromoneMatrix> pheromoneMatrix;
@@ -45,19 +47,23 @@ public class AntBreeder extends Breeder
     {
         assert(state != null);
         assert(base != null);
-        numAnts = state.parameters.getInt(base.push(P_NUM_ANTS), null, 0);
+        numAnts = state.parameters.getInt(base.push(P_NUM_ANTS), null, 1);
+        if (numAnts == 0)
+            state.output.fatal(String.format("%s: '%s' is set to %d, but must be positive.", this.getClass().getSimpleName(), base.push(P_NUM_ANTS), numAnts));
+        numNodes = state.parameters.getInt(base.push(P_NUM_NODES), null, 1);
+        if (numNodes == 0)
+            state.output.fatal(String.format("%s: '%s' is set to %d, but must be positive.", this.getClass().getSimpleName(), base.push(P_NUM_NODES), numNodes));
         constructionRule = (ConstructionRule) state.parameters.getInstanceForParameter(base.push(P_CONSTRUCTION_RULE), null, ConstructionRule.class);
         updateRule = (UpdateRule) state.parameters.getInstanceForParameter(base.push(P_UPDATE_RULE), null, UpdateRule.class);
-        pheromoneMatrix = initPheremones(((ConstructiveProblemForm)state.evaluator.p_problem));
+        pheromoneMatrix = initPheremones(numNodes);
         assert(repOK());
     }
     
-    private static List<PheromoneMatrix> initPheremones(final ConstructiveProblemForm problem)
+    private static List<PheromoneMatrix> initPheremones(final int numNodes)
     {
-        assert(problem != null);
-        final int dimensions = problem.numComponents();
+        assert(numNodes > 0);
         final List<PheromoneMatrix> matrices = new ArrayList<PheromoneMatrix>();
-        matrices.add(new PheromoneMatrix(dimensions));
+        matrices.add(new PheromoneMatrix(numNodes));
         return matrices;
     }
 
@@ -81,21 +87,12 @@ public class AntBreeder extends Breeder
             // Execute ants
             for (int j = 0; j < numAnts; j++)
                 {
-                final IntegerVectorIndividual newInd = constructionRule.constructSolution(state, i, startNode, pheromoneMatrix.get(i), problem);
+                final int startNode = state.random[0].nextInt(problem.numComponents() - 1) + 1;
+                final IntegerVectorIndividual newInd = constructionRule.constructSolution(state, i, startNode, pheromoneMatrix.get(i));
                 newPop.subpops.get(i).individuals.add(newInd);
                 }
             }
-        
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    private void breedSubpopulation(final Subpopulation oldSubpop, final Subpopulation newSubpop, final int numAnts, final PheromoneMatrix pheromones, final ConstructiveProblemForm problem)
-    {
-        assert(newSubpop != null);
-        assert(numAnts > 0);
-        assert(pheromones != null);
-            
-        
+        return newPop;
     }
     
     /** Representation invariant, used for verification.

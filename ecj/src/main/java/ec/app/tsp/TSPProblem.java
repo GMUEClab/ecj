@@ -6,16 +6,22 @@
 package ec.app.tsp;
 
 import ec.EvolutionState;
+import ec.Individual;
 import ec.Problem;
 import ec.co.ConstructiveProblemForm;
+import ec.simple.SimpleFitness;
+import ec.simple.SimpleProblemForm;
 import ec.util.Parameter;
+import ec.vector.IntegerVectorIndividual;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Implements a Traveling Salesmen Problem loaded from a file.
@@ -26,7 +32,7 @@ import java.util.Map;
  * 
  * @author Eric O. Scott
  */
-public class TSPProblem extends Problem implements ConstructiveProblemForm {
+public class TSPProblem extends Problem implements SimpleProblemForm, ConstructiveProblemForm {
     public final static String P_FILE = "file";
     
     private Map<Integer, double[]> nodes;
@@ -66,7 +72,7 @@ public class TSPProblem extends Problem implements ConstructiveProblemForm {
             final String[] cols = line.split(" ");
             if (cols.length != 3)
                 throw new IllegalStateException(String.format("%s: Node '%s' has %d columns, expected 3.", TSPProblem.class.getSimpleName(), line, cols.length));
-            final int id = Integer.valueOf(cols[0].trim());
+            final int id = Integer.valueOf(cols[0].trim()) - 1; // TSPLIB IDs start from 1, but we want them to start from 0
             final int x = Integer.valueOf(cols[1].trim());
             final int y = Integer.valueOf(cols[2].trim());
             nodes.put(id, new double[] {x, y});
@@ -112,19 +118,51 @@ public class TSPProblem extends Problem implements ConstructiveProblemForm {
     @Override
     public double desireability(final int from, final int to)
     {
-        assert(from >= 1); // TSPLIB node IDs start from 1
-        assert(from < numComponents() + 1);
-        assert(to >= 1);
-        assert(to < numComponents() + 1);
+        assert(from >= 0);
+        assert(from < numComponents());
+        assert(to >= 0);
+        assert(to < numComponents());
         final double[] fp = nodes.get(from);
         final double[] tp = nodes.get(to);
         return Math.rint(Math.sqrt(Math.pow(fp[0] - tp[0], 2) + Math.pow(fp[1] - tp[1], 2)));
     }
 
     @Override
+    public void evaluate(final EvolutionState state, final Individual ind, final int subpopulation, final int threadnum)
+    {
+        assert(state != null);
+        assert(ind != null);
+        assert(ind instanceof IntegerVectorIndividual);
+        assert(subpopulation >= 0);
+        assert(subpopulation < state.population.subpops.size());
+        assert(threadnum >= 0);
+        
+        if (!ind.evaluated)
+            {
+            final IntegerVectorIndividual iind = (IntegerVectorIndividual) ind;
+            assert(iind.genomeLength() > 0);
+            int currentNode = iind.genome[0];
+            double cost = 0.0;
+            for (int i = 1; i < iind.genomeLength(); i++)
+                cost += desireability(currentNode, iind.genome[i]);
+            assert(cost >= 0.0);
+            assert(!Double.isNaN(cost));
+            assert(!Double.isInfinite(cost));
+            ((SimpleFitness)ind.fitness).setFitness(state, cost, false);
+            ind.evaluated = true;
+            }
+    }
+
+    @Override
     public int numComponents()
     {
         return nodes.size();
+    }
+    
+    @Override
+    public Set<Integer> componentSet()
+    {
+        return new HashSet<Integer>(nodes.keySet()); // Defensive copy
     }
     
     /** Representation invariant, used for verification.

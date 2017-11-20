@@ -14,4 +14,5 @@ import java.util.Set;
 public interface ConstructiveProblemForm {
     public abstract double desireability(int from, int to);
     public abstract int numComponents();
+    public abstract Set<Integer> componentSet();
 }
