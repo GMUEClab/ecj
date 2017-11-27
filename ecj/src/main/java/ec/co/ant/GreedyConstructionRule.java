@@ -6,14 +6,12 @@
 package ec.co.ant;
 
 import ec.EvolutionState;
+import ec.co.ConstructiveIndividual;
 import ec.co.ConstructiveProblemForm;
 import ec.util.Misc;
 import ec.util.Parameter;
-import ec.vector.IntegerVectorIndividual;
-import ec.vector.IntegerVectorSpecies;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -37,26 +35,20 @@ public class GreedyConstructionRule implements ConstructionRule
     }
 
     @Override
-    public IntegerVectorIndividual constructSolution(final EvolutionState state, final int subpop, final int startNode, final PheromoneMatrix pheromones)
+    public ConstructiveIndividual constructSolution(final EvolutionState state, final ConstructiveIndividual ind, final int startNode, final PheromoneMatrix pheromones)
     {
         assert(state != null);
-        assert(subpop >= 0);
-        assert(subpop < state.population.subpops.size());
         assert(pheromones != null);
         assert(startNode >= 0);
         assert(startNode < pheromones.numNodes());
         assert(state.evaluator.p_problem instanceof ConstructiveProblemForm);
-        assert(state.population.subpops.get(subpop).species instanceof IntegerVectorSpecies);
         
         final ConstructiveProblemForm problem = (ConstructiveProblemForm) state.evaluator.p_problem;
-        final IntegerVectorSpecies species = (IntegerVectorSpecies) state.population.subpops.get(subpop).species;
         
         assert(problem != null);
         assert(pheromones.numNodes() == problem.numComponents());
-        assert(species != null);
         
         // Prepare data structures
-        final int length = pheromones.numNodes();
         final List<Integer> path = new ArrayList<Integer>();
         final Collection<Integer> allowedMoves = problem.componentSet();
         
@@ -71,7 +63,6 @@ public class GreedyConstructionRule implements ConstructionRule
             allowedMoves.remove(currentNode);
             }
         
-        final IntegerVectorIndividual ind = (IntegerVectorIndividual) species.newIndividual(state, 0);
         ind.setGenome(listToIntArray(path));
         assert(repOK());
         return ind;

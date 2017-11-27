@@ -8,11 +8,11 @@ package ec.app.tsp;
 import ec.EvolutionState;
 import ec.Individual;
 import ec.Problem;
+import ec.co.ConstructiveIndividual;
 import ec.co.ConstructiveProblemForm;
 import ec.simple.SimpleFitness;
 import ec.simple.SimpleProblemForm;
 import ec.util.Parameter;
-import ec.vector.IntegerVectorIndividual;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -132,15 +132,15 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
     {
         assert(state != null);
         assert(ind != null);
-        assert(ind instanceof IntegerVectorIndividual);
+        assert(ind instanceof ConstructiveIndividual);
         assert(subpopulation >= 0);
         assert(subpopulation < state.population.subpops.size());
         assert(threadnum >= 0);
         
         if (!ind.evaluated)
             {
-            final IntegerVectorIndividual iind = (IntegerVectorIndividual) ind;
-            assert(iind.genomeLength() > 0);
+            final ConstructiveIndividual iind = (ConstructiveIndividual) ind;
+            assert(iind.genomeLength() == numComponents());
             int currentNode = iind.genome[0];
             double cost = 0.0;
             for (int i = 1; i < iind.genomeLength(); i++)

@@ -8,9 +8,9 @@ package ec.co.ant;
 import ec.EvolutionState;
 import ec.Individual;
 import ec.Subpopulation;
+import ec.co.ConstructiveIndividual;
 import ec.util.IIntPoint;
 import ec.util.Parameter;
-import ec.vector.IntegerVectorIndividual;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,8 +42,8 @@ public class AntSystemUpdateRule implements UpdateRule
         final Map<IIntPoint, Double> scores = new HashMap();
         for (final Individual o : subpop.individuals)
             {
-            assert(o instanceof IntegerVectorIndividual);
-            final IntegerVectorIndividual ind = (IntegerVectorIndividual) o;
+            assert(o instanceof ConstructiveIndividual);
+            final ConstructiveIndividual ind = (ConstructiveIndividual) o;
             assert(ind.genomeLength() > 0);
             int currentNode = ind.genome[0];
             for (int i = 1; i < ind.genomeLength(); i++)

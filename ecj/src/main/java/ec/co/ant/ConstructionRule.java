@@ -7,7 +7,7 @@ package ec.co.ant;
 
 import ec.EvolutionState;
 import ec.Setup;
-import ec.vector.IntegerVectorIndividual;
+import ec.co.ConstructiveIndividual;
 
 /**
  *
@@ -15,5 +15,5 @@ import ec.vector.IntegerVectorIndividual;
  */
 public interface ConstructionRule extends Setup
 {
-    public abstract IntegerVectorIndividual constructSolution(EvolutionState state, int subpop, int startNode, PheromoneMatrix pheromones);
+    public abstract ConstructiveIndividual constructSolution(EvolutionState state, ConstructiveIndividual ind, int startNode, PheromoneMatrix pheromones);
 }
