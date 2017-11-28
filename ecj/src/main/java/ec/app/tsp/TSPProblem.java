@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +36,13 @@ import java.util.Set;
 public class TSPProblem extends Problem implements SimpleProblemForm, ConstructiveProblemForm {
     public final static String P_FILE = "file";
     
+    public final static String A_DIMENSION = "DIMENSION";
+    public final static String A_EDGE_WEIGHT_TYPE = "EDGE_WEIGHT_TYPE";
+    public final static String A_NODE_COORD_SECTION = "NODE_COORD_SECTION";
+    
+    private int dimension;
+    private enum EdgeWeightType { EUC_2D, GEO, ATT }
+    private EdgeWeightType edgeWeightType;
     private Map<Integer, double[]> nodes;
     
     @Override
@@ -47,25 +55,73 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
             state.output.fatal(String.format("%s: Unable to read file path '%s'.", this.getClass().getSimpleName(), base.push(P_FILE)), base.push(P_FILE));
         try
             {
-            nodes = loadNodes(file);
+            assert(file != null);
+            final BufferedReader r = new BufferedReader(new FileReader(file));
+            loadHeader(r);
+            nodes = loadNodes(r);
             }
         catch (final Exception e)
             {
-            state.output.fatal(String.format("%s: Unable to load TSP instance from file '%s'.", this.getClass().getSimpleName(), base.push(P_FILE)), base.push(P_FILE));
+            state.output.fatal(String.format("%s: Unable to load TSP instance from file '%s': %s", this.getClass().getSimpleName(), state.parameters.getString(base.push(P_FILE), null), e), base.push(P_FILE));
             }
         assert(repOK());
     }
     
-    /** Load a TSP problem from a file and store it as a Map from IDs to points. */
-    private static Map<Integer, double[]> loadNodes(final File file) throws IOException
+    /** Read the dimensionality of problem from a file in TSPLIB formate by
+     * looking for the 'DIMENSION' attribute. */
+    private void loadHeader(final BufferedReader tspReader) throws IOException
     {
-        assert(file != null);
-        final BufferedReader r = new BufferedReader(new FileReader(file));
-        
-        final int dimension = readDimension(r);
+        assert(tspReader != null);
+        String line;
+        while ( (line = tspReader.readLine()) != null && !line.equals(A_NODE_COORD_SECTION))
+            {
+            readLine(line);
+            }
+        if (dimension == 0)
+            throw new IllegalStateException("No valid 'DIMENSION' attribute found in TSP file.  Are you sure this file is in TSPLIB format?");
+    }
+    
+    private void readLine(final String line)
+    {
+        assert(line != null);
+        final String[] keyValue = line.split(":");
+        if (keyValue.length != 2)
+            throw new IllegalStateException(String.format("%s: invalid TSPLIB specification '%s'.  Expected a key-value pair.", this.getClass().getSimpleName(), line));
+        final String key = keyValue[0].trim().toUpperCase();
+        final String value = keyValue[1].trim();
+        if (key.equals(A_DIMENSION))
+            {
+            try
+                {
+                this.dimension = Integer.valueOf(value);
+                }
+            catch (final NumberFormatException e)
+                {
+                throw new NumberFormatException(String.format("%s: invalid value '%s' found for %s attribute.  Integer expected.", this.getClass().getSimpleName(), value, A_DIMENSION));
+                }
+            if (dimension <= 0)
+                throw new IllegalStateException(String.format("%s: invalid value '%d' found for %s attribute.  Must be positive", this.getClass().getSimpleName(), dimension, A_DIMENSION));
+            }
+        else if (key.equals(A_EDGE_WEIGHT_TYPE))
+            {
+            try
+                {
+                this.edgeWeightType = EdgeWeightType.valueOf(value.toUpperCase());
+                }
+            catch (final IllegalArgumentException e)
+                {
+                throw new NumberFormatException(String.format("%s: invalid value '%s' found for %s attribute.  Recognized values are %s.", this.getClass().getSimpleName(), value, A_EDGE_WEIGHT_TYPE, Arrays.asList(EdgeWeightType.values())));
+                }
+            }
+    }
+    
+    /** Load a TSP problem from a file and store it as a Map from IDs to points. 
+     * The reader should already be advanced one line beyond the occurrence of 
+     * A_NODE_COORD_SECTION, so that the next line is the first node in the list. */
+    private Map<Integer, double[]> loadNodes(final BufferedReader r) throws IOException
+    {
+        assert(r != null);
         final Map<Integer, double[]> nodes = new HashMap<Integer, double[]>();
-        
-        seekToDataSection(r);
         String line;
         while ( (line = r.readLine()) != null && !line.trim().equals("EOF") )
             {
@@ -73,45 +129,13 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
             if (cols.length != 3)
                 throw new IllegalStateException(String.format("%s: Node '%s' has %d columns, expected 3.", TSPProblem.class.getSimpleName(), line, cols.length));
             final int id = Integer.valueOf(cols[0].trim()) - 1; // TSPLIB IDs start from 1, but we want them to start from 0
-            final int x = Integer.valueOf(cols[1].trim());
-            final int y = Integer.valueOf(cols[2].trim());
+            final double x = Double.valueOf(cols[1].trim());
+            final double y = Double.valueOf(cols[2].trim());
             nodes.put(id, new double[] {x, y});
             }
         if (nodes.size() != dimension)
             throw new IllegalStateException(String.format("%s: TSP problem 'DIMENSION' is specified to be %d, but %d nodes were found.", TSPProblem.class.getSimpleName(), dimension, nodes.size()));
         return nodes;
-    }
-    
-    /** Read the dimensionality of problem from a file in TSPLIB formate by
-     * looking for the 'DIMENSION' attribute. */
-    private static int readDimension(final BufferedReader tspReader) throws IOException
-    {
-        assert(tspReader != null);
-        boolean done = false;
-        String line;
-        while ( (line = tspReader.readLine()) != null && !done)
-            {
-            final String[] keyValue = line.split(":");
-            if (keyValue.length == 2 && keyValue[0].trim().toLowerCase().equals("dimension"))
-                {
-                return Integer.valueOf(keyValue[1].trim());
-                }
-            }
-        throw new IllegalStateException("No valid 'DIMENSION' attribute found in TSP file.  Are you sure this file is in TSPLIB format?");
-    }
-    
-    /** Seek to the line where the coordinate data begins in a TSP problem definition of TSPLIB format. */
-    private static void seekToDataSection(final BufferedReader tspReader) throws IOException
-    {
-        assert(tspReader != null);
-        boolean done = false;
-        String line;
-        while ( (line = tspReader.readLine()) != null && !done)
-            {
-            if (line.trim().equals("NODE_COORD_SECTION"))
-                return;
-            }
-        throw new IllegalStateException("No 'NODE_COORD_SECTION' found in TSP file.  Are you sure this file is in TSPLIB format?");
     }
 
     /** Computes Euclidean distance between two nodes, rounded to the nearest integer. **/
@@ -124,7 +148,81 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         assert(to < numComponents());
         final double[] fp = nodes.get(from);
         final double[] tp = nodes.get(to);
-        return Math.rint(Math.sqrt(Math.pow(fp[0] - tp[0], 2) + Math.pow(fp[1] - tp[1], 2)));
+        switch (edgeWeightType)
+            {
+            default:
+            case EUC_2D:
+                return euclideanDistance(fp, tp);
+            case ATT:
+                return attDistance(fp, tp);
+            case GEO:
+                return geoDistance(fp, tp);
+            }
+    }
+    
+    /** Euclidean distance, rounded to the nearest integer. */
+    private double euclideanDistance(final double[] from, final double[] to)
+    {
+        assert(from != null);
+        assert(to != null);
+        assert(from.length == 2);
+        assert(to.length == 2);
+        return Math.rint(Math.sqrt(Math.pow(from[0] - to[0], 2) + Math.pow(from[1] - to[1], 2)));
+    }
+    
+    /** A "pseudo-Euclidean" distance, used in some TSPLIB instances. */
+    private double attDistance(final double[] from, final double[] to)
+    {
+        assert(from != null);
+        assert(to != null);
+        assert(from.length == 2);
+        assert(to.length == 2);
+        final double xd = from[0] - to[0];
+        final double yd = from[1] - to[1];
+        final double rft = Math.sqrt((xd*xd + yd*yd) / 10.0);
+        final double tft = Math.rint(rft);
+        if (tft < rft)
+            return tft + 1;
+        else
+            return tft;
+    }
+    
+    /** A geographical distance based on latitude and longitude. */
+    private double geoDistance(final double[] from, final double[] to)
+    {
+        assert(from != null);
+        assert(to != null);
+        assert(from.length == 2);
+        assert(to.length == 2);
+        final double rrr = 6378.388;
+        final double q1 = Math.cos(longitude(from) - longitude(to));
+        final double q2 = Math.cos(latitude(from) - latitude(to));
+        final double q3 = Math.cos(latitude(from) + latitude(to));
+        return (int) (rrr * Math.acos(0.5 * ((1.0 + q1)*q2 - (1.0 - q1)*q3) ) + 1.0);
+    }
+    
+    /** Latitude is encoded in DDD.MM format by the first element of a point,
+     * where DDD is degrees and MM is minutes.
+     */
+    private double latitude(final double[] p)
+    {
+        assert(p != null);
+        assert(p.length == 2);
+        final double deg = Math.rint(p[0]);
+        final double min = p[0] - deg;
+        return Math.PI * (deg + 5.0 * min / 3.0) / 180.0;
+    }
+    
+    /** Longitude is encoded in DDD.MM format by the first element of a point,
+     * where DDD is degrees and MM is minutes.
+     */
+    private double longitude(final double[] p)
+    {
+        assert(p != null);
+        assert(p.length == 2);
+        final double deg = Math.rint(p[1]);
+        final double min = p[1] - deg;
+        return Math.PI * (deg + 5.0 * min / 3.0) / 180.0;
     }
 
     @Override

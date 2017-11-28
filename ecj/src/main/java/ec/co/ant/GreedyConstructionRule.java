@@ -64,6 +64,7 @@ public class GreedyConstructionRule implements ConstructionRule
             }
         
         ind.setGenome(listToIntArray(path));
+        System.err.println(path);
         assert(repOK());
         return ind;
     }

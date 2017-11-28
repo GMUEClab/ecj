@@ -51,23 +51,87 @@ public class TSPProblemTest
     }
     
     @Test
-    public void testDesireability1()
+    public void testDesireabilityAtt532a()
     {
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
-        double result = instance.desireability(1, 2);
-        assertEquals(344, result, 0.0);
+        double result = instance.desireability(0, 1);
+        assertEquals(109, result, 0.0);
         assertTrue(instance.repOK());
     }
     
     @Test
-    public void testDesireability2()
+    public void testDesireabilityAtt532b()
     {
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
-        double result = instance.desireability(532, 2);
-        assertEquals(6157, result, 0.0);
+        double result = instance.desireability(531, 1);
+        assertEquals(1947, result, 0.0);
         assertTrue(instance.repOK());
+    }
+    
+    @Test
+    /** The TSPLIB documentation gives the distance of att532's 'canonical path' for verificiation purposes. */
+    public void testDesireabilityAtt532c()
+    {
+        final TSPProblem instance = new TSPProblem();
+        instance.setup(state, BASE);
+        assertEquals(309636, canonicalDistance(instance), 0.0);
+        assertTrue(instance.repOK());
+    }
+    
+    @Test
+    public void testDesireabilityBerlin52a()
+    {
+        state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/berlin52.tsp");
+        final TSPProblem instance = new TSPProblem();
+        instance.setup(state, BASE);
+        double result = instance.desireability(0, 1);
+        assertEquals(666, result, 0.0);
+        assertTrue(instance.repOK());
+    }
+    
+    @Test
+    public void testDesireabilityBerlin52b()
+    {
+        state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/berlin52.tsp");
+        final TSPProblem instance = new TSPProblem();
+        instance.setup(state, BASE);
+        double result = instance.desireability(51, 0);
+        assertEquals(1220, result, 0.0);
+        assertTrue(instance.repOK());
+    }
+    
+    @Test
+    /** The TSPLIB documentation gives the distance of pcb442's 'canonical path' for verificiation purposes. */
+    public void testDesireabilityPcb442()
+    {
+        state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/pcb442.tsp");
+        final TSPProblem instance = new TSPProblem();
+        instance.setup(state, BASE);
+        assertEquals(221440, canonicalDistance(instance), 0.0);
+        assertTrue(instance.repOK());
+    }
+    
+    @Test
+    /** The TSPLIB documentation gives the distance of gr666's 'canonical path' for verificiation purposes. */
+    public void testDesireabilityGr666()
+    {
+        state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/gr666.tsp");
+        final TSPProblem instance = new TSPProblem();
+        instance.setup(state, BASE);
+        assertEquals(423710, canonicalDistance(instance), 0.0);
+        assertTrue(instance.repOK());
+    }
+    
+    private double canonicalDistance(final TSPProblem instance)
+    {
+        assert(instance != null);
+        double sum = 0.0;
+        for (int i = 1; i < instance.numComponents(); i++)
+            sum += instance.desireability(i - 1, i);
+        sum += instance.desireability(instance.numComponents() - 1, 0);
+        return sum;
     }
     
     @Test
