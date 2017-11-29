@@ -25,6 +25,11 @@ public class GreedyConstructionRule implements ConstructionRule
     public final static String P_MINIMIZE = "minimize";
     private boolean minimize;
     
+    public boolean isMinimize()
+    {
+        return minimize;
+    }
+    
     @Override
     public void setup(final EvolutionState state, final Parameter base)
     {
@@ -34,19 +39,20 @@ public class GreedyConstructionRule implements ConstructionRule
         assert(repOK());
     }
 
+    /** Constructs a solution by greedily adding the lowest-cost component at 
+     * each step until a complete solution is formed.  The pheromone matrix
+     * argument is ignored, and may be null.
+     */
     @Override
     public ConstructiveIndividual constructSolution(final EvolutionState state, final ConstructiveIndividual ind, final int startNode, final PheromoneMatrix pheromones)
     {
         assert(state != null);
-        assert(pheromones != null);
         assert(startNode >= 0);
-        assert(startNode < pheromones.numNodes());
         assert(state.evaluator.p_problem instanceof ConstructiveProblemForm);
         
         final ConstructiveProblemForm problem = (ConstructiveProblemForm) state.evaluator.p_problem;
         
         assert(problem != null);
-        assert(pheromones.numNodes() == problem.numComponents());
         
         // Prepare data structures
         final List<Integer> path = new ArrayList<Integer>();
@@ -58,23 +64,30 @@ public class GreedyConstructionRule implements ConstructionRule
         allowedMoves.remove(currentNode);
         while (!allowedMoves.isEmpty())
             {
-            currentNode = bestMove(currentNode, pheromones, problem, allowedMoves);
+            currentNode = bestMove(currentNode, problem, allowedMoves);
             path.add(currentNode);
             allowedMoves.remove(currentNode);
             }
         
         ind.setGenome(listToIntArray(path));
-        System.err.println(path);
         assert(repOK());
         return ind;
     }
     
-    /** Greedily select the next move. */
-    private int bestMove(final int currentNode, final PheromoneMatrix pheromones, final ConstructiveProblemForm problem, final Collection<Integer> allowedMoves)
+    private static int[] listToIntArray(final List<Integer> l)
     {
-        assert(pheromones != null);
+        assert(l != null);
+        assert(!Misc.containsNulls(l));
+        final int[] a = new int[l.size()];
+        for (int i = 0; i < l.size(); i++)
+            a[i] = l.get(i);
+        return a;
+    }
+    
+    /** Greedily select the next move. */
+    private int bestMove(final int currentNode, final ConstructiveProblemForm problem, final Collection<Integer> allowedMoves)
+    {
         assert(problem != null);
-        assert(pheromones.numNodes() == problem.numComponents());
         assert(allowedMoves != null);
         assert(!allowedMoves.isEmpty());
         assert(!Misc.containsNulls(allowedMoves));
@@ -83,7 +96,7 @@ public class GreedyConstructionRule implements ConstructionRule
         int best = -1;
         for (final int move : allowedMoves)
             {
-            final double cost = problem.desireability(currentNode, move);
+            final double cost = problem.cost(currentNode, move);
             if (minimize ? cost <= bestCost : cost >= bestCost)
                 {
                 bestCost = cost;
@@ -102,15 +115,5 @@ public class GreedyConstructionRule implements ConstructionRule
     {
         return P_MINIMIZE != null
                 && !P_MINIMIZE.isEmpty();
-    }
-    
-    private static int[] listToIntArray(final List<Integer> l)
-    {
-        assert(l != null);
-        assert(!Misc.containsNulls(l));
-        final int[] a = new int[l.size()];
-        for (int i = 0; i < l.size(); i++)
-            a[i] = l.get(i);
-        return a;
     }
 }

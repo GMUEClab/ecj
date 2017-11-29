@@ -12,7 +12,7 @@ import java.util.Set;
  * @author Eric O. Scott
  */
 public interface ConstructiveProblemForm {
-    public abstract double desireability(int from, int to);
+    public abstract double cost(int from, int to);
     public abstract int numComponents();
     public abstract Set<Integer> componentSet();
 }

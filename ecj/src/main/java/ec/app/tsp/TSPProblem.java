@@ -140,7 +140,7 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
 
     /** Computes Euclidean distance between two nodes, rounded to the nearest integer. **/
     @Override
-    public double desireability(final int from, final int to)
+    public double cost(final int from, final int to)
     {
         assert(from >= 0);
         assert(from < numComponents());
@@ -242,7 +242,7 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
             int currentNode = iind.genome[0];
             double cost = 0.0;
             for (int i = 1; i < iind.genomeLength(); i++)
-                cost += desireability(currentNode, iind.genome[i]);
+                cost += cost(currentNode, iind.genome[i]);
             assert(cost >= 0.0);
             assert(!Double.isNaN(cost));
             assert(!Double.isInfinite(cost));
