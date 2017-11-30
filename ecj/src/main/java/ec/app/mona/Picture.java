@@ -25,6 +25,11 @@ public class Picture implements Cloneable, Serializable
     int[] xpoints = new int[0];
     int[] ypoints = new int[0];
         
+    public Picture(final boolean headless)
+    {
+        if (!headless)
+            f = new JFrame();
+    }
     // This allows genes from 0...1 to go to -0.025 ... +1.025.
     // which in turn makes it easy for polygons to have points off-screen
     double extend(double value)
@@ -179,7 +184,7 @@ public class Picture implements Cloneable, Serializable
         g.dispose();
     }
 
-    static JFrame f = new JFrame();
+    static JFrame f;
     static  boolean first = true;
     static JLabel left = new JLabel();
     static JLabel right = new JLabel();
@@ -189,6 +194,8 @@ public class Picture implements Cloneable, Serializable
     /** For debugging only.  */
     public void display(String title)
     {           
+        if (f == null)
+            return;
         left.setIcon(new ImageIcon(copyImage(original)));
         right.setIcon(new ImageIcon(copyImage(image)));
         if (first)

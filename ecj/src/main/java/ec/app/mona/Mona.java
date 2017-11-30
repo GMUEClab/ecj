@@ -19,7 +19,7 @@ public class Mona extends Problem implements SimpleProblemForm
     public static final String P_VERTICES = "num-vertices";
     public static final String P_HEADLESS = "headless";
     
-    public Picture pic = new Picture();
+    public Picture pic;
     public File in;
     public File out;
     public int numVertices;
@@ -40,6 +40,7 @@ public class Mona extends Problem implements SimpleProblemForm
         numVertices = state.parameters.getInt(base.push(P_VERTICES), null, 3);
         if (numVertices < 3) state.output.fatal("Number of vertices must be >= 3");
         headless = state.parameters.getBoolean(base.push(P_HEADLESS), null, false);
+        pic =  new Picture(headless);
         pic.load(in);
     }
         
