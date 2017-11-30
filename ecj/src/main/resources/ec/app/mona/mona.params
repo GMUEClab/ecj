@@ -14,6 +14,9 @@ eval.problem = ec.app.mona.Mona
 eval.problem.in = MonaLisaSmall.jpg
 eval.problem.out = MonaLisaOut.png
 
+# Comment out this line to see visualization during evolution
+eval.problem.headless = true
+
 # The number of vertices for each polygon is 6.  This affects two
 # parameters below which must be also adjusted of you change this,
 # so be careful.

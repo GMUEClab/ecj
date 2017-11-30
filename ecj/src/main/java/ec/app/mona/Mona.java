@@ -17,11 +17,13 @@ public class Mona extends Problem implements SimpleProblemForm
     public static final String P_IN = "in";
     public static final String P_OUT = "out";
     public static final String P_VERTICES = "num-vertices";
+    public static final String P_HEADLESS = "headless";
     
     public Picture pic = new Picture();
     public File in;
     public File out;
     public int numVertices;
+    public boolean headless;
     
     public Object clone()
     {
@@ -37,6 +39,7 @@ public class Mona extends Problem implements SimpleProblemForm
         out = state.parameters.getFile(base.push(P_OUT), null);
         numVertices = state.parameters.getInt(base.push(P_VERTICES), null, 3);
         if (numVertices < 3) state.output.fatal("Number of vertices must be >= 3");
+        headless = state.parameters.getBoolean(base.push(P_HEADLESS), null, false);
         pic.load(in);
     }
         
@@ -71,7 +74,8 @@ public class Mona extends Problem implements SimpleProblemForm
         ind.evaluated = false;
         evaluate(state, ind, subpopulation,threadnum);
         pic.save(new File(out.getParentFile(), "" + (state.generation) + "-" + out.getName()));  // not sure if "." is acceptable in Windows
-        pic.display("Best So Far, Generation " + state.generation);
+        if (!headless)
+            pic.display("Best So Far, Generation " + state.generation);
         // System.out.println("Filled Polygons: " + pic.getLatestFilledPolygonCount() + " of " + pic.getLatestTotalCount());
         ind.evaluated = true;
     }
