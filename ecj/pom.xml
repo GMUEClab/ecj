@@ -64,7 +64,7 @@
     <executions>
       <execution>
 	<id>install-jar-lib</id>
-        <phase>validate</phase>
+        <phase>clean</phase>
         <goals>
           <goal>install-file</goal>
         </goals>
