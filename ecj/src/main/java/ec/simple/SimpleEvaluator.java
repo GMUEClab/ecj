@@ -118,9 +118,10 @@ public class SimpleEvaluator extends Evaluator
         // populate with clones
         for(int i = 0;i<pop.subpops.size();++i)
             {
-                for(int j = 0;j<state.population.subpops.get(i).individuals.size();++j)
+            	int originalSubpopSize = state.population.subpops.get(i).individuals.size();
+                for(int j = 0;j<originalSubpopSize;++j)
                     {
-                        for(int k=0;k<numTests;++k)
+                        for(int k=0;k<numTests - 1;++k)
                             {
                                 pop.subpops.get(i).individuals.add((Individual) state.population.subpops.get(i).individuals.get(j).clone());
                             }
