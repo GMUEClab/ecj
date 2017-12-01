@@ -8,6 +8,11 @@ ECJ is now well over fifteen years old and is a mature, stable framework which h
 
 A toolkit such as this is not for everyone. ECJ was designed for big projects and to provide many facilities, and this comes with a relatively steep learning curve. We provide tutorials and many example applications, but this only partly mitigates ECJ's imposing nature. Further, while ECJ is extremely "hackable," the initial development overhead for starting a new project is relatively large. As a result, while I feel ECJ is an excellent tool for many projects, other tools might be more apropos for quick-and-dirty experimental work.
 
+Thanks,
+Sean Luke
+ECLab, Department of Computer Science
+George Mason University
+
 ## Getting Started
 
 For instructions on how to begin using the ECJ binary distribution and/or build the source package, take a look at the readme in the '[ecj/](ecj/)' subdirectory.
