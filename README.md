@@ -38,4 +38,5 @@ author       = { Sean Luke },
 title        = { {ECJ} Evolutionary Computation Library },
 year         = { 1998 },
 note         = { Available for free at http://cs.gmu.edu/$\sim$eclab/projects/ecj/  }
+}
 ```
