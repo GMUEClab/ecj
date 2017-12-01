@@ -26,6 +26,8 @@
 	    <groupId>edu.gmu.cs</groupId>
 	    <artifactId>pshecj</artifactId>
 	    <version>1.0</version>
+	    <scope>system</scope>
+	    <systemPath>${project.basedir}/lib/pshecj.jar</systemPath>
 	</dependency>
 	<dependency>
 	  <groupId>junit</groupId>
@@ -64,7 +66,7 @@
     <executions>
       <execution>
 	<id>install-jar-lib</id>
-        <phase>clean</phase>
+        <phase>initialize</phase>
         <goals>
           <goal>install-file</goal>
         </goals>
