@@ -58,8 +58,7 @@ public class MooSuite extends Problem implements SimpleProblemForm
     public static final String P_FON = "fon";
     public static final String P_QV = "qv";
     public static final String P_POL = "pol";
-    public static final String P_KUR_NSGA2 = "kur-nsga2";
-    public static final String P_KUR_SPEA2 = "kur-spea2";
+    public static final String P_KUR = "kur";
     public static final String P_F1 = "f1";    
     public static final String P_F2 = "f2";
     public static final String P_F3 = "unconstrained-f3";
@@ -74,12 +73,11 @@ public class MooSuite extends Problem implements SimpleProblemForm
     public static final int PROB_ZDT6 = 6;
     public static final int PROB_FON = 7;
     public static final int PROB_POL = 8;
-    public static final int PROB_KUR_NSGA2 = 9;
-    public static final int PROB_KUR_SPEA2 = 10;
-    public static final int PROB_QV = 11;
-    public static final int PROB_SCH = 12;
-    public static final int PROB_F2 = 13;
-    public static final int PROB_F3 = 14;
+    public static final int PROB_KUR = 9;
+    public static final int PROB_QV = 10;
+    public static final int PROB_SCH = 11;
+    public static final int PROB_F2 = 12;
+    public static final int PROB_F3 = 13;
 
     public int problemType = PROB_ZDT1;  // defaults on zdt1
 
@@ -103,10 +101,8 @@ public class MooSuite extends Problem implements SimpleProblemForm
             problemType = PROB_POL;
         else if ( wp.compareTo( P_QV) == 0 )
             problemType = PROB_QV;
-        else if ( wp.compareTo( P_KUR_NSGA2) == 0 )
-            problemType = PROB_KUR_NSGA2;
-        else if ( wp.compareTo( P_KUR_SPEA2) == 0 )
-            problemType = PROB_KUR_SPEA2;
+        else if ( wp.compareTo( P_KUR) == 0 )
+            problemType = PROB_KUR;
         else if( wp.compareTo( P_SPHERE) == 0)
             problemType = PROB_SPHERE;         
         else if( wp.compareTo( P_F2) == 0)
@@ -125,8 +121,7 @@ public class MooSuite extends Problem implements SimpleProblemForm
                                 "  " + P_ZDT6 + "\n" +
                                 "  " + P_POL + "\n" +
                                 "  " + P_FON + "\n" +
-                                "  " + P_KUR_NSGA2 + "\n" +
-                                "  " + P_KUR_SPEA2 + "\n" +
+                                "  " + P_KUR + "\n" +
                                 "  " + P_SPHERE + "\n" +
                                 "  " + P_SCH + "(or " + P_F1 + ")\n"+
                                 "  " + P_F2 + "\n\n" +
@@ -284,32 +279,27 @@ public class MooSuite extends Problem implements SimpleProblemForm
                     }
                 objectives[1] = Math.pow(sum/numDecisionVars, 0.25);
                 break;
-            case PROB_KUR_NSGA2:
+            case PROB_KUR:
+                // The version of the Kursawe function we use here is taken from Zitzler et al., "SPEA2: Improving the Strength Pareto Evolutionary Algorithm"
+                // Note that many different versions are described in the literature!
                 double nextSquared, thisSquared;
                 thisSquared = genome[0]*genome[0];
                 sum=0;
                 for(int i = 0; i< numDecisionVars-1; ++i)
                     {
                         nextSquared = genome[i+1]*genome[i+1];
-                        //sum += 1d-Math.exp(-0.2*Math.sqrt(thisSquared + nextSquared));
                         sum += -10-Math.exp(-0.2*Math.sqrt(thisSquared + nextSquared));
                         thisSquared = nextSquared;
                     }
-                //objectives[1] = sum;
                 objectives[0] = sum;
                 sum= 0;
                 for(int i = 0; i< numDecisionVars; ++i)
                     {
-                        //double sin_xi = Math.sin(genome[i]);          
-                        //double t1 = Math.pow(Math.abs(genome[i]), .8);
-                        //double t2 = 5*sin_xi*sin_xi*sin_xi;
-                        //sum +=t1+t2+ 3.5828;
                         double xi3 = Math.pow(genome[i], 3);
                         double t1 = Math.pow(Math.abs(genome[i]), .8);
                         double t2 = 5*Math.sin(xi3);
                         sum +=t1+t2;
                     }
-                //objectives[0] = sum;
                 objectives[1] = sum;
                 break;
 
