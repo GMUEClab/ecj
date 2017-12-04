@@ -18,7 +18,7 @@ public class ConstructiveIndividual extends Individual
 {
     
     public static final String P_CONSTRUCTIVEINDIVIDUAL = "constr-ind";
-    public int[] genome = new int[] { };
+    public int[] path = new int[] { };
     
     public Parameter defaultBase()
     {
@@ -29,22 +29,22 @@ public class ConstructiveIndividual extends Individual
     {
         ConstructiveIndividual myobj = (ConstructiveIndividual) (super.clone());
 
-        // must clone the genome
-        myobj.genome = (int[])(genome.clone());
+        // must clone the path
+        myobj.path = (int[])(path.clone());
         
         return myobj;
     } 
     
-    public void setGenome(final int[] genome)
+    public void setPath(final int[] path)
     {
-        assert(genome != null);
-        this.genome = genome;
+        assert(path != null);
+        this.path = path;
         assert(repOK());
     }
     
-    public int genomeLength()
+    public int pathLength()
     {
-        return genome.length;
+        return path.length;
     }
 
     @Override
@@ -54,14 +54,14 @@ public class ConstructiveIndividual extends Individual
             return true;
         if (!(ind instanceof ConstructiveIndividual))
             return false;
-        return Arrays.equals(genome, ((ConstructiveIndividual)ind).genome);
+        return Arrays.equals(path, ((ConstructiveIndividual)ind).path);
     }
 
     @Override
     public int hashCode()
     {
         int hash = 7;
-        hash = 13 * hash + Arrays.hashCode(this.genome);
+        hash = 13 * hash + Arrays.hashCode(this.path);
         return hash;
     }
     
@@ -69,6 +69,6 @@ public class ConstructiveIndividual extends Individual
     {
         return P_CONSTRUCTIVEINDIVIDUAL != null
                 && !P_CONSTRUCTIVEINDIVIDUAL.isEmpty()
-                && genome != null;
+                && path != null;
     }
 }

@@ -110,7 +110,7 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
                 }
             catch (final IllegalArgumentException e)
                 {
-                throw new NumberFormatException(String.format("%s: invalid value '%s' found for %s attribute.  Recognized values are %s.", this.getClass().getSimpleName(), value, A_EDGE_WEIGHT_TYPE, Arrays.asList(EdgeWeightType.values())));
+                throw new IllegalArgumentException(String.format("%s: invalid value '%s' found for %s attribute.  Recognized values are %s.", this.getClass().getSimpleName(), value, A_EDGE_WEIGHT_TYPE, Arrays.asList(EdgeWeightType.values())));
                 }
             }
     }
@@ -238,11 +238,11 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         if (!ind.evaluated)
             {
             final ConstructiveIndividual iind = (ConstructiveIndividual) ind;
-            assert(iind.genomeLength() == numComponents());
-            int currentNode = iind.genome[0];
+            assert(iind.pathLength() == numComponents());
+            int currentNode = iind.path[0];
             double cost = 0.0;
-            for (int i = 1; i < iind.genomeLength(); i++)
-                cost += cost(currentNode, iind.genome[i]);
+            for (int i = 1; i < iind.pathLength(); i++)
+                cost += cost(currentNode, iind.path[i]);
             assert(cost >= 0.0);
             assert(!Double.isNaN(cost));
             assert(!Double.isInfinite(cost));

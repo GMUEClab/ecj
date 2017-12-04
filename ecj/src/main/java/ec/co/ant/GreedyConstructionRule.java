@@ -69,7 +69,7 @@ public class GreedyConstructionRule implements ConstructionRule
             allowedMoves.remove(currentNode);
             }
         
-        ind.setGenome(listToIntArray(path));
+        ind.setPath(listToIntArray(path));
         assert(repOK());
         return ind;
     }

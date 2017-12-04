@@ -33,6 +33,7 @@ public class AntSpecies extends Species
     private PheromoneMatrix pheromoneMatrix;
     private UpdateRule updateRule;
     
+    @Override
     public void setup(final EvolutionState state, final Parameter base)
     {
         setupSuper(state, base); // Calling a custom replacement for super.setup(), because Species.setup() looks for parameters that we don't need for ACO.
