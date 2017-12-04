@@ -43,7 +43,7 @@ public class AntSystemUpdateRule implements UpdateRule
             depositRule = DepositRule.valueOf(depositString);
             if (depositRule.equals(DepositRule.ANT_CYCLE))
                 {
-                q = state.parameters.containsKey(base.push(P_Q)) ? state.parameters.getDouble(base.push(P_Q), null) : 1.0;
+                q = state.parameters.exists(base.push(P_Q), null) ? state.parameters.getDouble(base.push(P_Q), null) : 1.0;
                 if (q <= 0.0)
                     state.output.fatal(String.format("%s: parameter '%s' has a value of %f, but must be positive.", this.getClass().getSimpleName(), base.push(P_Q), q));
                 }
