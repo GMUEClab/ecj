@@ -7,16 +7,20 @@ package ec.co.ant;
 
 import ec.EvolutionState;
 import ec.Evolve;
+import ec.Individual;
 import ec.Subpopulation;
 import ec.app.tsp.TSPProblem;
+import ec.co.ConstructiveIndividual;
 import ec.co.ant.AntSystemUpdateRule.DepositRule;
 import ec.simple.SimpleEvaluator;
 import ec.simple.SimpleEvolutionState;
+import ec.simple.SimpleFitness;
 import ec.util.Output;
 import ec.util.Output.OutputExitException;
 import ec.util.OutputException;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
+import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -92,7 +96,17 @@ public class AntSystemUpdateRuleTest
     public void testUpdatePheremoneMatrix()
     {
         PheromoneMatrix matrix = null;
-        Subpopulation subpop = null;
+        Subpopulation subpop = new Subpopulation();
+        subpop.individuals = new ArrayList<Individual>()
+        {{
+            final ConstructiveIndividual ind1 = new ConstructiveIndividual();
+            ind1.path = new int[] { 0, 1, 2, 3 };
+            ind1.fitness = new SimpleFitness();
+            
+            ((ConstructiveIndividual)get(0)).path = new int[] { 0, 1, 2, 3 };
+            ((ConstructiveIndividual)get(0)).path = new int[] { 0, 3, 1, 2 };
+            ((ConstructiveIndividual)get(0)).path = new int[] { 0, 2, 3, 1 };
+        }};
         AntSystemUpdateRule instance = new AntSystemUpdateRule();
         instance.updatePheremoneMatrix(matrix, subpop);
         // TODO review the generated test code and remove the default call to fail.
