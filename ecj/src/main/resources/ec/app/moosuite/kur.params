@@ -4,10 +4,10 @@
 
 parent.0 = moosuite.params
 
-eval.problem.type = kur-nsga2
-#Kursawe from 
-#
-#Note that many different versions are described in the literature!
+eval.problem.type = kur
+# The version of the Kursawe function we use here is taken from Zitzler et al.,
+# "SPEA2: Improving the Strength Pareto Evolutionary Algorithm"
+# Note that many different versions are described in the literature!
 pop.subpop.0.species.min-gene = -5
 pop.subpop.0.species.max-gene = 5
 pop.subpop.0.species.genome-size = 3
