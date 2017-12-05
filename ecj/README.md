@@ -7,7 +7,7 @@ you are bound to if you wish to use this software.
 Additionally, please see the following important files:
 
   * [docs/index.html](docs/index.html)         ECJ documentation.  Start here.
-  *[docs/manual/manual.pdf](docs/manual/manual.pdf)	The ECJ Owner's Manual.  A large reference work describing ECJ in detail.  Go through the tutorials before bothering with this one. 
+  * [docs/manual/manual.pdf](docs/manual/manual.pdf)	The ECJ Owner's Manual.  A large reference work describing ECJ in detail.  Go through the tutorials before bothering with this one. 
   * [LICENSE](LICENSE)			ECJ's license
   * [CHANGES](CHANGES)			Change log.  Very important!
   * [pom.xml](pom.xml)			The Project Object Model, used by [Maven](http://maven.apache.org) to compile ECJ against its dependencies.
@@ -33,7 +33,6 @@ To continue familiarizing yourself with ECJ's features, and to learn how to use 
   * the extensive [ECJ Manual](docs/manual/manual.pdf).
 
 Happy evolving!
-
 
 ## Building ECJ with the Makefile
 
