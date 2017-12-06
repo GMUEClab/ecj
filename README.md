@@ -23,7 +23,7 @@ For instructions on how to begin using the ECJ binary distribution and/or build 
 Going forward, you may also want to avail yourself of
  * the extensive [ECJ Manual](ecj/docs/manual/manual.pdf), which explains most of ECJ's features and algorims in detail, with instructions on how to use them,
  * the [ECJ tutorials](ecj/docs/tutorials),
- * and the built-in collectin of example applications (source code [here](ecj/src/main/java/ec/app), parameter files [here](ecj/src/main/resources/ec/app).
+ * and the built-in collectin of example applications (source code [here](ecj/src/main/java/ec/app), parameter files [here](ecj/src/main/resources/ec/app)).
 
 ## Citing ECJ
 
