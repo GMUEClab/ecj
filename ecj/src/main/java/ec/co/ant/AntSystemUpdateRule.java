@@ -78,7 +78,7 @@ public class AntSystemUpdateRule implements UpdateRule
         assert(matrix != null);
         assert(subpop != null);
         final Map<IIntPoint, Double> contributions = new HashMap();
-        // Loop through every individual and record its pheremone contributions (scores)
+        // Loop through every individual and record its pheremone contributions (scores) for each edge
         for (final Individual o : subpop.individuals)
             {
             assert(o instanceof ConstructiveIndividual);
@@ -113,22 +113,20 @@ public class AntSystemUpdateRule implements UpdateRule
         assert(i >= 0);
         assert(i < ind.pathLength());
         final double fitness = ind.fitness.fitness();
-        if (depositRule.equals(DepositRule.ANT_CYCLE))
+        switch (depositRule)
             {
-            assert(fitness > 0);
-            return q/fitness;
+            case ANT_CYCLE:
+                assert(fitness > 0);
+                return q/fitness;
+            case ANT_DENSITY:
+                return q;
+            case ANT_QUANTITY:
+                final int from = ind.path[i - 1];
+                final int to = ind.path[i];
+                return q/((ConstructiveProblemForm)state.evaluator.p_problem).cost(from, to);
+            default:
+                throw new IllegalStateException(String.format("%s: no deposit rule logic implemented for %s.", this.getClass().getSimpleName(), depositRule));
             }
-        else if (depositRule.equals(DepositRule.ANT_DENSITY))
-            {
-            return q;
-            }
-        else if (depositRule.equals(DepositRule.ANT_QUANTITY))
-            {
-            final int from = ind.path[i - 1];
-            final int to = ind.path[i];
-            return q/((ConstructiveProblemForm)state.evaluator.p_problem).cost(from, to);
-            }
-        throw new IllegalStateException(String.format("%s: no deposit rule logic implemented for %s.", this.getClass().getSimpleName(), depositRule));
     }
     
     public final boolean repOK()

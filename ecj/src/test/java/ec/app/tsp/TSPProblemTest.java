@@ -51,6 +51,35 @@ public class TSPProblemTest
     }
     
     @Test
+    public void testCostTest4()
+    {
+        state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/test4.tsp");
+        final TSPProblem instance = new TSPProblem();
+        instance.setup(state, BASE);
+        assertEquals(Math.rint(2* Math.sqrt(2)), instance.cost(0, 1), 0.00001);
+        assertEquals(Math.rint(2.5), instance.cost(0, 2), 0.00001);
+        assertEquals(Math.rint(2.692582403567252), instance.cost(0, 3), 0.00001);
+        assertEquals(Math.rint(0.5), instance.cost(1, 2), 0.00001);
+        assertEquals(Math.rint(1.118033988749895), instance.cost(1, 3), 0.00001);
+        assertEquals(Math.rint(0.7071067811865476), instance.cost(2, 3), 0.00001);
+        
+        // Symmetric matrix
+        assertEquals(instance.cost(0, 1), instance.cost(1, 0), 0.00001);
+        assertEquals(instance.cost(0, 2), instance.cost(2, 0), 0.00001);
+        assertEquals(instance.cost(0, 3), instance.cost(3, 0), 0.00001);
+        assertEquals(instance.cost(1, 2), instance.cost(2, 1), 0.00001);
+        assertEquals(instance.cost(1, 3), instance.cost(3, 1), 0.00001);
+        assertEquals(instance.cost(2, 3), instance.cost(3, 2), 0.00001);
+        
+        // Zero diagonal
+        assertEquals(0, instance.cost(0, 0), 0.00001);
+        assertEquals(0, instance.cost(1, 1), 0.00001);
+        assertEquals(0, instance.cost(2, 2), 0.00001);
+        assertEquals(0, instance.cost(3, 3), 0.00001);
+    }
+        
+    
+    @Test
     public void testCostAtt532a()
     {
         final TSPProblem instance = new TSPProblem();

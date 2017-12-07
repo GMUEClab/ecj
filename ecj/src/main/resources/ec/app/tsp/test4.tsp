@@ -1,0 +1,11 @@
+NAME: test4
+TYPE: TSP
+COMMENT: a small problem for testing.
+DIMENSION: 4
+EDGE_WEIGHT_TYPE: EUC_2D
+NODE_COORD_SECTION
+1 0.0 0.0
+2 2.0 2.0
+3 2 1.5
+4 2.5 1
+EOF

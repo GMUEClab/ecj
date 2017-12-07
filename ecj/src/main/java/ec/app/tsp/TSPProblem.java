@@ -36,11 +36,8 @@ import java.util.Set;
 public class TSPProblem extends Problem implements SimpleProblemForm, ConstructiveProblemForm {
     public final static String P_FILE = "file";
     
-    public final static String A_DIMENSION = "DIMENSION";
-    public final static String A_EDGE_WEIGHT_TYPE = "EDGE_WEIGHT_TYPE";
-    public final static String A_NODE_COORD_SECTION = "NODE_COORD_SECTION";
-    
     private int dimension;
+    private enum TSPKeyword { TYPE, DIMENSION, EDGE_WEIGHT_TYPE, NODE_COORD_SECTION };
     private enum EdgeWeightType { EUC_2D, GEO, ATT }
     private EdgeWeightType edgeWeightType;
     private Map<Integer, double[]> nodes;
@@ -73,7 +70,7 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
     {
         assert(tspReader != null);
         String line;
-        while ( (line = tspReader.readLine()) != null && !line.equals(A_NODE_COORD_SECTION))
+        while ( (line = tspReader.readLine()) != null && !line.trim().toUpperCase().equals(TSPKeyword.NODE_COORD_SECTION.toString()))
             {
             readLine(line);
             }
@@ -87,31 +84,48 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         final String[] keyValue = line.split(":");
         if (keyValue.length != 2)
             throw new IllegalStateException(String.format("%s: invalid TSPLIB specification '%s'.  Expected a key-value pair.", this.getClass().getSimpleName(), line));
-        final String key = keyValue[0].trim().toUpperCase();
         final String value = keyValue[1].trim();
-        if (key.equals(A_DIMENSION))
+        TSPKeyword keyword;
+        try
             {
-            try
-                {
-                this.dimension = Integer.valueOf(value);
-                }
-            catch (final NumberFormatException e)
-                {
-                throw new NumberFormatException(String.format("%s: invalid value '%s' found for %s attribute.  Integer expected.", this.getClass().getSimpleName(), value, A_DIMENSION));
-                }
-            if (dimension <= 0)
-                throw new IllegalStateException(String.format("%s: invalid value '%d' found for %s attribute.  Must be positive", this.getClass().getSimpleName(), dimension, A_DIMENSION));
+            keyword = TSPKeyword.valueOf(keyValue[0].trim().toUpperCase());
             }
-        else if (key.equals(A_EDGE_WEIGHT_TYPE))
+        catch (final IllegalArgumentException e)
             {
-            try
-                {
-                this.edgeWeightType = EdgeWeightType.valueOf(value.toUpperCase());
-                }
-            catch (final IllegalArgumentException e)
-                {
-                throw new IllegalArgumentException(String.format("%s: invalid value '%s' found for %s attribute.  Recognized values are %s.", this.getClass().getSimpleName(), value, A_EDGE_WEIGHT_TYPE, Arrays.asList(EdgeWeightType.values())));
-                }
+            // We only recognize a subset of TSPLib keywords, and this isn't one of them.  Ignore it.
+            return;
+            }
+        assert(!keyword.equals(TSPKeyword.NODE_COORD_SECTION));
+        switch (keyword)
+            {
+            case DIMENSION:
+                try
+                    {
+                    this.dimension = Integer.valueOf(value);
+                    }
+                catch (final NumberFormatException e)
+                    {
+                    throw new NumberFormatException(String.format("%s: invalid value '%s' found for %s attribute.  Integer expected.", this.getClass().getSimpleName(), value, TSPKeyword.DIMENSION));
+                    }
+                if (dimension <= 0)
+                    throw new IllegalStateException(String.format("%s: invalid value '%d' found for %s attribute.  Must be positive", this.getClass().getSimpleName(), dimension, TSPKeyword.DIMENSION));
+                break;
+            case EDGE_WEIGHT_TYPE:
+                try
+                    {
+                    this.edgeWeightType = EdgeWeightType.valueOf(value.toUpperCase());
+                    }
+                catch (final IllegalArgumentException e)
+                    {
+                    throw new IllegalStateException(String.format("%s: invalid value '%s' found for %s attribute.  Recognized values are %s.", this.getClass().getSimpleName(), value, TSPKeyword.EDGE_WEIGHT_TYPE, Arrays.asList(EdgeWeightType.values())));
+                    }
+                break;
+            case TYPE:
+                if (!value.trim().toUpperCase().equals("TSP"))
+                    throw new IllegalStateException(String.format("%s: invalid problem type '%s' found for %s attribute.  Only 'TSP' is supported.", this.getClass().getSimpleName(), value, TSPKeyword.TYPE));
+                break;
+            default:
+                throw new UnsupportedOperationException(String.format("%s: no logic has been implemented to handle the '%s' attribute.", this.getClass().getSimpleName(), keyword));
             }
     }
     
