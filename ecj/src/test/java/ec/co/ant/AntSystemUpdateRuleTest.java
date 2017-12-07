@@ -95,21 +95,38 @@ public class AntSystemUpdateRuleTest
     @Test
     public void testUpdatePheremoneMatrix()
     {
-        PheromoneMatrix matrix = null;
-        Subpopulation subpop = new Subpopulation();
+        final AntSystemUpdateRule instance = new AntSystemUpdateRule();
+        instance.setup(state, BASE);
+        final PheromoneMatrix matrix = new PheromoneMatrix(4);
+        matrix.initZero();
+        final Subpopulation subpop = new Subpopulation();
         subpop.individuals = new ArrayList<Individual>()
         {{
-            final ConstructiveIndividual ind1 = new ConstructiveIndividual();
-            ind1.path = new int[] { 0, 1, 2, 3 };
-            ind1.fitness = new SimpleFitness();
-            
-            ((ConstructiveIndividual)get(0)).path = new int[] { 0, 1, 2, 3 };
-            ((ConstructiveIndividual)get(0)).path = new int[] { 0, 3, 1, 2 };
-            ((ConstructiveIndividual)get(0)).path = new int[] { 0, 2, 3, 1 };
+            add(buildPath(new int[] { 0, 1, 2, 3 }, 500.0));
+            add(buildPath(new int[] { 0, 1, 2, 3 }, 1000.0));
+            add(buildPath(new int[] { 0, 3, 1, 2 }, 700.0));
+            add(buildPath(new int[] { 0, 2, 3, 1 }, 800.0));
         }};
-        AntSystemUpdateRule instance = new AntSystemUpdateRule();
+        
+        final PheromoneMatrix expectedResult = new PheromoneMatrix(4);
+        expectedResult.set(0, 1, 0.00425);
+        expectedResult.set(0, 2, 0.0026785714285714286);
+        expectedResult.set(0, 3, 0.004428571428571428);
+        expectedResult.set(1, 2, 0.004428571428571428);
+        expectedResult.set(1, 3, 0.0026785714285714286);
+        expectedResult.set(2, 3, 0.00425);
+        
         instance.updatePheremoneMatrix(matrix, subpop);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(expectedResult, matrix);
+    }
+    
+    private ConstructiveIndividual buildPath(final int[] path, final double fitness)
+    {
+        assert(path != null);
+        final ConstructiveIndividual ind = new ConstructiveIndividual();
+        ind.path = path;
+        ind.fitness = new SimpleFitness();
+        ((SimpleFitness)ind.fitness).setFitness(state, fitness, false);
+        return ind;
     }
 }

@@ -5,6 +5,8 @@
 */
 package ec.co.ant;
 
+import ec.util.Misc;
+
 /**
  *
  * @author Eric O. Scott
@@ -87,6 +89,19 @@ public class PheromoneMatrix
             if (matrix[i] == null || matrix[i].length != matrix.length)
                 return false;
             }
+        return true;
+    }
+    
+    public boolean equals(final Object o)
+    {
+        if (o == this)
+            return true;
+        if (!(o instanceof PheromoneMatrix))
+            return false;
+        for(int i = 0; i < matrix.length; i++)
+            for (int j = 0; j < matrix[i].length; j++)
+                if (!Misc.doubleEquals(matrix[i][j], ((PheromoneMatrix)o).matrix[i][j], 0.00001))
+                    return false;
         return true;
     }
 }
