@@ -1,4 +1,4 @@
-# ECJ Evolutionary Computation Toolkit
+# The ECJ Evolutionary Computation Toolkit
 
 [![Build status](https://travis-ci.org/GMUEClab/ecj.svg?branch=master)](https://travis-ci.org/GMUEClab/ecj)
 
