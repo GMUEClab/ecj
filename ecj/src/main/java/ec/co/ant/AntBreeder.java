@@ -34,7 +34,6 @@ public class AntBreeder extends Breeder
             {
             state.output.fatal(String.format("Attempted to use %s with problem %s, but %s can only be used with a %s.", this.getClass().getSimpleName(), state.evaluator.p_problem.getClass().getSimpleName(), this.getClass().getSimpleName(), ConstructiveProblemForm.class.getSimpleName()));
             }
-        final ConstructiveProblemForm problem = (ConstructiveProblemForm) state.evaluator.p_problem;
             
         final Population newPop = state.population.emptyClone();
         for (int i = 0; i < state.population.subpops.size(); i++)
@@ -46,7 +45,7 @@ public class AntBreeder extends Breeder
             final int numAnts = oldSubpop.individuals.size();
             assert(numAnts > 0);
             
-            species.updatePheromones(oldSubpop);
+            species.updatePheromones(state, oldSubpop);
             for (int j = 0; j < numAnts; j++)
                 {
                 final ConstructiveIndividual newInd = species.newIndividual(state, i);

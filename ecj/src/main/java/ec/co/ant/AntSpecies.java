@@ -80,9 +80,9 @@ public class AntSpecies extends Species
         return pheromoneMatrix.clone(); // Defensive copy
     }
     
-    public void updatePheromones(final Subpopulation population)
+    public void updatePheromones(final EvolutionState state, final Subpopulation population)
     {
-        updateRule.updatePheremoneMatrix(pheromoneMatrix, population);
+        updateRule.updatePheremoneMatrix(state, pheromoneMatrix, population);
         assert(repOK());
     }
     

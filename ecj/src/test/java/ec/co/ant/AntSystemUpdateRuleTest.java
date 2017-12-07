@@ -102,10 +102,10 @@ public class AntSystemUpdateRuleTest
         final Subpopulation subpop = new Subpopulation();
         subpop.individuals = new ArrayList<Individual>()
         {{
-            add(buildPath(new int[] { 0, 1, 2, 3 }, 500.0));
-            add(buildPath(new int[] { 0, 1, 2, 3 }, 1000.0));
-            add(buildPath(new int[] { 0, 3, 1, 2 }, 700.0));
-            add(buildPath(new int[] { 0, 2, 3, 1 }, 800.0));
+            add(buildPath(new int[] { 0, 1, 2, 3, 0 }, 500.0));
+            add(buildPath(new int[] { 0, 1, 2, 3, 0 }, 1000.0));
+            add(buildPath(new int[] { 0, 3, 1, 2, 0 }, 700.0));
+            add(buildPath(new int[] { 0, 2, 3, 1, 0 }, 800.0));
         }};
         
         final PheromoneMatrix expectedResult = new PheromoneMatrix(4);
@@ -116,7 +116,7 @@ public class AntSystemUpdateRuleTest
         expectedResult.set(1, 3, 0.0026785714285714286);
         expectedResult.set(2, 3, 0.00425);
         
-        instance.updatePheremoneMatrix(matrix, subpop);
+        instance.updatePheremoneMatrix(state, matrix, subpop);
         assertEquals(expectedResult, matrix);
     }
     

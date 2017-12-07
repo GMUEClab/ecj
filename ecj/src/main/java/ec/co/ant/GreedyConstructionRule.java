@@ -23,11 +23,18 @@ import java.util.List;
 public class GreedyConstructionRule implements ConstructionRule
 {
     public final static String P_MINIMIZE = "minimize";
+    public final static String P_CYCLE = "cycle";
     private boolean minimize;
+    private boolean cycle;
     
     public boolean isMinimize()
     {
         return minimize;
+    }
+    
+    public boolean isLoop()
+    {
+        return cycle;
     }
     
     @Override
@@ -36,6 +43,7 @@ public class GreedyConstructionRule implements ConstructionRule
         assert(state != null);
         assert(base != null);
         minimize = state.parameters.getBoolean(base.push(P_MINIMIZE), null, true);
+        cycle = state.parameters.getBoolean(base.push(P_CYCLE), null, true);
         assert(repOK());
     }
 
@@ -68,6 +76,9 @@ public class GreedyConstructionRule implements ConstructionRule
             path.add(currentNode);
             allowedMoves.remove(currentNode);
             }
+        // If we mean to construct a cycle, add an edge back to origin
+        if (cycle)
+            path.add(path.get(0));
         
         ind.setPath(listToIntArray(path));
         assert(repOK());

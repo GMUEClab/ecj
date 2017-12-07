@@ -9,6 +9,7 @@ import ec.EvolutionState;
 import ec.Individual;
 import ec.Subpopulation;
 import ec.co.ConstructiveIndividual;
+import ec.co.ConstructiveProblemForm;
 import ec.util.IIntPoint;
 import ec.util.Parameter;
 import java.util.Arrays;
@@ -25,7 +26,7 @@ public class AntSystemUpdateRule implements UpdateRule
     public final static String P_DEPOSIT_RULE = "depositRule";
     public final static String P_Q = "Q";
     private double decayRate;
-    public enum DepositRule { ANT_CYCLE };
+    public enum DepositRule { ANT_CYCLE, ANT_DENSITY, ANT_QUANTITY };
     private DepositRule depositRule;
     private double q;
     
@@ -75,48 +76,60 @@ public class AntSystemUpdateRule implements UpdateRule
     }
 
     @Override
-    public void updatePheremoneMatrix(final PheromoneMatrix matrix, final Subpopulation subpop)
+    public void updatePheremoneMatrix(final EvolutionState state, final PheromoneMatrix matrix, final Subpopulation subpop)
     {
         assert(matrix != null);
         assert(subpop != null);
-        final Map<IIntPoint, Double> newPheremones = new HashMap();
+        final Map<IIntPoint, Double> contributions = new HashMap();
         // Loop through every individual and record its pheremone contributions (scores)
         for (final Individual o : subpop.individuals)
             {
             assert(o instanceof ConstructiveIndividual);
             final ConstructiveIndividual ind = (ConstructiveIndividual) o;
             assert(ind.pathLength() > 0);
-            int currentNode = ind.path[0];
             for (int i = 1; i < ind.pathLength(); i++)
                 {
-                final IIntPoint edge = new IIntPoint(currentNode, ind.path[i]);
-                final double indPheromone = pheromoneContribution(ind, i);
-                if (newPheremones.containsKey(edge))
-                    newPheremones.put(edge, newPheremones.get(edge) + indPheromone); // 
+                // Edge [a, b] is the same as edge [b, a], so choose one canonical key to represent both
+                final IIntPoint edge = (ind.path[i] > ind.path[i - 1]) ?
+                                        new IIntPoint(ind.path[i - 1], ind.path[i]) :
+                                        new IIntPoint(ind.path[i], ind.path[i - 1]);
+                final double indPheromone = pheromoneContribution(state, ind, i);
+                if (contributions.containsKey(edge))
+                    contributions.put(edge, contributions.get(edge) + indPheromone); // 
                 else
-                    newPheremones.put(edge, indPheromone);
+                    contributions.put(edge, indPheromone);
                 }
             }
         // Apply the new pheromones
-        for (final IIntPoint edge : newPheremones.keySet())
+        for (final IIntPoint edge : contributions.keySet())
             {
             final double oldPheromone = matrix.get(edge.x, edge.y);
-            final double newPheromone = (1.0-decayRate) * oldPheromone + newPheremones.get(edge);
+            final double newPheromone = (1.0-decayRate) * oldPheromone + contributions.get(edge);
             matrix.set(edge.x, edge.y, newPheromone);
             }
         assert(repOK());
     }
     
-    private double pheromoneContribution(final ConstructiveIndividual ind, final int i)
+    private double pheromoneContribution(final EvolutionState state, final ConstructiveIndividual ind, final int i)
     {
         assert(ind != null);
         assert(i >= 0);
         assert(i < ind.pathLength());
+        final double fitness = ind.fitness.fitness();
         if (depositRule.equals(DepositRule.ANT_CYCLE))
             {
-            final double fitness = ind.fitness.fitness();
             assert(fitness > 0);
             return q/fitness;
+            }
+        else if (depositRule.equals(DepositRule.ANT_DENSITY))
+            {
+            return q;
+            }
+        else if (depositRule.equals(DepositRule.ANT_QUANTITY))
+            {
+            final int from = ind.path[i - 1];
+            final int to = ind.path[i];
+            return q/((ConstructiveProblemForm)state.evaluator.p_problem).cost(from, to);
             }
         throw new IllegalStateException(String.format("%s: no deposit rule logic implemented for %s.", this.getClass().getSimpleName(), depositRule));
     }
