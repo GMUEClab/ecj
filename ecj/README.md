@@ -28,11 +28,6 @@ Take ECJ for a test drive by running one if its example apps:
 java -jar target/ecj-xx.jar -file src/main/resources/ec/app/tutorial3/tutorial3.params
 ```
 
-To continue familiarizing yourself with ECJ's features, and to learn how to use it to write your own problems and algorithms, take a look at 
-  * the [tutorials](docs/tutorials) and
-  * the extensive [ECJ Manual](docs/manual/manual.pdf).
-
-Happy evolving!
 
 ## Building ECJ with the Makefile
 
@@ -74,19 +69,28 @@ You can build a JAR file out of ECJ, if you like, with
   make jar
 
 
+Take ECJ for a test drive by running one if its example apps:
+```
+java -jar target/ecj-xx.jar -file src/main/resources/ec/app/tutorial3/tutorial3.params
+```
+
+... where xx is the 
+
+Or if you built ECJ
+
+To continue familiarizing yourself with ECJ's features, and to learn how to use it to write your own problems and algorithms, take a look at
+  * the [tutorials](docs/tutorials) and
+  * the extensive [ECJ Manual](docs/manual/manual.pdf).
+
+Happy evolving!
+
+
+
 ## Where to Ask Questions
 
-if you're really stuck, try the
+If you're really stuck, try the
 ECJ-INTEREST mailing list.  (see "Mailing Lists" at
 http://cs.gmu.edu/~eclab/projects/ecj/ )
-
-Thanks,
-
-Sean Luke
-
-ECLab, Department of Computer Science
-
-George Mason University
 
 ECJ:	http://cs.gmu.edu/~eclab/projects/ecj/
 
