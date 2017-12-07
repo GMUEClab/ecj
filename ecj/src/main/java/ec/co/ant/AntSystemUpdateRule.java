@@ -38,16 +38,13 @@ public class AntSystemUpdateRule implements UpdateRule
         decayRate = state.parameters.getDouble(base.push(P_DECAY_RATE), null);
         if (decayRate < 0.0 || decayRate >= 1.0 || Double.isInfinite(decayRate) || Double.isNaN(decayRate))
             state.output.fatal(String.format("%s: '%s' parameter is set to '%f,' but must be on the interval [0,1).", this.getClass().getSimpleName(), base.push(P_DECAY_RATE), decayRate));
+        q = state.parameters.exists(base.push(P_Q), null) ? state.parameters.getDouble(base.push(P_Q), null) : 1.0;
+        if (q <= 0.0)
+            state.output.fatal(String.format("%s: parameter '%s' has a value of %f, but must be positive.", this.getClass().getSimpleName(), base.push(P_Q), q));
         final String depositString = state.parameters.getString(base.push(P_DEPOSIT_RULE), null);
         try
             {
             depositRule = DepositRule.valueOf(depositString);
-            if (depositRule.equals(DepositRule.ANT_CYCLE))
-                {
-                q = state.parameters.exists(base.push(P_Q), null) ? state.parameters.getDouble(base.push(P_Q), null) : 1.0;
-                if (q <= 0.0)
-                    state.output.fatal(String.format("%s: parameter '%s' has a value of %f, but must be positive.", this.getClass().getSimpleName(), base.push(P_Q), q));
-                }
             }
         catch (final NullPointerException e)
             {

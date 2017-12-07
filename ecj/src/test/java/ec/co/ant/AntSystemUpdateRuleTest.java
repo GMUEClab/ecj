@@ -93,7 +93,7 @@ public class AntSystemUpdateRuleTest
     }
 
     @Test
-    public void testUpdatePheremoneMatrix()
+    public void testUpdatePheremoneMatrix1()
     {
         final AntSystemUpdateRule instance = new AntSystemUpdateRule();
         instance.setup(state, BASE);
@@ -115,6 +115,65 @@ public class AntSystemUpdateRuleTest
         expectedResult.set(1, 2, 0.004428571428571428);
         expectedResult.set(1, 3, 0.0026785714285714286);
         expectedResult.set(2, 3, 0.00425);
+        
+        instance.updatePheremoneMatrix(state, matrix, subpop);
+        assertEquals(expectedResult, matrix);
+    }
+    
+    @Test
+    public void testUpdatePheremoneMatrix2()
+    {
+        state.parameters.set(BASE.push(AntSystemUpdateRule.P_DEPOSIT_RULE), AntSystemUpdateRule.DepositRule.ANT_DENSITY.toString());
+        final AntSystemUpdateRule instance = new AntSystemUpdateRule();
+        instance.setup(state, BASE);
+        final PheromoneMatrix matrix = new PheromoneMatrix(4);
+        matrix.initZero();
+        final Subpopulation subpop = new Subpopulation();
+        subpop.individuals = new ArrayList<Individual>()
+        {{
+            add(buildPath(new int[] { 0, 1, 2, 3, 0 }, 500.0));
+            add(buildPath(new int[] { 0, 1, 2, 3, 0 }, 1000.0));
+            add(buildPath(new int[] { 0, 3, 1, 2, 0 }, 700.0));
+            add(buildPath(new int[] { 0, 2, 3, 1, 0 }, 800.0));
+        }};
+        
+        final PheromoneMatrix expectedResult = new PheromoneMatrix(4);
+        expectedResult.set(0, 1, 3.0);
+        expectedResult.set(0, 2, 2.0);
+        expectedResult.set(0, 3, 3.0);
+        expectedResult.set(1, 2, 3.0);
+        expectedResult.set(1, 3, 2.0);
+        expectedResult.set(2, 3, 3.0);
+        
+        instance.updatePheremoneMatrix(state, matrix, subpop);
+        assertEquals(expectedResult, matrix);
+    }
+    
+    @Test
+    public void testUpdatePheremoneMatrix3()
+    {
+        state.parameters.set(BASE.push(AntSystemUpdateRule.P_DEPOSIT_RULE), AntSystemUpdateRule.DepositRule.ANT_QUANTITY.toString());
+        // TODO set up problem
+        final AntSystemUpdateRule instance = new AntSystemUpdateRule();
+        instance.setup(state, BASE);
+        final PheromoneMatrix matrix = new PheromoneMatrix(4);
+        matrix.initZero();
+        final Subpopulation subpop = new Subpopulation();
+        subpop.individuals = new ArrayList<Individual>()
+        {{
+            add(buildPath(new int[] { 0, 1, 2, 3, 0 }, 500.0));
+            add(buildPath(new int[] { 0, 1, 2, 3, 0 }, 1000.0));
+            add(buildPath(new int[] { 0, 3, 1, 2, 0 }, 700.0));
+            add(buildPath(new int[] { 0, 2, 3, 1, 0 }, 800.0));
+        }};
+        final PheromoneMatrix expectedResult = new PheromoneMatrix(4);
+        // TODO hard-code expected output
+        /*expectedResult.set(0, 1, 3.0);
+        expectedResult.set(0, 2, 1.0);
+        expectedResult.set(0, 3, 3.0);
+        expectedResult.set(1, 2, 3.0);
+        expectedResult.set(1, 3, 2.0);
+        expectedResult.set(2, 3, 3.0);*/
         
         instance.updatePheremoneMatrix(state, matrix, subpop);
         assertEquals(expectedResult, matrix);
