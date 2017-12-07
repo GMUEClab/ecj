@@ -415,10 +415,6 @@ public class MuCommaLambdaBreeder extends Breeder
 
     public Population postProcess(Population newpop, Population oldpop, EvolutionState state)
     {
-        for(int i = 0; i < newpop.subpops.get(0).individuals.size(); i++)
-        	{
-        	newpop.subpops.get(0).individuals.get(i).printIndividualForHumans(state, 0);
-        	}
         return newpop;
     }
     
