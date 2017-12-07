@@ -80,8 +80,6 @@ public class ESSelection extends SelectionMethod
         // determine the parent
         int parent = pos / (breeder.lambda[subpopulation] / breeder.mu[subpopulation]); // note outer integer division
 
-		System.err.println("POS " + pos + " PARENT " + parent);
-
         // increment our count
         //breeder.count[thread]++;
         
