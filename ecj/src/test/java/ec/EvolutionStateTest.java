@@ -44,6 +44,7 @@ public class EvolutionStateTest
         params.set(new Parameter(EvolutionState.P_BREEDER), "ec.test.StubBreeder");
         params.set(new Parameter(EvolutionState.P_EVALUATOR), "ec.test.StubEvaluator");
         params.set(new Parameter(EvolutionState.P_STATISTICS), "ec.test.TestStatistics");
+        params.set(new Parameter(EvolutionState.P_STATISTICS).push(TestStatistics.P_STATISTICS_FILE), "/dev/null");
         params.set(new Parameter(EvolutionState.P_EXCHANGER), "ec.test.StubExchanger");
         instance = new EvolutionState();
         instance.parameters = params;
