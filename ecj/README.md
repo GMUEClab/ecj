@@ -25,7 +25,7 @@ You will now find a compiled jar at `target/ecj-xx.jar` (where `xx` is the curre
 
 Take ECJ for a test drive by running one if its example apps:
 ```
-java -jar target/ecj-xx.jar -file src/main/resources/ec/app/tutorial3/tutorial3.params
+java -jar target/ecj-xx.jar -from app/tutorial3/tutorial3.params
 ```
 
 
@@ -69,24 +69,26 @@ You can build a JAR file out of ECJ, if you like, with
   make jar
 
 
-Take ECJ for a test drive by running one if its example apps:
+Take ECJ for a test drive by running one if its example apps.  If you built
+the jar file, and you were in the ecj directory, you could say:
+
 ```
-java -jar target/ecj-xx.jar -file src/main/resources/ec/app/tutorial3/tutorial3.params
+java -jar jar/ecj-xx.jar -from app/tutorial3/tutorial3.params
+```
+... where xx is the ECJ version number
+
+Or if you built ECJ from the Makefile, you could do this.  First
+add the `classes/` directory to your `CLASSPATH`.  Then you could
+do:
+```
+java ec.Evolve -file classes/ec/app/tutorial3/tutorial3.params
 ```
 
-... where xx is the 
-
-Or if you built ECJ
+## Where to Go Next
 
 To continue familiarizing yourself with ECJ's features, and to learn how to use it to write your own problems and algorithms, take a look at
   * the [tutorials](docs/tutorials) and
   * the extensive [ECJ Manual](docs/manual/manual.pdf).
-
-Happy evolving!
-
-
-
-## Where to Ask Questions
 
 If you're really stuck, try the
 ECJ-INTEREST mailing list.  (see "Mailing Lists" at
@@ -95,3 +97,6 @@ http://cs.gmu.edu/~eclab/projects/ecj/ )
 ECJ:	http://cs.gmu.edu/~eclab/projects/ecj/
 
 ECLab:	http://cs.gmu.edu/~eclab/
+
+Happy Evolving!
+
