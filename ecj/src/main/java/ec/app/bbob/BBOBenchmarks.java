@@ -64,6 +64,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
     public static final String P_WHICH_PROBLEM = "type";
     public static final String P_NOISE = "noise";
     public static final String P_REEVALUATE_NOISY_PROBLEMS = "reevaluate-noisy-problems";
+    public static final String P_ZERO_IS_BEST = "zeroIsBest";
 
     final public String[] problemTypes =
     { "sphere", "ellipsoidal", "rastrigin", "buche-rastrigin", "linear-slope", "attractive-sector", "step-ellipsoidal", "rosenbrock", "rosenbrock-rotated", "ellipsoidal-2", "discus", "bent-cigar", "sharp-ridge", "different-powers", "rastrigin-2",
@@ -111,6 +112,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
     public int noise = NONE; // defaults to NONE
     
     public boolean reevaluateNoisyProblems;
+    public boolean zeroIsBest;
 
     public static final int NHIGHPEAKS21 = 101;
     public static final int NHIGHPEAKS22 = 21;
@@ -141,7 +143,6 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
     double[] peakvalues;
     double scales;
 
-
     public void setup(final EvolutionState state, final Parameter base)
     {
         super.setup(state, base);
@@ -155,6 +156,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 noise = i;
                 
         reevaluateNoisyProblems = state.parameters.getBoolean(base.push(P_REEVALUATE_NOISY_PROBLEMS), null, true);
+        zeroIsBest = state.parameters.getBoolean(base.push(P_ZERO_IS_BEST), null, false);
                                 
         double condition = 10.0;
         double alpha = 100.0;
@@ -168,7 +170,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm
                 problemType = i;
 
         // common Initialization
-        fOpt = computeFopt(state.random[0]);
+        fOpt = zeroIsBest ? 0.0 : computeFopt(state.random[0]);
         xOpt = new double[genomeSize];
 
         switch (problemType)
