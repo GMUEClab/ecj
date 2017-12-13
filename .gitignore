@@ -3,3 +3,8 @@ ecj/nb-configuration.xml
 ecj/nbactions.xml
 ecj/target/
 *.stat
+*.aux
+*.idx
+*.log
+*.out
+*.toc
