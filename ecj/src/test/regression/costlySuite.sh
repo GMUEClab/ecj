@@ -11,6 +11,7 @@
 
 ROOT=../../..
 RSRCROOT=${ROOT}/src/main/resources
+# Excluding ${RSRCROOT}/ec/app/mona/mona.params because it takes too long to run (and hogs memory on the nodes).
 files="${RSRCROOT}/ec/app/bbob/bbob.params
 ${RSRCROOT}/ec/app/bbob/de.params
 ${RSRCROOT}/ec/app/cartpole/cartpole.params
@@ -24,7 +25,6 @@ ${RSRCROOT}/ec/app/gui/coevolve2.params
 ${RSRCROOT}/ec/app/lid/lid.params
 ${RSRCROOT}/ec/app/majority/majorityga.params
 ${RSRCROOT}/ec/app/majority/majoritygp.params
-${RSRCROOT}/ec/app/mona/mona.params
 ${RSRCROOT}/ec/app/multiplexerslow/11.params
 ${RSRCROOT}/ec/app/ordertree/ordertree.params
 ${RSRCROOT}/ec/app/parity/parity.params
