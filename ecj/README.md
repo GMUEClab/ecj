@@ -7,7 +7,7 @@ you are bound to if you wish to use this software.
 Additionally, please see the following important files:
 
   * [docs/index.html](docs/index.html)         ECJ documentation.  Start here.
-  *[docs/manual/manual.pdf](docs/manual/manual.pdf)	The ECJ Owner's Manual.  A large reference work describing ECJ in detail.  Go through the tutorials before bothering with this one. 
+  * [docs/manual/manual.pdf](docs/manual/manual.pdf)	The ECJ Owner's Manual.  A large reference work describing ECJ in detail.  Go through the tutorials before bothering with this one. 
   * [LICENSE](LICENSE)			ECJ's license
   * [CHANGES](CHANGES)			Change log.  Very important!
   * [pom.xml](pom.xml)			The Project Object Model, used by [Maven](http://maven.apache.org) to compile ECJ against its dependencies.
@@ -25,14 +25,8 @@ You will now find a compiled jar at `target/ecj-xx.jar` (where `xx` is the curre
 
 Take ECJ for a test drive by running one if its example apps:
 ```
-java -jar target/ecj-xx.jar -file src/main/resources/ec/app/tutorial3/tutorial3.params
+java -jar target/ecj-xx.jar -from app/tutorial3/tutorial3.params
 ```
-
-To continue familiarizing yourself with ECJ's features, and to learn how to use it to write your own problems and algorithms, take a look at 
-  * the [tutorials](docs/tutorials) and
-  * the extensive [ECJ Manual](docs/manual/manual.pdf).
-
-Happy evolving!
 
 
 ## Building ECJ with the Makefile
@@ -75,20 +69,34 @@ You can build a JAR file out of ECJ, if you like, with
   make jar
 
 
-## Where to Ask Questions
+Take ECJ for a test drive by running one if its example apps.  If you built
+the jar file, and you were in the ecj directory, you could say:
 
-if you're really stuck, try the
+```
+java -jar jar/ecj-xx.jar -from app/tutorial3/tutorial3.params
+```
+... where xx is the ECJ version number
+
+Or if you built ECJ from the Makefile, you could do this.  First
+add the `classes/` directory to your `CLASSPATH`.  Then you could
+do:
+```
+java ec.Evolve -file classes/ec/app/tutorial3/tutorial3.params
+```
+
+## Where to Go Next
+
+To continue familiarizing yourself with ECJ's features, and to learn how to use it to write your own problems and algorithms, take a look at
+  * the [tutorials](docs/tutorials) and
+  * the extensive [ECJ Manual](docs/manual/manual.pdf).
+
+If you're really stuck, try the
 ECJ-INTEREST mailing list.  (see "Mailing Lists" at
 http://cs.gmu.edu/~eclab/projects/ecj/ )
-
-Thanks,
-
-Sean Luke
-
-ECLab, Department of Computer Science
-
-George Mason University
 
 ECJ:	http://cs.gmu.edu/~eclab/projects/ecj/
 
 ECLab:	http://cs.gmu.edu/~eclab/
+
+Happy Evolving!
+

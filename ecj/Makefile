@@ -114,6 +114,7 @@ base:
 	@ echo
 	mkdir -p ${CLASSROOT}
 	${JAVAC} ${DIRS}
+	tar -C ${RSRCROOT} -c ec | tar -C ${CLASSROOT} -x
 
 gui:
 	@ echo This builds the base code and the gui code
@@ -122,6 +123,7 @@ gui:
 	@ echo
 	mkdir -p ${CLASSROOT}
 	${JAVAC} ${DIRS} ${SRCROOT}ec/display/chart/*.java ${SRCROOT}ec/app/gui/*.java ${SRCROOT}ec/display/*.java ${SRCROOT}ec/display/portrayal/*.java
+	tar -C ${RSRCROOT} -c ec | tar -C ${CLASSROOT} -x
 
 push:
 	@ echo This builds the base code and the Push code
@@ -129,6 +131,7 @@ push:
 	@ echo
 	mkdir -p ${CLASSROOT}
 	${JAVAC} ${DIRS} ${SRCROOT}ec/gp/push/*.java ${SRCROOT}ec/app/push/*.java
+	tar -C ${RSRCROOT} -c ec | tar -C ${CLASSROOT} -x
 
 clean:
 	find . -name "*.class" -exec rm -f {} \;
@@ -172,7 +175,7 @@ jar: all gui
 	echo "Main-Class: ec.Evolve" > /tmp/manifest.add
 	mkdir -p jar/
 	jar cvfm jar/ecj.${VERSION}.jar /tmp/manifest.add -C ${CLASSROOT} . 
-	jar uvf jar/ecj.${VERSION}.jar -C ${RSRCROOT} .
+	#jar uvf jar/ecj.${VERSION}.jar -C ${RSRCROOT} .
 
 
 

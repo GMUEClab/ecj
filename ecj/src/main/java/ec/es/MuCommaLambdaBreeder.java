@@ -219,8 +219,7 @@ public class MuCommaLambdaBreeder extends Breeder
                         for (int i = 0; i < lambda[x]; i++)
                             {
                                 int parent = i / (lambda[x] / mu[x]);  // note integer division
-                                if (state.population.subpops.get(x).individuals.get(i).fitness.betterThan(
-                                                                                                          parentPopulation.subpops.get(x).individuals.get(parent).fitness))
+                                if (state.population.subpops.get(x).individuals.get(i).fitness.betterThan(parentPopulation.subpops.get(x).individuals.get(parent).fitness))
                                     numChildrenBetter++;
                             }
                         if (numChildrenBetter > lambda[x] / 5.0)  // note double division
@@ -254,8 +253,6 @@ public class MuCommaLambdaBreeder extends Breeder
         state.output.exitIfErrors();
         
         
-
-
         // sort evaluation to get the Mu best of each subpopulation
         
         for(int x = 0; x< state.population.subpops.size(); x++)
@@ -281,8 +278,7 @@ public class MuCommaLambdaBreeder extends Breeder
                                            });
             }
 
-        // now the subpops are sorted so that the best individuals
-        // appear in the lowest indexes.
+        // now the subpops are sorted so that the best individuals appear in the lowest indexes.
 
         // by Ermo, it seems we no longer need setToLambda, so I am comment them out, if it works, we will delete them later
         //Population newpop = setToLambda((Population) state.population.emptyClone(),state);

@@ -443,7 +443,7 @@ public class EvolutionState implements Singleton
     {
         synchronized(lock)
             {
-                evaluations++;
+                evaluations += val;
             }
     }
                                 

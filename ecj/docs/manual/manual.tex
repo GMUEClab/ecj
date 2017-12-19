@@ -158,8 +158,8 @@ George Mason University}
 \\
 \\
 \\
-\large\rm {\bf Manual Version 24}\\
-\large\rm September 1, 2015\\
+\large\rm {\bf Manual Version 25}\\
+\large\rm December 1, 2017\\
 
 \vspace{5.6in}
 \noindent\Large\bf Where to Obtain ECJ\\
@@ -168,7 +168,7 @@ George Mason University}
 \clearpage
 
 \small 
-\noindent {\Large\bf Copyright }  2010--2015 by Sean Luke.
+\noindent {\Large\bf Copyright }  2010--2017 by Sean Luke.
 
 \vspace{0.25in}
 \noindent {\Large\bf Thanks to } Carlotta Domeniconi.
@@ -675,7 +675,7 @@ The only kinds of paths which can refer to things inside jar files are relative 
 \item {\bf Read-Write Files} should use absolute paths or (in most cases) execution-relative paths, and should only be accessed using \method{getFile(...)} (see Section \ref{accessingparameters}).
 \end{itemize}
 
-\item {\bf Arrays}.   ECJ doesn't have direct support for loading arrays, but has a convention you should be made aware of.  It's common for arrays to be loaded by first stipulating the number of elements in the array, then stipulating each array element in turn, starting with 0.  The parameter used for the number of elements differs from case to case.  Note the use of periods prior to each number in the following example:
+\item {\bf Arrays}.   ECJ supports loading arrays of doubles,\footnote{See the various ``getDoubles'' methods in Section \ref{accessingparameters}.} but does not have direct support for loading arrays of other types.  However it has a convention you should be made aware of.  It's common for arrays to be loaded by first stipulating the number of elements in the array, then stipulating each array element in turn, starting with 0.  The parameter used for the number of elements differs from case to case.  Note the use of periods prior to each number in the following example:
 
 
 \params{%

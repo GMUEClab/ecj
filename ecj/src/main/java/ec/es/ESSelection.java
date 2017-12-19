@@ -78,7 +78,7 @@ public class ESSelection extends SelectionMethod
             thread + breeder.count[thread];  // note integer division
         
         // determine the parent
-        int parent = pos / breeder.mu[subpopulation]; // note integer division
+        int parent = pos / (breeder.lambda[subpopulation] / breeder.mu[subpopulation]); // note outer integer division
 
         // increment our count
         //breeder.count[thread]++;
