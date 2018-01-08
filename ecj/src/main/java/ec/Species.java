@@ -80,7 +80,6 @@ public abstract class Species implements Prototype
     public static final String P_INDIVIDUAL = "ind";
     public static final String P_PIPE = "pipe";
     public static final String P_FITNESS = "fitness";
-	public static final int NO_SUBPOPULATION = -1;
 
     /** The prototypical individual for this species. */
     public Individual i_prototype;
@@ -91,11 +90,6 @@ public abstract class Species implements Prototype
     /** The prototypical fitness for individuals of this species. */
     public Fitness f_prototype;    
     
-    /** Index into the subpopulation array of the subpopulation which owns this species,
-    	or NO_SUBPOPULATION if no subpopulation has been assigned to this species.
-    	This second situation can occur for example in GESpecies which *owns* a GPSpecies. */
-    public int subpopulation = Subpopulation.NO_SUBPOPULATION;
-
     public Object clone()
     {
         try

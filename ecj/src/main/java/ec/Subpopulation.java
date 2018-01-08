@@ -104,10 +104,6 @@ public class Subpopulation implements Cloneable, Setup
     /** What is our fill behavior beyond files? */
     public int extraBehavior;
     
-    /** What is our position in the population array? Or NO_SUBPOPULATION if for some crazy reason we're disembodied, which is likely an error.
-    	Population sets this in us when it creates us.  */
-    public int index = NO_SUBPOPULATION;
-    
     public static final String P_SUBPOPULATION = "subpop";
     public static final String P_FILE = "file";
     public static final String P_SUBPOPSIZE = "size";  // parameter for number of subpops or pops
@@ -124,8 +120,6 @@ public class Subpopulation implements Cloneable, Setup
     public static final int TRUNCATE = 0;
     public static final int WRAP = 1;
     public static final int FILL = 2;
-        
-	public static final int NO_SUBPOPULATION = -1;
         
     public Parameter defaultBase()
         {
@@ -189,7 +183,6 @@ public class Subpopulation implements Cloneable, Setup
         species = (Species) state.parameters.getInstanceForParameter(
             base.push(P_SPECIES),def.push(P_SPECIES),
             Species.class);
-        species.subpopulation = index;
         species.setup(state,base.push(P_SPECIES));
 
         // How often do we retry if we find a duplicate?
