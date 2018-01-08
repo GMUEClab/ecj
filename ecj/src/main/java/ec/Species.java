@@ -80,6 +80,7 @@ public abstract class Species implements Prototype
     public static final String P_INDIVIDUAL = "ind";
     public static final String P_PIPE = "pipe";
     public static final String P_FITNESS = "fitness";
+	public static final int NO_SUBPOPULATION = -1;
 
     /** The prototypical individual for this species. */
     public Individual i_prototype;
@@ -89,6 +90,11 @@ public abstract class Species implements Prototype
 
     /** The prototypical fitness for individuals of this species. */
     public Fitness f_prototype;    
+    
+    /** Index into the subpopulation array of the subpopulation which owns this species,
+    	or NO_SUBPOPULATION if no subpopulation has been assigned to this species.
+    	This second situation can occur for example in GESpecies which *owns* a GPSpecies. */
+    public int subpopulation = Subpopulation.NO_SUBPOPULATION;
 
     public Object clone()
     {
@@ -205,26 +211,20 @@ public abstract class Species implements Prototype
         Parameter def = defaultBase();
 
         // load the breeding pipeline
-        pipe_prototype = (BreedingSource)(
-                                          state.parameters.getInstanceForParameter(
-                                                                                   base.push(P_PIPE),def.push(P_PIPE),BreedingSource.class));
+        pipe_prototype = (BreedingSource)(state.parameters.getInstanceForParameter(base.push(P_PIPE),def.push(P_PIPE),BreedingSource.class));
         pipe_prototype.setup(state,base.push(P_PIPE));
 
         // I promised over in BreedingSource.java that this method would get called.
         state.output.exitIfErrors();
 
         // load our individual prototype
-        i_prototype = (Individual)(state.parameters.getInstanceForParameter(
-                                                                            base.push(P_INDIVIDUAL),def.push(P_INDIVIDUAL),
-                                                                            Individual. class));
+        i_prototype = (Individual)(state.parameters.getInstanceForParameter(base.push(P_INDIVIDUAL), def.push(P_INDIVIDUAL), Individual. class));
         // set the species to me before setting up the individual, so they know who I am
         i_prototype.species = this;
         i_prototype.setup(state,base.push(P_INDIVIDUAL));
         
         // load our fitness
-        f_prototype = (Fitness) state.parameters.getInstanceForParameter(
-                                                                         base.push(P_FITNESS),def.push(P_FITNESS),
-                                                                         Fitness.class);
+        f_prototype = (Fitness) state.parameters.getInstanceForParameter( base.push(P_FITNESS),def.push(P_FITNESS), Fitness.class);
         f_prototype.setup(state,base.push(P_FITNESS));
     }
 }

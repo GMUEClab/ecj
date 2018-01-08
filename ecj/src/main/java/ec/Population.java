@@ -138,6 +138,7 @@ public class Population implements Cloneable, Setup
                         // else an error will occur on the next line anyway.
                     }
                 subpops.add((Subpopulation) (state.parameters.getInstanceForParameterEq(p, null, Subpopulation.class)));  // Subpopulation.class is fine
+                subpops.get(x).index = x;
                 subpops.get(x).setup(state,p);
             
                 // test for loadinds

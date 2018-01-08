@@ -159,8 +159,8 @@ public class GESpecies extends IntegerVectorSpecies
         Parameter def = defaultBase();
 
         p = base.push(P_GPSPECIES);
-        gpspecies = (GPSpecies) (state.parameters.getInstanceForParameterEq(p,
-                                                                            def.push(P_GPSPECIES), GPSpecies.class));
+        gpspecies = (GPSpecies) (state.parameters.getInstanceForParameterEq(p, def.push(P_GPSPECIES), GPSpecies.class));
+        gpspecies.subpopulation = NO_SUBPOPULATION;  // just in case, though it's already assigned by default like this in Species.java
         gpspecies.setup(state, p);
 
         // check to make sure that our individual prototype is a GPIndividual

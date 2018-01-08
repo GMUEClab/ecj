@@ -104,6 +104,10 @@ public class Subpopulation implements Cloneable, Setup
     /** What is our fill behavior beyond files? */
     public int extraBehavior;
     
+    /** What is our position in the population array? Or NO_SUBPOPULATION if for some crazy reason we're disembodied, which is likely an error.
+    	Population sets this in us when it creates us.  */
+    public int index = NO_SUBPOPULATION;
+    
     public static final String P_SUBPOPULATION = "subpop";
     public static final String P_FILE = "file";
     public static final String P_SUBPOPSIZE = "size";  // parameter for number of subpops or pops
@@ -121,6 +125,7 @@ public class Subpopulation implements Cloneable, Setup
     public static final int WRAP = 1;
     public static final int FILL = 2;
         
+	public static final int NO_SUBPOPULATION = -1;
         
     public Parameter defaultBase()
         {
@@ -170,14 +175,7 @@ public class Subpopulation implements Cloneable, Setup
         file = base.push(P_FILE);
         loadInds = state.parameters.exists(file,null);
         
-        // what species do we use?
-
-        species = (Species) state.parameters.getInstanceForParameter(
-            base.push(P_SPECIES),def.push(P_SPECIES),
-            Species.class);
-        species.setup(state,base.push(P_SPECIES));
-
-        // how big should our subpopulation be?
+         // how big should our subpopulation be?
         // Note that EvolutionState.setup() has similar code, so if you change this, change it there too.
         
         initialSize = state.parameters.getInt(base.push(P_SUBPOPSIZE),def.push(P_SUBPOPSIZE),1);
@@ -186,6 +184,14 @@ public class Subpopulation implements Cloneable, Setup
                 "Subpopulation size must be an integer >= 1.\n",
                 base.push(P_SUBPOPSIZE),def.push(P_SUBPOPSIZE));
         
+       // what species do we use?
+
+        species = (Species) state.parameters.getInstanceForParameter(
+            base.push(P_SPECIES),def.push(P_SPECIES),
+            Species.class);
+        species.subpopulation = index;
+        species.setup(state,base.push(P_SPECIES));
+
         // How often do we retry if we find a duplicate?
         numDuplicateRetries = state.parameters.getInt(
             base.push(P_RETRIES),def.push(P_RETRIES),0);
