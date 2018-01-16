@@ -89,7 +89,7 @@ public abstract class Species implements Prototype
 
     /** The prototypical fitness for individuals of this species. */
     public Fitness f_prototype;    
-
+    
     public Object clone()
     {
         try
@@ -205,26 +205,20 @@ public abstract class Species implements Prototype
         Parameter def = defaultBase();
 
         // load the breeding pipeline
-        pipe_prototype = (BreedingSource)(
-                                          state.parameters.getInstanceForParameter(
-                                                                                   base.push(P_PIPE),def.push(P_PIPE),BreedingSource.class));
+        pipe_prototype = (BreedingSource)(state.parameters.getInstanceForParameter(base.push(P_PIPE),def.push(P_PIPE),BreedingSource.class));
         pipe_prototype.setup(state,base.push(P_PIPE));
 
         // I promised over in BreedingSource.java that this method would get called.
         state.output.exitIfErrors();
 
         // load our individual prototype
-        i_prototype = (Individual)(state.parameters.getInstanceForParameter(
-                                                                            base.push(P_INDIVIDUAL),def.push(P_INDIVIDUAL),
-                                                                            Individual. class));
+        i_prototype = (Individual)(state.parameters.getInstanceForParameter(base.push(P_INDIVIDUAL), def.push(P_INDIVIDUAL), Individual. class));
         // set the species to me before setting up the individual, so they know who I am
         i_prototype.species = this;
         i_prototype.setup(state,base.push(P_INDIVIDUAL));
         
         // load our fitness
-        f_prototype = (Fitness) state.parameters.getInstanceForParameter(
-                                                                         base.push(P_FITNESS),def.push(P_FITNESS),
-                                                                         Fitness.class);
+        f_prototype = (Fitness) state.parameters.getInstanceForParameter( base.push(P_FITNESS),def.push(P_FITNESS), Fitness.class);
         f_prototype.setup(state,base.push(P_FITNESS));
     }
 }
