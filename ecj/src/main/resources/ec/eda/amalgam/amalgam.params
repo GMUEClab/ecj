@@ -1,0 +1,30 @@
+# Copyright 2017 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../simple/simple.params
+
+breed =                                         ec.eda.amalgam.AMALGAMBreeder
+pop.subpop.0.species =                          ec.eda.amalgam.AMALGAMSpecies
+
+
+#### AMalGaM must use double vector individuals
+pop.subpop.0.species.ind =                      ec.vector.DoubleVectorIndividual
+
+
+pop.subpop.0.size =                             30
+pop.subpop.0.species.mutation-prob =            0
+pop.subpop.0.species.pipe =                     ec.breed.InitializationPipeline 
+pop.subpop.0.species.mutation-type =            reset
+pop.subpop.0.species.crossover-type =           one
+
+pop.subpop.0.species.tau =                    0.35
+pop.subpop.0.species.eta-dec =                0.9
+pop.subpop.0.species.theta-sdr =              1.0
+pop.subpop.0.species.variance-tolerance =     0.0
+pop.subpop.0.species.delta-ams =              2.0
+
+# pop.subpop.0.species.eta-shift =                
+# pop.subpop.0.species.eta-sigma =                
+# pop.subpop.0.species.nis-max =                  
+# pop.subpop.0.species.alpha-ams =                
