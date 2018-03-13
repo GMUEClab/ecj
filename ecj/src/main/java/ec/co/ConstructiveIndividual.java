@@ -1,5 +1,5 @@
 /*
-  Copyright 2017 by Sean Luke
+  Copyright 2018 by Sean Luke
   Licensed under the Academic Free License version 3.0
   See the file "LICENSE" for more information
 */
@@ -7,8 +7,11 @@ package ec.co;
 
 import ec.Individual;
 import ec.co.ant.AntSpecies;
+import ec.util.Misc;
 import ec.util.Parameter;
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -18,33 +21,44 @@ public class ConstructiveIndividual extends Individual
 {
     
     public static final String P_CONSTRUCTIVEINDIVIDUAL = "constr-ind";
-    public int[] path = new int[] { };
+    public Set<Integer> components = new HashSet<Integer>();
     
+    @Override
     public Parameter defaultBase()
     {
         return AntSpecies.DEFAULT_BASE.push(P_CONSTRUCTIVEINDIVIDUAL);
     }
 
+    @Override
     public Object clone()
     {
         ConstructiveIndividual myobj = (ConstructiveIndividual) (super.clone());
 
         // must clone the path
-        myobj.path = (int[])(path.clone());
+        myobj.components = new HashSet<Integer>(components);
         
+        assert(repOK());
         return myobj;
     } 
     
-    public void setPath(final int[] path)
+    public Set<Integer> getComponents()
     {
-        assert(path != null);
-        this.path = path;
+        assert(repOK());
+        return new HashSet<Integer>(components);
+    }
+    
+    public void setComponents(final Collection<Integer> newComponents)
+    {
+        assert(newComponents != null);
+        this.components = new HashSet<Integer>(newComponents);
         assert(repOK());
     }
     
-    public int pathLength()
+    @Override
+    public long size()
     {
-        return path.length;
+        assert(repOK());
+        return components.size();
     }
 
     @Override
@@ -54,14 +68,13 @@ public class ConstructiveIndividual extends Individual
             return true;
         if (!(ind instanceof ConstructiveIndividual))
             return false;
-        return Arrays.equals(path, ((ConstructiveIndividual)ind).path);
+        return components.equals(((ConstructiveIndividual)ind).components);
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int hash = 7;
-        hash = 13 * hash + Arrays.hashCode(this.path);
+        hash = 19 * hash + (this.components != null ? this.components.hashCode() : 0);
         return hash;
     }
     
@@ -69,6 +82,7 @@ public class ConstructiveIndividual extends Individual
     {
         return P_CONSTRUCTIVEINDIVIDUAL != null
                 && !P_CONSTRUCTIVEINDIVIDUAL.isEmpty()
-                && path != null;
+                && components != null
+                && !Misc.containsNulls(components);
     }
 }

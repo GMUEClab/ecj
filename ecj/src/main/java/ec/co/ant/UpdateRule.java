@@ -8,6 +8,7 @@ package ec.co.ant;
 import ec.EvolutionState;
 import ec.Setup;
 import ec.Subpopulation;
+import java.util.List;
 
 /**
  *
@@ -15,5 +16,5 @@ import ec.Subpopulation;
  */
 public interface UpdateRule extends Setup
 {
-    public abstract void updatePheremoneMatrix(final EvolutionState state, final PheromoneMatrix matrix, final Subpopulation subpop);
+    public abstract void updatePheromones(final EvolutionState state, final List<Double> pheremones, final Subpopulation subpop);
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2017 by Sean Luke
+  Copyright 2018 by Sean Luke
   Licensed under the Academic Free License version 3.0
   See the file "LICENSE" for more information
 */
@@ -37,6 +37,29 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
     public final static String P_FILE = "file";
     
     private int dimension;
+
+    @Override
+    public TSPEdge getComponent(int component) {
+        return new TSPEdge(component);
+    }
+
+    @Override
+    public boolean isViolated(final Set<Integer> partialSolution, final int component) {
+        assert(partialSolution != null);
+        final TSPEdge edge = new TSPEdge(component);
+        boolean connected = false;
+        for (final int c : partialSolution)
+        {
+            final TSPEdge solEdge = new TSPEdge(c);
+            
+            if (edge.fromNode == solEdge.fromNode || edge.fromNode == solEdge.toNode)
+                connected = false; // We are starting from a node that is part of the tour (good!)
+            if (edge.toNode == solEdge.fromNode || edge.toNode == solEdge.toNode)
+                return true; // We're trying to move to a node that is already in the tour (bad!)
+        }
+        return connected;
+    }
+    
     private enum TSPKeyword { TYPE, DIMENSION, EDGE_WEIGHT_TYPE, NODE_COORD_SECTION };
     private enum EdgeWeightType { EUC_2D, GEO, ATT }
     private EdgeWeightType edgeWeightType;
@@ -154,67 +177,104 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
 
     /** Computes Euclidean distance between two nodes, rounded to the nearest integer. **/
     @Override
-    public double cost(final int from, final int to)
+    public double cost(final int component)
     {
-        assert(from >= 0);
-        assert(from < numComponents());
-        assert(to >= 0);
-        assert(to < numComponents());
-        final double[] fp = nodes.get(from);
-        final double[] tp = nodes.get(to);
+        assert(component >= 0);
+        assert(component < Math.pow(nodes.size(), 2));
+        final TSPEdge edge = new TSPEdge(component);
         switch (edgeWeightType)
             {
             default:
             case EUC_2D:
-                return euclideanDistance(fp, tp);
+                return edge.euclideanDistance();
             case ATT:
-                return attDistance(fp, tp);
+                return edge.attDistance();
             case GEO:
-                return geoDistance(fp, tp);
+                return edge.geoDistance();
             }
     }
     
-    /** Euclidean distance, rounded to the nearest integer. */
-    private double euclideanDistance(final double[] from, final double[] to)
+    public class TSPEdge
     {
-        assert(from != null);
-        assert(to != null);
-        assert(from.length == 2);
-        assert(to.length == 2);
-        return Math.rint(Math.sqrt(Math.pow(from[0] - to[0], 2) + Math.pow(from[1] - to[1], 2)));
+        private int fromNode;
+        private int toNode;
+        private double[] from;
+        private double[] to;
+        
+        public TSPEdge(final int component)
+        {
+            fromNode = fromNode(component);
+            toNode = toNode(component);
+            from = nodes.get(fromNode);
+            to = nodes.get(toNode);
+            assert(repOK());
+        }
+        
+        public final boolean repOK()
+        {
+            return fromNode >= 0
+                    && fromNode < nodes.size()
+                    && toNode >= 0
+                    && toNode < nodes.size()
+                    && fromNode != toNode
+                    && from != null
+                    && to != null
+                    && from.length == 2
+                    && to.length == 2;
+        }
+        
+        /** Euclidean distance, rounded to the nearest integer. */
+        public double euclideanDistance()
+        {
+            return Math.rint(Math.sqrt(Math.pow(from[0] - to[0], 2) + Math.pow(from[1] - to[1], 2)));
+        }
+
+        /** A "pseudo-Euclidean" distance, used in some TSPLIB instances. */
+        public double attDistance()
+        {
+            final double xd = from[0] - to[0];
+            final double yd = from[1] - to[1];
+            final double rft = Math.sqrt((xd*xd + yd*yd) / 10.0);
+            final double tft = Math.rint(rft);
+            if (tft < rft)
+                return tft + 1;
+            else
+                return tft;
+        }
+
+        /** A geographical distance based on latitude and longitude. */
+        public double geoDistance()
+        {
+            final double rrr = 6378.388;
+            final double q1 = Math.cos(longitude(from) - longitude(to));
+            final double q2 = Math.cos(latitude(from) - latitude(to));
+            final double q3 = Math.cos(latitude(from) + latitude(to));
+            return (int) (rrr * Math.acos(0.5 * ((1.0 + q1)*q2 - (1.0 - q1)*q3) ) + 1.0);
+        }
     }
-    
-    /** A "pseudo-Euclidean" distance, used in some TSPLIB instances. */
-    private double attDistance(final double[] from, final double[] to)
+     
+    /** Interpret a component ID as an edge between two TSP nodes.
+     * @return The index of the node the edge begins at.
+     */
+    public int fromNode(final int component)
     {
-        assert(from != null);
-        assert(to != null);
-        assert(from.length == 2);
-        assert(to.length == 2);
-        final double xd = from[0] - to[0];
-        final double yd = from[1] - to[1];
-        final double rft = Math.sqrt((xd*xd + yd*yd) / 10.0);
-        final double tft = Math.rint(rft);
-        if (tft < rft)
-            return tft + 1;
-        else
-            return tft;
+        assert(component >= 0);
+        assert(component < Math.pow(nodes.size(), 2));
+        assert(repOK());
+        return component/nodes.size();
     }
-    
-    /** A geographical distance based on latitude and longitude. */
-    private double geoDistance(final double[] from, final double[] to)
+
+    /** Interpret a component ID as an edge between two TSP nodes.
+     * @return The index of the node the edge ends at.
+     */
+    public int toNode(final int component)
     {
-        assert(from != null);
-        assert(to != null);
-        assert(from.length == 2);
-        assert(to.length == 2);
-        final double rrr = 6378.388;
-        final double q1 = Math.cos(longitude(from) - longitude(to));
-        final double q2 = Math.cos(latitude(from) - latitude(to));
-        final double q3 = Math.cos(latitude(from) + latitude(to));
-        return (int) (rrr * Math.acos(0.5 * ((1.0 + q1)*q2 - (1.0 - q1)*q3) ) + 1.0);
+        assert(component >= 0);
+        assert(component < Math.pow(nodes.size(), 2));
+        assert(repOK());
+        return component % nodes.size();
     }
-    
+
     /** Latitude is encoded in DDD.MM format by the first element of a point,
      * where DDD is degrees and MM is minutes.
      */
@@ -226,7 +286,7 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         final double min = p[0] - deg;
         return Math.PI * (deg + 5.0 * min / 3.0) / 180.0;
     }
-    
+
     /** Longitude is encoded in DDD.MM format by the first element of a point,
      * where DDD is degrees and MM is minutes.
      */
@@ -252,11 +312,10 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         if (!ind.evaluated)
             {
             final ConstructiveIndividual iind = (ConstructiveIndividual) ind;
-            assert(iind.pathLength() == numComponents());
-            int currentNode = iind.path[0];
+            assert(iind.size() == nodes.size());
             double cost = 0.0;
-            for (int i = 1; i < iind.pathLength(); i++)
-                cost += cost(currentNode, iind.path[i]);
+            for (final int c : iind.getComponents())
+                cost += cost(c);
             assert(cost >= 0.0);
             assert(!Double.isNaN(cost));
             assert(!Double.isInfinite(cost));
@@ -268,7 +327,7 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
     @Override
     public int numComponents()
     {
-        return nodes.size();
+        return (int) Math.pow(nodes.size(), 2);
     }
     
     @Override

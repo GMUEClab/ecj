@@ -1,5 +1,5 @@
 /*
-  Copyright 2017 by Sean Luke
+  Copyright 2018 by Sean Luke
   Licensed under the Academic Free License version 3.0
   See the file "LICENSE" for more information
 */
@@ -8,6 +8,7 @@ package ec.co.ant;
 import ec.EvolutionState;
 import ec.Setup;
 import ec.co.ConstructiveIndividual;
+import java.util.List;
 
 /**
  *
@@ -15,5 +16,5 @@ import ec.co.ConstructiveIndividual;
  */
 public interface ConstructionRule extends Setup
 {
-    public abstract ConstructiveIndividual constructSolution(EvolutionState state, ConstructiveIndividual ind, int startNode, PheromoneMatrix pheromones);
+    public abstract ConstructiveIndividual constructSolution(EvolutionState state, ConstructiveIndividual ind, List<Double> pheromones);
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2017 by Sean Luke
+  Copyright 2018 by Sean Luke
   Licensed under the Academic Free License version 3.0
   See the file "LICENSE" for more information
 */
@@ -14,6 +14,8 @@ import static ec.Species.P_INDIVIDUAL;
 import ec.Subpopulation;
 import ec.co.ConstructiveIndividual;
 import ec.util.Parameter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -26,11 +28,11 @@ public class AntSpecies extends Species
     
     public final static String P_CONSTRUCTION_RULE = "constructionRule";
     public final static String P_UPDATE_RULE = "updateRule";
-    public final static String P_NUM_NODES = "numNodes";
+    public final static String P_NUM_COMPONENTS = "numComponents";
     
-    private int numNodes;
+    private int numComponents;
     private ConstructionRule constructionRule;
-    private PheromoneMatrix pheromoneMatrix;
+    private List<Double> pheremones;
     private UpdateRule updateRule;
     
     @Override
@@ -39,12 +41,12 @@ public class AntSpecies extends Species
         setupSuper(state, base); // Calling a custom replacement for super.setup(), because Species.setup() looks for parameters that we don't need for ACO.
         assert(state != null);
         assert(base != null);
-         numNodes = state.parameters.getInt(base.push(P_NUM_NODES), null, 1);
-        if (numNodes == 0)
-            state.output.fatal(String.format("%s: '%s' is set to %d, but must be positive.", this.getClass().getSimpleName(), base.push(P_NUM_NODES), numNodes));
+         numComponents = state.parameters.getInt(base.push(P_NUM_COMPONENTS), null, 1);
+        if (numComponents == 0)
+            state.output.fatal(String.format("%s: '%s' is set to %d, but must be positive.", this.getClass().getSimpleName(), base.push(P_NUM_COMPONENTS), numComponents));
         constructionRule = (ConstructionRule) state.parameters.getInstanceForParameter(base.push(P_CONSTRUCTION_RULE), null, ConstructionRule.class);
         updateRule = (UpdateRule) state.parameters.getInstanceForParameter(base.push(P_UPDATE_RULE), null, UpdateRule.class);
-        pheromoneMatrix = new PheromoneMatrix(numNodes);
+        pheremones = new ArrayList<Double>(numComponents);
         assert(repOK());
     }
     
@@ -74,15 +76,15 @@ public class AntSpecies extends Species
     
     
     
-    public PheromoneMatrix getPheremoneMatrix()
+    public List<Double> getPheremones()
     {
         assert(repOK());
-        return pheromoneMatrix.clone(); // Defensive copy
+        return new ArrayList<Double>(pheremones); // Defensive copy
     }
     
     public void updatePheromones(final EvolutionState state, final Subpopulation population)
     {
-        updateRule.updatePheremoneMatrix(state, pheromoneMatrix, population);
+        updateRule.updatePheromones(state, pheremones, population);
         assert(repOK());
     }
     
@@ -93,9 +95,8 @@ public class AntSpecies extends Species
         assert(thread >= 0);
         
         final ConstructiveIndividual ind = (ConstructiveIndividual)(super.newIndividual(state, thread));
-        final int startNode = state.random[0].nextInt(numNodes); // XXX Assumes that node IDs are consecutive and begin from zero.
         assert(repOK());
-        return constructionRule.constructSolution(state, ind, startNode, pheromoneMatrix);
+        return constructionRule.constructSolution(state, ind, pheremones);
     }
     
     @Override
@@ -117,11 +118,11 @@ public class AntSpecies extends Species
                 && !P_UPDATE_RULE.isEmpty()
                 && P_CONSTRUCTION_RULE != null
                 && !P_CONSTRUCTION_RULE.isEmpty()
-                && P_NUM_NODES != null
-                && !P_NUM_NODES.isEmpty()
-                && numNodes > 0
+                && P_NUM_COMPONENTS != null
+                && !P_NUM_COMPONENTS.isEmpty()
+                && numComponents > 0
                 && constructionRule != null
                 && updateRule != null
-                && pheromoneMatrix != null;
+                && pheremones != null;
     }
 }
