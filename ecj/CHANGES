@@ -2427,3 +2427,5 @@ Version		Change Log
 	Remove erroneous app/nullproblem and app/tutorial3copy directories.
 	Fixed bug in Makefile: make doc failed to utilize the $CLASSPATH variable
 
+26 Prerelease, shemerelease...
+
