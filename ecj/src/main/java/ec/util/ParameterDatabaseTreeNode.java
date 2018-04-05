@@ -33,14 +33,14 @@ class ParameterDatabaseTreeNode
      */
     public ParameterDatabaseTreeNode() {
         super();
-    }
+        }
 
     /**
      * @param userObject
      */
     public ParameterDatabaseTreeNode(Object userObject) {
         super(userObject);
-    }
+        }
 
     /**
      * @param userObject
@@ -48,7 +48,7 @@ class ParameterDatabaseTreeNode
      */
     public ParameterDatabaseTreeNode(Object userObject, boolean allowsChildren) {
         super(userObject, allowsChildren);
-    }
+        }
     
     /**
      * @param index
@@ -58,7 +58,7 @@ class ParameterDatabaseTreeNode
     public Object getChildAt(int index, boolean visibleLeaves) {
         if (children == null) {
             throw new ArrayIndexOutOfBoundsException("node has no children");
-        }
+            }
 
         if (!visibleLeaves) {
             int nonLeafIndex = -1;
@@ -68,14 +68,14 @@ class ParameterDatabaseTreeNode
                 if (!n.isLeaf()) {
                     if (++nonLeafIndex == index)
                         return n;
+                    }
                 }
-            }
             
             throw new ArrayIndexOutOfBoundsException("index = "+index+", children = "+getChildCount(visibleLeaves));
-        }
+            }
         
         return super.getChildAt(index);
-    }
+        }
     
     /**
      * @param visibleLeaves
@@ -88,13 +88,13 @@ class ParameterDatabaseTreeNode
             while (e.hasMoreElements()) {
                 TreeNode n = (TreeNode)e.nextElement();
                 if (!n.isLeaf()) ++nonLeafCount;
-            }
+                }
             
             return nonLeafCount;
-        }
+            }
         
         return super.getChildCount();
-    }
+        }
     
     /* (non-Javadoc)
      * @see java.lang.Comparable#compareTo(java.lang.Object)
@@ -103,7 +103,7 @@ class ParameterDatabaseTreeNode
         ParameterDatabaseTreeNode n = (ParameterDatabaseTreeNode)o;
 
         return ((Comparable)userObject).compareTo(n.userObject);
-    }
+        }
     
     /**
      * @param comp
@@ -124,6 +124,6 @@ class ParameterDatabaseTreeNode
             ParameterDatabaseTreeNode n = 
                 (ParameterDatabaseTreeNode)e.nextElement();
             n.sort(comp);
+            }
         }
     }
-}

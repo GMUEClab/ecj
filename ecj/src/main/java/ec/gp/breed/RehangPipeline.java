@@ -80,7 +80,7 @@ import java.util.HashMap;
  */
 
 public class RehangPipeline extends GPBreedingPipeline
-{
+    {
     public static final String P_REHANG = "rehang";
     public static final String P_NUM_TRIES = "tries";
     public static final int NUM_SOURCES = 1;
@@ -97,13 +97,13 @@ public class RehangPipeline extends GPBreedingPipeline
     public int numSources() { return NUM_SOURCES; }
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state,base);
         
         Parameter def = defaultBase();
 
         numTries = state.parameters.getInt(base.push(P_NUM_TRIES),
-                                           def.push(P_NUM_TRIES),1);
+            def.push(P_NUM_TRIES),1);
         if (numTries == 0)
             state.output.fatal("RehangPipeline has an invalid number of tries (it must be >= 1).",base.push(P_NUM_TRIES),def.push(P_NUM_TRIES));
 
@@ -112,71 +112,71 @@ public class RehangPipeline extends GPBreedingPipeline
 
         tree = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+0),
-                                    def.push(P_TREE).push(""+0)))
+                def.push(P_TREE).push(""+0)))
             {
-                tree = state.parameters.getInt(base.push(P_TREE).push(""+0),
-                                               def.push(P_TREE).push(""+0),0);
-                if (tree==-1)
-                    state.output.fatal("Tree fixed value, if defined, must be >= 0");
+            tree = state.parameters.getInt(base.push(P_TREE).push(""+0),
+                def.push(P_TREE).push(""+0),0);
+            if (tree==-1)
+                state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
-    }
+        }
 
 
 
     private int numRehangableNodes(final GPNode root, int soFar)
-    {
+        {
         // we don't include the tree root
         for(int x=0;x<root.children.length;x++) 
             soFar = _numRehangableNodes(root.children[x],soFar);
         return soFar;   
-    }
+        }
 
     private int _numRehangableNodes(final GPNode root, int soFar)
-    {
+        {
         if (root.children.length>0) soFar++;  // rehangable
         for(int x=0;x<root.children.length;x++) 
             soFar = _numRehangableNodes(root.children[x],soFar);
         return soFar;
-    }
+        }
 
 
     private GPNode rehangableNode;
 
     private int pickRehangableNode(final GPNode root, int num)
-    {
+        {
         // we don't include the tree root
         for(int x=0;x<root.children.length;x++)
             {
-                num = _pickRehangableNode(root.children[x],num);
-                if (num==-1) break;  // someone found it
+            num = _pickRehangableNode(root.children[x],num);
+            if (num==-1) break;  // someone found it
             }   
         return num;     
-    }
+        }
 
     // sticks the node in 
     private int _pickRehangableNode(final GPNode root, int num)
-    {
+        {
         if (root.children.length>0)  // rehangable
             {
-                num--;
-                if (num==-1)  // found it
-                    {
-                        rehangableNode = root;
-                        return num;
-                    }
+            num--;
+            if (num==-1)  // found it
+                {
+                rehangableNode = root;
+                return num;
+                }
             }
         for(int x=0;x<root.children.length;x++)
             {
-                num = _pickRehangableNode(root.children[x],num);
-                if (num==-1) break;  // someone found it
+            num = _pickRehangableNode(root.children[x],num);
+            if (num==-1) break;  // someone found it
             }
         return num;     
-    }
+        }
     
 
     private void rehang(final EvolutionState state, final int thread,
-                        GPNode pivot, final GPNode root)
-    {
+        GPNode pivot, final GPNode root)
+        {
         // pivot must not be root
         if (pivot==root) // uh oh
             throw new InternalError("Oops, pivot==root in ec.gp.breed.Rehang.rehang(...)");
@@ -198,17 +198,17 @@ public class RehangPipeline extends GPBreedingPipeline
         // rehang the intermediate nodes
         while(pivot!=root)
             {
-                newPivot = (GPNode)(pivot.parent);
+            newPivot = (GPNode)(pivot.parent);
             
-                pivot.parent = oldPivot;
-                oldPivot.children[spot] = pivot;        
-                tmpSpot = pivot.argposition;
-                pivot.argposition = spot;
-                spot = newSpot;
-                newSpot = tmpSpot;
+            pivot.parent = oldPivot;
+            oldPivot.children[spot] = pivot;        
+            tmpSpot = pivot.argposition;
+            pivot.argposition = spot;
+            spot = newSpot;
+            newSpot = tmpSpot;
             
-                oldPivot = pivot;
-                pivot = newPivot;
+            oldPivot = pivot;
+            pivot = newPivot;
             }
 
         // rehang the root and set the cut
@@ -218,16 +218,16 @@ public class RehangPipeline extends GPBreedingPipeline
         cut.parent = pivot;
         cut.argposition = newSpot;
         pivot.children[newSpot] = cut;
-    }
+        }
 
 
     public int produce(final int min,
-                       final int max,
-                       final int subpopulation,
-                       final ArrayList<Individual> inds,
-                       final EvolutionState state,
-                       final int thread, HashMap<String, Object> misc)
-    {
+        final int max,
+        final int subpopulation,
+        final ArrayList<Individual> inds,
+        final EvolutionState state,
+        final int thread, HashMap<String, Object> misc)
+        {
         int start = inds.size();
                 
         // grab n individuals from our source and stick 'em right into inds.
@@ -238,7 +238,7 @@ public class RehangPipeline extends GPBreedingPipeline
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
             {
-                return n;
+            return n;
             }
 
 
@@ -246,42 +246,42 @@ public class RehangPipeline extends GPBreedingPipeline
         // now let's rehang 'em
         for(int q=start; q < n+start; q++)
             {
-                GPIndividual i = (GPIndividual)inds.get(q);
+            GPIndividual i = (GPIndividual)inds.get(q);
             
-                if (tree!=TREE_UNFIXED && (tree<0 || tree >= i.trees.length))
-                    // uh oh
-                    state.output.fatal("RehangPipeline attempted to fix tree.0 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
+            if (tree!=TREE_UNFIXED && (tree<0 || tree >= i.trees.length))
+                // uh oh
+                state.output.fatal("RehangPipeline attempted to fix tree.0 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
 
-                for (int x=0;x<numTries;x++)
-                    {
-                        int t;
-                        // pick random tree
-                        if (tree==TREE_UNFIXED)
-                            if (i.trees.length>1) t = state.random[thread].nextInt(i.trees.length);
-                            else t = 0;
-                        else t = tree;
+            for (int x=0;x<numTries;x++)
+                {
+                int t;
+                // pick random tree
+                if (tree==TREE_UNFIXED)
+                    if (i.trees.length>1) t = state.random[thread].nextInt(i.trees.length);
+                    else t = 0;
+                else t = tree;
                 
-                        // is the tree rehangable?              
-                        if (i.trees[t].child.children.length==0) continue; // uh oh, try again
-                        boolean rehangable = false;
-                        for(int y=0;y<i.trees[t].child.children.length;y++)
-                            if (i.trees[t].child.children[y].children.length>0) // nonterminal
-                                { rehangable = true; break; }
-                        if (!rehangable) continue;  // the root's children are all terminals
+                // is the tree rehangable?              
+                if (i.trees[t].child.children.length==0) continue; // uh oh, try again
+                boolean rehangable = false;
+                for(int y=0;y<i.trees[t].child.children.length;y++)
+                    if (i.trees[t].child.children[y].children.length>0) // nonterminal
+                        { rehangable = true; break; }
+                if (!rehangable) continue;  // the root's children are all terminals
 
-                        int numrehang = numRehangableNodes(i.trees[t].child,0);
-                        pickRehangableNode(i.trees[t].child,
-                                           state.random[thread].nextInt(numrehang));
+                int numrehang = numRehangableNodes(i.trees[t].child,0);
+                pickRehangableNode(i.trees[t].child,
+                    state.random[thread].nextInt(numrehang));
                 
-                        rehang(state,thread,rehangableNode,i.trees[t].child);
+                rehang(state,thread,rehangableNode,i.trees[t].child);
 
-                        i.evaluated = false;
-                    }
+                i.evaluated = false;
+                }
 
-                // add the new individual, replacing its previous source
-                inds.set(q,i);
+            // add the new individual, replacing its previous source
+            inds.set(q,i);
             
             }
         return n;
+        }
     }
-}

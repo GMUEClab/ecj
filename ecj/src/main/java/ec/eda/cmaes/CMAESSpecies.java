@@ -197,7 +197,7 @@ import java.util.Collections;
  */
 
 public class CMAESSpecies extends FloatVectorSpecies
-{
+    {
     public static final String P_CMAES_SPECIES = "cma-es.species";
     
     public static final String P_LAMBDA = "lambda";
@@ -337,12 +337,12 @@ public class CMAESSpecies extends FloatVectorSpecies
 
 
     public Parameter defaultBase()
-    {
+        {
         return CMAESDefaults.base().push(P_CMAES_SPECIES);
-    }
+        }
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state, base);
         MersenneTwisterFast random = state.random[0];
 
@@ -353,14 +353,14 @@ public class CMAESSpecies extends FloatVectorSpecies
 
         if(!state.parameters.exists(base.push(P_SIGMA), def.push(P_SIGMA)))
             {
-                state.output.message("CMA-ES sigma was not provided, defaulting to 1.0");
-                sigma = 1.0;
+            state.output.message("CMA-ES sigma was not provided, defaulting to 1.0");
+            sigma = 1.0;
             }
         else
             {
-                sigma = state.parameters.getDouble(base.push(P_SIGMA), def.push(P_SIGMA),0.0);
-                if (sigma <= 0) 
-                    state.output.fatal("If CMA-ES sigma is provided, it must be > 0.0", base.push(P_SIGMA), def.push(P_SIGMA));
+            sigma = state.parameters.getDouble(base.push(P_SIGMA), def.push(P_SIGMA),0.0);
+            if (sigma <= 0) 
+                state.output.fatal("If CMA-ES sigma is provided, it must be > 0.0", base.push(P_SIGMA), def.push(P_SIGMA));
             }
 
         double[] cvals = new double[genomeSize];
@@ -368,24 +368,24 @@ public class CMAESSpecies extends FloatVectorSpecies
         String covs = "Initial Covariance: <";
         for(int i = 0; i < genomeSize; i++)
             {
-                if (i > 0) covs += ", ";
-                if (covarianceInitialization.equals(V_SCALED))
-                    {
-                        cvals[i] = (maxGene(i) - minGene(i));
-                    }
-                else if (covarianceInitialization.equals(V_IDENTITY))
-                    {
-                        cvals[i] = 1.0;
-                    }
-                else 
-                    {
-                        state.output.fatal("Invalid covariance initialization type " + covarianceInitialization,
-                                           base.push(P_COVARIANCE), def.push(P_COVARIANCE));
-                    }
+            if (i > 0) covs += ", ";
+            if (covarianceInitialization.equals(V_SCALED))
+                {
+                cvals[i] = (maxGene(i) - minGene(i));
+                }
+            else if (covarianceInitialization.equals(V_IDENTITY))
+                {
+                cvals[i] = 1.0;
+                }
+            else 
+                {
+                state.output.fatal("Invalid covariance initialization type " + covarianceInitialization,
+                    base.push(P_COVARIANCE), def.push(P_COVARIANCE));
+                }
                                 
-                // cvals is standard deviations, so we change them to variances now
-                cvals[i] *= cvals[i];
-                covs += cvals[i];
+            // cvals is standard deviations, so we change them to variances now
+            cvals[i] *= cvals[i];
+            covs += cvals[i];
             }
         state.output.message(covs + ">");
                 
@@ -408,21 +408,21 @@ public class CMAESSpecies extends FloatVectorSpecies
         EigenDecomposition<DenseMatrix64F> eig = DecompositionFactory.eig(genomeSize,true,true);
         if( eig.decompose(c.copy().getMatrix())) 
             {
-                SimpleMatrix dinv = new SimpleMatrix(genomeSize,genomeSize);
-                for(int i = 0; i < genomeSize; i++)
-                    {
-                        double eigrt = Math.sqrt(eig.getEigenvalue(i).real);
-                        d.set(i,i,eigrt);
-                        dinv.set(i,i,1/eigrt);
-                        CommonOps.insert(eig.getEigenVector(i), b.getMatrix(),0,i);
-                    }
+            SimpleMatrix dinv = new SimpleMatrix(genomeSize,genomeSize);
+            for(int i = 0; i < genomeSize; i++)
+                {
+                double eigrt = Math.sqrt(eig.getEigenvalue(i).real);
+                d.set(i,i,eigrt);
+                dinv.set(i,i,1/eigrt);
+                CommonOps.insert(eig.getEigenVector(i), b.getMatrix(),0,i);
+                }
 
-                invsqrtC = b.mult(dinv.mult(b.transpose()));
-                CommonOps.mult(b.getMatrix(),d.getMatrix(), bd);
+            invsqrtC = b.mult(dinv.mult(b.transpose()));
+            CommonOps.mult(b.getMatrix(),d.getMatrix(), bd);
             }
         else
             {
-                state.output.fatal("CMA-ES eigendecomposition failed. ");
+            state.output.fatal("CMA-ES eigendecomposition failed. ");
             }
         CommonOps.scale(sigma, bd, sbd);
                 
@@ -441,58 +441,58 @@ public class CMAESSpecies extends FloatVectorSpecies
         String val = state.parameters.getString(base.push(P_MEAN), def.push(P_MEAN));
         if (val != null)
             {
-                meanSpecified = true;
-                if (val.equals(V_CENTER))
+            meanSpecified = true;
+            if (val.equals(V_CENTER))
+                {
+                for(int i = 0; i < genomeSize; i++)
                     {
-                        for(int i = 0; i < genomeSize; i++)
-                            {
-                                xmean.set(i,0, (maxGene(i) + minGene(i)) / 2.0);
-                            }
+                    xmean.set(i,0, (maxGene(i) + minGene(i)) / 2.0);
                     }
-                else if (val.equals(V_ZERO))
+                }
+            else if (val.equals(V_ZERO))
+                {
+                for(int i = 0; i < genomeSize; i++)
                     {
-                        for(int i = 0; i < genomeSize; i++)
-                            {
-                                xmean.set(i,0,0);   // it is this anyway
-                            }
+                    xmean.set(i,0,0);   // it is this anyway
                     }
-                else if (val.equals(V_RANDOM))
+                }
+            else if (val.equals(V_RANDOM))
+                {
+                for(int i = 0; i < genomeSize; i++)
                     {
-                        for(int i = 0; i < genomeSize; i++)
-                            {
-                                xmean.set(i,0, state.random[0].nextDouble(true, true) * (maxGene(i) - minGene(i)) + minGene(i));
-                            }
+                    xmean.set(i,0, state.random[0].nextDouble(true, true) * (maxGene(i) - minGene(i)) + minGene(i));
                     }
-                else
-                    {
-                        state.output.fatal("Unknown mean value specified: " + val, base.push(P_MEAN), def.push(P_MEAN));
-                    }
+                }
+            else
+                {
+                state.output.fatal("Unknown mean value specified: " + val, base.push(P_MEAN), def.push(P_MEAN));
+                }
             }
         else
             {
-                state.output.fatal("No default mean value specified.  Loading full mean from parameters.", base.push(P_MEAN), def.push(P_MEAN));
+            state.output.fatal("No default mean value specified.  Loading full mean from parameters.", base.push(P_MEAN), def.push(P_MEAN));
             }
         
         boolean nonDefaultMeanSpecified = false;
         for(int i = 0; i < genomeSize; i++)
             {
-                double m_i = 0;
-                try { 
-                    m_i = state.parameters.getDouble(base.push(P_MEAN).push(""+i), def.push(P_MEAN).push(""+i)); 
-                    xmean.set(i,0,m_i);
-                    nonDefaultMeanSpecified = true;
+            double m_i = 0;
+            try { 
+                m_i = state.parameters.getDouble(base.push(P_MEAN).push(""+i), def.push(P_MEAN).push(""+i)); 
+                xmean.set(i,0,m_i);
+                nonDefaultMeanSpecified = true;
                 }
-                catch (NumberFormatException e)
-                    {
-                        if (!meanSpecified)
-                            state.output.error("No default mean value was specified, but CMA-ES mean index " + i + " is missing or not a number.", base.push(P_MEAN).push(""+i), def.push(P_MEAN).push(""+i));
-                    }
+            catch (NumberFormatException e)
+                {
+                if (!meanSpecified)
+                    state.output.error("No default mean value was specified, but CMA-ES mean index " + i + " is missing or not a number.", base.push(P_MEAN).push(""+i), def.push(P_MEAN).push(""+i));
+                }
             }
 
         state.output.exitIfErrors();
         if (nonDefaultMeanSpecified && meanSpecified)
             {
-                state.output.warning("A default mean value was specified, but certain mean values were overridden."); 
+            state.output.warning("A default mean value was specified, but certain mean values were overridden."); 
             }
 
         String mes = "Initial Mean: <";
@@ -503,24 +503,24 @@ public class CMAESSpecies extends FloatVectorSpecies
 
         if(!state.parameters.exists(base.push(P_LAMBDA), def.push(P_LAMBDA)))
             {
-                lambda = 4+(int)Math.floor(3*Math.log(n));
+            lambda = 4+(int)Math.floor(3*Math.log(n));
             }
         else
             {
-                lambda = state.parameters.getInt(base.push(P_LAMBDA), def.push(P_LAMBDA),1);
-                if (lambda <= 0) 
-                    state.output.fatal("If the CMA-ES lambda parameter is provided, it must be a valid integer > 0", base.push(P_LAMBDA), def.push(P_LAMBDA));
+            lambda = state.parameters.getInt(base.push(P_LAMBDA), def.push(P_LAMBDA),1);
+            if (lambda <= 0) 
+                state.output.fatal("If the CMA-ES lambda parameter is provided, it must be a valid integer > 0", base.push(P_LAMBDA), def.push(P_LAMBDA));
             }
 
         if(!state.parameters.exists(base.push(P_MU), def.push(P_MU)))
             {
-                mu = (int)(Math.floor(lambda/2.0));
+            mu = (int)(Math.floor(lambda/2.0));
             }
         else
             {
-                mu = state.parameters.getInt(base.push(P_MU), def.push(P_MU),1);
-                if (mu <= 0) 
-                    state.output.fatal("If the CMA-ES mu parameter is provided, it must be a valid integer > 0", base.push(P_MU), def.push(P_MU));
+            mu = state.parameters.getInt(base.push(P_MU), def.push(P_MU),1);
+            if (mu <= 0) 
+                state.output.fatal("If the CMA-ES mu parameter is provided, it must be a valid integer > 0", base.push(P_MU), def.push(P_MU));
             }
         
         if (mu > lambda)  // uh oh
@@ -531,29 +531,29 @@ public class CMAESSpecies extends FloatVectorSpecies
         for(int i = 0; i < mu; i++)
             if (state.parameters.exists(base.push(P_WEIGHTS).push(""+i), def.push(P_WEIGHTS).push(""+i)))
                 {
-                    state.output.message("CMA-ES weight index " + i + " specified.  Loading all weights from parameters.");
-                    weightsSpecified = true;
-                    break;
+                state.output.message("CMA-ES weight index " + i + " specified.  Loading all weights from parameters.");
+                weightsSpecified = true;
+                break;
                 }
         
         if (weightsSpecified)
             {
-                for(int i = 0; i < mu; i++)
+            for(int i = 0; i < mu; i++)
+                {
+                double m_i = 0;
+                try { weights[i] = state.parameters.getDouble(base.push(P_WEIGHTS).push(""+i), def.push(P_WEIGHTS).push(""+i)); }
+                catch (NumberFormatException e)
                     {
-                        double m_i = 0;
-                        try { weights[i] = state.parameters.getDouble(base.push(P_WEIGHTS).push(""+i), def.push(P_WEIGHTS).push(""+i)); }
-                        catch (NumberFormatException e)
-                            {
-                                state.output.error("CMA-ES weight index " + i + " missing or not a number.", 
-                                                   base.push(P_WEIGHTS).push(""+i), def.push(P_WEIGHTS).push(""+i)); 
-                            }
+                    state.output.error("CMA-ES weight index " + i + " missing or not a number.", 
+                        base.push(P_WEIGHTS).push(""+i), def.push(P_WEIGHTS).push(""+i)); 
                     }
-                state.output.exitIfErrors();
+                }
+            state.output.exitIfErrors();
             }
         else
             {
-                for(int i = 0; i < mu; i++)
-                    weights[i] = Math.log((lambda+1.0)/(2.0 * (i + 1)));
+            for(int i = 0; i < mu; i++)
+                weights[i] = Math.log((lambda+1.0)/(2.0 * (i + 1)));
             }
             
         // normalize
@@ -580,50 +580,50 @@ public class CMAESSpecies extends FloatVectorSpecies
         altGeneratorTries = state.parameters.getIntWithDefault(base.push(P_ALTERNATIVE_GENERATOR_TRIES), def.push(P_ALTERNATIVE_GENERATOR_TRIES), DEFAULT_ALT_GENERATOR_TRIES);
         if (altGeneratorTries < 1)
             state.output.fatal("If specified (the default is " + DEFAULT_ALT_GENERATOR_TRIES + "), alt-generation-tries must be >= 1", 
-                               base.push(P_ALTERNATIVE_GENERATOR_TRIES), def.push(P_ALTERNATIVE_GENERATOR_TRIES));
+                base.push(P_ALTERNATIVE_GENERATOR_TRIES), def.push(P_ALTERNATIVE_GENERATOR_TRIES));
 
         if(!state.parameters.exists(base.push(P_CC), def.push(P_CC)))
             {
-                cc = (4.0+mueff/n) / (n+4.0 + 2.0*mueff/n);  // time constant for cumulation for C
+            cc = (4.0+mueff/n) / (n+4.0 + 2.0*mueff/n);  // time constant for cumulation for C
             }
         else
             {
-                cc = state.parameters.getDoubleWithMax(base.push(P_CC), def.push(P_CC),0.0,1.0);
-                if (cc < 0.0) 
-                    state.output.fatal("If the CMA-ES cc parameter is provided, it must be a valid number in the range [0,1]", base.push(P_CC), def.push(P_CC));
+            cc = state.parameters.getDoubleWithMax(base.push(P_CC), def.push(P_CC),0.0,1.0);
+            if (cc < 0.0) 
+                state.output.fatal("If the CMA-ES cc parameter is provided, it must be a valid number in the range [0,1]", base.push(P_CC), def.push(P_CC));
             }
 
         if(!state.parameters.exists(base.push(P_CS), def.push(P_CS)))
             {
-                cs = (mueff+2.0)/(n+mueff+5.0);  // t-const for cumulation for sigma control
+            cs = (mueff+2.0)/(n+mueff+5.0);  // t-const for cumulation for sigma control
             }
         else
             {
-                cs = state.parameters.getDoubleWithMax(base.push(P_CS), def.push(P_CS),0.0,1.0);
-                if (cs < 0.0) 
-                    state.output.fatal("If the CMA-ES cs parameter is provided, it must be a valid number in the range [0,1]", base.push(P_CS), def.push(P_CS));
+            cs = state.parameters.getDoubleWithMax(base.push(P_CS), def.push(P_CS),0.0,1.0);
+            if (cs < 0.0) 
+                state.output.fatal("If the CMA-ES cs parameter is provided, it must be a valid number in the range [0,1]", base.push(P_CS), def.push(P_CS));
             }
 
         if(!state.parameters.exists(base.push(P_C1), def.push(P_C1)))
             {
-                c1 = 2.0 / ((n+1.3)*(n+1.3)+mueff);  // learning rate for rank-one update of C
+            c1 = 2.0 / ((n+1.3)*(n+1.3)+mueff);  // learning rate for rank-one update of C
             }
         else
             {
-                c1 = state.parameters.getDouble(base.push(P_C1), def.push(P_C1),0.0);
-                if (c1 < 0) 
-                    state.output.fatal("If the CMA-ES c1 parameter is provided, it must be a valid number >= 0.0", base.push(P_C1), def.push(P_C1));
+            c1 = state.parameters.getDouble(base.push(P_C1), def.push(P_C1),0.0);
+            if (c1 < 0) 
+                state.output.fatal("If the CMA-ES c1 parameter is provided, it must be a valid number >= 0.0", base.push(P_C1), def.push(P_C1));
             }
         
         if(!state.parameters.exists(base.push(P_CMU), def.push(P_CMU)))
             {
-                cmu = Math.min(1.0-c1, 2.0*(mueff-2.0+1.0/mueff) / ((n+2.0)*(n+2.0)+mueff));
+            cmu = Math.min(1.0-c1, 2.0*(mueff-2.0+1.0/mueff) / ((n+2.0)*(n+2.0)+mueff));
             }
         else
             {
-                cmu = state.parameters.getDouble(base.push(P_CMU), def.push(P_CMU),0.0);
-                if (cmu < 0) 
-                    state.output.fatal("If the CMA-ES cmu parameter is provided, it must be a valid number >= 0.0", base.push(P_CMU), def.push(P_CMU));
+            cmu = state.parameters.getDouble(base.push(P_CMU), def.push(P_CMU),0.0);
+            if (cmu < 0) 
+                state.output.fatal("If the CMA-ES cmu parameter is provided, it must be a valid number >= 0.0", base.push(P_CMU), def.push(P_CMU));
             }
 
         if (c1 > (1 - cmu))  // uh oh
@@ -633,13 +633,13 @@ public class CMAESSpecies extends FloatVectorSpecies
 
         if(!state.parameters.exists(base.push(P_DAMPS), def.push(P_DAMPS)))
             {
-                damps = 1.0 + 2.0*Math.max(0.0, Math.sqrt((mueff-1.0)/(n+1.0))-1.0) + cs; // damping for sigma
+            damps = 1.0 + 2.0*Math.max(0.0, Math.sqrt((mueff-1.0)/(n+1.0))-1.0) + cs; // damping for sigma
             }
         else
             {
-                damps = state.parameters.getDouble(base.push(P_DAMPS), def.push(P_DAMPS),0.0);
-                if (damps <= 0) 
-                    state.output.fatal("If the CMA-ES damps parameter is provided, it must be a valid number > 0.0", base.push(P_DAMPS), def.push(P_DAMPS));
+            damps = state.parameters.getDouble(base.push(P_DAMPS), def.push(P_DAMPS),0.0);
+            if (damps <= 0) 
+                state.output.fatal("If the CMA-ES damps parameter is provided, it must be a valid number > 0.0", base.push(P_DAMPS), def.push(P_DAMPS));
             }
 
         double damps_min = 0.5;
@@ -655,12 +655,12 @@ public class CMAESSpecies extends FloatVectorSpecies
         state.output.message("cc:     " + cc);
         state.output.message("cs:     " + cs);
         state.output.message("damps:  " + damps);
-    }
+        }
 
 
 
     public Object clone()
-    {
+        {
         CMAESSpecies myobj = (CMAESSpecies) (super.clone());
             
         // clone the distribution and other variables here
@@ -676,13 +676,13 @@ public class CMAESSpecies extends FloatVectorSpecies
         myobj.pc = pc.copy();
             
         return myobj;
-    } 
+        } 
 
 
     public static final int MAX_TRIES_BEFORE_WARNING = 100000;
         
     public Individual newIndividual(final EvolutionState state, int thread)
-    {
+        {
         Individual newind = super.newIndividual(state, thread);
         MersenneTwisterFast random = state.random[thread];
 
@@ -699,51 +699,51 @@ public class CMAESSpecies extends FloatVectorSpecies
         int tries = 0;
         while(true)
             {           
-                for( int i = 0; i < genomeSize; i++ ) 
-                    dvind.genome[i] = random.nextGaussian();
+            for( int i = 0; i < genomeSize; i++ ) 
+                dvind.genome[i] = random.nextGaussian();
 
-                CommonOps.mult(sbd,genome,temp); // temp = sigma*b*d*genome;
-                CommonOps.add(temp,xmean.getMatrix(),genome); // genome = temp + xmean;
+            CommonOps.mult(sbd,genome,temp); // temp = sigma*b*d*genome;
+            CommonOps.add(temp,xmean.getMatrix(),genome); // genome = temp + xmean;
 
-                boolean invalid_value = false;
-                for (int i = 0; i < genomeSize; i++)
-                    if (dvind.genome[i] < minGene(i) || dvind.genome[i] > maxGene(i))
-                        {
-                            if (useAltGenerator && tries > altGeneratorTries)
-                                {
-                                    // instead of just failing, we're going to select uniformly from
-                                    // possible values for this particular gene.
-                                    dvind.genome[i] = state.random[thread].nextDouble() * (maxGene(i) - minGene(i)) + minGene(i);
-                                }
-                            else
-                                {
-                                    invalid_value = true;
-                                    break;
-                                }
-                        }
-
-                if (invalid_value) 
+            boolean invalid_value = false;
+            for (int i = 0; i < genomeSize; i++)
+                if (dvind.genome[i] < minGene(i) || dvind.genome[i] > maxGene(i))
                     {
-                        if (++tries > MAX_TRIES_BEFORE_WARNING)
-                            state.output.warnOnce("CMA-ES may be slow because many individuals are being generated which\n" +
-                                                  "are outside the min/max gene bounds.  If an individual violates a single\n" +
-                                                  "gene bounds, it is rejected, so as the number of genes grows, the\n" +
-                                                  "probability of this happens increases exponentially.  You can deal\n" +
-                                                  "with this by decreasing sigma.  Alternatively you can use set\n" +
-                                                  "pop.subpop.0.alternative-generation=true (see the manual).\n" +
-                                                  "Finally, if this is happening during initialization, you might also\n" + 
-                                                  "change pop.subpop.0.species.covariance=scaled.\n");
-                        continue;
+                    if (useAltGenerator && tries > altGeneratorTries)
+                        {
+                        // instead of just failing, we're going to select uniformly from
+                        // possible values for this particular gene.
+                        dvind.genome[i] = state.random[thread].nextDouble() * (maxGene(i) - minGene(i)) + minGene(i);
+                        }
+                    else
+                        {
+                        invalid_value = true;
+                        break;
+                        }
                     }
 
-                return newind;
+            if (invalid_value) 
+                {
+                if (++tries > MAX_TRIES_BEFORE_WARNING)
+                    state.output.warnOnce("CMA-ES may be slow because many individuals are being generated which\n" +
+                        "are outside the min/max gene bounds.  If an individual violates a single\n" +
+                        "gene bounds, it is rejected, so as the number of genes grows, the\n" +
+                        "probability of this happens increases exponentially.  You can deal\n" +
+                        "with this by decreasing sigma.  Alternatively you can use set\n" +
+                        "pop.subpop.0.alternative-generation=true (see the manual).\n" +
+                        "Finally, if this is happening during initialization, you might also\n" + 
+                        "change pop.subpop.0.species.covariance=scaled.\n");
+                continue;
+                }
+
+            return newind;
             }
-    }
+        }
 
 
     /** Revises the CMA-ES distribution to reflect the current fitness results in the provided subpopulation. */
     public void updateDistribution(final EvolutionState state, final Subpopulation subpop)
-    {
+        {
         // % Sort by fitness and compute weighted mean into xmean
         // [arfitness, arindex] = sort(arfitness); % minimization
         // xmean = arx(:,arindex(1:mu))*weights;   % recombination            % Eq.39
@@ -758,17 +758,17 @@ public class CMAESSpecies extends FloatVectorSpecies
 
         for(int i = 0; i < mu; i++)
             {
-                DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
+            DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
 
-                // won't modify the genome
-                SimpleMatrix arz = new SimpleMatrix(genomeSize,1,true,dvind.genome);
-                arz = (arz.minus(xold).divide(sigma));
+            // won't modify the genome
+            SimpleMatrix arz = new SimpleMatrix(genomeSize,1,true,dvind.genome);
+            arz = (arz.minus(xold).divide(sigma));
 
-                for(int j = 0; j < genomeSize; j++) 
-                    {
-                        xmean.set(j,0, xmean.get(j,0)+weights[i]*dvind.genome[j]);
-                        artmp.set(j,i,arz.get(j,0));
-                    }
+            for(int j = 0; j < genomeSize; j++) 
+                {
+                xmean.set(j,0, xmean.get(j,0)+weights[i]*dvind.genome[j]);
+                artmp.set(j,i,arz.get(j,0));
+                }
             }
             
         // % Cumulation: Update evolution paths
@@ -795,35 +795,35 @@ public class CMAESSpecies extends FloatVectorSpecies
         // % Update B and D from C
         if((state.generation - lastEigenDecompositionGeneration) > 1.0/((c1+cmu)*genomeSize*10.0) )
             {
-                lastEigenDecompositionGeneration = state.generation;
+            lastEigenDecompositionGeneration = state.generation;
 
-                // make sure the matrix is symmetric (it should be already)
-                // not sure if this is necessary           
+            // make sure the matrix is symmetric (it should be already)
+            // not sure if this is necessary           
+            for(int i = 0; i < genomeSize; i++)
+                for(int j = 0; j < i; j++)
+                    c.set(j,i,c.get(i,j));
+
+            // this copy gets modified by the decomposition
+            DenseMatrix64F copy = c.copy().getMatrix();
+            EigenDecomposition<DenseMatrix64F> eig = DecompositionFactory.eig(genomeSize,true,true);
+            if(eig.decompose(copy)) 
+                {
+                SimpleMatrix dinv = new SimpleMatrix(genomeSize,genomeSize);
                 for(int i = 0; i < genomeSize; i++)
-                    for(int j = 0; j < i; j++)
-                        c.set(j,i,c.get(i,j));
-
-                // this copy gets modified by the decomposition
-                DenseMatrix64F copy = c.copy().getMatrix();
-                EigenDecomposition<DenseMatrix64F> eig = DecompositionFactory.eig(genomeSize,true,true);
-                if(eig.decompose(copy)) 
                     {
-                        SimpleMatrix dinv = new SimpleMatrix(genomeSize,genomeSize);
-                        for(int i = 0; i < genomeSize; i++)
-                            {
-                                double eigrt = Math.sqrt(eig.getEigenvalue(i).real);
-                                d.set(i,i,eigrt);
-                                dinv.set(i,i,1/eigrt);
-                                CommonOps.insert(eig.getEigenVector(i), b.getMatrix(),0,i);
-                            }
+                    double eigrt = Math.sqrt(eig.getEigenvalue(i).real);
+                    d.set(i,i,eigrt);
+                    dinv.set(i,i,1/eigrt);
+                    CommonOps.insert(eig.getEigenVector(i), b.getMatrix(),0,i);
+                    }
 
-                        invsqrtC = b.mult(dinv.mult(b.transpose()));
-                        CommonOps.mult(b.getMatrix(),d.getMatrix(), bd);
-                    }
-                else
-                    {
-                        state.output.fatal("CMA-ES eigendecomposition failed. ");
-                    }
+                invsqrtC = b.mult(dinv.mult(b.transpose()));
+                CommonOps.mult(b.getMatrix(),d.getMatrix(), bd);
+                }
+            else
+                {
+                state.output.fatal("CMA-ES eigendecomposition failed. ");
+                }
             }
 
         CommonOps.scale(sigma, bd, sbd);
@@ -834,10 +834,10 @@ public class CMAESSpecies extends FloatVectorSpecies
         // end
         if(useAltTermination && CommonOps.elementMax(d.extractDiag().getMatrix()) > 1e7*CommonOps.elementMin(d.extractDiag().getMatrix()))
             {
-                state.evaluator.setRunComplete("CMAESSpecies: Stopped because matrix condition exceeded limit.");
+            state.evaluator.setRunComplete("CMAESSpecies: Stopped because matrix condition exceeded limit.");
             }
+        }
+
+
     }
-
-
-}
 

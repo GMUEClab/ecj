@@ -100,7 +100,7 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
 
     public Parameter defaultBase() {
         return AMALGAMDefaults.base().push(P_AMALGAM_SPECIES);
-    }
+        }
 
     public void setup(final EvolutionState state, final Parameter base) {
         super.setup(state, base);
@@ -245,7 +245,7 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
         tempMatrix = new DenseMatrix64F(genomeSize,genomeSize);
 
         firstGeneration = true;
-    }
+        }
 
 
     // called after we have subpop size
@@ -254,7 +254,7 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
     // }
 
     public Object clone()
-    {
+        {
         AMALGAMSpecies myobj = (AMALGAMSpecies) (super.clone());
 
 
@@ -301,7 +301,7 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
         myobj.constraintViolations = (IdentityHashMap<Individual, Integer>) constraintViolations.clone();
 
         return myobj;
-    }
+        }
 
 
 
@@ -313,11 +313,11 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
             for(int j = 0; j < genomeSize; j++) {
                 if(dvind.genome[j] < minGene(j) || dvind.genome[j] > maxGene(j)) {
                     cv++;
+                    }
                 }
-            }
             constraintViolations.put(subpop.individuals.get(i), cv);
+            }
         }
-    }
 
     public int compareIndividuals(Individual a, Individual b) {
         int constraintViolationA = constraintViolations.get(a);
@@ -329,30 +329,30 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
             if(constraintViolationB > 0) {
                 if( constraintViolationA < constraintViolationB ){
                     return -1; // A is fitter
+                    }
                 }
-            }
-        } else {
-            if( constraintViolationB > 0 ) {
-                    return -1; // A is fitter
             } else {
+            if( constraintViolationB > 0 ) {
+                return -1; // A is fitter
+                } else {
                 if(((DoubleVectorIndividual) a).compareTo(((DoubleVectorIndividual) b)) < 0) {
                     return -1; // A is fitter
+                    }
                 }
             }
-        }
 
 
         return 1; // B is fitter
-    }
+        }
 
     public boolean isValid(DoubleVectorIndividual dvind) {
         for(int i = 0; i < genomeSize; i++) {
             if(dvind.genome[i] < minGene(i) || dvind.genome[i] > maxGene(i)) {
                 return false;
+                }
             }
-        }
         return true;
-    }
+        }
 
 
     public Individual newIndividual(final EvolutionState state, int thread) {
@@ -377,18 +377,18 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
 
                 if(!isValid(dvind)) {
                     continue;
-                }
-            } else {
+                    }
+                } else {
                 for( int i = 0; i < genomeSize; i++ )
                     dvind.genome[i] = minGene(i) + (maxGene[i] - minGene(i)) * random.nextDouble();
-            }
+                }
 
 
 
             return newind;
-        }
+            }
 
-    }
+        }
 
     public void adaptDistributionMultiplier(final EvolutionState state, final Subpopulation subpop) {
         // don't run for the first generation
@@ -400,8 +400,8 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
             if(compareIndividuals(subpop.individuals.get(i), subpop.individuals.get(0)) < 0) {
                 improved = true;
                 break;
+                }
             }
-        }
 
         if(improved) {
             noImprovementStretch = 0;
@@ -415,8 +415,8 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
                     DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
                     CommonOps.add(xAvgImp,genome,xAvgImp);
                     count++;
+                    }
                 }
-            }
             CommonOps.scale(1.0/count,xAvgImp,xAvgImp);
 
             CommonOps.subtract(xAvgImp, mean, temp);
@@ -426,23 +426,23 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
 
             if(sdr > stDevRatioThresh) {
                 distributionMultiplier *= distributionMultiplierIncrease;
-            }
-        } else {
+                }
+            } else {
             if(distributionMultiplier <= 1) noImprovementStretch++;
             if(distributionMultiplier > 1 || noImprovementStretch > maximumNoImprovementStretch) distributionMultiplier *= distributionMultiplierDecrease;
             if(distributionMultiplier < 1 && noImprovementStretch < maximumNoImprovementStretch) distributionMultiplier = 1;
+            }
         }
-    }
 
     public void selectForDiversity(final EvolutionState state, final Subpopulation subpop) {
         int numBest; // the number of individuals with fitness equal to the best individual
         DoubleVectorIndividual bestInd = (DoubleVectorIndividual) subpop.individuals.get(0);
         for(numBest = 1; numBest < subpop.individuals.size(); numBest++) {
-                DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(numBest));
-                if(dvind.compareTo(bestInd) != 0) {
-                    break; // break when we find an individual that isn't as good as the best
+            DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(numBest));
+            if(dvind.compareTo(bestInd) != 0) {
+                break; // break when we find an individual that isn't as good as the best
                 }
-        }
+            }
 
         // rearrange the selections so that the selected individuals out of the equal fitness ones are at the front of the array
         // chooses the individual that is farthest from the ones selected previously
@@ -458,18 +458,18 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
 
                 if(distance < distances[i]) {
                     distances[i] = distance;
-                }
+                    }
 
                 if(distances[i] > farthest) {
                     farthest = distances[i];
                     Individual tmp = subpop.individuals.get(i);
                     subpop.individuals.set(i, subpop.individuals.get(numSelectedSoFar));
                     subpop.individuals.set(numSelectedSoFar, tmp);
+                    }
                 }
             }
-        }
 
-    }
+        }
 
     public void computeMean(final EvolutionState state, final Subpopulation subpop) {
         prevMean.set(mean);
@@ -480,14 +480,14 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
                 DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
                 DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
                 CommonOps.add(mean,genome,mean);
-            }
+                }
             CommonOps.scale(1.0/i,mean,mean);
-        } else {
+            } else {
             // focus on the best solution
             DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(0));
             mean.set(DenseMatrix64F.wrap(genomeSize,1,dvind.genome));
+            }
         }
-    }
 
     public void computeCovariance(final EvolutionState state, final Subpopulation subpop) {
         CommonOps.fill(genCovarMatrix, 0);
@@ -499,7 +499,7 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
             CommonOps.subtract(genome,mean,temp);
             CommonOps.transpose(temp,temp2);
             CommonOps.multAdd(temp,temp2,genCovarMatrix);
-        }
+            }
 
 
 
@@ -509,15 +509,15 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
             CommonOps.scale(etaS, genCovarMatrix, genCovarMatrix);
             CommonOps.scale(1-etaS, aggCovarMatrix, aggCovarMatrix);
             CommonOps.add(aggCovarMatrix, genCovarMatrix, aggCovarMatrix);
-        } else {
+            } else {
             aggCovarMatrix.set(genCovarMatrix);
-        }    
+            }    
         CommonOps.scale(distributionMultiplier, aggCovarMatrix, covarMatrix);
 
         for( i = 0; i < genomeSize; i++ )
             for(int j = 0; j < i; j++ )
                 covarMatrix.set(i,j,covarMatrix.get(j,i));
-    }
+        }
 
     public void computeAMS(final EvolutionState state, final Subpopulation subpop) {
         CommonOps.subtract(mean,prevMean,temp);
@@ -525,10 +525,10 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
             CommonOps.scale(etaP, temp);
             CommonOps.scale(1-etaP, meanShift);
             CommonOps.add(meanShift,temp,meanShift);
-        } else {
+            } else {
             meanShift.set(temp);
+            }
         }
-    }
 
 
     public void updateDistribution(final EvolutionState state, final Subpopulation subpop) {
@@ -540,15 +540,15 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
 
         if(userEtaP == P_PARAMETER_MISSING) {
             etaP = 1.0-Math.exp(-1.2*Math.pow((int)(tau*subpop.individuals.size()),0.31)/Math.pow(genomeSize,0.50));
-        }
+            }
 
         if(userEtaS == P_PARAMETER_MISSING) {
             etaS = 1.0-Math.exp(-1.1*Math.pow((int)(tau*subpop.individuals.size()),1.20)/Math.pow(genomeSize,1.60));
-        }
+            }
 
         if(userAlphaAMS == P_PARAMETER_MISSING) {
             alphaAMS = 0.5 * tau * subpop.individuals.size() / (subpop.individuals.size()-1);
-        }
+            }
 
 
         computeConstraintViolations(state, subpop);
@@ -557,23 +557,23 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
 
         if(!firstGeneration) {
             adaptDistributionMultiplier(state, subpop);
-        }
+            }
 
         Collections.sort(subpop.individuals, new Comparator<Individual>() {
             public int compare(Individual a, Individual b) {
                 return compareIndividuals(a, b);
-            }
-        });
+                }
+            });
         // printStats(state,subpop);
 
         if(subpop.individuals.get((int)tau*subpop.individuals.size()).fitness.fitness() == subpop.individuals.get(0).fitness.fitness()) {
             selectForDiversity(state,subpop);
-        }
+            }
 
 
         if(checkTerminationConditions(state,subpop)) {
             state.evaluator.setRunComplete("AMALGAMSpecies: Termination condition reached.");
-        }
+            }
 
         computeMean(state, subpop);
         computeCovariance(state, subpop);
@@ -588,13 +588,13 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
         if(!chol.decompose(tempMatrix)) {
             chol.getT(choleskyLower);
             // state.output.fatal("Failed to decompose matrix");
-        } else {
+            } else {
             chol.getT(choleskyLower);
-        }
+            }
         
 
 
-    }
+        }
 
     public boolean checkTerminationConditions(final EvolutionState state,  final Subpopulation subpop) {
         if( 
@@ -602,20 +602,20 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
             // subpop.individuals.get(0).fitness.fitness() < valueToReach || 
             distributionMultiplier < 1e-10) {
             return true;
-        }
+            }
 
         double avg = 0, var = 0;
         // terminate if fitness variance multiplier gets too small
         for(int i = 0; i < subpop.individuals.size(); i++) {
             DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
             avg += dvind.fitness.fitness();
-        }
+            }
         avg /= subpop.individuals.size();
 
         for(int i = 0; i < subpop.individuals.size(); i++) {
             DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
             var += (dvind.fitness.fitness()-avg)*(dvind.fitness.fitness()-avg);
-        }
+            }
 
         var /= subpop.individuals.size();
 
@@ -624,10 +624,10 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
 
         if(var < fitnessVarianceTolerance){
             return true;
-        }
+            }
 
         return false;
-    }
+        }
 
     public void shiftIndividual(final EvolutionState state, DoubleVectorIndividual ind) {
         DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,ind.genome);
@@ -637,8 +637,8 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
             genome.set(temp);
             CommonOps.add(shiftMult*deltaAMS*distributionMultiplier, meanShift, genome, genome);
             shiftMult *= 0.5;
-        } while(!isValid(ind) && shiftMult > 1e-10);
-    }
+            } while(!isValid(ind) && shiftMult > 1e-10);
+        }
 
     // public void printStats(final EvolutionState state, final Subpopulation subpop) {
     //     // System.out.println(distributionMultiplier);
@@ -679,5 +679,5 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
     //         // temp2.print(); 
     //     }  
     // }
-}
+    }
 

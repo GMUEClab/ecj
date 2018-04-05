@@ -147,7 +147,7 @@ import java.io.*;
  */
 
 public class GPTree implements GPNodeParent, Prototype
-{
+    {
     public static final String P_TREE = "tree";
     public static final String P_TREECONSTRAINTS = "tc";
     public static final String P_USEGRAPHVIZ = "graphviz";
@@ -191,62 +191,62 @@ public class GPTree implements GPNodeParent, Prototype
     public boolean printTwoArgumentNonterminalsAsOperatorsInC;
 
     public final GPTreeConstraints constraints( final GPInitializer initializer ) 
-    { return initializer.treeConstraints[constraints]; }
+        { return initializer.treeConstraints[constraints]; }
 
     public Parameter defaultBase()
-    {
+        {
         return GPDefaults.base().push(P_TREE);
-    }
+        }
 
     /** Returns true if I am "genetically" the same as tree,
         though we may have different owners. */
     public boolean treeEquals(GPTree tree)
-    {
+        {
         return child.rootedTreeEquals(tree.child);
-    }
+        }
 
     /** Returns a hash code for comparing different GPTrees.  In
         general, two trees which are treeEquals(...) should have the
         same hash code. */
     public int treeHashCode()
-    {
+        {
         return child.rootedTreeHashCode();
-    }
+        }
 
     /** Like clone() but doesn't copy the tree. */
     public GPTree lightClone()
-    {
+        {
         try 
             { 
-                return (GPTree)(super.clone());  // note that the root child reference is copied, not cloned
+            return (GPTree)(super.clone());  // note that the root child reference is copied, not cloned
             }
         catch (CloneNotSupportedException e) { throw new InternalError(); } // never happens
-    }
+        }
 
     /** Deep-clones the tree.  Note that you should not deep-clone trees attached to the
         prototypical GPIndividual: they are blank trees with no root, and this method
         will generate a NullPointerException as a result. */
     public Object clone()
-    {
+        {
         GPTree newtree = lightClone();
         newtree.child = (GPNode)(child.clone());  // force a deep copy
         newtree.child.parent = newtree;
         newtree.child.argposition = 0;
         return newtree;
-    }
+        }
     
     /** An expensive function which determines my tree number -- only
         use for errors, etc. Returns ec.gp.GPTree.NO_TREENUM if the 
         tree number could not be
         determined (might happen if it's not been assigned yet). */
     public int treeNumber()
-    {
+        {
         if (owner==null) return NO_TREENUM;
         if (owner.trees==null) return NO_TREENUM;
         for(int x=0;x<owner.trees.length;x++)
             if (owner.trees[x]==this) return x;
         return NO_TREENUM;
-    }
+        }
 
     /** Sets up a prototypical GPTree with those features it shares with
         other GPTrees in its position in its GPIndividual, and nothhing more.
@@ -255,7 +255,7 @@ public class GPTree implements GPNodeParent, Prototype
         have been set up.  Presently they're set up in GPInitializer,
         which gets called before this does, so we're safe. */
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         Parameter def = defaultBase();
 
         // get rid of deprecated values
@@ -285,7 +285,7 @@ public class GPTree implements GPNodeParent, Prototype
 
         // determine my constraints -- at this point, the constraints should have been loaded.
         String s = state.parameters.getString(base.push(P_TREECONSTRAINTS),
-                                              def.push(P_TREECONSTRAINTS));
+            def.push(P_TREECONSTRAINTS));
         if (s==null)
             state.output.fatal("No tree constraints are defined for the GPTree " + base + ".");
         else 
@@ -293,12 +293,12 @@ public class GPTree implements GPNodeParent, Prototype
         
         state.output.exitIfErrors();  // because I promised
         // we're not loading the nodes at this point
-    }
+        }
 
 
     /** Verification of validity of the tree -- strictly for debugging purposes only */
     public final void verify(EvolutionState state)
-    {
+        {
         if (!(state.initializer instanceof GPInitializer))
             { state.output.error("Initializer is not a GPInitializer"); return; }
             
@@ -317,7 +317,7 @@ public class GPTree implements GPNodeParent, Prototype
 
         child.verify(state, constraints(initializer).functionset, 0);
         state.output.exitIfErrors();
-    }
+        }
 
     /** Prints out the tree in single-line fashion suitable for reading
         in later by computer. O(n). 
@@ -326,9 +326,9 @@ public class GPTree implements GPNodeParent, Prototype
     */
 
     public void printTree(final EvolutionState state, final int log)
-    {
+        {
         printTree(state, log, Output.V_VERBOSE);
-    }
+        }
 
     /** Prints out the tree in single-line fashion suitable for reading
         in later by computer. O(n). 
@@ -338,12 +338,12 @@ public class GPTree implements GPNodeParent, Prototype
     */
 
     public void printTree(final EvolutionState state, final int log,
-                          final int verbosity)
-    {
+        final int verbosity)
+        {
         child.printRootedTree(state,log,0);
         // printRootedTree doesn't print a '\n', so I need to do so here
         state.output.println("",log);
-    }
+        }
 
     /** Prints out the tree in single-line fashion suitable for reading
         in later by computer. O(n). 
@@ -351,46 +351,46 @@ public class GPTree implements GPNodeParent, Prototype
         printRootedTree(...) method. */
 
     public void printTree(final EvolutionState state,
-                          final PrintWriter writer)
-    {
+        final PrintWriter writer)
+        {
         child.printRootedTree(state,writer,0);
         // printRootedTree doesn't print a '\n', so I need to do so here
         writer.println();
-    }
+        }
 
     /** Reads in the tree from a form printed by printTree. */
     public void readTree(final EvolutionState state,
-                         final LineNumberReader reader) throws IOException
-    {
+        final LineNumberReader reader) throws IOException
+        {
         int linenumber = reader.getLineNumber();
 
         // the next line will be the child
         String s = reader.readLine();
         if (s==null)  // uh oh
             state.output.fatal("Reading Line " + linenumber + ": " +
-                               "No Tree found.");
+                "No Tree found.");
         else
             {
-                GPInitializer initializer = ((GPInitializer)state.initializer);
-                child = GPNode.readRootedTree(linenumber,new DecodeReturn(s),
-                                              constraints(initializer).treetype,
-                                              constraints(initializer).functionset,this,0,state);
+            GPInitializer initializer = ((GPInitializer)state.initializer);
+            child = GPNode.readRootedTree(linenumber,new DecodeReturn(s),
+                constraints(initializer).treetype,
+                constraints(initializer).functionset,this,0,state);
             }
-    }
+        }
 
     public void writeTree(final EvolutionState state,
-                          final DataOutput dataOutput) throws IOException
-    {
+        final DataOutput dataOutput) throws IOException
+        {
         GPInitializer initializer = ((GPInitializer)state.initializer);
         child.writeRootedTree(state,constraints(initializer).treetype, constraints(initializer).functionset, dataOutput);
-    }
+        }
 
     public void readTree(final EvolutionState state,
-                         final DataInput dataInput) throws IOException
-    {
+        final DataInput dataInput) throws IOException
+        {
         GPInitializer initializer = ((GPInitializer)state.initializer);
         child = GPNode.readRootedTree(state,dataInput,constraints(initializer).treetype, constraints(initializer).functionset, this,0);
-    }
+        }
 
 
     /** Prints out the tree in a readable Lisp-like fashion. O(n). 
@@ -398,9 +398,9 @@ public class GPTree implements GPNodeParent, Prototype
         printRootedTreeForHumans(...) method. */
     
     public void printTreeForHumans(final EvolutionState state, final int log)
-    {               
+        {               
         printTreeForHumans(state, log, Output.V_VERBOSE);
-    }
+        }
 
 
     /** Prints out the tree in a readable Lisp-like fashion. O(n). 
@@ -410,28 +410,28 @@ public class GPTree implements GPNodeParent, Prototype
     */
     
     public void printTreeForHumans(final EvolutionState state, final int log,
-                                   final int verbosity)
-    {               
+        final int verbosity)
+        {               
         if (printStyle==PRINT_STYLE_C) state.output.print(child.makeCTree(true, 
-                                                                          printTerminalsAsVariablesInC, printTwoArgumentNonterminalsAsOperatorsInC),log);
+                printTerminalsAsVariablesInC, printTwoArgumentNonterminalsAsOperatorsInC),log);
         else if (printStyle==PRINT_STYLE_LATEX) state.output.print(child.makeLatexTree(),log);
         else if (printStyle==PRINT_STYLE_DOT) state.output.print(child.makeGraphvizTree(), log);
         else child.printRootedTreeForHumans(state,log,0,0);
         // printRootedTreeForHumans doesn't print a '\n', so I need to do so here
         state.output.println("",log);
-    }
+        }
 
     /** Builds a new randomly-generated rooted tree and attaches it to the GPTree. */
 
     public void buildTree(final EvolutionState state, final int thread) 
-    {
+        {
         GPInitializer initializer = ((GPInitializer)state.initializer);
         child = constraints(initializer).init.newRootedTree(state,
-                                                            constraints(initializer).treetype,
-                                                            thread,
-                                                            this,
-                                                            constraints(initializer).functionset,
-                                                            0,
-                                                            GPNodeBuilder.NOSIZEGIVEN);
+            constraints(initializer).treetype,
+            thread,
+            this,
+            constraints(initializer).functionset,
+            0,
+            GPNodeBuilder.NOSIZEGIVEN);
+        }
     }
-}

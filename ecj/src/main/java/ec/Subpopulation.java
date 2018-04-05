@@ -169,7 +169,7 @@ public class Subpopulation implements Cloneable, Setup
         file = base.push(P_FILE);
         loadInds = state.parameters.exists(file,null);
         
-         // how big should our subpopulation be?
+        // how big should our subpopulation be?
         // Note that EvolutionState.setup() has similar code, so if you change this, change it there too.
         
         initialSize = state.parameters.getInt(base.push(P_SUBPOPSIZE),def.push(P_SUBPOPSIZE),1);
@@ -178,7 +178,7 @@ public class Subpopulation implements Cloneable, Setup
                 "Subpopulation size must be an integer >= 1.\n",
                 base.push(P_SUBPOPSIZE),def.push(P_SUBPOPSIZE));
         
-       // what species do we use?
+        // what species do we use?
 
         species = (Species) state.parameters.getInstanceForParameter(
             base.push(P_SPECIES),def.push(P_SPECIES),

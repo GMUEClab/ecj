@@ -191,12 +191,12 @@ public class SimpleBreeder extends Breeder
         
     
     /** Returns the next subpopulation size.  By default this is the CURRENT subpopulation size,
-    	but it could be overridden if you have modified the current subpopulation size (as in NSGA-II) 
-    	but don't want the next subpopulation size to be affected. */
+        but it could be overridden if you have modified the current subpopulation size (as in NSGA-II) 
+        but don't want the next subpopulation size to be affected. */
     public int nextSubpopulationSize(EvolutionState state, int subpop)
-    	{
-    	return state.population.subpops.get(subpop).individuals.size();
-    	}
+        {
+        return state.population.subpops.get(subpop).individuals.size();
+        }
 
     /** A simple breeder that doesn't attempt to do any cross-
         population breeding.  Basically it applies pipelines,
@@ -239,20 +239,20 @@ public class SimpleBreeder extends Breeder
         
         int numinds[][] = new int[numThreads][newpop.subpops.size()];
         int from[][] = new int[numThreads][newpop.subpops.size()];
-		
+                
         // determine numinds and from
         for(int x = 0; x< newpop.subpops.size(); x++)
             {
             newIndividuals[x] = new ArrayList[numThreads];
             for(int i = 0; i < numThreads; i++) 
-                   newIndividuals[x][i] = new ArrayList<Individual>();
+                newIndividuals[x][i] = new ArrayList<Individual>();
 
             if (!shouldBreedSubpop(state, x, 0))
                 {
-            	// just copy over
-            	newpop.subpops.get(x).individuals.clear();  // get rid of elites, we're just copying everyone
-            	newpop.subpops.get(x).individuals.addAll(state.population.subpops.get(x).individuals);
-            	continue;
+                // just copy over
+                newpop.subpops.get(x).individuals.clear();  // get rid of elites, we're just copying everyone
+                newpop.subpops.get(x).individuals.addAll(state.population.subpops.get(x).individuals);
+                continue;
                 }
             else
                 {
@@ -267,57 +267,57 @@ public class SimpleBreeder extends Breeder
                 for(int y=0;y<numThreads;y++)
                     {
                     if (slop > 0)
-                            {
-                            numinds[y][x] = individualsPerThread + 1;
-                            slop--;
-                            }
+                        {
+                        numinds[y][x] = individualsPerThread + 1;
+                        slop--;
+                        }
                     else
-                            numinds[y][x] = individualsPerThread;
+                        numinds[y][x] = individualsPerThread;
 
                     from[y][x] = currentFrom;
                     currentFrom += numinds[y][x];
 
                     if (numinds[y][x] == 0)
-                            {
-                            state.output.warnOnce("More threads exist than can be used to breed some subpopulations (first example: subpopulation " + x + ")");
-                            }
+                        {
+                        state.output.warnOnce("More threads exist than can be used to breed some subpopulations (first example: subpopulation " + x + ")");
+                        }
                     }
                 }
             }
 
-		// spawn threads
+        // spawn threads
 
-		if (numThreads==1)
-			{
-			breedPopChunk(newpop,state,numinds[0],from[0],0);
-			}
-		else
-			{
-			// start up the threads
-			for(int y=0;y<numThreads;y++)
-				{
-				SimpleBreederThread r = new SimpleBreederThread();
-				r.threadnum = y;
-				r.newpop = newpop;
-				r.from = from[y];
-				r.numinds = numinds[y];
-				r.me = this;
-				r.state = state;
-				pool.start(r, "ECJ Breeding Thread " + y );
-				}
-			
-			pool.joinAll();
-			}
+        if (numThreads==1)
+            {
+            breedPopChunk(newpop,state,numinds[0],from[0],0);
+            }
+        else
+            {
+            // start up the threads
+            for(int y=0;y<numThreads;y++)
+                {
+                SimpleBreederThread r = new SimpleBreederThread();
+                r.threadnum = y;
+                r.newpop = newpop;
+                r.from = from[y];
+                r.numinds = numinds[y];
+                r.me = this;
+                r.state = state;
+                pool.start(r, "ECJ Breeding Thread " + y );
+                }
+                        
+            pool.joinAll();
+            }
 
-		// Coalesce
-		for(int subpop = 0; subpop < newpop.subpops.size(); subpop++)
-			{
-			ArrayList<Individual> newpopindividuals = newpop.subpops.get(subpop).individuals;
-			for(int thread = 0; thread < numThreads; thread++)
-				{
-				newpopindividuals.addAll(newIndividuals[subpop][thread]);
-				}
-			}
+        // Coalesce
+        for(int subpop = 0; subpop < newpop.subpops.size(); subpop++)
+            {
+            ArrayList<Individual> newpopindividuals = newpop.subpops.get(subpop).individuals;
+            for(int thread = 0; thread < numThreads; thread++)
+                {
+                newpopindividuals.addAll(newIndividuals[subpop][thread]);
+                }
+            }
 
         return newpop;
         }
@@ -343,37 +343,37 @@ public class SimpleBreeder extends Breeder
             {
             ArrayList<Individual> putHere = (ArrayList<Individual>)newIndividuals[subpop][threadnum];
 
-			// do regular breeding of this subpopulation
-			BreedingSource bp = null;
-			if (clonePipelineAndPopulation)
-				bp = (BreedingSource) newpop.subpops.get(subpop).species.pipe_prototype.clone();
-			else
-				bp = (BreedingSource) newpop.subpops.get(subpop).species.pipe_prototype;
-			bp.fillStubs(state, null);
-									
-			// check to make sure that the breeding pipeline produces
-			// the right kind of individuals.  Don't want a mistake there! :-)
-			if (!bp.produces(state,newpop,subpop,threadnum))
-				state.output.fatal("The Breeding Source of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops.get(subpop).species.getClass().getName() + " or fitness " + newpop.subpops.get(subpop).species.f_prototype );
-			bp.prepareToProduce(state,subpop,threadnum);
-									
-			// start breedin'!
-									
-			int x = 0;
-			while(x<numinds[subpop])
-				x += bp.produce(1,numinds[subpop]-x,subpop,
-					putHere,
-					state,threadnum, newpop.subpops.get(subpop).species.buildMisc(state, subpop, threadnum));
-			if (x>numinds[subpop]) // uh oh!  Someone blew it!
-				state.output.fatal("Whoa!  A breeding source overwrote the space of another source in subpopulation " + subpop + ".  You need to check your breeding pipeline code (in produce() ).");
+            // do regular breeding of this subpopulation
+            BreedingSource bp = null;
+            if (clonePipelineAndPopulation)
+                bp = (BreedingSource) newpop.subpops.get(subpop).species.pipe_prototype.clone();
+            else
+                bp = (BreedingSource) newpop.subpops.get(subpop).species.pipe_prototype;
+            bp.fillStubs(state, null);
+                                                                        
+            // check to make sure that the breeding pipeline produces
+            // the right kind of individuals.  Don't want a mistake there! :-)
+            if (!bp.produces(state,newpop,subpop,threadnum))
+                state.output.fatal("The Breeding Source of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops.get(subpop).species.getClass().getName() + " or fitness " + newpop.subpops.get(subpop).species.f_prototype );
+            bp.prepareToProduce(state,subpop,threadnum);
+                                                                        
+            // start breedin'!
+                                                                        
+            int x = 0;
+            while(x<numinds[subpop])
+                x += bp.produce(1,numinds[subpop]-x,subpop,
+                    putHere,
+                    state,threadnum, newpop.subpops.get(subpop).species.buildMisc(state, subpop, threadnum));
+            if (x>numinds[subpop]) // uh oh!  Someone blew it!
+                state.output.fatal("Whoa!  A breeding source overwrote the space of another source in subpopulation " + subpop + ".  You need to check your breeding pipeline code (in produce() ).");
 
-			bp.finishProducing(state,subpop,threadnum);
-			}
+            bp.finishProducing(state,subpop,threadnum);
+            }
         }
         
     protected void breedPopChunkProduce(int position)
-    	{
-    	}
+        {
+        }
     
     static class EliteComparator implements SortComparatorL
         {

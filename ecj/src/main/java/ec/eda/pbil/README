@@ -1,0 +1,13 @@
+This is ECJ's PBIL package.  To see this package in action, try running ECJ
+on the file "ec/app/sum/pbil.params"
+
+PBIL has a custom breeder and no breeding pipelines.  However, most of the work 
+for PBIL takes place inside PBILSpecies.java, and the breeder is little more 
+than a wrapper to call methods there.  So we have:
+
+PBILSpecies.java		PBIL's species object.  PBIL uses
+				IntegerVectorIndividuals for its representation.
+PBILBreeder.java		Custom breeder for PBIL, largely calls
+				code in PBILSpecies
+
+

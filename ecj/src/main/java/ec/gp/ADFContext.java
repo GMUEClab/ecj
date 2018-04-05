@@ -38,7 +38,7 @@ import ec.util.*;
  */
 
 public class ADFContext implements Prototype
-{
+    {
     public final static String P_ADFCONTEXT = "adf-context";  // deprecated
 
     /** The ADF/ADM node proper */
@@ -49,46 +49,46 @@ public class ADFContext implements Prototype
     public GPData[] arguments = new GPData[0];
 
     public Parameter defaultBase()
-    {
+        {
         return GPDefaults.base().push(P_ADFCONTEXT);
-    }
+        }
 
     public Object clone()
-    {
+        {
         try 
             {
-                ADFContext myobj = (ADFContext) (super.clone());
+            ADFContext myobj = (ADFContext) (super.clone());
 
-                // deep-clone the contexts
-                myobj.arguments = new GPData[arguments.length];
-                for(int x=0;x<myobj.arguments.length;x++)
-                    myobj.arguments[x] = (GPData)(arguments[x].clone());
+            // deep-clone the contexts
+            myobj.arguments = new GPData[arguments.length];
+            for(int x=0;x<myobj.arguments.length;x++)
+                myobj.arguments[x] = (GPData)(arguments[x].clone());
 
-                return myobj;
+            return myobj;
             }
         catch (CloneNotSupportedException e)
             { throw new InternalError(); }
-    }
+        }
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
-    }
+        {
+        }
 
 
     /** Evaluates the argument number in the current context */
     public void evaluate(final EvolutionState state,
-                         final int thread,
-                         final GPData input,
-                         final ADFStack stack,
-                         final GPIndividual individual,
-                         final Problem problem,
-                         final int argument)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem,
+        final int argument)
+        {
         // do I have that many arguments?
         if (argument >= adf.children.length || argument < 0)  // uh oh 
             {
-                individual.printIndividual(state,0);
-                state.output.fatal("Invalid argument number for " + adf.errorInfo());
+            individual.printIndividual(state,0);
+            state.output.fatal("Invalid argument number for " + adf.errorInfo());
             }
 
         // Am I an ADM or an ADF?
@@ -99,43 +99,43 @@ public class ADFContext implements Prototype
             arguments[argument].copyTo(input);
         else // it's an ADM
             {
-                // get rid of my context temporarily
-                if (stack.moveOntoSubstack(1)!=1)
-                    state.output.fatal("Substack prematurely empty for "  + adf.errorInfo());
+            // get rid of my context temporarily
+            if (stack.moveOntoSubstack(1)!=1)
+                state.output.fatal("Substack prematurely empty for "  + adf.errorInfo());
 
-                // Call the GPNode
-                adf.children[argument].eval(state,thread,input,stack,individual,problem);
+            // Call the GPNode
+            adf.children[argument].eval(state,thread,input,stack,individual,problem);
             
-                // restore my context
-                if (stack.moveFromSubstack(1)!=1)
-                    state.output.fatal("Stack prematurely empty for " + adf.errorInfo());
+            // restore my context
+            if (stack.moveFromSubstack(1)!=1)
+                state.output.fatal("Stack prematurely empty for " + adf.errorInfo());
             }
-    }
+        }
 
     
     /** Increases arguments to accommodate space if necessary.
         Sets adf to a.
         You need to then fill out the arguments yourself. */
     public final void prepareADF(ADF a, GPProblem problem)
-    {
+        {
         // set to the length requested or longer
         if (a.children.length > arguments.length)  // the first time this will nearly always be true
             {
-                GPData[] newarguments = new GPData[a.children.length];
-                System.arraycopy(arguments,0,newarguments,0,arguments.length);
-                // fill gap -- ugh, luckily this doesn't happen but a few times
-                for(int x=arguments.length;x<newarguments.length;x++)
-                    newarguments[x] = (GPData)(problem.input.clone());
-                arguments = newarguments;
+            GPData[] newarguments = new GPData[a.children.length];
+            System.arraycopy(arguments,0,newarguments,0,arguments.length);
+            // fill gap -- ugh, luckily this doesn't happen but a few times
+            for(int x=arguments.length;x<newarguments.length;x++)
+                newarguments[x] = (GPData)(problem.input.clone());
+            arguments = newarguments;
             }
         adf = a;
-    }
+        }
 
     /** Sets adf to a */
     public final void prepareADM(ADM a)
-    {
+        {
         adf = a;
+        }
+
+
     }
-
-
-}

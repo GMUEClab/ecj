@@ -24,7 +24,7 @@ import java.util.*;
  */
 
 public class Version
-{
+    {
     public static final String name = "ECJ";
     public static final String version = "25";
     public static final String copyright = "2017";
@@ -43,7 +43,7 @@ public class Version
     public static final String minimumJavaVersion = "1.5";
 
     public static final String message()
-    {
+        {
         Properties p = System.getProperties();
         String javaVersion = p.getProperty("java.version");
         String javaVM = p.getProperty("java.vm.name");
@@ -70,5 +70,5 @@ public class Version
             "\n| Current Java: " + javaVersion +
             "\n| Required Minimum Java: " + minimumJavaVersion +
             "\n\n";
+        }
     }
-}

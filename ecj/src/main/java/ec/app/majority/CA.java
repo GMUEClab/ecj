@@ -26,16 +26,16 @@ import ec.*;
 
 
 public class CA implements java.io.Serializable
-{
+    {
     private static final long serialVersionUID = 1;
     
     public CA(int width, int neighborhood)
-    {
+        {
         ca = new int[width];
         ca2 = new int[width];
         this.neighborhood = neighborhood;
         rule = new int[1 << neighborhood];
-    }
+        }
 
     int[] ca;
     int[] ca2;
@@ -46,88 +46,88 @@ public class CA implements java.io.Serializable
     public int[] getRule() { return rule; }
 
     public void setRule(int[] r)
-    {
+        {
         if (r.length != rule.length)
             throw new RuntimeException("Rule length invalid given neighborhood size.");
         rule = r;
-    } 
+        } 
 
     public void setVals(int[] vals) 
-    {
+        {
         if (vals.length != ca.length)
             throw new RuntimeException("CA length invalid given prespecified size.");
         ca = (int[])(vals.clone());
-    }
+        }
 
     public void clear(boolean toOnes) 
-    { 
+        { 
         if (toOnes)
             for(int i = 0; i < ca.length; i++) 
                 ca[i] = 1;
         else
             for(int i = 0; i < ca.length; i++) 
                 ca[i] = 0; 
-    }
+        }
         
     public final boolean converged()
-    {
+        {
         int t = ca[0];
         //int len = ca.length;
         for(int i = 1; i < ca.length; i++)
             if (ca[i] != t) return false;
         return true;
-    }
+        }
                 
     public void randomize(EvolutionState state, int thread)
-    {
+        {
         MersenneTwisterFast random = state.random[thread];
         for(int i = 0; i < ca.length; i++) 
             ca[i] = random.nextBoolean() ? 0 : 1;
-    }
+        }
         
     public void step(int steps, boolean stopWhenConverged)
-    {
+        {
         final int len = ca.length;
         final int halfhood = neighborhood / 2;                  // this is the size of one side of the neighborhood
         final int mask = (1 << neighborhood) - 1;               // this masks out the state to the neighborhod length
         
         for(int q = 0; q < steps; q++)
             {
-                int state = 0;                                                                  // the current neighborhood state.  Rotates through.
+            int state = 0;                                                                  // the current neighborhood state.  Rotates through.
                         
-                // initialize state to right toroidal values
-                for(int i = len - halfhood; i < len; i++)
-                    state = (state << 1 ) | ca[i];
-                // initialize state to left values
-                for(int i = 0; i < halfhood + 1; i++)
-                    state = (state << 1 ) | ca[i];
+            // initialize state to right toroidal values
+            for(int i = len - halfhood; i < len; i++)
+                state = (state << 1 ) | ca[i];
+            // initialize state to left values
+            for(int i = 0; i < halfhood + 1; i++)
+                state = (state << 1 ) | ca[i];
         
-                // scan with current state
-                for(int i = 0; i < (len - halfhood) - 1; i++)
-                    {
-                        ca2[i] = rule[state];
-                        state = ((state << 1) | ca[i + halfhood + 1]) & mask;
-                    }
+            // scan with current state
+            for(int i = 0; i < (len - halfhood) - 1; i++)
+                {
+                ca2[i] = rule[state];
+                state = ((state << 1) | ca[i + halfhood + 1]) & mask;
+                }
                         
-                // continue to scan toroidally
-                int j = 0;
-                for(int i = len - halfhood - 1; i < len; i++)
-                    {
-                        ca2[i] = rule[state];
-                        state = ((state << 1) | ca[j++]) & mask;
-                    }
+            // continue to scan toroidally
+            int j = 0;
+            for(int i = len - halfhood - 1; i < len; i++)
+                {
+                ca2[i] = rule[state];
+                state = ((state << 1) | ca[j++]) & mask;
+                }
 
-                // swap
-                int[] tmp = ca;
-                ca = ca2;
-                ca2 = tmp;      
+            // swap
+            int[] tmp = ca;
+            ca = ca2;
+            ca2 = tmp;      
                         
-                // did we converge?
-                if (stopWhenConverged && converged())
-                    {
-                        //System.err.println("converged at " + q);
-                        return; 
-                    }
+            // did we converge?
+            if (stopWhenConverged && converged())
+                {
+                //System.err.println("converged at " + q);
+                return; 
+                }
             }
+        }
     }
-}

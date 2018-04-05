@@ -32,20 +32,20 @@ import ec.util.Parameter;
  */
 public class SimpleIndividualPortrayal
     extends IndividualPortrayal
-{
+    {
     
     private static final LogRestarter restarter = new LogRestarter()
         {
-            public Log reopen(Log l)
-                throws IOException
+        public Log reopen(Log l)
+            throws IOException
             {
-                return null;
+            return null;
             }
         
-            public Log restart(Log l)
-                throws IOException
+        public Log restart(Log l)
+            throws IOException
             {
-                return null;
+            return null;
             }
         };
     
@@ -53,16 +53,16 @@ public class SimpleIndividualPortrayal
     private CharArrayWriter printIndividualWriter;
     
     public SimpleIndividualPortrayal()
-    {
+        {
         super(new BorderLayout());
         textPane = new JTextPane();
         textPane.setEditable(false);
         this.add(textPane,BorderLayout.CENTER);
         printIndividualWriter = new CharArrayWriter();
-    }
+        }
     
     public void portrayIndividual(EvolutionState state, Individual individual)
-    {
+        {
         int printIndividualLog = state.output.addLog(printIndividualWriter,restarter,false,false);
         
         individual.printIndividualForHumans(state,printIndividualLog);
@@ -70,9 +70,9 @@ public class SimpleIndividualPortrayal
         textPane.setCaretPosition(0);
         state.output.removeLog(printIndividualLog);
         printIndividualWriter.reset();
-    }
+        }
     
     public void setup(EvolutionState state, Parameter base)
-    {
+        {
+        }
     }
-}

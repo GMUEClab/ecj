@@ -21,11 +21,11 @@ import ec.util.*;
  */
 
 public class DOVSBreeder extends Breeder
-{
-    public void setup(final EvolutionState state, final Parameter base)
     {
+    public void setup(final EvolutionState state, final Parameter base)
+        {
         // nothing to setup
-    }
+        }
 
     /**
      * This method have three major part, first identify the best indiviudal,
@@ -35,43 +35,43 @@ public class DOVSBreeder extends Breeder
      */
 
     public Population breedPopulation(final EvolutionState state)
-    {
+        {
         Population pop = state.population;
         for (int i = 0; i < pop.subpops.size(); i++)
             {
-                Subpopulation subpop = pop.subpops.get(i);
-                if (!(subpop.species instanceof DOVSSpecies)) // uh oh
-                    state.output.fatal("To use DOVSBreeder, subpopulation " + i
-                                       + " must contain a DOVSSpecies.  But it contains a " + subpop.species);
+            Subpopulation subpop = pop.subpops.get(i);
+            if (!(subpop.species instanceof DOVSSpecies)) // uh oh
+                state.output.fatal("To use DOVSBreeder, subpopulation " + i
+                    + " must contain a DOVSSpecies.  But it contains a " + subpop.species);
 
-                DOVSSpecies species = (DOVSSpecies) (subpop.species);
+            DOVSSpecies species = (DOVSSpecies) (subpop.species);
 
-                // we assume backTrackingTest is always false.
-                // Thus we combine activeSolution and Sk (individuals) to
-                // identify the optimal
-                species.findBestSample(state, subpop);
+            // we assume backTrackingTest is always false.
+            // Thus we combine activeSolution and Sk (individuals) to
+            // identify the optimal
+            species.findBestSample(state, subpop);
 
-                // Right now activeSolutions only has A_{k-1}, need to combine S_k
-                for (int j = 0; j < subpop.individuals.size(); j++)
-                    species.activeSolutions.add(subpop.individuals.get(i));
-                // Ak and bk will have all the constraints, including original
-                // problem formulation and MPR
-                // A b are original problem formulation constraints
-                // activeSolutions will then have the indices for those solutions
-                // already visited and define MPR
-                // excluding current best solution
+            // Right now activeSolutions only has A_{k-1}, need to combine S_k
+            for (int j = 0; j < subpop.individuals.size(); j++)
+                species.activeSolutions.add(subpop.individuals.get(i));
+            // Ak and bk will have all the constraints, including original
+            // problem formulation and MPR
+            // A b are original problem formulation constraints
+            // activeSolutions will then have the indices for those solutions
+            // already visited and define MPR
+            // excluding current best solution
 
-                // update MPA
-                species.updateMostPromisingArea(state);
+            // update MPA
+            species.updateMostPromisingArea(state);
 
-                // sample from MPA
-                ArrayList<Individual> candidates = species.mostPromisingAreaSamples(state, subpop.initialSize);
-                // get Sk for evaluation
-                ArrayList<Individual> Sk = species.uniqueSamples(state, candidates);
+            // sample from MPA
+            ArrayList<Individual> candidates = species.mostPromisingAreaSamples(state, subpop.initialSize);
+            // get Sk for evaluation
+            ArrayList<Individual> Sk = species.uniqueSamples(state, candidates);
 
-                // update the individuals
-                subpop.individuals = Sk;
+            // update the individuals
+            subpop.individuals = Sk;
             }
         return pop;
+        }
     }
-}

@@ -42,7 +42,7 @@ import ec.vector.*;
 */
  
 public class MooSuite extends Problem implements SimpleProblemForm
-{
+    {
     /**
      * 
      */
@@ -82,7 +82,7 @@ public class MooSuite extends Problem implements SimpleProblemForm
     public int problemType = PROB_ZDT1;  // defaults on zdt1
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state, base);
         String wp = state.parameters.getStringWithDefault( base.push( P_WHICH_PROBLEM ), null, "" );
         if( wp.compareTo( P_ZDT1) == 0 )
@@ -112,24 +112,24 @@ public class MooSuite extends Problem implements SimpleProblemForm
         else if( wp.compareTo( P_SCH) == 0 || wp.compareTo( P_F1) == 0 )
             problemType = PROB_SCH;         
         else state.output.fatal(
-                                "Invalid value for parameter, or parameter not found.\n" +
-                                "Acceptable values are:\n" +
-                                "  " + P_ZDT1 + "\n" +
-                                "  " + P_ZDT2 + "\n" +
-                                "  " + P_ZDT3 + "\n" +
-                                "  " + P_ZDT4 + "\n" +
-                                "  " + P_ZDT6 + "\n" +
-                                "  " + P_POL + "\n" +
-                                "  " + P_FON + "\n" +
-                                "  " + P_KUR + "\n" +
-                                "  " + P_SPHERE + "\n" +
-                                "  " + P_SCH + "(or " + P_F1 + ")\n"+
-                                "  " + P_F2 + "\n\n" +
-                                "Are you by any chance running moosuite.params?  Instead\n" + 
-                                "You should be running one of the params files for these\n" + 
-                                "specific problems, such as zdt2.params.\n",
-                                base.push( P_WHICH_PROBLEM ) );
-    }
+            "Invalid value for parameter, or parameter not found.\n" +
+            "Acceptable values are:\n" +
+            "  " + P_ZDT1 + "\n" +
+            "  " + P_ZDT2 + "\n" +
+            "  " + P_ZDT3 + "\n" +
+            "  " + P_ZDT4 + "\n" +
+            "  " + P_ZDT6 + "\n" +
+            "  " + P_POL + "\n" +
+            "  " + P_FON + "\n" +
+            "  " + P_KUR + "\n" +
+            "  " + P_SPHERE + "\n" +
+            "  " + P_SCH + "(or " + P_F1 + ")\n"+
+            "  " + P_F2 + "\n\n" +
+            "Are you by any chance running moosuite.params?  Instead\n" + 
+            "You should be running one of the params files for these\n" + 
+            "specific problems, such as zdt2.params.\n",
+            base.push( P_WHICH_PROBLEM ) );
+        }
     private static final double TWO_PI = Math.PI*2;//QV uses it.
     private static final double TEN_PI = Math.PI*10;//ZDT3 uses it.
     private static final double FOUR_PI = Math.PI*4;//ZDT4 uses it.
@@ -139,10 +139,10 @@ public class MooSuite extends Problem implements SimpleProblemForm
     private static final double A2 = 1.5*Math.sin(1) -   Math.cos(1) + 2* Math.sin(2)- 0.5*Math.cos(2);//POL uses it
 
     public void evaluate(final EvolutionState state,
-                         final Individual ind,
-                         final int subpopulation,
-                         final int threadnum)
-    {
+        final Individual ind,
+        final int subpopulation,
+        final int threadnum)
+        {
         if( !( ind instanceof DoubleVectorIndividual ) )
             state.output.fatal( "The individuals for this problem should be DoubleVectorIndividuals." );
 
@@ -214,11 +214,11 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 int numObjectives = objectives.length;
                 for(int j=0; j<numObjectives; ++j)
                     {
-                        sum = (genome[j]-1)*(genome[j]-1);
-                        for(int i=0; i<numDecisionVars; ++i)
-                            if (i!=j)
-                                sum += genome[i]*genome[i];
-                        objectives[j] = sum;
+                    sum = (genome[j]-1)*(genome[j]-1);
+                    for(int i=0; i<numDecisionVars; ++i)
+                        if (i!=j)
+                            sum += genome[i]*genome[i];
+                    objectives[j] = sum;
                     }
                 break;
             case PROB_SCH:
@@ -245,11 +245,11 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 double sum1 = 0, sum2=0;
                 for(int i = 0; i< numDecisionVars; i++)
                     {
-                        double xi = genome[i];
-                        double d = xi-ONE_OVER_SQRT_3;
-                        double s = xi+ONE_OVER_SQRT_3;
-                        sum1+=d*d;
-                        sum2+=s*s;
+                    double xi = genome[i];
+                    double d = xi-ONE_OVER_SQRT_3;
+                    double s = xi+ONE_OVER_SQRT_3;
+                    sum1+=d*d;
+                    sum2+=s*s;
                     }
                 objectives[0] = 1 - Math.exp(-sum1);
                 objectives[1] = 1 - Math.exp(-sum2);
@@ -267,15 +267,15 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 sum=0;
                 for(int i=0;i<numDecisionVars;i++)
                     {
-                        double xi=genome[i];
-                        sum+=xi*xi-10*Math.cos(TWO_PI*xi)+10;
+                    double xi=genome[i];
+                    sum+=xi*xi-10*Math.cos(TWO_PI*xi)+10;
                     }
                 objectives[0] = Math.pow(sum/numDecisionVars, 0.25);
                 sum=0;
                 for(int i=0;i<numDecisionVars;i++)
                     {
-                        double xi=genome[i]-1.5;
-                        sum+=xi*xi-10*Math.cos(TWO_PI*xi)+10;
+                    double xi=genome[i]-1.5;
+                    sum+=xi*xi-10*Math.cos(TWO_PI*xi)+10;
                     }
                 objectives[1] = Math.pow(sum/numDecisionVars, 0.25);
                 break;
@@ -287,18 +287,18 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 sum=0;
                 for(int i = 0; i< numDecisionVars-1; ++i)
                     {
-                        nextSquared = genome[i+1]*genome[i+1];
-                        sum += -10-Math.exp(-0.2*Math.sqrt(thisSquared + nextSquared));
-                        thisSquared = nextSquared;
+                    nextSquared = genome[i+1]*genome[i+1];
+                    sum += -10-Math.exp(-0.2*Math.sqrt(thisSquared + nextSquared));
+                    thisSquared = nextSquared;
                     }
                 objectives[0] = sum;
                 sum= 0;
                 for(int i = 0; i< numDecisionVars; ++i)
                     {
-                        double xi3 = Math.pow(genome[i], 3);
-                        double t1 = Math.pow(Math.abs(genome[i]), .8);
-                        double t2 = 5*Math.sin(xi3);
-                        sum +=t1+t2;
+                    double xi3 = Math.pow(genome[i], 3);
+                    double t1 = Math.pow(Math.abs(genome[i]), .8);
+                    double t2 = 5*Math.sin(xi3);
+                    sum +=t1+t2;
                     }
                 objectives[1] = sum;
                 break;
@@ -310,5 +310,5 @@ public class MooSuite extends Problem implements SimpleProblemForm
 
         ((MultiObjectiveFitness)ind.fitness).setObjectives(state, objectives);
         ind.evaluated = true;
+        }
     }
-}

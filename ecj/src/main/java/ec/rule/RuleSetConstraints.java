@@ -88,7 +88,7 @@ import ec.util.*;
 
 */
 public class RuleSetConstraints implements Clique
-{
+    {
     private static final long serialVersionUID = 1;
 
     /** The size of a byte */
@@ -129,16 +129,16 @@ public class RuleSetConstraints implements Clique
         picks a random size from resetMinSize...resetMaxSize inclusive, or randomly
         from sizeDistribution. */ 
     public int pickSize(final EvolutionState state, final int thread)
-    {
+        {
         if (sizeDistribution!=null)
             // pick from distribution
             return RandomChoice.pickFromDistribution(
-                                                     sizeDistribution,
-                                                     state.random[thread].nextDouble());
+                sizeDistribution,
+                state.random[thread].nextDouble());
         else
             // pick from resetMinSize...resetMaxSize
             return state.random[thread].nextInt(resetMaxSize-resetMinSize+1) + resetMinSize;
-    }
+        }
 
     /**
        The prototype of the Rule that will be used in the RuleSet
@@ -153,11 +153,11 @@ public class RuleSetConstraints implements Clique
        this to do whatever kind of thing you like here.
     */
     public int numRulesForReset(final RuleSet ruleset, 
-                                final EvolutionState state, final int thread)
-    {
+        final EvolutionState state, final int thread)
+        {
         // the default just uses pickSize
         return pickSize(state,thread);
-    }
+        }
         
     /** The byte value of the constraints -- we can only have 256 of them */
     public byte constraintNumber;
@@ -176,22 +176,22 @@ public class RuleSetConstraints implements Clique
         several times, you call state.output.exitIfErrors() once. */
 
     public static RuleSetConstraints constraintsFor(final String constraintsName,
-                                                    final EvolutionState state)
-    {
+        final EvolutionState state)
+        {
         RuleSetConstraints myConstraints = (RuleSetConstraints)(((RuleInitializer)state.initializer).ruleSetConstraintRepository.get(constraintsName));
         if (myConstraints==null)
             state.output.error("The rule constraints \"" + constraintsName + "\" could not be found.");
         return myConstraints;
-    }
+        }
 
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         // What's my name?
         name = state.parameters.getString(base.push(P_NAME),null);
         if (name==null)
             state.output.fatal("No name was given for this RuleSetConstraints.",
-                               base.push(P_NAME));
+                base.push(P_NAME));
 
         // Register me
         RuleSetConstraints old_constraints = (RuleSetConstraints)(((RuleInitializer)state.initializer).ruleSetConstraintRepository.put(name,this));
@@ -205,21 +205,21 @@ public class RuleSetConstraints implements Clique
         p_add = state.parameters.getDouble( base.push( P_ADD_PROB ), null, 0 );
         if( p_add < 0 || p_add > 1 )
             {
-                state.output.fatal( "Parameter not found, or its value is outside of allowed range [0..1].",
-                                    base.push( P_ADD_PROB ) );
+            state.output.fatal( "Parameter not found, or its value is outside of allowed range [0..1].",
+                base.push( P_ADD_PROB ) );
             }
         p_del = state.parameters.getDouble( base.push( P_DEL_PROB ), null, 0 );
         if( p_del < 0 || p_del > 1 )
             {
-                state.output.fatal( "Parameter not found, or its value is outside of allowed range [0..1].",
-                                    base.push( P_DEL_PROB ) );
+            state.output.fatal( "Parameter not found, or its value is outside of allowed range [0..1].",
+                base.push( P_DEL_PROB ) );
             }
 
         p_randorder = state.parameters.getDouble( base.push( P_RAND_ORDER_PROB ), null, 0 );
         if( p_randorder < 0 || p_randorder > 1 )
             {
-                state.output.fatal( "Parameter not found, or its value is outside of allowed range [0..1].",
-                                    base.push( P_RAND_ORDER_PROB ) );
+            state.output.fatal( "Parameter not found, or its value is outside of allowed range [0..1].",
+                base.push( P_RAND_ORDER_PROB ) );
             }
 
         // now, we are going to load EITHER min/max size OR a size distribution, or both
@@ -230,67 +230,67 @@ public class RuleSetConstraints implements Clique
         if (state.parameters.exists(base.push(P_RESETMINSIZE), null) || 
             state.parameters.exists(base.push(P_RESETMAXSIZE), null))
             {
-                if (!(state.parameters.exists(base.push(P_RESETMAXSIZE), null)))
-                    state.output.error("This RuleSetConstraints has a " + 
-                                       P_RESETMINSIZE + " but not a " + P_RESETMAXSIZE + ".");
+            if (!(state.parameters.exists(base.push(P_RESETMAXSIZE), null)))
+                state.output.error("This RuleSetConstraints has a " + 
+                    P_RESETMINSIZE + " but not a " + P_RESETMAXSIZE + ".");
            
-                resetMinSize = state.parameters.getInt(
-                                                       base.push(P_RESETMINSIZE), null,0);
-                if (resetMinSize==-1) 
-                    state.output.error("If min&max are defined, RuleSetConstraints must have a min size >= 0.",
-                                       base.push(P_RESETMINSIZE), null);
+            resetMinSize = state.parameters.getInt(
+                base.push(P_RESETMINSIZE), null,0);
+            if (resetMinSize==-1) 
+                state.output.error("If min&max are defined, RuleSetConstraints must have a min size >= 0.",
+                    base.push(P_RESETMINSIZE), null);
             
-                resetMaxSize = state.parameters.getInt(
-                                                       base.push(P_RESETMAXSIZE), null,0);
-                if (resetMaxSize==-1) 
-                    state.output.error("If min&max are defined, RuleSetConstraints must have a max size >= 0.",
-                                       base.push(P_RESETMAXSIZE), null);
+            resetMaxSize = state.parameters.getInt(
+                base.push(P_RESETMAXSIZE), null,0);
+            if (resetMaxSize==-1) 
+                state.output.error("If min&max are defined, RuleSetConstraints must have a max size >= 0.",
+                    base.push(P_RESETMAXSIZE), null);
 
-                if (resetMinSize > resetMaxSize)
-                    state.output.error(
-                                       "If min&max are defined, RuleSetConstraints must have min size <= max size.",
-                                       base.push(P_RESETMINSIZE), null);
-                state.output.exitIfErrors();
+            if (resetMinSize > resetMaxSize)
+                state.output.error(
+                    "If min&max are defined, RuleSetConstraints must have min size <= max size.",
+                    base.push(P_RESETMINSIZE), null);
+            state.output.exitIfErrors();
             }
 
         // load sizeDistribution
 
         if (state.parameters.exists(base.push(P_NUMSIZES),
-                                    null))
+                null))
             {
-                int siz = state.parameters.getInt(
-                                                  base.push(P_NUMSIZES), null,1);
-                if (siz==0)
-                    state.output.fatal("The number of sizes in the RuleSetConstraints's distribution must be >= 1. ");
-                sizeDistribution = new double[siz];
+            int siz = state.parameters.getInt(
+                base.push(P_NUMSIZES), null,1);
+            if (siz==0)
+                state.output.fatal("The number of sizes in the RuleSetConstraints's distribution must be >= 1. ");
+            sizeDistribution = new double[siz];
             
-                double sum = 0.0;
-                for(int x=0;x<siz;x++)
+            double sum = 0.0;
+            for(int x=0;x<siz;x++)
+                {
+                sizeDistribution[x] = state.parameters.getDouble(
+                    base.push(P_RESETSIZE).push(""+x),null, 0.0);
+                if (sizeDistribution[x]<0.0)
                     {
-                        sizeDistribution[x] = state.parameters.getDouble(
-                                                                         base.push(P_RESETSIZE).push(""+x),null, 0.0);
-                        if (sizeDistribution[x]<0.0)
-                            {
-                                state.output.warning(
-                                                     "Distribution value #" + x + " negative or not defined, assumed to be 0.0",
-                                                     base.push(P_RESETSIZE).push(""+x),null);
-                                sizeDistribution[x] = 0.0;
-                            }
-                        sum += sizeDistribution[x];
-                    }
-                if (sum>1.0)
                     state.output.warning(
-                                         "Distribution sums to greater than 1.0",
-                                         base.push(P_RESETSIZE),
-                                         null);
-                if (sum==0.0)
-                    state.output.fatal(
-                                       "Distribution is all 0's",
-                                       base.push(P_RESETSIZE),
-                                       null);
+                        "Distribution value #" + x + " negative or not defined, assumed to be 0.0",
+                        base.push(P_RESETSIZE).push(""+x),null);
+                    sizeDistribution[x] = 0.0;
+                    }
+                sum += sizeDistribution[x];
+                }
+            if (sum>1.0)
+                state.output.warning(
+                    "Distribution sums to greater than 1.0",
+                    base.push(P_RESETSIZE),
+                    null);
+            if (sum==0.0)
+                state.output.fatal(
+                    "Distribution is all 0's",
+                    base.push(P_RESETSIZE),
+                    null);
 
-                // normalize and prepare
-                RandomChoice.organizeDistribution(sizeDistribution);
+            // normalize and prepare
+            RandomChoice.organizeDistribution(sizeDistribution);
             }
         
         if (state.parameters.exists(base.push(P_MINSIZE), null))
@@ -304,26 +304,26 @@ public class RuleSetConstraints implements Clique
         // sanity checks
         if (minSize > maxSize)
             {
-                state.output.fatal("Cannot have min size greater than max size : (" + minSize + " > " + maxSize + ")",base.push(P_MINSIZE), null);
+            state.output.fatal("Cannot have min size greater than max size : (" + minSize + " > " + maxSize + ")",base.push(P_MINSIZE), null);
             }
         
         if (sizeDistribution != null)
             {
-                if (minSize!=0)
-                    state.output.fatal("Using size distribution, but min size is not 0",
-                                       base.push(P_MINSIZE), null);
-                if (sizeDistribution.length - 1 > maxSize)
-                    state.output.fatal("Using size distribution whose maximum size is higher than max size",
-                                       base.push(P_MAXSIZE), null);
+            if (minSize!=0)
+                state.output.fatal("Using size distribution, but min size is not 0",
+                    base.push(P_MINSIZE), null);
+            if (sizeDistribution.length - 1 > maxSize)
+                state.output.fatal("Using size distribution whose maximum size is higher than max size",
+                    base.push(P_MAXSIZE), null);
             }
         else
             {
-                if (resetMinSize < minSize)
-                    state.output.fatal("Cannot have min size greater than reset min size : (" + minSize + " > " + resetMinSize + ")",base.push(P_MINSIZE), null);
-                if (resetMaxSize > maxSize)
-                    state.output.fatal("Cannot have max size less than reset max size : (" + maxSize + " > " + resetMaxSize + ")",base.push(P_MAXSIZE), null);                
+            if (resetMinSize < minSize)
+                state.output.fatal("Cannot have min size greater than reset min size : (" + minSize + " > " + resetMinSize + ")",base.push(P_MINSIZE), null);
+            if (resetMaxSize > maxSize)
+                state.output.fatal("Cannot have max size less than reset max size : (" + maxSize + " > " + resetMaxSize + ")",base.push(P_MAXSIZE), null);                
             }
 
+        }
     }
-}
 

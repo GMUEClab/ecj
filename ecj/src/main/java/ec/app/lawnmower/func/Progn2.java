@@ -23,7 +23,7 @@ import ec.util.*;
  */
 
 public class Progn2 extends GPNode
-{
+    {
     public String toString() { return "progn2"; }
 
     /*
@@ -42,17 +42,17 @@ public class Progn2 extends GPNode
     public int expectedChildren() { return 2; }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
+        {
         // Evaluate both children.  Return the second one (done automagically).
         children[0].eval(state,thread,input,stack,individual,problem);
         children[1].eval(state,thread,input,stack,individual,problem);
+        }
     }
-}
 
 
 

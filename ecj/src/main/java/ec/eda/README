@@ -1,4 +1,7 @@
 Subpackages here comprise various ECJ Estimation of Distribution Algorithms
-(EDAs) and related packages.  At present there are two such packages,
-CMA-ES (the well-known Covariance Matrix Adaptation Evolution Strategy) and
-DOvS.
+(EDAs) and related packages.  The available packages are:
+
+1. CMA-ES (the well-known Covariance Matrix Adaptation Evolution Strategy) 
+2. DOvS (Discrete Optimization via Simulation).
+3. AMALGAM-IDEA.
+4. PBIL.

@@ -77,7 +77,7 @@ import ec.select.*;
  */
 
 public class RatioBucketTournamentSelection extends SelectionMethod implements SteadyStateBSourceForm
-{
+    {
     /** default base */
     public static final String P_RATIO_BUCKET_TOURNAMENT = "ratio-bucket-tournament";
 
@@ -106,12 +106,12 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
     int[] bucketValues;
  
     public Parameter defaultBase()
-    {
+        {
         return SelectDefaults.base().push(P_RATIO_BUCKET_TOURNAMENT);
-    }
+        }
     
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state,base);
         
         Parameter def = defaultBase();
@@ -122,36 +122,36 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
 
         if( state.parameters.exists( base.push(P_RATIO), def.push(P_RATIO)))
             {
-                ratio = state.parameters.getDouble(base.push(P_RATIO),def.push(P_RATIO),2.0f);
-                if( ratio<2 )
-                    {
-                        state.output.fatal("The value of b must be >= 2.",base.push(P_RATIO),def.push(P_RATIO));
-                    }
+            ratio = state.parameters.getDouble(base.push(P_RATIO),def.push(P_RATIO),2.0f);
+            if( ratio<2 )
+                {
+                state.output.fatal("The value of b must be >= 2.",base.push(P_RATIO),def.push(P_RATIO));
+                }
             }
         else
             {
-                ratio = defaultRATIO;
+            ratio = defaultRATIO;
             }
 
         pickWorst = state.parameters.getBoolean(base.push(P_PICKWORST),def.push(P_PICKWORST),false);
-    }
+        }
 
     /** Prepare to produce: create the buckets!!!! */
     public void prepareToProduce(final EvolutionState state, final int subpopulation, final int thread) 
-    {
+        {
         bucketValues = new int[ state.population.subpops.get(subpopulation).individuals.size() ];
         
         // correct?
         Collections.sort(state.population.subpops.get(subpopulation).individuals,
-                         new Comparator<Individual>() {
-                             public int compare(Individual a, Individual b) {
-                                 if (a.fitness.betterThan(b.fitness))
-                                     return 1;
-                                 if (b.fitness.betterThan(a.fitness))
-                                     return -1;
-                                 return 0;
-                             }
-                         });
+            new Comparator<Individual>() {
+                public int compare(Individual a, Individual b) {
+                    if (a.fitness.betterThan(b.fitness))
+                        return 1;
+                    if (b.fitness.betterThan(a.fitness))
+                        return -1;
+                    return 0;
+                    }
+                });
 
         // how many individuals in current bucket
         int nInd;
@@ -168,39 +168,39 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
 
         for(int i = 1; i < state.population.subpops.get(subpopulation).individuals.size() ; i++ )
             {
-                // if there is still some place left in the current bucket, throw the current individual there too
-                if( nInd < averageBuck )
+            // if there is still some place left in the current bucket, throw the current individual there too
+            if( nInd < averageBuck )
+                {
+                bucketValues[i] = bucketValues[i-1];
+                nInd++;
+                }
+            else // check if it has the same fitness as last individual
+                {
+                if( ((Individual) state.population.subpops.get(subpopulation).individuals.get(i)).fitness.equivalentTo(
+                        ((Individual) state.population.subpops.get(subpopulation).individuals.get(i - 1)).fitness ) )
                     {
-                        bucketValues[i] = bucketValues[i-1];
-                        nInd++;
+                    // now the individual has exactly the same fitness as previous one,
+                    // so we just put it in the same bucket as the previous one(s)
+                    bucketValues[i] = bucketValues[i-1];
+                    nInd++;
                     }
-                else // check if it has the same fitness as last individual
+                else
                     {
-                        if( ((Individual) state.population.subpops.get(subpopulation).individuals.get(i)).fitness.equivalentTo(
-                                                                                                                               ((Individual) state.population.subpops.get(subpopulation).individuals.get(i - 1)).fitness ) )
-                            {
-                                // now the individual has exactly the same fitness as previous one,
-                                // so we just put it in the same bucket as the previous one(s)
-                                bucketValues[i] = bucketValues[i-1];
-                                nInd++;
-                            }
-                        else
-                            {
-                                // new bucket!!!!
-                                averageBuck = Math.max( totalInds/ratio, 1 );
-                                bucketValues[i] = bucketValues[i-1] - 1; // decrease the fitness, so that high fit individuals have lower bucket values
-                                // with only one individual
-                                nInd = 1;
-                            }
+                    // new bucket!!!!
+                    averageBuck = Math.max( totalInds/ratio, 1 );
+                    bucketValues[i] = bucketValues[i-1] - 1; // decrease the fitness, so that high fit individuals have lower bucket values
+                    // with only one individual
+                    nInd = 1;
                     }
-                totalInds--;
+                }
+            totalInds--;
             }
-    }
+        }
 
     public int produce(final int subpopulation,
-                       final EvolutionState state,
-                       final int thread)
-    {
+        final EvolutionState state,
+        final int thread)
+        {
         // pick size random individuals, then pick the best.
         ArrayList<Individual> oldinds = (state.population.subpops.get(subpopulation).individuals);
         int i = state.random[thread].nextInt(oldinds.size());
@@ -208,47 +208,47 @@ public class RatioBucketTournamentSelection extends SelectionMethod implements S
 
         for (int x=1;x<size;x++)
             {
-                int j = state.random[thread].nextInt(oldinds.size());
-                if (pickWorst)
-                    {
-                        if( bucketValues[j]>bucketValues[i] ) { i = j; si = 0; }
-                        else if( bucketValues[i]>bucketValues[j] ) { } // do nothing
-                        else
-                            {
-                                if (si==0)
-                                    si = oldinds.get(i).size();
-                                long sj = oldinds.get(j).size();
-
-                                if (sj >= si) // sj's got worse lookin' trees
-                                    { i = j; si = sj; }
-                            }
-                    }
+            int j = state.random[thread].nextInt(oldinds.size());
+            if (pickWorst)
+                {
+                if( bucketValues[j]>bucketValues[i] ) { i = j; si = 0; }
+                else if( bucketValues[i]>bucketValues[j] ) { } // do nothing
                 else
-                    { 
-                        if( bucketValues[j]<bucketValues[i] ) { i = j; si = 0; }
-                        else if( bucketValues[i]<bucketValues[j] ) { } // do nothing
-                        else
-                            {
-                                if (si==0)
-                                    si = oldinds.get(i).size();
-                                long sj = oldinds.get(j).size();
+                    {
+                    if (si==0)
+                        si = oldinds.get(i).size();
+                    long sj = oldinds.get(j).size();
 
-                                if (sj < si) // sj's got better lookin' trees
-                                    { i = j; si = sj; }
-                            }
+                    if (sj >= si) // sj's got worse lookin' trees
+                        { i = j; si = sj; }
                     }
+                }
+            else
+                { 
+                if( bucketValues[j]<bucketValues[i] ) { i = j; si = 0; }
+                else if( bucketValues[i]<bucketValues[j] ) { } // do nothing
+                else
+                    {
+                    if (si==0)
+                        si = oldinds.get(i).size();
+                    long sj = oldinds.get(j).size();
+
+                    if (sj < si) // sj's got better lookin' trees
+                        { i = j; si = sj; }
+                    }
+                }
             }
         return i;
-    }
+        }
 
     // included for SteadyState
     public void individualReplaced(final SteadyStateEvolutionState state,
-                                   final int subpopulation,
-                                   final int thread,
-                                   final int individual)
-    { return; }
+        final int subpopulation,
+        final int thread,
+        final int individual)
+        { return; }
     
     public void sourcesAreProperForm(final SteadyStateEvolutionState state)
-    { return; }
+        { return; }
     
-}
+    }

@@ -27,5 +27,5 @@ package ec.steadystate;
  */
 
 public interface SteadyStateExchangerForm
-{
-}
+    {
+    }

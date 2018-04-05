@@ -26,7 +26,7 @@ package ec.util;
  */
 
 public class ParamClassLoadException extends RuntimeException
-{
+    {
     public ParamClassLoadException(String s)
-    { super("\n"+s); }
-}
+        { super("\n"+s); }
+    }

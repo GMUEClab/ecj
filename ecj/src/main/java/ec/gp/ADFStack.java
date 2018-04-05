@@ -73,7 +73,7 @@ import ec.util.*;
  */
 
 public class ADFStack implements Prototype 
-{
+    {
     private static final long serialVersionUID = 1;
 
     public static final String P_ADFSTACK = "adf-stack";
@@ -89,22 +89,22 @@ public class ADFStack implements Prototype
     protected ADFContext[] reserve;
 
     public ADFStack() 
-    { 
+        { 
         stack = new ADFContext[INITIAL_STACK_SIZE];
         substack = new ADFContext[INITIAL_STACK_SIZE];
         reserve = new ADFContext[INITIAL_STACK_SIZE];
         onStack=0;
         onSubstack = 0;
         inReserve = 0;
-    }
+        }
 
     public Parameter defaultBase()
-    {
+        {
         return GPDefaults.base().push(P_ADFSTACK);
-    }
+        }
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         // load our prototype
 
         Parameter p = base.push(P_CONTEXT);
@@ -113,34 +113,34 @@ public class ADFStack implements Prototype
         context_proto = (ADFContext)
             (state.parameters.getInstanceForParameterEq(p,d,ADFContext.class));
         context_proto.setup(state,p);
-    }
+        }
 
     public Object clone()
-    {
+        {
         try
             {
-                ADFStack myobj = (ADFStack) (super.clone());
+            ADFStack myobj = (ADFStack) (super.clone());
 
-                // deep-cloned stuff
-                myobj.context_proto = (ADFContext)(context_proto.clone());
+            // deep-cloned stuff
+            myobj.context_proto = (ADFContext)(context_proto.clone());
 
-                // clone the stack arrays -- dunno if this is faster than new ADFContext[...]
-                myobj.stack = (ADFContext[])(stack.clone());
-                myobj.substack = (ADFContext[])(substack.clone());
-                myobj.reserve = (ADFContext[])(reserve.clone());
+            // clone the stack arrays -- dunno if this is faster than new ADFContext[...]
+            myobj.stack = (ADFContext[])(stack.clone());
+            myobj.substack = (ADFContext[])(substack.clone());
+            myobj.reserve = (ADFContext[])(reserve.clone());
 
-                // fill 'em up
-                for(int x=0;x<onStack;x++)
-                    myobj.stack[x] = (ADFContext)(stack[x].clone());
-                for(int x=0;x<onSubstack;x++)
-                    myobj.substack[x] = (ADFContext)(substack[x].clone());
-                for(int x=0;x<inReserve;x++)
-                    myobj.reserve[x] = (ADFContext)(reserve[x].clone());
-                return myobj;
+            // fill 'em up
+            for(int x=0;x<onStack;x++)
+                myobj.stack[x] = (ADFContext)(stack[x].clone());
+            for(int x=0;x<onSubstack;x++)
+                myobj.substack[x] = (ADFContext)(substack[x].clone());
+            for(int x=0;x<inReserve;x++)
+                myobj.reserve[x] = (ADFContext)(reserve[x].clone());
+            return myobj;
             }
         catch (CloneNotSupportedException e) 
             { throw new InternalError(); } // never happens
-    }
+        }
     
     /** Returns an ADFContext from the stack's reserve, or creates one
         fresh if there are none in reserve.  While you can throw this
@@ -149,27 +149,27 @@ public class ADFStack implements Prototype
         context onto the stack with push(ADFContext obj) -- karma!
     */
     public final ADFContext get()
-    {
+        {
         // Remove one from reserve
 
         ADFContext obj;
         if (inReserve>0) obj = reserve[--inReserve];
         else obj = (ADFContext)(context_proto.clone());  // hopefully that doesn't have to happen too many times
         return obj;
-    }
+        }
 
 
     /** Pushes an ADFContext onto the main stack.  The best way to get an
         ADFContext to push onto the stack is with get(). Returns obj. */
 
     public final ADFContext push(ADFContext obj)
-    {
+        {
         // Double stack if necessary
         if (onStack==stack.length)
             {
-                ADFContext[] newstack = new ADFContext[stack.length * 2];
-                System.arraycopy(stack,0,newstack,0,stack.length);
-                stack = newstack;
+            ADFContext[] newstack = new ADFContext[stack.length * 2];
+            System.arraycopy(stack,0,newstack,0,stack.length);
+            stack = newstack;
             }
 
         // Add to stack
@@ -177,35 +177,35 @@ public class ADFStack implements Prototype
         
         // return it
         return obj;
-    }
+        }
 
 
     /** Pops off <i>n</i> items from the stack, if possible. Returns
         the number of items actually popped off. */ 
     public final int pop(int n)
-    {
+        {
         int x;
         for(x = 0 ; x < n; x++)
             {
-                // Anything left on the stack?
-                if (onStack==0) break;
+            // Anything left on the stack?
+            if (onStack==0) break;
 
-                // Remove one from stack
-                ADFContext obj = stack[--onStack];
+            // Remove one from stack
+            ADFContext obj = stack[--onStack];
             
-                // Double reserve if necessary
-                if (inReserve==reserve.length)
-                    {
-                        ADFContext[] newreserve = new ADFContext[reserve.length * 2];
-                        System.arraycopy(reserve,0,newreserve,0,reserve.length);
-                        reserve = newreserve;
-                    }
+            // Double reserve if necessary
+            if (inReserve==reserve.length)
+                {
+                ADFContext[] newreserve = new ADFContext[reserve.length * 2];
+                System.arraycopy(reserve,0,newreserve,0,reserve.length);
+                reserve = newreserve;
+                }
             
-                // Add to reserve
-                reserve[inReserve++] = obj;         
+            // Add to reserve
+            reserve[inReserve++] = obj;         
             }
         return x;
-    }
+        }
     
 
 
@@ -213,70 +213,70 @@ public class ADFStack implements Prototype
     /** Returns the <i>n</i>th item in the stack (0-indexed), or null if
         this goes to the bottom of the stack. */
     public final ADFContext top(int n)
-    {
+        {
         // is this beyond the stack?
         if (onStack-n <= 0) return null;
         else return stack[onStack-n-1];
-    }
+        }
 
 
     /** Moves <i>n</i> items onto the substack (pops them off the stack and pushes them onto the substack).  Returns the actual number of items for which this was done. */
     public final int moveOntoSubstack(int n)
-    {
+        {
         int x;
         for(x=0;x<n;x++)
             {
-                // is the stack empty?
-                if (onStack==0) break;  // uh oh
+            // is the stack empty?
+            if (onStack==0) break;  // uh oh
             
-                // Remove one from stack
-                ADFContext obj = stack[--onStack];
+            // Remove one from stack
+            ADFContext obj = stack[--onStack];
             
-                // Double substack if necessary
-                if (onSubstack == substack.length)
-                    {
-                        ADFContext[] newsubstack = new ADFContext[substack.length * 2];
-                        System.arraycopy(substack,0,newsubstack,0,substack.length);
-                        substack = newsubstack;
-                    }
+            // Double substack if necessary
+            if (onSubstack == substack.length)
+                {
+                ADFContext[] newsubstack = new ADFContext[substack.length * 2];
+                System.arraycopy(substack,0,newsubstack,0,substack.length);
+                substack = newsubstack;
+                }
             
-                // Add to substack
-                substack[onSubstack++] = obj;
+            // Add to substack
+            substack[onSubstack++] = obj;
             }
         return x;
-    }
+        }
 
     /** Moves <i>n</i> items onto the stack (popss them off the substack and pushes them onto the stack). Returns the actual number of items moved from the Substack onto the main stack */
     public final int moveFromSubstack(int n)
-    {
+        {
         int x;
         for(x=0;x<n;x++)
             {
-                // is the substack empty?
-                if (onSubstack==0) break; // uh oh
+            // is the substack empty?
+            if (onSubstack==0) break; // uh oh
             
-                // Remove one from stack
-                ADFContext obj = substack[--onSubstack];
+            // Remove one from stack
+            ADFContext obj = substack[--onSubstack];
 
-                // Double stack if necessary
-                if (onStack==stack.length)
-                    {
-                        ADFContext[] newstack = new ADFContext[stack.length * 2];
-                        System.arraycopy(stack,0,newstack,0,stack.length);
-                        stack = newstack;
-                    }
+            // Double stack if necessary
+            if (onStack==stack.length)
+                {
+                ADFContext[] newstack = new ADFContext[stack.length * 2];
+                System.arraycopy(stack,0,newstack,0,stack.length);
+                stack = newstack;
+                }
             
-                // Add to stack
-                stack[onStack++] = obj;
+            // Add to stack
+            stack[onStack++] = obj;
             }
         return x;
-    }
+        }
 
     /** Pops off all items on the stack and the substack. */
     public final void reset()
-    {
+        {
         if (onSubstack>0) moveFromSubstack(onSubstack);
         if (onStack>0) pop(onStack);
-    }
+        }
 
-}
+    }

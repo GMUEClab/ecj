@@ -8,14 +8,14 @@ package ec.app.majority;
 import ec.gp.*;
 
 public class MajorityData extends GPData
-{
+    {
     public long data0;
     public long data1;
 
     public void copyTo(final GPData gpd) 
-    {
+        {
         MajorityData md = (MajorityData)gpd; 
         md.data0 = data0;
         md.data1 = data1;
+        }
     }
-}

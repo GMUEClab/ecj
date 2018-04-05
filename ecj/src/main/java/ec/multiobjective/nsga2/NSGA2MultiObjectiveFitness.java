@@ -28,7 +28,7 @@ import ec.Fitness;
  */
 
 public class NSGA2MultiObjectiveFitness extends MultiObjectiveFitness
-{
+    {
     public static final String NSGA2_RANK_PREAMBLE = "Rank: ";
     public static final String NSGA2_SPARSITY_PREAMBLE = "Sparsity: ";
 
@@ -42,51 +42,51 @@ public class NSGA2MultiObjectiveFitness extends MultiObjectiveFitness
     public double sparsity;
 
     public String fitnessToString()
-    {
+        {
         return super.fitnessToString() + "\n" + NSGA2_RANK_PREAMBLE + Code.encode(rank) + "\n" + NSGA2_SPARSITY_PREAMBLE + Code.encode(sparsity);
-    }
+        }
 
     public String fitnessToStringForHumans()
-    {
+        {
         return super.fitnessToStringForHumans() + "\n" + NSGA2_RANK_PREAMBLE + rank + "\n" + NSGA2_SPARSITY_PREAMBLE + sparsity;
-    }
+        }
 
     public void readFitness(final EvolutionState state, final LineNumberReader reader) throws IOException
-    {
+        {
         super.readFitness(state, reader);
         rank = Code.readIntegerWithPreamble(NSGA2_RANK_PREAMBLE, state, reader);
         sparsity = Code.readDoubleWithPreamble(NSGA2_SPARSITY_PREAMBLE, state, reader);
-    }
+        }
 
     public void writeFitness(final EvolutionState state, final DataOutput dataOutput) throws IOException
-    {
+        {
         super.writeFitness(state, dataOutput);
         dataOutput.writeInt(rank);
         dataOutput.writeDouble(sparsity);
         writeTrials(state, dataOutput);
-    }
+        }
 
     public void readFitness(final EvolutionState state, final DataInput dataInput) throws IOException
-    {
+        {
         super.readFitness(state, dataInput);
         rank = dataInput.readInt();
         sparsity = dataInput.readDouble();
         readTrials(state, dataInput);
-    }
+        }
 
     public boolean equivalentTo(Fitness _fitness)
-    {
+        {
         NSGA2MultiObjectiveFitness other = (NSGA2MultiObjectiveFitness) _fitness;
         return (rank == ((NSGA2MultiObjectiveFitness) _fitness).rank) &&
             (sparsity == other.sparsity);
-    }
+        }
 
     /**
      * We specify the tournament selection criteria, Rank (lower
      * values are better) and Sparsity (higher values are better)
      */
     public boolean betterThan(Fitness _fitness)
-    {
+        {
         NSGA2MultiObjectiveFitness other = (NSGA2MultiObjectiveFitness) _fitness;
         // Rank should always be minimized.
         if (rank < ((NSGA2MultiObjectiveFitness) _fitness).rank)
@@ -96,5 +96,5 @@ public class NSGA2MultiObjectiveFitness extends MultiObjectiveFitness
                 
         // otherwise try sparsity
         return (sparsity > other.sparsity);
+        }
     }
-}

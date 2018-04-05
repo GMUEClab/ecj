@@ -30,18 +30,18 @@ import java.io.*;
  */
 
 public class KornsERC extends RegERC
-{
+    {
     public String name() { return "KornsERC"; }
 
     public void resetNode(final EvolutionState state, final int thread)
-    { 
+        { 
         do
             {
-                value = Double.longBitsToDouble(state.random[thread].nextLong()); 
+            value = Double.longBitsToDouble(state.random[thread].nextLong()); 
             }
         while (Double.isNaN(value) || Double.isInfinite(value));
+        }
     }
-}
 
 
 

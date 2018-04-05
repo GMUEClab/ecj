@@ -14,7 +14,7 @@ import ec.vector.*;
  * @author Ermo Wei and David Freelan
  */
 public class DOVSInitializer extends SimpleInitializer
-{
+    {
     private static final long serialVersionUID = 1;
 
     /**
@@ -28,51 +28,51 @@ public class DOVSInitializer extends SimpleInitializer
      * smaller than what have been specified in pop.subpop.X.size.
      */
     public Population initialPopulation(final EvolutionState state, int thread)
-    {
+        {
         Population p = super.initialPopulation(state, thread);
         // make sure the each subpop only have one individual
         for (int i = 0; i < p.subpops.size(); i++)
             {
-                if (p.subpops.get(i).species instanceof DOVSSpecies)
+            if (p.subpops.get(i).species instanceof DOVSSpecies)
+                {
+                DOVSSpecies species = (DOVSSpecies) p.subpops.get(i).species;
+
+                if (p.subpops.get(i).individuals.size() != 1)
+                    state.output.fatal("contain more than one start point");
+
+                // add the start point to the visited ArrayList
+                species.visited.clear();
+                species.visited.add(p.subpops.get(i).individuals.get(0));
+                species.visitedIndexMap.put(p.subpops.get(i).individuals.get(0), 0);
+                species.optimalIndex = 0;
+
+                IntegerVectorIndividual ind = (IntegerVectorIndividual) species.visited.get(species.optimalIndex);
+                // For the visited solution, record its coordinate
+                // positions in the multimap
+                for (int j = 0; j < species.genomeSize; ++j)
                     {
-                        DOVSSpecies species = (DOVSSpecies) p.subpops.get(i).species;
-
-                        if (p.subpops.get(i).individuals.size() != 1)
-                            state.output.fatal("contain more than one start point");
-
-                        // add the start point to the visited ArrayList
-                        species.visited.clear();
-                        species.visited.add(p.subpops.get(i).individuals.get(0));
-                        species.visitedIndexMap.put(p.subpops.get(i).individuals.get(0), 0);
-                        species.optimalIndex = 0;
-
-                        IntegerVectorIndividual ind = (IntegerVectorIndividual) species.visited.get(species.optimalIndex);
-                        // For the visited solution, record its coordinate
-                        // positions in the multimap
-                        for (int j = 0; j < species.genomeSize; ++j)
-                            {
-                                // The individual is the content. The key is its
-                                // coordinate position
-                                species.corners.get(j).insert(ind.genome[j], ind);
-                            }
-
-                        // update MPA
-                        species.updateMostPromisingArea(state);
-
-                        // sample from MPA
-                        int initialSize = p.subpops.get(i).initialSize;
-                        ArrayList<Individual> candidates = species.mostPromisingAreaSamples(state, initialSize);
-
-                        // get unique candidates for evaluation, this is Sk in paper
-                        ArrayList<Individual> uniqueCandidates = species.uniqueSamples(state, candidates);
-
-                        // update the individuals
-                        p.subpops.get(i).individuals = uniqueCandidates;
-
+                    // The individual is the content. The key is its
+                    // coordinate position
+                    species.corners.get(j).insert(ind.genome[j], ind);
                     }
+
+                // update MPA
+                species.updateMostPromisingArea(state);
+
+                // sample from MPA
+                int initialSize = p.subpops.get(i).initialSize;
+                ArrayList<Individual> candidates = species.mostPromisingAreaSamples(state, initialSize);
+
+                // get unique candidates for evaluation, this is Sk in paper
+                ArrayList<Individual> uniqueCandidates = species.uniqueSamples(state, candidates);
+
+                // update the individuals
+                p.subpops.get(i).individuals = uniqueCandidates;
+
+                }
 
             }
         return p;
-    }
+        }
 
-}
+    }

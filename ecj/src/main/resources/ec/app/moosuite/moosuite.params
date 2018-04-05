@@ -4,6 +4,7 @@
 
 #uncomment the desired multiobjective algorithm
 #parent.0 = spea2.params
+#parent.0 = nsga3.params
 parent.0 = nsga2.params
 
 eval.problem = ec.app.moosuite.MooSuite
@@ -39,6 +40,7 @@ pop.subpop.0.species.crossover-type = sbx
 pop.subpop.0.species.crossover-distribution-index = 20
 
 pop.subpop.0.species.mutation-type = polynomial
+pop.subpop.0.species.alternative-polynomial-version = true
 pop.subpop.0.species.mutation-distribution-index = 20
 pop.subpop.0.species.mutation-bounded = true
 

@@ -21,10 +21,10 @@ import ec.gp.*;
  */
 
 public class TwoBoxData extends GPData
-{
+    {
     // return value
     public double x;
 
     public void copyTo(final GPData gpd) 
-    { ((TwoBoxData)gpd).x = x; }
-}
+        { ((TwoBoxData)gpd).x = x; }
+    }

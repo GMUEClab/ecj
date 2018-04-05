@@ -107,7 +107,7 @@ import ec.*;
  */
 
 public class MultiObjectiveFitness extends Fitness
-{
+    {
     public static final String MULTI_FITNESS_POSTAMBLE = "[";
     public static final String FITNESS_POSTAMBLE = "]";
 
@@ -149,14 +149,14 @@ public class MultiObjectiveFitness extends Fitness
         @deprecated Use isMaximizing(objective).  This function now just returns whether the first objective is maximizing.
     */
     public boolean isMaximizing()
-    {
+        {
         return maximize[0];
-    }
+        }
 
     public boolean isMaximizing(int objective)
-    {
+        {
         return maximize[objective];
-    }
+        }
         
 
     public int getNumObjectives() { return objectives.length; }
@@ -167,53 +167,53 @@ public class MultiObjectiveFitness extends Fitness
      * rather, set them using setObjectives().
      */
     public double[] getObjectives()
-    {
+        {
         return objectives;
-    }
+        }
 
     public double getObjective(int i)
-    {
+        {
         return objectives[i];
-    }
+        }
 
     public void setObjectives(final EvolutionState state, double[] newObjectives)
-    {
+        {
         if (newObjectives == null)
             {
-                state.output.fatal("Null objective array provided to MultiObjectiveFitness.");
+            state.output.fatal("Null objective array provided to MultiObjectiveFitness.");
             }
         if (newObjectives.length != objectives.length)
             {
-                state.output.fatal("New objective array length does not match current length.");
+            state.output.fatal("New objective array length does not match current length.");
             }
         for (int i = 0; i < newObjectives.length; i++)
             {
-                double _f = newObjectives[i];
-                if (_f >= Double.POSITIVE_INFINITY || _f <= Double.NEGATIVE_INFINITY || Double.isNaN(_f))
-                    {
-                        state.output.warning("Bad objective #" + i + ": " + _f + ", setting to worst value for that objective.");
-                        if (maximize[i])
-                            newObjectives[i] = minObjective[i];
-                        else
-                            newObjectives[i] = maxObjective[i];
-                    }
+            double _f = newObjectives[i];
+            if (_f >= Double.POSITIVE_INFINITY || _f <= Double.NEGATIVE_INFINITY || Double.isNaN(_f))
+                {
+                state.output.warning("Bad objective #" + i + ": " + _f + ", setting to worst value for that objective.");
+                if (maximize[i])
+                    newObjectives[i] = minObjective[i];
+                else
+                    newObjectives[i] = maxObjective[i];
+                }
             }
         objectives = newObjectives;
-    }
+        }
 
     public Parameter defaultBase()
-    {
+        {
         return MultiObjectiveDefaults.base().push(P_FITNESS);
-    }
+        }
 
     public Object clone()
-    {
+        {
         MultiObjectiveFitness f = (MultiObjectiveFitness) (super.clone());
         f.objectives = (double[]) (objectives.clone()); // cloning an array
 
         // note that we do NOT clone max and min fitness, or maximizing -- they're shared
         return f;
-    }
+        }
 
     /**
      * Returns the Max() of objectives, which adheres to Fitness.java's protocol
@@ -221,13 +221,13 @@ public class MultiObjectiveFitness extends Fitness
      * method which requires this.
      */
     public double fitness()
-    {
+        {
         double fit = objectives[0];
         for (int x = 1; x < objectives.length; x++)
             if (fit < objectives[x])
                 fit = objectives[x];
         return fit;
-    }
+        }
 
     /**
      * Sets up. This must be called at least once in the prototype before
@@ -235,7 +235,7 @@ public class MultiObjectiveFitness extends Fitness
      */
 
     public void setup(EvolutionState state, Parameter base)
-    {
+        {
         super.setup(state, base); // unnecessary really
 
         Parameter def = defaultBase();
@@ -252,31 +252,31 @@ public class MultiObjectiveFitness extends Fitness
                 
         for (int i = 0; i < numFitnesses; i++)
             {
-                // load default globals
-                minObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_MINOBJECTIVES), def.push(P_MINOBJECTIVES), 0.0);
-                maxObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_MAXOBJECTIVES), def.push(P_MAXOBJECTIVES), 1.0);
-                maximize[i] = state.parameters.getBoolean(base.push(P_MAXIMIZE), def.push(P_MAXIMIZE), true);
+            // load default globals
+            minObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_MINOBJECTIVES), def.push(P_MINOBJECTIVES), 0.0);
+            maxObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_MAXOBJECTIVES), def.push(P_MAXOBJECTIVES), 1.0);
+            maximize[i] = state.parameters.getBoolean(base.push(P_MAXIMIZE), def.push(P_MAXIMIZE), true);
 
-                // load specifics if any
-                minObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_MINOBJECTIVES).push("" + i), def.push(P_MINOBJECTIVES).push("" + i), minObjective[i]);
-                maxObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_MAXOBJECTIVES).push("" + i), def.push(P_MAXOBJECTIVES).push("" + i), maxObjective[i]);
-                maximize[i] = state.parameters.getBoolean(base.push(P_MAXIMIZE).push("" + i), def.push(P_MAXIMIZE).push("" + i), maximize[i]);
+            // load specifics if any
+            minObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_MINOBJECTIVES).push("" + i), def.push(P_MINOBJECTIVES).push("" + i), minObjective[i]);
+            maxObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_MAXOBJECTIVES).push("" + i), def.push(P_MAXOBJECTIVES).push("" + i), maxObjective[i]);
+            maximize[i] = state.parameters.getBoolean(base.push(P_MAXIMIZE).push("" + i), def.push(P_MAXIMIZE).push("" + i), maximize[i]);
             
-                // test for validity
-                if (minObjective[i] >= maxObjective[i])
-                    state.output.error("For objective " + i + "the min fitness must be strictly less than the max fitness.");
+            // test for validity
+            if (minObjective[i] >= maxObjective[i])
+                state.output.error("For objective " + i + "the min fitness must be strictly less than the max fitness.");
             }
         state.output.exitIfErrors();
-    }
+        }
 
     /**
      * Returns true if this fitness is the "ideal" fitness. Default always
      * returns false. You may want to override this.
      */
     public boolean isIdealFitness()
-    {
+        {
         return false;
-    }
+        }
 
     /**
      * Returns true if I'm equivalent in fitness (neither better nor worse) to
@@ -288,7 +288,7 @@ public class MultiObjectiveFitness extends Fitness
      */
 
     public boolean equivalentTo(Fitness _fitness)
-    {
+        {
         MultiObjectiveFitness other = (MultiObjectiveFitness) _fitness;
         boolean abeatsb = false;
         boolean bbeatsa = false;
@@ -298,34 +298,34 @@ public class MultiObjectiveFitness extends Fitness
         
         for (int x = 0; x < objectives.length; x++)
             {
-                if (maximize[x] != other.maximize[x])  // uh oh
-                    throw new RuntimeException(
-                                               "Attempt made to compare two multiobjective fitnesses; but for objective #" + x + 
-                                               ", one expects higher values to be better and the other expectes lower values to be better.");
+            if (maximize[x] != other.maximize[x])  // uh oh
+                throw new RuntimeException(
+                    "Attempt made to compare two multiobjective fitnesses; but for objective #" + x + 
+                    ", one expects higher values to be better and the other expectes lower values to be better.");
 
-                if (maximize[x])
-                    {
-                        if (objectives[x] > other.objectives[x])
-                            abeatsb = true;
-                        if (objectives[x] < other.objectives[x])
-                            bbeatsa = true;
-                        if (abeatsb && bbeatsa)
-                            return true;
-                    }
-                else
-                    {
-                        if (objectives[x] < other.objectives[x])
-                            abeatsb = true;
-                        if (objectives[x] > other.objectives[x])
-                            bbeatsa = true;
-                        if (abeatsb && bbeatsa)
-                            return true;
-                    }
+            if (maximize[x])
+                {
+                if (objectives[x] > other.objectives[x])
+                    abeatsb = true;
+                if (objectives[x] < other.objectives[x])
+                    bbeatsa = true;
+                if (abeatsb && bbeatsa)
+                    return true;
+                }
+            else
+                {
+                if (objectives[x] < other.objectives[x])
+                    abeatsb = true;
+                if (objectives[x] > other.objectives[x])
+                    bbeatsa = true;
+                if (abeatsb && bbeatsa)
+                    return true;
+                }
             }
         if (abeatsb || bbeatsa)
             return false;
         return true;
-    }
+        }
 
     /**
      * Returns true if I'm better than _fitness. The DEFAULT rule I'm using is this: if
@@ -335,9 +335,9 @@ public class MultiObjectiveFitness extends Fitness
      */
 
     public boolean betterThan(Fitness fitness)
-    {
+        {
         return paretoDominates((MultiObjectiveFitness)fitness);
-    }
+        }
 
     /**
      * Returns true if I'm better than _fitness. The rule I'm using is this: if
@@ -346,7 +346,7 @@ public class MultiObjectiveFitness extends Fitness
      */
 
     public boolean paretoDominates(MultiObjectiveFitness other)
-    {
+        {
         boolean abeatsb = false;
 
         if (objectives.length != other.objectives.length)
@@ -354,38 +354,38 @@ public class MultiObjectiveFitness extends Fitness
             
         for (int x = 0; x < objectives.length; x++)
             {
-                if (maximize[x] != other.maximize[x])  // uh oh
-                    throw new RuntimeException(
-                                               "Attempt made to compare two multiobjective fitnesses; but for objective #" + x + 
-                                               ", one expects higher values to be better and the other expectes lower values to be better.");
+            if (maximize[x] != other.maximize[x])  // uh oh
+                throw new RuntimeException(
+                    "Attempt made to compare two multiobjective fitnesses; but for objective #" + x + 
+                    ", one expects higher values to be better and the other expectes lower values to be better.");
 
-                if (maximize[x])
-                    {
-                        if (objectives[x] > other.objectives[x])
-                            abeatsb = true;
-                        else if (objectives[x] < other.objectives[x])
-                            return false;
-                    }
-                else
-                    {
-                        if (objectives[x] < other.objectives[x])
-                            abeatsb = true;
-                        else if (objectives[x] > other.objectives[x])
-                            return false;
-                    }
+            if (maximize[x])
+                {
+                if (objectives[x] > other.objectives[x])
+                    abeatsb = true;
+                else if (objectives[x] < other.objectives[x])
+                    return false;
+                }
+            else
+                {
+                if (objectives[x] < other.objectives[x])
+                    abeatsb = true;
+                else if (objectives[x] > other.objectives[x])
+                    return false;
+                }
             }
             
         return abeatsb;
-    }
+        }
 
     // Remove an individual from the ArrayList, shifting the topmost
     // individual in his place
     static void yank(int val, ArrayList<Individual> list)
-    {
+        {
         int size = list.size();
         list.set(val, list.get(size - 1));
         list.remove(size - 1);
-    }
+        }
 
     /**
      * Divides an array of Individuals into the Pareto front and the "nonFront" (everyone else). 
@@ -395,7 +395,7 @@ public class MultiObjectiveFitness extends Fitness
      * O(n^2).
      */
     public static ArrayList<Individual> partitionIntoParetoFront(ArrayList<Individual> inds, ArrayList<Individual> front, ArrayList<Individual> nonFront)
-    {
+        {
         if (front == null)
             front = new ArrayList<Individual>();
                         
@@ -405,65 +405,65 @@ public class MultiObjectiveFitness extends Fitness
         // iterate over all the remaining individuals
         for (int i = 1; i < inds.size(); i++)
             {
-                Individual ind = (Individual) (inds.get(i));
+            Individual ind = (Individual) (inds.get(i));
 
-                boolean noOneWasBetter = true;
-                int frontSize = front.size();
+            boolean noOneWasBetter = true;
+            int frontSize = front.size();
                         
-                // iterate over the entire front
-                for (int j = 0; j < frontSize; j++)
-                    {
-                        Individual frontmember = (Individual) (front.get(j));
+            // iterate over the entire front
+            for (int j = 0; j < frontSize; j++)
+                {
+                Individual frontmember = (Individual) (front.get(j));
                                 
-                        // if the front member is better than the individual, dump the individual and go to the next one
-                        if (((MultiObjectiveFitness) (frontmember.fitness)).paretoDominates((MultiObjectiveFitness) (ind.fitness)))
-                            {
-                                if (nonFront != null) nonFront.add(ind);
-                                noOneWasBetter = false;
-                                break;  // failed.  He's not in the front
-                            } 
-                        // if the individual was better than the front member, dump the front member.  But look over the
-                        // other front members (don't break) because others might be dominated by the individual as well.
-                        else if (((MultiObjectiveFitness) (ind.fitness)).paretoDominates((MultiObjectiveFitness) (frontmember.fitness)))
-                            {
-                                yank(j, front);
-                                // a front member is dominated by the new individual.  Replace him
-                                frontSize--; // member got removed
-                                j--;  // because there's another guy we now need to consider in his place
-                                if (nonFront != null) nonFront.add(frontmember);
-                            }
+                // if the front member is better than the individual, dump the individual and go to the next one
+                if (((MultiObjectiveFitness) (frontmember.fitness)).paretoDominates((MultiObjectiveFitness) (ind.fitness)))
+                    {
+                    if (nonFront != null) nonFront.add(ind);
+                    noOneWasBetter = false;
+                    break;  // failed.  He's not in the front
+                    } 
+                // if the individual was better than the front member, dump the front member.  But look over the
+                // other front members (don't break) because others might be dominated by the individual as well.
+                else if (((MultiObjectiveFitness) (ind.fitness)).paretoDominates((MultiObjectiveFitness) (frontmember.fitness)))
+                    {
+                    yank(j, front);
+                    // a front member is dominated by the new individual.  Replace him
+                    frontSize--; // member got removed
+                    j--;  // because there's another guy we now need to consider in his place
+                    if (nonFront != null) nonFront.add(frontmember);
                     }
-                if (noOneWasBetter)
-                    front.add(ind);
+                }
+            if (noOneWasBetter)
+                front.add(ind);
             }
         return front;
-    }
+        }
 
 
     /** Divides inds into pareto front ranks (each an ArrayList), and returns them, in order,
         stored in an ArrayList. */
     public static ArrayList<ArrayList<Individual>> partitionIntoRanks(ArrayList<Individual> inds)
-    {
+        {
         ArrayList<ArrayList<Individual>> frontsByRank = new ArrayList<ArrayList<Individual>>();
 
         while(inds.size() > 0)
             {
-                ArrayList<Individual> front = new ArrayList<Individual>();
-                ArrayList<Individual> nonFront = new ArrayList<Individual>();
-                MultiObjectiveFitness.partitionIntoParetoFront(inds, front, nonFront);
+            ArrayList<Individual> front = new ArrayList<Individual>();
+            ArrayList<Individual> nonFront = new ArrayList<Individual>();
+            MultiObjectiveFitness.partitionIntoParetoFront(inds, front, nonFront);
                         
-                // build inds out of remainder
-                inds = new ArrayList<Individual>(nonFront);
-                frontsByRank.add(front);
+            // build inds out of remainder
+            inds = new ArrayList<Individual>(nonFront);
+            frontsByRank.add(front);
             }
         return frontsByRank;
-    }
+        }
 
 
     /** Returns the Pareto rank for each individual.  Rank 0 is the best rank, then rank 1, and so on.  This is O(n) but it has a high constant overhead because it
         allocates a hashmap and does some autoboxing. */
     public static int[] getRankings(ArrayList<Individual> inds)
-    {
+        {
         int[] r = new int[inds.size()];
         ArrayList<ArrayList<Individual>> ranks = partitionIntoRanks(inds);  // get all the ranks
         
@@ -475,17 +475,17 @@ public class MultiObjectiveFitness extends Fitness
         int numRanks = ranks.size();
         for(int rank = 0 ; rank < numRanks; rank++)  // for each rank...
             {
-                ArrayList<Individual> front = ranks.get(rank);
-                int numInds = front.size();
-                for(int ind = 0; ind < numInds; ind++)  // for each individual in that rank ...
-                    {
-                        // get the index of the individual in the inds array
-                        int i = ((Integer)(m.get(front.get(ind)))).intValue();
-                        r[i] = rank;  // set the rank in the corresponding ranks array
-                    }
+            ArrayList<Individual> front = ranks.get(rank);
+            int numInds = front.size();
+            for(int ind = 0; ind < numInds; ind++)  // for each individual in that rank ...
+                {
+                // get the index of the individual in the inds array
+                int i = ((Integer)(m.get(front.get(ind)))).intValue();
+                r[i] = rank;  // set the rank in the corresponding ranks array
+                }
             }
         return r;
-    }
+        }
 
 
 
@@ -493,109 +493,109 @@ public class MultiObjectiveFitness extends Fitness
      * Returns the sum of the squared difference between two Fitnesses in Objective space.
      */
     public double sumSquaredObjectiveDistance(MultiObjectiveFitness other)
-    {
+        {
         double s = 0;
         for (int i = 0; i < objectives.length; i++)
             {
-                double a = (objectives[i] - other.objectives[i]);
-                s += a * a;
+            double a = (objectives[i] - other.objectives[i]);
+            s += a * a;
             }
         return s;
-    }
+        }
 
 
     /**
      * Returns the Manhattan difference between two Fitnesses in Objective space.
      */
     public double manhattanObjectiveDistance(MultiObjectiveFitness other)
-    {
+        {
         double s = 0;
         for (int i = 0; i < objectives.length; i++)
             {
-                s += Math.abs(objectives[i] - other.objectives[i]);
+            s += Math.abs(objectives[i] - other.objectives[i]);
             }
         return s;
-    }
+        }
 
 
     public String fitnessToString()
-    {
+        {
         String s = FITNESS_PREAMBLE + MULTI_FITNESS_POSTAMBLE;
         for (int x = 0; x < objectives.length; x++)
             {
-                if (x > 0)
-                    s = s + " ";
-                s = s + Code.encode(objectives[x]);
+            if (x > 0)
+                s = s + " ";
+            s = s + Code.encode(objectives[x]);
             }
         return s + FITNESS_POSTAMBLE;
-    }
+        }
 
 
     public String fitnessToStringForHumans()
-    {
+        {
         String s = FITNESS_PREAMBLE + MULTI_FITNESS_POSTAMBLE;
         for (int x = 0; x < objectives.length; x++)
             {
-                if (x > 0)
-                    s = s + " ";
-                s = s + objectives[x];
+            if (x > 0)
+                s = s + " ";
+            s = s + objectives[x];
             }
         return s + FITNESS_POSTAMBLE;
-    }
+        }
 
     public void readFitness(final EvolutionState state, final LineNumberReader reader) throws IOException
-    {
+        {
         DecodeReturn d = Code.checkPreamble(FITNESS_PREAMBLE + MULTI_FITNESS_POSTAMBLE, state, reader);
         for (int x = 0; x < objectives.length; x++)
             {
-                Code.decode(d);
-                if (d.type != DecodeReturn.T_DOUBLE)
-                    state.output.fatal("Reading Line " + d.lineNumber + ": " + "Bad Fitness (objectives value #" + x + ").");
-                objectives[x] = (double) d.d;
+            Code.decode(d);
+            if (d.type != DecodeReturn.T_DOUBLE)
+                state.output.fatal("Reading Line " + d.lineNumber + ": " + "Bad Fitness (objectives value #" + x + ").");
+            objectives[x] = (double) d.d;
             }
-    }
+        }
 
     public void writeFitness(final EvolutionState state, final DataOutput dataOutput) throws IOException
-    {
+        {
         dataOutput.writeInt(objectives.length);
         for (int x = 0; x < objectives.length; x++)
             dataOutput.writeDouble(objectives[x]);
         writeTrials(state, dataOutput);
-    }
+        }
 
     public void readFitness(final EvolutionState state, final DataInput dataInput) throws IOException
-    {
+        {
         int len = dataInput.readInt();
         if (objectives == null || objectives.length != len)
             objectives = new double[len];
         for (int x = 0; x < objectives.length; x++)
             objectives[x] = dataInput.readDouble();
         readTrials(state, dataInput);
-    }
+        }
 
 
     public void setToBestOf(EvolutionState state, Fitness[] fitnesses)
-    {
+        {
         state.output.fatal("setToBestOf(EvolutionState, Fitness[]) not implemented in " + this.getClass());
-    }
+        }
 
     public void setToMeanOf(EvolutionState state, Fitness[] fitnesses)
-    {
+        {
         // basically we compute the centroid of the fitnesses
         double sum = 0.0;
         for(int i = 0; i < objectives.length; i++)
             {
-                for(int k = 0; k < fitnesses.length; k++)
-                    {
-                        MultiObjectiveFitness f = (MultiObjectiveFitness) fitnesses[k];
-                        sum += f.objectives[i];
-                    }
-                objectives[i] = (double)(sum / fitnesses.length);
+            for(int k = 0; k < fitnesses.length; k++)
+                {
+                MultiObjectiveFitness f = (MultiObjectiveFitness) fitnesses[k];
+                sum += f.objectives[i];
+                }
+            objectives[i] = (double)(sum / fitnesses.length);
             }
-    }
+        }
 
     public void setToMedianOf(EvolutionState state, Fitness[] fitnesses)
-    {
+        {
         state.output.fatal("setToMedianOf(EvolutionState, Fitness[]) not implemented in " + this.getClass());
+        }
     }
-}

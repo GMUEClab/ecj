@@ -25,12 +25,12 @@ import ec.*;
  */
 
 public final class CMAESDefaults implements DefaultsForm
-{
+    {
     public static final String P_CMAES = "cmaes";
 
     /** Returns the default base. */
     public static final Parameter base()
-    {
+        {
         return new Parameter(P_CMAES);
-    }    
-}
+        }    
+    }

@@ -71,7 +71,7 @@ import ec.util.*;
  */
 
 public class MuCommaLambdaBreeder extends Breeder
-{    
+    {    
     public static final String P_MU = "mu";
     public static final String P_MU_FRACTION = "mu-fraction";
     public static final String P_LAMBDA = "lambda";
@@ -101,7 +101,7 @@ public class MuCommaLambdaBreeder extends Breeder
     public int maximumMuLambdaDivisor() { return 2; }
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         // we're not using the base
         Parameter p = new Parameter(Initializer.P_POP).push(Population.P_SIZE);
         int size = state.parameters.getInt(p,null,1);  // if size is wrong, we'll let Population complain about it -- for us, we'll just make 0-sized arrays and drop out.
@@ -113,70 +113,70 @@ public class MuCommaLambdaBreeder extends Breeder
         // load mu and lambda data
         for(int x=0;x<size;x++)
             {
-                Parameter pp = new Parameter(Initializer.P_POP).push(Population.P_SUBPOP).push(""+x).push(Subpopulation.P_SUBPOPSIZE);
-                int ppval = state.parameters.getInt(pp, null, 1);
-                if (state.parameters.exists(ESDefaults.base().push(P_LAMBDA).push(""+x),null))  // we have a lambda
-                    {
-                        lambda[x] = state.parameters.getInt(ESDefaults.base().push(P_LAMBDA).push(""+x),null,1);            
-                        if (lambda[x]==0) state.output.error("lambda must be an integer >= 1",ESDefaults.base().push(P_LAMBDA).push(""+x));
-                    }
-                else
-                    {
-                        state.output.warning("lambda not specified for subpopulation " + x + ", setting it to the subopulation size, that is, " + ppval + ".", 
-                                             ESDefaults.base().push(P_LAMBDA).push(""+x),null);
-                        lambda[x] = ppval;
-                        if (lambda[x] == 0)
-                            state.output.error("Subpouplation Size must be >= 1", pp, null);
-                    }
+            Parameter pp = new Parameter(Initializer.P_POP).push(Population.P_SUBPOP).push(""+x).push(Subpopulation.P_SUBPOPSIZE);
+            int ppval = state.parameters.getInt(pp, null, 1);
+            if (state.parameters.exists(ESDefaults.base().push(P_LAMBDA).push(""+x),null))  // we have a lambda
+                {
+                lambda[x] = state.parameters.getInt(ESDefaults.base().push(P_LAMBDA).push(""+x),null,1);            
+                if (lambda[x]==0) state.output.error("lambda must be an integer >= 1",ESDefaults.base().push(P_LAMBDA).push(""+x));
+                }
+            else
+                {
+                state.output.warning("lambda not specified for subpopulation " + x + ", setting it to the subopulation size, that is, " + ppval + ".", 
+                    ESDefaults.base().push(P_LAMBDA).push(""+x),null);
+                lambda[x] = ppval;
+                if (lambda[x] == 0)
+                    state.output.error("Subpouplation Size must be >= 1", pp, null);
+                }
                                 
-                if (state.parameters.exists(ESDefaults.base().push(P_MU).push(""+x),null))  // we defined mu
-                    {
-                        // did we also define a mu-fraction?
-                        if (state.parameters.exists(ESDefaults.base().push(P_MU_FRACTION).push(""+x), null))
-                            state.output.warning("Defined both a mu and mu-fraction for subpopulation " + x + ".  Only mu will be used. ", 
-                                                 ESDefaults.base().push(P_MU).push(""+x),
-                                                 ESDefaults.base().push(P_MU_FRACTION).push(""+x));
+            if (state.parameters.exists(ESDefaults.base().push(P_MU).push(""+x),null))  // we defined mu
+                {
+                // did we also define a mu-fraction?
+                if (state.parameters.exists(ESDefaults.base().push(P_MU_FRACTION).push(""+x), null))
+                    state.output.warning("Defined both a mu and mu-fraction for subpopulation " + x + ".  Only mu will be used. ", 
+                        ESDefaults.base().push(P_MU).push(""+x),
+                        ESDefaults.base().push(P_MU_FRACTION).push(""+x));
                 
-                        mu[x] = state.parameters.getInt(ESDefaults.base().push(P_MU).push(""+x),null,1);       
-                        if (mu[x]==0) state.output.error("mu must be an integer >= 1",ESDefaults.base().push(P_MU).push(""+x), null);
-                        else if (lambda[x] % mu[x] != 0)
-                            {
-                                if (mu[x] > lambda[x] / maximumMuLambdaDivisor())
-                                    {
-                                        state.output.warning("mu (" + mu[x] + ") for subpopulation " + x + " is greater than lambda (" + lambda[x] + ") / " + maximumMuLambdaDivisor() + ".  Mu will be set to half of lambda, that is, " + lambda[x] / maximumMuLambdaDivisor() + ".");                        
-                                        mu[x] = lambda[x] / maximumMuLambdaDivisor();
-                                    }
-        
-                                if (lambda[x] % mu[x] != 0)  // check again
-                                    state.output.error("mu must be a divisor of lambda", ESDefaults.base().push(P_MU).push(""+x));
-                            }
-                        else if (mu[x] > ppval)
-                            {
-                                state.output.warning("mu is presently > the initial subpopulation size.  Mu will be set to the subpopulation size, that is, " + ppval + ".", ESDefaults.base().push(P_MU).push(""+x), null);
-                                mu[x] = ppval;
-                            }
-                    }
-                else if (state.parameters.exists(ESDefaults.base().push(P_MU_FRACTION).push(""+x), null))  // we defined mu in terms of a fraction
+                mu[x] = state.parameters.getInt(ESDefaults.base().push(P_MU).push(""+x),null,1);       
+                if (mu[x]==0) state.output.error("mu must be an integer >= 1",ESDefaults.base().push(P_MU).push(""+x), null);
+                else if (lambda[x] % mu[x] != 0)
                     {
-                        double mufrac = state.parameters.getDoubleWithMax(ESDefaults.base().push(P_MU_FRACTION).push(""+x), null, 0.0, 1.0 / maximumMuLambdaDivisor());
-                        if (mufrac < 0.0)
-                            state.output.fatal("Mu-Fraction must be a value between 0.0 and " + 1.0 / maximumMuLambdaDivisor(), ESDefaults.base().push(P_MU_FRACTION).push(""+x), null);
-                                
-                        int m = (int)Math.max(lambda[x] * mufrac, 1.0);
-                        mu[x] = m;
-                        // find the largest divisor of lambda[x] which is <= m. This is ugly
-                        double val = lambda[x] / (double) mu[x];
-                        while (val != (int) val)
-                            {
-                                mu[x]--;
-                                val = lambda[x] / (double) mu[x];
-                            }
-                        state.output.message("Mu-Fraction " + mufrac + " yields a mu of " + m + ", adjusted to " + mu[x]);
+                    if (mu[x] > lambda[x] / maximumMuLambdaDivisor())
+                        {
+                        state.output.warning("mu (" + mu[x] + ") for subpopulation " + x + " is greater than lambda (" + lambda[x] + ") / " + maximumMuLambdaDivisor() + ".  Mu will be set to half of lambda, that is, " + lambda[x] / maximumMuLambdaDivisor() + ".");                        
+                        mu[x] = lambda[x] / maximumMuLambdaDivisor();
+                        }
+        
+                    if (lambda[x] % mu[x] != 0)  // check again
+                        state.output.error("mu must be a divisor of lambda", ESDefaults.base().push(P_MU).push(""+x));
                     }
-                else state.output.fatal("Neither a Mu or a Mu-Fraction was provided for subpopulation " + x, ESDefaults.base().push(P_MU).push(""+x), ESDefaults.base().push(P_MU_FRACTION).push(""+x));
+                else if (mu[x] > ppval)
+                    {
+                    state.output.warning("mu is presently > the initial subpopulation size.  Mu will be set to the subpopulation size, that is, " + ppval + ".", ESDefaults.base().push(P_MU).push(""+x), null);
+                    mu[x] = ppval;
+                    }
+                }
+            else if (state.parameters.exists(ESDefaults.base().push(P_MU_FRACTION).push(""+x), null))  // we defined mu in terms of a fraction
+                {
+                double mufrac = state.parameters.getDoubleWithMax(ESDefaults.base().push(P_MU_FRACTION).push(""+x), null, 0.0, 1.0 / maximumMuLambdaDivisor());
+                if (mufrac < 0.0)
+                    state.output.fatal("Mu-Fraction must be a value between 0.0 and " + 1.0 / maximumMuLambdaDivisor(), ESDefaults.base().push(P_MU_FRACTION).push(""+x), null);
+                                
+                int m = (int)Math.max(lambda[x] * mufrac, 1.0);
+                mu[x] = m;
+                // find the largest divisor of lambda[x] which is <= m. This is ugly
+                double val = lambda[x] / (double) mu[x];
+                while (val != (int) val)
+                    {
+                    mu[x]--;
+                    val = lambda[x] / (double) mu[x];
+                    }
+                state.output.message("Mu-Fraction " + mufrac + " yields a mu of " + m + ", adjusted to " + mu[x]);
+                }
+            else state.output.fatal("Neither a Mu or a Mu-Fraction was provided for subpopulation " + x, ESDefaults.base().push(P_MU).push(""+x), ESDefaults.base().push(P_MU_FRACTION).push(""+x));
             }
         state.output.exitIfErrors();
-    }
+        }
 
 
 
@@ -206,28 +206,28 @@ public class MuCommaLambdaBreeder extends Breeder
                 
 
     public Population breedPopulation(EvolutionState state) 
-    {
+        {
         // Complete 1/5 statistics for last population
         
         if (parentPopulation != null)
             {
-                // Only go from 0 to lambda-1, as the remaining individuals may be parents.
-                // A child C's parent's index I is equal to C / mu[subpopulation].
-                for (int x = 0; x< state.population.subpops.size(); x++)
+            // Only go from 0 to lambda-1, as the remaining individuals may be parents.
+            // A child C's parent's index I is equal to C / mu[subpopulation].
+            for (int x = 0; x< state.population.subpops.size(); x++)
+                {
+                int numChildrenBetter = 0;
+                for (int i = 0; i < lambda[x]; i++)
                     {
-                        int numChildrenBetter = 0;
-                        for (int i = 0; i < lambda[x]; i++)
-                            {
-                                int parent = i / (lambda[x] / mu[x]);  // note integer division
-                                if (state.population.subpops.get(x).individuals.get(i).fitness.betterThan(parentPopulation.subpops.get(x).individuals.get(parent).fitness))
-                                    numChildrenBetter++;
-                            }
-                        if (numChildrenBetter > lambda[x] / 5.0)  // note double division
-                            comparison[x] = C_OVER_ONE_FIFTH_BETTER;
-                        else if (numChildrenBetter < lambda[x] / 5.0)  // note double division
-                            comparison[x] = C_UNDER_ONE_FIFTH_BETTER;
-                        else comparison[x] = C_EXACTLY_ONE_FIFTH_BETTER;
+                    int parent = i / (lambda[x] / mu[x]);  // note integer division
+                    if (state.population.subpops.get(x).individuals.get(i).fitness.betterThan(parentPopulation.subpops.get(x).individuals.get(parent).fitness))
+                        numChildrenBetter++;
                     }
+                if (numChildrenBetter > lambda[x] / 5.0)  // note double division
+                    comparison[x] = C_OVER_ONE_FIFTH_BETTER;
+                else if (numChildrenBetter < lambda[x] / 5.0)  // note double division
+                    comparison[x] = C_UNDER_ONE_FIFTH_BETTER;
+                else comparison[x] = C_EXACTLY_ONE_FIFTH_BETTER;
+                }
             }
                         
         // load the parent population
@@ -247,8 +247,8 @@ public class MuCommaLambdaBreeder extends Breeder
         // next, load our population, make sure there are no subpopulations smaller than the mu's
         for(int x = 0; x< state.population.subpops.size(); x++)
             {
-                if (state.population.subpops.get(0).individuals.size() < mu[x])
-                    state.output.error("Subpopulation " + x + " must be a multiple of the equivalent mu (that is, "+ mu[x]+").");
+            if (state.population.subpops.get(0).individuals.size() < mu[x])
+                state.output.error("Subpopulation " + x + " must be a multiple of the equivalent mu (that is, "+ mu[x]+").");
             }
         state.output.exitIfErrors();
         
@@ -257,25 +257,25 @@ public class MuCommaLambdaBreeder extends Breeder
         
         for(int x = 0; x< state.population.subpops.size(); x++)
             {
-                final ArrayList<Individual> i = state.population.subpops.get(x).individuals;
+            final ArrayList<Individual> i = state.population.subpops.get(x).individuals;
 
-                java.util.Collections.sort(i,
-                                           new java.util.Comparator<Individual>()
-                                           {
-                                               public int compare(Individual i1, Individual i2)
-                                               {
-                                                   Individual a = i1;
-                                                   Individual b = i2;
-                                                   // return 1 if should appear after object b in the array.
-                                                   // This is the case if a has WORSE fitness.
-                                                   if (b.fitness.betterThan(a.fitness)) return 1;
-                                                   // return -1 if a should appear before object b in the array.
-                                                   // This is the case if b has WORSE fitness.
-                                                   if (a.fitness.betterThan(b.fitness)) return -1;
-                                                   // else return 0
-                                                   return 0;
-                                               }
-                                           });
+            java.util.Collections.sort(i,
+                new java.util.Comparator<Individual>()
+                    {
+                    public int compare(Individual i1, Individual i2)
+                        {
+                        Individual a = i1;
+                        Individual b = i2;
+                        // return 1 if should appear after object b in the array.
+                        // This is the case if a has WORSE fitness.
+                        if (b.fitness.betterThan(a.fitness)) return 1;
+                        // return -1 if a should appear before object b in the array.
+                        // This is the case if b has WORSE fitness.
+                        if (a.fitness.betterThan(b.fitness)) return -1;
+                        // else return 0
+                        return 0;
+                        }
+                    });
             }
 
         // now the subpops are sorted so that the best individuals appear in the lowest indexes.
@@ -299,7 +299,7 @@ public class MuCommaLambdaBreeder extends Breeder
         numThreads = Math.min(numThreads, state.breedthreads);
         if (numThreads < state.breedthreads)
             state.output.warnOnce("Largest lambda size (" + numThreads +") is smaller than number of breedthreads (" + state.breedthreads +
-                                  "), so fewer breedthreads will be created.");
+                "), so fewer breedthreads will be created.");
             
         newIndividuals = new ArrayList[state.population.subpops.size()][numThreads];
         for(int subpop = 0; subpop < state.population.subpops.size(); subpop++)
@@ -313,34 +313,34 @@ public class MuCommaLambdaBreeder extends Breeder
         
         for(int x = 0; x< state.population.subpops.size(); x++)
             {
-                for(int thread = 0; thread < numThreads; thread++)
-                    newIndividuals[x][thread].clear();
+            for(int thread = 0; thread < numThreads; thread++)
+                newIndividuals[x][thread].clear();
 
-                int length = lambda[x];
+            int length = lambda[x];
 
-                // we will have some extra individuals.  We distribute these among the early subpopulations
-                int individualsPerThread = length / numThreads;  // integer division
-                int slop = length - numThreads * individualsPerThread;
-                int currentFrom = 0;
+            // we will have some extra individuals.  We distribute these among the early subpopulations
+            int individualsPerThread = length / numThreads;  // integer division
+            int slop = length - numThreads * individualsPerThread;
+            int currentFrom = 0;
                                 
-                for(int y=0;y<numThreads;y++)
+            for(int y=0;y<numThreads;y++)
+                {
+                if (slop > 0)
                     {
-                        if (slop > 0)
-                            {
-                                numinds[y][x] = individualsPerThread + 1;
-                                slop--;
-                            }
-                        else
-                            numinds[y][x] = individualsPerThread;
-                    
-                        if (numinds[y][x] == 0)
-                            {
-                                state.output.warnOnce("More threads exist than can be used to breed some subpopulations (first example: subpopulation " + x + ")");
-                            }
-                    
-                        from[y][x] = currentFrom;
-                        currentFrom += numinds[y][x];
+                    numinds[y][x] = individualsPerThread + 1;
+                    slop--;
                     }
+                else
+                    numinds[y][x] = individualsPerThread;
+                    
+                if (numinds[y][x] == 0)
+                    {
+                    state.output.warnOnce("More threads exist than can be used to breed some subpopulations (first example: subpopulation " + x + ")");
+                    }
+                    
+                from[y][x] = currentFrom;
+                currentFrom += numinds[y][x];
+                }
             }
 
         /*
@@ -366,57 +366,57 @@ public class MuCommaLambdaBreeder extends Breeder
         */           
         if (numThreads==1)
             {
-                breedPopChunk(newpop,state,numinds[0],from[0],0);
+            breedPopChunk(newpop,state,numinds[0],from[0],0);
             }
         else
             {
-                Thread[] t = new Thread[numThreads];
+            Thread[] t = new Thread[numThreads];
                 
-                // start up the threads
-                for(int y=0;y<numThreads;y++)
+            // start up the threads
+            for(int y=0;y<numThreads;y++)
+                {
+                MuLambdaBreederThread r = new MuLambdaBreederThread();
+                r.threadnum = y;
+                r.newpop = newpop;
+                r.numinds = numinds[y];
+                r.from = from[y];
+                r.me = this;
+                r.state = state;
+                t[y] = new Thread(r);
+                t[y].start();
+                }
+                
+            // gather the threads
+            for(int y=0;y<numThreads;y++) 
+                try
                     {
-                        MuLambdaBreederThread r = new MuLambdaBreederThread();
-                        r.threadnum = y;
-                        r.newpop = newpop;
-                        r.numinds = numinds[y];
-                        r.from = from[y];
-                        r.me = this;
-                        r.state = state;
-                        t[y] = new Thread(r);
-                        t[y].start();
+                    t[y].join();
                     }
-                
-                // gather the threads
-                for(int y=0;y<numThreads;y++) 
-                    try
-                        {
-                            t[y].join();
-                        }
-                    catch(InterruptedException e)
-                        {
-                            state.output.fatal("Whoa! The main breeding thread got interrupted!  Dying...");
-                        }
+                catch(InterruptedException e)
+                    {
+                    state.output.fatal("Whoa! The main breeding thread got interrupted!  Dying...");
+                    }
             }
             
         // Coalesce
         for(int subpop = 0; subpop < state.population.subpops.size(); subpop++)
             {
-                ArrayList<Individual> newpopindividuals = newpop.subpops.get(subpop).individuals;
-                for(int thread = 0; thread < numThreads; thread++)
-                    {
-                        newpopindividuals.addAll(newIndividuals[subpop][thread]);
-                    }
+            ArrayList<Individual> newpopindividuals = newpop.subpops.get(subpop).individuals;
+            for(int thread = 0; thread < numThreads; thread++)
+                {
+                newpopindividuals.addAll(newIndividuals[subpop][thread]);
+                }
             }
 
         return postProcess(newpop,state.population,state);
-    }
+        }
 
     /** A hook for Mu+Lambda, not used in Mu,Lambda */
 
     public Population postProcess(Population newpop, Population oldpop, EvolutionState state)
-    {
+        {
         return newpop;
-    }
+        }
     
     
     int[] children;
@@ -430,48 +430,48 @@ public class MuCommaLambdaBreeder extends Breeder
         you should not call it. */
     
     public void breedPopChunk(Population newpop, EvolutionState state, int[] numinds, int[] from, int threadnum) 
-    {
+        {
         for(int subpop = 0; subpop< newpop.subpops.size(); subpop++)
             {
-                ArrayList<Individual> putHere = (ArrayList<Individual>)newIndividuals[subpop][threadnum];
+            ArrayList<Individual> putHere = (ArrayList<Individual>)newIndividuals[subpop][threadnum];
 
-                // reset the appropriate count slot  -- this used to be outside the for-loop, a bug
-                // I believe
-                count[threadnum]=0;
+            // reset the appropriate count slot  -- this used to be outside the for-loop, a bug
+            // I believe
+            count[threadnum]=0;
         
-                BreedingSource bp = (BreedingSource) newpop.subpops.get(subpop).
-                    species.pipe_prototype.clone();
+            BreedingSource bp = (BreedingSource) newpop.subpops.get(subpop).
+                species.pipe_prototype.clone();
             
-                // check to make sure that the breeding pipeline produces
-                // the right kind of individuals.  Don't want a mistake there! :-)
-                if (!bp.produces(state,newpop,subpop,threadnum))
-                    state.output.fatal("The Breeding Source of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops.get(subpop).species.getClass().getName() + " or fitness " + newpop.subpops.get(subpop).species.f_prototype );
-                bp.prepareToProduce(state,subpop,threadnum);
-                if (count[threadnum] == 0)  // the ESSelection didn't set it to nonzero to inform us of his existence
-                    state.output.warnOnce("Whoa!  Breeding Source for subpop " + subpop + " doesn't have an ESSelection, but is being used by MuCommaLambdaBreeder or MuPlusLambdaBreeder.  That's probably not right.");
-                // reset again
-                count[threadnum] = 0;
+            // check to make sure that the breeding pipeline produces
+            // the right kind of individuals.  Don't want a mistake there! :-)
+            if (!bp.produces(state,newpop,subpop,threadnum))
+                state.output.fatal("The Breeding Source of subpopulation " + subpop + " does not produce individuals of the expected species " + newpop.subpops.get(subpop).species.getClass().getName() + " or fitness " + newpop.subpops.get(subpop).species.f_prototype );
+            bp.prepareToProduce(state,subpop,threadnum);
+            if (count[threadnum] == 0)  // the ESSelection didn't set it to nonzero to inform us of his existence
+                state.output.warnOnce("Whoa!  Breeding Source for subpop " + subpop + " doesn't have an ESSelection, but is being used by MuCommaLambdaBreeder or MuPlusLambdaBreeder.  That's probably not right.");
+            // reset again
+            count[threadnum] = 0;
         
-                // start breedin'!
+            // start breedin'!
             
-                int upperbound = from[subpop]+numinds[subpop];
-                for(int x=from[subpop];x<upperbound;x++)
-                    {
-                        if (bp.produce(1,1,subpop, putHere, state,threadnum, newpop.subpops.get(subpop).species.buildMisc(state, subpop, threadnum)) != 1)
-                            state.output.fatal("Whoa! Breeding Source for subpop " + subpop + " is not producing one individual at a time, as is required by the MuLambda strategies.");
+            int upperbound = from[subpop]+numinds[subpop];
+            for(int x=from[subpop];x<upperbound;x++)
+                {
+                if (bp.produce(1,1,subpop, putHere, state,threadnum, newpop.subpops.get(subpop).species.buildMisc(state, subpop, threadnum)) != 1)
+                    state.output.fatal("Whoa! Breeding Source for subpop " + subpop + " is not producing one individual at a time, as is required by the MuLambda strategies.");
 
-                        // increment the count
-                        count[threadnum]++;
-                    }
-                bp.finishProducing(state,subpop,threadnum);
+                // increment the count
+                count[threadnum]++;
+                }
+            bp.finishProducing(state,subpop,threadnum);
             }
+        }
     }
-}
 
 
 /** A private helper class for implementing multithreaded breeding */
 class MuLambdaBreederThread implements Runnable
-{
+    {
     Population newpop;
     public int[] numinds;
     public int[] from;
@@ -479,9 +479,9 @@ class MuLambdaBreederThread implements Runnable
     public EvolutionState state;
     public int threadnum;
     public void run()
-    {
+        {
         me.breedPopChunk(newpop,state,numinds,from,threadnum);
+        }
     }
-}
 
 

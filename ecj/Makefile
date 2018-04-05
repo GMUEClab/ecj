@@ -73,8 +73,10 @@ ec/app/xor/*.java \
 ec/breed/*.java \
 ec/coevolve/*.java \
 ec/de/*.java \
+ec/eda/amalgam/*.java \
 ec/eda/dovs/*.java \
 ec/eda/cmaes/*.java \
+ec/eda/pbil/*.java \
 ec/es/*.java \
 ec/eval/*.java \
 ec/evolve/*.java \
@@ -87,6 +89,7 @@ ec/gp/ge/*.java \
 ec/gp/ge/breed/*.java \
 ec/multiobjective/*.java \
 ec/multiobjective/nsga2/*.java \
+ec/multiobjective/nsga3/*.java \
 ec/multiobjective/spea2/*.java \
 ec/neat/*.java \
 ec/pso/*.java \

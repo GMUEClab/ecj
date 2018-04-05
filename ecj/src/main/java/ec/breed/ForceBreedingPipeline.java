@@ -51,21 +51,21 @@ import java.util.HashMap;
  */
 
 public class ForceBreedingPipeline extends BreedingPipeline
-{
+    {
     public static final String P_NUMINDS = "num-inds";
     public static final String P_FORCE = "force";
 
     public int numInds;
 
     public Parameter defaultBase()
-    {
+        {
         return BreedDefaults.base().push(P_FORCE);
-    }
+        }
 
     public int numSources() { return 1; }    
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state,base);
         Parameter def = defaultBase();
         numInds = state.parameters.getInt(base.push(P_NUMINDS),def.push(P_NUMINDS),1);
@@ -75,23 +75,23 @@ public class ForceBreedingPipeline extends BreedingPipeline
         // declare that likelihood isn't used
         if (likelihood < 1.0)
             state.output.warning("ForceBreedingPipeline does not respond to the 'likelihood' parameter.",
-                                 base.push(P_LIKELIHOOD), def.push(P_LIKELIHOOD));
-    }
+                base.push(P_LIKELIHOOD), def.push(P_LIKELIHOOD));
+        }
 
     /** Returns the max of typicalIndsProduced() of all its children */
     public int typicalIndsProduced()
-    {
+        {
         return numInds;
-    }
+        }
 
     public int produce(final int min,
-                       final int max,
-                       final int subpopulation,
-                       final ArrayList<Individual> inds,
-                       final EvolutionState state,
-                       final int thread, HashMap<String, Object> misc)
+        final int max,
+        final int subpopulation,
+        final ArrayList<Individual> inds,
+        final EvolutionState state,
+        final int thread, HashMap<String, Object> misc)
 
-    {
+        {
         int start = inds.size();
 
         int n = numInds;
@@ -102,13 +102,13 @@ public class ForceBreedingPipeline extends BreedingPipeline
         int numToProduce;
         for(total=0; total<n; )  // note empty term
             {
-                numToProduce = n - total;
-                if (numToProduce > numInds)
-                    numToProduce = numInds;
+            numToProduce = n - total;
+            if (numToProduce > numInds)
+                numToProduce = numInds;
 
-                total += sources[0].produce(numToProduce, numToProduce, subpopulation, inds, state, thread, misc);
+            total += sources[0].produce(numToProduce, numToProduce, subpopulation, inds, state, thread, misc);
             }
         
         return total;
+        }
     }
-}

@@ -11,12 +11,12 @@ import ec.simple.*;
 import ec.vector.*;
 
 public class AddSubtract extends Problem implements SimpleProblemForm
-{
-    public void evaluate(final EvolutionState state,
-                         final Individual ind,
-                         final int subpopulation,
-                         final int threadnum)
     {
+    public void evaluate(final EvolutionState state,
+        final Individual ind,
+        final int subpopulation,
+        final int threadnum)
+        {
         if (ind.evaluated) return;
 
         if (!(ind instanceof IntegerVectorIndividual))
@@ -37,10 +37,10 @@ public class AddSubtract extends Problem implements SimpleProblemForm
         if (!(ind2.fitness instanceof SimpleFitness))
             state.output.fatal("Whoa!  It's not a SimpleFitness!!!",null);
         ((SimpleFitness)ind2.fitness).setFitness(state,
-                                                 // what the heck, lets normalize the fitness for genome length
-                                                 rawfitness/(double)ind2.genome.length,
-                                                 ///... is the individual ideal?  Indicate here...
-                                                 false);
+            // what the heck, lets normalize the fitness for genome length
+            rawfitness/(double)ind2.genome.length,
+            ///... is the individual ideal?  Indicate here...
+            false);
         ind2.evaluated = true;
+        }
     }
-}

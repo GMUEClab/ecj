@@ -11,7 +11,7 @@ import ec.gp.*;
 import ec.util.*;
 
 public class Add extends GPNode
-{
+    {
     public String toString() { return "+"; }
 
     /*
@@ -30,12 +30,12 @@ public class Add extends GPNode
     public int expectedChildren() { return 2; }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
+        {
         double result;
         DoubleData rd = ((DoubleData)(input));
 
@@ -44,6 +44,6 @@ public class Add extends GPNode
 
         children[1].eval(state,thread,input,stack,individual,problem);
         rd.x = result + rd.x;
+        }
     }
-}
 

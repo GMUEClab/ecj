@@ -53,7 +53,7 @@ import ec.steadystate.*;
  */
 
 public class ProportionalTournamentSelection extends TournamentSelection
-{
+    {
     /** default base */
     public static final String P_PROPORTIONAL_TOURNAMENT = "proportional-tournament";
 
@@ -64,12 +64,12 @@ public class ProportionalTournamentSelection extends TournamentSelection
     public double fitnessPressureProb;
 
     public Parameter defaultBase()
-    {
+        {
         return SelectDefaults.base().push(P_PROPORTIONAL_TOURNAMENT);
-    }
+        }
     
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state,base);
         
         Parameter def = defaultBase();
@@ -77,14 +77,14 @@ public class ProportionalTournamentSelection extends TournamentSelection
         fitnessPressureProb = state.parameters.getDouble(base.push(P_PROBABILITY),def.push(P_PROBABILITY),0.0);
         if( fitnessPressureProb<0.0 || fitnessPressureProb>1.0 )
             state.output.fatal( "Probability must be between 0.0 and 1.0",
-                                base.push(P_PROBABILITY),def.push(P_PROBABILITY));
-    }
+                base.push(P_PROBABILITY),def.push(P_PROBABILITY));
+        }
 
     public boolean betterThan(Individual first, Individual second, int subpopulation, EvolutionState state, int thread)
-    {
+        {
         if (state.random[thread].nextBoolean(fitnessPressureProb))
             return first.fitness.betterThan(second.fitness);
         else
             return first.size() < second.size();
+        }
     }
-}

@@ -45,31 +45,31 @@ package ec.util;
 
 
 public class QuickSort 
-{
+    {
     static final int THRESHOLD = 0;  // might want to tweak this
     static final int MAXSTACKSIZE = 1000;
 
     /** Non-Recursive QuickSort */
     static public void qsort(byte[] array) 
-    {
+        {
         qsort_h(array, 0, array.length-1);
-    }
+        }
     
     
     
     /** Insertion Sort */
     static public void inssort(byte[] array) 
-    {
+        {
         byte tmp;
 
         for (int i=1; i<array.length; i++) // Insert i'th record
             for (int j=i; (j>0) && (array[j]<array[j-1]); j--)
                 //DSutil.swap(array, j, j-1);
                 { tmp = array[j]; array[j] = array[j-1]; array[j-1] = tmp; }
-    }
+        }
     
     static private void qsort_h(byte[] array, int oi, int oj) 
-    {
+        {
         int[] stack = new int[MAXSTACKSIZE]; // Stack for array bounds
         int top = -1;
         byte pivot;
@@ -81,66 +81,66 @@ public class QuickSort
 
         while (top > 0)    // While there are unprocessed subarrays
             {
-                // Pop stack
-                int j = stack[top--];
-                int i = stack[top--];
+            // Pop stack
+            int j = stack[top--];
+            int i = stack[top--];
       
-                // Findpivot
-                pivotindex = (i+j)/2;
-                pivot = array[pivotindex];
-                //DSutil.swap(array, pivotindex, j); // Stick pivot at end
-                tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
-                // Partition
-                l = i-1;
-                r = j;
-                do 
-                    {
-                        while (array[++l] < pivot);
-                        while ((r!=0) && (array[--r] > pivot));
-                        //DSutil.swap(array, l, r);
-                        tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                    } while (l < r);
-                //DSutil.swap(array, l, r);  // Undo final swap
+            // Findpivot
+            pivotindex = (i+j)/2;
+            pivot = array[pivotindex];
+            //DSutil.swap(array, pivotindex, j); // Stick pivot at end
+            tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
+            // Partition
+            l = i-1;
+            r = j;
+            do 
+                {
+                while (array[++l] < pivot);
+                while ((r!=0) && (array[--r] > pivot));
+                //DSutil.swap(array, l, r);
                 tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                //DSutil.swap(array, l, j);  // Put pivot value in place
-                tmp = array[l]; array[l] = array[j]; array[j] = tmp;
+                } while (l < r);
+            //DSutil.swap(array, l, r);  // Undo final swap
+            tmp = array[l]; array[l] = array[r]; array[r] = tmp;
+            //DSutil.swap(array, l, j);  // Put pivot value in place
+            tmp = array[l]; array[l] = array[j]; array[j] = tmp;
             
-                // Put new subarrays onto stack if they are small
-                if ((l-i) > THRESHOLD)   // Left partition
-                    { 
-                        stack[++top] = i;
-                        stack[++top] = l-1;
-                    }
-                if ((j-l) > THRESHOLD) // Right partition 
-                    {   
-                        stack[++top] = l+1;
-                        stack[++top] = j;
-                    }
+            // Put new subarrays onto stack if they are small
+            if ((l-i) > THRESHOLD)   // Left partition
+                { 
+                stack[++top] = i;
+                stack[++top] = l-1;
+                }
+            if ((j-l) > THRESHOLD) // Right partition 
+                {   
+                stack[++top] = l+1;
+                stack[++top] = j;
+                }
             }
         inssort(array);             // Final Insertion Sort
-    }
+        }
 
     /** Non-Recursive QuickSort */
     static public void qsort(short[] array) 
-    {
+        {
         qsort_h(array, 0, array.length-1);
-    }
+        }
     
     
     
     /** Insertion Sort */
     static public void inssort(short[] array) 
-    {
+        {
         short tmp;
 
         for (int i=1; i<array.length; i++) // Insert i'th record
             for (int j=i; (j>0) && (array[j]<array[j-1]); j--)
                 //DSutil.swap(array, j, j-1);
                 { tmp = array[j]; array[j] = array[j-1]; array[j-1] = tmp; }
-    }
+        }
     
     static private void qsort_h(short[] array, int oi, int oj) 
-    {
+        {
         int[] stack = new int[MAXSTACKSIZE]; // Stack for array bounds
         int top = -1;
         short pivot;
@@ -152,66 +152,66 @@ public class QuickSort
 
         while (top > 0)    // While there are unprocessed subarrays
             {
-                // Pop stack
-                int j = stack[top--];
-                int i = stack[top--];
+            // Pop stack
+            int j = stack[top--];
+            int i = stack[top--];
       
-                // Findpivot
-                pivotindex = (i+j)/2;
-                pivot = array[pivotindex];
-                //DSutil.swap(array, pivotindex, j); // Stick pivot at end
-                tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
-                // Partition
-                l = i-1;
-                r = j;
-                do 
-                    {
-                        while (array[++l] < pivot);
-                        while ((r!=0) && (array[--r] > pivot));
-                        //DSutil.swap(array, l, r);
-                        tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                    } while (l < r);
-                //DSutil.swap(array, l, r);  // Undo final swap
+            // Findpivot
+            pivotindex = (i+j)/2;
+            pivot = array[pivotindex];
+            //DSutil.swap(array, pivotindex, j); // Stick pivot at end
+            tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
+            // Partition
+            l = i-1;
+            r = j;
+            do 
+                {
+                while (array[++l] < pivot);
+                while ((r!=0) && (array[--r] > pivot));
+                //DSutil.swap(array, l, r);
                 tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                //DSutil.swap(array, l, j);  // Put pivot value in place
-                tmp = array[l]; array[l] = array[j]; array[j] = tmp;
+                } while (l < r);
+            //DSutil.swap(array, l, r);  // Undo final swap
+            tmp = array[l]; array[l] = array[r]; array[r] = tmp;
+            //DSutil.swap(array, l, j);  // Put pivot value in place
+            tmp = array[l]; array[l] = array[j]; array[j] = tmp;
             
-                // Put new subarrays onto stack if they are small
-                if ((l-i) > THRESHOLD)   // Left partition
-                    { 
-                        stack[++top] = i;
-                        stack[++top] = l-1;
-                    }
-                if ((j-l) > THRESHOLD) // Right partition 
-                    {   
-                        stack[++top] = l+1;
-                        stack[++top] = j;
-                    }
+            // Put new subarrays onto stack if they are small
+            if ((l-i) > THRESHOLD)   // Left partition
+                { 
+                stack[++top] = i;
+                stack[++top] = l-1;
+                }
+            if ((j-l) > THRESHOLD) // Right partition 
+                {   
+                stack[++top] = l+1;
+                stack[++top] = j;
+                }
             }
         inssort(array);             // Final Insertion Sort
-    }
+        }
 
     /** Non-Recursive QuickSort */
     static public void qsort(char[] array) 
-    {
+        {
         qsort_h(array, 0, array.length-1);
-    }
+        }
     
     
     
     /** Insertion Sort */
     static public void inssort(char[] array) 
-    {
+        {
         char tmp;
 
         for (int i=1; i<array.length; i++) // Insert i'th record
             for (int j=i; (j>0) && (array[j]<array[j-1]); j--)
                 //DSutil.swap(array, j, j-1);
                 { tmp = array[j]; array[j] = array[j-1]; array[j-1] = tmp; }
-    }
+        }
     
     static private void qsort_h(char[] array, int oi, int oj) 
-    {
+        {
         int[] stack = new int[MAXSTACKSIZE]; // Stack for array bounds
 
         int top = -1;
@@ -224,66 +224,66 @@ public class QuickSort
 
         while (top > 0)    // While there are unprocessed subarrays
             {
-                // Pop stack
-                int j = stack[top--];
-                int i = stack[top--];
+            // Pop stack
+            int j = stack[top--];
+            int i = stack[top--];
       
-                // Findpivot
-                pivotindex = (i+j)/2;
-                pivot = array[pivotindex];
-                //DSutil.swap(array, pivotindex, j); // Stick pivot at end
-                tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
-                // Partition
-                l = i-1;
-                r = j;
-                do 
-                    {
-                        while (array[++l] < pivot);
-                        while ((r!=0) && (array[--r] > pivot));
-                        //DSutil.swap(array, l, r);
-                        tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                    } while (l < r);
-                //DSutil.swap(array, l, r);  // Undo final swap
+            // Findpivot
+            pivotindex = (i+j)/2;
+            pivot = array[pivotindex];
+            //DSutil.swap(array, pivotindex, j); // Stick pivot at end
+            tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
+            // Partition
+            l = i-1;
+            r = j;
+            do 
+                {
+                while (array[++l] < pivot);
+                while ((r!=0) && (array[--r] > pivot));
+                //DSutil.swap(array, l, r);
                 tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                //DSutil.swap(array, l, j);  // Put pivot value in place
-                tmp = array[l]; array[l] = array[j]; array[j] = tmp;
+                } while (l < r);
+            //DSutil.swap(array, l, r);  // Undo final swap
+            tmp = array[l]; array[l] = array[r]; array[r] = tmp;
+            //DSutil.swap(array, l, j);  // Put pivot value in place
+            tmp = array[l]; array[l] = array[j]; array[j] = tmp;
             
-                // Put new subarrays onto stack if they are small
-                if ((l-i) > THRESHOLD)   // Left partition
-                    { 
-                        stack[++top] = i;
-                        stack[++top] = l-1;
-                    }
-                if ((j-l) > THRESHOLD) // Right partition 
-                    {   
-                        stack[++top] = l+1;
-                        stack[++top] = j;
-                    }
+            // Put new subarrays onto stack if they are small
+            if ((l-i) > THRESHOLD)   // Left partition
+                { 
+                stack[++top] = i;
+                stack[++top] = l-1;
+                }
+            if ((j-l) > THRESHOLD) // Right partition 
+                {   
+                stack[++top] = l+1;
+                stack[++top] = j;
+                }
             }
         inssort(array);             // Final Insertion Sort
-    }
+        }
 
     /** Non-Recursive QuickSort */
     static public void qsort(int[] array) 
-    {
+        {
         qsort_h(array, 0, array.length-1);
-    }
+        }
     
     
     
     /** Insertion Sort */
     static public void inssort(int[] array) 
-    {
+        {
         int tmp;
 
         for (int i=1; i<array.length; i++) // Insert i'th record
             for (int j=i; (j>0) && (array[j]<array[j-1]); j--)
                 //DSutil.swap(array, j, j-1);
                 { tmp = array[j]; array[j] = array[j-1]; array[j-1] = tmp; }
-    }
+        }
     
     static private void qsort_h(int[] array, int oi, int oj) 
-    {
+        {
         int[] stack = new int[MAXSTACKSIZE]; // Stack for array bounds
         int top = -1;
         int pivot;
@@ -295,66 +295,66 @@ public class QuickSort
 
         while (top > 0)    // While there are unprocessed subarrays
             {
-                // Pop stack
-                int j = stack[top--];
-                int i = stack[top--];
+            // Pop stack
+            int j = stack[top--];
+            int i = stack[top--];
       
-                // Findpivot
-                pivotindex = (i+j)/2;
-                pivot = array[pivotindex];
-                //DSutil.swap(array, pivotindex, j); // Stick pivot at end
-                tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
-                // Partition
-                l = i-1;
-                r = j;
-                do 
-                    {
-                        while (array[++l] < pivot);
-                        while ((r!=0) && (array[--r] > pivot));
-                        //DSutil.swap(array, l, r);
-                        tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                    } while (l < r);
-                //DSutil.swap(array, l, r);  // Undo final swap
+            // Findpivot
+            pivotindex = (i+j)/2;
+            pivot = array[pivotindex];
+            //DSutil.swap(array, pivotindex, j); // Stick pivot at end
+            tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
+            // Partition
+            l = i-1;
+            r = j;
+            do 
+                {
+                while (array[++l] < pivot);
+                while ((r!=0) && (array[--r] > pivot));
+                //DSutil.swap(array, l, r);
                 tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                //DSutil.swap(array, l, j);  // Put pivot value in place
-                tmp = array[l]; array[l] = array[j]; array[j] = tmp;
+                } while (l < r);
+            //DSutil.swap(array, l, r);  // Undo final swap
+            tmp = array[l]; array[l] = array[r]; array[r] = tmp;
+            //DSutil.swap(array, l, j);  // Put pivot value in place
+            tmp = array[l]; array[l] = array[j]; array[j] = tmp;
             
-                // Put new subarrays onto stack if they are small
-                if ((l-i) > THRESHOLD)   // Left partition
-                    { 
-                        stack[++top] = i;
-                        stack[++top] = l-1;
-                    }
-                if ((j-l) > THRESHOLD) // Right partition 
-                    {   
-                        stack[++top] = l+1;
-                        stack[++top] = j;
-                    }
+            // Put new subarrays onto stack if they are small
+            if ((l-i) > THRESHOLD)   // Left partition
+                { 
+                stack[++top] = i;
+                stack[++top] = l-1;
+                }
+            if ((j-l) > THRESHOLD) // Right partition 
+                {   
+                stack[++top] = l+1;
+                stack[++top] = j;
+                }
             }
         inssort(array);             // Final Insertion Sort
-    }
+        }
 
     /** Non-Recursive QuickSort */
     static public void qsort(long[] array) 
-    {
+        {
         qsort_h(array, 0, array.length-1);
-    }
+        }
     
     
     
     /** Insertion Sort */
     static public void inssort(long[] array) 
-    {
+        {
         long tmp;
 
         for (int i=1; i<array.length; i++) // Insert i'th record
             for (int j=i; (j>0) && (array[j]<array[j-1]); j--)
                 //DSutil.swap(array, j, j-1);
                 { tmp = array[j]; array[j] = array[j-1]; array[j-1] = tmp; }
-    }
+        }
     
     static private void qsort_h(long[] array, int oi, int oj) 
-    {
+        {
         int[] stack = new int[MAXSTACKSIZE]; // Stack for array bounds
 
         int top = -1;
@@ -367,66 +367,66 @@ public class QuickSort
 
         while (top > 0)    // While there are unprocessed subarrays
             {
-                // Pop stack
-                int j = stack[top--];
-                int i = stack[top--];
+            // Pop stack
+            int j = stack[top--];
+            int i = stack[top--];
       
-                // Findpivot
-                pivotindex = (i+j)/2;
-                pivot = array[pivotindex];
-                //DSutil.swap(array, pivotindex, j); // Stick pivot at end
-                tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
-                // Partition
-                l = i-1;
-                r = j;
-                do 
-                    {
-                        while (array[++l] < pivot);
-                        while ((r!=0) && (array[--r] > pivot));
-                        //DSutil.swap(array, l, r);
-                        tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                    } while (l < r);
-                //DSutil.swap(array, l, r);  // Undo final swap
+            // Findpivot
+            pivotindex = (i+j)/2;
+            pivot = array[pivotindex];
+            //DSutil.swap(array, pivotindex, j); // Stick pivot at end
+            tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
+            // Partition
+            l = i-1;
+            r = j;
+            do 
+                {
+                while (array[++l] < pivot);
+                while ((r!=0) && (array[--r] > pivot));
+                //DSutil.swap(array, l, r);
                 tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                //DSutil.swap(array, l, j);  // Put pivot value in place
-                tmp = array[l]; array[l] = array[j]; array[j] = tmp;
+                } while (l < r);
+            //DSutil.swap(array, l, r);  // Undo final swap
+            tmp = array[l]; array[l] = array[r]; array[r] = tmp;
+            //DSutil.swap(array, l, j);  // Put pivot value in place
+            tmp = array[l]; array[l] = array[j]; array[j] = tmp;
             
-                // Put new subarrays onto stack if they are small
-                if ((l-i) > THRESHOLD)   // Left partition
-                    { 
-                        stack[++top] = i;
-                        stack[++top] = l-1;
-                    }
-                if ((j-l) > THRESHOLD) // Right partition 
-                    {   
-                        stack[++top] = l+1;
-                        stack[++top] = j;
-                    }
+            // Put new subarrays onto stack if they are small
+            if ((l-i) > THRESHOLD)   // Left partition
+                { 
+                stack[++top] = i;
+                stack[++top] = l-1;
+                }
+            if ((j-l) > THRESHOLD) // Right partition 
+                {   
+                stack[++top] = l+1;
+                stack[++top] = j;
+                }
             }
         inssort(array);             // Final Insertion Sort
-    }
+        }
 
     /** Non-Recursive QuickSort */
     static public void qsort(float[] array) 
-    {
+        {
         qsort_h(array, 0, array.length-1);
-    }
+        }
     
     
     
     /** Insertion Sort */
     static public void inssort(float[] array) 
-    {
+        {
         float tmp;
 
         for (int i=1; i<array.length; i++) // Insert i'th record
             for (int j=i; (j>0) && (array[j]<array[j-1]); j--)
                 //DSutil.swap(array, j, j-1);
                 { tmp = array[j]; array[j] = array[j-1]; array[j-1] = tmp; }
-    }
+        }
     
     static private void qsort_h(float[] array, int oi, int oj) 
-    {
+        {
         int[] stack = new int[MAXSTACKSIZE]; // Stack for array bounds
 
         int top = -1;
@@ -439,68 +439,68 @@ public class QuickSort
 
         while (top > 0)    // While there are unprocessed subarrays
             {
-                // Pop stack
-                int j = stack[top--];
-                int i = stack[top--];
+            // Pop stack
+            int j = stack[top--];
+            int i = stack[top--];
       
-                // Findpivot
-                pivotindex = (i+j)/2;
-                pivot = array[pivotindex];
-                //DSutil.swap(array, pivotindex, j); // Stick pivot at end
-                tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
-                // Partition
-                l = i-1;
-                r = j;
-                do 
-                    {
-                        while (array[++l] < pivot);
-                        while ((r!=0) && (array[--r] > pivot));
-                        //DSutil.swap(array, l, r);
-                        tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                    } while (l < r);
-                //DSutil.swap(array, l, r);  // Undo final swap
+            // Findpivot
+            pivotindex = (i+j)/2;
+            pivot = array[pivotindex];
+            //DSutil.swap(array, pivotindex, j); // Stick pivot at end
+            tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
+            // Partition
+            l = i-1;
+            r = j;
+            do 
+                {
+                while (array[++l] < pivot);
+                while ((r!=0) && (array[--r] > pivot));
+                //DSutil.swap(array, l, r);
                 tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                //DSutil.swap(array, l, j);  // Put pivot value in place
-                tmp = array[l]; array[l] = array[j]; array[j] = tmp;
+                } while (l < r);
+            //DSutil.swap(array, l, r);  // Undo final swap
+            tmp = array[l]; array[l] = array[r]; array[r] = tmp;
+            //DSutil.swap(array, l, j);  // Put pivot value in place
+            tmp = array[l]; array[l] = array[j]; array[j] = tmp;
             
-                // Put new subarrays onto stack if they are small
-                if ((l-i) > THRESHOLD)   // Left partition
-                    { 
-                        stack[++top] = i;
-                        stack[++top] = l-1;
-                    }
-                if ((j-l) > THRESHOLD) // Right partition 
-                    {   
-                        stack[++top] = l+1;
-                        stack[++top] = j;
-                    }
+            // Put new subarrays onto stack if they are small
+            if ((l-i) > THRESHOLD)   // Left partition
+                { 
+                stack[++top] = i;
+                stack[++top] = l-1;
+                }
+            if ((j-l) > THRESHOLD) // Right partition 
+                {   
+                stack[++top] = l+1;
+                stack[++top] = j;
+                }
             }
         inssort(array);             // Final Insertion Sort
-    }
+        }
 
 
 
     /** Non-Recursive QuickSort */
     static public void qsort(double[] array) 
-    {
+        {
         qsort_h(array, 0, array.length-1);
-    }
+        }
     
     
     
     /** Insertion Sort */
     static public void inssort(double[] array) 
-    {
+        {
         double tmp;
 
         for (int i=1; i<array.length; i++) // Insert i'th record
             for (int j=i; (j>0) && (array[j]<array[j-1]); j--)
                 //DSutil.swap(array, j, j-1);
                 { tmp = array[j]; array[j] = array[j-1]; array[j-1] = tmp; }
-    }
+        }
     
     static private void qsort_h(double[] array, int oi, int oj) 
-    {
+        {
         int[] stack = new int[MAXSTACKSIZE]; // Stack for array bounds
         int top = -1;
         double pivot;
@@ -512,68 +512,68 @@ public class QuickSort
 
         while (top > 0)    // While there are unprocessed subarrays
             {
-                // Pop stack
-                int j = stack[top--];
-                int i = stack[top--];
+            // Pop stack
+            int j = stack[top--];
+            int i = stack[top--];
       
-                // Findpivot
-                pivotindex = (i+j)/2;
-                pivot = array[pivotindex];
-                //DSutil.swap(array, pivotindex, j); // Stick pivot at end
-                tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
-                // Partition
-                l = i-1;
-                r = j;
-                do 
-                    {
-                        while (array[++l] < pivot);
-                        while ((r!=0) && (array[--r] > pivot));
-                        //DSutil.swap(array, l, r);
-                        tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                    } while (l < r);
-                //DSutil.swap(array, l, r);  // Undo final swap
+            // Findpivot
+            pivotindex = (i+j)/2;
+            pivot = array[pivotindex];
+            //DSutil.swap(array, pivotindex, j); // Stick pivot at end
+            tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
+            // Partition
+            l = i-1;
+            r = j;
+            do 
+                {
+                while (array[++l] < pivot);
+                while ((r!=0) && (array[--r] > pivot));
+                //DSutil.swap(array, l, r);
                 tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                //DSutil.swap(array, l, j);  // Put pivot value in place
-                tmp = array[l]; array[l] = array[j]; array[j] = tmp;
+                } while (l < r);
+            //DSutil.swap(array, l, r);  // Undo final swap
+            tmp = array[l]; array[l] = array[r]; array[r] = tmp;
+            //DSutil.swap(array, l, j);  // Put pivot value in place
+            tmp = array[l]; array[l] = array[j]; array[j] = tmp;
             
-                // Put new subarrays onto stack if they are small
-                if ((l-i) > THRESHOLD)   // Left partition
-                    { 
-                        stack[++top] = i;
-                        stack[++top] = l-1;
-                    }
-                if ((j-l) > THRESHOLD) // Right partition 
-                    {   
-                        stack[++top] = l+1;
-                        stack[++top] = j;
-                    }
+            // Put new subarrays onto stack if they are small
+            if ((l-i) > THRESHOLD)   // Left partition
+                { 
+                stack[++top] = i;
+                stack[++top] = l-1;
+                }
+            if ((j-l) > THRESHOLD) // Right partition 
+                {   
+                stack[++top] = l+1;
+                stack[++top] = j;
+                }
             }
         inssort(array);             // Final Insertion Sort
-    }
+        }
 
 
 
     /** Non-Recursive QuickSort */
     static public void qsort(Object[] array, SortComparator comp) 
-    {
+        {
         qsort_h(array, 0, array.length-1, comp);
-    }
+        }
     
     
     
     /** Insertion Sort */
     static public void inssort(Object[] array, SortComparator comp) 
-    {
+        {
         Object tmp;
 
         for (int i=1; i<array.length; i++) // Insert i'th record
             for (int j=i; (j>0) && (comp.lt(array[j],array[j-1])); j--)
                 //DSutil.swap(array, j, j-1);
                 { tmp = array[j]; array[j] = array[j-1]; array[j-1] = tmp; }
-    }
+        }
     
     static private void qsort_h(Object[] array, int oi, int oj, SortComparator comp) 
-    {
+        {
         int[] stack = new int[MAXSTACKSIZE]; // Stack for array bounds
         int top = -1;
         Object pivot;
@@ -585,68 +585,68 @@ public class QuickSort
         
         while (top > 0)    // While there are unprocessed subarrays
             {
-                // Pop stack
-                int j = stack[top--];
-                int i = stack[top--];
+            // Pop stack
+            int j = stack[top--];
+            int i = stack[top--];
             
-                // Findpivot
-                pivotindex = (i+j)/2;
-                pivot = array[pivotindex];
-                //DSutil.swap(array, pivotindex, j); // Stick pivot at end
-                tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
-                // Partition
-                l = i-1;
-                r = j;
-                do 
-                    {
-                        while (comp.lt(array[++l],pivot));
-                        while ((r!=0) && (comp.gt(array[--r],pivot)));
-                        //DSutil.swap(array, l, r);
-                        tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                    } while (l < r);
-                //DSutil.swap(array, l, r);  // Undo final swap
+            // Findpivot
+            pivotindex = (i+j)/2;
+            pivot = array[pivotindex];
+            //DSutil.swap(array, pivotindex, j); // Stick pivot at end
+            tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
+            // Partition
+            l = i-1;
+            r = j;
+            do 
+                {
+                while (comp.lt(array[++l],pivot));
+                while ((r!=0) && (comp.gt(array[--r],pivot)));
+                //DSutil.swap(array, l, r);
                 tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                //DSutil.swap(array, l, j);  // Put pivot value in place
-                tmp = array[l]; array[l] = array[j]; array[j] = tmp;
+                } while (l < r);
+            //DSutil.swap(array, l, r);  // Undo final swap
+            tmp = array[l]; array[l] = array[r]; array[r] = tmp;
+            //DSutil.swap(array, l, j);  // Put pivot value in place
+            tmp = array[l]; array[l] = array[j]; array[j] = tmp;
             
-                // Put new subarrays onto stack if they are small
-                if ((l-i) > THRESHOLD)   // Left partition
-                    { 
-                        stack[++top] = i;
-                        stack[++top] = l-1;
-                    }
-                if ((j-l) > THRESHOLD) // Right partition 
-                    {   
-                        stack[++top] = l+1;
-                        stack[++top] = j;
-                    }
+            // Put new subarrays onto stack if they are small
+            if ((l-i) > THRESHOLD)   // Left partition
+                { 
+                stack[++top] = i;
+                stack[++top] = l-1;
+                }
+            if ((j-l) > THRESHOLD) // Right partition 
+                {   
+                stack[++top] = l+1;
+                stack[++top] = j;
+                }
             }
         inssort(array,comp);             // Final Insertion Sort
-    }
+        }
 
 
 
     /** Non-Recursive QuickSort */
     static public void qsort(long[] array, SortComparatorL comp) 
-    {
+        {
         qsort_h(array, 0, array.length-1, comp);
-    }
+        }
     
     
     
     /** Insertion Sort */
     static public void inssort(long[] array, SortComparatorL comp) 
-    {
+        {
         long tmp;
 
         for (int i=1; i<array.length; i++) // Insert i'th record
             for (int j=i; (j>0) && (comp.lt(array[j],array[j-1])); j--)
                 //DSutil.swap(array, j, j-1);
                 { tmp = array[j]; array[j] = array[j-1]; array[j-1] = tmp; }
-    }
+        }
     
     static private void qsort_h(long[] array, int oi, int oj, SortComparatorL comp) 
-    {
+        {
         int[] stack = new int[MAXSTACKSIZE]; // Stack for array bounds
         int top = -1;
         long pivot;
@@ -658,67 +658,67 @@ public class QuickSort
         
         while (top > 0)    // While there are unprocessed subarrays
             {
-                // Pop stack
-                int j = stack[top--];
-                int i = stack[top--];
+            // Pop stack
+            int j = stack[top--];
+            int i = stack[top--];
             
-                // Findpivot
-                pivotindex = (i+j)/2;
-                pivot = array[pivotindex];
-                //DSutil.swap(array, pivotindex, j); // Stick pivot at end
-                tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
-                // Partition
-                l = i-1;
-                r = j;
-                do 
-                    {
-                        while (comp.lt(array[++l],pivot));
-                        while ((r!=0) && (comp.gt(array[--r],pivot)));
-                        //DSutil.swap(array, l, r);
-                        tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                    } while (l < r);
-                //DSutil.swap(array, l, r);  // Undo final swap
+            // Findpivot
+            pivotindex = (i+j)/2;
+            pivot = array[pivotindex];
+            //DSutil.swap(array, pivotindex, j); // Stick pivot at end
+            tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
+            // Partition
+            l = i-1;
+            r = j;
+            do 
+                {
+                while (comp.lt(array[++l],pivot));
+                while ((r!=0) && (comp.gt(array[--r],pivot)));
+                //DSutil.swap(array, l, r);
                 tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                //DSutil.swap(array, l, j);  // Put pivot value in place
-                tmp = array[l]; array[l] = array[j]; array[j] = tmp;
+                } while (l < r);
+            //DSutil.swap(array, l, r);  // Undo final swap
+            tmp = array[l]; array[l] = array[r]; array[r] = tmp;
+            //DSutil.swap(array, l, j);  // Put pivot value in place
+            tmp = array[l]; array[l] = array[j]; array[j] = tmp;
             
-                // Put new subarrays onto stack if they are small
-                if ((l-i) > THRESHOLD)   // Left partition
-                    { 
-                        stack[++top] = i;
-                        stack[++top] = l-1;
-                    }
-                if ((j-l) > THRESHOLD) // Right partition 
-                    {   
-                        stack[++top] = l+1;
-                        stack[++top] = j;
-                    }
+            // Put new subarrays onto stack if they are small
+            if ((l-i) > THRESHOLD)   // Left partition
+                { 
+                stack[++top] = i;
+                stack[++top] = l-1;
+                }
+            if ((j-l) > THRESHOLD) // Right partition 
+                {   
+                stack[++top] = l+1;
+                stack[++top] = j;
+                }
             }
         inssort(array,comp);             // Final Insertion Sort
-    }
+        }
 
 
     /** Non-Recursive QuickSort */
     static public void qsort(int[] array, SortComparatorL comp) 
-    {
+        {
         qsort_h(array, 0, array.length-1, comp);
-    }
+        }
     
     
     
     /** Insertion Sort */
     static public void inssort(int[] array, SortComparatorL comp)
-    {
+        {
         int tmp;
 
         for (int i=1; i<array.length; i++) // Insert i'th record
             for (int j=i; (j>0) && (comp.lt(array[j],array[j-1])); j--)
                 //DSutil.swap(array, j, j-1);
                 { tmp = array[j]; array[j] = array[j-1]; array[j-1] = tmp; }
-    }
+        }
     
     static private void qsort_h(int[] array, int oi, int oj, SortComparatorL comp) 
-    {
+        {
         int[] stack = new int[MAXSTACKSIZE]; // Stack for array bounds
         int top = -1;
         int pivot;
@@ -730,45 +730,45 @@ public class QuickSort
         
         while (top > 0)    // While there are unprocessed subarrays
             {
-                // Pop stack
-                int j = stack[top--];
-                int i = stack[top--];
+            // Pop stack
+            int j = stack[top--];
+            int i = stack[top--];
             
-                // Findpivot
-                pivotindex = (i+j)/2;
-                pivot = array[pivotindex];
-                //DSutil.swap(array, pivotindex, j); // Stick pivot at end
-                tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
-                // Partition
-                l = i-1;
-                r = j;
-                do 
-                    {
-                        while (comp.lt(array[++l],pivot));
-                        while ((r!=0) && (comp.gt(array[--r],pivot)));
-                        //DSutil.swap(array, l, r);
-                        tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                    } while (l < r);
-                //DSutil.swap(array, l, r);  // Undo final swap
+            // Findpivot
+            pivotindex = (i+j)/2;
+            pivot = array[pivotindex];
+            //DSutil.swap(array, pivotindex, j); // Stick pivot at end
+            tmp = array[pivotindex]; array[pivotindex] = array[j]; array[j] = tmp; 
+            // Partition
+            l = i-1;
+            r = j;
+            do 
+                {
+                while (comp.lt(array[++l],pivot));
+                while ((r!=0) && (comp.gt(array[--r],pivot)));
+                //DSutil.swap(array, l, r);
                 tmp = array[l]; array[l] = array[r]; array[r] = tmp;
-                //DSutil.swap(array, l, j);  // Put pivot value in place
-                tmp = array[l]; array[l] = array[j]; array[j] = tmp;
+                } while (l < r);
+            //DSutil.swap(array, l, r);  // Undo final swap
+            tmp = array[l]; array[l] = array[r]; array[r] = tmp;
+            //DSutil.swap(array, l, j);  // Put pivot value in place
+            tmp = array[l]; array[l] = array[j]; array[j] = tmp;
             
-                // Put new subarrays onto stack if they are small
-                if ((l-i) > THRESHOLD)   // Left partition
-                    { 
-                        stack[++top] = i;
-                        stack[++top] = l-1;
-                    }
-                if ((j-l) > THRESHOLD) // Right partition 
-                    {   
-                        stack[++top] = l+1;
-                        stack[++top] = j;
-                    }
+            // Put new subarrays onto stack if they are small
+            if ((l-i) > THRESHOLD)   // Left partition
+                { 
+                stack[++top] = i;
+                stack[++top] = l-1;
+                }
+            if ((j-l) > THRESHOLD) // Right partition 
+                {   
+                stack[++top] = l+1;
+                stack[++top] = j;
+                }
             }
         inssort(array,comp);             // Final Insertion Sort
+        }
     }
-}
     
 
 

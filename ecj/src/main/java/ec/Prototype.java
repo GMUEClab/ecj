@@ -51,7 +51,7 @@ import ec.util.Parameter;
  */
 
 public interface Prototype extends Cloneable, Setup
-{
+    {
     /** Creates a new individual cloned from a prototype,
         and suitable to begin use in its own evolutionary
         context.
@@ -158,5 +158,5 @@ public interface Prototype extends Cloneable, Setup
         method on the DefaultsForm object for the prototype's package. This should
         be callable during setup(...).  */
     public Parameter defaultBase();
-}
+    }
 

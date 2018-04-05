@@ -35,7 +35,7 @@ import java.io.*;
 
 
 public class Particle extends DoubleVectorIndividual
-{
+    {
     public static final String AUXILLARY_PREAMBLE = "Auxillary: ";
         
     // my velocity
@@ -53,15 +53,15 @@ public class Particle extends DoubleVectorIndividual
     public Fitness personalBestFitness = null;
 
     public int hashCode()
-    {
+        {
         int hash = super.hashCode();
         // no need to change anything I think
         return hash;
-    }
+        }
 
 
     public boolean equals(Object ind)
-    {
+        {
         if (!super.equals(ind)) return false;
         Particle i = (Particle) ind;
 
@@ -71,11 +71,11 @@ public class Particle extends DoubleVectorIndividual
                         
         if (velocity != null)
             {
-                if (velocity.length != i.velocity.length)
+            if (velocity.length != i.velocity.length)
+                return false;
+            for (int j = 0; j < velocity.length; j++)
+                if (velocity[j] != i.velocity[j])
                     return false;
-                for (int j = 0; j < velocity.length; j++)
-                    if (velocity[j] != i.velocity[j])
-                        return false;
             }
                         
         if ((neighborhood == null && i.neighborhood != null) ||
@@ -84,11 +84,11 @@ public class Particle extends DoubleVectorIndividual
                         
         if (neighborhood != null)
             {
-                if (neighborhood.length != i.neighborhood.length)
+            if (neighborhood.length != i.neighborhood.length)
+                return false;
+            for (int j = 0; j < neighborhood.length; j++)
+                if (neighborhood[j] != i.neighborhood[j])
                     return false;
-                for (int j = 0; j < neighborhood.length; j++)
-                    if (neighborhood[j] != i.neighborhood[j])
-                        return false;
             }
 
         if ((neighborhoodBestGenome == null && i.neighborhoodBestGenome != null) ||
@@ -97,11 +97,11 @@ public class Particle extends DoubleVectorIndividual
                         
         if (neighborhoodBestGenome != null)
             {
-                if (neighborhoodBestGenome.length != i.neighborhoodBestGenome.length)
+            if (neighborhoodBestGenome.length != i.neighborhoodBestGenome.length)
+                return false;
+            for (int j = 0; j < neighborhoodBestGenome.length; j++)
+                if (neighborhoodBestGenome[j] != i.neighborhoodBestGenome[j])
                     return false;
-                for (int j = 0; j < neighborhoodBestGenome.length; j++)
-                    if (neighborhoodBestGenome[j] != i.neighborhoodBestGenome[j])
-                        return false;
             }
                         
         if ((neighborhoodBestFitness == null && i.neighborhoodBestFitness != null) ||
@@ -110,8 +110,8 @@ public class Particle extends DoubleVectorIndividual
                         
         if (neighborhoodBestFitness != null)
             {
-                if (!neighborhoodBestFitness.equals(i.neighborhoodBestFitness))
-                    return false;
+            if (!neighborhoodBestFitness.equals(i.neighborhoodBestFitness))
+                return false;
             }
 
         if ((personalBestGenome == null && i.personalBestGenome != null) ||
@@ -120,11 +120,11 @@ public class Particle extends DoubleVectorIndividual
                         
         if (personalBestGenome != null)
             {
-                if (personalBestGenome.length != i.personalBestGenome.length)
+            if (personalBestGenome.length != i.personalBestGenome.length)
+                return false;
+            for (int j = 0; j < personalBestGenome.length; j++)
+                if (personalBestGenome[j] != i.personalBestGenome[j])
                     return false;
-                for (int j = 0; j < personalBestGenome.length; j++)
-                    if (personalBestGenome[j] != i.personalBestGenome[j])
-                        return false;
             }
 
         if ((personalBestFitness == null && i.personalBestFitness != null) ||
@@ -133,50 +133,50 @@ public class Particle extends DoubleVectorIndividual
                         
         if (personalBestFitness != null)
             {
-                if (!personalBestFitness.equals(i.personalBestFitness))
-                    return false;
+            if (!personalBestFitness.equals(i.personalBestFitness))
+                return false;
             }
 
         return true;
-    }
+        }
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state, base);
         velocity = new double[genome.length] ;
-    }
+        }
         
 
     public Object clone()
-    {
+        {
         Particle myobj = (Particle) (super.clone());
         // must clone the velocity and neighborhood pattern if they exist
         if (velocity != null) velocity = (double[])(velocity.clone());
         if (neighborhood != null) neighborhood = (int[])(neighborhood.clone());
         return myobj;
-    }
+        }
 
     public void update(final EvolutionState state, int subpop, int myindex, int thread)
-    {
+        {
         // update personal best
         if (personalBestFitness == null || fitness.betterThan(personalBestFitness))
             {
-                personalBestFitness = (Fitness)(fitness.clone());
-                personalBestGenome = (double[])(genome.clone());
+            personalBestFitness = (Fitness)(fitness.clone());
+            personalBestGenome = (double[])(genome.clone());
             }
         
         // initialize neighborhood if it's not been created yet
         PSOBreeder psob = (PSOBreeder)(state.breeder);
         if (neighborhood == null || psob.neighborhood == psob.C_NEIGHBORHOOD_RANDOM_EACH_TIME)
             {
-                if (psob.neighborhood == psob.C_NEIGHBORHOOD_RANDOM) // "random" scheme is the only thing that is available for now
-                    neighborhood = createRandomPattern(myindex, psob.includeSelf, 
-                                                       state.population.subpops.get(subpop).individuals.size(), psob.neighborhoodSize, state, thread);
-                else if (psob.neighborhood == psob.C_NEIGHBORHOOD_TOROIDAL || psob.neighborhood == psob.C_NEIGHBORHOOD_RANDOM_EACH_TIME)
-                    neighborhood = createToroidalPattern(myindex, psob.includeSelf,
-                                                         state.population.subpops.get(subpop).individuals.size(), psob.neighborhoodSize);
-                else // huh?
-                    state.output.fatal("internal error: invalid PSO neighborhood style: " + psob.neighborhood);
+            if (psob.neighborhood == psob.C_NEIGHBORHOOD_RANDOM) // "random" scheme is the only thing that is available for now
+                neighborhood = createRandomPattern(myindex, psob.includeSelf, 
+                    state.population.subpops.get(subpop).individuals.size(), psob.neighborhoodSize, state, thread);
+            else if (psob.neighborhood == psob.C_NEIGHBORHOOD_TOROIDAL || psob.neighborhood == psob.C_NEIGHBORHOOD_RANDOM_EACH_TIME)
+                neighborhood = createToroidalPattern(myindex, psob.includeSelf,
+                    state.population.subpops.get(subpop).individuals.size(), psob.neighborhoodSize);
+            else // huh?
+                state.output.fatal("internal error: invalid PSO neighborhood style: " + psob.neighborhood);
             }
 
         // identify neighborhood best
@@ -184,62 +184,62 @@ public class Particle extends DoubleVectorIndividual
         neighborhoodBestGenome = genome;
         for(int i = 0 ; i < neighborhood.length ; i++)
             {
-                int ind = neighborhood[i] ;
-                if (state.population.subpops.get(subpop).individuals.get(ind).fitness.betterThan(fitness))
-                    {
-                        neighborhoodBestFitness = state.population.subpops.get(subpop).individuals.get(ind).fitness;
-                        neighborhoodBestGenome = ((DoubleVectorIndividual)(state.population.subpops.get(subpop).individuals.get(ind))).genome;
-                    }
+            int ind = neighborhood[i] ;
+            if (state.population.subpops.get(subpop).individuals.get(ind).fitness.betterThan(fitness))
+                {
+                neighborhoodBestFitness = state.population.subpops.get(subpop).individuals.get(ind).fitness;
+                neighborhoodBestGenome = ((DoubleVectorIndividual)(state.population.subpops.get(subpop).individuals.get(ind))).genome;
+                }
             }
                 
         // clone neighborhood best
         neighborhoodBestFitness = (Fitness)(neighborhoodBestFitness.clone());
         neighborhoodBestGenome = (double[])(neighborhoodBestGenome.clone());
-    }
+        }
 
     // velocityCoeff:       cognitive/confidence coefficient for the velocity
     // personalCoeff:       cognitive/confidence coefficient for self
     // informantCoeff:      cognitive/confidence coefficient for informants/neighbours
     // globalCoeff:         cognitive/confidence coefficient for global best, this is not done in the standard PSO
     public void tweak(
-                      EvolutionState state,  double[] globalBest,
-                      double velocityCoeff, double personalCoeff, 
-                      double informantCoeff, double globalCoeff, 
-                      int thread)
-    {
+        EvolutionState state,  double[] globalBest,
+        double velocityCoeff, double personalCoeff, 
+        double informantCoeff, double globalCoeff, 
+        int thread)
+        {
         for(int x = 0 ; x < genomeLength() ; x++)
             {
-                double xCurrent = genome[x] ;
-                double xPersonal = personalBestGenome[x] ;
-                double xNeighbour = neighborhoodBestGenome[x] ;
-                double xGlobal = globalBest[x] ;
-                double beta = state.random[thread].nextDouble() * personalCoeff ;
-                double gamma = state.random[thread].nextDouble() * informantCoeff ;
-                double delta = state.random[thread].nextDouble() * globalCoeff ;
+            double xCurrent = genome[x] ;
+            double xPersonal = personalBestGenome[x] ;
+            double xNeighbour = neighborhoodBestGenome[x] ;
+            double xGlobal = globalBest[x] ;
+            double beta = state.random[thread].nextDouble() * personalCoeff ;
+            double gamma = state.random[thread].nextDouble() * informantCoeff ;
+            double delta = state.random[thread].nextDouble() * globalCoeff ;
 
-                double newVelocity = (velocityCoeff * velocity[x]) + (beta * (xPersonal - xCurrent)) + (gamma * (xNeighbour - xCurrent)) + (delta * (xGlobal - xCurrent)) ;
-                velocity[x] = newVelocity ;
-                genome[x] += newVelocity ;
+            double newVelocity = (velocityCoeff * velocity[x]) + (beta * (xPersonal - xCurrent)) + (gamma * (xNeighbour - xCurrent)) + (delta * (xGlobal - xCurrent)) ;
+            velocity[x] = newVelocity ;
+            genome[x] += newVelocity ;
             }
                 
         evaluated = false ;
         
         // printIndividual(state, 0);
         
-    }
+        }
 
     // Creates a toroidal neighborhood pattern for the individual
     int[] createRandomPattern(int myIndex, boolean includeSelf, int popsize, int neighborhoodSize, EvolutionState state, int threadnum)
-    {
+        {
         MersenneTwisterFast mtf = state.random[threadnum];
         HashSet already = new HashSet();
         int[] neighbors = null;
         
         if (includeSelf)
             {
-                neighbors = new int[neighborhoodSize + 1];
-                neighbors[neighborhoodSize] = myIndex;  // put me at the top
-                already.add(Integer.valueOf(myIndex));
+            neighbors = new int[neighborhoodSize + 1];
+            neighbors[neighborhoodSize] = myIndex;  // put me at the top
+            already.add(Integer.valueOf(myIndex));
             }
         else
             neighbors = new int[neighborhoodSize];
@@ -247,27 +247,27 @@ public class Particle extends DoubleVectorIndividual
         Integer n = null;
         for(int i = 0; i < neighborhoodSize; i++)
             {
-                do
-                    {
-                        neighbors[i] = mtf.nextInt(popsize);
-                        n = Integer.valueOf(neighbors[i]);
-                    }
-                while (already.contains(n));
-                already.add(n);
+            do
+                {
+                neighbors[i] = mtf.nextInt(popsize);
+                n = Integer.valueOf(neighbors[i]);
+                }
+            while (already.contains(n));
+            already.add(n);
             }
         return neighbors;
 
-    }
+        }
 
     // Creates a toroidal neighborhood pattern for the individual indexed by 'myindex'
     int[] createToroidalPattern(int myindex, boolean includeSelf, int popsize, int neighborhoodSize)
-    {
+        {
         int[] neighbors = null;
 
         if (includeSelf)
             {
-                neighbors = new int[neighborhoodSize + 1];
-                neighbors[neighborhoodSize] = myindex;  // put me at the top
+            neighbors = new int[neighborhoodSize + 1];
+            neighbors[neighborhoodSize] = myindex;  // put me at the top
             }
         else
             neighbors = new int[neighborhoodSize];
@@ -275,16 +275,16 @@ public class Particle extends DoubleVectorIndividual
         int pos = 0;
         for(int i = myindex - neighborhoodSize / 2; i < myindex; i++)
             {
-                neighbors[pos++] = ((i % popsize) + popsize) % popsize;
+            neighbors[pos++] = ((i % popsize) + popsize) % popsize;
             }
                 
         for(int i = myindex + 1; i < neighborhoodSize - (neighborhoodSize / 2) + 1; i++)
             {
-                neighbors[pos++] = ((i % popsize) + popsize) % popsize;
+            neighbors[pos++] = ((i % popsize) + popsize) % popsize;
             }
 
         return neighbors;
-    }
+        }
         
         
         
@@ -293,7 +293,7 @@ public class Particle extends DoubleVectorIndividual
     /// genome is messed around with.
     
     void resetAuxillaryInformation()
-    {
+        {
         neighborhood = null;
         neighborhoodBestGenome = null;
         neighborhoodBestFitness = null;
@@ -301,51 +301,51 @@ public class Particle extends DoubleVectorIndividual
         personalBestFitness = null;
         for(int i = 0; i < velocity.length; i++)
             velocity[i] = 0.0;
-    }
+        }
         
     public void reset(EvolutionState state, int thread)
-    {
+        {
         super.reset(state, thread);
         if (genome.length != velocity.length)
             velocity = new double[genome.length];
         resetAuxillaryInformation();
-    }
+        }
     
     // This would be exceptionally weird to use in a PSO context, but for
     // consistency's sake...
     public void setGenomeLength(int len)
-    {
+        {
         super.setGenomeLength(len);
         
         // we always reset regardless of whether the length is the same
         if (genome.length != velocity.length)
             velocity = new double[genome.length];
         resetAuxillaryInformation();
-    }
+        }
         
     // This would be exceptionally weird to use in a PSO context, but for
     // consistency's sake...
     public void setGenome(Object gen)
-    {
+        {
         super.setGenome(gen);
         
         // we always reset regardless of whether the length is the same
         if (genome.length != velocity.length)
             velocity = new double[genome.length];
         resetAuxillaryInformation();
-    }
+        }
 
     // This would be exceptionally weird to use in a PSO context, but for
     // consistency's sake...
     public void join(Object[] pieces)
-    {
+        {
         super.join(pieces);
         
         // we always reset regardless of whether the length is the same
         if (genome.length != velocity.length)
             velocity = new double[genome.length];
         resetAuxillaryInformation();
-    }
+        }
         
         
     
@@ -354,7 +354,7 @@ public class Particle extends DoubleVectorIndividual
     /// auxillary information
         
     StringBuilder encodeAuxillary()
-    {
+        {
         StringBuilder s = new StringBuilder();
         s.append(AUXILLARY_PREAMBLE);
         s.append(Code.encode(true));
@@ -374,19 +374,19 @@ public class Particle extends DoubleVectorIndividual
         // neighborhood 
         if (neighborhood != null)
             {
-                s.append(Code.encode(neighborhood.length));
-                for(int i = 0; i < neighborhood.length; i++)
-                    s.append(Code.encode(neighborhood[i]));
-                s.append("\n");
+            s.append(Code.encode(neighborhood.length));
+            for(int i = 0; i < neighborhood.length; i++)
+                s.append(Code.encode(neighborhood[i]));
+            s.append("\n");
             }
 
         // neighborhood best
         if (neighborhoodBestGenome != null)
             {
-                s.append(Code.encode(neighborhoodBestGenome.length));
-                for(int i = 0; i < neighborhoodBestGenome.length; i++)
-                    s.append(Code.encode(neighborhoodBestGenome[i]));
-                s.append("\n");
+            s.append(Code.encode(neighborhoodBestGenome.length));
+            for(int i = 0; i < neighborhoodBestGenome.length; i++)
+                s.append(Code.encode(neighborhoodBestGenome[i]));
+            s.append("\n");
             }
 
         if (neighborhoodBestFitness != null)
@@ -395,10 +395,10 @@ public class Particle extends DoubleVectorIndividual
         // personal     best
         if (personalBestGenome != null)
             {
-                s.append(Code.encode(personalBestGenome.length));
-                for(int i = 0; i < personalBestGenome.length; i++)
-                    s.append(Code.encode(personalBestGenome[i]));
-                s.append("\n");
+            s.append(Code.encode(personalBestGenome.length));
+            for(int i = 0; i < personalBestGenome.length; i++)
+                s.append(Code.encode(personalBestGenome[i]));
+            s.append("\n");
             }
 
         if (personalBestFitness != null)
@@ -406,24 +406,24 @@ public class Particle extends DoubleVectorIndividual
         s.append("\n");
                 
         return s;
-    }
+        }
     
     public void printIndividual(final EvolutionState state, final int log)
-    {
+        {
         super.printIndividual(state, log);
         state.output.println(encodeAuxillary().toString(), log);
-    }
+        }
 
     public void printIndividual(final EvolutionState state, final PrintWriter writer)
-    {
+        {
         super.printIndividual(state, writer);
         writer.println(encodeAuxillary().toString());
-    }
+        }
 
     public void readIndividual(final EvolutionState state, 
-                               final LineNumberReader reader)
+        final LineNumberReader reader)
         throws IOException
-    {
+        {
         super.readIndividual(state, reader);
         
         // Next, read auxillary header.
@@ -456,203 +456,203 @@ public class Particle extends DoubleVectorIndividual
         // Next, read auxillary arrays.
         if (v)
             {
-                String s = reader.readLine();
-                d = new DecodeReturn(s);
+            String s = reader.readLine();
+            d = new DecodeReturn(s);
+            Code.decode(d);
+            if (d.type != DecodeReturn.T_INT)
+                state.output.fatal("Velocity length missing.");
+            velocity = new double[(int)(d.l)];
+            for(int i = 0; i < velocity.length; i++)
+                {
                 Code.decode(d);
-                if (d.type != DecodeReturn.T_INT)
-                    state.output.fatal("Velocity length missing.");
-                velocity = new double[(int)(d.l)];
-                for(int i = 0; i < velocity.length; i++)
-                    {
-                        Code.decode(d);
-                        if (d.type != DecodeReturn.T_DOUBLE)
-                            state.output.fatal("Velocity information not long enough");
-                        velocity[i] = d.d;
-                    }
+                if (d.type != DecodeReturn.T_DOUBLE)
+                    state.output.fatal("Velocity information not long enough");
+                velocity[i] = d.d;
+                }
             }
         else velocity = new double[genome.length];
 
         if (n)
             {
-                String s = reader.readLine();
-                d = new DecodeReturn(s);
+            String s = reader.readLine();
+            d = new DecodeReturn(s);
+            Code.decode(d);
+            if (d.type != DecodeReturn.T_INT)
+                state.output.fatal("Neighborhood length missing.");
+            neighborhood = new int[(int)(d.l)];
+            for(int i = 0; i < neighborhood.length; i++)
+                {
                 Code.decode(d);
                 if (d.type != DecodeReturn.T_INT)
-                    state.output.fatal("Neighborhood length missing.");
-                neighborhood = new int[(int)(d.l)];
-                for(int i = 0; i < neighborhood.length; i++)
-                    {
-                        Code.decode(d);
-                        if (d.type != DecodeReturn.T_INT)
-                            state.output.fatal("Neighborhood information not long enough");
-                        neighborhood[i] = (int)(d.l);
-                    }
+                    state.output.fatal("Neighborhood information not long enough");
+                neighborhood[i] = (int)(d.l);
+                }
             }
         else neighborhood = null;
 
         if (nb)
             {
-                String s = reader.readLine();
-                d = new DecodeReturn(s);
+            String s = reader.readLine();
+            d = new DecodeReturn(s);
+            Code.decode(d);
+            if (d.type != DecodeReturn.T_INT)
+                state.output.fatal("Neighborhood-Best length missing.");
+            neighborhoodBestGenome = new double[(int)(d.l)];
+            for(int i = 0; i < neighborhoodBestGenome.length; i++)
+                {
                 Code.decode(d);
-                if (d.type != DecodeReturn.T_INT)
-                    state.output.fatal("Neighborhood-Best length missing.");
-                neighborhoodBestGenome = new double[(int)(d.l)];
-                for(int i = 0; i < neighborhoodBestGenome.length; i++)
-                    {
-                        Code.decode(d);
-                        if (d.type != DecodeReturn.T_DOUBLE)
-                            state.output.fatal("Neighborhood-Best genome not long enough");
-                        neighborhoodBestGenome[i] = d.d;
-                    }
+                if (d.type != DecodeReturn.T_DOUBLE)
+                    state.output.fatal("Neighborhood-Best genome not long enough");
+                neighborhoodBestGenome[i] = d.d;
+                }
             }
         else neighborhoodBestGenome = null;
 
         if (nbf)
             {
-                // here we don't know what kind of fitness it is.  So we'll do our best and guess
-                // that it's the same fitness as our own Particle 
-                neighborhoodBestFitness = (Fitness)(fitness.clone());
-                neighborhoodBestFitness.readFitness(state, reader);
+            // here we don't know what kind of fitness it is.  So we'll do our best and guess
+            // that it's the same fitness as our own Particle 
+            neighborhoodBestFitness = (Fitness)(fitness.clone());
+            neighborhoodBestFitness.readFitness(state, reader);
             }
 
         if (pb)
             {
-                String s = reader.readLine();
-                d = new DecodeReturn(s);
+            String s = reader.readLine();
+            d = new DecodeReturn(s);
+            Code.decode(d);
+            if (d.type != DecodeReturn.T_INT)
+                state.output.fatal("Personal-Best length missing.");
+            personalBestGenome = new double[(int)(d.l)];
+            for(int i = 0; i < personalBestGenome.length; i++)
+                {
                 Code.decode(d);
-                if (d.type != DecodeReturn.T_INT)
-                    state.output.fatal("Personal-Best length missing.");
-                personalBestGenome = new double[(int)(d.l)];
-                for(int i = 0; i < personalBestGenome.length; i++)
-                    {
-                        Code.decode(d);
-                        if (d.type != DecodeReturn.T_DOUBLE)
-                            state.output.fatal("Personal-Best genome not long enough");
-                        personalBestGenome[i] = d.d;
-                    }
+                if (d.type != DecodeReturn.T_DOUBLE)
+                    state.output.fatal("Personal-Best genome not long enough");
+                personalBestGenome[i] = d.d;
+                }
             }
         else personalBestGenome = null;
 
         if (pbf)
             {
-                // here we don't know what kind of fitness it is.  So we'll do our best and guess
-                // that it's the same fitness as our own Particle 
-                personalBestFitness = (Fitness)(fitness.clone());
-                personalBestFitness.readFitness(state, reader);
+            // here we don't know what kind of fitness it is.  So we'll do our best and guess
+            // that it's the same fitness as our own Particle 
+            personalBestFitness = (Fitness)(fitness.clone());
+            personalBestFitness.readFitness(state, reader);
             }
-    }
+        }
 
     public void writeIndividual(final EvolutionState state,
-                                final DataOutput dataOutput) throws IOException
-    {
+        final DataOutput dataOutput) throws IOException
+        {
         super.writeIndividual(state, dataOutput);
         
         if (velocity != null)  // it's always non-null
             {
-                dataOutput.writeBoolean(true);
-                dataOutput.writeInt(velocity.length);
-                for(int i = 0; i < velocity.length; i++)
-                    dataOutput.writeDouble(velocity[i]);
+            dataOutput.writeBoolean(true);
+            dataOutput.writeInt(velocity.length);
+            for(int i = 0; i < velocity.length; i++)
+                dataOutput.writeDouble(velocity[i]);
             }
         else dataOutput.writeBoolean(false);  // this will never happen
  
  
         if (neighborhood != null)
             {
-                dataOutput.writeBoolean(true);
-                dataOutput.writeInt(neighborhood.length);
-                for(int i = 0; i < neighborhood.length; i++)
-                    dataOutput.writeDouble(neighborhood[i]);
+            dataOutput.writeBoolean(true);
+            dataOutput.writeInt(neighborhood.length);
+            for(int i = 0; i < neighborhood.length; i++)
+                dataOutput.writeDouble(neighborhood[i]);
             }
         else dataOutput.writeBoolean(false);
 
 
         if (neighborhoodBestGenome != null)
             {
-                dataOutput.writeBoolean(true);
-                dataOutput.writeInt(neighborhoodBestGenome.length);
-                for(int i = 0; i < neighborhoodBestGenome.length; i++)
-                    dataOutput.writeDouble(neighborhoodBestGenome[i]);
+            dataOutput.writeBoolean(true);
+            dataOutput.writeInt(neighborhoodBestGenome.length);
+            for(int i = 0; i < neighborhoodBestGenome.length; i++)
+                dataOutput.writeDouble(neighborhoodBestGenome[i]);
             }
         else dataOutput.writeBoolean(false);
 
 
         if (neighborhoodBestFitness != null)
             {
-                dataOutput.writeBoolean(true);
-                neighborhoodBestFitness.writeFitness(state, dataOutput);
+            dataOutput.writeBoolean(true);
+            neighborhoodBestFitness.writeFitness(state, dataOutput);
             }
         else dataOutput.writeBoolean(false);
 
 
         if (personalBestGenome != null)  // it's always non-null
             {
-                dataOutput.writeBoolean(true);
-                dataOutput.writeInt(personalBestGenome.length);
-                for(int i = 0; i < personalBestGenome.length; i++)
-                    dataOutput.writeDouble(personalBestGenome[i]);
+            dataOutput.writeBoolean(true);
+            dataOutput.writeInt(personalBestGenome.length);
+            for(int i = 0; i < personalBestGenome.length; i++)
+                dataOutput.writeDouble(personalBestGenome[i]);
             }
         else dataOutput.writeBoolean(false);
 
 
         if (personalBestFitness != null)
             {
-                dataOutput.writeBoolean(true);
-                personalBestFitness.writeFitness(state, dataOutput);
+            dataOutput.writeBoolean(true);
+            personalBestFitness.writeFitness(state, dataOutput);
             }
         else dataOutput.writeBoolean(false);
-    }
+        }
 
     public void readIndividual(final EvolutionState state,
-                               final DataInput dataInput) throws IOException
-    {
+        final DataInput dataInput) throws IOException
+        {
         super.readIndividual(state, dataInput);
         
         // Next, read auxillary arrays.
         if (dataInput.readBoolean())
             {
-                velocity = new double[dataInput.readInt()];
-                for(int i = 0; i < velocity.length; i++)
-                    velocity[i] = dataInput.readDouble();
+            velocity = new double[dataInput.readInt()];
+            for(int i = 0; i < velocity.length; i++)
+                velocity[i] = dataInput.readDouble();
             }
         else velocity = new double[genome.length];
 
         if (dataInput.readBoolean())
             {
-                neighborhood = new int[dataInput.readInt()];
-                for(int i = 0; i < neighborhood.length; i++)
-                    neighborhood[i] = dataInput.readInt();
+            neighborhood = new int[dataInput.readInt()];
+            for(int i = 0; i < neighborhood.length; i++)
+                neighborhood[i] = dataInput.readInt();
             }
         else neighborhood = null;
         
         if (dataInput.readBoolean())
             {
-                neighborhoodBestGenome = new double[dataInput.readInt()];
-                for(int i = 0; i < neighborhoodBestGenome.length; i++)
-                    neighborhoodBestGenome[i] = dataInput.readDouble();
+            neighborhoodBestGenome = new double[dataInput.readInt()];
+            for(int i = 0; i < neighborhoodBestGenome.length; i++)
+                neighborhoodBestGenome[i] = dataInput.readDouble();
             }
         else neighborhoodBestGenome = null;
 
         if (dataInput.readBoolean())
             {
-                neighborhoodBestFitness = (Fitness)(fitness.clone());
-                neighborhoodBestFitness.readFitness(state, dataInput);
+            neighborhoodBestFitness = (Fitness)(fitness.clone());
+            neighborhoodBestFitness.readFitness(state, dataInput);
             }
 
         if (dataInput.readBoolean())
             {
-                personalBestGenome = new double[dataInput.readInt()];
-                for(int i = 0; i < personalBestGenome.length; i++)
-                    personalBestGenome[i] = dataInput.readDouble();
+            personalBestGenome = new double[dataInput.readInt()];
+            for(int i = 0; i < personalBestGenome.length; i++)
+                personalBestGenome[i] = dataInput.readDouble();
             }
         else personalBestGenome = null;
 
         if (dataInput.readBoolean())
             {
-                personalBestFitness = (Fitness)(fitness.clone());
-                personalBestFitness.readFitness(state, dataInput);
+            personalBestFitness = (Fitness)(fitness.clone());
+            personalBestFitness.readFitness(state, dataInput);
             }
-    }
+        }
 
-}
+    }

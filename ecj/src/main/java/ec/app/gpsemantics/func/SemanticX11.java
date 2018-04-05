@@ -20,7 +20,7 @@ import ec.util.*;
  */
 
 public class SemanticX11 extends SemanticNode
-{
+    {
     public char value() { return 'X'; }
     public int index() { return 11; }
-}
+    }

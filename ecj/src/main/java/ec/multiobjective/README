@@ -1,9 +1,9 @@
 This package, and various subpackages, contain tools for doing multiobjective
 optimization.  In the primary package (ec.multiobjective) are just useful
-top-level classes.  In the subsidiary packages (ec.multiobjective.nsga2
-and ec.multiobjective.spea2) are implementations of two popular multiobjective
-optimization algorithms, NSGA-II and SPEA2, which use these top-level classes.
-
+top-level classes.  In the subsidiary packages (ec.multiobjective.nsga2,
+ec.multiobjective.nsga3, and ec.multiobjective.spea2) are implementations 
+of three popular multiobjective optimization algorithms, NSGA-II and SPEA2, 
+which use these top-level classes.
 
 
 

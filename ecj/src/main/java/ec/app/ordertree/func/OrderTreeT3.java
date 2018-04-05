@@ -20,8 +20,8 @@ import ec.util.*;
  */
 
 public class OrderTreeT3 extends OrderTreeNode
-{
+    {
     public int value() { return 3; }
     public int expectedChildren() { return 0; }
-}
+    }
 

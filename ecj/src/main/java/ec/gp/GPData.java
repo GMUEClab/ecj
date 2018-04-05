@@ -36,7 +36,7 @@ import ec.util.*;
  */
 
 public class GPData implements Prototype
-{
+    {
     public static final String P_GPDATA = "data";
 
     /** Modifies gpd so that gpd is equivalent to us. You may
@@ -44,22 +44,22 @@ public class GPData implements Prototype
         Do not share pointers with the other object, except to
         read-only data: instead, copy any read-write data as necessary. */
     public void copyTo(final GPData gpd)
-    {
-    }
+        {
+        }
 
     public Parameter defaultBase()
-    {
+        {
         return GPDefaults.base().push(P_GPDATA);
-    }
+        }
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
-    }
+        {
+        }
 
     public Object clone()
-    {
+        {
         try { return super.clone(); }
         catch (CloneNotSupportedException e) 
             { throw new InternalError(); } // never happens
+        }
     }
-}

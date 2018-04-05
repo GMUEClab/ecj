@@ -9,16 +9,16 @@ import ec.util.*;
 import ec.vector.*;
 
 public class Singular extends Problem implements SimpleProblemForm
-{
+    {
     public static final String P_SINGULAR = "singular";
 
     public Parameter defaultBase()
-    {
+        {
         return super.defaultBase().push(P_SINGULAR);
-    }
+        }
 
     public void evaluate(final EvolutionState state, final Individual ind, final int subpopulation, final int threadnum)
-    {
+        {
 
         if (!(ind instanceof IntegerVectorIndividual))
             // TODO : the output text may need to change
@@ -40,7 +40,7 @@ public class Singular extends Problem implements SimpleProblemForm
         ((DOVSFitness) ind.fitness).recordObservation(state, -sum);
 
         ind.evaluated = true;
-    }
+        }
 
-}
+    }
 

@@ -195,12 +195,12 @@ import java.util.*;
  * 
  */
 public class NEATSpecies extends GeneVectorSpecies
-{
+    {
 
     public enum MutationType
-    {
+        {
         GAUSSIAN, COLDGAUSSIAN
-            }
+        }
 
     // parameters
     public static final String P_SPECIES = "species";
@@ -351,23 +351,23 @@ public class NEATSpecies extends GeneVectorSpecies
     public HashMap<NEATInnovation, NEATInnovation> innovations;
 
     public void setup(EvolutionState state, Parameter base)
-    {
+        {
         Parameter def = defaultBase();
 
         nodePrototype = (NEATNode) (state.parameters.getInstanceForParameterEq(base.push(P_NODE), def.push(P_NODE),
-                                                                               NEATNode.class));
+                NEATNode.class));
         nodePrototype.setup(state, base.push(P_NODE));
 
         subspeciesPrototype = (NEATSubspecies) (state.parameters.getInstanceForParameterEq(base.push(P_SUBSPECIES),
-                                                                                           def.push(P_SUBSPECIES), NEATSubspecies.class));
+                def.push(P_SUBSPECIES), NEATSubspecies.class));
         subspeciesPrototype.setup(state, base.push(P_SUBSPECIES));
 
         innovationPrototype = (NEATInnovation) (state.parameters.getInstanceForParameterEq(base.push(P_INNOVATION),
-                                                                                           def.push(P_INNOVATION), NEATInnovation.class));
+                def.push(P_INNOVATION), NEATInnovation.class));
         subspeciesPrototype.setup(state, base.push(P_INNOVATION));
 
         networkPrototype = (NEATNetwork) (state.parameters.getInstanceForParameterEq(base.push(P_NETWORK),
-                                                                                     def.push(P_NETWORK), NEATNetwork.class));
+                def.push(P_NETWORK), NEATNetwork.class));
         networkPrototype.setup(state, base.push(P_NETWORK));
 
         // make sure that super.setup is done AFTER we've loaded our gene
@@ -408,82 +408,82 @@ public class NEATSpecies extends GeneVectorSpecies
         babiesStolen = state.parameters.getInt(base.push(P_BABIES_STOLEN), def.push(P_BABIES_STOLEN), 0);
         maxNetworkDepth = state.parameters.getInt(base.push(P_MAX_NETWORK_DEPTH), base.push(P_MAX_NETWORK_DEPTH), 30);
         addNodeMaxGenomeLength = state.parameters.getInt(base.push(P_ADD_NODE_MAX_GENOME_LENGTH), base.push(P_ADD_NODE_MAX_GENOME_LENGTH), 15);
-    }
+        }
 
     double boundProbabilityParameter(EvolutionState state, Parameter base, String param, String description)
-    {
+        {
         Parameter def = defaultBase();
         double probability = state.parameters.getDoubleWithMax(base.push(param), def.push(param), 0.0, 1.0);
         if (probability < 0.0)
             state.output.fatal(description + " is a probability, and must be a value between 0.0 and 1.0.");
         return probability;
-    }
+        }
 
     public Parameter defaultBase()
-    {
+        {
         return NEATDefaults.base().push(P_SPECIES);
-    }
+        }
 
 
     private Object innoLock = new Object[0];  // arrays are synchronizable, so make good locks
     public int nextInnovationNumber()
-    {
+        {
         synchronized(innoLock) { return currInnovNum++; }
-    }
+        }
 
     public void setInnovationNumber(int num)
-    {
+        {
         synchronized(innoLock) {currInnovNum = num;}
-    }
+        }
 
     /** Assign the individual into a species, if not found, create a new one */
     public void speciate(EvolutionState state, Individual ind)
-    {
+        {
        
         NEATIndividual neatInd = (NEATIndividual) ind;
         // For each individual, search for a subspecies it is compatible to
         if (subspecies.size() == 0) // not subspecies available, create the
             // first species
             {
+            NEATSubspecies newSubspecies = (NEATSubspecies) subspeciesPrototype.emptyClone();
+            newSubspecies.reset();
+            subspecies.add(newSubspecies);
+            newSubspecies.addNewGenIndividual(neatInd);
+            }
+        else
+            {
+            boolean found = false;
+            for (int i = 0; i < subspecies.size(); ++i)
+                {
+                NEATIndividual represent = (NEATIndividual) subspecies.get(i).newGenerationFirst();
+                if (represent == null)
+                    represent = (NEATIndividual) subspecies.get(i).first();
+
+                // found compatible subspecies, add this individual to it
+                if (compatibility(neatInd, represent) < compatThreshold)
+                    {
+                    
+                    subspecies.get(i).addNewGenIndividual(neatInd);
+                    found = true; // change flag
+                    break; // search is over, quit loop
+                    }
+                }
+            // if we didn't find a match, create a new subspecies
+            if (!found)
+                {
                 NEATSubspecies newSubspecies = (NEATSubspecies) subspeciesPrototype.emptyClone();
                 newSubspecies.reset();
                 subspecies.add(newSubspecies);
                 newSubspecies.addNewGenIndividual(neatInd);
-            }
-        else
-            {
-                boolean found = false;
-                for (int i = 0; i < subspecies.size(); ++i)
-                    {
-                        NEATIndividual represent = (NEATIndividual) subspecies.get(i).newGenerationFirst();
-                        if (represent == null)
-                            represent = (NEATIndividual) subspecies.get(i).first();
-
-                        // found compatible subspecies, add this individual to it
-                        if (compatibility(neatInd, represent) < compatThreshold)
-                            {
-                    
-                                subspecies.get(i).addNewGenIndividual(neatInd);
-                                found = true; // change flag
-                                break; // search is over, quit loop
-                            }
-                    }
-                // if we didn't find a match, create a new subspecies
-                if (!found)
-                    {
-                        NEATSubspecies newSubspecies = (NEATSubspecies) subspeciesPrototype.emptyClone();
-                        newSubspecies.reset();
-                        subspecies.add(newSubspecies);
-                        newSubspecies.addNewGenIndividual(neatInd);
-                    }
+                }
             }
             
 
-    }
+        }
 
     /** Spawn a new individual with given individual as template. */
     public NEATIndividual spawnWithTemplate(EvolutionState state, NEATSpecies species, int thread, NEATIndividual ind)
-    {
+        {
         // we clone but do not reset the individual, since these individuals are
         // made from template
         NEATIndividual newInd = (NEATIndividual) ind.clone();
@@ -494,7 +494,7 @@ public class NEATSpecies extends GeneVectorSpecies
         newInd.createNetwork(); // we create the network after we have the
         // complete genome
         return newInd;
-    }
+        }
 
     /**
      * This function gives a measure of compatibility between two Genomes by
@@ -505,7 +505,7 @@ public class NEATSpecies extends GeneVectorSpecies
      * disjointCoeff*numDisjoint+excessCoeff*numExcess+mutdiffCoeff*numMatching.
      */
     public double compatibility(NEATIndividual a, NEATIndividual b)
-    {
+        {
 
 
         int numExcess = 0;
@@ -516,43 +516,43 @@ public class NEATSpecies extends GeneVectorSpecies
         int i = 0, j = 0;
         while (!(i == a.genome.length && j == b.genome.length))
             {
-                // if genome a is already finished, move b's pointer
-                if (i == a.genome.length)
+            // if genome a is already finished, move b's pointer
+            if (i == a.genome.length)
+                {
+                j++;
+                numExcess++;
+                }
+            // if genome b is already finished, move a's pointer
+            else if (j == b.genome.length)
+                {
+                i++;
+                numExcess++;
+                }
+            else
+                {
+                int aInno = ((NEATGene) a.genome[i]).innovationNumber;
+                int bInno = ((NEATGene) b.genome[j]).innovationNumber;
+                if (aInno == bInno)
                     {
-                        j++;
-                        numExcess++;
+                    numMatching++;
+                    double mutDiff = Math
+                        .abs(((NEATGene) a.genome[i]).mutationNumber - ((NEATGene) b.genome[j]).mutationNumber);
+                    mutTotalDiff += mutDiff;
+                    i++;
+                    j++;
                     }
-                // if genome b is already finished, move a's pointer
-                else if (j == b.genome.length)
+                // innovation number do not match, skip this one
+                else if (aInno < bInno)
                     {
-                        i++;
-                        numExcess++;
+                    i++;
+                    numDisjoint++;
                     }
-                else
+                else if (bInno < aInno)
                     {
-                        int aInno = ((NEATGene) a.genome[i]).innovationNumber;
-                        int bInno = ((NEATGene) b.genome[j]).innovationNumber;
-                        if (aInno == bInno)
-                            {
-                                numMatching++;
-                                double mutDiff = Math
-                                    .abs(((NEATGene) a.genome[i]).mutationNumber - ((NEATGene) b.genome[j]).mutationNumber);
-                                mutTotalDiff += mutDiff;
-                                i++;
-                                j++;
-                            }
-                        // innovation number do not match, skip this one
-                        else if (aInno < bInno)
-                            {
-                                i++;
-                                numDisjoint++;
-                            }
-                        else if (bInno < aInno)
-                            {
-                                j++;
-                                numDisjoint++;
-                            }
+                    j++;
+                    numDisjoint++;
                     }
+                }
             }
 
         // Return the compatibility number using compatibility formula
@@ -587,18 +587,18 @@ public class NEATSpecies extends GeneVectorSpecies
         
 
         return compatibility;
-    }
+        }
 
     /** Determine the offsprings for all the subspecies. */
     public void countOffspring(EvolutionState state, int subpop)
-    {
+        {
         // Go through the organisms and add up their adjusted fitnesses to
         // compute the overall average
         double total = 0.0;
         ArrayList<Individual> inds = state.population.subpops.get(subpop).individuals;
         for (int i = 0; i < inds.size(); ++i)
             {
-                total += ((NEATIndividual) inds.get(i)).adjustedFitness;
+            total += ((NEATIndividual) inds.get(i)).adjustedFitness;
 
             }
 
@@ -607,8 +607,8 @@ public class NEATSpecies extends GeneVectorSpecies
         // Now compute expected number of offspring for each individual organism
         for (int i = 0; i < inds.size(); ++i)
             {
-                ((NEATIndividual) inds.get(i)).expectedOffspring = ((NEATIndividual) inds.get(i)).adjustedFitness
-                    / overallAverage;
+            ((NEATIndividual) inds.get(i)).expectedOffspring = ((NEATIndividual) inds.get(i)).adjustedFitness
+                / overallAverage;
 
 
             }
@@ -620,9 +620,9 @@ public class NEATSpecies extends GeneVectorSpecies
         int totalExpected = 0;
         for (int i = 0; i < subspecies.size(); ++i)
             {
-                NEATSubspecies subs = subspecies.get(i);
-                skim = subs.countOffspring(skim);
-                totalExpected += subs.expectedOffspring;
+            NEATSubspecies subs = subspecies.get(i);
+            skim = subs.countOffspring(skim);
+            totalExpected += subs.expectedOffspring;
             }
 
        
@@ -632,41 +632,41 @@ public class NEATSpecies extends GeneVectorSpecies
         // subpecies
         if (totalExpected < inds.size())
             {
-                // Find the subspecies expecting the most
-                int maxExpected = 0;
-                int finalExpected = 0;
-                NEATSubspecies best = null;
+            // Find the subspecies expecting the most
+            int maxExpected = 0;
+            int finalExpected = 0;
+            NEATSubspecies best = null;
+            for (int i = 0; i < subspecies.size(); ++i)
+                {
+                if (subspecies.get(i).expectedOffspring >= maxExpected)
+                    {
+                    maxExpected = subspecies.get(i).expectedOffspring;
+                    best = subspecies.get(i);
+                    }
+                finalExpected += subspecies.get(i).expectedOffspring;
+                }
+
+            // Give the extra offspring to the best subspecies
+            best.expectedOffspring++;
+            finalExpected++;
+
+            // If we still aren't at total, there is a problem
+            // Note that this can happen if a stagnant subpecies
+            // dominates the population and then gets killed off by its age
+            // Then the whole population plummets in fitness
+            // If the average fitness is allowed to hit 0, then we no longer
+            // have an average we can use to assign offspring.
+            if (finalExpected < inds.size())
+                {
+                state.output.warnOnce("Population has died");
                 for (int i = 0; i < subspecies.size(); ++i)
                     {
-                        if (subspecies.get(i).expectedOffspring >= maxExpected)
-                            {
-                                maxExpected = subspecies.get(i).expectedOffspring;
-                                best = subspecies.get(i);
-                            }
-                        finalExpected += subspecies.get(i).expectedOffspring;
+                    subspecies.get(i).expectedOffspring = 0;
                     }
-
-                // Give the extra offspring to the best subspecies
-                best.expectedOffspring++;
-                finalExpected++;
-
-                // If we still aren't at total, there is a problem
-                // Note that this can happen if a stagnant subpecies
-                // dominates the population and then gets killed off by its age
-                // Then the whole population plummets in fitness
-                // If the average fitness is allowed to hit 0, then we no longer
-                // have an average we can use to assign offspring.
-                if (finalExpected < inds.size())
-                    {
-                        state.output.warnOnce("Population has died");
-                        for (int i = 0; i < subspecies.size(); ++i)
-                            {
-                                subspecies.get(i).expectedOffspring = 0;
-                            }
-                        best.expectedOffspring = inds.size();
-                    }
+                best.expectedOffspring = inds.size();
+                }
             }
-    }
+        }
 
     /**
      * Breed a new generation of population, this is done by first figure the
@@ -674,7 +674,7 @@ public class NEATSpecies extends GeneVectorSpecies
      * to reproduce.
      */
     public void breedNewPopulation(EvolutionState state, int subpop, int thread)
-    {
+        {
         // see epoch method in Population
         ArrayList<Individual> inds = state.population.subpops.get(subpop).individuals;
 
@@ -696,10 +696,10 @@ public class NEATSpecies extends GeneVectorSpecies
         // those below survivalThresh * average
         for (int i = 0; i < subspecies.size(); ++i)
             {
-                subspecies.get(i).adjustFitness(state, dropoffAge, ageSignificance);
-                subspecies.get(i).sortIndividuals();
-                subspecies.get(i).updateSubspeciesMaxFitness();
-                subspecies.get(i).markReproducableIndividuals(survivalThreshold);
+            subspecies.get(i).adjustFitness(state, dropoffAge, ageSignificance);
+            subspecies.get(i).sortIndividuals();
+            subspecies.get(i).updateSubspeciesMaxFitness();
+            subspecies.get(i).markReproducableIndividuals(survivalThreshold);
             }
 
         // count the offspring for each subspecies
@@ -709,20 +709,20 @@ public class NEATSpecies extends GeneVectorSpecies
         // these need to use original fitness, descending order
         ArrayList<NEATSubspecies> sortedSubspecies = new ArrayList<NEATSubspecies>(subspecies);
         Collections.sort(sortedSubspecies, new Comparator<NEATSubspecies>()
-                         {
-                             @Override
-                                 public int compare(NEATSubspecies o1, NEATSubspecies o2)
-                                 {
-                                     NEATIndividual ind1 = (NEATIndividual) o1.individuals.get(0);
-                                     NEATIndividual ind2 = (NEATIndividual) o2.individuals.get(0);
+                {
+                @Override
+                public int compare(NEATSubspecies o1, NEATSubspecies o2)
+                    {
+                    NEATIndividual ind1 = (NEATIndividual) o1.individuals.get(0);
+                    NEATIndividual ind2 = (NEATIndividual) o2.individuals.get(0);
 
-                                     if (ind1.fitness.fitness() < ind2.fitness.fitness())
-                                         return 1;
-                                     if (ind1.fitness.fitness() > ind2.fitness.fitness())
-                                         return -1;
-                                     return 0;
-                                 }
-                         });
+                    if (ind1.fitness.fitness() < ind2.fitness.fitness())
+                        return 1;
+                    if (ind1.fitness.fitness() > ind2.fitness.fitness())
+                        return -1;
+                    return 0;
+                    }
+            });
 
         // Check for population-level stagnation code
         populationStagnation(state, subpop, sortedSubspecies);
@@ -731,14 +731,14 @@ public class NEATSpecies extends GeneVectorSpecies
         // TODO: fix weird constant
         if (highestLastChanged >= dropoffAge + 5)
             {
-                deltaCoding(state, subpop, sortedSubspecies);
+            deltaCoding(state, subpop, sortedSubspecies);
             }
         // STOLEN BABIES: The system can take expected offspring away from
         // worse species and give them to superior species depending on
         // the system parameter babies_stolen (when babies_stolen > 0)
         else if (babiesStolen > 0)
             {
-                stealBabies(state,thread , subpop, sortedSubspecies);
+            stealBabies(state,thread , subpop, sortedSubspecies);
             }
 
         // Kill off all Individual marked for death. The remainder
@@ -748,7 +748,7 @@ public class NEATSpecies extends GeneVectorSpecies
         // population
         for (int i = 0; i < sortedSubspecies.size(); ++i)
             {
-                sortedSubspecies.get(i).removePoorFitnessIndividuals();
+            sortedSubspecies.get(i).removePoorFitnessIndividuals();
             }
 
         // Reproduction
@@ -761,16 +761,16 @@ public class NEATSpecies extends GeneVectorSpecies
         // subspecies
         for (int i = 0; i < sortedSubspecies.size(); ++i)
             {
-                // first for all current subspecies, clear their new generation
-                // individuals
-                NEATSubspecies subs = sortedSubspecies.get(i);
-                subs.newGenIndividuals.clear();
+            // first for all current subspecies, clear their new generation
+            // individuals
+            NEATSubspecies subs = sortedSubspecies.get(i);
+            subs.newGenIndividuals.clear();
             }
 
         for (int i = 0; i < sortedSubspecies.size(); ++i)
             {
-                NEATSubspecies subs = sortedSubspecies.get(i);
-                subs.reproduce(state, thread, subpop, sortedSubspecies);
+            NEATSubspecies subs = sortedSubspecies.get(i);
+            subs.reproduce(state, thread, subpop, sortedSubspecies);
             }
 
         // Remove all empty subspecies and age ones that survive
@@ -780,31 +780,31 @@ public class NEATSpecies extends GeneVectorSpecies
         // first age the old subspecies
         for (int i = 0; i < sortedSubspecies.size(); ++i)
             {
-                NEATSubspecies subs = sortedSubspecies.get(i);
-                subs.age++;
+            NEATSubspecies subs = sortedSubspecies.get(i);
+            subs.age++;
             }
         ArrayList<NEATSubspecies> remainSubspecies = new ArrayList<NEATSubspecies>();
         ArrayList<Individual> newGenIndividuals = new ArrayList<Individual>();
         for (int i = 0; i < subspecies.size(); ++i)
             {
-                if (subspecies.get(i).hasNewGeneration())
-                    {
-                        // add to the remaining subspecies
-                        remainSubspecies.add(subspecies.get(i));
-                        subspecies.get(i).toNewGeneration();
-                        // add to the new generation population
-                        newGenIndividuals.addAll(subspecies.get(i).individuals);
-                    }
+            if (subspecies.get(i).hasNewGeneration())
+                {
+                // add to the remaining subspecies
+                remainSubspecies.add(subspecies.get(i));
+                subspecies.get(i).toNewGeneration();
+                // add to the new generation population
+                newGenIndividuals.addAll(subspecies.get(i).individuals);
+                }
             }
         // replace the old stuff
         subspecies = remainSubspecies;
 
         state.population.subpops.get(subpop).individuals = newGenIndividuals;
-    }
+        }
 
     /** Perform a delta coding. */
     public void deltaCoding(EvolutionState state, int subpop, ArrayList<NEATSubspecies> sortedSubspecies)
-    {
+        {
         highestLastChanged = 0;
 
         int popSize = state.population.subpops.get(subpop).initialSize;
@@ -820,71 +820,71 @@ public class NEATSpecies extends GeneVectorSpecies
 
         if (sortedSubspecies.size() >= 2)
             {
-                // the second subspecies can have the other half pop size
-                ((NEATIndividual) sortedSubspecies.get(1).first()).superChampionOffspring = popSize - halfPop;
-                sortedSubspecies.get(1).expectedOffspring = popSize - halfPop;
-                sortedSubspecies.get(1).ageOfLastImprovement = sortedSubspecies.get(1).age;
-                // the remainder subspecies has 0 offsprings
-                for (int i = 2; i < sortedSubspecies.size(); ++i)
-                    {
-                        sortedSubspecies.get(i).expectedOffspring = 0;
-                    }
+            // the second subspecies can have the other half pop size
+            ((NEATIndividual) sortedSubspecies.get(1).first()).superChampionOffspring = popSize - halfPop;
+            sortedSubspecies.get(1).expectedOffspring = popSize - halfPop;
+            sortedSubspecies.get(1).ageOfLastImprovement = sortedSubspecies.get(1).age;
+            // the remainder subspecies has 0 offsprings
+            for (int i = 2; i < sortedSubspecies.size(); ++i)
+                {
+                sortedSubspecies.get(i).expectedOffspring = 0;
+                }
             }
         else
             {
-                ((NEATIndividual) bestFitnessSubspecies.first()).superChampionOffspring += popSize - halfPop;
-                bestFitnessSubspecies.expectedOffspring = popSize - halfPop;
+            ((NEATIndividual) bestFitnessSubspecies.first()).superChampionOffspring += popSize - halfPop;
+            bestFitnessSubspecies.expectedOffspring = popSize - halfPop;
             }
-    }
+        }
 
     /** Determine if the whole subpopulation get into stagnation. */
     public void populationStagnation(EvolutionState state, int subpop, ArrayList<NEATSubspecies> sortedSubspecies)
-    {
+        {
         NEATIndividual bestFitnessIndividual = (NEATIndividual) sortedSubspecies.get(0).individuals.get(0);
         bestFitnessIndividual.popChampion = true;
         if (bestFitnessIndividual.fitness.fitness() > highestFitness)
             {
-                highestFitness = bestFitnessIndividual.fitness.fitness();
-                highestLastChanged = 0;
-                //state.output.message("Population has reached a new RECORD FITNESS " + highestFitness);
+            highestFitness = bestFitnessIndividual.fitness.fitness();
+            highestLastChanged = 0;
+            //state.output.message("Population has reached a new RECORD FITNESS " + highestFitness);
             }
         else
             {
-                highestLastChanged++;
-                //state.output.message(
-                //    highestLastChanged + " generations since last population fitness record " + highestFitness);
+            highestLastChanged++;
+            //state.output.message(
+            //    highestLastChanged + " generations since last population fitness record " + highestFitness);
             }
-    }
+        }
 
     /** Steal the babies from champion subspecies. */
     public void stealBabies(EvolutionState state, int thread,int subpop, ArrayList<NEATSubspecies> sortedSubspecies)
-    {
+        {
         // Take away a constant number of expected offspring from the worst few
         // species
         int babiesAlreadyStolen = 0;
 
         for (int i = sortedSubspecies.size() - 1; i >= 0 && babiesAlreadyStolen < babiesStolen; i--)
             {
-                NEATSubspecies subs = sortedSubspecies.get(i);
+            NEATSubspecies subs = sortedSubspecies.get(i);
 
-                if (subs.age > 5 && subs.expectedOffspring > 2)
+            if (subs.age > 5 && subs.expectedOffspring > 2)
+                {
+                // This subspecies has enough to finish off the stolen pool
+                int babiesNeeded = babiesStolen - babiesAlreadyStolen;
+                if (subs.expectedOffspring - 1 >= babiesNeeded)
                     {
-                        // This subspecies has enough to finish off the stolen pool
-                        int babiesNeeded = babiesStolen - babiesAlreadyStolen;
-                        if (subs.expectedOffspring - 1 >= babiesNeeded)
-                            {
-                                subs.expectedOffspring -= babiesNeeded;
-                                babiesAlreadyStolen = babiesStolen;
-                            }
-                        // Not enough here to complete the pool of stolen, then leave
-                        // one individual
-                        // for that subspecies
-                        else
-                            {
-                                babiesAlreadyStolen += subs.expectedOffspring - 1;
-                                subs.expectedOffspring = 1;
-                            }
+                    subs.expectedOffspring -= babiesNeeded;
+                    babiesAlreadyStolen = babiesStolen;
                     }
+                // Not enough here to complete the pool of stolen, then leave
+                // one individual
+                // for that subspecies
+                else
+                    {
+                    babiesAlreadyStolen += subs.expectedOffspring - 1;
+                    subs.expectedOffspring = 1;
+                    }
+                }
             }
 
         // Mark the best champions of the top subspecies to be the super
@@ -902,94 +902,94 @@ public class NEATSpecies extends GeneVectorSpecies
 
         while (!done && iterator.hasNext())
             {
-                NEATSubspecies subs = iterator.next();
-                // Don't give to dying species even if they are champions
-                if (subs.timeSinceLastImproved() <= dropoffAge)
+            NEATSubspecies subs = iterator.next();
+            // Don't give to dying species even if they are champions
+            if (subs.timeSinceLastImproved() <= dropoffAge)
+                {
+                if (quoteIndex < quote.length)
                     {
-                        if (quoteIndex < quote.length)
-                            {
-                                if (babiesAlreadyStolen > quote[quoteIndex])
-                                    {
-                                        ((NEATIndividual) subs.first()).superChampionOffspring = quote[quoteIndex];
-                                        subs.expectedOffspring += quote[quoteIndex];
-                                        babiesAlreadyStolen -= quote[quoteIndex];
-                                    }
-                                quoteIndex++;
-                            }
-                        else if (quoteIndex >= quote.length)
-                            {
-                                // Randomize a little which species get boosted by a super
-                                // champion
-                                if (state.random[thread].nextBoolean(.9))
-                                    {
-                                        if (babiesAlreadyStolen > 3)
-                                            {
-                                                ((NEATIndividual) subs.first()).superChampionOffspring = 3;
-                                                subs.expectedOffspring += 3;
-                                                babiesAlreadyStolen -= 3;
-                                            }
-                                        else
-                                            {
-                                                ((NEATIndividual) subs.first()).superChampionOffspring = babiesAlreadyStolen;
-                                                subs.expectedOffspring += babiesAlreadyStolen;
-                                                babiesAlreadyStolen = 0;
-                                            }
-                                    }
-                            }
-                        // assiged all the stolen babies
-                        if (babiesAlreadyStolen == 0)
-                            done = true;
+                    if (babiesAlreadyStolen > quote[quoteIndex])
+                        {
+                        ((NEATIndividual) subs.first()).superChampionOffspring = quote[quoteIndex];
+                        subs.expectedOffspring += quote[quoteIndex];
+                        babiesAlreadyStolen -= quote[quoteIndex];
+                        }
+                    quoteIndex++;
                     }
+                else if (quoteIndex >= quote.length)
+                    {
+                    // Randomize a little which species get boosted by a super
+                    // champion
+                    if (state.random[thread].nextBoolean(.9))
+                        {
+                        if (babiesAlreadyStolen > 3)
+                            {
+                            ((NEATIndividual) subs.first()).superChampionOffspring = 3;
+                            subs.expectedOffspring += 3;
+                            babiesAlreadyStolen -= 3;
+                            }
+                        else
+                            {
+                            ((NEATIndividual) subs.first()).superChampionOffspring = babiesAlreadyStolen;
+                            subs.expectedOffspring += babiesAlreadyStolen;
+                            babiesAlreadyStolen = 0;
+                            }
+                        }
+                    }
+                // assiged all the stolen babies
+                if (babiesAlreadyStolen == 0)
+                    done = true;
+                }
             }
 
         // If any stolen babies aren't taken, give them to species #1's champion
         if (babiesAlreadyStolen > 0)
             {
-                state.output.message("Not all stolen babies assigned, giving to the best subspecies");
-                NEATSubspecies subs = subspecies.get(0);
-                ((NEATIndividual) subs.first()).superChampionOffspring += babiesAlreadyStolen;
-                subs.expectedOffspring += babiesAlreadyStolen;
-                babiesAlreadyStolen = 0;
+            state.output.message("Not all stolen babies assigned, giving to the best subspecies");
+            NEATSubspecies subs = subspecies.get(0);
+            ((NEATIndividual) subs.first()).superChampionOffspring += babiesAlreadyStolen;
+            subs.expectedOffspring += babiesAlreadyStolen;
+            babiesAlreadyStolen = 0;
             }
 
-    }
+        }
 
 
 
     /** Create a new individual with given nodes and genes */
     public Individual newIndividual(EvolutionState state, int thread, ArrayList<NEATNode> nodes,
-                                    ArrayList<Gene> genes)
-    {
+        ArrayList<Gene> genes)
+        {
         NEATIndividual newind = (NEATIndividual) (super.newIndividual(state, thread));
         newind.reset(nodes, genes);
         return newind;
-    }
+        }
 
     public boolean hasInnovation(NEATInnovation inno)
-    {
+        {
         return innovations.containsKey(inno);
-    }
+        }
 
     public NEATInnovation getInnovation(NEATInnovation inno)
-    {
+        {
         return innovations.get(inno);
-    }
+        }
 
     public void addInnovation(NEATInnovation inno)
-    {
+        {
         innovations.put(inno, inno);
-    }
+        }
 
     /**
      * Clear the evaluation flag in each individual. This is important if a
      * evaluation individual mutated.
      */
     public void clearEvaluationFlag(ArrayList<Individual> individuals)
-    {
+        {
         for (int i = 0; i < individuals.size(); ++i)
             {
-                individuals.get(i).evaluated = false;
+            individuals.get(i).evaluated = false;
             }
-    }
+        }
 
-}
+    }

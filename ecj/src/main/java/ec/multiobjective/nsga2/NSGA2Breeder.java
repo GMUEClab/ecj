@@ -49,25 +49,25 @@ public class NSGA2Breeder extends SimpleBreeder
             state.output.fatal("clonePipelineAndPopulation must be true for NSGA2Breeder.");
         }
 
-	int[] numElites = null;
-	
-	// This method is called AFTER loadElites.  We could just 
+    int[] numElites = null;
+        
+    // This method is called AFTER loadElites.  We could just 
     public int numElites(EvolutionState state, int subpopulation)
-    	{
-    	return numElites[subpopulation];
-    	}
+        {
+        return numElites[subpopulation];
+        }
 
     protected void loadElites(EvolutionState state, Population newpop)
-    	{
-    	numElites = new int[newpop.subpops.size()];
-    	
-    	for(int i = 0; i < newpop.subpops.size(); i++)
-    		{
-    		ArrayList list = buildArchive(state, i);
-    		numElites[i] = list.size();
-	    	newpop.subpops.get(i).individuals.addAll(list);
-	    	}
-    	}
+        {
+        numElites = new int[newpop.subpops.size()];
+        
+        for(int i = 0; i < newpop.subpops.size(); i++)
+            {
+            ArrayList list = buildArchive(state, i);
+            numElites[i] = list.size();
+            newpop.subpops.get(i).individuals.addAll(list);
+            }
+        }
 
     /** Build the auxiliary fitness data and reduce the subpopulation to just the archive, which is returned. */
     public ArrayList<Individual> buildArchive(EvolutionState state, int subpop)
@@ -83,7 +83,7 @@ public class NSGA2Breeder extends SimpleBreeder
             ArrayList<Individual> rank = ranks.get(i);
             if (rank.size() + newSubpopulation.size() >= originalPopSize)
                 {
-	            assignSparsity(rank);
+                assignSparsity(rank);
 
                 // first sort the rank by sparsity
                 // decreasing order

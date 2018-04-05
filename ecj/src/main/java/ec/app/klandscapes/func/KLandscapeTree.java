@@ -12,17 +12,17 @@ import ec.gp.*;
 import ec.util.*;
 
 public abstract class KLandscapeTree extends GPNode
-{
+    {
     public abstract char value();
 
     public String toString() { return "" + value(); }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
+        {
+        }
     }
-}

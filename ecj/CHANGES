@@ -2467,3 +2467,7 @@ Version		Change Log
    	     with TeXLive 2017.
 	Fixed an incorrect comment in nsga2.params
 	Added ec.eda.Amalgam package
+	Removed SPEA2Evaluator.java
+	Added nsga3 package
+	Added pbil package
+	Initial version of rule-rewriting in parameter databases added

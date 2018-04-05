@@ -41,5 +41,5 @@ package ec;
  */
 
 public interface Clique extends Setup
-{
-}
+    {
+    }

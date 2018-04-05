@@ -116,7 +116,7 @@ import ec.util.*;
  
  
 public class Slave 
-{
+    {
     public final static String P_EVALSLAVENAME = "eval.slave.name";
         
     public final static String P_EVALMASTERHOST = "eval.master.host";
@@ -162,7 +162,7 @@ public class Slave
     public static int slaveNum = -1;
 
     public static void main(String[] args)
-    {
+        {
         EvolutionState state = null;
         ParameterDatabase parameters = null;
         Output output = null;
@@ -174,30 +174,30 @@ public class Slave
         for (x = 0; x < args.length - 1; x++)
             if (args[x].equals(A_FILE))
                 {
-                    try
-                        {
-                            parameters = new ParameterDatabase(
-                                                               // not available in jdk1.1: new File(args[x+1]).getAbsoluteFile(),
-                                                               new File(new File(args[x + 1]).getAbsolutePath()),
-                                                               args);
+                try
+                    {
+                    parameters = new ParameterDatabase(
+                        // not available in jdk1.1: new File(args[x+1]).getAbsoluteFile(),
+                        new File(new File(args[x + 1]).getAbsolutePath()),
+                        args);
                                                 
-                            // add the fact that I am a slave:      eval.i-am-slave = true
-                            // this is used only by the Evaluator to determine whether to use the MasterProblem
-                            parameters.set(new Parameter(ec.EvolutionState.P_EVALUATOR).push(ec.Evaluator.P_IAMSLAVE), "true");
-                            break;
-                        }
-                    catch(FileNotFoundException e)
-                        { 
-                            Output.initialError(
-                                                "A File Not Found Exception was generated upon" +
-                                                "reading the parameter file \"" + args[x+1] + 
-                                                "\".\nHere it is:\n" + e); }
-                    catch(IOException e)
-                        { 
-                            Output.initialError(
-                                                "An IO Exception was generated upon reading the" +
-                                                "parameter file \"" + args[x+1] +
-                                                "\".\nHere it is:\n" + e); } 
+                    // add the fact that I am a slave:      eval.i-am-slave = true
+                    // this is used only by the Evaluator to determine whether to use the MasterProblem
+                    parameters.set(new Parameter(ec.EvolutionState.P_EVALUATOR).push(ec.Evaluator.P_IAMSLAVE), "true");
+                    break;
+                    }
+                catch(FileNotFoundException e)
+                    { 
+                    Output.initialError(
+                        "A File Not Found Exception was generated upon" +
+                        "reading the parameter file \"" + args[x+1] + 
+                        "\".\nHere it is:\n" + e); }
+                catch(IOException e)
+                    { 
+                    Output.initialError(
+                        "An IO Exception was generated upon reading the" +
+                        "parameter file \"" + args[x+1] +
+                        "\".\nHere it is:\n" + e); } 
                 }
         if (parameters == null)
             Output.initialError("No parameter file was specified." ); 
@@ -213,20 +213,20 @@ public class Slave
 
         if (parameters.exists(new Parameter(P_MUZZLE), null))
             Output.initialWarning("" + new Parameter(P_MUZZLE) + " has been deprecated.  We suggest you use " + 
-                                  new Parameter(P_SILENT) + " or similar newer options.");
+                new Parameter(P_SILENT) + " or similar newer options.");
         silent = silent || parameters.getBoolean(new Parameter(P_MUZZLE), null, false);
 
                 
         // 6. Open a server socket and listen for requests
         String slaveName = parameters.getString(
-                                                new Parameter(P_EVALSLAVENAME),null);
+            new Parameter(P_EVALSLAVENAME),null);
                 
         String masterHost = parameters.getString(
-                                                 new Parameter(P_EVALMASTERHOST),null );
+            new Parameter(P_EVALMASTERHOST),null );
         if (masterHost == null)
             Output.initialError("Master Host missing", new Parameter(P_EVALMASTERHOST));
         int masterPort = parameters.getInt(
-                                           new Parameter(P_EVALMASTERPORT),null, 0);
+            new Parameter(P_EVALMASTERPORT),null, 0);
         if (masterPort == -1)
             Output.initialError("Master Port missing", new Parameter(P_EVALMASTERPORT));
         boolean useCompression = parameters.getBoolean(new Parameter(P_EVALCOMPRESSION),null,false);
@@ -239,255 +239,255 @@ public class Slave
         
         if (runEvolve && !returnIndividuals)
             {
-                Output.initialError("You have the slave running in 'evolve' mode, but it's only returning fitnesses to the master, not whole individuals.  This is almost certainly wrong.",
-                                    new Parameter(P_RUNEVOLVE), new Parameter(P_RETURNINDIVIDUALS));
+            Output.initialError("You have the slave running in 'evolve' mode, but it's only returning fitnesses to the master, not whole individuals.  This is almost certainly wrong.",
+                new Parameter(P_RUNEVOLVE), new Parameter(P_RETURNINDIVIDUALS));
             }
         
         if (!silent) 
             {
-                Output.initialMessage("ECJ Slave");
-                if (runEvolve) Output.initialMessage("Running in Evolve mode, evolve time is " + runTime + " milliseconds");
-                if (returnIndividuals) Output.initialMessage("Whole individuals will be returned");
-                else Output.initialMessage("Only fitnesses will be returned");
+            Output.initialMessage("ECJ Slave");
+            if (runEvolve) Output.initialMessage("Running in Evolve mode, evolve time is " + runTime + " milliseconds");
+            if (returnIndividuals) Output.initialMessage("Whole individuals will be returned");
+            else Output.initialMessage("Only fitnesses will be returned");
             }
         
         // Continue to serve new masters until killed.
         Socket socket = null;
         while (true)
             {
+            try
+                {
                 try
                     {
+                    long connectAttemptCount = 0;
+                    if (!silent) Output.initialMessage("Connecting to master at "+masterHost+":"+masterPort);
+                    while (true)
+                        {
                         try
                             {
-                                long connectAttemptCount = 0;
-                                if (!silent) Output.initialMessage("Connecting to master at "+masterHost+":"+masterPort);
-                                while (true)
-                                    {
-                                        try
-                                            {
-                                                socket = new Socket(masterHost, masterPort);
-                                                break;
-                                            }
-                                        catch (ConnectException e)   // it's not up yet...
-                                            {
-                                                connectAttemptCount++;
-                                                try
-                                                    {
-                                                        Thread.sleep(SLEEP_TIME);
-                                                    }
-                                                catch( InterruptedException f )
-                                                    {
-                                                    }
-                                            }
-                                    }
-                                if (!silent) Output.initialMessage("Connected to master after " + (connectAttemptCount * SLEEP_TIME) + " ms");
+                            socket = new Socket(masterHost, masterPort);
+                            break;
+                            }
+                        catch (ConnectException e)   // it's not up yet...
+                            {
+                            connectAttemptCount++;
+                            try
+                                {
+                                Thread.sleep(SLEEP_TIME);
+                                }
+                            catch( InterruptedException f )
+                                {
+                                }
+                            }
+                        }
+                    if (!silent) Output.initialMessage("Connected to master after " + (connectAttemptCount * SLEEP_TIME) + " ms");
                     
-                                DataInputStream dataIn = null;
-                                DataOutputStream dataOut = null;
+                    DataInputStream dataIn = null;
+                    DataOutputStream dataOut = null;
 
-                                try
-                                    {
-                                        InputStream tmpIn = socket.getInputStream();
-                                        OutputStream tmpOut = socket.getOutputStream();
-                                        if (useCompression)
-                                            {
-                                                tmpIn = Output.makeCompressingInputStream(tmpIn);
-                                                tmpOut = Output.makeCompressingOutputStream(tmpOut);
-                                                if (tmpIn == null || tmpOut == null)
-                                                    {
-                                                        String err = "You do not appear to have JZLib installed on your system, and so must set eval.compression=false.  " +
-                                                            "To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/";
-                                                        if (!silent) Output.initialMessage(err);
-                                                        throw new Output.OutputExitException(err);
-                                                    }
-                                            }
+                    try
+                        {
+                        InputStream tmpIn = socket.getInputStream();
+                        OutputStream tmpOut = socket.getOutputStream();
+                        if (useCompression)
+                            {
+                            tmpIn = Output.makeCompressingInputStream(tmpIn);
+                            tmpOut = Output.makeCompressingOutputStream(tmpOut);
+                            if (tmpIn == null || tmpOut == null)
+                                {
+                                String err = "You do not appear to have JZLib installed on your system, and so must set eval.compression=false.  " +
+                                    "To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/";
+                                if (!silent) Output.initialMessage(err);
+                                throw new Output.OutputExitException(err);
+                                }
+                            }
                                                 
-                                        dataIn = new DataInputStream(tmpIn);
-                                        dataOut = new DataOutputStream(tmpOut);
-                                    }
-                                catch (IOException e)
-                                    {
-                                        String err = "Unable to open input stream from socket:\n"+e;
-                                        if (!silent) Output.initialMessage(err);
-                                        throw new Output.OutputExitException(err);
-                                    }
+                        dataIn = new DataInputStream(tmpIn);
+                        dataOut = new DataOutputStream(tmpOut);
+                        }
+                    catch (IOException e)
+                        {
+                        String err = "Unable to open input stream from socket:\n"+e;
+                        if (!silent) Output.initialMessage(err);
+                        throw new Output.OutputExitException(err);
+                        }
                         
-                                // read the unique number assigned to me
-                                slaveNum = dataIn.readInt();
+                    // read the unique number assigned to me
+                    slaveNum = dataIn.readInt();
                                 
-                                // specify the slaveName
-                                if (slaveName==null)
-                                    {                    
-                                        slaveName = socket.getLocalAddress().toString() + "/" + slaveNum;
-                                        if (!silent) Output.initialMessage("No slave name specified.  Using: " + slaveName);
-                                    }
+                    // specify the slaveName
+                    if (slaveName==null)
+                        {                    
+                        slaveName = socket.getLocalAddress().toString() + "/" + slaveNum;
+                        if (!silent) Output.initialMessage("No slave name specified.  Using: " + slaveName);
+                        }
                                 
-                                dataOut.writeUTF(slaveName);
-                                dataOut.flush();
+                    dataOut.writeUTF(slaveName);
+                    dataOut.flush();
 
-                                // 1. create the output
-                                // store = parameters.getBoolean(new Parameter(P_STORE), null, false);
+                    // 1. create the output
+                    // store = parameters.getBoolean(new Parameter(P_STORE), null, false);
                 
-                                if (output != null) output.close();
-                                output = new Output(false);              // do not store messages, just print them
-                                output.setThrowsErrors(true);  // don't do System.exit(1);
+                    if (output != null) output.close();
+                    output = new Output(false);              // do not store messages, just print them
+                    output.setThrowsErrors(true);  // don't do System.exit(1);
                 
-                                // stdout is always log #0. stderr is always log #1.
-                                // stderr accepts announcements, and both are fully verbose
-                                // by default.
-                                output.addLog(ec.util.Log.D_STDOUT, false);
-                                output.addLog(ec.util.Log.D_STDERR, true);
+                    // stdout is always log #0. stderr is always log #1.
+                    // stderr accepts announcements, and both are fully verbose
+                    // by default.
+                    output.addLog(ec.util.Log.D_STDOUT, false);
+                    output.addLog(ec.util.Log.D_STDERR, true);
 
-                                if (silent)
-                                    {
-                                        output.getLog(0).silent = true;
-                                        output.getLog(1).silent = true;
-                                    }
+                    if (silent)
+                        {
+                        output.getLog(0).silent = true;
+                        output.getLog(1).silent = true;
+                        }
 
-                                if (!silent) output.systemMessage(Version.message());
+                    if (!silent) output.systemMessage(Version.message());
 
 
-                                // 2. set up thread values
-                                int breedthreads = Evolve.determineThreads(output, parameters, new Parameter(Evolve.P_BREEDTHREADS));
-                                int evalthreads = Evolve.determineThreads(output, parameters, new Parameter(Evolve.P_EVALTHREADS));
+                    // 2. set up thread values
+                    int breedthreads = Evolve.determineThreads(output, parameters, new Parameter(Evolve.P_BREEDTHREADS));
+                    int evalthreads = Evolve.determineThreads(output, parameters, new Parameter(Evolve.P_EVALTHREADS));
 
-                                // Note that either breedthreads or evalthreads (or both) may be 'auto'.  We don't warn about this because
-                                // the user isn't providing the thread seeds.
+                    // Note that either breedthreads or evalthreads (or both) may be 'auto'.  We don't warn about this because
+                    // the user isn't providing the thread seeds.
                 
 
-                                // 3. create the Mersenne Twister random number generators,
-                                // one per thread
+                    // 3. create the Mersenne Twister random number generators,
+                    // one per thread
 
-                                MersenneTwisterFast[] random = new MersenneTwisterFast[breedthreads > evalthreads ? 
-                                                                                       breedthreads : evalthreads];
+                    MersenneTwisterFast[] random = new MersenneTwisterFast[breedthreads > evalthreads ? 
+                        breedthreads : evalthreads];
         
-                                int seed = dataIn.readInt();
-                                for(int i = 0; i < random.length; i++)
-                                    random[i] = Evolve.primeGenerator(new MersenneTwisterFast(seed++));  // we prime the generator to be more sure of randomness.
+                    int seed = dataIn.readInt();
+                    for(int i = 0; i < random.length; i++)
+                        random[i] = Evolve.primeGenerator(new MersenneTwisterFast(seed++));  // we prime the generator to be more sure of randomness.
 
-                                // 4. Set up the evolution state
+                    // 4. Set up the evolution state
                 
-                                // what evolution state to use?
-                                state = (EvolutionState)
-                                    parameters.getInstanceForParameter(new Parameter(ec.Evolve.P_STATE),null,
-                                                                       EvolutionState.class);
-                                state.parameters = new ParameterDatabase();
-                                state.parameters.addParent(parameters);
-                                state.random = random;
-                                state.output = output;
-                                state.evalthreads = evalthreads;
-                                state.breedthreads = breedthreads;
+                    // what evolution state to use?
+                    state = (EvolutionState)
+                        parameters.getInstanceForParameter(new Parameter(ec.Evolve.P_STATE),null,
+                            EvolutionState.class);
+                    state.parameters = new ParameterDatabase();
+                    state.parameters.addParent(parameters);
+                    state.random = random;
+                    state.output = output;
+                    state.evalthreads = evalthreads;
+                    state.breedthreads = breedthreads;
         
-                                state.setup(state, null);
-                                state.population = state.initializer.setupPopulation(state, 0);
+                    state.setup(state, null);
+                    state.population = state.initializer.setupPopulation(state, 0);
                 
-                                // 5. Optionally do further loading
-                                final MasterProblem storage = state.evaluator.masterproblem;
-                                storage.receiveAdditionalData(state, dataIn);
-                                storage.transferAdditionalData(state);
+                    // 5. Optionally do further loading
+                    final MasterProblem storage = state.evaluator.masterproblem;
+                    storage.receiveAdditionalData(state, dataIn);
+                    storage.transferAdditionalData(state);
                                 
-                                try
-                                    {
-                                        while (true)
-                                            {
-                                                EvolutionState newState = state;
+                    try
+                        {
+                        while (true)
+                            {
+                            EvolutionState newState = state;
                         
-                                                if (runEvolve) 
-                                                    {
-                                                        // Construct and use a new EvolutionState.  This will be inefficient the first time around
-                                                        // as we've set up TWO EvolutionStates in a row with no good reason.
-                                                        ParameterDatabase coverDatabase = new ParameterDatabase();  // protect the underlying one
-                                                        coverDatabase.addParent(state.parameters);
-                                                        newState = (EvolutionState) Evolve.initialize(coverDatabase, 0);
-                                                        newState.startFresh();
-                                                        newState.output.message("Replacing random number generators, ignore above seed message");
-                                                        newState.random = state.random;  // continue with RNG
-                                                        storage.transferAdditionalData(newState);  // load the arbitrary data again
-                                                    }
+                            if (runEvolve) 
+                                {
+                                // Construct and use a new EvolutionState.  This will be inefficient the first time around
+                                // as we've set up TWO EvolutionStates in a row with no good reason.
+                                ParameterDatabase coverDatabase = new ParameterDatabase();  // protect the underlying one
+                                coverDatabase.addParent(state.parameters);
+                                newState = (EvolutionState) Evolve.initialize(coverDatabase, 0);
+                                newState.startFresh();
+                                newState.output.message("Replacing random number generators, ignore above seed message");
+                                newState.random = state.random;  // continue with RNG
+                                storage.transferAdditionalData(newState);  // load the arbitrary data again
+                                }
                         
-                                                // 0 means to shut down
-                                                // System.err.println("reading next problem");
-                                                int problemType = dataIn.readByte();
-                                                // System.err.println("Read problem: " + (int)problemType);
-                                                switch (problemType)
-                                                    {
-                                                    case V_SHUTDOWN:
-                                                        {
-                                                            socket.close();
-                                                            if (oneShot)
-                                                                return;  // we're outa here
-                                                            else
-                                                                throw new Output.OutputExitException("SHUTDOWN");
-                                                        }
-                                                    case V_EVALUATESIMPLE:
-                                                        evaluateSimpleProblemForm(newState, returnIndividuals, dataIn, dataOut, args);
-                                                        break;
-                                                    case V_EVALUATEGROUPED:
-                                                        evaluateGroupedProblemForm(newState, returnIndividuals, dataIn, dataOut);
-                                                        break;
-                                                    default:
-                                                        state.output.fatal("Unknown problem form specified: "+problemType);
-                                                    }
-                                            }
-
-                                    } 
-                                catch (Exception e)    
+                            // 0 means to shut down
+                            // System.err.println("reading next problem");
+                            int problemType = dataIn.readByte();
+                            // System.err.println("Read problem: " + (int)problemType);
+                            switch (problemType)
+                                {
+                                case V_SHUTDOWN:
                                     {
-                                        // Since an IOException can happen here if the peer closes the socket
-                                        // on it's end, we don't necessarily have to exit.  Maybe we don't
-                                        // even need to print a warning, but we'll do so just to indicate
-                                        // something happened.
-                                        state.output.fatal("Unable to read type of evaluation from master.  Maybe the master closed its socket and exited?:\n" + e);
+                                    socket.close();
+                                    if (oneShot)
+                                        return;  // we're outa here
+                                    else
+                                        throw new Output.OutputExitException("SHUTDOWN");
                                     }
-                            } 
-                        catch (UnknownHostException e)
-                            {
-                                if (state != null)
-                                    state.output.fatal(e.getMessage());
-                                else if (!silent) System.err.println("FATAL ERROR (EvolutionState not created yet): " + e.getMessage());
+                                case V_EVALUATESIMPLE:
+                                    evaluateSimpleProblemForm(newState, returnIndividuals, dataIn, dataOut, args);
+                                    break;
+                                case V_EVALUATEGROUPED:
+                                    evaluateGroupedProblemForm(newState, returnIndividuals, dataIn, dataOut);
+                                    break;
+                                default:
+                                    state.output.fatal("Unknown problem form specified: "+problemType);
+                                }
                             }
-                        catch (IOException e)
-                            {
-                                if (state != null)
-                                    state.output.fatal("Unable to connect to master:\n" + e);
-                                else if (!silent) System.err.println("FATAL ERROR (EvolutionState not created yet): " + e);
-                            }
-                    }
-                catch (Output.OutputExitException e)
+
+                        } 
+                    catch (Exception e)    
+                        {
+                        // Since an IOException can happen here if the peer closes the socket
+                        // on it's end, we don't necessarily have to exit.  Maybe we don't
+                        // even need to print a warning, but we'll do so just to indicate
+                        // something happened.
+                        state.output.fatal("Unable to read type of evaluation from master.  Maybe the master closed its socket and exited?:\n" + e);
+                        }
+                    } 
+                catch (UnknownHostException e)
                     {
-                        // here we restart if necessary
-                        try { socket.close(); } catch (Exception e2) { }
-                        if (oneShot) System.exit(0);
+                    if (state != null)
+                        state.output.fatal(e.getMessage());
+                    else if (!silent) System.err.println("FATAL ERROR (EvolutionState not created yet): " + e.getMessage());
                     }
-                catch (OutOfMemoryError e)
+                catch (IOException e)
                     {
-                        // Let's try fixing things
-                        state = null;
-                        System.gc();
-                        try { socket.close(); } catch (Exception e2) { }
-                        socket = null;
-                        System.gc();
-                        System.err.println(e);
-                        if (oneShot) System.exit(0);
+                    if (state != null)
+                        state.output.fatal("Unable to connect to master:\n" + e);
+                    else if (!silent) System.err.println("FATAL ERROR (EvolutionState not created yet): " + e);
                     }
-                if (!silent) Output.initialMessage("\n\nResetting Slave");
+                }
+            catch (Output.OutputExitException e)
+                {
+                // here we restart if necessary
+                try { socket.close(); } catch (Exception e2) { }
+                if (oneShot) System.exit(0);
+                }
+            catch (OutOfMemoryError e)
+                {
+                // Let's try fixing things
+                state = null;
+                System.gc();
+                try { socket.close(); } catch (Exception e2) { }
+                socket = null;
+                System.gc();
+                System.err.println(e);
+                if (oneShot) System.exit(0);
+                }
+            if (!silent) Output.initialMessage("\n\nResetting Slave");
             }
-    }
+        }
                             
     public static void evaluateSimpleProblemForm( final EvolutionState state, boolean returnIndividuals,
-                                                  DataInputStream dataIn, DataOutputStream dataOut, String[] args )
-    {
+        DataInputStream dataIn, DataOutputStream dataOut, String[] args )
+        {
         ParameterDatabase params=null; 
         
         // first load the individuals
         int numInds=1; 
         try
             {
-                numInds = dataIn.readInt();
+            numInds = dataIn.readInt();
             }
         catch (Exception e)
             {
-                state.output.fatal("Unable to read the number of individuals from the master:\n"+e);
+            state.output.fatal("Unable to read the number of individuals from the master:\n"+e);
             }
         
         // load the subpops 
@@ -495,17 +495,17 @@ public class Slave
         int[] indsPerSubpop = new int[state.population.subpops.size()];  // num inds for each subpop
         for(int i = 0; i < numInds; i++)
             {
-                try
-                    {
-                        subpops[i] = dataIn.readInt();
-                        if (subpops[i] < 0 || subpops[i] >= state.population.subpops.size())
-                            state.output.fatal("Bad subpop number for individual #" + i + ": " + subpops[i]);
-                        indsPerSubpop[subpops[i]]++;
-                    }
-                catch (Exception e)
-                    {
-                        state.output.fatal("Unable to read the subpop number from the master:\n"+e);
-                    }
+            try
+                {
+                subpops[i] = dataIn.readInt();
+                if (subpops[i] < 0 || subpops[i] >= state.population.subpops.size())
+                    state.output.fatal("Bad subpop number for individual #" + i + ": " + subpops[i]);
+                indsPerSubpop[subpops[i]]++;
+                }
+            catch (Exception e)
+                {
+                state.output.fatal("Unable to read the subpop number from the master:\n"+e);
+                }
             }
         
                 
@@ -521,59 +521,59 @@ public class Slave
         // and returning them as soon as they come in, albeit in the proper order)
         if (!runEvolve)
             {
-                ThreadPool.Worker[] threads = new ThreadPool.Worker[state.evalthreads];
-                final SimpleProblemForm[] problems = new SimpleProblemForm[state.evalthreads];
-                int[] indForThread = new int[state.evalthreads];
+            ThreadPool.Worker[] threads = new ThreadPool.Worker[state.evalthreads];
+            final SimpleProblemForm[] problems = new SimpleProblemForm[state.evalthreads];
+            int[] indForThread = new int[state.evalthreads];
                         
-                try
+            try
+                {
+                int t = 0;              // thread index
+                        
+                // start up all the threads
+                for(int i = 0 ; i < numInds; i++)
                     {
-                        int t = 0;              // thread index
-                        
-                        // start up all the threads
-                        for(int i = 0 ; i < numInds; i++)
-                            {
-                                // load individual
-                                inds[i] = state.population.subpops.get(subpops[i]).species.newIndividual(state, dataIn);
-                                updateFitness[i] = dataIn.readBoolean(); 
+                    // load individual
+                    inds[i] = state.population.subpops.get(subpops[i]).species.newIndividual(state, dataIn);
+                    updateFitness[i] = dataIn.readBoolean(); 
 
-                                // fire up evaluation thread on individual
-                                if (t >= state.evalthreads) t = 0;       // we can only be here if evalthreads > numInds
-                                if (threads[t] != null)
-                                    {
-                                        pool.join(threads[t]);  // ran out of threads, wait for new ones
-                                        returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, indForThread[t]);  // return just that individual
-                                    }
-                                if (problems[t] == null) problems[t] = ((SimpleProblemForm)(state.evaluator.p_problem.clone()));
+                    // fire up evaluation thread on individual
+                    if (t >= state.evalthreads) t = 0;       // we can only be here if evalthreads > numInds
+                    if (threads[t] != null)
+                        {
+                        pool.join(threads[t]);  // ran out of threads, wait for new ones
+                        returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, indForThread[t]);  // return just that individual
+                        }
+                    if (problems[t] == null) problems[t] = ((SimpleProblemForm)(state.evaluator.p_problem.clone()));
 
-                                final int j = i;
-                                final int s = t;
-                                indForThread[t] = i;
-                                threads[t] = pool.start(new Runnable()
-                                    {
-                                        public void run() { problems[s].evaluate( state, inds[j], subpops[j], 0 ); }
-                                    }, "Evaluation of individual " + i);
-                                t++;
-                            }
+                    final int j = i;
+                    final int s = t;
+                    indForThread[t] = i;
+                    threads[t] = pool.start(new Runnable()
+                        {
+                        public void run() { problems[s].evaluate( state, inds[j], subpops[j], 0 ); }
+                        }, "Evaluation of individual " + i);
+                    t++;
+                    }
                                 
-                        // gather everyone
-                        for(t = 0; t < state.evalthreads; t++)
-                            {
-                                if (threads[t] != null)
-                                    {
-                                        pool.join(threads[t]);
-                                        returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, indForThread[t]);   // return just that individual
-                                    }
-                            }
-                    }
-                catch (Exception e)
+                // gather everyone
+                for(t = 0; t < state.evalthreads; t++)
                     {
-                        state.output.fatal("Unable to read individual from master:\n" + e);
+                    if (threads[t] != null)
+                        {
+                        pool.join(threads[t]);
+                        returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, indForThread[t]);   // return just that individual
+                        }
                     }
-                try
-                    {
-                        dataOut.flush();
-                    } 
-                catch( IOException e ) { state.output.fatal("Caught fatal IOException:\n"+e ); }
+                }
+            catch (Exception e)
+                {
+                state.output.fatal("Unable to read individual from master:\n" + e);
+                }
+            try
+                {
+                dataOut.flush();
+                } 
+            catch( IOException e ) { state.output.fatal("Caught fatal IOException:\n"+e ); }
             }
                         
                         
@@ -583,64 +583,64 @@ public class Slave
         // write them ALL out, very slightly less efficient
         else // (runEvolve) 
             {
-                try             // load up all the individuals
-                    {
-                        for (int i=0; i < numInds; i++) 
-                            { 
-                                inds[i] = state.population.subpops.get(subpops[i]).species.newIndividual(state, dataIn);
-                                updateFitness[i] = dataIn.readBoolean(); 
-                            }
+            try             // load up all the individuals
+                {
+                for (int i=0; i < numInds; i++) 
+                    { 
+                    inds[i] = state.population.subpops.get(subpops[i]).species.newIndividual(state, dataIn);
+                    updateFitness[i] = dataIn.readBoolean(); 
                     }
-                catch (Exception e)
-                    {
-                        state.output.fatal("Unable to read individual from master:\n" + e);
-                    }
+                }
+            catch (Exception e)
+                {
+                state.output.fatal("Unable to read individual from master:\n" + e);
+                }
                         
                         
-                long startTime = System.currentTimeMillis(); 
-                long endTime=0; 
+            long startTime = System.currentTimeMillis(); 
+            long endTime=0; 
 
-                // Now we need to reset the subpopulations.  They were already set up with the right
-                // classes, Species, etc. in state.setup(), so all we need to do is modify the number
-                // of individuals in each subpopulation.
+            // Now we need to reset the subpopulations.  They were already set up with the right
+            // classes, Species, etc. in state.setup(), so all we need to do is modify the number
+            // of individuals in each subpopulation.
         
-                for(int subpop = 0; subpop < state.population.subpops.size(); subpop++)
-                    {
-                        if (state.population.subpops.get(subpop).individuals.size() != indsPerSubpop[subpop])
-                            state.population.subpops.get(subpop).individuals = new ArrayList<Individual>(indsPerSubpop[subpop]);
-                    }
+            for(int subpop = 0; subpop < state.population.subpops.size(); subpop++)
+                {
+                if (state.population.subpops.get(subpop).individuals.size() != indsPerSubpop[subpop])
+                    state.population.subpops.get(subpop).individuals = new ArrayList<Individual>(indsPerSubpop[subpop]);
+                }
             
-                // Disperse into the population
-                int[] counts = new int[state.population.subpops.size()];
-                for(int i =0; i < numInds; i++)
-                    state.population.subpops.get(subpops[i]).individuals.set(counts[subpops[i]]++,inds[i]);
+            // Disperse into the population
+            int[] counts = new int[state.population.subpops.size()];
+            for(int i =0; i < numInds; i++)
+                state.population.subpops.get(subpops[i]).individuals.set(counts[subpops[i]]++,inds[i]);
             
-                // Evaluate the population until time is up, or the evolution stops
-                int result = state.R_NOTDONE; 
-                while (result == state.R_NOTDONE) 
-                    { 
-                        result = state.evolve(); 
-                        endTime = System.currentTimeMillis(); 
-                        if ((endTime - startTime) > runTime) 
-                            break;
-                    }
+            // Evaluate the population until time is up, or the evolution stops
+            int result = state.R_NOTDONE; 
+            while (result == state.R_NOTDONE) 
+                { 
+                result = state.evolve(); 
+                endTime = System.currentTimeMillis(); 
+                if ((endTime - startTime) > runTime) 
+                    break;
+                }
                 
-                // re-gather from population in the same order
-                counts = new int[state.population.subpops.size()];
-                for(int i =0; i < numInds; i++)
-                    inds[i] = state.population.subpops.get(subpops[i]).individuals.get(counts[subpops[i]]++);
-                state.finish(result);
-                Evolve.cleanup(state);
+            // re-gather from population in the same order
+            counts = new int[state.population.subpops.size()];
+            for(int i =0; i < numInds; i++)
+                inds[i] = state.population.subpops.get(subpops[i]).individuals.get(counts[subpops[i]]++);
+            state.finish(result);
+            Evolve.cleanup(state);
 
-                // Return the evaluated individual to the master
-                try 
-                    { 
-                        returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, -1);  // -1 == write all individuals
-                        dataOut.flush();
-                    } 
-                catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
+            // Return the evaluated individual to the master
+            try 
+                { 
+                returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, -1);  // -1 == write all individuals
+                dataOut.flush();
+                } 
+            catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
             }
-    }
+        }
     
         
         
@@ -650,20 +650,20 @@ public class Slave
         
         
     public static void evaluateGroupedProblemForm( EvolutionState state, boolean returnIndividuals,
-                                                   DataInputStream dataIn, DataOutputStream dataOut )
-    {
+        DataInputStream dataIn, DataOutputStream dataOut )
+        {
         boolean countVictoriesOnly = false;
 
         // first load the individuals
         int numInds = 1;
         try
             {
-                countVictoriesOnly = dataIn.readBoolean();
-                numInds = dataIn.readInt();
+            countVictoriesOnly = dataIn.readBoolean();
+            numInds = dataIn.readInt();
             }
         catch (Exception e)
             {
-                state.output.fatal("Unable to read the number of individuals from the master:\n"+e);
+            state.output.fatal("Unable to read the number of individuals from the master:\n"+e);
             }
 
         // load the subpops 
@@ -671,17 +671,17 @@ public class Slave
         int[] indsPerSubpop = new int[state.population.subpops.size()];  // num inds for each subpop
         for(int i = 0; i < numInds; i++)
             {
-                try
-                    {
-                        subpops[i] = dataIn.readInt();
-                        if (subpops[i] < 0 || subpops[i] >= state.population.subpops.size())
-                            state.output.fatal("Bad subpop number for individual #" + i + ": " + subpops[i]);
-                        indsPerSubpop[subpops[i]]++;
-                    }
-                catch (Exception e)
-                    {
-                        state.output.fatal("Unable to read the subpop number from the master:\n"+e);
-                    }
+            try
+                {
+                subpops[i] = dataIn.readInt();
+                if (subpops[i] < 0 || subpops[i] >= state.population.subpops.size())
+                    state.output.fatal("Bad subpop number for individual #" + i + ": " + subpops[i]);
+                indsPerSubpop[subpops[i]]++;
+                }
+            catch (Exception e)
+                {
+                state.output.fatal("Unable to read the subpop number from the master:\n"+e);
+                }
             }
 
         // Read the individuals from the stream
@@ -689,15 +689,15 @@ public class Slave
         boolean updateFitness[] = new boolean[numInds];
         try
             {
-                for(int i=0;i<inds.length;++i)
-                    {
-                        inds[i] = state.population.subpops.get(subpops[i]).species.newIndividual( state, dataIn );
-                        updateFitness[i] = dataIn.readBoolean();
-                    }
+            for(int i=0;i<inds.length;++i)
+                {
+                inds[i] = state.population.subpops.get(subpops[i]).species.newIndividual( state, dataIn );
+                updateFitness[i] = dataIn.readBoolean();
+                }
             }
         catch (Exception e)
             {
-                state.output.fatal("Unable to read individual from master:\n" + e);
+            state.output.fatal("Unable to read individual from master:\n" + e);
             }
                 
         // Evaluate the individuals together
@@ -705,11 +705,11 @@ public class Slave
                                 
         try 
             {
-                returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, -1);      // -1 == write all individuals
-                dataOut.flush();
+            returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, -1);      // -1 == write all individuals
+            dataOut.flush();
             } 
         catch( IOException e ) { state.output.fatal("Caught fatal IOException\n"+e ); }
-    }
+        }
         
         
         
@@ -717,24 +717,24 @@ public class Slave
         
     // if individualInQuestion is -1, all individuals are returned
     static void returnIndividualsToMaster(EvolutionState state, Individual []inds, boolean[] updateFitness,
-                                          DataOutputStream dataOut, boolean returnIndividuals, int individualInQuestion) throws IOException 
-    {
+        DataOutputStream dataOut, boolean returnIndividuals, int individualInQuestion) throws IOException 
+        {
         // Return the evaluated individual to the master
         // just write evaluated and fitness
         int startInd = (individualInQuestion == -1 ? 0 : individualInQuestion);
         int endInd = (individualInQuestion == -1 ? inds.length : individualInQuestion + 1);
         for(int i = startInd; i<endInd;i++)
             {
-                dataOut.writeByte(returnIndividuals ? V_INDIVIDUAL : (updateFitness[i] ? V_FITNESS : V_NOTHING));
-                if (returnIndividuals)
-                    {
-                        inds[i].writeIndividual(state, dataOut);
-                    }
-                else if (updateFitness[i])
-                    {
-                        dataOut.writeBoolean(inds[i].evaluated);
-                        inds[i].fitness.writeFitness(state,dataOut);
-                    }
+            dataOut.writeByte(returnIndividuals ? V_INDIVIDUAL : (updateFitness[i] ? V_FITNESS : V_NOTHING));
+            if (returnIndividuals)
+                {
+                inds[i].writeIndividual(state, dataOut);
+                }
+            else if (updateFitness[i])
+                {
+                dataOut.writeBoolean(inds[i].evaluated);
+                inds[i].fitness.writeFitness(state,dataOut);
+                }
             }
+        }
     }
-}

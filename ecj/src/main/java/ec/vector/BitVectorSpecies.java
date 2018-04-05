@@ -59,7 +59,7 @@ import ec.*;
  */
 
 public class BitVectorSpecies extends VectorSpecies
-{
+    {
     public final static String P_MUTATIONTYPE = "mutation-type";
     public final static String V_RESET_MUTATION = "reset";
     public final static String V_FLIP_MUTATION = "flip";
@@ -74,16 +74,16 @@ public class BitVectorSpecies extends VectorSpecies
     protected int[] mutationType;
 
     public int mutationType(int gene)
-    {
+        {
         int[] m = mutationType;
         if (m.length <= gene)
             gene = m.length - 1;
         return m[gene];
-    }
+        }
 
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         Parameter def = defaultBase();
         
         setupGenome(state, base);
@@ -99,14 +99,14 @@ public class BitVectorSpecies extends VectorSpecies
         int _mutationType = C_FLIP_MUTATION;
         if (mtype == null)
             state.output.warning("No global mutation type given for BitVectorSpecies, assuming 'flip' mutation",
-                                 base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE));
+                base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE));
         else if (mtype.equalsIgnoreCase(V_RESET_MUTATION))
             _mutationType = C_RESET_MUTATION; // redundant
         else if (mtype.equalsIgnoreCase(V_FLIP_MUTATION))
             _mutationType = C_FLIP_MUTATION;
         else
             state.output.fatal("BitVectorSpecies given a bad mutation type: "
-                               + mtype, base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE));
+                + mtype, base.push(P_MUTATIONTYPE), def.push(P_MUTATIONTYPE));
         fill(mutationType, _mutationType);
 
 
@@ -121,7 +121,7 @@ public class BitVectorSpecies extends VectorSpecies
         // getting setup at the end of super.setup(...).
 
         super.setup(state, base);
-    }
+        }
 
 
 
@@ -135,7 +135,7 @@ public class BitVectorSpecies extends VectorSpecies
         <p>If you override this method, be sure to call super(...) at some point, ideally first.
     */
     protected void loadParametersForGene(EvolutionState state, int index, Parameter base, Parameter def, String postfix)
-    {       
+        {       
         super.loadParametersForGene(state, index, base, def, postfix);
 
         String mtype = state.parameters.getStringWithDefault(base.push(P_MUTATIONTYPE).push(postfix), def.push(P_MUTATIONTYPE).push(postfix), null);
@@ -146,8 +146,8 @@ public class BitVectorSpecies extends VectorSpecies
             mutationType[index] = C_FLIP_MUTATION;
         else
             state.output.fatal("BitVectorSpecies given a bad mutation type: " + mtype, 
-                               base.push(P_MUTATIONTYPE).push(postfix), def.push(P_MUTATIONTYPE).push(postfix));
-    }            
-}
+                base.push(P_MUTATIONTYPE).push(postfix), def.push(P_MUTATIONTYPE).push(postfix));
+        }            
+    }
 
 

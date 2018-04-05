@@ -21,10 +21,10 @@ import ec.gp.*;
  */
 
 public class ParityData extends GPData
-{
+    {
     // return value -- should ALWAYS be either 1 or 0
     public int x;
 
     public void copyTo(final GPData gpd) 
-    { ((ParityData)gpd).x = x; }
-}
+        { ((ParityData)gpd).x = x; }
+    }

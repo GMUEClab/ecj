@@ -11,7 +11,7 @@ import ec.gp.*;
 import ec.util.*;
 
 public class E extends GPNode
-{
+    {
     public String toString() { return "e"; }
 
     public int expectedChildren() { return 0; }
@@ -19,32 +19,32 @@ public class E extends GPNode
     public static long X0 = 0;
     public static long X1 = 0;
     static
-    {
+        {
         for(int i = 0 ; i < 64; i++)
             {
-                long val = (i >> 2) & 0x1;  // east element
-                X0 = X0 | (val << i);
+            long val = (i >> 2) & 0x1;  // east element
+            X0 = X0 | (val << i);
             }
                 
         for(int i = 64 ; i < 128; i++)
             {
-                long val = (i >> 2) & 0x1;  // east element
-                X1 = X1 | (val << (i - 64));
+            long val = (i >> 2) & 0x1;  // east element
+            X1 = X1 | (val << (i - 64));
             }
-    }
+        }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
+        {
         MajorityData md = (MajorityData) input;
         md.data0 = X0;
         md.data1 = X1;
+        }
     }
-}
 
 
 

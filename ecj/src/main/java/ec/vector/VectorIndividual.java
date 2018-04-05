@@ -85,7 +85,7 @@ import ec.*;
  */
 
 public abstract class VectorIndividual extends Individual
-{
+    {
     /** Destructively crosses over the individual with another in some default manner.  In most
         implementations provided in ECJ, one-, two-, and any-point crossover is done with a 
         for loop, rather than a possibly more efficient approach like arrayCopy().  The disadvantage
@@ -93,7 +93,7 @@ public abstract class VectorIndividual extends Individual
         would require a scratch array, so you'd be allocing and GCing an array for every crossover.
         Dunno which is more efficient.  */
     public void defaultCrossover(EvolutionState state, int thread, 
-                                 VectorIndividual ind) { }
+        VectorIndividual ind) { }
 
     /** Destructively mutates the individual in some default manner.  The default version calls reset()*/
     public void defaultMutate(EvolutionState state, int thread) { reset(state,thread); }
@@ -118,10 +118,10 @@ public abstract class VectorIndividual extends Individual
 
     /** Initializes the individual to a new size.  Only use this if you need to initialize variable-length individuals. */
     public void reset(EvolutionState state, int thread, int newSize)
-    {
+        {
         setGenomeLength(newSize);
         reset(state, thread);
-    }
+        }
 
     /** Sets the genome length.  If the length is longer, then it is filled with a default value (likely 0 or false).
         This may or may not be a valid value -- you will need to set appropriate values here. 
@@ -145,4 +145,4 @@ public abstract class VectorIndividual extends Individual
     public void cloneGenes(Object piece) { }  // default does nothing.
     
     public long size() { return genomeLength(); }
-}
+    }

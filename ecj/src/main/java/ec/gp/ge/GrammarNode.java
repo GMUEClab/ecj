@@ -17,20 +17,20 @@ import java.util.*;
  */
 
 public abstract class GrammarNode implements java.io.Serializable
-{
+    {
     String head;
     // may be empty but it's not very expensive
     protected ArrayList<GrammarNode> children = new ArrayList<GrammarNode>();  
 
     public GrammarNode(String head)
-    {
+        {
         this.head = head;
-    }
+        }
 
     public String getHead()
-    {
+        {
         return head;
-    }
+        }
 
     public abstract String toString();
         
@@ -39,29 +39,29 @@ public abstract class GrammarNode implements java.io.Serializable
      * in hash-map, see GrammarParser.java for details.
      */
     public boolean equals(Object o)
-    {
+        {
         boolean ret = true ;
         if((o instanceof GrammarNode) && head.equals(((GrammarNode)o).getHead()) 
-           && (children.size() == ((GrammarNode)o).children.size()))
+            && (children.size() == ((GrammarNode)o).children.size()))
             {
-                for(int i = 0 ; i < children.size() ; i++)
+            for(int i = 0 ; i < children.size() ; i++)
+                {
+                if(!children.get(i).getHead().equals(
+                        ((GrammarNode)o).children.get(i).getHead()))
                     {
-                        if(!children.get(i).getHead().equals(
-                                                             ((GrammarNode)o).children.get(i).getHead()))
-                            {
-                                ret = false ; 
-                                break;
-                            }
+                    ret = false ; 
+                    break;
                     }
+                }
             }
         else
             ret = false ;
         return ret ;
-    }
+        }
 
     /** As usual */
     public int hashCode()
-    {
+        {
         final int prime = 7 ;
         int hash = 1 ;
         hash = prime * hash + ((head == null) ? 0 : head.hashCode());
@@ -70,5 +70,5 @@ public abstract class GrammarNode implements java.io.Serializable
             for(int i = 0 ; i < children.size() ; i++)
                 hash = prime * hash + children.get(i).getHead().hashCode();
         return hash ;
+        }
     }
-}

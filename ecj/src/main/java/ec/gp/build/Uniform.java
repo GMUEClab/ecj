@@ -135,14 +135,14 @@ import java.io.*;
 
 
 public class Uniform extends GPNodeBuilder 
-{
+    {
     public static final String P_UNIFORM = "uniform";
     public static final String P_TRUEDISTRIBUTION = "true-dist";
     
     public Parameter defaultBase()
-    {
+        {
         return GPBuildDefaults.base().push(P_UNIFORM);
-    }
+        }
 
     // Mapping of integers to function sets
     public GPFunctionSet[] functionsets;
@@ -195,37 +195,37 @@ public class Uniform extends GPNodeBuilder
     
     
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state,base);
         
         Parameter def = defaultBase();
         
         // use true distributions? false is default
         useTrueDistribution = state.parameters.getBoolean(
-                                                          base.push(P_TRUEDISTRIBUTION), def.push(P_TRUEDISTRIBUTION),false);
+            base.push(P_TRUEDISTRIBUTION), def.push(P_TRUEDISTRIBUTION),false);
         
         if (minSize>0)  // we're using maxSize and minSize
             maxtreesize=maxSize;
         else if (sizeDistribution != null)
             maxtreesize = sizeDistribution.length;
         else state.output.fatal("Uniform is used for the GP node builder, but no distribution was specified." +
-                                "  You must specify either a min/max size, or a full size distribution.",
-                                base.push(P_MINSIZE), def.push(P_MINSIZE));
+            "  You must specify either a min/max size, or a full size distribution.",
+            base.push(P_MINSIZE), def.push(P_MINSIZE));
         // preprocess offline
         preprocess(state,maxtreesize);
-    }
+        }
         
     public int pickSize(final EvolutionState state, final int thread, 
-                        final int functionset, final int type)
-    {
+        final int functionset, final int type)
+        {
         if (useTrueDistribution)
             return RandomChoice.pickFromDistribution(
-                                                     truesizes[functionset][type],state.random[thread].nextDouble());
+                truesizes[functionset][type],state.random[thread].nextDouble());
         else return super.pickSize(state,thread);
-    }
+        }
     
     public void preprocess(final EvolutionState state, final int _maxtreesize)
-    {
+        {
         state.output.message("Determining Tree Sizes");
         
         maxtreesize = _maxtreesize;
@@ -239,9 +239,9 @@ public class Uniform extends GPNodeBuilder
         int count=0;
         while(e.hasMoreElements())
             {
-                GPFunctionSet set = (GPFunctionSet)(e.nextElement());
-                _functionsets.put(set,Integer.valueOf(count));
-                functionsets[count++] = set;
+            GPFunctionSet set = (GPFunctionSet)(e.nextElement());
+            _functionsets.put(set,Integer.valueOf(count));
+            functionsets[count++] = set;
             }
         
         // For each function set, assign each GPNode to a unique integer
@@ -253,21 +253,21 @@ public class Uniform extends GPNodeBuilder
         GPNode n;
         for(int x=0;x<functionsets.length;x++)
             {
-                // hash all the nodes so we can remove duplicates
-                for(int typ=0;typ<functionsets[x].nodes.length;typ++)
-                    for(int nod=0;nod<functionsets[x].nodes[typ].length;nod++)
-                        t_nodes.put(n=functionsets[x].nodes[typ][nod],n);
-                // rehash with Integers, yuck
-                e = t_nodes.elements();
-                GPNode tmpn;
-                while(e.hasMoreElements())
-                    {
-                        tmpn = (GPNode)(e.nextElement());
-                        if (maxarity < tmpn.children.length) 
-                            maxarity = tmpn.children.length;
-                        if (!funcnodes.containsKey(tmpn))  // don't remap the node; it'd make holes
-                            funcnodes.put(tmpn,new Integer(count++));
-                    }
+            // hash all the nodes so we can remove duplicates
+            for(int typ=0;typ<functionsets[x].nodes.length;typ++)
+                for(int nod=0;nod<functionsets[x].nodes[typ].length;nod++)
+                    t_nodes.put(n=functionsets[x].nodes[typ][nod],n);
+            // rehash with Integers, yuck
+            e = t_nodes.elements();
+            GPNode tmpn;
+            while(e.hasMoreElements())
+                {
+                tmpn = (GPNode)(e.nextElement());
+                if (maxarity < tmpn.children.length) 
+                    maxarity = tmpn.children.length;
+                if (!funcnodes.containsKey(tmpn))  // don't remap the node; it'd make holes
+                    funcnodes.put(tmpn,new Integer(count++));
+                }
             }
         
         numfuncnodes = funcnodes.size();
@@ -292,7 +292,7 @@ public class Uniform extends GPNodeBuilder
             for(int y=0;y<numAtomicTypes+numSetTypes;y++)
                 for(int z=1;z<=maxtreesize;z++)
                     state.output.message("FunctionSet: " + functionsets[x].name + ", Type: " + types[y].name + ", Size: " + z + " num: " + 
-                                         (_truesizes[x][y][z] = numTreesOfType(initializer,x,y,z)));
+                        (_truesizes[x][y][z] = numTreesOfType(initializer,x,y,z)));
 
         state.output.message("Compiling Distributions");
 
@@ -301,116 +301,116 @@ public class Uniform extends GPNodeBuilder
         for(int x=0;x<functionsets.length;x++)
             for(int y=0;y<numAtomicTypes+numSetTypes;y++)
                 {
-                    for(int z=1;z<=maxtreesize;z++)
-                        truesizes[x][y][z] = _truesizes[x][y][z].doubleValue();
-                    // and if this is all zero (a possibility) we should be forgiving (hence the 'true') -- I *think*
-                    RandomChoice.organizeDistribution(truesizes[x][y],true);
+                for(int z=1;z<=maxtreesize;z++)
+                    truesizes[x][y][z] = _truesizes[x][y][z].doubleValue();
+                // and if this is all zero (a possibility) we should be forgiving (hence the 'true') -- I *think*
+                RandomChoice.organizeDistribution(truesizes[x][y],true);
                 }
         
         // compute our percentages
         computePercentages();
-    }
+        }
     
     // hopefully this will get inlined
     public final int intForNode(GPNode node)
-    {
+        {
         return ((Integer)(funcnodes.get(node))).intValue();
-    }
+        }
     
     
     public BigInteger numTreesOfType(final GPInitializer initializer, 
-                                     final int functionset, final int type, final int size)
-    {
+        final int functionset, final int type, final int size)
+        {
         if (NUMTREESOFTYPE[functionset][type][size]==null)
             {
-                GPNode[] nodes = functionsets[functionset].nodes[type];
-                BigInteger count = BigInteger.valueOf(0);
-                for(int x=0;x<nodes.length;x++)
-                    count = count.add(numTreesRootedByNode(initializer,functionset,nodes[x],size));
-                NUMTREESOFTYPE[functionset][type][size] = count;
+            GPNode[] nodes = functionsets[functionset].nodes[type];
+            BigInteger count = BigInteger.valueOf(0);
+            for(int x=0;x<nodes.length;x++)
+                count = count.add(numTreesRootedByNode(initializer,functionset,nodes[x],size));
+            NUMTREESOFTYPE[functionset][type][size] = count;
             }
         return NUMTREESOFTYPE[functionset][type][size];
-    }
+        }
     
     public BigInteger numTreesRootedByNode(final GPInitializer initializer,
-                                           final int functionset, final GPNode node, final int size)
-    {
+        final int functionset, final GPNode node, final int size)
+        {
         if (NUMTREESROOTEDBYNODE[functionset][intForNode(node)][size]==null)
             {
-                BigInteger one = BigInteger.valueOf(1);
-                BigInteger count = BigInteger.valueOf(0);
-                int outof = size-1;
-                if (node.children.length == 0 && outof == 0) // a valid terminal
-                    count = one;
-                else if (node.children.length <= outof)  // a valid nonterminal
-                    for (int s=1;s<=outof;s++)
-                        count = count.add(numChildPermutations(initializer,functionset,node,s,outof,0));
-                //System.out.println("Node: " + node + " Size: " + size + " Count: " +count);
-                NUMTREESROOTEDBYNODE[functionset][intForNode(node)][size] = count;
+            BigInteger one = BigInteger.valueOf(1);
+            BigInteger count = BigInteger.valueOf(0);
+            int outof = size-1;
+            if (node.children.length == 0 && outof == 0) // a valid terminal
+                count = one;
+            else if (node.children.length <= outof)  // a valid nonterminal
+                for (int s=1;s<=outof;s++)
+                    count = count.add(numChildPermutations(initializer,functionset,node,s,outof,0));
+            //System.out.println("Node: " + node + " Size: " + size + " Count: " +count);
+            NUMTREESROOTEDBYNODE[functionset][intForNode(node)][size] = count;
             }
         return NUMTREESROOTEDBYNODE[functionset][intForNode(node)][size];
-    }
+        }
     
     public BigInteger numChildPermutations( final GPInitializer initializer,
-                                            final int functionset, final GPNode parent, final int size,
-                                            final int outof, final int pickchild)
-    {
+        final int functionset, final GPNode parent, final int size,
+        final int outof, final int pickchild)
+        {
         if (NUMCHILDPERMUTATIONS[functionset][intForNode(parent)][size][outof][pickchild]==null)
             {
-                BigInteger count = BigInteger.valueOf(0);
-                if (pickchild == parent.children.length - 1 && size==outof)
-                    count = numTreesOfType(initializer,functionset,parent.constraints(initializer).childtypes[pickchild].type,size);
-                else if (pickchild < parent.children.length - 1 && 
-                         outof-size >= (parent.children.length - pickchild-1))
-                    {
-                        BigInteger cval = numTreesOfType(initializer,functionset,parent.constraints(initializer).childtypes[pickchild].type,size);
-                        BigInteger tot = BigInteger.valueOf(0);
-                        for (int s=1; s<=outof-size; s++)
-                            tot = tot.add(numChildPermutations(initializer,functionset,parent,s,outof-size,pickchild+1));
-                        count = cval.multiply(tot);
-                    }
-                // System.out.println("Parent: " + parent + " Size: " + size + " OutOf: " + outof + 
-                //       " PickChild: " + pickchild + " Count: " +count);
-                NUMCHILDPERMUTATIONS[functionset][intForNode(parent)][size][outof][pickchild] = count;
+            BigInteger count = BigInteger.valueOf(0);
+            if (pickchild == parent.children.length - 1 && size==outof)
+                count = numTreesOfType(initializer,functionset,parent.constraints(initializer).childtypes[pickchild].type,size);
+            else if (pickchild < parent.children.length - 1 && 
+                outof-size >= (parent.children.length - pickchild-1))
+                {
+                BigInteger cval = numTreesOfType(initializer,functionset,parent.constraints(initializer).childtypes[pickchild].type,size);
+                BigInteger tot = BigInteger.valueOf(0);
+                for (int s=1; s<=outof-size; s++)
+                    tot = tot.add(numChildPermutations(initializer,functionset,parent,s,outof-size,pickchild+1));
+                count = cval.multiply(tot);
+                }
+            // System.out.println("Parent: " + parent + " Size: " + size + " OutOf: " + outof + 
+            //       " PickChild: " + pickchild + " Count: " +count);
+            NUMCHILDPERMUTATIONS[functionset][intForNode(parent)][size][outof][pickchild] = count;
             }
         return NUMCHILDPERMUTATIONS[functionset][intForNode(parent)][size][outof][pickchild];
-    }
+        }
     
     private final double getProb(final BigInteger i)
-    {
+        {
         if (i==null) return 0.0f;
         else return i.doubleValue();
-    }
+        }
         
     public void computePercentages()
-    {
+        {
         // load ROOT_D
         for(int f = 0;f<NUMTREESOFTYPE.length;f++)
             for(int t=0;t<NUMTREESOFTYPE[f].length;t++)
                 for(int s=0;s<NUMTREESOFTYPE[f][t].length;s++)
                     {
-                        ROOT_D[f][t][s] = new UniformGPNodeStorage[functionsets[f].nodes[t].length];
-                        for(int x=0;x<ROOT_D[f][t][s].length;x++)
+                    ROOT_D[f][t][s] = new UniformGPNodeStorage[functionsets[f].nodes[t].length];
+                    for(int x=0;x<ROOT_D[f][t][s].length;x++)
+                        {
+                        ROOT_D[f][t][s][x] = new UniformGPNodeStorage();
+                        ROOT_D[f][t][s][x].node = functionsets[f].nodes[t][x];
+                        ROOT_D[f][t][s][x].prob = getProb(NUMTREESROOTEDBYNODE[f][intForNode(ROOT_D[f][t][s][x].node)][s]);
+                        }
+                    // organize the distribution
+                    //System.out.println("Organizing " + f + " " + t + " " + s);
+                    // check to see if it's all zeros
+                    for(int x=0;x<ROOT_D[f][t][s].length;x++)
+                        if (ROOT_D[f][t][s][x].prob != 0.0)
                             {
-                                ROOT_D[f][t][s][x] = new UniformGPNodeStorage();
-                                ROOT_D[f][t][s][x].node = functionsets[f].nodes[t][x];
-                                ROOT_D[f][t][s][x].prob = getProb(NUMTREESROOTEDBYNODE[f][intForNode(ROOT_D[f][t][s][x].node)][s]);
+                            // don't need to check for negatives here I believe
+                            RandomChoice.organizeDistribution(ROOT_D[f][t][s],ROOT_D[f][t][s][0]);
+                            ROOT_D_ZERO[f][t][s] = false;
+                            break;
                             }
-                        // organize the distribution
-                        //System.out.println("Organizing " + f + " " + t + " " + s);
-                        // check to see if it's all zeros
-                        for(int x=0;x<ROOT_D[f][t][s].length;x++)
-                            if (ROOT_D[f][t][s][x].prob != 0.0)
-                                {
-                                    // don't need to check for negatives here I believe
-                                    RandomChoice.organizeDistribution(ROOT_D[f][t][s],ROOT_D[f][t][s][0]);
-                                    ROOT_D_ZERO[f][t][s] = false;
-                                    break;
-                                }
-                            else
-                                {
-                                    ROOT_D_ZERO[f][t][s] = true;
-                                }
+                        else
+                            {
+                            ROOT_D_ZERO[f][t][s] = true;
+                            }
                     }
 
         // load CHILD_D
@@ -419,168 +419,168 @@ public class Uniform extends GPNodeBuilder
                 for(int o=0;o<maxtreesize+1;o++)
                     for(int c=0;c<maxarity;c++)
                         {
-                            CHILD_D[f][p][o][c] = new double[o+1];
-                            for(int s=0;s<CHILD_D[f][p][o][c].length;s++)
-                                CHILD_D[f][p][o][c][s] = getProb(NUMCHILDPERMUTATIONS[f][p][s][o][c]);
-                            // organize the distribution
-                            //System.out.println("Organizing " + f + " " + p + " " + o + " " + c);
-                            // check to see if it's all zeros
-                            for(int x=0;x<CHILD_D[f][p][o][c].length;x++)
-                                if (CHILD_D[f][p][o][c][x] != 0.0)
-                                    {
-                                        // don't need to check for negatives here I believe
-                                        RandomChoice.organizeDistribution(CHILD_D[f][p][o][c]);
-                                        break;
-                                    }
+                        CHILD_D[f][p][o][c] = new double[o+1];
+                        for(int s=0;s<CHILD_D[f][p][o][c].length;s++)
+                            CHILD_D[f][p][o][c][s] = getProb(NUMCHILDPERMUTATIONS[f][p][s][o][c]);
+                        // organize the distribution
+                        //System.out.println("Organizing " + f + " " + p + " " + o + " " + c);
+                        // check to see if it's all zeros
+                        for(int x=0;x<CHILD_D[f][p][o][c].length;x++)
+                            if (CHILD_D[f][p][o][c][x] != 0.0)
+                                {
+                                // don't need to check for negatives here I believe
+                                RandomChoice.organizeDistribution(CHILD_D[f][p][o][c]);
+                                break;
+                                }
                         }
-    }
+        }
         
     GPNode createTreeOfType(final EvolutionState state, final int thread, final GPInitializer initializer, 
-                            final int functionset, final int type, final int size, final MersenneTwisterFast mt)
+        final int functionset, final int type, final int size, final MersenneTwisterFast mt)
         
-    {
+        {
         //System.out.println("" + functionset + " " + type + " " + size);
         int choice = RandomChoice.pickFromDistribution(
-                                                       ROOT_D[functionset][type][size],ROOT_D[functionset][type][size][0],
-                                                       mt.nextDouble());
+            ROOT_D[functionset][type][size],ROOT_D[functionset][type][size][0],
+            mt.nextDouble());
         GPNode node = (GPNode)(ROOT_D[functionset][type][size][choice].node.lightClone());
         node.resetNode(state,thread);  // give ERCs a chance to randomize
         //System.out.println("Size: " + size + "Rooted: " + node);
         if (node.children.length == 0 && size !=1) // uh oh
             {
-                System.out.println("Size: " + size + " Node: " + node);
-                for(int x=0;x<ROOT_D[functionset][type][size].length;x++)
-                    System.out.println("" + x + (GPNode)(ROOT_D[functionset][type][size][x].node) + " " + ROOT_D[functionset][type][size][x].prob );
+            System.out.println("Size: " + size + " Node: " + node);
+            for(int x=0;x<ROOT_D[functionset][type][size].length;x++)
+                System.out.println("" + x + (GPNode)(ROOT_D[functionset][type][size][x].node) + " " + ROOT_D[functionset][type][size][x].prob );
             }
         if (size > 1)  // nonterminal
             fillNodeWithChildren(state,thread,initializer,functionset,node,ROOT_D[functionset][type][size][choice].node,0,size-1,mt);
         return node;
-    }
+        }
        
     void fillNodeWithChildren(final EvolutionState state, final int thread, final GPInitializer initializer,
-                              final int functionset, final GPNode parent, final GPNode parentc, 
-                              final int pickchild, final int outof, final MersenneTwisterFast mt)
+        final int functionset, final GPNode parent, final GPNode parentc, 
+        final int pickchild, final int outof, final MersenneTwisterFast mt)
         
-    {
+        {
         if (pickchild == parent.children.length - 1)
             {
-                parent.children[pickchild] = 
-                    createTreeOfType(state,thread,initializer,functionset,parent.constraints(initializer).childtypes[pickchild].type,outof, mt);
+            parent.children[pickchild] = 
+                createTreeOfType(state,thread,initializer,functionset,parent.constraints(initializer).childtypes[pickchild].type,outof, mt);
             }
         else 
             {
-                int size = RandomChoice.pickFromDistribution(
-                                                             CHILD_D[functionset][intForNode(parentc)][outof][pickchild],
-                                                             mt.nextDouble());
-                parent.children[pickchild] = 
-                    createTreeOfType(state,thread,initializer,functionset,parent.constraints(initializer).childtypes[pickchild].type,size,mt);
-                fillNodeWithChildren(state,thread,initializer,functionset,parent,parentc,pickchild+1,outof-size,mt);
+            int size = RandomChoice.pickFromDistribution(
+                CHILD_D[functionset][intForNode(parentc)][outof][pickchild],
+                mt.nextDouble());
+            parent.children[pickchild] = 
+                createTreeOfType(state,thread,initializer,functionset,parent.constraints(initializer).childtypes[pickchild].type,size,mt);
+            fillNodeWithChildren(state,thread,initializer,functionset,parent,parentc,pickchild+1,outof-size,mt);
             }
         parent.children[pickchild].parent = parent;
         parent.children[pickchild].argposition = (byte)pickchild;            
-    }
+        }
         
 
     public GPNode newRootedTree(final EvolutionState state,
-                                final GPType type,
-                                final int thread,
-                                final GPNodeParent parent,
-                                final GPFunctionSet set,
-                                final int argposition,
-                                final int requestedSize)
-    {
+        final GPType type,
+        final int thread,
+        final GPNodeParent parent,
+        final GPFunctionSet set,
+        final int argposition,
+        final int requestedSize)
+        {
         GPInitializer initializer = ((GPInitializer)state.initializer);
         
         if (requestedSize == NOSIZEGIVEN)  // pick from the distribution
             {
-                final int BOUNDARY = 20;  // if we try 20 times and fail, check to see if it's possible to succeed
-                int bound=0;
+            final int BOUNDARY = 20;  // if we try 20 times and fail, check to see if it's possible to succeed
+            int bound=0;
                 
-                int fset = ((Integer)(_functionsets.get(set))).intValue();
-                int siz = pickSize(state,thread,fset,type.type);
-                int typ = type.type;
+            int fset = ((Integer)(_functionsets.get(set))).intValue();
+            int siz = pickSize(state,thread,fset,type.type);
+            int typ = type.type;
             
-                // this code is confusing.  The idea is:
-                // if the number of trees of our arbitrarily-picked size is zero, we try BOUNDARY
-                // number of times to find a tree which will work, picking new sizes each
-                // time.  If we still haven't found anything, we will continue to search
-                // for a working tree only if we know for sure that one exists in the distribution.
+            // this code is confusing.  The idea is:
+            // if the number of trees of our arbitrarily-picked size is zero, we try BOUNDARY
+            // number of times to find a tree which will work, picking new sizes each
+            // time.  If we still haven't found anything, we will continue to search
+            // for a working tree only if we know for sure that one exists in the distribution.
             
-                boolean checked = false;
-                while(ROOT_D_ZERO[fset][typ][siz])
+            boolean checked = false;
+            while(ROOT_D_ZERO[fset][typ][siz])
+                {
+                if (++bound == BOUNDARY)
                     {
-                        if (++bound == BOUNDARY)
-                            {
-                                check: 
-                                if (!checked) 
-                                    {
-                                        checked = true;
-                                        for(int x=0;x<ROOT_D_ZERO[fset][typ].length;x++)
-                                            if (!ROOT_D_ZERO[fset][typ][x]) 
-                                                break check;  // found a non-zero
-                                        // uh oh, we're all zeroes
-                                        state.output.fatal("ec.gp.build.Uniform was asked to build a tree with functionset " + set + " rooted with type " + type + ", but cannot because for some reason there are no trees of any valid size (within the specified size range) which exist for this function set and type.");       
-                                    }   
-                            }
-                        siz = pickSize(state,thread,fset,typ);
+                    check: 
+                    if (!checked) 
+                        {
+                        checked = true;
+                        for(int x=0;x<ROOT_D_ZERO[fset][typ].length;x++)
+                            if (!ROOT_D_ZERO[fset][typ][x]) 
+                                break check;  // found a non-zero
+                        // uh oh, we're all zeroes
+                        state.output.fatal("ec.gp.build.Uniform was asked to build a tree with functionset " + set + " rooted with type " + type + ", but cannot because for some reason there are no trees of any valid size (within the specified size range) which exist for this function set and type.");       
+                        }   
                     }
+                siz = pickSize(state,thread,fset,typ);
+                }
                     
-                // okay, now we have a valid size.
-                GPNode n = createTreeOfType(state,thread,initializer,fset,typ,siz,state.random[thread]);
-                n.parent = parent;
-                n.argposition = (byte)argposition;
-                return n;
+            // okay, now we have a valid size.
+            GPNode n = createTreeOfType(state,thread,initializer,fset,typ,siz,state.random[thread]);
+            n.parent = parent;
+            n.argposition = (byte)argposition;
+            return n;
             }
         else if (requestedSize<1)
             {
-                state.output.fatal("ec.gp.build.Uniform requested to build a tree, but a requested size was given that is < 1.");
-                return null;  // never happens
+            state.output.fatal("ec.gp.build.Uniform requested to build a tree, but a requested size was given that is < 1.");
+            return null;  // never happens
             }
         else 
             {
-                int fset = ((Integer)(_functionsets.get(set))).intValue();
-                int typ = type.type;
-                int siz = requestedSize;
+            int fset = ((Integer)(_functionsets.get(set))).intValue();
+            int typ = type.type;
+            int siz = requestedSize;
             
-                // if the number of trees of the requested size is zero, we first march up until we
-                // find a tree size with non-zero numbers of trees.  Failing that, we march down to
-                // find one.  If that still fails, we issue an error.  Otherwise we use the size
-                // we discovered.
+            // if the number of trees of the requested size is zero, we first march up until we
+            // find a tree size with non-zero numbers of trees.  Failing that, we march down to
+            // find one.  If that still fails, we issue an error.  Otherwise we use the size
+            // we discovered.
             
-                determineSize:
-                if (ROOT_D_ZERO[fset][typ][siz])
-                    {
-                        // march up
-                        for(int x=siz+1;x<ROOT_D_ZERO[fset][typ].length;x++)
-                            if (ROOT_D_ZERO[fset][typ][siz])
-                                { siz=x; break determineSize; }
-                        // march down
-                        for(int x=siz-1;x>=0;x--)
-                            if (ROOT_D_ZERO[fset][typ][siz])
-                                { siz=x; break determineSize; }
-                        // issue an error
-                        state.output.fatal("ec.gp.build.Uniform was asked to build a tree with functionset " + set + " rooted with type " + type + ", and of size " + requestedSize + ", but cannot because for some reason there are no trees of any valid size (within the specified size range) which exist for this function set and type.");
-                    }
+            determineSize:
+            if (ROOT_D_ZERO[fset][typ][siz])
+                {
+                // march up
+                for(int x=siz+1;x<ROOT_D_ZERO[fset][typ].length;x++)
+                    if (ROOT_D_ZERO[fset][typ][siz])
+                        { siz=x; break determineSize; }
+                // march down
+                for(int x=siz-1;x>=0;x--)
+                    if (ROOT_D_ZERO[fset][typ][siz])
+                        { siz=x; break determineSize; }
+                // issue an error
+                state.output.fatal("ec.gp.build.Uniform was asked to build a tree with functionset " + set + " rooted with type " + type + ", and of size " + requestedSize + ", but cannot because for some reason there are no trees of any valid size (within the specified size range) which exist for this function set and type.");
+                }
                 
-                GPNode n = createTreeOfType(state,thread,initializer,fset,typ,siz,state.random[thread]);
-                n.parent = parent;
-                n.argposition = (byte)argposition;
-                return n;
+            GPNode n = createTreeOfType(state,thread,initializer,fset,typ,siz,state.random[thread]);
+            n.parent = parent;
+            n.argposition = (byte)argposition;
+            return n;
             }
-    }
+        }
         
-}
+    }
     
     
 class UniformGPNodeStorage implements RandomChoiceChooserD, Serializable
-{
+    {
     public GPNode node;
     public double prob;
     public double getProbability(final Object obj)
-    { return (((UniformGPNodeStorage)obj).prob); }
+        { return (((UniformGPNodeStorage)obj).prob); }
     public void setProbability(final Object obj, final double _prob)
-    { ((UniformGPNodeStorage)obj).prob = _prob; }
-}
+        { ((UniformGPNodeStorage)obj).prob = _prob; }
+    }
 
     
     

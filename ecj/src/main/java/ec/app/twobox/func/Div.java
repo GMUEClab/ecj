@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class Div extends GPNode
-{
+    {
     public String toString() { return "%"; }
 
     /*
@@ -43,12 +43,12 @@ public class Div extends GPNode
     public int expectedChildren() { return 2; }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
+        {
         TwoBoxData rd = ((TwoBoxData)(input));
 
         // evaluate children[1] first to determine if the demoniator is 0
@@ -58,14 +58,14 @@ public class Div extends GPNode
             rd.x = 1.0;
         else
             {
-                double result;
-                result = rd.x;
+            double result;
+            result = rd.x;
             
-                children[0].eval(state,thread,input,stack,individual,problem);
-                rd.x = rd.x / result;
+            children[0].eval(state,thread,input,stack,individual,problem);
+            rd.x = rd.x / result;
             }
+        }
     }
-}
 
 
 

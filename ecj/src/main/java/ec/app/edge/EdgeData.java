@@ -21,10 +21,10 @@ import ec.gp.*;
  */
 
 public class EdgeData extends GPData
-{
+    {
     // return value
     public int edge;
 
     public void copyTo(final GPData gpd)
-    { ((EdgeData)gpd).edge = edge; }
-}
+        { ((EdgeData)gpd).edge = edge; }
+    }

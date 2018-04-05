@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class X2 extends GPNode
-{
+    {
     public String toString() { return "x2"; }
 
     /*
@@ -43,19 +43,19 @@ public class X2 extends GPNode
     public int expectedChildren() { return 0; }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
+        {
         RegressionData rd = ((RegressionData)(input));
         double[] c = ((Benchmarks)problem).currentValue;
         if (c.length >= 2)
             rd.x = ((Benchmarks)problem).currentValue[1];
         else rd.x = 0;
+        }
     }
-}
 
 
 

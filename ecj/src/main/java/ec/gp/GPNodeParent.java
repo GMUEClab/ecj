@@ -24,5 +24,5 @@ import ec.Prototype;
  */
 
 public interface GPNodeParent
-{
-}
+    {
+    }
