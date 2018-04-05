@@ -1,6 +1,6 @@
 # The ECJ Evolutionary Computation Toolkit
 
-[![Build status](https://travis-ci.org/GMUEClab/ecj.svg?branch=master)](https://travis-ci.org/GMUEClab/ecj)
+<!--- [![Build status](https://travis-ci.org/GMUEClab/ecj.svg?branch=master)](https://travis-ci.org/GMUEClab/ecj) -->
 
 ECJ is an evolutionary computation framework written in Java. The system was designed for large, heavyweight experimental needs and provides tools which provide many popular EC algorithms and conventions of EC algorithms, but with a particular emphasis towards genetic programming. ECJ is free open-source with a BSD-style academic license (AFL 3.0).
 
