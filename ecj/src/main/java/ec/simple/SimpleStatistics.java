@@ -44,6 +44,21 @@ import java.io.File;
  <tr><td valign=top><i>base.</i><tt>file</tt><br>
  <font size=-1>String (a filename), or nonexistant (signifies stdout)</font></td>
  <td valign=top>(the log for statistics)</td></tr>
+ <tr><td valign=top><i>base.</i><tt>do-final</tt><br>
+ <font size=-1>boolean</font></td>
+ <td valign=top>(do we print out any final statistics to the log?)</td></tr>
+ <tr><td valign=top><i>base.</i><tt>do-generation</tt><br>
+ <font size=-1>boolean</font></td>
+ <td valign=top>(do we print out any per-generation statistics to the log?)</td></tr>
+ <tr><td valign=top><i>base.</i><tt>do-message</tt><br>
+ <font size=-1>boolean</font></td>
+ <td valign=top>(do we print out any per-generation statistics to stdout?)</td></tr>
+ <tr><td valign=top><i>base.</i><tt>do-description</tt><br>
+ <font size=-1>boolean</font></td>
+ <td valign=top>(do we print out any final description to the log?)</td></tr>
+ <tr><td valign=top><i>base.</i><tt>do-per-generation-description</tt><br>
+ <font size=-1>boolean</font></td>
+ <td valign=top>(do we print out any per-generation description to stdout?)</td></tr>
  </table>
 
  *
@@ -87,8 +102,7 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         
         compress = state.parameters.getBoolean(base.push(P_COMPRESS),null,false);
                 
-        File statisticsFile = state.parameters.getFile(
-            base.push(P_STATISTICS_FILE),null);
+        File statisticsFile = state.parameters.getFile(base.push(P_STATISTICS_FILE),null);
 
         doFinal = state.parameters.getBoolean(base.push(P_DO_FINAL),null,true);
         doGeneration = state.parameters.getBoolean(base.push(P_DO_GENERATION),null,true);
@@ -122,6 +136,11 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
         // we don't know if the number of subpopulations has been determined yet
         best_of_run = new Individual[state.population.subpops.size()];
         }
+
+    /** Allows MultiObjectiveStatistics etc. to call super.super.postEvaluationStatistics(...) without
+        calling super.postEvaluationStatistics(...) */
+    protected void bypassPostEvaluationStatistics(EvolutionState state)
+        { super.postEvaluationStatistics(state); }
 
     /** Logs the best individual of the generation. */
     boolean warned = false;

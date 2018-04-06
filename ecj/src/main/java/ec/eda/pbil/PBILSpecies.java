@@ -11,7 +11,7 @@ import ec.*;
 import ec.vector.*;
 import ec.util.*;
 import java.util.*;
-åimport java.util.Collections;
+import java.util.Collections;
 
 
 /* 
@@ -111,9 +111,9 @@ public class PBILSpecies extends IntegerVectorSpecies
         
         alpha = state.parameters.getDouble(base.push(P_ALPHA), subpopDefaultBase);
         if ((alpha < 0) | (alpha > 1))
-            state.output.fatal("If the PBIL alpha parameter is provided, it must be a valid number in the range 0 to 1", base.push(P_ALPHA), def.push(P_ALPHA));å
-                
-                                                                                                                                                                    b = state.parameters.getInt(base.push(P_B), def.push(P_B), 1);
+            state.output.fatal("If the PBIL alpha parameter is provided, it must be a valid number in the range 0 to 1", base.push(P_ALPHA), def.push(P_ALPHA));
+        
+        b = state.parameters.getInt(base.push(P_B), def.push(P_B), 1);
         int n = genomeSize;
 
         distribution_List = new ArrayList<double[]>();  

@@ -59,6 +59,11 @@ public class MultiObjectiveStatistics extends SimpleStatistics
         {
         super.setup(state,base);
 
+        if (state.parameters.exists(base.push(P_DO_DESCRIPTION),null))
+        	state.output.warning("Descriptions are not printed out by MultiObjectiveStatistics", base.push(P_DO_DESCRIPTION));
+        if (state.parameters.exists(base.push(P_DO_PER_GENERATION_DESCRIPTION),null))
+        	state.output.warning("Descriptions are not printed out by MultiObjectiveStatistics", base.push(P_DO_PER_GENERATION_DESCRIPTION));
+        
         silentFront = state.parameters.getBoolean(base.push(P_SILENT), null, false);
         // yes, we're stating it a second time.  It's correct logic.
         silentFront = state.parameters.getBoolean(base.push(P_SILENT_FRONT_FILE), null, silentFront);
@@ -84,6 +89,51 @@ public class MultiObjectiveStatistics extends SimpleStatistics
         }
 
 
+    /** Logs the best individual of the generation. */
+    boolean warned = false;
+    public void postEvaluationStatistics(final EvolutionState state)
+        {
+        super.bypassPostEvaluationStatistics(state);
+        
+        state.output.println("\nGeneration: " + state.generation, statisticslog);
+        for(int s = 0; s < state.population.subpops.size(); s++)
+        	{
+			if (doMessage || doGeneration)
+				{
+				// build front
+				ArrayList<Individual> sortedFront = MultiObjectiveFitness.getSortedParetoFront(state.population.subpops.get(s).individuals);
+		
+				if (doGeneration)
+					{
+					// Print out the front
+            		state.output.println("Subpopulation " + s + ":", statisticslog);
+					state.output.println("\nFront: ", statisticslog);
+					for (int i = 0; i < sortedFront.size(); i++)
+						((Individual)(sortedFront.get(i))).printIndividualForHumans(state, statisticslog);
+					}
+				
+				if (doMessage && !silentPrint) 
+					{
+					StringBuilder msg = new StringBuilder();
+					for(int i = 0; i < sortedFront.size(); i++)
+						{
+						Individual ind = (Individual)(sortedFront.get(i));
+						MultiObjectiveFitness mof = (MultiObjectiveFitness) (ind.fitness);
+						double[] objectives = mof.getObjectives();
+
+						msg.append("[");
+						for(int j = 0; j < objectives.length; i++)
+							{
+							msg.append(objectives[j]);
+							if (j < (objectives.length - 1)) msg.append(" ");
+							}
+						msg.append("] ");
+						}
+					state.output.message("Subpop " + s + " front: " + msg);
+					}
+				}
+            }
+        }
 
     /** Logs the best individual of the run. */
     public void finalStatistics(final EvolutionState state, final int result)
@@ -97,38 +147,21 @@ public class MultiObjectiveStatistics extends SimpleStatistics
             if (doFinal) state.output.println("\n\nPareto Front of Subpopulation " + s, statisticslog);
 
             // build front
-            ArrayList front = typicalFitness.partitionIntoParetoFront(state.population.subpops.get(s).individuals, null, null);
-
-            // sort by objective[0]
-            Object[] sortedFront = front.toArray();
-            QuickSort.qsort(sortedFront, new SortComparator()
-                {
-                public boolean lt(Object a, Object b)
-                    {
-                    return (((MultiObjectiveFitness) (((Individual) a).fitness)).getObjective(0) < 
-                        (((MultiObjectiveFitness) ((Individual) b).fitness)).getObjective(0));
-                    }
-                
-                public boolean gt(Object a, Object b)
-                    {
-                    return (((MultiObjectiveFitness) (((Individual) a).fitness)).getObjective(0) > 
-                        ((MultiObjectiveFitness) (((Individual) b).fitness)).getObjective(0));
-                    }
-                });
+            ArrayList<Individual> sortedFront = MultiObjectiveFitness.getSortedParetoFront(state.population.subpops.get(s).individuals);
                         
             // print out front to statistics log
             if (doFinal)
-                for (int i = 0; i < sortedFront.length; i++)
-                    ((Individual)(sortedFront[i])).printIndividualForHumans(state, statisticslog);
+                for (int i = 0; i < sortedFront.size(); i++)
+                    ((Individual)(sortedFront.get(i))).printIndividualForHumans(state, statisticslog);
                 
             // write short version of front out to disk
             if (!silentFront)
                 {
                 if (state.population.subpops.size() > 1)
                     state.output.println("Subpopulation " + s, frontLog);
-                for (int i = 0; i < sortedFront.length; i++)
+                for (int i = 0; i < sortedFront.size(); i++)
                     {
-                    Individual ind = (Individual)(sortedFront[i]);
+                    Individual ind = (Individual)(sortedFront.get(i));
                     MultiObjectiveFitness mof = (MultiObjectiveFitness) (ind.fitness);
                     double[] objectives = mof.getObjectives();
         
