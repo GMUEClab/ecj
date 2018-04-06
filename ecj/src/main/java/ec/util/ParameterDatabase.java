@@ -371,6 +371,8 @@ public class ParameterDatabase extends Properties implements Serializable
     {
     public static final String C_HERE = "$";
     public static final String C_CLASS = "@";
+    public static final String V_ALIAS = "alias";
+    public static final String V_DEFAULT = "default";
     public static final String UNKNOWN_VALUE = "";
     public static final String PRINT_PARAMS = "print-params";
     public static final int PS_UNKNOWN = -1;
@@ -2250,8 +2252,7 @@ public class ParameterDatabase extends Properties implements Serializable
         gotten.put(parameter.param, Boolean.TRUE);
         return result;
         }
-
-
+    
     /** Private helper function */
     synchronized String _getRecursive(String parameter) 
     {
@@ -2285,52 +2286,54 @@ public class ParameterDatabase extends Properties implements Serializable
     }
 
 
-	synchronized String _get(String parameter)
-		{
-		try
-			{
-			return _getInner(parameter);
-			}
-		catch (RuntimeException ex)
-			{
-			System.err.println("Parameter Database Error: " + ex.getMessage());
-			return null;
-			}
-		}
-
+    synchronized String _get(String parameter)
+    {
+    try
+            {
+            return _getInner(parameter);
+            }
+    catch (RuntimeException ex)
+            {
+            System.err.println("Parameter Database Error: " + ex.getMessage());
+            return null;
+            }
+    }
+    
     /** Private helper function */
     synchronized String _getInner(String parameter) 
         {
-        String result = _getRecursive(parameter);
         
-		
+        /*if (result != null)
+            return result;
+        
+        int lastDelim = parameter.lastIndexOf(Parameter.delimiter);
+        final String head = parameter.substring(lastDelim + 1);
+        final String tail = parameter.substring(0, lastDelim);
+
+        final String aliasBase = _getRecursive(tail + Parameter.delimiter + V_ALIAS);
+        result = _getRecursive(aliasBase + Parameter.delimiter + head);
+        uncheck();
+        if (result != null)
+            return result;
+         
+        throw new UnsupportedOperationException();*/
 		//// REVISE ME
-
-
+        
         if (parameter == null) 
             {
             this.popped = "";
             return null;
             }
-
-        String result = getProperty(parameter);
+        
+        
+        String result = _getRecursive(parameter);
+        uncheck();
+        
         int lastDelim = parameter.lastIndexOf(Parameter.delimiter);
         String top = null;
 
         if (result == null) 
             {
-            // check parents
-            int size = parents.size();
-            for (int x = 0; x < size; x++) 
-                {
-                result = ((ParameterDatabase) (parents.elementAt(x)))._get(parameter);
-                if (result != null) 
-                    {
-                    aliases = new Hashtable();
-                    return result;
-                    }
-                }
-
             // if parameter not found and there are no more delimiters (can't search for alias or defaults)
             if (lastDelim == -1) 
                 {
@@ -2349,7 +2352,7 @@ public class ParameterDatabase extends Properties implements Serializable
                     if (this.popped.equals("")) 
                         this.popped = top;
                     else this.popped = top + Parameter.delimiter + this.popped;
-                    result = _get(parameter + Parameter.delimiter + "default");
+                    result = _getInner(parameter + Parameter.delimiter + "default");
                     }
 
                 //if you just looked for a default and didnt find anything
@@ -2358,7 +2361,7 @@ public class ParameterDatabase extends Properties implements Serializable
                     // look for an alias
                     if (aliases.get(parameter + Parameter.delimiter + "alias") == null) 
                         {
-                        result = _get(parameter + Parameter.delimiter + "alias");
+                        result = _getInner(parameter + Parameter.delimiter + "alias");
                         } 
                     else 
                         {
@@ -2382,7 +2385,7 @@ public class ParameterDatabase extends Properties implements Serializable
                         top = parameter.substring(lastDelim+1);
                         parameter = parameter.substring(0,lastDelim);
                         this.popped = top + Parameter.delimiter + this.popped;
-                        result = _get(parameter + Parameter.delimiter + "default");
+                        result = _getInner(parameter + Parameter.delimiter + "default");
                         }
                     }
                 }
@@ -2396,7 +2399,7 @@ public class ParameterDatabase extends Properties implements Serializable
                 {  
                 // if alias is found replace original parameter with aliased parameter and look again
                 aliases.put(parameter,result);
-                result = _get(result + Parameter.delimiter + this.popped); 
+                result = _getInner(result + Parameter.delimiter + this.popped); 
                 } 
 
             else 
@@ -2414,8 +2417,7 @@ public class ParameterDatabase extends Properties implements Serializable
 
         aliases = new Hashtable();
         return result;
-
-        }
+    }
 
 
     public ParameterDatabase getLocation(Parameter parameter)
@@ -3300,16 +3302,24 @@ public class ParameterDatabase extends Properties implements Serializable
                 }
             }
         }
-    
-    /** Test the ParameterDatabase */
+
+    /**
+     * Test the ParameterDatabase
+     */
     public static void main(String[] args)
-        throws FileNotFoundException, IOException 
+            throws FileNotFoundException, IOException
         {
         ParameterDatabase pd = new ParameterDatabase(new File(args[0]), args);
         pd.set(new Parameter("Hi there"), "Whatever");
-        pd.set(new Parameter(new String[] { "1", "2", "3" }), " Whatever ");
-        pd.set(new Parameter(new String[] { "a", "b", "c" }).pop().push("d"),
-            "Whatever");
+        pd.set(new Parameter(new String[]
+            {
+            "1", "2", "3"
+            }), " Whatever ");
+        pd.set(new Parameter(new String[]
+            {
+            "a", "b", "c"
+            }).pop().push("d"),
+                "Whatever");
 
         System.err.println("\n\n PRINTING ALL PARAMETERS \n\n");
         pd.list(new PrintWriter(System.err, true), true);
