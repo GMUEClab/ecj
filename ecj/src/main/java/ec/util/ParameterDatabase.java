@@ -2302,23 +2302,6 @@ public class ParameterDatabase extends Properties implements Serializable
     /** Private helper function */
     synchronized String _getInner(String parameter) 
         {
-        
-        /*if (result != null)
-            return result;
-        
-        int lastDelim = parameter.lastIndexOf(Parameter.delimiter);
-        final String head = parameter.substring(lastDelim + 1);
-        final String tail = parameter.substring(0, lastDelim);
-
-        final String aliasBase = _getRecursive(tail + Parameter.delimiter + V_ALIAS);
-        result = _getRecursive(aliasBase + Parameter.delimiter + head);
-        uncheck();
-        if (result != null)
-            return result;
-         
-        throw new UnsupportedOperationException();*/
-		//// REVISE ME
-        
         if (parameter == null) 
             {
             this.popped = "";
