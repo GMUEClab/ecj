@@ -2251,9 +2251,61 @@ public class ParameterDatabase extends Properties implements Serializable
         return result;
         }
 
+
     /** Private helper function */
-    synchronized String _get(String parameter) 
+    synchronized String _getRecursive(String parameter) 
+    {
+        if (parameter == null)
+            {
+                return null;
+            }
+        if (checked)
+            return null; // we already searched this path
+        checked = true;
+        String result = getProperty(parameter);
+        if (result == null) 
+            {
+                int size = parents.size();
+                for (int x = 0; x < size; x++) 
+                    {
+                        result = ((ParameterDatabase) (parents.elementAt(x)))._getRecursive(parameter);
+                        if (result != null)
+                            {
+                                return result;
+                            }
+                    }
+            } 
+        else  // preprocess
+            {
+                result = result.trim();
+                if (result.length() == 0)
+                    result = null;
+            }
+        return result;
+    }
+
+
+	synchronized String _get(String parameter)
+		{
+		try
+			{
+			return _getInner(parameter);
+			}
+		catch (RuntimeException ex)
+			{
+			System.err.println("Parameter Database Error: " + ex.getMessage());
+			return null;
+			}
+		}
+
+    /** Private helper function */
+    synchronized String _getInner(String parameter) 
         {
+        String result = _getRecursive(parameter);
+        
+		
+		//// REVISE ME
+
 
         if (parameter == null) 
             {
