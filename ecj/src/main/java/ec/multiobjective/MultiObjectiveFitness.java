@@ -446,46 +446,46 @@ public class MultiObjectiveFitness extends Fitness
      */
     public static ArrayList<Individual> getSortedParetoFront(ArrayList<Individual> inds)
         {
-     	ArrayList<Individual> front = partitionIntoParetoFront(inds, null, null);
+        ArrayList<Individual> front = partitionIntoParetoFront(inds, null, null);
 
-		// sort by objective[0], breaking ties by objective[1], breaking ties by objective[2], etc.
-		Object[] sortedFront = front.toArray();
-		QuickSort.qsort(sortedFront, new SortComparator()
-			{
-			public boolean lt(Object a, Object b)
-				{
-				MultiObjectiveFitness fa = ((MultiObjectiveFitness) (((Individual) a).fitness));
-				MultiObjectiveFitness fb = ((MultiObjectiveFitness) (((Individual) b).fitness));
-				
-				int objs = fa.getNumObjectives();
-				
-				for(int i = 0; i < objs; i++)
-					{
-					if (fa.getObjective(i) < fb.getObjective(i)) return true;
-					else if (fa.getObjective(i) > fb.getObjective(i)) return false;
-					}
-				return false;
-				}
-			
-			public boolean gt(Object a, Object b)
-				{
-				MultiObjectiveFitness fa = ((MultiObjectiveFitness) (((Individual) a).fitness));
-				MultiObjectiveFitness fb = ((MultiObjectiveFitness) (((Individual) b).fitness));
-				
-				int objs = fa.getNumObjectives();
-				
-				for(int i = 0; i < objs; i++)
-					{
-					if (fa.getObjective(i) > fb.getObjective(i)) return true;
-					else if (fa.getObjective(i) < fb.getObjective(i)) return false;
-					}
-				return false;
-				}
-			});
-		
-		return front;
-		}
-		
+        // sort by objective[0], breaking ties by objective[1], breaking ties by objective[2], etc.
+        Object[] sortedFront = front.toArray();
+        QuickSort.qsort(sortedFront, new SortComparator()
+            {
+            public boolean lt(Object a, Object b)
+                {
+                MultiObjectiveFitness fa = ((MultiObjectiveFitness) (((Individual) a).fitness));
+                MultiObjectiveFitness fb = ((MultiObjectiveFitness) (((Individual) b).fitness));
+                                
+                int objs = fa.getNumObjectives();
+                                
+                for(int i = 0; i < objs; i++)
+                    {
+                    if (fa.getObjective(i) < fb.getObjective(i)) return true;
+                    else if (fa.getObjective(i) > fb.getObjective(i)) return false;
+                    }
+                return false;
+                }
+                        
+            public boolean gt(Object a, Object b)
+                {
+                MultiObjectiveFitness fa = ((MultiObjectiveFitness) (((Individual) a).fitness));
+                MultiObjectiveFitness fb = ((MultiObjectiveFitness) (((Individual) b).fitness));
+                                
+                int objs = fa.getNumObjectives();
+                                
+                for(int i = 0; i < objs; i++)
+                    {
+                    if (fa.getObjective(i) > fb.getObjective(i)) return true;
+                    else if (fa.getObjective(i) < fb.getObjective(i)) return false;
+                    }
+                return false;
+                }
+            });
+                
+        return front;
+        }
+                
 
     /** Divides inds into pareto front ranks (each an ArrayList), and returns them, in order,
         stored in an ArrayList. */

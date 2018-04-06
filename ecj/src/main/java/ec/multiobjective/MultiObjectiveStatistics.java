@@ -60,9 +60,9 @@ public class MultiObjectiveStatistics extends SimpleStatistics
         super.setup(state,base);
 
         if (state.parameters.exists(base.push(P_DO_DESCRIPTION),null))
-        	state.output.warning("Descriptions are not printed out by MultiObjectiveStatistics", base.push(P_DO_DESCRIPTION));
+            state.output.warning("Descriptions are not printed out by MultiObjectiveStatistics", base.push(P_DO_DESCRIPTION));
         if (state.parameters.exists(base.push(P_DO_PER_GENERATION_DESCRIPTION),null))
-        	state.output.warning("Descriptions are not printed out by MultiObjectiveStatistics", base.push(P_DO_PER_GENERATION_DESCRIPTION));
+            state.output.warning("Descriptions are not printed out by MultiObjectiveStatistics", base.push(P_DO_PER_GENERATION_DESCRIPTION));
         
         silentFront = state.parameters.getBoolean(base.push(P_SILENT), null, false);
         // yes, we're stating it a second time.  It's correct logic.
@@ -97,41 +97,41 @@ public class MultiObjectiveStatistics extends SimpleStatistics
         
         state.output.println("\nGeneration: " + state.generation, statisticslog);
         for(int s = 0; s < state.population.subpops.size(); s++)
-        	{
-			if (doMessage || doGeneration)
-				{
-				// build front
-				ArrayList<Individual> sortedFront = MultiObjectiveFitness.getSortedParetoFront(state.population.subpops.get(s).individuals);
-		
-				if (doGeneration)
-					{
-					// Print out the front
-            		state.output.println("Subpopulation " + s + ":", statisticslog);
-					state.output.println("\nFront: ", statisticslog);
-					for (int i = 0; i < sortedFront.size(); i++)
-						((Individual)(sortedFront.get(i))).printIndividualForHumans(state, statisticslog);
-					}
-				
-				if (doMessage && !silentPrint) 
-					{
-					StringBuilder msg = new StringBuilder();
-					for(int i = 0; i < sortedFront.size(); i++)
-						{
-						Individual ind = (Individual)(sortedFront.get(i));
-						MultiObjectiveFitness mof = (MultiObjectiveFitness) (ind.fitness);
-						double[] objectives = mof.getObjectives();
+            {
+            if (doMessage || doGeneration)
+                {
+                // build front
+                ArrayList<Individual> sortedFront = MultiObjectiveFitness.getSortedParetoFront(state.population.subpops.get(s).individuals);
+                
+                if (doGeneration)
+                    {
+                    // Print out the front
+                    state.output.println("Subpopulation " + s + ":", statisticslog);
+                    state.output.println("\nFront: ", statisticslog);
+                    for (int i = 0; i < sortedFront.size(); i++)
+                        ((Individual)(sortedFront.get(i))).printIndividualForHumans(state, statisticslog);
+                    }
+                                
+                if (doMessage && !silentPrint) 
+                    {
+                    StringBuilder msg = new StringBuilder();
+                    for(int i = 0; i < sortedFront.size(); i++)
+                        {
+                        Individual ind = (Individual)(sortedFront.get(i));
+                        MultiObjectiveFitness mof = (MultiObjectiveFitness) (ind.fitness);
+                        double[] objectives = mof.getObjectives();
 
-						msg.append("[");
-						for(int j = 0; j < objectives.length; i++)
-							{
-							msg.append(objectives[j]);
-							if (j < (objectives.length - 1)) msg.append(" ");
-							}
-						msg.append("] ");
-						}
-					state.output.message("Subpop " + s + " front: " + msg);
-					}
-				}
+                        msg.append("[");
+                        for(int j = 0; j < objectives.length; i++)
+                            {
+                            msg.append(objectives[j]);
+                            if (j < (objectives.length - 1)) msg.append(" ");
+                            }
+                        msg.append("] ");
+                        }
+                    state.output.message("Subpop " + s + " front: " + msg);
+                    }
+                }
             }
         }
 

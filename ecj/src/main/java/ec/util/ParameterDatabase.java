@@ -1,5 +1,6 @@
 /*
   Copyright 2006 by Sean Luke
+  With modifications by Ananya Dhawan
   Licensed under the Academic Free License version 3.0
   See the file "LICENSE" for more information
 */
@@ -1774,7 +1775,8 @@ public class ParameterDatabase extends Properties implements Serializable
                 return new File(p.substring(C_HERE.length()));
             else if (p.startsWith(C_CLASS))
                 return null;  // can't start with that.
-            else {
+            else 
+                {
                 File f = new File(p);
                 if (f.isAbsolute())
                     return f;
@@ -1856,8 +1858,10 @@ public class ParameterDatabase extends Properties implements Serializable
             else
                 return null;
             }
-        catch (FileNotFoundException ex1) { return null; }
-        catch (ClassNotFoundException ex2) { return null; } 
+        catch (FileNotFoundException ex1) 
+            { return null; }
+        catch (ClassNotFoundException ex2) 
+            { return null; } 
         }
 
     /**
@@ -1923,7 +1927,8 @@ public class ParameterDatabase extends Properties implements Serializable
                 else
                     result = defaultValue.trim();
                 } 
-            else {
+            else 
+                {
                 result = result.trim();
                 if (result.length() == 0) 
                     {
@@ -1935,7 +1940,8 @@ public class ParameterDatabase extends Properties implements Serializable
                 }
             return result;
             } 
-        else {
+        else 
+            {
             if (defaultValue == null)
                 return null;
             else
@@ -2246,9 +2252,11 @@ public class ParameterDatabase extends Properties implements Serializable
         }
 
     /** Private helper function */
-    synchronized String _get(String parameter) {
+    synchronized String _get(String parameter) 
+        {
 
-        if (parameter == null) {
+        if (parameter == null) 
+            {
             this.popped = "";
             return null;
             }
@@ -2257,31 +2265,35 @@ public class ParameterDatabase extends Properties implements Serializable
         int lastDelim = parameter.lastIndexOf(Parameter.delimiter);
         String top = null;
 
-        if (result == null) {
-
+        if (result == null) 
+            {
             // check parents
             int size = parents.size();
-            for (int x = 0; x < size; x++) {
+            for (int x = 0; x < size; x++) 
+                {
                 result = ((ParameterDatabase) (parents.elementAt(x)))._get(parameter);
-                if (result != null) {
+                if (result != null) 
+                    {
                     aliases = new Hashtable();
                     return result;
                     }
                 }
 
-            // if parameter not found and there are no more delimiters (cant search for alias or defaults)
-            if (lastDelim==-1) {
+            // if parameter not found and there are no more delimiters (can't search for alias or defaults)
+            if (lastDelim == -1) 
+                {
                 aliases = new Hashtable();
                 return null;
                 }
 
-            else {
+            else 
+                {
+                top = parameter.substring(lastDelim + 1);
+                parameter = parameter.substring(0, lastDelim);
 
-                top = parameter.substring(lastDelim+1);
-                parameter = parameter.substring(0,lastDelim);
-
-                // if you didnt find a parameter look for a default
-                if (!top.equals("default") && !top.equals("alias")) {
+                // if you didn't find a parameter look for a default
+                if (!top.equals("default") && !top.equals("alias")) 
+                    {
                     if (this.popped.equals("")) 
                         this.popped = top;
                     else this.popped = top + Parameter.delimiter + this.popped;
@@ -2289,24 +2301,32 @@ public class ParameterDatabase extends Properties implements Serializable
                     }
 
                 //if you just looked for a default and didnt find anything
-                else if (top.equals("default")) {
+                else if (top.equals("default")) 
+                    {
                     // look for an alias
-                    if (aliases.get(parameter + Parameter.delimiter + "alias") == null){
+                    if (aliases.get(parameter + Parameter.delimiter + "alias") == null) 
+                        {
                         result = _get(parameter + Parameter.delimiter + "alias");
-                        } else {
+                        } 
+                    else 
+                        {
                         aliases = new Hashtable();
                         return null;
                         }
                     }
 
-                // if you just looked for an alias and didnt find anything
-                else {
+                // if you just looked for an alias and didn't find anything
+                else 
+                    {
                     //go one level higher and look for a default
                     lastDelim = parameter.lastIndexOf(Parameter.delimiter);
-                    if (lastDelim==-1){
+                    if (lastDelim==-1) 
+                        {
                         aliases = new Hashtable();
                         return null;
-                        } else {
+                        } 
+                    else 
+                        {
                         top = parameter.substring(lastDelim+1);
                         parameter = parameter.substring(0,lastDelim);
                         this.popped = top + Parameter.delimiter + this.popped;
@@ -2316,19 +2336,23 @@ public class ParameterDatabase extends Properties implements Serializable
                 }
             }
 
-        else { // parameter found
+        else 
+            { // parameter found
 
-            top = parameter.substring(lastDelim+1);
-            if (top.equals("alias")) {  
+            top = parameter.substring(lastDelim + 1);
+            if (top.equals("alias")) 
+                {  
                 // if alias is found replace original parameter with aliased parameter and look again
                 aliases.put(parameter,result);
                 result = _get(result + Parameter.delimiter + this.popped); 
                 } 
 
-            else { //found an actual result
+            else 
+                { // found an actual result
                 this.popped = "";
                 result = result.trim();
-                if (result.length() == 0) {
+                if (result.length() == 0) 
+                    {
                     aliases = new Hashtable();
                     result = null;
                     }
@@ -2599,11 +2623,13 @@ public class ParameterDatabase extends Properties implements Serializable
     // Jar file ecj.jar, we might build a URL of the form
     // jar:file:ecj.jar!/ec/util/Foo.class
     // This might break for unusual class file names (like Foo$12.class)
-    static URL defaultResourceURL(Class cls) { return cls.getResource(cls.getSimpleName() + ".class"); }
+    static URL defaultResourceURL(Class cls) 
+        { return cls.getResource(cls.getSimpleName() + ".class"); }
     
     // Returns whether or not a URL refers to something inside a Jar file.  We do this by
     // just checking if the protocol is 'jar'.
-    static boolean isJarFile(URL url) { return url.getProtocol().equalsIgnoreCase("jar"); }
+    static boolean isJarFile(URL url) 
+        { return url.getProtocol().equalsIgnoreCase("jar"); }
 
     // Given a URL referring to something in a Jar file, removes the final filename from
     // the end of the existing internal path inside the Jar file, then revises the
@@ -2732,7 +2758,8 @@ public class ParameterDatabase extends Properties implements Serializable
         for(int i = a.size() - 1; i >= 0; i--)
             {
             String n = (String)(a.get(i));
-            if (n.equals(".")) { } // do nothing
+            if (n.equals(".")) 
+                { } // do nothing
             else if (n.equals("..") &&
                 b.size() != 0 && !b.get(0).equals(".."))
                 b.remove(b.size() - 1);  
@@ -2835,7 +2862,8 @@ public class ParameterDatabase extends Properties implements Serializable
                 relativePath = simplifyPath(pathNameRelativeToClassFile);
                 InputStream f = cls.getResourceAsStream(relativePath);
                 load(f);
-                try { f.close(); } catch (IOException e) { }
+                try { f.close(); } catch (IOException e) 
+                    { }
                 }
             }
         catch (NullPointerException e)
@@ -2934,7 +2962,8 @@ public class ParameterDatabase extends Properties implements Serializable
         // file is in
         FileInputStream f = new FileInputStream(file);
         load(f);
-        try { f.close(); } catch (IOException e) { }
+        try { f.close(); } catch (IOException e) 
+            { }
                 
         // load parents
         for (int x = 0;; x++) 
@@ -3030,7 +3059,8 @@ public class ParameterDatabase extends Properties implements Serializable
         {
         if (listShadowed)
             _list(p, listShadowed, "root", null);
-        else {
+        else 
+            {
             Hashtable gather = new Hashtable();
             _list(null, listShadowed, "root", gather);
 
@@ -3073,7 +3103,8 @@ public class ParameterDatabase extends Properties implements Serializable
                 ((ParameterDatabase) (parents.elementAt(x)))._list(p,
                     listShadowed, prefix + "." + x, gather);
             } 
-        else {
+        else 
+            {
             // load in reverse order so things get properly overwritten
             int size = parents.size();
             for (int x = size - 1; x >= 0; x--)
@@ -3207,7 +3238,8 @@ public class ParameterDatabase extends Properties implements Serializable
                         }
                     }
                 // If the parent has no children, just add the node.
-                else {
+                else 
+                    {
                     DefaultMutableTreeNode child = 
                         new ParameterDatabaseTreeNode(path[i]);
                     model.insertNodeInto(child, parent, 0);
