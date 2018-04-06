@@ -122,7 +122,7 @@ public class MultiObjectiveStatistics extends SimpleStatistics
                         double[] objectives = mof.getObjectives();
 
                         msg.append("[");
-                        for(int j = 0; j < objectives.length; i++)
+                        for(int j = 0; j < objectives.length; j++)
                             {
                             msg.append(objectives[j]);
                             if (j < (objectives.length - 1)) msg.append(" ");

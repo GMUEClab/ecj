@@ -88,6 +88,7 @@ public class AppsTest
         // Parent files; can't be run directly
         new File("src/main/resources/ec/app/moosuite/moosuite.params").getAbsolutePath(),
         new File("src/main/resources/ec/app/moosuite/nsga2.params").getAbsolutePath(),
+        new File("src/main/resources/ec/app/moosuite/nsga3.params").getAbsolutePath(),
         new File("src/main/resources/ec/app/moosuite/spea2.params").getAbsolutePath(),
 
         // Distributed examples; need their own test runner.
