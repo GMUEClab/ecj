@@ -1,4 +1,4 @@
-# Copyright 2018 by Sean Luke and George Mason University
+# Copyright 2018 by Sunil Kumar Rajendran, Sean Luke, and George Mason Unviersity
 # Licensed under the Academic Free License version 3.0
 # See the file "LICENSE" for more information
 
@@ -29,6 +29,6 @@ pop.subpop.0.species.crossover-type =          one
 #### number of individuals to be selected out of the generated population. 
 
 pop.subpop.0.species.alpha = 0.5
-pop.subpop.0.species.b = 10
+pop.subpop.0.species.b = 50
 
 
