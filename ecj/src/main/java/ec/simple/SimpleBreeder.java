@@ -192,8 +192,8 @@ public class SimpleBreeder extends Breeder
     
     /** Returns the next subpopulation size.  By default this is the CURRENT subpopulation size,
         but it could be overridden if you have modified the current subpopulation size (as in NSGA-II) 
-        but don't want the next subpopulation size to be affected. */
-    public int nextSubpopulationSize(EvolutionState state, int subpop)
+        but don't want the next subpopulation size to be affected.*/
+    protected int nextSubpopulationSize(EvolutionState state, int subpop)
         {
         return state.population.subpops.get(subpop).individuals.size();
         }
@@ -400,8 +400,7 @@ public class SimpleBreeder extends Breeder
             }
         }
 
-    /** A private helper function for breedPopulation which loads elites into a subpopulation. */
-
+    /** A protected helper function for breedPopulation which loads elites into a subpopulation. */
     protected void loadElites(EvolutionState state, Population newpop)
         {
         // are our elites small enough?

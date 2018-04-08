@@ -198,6 +198,10 @@ public class MultiObjectiveFitness extends Fitness
                 else
                     newObjectives[i] = maxObjective[i];
                 }
+            else if (_f > maxObjective[i] || _f < minObjective[i])
+                {
+                state.output.warnOnce(String.format("The value of objective #%d is outside the expected bounds [%f, %f].  Did you configure the '%s' and '%s' parameters correctly?", i, minObjective[i], maxObjective[i], P_MINOBJECTIVES, P_MAXOBJECTIVES));
+                }
             }
         objectives = newObjectives;
         }
