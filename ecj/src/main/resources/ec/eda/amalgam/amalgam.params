@@ -18,11 +18,19 @@ pop.subpop.0.species.pipe =                     ec.breed.InitializationPipeline
 pop.subpop.0.species.mutation-type =            reset
 pop.subpop.0.species.crossover-type =           one
 
+### The following five parameters have standard constant default settings.
+### We list them here, though if you don't specify the parameter
+### (commenting it out below, say) it'll default to this value anyway
+
 pop.subpop.0.species.tau =                    0.35
 pop.subpop.0.species.eta-dec =                0.9
 pop.subpop.0.species.theta-sdr =              1.0
 pop.subpop.0.species.variance-tolerance =     0.0
 pop.subpop.0.species.delta-ams =              2.0
+
+### The following four parameters have standard default settings but they're
+### defined programmatically, see the manual for details.  Here we don't
+### define them at all, but you could of course if you wished.
 
 # pop.subpop.0.species.eta-shift =                
 # pop.subpop.0.species.eta-sigma =                
