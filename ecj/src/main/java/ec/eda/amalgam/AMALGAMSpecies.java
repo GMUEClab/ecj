@@ -28,61 +28,30 @@ import java.util.IdentityHashMap;
 
 
 /**
- * CMAESSpecies is a FloatVectorSpecies which implements a faithful version of the
- * CMA-ES algorithm.  The class has two basic methods.  The newIndividual(...)
- * method generates a new random individual underneath the current CMA-ES
- * gaussian distribution.  The updateDistribution(...) method revises the
- * gaussian distribution to reflect the fitness results of the population.
+ * AMALGAMSpecies is a FloatVectorSpecies which implements a faithful version of the
+ * iAMaLGaM IDEA algorithm.  The class has two basic methods.  The newIndividual(...)
+ * method generates a new random individual underneath the current AMALGAM
+ * distribution.  The updateDistribution(...) method revises the
+ * distribution to reflect the fitness results of the population.  In many respects
+ * this approach is similar to how it's done in CMA-ES [and in fact you'll find that
+ * these comments are similar to the CMA-ES comments].
  * 
- * <p>CMAESSpecies must be used in combination with CMAESBreeder, which will
+ * <p>AMALGAMSpecies must be used in combination with AMALGAMBreeder, which will
  * call it at appropriate times to revise the distribution and to generate a new
- * subpopulation of individuals.  It must also be used in combination with
- * CMAESInitializer, which will use it to generate the initial population.
+ * subpopulation of individuals.  Unlike CMA-ES, AMALGAM does not require its own
+ * special initializer (we use SimpleInitializer).
  *
- * <p>Note importantly that CMAESSpecies <b>ignores the subpopulation size</b>.
- * Instead the first thing it will do is revise the subpopulation size to reflect
- * the "lambda" parameter.  This is a consequence of another feature of
- * CMAESSpecies: many of its parameters do not have fixed default values, but
- * rather values which are computed on the fly if the user does not provide them.
- * For this reason, it also prints out these values when running so the user may
- * see what values it used for that given run.  The computed default values 
- * use equations which are common in the CMA-ES literature and are described
- * below.
+ * <p>AMALAGAMSpecies has nine numeric parameters that you can set; five of them
+ * have standard default constant values, and four have values which, if you 
+ * don't specify them, are updated every step via excessively complex equations.
  *
- * <p>CMAESSpecies also has an "alternative termination" option.  Normally ECJ
- * terminates when the optimal individual is discovered or when the generations
- * or maximum number of evaluations has been exceeded.  CMA-ES can optionally
- * terminate when the eigenvalues of the covariance matrix of its gaussian
- * distribution are too small.  Among other things, this will generally prevent
- * CMA-ES from terminating abnormally because an eigenvalue has gone negative
- * (due to floating point underflows).  But by default this alternative termination
- * is turned off, and CMA-ES will simply terminate in that case.
+ * <p>AMALGAMSpecies also has an "alternative termination" option, by default turned off.  
+ * Normally ECJ terminates when the optimal individual is discovered or when the generations
+ * or maximum number of evaluations has been exceeded.  AMALGAM will also terminate
+ * when the "distribution multiplier" is lower than 10^(-10), or when the distribution
+ * variance is less than the fitness variance tolerance.  
  *
- * <p>CMAESSpecies needs initial values of sigma (the scaling parameter for its
- * covariance matrix) and the mean of the gaussian distribution.  By default
- * sigma's initial value is 1.0.  The mean must be set to one of "zero"
- * (meaning the origin), "center" (meaning the center of the genome space defined
- * by the min and max gene values for each gene), or "random" (meaning a randomly-
- * chosen point in the space".  If it is not set to any of these, you may
- * alternatively set the initial mean values by hand.  But you must do one of
- * the two.
- *
- * <p>Initializing the covariance matrix can be a problem in in CMA-ES, particularly
- * if it is large relative to the gene bounds.  If CMA-ES generates a random individual
- * under its current distribution and that individual violates the bounds of just a 
- * single gene, it is invalid and must be regenerated.  If you have a lot of genes,
- * and the covariance matrix is large relative to their bounds, then the probability
- * that this will occur rapidly approaches 1.0, so CMA-ES will be trapped in an effectively
- * infinite loop endlessly producing invalid individuals.
- *
- * <p>This can be remedied in a few ways.  First there is an option available to force
- * the initial covariance matrix to NOT be the identity matrix (the default) but instead
- * be scaled according to the gene bounds.  That may help.  You can also of course reduce
- * sigma.  Last, you can turn on an alternative individual generation mechanism; here,
- * if a specific gene bound is violated, then *for that gene only* the value is chosen at
- * random uniformly from within the gene bounds.
- *
- * <p>CMAESSpecies relies on the EJML matrix library, available at 
+ * <p>AMALGAMSpecies relies on the EJML matrix library, available at 
  * <a href="http://ejml.org/">http://ejml.org/</a>
 
  <p><b>Parameters</b><br>
@@ -102,7 +71,7 @@ import java.util.IdentityHashMap;
  <tr><td valign=top><i>base</i>.<tt>nis-max</tt><br>
  <font size=-1>0 &lt;= Floating-point value</font></td>
  <td valign=top>(the initial mean for the distribution)<br>
- If not provided, defaults to 26 + genome size
+ If not provided, defaults to 25 + genome size
  </td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>alpha-ams</tt><br>
@@ -141,19 +110,23 @@ import java.util.IdentityHashMap;
  If not provided, defaults to 1.0
  </td></tr>
 
- </table>
+ <tr><td valign=top><i>base</i>.<tt>alternative-termination</tt><br>
+ <font size=-1>boolean, default false</td>
+ <td valign=top>Should we also terminate on AMALGAM's additional termination conditions?.
+ </td></tr>
 
+ </table>
 
  <p><b>Default Base</b><br>
  eda.amalgam.species
-
 
  * @author Sam McKay and Sean Luke
  * @version 1.0 
  */
 
 
-public class AMALGAMSpecies extends FloatVectorSpecies {
+public class AMALGAMSpecies extends FloatVectorSpecies 
+    {
     public static final String P_AMALGAM_SPECIES = "amalgam.species";
 
     public static final String P_TAU = "tau"; // tau
@@ -166,25 +139,27 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
     public static final String P_DELTA_AMS = "delta-ams"; // delta-ams
     public static final String P_ALPHA_AMS = "alpha-ams"; // alpha-ams
 
-
+        
     public static final String P_ALTERNATIVE_TERMINATION = "alternative-termination";
     public static final int P_PARAMETER_MISSING = -1;
 
-	// 0 <= tau <= 1
-	// defaults to 0.35
+    public boolean useAltTermination;
+
+    // 0 <= tau <= 1
+    // defaults to 0.35
     public double tau;
 
-	// 0 <= variance-tolerance	: we terminate if the distribution variance is less than this
-	// 0 by default
+    // 0 <= variance-tolerance      : we terminate if the distribution variance is less than this
+    // 0 by default
     public double fitnessVarianceTolerance = 0;
 
-	// 0 <= nis-max
-	// 26 + genome size by default
+    // 0 <= nis-max
+    // 26 + genome size by default
     public int maximumNoImprovementStretch = 0;
     public int noImprovementStretch = 0;
 
-	// 0 < alpha-ams
-	// default is 	0.5 * tau * subpop.individuals.size() / (subpop.individuals.size()-1)
+    // 0 < alpha-ams
+    // default is   0.5 * tau * subpop.individuals.size() / (subpop.individuals.size()-1)
     public double alphaAMS;
     public double userAlphaAMS;
     
@@ -192,25 +167,25 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
     // defaults to 2.0
     public double deltaAMS;
 
-	// 0 <= eta-shift <= 1
-	// defaults to   1.0-Math.exp(-1.2*Math.pow((int)(tau*subpop.individuals.size()),0.31)/Math.pow(genomeSize,0.50))
+    // 0 <= eta-shift <= 1
+    // defaults to   1.0-Math.exp(-1.2*Math.pow((int)(tau*subpop.individuals.size()),0.31)/Math.pow(genomeSize,0.50))
     public double etaP;
     public double userEtaP;
 
-	// 0 <= eta-sigma <= 1
-	// defaults to 	1.0-Math.exp(-1.1*Math.pow((int)(tau*subpop.individuals.size()),1.20)/Math.pow(genomeSize,1.60))
+    // 0 <= eta-sigma <= 1
+    // defaults to  1.0-Math.exp(-1.1*Math.pow((int)(tau*subpop.individuals.size()),1.20)/Math.pow(genomeSize,1.60))
     public double etaS;
     public double userEtaS;
 
-	// 0 <= eta-dec <= 1
-	// defaults to 0.9
+    // 0 <= eta-dec <= 1
+    // defaults to 0.9
     public double distributionMultiplierDecrease;
     // this is just 1.0/distributionMultiplierDecrease -- it's only here because Amalgam's C code had that
     public double distributionMultiplierIncrease;
     public double distributionMultiplier;
 
-	// 0 <= theta-sdr 
-	// defaults to 1.0
+    // 0 <= theta-sdr 
+    // defaults to 1.0
     public double stDevRatioThresh;
 
 
@@ -238,19 +213,22 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
     // this flag is flipped in breeder
     public boolean firstGeneration;
 
-    public Parameter defaultBase() {
+    public Parameter defaultBase() 
+        {
         return AMALGAMDefaults.base().push(P_AMALGAM_SPECIES);
         }
 
-    public void setup(final EvolutionState state, final Parameter base) {
+    public void setup(final EvolutionState state, final Parameter base) 
+        {
         super.setup(state, base);
         Parameter def = defaultBase();
 
         Parameter subpopBase = base.pop();
         Parameter subpopDefaultBase =  ECDefaults.base().push(Subpopulation.P_SUBPOPULATION);
 
+        useAltTermination = state.parameters.getBoolean(base.push(P_ALTERNATIVE_TERMINATION), def.push(P_ALTERNATIVE_TERMINATION),false);
 
-        if(!state.parameters.exists(base.push(P_TAU), def.push(P_TAU)))
+        if (!state.parameters.exists(base.push(P_TAU), def.push(P_TAU)))
             {
             state.output.message("AMALGAM tau was not provided, defaulting to 0.35");
             tau = 0.35;
@@ -263,7 +241,7 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
             }
 
 
-        if(!state.parameters.exists(base.push(P_ETA_DEC), def.push(P_ETA_DEC)))
+        if (!state.parameters.exists(base.push(P_ETA_DEC), def.push(P_ETA_DEC)))
             {
             state.output.message("AMALGAM eta-dec was not provided, defaulting to 0.9");
             distributionMultiplierDecrease = 0.9;
@@ -278,7 +256,7 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
         distributionMultiplier = 1;
         distributionMultiplierIncrease = 1.0/distributionMultiplierDecrease;
 
-        if(!state.parameters.exists(base.push(P_THETA_SDR), def.push(P_THETA_SDR)))
+        if (!state.parameters.exists(base.push(P_THETA_SDR), def.push(P_THETA_SDR)))
             {
             state.output.message("AMALGAM theta-sdr was not provided, defaulting to 1.0");
             stDevRatioThresh = 1.0;
@@ -291,7 +269,7 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
             }
 
 
-        if(!state.parameters.exists(base.push(P_VARIANCE_TOLERANCE), def.push(P_VARIANCE_TOLERANCE)))
+        if (!state.parameters.exists(base.push(P_VARIANCE_TOLERANCE), def.push(P_VARIANCE_TOLERANCE)))
             {
             state.output.message("AMALGAM variance-tolerance was not provided, defaulting to 0.0");
             fitnessVarianceTolerance = 0.0;
@@ -304,7 +282,7 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
             }
 
         noImprovementStretch = 0;
-        if(!state.parameters.exists(base.push(P_NIS_MAX), def.push(P_NIS_MAX)))
+        if (!state.parameters.exists(base.push(P_NIS_MAX), def.push(P_NIS_MAX)))
             {
             maximumNoImprovementStretch = 25 + genomeSize;
             }
@@ -316,7 +294,7 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
             }
 
 
-        if(!state.parameters.exists(base.push(P_DELTA_AMS), def.push(P_DELTA_AMS)))
+        if (!state.parameters.exists(base.push(P_DELTA_AMS), def.push(P_DELTA_AMS)))
             {
             state.output.message("AMALGAM delta-ams was not provided, defaulting to 2.0");
             deltaAMS = 2;
@@ -332,7 +310,7 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
         // we don't know it at this point, so wait until update distribution to set default values up
         // for now, just assign P_PARAMETER MISSING if the param file does not contain a value
 
-        if(!state.parameters.exists(base.push(P_ALPHA_AMS), def.push(P_ALPHA_AMS)))
+        if (!state.parameters.exists(base.push(P_ALPHA_AMS), def.push(P_ALPHA_AMS)))
             {
             userAlphaAMS = P_PARAMETER_MISSING;
             }
@@ -343,7 +321,7 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
                 state.output.fatal("If AMALGAM alpha-ams is provided, it must be > 0", base.push(P_ALPHA_AMS), def.push(P_ALPHA_AMS));
             }
 
-        if(!state.parameters.exists(base.push(P_ETA_SHIFT), def.push(P_ETA_SHIFT)))
+        if (!state.parameters.exists(base.push(P_ETA_SHIFT), def.push(P_ETA_SHIFT)))
             {
             userEtaP = P_PARAMETER_MISSING;
             }
@@ -354,7 +332,7 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
                 state.output.fatal("If AMALGAM eta-shift is provided, it must be a valid number in the range [0,1]", base.push(P_ETA_SHIFT), def.push(P_ETA_SHIFT));
             }
 
-        if(!state.parameters.exists(base.push(P_ETA_SIGMA), def.push(P_ETA_SIGMA)))
+        if (!state.parameters.exists(base.push(P_ETA_SIGMA), def.push(P_ETA_SIGMA)))
             {
             userEtaS = P_PARAMETER_MISSING;
             }
@@ -388,11 +366,6 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
         }
 
 
-    // called after we have subpop size
-    // public void setup2(final EvolutionState state, final Parameter base) {
-
-    // }
-
     public Object clone()
         {
         AMALGAMSpecies myobj = (AMALGAMSpecies) (super.clone());
@@ -410,16 +383,12 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
         myobj.userEtaP = userEtaP;
         myobj.userEtaS = userEtaS;
 
-
-
         myobj.distributionMultiplier = distributionMultiplier;
 
         myobj.distributionMultiplierDecrease = distributionMultiplierDecrease;
         myobj.distributionMultiplierIncrease = distributionMultiplierIncrease;
 
         myobj.stDevRatioThresh = stDevRatioThresh;
-
-
 
         /** The mean of the distribution. */
         myobj.mean.set(mean);
@@ -432,7 +401,6 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
         myobj.covarMatrix.set(covarMatrix);
         myobj.choleskyLower.set(choleskyLower);
 
-
         myobj.constraintViolations = (IdentityHashMap<Individual, Integer>) constraintViolations.clone();
 
         return myobj;
@@ -440,13 +408,17 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
 
 
 
-    public void computeConstraintViolations(final EvolutionState state, final Subpopulation subpop) {
+    public void computeConstraintViolations(final EvolutionState state, final Subpopulation subpop) 
+        {
         constraintViolations = new IdentityHashMap<Individual, Integer>();
-        for(int i = 0; i < subpop.individuals.size(); i++) {
+        for (int i = 0; i < subpop.individuals.size(); i++) 
+            {
             int cv = 0;
             DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
-            for(int j = 0; j < genomeSize; j++) {
-                if(dvind.genome[j] < minGene(j) || dvind.genome[j] > maxGene(j)) {
+            for (int j = 0; j < genomeSize; j++) 
+                {
+                if (dvind.genome[j] < minGene(j) || dvind.genome[j] > maxGene(j)) 
+                    {
                     cv++;
                     }
                 }
@@ -454,23 +426,33 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
             }
         }
 
-    public int compareIndividuals(Individual a, Individual b) {
+    public int compareIndividuals(Individual a, Individual b) 
+        {
         int constraintViolationA = constraintViolations.get(a);
         int constraintViolationB = constraintViolations.get(b);
 
 
         // this is the logic that was in iAMALGAM code
-        if(constraintViolationA > 0) {
-            if(constraintViolationB > 0) {
-                if( constraintViolationA < constraintViolationB ){
+        if (constraintViolationA > 0) 
+            {
+            if (constraintViolationB > 0) 
+                {
+                if ( constraintViolationA < constraintViolationB )
+                    {
                     return -1; // A is fitter
                     }
                 }
-            } else {
-            if( constraintViolationB > 0 ) {
+            } 
+        else 
+            {
+            if ( constraintViolationB > 0 ) 
+                {
                 return -1; // A is fitter
-                } else {
-                if(((DoubleVectorIndividual) a).compareTo(((DoubleVectorIndividual) b)) < 0) {
+                } 
+            else 
+                {
+                if (((DoubleVectorIndividual) a).compareTo(((DoubleVectorIndividual) b)) < 0) 
+                    {
                     return -1; // A is fitter
                     }
                 }
@@ -480,9 +462,12 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
         return 1; // B is fitter
         }
 
-    public boolean isValid(DoubleVectorIndividual dvind) {
-        for(int i = 0; i < genomeSize; i++) {
-            if(dvind.genome[i] < minGene(i) || dvind.genome[i] > maxGene(i)) {
+    public boolean isValid(DoubleVectorIndividual dvind)
+        {
+        for (int i = 0; i < genomeSize; i++)
+            {
+            if (dvind.genome[i] < minGene(i) || dvind.genome[i] > maxGene(i)) 
+                {
                 return false;
                 }
             }
@@ -490,7 +475,8 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
         }
 
 
-    public Individual newIndividual(final EvolutionState state, int thread) {
+    public Individual newIndividual(final EvolutionState state, int thread) 
+        {
         Individual newind = super.newIndividual(state, thread);
         MersenneTwisterFast random = state.random[thread];
 
@@ -501,316 +487,365 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
         DoubleVectorIndividual dvind = (DoubleVectorIndividual)(newind);
         DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
 
-        while(true) {
+        while (true) 
+            {
 
-            if(!firstGeneration) {
-                for( int i = 0; i < genomeSize; i++ )
+            if (!firstGeneration) 
+                {
+                for ( int i = 0; i < genomeSize; i++ )
                     dvind.genome[i] = random.nextGaussian();
 
                 CommonOps.mult(choleskyLower,genome,temp);
                 CommonOps.add(temp,mean,genome);
 
-                if(!isValid(dvind)) {
+                if (!isValid(dvind)) 
+                    {
                     continue;
                     }
-                } else {
-                for( int i = 0; i < genomeSize; i++ )
+                } 
+            else 
+                {
+                for ( int i = 0; i < genomeSize; i++ )
                     dvind.genome[i] = minGene(i) + (maxGene[i] - minGene(i)) * random.nextDouble();
                 }
-
-
 
             return newind;
             }
 
         }
 
-    public void adaptDistributionMultiplier(final EvolutionState state, final Subpopulation subpop) {
+    public void adaptDistributionMultiplier(final EvolutionState state, final Subpopulation subpop) 
+        {
         // don't run for the first generation
 
         boolean improved = false;
-        for(int i = 1; i < tau*subpop.individuals.size(); i++) {
+        for (int i = 1; i < tau*subpop.individuals.size(); i++) 
+            {
             // if ind[i] is better than ind[0] (the individual kept from the previous population)
-            // if(subpop.individuals.get(i).compareTo(subpop.individuals.get(0)) < 0) {
-            if(compareIndividuals(subpop.individuals.get(i), subpop.individuals.get(0)) < 0) {
-                improved = true;
-                break;
+            // if (subpop.individuals.get(i).compareTo(subpop.individuals.get(0)) < 0) 
+                {
+                if (compareIndividuals(subpop.individuals.get(i), subpop.individuals.get(0)) < 0) 
+                    {
+                    improved = true;
+                    break;
+                    }
+                }
+
+            if (improved) 
+                {
+                noImprovementStretch = 0;
+                if (distributionMultiplier < 1) distributionMultiplier = 1;
+
+                xAvgImp = new DenseMatrix64F(genomeSize, 1);
+                int count = 0;
+                for (int i = 1; i < tau*subpop.individuals.size(); i++) 
+                    {
+                    if (compareIndividuals(subpop.individuals.get(i), subpop.individuals.get(0)) < 0) 
+                        {
+                        DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
+                        DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
+                        CommonOps.add(xAvgImp,genome,xAvgImp);
+                        count++;
+                        }
+                    }
+                CommonOps.scale(1.0/count,xAvgImp,xAvgImp);
+
+                CommonOps.subtract(xAvgImp, mean, temp);
+                CommonOps.invert(choleskyLower, tempMatrix);
+                CommonOps.mult(tempMatrix, temp, temp3);
+                double sdr = CommonOps.elementMaxAbs(temp3);
+
+                if (sdr > stDevRatioThresh) 
+                    {
+                    distributionMultiplier *= distributionMultiplierIncrease;
+                    }
+                } 
+            else 
+                {
+                if (distributionMultiplier <= 1) noImprovementStretch++;
+                if (distributionMultiplier > 1 || noImprovementStretch > maximumNoImprovementStretch) distributionMultiplier *= distributionMultiplierDecrease;
+                if (distributionMultiplier < 1 && noImprovementStretch < maximumNoImprovementStretch) distributionMultiplier = 1;
                 }
             }
 
-        if(improved) {
-            noImprovementStretch = 0;
-            if(distributionMultiplier < 1) distributionMultiplier = 1;
+        public void selectForDiversity(final EvolutionState state, final Subpopulation subpop) 
+            {
+            int numBest; // the number of individuals with fitness equal to the best individual
+            DoubleVectorIndividual bestInd = (DoubleVectorIndividual) subpop.individuals.get(0);
+            for (numBest = 1; numBest < subpop.individuals.size(); numBest++) 
+                {
+                DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(numBest));
+                if (dvind.compareTo(bestInd) != 0) 
+                    {
+                    break; // break when we find an individual that isn't as good as the best
+                    }
+                }
 
-            xAvgImp = new DenseMatrix64F(genomeSize, 1);
-            int count = 0;
-            for(int i = 1; i < tau*subpop.individuals.size(); i++) {
-                if(compareIndividuals(subpop.individuals.get(i), subpop.individuals.get(0)) < 0) {
+            // rearrange the selections so that the selected individuals out of the equal fitness ones are at the front of the array
+            // chooses the individual that is farthest from the ones selected previously
+
+            int numSelectedSoFar = 1; // first one is already selected
+            double[] distances = new double[numBest];
+            Arrays.fill(distances, Double.POSITIVE_INFINITY); // value guaranteed to be overwriten
+            for (; numSelectedSoFar < tau*subpop.individuals.size(); numSelectedSoFar++) 
+                {
+                double farthest = -1; // always less than the first candidate
+
+                for (int i = numSelectedSoFar; i < numBest; i++) 
+                    {
+                    double distance = subpop.individuals.get(numSelectedSoFar-1).distanceTo(subpop.individuals.get(i));
+
+                    if (distance < distances[i]) 
+                        {
+                        distances[i] = distance;
+                        }
+
+                    if (distances[i] > farthest)
+                        {
+                        farthest = distances[i];
+                        Individual tmp = subpop.individuals.get(i);
+                        subpop.individuals.set(i, subpop.individuals.get(numSelectedSoFar));
+                        subpop.individuals.set(numSelectedSoFar, tmp);
+                        }
+                    }
+                }
+
+            }
+
+        public void computeMean(final EvolutionState state, final Subpopulation subpop) 
+            {
+            prevMean.set(mean);
+            CommonOps.fill(mean,0);
+            if (distributionMultiplier >= 1.0) 
+                {
+                int i;
+                for (i = 0; i < tau*subpop.individuals.size(); i++) 
+                    {
                     DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
                     DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
-                    CommonOps.add(xAvgImp,genome,xAvgImp);
-                    count++;
+                    CommonOps.add(mean,genome,mean);
                     }
-                }
-            CommonOps.scale(1.0/count,xAvgImp,xAvgImp);
-
-            CommonOps.subtract(xAvgImp, mean, temp);
-            CommonOps.invert(choleskyLower, tempMatrix);
-            CommonOps.mult(tempMatrix, temp, temp3);
-            double sdr = CommonOps.elementMaxAbs(temp3);
-
-            if(sdr > stDevRatioThresh) {
-                distributionMultiplier *= distributionMultiplierIncrease;
-                }
-            } else {
-            if(distributionMultiplier <= 1) noImprovementStretch++;
-            if(distributionMultiplier > 1 || noImprovementStretch > maximumNoImprovementStretch) distributionMultiplier *= distributionMultiplierDecrease;
-            if(distributionMultiplier < 1 && noImprovementStretch < maximumNoImprovementStretch) distributionMultiplier = 1;
-            }
-        }
-
-    public void selectForDiversity(final EvolutionState state, final Subpopulation subpop) {
-        int numBest; // the number of individuals with fitness equal to the best individual
-        DoubleVectorIndividual bestInd = (DoubleVectorIndividual) subpop.individuals.get(0);
-        for(numBest = 1; numBest < subpop.individuals.size(); numBest++) {
-            DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(numBest));
-            if(dvind.compareTo(bestInd) != 0) {
-                break; // break when we find an individual that isn't as good as the best
+                CommonOps.scale(1.0/i,mean,mean);
+                } 
+            else 
+                {
+                // focus on the best solution
+                DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(0));
+                mean.set(DenseMatrix64F.wrap(genomeSize,1,dvind.genome));
                 }
             }
 
-        // rearrange the selections so that the selected individuals out of the equal fitness ones are at the front of the array
-        // chooses the individual that is farthest from the ones selected previously
+        public void computeCovariance(final EvolutionState state, final Subpopulation subpop) 
+            {
+            CommonOps.fill(genCovarMatrix, 0);
 
-        int numSelectedSoFar = 1; // first one is already selected
-        double[] distances = new double[numBest];
-        Arrays.fill(distances, Double.POSITIVE_INFINITY); // value guaranteed to be overwriten
-        for(; numSelectedSoFar < tau*subpop.individuals.size(); numSelectedSoFar++) {
-            double farthest = -1; // always less than the first candidate
-
-            for(int i = numSelectedSoFar; i < numBest; i++) {
-                double distance = subpop.individuals.get(numSelectedSoFar-1).distanceTo(subpop.individuals.get(i));
-
-                if(distance < distances[i]) {
-                    distances[i] = distance;
-                    }
-
-                if(distances[i] > farthest) {
-                    farthest = distances[i];
-                    Individual tmp = subpop.individuals.get(i);
-                    subpop.individuals.set(i, subpop.individuals.get(numSelectedSoFar));
-                    subpop.individuals.set(numSelectedSoFar, tmp);
-                    }
-                }
-            }
-
-        }
-
-    public void computeMean(final EvolutionState state, final Subpopulation subpop) {
-        prevMean.set(mean);
-        CommonOps.fill(mean,0);
-        if(distributionMultiplier >= 1.0) {
             int i;
-            for(i = 0; i < tau*subpop.individuals.size(); i++) {
+            for (i = 0; i < tau*subpop.individuals.size(); i++) 
+                {
                 DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
                 DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
-                CommonOps.add(mean,genome,mean);
+                CommonOps.subtract(genome,mean,temp);
+                CommonOps.transpose(temp,temp2);
+                CommonOps.multAdd(temp,temp2,genCovarMatrix);
                 }
-            CommonOps.scale(1.0/i,mean,mean);
-            } else {
-            // focus on the best solution
-            DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(0));
-            mean.set(DenseMatrix64F.wrap(genomeSize,1,dvind.genome));
-            }
-        }
-
-    public void computeCovariance(final EvolutionState state, final Subpopulation subpop) {
-        CommonOps.fill(genCovarMatrix, 0);
-
-        int i;
-        for(i = 0; i < tau*subpop.individuals.size(); i++) {
-            DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
-            DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
-            CommonOps.subtract(genome,mean,temp);
-            CommonOps.transpose(temp,temp2);
-            CommonOps.multAdd(temp,temp2,genCovarMatrix);
-            }
 
 
 
-        CommonOps.scale(1.0/i,genCovarMatrix,genCovarMatrix);
+            CommonOps.scale(1.0/i,genCovarMatrix,genCovarMatrix);
 
-        if(!firstGeneration) {
-            CommonOps.scale(etaS, genCovarMatrix, genCovarMatrix);
-            CommonOps.scale(1-etaS, aggCovarMatrix, aggCovarMatrix);
-            CommonOps.add(aggCovarMatrix, genCovarMatrix, aggCovarMatrix);
-            } else {
-            aggCovarMatrix.set(genCovarMatrix);
-            }    
-        CommonOps.scale(distributionMultiplier, aggCovarMatrix, covarMatrix);
+            if (!firstGeneration) 
+                {
+                CommonOps.scale(etaS, genCovarMatrix, genCovarMatrix);
+                CommonOps.scale(1-etaS, aggCovarMatrix, aggCovarMatrix);
+                CommonOps.add(aggCovarMatrix, genCovarMatrix, aggCovarMatrix);
+                } 
+            else 
+                {
+                aggCovarMatrix.set(genCovarMatrix);
+                }    
+            CommonOps.scale(distributionMultiplier, aggCovarMatrix, covarMatrix);
 
-        for( i = 0; i < genomeSize; i++ )
-            for(int j = 0; j < i; j++ )
-                covarMatrix.set(i,j,covarMatrix.get(j,i));
-        }
-
-    public void computeAMS(final EvolutionState state, final Subpopulation subpop) {
-        CommonOps.subtract(mean,prevMean,temp);
-        if(!firstGeneration) {
-            CommonOps.scale(etaP, temp);
-            CommonOps.scale(1-etaP, meanShift);
-            CommonOps.add(meanShift,temp,meanShift);
-            } else {
-            meanShift.set(temp);
-            }
-        }
-
-
-    public void updateDistribution(final EvolutionState state, final Subpopulation subpop) {
-
-        CommonOps.fill(temp, 0);
-        CommonOps.fill(temp3, 0);
-        CommonOps.fill(temp2, 0);
-        CommonOps.fill(tempMatrix, 0);
-
-        if(userEtaP == P_PARAMETER_MISSING) {
-            etaP = 1.0-Math.exp(-1.2*Math.pow((int)(tau*subpop.individuals.size()),0.31)/Math.pow(genomeSize,0.50));
+            for ( i = 0; i < genomeSize; i++ )
+                for (int j = 0; j < i; j++ )
+                    covarMatrix.set(i,j,covarMatrix.get(j,i));
             }
 
-        if(userEtaS == P_PARAMETER_MISSING) {
-            etaS = 1.0-Math.exp(-1.1*Math.pow((int)(tau*subpop.individuals.size()),1.20)/Math.pow(genomeSize,1.60));
-            }
-
-        if(userAlphaAMS == P_PARAMETER_MISSING) {
-            alphaAMS = 0.5 * tau * subpop.individuals.size() / (subpop.individuals.size()-1);
-            }
-
-
-        computeConstraintViolations(state, subpop);
-
-
-
-        if(!firstGeneration) {
-            adaptDistributionMultiplier(state, subpop);
-            }
-
-        Collections.sort(subpop.individuals, new Comparator<Individual>() {
-            public int compare(Individual a, Individual b) {
-                return compareIndividuals(a, b);
+        public void computeAMS(final EvolutionState state, final Subpopulation subpop) 
+            {
+            CommonOps.subtract(mean,prevMean,temp);
+            if (!firstGeneration) 
+                {
+                CommonOps.scale(etaP, temp);
+                CommonOps.scale(1-etaP, meanShift);
+                CommonOps.add(meanShift,temp,meanShift);
+                } 
+            else 
+                {
+                meanShift.set(temp);
                 }
-            });
-        // printStats(state,subpop);
-
-        if(subpop.individuals.get((int)tau*subpop.individuals.size()).fitness.fitness() == subpop.individuals.get(0).fitness.fitness()) {
-            selectForDiversity(state,subpop);
             }
 
 
-        if(checkTerminationConditions(state,subpop)) {
-            state.evaluator.setRunComplete("AMALGAMSpecies: Termination condition reached.");
+        public void updateDistribution(final EvolutionState state, final Subpopulation subpop) 
+            {
+            CommonOps.fill(temp, 0);
+            CommonOps.fill(temp3, 0);
+            CommonOps.fill(temp2, 0);
+            CommonOps.fill(tempMatrix, 0);
+
+            if (userEtaP == P_PARAMETER_MISSING) 
+                {
+                etaP = 1.0-Math.exp(-1.2*Math.pow((int)(tau*subpop.individuals.size()),0.31)/Math.pow(genomeSize,0.50));
+                }
+
+            if (userEtaS == P_PARAMETER_MISSING) 
+                {
+                etaS = 1.0-Math.exp(-1.1*Math.pow((int)(tau*subpop.individuals.size()),1.20)/Math.pow(genomeSize,1.60));
+                }
+
+            if (userAlphaAMS == P_PARAMETER_MISSING) 
+                {
+                alphaAMS = 0.5 * tau * subpop.individuals.size() / (subpop.individuals.size()-1);
+                }
+
+
+            computeConstraintViolations(state, subpop);
+
+            if (!firstGeneration)
+                {
+                adaptDistributionMultiplier(state, subpop);
+                }
+
+            Collections.sort(subpop.individuals, new Comparator<Individual>() 
+                    {
+                    public int compare(Individual a, Individual b) 
+                        {
+                        return compareIndividuals(a, b);
+                        }
+                });
+            // printStats(state,subpop);
+
+            if (subpop.individuals.get((int)tau*subpop.individuals.size()).fitness.fitness() == subpop.individuals.get(0).fitness.fitness()) 
+                {
+                selectForDiversity(state,subpop);
+                }
+
+
+            if (checkTerminationConditions(state,subpop)) 
+                {
+                state.evaluator.setRunComplete("AMALGAMSpecies: Termination condition reached.");
+                }
+
+            computeMean(state, subpop);
+            computeCovariance(state, subpop);
+            computeAMS(state, subpop);
+
+
+            // System.out.println("distributionMultiplier: " + distributionMultiplier);
+            CholeskyDecomposition chol = DecompositionFactory.chol(genomeSize, true);
+
+            tempMatrix.set(covarMatrix);
+
+            if (!chol.decompose(tempMatrix)) 
+                {
+                chol.getT(choleskyLower);
+                // state.output.fatal("Failed to decompose matrix");
+                } 
+            else
+                {
+                chol.getT(choleskyLower);
+                }
             }
 
-        computeMean(state, subpop);
-        computeCovariance(state, subpop);
-        computeAMS(state, subpop);
+        public boolean checkTerminationConditions(final EvolutionState state,  final Subpopulation subpop) 
+            {
+            if (!useAltTermination)
+                return false;
+                
+            if (distributionMultiplier < 1e-10) 
+                {
+                return true;
+                }
 
+            double avg = 0, var = 0;
+            // terminate if fitness variance multiplier gets too small
+            for (int i = 0; i < subpop.individuals.size(); i++) 
+                {
+                DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
+                avg += dvind.fitness.fitness();
+                }
+            avg /= subpop.individuals.size();
 
-        // System.out.println("distributionMultiplier: " + distributionMultiplier);
-        CholeskyDecomposition chol = DecompositionFactory.chol(genomeSize, true);
+            for (int i = 0; i < subpop.individuals.size(); i++) 
+                {
+                DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
+                var += (dvind.fitness.fitness()-avg)*(dvind.fitness.fitness()-avg);
+                }
 
-        tempMatrix.set(covarMatrix);
+            var /= subpop.individuals.size();
 
-        if(!chol.decompose(tempMatrix)) {
-            chol.getT(choleskyLower);
-            // state.output.fatal("Failed to decompose matrix");
-            } else {
-            chol.getT(choleskyLower);
+            if (var <= 0.0)
+                var = 0.0;
+
+            if (var < fitnessVarianceTolerance)
+                {
+                return true;
+                }
+
+            return false;
             }
-        
+
+        public void shiftIndividual(final EvolutionState state, DoubleVectorIndividual ind)
+            {
+            DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,ind.genome);
+            double shiftMult = 1;
+            temp.set(genome);
+            do 
+                {
+                genome.set(temp);
+                CommonOps.add(shiftMult*deltaAMS*distributionMultiplier, meanShift, genome, genome);
+                shiftMult *= 0.5;
+                } while (!isValid(ind) && shiftMult > 1e-10);
+            }
+
+        // public void printStats(final EvolutionState state, final Subpopulation subpop) {
+        //     // System.out.println(distributionMultiplier);
+        //     DoubleVectorIndividual first = (DoubleVectorIndividual)(subpop.individuals.get(0));
+        //     double avg = 0, var = 0;
+        //     double best = first.fitness.fitness();
+        //     double worst = first.fitness.fitness();
+
+        //     for (int i = 0; i < subpop.individuals.size(); i++) {
+        //         DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
+        //         avg += dvind.fitness.fitness();
+        //         if (dvind.fitness.fitness() > best) {
+        //             best = dvind.fitness.fitness();
+        //         }
+        //         if (dvind.fitness.fitness() < worst) {
+        //             worst = dvind.fitness.fitness();
+        //         }
+        //     }
+        //     avg /= subpop.individuals.size();
+
+        //     for (int i = 0; i < subpop.individuals.size(); i++) {
+        //         DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
+        //         var += (dvind.fitness.fitness()-avg)*(dvind.fitness.fitness()-avg);
+        //     }
+
+        //     var /= subpop.individuals.size();
 
 
+        //     System.out.printf("# Generation Evaluations  Average-obj. Variance-obj.     Best-obj.    Worst-obj.   Dist. mult. \n");
+        //     System.out.printf("  %10d %11d %13e %13e %13e %13e %13e\n", state.generation, 0, avg, var, best, worst, distributionMultiplier);
+
+
+        //     for (int i = 0; i < subpop.individuals.size(); i++) {
+        //         DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
+        //         DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
+        //         // genome.transpose().print();
+        //         CommonOps.transpose(genome, temp2);
+        //         // temp2.print(); 
+        //     }  
+        // }
         }
-
-    public boolean checkTerminationConditions(final EvolutionState state,  final Subpopulation subpop) {
-        if( 
-            distributionMultiplier < 1e-10) {
-            return true;
-            }
-
-        double avg = 0, var = 0;
-        // terminate if fitness variance multiplier gets too small
-        for(int i = 0; i < subpop.individuals.size(); i++) {
-            DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
-            avg += dvind.fitness.fitness();
-            }
-        avg /= subpop.individuals.size();
-
-        for(int i = 0; i < subpop.individuals.size(); i++) {
-            DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
-            var += (dvind.fitness.fitness()-avg)*(dvind.fitness.fitness()-avg);
-            }
-
-        var /= subpop.individuals.size();
-
-        if(var <= 0.0)
-            var = 0.0;
-
-        if(var < fitnessVarianceTolerance){
-            return true;
-            }
-
-        return false;
-        }
-
-    public void shiftIndividual(final EvolutionState state, DoubleVectorIndividual ind) {
-        DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,ind.genome);
-        double shiftMult = 1;
-        temp.set(genome);
-        do {
-            genome.set(temp);
-            CommonOps.add(shiftMult*deltaAMS*distributionMultiplier, meanShift, genome, genome);
-            shiftMult *= 0.5;
-            } while(!isValid(ind) && shiftMult > 1e-10);
-        }
-
-    // public void printStats(final EvolutionState state, final Subpopulation subpop) {
-    //     // System.out.println(distributionMultiplier);
-    //     DoubleVectorIndividual first = (DoubleVectorIndividual)(subpop.individuals.get(0));
-    //     double avg = 0, var = 0;
-    //     double best = first.fitness.fitness();
-    //     double worst = first.fitness.fitness();
-
-    //     for(int i = 0; i < subpop.individuals.size(); i++) {
-    //         DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
-    //         avg += dvind.fitness.fitness();
-    //         if(dvind.fitness.fitness() > best) {
-    //             best = dvind.fitness.fitness();
-    //         }
-    //         if(dvind.fitness.fitness() < worst) {
-    //             worst = dvind.fitness.fitness();
-    //         }
-    //     }
-    //     avg /= subpop.individuals.size();
-
-    //     for(int i = 0; i < subpop.individuals.size(); i++) {
-    //         DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
-    //         var += (dvind.fitness.fitness()-avg)*(dvind.fitness.fitness()-avg);
-    //     }
-
-    //     var /= subpop.individuals.size();
-
-
-    //     System.out.printf("# Generation Evaluations  Average-obj. Variance-obj.     Best-obj.    Worst-obj.   Dist. mult. \n");
-    //     System.out.printf("  %10d %11d %13e %13e %13e %13e %13e\n", state.generation, 0, avg, var, best, worst, distributionMultiplier);
-
-
-    //     for(int i = 0; i < subpop.individuals.size(); i++) {
-    //         DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
-    //         DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
-    //         // genome.transpose().print();
-    //         CommonOps.transpose(genome, temp2);
-    //         // temp2.print(); 
-    //     }  
-    // }
-    }
 
