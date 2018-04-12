@@ -25,6 +25,134 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
 
+
+
+/**
+ * CMAESSpecies is a FloatVectorSpecies which implements a faithful version of the
+ * CMA-ES algorithm.  The class has two basic methods.  The newIndividual(...)
+ * method generates a new random individual underneath the current CMA-ES
+ * gaussian distribution.  The updateDistribution(...) method revises the
+ * gaussian distribution to reflect the fitness results of the population.
+ * 
+ * <p>CMAESSpecies must be used in combination with CMAESBreeder, which will
+ * call it at appropriate times to revise the distribution and to generate a new
+ * subpopulation of individuals.  It must also be used in combination with
+ * CMAESInitializer, which will use it to generate the initial population.
+ *
+ * <p>Note importantly that CMAESSpecies <b>ignores the subpopulation size</b>.
+ * Instead the first thing it will do is revise the subpopulation size to reflect
+ * the "lambda" parameter.  This is a consequence of another feature of
+ * CMAESSpecies: many of its parameters do not have fixed default values, but
+ * rather values which are computed on the fly if the user does not provide them.
+ * For this reason, it also prints out these values when running so the user may
+ * see what values it used for that given run.  The computed default values 
+ * use equations which are common in the CMA-ES literature and are described
+ * below.
+ *
+ * <p>CMAESSpecies also has an "alternative termination" option.  Normally ECJ
+ * terminates when the optimal individual is discovered or when the generations
+ * or maximum number of evaluations has been exceeded.  CMA-ES can optionally
+ * terminate when the eigenvalues of the covariance matrix of its gaussian
+ * distribution are too small.  Among other things, this will generally prevent
+ * CMA-ES from terminating abnormally because an eigenvalue has gone negative
+ * (due to floating point underflows).  But by default this alternative termination
+ * is turned off, and CMA-ES will simply terminate in that case.
+ *
+ * <p>CMAESSpecies needs initial values of sigma (the scaling parameter for its
+ * covariance matrix) and the mean of the gaussian distribution.  By default
+ * sigma's initial value is 1.0.  The mean must be set to one of "zero"
+ * (meaning the origin), "center" (meaning the center of the genome space defined
+ * by the min and max gene values for each gene), or "random" (meaning a randomly-
+ * chosen point in the space".  If it is not set to any of these, you may
+ * alternatively set the initial mean values by hand.  But you must do one of
+ * the two.
+ *
+ * <p>Initializing the covariance matrix can be a problem in in CMA-ES, particularly
+ * if it is large relative to the gene bounds.  If CMA-ES generates a random individual
+ * under its current distribution and that individual violates the bounds of just a 
+ * single gene, it is invalid and must be regenerated.  If you have a lot of genes,
+ * and the covariance matrix is large relative to their bounds, then the probability
+ * that this will occur rapidly approaches 1.0, so CMA-ES will be trapped in an effectively
+ * infinite loop endlessly producing invalid individuals.
+ *
+ * <p>This can be remedied in a few ways.  First there is an option available to force
+ * the initial covariance matrix to NOT be the identity matrix (the default) but instead
+ * be scaled according to the gene bounds.  That may help.  You can also of course reduce
+ * sigma.  Last, you can turn on an alternative individual generation mechanism; here,
+ * if a specific gene bound is violated, then *for that gene only* the value is chosen at
+ * random uniformly from within the gene bounds.
+ *
+ * <p>CMAESSpecies relies on the EJML matrix library, available at 
+ * <a href="http://ejml.org/">http://ejml.org/</a>
+
+ <p><b>Parameters</b><br>
+ <table>
+ <tr><td valign=top><i>base</i>.<tt>tau</tt><br>
+ <font size=-1>0 &lt;= Floating-point value &lt;= 1</font></td>
+ <td valign=top>(the initial mean for the distribution)<br>
+ If not provided, defaults to 0.35
+ </td></tr>
+
+ <tr><td valign=top><i>base</i>.<tt>variance-tolerance</tt><br>
+ <font size=-1>0 &lt;= Floating-point value</font></td>
+ <td valign=top>(the initial mean for the distribution)<br>
+ If not provided, defaults to 0.0
+ </td></tr>
+
+ <tr><td valign=top><i>base</i>.<tt>nis-max</tt><br>
+ <font size=-1>0 &lt;= Floating-point value</font></td>
+ <td valign=top>(the initial mean for the distribution)<br>
+ If not provided, defaults to 26 + genome size
+ </td></tr>
+
+ <tr><td valign=top><i>base</i>.<tt>alpha-ams</tt><br>
+ <font size=-1>0 &lt; Floating-point value</font></td>
+ <td valign=top>(the initial mean for the distribution)<br>
+ If not provided, defaults to 0.5 * tau * subpopulation size / (subpopulation size - 1)
+ </td></tr>
+
+ <tr><td valign=top><i>base</i>.<tt>delta-ams</tt><br>
+ <font size=-1>0 &lt; Floating-point value</font></td>
+ <td valign=top>(the initial mean for the distribution)<br>
+ If not provided, defaults to 2.0
+ </td></tr>
+
+ <tr><td valign=top><i>base</i>.<tt>eta-shift</tt><br>
+ <font size=-1>0 &lt;= Floating-point value &lt;= 1</font></td>
+ <td valign=top>(the initial mean for the distribution)<br>
+ If not provided, defaults to 1.0 - (e ^ (-1.2 * (floor(tau * subpopulation size))^0.31) / (genome size ^ 0.5))
+ </td></tr>
+
+ <tr><td valign=top><i>base</i>.<tt>eta-sigma</tt><br>
+ <font size=-1>0 &lt;= Floating-point value &lt;= 1</font></td>
+ <td valign=top>(the initial mean for the distribution)<br>
+ If not provided, defaults to 1.0 - e ^ (-1.1 * (floor(tau * subpopulation size)^1.20) / (genome size ^ 1.6))
+ </td></tr>
+
+ <tr><td valign=top><i>base</i>.<tt>eta-dec</tt><br>
+ <font size=-1>0 &lt;= Floating-point value &lt;= 1</font></td>
+ <td valign=top>(the initial mean for the distribution)<br>
+ If not provided, defaults to 0.9
+ </td></tr>
+
+ <tr><td valign=top><i>base</i>.<tt>theta-sdr</tt><br>
+ <font size=-1>0 &lt;= Floating-point value</font></td>
+ <td valign=top>(the initial mean for the distribution)<br>
+ If not provided, defaults to 1.0
+ </td></tr>
+
+ </table>
+
+
+ <p><b>Default Base</b><br>
+ eda.amalgam.species
+
+
+ * @author Sam McKay and Sean Luke
+ * @version 1.0 
+ */
+
+
 public class AMALGAMSpecies extends FloatVectorSpecies {
     public static final String P_AMALGAM_SPECIES = "amalgam.species";
 
@@ -42,35 +170,47 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
     public static final String P_ALTERNATIVE_TERMINATION = "alternative-termination";
     public static final int P_PARAMETER_MISSING = -1;
 
-
-    public int maxEvaluations = 1000000;
-    public int valueToReach = 0;
-    public double fitnessVarianceTolerance = 0;
-
-    public int noImprovementStretch = 0;
-    public int maximumNoImprovementStretch = 0;
-    public int selectionSize = 0;
-
+	// 0 <= tau <= 1
+	// defaults to 0.35
     public double tau;
 
+	// 0 <= variance-tolerance	: we terminate if the distribution variance is less than this
+	// 0 by default
+    public double fitnessVarianceTolerance = 0;
+
+	// 0 <= nis-max
+	// 26 + genome size by default
+    public int maximumNoImprovementStretch = 0;
+    public int noImprovementStretch = 0;
+
+	// 0 < alpha-ams
+	// default is 	0.5 * tau * subpop.individuals.size() / (subpop.individuals.size()-1)
     public double alphaAMS;
+    public double userAlphaAMS;
+    
+    // 0 < delta-ams
+    // defaults to 2.0
     public double deltaAMS;
 
-    public double userAlphaAMS;
-
+	// 0 <= eta-shift <= 1
+	// defaults to   1.0-Math.exp(-1.2*Math.pow((int)(tau*subpop.individuals.size()),0.31)/Math.pow(genomeSize,0.50))
     public double etaP;
-    public double etaS;
-
     public double userEtaP;
+
+	// 0 <= eta-sigma <= 1
+	// defaults to 	1.0-Math.exp(-1.1*Math.pow((int)(tau*subpop.individuals.size()),1.20)/Math.pow(genomeSize,1.60))
+    public double etaS;
     public double userEtaS;
 
-
-
+	// 0 <= eta-dec <= 1
+	// defaults to 0.9
+    public double distributionMultiplierDecrease;
+    // this is just 1.0/distributionMultiplierDecrease -- it's only here because Amalgam's C code had that
+    public double distributionMultiplierIncrease;
     public double distributionMultiplier;
 
-    public double distributionMultiplierDecrease;
-    public double distributionMultiplierIncrease;
-
+	// 0 <= theta-sdr 
+	// defaults to 1.0
     public double stDevRatioThresh;
 
 
@@ -166,7 +306,7 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
         noImprovementStretch = 0;
         if(!state.parameters.exists(base.push(P_NIS_MAX), def.push(P_NIS_MAX)))
             {
-            maximumNoImprovementStretch = 25+genomeSize;
+            maximumNoImprovementStretch = 25 + genomeSize;
             }
         else
             {
@@ -257,15 +397,10 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
         {
         AMALGAMSpecies myobj = (AMALGAMSpecies) (super.clone());
 
-
-
-        // myobj.maxEvaluations = maxEvaluations;
-        myobj.valueToReach = valueToReach;
         myobj.fitnessVarianceTolerance = fitnessVarianceTolerance;
 
         myobj.noImprovementStretch = noImprovementStretch = 0;
         myobj.maximumNoImprovementStretch = maximumNoImprovementStretch = 0;
-        myobj.selectionSize = selectionSize = 0;
 
         myobj.tau = tau;
 
@@ -598,8 +733,6 @@ public class AMALGAMSpecies extends FloatVectorSpecies {
 
     public boolean checkTerminationConditions(final EvolutionState state,  final Subpopulation subpop) {
         if( 
-            // state.generation * subpop.individuals.size() >= maxEvaluations ||
-            // subpop.individuals.get(0).fitness.fitness() < valueToReach || 
             distributionMultiplier < 1e-10) {
             return true;
             }
