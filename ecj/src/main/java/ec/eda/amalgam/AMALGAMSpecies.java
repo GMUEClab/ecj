@@ -538,11 +538,11 @@ public class AMALGAMSpecies extends FloatVectorSpecies
 
                 xAvgImp = new DenseMatrix64F(genomeSize, 1);
                 int count = 0;
-                for (int i = 1; i < tau*subpop.individuals.size(); i++) 
+                for (int j = 1; i < tau*subpop.individuals.size(); j++) 
                     {
-                    if (compareIndividuals(subpop.individuals.get(i), subpop.individuals.get(0)) < 0) 
+                    if (compareIndividuals(subpop.individuals.get(j), subpop.individuals.get(0)) < 0) 
                         {
-                        DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
+                        DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(j));
                         DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
                         CommonOps.add(xAvgImp,genome,xAvgImp);
                         count++;
@@ -567,6 +567,7 @@ public class AMALGAMSpecies extends FloatVectorSpecies
                 if (distributionMultiplier < 1 && noImprovementStretch < maximumNoImprovementStretch) distributionMultiplier = 1;
                 }
             }
+        }
 
         public void selectForDiversity(final EvolutionState state, final Subpopulation subpop) 
             {
