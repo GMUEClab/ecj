@@ -38,3 +38,8 @@ in various ways at the end of the run:
 	  and the front will be displayed in gnuplot for you.
 
 
+ec.multiobjective.HypervolumeStatistics
+
+A subclass of ec.simple.SimpleStatistics that outputs the exact hypervolume of
+the Pareto front at each generation, the end of the run, or both.  Note that this
+computation can be expensive for large populations or numbers of objectives!

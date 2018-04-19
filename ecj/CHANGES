@@ -2471,3 +2471,5 @@ Version		Change Log
 	Added nsga3 package
 	Added pbil package
 	Initial version of rule-rewriting in parameter databases added
+	Fixed bugs in and added unit tests for NSGA2Breeder
+	Added ec/multiobjective/HypervolumeStatistics.java, with unit tests

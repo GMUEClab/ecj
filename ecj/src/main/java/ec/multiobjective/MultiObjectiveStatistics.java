@@ -60,9 +60,9 @@ public class MultiObjectiveStatistics extends SimpleStatistics
         super.setup(state,base);
 
         if (state.parameters.exists(base.push(P_DO_DESCRIPTION),null))
-            state.output.warning("Descriptions are not printed out by MultiObjectiveStatistics", base.push(P_DO_DESCRIPTION));
+            state.output.warning("Descriptions are not printed out by " + this.getClass().getSimpleName(), base.push(P_DO_DESCRIPTION));
         if (state.parameters.exists(base.push(P_DO_PER_GENERATION_DESCRIPTION),null))
-            state.output.warning("Descriptions are not printed out by MultiObjectiveStatistics", base.push(P_DO_PER_GENERATION_DESCRIPTION));
+            state.output.warning("Descriptions are not printed out by " + this.getClass().getSimpleName(), base.push(P_DO_PER_GENERATION_DESCRIPTION));
         
         silentFront = state.parameters.getBoolean(base.push(P_SILENT), null, false);
         // yes, we're stating it a second time.  It's correct logic.
@@ -143,7 +143,6 @@ public class MultiObjectiveStatistics extends SimpleStatistics
         if (doFinal) state.output.println("\n\n\n PARETO FRONTS", statisticslog);
         for (int s = 0; s < state.population.subpops.size(); s++)
             {
-            MultiObjectiveFitness typicalFitness = (MultiObjectiveFitness)(state.population.subpops.get(s).individuals.get(0).fitness);
             if (doFinal) state.output.println("\n\nPareto Front of Subpopulation " + s, statisticslog);
 
             // build front
