@@ -303,9 +303,9 @@ ECJ allows multiple subtrees for various experimental needs: Automatically Defin
 
 Genetic programming trees are constructed out of a ``primorial soup'' of function templates (such as \lisp{on-wall} or \lisp{2.3}.  Early forms of genetic programming were typeless: though such templates had a predefined arity (number of arguments), any node could be connected to any other.  Many genetic programming needs require more constraints than this.  For example, the node \lisp{if} might expect a boolean value in its first argument, and integers or floats in the second and third arguments, and return a float when evaluated.  Similarly \lisp{and} might take two booleans as arguments and return a boolean, while \lisp{\(\ast\)} would take ints or floats as arguments and return a float.
 
-Such types are often associated with the kinds of data passed from node to node, but they do not have to be.  Typing might be used to constrain certain nodes to be evaluated in groups or in a certain order: for example, a function \lisp{type-block} might insist that its first argument be of type \textit{foo} and its second argument be of type \textit{bar} to make certain that a \textit{foo} node be executed before a \textit{bar} node.
+Such types are often associated with the kinds of data passed from node to node, but they do not have to be.  Typing might be used to constrain certain nodes to be evaluated in groups or in a certain order: for example, a function \lisp{type-block} might insist that its first argument be of type \textit{foo} and its second argument be of type \textbf{ar} to make certain that a \textit{foo} node be executed before a \textbf{ar} node.
 
-ECJ permits a simple static typing mechanism called {\it set-based} typing, which is suitable for many such tasks.  In set-based typing, the return type and argument types of each node are each defined to be  sets of type symbols (for example, \{\textit{bool}\} or \{\textit{foo, bar, baz}\}, or \{\textit{int, float}\}.  The desired return type for the tree's root is similarly defined.  A child node is permitted to fit into the argument slot of a parent node if the child node's return type and type of the that argument slot in the parent are {\it compatible}.  We define types to be compatible if their set intersection is nonempty (that is, they share at least one type symbol).
+ECJ permits a simple static typing mechanism called {\it set-based} typing, which is suitable for many such tasks.  In set-based typing, the return type and argument types of each node are each defined to be  sets of type symbols (for example, \{\textbf{ool}\} or \{\textit{foo, bar, baz}\}, or \{\textit{int, float}\}.  The desired return type for the tree's root is similarly defined.  A child node is permitted to fit into the argument slot of a parent node if the child node's return type and type of the that argument slot in the parent are {\it compatible}.  We define types to be compatible if their set intersection is nonempty (that is, they share at least one type symbol).
 
 Set-based typing is sufficient for the typing requirements found in many programming languages, including ones with type hierarchies.  It allows, among other things, for nodes such as \lisp{\(\ast\)} to accept {\it either} integers or floats.  However there are considerable restrictions on the power of set-based typing.  It's often useful for the return type of a node to {\it change} based on the particular nodes which have plugged into it as arguments. For example, \lisp{\(\ast\)} might be defined as returning a float if at least one of its arguments returns floats, but returning an integer if both of its arguments return integers.  \lisp{if} might be similarly defined not to return a particular type, but to simply require that its return type and the second and third argument types must all match.  Such ``polymorphic'' typing is particularly useful in situations such as matrix multiplication, where the operator must place constraints on the width and height of its arguments and the final returned matrix.  In this example, it's also useful to have an infinite number of types (perhaps to represent matrices of varying widths or heights).
 
@@ -952,6 +952,234 @@ double values, and return the result as an array of doubles, else null if they a
 or if the list is not expectedLength \((>0)\) long, 
 or if it has garbage at the end of it.   Either parameter may be null.
 \end{methods}
+
+\subsection{Parameter Macros}
+\label{ParameterMacros}
+
+
+
+The get() method can also handle special \textit{macro parameters}.
+Macro parameter names will end in \textbf{default} or \textbf{alias}, which
+means you \textit{cannot have any parameter names which end with these two words.}
+The idea behind a macro parameter is that it can substitute one substring for another
+among your parameter names, making your parameters potentially much simpler.
+Macros work along period boundaries. 
+
+\subsubsection{The Alias Macro}
+
+The \textbf{alias} parameter macro works as follows.  Let's say that you have:
+
+\params{%
+hello.there.alias = foo
+}
+
+\noindent This means to replace \parameter{hello.there} with \parameter{foo} and continue looking up the parameter.  For example, when When query for the parameter 
+
+\params{%
+hello.there.mom.how.are.you
+}
+
+\noindent it is converted to the parameter
+
+\params{%
+foo.mom.how.are.you
+}
+
+\noindent which is then looked up in the database.  Furthermore
+
+\params{%
+hello.there.partner
+}
+
+\noindent is converted to the parameter
+
+\params{%
+foo.partner
+}
+
+\noindent and
+
+\params{%
+hello.there
+}
+
+\noindent is converted to just the parameter
+
+\params{%
+foo
+}
+
+\noindent Which are then looked up in the database.  Conflicting rules are handled in order of specificity.  For example, if you had 
+
+\params{%
+hello.there.alias = foo
+hello.there.mom.alias = bar
+hello.there.mom.how.are.you = whoa
+hello.there.brother = hey
+}
+
+Now let's say we queried
+
+\params{%
+hello.there.dad
+}
+
+\noindent This would get converted to
+
+\params{%
+foo.dad
+}
+
+\noindent which would then get looked up.  But if we queried
+
+\params{%
+hello.there.mom.42
+}
+
+\noindent Then our second rule would take precedence, because it's more specific, and instead of converting to \parameter{foo.mom.42} we would instead convert to 
+
+
+\params{%
+bar.42
+}
+
+\noindent which would then get looked up.  Finally, if we queried
+
+\params{%
+hello.there.mom.how.are.you
+}
+
+\noindent Then this would take precedence and the system would immediately return \parameter{whoa}.  Furthermore, if we queried
+
+\params{%
+hello.there.brother
+}
+
+\noindent This would immediately return \parameter{hey}, because exact parameters take precedence over macros.
+
+Additionally note that the substitution is delimited by the periods.  So querying 
+
+\params{%
+hello.therewhoa
+}
+
+\noindent will {\it not} get translated.  And furthermore the substitution must start at the start of the parameter name, so querying 
+
+
+\params{%
+my.hello.there.mom
+}
+
+\noindent will also {\it not} get translated.
+
+Beware of cycles!  For example, if you have
+
+\params{%
+a.b.alias = foo\\
+foo.alias  a.b
+}
+
+... and you query
+
+\params{%
+a.b.yo
+}
+
+... you should get an error reported and \variable{null} returned.
+
+
+
+\subsubsection{The Default Macro}
+
+The default macro is like the alias macro except that it permits a variable in the final parameter segment.  That is:
+ 
+\params{%
+hello.there.default = foo}
+
+\noindent Means that parameters which \textit{start with} \parameter{hello.*} , where "*" can be
+any single parameter element, will have that portion replaced with \parameter{foo}.  Thus
+
+\params{%
+hello.there.mom.how.are.you}
+
+... becomes ...
+
+\params{%
+foo.mom.how.are.you}
+
+ and
+
+\params{%
+hello.yo.whatever}
+
+... becomes ...
+
+\params{%
+foo.whatever}
+
+ and
+
+\params{%
+hello.blah}
+
+... becomes ...
+
+\params{%
+foo}
+
+This second macro is particularly useful for replacing groups of parameters which differ
+based on some number.  For example, imagine you had the following parameters (taken from \file{koza.params}
+
+\params{%
+gp.nc.0 = ec.gp.GPNodeConstraints\\
+gp.nc.0.name = nc0\\
+gp.nc.0.returns = nil\\
+gp.nc.0.size = 0\\
+\\
+gp.nc.1 = ec.gp.GPNodeConstraints\\
+gp.nc.1.name = nc1\\
+gp.nc.1.returns = nil\\
+gp.nc.1.size = 1\\
+gp.nc.1.child.0 = nil\\
+\\
+gp.nc.2 = ec.gp.GPNodeConstraints\\
+gp.nc.2.name = nc2\\
+gp.nc.2.returns = nil\\
+gp.nc.2.size = 2\\
+gp.nc.2.child.0 = nil\\
+gp.nc.2.child.1 = nil\\
+\\
+gp.nc.3 = ec.gp.GPNodeConstraints\\
+gp.nc.3.name = nc3\\
+gp.nc.3.returns = nil\\
+gp.nc.3.size = 3\\
+gp.nc.3.child.0 = nil\\
+gp.nc.3.child.1 = nil\\
+gp.nc.3.child.2 = nil\\
+}
+
+These could be replaced with
+
+\params{%
+gp.nc.default = gpnc\\
+gpnc = ec.gp.GPNodeConstraints\\
+\\
+gp.nc.0.name = nc0\\
+gp.nc.1.name = nc1\\
+gp.nc.2.name = nc2\\
+gp.nc.3.name = nc3\\
+\\
+gpnc.returns = nil\\
+gpnc.size = nil\\
+gpnc.child.c.default = gpncchild\\
+\\
+gpncchild = nil\\
+}
+
+
+The parameter database macro facility was implemented by Ananya Dhawan, a GMU student.
+
+
 
 \subsection{Debugging Your Parameters}
 \label{DebuggingYourParameters}
@@ -13650,7 +13878,7 @@ public Individual bestUnderlyingIndividual[];  // per subpopulation
 One last method you might be interested in overriding: \method{combine(...)}.  This method is responsible for taking multiple fitness results and combining them into a final fitness for a meta-level individual.  The default form calls \method{fitness.setToMeanOf(...)} to combine them using their average.  But you can change this if you like.
 
 \begin{methods}{ec.eval.MetaProblem}
-\mthd{protected void loadDomain(EvolutionState \textit{state}, Parameter \textit{base})}
+\mthd{protected void loadDomain(EvolutionState \textit{state}, Parameter \textbf{ase})}
 Constucts the \variable{domain} array from the given parameter database.
 
 \mthd{public void modifyParameters(EvolutionState \textit{state}, ParameterDatabase \textit{database}, int \textit{run}, Individual \textit{metaIndividual})}
