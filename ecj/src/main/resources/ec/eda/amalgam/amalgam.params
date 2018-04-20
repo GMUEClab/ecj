@@ -18,6 +18,10 @@ pop.subpop.0.species.pipe =                     ec.breed.InitializationPipeline
 pop.subpop.0.species.mutation-type =            reset
 pop.subpop.0.species.crossover-type =           one
 
+### We terminate on some additional conditions (see manual) if this is set.
+### (by default it's false)
+#pop.subpop.0.species.alternative-termination = 	true
+
 ### The following five parameters have standard constant default settings.
 ### We list them here, though if you don't specify the parameter
 ### (commenting it out below, say) it'll default to this value anyway

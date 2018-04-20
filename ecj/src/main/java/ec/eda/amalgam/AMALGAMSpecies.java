@@ -58,55 +58,55 @@ import java.util.IdentityHashMap;
  <table>
  <tr><td valign=top><i>base</i>.<tt>tau</tt><br>
  <font size=-1>0 &lt;= Floating-point value &lt;= 1</font></td>
- <td valign=top>(the initial mean for the distribution)<br>
+ <td valign=top>(proportion of elite individuals)<br>
  If not provided, defaults to 0.35
  </td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>variance-tolerance</tt><br>
  <font size=-1>0 &lt;= Floating-point value</font></td>
- <td valign=top>(the initial mean for the distribution)<br>
+ <td valign=top>(termination condition: if the variance is less than this amount)<br>
  If not provided, defaults to 0.0
  </td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>nis-max</tt><br>
  <font size=-1>0 &lt;= Floating-point value</font></td>
- <td valign=top>(the initial mean for the distribution)<br>
+ <td valign=top>(number of generations with no improvement beyond which the distribution multiplier begins to decrease)<br>
  If not provided, defaults to 25 + genome size
  </td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>alpha-ams</tt><br>
  <font size=-1>0 &lt; Floating-point value</font></td>
- <td valign=top>(the initial mean for the distribution)<br>
+ <td valign=top>(the proportion of individuals to be shifted in the direction of the anticipated mean shift)<br>
  If not provided, defaults to 0.5 * tau * subpopulation size / (subpopulation size - 1)
  </td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>delta-ams</tt><br>
  <font size=-1>0 &lt; Floating-point value</font></td>
- <td valign=top>(the initial mean for the distribution)<br>
+ <td valign=top>(controls how much selected individuals are shifted)<br>
  If not provided, defaults to 2.0
  </td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>eta-shift</tt><br>
  <font size=-1>0 &lt;= Floating-point value &lt;= 1</font></td>
- <td valign=top>(the initial mean for the distribution)<br>
+ <td valign=top>(learning rate of the anticipated mean shift)<br>
  If not provided, defaults to 1.0 - (e ^ (-1.2 * (floor(tau * subpopulation size))^0.31) / (genome size ^ 0.5))
  </td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>eta-sigma</tt><br>
  <font size=-1>0 &lt;= Floating-point value &lt;= 1</font></td>
- <td valign=top>(the initial mean for the distribution)<br>
+ <td valign=top>(learning rate of the covariance matrix)<br>
  If not provided, defaults to 1.0 - e ^ (-1.1 * (floor(tau * subpopulation size)^1.20) / (genome size ^ 1.6))
  </td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>eta-dec</tt><br>
  <font size=-1>0 &lt;= Floating-point value &lt;= 1</font></td>
- <td valign=top>(the initial mean for the distribution)<br>
+ <td valign=top>(degree to which the distribution multipler is decreased in certain conditions)<br>
  If not provided, defaults to 0.9
  </td></tr>
 
  <tr><td valign=top><i>base</i>.<tt>theta-sdr</tt><br>
  <font size=-1>0 &lt;= Floating-point value</font></td>
- <td valign=top>(the initial mean for the distribution)<br>
+ <td valign=top>(threshold for the standard deviation ratio)<br>
  If not provided, defaults to 1.0
  </td></tr>
 
@@ -538,7 +538,7 @@ public class AMALGAMSpecies extends FloatVectorSpecies
 
                 xAvgImp = new DenseMatrix64F(genomeSize, 1);
                 int count = 0;
-                for (int j = 1; i < tau*subpop.individuals.size(); j++) 
+                for (int j = 1; j < tau*subpop.individuals.size(); j++) 
                     {
                     if (compareIndividuals(subpop.individuals.get(j), subpop.individuals.get(0)) < 0) 
                         {
@@ -547,6 +547,7 @@ public class AMALGAMSpecies extends FloatVectorSpecies
                         CommonOps.add(xAvgImp,genome,xAvgImp);
                         count++;
                         }
+
                     }
                 CommonOps.scale(1.0/count,xAvgImp,xAvgImp);
 

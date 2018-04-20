@@ -94,6 +94,12 @@ import java.util.Collections;
  If not provided, <i>base</i>.<tt>mean</tt>.0 and so on must be given    
  </td></tr>
 
+ <tr><td valign=top><i>base</i>.<tt>mean</tt><br>
+ <font size=-1>String, one of center, zero, or random</font></td>
+ <td valign=top>(the initial mean for the distribution)<br>
+ If not provided, <i>base</i>.<tt>mean</tt>.0 and so on must be given    
+ </td></tr>
+
  <tr><td valign=top><i>base</i>.<tt>mean</tt>.<i>i</i><br>
  <font size=-1>Floating-point value</font></td>
  <td valign=top>(the value of dimension i of the initial mean vector)<br>
@@ -183,6 +189,11 @@ import java.util.Collections;
  <font size=-1>Integer > 1 (default is 100)</td>
  <td valign=top>How many times we try to generate a valid individual before
  possibly using the alternative-generator approach.
+ </td></tr>
+
+ <tr><td valign=top><i>base</i>.<tt>alternative-termination</tt><br>
+ <font size=-1>boolean, default false</td>
+ <td valign=top>Should we also terminate on CMA-ES's additional termination conditions?.
  </td></tr>
 
  </table>

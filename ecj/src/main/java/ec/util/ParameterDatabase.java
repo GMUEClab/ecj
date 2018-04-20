@@ -353,7 +353,79 @@ import java.net.*;
  * <p>
  * The values stored in a parameter database must not contain "#", "=",
  * non-ascii values, or whitespace.
+ *
+ * <p>The get() method can also handle special <i>macro parameters</i>.
+ * Macro parameter names will end in <b>default</b> or <b>alias</b>, which
+ * means you <i>cannot have any parameter names which end with these two words.</i>
+ * The idea behind a macro parameter is that it can substitute one substring for another
+ * among your parameter names, making your parameters potentially much simpler.
+ * Macros work along period boundaries.  
+ *
+ * <p>The <b>alias</b> parameter macro works as follows.  A parameter entry of the form:
+ *
+ * <p><tt>hello.there.alias = foo</tt>
+ *
+ * <p>Means that parameters which <i>start with</i> <tt>hello.there</tt> should have
+ * the <tt>hello.there</tt> portion replace with <tt>foo</tt>.  Thus
+ *
+ * <p><tt>hello.there.mom.how.are.you</tt>
+ *
+ * <p>... becomes ...
  * 
+ * <p><tt>foo.mom.how.are.you</tt>
+ * 
+ * <p> and
+ *
+ * <p><tt>hello.there</tt>
+ *
+ * <p>... becomes ...
+ * 
+ * <p><tt>foo</tt>
+ *
+ * <p> but <tt>hello.thereyo</tt> is unchanged, and <tt>yohello.there.how.are.you</tt> is unchanged.
+ *
+ * <p>Furthermore if you already have a parameter entered for a given name, it takes precedence 
+ * over a macro, and more specific macros take precedence over more general ones.  Thus
+ * imagine you have  <tt>a.b.alias = quux</tt>.  Now when you query <tt>a.b.c.d</tt> this
+ * will get converted to <tt>quux.c.d</tt> and that parameter will get looked up instead.
+ * If you also had <tt>a.b.c.alias = bar</tt>, when when you query <tt>a.b.c.d</tt>, this takes
+ * precedence, so now it'll get converted to <tt>bar.d</tt> and that'll get looked up.
+ * Finally, if you had <tt>a.b.c.d = foo</tt>, when querying <tt>a.b.c.d</tt> will simply result 
+ * in <tt>foo</tt>.
+ * 
+ * Additionally there is the <b>default</b> macro.  This works just like the <b>alias</b> macro
+ * except that it allows anything to be in the last parameter position prior to the default.
+ * That is:
+ *
+ * <p><tt>hello.there.default = foo</tt>
+ *
+ * <p>Means that parameters which <i>start with</i> <tt>hello.*</tt> , where "*" can be
+ * any single parameter element, will have that portion replaced with <tt>foo</tt>.  Thus
+ *
+ * <p><tt>hello.there.mom.how.are.you</tt>
+ *
+ * <p>... becomes ...
+ * 
+ * <p><tt>foo.mom.how.are.you</tt>
+ * 
+ * <p> and
+ *
+ * <p><tt>hello.yo.whatever</tt>
+ *
+ * <p>... becomes ...
+ * 
+ * <p><tt>foo.whatever</tt>
+ *
+ * <p> and
+ *
+ * <p><tt>hello.blah</tt>
+ *
+ * <p>... becomes ...
+ * 
+ * <p><tt>foo</tt>
+ *
+ * This second macro is particularly useful for replacing groups of parameters which differ
+ * based on some number.
  * <p>
  * <b>Note for JDK 1.1 </b>. Finally recovering from stupendous idiocy, JDK 1.2
  * included parseDouble() and parseFloat() commands; now you can READ A FLOAT
