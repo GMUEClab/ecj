@@ -12,25 +12,6 @@ May 2001.
 ftp://ftp.tik.ee.ethz.ch/pub/people/zitzler/ZLT2001a.ps (Postscript),
 ftp://ftp.tik.ee.ethz.ch/pub/people/zitzler/ZLT2001a.pdf (PDF)
 
-
-ABSTRACT 
-
-The Strength Pareto Evolutionary Algorithm (SPEA) (Zitzler and Thiele
-1999) is a relatively recent technique for finding or approximating the
-Pareto-optimal set for multiobjective optimization problems. In
-different studies (Zitzler and Thiele 1999; Zitzler, Deb, and Thiele
-2000) SPEA has shown very good performance in comparison to other
-multiobjective evolutionary algorithms, and therefore it has been a
-point of reference in various recent investigations, e.g., (Corne,
-Knowles, and Oates 2000). Furthermore, it has been used in different
-applications, e.g., (La-hanas, Milickovic, Baltas, and Zamboglou 2001).
-In this paper, an improved ver-sion, namely SPEA2, is proposed, which
-incorporates in contrast to its predecessor a fine-grained fitness
-assignment strategy, a density estimation technique, and an enhanced
-archive truncation method. The comparison of SPEA2 with SPEA and two
-other modern elitist methods, PESA and NSGA-II, on different test
-problems yields promising results.
-
 This package has a significant history.  The early versions of the
 package were donated by Robert Hubley at the Institute for Systems
 Biology.  Major later modifications were made by Sean Luke, Gabriel Balan,
@@ -54,14 +35,10 @@ the population.  That archive is carried over from generation to generation.
 
 SPEA2 has an elaborate fitness setting procedure which involves the 
 computation of several measures of domination (known as "strength") and
-sparsity.  This computation is performed by a revised SimpleEvaluator subclass:
-
-	ec.multiobjective.spea2.SPEA2Evaluator
-
-New children are then bred and an archive is formed by loading the pareto
+sparsity.  New children are bred and an archive is formed by loading the pareto
 front, trimmed by sparsity plus various other "highly fit" children (if there
-is space).  The breeding procedure is handled by a revised version of 
-SimpleBreeder:
+is space). Both the fitness setting and breeding procedures are handled by a
+revised version of SimpleBreeder:
 
 	ec.multiobjective.spea2.SPEA2Breeder
 
@@ -78,7 +55,7 @@ consider the archive when selecting an individual.  Our modified version is:
 	ec.multiobjecive.spea2.SPEA2TournamentSelection
 
 
-SPEA2 and NSGA-II have different approaches to building archives which impacts
+SPEA2 and NSGA-II have different approaches to building archives. This impacts
 on how you need to set your population sizes in order to achieve the same number
 of evaluations.  In ECJ, NSGA-II does not include the archive as part of the basic
 population size.  Rather, it builds the archive separately, then builds the

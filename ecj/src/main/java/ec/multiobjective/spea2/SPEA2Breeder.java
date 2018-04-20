@@ -27,6 +27,11 @@ import java.util.*;
 
 public class SPEA2Breeder extends SimpleBreeder
     {
+    public final static String P_K = "k";
+    
+    private int k;
+    private static int NOT_SET = -1;
+    
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state, base);
@@ -37,6 +42,8 @@ public class SPEA2Breeder extends SimpleBreeder
 
         if (!clonePipelineAndPopulation)
             state.output.fatal("clonePipelineAndPopulation must be true for SPEA2Breeder.");
+        
+        k = state.parameters.getIntWithDefault(base.push(P_K), null, NOT_SET);
         }
 
 
@@ -73,7 +80,7 @@ public class SPEA2Breeder extends SimpleBreeder
         }
 
 
-    public void buildArchive(EvolutionState state, ArrayList<Individual> oldInds, ArrayList<Individual> newInds, int archiveSize)
+    private void buildArchive(EvolutionState state, ArrayList<Individual> oldInds, ArrayList<Individual> newInds, int archiveSize)
         {                
         // step 1: load the archive with the pareto-nondominated front
         ArrayList<Individual> archive = new ArrayList<Individual>();
@@ -130,7 +137,7 @@ public class SPEA2Breeder extends SimpleBreeder
 
     /** Computes the strength of individuals, then the raw fitness (wimpiness) and kth-closest sparsity
         measure.  Finally, computes the final fitness of the individuals.  */
-    public void computeAuxiliaryData(EvolutionState state, ArrayList<Individual> inds)
+    private void computeAuxiliaryData(EvolutionState state, ArrayList<Individual> inds)
         {
         double[][] distances = calculateDistances(state, inds);
                         
@@ -146,7 +153,7 @@ public class SPEA2Breeder extends SimpleBreeder
             } //For each individual y calculate the strength
                 
         // calculate k value
-        int kTH = (int) Math.sqrt(inds.size());  // note that the first element is k=1, not k=0 
+        int kTH = (k == NOT_SET) ? (int) Math.sqrt(inds.size()) : k;  // note that the first element is k=1, not k=0 
         
         // For each individual calculate the Raw fitness and kth-distance
         for(int y=0;y<inds.size();y++)
@@ -180,7 +187,7 @@ public class SPEA2Breeder extends SimpleBreeder
     
         
     /** Returns a matrix of sum squared distances from each individual to each other individual. */
-    public double[][] calculateDistances(EvolutionState state, ArrayList<Individual> inds)
+    private double[][] calculateDistances(EvolutionState state, ArrayList<Individual> inds)
         {
         double[][] distances = new double[inds.size()][inds.size()];
         for(int y=0;y<inds.size();y++)
@@ -199,7 +206,7 @@ public class SPEA2Breeder extends SimpleBreeder
 
     /** Returns the kth smallest element in the array.  Note that here k=1 means the smallest element in the array (not k=0).
         Uses a randomized sorting technique, hence the need for the random number generator. */
-    double orderStatistics(double[] array, int kth, MersenneTwisterFast rng)
+    private double orderStatistics(double[] array, int kth, MersenneTwisterFast rng)
         {
         return randomizedSelect(array, 0, array.length-1, kth, rng);
         }
@@ -207,7 +214,7 @@ public class SPEA2Breeder extends SimpleBreeder
                 
     /* OrderStatistics [Cormen, p187]:
      * find the ith smallest element of the array between indices p and r */
-    double randomizedSelect(double[] array, int p, int r, int i, MersenneTwisterFast rng)
+    private double randomizedSelect(double[] array, int p, int r, int i, MersenneTwisterFast rng)
         {
         if(p==r) return array[p];
         int q = randomizedPartition(array, p, r, rng);
@@ -220,7 +227,7 @@ public class SPEA2Breeder extends SimpleBreeder
                 
                 
     /* [Cormen, p162] */
-    int randomizedPartition(double[] array, int p, int r, MersenneTwisterFast rng)
+    private int randomizedPartition(double[] array, int p, int r, MersenneTwisterFast rng)
         {
         int i = rng.nextInt(r-p+1)+p;
                 
@@ -233,7 +240,7 @@ public class SPEA2Breeder extends SimpleBreeder
                 
                 
     /* [cormen p 154] */
-    int partition(double[] array, int p, int r)
+    private int partition(double[] array, int p, int r)
         {
         double x = array[p];
         int i = p-1;
