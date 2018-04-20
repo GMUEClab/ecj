@@ -47,6 +47,8 @@ public class HypervolumeStatistics extends SimpleStatistics
         referencePoint = state.parameters.getDoubles(base.push(P_REFERENCE_POINT), null, Double.NEGATIVE_INFINITY);
         if (referencePoint == null)
             state.output.fatal("Missing required parameter.", base.push(P_REFERENCE_POINT));
+        if (doGeneration && referencePoint.length > 3)
+            state.output.warnOnce(String.format("You calculating hypervolume on %d objectives at every generation.  Note that hypervolume calculation can very costly for more than a few objectives.", referencePoint.length), base.push(P_REFERENCE_POINT));
         }
     
     @Override
