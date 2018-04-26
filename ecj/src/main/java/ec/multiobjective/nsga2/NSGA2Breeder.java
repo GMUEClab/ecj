@@ -68,6 +68,8 @@ public class NSGA2Breeder extends SimpleBreeder
         return numElites[subpopulation];
         }
 
+    Population oldPopulation = null;
+    
     @Override
     protected void loadElites(EvolutionState state, Population newpop)
         {
@@ -85,15 +87,25 @@ public class NSGA2Breeder extends SimpleBreeder
         breedingState = BreedingState.ARCHIVE_LOADED;
 
 		// replace old population with archive so new individuals are bred from the archive members only
+        oldPopulation = state.population;
+        state.population = state.population.emptyClone();
+        state.population.clear();
+        
         for(int i = 0; i < newpop.subpops.size(); i++)
             {
             Subpopulation subpop = state.population.subpops.get(i);
             Subpopulation newsubpop = newpop.subpops.get(i);
-            subpop.truncate(numElites[i]);
-            for(int j = 0; j < numElites[i]; j++)
-            	subpop.individuals.set(j, (Individual)(newsubpop.individuals.get(j).clone()));
+            int ne = numElites[i];
+            for(int j = 0; j < ne; j++)
+            	subpop.individuals.add(j, (Individual)(newsubpop.individuals.get(j).clone()));
             }
         }
+
+	@Override
+	public void postProcess(EvolutionState state)
+		{
+		state.population = oldPopulation;
+		}
     
     /** Use super's breeding, but also set our local state to record that breeding is complete. */
     public Population breedPopulation(EvolutionState state) 

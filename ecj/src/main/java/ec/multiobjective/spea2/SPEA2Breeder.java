@@ -65,6 +65,9 @@ public class SPEA2Breeder extends SimpleBreeder
             return result;
         }
 
+    Population oldPopulation = null;
+    
+    @Override
     protected void loadElites(EvolutionState state, Population newpop)
         {
         assert(state != null);
@@ -93,17 +96,26 @@ public class SPEA2Breeder extends SimpleBreeder
         breedingState = BreedingState.ARCHIVE_LOADED;
 
 		// replace old population with archive so new individuals are bred from the archive members only
+        oldPopulation = state.population;
+        state.population = state.population.emptyClone();
+        state.population.clear();
+        
         for(int i = 0; i < newpop.subpops.size(); i++)
             {
             Subpopulation subpop = state.population.subpops.get(i);
             Subpopulation newsubpop = newpop.subpops.get(i);
             int ne = numElites(state, i);
-            subpop.truncate(ne);
             for(int j = 0; j < ne; j++)
-            	subpop.individuals.set(j, (Individual)(newsubpop.individuals.get(j).clone()));
+            	subpop.individuals.add(j, (Individual)(newsubpop.individuals.get(j).clone()));
             }
         }
 
+	@Override
+	public void postProcess(EvolutionState state)
+		{
+		state.population = oldPopulation;
+		}
+    
     public double[] calculateDistancesFromIndividual(Individual ind, ArrayList<Individual> inds)
         {
         double[] d = new double[inds.size()];
