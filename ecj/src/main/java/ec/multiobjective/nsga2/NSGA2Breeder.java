@@ -89,7 +89,6 @@ public class NSGA2Breeder extends SimpleBreeder
 		// replace old population with archive so new individuals are bred from the archive members only
         oldPopulation = state.population;
         state.population = state.population.emptyClone();
-        state.population.clear();
         
         for(int i = 0; i < newpop.subpops.size(); i++)
             {
@@ -105,6 +104,7 @@ public class NSGA2Breeder extends SimpleBreeder
 	public void postProcess(EvolutionState state)
 		{
 		state.population = oldPopulation;
+		oldPopulation = null;
 		}
     
     /** Use super's breeding, but also set our local state to record that breeding is complete. */

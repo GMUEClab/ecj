@@ -98,7 +98,6 @@ public class SPEA2Breeder extends SimpleBreeder
 		// replace old population with archive so new individuals are bred from the archive members only
         oldPopulation = state.population;
         state.population = state.population.emptyClone();
-        state.population.clear();
         
         for(int i = 0; i < newpop.subpops.size(); i++)
             {
@@ -114,6 +113,7 @@ public class SPEA2Breeder extends SimpleBreeder
 	public void postProcess(EvolutionState state)
 		{
 		state.population = oldPopulation;
+		oldPopulation = null;
 		}
     
     public double[] calculateDistancesFromIndividual(Individual ind, ArrayList<Individual> inds)
