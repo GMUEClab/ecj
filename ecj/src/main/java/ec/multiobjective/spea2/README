@@ -47,14 +47,6 @@ a subclass of MultiObjectiveFitness which stores these auxiliary measures:
 
 	ec.multiobjective.spea2.SPEA2MultiObjectiveFitness
 
-When SPEA2 needs to do breeding, it does so solely from the archive, not from
-the full population.  This means that the selection operator 
-(TournamentSelection, which SPEA uses) needs to be modified to only 
-consider the archive when selecting an individual.  Our modified version is:
-
-	ec.multiobjecive.spea2.SPEA2TournamentSelection
-
-
 SPEA2 and NSGA-II have different approaches to building archives. This impacts
 on how you need to set your population sizes in order to achieve the same number
 of evaluations.  In ECJ, NSGA-II does not include the archive as part of the basic
@@ -71,5 +63,10 @@ If you set things so that SPEA2 and NSGA-II must reevaluate the fitness of
 their archives (which is rare), things are different.  Now you should set SPEA2
 so that its archive size and population size is equal to twice NSGA-II's population
 size (because NSGA-II's archive size is the size of its population).
+
+
+SPEA2 assumes that you will be using it in conjunction with TournamentSelection
+as your selection operator. You can use whatever selection operator you like but it
+won't be canonical.
 
 

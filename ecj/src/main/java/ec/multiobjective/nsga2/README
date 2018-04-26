@@ -51,6 +51,9 @@ their archives (which is rare), things are different.  Now you should set SPEA2
 so that its archive size and population size is equal to twice NSGA-II's population
 size (because NSGA-II's archive size is the size of its population).
 
+NSGA-II assumes that you're using tournament selection as your selection operator.
+You can use whatever selection operator you like, but it won't be canonical.
+
 The classes in question:
 
 

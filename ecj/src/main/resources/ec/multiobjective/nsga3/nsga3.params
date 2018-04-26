@@ -22,3 +22,9 @@ breed =						ec.multiobjective.nsga3.NSGA3Breeder
 # pop.subpop.0.species.pipe.source.0          = ec.vector.breed.VectorCrossoverPipeline
 # pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
 # pop.subpop.0.species.pipe.source.0.source.1 = same
+
+### IMPORTANT NOTE: NSGA3 assume that you're using tournament selection.
+# You could use another selection operator if you so chose, but it wouldn't
+# be the same as the standard NSGA3 algorithm
+
+
