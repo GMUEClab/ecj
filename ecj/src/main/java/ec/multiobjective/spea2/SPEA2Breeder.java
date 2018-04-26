@@ -91,6 +91,17 @@ public class SPEA2Breeder extends SimpleBreeder
         // optionally force reevaluation
         unmarkElitesEvaluated(state, newpop); // XXX Should NSGA-II be doing this too?  What is this?
         breedingState = BreedingState.ARCHIVE_LOADED;
+
+		// replace old population with archive so new individuals are bred from the archive members only
+        for(int i = 0; i < newpop.subpops.size(); i++)
+            {
+            Subpopulation subpop = state.population.subpops.get(i);
+            Subpopulation newsubpop = newpop.subpops.get(i);
+            int ne = numElites(state, i);
+            subpop.truncate(ne);
+            for(int j = 0; j < ne; j++)
+            	subpop.individuals.set(j, (Individual)(newsubpop.individuals.get(j).clone()));
+            }
         }
 
     public double[] calculateDistancesFromIndividual(Individual ind, ArrayList<Individual> inds)

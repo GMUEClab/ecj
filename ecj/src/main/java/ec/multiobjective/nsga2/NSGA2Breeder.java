@@ -36,7 +36,7 @@ public class NSGA2Breeder extends SimpleBreeder
      * is only called at the appropriate time.
      */
     public enum BreedingState { ARCHIVE_LOADED, BREEDING_COMPLETE };
-    private BreedingState breedingState;
+     BreedingState breedingState;
     
     public void setup(final EvolutionState state, final Parameter base)
         {
@@ -83,6 +83,16 @@ public class NSGA2Breeder extends SimpleBreeder
             }
         
         breedingState = BreedingState.ARCHIVE_LOADED;
+
+		// replace old population with archive so new individuals are bred from the archive members only
+        for(int i = 0; i < newpop.subpops.size(); i++)
+            {
+            Subpopulation subpop = state.population.subpops.get(i);
+            Subpopulation newsubpop = newpop.subpops.get(i);
+            subpop.truncate(numElites[i]);
+            for(int j = 0; j < numElites[i]; j++)
+            	subpop.individuals.set(j, (Individual)(newsubpop.individuals.get(j).clone()));
+            }
         }
     
     /** Use super's breeding, but also set our local state to record that breeding is complete. */
@@ -94,7 +104,7 @@ public class NSGA2Breeder extends SimpleBreeder
         }
     
     /** Build the auxiliary fitness data and reduce the subpopulation to just the archive, which is returned. */
-    private ArrayList<Individual> buildArchive(EvolutionState state, int subpop)
+     ArrayList<Individual> buildArchive(EvolutionState state, int subpop)
         {
         ArrayList<ArrayList<Individual>> ranks = assignFrontRanks(state.population.subpops.get(subpop));
                 
@@ -149,7 +159,7 @@ public class NSGA2Breeder extends SimpleBreeder
 
     /** Divides inds into ranks and assigns each individual's rank to be the rank it was placed into.
         Each front is an ArrayList. */
-    private ArrayList<ArrayList<Individual>> assignFrontRanks(Subpopulation subpop)
+	public ArrayList<ArrayList<Individual>> assignFrontRanks(Subpopulation subpop)
         {
         ArrayList<Individual> inds = subpop.individuals;
         ArrayList<ArrayList<Individual>> frontsByRank = MultiObjectiveFitness.partitionIntoRanks(inds);
@@ -170,7 +180,7 @@ public class NSGA2Breeder extends SimpleBreeder
     /**
      * Computes and assigns the sparsity values of a given front.
      */
-    private void assignSparsity(ArrayList<Individual> front)
+     void assignSparsity(ArrayList<Individual> front)
         {
         int numObjectives = ((NSGA2MultiObjectiveFitness) front.get(0).fitness).getObjectives().length;
                 
