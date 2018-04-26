@@ -12,6 +12,7 @@ import ec.util.*;
 import ec.simple.*;
 import java.util.*;
 import ec.multiobjective.*;
+import ec.multiobjective.nsga2.*;
 
 /* 
  * NSGA3Breeder.java
@@ -31,43 +32,11 @@ import ec.multiobjective.*;
 
  */
 
-public class NSGA3Breeder extends SimpleBreeder
+public class NSGA3Breeder extends NSGA2Breeder
     {
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state, base);
-        // make sure SimpleBreeder's elites facility isn't being used
-        for (int i = 0; i < elite.length; i++)  // we use elite.length here instead of pop.subpops.length because the population hasn't been made yet.
-            if (usingElitism(i))
-                state.output.warning("You're using elitism with NSGA3Breeder, which is not permitted and will be ignored.  However the reevaluate-elites parameter *will* bre recognized by NSGAEvaluator.",
-                    base.push(P_ELITE).push(""+i));
-
-        if (sequentialBreeding) // uh oh, haven't tested with this
-            state.output.fatal("NSGA3Breeder does not support sequential evaluation.",
-                base.push(P_SEQUENTIAL_BREEDING));
-
-        if (!clonePipelineAndPopulation)
-            state.output.fatal("clonePipelineAndPopulation must be true for NSGA3Breeder.");
-        }
-
-    int[] numElites = null;
-        
-    // This method is called AFTER loadElites.  We could just 
-    public int numElites(EvolutionState state, int subpopulation)
-        {
-        return numElites[subpopulation];
-        }
-
-    protected void loadElites(EvolutionState state, Population newpop)
-        {
-        numElites = new int[newpop.subpops.size()];
-        
-        for(int i = 0; i < newpop.subpops.size(); i++)
-            {
-            ArrayList list = buildArchive(state, i);
-            numElites[i] = list.size();
-            newpop.subpops.get(i).individuals.addAll(list);
-            }
         }
 
     /** Build the auxiliary fitness data and reduce the subpopulation to just the archive, which is returned. */
