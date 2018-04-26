@@ -543,12 +543,14 @@ public class MultiObjectiveFitness extends Fitness
     /**
      * Returns the sum of the squared difference between two Fitnesses in Objective space.
      */
-    public double sumSquaredObjectiveDistance(MultiObjectiveFitness other)
+    public double sumSquaredObjectiveDistance(MultiObjectiveFitness other, boolean normalize)
         {
         double s = 0;
         for (int i = 0; i < objectives.length; i++)
             {
             double a = (objectives[i] - other.objectives[i]);
+            if (normalize)
+                a /= maxObjective[i];
             s += a * a;
             }
         return s;

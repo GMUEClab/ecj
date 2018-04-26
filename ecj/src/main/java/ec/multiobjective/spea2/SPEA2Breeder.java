@@ -28,9 +28,18 @@ import java.util.*;
 public class SPEA2Breeder extends SimpleBreeder
     {
     public final static String P_K = "k";
+    public final static String P_NORMALIZE = "normalize-fitnesses";
     
     private int k;
     private static int NOT_SET = -1;
+    
+    /** Indicates whether distance calculations first normalize the objectives to range between zero and one. */
+    private boolean normalize;
+    
+    /** We use a state variable to make sure that the archive isn't built twice in a row.
+     */
+    public enum BreedingState { ARCHIVE_LOADED, BREEDING_COMPLETE };
+    private BreedingState breedingState;
     
     public void setup(final EvolutionState state, final Parameter base)
         {
@@ -44,11 +53,25 @@ public class SPEA2Breeder extends SimpleBreeder
             state.output.fatal("clonePipelineAndPopulation must be true for SPEA2Breeder.");
         
         k = state.parameters.getIntWithDefault(base.push(P_K), null, NOT_SET);
+        normalize = state.parameters.getBoolean(base.push(P_NORMALIZE), null, true);
+        breedingState = BreedingState.BREEDING_COMPLETE;
         }
-
+    
+    /** Use super's breeding, but also set our local state to record that breeding is complete. */
+    public Population breedPopulation(EvolutionState state) 
+        {
+            final Population result = super.breedPopulation(state);
+            breedingState = BreedingState.BREEDING_COMPLETE;
+            return result;
+        }
 
     protected void loadElites(EvolutionState state, Population newpop)
         {
+        assert(state != null);
+        assert(newpop != null);
+        if (breedingState == BreedingState.ARCHIVE_LOADED)
+            state.output.fatal("Tried to load elites for the next generation before breeding for the current generation was complete.");
+        
         // are our elites small enough?
         for(int x = 0; x< state.population.subpops.size(); x++)
             if (numElites(state, x)> state.population.subpops.get(x).individuals.size())
@@ -66,14 +89,15 @@ public class SPEA2Breeder extends SimpleBreeder
             }
 
         // optionally force reevaluation
-        unmarkElitesEvaluated(state, newpop);
+        unmarkElitesEvaluated(state, newpop); // XXX Should NSGA-II be doing this too?  What is this?
+        breedingState = BreedingState.ARCHIVE_LOADED;
         }
 
     public double[] calculateDistancesFromIndividual(Individual ind, ArrayList<Individual> inds)
         {
         double[] d = new double[inds.size()];
         for(int i = 0; i < inds.size(); i++)
-            d[i] = ((SPEA2MultiObjectiveFitness)ind.fitness).sumSquaredObjectiveDistance((SPEA2MultiObjectiveFitness)inds.get(i).fitness);
+            d[i] = ((SPEA2MultiObjectiveFitness)ind.fitness).sumSquaredObjectiveDistance((SPEA2MultiObjectiveFitness)inds.get(i).fitness, normalize);
         // now sort
         Arrays.sort(d);
         return d;
@@ -99,24 +123,19 @@ public class SPEA2Breeder extends SimpleBreeder
             }
                         
 
-        // step 3: if the archive is OVERFULL, iterate as follows:
-        //              step 3a: remove the k-closest individual in the archive
-
-        //SPEA2Evaluator evaluator = ((SPEA2Evaluator)(state.evaluator));
-        // Individual[] inds = (Individual[])(archive.toArray(dummy));
-                
+        // step 3: if the archive is OVERFULL, iterively remove the most crowded individuals
         while(archive.size() > archiveSize)
             {
             Individual closest = (Individual)(archive.get(0));
             int closestIndex = 0;
-            double[] closestD = calculateDistancesFromIndividual(closest, oldInds);
+            double[] closestD = calculateDistancesFromIndividual(closest, archive);
                         
             for(int i = 1; i < archive.size(); i++)
                 {
                 Individual competitor = (Individual)(archive.get(i));
-                double[] competitorD = calculateDistancesFromIndividual(competitor, oldInds);
+                double[] competitorD = calculateDistancesFromIndividual(competitor, archive);
                                 
-                for(int k = 0; k < oldInds.size(); k++)
+                for(int k = 0; k < archive.size(); k++)
                     {
                     if (closestD[i] > competitorD[i])
                         { closest = competitor ; closestD = competitorD;  closestIndex = k; break; }
@@ -124,7 +143,7 @@ public class SPEA2Breeder extends SimpleBreeder
                         { break; }
                     }
                 }
-                        
+            
             // remove him destructively -- put the top guy in his place and remove the top guy.  This is O(1)
             archive.set(closestIndex, archive.get(archive.size()-1));
             archive.remove(archive.size()-1);
@@ -153,7 +172,7 @@ public class SPEA2Breeder extends SimpleBreeder
             } //For each individual y calculate the strength
                 
         // calculate k value
-        int kTH = (k == NOT_SET) ? (int) Math.sqrt(inds.size()) : k;  // note that the first element is k=1, not k=0 
+        final int kTH = (k == NOT_SET) ? (int) Math.sqrt(inds.size()) : k;  // note that the first element is k=1, not k=0 
         
         // For each individual calculate the Raw fitness and kth-distance
         for(int y=0;y<inds.size();y++)
@@ -174,8 +193,9 @@ public class SPEA2Breeder extends SimpleBreeder
             // Density component
                         
             // calc k-th nearest neighbor distance.
+            // we add 1 to k because the distances[] array includes the distance to self (which we wish to ignore)
             // distances are squared, so we need to take the square root.
-            double kthDistance = Math.sqrt(orderStatistics(distances[y], kTH, state.random[0]));
+            double kthDistance = Math.sqrt(orderStatistics(distances[y], kTH + 1, state.random[0]));
                         
             // Set SPEA2 k-th NN distance value for each individual
             indYFitness.kthNNDistance = 1.0 / ( 2 + kthDistance);
@@ -197,7 +217,7 @@ public class SPEA2Breeder extends SimpleBreeder
                 {
                 distances[z][y] = distances[y][z] =
                     ((SPEA2MultiObjectiveFitness)inds.get(y).fitness).
-                    sumSquaredObjectiveDistance( (SPEA2MultiObjectiveFitness)inds.get(z).fitness );
+                    sumSquaredObjectiveDistance( (SPEA2MultiObjectiveFitness)inds.get(z).fitness , normalize);
                 }
             }
         return distances;
