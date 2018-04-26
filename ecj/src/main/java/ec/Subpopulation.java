@@ -150,7 +150,8 @@ public class Subpopulation implements Cloneable, Setup
     */
     public void truncate(int toThis)
         {
-        individuals.removeRange(toThis, individuals.size());
+        for(int i = individuals.size() - 1; i >= toThis; i--)
+        	individuals.remove(i);
         }
 
     /** Sets all Individuals in the Subpopulation to null, preparing it to be reused. */
