@@ -73,7 +73,6 @@ public class SimpleBreeder extends Breeder
     public boolean sequentialBreeding;
     public boolean clonePipelineAndPopulation;
     public Population backupPopulation = null;
-    public boolean onlyBreedFromArchive = false;
     
     // This is a DOUBLE ARRAY of ARRAYLISTS of <INDIVIDUALS>
     // Individuals are stored here by the breed pop chunk methods, and afterwards
