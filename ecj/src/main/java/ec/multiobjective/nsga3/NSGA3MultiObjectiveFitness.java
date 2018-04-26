@@ -9,7 +9,7 @@ package ec.multiobjective.nsga3;
 
 import java.io.*;
 import ec.util.Code;
-import ec.multiobjective.MultiObjectiveFitness;
+import ec.multiobjective.nsga2.*;
 import ec.EvolutionState;
 import ec.Fitness;
 import java.util.*;
@@ -22,9 +22,12 @@ import java.util.*;
  */
 
 /**
- * NSGA3MultiObjectiveFitness is a subclass of MultiObjeciveFitness which
+ * NSGA3MultiObjectiveFitness is a subclass of NSGA2MultiObjectiveFitness which
  * adds auxiliary fitness measures (normalizedFitness, rank) largely used by MultiObjectiveStatistics.
  * It also redefines the comparison measures to compare based on rank.
+ *
+ * Note that we inherit NSGA2's sparsity measure but we don't use it, nor
+ * do we read or write it to stdin/out.
  *
  */
  
@@ -32,51 +35,28 @@ import java.util.*;
  * NOTE: normalizedFitness could probably use some double checking to make sure it has all the functions that make sense.
  */
 
-public class NSGA3MultiObjectiveFitness extends MultiObjectiveFitness
+public class NSGA3MultiObjectiveFitness extends NSGA2MultiObjectiveFitness
     {
-        
-    public static final String NSGA3_RANK_PREAMBLE = "Rank: ";
-
-    public String[] getAuxilliaryFitnessNames() { return new String[] { "Rank"}; }
-    public double[] getAuxilliaryFitnessValues() { return new double[] { rank }; }
-        
-    /** Pareto front rank measure (lower ranks are better) */
-    public int rank;
-        
     // This is used in NSGA-3
     public ArrayList<Double> normalizedFitness;
         
     public String fitnessToString()
         {
-        return super.fitnessToString() + "\n" + NSGA3_RANK_PREAMBLE + Code.encode(rank);
+        return super.fitnessToString() + "\n" + NSGA2_RANK_PREAMBLE + Code.encode(rank);
         }
 
     public String fitnessToStringForHumans()
         {
-        return super.fitnessToStringForHumans() + "\n" + NSGA3_RANK_PREAMBLE + rank;
+        return super.fitnessToStringForHumans() + "\n" + NSGA2_RANK_PREAMBLE + rank;
         }
 
     public void readFitness(final EvolutionState state, final LineNumberReader reader) throws IOException
         {
         super.readFitness(state, reader);
-        rank = Code.readIntegerWithPreamble(NSGA3_RANK_PREAMBLE, state, reader);
+        rank = Code.readIntegerWithPreamble(NSGA2_RANK_PREAMBLE, state, reader);
         }
 
-    public void writeFitness(final EvolutionState state, final DataOutput dataOutput) throws IOException
-        {
-        super.writeFitness(state, dataOutput);
-        dataOutput.writeInt(rank);
-        writeTrials(state, dataOutput);
-        }
-
-    public void readFitness(final EvolutionState state, final DataInput dataInput) throws IOException
-        {
-        super.readFitness(state, dataInput);
-        rank = dataInput.readInt();
-        readTrials(state, dataInput);
-        }
-        
-    //Below are the normized fitness functions which are used in NSGA-3
+    // Below are the normized fitness functions which are used in NSGA-3
         
     public void initNorm()
         {
@@ -121,8 +101,6 @@ public class NSGA3MultiObjectiveFitness extends MultiObjectiveFitness
         {
         NSGA3MultiObjectiveFitness other = (NSGA3MultiObjectiveFitness) _fitness;
         // Rank should always be minimized.
-        if (rank < ((NSGA3MultiObjectiveFitness) _fitness).rank)
-            return true;
-        else return (rank > ((NSGA3MultiObjectiveFitness) _fitness).rank);
+        return (rank < ((NSGA3MultiObjectiveFitness) _fitness).rank);
         }
     }
