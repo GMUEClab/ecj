@@ -148,11 +148,9 @@ public class Subpopulation implements Cloneable, Setup
     /** Truncates the Subpopulation to a new size. The Subpopulation is truncated such that 
         the higher indexed individuals may be deleted.  
     */
-    
     public void truncate(int toThis)
         {
-        int length = individuals.size();
-        individuals.subList(toThis, length).clear();
+        individuals.removeRange(toThis, individuals.size());
         }
 
     /** Sets all Individuals in the Subpopulation to null, preparing it to be reused. */
