@@ -8,6 +8,7 @@
 
 package ec.eda.pbil;
 import ec.*;
+import ec.select.FirstSelection;
 import ec.vector.*;
 import ec.util.*;
 import java.util.*;
@@ -94,14 +95,29 @@ public class PBILSpecies extends IntegerVectorSpecies
     public double alpha;
     public int b;
     
-    public List<double[]> distribution_List;
+    private List<double[]> distributions;
+    
+    public double[] getMarginalDistribution(final int gene)
+        {
+        assert(gene >= 0);
+        assert(gene < distributions.size());
+        return Arrays.copyOf(distributions.get(gene), distributions.get(gene).length);
+        }
    
     public void setup(final EvolutionState state, final Parameter base)
         {
+        assert(state != null);
+        assert(base != null);
+        // Mutation is irrelevant to PBIL, so we hardcode a default value
+        if (!state.parameters.containsKey(base.push(PBILSpecies.P_MUTATIONPROB)))
+            state.parameters.set(base.push(PBILSpecies.P_MUTATIONPROB), "0");
+        // Likewise with the breeding pipeline
+        if (!state.parameters.containsKey(base.push(PBILSpecies.P_PIPE)))
+            state.parameters.set(base.push(PBILSpecies.P_PIPE), FirstSelection.class.getCanonicalName());
         super.setup(state, base);
         Parameter def = defaultBase();
         Parameter subpopDefaultBase =  ECDefaults.base().push(Subpopulation.P_SUBPOPULATION);
-        
+                
         //display minGene and maxGene values for each gene
         for(int i =0;i<genomeSize;i++)
             {
@@ -111,12 +127,13 @@ public class PBILSpecies extends IntegerVectorSpecies
         
         alpha = state.parameters.getDouble(base.push(P_ALPHA), subpopDefaultBase);
         if ((alpha < 0) | (alpha > 1))
-            state.output.fatal("If the PBIL alpha parameter is provided, it must be a valid number in the range 0 to 1", base.push(P_ALPHA), def.push(P_ALPHA));
+            state.output.fatal(String.format("%s: the %s parameter is %f, but must be a valid number in the range 0 to 1", this.getClass().getSimpleName(), base.push(P_ALPHA), alpha), base.push(P_ALPHA), def.push(P_ALPHA));
         
         b = state.parameters.getInt(base.push(P_B), def.push(P_B), 1);
-        int n = genomeSize;
+        if (b < 1)
+            state.output.fatal(String.format("%s: the %s parameter must be a positive integer.", this.getClass().getSimpleName(), base.push(P_B)), base.push(P_B), def.push(P_B));
 
-        distribution_List = new ArrayList<double[]>();  
+        distributions = new ArrayList<double[]>();  
         for(int i=0;i<genomeSize;i++)
             {
             double[] marginalDist=new double[(int)maxGene[i]-(int)minGene[i]+1];
@@ -124,11 +141,12 @@ public class PBILSpecies extends IntegerVectorSpecies
                 {
                 marginalDist[j] = 1.0d / (maxGene[i]-minGene[i]+1);
                 }
-            distribution_List.add(marginalDist);
+            distributions.add(marginalDist);
             }
      
         state.output.message("alpha: " + alpha);
         state.output.message("b:     " + b);
+        assert(distributions.size() == genomeSize);
         }
 
 
@@ -157,7 +175,7 @@ public class PBILSpecies extends IntegerVectorSpecies
 
         for(int i=0;i<genomeSize;i++)
             {
-            temp.add(distribution_List.get(i));
+            temp.add(distributions.get(i));
             }
 
         //for every gene value slot in the individual, checks the most probable 
@@ -221,7 +239,7 @@ public class PBILSpecies extends IntegerVectorSpecies
         //probabilities
         for(int i=0;i<genomeSize;i++)
             {
-            double[] tempDist = distribution_List.get(i);
+            double[] tempDist = distributions.get(i);
             double[] tempNewDist = Nj.get(i);
                 
             for(int j=0;j<maxGene[i]-minGene[i]+1;j++)
@@ -231,12 +249,11 @@ public class PBILSpecies extends IntegerVectorSpecies
                 tempDist[j] += tempNewDist[j];
                 }
                 
-            distribution_List.set(i,tempDist);
+            distributions.set(i,tempDist);
             }
         }
     
-    /** Created this to avoid confusion in the updateDistribution function. */
-    public double marginalDist(int i,int k, int arz[][])
+    private double marginalDist(int i,int k, int arz[][])
         {
         double count=0;
         

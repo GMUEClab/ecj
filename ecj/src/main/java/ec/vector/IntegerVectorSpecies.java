@@ -338,7 +338,7 @@ public class IntegerVectorSpecies extends VectorSpecies
                     base.push(P_MINGENE).push(postfix));
             }
             
-        if (minValExists)
+        if (maxValExists)
             {
             long maxVal = state.parameters.getLongWithDefault(base.push(P_MAXGENE).push(postfix), def.push(P_MAXGENE).push(postfix), 0);
                 
