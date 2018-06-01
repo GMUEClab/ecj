@@ -12984,6 +12984,40 @@ Returns an array of doubles, one per auxiliary fitness element, of the current v
 
 
 
+
+\subsubsection{The HypervolumeStatistics class}  
+\label{ec.multi.HypervolumeStatistics}
+
+Because multiobjective algorithms work with several competing objectives at once, their performance can be tricky to quantify as a scalar value.  One popular way of expressing the quality of a Pareto front is compute the hypervolume of the portion of the objective space that is dominated by the current population.  In general, the larger the hypervolume, the better the Pareto front.
+
+The \package{ec.multiobjective} package offers a statistics class for recording such a hypervolume over the course of a run: \class{ec.multiobjective.HypervolumeStatistics}.  The HypervolumeStatistics class is used as follows:
+
+\params{%
+stat = ec.multiobjective.HypervolumeStatistics
+}
+
+Since HypervolumeStatistics inherits the logging behavior of SimpleStatistics, we are free to tweak the file the same way we would for SimpleStatistics:
+
+\params{%
+stat.file = \$hv.out
+}
+
+Now, hypervolume always measure progress relative to a \textbf{reference point} in objective space, which we must specify in advance. The idea is that the reference point serves as a \emph{lower bound} on the fitness values that we observe in the Pareto front (or upper bound, in the case of objectives that we seek to maximize).  As long as the Pareto front dominates the reference point, we get a positive (and, we hope, increasing!) hypervolume.
+
+If you know the worst fitness that is possible for each objective, then that can serve as a nice choice of an absolute reference point.  In the simplest case, a natural choice of reference point might be the origin (shown here for three objectives):
+
+\params{%
+stat.referencePoint = 0 0 0
+}
+
+If you don't know the actual worst possible fitnesses, you can just choose an arbitrary reference point with very poor fitness.  HypervolumeStatistics will throw an exception if it encounters a Pareto front with negative hypervolume, so just make sure your reference point is bad enough that it will never dominate the population.
+
+For example, let's say that we are maximizing three objectives, and we don't know in advance what the worst possible fitness might be for each objective.  But we do notice that every time we run the algorithm, the initial, random population always exhibits fitness significantly higher than -10.0 in the first objective, 5.0 for the second, and zero for the third.  This suggests that the point $\langle -10, 5, 0 \rangle$ is a suitable point to measure progress from:
+
+\params{%
+stat.referencePoint = -10.0 5.0 0
+}
+
 \subsection{Selecting with Multiple Objectives}
 
 ECJ's primary multiobjective algorithms don't use MultiObjectiveFitness directly, but rather subclass it to add per-algorithm gizmos.  But if you're not using these algorithms, you can still use MultiObjectiveFitness in a more ``traditional'' generational algorithm.  This requires some thought: at the end of the day, ECJ needs to select based on this Fitness mechanism.  But if there is more than one objective value, how is this done?
