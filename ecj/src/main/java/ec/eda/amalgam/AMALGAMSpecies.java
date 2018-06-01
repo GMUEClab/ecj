@@ -127,7 +127,7 @@ import java.util.IdentityHashMap;
 
 public class AMALGAMSpecies extends FloatVectorSpecies 
     {
-    public static final String P_AMALGAM_SPECIES = "amalgam.species";
+    public static final String P_AMALGAM_SPECIES = "species";
 
     public static final String P_TAU = "tau"; // tau
     public static final String P_ETA_DEC = "eta-dec"; // eta-dec

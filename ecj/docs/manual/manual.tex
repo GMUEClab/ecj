@@ -13076,7 +13076,7 @@ For each individual, returns the Pareto Front ranking of that individual, starti
 
 
 
-\subsection{NSGA-II  / III\\(The \package{ec.multiobjective.nsga2} and  \package{ec.multiobjective.nsga3} and Packages)}
+\subsection{NSGA-II/III (\package{ec.multiobjective.nsga2} and \package{ec.multiobjective.nsga3} Packages)}
 \label{ec.multiobjective.nsga2}
 
 The Non-dominated Sorting Genetic Algorithm Version II (or NSGA-II) \cite{nsga2} is essentially a version of the \((\mu+\mu)\) evolution strategy using non-dominated sorting.  It maintains and updates an archive (half the population) of the current best individuals (essentially the current estimate of the Pareto Front), and breeds the remaining population from the archive.  
@@ -13413,6 +13413,120 @@ Normally you wouldn't play with any of these parameters, but if you wanted to se
 
 There is an example parameter file, \file{ec/app/ecsuite/cmaes.params}, located in the \file{ecsuite} application, which you can try.  The CMA-ES code is due to Sam McKay, a GMU undergraduate student.
 
+
+
+\subsection{AMaLGaM IDEA}
+
+The Adapted Maximum-Likelihood Gaussian Model Iterated Density-Estimation Evolutionary Algorithm (AMaLGaM-IDEA) is an EDA in the same vein as CMA-ES, and likewise ECJ's implementation of it is set up in a manner very similar to how ECJ does CMA-ES.  Like CMA-ES, AMaLGaM-IDEA has its on breeder and species; but unlike CMA-ES, AMaLGaM-IDEA does not have its one specialized initializer.
+
+The critical class is \class{ec.eda.amalgam.AMALGAMSpecies}, which does the heavy lifting.  Like the CMA-ES version, this one has two primary methods,  \method{newIndividual(...)} and \method{updateDistribution(...)}.  The first samples a random individual from the distribution.  The second updates the distribution to reflect the fitness values among individuals in a given subpopulation.  AMaLGaM-IDEA is single-threaded only.  AMaLGaM-IDEA only uses real-valued vector individuals, and so is restricted to using \class{ec.vector.DoubleVectorIndividual}.   Thus we might start with something like this:
+
+\begin{verbatim}
+## Standard ECJ Stuff
+evalthreads =                                  auto
+breedthreads =                                 auto
+seed.0 =                                 time
+quit-on-run-complete = true
+checkpoint-prefix =                            ec
+checkpoint-modulo =                            1
+state =                                        ec.simple.SimpleEvolutionState
+init = ec.simple.SimpleInitializer
+finish =                                       ec.simple.SimpleFinisher
+eval =                                         ec.simple.SimpleEvaluator
+stat =                                         ec.simple.SimpleStatistics
+stat.file =                                    $out.stat
+exch =                                         ec.simple.SimpleExchanger
+pop =                                          ec.Population
+pop.default-subpop =                           0
+pop.subpops = 1
+pop.subpop.0 =                                 ec.Subpopulation
+pop.subpop.0.duplicate-retries = 0
+pop.subpop.0.size = 30
+generations = 1000
+pop.subpop.0.species.ind =                     ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.fitness = ec.simple.SimpleFitness
+
+## Sample Problem Parameters, just like an ECJ vector problem
+pop.subpop.0.species.genome-size = 10
+pop.subpop.0.species.max-gene = 2.048
+pop.subpop.0.species.min-gene = -2.048
+
+## AMaLGaM-IDEA Specific Stuff
+breed =                                        ec.eda.amalgam.AMALGAMBreeder
+pop.subpop.0.species =                         ec.eda.amalgam.AMALGAMSpecies
+\end{verbatim}
+
+AMaLGaM-IDEA does its own breeding, and doesn't use pipelines at all.  Furthermore it doesn't use ECJ's mutation or breeding.  So we'll use the following unused defaults because ECJ needs {\it something}:
+
+\begin{verbatim}
+pop.subpop.0.species.pipe = ec.breed.InitializationPipeline
+pop.subpop.0.species.mutation-prob = 0
+pop.subpop.0.species.mutation-type = reset
+pop.subpop.0.species.crossover-type = one
+\end{verbatim}
+
+AMaLGaM-IDEA has several custom parameters which have standard defaults, and several other parameters whose values can be set but are normally computed from the custom parameters.  Specifically:
+
+\begin{center}
+\begin{tabular}{@{}rlp{3.25in}@{}}
+{\bf Item}	&	{\bf Default}	& {\bf Description}\\
+\(\tau\)	&	 \( 0.35 \)		& Proportion of elite individuals\\
+Variance Tolerance	&	 \( 0.0 \)		&  AMaLGaM-IDEA terminates if the variance is less than this amount \\
+\(\delta^{\text{AMS}}\)	&	 \( 2.0 \)		& Controls how much selected individuals are shifted\\
+\(\eta^{\text{DEC}}\)	&	 \( 0.9 \)		& Degree to which the distribution multiplier is decreased in certain conditions\\
+\(\theta^{\text{SDR}}\)	&	 \( 1.0 \)		& Threshold for the standard deviation ratio\\
+\(\text{NIS}^{\text{MAX}}\)	&	 \( 25 + \text{genome size} \)		& Number of generations with no improvement beyond which the distribution multiplier begins to decrease \\
+\(\alpha^{\text{AMS}}\)	&	 \( \frac{\tau}{2} \times \frac{\text{subpopulation size}}{\text{subpopulation size} - 1} \)		& Proportion of individuals to be shifted in the direction of the anticipated mean shift\\
+\(\eta^{\text{Shift}}\)	&	 \( 1 - e^\frac{ -1.2 \times \lfloor \tau \times \text{subpopulation size} \rfloor ^ {0.31}}{\text{genome size}^{0.5}} \)		& Proportion of elite individuals\\
+\(\eta^{\Sigma}\)	&	 \(  1 - e^\frac{ -1.1 \times \lfloor \tau \times \text{subpopulation size} \rfloor ^ {1.20}}{\text{genome size}^{1.6}}\)		& Learning rate of the covariance matrix\\
+\end{tabular}
+\end{center}
+
+The parameters for these, which if unset use the defaults above, are:
+
+\begin{verbatim}
+### Standard customizable parameters with defaults if you don't set them
+amalgam.species.tau = ...
+amalgam.species.variance-tolerance = ...
+amalgam.species.delta-ams = ...
+amalgam.species.eta-dec = ...
+amalgam.species.theta-sdr = ...
+
+### Additional parameters.  These are computed automatically from the above parameters 
+### if you don't set them
+amalgam.species.nis-max = ...
+amalgam.species.alpha-ams = ...
+amalgam.species.eta-shift = ...
+amalgam.species.eta-sigma = ...
+\end{verbatim}
+
+All nine of the above parameters can of course also be defined as:
+
+\begin{verbatim}
+### Standard customizable parameters with defaults if you don't set them
+pop.subpop.0.species.tau = ...
+pop.subpop.0.species.variance-tolerance = ...
+pop.subpop.0.species.delta-ams = ...
+pop.subpop.0.species.eta-dec = ...
+pop.subpop.0.species.theta-sdr = ...
+
+### Additional parameters.  These are computed automatically from the above parameters 
+### if you don't set them
+pop.subpop.0.species.nis-max = ...
+pop.subpop.0.species.alpha-ams = ...
+pop.subpop.0.species.eta-shift = ...
+pop.subpop.0.species.eta-sigma = ...
+\end{verbatim}
+
+
+
+Last, AMaLGaM-IDEA has a few custom termination conditions which ECJ can apply beyond the traditional ones (number of generations exceeded, ideal fitness discovered).  You already saw one: variance-tolerance.  To turn on use of these termination conditions, you say:
+
+\begin{verbatim}
+amalgam.species.alternative-termination = true
+\end{verbatim}
+
+There is an example parameter file, \file{ec/app/ecsuite/amalgam.params}, located in the \file{ecsuite} application, which you can try.  The AMaLGaM-IDEA code is due to Sam McKay, a GMU undergraduate student.
 
 \subsection{DOvS}
 
