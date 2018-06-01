@@ -12988,9 +12988,11 @@ Returns an array of doubles, one per auxiliary fitness element, of the current v
 \subsubsection{The HypervolumeStatistics class}  
 \label{ec.multi.HypervolumeStatistics}
 
-Because multiobjective algorithms work with several competing objectives at once, their performance can be tricky to quantify as a scalar value.  One popular way of expressing the quality of a Pareto front is compute the hypervolume of the portion of the objective space that is dominated by the current population.  In general, the larger the hypervolume, the better the Pareto front.
+Because multiobjective algorithms work with several competing objectives at once, their performance can be tricky to quantify as a scalar value.  One popular way of expressing the quality of a Pareto front is compute the hypervolume of the portion of the objective space that is dominated by the current population.  In general, the larger the hypervolume, the better the Pareto front.  The \package{ec.multiobjective} package offers a statistics class for recording such a hypervolume over the course of a run: \class{ec.multiobjective.HypervolumeStatistics}.
 
-The \package{ec.multiobjective} package offers a statistics class for recording such a hypervolume over the course of a run: \class{ec.multiobjective.HypervolumeStatistics}.  The HypervolumeStatistics class is used as follows:
+Note that hypervolume can be a notoriously expensive calculation to perform for large populations and/or large numbers of objectives!  ECJ uses a hypervolume algorithm that aims at efficiency, but in some applications you may want to avoid calculating hypervolume at every generation.
+
+The HypervolumeStatistics class is used as follows:
 
 \params{%
 stat = ec.multiobjective.HypervolumeStatistics
