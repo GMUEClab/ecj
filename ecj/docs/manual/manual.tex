@@ -23,6 +23,7 @@
 \usepackage{graphicx}
 \usepackage{wrapfig}
 \usepackage{bm}
+\usepackage{bbm}
 \usepackage{qtree}
 \usepackage{array}
 \usepackage{eurosym}
@@ -13413,13 +13414,13 @@ Normally you wouldn't play with any of these parameters, but if you wanted to se
 
 There is an example parameter file, \file{ec/app/ecsuite/cmaes.params}, located in the \file{ecsuite} application, which you can try.  The CMA-ES code is due to Sam McKay, a GMU undergraduate student.
 
+\newcommand\amalgam{{AMaLGaM~ID${\mathbb{E}}$A}}
 
+\subsection{\amalgam}
 
-\subsection{AMaLGaM IDEA}
+The Adapted Maximum-Likelihood Gaussian Model Iterated Density-Estimation Evolutionary Algorithm (\amalgam) is an EDA in the same vein as CMA-ES, and likewise ECJ's implementation of it is set up in a manner very similar to how ECJ does CMA-ES.  Like CMA-ES, \amalgam has its on breeder and species; but unlike CMA-ES, \amalgam does not have its one specialized initializer.
 
-The Adapted Maximum-Likelihood Gaussian Model Iterated Density-Estimation Evolutionary Algorithm (AMaLGaM-IDEA) is an EDA in the same vein as CMA-ES, and likewise ECJ's implementation of it is set up in a manner very similar to how ECJ does CMA-ES.  Like CMA-ES, AMaLGaM-IDEA has its on breeder and species; but unlike CMA-ES, AMaLGaM-IDEA does not have its one specialized initializer.
-
-The critical class is \class{ec.eda.amalgam.AMALGAMSpecies}, which does the heavy lifting.  Like the CMA-ES version, this one has two primary methods,  \method{newIndividual(...)} and \method{updateDistribution(...)}.  The first samples a random individual from the distribution.  The second updates the distribution to reflect the fitness values among individuals in a given subpopulation.  AMaLGaM-IDEA is single-threaded only.  AMaLGaM-IDEA only uses real-valued vector individuals, and so is restricted to using \class{ec.vector.DoubleVectorIndividual}.   Thus we might start with something like this:
+The critical class is \class{ec.eda.amalgam.AMALGAMSpecies}, which does the heavy lifting.  Like the CMA-ES version, this one has two primary methods,  \method{newIndividual(...)} and \method{updateDistribution(...)}.  The first samples a random individual from the distribution.  The second updates the distribution to reflect the fitness values among individuals in a given subpopulation.  \amalgam is single-threaded only.  \amalgam only uses real-valued vector individuals, and so is restricted to using \class{ec.vector.DoubleVectorIndividual}.   Thus we might start with something like this:
 
 \begin{verbatim}
 ## Standard ECJ Stuff
@@ -13456,7 +13457,7 @@ breed =                                        ec.eda.amalgam.AMALGAMBreeder
 pop.subpop.0.species =                         ec.eda.amalgam.AMALGAMSpecies
 \end{verbatim}
 
-AMaLGaM-IDEA does its own breeding, and doesn't use pipelines at all.  Furthermore it doesn't use ECJ's mutation or breeding.  So we'll use the following unused defaults because ECJ needs {\it something}:
+\amalgam does its own breeding, and doesn't use pipelines at all.  Furthermore it doesn't use ECJ's mutation or breeding.  So we'll use the following unused defaults because ECJ needs {\it something}:
 
 \begin{verbatim}
 pop.subpop.0.species.pipe = ec.breed.InitializationPipeline
@@ -13465,13 +13466,13 @@ pop.subpop.0.species.mutation-type = reset
 pop.subpop.0.species.crossover-type = one
 \end{verbatim}
 
-AMaLGaM-IDEA has several custom parameters which have standard defaults, and several other parameters whose values can be set but are normally computed from the custom parameters.  Specifically:
+\amalgam has several custom parameters which have standard defaults, and several other parameters whose values can be set but are normally computed from the custom parameters.  Specifically:
 
 \begin{center}
 \begin{tabular}{@{}rlp{3.25in}@{}}
 {\bf Item}	&	{\bf Default}	& {\bf Description}\\
 \(\tau\)	&	 \( 0.35 \)		& Proportion of elite individuals\\
-Variance Tolerance	&	 \( 0.0 \)		&  AMaLGaM-IDEA terminates if the variance is less than this amount \\
+Variance Tolerance	&	 \( 0.0 \)		&  \amalgam terminates if the variance is less than this amount \\
 \(\delta^{\text{AMS}}\)	&	 \( 2.0 \)		& Controls how much selected individuals are shifted\\
 \(\eta^{\text{DEC}}\)	&	 \( 0.9 \)		& Degree to which the distribution multiplier is decreased in certain conditions\\
 \(\theta^{\text{SDR}}\)	&	 \( 1.0 \)		& Threshold for the standard deviation ratio\\
@@ -13520,13 +13521,13 @@ pop.subpop.0.species.eta-sigma = ...
 
 
 
-Last, AMaLGaM-IDEA has a few custom termination conditions which ECJ can apply beyond the traditional ones (number of generations exceeded, ideal fitness discovered).  You already saw one: variance-tolerance.  To turn on use of these termination conditions, you say:
+Last, \amalgam has a few custom termination conditions which ECJ can apply beyond the traditional ones (number of generations exceeded, ideal fitness discovered).  You already saw one: variance-tolerance.  To turn on use of these termination conditions, you say:
 
 \begin{verbatim}
 amalgam.species.alternative-termination = true
 \end{verbatim}
 
-There is an example parameter file, \file{ec/app/ecsuite/amalgam.params}, located in the \file{ecsuite} application, which you can try.  The AMaLGaM-IDEA code is due to Sam McKay, a GMU undergraduate student.
+There is an example parameter file, \file{ec/app/ecsuite/amalgam.params}, located in the \file{ecsuite} application, which you can try.  The \amalgam code is due to Sam McKay, a GMU undergraduate student.
 
 \subsection{DOvS}
 
