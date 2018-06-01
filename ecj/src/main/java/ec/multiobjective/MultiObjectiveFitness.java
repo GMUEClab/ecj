@@ -181,11 +181,11 @@ public class MultiObjectiveFitness extends Fitness
         {
         if (newObjectives == null)
             {
-            state.output.fatal("Null objective array provided to MultiObjectiveFitness.");
+            state.output.fatal(String.format("Null objective array provided to %s.", this.getClass().getSimpleName()));
             }
         if (newObjectives.length != objectives.length)
             {
-            state.output.fatal("New objective array length does not match current length.");
+            state.output.fatal(String.format("%s: New objective array length does not match current length.", this.getClass().getSimpleName()));
             }
         for (int i = 0; i < newObjectives.length; i++)
             {
@@ -200,7 +200,7 @@ public class MultiObjectiveFitness extends Fitness
                 }
             else if (_f > maxObjective[i] || _f < minObjective[i])
                 {
-                state.output.warnOnce(String.format("The value of objective #%d is outside the expected bounds [%f, %f].  Did you configure the '%s' and '%s' parameters correctly?", i, minObjective[i], maxObjective[i], P_MINOBJECTIVES, P_MAXOBJECTIVES));
+                state.output.warnOnce(String.format("%s: The value of objective #%d is outside the expected bounds [%f, %f].  Did you configure the '%s' and '%s' parameters correctly?", this.getClass().getSimpleName(), i, minObjective[i], maxObjective[i], P_MINOBJECTIVES, P_MAXOBJECTIVES));
                 }
             }
         objectives = newObjectives;
