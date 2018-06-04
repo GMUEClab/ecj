@@ -431,35 +431,38 @@ public class AMALGAMSpecies extends FloatVectorSpecies
         int constraintViolationA = constraintViolations.get(a);
         int constraintViolationB = constraintViolations.get(b);
 
+		/// The original iAmalgam code uses a merge sort, but the sorting comparison
+		/// does not ever state that two individuals are equal.  It just says that
+		/// if a and b are the same, then a > b.  This is of course in violation of 
+		/// Java sorting contracts.  So we have to tweak it slightly.  
+		/// The iAmalgam sorting code (line 783 of iAMaLGaM-Full.c) says:
+		/// 
+		///		Sorts an array of objectives and constraints
+		///		using constraint domination and returns the
+		///		sort-order (small to large).
+		///
+		/// By this we assume that the following should be proper:
+		///
+		/// If A violates fewer constraints than B
+		///		A is best
+		///	Else if B violates less than A
+		///		B is best
+		///	Else if A is fitter than B
+		///		A is best
+		///	Else if B is fitter than A
+		///		B is best
+		///	Else 
+		///		A and B are equal
 
-        // this is the logic that was in iAMALGAM code
-        if (constraintViolationA > 0) 
-            {
-            if (constraintViolationB > 0) 
-                {
-                if ( constraintViolationA < constraintViolationB )
-                    {
-                    return -1; // A is fitter
-                    }
-                }
-            } 
-        else 
-            {
-            if ( constraintViolationB > 0 ) 
-                {
-                return -1; // A is fitter
-                } 
-            else 
-                {
-                if (((DoubleVectorIndividual) a).compareTo(((DoubleVectorIndividual) b)) < 0) 
-                    {
-                    return -1; // A is fitter
-                    }
-                }
-            }
-
-
-        return 1; // B is fitter
+        if (constraintViolationA < constraintViolationB)
+        	{
+        	return -1;  // A is better
+        	}
+        else if (constraintViolationB < constraintViolationA)
+        	{
+        	return 1;  // B is better
+        	}
+        else return a.compareTo(b);  // compares based on fitness, with 0 as a tie
         }
 
     public boolean isValid(DoubleVectorIndividual dvind)
