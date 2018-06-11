@@ -108,12 +108,14 @@ public class PBILSpecies extends IntegerVectorSpecies
         {
         assert(state != null);
         assert(base != null);
+        /*
         // Mutation is irrelevant to PBIL, so we hardcode a default value
         if (!state.parameters.containsKey(base.push(PBILSpecies.P_MUTATIONPROB)))
             state.parameters.set(base.push(PBILSpecies.P_MUTATIONPROB), "0");
         // Likewise with the breeding pipeline
         if (!state.parameters.containsKey(base.push(PBILSpecies.P_PIPE)))
             state.parameters.set(base.push(PBILSpecies.P_PIPE), FirstSelection.class.getCanonicalName());
+        */
         super.setup(state, base);
         Parameter def = defaultBase();
         Parameter subpopDefaultBase =  ECDefaults.base().push(Subpopulation.P_SUBPOPULATION);
