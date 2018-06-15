@@ -2473,3 +2473,5 @@ Version		Change Log
 	Initial version of rule-rewriting in parameter databases added
 	Fixed bugs in and added unit tests for NSGA2Breeder
 	Added ec/multiobjective/HypervolumeStatistics.java, with unit tests
+	Bugfix to AmalgamSpecies.  Thanks to Stef Maree <s.c.maree@amc.uva.nl>
+		and Peter Bosman <Peter.Bosman@cwi.nl>

@@ -533,44 +533,44 @@ public class AMALGAMSpecies extends FloatVectorSpecies
                     break;
                     }
                 }
+			}
+			
+		if (improved) 
+			{
+			noImprovementStretch = 0;
+			if (distributionMultiplier < 1) distributionMultiplier = 1;
 
-            if (improved) 
-                {
-                noImprovementStretch = 0;
-                if (distributionMultiplier < 1) distributionMultiplier = 1;
+			xAvgImp = new DenseMatrix64F(genomeSize, 1);
+			int count = 0;
+			for (int j = 1; j < tau*subpop.individuals.size(); j++) 
+				{
+				if (compareIndividuals(subpop.individuals.get(j), subpop.individuals.get(0)) < 0) 
+					{
+					DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(j));
+					DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
+					CommonOps.add(xAvgImp,genome,xAvgImp);
+					count++;
+					}
 
-                xAvgImp = new DenseMatrix64F(genomeSize, 1);
-                int count = 0;
-                for (int j = 1; j < tau*subpop.individuals.size(); j++) 
-                    {
-                    if (compareIndividuals(subpop.individuals.get(j), subpop.individuals.get(0)) < 0) 
-                        {
-                        DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(j));
-                        DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
-                        CommonOps.add(xAvgImp,genome,xAvgImp);
-                        count++;
-                        }
+				}
+			CommonOps.scale(1.0/count,xAvgImp,xAvgImp);
 
-                    }
-                CommonOps.scale(1.0/count,xAvgImp,xAvgImp);
+			CommonOps.subtract(xAvgImp, mean, temp);
+			CommonOps.invert(choleskyLower, tempMatrix);
+			CommonOps.mult(tempMatrix, temp, temp3);
+			double sdr = CommonOps.elementMaxAbs(temp3);
 
-                CommonOps.subtract(xAvgImp, mean, temp);
-                CommonOps.invert(choleskyLower, tempMatrix);
-                CommonOps.mult(tempMatrix, temp, temp3);
-                double sdr = CommonOps.elementMaxAbs(temp3);
-
-                if (sdr > stDevRatioThresh) 
-                    {
-                    distributionMultiplier *= distributionMultiplierIncrease;
-                    }
-                } 
-            else 
-                {
-                if (distributionMultiplier <= 1) noImprovementStretch++;
-                if (distributionMultiplier > 1 || noImprovementStretch > maximumNoImprovementStretch) distributionMultiplier *= distributionMultiplierDecrease;
-                if (distributionMultiplier < 1 && noImprovementStretch < maximumNoImprovementStretch) distributionMultiplier = 1;
-                }
-            }
+			if (sdr > stDevRatioThresh) 
+				{
+				distributionMultiplier *= distributionMultiplierIncrease;
+				}
+			} 
+		else 
+			{
+			if (distributionMultiplier <= 1) noImprovementStretch++;
+			if (distributionMultiplier > 1 || noImprovementStretch > maximumNoImprovementStretch) distributionMultiplier *= distributionMultiplierDecrease;
+			if (distributionMultiplier < 1 && noImprovementStretch < maximumNoImprovementStretch) distributionMultiplier = 1;
+			}
         }
 
         public void selectForDiversity(final EvolutionState state, final Subpopulation subpop) 
