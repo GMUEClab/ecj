@@ -2475,3 +2475,5 @@ Version		Change Log
 	Added ec/multiobjective/HypervolumeStatistics.java, with unit tests
 	Bugfix to AmalgamSpecies.  Thanks to Stef Maree <s.c.maree@amc.uva.nl>
 		and Peter Bosman <Peter.Bosman@cwi.nl>
+	Bugfix to SimpleShortStatistics, which was printing the wrong
+		generation number (off by 1) in the file.
