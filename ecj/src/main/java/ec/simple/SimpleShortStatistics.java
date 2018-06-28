@@ -204,7 +204,7 @@ public class SimpleShortStatistics extends Statistics
         {
         super.postBreedingStatistics(state);
         boolean output = (state.generation % modulus == modulus - 1);
-        if (output) state.output.print("" + (state.generation + 1) + " ", statisticslog); // 1 because we're putting the breeding info on the same line as the generation it *produces*, and the generation number is increased *after* breeding occurs, and statistics for it
+        if (output) state.output.print("" + state.generation + " ", statisticslog); // 1 because we're putting the breeding info on the same line as the generation it *produces*, and the generation number is increased *after* breeding occurs, and statistics for it
 
         // gather timings
         if (output && doTime)
