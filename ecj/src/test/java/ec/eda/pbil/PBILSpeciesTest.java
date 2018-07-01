@@ -16,6 +16,7 @@ import ec.util.Output;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
 import ec.vector.IntegerVectorIndividual;
+import ec.vector.IntegerVectorSpecies;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,6 +52,8 @@ public class PBILSpeciesTest
         state.parameters.set(BASE.push(PBILSpecies.P_MINGENE), "0");
         state.parameters.set(BASE.push(PBILSpecies.P_MAXGENE), "4");
         state.parameters.set(BASE.push(PBILSpecies.P_MAXGENE).push("2"), "3");
+        state.parameters.set(BASE.push(IntegerVectorSpecies.P_MUTATIONPROB), "0");
+        state.parameters.set(BASE.push(IntegerVectorSpecies.P_PIPE), "ec.breed.InitializationPipeline");
         state.random = new MersenneTwisterFast[] { new MersenneTwisterFast() };
         }
 
