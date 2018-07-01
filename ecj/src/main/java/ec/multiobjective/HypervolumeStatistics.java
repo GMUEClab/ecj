@@ -56,7 +56,7 @@ public class HypervolumeStatistics extends SimpleStatistics
         {
         super.bypassPostEvaluationStatistics(state);
         
-        state.output.println("\nGeneration: " + state.generation, statisticslog);
+        state.output.print("" + state.generation, statisticslog);
         for(int s = 0; s < state.population.subpops.size(); s++)
             {
             if (doGeneration)
@@ -65,8 +65,7 @@ public class HypervolumeStatistics extends SimpleStatistics
                 try
                     {
                     final double hv = hypervolume(paretoFront);
-                    state.output.println("Subpopulation " + s + ":", statisticslog);
-                    state.output.println("\nHypervolume: " + hv, statisticslog);
+                    state.output.print(", " + hv, statisticslog);
                     }
                 catch (final Exception e)
                     {
@@ -74,6 +73,7 @@ public class HypervolumeStatistics extends SimpleStatistics
                     }
                 }
             }
+        state.output.print("\n", statisticslog);
         }
     
     /** Compute the hypervolume of the Pareto front induced by a collection of points. */
@@ -178,12 +178,13 @@ public class HypervolumeStatistics extends SimpleStatistics
 
         if (!doFinal)
             return;
-        state.output.println("\n\n\n FINAL HYPERVOLUMES", statisticslog);
+        state.output.print("" + state.generation, statisticslog);
         for (int s = 0; s < state.population.subpops.size(); s++)
             {
             ArrayList<Individual> paretoFront = MultiObjectiveFitness.partitionIntoParetoFront(state.population.subpops.get(s).individuals, null, null);
             final double hv = hypervolume(paretoFront);
-            if (doFinal) state.output.println(String.format("\n\nSubpopulation %d: %f", s, hv), statisticslog);
+            state.output.println(", " + hv, statisticslog);
             }
+        state.output.print("\n", statisticslog);
         }
     }
