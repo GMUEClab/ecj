@@ -11,3 +11,13 @@ pop.subpop.0.species.genome-size = 2
 pop.subpop.0.species.mutation-prob = 0.5
 
 #Srinivas & Deb uses a bit string representation with 15 bits per variable (30bit genome).
+
+# max and min values of each objective function
+# (important for algorithms that normalize the objective scales relative to each other)
+multi.fitness.max.0 		= 927
+multi.fitness.min.0		= 2
+multi.fitness.max.1 		= 175.5
+multi.fitness.min.1		= -621.0
+
+# Reference point for hypervolume calculation
+stat.child.0.reference-point = 927 175.5

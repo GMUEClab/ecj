@@ -26,7 +26,7 @@ import ec.vector.*;
    <li>F2: (Schaffer), (Srinivas & Deb),  (Coello Coello & Cortes); requires exactly 1 decision variables (genes)
    <li>unconstrained F3: Schaffer, Srinivas & Deb  (Chankong & Haimes); requires exactly 2 decision variables (genes)
    <li>QV: Quagliarella & Vicini
-   <li>FON: Fonseca & Fleming; requires exactly 3 decision variables (genes)
+   <li>FON: Fonseca & Fleming (1995); requires exactly 3 decision variables (genes)
    <li>POL: Poloni; requires exactly 2 decision variables (genes)
    <li>KUR: Kursawe from the Errata of Zitzler's TIK-Report 103: "SPEA2: Improving the Strength Pareto Evolutionary Algorithm"
    (note that many different versions are described in the literature).
@@ -280,25 +280,24 @@ public class MooSuite extends Problem implements SimpleProblemForm
                 objectives[1] = Math.pow(sum/numDecisionVars, 0.25);
                 break;
             case PROB_KUR:
-                // The version of the Kursawe function we use here is taken from Zitzler et al., "SPEA2: Improving the Strength Pareto Evolutionary Algorithm"
+                // The version of the Kursawe function we use here is taken from the erata of Zitzler et al., "SPEA2: Improving the Strength Pareto Evolutionary Algorithm"
                 // Note that many different versions are described in the literature!
+                sum= 0;
+                for(int i = 0; i < numDecisionVars; ++i)
+                    {
+                    double t1 = Math.pow(Math.abs(genome[i]), .8);
+                    double t2 = 5 * Math.pow(Math.sin(genome[i]), 3);
+                    sum += t1 + t2 + 3.5828;
+                    }
+                objectives[0] = sum;
                 double nextSquared, thisSquared;
                 thisSquared = genome[0]*genome[0];
                 sum=0;
-                for(int i = 0; i< numDecisionVars-1; ++i)
+                for(int i = 0; i < numDecisionVars-1; ++i)
                     {
                     nextSquared = genome[i+1]*genome[i+1];
-                    sum += -10-Math.exp(-0.2*Math.sqrt(thisSquared + nextSquared));
+                    sum += 1 - Math.exp(-0.2 * Math.sqrt(thisSquared + nextSquared));
                     thisSquared = nextSquared;
-                    }
-                objectives[0] = sum;
-                sum= 0;
-                for(int i = 0; i< numDecisionVars; ++i)
-                    {
-                    double xi3 = Math.pow(genome[i], 3);
-                    double t1 = Math.pow(Math.abs(genome[i]), .8);
-                    double t2 = 5*Math.sin(xi3);
-                    sum +=t1+t2;
                     }
                 objectives[1] = sum;
                 break;
