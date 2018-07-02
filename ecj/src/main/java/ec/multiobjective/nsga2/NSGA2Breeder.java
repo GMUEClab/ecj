@@ -64,7 +64,7 @@ public class NSGA2Breeder extends SimpleBreeder
     public int numElites(EvolutionState state, int subpopulation)
         {
         if (breedingState != BreedingState.ARCHIVE_LOADED)
-            state.output.fatal("Tried to query numElites before loadElites() was called.");
+            state.output.fatal(String.format("%s: Tried to query numElites before loadElites() was called.", this.getClass().getSimpleName()));
         return numElites[subpopulation];
         }
 
@@ -74,7 +74,7 @@ public class NSGA2Breeder extends SimpleBreeder
     protected void loadElites(EvolutionState state, Population newpop)
         {
         if (breedingState == BreedingState.ARCHIVE_LOADED)
-            state.output.fatal("Tried to load elites for the next generation before breeding for the current generation was complete.");
+            state.output.fatal(String.format("%s: Tried to load elites for the next generation before breeding for the current generation was complete.", this.getClass().getSimpleName()));
         numElites = new int[newpop.subpops.size()];
         
         for(int i = 0; i < newpop.subpops.size(); i++)

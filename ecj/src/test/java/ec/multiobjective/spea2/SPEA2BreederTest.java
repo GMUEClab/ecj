@@ -11,7 +11,6 @@ import ec.Individual;
 import ec.Initializer;
 import ec.Population;
 import ec.Subpopulation;
-import ec.breed.BreedDefaults;
 import ec.multiobjective.MultiObjectiveFitness;
 import ec.util.MersenneTwisterFast;
 import ec.util.Output;
@@ -87,8 +86,11 @@ public class SPEA2BreederTest
         }};
         
         assertEquals(10, newpop.subpops.get(0).individuals.size());
+        assertEquals(10, state.population.subpops.get(0).individuals.size());
         assertTrue(newpop.subpops.get(0).individuals.containsAll(expectedArchive));
         assertTrue(expectedArchive.containsAll(newpop.subpops.get(0).individuals));
+        assertTrue(expectedArchive.containsAll(state.population.subpops.get(0).individuals));
+        assertTrue(state.population.subpops.get(0).individuals.containsAll(expectedArchive));
         }
 
     /** Build an archive of size 10 with k=5. */
@@ -113,8 +115,11 @@ public class SPEA2BreederTest
         }};
         
         assertEquals(10, newpop.subpops.get(0).individuals.size());
+        assertEquals(10, state.population.subpops.get(0).individuals.size());
         assertTrue(newpop.subpops.get(0).individuals.containsAll(expectedArchive));
         assertTrue(expectedArchive.containsAll(newpop.subpops.get(0).individuals));
+        assertTrue(expectedArchive.containsAll(state.population.subpops.get(0).individuals));
+        assertTrue(state.population.subpops.get(0).individuals.containsAll(expectedArchive));
         }
 
     /** Build an archive of size 10 with k=5, without normalizing the fitness ranges during distance 
@@ -141,8 +146,11 @@ public class SPEA2BreederTest
         }};
         
         assertEquals(10, newpop.subpops.get(0).individuals.size());
+        assertEquals(10, state.population.subpops.get(0).individuals.size());
         assertTrue(newpop.subpops.get(0).individuals.containsAll(expectedArchive));
         assertTrue(expectedArchive.containsAll(newpop.subpops.get(0).individuals));
+        assertTrue(expectedArchive.containsAll(state.population.subpops.get(0).individuals));
+        assertTrue(state.population.subpops.get(0).individuals.containsAll(expectedArchive));
         }
 
     /** Build an archive of size 12 with the default k. */
@@ -169,8 +177,11 @@ public class SPEA2BreederTest
         }};
         
         assertEquals(12, newpop.subpops.get(0).individuals.size());
+        assertEquals(12, state.population.subpops.get(0).individuals.size());
         assertTrue(newpop.subpops.get(0).individuals.containsAll(expectedArchive));
         assertTrue(expectedArchive.containsAll(newpop.subpops.get(0).individuals));
+        assertTrue(expectedArchive.containsAll(state.population.subpops.get(0).individuals));
+        assertTrue(state.population.subpops.get(0).individuals.containsAll(expectedArchive));
         }
     
     /** Build an archive of size 4 with the default k. */
@@ -189,8 +200,11 @@ public class SPEA2BreederTest
         }};
         
         assertEquals(4, newpop.subpops.get(0).individuals.size());
+        assertEquals(4, state.population.subpops.get(0).individuals.size());
         assertTrue(newpop.subpops.get(0).individuals.containsAll(expectedArchive));
         assertTrue(expectedArchive.containsAll(newpop.subpops.get(0).individuals));
+        assertTrue(expectedArchive.containsAll(state.population.subpops.get(0).individuals));
+        assertTrue(state.population.subpops.get(0).individuals.containsAll(expectedArchive));
         }
     
     /** Build an archive of size 2 with the default k. */
@@ -210,8 +224,11 @@ public class SPEA2BreederTest
         }};
         
         assertEquals(2, newpop.subpops.get(0).individuals.size());
+        assertEquals(2, state.population.subpops.get(0).individuals.size());
         assertTrue(newpop.subpops.get(0).individuals.containsAll(expectedArchive));
         assertTrue(expectedArchive.containsAll(newpop.subpops.get(0).individuals));
+        assertTrue(expectedArchive.containsAll(state.population.subpops.get(0).individuals));
+        assertTrue(state.population.subpops.get(0).individuals.containsAll(expectedArchive));
         }
     
     /** Check the fitnesses after building an archive of size 10 with the
