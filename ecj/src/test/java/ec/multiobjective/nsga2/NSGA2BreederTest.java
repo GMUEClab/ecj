@@ -111,6 +111,8 @@ public class NSGA2BreederTest
         instance.loadElites(state, newpop);
         assertTrue(expectedArchive.containsAll(newpop.subpops.get(0).individuals));
         assertTrue(newpop.subpops.get(0).individuals.containsAll(expectedArchive));
+        assertTrue(expectedArchive.containsAll(state.population.subpops.get(0).individuals));
+        assertTrue(state.population.subpops.get(0).individuals.containsAll(expectedArchive));
         }
 
     @Test
@@ -175,7 +177,7 @@ public class NSGA2BreederTest
         
         // Not all rank-3 individuals get added to the archive, but they all still exist in
         // the original population.
-        final List<Individual> individuals = state.population.subpops.get(0).individuals;
+        final List<Individual> individuals = instance.oldPopulation.subpops.get(0).individuals;
         final List<Individual> rank3 = getRank3();
         assertEquals(expectedRank3Sparsities.length, rank3.size());
         
