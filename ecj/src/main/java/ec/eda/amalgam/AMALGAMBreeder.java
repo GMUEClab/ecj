@@ -27,7 +27,6 @@ public class AMALGAMBreeder extends Breeder
     public Population breedPopulation(final EvolutionState state)
         {
         Population pop = state.population;
-        MersenneTwisterFast random = state.random[0];
         
         for(int i = 0; i < pop.subpops.size(); i++)
             {
