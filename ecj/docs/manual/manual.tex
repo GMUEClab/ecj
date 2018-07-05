@@ -960,8 +960,10 @@ or if it has garbage at the end of it.   Either parameter may be null.
 
 
 The get() method can also handle special \textit{macro parameters}.
-Macro parameter names will end in \textbf{default} or \textbf{alias}, which
-means you \textit{cannot have any parameter names which end with these two words.}
+% Macro parameter names will end in \textbf{default} or \textbf{alias}, which
+Macro parameter names will end in \textbf{alias}, which
+% means you \textit{cannot have any parameter names which end with these two words.}
+means you \textit{cannot have any parameter names which end with this word.}
 The idea behind a macro parameter is that it can substitute one substring for another
 among your parameter names, making your parameters potentially much simpler.
 Macros work along period boundaries. 
@@ -1013,9 +1015,9 @@ foo
 \noindent Which are then looked up in the database.  Conflicting rules are handled in order of specificity.  For example, if you had 
 
 \params{%
-hello.there.alias = foo
-hello.there.mom.alias = bar
-hello.there.mom.how.are.you = whoa
+hello.there.alias = foo\\
+hello.there.mom.alias = bar\\
+hello.there.mom.how.are.you = whoa\\
 hello.there.brother = hey
 }
 
@@ -1077,7 +1079,7 @@ Beware of cycles!  For example, if you have
 
 \params{%
 a.b.alias = foo\\
-foo.alias  a.b
+foo.alias = a.b
 }
 
 ... and you query
@@ -1089,7 +1091,7 @@ a.b.yo
 ... you should get an error reported and \variable{null} returned.
 
 
-
+\iffalse % This section describes a feature that hasn't been correctly implemented yet.  We can remove the '\iffalse` to activate this section after we fix the defaults mechanism.
 \subsubsection{The Default Macro}
 
 The default macro is like the alias macro except that it permits a variable in the final parameter segment.  That is:
@@ -1179,7 +1181,7 @@ gpncchild = nil\\
 
 
 The parameter database macro facility was implemented by Ananya Dhawan, a GMU student.
-
+\fi
 
 
 \subsection{Debugging Your Parameters}
