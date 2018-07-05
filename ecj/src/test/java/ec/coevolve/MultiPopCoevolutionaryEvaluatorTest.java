@@ -60,9 +60,10 @@ public class MultiPopCoevolutionaryEvaluatorTest {
     public void testAfterCoevolutionaryEvaluation1() {
         final MultiPopCoevolutionaryEvaluator instance = new MultiPopCoevolutionaryEvaluator();
         instance.setup(state, BASE);
+        state.population = getTestPop(); // Input population
         
         assertEquals(null, instance.previousPopulation);
-        instance.afterCoevolutionaryEvaluation(state, getTestPop(), null);
+        instance.afterCoevolutionaryEvaluation(state, null);
         assertEquals(null, instance.previousPopulation);
     }
     
@@ -71,14 +72,15 @@ public class MultiPopCoevolutionaryEvaluatorTest {
         params.set(BASE.push(MultiPopCoevolutionaryEvaluator.P_NUM_IND), "1");
         final MultiPopCoevolutionaryEvaluator instance = new MultiPopCoevolutionaryEvaluator();
         instance.setup(state, BASE);
-        final Population inputPop = getTestPop();
+        state.population = getTestPop(); // Input population
         assertNull(instance.previousPopulation);
         
-        instance.afterCoevolutionaryEvaluation(state, inputPop, null);
+        instance.afterCoevolutionaryEvaluation(state, null);
         assertNotNull(instance.previousPopulation);
         assertNotNull(instance.previousPopulation.subpops);
         assertEquals(2, instance.previousPopulation.subpops.size());
-        assertEquals(getTestPop(), instance.previousPopulation);
+        assertTrue(instance.previousPopulation.subpops.get(0).individuals.isEmpty());
+        assertTrue(instance.previousPopulation.subpops.get(1).individuals.isEmpty());
     }
     
     private Population getTestPop() {
