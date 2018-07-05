@@ -14,9 +14,9 @@ import ec.util.*;
 import ec.vector.*;
 
 /**
- * NEATIndividual is GeneVectorIndividual with NEATNetwork as pheotype. It
+ * NEATIndividual is GeneVectorIndividual with NEATNetwork as phenotype. It
  * contains the genome of the individual and also the nodes (NEATNode) for
- * pheotype. It's the combination of Organism class and Genome class in original
+ * phenotype. It's the combination of Organism class and Genome class in original
  * code. Most of the mutation and crossover happen in this class.
  * 
  * 
