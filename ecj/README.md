@@ -90,7 +90,7 @@ java ec.Evolve -file target/classes/ec/app/tutorial3/tutorial3.params
 
 To continue familiarizing yourself with ECJ's features, and to learn how to use it to write your own problems and algorithms, take a look at
   * the [tutorials](docs/tutorials) and
-  * the extensive [ECJ Manual](docs/manual/manual.pdf).
+  * the extensive [ECJ Manual](https://cs.gmu.edu/~eclab/projects/ecj/docs/manual/manual.pdf).
 
 If you're really stuck, try the
 ECJ-INTEREST mailing list.  (see "Mailing Lists" at
