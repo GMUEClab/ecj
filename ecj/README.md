@@ -6,7 +6,7 @@ you are bound to if you wish to use this software.
 
 Additionally, please see the following important files:
 
-  * [docs/index.html](docs/index.html)         ECJ documentation.  Start here.
+  * [docs/index.html](https://cs.gmu.edu/~eclab/projects/ecj/docs/)         ECJ documentation.  Start here.
   * [docs/manual/manual.pdf](https://cs.gmu.edu/~eclab/projects/ecj/docs/manual/manual.pdf)	The ECJ Owner's Manual.  A large reference work describing ECJ in detail.  Go through the tutorials before bothering with this one. 
   * [LICENSE](LICENSE)			ECJ's license
   * [CHANGES](CHANGES)			Change log.  Very important!
@@ -56,32 +56,34 @@ them you need to tweak ECJ a bit in order to get it to compile:
   *off* in order to run distributed evaluation or island
   models.
 
-TO COMPILE: under UNIX, just type
+TO COMPILE: under UNIX, if you have JFreeChart and iText installed to your CLASSPATH, just type
 ```
   make gui
 ```
-if you have JFreeChart and iText installed, or
+Otherwise,
 ```
   make
 ```
-otherwise.  You can build a JAR file out of ECJ, if you like, with
+You can build a JAR file out of ECJ, if you like, with
 ```
   make jar
 ```
+
+## Running ECJ
 
 Take ECJ for a test drive by running one if its example apps.  If you built
 the jar file, and you were in the ecj directory, you could say:
 
 ```
-java -jar jar/ecj-xx.jar -from app/tutorial3/tutorial3.params
+java -jar target/ecj-xx.jar -from app/tutorial3/tutorial3.params
 ```
 ... where xx is the ECJ version number
 
 Or if you built ECJ from the Makefile, you could do this.  First
-add the `classes/` directory to your `CLASSPATH`.  Then you could
+add the `target/classes/` directory to your `CLASSPATH`.  Then you could
 do:
 ```
-java ec.Evolve -file classes/ec/app/tutorial3/tutorial3.params
+java ec.Evolve -file target/classes/ec/app/tutorial3/tutorial3.params
 ```
 
 ## Where to Go Next
