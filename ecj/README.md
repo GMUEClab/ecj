@@ -56,18 +56,18 @@ them you need to tweak ECJ a bit in order to get it to compile:
   *off* in order to run distributed evaluation or island
   models.
 
-TO COMPILE: under UNIX, just type:
-
-  make gui       (if you have JFreeChart and iText installed)
-
-or
-
-  make           (otherwise)
-
-You can build a JAR file out of ECJ, if you like, with
-
+TO COMPILE: under UNIX, just type
+```
+  make gui
+```
+if you have JFreeChart and iText installed, or
+```
+  make
+```
+otherwise.  You can build a JAR file out of ECJ, if you like, with
+```
   make jar
-
+```
 
 Take ECJ for a test drive by running one if its example apps.  If you built
 the jar file, and you were in the ecj directory, you could say:
