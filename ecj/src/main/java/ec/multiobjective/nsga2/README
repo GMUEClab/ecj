@@ -25,7 +25,7 @@ appending the current archive to the newly-generated children.  This
 is essentially a version of (mu+mu).
 
 Most of the work is done when the protected loadElites() method is called. 
-The Individuals are evaluated, then broken into Pareto Front Ranks,
+The Individuals are broken into Pareto Front Ranks,
 then loaded into the archive.  When there's not enough room left in the
 archive for another full rank, sparsity is used to decide who gets to be
 included.  The archive then forms the next-generation population.
