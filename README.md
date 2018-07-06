@@ -6,6 +6,9 @@ ECJ is an evolutionary computation framework written in Java. The system was des
 
 ECJ is now well over fifteen years old and is a mature, stable framework which has (fortunately) exhibited relatively few serious bugs over the years. Its design has readily accommodated many later additions, including multiobjective optimization algorithms, island models, master/slave evaluation facilities, coevolution, steady-state and evolution strategies methods, parsimony pressure techniques, and various new individual representations (for example, rule-sets). The system is widely used in the genetic programming community and is reasonably popular in the EC community at large, where it has formed the basis of many theses, publications, and commercial products.
 
+## ECJ's Website
+
+This is ECJ's repository, but [ECJ's official website](http://cs.gmu.edu/~eclab/projects/ecj/) is elsewhere.  Before doing anything else, we'd recommend you started there.
 
 ## Getting Started
 
