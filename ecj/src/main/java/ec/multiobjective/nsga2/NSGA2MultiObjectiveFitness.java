@@ -94,7 +94,7 @@ public class NSGA2MultiObjectiveFitness extends MultiObjectiveFitness
         else if (rank > ((NSGA2MultiObjectiveFitness) _fitness).rank)
             return false;
         else        
-        // otherwise try sparsity
-        return (sparsity > other.sparsity);
+            // otherwise try sparsity
+            return (sparsity > other.sparsity);
         }
     }

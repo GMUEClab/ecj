@@ -431,37 +431,37 @@ public class AMALGAMSpecies extends FloatVectorSpecies
         int constraintViolationA = constraintViolations.get(a);
         int constraintViolationB = constraintViolations.get(b);
 
-		/// The original iAmalgam code uses a merge sort, but the sorting comparison
-		/// does not ever state that two individuals are equal.  It just says that
-		/// if a and b are the same, then a > b.  This is of course in violation of 
-		/// Java sorting contracts.  So we have to tweak it slightly.  
-		/// The iAmalgam sorting code (line 783 of iAMaLGaM-Full.c) says:
-		/// 
-		///		Sorts an array of objectives and constraints
-		///		using constraint domination and returns the
-		///		sort-order (small to large).
-		///
-		/// By this we assume that the following should be proper:
-		///
-		/// If A violates fewer constraints than B
-		///		A is best
-		///	Else if B violates less than A
-		///		B is best
-		///	Else if A is fitter than B
-		///		A is best
-		///	Else if B is fitter than A
-		///		B is best
-		///	Else 
-		///		A and B are equal
+        /// The original iAmalgam code uses a merge sort, but the sorting comparison
+        /// does not ever state that two individuals are equal.  It just says that
+        /// if a and b are the same, then a > b.  This is of course in violation of 
+        /// Java sorting contracts.  So we have to tweak it slightly.  
+        /// The iAmalgam sorting code (line 783 of iAMaLGaM-Full.c) says:
+        /// 
+        ///             Sorts an array of objectives and constraints
+        ///             using constraint domination and returns the
+        ///             sort-order (small to large).
+        ///
+        /// By this we assume that the following should be proper:
+        ///
+        /// If A violates fewer constraints than B
+        ///             A is best
+        ///     Else if B violates less than A
+        ///             B is best
+        ///     Else if A is fitter than B
+        ///             A is best
+        ///     Else if B is fitter than A
+        ///             B is best
+        ///     Else 
+        ///             A and B are equal
 
         if (constraintViolationA < constraintViolationB)
-        	{
-        	return -1;  // A is better
-        	}
+            {
+            return -1;  // A is better
+            }
         else if (constraintViolationB < constraintViolationA)
-        	{
-        	return 1;  // B is better
-        	}
+            {
+            return 1;  // B is better
+            }
         else return a.compareTo(b);  // compares based on fitness, with 0 as a tie
         }
 
@@ -533,324 +533,324 @@ public class AMALGAMSpecies extends FloatVectorSpecies
                     break;
                     }
                 }
-			}
-			
-		if (improved) 
-			{
-			noImprovementStretch = 0;
-			if (distributionMultiplier < 1) distributionMultiplier = 1;
+            }
+                        
+        if (improved) 
+            {
+            noImprovementStretch = 0;
+            if (distributionMultiplier < 1) distributionMultiplier = 1;
 
-			xAvgImp = new DenseMatrix64F(genomeSize, 1);
-			int count = 0;
-			for (int j = 1; j < tau*subpop.individuals.size(); j++) 
-				{
-				if (compareIndividuals(subpop.individuals.get(j), subpop.individuals.get(0)) < 0) 
-					{
-					DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(j));
-					DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
-					CommonOps.add(xAvgImp,genome,xAvgImp);
-					count++;
-					}
+            xAvgImp = new DenseMatrix64F(genomeSize, 1);
+            int count = 0;
+            for (int j = 1; j < tau*subpop.individuals.size(); j++) 
+                {
+                if (compareIndividuals(subpop.individuals.get(j), subpop.individuals.get(0)) < 0) 
+                    {
+                    DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(j));
+                    DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
+                    CommonOps.add(xAvgImp,genome,xAvgImp);
+                    count++;
+                    }
 
-				}
-			CommonOps.scale(1.0/count,xAvgImp,xAvgImp);
+                }
+            CommonOps.scale(1.0/count,xAvgImp,xAvgImp);
 
-			CommonOps.subtract(xAvgImp, mean, temp);
-			CommonOps.invert(choleskyLower, tempMatrix);
-			CommonOps.mult(tempMatrix, temp, temp3);
-			double sdr = CommonOps.elementMaxAbs(temp3);
+            CommonOps.subtract(xAvgImp, mean, temp);
+            CommonOps.invert(choleskyLower, tempMatrix);
+            CommonOps.mult(tempMatrix, temp, temp3);
+            double sdr = CommonOps.elementMaxAbs(temp3);
 
-			if (sdr > stDevRatioThresh) 
-				{
-				distributionMultiplier *= distributionMultiplierIncrease;
-				}
-			} 
-		else 
-			{
-			if (distributionMultiplier <= 1) noImprovementStretch++;
-			if (distributionMultiplier > 1 || noImprovementStretch > maximumNoImprovementStretch) distributionMultiplier *= distributionMultiplierDecrease;
-			if (distributionMultiplier < 1 && noImprovementStretch < maximumNoImprovementStretch) distributionMultiplier = 1;
-			}
+            if (sdr > stDevRatioThresh) 
+                {
+                distributionMultiplier *= distributionMultiplierIncrease;
+                }
+            } 
+        else 
+            {
+            if (distributionMultiplier <= 1) noImprovementStretch++;
+            if (distributionMultiplier > 1 || noImprovementStretch > maximumNoImprovementStretch) distributionMultiplier *= distributionMultiplierDecrease;
+            if (distributionMultiplier < 1 && noImprovementStretch < maximumNoImprovementStretch) distributionMultiplier = 1;
+            }
         }
 
-        public void selectForDiversity(final EvolutionState state, final Subpopulation subpop) 
+    public void selectForDiversity(final EvolutionState state, final Subpopulation subpop) 
+        {
+        int numBest; // the number of individuals with fitness equal to the best individual
+        DoubleVectorIndividual bestInd = (DoubleVectorIndividual) subpop.individuals.get(0);
+        for (numBest = 1; numBest < subpop.individuals.size(); numBest++) 
             {
-            int numBest; // the number of individuals with fitness equal to the best individual
-            DoubleVectorIndividual bestInd = (DoubleVectorIndividual) subpop.individuals.get(0);
-            for (numBest = 1; numBest < subpop.individuals.size(); numBest++) 
+            DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(numBest));
+            if (dvind.compareTo(bestInd) != 0) 
                 {
-                DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(numBest));
-                if (dvind.compareTo(bestInd) != 0) 
-                    {
-                    break; // break when we find an individual that isn't as good as the best
-                    }
-                }
-
-            // rearrange the selections so that the selected individuals out of the equal fitness ones are at the front of the array
-            // chooses the individual that is farthest from the ones selected previously
-
-            int numSelectedSoFar = 1; // first one is already selected
-            double[] distances = new double[numBest];
-            Arrays.fill(distances, Double.POSITIVE_INFINITY); // value guaranteed to be overwriten
-            for (; numSelectedSoFar < tau*subpop.individuals.size(); numSelectedSoFar++) 
-                {
-                double farthest = -1; // always less than the first candidate
-
-                for (int i = numSelectedSoFar; i < numBest; i++) 
-                    {
-                    double distance = subpop.individuals.get(numSelectedSoFar-1).distanceTo(subpop.individuals.get(i));
-
-                    if (distance < distances[i]) 
-                        {
-                        distances[i] = distance;
-                        }
-
-                    if (distances[i] > farthest)
-                        {
-                        farthest = distances[i];
-                        Individual tmp = subpop.individuals.get(i);
-                        subpop.individuals.set(i, subpop.individuals.get(numSelectedSoFar));
-                        subpop.individuals.set(numSelectedSoFar, tmp);
-                        }
-                    }
-                }
-
-            }
-
-        public void computeMean(final EvolutionState state, final Subpopulation subpop) 
-            {
-            prevMean.set(mean);
-            CommonOps.fill(mean,0);
-            if (distributionMultiplier >= 1.0) 
-                {
-                int i;
-                for (i = 0; i < tau*subpop.individuals.size(); i++) 
-                    {
-                    DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
-                    DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
-                    CommonOps.add(mean,genome,mean);
-                    }
-                CommonOps.scale(1.0/i,mean,mean);
-                } 
-            else 
-                {
-                // focus on the best solution
-                DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(0));
-                mean.set(DenseMatrix64F.wrap(genomeSize,1,dvind.genome));
+                break; // break when we find an individual that isn't as good as the best
                 }
             }
 
-        public void computeCovariance(final EvolutionState state, final Subpopulation subpop) 
-            {
-            CommonOps.fill(genCovarMatrix, 0);
+        // rearrange the selections so that the selected individuals out of the equal fitness ones are at the front of the array
+        // chooses the individual that is farthest from the ones selected previously
 
+        int numSelectedSoFar = 1; // first one is already selected
+        double[] distances = new double[numBest];
+        Arrays.fill(distances, Double.POSITIVE_INFINITY); // value guaranteed to be overwriten
+        for (; numSelectedSoFar < tau*subpop.individuals.size(); numSelectedSoFar++) 
+            {
+            double farthest = -1; // always less than the first candidate
+
+            for (int i = numSelectedSoFar; i < numBest; i++) 
+                {
+                double distance = subpop.individuals.get(numSelectedSoFar-1).distanceTo(subpop.individuals.get(i));
+
+                if (distance < distances[i]) 
+                    {
+                    distances[i] = distance;
+                    }
+
+                if (distances[i] > farthest)
+                    {
+                    farthest = distances[i];
+                    Individual tmp = subpop.individuals.get(i);
+                    subpop.individuals.set(i, subpop.individuals.get(numSelectedSoFar));
+                    subpop.individuals.set(numSelectedSoFar, tmp);
+                    }
+                }
+            }
+
+        }
+
+    public void computeMean(final EvolutionState state, final Subpopulation subpop) 
+        {
+        prevMean.set(mean);
+        CommonOps.fill(mean,0);
+        if (distributionMultiplier >= 1.0) 
+            {
             int i;
             for (i = 0; i < tau*subpop.individuals.size(); i++) 
                 {
                 DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
                 DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
-                CommonOps.subtract(genome,mean,temp);
-                CommonOps.transpose(temp,temp2);
-                CommonOps.multAdd(temp,temp2,genCovarMatrix);
+                CommonOps.add(mean,genome,mean);
                 }
-
-
-
-            CommonOps.scale(1.0/i,genCovarMatrix,genCovarMatrix);
-
-            if (!firstGeneration) 
-                {
-                CommonOps.scale(etaS, genCovarMatrix, genCovarMatrix);
-                CommonOps.scale(1-etaS, aggCovarMatrix, aggCovarMatrix);
-                CommonOps.add(aggCovarMatrix, genCovarMatrix, aggCovarMatrix);
-                } 
-            else 
-                {
-                aggCovarMatrix.set(genCovarMatrix);
-                }    
-            CommonOps.scale(distributionMultiplier, aggCovarMatrix, covarMatrix);
-
-            for ( i = 0; i < genomeSize; i++ )
-                for (int j = 0; j < i; j++ )
-                    covarMatrix.set(i,j,covarMatrix.get(j,i));
-            }
-
-        public void computeAMS(final EvolutionState state, final Subpopulation subpop) 
+            CommonOps.scale(1.0/i,mean,mean);
+            } 
+        else 
             {
-            CommonOps.subtract(mean,prevMean,temp);
-            if (!firstGeneration) 
-                {
-                CommonOps.scale(etaP, temp);
-                CommonOps.scale(1-etaP, meanShift);
-                CommonOps.add(meanShift,temp,meanShift);
-                } 
-            else 
-                {
-                meanShift.set(temp);
-                }
+            // focus on the best solution
+            DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(0));
+            mean.set(DenseMatrix64F.wrap(genomeSize,1,dvind.genome));
             }
-
-
-        public void updateDistribution(final EvolutionState state, final Subpopulation subpop) 
-            {
-            CommonOps.fill(temp, 0);
-            CommonOps.fill(temp3, 0);
-            CommonOps.fill(temp2, 0);
-            CommonOps.fill(tempMatrix, 0);
-
-            if (userEtaP == P_PARAMETER_MISSING) 
-                {
-                etaP = 1.0-Math.exp(-1.2*Math.pow((int)(tau*subpop.individuals.size()),0.31)/Math.pow(genomeSize,0.50));
-                }
-
-            if (userEtaS == P_PARAMETER_MISSING) 
-                {
-                etaS = 1.0-Math.exp(-1.1*Math.pow((int)(tau*subpop.individuals.size()),1.20)/Math.pow(genomeSize,1.60));
-                }
-
-            if (userAlphaAMS == P_PARAMETER_MISSING) 
-                {
-                alphaAMS = 0.5 * tau * subpop.individuals.size() / (subpop.individuals.size()-1);
-                }
-
-
-            computeConstraintViolations(state, subpop);
-
-            if (!firstGeneration)
-                {
-                adaptDistributionMultiplier(state, subpop);
-                }
-
-            Collections.sort(subpop.individuals, new Comparator<Individual>() 
-                    {
-                    public int compare(Individual a, Individual b) 
-                        {
-                        return compareIndividuals(a, b);
-                        }
-                });
-            // printStats(state,subpop);
-
-            if (subpop.individuals.get((int)tau*subpop.individuals.size()).fitness.fitness() == subpop.individuals.get(0).fitness.fitness()) 
-                {
-                selectForDiversity(state,subpop);
-                }
-
-
-            if (checkTerminationConditions(state,subpop)) 
-                {
-                state.evaluator.setRunComplete("AMALGAMSpecies: Termination condition reached.");
-                }
-
-            computeMean(state, subpop);
-            computeCovariance(state, subpop);
-            computeAMS(state, subpop);
-
-
-            // System.out.println("distributionMultiplier: " + distributionMultiplier);
-            CholeskyDecomposition chol = DecompositionFactory.chol(genomeSize, true);
-
-            tempMatrix.set(covarMatrix);
-
-            if (!chol.decompose(tempMatrix)) 
-                {
-                chol.getT(choleskyLower);
-                // state.output.fatal("Failed to decompose matrix");
-                } 
-            else
-                {
-                chol.getT(choleskyLower);
-                }
-            }
-
-        public boolean checkTerminationConditions(final EvolutionState state,  final Subpopulation subpop) 
-            {
-            if (!useAltTermination)
-                return false;
-                
-            if (distributionMultiplier < 1e-10) 
-                {
-                return true;
-                }
-
-            double avg = 0, var = 0;
-            // terminate if fitness variance multiplier gets too small
-            for (int i = 0; i < subpop.individuals.size(); i++) 
-                {
-                DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
-                avg += dvind.fitness.fitness();
-                }
-            avg /= subpop.individuals.size();
-
-            for (int i = 0; i < subpop.individuals.size(); i++) 
-                {
-                DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
-                var += (dvind.fitness.fitness()-avg)*(dvind.fitness.fitness()-avg);
-                }
-
-            var /= subpop.individuals.size();
-
-            if (var <= 0.0)
-                var = 0.0;
-
-            if (var < fitnessVarianceTolerance)
-                {
-                return true;
-                }
-
-            return false;
-            }
-
-        public void shiftIndividual(final EvolutionState state, DoubleVectorIndividual ind)
-            {
-            DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,ind.genome);
-            double shiftMult = 1;
-            temp.set(genome);
-            do 
-                {
-                genome.set(temp);
-                CommonOps.add(shiftMult*deltaAMS*distributionMultiplier, meanShift, genome, genome);
-                shiftMult *= 0.5;
-                } while (!isValid(ind) && shiftMult > 1e-10);
-            }
-
-        // public void printStats(final EvolutionState state, final Subpopulation subpop) {
-        //     // System.out.println(distributionMultiplier);
-        //     DoubleVectorIndividual first = (DoubleVectorIndividual)(subpop.individuals.get(0));
-        //     double avg = 0, var = 0;
-        //     double best = first.fitness.fitness();
-        //     double worst = first.fitness.fitness();
-
-        //     for (int i = 0; i < subpop.individuals.size(); i++) {
-        //         DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
-        //         avg += dvind.fitness.fitness();
-        //         if (dvind.fitness.fitness() > best) {
-        //             best = dvind.fitness.fitness();
-        //         }
-        //         if (dvind.fitness.fitness() < worst) {
-        //             worst = dvind.fitness.fitness();
-        //         }
-        //     }
-        //     avg /= subpop.individuals.size();
-
-        //     for (int i = 0; i < subpop.individuals.size(); i++) {
-        //         DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
-        //         var += (dvind.fitness.fitness()-avg)*(dvind.fitness.fitness()-avg);
-        //     }
-
-        //     var /= subpop.individuals.size();
-
-
-        //     System.out.printf("# Generation Evaluations  Average-obj. Variance-obj.     Best-obj.    Worst-obj.   Dist. mult. \n");
-        //     System.out.printf("  %10d %11d %13e %13e %13e %13e %13e\n", state.generation, 0, avg, var, best, worst, distributionMultiplier);
-
-
-        //     for (int i = 0; i < subpop.individuals.size(); i++) {
-        //         DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
-        //         DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
-        //         // genome.transpose().print();
-        //         CommonOps.transpose(genome, temp2);
-        //         // temp2.print(); 
-        //     }  
-        // }
         }
+
+    public void computeCovariance(final EvolutionState state, final Subpopulation subpop) 
+        {
+        CommonOps.fill(genCovarMatrix, 0);
+
+        int i;
+        for (i = 0; i < tau*subpop.individuals.size(); i++) 
+            {
+            DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
+            DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
+            CommonOps.subtract(genome,mean,temp);
+            CommonOps.transpose(temp,temp2);
+            CommonOps.multAdd(temp,temp2,genCovarMatrix);
+            }
+
+
+
+        CommonOps.scale(1.0/i,genCovarMatrix,genCovarMatrix);
+
+        if (!firstGeneration) 
+            {
+            CommonOps.scale(etaS, genCovarMatrix, genCovarMatrix);
+            CommonOps.scale(1-etaS, aggCovarMatrix, aggCovarMatrix);
+            CommonOps.add(aggCovarMatrix, genCovarMatrix, aggCovarMatrix);
+            } 
+        else 
+            {
+            aggCovarMatrix.set(genCovarMatrix);
+            }    
+        CommonOps.scale(distributionMultiplier, aggCovarMatrix, covarMatrix);
+
+        for ( i = 0; i < genomeSize; i++ )
+            for (int j = 0; j < i; j++ )
+                covarMatrix.set(i,j,covarMatrix.get(j,i));
+        }
+
+    public void computeAMS(final EvolutionState state, final Subpopulation subpop) 
+        {
+        CommonOps.subtract(mean,prevMean,temp);
+        if (!firstGeneration) 
+            {
+            CommonOps.scale(etaP, temp);
+            CommonOps.scale(1-etaP, meanShift);
+            CommonOps.add(meanShift,temp,meanShift);
+            } 
+        else 
+            {
+            meanShift.set(temp);
+            }
+        }
+
+
+    public void updateDistribution(final EvolutionState state, final Subpopulation subpop) 
+        {
+        CommonOps.fill(temp, 0);
+        CommonOps.fill(temp3, 0);
+        CommonOps.fill(temp2, 0);
+        CommonOps.fill(tempMatrix, 0);
+
+        if (userEtaP == P_PARAMETER_MISSING) 
+            {
+            etaP = 1.0-Math.exp(-1.2*Math.pow((int)(tau*subpop.individuals.size()),0.31)/Math.pow(genomeSize,0.50));
+            }
+
+        if (userEtaS == P_PARAMETER_MISSING) 
+            {
+            etaS = 1.0-Math.exp(-1.1*Math.pow((int)(tau*subpop.individuals.size()),1.20)/Math.pow(genomeSize,1.60));
+            }
+
+        if (userAlphaAMS == P_PARAMETER_MISSING) 
+            {
+            alphaAMS = 0.5 * tau * subpop.individuals.size() / (subpop.individuals.size()-1);
+            }
+
+
+        computeConstraintViolations(state, subpop);
+
+        if (!firstGeneration)
+            {
+            adaptDistributionMultiplier(state, subpop);
+            }
+
+        Collections.sort(subpop.individuals, new Comparator<Individual>() 
+                {
+                public int compare(Individual a, Individual b) 
+                    {
+                    return compareIndividuals(a, b);
+                    }
+            });
+        // printStats(state,subpop);
+
+        if (subpop.individuals.get((int)tau*subpop.individuals.size()).fitness.fitness() == subpop.individuals.get(0).fitness.fitness()) 
+            {
+            selectForDiversity(state,subpop);
+            }
+
+
+        if (checkTerminationConditions(state,subpop)) 
+            {
+            state.evaluator.setRunComplete("AMALGAMSpecies: Termination condition reached.");
+            }
+
+        computeMean(state, subpop);
+        computeCovariance(state, subpop);
+        computeAMS(state, subpop);
+
+
+        // System.out.println("distributionMultiplier: " + distributionMultiplier);
+        CholeskyDecomposition chol = DecompositionFactory.chol(genomeSize, true);
+
+        tempMatrix.set(covarMatrix);
+
+        if (!chol.decompose(tempMatrix)) 
+            {
+            chol.getT(choleskyLower);
+            // state.output.fatal("Failed to decompose matrix");
+            } 
+        else
+            {
+            chol.getT(choleskyLower);
+            }
+        }
+
+    public boolean checkTerminationConditions(final EvolutionState state,  final Subpopulation subpop) 
+        {
+        if (!useAltTermination)
+            return false;
+                
+        if (distributionMultiplier < 1e-10) 
+            {
+            return true;
+            }
+
+        double avg = 0, var = 0;
+        // terminate if fitness variance multiplier gets too small
+        for (int i = 0; i < subpop.individuals.size(); i++) 
+            {
+            DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
+            avg += dvind.fitness.fitness();
+            }
+        avg /= subpop.individuals.size();
+
+        for (int i = 0; i < subpop.individuals.size(); i++) 
+            {
+            DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
+            var += (dvind.fitness.fitness()-avg)*(dvind.fitness.fitness()-avg);
+            }
+
+        var /= subpop.individuals.size();
+
+        if (var <= 0.0)
+            var = 0.0;
+
+        if (var < fitnessVarianceTolerance)
+            {
+            return true;
+            }
+
+        return false;
+        }
+
+    public void shiftIndividual(final EvolutionState state, DoubleVectorIndividual ind)
+        {
+        DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,ind.genome);
+        double shiftMult = 1;
+        temp.set(genome);
+        do 
+            {
+            genome.set(temp);
+            CommonOps.add(shiftMult*deltaAMS*distributionMultiplier, meanShift, genome, genome);
+            shiftMult *= 0.5;
+            } while (!isValid(ind) && shiftMult > 1e-10);
+        }
+
+    // public void printStats(final EvolutionState state, final Subpopulation subpop) {
+    //     // System.out.println(distributionMultiplier);
+    //     DoubleVectorIndividual first = (DoubleVectorIndividual)(subpop.individuals.get(0));
+    //     double avg = 0, var = 0;
+    //     double best = first.fitness.fitness();
+    //     double worst = first.fitness.fitness();
+
+    //     for (int i = 0; i < subpop.individuals.size(); i++) {
+    //         DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
+    //         avg += dvind.fitness.fitness();
+    //         if (dvind.fitness.fitness() > best) {
+    //             best = dvind.fitness.fitness();
+    //         }
+    //         if (dvind.fitness.fitness() < worst) {
+    //             worst = dvind.fitness.fitness();
+    //         }
+    //     }
+    //     avg /= subpop.individuals.size();
+
+    //     for (int i = 0; i < subpop.individuals.size(); i++) {
+    //         DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
+    //         var += (dvind.fitness.fitness()-avg)*(dvind.fitness.fitness()-avg);
+    //     }
+
+    //     var /= subpop.individuals.size();
+
+
+    //     System.out.printf("# Generation Evaluations  Average-obj. Variance-obj.     Best-obj.    Worst-obj.   Dist. mult. \n");
+    //     System.out.printf("  %10d %11d %13e %13e %13e %13e %13e\n", state.generation, 0, avg, var, best, worst, distributionMultiplier);
+
+
+    //     for (int i = 0; i < subpop.individuals.size(); i++) {
+    //         DoubleVectorIndividual dvind = (DoubleVectorIndividual)(subpop.individuals.get(i));
+    //         DenseMatrix64F genome = DenseMatrix64F.wrap(genomeSize,1,dvind.genome);
+    //         // genome.transpose().print();
+    //         CommonOps.transpose(genome, temp2);
+    //         // temp2.print(); 
+    //     }  
+    // }
+    }
 

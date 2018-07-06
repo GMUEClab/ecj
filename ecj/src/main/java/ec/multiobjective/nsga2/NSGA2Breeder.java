@@ -36,7 +36,7 @@ public class NSGA2Breeder extends SimpleBreeder
      * is only called at the appropriate time.
      */
     public enum BreedingState { ARCHIVE_LOADED, BREEDING_COMPLETE };
-     BreedingState breedingState;
+    BreedingState breedingState;
     
     public void setup(final EvolutionState state, final Parameter base)
         {
@@ -86,7 +86,7 @@ public class NSGA2Breeder extends SimpleBreeder
         
         breedingState = BreedingState.ARCHIVE_LOADED;
 
-		// replace old population with archive so new individuals are bred from the archive members only
+        // replace old population with archive so new individuals are bred from the archive members only
         oldPopulation = state.population;
         state.population = state.population.emptyClone();
         
@@ -96,27 +96,27 @@ public class NSGA2Breeder extends SimpleBreeder
             Subpopulation newsubpop = newpop.subpops.get(i);
             int ne = numElites[i];
             for(int j = 0; j < ne; j++)
-            	subpop.individuals.add(j, (Individual)(newsubpop.individuals.get(j).clone()));
+                subpop.individuals.add(j, (Individual)(newsubpop.individuals.get(j).clone()));
             }
         }
 
-	@Override
-	public void postProcess(EvolutionState state)
-		{
-		state.population = oldPopulation;
-		oldPopulation = null;
-		}
+    @Override
+    public void postProcess(EvolutionState state)
+        {
+        state.population = oldPopulation;
+        oldPopulation = null;
+        }
     
     /** Use super's breeding, but also set our local state to record that breeding is complete. */
     public Population breedPopulation(EvolutionState state) 
         {
-            final Population result = super.breedPopulation(state);
-            breedingState = BreedingState.BREEDING_COMPLETE;
-            return result;
+        final Population result = super.breedPopulation(state);
+        breedingState = BreedingState.BREEDING_COMPLETE;
+        return result;
         }
     
     /** Build the auxiliary fitness data and reduce the subpopulation to just the archive, which is returned. */
-     ArrayList<Individual> buildArchive(EvolutionState state, int subpop)
+    ArrayList<Individual> buildArchive(EvolutionState state, int subpop)
         {
         ArrayList<ArrayList<Individual>> ranks = assignFrontRanks(state.population.subpops.get(subpop));
                 
@@ -171,7 +171,7 @@ public class NSGA2Breeder extends SimpleBreeder
 
     /** Divides inds into ranks and assigns each individual's rank to be the rank it was placed into.
         Each front is an ArrayList. */
-	public ArrayList<ArrayList<Individual>> assignFrontRanks(Subpopulation subpop)
+    public ArrayList<ArrayList<Individual>> assignFrontRanks(Subpopulation subpop)
         {
         ArrayList<Individual> inds = subpop.individuals;
         ArrayList<ArrayList<Individual>> frontsByRank = MultiObjectiveFitness.partitionIntoRanks(inds);
@@ -192,7 +192,7 @@ public class NSGA2Breeder extends SimpleBreeder
     /**
      * Computes and assigns the sparsity values of a given front.
      */
-     void assignSparsity(ArrayList<Individual> front)
+    void assignSparsity(ArrayList<Individual> front)
         {
         int numObjectives = ((NSGA2MultiObjectiveFitness) front.get(0).fitness).getObjectives().length;
                 

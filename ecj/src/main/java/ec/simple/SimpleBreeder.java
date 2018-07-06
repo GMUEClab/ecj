@@ -319,17 +319,17 @@ public class SimpleBreeder extends Breeder
                 }
             }
 
-		postProcess(state);
+        postProcess(state);
 
         return newpop;
         }
 
-	/** A hook to do final modifications as necessary to the population after breeding has concluded.
-		By default this does nothing, but multiobjective breeders, which temporarily replace the old
-		population while it's being breeded, may use this to put the popuplation back again just in
-		case statistics needs it.
-	*/
-	public void postProcess(EvolutionState state) { }
+    /** A hook to do final modifications as necessary to the population after breeding has concluded.
+        By default this does nothing, but multiobjective breeders, which temporarily replace the old
+        population while it's being breeded, may use this to put the popuplation back again just in
+        case statistics needs it.
+    */
+    public void postProcess(EvolutionState state) { }
 
     /** Returns true if we're doing sequential breeding and it's the subpopulation's turn (round robin,
         one subpopulation per generation).*/

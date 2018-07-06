@@ -151,7 +151,7 @@ public class Subpopulation implements Cloneable, Setup
     public void truncate(int toThis)
         {
         for(int i = individuals.size() - 1; i >= toThis; i--)
-        	individuals.remove(i);
+            individuals.remove(i);
         assert(individuals.size() == toThis);
         }
 

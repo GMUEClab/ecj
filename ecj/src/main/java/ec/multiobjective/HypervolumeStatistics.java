@@ -114,8 +114,8 @@ public class HypervolumeStatistics extends SimpleStatistics
         final double ihv = inclusiveHypervolume(ind);
         assert(ihv >= 0);
         final double result = limitSet.isEmpty() ?
-                ihv :
-                ihv - hypervolume(MultiObjectiveFitness.partitionIntoParetoFront(limitSet, null, null));
+            ihv :
+            ihv - hypervolume(MultiObjectiveFitness.partitionIntoParetoFront(limitSet, null, null));
         assert(result >= 0);
         return result;
         }
@@ -159,8 +159,8 @@ public class HypervolumeStatistics extends SimpleStatistics
             for (int j = 0; j < newPoint.length; j++)
                 {
                 newPoint[j] = contributingFitness.isMaximizing(j) ? 
-                        Math.min(contributingFitness.getObjective(j), refFitness.getObjective(j)) :
-                        Math.max(contributingFitness.getObjective(j), refFitness.getObjective(j));
+                    Math.min(contributingFitness.getObjective(j), refFitness.getObjective(j)) :
+                    Math.max(contributingFitness.getObjective(j), refFitness.getObjective(j));
                 }
             final Individual newPointInd = (Individual) contributingPoint.clone();
             newPointInd.fitness = (MultiObjectiveFitness) contributingFitness.clone();

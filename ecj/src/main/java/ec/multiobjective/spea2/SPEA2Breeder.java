@@ -60,9 +60,9 @@ public class SPEA2Breeder extends SimpleBreeder
     /** Use super's breeding, but also set our local state to record that breeding is complete. */
     public Population breedPopulation(EvolutionState state) 
         {
-            final Population result = super.breedPopulation(state);
-            breedingState = BreedingState.BREEDING_COMPLETE;
-            return result;
+        final Population result = super.breedPopulation(state);
+        breedingState = BreedingState.BREEDING_COMPLETE;
+        return result;
         }
 
     Population oldPopulation = null;
@@ -95,7 +95,7 @@ public class SPEA2Breeder extends SimpleBreeder
         unmarkElitesEvaluated(state, newpop); // XXX Should NSGA-II be doing this too?  What is this?
         breedingState = BreedingState.ARCHIVE_LOADED;
 
-		// replace old population with archive so new individuals are bred from the archive members only
+        // replace old population with archive so new individuals are bred from the archive members only
         oldPopulation = state.population;
         state.population = state.population.emptyClone();
         
@@ -105,16 +105,16 @@ public class SPEA2Breeder extends SimpleBreeder
             Subpopulation newsubpop = newpop.subpops.get(i);
             int ne = numElites(state, i);
             for(int j = 0; j < ne; j++)
-            	subpop.individuals.add(j, (Individual)(newsubpop.individuals.get(j).clone()));
+                subpop.individuals.add(j, (Individual)(newsubpop.individuals.get(j).clone()));
             }
         }
 
-	@Override
-	public void postProcess(EvolutionState state)
-		{
-		state.population = oldPopulation;
-		oldPopulation = null;
-		}
+    @Override
+    public void postProcess(EvolutionState state)
+        {
+        state.population = oldPopulation;
+        oldPopulation = null;
+        }
     
     public double[] calculateDistancesFromIndividual(Individual ind, ArrayList<Individual> inds)
         {

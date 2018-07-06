@@ -477,7 +477,7 @@ public class ParameterDatabase implements Serializable
     Class relativeClass;
     String relativePath;
 
-	Properties properties;
+    Properties properties;
 
     /**
      * Searches down through databases to find a given parameter, whose value
@@ -2325,10 +2325,10 @@ public class ParameterDatabase implements Serializable
     
     /** Private helper function */
     synchronized String _getRecursive(String parameter) 
-    {
+        {
         if (parameter == null)
             {
-                return null;
+            return null;
             }
         if (checked)
             return null; // we already searched this path
@@ -2336,38 +2336,38 @@ public class ParameterDatabase implements Serializable
         String result = properties.getProperty(parameter);
         if (result == null) 
             {
-                int size = parents.size();
-                for (int x = 0; x < size; x++) 
+            int size = parents.size();
+            for (int x = 0; x < size; x++) 
+                {
+                result = ((ParameterDatabase) (parents.elementAt(x)))._getRecursive(parameter);
+                if (result != null)
                     {
-                        result = ((ParameterDatabase) (parents.elementAt(x)))._getRecursive(parameter);
-                        if (result != null)
-                            {
-                                return result;
-                            }
+                    return result;
                     }
+                }
             } 
         else  // preprocess
             {
-                result = result.trim();
-                if (result.length() == 0)
-                    result = null;
+            result = result.trim();
+            if (result.length() == 0)
+                result = null;
             }
         return result;
-    }
+        }
 
 
     synchronized String _getParam(String parameter)
-    {
-    try
+        {
+        try
             {
             return _getInner(parameter);
             }
-    catch (RuntimeException ex)
+        catch (RuntimeException ex)
             {
             System.err.println("Parameter Database Error: " + ex.getMessage());
             return null;
             }
-    }
+        }
     
     /** Private helper function */
     synchronized String _getInner(String parameter) 
@@ -2468,7 +2468,7 @@ public class ParameterDatabase implements Serializable
 
         aliases = new Hashtable();
         return result;
-    }
+        }
 
 
     public ParameterDatabase getLocation(Parameter parameter)
@@ -3358,7 +3358,7 @@ public class ParameterDatabase implements Serializable
      * Test the ParameterDatabase
      */
     public static void main(String[] args)
-            throws FileNotFoundException, IOException
+        throws FileNotFoundException, IOException
         {
         ParameterDatabase pd = new ParameterDatabase(new File(args[0]), args);
         pd.set(new Parameter("Hi there"), "Whatever");
@@ -3370,7 +3370,7 @@ public class ParameterDatabase implements Serializable
             {
             "a", "b", "c"
             }).pop().push("d"),
-                "Whatever");
+            "Whatever");
 
         System.err.println("\n\n PRINTING ALL PARAMETERS \n\n");
         pd.list(new PrintWriter(System.err, true), true);
