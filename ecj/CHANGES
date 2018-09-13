@@ -2479,3 +2479,6 @@ Version		Change Log
 		generation number (off by 1) in the file.
 	Multiobjective examples now enable HypervolumeStatistics by default
 	Fixed incorrect equation for the KUR function in ec.app.moosuite.MooSuite
+
+27 Prerelease Schmirelease
+   	Added hypervolume calculation to ec.multiobjective.MultiObjectivestatistics

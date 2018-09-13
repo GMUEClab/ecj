@@ -12988,10 +12988,29 @@ Returns an array of doubles, one per auxiliary fitness element, of the current v
 
 
 
-\subsubsection{The HypervolumeStatistics class}  
+\subsubsection{Measuring Hypervolume}  
 \label{ec.multi.HypervolumeStatistics}
 
-Because multiobjective algorithms work with several competing objectives at once, their performance can be tricky to quantify as a scalar value.  One popular way of expressing the quality of a Pareto front is compute the hypervolume of the portion of the objective space that is dominated by the current population.  In general, the larger the hypervolume, the better the Pareto front.  The \package{ec.multiobjective} package offers a statistics class for recording such a hypervolume over the course of a run: \class{ec.multiobjective.HypervolumeStatistics}.
+Because multiobjective algorithms work with several competing objectives at once, their performance can be tricky to quantify as a scalar value.  One popular way of expressing the quality of a Pareto front is to compute the \textbf{hypervolume} of the portion of the objective space that is dominated by the current population.  In general, the larger the hypervolume, the better the Pareto front. The \package{ec.multiobjective} package offers two mechanisms for recording such a hypervolume over the course of a run.  First, the \class{ec.multiobjective.MultiObjectiveStatistics} class has an option that allows us to include hypervolume as part of its output.  Second, ECJ provides a statistics class that can be used to record hypervolume to an independent CSV file: \class{ec.multiobjective.HypervolumeStatistics}.
+
+The easiest way to add hypervolume to an experiment's statistics is to activate it for \class{MultiObjectiveStatistics} like so:
+
+\params{%
+stat = ec.multiobjective.MultiObjectiveStatistics\\
+stat.front = \$front.stat\\
+stat.hypervolume = true
+}
+
+But we're not quite done yet, because hypervolume is always measured relative to a \textbf{reference point} in the multiobjective space, which we must specify in advance. If our method is minimizing, then the reference point serves as a \textbf{lower bound} on possible objective values in the Pareto front space; and if our method is maximizing, then the reference point serves as an \textbf{upper bound}.  As long as the Pareto front dominates the reference point, we get a positive (and, we hope, increasing!) hypervolume.
+
+If you know the worst fitness that is possible for each objective, then that can serve as a nice choice of an absolute reference point.  If you're maximizing, then in the simplest case, a natural choice of reference point might be the origin (shown here for three objectives):
+
+\params{%
+stat.reference-point = 0.0 0.0 0.0
+}
+
+If you don't know the actual worst possible fitnesses, you can just choose an arbitrary reference point with very poor objective values.  HypervolumeStatistics will generate a fatal error if it encounters a Pareto front with negative hypervolume, so make sure your reference point is bad enough that it will never dominate the population.
+
 
 We envision HypervolumeStatistics will typically be used as a complement to the \class{ec.multiobjective.MultiobjectiveStatistics} class.  Thus you'd probably want to set things up like this:
 
@@ -13000,24 +13019,16 @@ stat = ec.multiobjective.MultiobjectiveStatistics \\
 \#\#\# ... followed by various MultiobjectiveStatistics parameter settings, and then... \\
 \\
 stat.num-children = 1 \\
-stat.child.0 = ec.multiobjective.HypervolumeStatistics
+stat.child.0 = ec.multiobjective.HypervolumeStatistics\\
+stat.child.0.reference-point = 0.0 0.0 0.0
 }
 
-HypervolumeStatistics requires an output file in which to dump its statistics:
+HypervolumeStatistics also requires an output file in which to dump its statistics:
 
 \params{%
 stat.child.0.file = \$hypervolume.out
 }
 
-Hypervolume is always measured relative to a \textbf{reference point} in the multiobjective space, which we must specify in advance. If our method is minimizing then the reference point serves as a \textbf{lower bound} on possible objective values in the Pareto front space; and if our method is maximizing then the reference point serves as an \textbf{upper bound}.  As long as the Pareto front dominates the reference point, we get a positive (and, we hope, increasing!) hypervolume.
-
-If you know the worst fitness that is possible for each objective, then that can serve as a nice choice of an absolute reference point.  If you're maximizing, then in the simplest case, a natural choice of reference point might be the origin (shown here for three objectives):
-
-\params{%
-stat.child.0.reference-point = 0.0 0.0 0.0
-}
-
-If you don't know the actual worst possible fitnesses, you can just choose an arbitrary reference point with very poor objective values.  HypervolumeStatistics will generate a fatal error if it encounters a Pareto front with negative hypervolume, so make sure your reference point is bad enough that it will never dominate the population.
 
 \paragraph{Warning}  Note that hypervolume can be a {\bf notoriously expensive calculation} to perform for large populations and/or large numbers of objectives!  ECJ uses a hypervolume algorithm that aims at efficiency, but in some applications you may want to avoid calculating hypervolume at every generation.  One simple way to do this is to simply comment out the \parameter{num-children} line:
 

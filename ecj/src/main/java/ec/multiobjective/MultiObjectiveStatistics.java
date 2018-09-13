@@ -49,8 +49,13 @@ public class MultiObjectiveStatistics extends SimpleStatistics
     /** front file parameter */
     public static final String P_PARETO_FRONT_FILE = "front";
     public static final String P_SILENT_FRONT_FILE = "silent.front";
+    public static final String P_DO_HYPERVOLUME = "hypervolume";
+    public final static String P_REFERENCE_POINT = "reference-point";
         
     public boolean silentFront;
+    
+    public boolean doHypervolume;
+    private double[] referencePoint;
 
     /** The pareto front log */
     public int frontLog = 0;  // stdout by default
@@ -86,6 +91,17 @@ public class MultiObjectiveStatistics extends SimpleStatistics
                 }
             }
         else state.output.warning("No Pareto Front statistics file specified, printing to stdout at end.", base.push(P_PARETO_FRONT_FILE));
+        
+        
+        doHypervolume = state.parameters.getBoolean(base.push(P_DO_HYPERVOLUME), null, false);
+        if (doHypervolume)
+            if (!state.parameters.exists(base.push(P_REFERENCE_POINT), null))
+                state.output.fatal(String.format("%s: '%s' is specified, but no '%s' was given.", this.getClass().getSimpleName(), base.push(P_DO_HYPERVOLUME), base.push(P_REFERENCE_POINT), P_REFERENCE_POINT));
+            else
+                referencePoint = state.parameters.getDoubles(base.push(P_REFERENCE_POINT), null, Double.NEGATIVE_INFINITY);
+        else
+            if (state.parameters.exists(base.push(P_REFERENCE_POINT), null))
+                state.output.warning("Ignoring the provided reference point parameter, because the hypervolume parameter is set to false", base.push(P_REFERENCE_POINT));
         }
 
 
@@ -107,6 +123,11 @@ public class MultiObjectiveStatistics extends SimpleStatistics
                     {
                     // Print out the front
                     state.output.println("Subpopulation " + s + ":", statisticslog);
+                    if (doHypervolume)
+                        {
+                        final double hv = HypervolumeStatistics.hypervolume(sortedFront, referencePoint);
+                        state.output.println("Hypervolume: " + hv, statisticslog);
+                        }
                     state.output.println("\nFront: ", statisticslog);
                     for (int i = 0; i < sortedFront.size(); i++)
                         ((Individual)(sortedFront.get(i))).printIndividualForHumans(state, statisticslog);
