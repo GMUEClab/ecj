@@ -2482,3 +2482,4 @@ Version		Change Log
 
 27 Prerelease Schmirelease
    	Added hypervolume calculation to ec.multiobjective.MultiObjectivestatistics
+	Add header to SimpleShortStatistics, and control over the delimiter used
