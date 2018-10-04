@@ -18,4 +18,4 @@ multi.fitness.max.1 		= 10
 multi.fitness.min.1		= 0
 
 # Reference point for hypervolume calculation
-stat.child.0.reference-point = 10 10
+stat.reference-point = 10 10

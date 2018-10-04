@@ -19,9 +19,6 @@ multi.fitness.min 		= 0
 
 # Use a statistics object which dumps the front
 stat =                                          ec.multiobjective.MultiObjectiveStatistics
-stat.num-children = 1
-stat.child.0 = 					ec.multiobjective.HypervolumeStatistics
-stat.child.0.file =				$hypervolume.stat
-stat.child.0.reference-point = 			0 0
 stat.front =                                    $front.stat
+stat.do-hypervolume =				true
 

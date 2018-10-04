@@ -44,5 +44,5 @@ pop.subpop.0.species.alternative-polynomial-version = true
 pop.subpop.0.species.mutation-distribution-index = 20
 pop.subpop.0.species.mutation-bounded = true
 
-# Uncomment this line to disable HypervolumeStatistics
-# stat.num-children = 0
+# Uncomment this line to disable hypervolume calculation
+# stat.do-hypervolume = false

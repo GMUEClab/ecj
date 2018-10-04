@@ -12998,7 +12998,7 @@ The easiest way to add hypervolume to an experiment's statistics is to activate 
 \params{%
 stat = ec.multiobjective.MultiObjectiveStatistics\\
 stat.front = \$front.stat\\
-stat.hypervolume = true
+stat.do-hypervolume = true
 }
 
 But we're not quite done yet, because hypervolume is always measured relative to a \textbf{reference point} in the multiobjective space, which we must specify in advance. If our method is minimizing, then the reference point serves as a \textbf{lower bound} on possible objective values in the Pareto front space; and if our method is maximizing, then the reference point serves as an \textbf{upper bound}.  As long as the Pareto front dominates the reference point, we get a positive (and, we hope, increasing!) hypervolume.
@@ -13009,10 +13009,10 @@ If you know the worst fitness that is possible for each objective, then that can
 stat.reference-point = 0.0 0.0 0.0
 }
 
-If you don't know the actual worst possible fitnesses, you can just choose an arbitrary reference point with very poor objective values.  HypervolumeStatistics will generate a fatal error if it encounters a Pareto front with negative hypervolume, so make sure your reference point is bad enough that it will never dominate the population.
+If you don't know the actual worst possible fitnesses, you can just choose an arbitrary reference point with very poor objective values.  \class{MultiObjectiveStatistics} will generate a fatal error if it encounters a Pareto front with negative hypervolume, so make sure your reference point is bad enough that it will never dominate the population.
 
 
-We envision HypervolumeStatistics will typically be used as a complement to the \class{ec.multiobjective.MultiobjectiveStatistics} class.  Thus you'd probably want to set things up like this:
+We envision \class{HypervolumeStatistics} will typically be used as a complement to the \class{ec.multiobjective.MultiobjectiveStatistics} class.  Thus you'd probably want to set things up like this:
 
 \params{%
 stat = ec.multiobjective.MultiobjectiveStatistics \\

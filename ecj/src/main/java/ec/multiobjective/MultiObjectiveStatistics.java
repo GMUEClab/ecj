@@ -41,6 +41,9 @@ import java.io.*;
  * <font size=-1>String (a filename)</font></td>
  * <td valign=top>(The Pareto Front file, if any)</td>
  * </tr>
+ * <tr><td valign=top><i>base.</i><tt>do-hypervolume</tt><br>
+ * <font size=-1>boolean</font></td>
+ * <td valign=top>(do we print out the per-generation hypervolume of the population?)</td></tr>
  * </table>
  */
 
@@ -49,7 +52,7 @@ public class MultiObjectiveStatistics extends SimpleStatistics
     /** front file parameter */
     public static final String P_PARETO_FRONT_FILE = "front";
     public static final String P_SILENT_FRONT_FILE = "silent.front";
-    public static final String P_DO_HYPERVOLUME = "hypervolume";
+    public static final String P_DO_HYPERVOLUME = "do-hypervolume";
     public final static String P_REFERENCE_POINT = "reference-point";
         
     public boolean silentFront;
@@ -127,6 +130,8 @@ public class MultiObjectiveStatistics extends SimpleStatistics
                         {
                         final double hv = HypervolumeStatistics.hypervolume(sortedFront, referencePoint);
                         state.output.println("Hypervolume: " + hv, statisticslog);
+                        if (doMessage && !silentPrint) 
+                            state.output.message("Subpop " + s + " hypervolume: " + hv);
                         }
                     state.output.println("\nFront: ", statisticslog);
                     for (int i = 0; i < sortedFront.size(); i++)
