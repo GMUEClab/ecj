@@ -33,8 +33,9 @@ public class Version
     public static final String contributors2 = "E. Popovici, K. Sullivan, J. Harrison, J. Bassett, R. Hubley,";
     public static final String contributors3 = "A. Desai, A. Chircop, J. Compton, W. Haddon, S. Donnelly,";
     public static final String contributors4 = "B. Jamil, J. Zelibor, E. Kangas, F. Abidi, H. Mooers,";
-    public static final String contributors5 = "J. O'Beirne, L. Manzoni, K. Talukder, S. McKay, J. McDermott";
-    public static final String contributors6 = "J. Zou, A. Rutherford, D. Freelan, E. Wei, E. Scott";
+    public static final String contributors5 = "J. O'Beirne, L. Manzoni, K. Talukder, S. McKay, J. McDermott,";
+    public static final String contributors6 = "J. Zou, A. Rutherford, D. Freelan, E. Wei, E. Scott,";
+    public static final String contributors7 = "S. Rajendran, A. Dhawan, B. Brumbac, A. Rutherford";
     public static final String authorEmail0 = "ecj-help";
     public static final String authorEmail1 = "cs.gmu.edu";
     public static final String authorEmail2 = "(better: join ECJ-INTEREST at URL above)";
@@ -63,6 +64,7 @@ public class Version
             "\n|               " + contributors4 +
             "\n|               " + contributors5 +
             "\n|               " + contributors6 +
+	    "\n|               " + contributors7 +
             "\n| URL: " + authorURL +
             "\n| Mail: " + authorEmail0 + "@" + authorEmail1 +
             "\n|       " + authorEmail2 + 
