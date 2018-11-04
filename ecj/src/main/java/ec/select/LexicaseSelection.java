@@ -41,7 +41,10 @@ public class LexicaseSelection extends SelectionMethod
             candidates.add(i);
         
         // Shuffle test cases
+        assert(pop.get(candidates.get(0)).fitness.trials != null);
         final int numCases = pop.get(0).fitness.trials.size();
+        if (numCases == 0)
+            state.output.fatal(String.format("Attempted to use %s on an individual with an empty list of trials.", this.getClass().getSimpleName()));
         final int[] caseOrder = new int[numCases];
         for (int i = 0; i < numCases; i++)
             caseOrder[i] = i;
@@ -55,6 +58,8 @@ public class LexicaseSelection extends SelectionMethod
             Fitness best = (Fitness) pop.get(candidates.get(0)).fitness.trials.get(currentCase);
             for (int j = 1; j < candidates.size(); j++)
                 {
+                assert(pop.get(candidates.get(j)).fitness.trials != null);
+                assert(pop.get(candidates.get(j)).fitness.trials.size() == numCases);
                 final Fitness caseFitness = (Fitness) pop.get(candidates.get(j)).fitness.trials.get(currentCase);
                 if (caseFitness.betterThan(best))
                     best = caseFitness;
@@ -71,12 +76,14 @@ public class LexicaseSelection extends SelectionMethod
             // If only one individual is left, return it
             if (candidates.size() == 1)
                 {
+                System.out.println(state.generation + ", " + i);
                 return candidates.get(0);
                 }
             
             // If this was the last test case, return a random candidate
             if (i == caseOrder.length - 1)
                 {
+                System.out.println(state.generation + ", " + i);
                 return candidates.get(state.random[0].nextInt(candidates.size()));
                 }
             }
