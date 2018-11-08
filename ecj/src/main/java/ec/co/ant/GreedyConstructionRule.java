@@ -11,7 +11,6 @@ import ec.co.ConstructiveProblemForm;
 import ec.util.Misc;
 import ec.util.Parameter;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +23,7 @@ import java.util.Set;
 public class GreedyConstructionRule implements ConstructionRule
 {
     public final static String P_MINIMIZE = "minimize";
+    
     private boolean minimize;
     
     public boolean isMinimize()
@@ -48,31 +48,30 @@ public class GreedyConstructionRule implements ConstructionRule
     public ConstructiveIndividual constructSolution(final EvolutionState state, final ConstructiveIndividual ind, final List<Double> pheromones)
     {
         assert(state != null);
+        assert(ind != null);
+        assert(ind.isEmpty());
         assert(state.evaluator.p_problem instanceof ConstructiveProblemForm);
         
         final ConstructiveProblemForm problem = (ConstructiveProblemForm) state.evaluator.p_problem;
         
-        assert(problem != null);
+        assert(!problem.isCompleteSolution(ind));
         
-        // Prepare data structures
-        final Set<Integer> solution = new HashSet<Integer>();
-        final Collection<Integer> unusedComponents = problem.componentSet();
+        // TODO Add an option to choose the first component randomly
         
         // Constructively build a new individual
-        while (!unusedComponents.isEmpty())
+        while (!problem.isCompleteSolution(ind))
             {
-            final int component = bestMove(problem, unusedComponents);
-            solution.add(component);
-            unusedComponents.remove(component);
+            final Set<Integer> allowedMoves = problem.getAllowedComponents(ind);
+            final int component = bestMove(problem, ind, allowedMoves);
+            ind.add(component);
             }
         
-        ind.setComponents(solution);
         assert(repOK());
         return ind;
     }
     
     /** Greedily select the next move. */
-    private int bestMove(final ConstructiveProblemForm problem, final Collection<Integer> allowedMoves)
+    private int bestMove(final ConstructiveProblemForm problem, final ConstructiveIndividual partialSolution, final Collection<Integer> allowedMoves)
     {
         assert(problem != null);
         assert(allowedMoves != null);
@@ -83,14 +82,17 @@ public class GreedyConstructionRule implements ConstructionRule
         int best = -1;
         for (final int move : allowedMoves)
             {
-            final double cost = problem.cost(move);
-            if (minimize ? cost <= bestCost : cost >= bestCost)
-                {
-                bestCost = cost;
-                best = move;
+            if (!problem.isViolated(partialSolution, move)) { // XXX I haven't decided if allowedMoves should be allowed to violate constraints.  If not, change this to an assert.
+                final double cost = problem.cost(move);
+                if (minimize ? cost <= bestCost : cost >= bestCost)
+                    {
+                    bestCost = cost;
+                    best = move;
+                    }
                 }
             }
-        assert(best >= 0);
+        if (best < 0)
+            throw new IllegalStateException(String.format("%s: no valid moves found while construction individual (either the neighborhood of allowed components is empty, or they all violate the problem constraints.", this.getClass().getSimpleName()));
         return best;
     }
     

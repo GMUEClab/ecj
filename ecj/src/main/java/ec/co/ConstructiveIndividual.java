@@ -9,19 +9,29 @@ import ec.Individual;
 import ec.co.ant.AntSpecies;
 import ec.util.Misc;
 import ec.util.Parameter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
  *
  * @author Eric O. Scott
  */
-public class ConstructiveIndividual extends Individual
+public class ConstructiveIndividual extends Individual implements Iterable<Integer>
 {
     
     public static final String P_CONSTRUCTIVEINDIVIDUAL = "constr-ind";
-    public Set<Integer> components = new HashSet<Integer>();
+    private List<Integer> components = new ArrayList<Integer>();
+    private Set<Integer> componentsSet = new HashSet<Integer>();
+    private int lastAddedComponent = -1;
+    
+    public int getLastAddedComponent() {
+        return lastAddedComponent;
+    }
+    
     
     @Override
     public Parameter defaultBase()
@@ -34,24 +44,47 @@ public class ConstructiveIndividual extends Individual
     {
         ConstructiveIndividual myobj = (ConstructiveIndividual) (super.clone());
 
-        // must clone the path
-        myobj.components = new HashSet<Integer>(components);
+        myobj.components = new ArrayList<Integer>(components);
+        myobj.componentsSet = new HashSet<Integer>(componentsSet);
         
         assert(repOK());
         return myobj;
     } 
     
-    public Set<Integer> getComponents()
+    public Collection<Integer> getComponents()
     {
         assert(repOK());
-        return new HashSet<Integer>(components);
+        return new ArrayList<Integer>(components); // Defensive copy
     }
     
     public void setComponents(final Collection<Integer> newComponents)
     {
         assert(newComponents != null);
-        this.components = new HashSet<Integer>(newComponents);
+        this.components = new ArrayList<Integer>(newComponents);
+        this.componentsSet = new HashSet<Integer>(newComponents);
+        this.lastAddedComponent = components.get(components.size() - 1);
         assert(repOK());
+    }
+    
+    public void add(final int component) {
+        assert(component >= 0);
+        components.add(component);
+        componentsSet.add(component);
+        lastAddedComponent = component;
+        assert(repOK());
+    }
+    
+    public boolean contains(final int component) {
+        return componentsSet.contains(component);
+    }
+
+    @Override
+    public Iterator<Integer> iterator() {
+        return components.iterator();
+    }
+    
+    public boolean isEmpty() {
+        return this.components.isEmpty();
     }
     
     @Override
@@ -68,13 +101,16 @@ public class ConstructiveIndividual extends Individual
             return true;
         if (!(ind instanceof ConstructiveIndividual))
             return false;
-        return components.equals(((ConstructiveIndividual)ind).components);
+        final ConstructiveIndividual ref = (ConstructiveIndividual)ind;
+        return components.equals(ref.components)
+                && lastAddedComponent == ref.lastAddedComponent;
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 19 * hash + (this.components != null ? this.components.hashCode() : 0);
+        int hash = 5;
+        hash = 41 * hash + (this.components != null ? this.components.hashCode() : 0);
+        hash = 41 * hash + this.lastAddedComponent;
         return hash;
     }
     
@@ -83,6 +119,10 @@ public class ConstructiveIndividual extends Individual
         return P_CONSTRUCTIVEINDIVIDUAL != null
                 && !P_CONSTRUCTIVEINDIVIDUAL.isEmpty()
                 && components != null
-                && !Misc.containsNulls(components);
+                && !Misc.containsNulls(components)
+                && componentsSet.size() == components.size()
+                && componentsSet.equals(new HashSet<Integer>(components))
+                && !(components.isEmpty() && lastAddedComponent != -1)
+                && !(components.size() > 0 && lastAddedComponent < 0);
     }
 }

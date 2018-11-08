@@ -107,7 +107,6 @@ public class AntSystemUpdateRule implements UpdateRule
     {
         assert(ind != null);
         assert(component >= 0);
-        assert(component < ind.size());
         final double fitness = ind.fitness.fitness();
         switch (depositRule)
             {

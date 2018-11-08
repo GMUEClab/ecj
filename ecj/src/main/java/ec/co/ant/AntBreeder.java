@@ -45,12 +45,16 @@ public class AntBreeder extends Breeder
             final int numAnts = oldSubpop.individuals.size();
             assert(numAnts > 0);
             
+            // Update pheromones
             species.updatePheromones(state, oldSubpop);
+            
+            // Execute ants
             for (int j = 0; j < numAnts; j++)
                 {
                 final ConstructiveIndividual newInd = species.newIndividual(state, i);
                 newPop.subpops.get(i).individuals.add(newInd);
                 }
+            
             assert(newPop.subpops.get(i).individuals.size() == numAnts);
             }
         return newPop;

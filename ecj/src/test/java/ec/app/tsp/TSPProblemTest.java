@@ -56,26 +56,28 @@ public class TSPProblemTest
         state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/test4.tsp");
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
-        assertEquals(Math.rint(2* Math.sqrt(2)), instance.cost(0, 1), 0.00001);
-        assertEquals(Math.rint(2.5), instance.cost(0, 2), 0.00001);
-        assertEquals(Math.rint(2.692582403567252), instance.cost(0, 3), 0.00001);
-        assertEquals(Math.rint(0.5), instance.cost(1, 2), 0.00001);
-        assertEquals(Math.rint(1.118033988749895), instance.cost(1, 3), 0.00001);
-        assertEquals(Math.rint(0.7071067811865476), instance.cost(2, 3), 0.00001);
+        assertEquals(Math.rint(2* Math.sqrt(2)), instance.cost(1), 0.00001);
+        assertEquals(Math.rint(2.5), instance.cost(2), 0.00001);
+        assertEquals(Math.rint(2.692582403567252), instance.cost(3), 0.00001);
+        assertEquals(Math.rint(0.5), instance.cost(6), 0.00001);
+        assertEquals(Math.rint(1.118033988749895), instance.cost(7), 0.00001);
+        assertEquals(Math.rint(0.7071067811865476), instance.cost(11), 0.00001);
         
         // Symmetric matrix
-        assertEquals(instance.cost(0, 1), instance.cost(1, 0), 0.00001);
-        assertEquals(instance.cost(0, 2), instance.cost(2, 0), 0.00001);
-        assertEquals(instance.cost(0, 3), instance.cost(3, 0), 0.00001);
-        assertEquals(instance.cost(1, 2), instance.cost(2, 1), 0.00001);
-        assertEquals(instance.cost(1, 3), instance.cost(3, 1), 0.00001);
-        assertEquals(instance.cost(2, 3), instance.cost(3, 2), 0.00001);
+        assertEquals(instance.cost(1), instance.cost(4), 0.00001);
+        assertEquals(instance.cost(2), instance.cost(8), 0.00001);
+        assertEquals(instance.cost(3), instance.cost(12), 0.00001);
+        assertEquals(instance.cost(6), instance.cost(9), 0.00001);
+        assertEquals(instance.cost(7), instance.cost(13), 0.00001);
+        assertEquals(instance.cost(11), instance.cost(14), 0.00001);
         
         // Zero diagonal
-        assertEquals(0, instance.cost(0, 0), 0.00001);
-        assertEquals(0, instance.cost(1, 1), 0.00001);
-        assertEquals(0, instance.cost(2, 2), 0.00001);
-        assertEquals(0, instance.cost(3, 3), 0.00001);
+        assertEquals(0, instance.cost(0), 0.00001);
+        assertEquals(0, instance.cost(5), 0.00001);
+        assertEquals(0, instance.cost(10), 0.00001);
+        assertEquals(0, instance.cost(15), 0.00001);
+        
+        assertEquals(Math.rint(2* Math.sqrt(2) + 0.5 + 0.7071067811865476 + 2.692582403567252), canonicalDistance(instance), 0.00001);
     }
         
     
@@ -84,7 +86,7 @@ public class TSPProblemTest
     {
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
-        double result = instance.cost(0, 1);
+        double result = instance.cost(1);
         assertEquals(109, result, 0.0);
         assertTrue(instance.repOK());
     }
@@ -94,7 +96,7 @@ public class TSPProblemTest
     {
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
-        double result = instance.cost(531, 1);
+        double result = instance.cost(531*532 + 1); // Edge 531—>1
         assertEquals(1947, result, 0.0);
         assertTrue(instance.repOK());
     }
@@ -115,7 +117,7 @@ public class TSPProblemTest
         state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/berlin52.tsp");
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
-        double result = instance.cost(0, 1);
+        double result = instance.cost(1);
         assertEquals(666, result, 0.0);
         assertTrue(instance.repOK());
     }
@@ -126,7 +128,7 @@ public class TSPProblemTest
         state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/berlin52.tsp");
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
-        double result = instance.cost(51, 0);
+        double result = instance.cost(51*52 + 0); // Edge 51—>0
         assertEquals(1220, result, 0.0);
         assertTrue(instance.repOK());
     }
@@ -157,18 +159,28 @@ public class TSPProblemTest
     {
         assert(instance != null);
         double sum = 0.0;
-        for (int i = 1; i < instance.numComponents(); i++)
-            sum += instance.cost(i - 1, i);
-        sum += instance.cost(instance.numComponents() - 1, 0);
+        for (int i = 1; i < instance.numComponents(); i += instance.numNodes() + 1)
+            sum += instance.cost(i);
+        sum += instance.cost(instance.numNodes()*(instance.numNodes() - 1));
         return sum;
     }
     
     @Test
-    public void testNumComponents()
+    public void testNumComponentsDirected()
     {
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
-        assertEquals(532, instance.numComponents());
+        assertEquals((int) Math.pow(532, 2), instance.numComponents());
+        assertTrue(instance.repOK());
+    }
+    
+    @Test
+    public void testNumComponentsUndirected()
+    {
+        final TSPProblem instance = new TSPProblem();
+        state.parameters.set(BASE.push(TSPProblem.P_UNDIRECTED), "true");
+        instance.setup(state, BASE);
+        assertEquals(532*(532 + 1)/2, instance.numComponents());
         assertTrue(instance.repOK());
     }
 }

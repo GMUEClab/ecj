@@ -13,6 +13,7 @@ import static ec.Species.P_FITNESS;
 import static ec.Species.P_INDIVIDUAL;
 import ec.Subpopulation;
 import ec.co.ConstructiveIndividual;
+import ec.co.ConstructiveProblemForm;
 import ec.util.Parameter;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +42,10 @@ public class AntSpecies extends Species
         setupSuper(state, base); // Calling a custom replacement for super.setup(), because Species.setup() looks for parameters that we don't need for ACO.
         assert(state != null);
         assert(base != null);
-         numComponents = state.parameters.getInt(base.push(P_NUM_COMPONENTS), null, 1);
-        if (numComponents == 0)
-            state.output.fatal(String.format("%s: '%s' is set to %d, but must be positive.", this.getClass().getSimpleName(), base.push(P_NUM_COMPONENTS), numComponents));
+        numComponents = ((ConstructiveProblemForm)state.evaluator.p_problem).numComponents();
+        //numComponents = state.parameters.getInt(base.push(P_NUM_COMPONENTS), null, 1);
+        //if (numComponents == 0)
+        //    state.output.fatal(String.format("%s: '%s' is set to %d, but must be positive.", this.getClass().getSimpleName(), base.push(P_NUM_COMPONENTS), numComponents));
         constructionRule = (ConstructionRule) state.parameters.getInstanceForParameter(base.push(P_CONSTRUCTION_RULE), null, ConstructionRule.class);
         updateRule = (UpdateRule) state.parameters.getInstanceForParameter(base.push(P_UPDATE_RULE), null, UpdateRule.class);
         pheremones = new ArrayList<Double>(numComponents);

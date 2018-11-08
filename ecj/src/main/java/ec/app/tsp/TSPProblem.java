@@ -35,35 +35,26 @@ import java.util.Set;
  */
 public class TSPProblem extends Problem implements SimpleProblemForm, ConstructiveProblemForm {
     public final static String P_FILE = "file";
-    
-    private int dimension;
-
-    @Override
-    public TSPEdge getComponent(int component) {
-        return new TSPEdge(component);
-    }
-
-    @Override
-    public boolean isViolated(final Set<Integer> partialSolution, final int component) {
-        assert(partialSolution != null);
-        final TSPEdge edge = new TSPEdge(component);
-        boolean connected = false;
-        for (final int c : partialSolution)
-        {
-            final TSPEdge solEdge = new TSPEdge(c);
+    public final static String P_ALLOW_CYCLES = "allow-cycles";
+    public final static String P_UNDIRECTED = "undirected";
             
-            if (edge.fromNode == solEdge.fromNode || edge.fromNode == solEdge.toNode)
-                connected = false; // We are starting from a node that is part of the tour (good!)
-            if (edge.toNode == solEdge.fromNode || edge.toNode == solEdge.toNode)
-                return true; // We're trying to move to a node that is already in the tour (bad!)
-        }
-        return connected;
-    }
-    
+    private int dimension;
     private enum TSPKeyword { TYPE, DIMENSION, EDGE_WEIGHT_TYPE, NODE_COORD_SECTION };
     private enum EdgeWeightType { EUC_2D, GEO, ATT }
     private EdgeWeightType edgeWeightType;
     private Map<Integer, double[]> nodes;
+    private boolean allowCycles;
+    private boolean undirected;
+    
+    @Override
+    public TSPEdge getComponent(int component) {
+        return new TSPEdge(component);
+    }
+    
+    public int numNodes()
+    {
+        return nodes.size();
+    }
     
     @Override
     public void setup(EvolutionState state, Parameter base)
@@ -71,6 +62,8 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         assert(state != null);
         assert(base != null);
         final File file = state.parameters.getFile(base.push(P_FILE), null);
+        allowCycles = state.parameters.getBoolean(base.push(P_ALLOW_CYCLES), null, false);
+        undirected = state.parameters.getBoolean(base.push(P_UNDIRECTED), null, false);
         if (file == null)
             state.output.fatal(String.format("%s: Unable to read file path '%s'.", this.getClass().getSimpleName(), base.push(P_FILE)), base.push(P_FILE));
         try
@@ -175,6 +168,72 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         return nodes;
     }
 
+    @Override
+    public boolean isViolated(final ConstructiveIndividual partialSolution, final int component) {
+        assert(partialSolution != null);
+        final TSPEdge edge = new TSPEdge(component);
+        boolean connected = false;
+        for (final int c : partialSolution)
+        {
+            final TSPEdge solEdge = new TSPEdge(c);
+            
+            if (edge.fromNode == solEdge.fromNode || edge.fromNode == solEdge.toNode)
+                connected = false; // We are starting from a node that is part of the tour (good!)
+            if (edge.toNode == solEdge.fromNode || edge.toNode == solEdge.toNode)
+                return true; // We're trying to move to a node that is already in the tour (bad!)
+        }
+        return connected;
+    }
+
+    @Override
+    public Set<Integer> getAllowedComponents(final ConstructiveIndividual partialSolution) {
+        assert(partialSolution != null);
+            
+        // If the solution is empty, then any component is allowed
+        if (partialSolution.isEmpty())
+            return componentSet();
+        
+        // Otherwise, only components in the current neighborhood are allowed
+        final Set<Integer> allowedComponents = new HashSet<Integer>();
+        // Focus on the most recently added node in the tour
+        final int last = partialSolution.getLastAddedComponent();
+        final int from = fromNode(last);
+        // Loop through every edge eminating from that node
+        for (int to = 0; to < dimension; to++)
+        {
+            if (from != to) // Disallow self-loops
+            {
+                final int reachable = componentID(from, to);
+                if (!allowCycles && !partialSolution.contains(reachable)) // Allow the edge if it isn't already part of the tour
+                    allowedComponents.add(reachable);
+            }
+        }
+        assert(repOK());
+        assert(allowedComponents.size() < numComponents());
+        return allowedComponents;
+    }
+
+    /** Check whether a solution forms a valid tour of all the nodes. */
+    @Override
+    public boolean isCompleteSolution(final ConstructiveIndividual solution) {
+        if (solution.size() != nodes.size())
+            return false;
+        final Set<Integer> visited = nodesVisited(solution);
+        return visited.equals(componentSet());
+    }
+        
+    private Set<Integer> nodesVisited(final ConstructiveIndividual partialSolution) {
+        assert(partialSolution != null);
+        final Set<Integer> nodesVisited = new HashSet<Integer>();
+        for (final int c : partialSolution) {
+            if (!allowCycles && (nodesVisited.contains(toNode(c)) || nodesVisited.contains(fromNode(c))))
+                throw new IllegalStateException(String.format("%s: '%s' is set to false, but an individual containing cycles was encountered.  Is your construction heuristic configured to avoid cycles?", this.getClass().getSimpleName(), P_ALLOW_CYCLES));
+            nodesVisited.add(toNode(c));
+            nodesVisited.add(fromNode(c));
+        }
+        return nodesVisited;
+    }
+
     /** Computes Euclidean distance between two nodes, rounded to the nearest integer. **/
     @Override
     public double cost(final int component)
@@ -203,6 +262,9 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         
         public TSPEdge(final int component)
         {
+            assert(component >= 0);
+            assert(component < numComponents());
+            assert(componentSet().contains(component));
             fromNode = fromNode(component);
             toNode = toNode(component);
             from = nodes.get(fromNode);
@@ -216,11 +278,12 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
                     && fromNode < nodes.size()
                     && toNode >= 0
                     && toNode < nodes.size()
-                    && fromNode != toNode
+                    //&& fromNode != toNode
                     && from != null
                     && to != null
                     && from.length == 2
-                    && to.length == 2;
+                    && to.length == 2
+                    && !(undirected && fromNode > toNode);
         }
         
         /** Euclidean distance, rounded to the nearest integer. */
@@ -253,13 +316,27 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         }
     }
      
+    private int componentID(final int from, final int to) {
+        assert(from >= 0);
+        assert(from < nodes.size());
+        assert(to >= 0);
+        assert(to < nodes.size());
+        final int normalizedFrom = undirected ? (int) Math.min(from, to) : from;
+        final int normalizedTo = undirected ? (int) Math.max(from, to) : to;
+        final int id = nodes.size()*normalizedFrom + normalizedTo;
+        assert(id >= 0);
+        assert(id < numComponents());
+        assert(componentSet().contains(id));
+        return id;
+    }
+    
     /** Interpret a component ID as an edge between two TSP nodes.
      * @return The index of the node the edge begins at.
      */
-    public int fromNode(final int component)
+    public int directedFromNode(final int component)
     {
         assert(component >= 0);
-        assert(component < Math.pow(nodes.size(), 2));
+        assert(component < numComponents());
         assert(repOK());
         return component/nodes.size();
     }
@@ -267,12 +344,32 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
     /** Interpret a component ID as an edge between two TSP nodes.
      * @return The index of the node the edge ends at.
      */
+    public int directedToNode(final int component)
+    {
+        assert(component >= 0);
+        assert(component < numComponents());
+        assert(repOK());
+        return component % nodes.size();
+    }
+    
+    public int fromNode(final int component)
+    {
+        assert(component >= 0);
+        assert(component < numComponents());
+        final int from = directedFromNode(component);
+        final int to = directedToNode(component);
+        assert(repOK());
+        return undirected ? (int) Math.min(from, to) : from;
+    }
+    
     public int toNode(final int component)
     {
         assert(component >= 0);
-        assert(component < Math.pow(nodes.size(), 2));
+        assert(component < numComponents());
+        final int from = directedFromNode(component);
+        final int to = directedToNode(component);
         assert(repOK());
-        return component % nodes.size();
+        return undirected ? (int) Math.max(from, to) : to;
     }
 
     /** Latitude is encoded in DDD.MM format by the first element of a point,
@@ -312,6 +409,8 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         if (!ind.evaluated)
             {
             final ConstructiveIndividual iind = (ConstructiveIndividual) ind;
+            if (!isCompleteSolution(iind))
+                state.output.fatal(String.format("%s: attempted to evaluate an incomplete solution.", this.getClass().getSimpleName()));
             assert(iind.size() == nodes.size());
             double cost = 0.0;
             for (final int c : iind.getComponents())
@@ -327,13 +426,38 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
     @Override
     public int numComponents()
     {
-        return (int) Math.pow(nodes.size(), 2);
+        return (int) (undirected ? nodes.size()*(nodes.size() + 1)/2 // For an undirected graph, the adjacency matrix is upper triangular, with n(n+1)/2 individual entries.
+                : Math.pow(nodes.size(), 2)); // For a directed graph, the adajency matrix is full, with n^2 entries.
     }
     
     @Override
     public Set<Integer> componentSet()
     {
-        return new HashSet<Integer>(nodes.keySet()); // Defensive copy
+        final Set<Integer> result = new HashSet<Integer>();
+        if (undirected) // For an undirected graph, return only the ids of the lower-trangular portion of the adjacency matrix
+        {
+            while (result.size() < numComponents())
+            {
+                int id = 0;
+                for (int k = 1; k <= nodes.size(); k++)
+                {
+                    for (int i = 0; i < k; i++)
+                    {
+                        result.add(id);
+                        id++;
+                    }
+                    id += nodes.size() - k;
+                }
+            }
+        }
+        else // For a directed graph, return ids for every element of the adjacency matrix
+        {
+            for (int i = 0; i < numComponents(); i++)
+                result.add(i);
+        }
+        assert(repOK());
+        assert(result.size() < numComponents());
+        return result;
     }
     
     /** Representation invariant, used for verification.

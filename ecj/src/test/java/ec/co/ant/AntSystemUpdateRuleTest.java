@@ -9,18 +9,15 @@ import ec.EvolutionState;
 import ec.Evolve;
 import ec.Individual;
 import ec.Subpopulation;
-import ec.app.tsp.TSPProblem;
 import ec.co.ConstructiveIndividual;
 import ec.co.ant.AntSystemUpdateRule.DepositRule;
-import ec.simple.SimpleEvaluator;
 import ec.simple.SimpleEvolutionState;
 import ec.simple.SimpleFitness;
-import ec.util.Output;
 import ec.util.Output.OutputExitException;
-import ec.util.OutputException;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
 import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -93,80 +90,78 @@ public class AntSystemUpdateRuleTest
     }
 
     @Test
-    public void testUpdatePheremoneMatrix1()
+    public void testUpdatePheromones1()
     {
         final AntSystemUpdateRule instance = new AntSystemUpdateRule();
         instance.setup(state, BASE);
-        final PheromoneMatrix matrix = new PheromoneMatrix(4);
-        matrix.initZero();
+        final List<Double> pheromones = zeroList(16);
         final Subpopulation subpop = new Subpopulation();
         subpop.individuals = new ArrayList<Individual>()
         {{
-            add(buildPath(new int[] { 0, 1, 2, 3, 0 }, 500.0));
-            add(buildPath(new int[] { 0, 1, 2, 3, 0 }, 1000.0));
-            add(buildPath(new int[] { 0, 3, 1, 2, 0 }, 700.0));
-            add(buildPath(new int[] { 0, 2, 3, 1, 0 }, 800.0));
+            add(createInd(new int[] { 1, 6, 11, 12 }, 500.0));
+            add(createInd(new int[] { 1, 6, 11, 12 }, 1000.0));
+            add(createInd(new int[] { 3, 13, 6, 8 }, 700.0));
+            add(createInd(new int[] { 2, 11, 13, 4}, 800.0));
         }};
         
-        final PheromoneMatrix expectedResult = new PheromoneMatrix(4);
-        expectedResult.set(0, 1, 0.00425);
-        expectedResult.set(0, 2, 0.0026785714285714286);
-        expectedResult.set(0, 3, 0.004428571428571428);
-        expectedResult.set(1, 2, 0.004428571428571428);
-        expectedResult.set(1, 3, 0.0026785714285714286);
-        expectedResult.set(2, 3, 0.00425);
+        final List<Double> expectedResult = zeroList(16);
+        expectedResult.set(1, 0.00425);
+        expectedResult.set(2, 0.0026785714285714286);
+        expectedResult.set(3, 0.004428571428571428);
+        expectedResult.set(6, 0.004428571428571428);
+        expectedResult.set(7, 0.0026785714285714286);
+        expectedResult.set(11, 0.00425);
         
-        instance.updatePheremoneMatrix(state, matrix, subpop);
-        assertEquals(expectedResult, matrix);
+        instance.updatePheromones(state, pheromones, subpop);
+        assertEquals(expectedResult, pheromones);
     }
     
     @Test
-    public void testUpdatePheremoneMatrix2()
+    public void testUpdatePheromones2()
     {
         state.parameters.set(BASE.push(AntSystemUpdateRule.P_DEPOSIT_RULE), AntSystemUpdateRule.DepositRule.ANT_DENSITY.toString());
         final AntSystemUpdateRule instance = new AntSystemUpdateRule();
         instance.setup(state, BASE);
-        final PheromoneMatrix matrix = new PheromoneMatrix(4);
-        matrix.initZero();
+        final List<Double> pheromones = zeroList(16);
         final Subpopulation subpop = new Subpopulation();
         subpop.individuals = new ArrayList<Individual>()
         {{
-            add(buildPath(new int[] { 0, 1, 2, 3, 0 }, 500.0));
-            add(buildPath(new int[] { 0, 1, 2, 3, 0 }, 1000.0));
-            add(buildPath(new int[] { 0, 3, 1, 2, 0 }, 700.0));
-            add(buildPath(new int[] { 0, 2, 3, 1, 0 }, 800.0));
+            add(createInd(new int[] { 1, 6, 11, 12 }, 500.0));
+            add(createInd(new int[] { 1, 6, 11, 12 }, 1000.0));
+            add(createInd(new int[] { 3, 13, 6, 8 }, 700.0));
+            add(createInd(new int[] { 2, 11, 13, 4}, 800.0));
         }};
         
-        final PheromoneMatrix expectedResult = new PheromoneMatrix(4);
-        expectedResult.set(0, 1, 3.0);
-        expectedResult.set(0, 2, 2.0);
-        expectedResult.set(0, 3, 3.0);
-        expectedResult.set(1, 2, 3.0);
-        expectedResult.set(1, 3, 2.0);
-        expectedResult.set(2, 3, 3.0);
+        final List<Double> expectedResult = zeroList(16);
+        expectedResult.set(1, 3.0);
+        expectedResult.set(2, 2.0);
+        expectedResult.set(3, 3.0);
+        expectedResult.set(6, 3.0);
+        expectedResult.set(7, 2.0);
+        expectedResult.set(11, 3.0);
         
-        instance.updatePheremoneMatrix(state, matrix, subpop);
-        assertEquals(expectedResult, matrix);
+        instance.updatePheromones(state, pheromones, subpop);
+        assertEquals(expectedResult, pheromones);
     }
     
     @Test
-    public void testUpdatePheremoneMatrix3()
+    public void testUpdatePheromones3()
     {
         state.parameters.set(BASE.push(AntSystemUpdateRule.P_DEPOSIT_RULE), AntSystemUpdateRule.DepositRule.ANT_QUANTITY.toString());
         // TODO set up problem
         final AntSystemUpdateRule instance = new AntSystemUpdateRule();
         instance.setup(state, BASE);
-        final PheromoneMatrix matrix = new PheromoneMatrix(4);
-        matrix.initZero();
+        final List<Double> pheromones = zeroList(16);
         final Subpopulation subpop = new Subpopulation();
         subpop.individuals = new ArrayList<Individual>()
         {{
-            add(buildPath(new int[] { 0, 1, 2, 3, 0 }, 500.0));
-            add(buildPath(new int[] { 0, 1, 2, 3, 0 }, 1000.0));
-            add(buildPath(new int[] { 0, 3, 1, 2, 0 }, 700.0));
-            add(buildPath(new int[] { 0, 2, 3, 1, 0 }, 800.0));
+            add(createInd(new int[] { 1, 6, 11, 12 }, 500.0));
+            add(createInd(new int[] { 1, 6, 11, 12 }, 1000.0));
+            add(createInd(new int[] { 3, 13, 6, 8 }, 700.0));
+            add(createInd(new int[] { 2, 11, 13, 4}, 800.0));
         }};
-        final PheromoneMatrix expectedResult = new PheromoneMatrix(4);
+        
+        final List<Double> expectedResult = zeroList(16);
         // TODO hard-code expected output
         /*expectedResult.set(0, 1, 3.0);
         expectedResult.set(0, 2, 1.0);
@@ -175,17 +170,27 @@ public class AntSystemUpdateRuleTest
         expectedResult.set(1, 3, 2.0);
         expectedResult.set(2, 3, 3.0);*/
         
-        instance.updatePheremoneMatrix(state, matrix, subpop);
-        assertEquals(expectedResult, matrix);
+        instance.updatePheromones(state, pheromones, subpop);
+        assertEquals(expectedResult, pheromones);
     }
     
-    private ConstructiveIndividual buildPath(final int[] path, final double fitness)
+    private ConstructiveIndividual createInd(final int[] components, final double fitness)
     {
-        assert(path != null);
+        assert(components != null);
         final ConstructiveIndividual ind = new ConstructiveIndividual();
-        ind.path = path;
+        final List<Integer> componentsList = new ArrayList<Integer>(components.length);
+        for (final int c : components)
+            componentsList.add(c);
+        ind.setComponents(componentsList);
         ind.fitness = new SimpleFitness();
         ((SimpleFitness)ind.fitness).setFitness(state, fitness, false);
         return ind;
+    }
+    
+    private List<Double> zeroList(final int length) {
+        return new ArrayList<Double>(16) {{
+           for (int i = 0; i < length; i++)
+               add(0.0);
+        }};
     }
 }
