@@ -7,6 +7,7 @@ import ec.SelectionMethod;
 import ec.util.MersenneTwisterFast;
 import ec.util.Parameter;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *
@@ -66,24 +67,23 @@ public class LexicaseSelection extends SelectionMethod
                 }
             
             // Reduce candidates to the subset that performs best on the current test case
-            for (int j = 0; j < candidates.size(); j++)
+            final Iterator<Integer> it = candidates.iterator();
+            while (it.hasNext())
                 {
-                final Fitness caseFitness = (Fitness) pop.get(candidates.get(j)).fitness.trials.get(currentCase);
+                final Fitness caseFitness = (Fitness) pop.get(it.next()).fitness.trials.get(currentCase);
                 if (caseFitness.compareTo(best) > 0) // if strictly worse than best
-                    candidates.remove(j);
+                    it.remove();
                 }
             
             // If only one individual is left, return it
             if (candidates.size() == 1)
                 {
-                System.out.println(state.generation + ", " + i);
                 return candidates.get(0);
                 }
             
             // If this was the last test case, return a random candidate
             if (i == caseOrder.length - 1)
                 {
-                System.out.println(state.generation + ", " + i);
                 return candidates.get(state.random[0].nextInt(candidates.size()));
                 }
             }
