@@ -29,6 +29,56 @@ public class TSPProblemTest
     {
     }
     
+    @Test
+    public void testGetComponentID1()
+    {
+        final TSPProblem instance = new TSPProblem();
+        instance.setup(state, BASE);
+        final int result = instance.getComponentId(531, 0);
+        final int result2 = instance.getComponentId(0, 531);
+        assertEquals(531, result);
+        assertEquals(result, result2);
+        assertTrue(instance.repOK());
+    }
+    
+    @Test
+    public void testGetComponentID2()
+    {
+        final TSPProblem instance = new TSPProblem();
+        instance.setup(state, BASE);
+        final int result = instance.getComponentId(531, 1);
+        final int result2 = instance.getComponentId(1, 531);
+        assertEquals(2*532 - 1, result);
+        assertEquals(result, result2);
+        assertTrue(instance.repOK());
+    }
+    
+    @Test
+    public void testGetComponentID3()
+    {
+        state.parameters.set(BASE.push(TSPProblem.P_DIRECTED), "true");
+        final TSPProblem instance = new TSPProblem();
+        instance.setup(state, BASE);
+        final int result = instance.getComponentId(531, 0);
+        final int result2 = instance.getComponentId(0, 531);
+        assertEquals(531*532, result);
+        assertEquals(531, result2);
+        assertTrue(instance.repOK());
+    }
+    
+    @Test
+    public void testGetComponentID4()
+    {
+        state.parameters.set(BASE.push(TSPProblem.P_DIRECTED), "true");
+        final TSPProblem instance = new TSPProblem();
+        instance.setup(state, BASE);
+        final int result = instance.getComponentId(531, 1);
+        final int result2 = instance.getComponentId(1, 531);
+        assertEquals(531*532 + 1, result);
+        assertEquals(2*532 - 1, result2);
+        assertTrue(instance.repOK());
+    }
+    
     @Before
     public void setUp()
     {
@@ -53,6 +103,7 @@ public class TSPProblemTest
     @Test
     public void testCostTest4()
     {
+        state.parameters.set(BASE.push(TSPProblem.P_DIRECTED), "true");
         state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/test4.tsp");
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
@@ -96,7 +147,7 @@ public class TSPProblemTest
     {
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
-        double result = instance.cost(531*532 + 1); // Edge 531—>1
+        double result = instance.cost(instance.getComponentId(531, 1)); // Edge 531—>1
         assertEquals(1947, result, 0.0);
         assertTrue(instance.repOK());
     }
@@ -128,7 +179,7 @@ public class TSPProblemTest
         state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/berlin52.tsp");
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
-        double result = instance.cost(51*52 + 0); // Edge 51—>0
+        double result = instance.cost(instance.getComponentId(51, 0)); // Edge 51—>0
         assertEquals(1220, result, 0.0);
         assertTrue(instance.repOK());
     }
@@ -159,9 +210,9 @@ public class TSPProblemTest
     {
         assert(instance != null);
         double sum = 0.0;
-        for (int i = 1; i < instance.numComponents(); i += instance.numNodes() + 1)
-            sum += instance.cost(i);
-        sum += instance.cost(instance.numNodes()*(instance.numNodes() - 1));
+        for (int i = 0; i < instance.numNodes() - 1; i++)
+            sum += instance.cost(instance.getComponentId(i, i+1));
+        sum += instance.cost(instance.getComponentId(instance.numNodes() - 1, 0));
         return sum;
     }
     
@@ -169,6 +220,7 @@ public class TSPProblemTest
     public void testNumComponentsDirected()
     {
         final TSPProblem instance = new TSPProblem();
+        state.parameters.set(BASE.push(TSPProblem.P_DIRECTED), "true");
         instance.setup(state, BASE);
         assertEquals((int) Math.pow(532, 2), instance.numComponents());
         assertTrue(instance.repOK());
@@ -178,7 +230,6 @@ public class TSPProblemTest
     public void testNumComponentsUndirected()
     {
         final TSPProblem instance = new TSPProblem();
-        state.parameters.set(BASE.push(TSPProblem.P_UNDIRECTED), "true");
         instance.setup(state, BASE);
         assertEquals(532*(532 + 1)/2, instance.numComponents());
         assertTrue(instance.repOK());
