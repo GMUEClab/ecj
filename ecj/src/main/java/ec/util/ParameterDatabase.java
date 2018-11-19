@@ -1402,33 +1402,51 @@ public class ParameterDatabase implements Serializable
         }
 
 
-
+	double[] extendBag(double[] bag)
+		{
+		double[] newbag = new double[bag.length * 2 + 1];
+		System.arraycopy(bag, 0, newbag, 0, bag.length);
+		return newbag;
+		}
+		
+	double[] collapseBag(double[] bag, int size)
+		{
+		double[] newbag = new double[size];
+		System.arraycopy(bag, 0, newbag, 0, size);
+		return newbag;
+		}
 
     static final int ARRAY_NO_EXPECTED_LENGTH = (-1);
     double[] getDoublesWithMax(Parameter parameter, double minValue, double maxValue, int expectedLength)
         {
         if (_exists(parameter)) 
             {
-            DoubleBag bag = new DoubleBag();
+            double[] bag = new double[256];
+            int bagSize = 0;
+            
             Scanner scanner = new Scanner(getParam(parameter));
             while(scanner.hasNextDouble())
                 {
-                if (expectedLength != ARRAY_NO_EXPECTED_LENGTH && bag.size() >= expectedLength)
+                if (expectedLength != ARRAY_NO_EXPECTED_LENGTH && bagSize >= expectedLength)
                     return null;  // too big
                                 
                 double val = scanner.nextDouble();
                 if (val != val || val > maxValue || val < minValue)
                     return null;
                 else
-                    { bag.add(val); }
+                    {
+                    if (bagSize == bag.length) bag = extendBag(bag);
+                	bag[bagSize] = val;
+                	bagSize++; 
+                	}
                 }
             if (scanner.hasNext())
                 return null;  // too long, or garbage afterwards
-            if (expectedLength != ARRAY_NO_EXPECTED_LENGTH && bag.size() != expectedLength)
+            if (expectedLength != ARRAY_NO_EXPECTED_LENGTH && bagSize != expectedLength)
                 return null;
-            if (bag.size() == 0)
+            if (bagSize == 0)
                 return null;            // 0 lengths not permitted
-            return bag.toArray();
+            return collapseBag(bag, bagSize);
             } 
         else
             {
