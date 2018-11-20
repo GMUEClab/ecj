@@ -6,6 +6,13 @@
     <version>26</version>
     <packaging>jar</packaging>
 
+    <repositories>
+      <repository>
+	<id>local-repo</id>
+	<url>file:///${project.basedir}/local-repo</url>
+      </repository>
+    </repositories>
+    
     <dependencies>
        <dependency>
 	 <groupId>com.jcraft</groupId>
@@ -28,17 +35,15 @@
           <version>1.2.3</version>
         </dependency>
 	<dependency>
-	  <groupId>edu.gmu.cs</groupId>
-	  <artifactId>pshecj</artifactId>
-	  <version>1.0</version>
-	  <scope>system</scope>
-	  <systemPath>${project.basedir}/lib/pshecj.jar</systemPath>
-	</dependency>
-	<dependency>
 	  <groupId>junit</groupId>
 	  <artifactId>junit</artifactId>
 	  <version>4.12</version>
 	  <scope>test</scope>
+	</dependency>
+	<dependency>
+	  <groupId>pshecj</groupId>
+	  <artifactId>pshecj</artifactId>
+	  <version>1</version>
 	</dependency>
     </dependencies>
     <properties>
@@ -62,29 +67,6 @@
 	</manifest>
       </archive>
     </configuration>
-  </plugin>
-  <!-- PushGP is not in the Maven respository, so we manually install the dependency to the user's local repository. -->
-  <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-install-plugin</artifactId>
-    <version>2.5.2</version>
-    <executions>
-      <execution>
-	<id>install-jar-lib</id>
-        <phase>initialize</phase>
-        <goals>
-          <goal>install-file</goal>
-        </goals>
-	<configuration>
-	  <groupId>edu.gmu.cs</groupId>
-	  <artifactId>pshecj</artifactId>
-	  <version>1.0</version>
-	  <packaging>jar</packaging>
-	  <file>${project.basedir}/lib/pshecj.jar</file>
-	  <generatePom>true</generatePom>
-	</configuration>
-      </execution>
-    </executions>
   </plugin>
   <!-- Copy dependency jars into the target directory. -->
   <plugin>
