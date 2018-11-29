@@ -16,5 +16,5 @@ import java.util.List;
  */
 public interface ConstructionRule extends Setup
 {
-    public abstract ConstructiveIndividual constructSolution(EvolutionState state, ConstructiveIndividual ind, List<Double> pheromones);
+    public abstract ConstructiveIndividual constructSolution(EvolutionState state, ConstructiveIndividual ind, PheromoneTable pheromones);
 }

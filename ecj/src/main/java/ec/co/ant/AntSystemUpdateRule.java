@@ -73,9 +73,9 @@ public class AntSystemUpdateRule implements UpdateRule
     }
 
     @Override
-    public void updatePheromones(final EvolutionState state, final List<Double> pheremones, final Subpopulation subpop)
+    public void updatePheromones(final EvolutionState state, final PheromoneTable pheromones, final Subpopulation subpop)
     {
-        assert(pheremones != null);
+        assert(pheromones != null);
         assert(subpop != null);
         final Map<Integer, Double> contributions = new HashMap();
         // Loop through every individual and record its pheremone contributions (scores) for each edge
@@ -96,9 +96,9 @@ public class AntSystemUpdateRule implements UpdateRule
         // Apply the new pheromones
         for (final int c : contributions.keySet())
             {
-            final double oldPheromone = pheremones.get(c);
+            final double oldPheromone = pheromones.get(c);
             final double newPheromone = (1.0-decayRate) * oldPheromone + contributions.get(c);
-            pheremones.set(c, newPheromone);
+            pheromones.set(c, newPheromone);
             }
         assert(repOK());
     }
