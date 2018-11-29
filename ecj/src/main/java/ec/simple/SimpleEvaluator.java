@@ -7,7 +7,6 @@
 
 package ec.simple;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import ec.*;
 import ec.util.*;
