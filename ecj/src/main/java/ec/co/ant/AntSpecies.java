@@ -28,12 +28,11 @@ public class AntSpecies extends Species
     public final static String SPECIES_NAME = "constructiveSpecies";
     
     public final static String P_CONSTRUCTION_RULE = "constructionRule";
+    public final static String P_PHEROMONE_TABLE = "pheromoneTable";
     public final static String P_UPDATE_RULE = "updateRule";
-    public final static String P_NUM_COMPONENTS = "numComponents";
     
-    private int numComponents;
     private ConstructionRule constructionRule;
-    private List<Double> pheremones;
+    private PheromoneTable pheromones;
     private UpdateRule updateRule;
     
     @Override
@@ -42,13 +41,14 @@ public class AntSpecies extends Species
         setupSuper(state, base); // Calling a custom replacement for super.setup(), because Species.setup() looks for parameters that we don't need for ACO.
         assert(state != null);
         assert(base != null);
-        numComponents = ((ConstructiveProblemForm)state.evaluator.p_problem).numComponents();
-        //numComponents = state.parameters.getInt(base.push(P_NUM_COMPONENTS), null, 1);
-        //if (numComponents == 0)
-        //    state.output.fatal(String.format("%s: '%s' is set to %d, but must be positive.", this.getClass().getSimpleName(), base.push(P_NUM_COMPONENTS), numComponents));
         constructionRule = (ConstructionRule) state.parameters.getInstanceForParameter(base.push(P_CONSTRUCTION_RULE), null, ConstructionRule.class);
+        constructionRule.setup(state, base.push(P_CONSTRUCTION_RULE));
+        
+        pheromones = (PheromoneTable) state.parameters.getInstanceForParameter(base.push(P_PHEROMONE_TABLE), null, PheromoneTable.class);
+        pheromones.setup(state, base.push(P_PHEROMONE_TABLE));
+        
         updateRule = (UpdateRule) state.parameters.getInstanceForParameter(base.push(P_UPDATE_RULE), null, UpdateRule.class);
-        pheremones = new ArrayList<Double>(numComponents);
+        updateRule.setup(state, base.push(P_UPDATE_RULE));
         assert(repOK());
     }
     
@@ -76,17 +76,9 @@ public class AntSpecies extends Species
         f_prototype.setup(state,base.push(P_FITNESS));
     }
     
-    
-    
-    public List<Double> getPheremones()
-    {
-        assert(repOK());
-        return new ArrayList<Double>(pheremones); // Defensive copy
-    }
-    
     public void updatePheromones(final EvolutionState state, final Subpopulation population)
     {
-        updateRule.updatePheromones(state, pheremones, population);
+        updateRule.updatePheromones(state, pheromones, population);
         assert(repOK());
     }
     
@@ -98,7 +90,7 @@ public class AntSpecies extends Species
         
         final ConstructiveIndividual ind = (ConstructiveIndividual)(super.newIndividual(state, thread));
         assert(repOK());
-        return constructionRule.constructSolution(state, ind, pheremones);
+        return constructionRule.constructSolution(state, ind, pheromones);
     }
     
     @Override
@@ -120,11 +112,8 @@ public class AntSpecies extends Species
                 && !P_UPDATE_RULE.isEmpty()
                 && P_CONSTRUCTION_RULE != null
                 && !P_CONSTRUCTION_RULE.isEmpty()
-                && P_NUM_COMPONENTS != null
-                && !P_NUM_COMPONENTS.isEmpty()
-                && numComponents > 0
                 && constructionRule != null
                 && updateRule != null
-                && pheremones != null;
+                && pheromones != null;
     }
 }

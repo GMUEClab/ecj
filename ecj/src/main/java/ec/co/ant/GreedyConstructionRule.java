@@ -45,7 +45,7 @@ public class GreedyConstructionRule implements ConstructionRule
      * argument is ignored, and may be null.
      */
     @Override
-    public ConstructiveIndividual constructSolution(final EvolutionState state, final ConstructiveIndividual ind, final List<Double> pheromones)
+    public ConstructiveIndividual constructSolution(final EvolutionState state, final ConstructiveIndividual ind, final PheromoneTable pheromones)
     {
         assert(state != null);
         assert(ind != null);
@@ -63,7 +63,7 @@ public class GreedyConstructionRule implements ConstructionRule
             {
             final Set<Integer> allowedMoves = problem.getAllowedComponents(ind);
             final int component = bestMove(problem, ind, allowedMoves);
-            ind.add(component);
+            ind.add(state, component);
             }
         
         assert(repOK());
