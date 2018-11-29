@@ -11,6 +11,7 @@ import ec.Problem;
 import ec.app.tsp.TSPGraph.TSPEdge;
 import ec.co.ConstructiveIndividual;
 import ec.co.ConstructiveProblemForm;
+import ec.co.TSPIndividual;
 import ec.simple.SimpleFitness;
 import ec.simple.SimpleProblemForm;
 import ec.util.Parameter;
@@ -92,25 +93,25 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
     @Override
     public Set<Integer> getAllowedComponents(final ConstructiveIndividual partialSolution) {
         assert(partialSolution != null);
-            
+        
+        if (!(partialSolution instanceof TSPIndividual))
+            throw new IllegalStateException(String.format("%s: received an individual of type %s, but must be %s.", this.getClass().getSimpleName(), partialSolution.getClass().getSimpleName(), TSPIndividual.class.getSimpleName()));
+        final TSPIndividual tspSol = (TSPIndividual) partialSolution;
+        
         // If the solution is empty, then any component is allowed
         if (partialSolution.isEmpty())
             return componentSet();
         
-        // Otherwise, only components in the current neighborhood are allowed
+        // Otherwise, only edges extending from either end of the paht are allowed
         final Set<Integer> allowedComponents = new HashSet<Integer>();
         // Focus on the most recently added node in the tour
-        final int last = partialSolution.getLastAddedComponent();
-        final int from = graph.getEdge(last).from();
+        final TSPEdge lastEdge = graph.getEdge(partialSolution.get((int) partialSolution.size() - 1));
+        
         // Loop through every edge eminating from that node
         for (int to = 0; to < graph.numNodes(); to++)
         {
-            if (from != to) // Disallow self-loops
-            {
-                final int reachable = graph.edgeID(from, to);
-                if (!allowCycles && !partialSolution.contains(reachable)) // Allow the edge if it isn't already part of the tour
-                    allowedComponents.add(reachable);
-            }
+            if (allowCycles || !tspSol.visited(to))
+                allowedComponents.add(graph.edgeID(lastEdge.from(), to));
         }
         assert(repOK());
         assert(allowedComponents.size() < numComponents());

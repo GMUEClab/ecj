@@ -1,5 +1,5 @@
 /*
-  Copyright 2017 by Sean Luke
+  Copyright 2018 by Sean Luke
   Licensed under the Academic Free License version 3.0
   See the file "LICENSE" for more information
 */
@@ -7,10 +7,15 @@ package ec.app.tsp;
 
 import ec.EvolutionState;
 import ec.Evolve;
+import ec.co.TSPIndividual;
+import ec.simple.SimpleEvaluator;
 import ec.simple.SimpleEvolutionState;
 import ec.util.Output.OutputExitException;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -27,6 +32,20 @@ public class TSPProblemTest
     
     public TSPProblemTest()
     {
+    }
+    
+    @Before
+    public void setUp()
+    {
+        params = new ParameterDatabase();
+        params.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/att532.tsp");
+        state = new SimpleEvolutionState();
+        state.parameters = params;
+        state.output = Evolve.buildOutput();
+        state.output.getLog(0).silent = true;
+        state.output.getLog(1).silent = true;
+        state.output.setThrowsErrors(true);
+        state.evaluator = new SimpleEvaluator();
     }
     
     @Test
@@ -77,19 +96,6 @@ public class TSPProblemTest
         assertEquals(531*532 + 1, result);
         assertEquals(2*532 - 1, result2);
         assertTrue(instance.repOK());
-    }
-    
-    @Before
-    public void setUp()
-    {
-        params = new ParameterDatabase();
-        params.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/att532.tsp");
-        state = new SimpleEvolutionState();
-        state.parameters = params;
-        state.output = Evolve.buildOutput();
-        state.output.getLog(0).silent = true;
-        state.output.getLog(1).silent = true;
-        state.output.setThrowsErrors(true);
     }
     
     @Test(expected = OutputExitException.class)
@@ -232,6 +238,56 @@ public class TSPProblemTest
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
         assertEquals(532*(532 + 1)/2, instance.numComponents());
+        assertTrue(instance.repOK());
+    }
+    
+    @Test
+    public void testGetAllowedComponents1()
+    {
+        state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/test4.tsp");
+        final TSPProblem instance = new TSPProblem();
+        instance.setup(state, BASE);
+        state.evaluator.p_problem = instance;
+        
+        final TSPIndividual ind = new TSPIndividual();
+        ind.setComponents(state, new ArrayList<Integer>() {{
+            add(instance.getComponentId(0, 1));
+        }});
+        
+        final Set<Integer> expected = new HashSet<Integer>() {{
+            add(instance.getComponentId(1, 2));
+            add(instance.getComponentId(1, 3));
+        }};
+        
+        final Set<Integer> result = instance.getAllowedComponents(ind);
+        
+        assertTrue(result.containsAll(expected));
+        assertTrue(expected.containsAll(result));
+        assertTrue(instance.repOK());
+    }
+    
+    @Test
+    public void testGetAllowedComponents2()
+    {
+        state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/test4.tsp");
+        final TSPProblem instance = new TSPProblem();
+        instance.setup(state, BASE);
+        state.evaluator.p_problem = instance;
+        
+        final TSPIndividual ind = new TSPIndividual();
+        ind.setComponents(state, new ArrayList<Integer>() {{
+            add(instance.getComponentId(1, 0));
+        }});
+        
+        final Set<Integer> expected = new HashSet<Integer>() {{
+            add(instance.getComponentId(0, 2));
+            add(instance.getComponentId(0, 3));
+        }};
+        
+        final Set<Integer> result = instance.getAllowedComponents(ind);
+        
+        assertTrue(result.containsAll(expected));
+        assertTrue(expected.containsAll(result));
         assertTrue(instance.repOK());
     }
 }
