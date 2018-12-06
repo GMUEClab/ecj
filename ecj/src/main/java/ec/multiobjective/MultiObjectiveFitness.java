@@ -487,7 +487,10 @@ public class MultiObjectiveFitness extends Fitness
                 }
             });
                 
-        return front;
+        final ArrayList<Individual> sorted = new ArrayList<Individual>(sortedFront.length);
+        for (final Object ind : sortedFront)
+            sorted.add((Individual)ind);
+        return sorted;
         }
                 
 
