@@ -50,7 +50,7 @@ public class NSGA2Breeder extends SimpleBreeder
         if (sequentialBreeding) // uh oh, haven't tested with this
             state.output.fatal(this.getClass().getSimpleName() + "does not support sequential evaluation.",
                 base.push(P_SEQUENTIAL_BREEDING));
-
+        
         if (!clonePipelineAndPopulation)
             state.output.fatal(P_CLONE_PIPELINE_AND_POPULATION + " must be true for " + this.getClass().getSimpleName());
         
@@ -116,9 +116,12 @@ public class NSGA2Breeder extends SimpleBreeder
         }
     
     /** Build the auxiliary fitness data and reduce the subpopulation to just the archive, which is returned. */
-    ArrayList<Individual> buildArchive(EvolutionState state, int subpop)
+    ArrayList<Individual> buildArchive(final EvolutionState state, int subpop)
         {
         ArrayList<ArrayList<Individual>> ranks = assignFrontRanks(state.population.subpops.get(subpop));
+        
+        if (!(state.population.subpops.get(subpop).species.f_prototype instanceof NSGA2MultiObjectiveFitness))
+            state.output.fatal(String.format("%s: subpopulation %d is using %s to represent fitness, but NSGA2 requires %s or a subtype of %s.", this.getClass().getSimpleName(), subpop, state.population.subpops.get(subpop).species.f_prototype.getClass().getSimpleName(), NSGA2MultiObjectiveFitness.class.getSimpleName(), NSGA2MultiObjectiveFitness.class.getSimpleName()));
                 
         ArrayList<Individual> newSubpopulation = new ArrayList<Individual>();
         int size = ranks.size();

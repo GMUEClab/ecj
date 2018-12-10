@@ -17,6 +17,7 @@ import ec.util.Output;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
 import ec.vector.DoubleVectorIndividual;
+import ec.vector.FloatVectorSpecies;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
@@ -76,8 +77,9 @@ public class NSGA2BreederTest
         instance.setup(state, BASE);
         }
 
+    /** The new archive should contain the number of individuals we expect. */
     @Test
-    public void testLoadElitesSize()
+    public void testLoadElites1()
         {
         state.population = getTestPopulation();
         final Population newpop = state.population.emptyClone();
@@ -90,8 +92,9 @@ public class NSGA2BreederTest
         assertEquals(10, newpop.subpops.get(0).individuals.size());
         }
 
+    /** The new archive should contain exactly the individuals we expect. */
     @Test
-    public void testLoadElites()
+    public void testLoadElites2()
         {
         state.population = getTestPopulation();
         final Population newpop = state.population.emptyClone();
@@ -115,8 +118,9 @@ public class NSGA2BreederTest
         assertTrue(state.population.subpops.get(0).individuals.containsAll(expectedArchive));
         }
 
+    /** Individuals' "rank" attribute should correctly record the rank that individuals belong to. */
     @Test
-    public void testLoadElitesRanks()
+    public void testLoadElites3()
         {
         state.population = getTestPopulation();
         final Population newpop = state.population.emptyClone();
@@ -143,6 +147,18 @@ public class NSGA2BreederTest
         rank1.retainAll(rank);
         for (final Individual ind : rank1)
             assertEquals(rankID, ((NSGA2MultiObjectiveFitness)ind.fitness).rank);
+        }
+    
+    /** If the subpopulation's fitness object is not an instance of NSGA2MultiObjectiveFitness, throw an error. */
+    @Test (expected = Output.OutputExitException.class)
+    public void testLoadElites4()
+        {
+        state.population = getTestPopulation();
+        state.population.subpops.get(0).species.f_prototype = new MultiObjectiveFitness();
+        final Population newpop = state.population.emptyClone();
+        final NSGA2Breeder instance = new NSGA2Breeder();
+        instance.setup(state, BASE);
+        instance.loadElites(state, newpop);
         }
     
     @Test
@@ -239,6 +255,8 @@ public class NSGA2BreederTest
         pop.subpops.get(0).individuals.addAll(getRank3());
         pop.subpops.get(0).individuals.addAll(getRank1());
         pop.subpops.get(0).individuals.addAll(getRank4());
+        pop.subpops.get(0).species = new FloatVectorSpecies();
+        pop.subpops.get(0).species.f_prototype = p_fitness;
         return pop;
         }
     
