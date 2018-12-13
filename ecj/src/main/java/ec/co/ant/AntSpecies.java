@@ -90,7 +90,7 @@ public class AntSpecies extends Species
         
         final ConstructiveIndividual ind = (ConstructiveIndividual)(super.newIndividual(state, thread));
         assert(repOK());
-        return constructionRule.constructSolution(state, ind, pheromones);
+        return constructionRule.constructSolution(state, ind, pheromones, thread);
     }
     
     @Override

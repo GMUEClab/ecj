@@ -8,6 +8,7 @@ package ec.co.ant;
 import ec.EvolutionState;
 import ec.Individual;
 import ec.Subpopulation;
+import ec.co.Component;
 import ec.co.ConstructiveIndividual;
 import ec.co.ConstructiveProblemForm;
 import ec.util.Parameter;
@@ -77,15 +78,17 @@ public class AntSystemUpdateRule implements UpdateRule
     {
         assert(pheromones != null);
         assert(subpop != null);
-        final Map<Integer, Double> contributions = new HashMap();
+        final Map<Component, Double> contributions = new HashMap();
         // Loop through every individual and record its pheremone contributions (scores) for each edge
         for (final Individual o : subpop.individuals)
             {
             assert(o instanceof ConstructiveIndividual);
             final ConstructiveIndividual ind = (ConstructiveIndividual) o;
             assert(ind.size() > 0);
-            for (final int c : ind.getComponents())
+            for (final Object oo : ind)
                 {
+                assert(oo instanceof Component);
+                final Component c = (Component) oo;
                 final double cPheromone = pheromoneContribution(state, ind, c);
                 if (contributions.containsKey(c))
                     contributions.put(c, contributions.get(c) + cPheromone); // 
@@ -94,19 +97,19 @@ public class AntSystemUpdateRule implements UpdateRule
                 }
             }
         // Apply the new pheromones
-        for (final int c : contributions.keySet())
+        for (final Component c : contributions.keySet())
             {
-            final double oldPheromone = pheromones.get(c);
+            final double oldPheromone = pheromones.get(state, c, 0); // Using thread 0 because we are in a single-threaded function
             final double newPheromone = (1.0-decayRate) * oldPheromone + contributions.get(c);
             pheromones.set(c, newPheromone);
             }
         assert(repOK());
     }
     
-    private double pheromoneContribution(final EvolutionState state, final ConstructiveIndividual ind, final int component)
+    private double pheromoneContribution(final EvolutionState state, final ConstructiveIndividual ind, final Component component)
     {
         assert(ind != null);
-        assert(component >= 0);
+        assert(component != null);
         final double fitness = ind.fitness.fitness();
         switch (depositRule)
             {
@@ -116,7 +119,7 @@ public class AntSystemUpdateRule implements UpdateRule
             case ANT_DENSITY:
                 return q;
             case ANT_QUANTITY:
-                return q/((ConstructiveProblemForm)state.evaluator.p_problem).cost(component);
+                return q/component.cost();
             default:
                 throw new IllegalStateException(String.format("%s: no deposit rule logic implemented for %s.", this.getClass().getSimpleName(), depositRule));
             }

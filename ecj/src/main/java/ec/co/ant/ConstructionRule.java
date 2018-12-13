@@ -8,7 +8,6 @@ package ec.co.ant;
 import ec.EvolutionState;
 import ec.Setup;
 import ec.co.ConstructiveIndividual;
-import java.util.List;
 
 /**
  *
@@ -16,5 +15,5 @@ import java.util.List;
  */
 public interface ConstructionRule extends Setup
 {
-    public abstract ConstructiveIndividual constructSolution(EvolutionState state, ConstructiveIndividual ind, PheromoneTable pheromones);
+    public abstract ConstructiveIndividual constructSolution(EvolutionState state, ConstructiveIndividual ind, PheromoneTable pheromones, int thread);
 }

@@ -8,13 +8,14 @@ package ec.app.knapsack;
 import ec.EvolutionState;
 import ec.Individual;
 import ec.Problem;
+import ec.co.Component;
 import ec.co.ConstructiveIndividual;
 import ec.co.ConstructiveProblemForm;
+import ec.simple.SimpleFitness;
 import ec.simple.SimpleProblemForm;
-import ec.util.Misc;
 import ec.util.Parameter;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -22,20 +23,28 @@ import java.util.Set;
  */
 public class KnapsackProblem extends Problem implements SimpleProblemForm, ConstructiveProblemForm {
     public final static String P_SIZES = "sizes";
-    public final static String P_COSTS = "costs";
+    public final static String P_VALUES = "values";
     public final static String P_KNAPSACK_SIZE = "knapsack-size";
+    public final static String P_ALLOW_DUPLICATES = "allow-duplicates";
     
-    private double[] sizes;
-    private double[] costs;
+    private List<KnapsackComponent> components;
+    
     private double knapsackSize;
+    private boolean allowDuplicates;
     
     @Override
     public void setup(final EvolutionState state, final Parameter base) {
         assert(state != null);
         assert(base != null);
         knapsackSize = state.parameters.getDouble(base.push(P_KNAPSACK_SIZE), null);
-        sizes = state.parameters.getDoubles(base.push(P_SIZES), null, 0);
-        costs = state.parameters.getDoubles(base.push(P_COSTS), null, 0, sizes.length);
+        allowDuplicates = state.parameters.getBoolean(base.push(P_ALLOW_DUPLICATES), null, false);
+        
+        final double[] sizes = state.parameters.getDoubles(base.push(P_SIZES), null, 0);
+        final double[] values = state.parameters.getDoubles(base.push(P_VALUES), null, 0, sizes.length);
+        assert(sizes.length == values.length);
+        components = new ArrayList<KnapsackComponent>(sizes.length);
+        for (int i = 0; i < sizes.length; i++)
+            components.add(new KnapsackComponent(sizes[i], values[i]));
         assert(repOK());
     }
             
@@ -44,76 +53,87 @@ public class KnapsackProblem extends Problem implements SimpleProblemForm, Const
         assert(state != null);
         if (!(ind instanceof ConstructiveIndividual))
             state.output.fatal(String.format("%s requires a %s, but was given a %s.", this.getClass().getSimpleName(), ConstructiveIndividual.class.getSimpleName(), ind.getClass().getSimpleName()));
-        
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public double cost(final int component) {
-        if (component < 0 || component > numComponents())
-            throw new IllegalStateException(String.format("%s: attempted to evaluate the cost of component %d, but component IDs must be between 0 and %d (inclusive).", this.getClass().getSimpleName(), component, numComponents()));
+        ((SimpleFitness)ind.fitness).setFitness(state, totalValue((ConstructiveIndividual)ind), false);
+        ind.evaluated = true;
         assert(repOK());
-        return costs[component];
+    }
+    
+    private double totalValue(final ConstructiveIndividual solution) {
+        assert(solution != null);
+        double value = 0.0;
+        for (final Object c : solution)
+        {
+            if (!(c instanceof KnapsackComponent))
+                throw new IllegalArgumentException(String.format("%s: found a %s containing a %s, but must contain only %ss.", this.getClass().getSimpleName(), solution.getClass().getSimpleName(), c.getClass().getSimpleName(), KnapsackComponent.class.getSimpleName()));
+            value += ((KnapsackComponent)c).value();
+        }
+        assert(repOK());
+        return value;
+    }
+    
+    private double totalSize(final ConstructiveIndividual solution) {
+        assert(solution != null);
+        double size = 0.0;
+        for (final Object c : solution)
+        {
+            if (!(c instanceof KnapsackComponent))
+                throw new IllegalArgumentException(String.format("%s: found a %s containing a %s, but must contain only %ss.", this.getClass().getSimpleName(), solution.getClass().getSimpleName(), c.getClass().getSimpleName(), KnapsackComponent.class.getSimpleName()));
+            size += ((KnapsackComponent)c).size();
+        }
+        assert(repOK());
+        return size;
     }
 
     @Override
-    public boolean isViolated(final Set<Integer> partialSolution, final int component) {
+    public boolean isViolated(final ConstructiveIndividual partialSolution, final Component component) {
         assert(partialSolution != null);
-        assert(component > 0 && component < numComponents());
-        assert(!Misc.containsNulls(partialSolution));
-        double cost = cost(component);
-        for (final int c : partialSolution)
-            cost += cost(c);
-        return cost > knapsackSize;
+        assert(component != null);
+        if (!(component instanceof KnapsackComponent))
+            throw new IllegalArgumentException(String.format("%s: tried to check constraints on a %s containing a %s, but must be a %s.", this.getClass().getSimpleName(), partialSolution.getClass().getSimpleName(), component.getClass().getSimpleName(), KnapsackComponent.class.getSimpleName()));
+        return totalSize(partialSolution) + ((KnapsackComponent)component).size() > knapsackSize;
     }
 
     @Override
     public int numComponents() {
         assert(repOK());
-        return sizes.length;
-    }
-
-    @Override
-    public KnapsackComponent getComponent(final int component) {
-        if (component < 0 || component > numComponents())
-            throw new IllegalStateException(String.format("%s: attempted to get component %d, but component IDs must be between 0 and %d (inclusive).", this.getClass().getSimpleName(), component, numComponents()));
-        return new KnapsackComponent(sizes[component], costs[component]);
-    }
-
-    @Override
-    public Set<Integer> componentSet() {
-        final Set<Integer> result = new HashSet<Integer>(numComponents());
-        for (int i = 0; i < numComponents(); i++)
-            result.add(i);
-        assert(repOK());
-        return result;
+        return components.size();
     }
     
     public final boolean repOK() {
-        return P_COSTS != null
-                && !P_COSTS.isEmpty()
+        return P_VALUES != null
+                && !P_VALUES.isEmpty()
                 && P_SIZES != null
                 && !P_SIZES.isEmpty()
                 && P_KNAPSACK_SIZE != null
                 && !P_KNAPSACK_SIZE.isEmpty()
-                && sizes != null
-                && sizes.length > 0
-                && costs != null
-                && costs.length > 0
-                && sizes.length == costs.length
+                && components != null
+                && !components.isEmpty()
+                && knapsackSize > 0.0
                 && !Double.isNaN(knapsackSize);
     }
-    
-    public class KnapsackComponent {
-        private final double size;
-        private final double cost;
+
+    @Override
+    public List<Component> getAllowedComponents(final ConstructiveIndividual partialSolution) {
+        assert(partialSolution != null);
         
-        public double getSize() { return size; }
-        public double getCost() { return cost; }
+        final double partialSolutionSize = totalSize(partialSolution);
+        final List<Component> allowedComponents = new ArrayList<Component>();
+        for (final KnapsackComponent c : components)
+            if (allowDuplicates || !partialSolution.contains(c))
+                if (partialSolutionSize + c.size() <= knapsackSize)
+                    allowedComponents.add(c);
+        return allowedComponents;
+    }
+
+    @Override
+    public boolean isCompleteSolution(final ConstructiveIndividual solution) {
+        assert(solution != null);
         
-        public KnapsackComponent(final double size, final double cost) {
-            this.size = size;
-            this.cost = cost;
-        }
+        final double size = totalSize(solution);
+        for (final KnapsackComponent c : components)
+            if (allowDuplicates || !solution.contains(c))
+                if (size + c.size() <= knapsackSize)
+                    return false;
+        return true;
     }
 }
