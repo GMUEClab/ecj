@@ -5,12 +5,12 @@
 */
 package ec.co;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Defines a constrained combinatorial optimization problem.
  * 
- * Users can implement this interface to define the component, cost function, and 
+ * Users can implement this interface to define the component and 
  * solution constraints that make up a combinatorial optimization problems, 
  * such as knapsack problems, satisfiability problems, or vehicle routing problems.
  * 
@@ -19,26 +19,9 @@ import java.util.Set;
 public interface ConstructiveProblemForm {
     
     /**
-     * @param component Integer ID identifying the component.
-     * @return The cost associated with an individual component.
-     */
-    public abstract double cost(int component);
-    
-    /**
      * @return The total number of components that exist in the problem.
      */
     public abstract int numComponents();
-    
-    /**
-     * @param component Integer ID identifying the component.
-     * @return An object that defines the details of the component.
-     */
-    public abstract Object getComponent(int component);
-    
-    /**
-     * @return The set of all component IDs.
-     */
-    public abstract Set<Integer> componentSet();
     
     /**
      * Determine whether a given specifies a complete solution to this problem.
@@ -55,16 +38,16 @@ public interface ConstructiveProblemForm {
      * @return True iff the constraint allows component to be added to the given
      * partialSolution.
      */
-    public abstract boolean isViolated(final ConstructiveIndividual partialSolution, final int component);
+    public abstract boolean isViolated(final ConstructiveIndividual partialSolution, final Component component);
     
     /**
      * Return the allowable "neighborhood" of components that 
      * 
-     * @param partialSolution An collection of components that represent a
+     * @param partialSolution A collection of components that represent a
      * partial solution that we wish to add a component to.
      * 
-     * @return The set of all components that could be added to the given partial 
+     * @return The set of all components that can be added to the given partial 
      * solution without causing a constraint violation.
      */
-    public abstract Set<Integer> getAllowedComponents(final ConstructiveIndividual partialSolution);
+    public abstract List<Component> getAllowedComponents(final ConstructiveIndividual partialSolution);
 }

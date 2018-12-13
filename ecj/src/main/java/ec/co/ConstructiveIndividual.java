@@ -21,15 +21,15 @@ import java.util.Set;
  *
  * @author Eric O. Scott
  */
-public class ConstructiveIndividual extends Individual implements Iterable<Integer>
+public class ConstructiveIndividual<T extends Component> extends Individual implements Iterable<T>
 {
     
     public static final String P_CONSTRUCTIVEINDIVIDUAL = "constr-ind";
-    private List<Integer> components = new ArrayList<Integer>();
+    private List<T> components = new ArrayList<T>();
     /** A set representation of the components, to allow for quick "contains()" checking */
-    private Set<Integer> componentsSet = new HashSet<Integer>();
+    private Set<T> componentsSet = new HashSet<T>();
     
-    public int get(final int i)
+    public T get(final int i)
     {
         return components.get(i);
     }
@@ -45,42 +45,42 @@ public class ConstructiveIndividual extends Individual implements Iterable<Integ
     {
         ConstructiveIndividual myobj = (ConstructiveIndividual) (super.clone());
 
-        myobj.components = new ArrayList<Integer>(components);
-        myobj.componentsSet = new HashSet<Integer>(componentsSet);
+        myobj.components = new ArrayList<T>(components);
+        myobj.componentsSet = new HashSet<T>(componentsSet);
         
         assert(repOK());
         return myobj;
     } 
     
-    public Collection<Integer> getComponents()
+    public Collection<T> getComponents()
     {
         assert(repOK());
-        return new ArrayList<Integer>(components); // Defensive copy
+        return new ArrayList<T>(components); // Defensive copy
     }
     
-    public void setComponents(final EvolutionState state, final Collection<Integer> newComponents)
+    public void setComponents(final EvolutionState state, final Collection<T> newComponents)
     {
         assert(newComponents != null);
-        components = new ArrayList<Integer>(newComponents.size());
-        componentsSet = new HashSet<Integer>();
-        for (final Integer c : newComponents)
+        components = new ArrayList<T>(newComponents.size());
+        componentsSet = new HashSet<T>();
+        for (final T c : newComponents)
             add(state, c);
         assert(repOK());
     }
     
-    public void add(final EvolutionState state, final int component) {
-        assert(component >= 0);
+    public void add(final EvolutionState state, final T component) {
+        assert(component != null);
         components.add(component);
         componentsSet.add(component);
         assert(repOK());
     }
     
-    public boolean contains(final int component) {
+    public boolean contains(final T component) {
         return componentsSet.contains(component);
     }
 
     @Override
-    public Iterator<Integer> iterator() {
+    public Iterator<T> iterator() {
         return components.iterator();
     }
     
@@ -113,6 +113,11 @@ public class ConstructiveIndividual extends Individual implements Iterable<Integ
         return hash;
     }
     
+    @Override
+    public String toString() {
+        return components.toString();
+    }
+    
     public boolean repOK()
     {
         return P_CONSTRUCTIVEINDIVIDUAL != null
@@ -120,6 +125,6 @@ public class ConstructiveIndividual extends Individual implements Iterable<Integ
                 && components != null
                 && !Misc.containsNulls(components)
                 && componentsSet.size() == components.size()
-                && componentsSet.equals(new HashSet<Integer>(components));
+                && componentsSet.equals(new HashSet<T>(components));
     }
 }
