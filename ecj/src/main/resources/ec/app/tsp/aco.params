@@ -15,4 +15,5 @@ pop.subpop.0.species.updateRule =               ec.co.ant.AntSystemUpdateRule
 pop.subpop.0.species.constructionRule =         ec.co.ant.GreedyConstructionRule
 
 eval.problem =                                  ec.app.tsp.TSPProblem
-eval.problem.file =                             $src/main/resources/ec/app/tsp/att532.tsp
+#eval.problem.file =                             $src/main/resources/ec/app/tsp/att532.tsp
+eval.problem.file =				$src/main/resources/ec/app/tsp/test4.tsp

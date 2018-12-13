@@ -3,17 +3,13 @@
   Licensed under the Academic Free License version 3.0
   See the file "LICENSE" for more information
 */
-package ec.app.knapsack;
+package ec.co.ant;
 
 import ec.EvolutionState;
 import ec.Setup;
 import ec.co.Component;
 import ec.co.ConstructiveIndividual;
 import ec.co.ConstructiveProblemForm;
-import ec.co.ant.ComponentSelector;
-import ec.co.ant.ConstructionRule;
-import ec.co.ant.PheromoneTable;
-import ec.co.ant.ProportionateComponentSelector;
 import ec.util.Parameter;
 import java.util.List;
 
@@ -21,9 +17,8 @@ import java.util.List;
  *
  * @author Eric O. Scott
  */
-public class KnapsackConstructionRule implements ConstructionRule, Setup {
-    public final static String P_ALPHA = "alpha";
-    public final static String P_BETA = "beta";
+public class SimpleConstructionRule implements ConstructionRule, Setup {
+    public final static String P_SELECTOR = "component-selector";
     public final static String P_FIRST_RANDOM = "first-random";
 
     private boolean firstRandom;
@@ -35,9 +30,7 @@ public class KnapsackConstructionRule implements ConstructionRule, Setup {
         assert(state != null);
         assert(base != null);
         firstRandom = state.parameters.getBoolean(base.push(P_FIRST_RANDOM), null, true);
-        final double alpha = state.parameters.getDouble(base.push(P_ALPHA), null);
-        final double beta = state.parameters.getDouble(base.push(P_BETA), null);
-        selector = new ProportionateComponentSelector(alpha, beta);
+        selector = (ComponentSelector) state.parameters.getInstanceForParameter(base.push(P_SELECTOR), null, ComponentSelector.class);
         assert(repOK());
     }
 
@@ -77,10 +70,10 @@ public class KnapsackConstructionRule implements ConstructionRule, Setup {
     
     public final boolean repOK()
     {
-        return P_ALPHA != null
-                && !P_ALPHA.isEmpty()
-                && P_BETA != null
-                && !P_BETA.isEmpty()
+        return P_SELECTOR != null
+                && !P_SELECTOR.isEmpty()
+                && P_FIRST_RANDOM != null
+                && !P_FIRST_RANDOM.isEmpty()
                 && selector != null;
     }
 }

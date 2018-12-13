@@ -7,7 +7,8 @@ package ec.app.tsp;
 
 import ec.EvolutionState;
 import ec.Evolve;
-import ec.co.TSPIndividual;
+import ec.app.tsp.TSPGraph.TSPComponent;
+import ec.co.Component;
 import ec.simple.SimpleEvaluator;
 import ec.simple.SimpleEvolutionState;
 import ec.util.Output.OutputExitException;
@@ -15,6 +16,7 @@ import ec.util.Parameter;
 import ec.util.ParameterDatabase;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,56 +50,6 @@ public class TSPProblemTest
         state.evaluator = new SimpleEvaluator();
     }
     
-    @Test
-    public void testGetComponentID1()
-    {
-        final TSPProblem instance = new TSPProblem();
-        instance.setup(state, BASE);
-        final int result = instance.getComponentId(531, 0);
-        final int result2 = instance.getComponentId(0, 531);
-        assertEquals(531, result);
-        assertEquals(result, result2);
-        assertTrue(instance.repOK());
-    }
-    
-    @Test
-    public void testGetComponentID2()
-    {
-        final TSPProblem instance = new TSPProblem();
-        instance.setup(state, BASE);
-        final int result = instance.getComponentId(531, 1);
-        final int result2 = instance.getComponentId(1, 531);
-        assertEquals(2*532 - 1, result);
-        assertEquals(result, result2);
-        assertTrue(instance.repOK());
-    }
-    
-    @Test
-    public void testGetComponentID3()
-    {
-        state.parameters.set(BASE.push(TSPProblem.P_DIRECTED), "true");
-        final TSPProblem instance = new TSPProblem();
-        instance.setup(state, BASE);
-        final int result = instance.getComponentId(531, 0);
-        final int result2 = instance.getComponentId(0, 531);
-        assertEquals(531*532, result);
-        assertEquals(531, result2);
-        assertTrue(instance.repOK());
-    }
-    
-    @Test
-    public void testGetComponentID4()
-    {
-        state.parameters.set(BASE.push(TSPProblem.P_DIRECTED), "true");
-        final TSPProblem instance = new TSPProblem();
-        instance.setup(state, BASE);
-        final int result = instance.getComponentId(531, 1);
-        final int result2 = instance.getComponentId(1, 531);
-        assertEquals(531*532 + 1, result);
-        assertEquals(2*532 - 1, result2);
-        assertTrue(instance.repOK());
-    }
-    
     @Test(expected = OutputExitException.class)
     public void testSetup()
     {
@@ -109,30 +61,29 @@ public class TSPProblemTest
     @Test
     public void testCostTest4()
     {
-        state.parameters.set(BASE.push(TSPProblem.P_DIRECTED), "true");
         state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/test4.tsp");
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
-        assertEquals(Math.rint(2* Math.sqrt(2)), instance.cost(1), 0.00001);
-        assertEquals(Math.rint(2.5), instance.cost(2), 0.00001);
-        assertEquals(Math.rint(2.692582403567252), instance.cost(3), 0.00001);
-        assertEquals(Math.rint(0.5), instance.cost(6), 0.00001);
-        assertEquals(Math.rint(1.118033988749895), instance.cost(7), 0.00001);
-        assertEquals(Math.rint(0.7071067811865476), instance.cost(11), 0.00001);
+        assertEquals(Math.rint(2* Math.sqrt(2)), instance.getComponent(0, 1).cost(), 0.00001);
+        assertEquals(Math.rint(2.5), instance.getComponent(0, 2).cost(), 0.00001);
+        assertEquals(Math.rint(2.692582403567252), instance.getComponent(0, 3).cost(), 0.00001);
+        assertEquals(Math.rint(0.5), instance.getComponent(1, 2).cost(), 0.00001);
+        assertEquals(Math.rint(1.118033988749895), instance.getComponent(1, 3).cost(), 0.00001);
+        assertEquals(Math.rint(0.7071067811865476), instance.getComponent(2, 3).cost(), 0.00001);
         
         // Symmetric matrix
-        assertEquals(instance.cost(1), instance.cost(4), 0.00001);
-        assertEquals(instance.cost(2), instance.cost(8), 0.00001);
-        assertEquals(instance.cost(3), instance.cost(12), 0.00001);
-        assertEquals(instance.cost(6), instance.cost(9), 0.00001);
-        assertEquals(instance.cost(7), instance.cost(13), 0.00001);
-        assertEquals(instance.cost(11), instance.cost(14), 0.00001);
+        assertEquals(instance.getComponent(0, 1).cost(), instance.getComponent(1, 0).cost(), 0.00001);
+        assertEquals(instance.getComponent(0, 2).cost(), instance.getComponent(2, 0).cost(), 0.00001);
+        assertEquals(instance.getComponent(0, 3).cost(), instance.getComponent(3, 0).cost(), 0.00001);
+        assertEquals(instance.getComponent(1, 2).cost(), instance.getComponent(2, 1).cost(), 0.00001);
+        assertEquals(instance.getComponent(1, 3).cost(), instance.getComponent(3, 1).cost(), 0.00001);
+        assertEquals(instance.getComponent(2, 3).cost(), instance.getComponent(3, 2).cost(), 0.00001);
         
         // Zero diagonal
-        assertEquals(0, instance.cost(0), 0.00001);
-        assertEquals(0, instance.cost(5), 0.00001);
-        assertEquals(0, instance.cost(10), 0.00001);
-        assertEquals(0, instance.cost(15), 0.00001);
+        assertEquals(0, instance.getComponent(0, 0).cost(), 0.00001);
+        assertEquals(0, instance.getComponent(1, 1).cost(), 0.00001);
+        assertEquals(0, instance.getComponent(2, 2).cost(), 0.00001);
+        assertEquals(0, instance.getComponent(3, 3).cost(), 0.00001);
         
         assertEquals(Math.rint(2* Math.sqrt(2) + 0.5 + 0.7071067811865476 + 2.692582403567252), canonicalDistance(instance), 0.00001);
     }
@@ -143,7 +94,7 @@ public class TSPProblemTest
     {
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
-        double result = instance.cost(1);
+        double result = instance.getComponent(0, 1).cost();
         assertEquals(109, result, 0.0);
         assertTrue(instance.repOK());
     }
@@ -153,7 +104,7 @@ public class TSPProblemTest
     {
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
-        double result = instance.cost(instance.getComponentId(531, 1)); // Edge 531—>1
+        double result = instance.getComponent(531, 1).cost();
         assertEquals(1947, result, 0.0);
         assertTrue(instance.repOK());
     }
@@ -174,7 +125,7 @@ public class TSPProblemTest
         state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/berlin52.tsp");
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
-        double result = instance.cost(1);
+        double result = instance.getComponent(0, 1).cost();
         assertEquals(666, result, 0.0);
         assertTrue(instance.repOK());
     }
@@ -185,7 +136,7 @@ public class TSPProblemTest
         state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/berlin52.tsp");
         final TSPProblem instance = new TSPProblem();
         instance.setup(state, BASE);
-        double result = instance.cost(instance.getComponentId(51, 0)); // Edge 51—>0
+        double result = instance.getComponent(51, 0).cost();
         assertEquals(1220, result, 0.0);
         assertTrue(instance.repOK());
     }
@@ -217,27 +168,17 @@ public class TSPProblemTest
         assert(instance != null);
         double sum = 0.0;
         for (int i = 0; i < instance.numNodes() - 1; i++)
-            sum += instance.cost(instance.getComponentId(i, i+1));
-        sum += instance.cost(instance.getComponentId(instance.numNodes() - 1, 0));
+            sum += instance.getComponent(i, i+1).cost();
+        sum += instance.getComponent(instance.numNodes() - 1, 0).cost();
         return sum;
     }
     
     @Test
-    public void testNumComponentsDirected()
+    public void testNumComponents()
     {
         final TSPProblem instance = new TSPProblem();
-        state.parameters.set(BASE.push(TSPProblem.P_DIRECTED), "true");
         instance.setup(state, BASE);
         assertEquals((int) Math.pow(532, 2), instance.numComponents());
-        assertTrue(instance.repOK());
-    }
-    
-    @Test
-    public void testNumComponentsUndirected()
-    {
-        final TSPProblem instance = new TSPProblem();
-        instance.setup(state, BASE);
-        assertEquals(532*(532 + 1)/2, instance.numComponents());
         assertTrue(instance.repOK());
     }
     
@@ -250,16 +191,16 @@ public class TSPProblemTest
         state.evaluator.p_problem = instance;
         
         final TSPIndividual ind = new TSPIndividual();
-        ind.setComponents(state, new ArrayList<Integer>() {{
-            add(instance.getComponentId(0, 1));
+        ind.setComponents(state, new ArrayList<Component>() {{
+            add(instance.getComponent(0, 1));
         }});
         
-        final Set<Integer> expected = new HashSet<Integer>() {{
-            add(instance.getComponentId(1, 2));
-            add(instance.getComponentId(1, 3));
+        final List<Component> expected = new ArrayList<Component>() {{
+            add(instance.getComponent(1, 2));
+            add(instance.getComponent(1, 3));
         }};
         
-        final Set<Integer> result = instance.getAllowedComponents(ind);
+        final List<Component> result = instance.getAllowedComponents(ind);
         
         assertTrue(result.containsAll(expected));
         assertTrue(expected.containsAll(result));
@@ -275,16 +216,16 @@ public class TSPProblemTest
         state.evaluator.p_problem = instance;
         
         final TSPIndividual ind = new TSPIndividual();
-        ind.setComponents(state, new ArrayList<Integer>() {{
-            add(instance.getComponentId(1, 0));
+        ind.setComponents(state, new ArrayList<Component>() {{
+            add(instance.getComponent(1, 0));
         }});
         
-        final Set<Integer> expected = new HashSet<Integer>() {{
-            add(instance.getComponentId(0, 2));
-            add(instance.getComponentId(0, 3));
+        final List<Component> expected = new ArrayList<Component>() {{
+            add(instance.getComponent(0, 2));
+            add(instance.getComponent(0, 3));
         }};
         
-        final Set<Integer> result = instance.getAllowedComponents(ind);
+        final List<Component> result = instance.getAllowedComponents(ind);
         
         assertTrue(result.containsAll(expected));
         assertTrue(expected.containsAll(result));

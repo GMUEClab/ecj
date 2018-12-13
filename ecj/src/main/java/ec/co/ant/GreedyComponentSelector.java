@@ -17,13 +17,20 @@ import java.util.List;
  * @author Eric O. Scott
  */
 public class GreedyComponentSelector implements ComponentSelector, Setup {
-    public final static String P_MINIMIZE = "minimize";
+    public final static String P_MINIMIZE = "minimize-local-cost";
     
     private boolean minimize;
+    
+    public GreedyComponentSelector() {}
     
     public GreedyComponentSelector(final boolean minimize)
     {
         this.minimize = minimize;
+    }
+    
+    public boolean isMinimize()
+    {
+        return minimize;
     }
     
     @Override

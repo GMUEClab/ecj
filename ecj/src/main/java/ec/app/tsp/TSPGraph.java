@@ -5,14 +5,18 @@
 */
 package ec.app.tsp;
 
+import ec.co.Component;
+import ec.util.Misc;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,7 +28,6 @@ public class TSPGraph {
     private enum TSPKeyword { TYPE, DIMENSION, EDGE_WEIGHT_TYPE, NODE_COORD_SECTION };
     private enum EdgeWeightType { EUC_2D, GEO, ATT }
     private EdgeWeightType edgeWeightType;
-    private final boolean directed;
     private int dimension;
     private Map<Integer, double[]> nodes;
     
@@ -33,10 +36,9 @@ public class TSPGraph {
         return edgeWeightType;
     }
     
-    public TSPGraph(final File file, final boolean directed) throws IOException
+    public TSPGraph(final File file) throws IOException
     {
         assert(file != null);
-        this.directed = directed;
         final BufferedReader r = new BufferedReader(new FileReader(file));
         loadHeader(r);
         nodes = loadNodes(r);
@@ -135,94 +137,29 @@ public class TSPGraph {
     {
         return nodes.size();
     }
-     
-    public int edgeID(final int from, final int to) {
-        assert(from >= 0);
-        assert(from < nodes.size());
-        assert(to >= 0);
-        assert(to < nodes.size());
-        final int normalizedFrom = directed ? from: (int) Math.min(from, to);
-        final int normalizedTo = directed ? to : (int) Math.max(from, to);
-        final int id = nodes.size()*normalizedFrom + normalizedTo;
-        assert(id >= 0);
-        assert(edgeSet().contains(id));
-        return id;
-    }
-    
-    /** Interpret a component ID as an edge between two TSP nodes.
-     * @return The index of the node the edge begins at.
-     */
-    private int directedFromNode(final int component)
-    {
-        assert(component >= 0);
-        assert(repOK());
-        return component/nodes.size();
-    }
-
-    /** Interpret a component ID as an edge between two TSP nodes.
-     * @return The index of the node the edge ends at.
-     */
-    private int directedToNode(final int component)
-    {
-        assert(component >= 0);
-        assert(repOK());
-        return component % nodes.size();
-    }
-    
-    private int fromNode(final int component)
-    {
-        assert(component >= 0);
-        final int from = directedFromNode(component);
-        final int to = directedToNode(component);
-        assert(repOK());
-        return directed ? from : (int) Math.min(from, to);
-    }
-    
-    private int toNode(final int component)
-    {
-        assert(component >= 0);
-        final int from = directedFromNode(component);
-        final int to = directedToNode(component);
-        assert(repOK());
-        return directed ? to : (int) Math.max(from, to);
-    }
     
     public int numEdges()
     {
-        return (int) (directed ? Math.pow(nodes.size(), 2) // For a directed graph, the adajency matrix is full, with n^2 entries.
-                : nodes.size()*(nodes.size() + 1)/2); // For an undirected graph, the adjacency matrix is upper triangular, with n(n+1)/2 individual entries.
+        return (int) Math.pow(nodes.size(), 2); // For a directed graph, the adajency matrix is full, with n^2 entries.
     }
     
-    public Set<Integer> edgeSet()
+    public List<TSPComponent> getAllEdges()
     {
-        final Set<Integer> result = new HashSet<Integer>();
-        if (directed) // For a directed graph, return ids for every element of the adjacency matrix
-        {
-            for (int i = 0; i < numEdges(); i++)
-                result.add(i);
-        }
-        else // For an undirected graph, return only the ids of the upper-trangular portion of the adjacency matrix
-        {
-            int id = 0;
-            // Fill each row of the upper-triangular matrix one by one
-            for (int k = nodes.size(); k > 0; k--)
-            {
-                for (int i = 0; i < k; i++)
-                    result.add(id++);
-                id += 1 + nodes.size() - k;
-            }
-        }
+        final List<TSPComponent> result = new ArrayList<TSPComponent>();
+        for (int i = 0; i < nodes.size(); i++)
+            for (int j = 0; j < nodes.size(); j++)
+                result.add(new TSPComponent(i, j));
         assert(repOK());
         assert(result.size() == numEdges());
         return result;
     }
     
-    public TSPEdge getEdge(final int component)
+    public TSPComponent getEdge(final int from, final int to)
     {
-        return new TSPEdge(component);
+        return new TSPComponent(from, to);
     }
     
-    public class TSPEdge
+    public class TSPComponent implements Component
     {
         private int fromNode;
         private int toNode;
@@ -241,31 +178,20 @@ public class TSPGraph {
             return toNode;
         }
         
-        public TSPEdge(final int component)
+        public TSPComponent(final int from, final int to)
         {
-            assert(component >= 0);
-            assert(edgeSet().contains(component));
-            fromNode = fromNode(component);
-            toNode = toNode(component);
-            from = nodes.get(fromNode);
-            to = nodes.get(toNode);
+            assert(from >= 0);
+            assert(from < numNodes());
+            assert(to >= 0);
+            assert(to < numNodes());
+            fromNode = from;
+            toNode = to;
+            this.from = nodes.get(fromNode);
+            this.to = nodes.get(toNode);
             assert(repOK());
         }
         
-        public final boolean repOK()
-        {
-            return fromNode >= 0
-                    && fromNode < nodes.size()
-                    && toNode >= 0
-                    && toNode < nodes.size()
-                    //&& fromNode != toNode
-                    && from != null
-                    && to != null
-                    && from.length == 2
-                    && to.length == 2
-                    && !(!directed && fromNode > toNode);
-        }
-        
+        @Override
         public double cost()
         {
             switch (weightType())
@@ -307,6 +233,40 @@ public class TSPGraph {
             final double q2 = Math.cos(latitude(from) - latitude(to));
             final double q3 = Math.cos(latitude(from) + latitude(to));
             return (int) (rrr * Math.acos(0.5 * ((1.0 + q1)*q2 - (1.0 - q1)*q3) ) + 1.0);
+        }
+        
+        public final boolean repOK()
+        {
+            return fromNode >= 0
+                    && fromNode < nodes.size()
+                    && toNode >= 0
+                    && toNode < nodes.size()
+                    && from != null
+                    && to != null
+                    && from.length == 2
+                    && to.length == 2;
+        }
+        
+        @Override
+        public boolean equals(final Object o)
+        {
+            if (!(o instanceof TSPComponent))
+                return false;
+            final TSPComponent ref = (TSPComponent)o;
+            return from == ref.from
+                    && to == ref.to
+                    && Misc.doubleEquals(toNode, ref.toNode, 0.000001)
+                    && Misc.doubleEquals(fromNode, ref.fromNode, 0.000001);
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 11 * hash + this.fromNode;
+            hash = 11 * hash + this.toNode;
+            hash = 11 * hash + Arrays.hashCode(this.from);
+            hash = 11 * hash + Arrays.hashCode(this.to);
+            return hash;
         }
     }
 

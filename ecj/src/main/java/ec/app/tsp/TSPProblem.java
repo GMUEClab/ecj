@@ -8,15 +8,17 @@ package ec.app.tsp;
 import ec.EvolutionState;
 import ec.Individual;
 import ec.Problem;
-import ec.app.tsp.TSPGraph.TSPEdge;
+import ec.app.tsp.TSPGraph.TSPComponent;
+import ec.co.Component;
 import ec.co.ConstructiveIndividual;
 import ec.co.ConstructiveProblemForm;
-import ec.co.TSPIndividual;
 import ec.simple.SimpleFitness;
 import ec.simple.SimpleProblemForm;
 import ec.util.Parameter;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -31,19 +33,12 @@ import java.util.Set;
 public class TSPProblem extends Problem implements SimpleProblemForm, ConstructiveProblemForm {
     public final static String P_FILE = "file";
     public final static String P_ALLOW_CYCLES = "allow-cycles";
-    public final static String P_DIRECTED = "directed";
 
     private boolean allowCycles;
     private TSPGraph graph;
     
-    @Override
-    public TSPEdge getComponent(final int component) {
-        return graph.getEdge(component);
-    }
-    
-    public int getComponentId(final int from, final int to)
-    {
-        return graph.edgeID(from, to);
+    public TSPComponent getComponent(final int from, final int to) {
+        return graph.getEdge(from, to);
     }
     
     public int numNodes()
@@ -58,13 +53,12 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         assert(base != null);
         final File file = state.parameters.getFile(base.push(P_FILE), null);
         allowCycles = state.parameters.getBoolean(base.push(P_ALLOW_CYCLES), null, false);
-        final boolean directed = state.parameters.getBoolean(base.push(P_DIRECTED), null, false);
         if (file == null)
             state.output.fatal(String.format("%s: Unable to read file path '%s'.", this.getClass().getSimpleName(), base.push(P_FILE)), base.push(P_FILE));
         try
             {
             assert(file != null);
-            graph = new TSPGraph(file, directed);
+            graph = new TSPGraph(file);
             }
         catch (final Exception e)
             {
@@ -73,14 +67,16 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         assert(repOK());
     }
 
-    @Override
-    public boolean isViolated(final ConstructiveIndividual partialSolution, final int component) {
+    public boolean isViolated(final ConstructiveIndividual partialSolution, final Component component) {
         assert(partialSolution != null);
-        final TSPEdge edge = graph.getEdge(component);
+        if (!(component instanceof TSPComponent))
+            throw new IllegalArgumentException(String.format("%s: attempted to verify a component of type %s, but must be %s.", this.getClass().getSimpleName(), component.getClass().getSimpleName(), TSPComponent.class.getSimpleName()));
+        final TSPComponent edge = (TSPComponent) component;
         boolean connected = false;
-        for (final int c : partialSolution)
+        for (final Object c : partialSolution)
         {
-            final TSPEdge solEdge = graph.getEdge(c);
+            assert(c instanceof TSPComponent);
+            final TSPComponent solEdge = (TSPComponent) c;
             
             if (edge.from() == solEdge.from() || edge.from() == solEdge.to())
                 connected = false; // We are starting from a node that is part of the tour (good!)
@@ -91,30 +87,32 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
     }
 
     @Override
-    public Set<Integer> getAllowedComponents(final ConstructiveIndividual partialSolution) {
+    public List<Component> getAllowedComponents(final ConstructiveIndividual partialSolution) {
         assert(partialSolution != null);
         
         if (!(partialSolution instanceof TSPIndividual))
             throw new IllegalStateException(String.format("%s: received an individual of type %s, but must be %s.", this.getClass().getSimpleName(), partialSolution.getClass().getSimpleName(), TSPIndividual.class.getSimpleName()));
         final TSPIndividual tspSol = (TSPIndividual) partialSolution;
         
+        final List<Component> allowedComponents = new ArrayList<Component>();
+        
         // If the solution is empty, then any component is allowed
         if (partialSolution.isEmpty())
-            return componentSet();
-        
-        // Otherwise, only edges extending from either end of the paht are allowed
-        final Set<Integer> allowedComponents = new HashSet<Integer>();
-        // Focus on the most recently added node in the tour
-        final TSPEdge lastEdge = graph.getEdge(partialSolution.get((int) partialSolution.size() - 1));
-        
-        // Loop through every edge eminating from that node
-        for (int to = 0; to < graph.numNodes(); to++)
-        {
-            if (allowCycles || !tspSol.visited(to))
-                allowedComponents.add(graph.edgeID(lastEdge.from(), to));
+            allowedComponents.addAll(graph.getAllEdges());
+        else
+        { // Otherwise, only edges extending from either end of the paht are allowed
+            // Focus on the most recently added node in the tour
+            final TSPComponent lastEdge = (TSPComponent) partialSolution.get((int) partialSolution.size() - 1);
+
+            // Loop through every edge eminating from that node
+            for (int to = 0; to < graph.numNodes(); to++)
+            {
+                if (allowCycles || !tspSol.visited(to))
+                    allowedComponents.add(graph.getEdge(lastEdge.to(), to));
+            }
         }
         assert(repOK());
-        assert(allowedComponents.size() < numComponents());
+        assert(allowedComponents.size() <= numComponents());
         return allowedComponents;
     }
 
@@ -124,29 +122,20 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         if (solution.size() != graph.numNodes())
             return false;
         final Set<Integer> visited = nodesVisited(solution);
-        return visited.equals(componentSet());
+        return visited.equals(graph.getAllEdges());
     }
         
     private Set<Integer> nodesVisited(final ConstructiveIndividual partialSolution) {
         assert(partialSolution != null);
         final Set<Integer> nodesVisited = new HashSet<Integer>();
-        for (final int c : partialSolution) {
-            final TSPEdge edge = graph.getEdge(c);
+        for (final Object c : partialSolution) {
+            final TSPComponent edge = (TSPComponent) c;
             if (!allowCycles && (nodesVisited.contains(edge.to()) || nodesVisited.contains(edge.from())))
                 throw new IllegalStateException(String.format("%s: '%s' is set to false, but an individual containing cycles was encountered.  Is your construction heuristic configured to avoid cycles?", this.getClass().getSimpleName(), P_ALLOW_CYCLES));
             nodesVisited.add(edge.to());
             nodesVisited.add(edge.from());
         }
         return nodesVisited;
-    }
-
-    /** Returns the distance between two nodes, rounded to the nearest integer. **/
-    @Override
-    public double cost(final int component)
-    {
-        assert(component >= 0);
-        final TSPEdge edge = graph.getEdge(component);
-        return edge.cost();
     }
 
     @Override
@@ -161,13 +150,13 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         
         if (!ind.evaluated)
             {
-            final ConstructiveIndividual iind = (ConstructiveIndividual) ind;
+            final ConstructiveIndividual<Component> iind = (ConstructiveIndividual) ind;
             if (!isCompleteSolution(iind))
                 state.output.fatal(String.format("%s: attempted to evaluate an incomplete solution.", this.getClass().getSimpleName()));
             assert(iind.size() == graph.numNodes());
             double cost = 0.0;
-            for (final int c : iind.getComponents())
-                cost += cost(c);
+            for (final Component c : iind.getComponents())
+                cost += c.cost();
             assert(cost >= 0.0);
             assert(!Double.isNaN(cost));
             assert(!Double.isInfinite(cost));
@@ -182,20 +171,12 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         return graph.numEdges();
     }
     
-    @Override
-    public Set<Integer> componentSet()
-    {
-        return graph.edgeSet();
-    }
-    
     public final boolean repOK()
     {
         return P_FILE != null
                 && !P_FILE.isEmpty()
                 && P_ALLOW_CYCLES != null
                 && !P_ALLOW_CYCLES.isEmpty()
-                && P_DIRECTED != null
-                && !P_DIRECTED.isEmpty()
                 && graph != null;
     }
 }
