@@ -191,7 +191,7 @@ public class TSPProblemTest
         state.evaluator.p_problem = instance;
         
         final TSPIndividual ind = new TSPIndividual();
-        ind.setComponents(state, new ArrayList<Component>() {{
+        ind.setComponents(state, new ArrayList<TSPComponent>() {{
             add(instance.getComponent(0, 1));
         }});
         
@@ -216,7 +216,7 @@ public class TSPProblemTest
         state.evaluator.p_problem = instance;
         
         final TSPIndividual ind = new TSPIndividual();
-        ind.setComponents(state, new ArrayList<Component>() {{
+        ind.setComponents(state, new ArrayList<TSPComponent>() {{
             add(instance.getComponent(1, 0));
         }});
         
@@ -230,5 +230,41 @@ public class TSPProblemTest
         assertTrue(result.containsAll(expected));
         assertTrue(expected.containsAll(result));
         assertTrue(instance.repOK());
+    }
+    
+    /** A solution that doesn't visit all the nodes is incomplete. */
+    @Test
+    public void testIsCompleteSolution1()
+    {
+        state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/test4.tsp");
+        final TSPProblem instance = new TSPProblem();
+        instance.setup(state, BASE);
+        state.evaluator.p_problem = instance;
+        
+        final TSPIndividual ind = new TSPIndividual();
+        ind.setComponents(state, new ArrayList<TSPComponent>() {{
+            add(instance.getComponent(1, 0));
+        }});
+        
+        assertFalse(instance.isCompleteSolution(ind));
+    }
+    
+    /** A solution that visits all the nodes is incomplete. */
+    @Test
+    public void testIsCompleteSolution2()
+    {
+        state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/test4.tsp");
+        final TSPProblem instance = new TSPProblem();
+        instance.setup(state, BASE);
+        state.evaluator.p_problem = instance;
+        
+        final TSPIndividual ind = new TSPIndividual();
+        ind.setComponents(state, new ArrayList<TSPComponent>() {{
+            add(instance.getComponent(1, 0));
+            add(instance.getComponent(0, 2));
+            add(instance.getComponent(2, 3));
+        }});
+        
+        assertTrue(instance.isCompleteSolution(ind));
     }
 }

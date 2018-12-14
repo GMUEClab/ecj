@@ -6,6 +6,7 @@
 package ec.co.ant;
 
 import ec.EvolutionState;
+import ec.Setup;
 import ec.co.Component;
 import java.util.List;
 
@@ -13,6 +14,6 @@ import java.util.List;
  *
  * @author Eric O. Scott
  */
-public interface ComponentSelector {
+public interface ComponentSelector extends Setup {
     public abstract Component choose(final EvolutionState state, final List<Component> components, final PheromoneTable pheromones, final int thread);
 }

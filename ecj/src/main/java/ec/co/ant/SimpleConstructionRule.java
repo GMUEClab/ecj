@@ -19,9 +19,9 @@ import java.util.List;
  */
 public class SimpleConstructionRule implements ConstructionRule, Setup {
     public final static String P_SELECTOR = "component-selector";
-    public final static String P_FIRST_RANDOM = "first-random";
+    public final static String P_START = "start-component";
 
-    private boolean firstRandom;
+    private String startComponent;
     private ComponentSelector selector;
     
     @Override
@@ -29,8 +29,9 @@ public class SimpleConstructionRule implements ConstructionRule, Setup {
     {
         assert(state != null);
         assert(base != null);
-        firstRandom = state.parameters.getBoolean(base.push(P_FIRST_RANDOM), null, true);
+        startComponent = state.parameters.getString(base.push(P_START), null);
         selector = (ComponentSelector) state.parameters.getInstanceForParameter(base.push(P_SELECTOR), null, ComponentSelector.class);
+        selector.setup(state, base.push(P_SELECTOR));
         assert(repOK());
     }
 
@@ -49,7 +50,11 @@ public class SimpleConstructionRule implements ConstructionRule, Setup {
         final ConstructiveProblemForm problem = (ConstructiveProblemForm) state.evaluator.p_problem;
         assert(!problem.isCompleteSolution(ind));
         
-        if (firstRandom)
+        if (startComponent != null)
+        {
+            ind.add(state, problem.getComponentFromString(startComponent));
+        }
+        else
         { // Choose the first component randomly
             final List<Component> allowedMoves = problem.getAllowedComponents(ind);
             final Component component = allowedMoves.get(state.random[thread].nextInt(allowedMoves.size()));
@@ -72,8 +77,8 @@ public class SimpleConstructionRule implements ConstructionRule, Setup {
     {
         return P_SELECTOR != null
                 && !P_SELECTOR.isEmpty()
-                && P_FIRST_RANDOM != null
-                && !P_FIRST_RANDOM.isEmpty()
+                && P_START != null
+                && !P_START.isEmpty()
                 && selector != null;
     }
 }

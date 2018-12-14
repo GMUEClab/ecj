@@ -138,6 +138,11 @@ public class TSPGraph {
         return nodes.size();
     }
     
+    public Set<Integer> getNodes()
+    {
+        return nodes.keySet();
+    }
+    
     public int numEdges()
     {
         return (int) Math.pow(nodes.size(), 2); // For a directed graph, the adajency matrix is full, with n^2 entries.
@@ -245,6 +250,12 @@ public class TSPGraph {
                     && to != null
                     && from.length == 2
                     && to.length == 2;
+        }
+        
+        @Override
+        public String toString()
+        {
+            return String.format("%s[from=%d, to=%d]", this.getClass().getSimpleName(), fromNode, toNode);
         }
         
         @Override

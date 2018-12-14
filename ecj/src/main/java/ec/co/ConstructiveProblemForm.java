@@ -50,4 +50,11 @@ public interface ConstructiveProblemForm {
      * solution without causing a constraint violation.
      */
     public abstract List<Component> getAllowedComponents(final ConstructiveIndividual partialSolution);
+    
+    /** Decode a String representation of a solution component.
+     * 
+     * @param s A String representing a component.
+     * @return A component matching the provided String.
+     */
+    public abstract Component getComponentFromString(final String s);
 }

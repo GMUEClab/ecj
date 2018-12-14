@@ -46,7 +46,6 @@ public class GreedyComponentSelector implements ComponentSelector, Setup {
     public Component choose(final EvolutionState state, final List<Component> components, final PheromoneTable pheromones, final int thread) {
         assert(components != null);
         assert(!components.isEmpty());
-        assert(pheromones != null);
         assert(!Misc.containsNulls(components));
         
         double bestCost = minimize ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;

@@ -52,7 +52,7 @@ public class ConstructiveIndividual<T extends Component> extends Individual impl
         return myobj;
     } 
     
-    public Collection<T> getComponents()
+    public List<T> getComponents()
     {
         assert(repOK());
         return new ArrayList<T>(components); // Defensive copy

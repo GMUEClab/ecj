@@ -21,7 +21,7 @@ import java.util.Set;
  * 
  * @author Eric O. Scott
  */
-public class TSPIndividual extends ConstructiveIndividual {
+public class TSPIndividual extends ConstructiveIndividual<TSPComponent> {
     private Set<Integer> visitedNodes = new HashSet<Integer>();
     
     private int lastNodeVisited = -1;
@@ -40,7 +40,7 @@ public class TSPIndividual extends ConstructiveIndividual {
     }
     
     @Override
-    public void add(final EvolutionState state, final Component component)
+    public void add(final EvolutionState state, final TSPComponent component)
     {
         super.add(state, component);
         assert(component != null);
@@ -61,8 +61,8 @@ public class TSPIndividual extends ConstructiveIndividual {
         // for each direction, which contradicts the classical formulation of ACO for TSP.
         
         // 
-        assert(visitedNodes.contains(e.from()) ^ !visitedNodes.contains(e.to()));
-        lastNodeVisited = visitedNodes.contains(e.from()) ? e.to() : e.from();
+        assert(visitedNodes.isEmpty() || visitedNodes.contains(e.from()));
+        lastNodeVisited = e.to();
         
         visitedNodes.add(e.from());
         visitedNodes.add(e.to());

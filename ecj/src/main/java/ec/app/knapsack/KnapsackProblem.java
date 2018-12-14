@@ -136,4 +136,52 @@ public class KnapsackProblem extends Problem implements SimpleProblemForm, Const
                     return false;
         return true;
     }
+
+    @Override
+    public Component getComponentFromString(final String s)
+    {
+        assert(s != null);
+        assert(!s.isEmpty());
+        final String error = String.format("%s: failed to decode string representation of %s.  It must have the form '%s[size=M, value=N]' where M, N are floating point numbers, but was '%s'.", this.getClass().getSimpleName(), KnapsackComponent.class.getSimpleName(), KnapsackComponent.class.getSimpleName(), s);
+        
+        String[] splits = s.split("\\["); // "KnapsackComponent" "size=M, value=N]"
+        if (splits.length != 2)
+            throw new IllegalArgumentException(error);
+        final String name = splits[0].trim();
+        if (!name.equals(KnapsackComponent.class.getSimpleName()))
+            throw new IllegalArgumentException(error);
+        
+        splits = splits[1].split(","); // "size=M" "value=N]"
+        if (splits.length != 2)
+            throw new IllegalArgumentException(error);
+        final String sizeStr = splits[0]; // "size=M"
+        final String valueStr = splits[1].substring(0, splits[1].length() - 1); // "value=N"
+        
+        splits = sizeStr.split("="); // "from" "M"
+        if (!splits[0].trim().equals("size"))
+            throw new IllegalArgumentException(error);
+        final double size;
+        try {
+            size = Double.parseDouble(splits[1]);
+        }
+        catch (final NumberFormatException e)
+        {
+            throw new IllegalArgumentException(error);
+        }
+        
+        splits = valueStr.split("="); // "from" "M"
+        if (!splits[0].trim().equals("value"))
+            throw new IllegalArgumentException(error);
+        final double value;
+        try {
+            value = Double.parseDouble(splits[1]);
+        }
+        catch (final NumberFormatException e)
+        {
+            throw new IllegalArgumentException(error);
+        }
+        
+        assert(repOK());
+        return new KnapsackComponent(size, value);
+    }
 }

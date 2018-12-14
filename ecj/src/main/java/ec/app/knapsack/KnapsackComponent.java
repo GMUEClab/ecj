@@ -63,8 +63,26 @@ public class KnapsackComponent implements Component {
     }
     
     @Override
+    public boolean equals(final Object o)
+    {
+        if (!(o instanceof KnapsackComponent))
+            return false;
+        final KnapsackComponent ref = (KnapsackComponent) o;
+        return size == ref.size
+                && value == ref.value;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + (int) (Double.doubleToLongBits(this.size) ^ (Double.doubleToLongBits(this.size) >>> 32));
+        hash = 37 * hash + (int) (Double.doubleToLongBits(this.value) ^ (Double.doubleToLongBits(this.value) >>> 32));
+        return hash;
+    }
+    
+    @Override
     public String toString()
     {
-        return String.format("[%s: size=%f, value=%f]", this.getClass().getSimpleName(), size, value);
+        return String.format("%s[size=%f, value=%f]", this.getClass().getSimpleName(), size, value);
     }
 }

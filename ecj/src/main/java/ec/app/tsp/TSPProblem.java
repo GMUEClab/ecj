@@ -41,6 +41,53 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         return graph.getEdge(from, to);
     }
     
+    public TSPComponent getComponentFromString(final String s)
+    {
+        assert(s != null);
+        assert(!s.isEmpty());
+        final String error = String.format("%s: failed to decode string representation of %s.  It must have the form '%s[from=M, to=N]' where M, N are integers, but was '%s'.", this.getClass().getSimpleName(), TSPComponent.class.getSimpleName(), TSPComponent.class.getSimpleName(), s);
+        
+        String[] splits = s.split("\\["); // "TSPComponent" "from=M, to=N]"
+        if (splits.length != 2)
+            throw new IllegalArgumentException(error);
+        final String name = splits[0].trim();
+        if (!name.equals(TSPComponent.class.getSimpleName()))
+            throw new IllegalArgumentException(error);
+        
+        splits = splits[1].split(","); // "from=M" "to=N]"
+        if (splits.length != 2)
+            throw new IllegalArgumentException(error);
+        final String fromStr = splits[0]; // "from=M"
+        final String toStr = splits[1].substring(0, splits[1].length() - 1); // "to=N"
+        
+        splits = fromStr.split("="); // "from" "M"
+        if (!splits[0].trim().equals("from"))
+            throw new IllegalArgumentException(error);
+        final int from;
+        try {
+            from = Integer.parseInt(splits[1]);
+        }
+        catch (final NumberFormatException e)
+        {
+            throw new IllegalArgumentException(error);
+        }
+        
+        splits = toStr.split("="); // "from" "M"
+        if (!splits[0].trim().equals("to"))
+            throw new IllegalArgumentException(error);
+        final int to;
+        try {
+            to = Integer.parseInt(splits[1]);
+        }
+        catch (final NumberFormatException e)
+        {
+            throw new IllegalArgumentException(error);
+        }
+        
+        assert(repOK());
+        return graph.getEdge(from, to);
+    }
+    
     public int numNodes()
     {
         return graph.numNodes();
@@ -99,16 +146,16 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         // If the solution is empty, then any component is allowed
         if (partialSolution.isEmpty())
             allowedComponents.addAll(graph.getAllEdges());
-        else
+         else
         { // Otherwise, only edges extending from either end of the paht are allowed
             // Focus on the most recently added node in the tour
-            final TSPComponent lastEdge = (TSPComponent) partialSolution.get((int) partialSolution.size() - 1);
-
+            final int mostRecentNode = tspSol.getLastNodeVisited();
+            assert(mostRecentNode == tspSol.get((int) partialSolution.size() - 1).to());
             // Loop through every edge eminating from that node
             for (int to = 0; to < graph.numNodes(); to++)
             {
                 if (allowCycles || !tspSol.visited(to))
-                    allowedComponents.add(graph.getEdge(lastEdge.to(), to));
+                    allowedComponents.add(graph.getEdge(mostRecentNode, to));
             }
         }
         assert(repOK());
@@ -119,10 +166,10 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
     /** Check whether a solution forms a valid tour of all the nodes. */
     @Override
     public boolean isCompleteSolution(final ConstructiveIndividual solution) {
-        if (solution.size() != graph.numNodes())
-            return false;
         final Set<Integer> visited = nodesVisited(solution);
-        return visited.equals(graph.getAllEdges());
+        return visited.size() == graph.numNodes()
+                && visited.containsAll(graph.getNodes())
+                && graph.getNodes().containsAll(visited);
     }
         
     private Set<Integer> nodesVisited(final ConstructiveIndividual partialSolution) {
@@ -130,7 +177,7 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         final Set<Integer> nodesVisited = new HashSet<Integer>();
         for (final Object c : partialSolution) {
             final TSPComponent edge = (TSPComponent) c;
-            if (!allowCycles && (nodesVisited.contains(edge.to()) || nodesVisited.contains(edge.from())))
+            if (!allowCycles && nodesVisited.contains(edge.to()))
                 throw new IllegalStateException(String.format("%s: '%s' is set to false, but an individual containing cycles was encountered.  Is your construction heuristic configured to avoid cycles?", this.getClass().getSimpleName(), P_ALLOW_CYCLES));
             nodesVisited.add(edge.to());
             nodesVisited.add(edge.from());
@@ -150,13 +197,17 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         
         if (!ind.evaluated)
             {
-            final ConstructiveIndividual<Component> iind = (ConstructiveIndividual) ind;
-            if (!isCompleteSolution(iind))
+            final TSPIndividual tind = (TSPIndividual) ind;
+            if (!isCompleteSolution(tind))
                 state.output.fatal(String.format("%s: attempted to evaluate an incomplete solution.", this.getClass().getSimpleName()));
-            assert(iind.size() == graph.numNodes());
+            assert(tind.size() == graph.numNodes());
+            final List<TSPComponent> components = tind.getComponents();
             double cost = 0.0;
-            for (final Component c : iind.getComponents())
+            for (final TSPComponent c : tind.getComponents())
                 cost += c.cost();
+            // The edge connecting the end to the beginning is implicit, so we add it here
+            assert(components.get(components.size() - 1).to() != components.get(0).from()); 
+            cost += graph.getEdge(components.get(components.size() - 1).to(), components.get(0).from()).cost();
             assert(cost >= 0.0);
             assert(!Double.isNaN(cost));
             assert(!Double.isInfinite(cost));
