@@ -14,9 +14,10 @@ pop.subpop.0.species.updateRule =               ec.co.ant.AntSystemUpdateRule
 pop.subpop.0.species.updateRule.decayRate =	0.1
 pop.subpop.0.species.updateRule.depositRule =	ANT_CYCLE
 pop.subpop.0.species.pheromoneTable =		ec.co.ant.SimplePheromoneTable
-pop.subpop.0.species.constructionRule =         ec.app.knapsack.KnapsackConstructionRule
-pop.subpop.0.species.constructionRule.alpha =   1.0
-pop.subpop.0.species.constructionRule.beta =    1.0
+pop.subpop.0.species.constructionRule =         ec.co.ant.SimpleConstructionRule
+pop.subpop.0.species.constructionRule.componentSelector = ec.co.ant.ProportionateComponentSelector
+pop.subpop.0.species.constructionRule.componentSelector.alpha =   1.0
+pop.subpop.0.species.constructionRule.componentSelector.beta =    1.0
 pop.subpop.0.species.constructionRule.minimize = false
 
 eval.problem =                                  ec.app.knapsack.KnapsackProblem

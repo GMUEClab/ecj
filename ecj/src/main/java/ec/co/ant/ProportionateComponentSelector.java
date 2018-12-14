@@ -27,6 +27,8 @@ public class ProportionateComponentSelector implements ComponentSelector, Setup 
     private double alpha;
     private double beta;
     
+    public ProportionateComponentSelector() { }
+    
     public ProportionateComponentSelector(final double alpha, final double beta)
     {
         if (!Double.isFinite(alpha))

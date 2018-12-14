@@ -18,7 +18,7 @@ import java.util.List;
  * @author Eric O. Scott
  */
 public class SimpleConstructionRule implements ConstructionRule, Setup {
-    public final static String P_SELECTOR = "component-selector";
+    public final static String P_SELECTOR = "componentSelector";
     public final static String P_START = "start-component";
 
     private String startComponent;
