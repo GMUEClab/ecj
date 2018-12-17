@@ -143,10 +143,14 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         
         final List<Component> allowedComponents = new ArrayList<Component>();
         
-        // If the solution is empty, then any component is allowed
+        // If the solution is empty, then any non-self-loop component is allowed
         if (partialSolution.isEmpty())
-            allowedComponents.addAll(graph.getAllEdges());
-         else
+        {
+            for (final TSPComponent edge : graph.getAllEdges())
+                if (edge.to() != edge.from()) // Disallow self-loops
+                    allowedComponents.add(edge);
+        }
+        else
         { // Otherwise, only edges extending from either end of the paht are allowed
             // Focus on the most recently added node in the tour
             final int mostRecentNode = tspSol.getLastNodeVisited();
@@ -154,8 +158,9 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
             // Loop through every edge eminating from that node
             for (int to = 0; to < graph.numNodes(); to++)
             {
-                if (allowCycles || !tspSol.visited(to))
-                    allowedComponents.add(graph.getEdge(mostRecentNode, to));
+                if (mostRecentNode != to) // Disallow self-loops
+                    if (allowCycles || !tspSol.visited(to))
+                        allowedComponents.add(graph.getEdge(mostRecentNode, to));
             }
         }
         assert(repOK());
@@ -200,7 +205,7 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
             final TSPIndividual tind = (TSPIndividual) ind;
             if (!isCompleteSolution(tind))
                 state.output.fatal(String.format("%s: attempted to evaluate an incomplete solution.", this.getClass().getSimpleName()));
-            assert(tind.size() == graph.numNodes());
+            assert(tind.size() == graph.numNodes() - 1);
             final List<TSPComponent> components = tind.getComponents();
             double cost = 0.0;
             for (final TSPComponent c : tind.getComponents())

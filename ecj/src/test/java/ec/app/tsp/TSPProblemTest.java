@@ -182,6 +182,7 @@ public class TSPProblemTest
         assertTrue(instance.repOK());
     }
     
+    /** The path (0, 1) on a 4-node problem can be extended with (1, 2) or (1, 3). */
     @Test
     public void testGetAllowedComponents1()
     {
@@ -207,6 +208,7 @@ public class TSPProblemTest
         assertTrue(instance.repOK());
     }
     
+    /** The path (0, 1) on a 4-node problem can be extended with (0, 2) or (0, 3). */
     @Test
     public void testGetAllowedComponents2()
     {
@@ -223,6 +225,40 @@ public class TSPProblemTest
         final List<Component> expected = new ArrayList<Component>() {{
             add(instance.getComponent(0, 2));
             add(instance.getComponent(0, 3));
+        }};
+        
+        final List<Component> result = instance.getAllowedComponents(ind);
+        
+        assertTrue(result.containsAll(expected));
+        assertTrue(expected.containsAll(result));
+        assertTrue(instance.repOK());
+    }
+    
+    /** An empty path can be extended by choosing any edge except for self-loops. */
+    @Test
+    public void testGetAllowedComponents3()
+    {
+        state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/test4.tsp");
+        final TSPProblem instance = new TSPProblem();
+        instance.setup(state, BASE);
+        state.evaluator.p_problem = instance;
+        
+        final TSPIndividual ind = new TSPIndividual();
+        ind.setComponents(state, new ArrayList<TSPComponent>());
+        
+        final List<Component> expected = new ArrayList<Component>() {{
+            add(instance.getComponent(0, 1));
+            add(instance.getComponent(0, 2));
+            add(instance.getComponent(0, 3));
+            add(instance.getComponent(1, 0));
+            add(instance.getComponent(1, 2));
+            add(instance.getComponent(1, 3));
+            add(instance.getComponent(2, 0));
+            add(instance.getComponent(2, 1));
+            add(instance.getComponent(2, 3));
+            add(instance.getComponent(3, 0));
+            add(instance.getComponent(3, 1));
+            add(instance.getComponent(3, 2));
         }};
         
         final List<Component> result = instance.getAllowedComponents(ind);

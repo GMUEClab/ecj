@@ -67,9 +67,6 @@ public class ProportionateComponentSelector implements ComponentSelector, Setup 
             final double score = Math.pow(tau, alpha)*Math.pow(eta, beta);
             scores.add(score);
             denominator += score;
-            assert(tau > 0.0);
-            assert(eta > 0.0);
-            assert(score > 0.0);
         }
         assert(Double.isFinite(denominator));
         assert(denominator >= 0);
