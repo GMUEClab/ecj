@@ -121,7 +121,6 @@ public class Subpopulation implements Cloneable, Setup
     public static final int WRAP = 1;
     public static final int FILL = 2;
         
-        
     public Parameter defaultBase()
         {
         return ECDefaults.base().push(P_SUBPOPULATION);
@@ -170,14 +169,7 @@ public class Subpopulation implements Cloneable, Setup
         file = base.push(P_FILE);
         loadInds = state.parameters.exists(file,null);
         
-        // what species do we use?
-
-        species = (Species) state.parameters.getInstanceForParameter(
-            base.push(P_SPECIES),def.push(P_SPECIES),
-            Species.class);
-        species.setup(state,base.push(P_SPECIES));
-
-        // how big should our subpopulation be?
+         // how big should our subpopulation be?
         // Note that EvolutionState.setup() has similar code, so if you change this, change it there too.
         
         initialSize = state.parameters.getInt(base.push(P_SUBPOPSIZE),def.push(P_SUBPOPSIZE),1);
@@ -186,6 +178,13 @@ public class Subpopulation implements Cloneable, Setup
                 "Subpopulation size must be an integer >= 1.\n",
                 base.push(P_SUBPOPSIZE),def.push(P_SUBPOPSIZE));
         
+       // what species do we use?
+
+        species = (Species) state.parameters.getInstanceForParameter(
+            base.push(P_SPECIES),def.push(P_SPECIES),
+            Species.class);
+        species.setup(state,base.push(P_SPECIES));
+
         // How often do we retry if we find a duplicate?
         numDuplicateRetries = state.parameters.getInt(
             base.push(P_RETRIES),def.push(P_RETRIES),0);
