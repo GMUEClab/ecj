@@ -12,7 +12,10 @@ setwd("~/NetBeansProjects/ecj/ecj/src/test/regression/")
 
 # Paths of ECJ regression results files to compare.  Change these as needed.
 file1 <- "ecj24_regression.csv"
-file2 <- "ecj26dev_regression_eb4f0ae.csv"
+file1 <- "ecj26dev_regression_eb4f0ae_2017-10-16.csv"
+#file1 <- "ecj26dev_regression_670c356_2017-11-02.csv"
+#file2 <- "ecj26dev_regression_38097b9_2017-12-13.csv"
+#file2 <- "ecj26dev_regression_33c679b_2017-12-14.csv"
 
 # P-value to use as error detection threshold.
 p <- 0.05
@@ -28,7 +31,7 @@ h <- c("app", "subpop", "best", "gen", "version")
 names(data) <- h
 
 # Get the names of all apps in the reference suite
-apps <- unique(file1$V1)
+apps <- intersect(unique(file1$V1), unique(file2$V1))
 
 print(paste("Comparing regression results for", length(apps), "apps..."))
 
@@ -62,3 +65,4 @@ plotHists <- function(d) {
 
 z <- sapply(bad$app, function(b) plotHists(data[data$app == b,]))
 
+nrow(data[data$app == "moosuite.zdt1.params",])
