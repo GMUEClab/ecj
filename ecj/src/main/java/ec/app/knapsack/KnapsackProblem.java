@@ -112,6 +112,22 @@ public class KnapsackProblem extends Problem implements SimpleProblemForm, Const
                 && !Double.isNaN(knapsackSize);
     }
 
+    /**
+     * Choose a random component from the full component set.
+     * 
+     * @param state The state.  Its PRNG field (state.random) must exist.
+     * @param thread The thread the caller is operating on.  If the caller is single-threaded, just set this to zero.
+     * @return An component selected at random from all of the non-self-loop edges in the TSP graph.
+     */
+    @Override
+    public KnapsackComponent getArbitraryComponent(final EvolutionState state, final int thread) {
+        assert(state != null);
+        assert(thread >= 0);
+        final KnapsackComponent result = components.get(state.random[thread].nextInt(components.size()));
+        assert(repOK());
+        return result;
+    }
+    
     @Override
     public List<Component> getAllowedComponents(final ConstructiveIndividual partialSolution) {
         assert(partialSolution != null);

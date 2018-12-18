@@ -50,16 +50,11 @@ public class SimpleConstructionRule implements ConstructionRule, Setup {
         final ConstructiveProblemForm problem = (ConstructiveProblemForm) state.evaluator.p_problem;
         assert(!problem.isCompleteSolution(ind));
         
-        if (startComponent != null)
-        {
+        // Choose the initial component
+        if (startComponent != null) // given manually
             ind.add(state, problem.getComponentFromString(startComponent));
-        }
-        else
-        { // Choose the first component randomly
-            final List<Component> allowedMoves = problem.getAllowedComponents(ind);
-            final Component component = allowedMoves.get(state.random[thread].nextInt(allowedMoves.size()));
-            ind.add(state, component);
-        }
+        else // chosen arbitratily
+            ind.add(state, problem.getArbitraryComponent(state, thread));
         
         // Constructively build a new individual
         while (!problem.isCompleteSolution(ind))

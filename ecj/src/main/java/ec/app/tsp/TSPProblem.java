@@ -132,6 +132,34 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         }
         return connected;
     }
+    
+    /**
+     * Chooses a random edge in the TSP graph, disallowing self-loops.
+     *
+     * The intent here is that this gives us an efficient way to choose a component
+     * to begin a solution with (as opposed to returning all possible components
+     * so that some external method can choose one, has quadratic complexity
+     * in the case of TSP).
+     * 
+     * @param state The state.  Its PRNG field (state.random) must exist.
+     * @param thread The thread the caller is operating on.  If the caller is single-threaded, just set this to zero.
+     * @return An component selected at random from all of the non-self-loop edges in the TSP graph.
+     */
+    @Override
+    public TSPComponent getArbitraryComponent(final EvolutionState state, final int thread)
+    {
+        assert(state != null);
+        assert(state.random != null);
+        assert(thread >= 0);
+        assert(graph.numNodes() > 1); // A degenerate graph would cause an infinite loop
+        final int from = state.random[thread].nextInt(graph.numNodes());
+        int to = from;
+        while (to == from) // Keep sampling 'to' until we get something other than 'from'
+            to = state.random[thread].nextInt(graph.numNodes());
+        final TSPComponent result = graph.getEdge(from, to);
+        assert(repOK());
+        return result;
+    }
 
     @Override
     public List<Component> getAllowedComponents(final ConstructiveIndividual partialSolution) {

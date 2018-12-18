@@ -12,18 +12,21 @@ import ec.co.Component;
 import ec.simple.SimpleEvaluator;
 import ec.simple.SimpleEvolutionState;
 import ec.util.Output.OutputExitException;
+import ec.util.IIntPoint;
+import ec.util.MersenneTwisterFast;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * Unit tests for the TSPProblem class
+ * 
  * @author Eric O. Scott
  */
 public class TSPProblemTest
@@ -47,6 +50,7 @@ public class TSPProblemTest
         state.output.getLog(0).silent = true;
         state.output.getLog(1).silent = true;
         state.output.setThrowsErrors(true);
+        state.random = new MersenneTwisterFast[] { new MersenneTwisterFast() };
         state.evaluator = new SimpleEvaluator();
     }
     
@@ -302,5 +306,46 @@ public class TSPProblemTest
         }});
         
         assertTrue(instance.isCompleteSolution(ind));
+    }
+    
+    /** Choosing a random edge from the graph should follow a uniform distribution. */
+    @Test
+    public void testGetArbitraryComponent1()
+    {
+        state.parameters.set(BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/test4.tsp");
+        final TSPProblem instance = new TSPProblem();
+        instance.setup(state, BASE);
+        state.evaluator.p_problem = instance;
+        
+        final Map<IIntPoint, Integer> counts = new HashMap<IIntPoint, Integer>();
+        final int N = 1000;
+        for (int i = 0; i < N; i++)
+        {
+            final TSPComponent result = instance.getArbitraryComponent(state, 0);
+            final IIntPoint edge = new IIntPoint(result.from(), result.to());
+            if (counts.containsKey(edge))
+                counts.put(edge, counts.get(edge) + 1);
+            else
+                counts.put(edge, 1);
+        }
+        
+        // Self-edges should never be returned
+        assertEquals(4, instance.numNodes());
+        for (int i = 0; i < instance.numNodes(); i++)
+            assertFalse(counts.containsKey(new IIntPoint(i, i)));
+        
+        // Compute the χ^2 value for the observations
+        final int expectedPerEdge = N/12;
+        double chiSquared = 0.0;
+        for (int i = 0; i < instance.numNodes(); i++)
+            for (int j = 0; j < instance.numNodes(); j++)
+                if (i != j)
+                {
+                    final int observed = counts.get(new IIntPoint(i, j));
+                    chiSquared += Math.pow(observed - expectedPerEdge, 2)/expectedPerEdge;
+                }
+        
+        // Reject the hypothesis that the distribution is uniform if p > 0.01 (i.e. if χ^2 > 24.725, the threshold for p = 0.01 at 12-1 = 11 degrees of freedom)
+        assertFalse(chiSquared > 24.725);
     }
 }

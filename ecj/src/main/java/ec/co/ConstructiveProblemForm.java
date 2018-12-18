@@ -5,6 +5,7 @@
 */
 package ec.co;
 
+import ec.EvolutionState;
 import java.util.List;
 
 /**
@@ -57,4 +58,19 @@ public interface ConstructiveProblemForm {
      * @return A component matching the provided String.
      */
     public abstract Component getComponentFromString(final String s);
+    
+    
+    /**
+     * Chooses an arbitrary component from the problem domain.
+     *
+     * The intent here is that this gives us an efficient way to choose a component
+     * to begin a solution with (as opposed to returning all possible components
+     * so that some external method can choose one, which may have nonlinear
+     * complexity in some domains).
+     * 
+     * @param state The state (used, for example, to access the simulation's PRNGs)
+     * @param thread The thread the caller is operating on.  If the caller is single-threaded, just set this to zero.
+     * @return An component selected arbitrarily from the problem domain
+     */
+    public abstract Component getArbitraryComponent(final EvolutionState state, final int thread);
 }
