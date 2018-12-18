@@ -6,12 +6,12 @@ parent.0 = ../multiobjective.params
 parent.1 = ../../simple/simple.params
 
 # Be sure to set the multiobjective fitness size as shown in ../multiobjective.params
-# Likewise note tht ../multiobjective.params sets the statistics
+# Likewise note that ../multiobjective.params sets the statistics
 
 # We also use a special version of MultiObjectiveFitness
 pop.subpop.0.species.fitness =				ec.multiobjective.nsga2.NSGA2MultiObjectiveFitness
 
-# We have our own evaluator and breeder
+# We have our own breeder
 breed =						ec.multiobjective.nsga2.NSGA2Breeder
 
 # Specify the breeding pipeline as follows
