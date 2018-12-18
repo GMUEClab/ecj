@@ -11,3 +11,13 @@ pop.subpop.0.species.min-gene = -4
 pop.subpop.0.species.max-gene = 4
 pop.subpop.0.species.genome-size = 3
 pop.subpop.0.species.mutation-prob = 0.3333
+
+# max and min values of each objective function
+# (important for algorithms that normalize the objective scales relative to each other)
+multi.fitness.max.0 		= 1
+multi.fitness.min.0		= 0
+multi.fitness.max.1 		= 1
+multi.fitness.min.1		= 0
+
+# Reference point for hypervolume calculation
+stat.reference-point = 1 1

@@ -22,7 +22,7 @@ import ec.simple.*;
 */
 
 public class MajorityGP extends GPProblem implements SimpleProblemForm
-{
+    {
     CA ca = null;
     
     // How many trials in our training set
@@ -45,64 +45,64 @@ public class MajorityGP extends GPProblem implements SimpleProblemForm
     static final int RANDOM = -1;
     
     boolean makeTrial(EvolutionState state, int thread, int[] trial, int trialType)
-    {
+        {
         if (trialType == RANDOM)
             {
-                int count = 0;
-                for(int i = 0; i < CA_WIDTH; i++)
-                    {
-                        trial[i] = state.random[thread].nextInt(2);
-                        count += trial[i];
-                    }  
-                return (count > CA_WIDTH / 2.0);  // > 74
+            int count = 0;
+            for(int i = 0; i < CA_WIDTH; i++)
+                {
+                trial[i] = state.random[thread].nextInt(2);
+                count += trial[i];
+                }  
+            return (count > CA_WIDTH / 2.0);  // > 74
             }
         else if (trialType == MAJORITY_ONE)
             {
-                while(!makeTrial(state, thread, trial, RANDOM));
-                return true;
+            while(!makeTrial(state, thread, trial, RANDOM));
+            return true;
             }               
         else if (trialType == MAJORITY_ZERO) // uniform selection
             {
-                while(makeTrial(state, thread, trial, RANDOM));
-                return false;
+            while(makeTrial(state, thread, trial, RANDOM));
+            return false;
             }
         else
             {
-                state.output.fatal("This should never happen");
-                return false;
+            state.output.fatal("This should never happen");
+            return false;
             }
-    }
+        }
 
 
     public void generateTrials(EvolutionState state, int thread)
-    {
+        {
         // the trials strategy here is: 25% ones, 25% zeros, and 50% random choice
 
         //MersenneTwisterFast mtf = state.random[thread];
         
         for(int i = 0; i < NUM_TRIALS / 4; i++)
             {
-                majorities[i] = makeTrial(state, thread, trials[i], MAJORITY_ZERO) ? 1 : 0;
+            majorities[i] = makeTrial(state, thread, trials[i], MAJORITY_ZERO) ? 1 : 0;
             }
         
         for(int i = NUM_TRIALS / 4; i < NUM_TRIALS / 2; i++)
             {
-                majorities[i] = makeTrial(state, thread, trials[i], MAJORITY_ONE) ? 1 : 0;
+            majorities[i] = makeTrial(state, thread, trials[i], MAJORITY_ONE) ? 1 : 0;
             }
         for(int i = NUM_TRIALS / 2; i < NUM_TRIALS; i++)
             {
-                majorities[i] = makeTrial(state, thread, trials[i], RANDOM) ? 1 : 0;
+            majorities[i] = makeTrial(state, thread, trials[i], RANDOM) ? 1 : 0;
             }
         
-    }
+        }
         
         
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         // very important, remember this
         super.setup(state,base);
         generateTrials(state, 0);        
-    }
+        }
 
 
 
@@ -113,59 +113,59 @@ public class MajorityGP extends GPProblem implements SimpleProblemForm
     private Object[] lock = new Object[0];
         
     public void prepareToEvaluate(final EvolutionState state, final int threadnum)
-    {
+        {
         if (threadnum != 0) 
             synchronized(lock) { lockCount++ ; }
-    }
+        }
 
     public void finishEvaluating(final EvolutionState state, final int threadnum)
-    {
+        {
         if (threadnum != 0)
             {
-                synchronized(lock) { lockCount--; lock.notifyAll(); }
+            synchronized(lock) { lockCount--; lock.notifyAll(); }
             }
         else  // I'm thread 0
             {
-                synchronized(lock) 
-                    { 
-                        while(lockCount > 0)
-                            try { lock.wait(); }
-                            catch (InterruptedException e) { }
-                    }
+            synchronized(lock) 
+                { 
+                while(lockCount > 0)
+                    try { lock.wait(); }
+                    catch (InterruptedException e) { }
+                }
                                 
-                // at this point I'm all alone!
-                generateTrials(state, threadnum);
+            // at this point I'm all alone!
+            generateTrials(state, threadnum);
             }
-    }
+        }
 
 
 
     public static boolean all(int[] vals, int val)
-    {
+        {
         for(int i = 0; i < vals.length; i++)
             if (vals[i] != val) return false;
         return true;
-    }
+        }
 
 
     public void evaluate(final EvolutionState state, 
-                         final Individual ind, 
-                         final int subpopulation,
-                         final int threadnum)
-    {
+        final Individual ind, 
+        final int subpopulation,
+        final int threadnum)
+        {
         if (ca == null)
             ca = new CA(CA_WIDTH, NEIGHBORHOOD);
         
         // we always reevaluate         
         //if (!ind.evaluated)  // don't bother reevaluating
-        {
+            {
             MajorityData input = (MajorityData)(this.input);
 
             int sum = 0;
             
             // extract the rule
             ((GPIndividual)ind).trees[0].child.eval(
-                                                    state,threadnum,input,stack,((GPIndividual)ind),this);
+                state,threadnum,input,stack,((GPIndividual)ind),this);
 
             int[] rule = ca.getRule();
             for(int i = 0; i < 64; i++)
@@ -177,32 +177,32 @@ public class MajorityGP extends GPProblem implements SimpleProblemForm
 
             for(int i = 0; i < NUM_TRIALS; i++)
                 {
-                    // set up and run the CA
-                    ca.setVals(trials[i]);
-                    ca.step(STEPS, true);
+                // set up and run the CA
+                ca.setVals(trials[i]);
+                ca.step(STEPS, true);
                 
-                    // extract the fitness
-                    if (all(ca.getVals(), majorities[i]))
-                        sum ++;
+                // extract the fitness
+                if (all(ca.getVals(), majorities[i]))
+                    sum ++;
                 }
                                 
             SimpleFitness f = ((SimpleFitness)ind.fitness);
             f.setFitness(state, sum / (double)NUM_TRIALS, (sum == NUM_TRIALS));
             ind.evaluated = true;
+            }
         }
-    }
 
 
     public static final int NUM_TESTS = 10000;
 
     double density = 0.0;
     public void describe(
-                         final EvolutionState state, 
-                         final Individual ind, 
-                         final int subpopulation,
-                         final int threadnum,
-                         final int log)
-    {
+        final EvolutionState state, 
+        final Individual ind, 
+        final int subpopulation,
+        final int threadnum,
+        final int log)
+        {
         if (ca == null)
             ca = new CA(CA_WIDTH, NEIGHBORHOOD);
 
@@ -212,7 +212,7 @@ public class MajorityGP extends GPProblem implements SimpleProblemForm
 
         // extract the rule
         ((GPIndividual)ind).trees[0].child.eval(
-                                                state,threadnum,input,stack,((GPIndividual)ind),this);
+            state,threadnum,input,stack,((GPIndividual)ind),this);
                 
         int[] rule = ca.getRule();
         for(int i = 0; i < 64; i++)
@@ -230,22 +230,22 @@ public class MajorityGP extends GPProblem implements SimpleProblemForm
         double sum = 0;
         for(int i = 0; i < NUM_TESTS; i++)
             {
-                // set up and run the CA
-                int result = makeTrial(state, threadnum, trial, RANDOM) ? 1 : 0;
-                ca.setVals(trial);
-                ca.step(STEPS, true);
+            // set up and run the CA
+            int result = makeTrial(state, threadnum, trial, RANDOM) ? 1 : 0;
+            ca.setVals(trial);
+            ca.step(STEPS, true);
                         
-                // extract the fitness
-                if (all(ca.getVals(), result)) sum++;
+            // extract the fitness
+            if (all(ca.getVals(), result)) sum++;
             }
                 
         density = (sum / NUM_TESTS);
         state.output.println("Generalization Accuracy: " + density, 1);  // stderr
         state.output.println("Generalization Accuracy: " + density, log);
+        }
+
+
+
+
+
     }
-
-
-
-
-
-}

@@ -1,0 +1,33 @@
+# Copyright 2010 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../multiobjective/nsga3/nsga3.params
+
+
+# NSGA-III, like NSGA-II, will use a population size of 100.  Its archive 
+# will be another 100 on top of that.  Since we're not reevaluating elites, 
+# only the 100 new individuals will be bred and evaluated each generation.
+#
+# For more discussion about how to get SPEA2 and NSGA-II/III to have "equivalent"
+# numbers of evaluations in ECJ, see the README files for the SPEA2 and NSGA-II/III
+# packages.
+#
+# constants from  "Zitzler, E., Deb, K., and Thiele, L., 2000,
+# Comparison of Multiobjective Evolutionary Algorithms: Empirical Results,
+# Evolutionary Computation, Vol. 8, No. 2, pp173-195."
+#
+pop.subpop.0.size =                     100
+generations =                           250
+
+
+# NSGA2's pipeline
+
+pop.subpop.0.species.pipe		     	= ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.likelihood        	= 1.0
+pop.subpop.0.species.pipe.source.0		= ec.vector.breed.VectorCrossoverPipeline
+pop.subpop.0.species.pipe.source.0.likelihood 	= 0.9
+pop.subpop.0.species.pipe.source.0.source.0 	= ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.1 	= same
+select.tournament.size 				= 2
+

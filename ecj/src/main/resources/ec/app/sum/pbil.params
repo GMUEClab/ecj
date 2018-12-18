@@ -1,0 +1,23 @@
+# Copyright 2018 by Sunil Kumar Rajendran, Sean Luke, and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../eda/pbil/pbil.params
+
+pop.subpops =                           1  
+           
+pop.subpop.0.species.genome-size =	10
+pop.subpop.0.species.min-gene    = 	0
+pop.subpop.0.species.max-gene    = 	100
+pop.subpop.0.species.fitness     =      ec.simple.SimpleFitness
+
+generations =                           1000
+
+# this value seems to do well for sum
+pop.subpop.0.species.alpha	=	0.05
+
+# test problem
+eval.problem =                          ec.app.sum.Sum
+
+
+

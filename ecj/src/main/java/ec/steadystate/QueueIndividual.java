@@ -14,13 +14,13 @@ package ec.steadystate;
 import ec.*;
 
 public class QueueIndividual implements java.io.Serializable
-{ 
+    { 
     public Individual ind;
     public int subpop; 
     public  QueueIndividual(Individual i, int s)
-    {
+        {
         ind = i; 
         subpop=s; 
-    }
-};
+        }
+    };
 

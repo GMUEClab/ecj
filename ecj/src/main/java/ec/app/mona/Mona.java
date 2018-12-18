@@ -13,7 +13,7 @@ import ec.simple.*;
 import java.io.*;
 
 public class Mona extends Problem implements SimpleProblemForm 
-{
+    {
     public static final String P_IN = "in";
     public static final String P_OUT = "out";
     public static final String P_VERTICES = "num-vertices";
@@ -26,14 +26,14 @@ public class Mona extends Problem implements SimpleProblemForm
     public boolean headless;
     
     public Object clone()
-    {
+        {
         Mona m = (Mona)(super.clone());
         m.pic = (Picture)(pic.clone());
         return m;
-    }
+        }
         
     public void setup(EvolutionState state, Parameter base) 
-    {
+        {
         super.setup(state, base); 
         in = state.parameters.getFile(base.push(P_IN), null);
         out = state.parameters.getFile(base.push(P_OUT), null);
@@ -42,10 +42,10 @@ public class Mona extends Problem implements SimpleProblemForm
         headless = state.parameters.getBoolean(base.push(P_HEADLESS), null, false);
         pic =  new Picture(headless);
         pic.load(in);
-    }
+        }
         
     public void evaluate(final EvolutionState state, final Individual ind, final int subpopulation, final int threadnum)
-    {
+        {
         if (ind.evaluated) return;
         
         DoubleVectorIndividual _ind = (DoubleVectorIndividual)ind;
@@ -58,20 +58,20 @@ public class Mona extends Problem implements SimpleProblemForm
         double error = pic.error();
         ((SimpleFitness)(_ind.fitness)).setFitness(state, (1.0 - error), error == 0);
         ind.evaluated = true;
-    }
+        }
         
     public void finishEvaluating(final EvolutionState state, final int threadnum)
-    {
+        {
         pic.disposeGraphics();  // dutifully
-    }
+        }
 
     public void describe(
-                         final EvolutionState state, 
-                         final Individual ind, 
-                         final int threadnum,
-                         final int subpopulation,
-                         final int log)  
-    {
+        final EvolutionState state, 
+        final Individual ind, 
+        final int threadnum,
+        final int subpopulation,
+        final int log)  
+        {
         ind.evaluated = false;
         evaluate(state, ind, subpopulation,threadnum);
         pic.save(new File(out.getParentFile(), "" + (state.generation) + "-" + out.getName()));  // not sure if "." is acceptable in Windows
@@ -79,5 +79,5 @@ public class Mona extends Problem implements SimpleProblemForm
             pic.display("Best So Far, Generation " + state.generation);
         // System.out.println("Filled Polygons: " + pic.getLatestFilledPolygonCount() + " of " + pic.getLatestTotalCount());
         ind.evaluated = true;
+        }
     }
-}

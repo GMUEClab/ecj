@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class And extends GPNode
-{
+    {
     public String toString() { return "and"; }
 
     /*
@@ -43,20 +43,20 @@ public class And extends GPNode
     public int expectedChildren() { return 2; }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
+        {
         // shortcutting AND
         children[0].eval(state,thread,input,stack,individual,problem);
 
         if (((ParityData)input).x == 1 )  // return the second item
             children[1].eval(state,thread,input,stack,individual,problem);
         // else return the first item (already there)
+        }
     }
-}
 
 
 

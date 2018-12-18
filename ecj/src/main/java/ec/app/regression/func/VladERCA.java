@@ -31,32 +31,32 @@ import java.io.*;
  */
 
 public class VladERCA extends RegERC
-{
+    {
     public String name() { return "VladERCA"; }
     public int expectedChildren() { return 1; }
 
     public void resetNode(final EvolutionState state, final int thread)
-    {
+        {
         value = state.random[thread].nextDouble(true, true) * 5.0;
-    }
+        }
 
     public String toStringForHumans()
-    { return "n^" + value; }
+        { return "n^" + value; }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
+        {
         RegressionData rd = ((RegressionData)(input));
 
         children[0].eval(state,thread,input,stack,individual,problem);
         rd.x = Math.pow(rd.x, value);
-    }
+        }
 
-}
+    }
 
 
 

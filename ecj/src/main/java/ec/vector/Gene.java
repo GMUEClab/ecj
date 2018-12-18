@@ -63,28 +63,28 @@ import java.io.*;
  */
  
 public abstract class Gene implements Prototype
-{
+    {
     public static final String P_GENE = "gene";
 
     /** @deprecated */
     private static final String P_VECTOR_GENE = "vect-gene";
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         // nothing by default
-    }
+        }
         
     public Parameter defaultBase()
-    {
+        {
         return VectorDefaults.base().push(P_GENE);
-    }
+        }
     
     public Object clone()
-    {
+        {
         try { return super.clone(); }
         catch (CloneNotSupportedException e) 
             { throw new InternalError(); } // never happens
-    }
+        }
         
 
 
@@ -105,31 +105,31 @@ public abstract class Gene implements Prototype
        Mutate the gene.  The default form just resets the gene.
     */
     public void mutate(final EvolutionState state, final int thread)
-    {
+        {
         reset(state,thread);
-    }
+        }
 
     /**
        Nice printing.  The default form simply calls printGeneToStringForHumans and prints the result, 
        but you might want to override this.
     */
     public void printGeneForHumans( final EvolutionState state, final int verbosity, final int log )
-    {  state.output.println(printGeneToStringForHumans(),log); }
+        {  state.output.println(printGeneToStringForHumans(),log); }
 
     /** Prints the gene to a string in a human-readable fashion.  The default simply calls toString(). */
     public String printGeneToStringForHumans()
-    { return toString(); }
+        { return toString(); }
 
     /** Prints the gene to a string in a fashion readable by readGeneFromString and parseable by readGene(state, reader).
         Override this.  The default form returns toString(). */
     public String printGeneToString()
-    { return toString(); }
+        { return toString(); }
 
     /** Reads a gene from a string, which may contain a final '\n'.
         Override this method.  The default form generates an error.
     */
     public void readGeneFromString(final String string, final EvolutionState state)
-    { state.output.error("readGeneFromString(string,state) unimplemented in " + this.getClass()); }
+        { state.output.error("readGeneFromString(string,state) unimplemented in " + this.getClass()); }
 
     /**
        Prints the gene in a way that can be read by readGene().  The default form simply
@@ -137,7 +137,7 @@ public abstract class Gene implements Prototype
        or just override printGeneToString(...), which is probably easier to do.
     */
     public void printGene( final EvolutionState state, final int verbosity, final int log )
-    { state.output.println(printGeneToString(),log); }
+        { state.output.println(printGeneToString(),log); }
 
     /**
        Prints the gene in a way that can be read by readGene().  The default form simply
@@ -145,7 +145,7 @@ public abstract class Gene implements Prototype
        or just override printGeneToString(...), which is probably easier to do.
     */
     public void printGene( final EvolutionState state, final PrintWriter writer )
-    { writer.println(printGeneToString()); }
+        { writer.println(printGeneToString()); }
 
     /**
        Reads a gene printed by printGene(...).  The default form simply reads a line into
@@ -153,22 +153,22 @@ public abstract class Gene implements Prototype
        custom reading, or just override readGeneFromString(...), which is probably easier to do.
     */
     public void readGene(final EvolutionState state,
-                         final LineNumberReader reader)
+        final LineNumberReader reader)
         throws IOException
-    { readGeneFromString(reader.readLine(),state); }
+        { readGeneFromString(reader.readLine(),state); }
 
     /** Override this if you need to write rules out to a binary stream */
     public void writeGene(final EvolutionState state,
-                          final DataOutput dataOutput) throws IOException
-    {
+        final DataOutput dataOutput) throws IOException
+        {
         state.output.fatal("writeGene(EvolutionState, DataOutput) not implemented in " + this.getClass());
-    }
+        }
 
     /** Override this if you need to read rules in from a binary stream */
     public void readGene(final EvolutionState state,
-                         final DataInput dataInput) throws IOException
-    {
+        final DataInput dataInput) throws IOException
+        {
         state.output.fatal("readGene(EvolutionState, DataInput) not implemented in " + this.getClass());
-    }
+        }
 
-}
+    }

@@ -48,7 +48,6 @@ public class BBOBenchmarksTest {
 
     @Test
     public void testEvaluate() {
-        System.out.println("evaluate");
         for (int i = 0; i < 1000; i++) {
             BBOBenchmarks instance = new BBOBenchmarks();
             instance.setup(state, BASE);

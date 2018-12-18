@@ -1,0 +1,42 @@
+# Copyright 2017 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../simple/simple.params
+
+breed =                                         ec.eda.amalgam.AMALGAMBreeder
+pop.subpop.0.species =                          ec.eda.amalgam.AMALGAMSpecies
+
+
+#### AMalGaM must use double vector individuals
+pop.subpop.0.species.ind =                      ec.vector.DoubleVectorIndividual
+
+
+pop.subpop.0.size =                             30
+pop.subpop.0.species.mutation-prob =            0
+pop.subpop.0.species.pipe =                     ec.breed.InitializationPipeline 
+pop.subpop.0.species.mutation-type =            reset
+pop.subpop.0.species.crossover-type =           one
+
+### We terminate on some additional conditions (see manual) if this is set.
+### (by default it's false)
+#amalgam.species.alternative-termination = 	true
+
+### The following five parameters have standard constant default settings.
+### We list them here, though if you don't specify the parameter
+### (commenting it out below, say) it'll default to this value anyway
+
+amalgam.species.tau =                    0.35
+amalgam.species.eta-dec =                0.9
+amalgam.species.theta-sdr =              1.0
+amalgam.species.variance-tolerance =     0.0
+amalgam.species.delta-ams =              2.0
+
+### The following four parameters have standard default settings but they're
+### defined programmatically, see the manual for details.  Here we don't
+### define them at all, but you could of course if you wished.
+
+# amalgam.species.eta-shift =                
+# amalgam.species.eta-sigma =                
+# amalgam.species.nis-max =                  
+# amalgam.species.alpha-ams =                

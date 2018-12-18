@@ -2427,3 +2427,59 @@ Version		Change Log
 	Remove erroneous app/nullproblem and app/tutorial3copy directories.
 	Fixed bug in Makefile: make doc failed to utilize the $CLASSPATH variable
 
+26 Prerelease Schmirelease
+   	This version reorganizes the source tree to match the
+   	     directory structure required by Apache Maven. Notably,
+	     Java files are now stored separately from other
+   	     'resource' files.
+   	Added an Apache Maven build file (pom.xml).
+	Revised high-level READMEs and converted them to Markdown.
+	Added src/test/java/ec/app/ package: system tests to ensure
+   	     that each example application runs with no exceptions.
+	Removed obsolete app/nullproblem package
+	Removed erroneous app/tutorial3copy package
+	Added src/test/regression scripts: an experimental regression
+   	     suite to catch changes in the stochastic behavior of ECJ's
+ 	     example applications.
+	Removed erroneous app/star/old package
+	Fixed bug in ec.app.gpsemantics.Semantic: the app printed to
+   	     STDOUT in silent mode.
+	Fixed a mislabeled error message in ec.app.moosuite.MooSuite
+	Fixed typos in the years of some source files' copyright
+   	     notices.
+	Fixed bugs in SimpleBreeder, NSGA2Breeder, SPEA2Breeder,
+   	     SpatialBreeder, MuCommaLambdaBreeder, and ESSelection
+   	     that were caused by our recent transition from
+   	     arrays to ArrayLists.
+	Added .gitignore
+	Added lib/pshecj.jar, the one ECJ dependency that can't be
+   	     found in the Maven repository.
+	Added .travis.yml file: configuration for Travis-CI
+	The app/mona application can now be run in headless mode.
+	Fixed bug in ec.app.moosuite.MooSuite: there were options for two
+   	     different KUR functions, but only one was implemented.
+	Fixed bug in how EvolutionState counts evaluations.
+  	     Thanks to Jorge Gomes <jorgemcgomes@gmail.com>.
+	Added ec.util.Misc class to hold static utility methods.
+	Add a flag to BBOBenchmarks that allows us to fix the best
+   	     fitness value to zero.
+	Fixed bug in docs/manual.tex that prevented it from building
+   	     with TeXLive 2017.
+	Fixed an incorrect comment in nsga2.params
+	Added ec.eda.Amalgam package
+	Removed SPEA2Evaluator.java
+	Added nsga3 package
+	Added pbil package
+	Initial version of rule-rewriting in parameter databases added
+	Fixed bugs in and added unit tests for NSGA2Breeder
+	Added ec/multiobjective/HypervolumeStatistics.java, with unit tests
+	Bugfix to AmalgamSpecies.  Thanks to Stef Maree <s.c.maree@amc.uva.nl>
+		and Peter Bosman <Peter.Bosman@cwi.nl>
+	Bugfix to SimpleShortStatistics, which was printing the wrong
+		generation number (off by 1) in the file.
+	Multiobjective examples now enable HypervolumeStatistics by default
+	Fixed incorrect equation for the KUR function in ec.app.moosuite.MooSuite
+
+27 Prerelease Schmirelease
+   	Added hypervolume calculation to ec.multiobjective.MultiObjectivestatistics
+	Add header to SimpleShortStatistics, and control over the delimiter used

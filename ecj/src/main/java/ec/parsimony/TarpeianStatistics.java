@@ -45,46 +45,46 @@ import ec.util.*;
 */
  
 public class TarpeianStatistics extends Statistics
-{
+    {
     /** one in n individuals are killed */
     public static final String P_KILL_PROPORTION = "kill-proportion";
     double killProportion;
 
     public void setup( final EvolutionState state, final Parameter base )
-    {
+        {
         super.setup (state, base);
 
         killProportion = state.parameters.getDouble( base.push(P_KILL_PROPORTION), null, 0.0 );
         if( killProportion < 0 || killProportion > 1 )
             state.output.fatal( "Parameter not found, or it has an invalid value (<0 or >1).", base.push(P_KILL_PROPORTION) );
-    }
+        }
 
     /**
        Marks a proportion (killProportion) of individuals with above-average size (within their own subpopulation) to a minimum value.
     */
     public void preEvaluationStatistics(final EvolutionState state)
-    {
+        {
         for(int subpopulation = 0; subpopulation < state.population.subpops.size(); subpopulation++ )
             {
-                double averageSize = 0;
+            double averageSize = 0;
 
-                for(int i = 0; i < state.population.subpops.get(subpopulation).individuals.size() ; i++ )
-                    averageSize += state.population.subpops.get(subpopulation).individuals.get(i).size();
+            for(int i = 0; i < state.population.subpops.get(subpopulation).individuals.size() ; i++ )
+                averageSize += state.population.subpops.get(subpopulation).individuals.get(i).size();
 
-                averageSize /= state.population.subpops.get(subpopulation).individuals.size();
+            averageSize /= state.population.subpops.get(subpopulation).individuals.size();
 
-                for(int i = 0; i < state.population.subpops.get(subpopulation).individuals.size() ; i++ )
+            for(int i = 0; i < state.population.subpops.get(subpopulation).individuals.size() ; i++ )
+                {
+                if( ( state.population.subpops.get(subpopulation).individuals.get(i).size() > averageSize ) &&
+                    ( state.random[0].nextDouble() < killProportion ) )
                     {
-                        if( ( state.population.subpops.get(subpopulation).individuals.get(i).size() > averageSize ) &&
-                            ( state.random[0].nextDouble() < killProportion ) )
-                            {
-                                Individual ind = state.population.subpops.get(subpopulation).individuals.get(i);
-                                setMinimumFitness( state, subpopulation, ind );
-                                ind.evaluated = true;
-                            }
+                    Individual ind = state.population.subpops.get(subpopulation).individuals.get(i);
+                    setMinimumFitness( state, subpopulation, ind );
+                    ind.evaluated = true;
                     }
+                }
             }
-    }
+        }
 
     /**
        Sets the fitness of an individual to the minimum fitness possible.
@@ -95,7 +95,7 @@ public class TarpeianStatistics extends Statistics
        You need to override this method if you're using any other type of fitness.
     */
     public void setMinimumFitness( final EvolutionState state, int subpopulation, Individual ind )
-    {
+        {
         Fitness fitness = ind.fitness;
         if( fitness instanceof ec.gp.koza.KozaFitness )
             ((ec.gp.koza.KozaFitness)fitness).setStandardizedFitness( state, Double.MAX_VALUE );
@@ -103,6 +103,6 @@ public class TarpeianStatistics extends Statistics
             ((ec.simple.SimpleFitness)fitness).setFitness(state,-Double.MAX_VALUE,false);
         else
             state.output.fatal( "TarpeianStatistics only accepts individuals with fitness of type ec.simple.SimpleFitness or ec.gp.koza.KozaFitness." );
-    }
+        }
 
-}
+    }

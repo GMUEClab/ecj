@@ -1,0 +1,33 @@
+# Copyright 2018 by Sunil Kumar Rajendran, Sean Luke, and George Mason Unviersity
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../simple/simple.params
+
+init =	                                       ec.simple.SimpleInitializer
+breed =                                        ec.eda.pbil.PBILBreeder
+pop.subpop.0.species =                         ec.eda.pbil.PBILSpecies
+
+
+#### PBIL must use integer vector individuals
+pop.subpop.0.species.ind =                     ec.vector.IntegerVectorIndividual
+
+
+#### PBIL relies on the population size and hence needs to be set before 
+#### running the algorithm. 
+
+pop.subpop.0.size =                            100
+
+#### These are possible values which you may set, but if you don't then 
+#### PBIL will use internal functions to compute appropriate default
+#### values for them. Here 'alpha' is the learning rate and 'b' denotes the 
+#### number of individuals to be selected out of the generated population. 
+
+pop.subpop.0.species.alpha = 0.5
+pop.subpop.0.species.b = 50
+
+#### Mutation and breeding are irrelevant to PBIL, but must be set to something to satisfy IntegerVectorSpecies
+pop.subpop.0.species.mutation-prob =           0
+pop.subpop.0.species.pipe =                    ec.breed.InitializationPipeline	
+pop.subpop.0.species.mutation-type =           reset
+pop.subpop.0.species.crossover-type =          one

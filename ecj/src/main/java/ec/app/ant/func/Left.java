@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class Left extends GPNode implements EvalPrint
-{
+    {
     public String toString() { return "left"; }
 
     /*    public void checkConstraints(final EvolutionState state,
@@ -42,12 +42,12 @@ public class Left extends GPNode implements EvalPrint
     public int expectedChildren() { return 0; }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
+        {
         Ant p = (Ant)problem;
         switch (p.orientation)
             {
@@ -68,20 +68,20 @@ public class Left extends GPNode implements EvalPrint
                 break;
             }
         p.moves++;
-    }
+        }
 
 
     public void evalPrint(final EvolutionState state,
-                          final int thread,
-                          final GPData input,
-                          final ADFStack stack,
-                          final GPIndividual individual,
-                          final Problem problem,
-                          final int[][] map2)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem,
+        final int[][] map2)
+        {
         eval(state,thread,input,stack,individual,problem);
+        }
     }
-}
 
 
 

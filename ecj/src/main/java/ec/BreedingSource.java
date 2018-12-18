@@ -53,7 +53,7 @@ import java.util.HashMap;
  */
 
 public abstract class BreedingSource implements Prototype, RandomChoiceChooserD
-{
+    {
     public static final String P_PROB = "prob";
     public static final double NO_PROBABILITY = -1.0;
     
@@ -94,27 +94,27 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooserD
         @see Prototype#setup(EvolutionState,Parameter)
     */
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         Parameter def = defaultBase();
 
         if (!state.parameters.exists(base.push(P_PROB),def.push(P_PROB)))
             probability = NO_PROBABILITY;
         else
             {
-                probability = state.parameters.getDouble(base.push(P_PROB),def.push(P_PROB),0.0);
-                if (probability<0.0) state.output.error("Breeding Source's probability must be a double floating point value >= 0.0, or empty, which represents NO_PROBABILITY.",base.push(P_PROB),def.push(P_PROB));
+            probability = state.parameters.getDouble(base.push(P_PROB),def.push(P_PROB),0.0);
+            if (probability<0.0) state.output.error("Breeding Source's probability must be a double floating point value >= 0.0, or empty, which represents NO_PROBABILITY.",base.push(P_PROB),def.push(P_PROB));
             }
-    }
+        }
 
     public final double getProbability(final Object obj)
-    {
+        {
         return ((BreedingSource)obj).probability;
-    }
+        }
 
     public final void setProbability(final Object obj, final double prob)
-    {
+        {
         ((BreedingSource)obj).probability = prob;
-    }
+        }
 
 
     /** Picks a random source from an array of sources, with their
@@ -125,18 +125,18 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooserD
         as: {0.3, 0.5, 0.6, 1.0}. */
 
     public static int pickRandom(final BreedingSource[] sources, final double prob)
-    {
+        {
         return RandomChoice.pickFromDistribution(sources,sources[0], prob);
-    }
+        }
 
     /** Normalizes and arranges the probabilities in sources so that they
         are usable by pickRandom(...).  If the sources have all zero probabilities,
         then a uniform selection is used.  Negative probabilities will
         generate an ArithmeticException, as will an empty source array. */
     public static void setupProbabilities(final BreedingSource[] sources)
-    {
+        {
         RandomChoice.organizeDistribution(sources,sources[0],true);
-    }
+        }
 
 
     /** Returns the "typical" number of individuals
@@ -150,9 +150,9 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooserD
     */
 
     public abstract boolean produces(final EvolutionState state,
-                                     final Population newpop,
-                                     final int subpopulation,
-                                     int thread);
+        final Population newpop,
+        final int subpopulation,
+        int thread);
 
     /** Called before produce(...), usually once a generation, or maybe only
         once if you're doing steady-state evolution, to let the breeding source
@@ -176,20 +176,20 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooserD
         might typically produce two individuals, tournament selection might typically
         produce a single individual, etc. */
     public abstract int produce(
-                                int min,
-                                int max,
-                                int subpopulation,
-                                ArrayList<Individual> inds,
-                                EvolutionState state,
-                                int thread, 
-                                HashMap<String, Object> misc) ;
+        int min,
+        int max,
+        int subpopulation,
+        ArrayList<Individual> inds,
+        EvolutionState state,
+        int thread, 
+        HashMap<String, Object> misc) ;
 
     public Object clone()
-    {
+        {
         try { return super.clone(); }
         catch (CloneNotSupportedException e) 
             { throw new InternalError(); } // never happens
-    }
+        }
 
     public void fillStubs(final EvolutionState state, BreedingSource source) { }
 
@@ -210,8 +210,8 @@ public abstract class BreedingSource implements Prototype, RandomChoiceChooserD
         breeding source paths regardless of whether or not it's redundant to
         do so. */
     public void preparePipeline(final Object hook)
-    {
+        {
         // the default method does nothing, though BreedingPipelines override this
         // to guarantee that it's called on all their sources as well.
+        }
     }
-}

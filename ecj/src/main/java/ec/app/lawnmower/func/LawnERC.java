@@ -25,7 +25,7 @@ import java.io.*;
  */
 
 public class LawnERC extends ERC
-{
+    {
     public int maxx;
     public int maxy;
 
@@ -33,7 +33,7 @@ public class LawnERC extends ERC
     public int y;
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state,base);
         // figure the coordinate base -- this will break if the underlying
         // base changes, oops
@@ -46,28 +46,28 @@ public class LawnERC extends ERC
         maxx = state.parameters.getInt(newbase.push(Lawnmower.P_X),null,1);
         if (maxx==0)
             state.output.error("The width (x dimension) of the lawn must be >0",
-                               newbase.push(Lawnmower.P_X));
+                newbase.push(Lawnmower.P_X));
         maxy = state.parameters.getInt(newbase.push(Lawnmower.P_Y),null,1);
         if (maxy==0)
             state.output.error("The length (y dimension) of the lawn must be >0",
-                               newbase.push(Lawnmower.P_X));
+                newbase.push(Lawnmower.P_X));
         state.output.exitIfErrors();      
-    }
+        }
 
     public void resetNode(final EvolutionState state, final int thread)
-    {
+        {
         x = state.random[thread].nextInt(maxx);
         y = state.random[thread].nextInt(maxy);
-    }
+        }
 
     public int nodeHashCode()
-    {
+        {
         // a reasonable hash code
         return this.getClass().hashCode() + x*maxy + y;
-    }
+        }
 
     public boolean nodeEquals(final GPNode node)
-    {
+        {
         // check first to see if we're the same kind of ERC -- 
         // won't work for subclasses; in that case you'll need
         // to change this to isAssignableTo(...)
@@ -75,25 +75,25 @@ public class LawnERC extends ERC
         // now check to see if the ERCs hold the same value
         LawnERC n = (LawnERC)node;
         return (n.x==x && n.y==y);
-    }
+        }
 
     public void readNode(final EvolutionState state, final DataInput dataInput) throws IOException
-    {
+        {
         x = dataInput.readInt();
         y = dataInput.readInt();
-    }
+        }
 
     public void writeNode(final EvolutionState state, final DataOutput dataOutput) throws IOException
-    {
+        {
         dataOutput.writeInt(x);
         dataOutput.writeInt(y);
-    }
+        }
 
     public String encode()
-    { return Code.encode(x) + Code.encode(y); }
+        { return Code.encode(x) + Code.encode(y); }
 
     public boolean decode(DecodeReturn dret)
-    {
+        {
         // store the position and the string in case they
         // get modified by Code.java
         int pos = dret.pos;
@@ -104,10 +104,10 @@ public class LawnERC extends ERC
 
         if (dret.type != DecodeReturn.T_INT) // uh oh!
             {
-                // restore the position and the string; it was an error
-                dret.data = data;
-                dret.pos = pos;
-                return false;
+            // restore the position and the string; it was an error
+            dret.data = data;
+            dret.pos = pos;
+            return false;
             }
 
         // store the data
@@ -118,33 +118,33 @@ public class LawnERC extends ERC
 
         if (dret.type != DecodeReturn.T_INT) // uh oh!
             {
-                // restore the position and the string; it was an error
-                dret.data = data;
-                dret.pos = pos;
-                return false;
+            // restore the position and the string; it was an error
+            dret.data = data;
+            dret.pos = pos;
+            return false;
             }
 
         // store the data
         y = (int)(dret.l);
 
         return true;
-    }
+        }
 
     public String toStringForHumans()
-    { return "[" + x + "," + y + "]"; }
+        { return "[" + x + "," + y + "]"; }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
+        {
         LawnmowerData rd = ((LawnmowerData)(input));
         rd.x = x;
         rd.y = y;
+        }
     }
-}
 
 
 

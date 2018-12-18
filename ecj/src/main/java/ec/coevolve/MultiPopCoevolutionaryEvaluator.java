@@ -222,7 +222,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         performCoevolutionaryEvaluation( state, state.population, (GroupedProblemForm)p_problem );
         state.incrementEvaluations(((GroupedProblemForm)p_problem).postprocessPopulation(state, state.population, postAssessFitness, false));
 
-        afterCoevolutionaryEvaluation( state, state.population, (GroupedProblemForm)p_problem );
+        afterCoevolutionaryEvaluation( state, (GroupedProblemForm)p_problem );
         }
 
     protected void beforeCoevolutionaryEvaluation( final EvolutionState state, final Population population, final GroupedProblemForm prob )
@@ -438,7 +438,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
 
 
 
-    protected void afterCoevolutionaryEvaluation( final EvolutionState state, final Population population, final GroupedProblemForm prob )
+    protected void afterCoevolutionaryEvaluation( final EvolutionState state, final GroupedProblemForm prob )
         {
         if( numGuru > 0 )
             {

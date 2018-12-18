@@ -58,7 +58,7 @@ import java.io.*;
 
 
 public class ThreadPool implements java.io.Serializable
-{
+    {
     private static final long serialVersionUID = 1;
 
     /** A Worker is a special kind of object which represents an underlying
@@ -78,7 +78,7 @@ public class ThreadPool implements java.io.Serializable
     int totalWorkers = 0;  // resets to 0 on deserialization
         
     private void writeObject(java.io.ObjectOutputStream stream) throws IOException 
-    {
+        {
         // DO NOTHING
         // This is because we will be rebuilding ALL THREE variables
         // (workers, workersLock, and totalWorkers) during readObject.
@@ -87,15 +87,15 @@ public class ThreadPool implements java.io.Serializable
         // Further, having an empty writeObject method here prevents Java
         // from attempting to serialize these non-transient objects while some
         // thread might be accessing them.
-    }
+        }
 
     private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException
-    {
+        {
         // REBUILD THE WHOLE INSTANCE
         workers = new LinkedList();
         workersLock = new Object[0];
         totalWorkers = 0;
-    }
+        }
 
 
     /** Start a thread on the given Runnable and returns it. */
@@ -103,34 +103,34 @@ public class ThreadPool implements java.io.Serializable
 
     /** Start a thread on the given Runnable with a given thread name (for debugging purposes). */
     public Worker start(Runnable run, String name)
-    {
+        {
         Node node;
         // ensure we have at least one thread
         synchronized(workersLock) 
             {
-                // if (workers == null) workers = new LinkedList();  // deserialized
-                if (workers.isEmpty())
-                    {
-                        node = new Node(name + " (" + totalWorkers + ")");
-                        node.thread.start();  // build a new thread
-                        totalWorkers++;
-                    }
-                else  // pull a thread
-                    {
-                        node = (Node)(workers.remove());  // removes from end
-                    }
+            // if (workers == null) workers = new LinkedList();  // deserialized
+            if (workers.isEmpty())
+                {
+                node = new Node(name + " (" + totalWorkers + ")");
+                node.thread.start();  // build a new thread
+                totalWorkers++;
+                }
+            else  // pull a thread
+                {
+                node = (Node)(workers.remove());  // removes from end
+                }
             }
                         
         // now get the thread running
         synchronized(node) 
             {
-                node.setRun(run);
-                node.go = true;
-                node.notify(); 
+            node.setRun(run);
+            node.go = true;
+            node.notify(); 
             }
 
         return node;
-    }
+        }
 
     /** Start a thread on the given Runnable and returns it. 
         This method blocks and does not start the thread as long
@@ -139,9 +139,9 @@ public class ThreadPool implements java.io.Serializable
         to limit the number of jobs processed by the ThreadPool at
         any one time.  */ 
     public Worker start(Runnable run, int maximumOutstandingWorkers)
-    {
+        {
         return start(run, maximumOutstandingWorkers, "" + this);
-    }
+        }
 
     /** Start a thread on the given Runnable with a given thread name 
         (for debugging purposes) and returns it. 
@@ -151,107 +151,107 @@ public class ThreadPool implements java.io.Serializable
         to limit the number of jobs processed by the ThreadPool at
         any one time.  */ 
     public Worker start(Runnable run, int maximumOutstandingWorkers, String name)
-    {
+        {
         synchronized(workersLock)
             {
-                // if (workers == null) workers = new LinkedList();  // deserialized
-                while (getOutstandingWorkers() >= maximumOutstandingWorkers)  // too many outstanding jobs
-                    {
-                        try { workersLock.wait(); }
-                        catch (InterruptedException e) { Thread.interrupted(); }
-                    }
-                return start(run, name);
+            // if (workers == null) workers = new LinkedList();  // deserialized
+            while (getOutstandingWorkers() >= maximumOutstandingWorkers)  // too many outstanding jobs
+                {
+                try { workersLock.wait(); }
+                catch (InterruptedException e) { Thread.interrupted(); }
+                }
+            return start(run, name);
             }
-    }
+        }
         
     /** Returns the total number of workers, both pooled and outstanding (working on something). */
     public int getTotalWorkers()
-    {
+        {
         synchronized(workersLock) { return totalWorkers; }
-    }
+        }
                 
     /** Returns the total number of pooled workers (those not working on something right now). */
     public int getPooledWorkers()
-    {
+        {
         synchronized(workersLock) 
             {
-                // if (workers == null) workers = new LinkedList();  // deserialized
-                return workers.size();
+            // if (workers == null) workers = new LinkedList();  // deserialized
+            return workers.size();
             }
-    }
+        }
         
     /** Returns the total number of outstanding workers (those working on something right now). */
     public int getOutstandingWorkers()
-    {
+        {
         synchronized(workersLock) { return getTotalWorkers() - getPooledWorkers(); }
-    }
+        }
         
     /** Joins the given thread running the given Runnable.  If the thread is not presently running
         this Runnable, then the method immediately returns.  Else it blocks until the Runnable has
         terminated.  Returns true if the worker was working on the provided Runnable, else false. */
     public boolean join(Worker thread, Runnable run)
-    {
+        {
         return ((Node)thread).joinRunnable(run);
-    }
+        }
         
     /** If the thread is presently running a Runnable of any kind, blocks until the Runnable has
         finished running.  Else returns immediately.  Returns true if the worker was working
         on some Runnable, else false.  */
     public boolean join(Worker thread)
-    {
+        {
         return ((Node)thread).joinRunnable();
-    }
+        }
         
     /** Waits until there are no outstanding workers: all pool workers are in the pool. */
     public void joinAll()
-    {
+        {
         synchronized(workersLock)
             {
-                // if (workers == null) workers = new LinkedList();  // deserialized
-                while (totalWorkers > workers.size())  // there are still outstanding workers
-                    try { workersLock.wait(); }
-                    catch (InterruptedException e) { Thread.interrupted(); }  // ignore
+            // if (workers == null) workers = new LinkedList();  // deserialized
+            while (totalWorkers > workers.size())  // there are still outstanding workers
+                try { workersLock.wait(); }
+                catch (InterruptedException e) { Thread.interrupted(); }  // ignore
             }
-    }
+        }
         
     /** Kills all unused workers in the pool.  This can be used to reduce the pool
         to a manageable size if the number of workers in it has grown too large
         (an unlikely scenario).  You can still use the
         ThreadPool after calling this function; but it will have to build new workers. */
     public void killPooled()
-    {
+        {
         synchronized(workersLock)
             {
-                // if (workers == null) workers = new LinkedList();  // deserialized
-                while(!workers.isEmpty())
-                    {
-                        Node node = (Node)(workers.remove()); // removes from front
-                        synchronized(node) { node.die = true; node.notify(); }  // reel it in
-                        try { node.thread.join(); }
-                        catch (InterruptedException e) { Thread.interrupted(); } // ignore
-                        totalWorkers--;
-                    }
+            // if (workers == null) workers = new LinkedList();  // deserialized
+            while(!workers.isEmpty())
+                {
+                Node node = (Node)(workers.remove()); // removes from front
+                synchronized(node) { node.die = true; node.notify(); }  // reel it in
+                try { node.thread.join(); }
+                catch (InterruptedException e) { Thread.interrupted(); } // ignore
+                totalWorkers--;
+                }
             }
-    }
+        }
                 
     /** Waits until there are no outstanding workers: all pool workers are in the pool. 
         Then kills all the workers.  This is the approprate way to shut down the 
         ThreadPool in preparation for quitting your program.  You can still use the
         ThreadPool after calling this function; but it will have to build new workers. */
     public void killAll()
-    {
+        {
         synchronized(workersLock)
             {
-                joinAll();
-                killPooled();
+            joinAll();
+            killPooled();
             }
-    }
+        }
         
     // This is the underlying class for Worker.
     // Not serializable (Thread is not serializable), but it shouldn't
     // be a problem since the worker list is transient.
     class Node implements Runnable, Worker
-    {
+        {
         private static final long serialVersionUID = 1;
 
         // have I been asked to die?
@@ -267,101 +267,101 @@ public class ThreadPool implements java.io.Serializable
         Object runLock = new Object[0];
                 
         Node(String name) 
-        {
+            {
             thread = new Thread(this); 
             thread.setDaemon(true);
             thread.setName(name);
-        }
+            }
                 
         public void interrupt()
-        {
+            {
             synchronized(runLock) 
                 {
-                    if (toRun != null)  // don't interrupt a thread that's pooled
-                        thread.interrupt();
+                if (toRun != null)  // don't interrupt a thread that's pooled
+                    thread.interrupt();
                 }
-        }
+            }
 
         // Sets the runnable to a new job and notifies any waiting processes trying to join on the old thread
         void setRun(Runnable r)
-        {
+            {
             synchronized(runLock) 
                 { 
-                    toRun = r; 
-                    runLock.notifyAll(); 
+                toRun = r; 
+                runLock.notifyAll(); 
                 } 
-        }
+            }
                         
         // joins on the current runnable if any
         boolean joinRunnable()
-        {
+            {
             synchronized(runLock)
                 {
-                    if (toRun != null)
-                        return joinRunnable(toRun);
-                    else return false;
+                if (toRun != null)
+                    return joinRunnable(toRun);
+                else return false;
                 }
-        }
+            }
                 
         // joins on a current runnable if it is running
         boolean joinRunnable(Runnable r)
-        {
+            {
             synchronized(runLock)
                 {
-                    if (toRun == r)
-                        {
-                            try { runLock.wait(); }
-                            catch (InterruptedException e) { }
-                            return true;
-                        }
-                    else 
-                        {
-                            return false;
-                        }
+                if (toRun == r)
+                    {
+                    try { runLock.wait(); }
+                    catch (InterruptedException e) { }
+                    return true;
+                    }
+                else 
+                    {
+                    return false;
+                    }
                 }
-        }
+            }
                 
         public void run()  // assumes run is non-null
-        {
+            {
             while(true)
                 {
-                    synchronized(this) 
+                synchronized(this) 
+                    {
+                    while(!go)
                         {
-                            while(!go)
-                                {
-                                    if (die) { die = false; return; }
-                                    try { wait(); }  // wait for a new job to work on, or a request to die
-                                    catch (InterruptedException e) { Thread.interrupted(); } // ignore
-                                }
-                            go = false;
+                        if (die) { die = false; return; }
+                        try { wait(); }  // wait for a new job to work on, or a request to die
+                        catch (InterruptedException e) { Thread.interrupted(); } // ignore
                         }
+                    go = false;
+                    }
                                 
-                    try
-                        {
-                            toRun.run();  // do the job
-                        }
-                    catch (Exception e) { e.printStackTrace(); Thread.interrupted(); } // resets interrupted flag.  Note ANY exception.
+                try
+                    {
+                    toRun.run();  // do the job
+                    }
+                catch (Exception e) { e.printStackTrace(); Thread.interrupted(); } // resets interrupted flag.  Note ANY exception.
 
-                    // add myself back in the list
-                    synchronized(workersLock)
+                // add myself back in the list
+                synchronized(workersLock)
+                    {
+                    synchronized(runLock)
                         {
-                            synchronized(runLock)
-                                {
-                                    // if (workers == null) workers = new LinkedList();  // deserialized
-                                    workers.add(this);  // adds at end
+                        // if (workers == null) workers = new LinkedList();  // deserialized
+                        workers.add(this);  // adds at end
                                                 
-                                    if (totalWorkers == workers.size())  // we're all in the bag, let the pool know if it's joining
-                                        workersLock.notify();  // let joinAll know someone's back in the pool
-                                    toRun = null;
-                                    runLock.notifyAll(); // let joinRunnable know I'm done
-                                }
+                        if (totalWorkers == workers.size())  // we're all in the bag, let the pool know if it's joining
+                            workersLock.notify();  // let joinAll know someone's back in the pool
+                        toRun = null;
+                        runLock.notifyAll(); // let joinRunnable know I'm done
                         }
+                    }
                 }
+            }
         }
-    }
         
     public static void main(String[] args)
-    {
+        {
         ThreadPool p = new ThreadPool();
                 
         Runnable[] runs = new Runnable[1000];
@@ -369,18 +369,18 @@ public class ThreadPool implements java.io.Serializable
                 
         while(true)
             {
-                for(int x = 0; x < 1000; x++)
-                    {
-                        workers[x] = p.start( 
-                                             runs[x] = new Runnable() { public void run() { try { Thread.currentThread().sleep(5000); }  
-                                                     catch(InterruptedException e) { } } } );
-                    }
-                for(int y = 0; y < 1000; y++)
-                    {
-                        System.err.println("joining " + y);
-                        p.join(workers[y], runs[y]);
-                        System.err.println("joined");
-                    }
+            for(int x = 0; x < 1000; x++)
+                {
+                workers[x] = p.start( 
+                    runs[x] = new Runnable() { public void run() { try { Thread.currentThread().sleep(5000); }  
+                            catch(InterruptedException e) { } } } );
+                }
+            for(int y = 0; y < 1000; y++)
+                {
+                System.err.println("joining " + y);
+                p.join(workers[y], runs[y]);
+                System.err.println("joined");
+                }
             }
+        }
     }
-}

@@ -38,7 +38,7 @@ import java.util.HashMap;
  */
 
 public class InitializationPipeline extends BreedingPipeline
-{
+    {
     public static final String P_INIT = "init";
     public static final int NUM_SOURCES = 0;
     
@@ -47,28 +47,28 @@ public class InitializationPipeline extends BreedingPipeline
     public int numSources() { return NUM_SOURCES; }
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state,base);
         Parameter def = defaultBase();
 
         if (likelihood != 1.0)
             state.output.warning("InitializationPipeline given a likelihood other than 1.0.  This is nonsensical and will be ignored.",
-                                 base.push(P_LIKELIHOOD),
-                                 def.push(P_LIKELIHOOD));
-    }
+                base.push(P_LIKELIHOOD),
+                def.push(P_LIKELIHOOD));
+        }
         
     public int produce(final int min,
-                       final int max,
-                       final int subpopulation,
-                       final ArrayList<Individual> inds,
-                       final EvolutionState state,
-                       final int thread, HashMap<String, Object> misc)
-    {
+        final int max,
+        final int subpopulation,
+        final ArrayList<Individual> inds,
+        final EvolutionState state,
+        final int thread, HashMap<String, Object> misc)
+        {
         Species s = state.population.subpops.get(subpopulation).species;
         for(int q = 0; q < max; q++)
             {
-                inds.add(s.newIndividual(state, thread));
+            inds.add(s.newIndividual(state, thread));
             }
         return max;
+        }
     }
-}

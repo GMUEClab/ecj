@@ -1,0 +1,20 @@
+# Copyright 2015 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../eda/amalgam/amalgam.params
+
+pop.subpops =                           1
+
+pop.subpop.0.species.genome-size =	10
+pop.subpop.0.species.min-gene = 	-2.048
+pop.subpop.0.species.max-gene = 	2.048
+pop.subpop.0.species.fitness = 		ec.simple.SimpleFitness
+
+generations =                           1000
+
+# test problem
+eval.problem =                          ec.app.ecsuite.ECSuite
+eval.problem.type =                     rosenbrock
+
+

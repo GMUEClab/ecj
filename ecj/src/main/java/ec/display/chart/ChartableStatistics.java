@@ -23,7 +23,7 @@ import ec.util.Parameter;
  */
 public abstract class ChartableStatistics
     extends Statistics
-{
+    {
     
     public static final String P_TITLE = "title";
     public static final String P_XAXIS = "x-axis-label";
@@ -34,14 +34,14 @@ public abstract class ChartableStatistics
     public String ylabel;
     
     public void setup(EvolutionState state, Parameter base)
-    {
+        {
         super.setup(state, base);
         
         title = state.parameters.getStringWithDefault(base.push(P_TITLE),null,"Title");
         xlabel = state.parameters.getStringWithDefault(base.push(P_XAXIS),null,"x");
         ylabel = state.parameters.getStringWithDefault(base.push(P_YAXIS),null,"y");
-    }
+        }
     
     public abstract JFreeChart makeChart();
 
-}
+    }

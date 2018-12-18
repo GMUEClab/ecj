@@ -83,7 +83,7 @@ import java.util.*;
  */
 
 public class DOVSSpecies extends IntegerVectorSpecies
-{
+    {
 
     public static final String P_DOVS_SPECIES = "species";
     public static final String P_INITIAL_REPETITION = "initial-reps";
@@ -159,12 +159,12 @@ public class DOVSSpecies extends IntegerVectorSpecies
     public double[] b;
 
     public Parameter defaultBase()
-    {
+        {
         return DOVSDefaults.base().push(P_DOVS_SPECIES);
-    }
+        }
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state, base);
                 
         activeSolutions = new ArrayList<Individual>();
@@ -197,49 +197,49 @@ public class DOVSSpecies extends IntegerVectorSpecies
 
         if (size > 0)
             {
-                // Set up the constraints for A
-                for (int x = 0; x < size; x++)
-                    {
-                        Parameter p = base.push(P_A).push("" + x);
-                        Parameter defp = def.push(P_A).push("" + x);
+            // Set up the constraints for A
+            for (int x = 0; x < size; x++)
+                {
+                Parameter p = base.push(P_A).push("" + x);
+                Parameter defp = def.push(P_A).push("" + x);
                                 
-                        double[] d = state.parameters.getDoublesUnconstrained(p, defp, this.genomeSize);
-                        if (d == null)
-                            state.output.fatal("Row " + x + " of DOVSSpecies constraints array A must be a space- or tab-delimited list of exactly " + this.genomeSize + " numbers.",
-                                               p, defp); 
-                        A.add(d);
-                    }
+                double[] d = state.parameters.getDoublesUnconstrained(p, defp, this.genomeSize);
+                if (d == null)
+                    state.output.fatal("Row " + x + " of DOVSSpecies constraints array A must be a space- or tab-delimited list of exactly " + this.genomeSize + " numbers.",
+                        p, defp); 
+                A.add(d);
+                }
                         
-                Parameter p = base.push(P_B);
-                Parameter defp = def.push(P_B);
+            Parameter p = base.push(P_B);
+            Parameter defp = def.push(P_B);
                                 
-                b = state.parameters.getDoublesUnconstrained(p, defp, size);
-                if (b == null)
-                    state.output.fatal("DOVSSpecies constraints vector b must be a space- or tab-delimited list of exactly " + size + " numbers.",
-                                       p, defp); 
+            b = state.parameters.getDoublesUnconstrained(p, defp, size);
+            if (b == null)
+                state.output.fatal("DOVSSpecies constraints vector b must be a space- or tab-delimited list of exactly " + size + " numbers.",
+                    p, defp); 
 
             }
 
         repetition = stochastic ? initialReps : 1;
 
-    }
+        }
 
     /**
      * Define a most promising area for search of next genertion of individuals.
      */
     public void updateMostPromisingArea(EvolutionState state)
-    {
+        {
         throw new UnsupportedOperationException("updateMostPromisingArea method not implementd!");
-    }
+        }
 
     /**
      * Sample from the most promising area to get new generation of individual
      * for evaluation.
      */
     public ArrayList<Individual> mostPromisingAreaSamples(EvolutionState state, int size)
-    {
+        {
         throw new UnsupportedOperationException("mostPromisingAreaSamples method not implementd!");
-    }
+        }
 
     /**
      * To find the best sample for each generation, we need to go through each
@@ -248,7 +248,7 @@ public class DOVSSpecies extends IntegerVectorSpecies
      * exactly the individuals evaluated in DOVSEvaluator.
      */
     public void findBestSample(EvolutionState state, Subpopulation subpop)
-    {
+        {
         // clear Ek
         Ek.clear();
 
@@ -259,28 +259,28 @@ public class DOVSSpecies extends IntegerVectorSpecies
             Ek.add(activeSolutions.get(i));
         Ek.add(visited.get(optimalIndex));
         optimalIndex = findOptimalIndividual(Ek);
-    }
+        }
 
     /**
      * Given a list of individuals, it will find the one with highest fitness
      * value and retrieve its index in visited solution list.
      */
     private int findOptimalIndividual(ArrayList<Individual> list)
-    {
+        {
         double maximum = Integer.MIN_VALUE;
         IntegerVectorIndividual bestInd = null;
         for (int i = 0; i < list.size(); ++i)
             {
-                IntegerVectorIndividual ind = (IntegerVectorIndividual) list.get(i);
-                if (((DOVSFitness)(ind.fitness)).mean > maximum)
-                    {
-                        maximum = ((DOVSFitness)(ind.fitness)).mean;
-                        bestInd = ind;
-                    }
+            IntegerVectorIndividual ind = (IntegerVectorIndividual) list.get(i);
+            if (((DOVSFitness)(ind.fitness)).mean > maximum)
+                {
+                maximum = ((DOVSFitness)(ind.fitness)).mean;
+                bestInd = ind;
+                }
             }
 
         return visitedIndexMap.get(bestInd);
-    }
+        }
 
     /**
      * This method will take a candidate list and identify is there is redundant
@@ -290,13 +290,13 @@ public class DOVSSpecies extends IntegerVectorSpecies
      * from previous generations.
      */
     public ArrayList<Individual> uniqueSamples(EvolutionState state, ArrayList<Individual> candidates)
-    {
+        {
         // first filter out the redundant sample with in the set of candidates
         HashSet<Individual> set = new HashSet<Individual>();
         for (int i = 0; i < candidates.size(); ++i)
             {
-                if (!set.contains(candidates.get(i)))
-                    set.add(candidates.get(i));
+            if (!set.contains(candidates.get(i)))
+                set.add(candidates.get(i));
             }
         // now all the individual in candidates are unique with in the set
         candidates = new ArrayList<Individual>(set);
@@ -307,34 +307,34 @@ public class DOVSSpecies extends IntegerVectorSpecies
         // see if we have these individual in visted array before
         for (int i = 0; i < candidates.size(); ++i)
             {
-                IntegerVectorIndividual individual = (IntegerVectorIndividual) candidates.get(i);
-                if (visitedIndexMap.containsKey(individual))
-                    {
-                        // we have this individual before, retrieve that
-                        int index = visitedIndexMap.get(individual);
-                        // get the original individual
-                        individual = (IntegerVectorIndividual) visited.get(index);
-                    }
-                else
-                    {
-                        visited.add(individual);
-                        visitedIndexMap.put(individual, visited.size() - 1);
+            IntegerVectorIndividual individual = (IntegerVectorIndividual) candidates.get(i);
+            if (visitedIndexMap.containsKey(individual))
+                {
+                // we have this individual before, retrieve that
+                int index = visitedIndexMap.get(individual);
+                // get the original individual
+                individual = (IntegerVectorIndividual) visited.get(index);
+                }
+            else
+                {
+                visited.add(individual);
+                visitedIndexMap.put(individual, visited.size() - 1);
 
-                        // We add the new individual into the CornerMap
-                        // NOTE: if the individual already, we still need to do this?
-                        // original code says yes, but it seems to be wrong
-                        // so we do this only the new individual is new
-                        for (int j = 0; j < genomeSize; ++j)
-                            {
-                                // The individual is the content. The key is its
-                                // coordinate position
-                                corners.get(j).insert(individual.genome[j], individual);
-                            }
+                // We add the new individual into the CornerMap
+                // NOTE: if the individual already, we still need to do this?
+                // original code says yes, but it seems to be wrong
+                // so we do this only the new individual is new
+                for (int j = 0; j < genomeSize; ++j)
+                    {
+                    // The individual is the content. The key is its
+                    // coordinate position
+                    corners.get(j).insert(individual.genome[j], individual);
                     }
+                }
 
-                Sk.add(individual);
+            Sk.add(individual);
             }
 
         return Sk;
+        }
     }
-}

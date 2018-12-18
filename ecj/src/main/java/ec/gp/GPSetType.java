@@ -35,7 +35,7 @@ import java.util.Enumeration;
  */
 
 public final class GPSetType extends GPType
-{
+    {
     public static final String P_MEMBER = "member";
     public static final String P_SIZE = "size";
 
@@ -54,7 +54,7 @@ public final class GPSetType extends GPType
 
     /** Sets up the packed and sparse arrays based on the hashtable */
     public void postProcessSetType(int totalAtomicTypes)
-    {
+        {
         // load the hashtable into the arrays
         int x=0;
         types_packed = new int[types_h.size()];
@@ -62,18 +62,18 @@ public final class GPSetType extends GPType
         Enumeration e = types_h.elements();
         while(e.hasMoreElements())
             {
-                GPAtomicType t = (GPAtomicType)(e.nextElement());
-                types_packed[x++] = t.type;
-                types_sparse[t.type] = true;
+            GPAtomicType t = (GPAtomicType)(e.nextElement());
+            types_packed[x++] = t.type;
+            types_sparse[t.type] = true;
             }
 
         // Sort the packed array
         java.util.Arrays.sort(types_packed);
-    }
+        }
 
 
     public void setup(final EvolutionState state, Parameter base)
-    {
+        {
         super.setup(state,base);
         
         // Make my Hashtable
@@ -83,35 +83,35 @@ public final class GPSetType extends GPType
         int len = state.parameters.getInt(base.push(P_SIZE),null,1);
         if (len<=0) 
             state.output.fatal("The number of atomic types in the GPSetType " +
-                               name + " must be >= 1.",base.push(P_SIZE));
+                name + " must be >= 1.",base.push(P_SIZE));
 
         // Load the GPAtomicTypes
         for(int x=0;x<len;x++)
             {
-                String s = state.parameters.getString(base.push(P_MEMBER).push(""+x),null);
-                if (s==null)
-                    state.output.fatal("Atomic type member #" + x + 
-                                       " is not defined for the GPSetType " + name +
-                                       ".",base.push(P_MEMBER).push(""+x));
-                GPType t = GPType.typeFor(s,state);
-                if (!(t instanceof GPAtomicType)) // uh oh
-                    state.output.fatal("Atomic type member #" + x +
-                                       " of GPSetType " + name +
-                                       " is not a GPAtomicType.",
-                                       base.push(P_MEMBER).push(""+x));
+            String s = state.parameters.getString(base.push(P_MEMBER).push(""+x),null);
+            if (s==null)
+                state.output.fatal("Atomic type member #" + x + 
+                    " is not defined for the GPSetType " + name +
+                    ".",base.push(P_MEMBER).push(""+x));
+            GPType t = GPType.typeFor(s,state);
+            if (!(t instanceof GPAtomicType)) // uh oh
+                state.output.fatal("Atomic type member #" + x +
+                    " of GPSetType " + name +
+                    " is not a GPAtomicType.",
+                    base.push(P_MEMBER).push(""+x));
 
-                if (types_h.get(t)!=null)
-                    state.output.warning("Atomic type member #" + x +
-                                         " is included more than once in GPSetType " + 
-                                         name + ".",
-                                         base.push(P_MEMBER).push(""+x));
-                types_h.put(t,t);
+            if (types_h.get(t)!=null)
+                state.output.warning("Atomic type member #" + x +
+                    " is included more than once in GPSetType " + 
+                    name + ".",
+                    base.push(P_MEMBER).push(""+x));
+            types_h.put(t,t);
             }
-    }
+        }
 
     
     public final boolean compatibleWith(final GPInitializer initializer,final GPType t)
-    {
+        {
         // if the type is me, then I'm compatible with it.
         if (t.type == type) return true;
 
@@ -124,15 +124,15 @@ public final class GPSetType extends GPType
         // an atomic type in common.   Use the sorted packed array.
         else
             {
-                GPSetType s = (GPSetType)t;
-                int x=0; int y=0;
-                for( ; x < types_packed.length && y < s.types_packed.length ; )
-                    {
-                        if (types_packed[x] == s.types_packed[y]) return true;
-                        else if (types_packed[x] < s.types_packed[y]) x++;
-                        else y++;
-                    }
-                return false;
+            GPSetType s = (GPSetType)t;
+            int x=0; int y=0;
+            for( ; x < types_packed.length && y < s.types_packed.length ; )
+                {
+                if (types_packed[x] == s.types_packed[y]) return true;
+                else if (types_packed[x] < s.types_packed[y]) x++;
+                else y++;
+                }
+            return false;
             }
+        }
     }
-}

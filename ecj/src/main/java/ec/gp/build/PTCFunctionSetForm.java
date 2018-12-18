@@ -26,7 +26,7 @@ package ec.gp.build;
  */
 
 public interface PTCFunctionSetForm  
-{
+    {
     /** Returns an organized distribution (see ec.util.RandomChoice) of likelihoods
         that various terminals in the function set will be chosen over other terminals
         with the same return type.  The ordering of the array is the same as
@@ -43,4 +43,4 @@ public interface PTCFunctionSetForm
         nonterminal over a terminal in order to guarantee the expectedTreeSize.
         Only used by PTC1, not by PTC2. */
     public double[] nonterminalSelectionProbabilities(final int expectedTreeSize);
-}
+    }

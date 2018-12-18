@@ -14,46 +14,46 @@ import ec.vector.*;
 import java.util.*;
 
 public class CompetitiveMaxOnes extends Problem implements GroupedProblemForm
-{
-    public void preprocessPopulation(final EvolutionState state, Population pop, boolean[] updateFitness, boolean countVictoriesOnly)
     {
+    public void preprocessPopulation(final EvolutionState state, Population pop, boolean[] updateFitness, boolean countVictoriesOnly)
+        {
         for(int i = 0; i < pop.subpops.size(); i++ )
             if (updateFitness[i])
                 for(int j = 0; j < pop.subpops.get(i).individuals.size() ; j++ )
                     ((SimpleFitness)(pop.subpops.get(i).individuals.get(j).fitness)).trials = new ArrayList();
-    }
+        }
 
     public int postprocessPopulation(final EvolutionState state, Population pop, boolean[] updateFitness, boolean countVictoriesOnly)
-    {
+        {
         int total = 0;
         for(int i = 0; i < pop.subpops.size(); i++ )
             if (updateFitness[i])
                 for(int j = 0; j < pop.subpops.get(i).individuals.size() ; j++ )
                     {
-                        SimpleFitness fit = ((SimpleFitness)(pop.subpops.get(i).individuals.get(j).fitness));
+                    SimpleFitness fit = ((SimpleFitness)(pop.subpops.get(i).individuals.get(j).fitness));
 
-                        // average of the trials we got
-                        int len = fit.trials.size();
-                        double sum = 0;
-                        for(int l = 0; l < len; l++)
-                            sum += ((Double)(fit.trials.get(l))).doubleValue();
-                        sum /= len;
+                    // average of the trials we got
+                    int len = fit.trials.size();
+                    double sum = 0;
+                    for(int l = 0; l < len; l++)
+                        sum += ((Double)(fit.trials.get(l))).doubleValue();
+                    sum /= len;
                                                                         
-                        // we'll not bother declaring the ideal
-                        fit.setFitness(state, sum, false);
-                        pop.subpops.get(i).individuals.get(j).evaluated = true;
-                        total++;
+                    // we'll not bother declaring the ideal
+                    fit.setFitness(state, sum, false);
+                    pop.subpops.get(i).individuals.get(j).evaluated = true;
+                    total++;
                     }
         return total;
-    }
+        }
 
     public void evaluate(final EvolutionState state,
-                         final Individual[] ind,  // the individuals to evaluate together
-                         final boolean[] updateFitness,  // should this individuals' fitness be updated?
-                         final boolean countVictoriesOnly,
-                         int[] subpops,
-                         final int threadnum)
-    {
+        final Individual[] ind,  // the individuals to evaluate together
+        final boolean[] updateFitness,  // should this individuals' fitness be updated?
+        final boolean countVictoriesOnly,
+        int[] subpops,
+        final int threadnum)
+        {
         if( ind.length != 2 || updateFitness.length != 2 )
             state.output.fatal( "The InternalSumProblem evaluates only two individuals at a time." );
 
@@ -82,26 +82,26 @@ public class CompetitiveMaxOnes extends Problem implements GroupedProblemForm
 
         if( updateFitness[0] )
             {
-                SimpleFitness fit = ((SimpleFitness)(ind[0].fitness));
-                fit.trials.add(new Double(score));
+            SimpleFitness fit = ((SimpleFitness)(ind[0].fitness));
+            fit.trials.add(new Double(score));
                         
-                // set the fitness because if we're doing Single Elimination Tournament, the tournament
-                // needs to know who won this time around.  Don't bother declaring the ideal here.
-                fit.setFitness(state, score, false);
+            // set the fitness because if we're doing Single Elimination Tournament, the tournament
+            // needs to know who won this time around.  Don't bother declaring the ideal here.
+            fit.setFitness(state, score, false);
             }
 
         if( updateFitness[1] )
             {
-                SimpleFitness fit = ((SimpleFitness)(ind[1].fitness));
-                fit.trials.add(new Double(-score));
+            SimpleFitness fit = ((SimpleFitness)(ind[1].fitness));
+            fit.trials.add(new Double(-score));
 
-                // set the fitness because if we're doing Single Elimination Tournament, the tournament
-                // needs to know who won this time around.
-                fit.setFitness(state, -score, false);
+            // set the fitness because if we're doing Single Elimination Tournament, the tournament
+            // needs to know who won this time around.
+            fit.setFitness(state, -score, false);
             }
-    }
+        }
 
-}
+    }
 
 
 

@@ -23,7 +23,7 @@ import ec.util.*;
  */
 
 public class Progn2 extends GPNode implements EvalPrint
-{
+    {
     public String toString() { return "progn2"; }
 
     /*
@@ -43,31 +43,31 @@ public class Progn2 extends GPNode implements EvalPrint
     public int expectedChildren() { return 2; }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
+        {
         // Evaluate both children.  Easy as cake.
         children[0].eval(state,thread,input,stack,individual,problem);
         children[1].eval(state,thread,input,stack,individual,problem);
-    }
+        }
 
     public void evalPrint(final EvolutionState state,
-                          final int thread,
-                          final GPData input,
-                          final ADFStack stack,
-                          final GPIndividual individual,
-                          final Problem problem,
-                          final int[][] map2 )
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem,
+        final int[][] map2 )
+        {
         // Evaluate both children.  Easy as cake.
         ((EvalPrint)children[0]).evalPrint(state,thread,input,stack,individual,problem,map2);
         ((EvalPrint)children[1]).evalPrint(state,thread,input,stack,individual,problem,map2);
-    }
+        }
 
-}
+    }
 
 
 

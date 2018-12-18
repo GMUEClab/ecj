@@ -11,6 +11,7 @@ import ec.*;
 import ec.gp.*;
 import ec.gp.koza.*;
 import ec.simple.*;
+import java.util.ArrayList;
 
 /* 
  * Multiplexer.java
@@ -43,7 +44,7 @@ import ec.simple.*;
  */
 
 public class Multiplexer extends GPProblem implements SimpleProblemForm
-{
+    {
     private static final long serialVersionUID = 1;
 
     public static final int NUMINPUTS = 20;
@@ -56,8 +57,8 @@ public class Multiplexer extends GPProblem implements SimpleProblemForm
     public int dataPart;     // the current data part
 
     public void setup(final EvolutionState state,
-                      final Parameter base)
-    {
+        final Parameter base)
+        {
         // very important, remember this
         super.setup(state,base);
 
@@ -66,7 +67,7 @@ public class Multiplexer extends GPProblem implements SimpleProblemForm
         // verify our input is the right class (or subclasses from it)
         if (!(input instanceof MultiplexerData))
             state.output.fatal("GPData class must subclass from " + MultiplexerData.class,
-                               base.push(P_DATA), null);
+                base.push(P_DATA), null);
 
         // I figure 3 bits is plenty -- otherwise we'd be dealing with
         // REALLY big arrays!
@@ -79,41 +80,51 @@ public class Multiplexer extends GPProblem implements SimpleProblemForm
 
         dmax=1;
         for(int x=0;x<amax;x++) dmax *=2;   // safer than Math.pow(...)
-    }
+        }
 
-
+    @Override
     public void evaluate(final EvolutionState state, 
-                         final Individual ind, 
-                         final int subpopulation,
-                         final int threadnum)
-    {
+        final Individual ind, 
+        final int subpopulation,
+        final int threadnum)
+        {
         if (!ind.evaluated)  // don't bother reevaluating
             {
-                MultiplexerData input = (MultiplexerData)(this.input);
+            MultiplexerData input = (MultiplexerData)(this.input);
         
-                int sum = 0;
+            int sum = 0;
+            
+            // We'll record the individual trials in case we want to use LexicaseSelection
+            final ArrayList<Fitness> trials = new ArrayList<Fitness>();
+            
+            for(addressPart = 0; addressPart < amax; addressPart++)
+                for(dataPart = 0; dataPart < dmax; dataPart++)
+                    {
+                    ((GPIndividual)ind).trees[0].child.eval(
+                        state,threadnum,input,stack,((GPIndividual)ind),this);
+                    final double trial = 1- (                  /* "Not" */
+                        ((dataPart >>> addressPart) & 1) /* extracts the address-th 
+                                                            bit in data and moves 
+                                                            it to position 0, 
+                                                            clearing out all 
+                                                            other bits */
+                        ^                   /* "Is Different from" */
+                        (input.x & 1));      /* A 1 if input.x is 
+                                                non-zero, else 0. */
+                    
+                    final SimpleFitness trialFitness = new SimpleFitness();
+                    trialFitness.setFitness(state, trial, false);
+                    trials.add(trialFitness);
+                    sum += trial;
+                    }
                 
-                for(addressPart = 0; addressPart < amax; addressPart++)
-                    for(dataPart = 0; dataPart < dmax; dataPart++)
-                        {
-                            ((GPIndividual)ind).trees[0].child.eval(
-                                                                    state,threadnum,input,stack,((GPIndividual)ind),this);
-                            sum += 1- (                  /* "Not" */
-                                       ((dataPart >>> addressPart) & 1) /* extracts the address-th 
-                                                                           bit in data and moves 
-                                                                           it to position 0, 
-                                                                           clearing out all 
-                                                                           other bits */
-                                       ^                   /* "Is Different from" */
-                                       (input.x & 1));      /* A 1 if input.x is 
-                                                               non-zero, else 0. */
-                        }
-                
-                // the fitness better be KozaFitness!
-                KozaFitness f = ((KozaFitness)ind.fitness);
-                f.setStandardizedFitness(state, (amax*dmax - sum));
-                f.hits = sum;
-                ind.evaluated = true;
+            // the fitness better be KozaFitness!
+            KozaFitness f = ((KozaFitness)ind.fitness);
+            assert(trials.size() == amax*dmax);
+            f.trials = trials;
+            f.setStandardizedFitness(state, (amax*dmax - sum));
+            f.hits = sum;
+            ind.evaluated = true;
             }
+        }
     }
-}

@@ -25,7 +25,7 @@ import ec.*;
  */
 
 public interface GroupedProblemForm
-{
+    {
     /** Set up the population <tt>pop</tt> (such as fitness information) prior to evaluation.
         Although this method is not static, you should not use it to write to any instance
         variables in the GroupedProblem instance; this is because it's possible that
@@ -96,12 +96,12 @@ public interface GroupedProblemForm
         the final Fitness in preprocessPopulation. 
     */
     public void evaluate(final EvolutionState state,
-                         final Individual[] ind,  // the individuals to evaluate together
-                         final boolean[] updateFitness,  // should this individuals' fitness be updated?
-                         final boolean countVictoriesOnly, // don't bother updating Fitness with socres, just victories
-                         final int[] subpops,
-                         final int threadnum);
-}
+        final Individual[] ind,  // the individuals to evaluate together
+        final boolean[] updateFitness,  // should this individuals' fitness be updated?
+        final boolean countVictoriesOnly, // don't bother updating Fitness with socres, just victories
+        final int[] subpops,
+        final int threadnum);
+    }
 
 
 

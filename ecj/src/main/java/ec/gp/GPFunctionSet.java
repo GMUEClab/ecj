@@ -59,7 +59,7 @@ import java.util.*;
  */
 
 public class GPFunctionSet implements Clique
-{
+    {
     private static final long serialVersionUID = 1;
 
     public final static String P_NAME = "name";
@@ -112,7 +112,7 @@ public class GPFunctionSet implements Clique
     /** Sets up the arrays based on the hashtables */
 
     public void postProcessFunctionSet()
-    {
+        {
         nodes = new GPNode[nodes_h.size()][];
         terminals = new GPNode[terminals_h.size()][];
         nonterminals = new GPNode[nonterminals_h.size()][];
@@ -120,23 +120,23 @@ public class GPFunctionSet implements Clique
         Enumeration e = nodes_h.keys();
         while(e.hasMoreElements())
             {
-                GPType gpt = (GPType)(e.nextElement());
-                GPNode[] gpfi = (GPNode[])(nodes_h.get(gpt));
-                nodes[gpt.type] = gpfi;
+            GPType gpt = (GPType)(e.nextElement());
+            GPNode[] gpfi = (GPNode[])(nodes_h.get(gpt));
+            nodes[gpt.type] = gpfi;
             }
         e = nonterminals_h.keys();
         while(e.hasMoreElements())
             {
-                GPType gpt = (GPType)(e.nextElement());
-                GPNode[] gpfi = (GPNode[])(nonterminals_h.get(gpt));
-                nonterminals[gpt.type] = gpfi;
+            GPType gpt = (GPType)(e.nextElement());
+            GPNode[] gpfi = (GPNode[])(nonterminals_h.get(gpt));
+            nonterminals[gpt.type] = gpfi;
             }
         e = terminals_h.keys();
         while(e.hasMoreElements())
             {
-                GPType gpt = (GPType)(e.nextElement());
-                GPNode[] gpfi = (GPNode[])(terminals_h.get(gpt));
-                terminals[gpt.type] = gpfi;
+            GPType gpt = (GPType)(e.nextElement());
+            GPNode[] gpfi = (GPNode[])(terminals_h.get(gpt));
+            terminals[gpt.type] = gpfi;
             }
 
         // set up arity-based arrays
@@ -152,16 +152,16 @@ public class GPFunctionSet implements Clique
         for(int x=0;x<nodes.length;x++)
             for(int a = 0; a <= max_arity; a++)
                 {
-                    // how many nodes do we have?
-                    int num_of_a = 0;
-                    for(int y=0;y<nodes[x].length;y++)
-                        if (nodes[x][y].children.length == a) num_of_a++;
-                    // allocate and fill
-                    nodesByArity[x][a] = new GPNode[num_of_a];
-                    int cur_a = 0;
-                    for(int y=0;y<nodes[x].length;y++)
-                        if (nodes[x][y].children.length == a )
-                            nodesByArity[x][a][cur_a++] = nodes[x][y];
+                // how many nodes do we have?
+                int num_of_a = 0;
+                for(int y=0;y<nodes[x].length;y++)
+                    if (nodes[x][y].children.length == a) num_of_a++;
+                // allocate and fill
+                nodesByArity[x][a] = new GPNode[num_of_a];
+                int cur_a = 0;
+                for(int y=0;y<nodes[x].length;y++)
+                    if (nodes[x][y].children.length == a )
+                        nodesByArity[x][a][cur_a++] = nodes[x][y];
                 }
 
         // now set up the <= nonterminals array
@@ -169,16 +169,16 @@ public class GPFunctionSet implements Clique
         for(int x=0;x<nonterminals.length;x++)
             for (int a = 0;a <= max_arity; a++)
                 {
-                    // how many nonterminals do we have?
-                    int num_of_a = 0;
-                    for(int y=0;y<nonterminals[x].length;y++)
-                        if (nonterminals[x][y].children.length <= a) num_of_a++;
-                    // allocate and fill
-                    nonterminalsUnderArity[x][a] = new GPNode[num_of_a];
-                    int cur_a = 0;
-                    for(int y=0;y<nonterminals[x].length;y++)
-                        if (nonterminals[x][y].children.length <= a )
-                            nonterminalsUnderArity[x][a][cur_a++] = nonterminals[x][y];
+                // how many nonterminals do we have?
+                int num_of_a = 0;
+                for(int y=0;y<nonterminals[x].length;y++)
+                    if (nonterminals[x][y].children.length <= a) num_of_a++;
+                // allocate and fill
+                nonterminalsUnderArity[x][a] = new GPNode[num_of_a];
+                int cur_a = 0;
+                for(int y=0;y<nonterminals[x].length;y++)
+                    if (nonterminals[x][y].children.length <= a )
+                        nonterminalsUnderArity[x][a][cur_a++] = nonterminals[x][y];
                 }
 
 
@@ -188,18 +188,18 @@ public class GPFunctionSet implements Clique
         for(int x=0;x<nonterminals.length;x++)
             for (int a = 0;a <= max_arity; a++)
                 {
-                    // how many nonterminals do we have?
-                    int num_of_a = 0;
-                    for(int y=0;y<nonterminals[x].length;y++)
-                        if (nonterminals[x][y].children.length >= a) num_of_a++;
-                    // allocate and fill
-                    nonterminalsOverArity[x][a] = new GPNode[num_of_a];
-                    int cur_a = 0;
-                    for(int y=0;y<nonterminals[x].length;y++)
-                        if (nonterminals[x][y].children.length >= a )
-                            nonterminalsOverArity[x][a][cur_a++] = nonterminals[x][y];
+                // how many nonterminals do we have?
+                int num_of_a = 0;
+                for(int y=0;y<nonterminals[x].length;y++)
+                    if (nonterminals[x][y].children.length >= a) num_of_a++;
+                // allocate and fill
+                nonterminalsOverArity[x][a] = new GPNode[num_of_a];
+                int cur_a = 0;
+                for(int y=0;y<nonterminals[x].length;y++)
+                    if (nonterminals[x][y].children.length >= a )
+                        nonterminalsOverArity[x][a][cur_a++] = nonterminals[x][y];
                 }
-    }
+        }
 
 
 
@@ -207,12 +207,12 @@ public class GPFunctionSet implements Clique
     /** Must be done <i>after</i> GPType and GPNodeConstraints have been set up */
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         // What's my name?
         name = state.parameters.getString(base.push(P_NAME),null);
         if (name==null)
             state.output.fatal("No name was given for this function set.",
-                               base.push(P_NAME));
+                base.push(P_NAME));
         // Register me
         GPFunctionSet old_functionset = (GPFunctionSet)(((GPInitializer)state.initializer).functionSetRepository.put(name,this));
         if (old_functionset != null)
@@ -222,7 +222,7 @@ public class GPFunctionSet implements Clique
         int numFuncs = state.parameters.getInt(base.push(P_SIZE),null,1);
         if (numFuncs < 1)
             state.output.error("The GPFunctionSet \"" + name + "\" has no functions.",
-                               base.push(P_SIZE));
+                base.push(P_SIZE));
         
         nodesByName = new Hashtable();
 
@@ -230,27 +230,27 @@ public class GPFunctionSet implements Clique
         Vector tmp = new Vector();
         for(int x = 0; x < numFuncs; x++)
             {
-                // load
-                Parameter pp = p.push(""+x);
-                GPNode gpfi = (GPNode)(state.parameters.getInstanceForParameter(
-                                                                                pp, null, GPNode.class));
-                gpfi.setup(state,pp);
+            // load
+            Parameter pp = p.push(""+x);
+            GPNode gpfi = (GPNode)(state.parameters.getInstanceForParameter(
+                    pp, null, GPNode.class));
+            gpfi.setup(state,pp);
 
-                // add to my collection
-                tmp.addElement(gpfi);
+            // add to my collection
+            tmp.addElement(gpfi);
                         
-                // Load into the nodesByName hashtable
-                GPNode[] nodes = (GPNode[])(nodesByName.get(gpfi.name()));
-                if (nodes == null)
-                    nodesByName.put(gpfi.name(), new GPNode[] { gpfi });
-                else
-                    {
-                        // O(n^2) but uncommon so what the heck.
-                        GPNode[] nodes2 = new GPNode[nodes.length + 1];
-                        System.arraycopy(nodes, 0, nodes2, 0, nodes.length);
-                        nodes2[nodes2.length - 1] = gpfi;
-                        nodesByName.put(gpfi.name(), nodes2);
-                    }
+            // Load into the nodesByName hashtable
+            GPNode[] nodes = (GPNode[])(nodesByName.get(gpfi.name()));
+            if (nodes == null)
+                nodesByName.put(gpfi.name(), new GPNode[] { gpfi });
+            else
+                {
+                // O(n^2) but uncommon so what the heck.
+                GPNode[] nodes2 = new GPNode[nodes.length + 1];
+                System.arraycopy(nodes, 0, nodes2, 0, nodes.length);
+                nodes2[nodes2.length - 1] = gpfi;
+                nodesByName.put(gpfi.name(), nodes2);
+                }
             }
 
         // Make my hash tables
@@ -264,41 +264,41 @@ public class GPFunctionSet implements Clique
         GPInitializer initializer = ((GPInitializer)state.initializer);
         while(e.hasMoreElements())
             {
-                GPType typ = (GPType)(e.nextElement());
+            GPType typ = (GPType)(e.nextElement());
             
-                // make vectors for the type.
-                Vector nodes_v = new Vector();
-                Vector terminals_v = new Vector();
-                Vector nonterminals_v = new Vector();
+            // make vectors for the type.
+            Vector nodes_v = new Vector();
+            Vector terminals_v = new Vector();
+            Vector nonterminals_v = new Vector();
 
-                // add GPNodes as appropriate to each vector
-                Enumeration v = tmp.elements();
-                while (v.hasMoreElements())
+            // add GPNodes as appropriate to each vector
+            Enumeration v = tmp.elements();
+            while (v.hasMoreElements())
+                {
+                GPNode i = (GPNode)(v.nextElement());
+                if (typ.compatibleWith(initializer,i.constraints(initializer).returntype))
                     {
-                        GPNode i = (GPNode)(v.nextElement());
-                        if (typ.compatibleWith(initializer,i.constraints(initializer).returntype))
-                            {
-                                nodes_v.addElement(i);
-                                if (i.children.length == 0)
-                                    terminals_v.addElement(i);
-                                else nonterminals_v.addElement(i);
-                            }
+                    nodes_v.addElement(i);
+                    if (i.children.length == 0)
+                        terminals_v.addElement(i);
+                    else nonterminals_v.addElement(i);
                     }
+                }
 
-                // turn nodes_h' vectors into arrays
-                GPNode[] ii = new GPNode[nodes_v.size()];
-                nodes_v.copyInto(ii);
-                nodes_h.put(typ,ii);
+            // turn nodes_h' vectors into arrays
+            GPNode[] ii = new GPNode[nodes_v.size()];
+            nodes_v.copyInto(ii);
+            nodes_h.put(typ,ii);
 
-                // turn terminals_h' vectors into arrays
-                ii = new GPNode[terminals_v.size()];
-                terminals_v.copyInto(ii);
-                terminals_h.put(typ,ii);
+            // turn terminals_h' vectors into arrays
+            ii = new GPNode[terminals_v.size()];
+            terminals_v.copyInto(ii);
+            terminals_h.put(typ,ii);
 
-                // turn nonterminals_h' vectors into arrays
-                ii = new GPNode[nonterminals_v.size()];
-                nonterminals_v.copyInto(ii);
-                nonterminals_h.put(typ,ii);
+            // turn nonterminals_h' vectors into arrays
+            ii = new GPNode[nonterminals_v.size()];
+            nonterminals_v.copyInto(ii);
+            nonterminals_h.put(typ,ii);
             }
 
         // I don't check to see if the generation mechanism will be valid here
@@ -310,7 +310,7 @@ public class GPFunctionSet implements Clique
 
         // postprocess the function set
         postProcessFunctionSet();
-    }
+        }
 
 
     /** Returns the function set for a given name.
@@ -318,24 +318,24 @@ public class GPFunctionSet implements Clique
         several times, you call state.output.exitIfErrors() once. */
 
     public static GPFunctionSet functionSetFor(final String functionSetName,
-                                               final EvolutionState state)
-    {
+        final EvolutionState state)
+        {
         GPFunctionSet set = (GPFunctionSet)(((GPInitializer)state.initializer).functionSetRepository.get(functionSetName));
         if (set==null)
             state.output.error("The GP function set \"" + functionSetName + "\" could not be found.");
         return set;
-    }
+        }
 
 
     private void writeObject(ObjectOutputStream out) throws IOException
-    {
+        {
         // this wastes an hashtable pointer, but what the heck.
 
         out.defaultWriteObject();
-    }
+        }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
-    {
+        {
         in.defaultReadObject();
+        }
     }
-}

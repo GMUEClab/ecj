@@ -12,7 +12,7 @@ import ec.gp.*;
 import ec.util.*;
 
 public class KLandscapeTreeA extends KLandscapeTree
-{
+    {
     public int expectedChildren() { return 2; }
     public char value() { return 'A'; }
-}
+    }

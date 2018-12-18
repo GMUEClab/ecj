@@ -23,6 +23,7 @@
 \usepackage{graphicx}
 \usepackage{wrapfig}
 \usepackage{bm}
+\usepackage{bbm}
 \usepackage{qtree}
 \usepackage{array}
 \usepackage{eurosym}
@@ -158,8 +159,8 @@ George Mason University}
 \\
 \\
 \\
-\large\rm {\bf Manual Version 25}\\
-\large\rm December 1, 2017\\
+\large\rm {\bf Manual Version 26}\\
+\large\rm July 5, 2018\\
 
 \vspace{5.6in}
 \noindent\Large\bf Where to Obtain ECJ\\
@@ -303,9 +304,9 @@ ECJ allows multiple subtrees for various experimental needs: Automatically Defin
 
 Genetic programming trees are constructed out of a ``primorial soup'' of function templates (such as \lisp{on-wall} or \lisp{2.3}.  Early forms of genetic programming were typeless: though such templates had a predefined arity (number of arguments), any node could be connected to any other.  Many genetic programming needs require more constraints than this.  For example, the node \lisp{if} might expect a boolean value in its first argument, and integers or floats in the second and third arguments, and return a float when evaluated.  Similarly \lisp{and} might take two booleans as arguments and return a boolean, while \lisp{\(\ast\)} would take ints or floats as arguments and return a float.
 
-Such types are often associated with the kinds of data passed from node to node, but they do not have to be.  Typing might be used to constrain certain nodes to be evaluated in groups or in a certain order: for example, a function \lisp{type-block} might insist that its first argument be of type \textit{foo} and its second argument be of type \textit{bar} to make certain that a \textit{foo} node be executed before a \textit{bar} node.
+Such types are often associated with the kinds of data passed from node to node, but they do not have to be.  Typing might be used to constrain certain nodes to be evaluated in groups or in a certain order: for example, a function \lisp{type-block} might insist that its first argument be of type \textit{foo} and its second argument be of type \textbf{ar} to make certain that a \textit{foo} node be executed before a \textbf{ar} node.
 
-ECJ permits a simple static typing mechanism called {\it set-based} typing, which is suitable for many such tasks.  In set-based typing, the return type and argument types of each node are each defined to be  sets of type symbols (for example, \{\textit{bool}\} or \{\textit{foo, bar, baz}\}, or \{\textit{int, float}\}.  The desired return type for the tree's root is similarly defined.  A child node is permitted to fit into the argument slot of a parent node if the child node's return type and type of the that argument slot in the parent are {\it compatible}.  We define types to be compatible if their set intersection is nonempty (that is, they share at least one type symbol).
+ECJ permits a simple static typing mechanism called {\it set-based} typing, which is suitable for many such tasks.  In set-based typing, the return type and argument types of each node are each defined to be  sets of type symbols (for example, \{\textbf{ool}\} or \{\textit{foo, bar, baz}\}, or \{\textit{int, float}\}.  The desired return type for the tree's root is similarly defined.  A child node is permitted to fit into the argument slot of a parent node if the child node's return type and type of the that argument slot in the parent are {\it compatible}.  We define types to be compatible if their set intersection is nonempty (that is, they share at least one type symbol).
 
 Set-based typing is sufficient for the typing requirements found in many programming languages, including ones with type hierarchies.  It allows, among other things, for nodes such as \lisp{\(\ast\)} to accept {\it either} integers or floats.  However there are considerable restrictions on the power of set-based typing.  It's often useful for the return type of a node to {\it change} based on the particular nodes which have plugged into it as arguments. For example, \lisp{\(\ast\)} might be defined as returning a float if at least one of its arguments returns floats, but returning an integer if both of its arguments return integers.  \lisp{if} might be similarly defined not to return a particular type, but to simply require that its return type and the second and third argument types must all match.  Such ``polymorphic'' typing is particularly useful in situations such as matrix multiplication, where the operator must place constraints on the width and height of its arguments and the final returned matrix.  In this example, it's also useful to have an infinite number of types (perhaps to represent matrices of varying widths or heights).
 
@@ -360,23 +361,26 @@ ECJ was developed near the introduction of Java and so has a lot of historical i
 
 \section{Unpacking ECJ and Using the Tutorials}
 
-ECJ comes as a single tarball, \file{ecj.tar.gz}, or as a ZIP file, \file{ecj.zip}.  After unpacking this, you're left with one directory called \file{ecj}.
+ECJ is designed to be built either with {\bf maven} or with {\bf make}.  If you build ECJ with maven, then it will package all of ECJ into a single {\bf jar file}.  If you build with {\bf make}, you have the option of packaging into a single {\bf jar file} or into a {\bf directory of class files and resources}.  Building to a directory is how ECJ classically was constructed, but nowadays a jar file is more useful.  However even if you build to a jar file, it's still useful to have the resources and java files on-hand so you know what various ECJ applications can do and how to run them.
 
-In the \file{ecj} directory you'll find several items:
+After unpacking ECJ, you're left with one directory called \file{ecj} where you will find several items:
 
 \begin{itemize}
-\item A top-level \file{README} file, which should be self-explanatory in its importance.
+\item A top-level \file{README.md} file, which should be self-explanatory in its importance.
 \item ECJ's \file{LICENSE} file, which describes the primary license (AFL 3.0, a BSD-style academic license).
 \item A \file{CHANGES} log, which lists all past changes to all versions (including the latest).
-\item A \file{Makefile}.  ECJ does not use Ant, and in fact you can compile ECJ very straightforwardly by simply compiling all the java files in the \file{ec} directory.  But we provide a helpful Makefile which will compile ECJ and do various other useful tasks.
+\item A \file{Makefile} for building via {\tt make}.
+\item A \file{pom.xml} for building via Maven.
 \item The \file{docs} directory.  This contains most of the ECJ documentation.
 \item The \file{start} directory.  This contains various scripts for starting up ECJ: though in truth we rarely use them.
-\item The \file{ec} directory.  This contains ECJ proper.  \file{ec} is the top-level package for ECJ.
+\item The \file{lib} directory.  This contains any additional libraries that maven (not make) will need to build ECJ (to build with make, you'll use a different mechanism).
+\item The \file{classes} directory.  This contains the class files, and possibly other resources (see next bullet), for ECJ after it has been built.
+\item The \file{src} directory, which contains the main Java code and the internal library test code.  Of particular interest to you will be the directories \textbf{\file{src/main/java/ec/}}, which is the top-level package for ECJ, and \file{src/main/java/resources/ec/}.  The \file{src/main/java/ec/} directory holds the top-level package for ECJ, \package{ec}.  The \file{src/main/java/resources/ec} directory is an identical-structured directory containing various resources (notably parameter files).  If you build with {\tt make}, then these resources will get merged into the \file{classes} directory.
 \end{itemize}
 
 \subsection{The \file{ec} Directory, the CLASSPATH, and jar files}
 
-The \file{ec} directory is ECJ's top-level package.  Every subdirectory is a subpackage, and most of them are headed by helpful README files which describe the contents of the directory.  Most packages contain not only Java files and class files but also parameter files and occasional data files: ECJ was designed originally for the class files to be compiled and stored right alongside the Java files in these directories, though it can be used with the separate-build-area approach taken by IDEs like Eclipse.
+The \file{ec} (\file{ecj/src/main/java/ec/}) directory is ECJ's top-level package.  Every subdirectory is a subpackage, and most of them are headed by helpful README files which describe the contents of the directory.  Most packages contain not only Java files and class files but also parameter files and occasional data files: ECJ was designed originally for the class files to be compiled and stored right alongside the Java files in these directories, though it can be used with the separate-build-area approach taken by IDEs like Eclipse.
 
 Because \file{ec} is the top-level package, you can compile ECJ, more or less, by just sticking its parent directory (the \file{ecj} directory), in your CLASSPATH.  You will also need to add certain {\bf jar files} in order to compile ECJ's distributed evaluation and island model facilities, and its GUI.  You can get these jar files from the ECJ main website (http://cs.gmu.edu/\(\sim\)eclab/projects/ecj/).  Note that none of these libraries is required.  For example, if the libraries for the distributed evaluator and island model are missing, ECJ will compile but will complain if you try to run those packages with compression turned on (a feature of the packages).  The GUI library is optional to ECJ, so if you don't install its libraries, you can still compile ECJ by just deleting the \file{ec/display} directory.
 
@@ -844,7 +848,7 @@ See the next section for more explanation of that text format.
 Last but not least, once your parameter file is in a Jar file, you can refer to a parent in the file system if you use an absolute path (that is, one which (in UNIX anyway) starts with \character{'/'}).  For example:
 
 \params{%
-parent.0 = /Users/sean/ecj/ec/parent.params
+parent.0 = /Users/sean/myexperiment/other.params
 }
 
 Absolute path names aren't very portable and aren't recommended.
@@ -949,6 +953,236 @@ double values, and return the result as an array of doubles, else null if they a
 or if the list is not expectedLength \((>0)\) long, 
 or if it has garbage at the end of it.   Either parameter may be null.
 \end{methods}
+
+\subsection{Parameter Macros}
+\label{ParameterMacros}
+
+
+
+The get() method can also handle special \textit{macro parameters}.
+% Macro parameter names will end in \textbf{default} or \textbf{alias}, which
+Macro parameter names will end in \textbf{alias}, which
+% means you \textit{cannot have any parameter names which end with these two words.}
+means you \textit{cannot have any parameter names which end with this word.}
+The idea behind a macro parameter is that it can substitute one substring for another
+among your parameter names, making your parameters potentially much simpler.
+Macros work along period boundaries. 
+
+\subsubsection{The Alias Macro}
+
+The \textbf{alias} parameter macro works as follows.  Let's say that you have:
+
+\params{%
+hello.there.alias = foo
+}
+
+\noindent This means to replace \parameter{hello.there} with \parameter{foo} and continue looking up the parameter.  For example, when When query for the parameter 
+
+\params{%
+hello.there.mom.how.are.you
+}
+
+\noindent it is converted to the parameter
+
+\params{%
+foo.mom.how.are.you
+}
+
+\noindent which is then looked up in the database.  Furthermore
+
+\params{%
+hello.there.partner
+}
+
+\noindent is converted to the parameter
+
+\params{%
+foo.partner
+}
+
+\noindent and
+
+\params{%
+hello.there
+}
+
+\noindent is converted to just the parameter
+
+\params{%
+foo
+}
+
+\noindent Which are then looked up in the database.  Conflicting rules are handled in order of specificity.  For example, if you had 
+
+\params{%
+hello.there.alias = foo\\
+hello.there.mom.alias = bar\\
+hello.there.mom.how.are.you = whoa\\
+hello.there.brother = hey
+}
+
+Now let's say we queried
+
+\params{%
+hello.there.dad
+}
+
+\noindent This would get converted to
+
+\params{%
+foo.dad
+}
+
+\noindent which would then get looked up.  But if we queried
+
+\params{%
+hello.there.mom.42
+}
+
+\noindent Then our second rule would take precedence, because it's more specific, and instead of converting to \parameter{foo.mom.42} we would instead convert to 
+
+
+\params{%
+bar.42
+}
+
+\noindent which would then get looked up.  Finally, if we queried
+
+\params{%
+hello.there.mom.how.are.you
+}
+
+\noindent Then this would take precedence and the system would immediately return \parameter{whoa}.  Furthermore, if we queried
+
+\params{%
+hello.there.brother
+}
+
+\noindent This would immediately return \parameter{hey}, because exact parameters take precedence over macros.
+
+Additionally note that the substitution is delimited by the periods.  So querying 
+
+\params{%
+hello.therewhoa
+}
+
+\noindent will {\it not} get translated.  And furthermore the substitution must start at the start of the parameter name, so querying 
+
+
+\params{%
+my.hello.there.mom
+}
+
+\noindent will also {\it not} get translated.
+
+Beware of cycles!  For example, if you have
+
+\params{%
+a.b.alias = foo\\
+foo.alias = a.b
+}
+
+... and you query
+
+\params{%
+a.b.yo
+}
+
+... you should get an error reported and \variable{null} returned.
+
+
+\iffalse % This section describes a feature that hasn't been correctly implemented yet.  We can remove the '\iffalse` to activate this section after we fix the defaults mechanism.
+\subsubsection{The Default Macro}
+
+The default macro is like the alias macro except that it permits a variable in the final parameter segment.  That is:
+ 
+\params{%
+hello.there.default = foo}
+
+\noindent Means that parameters which \textit{start with} \parameter{hello.*} , where "*" can be
+any single parameter element, will have that portion replaced with \parameter{foo}.  Thus
+
+\params{%
+hello.there.mom.how.are.you}
+
+... becomes ...
+
+\params{%
+foo.mom.how.are.you}
+
+ and
+
+\params{%
+hello.yo.whatever}
+
+... becomes ...
+
+\params{%
+foo.whatever}
+
+ and
+
+\params{%
+hello.blah}
+
+... becomes ...
+
+\params{%
+foo}
+
+This second macro is particularly useful for replacing groups of parameters which differ
+based on some number.  For example, imagine you had the following parameters (taken from \file{koza.params}
+
+\params{%
+gp.nc.0 = ec.gp.GPNodeConstraints\\
+gp.nc.0.name = nc0\\
+gp.nc.0.returns = nil\\
+gp.nc.0.size = 0\\
+\\
+gp.nc.1 = ec.gp.GPNodeConstraints\\
+gp.nc.1.name = nc1\\
+gp.nc.1.returns = nil\\
+gp.nc.1.size = 1\\
+gp.nc.1.child.0 = nil\\
+\\
+gp.nc.2 = ec.gp.GPNodeConstraints\\
+gp.nc.2.name = nc2\\
+gp.nc.2.returns = nil\\
+gp.nc.2.size = 2\\
+gp.nc.2.child.0 = nil\\
+gp.nc.2.child.1 = nil\\
+\\
+gp.nc.3 = ec.gp.GPNodeConstraints\\
+gp.nc.3.name = nc3\\
+gp.nc.3.returns = nil\\
+gp.nc.3.size = 3\\
+gp.nc.3.child.0 = nil\\
+gp.nc.3.child.1 = nil\\
+gp.nc.3.child.2 = nil\\
+}
+
+These could be replaced with
+
+\params{%
+gp.nc.default = gpnc\\
+gpnc = ec.gp.GPNodeConstraints\\
+\\
+gp.nc.0.name = nc0\\
+gp.nc.1.name = nc1\\
+gp.nc.2.name = nc2\\
+gp.nc.3.name = nc3\\
+\\
+gpnc.returns = nil\\
+gpnc.size = nil\\
+gpnc.child.c.default = gpncchild\\
+\\
+gpncchild = nil\\
+}
+
+
+The parameter database macro facility was implemented by Ananya Dhawan, a GMU student.
+\fi
+
 
 \subsection{Debugging Your Parameters}
 \label{DebuggingYourParameters}
@@ -12753,6 +12987,58 @@ Returns an array of doubles, one per auxiliary fitness element, of the current v
 
 
 
+
+\subsubsection{Measuring Hypervolume}  
+\label{ec.multi.HypervolumeStatistics}
+
+Because multiobjective algorithms work with several competing objectives at once, their performance can be tricky to quantify as a scalar value.  One popular way of expressing the quality of a Pareto front is to compute the \textbf{hypervolume} of the portion of the objective space that is dominated by the current population.  In general, the larger the hypervolume, the better the Pareto front. The \package{ec.multiobjective} package offers two mechanisms for recording such a hypervolume over the course of a run.  First, the \class{ec.multiobjective.MultiObjectiveStatistics} class has an option that allows us to include hypervolume as part of its output.  Second, ECJ provides a statistics class that can be used to record hypervolume to an independent CSV file: \class{ec.multiobjective.HypervolumeStatistics}.
+
+The easiest way to add hypervolume to an experiment's statistics is to activate it for \class{MultiObjectiveStatistics} like so:
+
+\params{%
+stat = ec.multiobjective.MultiObjectiveStatistics\\
+stat.front = \$front.stat\\
+stat.do-hypervolume = true
+}
+
+But we're not quite done yet, because hypervolume is always measured relative to a \textbf{reference point} in the multiobjective space, which we must specify in advance. If our method is minimizing, then the reference point serves as a \textbf{lower bound} on possible objective values in the Pareto front space; and if our method is maximizing, then the reference point serves as an \textbf{upper bound}.  As long as the Pareto front dominates the reference point, we get a positive (and, we hope, increasing!) hypervolume.
+
+If you know the worst fitness that is possible for each objective, then that can serve as a nice choice of an absolute reference point.  If you're maximizing, then in the simplest case, a natural choice of reference point might be the origin (shown here for three objectives):
+
+\params{%
+stat.reference-point = 0.0 0.0 0.0
+}
+
+If you don't know the actual worst possible fitnesses, you can just choose an arbitrary reference point with very poor objective values.  \class{MultiObjectiveStatistics} will generate a fatal error if it encounters a Pareto front with negative hypervolume, so make sure your reference point is bad enough that it will never dominate the population.
+
+
+We envision \class{HypervolumeStatistics} will typically be used as a complement to the \class{ec.multiobjective.MultiobjectiveStatistics} class.  Thus you'd probably want to set things up like this:
+
+\params{%
+stat = ec.multiobjective.MultiobjectiveStatistics \\
+\#\#\# ... followed by various MultiobjectiveStatistics parameter settings, and then... \\
+\\
+stat.num-children = 1 \\
+stat.child.0 = ec.multiobjective.HypervolumeStatistics\\
+stat.child.0.reference-point = 0.0 0.0 0.0
+}
+
+HypervolumeStatistics also requires an output file in which to dump its statistics:
+
+\params{%
+stat.child.0.file = \$hypervolume.out
+}
+
+
+\paragraph{Warning}  Note that hypervolume can be a {\bf notoriously expensive calculation} to perform for large populations and/or large numbers of objectives!  ECJ uses a hypervolume algorithm that aims at efficiency, but in some applications you may want to avoid calculating hypervolume at every generation.  One simple way to do this is to simply comment out the \parameter{num-children} line:
+
+
+\params{%
+\#\#\# We don't want hypervolume for now. \\
+\# stat.num-children = 1
+}
+
+
 \subsection{Selecting with Multiple Objectives}
 
 ECJ's primary multiobjective algorithms don't use MultiObjectiveFitness directly, but rather subclass it to add per-algorithm gizmos.  But if you're not using these algorithms, you can still use MultiObjectiveFitness in a more ``traditional'' generational algorithm.  This requires some thought: at the end of the day, ECJ needs to select based on this Fitness mechanism.  But if there is more than one objective value, how is this done?
@@ -12809,12 +13095,12 @@ For each individual, returns the Pareto Front ranking of that individual, starti
 
 
 
-\subsection{NSGA-II (The \package{ec.multiobjective.nsga2} Package)}
+\subsection{NSGA-II/III (\package{ec.multiobjective.nsga2} and \package{ec.multiobjective.nsga3} Packages)}
 \label{ec.multiobjective.nsga2}
 
 The Non-dominated Sorting Genetic Algorithm Version II (or NSGA-II) \cite{nsga2} is essentially a version of the \((\mu+\mu)\) evolution strategy using non-dominated sorting.  It maintains and updates an archive (half the population) of the current best individuals (essentially the current estimate of the Pareto Front), and breeds the remaining population from the archive.  
 
-NSGA-II requires a Breeder to maintain the archive and handle the algorithm's custom breeding; and an Evaluator to compute the non-dominated sorting.  These classes are defined by the \class{ec.mutiobjective.nsga2.NSGA2Breeder} and \class{ec.multiobjective.nsga2.NSGA2Evaluator} classes respectively.  The non-dominated sorting information is included in the fitness, and so NSGA-II uses a subclass of MultiObjectiveFitness called \class{ec.mutiobjective.nsga2.NSGA2MultiObjectiveFitness}.  To output the Pareto Front for the user, we also include a special Statistics subclass called \class{ec.mutiobjective.nsga2.NSGA2Statistics}.
+NSGA-II requires a Breeder, \class{ec.mutiobjective.nsga2.NSGA2Breeder}, to maintain the archive and handle the algorithm's custom breeding; it also computes the non-dominated sorting on the fly.  The non-dominated sorting information is included in the fitness, and so NSGA-II uses a subclass of MultiObjectiveFitness called \class{ec.mutiobjective.nsga2.NSGA2MultiObjectiveFitness}.  To output the Pareto Front for the user, we also include a special Statistics subclass called \class{ec.mutiobjective.nsga2.NSGA2Statistics}.
 
 Simply replace MultiObjectiveFitness with this class:
 
@@ -12841,12 +13127,6 @@ This class contains two special fitness measures: the {\bf rank} and {\bf sparsi
     public double sparsity;
 }
 
-The NSGA2Evaluator computes and sets these values.  You define it in the obvious way:
-
-\params{%
-eval = ec.multiobjective.nsga2.NSGA2Evaluator
-}
-
 The NSGA2Breeder performs breeding using the archive.  Again, defined in the obvious way:
 
 \params{%
@@ -12858,7 +13138,31 @@ You're responsible for setting up breeding pipelines like you see fit.
 Note that although NSGA2Breeder is a subclass of SimpleBreeder, it cannot be used with elitism and will complain if you attempt to do so.
 
 
-\paragraph{Where to get examples}  The package \package{ec.app.moosuite} has NSGA-II implementations of a number of famous multiobjective test problems.  Be sure to read the \file{moosuite.params} file, where you can specify that you want to use NSGA-II for the problems.
+When breeding, NSGA-II assumes you're using TournamentSelection.  You can do what you like selection-wise, but if you pick something other than TournamentSelection, it won't be ``standard'' NSGA-II.
+
+
+
+\paragraph{NSGA-III}  NSGA-III is run in largely the same way as NSGA-II except that it is found in the \package{ec.multiobjective.nsga3} package.  Thus you would instead change the relevant parameters to:
+
+\params{%
+pop.subpop.0.species.fitness = ec.multiobjective.nsga3.NSGA3MultiObjectiveFitness\\
+multi.fitness.num-objectives = 3\\
+multi.fitness.min = 0.0\\
+multi.fitness.max = 2.0\\
+multi.fitness.min.1 = 1.0\\
+multi.fitness.max.1 = 3.5\\
+multi.fitness.min.2 = -10\\
+multi.fitness.max.2 = 0\\
+breed = ec.multiobjective.nsga3.NSGA3Breeder
+}
+
+The big difference between NSGA-II and NSGA-III is that NSGA-III does not use sparsity.  Instead it uses a special niching mechanism meant to try to distribute individuals consistently through the pareto front (so-called {\it reference points}).  This means that NSGA-III does not have NSGA-II's \variable{sparsity} variable.
+
+Like NSGA-II, when breeding, NSGA-III assumes you're using TournamentSelection.  You can do what you like selection-wise, but if you pick something other than TournamentSelection, it won't be ``standard'' NSGA-III.
+
+\paragraph{Where to get examples}  The package \package{ec.app.moosuite} has NSGA-II implementations of a number of famous multiobjective test problems.  Be sure to read the \file{moosuite.params} file, where you can specify that you want to use NSGA-II or NSGA-III for the problems.
+
+The NSGA-III code is due to Ben Brumbac, a GMU graduate student.
 
 
 
@@ -12897,18 +13201,13 @@ multi.fitness.min.1 = -10\\
 multi.fitness.max.1 = 0
 }
 
-SPEA2 also requires a special Breeder and a special Evaluator:
+SPEA2 also requires a special Breeder:
 
 \params{%
-eval = ec.multiobjective.spea2.SPEA2Evaluator\\
 breed = ec.multiobjective.spea2.SPEA2Breeder
 }
 
-When breeding, SPEA2 has a special version of TournamentSelection which only selects among archive members.  We'd include it in various places instead of other selection methods, for example something like:
-
-\params{%
-pop.subpop.0.species.pipe.source.0 = ec.multiobjective.spea2.SPEA2TournamentSelection
-}
+When breeding, SPEA2 assumes you're using TournamentSelection.  You can do what you like selection-wise, but if you pick something other than TournamentSelection, it won't be ``standard'' SPEA2.
 
 
 \paragraph{Where to get examples}  The package \package{ec.app.moosuite} has SPEA2 implementations of a number of famous multiobjective test problems.  Be sure to read the \file{moosuite.params} file, where you can specify that you want to use SPEA2 for the problems.
@@ -12919,18 +13218,82 @@ pop.subpop.0.species.pipe.source.0 = ec.multiobjective.spea2.SPEA2TournamentSele
 
 An estimation of distribution algorithm is similar to an evolutionary algorithm in that it periodically produces individuals and assesses their fitness.  However, the manner in which individuals are generated is quite different.  Rather than producing individuals from a previous generation of individuals, an estimation of distribution algorithm typically maintains some kind of {\bf distribution} from which individuals are sampled.  After individuals have their fitnesses assessed, the distribution is revised to reflect the better quality individuals, and then the next generation is sampled from this revised distribution, and so on.
 
-ECJ's estimation of distribution package is \package{ec.eda}.  In it there are presently two estimation of distribution algorithms:
+ECJ's estimation of distribution package is \package{ec.eda}.  In it there are presently three estimation of distribution algorithms:
 
 \begin{itemize}
+\item PBIL
 \item CMA-ES
 \item  DOvS
 \end{itemize}
 
+\subsection{PBIL}
+
+Population-based Incremental Learning (or PBIL) is a univariate estimation of distribution method.\footnote{A basic introduction to the algorithm can be found in \cite{Luke2009Metaheuristics}.}  It assumes that individuals are vectors of integers (thus \class{ec.vector.IntegerVectorIndividual} and maintains one distribution for each gene.  A gene's distribution is simply an array of probabilities, one for each possible value that that gene could take on.  To build a new individual, PBIL selects randomly from each distribution to determine the gene value for that particular gene.  The distributions are updated by performing truncation selection on the population, then revising each distribution somewhat to reflect the distribution of values of its gene in the truncated population.  PBIL is single-threaded in its breeding.  PBIL does not have a lot of parameters:
+
+
+\begin{verbatim}
+## Standard ECJ Stuff
+evalthreads =                                  auto
+breedthreads =                                 auto
+checkpoint-prefix =                            ec
+checkpoint-modulo =                            1
+state =                                        ec.simple.SimpleEvolutionState
+init =                                         ec.simple.SimpleInitializer
+finish =                                       ec.simple.SimpleFinisher
+eval =                                         ec.simple.SimpleEvaluator
+stat =                                         ec.simple.SimpleStatistics
+stat.file =                                    $out.stat
+exch =                                         ec.simple.SimpleExchanger
+pop =                                          ec.Population
+pop.default-subpop =                           0
+pop.subpop.0 =                                 ec.Subpopulation
+
+## PBIL Specific Stuff
+breed =                                        ec.eda.pbil.PBILBreeder
+pop.subpop.0.species =                         ec.eda.pbil.PBILSpecies
+pop.subpop.0.species.ind =                     ec.vector.DoubleVectorIndividual
+
+## This gunk must be set even though we don't use it.  
+pop.subpop.0.species.mutation-prob =           0
+pop.subpop.0.species.pipe =                    ec.breed.InitializationPipeline
+pop.subpop.0.species.mutation-type =           reset
+pop.subpop.0.species.crossover-type =          one
+# PBIL will probably not generate duplicate individuals
+pop.subpop.0.duplicate-retries =               0
+\end{verbatim}
+
+\paragraph{}
+Now we need to specify the size of the population as well as the truncation selection size (similar to \(\lambda\) and \(\mu\) in evolution strategies).  And we need to specify to what degree the distribution will be updated to reflect the genes in the truncated population each time.  These parameters are:
+
+\begin{verbatim}
+pop.subpop.0.size =                            100
+# how many individuals survive truncation?
+pop.subpop.0.species.b =                       50
+# To what degree (0.0 ... 1.0) is the distribution updated?  This should be fairly small.
+pop.subpop.0.species.alpha =                   0.05
+\end{verbatim}
+
+\paragraph{}
+We'll also need to provide some generations, genome information, fitnesses,  and an evaluation problem, for example:
+
+\begin{verbatim}
+pop.subpop.0.species.genome-size =             10
+pop.subpop.0.species.min-gene    =             0
+pop.subpop.0.species.max-gene    =             100
+pop.subpop.0.species.fitness     =             ec.simple.SimpleFitness
+generations =                                  1000
+eval.problem =                                 ec.app.sum.Sum
+\end{verbatim}
+
+
+\paragraph{}
+There is an example application for PBIL in \file{ec/app/sum/pbil.params}.  The PBIL code is due to Sunil Kumar Rajendran, a GMU graduate student.
+
 \subsection{CMA-ES}
 
-The \((\mu / \mu_W, \lambda)\) Covariance Adaptation Evolution Strategy, or CMA-ES, maintains a distribution in the form of a multivariate Gaussian distribution.\footnote{There is significant standardized source code available for CMA-ES (see https:/\!/www.lri.fr/\(\sim\)hansen/cmaes\_inmatlab.html), and although it is a clean rewrite, ECJ's implementation tries to be fairly faithful to that code.}  The CMA-ES facility in ECJ consists of three classes: \class{ec.eda.CMAESSpecies}, \class{ec.eda.CMAESBreeder}, and \class{ec.eda.CMAESInitializer}.  The critical class is \class{ec.eda.CMAESSpecies}, which does all the hard work.  The other two largely call it to initialize the initial population (and set up the CMA-ES distribution), and to resample a subpopulation for the next generation.
+The \((\mu / \mu_W, \lambda)\) Covariance Adaptation Evolution Strategy, or CMA-ES, maintains a distribution in the form of a multivariate Gaussian distribution.\footnote{There is significant standardized source code available for CMA-ES (see https:/\!/www.lri.fr/\(\sim\)hansen/cmaes\_inmatlab.html), and although it is a clean rewrite, ECJ's implementation tries to be fairly faithful to that code.}  The CMA-ES facility in ECJ consists of three classes: \class{ec.eda.cmaes.CMAESSpecies}, \class{ec.eda.cmaes.CMAESBreeder}, and \class{ec.eda.cmaes.CMAESInitializer}.  The critical class is \class{ec.eda.cmaes.CMAESSpecies}, which does all the hard work.  The other two largely call it to initialize the initial population (and set up the CMA-ES distribution), and to resample a subpopulation for the next generation.
 
-As such, \class{ec.eda.CMAESSpecies} has two methods of note: \method{newIndividual(...)} and \method{updateDistribution(...)}.  The first samples a random individual from the distribution.  The second updates the distribution to reflect the fitness values among individuals in a given subpopulation.  The other big method is \method{setup(...)}, which does a lot of work because CMA-ES, unusually for a metaheuristic algorithm, has default values for many of its parameters determined not by constant numbers but by equations.
+As such, \class{ec.eda.cmaes.CMAESSpecies} has two methods of note: \method{newIndividual(...)} and \method{updateDistribution(...)}.  The first samples a random individual from the distribution.  The second updates the distribution to reflect the fitness values among individuals in a given subpopulation.  The other big method is \method{setup(...)}, which does a lot of work because CMA-ES, unusually for a metaheuristic algorithm, has default values for many of its parameters determined not by constant numbers but by equations.
 
 CMA-ES is single-threaded only.
 
@@ -12953,9 +13316,9 @@ pop.default-subpop =                           0
 pop.subpop.0 =                                 ec.Subpopulation
 
 ## CMA-ES Specific Stuff
-init =                                         ec.eda.CMAESInitializer
-breed =                                        ec.eda.CMAESBreeder
-pop.subpop.0.species =                         ec.eda.CMAESSpecies
+init =                                         ec.eda.cmaes.CMAESInitializer
+breed =                                        ec.eda.cmaes.CMAESBreeder
+pop.subpop.0.species =                         ec.eda.cmaes.CMAESSpecies
 pop.subpop.0.species.ind =                     ec.vector.DoubleVectorIndividual
 
 ## This gunk must be set even though we don't use it.  We set the population
@@ -13067,8 +13430,122 @@ Normally you wouldn't play with any of these parameters, but if you wanted to se
 # ... and so on ...
 \end{verbatim}
 
-There is an example parameter file, \file{ec/app/ecsuite/cmaes.params}, located in the \file{ecsuite} application, which you can try.
+There is an example parameter file, \file{ec/app/ecsuite/cmaes.params}, located in the \file{ecsuite} application, which you can try.  The CMA-ES code is due to Sam McKay, a GMU undergraduate student.
 
+\newcommand\amalgam{{iAMaLGaM~ID${\mathbb{E}}$A} }
+
+\subsection{\amalgam}
+
+The Adapted Maximum-Likelihood Gaussian Model Iterated Density-Estimation Evolutionary Algorithm (\amalgam) is an EDA in the same vein as CMA-ES, and likewise ECJ's implementation of it is set up in a manner very similar to how ECJ does CMA-ES.  Like CMA-ES, \amalgam has its on breeder and species; but unlike CMA-ES, \amalgam does not have its one specialized initializer.
+
+The critical class is \class{ec.eda.amalgam.AMALGAMSpecies}, which does the heavy lifting.  Like the CMA-ES version, this one has two primary methods,  \method{newIndividual(...)} and \method{updateDistribution(...)}.  The first samples a random individual from the distribution.  The second updates the distribution to reflect the fitness values among individuals in a given subpopulation.  \amalgam is single-threaded only.  \amalgam only uses real-valued vector individuals, and so is restricted to using \class{ec.vector.DoubleVectorIndividual}.   Thus we might start with something like this:
+
+\begin{verbatim}
+## Standard ECJ Stuff
+evalthreads =                                  auto
+breedthreads =                                 auto
+seed.0 =                                 time
+quit-on-run-complete = true
+checkpoint-prefix =                            ec
+checkpoint-modulo =                            1
+state =                                        ec.simple.SimpleEvolutionState
+init = ec.simple.SimpleInitializer
+finish =                                       ec.simple.SimpleFinisher
+eval =                                         ec.simple.SimpleEvaluator
+stat =                                         ec.simple.SimpleStatistics
+stat.file =                                    $out.stat
+exch =                                         ec.simple.SimpleExchanger
+pop =                                          ec.Population
+pop.default-subpop =                           0
+pop.subpops = 1
+pop.subpop.0 =                                 ec.Subpopulation
+pop.subpop.0.duplicate-retries = 0
+pop.subpop.0.size = 30
+generations = 1000
+pop.subpop.0.species.ind =                     ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.fitness = ec.simple.SimpleFitness
+
+## Sample Problem Parameters, just like an ECJ vector problem
+pop.subpop.0.species.genome-size = 10
+pop.subpop.0.species.max-gene = 2.048
+pop.subpop.0.species.min-gene = -2.048
+
+## AMaLGaM-IDEA Specific Stuff
+breed =                                        ec.eda.amalgam.AMALGAMBreeder
+pop.subpop.0.species =                         ec.eda.amalgam.AMALGAMSpecies
+\end{verbatim}
+
+\amalgam does its own breeding, and doesn't use pipelines at all.  Furthermore it doesn't use ECJ's mutation or breeding.  So we'll use the following unused defaults because ECJ needs {\it something}:
+
+\begin{verbatim}
+pop.subpop.0.species.pipe = ec.breed.InitializationPipeline
+pop.subpop.0.species.mutation-prob = 0
+pop.subpop.0.species.mutation-type = reset
+pop.subpop.0.species.crossover-type = one
+\end{verbatim}
+
+\amalgam has several custom parameters which have standard defaults, and several other parameters whose values can be set but are normally computed from the custom parameters.  Specifically:
+
+\begin{center}
+\begin{tabular}{@{}rlp{3.25in}@{}}
+{\bf Item}	&	{\bf Default}	& {\bf Description}\\
+\(\tau\)	&	 \( 0.35 \)		& Proportion of elite individuals\\
+Variance Tolerance	&	 \( 0.0 \)		&  \amalgam terminates if the variance is less than this amount \\
+\(\delta^{\text{AMS}}\)	&	 \( 2.0 \)		& Controls how much selected individuals are shifted\\
+\(\eta^{\text{DEC}}\)	&	 \( 0.9 \)		& Degree to which the distribution multiplier is decreased in certain conditions\\
+\(\theta^{\text{SDR}}\)	&	 \( 1.0 \)		& Threshold for the standard deviation ratio\\
+\(\text{NIS}^{\text{MAX}}\)	&	 \( 25 + \text{genome size} \)		& Number of generations with no improvement beyond which the distribution multiplier begins to decrease \\
+\(\alpha^{\text{AMS}}\)	&	 \( \frac{\tau}{2} \times \frac{\text{subpopulation size}}{\text{subpopulation size} - 1} \)		& Proportion of individuals to be shifted in the direction of the anticipated mean shift\\
+\(\eta^{\text{Shift}}\)	&	 \( 1 - e^\frac{ -1.2 \times \lfloor \tau \times \text{subpopulation size} \rfloor ^ {0.31}}{\text{genome size}^{0.5}} \)		& Proportion of elite individuals\\
+\(\eta^{\Sigma}\)	&	 \(  1 - e^\frac{ -1.1 \times \lfloor \tau \times \text{subpopulation size} \rfloor ^ {1.20}}{\text{genome size}^{1.6}}\)		& Learning rate of the covariance matrix\\
+\end{tabular}
+\end{center}
+
+The parameters for these, which if unset use the defaults above, are:
+
+\begin{verbatim}
+### Standard customizable parameters with defaults if you don't set them
+amalgam.species.tau = ...
+amalgam.species.variance-tolerance = ...
+amalgam.species.delta-ams = ...
+amalgam.species.eta-dec = ...
+amalgam.species.theta-sdr = ...
+
+### Additional parameters.  These are computed automatically from the above parameters 
+### if you don't set them
+amalgam.species.nis-max = ...
+amalgam.species.alpha-ams = ...
+amalgam.species.eta-shift = ...
+amalgam.species.eta-sigma = ...
+\end{verbatim}
+
+All nine of the above parameters can of course also be defined as:
+
+\begin{verbatim}
+### Standard customizable parameters with defaults if you don't set them
+pop.subpop.0.species.tau = ...
+pop.subpop.0.species.variance-tolerance = ...
+pop.subpop.0.species.delta-ams = ...
+pop.subpop.0.species.eta-dec = ...
+pop.subpop.0.species.theta-sdr = ...
+
+### Additional parameters.  These are computed automatically from the above parameters 
+### if you don't set them
+pop.subpop.0.species.nis-max = ...
+pop.subpop.0.species.alpha-ams = ...
+pop.subpop.0.species.eta-shift = ...
+pop.subpop.0.species.eta-sigma = ...
+\end{verbatim}
+
+
+
+Last, \amalgam has a few custom termination conditions which ECJ can apply beyond the traditional ones (number of generations exceeded, ideal fitness discovered).  You already saw one: variance-tolerance.  To turn on use of these termination conditions, you say:
+
+\begin{verbatim}
+amalgam.species.alternative-termination = true
+\end{verbatim}
+
+There is an example parameter file, \file{ec/app/ecsuite/amalgam.params}, located in the \file{ecsuite} application, which you can try.  The \amalgam code is due to Sam McKay, a GMU undergraduate student.
 
 \subsection{DOvS}
 
@@ -13572,7 +14049,7 @@ public Individual bestUnderlyingIndividual[];  // per subpopulation
 One last method you might be interested in overriding: \method{combine(...)}.  This method is responsible for taking multiple fitness results and combining them into a final fitness for a meta-level individual.  The default form calls \method{fitness.setToMeanOf(...)} to combine them using their average.  But you can change this if you like.
 
 \begin{methods}{ec.eval.MetaProblem}
-\mthd{protected void loadDomain(EvolutionState \textit{state}, Parameter \textit{base})}
+\mthd{protected void loadDomain(EvolutionState \textit{state}, Parameter \textbf{ase})}
 Constucts the \variable{domain} array from the given parameter database.
 
 \mthd{public void modifyParameters(EvolutionState \textit{state}, ParameterDatabase \textit{database}, int \textit{run}, Individual \textit{metaIndividual})}

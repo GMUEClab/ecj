@@ -68,7 +68,7 @@ import java.io.*;
  * @version 1.0 
  */
 public class RuleSet implements Prototype
-{
+    {
 
     /**
        The message to appear when printing the rule set
@@ -86,9 +86,9 @@ public class RuleSet implements Prototype
 
     /* Returns the RuleSet's constraints.  A good JIT compiler should inline this. */
     public final RuleSetConstraints constraints(RuleInitializer initializer) 
-    {
+        {
         return initializer.ruleSetConstraints[constraints];
-    }
+        }
 
     /**
        The rules in the rule set
@@ -101,26 +101,26 @@ public class RuleSet implements Prototype
 
 
     public Object clone()
-    {
+        {
         try
             {
-                RuleSet newRuleSet = (RuleSet)(super.clone());
-                // copy the rules over
-                if( rules != null )
-                    {
-                        newRuleSet.rules = (Rule[])(rules.clone());
-                    }
-                else
-                    {
-                        newRuleSet.rules = null;
-                    }
-                for(int x=0;x<numRules;x++)
-                    newRuleSet.rules[x] = (Rule)(rules[x].clone());
-                return newRuleSet;
+            RuleSet newRuleSet = (RuleSet)(super.clone());
+            // copy the rules over
+            if( rules != null )
+                {
+                newRuleSet.rules = (Rule[])(rules.clone());
+                }
+            else
+                {
+                newRuleSet.rules = null;
+                }
+            for(int x=0;x<numRules;x++)
+                newRuleSet.rules[x] = (Rule)(rules[x].clone());
+            return newRuleSet;
             }
         catch (CloneNotSupportedException e)
             { throw new InternalError(); } // never happens
-    }
+        }
 
 
 
@@ -133,7 +133,7 @@ public class RuleSet implements Prototype
        A reset method for randomly reinitializing the RuleSet
     */
     public void reset(final EvolutionState state, final int thread)
-    {
+        {
         // reinitialize the array of rules
         RuleInitializer initializer = ((RuleInitializer)state.initializer);
         numRules = constraints(initializer).numRulesForReset(this,state,thread);
@@ -142,109 +142,109 @@ public class RuleSet implements Prototype
 
         for( int i = 0 ; i < rules.length ; i++ )
             {
-                rules[i] = (Rule)(constraints(initializer).rulePrototype.clone());
-                rules[i].reset(state,thread);
+            rules[i] = (Rule)(constraints(initializer).rulePrototype.clone());
+            rules[i].reset(state,thread);
             }
-    }
+        }
 
     /**
        Mutates rules in the RuleSet independently with the given probability.
     */
     public void mutate( final EvolutionState state, final int thread)
-    {
+        {
         RuleInitializer initializer = ((RuleInitializer)state.initializer);
         
         for( int i = 0 ; i < numRules ; i++ )
             {
-                rules[i].mutate(state,thread);
+            rules[i].mutate(state,thread);
             }
         while( state.random[thread].nextBoolean( constraints(initializer).p_del ) && numRules > constraints(initializer).minSize )
             {
-                removeRandomRule( state, thread );
+            removeRandomRule( state, thread );
             }
         while( state.random[thread].nextBoolean( constraints(initializer).p_add ) && numRules < constraints(initializer).maxSize )
             {
-                addRandomRule( state, thread );
+            addRandomRule( state, thread );
             }
         if( state.random[thread].nextBoolean( constraints(initializer).p_randorder ) )
             {
-                randomizeRulesOrder( state, thread );
+            randomizeRulesOrder( state, thread );
             }
-    }
+        }
         
     /**
        Should be called by pipelines to "fix up" the rulesets before they have been
        mutated or crossed over.  Override this method to do so.
     */
     public void preprocessRules(final EvolutionState state, final int thread)
-    {
-    }
+        {
+        }
 
     /**
        Should be called by pipelines to "fix up" the rulesets after they have been
        mutated or crossed over.  Override this method to do so.
     */
     public void postprocessRules(final EvolutionState state, final int thread)
-    {
-    }
+        {
+        }
         
     /**
        Randomizes the order of the rules in the rule set. It is helpful when the
        order of rule is important for the conflict resolution.
     */
     public void randomizeRulesOrder(final EvolutionState state, final int thread)
-    {
+        {
         Rule temp;
         for( int i = numRules-1 ; i > 0 ; i-- )
             {
-                int j = state.random[thread].nextInt( i+1 );
-                temp = rules[i];
-                rules[i] = rules[j];
-                rules[j] = temp;
+            int j = state.random[thread].nextInt( i+1 );
+            temp = rules[i];
+            rules[i] = rules[j];
+            rules[j] = temp;
             }
-    }
+        }
 
     /**
        Add a random rule to the rule set
     */
     public void addRandomRule(final EvolutionState state, final int thread)
-    {
+        {
         Rule newRule = (Rule)(constraints(((RuleInitializer)state.initializer)).rulePrototype.clone());
         newRule.reset(state,thread);
         addRule(newRule);
-    }
+        }
 
     /**
        Add a rule directly to the rule set.  Does not copy the rule.
     */
     public void addRule( Rule rule )
-    {
+        {
         if( rules == null  || ( numRules == rules.length ) )
             {
-                Rule[] tempRules;
-                if( rules == null )
-                    {
-                        tempRules = new Rule[2];
-                    }
-                else
-                    {
-                        tempRules = new Rule[ (rules.length + 1 ) * 2 ];
-                    }
-                if( rules != null )
-                    System.arraycopy( rules, 0, tempRules, 0, rules.length );
-                rules = tempRules;
+            Rule[] tempRules;
+            if( rules == null )
+                {
+                tempRules = new Rule[2];
+                }
+            else
+                {
+                tempRules = new Rule[ (rules.length + 1 ) * 2 ];
+                }
+            if( rules != null )
+                System.arraycopy( rules, 0, tempRules, 0, rules.length );
+            rules = tempRules;
             }
 
         // add the rule and increase the counter
         rules[ numRules++ ] = rule;
-    }
+        }
 
     /**
        Removes a rule from the rule set and returns it.  If index is out of bounds, then
        this method returns null.  The rules are shifted down --- thus this is O(n).
     */
     public Rule removeRule( int index )
-    {
+        {
         if (index >= numRules || index < 0 ) return null;
         Rule myrule = rules[index];
         if (index < numRules - 1)   // if we've chosen to remove the last rule, leave it where it is
@@ -258,29 +258,29 @@ public class RuleSet implements Prototype
 
         numRules--;
         return myrule; 
-    }
+        }
 
     /**
        Removes a randomly-chosen rule from the rule set and returns it.  If there are no rules to remove,
        this method returns null.
     */
     public Rule removeRandomRule( final EvolutionState state, final int thread )
-    {
+        {
         if (numRules <= 0) return null;
         else return removeRule(state.random[thread].nextInt(numRules));
-    }
+        }
 
     /**
        Makes a copy of the rules in another RuleSet and adds the rule copies.
     */
     public void join( final RuleSet other )
-    {
+        {
         // if there's not enough place to store the new rules, increase space
         if( rules.length <= numRules + other.numRules )
             {
-                Rule[] tempRules = new Rule[ rules.length + other.rules.length ];
-                System.arraycopy( rules, 0, tempRules, 0, numRules );
-                rules = tempRules;
+            Rule[] tempRules = new Rule[ rules.length + other.rules.length ];
+            System.arraycopy( rules, 0, tempRules, 0, numRules );
+            rules = tempRules;
             }
         // copy in the new rules
         System.arraycopy( other.rules, 0, rules, numRules, other.numRules );
@@ -288,24 +288,24 @@ public class RuleSet implements Prototype
         for(int x=numRules;x<numRules+other.numRules;x++)
             rules[x] = (Rule)(rules[x].clone());
         numRules += other.numRules;
-    }
+        }
         
     /**
        Clears out existing rules, and loads the rules from the other ruleset without cloning them.
        Mostly for use if you create temporary rulesets (see for example RuleCrossoverPipeline)
     */
     public void copyNoClone( final RuleSet other )
-    {
+        {
         // if there's not enough place to store the new rules, increase space
         if( rules.length <= other.numRules )
             {
-                rules = new Rule[ other.numRules ];
+            rules = new Rule[ other.numRules ];
             }
         // copy in the new rules
         // System.out.println(other.rules);
         System.arraycopy( other.rules, 0, rules, 0, other.numRules );
         numRules = other.numRules;
-    }
+        }
         
     /**
        Splits the rule set into n pieces, according to points, which *must* be sorted.
@@ -314,24 +314,24 @@ public class RuleSet implements Prototype
        Comment: This function appends the split rulesets to the existing rulesets already in <i>sets</i>.
     */
     public RuleSet[] split( int[] points, RuleSet[] sets )
-    {
+        {
         // Do the first chunk or the whole thing
         for(int i=0; i < (points.length > 0 ? points[0] : rules.length); i++)
             sets[0].addRule((Rule)(rules[i].clone()) );
                 
         if (points.length > 0)
             {
-                // do the in-between chunks
-                for(int p = 1; p < points.length; p++)
-                    for(int i= points[p-1]; i < points[p]; i++)
-                        sets[p].addRule((Rule)(rules[i].clone()) );
+            // do the in-between chunks
+            for(int p = 1; p < points.length; p++)
+                for(int i= points[p-1]; i < points[p]; i++)
+                    sets[p].addRule((Rule)(rules[i].clone()) );
                 
-                // do the final chunk
-                for(int i=points[points.length - 1]; i < rules.length; i++)
-                    sets[points.length].addRule((Rule)(rules[i].clone()) );
+            // do the final chunk
+            for(int i=points[points.length - 1]; i < rules.length; i++)
+                sets[points.length].addRule((Rule)(rules[i].clone()) );
             }
         return sets;
-    }
+        }
     
     /**
        Splits the rule set into a number of disjoint rule sets, copying the rules and adding
@@ -340,12 +340,12 @@ public class RuleSet implements Prototype
        Comment: This function appends the split rulesets to the existing rulesets already in <i>sets</i>.
     */
     public RuleSet[] split( final EvolutionState state, final int thread, RuleSet[] sets )
-    {
+        {
         for( int i = 0 ; i < numRules ; i++ )
             sets[ state.random[ thread ].nextInt( sets.length ) ].addRule(
-                                                                          (Rule)(rules[i].clone()) );
+                (Rule)(rules[i].clone()) );
         return sets;
-    }
+        }
     
     /**
        Splits the rule set into a two disjoint rule sets, copying the rules and adding
@@ -354,127 +354,127 @@ public class RuleSet implements Prototype
        Comment: This function appends the split rulesets to the existing rulesets already in <i>sets</i>.
     */
     public RuleSet[] splitIntoTwo( final EvolutionState state, final int thread, RuleSet[] sets, double prob )
-    {
+        {
         for( int i = 0 ; i < numRules ; i++ )
             if (state.random[thread].nextBoolean(prob))
                 sets[0].addRule((Rule)(rules[i].clone()) );
             else
                 sets[1].addRule((Rule)(rules[i].clone()) );
         return sets;
-    }
+        }
     
     /**
        Prints out the rule set in a readable fashion.
     */
     public void printRuleSetForHumans(final EvolutionState state, final int log)
-    {
+        {
         printRuleSetForHumans(state, log, Output.V_VERBOSE);
-    }
+        }
                 
     /**
        Prints out the rule set in a readable fashion.
        @deprecated Verbosity no longer has an effect
     */
     public void printRuleSetForHumans(final EvolutionState state, final int log,
-                                      final int verbosity)
-    {
+        final int verbosity)
+        {
         state.output.println( "Ruleset contains " + numRules + " rules",
-                              log );
+            log );
         for( int i = 0 ; i < numRules ; i ++ )
             {
-                state.output.println( "Rule " + i + ":", log );
-                rules[i].printRuleForHumans( state, log );
+            state.output.println( "Rule " + i + ":", log );
+            rules[i].printRuleForHumans( state, log );
             }
-    }
+        }
 
     /**
        Prints the rule set such that the computer can read it later
     */
     public void printRuleSet(final EvolutionState state, final int log)
-    {
+        {
         printRuleSet(state, log, Output.V_VERBOSE);
-    }
+        }
                 
     /**
        Prints the rule set such that the computer can read it later
        @deprecated Verbosity no longer has an effect
     */
     public void printRuleSet(final EvolutionState state,
-                             final int log, final int verbosity)
-    {
+        final int log, final int verbosity)
+        {
         state.output.println(N_RULES + Code.encode(numRules), log);
         for( int i = 0 ; i < numRules ; i ++ )
             rules[i].printRule(state,log);
-    }
+        }
 
     /**
        Prints the rule set such that the computer can read it later
     */
     public void printRuleSet(final EvolutionState state,
-                             final PrintWriter writer)
-    {
+        final PrintWriter writer)
+        {
         writer.println( N_RULES + Code.encode(numRules) );
         for( int i = 0 ; i < numRules ; i ++ )
             rules[i].printRule(state,writer);
-    }
+        }
 
     /**
        Reads the rule set
     */
     public void readRuleSet(final EvolutionState state,
-                            final LineNumberReader reader)
+        final LineNumberReader reader)
         throws IOException
-    {
+        {
         numRules = Code.readIntegerWithPreamble(N_RULES, state, reader);
 
         rules = new Rule[ numRules ];
         for(int x=0;x<numRules;x++)
             {
-                rules[x] = (Rule)(constraints(((RuleInitializer)state.initializer)).rulePrototype.clone());
-                rules[x].readRule(state,reader);
+            rules[x] = (Rule)(constraints(((RuleInitializer)state.initializer)).rulePrototype.clone());
+            rules[x].readRule(state,reader);
             }
-    }
+        }
 
     /** Writes RuleSets out to a binary stream */
     public void writeRuleSet(final EvolutionState state,
-                             final DataOutput dataOutput) throws IOException
-    {
+        final DataOutput dataOutput) throws IOException
+        {
         dataOutput.writeInt(numRules);
         for(int x=0;x<numRules;x++)
             rules[x].writeRule(state,dataOutput);
-    }
+        }
 
     /** Reads RuleSets in from a binary stream */
     public void readRuleSet(final EvolutionState state,
-                            final DataInput dataInput) throws IOException
-    {
+        final DataInput dataInput) throws IOException
+        {
         int ruleCount = dataInput.readInt();
         if (rules==null || rules.length != ruleCount)
             rules = new Rule[ruleCount];
         for(int x=0;x<ruleCount;x++)
             {
-                rules[x] = (Rule)(constraints((RuleInitializer)state.initializer).rulePrototype.clone());
-                rules[x].readRule(state,dataInput);
+            rules[x] = (Rule)(constraints((RuleInitializer)state.initializer).rulePrototype.clone());
+            rules[x].readRule(state,dataInput);
             }
-    }
+        }
 
 
     public Parameter defaultBase()
-    {
+        {
         return RuleDefaults.base().push(P_RULESET);
-    }
+        }
 
     public void setup(EvolutionState state, Parameter base)
-    {        
+        {        
         String constraintname = state.parameters.getString(
-                                                           base.push( P_CONSTRAINTS ),defaultBase().push(P_CONSTRAINTS));
+            base.push( P_CONSTRAINTS ),defaultBase().push(P_CONSTRAINTS));
         if (constraintname == null)
             state.output.fatal("No RuleSetConstraints name given",
-                               base.push( P_CONSTRAINTS ),defaultBase().push(P_CONSTRAINTS));
+                base.push( P_CONSTRAINTS ),defaultBase().push(P_CONSTRAINTS));
 
         constraints = RuleSetConstraints.constraintsFor(constraintname,state).constraintNumber;
         state.output.exitIfErrors();
-    }
+        }
 
     /**
        The hash code for the rule set.  This isn't a very good hash code,
@@ -483,16 +483,16 @@ public class RuleSet implements Prototype
        do an ordered hash code of some sort, ick.
     */
     public int hashCode()
-    {
+        {
         int hash = this.getClass().hashCode();
         for(int x=0;x<rules.length;x++)
             if (rules[x] !=null) 
                 hash += rules[x].hashCode();
         return hash;
-    }
+        }
 
     public boolean equals( final Object _other )
-    {
+        {
         if (_other == null) return false;
         if (!getClass().equals(_other.getClass()))  // not the same class, I'm conservative that way
             return false;
@@ -518,6 +518,6 @@ public class RuleSet implements Prototype
                 return false;
 
         return true;
-    }
+        }
 
-}
+    }

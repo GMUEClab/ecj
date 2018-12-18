@@ -37,7 +37,7 @@ import ec.util.*;
 
 */
 public class RuleConstraints implements Clique
-{
+    {
     //    public static final int SIZE_OF_BYTE = 256;
     public final static String P_NAME = "name";
     //    public final static String P_SIZE = "size";
@@ -53,28 +53,28 @@ public class RuleConstraints implements Clique
 
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         // What's my name?
         name = state.parameters.getString(base.push(P_NAME),null);
         if (name==null)
             state.output.fatal("No name was given for this Rule Constraints.",
-                               base.push(P_NAME));
+                base.push(P_NAME));
 
         // Register me
         RuleConstraints old_constraints = (RuleConstraints)(((RuleInitializer)state.initializer).ruleConstraintRepository.put(name,this));
         if (old_constraints != null)
             state.output.fatal("The rule constraints \"" + name + "\" has been defined multiple times.", base.push(P_NAME));
-    }
+        }
 
     /** You must guarantee that after calling constraintsFor(...) one or
         several times, you call state.output.exitIfErrors() once. */
 
     public static RuleConstraints constraintsFor(final String constraintsName,
-                                                 final EvolutionState state)
-    {
+        final EvolutionState state)
+        {
         RuleConstraints myConstraints = (RuleConstraints)(((RuleInitializer)state.initializer).ruleConstraintRepository.get(constraintsName));
         if (myConstraints==null)
             state.output.error("The rule constraints \"" + constraintsName + "\" could not be found.");
         return myConstraints;
+        }
     }
-}

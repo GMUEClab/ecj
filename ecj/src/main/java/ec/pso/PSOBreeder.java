@@ -70,7 +70,7 @@ import ec.vector.* ;
 
 
 public class PSOBreeder extends Breeder
-{
+    {
     public static final int C_NEIGHBORHOOD_RANDOM = 0;
     public static final int C_NEIGHBORHOOD_TOROIDAL = 1;
     public static final int C_NEIGHBORHOOD_RANDOM_EACH_TIME = 2;
@@ -98,7 +98,7 @@ public class PSOBreeder extends Breeder
     public Fitness[] globalBestFitness = null;
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         velCoeff = state.parameters.getDouble(base.push(P_VELOCITY_COEFFICIENT),null,0.0);
         if ( velCoeff < 0.0 )
             state.output.fatal( "Parameter not found, or its value is less than 0.", base.push(P_VELOCITY_COEFFICIENT), null );
@@ -122,60 +122,60 @@ public class PSOBreeder extends Breeder
         String sch = state.parameters.getString(base.push(P_NEIGHBORHOOD), null);
         if (V_NEIGHBORHOOD_RANDOM.equals(sch))
             {
-                neighborhood = C_NEIGHBORHOOD_RANDOM; // default anyway
+            neighborhood = C_NEIGHBORHOOD_RANDOM; // default anyway
             }
         else if (V_NEIGHBORHOOD_TOROIDAL.equals(sch))
             {
-                neighborhood = C_NEIGHBORHOOD_TOROIDAL;
+            neighborhood = C_NEIGHBORHOOD_TOROIDAL;
             }
         else if (V_NEIGHBORHOOD_RANDOM_EACH_TIME.equals(sch))
             {
-                neighborhood = C_NEIGHBORHOOD_RANDOM_EACH_TIME;
+            neighborhood = C_NEIGHBORHOOD_RANDOM_EACH_TIME;
             }
         else state.output.fatal( "Neighborhood style must be either 'random', 'toroidal', or 'random-each-time'.", base.push(P_NEIGHBORHOOD), null );
 
         includeSelf = state.parameters.getBoolean(base.push(P_INCLUDE_SELF), null, false);               
-    }
+        }
 
     public Population breedPopulation(EvolutionState state)
-    {
+        {
         // initialize the global best
         if (globalBest == null)
             {
-                globalBest = new double[state.population.subpops.size()][];
-                globalBestFitness = new Fitness[state.population.subpops.size()];
+            globalBest = new double[state.population.subpops.size()][];
+            globalBestFitness = new Fitness[state.population.subpops.size()];
             }
                 
         // update global best, neighborhood best, and personal best 
         for(int subpop = 0; subpop < state.population.subpops.size(); subpop++)
             {
-                for(int ind = 0; ind < state.population.subpops.get(subpop).individuals.size() ; ind++)
+            for(int ind = 0; ind < state.population.subpops.get(subpop).individuals.size() ; ind++)
+                {
+                if (globalBestFitness[subpop] == null ||
+                    state.population.subpops.get(subpop).individuals.get(ind).fitness.betterThan(globalBestFitness[subpop]))
                     {
-                        if (globalBestFitness[subpop] == null ||
-                            state.population.subpops.get(subpop).individuals.get(ind).fitness.betterThan(globalBestFitness[subpop]))
-                            {
-                                globalBest[subpop] = ((DoubleVectorIndividual) state.population.subpops.get(subpop).individuals.get(ind)).genome;
-                                globalBestFitness[subpop] = state.population.subpops.get(subpop).individuals.get(ind).fitness;
-                            }
-                        ((Particle) state.population.subpops.get(subpop).individuals.get(ind)).update(state, subpop, ind, 0);
+                    globalBest[subpop] = ((DoubleVectorIndividual) state.population.subpops.get(subpop).individuals.get(ind)).genome;
+                    globalBestFitness[subpop] = state.population.subpops.get(subpop).individuals.get(ind).fitness;
                     }
-                // clone global best
-                globalBest[subpop] = (double[])(globalBest[subpop].clone());
-                globalBestFitness[subpop] = (Fitness)(globalBestFitness[subpop].clone());
+                ((Particle) state.population.subpops.get(subpop).individuals.get(ind)).update(state, subpop, ind, 0);
+                }
+            // clone global best
+            globalBest[subpop] = (double[])(globalBest[subpop].clone());
+            globalBestFitness[subpop] = (Fitness)(globalBestFitness[subpop].clone());
             }
 
 
         // now move the particles
         for(int subpop = 0; subpop < state.population.subpops.size(); subpop++)
             {
-                for(int ind = 0; ind < state.population.subpops.get(subpop).individuals.size() ; ind++)
-                    // tweak in place, destructively
-                    ((Particle) state.population.subpops.get(subpop).individuals.get(ind)).tweak(state, globalBest[subpop],
-                                                                                                 velCoeff, personalCoeff, informantCoeff, globalCoeff, 0);
+            for(int ind = 0; ind < state.population.subpops.get(subpop).individuals.size() ; ind++)
+                // tweak in place, destructively
+                ((Particle) state.population.subpops.get(subpop).individuals.get(ind)).tweak(state, globalBest[subpop],
+                    velCoeff, personalCoeff, informantCoeff, globalCoeff, 0);
             }
                 
         // we return the same population
         return state.population ;
+        }
     }
-}
 

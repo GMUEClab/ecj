@@ -22,10 +22,10 @@ package ec.util;
  */
 
 public interface SortComparator 
-{
+    {
     /** Returns true if a < b, else false */
     public boolean lt(Object a, Object b);
 
     /** Returns true if a > b, else false */
     public boolean gt(Object a, Object b);
-}
+    }

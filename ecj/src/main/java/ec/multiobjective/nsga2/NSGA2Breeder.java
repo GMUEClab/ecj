@@ -32,58 +32,108 @@ import ec.multiobjective.*;
 
 public class NSGA2Breeder extends SimpleBreeder
     {
+    /** We use a state variable to make sure that the nextSubpopulationSize() method
+     * is only called at the appropriate time.
+     */
+    public enum BreedingState { ARCHIVE_LOADED, BREEDING_COMPLETE };
+    BreedingState breedingState;
+    
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state, base);
         // make sure SimpleBreeder's elites facility isn't being used
         for (int i = 0; i < elite.length; i++)  // we use elite.length here instead of pop.subpops.length because the population hasn't been made yet.
             if (usingElitism(i))
-                state.output.warning("You're using elitism with NSGA2Breeder, which is not permitted and will be ignored.  However the reevaluate-elites parameter *will* bre recognized by NSGAEvaluator.",
+                state.output.warning("You're using elitism with " + this.getClass().getSimpleName() + ", which is not permitted and will be ignored.  However the '" + P_REEVALUATE_ELITES + "' parameter *will* be recognized.",
                     base.push(P_ELITE).push(""+i));
 
         if (sequentialBreeding) // uh oh, haven't tested with this
-            state.output.fatal("NSGA2Breeder does not support sequential evaluation.",
+            state.output.fatal(this.getClass().getSimpleName() + "does not support sequential evaluation.",
                 base.push(P_SEQUENTIAL_BREEDING));
-
+        
         if (!clonePipelineAndPopulation)
-            state.output.fatal("clonePipelineAndPopulation must be true for NSGA2Breeder.");
+            state.output.fatal(P_CLONE_PIPELINE_AND_POPULATION + " must be true for " + this.getClass().getSimpleName());
+        
+        breedingState = BreedingState.BREEDING_COMPLETE;
         }
 
-	int[] numElites = null;
-	
-	// This method is called AFTER loadElites.  We could just 
+    int[] numElites = null;
+        
+    // This method is called AFTER loadElites.
+    @Override
     public int numElites(EvolutionState state, int subpopulation)
-    	{
-    	return numElites[subpopulation];
-    	}
+        {
+        if (breedingState != BreedingState.ARCHIVE_LOADED)
+            state.output.fatal(String.format("%s: Tried to query numElites before loadElites() was called.", this.getClass().getSimpleName()));
+        return numElites[subpopulation];
+        }
 
+    Population oldPopulation = null;
+    
+    @Override
     protected void loadElites(EvolutionState state, Population newpop)
-    	{
-    	numElites = new int[newpop.subpops.size()];
-    	
-    	for(int i = 0; i < newpop.subpops.size(); i++)
-    		{
-    		ArrayList list = buildArchive(state, i);
-    		numElites[i] = list.size();
-	    	newpop.subpops.get(i).individuals.addAll(list);
-	    	}
-    	}
+        {
+        if (breedingState == BreedingState.ARCHIVE_LOADED)
+            state.output.fatal(String.format("%s: Tried to load elites for the next generation before breeding for the current generation was complete.", this.getClass().getSimpleName()));
+        numElites = new int[newpop.subpops.size()];
+        
+        for(int i = 0; i < newpop.subpops.size(); i++)
+            {
+            ArrayList list = buildArchive(state, i);
+            numElites[i] = list.size();
+            newpop.subpops.get(i).individuals.addAll(list);
+            }
+        
+        breedingState = BreedingState.ARCHIVE_LOADED;
 
+        // replace old population with archive so new individuals are bred from the archive members only
+        oldPopulation = state.population;
+        state.population = state.population.emptyClone();
+        
+        for(int i = 0; i < newpop.subpops.size(); i++)
+            {
+            Subpopulation subpop = state.population.subpops.get(i);
+            Subpopulation newsubpop = newpop.subpops.get(i);
+            int ne = numElites[i];
+            for(int j = 0; j < ne; j++)
+                subpop.individuals.add(j, (Individual)(newsubpop.individuals.get(j).clone()));
+            }
+        }
+
+    @Override
+    public void postProcess(EvolutionState state)
+        {
+        state.population = oldPopulation;
+        oldPopulation = null;
+        }
+    
+    /** Use super's breeding, but also set our local state to record that breeding is complete. */
+    public Population breedPopulation(EvolutionState state) 
+        {
+        final Population result = super.breedPopulation(state);
+        breedingState = BreedingState.BREEDING_COMPLETE;
+        return result;
+        }
+    
     /** Build the auxiliary fitness data and reduce the subpopulation to just the archive, which is returned. */
-    public ArrayList<Individual> buildArchive(EvolutionState state, int subpop)
+    ArrayList<Individual> buildArchive(final EvolutionState state, int subpop)
         {
         ArrayList<ArrayList<Individual>> ranks = assignFrontRanks(state.population.subpops.get(subpop));
+        
+        if (!(state.population.subpops.get(subpop).species.f_prototype instanceof NSGA2MultiObjectiveFitness))
+            state.output.fatal(String.format("%s: subpopulation %d is using %s to represent fitness, but NSGA2 requires %s or a subtype of %s.", this.getClass().getSimpleName(), subpop, state.population.subpops.get(subpop).species.f_prototype.getClass().getSimpleName(), NSGA2MultiObjectiveFitness.class.getSimpleName(), NSGA2MultiObjectiveFitness.class.getSimpleName()));
                 
         ArrayList<Individual> newSubpopulation = new ArrayList<Individual>();
         int size = ranks.size();
         int originalPopSize = state.population.subpops.get(subpop).individuals.size();
+        int archiveSize = originalPopSize/2; // Reduce the combined (mu + mu)-style population size to just the archive of size mu.
 
         for(int i = 0; i < size; i++)
             {
             ArrayList<Individual> rank = ranks.get(i);
-            if (rank.size() + newSubpopulation.size() >= originalPopSize)
+            if (rank.size() + newSubpopulation.size() >= archiveSize)
                 {
-	            assignSparsity(rank);
+                assignSparsity(rank);
 
                 // first sort the rank by sparsity
                 // decreasing order
@@ -96,7 +146,7 @@ public class NSGA2Breeder extends SimpleBreeder
                     });
 
                 // then put the m sparsest individuals in the new population
-                int m = originalPopSize - newSubpopulation.size();
+                int m = archiveSize - newSubpopulation.size();
                 for(int j = 0 ; j < m; j++)
                     newSubpopulation.add(rank.get(j));
                                 
@@ -145,7 +195,7 @@ public class NSGA2Breeder extends SimpleBreeder
     /**
      * Computes and assigns the sparsity values of a given front.
      */
-    public void assignSparsity(ArrayList<Individual> front)
+    void assignSparsity(ArrayList<Individual> front)
         {
         int numObjectives = ((NSGA2MultiObjectiveFitness) front.get(0).fitness).getObjectives().length;
                 

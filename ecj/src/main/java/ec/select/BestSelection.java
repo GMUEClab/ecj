@@ -61,7 +61,7 @@ import ec.*;
  */
 
 public class BestSelection extends SelectionMethod 
-{
+    {
     /** Default base */
     public static final String P_BEST = "best";
     
@@ -87,33 +87,33 @@ public class BestSelection extends SelectionMethod
     public double bestnFrac = NOT_SET;
 
     public Parameter defaultBase()
-    {
+        {
         return SelectDefaults.base().push(P_BEST);
-    }
+        }
 
     // don't need clone etc. 
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state,base);
         
         Parameter def = defaultBase();
         
         if ( state.parameters.exists(base.push(P_N),def.push(P_N)) )
             {
-                bestn =
-                    state.parameters.getInt(base.push(P_N),def.push(P_N),1);
-                if (bestn == 0 )
-                    state.output.fatal("n must be an integer greater than 0", base.push(P_N),def.push(P_N));
+            bestn =
+                state.parameters.getInt(base.push(P_N),def.push(P_N),1);
+            if (bestn == 0 )
+                state.output.fatal("n must be an integer greater than 0", base.push(P_N),def.push(P_N));
             }
         else if (state.parameters.exists(base.push(P_N_FRACTION),def.push(P_N_FRACTION)) )
             {
-                if (state.parameters.exists(base.push(P_N),def.push(P_N)) )
-                    state.output.fatal("Both n and n-fraction specified for BestSelection.", base.push(P_N),def.push(P_N));
-                bestnFrac =
-                    state.parameters.getDoubleWithMax(base.push(P_N_FRACTION),def.push(P_N_FRACTION),0.0,1.0);
-                if (bestnFrac <= 0.0)
-                    state.output.fatal("n-fraction must be a double floating-point value greater than 0.0 and <= 1.0", base.push(P_N_FRACTION),def.push(P_N_FRACTION));
+            if (state.parameters.exists(base.push(P_N),def.push(P_N)) )
+                state.output.fatal("Both n and n-fraction specified for BestSelection.", base.push(P_N),def.push(P_N));
+            bestnFrac =
+                state.parameters.getDoubleWithMax(base.push(P_N_FRACTION),def.push(P_N_FRACTION),0.0,1.0);
+            if (bestnFrac <= 0.0)
+                state.output.fatal("n-fraction must be a double floating-point value greater than 0.0 and <= 1.0", base.push(P_N_FRACTION),def.push(P_N_FRACTION));
             }
         else state.output.fatal("Either n or n-fraction must be defined for BestSelection.", base.push(P_N),def.push(P_N));
                 
@@ -124,20 +124,20 @@ public class BestSelection extends SelectionMethod
             state.output.fatal("Tournament size must be >= 1.",base.push(P_SIZE),def.push(P_SIZE));
         else if (val == (int) val)  // easy, it's just an integer
             {
-                size = (int) val;
-                probabilityOfPickingSizePlusOne = 0.0;
+            size = (int) val;
+            probabilityOfPickingSizePlusOne = 0.0;
             }
         else
             {
-                size = (int) Math.floor(val);
-                probabilityOfPickingSizePlusOne = val - size;  // for example, if we have 5.4, then the probability of picking *6* is 0.4
+            size = (int) Math.floor(val);
+            probabilityOfPickingSizePlusOne = val - size;  // for example, if we have 5.4, then the probability of picking *6* is 0.4
             }
-    }
+        }
 
     public void prepareToProduce(final EvolutionState s,
-                                 final int subpopulation,
-                                 final int thread)
-    {
+        final int subpopulation,
+        final int thread)
+        {
         super.prepareToProduce(s, subpopulation, thread);
 
         // load sortedPop integers
@@ -148,49 +148,49 @@ public class BestSelection extends SelectionMethod
 
         // sort sortedPop in increasing fitness order
         QuickSort.qsort(sortedPop, 
-                        new SortComparatorL()
-                        {
-                            public boolean lt(long a, long b)
-                            {
-                                return ((Individual)(i.get((int)b))).fitness.betterThan(
-                                                                                        ((Individual)(i.get((int)a))).fitness);
-                            }
+            new SortComparatorL()
+                {
+                public boolean lt(long a, long b)
+                    {
+                    return ((Individual)(i.get((int)b))).fitness.betterThan(
+                        ((Individual)(i.get((int)a))).fitness);
+                    }
 
-                            public boolean gt(long a, long b)
-                            {
-                                return ((Individual)(i.get((int)a))).fitness.betterThan(
-                                                                                        ((Individual)(i.get((int)b))).fitness);
-                            }
-                        });
+                public boolean gt(long a, long b)
+                    {
+                    return ((Individual)(i.get((int)a))).fitness.betterThan(
+                        ((Individual)(i.get((int)b))).fitness);
+                    }
+                });
 
         if (!pickWorst)  // gotta reverse it
             for(int x = 0; x < sortedPop.length / 2; x++)
                 {
-                    int p = sortedPop[x];
-                    sortedPop[x] = sortedPop[sortedPop.length - x - 1];
-                    sortedPop[sortedPop.length - x - 1] = p;
+                int p = sortedPop[x];
+                sortedPop[x] = sortedPop[sortedPop.length - x - 1];
+                sortedPop[sortedPop.length - x - 1] = p;
                 }
                         
         // figure out bestn
         if (bestnFrac != NOT_SET)
             {
-                bestn = (int) Math.max(Math.floor(s.population.subpops.get(subpopulation).individuals.size() * bestnFrac), 1);
+            bestn = (int) Math.max(Math.floor(s.population.subpops.get(subpopulation).individuals.size() * bestnFrac), 1);
             }
-    }
+        }
 
 
     /** Returns a tournament size to use, at random, based on base size and probability of picking the size plus one. */
     int getTournamentSizeToUse(MersenneTwisterFast random)
-    {
+        {
         double p = probabilityOfPickingSizePlusOne;   // pulls us to under 35 bytes
         if (p == 0.0) return size;
         return size + (random.nextBoolean(p) ? 1 : 0);
-    }
+        }
 
     public int produce(final int subpopulation,
-                       final EvolutionState state,
-                       final int thread)
-    {
+        final EvolutionState state,
+        final int thread)
+        {
         // pick size random individuals, then pick the best.
         //Individual[] oldinds = state.population.subpops.get(subpopulation).individuals;
         ArrayList<Individual> oldinds = state.population.subpops.get(subpopulation).individuals;
@@ -200,29 +200,29 @@ public class BestSelection extends SelectionMethod
         if (pickWorst)
             for (int x=1;x<s;x++)
                 {
-                    int j = state.random[thread].nextInt(bestn);  // only among the first N
-                    if (!(oldinds.get(sortedPop[j]).fitness.betterThan(oldinds.get(sortedPop[best]).fitness)))  // j isn't better than best
-                        best = j;
+                int j = state.random[thread].nextInt(bestn);  // only among the first N
+                if (!(oldinds.get(sortedPop[j]).fitness.betterThan(oldinds.get(sortedPop[best]).fitness)))  // j isn't better than best
+                    best = j;
                 }
         else
             for (int x=1;x<s;x++)
                 {
-                    int j = state.random[thread].nextInt(bestn);  // only among the first N
-                    if (oldinds.get(sortedPop[j]).fitness.betterThan(oldinds.get(sortedPop[best]).fitness))  // j is better than best
-                        best = j;
+                int j = state.random[thread].nextInt(bestn);  // only among the first N
+                if (oldinds.get(sortedPop[j]).fitness.betterThan(oldinds.get(sortedPop[best]).fitness))  // j is better than best
+                    best = j;
                 }
         
         return sortedPop[best];
-    }
+        }
     
     public void finishProducing(final EvolutionState s,
-                                final int subpopulation,
-                                final int thread)
-    {
+        final int subpopulation,
+        final int thread)
+        {
         super.finishProducing(s, subpopulation, thread);
 
         // release the distributions so we can quickly 
         // garbage-collect them if necessary
         sortedPop = null;
-    }    
-}
+        }    
+    }

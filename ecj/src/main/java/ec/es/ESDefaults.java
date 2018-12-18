@@ -22,12 +22,12 @@ import ec.*;
  */
 
 public final class ESDefaults implements DefaultsForm 
-{
+    {
     public static final String P_ES = "es";
 
     /** Returns the default base. */
     public static final Parameter base()
-    {
+        {
         return new Parameter(P_ES);
+        }
     }
-}

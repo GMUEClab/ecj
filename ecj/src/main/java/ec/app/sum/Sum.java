@@ -32,19 +32,19 @@ import ec.util.*;
 
 
 public class Sum extends Problem implements SimpleProblemForm
-{
+    {
     public static final String P_SUM = "sum";
     
     public Parameter defaultBase()
-    {
+        {
         return super.defaultBase().push(P_SUM);
-    }
+        }
 
     public void evaluate(final EvolutionState state,
-                         final Individual ind,
-                         final int subpopulation,
-                         final int threadnum)
-    {
+        final Individual ind,
+        final int subpopulation,
+        final int threadnum)
+        {
         if (ind.evaluated) return;
 
         if (!(ind instanceof IntegerVectorIndividual))
@@ -57,19 +57,19 @@ public class Sum extends Problem implements SimpleProblemForm
         long max=0;
         for(int x=0; x<ind2.genome.length; x++)
             {
-                sum += ind2.genome[x];
-                max += (int)(s.maxGene(x));  // perhaps this neededn't be computed over and over again
+            sum += ind2.genome[x];
+            max += (int)(s.maxGene(x));  // perhaps this neededn't be computed over and over again
             }
 
         // Now we know that max is the maximum possible value, and sum is the fitness.
         
         // assume we're using SimpleFitness
         ((SimpleFitness)ind2.fitness).setFitness(state,
-                                                 /// ...the fitness...
-                                                 sum, 
-                                                 ///... our definition of the ideal individual
-                                                 sum >= max);  // it shouldn't ever be >, but just in case.
+            /// ...the fitness...
+            sum, 
+            ///... our definition of the ideal individual
+            sum >= max);  // it shouldn't ever be >, but just in case.
                 
         ind2.evaluated = true;
+        }
     }
-}

@@ -52,7 +52,7 @@ import ec.select.TournamentSelection;
  * @version 2.0
  */
 public class SpatialTournamentSelection extends TournamentSelection
-{
+    {
     /**
        The size of the neighborhood from where parents are selected.  Small neighborhood sizes
        enforce a local selection pressure, while larger values for this parameters allow further-away
@@ -83,7 +83,7 @@ public class SpatialTournamentSelection extends TournamentSelection
     int type;
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state,base);
                 
         Parameter defaultBase = defaultBase();
@@ -98,19 +98,19 @@ public class SpatialTournamentSelection extends TournamentSelection
         else if (state.parameters.getString( base.push(P_TYPE), defaultBase.push(P_TYPE)).equals(V_RANDOM_WALK))
             type = TYPE_RANDOM_WALK;
         else state.output.fatal("Invalid parameter, must be either " + V_RANDOM_WALK + " or " + V_UNIFORM + ".",
-                                base.push(P_TYPE), defaultBase.push(P_TYPE));
+            base.push(P_TYPE), defaultBase.push(P_TYPE));
                 
         indCompetes = state.parameters.getBoolean(base.push(P_IND_COMPETES), defaultBase.push(P_IND_COMPETES), false);
-    }
+        }
 
 
     public Parameter defaultBase()
-    {
+        {
         return SpatialDefaults.base().push(P_TOURNAMENT);
-    }
+        }
 
     public int getRandomIndividual(int number, int subpopulation, EvolutionState state, int thread)
-    {
+        {
         Subpopulation subpop = state.population.subpops.get(subpopulation);
         if (!(subpop instanceof Space))
             state.output.fatal( "Subpopulation "+subpopulation+" is not a spatially-embedded subpopulation.\n");
@@ -123,12 +123,12 @@ public class SpatialTournamentSelection extends TournamentSelection
             return space.getIndexRandomNeighbor(state,thread,neighborhoodSize);
         else // if (type == TYPE_RANDOM_WALK)  // Should we do a random walk?
             {
-                int oldIndex = index;
-                for(int x=0; x < neighborhoodSize; x++)
-                    space.setIndex(thread, space.getIndexRandomNeighbor(state, thread, 1));
-                int val = space.getIndex(thread);
-                space.setIndex(thread,oldIndex);  // just in case we weren't supposed to mess around with that
-                return val;
+            int oldIndex = index;
+            for(int x=0; x < neighborhoodSize; x++)
+                space.setIndex(thread, space.getIndexRandomNeighbor(state, thread, 1));
+            int val = space.getIndex(thread);
+            space.setIndex(thread,oldIndex);  // just in case we weren't supposed to mess around with that
+            return val;
             }
+        }
     }
-}

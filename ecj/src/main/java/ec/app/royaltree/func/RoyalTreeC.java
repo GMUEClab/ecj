@@ -21,7 +21,7 @@ import ec.util.*;
  */
 
 public class RoyalTreeC extends RoyalTreeNode
-{
+    {
     public int expectedChildren() { return 3; }
     public char value() { return 'C'; }
-}
+    }

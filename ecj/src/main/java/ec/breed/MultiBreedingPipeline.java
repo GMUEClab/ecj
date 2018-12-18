@@ -50,7 +50,7 @@ import java.util.HashMap;
  */
 
 public class MultiBreedingPipeline extends BreedingPipeline
-{
+    {
     public static final String P_GEN_MAX = "generate-max";
     public static final String P_MULTIBREED = "multibreed";
 
@@ -58,14 +58,14 @@ public class MultiBreedingPipeline extends BreedingPipeline
     public boolean generateMax;
 
     public Parameter defaultBase()
-    {
+        {
         return BreedDefaults.base().push(P_MULTIBREED);
-    }
+        }
 
     public int numSources() { return DYNAMIC_SOURCES; }    
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state,base);
 
         Parameter def = defaultBase();
@@ -74,13 +74,13 @@ public class MultiBreedingPipeline extends BreedingPipeline
         
         if (sources.length == 0)  // uh oh
             state.output.fatal("num-sources must be provided and > 0 for MultiBreedingPipeline",
-                               base.push(P_NUMSOURCES), def.push(P_NUMSOURCES));
+                base.push(P_NUMSOURCES), def.push(P_NUMSOURCES));
         
         for(int x=0;x<sources.length;x++)
             {
-                if (sources[x].probability<0.0) // null checked from state.output.error above
-                    state.output.error("Pipe #" + x + " must have a probability >= 0.0",base);  // convenient that NO_PROBABILITY is -1...
-                else total += sources[x].probability;
+            if (sources[x].probability<0.0) // null checked from state.output.error above
+                state.output.error("Pipe #" + x + " must have a probability >= 0.0",base);  // convenient that NO_PROBABILITY is -1...
+            else total += sources[x].probability;
             }
 
         state.output.exitIfErrors();
@@ -98,26 +98,26 @@ public class MultiBreedingPipeline extends BreedingPipeline
         // declare that likelihood isn't used
         if (likelihood < 1.0)
             state.output.warning("MultiBreedingPipeline does not respond to the 'likelihood' parameter.",
-                                 base.push(P_LIKELIHOOD), def.push(P_LIKELIHOOD));
-    }
+                base.push(P_LIKELIHOOD), def.push(P_LIKELIHOOD));
+        }
 
     /** Returns the max of typicalIndsProduced() of all its children */
     public int typicalIndsProduced()
-    { 
+        { 
         if (maxGeneratable==0) // not determined yet
             maxGeneratable = maxChildProduction();
         return maxGeneratable; 
-    }
+        }
 
 
     public int produce(final int min,
-                       final int max,
-                       final int subpopulation,
-                       final ArrayList<Individual> inds,
-                       final EvolutionState state,
-                       final int thread, HashMap<String, Object> misc)
+        final int max,
+        final int subpopulation,
+        final ArrayList<Individual> inds,
+        final EvolutionState state,
+        final int thread, HashMap<String, Object> misc)
 
-    {
+        {
         int start = inds.size();
 
         BreedingSource s = sources[BreedingSource.pickRandom(sources,state.random[thread].nextDouble())];
@@ -125,19 +125,19 @@ public class MultiBreedingPipeline extends BreedingPipeline
         
         if (generateMax)
             {
-                if (maxGeneratable==0)
-                    maxGeneratable = maxChildProduction();
-                int n = maxGeneratable;
-                if (n < min) n = min;
-                if (n > max) n = max;
+            if (maxGeneratable==0)
+                maxGeneratable = maxChildProduction();
+            int n = maxGeneratable;
+            if (n < min) n = min;
+            if (n > max) n = max;
 
-                total = s.produce(n,n,subpopulation,inds, state,thread, misc);
+            total = s.produce(n,n,subpopulation,inds, state,thread, misc);
             }
         else
             {
-                total = s.produce(min,max,subpopulation,inds, state,thread, misc);
+            total = s.produce(min,max,subpopulation,inds, state,thread, misc);
             }
             
         return total;
+        }
     }
-}

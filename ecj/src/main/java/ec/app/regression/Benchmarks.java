@@ -51,7 +51,7 @@ import java.util.*;
  *
  */
 public class Benchmarks extends GPProblem implements SimpleProblemForm
-{
+    {
     private static final long serialVersionUID = 1;
 
     //////////////////////////// problem tags
@@ -131,46 +131,46 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
         
     // parameter names
     public static final String names[] = 
-    { 
+        { 
         "koza-1", "koza-2", "koza-3",
         "nguyen-1", "nguyen-2", "nguyen-3", "nguyen-4", "nguyen-5", "nguyen-6", "nguyen-7", "nguyen-8", "nguyen-9", "nguyen-10",
         "pagie-1", "pagie-2",
         "korns-1", "korns-2", "korns-3", "korns-4", "korns-5", "korns-6", "korns-7", "korns-8", "korns-9", "korns-10", "korns-11", "korns-12", "korns-13", "korns-14", "korns-15",
         "keijzer-1", "keijzer-2", "keijzer-3", "keijzer-4", "keijzer-5", "keijzer-6", "keijzer-7", "keijzer-8", "keijzer-9", "keijzer-10", "keijzer-11", "keijzer-12", "keijzer-13", "keijzer-14", "keijzer-15", 
         "vladislavleva-1", "vladislavleva-2", "vladislavleva-3", "vladislavleva-4", "vladislavleva-5", "vladislavleva-6", "vladislavleva-7", "vladislavleva-8"
-    }; 
+        }; 
                 
                 
     // expected function sets.  "fn" means "function set with n terminals x_1 ... x_n"
     public static final String fs[] = 
-    {
+        {
         "koza1", "koza1", "koza1",
         "koza1", "koza1", "koza1", "koza1", "koza1", "koza1", "koza1", "koza1", "koza2", "koza2",
         "koza2", "koza3",
         "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", "korns5", 
         "keijzer1", "keijzer1", "keijzer1"/* revised from GECCO paper */,  "keijzer1", "keijzer3", "keijzer1", "keijzer1", "keijzer1", "keijzer1", "keijzer2", "keijzer2", "keijzer2", "keijzer2", "keijzer2", "keijzer2",
         "vladislavleva-b2", "vladislavleva-c1", "vladislavleva-c2", "vladislavleva-a5", "vladislavleva-a3", "vladislavleva-b2", "vladislavleva-c2", "vladislavleva-a2"
-    };
+        };
         
         
     
     // function sets with various variable lengths
     public static final String fs_vars[][] = 
-    {
+        {
         { },
         { "koza1", "keijzer1", "vladislavleva-c1" },
         { "koza2", "keijzer2", "vladislavleva-a2", "vladislavleva-b2", "vladislavleva-c2" },
         { "koza3", "keijzer3", "vladislavleva-a3" },
         { },
         { "korns5", "vladislavleva-a5" },
-    };
+        };
         
         
     /** Hyperbolic Arc Sin -- not standard in Java Math library */
     static double asinh(double x)
-    {
+        {
         return Math.log(x + Math.sqrt(x*x + 1.0));
-    }
+        }
         
         
     //// Input Sample Generation
@@ -178,7 +178,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
         
     /** Produce random sample points between min and max, inclusive, in each dimension.  */
     public double[][] generateRandomSamples(EvolutionState state, double[] min, double[] max, int numPoints, int threadnum)
-    {
+        {
         int vars = max.length;
         double[][] d = new double[numPoints][vars];
         for(int i = 0 ; i < d.length; i++)
@@ -187,41 +187,41 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
                 // FULLY CLOSED interval [0.0, 1.0], including both 0.0 and 1.0.
                 d[i][j] = state.random[threadnum].nextDouble(true, true) * (max[j] - min[j]) + min[j];
         return d;
-    }
+        }
                 
     /** Produce random sample points between min and max, inclusive, in one dimension.  */
     public double[][] generateRandomSamples(EvolutionState state, double min, double max, int numPoints, int threadnum)
-    {
+        {
         return generateRandomSamples(state, new double[] { min }, new double[] { max }, numPoints, threadnum);
-    }
+        }
 
     // recursive trick to dump the full mesh into a bag.  Enter this by setting variable to 0,  Yuck, expensive.  But O(n).
     void buildIntervalPoints(EvolutionState state, ArrayList list, double[] min, double[] max, double[] interval, double current[], int variable, int threadnum)
-    {
+        {
         if (variable == min.length)  // we're out of variables, base case
             {
-                double[] d = new double[min.length];
-                for(int i = 0; i < d.length; i++)
-                    d[i] = current[i];      // not sure if System.arraycopy would be faster, probably not in this case
-                list.add(d);
+            double[] d = new double[min.length];
+            for(int i = 0; i < d.length; i++)
+                d[i] = current[i];      // not sure if System.arraycopy would be faster, probably not in this case
+            list.add(d);
             }
         else
             {
-                int jumps = (int)((max[variable] - min[variable]) / interval[variable]) + 1;
+            int jumps = (int)((max[variable] - min[variable]) / interval[variable]) + 1;
 
-                for(int j = 0; j < jumps; j++)
-                    {
-                        current[variable] = min[variable] + interval[variable] * j;
-                        buildIntervalPoints(state, list, min, max, interval, current, variable + 1, threadnum);
-                    }
+            for(int j = 0; j < jumps; j++)
+                {
+                current[variable] = min[variable] + interval[variable] * j;
+                buildIntervalPoints(state, list, min, max, interval, current, variable + 1, threadnum);
+                }
             }
-    }
+        }
 
 
 
     /** Produce sample points evenly spaced out between min and max in each dimension, with the given spacing interval per-dimension.  */
     public double[][] generateIntervalSpacedSamples(EvolutionState state, double[] min, double[] max, double[] interval, int threadnum)
-    {
+        {
         // gather all the points in the mesh recursively
         ArrayList list = new ArrayList();
         double[] current = new double[min.length];
@@ -229,19 +229,19 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
                 
         // Convert to an array
         return (double[][])(list.toArray(new double[0][]));
-    }
+        }
                 
                 
     /** Produce sample points evenly spaced out between min and max in one dimension, with the given spacing interval.  One dimension only. */
     public double[][] generateIntervalSpacedSamples(EvolutionState state, double min, double max, double interval, int threadnum)
-    {
+        {
         return generateIntervalSpacedSamples(state, new double[] { min }, new double[] { max }, new double[] { interval }, threadnum);
-    }
+        }
                 
         
     /** Produce sample points for a given benchmark problem.  */
     public double[][] trainPoints(EvolutionState state, int benchmark, int threadnum)
-    {
+        {
         switch(benchmark)
             {
             case KOZA1:
@@ -351,13 +351,13 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
             default:
                 return null;
             }
-    }
+        }
 
 
 
     /** Produce test sample points for a given benchmark problem, to test generalization.  */
     public double[][] testPoints(EvolutionState state, int benchmark, int threadnum, double[][] trainpoints)
-    {
+        {
         switch(benchmark)
             {
             case KOZA1:
@@ -459,7 +459,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
             default:
                 return null;
             }
-    }
+        }
 
 
 
@@ -469,7 +469,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
 
     /** Return the function applied to the given data by benchmark problem.  */
     public double func(EvolutionState state, double[] xs, int benchmark) throws IllegalArgumentException
-    {
+        {
         double x = xs[0];
         double y = (xs.length > 1 ? xs[1] : 0);
         double z = (xs.length > 2 ? xs[2] : 0);
@@ -552,11 +552,11 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
                 return (30.0 * x * z) / ((x - 10.0) * y * y);
             case KEIJZER6:
                 { 
-                    double sum = 0;
-                    double fx = Math.floor(x);
-                    for(int i = 1; i < fx + 1; i++)  // up to and including floor(x)
-                        sum += (1.0 / i);
-                    return sum; 
+                double sum = 0;
+                double fx = Math.floor(x);
+                for(int i = 1; i < fx + 1; i++)  // up to and including floor(x)
+                    sum += (1.0 / i);
+                return sum; 
                 }
             case KEIJZER7:                          // Note this presumes you don't have log(x) in your function set!
                 return Math.log(x);
@@ -584,10 +584,10 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
                 return Math.exp(-x)*x*x*x*Math.cos(x)*Math.sin(x)*(Math.cos(x)*Math.sin(x)*Math.sin(x) - 1) * (y - 5);
             case VLADISLAVLEVA4:
                 {
-                    double sum = 0;
-                    for(int i = 0; i < 5; i++)
-                        sum += (xs[i] - 3) * (xs[i] - 3);
-                    return 10.0 / (5.0 + sum);
+                double sum = 0;
+                for(int i = 0; i < 5; i++)
+                    sum += (xs[i] - 3) * (xs[i] - 3);
+                return 10.0 / (5.0 + sum);
                 }
             case VLADISLAVLEVA5:
                 return (30.0 * (x - 1.0) * (z - 1.0)) / (y * y * (x - 10.0));
@@ -601,7 +601,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
                 throw new IllegalArgumentException("Invalid benchmark value " + benchmark);
             }
         // never reaches here
-    }
+        }
         
 
 
@@ -617,7 +617,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
     /** Returns the error between the result and the expected result of a single
         data point. */
     public double error(double result, double expectedResult)
-    {
+        {
         double delta = Math.abs(result - expectedResult);
 
         // It's possible to get NaN because cos(infinity) and
@@ -636,7 +636,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
         else if (delta < PROBABLY_ZERO)  // slightly off
             delta = 0.0;
         return delta;
-    }
+        }
 
 
 
@@ -668,14 +668,14 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
     // don't bother cloning the current value, it's only set during evaluation
 
     public void setup(EvolutionState state, Parameter base)
-    {
+        {
         // very important, remember this
         super.setup(state,base);
 
         // verify our input is the right class (or subclasses from it)
         if (!(input instanceof RegressionData))
             state.output.fatal("GPData class must subclass from " + RegressionData.class,
-                               base.push(P_DATA), null);
+                base.push(P_DATA), null);
 
         // should we load our x parameters from a file, or generate them randomly?
         InputStream training_file = state.parameters.getResource(base.push(P_TRAINING_FILE), null);
@@ -685,133 +685,133 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
                 
         if (problem == null)
             {
-                state.output.message("Loading benchmark data from files");
-                if ((testing_file == null || training_file == null))            // must provide both
+            state.output.message("Loading benchmark data from files");
+            if ((testing_file == null || training_file == null))            // must provide both
+                {
+                state.output.fatal("If you don't specify a problem type, you must provide a training file and a testing file",
+                    (training_file == null ? base.push(P_TRAINING_FILE) : base.push(P_TESTING_FILE)));
+                }
+            else  // load from files
+                {
+                try
                     {
-                        state.output.fatal("If you don't specify a problem type, you must provide a training file and a testing file",
-                                           (training_file == null ? base.push(P_TRAINING_FILE) : base.push(P_TESTING_FILE)));
-                    }
-                else  // load from files
-                    {
-                        try
+                    int numInputs = 0;
+                                        
+                    // first load the number of input variables
+                    Scanner scan = new Scanner(training_file);
+                    if (scan.hasNextInt()) 
+                        numInputs = scan.nextInt();
+                    else state.output.fatal("Number of input variables not provided at beginning of training file ", base.push(P_TRAINING_FILE), null);
+                                        
+                    // Load into an array list each element
+                    ArrayList input = new ArrayList();
+                    ArrayList output = new ArrayList();
+                    while(scan.hasNextDouble())
+                        {
+                        double[] in = new double[numInputs];
+                        double out = 0;
+                        for(int i = 0; i < numInputs; i++)
                             {
-                                int numInputs = 0;
+                            if (scan.hasNextDouble())
+                                in[i] = scan.nextDouble();
+                            else state.output.fatal("Non-normal number of data points in training file ", base.push(P_TRAINING_FILE), null);
+                            }
+                        if (scan.hasNextDouble())
+                            out = scan.nextDouble();
+                        else state.output.fatal("Non-normal number of data points in training file ", base.push(P_TRAINING_FILE), null);
+                        input.add(in);
+                        output.add(new Double(out));
+                        }
                                         
-                                // first load the number of input variables
-                                Scanner scan = new Scanner(training_file);
-                                if (scan.hasNextInt()) 
-                                    numInputs = scan.nextInt();
-                                else state.output.fatal("Number of input variables not provided at beginning of training file ", base.push(P_TRAINING_FILE), null);
-                                        
-                                // Load into an array list each element
-                                ArrayList input = new ArrayList();
-                                ArrayList output = new ArrayList();
-                                while(scan.hasNextDouble())
-                                    {
-                                        double[] in = new double[numInputs];
-                                        double out = 0;
-                                        for(int i = 0; i < numInputs; i++)
-                                            {
-                                                if (scan.hasNextDouble())
-                                                    in[i] = scan.nextDouble();
-                                                else state.output.fatal("Non-normal number of data points in training file ", base.push(P_TRAINING_FILE), null);
-                                            }
-                                        if (scan.hasNextDouble())
-                                            out = scan.nextDouble();
-                                        else state.output.fatal("Non-normal number of data points in training file ", base.push(P_TRAINING_FILE), null);
-                                        input.add(in);
-                                        output.add(new Double(out));
-                                    }
-                                        
-                                // dump to arrays
-                                int len = input.size();
-                                trainingInputs = new double[len][numInputs];
-                                trainingOutputs = new double[len];
-                                for(int i = 0; i < len; i++)
-                                    {
-                                        trainingInputs[i] = (double[])(input.get(i));
-                                        trainingOutputs[i] = ((Double)(output.get(i))).doubleValue();
-                                    }
+                    // dump to arrays
+                    int len = input.size();
+                    trainingInputs = new double[len][numInputs];
+                    trainingOutputs = new double[len];
+                    for(int i = 0; i < len; i++)
+                        {
+                        trainingInputs[i] = (double[])(input.get(i));
+                        trainingOutputs[i] = ((Double)(output.get(i))).doubleValue();
+                        }
 
         
-                                // same thing for testing
+                    // same thing for testing
 
 
-                                scan = new Scanner(testing_file);
-                                if (scan.hasNextInt()) 
-                                    numInputs = scan.nextInt();
-                                else state.output.fatal("Number of input variables not provided at beginning of testing file ", base.push(P_TESTING_FILE), null);
+                    scan = new Scanner(testing_file);
+                    if (scan.hasNextInt()) 
+                        numInputs = scan.nextInt();
+                    else state.output.fatal("Number of input variables not provided at beginning of testing file ", base.push(P_TESTING_FILE), null);
                                         
-                                // Load into an array list each element
-                                input = new ArrayList();
-                                output = new ArrayList();
-                                while(scan.hasNextDouble())
-                                    {
-                                        double[] in = new double[numInputs];
-                                        double out = 0;
-                                        for(int i = 0; i < numInputs; i++)
-                                            {
-                                                if (scan.hasNextDouble())
-                                                    in[i] = scan.nextDouble();
-                                                else state.output.fatal("Non-normal number of data points in testing file ", base.push(P_TESTING_FILE), null);
-                                            }
-                                        if (scan.hasNextDouble())
-                                            out = scan.nextDouble();
-                                        else state.output.fatal("Non-normal number of data points in testing file ", base.push(P_TESTING_FILE), null);
-                                        input.add(in);
-                                        output.add(new Double(out));
-                                    }
-                                        
-                                // dump to arrays
-                                len = input.size();
-                                testingInputs = new double[len][numInputs];
-                                testingOutputs= new double[len];
-                                for(int i = 0; i < len; i++)
-                                    {
-                                        testingInputs[i] = (double[])(input.get(i));
-                                        testingOutputs[i] = ((Double)(output.get(i))).doubleValue();
-                                    }
-                            }
-                        catch (NumberFormatException e)
+                    // Load into an array list each element
+                    input = new ArrayList();
+                    output = new ArrayList();
+                    while(scan.hasNextDouble())
+                        {
+                        double[] in = new double[numInputs];
+                        double out = 0;
+                        for(int i = 0; i < numInputs; i++)
                             {
-                                state.output.fatal("Some tokens in the file were not numbers.");
+                            if (scan.hasNextDouble())
+                                in[i] = scan.nextDouble();
+                            else state.output.fatal("Non-normal number of data points in testing file ", base.push(P_TESTING_FILE), null);
                             }
+                        if (scan.hasNextDouble())
+                            out = scan.nextDouble();
+                        else state.output.fatal("Non-normal number of data points in testing file ", base.push(P_TESTING_FILE), null);
+                        input.add(in);
+                        output.add(new Double(out));
+                        }
+                                        
+                    // dump to arrays
+                    len = input.size();
+                    testingInputs = new double[len][numInputs];
+                    testingOutputs= new double[len];
+                    for(int i = 0; i < len; i++)
+                        {
+                        testingInputs[i] = (double[])(input.get(i));
+                        testingOutputs[i] = ((Double)(output.get(i))).doubleValue();
+                        }
                     }
+                catch (NumberFormatException e)
+                    {
+                    state.output.fatal("Some tokens in the file were not numbers.");
+                    }
+                }
             }
         else
             {
-                // determine benchmark
-                for(int i = 0; i < names.length; i++)
-                    if (names[i].equals(problem))  // got it
-                        { benchmark = i ; break; }
-                if (benchmark == -1) // uh oh
-                    state.output.fatal("Could not find benchmark " + problem, base.push(P_PROBLEM_TYPE), null);
+            // determine benchmark
+            for(int i = 0; i < names.length; i++)
+                if (names[i].equals(problem))  // got it
+                    { benchmark = i ; break; }
+            if (benchmark == -1) // uh oh
+                state.output.fatal("Could not find benchmark " + problem, base.push(P_PROBLEM_TYPE), null);
                         
-                state.output.message("Doing benchmark " + names[benchmark]);
+            state.output.message("Doing benchmark " + names[benchmark]);
 
-                try
-                    {
-                        trainingInputs = trainPoints(state, benchmark, 0);
-                        trainingOutputs = new double[trainingInputs.length];
-                        for(int i = 0 ; i < trainingOutputs.length; i++)
-                            trainingOutputs[i] = func(state, trainingInputs[i], benchmark);
-                    }
-                catch (IllegalArgumentException e)
-                    {
-                        state.output.fatal("Error in generating training data: " + e.getMessage());
-                    }
+            try
+                {
+                trainingInputs = trainPoints(state, benchmark, 0);
+                trainingOutputs = new double[trainingInputs.length];
+                for(int i = 0 ; i < trainingOutputs.length; i++)
+                    trainingOutputs[i] = func(state, trainingInputs[i], benchmark);
+                }
+            catch (IllegalArgumentException e)
+                {
+                state.output.fatal("Error in generating training data: " + e.getMessage());
+                }
 
-                try
-                    {
-                        testingInputs = testPoints(state, benchmark, 0, trainingInputs);
-                        testingOutputs = new double[testingInputs.length];
-                        for(int i = 0 ; i < testingOutputs.length; i++)
-                            testingOutputs[i] = func(state, testingInputs[i], benchmark);
-                    }
-                catch (IllegalArgumentException e)
-                    {
-                        state.output.fatal("Error in generating testing data: " + e.getMessage());
-                    }
+            try
+                {
+                testingInputs = testPoints(state, benchmark, 0, trainingInputs);
+                testingOutputs = new double[testingInputs.length];
+                for(int i = 0 ; i < testingOutputs.length; i++)
+                    testingOutputs[i] = func(state, testingInputs[i], benchmark);
+                }
+            catch (IllegalArgumentException e)
+                {
+                state.output.fatal("Error in generating testing data: " + e.getMessage());
+                }
 
             }
                         
@@ -822,28 +822,28 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
         // verify the number of variables match the expected function set
         if (problem == null)  // it's being loaded from file
             {
-                boolean found = false;
-                String[] vars = fs_vars[trainingInputs[0].length];
-                for(int i = 0; i< vars.length; i++)
-                    if (pval.equals(vars[i])) { found = true; break; }
-                if (!found)
-                    state.output.warning("The number of variables in your problem data (" + trainingInputs[0].length +
-                                         "does not match the variables found in the function set " + pval + ".  Hope you know what you're doing.",
-                                         param);
-                else state.output.message("Using function set " + pval);
+            boolean found = false;
+            String[] vars = fs_vars[trainingInputs[0].length];
+            for(int i = 0; i< vars.length; i++)
+                if (pval.equals(vars[i])) { found = true; break; }
+            if (!found)
+                state.output.warning("The number of variables in your problem data (" + trainingInputs[0].length +
+                    "does not match the variables found in the function set " + pval + ".  Hope you know what you're doing.",
+                    param);
+            else state.output.message("Using function set " + pval);
             }
         else
             {
-                if (!(pval.equals(fs[benchmark])))  // uh oh
-                    state.output.warning("The number of variables for the " + names[benchmark] + 
-                                         " problem (" + trainingInputs[0].length +
-                                         ") is normally handled by the function set " + fs[benchmark] +
-                                         " but you are using " + pval + ".  Hope you know what you're doing.  "+ 
-                                         "To correct this, try adding the parameter gp.tc.0.fset=" + fs[benchmark],
-                                         param);
-                else state.output.message("Using function set " + pval);
+            if (!(pval.equals(fs[benchmark])))  // uh oh
+                state.output.warning("The number of variables for the " + names[benchmark] + 
+                    " problem (" + trainingInputs[0].length +
+                    ") is normally handled by the function set " + fs[benchmark] +
+                    " but you are using " + pval + ".  Hope you know what you're doing.  "+ 
+                    "To correct this, try adding the parameter gp.tc.0.fset=" + fs[benchmark],
+                    param);
+            else state.output.message("Using function set " + pval);
             }
-    }
+        }
 
 
 
@@ -854,39 +854,39 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
 
 
     public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum)
-    {
+        {
         if (!ind.evaluated)  // don't bother reevaluating
             {
-                RegressionData input = (RegressionData)(this.input);
+            RegressionData input = (RegressionData)(this.input);
 
-                int hits = 0;
-                double sum = 0.0;
-                for (int y=0;y<trainingInputs.length;y++)
-                    {
-                        currentValue = trainingInputs[y];
-                        ((GPIndividual)ind).trees[0].child.eval(
-                                                                state,threadnum,input,stack,((GPIndividual)ind),this);
+            int hits = 0;
+            double sum = 0.0;
+            for (int y=0;y<trainingInputs.length;y++)
+                {
+                currentValue = trainingInputs[y];
+                ((GPIndividual)ind).trees[0].child.eval(
+                    state,threadnum,input,stack,((GPIndividual)ind),this);
 
-                        double error = error(input.x, trainingOutputs[y]);
+                double error = error(input.x, trainingOutputs[y]);
                                 
-                        // We'll keep the auxillary hits measure for tradition only 
-                        final double HIT_LEVEL = 0.01;
-                        if (error <= HIT_LEVEL) hits++; 
+                // We'll keep the auxillary hits measure for tradition only 
+                final double HIT_LEVEL = 0.01;
+                if (error <= HIT_LEVEL) hits++; 
 
-                        sum += error;              
-                    }
+                sum += error;              
+                }
                 
-                // the fitness better be KozaFitness!
-                KozaFitness f = ((KozaFitness)ind.fitness);
-                f.setStandardizedFitness(state, sum);
-                f.hits = hits;
-                ind.evaluated = true;
+            // the fitness better be KozaFitness!
+            KozaFitness f = ((KozaFitness)ind.fitness);
+            f.setStandardizedFitness(state, sum);
+            f.hits = hits;
+            ind.evaluated = true;
             }
-    }
+        }
 
 
     public void describe(EvolutionState state, Individual ind, int subpopulation, int threadnum, int log)
-    {
+        {
         RegressionData input = (RegressionData)(this.input);
 
         // we do the testing set here
@@ -897,17 +897,17 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
         double sum = 0.0;
         for (int y=0;y<testingInputs.length;y++)
             {
-                currentValue = testingInputs[y];
-                ((GPIndividual)ind).trees[0].child.eval(
-                                                        state,threadnum,input,stack,((GPIndividual)ind),this);
+            currentValue = testingInputs[y];
+            ((GPIndividual)ind).trees[0].child.eval(
+                state,threadnum,input,stack,((GPIndividual)ind),this);
 
-                double error = error(input.x, testingOutputs[y]);
+            double error = error(input.x, testingOutputs[y]);
                         
-                // We'll keep the auxillary hits measure for tradition only 
-                final double HIT_LEVEL = 0.01;
-                if (error <= HIT_LEVEL) hits++; 
+            // We'll keep the auxillary hits measure for tradition only 
+            final double HIT_LEVEL = 0.01;
+            if (error <= HIT_LEVEL) hits++; 
 
-                sum += error;              
+            sum += error;              
             }
                         
         // the fitness better be KozaFitness!
@@ -916,6 +916,6 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
         f.hits = hits;
                 
         f.printFitnessForHumans(state, log);
-    }
+        }
         
-}
+    }

@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class Or extends GPNode
-{
+    {
     public String toString() { return "or"; }
 
     /*
@@ -44,20 +44,20 @@ public class Or extends GPNode
     public int expectedChildren() { return 2; }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
+        {
         // shortcutting OR
         children[0].eval(state,thread,input,stack,individual,problem);
 
         if (((ParityData)input).x == 0 )  // return the second item
             children[1].eval(state,thread,input,stack,individual,problem);
         // else return the first item (already there)
+        }
     }
-}
 
 
 

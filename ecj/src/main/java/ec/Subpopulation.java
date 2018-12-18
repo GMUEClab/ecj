@@ -148,11 +148,11 @@ public class Subpopulation implements Cloneable, Setup
     /** Truncates the Subpopulation to a new size. The Subpopulation is truncated such that 
         the higher indexed individuals may be deleted.  
     */
-    
     public void truncate(int toThis)
         {
-        int length = individuals.size();
-        individuals.subList(toThis, length).clear();
+        for(int i = individuals.size() - 1; i >= toThis; i--)
+            individuals.remove(i);
+        assert(individuals.size() == toThis);
         }
 
     /** Sets all Individuals in the Subpopulation to null, preparing it to be reused. */
@@ -169,7 +169,7 @@ public class Subpopulation implements Cloneable, Setup
         file = base.push(P_FILE);
         loadInds = state.parameters.exists(file,null);
         
-         // how big should our subpopulation be?
+        // how big should our subpopulation be?
         // Note that EvolutionState.setup() has similar code, so if you change this, change it there too.
         
         initialSize = state.parameters.getInt(base.push(P_SUBPOPSIZE),def.push(P_SUBPOPSIZE),1);
@@ -178,7 +178,7 @@ public class Subpopulation implements Cloneable, Setup
                 "Subpopulation size must be an integer >= 1.\n",
                 base.push(P_SUBPOPSIZE),def.push(P_SUBPOPSIZE));
         
-       // what species do we use?
+        // what species do we use?
 
         species = (Species) state.parameters.getInstanceForParameter(
             base.push(P_SPECIES),def.push(P_SPECIES),

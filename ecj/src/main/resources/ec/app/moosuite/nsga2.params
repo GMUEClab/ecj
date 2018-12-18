@@ -5,11 +5,11 @@
 parent.0 = ../../multiobjective/nsga2/nsga2.params
 
 
-# NSGA-II wil use a population size of 100.  Its archive will be another 100 
+# NSGA-II will use a population size of 100.  Its archive will be another 100 
 # on top of that.  Since we're not reevaluating elites, only the 100 new
 # individuals will be bred and evaluated each generation.
 #
-# For more discussion about how to get SPEA2 and NSGA-II to have "equivalent"
+# For more discussion about how to get SPEA2 and NSGA-II (or III) to have "equivalent"
 # numbers of evaluations in ECJ, see the README files for the SPEA2 and NSGA-II
 # packages.
 #
@@ -30,4 +30,4 @@ pop.subpop.0.species.pipe.source.0.likelihood 	= 0.9
 pop.subpop.0.species.pipe.source.0.source.0 	= ec.select.TournamentSelection
 pop.subpop.0.species.pipe.source.0.source.1 	= same
 select.tournament.size 				= 2
-
+

@@ -1,0 +1,13 @@
+This is ECJ's AMaLGaM IDEA package (or more properly, iAMaLGaM IDEA).  
+To see this package in action, try running ECJ on the file "ec/app/ecsuite/amalgam.params"
+
+Much like CMA-ES, ECJ's AMaLGaM IDEA implementation has a custom breeder and 
+no breeding pipelines.  However you will find that nearly all the work takes 
+place inside AMALGAMSpecies.java, and the breeder is little more than a wrapper
+to call methods there.  We have:
+
+AMALGAMDefaults.java		Package Defaults
+AMALGAMSpecies.java		AMaLGaM IDEA's species object.  This uses
+				DoubleVectorIndividuals for its representation.
+AMALGAMBreeder.java		Custom breeder for AMaLGaM IDEA, which 
+				largely calls code in AMALGAMSpecies

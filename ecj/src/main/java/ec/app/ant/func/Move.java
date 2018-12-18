@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class Move extends GPNode implements EvalPrint
-{
+    {
     public String toString() { return "move"; }
 
     /*
@@ -43,12 +43,12 @@ public class Move extends GPNode implements EvalPrint
     public int expectedChildren() { return 0; }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
+        {
         Ant p = (Ant)problem;
         switch (p.orientation)
             {
@@ -76,20 +76,20 @@ public class Move extends GPNode implements EvalPrint
         p.moves++;
         if (p.map[p.posx][p.posy]==Ant.FOOD && p.moves < p.maxMoves )
             {
-                p.sum++;
-                p.map[p.posx][p.posy]=Ant.ATE;
+            p.sum++;
+            p.map[p.posx][p.posy]=Ant.ATE;
             }
-    }
+        }
 
     /** Just like eval, but it retraces the map and prints out info */
     public void evalPrint(final EvolutionState state,
-                          final int thread,
-                          final GPData input,
-                          final ADFStack stack,
-                          final GPIndividual individual,
-                          final Problem problem,
-                          final int[][] map2)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem,
+        final int[][] map2)
+        {
         Ant p = (Ant)problem;
         switch (p.orientation)
             {
@@ -117,17 +117,17 @@ public class Move extends GPNode implements EvalPrint
         p.moves++;
         if (p.map[p.posx][p.posy]==Ant.FOOD && p.moves < p.maxMoves)
             {
-                p.sum++;
-                p.map[p.posx][p.posy]=Ant.ATE;
+            p.sum++;
+            p.map[p.posx][p.posy]=Ant.ATE;
             }
 
         if (p.moves<p.maxMoves)
             {
-                if (++p.pmod > 122 /* ascii z */) p.pmod=97; /* ascii a */
-                map2[p.posx][p.posy]=p.pmod;
+            if (++p.pmod > 122 /* ascii z */) p.pmod=97; /* ascii a */
+            map2[p.posx][p.posy]=p.pmod;
             }
+        }
     }
-}
 
 
 

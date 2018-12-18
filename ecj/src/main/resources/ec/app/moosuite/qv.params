@@ -5,7 +5,17 @@
 parent.0 = moosuite.params
 
 eval.problem.type = qv
-pop.subpop.0.species.min-gene = -5
-pop.subpop.0.species.max-gene = 5
+pop.subpop.0.species.min-gene = -5.12
+pop.subpop.0.species.max-gene = 5.12
 pop.subpop.0.species.genome-size = 100
 pop.subpop.0.species.mutation-prob = 0.01
+
+# max and min values of each objective function
+# (important for algorithms that normalize the objective scales relative to each other)
+multi.fitness.max.0 		= 2.5
+multi.fitness.min.0		= 1.5
+multi.fitness.max.1 		= 2.5
+multi.fitness.min.1		= 1.5
+
+# Reference point for hypervolume calculation
+stat.reference-point = 2.5 2.5

@@ -26,7 +26,7 @@ import ec.*;
  */
 
 public abstract class GPBreedingPipeline extends BreedingPipeline 
-{
+    {
     /** Standard parameter for node-selectors associated with a GPBreedingPipeline */
     public static final String P_NODESELECTOR = "ns";
 
@@ -39,16 +39,16 @@ public abstract class GPBreedingPipeline extends BreedingPipeline
 
     /** Returns true if <i>s</i> is a GPSpecies. */
     public boolean produces(final EvolutionState state,
-                            final Population newpop,
-                            final int subpopulation,
-                            final int thread)
-    {
+        final Population newpop,
+        final int subpopulation,
+        final int thread)
+        {
         if (!super.produces(state,newpop,subpopulation,thread)) return false;
 
         // we produce individuals which are owned by subclasses of GPSpecies
         if (newpop.subpops.get(subpopulation).species instanceof GPSpecies)
             return true;
         return false;
-    }
+        }
 
-}
+    }

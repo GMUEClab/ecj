@@ -39,7 +39,7 @@ import java.io.*;
  */
 
 public class KozaFitness extends Fitness
-{
+    {
     public static final String P_KOZAFITNESS = "fitness";
 
     /** This ranges from 0 (best) to infinity (worst).    I
@@ -52,9 +52,9 @@ public class KozaFitness extends Fitness
     public int hits;
 
     public Parameter defaultBase()
-    {
+        {
         return GPKozaDefaults.base().push(P_KOZAFITNESS);
-    }
+        }
         
     /**
        Do not use this function.  Use the identical setStandardizedFitness() instead.
@@ -63,9 +63,9 @@ public class KozaFitness extends Fitness
        @deprecated
     */
     public void setFitness(final EvolutionState state, final double _f)
-    {
+        {
         setStandardizedFitness(state,_f);
-    }
+        }
 
     /** Set the standardized fitness in the half-open interval [0.0,infinity)
         which is defined (NOTE: DIFFERENT FROM fitness()!!!) as 0.0 
@@ -74,120 +74,120 @@ public class KozaFitness extends Fitness
         the equivalent of Adjusted Fitness.
     */
     public void setStandardizedFitness(final EvolutionState state, final double _f)
-    {
+        {
         if (_f < 0.0 || _f >= Double.POSITIVE_INFINITY || Double.isNaN(_f))
             {
-                state.output.warning("Bad fitness (may not be < 0, NaN, or infinity): " + _f  + ", setting to 0.");
-                standardizedFitness = 0;
+            state.output.warning("Bad fitness (may not be < 0, NaN, or infinity): " + _f  + ", setting to 0.");
+            standardizedFitness = 0;
             }
         else standardizedFitness = _f;
-    }
+        }
 
     /** Returns the adjusted fitness metric, which recasts the
         fitness to the half-open interval (0,1], where 1 is ideal and
         0 is worst.  Same as adjustedFitness().  */
 
     public double fitness()
-    {
+        {
         return 1.0/(1.0 + standardizedFitness);     
-    }
+        }
 
     /** Returns the raw fitness metric.  
         @deprecated use standardizedFitness()
     */
     public double rawFitness()
-    {
+        {
         return standardizedFitness();
-    }
+        }
 
     /** Returns the standardized fitness metric. */
 
     public double standardizedFitness()
-    {
+        {
         return standardizedFitness;
-    }
+        }
 
     /** Returns the adjusted fitness metric, which recasts the fitness
         to the half-open interval (0,1], where 1 is ideal and 0 is worst.
         This metric is used when printing the fitness out. */
 
     public double adjustedFitness()
-    {
+        {
         return fitness();
-    }
+        }
 
     public void setup(final EvolutionState state, final Parameter base) { }
     
     public boolean isIdealFitness()
-    {
+        {
         return standardizedFitness <= 0.0;  // should always be == 0.0, <0.0 is illegal, but just in case...
-    }
+        }
     
     public boolean equivalentTo(final Fitness _fitness)
-    {
+        {
         // We're comparing standardized fitness because adjusted fitness can
         // loose some precision in the division.
         return ((KozaFitness)_fitness).standardizedFitness() == standardizedFitness;
-    }
+        }
 
     public boolean betterThan(final Fitness _fitness)
-    {
+        {
         // I am better than you if my standardized fitness is LOWER than you
         // (that is, closer to zero, which is optimal)
         // We're comparing standardized fitness because adjusted fitness can
         // loose some precision in the division.
         return ((KozaFitness)_fitness).standardizedFitness() > standardizedFitness;
-    }
+        }
  
     public String fitnessToString()
-    {
+        {
         return FITNESS_PREAMBLE + Code.encode(standardizedFitness) + Code.encode(hits);
-    }
+        }
         
     public String fitnessToStringForHumans()
-    {
+        {
         return FITNESS_PREAMBLE + "Standardized=" + standardizedFitness + " Adjusted=" + adjustedFitness() + " Hits=" + hits;
-    }
+        }
             
     public void readFitness(final EvolutionState state, 
-                            final LineNumberReader reader)
+        final LineNumberReader reader)
         throws IOException
-    {
+        {
         DecodeReturn d = Code.checkPreamble(FITNESS_PREAMBLE, state, reader);
         
         // extract fitness
         Code.decode(d);
         if (d.type!=DecodeReturn.T_DOUBLE)
             state.output.fatal("Reading Line " + d.lineNumber + ": " +
-                               "Bad Fitness.");
+                "Bad Fitness.");
         standardizedFitness = (double)d.d;
         
         // extract hits
         Code.decode(d);
         if (d.type!=DecodeReturn.T_INT)
             state.output.fatal("Reading Line " + d.lineNumber + ": " +
-                               "Bad Fitness.");
+                "Bad Fitness.");
         hits = (int)d.l;
-    }
+        }
 
     public void writeFitness(final EvolutionState state,
-                             final DataOutput dataOutput) throws IOException
-    {
+        final DataOutput dataOutput) throws IOException
+        {
         dataOutput.writeDouble(standardizedFitness);
         dataOutput.writeInt(hits);
         writeTrials(state, dataOutput);
-    }
+        }
 
     public void readFitness(final EvolutionState state,
-                            final DataInput dataInput) throws IOException
-    {
+        final DataInput dataInput) throws IOException
+        {
         standardizedFitness = dataInput.readDouble();
         hits = dataInput.readInt();
         readTrials(state, dataInput);
-    }
+        }
 
     public void setToMeanOf(EvolutionState state, Fitness[] fitnesses)
-    {
+        {
         // this is not numerically stable.  Perhaps we should have a numerically stable algorithm for sums
         // we're presuming it's not a very large number of elements, so it's probably not a big deal,
         // since this function is meant to be used mostly for gathering trials together.
@@ -195,13 +195,13 @@ public class KozaFitness extends Fitness
         long h = 0;
         for(int i = 0; i < fitnesses.length; i++)
             {
-                KozaFitness fit = (KozaFitness)(fitnesses[i]);
-                f += fit.standardizedFitness;
-                h += fit.hits;
+            KozaFitness fit = (KozaFitness)(fitnesses[i]);
+            f += fit.standardizedFitness;
+            h += fit.hits;
             }
         f /= fitnesses.length;
         h /= fitnesses.length;
         standardizedFitness = (double)f;
         hits = (int)h;
+        }
     }
-}

@@ -17,3 +17,13 @@ pop.supbop.0.species.bounded = true
 #
 pop.subpop.0.species.fitness.num-objectives = 2
 #pop.subpop.0.species.fitness.num-objectives = 3
+
+# max and min values of each objective function
+# (important for algorithms that normalize the objective scales relative to each other)
+multi.fitness.max.0 		= 2000000
+multi.fitness.min.0		= 0
+multi.fitness.max.1 		= 2000000
+multi.fitness.min.1		= 0
+
+# Reference point for hypervolume calculation
+stat.reference-point = 2000000 2000000

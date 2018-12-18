@@ -31,7 +31,7 @@ import ec.*;
  */
 
 public class MuPlusLambdaBreeder extends MuCommaLambdaBreeder
-{
+    {
     public int maximumMuLambdaDivisor() { return 1; }
  
     /** Sets all subpopulations in pop to the expected mu+lambda size.  Does not fill new slots with individuals. */
@@ -57,17 +57,17 @@ public class MuPlusLambdaBreeder extends MuCommaLambdaBreeder
 
     // by Ermo. I guess the method on the top is useless now, and accordingly, I changed the method at the bottom to this form
     public Population postProcess(Population newpop, Population oldpop, EvolutionState state)
-    {
+        {
         // now we need to dump the old population into the high end of the new population
         for(int x = 0; x< newpop.subpops.size(); x++)
             {
-                for(int y=0;y<mu[x];y++)
-                    {
-                        newpop.subpops.get(x).individuals.add((Individual)(oldpop.subpops.get(x).individuals.get(y).clone()));
-                    }
+            for(int y=0;y<mu[x];y++)
+                {
+                newpop.subpops.get(x).individuals.add((Individual)(oldpop.subpops.get(x).individuals.get(y).clone()));
+                }
             }
         return newpop;
-    }
+        }
     
     //    public Population postProcess(Population newpop, Population oldpop, EvolutionState state)
     //        {
@@ -86,4 +86,4 @@ public class MuPlusLambdaBreeder extends MuCommaLambdaBreeder
     //            }
     //        return newpop;
     //        }
-}
+    }

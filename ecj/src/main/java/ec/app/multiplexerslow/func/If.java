@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class If extends GPNode
-{
+    {
     public String toString() { return "if"; }
 
     /*
@@ -43,20 +43,20 @@ public class If extends GPNode
     public int expectedChildren() { return 3; }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
+        {
         children[0].eval(state,thread,input,stack,individual,problem);
 
         if (((MultiplexerData)input).x == 1 )  // return the second item
             children[1].eval(state,thread,input,stack,individual,problem);
         else // return the third item.
             children[2].eval(state,thread,input,stack,individual,problem);
+        }
     }
-}
 
 
 

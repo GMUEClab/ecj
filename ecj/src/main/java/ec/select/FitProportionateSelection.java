@@ -41,55 +41,55 @@ import ec.*;
  */
 
 public class FitProportionateSelection extends SelectionMethod
-{
+    {
     /** Default base */
     public static final String P_FITNESSPROPORTIONATE = "fitness-proportionate";
     /** Normalized, totalized fitnesses for the population */
     public double[] fitnesses;
 
     public Parameter defaultBase()
-    {
+        {
         return SelectDefaults.base().push(P_FITNESSPROPORTIONATE);
-    }
+        }
 
     // don't need clone etc. 
 
     public void prepareToProduce(final EvolutionState s,
-                                 final int subpopulation,
-                                 final int thread)
-    {
+        final int subpopulation,
+        final int thread)
+        {
         super.prepareToProduce(s, subpopulation, thread);
 
         // load fitnesses
         fitnesses = new double[s.population.subpops.get(subpopulation).individuals.size()];
         for(int x=0;x<fitnesses.length;x++)
             {
-                fitnesses[x] = ((Individual)(s.population.subpops.get(subpopulation).individuals.get(x))).fitness.fitness();
-                if (fitnesses[x] < 0) // uh oh
-                    s.output.fatal("Discovered a negative fitness value.  FitProportionateSelection requires that all fitness values be non-negative(offending subpopulation #" + subpopulation + ")");
+            fitnesses[x] = ((Individual)(s.population.subpops.get(subpopulation).individuals.get(x))).fitness.fitness();
+            if (fitnesses[x] < 0) // uh oh
+                s.output.fatal("Discovered a negative fitness value.  FitProportionateSelection requires that all fitness values be non-negative(offending subpopulation #" + subpopulation + ")");
             }
         
         // organize the distribution.  All zeros in fitness is fine
         RandomChoice.organizeDistribution(fitnesses, true);
-    }
+        }
 
     public int produce(final int subpopulation,
-                       final EvolutionState state,
-                       final int thread)
-    {
+        final EvolutionState state,
+        final int thread)
+        {
         // Pick and return an individual from the population
         return RandomChoice.pickFromDistribution(
-                                                 fitnesses,state.random[thread].nextDouble());
-    }
+            fitnesses,state.random[thread].nextDouble());
+        }
     
     public void finishProducing(final EvolutionState s,
-                                final int subpopulation,
-                                final int thread)
-    {
+        final int subpopulation,
+        final int thread)
+        {
         super.finishProducing(s, subpopulation, thread);
 
         // release the distributions so we can quickly 
         // garbage-collect them if necessary
         fitnesses = null;
+        }
     }
-}

@@ -45,7 +45,7 @@ import java.io.*;
  */
 
 public class ADFArgument extends GPNode 
-{
+    {
     public static final String P_ADFARGUMENT = "adf-argument";
     public final static String P_ARGUMENT = "arg";
     public static final String P_FUNCTIONNAME = "name";
@@ -59,14 +59,14 @@ public class ADFArgument extends GPNode
     public int expectedChildren() { return 0; }
     
     public Parameter defaultBase()
-    {
+        {
         return GPDefaults.base().push(P_ADFARGUMENT);
-    }
+        }
 
     public String toString() { return name(); }
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state,base);
         
         Parameter def = defaultBase();
@@ -74,39 +74,39 @@ public class ADFArgument extends GPNode
         argument = state.parameters.getInt(base.push(P_ARGUMENT),def.push(P_ARGUMENT),0);
         if (argument < 0)
             state.output.fatal("Argument terminal must have a positive argument number.",
-                               base.push(P_ARGUMENT),def.push(P_ARGUMENT));
+                base.push(P_ARGUMENT),def.push(P_ARGUMENT));
 
         name = state.parameters.getString(base.push(P_FUNCTIONNAME),def.push(P_FUNCTIONNAME));
         if (name == null || name.equals(""))
             {
-                name = "ARG" + argument;
-                state.output.warning("ADFArgument node for argument " + argument + " has no function name.  Using the name " + name(),
-                                     base.push(P_FUNCTIONNAME),def.push(P_FUNCTIONNAME));
+            name = "ARG" + argument;
+            state.output.warning("ADFArgument node for argument " + argument + " has no function name.  Using the name " + name(),
+                base.push(P_FUNCTIONNAME),def.push(P_FUNCTIONNAME));
             }
-    }
+        }
 
     public void writeNode(final EvolutionState state, final DataOutput dataOutput) throws IOException
-    {
+        {
         dataOutput.writeInt(argument);
-    }
+        }
          
  
     public void readNode(final EvolutionState state, final DataInput dataInput) throws IOException
-    {
+        {
         argument = dataInput.readInt();
-    }
+        }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
+        {
         // get the current context
         ADFContext c = stack.top(0);
         if (c==null) // uh oh
             state.output.fatal("No context with which to evaluate ADFArgument terminal " +  toStringForError() +  ".  This often happens if you evaluate a tree by hand  which is supposed to only be an ADF's associated tree.");      
         c.evaluate(state,thread,input,stack,individual,problem,argument);
+        }
     }
-}

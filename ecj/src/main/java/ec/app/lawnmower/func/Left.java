@@ -24,7 +24,7 @@ import ec.util.*;
  */
 
 public class Left extends GPNode
-{
+    {
     public String toString() { return "left"; }
 
     /*
@@ -43,12 +43,12 @@ public class Left extends GPNode
     public int expectedChildren() { return 0; }
 
     public void eval(final EvolutionState state,
-                     final int thread,
-                     final GPData input,
-                     final ADFStack stack,
-                     final GPIndividual individual,
-                     final Problem problem)
-    {
+        final int thread,
+        final GPData input,
+        final ADFStack stack,
+        final GPIndividual individual,
+        final Problem problem)
+        {
         Lawnmower p = (Lawnmower)problem;
         LawnmowerData d = (LawnmowerData)input;
 
@@ -75,8 +75,8 @@ public class Left extends GPNode
         // return [0,0]
         d.x = 0;
         d.y = 0;
+        }
     }
-}
 
 
 

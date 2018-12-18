@@ -26,13 +26,13 @@ import java.util.*;
 */
 
 public class GEIndividual extends IntegerVectorIndividual
-{
+    {
     public static final String GP_PREAMBLE = "Equivalent GP Individual:";
     public static final String ERC_PREAMBLE = "ERCs: ";
     public static final String BAD_TREE = "[BAD]";
 
     public void printIndividualForHumans(EvolutionState state, int log)
-    {
+        {
         super.printIndividualForHumans(state, log);
 
         HashMap ERCmapsForFancyPrint = new HashMap();
@@ -48,10 +48,10 @@ public class GEIndividual extends IntegerVectorIndividual
         Iterator iter = (ERCmapsForFancyPrint.keySet()).iterator();
         while(iter.hasNext())
             {
-                Integer key = (Integer)(iter.next());
-                GPNode val = (GPNode)(ERCmapsForFancyPrint.get(key));
-                state.output.print("    " + (byte)(key.intValue()) + " -> " + val.toStringForHumans(), log);
+            Integer key = (Integer)(iter.next());
+            GPNode val = (GPNode)(ERCmapsForFancyPrint.get(key));
+            state.output.print("    " + (byte)(key.intValue()) + " -> " + val.toStringForHumans(), log);
             }
         state.output.println("", log);
+        }
     }
-}

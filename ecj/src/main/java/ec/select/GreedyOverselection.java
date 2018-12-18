@@ -65,7 +65,7 @@ import ec.util.*;
  */
 
 public class GreedyOverselection extends SelectionMethod
-{
+    {
     public double[] sortedFitOver;
     public double[] sortedFitUnder;
     /** Sorted population -- since I *have* to use an int-sized
@@ -82,12 +82,12 @@ public class GreedyOverselection extends SelectionMethod
     public double gets_n_percent;
 
     public Parameter defaultBase()
-    {
+        {
         return SelectDefaults.base().push(P_GREEDY);
-    }
+        }
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state,base);
         
         Parameter def = defaultBase();
@@ -102,15 +102,15 @@ public class GreedyOverselection extends SelectionMethod
         if (gets_n_percent < 0.0)
             state.output.fatal("Gets-n-percent must be between 0.0 and 1.0", base.push(P_GETS),def.push(P_GETS));
         
-    }
+        }
     
     
     // don't need clone etc. -- I'll never clone with my arrays intact
     
     public void prepareToProduce(final EvolutionState s,
-                                 final int subpopulation,
-                                 final int thread)
-    {
+        final int subpopulation,
+        final int thread)
+        {
         super.prepareToProduce(s, subpopulation, thread);
 
         // load sortedPop integers
@@ -121,20 +121,20 @@ public class GreedyOverselection extends SelectionMethod
         
         // sort sortedPop in increasing fitness order
         QuickSort.qsort(sortedPop, 
-                        new SortComparatorL()
-                        {
-                            public boolean lt(long a, long b)
-                            {
-                                return ((Individual)(i.get((int)b))).fitness.betterThan(
-                                                                                        ((Individual)(i.get((int)a))).fitness);
-                            }
+            new SortComparatorL()
+                {
+                public boolean lt(long a, long b)
+                    {
+                    return ((Individual)(i.get((int)b))).fitness.betterThan(
+                        ((Individual)(i.get((int)a))).fitness);
+                    }
 
-                            public boolean gt(long a, long b)
-                            {
-                                return ((Individual)(i.get((int)a))).fitness.betterThan(
-                                                                                        ((Individual)(i.get((int)b))).fitness);
-                            }
-                        });
+                public boolean gt(long a, long b)
+                    {
+                    return ((Individual)(i.get((int)a))).fitness.betterThan(
+                        ((Individual)(i.get((int)b))).fitness);
+                    }
+                });
         
         
         
@@ -151,10 +151,10 @@ public class GreedyOverselection extends SelectionMethod
         int y=0;
         for(int x=sortedPop.length-boundary;x<sortedPop.length;x++)
             {
-                sortedFitOver[y] = (i.get(sortedPop[x])).fitness.fitness();
-                if (sortedFitOver[y] < 0) // uh oh
-                    s.output.fatal("Discovered a negative fitness value.  Greedy Overselection requires that all fitness values be non-negative (offending subpopulation #" + subpopulation + ")");
-                y++;
+            sortedFitOver[y] = (i.get(sortedPop[x])).fitness.fitness();
+            if (sortedFitOver[y] < 0) // uh oh
+                s.output.fatal("Discovered a negative fitness value.  Greedy Overselection requires that all fitness values be non-negative (offending subpopulation #" + subpopulation + ")");
+            y++;
             }
         
         // load sortedFitUnder
@@ -162,37 +162,37 @@ public class GreedyOverselection extends SelectionMethod
         y=0;
         for(int x=0;x<sortedPop.length-boundary;x++)
             {
-                sortedFitUnder[y] = (i.get(sortedPop[x])).fitness.fitness();
-                if (sortedFitUnder[y] < 0) // uh oh
-                    s.output.fatal("Discovered a negative fitness value.  Greedy Overselection requires that all fitness values be non-negative (offending subpopulation #" + subpopulation + ")");
-                y++;
+            sortedFitUnder[y] = (i.get(sortedPop[x])).fitness.fitness();
+            if (sortedFitUnder[y] < 0) // uh oh
+                s.output.fatal("Discovered a negative fitness value.  Greedy Overselection requires that all fitness values be non-negative (offending subpopulation #" + subpopulation + ")");
+            y++;
             }
 
         // organize the distributions.  All zeros in fitness is fine
         RandomChoice.organizeDistribution(sortedFitUnder, true);
         RandomChoice.organizeDistribution(sortedFitOver, true);
-    }
+        }
 
     public int produce(final int subpopulation,
-                       final EvolutionState state,
-                       final int thread)
-    {
+        final EvolutionState state,
+        final int thread)
+        {
         // pick a coin toss
         if (state.random[thread].nextBoolean(gets_n_percent))
             // over -- sortedFitUnder.length to sortedPop.length
             return sortedPop[
-                             sortedFitUnder.length + RandomChoice.pickFromDistribution(
-                                                                                       sortedFitOver,state.random[thread].nextDouble())];
+                sortedFitUnder.length + RandomChoice.pickFromDistribution(
+                    sortedFitOver,state.random[thread].nextDouble())];
         else
             // under -- 0 to sortedFitUnder.length
             return sortedPop[RandomChoice.pickFromDistribution(
-                                                               sortedFitUnder,state.random[thread].nextDouble())];
-    }
+                    sortedFitUnder,state.random[thread].nextDouble())];
+        }
 
     public void finishProducing(final EvolutionState s,
-                                final int subpopulation,
-                                final int thread)
-    {
+        final int subpopulation,
+        final int thread)
+        {
         super.finishProducing(s, subpopulation, thread);
         
         // release the distributions so we can quickly 
@@ -200,5 +200,5 @@ public class GreedyOverselection extends SelectionMethod
         sortedFitUnder = null;
         sortedFitOver = null;
         sortedPop = null;
+        }
     }
-}

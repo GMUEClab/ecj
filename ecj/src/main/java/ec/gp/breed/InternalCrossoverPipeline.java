@@ -82,7 +82,7 @@ import java.util.HashMap;
  */
 
 public class InternalCrossoverPipeline extends GPBreedingPipeline
-{
+    {
     private static final long serialVersionUID = 1;
 
     public static final String P_INTERNALCROSSOVER = "internal-xover";
@@ -116,17 +116,17 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
     public int numSources() { return NUM_SOURCES; }
 
     public Object clone()
-    {
+        {
         InternalCrossoverPipeline c = (InternalCrossoverPipeline)(super.clone());
         
         // deep-cloned stuff
         c.nodeselect0 = (GPNodeSelector)(nodeselect0.clone());
         c.nodeselect1 = (GPNodeSelector)(nodeselect1.clone());
         return c;
-    }
+        }
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state,base);
 
         Parameter def = defaultBase();
@@ -135,7 +135,7 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
 
         nodeselect0 = (GPNodeSelector)
             (state.parameters.getInstanceForParameter(
-                                                      p,d, GPNodeSelector.class));
+                p,d, GPNodeSelector.class));
         nodeselect0.setup(state,p);
 
         p = base.push(P_NODESELECTOR).push("1");
@@ -148,14 +148,14 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
             nodeselect1 = (GPNodeSelector)(nodeselect0.clone());
         else
             {
-                nodeselect1 = (GPNodeSelector)
-                    (state.parameters.getInstanceForParameter(
-                                                              p,d, GPNodeSelector.class));
-                nodeselect1.setup(state,p);
+            nodeselect1 = (GPNodeSelector)
+                (state.parameters.getInstanceForParameter(
+                    p,d, GPNodeSelector.class));
+            nodeselect1.setup(state,p);
             }
 
         numTries = state.parameters.getInt(base.push(P_NUM_TRIES),
-                                           def.push(P_NUM_TRIES),1);
+            def.push(P_NUM_TRIES),1);
         if (numTries == 0)
             state.output.fatal("InternalCrossover Pipeline has an invalid number of tries (it must be >= 1).",base.push(P_NUM_TRIES),def.push(P_NUM_TRIES));
 
@@ -165,49 +165,49 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
 
         tree1 = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+0),
-                                    def.push(P_TREE).push(""+0)))
+                def.push(P_TREE).push(""+0)))
             {
-                tree1 = state.parameters.getInt(base.push(P_TREE).push(""+0),
-                                                def.push(P_TREE).push(""+0),0);
-                if (tree1==-1)
-                    state.output.fatal("Tree fixed value, if defined, must be >= 0");
+            tree1 = state.parameters.getInt(base.push(P_TREE).push(""+0),
+                def.push(P_TREE).push(""+0),0);
+            if (tree1==-1)
+                state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
 
         tree2 = TREE_UNFIXED;
         if (state.parameters.exists(base.push(P_TREE).push(""+1),
-                                    def.push(P_TREE).push(""+1)))
+                def.push(P_TREE).push(""+1)))
             {
-                tree2 = state.parameters.getInt(base.push(P_TREE).push(""+1),
-                                                def.push(P_TREE).push(""+1),0);
-                if (tree2==-1)
-                    state.output.fatal("Tree fixed value, if defined, must be >= 0");
+            tree2 = state.parameters.getInt(base.push(P_TREE).push(""+1),
+                def.push(P_TREE).push(""+1),0);
+            if (tree2==-1)
+                state.output.fatal("Tree fixed value, if defined, must be >= 0");
             }
-    }
+        }
 
 
 
     /** Returns true if inner1 and inner2 do not contain one another */
     private boolean noContainment(GPNode inner1, GPNode inner2)
-    {
+        {
         GPNodeParent current = inner1;
         while(current != null && current instanceof GPNode)
             {
-                if (current==inner2) return false;  // inner2 contains inner1
-                current = ((GPNode)current).parent;
+            if (current==inner2) return false;  // inner2 contains inner1
+            current = ((GPNode)current).parent;
             }
         current = inner2;
         while(current != null && current instanceof GPNode)
             {
-                if (current==inner1) return false;  // inner1 contains inner2
-                current = ((GPNode)current).parent;
+            if (current==inner1) return false;  // inner1 contains inner2
+            current = ((GPNode)current).parent;
             }
         return true;
-    }
+        }
 
     /** Returns true if inner1 can feasibly be swapped into inner2's position. */
 
     boolean verifyPoints(GPInitializer initializer, GPNode inner1, GPNode inner2)
-    {
+        {
         // first check to see if inner1 is swap-compatible with inner2
         // on a type basis
         if (!inner1.swapCompatibleWith(initializer, inner2)) return false;
@@ -217,17 +217,17 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
 
         // checks done!
         return true;
-    }
+        }
 
 
     public int produce(final int min,
-                       final int max,
-                       final int subpopulation,
-                       final ArrayList<Individual> inds,
-                       final EvolutionState state,
-                       final int thread, HashMap<String, Object> misc)
+        final int max,
+        final int subpopulation,
+        final ArrayList<Individual> inds,
+        final EvolutionState state,
+        final int thread, HashMap<String, Object> misc)
 
-    {
+        {
         int start = inds.size();
                 
         // we'll modify them from there
@@ -238,15 +238,15 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
         IntBag[] preserveParents = null;
         if (misc!=null&&misc.get(KEY_PARENTS) != null)
             {
-                preserveParents = (IntBag[])misc.get(KEY_PARENTS);
-                parentparents = new IntBag[2];
-                misc.put(KEY_PARENTS, parentparents);
+            preserveParents = (IntBag[])misc.get(KEY_PARENTS);
+            parentparents = new IntBag[2];
+            misc.put(KEY_PARENTS, parentparents);
             }
         
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
             {
-                return n;
+            return n;
             }
 
 
@@ -255,107 +255,107 @@ public class InternalCrossoverPipeline extends GPBreedingPipeline
 
         for(int q=start;q<n+start; q++)
             {
-                GPIndividual i = (GPIndividual)inds.get(q);
+            GPIndividual i = (GPIndividual)inds.get(q);
                     
-                if (tree1!=TREE_UNFIXED && (tree1<0 || tree1 >= i.trees.length))
-                    // uh oh
-                    state.output.fatal("Internal Crossover Pipeline attempted to fix tree.0 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
+            if (tree1!=TREE_UNFIXED && (tree1<0 || tree1 >= i.trees.length))
+                // uh oh
+                state.output.fatal("Internal Crossover Pipeline attempted to fix tree.0 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
                 
-                if (tree2!=TREE_UNFIXED && (tree2<0 || tree2 >= i.trees.length))
-                    // uh oh
-                    state.output.fatal("Internal Crossover Pipeline attempted to fix tree.0 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
+            if (tree2!=TREE_UNFIXED && (tree2<0 || tree2 >= i.trees.length))
+                // uh oh
+                state.output.fatal("Internal Crossover Pipeline attempted to fix tree.0 to a value which was out of bounds of the array of the individual's trees.  Check the pipeline's fixed tree values -- they may be negative or greater than the number of trees in an individual"); 
 
 
-                int t1=0; int t2=0;
-                if (tree1==TREE_UNFIXED || tree2==TREE_UNFIXED) 
+            int t1=0; int t2=0;
+            if (tree1==TREE_UNFIXED || tree2==TREE_UNFIXED) 
+                {
+                do
+                    // pick random trees  -- their GPTreeConstraints must be the same
                     {
-                        do
-                            // pick random trees  -- their GPTreeConstraints must be the same
-                            {
-                                if (tree1==TREE_UNFIXED)
-                                    if (i.trees.length > 1)
-                                        t1 = state.random[thread].nextInt(i.trees.length);
-                                    else t1 = 0;
-                                else t1 = tree1;
+                    if (tree1==TREE_UNFIXED)
+                        if (i.trees.length > 1)
+                            t1 = state.random[thread].nextInt(i.trees.length);
+                        else t1 = 0;
+                    else t1 = tree1;
                     
-                                if (tree2==TREE_UNFIXED) 
-                                    if (i.trees.length > 1)
-                                        t2 = state.random[thread].nextInt(i.trees.length);
-                                    else t2 = 0;
-                                else t2 = tree2;
-                            } while (i.trees[t1].constraints(initializer) != i.trees[t2].constraints(initializer));
-                    }
-                else
-                    {
-                        t1 = tree1;
-                        t2 = tree2;
-                        // make sure the constraints are okay
-                        if (i.trees[t1].constraints(initializer) 
-                            != i.trees[t2].constraints(initializer)) // uh oh
-                            state.output.fatal("GP Crossover Pipeline's two tree choices are both specified by the user -- but their GPTreeConstraints are not the same");
-                    }
+                    if (tree2==TREE_UNFIXED) 
+                        if (i.trees.length > 1)
+                            t2 = state.random[thread].nextInt(i.trees.length);
+                        else t2 = 0;
+                    else t2 = tree2;
+                    } while (i.trees[t1].constraints(initializer) != i.trees[t2].constraints(initializer));
+                }
+            else
+                {
+                t1 = tree1;
+                t2 = tree2;
+                // make sure the constraints are okay
+                if (i.trees[t1].constraints(initializer) 
+                    != i.trees[t2].constraints(initializer)) // uh oh
+                    state.output.fatal("GP Crossover Pipeline's two tree choices are both specified by the user -- but their GPTreeConstraints are not the same");
+                }
 
             
-                // prepare the nodeselectors
-                nodeselect0.reset();
-                nodeselect1.reset();
+            // prepare the nodeselectors
+            nodeselect0.reset();
+            nodeselect1.reset();
             
             
-                // pick some nodes
+            // pick some nodes
             
-                GPNode p1=null;
-                GPNode p2=null;
-                boolean res = false;
+            GPNode p1=null;
+            GPNode p2=null;
+            boolean res = false;
 
-                for(int x=0;x<numTries;x++)
-                    {
-                        // pick a node in individual 1
-                        p1 = nodeselect0.pickNode(state,subpopulation,thread,i,i.trees[t1]);
+            for(int x=0;x<numTries;x++)
+                {
+                // pick a node in individual 1
+                p1 = nodeselect0.pickNode(state,subpopulation,thread,i,i.trees[t1]);
                 
-                        // pick a node in individual 2
-                        p2 = nodeselect1.pickNode(state,subpopulation,thread,i,i.trees[t2]);
+                // pick a node in individual 2
+                p2 = nodeselect1.pickNode(state,subpopulation,thread,i,i.trees[t2]);
                 
-                        // make sure they're not the same node
-                        res = (p1!=p2 &&
-                               // check for containment
-                               (t1!=t2 || noContainment(p1,p2)) &&
-                               // check for validity
-                               verifyPoints(initializer,p1,p2) &&   // 1 goes into 2
-                               verifyPoints(initializer,p2,p1));    // 2 goes into 1
-                        if (res) break; // got one
-                    }
+                // make sure they're not the same node
+                res = (p1!=p2 &&
+                    // check for containment
+                    (t1!=t2 || noContainment(p1,p2)) &&
+                    // check for validity
+                    verifyPoints(initializer,p1,p2) &&   // 1 goes into 2
+                    verifyPoints(initializer,p2,p1));    // 2 goes into 1
+                if (res) break; // got one
+                }
 
-                // if res, then it's time to cross over!
-                if (res)
-                    {
-                        GPNodeParent oldparent = p1.parent;
-                        byte oldargposition = p1.argposition;
-                        p1.parent = p2.parent;
-                        p1.argposition = p2.argposition;
-                        p2.parent = oldparent;
-                        p2.argposition = oldargposition;
+            // if res, then it's time to cross over!
+            if (res)
+                {
+                GPNodeParent oldparent = p1.parent;
+                byte oldargposition = p1.argposition;
+                p1.parent = p2.parent;
+                p1.argposition = p2.argposition;
+                p2.parent = oldparent;
+                p2.argposition = oldargposition;
                 
-                        if (p1.parent instanceof GPNode)
-                            ((GPNode)(p1.parent)).children[p1.argposition] = p1;
-                        else ((GPTree)(p1.parent)).child = p1;
+                if (p1.parent instanceof GPNode)
+                    ((GPNode)(p1.parent)).children[p1.argposition] = p1;
+                else ((GPTree)(p1.parent)).child = p1;
 
-                        if (p2.parent instanceof GPNode)
-                            ((GPNode)(p2.parent)).children[p2.argposition] = p2;
-                        else ((GPTree)(p2.parent)).child = p2;
+                if (p2.parent instanceof GPNode)
+                    ((GPNode)(p2.parent)).children[p2.argposition] = p2;
+                else ((GPTree)(p2.parent)).child = p2;
 
-                        i.evaluated = false;  // we've modified it
-                    }
+                i.evaluated = false;  // we've modified it
+                }
             
-                // add the individuals to the population
-                //inds.set(q,i);
-                inds.add(i);
-                if (preserveParents != null)
-                    {
-                        parentparents[0].addAll(parentparents[1]);
-                        preserveParents[q] = new IntBag(parentparents[0]);
-                    }
+            // add the individuals to the population
+            //inds.set(q,i);
+            inds.add(i);
+            if (preserveParents != null)
+                {
+                parentparents[0].addAll(parentparents[1]);
+                preserveParents[q] = new IntBag(parentparents[0]);
+                }
             }
         return n;
-    }
+        }
 
-}
+    }

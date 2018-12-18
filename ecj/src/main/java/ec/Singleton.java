@@ -25,5 +25,5 @@ package ec;
  */
 
 public interface Singleton extends Setup
-{
-}
+    {
+    }

@@ -46,7 +46,7 @@ import ec.simple.*;
  */
 
 public class Lawnmower extends GPProblem implements SimpleProblemForm
-{
+    {
     private static final long serialVersionUID = 1;
 
     public static final String P_X = "x";
@@ -85,17 +85,17 @@ public class Lawnmower extends GPProblem implements SimpleProblemForm
     public int pmod;
 
     public Object clone()
-    {
+        {
         Lawnmower myobj = (Lawnmower) (super.clone());
         myobj.map = new int[map.length][];
         for(int x=0;x<map.length;x++)
             myobj.map[x] = (int[])(map[x].clone());
         return myobj;
-    }
+        }
 
     public void setup(final EvolutionState state,
-                      final Parameter base)
-    {
+        final Parameter base)
+        {
         // very important, remember this
         super.setup(state,base);
 
@@ -105,17 +105,17 @@ public class Lawnmower extends GPProblem implements SimpleProblemForm
         // verify our input is the right class (or subclasses from it)
         if (!(input instanceof LawnmowerData))
             state.output.fatal("GPData class must subclass from " + LawnmowerData.class,
-                               base.push(P_DATA), null);
+                base.push(P_DATA), null);
 
         // load our map coordinates
         maxx = state.parameters.getInt(base.push(P_X),null,1);
         if (maxx==0)
             state.output.error("The width (x dimension) of the lawn must be >0",
-                               base.push(P_X));
+                base.push(P_X));
         maxy = state.parameters.getInt(base.push(P_Y),null,1);
         if (maxy==0)
             state.output.error("The length (y dimension) of the lawn must be >0",
-                               base.push(P_Y));
+                base.push(P_Y));
         state.output.exitIfErrors();
             
         // set up the map
@@ -124,47 +124,47 @@ public class Lawnmower extends GPProblem implements SimpleProblemForm
         for(int x=0;x<maxx;x++)
             for(int y=0;y<maxy;y++)
                 map[x][y]=UNMOWED;
-    }
+        }
 
     public void evaluate(final EvolutionState state, 
-                         final Individual ind, 
-                         final int subpopulation,
-                         final int threadnum)
-    {               
+        final Individual ind, 
+        final int subpopulation,
+        final int threadnum)
+        {               
         if (!ind.evaluated)  // don't bother reevaluating
             {
-                LawnmowerData input = (LawnmowerData)(this.input);
+            LawnmowerData input = (LawnmowerData)(this.input);
         
-                sum = 0;
-                moves = 0;
-                posx = maxx/2+1;
-                posy = maxy/2+1;
-                orientation = O_UP;
+            sum = 0;
+            moves = 0;
+            posx = maxx/2+1;
+            posy = maxy/2+1;
+            orientation = O_UP;
 
-                // evaluate the individual
-                ((GPIndividual)ind).trees[0].child.eval(
-                                                        state,threadnum,input,stack,((GPIndividual)ind),this);
+            // evaluate the individual
+            ((GPIndividual)ind).trees[0].child.eval(
+                state,threadnum,input,stack,((GPIndividual)ind),this);
                 
-                // clean up the map
-                for(int x=0;x<maxx;x++)
-                    for(int y=0;y<maxy;y++)
-                        map[x][y]=UNMOWED;
+            // clean up the map
+            for(int x=0;x<maxx;x++)
+                for(int y=0;y<maxy;y++)
+                    map[x][y]=UNMOWED;
 
-                // the fitness better be KozaFitness!
-                KozaFitness f = ((KozaFitness)ind.fitness);
-                f.setStandardizedFitness(state, maxx*maxy - sum);
-                f.hits = sum;
-                ind.evaluated = true;
+            // the fitness better be KozaFitness!
+            KozaFitness f = ((KozaFitness)ind.fitness);
+            f.setStandardizedFitness(state, maxx*maxy - sum);
+            f.hits = sum;
+            ind.evaluated = true;
             }
-    }
+        }
 
     public void describe(
-                         final EvolutionState state, 
-                         final Individual ind, 
-                         final int subpopulation, 
-                         final int threadnum, 
-                         final int log)
-    {
+        final EvolutionState state, 
+        final Individual ind, 
+        final int subpopulation, 
+        final int threadnum, 
+        final int log)
+        {
         state.output.println("\n\nBest Individual's Map\n=====================", log);
         
         sum = 0;
@@ -175,35 +175,35 @@ public class Lawnmower extends GPProblem implements SimpleProblemForm
             
         // evaluate the individual
         ((GPIndividual)ind).trees[0].child.eval(
-                                                state,threadnum,input,stack,((GPIndividual)ind),this);
+            state,threadnum,input,stack,((GPIndividual)ind),this);
             
         // print out the map
         state.output.println(" Y ->", log);
         for(int x=0;x<map.length;x++)
             {
-                if (x==1) state.output.print("v", log);
-                else if (x==0) state.output.print("X",log);
-                else state.output.print(" ",log);
-                state.output.print("+",log);
-                for(int y=0;y<map[x].length;y++)
-                    state.output.print("----+",log);
-                state.output.println("",log);
-                if (x==0) state.output.print("|",log);
-                else state.output.print(" ",log);
-                state.output.print("|",log);
+            if (x==1) state.output.print("v", log);
+            else if (x==0) state.output.print("X",log);
+            else state.output.print(" ",log);
+            state.output.print("+",log);
+            for(int y=0;y<map[x].length;y++)
+                state.output.print("----+",log);
+            state.output.println("",log);
+            if (x==0) state.output.print("|",log);
+            else state.output.print(" ",log);
+            state.output.print("|",log);
                 
-                for(int y=0;y<map[x].length;y++)
+            for(int y=0;y<map[x].length;y++)
+                {
+                if (map[x][y]==UNMOWED)
+                    state.output.print("    ",log);
+                else 
                     {
-                        if (map[x][y]==UNMOWED)
-                            state.output.print("    ",log);
-                        else 
-                            {
-                                String s = "" + (map[x][y]);
-                                while (s.length()<4) s = " " + s;
-                                state.output.print(s + "|",log);
-                            }
+                    String s = "" + (map[x][y]);
+                    while (s.length()<4) s = " " + s;
+                    state.output.print(s + "|",log);
                     }
-                state.output.println("",log);
+                }
+            state.output.println("",log);
             }
         if (map.length==1) state.output.print("v",log);
         else state.output.print(" ",log);
@@ -217,5 +217,5 @@ public class Lawnmower extends GPProblem implements SimpleProblemForm
         for(int x=0;x<maxx;x++)
             for(int y=0;y<maxy;y++)
                 map[x][y]=UNMOWED;
+        }
     }
-}

@@ -64,7 +64,7 @@ import java.util.HashMap;
  */
 
 public class BufferedBreedingPipeline extends BreedingPipeline
-{
+    {
     public static final String P_BUFSIZE = "num-inds";
     public static final String P_BUFFERED = "buffered";
     public static final int INDS_PRODUCED = 1;
@@ -74,21 +74,21 @@ public class BufferedBreedingPipeline extends BreedingPipeline
     public int bufSize;
 
     public Parameter defaultBase()
-    {
+        {
         return BreedDefaults.base().push(P_BUFFERED);
-    }
+        }
 
     public int numSources() { return NUM_SOURCES; }    
     public int typicalIndsProduced() { return INDS_PRODUCED;}
 
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state,base);
 
         Parameter def = defaultBase();
 
         bufSize = state.parameters.getInt(base.push(P_BUFSIZE),
-                                          def.push(P_BUFSIZE),1);
+            def.push(P_BUFSIZE),1);
         if (bufSize == 0)
             state.output.fatal("BufferedBreedingPipeline's number of individuals must be >= 1.",base.push(P_BUFSIZE),def.push(P_BUFSIZE));
         
@@ -97,37 +97,37 @@ public class BufferedBreedingPipeline extends BreedingPipeline
         // declare that likelihood isn't used
         if (likelihood < 1.0)
             state.output.warning("BufferedBreedingPipeline does not respond to the 'likelihood' parameter.",
-                                 base.push(P_LIKELIHOOD), def.push(P_LIKELIHOOD));
-    }
+                base.push(P_LIKELIHOOD), def.push(P_LIKELIHOOD));
+        }
 
 
     public void prepareToProduce(final EvolutionState state,
-                                 final int subpopulation,
-                                 final int thread)
-    {
+        final int subpopulation,
+        final int thread)
+        {
         super.prepareToProduce(state,subpopulation,thread);
         // reset my number of individuals to 0
         buffer.clear();
-    }
+        }
 
 
     public int produce(final int min,
-                       final int max,
-                       final int subpopulation,
-                       final ArrayList<Individual> inds,
-                       final EvolutionState state,
-                       final int thread, HashMap<String, Object> misc)
+        final int max,
+        final int subpopulation,
+        final ArrayList<Individual> inds,
+        final EvolutionState state,
+        final int thread, HashMap<String, Object> misc)
 
-    {
+        {
         for(int q=0; q<min; q++ )
             {
-                if (buffer.isEmpty())       // reload
-                    {
-                        sources[0].produce(bufSize, bufSize, subpopulation, buffer, state, thread, misc);
-                    }
+            if (buffer.isEmpty())       // reload
+                {
+                sources[0].produce(bufSize, bufSize, subpopulation, buffer, state, thread, misc);
+                }
             
-                inds.add(buffer.remove(buffer.size() - 1));
+            inds.add(buffer.remove(buffer.size() - 1));
             }
         return min;
+        }
     }
-}

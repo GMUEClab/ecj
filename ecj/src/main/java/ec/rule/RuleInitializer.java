@@ -38,7 +38,7 @@ import ec.EvolutionState;
 */
 
 public class RuleInitializer extends SimpleInitializer
-{
+    {
     private static final long serialVersionUID = 1;
 
     // used just here, so far as I know :-)
@@ -57,7 +57,7 @@ public class RuleInitializer extends SimpleInitializer
     
     /** Sets up the RuleConstraints and RuleSetConstraints cliques. */
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state,base);
 
         ruleConstraintRepository = new Hashtable();
@@ -72,18 +72,18 @@ public class RuleInitializer extends SimpleInitializer
         // This is done in a very specific order, don't change it or things
         // will break.
         setupConstraints(
-                         state, RuleDefaults.base().push( P_RULECONSTRAINTS ) );
+            state, RuleDefaults.base().push( P_RULECONSTRAINTS ) );
         setupRuleSetConstraints(
-                                state, RuleDefaults.base().push( P_RULESETCONSTRAINTS ) );
-    }
+            state, RuleDefaults.base().push( P_RULESETCONSTRAINTS ) );
+        }
 
     /** Sets up all the RuleConstraints, loading them from the parameter
         file.  This must be called before anything is called which refers
         to a type by name. */
     
     public void setupConstraints(final EvolutionState state,
-                                 final Parameter base)
-    {
+        final Parameter base)
+        {
         state.output.message("Processing Rule Constraints");
         
         // How many RuleConstraints do we have?
@@ -94,33 +94,33 @@ public class RuleInitializer extends SimpleInitializer
         // Load our constraints
         for (int y=0;y<x;y++)
             {
-                RuleConstraints c;
-                // Figure the constraints class
-                if (state.parameters.exists(base.push(""+y), null))
-                    c = (RuleConstraints)(state.parameters.getInstanceForParameterEq(
-                                                                                     base.push(""+y),null,RuleConstraints.class));
-                else
-                    {
-                        state.output.message("No Rule Constraints specified, assuming the default class: ec.rule.RuleConstraints for " + base.push(""+y));
-                        c = new RuleConstraints();
-                    }
-                c.setup(state,base.push(""+y));
+            RuleConstraints c;
+            // Figure the constraints class
+            if (state.parameters.exists(base.push(""+y), null))
+                c = (RuleConstraints)(state.parameters.getInstanceForParameterEq(
+                        base.push(""+y),null,RuleConstraints.class));
+            else
+                {
+                state.output.message("No Rule Constraints specified, assuming the default class: ec.rule.RuleConstraints for " + base.push(""+y));
+                c = new RuleConstraints();
+                }
+            c.setup(state,base.push(""+y));
             }
         
         // set our constraints array up
         Enumeration e = ruleConstraintRepository.elements();
         while(e.hasMoreElements())
             {
-                RuleConstraints c = (RuleConstraints)(e.nextElement());
-                c.constraintNumber = numRuleConstraints;
-                ruleConstraints[numRuleConstraints] = c;
-                numRuleConstraints++;
+            RuleConstraints c = (RuleConstraints)(e.nextElement());
+            c.constraintNumber = numRuleConstraints;
+            ruleConstraints[numRuleConstraints] = c;
+            numRuleConstraints++;
             }
-    }
+        }
     
     public void setupRuleSetConstraints(final EvolutionState state,
-                                        final Parameter base)
-    {
+        final Parameter base)
+        {
         state.output.message("Processing Ruleset Constraints");
         // How many RuleSetConstraints do we have?
         int x = state.parameters.getInt(base.push(P_SIZE),null,1);
@@ -130,27 +130,27 @@ public class RuleInitializer extends SimpleInitializer
         // Load our RuleSetConstraints
         for (int y=0;y<x;y++)
             {
-                RuleSetConstraints c;
-                // Figure the RuleSetConstraints class
-                if (state.parameters.exists(base.push(""+y), null))
-                    c = (RuleSetConstraints)(state.parameters.getInstanceForParameterEq(
-                                                                                        base.push(""+y),null,RuleSetConstraints.class));
-                else
-                    {
-                        state.output.message("No RuleSetConstraints specified, assuming the default class: ec.gp.RuleSetConstraints for " + base.push(""+y));
-                        c = new RuleSetConstraints();
-                    }
-                c.setup(state,base.push(""+y));
+            RuleSetConstraints c;
+            // Figure the RuleSetConstraints class
+            if (state.parameters.exists(base.push(""+y), null))
+                c = (RuleSetConstraints)(state.parameters.getInstanceForParameterEq(
+                        base.push(""+y),null,RuleSetConstraints.class));
+            else
+                {
+                state.output.message("No RuleSetConstraints specified, assuming the default class: ec.gp.RuleSetConstraints for " + base.push(""+y));
+                c = new RuleSetConstraints();
+                }
+            c.setup(state,base.push(""+y));
             }
 
         // set our constraints array up
         Enumeration e = ruleSetConstraintRepository.elements();
         while(e.hasMoreElements())
             {
-                RuleSetConstraints c = (RuleSetConstraints)(e.nextElement());
-                c.constraintNumber = numRuleSetConstraints;
-                ruleSetConstraints[numRuleSetConstraints] = c;
-                numRuleSetConstraints++;
+            RuleSetConstraints c = (RuleSetConstraints)(e.nextElement());
+            c.constraintNumber = numRuleSetConstraints;
+            ruleSetConstraints[numRuleSetConstraints] = c;
+            numRuleSetConstraints++;
             }            
+        }
     }
-}

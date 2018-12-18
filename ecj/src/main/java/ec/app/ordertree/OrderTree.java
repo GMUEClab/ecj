@@ -49,7 +49,7 @@ import javax.imageio.stream.*;
  */
 
 public class OrderTree extends GPProblem implements SimpleProblemForm
-{
+    {
 
     double fitness;
     static final String P_CONTRIBUTION_TYPE = "contribution-type";
@@ -61,8 +61,8 @@ public class OrderTree extends GPProblem implements SimpleProblemForm
     int fitnessContributionType;
     
     public void setup(final EvolutionState state,
-                      final Parameter base)
-    {
+        final Parameter base)
+        {
         // very important, remember this
         super.setup(state,base);
 
@@ -70,27 +70,27 @@ public class OrderTree extends GPProblem implements SimpleProblemForm
         if (fitnessContributionType < CONTRIBUTION_UNIT || fitnessContributionType > CONTRIBUTION_EXPONENTIAL) state.output.fatal("Fitness Contribution Type must be an integer greater than 0 and less th an 4", base.push(P_CONTRIBUTION_TYPE)); 
 
         state.output.exitIfErrors();
-    }
+        }
 
     public void evaluate(final EvolutionState state,
-                         final Individual ind,
-                         final int subpopulation,
-                         final int threadnum)
-    {
+        final Individual ind,
+        final int subpopulation,
+        final int threadnum)
+        {
         if (!ind.evaluated)  // don't bother reevaluating
             {
-                // trees[0].child is the root
-                fitness = 0.0;
-                nodeCal(((GPIndividual) ind).trees[0].child, state);
+            // trees[0].child is the root
+            fitness = 0.0;
+            nodeCal(((GPIndividual) ind).trees[0].child, state);
 
-                SimpleFitness f = ((SimpleFitness) ind.fitness);
-                f.setFitness(state, fitness, false);
-                ind.evaluated = true;
+            SimpleFitness f = ((SimpleFitness) ind.fitness);
+            f.setFitness(state, fitness, false);
+            ind.evaluated = true;
             }
-    }
+        }
 
     double fitnessContribution(double value, EvolutionState state)
-    {
+        {
         switch (fitnessContributionType)
             {
             case CONTRIBUTION_UNIT: return 1.0;
@@ -100,41 +100,41 @@ public class OrderTree extends GPProblem implements SimpleProblemForm
             default: state.output.fatal("Unexpected fitness contribution type.");
                 return -1.0;
             }
-    }
+        }
     
     void nodeCal(GPNode p, EvolutionState state)
-    {
+        {
         int pval = ((OrderTreeNode) p).value();
         for (int i = 0; i < p.children.length; i++)
             {
-                GPNode c = p.children[i];
-                int cval = ((OrderTreeNode) c).value();
-                if (pval < cval)
+            GPNode c = p.children[i];
+            int cval = ((OrderTreeNode) c).value();
+            if (pval < cval)
+                {
+                // direct fitness contribution
+                fitness += fitnessContribution(cval, state);
+                nodeCal(c, state);
+                }
+            else if (pval == cval)
+                {
+                // neutral-left-walk
+                boolean found = false;
+                while (c.children.length > 0 && cval == pval && !found)
                     {
-                        // direct fitness contribution
-                        fitness += fitnessContribution(cval, state);
-                        nodeCal(c, state);
+                    c = c.children[0];
+                    cval = ((OrderTreeNode) c).value();
+                    if (pval < cval)
+                        {
+                        found = true;
+                        }
                     }
-                else if (pval == cval)
+                if (found)
                     {
-                        // neutral-left-walk
-                        boolean found = false;
-                        while (c.children.length > 0 && cval == pval && !found)
-                            {
-                                c = c.children[0];
-                                cval = ((OrderTreeNode) c).value();
-                                if (pval < cval)
-                                    {
-                                        found = true;
-                                    }
-                            }
-                        if (found)
-                            {
-                                fitness += fitnessContribution(cval, state);
-                                nodeCal(c, state);
-                            }
+                    fitness += fitnessContribution(cval, state);
+                    nodeCal(c, state);
                     }
+                }
             }
         return;
+        }
     }
-}

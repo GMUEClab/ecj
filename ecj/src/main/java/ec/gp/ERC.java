@@ -105,7 +105,7 @@ import java.io.*;
  */
 
 public abstract class ERC extends GPNode
-{
+    {
     /** Returns the lowercase "name" of this ERC function class, some
         simple, short name which distinguishes this class from other ERC
         function classes you're using.  If you have more than one ERC function,
@@ -134,11 +134,11 @@ public abstract class ERC extends GPNode
 
     /** You might want to override this to return a special human-readable version of the erc value; otherwise this defaults to toString();  This should be something that resembles a LISP atom.  If a simple number or other object won't suffice, you might use something that begins with  name() + [ + ... + ] */
     public String toStringForHumans() 
-    { return toString(); }
+        { return toString(); }
 
     /** This defaults to simply name() + "[" + encode() + "]".   You probably shouldn't deviate from this. */
     public String toString() 
-    { return name() + "[" + encode() + "]"; }
+        { return name() + "[" + encode() + "]"; }
 
     /** Encodes data from the ERC, using ec.util.Code.  */
     public abstract String encode();
@@ -149,9 +149,9 @@ public abstract class ERC extends GPNode
         you should make sure that the position and data in the dret are exactly
         as they were originally. */
     public boolean decode(final DecodeReturn dret)
-    {
+        {
         return false;
-    }
+        }
 
     /** Mutates the node's "value".  This is called by mutating operators
         which specifically <i>mutate</i> the "value" of ERCs, as opposed to 
@@ -161,26 +161,26 @@ public abstract class ERC extends GPNode
         noise for example. */
 
     public void mutateERC(final EvolutionState state, final int thread)
-    {
+        {
         resetNode(state,thread);
-    }
+        }
 
     /** To successfully write to a DataOutput, you must override this to write your specific ERC data out.  The
         default implementation issues a fatal error. */
     public void writeNode(final EvolutionState state, final DataOutput dataOutput) throws IOException
-    {
+        {
         state.output.fatal("writeNode(EvolutionState,DataInput) not implemented in " + getClass().getName());
-    }
+        }
 
     /** To successfully read from a DataOutput, you must override this to read your specific ERC data in.  The
         default implementation issues a fatal error. */
     public void readNode(final EvolutionState state, final DataInput dataInput) throws IOException
-    {
+        {
         state.output.fatal("readNode(EvolutionState,DataInput) not implemented in " + getClass().getName());
-    }
+        }
 
     public GPNode readNode(final DecodeReturn dret) 
-    {
+        {
         int len = dret.data.length();
         int originalPos = dret.pos;
         
@@ -212,14 +212,14 @@ public abstract class ERC extends GPNode
         // Check to make sure that the ERC's all there is
         if (dret.data.length() > dret.pos+1)
             {
-                char c = dret.data.charAt(dret.pos+1);
-                if (!Character.isWhitespace(c) &&
-                    c != ')' && c != '(') // uh oh
-                    { dret.pos = originalPos; return null; }
+            char c = dret.data.charAt(dret.pos+1);
+            if (!Character.isWhitespace(c) &&
+                c != ')' && c != '(') // uh oh
+                { dret.pos = originalPos; return null; }
             }   
 
         dret.pos++;
 
         return node;
+        }
     }
-}

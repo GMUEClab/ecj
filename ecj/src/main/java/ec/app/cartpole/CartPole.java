@@ -10,7 +10,7 @@ import ec.neat.*;
 import ec.simple.*;
 
 public class CartPole extends Problem implements SimpleProblemForm
-{
+    {
     int MAX_STEPS=100000;
     double x,                   /* cart position, meters */
         x_dot,                      /* cart velocity */
@@ -20,14 +20,14 @@ public class CartPole extends Problem implements SimpleProblemForm
 
 
     public double[] getNetOutput(NEATNetwork net, double[][] in,EvolutionState state)
-    {
+        {
         double[] out;
         int netDepth = net.maxDepth();
 
         net.loadSensors(in[0]);
         for(int relax = 0; relax < netDepth; relax++)
             {
-                net.activate(state);
+            net.activate(state);
             }
 
         out = net.getOutputResults();
@@ -36,9 +36,9 @@ public class CartPole extends Problem implements SimpleProblemForm
 
 
         return out;
-    }
+        }
     public int runCartPole(NEATNetwork net, EvolutionState state)
-    {
+        {
 
 
 
@@ -57,38 +57,38 @@ public class CartPole extends Problem implements SimpleProblemForm
         while (steps++ < MAX_STEPS)
             {
 
-                /*-- setup the input layer based on the four inputs and bias --*/
-                //setup_input(net,x,x_dot,theta,theta_dot);
-                in[0][0] = 1.0;  //Bias
-                in[0][1] = (x + 2.4) / 4.8;
+            /*-- setup the input layer based on the four inputs and bias --*/
+            //setup_input(net,x,x_dot,theta,theta_dot);
+            in[0][0] = 1.0;  //Bias
+            in[0][1] = (x + 2.4) / 4.8;
 
-                in[0][2] = (x_dot + .75) / 1.5;
-                in[0][3] = (theta + twelve_degrees) / .41;
-                in[0][4] = (theta_dot + 1.0) / 2.0;
+            in[0][2] = (x_dot + .75) / 1.5;
+            in[0][3] = (theta + twelve_degrees) / .41;
+            in[0][4] = (theta_dot + 1.0) / 2.0;
 
-                double[] out = getNetOutput(net,in,state);
+            double[] out = getNetOutput(net,in,state);
 
-                /*-- decide which way to push via which output unit is greater --*/
-                if(out[0] > out[1])
-                    y=0;
-                else
-                    y=1;
+            /*-- decide which way to push via which output unit is greater --*/
+            if(out[0] > out[1])
+                y=0;
+            else
+                y=1;
 
-                /*--- Apply action to the simulated cart-pole ---*/
-                cart_pole(y);
+            /*--- Apply action to the simulated cart-pole ---*/
+            cart_pole(y);
 
-                /*--- Check for failure.  If so, return steps ---*/
-                if (x < -2.4 || x > 2.4  || theta < -twelve_degrees || theta > twelve_degrees)
-                    return steps;
+            /*--- Check for failure.  If so, return steps ---*/
+            if (x < -2.4 || x > 2.4  || theta < -twelve_degrees || theta > twelve_degrees)
+                return steps;
             }
 
         return steps;
 
 
 
-    }
+        }
     void cart_pole(int action)
-    {
+        {
         double xacc,thetaacc,force,costheta,sintheta,temp;
 
         final double GRAVITY=9.8;
@@ -109,7 +109,7 @@ public class CartPole extends Problem implements SimpleProblemForm
 
         thetaacc = (GRAVITY * sintheta - costheta* temp)
             / (LENGTH * (FOURTHIRDS - MASSPOLE * costheta * costheta
-                         / TOTAL_MASS));
+                    / TOTAL_MASS));
 
         xacc  = temp - POLEMASS_LENGTH * thetaacc* costheta / TOTAL_MASS;
 
@@ -119,9 +119,9 @@ public class CartPole extends Problem implements SimpleProblemForm
         x_dot += TAU * xacc;
         theta += TAU * theta_dot;
         theta_dot += TAU * thetaacc;
-    }
+        }
     public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum)
-    {
+        {
 
         if (ind.evaluated) return;
 
@@ -142,6 +142,6 @@ public class CartPole extends Problem implements SimpleProblemForm
         neatInd.evaluated = true;
 
 
-    }
+        }
 
-}
+    }

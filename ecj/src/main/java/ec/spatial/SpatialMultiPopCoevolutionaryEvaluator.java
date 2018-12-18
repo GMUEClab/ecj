@@ -26,9 +26,9 @@ import ec.coevolve.*;
  */
 
 public class SpatialMultiPopCoevolutionaryEvaluator extends MultiPopCoevolutionaryEvaluator
-{
-    protected Individual produce(SelectionMethod method, int subpopulation, int individual, EvolutionState state, int thread)
     {
+    protected Individual produce(SelectionMethod method, int subpopulation, int individual, EvolutionState state, int thread)
+        {
         if (!(state.population.subpops.get(subpopulation) instanceof Space))
             state.output.fatal("Subpopulation " + subpopulation + " is not a Space.");
                         
@@ -36,5 +36,5 @@ public class SpatialMultiPopCoevolutionaryEvaluator extends MultiPopCoevolutiona
         space.setIndex(thread, individual);
                 
         return state.population.subpops.get(subpopulation).individuals.get(method.produce(subpopulation, state, thread));
+        }
     }
-}

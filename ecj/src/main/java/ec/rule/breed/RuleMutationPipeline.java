@@ -43,7 +43,7 @@ import java.util.HashMap;
  */
 
 public class RuleMutationPipeline extends BreedingPipeline
-{
+    {
     public static final String P_MUTATION = "mutate";
     public static final int INDS_PRODUCED = 1;
     public static final int NUM_SOURCES = 1;
@@ -58,12 +58,12 @@ public class RuleMutationPipeline extends BreedingPipeline
     public int typicalIndsProduced() { return (INDS_PRODUCED); }
 
     public int produce(final int min,
-                       final int max,
-                       final int subpopulation,
-                       final ArrayList<Individual> inds,
-                       final EvolutionState state,
-                       final int thread, HashMap<String, Object> misc)
-    {
+        final int max,
+        final int subpopulation,
+        final ArrayList<Individual> inds,
+        final EvolutionState state,
+        final int thread, HashMap<String, Object> misc)
+        {
         int start = inds.size();
         
         // grab n individuals from our source and stick 'em right into inds.
@@ -73,31 +73,31 @@ public class RuleMutationPipeline extends BreedingPipeline
         // should we bother?
         if (!state.random[thread].nextBoolean(likelihood))
             {
-                return n;
+            return n;
             }
 
         // mutate 'em
         for(int q=start;q<n+start;q++)
             {
 
-                ((RuleIndividual)inds.get(q)).preprocessIndividual(state,thread);
+            ((RuleIndividual)inds.get(q)).preprocessIndividual(state,thread);
 
-                /*
-                  int len = ((RuleIndividual)inds[q]).rulesets.length;
-                  for( int x = 0 ; x < len ; x++ )
-                  {
-                  ((RuleIndividual)inds[q]).rulesets[x].mutateRules( state, thread );
-                  }
-                */
-                ((RuleIndividual)inds.get(q)).mutate(state, thread);
-                ((RuleIndividual)inds.get(q)).postprocessIndividual(state,thread);
+            /*
+              int len = ((RuleIndividual)inds[q]).rulesets.length;
+              for( int x = 0 ; x < len ; x++ )
+              {
+              ((RuleIndividual)inds[q]).rulesets[x].mutateRules( state, thread );
+              }
+            */
+            ((RuleIndividual)inds.get(q)).mutate(state, thread);
+            ((RuleIndividual)inds.get(q)).postprocessIndividual(state,thread);
 
-                ((RuleIndividual)inds.get(q)).evaluated=false;
+            ((RuleIndividual)inds.get(q)).evaluated=false;
             }
 
         return n;
-    }
+        }
 
-}
+    }
     
     

@@ -58,7 +58,7 @@ public class KLandscapes extends GPProblem implements SimpleProblemForm {
     String P_KVALUE = "k-value";
     
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         super.setup(state,base);
         state.output.exitIfErrors();
         Parameter kval = new Parameter(state.P_EVALUATOR).push(P_PROBLEM).push(P_PROBLEMNAME).push(P_KVALUE);
@@ -81,167 +81,167 @@ public class KLandscapes extends GPProblem implements SimpleProblemForm {
         edgeScore = new double[2][6];
         for (int i = 0; i < 6; i++)
             {
-                nodeScore[i] = 2*r.nextDouble() -1;
+            nodeScore[i] = 2*r.nextDouble() -1;
             }
         // We need to assure that the best fitness is positive (to normalize it to 1)
         // A method to do this is to have at least one terminal symbol with a positive score.
         boolean ok = false;
         for (int i = 2; i < 6; i++)
             {
-                if (nodeScore[i] > 0)
-                    ok = true;
+            if (nodeScore[i] > 0)
+                ok = true;
             }
         if (!ok)
             nodeScore[2] = r.nextDouble();
         for (int i = 0; i < 2; i++)
             {
-                for (int j = 0; j < 6; j++)
-                    {
-                        edgeScore[i][j] = r.nextDouble();
-                    }
+            for (int j = 0; j < 6; j++)
+                {
+                edgeScore[i][j] = r.nextDouble();
+                }
             }
         bestFitness = computeBestFitness();
 
 
-    }
+        }
 
     // doesn't need to be cloned
     int[] indices = new int[256];  // we assume we only have letters, and 0 means "no sucessor"
     int getIndex(char c)
-    {
+        {
         return indices[c - 'A'];
-    }
+        }
 
     public void evaluate(
-                         final EvolutionState state,
-                         final Individual ind,
-                         final int subpopulation,
-                         final int threadnum)
-    {
+        final EvolutionState state,
+        final Individual ind,
+        final int subpopulation,
+        final int threadnum)
+        {
         if (!ind.evaluated)
             {
-                double score = fitness(((GPIndividual) ind).trees[0].child);
-                SimpleFitness f = ((SimpleFitness) ind.fitness);
-                f.setFitness(state, score, score==1.0);
-                ind.evaluated = true;
+            double score = fitness(((GPIndividual) ind).trees[0].child);
+            SimpleFitness f = ((SimpleFitness) ind.fitness);
+            f.setFitness(state, score, score==1.0);
+            ind.evaluated = true;
             }
         
-    }
+        }
 
     double fitness(GPNode root)
-    {
+        {
         // Compute the penality (it increases with the difference in depth between the tree and k.
         double penalty = 1.0/(1+Math.abs(k+1-root.depth()));
         return penalty*fitnessHelper(root)/bestFitness;
-    }
+        }
 
     // We recursively search for the subtree with the maximal "score" 
     double fitnessHelper(GPNode node)
-    {
+        {
         double max = subtreeFitness(node,k);
         for (int i = 0; i < node.children.length; i++)
             {
-                GPNode child = node.children[i];
-                double tmp = fitnessHelper(child);
-                if (tmp > max)
-                    max = tmp;
+            GPNode child = node.children[i];
+            double tmp = fitnessHelper(child);
+            if (tmp > max)
+                max = tmp;
             }
         return max;
-    }
+        }
 
     double subtreeFitness(GPNode node, int depth)
-    {
+        {
         int index = getIndex(((KLandscapeTree) node).value());
         double score = nodeScore[index];
         if (depth == 0 || index > 1) //If we have reached the maximum depth (or we have found a terminal)
             return score;
         for (int i = 0; i < node.children.length; i++)
             {
-                GPNode child = node.children[i];
-                int childindex = getIndex(((KLandscapeTree) child).value());
-                //We recursively compute the "score" of the subtree
-                score += (1+edgeScore[index][childindex])*subtreeFitness(child,depth-1);
+            GPNode child = node.children[i];
+            int childindex = getIndex(((KLandscapeTree) child).value());
+            //We recursively compute the "score" of the subtree
+            score += (1+edgeScore[index][childindex])*subtreeFitness(child,depth-1);
             }
         return score;
-    }
+        }
 
     double computeBestFitness()
-    {
+        {
         // This is a dynamic programming kludge.
         double ttable[][] = new double[k][2];
         double ftable[][] = new double[k+1][2];
         for (int i = 0; i < 2; i++)
             {
-                ftable[0][i] = nodeScore[i];
+            ftable[0][i] = nodeScore[i];
             }
         // Case 1: the optimum hase depth at most k
         for (int i = 0; i < k; i++)
             {
-                for (int j = 0; j < 2; j++)
+            for (int j = 0; j < 2; j++)
+                {
+                if (i == 0)
                     {
-                        if (i == 0)
-                            {
-                                double max = (1+edgeScore[j][2])*nodeScore[2];
-                                for (int h = 3; h < 6; h++)
-                                    {
-                                        double tmp = (1+edgeScore[j][h])*nodeScore[h];
-                                        if (tmp > max)
-                                            max = tmp;
-                                    }
-                                ttable[i][j] = nodeScore[j] + 2*max;
-                            }
-                        else
-                            {
-                                double max = (1+edgeScore[j][0])*ttable[i-1][0];
-                                for (int h = 1; h < 2; h++)
-                                    {
-                                        double tmp = (1+edgeScore[j][h])*ttable[i-1][h];
-                                        if (tmp > max)
-                                            max = tmp;
-                                    }
-                                ttable[i][j] = nodeScore[j] + 2*max;
-                            }
+                    double max = (1+edgeScore[j][2])*nodeScore[2];
+                    for (int h = 3; h < 6; h++)
+                        {
+                        double tmp = (1+edgeScore[j][h])*nodeScore[h];
+                        if (tmp > max)
+                            max = tmp;
+                        }
+                    ttable[i][j] = nodeScore[j] + 2*max;
                     }
+                else
+                    {
+                    double max = (1+edgeScore[j][0])*ttable[i-1][0];
+                    for (int h = 1; h < 2; h++)
+                        {
+                        double tmp = (1+edgeScore[j][h])*ttable[i-1][h];
+                        if (tmp > max)
+                            max = tmp;
+                        }
+                    ttable[i][j] = nodeScore[j] + 2*max;
+                    }
+                }
             }
         // Case 2: the optimum has depth k+1
         for (int i = 1; i < k+1; i++)
             {
-                for (int j = 0; j < 2; j++)
+            for (int j = 0; j < 2; j++)
+                {
+                double max = (1+edgeScore[j][0])*ftable[i-1][0];
+                for (int h = 1; h < 2; h++)
                     {
-                        double max = (1+edgeScore[j][0])*ftable[i-1][0];
-                        for (int h = 1; h < 2; h++)
-                            {
-                                double tmp = (1+edgeScore[j][h])*ftable[i-1][h];
-                                if (tmp > max)
-                                    max = tmp;
-                            }
-                        ftable[i][j] = nodeScore[j] + 2*max;
+                    double tmp = (1+edgeScore[j][h])*ftable[i-1][h];
+                    if (tmp > max)
+                        max = tmp;
                     }
+                ftable[i][j] = nodeScore[j] + 2*max;
+                }
             }
         double best = nodeScore[2];
         for (int i = 3; i < 6; i++)
             {
-                if (nodeScore[i] > best)
-                    best = nodeScore[i];
+            if (nodeScore[i] > best)
+                best = nodeScore[i];
             }
         for (int i = 0; i < k; i++)
             {
-                for (int j = 0; j < 2; j++)
-                    {
-                        if (ttable[i][j] > best)
-                            best = ttable[i][j];
-                    }
+            for (int j = 0; j < 2; j++)
+                {
+                if (ttable[i][j] > best)
+                    best = ttable[i][j];
+                }
             }
         for (int i = 0; i < 2; i++)
             {
-                if (0.5*ftable[k][i] > best)
-                    best = 0.5*ftable[k][i];
+            if (0.5*ftable[k][i] > best)
+                best = 0.5*ftable[k][i];
             }
         return best;
-    }
+        }
 
     public Object clone()
-    {
+        {
         KLandscapes tmp = (KLandscapes)(super.clone());
         tmp.nodeScore = new double[6];
         tmp.edgeScore = new double[2][6];
@@ -249,13 +249,13 @@ public class KLandscapes extends GPProblem implements SimpleProblemForm {
         tmp.k = k;
         for (int i = 0; i < 6; i++)
             {
-                tmp.nodeScore[i] = nodeScore[i];
-                for (int j = 0; j < 2; j++)
-                    {
-                        tmp.edgeScore[j][i] = edgeScore[j][i];
-                    }
+            tmp.nodeScore[i] = nodeScore[i];
+            for (int j = 0; j < 2; j++)
+                {
+                tmp.edgeScore[j][i] = edgeScore[j][i];
+                }
             }
         return tmp;
-    }
+        }
 
-}
+    }
