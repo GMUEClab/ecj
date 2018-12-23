@@ -30,19 +30,20 @@ public class Misc
         return false;
         }
     
-    public static boolean doubleEquals(final double a, final double b, final double epsilon) {
+    public static boolean doubleEquals(final double a, final double b, final double epsilon)
+        {
         final double diff = Math.abs(a - b);
         return diff < epsilon
             || (Double.isNaN(diff) && a == b); // Handle the case where a = b = Double.POSITIVE_INFINITY or a = b = Double.NEGATIVE_INFINITY.
         }
-    }
     
-    public static boolean doubleArrayEquals(final double[] a, final double[] b, final double epsilon) {
+    public static boolean doubleArrayEquals(final double[] a, final double[] b, final double epsilon)
+        {
         if (a.length != b.length)
             return false;
         for (int i = 0; i < a.length; i++)
             if (!doubleEquals(a[i], b[i], epsilon))
                 return false;
         return true;
-    }
+        }
 }

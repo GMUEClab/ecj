@@ -47,12 +47,11 @@ public class IntegerVectorIndividual extends VectorIndividualCGP {
 	 */
 	public void defaultMutate(EvolutionState state, int thread) {
 		IntegerVectorSpecies s = (IntegerVectorSpecies) species;
-		if (s.mutationProbability > 0.0)
-			for (int x = 0; x < genome.length; x++)
-				if (state.random[thread].nextBoolean(s.mutationProbability)) {
-					genome[x] = randomValueFromClosedInterval(0, s
-							.computeMaxGene(x, genome), state.random[thread]);
-				}
+                for (int x = 0; x < genome.length; x++)
+                        if (state.random[thread].nextBoolean(s.mutationProbability(x))) {
+                                genome[x] = randomValueFromClosedInterval(0, s
+                                                .computeMaxGene(x, genome), state.random[thread]);
+                        }
 
 	}
 
@@ -126,7 +125,7 @@ public class IntegerVectorIndividual extends VectorIndividualCGP {
 	}
 
 	/** Return the genome length */
-	public long genomeLength() {
+	public int genomeLength() {
 		return genome.length;
 	}
 

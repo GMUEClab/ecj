@@ -2,7 +2,6 @@ package ec.cgp;
 
 import ec.EvolutionState;
 import ec.Individual;
-import ec.cgp.representation.VectorIndividualCGP;
 import ec.simple.SimpleStatistics;
 import ec.util.Output;
 
@@ -19,7 +18,7 @@ import ec.util.Output;
 public class Stats extends SimpleStatistics {
 
 	public void postEvaluationStatistics(EvolutionState state) {
-		Individual[] indBefore = new Individual[state.population.subpops.length];
+		final Individual[] indBefore = new Individual[state.population.subpops.size()];
 		boolean newBest = false;
 
 		if (best_of_run == null)
@@ -51,12 +50,10 @@ public class Stats extends SimpleStatistics {
 		 * multiple subpops
 		 */
 		float total = 0;
-		for (int i = 0; i < state.population.subpops[0].individuals.length; i++) {
-			total += state.population.subpops[0].individuals[i].fitness
-					.fitness();
-		}
+                for (final Individual ind : state.population.subpops.get(0).individuals)
+			total += ind.fitness.fitness();
 		String msg = "Mean fitness at generation " + state.generation + ": "
-				+ (total / state.population.subpops[0].individuals.length);
+				+ (total / state.population.subpops.get(0).individuals.size());
 		state.output.println(msg, Output.V_NO_GENERAL, statisticslog);
 		state.output.message(msg);
 	}

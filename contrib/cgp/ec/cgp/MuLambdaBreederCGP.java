@@ -2,10 +2,11 @@ package ec.cgp;
 
 
 import ec.EvolutionState;
+import ec.Individual;
 import ec.Population;
+import ec.Subpopulation;
 import ec.cgp.representation.VectorIndividualCGP;
 import ec.es.MuPlusLambdaBreeder;
-import ec.simple.SimpleBreeder;
 
 /**
  * The CGP implementation requires this slightly modified MuPlusLambdaBreeder
@@ -19,18 +20,13 @@ import ec.simple.SimpleBreeder;
  */
 public class MuLambdaBreederCGP extends MuPlusLambdaBreeder {
 
-	public Population breedPopulation(EvolutionState state) {
-
-		/**
-		 * reset the expressions that were computed and stored in the previous
-		 * generation.
-		 */
-		for (int x = 0; x < state.population.subpops.length; x++)
-			for (int y = 0; y < state.population.subpops[x].individuals.length; y++) {
-				((VectorIndividualCGP) state.population.subpops[x].individuals[y]).expression = null;
-			}
-
+	@Override
+	public Population breedPopulation(EvolutionState state)
+            {
+                for (final Subpopulation subpop : state.population.subpops)
+                    for (final Individual ind : subpop.individuals)
+                        ((VectorIndividualCGP)ind).expression = null;
 		return super.breedPopulation(state);
-	}
+            }
 
 }

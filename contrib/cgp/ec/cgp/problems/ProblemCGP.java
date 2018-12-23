@@ -44,9 +44,11 @@ public abstract class ProblemCGP extends Problem implements SimpleProblemForm {
 	/**
 	 * Currently does nothing except enforce the SimpleProblemForm contract.
 	 */
-	public void describe(Individual ind, EvolutionState state,
-			int subpopulation, int threadnum, int log, int verbosity) {
-	}
+        @Override
+	public void describe(final EvolutionState state, final Individual ind, final int subpopulation, final int threadnum, final int log)
+        {
+            return;
+        }
 
 	/**
 	 * Initialize the evaluation cache, and configure the random constants.

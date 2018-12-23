@@ -44,12 +44,10 @@ public class FloatVectorIndividual extends VectorIndividualCGP {
 	/** Mutate the genome. Adapted from FloatVectorIndividual. */
 	public void defaultMutate(EvolutionState state, int thread) {
 		VectorSpeciesCGP s = (VectorSpeciesCGP) species;
-		if (!(s.mutationProbability > 0.0))
-			return;
 		MersenneTwisterFast rng = state.random[thread];
 
 		for (int x = 0; x < genome.length; x++)
-			if (rng.nextBoolean(s.mutationProbability))
+			if (rng.nextBoolean(s.mutationProbability(x)))
 				genome[x] = rng.nextFloat();
 
 	}
@@ -192,7 +190,7 @@ public class FloatVectorIndividual extends VectorIndividualCGP {
 	/**
 	 * Return the length of the genome
 	 */
-	public long genomeLength() {
+	public int genomeLength() {
 		return genome.length;
 	}
 
