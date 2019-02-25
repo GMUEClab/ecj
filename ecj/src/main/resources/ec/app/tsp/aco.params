@@ -24,5 +24,4 @@ pop.subpop.0.species.pheromone
 
 
 eval.problem =                                  ec.app.tsp.TSPProblem
-eval.problem.file =                             $src/main/resources/ec/app/tsp/att532.tsp
-#eval.problem.file =				$src/main/resources/ec/app/tsp/test4.tsp
+eval.problem.file =				$src/main/resources/ec/app/tsp/test4.tsp
