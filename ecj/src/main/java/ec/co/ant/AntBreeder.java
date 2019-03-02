@@ -14,7 +14,9 @@ import ec.co.ConstructiveProblemForm;
 import ec.util.Parameter;
 
 /**
- *
+ * A breeder that contains the logic that is shared across Ant Colony Optimization
+ * algorithms.
+ * 
  * @author Eric O. Scott
  */
 public class AntBreeder extends Breeder
@@ -36,8 +38,10 @@ public class AntBreeder extends Breeder
             }
             
         final Population newPop = state.population.emptyClone();
+        // For each subpopulation
         for (int i = 0; i < state.population.subpops.size(); i++)
             {
+            // Get the subpop
             final Subpopulation oldSubpop = state.population.subpops.get(i);
             if (!(state.population.subpops.get(i).species instanceof AntSpecies))
                 state.output.fatal(String.format("%s: subpopulation %d has a %s, but %s requires a %s.", this.getClass().getSimpleName(), i, state.population.subpops.get(i).species.getClass().getSimpleName(), AntSpecies.class.getSimpleName()));

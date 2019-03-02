@@ -61,6 +61,7 @@ ec/app/royaltree/func/*.java \
 ec/app/sat/*.java \
 ec/app/singular/*.java \
 ec/app/sum/*.java \
+ec/app/tsp/*.java \
 ec/app/tutorial1/*.java \
 ec/app/tutorial2/*.java \
 ec/app/tutorial3/*.java \
@@ -71,6 +72,8 @@ ec/app/twobox/*.java \
 ec/app/twobox/func/*.java \
 ec/app/xor/*.java \
 ec/breed/*.java \
+ec/co/*.java \
+ec/co/ant/*.java \
 ec/coevolve/*.java \
 ec/de/*.java \
 ec/eda/amalgam/*.java \

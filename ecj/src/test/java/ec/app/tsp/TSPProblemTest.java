@@ -39,6 +39,7 @@ public class TSPProblemTest
     {
     }
     
+    /** Setup a TSP problem that reads its graph from an input file. */
     @Before
     public void setUp()
     {
@@ -54,6 +55,7 @@ public class TSPProblemTest
         state.evaluator = new SimpleEvaluator();
     }
     
+    /** Make sure the setup method doesn't crash. */
     @Test(expected = OutputExitException.class)
     public void testSetup()
     {
@@ -62,6 +64,7 @@ public class TSPProblemTest
         instance.setup(state, BASE);
     }
     
+    /** The costs loaded in from our 4-city example should match the input file. */
     @Test
     public void testCostTest4()
     {
@@ -93,6 +96,7 @@ public class TSPProblemTest
     }
         
     
+    /** Edge 0-1 of the att532 problem should have a cost of 109. */
     @Test
     public void testCostAtt532a()
     {
@@ -103,6 +107,7 @@ public class TSPProblemTest
         assertTrue(instance.repOK());
     }
     
+    /** Edge 531-1 of the att532 problem should have a cost of 1947. */
     @Test
     public void testCostAtt532b()
     {
@@ -113,8 +118,9 @@ public class TSPProblemTest
         assertTrue(instance.repOK());
     }
     
+    /** The canonical path of the att532 problem should equal 309636. This value
+     * comes from the TSPLIB documentation. */
     @Test
-    /** The TSPLIB documentation gives the distance of att532's 'canonical path' for verificiation purposes. */
     public void testCostAtt532c()
     {
         final TSPProblem instance = new TSPProblem();
@@ -123,6 +129,7 @@ public class TSPProblemTest
         assertTrue(instance.repOK());
     }
     
+    /** Edge 0-1 in the berlin52 problem should have a cost of 666. */
     @Test
     public void testCostBerlin52a()
     {
@@ -134,6 +141,7 @@ public class TSPProblemTest
         assertTrue(instance.repOK());
     }
     
+    /** Edge 51-0 of the berlin52 problem should have a cost of 1220. */
     @Test
     public void testCostBerlin52b()
     {
@@ -145,6 +153,8 @@ public class TSPProblemTest
         assertTrue(instance.repOK());
     }
     
+    /** The canonical path of the pcb442 problem should have a cost of 221440. 
+     * This value comes from the TSBLIB documentation. */
     @Test
     /** The TSPLIB documentation gives the distance of pcb442's 'canonical path' for verificiation purposes. */
     public void testCostPcb442()
@@ -156,6 +166,8 @@ public class TSPProblemTest
         assertTrue(instance.repOK());
     }
     
+    /** The canonical path of the gr666 problem should be 423710.  This value 
+     * comes from the TSPLIB documentation. */
     @Test
     /** The TSPLIB documentation gives the distance of gr666's 'canonical path' for verificiation purposes. */
     public void testCostGr666()
@@ -167,6 +179,10 @@ public class TSPProblemTest
         assertTrue(instance.repOK());
     }
     
+    /** Compute the cost of a problem's "canonical path", i.e. the cost of the
+     * tour that starts from node 0 and proceeds consecutively through nodes 
+     * 1, 2, 3, etc.
+     */
     private double canonicalDistance(final TSPProblem instance)
     {
         assert(instance != null);
@@ -177,6 +193,7 @@ public class TSPProblemTest
         return sum;
     }
     
+    /** The att532 problem should have 532^2 components. */
     @Test
     public void testNumComponents()
     {

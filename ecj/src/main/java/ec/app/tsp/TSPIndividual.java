@@ -44,9 +44,6 @@ public class TSPIndividual extends ConstructiveIndividual<TSPComponent> {
     {
         super.add(state, component);
         assert(component != null);
-        if (!(state.evaluator.p_problem instanceof TSPProblem))
-            state.output.fatal(String.format("%s: tried to use with %s, but must be an instance of %s.", this.getClass().getSimpleName(), state.evaluator.p_problem.getClass().getSimpleName(), TSPProblem.class.getSimpleName()));
-        final TSPProblem p = (TSPProblem) state.evaluator.p_problem;
         if (!(component instanceof TSPComponent))
             state.output.fatal(String.format("%s: attempted to add a component of type %s, but must be %s.", this.getClass().getSimpleName(), component.getClass().getSimpleName(), TSPComponent.class.getSimpleName()));
         final TSPComponent e = (TSPComponent) component;

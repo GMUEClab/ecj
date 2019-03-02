@@ -179,7 +179,7 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
                     allowedComponents.add(edge);
         }
         else
-        { // Otherwise, only edges extending from either end of the paht are allowed
+        { // Otherwise, only edges extending from either end of the path are allowed
             // Focus on the most recently added node in the tour
             final int mostRecentNode = tspSol.getLastNodeVisited();
             assert(mostRecentNode == tspSol.get((int) partialSolution.size() - 1).to());

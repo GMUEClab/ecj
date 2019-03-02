@@ -5,9 +5,12 @@
 */
 package ec.app.tsp;
 
+import ec.EvolutionState;
 import ec.co.Component;
 import ec.util.Misc;
 import java.io.BufferedReader;
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -15,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -164,7 +166,7 @@ public class TSPGraph {
         return new TSPComponent(from, to);
     }
     
-    public class TSPComponent implements Component
+    public class TSPComponent extends Component
     {
         private int fromNode;
         private int toNode;
@@ -238,6 +240,25 @@ public class TSPGraph {
             final double q2 = Math.cos(latitude(from) - latitude(to));
             final double q3 = Math.cos(latitude(from) + latitude(to));
             return (int) (rrr * Math.acos(0.5 * ((1.0 + q1)*q2 - (1.0 - q1)*q3) ) + 1.0);
+        }
+        
+        @Override
+        public void writeComponent(final EvolutionState state, final DataOutput output) throws IOException
+        {
+            assert(output != null);
+            output.writeInt(fromNode);
+            output.writeInt(toNode);
+            assert(repOK());
+        }
+        
+        @Override
+        public TSPComponent readComponent(final EvolutionState state, final DataInput input) throws IOException
+        {
+            assert(input != null);
+            final int fromNode = input.readInt();
+            final int toNode = input.readInt();
+            assert(repOK());
+            return new TSPComponent(fromNode, toNode);
         }
         
         public final boolean repOK()

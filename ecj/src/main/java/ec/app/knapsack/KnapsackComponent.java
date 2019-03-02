@@ -5,14 +5,18 @@
 */
 package ec.app.knapsack;
 
+import ec.EvolutionState;
 import ec.co.Component;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 
 /**
  * A component representing an object in a knapsack problem.
  * 
  * @author Eric O. Scott
  */
-public class KnapsackComponent implements Component {
+public class KnapsackComponent extends Component {
     private double size;
     private double value;
     
@@ -51,6 +55,21 @@ public class KnapsackComponent implements Component {
     public double cost() {
         assert(repOK());
         return value;
+    }
+    
+    @Override
+    public void writeComponent(final EvolutionState state, final DataOutput output) throws IOException
+    {
+        output.writeDouble(size);
+        output.writeDouble(value);
+    }
+    
+    @Override
+    public Component readComponent(final EvolutionState state, final DataInput input) throws IOException
+    {
+        final double size = input.readDouble();
+        final double value = input.readDouble();
+        return new KnapsackComponent(size, value);
     }
     
     /** @return False iff the object is in an inconsistent state. */

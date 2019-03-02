@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 /**
- * System tests that run every example parameter file for a couple generations
+ * "Smoke tests" that run every example parameter file for a couple generations
  * and ensure that they don't crash.
  * 
  * @author Eric O. Scott
@@ -92,6 +92,8 @@ public class AppsTest
         new File("src/main/resources/ec/app/moosuite/spea2.params").getAbsolutePath(),
 
         // Distributed examples; need their own test runner.
+        new File("src/main/resources/ec/app/tsp/aco.master.params").getAbsolutePath(),
+        new File("src/main/resources/ec/app/tsp/aco.slave.params").getAbsolutePath(),
         new File("src/main/resources/ec/app/star/ant.master.params").getAbsolutePath(),
         new File("src/main/resources/ec/app/star/ant.slave.params").getAbsolutePath(),
         new File("src/main/resources/ec/app/star/coevolve1.master.params").getAbsolutePath(),

@@ -8,6 +8,9 @@
 package ec.eval;
 
 import ec.*;
+import ec.co.Component;
+import ec.co.ConstructiveIndividual;
+import ec.co.ConstructiveProblemForm;
 import ec.util.*;
 import ec.coevolve.GroupedProblemForm;
 import ec.simple.SimpleProblemForm;
@@ -15,6 +18,7 @@ import ec.steadystate.QueueIndividual;
 import java.util.ArrayList;
 
 import java.io.*;
+import java.util.List;
 
 /**
  * MasterProblem.java
@@ -90,7 +94,7 @@ import java.io.*;
  * @version 1.0 
  */
 
-public class MasterProblem extends Problem implements SimpleProblemForm, GroupedProblemForm 
+public class MasterProblem extends Problem implements SimpleProblemForm, GroupedProblemForm, ConstructiveProblemForm
     {
     private static final long serialVersionUID = 1;
     
@@ -351,5 +355,59 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
     public void transferAdditionalData(EvolutionState state)
         {
         // do nothing
+        }
+
+    @Override
+    public int numComponents()
+        {
+        if (!(problem instanceof ConstructiveProblemForm)) 
+            throw new IllegalStateException(String.format("%s.numComponents() invoked, but the underlying Problem is not of %s", this.getClass().getSimpleName(), ConstructiveProblemForm.class.getSimpleName()));
+                
+        return ((ConstructiveProblemForm) problem).numComponents();
+        }
+
+    @Override
+    public boolean isCompleteSolution(final ConstructiveIndividual solution)
+        {
+        if (!(problem instanceof ConstructiveProblemForm)) 
+            throw new IllegalStateException(String.format("%s.isCompleteSolution() invoked, but the underlying Problem is not of %s", this.getClass().getSimpleName(), ConstructiveProblemForm.class.getSimpleName()));
+                
+        return ((ConstructiveProblemForm) problem).isCompleteSolution(solution);
+        }
+
+    @Override
+    public boolean isViolated(final ConstructiveIndividual partialSolution, final Component component)
+        {
+        if (!(problem instanceof ConstructiveProblemForm)) 
+            throw new IllegalStateException(String.format("%s.isViolated() invoked, but the underlying Problem is not of %s", this.getClass().getSimpleName(), ConstructiveProblemForm.class.getSimpleName()));
+                
+        return ((ConstructiveProblemForm) problem).isViolated(partialSolution, component);
+        }
+
+    @Override
+    public List<Component> getAllowedComponents(final ConstructiveIndividual partialSolution)
+        {
+        if (!(problem instanceof ConstructiveProblemForm)) 
+            throw new IllegalStateException(String.format("%s.getAllowedComponents() invoked, but the underlying Problem is not of %s", this.getClass().getSimpleName(), ConstructiveProblemForm.class.getSimpleName()));
+                
+        return ((ConstructiveProblemForm) problem).getAllowedComponents(partialSolution);
+        }
+
+    @Override
+    public Component getComponentFromString(final String s)
+        {
+        if (!(problem instanceof ConstructiveProblemForm)) 
+            throw new IllegalStateException(String.format("%s.getComponentFromString() invoked, but the underlying Problem is not of %s", this.getClass().getSimpleName(), ConstructiveProblemForm.class.getSimpleName()));
+                
+        return ((ConstructiveProblemForm) problem).getComponentFromString(s);
+        }
+
+    @Override
+    public Component getArbitraryComponent(final EvolutionState state, final int thread)
+        {
+        if (!(problem instanceof ConstructiveProblemForm)) 
+            throw new IllegalStateException(String.format("%s.getArbitraryComponent() invoked, but the underlying Problem is not of %s", this.getClass().getSimpleName(), ConstructiveProblemForm.class.getSimpleName()));
+                
+        return ((ConstructiveProblemForm) problem).getArbitraryComponent(state, thread);
         }
     }
