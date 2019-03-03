@@ -7,9 +7,9 @@ package ec.app.tsp;
 
 import ec.EvolutionState;
 import ec.app.tsp.TSPGraph.TSPComponent;
-import ec.app.tsp.TSPProblem;
-import ec.co.Component;
 import ec.co.ConstructiveIndividual;
+import java.io.DataInput;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,6 +65,13 @@ public class TSPIndividual extends ConstructiveIndividual<TSPComponent> {
         visitedNodes.add(e.to());
         assert(repOK());
     }
+    
+    @Override
+    public void readGenotype(final EvolutionState state, final DataInput dataInput) throws IOException
+        {
+            visitedNodes = new HashSet<Integer>();
+            super.readGenotype(state, dataInput);
+        }
     
     @Override
     public Object clone()
