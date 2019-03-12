@@ -111,8 +111,7 @@ public class SPEA2Breeder extends SimpleBreeder
             {
             Subpopulation subpop = state.population.subpops.get(i);
             Subpopulation newsubpop = newpop.subpops.get(i);
-            int ne = numElites(state, i);
-            for(int j = 0; j < ne; j++)
+            for(int j = 0; j < newsubpop.individuals.size(); j++)
                 subpop.individuals.add(j, (Individual)(newsubpop.individuals.get(j).clone()));
             }
         }
