@@ -2676,6 +2676,11 @@ public class ParameterDatabase implements Serializable
             ((ParameterDatabase) (parents.elementAt(x)))
                 .removeDeeply(parameter);
         }
+    
+    public void prependParent(ParameterDatabase database)
+        {
+        parents.insertElementAt(database, 0);
+        }
 
     public void addParent(ParameterDatabase database)
         {

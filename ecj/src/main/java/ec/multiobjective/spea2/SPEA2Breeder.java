@@ -67,6 +67,14 @@ public class SPEA2Breeder extends SimpleBreeder
 
     Population oldPopulation = null;
     
+    /** Extract the elite individuals from the current population and
+     * <i>both</i> place in newpop <i>and</i> replace the current population 
+     * with the archive.
+     *
+     * We place the elites straight into the current population because breeding
+     * is the next thing that happens right after loadElites() is called, and
+     * SPEA breeds children from the elitist archive.
+     */
     @Override
     protected void loadElites(EvolutionState state, Population newpop)
         {
@@ -95,7 +103,7 @@ public class SPEA2Breeder extends SimpleBreeder
         unmarkElitesEvaluated(state, newpop); // XXX Should NSGA-II be doing this too?  What is this?
         breedingState = BreedingState.ARCHIVE_LOADED;
 
-        // replace old population with archive so new individuals are bred from the archive members only
+        // replace old population with archive so new individuals will be bred from the archive members only
         oldPopulation = state.population;
         state.population = state.population.emptyClone();
         

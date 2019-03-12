@@ -14,7 +14,9 @@ import ec.util.Parameter;
 import java.util.List;
 
 /**
- *
+ * Builds an individual by adding one component at a time.  The component
+ * is chosen using a ComponentSelector of your choice.
+ * 
  * @author Eric O. Scott
  */
 public class SimpleConstructionRule implements ConstructionRule, Setup {

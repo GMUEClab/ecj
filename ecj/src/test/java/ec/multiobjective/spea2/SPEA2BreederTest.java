@@ -17,6 +17,8 @@ import ec.util.Output;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
 import ec.vector.DoubleVectorIndividual;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
@@ -386,5 +388,22 @@ public class SPEA2BreederTest
         ind.fitness = fitness;
         ind.genome = new double[] { geneValue };
         return ind;
+        }
+    
+    /** When running the full SPEA2 algorithm, the population size should be
+     * the same size after calling evolve() as it was before.
+     */
+    @Test
+    public void testPopulationSize() throws IOException
+        {
+        final ParameterDatabase params = new ParameterDatabase(new File("src/main/resources/ec/app/moosuite/zdt6.params"));
+        final ParameterDatabase spea2_params = new ParameterDatabase(new File("src/main/resources/ec/app/moosuite/spea2.params"));
+        params.prependParent(spea2_params);
+        
+        final EvolutionState state = Evolve.initialize(params, 10000);
+        state.startFresh(); // Set up the initial population and stuff
+        assertEquals(150, state.population.subpops.get(0).individuals.size());
+        state.evolve(); // Run one generation
+        assertEquals(150, state.population.subpops.get(0).individuals.size());
         }
     }
