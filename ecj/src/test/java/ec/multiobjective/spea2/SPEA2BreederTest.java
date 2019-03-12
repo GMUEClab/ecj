@@ -233,6 +233,25 @@ public class SPEA2BreederTest
         assertTrue(state.population.subpops.get(0).individuals.containsAll(expectedArchive));
         }
     
+    /** If "elite-fraction" is set to 0.1, the archive size for a population of
+     * 20 should be 2. */
+    @Test
+    public void testLoadElites7()
+        {
+        state.parameters.remove(BASE.push(SPEA2Breeder.P_ELITE).push("0"));
+        state.parameters.set(BASE.push(SPEA2Breeder.P_ELITE_FRAC).push("0"), "0.1");
+        state.population = getTestPopulation();
+        assert(state.population.subpops.get(0).individuals.size() == 20);
+        final Population newpop = state.population.emptyClone();
+        final SPEA2Breeder instance = new SPEA2Breeder();
+        instance.setup(state, BASE);
+        instance.loadElites(state, newpop);
+        assertEquals(2, newpop.subpops.get(0).individuals.size());
+        assertEquals(2, state.population.subpops.get(0).individuals.size());
+        assertTrue(state.population.subpops.get(0).individuals.containsAll(newpop.subpops.get(0).individuals));
+        assertTrue(newpop.subpops.get(0).individuals.containsAll(state.population.subpops.get(0).individuals));
+        }
+    
     /** Check the fitnesses after building an archive of size 10 with the
      * default k. */
     @Test
