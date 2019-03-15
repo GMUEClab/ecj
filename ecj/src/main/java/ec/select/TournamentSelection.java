@@ -74,7 +74,7 @@ public class TournamentSelection extends SelectionMethod implements SteadyStateB
     public static final String P_SIZE = "size";
 
     /** Base size of the tournament; this may change.  */
-    int size;
+    public int size;
 
     /** Probablity of picking the size plus one */
     public double probabilityOfPickingSizePlusOne;
