@@ -17,8 +17,6 @@ public class ParameterDatabaseTest
                 
         params_A.set(new Parameter("a.alias"), "foo");
         params_A.set(new Parameter("foo.alias"), "a");
-        params_A.set(new Parameter("a.b"), "ab");
-        params_A.set(new Parameter("a.b.c"), "abc");
         params_A.set(new Parameter("a.b.default"), "def");
         params_A.set(new Parameter("a.b.c.alias"), "ali");
         params_A.set(new Parameter("ali.d"), "abcd");
@@ -62,105 +60,581 @@ public class ParameterDatabaseTest
         manualDefaultExampleParams.set(new Parameter("gpncchild"), "nil");
         }
 
-    @Test public void aliasInParent()
-        {
-	assertEquals("spinach", params_A.getString(new Parameter("x.y.z"), null));
-        }
-
-    @Test public void aliasValueInParent()
-        {
-	assertEquals("toast", params_A.getString(new Parameter("q.r.s"), null));
-        }
-
-    @Test public void aliasValueInChild()
-        {
-            assertEquals("eggs", params_A.getString(new Parameter("t.u.v"), null));
-        }
-
-    @Test public void cycle()
-        {
-        assertEquals(null, params_A.getString(new Parameter("a.k"), null));
-        }
-    
-    @Test public void cycle2()
-        {
-        assertEquals(null, params_A.getString(new Parameter("a.b.c.k"), null));
-        }
-    
+    /** If the database contains
+     * 
+     * a.b = ab
+     * 
+     * then the query "a.b" should return "ab".
+     */
     @Test public void happyPath1()
         {
-        assertEquals("ab", params_A.getString(new Parameter("a.b"), null));
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("a.b"), "ab");
+        assertEquals("ab", params.getString(new Parameter("a.b"), null));
         }
 
+    /** If the database contains
+     * 
+     * a.b.c = foobarbaz
+     * 
+     * then the query "a.b.c" should return "foobarbaz".
+     */
     @Test public void happyPath2()
         {
-        assertEquals("abc", params_A.getString(new Parameter("a.b.c"), null));
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("a.b.c"), "foobarbaz");
+        
+        assertEquals("foobarbaz", params.getString(new Parameter("a.b.c"), null));
         }
     
-    @Test public void default1()
+    /** Aliases contained entirely within the parent file should resolve:
+     * 
+     * If the parent file contains the lines
+     * 
+     * x.y.alias = alias-in-parent
+     * alias-in-parent.z = spinach
+     * 
+     * then querying "x.y.z" should yield "spinach"
+     * 
+     */
+    @Test public void aliasInParent()
         {
-        // FIXME This requires that we return a default *value.*  But we intend the default mechanism to act as an *alias parameter.*
-        assertEquals("def", params_A.getString( new Parameter("a.b.d"), null));
+        final ParameterDatabase params = new ParameterDatabase();
+	final ParameterDatabase parent0 = new ParameterDatabase();
+	parent0.set(new Parameter("x.y.alias"), "alias-in-parent");
+	parent0.set(new Parameter("alias-in-parent.z"), "spinach");
+	params.addParent(parent0);
+        
+	assertEquals("spinach", params.getString(new Parameter("x.y.z"), null));
         }
 
-    @Test public void default2()
+    /** Aliases contained in the parent but referenced in the child should resolve:
+     * 
+     * If the child file contains the line
+     *
+     * q.r.alias = alias-value-in-parent
+     * 
+     * and the parent file contains
+     * 
+     * alias-value-in-parent.s = toast
+     * 
+     * then querying "q.r.s" should yield "toast"
+     * 
+     */
+    @Test public void aliasValueInParent()
         {
-        // FIXME This requires that we return a default *value.*  But we intended the default mechanism to act as an *alias parameter.*
-        assertEquals("def", params_A.getString( new Parameter("a.b.d.e"), null));
+        final ParameterDatabase params = new ParameterDatabase();
+	params.set(new Parameter("q.r.alias"), "alias-value-in-parent");
+	final ParameterDatabase parent0 = new ParameterDatabase();
+	parent0.set(new Parameter("alias-value-in-parent.s"), "toast");
+	params.addParent(parent0);
+        
+	assertEquals("toast", params.getString(new Parameter("q.r.s"), null));
         }
 
-    @Test public void alias1()
+    /** Aliases contained in the child but referenced in the parent should resolve:
+     * 
+     * If the parent file contains the line
+     * 
+     * t.u.alias = alias-value-in-child
+     * 
+     * and the child file contains
+     * 
+     * alias-value-in-child.v = eggs
+     * 
+     * then the query "t.u.v" should yield "eggs"
+     * 
+     */
+    @Test public void aliasValueInChild()
         {
-        assertEquals("abcd", params_A.getString( new Parameter("a.b.c.d"), null));
+        final ParameterDatabase params = new ParameterDatabase();
+	params.set(new Parameter("alias-value-in-child.v"), "eggs");
+	final ParameterDatabase parent0 = new ParameterDatabase();
+	parent0.set(new Parameter("t.u.alias"), "alias-value-in-child");
+	params.addParent(parent0);
+        
+        assertEquals("eggs", params.getString(new Parameter("t.u.v"), null));
         }
 
+    /** Cycles should return null without going into an infinite loop:
+     * 
+     * If the parameter file contains the lines
+     * 
+     * a.alias = foo
+     * foo.alias = a
+     * 
+     * then the query "a.k" should return null.
+     */
+    @Test public void aliasCycle1()
+        {
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("a.alias"), "foo");
+        params.set(new Parameter("foo.alias"), "a");
+        assertEquals(null, params.getString(new Parameter("a.k"), null));
+        }
+    
+    /** Cycles should return null without going into an infinite loop:
+     * 
+     * If the parameter file contains the lines
+     * 
+     * a.b.c.alias = ali
+     * ali.alias = a
+     * 
+     * and there is no value specified for a parameter "ali.k",
+     * then the query "a.b.c.k" should return null.
+     */
+    @Test public void aliasCycle2()
+        {
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("a.b.c.alias"), "ali");
+        params.set(new Parameter("ali.alias"), "a");
+        assertEquals(null, params.getString(new Parameter("a.b.c.k"), null));
+        }
+    
+    /** An alias with no appended parameters should resolve.  If we have
+     * 
+     * a.alias = b
+     * b = solutionb
+     * 
+     * then querying "a" should return "solutionb"
+     */
+    @Test
+    public void alias1()
+        {
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("a.alias"), "b");
+        params.set(new Parameter("b"), "solutionb");
+        assertEquals("solutionb", params.getString( new Parameter("a"), null));
+        }
+    
+    /** An alias with one appended parameter should resolve:
+     * 
+     * If the parameter file contains the lines:
+     * 
+     * a.b.c.alias = ali
+     * ali.d = abcd
+     * 
+     * then querying "a.b.c.d" should return "abcd".
+     */
     @Test public void alias2()
         {
-        assertEquals("abcef", params_A.getString( new Parameter("a.b.c.e.f"), null));
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("a.b.c.alias"), "ali");
+        params.set(new Parameter("ali.d"), "abcd");
+        assertEquals("abcd", params.getString( new Parameter("a.b.c.d"), null));
         }
 
+    /** An alias with two appended parameters should resolve:
+     * 
+     * If the parameter file contains the lines:
+     * 
+     * a.b.c.alias = ali
+     * ali.e.f = abcef
+     * 
+     * then querying "a.b.c.e.f" should return "abcef".
+     */
+    @Test public void alias3()
+        {
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("a.b.c.alias"), "ali");
+        params.set(new Parameter("ali.e.f"), "abcef");
+        assertEquals("abcef", params.getString( new Parameter("a.b.c.e.f"), null));
+        }
+    
+    /** An alias with four appended parameters should resolve.  If we have
+     * 
+     * a.alias = b
+     * b = solutionb
+     * b.c.d.e.f = solutionbcdef
+     * 
+     * then querying "a.c.d.e.f" should return "solutionbcdef"
+     */
+    @Test
+    public void alias4()
+        {
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("a.alias"), "b");
+        params.set(new Parameter("b"), "solutionb");
+        params.set(new Parameter("b.c.d.e.f"), "solutionbdcef");
+        assertEquals("solutionbdcef", params.getString( new Parameter("a.c.d.e.f"), null));
+        }
+    
+    /** A chain of aliases that reference each other should resolve. If we have
+     * 
+     * m.alias = n
+     * n.alias = o
+     * o.alias = p
+     * p.alias = a
+     * a.alias = b
+     * b = solutionb
+     * 
+     * then querying any of "m", "n", "o", "p", or "a" should return "solutionb".
+     */
+    @Test
+    public void alias5()
+        {
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("m.alias"), "n");
+        params.set(new Parameter("n.alias"), "o");
+        params.set(new Parameter("o.alias"), "p");
+        params.set(new Parameter("p.alias"), "a");
+        params.set(new Parameter("a.alias"), "b");
+        params.set(new Parameter("b"), "solutionb");
+        
+        assertEquals("solutionb", params.getString( new Parameter("m"), null));
+        assertEquals("solutionb", params.getString( new Parameter("n"), null));
+        assertEquals("solutionb", params.getString( new Parameter("o"), null));
+        assertEquals("solutionb", params.getString( new Parameter("p"), null));
+        assertEquals("solutionb", params.getString( new Parameter("a"), null));
+        assertEquals("solutionb", params.getString( new Parameter("b"), null));
+        }
+
+    /** Aliases that are themselves complex names (ex. x.y.z) should resolve. If
+     * we have the chain of aliases
+     * 
+     * m.n.o.p.alias = x.y.z
+     * x.y.z.alias = h.g
+     * h.g.alias = m
+     * m.alias = n
+     * n.alias = o
+     * o.alias = p
+     * p.alias = a
+     * a.u.v = solutionauv
+     * 
+     * then the query "m.n.o.p.u.v" should return "solutionauv."
+     */
+    @Test
+    public void alias6()
+        {
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("m.n.o.p.alias"), "x.y.z");
+        params.set(new Parameter("x.y.z.alias"), "h.g");
+        params.set(new Parameter("h.g.alias"), "m");
+        params.set(new Parameter("m.alias"), "n");
+        params.set(new Parameter("n.alias"), "o");
+        params.set(new Parameter("o.alias"), "p");
+        params.set(new Parameter("p.alias"), "a");
+        params.set(new Parameter("a.alias"), "b");
+        params.set(new Parameter("a.u.v"), "solutionauv");
+        
+        assertEquals("solutionauv", params.getString( new Parameter("m.n.o.p.u.v"), null));
+        assertEquals("solutionauv", params.getString( new Parameter("n.u.v"), null));
+        }
+
+    /** An alias for a default should resolve.  If we have
+     * 
+     * q.q.q.default = q.r
+     * q.r.alias = mm
+     * mm.h = solutionmmh
+     * 
+     * then the query "q.q.q.*.h" should return "solutionmmb", where "*" is 
+     * anything.
+     */
+    @Test
+    public void aliasDefault()
+        {
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("q.q.q.default"), "q.r");
+        params.set(new Parameter("q.r.alias"), "mm");
+        params.set(new Parameter("mm.h"), "solutionmmh");
+        
+        assertEquals("solutionmmh", params.getString( new Parameter("q.q.q.0.h"), null));
+        assertEquals("solutionmmh", params.getString( new Parameter("q.q.q.*.h"), null));
+        assertEquals("solutionmmh", params.getString( new Parameter("q.q.q.foo_bar.h"), null));
+        }
+    
+    /** Don't check for aliases on "parent" parameters. So if we have
+     * 
+     * parent.alias = x
+     * x.0 = myparent.params
+     * 
+     * then querying "parent.0" should return null.
+     */
+    @Test
+    public void aliasParentParams()
+        {
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("parent.alias"), "x");  
+        params.set(new Parameter("x.0"), "myparent.params"); 
+        assertEquals(null, params.getString( new Parameter("parent.0"), null));
+        }
+    
+    /** Don't check for defaults on "parent" parameters. So if we have
+     * 
+     * parent.default = x
+     * x = myparent.params
+     * 
+     * then querying "parent.*" should return null, where "*" is anything.
+     */
+    @Test
+    public void defaultParentParams()
+        {
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("parent.default"), "x");  
+        params.set(new Parameter("x"), "myparent.params"); 
+        assertEquals(null, params.getString( new Parameter("parent.0"), null));
+        assertEquals(null, params.getString( new Parameter("parent.1"), null));
+        assertEquals(null, params.getString( new Parameter("parent.*"), null));
+        assertEquals(null, params.getString( new Parameter("parent.foo_bar"), null));
+        }
+    
+    /** Don't check for aliases on "print-params". So if we have
+     * 
+     * print-params.alias = x
+     * x = false
+     * 
+     * then querying "print-params" should return null.
+     */
+    @Test
+    public void aliasPrintParams1()
+        {
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter(ParameterDatabase.PRINT_PARAMS + ".alias"), "x");  
+        params.set(new Parameter("x"), "false"); 
+        assertEquals(null, params.getString( new Parameter(ParameterDatabase.PRINT_PARAMS), null));
+        }
+    
+    /** If the parameter "im.not.here" does not appear in the database, querying
+     * for it should return null.
+     */
     @Test public void nonExistant()
         {
         assertEquals(null, params_A.getString( new Parameter("im.not.here"), null));
         }
 
-
+    /** Querying for the null parameter returns null. */
     @Test public void nullParam()
         {
         assertEquals(null, params_A.getString(null, null));
         }
 
+    
+    /** Simple alias example from the manual.  If the database contains
+     * 
+     * hello.there.alias = foo
+     * foo.dad = A
+     * 
+     * then querying "hello.there.dad" should return "A"
+     */
     @Test public void manualAliasExample1()
-        {
-        assertEquals("A", manualAliasExampleParams.getString( new Parameter("hello.there.dad"), null));
+        {   
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("hello.there.alias"), "foo");
+        params.set(new Parameter("foo.dad"), "A");
+        
+        assertEquals("A", params.getString( new Parameter("hello.there.dad"), null));
         }
 
+    /** Simple alias example from the manual.  If the database contains
+     * 
+     * hello.there.mom.alias = bar
+     * bar.42 = 6x9
+     * 
+     * then querying "hello.there.mom.42" should return "6x9".
+     */
     @Test public void manualAliasExample2()
-        {
+        {   
+        final ParameterDatabase params = new ParameterDatabase();
+        manualAliasExampleParams.set(new Parameter("hello.there.mom.alias"), "bar");
+        manualAliasExampleParams.set(new Parameter("bar.42"), "6x9");
+        
         assertEquals("6x9", manualAliasExampleParams.getString( new Parameter("hello.there.mom.42"), null));
         }
 
+    /** Exact parameter matches take precedence over alias matches.  So if the
+     * database contains
+     * 
+     * hello.there.alias = foo
+     * hello.there.mom.how.are.you = A
+     * foo.mom.how.are.you = B
+     * 
+     * then the query "hello.there.mom.how.are.you" should return "A".
+     */
     @Test public void manualAliasExample3()
         {
-        assertEquals("whoa", manualAliasExampleParams.getString( new Parameter("hello.there.mom.how.are.you"), null));
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("hello.there.alias"), "foo");
+        params.set(new Parameter("hello.there.mom.how.are.you"), "A");
+        params.set(new Parameter("foo.mom.how.are.you"), "B");
+        
+        assertEquals("A", params.getString( new Parameter("hello.there.mom.how.are.you"), null));
         }
 
+    /** Aliases only match to full parameter names, not partial ones.  So if the
+     * database contains
+     * 
+     * hello.there.alias = foo
+     * foo = value
+     * hello.therewhoa = howdy
+     * 
+     * then the query "hello.therewhoa" will return "howdy".
+     * 
+     */
     @Test public void manualAliasExample4()
         {
-        assertEquals("howdy", manualAliasExampleParams.getString( new Parameter("hello.therewhoa"), null));
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("hello.there.alias"), "foo");
+        params.set(new Parameter("foo"), "value");
+        params.set(new Parameter("hello.therewhoa"), "howdy");
+        assertEquals("howdy", params.getString( new Parameter("hello.therewhoa"), null));
         }
 
+    /** Aliases don't match in the middle of a string, only at the beginning. So
+     * if the database contains
+     * 
+     * hello.there.alias = foo
+     * foo.mom = howdy
+     * my.foo.mom = dooty
+     * 
+     * then the query "hello.there.mom" should return "howdy".
+     */
     @Test public void manualAliasExample5()
         {
-        assertEquals("dooty", manualAliasExampleParams.getString( new Parameter("my.hello.there.mom"), null));
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("hello.there.alias"), "foo");
+        params.set(new Parameter("foo.mom"), "howdy");
+        params.set(new Parameter("my.hello.there.mom"), "dooty");
+        
+        assertEquals("howdy", params.getString( new Parameter("hello.there.mom"), null));
         }
 
+    /** Cycles should return null without going into an infinite loop.  So if we
+     * have
+     * 
+     * a.b.alias = foo
+     * foo.alias = a.b
+     * 
+     * then querying "a.b.yo" should return null.
+     */
     @Test
     public void manualAliasExample6()
         {
-        //XXX Accessing a cycle should also produce an error message
-        assertEquals(null, manualAliasExampleParams.getString( new Parameter("a.b.yo"), null));
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("a.b.alias"), "foo");
+        params.set(new Parameter("foo.alias"), "a.b");
+        assertEquals(null, params.getString( new Parameter("a.b.yo"), null));
         }
+    
+    /** A default with no appended parameters should resolve.  i.e. if we have
+     * 
+     * a.default = c
+     * c = solutionc
+     * 
+     * then querying "a.*" should return "solutionc", where "*" is anything.
+     */
+    @Test public void default1()
+        {
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("a.default"), "c");
+        params.set(new Parameter("c"), "solutionc");
+        assertEquals("solutionc", params.getString(new Parameter("a.0"), null));
+        assertEquals("solutionc", params.getString(new Parameter("a.1"), null));
+        assertEquals("solutionc", params.getString(new Parameter("a. "), null));
+        assertEquals("solutionc", params.getString(new Parameter("a.*"), null));
+        assertEquals("solutionc", params.getString(new Parameter("a.foo_bar"), null));
+        }
+
+    /** A default with one appended parameter should resolve.  i.e. if we have
+     * 
+     * a.default = c
+     * c.b = solutioncb
+     * 
+     * then querying "a.*.b" should return "solutioncb", where "*" is anything.
+     */
+    @Test public void default2()
+        {
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("a.default"), "c");
+        params.set(new Parameter("c.b"), "solutioncb");
+        assertEquals("solutioncb", params.getString(new Parameter("a.0.b"), null));
+        assertEquals("solutioncb", params.getString(new Parameter("a.1.b"), null));
+        assertEquals("solutioncb", params.getString(new Parameter("a. .b"), null));
+        assertEquals("solutioncb", params.getString(new Parameter("a.*.b"), null));
+        assertEquals("solutioncb", params.getString(new Parameter("a.foo_bar.b"), null));
+        }
+
+    /** A default with two appended parameters should resolve.  i.e. if we have
+     * 
+     * a.default = c
+     * c.b.c = solutioncbc
+     * 
+     * then querying "a.*.b.c" should return "solutioncbc", where "*" is anything.
+     */
+    @Test public void default3()
+        {
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("a.default"), "c");
+        params.set(new Parameter("c.b.c"), "solutioncbc");
+        assertEquals("solutioncbc", params.getString(new Parameter("a.0.b.c"), null));
+        assertEquals("solutioncbc", params.getString(new Parameter("a.1.b.c"), null));
+        assertEquals("solutioncbc", params.getString(new Parameter("a. .b.c"), null));
+        assertEquals("solutioncbc", params.getString(new Parameter("a.*.b.c"), null));
+        assertEquals("solutioncbc", params.getString(new Parameter("a.foo_bar.b.c"), null));
+        }
+
+    /** A default with five appended parameters should resolve.  i.e. if we have
+     * 
+     * a.default = c
+     * c.b.c.d.e.f = solutioncbcdef
+     * 
+     * then querying "a.*.b.c.d.e.f" should return "solutioncbc", where "*" is anything.
+     */
+    @Test public void default4()
+        {
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("a.default"), "c");
+        params.set(new Parameter("c.b.c.d.e.f"), "solutioncbcdef");
+        assertEquals("solutioncbcdef", params.getString(new Parameter("a.0.b.c.d.e.f"), null));
+        assertEquals("solutioncbcdef", params.getString(new Parameter("a.1.b.c.d.e.f"), null));
+        assertEquals("solutioncbcdef", params.getString(new Parameter("a. .b.c.d.e.f"), null));
+        assertEquals("solutioncbcdef", params.getString(new Parameter("a.*.b.c.d.e.f"), null));
+        assertEquals("solutioncbcdef", params.getString(new Parameter("a.foo_bar.b.c.d.e.f"), null));
+        }
+
+    /** Chained defaults should resolve.  i.e. if we have
+     * 
+     * q.q.q.default = q.r
+     * q.r.default = mm
+     * mm.h = solutionmmh
+     * 
+     * then the query "q.q.q.*.*.h" should return "solutionmmb", where the "*"s
+     * are anything.
+     */
+    @Test public void default5()
+        {
+        final ParameterDatabase params = new ParameterDatabase();
+        params.set(new Parameter("q.q.q.default"), "q.r");
+        params.set(new Parameter("q.r.default"), "mm");
+        params.set(new Parameter("mm.h"), "solutionmmb");
+        assertEquals("solutionmmb", params.getString(new Parameter("q.q.q.0.1.h"), null));
+        assertEquals("solutionmmb", params.getString(new Parameter("q.q.q.1.0.h"), null));
+        assertEquals("solutionmmb", params.getString(new Parameter("q.q.q.foo.bar.h"), null));
+        }
+
+    /** An extended example of the defaults mechanism.
+     * 
+     * If the parameter file contains
+     * 
+     *   gp.nc.default = gpnc
+     *   gpnc = ec.gp.GPNodeConstraints
+     *  
+     *   gp.nc.0.name = nc0
+     *   gp.nc.1.name = nc1
+     *   gp.nc.2.name = nc2
+     *   gp.nc.3.name = nc3
+     * 
+     *   gpnc.returns = nil
+     *   gpnc.size = nil
+     *   gpnc.child.c.default = gpncchild
+     * 
+     *   gpncchild = nil
+     * 
+     * XXX This is inconsistent.
+     * 
+     * It says gp.nc.default rather than gp.nc.X.default,
+     * but then it says gpnc.child.c.default rather than cpnc.child.default
+     * 
+     */
     
     /* TODO This describes the behavior that we want from default, but which currently is not properly implemented.
     @Test public void manualDefaultExample()
