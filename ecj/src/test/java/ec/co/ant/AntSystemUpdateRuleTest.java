@@ -96,6 +96,7 @@ public class AntSystemUpdateRuleTest
         final AntSystemUpdateRule instance = new AntSystemUpdateRule();
         instance.setup(state, BASE);
         final SimplePheromoneTable pheromones = new SimplePheromoneTable();
+        pheromones.setup(state, BASE);
         final Subpopulation subpop = new Subpopulation();
         subpop.individuals = new ArrayList<Individual>()
         {{
@@ -124,6 +125,7 @@ public class AntSystemUpdateRuleTest
         final AntSystemUpdateRule instance = new AntSystemUpdateRule();
         instance.setup(state, BASE);
         final SimplePheromoneTable pheromones = new SimplePheromoneTable();
+        pheromones.setup(state, BASE);
         final Subpopulation subpop = new Subpopulation();
         subpop.individuals = new ArrayList<Individual>()
         {{
@@ -153,6 +155,7 @@ public class AntSystemUpdateRuleTest
         final AntSystemUpdateRule instance = new AntSystemUpdateRule();
         instance.setup(state, BASE);
         final SimplePheromoneTable pheromones = new SimplePheromoneTable();
+        pheromones.setup(state, BASE);
         final Subpopulation subpop = new Subpopulation();
         subpop.individuals = new ArrayList<Individual>()
         {{
@@ -196,7 +199,7 @@ public class AntSystemUpdateRuleTest
         }};
     }
     
-    class IntComponent implements Component
+    class IntComponent extends Component
     {
         final int i;
         
