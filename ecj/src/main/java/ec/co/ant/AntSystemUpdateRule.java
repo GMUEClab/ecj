@@ -10,9 +10,11 @@ import ec.Individual;
 import ec.Subpopulation;
 import ec.co.Component;
 import ec.co.ConstructiveIndividual;
+import ec.co.ConstructiveProblemForm;
 import ec.util.Parameter;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -76,6 +78,9 @@ public class AntSystemUpdateRule implements UpdateRule
     {
         assert(pheromones != null);
         assert(subpop != null);
+        
+        decayPheromones(state, pheromones);
+        
         final Map<Component, Double> contributions = new HashMap();
         // Loop through every individual and record its pheremone contributions (scores) for each edge
         for (final Individual o : subpop.individuals)
@@ -98,10 +103,19 @@ public class AntSystemUpdateRule implements UpdateRule
         for (final Component c : contributions.keySet())
             {
             final double oldPheromone = pheromones.get(state, c, 0); // Using thread 0 because we are in a single-threaded function
-            final double newPheromone = (1.0-decayRate) * oldPheromone + contributions.get(c);
+            final double newPheromone = oldPheromone + contributions.get(c);
             pheromones.set(c, newPheromone);
             }
         assert(repOK());
+    }
+    
+    private void decayPheromones(final EvolutionState state, final PheromoneTable pheromones)
+    {
+        assert(state != null);
+        assert(pheromones != null);
+        final List<Component> components = ((ConstructiveProblemForm)state.evaluator.p_problem).getAllComponents();
+        for (final Component c : components)
+            pheromones.set(c, (1.0-decayRate)*pheromones.get(state, c, 0)); // Using thread 0 because we are in a single-threaded function
     }
     
     private double pheromoneContribution(final EvolutionState state, final ConstructiveIndividual ind, final Component component)

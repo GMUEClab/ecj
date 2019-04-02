@@ -162,6 +162,11 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
     }
 
     @Override
+    public List<Component> getAllComponents() {
+        return new ArrayList<Component>(graph.getAllEdges());
+    }
+    
+    @Override
     public List<Component> getAllowedComponents(final ConstructiveIndividual partialSolution) {
         assert(partialSolution != null);
         

@@ -385,6 +385,14 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         }
 
     @Override
+    public List<Component> getAllComponents() {
+        if (!(problem instanceof ConstructiveProblemForm)) 
+            throw new IllegalStateException(String.format("%s.isViolated() invoked, but the underlying Problem is not of %s", this.getClass().getSimpleName(), ConstructiveProblemForm.class.getSimpleName()));
+                
+        return ((ConstructiveProblemForm) problem).getAllComponents();
+        }
+
+    @Override
     public List<Component> getAllowedComponents(final ConstructiveIndividual partialSolution)
         {
         if (!(problem instanceof ConstructiveProblemForm)) 

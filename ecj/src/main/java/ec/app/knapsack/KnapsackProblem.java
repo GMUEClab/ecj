@@ -32,9 +32,10 @@ public class KnapsackProblem extends Problem implements SimpleProblemForm, Const
     private double knapsackSize;
     private boolean allowDuplicates;
     
-    public List<KnapsackComponent> getComponents()
+    @Override
+    public List<Component> getAllComponents()
     {
-        return new ArrayList<KnapsackComponent>(components); // Defensive copy
+        return new ArrayList<Component>(components); // Defensive copy
     }
     
     @Override

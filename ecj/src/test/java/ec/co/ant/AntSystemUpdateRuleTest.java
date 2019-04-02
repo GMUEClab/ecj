@@ -128,7 +128,7 @@ public class AntSystemUpdateRuleTest
         
         instance.updatePheromones(state, pheromones, subpop);
         
-        final List<KnapsackComponent> pComponents = problem.getComponents();
+        final List<Component> pComponents = problem.getAllComponents();
         assertEquals(pheromones.get(state, pComponents.get(0), 0), 0.0014290714285714286, 0.00000001);
         assertEquals(pheromones.get(state, pComponents.get(1), 0), 0.0055005, 0.00000001);
         assertEquals(pheromones.get(state, pComponents.get(2), 0), 0.0030005, 0.00000001);
@@ -161,7 +161,7 @@ public class AntSystemUpdateRuleTest
         
         instance.updatePheromones(state, pheromones, subpop);
         
-        final List<KnapsackComponent> pComponents = problem.getComponents();
+        final List<Component> pComponents = problem.getAllComponents();
         assertEquals(pheromones.get(state, pComponents.get(0), 0), 1.0000005, 0.00000001);
         assertEquals(pheromones.get(state, pComponents.get(1), 0), 4.0000005, 0.00000001);
         assertEquals(pheromones.get(state, pComponents.get(2), 0), 2.0000005, 0.00000001);
@@ -194,7 +194,7 @@ public class AntSystemUpdateRuleTest
         
         instance.updatePheromones(state, pheromones, subpop);
         
-        final List<KnapsackComponent> pComponents = problem.getComponents();
+        final List<Component> pComponents = problem.getAllComponents();
         assertEquals(pheromones.get(state, pComponents.get(0), 0), 1.0000005, 0.00000001);
         assertEquals(pheromones.get(state, pComponents.get(1), 0), 2.0000005, 0.00000001);
         assertEquals(pheromones.get(state, pComponents.get(2), 0), 0.6666671666666666, 0.00000001);
@@ -212,7 +212,7 @@ public class AntSystemUpdateRuleTest
     {
         assert(components != null);
         final ConstructiveIndividual ind = new ConstructiveIndividual();
-        final List<KnapsackComponent> pComponents = problem.getComponents();
+        final List<Component> pComponents = problem.getAllComponents();
         for (final int c : components)
             ind.add(state, pComponents.get(c));
         ind.fitness = new SimpleFitness();

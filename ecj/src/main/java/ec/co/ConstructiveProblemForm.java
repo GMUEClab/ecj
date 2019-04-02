@@ -52,6 +52,9 @@ public interface ConstructiveProblemForm {
      */
     public abstract List<Component> getAllowedComponents(final ConstructiveIndividual partialSolution);
     
+    /** @return all components that exist in the problem definition. */
+    public abstract List<Component> getAllComponents();
+    
     /** Decode a String representation of a solution component.
      * 
      * @param s A String representing a component.
