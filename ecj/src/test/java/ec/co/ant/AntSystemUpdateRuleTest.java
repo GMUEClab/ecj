@@ -9,11 +9,15 @@ import ec.EvolutionState;
 import ec.Evolve;
 import ec.Individual;
 import ec.Subpopulation;
+import ec.app.knapsack.KnapsackComponent;
+import ec.app.knapsack.KnapsackProblem;
 import ec.co.Component;
 import ec.co.ConstructiveIndividual;
 import ec.co.ant.AntSystemUpdateRule.DepositRule;
+import ec.simple.SimpleEvaluator;
 import ec.simple.SimpleEvolutionState;
 import ec.simple.SimpleFitness;
+import ec.util.MersenneTwisterFast;
 import ec.util.Output.OutputExitException;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
@@ -30,8 +34,12 @@ import static org.junit.Assert.*;
 public class AntSystemUpdateRuleTest
 {
     private final static Parameter BASE = new Parameter("base");
+    private final static Parameter PROBLEM_BASE = new Parameter("prob");
+    private final static Parameter PHEROMONES_BASE = new Parameter("pheromones");
     private EvolutionState state;
     private ParameterDatabase params;
+    private SimplePheromoneTable pheromones;
+    private KnapsackProblem problem;
     
     public AntSystemUpdateRuleTest()
     {
@@ -41,6 +49,10 @@ public class AntSystemUpdateRuleTest
     public void setUp()
     {
         params = new ParameterDatabase();
+        params.set(PROBLEM_BASE.push(KnapsackProblem.P_SIZES), "1 2 3 4 5 6 7 8 9 10");
+        params.set(PROBLEM_BASE.push(KnapsackProblem.P_VALUES), "1 2 3 4 5 5 4 3 2 1");
+        params.set(PROBLEM_BASE.push(KnapsackProblem.P_KNAPSACK_SIZE), "15");
+        params.set(PHEROMONES_BASE.push(SimplePheromoneTable.P_INITIALIZE_WITH_NOISE), "false");
         params.set(BASE.push(AntSystemUpdateRule.P_DECAY_RATE), "0.5");
         params.set(BASE.push(AntSystemUpdateRule.P_DEPOSIT_RULE), DepositRule.ANT_CYCLE.toString());
         state = new SimpleEvolutionState();
@@ -49,6 +61,13 @@ public class AntSystemUpdateRuleTest
         state.output.getLog(0).silent = true;
         state.output.getLog(1).silent = true;
         state.output.setThrowsErrors(true);
+        state.random = new MersenneTwisterFast[] { new MersenneTwisterFast() };
+        state.evaluator = new SimpleEvaluator();
+        problem = new KnapsackProblem();
+        problem.setup(state, PROBLEM_BASE);
+        state.evaluator.p_problem = problem;
+        pheromones = new SimplePheromoneTable();
+        pheromones.setup(state, PHEROMONES_BASE);
     }
 
     @Test
@@ -90,113 +109,115 @@ public class AntSystemUpdateRuleTest
         instance.setup(state, BASE);
     }
 
+    /** Applying ANT_CYCLE once to a set of ConstructiveIndividuals whose fitness 
+     * has already been evaluated should produce the expected changes in 
+     * pheromone levels. */
     @Test
     public void testUpdatePheromones1()
     {
         final AntSystemUpdateRule instance = new AntSystemUpdateRule();
         instance.setup(state, BASE);
-        final SimplePheromoneTable pheromones = new SimplePheromoneTable();
-        pheromones.setup(state, BASE);
         final Subpopulation subpop = new Subpopulation();
         subpop.individuals = new ArrayList<Individual>()
         {{
-            add(createInd(new int[] { 1, 6, 11, 12 }, 500.0));
-            add(createInd(new int[] { 1, 6, 11, 12 }, 1000.0));
-            add(createInd(new int[] { 3, 13, 6, 8 }, 700.0));
-            add(createInd(new int[] { 2, 11, 13, 4}, 800.0));
+            add(createKnapsackInd(new int[] { 1, 2, 3, 4 }, 500.0));
+            add(createKnapsackInd(new int[] { 1, 2, 3, 4 }, 1000.0));
+            add(createKnapsackInd(new int[] { 0, 3, 6, 8 }, 700.0));
+            add(createKnapsackInd(new int[] { 9, 3, 1, 1}, 800.0));
         }};
         
-        final SimplePheromoneTable expectedResult = new SimplePheromoneTable();
-        expectedResult.set(new IntComponent(1), 0.00425);
-        expectedResult.set(new IntComponent(2), 0.0026785714285714286);
-        expectedResult.set(new IntComponent(3), 0.004428571428571428);
-        expectedResult.set(new IntComponent(6), 0.004428571428571428);
-        expectedResult.set(new IntComponent(7), 0.0026785714285714286);
-        expectedResult.set(new IntComponent(11), 0.00425);
-        
         instance.updatePheromones(state, pheromones, subpop);
-        assertEquals(expectedResult, pheromones);
+        
+        final List<KnapsackComponent> pComponents = problem.getComponents();
+        assertEquals(pheromones.get(state, pComponents.get(0), 0), 0.0014290714285714286, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(1), 0), 0.0055005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(2), 0), 0.0030005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(3), 0), 0.005679071428571429, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(4), 0), 0.0030005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(5), 0), 0.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(6), 0), 0.0014290714285714286, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(7), 0), 0.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(8), 0), 0.0014290714285714286, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(9), 0), 0.0012505, 0.00000001);
     }
     
+    /** Applying ANT_DENSITY once to a set of ConstructiveIndividuals whose fitness 
+     * has already been evaluated should produce the expected changes in 
+     * pheromone levels. */
     @Test
     public void testUpdatePheromones2()
     {
         state.parameters.set(BASE.push(AntSystemUpdateRule.P_DEPOSIT_RULE), AntSystemUpdateRule.DepositRule.ANT_DENSITY.toString());
         final AntSystemUpdateRule instance = new AntSystemUpdateRule();
         instance.setup(state, BASE);
-        final SimplePheromoneTable pheromones = new SimplePheromoneTable();
-        pheromones.setup(state, BASE);
         final Subpopulation subpop = new Subpopulation();
         subpop.individuals = new ArrayList<Individual>()
         {{
-            add(createInd(new int[] { 1, 6, 11, 12 }, 500.0));
-            add(createInd(new int[] { 1, 6, 11, 12 }, 1000.0));
-            add(createInd(new int[] { 3, 13, 6, 8 }, 700.0));
-            add(createInd(new int[] { 2, 11, 13, 4}, 800.0));
+            add(createKnapsackInd(new int[] { 1, 2, 3, 4 }, 500.0));
+            add(createKnapsackInd(new int[] { 1, 2, 3, 4 }, 1000.0));
+            add(createKnapsackInd(new int[] { 0, 3, 6, 8 }, 700.0));
+            add(createKnapsackInd(new int[] { 9, 3, 1, 1}, 800.0));
         }};
         
-        final SimplePheromoneTable expectedResult = new SimplePheromoneTable();
-        expectedResult.set(new IntComponent(1), 3.0);
-        expectedResult.set(new IntComponent(2), 2.0);
-        expectedResult.set(new IntComponent(3), 3.0);
-        expectedResult.set(new IntComponent(6), 3.0);
-        expectedResult.set(new IntComponent(7), 2.0);
-        expectedResult.set(new IntComponent(11), 3.0);
-        
         instance.updatePheromones(state, pheromones, subpop);
-        assertEquals(expectedResult, pheromones);
+        
+        final List<KnapsackComponent> pComponents = problem.getComponents();
+        assertEquals(pheromones.get(state, pComponents.get(0), 0), 1.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(1), 0), 4.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(2), 0), 2.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(3), 0), 4.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(4), 0), 2.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(5), 0), 0.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(6), 0), 1.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(7), 0), 0.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(8), 0), 1.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(9), 0), 1.0000005, 0.00000001);
     }
     
+    /** Applying ANT_QUANTITY once to a set of ConstructiveIndividuals whose fitness 
+     * has already been evaluated should produce the expected changes in 
+     * pheromone levels. */
     @Test
     public void testUpdatePheromones3()
     {
         state.parameters.set(BASE.push(AntSystemUpdateRule.P_DEPOSIT_RULE), AntSystemUpdateRule.DepositRule.ANT_QUANTITY.toString());
-        // TODO set up problem
         final AntSystemUpdateRule instance = new AntSystemUpdateRule();
         instance.setup(state, BASE);
-        final SimplePheromoneTable pheromones = new SimplePheromoneTable();
-        pheromones.setup(state, BASE);
         final Subpopulation subpop = new Subpopulation();
         subpop.individuals = new ArrayList<Individual>()
         {{
-            add(createInd(new int[] { 1, 6, 11, 12 }, 500.0));
-            add(createInd(new int[] { 1, 6, 11, 12 }, 1000.0));
-            add(createInd(new int[] { 3, 13, 6, 8 }, 700.0));
-            add(createInd(new int[] { 2, 11, 13, 4}, 800.0));
+            add(createKnapsackInd(new int[] { 1, 2, 3, 4 }, 500.0));
+            add(createKnapsackInd(new int[] { 1, 2, 3, 4 }, 1000.0));
+            add(createKnapsackInd(new int[] { 0, 3, 6, 8 }, 700.0));
+            add(createKnapsackInd(new int[] { 9, 3, 1, 1}, 800.0));
         }};
         
-        final List<Double> expectedList = zeroList(16);
-        // TODO hard-code expected output
-        /*expectedResult.set(0, 1, 3.0);
-        expectedResult.set(0, 2, 1.0);
-        expectedResult.set(0, 3, 3.0);
-        expectedResult.set(1, 2, 3.0);
-        expectedResult.set(1, 3, 2.0);
-        expectedResult.set(2, 3, 3.0);*/
-        final SimplePheromoneTable expectedResult = new SimplePheromoneTable();
-        
         instance.updatePheromones(state, pheromones, subpop);
-        assertEquals(expectedResult, pheromones);
+        
+        final List<KnapsackComponent> pComponents = problem.getComponents();
+        assertEquals(pheromones.get(state, pComponents.get(0), 0), 1.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(1), 0), 2.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(2), 0), 0.6666671666666666, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(3), 0), 1.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(4), 0), 0.4000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(5), 0), 0.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(6), 0), 0.2500005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(7), 0), 0.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(8), 0), 0.5000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(9), 0), 1.0000005, 0.00000001);
     }
     
-    private ConstructiveIndividual createInd(final int[] components, final double fitness)
+    /** @returns a solution to 'problem' with a manually designated fitness value. */
+    private ConstructiveIndividual createKnapsackInd(final int[] components, final double fitness)
     {
         assert(components != null);
         final ConstructiveIndividual ind = new ConstructiveIndividual();
-        final List<IntComponent> componentsList = new ArrayList<IntComponent>(components.length);
+        final List<KnapsackComponent> pComponents = problem.getComponents();
         for (final int c : components)
-            componentsList.add(new IntComponent(c));
-        ind.setComponents(state, componentsList);
+            ind.add(state, pComponents.get(c));
         ind.fitness = new SimpleFitness();
         ((SimpleFitness)ind.fitness).setFitness(state, fitness, false);
         return ind;
-    }
-    
-    private List<Double> zeroList(final int length) {
-        return new ArrayList<Double>(16) {{
-           for (int i = 0; i < length; i++)
-               add(0.0);
-        }};
     }
     
     class IntComponent extends Component

@@ -160,7 +160,7 @@ public class ConstructiveIndividual<T extends Component> extends Individual impl
                 && !P_CONSTRUCTIVEINDIVIDUAL.isEmpty()
                 && components != null
                 && !Misc.containsNulls(components)
-                && componentsSet.size() == components.size()
+                && componentsSet.size() == new HashSet<T>(components).size()
                 && componentsSet.equals(new HashSet<T>(components));
         }
 }

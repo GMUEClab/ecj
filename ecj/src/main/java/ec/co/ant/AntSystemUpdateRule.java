@@ -10,11 +10,9 @@ import ec.Individual;
 import ec.Subpopulation;
 import ec.co.Component;
 import ec.co.ConstructiveIndividual;
-import ec.co.ConstructiveProblemForm;
 import ec.util.Parameter;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
