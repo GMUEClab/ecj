@@ -64,6 +64,48 @@ public class SPEA2Breeder extends SimpleBreeder
         breedingState = BreedingState.BREEDING_COMPLETE;
         return result;
         }
+    
+    /** Return the number of individuals that we aim to see in the elitist 
+     * archive. 
+     *
+     * This can only be called after loadArchive() and before breedPopulation(). */
+    @Override
+    public int numElites(EvolutionState state, int subpopulation)
+        {
+        if (breedingState != BreedingState.ARCHIVE_LOADED)
+            state.output.fatal(String.format("%s: Tried to query numElites before loadElites() was called.", this.getClass().getSimpleName()));
+        return numElites(state, oldPopulation, subpopulation);
+        }
+    
+    /** Return the number of individuals that we aim to see in the elitist 
+     * archive, as a function of the size of an existing population.
+     * 
+     * Right after a breeding cycle, we'll wan to calculate relative to the 
+     * current population.  loadArchive() nukes the current population, though,
+     * in which case we calculate against oldPopulation.
+     */
+    private int numElites(EvolutionState state, final Population referencePop, int subpopulation)
+        {
+        if (elite[subpopulation] != NOT_SET)
+            {
+            if (elite[subpopulation] > referencePop.subpops.get(subpopulation).individuals.size())
+            state.output.error("The number of elites for subpopulation " + subpopulation + " exceeds the actual size of the subpopulation");
+            return elite[subpopulation];
+            }
+        else if (eliteFrac[subpopulation] == 0)
+            {
+            return 0; // no elites
+            }
+        else if (eliteFrac[subpopulation] != NOT_SET)
+            {
+            return (int) Math.max(Math.floor(referencePop.subpops.get(subpopulation).individuals.size() * eliteFrac[subpopulation]), 1.0);  // AT LEAST 1 ELITE
+            }
+        else 
+            {
+            state.output.warnOnce("Elitism error (SPEA2Breeder).  This shouldn't be able to happen.  Please report.");
+            return 0;  // this shouldn't happen
+            }
+        }
 
     Population oldPopulation = null;
     
@@ -83,12 +125,6 @@ public class SPEA2Breeder extends SimpleBreeder
         if (breedingState == BreedingState.ARCHIVE_LOADED)
             state.output.fatal("Tried to load elites for the next generation before breeding for the current generation was complete.");
         
-        // are our elites small enough?
-        for(int x = 0; x< state.population.subpops.size(); x++)
-            if (numElites(state, x)> state.population.subpops.get(x).individuals.size())
-                state.output.error("The number of elites for subpopulation " + x + " exceeds the actual size of the subpopulation");
-        state.output.exitIfErrors();
-
         // do it
         for (int sub = 0; sub < state.population.subpops.size(); sub++)
             {
@@ -96,12 +132,9 @@ public class SPEA2Breeder extends SimpleBreeder
             ArrayList<Individual> oldInds = state.population.subpops.get(sub).individuals;   // The old population from which to pick elites
                         
             computeAuxiliaryData(state, oldInds);
-            buildArchive(state, oldInds, newInds, numElites(state, sub));
+            buildArchive(state, oldInds, newInds, numElites(state, state.population, sub));
             }
 
-        // optionally force reevaluation
-        unmarkElitesEvaluated(state, newpop); // XXX Should NSGA-II be doing this too?  What is this?
-        breedingState = BreedingState.ARCHIVE_LOADED;
 
         // replace old population with archive so new individuals will be bred from the archive members only
         oldPopulation = state.population;
@@ -114,6 +147,10 @@ public class SPEA2Breeder extends SimpleBreeder
             for(int j = 0; j < newsubpop.individuals.size(); j++)
                 subpop.individuals.add(j, (Individual)(newsubpop.individuals.get(j).clone()));
             }
+        breedingState = BreedingState.ARCHIVE_LOADED;
+        
+        // optionally force reevaluation
+        unmarkElitesEvaluated(state, newpop);
         }
 
     @Override

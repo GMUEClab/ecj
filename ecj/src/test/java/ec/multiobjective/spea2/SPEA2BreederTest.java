@@ -66,6 +66,9 @@ public class SPEA2BreederTest
         {
         final SPEA2Breeder instance = new SPEA2Breeder();
         instance.setup(state, BASE);
+        state.population = getTestPopulation();
+        final Population newpop = state.population.emptyClone();
+        instance.loadElites(state, newpop); // Must load elites before numElites() is called
         assertTrue(instance.usingElitism(0));
         assertEquals(10, instance.numElites(state, 0));
         }
