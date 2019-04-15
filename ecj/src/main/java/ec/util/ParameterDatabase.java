@@ -2403,7 +2403,6 @@ g("a.b.c.d.e");
     /** Private helper function */
     synchronized String _getInner(String parameter, HashSet set) 
         {
-        //System.err.println("Searching " + parameter);
         if (parameter == null) 
             {
             return null;
@@ -2442,16 +2441,13 @@ g("a.b.c.d.e");
 	    	uncheck();
 			if (replace != null && countDelimiters(replace) > count)	// we don't allow macros to grow
 				{
-				System.err.println(parameter + " " + count + " < " + replace);
 				replace = null;
 				}
 
-	        System.err.println("Alias 0? " + parameter + "." + V_ALIAS + " -> " + replace);
             if (replace != null)
             	{
             	result = _getInner(replace, set);
 	        	uncheck();
-	        	//System.err.println("Result is " + result);
             	if (result != null)
             		{
             		return result;
@@ -2471,21 +2467,17 @@ g("a.b.c.d.e");
 					String head = parameter.substring(0, lastDelim);
 					String tail = parameter.substring(lastDelim + 1);
 					
-					System.err.println("Parameter " + parameter + " Head " + head + " Tail " + tail);
 					
 					// try default
 					replace = _getRecursive(head + "." + V_DEFAULT);		// we don't allow macros inside macro rules
 	        		uncheck();
 					if (replace != null && countDelimiters(replace) > count) // we don't allow macros to grow
 						{
-						//System.err.println(parameter + " " + count + " < " + replace);
 						replace = null;
 						}
 
-	        		System.err.println("Default? " + head + "." + V_DEFAULT + " -> " + replace);
 					if (replace != null)
 						{
-						//System.err.println("Default");
 						result = _getInner(replace + extra, set);
 	    				uncheck();
 						if (result != null)
@@ -2497,11 +2489,9 @@ g("a.b.c.d.e");
 	        		uncheck();
 					if (replace != null && countDelimiters(replace) > count)	// we don't allow macros to grow
 						{
-						//System.err.println(parameter + " " + count + " < " + replace);
 						replace = null;
 						}
 
-	        		System.err.println("Alias? " + head + "." + V_ALIAS + " -> " + replace);
 					if (replace != null)
 						{
 						result = _getInner(replace + "." + tail + extra, set);
