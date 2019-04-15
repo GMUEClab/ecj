@@ -138,6 +138,12 @@ public class Slave
     public static final byte V_EVALUATESIMPLE = 1;
     public static final byte V_EVALUATEGROUPED = 2;
 
+    /** The argument indicating that we're starting fresh from a parameter file stored in a jar file or as some resource. */
+    public static final String A_FROM = "-from";
+
+    /** The argument indicating the class where the resource is relative to. */
+    public static final String A_AT = "-at";
+
     /** The argument indicating that we're starting fresh from a new parameter file. */
     public static final String A_FILE = "-file";
         
@@ -168,16 +174,13 @@ public class Slave
         Output output = null;
         
         boolean store;
-        int x;
                 
         // 0. find the parameter database
-        for (x = 0; x < args.length - 1; x++)
+        for (int x = 0; x < args.length - 1; x++)
             if (args[x].equals(A_FILE))
-                {
                 try
                     {
                     parameters = new ParameterDatabase(
-                        // not available in jdk1.1: new File(args[x+1]).getAbsoluteFile(),
                         new File(new File(args[x + 1]).getAbsolutePath()),
                         args);
                                                 
@@ -186,19 +189,61 @@ public class Slave
                     parameters.set(new Parameter(ec.EvolutionState.P_EVALUATOR).push(ec.Evaluator.P_IAMSLAVE), "true");
                     break;
                     }
-                catch(FileNotFoundException e)
-                    { 
+                catch(Exception e)
+                    {
+                    e.printStackTrace();
+                    Output.initialError("An exception was generated upon reading the parameter file \"" + args[x+1] + "\".\nHere it is:\n" + e); 
+                    }
+        
+        // search for a resource class (we may or may not use this)
+        Class cls = null;
+        for(int x=0;x<args.length-1;x++)
+            if (args[x].equals(A_AT))
+                try
+                    {
+                    if (parameters != null)  // uh oh
+                        Output.initialError("Both -from and -at arguments provided.  This is not permitted.\nFor help, try:  java ec.Evolve -help");
+                    else 
+                        cls = Class.forName(args[x+1]);
+                    break;
+                    }
+                catch (Exception e)
+                    {
+                    e.printStackTrace();
                     Output.initialError(
-                        "A File Not Found Exception was generated upon" +
-                        "reading the parameter file \"" + args[x+1] + 
-                        "\".\nHere it is:\n" + e); }
-                catch(IOException e)
-                    { 
+                        "An exception was generated upon extracting the class to load the parameter file relative to: " + args[x+1] + 
+                        "\nFor help, try:  java ec.Evolve -help\n\n" + e);
+                    }
+                    
+        // search for a resource (we may or may not use this)
+        for(int x=0;x<args.length-1;x++)
+            if (args[x].equals(A_FROM))
+                try
+                    {
+                    if (parameters != null)  // uh oh
+                        Output.initialError("Both -file and -from arguments provided.  This is not permitted.\nFor help, try:  java ec.Evolve -help");
+                    else 
+                        {
+                        if (cls == null)  // no -at
+                            cls = Evolve.class;
+                        parameters = new ParameterDatabase(args[x+1], cls, args);
+                        Output.initialMessage("Using database resource location " + parameters.getLabel());
+                        }
+                        
+                    // add the fact that I am a slave:      eval.i-am-slave = true
+                    // this is used only by the Evaluator to determine whether to use the MasterProblem
+                    parameters.set(new Parameter(ec.EvolutionState.P_EVALUATOR).push(ec.Evaluator.P_IAMSLAVE), "true");
+                    break;
+                    }
+                catch (Exception e)
+                    {
+                    e.printStackTrace();
                     Output.initialError(
-                        "An IO Exception was generated upon reading the" +
-                        "parameter file \"" + args[x+1] +
-                        "\".\nHere it is:\n" + e); } 
-                }
+                        "The parameter file is missing at the resource location: " + args[x+1] + " relative to the class: " + cls + "\n\nFor help, try:  java ec.Evolve -help");
+                    }
+
+        
+        
         if (parameters == null)
             Output.initialError("No parameter file was specified." ); 
                 
@@ -406,9 +451,7 @@ public class Slave
                                 }
                         
                             // 0 means to shut down
-                            // System.err.println("reading next problem");
                             int problemType = dataIn.readByte();
-                            // System.err.println("Read problem: " + (int)problemType);
                             switch (problemType)
                                 {
                                 case V_SHUTDOWN:
@@ -444,13 +487,13 @@ public class Slave
                     {
                     if (state != null)
                         state.output.fatal(e.getMessage());
-                    else if (!silent) System.err.println("FATAL ERROR (EvolutionState not created yet): " + e.getMessage());
+                    else if (!silent) Output.initialError("FATAL ERROR (EvolutionState not created yet): " + e.getMessage());
                     }
                 catch (IOException e)
                     {
                     if (state != null)
                         state.output.fatal("Unable to connect to master:\n" + e);
-                    else if (!silent) System.err.println("FATAL ERROR (EvolutionState not created yet): " + e);
+                    else if (!silent) Output.initialError("FATAL ERROR (EvolutionState not created yet): " + e);
                     }
                 }
             catch (Output.OutputExitException e)

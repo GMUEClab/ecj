@@ -168,8 +168,8 @@ public class Evolve
         for(int x=0;x<args.length;x++)
             if (args[x].equals(A_HELP))
                 {
-                System.err.println(Version.message());
-                System.err.println(
+                Output.initialMessage(Version.message());
+                Output.initialMessage(
                     "Format:\n\n" + 
                     "    java ec.Evolve -file FILE [-p PARAM=VALUE] [-p PARAM=VALUE] ...\n" +
                     "    java ec.Evolve -from FILE [-p PARAM=VALUE] [-p PARAM=VALUE] ...\n" + 
@@ -207,7 +207,7 @@ public class Evolve
         for(int x=0;x<args.length-1;x++)
             if (args[x].equals(A_CHECKPOINT))
                 {
-                System.err.println("Restoring from Checkpoint " + args[x+1]);
+                Output.initialMessage("Restoring from Checkpoint " + args[x+1]);
                 try
                     {
                     return Checkpoint.restoreFromCheckpoint(args[x+1]);
@@ -247,7 +247,7 @@ public class Evolve
                 try
                     {
                     if (parameters != null)  // uh oh
-                        Output.initialError("Both -file and -at arguments provided.  This is not permitted.\nFor help, try:  java ec.Evolve -help");
+                        Output.initialError("Both -from and -at arguments provided.  This is not permitted.\nFor help, try:  java ec.Evolve -help");
                     else 
                         cls = Class.forName(args[x+1]);
                     break;
@@ -272,7 +272,7 @@ public class Evolve
                         if (cls == null)  // no -at
                             cls = Evolve.class;
                         parameters = new ParameterDatabase(args[x+1], cls, args);
-                        System.err.println("Using database resource location " + parameters.getLabel());
+                        Output.initialMessage("Using database resource location " + parameters.getLabel());
                         }
                     break;
                     }
