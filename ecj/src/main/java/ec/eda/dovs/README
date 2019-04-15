@@ -10,7 +10,7 @@ in the future.  DOvS individuals are presently IntegerVectorIndividual, but
 this may be broadened later.  DOvS has an abstract species called DOVSSpecies
 and one concrete subclass called HyperboxSpecies (for the moment). 
 
-DOVSDefauls.java		Package Defaults
+DOVSDefaults.java		Package Defaults
 DOVSEvaluator.java		Custom evaluator
 DOVSBreeder.java		Custom breeder
 DOVSInitializer.java		Custom initializer

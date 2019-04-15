@@ -70,6 +70,14 @@ public class NSGA2Breeder extends SimpleBreeder
 
     Population oldPopulation = null;
     
+    /** Extract the elite individuals from the current population and
+     * <i>both</i> place in newpop <i>and</i> replace the current population 
+     * with the archive.
+     *
+     * We place the elites straight into the current population because breeding
+     * is the next thing that happens right after loadElites() is called, and
+     * NSGA-II breeds children from the elitist archive.
+     */
     @Override
     protected void loadElites(EvolutionState state, Population newpop)
         {
