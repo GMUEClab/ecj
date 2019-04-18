@@ -25,11 +25,11 @@ import java.util.List;
 public class AntSpecies extends Species
 {
     public final static Parameter DEFAULT_BASE = new Parameter("constructive");
-    public final static String SPECIES_NAME = "constructiveSpecies";
+    public final static String SPECIES_NAME = "constructive-species";
     
-    public final static String P_CONSTRUCTION_RULE = "constructionRule";
-    public final static String P_PHEROMONE_TABLE = "pheromoneTable";
-    public final static String P_UPDATE_RULE = "updateRule";
+    public final static String P_CONSTRUCTION_RULE = "construction-rule";
+    public final static String P_PHEROMONE_TABLE = "pheromone-table";
+    public final static String P_UPDATE_RULE = "update-rule";
     
     private ConstructionRule constructionRule;
     private PheromoneTable pheromones;

@@ -23,8 +23,8 @@ import java.util.Map;
  */
 public class AntSystemUpdateRule implements UpdateRule
 {
-    public final static String P_DECAY_RATE = "decayRate";
-    public final static String P_DEPOSIT_RULE = "depositRule";
+    public final static String P_DECAY_RATE = "decay-rate";
+    public final static String P_DEPOSIT_RULE = "deposit-rule";
     public final static String P_Q = "Q";
     private double decayRate;
     public enum DepositRule { ANT_CYCLE, ANT_DENSITY, ANT_QUANTITY };
@@ -42,9 +42,12 @@ public class AntSystemUpdateRule implements UpdateRule
         q = state.parameters.exists(base.push(P_Q), null) ? state.parameters.getDouble(base.push(P_Q), null) : 1.0;
         if (q <= 0.0)
             state.output.fatal(String.format("%s: parameter '%s' has a value of %f, but must be positive.", this.getClass().getSimpleName(), base.push(P_Q), q));
-        final String depositString = state.parameters.getString(base.push(P_DEPOSIT_RULE), null);
+        String depositString = state.parameters.getString(base.push(P_DEPOSIT_RULE), null);
+        if (depositString == null)
+            state.output.fatal(String.format("%s: missing required parameter '%s'.", this.getClass().getSimpleName(), base.push(P_DEPOSIT_RULE)));
         try
             {
+            depositString = depositString.replace('-', '_');
             depositRule = DepositRule.valueOf(depositString);
             }
         catch (final NullPointerException e)
