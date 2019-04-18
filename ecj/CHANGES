@@ -2472,14 +2472,41 @@ Version		Change Log
 	Added pbil package
 	Initial version of rule-rewriting in parameter databases added
 	Fixed bugs in and added unit tests for NSGA2Breeder
-	Added ec/multiobjective/HypervolumeStatistics.java, with unit tests
-	Bugfix to AmalgamSpecies.  Thanks to Stef Maree <s.c.maree@amc.uva.nl>
-		and Peter Bosman <Peter.Bosman@cwi.nl>
+	Added ec/multiobjective/HypervolumeStatistics.java, with unit
+		tests
+	Bugfix to AmalgamSpecies.  Thanks to Stef Maree
+	       <s.c.maree@amc.uva.nl> and Peter Bosman
+	       <Peter.Bosman@cwi.nl>
 	Bugfix to SimpleShortStatistics, which was printing the wrong
 		generation number (off by 1) in the file.
-	Multiobjective examples now enable HypervolumeStatistics by default
-	Fixed incorrect equation for the KUR function in ec.app.moosuite.MooSuite
+	Multiobjective examples now enable HypervolumeStatistics by
+		default
+	Fixed incorrect equation for the KUR function in
+	      ec.app.moosuite.MooSuite
 
 27 Prerelease Schmirelease
-   	Added hypervolume calculation to ec.multiobjective.MultiObjectivestatistics
-	Add header to SimpleShortStatistics, and control over the delimiter used
+   	Added hypervolume calculation to
+	   	ec.multiobjective.MultiObjectiveStatistics
+	Added CSV header to SimpleShortStatistics, and control over
+		the delimiter used
+	Added a new framework for Ant Colony algorithms and
+	      combinatorial optimization
+	Implemented a TSP application with the ACO framework
+	Implemented a Knapsack application with the ACO framework
+	Added Lexicase selection
+	Replace the Maven pom.xml's fault <systemPath> hack for the
+   		pushGP dependency with a local repository
+	Expanded unit test coverage up to about 10%
+	Eliminated the DoubleBag util class
+	Fixed bug in MultiObjectiveFitness that affected
+	   	MultiObjectiveStatistics
+	Added error handling when the wront Fitness type is used with
+	   	NSGA2Breeder
+	Made ECJ buildable with JDK 11, now targeting Java 1.6
+	Fixed bug in SPEA2Breeder that occurred when the
+	   	elites-fraction parameter was used
+	Add macro mechanisms ("default" and "alias") to the
+	   	ParameterDatabase language
+	Disabled system tests by default (since they are slow); only
+	   	unit tests run by default
+	Update contrib/cgp so that it builds with recent ECJ versions
