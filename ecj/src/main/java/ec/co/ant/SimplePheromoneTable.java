@@ -101,6 +101,7 @@ public class SimplePheromoneTable implements PheromoneTable {
         return hash;
     }
     
+    @Override
     public boolean equals(final Object o)
     {
         if (o == this)

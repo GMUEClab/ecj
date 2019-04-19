@@ -1,5 +1,5 @@
 /*
-  Copyright 2017 by Sean Luke
+  Copyright 2018 by Sean Luke
   Licensed under the Academic Free License version 3.0
   See the file "LICENSE" for more information
 */
@@ -9,7 +9,6 @@ import ec.EvolutionState;
 import ec.Evolve;
 import ec.Individual;
 import ec.Subpopulation;
-import ec.app.knapsack.KnapsackComponent;
 import ec.app.knapsack.KnapsackProblem;
 import ec.co.Component;
 import ec.co.ConstructiveIndividual;
