@@ -1,5 +1,5 @@
 /*
-  Copyright 2019 by Sean Luke
+  Copyright 2018 by Sean Luke
   Licensed under the Academic Free License version 3.0
   See the file "LICENSE" for more information
 */
@@ -7,15 +7,14 @@ package ec.co.ant;
 
 import ec.EvolutionState;
 import ec.Evolve;
-import ec.app.knapsack.KnapsackComponent;
 import ec.app.knapsack.KnapsackProblem;
 import ec.co.Component;
+import static ec.co.ant.ProportionateComponentSelectorTest.createKnapsackComponents;
 import ec.simple.SimpleEvaluator;
 import ec.simple.SimpleEvolutionState;
 import ec.util.MersenneTwisterFast;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.math3.stat.inference.ChiSquareTest;
 import org.junit.Before;
@@ -23,23 +22,21 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * 
+ *
  * @author Eric O. Scott
  */
-public class ProportionateComponentSelectorTest {
+public class PseudorandomProportionateComponentSelectorTest {
     private final static Parameter BASE = new Parameter("base");
     private final static Parameter PROBLEM_BASE = new Parameter("prob");
     private final static Parameter PHEROMONE_BASE = new Parameter("pheromones");
     private EvolutionState state;
     private ParameterDatabase params;
     private KnapsackProblem problem;
-        
-    public ProportionateComponentSelectorTest() {
-    }
     
     @Before
     public void setUp() {
         params = new ParameterDatabase();
+        params.set(BASE.push(PseudorandomProportionateComponentSelector.P_PROB_BEST), "0.3");
         params.set(BASE.push(ProportionateComponentSelector.P_ALPHA), "0.5");
         params.set(BASE.push(ProportionateComponentSelector.P_BETA), "0.6");
         params.set(PROBLEM_BASE.push(KnapsackProblem.P_SIZES), "1 2 3 4 5");
@@ -58,27 +55,30 @@ public class ProportionateComponentSelectorTest {
         problem.setup(state, PROBLEM_BASE);
         state.evaluator.p_problem = problem;
     }
-
-    /** After setup, our alpha and beta parameters should be set. */
+    
+    /**
+     * After setting up, the probability of choosing the best individual should 
+     * be set.
+     */
     @Test
     public void testSetup() {
-        final ProportionateComponentSelector instance = new ProportionateComponentSelector();
+        final PseudorandomProportionateComponentSelector instance = new PseudorandomProportionateComponentSelector();
         instance.setup(state, BASE);
-        assertEquals(0.5, instance.getAlpha(), 0.00001);
-        assertEquals(0.6, instance.getBeta(), 0.00001);
+        
+        assertEquals(0.3, instance.getProbBest(), 0.000001);
         assertTrue(instance.repOK());
     }
-
+    
     /**
      * If we call the choose method 1000 times, the distribution of the selected
      * components should match the frequency predicted by the proportionate 
-     * selection equation.
+     * selection equation.  In this case, the third component is the best.
      */
     @Test
     public void testChoose1() {
         final List<Component> components = createKnapsackComponents(new double[] { 2.3528811 , 1.53512392, 2.59346391, 2.42995666, 0.4010784 });
         final PheromoneTable pheromones = createPheromoneTable(new double[] { 1.00587948, 0.31695738, 3.17696856, 0.2028905 , 1.39808347 }, components);
-        final ProportionateComponentSelector instance = new ProportionateComponentSelector();
+        final PseudorandomProportionateComponentSelector instance = new PseudorandomProportionateComponentSelector();
         instance.setup(state, BASE);
         
         final int N = 1000;
@@ -89,45 +89,38 @@ public class ProportionateComponentSelectorTest {
             observedCounts[components.indexOf(c)]++;
         }
         
-        final double[] expected = new double[] { 238.99078598960045, 103.83283023068613, 450.28012536317226, 109.43044552669576, 97.46581288984535 };
-        
-        assertFalse((new ChiSquareTest()).chiSquareTest(expected, observedCounts, alpha));
-        assertTrue(instance.repOK());
-    }
-
-    /**
-     * If we call the choose method 1000 times, the distribution of the selected
-     * components should match the frequency predicted by the proportionate 
-     * selection equation.  This cases includes some very small values in the 
-     * pheromone table.
-     */
-    @Test
-    public void testChoose2() {
-        final List<Component> components = createKnapsackComponents(new double[] { 2.3528811 , 1.53512392, 2.59346391, 2.42995666, 0.4010784 });
-        final PheromoneTable pheromones = createPheromoneTable(new double[] { 1.00587948, 0.0001, 0.0001, 0.2028905 , 1.39808347 }, components);
-        final ProportionateComponentSelector instance = new ProportionateComponentSelector();
-        instance.setup(state, BASE);
-        
-        final int N = 1000;
-        final double alpha = 0.01;
-        final long[] observedCounts = new long[components.size()];
-        for (int i = 0; i < N; i++) {
-            final Component c = instance.choose(state, components, pheromones, 0);
-            observedCounts[components.indexOf(c)]++;
-        }
-        
-        final double[] expected = new double[] { 530.7867827490876, 4.096124988314692, 5.610676929420844, 243.03963801534023, 216.46677731783657 };
+        final double[] expected = new double[] { 167.29355019,  72.68298116, 615.19608775,  76.60131187,
+        68.22606902 };
         
         assertFalse((new ChiSquareTest()).chiSquareTest(expected, observedCounts, alpha));
         assertTrue(instance.repOK());
     }
     
-    public static List<Component> createKnapsackComponents(final double[] costs)
-    {
-        return new ArrayList<Component>(costs.length) {{
-            for (final double c : costs)
-                add(new KnapsackComponent(c, c));
-            }};
+    /**
+     * If we call the choose method 1000 times, the distribution of the selected
+     * components should match the frequency predicted by the proportionate 
+     * selection equation.  In this case the first component is the best, and
+     * some very small values are included in the pheromone table.
+     */
+    @Test
+    public void testChoose2() {
+        final List<Component> components = createKnapsackComponents(new double[] { 2.3528811 , 1.53512392, 2.59346391, 2.42995666, 0.4010784 });
+        final PheromoneTable pheromones = createPheromoneTable(new double[] { 1.00587948, 0.0001, 0.0001, 0.2028905 , 1.39808347 }, components);
+        final PseudorandomProportionateComponentSelector instance = new PseudorandomProportionateComponentSelector();
+        instance.setup(state, BASE);
+        
+        final int N = 1000;
+        final double alpha = 0.01;
+        final long[] observedCounts = new long[components.size()];
+        for (int i = 0; i < N; i++) {
+            final Component c = instance.choose(state, components, pheromones, 0);
+            observedCounts[components.indexOf(c)]++;
+        }
+        
+        final double[] expected = new double[] { 671.55074792, 2.86728749, 3.92747385, 170.12774661, 151.52674412 };
+        
+        assertFalse((new ChiSquareTest()).chiSquareTest(expected, observedCounts, alpha));
+        assertTrue(instance.repOK());
     }
     
     private PheromoneTable createPheromoneTable(final double[] pheromones, final List<Component> components)
