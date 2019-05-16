@@ -50,7 +50,7 @@ public class PseudorandomProportionateComponentSelector implements ComponentSele
             double best_score = Double.NEGATIVE_INFINITY;
             for (final Component c : components)
             {
-                final double score = c.cost()*pheromones.get(state, c, thread);
+                final double score = c.desirability()*pheromones.get(state, c, thread);
                 if (score > best_score)
                 {
                     best = c;

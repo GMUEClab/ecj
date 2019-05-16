@@ -20,7 +20,8 @@ parent.0 = ../../multiobjective/spea2/spea2.params
 # Evolutionary Computation, Vol. 8, No. 2, pp173-195."
 #
 pop.subpop.0.size =                     150
-breed.elite.0 =				50
+#breed.elite.0 =				50
+breed.elite-fraction.0 =				0.1
 generations =                           250
 
 # SPEA2's pipeline:

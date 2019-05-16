@@ -240,16 +240,16 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
                 state.output.fatal(String.format("%s: attempted to evaluate an incomplete solution.", this.getClass().getSimpleName()));
             assert(tind.size() == graph.numNodes() - 1);
             final List<TSPComponent> components = tind.getComponents();
-            double cost = 0.0;
+            double distance = 0.0;
             for (final TSPComponent c : tind.getComponents())
-                cost += c.cost();
+                distance += c.distance();
             // The edge connecting the end to the beginning is implicit, so we add it here
-            assert(components.get(components.size() - 1).to() != components.get(0).from()); 
-            cost += graph.getEdge(components.get(components.size() - 1).to(), components.get(0).from()).cost();
-            assert(cost >= 0.0);
-            assert(!Double.isNaN(cost));
-            assert(!Double.isInfinite(cost));
-            ((SimpleFitness)ind.fitness).setFitness(state, cost, false);
+            assert(components.get(components.size() - 1).to() != components.get(0).from());
+            distance += graph.getEdge(components.get(components.size() - 1).to(), components.get(0).from()).desirability();
+            assert(distance >= 0.0);
+            assert(!Double.isNaN(distance));
+            assert(!Double.isInfinite(distance));
+            ((SimpleFitness)ind.fitness).setFitness(state, distance, false);
             ind.evaluated = true;
             }
     }

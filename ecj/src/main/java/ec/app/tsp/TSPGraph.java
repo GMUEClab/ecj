@@ -199,17 +199,22 @@ public class TSPGraph {
         }
         
         @Override
-        public double cost()
+        public double desirability()
+        {
+            return 1.0/distance();
+        }
+
+        public double distance()
         {
             switch (weightType())
             {
-            default:
-            case EUC_2D:
-                return euclideanDistance();
-            case ATT:
-                return attDistance();
-            case GEO:
-                return geoDistance();
+                default:
+                case EUC_2D:
+                    return 1.0/euclideanDistance();
+                case ATT:
+                    return 1.0/attDistance();
+                case GEO:
+                    return 1.0/geoDistance();
             }
         }
         

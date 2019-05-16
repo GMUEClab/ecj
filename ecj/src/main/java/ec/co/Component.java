@@ -16,8 +16,8 @@ import java.io.IOException;
  */
 public abstract class Component {
     
-    /** @return The heuristic cost of the component. */
-    public abstract double cost();
+    /** @return The heuristic value of the component (higher is better). */
+    public abstract double desirability();
     
     public void writeComponent(EvolutionState state, DataOutput output) throws IOException
         {

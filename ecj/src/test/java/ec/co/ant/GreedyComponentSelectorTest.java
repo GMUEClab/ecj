@@ -40,46 +40,17 @@ public class GreedyComponentSelectorTest {
         state.output.setThrowsErrors(true);
     }
 
-    /** The 'minimize' attribute should default to true. */
     @Test
     public void testSetup1()
     {
         final GreedyComponentSelector instance = new GreedyComponentSelector();
         instance.setup(state, BASE);
-        assertTrue(instance.isMinimize());
-        assertTrue(instance.repOK());
-    }
-
-    /** Set the minimize attribute. */
-    @Test
-    public void testSetup2()
-    {
-        state.parameters.set(BASE.push(GreedyComponentSelector.P_MINIMIZE), "false");
-        final GreedyComponentSelector instance = new GreedyComponentSelector();
-        instance.setup(state, BASE);
-        assertFalse(instance.isMinimize());
-        assertTrue(instance.repOK());
-    }
-
-    /** By default, select the component with the lowest cost. */
-    @Test
-    public void testChoose1() {
-        final GreedyComponentSelector instance = new GreedyComponentSelector();
-        instance.setup(state, BASE);
-        final List<Component> components = new ArrayList<Component>();
-        components.add(new KnapsackComponent(23, 92));
-        components.add(new KnapsackComponent(31, 57));
-        components.add(new KnapsackComponent(29, 49));
-        final Component expResult = new KnapsackComponent(29, 49);
-        final Component result = instance.choose(state, components, null, 0);
-        assertEquals(expResult, result);
         assertTrue(instance.repOK());
     }
     
-    /** When minimize is set to false, select the component with the highest cost. */
+    /** Select the component with the highest desirability. */
     @Test
-    public void testChoose2() {
-        state.parameters.set(BASE.push(GreedyComponentSelector.P_MINIMIZE), "false");
+    public void testChoose() {
         final GreedyComponentSelector instance = new GreedyComponentSelector();
         instance.setup(state, BASE);
         final List<Component> components = new ArrayList<Component>();

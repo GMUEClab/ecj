@@ -50,9 +50,9 @@ public class KnapsackComponent extends Component {
         return value;
     }
 
-    /** @return The heuristic value of the component (which is equal to its value). */
+    /** @return The heuristic value of the component (higher is better). */
     @Override
-    public double cost() {
+    public double desirability() {
         assert(repOK());
         return value;
     }

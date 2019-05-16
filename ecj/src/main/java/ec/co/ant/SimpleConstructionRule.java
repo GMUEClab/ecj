@@ -37,7 +37,7 @@ public class SimpleConstructionRule implements ConstructionRule, Setup {
         assert(repOK());
     }
 
-    /** Constructs a solution by greedily adding the lowest-cost component at 
+    /** Constructs a solution by greedily adding the lowest-desirability component at
      * each step until a complete solution is formed.  The pheromone matrix
      * argument is ignored, and may be null.
      */

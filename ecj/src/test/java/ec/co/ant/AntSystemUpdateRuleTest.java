@@ -229,7 +229,7 @@ public class AntSystemUpdateRuleTest
         }
         
         @Override
-        public double cost() {
+        public double desirability() {
             return i;
         }
         
