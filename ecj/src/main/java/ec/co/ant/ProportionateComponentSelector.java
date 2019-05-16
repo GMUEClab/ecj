@@ -78,7 +78,8 @@ public class ProportionateComponentSelector implements ComponentSelector, Setup 
             scores.add(score);
             denominator += score;
         }
-        assert(Double.isFinite(denominator));
+        assert(!Double.isInfinite(denominator));
+        assert(!Double.isNaN(denominator));
         assert(denominator >= 0);
         
         final double dart = state.random[thread].nextDouble();
@@ -97,7 +98,9 @@ public class ProportionateComponentSelector implements ComponentSelector, Setup 
                 && !P_ALPHA.isEmpty()
                 && P_BETA != null
                 && !P_BETA.isEmpty()
-                && Double.isFinite(alpha)
-                && Double.isFinite(beta);
+                && !Double.isInfinite(alpha)
+                && !Double.isNaN(alpha)
+                && !Double.isInfinite(beta)
+                && !Double.isNaN(beta);
     }
 }
