@@ -322,26 +322,28 @@ public class MaxOnes extends Problem implements SimpleProblemForm
 java ec.Evolve -file tutorial1.params
 </pre></tt>
 
-<p>As of ECJ 8, the ideal individual will be discovered in the Generation 102, at least on Java VMs which obey strict math (Microsoft's VM does not).  For more information on that little annoyance, see the <b>ABOUT.JDK13</b> file.  The system dumps its statistics into the <b>out.stat</b> file like you requested.  Look in the file and note the style of the statistics that SimpleStatistics uses.  The last few lines of the file look like this:
+<p>As of ECJ 26, the ideal individual will be discovered in the Generation 63 (using the fixed seed 4357), at least on Java VMs which obey strict math (Microsoft's VM does not).  For more information on that little annoyance, see the <b>ABOUT.JDK13</b> file.  The system dumps its statistics into the <b>out.stat</b> file like you requested.  Look in the file and note the style of the statistics that SimpleStatistics uses.  The last few lines of the file look like this:
 
 <tt><pre>
-Generation: 101
+Generation: 62
 Best Individual:
-Evaluated: true
+Subpopulation 0:
+Evaluated: T
 Fitness: 0.99
- 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+1111111111111111111111111111111111111111111111111111111111011111111111111111111111111111111111111111
 
-Generation: 102
+Generation: 63
 Best Individual:
-Evaluated: true
+Subpopulation 0:
+Evaluated: T
 Fitness: 1.0
- 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
 
 Best Individual of Run:
-Evaluated: true
+Subpopulation 0:
+Evaluated: T
 Fitness: 1.0
- 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-</pre></tt>
+1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
 
 <p>If you'd like information instead in a columnar format, and don't care about what the best individuals <i>look like</i>, you might try using <a href="../../classdocs/ec/simple/SimpleShortStatistics.html">ec.simple.SimpleShortStatistics</a> instead of SimpleStatistics.  You can of course modify your parameter file, but it might be easier to simply override a parameter on the command line:
 
@@ -352,9 +354,9 @@ java ec.Evolve -file tutorial1.params -p stat=ec.simple.SimpleShortStatistics
 <p>...the last few lines look like this:
 
 <tt><pre>
-100 0.9550000005960464 0.99 0.99 
-101 0.9568999993801117 0.99 0.99 
-102 0.9563999980688095 1.0 1.0 
+61 0.9547999999999993 0.98 0.99
+62 0.9577000000000001 0.99 0.99
+63 0.9543999999999997 1.0 1.0
 </pre></tt>
 
 <p>These columns are: the generation number, the mean fitness of the first subpopulation per generation, the best fitness of the first subpopulation per generation, and the best fitness of the first subpopulation so far in the run.  You can turn on even more statistics-gathering in most Statistics objects by saying <tt>stat.gather-full = true</tt>  More than one Statistics object can be defined simultaneously for a run as well, though that's out of the scope of this tutorial.

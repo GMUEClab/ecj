@@ -277,9 +277,9 @@ public class BitVectorIndividual extends VectorIndividual
         for( int i = 0 ; i < genome.length ; i++ )
             {
             if( genome[i] )
-                s.append("1");
+                s.append("1 ");
             else
-                s.append("0");
+                s.append("0 ");
             }
         return s.toString();
         }

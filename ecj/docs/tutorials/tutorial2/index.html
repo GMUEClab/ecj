@@ -26,11 +26,11 @@
 			<p>
 			Go into the <tt>ec/app</tt> directory and create a directory called <tt>tutorial2</tt>. In this directory, create a file called <tt>tutorial2.params</tt>. In this file, add as a first line the following: <tt>
 			<pre>
-parent.0		= ../../simple/simple.params
+parent.0		= ../../../../resources/ec/simple/simple.params
 </pre>
 			</tt>
 			<p>
-			This specifies that <tt>../../simple/simple.params </tt> will be the <b>first parent</b> of our parameter file. This means that if the parameter is not specified in <tt>tutorial.params</tt>, ECJ will next look in <tt>../../simple/simple.params</tt> to find that parameter.
+			This specifies that <tt>../../../../resources/ec/simple/simple.params </tt> will be the <b>first parent</b> of our parameter file. This means that if the parameter is not specified in <tt>tutorial.params</tt>, ECJ will next look in <tt>../../simple/simple.params</tt> to find that parameter.
 			<p>
 			<img src="hierarchy.jpg" valign=top align=right> As discussed in the <a href="../../parameters.html">introduction to Parameter files</a>, ECJ has a particular way of looking up parameters. When a parameter is requested by the system, ECJ tries the following in order:
 			<ol>
@@ -87,7 +87,7 @@ store =                                 true
 flush =                                 true
 evalthreads =                           1
 breedthreads =                          1
-seed.0 =                                4357
+seed.0 =                                time
 gc =                                    false
 gc-modulo =                             1
 aggressive =                            true
@@ -100,7 +100,7 @@ checkpoint-prefix =                     ec
 				</tr>
 			</table>
 			<p>
-			You'll notice these are the same parameters that we typed in by hand in Tutorial 1. Now we don't have to. So what <i>do</i> we have to specify? Mostly, we have to specify the representation, problem domain, and breeding pipeline.
+			With the exception of seed.0 = time you'll notice these are the same parameters that we typed in by hand in Tutorial 1. Now we don't have to. So what <i>do</i> we have to specify? Mostly, we have to specify the representation, problem domain, and breeding pipeline. Additionally for tutorial purposes specify seed.0 = 4357.
 			<h3>
 				Define the Representation -- And All About Species
 			</h3>
@@ -368,10 +368,10 @@ java ec.Evolve -file tutorial2.params
 
 <tt><pre>
 Best Individual of Run:
-Evaluated: true
-Fitness: 1430113.9
- 1777241 -955954 760157 -1180365 2011420 -2018763 1458181 491644 521531 -1835900 
- 819498 -2134796 1707889 -1326509 2324432 -1148173 1809439 -2129740 2031426 -1142507
+Subpopulation 0:
+Evaluated: T
+Fitness: 1328937.4
+-2109611 1506982 -1619349 -422340 -1215817 2311577 -2274133 824791 -897177 1507724 1558730 2287338 -914940 2337825 -2002770 1915314 -2239144 941224 -1103088 551014
 </pre></tt>
 
 <p>Now, let's run this with two simulataneous threads.  This would be useful in particular if you have a multiprocessor computer. You can multithread the evaluation process, the breeding process, or both.  Let's do both.  When you have more than one thread, you need to have more than one seed.  We have only specified one seed (seed.0=4357).  So we'll need to specify a second one.  We'll add the parameters on the command line, though of course you could add them to your parameter file:
@@ -384,10 +384,10 @@ java ec.Evolve -file tutorial2.params -p breedthreads=2 -p evalthreads=2 -p seed
 
 <tt><pre>
 Best Individual of Run:
-Evaluated: true
-Fitness: 1134800.9
- -2144673 -1202304 -529156 1934348 -2266614 1518874 -523776 1940636 -1432431 -537864 
- -982131 195106 -2023895 1775415 -198611 1216088 -2125361 1065844 -1420719 1142507
+Subpopulation 0:
+Evaluated: T
+Fitness: 1319626.5
+2124789 -2138310 516537 200535 2272817 -603010 1817772 -2297983 1809286 -2259884 674488 42054 323646 -506085 1863075 -2047703 1955544 -1371816 2316829 264455
 </pre></tt>
 
 <p>Even though the process is multithreaded, it's been arranged so that the results will be the same across runs with the same initial seeds.  Try running it again and see for yourself.
