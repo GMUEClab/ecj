@@ -112,6 +112,7 @@ public class SimpleShortStatisticsTest
         ind.genome = Arrays.copyOf(genome, genome.length);
         ind.fitness = new SimpleFitness();
         ((SimpleFitness)ind.fitness).setFitness(state, fitness, false);
+        ind.evaluated = true;
         return ind;
         }
     }
