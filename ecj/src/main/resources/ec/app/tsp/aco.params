@@ -5,17 +5,16 @@
 parent.0 = ../../simple/simple.params
 
 breed =                                         ec.co.ant.AntBreeder
-
+generations =                                   200
 pop.subpop.0.size =                             20
 pop.subpop.0.species =                          ec.co.ant.AntSpecies
 pop.subpop.0.species.fitness =                  ec.simple.SimpleFitness
 pop.subpop.0.species.ind =                      ec.app.tsp.TSPIndividual
-pop.subpop.0.species.numNodes =                 532
-pop.subpop.0.species.update-rule =               ec.co.ant.AntSystemUpdateRule
+pop.subpop.0.species.update-rule =              ec.co.ant.AntSystemUpdateRule
 pop.subpop.0.species.update-rule.decay-rate =	0.1
 pop.subpop.0.species.update-rule.deposit-rule =	ANT-CYCLE
-pop.subpop.0.species.pheromone-table =		ec.co.ant.SimplePheromoneTable
-pop.subpop.0.species.construction-rule =         ec.co.ant.SimpleConstructionRule
+pop.subpop.0.species.pheromone-table =		    ec.co.ant.SimplePheromoneTable
+pop.subpop.0.species.construction-rule =        ec.co.ant.SimpleConstructionRule
 pop.subpop.0.species.construction-rule.component-selector = ec.co.ant.ProportionateComponentSelector
 pop.subpop.0.species.construction-rule.component-selector.alpha =   1.0
 pop.subpop.0.species.construction-rule.component-selector.beta =    1.0
@@ -24,3 +23,4 @@ pop.subpop.0.species.pheromone
 
 eval.problem =                                  ec.app.tsp.TSPProblem
 eval.problem.file =				$src/main/resources/ec/app/tsp/test4.tsp
+#eval.problem.file =				$src/main/resources/ec/app/tsp/berlin52.tsp

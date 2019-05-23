@@ -52,6 +52,11 @@ alternative to Maven.  The downside of the Makefile is that you are
 responsible for manually installing ECJ's dependencies and adding them 
 to your `CLASSPATH` environment variable.
 
+```Bash
+wget libraries.tar.gz && tar -xzvf libraries.tar.gz
+export CLASSPATH=$(pwd)/libraries/*
+```
+
 ECJ has two modules which rely on external libraies
 which you can download as JAR files from the ECJ website
 (here:  http://cs.gmu.edu/~eclab/projects/ecj/libraries.zip ).

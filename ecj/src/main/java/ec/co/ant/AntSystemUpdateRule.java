@@ -95,9 +95,9 @@ public class AntSystemUpdateRule implements UpdateRule
                 {
                 assert(oo instanceof Component);
                 final Component c = (Component) oo;
-                final double cPheromone = pheromoneContribution(state, ind, c);
+                final double cPheromone = pheromoneContribution(ind, c);
                 if (contributions.containsKey(c))
-                    contributions.put(c, contributions.get(c) + cPheromone); // 
+                    contributions.put(c, contributions.get(c) + cPheromone);
                 else
                     contributions.put(c, cPheromone);
                 }
@@ -121,7 +121,7 @@ public class AntSystemUpdateRule implements UpdateRule
             pheromones.set(c, (1.0-decayRate)*pheromones.get(state, c, 0)); // Using thread 0 because we are in a single-threaded function
     }
     
-    private double pheromoneContribution(final EvolutionState state, final ConstructiveIndividual ind, final Component component)
+    private double pheromoneContribution(final ConstructiveIndividual ind, final Component component)
     {
         assert(ind != null);
         assert(component != null);
@@ -130,11 +130,11 @@ public class AntSystemUpdateRule implements UpdateRule
             {
             case ANT_CYCLE:
                 assert(fitness > 0);
-                return q/fitness;
+                return q*fitness;
             case ANT_DENSITY:
                 return q;
             case ANT_QUANTITY:
-                return q/component.cost();
+                return q*component.desirability();
             default:
                 throw new IllegalStateException(String.format("%s: no deposit rule logic implemented for %s.", this.getClass().getSimpleName(), depositRule));
             }

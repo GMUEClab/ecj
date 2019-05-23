@@ -1,2 +1,8 @@
 before_script: cd ecj
 language: java
+notifications:
+  email:
+    recipients:
+    - javierahilty@gmail.com
+    on_success: always
+    on_failure: always

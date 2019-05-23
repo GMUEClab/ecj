@@ -199,24 +199,39 @@ public class TSPGraph {
         }
         
         @Override
-        public double cost()
+        public double desirability()
+        {
+            final double eta = 1.0/distance();
+            assert(!Double.isInfinite(eta));
+            assert(!Double.isNaN(eta));
+            return eta;
+        }
+
+        public double distance()
         {
             switch (weightType())
             {
-            default:
-            case EUC_2D:
-                return euclideanDistance();
-            case ATT:
-                return attDistance();
-            case GEO:
-                return geoDistance();
+                default:
+                case EUC_2D:
+                    return euclideanDistance();
+                case ATT:
+                    return attDistance();
+                case GEO:
+                    return geoDistance();
             }
         }
         
         /** Euclidean distance, rounded to the nearest integer. */
         private double euclideanDistance()
         {
-            return Math.rint(Math.sqrt(Math.pow(from[0] - to[0], 2) + Math.pow(from[1] - to[1], 2)));
+            final double dist = Math.sqrt(Math.pow(from[0] - to[0], 2) + Math.pow(from[1] - to[1], 2));
+
+            // TSPLIB's Euclidean distance metric rounds to the nearest integer.  Most (all?) TSPLIB benchmark tasks
+            // don't have distances small enough to be rounded down to zero.  We want to make sure that truly identical
+            // points have a distance of zero, but that different points have non-zero distance:
+            if (dist == 0.0)
+                return 0.0;
+            else return Math.max(1.0, Math.rint(dist));
         }
 
         /** A "pseudo-Euclidean" distance, used in some TSPLIB instances. */

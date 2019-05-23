@@ -12,7 +12,7 @@ parent.1 = ../../simple/simple.params
 # than the subpopulation size, and it generally could be roughly
 # the size of the number of solutions you expect.  If your subpopulation
 # was 1024 in size, maybe this might be a reasonable value...
-breed.elite.0 =			128
+#breed.elite.0 =			128
 
 # We also use a special version of MultiObjectiveFitness
 pop.subpop.0.species.fitness =				ec.multiobjective.spea2.SPEA2MultiObjectiveFitness

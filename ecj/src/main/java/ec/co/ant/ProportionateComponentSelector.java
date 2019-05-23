@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Provides a function that chooses components stochastically in the style of
  * Ant System.  Each component's probability of being chosen is proportional to
- * the product of its phereomone concentration and its heuristic cost, each 
+ * the product of its phereomone concentration and its heuristic desirability, each
  * weighted according to an exponential scaling factor (alpha and beta, 
  * respectively).
  * 
@@ -73,12 +73,13 @@ public class ProportionateComponentSelector implements ComponentSelector, Setup 
         for (final Component c : components)
         {
             final double tau = pheromones.get(state, c, thread);
-            final double eta = c.cost();
+            final double eta = c.desirability();
             final double score = Math.pow(tau, alpha)*Math.pow(eta, beta);
             scores.add(score);
             denominator += score;
         }
-        assert(Double.isFinite(denominator));
+        assert(!Double.isInfinite(denominator));
+        assert(!Double.isNaN(denominator));
         assert(denominator >= 0);
         
         final double dart = state.random[thread].nextDouble();
@@ -97,7 +98,9 @@ public class ProportionateComponentSelector implements ComponentSelector, Setup 
                 && !P_ALPHA.isEmpty()
                 && P_BETA != null
                 && !P_BETA.isEmpty()
-                && Double.isFinite(alpha)
-                && Double.isFinite(beta);
+                && !Double.isInfinite(alpha)
+                && !Double.isNaN(alpha)
+                && !Double.isInfinite(beta)
+                && !Double.isNaN(beta);
     }
 }

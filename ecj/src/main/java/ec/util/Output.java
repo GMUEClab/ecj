@@ -910,7 +910,8 @@ public class Output implements Serializable
         exitIfErrors();
         }
         
-    /** Returns a compressing input stream using JZLib (http://www.jcraft.com/jzlib/).  If JZLib is not available on your system, this method will return null. */
+    /** Returns a compressing input stream using JZLib (http://www.jcraft.com/jzlib/).  If JZLib is not available on
+     * your system, this method will return null. */
     public static InputStream makeCompressingInputStream(InputStream in)
         {
         // to do this, we're going to use reflection.  But here's the equivalent code:
@@ -925,24 +926,22 @@ public class Output implements Serializable
         catch (Exception e) { return null; }  // failed, probably doesn't have JZLib on the system
         }
 
-    /** Returns a compressing output stream using JZLib (http://www.jcraft.com/jzlib/).  If JZLib is not available on your system, this method will return null. */
+    /** Returns a compressing output stream using JZLib (http://www.jcraft.com/jzlib/).  If JZLib is not available on
+     * your system, this method will return null. */
     public static OutputStream makeCompressingOutputStream(OutputStream out)
         {
         // to do this, we're going to use reflection.  But here's the equivalent code:
         /*
-          com.jcraft.jzlib.ZOutputStream stream = new com.jcraft.jzlib.ZOutputStream(out, com.jcraft.jzlib.JZlib.Z_BEST_SPEED);
-          stream.setFlushMode(com.jcraft.jzlib.JZlib.Z_SYNC_FLUSH);
-          return stream;
+            com.jcraft.jzlib.DeflaterOutputStream stream = new com.jcraft.jzlib.DeflaterOutputStream(out);
+            stream.setSyncFlush(true);
+            return stream;
         */
+
         try
             {
-            Class outz = Class.forName("com.jcraft.jzlib.JZlib");
-            int Z_BEST_SPEED = outz.getField("Z_BEST_SPEED").getInt(null);
-            int Z_SYNC_FLUSH = outz.getField("Z_SYNC_FLUSH").getInt(null);
-            
-            Class outc = Class.forName("com.jcraft.jzlib.ZOutputStream");
-            Object outi = outc.getConstructor(new Class[] { OutputStream.class, Integer.TYPE }).newInstance(new Object[] { out, Integer.valueOf(Z_BEST_SPEED) });
-            outc.getMethod("setFlushMode", new Class[] { Integer.TYPE }).invoke(outi, new Object[] { new Integer(Z_SYNC_FLUSH) });
+            Class outc = Class.forName("com.jcraft.jzlib.DeflaterOutputStream");
+            Object outi = outc.getConstructor(new Class[] { OutputStream.class }).newInstance(new Object[] { out });
+            outc.getMethod("setSyncFlush", new Class[] { Boolean.TYPE }).invoke(outi, new Object[] { true });
             return (OutputStream) outi;
             }
         // just in case of RuntimeExceptions

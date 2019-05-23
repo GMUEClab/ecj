@@ -15,5 +15,5 @@ import ec.Subpopulation;
  */
 public interface UpdateRule extends Setup
 {
-    public abstract void updatePheromones(final EvolutionState state, final PheromoneTable pheremones, final Subpopulation subpop);
+    void updatePheromones(final EvolutionState state, final PheromoneTable pheromones, final Subpopulation subpop);
 }

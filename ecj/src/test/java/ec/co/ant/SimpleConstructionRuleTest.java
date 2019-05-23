@@ -42,7 +42,6 @@ public class SimpleConstructionRuleTest
         params = new ParameterDatabase();
         params.set(PROBLEM_BASE.push(TSPProblem.P_FILE), "src/main/resources/ec/app/tsp/berlin52.tsp");
         params.set(BASE.push(SimpleConstructionRule.P_SELECTOR), GreedyComponentSelector.class.getCanonicalName());
-        params.set(BASE.push(SimpleConstructionRule.P_SELECTOR).push(GreedyComponentSelector.P_MINIMIZE), "true");
         params.set(BASE.push(SimpleConstructionRule.P_START), "TSPComponent[from=0, to=21]");
         state = new SimpleEvolutionState();
         state.parameters = params;
@@ -109,7 +108,6 @@ public class SimpleConstructionRuleTest
     @Test
     public void testConstructSolution5()
     {
-        state.parameters.set(BASE.push(SimpleConstructionRule.P_SELECTOR).push(GreedyComponentSelector.P_MINIMIZE), "false");
         state.parameters.set(BASE.push(SimpleConstructionRule.P_START), "TSPComponent[from=0, to=51]");
         final SimpleConstructionRule instance = new SimpleConstructionRule();
         instance.setup(state, BASE);
