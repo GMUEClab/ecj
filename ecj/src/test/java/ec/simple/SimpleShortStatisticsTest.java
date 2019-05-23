@@ -108,6 +108,6 @@ public class SimpleShortStatisticsTest
         ind.fitness = new SimpleFitness();
         ((SimpleFitness)ind.fitness).setFitness(state, fitness, false);
         ind.evaluated = true;
-	return ind;
+        return ind;
         }
     }
