@@ -76,17 +76,12 @@ public class SimpleShortStatisticsTest
 	state.statistics = statInd;
 	statInd.setup(state,BASE);
 
-	//statInd.preInitializationStatistics(state);
-	//statInd.postInitializationStatistics(state);
-	//statInd.preBreedingStatistics(state);
-	//statInd.postBreedingStatistics(state);
-	//statInd.preEvaluationStatistics(state);
 	statInd.postInitializationStatistics(state);
 	statInd.postEvaluationStatistics(state);
         state.output.flush();
         BufferedReader Buff = new BufferedReader(new FileReader("/tmp/a.txt"));
         String text = Buff.readLine();
-        assertEquals("0 1.0 1.0 1.0", text);
+        assertEquals("0 0.55 1.0 1.0", text);
         }
 
 
@@ -112,6 +107,7 @@ public class SimpleShortStatisticsTest
         ind.genome = Arrays.copyOf(genome, genome.length);
         ind.fitness = new SimpleFitness();
         ((SimpleFitness)ind.fitness).setFitness(state, fitness, false);
-        return ind;
+        ind.evaluated = true;
+	return ind;
         }
     }
