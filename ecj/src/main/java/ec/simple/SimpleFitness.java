@@ -102,7 +102,7 @@ public class SimpleFitness extends Fitness
         
     public String fitnessToStringForHumans()
         {
-        return FITNESS_PREAMBLE + fitness() + " ";
+        return FITNESS_PREAMBLE + fitness();
         }
 
     /** Presently does not decode the fact that the fitness is ideal or not */
