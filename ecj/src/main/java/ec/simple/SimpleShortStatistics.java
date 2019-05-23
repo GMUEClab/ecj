@@ -99,7 +99,7 @@ public class SimpleShortStatistics extends Statistics
         
     public int statisticslog = 0;  // stdout by default
     public int modulus;
-    public String delimiter;
+    public String delimiter = " ";
     public boolean doSize;
     public boolean doTime;
     public boolean doSubpops;
@@ -123,7 +123,6 @@ public class SimpleShortStatistics extends Statistics
             base.push(P_STATISTICS_FILE),null);
 
         modulus = state.parameters.getIntWithDefault(base.push(P_STATISTICS_MODULUS), null, 1);
-        delimiter = state.parameters.getStringWithDefault(base.push(P_DELIMITER), null, " ");
 
         if (silentFile)
             {

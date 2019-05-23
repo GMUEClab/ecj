@@ -50,7 +50,7 @@ public class SimpleShortStatisticsTest
 	state.parameters.set(BASE.push(TestStatistics.P_STATISTICS_FILE), "/tmp/a.txt");
         }
     
-    /*@Test
+    @Test
     //If doHeader = true proper spacing occuer
     public void headerTest() throws FileNotFoundException, IOException
     	{
@@ -63,7 +63,7 @@ public class SimpleShortStatisticsTest
         String text = Buff.readLine();
         assertEquals("generation meanFitness bestOfGenFitness bestSoFarFitness", text);
 	}
-	*/
+	
     @Test
     public void postEvaluationTest() throws FileNotFoundException, IOException
         {
