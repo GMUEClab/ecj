@@ -8,3 +8,6 @@ ecj/target/
 *.log
 *.out
 *.toc
+*.classpath
+*.project
+*.settings/
