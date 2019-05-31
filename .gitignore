@@ -2,6 +2,10 @@ ecj/nbproject
 ecj/nb-configuration.xml
 ecj/nbactions.xml
 ecj/target/
+.idea/
+ecj.iml
+ecj/src/main/resources/ec/app/mona/0-MonaLisaOut.png
+ecj/src/main/resources/ec/app/mona/1-MonaLisaOut.png
 *.stat
 *.aux
 *.idx

@@ -6,6 +6,44 @@
     <version>26</version>
     <packaging>jar</packaging>
 
+    <profiles>
+      <profile>
+	<!-- The default profile excludes the SystemTest suite (becaue
+	     it's expensive). -->
+	<id>UnitTests</id>
+	<activation>
+	  <activeByDefault>true</activeByDefault>
+	</activation>
+	<properties>
+	  <tests.excludedGroups>ec.test.SystemTest</tests.excludedGroups>
+	</properties>
+      </profile>
+	  
+      <profile>
+	<!-- This profile executes the SystemTest suite, but not the
+	     other tests. -->
+	<id>SystemTests</id>
+	<properties>
+	  <!-- No test groups are excluded. -->
+	  <tests.excludedGroups></tests.excludedGroups>
+	</properties>
+	<build>
+	  <plugins>
+	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-surefire-plugin</artifactId>
+	      <version>2.12.4</version>
+	      <configuration>
+		<!-- We only run the SystemTest group (and no other
+		     tests). -->
+		<groups>ec.test.SystemTest</groups>
+	      </configuration>
+	    </plugin>
+	  </plugins>
+	</build>
+      </profile>
+    </profiles>
+
     <repositories>
       <repository>
 	<id>local-repo</id>
@@ -103,9 +141,8 @@
 	  <artifactId>maven-surefire-plugin</artifactId>
 	  <version>2.12.4</version>
 	  <configuration>
+	    <excludedGroups>${tests.excludedGroups}</excludedGroups>
 	    <excludes>
-	      <exclude>ec/app/AppsTest.java</exclude>
-	      <exclude>ec/app/SPEA2AppsTest.java</exclude>
 	      <!-- XXX Temporary exclusion of failing tests -->
 	      <exclude>ec/co/ant/*.java</exclude>
 	    </excludes>
