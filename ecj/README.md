@@ -30,7 +30,7 @@ The easiest way to build ECJ is to run the Maven `package` target:
 mvn clean package
 ```
 
-This will build ECJ and run its test suite, after automatically installing 
+This will build ECJ and run its unit test suite, after automatically installing 
 ECJ's dependencies into your local Maven repository, downloading packages 
 from Maven's central repository as needed.
 
@@ -44,6 +44,12 @@ Take ECJ for a test drive by running one if its example apps:
 java -jar target/ecj-xx.jar -from app/tutorial3/tutorial3.params
 ```
 
+If you would like to run ECJ's (slightly expensive) sytem test suite,
+you can use the following Maven profile:
+
+```
+mvn test -PSystemTests
+```
 
 ## Building ECJ with the Makefile
 

@@ -17,12 +17,15 @@ import java.util.logging.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.experimental.categories.Category;
+import ec.test.SystemTest;
 
 /**
  * Custom system tests to supplement the automatic harness given by AppsTest.
  * 
  * @author Eric O. Scott
  */
+@Category(SystemTest.class)
 public class SPEA2AppsTest
 {
     

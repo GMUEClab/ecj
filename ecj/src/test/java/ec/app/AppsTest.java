@@ -24,6 +24,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.junit.experimental.categories.Category;
+import ec.test.SystemTest;
+
 
 /**
  * "Smoke tests" that run every example parameter file for a couple generations
@@ -32,6 +35,7 @@ import org.junit.runners.Parameterized;
  * @author Eric O. Scott
  */
 @RunWith(Parameterized.class)
+@Category(SystemTest.class)
 public class AppsTest
 {
     
