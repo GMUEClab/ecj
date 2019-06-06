@@ -332,12 +332,6 @@ public class GESpecies extends IntegerVectorSpecies
 
     /**
      * makeTree, edits the tree that its given by adding a root (and all subtrees attached)
-     * @param state
-     * @param ind
-     * @param tree
-     * @param position
-     * @param treeNum
-     * @param threadnum
      * @return the number of chromosomes used, or an BIG_TREE_ERROR sentinel value.
      */
     public int makeTree(EvolutionState state, int[] genome, GPTree tree,
