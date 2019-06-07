@@ -11,6 +11,8 @@ import ec.Initializer;
 import ec.Population;
 import ec.Individual;
 import ec.Subpopulation;
+import ec.util.Output;
+import ec.util.OutputException;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
 import ec.vector.IntegerVectorIndividual;
@@ -40,26 +42,26 @@ public class SimpleShortStatisticsTest
     public void setUp()
         {
         state = new EvolutionState();
-	state.output = Evolve.buildOutput();
+	    state.output = Evolve.buildOutput();
         state.output.setThrowsErrors(true);
-	state.parameters = new ParameterDatabase();
-	state.population = new Population();
-	state.population.subpops = new ArrayList();
+	    state.parameters = new ParameterDatabase();
+	    state.population = new Population();
+	    state.population.subpops = new ArrayList();
         state.population.subpops.add(new Subpopulation());
-	state.population.subpops.get(0).individuals = getTestPopulation();
-	state.parameters.set(BASE.push(TestStatistics.P_STATISTICS_FILE), "/tmp/a.txt");
+	    state.population.subpops.get(0).individuals = getTestPopulation();
+	    state.parameters.set(BASE.push(TestStatistics.P_STATISTICS_FILE), "/tmp/a.txt");
         }
     
     @Test
     //If doHeader = true proper spacing occuer
     public void headerTest() throws FileNotFoundException, IOException
     	{
-	SimpleShortStatistics statInd = new SimpleShortStatistics();
-	statInd.setup(state,BASE);
-	statInd.doHeader = true;
-	statInd.preInitializationStatistics(state);
-	state.output.flush();
-	BufferedReader Buff = new BufferedReader(new FileReader("/tmp/a.txt"));
+	    SimpleShortStatistics statInd = new SimpleShortStatistics();
+	    statInd.setup(state,BASE);
+	    statInd.doHeader = true;
+	    statInd.preInitializationStatistics(state);
+	    state.output.flush();
+	    BufferedReader Buff = new BufferedReader(new FileReader("/tmp/a.txt"));
         String text = Buff.readLine();
         assertEquals("generation meanFitness bestOfGenFitness bestSoFarFitness", text);
 	}
@@ -69,19 +71,38 @@ public class SimpleShortStatisticsTest
         {
         SimpleShortStatistics statInd = new SimpleShortStatistics();
         statInd.doHeader = false;
-	statInd.doSize = false;
-	statInd.doTime = false;
-	statInd.doSubpops = false;
+	    statInd.doSize = false;
+	    statInd.doTime = false;
+	    statInd.doSubpops = false;
 
-	state.statistics = statInd;
-	statInd.setup(state,BASE);
+	    state.statistics = statInd;
+	    statInd.setup(state,BASE);
 
-	statInd.postInitializationStatistics(state);
-	statInd.postEvaluationStatistics(state);
+	    statInd.postInitializationStatistics(state);
+	    statInd.postEvaluationStatistics(state);
         state.output.flush();
         BufferedReader Buff = new BufferedReader(new FileReader("/tmp/a.txt"));
         String text = Buff.readLine();
         assertEquals("0 0.55 1.0 1.0", text);
+        }
+
+    @Test (expected = Output.OutputExitException.class)
+    public void postEvaluationTestException() throws FileNotFoundException, IOException
+        {
+            SimpleShortStatistics statInd = new SimpleShortStatistics();
+            statInd.doHeader = false;
+            statInd.doSize = false;
+            statInd.doTime = false;
+            statInd.doSubpops = false;
+            for(int x=0;x<state.population.subpops.get(0).individuals.size();x++){
+                state.population.subpops.get(0).individuals.get(x).evaluated = false;
+            }
+
+            state.statistics = statInd;
+            statInd.setup(state,BASE);
+
+            statInd.postInitializationStatistics(state);
+            statInd.postEvaluationStatistics(state);
         }
 
 
