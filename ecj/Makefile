@@ -172,7 +172,7 @@ indent:
 	find ${SRCROOT} -name "*.java" -print -exec emacs --batch --load ~/.emacs --eval='(progn (find-file "{}") (mark-whole-buffer) (setq indent-tabs-mode nil) (untabify (point-min) (point-max)) (indent-region (point-min) (point-max) nil) (save-buffer))' \;
 
 doc:
-	javadoc -classpath ${CLASSPATH}:${SRCROOT} -protected -Xdoclint:none -Xmaxwarns 10000 -Xmaxerrs 10000 -d docs/classdocs ec ec.breed ec.coevolve ec.de ec.display ec.display.chart ec.display.portrayal ec.eda.amalgam ec.eda.dovs ec.eda.pbil ec.eda.cmaes ec.es ec.eval ec.evolve ec.exchange ec.gp ec.gp.breed ec.gp.build ec.gp.koza ec.multiobjective ec.multiobjective.spea2 ec.multiobjective.nsga2 ec.parsimony ec.pso ec.rule ec.rule.breed ec.select ec.simple ec.spatial ec.steadystate ec.util ec.vector ec.vector.breed ec.gp.ge ec.gp.push ec.neat ec.dovs
+	javadoc -classpath ${CLASSPATH}:${SRCROOT} -protected -Xdoclint:none -Xmaxwarns 10000 -Xmaxerrs 10000 -d docs/classdocs ec ec.breed ec.coevolve ec.de ec.display ec.display.chart ec.display.portrayal ec.eda.amalgam ec.eda.dovs ec.eda.pbil ec.eda.cmaes ec.es ec.eval ec.evolve ec.exchange ec.gp ec.gp.breed ec.gp.build ec.gp.koza ec.multiobjective ec.multiobjective.spea2 ec.multiobjective.nsga2 ec.parsimony ec.pso ec.rule ec.rule.breed ec.select ec.simple ec.spatial ec.steadystate ec.util ec.vector ec.vector.breed ec.gp.ge ec.gp.push ec.neat
 
 # Build a jar file.  Note this collects ALL files in both the $CLASSROOT and the RSRCROOT.
 jar: all gui

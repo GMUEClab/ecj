@@ -27,7 +27,7 @@ import java.util.Set;
 public class ConstructiveIndividual<T extends Component> extends Individual implements Iterable<T>
 {
     
-    public static final String P_CONSTRUCTIVEINDIVIDUAL = "constr-ind";
+    public static final String P_DEFAULTBASE = "constr-ind";
     private List<T> components = new ArrayList<T>();
     /** A set representation of the components, to allow for quick "contains()" checking */
     private Set<T> componentsSet = new HashSet<T>();
@@ -40,7 +40,7 @@ public class ConstructiveIndividual<T extends Component> extends Individual impl
     @Override
     public Parameter defaultBase()
         {
-        return AntSpecies.DEFAULT_BASE.push(P_CONSTRUCTIVEINDIVIDUAL);
+        return new Parameter(P_DEFAULTBASE);
         }
 
     @Override
@@ -156,8 +156,8 @@ public class ConstructiveIndividual<T extends Component> extends Individual impl
     
     public boolean repOK()
         {
-        return P_CONSTRUCTIVEINDIVIDUAL != null
-                && !P_CONSTRUCTIVEINDIVIDUAL.isEmpty()
+        return P_DEFAULTBASE != null
+                && !P_DEFAULTBASE.isEmpty()
                 && components != null
                 && !Misc.containsNulls(components)
                 && componentsSet.size() == new HashSet<T>(components).size()

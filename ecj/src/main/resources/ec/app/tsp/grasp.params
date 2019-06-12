@@ -1,0 +1,18 @@
+# Copyright 2017 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../simple/simple.params
+
+breed =                                         ec.co.ConstructiveBreeder
+generations =                                   200
+pop.subpop.0.size =                             20
+pop.subpop.0.species =                          ec.co.grasp.GraspSpecies
+pop.subpop.0.species.fitness =                  ec.simple.SimpleFitness
+pop.subpop.0.species.ind =                      ec.app.tsp.TSPIndividual
+pop.subpop.0.species.construction-rule =        ec.co.grasp.SimpleConstructionRule
+pop.subpop.0.species.construction-rule.component-selector = ec.co.grasp.GreedyComponentSelector
+
+eval.problem =                                  ec.app.tsp.TSPProblem
+eval.problem.file =				$src/main/resources/ec/app/tsp/test4.tsp
+#eval.problem.file =				$src/main/resources/ec/app/tsp/berlin52.tsp
