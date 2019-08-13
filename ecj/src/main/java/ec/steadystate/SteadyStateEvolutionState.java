@@ -231,6 +231,8 @@ public class SteadyStateEvolutionState extends EvolutionState
 
             int subpop = ((SteadyStateEvaluator)evaluator).getSubpopulationOfEvaluatedIndividual(); 
             whichSubpop = subpop;
+
+    		/// ------ INSERT BREEDING LOCAL UPDATE HOOK HERE
                                              
             if ( partiallyFullSubpop ) // is subpopulation full? 
                 {  
@@ -314,6 +316,8 @@ public class SteadyStateEvolutionState extends EvolutionState
                 finishEvaluationStatistics();
                 return R_SUCCESS;
                 }
+                       
+        	/// ------ INSERT BREEDING GLOBAL UPDATE HOOK HERE
                         
             // POST-BREEDING EXCHANGING
             statistics.prePostBreedingExchangeStatistics(this);

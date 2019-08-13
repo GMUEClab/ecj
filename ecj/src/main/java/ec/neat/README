@@ -21,8 +21,8 @@ You can run NEAT with two applications, both in ec/app:  xor and cartpole
 The code here is:
 
 NEATDefaults.java		Package defaults
-NEATIndividual.java		Subclass of IntegerVectorIndividual with an
-				additional list of "node" genes.
+NEATIndividual.java		Subclass of GeneVectorIndividual (using NEATGenes),
+				with an additional list of "node" genes.
 NEATSpecies.java		Special species for NEATIndividual, does a lot
 				of the custom heavy-lifting in the package
 NEATNode.java			Node genes

@@ -1476,7 +1476,7 @@ public class ParameterDatabase implements Serializable
      * or any of its doubles are out of bounds, or the list is not long enough or is  
      * too long or has garbage at the end of it, then this method returns null.
      * Otherwise the method returns the doubles in question.  The doubles may not
-     * be NaN, +Infinity, or -Infinity. The parameter chosen is
+     * be NaN. The parameter chosen is
      * marked "used" if it exists.
      */
 
@@ -1496,7 +1496,7 @@ public class ParameterDatabase implements Serializable
      * or any of its doubles are out of bounds, or the list is not long enough or is  
      * too long or has garbage at the end of it, then this method returns null.
      * Otherwise the method returns the doubles in question.  The doubles may not
-     * be NaN, +Infinity, or -Infinity. The parameter chosen is
+     * be NaN. The parameter chosen is
      * marked "used" if it exists.
      */
 
@@ -1516,7 +1516,7 @@ public class ParameterDatabase implements Serializable
      * or any of its doubles are out of bounds, or the list is not long enough or is  
      * too long or has garbage at the end of it, then this method returns null.
      * Otherwise the method returns the doubles in question.  The doubles may not
-     * be NaN, +Infinity, or -Infinity. The parameter chosen is
+     * be NaN. The parameter chosen is
      * marked "used" if it exists.
      */
 
@@ -1536,7 +1536,7 @@ public class ParameterDatabase implements Serializable
      * or any of its doubles are out of bounds, or the list is not long enough or is  
      * too long or has garbage at the end of it, then this method returns null.
      * Otherwise the method returns the doubles in question.  The doubles may not
-     * be NaN, +Infinity, or -Infinity. The parameter chosen is
+     * be NaN. The parameter chosen is
      * marked "used" if it exists.
      */
 
@@ -1556,7 +1556,7 @@ public class ParameterDatabase implements Serializable
      * or the list is not long enough or is  
      * too long or has garbage at the end of it, then this method returns null.
      * Otherwise the method returns the doubles in question.  The doubles may not
-     * be NaN, +Infinity, or -Infinity. The parameter chosen is
+     * be NaN. The parameter chosen is
      * marked "used" if it exists.
      */
 
@@ -1576,7 +1576,7 @@ public class ParameterDatabase implements Serializable
      * or the list is not long enough or is  
      * too long or has garbage at the end of it, then this method returns null.
      * Otherwise the method returns the doubles in question.  The doubles may not
-     * be NaN, +Infinity, or -Infinity. The parameter chosen is
+     * be NaN. The parameter chosen is
      * marked "used" if it exists.
      */
 
@@ -1590,6 +1590,115 @@ public class ParameterDatabase implements Serializable
         }
 
 
+
+
+
+
+
+    /**
+     * Searches down through databases to find a given parameter, whose value
+     * must be a space- or tab-delimited list of ints, each of which is >= minValue and <= maxValue,
+     * and which must be exactly expectedLength (> 0) long.  If the parameter does not exist,
+     * or any of its ints are out of bounds, or the list is not long enough or is  
+     * too long or has garbage at the end of it, then this method returns null.
+     * Otherwise the method returns the ints in question.  
+     * The parameter chosen is
+     * marked "used" if it exists.
+     */
+
+    public int[] getIntsWithMax(Parameter parameter, Parameter defaultParameter, int minValue, int maxValue, int expectedLength)
+        {
+        double[] val = getDoublesWithMax(parameter, defaultParameter, minValue, maxValue, expectedLength);
+        if (val == null) return null;
+        int[] ret = new int[val.length];
+        for(int i = 0; i < val.length; i++)
+        	{
+        	ret[i] = (int)val[i];
+        	if (ret[i] != val[i]) // uh oh, a double with a decimal place, or infinity or NaN
+        		return null;
+        	}
+        return ret;
+        }
+
+    /**
+     * Searches down through databases to find a given parameter, whose value
+     * must be a space- or tab-delimited list of ints, each of which is >= minValue and <= maxValue,
+     * and which must be at least 1 number long.  If the parameter does not exist,
+     * or any of its ints are out of bounds, or the list is not long enough or is  
+     * too long or has garbage at the end of it, then this method returns null.
+     * Otherwise the method returns the ints in question.  
+     * The parameter chosen is
+     * marked "used" if it exists.
+     */
+
+    public int[] getIntsWithMax(Parameter parameter, Parameter defaultParameter, int minValue, int maxValue)
+        {
+        return getIntsWithMax(parameter, defaultParameter, minValue, maxValue, ARRAY_NO_EXPECTED_LENGTH);
+        }
+        
+    /**
+     * Searches down through databases to find a given parameter, whose value
+     * must be a space- or tab-delimited list of ints, each of which is >= minValue,
+     * and which must be exactly expectedLength (> 0) long.  If the parameter does not exist,
+     * or any of its ints are out of bounds, or the list is not long enough or is  
+     * too long or has garbage at the end of it, then this method returns null.
+     * Otherwise the method returns the ints in question.  
+     * The parameter chosen is
+     * marked "used" if it exists.
+     */
+
+    public int[] getInts(Parameter parameter, Parameter defaultParameter, int minValue, int expectedLength)
+        {
+        return getIntsWithMax(parameter, defaultParameter, minValue, Integer.MAX_VALUE, expectedLength);
+        }
+
+    /**
+     * Searches down through databases to find a given parameter, whose value
+     * must be a space- or tab-delimited list of ints, each of which is >= minValue,
+     * and which must be at least 1 number long.  If the parameter does not exist,
+     * or any of its ints are out of bounds, or the list is not long enough or is  
+     * too long or has garbage at the end of it, then this method returns null.
+     * Otherwise the method returns the ints in question.  
+     * The parameter chosen is
+     * marked "used" if it exists.
+     */
+
+    public int[] getInts(Parameter parameter, Parameter defaultParameter, int minValue)
+        {
+        return getInts(parameter, defaultParameter, minValue, ARRAY_NO_EXPECTED_LENGTH);
+        }
+
+    /**
+     * Searches down through databases to find a given parameter, whose value
+     * must be a space- or tab-delimited list of ints,
+     * and which must be exactly expectedLength (> 0) long.  If the parameter does not exist,
+     * or the list is not long enough or is  
+     * too long or has garbage at the end of it, then this method returns null.
+     * Otherwise the method returns the ints in question.  
+     * The parameter chosen is
+     * marked "used" if it exists.
+     */
+
+    public int[] getIntsUnconstrained(Parameter parameter, Parameter defaultParameter, int expectedLength)
+        {
+        return getIntsWithMax(parameter, defaultParameter, Integer.MIN_VALUE, Integer.MAX_VALUE, expectedLength);
+        }
+
+    /**
+     * Searches down through databases to find a given parameter, whose value
+     * must be a space- or tab-delimited list of ints,
+     * and which must be at least 1 number long.  If the parameter does not exist,
+     * or the list is not long enough or is  
+     * too long or has garbage at the end of it, then this method returns null.
+     * Otherwise the method returns the ints in question.  
+     * The parameter chosen is
+     * marked "used" if it exists.
+     */
+
+    public int[] getIntsUnconstrained(Parameter parameter, Parameter defaultParameter)
+        {
+        return getIntsUnconstrained(parameter, defaultParameter, ARRAY_NO_EXPECTED_LENGTH);
+        }
 
 
 
