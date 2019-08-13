@@ -13,6 +13,7 @@
 %%%%
 %%%% If you have any questions, feel free to contact me at sean@cs.gmu.edu
 %%%% Sean Luke
+\synctex=1
 
 \documentclass[twoside,10pt]{book}
 \usepackage{fullpage}
@@ -876,6 +877,8 @@ Here are some common \class{ec.util.ParameterDatabase} methods.  Note that all o
 If either parameter exists in the database, return true.  Either parameter may be null.
 \mthd{public String getString(Parameter \textit{parameter}, Parameter \textit{default})}
 Look first in {\it parameter}, then failing that, in {\it default parameter}, and return the result as a String, else null if not found.  Either parameter may be null.
+\mthd{public String getStringWithDefault(Parameter \textit{parameter}, Parameter \textit{default}, String \textit{defaultValue})}
+Look first in {\it parameter}, then failing that, in {\it default parameter}, and return the result as a String, else {\it defaultValue} if not found.  Either parameter may be null.
 \mthd{public File getFile(Parameter \textit{parameter}, Parameter \textit{default})}
 Look first in {\it parameter}, then failing that, in {\it default parameter}, and return the result as a File, else null if not found.  Either parameter may be null.  {\bf Important Note.}  You should generally only use this method if you are {\it writing} to a file.  Otherwise it's best if you used \method{getResource(...)}.
 \mthd{public InputStream getResource(Parameter \textit{parameter}, Parameter \textit{default})}
@@ -952,7 +955,40 @@ Look first in {\it parameter}, then failing that, in {\it default parameter}, fo
 double values, and return the result as an array of doubles, else null if they are improperly formatted,
 or if the list is not expectedLength \((>0)\) long, 
 or if it has garbage at the end of it.   Either parameter may be null.
+
+\mthd{public double getInts(Parameter \textit{parameter}, Parameter \textit{default}, double \textit{minValue})}
+Look first in {\it parameter}, then failing that, in {\it default parameter}, for a space- or tab-delimited list of
+double values, and return the result as an array of ints, else null if they are improperly formatted
+or if any of them is \(<\) minValue, or if the list is zero in length, or if it has garbage
+at the end of it.   Either parameter may be null.
+\mthd{public double getInts(Parameter \textit{parameter}, Parameter \textit{default}, double \textit{minValue}, int \textit{expectedLength})}
+Look first in {\it parameter}, then failing that, in {\it default parameter}, for a space- or tab-delimited list of
+double values, and return the result as an array of ints, else null if they are improperly formatted
+or if any of them is \(<\) minValue, or if the list is not expectedLength \((>0)\) long, 
+or if it has garbage at the end of it.   Either parameter may be null.
+\mthd{public double getIntsWithMax(Parameter \textit{parameter}, Parameter \textit{default}, double \textit{minValue}, double \textit{maxValue})}
+Look first in {\it parameter}, then failing that, in {\it default parameter}, for a space- or tab-delimited list of
+double values, and return the result as an array of ints, else null if they are improperly formatted
+or if any of them is \(<\) minValue, or \(>\) maxValue, or if the list is zero in length, or if it has garbage
+at the end of it.   Either parameter may be null.
+\mthd{public double getIntsWithMax(Parameter \textit{parameter}, Parameter \textit{default}, double \textit{minValue}, double \textit{maxValue},}
+\rule{0pt}{0pt}\hspace{\fill} {\sf int \textit{expectedLength})}\\
+Look first in {\it parameter}, then failing that, in {\it default parameter}, for a space- or tab-delimited list of
+double values, and return the result as an array of ints, else null if they are improperly formatted
+or if any of them is \(<\) minValue, or \(>\) maxValue, or if the list is not expectedLength \((>0)\) long, 
+or if it has garbage at the end of it.   Either parameter may be null.
+\mthd{public double getIntsUnconstrained(Parameter \textit{parameter}, Parameter \textit{default})}
+Look first in {\it parameter}, then failing that, in {\it default parameter}, for a space- or tab-delimited list of
+double values, and return the result as an array of ints, else null if they are improperly formatted, 
+or if the list is zero in length, or if it has garbage
+at the end of it.   Either parameter may be null.
+\mthd{public double getIntsUnconstrained(Parameter \textit{parameter}, Parameter \textit{default}, int \textit{expectedLength})}
+Look first in {\it parameter}, then failing that, in {\it default parameter}, for a space- or tab-delimited list of
+double values, and return the result as an array of ints, else null if they are improperly formatted,
+or if the list is not expectedLength \((>0)\) long, 
+or if it has garbage at the end of it.   Either parameter may be null.
 \end{methods}
+
 
 \subsection{Parameter Macros}
 \label{ParameterMacros}
