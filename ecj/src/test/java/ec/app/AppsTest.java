@@ -106,6 +106,8 @@ public class AppsTest
         new File("src/main/resources/ec/app/star/coevolve2.slave.params").getAbsolutePath(),
         new File("src/main/resources/ec/app/star/mastermeta.params").getAbsolutePath(),
         new File("src/main/resources/ec/app/star/slavemeta.params").getAbsolutePath(),
+	new File("src/main/resources/ec/app/tsp/grasp.master.params").getAbsolutePath(),
+	new File("src/main/resources/ec/app/tsp/grasp.slave.params").getAbsolutePath(),
 
         // Too expensive to bother with
         new File("src/main/resources/ec/app/cartpole/cartpole.params").getAbsolutePath()
