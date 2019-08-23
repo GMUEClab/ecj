@@ -193,21 +193,22 @@
 	  </executions>
 	</plugin>
 		  <plugin>
-			  <groupId>org.apache.maven.plugins</groupId>
-			  <artifactId>maven-javadoc-plugin</artifactId>
-			  <version>3.1.0</version>
-			  <configuration>
-					  <show>private</show>
-				  <overview>file:///${project.basedir}/docs</overview>
-			  </configuration>
-			  <executions>
-				  <execution>
-					  <goals>
-						  <goal>javadoc</goal>
-					  </goals>
-					  <phase>package</phase>
-				  </execution>
-			  </executions>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-javadoc-plugin</artifactId>
+		    <version>3.1.1</version>
+		    <configuration>
+		      <show>private</show>
+		      <overview>file:///${project.basedir}/docs</overview>
+		      <additionalJOption>-Xdoclint:none</additionalJOption>
+		    </configuration>
+		    <executions>
+		      <execution>
+			<goals>
+			  <goal>javadoc</goal>
+			</goals>
+			<phase>package</phase>
+		      </execution>
+		    </executions>
 		  </plugin>
       </plugins>
     </build>
