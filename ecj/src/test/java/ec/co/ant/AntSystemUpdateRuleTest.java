@@ -39,11 +39,11 @@ public class AntSystemUpdateRuleTest
     private ParameterDatabase params;
     private SimplePheromoneTable pheromones;
     private KnapsackProblem problem;
-    
+
     public AntSystemUpdateRuleTest()
     {
     }
-    
+
     @Before
     public void setUp()
     {
@@ -124,9 +124,9 @@ public class AntSystemUpdateRuleTest
             add(createKnapsackInd(new int[] { 0, 3, 6, 8 }, 700.0));
             add(createKnapsackInd(new int[] { 9, 3, 1, 1}, 800.0));
         }};
-        
-        instance.updatePheromones(state, pheromones, subpop);
-        
+
+        instance.updatePheromones(state, pheromones, subpop.individuals);
+
         final List<Component> pComponents = problem.getAllComponents();
         assertEquals(pheromones.get(state, pComponents.get(0), 0), 0.0014290714285714286, 0.00000001);
         assertEquals(pheromones.get(state, pComponents.get(1), 0), 0.0055005, 0.00000001);
@@ -139,9 +139,9 @@ public class AntSystemUpdateRuleTest
         assertEquals(pheromones.get(state, pComponents.get(8), 0), 0.0014290714285714286, 0.00000001);
         assertEquals(pheromones.get(state, pComponents.get(9), 0), 0.0012505, 0.00000001);
     }
-    
-    /** Applying ANT_DENSITY once to a set of ConstructiveIndividuals whose fitness 
-     * has already been evaluated should produce the expected changes in 
+
+    /** Applying ANT_DENSITY once to a set of ConstructiveIndividuals whose fitness
+     * has already been evaluated should produce the expected changes in
      * pheromone levels. */
     @Test
     public void testUpdatePheromones2()
@@ -157,9 +157,9 @@ public class AntSystemUpdateRuleTest
             add(createKnapsackInd(new int[] { 0, 3, 6, 8 }, 700.0));
             add(createKnapsackInd(new int[] { 9, 3, 1, 1}, 800.0));
         }};
-        
-        instance.updatePheromones(state, pheromones, subpop);
-        
+
+        instance.updatePheromones(state, pheromones, subpop.individuals);
+
         final List<Component> pComponents = problem.getAllComponents();
         assertEquals(pheromones.get(state, pComponents.get(0), 0), 1.0000005, 0.00000001);
         assertEquals(pheromones.get(state, pComponents.get(1), 0), 4.0000005, 0.00000001);
@@ -172,9 +172,9 @@ public class AntSystemUpdateRuleTest
         assertEquals(pheromones.get(state, pComponents.get(8), 0), 1.0000005, 0.00000001);
         assertEquals(pheromones.get(state, pComponents.get(9), 0), 1.0000005, 0.00000001);
     }
-    
-    /** Applying ANT_QUANTITY once to a set of ConstructiveIndividuals whose fitness 
-     * has already been evaluated should produce the expected changes in 
+
+    /** Applying ANT_QUANTITY once to a set of ConstructiveIndividuals whose fitness
+     * has already been evaluated should produce the expected changes in
      * pheromone levels. */
     @Test
     public void testUpdatePheromones3()
@@ -190,9 +190,9 @@ public class AntSystemUpdateRuleTest
             add(createKnapsackInd(new int[] { 0, 3, 6, 8 }, 700.0));
             add(createKnapsackInd(new int[] { 9, 3, 1, 1}, 800.0));
         }};
-        
-        instance.updatePheromones(state, pheromones, subpop);
-        
+
+        instance.updatePheromones(state, pheromones, subpop.individuals);
+
         final List<Component> pComponents = problem.getAllComponents();
         assertEquals(pheromones.get(state, pComponents.get(0), 0), 1.0000005, 0.00000001);
         assertEquals(pheromones.get(state, pComponents.get(1), 0), 2.0000005, 0.00000001);
@@ -205,7 +205,7 @@ public class AntSystemUpdateRuleTest
         assertEquals(pheromones.get(state, pComponents.get(8), 0), 0.5000005, 0.00000001);
         assertEquals(pheromones.get(state, pComponents.get(9), 0), 1.0000005, 0.00000001);
     }
-    
+
     /** @returns a solution to 'problem' with a manually designated fitness value. */
     private ConstructiveIndividual createKnapsackInd(final int[] components, final double fitness)
     {
@@ -218,20 +218,20 @@ public class AntSystemUpdateRuleTest
         ((SimpleFitness)ind.fitness).setFitness(state, fitness, false);
         return ind;
     }
-    
+
     class IntComponent extends Component
     {
         final int i;
-        
+
         public IntComponent(final int i)
         {
             this.i = i;
         }
-        
+
         @Override
         public double desirability() {
             return i;
         }
-        
+
     }
 }

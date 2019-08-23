@@ -221,6 +221,30 @@ public abstract class Species implements Prototype
         f_prototype = (Fitness) state.parameters.getInstanceForParameter( base.push(P_FITNESS),def.push(P_FITNESS), Fitness.class);
         f_prototype.setup(state,base.push(P_FITNESS));
         }
+
+    /** A hook for code that is run on every individual as soon as it is evaluated.  This method does nothing unless it
+     * is override by a subclass.
+     *
+     * For example, an implementation of Ant Colony System might use this to apply a
+     * local pheromone update.
+     *
+     * @see ec.simple.SimpleEvaluator
+     */
+    public void updateIndividual(final EvolutionState state, final Individual ind)
+        {
+            // Do nothing by default
+        }
+
+    /**
+     * A hook for code that is run on the entire subpopulation as soon as it has been evaluated.
+     *
+     * For example, an implementation of Ant System might use this to apply a global
+     * pheromone update. You can see how this method is used by having a look at SimpleEvaluator.
+     */
+    public void updateSubpopulation(final EvolutionState state, final Subpopulation subpop)
+        {
+            // Do nothing by default
+        }
     }
 
 

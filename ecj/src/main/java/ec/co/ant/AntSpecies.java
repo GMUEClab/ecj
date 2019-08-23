@@ -9,14 +9,10 @@ import ec.EvolutionState;
 import ec.Fitness;
 import ec.Individual;
 import ec.Species;
-import static ec.Species.P_FITNESS;
-import static ec.Species.P_INDIVIDUAL;
 import ec.Subpopulation;
 import ec.co.ConstructiveIndividual;
-import ec.co.ConstructiveProblemForm;
 import ec.util.Parameter;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -26,15 +22,17 @@ public class AntSpecies extends Species
 {
     public final static Parameter DEFAULT_BASE = new Parameter("constructive");
     public final static String SPECIES_NAME = "constructive-species";
-    
+
     public final static String P_CONSTRUCTION_RULE = "construction-rule";
     public final static String P_PHEROMONE_TABLE = "pheromone-table";
     public final static String P_UPDATE_RULE = "update-rule";
-    
+    public final static String P_LOCAL_UPDATE_RULE = "local-update-rule";
+
     private ConstructionRule constructionRule;
     private PheromoneTable pheromones;
     private UpdateRule updateRule;
-    
+    private UpdateRule localUpdateRule;
+
     @Override
     public void setup(final EvolutionState state, final Parameter base)
     {
@@ -43,15 +41,24 @@ public class AntSpecies extends Species
         assert(base != null);
         constructionRule = (ConstructionRule) state.parameters.getInstanceForParameter(base.push(P_CONSTRUCTION_RULE), null, ConstructionRule.class);
         constructionRule.setup(state, base.push(P_CONSTRUCTION_RULE));
-        
+
         pheromones = (PheromoneTable) state.parameters.getInstanceForParameter(base.push(P_PHEROMONE_TABLE), null, PheromoneTable.class);
         pheromones.setup(state, base.push(P_PHEROMONE_TABLE));
-        
-        updateRule = (UpdateRule) state.parameters.getInstanceForParameter(base.push(P_UPDATE_RULE), null, UpdateRule.class);
-        updateRule.setup(state, base.push(P_UPDATE_RULE));
+
+        if (state.parameters.exists(base.push(P_UPDATE_RULE), null))
+            {
+            updateRule = (UpdateRule) state.parameters.getInstanceForParameter(base.push(P_UPDATE_RULE), null, UpdateRule.class);
+            updateRule.setup(state, base.push(P_UPDATE_RULE));
+            }
+
+        if (state.parameters.exists(base.push(P_LOCAL_UPDATE_RULE), null))
+            {
+            localUpdateRule = (UpdateRule) state.parameters.getInstanceForParameter(base.push(P_LOCAL_UPDATE_RULE), null, UpdateRule.class);
+            localUpdateRule.setup(state, base.push(P_LOCAL_UPDATE_RULE));
+            }
         assert(repOK());
     }
-    
+
     /** A custom setup method for Species that skips the initialization of the
      * breeding pipeline.  We call this in place of super.setup(), since this
      * Species doesn't use a pipeline.
@@ -63,44 +70,58 @@ public class AntSpecies extends Species
         Parameter def = defaultBase();
         // load our individual prototype
         i_prototype = (Individual)(state.parameters.getInstanceForParameter(
-                                                                            base.push(P_INDIVIDUAL),def.push(P_INDIVIDUAL),
-                                                                            Individual. class));
+                base.push(P_INDIVIDUAL),def.push(P_INDIVIDUAL),
+                Individual. class));
         // set the species to me before setting up the individual, so they know who I am
         i_prototype.species = this;
         i_prototype.setup(state,base.push(P_INDIVIDUAL));
-        
+
         // load our fitness
         f_prototype = (Fitness) state.parameters.getInstanceForParameter(
-                                                                         base.push(P_FITNESS),def.push(P_FITNESS),
-                                                                         Fitness.class);
+                base.push(P_FITNESS),def.push(P_FITNESS),
+                Fitness.class);
         f_prototype.setup(state,base.push(P_FITNESS));
     }
-    
-    public void updatePheromones(final EvolutionState state, final Subpopulation population)
+
+    /** Apply a global update rule to the pheromone table.
+     *
+     *  @param subpop The Subpopulation to use as the input of the global update. */
+    @Override
+    public void updateSubpopulation(final EvolutionState state, final Subpopulation subpop)
     {
-        updateRule.updatePheromones(state, pheromones, population);
+        updateRule.updatePheromones(state, pheromones, subpop.individuals);
         assert(repOK());
     }
-    
+
+    /** Apply a local update rule to the pheromone table.
+     *
+     * @param ind The Individual to use as the input of the local update. */
+    @Override
+    public void updateIndividual(final EvolutionState state, final Individual ind)
+    {
+        if (localUpdateRule != null)
+            localUpdateRule.updatePheromones(state, pheromones, new ArrayList() {{ add(ind); }});
+    }
+
     @Override
     public ConstructiveIndividual newIndividual(final EvolutionState state, final int thread)
     {
         assert(state != null);
         assert(thread >= 0);
-        
+
         final ConstructiveIndividual ind = (ConstructiveIndividual)(super.newIndividual(state, thread));
         assert(repOK());
         return constructionRule.constructSolution(state, ind, pheromones, thread);
     }
-    
+
     @Override
     public Parameter defaultBase()
     {
         return DEFAULT_BASE.push(SPECIES_NAME);
     }
-    
+
     /** Representation invariant, used for verification.
-     * 
+     *
      * @return true if the class is found to be in an erroneous state.
      */
     public final boolean repOK()

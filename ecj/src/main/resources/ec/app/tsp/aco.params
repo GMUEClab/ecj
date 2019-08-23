@@ -4,7 +4,7 @@
 
 parent.0 = ../../simple/simple.params
 
-breed =                                         ec.co.ant.AntBreeder
+breed =                                         ec.co.ConstructiveBreeder
 generations =                                   200
 pop.subpop.0.size =                             20
 pop.subpop.0.species =                          ec.co.ant.AntSpecies
@@ -22,5 +22,5 @@ pop.subpop.0.species.pheromone
 
 
 eval.problem =                                  ec.app.tsp.TSPProblem
-eval.problem.file =				$src/main/resources/ec/app/tsp/test4.tsp
-#eval.problem.file =				$src/main/resources/ec/app/tsp/berlin52.tsp
+#eval.problem.file =				$src/main/resources/ec/app/tsp/test4.tsp
+eval.problem.file =				$src/main/resources/ec/app/tsp/berlin52.tsp

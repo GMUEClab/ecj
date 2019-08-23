@@ -218,9 +218,27 @@ public class SimpleEvaluator extends Evaluator
 
         if (numTests > 1)
             contract(state);
-
         }
 
+    @Override
+    public void postEvaluationGlobalUpdate(final EvolutionState state)
+        {
+        assert(state != null);
+        assert(state.population != null);
+        assert(state.population.subpops != null);
+        for (final Subpopulation subpop : state.population.subpops)
+            subpop.species.updateSubpopulation(state, subpop);
+        }
+
+    @Override
+    public void postEvaluationLocalUpdate(final EvolutionState state, final Individual ind, final int subpop)
+        {
+        assert(state != null);
+        assert(state.population != null);
+        assert(state.population.subpops != null);
+        assert(state.population.subpops.size() > subpop);
+        state.population.subpops.get(subpop).species.updateIndividual(state, ind);
+        }
 
     /** The SimpleEvaluator determines that a run is complete by asking
         each individual in each population if he's optimal; if he 
