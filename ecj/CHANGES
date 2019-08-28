@@ -2489,7 +2489,7 @@ Version		Change Log
 	   	ec.multiobjective.MultiObjectiveStatistics
 	Added CSV header to SimpleShortStatistics, and control over
 		the delimiter used
-	Added a new framework for Ant Colony algorithms and
+	Added an experimental framework for Ant Colony algorithms and
 	      combinatorial optimization
 	Implemented a TSP application with the ACO framework
 	Implemented a Knapsack application with the ACO framework
