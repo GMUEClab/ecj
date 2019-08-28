@@ -1,0 +1,25 @@
+# Copyright 2019 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+##############################
+# Ant System boiler plate
+##############################
+
+parent.0 = ../../simple/simple.params
+
+# AS uses ConstructiveBreeder to execute populations of ants
+breed =                                         ec.co.ConstructiveBreeder
+
+# Population size sets the number of ants per generation
+# pop.subpop.0.size =                             20
+
+##############################
+# AntSpecies holds the construction and update rules that define ACO algorithms
+##############################
+pop.subpop.0.species =                          ec.co.ant.AntSpecies
+pop.subpop.0.species.fitness =                  ec.simple.SimpleFitness
+pop.subpop.0.species.pheromone-table =		ec.co.ant.SimplePheromoneTable
+
+# Further species parameters (construction-rule, update-rule, etc) must be
+# set by the application parameters.

@@ -1,0 +1,21 @@
+# Copyright 2019 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+##############################
+# Ant Colony System boiler plate
+##############################
+
+# To implement ACS, we adapt ECJ's steady-state EA model to support local
+# and global pheromone update rules.
+parent.1 = ../../simple/simple.params
+parent.0 = ../../steadystate/steadystate.params
+
+breed =					ec.steadystate.SteadyStateBreeder
+
+# generations =                                   200
+
+# Population size sets the number of ants per generation
+pop.subpops =	       	   	     	        1
+#pop.subpop.0.size =                             20
+pop.subpop.0.species =                          ec.co.ant.AntSpecies
