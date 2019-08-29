@@ -15,8 +15,21 @@ import ec.util.Parameter;
 import java.util.ArrayList;
 
 /**
+ * Coordinates the core behavior of Ant Colony Optimization algorithms.
+ *
+ * There are many kinds of ACO algorithms, but many of them can be defined in terms of a <code>PheromoneTable</code>,
+ * a <code>ConstructionRule</code> (which reads pheromones to execute "ants"), and a local and/or global
+ * <code>UpdateRule</code> (which alter pheromone values in the environment).
+ *
+ * <br/><br/>
+ *
+ * <code>AntSpecies</code> species these components for an algorithm and coordinates their execution.  ECJ's ACO
+ * algorithms are controlled by the usual <code>EvolutionState</code> characters, which hand off control to
+ * <code>Species</code> at appropriate points to generate solutions or perform pheromone updates.
  *
  * @author Eric O. Scott
+ * @see ec.app.tsp
+ * @see ec.app.knapsack
  */
 public class AntSpecies extends Species
 {

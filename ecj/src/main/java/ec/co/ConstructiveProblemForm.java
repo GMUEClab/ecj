@@ -9,13 +9,32 @@ import ec.EvolutionState;
 import java.util.List;
 
 /**
- * Defines a constrained combinatorial optimization problem.
- * 
- * Users can implement this interface to define the component and 
- * solution constraints that make up a combinatorial optimization problems, 
- * such as knapsack problems, satisfiability problems, or vehicle routing problems.
+ * Defines a combinatorial optimization problem.
+ *
+ * Combinatorial optimization differs from other kinds of optimization and search in that algorithms for solving tasks
+ * in this domain often proceed by building up partial solutions incrementally with the help of heuristic information.
+ * So while most of ECJ's algorithms can be applied to a <code>Problem</code> that just provides a fitness function for
+ * whole solutions, we need more than just a fitness function in order to apply ECJ's <code>CO</code> algorithms.
+ *
+ * <br/><br/>
+ *
+ * This interface in this package defines the additional information that users must
+ * provide for combinatorial optimization problems.  The most important of these are
+ *
+ * <ul>
+ *     <li>the component set, <code>getAllComponents()</code>, defining the pool of components that can be used to
+ *     construct solutions in your problem domain,</li>
+ *     <li>a neighborhood function, <code>getAllowedComponents()</code>, which defines the subset of components that
+ *     can be added to a given partial solution without breaking it.</li>
+ * </ul>
+ *
+ * The lists of <code>Component</code> objects returned by these methods come with their heuristic values pre-assigned.
+ * A <code>ConstructiveProblemForm</code> thus also implicitly implements the heuristic evaluation function, which is
+ * essential to many combinatorial optimization algorithms.
  * 
  * @author Eric O. Scott
+ * @see ec.app.tsp
+ * @see ec.app.knapsack
  */
 public interface ConstructiveProblemForm {
     

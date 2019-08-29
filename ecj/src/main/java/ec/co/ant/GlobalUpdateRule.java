@@ -15,6 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * A "global" pheromone update rule in the style of Ant Colony System.
+ *
+ * Either the best ant of the run (<code>GLOBAL_BEST</code>) or best of the generation (<code>ITERATION_BEST</code>)
+ * is chosen according to <code>base.best-strategy</code> and used to deposit pheromones.
  *
  * @author Eric O. Scott
  */

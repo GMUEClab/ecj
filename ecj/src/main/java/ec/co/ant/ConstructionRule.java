@@ -10,6 +10,9 @@ import ec.Setup;
 import ec.co.ConstructiveIndividual;
 
 /**
+ * Defines a rule for constructing ants based on pheromone values.
+ *
+ * Contrast to <code>ec.co.grasp.ConstructionRule</code>, which doesn't take pheromones into account.
  *
  * @author Eric O. Scott
  */

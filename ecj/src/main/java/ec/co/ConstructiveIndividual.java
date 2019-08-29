@@ -21,6 +21,10 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * Represents an <code>Individual</code> that can be incrementally constructed from a number of smaller components.
+ *
+ * This type is used by ECJ's combinatorial optimization to represent and construct solutions to problems like
+ * TSP or Knapsack, where partial solutions are usually built one component at a time.
  *
  * @author Eric O. Scott
  */

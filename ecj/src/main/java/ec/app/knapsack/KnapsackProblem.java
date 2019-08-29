@@ -18,8 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Definition of a basic knapsack problem.
+ *
+ * This problem takes a list of sizes (<code>base.sizes</code>) and values (<code>base.values</code>), as well as an
+ * overall knapsack size (<code>base.knapsack-size</code>).
  *
  * @author Eric O. Scott
+ * @see KnapsackComponent
+ * @see ec.co
  */
 public class KnapsackProblem extends Problem implements SimpleProblemForm, ConstructiveProblemForm {
     public final static String P_SIZES = "sizes";

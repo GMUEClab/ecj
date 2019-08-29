@@ -13,6 +13,7 @@ import ec.util.Parameter;
 import java.util.List;
 
 /**
+ * A trivial rule that builds solutions greedily to have the highest heuristic value in the neighborhood.
  *
  * @author Eric O. Scott
  */

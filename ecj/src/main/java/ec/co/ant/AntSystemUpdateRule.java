@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * <code>ANT_CYCLE</code>, <code>ANT_DENSITY</code>, and <code>ANT_QUANTITY</code> pheromone update rules, in the style
+ * of the Ant System algorithm.
  *
  * @author Eric O. Scott
  */

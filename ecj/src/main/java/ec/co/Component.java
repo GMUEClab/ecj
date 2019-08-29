@@ -11,6 +11,10 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 /**
+ * A data structure that encodes a single candidate piece of a constructive solution.
+ *
+ * The essential feature of a <code>Component</code> is that it comes with a <code>desireability()</code> score (a.k.a.
+ * a heuristic value).
  *
  * @author Eric O. Scott
  */

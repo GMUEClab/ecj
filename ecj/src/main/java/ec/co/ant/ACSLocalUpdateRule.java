@@ -15,6 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * A "local" pheromone decay rule in the style of Ant Colony System.
+ *
+ * ACS uses this rule to decay pheromones as soon as they are visited.  The intention is to encourage diversification
+ * within the same generation, so that ants are less likely to visit identical paths at the same time.
  *
  * @author Eric O. Scott
  */

@@ -13,6 +13,7 @@ import ec.co.ConstructiveIndividual;
 import java.util.List;
 
 /**
+ * Defines a rule for updating pheromone values using a list of "ants."
  *
  * @author Eric O. Scott
  */
