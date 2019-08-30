@@ -2517,4 +2517,6 @@ Version		Change Log
 	Add a separate Maven profile for running expensive system tests
 	Bugfixes for SimpleStatistics
 	Added GRASP to the combinatorial optimization package
-	Expanded unit test coverage of the BBOB benchmark
+	Unit test coverage improved to 13%
+	System test coverage improved to 41%
+	
