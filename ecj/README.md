@@ -59,7 +59,7 @@ responsible for manually installing ECJ's dependencies and adding them
 to your `CLASSPATH` environment variable.
 
 ```Bash
-wget libraries.tar.gz && tar -xzvf libraries.tar.gz
+wget https://cs.gmu.edu/~eclab/projects/ecj/libraries.tar.gz && tar -xzvf libraries.tar.gz
 export CLASSPATH=$(pwd)/libraries/*
 ```
 
