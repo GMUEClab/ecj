@@ -28,7 +28,7 @@
 
 <p>
 <img valign=top align=right src="GPGraph.png">
-ECJ implements genetic programming individuals as forests of trees.  Each tree is implemented as a tree of <a href="../../classdocs/ec/gp/GPNode.html">GPNode</a>s.  A <a href="../../classdocs/ec/gp/GPIndividual.html">GPIndividual</a> is a subclass of Individual which holds an array of <a href="../../classdocs/ec/gp/GPTree.html">GPTree</a>s.  In most GP problems, the GPIndividual uses <a href="../../classdocs/ec/gp/koza/KozaFitness">KozaFitness</a>, a Fitness subclass which implements Koza's raw and standardized fitness and hits measure.
+ECJ implements genetic programming individuals as forests of trees.  Each tree is implemented as a tree of <a href="../../classdocs/ec/gp/GPNode.html">GPNode</a>s.  A <a href="../../classdocs/ec/gp/GPIndividual.html">GPIndividual</a> is a subclass of Individual which holds an array of <a href="../../classdocs/ec/gp/GPTree.html">GPTree</a>s.  In most GP problems, the GPIndividual uses <a href="../../classdocs/ec/gp/koza/KozaFitness.html">KozaFitness</a>, a Fitness subclass which implements Koza's raw and standardized fitness and hits measure.
  
 <p>A GPTree contains a pointer to the root GPNode of its tree.  GPNodes contain an array of pointers to their children in the tree.  At present, all GPNodes contain this array, even the terminals, for whom the array is of zero length.  For convenience, GPNodes also maintain a pointer to their parent in the tree (always a GPNode, except the root's parent, which is the owning GPTree) and an integer indicating which number child they are of their parent (their <tt>argposition</tt>).
 

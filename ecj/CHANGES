@@ -2489,7 +2489,7 @@ Version		Change Log
 	   	ec.multiobjective.MultiObjectiveStatistics
 	Added CSV header to SimpleShortStatistics, and control over
 		the delimiter used
-	Added a new framework for Ant Colony algorithms and
+	Added an experimental framework for Ant Colony algorithms and
 	      combinatorial optimization
 	Implemented a TSP application with the ACO framework
 	Implemented a Knapsack application with the ACO framework
@@ -2502,11 +2502,19 @@ Version		Change Log
 	   	MultiObjectiveStatistics
 	Added error handling when the wront Fitness type is used with
 	   	NSGA2Breeder
-	Made ECJ buildable with JDK 11, now targeting Java 1.6
+	Made ECJ buildable with JDK 11, now targeting Java 1.7
 	Fixed bug in SPEA2Breeder that occurred when the
 	   	elites-fraction parameter was used
 	Add macro mechanisms ("default" and "alias") to the
 	   	ParameterDatabase language
 	Disabled system tests by default (since they are slow); only
 	   	unit tests run by default
-	Update contrib/cgp so that it builds with recent ECJ versions
+	Updated contrib/cgp so that it builds with recent ECJ versions
+	Removed obsolete scripts in the start/ directory
+	Fixed a JZlib versioning issue that caused distributed EAs to 
+	        crash when building with Apache Maven
+	Revise README to include better instructions
+	Add a separate Maven profile for running expensive system tests
+	Bugfixes for SimpleStatistics
+	Added GRASP to the combinatorial optimization package
+	Expanded unit test coverage of the BBOB benchmark

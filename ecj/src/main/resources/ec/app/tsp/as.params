@@ -1,0 +1,38 @@
+# Copyright 2017 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+##############################
+# Ant System applied to TSP
+##############################
+
+parent.0 = ../../co/ant/as.params
+
+generations =                                   200
+
+# Population size sets the number of ants per generation
+pop.subpop.0.size =                             20
+
+##############################
+# AntSpecies holds the construction and update rules that define ACO algorithms
+##############################
+pop.subpop.0.species.ind =                      ec.app.tsp.TSPIndividual
+
+# AS uses SimpleConstructionRule to implement proportionate selection
+pop.subpop.0.species.construction-rule =        ec.co.ant.SimpleConstructionRule
+pop.subpop.0.species.construction-rule.component-selector = ec.co.ant.ProportionateComponentSelector
+pop.subpop.0.species.construction-rule.component-selector.alpha =   1.0
+pop.subpop.0.species.construction-rule.component-selector.beta =    1.0
+
+# Here we specify AS's global rule for pheromone updates
+pop.subpop.0.species.update-rule =              ec.co.ant.AntSystemUpdateRule
+pop.subpop.0.species.update-rule.decay-rate =	0.1
+pop.subpop.0.species.update-rule.deposit-rule =	ANT-CYCLE
+
+
+##############################
+# Problem
+##############################
+eval.problem =                                  ec.app.tsp.TSPProblem
+#eval.problem.file =				$src/main/resources/ec/app/tsp/test4.tsp
+eval.problem.file =				$src/main/resources/ec/app/tsp/berlin52.tsp

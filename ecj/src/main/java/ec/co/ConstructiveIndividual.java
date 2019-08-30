@@ -21,13 +21,17 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * Represents an <code>Individual</code> that can be incrementally constructed from a number of smaller components.
+ *
+ * This type is used by ECJ's combinatorial optimization to represent and construct solutions to problems like
+ * TSP or Knapsack, where partial solutions are usually built one component at a time.
  *
  * @author Eric O. Scott
  */
 public class ConstructiveIndividual<T extends Component> extends Individual implements Iterable<T>
 {
     
-    public static final String P_CONSTRUCTIVEINDIVIDUAL = "constr-ind";
+    public static final String P_DEFAULTBASE = "constr-ind";
     private List<T> components = new ArrayList<T>();
     /** A set representation of the components, to allow for quick "contains()" checking */
     private Set<T> componentsSet = new HashSet<T>();
@@ -40,7 +44,7 @@ public class ConstructiveIndividual<T extends Component> extends Individual impl
     @Override
     public Parameter defaultBase()
         {
-        return AntSpecies.DEFAULT_BASE.push(P_CONSTRUCTIVEINDIVIDUAL);
+        return new Parameter(P_DEFAULTBASE);
         }
 
     @Override
@@ -156,8 +160,8 @@ public class ConstructiveIndividual<T extends Component> extends Individual impl
     
     public boolean repOK()
         {
-        return P_CONSTRUCTIVEINDIVIDUAL != null
-                && !P_CONSTRUCTIVEINDIVIDUAL.isEmpty()
+        return P_DEFAULTBASE != null
+                && !P_DEFAULTBASE.isEmpty()
                 && components != null
                 && !Misc.containsNulls(components)
                 && componentsSet.size() == new HashSet<T>(components).size()

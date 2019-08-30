@@ -2,22 +2,30 @@
 # Licensed under the Academic Free License version 3.0
 # See the file "LICENSE" for more information
 
-parent.0 = ../../simple/simple.params
+##############################
+# Ant System applied to Knapsack
+##############################
 
-breed =                                         ec.co.ant.AntBreeder
+parent.0 = ../../co/ant/as.params
 
+generations =					200
+
+# Population size sets the number of ants per generation
 pop.subpop.0.size =                             10
-pop.subpop.0.species =                          ec.co.ant.AntSpecies
-pop.subpop.0.species.fitness =                  ec.simple.SimpleFitness
+
+##############################
+# AntSpecies holds the construction and update rules that define ACO algorithms
+##############################
 pop.subpop.0.species.ind =                      ec.co.ConstructiveIndividual
-pop.subpop.0.species.update-rule =              ec.co.ant.AntSystemUpdateRule
-pop.subpop.0.species.update-rule.decay-rate =	0.1
-pop.subpop.0.species.update-rule.deposit-rule =	ANT-CYCLE
-pop.subpop.0.species.pheromone-table =		    ec.co.ant.SimplePheromoneTable
+
 pop.subpop.0.species.construction-rule =        ec.co.ant.SimpleConstructionRule
 pop.subpop.0.species.construction-rule.component-selector = ec.co.ant.ProportionateComponentSelector
 pop.subpop.0.species.construction-rule.component-selector.alpha =   1.0
 pop.subpop.0.species.construction-rule.component-selector.beta =    1.0
+
+pop.subpop.0.species.update-rule =              ec.co.ant.AntSystemUpdateRule
+pop.subpop.0.species.update-rule.decay-rate =	0.1
+pop.subpop.0.species.update-rule.deposit-rule =	ANT-CYCLE
 
 eval.problem =                                  ec.app.knapsack.KnapsackProblem
 # Example instance P01 from http://people.sc.fsu.edu/~jburkardt/datasets/knapsack_01/knapsack_01.html

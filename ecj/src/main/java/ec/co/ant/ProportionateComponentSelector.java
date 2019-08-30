@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Provides a function that chooses components stochastically in the style of
+ * Provides a function that chooses a <code>Component</code> stochastically in the style of
  * Ant System.  Each component's probability of being chosen is proportional to
  * the product of its phereomone concentration and its heuristic desirability, each
- * weighted according to an exponential scaling factor (alpha and beta, 
+ * weighted according to an exponential scaling factor (<code>alpha</code> and <code>beta</code>,
  * respectively).
  * 
  * @author Eric O. Scott

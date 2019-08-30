@@ -135,4 +135,35 @@ public abstract class Evaluator implements Singleton
         {
         p_problem.closeContacts(state,result);
         }
+
+    /** Called to update some state by considering the current population.
+     *
+     * This is used by some algorithms to update additional state (stored the population's Species)
+     * beyond fitness values (ex. ACO's pheromone distributions).
+     *
+     * This method will typically just call a similar hook on a Species, where the actually state update occurs.*/
+    public void postEvaluationGlobalUpdate(EvolutionState state)
+        {
+        assert(state != null);
+        assert(state.population != null);
+        assert(state.population.subpops != null);
+        for (final Subpopulation subpop : state.population.subpops)
+            subpop.species.updateSubpopulation(state, subpop);
+        }
+
+
+    /** Called to update some state by considering a single Individual.
+     *
+     * This is used by some algorithms to update additional state (stored the population's Species)
+     * beyond fitness values (ex. ACO's pheromone distributions).
+     *
+     * This method will typically just call a similar hook on a Species, where the actually state update occurs.*/
+    public void postEvaluationLocalUpdate(EvolutionState state, Individual ind, int subpop)
+        {
+        assert(state != null);
+        assert(state.population != null);
+        assert(state.population.subpops != null);
+        assert(state.population.subpops.size() > subpop);
+        state.population.subpops.get(subpop).species.updateIndividual(state, ind);
+        }
     }

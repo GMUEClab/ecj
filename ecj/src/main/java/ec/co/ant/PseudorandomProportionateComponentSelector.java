@@ -13,6 +13,11 @@ import ec.util.Parameter;
 import java.util.List;
 
 /**
+ * The classic ant transition rule used by Ant Colony System.
+ *
+ * A coin is flipped with probability <code>base.prob-best</code>.  If it's heads, the next <code>Component</code> is
+ * chosen greedily to have the highest heuristic value in the neighborhood.  If it's tails,
+ * <code>ProportionateComponentSelect</code> is used instead.
  *
  * @author Eric O. Scott
  */

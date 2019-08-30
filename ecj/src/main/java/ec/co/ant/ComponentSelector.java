@@ -11,8 +11,13 @@ import ec.co.Component;
 import java.util.List;
 
 /**
+ * A basic strategy for selecting a <code>Component</code> out of a list of candidates.
+ *
+ * <code>ComponentSelector</code> classes are intended to be used as building blocks for writing
+ * <code>ConstructionRule</code>.
  *
  * @author Eric O. Scott
+ * @see ConstructionRule
  */
 public interface ComponentSelector extends Setup {
     public abstract Component choose(final EvolutionState state, final List<Component> components, final PheromoneTable pheromones, final int thread);

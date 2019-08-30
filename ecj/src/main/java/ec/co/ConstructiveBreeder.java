@@ -1,20 +1,18 @@
 /*
- Copyright 2017 by Sean Luke
+ Copyright 2019 by Sean Luke
  Licensed under the Academic Free License version 3.0
  See the file "LICENSE" for more information
  */
 package ec.co;
 
 import ec.*;
-import ec.co.ConstructiveIndividual;
-import ec.co.ConstructiveProblemForm;
 import ec.util.Parameter;
 
 /**
- * A simple Breeder that generates a new population by asking each subpopulation's
+ * A basic Breeder that generates a new population by asking each subpopulation's
  * Species to create new individuals.
  *
- * This is used with algorithms like Grasp and ACO, which generate new individuals at
+ * This is used with algorithms like GRASP, which generate new individuals at
  * each step (rather than producing them by running an old population through a pipeline).
  *
  * @author Eric O. Scott

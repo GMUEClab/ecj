@@ -61,6 +61,7 @@ import java.util.*;
 public class SteadyStateEvolutionState extends EvolutionState
     {
     public static final String P_REPLACEMENT_PROBABILITY = "replacement-probability";
+    public static final String P_EMPTY_AT_GEN = "empty-at-generation-boundary";
         
     /** Did we just start a new generation? */
     public boolean generationBoundary;
@@ -71,8 +72,13 @@ public class SteadyStateEvolutionState extends EvolutionState
     /** When a new individual arrives, with what probability should it directly replace the existing
         "marked for death" individual, as opposed to only replacing it if it's superior? */
     public double replacementProbability;
-        
-    //int[] individualCount; 
+
+    /** If true, the population will be emptied after each "generation," so no replacement or breeding occurrs.  This
+     * is used, for example, by Ant Colony algorithms, which have no notion of breeding.
+     */
+    public boolean emptyAtGenerationBoundary;
+
+        //int[] individualCount;
         
     /** Hash table to check for duplicate individuals */ 
     HashMap[] individualHash; 
@@ -81,7 +87,7 @@ public class SteadyStateEvolutionState extends EvolutionState
     int whichSubpop;
     
     /** First time calling evolve */
-    protected boolean firstTime; 
+    protected boolean firstTime;
         
     public void setup(final EvolutionState state, final Parameter base)
         {
@@ -96,7 +102,9 @@ public class SteadyStateEvolutionState extends EvolutionState
             state.output.error("You've chosen to use Steady-State Evolution, but your exchanger does not implement the SteadyStateExchangerForm.",base);
         
         checkStatistics(state, statistics, new Parameter(P_STATISTICS));
-        
+
+        emptyAtGenerationBoundary = parameters.getBoolean(SteadyStateDefaults.base().push(P_EMPTY_AT_GEN), null, false);
+
         if (parameters.exists(SteadyStateDefaults.base().push(P_REPLACEMENT_PROBABILITY),null))
             {
             replacementProbability = parameters.getDoubleWithMax(SteadyStateDefaults.base().push(P_REPLACEMENT_PROBABILITY),null,0.0, 1.0);
@@ -231,9 +239,12 @@ public class SteadyStateEvolutionState extends EvolutionState
 
             int subpop = ((SteadyStateEvaluator)evaluator).getSubpopulationOfEvaluatedIndividual(); 
             whichSubpop = subpop;
+
+            // LOCAL STATE UPDATE (used by some algorithms like ACO to EDAS to update auxiliary state)
+            evaluator.postEvaluationLocalUpdate(this, ind, subpop);
                                              
             if ( partiallyFullSubpop ) // is subpopulation full? 
-                {  
+                {
                 population.subpops.get(subpop).individuals.add(ind);
                                 
                 // STATISTICS FOR GENERATION ZERO 
@@ -314,11 +325,17 @@ public class SteadyStateEvolutionState extends EvolutionState
                 finishEvaluationStatistics();
                 return R_SUCCESS;
                 }
-                        
+
+            // GLOBAL STATE UPDATE (used by some algorithms like ACO to EDAS to update auxiliary state)
+            evaluator.postEvaluationGlobalUpdate(this);
+
             // POST-BREEDING EXCHANGING
             statistics.prePostBreedingExchangeStatistics(this);
             population = exchanger.postBreedingExchangePopulation(this);
             statistics.postPostBreedingExchangeStatistics(this);
+
+            // CLEAR POPULATION
+            population = population.emptyClone();
             }
 
         if (checkpoint && generationBoundary && (generation - 1) % checkpointModulo == 0) 
@@ -342,9 +359,6 @@ public class SteadyStateEvolutionState extends EvolutionState
             }
         }
 
-    /**
-     * @param result
-     */
     public void finish(int result)
         {
         output.message("Total Evaluations " + evaluations);

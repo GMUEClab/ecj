@@ -37,10 +37,10 @@ public class GlobalUpdateRuleTest {
     private ParameterDatabase params;
     private SimplePheromoneTable pheromones;
     private KnapsackProblem problem;
-    
+
     public GlobalUpdateRuleTest() {
     }
-    
+
     @Before
     public void setUp()
     {
@@ -74,7 +74,7 @@ public class GlobalUpdateRuleTest {
     public void testSetup1() {
         GlobalUpdateRule instance = new GlobalUpdateRule();
         instance.setup(state, BASE);
-        
+
         assertEquals(instance.getBestStrategy(), BestStrategy.GLOBAL_BEST);
         assertEquals(instance.getRho(), 0.3, 0.000001);
         assertTrue(instance.repOK());
@@ -89,7 +89,7 @@ public class GlobalUpdateRuleTest {
         params.set(BASE.push(GlobalUpdateRule.P_BEST_STRATEGY), BestStrategy.ITERATION_BEST.toString());
         GlobalUpdateRule instance = new GlobalUpdateRule();
         instance.setup(state, BASE);
-        
+
         assertEquals(instance.getBestStrategy(), BestStrategy.ITERATION_BEST);
         assertEquals(instance.getRho(), 0.3, 0.000001);
         assertTrue(instance.repOK());
@@ -110,9 +110,9 @@ public class GlobalUpdateRuleTest {
             add(createKnapsackInd(new int[] { 0, 3, 6, 8 }, 700.0));
             add(createKnapsackInd(new int[] { 9, 3, 1, 1}, 800.0));
         }};
-        
-        instance.updatePheromones(state, pheromones, subpop);
-        
+
+        instance.updatePheromones(state, pheromones, subpop.individuals);
+
         final List<Component> pComponents = problem.getAllComponents();
         assertEquals(0.000001, pheromones.get(state, pComponents.get(0), 0), 0.00000001);
         assertEquals(0.0006006999999999999, pheromones.get(state, pComponents.get(1), 0), 0.00000001);
@@ -125,7 +125,7 @@ public class GlobalUpdateRuleTest {
         assertEquals(0.000001, pheromones.get(state, pComponents.get(8), 0), 0.00000001);
         assertEquals(0.000001, pheromones.get(state, pComponents.get(9), 0), 0.00000001);
     }
-    
+
     /** @returns a solution to 'problem' with a manually designated fitness value. */
     private ConstructiveIndividual createKnapsackInd(final int[] components, final double fitness)
     {
@@ -138,5 +138,5 @@ public class GlobalUpdateRuleTest {
         ((SimpleFitness)ind.fitness).setFitness(state, fitness, false);
         return ind;
     }
-    
+
 }

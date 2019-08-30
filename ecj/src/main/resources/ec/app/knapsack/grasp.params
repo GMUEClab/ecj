@@ -1,0 +1,20 @@
+# Copyright 2017 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../../simple/simple.params
+
+breed =                                         ec.co.ConstructiveBreeder
+
+pop.subpop.0.size =                             10
+pop.subpop.0.species =                          ec.co.grasp.GraspSpecies
+pop.subpop.0.species.fitness =                  ec.simple.SimpleFitness
+pop.subpop.0.species.ind =                      ec.co.ConstructiveIndividual
+pop.subpop.0.species.construction-rule =        ec.co.grasp.SimpleConstructionRule
+pop.subpop.0.species.construction-rule.component-selector = ec.co.grasp.GreedyComponentSelector
+
+eval.problem =                                  ec.app.knapsack.KnapsackProblem
+# Example instance P01 from http://people.sc.fsu.edu/~jburkardt/datasets/knapsack_01/knapsack_01.html
+eval.problem.knapsack-size = 165
+eval.problem.sizes = 23 31 29 44 53 38 63 85 89 82
+eval.problem.values = 92 57 49 68 60 43 67 84 87 72

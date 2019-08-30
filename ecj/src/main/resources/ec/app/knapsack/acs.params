@@ -1,0 +1,48 @@
+# Copyright 2019 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+##############################
+# Ant Colony System applied to TSP
+##############################
+parent.0 = ../../co/ant/acs.params
+
+generations =                                   200
+
+# Population size sets the number of ants per generation
+pop.subpop.0.size =                             20
+
+
+##############################
+# AntSpecies holds the construction and update rules that define ACO algorithms
+##############################
+pop.subpop.0.species.ind =                      ec.co.ConstructiveIndividual
+
+# AS uses SimpleConstructionRule to implement psuedo-random proportionate selection
+pop.subpop.0.species.construction-rule =        ec.co.ant.SimpleConstructionRule
+pop.subpop.0.species.construction-rule.component-selector = ec.co.ant.PseudorandomProportionateComponentSelector
+pop.subpop.0.species.construction-rule.component-selector.prob-best = 0.5
+pop.subpop.0.species.construction-rule.component-selector.alpha =   1.0
+pop.subpop.0.species.construction-rule.component-selector.beta =    1.0
+
+# Here we specify ACS's global rule for pheromone updates, using the global best ant
+# to deposite pheromones at the generation boundary
+pop.subpop.0.species.update-rule =              ec.co.ant.GlobalUpdateRule
+pop.subpop.0.species.update-rule.rho =		0.3
+# You could switch this to ITERATION-BEST if you like
+pop.subpop.0.species.update-rule.best-strategy =	GLOBAL_BEST
+
+# Here we add ACS's local update rule, which decayse pheromones visited by each ant as soon as it is evaluated (rather than waiting for the generation boundary)
+pop.subpop.0.species.local-update-rule =        ec.co.ant.ACSLocalUpdateRule
+pop.subpop.0.species.local-update-rule.rho =             		0.1
+pop.subpop.0.species.local-update-rule.minimum-pheromone =	0.000001
+
+
+##############################
+# Problem
+##############################
+eval.problem =                                  ec.app.knapsack.KnapsackProblem
+# Example instance P01 from http://people.sc.fsu.edu/~jburkardt/datasets/knapsack_01/knapsack_01.html
+eval.problem.knapsack-size = 165
+eval.problem.sizes = 23 31 29 44 53 38 63 85 89 82
+eval.problem.values = 92 57 49 68 60 43 67 84 87 72

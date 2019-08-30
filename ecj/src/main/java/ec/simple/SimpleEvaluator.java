@@ -218,9 +218,7 @@ public class SimpleEvaluator extends Evaluator
 
         if (numTests > 1)
             contract(state);
-
         }
-
 
     /** The SimpleEvaluator determines that a run is complete by asking
         each individual in each population if he's optimal; if he 

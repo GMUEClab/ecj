@@ -96,8 +96,8 @@ public class AppsTest
         new File("src/main/resources/ec/app/moosuite/spea2.params").getAbsolutePath(),
 
         // Distributed examples; need their own test runner.
-        new File("src/main/resources/ec/app/tsp/aco.master.params").getAbsolutePath(),
-        new File("src/main/resources/ec/app/tsp/aco.slave.params").getAbsolutePath(),
+        new File("src/main/resources/ec/app/tsp/as.master.params").getAbsolutePath(),
+        new File("src/main/resources/ec/app/tsp/as.slave.params").getAbsolutePath(),
         new File("src/main/resources/ec/app/star/ant.master.params").getAbsolutePath(),
         new File("src/main/resources/ec/app/star/ant.slave.params").getAbsolutePath(),
         new File("src/main/resources/ec/app/star/coevolve1.master.params").getAbsolutePath(),
@@ -106,6 +106,8 @@ public class AppsTest
         new File("src/main/resources/ec/app/star/coevolve2.slave.params").getAbsolutePath(),
         new File("src/main/resources/ec/app/star/mastermeta.params").getAbsolutePath(),
         new File("src/main/resources/ec/app/star/slavemeta.params").getAbsolutePath(),
+	new File("src/main/resources/ec/app/tsp/grasp.master.params").getAbsolutePath(),
+	new File("src/main/resources/ec/app/tsp/grasp.slave.params").getAbsolutePath(),
 
         // Too expensive to bother with
         new File("src/main/resources/ec/app/cartpole/cartpole.params").getAbsolutePath()

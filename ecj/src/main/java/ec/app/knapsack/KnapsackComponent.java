@@ -13,8 +13,13 @@ import java.io.IOException;
 
 /**
  * A component representing an object in a knapsack problem.
+ *
+ * The heuristic <code>desirability()</code> of a <code>KnapsackComponent</code> is equal to its <code>value</code>
+ * attribute.
  * 
  * @author Eric O. Scott
+ * @see KnapsackProblem
+ * @see ec.co
  */
 public class KnapsackComponent extends Component {
     private double size;

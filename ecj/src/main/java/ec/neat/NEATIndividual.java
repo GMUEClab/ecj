@@ -648,7 +648,6 @@ public class NEATIndividual extends GeneVectorIndividual
         NEATGene[] newGenes = new NEATGene[2];
         if (neatSpecies.hasInnovation(testInno))
             {
-            
             // Grab the existing innovation info
             NEATInnovation innovation = neatSpecies.getInnovation(testInno);
             newNode = (NEATNode) neatSpecies.nodePrototype.emptyClone();

@@ -123,7 +123,10 @@ public class SteadyStateBreeder extends SimpleBreeder
             // all breeding pipelines are SteadyStateBSourceForm
             //if (!(breedingSources[x] instanceof SteadyStateBSourceForm))
             //    state.output.error("Breeding Pipeline of subpopulation " + x + " is not of SteadyStateBSourceForm");
-            ((SteadyStateBSourceForm)(breedingSources[x])).sourcesAreProperForm(state);
+            if (breedingSources[x] != null)
+                {
+                ((SteadyStateBSourceForm)(breedingSources[x])).sourcesAreProperForm(state);
+                }
             }
         }
     
@@ -145,8 +148,11 @@ public class SteadyStateBreeder extends SimpleBreeder
         {
         for(int x = 0 ; x < deselectors.length; x++)
             {
-            bp[x].finishProducing(state,x,0);
-            deselectors[x].finishProducing(state,x,0);
+                if (bp[x] != null)
+                {
+                bp[x].finishProducing(state,x,0);
+                deselectors[x].finishProducing(state,x,0);
+                }
             }
         }
         
@@ -157,10 +163,13 @@ public class SteadyStateBreeder extends SimpleBreeder
         bp = new BreedingSource[st.population.subpops.size()];
         for(int pop=0;pop<bp.length;pop++)
             {
-            bp[pop] = (BreedingSource) st.population.subpops.get(pop).species.pipe_prototype.clone();
-            if (!bp[pop].produces(st,st.population,pop,0))
-                st.output.error("The Breeding Source of subpopulation " + pop + " does not produce individuals of the expected species " + st.population.subpops.get(pop).species.getClass().getName() + " and with the expected Fitness class " + st.population.subpops.get(pop).species.f_prototype.getClass().getName());
-            bp[pop].fillStubs(state, null);
+            if (st.population.subpops.get(pop).species.pipe_prototype != null)
+                { // If this algorithm uses a pipeline, make sure it produces the right type of output
+                bp[pop] = (BreedingSource) st.population.subpops.get(pop).species.pipe_prototype.clone();
+                if (!bp[pop].produces(st, st.population, pop, 0))
+                    st.output.error("The Breeding Source of subpopulation " + pop + " does not produce individuals of the expected species " + st.population.subpops.get(pop).species.getClass().getName() + " and with the expected Fitness class " + st.population.subpops.get(pop).species.f_prototype.getClass().getName());
+                bp[pop].fillStubs(state, null);
+                }
             }
         // are they of the proper form?
         sourcesAreProperForm(st,bp);
@@ -170,8 +179,11 @@ public class SteadyStateBreeder extends SimpleBreeder
         // warm them up
         for(int pop=0;pop<bp.length;pop++)
             {
-            bp[pop].prepareToProduce(state,pop,0);
-            deselectors[pop].prepareToProduce(state,pop,0);
+            if (bp[pop] != null)
+                {
+                bp[pop].prepareToProduce(state,pop,0);
+                deselectors[pop].prepareToProduce(state,pop,0);
+                }
             }
         }
         

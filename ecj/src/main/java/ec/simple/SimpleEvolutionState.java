@@ -66,6 +66,17 @@ public class SimpleEvolutionState extends EvolutionState
         // EVALUATION
         statistics.preEvaluationStatistics(this);
         evaluator.evaluatePopulation(this);
+
+        // LOCAL STATE UPDATES (used by some algorithms like ACO or EDAs to update auxiliary state
+        // SimpleEvolutionState executes all the "local" updates in a batch—-so it's really a kind of "global" update
+        // See SteadyStateEvolutionState for true local state updates
+        for (int i = 0; i < this.population.subpops.size(); i++)
+            {
+            final Subpopulation subpop = this.population.subpops.get(i);
+            for (final Individual ind : subpop.individuals)
+                evaluator.postEvaluationLocalUpdate(this, ind, i);
+            }
+
         statistics.postEvaluationStatistics(this);
 
         // SHOULD WE QUIT?
@@ -85,7 +96,7 @@ public class SimpleEvolutionState extends EvolutionState
  
         // INCREMENT GENERATION AND CHECKPOINT
         generation++;
-       
+                     
         // PRE-BREEDING EXCHANGING
         statistics.prePreBreedingExchangeStatistics(this);
         population = exchanger.preBreedingExchangePopulation(this);
@@ -98,6 +109,8 @@ public class SimpleEvolutionState extends EvolutionState
             return R_SUCCESS;
             }
 
+    	/// GLOBAL STATE UPDATE (used by some algorithms like ACO to EDAS to update auxiliary state)
+        evaluator.postEvaluationGlobalUpdate(this);
         
         // BREEDING
         statistics.preBreedingStatistics(this);
