@@ -373,9 +373,8 @@ After unpacking ECJ, you're left with one directory called \file{ecj} where you 
 \item A \file{Makefile} for building via {\tt make}.
 \item A \file{pom.xml} for building via Maven.
 \item The \file{docs} directory.  This contains most of the ECJ documentation.
-\item The \file{start} directory.  This contains various scripts for starting up ECJ: though in truth we rarely use them.
-\item The \file{lib} directory.  This contains any additional libraries that maven (not make) will need to build ECJ (to build with make, you'll use a different mechanism).
-\item The \file{classes} directory.  This contains the class files, and possibly other resources (see next bullet), for ECJ after it has been built.
+\item The \file{local-repo} directory.  This contains any additional libraries that maven (not make) will need to build ECJ (to build with make, you'll use a different mechanism).
+\item The \file{target} directory.  This contains the class files, and possibly other resources (see next bullet), for ECJ after it has been built.
 \item The \file{src} directory, which contains the main Java code and the internal library test code.  Of particular interest to you will be the directories \textbf{\file{src/main/java/ec/}}, which is the top-level package for ECJ, and \file{src/main/java/resources/ec/}.  The \file{src/main/java/ec/} directory holds the top-level package for ECJ, \package{ec}.  The \file{src/main/java/resources/ec} directory is an identical-structured directory containing various resources (notably parameter files).  If you build with {\tt make}, then these resources will get merged into the \file{classes} directory.
 \end{itemize}
 
@@ -383,7 +382,7 @@ After unpacking ECJ, you're left with one directory called \file{ecj} where you 
 
 The \file{ec} (\file{ecj/src/main/java/ec/}) directory is ECJ's top-level package.  Every subdirectory is a subpackage, and most of them are headed by helpful README files which describe the contents of the directory.  Most packages contain not only Java files and class files but also parameter files and occasional data files: ECJ was designed originally for the class files to be compiled and stored right alongside the Java files in these directories, though it can be used with the separate-build-area approach taken by IDEs like Eclipse.
 
-Because \file{ec} is the top-level package, you can compile ECJ, more or less, by just sticking its parent directory (the \file{ecj} directory), in your CLASSPATH.  You will also need to add certain {\bf jar files} in order to compile ECJ's distributed evaluation and island model facilities, and its GUI.  You can get these jar files from the ECJ main website (http://cs.gmu.edu/\(\sim\)eclab/projects/ecj/).  Note that none of these libraries is required.  For example, if the libraries for the distributed evaluator and island model are missing, ECJ will compile but will complain if you try to run those packages with compression turned on (a feature of the packages).  The GUI library is optional to ECJ, so if you don't install its libraries, you can still compile ECJ by just deleting the \file{ec/display} directory.
+Because \file{ec} is the top-level package, you can compile ECJ, more or less, by just sticking its parent directory (the \file{ecj/target/} directory), in your CLASSPATH.  You will also need to add certain {\bf jar files} in order to compile ECJ's distributed evaluation and island model facilities, and its GUI.  You can get these jar files from the ECJ main website (http://cs.gmu.edu/\(\sim\)eclab/projects/ecj/).  Note that none of these libraries is required.  For example, if the libraries for the distributed evaluator and island model are missing, ECJ will compile but will complain if you try to run those packages with compression turned on (a feature of the packages).  The GUI library is optional to ECJ, so if you don't install its libraries, you can still compile ECJ by just deleting the \file{ec/display} directory.
 
 \subsubsection{The \file{ec/display} Directory: ECJ's GUI}
 
