@@ -20,7 +20,7 @@ CLASSROOT = target/classes
 JAVACFLAGS = -target 1.7 -source 1.7 ${FLAGS} -d ${CLASSROOT}
 FLAGS = -g -Xlint:deprecation
 
-VERSION = 26
+VERSION = 27
 
 SRCS = \
 ec/*.java \
