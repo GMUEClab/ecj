@@ -12,4 +12,8 @@ ecj/src/main/resources/ec/app/mona/1-MonaLisaOut.png
 *.log
 *.out
 *.toc
+*.bbl
+*.blg
+*.synctex.gz
+*.pdf
 *~

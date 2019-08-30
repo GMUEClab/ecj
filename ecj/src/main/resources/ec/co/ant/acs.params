@@ -29,7 +29,6 @@ steady.empty-at-generation-boundary =  		True
 # AntSpecies holds the construction and update rules that define ACO algorithms
 ##############################
 pop.subpop.0.species.fitness =                  ec.simple.SimpleFitness
-pop.subpop.0.species.ind =                      ec.app.tsp.TSPIndividual
 pop.subpop.0.species.pheromone-table =		ec.co.ant.SimplePheromoneTable
 
 # Further species parameters (construction-rule, update-rule, etc) must be

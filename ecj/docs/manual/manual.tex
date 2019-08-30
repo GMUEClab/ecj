@@ -161,7 +161,7 @@ George Mason University}
 \\
 \\
 \large\rm {\bf Manual Version 27}\\
-\large\rm April 18, 2019\\
+\large\rm August 30, 2019\\
 
 \vspace{5.6in}
 \noindent\Large\bf Where to Obtain ECJ\\
@@ -13684,6 +13684,273 @@ Second, instead of setting the fitness, we'll {\it record an observation} like t
 }
 
 Two examples using DOvS are \package{ec/app/singular} and \package{ec/app/highdimension}
+
+
+
+
+\section{Ant Colony Optimization and GRASP}
+
+Most of the metaheuristics in ECJ rely on operations that work with complete candidate solutions: whole solutions are mutated, mated, or sampled from a distribution, and only whole solutions are evaluated for their quality.  
+
+Ant Colony Optimization algorithms and related methods for combinatorial optimization  (like GRASP) tend to work differently: these methods are based on \emph{constructive} heuristics, i.e.\ heuristics that work with partial solutions by adding to them component-by-component.
+
+ECJ offers a flexible framework for combinatorial optimization in the \package{ec/co} package.  It's distinguishing feature is a special \class{ConstructiveProblemForm}, which enforces the idea that to define a combinatorial optimization problem you must define not only a {\it fitness function} for evaluating whole solutions, but also a {\it neighborhood} of candidate components that solutions can be built from, and a means of assigning a {\it heuristic value} to individual components.  Describing problems in this abstract way allows us to implement a variety of combinatorial optimization algorithms without making domain-specific assumptions (like assuming that solutions represent paths on a connected graph---a limiting assumption that tends to be built into most implementations of Ant Colony algorithms).
+
+Here we describe how to use three combinatorial optimization methods offered by ECJ:
+\begin{itemize}
+        \item Ant System (AS)
+        \item Ant Colony System (ACS)
+        \item Greedy Randomized Adaptive Search Procedure (GRASP)
+\end{itemize}
+
+
+Have a look at \package{ec/app/knapsack} and \package{ec/app/tsp} for examples of how problems can be defined for use with the algorithsm in \package{ec/co}.
+
+\subsection{Ant Colony Optimization}
+\paragraph{WARNING:} {\color{red} EJC's Ant Colony code is in early preview and is not ready for serious use yet.}
+
+Ant colony optimization (ACO) is a family of algorithms that are based on the idea of incrementally building up solutions according to a heuristic function, and then having those solutions assign ``pheromones'' to components.  Components that accrue larger amounts of pheromones are more likely to be selected during the construction of future solutions.
+
+ECJ's ACO package is \package{ec/co/aco}, which is centered around the \class{AntSpecies} class.  This is a special \class{Species} that coordinates the activity of typical ACO components. Specifically, \class{AntSpecies} contains references to the following kinds of objects:
+
+\begin{itemize}
+        \item \class{PheromoneTable}: stores pheromone values for each candidate \class{Component}.
+        \item \class{ConstructionRule}: constructs solutions (``ants'') using information from the \class{PheromoneTable}.
+        \item \class{UpdateRule}: uses a set of solutions to modify the \class{PheromoneTable}.
+\end{itemize}
+
+Ant colony algorithms are very similar to estimation of distribution algorithms: instead of modifying a persisent population, they generate new solutions at each step and use them to update some auxiliary data (pheromones).  To achieve this for ACO, we wire \class{AntSpecies} together with a few standard evolutionary algorithm components: both \class{SimpleEvolutionState} and \class{SteadyStateEvolutionState} include hooks that will ask \class{AntSpecies} to perform local and global pheromone updates at the appropriate times---namely by calling the special methods \method{updateIndividual(...)} and \method{updateSubpopulation(...)}.
+
+Here we show how these pieces can be combined to create two classic ACO methods.
+
+\subsubsection{Ant System}
+
+Ant System \cite{ant_system} was one of the first ACO algorithms.  It's most distinctive features are
+\begin{itemize}
+        \item a stochastic construction rule based on {\it proportionate selection} of candidate components, and
+        \item a update rule that uses {\it all} ants to lay down pheromones, according to one of three strategies: \texttt{ANT-CYCLE}, \texttt{ANT-QUANTITY}, and \texttt{ANT-DENSITY}.
+\end{itemize}
+
+Ant System is a completely generational algorithm---pheromones are only updated after all the ants in the generation have had their fitnesses evaluated---and it works well with ECJ's distributed evaluation system.  We use \class{SimpleEvolutionState} and a simplistic \class{ConstructiveBreeder} to implement Ant System's generational dynamics.
+
+Here we give a full example of Ant System parameters, starting from scratch.  In practice, you'll want to use the \texttt{ec/co/ant/as.params} file as a parent for your parameters to cut down on boiler plate (see the parameter files in \package{ec/app/knapsack} and \package{ec/app/tsp} for real-world examples).
+
+We begin with the standard EA components:
+
+\begin{verbatim}
+## Standard ECJ Stuff
+evalthreads = 				auto
+breedthreads = 				auto
+checkpoint-prefix = 			ec
+checkpoint-modulo =                     1
+state = 				ec.simple.SimpleEvolutionState
+init = 					ec.simple.SimpleInitializer
+finish = 	        		ec.simple.SimpleFinisher
+exch = 					ec.simple.SimpleExchanger
+breed =					ec.simple.SimpleBreeder
+eval =					ec.simple.SimpleEvaluator
+stat =					ec.simple.SimpleStatistics
+stat.file				$out.stat
+pop = 					ec.Population
+pop.subpops =				1
+pop.subpop.0 = 				ec.Subpopulation
+pop.subpop.0.duplicate-retries =	0
+
+generations =				200
+\end{verbatim}
+
+As you might expect, we use the population size to set the number of ants per generation:
+\begin{verbatim}
+pop.subpop.0.size =			20
+\end{verbatim}
+
+Now we define some basic high-level ACO components:
+\begin{verbatim}
+##############################
+# Ant System boiler plate
+##############################
+
+# AS uses ConstructiveBreeder to execute populations of ants
+breed =                                         ec.co.ConstructiveBreeder
+
+# AntSpecies holds the construction and update rules that define ACO algorithms
+pop.subpop.0.species =		        ec.co.ant.AntSpecies
+pop.subpop.0.species.fitness =          ec.simple.SimpleFitness
+pop.subpop.0.species.pheromone-table =	ec.co.ant.SimplePheromoneTable
+\end{verbatim}
+
+And finally, here we use parameters specific to \class{AntSpecies} to define Ant System's distinctive \class{ConstructionRule} and \class{UpdateRule}.  We also specify that solutions will be represented as \class{ConstructiveIndividual}, which is sufficient for most simple combinatorial optimization problems.
+
+\begin{verbatim}
+##############################
+# Ant System details
+##############################
+pop.subpop.0.species.ind =                      ec.co.ConstructiveIndividual
+
+pop.subpop.0.species.construction-rule =        ec.co.ant.SimpleConstructionRule
+pop.subpop.0.species.construction-rule.component-selector = ec.co.ant.ProportionateComponentSelector
+pop.subpop.0.species.construction-rule.component-selector.alpha =   1.0
+pop.subpop.0.species.construction-rule.component-selector.beta =    1.0
+
+pop.subpop.0.species.update-rule =              ec.co.ant.AntSystemUpdateRule
+pop.subpop.0.species.update-rule.decay-rate =	0.1
+pop.subpop.0.species.update-rule.deposit-rule =	ANT-CYCLE
+\end{verbatim}
+
+All that's left now is to specify the problem we wish to solve.  In this case we'll define a knapsack instance.  This example is the standard P01 instance from \url{http://people.sc.fsu.edu/~jburkardt/datasets/knapsack_01/knapsack_01.html}:
+
+\begin{verbatim}
+##############################
+# Example problem
+##############################
+eval.problem =                                  ec.app.knapsack.KnapsackProblem
+eval.problem.knapsack-size =                    165
+eval.problem.sizes =                            23 31 29 44 53 38 63 85 89 82
+eval.problem.values =                           92 57 49 68 60 43 67 84 87 72
+\end{verbatim}
+
+
+\subsubsection{Ant Colony System}
+
+Ant Colony System (ACS) \cite{acs} differs from Ant System in three main ways:
+\begin{itemize}
+        \item A ``pseudo-random'' proportional constructin rule is use, which randomly chooses between greedy selection and proportionate selection,
+        \item A ``global'' pheromone update rule uses only the {\it best} ``ant'' (either the \texttt{GLOBAL-BEST} or \texttt{ITERATION-BEST} to lay down pheromones, and
+        \item A ``local'' pheromone update rule decays the pheromones visited by each ``ant'' {\it as soon as it is generated} and {\it before} the next ant of the generation is generated.
+\end{itemize}
+
+Thanks to the local update rule, Ant Colony System is not purely generational: some pheromone updates occurs at the generation boundary, but other pheromone updates occur in a steady-state fashion.  As such, we use ECJ's \class{SteadyStateEvolutionState} to implement ACS.  This optionally allows ACS to interoperate with ECJ's distributed evaluation system---producing an asynchronous, parallel variant of ACS.
+
+Here we give a full example of the synchronous, single-threaded version of Ant Colony System, starting from scratch.  As with AS, you'll actually want to use the parent parameter file to save yourself some boilerplate: \texttt{ec/co/ant/acs.params}.
+
+We begin with the standard EA components, this time choosing the control mechanisms for steady-state EAs:
+
+\begin{verbatim}
+## Standard ECJ Stuff
+evalthreads = 				auto
+breedthreads = 				auto
+checkpoint-prefix = 			ec
+checkpoint-modulo =                     1
+#seed.0 =				time
+#checkpoint =				false
+init = 					ec.simple.SimpleInitializer
+finish = 	        		ec.simple.SimpleFinisher
+exch = 					ec.simple.SimpleExchanger
+breed =					ec.simple.SimpleBreeder
+eval =					ec.simple.SimpleEvaluator
+stat =					ec.simple.SimpleStatistics
+stat.file				$out.stat
+pop = 					ec.Population
+pop.subpops =				1
+pop.subpop.0 = 				ec.Subpopulation
+pop.subpop.0.duplicate-retries =	0
+
+## Standard steady-state EA stuff
+
+state = 				ec.steadystate.SteadyStateEvolutionState
+breed =					ec.steadystate.SteadyStateBreeder
+eval =					ec.steadystate.SteadyStateEvaluator
+
+## Must specify deselectors even though ACO won't use them
+steady.deselector.0 =			ec.select.TournamentSelection
+steady.deselector.0.size =		1
+
+generations =				200
+\end{verbatim}
+
+The population size sets the number of ants in a generation---that is, the number of ants we evaluate before performing the {\it global} update operation:
+
+\begin{verbatim}
+pop.subpop.0.size =			20
+\end{verbatim}
+
+Now we set up the high-level ACO components, with a few tweaks to the steady-state components:
+
+\begin{verbatim}
+##############################
+# Ant Colony System boiler plate
+##############################
+
+# AntSpecies holds the construction and update rules that define ACO algorithms
+pop.subpop.0.species =		        ec.co.ant.AntSpecies
+pop.subpop.0.species.fitness =          ec.simple.SimpleFitness
+pop.subpop.0.species.pheromone-table =	ec.co.ant.SimplePheromoneTable
+
+# To use an ACO algorithm with SteadyStateEvolutionState, we need to tell it to
+# throw away the population after each generation boundary.  Otherwise it will try
+# to "insert" ants into a persistent population, which is not how ACO works!
+steady.empty-at-generation-boundary =  		True
+\end{verbatim}
+
+And then we get to the meat of the matter: ACS's construction and update rules and their parameterization:
+
+\begin{verbatim}
+##############################
+# Ant System details
+##############################
+pop.subpop.0.species.ind =                      ec.co.ConstructiveIndividual
+
+# AS uses SimpleConstructionRule to implement psuedo-random proportionate selection
+pop.subpop.0.species.construction-rule =        ec.co.ant.SimpleConstructionRule
+pop.subpop.0.species.construction-rule.component-selector = \
+                              ec.co.ant.PseudorandomProportionateComponentSelector
+pop.subpop.0.species.construction-rule.component-selector.prob-best = 0.5
+pop.subpop.0.species.construction-rule.component-selector.alpha =   1.0
+pop.subpop.0.species.construction-rule.component-selector.beta =    1.0
+
+# Global rule for pheromone updates
+pop.subpop.0.species.update-rule =              ec.co.ant.GlobalUpdateRule
+pop.subpop.0.species.update-rule.rho =		0.3
+# You could switch this to ITERATION-BEST if you like
+pop.subpop.0.species.update-rule.best-strategy =	GLOBAL-BEST
+
+# Local update rule
+pop.subpop.0.species.local-update-rule =        ec.co.ant.ACSLocalUpdateRule
+pop.subpop.0.species.local-update-rule.rho =    0.1
+pop.subpop.0.species.local-update-rule.minimum-pheromone =	0.000001
+\end{verbatim}
+
+We close with a problem definition:
+
+\begin{verbatim}
+##############################
+# Example Problem
+##############################
+eval.problem =                                  ec.app.knapsack.KnapsackProblem
+eval.problem.knapsack-size =			165
+eval.problem.sizes = 	   			23 31 29 44 53 38 63 85 89 82
+eval.problem.values = 				92 57 49 68 60 43 67 84 87 72
+\end{verbatim}
+
+
+\subsection{GRASP}
+
+GRASP \cite{grasp} takes a very simple approach to combinatorial optimization: we construct solutions by greedily selecting the component with the best heuristic value at each step.  Because GRASP relies entirely on heuristic information (with no concept of pheromones or distributions that are learned over time), we really only need to choose a greedly \class{ConstructionRule} to define the algorithm:
+
+\begin{verbatim}
+parent.0 = ../../simple/simple.params
+
+breed =                                         ec.co.ConstructiveBreeder
+
+pop.subpop.0.size =                             10
+pop.subpop.0.species =                          ec.co.grasp.GraspSpecies
+pop.subpop.0.species.fitness =                  ec.simple.SimpleFitness
+pop.subpop.0.species.ind =                      ec.co.ConstructiveIndividual
+pop.subpop.0.species.construction-rule =        ec.co.grasp.SimpleConstructionRule
+pop.subpop.0.species.construction-rule.component-selector = ec.co.grasp.GreedyComponentSelector
+\end{verbatim}
+
+As usual, here's our problem:
+
+\begin{verbatim}
+eval.problem =                                  ec.app.knapsack.KnapsackProblem
+eval.problem.knapsack-size =                    165
+eval.problem.sizes =                            23 31 29 44 53 38 63 85 89 82
+eval.problem.values =                           92 57 49 68 60 43 67 84 87 72
+\end{verbatim}
+
+
+
 
 \section{Meta-Evolutionary Algorithms}
 \label{metaea}
