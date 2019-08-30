@@ -37,6 +37,7 @@ ec/app/hiff/*.java \
 ec/app/highdimension/*.java \
 ec/app/klandscapes/*.java \
 ec/app/klandscapes/func/*.java \
+ec/app/knapsack/*.java \
 ec/app/lawnmower/*.java \
 ec/app/lawnmower/func/*.java \
 ec/app/lid/*.java \
@@ -74,6 +75,7 @@ ec/app/xor/*.java \
 ec/breed/*.java \
 ec/co/*.java \
 ec/co/ant/*.java \
+ec/co/grasp/*.java \
 ec/coevolve/*.java \
 ec/de/*.java \
 ec/eda/amalgam/*.java \
