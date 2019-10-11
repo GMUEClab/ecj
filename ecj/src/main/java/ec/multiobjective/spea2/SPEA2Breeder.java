@@ -89,7 +89,7 @@ public class SPEA2Breeder extends SimpleBreeder
         if (elite[subpopulation] != NOT_SET)
             {
             if (elite[subpopulation] > referencePop.subpops.get(subpopulation).individuals.size())
-            state.output.error("The number of elites for subpopulation " + subpopulation + " exceeds the actual size of the subpopulation");
+                state.output.error("The number of elites for subpopulation " + subpopulation + " exceeds the actual size of the subpopulation");
             return elite[subpopulation];
             }
         else if (eliteFrac[subpopulation] == 0)

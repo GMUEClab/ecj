@@ -40,13 +40,13 @@ public class KnapsackProblem extends Problem implements SimpleProblemForm, Const
     
     @Override
     public List<Component> getAllComponents()
-    {
+        {
         return new ArrayList<Component>(components); // Defensive copy
-    }
+        }
     
     @Override
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         assert(state != null);
         assert(base != null);
         knapsackSize = state.parameters.getDouble(base.push(P_KNAPSACK_SIZE), null);
@@ -61,7 +61,7 @@ public class KnapsackProblem extends Problem implements SimpleProblemForm, Const
         for (int i = 0; i < sizes.length; i++)
             components.add(new KnapsackComponent(sizes[i], values[i]));
         assert(repOK());
-    }
+        }
             
     @Override
     public void evaluate(final EvolutionState state, final Individual ind, final int subpopulation, final int threadnum) {
@@ -71,33 +71,33 @@ public class KnapsackProblem extends Problem implements SimpleProblemForm, Const
         ((SimpleFitness)ind.fitness).setFitness(state, totalValue((ConstructiveIndividual)ind), false);
         ind.evaluated = true;
         assert(repOK());
-    }
+        }
     
     private double totalValue(final ConstructiveIndividual solution) {
         assert(solution != null);
         double value = 0.0;
         for (final Object c : solution)
-        {
+            {
             if (!(c instanceof KnapsackComponent))
                 throw new IllegalArgumentException(String.format("%s: found a %s containing a %s, but must contain only %ss.", this.getClass().getSimpleName(), solution.getClass().getSimpleName(), c.getClass().getSimpleName(), KnapsackComponent.class.getSimpleName()));
             value += ((KnapsackComponent)c).value();
-        }
+            }
         assert(repOK());
         return value;
-    }
+        }
     
     private double totalSize(final ConstructiveIndividual solution) {
         assert(solution != null);
         double size = 0.0;
         for (final Object c : solution)
-        {
+            {
             if (!(c instanceof KnapsackComponent))
                 throw new IllegalArgumentException(String.format("%s: found a %s containing a %s, but must contain only %ss.", this.getClass().getSimpleName(), solution.getClass().getSimpleName(), c.getClass().getSimpleName(), KnapsackComponent.class.getSimpleName()));
             size += ((KnapsackComponent)c).size();
-        }
+            }
         assert(repOK());
         return size;
-    }
+        }
 
     @Override
     public boolean isViolated(final ConstructiveIndividual partialSolution, final Component component) {
@@ -106,26 +106,26 @@ public class KnapsackProblem extends Problem implements SimpleProblemForm, Const
         if (!(component instanceof KnapsackComponent))
             throw new IllegalArgumentException(String.format("%s: tried to check constraints on a %s containing a %s, but must be a %s.", this.getClass().getSimpleName(), partialSolution.getClass().getSimpleName(), component.getClass().getSimpleName(), KnapsackComponent.class.getSimpleName()));
         return totalSize(partialSolution) + ((KnapsackComponent)component).size() > knapsackSize;
-    }
+        }
 
     @Override
     public int numComponents() {
         assert(repOK());
         return components.size();
-    }
+        }
     
     public final boolean repOK() {
         return P_VALUES != null
-                && !P_VALUES.isEmpty()
-                && P_SIZES != null
-                && !P_SIZES.isEmpty()
-                && P_KNAPSACK_SIZE != null
-                && !P_KNAPSACK_SIZE.isEmpty()
-                && components != null
-                && !components.isEmpty()
-                && knapsackSize > 0.0
-                && !Double.isNaN(knapsackSize);
-    }
+            && !P_VALUES.isEmpty()
+            && P_SIZES != null
+            && !P_SIZES.isEmpty()
+            && P_KNAPSACK_SIZE != null
+            && !P_KNAPSACK_SIZE.isEmpty()
+            && components != null
+            && !components.isEmpty()
+            && knapsackSize > 0.0
+            && !Double.isNaN(knapsackSize);
+        }
 
     /**
      * Choose a random component from the full component set.
@@ -141,7 +141,7 @@ public class KnapsackProblem extends Problem implements SimpleProblemForm, Const
         final KnapsackComponent result = components.get(state.random[thread].nextInt(components.size()));
         assert(repOK());
         return result;
-    }
+        }
     
     @Override
     public List<Component> getAllowedComponents(final ConstructiveIndividual partialSolution) {
@@ -154,7 +154,7 @@ public class KnapsackProblem extends Problem implements SimpleProblemForm, Const
                 if (partialSolutionSize + c.size() <= knapsackSize)
                     allowedComponents.add(c);
         return allowedComponents;
-    }
+        }
 
     @Override
     public boolean isCompleteSolution(final ConstructiveIndividual solution) {
@@ -166,11 +166,11 @@ public class KnapsackProblem extends Problem implements SimpleProblemForm, Const
                 if (size + c.size() <= knapsackSize)
                     return false;
         return true;
-    }
+        }
 
     @Override
     public Component getComponentFromString(final String s)
-    {
+        {
         assert(s != null);
         assert(!s.isEmpty());
         final String error = String.format("%s: failed to decode string representation of %s.  It must have the form '%s[size=M, value=N]' where M, N are floating point numbers, but was '%s'.", this.getClass().getSimpleName(), KnapsackComponent.class.getSimpleName(), KnapsackComponent.class.getSimpleName(), s);
@@ -194,11 +194,11 @@ public class KnapsackProblem extends Problem implements SimpleProblemForm, Const
         final double size;
         try {
             size = Double.parseDouble(splits[1]);
-        }
+            }
         catch (final NumberFormatException e)
-        {
+            {
             throw new IllegalArgumentException(error);
-        }
+            }
         
         splits = valueStr.split("="); // "from" "M"
         if (!splits[0].trim().equals("value"))
@@ -206,13 +206,13 @@ public class KnapsackProblem extends Problem implements SimpleProblemForm, Const
         final double value;
         try {
             value = Double.parseDouble(splits[1]);
-        }
+            }
         catch (final NumberFormatException e)
-        {
+            {
             throw new IllegalArgumentException(error);
-        }
+            }
         
         assert(repOK());
         return new KnapsackComponent(size, value);
+        }
     }
-}

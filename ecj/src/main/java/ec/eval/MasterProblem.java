@@ -336,13 +336,13 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
     public void sendAdditionalData(EvolutionState state, DataOutputStream dataOut)
         {
         if (problem == null)
-        	{
-        	state.output.warning("Cannot call Problem.sendAdditionalData(...) because MasterProblem's problem is currently null.");
-        	}
+            {
+            state.output.warning("Cannot call Problem.sendAdditionalData(...) because MasterProblem's problem is currently null.");
+            }
         else
-        	{
-        	problem.sendAdditionalData(state, dataOut);
-        	}
+            {
+            problem.sendAdditionalData(state, dataOut);
+            }
         }
 
     /** This method is called on a MasterProblem by the Slave.  You should use this method to store away
@@ -354,13 +354,13 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
     public void receiveAdditionalData(EvolutionState state, DataInputStream dataIn)
         {
         if (problem == null)
-        	{
-        	state.output.warning("Cannot call Problem.receiveAdditionalData(...) because MasterProblem's problem is currently null.");
-        	}
+            {
+            state.output.warning("Cannot call Problem.receiveAdditionalData(...) because MasterProblem's problem is currently null.");
+            }
         else
-        	{
-        	problem.receiveAdditionalData(state, dataIn);
-        	}
+            {
+            problem.receiveAdditionalData(state, dataIn);
+            }
         }
 
     /** This method is called by a Slave to transfer data previously loaded via receiveAdditionalData() to
@@ -369,13 +369,13 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
     public void transferAdditionalData(EvolutionState state)
         {
         if (problem == null)
-        	{
-        	state.output.warning("Cannot call Problem.transferAdditionalData(...) because MasterProblem's problem is currently null.");
-        	}
+            {
+            state.output.warning("Cannot call Problem.transferAdditionalData(...) because MasterProblem's problem is currently null.");
+            }
         else
-        	{
-        	problem.transferAdditionalData(state);
-        	}
+            {
+            problem.transferAdditionalData(state);
+            }
         }
 
     @Override

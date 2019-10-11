@@ -23,7 +23,7 @@ public class GreedyComponentSelector implements ComponentSelector {
 
     public void setup(final EvolutionState state, final Parameter base) {
         assert(repOK());
-    }
+        }
 
     @Override
     public Component choose(final EvolutionState state, final List<Component> components, final PheromoneTable pheromones, final int thread) {
@@ -35,18 +35,18 @@ public class GreedyComponentSelector implements ComponentSelector {
         Component best = null;
         for (final Component c : components)
             {
-                if (c.desirability() >= bestValue)
-                    {
-                    bestValue = c.desirability();
-                    best = c;
-                    }
+            if (c.desirability() >= bestValue)
+                {
+                bestValue = c.desirability();
+                best = c;
+                }
             }
         assert(best != null);
         return best;
-    }
+        }
     
     public final boolean repOK()
-    {
+        {
         return true;
+        }
     }
-}

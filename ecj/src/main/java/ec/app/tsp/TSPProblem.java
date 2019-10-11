@@ -39,10 +39,10 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
     
     public TSPComponent getComponent(final int from, final int to) {
         return graph.getEdge(from, to);
-    }
+        }
     
     public TSPComponent getComponentFromString(final String s)
-    {
+        {
         assert(s != null);
         assert(!s.isEmpty());
         final String error = String.format("%s: failed to decode string representation of %s.  It must have the form '%s[from=M, to=N]' where M, N are integers, but was '%s'.", this.getClass().getSimpleName(), TSPComponent.class.getSimpleName(), TSPComponent.class.getSimpleName(), s);
@@ -66,11 +66,11 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         final int from;
         try {
             from = Integer.parseInt(splits[1]);
-        }
+            }
         catch (final NumberFormatException e)
-        {
+            {
             throw new IllegalArgumentException(error);
-        }
+            }
         
         splits = toStr.split("="); // "from" "M"
         if (!splits[0].trim().equals("to"))
@@ -78,24 +78,24 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         final int to;
         try {
             to = Integer.parseInt(splits[1]);
-        }
+            }
         catch (final NumberFormatException e)
-        {
+            {
             throw new IllegalArgumentException(error);
-        }
+            }
         
         assert(repOK());
         return graph.getEdge(from, to);
-    }
+        }
     
     public int numNodes()
-    {
+        {
         return graph.numNodes();
-    }
+        }
     
     @Override
     public void setup(EvolutionState state, Parameter base)
-    {
+        {
         assert(state != null);
         assert(base != null);
         final File file = state.parameters.getFile(base.push(P_FILE), null);
@@ -112,7 +112,7 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
             state.output.fatal(String.format("%s: Unable to load TSP instance from file '%s': %s", this.getClass().getSimpleName(), state.parameters.getString(base.push(P_FILE), null), e), base.push(P_FILE));
             }
         assert(repOK());
-    }
+        }
 
     public boolean isViolated(final ConstructiveIndividual partialSolution, final Component component) {
         assert(partialSolution != null);
@@ -121,7 +121,7 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         final TSPComponent edge = (TSPComponent) component;
         boolean connected = false;
         for (final Object c : partialSolution)
-        {
+            {
             assert(c instanceof TSPComponent);
             final TSPComponent solEdge = (TSPComponent) c;
             
@@ -129,9 +129,9 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
                 connected = false; // We are starting from a node that is part of the tour (good!)
             if (edge.from() == solEdge.from() || edge.to() == solEdge.to())
                 return true; // We're trying to move to a node that is already in the tour (bad!)
-        }
+            }
         return connected;
-    }
+        }
     
     /**
      * Chooses a random edge in the TSP graph, disallowing self-loops.
@@ -147,7 +147,7 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
      */
     @Override
     public TSPComponent getArbitraryComponent(final EvolutionState state, final int thread)
-    {
+        {
         assert(state != null);
         assert(state.random != null);
         assert(thread >= 0);
@@ -159,12 +159,12 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         final TSPComponent result = graph.getEdge(from, to);
         assert(repOK());
         return result;
-    }
+        }
 
     @Override
     public List<Component> getAllComponents() {
         return new ArrayList<Component>(graph.getAllEdges());
-    }
+        }
     
     @Override
     public List<Component> getAllowedComponents(final ConstructiveIndividual partialSolution) {
@@ -178,37 +178,37 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         
         // If the solution is empty, then any non-self-loop component is allowed
         if (partialSolution.isEmpty())
-        {
+            {
             for (final TSPComponent edge : graph.getAllEdges())
                 if (edge.to() != edge.from()) // Disallow self-loops
                     allowedComponents.add(edge);
-        }
+            }
         else
-        { // Otherwise, only edges extending from either end of the path are allowed
+            { // Otherwise, only edges extending from either end of the path are allowed
             // Focus on the most recently added node in the tour
             final int mostRecentNode = tspSol.getLastNodeVisited();
             assert(mostRecentNode == tspSol.get((int) partialSolution.size() - 1).to());
             // Loop through every edge eminating from that node
             for (int to = 0; to < graph.numNodes(); to++)
-            {
+                {
                 if (mostRecentNode != to) // Disallow self-loops
                     if (allowCycles || !tspSol.visited(to))
                         allowedComponents.add(graph.getEdge(mostRecentNode, to));
+                }
             }
-        }
         assert(repOK());
         assert(allowedComponents.size() <= numComponents());
         return allowedComponents;
-    }
+        }
 
     /** Check whether a solution forms a valid tour of all the nodes. */
     @Override
     public boolean isCompleteSolution(final ConstructiveIndividual solution) {
         final Set<Integer> visited = nodesVisited(solution);
         return visited.size() == graph.numNodes()
-                && visited.containsAll(graph.getNodes())
-                && graph.getNodes().containsAll(visited);
-    }
+            && visited.containsAll(graph.getNodes())
+            && graph.getNodes().containsAll(visited);
+        }
         
     private Set<Integer> nodesVisited(final ConstructiveIndividual partialSolution) {
         assert(partialSolution != null);
@@ -219,13 +219,13 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
                 throw new IllegalStateException(String.format("%s: '%s' is set to false, but an individual containing cycles was encountered.  Is your construction heuristic configured to avoid cycles?", this.getClass().getSimpleName(), P_ALLOW_CYCLES));
             nodesVisited.add(edge.to());
             nodesVisited.add(edge.from());
-        }
+            }
         return nodesVisited;
-    }
+        }
 
     @Override
     public void evaluate(final EvolutionState state, final Individual ind, final int subpopulation, final int threadnum)
-    {
+        {
         assert(state != null);
         assert(ind != null);
         assert(ind instanceof ConstructiveIndividual);
@@ -239,10 +239,10 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
             ((SimpleFitness)ind.fitness).setFitness(state, fitness, false);
             ind.evaluated = true;
             }
-    }
+        }
 
     private double totalDistance(final EvolutionState state, final Individual ind)
-    {
+        {
         final TSPIndividual tind = (TSPIndividual) ind;
         assert(ind != null);
         if (!isCompleteSolution(tind))
@@ -262,20 +262,20 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         assert(!Double.isNaN(distance));
         assert(!Double.isInfinite(distance));
         return distance;
-    }
+        }
 
     @Override
     public int numComponents()
-    {
+        {
         return graph.numEdges();
-    }
+        }
     
     public final boolean repOK()
-    {
+        {
         return P_FILE != null
-                && !P_FILE.isEmpty()
-                && P_ALLOW_CYCLES != null
-                && !P_ALLOW_CYCLES.isEmpty()
-                && graph != null;
+            && !P_FILE.isEmpty()
+            && P_ALLOW_CYCLES != null
+            && !P_ALLOW_CYCLES.isEmpty()
+            && graph != null;
+        }
     }
-}

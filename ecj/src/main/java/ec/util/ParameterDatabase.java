@@ -1390,19 +1390,19 @@ public class ParameterDatabase implements Serializable
         }
 
 
-	double[] extendBag(double[] bag)
-		{
-		double[] newbag = new double[bag.length * 2 + 1];
-		System.arraycopy(bag, 0, newbag, 0, bag.length);
-		return newbag;
-		}
-		
-	double[] collapseBag(double[] bag, int size)
-		{
-		double[] newbag = new double[size];
-		System.arraycopy(bag, 0, newbag, 0, size);
-		return newbag;
-		}
+    double[] extendBag(double[] bag)
+        {
+        double[] newbag = new double[bag.length * 2 + 1];
+        System.arraycopy(bag, 0, newbag, 0, bag.length);
+        return newbag;
+        }
+                
+    double[] collapseBag(double[] bag, int size)
+        {
+        double[] newbag = new double[size];
+        System.arraycopy(bag, 0, newbag, 0, size);
+        return newbag;
+        }
 
     static final int ARRAY_NO_EXPECTED_LENGTH = (-1);
     double[] getDoublesWithMax(Parameter parameter, double minValue, double maxValue, int expectedLength)
@@ -1424,9 +1424,9 @@ public class ParameterDatabase implements Serializable
                 else
                     {
                     if (bagSize == bag.length) bag = extendBag(bag);
-                	bag[bagSize] = val;
-                	bagSize++; 
-                	}
+                    bag[bagSize] = val;
+                    bagSize++; 
+                    }
                 }
             if (scanner.hasNext())
                 return null;  // too long, or garbage afterwards
@@ -1612,11 +1612,11 @@ public class ParameterDatabase implements Serializable
         if (val == null) return null;
         int[] ret = new int[val.length];
         for(int i = 0; i < val.length; i++)
-        	{
-        	ret[i] = (int)val[i];
-        	if (ret[i] != val[i]) // uh oh, a double with a decimal place, or infinity or NaN
-        		return null;
-        	}
+            {
+            ret[i] = (int)val[i];
+            if (ret[i] != val[i]) // uh oh, a double with a decimal place, or infinity or NaN
+                return null;
+            }
         return ret;
         }
 
@@ -2487,27 +2487,27 @@ public class ParameterDatabase implements Serializable
     
 /*
 
-show();
-import ec.util.*;
-p = new ParameterDatabase(new File("ec/util/test.params"));
-String g(String s) { return p.getString(new Parameter(s), null); }
-p.list(new PrintWriter(System.out));
-g("a.b.c.d.e");
+  show();
+  import ec.util.*;
+  p = new ParameterDatabase(new File("ec/util/test.params"));
+  String g(String s) { return p.getString(new Parameter(s), null); }
+  p.list(new PrintWriter(System.out));
+  g("a.b.c.d.e");
 
 */
 
 
-	int countDelimiters(String parameter)
-		{
-		if (parameter == null) return 0;
-		int count = 0;
-		for(int i = 0; i < parameter.length(); i++)
-			{
-			if (parameter.charAt(i) == '.')
-				count++;
-			}
-		return count;
-		}
+    int countDelimiters(String parameter)
+        {
+        if (parameter == null) return 0;
+        int count = 0;
+        for(int i = 0; i < parameter.length(); i++)
+            {
+            if (parameter.charAt(i) == '.')
+                count++;
+            }
+        return count;
+        }
 
     /** Private helper function */
     synchronized String _getInner(String parameter, HashSet set) 
@@ -2518,104 +2518,104 @@ g("a.b.c.d.e");
             }
 
         if (set.contains(parameter))
-        	{
-        	return null;
-        	}
+            {
+            return null;
+            }
         set.add(parameter);
         
-        String result = _getRecursive(parameter);		// try concrete parameter
-	    uncheck();
+        String result = _getRecursive(parameter);               // try concrete parameter
+        uncheck();
         if (result != null)
-        	{
-        	return result;
-        	}
+            {
+            return result;
+            }
         else if (parameter.endsWith(".alias") || parameter.endsWith(".default") )  // don't allow macros inside macro definitions
-        	{
-        	return null;
-        	}
+            {
+            return null;
+            }
         else if (parameter.startsWith("parent."))
-        	{
-        	return null;
-        	}
+            {
+            return null;
+            }
         else if (parameter.equals(PRINT_PARAMS))
-        	{
-        	return null;
-        	}
+            {
+            return null;
+            }
         else
             {
-			int count = countDelimiters(parameter);				// this could be improved
+            int count = countDelimiters(parameter);                         // this could be improved
 
             // try top-level alias
             String replace = _getInner(parameter + "." + V_ALIAS, set);
-	    	uncheck();
-			if (replace != null && countDelimiters(replace) > count)	// we don't allow macros to grow
-				{
-				replace = null;
-				}
+            uncheck();
+            if (replace != null && countDelimiters(replace) > count)        // we don't allow macros to grow
+                {
+                replace = null;
+                }
 
             if (replace != null)
-            	{
-            	result = _getInner(replace, set);
-	        	uncheck();
-            	if (result != null)
-            		{
-            		return result;
-            		}
-            	}
+                {
+                result = _getInner(replace, set);
+                uncheck();
+                if (result != null)
+                    {
+                    return result;
+                    }
+                }
 
             String extra = "";
             while(true)
-            	{
-		        int lastDelim = parameter.lastIndexOf(Parameter.delimiter);
-				if (lastDelim <= 0 || lastDelim == parameter.length() - 1)  // fail if there is no dot, or if there is a dot at the beginning, or end
-					{
-					return null;
-					}
-				else
-					{
-					String head = parameter.substring(0, lastDelim);
-					String tail = parameter.substring(lastDelim + 1);
-					
-					
-					// try default
-					replace = _getRecursive(head + "." + V_DEFAULT);		// we don't allow macros inside macro rules
-	        		uncheck();
-					if (replace != null && countDelimiters(replace) > count) // we don't allow macros to grow
-						{
-						replace = null;
-						}
+                {
+                int lastDelim = parameter.lastIndexOf(Parameter.delimiter);
+                if (lastDelim <= 0 || lastDelim == parameter.length() - 1)  // fail if there is no dot, or if there is a dot at the beginning, or end
+                    {
+                    return null;
+                    }
+                else
+                    {
+                    String head = parameter.substring(0, lastDelim);
+                    String tail = parameter.substring(lastDelim + 1);
+                                        
+                                        
+                    // try default
+                    replace = _getRecursive(head + "." + V_DEFAULT);                // we don't allow macros inside macro rules
+                    uncheck();
+                    if (replace != null && countDelimiters(replace) > count) // we don't allow macros to grow
+                        {
+                        replace = null;
+                        }
 
-					if (replace != null)
-						{
-						result = _getInner(replace + extra, set);
-	    				uncheck();
-						if (result != null)
-							return result;
-						}
+                    if (replace != null)
+                        {
+                        result = _getInner(replace + extra, set);
+                        uncheck();
+                        if (result != null)
+                            return result;
+                        }
 
-					// try alias
-					replace = _getRecursive(head + "." + V_ALIAS);		// we don't allow macros inside macro rules
-	        		uncheck();
-					if (replace != null && countDelimiters(replace) > count)	// we don't allow macros to grow
-						{
-						replace = null;
-						}
+                    // try alias
+                    replace = _getRecursive(head + "." + V_ALIAS);          // we don't allow macros inside macro rules
+                    uncheck();
+                    if (replace != null && countDelimiters(replace) > count)        // we don't allow macros to grow
+                        {
+                        replace = null;
+                        }
 
-					if (replace != null)
-						{
-						result = _getInner(replace + "." + tail + extra, set);
-	    				uncheck();
-						if (result != null)
-							return result;
-						}
-					
-					extra = "." + tail + extra;
-					parameter = head;
-					count--;  // one less delimiter!
-					}
-				}
-			}
-		}
+                    if (replace != null)
+                        {
+                        result = _getInner(replace + "." + tail + extra, set);
+                        uncheck();
+                        if (result != null)
+                            return result;
+                        }
+                                        
+                    extra = "." + tail + extra;
+                    parameter = head;
+                    count--;  // one less delimiter!
+                    }
+                }
+            }
+        }
 
 
     public ParameterDatabase getLocation(Parameter parameter)

@@ -67,8 +67,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
     public static final String P_XOPT = "xopt";
 
     final public String[] problemTypes =
-            {"sphere", "ellipsoidal", "rastrigin", "buche-rastrigin", "linear-slope", "attractive-sector", "step-ellipsoidal", "rosenbrock", "rosenbrock-rotated", "ellipsoidal-2", "discus", "bent-cigar", "sharp-ridge", "different-powers", "rastrigin-2",
-                    "weierstrass", "schaffers-f7", "schaffers-f7-2", "griewank-rosenbrock", "schwefel", "gallagher-gaussian-101me", "gallagher-gaussian-21hi", "katsuura", "lunacek"};
+        {"sphere", "ellipsoidal", "rastrigin", "buche-rastrigin", "linear-slope", "attractive-sector", "step-ellipsoidal", "rosenbrock", "rosenbrock-rotated", "ellipsoidal-2", "discus", "bent-cigar", "sharp-ridge", "different-powers", "rastrigin-2",
+         "weierstrass", "schaffers-f7", "schaffers-f7-2", "griewank-rosenbrock", "schwefel", "gallagher-gaussian-101me", "gallagher-gaussian-21hi", "katsuura", "lunacek"};
 
     final static public int SPHERE = 0;
     final static public int ELLIPSOIDAL = 1;
@@ -97,7 +97,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
 
     // Noise types
     final public String[] noiseTypes =
-            {"none", "gauss", "uniform", "cauchy", "gauss-moderate", "uniform-moderate", "cauchy-moderate"};
+        {"none", "gauss", "uniform", "cauchy", "gauss-moderate", "uniform-moderate", "cauchy-moderate"};
 
     final static public int NONE = 0;
     final static public int GAUSSIAN = 1;
@@ -167,24 +167,24 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
         int whichLog = state.output.numLogs() - 1;
         File f = new File("bbob.csv");
         try {
-           whichLog = state.output.addLog(f, false);
-        } catch (IOException io) {
+            whichLog = state.output.addLog(f, false);
+            } catch (IOException io) {
             state.output.fatal("An IOException occurred while trying to create bbob.csv");
-        }
+            }
 
         double granularity = Double.parseDouble(args[1]);
         ArrayList<Double> possibleVals = new ArrayList<Double>();
         for(double i =-10;i<10;i+=granularity){
             possibleVals.add(i);
-        }
+            }
         int valsLength = possibleVals.size();
         ArrayList<Double[]> XYPair = new ArrayList<Double[]>();
         for(int i=0;i<valsLength;i++){
             for(int j=0;j<valsLength;j++){
                 Double[] temp = new Double[]{possibleVals.get(i),possibleVals.get(j)};
                 XYPair.add(temp);
+                }
             }
-        }
         int pairNumber = XYPair.size();
         DoubleVectorIndividual[] inds = new DoubleVectorIndividual[pairNumber];
         for(int i=0;i<pairNumber;i++){
@@ -194,8 +194,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             inds[i].fitness = new SimpleFitness();
             instance.evaluate(state,inds[i],0,0);
             state.output.println(pair[0]+", "+pair[1] +", "+inds[i].fitness.fitnessToStringForHumans().split(" ")[1],whichLog);
-        }
-    }                                                                                                                                                            
+            }
+        }                                                                                                                                                            
 
     public void setup(final EvolutionState state, final Parameter base) {
         super.setup(state, base);
@@ -228,9 +228,9 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
         if(!state.parameters.exists(base.push(P_XOPT),null)){
             xOpt = new double[genomeSize];
             computeXopt(xOpt, state.random[0]);
-        }else{
+            }else{
             xOpt = state.parameters.getDoublesWithMax(base.push(P_XOPT),null,-5,5,genomeSize);
-        }
+            }
         rotation = new double[genomeSize][genomeSize];
         rot2 = new double[genomeSize][genomeSize];
         linearTF = new double[genomeSize][genomeSize];
@@ -239,318 +239,318 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
         scales = Math.max(1.0, Math.sqrt(genomeSize) / 8.);
 
         switch (problemType) {
-            case SPHERE:
-                /* INITIALIZATION */
-                break;
+        case SPHERE:
+            /* INITIALIZATION */
+            break;
 
-            case ELLIPSOIDAL: // f2
-                if (noise != NONE) {
-                    rot2 = new double[genomeSize][genomeSize];
-                    computeRotation(rot2, state.random[0], genomeSize);
+        case ELLIPSOIDAL: // f2
+            if (noise != NONE) {
+                rot2 = new double[genomeSize][genomeSize];
+                computeRotation(rot2, state.random[0], genomeSize);
                 }
-                break;
+            break;
 
-            case RASTRIGIN:
-                break;
+        case RASTRIGIN:
+            break;
 
-            case BUCHE_RASTRIGIN:
-                for (i = 0; i < genomeSize; i += 2)
-                    xOpt[i] = Math.abs(xOpt[i]); /* Skew */
-                break;
+        case BUCHE_RASTRIGIN:
+            for (i = 0; i < genomeSize; i += 2)
+                xOpt[i] = Math.abs(xOpt[i]); /* Skew */
+            break;
 
-            case LINEAR_SLOPE:
-                for (i = 0; i < genomeSize; i++) {
-                    tmp = Math.pow(Math.sqrt(alpha), ((double) i) / ((double) (genomeSize - 1)));
-                    if (xOpt[i] > 0) {
-                        xOpt[i] = 5.;
+        case LINEAR_SLOPE:
+            for (i = 0; i < genomeSize; i++) {
+                tmp = Math.pow(Math.sqrt(alpha), ((double) i) / ((double) (genomeSize - 1)));
+                if (xOpt[i] > 0) {
+                    xOpt[i] = 5.;
                     } else if (xOpt[i] <= 0) {
-                        xOpt[i] = -5.;
+                    xOpt[i] = -5.;
                     }
-                    fAdd_Init += 5. * tmp;
+                fAdd_Init += 5. * tmp;
                 }
-                break;
+            break;
 
-            case ATTRACTIVE_SECTOR:
-                /* decouple scaling from function definition */
-                for (i = 0; i < genomeSize; i++) {
-                    for (j = 0; j < genomeSize; j++) {
-                        linearTF[i][j] = 0.0;
-                        for (k = 0; k < genomeSize; k++) {
-                            linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
+        case ATTRACTIVE_SECTOR:
+            /* decouple scaling from function definition */
+            for (i = 0; i < genomeSize; i++) {
+                for (j = 0; j < genomeSize; j++) {
+                    linearTF[i][j] = 0.0;
+                    for (k = 0; k < genomeSize; k++) {
+                        linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
                         }
                     }
                 }
-                break;
+            break;
 
-            case STEP_ELLIPSOIDAL:
-                break;
+        case STEP_ELLIPSOIDAL:
+            break;
 
-            case ROSENBROCK:
-                if (noise == NONE)
-                    for (i = 0; i < genomeSize; i++)
-                        xOpt[i] *= 0.75;
-                break;
+        case ROSENBROCK:
+            if (noise == NONE)
+                for (i = 0; i < genomeSize; i++)
+                    xOpt[i] *= 0.75;
+            break;
 
-            case ROSENBROCK_ROTATED:
-                /* INITIALIZATION */
-                /* computeXopt(state.random[0], genomeSize); */
+        case ROSENBROCK_ROTATED:
+            /* INITIALIZATION */
+            /* computeXopt(state.random[0], genomeSize); */
+            for (i = 0; i < genomeSize; i++) {
+                for (j = 0; j < genomeSize; j++)
+                    linearTF[i][j] = scales * rotation[i][j];
+                }
+            break;
+
+        case ELLIPSOIDAL_2:
+            ;
+            break;
+
+        case DISCUS:
+            break;
+
+        case BENT_CIGAR:
+            break;
+
+        case SHARP_RIDGE:
+            for (i = 0; i < genomeSize; i++) {
+                for (j = 0; j < genomeSize; j++) {
+                    linearTF[i][j] = 0.0;
+                    for (k = 0; k < genomeSize; k++) {
+                        linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
+                        }
+                    }
+                }
+            break;
+
+        case DIFFERENT_POWERS:
+            break;
+
+        case RASTRIGIN_2:
+            for (i = 0; i < genomeSize; i++) {
+                for (j = 0; j < genomeSize; j++) {
+                    linearTF[i][j] = 0.0;
+                    for (k = 0; k < genomeSize; k++) {
+                        linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
+                        }
+                    }
+                }
+            break;
+
+        case WEIERSTRASS:
+            aK = new double[12];
+            bK = new double[12];
+
+            for (i = 0; i < genomeSize; i++) {
+                for (j = 0; j < genomeSize; j++) {
+                    linearTF[i][j] = 0.0;
+                    for (k = 0; k < genomeSize; k++) {
+                        linearTF[i][j] += rotation[i][k] * Math.pow(1.0 / Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
+                        }
+                    }
+                }
+
+            f0 = 0.0;
+            for (i = 0; i < 12; i++) /*
+                                      * number of summands, 20 in CEC2005, 10/12
+                                      * saves 30% of time
+                                      */ {
+                aK[i] = Math.pow(0.5, (double) i);
+                bK[i] = Math.pow(3., (double) i);
+                f0 += aK[i] * Math.cos(2 * Math.PI * bK[i] * 0.5);
+                }
+            break;
+
+        case SCHAFFERS_F7:
+            break;
+
+        case SCHAFFERS_F7_2:
+            break;
+
+        case GRIEWANK_ROSENBROCK:
+            if (noise == NONE) {
+                rot2 = new double[genomeSize][genomeSize];
+                linearTF = new double[genomeSize][genomeSize];
                 for (i = 0; i < genomeSize; i++) {
-                    for (j = 0; j < genomeSize; j++)
+                    for (j = 0; j < genomeSize; j++) {
                         linearTF[i][j] = scales * rotation[i][j];
-                }
-                break;
-
-            case ELLIPSOIDAL_2:
-                ;
-                break;
-
-            case DISCUS:
-                break;
-
-            case BENT_CIGAR:
-                break;
-
-            case SHARP_RIDGE:
+                        }
+                    }
                 for (i = 0; i < genomeSize; i++) {
+                    xOpt[i] = 0.0;
                     for (j = 0; j < genomeSize; j++) {
-                        linearTF[i][j] = 0.0;
-                        for (k = 0; k < genomeSize; k++) {
-                            linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
-                        }
-                    }
-                }
-                break;
-
-            case DIFFERENT_POWERS:
-                break;
-
-            case RASTRIGIN_2:
-                for (i = 0; i < genomeSize; i++) {
-                    for (j = 0; j < genomeSize; j++) {
-                        linearTF[i][j] = 0.0;
-                        for (k = 0; k < genomeSize; k++) {
-                            linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
-                        }
-                    }
-                }
-                break;
-
-            case WEIERSTRASS:
-                aK = new double[12];
-                bK = new double[12];
-
-                for (i = 0; i < genomeSize; i++) {
-                    for (j = 0; j < genomeSize; j++) {
-                        linearTF[i][j] = 0.0;
-                        for (k = 0; k < genomeSize; k++) {
-                            linearTF[i][j] += rotation[i][k] * Math.pow(1.0 / Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
-                        }
-                    }
-                }
-
-                f0 = 0.0;
-                for (i = 0; i < 12; i++) /*
-                 * number of summands, 20 in CEC2005, 10/12
-                 * saves 30% of time
-                 */ {
-                    aK[i] = Math.pow(0.5, (double) i);
-                    bK[i] = Math.pow(3., (double) i);
-                    f0 += aK[i] * Math.cos(2 * Math.PI * bK[i] * 0.5);
-                }
-                break;
-
-            case SCHAFFERS_F7:
-                break;
-
-            case SCHAFFERS_F7_2:
-                break;
-
-            case GRIEWANK_ROSENBROCK:
-                if (noise == NONE) {
-                    rot2 = new double[genomeSize][genomeSize];
-                    linearTF = new double[genomeSize][genomeSize];
-                    for (i = 0; i < genomeSize; i++) {
-                        for (j = 0; j < genomeSize; j++) {
-                            linearTF[i][j] = scales * rotation[i][j];
-                        }
-                    }
-                    for (i = 0; i < genomeSize; i++) {
-                        xOpt[i] = 0.0;
-                        for (j = 0; j < genomeSize; j++) {
-                            xOpt[i] += linearTF[j][i] * 0.5 / scales / scales;
+                        xOpt[i] += linearTF[j][i] * 0.5 / scales / scales;
                         }
                     }
                 } else {
-                    // TODO
+                // TODO
                 }
-                break;
+            break;
 
-            case SCHWEFEL:
-                /* INITIALIZATION */
-                tmpvect = new double[genomeSize];
+        case SCHWEFEL:
+            /* INITIALIZATION */
+            tmpvect = new double[genomeSize];
 
-                for (i = 0; i < genomeSize; i++)
-                    tmpvect[i] = nextDoubleClosedInterval(state.random[0]);
-                for (i = 0; i < genomeSize; i++) {
-                    xOpt[i] = 0.5 * 4.2096874633;
-                    if (tmpvect[i] - 0.5 < 0)
-                        xOpt[i] *= -1.;
+            for (i = 0; i < genomeSize; i++)
+                tmpvect[i] = nextDoubleClosedInterval(state.random[0]);
+            for (i = 0; i < genomeSize; i++) {
+                xOpt[i] = 0.5 * 4.2096874633;
+                if (tmpvect[i] - 0.5 < 0)
+                    xOpt[i] *= -1.;
                 }
-                break;
+            break;
 
-            case GALLAGHER_GAUSSIAN_101ME:
-                maxCondition = 1000.0;
-                arrCondition = new double[NHIGHPEAKS21];
-                peaks21 = new double[genomeSize * NHIGHPEAKS21];
-                rperm21 = new int[Math.max(genomeSize, NHIGHPEAKS21)];
-                peaks = peaks21;
-                peakvalues = new double[NHIGHPEAKS21];
-                arrScales21 = new double[NHIGHPEAKS21][genomeSize];
-                xLocal21 = new double[genomeSize][NHIGHPEAKS21];
+        case GALLAGHER_GAUSSIAN_101ME:
+            maxCondition = 1000.0;
+            arrCondition = new double[NHIGHPEAKS21];
+            peaks21 = new double[genomeSize * NHIGHPEAKS21];
+            rperm21 = new int[Math.max(genomeSize, NHIGHPEAKS21)];
+            peaks = peaks21;
+            peakvalues = new double[NHIGHPEAKS21];
+            arrScales21 = new double[NHIGHPEAKS21][genomeSize];
+            xLocal21 = new double[genomeSize][NHIGHPEAKS21];
 
-                for (i = 0; i < NHIGHPEAKS21 - 1; i++)
-                    peaks[i] = nextDoubleClosedInterval(state.random[0]);
-                rperm = rperm21;
-                for (i = 0; i < NHIGHPEAKS21 - 1; i++)
-                    rperm[i] = i;
+            for (i = 0; i < NHIGHPEAKS21 - 1; i++)
+                peaks[i] = nextDoubleClosedInterval(state.random[0]);
+            rperm = rperm21;
+            for (i = 0; i < NHIGHPEAKS21 - 1; i++)
+                rperm[i] = i;
+            QuickSort.qsort(rperm);
+
+            /* Random permutation */
+
+            arrCondition[0] = Math.sqrt(maxCondition);
+            peakvalues[0] = 10;
+            for (i = 1; i < NHIGHPEAKS21; i++) {
+                arrCondition[i] = Math.pow(maxCondition, (double) (rperm[i - 1]) / ((double) (NHIGHPEAKS21 - 2)));
+                peakvalues[i] = (double) (i - 1) / (double) (NHIGHPEAKS21 - 2) * (fitValues[1] - fitValues[0]) + fitValues[0];
+                }
+            arrScales = arrScales21;
+            for (i = 0; i < NHIGHPEAKS21; i++) {
+                for (j = 0; j < genomeSize; j++)
+                    peaks[j] = nextDoubleClosedInterval(state.random[0]);
+                for (j = 0; j < genomeSize; j++)
+                    rperm[j] = j;
+                // qsort(rperm, genomeSize, sizeof(int), compare_doubles);
                 QuickSort.qsort(rperm);
-
-                /* Random permutation */
-
-                arrCondition[0] = Math.sqrt(maxCondition);
-                peakvalues[0] = 10;
-                for (i = 1; i < NHIGHPEAKS21; i++) {
-                    arrCondition[i] = Math.pow(maxCondition, (double) (rperm[i - 1]) / ((double) (NHIGHPEAKS21 - 2)));
-                    peakvalues[i] = (double) (i - 1) / (double) (NHIGHPEAKS21 - 2) * (fitValues[1] - fitValues[0]) + fitValues[0];
-                }
-                arrScales = arrScales21;
-                for (i = 0; i < NHIGHPEAKS21; i++) {
-                    for (j = 0; j < genomeSize; j++)
-                        peaks[j] = nextDoubleClosedInterval(state.random[0]);
-                    for (j = 0; j < genomeSize; j++)
-                        rperm[j] = j;
-                    // qsort(rperm, genomeSize, sizeof(int), compare_doubles);
-                    QuickSort.qsort(rperm);
-                    for (j = 0; j < genomeSize; j++) {
-                        arrScales[i][j] = Math.pow(arrCondition[i], ((double) rperm[j]) / ((double) (genomeSize - 1)) - 0.5);
+                for (j = 0; j < genomeSize; j++) {
+                    arrScales[i][j] = Math.pow(arrCondition[i], ((double) rperm[j]) / ((double) (genomeSize - 1)) - 0.5);
                     }
                 }
 
-                for (i = 0; i < genomeSize * NHIGHPEAKS21; i++)
-                    peaks[i] = nextDoubleClosedInterval(state.random[0]);
-                xLocal = xLocal21;
-                for (i = 0; i < genomeSize; i++) {
-                    xOpt[i] = 0.8 * (10. * peaks[i] - 5.);
-                    for (j = 0; j < NHIGHPEAKS21; j++) {
-                        xLocal[i][j] = 0.0;
-                        for (k = 0; k < genomeSize; k++) {
-                            xLocal[i][j] += rotation[i][k] * (10. * peaks[j * genomeSize + k] - 5.);
+            for (i = 0; i < genomeSize * NHIGHPEAKS21; i++)
+                peaks[i] = nextDoubleClosedInterval(state.random[0]);
+            xLocal = xLocal21;
+            for (i = 0; i < genomeSize; i++) {
+                xOpt[i] = 0.8 * (10. * peaks[i] - 5.);
+                for (j = 0; j < NHIGHPEAKS21; j++) {
+                    xLocal[i][j] = 0.0;
+                    for (k = 0; k < genomeSize; k++) {
+                        xLocal[i][j] += rotation[i][k] * (10. * peaks[j * genomeSize + k] - 5.);
                         }
-                        if (j == 0)
-                            xLocal[i][j] *= 0.8;
+                    if (j == 0)
+                        xLocal[i][j] *= 0.8;
                     }
                 }
-                break;
+            break;
 
-            case GALLAGHER_GAUSSIAN_21HI:
-                maxCondition = 1000.0;
-                arrCondition = new double[NHIGHPEAKS22];
-                peaks22 = new double[genomeSize * NHIGHPEAKS22];
-                rperm22 = new int[Math.max(genomeSize, NHIGHPEAKS22)];
-                arrScales22 = new double[NHIGHPEAKS22][genomeSize];
-                xLocal22 = new double[genomeSize][NHIGHPEAKS22];
-                peaks = peaks22;
-                peakvalues = new double[NHIGHPEAKS22];
-                peaks = peaks22;
-                for (i = 0; i < NHIGHPEAKS22 - 1; i++)
-                    peaks[i] = nextDoubleClosedInterval(state.random[0]);
-                rperm = rperm22;
-                for (i = 0; i < NHIGHPEAKS22 - 1; i++)
-                    rperm[i] = i;
-                // NOTE: confirm if this is a valid java conversion.
+        case GALLAGHER_GAUSSIAN_21HI:
+            maxCondition = 1000.0;
+            arrCondition = new double[NHIGHPEAKS22];
+            peaks22 = new double[genomeSize * NHIGHPEAKS22];
+            rperm22 = new int[Math.max(genomeSize, NHIGHPEAKS22)];
+            arrScales22 = new double[NHIGHPEAKS22][genomeSize];
+            xLocal22 = new double[genomeSize][NHIGHPEAKS22];
+            peaks = peaks22;
+            peakvalues = new double[NHIGHPEAKS22];
+            peaks = peaks22;
+            for (i = 0; i < NHIGHPEAKS22 - 1; i++)
+                peaks[i] = nextDoubleClosedInterval(state.random[0]);
+            rperm = rperm22;
+            for (i = 0; i < NHIGHPEAKS22 - 1; i++)
+                rperm[i] = i;
+            // NOTE: confirm if this is a valid java conversion.
+            QuickSort.qsort(rperm);
+            /* Random permutation */
+            arrCondition[0] = maxCondition;
+            peakvalues[0] = 10;
+            for (i = 1; i < NHIGHPEAKS22; i++) {
+                arrCondition[i] = Math.pow(maxCondition, (double) (rperm[i - 1]) / ((double) (NHIGHPEAKS22 - 2)));
+                peakvalues[i] = (double) (i - 1) / (double) (NHIGHPEAKS22 - 2) * (fitValues[1] - fitValues[0]) + fitValues[0];
+                }
+            arrScales = arrScales22;
+            for (i = 0; i < NHIGHPEAKS22; i++) {
+                for (j = 0; j < genomeSize; j++)
+                    peaks[j] = nextDoubleClosedInterval(state.random[0]);
+                for (j = 0; j < genomeSize; j++)
+                    rperm[j] = j;
+                // qsort(rperm, genomeSize, sizeof(int), compare_doubles);
+                // NOTE: confirm if converted correctly
                 QuickSort.qsort(rperm);
-                /* Random permutation */
-                arrCondition[0] = maxCondition;
-                peakvalues[0] = 10;
-                for (i = 1; i < NHIGHPEAKS22; i++) {
-                    arrCondition[i] = Math.pow(maxCondition, (double) (rperm[i - 1]) / ((double) (NHIGHPEAKS22 - 2)));
-                    peakvalues[i] = (double) (i - 1) / (double) (NHIGHPEAKS22 - 2) * (fitValues[1] - fitValues[0]) + fitValues[0];
-                }
-                arrScales = arrScales22;
-                for (i = 0; i < NHIGHPEAKS22; i++) {
-                    for (j = 0; j < genomeSize; j++)
-                        peaks[j] = nextDoubleClosedInterval(state.random[0]);
-                    for (j = 0; j < genomeSize; j++)
-                        rperm[j] = j;
-                    // qsort(rperm, genomeSize, sizeof(int), compare_doubles);
-                    // NOTE: confirm if converted correctly
-                    QuickSort.qsort(rperm);
-                    for (j = 0; j < genomeSize; j++) {
-                        arrScales[i][j] = Math.pow(arrCondition[i], ((double) rperm[j]) / ((double) (genomeSize - 1)) - 0.5);
+                for (j = 0; j < genomeSize; j++) {
+                    arrScales[i][j] = Math.pow(arrCondition[i], ((double) rperm[j]) / ((double) (genomeSize - 1)) - 0.5);
                     }
                 }
 
-                for (i = 0; i < genomeSize * NHIGHPEAKS22; i++)
-                    peaks[i] = nextDoubleClosedInterval(state.random[0]);
-                xLocal = xLocal22;
-                for (i = 0; i < genomeSize; i++) {
-                    xOpt[i] = 0.8 * (9.8 * peaks[i] - 4.9);
-                    for (j = 0; j < NHIGHPEAKS22; j++) {
-                        xLocal[i][j] = 0.0;
-                        for (k = 0; k < genomeSize; k++) {
-                            xLocal[i][j] += rotation[i][k] * (9.8 * peaks[j * genomeSize + k] - 4.9);
+            for (i = 0; i < genomeSize * NHIGHPEAKS22; i++)
+                peaks[i] = nextDoubleClosedInterval(state.random[0]);
+            xLocal = xLocal22;
+            for (i = 0; i < genomeSize; i++) {
+                xOpt[i] = 0.8 * (9.8 * peaks[i] - 4.9);
+                for (j = 0; j < NHIGHPEAKS22; j++) {
+                    xLocal[i][j] = 0.0;
+                    for (k = 0; k < genomeSize; k++) {
+                        xLocal[i][j] += rotation[i][k] * (9.8 * peaks[j * genomeSize + k] - 4.9);
                         }
-                        if (j == 0)
-                            xLocal[i][j] *= 0.8;
+                    if (j == 0)
+                        xLocal[i][j] *= 0.8;
                     }
                 }
-                break;
+            break;
 
-            case KATSUURA:
-                for (i = 0; i < genomeSize; i++) {
-                    for (j = 0; j < genomeSize; j++) {
-                        linearTF[i][j] = 0.0;
-                        for (k = 0; k < genomeSize; k++) {
-                            linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / (double) (genomeSize - 1)) * rot2[k][j];
+        case KATSUURA:
+            for (i = 0; i < genomeSize; i++) {
+                for (j = 0; j < genomeSize; j++) {
+                    linearTF[i][j] = 0.0;
+                    for (k = 0; k < genomeSize; k++) {
+                        linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / (double) (genomeSize - 1)) * rot2[k][j];
                         }
                     }
                 }
-                break;
+            break;
 
-            case LUNACEK:
-                tmpvect = new double[genomeSize];
-                double mu1 = 2.5;
-                gauss(tmpvect, state.random[0]);
-                for (i = 0; i < genomeSize; i++) {
-                    xOpt[i] = 0.5 * mu1;
-                    if (tmpvect[i] < 0.)
-                        xOpt[i] *= -1.;
+        case LUNACEK:
+            tmpvect = new double[genomeSize];
+            double mu1 = 2.5;
+            gauss(tmpvect, state.random[0]);
+            for (i = 0; i < genomeSize; i++) {
+                xOpt[i] = 0.5 * mu1;
+                if (tmpvect[i] < 0.)
+                    xOpt[i] *= -1.;
                 }
 
-                for (i = 0; i < genomeSize; i++) {
-                    for (j = 0; j < genomeSize; j++) {
-                        linearTF[i][j] = 0.0;
-                        for (k = 0; k < genomeSize; k++) {
-                            linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
+            for (i = 0; i < genomeSize; i++) {
+                for (j = 0; j < genomeSize; j++) {
+                    linearTF[i][j] = 0.0;
+                    for (k = 0; k < genomeSize; k++) {
+                        linearTF[i][j] += rotation[i][k] * Math.pow(Math.sqrt(condition), ((double) k) / ((double) (genomeSize - 1))) * rot2[k][j];
                         }
                     }
                 }
-                break;
+            break;
 
-            default:
-                String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
-                for (i = 0; i < problemTypes.length; i++)
-                    outputStr += problemTypes[i] + "\n";
-                state.output.fatal(outputStr, base.push(P_WHICH_PROBLEM));
+        default:
+            String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
+            for (i = 0; i < problemTypes.length; i++)
+                outputStr += problemTypes[i] + "\n";
+            state.output.fatal(outputStr, base.push(P_WHICH_PROBLEM));
+            }
+
         }
-
-    }
 
     public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum) {
         if (noise != NONE) {
             if (!reevaluateNoisyProblems && ind.evaluated) // don't bother reevaluating
                 return;
-        } else if (ind.evaluated)  // don't bother reevaluating
+            } else if (ind.evaluated)  // don't bother reevaluating
             return;
 
         if (!(ind instanceof DoubleVectorIndividual))
@@ -566,148 +566,148 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
         double[] tmpvect = new double[genomeSize];
 
         switch (problemType) {
-            case SPHERE:// f1
-                /* Sphere function */
-                sphere(fAdd, genomeSize, genome, tmp, fPen, value, fit, ind, state, threadnum);
+        case SPHERE:// f1
+            /* Sphere function */
+            sphere(fAdd, genomeSize, genome, tmp, fPen, value, fit, ind, state, threadnum);
 
-                break;
+            break;
 
-            case ELLIPSOIDAL:// f2
-                /*
-                 * separable ellipsoid with monotone transformation with noiseless
-                 * condition 1e6 and noisy condition 1e4
-                 */
-                ellipsoidal(fAdd, condition, tmx, genomeSize, genome, tmp, fPen, value, fit, ind, state, threadnum);
-                break;
+        case ELLIPSOIDAL:// f2
+            /*
+             * separable ellipsoid with monotone transformation with noiseless
+             * condition 1e6 and noisy condition 1e4
+             */
+            ellipsoidal(fAdd, condition, tmx, genomeSize, genome, tmp, fPen, value, fit, ind, state, threadnum);
+            break;
 
-            case RASTRIGIN:// f3
-                /* Rastrigin with monotone transformation separable "condition" 10 */
-                rastrigin(fAdd, genomeSize, genome, tmp, tmp2, tmx, value, fit, ind, state, threadnum);
-                break;
+        case RASTRIGIN:// f3
+            /* Rastrigin with monotone transformation separable "condition" 10 */
+            rastrigin(fAdd, genomeSize, genome, tmp, tmp2, tmx, value, fit, ind, state, threadnum);
+            break;
 
-            case BUCHE_RASTRIGIN:// f4
-                /* skew Rastrigin-Bueche, condition 10, skew-"condition" 100 */
-                buche_rastrigin(fAdd, genomeSize, genome, tmp, tmp2, tmx, value, fit, ind, state, threadnum);
-                break;
+        case BUCHE_RASTRIGIN:// f4
+            /* skew Rastrigin-Bueche, condition 10, skew-"condition" 100 */
+            buche_rastrigin(fAdd, genomeSize, genome, tmp, tmp2, tmx, value, fit, ind, state, threadnum);
+            break;
 
-            case LINEAR_SLOPE:// f5
-                /* linear slope */
-                linear_slope(fAdd, genomeSize, genome, tmx, value, fit, ind, state, threadnum);
-                break;
+        case LINEAR_SLOPE:// f5
+            /* linear slope */
+            linear_slope(fAdd, genomeSize, genome, tmx, value, fit, ind, state, threadnum);
+            break;
 
-            case ATTRACTIVE_SECTOR:// f6
-                /* attractive sector function */
-                attractive_sector(fAdd, genomeSize, genome, tmx, value, fit, ind, state, threadnum);
-                break;
+        case ATTRACTIVE_SECTOR:// f6
+            /* attractive sector function */
+            attractive_sector(fAdd, genomeSize, genome, tmx, value, fit, ind, state, threadnum);
+            break;
 
-            case STEP_ELLIPSOIDAL:// f7
-                /* step-ellipsoid, condition 100 */
-                step_ellipsoidal(fAdd, genomeSize, genome, tmp, tmx, tmpvect, x1, fPen, value, fit, ind, state, threadnum);
-                break;
+        case STEP_ELLIPSOIDAL:// f7
+            /* step-ellipsoid, condition 100 */
+            step_ellipsoidal(fAdd, genomeSize, genome, tmp, tmx, tmpvect, x1, fPen, value, fit, ind, state, threadnum);
+            break;
 
-            case ROSENBROCK:// f8
-                /* Rosenbrock, non-rotated */
-                rosenbrock(fAdd, genomeSize, genome, tmp, tmx, fPen, value, fit, ind, state, threadnum);
-                break;
+        case ROSENBROCK:// f8
+            /* Rosenbrock, non-rotated */
+            rosenbrock(fAdd, genomeSize, genome, tmp, tmx, fPen, value, fit, ind, state, threadnum);
+            break;
 
-            case ROSENBROCK_ROTATED:// f9
-                /* Rosenbrock, rotated */
-                rosenbrock_rotated(fAdd, genomeSize, genome, tmp, tmx, fPen, value, fit, ind, state, threadnum);
-                break;
+        case ROSENBROCK_ROTATED:// f9
+            /* Rosenbrock, rotated */
+            rosenbrock_rotated(fAdd, genomeSize, genome, tmp, tmx, fPen, value, fit, ind, state, threadnum);
+            break;
 
-            case ELLIPSOIDAL_2:// f10
-                /* ellipsoid with monotone transformation, condition 1e6 */
-                ellipsoidal_2(fAdd, genomeSize, genome, tmp, tmx, value, fit, ind, state, threadnum);
-                break;
+        case ELLIPSOIDAL_2:// f10
+            /* ellipsoid with monotone transformation, condition 1e6 */
+            ellipsoidal_2(fAdd, genomeSize, genome, tmp, tmx, value, fit, ind, state, threadnum);
+            break;
 
-            case DISCUS:// f11
-                /* DISCUS (tablet) with monotone transformation, condition 1e6 */
-                discus(fAdd, genomeSize, genome, tmx, value, fit, ind, state, threadnum);
-                break;
+        case DISCUS:// f11
+            /* DISCUS (tablet) with monotone transformation, condition 1e6 */
+            discus(fAdd, genomeSize, genome, tmx, value, fit, ind, state, threadnum);
+            break;
 
-            case BENT_CIGAR:// f12
-                /* bent cigar with asymmetric space distortion, condition 1e6 */
-                bent_cigar(fAdd, genomeSize, genome, tmx, tmpvect, value, fit, ind, state, threadnum);
-                break;
+        case BENT_CIGAR:// f12
+            /* bent cigar with asymmetric space distortion, condition 1e6 */
+            bent_cigar(fAdd, genomeSize, genome, tmx, tmpvect, value, fit, ind, state, threadnum);
+            break;
 
-            case SHARP_RIDGE:// f13
-                /* sharp ridge */
-                sharp_ridge(fAdd, genomeSize, genome, tmx, value, fit, ind, state, threadnum);
-                break;
-
-
-            case DIFFERENT_POWERS:// f14
-                /* sum of different powers, between x^2 and x^6 */
-                different_powers(fAdd, genomeSize, genome, tmp, tmx, fPen, value, fit, ind, state, threadnum);
-                break;
-
-            case RASTRIGIN_2:// f15
-                /* Rastrigin with asymmetric non-linear distortion, "condition" 10 */
-                rastrigin_2(fAdd, genomeSize, genome, tmp, tmp2, tmx, tmpvect, fPen, value, fit, ind, state, threadnum);
-                break;
-
-            case WEIERSTRASS:// f16
-                /* Weierstrass, condition 100 */
-                weierstrass(fAdd, genomeSize, genome, tmp, tmx, tmpvect, fPen, value, fit, ind, state, threadnum);
-                break;
-
-            case SCHAFFERS_F7:// f17
-                /*
-                 * Schaffers F7 with asymmetric non-linear transformation, condition
-                 * 10
-                 */
-                schaffersF7(fAdd, genomeSize, genome, tmp, tmx, tmpvect, fPen, value, fit, ind, state, threadnum);
-                break;
-
-            case SCHAFFERS_F7_2:// f18
-                /*
-                 * Schaffers F7 with asymmetric non-linear transformation, condition
-                 * 1000
-                 */
-                schaffersF72(fAdd, genomeSize, genome, tmp, tmx, tmpvect, fPen, value, fit, ind, state, threadnum);
-                break;
-
-            case GRIEWANK_ROSENBROCK:// f19
-                /* F8f2 sum of Griewank-Rosenbrock 2-D blocks */
-                griewank_rosenbrock(fAdd, genomeSize, genome, tmp, tmx, tmp2, f2, fPen, value, fit, ind, state, threadnum);
-                break;
+        case SHARP_RIDGE:// f13
+            /* sharp ridge */
+            sharp_ridge(fAdd, genomeSize, genome, tmx, value, fit, ind, state, threadnum);
+            break;
 
 
-            case SCHWEFEL:// f20
-                /* Schwefel with tridiagonal variable transformation */
-                schwefel(fAdd, genomeSize, genome, tmp, tmx, tmpvect, fPen, value, fit, ind, state, threadnum);
-                break;
+        case DIFFERENT_POWERS:// f14
+            /* sum of different powers, between x^2 and x^6 */
+            different_powers(fAdd, genomeSize, genome, tmp, tmx, fPen, value, fit, ind, state, threadnum);
+            break;
 
-            case GALLAGHER_GAUSSIAN_101ME:// f21
-                /*
-                 * Gallagher with 101 Gaussian peaks, condition up to 1000, one
-                 * global rotation
-                 */
-                gallagher_gaussian_101me(fAdd, genomeSize, genome, tmp, tmx, tmp2, f, fPen, value, fit, ind, state, threadnum);
-                break;
+        case RASTRIGIN_2:// f15
+            /* Rastrigin with asymmetric non-linear distortion, "condition" 10 */
+            rastrigin_2(fAdd, genomeSize, genome, tmp, tmp2, tmx, tmpvect, fPen, value, fit, ind, state, threadnum);
+            break;
 
-            case GALLAGHER_GAUSSIAN_21HI:// f22
-                /*
-                 * Gallagher with 21 Gaussian peaks, condition up to 1000, one
-                 * global rotation
-                 */
-                gallagher_gaussian_21hi(fAdd, genomeSize, genome, tmp, tmx, tmp2, fPen, value, fit, ind, state, threadnum);
-                break;
+        case WEIERSTRASS:// f16
+            /* Weierstrass, condition 100 */
+            weierstrass(fAdd, genomeSize, genome, tmp, tmx, tmpvect, fPen, value, fit, ind, state, threadnum);
+            break;
 
-            case KATSUURA:// f23
-                katsuura(fAdd, genomeSize, genome, tmp, tmp2, tmx, tmpvect, fPen, value, fit, ind, state, threadnum);
-                /* Katsuura function */
-                break;
+        case SCHAFFERS_F7:// f17
+            /*
+             * Schaffers F7 with asymmetric non-linear transformation, condition
+             * 10
+             */
+            schaffersF7(fAdd, genomeSize, genome, tmp, tmx, tmpvect, fPen, value, fit, ind, state, threadnum);
+            break;
 
-            case LUNACEK:// f24
-                lunacek(fAdd, genomeSize, genome, tmp, tmp2, condition, tmx, fPen, value, fit, ind, state, threadnum);
-                break;
-            default:
-                break;
-        }
+        case SCHAFFERS_F7_2:// f18
+            /*
+             * Schaffers F7 with asymmetric non-linear transformation, condition
+             * 1000
+             */
+            schaffersF72(fAdd, genomeSize, genome, tmp, tmx, tmpvect, fPen, value, fit, ind, state, threadnum);
+            break;
+
+        case GRIEWANK_ROSENBROCK:// f19
+            /* F8f2 sum of Griewank-Rosenbrock 2-D blocks */
+            griewank_rosenbrock(fAdd, genomeSize, genome, tmp, tmx, tmp2, f2, fPen, value, fit, ind, state, threadnum);
+            break;
+
+
+        case SCHWEFEL:// f20
+            /* Schwefel with tridiagonal variable transformation */
+            schwefel(fAdd, genomeSize, genome, tmp, tmx, tmpvect, fPen, value, fit, ind, state, threadnum);
+            break;
+
+        case GALLAGHER_GAUSSIAN_101ME:// f21
+            /*
+             * Gallagher with 101 Gaussian peaks, condition up to 1000, one
+             * global rotation
+             */
+            gallagher_gaussian_101me(fAdd, genomeSize, genome, tmp, tmx, tmp2, f, fPen, value, fit, ind, state, threadnum);
+            break;
+
+        case GALLAGHER_GAUSSIAN_21HI:// f22
+            /*
+             * Gallagher with 21 Gaussian peaks, condition up to 1000, one
+             * global rotation
+             */
+            gallagher_gaussian_21hi(fAdd, genomeSize, genome, tmp, tmx, tmp2, fPen, value, fit, ind, state, threadnum);
+            break;
+
+        case KATSUURA:// f23
+            katsuura(fAdd, genomeSize, genome, tmp, tmp2, tmx, tmpvect, fPen, value, fit, ind, state, threadnum);
+            /* Katsuura function */
+            break;
+
+        case LUNACEK:// f24
+            lunacek(fAdd, genomeSize, genome, tmp, tmp2, condition, tmx, fPen, value, fit, ind, state, threadnum);
+            break;
+        default:
+            break;
+            }
 
         ind.evaluated = true;
-    }
+        }
 
     void sphere(double fAdd, int genomeSize, double[] genome, double tmp, double fPen, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         fAdd = fOpt;
@@ -717,47 +717,47 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
                 tmp = Math.abs(genome[i]) - 5.;
                 if (tmp > 0.0) {
                     fPen += tmp * tmp;
+                    }
                 }
-            }
             fAdd += 100. * fPen;
-        }
+            }
         /* COMPUTATION core */
         for (i = 0; i < genomeSize; i++) {
             tmp = genome[i] - xOpt[i];
             value += tmp * tmp;
-        }
+            }
         switch (noise) {
-            case NONE:
-                break;
-            case GAUSSIAN:
-                value = fGauss(value, 1.0, state.random[threadnum]);
-                break;
-            case UNIFORM:
-                value = fUniform(value, 0.49 + 1.0 / genomeSize, 1.0, state.random[threadnum]);
-                break;
-            case CAUCHY:
-                value = fCauchy(value, 1.0, 0.2, state.random[threadnum]);
-                break;
-            case GAUSSIAN_MODERATE:
-                value = fGauss(value, 0.01, state.random[threadnum]);
-                break;
-            case UNIFORM_MODERATE:
-                value = fUniform(value, 0.01 * (0.49 + 1. / genomeSize), 0.01, state.random[threadnum]);
-                break;
-            case CAUCHY_MODERATE:
-                value = fCauchy(value, 0.01, 0.05, state.random[threadnum]);
-                break;
-            default:
-                String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
-                for (i = 0; i < noiseTypes.length; i++)
-                    outputStr += noiseTypes[i] + "\n";
-                state.output.fatal(outputStr, new Parameter(P_NOISE));
-                break;
-        }
+        case NONE:
+            break;
+        case GAUSSIAN:
+            value = fGauss(value, 1.0, state.random[threadnum]);
+            break;
+        case UNIFORM:
+            value = fUniform(value, 0.49 + 1.0 / genomeSize, 1.0, state.random[threadnum]);
+            break;
+        case CAUCHY:
+            value = fCauchy(value, 1.0, 0.2, state.random[threadnum]);
+            break;
+        case GAUSSIAN_MODERATE:
+            value = fGauss(value, 0.01, state.random[threadnum]);
+            break;
+        case UNIFORM_MODERATE:
+            value = fUniform(value, 0.01 * (0.49 + 1. / genomeSize), 0.01, state.random[threadnum]);
+            break;
+        case CAUCHY_MODERATE:
+            value = fCauchy(value, 0.01, 0.05, state.random[threadnum]);
+            break;
+        default:
+            String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
+            for (i = 0; i < noiseTypes.length; i++)
+                outputStr += noiseTypes[i] + "\n";
+            state.output.fatal(outputStr, new Parameter(P_NOISE));
+            break;
+            }
         value += fAdd;
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void ellipsoidal(double fAdd, double condition, double[] tmx, int genomeSize, double[] genome, double tmp, double fPen, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -766,8 +766,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             condition = 1e6;
             for (i = 0; i < genomeSize; i++) {
                 tmx[i] = genome[i] - xOpt[i];
-            }
-        } else {
+                }
+            } else {
             condition = 1e4;
             fAdd = fOpt;
 
@@ -776,8 +776,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
                 tmp = Math.abs(genome[i]) - 5.;
                 if (tmp > 0.) {
                     fPen += tmp * tmp;
+                    }
                 }
-            }
             fAdd += 100. * fPen;
 
             /* TRANSFORMATION IN SEARCH SPACE */
@@ -785,39 +785,39 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
                 tmx[i] = 0.;
                 for (j = 0; j < genomeSize; j++) {
                     tmx[i] += rotation[i][j] * (genome[j] - xOpt[j]);
+                    }
                 }
             }
-        }
 
         monotoneTFosc(tmx);
         /* COMPUTATION core */
         for (i = 0; i < genomeSize; i++) {
             value += Math.pow(condition, ((double) i) / ((double) (genomeSize - 1))) * tmx[i] * tmx[i];
-        }
+            }
 
         switch (noise) {
-            case NONE:
-                break;
-            case GAUSSIAN:
-                value = fGauss(value, 1.0, state.random[threadnum]);
-                break;
-            case UNIFORM:
-                value = fUniform(value, 0.49 + 1.0 / genomeSize, 1.0, state.random[threadnum]);
-                break;
-            case CAUCHY:
-                value = fCauchy(value, 1.0, 0.2, state.random[threadnum]);
-                break;
-            default:
-                String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
-                for (i = 0; i < 4; i++)
-                    outputStr += noiseTypes[i] + "\n";
-                state.output.fatal(outputStr, new Parameter(P_NOISE));
-                break;
-        }
+        case NONE:
+            break;
+        case GAUSSIAN:
+            value = fGauss(value, 1.0, state.random[threadnum]);
+            break;
+        case UNIFORM:
+            value = fUniform(value, 0.49 + 1.0 / genomeSize, 1.0, state.random[threadnum]);
+            break;
+        case CAUCHY:
+            value = fCauchy(value, 1.0, 0.2, state.random[threadnum]);
+            break;
+        default:
+            String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
+            for (i = 0; i < 4; i++)
+                outputStr += noiseTypes[i] + "\n";
+            state.output.fatal(outputStr, new Parameter(P_NOISE));
+            break;
+            }
         value += fAdd;
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void rastrigin(double fAdd, int genomeSize, double[] genome, double tmp, double tmp2, double[] tmx, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i;
@@ -826,27 +826,27 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
         fAdd = fOpt;
         for (i = 0; i < genomeSize; i++) {
             tmx[i] = genome[i] - xOpt[i];
-        }
+            }
         monotoneTFosc(tmx);
         for (i = 0; i < genomeSize; i++) {
             tmp = ((double) i) / ((double) (genomeSize - 1));
             if (tmx[i] > 0)
                 tmx[i] = Math.pow(tmx[i], 1 + beta * tmp * Math.sqrt(tmx[i]));
             tmx[i] = Math.pow(Math.sqrt(condition), tmp) * tmx[i];
-        }
+            }
         /* COMPUTATION core */
         tmp = 0;
         tmp2 = 0;
         for (i = 0; i < genomeSize; i++) {
             tmp += Math.cos(2 * Math.PI * tmx[i]);
             tmp2 += tmx[i] * tmx[i];
-        }
+            }
         value = 10 * (genomeSize - tmp) + tmp2;
         value += fAdd;
 
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void buche_rastrigin(double fAdd, int genomeSize, double[] genome, double tmp, double tmp2, double[] tmx, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i;
@@ -858,33 +858,33 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmp = Math.abs(genome[i]) - 5.;
             if (tmp > 0.)
                 fPen += tmp * tmp;
-        }
+            }
         fPen *= 1e2;
         fAdd += fPen;
 
         for (i = 0; i < genomeSize; i++) {
             tmx[i] = genome[i] - xOpt[i];
-        }
+            }
 
         monotoneTFosc(tmx);
         for (i = 0; i < genomeSize; i++) {
             if (i % 2 == 0 && tmx[i] > 0)
                 tmx[i] = Math.sqrt(alpha) * tmx[i];
             tmx[i] = Math.pow(Math.sqrt(condition), ((double) i) / ((double) (genomeSize - 1))) * tmx[i];
-        }
+            }
         /* COMPUTATION core */
         tmp = 0.0;
         tmp2 = 0.0;
         for (i = 0; i < genomeSize; i++) {
             tmp += Math.cos(2 * Math.PI * tmx[i]);
             tmp2 += tmx[i] * tmx[i];
-        }
+            }
         value = 10 * (genomeSize - tmp) + tmp2;
         value += fAdd;
 
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void linear_slope(double fAdd, int genomeSize, double[] genome, double[] tmx, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i;
@@ -899,7 +899,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
                 tmx[i] = -5.;
             else
                 tmx[i] = genome[i];
-        }
+            }
 
         /* COMPUTATION core */
         double base = Math.sqrt(alpha);
@@ -907,15 +907,15 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
         for (i = 0; i < genomeSize; i++) {
             if (xOpt[i] > 0) {
                 value -= Math.pow(base, exponent) * tmx[i];
-            } else {
+                } else {
                 value += Math.pow(base, exponent) * tmx[i];
+                }
             }
-        }
         value += fAdd;
 
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void attractive_sector(double fAdd, int genomeSize, double[] genome, double[] tmx, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -929,27 +929,27 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmx[i] = 0.0;
             for (j = 0; j < genomeSize; j++) {
                 tmx[i] += linearTF[i][j] * (genome[j] - xOpt[j]);
+                }
             }
-        }
 
         /* COMPUTATION core */
         for (i = 0; i < genomeSize; i++) {
             if (tmx[i] * xOpt[i] > 0)
                 tmx[i] *= alpha;
             value += tmx[i] * tmx[i];
-        }
+            }
 
         /* monotoneTFosc... */
         if (value > 0) {
             value = Math.pow(Math.exp(Math.log(value) / 0.1 + 0.49 * (Math.sin(Math.log(value) / 0.1) + Math.sin(0.79 * Math.log(value) / 0.1))), 0.1);
-        } else if (value < 0) {
+            } else if (value < 0) {
             value = -Math.pow(Math.exp(Math.log(-value) / 0.1 + 0.49 * (Math.sin(0.55 * Math.log(-value) / 0.1) + Math.sin(0.31 * Math.log(-value) / 0.1))), 0.1);
-        }
+            }
         value = Math.pow(value, 0.9);
         value += fAdd;
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void step_ellipsoidal(double fAdd, int genomeSize, double[] genome, double tmp, double[] tmx, double[] tmpvect, double x1, double fPen, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -961,8 +961,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmp = Math.abs(genome[i]) - 5.0;
             if (tmp > 0.0) {
                 fPen += tmp * tmp;
+                }
             }
-        }
         if (noise == NONE)
             fAdd += fPen;
         else
@@ -975,9 +975,9 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmp = Math.sqrt(Math.pow(condition / 10., ((double) i) / ((double) (genomeSize - 1))));
             for (j = 0; j < genomeSize; j++) {
                 tmpvect[i] += tmp * rot2[i][j] * (genome[j] - xOpt[j]);
-            }
+                }
 
-        }
+            }
         x1 = tmpvect[0];
 
         for (i = 0; i < genomeSize; i++) {
@@ -985,43 +985,43 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
                 tmpvect[i] = Math.round(tmpvect[i]);
             else
                 tmpvect[i] = Math.round(alpha * tmpvect[i]) / alpha;
-        }
+            }
 
         for (i = 0; i < genomeSize; i++) {
             tmx[i] = 0.0;
             for (j = 0; j < genomeSize; j++) {
                 tmx[i] += rotation[i][j] * tmpvect[j];
+                }
             }
-        }
 
         /* COMPUTATION core */
         for (i = 0; i < genomeSize; i++) {
             value += Math.pow(condition, ((double) i) / ((double) (genomeSize - 1))) * tmx[i] * tmx[i];
-        }
+            }
         value = 0.1 * Math.max(1e-4 * Math.abs(x1), value);
         switch (noise) {
-            case NONE:
-                break;
-            case GAUSSIAN:
-                value = fGauss(value, 1.0, state.random[threadnum]);
-                break;
-            case UNIFORM:
-                value = fUniform(value, 0.49 + 1.0 / genomeSize, 1.0, state.random[threadnum]);
-                break;
-            case CAUCHY:
-                value = fCauchy(value, 1.0, 0.2, state.random[threadnum]);
-                break;
-            default:
-                String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
-                for (i = 0; i < 4; i++)
-                    outputStr += noiseTypes[i] + "\n";
-                state.output.fatal(outputStr, new Parameter(P_NOISE));
-                break;
-        }
+        case NONE:
+            break;
+        case GAUSSIAN:
+            value = fGauss(value, 1.0, state.random[threadnum]);
+            break;
+        case UNIFORM:
+            value = fUniform(value, 0.49 + 1.0 / genomeSize, 1.0, state.random[threadnum]);
+            break;
+        case CAUCHY:
+            value = fCauchy(value, 1.0, 0.2, state.random[threadnum]);
+            break;
+        default:
+            String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
+            for (i = 0; i < 4; i++)
+                outputStr += noiseTypes[i] + "\n";
+            state.output.fatal(outputStr, new Parameter(P_NOISE));
+            break;
+            }
         value += fAdd;
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void rosenbrock(double fAdd, int genomeSize, double[] genome, double tmp, double[] tmx, double fPen, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i;
@@ -1030,67 +1030,67 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             /* TRANSFORMATION IN SEARCH SPACE */
             for (i = 0; i < genomeSize; i++) {
                 tmx[i] = scales * (genome[i] - xOpt[i]) + 1;
-            }
-        } else {
+                }
+            } else {
             /* BOUNDARY HANDLING */
             for (i = 0; i < genomeSize; i++) {
                 tmp = Math.abs(genome[i]) - 5.;
                 if (tmp > 0.) {
                     fPen += tmp * tmp;
+                    }
                 }
-            }
             fAdd += 100.0 * fPen;
             /* TRANSFORMATION IN SEARCH SPACE */
             for (i = 0; i < genomeSize; i++) {
                 tmx[i] = scales * (genome[i] - 0.75 * xOpt[i]) + 1;
+                }
             }
-        }
 
         /* COMPUTATION core */
         for (i = 0; i < genomeSize - 1; i++) {
             tmp = (tmx[i] * tmx[i] - tmx[i + 1]);
             value += tmp * tmp;
-        }
+            }
         value *= 1e2;
         for (i = 0; i < genomeSize - 1; i++) {
             tmp = (tmx[i] - 1.);
             value += tmp * tmp;
-        }
+            }
 
         switch (noise) {
-            case NONE:
-                break;
-            case GAUSSIAN:
-                value = fGauss(value, 1.0, state.random[threadnum]);
-                break;
-            case UNIFORM:
-                value = fUniform(value, 0.49 + 1.0 / genomeSize, 1.0, state.random[threadnum]);
-                break;
-            case CAUCHY:
-                value = fCauchy(value, 1.0, 0.2, state.random[threadnum]);
-                break;
-            case GAUSSIAN_MODERATE:
-                value = fGauss(value, 0.01, state.random[threadnum]);
-                break;
-            case UNIFORM_MODERATE:
-                value = fUniform(value, 0.01 * (0.49 + 1. / genomeSize), 0.01, state.random[threadnum]);
-                break;
-            case CAUCHY_MODERATE:
-                value = fCauchy(value, 0.01, 0.05, state.random[threadnum]);
-                break;
-            default:
-                String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
-                for (i = 0; i < noiseTypes.length; i++)
-                    outputStr += noiseTypes[i] + "\n";
-                state.output.fatal(outputStr, new Parameter(P_NOISE));
-                break;
-        }
+        case NONE:
+            break;
+        case GAUSSIAN:
+            value = fGauss(value, 1.0, state.random[threadnum]);
+            break;
+        case UNIFORM:
+            value = fUniform(value, 0.49 + 1.0 / genomeSize, 1.0, state.random[threadnum]);
+            break;
+        case CAUCHY:
+            value = fCauchy(value, 1.0, 0.2, state.random[threadnum]);
+            break;
+        case GAUSSIAN_MODERATE:
+            value = fGauss(value, 0.01, state.random[threadnum]);
+            break;
+        case UNIFORM_MODERATE:
+            value = fUniform(value, 0.01 * (0.49 + 1. / genomeSize), 0.01, state.random[threadnum]);
+            break;
+        case CAUCHY_MODERATE:
+            value = fCauchy(value, 0.01, 0.05, state.random[threadnum]);
+            break;
+        default:
+            String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
+            for (i = 0; i < noiseTypes.length; i++)
+                outputStr += noiseTypes[i] + "\n";
+            state.output.fatal(outputStr, new Parameter(P_NOISE));
+            break;
+            }
 
         value += fAdd;
 
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void rosenbrock_rotated(double fAdd, int genomeSize, double[] genome, double tmp, double[] tmx, double fPen, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -1103,24 +1103,24 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmx[i] = 0.5;
             for (j = 0; j < genomeSize; j++) {
                 tmx[i] += linearTF[i][j] * genome[j];
+                }
             }
-        }
 
         /* COMPUTATION core */
         for (i = 0; i < genomeSize - 1; i++) {
             tmp = (tmx[i] * tmx[i] - tmx[i + 1]);
             value += tmp * tmp;
-        }
+            }
         value *= 1e2;
         for (i = 0; i < genomeSize - 1; i++) {
             tmp = (tmx[i] - 1.);
             value += tmp * tmp;
-        }
+            }
 
         value += fAdd;
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void schaffersF7(double fAdd, int genomeSize, double[] genome, double tmp, double[] tmx, double[] tmpvect, double fPen, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -1133,8 +1133,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmp = Math.abs(genome[i]) - 5.;
             if (tmp > 0.) {
                 fPen += tmp * tmp;
+                }
             }
-        }
         fAdd += 10. * fPen;
 
         /* TRANSFORMATION IN SEARCH SPACE */
@@ -1142,48 +1142,48 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmpvect[i] = 0.0;
             for (j = 0; j < genomeSize; j++) {
                 tmpvect[i] += rotation[i][j] * (genome[j] - xOpt[j]);
-            }
+                }
             if (tmpvect[i] > 0)
                 tmpvect[i] = Math.pow(tmpvect[i], 1 + beta * ((double) i) / ((double) (genomeSize - 1)) * Math.sqrt(tmpvect[i]));
-        }
+            }
 
         for (i = 0; i < genomeSize; i++) {
             tmx[i] = 0.0;
             tmp = Math.pow(Math.sqrt(condition), ((double) i) / ((double) (genomeSize - 1)));
             for (j = 0; j < genomeSize; j++) {
                 tmx[i] += tmp * rot2[i][j] * tmpvect[j];
+                }
             }
-        }
 
         /* COMPUTATION core */
         for (i = 0; i < genomeSize - 1; i++) {
             tmp = tmx[i] * tmx[i] + tmx[i + 1] * tmx[i + 1];
             value += Math.pow(tmp, 0.25) * (Math.pow(Math.sin(50 * Math.pow(tmp, 0.1)), 2.0) + 1.0);
-        }
+            }
         value = Math.pow(value / (double) (genomeSize - 1), 2.);
         switch (noise) {
-            case NONE:
-                break;
-            case GAUSSIAN:
-                value = fGauss(value, 1.0, state.random[threadnum]);
-                break;
-            case UNIFORM:
-                value = fUniform(value, 0.49 + 1.0 / genomeSize, 1.0, state.random[threadnum]);
-                break;
-            case CAUCHY:
-                value = fCauchy(value, 1.0, 0.2, state.random[threadnum]);
-                break;
-            default:
-                String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
-                for (i = 0; i < 4; i++)
-                    outputStr += noiseTypes[i] + "\n";
-                state.output.fatal(outputStr, new Parameter(P_NOISE));
-                break;
-        }
+        case NONE:
+            break;
+        case GAUSSIAN:
+            value = fGauss(value, 1.0, state.random[threadnum]);
+            break;
+        case UNIFORM:
+            value = fUniform(value, 0.49 + 1.0 / genomeSize, 1.0, state.random[threadnum]);
+            break;
+        case CAUCHY:
+            value = fCauchy(value, 1.0, 0.2, state.random[threadnum]);
+            break;
+        default:
+            String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
+            for (i = 0; i < 4; i++)
+                outputStr += noiseTypes[i] + "\n";
+            state.output.fatal(outputStr, new Parameter(P_NOISE));
+            break;
+            }
         value += fAdd;
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void schaffersF72(double fAdd, int genomeSize, double[] genome, double tmp, double[] tmx, double[] tmpvect, double fPen, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -1196,8 +1196,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmp = Math.abs(genome[i]) - 5.;
             if (tmp > 0.) {
                 fPen += tmp * tmp;
+                }
             }
-        }
         fAdd += 10. * fPen;
 
         /* TRANSFORMATION IN SEARCH SPACE */
@@ -1205,29 +1205,29 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmpvect[i] = 0.0;
             for (j = 0; j < genomeSize; j++) {
                 tmpvect[i] += rotation[i][j] * (genome[j] - xOpt[j]);
-            }
+                }
             if (tmpvect[i] > 0)
                 tmpvect[i] = Math.pow(tmpvect[i], 1. + beta * ((double) i) / ((double) (genomeSize - 1)) * Math.sqrt(tmpvect[i]));
-        }
+            }
 
         for (i = 0; i < genomeSize; i++) {
             tmx[i] = 0.0;
             tmp = Math.pow(Math.sqrt(condition), ((double) i) / ((double) (genomeSize - 1)));
             for (j = 0; j < genomeSize; j++) {
                 tmx[i] += tmp * rot2[i][j] * tmpvect[j];
+                }
             }
-        }
 
         /* COMPUTATION core */
         for (i = 0; i < genomeSize - 1; i++) {
             tmp = tmx[i] * tmx[i] + tmx[i + 1] * tmx[i + 1];
             value += Math.pow(tmp, 0.25) * (Math.pow(Math.sin(50. * Math.pow(tmp, 0.1)), 2.) + 1.);
-        }
+            }
         value = Math.pow(value / (double) (genomeSize - 1), 2.);
         value += fAdd;
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void griewank_rosenbrock(double fAdd, int genomeSize, double[] genome, double tmp, double[] tmx, double tmp2, double f2, double fPen, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -1238,8 +1238,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
                 tmx[i] = 0.5;
                 for (j = 0; j < genomeSize; j++) {
                     tmx[i] += linearTF[i][j] * genome[j];
+                    }
                 }
-            }
             /* COMPUTATION core */
             for (i = 0; i < genomeSize - 1; i++) {
                 tmp2 = tmx[i] * tmx[i] - tmx[i + 1];
@@ -1247,16 +1247,16 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
                 tmp2 = 1 - tmx[i];
                 f2 += tmp2 * tmp2;
                 tmp += f2 / 4000. - Math.cos(f2);
-            }
+                }
             value = 10. + 10. * tmp / (double) (genomeSize - 1);
-        } else {
+            } else {
             /* BOUNDARY HANDLING */
             for (i = 0; i < genomeSize; i++) {
                 tmp = Math.abs(genome[i]) - 5.0;
                 if (tmp > 0.0) {
                     fPen += tmp * tmp;
+                    }
                 }
-            }
             fAdd += 100.0 * fPen;
 
             /* TRANSFORMATION IN SEARCH SPACE */
@@ -1264,39 +1264,39 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
                 tmx[i] = 0.5;
                 for (j = 0; j < genomeSize; j++) {
                     tmx[i] += scales * rotation[i][j] * genome[j];
+                    }
                 }
-            }
             /* COMPUTATION core */
             tmp = 0.;
             for (i = 0; i < genomeSize - 1; i++) {
                 f2 = 100. * (tmx[i] * tmx[i] - tmx[i + 1]) * (tmx[i] * tmx[i] - tmx[i + 1]) + (1 - tmx[i]) * (1 - tmx[i]);
                 tmp += f2 / 4000. - Math.cos(f2);
-            }
+                }
             value = 1. + 1. * tmp / (double) (genomeSize - 1);
-        }
+            }
         switch (noise) {
-            case NONE:
-                break;
-            case GAUSSIAN:
-                value = fGauss(value, 1.0, state.random[threadnum]);
-                break;
-            case UNIFORM:
-                value = fUniform(value, 0.49 + 1.0 / genomeSize, 1.0, state.random[threadnum]);
-                break;
-            case CAUCHY:
-                value = fCauchy(value, 1.0, 0.2, state.random[threadnum]);
-                break;
-            default:
-                String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
-                for (i = 0; i < 4; i++)
-                    outputStr += noiseTypes[i] + "\n";
-                state.output.fatal(outputStr, new Parameter(P_NOISE));
-                break;
-        }
+        case NONE:
+            break;
+        case GAUSSIAN:
+            value = fGauss(value, 1.0, state.random[threadnum]);
+            break;
+        case UNIFORM:
+            value = fUniform(value, 0.49 + 1.0 / genomeSize, 1.0, state.random[threadnum]);
+            break;
+        case CAUCHY:
+            value = fCauchy(value, 1.0, 0.2, state.random[threadnum]);
+            break;
+        default:
+            String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
+            for (i = 0; i < 4; i++)
+                outputStr += noiseTypes[i] + "\n";
+            state.output.fatal(outputStr, new Parameter(P_NOISE));
+            break;
+            }
         value += fAdd;
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void ellipsoidal_2(double fAdd, int genomeSize, double[] genome, double tmp, double[] tmx, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -1310,18 +1310,18 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmx[i] = 0.0;
             for (j = 0; j < genomeSize; j++) {
                 tmx[i] += rotation[i][j] * (genome[j] - xOpt[j]);
+                }
             }
-        }
 
         monotoneTFosc(tmx);
         /* COMPUTATION core */
         for (i = 0; i < genomeSize; i++) {
             fAdd += Math.pow(condition, ((double) i) / ((double) (genomeSize - 1))) * tmx[i] * tmx[i];
-        }
+            }
         value = fAdd;
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void rastrigin_2(double fAdd, int genomeSize, double[] genome, double tmp, double tmp2, double[] tmx, double[] tmpvect, double fPen, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -1337,30 +1337,30 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmpvect[i] = 0.0;
             for (j = 0; j < genomeSize; j++) {
                 tmpvect[i] += rotation[i][j] * (genome[j] - xOpt[j]);
+                }
             }
-        }
 
         monotoneTFosc(tmpvect);
         for (i = 0; i < genomeSize; i++) {
             if (tmpvect[i] > 0)
                 tmpvect[i] = Math.pow(tmpvect[i], 1 + beta * ((double) i) / ((double) (genomeSize - 1)) * Math.sqrt(tmpvect[i]));
-        }
+            }
         for (i = 0; i < genomeSize; i++) {
             tmx[i] = 0.0;
             for (j = 0; j < genomeSize; j++) {
                 tmx[i] += linearTF[i][j] * tmpvect[j];
+                }
             }
-        }
         /* COMPUTATION core */
         for (i = 0; i < genomeSize; i++) {
             tmp += Math.cos(2. * Math.PI * tmx[i]);
             tmp2 += tmx[i] * tmx[i];
-        }
+            }
         value = 10. * ((double) genomeSize - tmp) + tmp2;
         value += fAdd;
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void discus(double fAdd, int genomeSize, double[] genome, double[] tmx, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -1373,8 +1373,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmx[i] = 0.0;
             for (j = 0; j < genomeSize; j++) {
                 tmx[i] += rotation[i][j] * (genome[j] - xOpt[j]);
+                }
             }
-        }
 
         monotoneTFosc(tmx);
 
@@ -1382,11 +1382,11 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
         value = condition * tmx[0] * tmx[0];
         for (i = 1; i < genomeSize; i++) {
             value += tmx[i] * tmx[i];
-        }
+            }
         value += fAdd; /* without noise */
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void bent_cigar(double fAdd, int genomeSize, double[] genome, double[] tmx, double[] tmpvect, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -1400,28 +1400,28 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmpvect[i] = 0.0;
             for (j = 0; j < genomeSize; j++) {
                 tmpvect[i] += rotation[i][j] * (genome[j] - xOpt[j]);
-            }
+                }
             if (tmpvect[i] > 0) {
                 tmpvect[i] = Math.pow(tmpvect[i], 1 + beta * ((double) i) / ((double) (genomeSize - 1)) * Math.sqrt(tmpvect[i]));
+                }
             }
-        }
 
         for (i = 0; i < genomeSize; i++) {
             tmx[i] = 0.0;
             for (j = 0; j < genomeSize; j++) {
                 tmx[i] += rotation[i][j] * tmpvect[j];
+                }
             }
-        }
 
         /* COMPUTATION core */
         value = tmx[0] * tmx[0];
         for (i = 1; i < genomeSize; i++) {
             value += condition * tmx[i] * tmx[i];
-        }
+            }
         value += fAdd;
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void sharp_ridge(double fAdd, int genomeSize, double[] genome, double[] tmx, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -1436,19 +1436,19 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmx[i] = 0.0;
             for (j = 0; j < genomeSize; j++) {
                 tmx[i] += linearTF[i][j] * (genome[j] - xOpt[j]);
+                }
             }
-        }
 
         /* COMPUTATION core */
         for (i = 1; i < genomeSize; i++) {
             value += tmx[i] * tmx[i];
-        }
+            }
         value = alpha * Math.sqrt(value);
         value += tmx[0] * tmx[0];
         value += fAdd;
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void different_powers(double fAdd, int genomeSize, double[] genome, double tmp, double[] tmx, double fPen, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -1460,47 +1460,47 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
                 tmp = Math.abs(genome[i]) - 5.;
                 if (tmp > 0.) {
                     fPen += tmp * tmp;
+                    }
                 }
-            }
             fAdd += 100. * fPen;
-        }
+            }
 
         /* TRANSFORMATION IN SEARCH SPACE */
         for (i = 0; i < genomeSize; i++) {
             tmx[i] = 0.0;
             for (j = 0; j < genomeSize; j++) {
                 tmx[i] += rotation[i][j] * (genome[j] - xOpt[j]);
+                }
             }
-        }
 
         /* COMPUTATION core */
         for (i = 0; i < genomeSize; i++) {
             value += Math.pow(Math.abs(tmx[i]), 2. + alpha * ((double) i) / ((double) (genomeSize - 1)));
-        }
+            }
         value = Math.sqrt(value);
         switch (noise) {
-            case NONE:
-                break;
-            case GAUSSIAN:
-                value = fGauss(value, 1.0, state.random[threadnum]);
-                break;
-            case UNIFORM:
-                value = fUniform(value, 0.49 + 1.0 / genomeSize, 1.0, state.random[threadnum]);
-                break;
-            case CAUCHY:
-                value = fCauchy(value, 1.0, 0.2, state.random[threadnum]);
-                break;
-            default:
-                String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
-                for (i = 0; i < 4; i++)
-                    outputStr += noiseTypes[i] + "\n";
-                state.output.fatal(outputStr, new Parameter(P_NOISE));
-                break;
-        }
+        case NONE:
+            break;
+        case GAUSSIAN:
+            value = fGauss(value, 1.0, state.random[threadnum]);
+            break;
+        case UNIFORM:
+            value = fUniform(value, 0.49 + 1.0 / genomeSize, 1.0, state.random[threadnum]);
+            break;
+        case CAUCHY:
+            value = fCauchy(value, 1.0, 0.2, state.random[threadnum]);
+            break;
+        default:
+            String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
+            for (i = 0; i < 4; i++)
+                outputStr += noiseTypes[i] + "\n";
+            state.output.fatal(outputStr, new Parameter(P_NOISE));
+            break;
+            }
         value += fAdd;
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void weierstrass(double fAdd, int genomeSize, double[] genome, double tmp, double[] tmx, double[] tmpvect, double fPen, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -1514,8 +1514,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmp = Math.abs(genome[i]) - 5.;
             if (tmp > 0.) {
                 fPen += tmp * tmp;
+                }
             }
-        }
         fAdd += 10. / (double) genomeSize * fPen;
 
         /* TRANSFORMATION IN SEARCH SPACE */
@@ -1523,31 +1523,31 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmpvect[i] = 0.0;
             for (j = 0; j < genomeSize; j++) {
                 tmpvect[i] += rotation[i][j] * (genome[j] - xOpt[j]);
+                }
             }
-        }
 
         monotoneTFosc(tmpvect);
         for (i = 0; i < genomeSize; i++) {
             tmx[i] = 0.0;
             for (j = 0; j < genomeSize; j++) {
                 tmx[i] += linearTF[i][j] * tmpvect[j];
+                }
             }
-        }
         /* COMPUTATION core */
         for (i = 0; i < genomeSize; i++) {
             tmp = 0.0;
             for (j = 0; j < 12; j++) {
                 tmp += Math.cos(2 * Math.PI * (tmx[i] + 0.5) * bK[j]) * aK[j];
-            }
+                }
             value += tmp;
-        }
+            }
         value = 10. * Math.pow(value / (double) genomeSize - f0, 3.);
         value += fAdd;
         ;
 
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void schwefel(double fAdd, int genomeSize, double[] genome, double tmp, double[] tmx, double[] tmpvect, double fPen, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -1560,37 +1560,37 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmpvect[i] = 2. * genome[i];
             if (xOpt[i] < 0.)
                 tmpvect[i] *= -1.;
-        }
+            }
 
         tmx[0] = tmpvect[0];
         for (i = 1; i < genomeSize; i++) {
             tmx[i] = tmpvect[i] + 0.25 * (tmpvect[i - 1] - 2. * Math.abs(xOpt[i - 1]));
-        }
+            }
 
         for (i = 0; i < genomeSize; i++) {
             tmx[i] -= 2 * Math.abs(xOpt[i]);
             tmx[i] *= Math.pow(Math.sqrt(condition), ((double) i) / ((double) (genomeSize - 1)));
             tmx[i] = 100. * (tmx[i] + 2 * Math.abs(xOpt[i]));
-        }
+            }
 
         /* BOUNDARY HANDLING */
         for (i = 0; i < genomeSize; i++) {
             tmp = Math.abs(tmx[i]) - 500.0;
             if (tmp > 0.) {
                 fPen += tmp * tmp;
+                }
             }
-        }
         fAdd += 0.01 * fPen;
 
         /* COMPUTATION core */
         for (i = 0; i < genomeSize; i++) {
             value += tmx[i] * Math.sin(Math.sqrt(Math.abs(tmx[i])));
-        }
+            }
         value = 0.01 * ((418.9828872724339) - value / (double) genomeSize);
         value += fAdd;/* without noise */
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void gallagher_gaussian_101me(double fAdd, int genomeSize, double[] genome, double tmp, double[] tmx, double tmp2, double f, double fPen, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -1603,8 +1603,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmp = Math.abs(genome[i]) - 5.;
             if (tmp > 0.) {
                 fPen += tmp * tmp;
+                }
             }
-        }
         if (noise == NONE)
             fAdd += fPen;
         else
@@ -1615,8 +1615,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmx[i] = 0.0;
             for (j = 0; j < genomeSize; j++) {
                 tmx[i] += rotation[i][j] * genome[j];
+                }
             }
-        }
 
         /* COMPUTATION core */
         if (noise == NONE)
@@ -1625,58 +1625,58 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
                 for (j = 0; j < genomeSize; j++) {
                     tmp = (tmx[j] - xLocal[j][i]);
                     tmp2 += arrScales[i][j] * tmp * tmp;
-                }
+                    }
                 tmp2 = peakvalues[i] * Math.exp(fac * tmp2);
                 f = Math.max(f, tmp2);
-            }
+                }
         else
             /* COMPUTATION core */
             for (i = 0; i < NHIGHPEAKS21; i++) {
                 tmp2 = 0.;
                 for (j = 0; j < genomeSize; j++) {
                     tmp2 += arrScales[i][j] * (tmx[j] - xLocal[j][i]) * (tmx[j] - xLocal[j][i]);
-                }
+                    }
                 tmp2 = peakvalues[i] * Math.exp(fac * tmp2);
                 f = Math.max(f, tmp2);
-            }
+                }
 
         f = 10.0 - f;
         /* monotoneTFosc */
         if (f > 0) {
             value = Math.log(f) / a;
             value = Math.pow(Math.exp(value + 0.49 * (Math.sin(value) + Math.sin(0.79 * value))), a);
-        } else if (f < 0) {
+            } else if (f < 0) {
             value = Math.log(-f) / a;
             value = -Math.pow(Math.exp(value + 0.49 * (Math.sin(0.55 * value) + Math.sin(0.31 * value))), a);
-        } else
+            } else
             value = f;
 
         value *= value;
         switch (noise) {
-            case NONE:
-                break;
-            case GAUSSIAN:
-                value = fGauss(value, 1.0, state.random[threadnum]);
-                break;
-            case UNIFORM:
-                value = fUniform(value, 0.49 + 1.0 / genomeSize, 1.0, state.random[threadnum]);
-                break;
-            case CAUCHY:
-                value = fCauchy(value, 1.0, 0.2, state.random[threadnum]);
-                break;
-            default:
-                String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
-                for (i = 0; i < 4; i++)
-                    outputStr += noiseTypes[i] + "\n";
-                state.output.fatal(outputStr, new Parameter(P_NOISE));
-                break;
-        }
+        case NONE:
+            break;
+        case GAUSSIAN:
+            value = fGauss(value, 1.0, state.random[threadnum]);
+            break;
+        case UNIFORM:
+            value = fUniform(value, 0.49 + 1.0 / genomeSize, 1.0, state.random[threadnum]);
+            break;
+        case CAUCHY:
+            value = fCauchy(value, 1.0, 0.2, state.random[threadnum]);
+            break;
+        default:
+            String outputStr = "Invalid value for parameter, or parameter not found.\n" + "Acceptable values are:\n";
+            for (i = 0; i < 4; i++)
+                outputStr += noiseTypes[i] + "\n";
+            state.output.fatal(outputStr, new Parameter(P_NOISE));
+            break;
+            }
         value += fAdd;
         ; /* without noise */
 
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void gallagher_gaussian_21hi(double fAdd, int genomeSize, double[] genome, double tmp, double[] tmx, double tmp2, double fPen, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -1692,8 +1692,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmp = Math.abs(genome[i]) - 5.;
             if (tmp > 0.) {
                 fPen += tmp * tmp;
+                }
             }
-        }
         fAdd += fPen;
 
         /* TRANSFORMATION IN SEARCH SPACE */
@@ -1701,8 +1701,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmx[i] = 0.0;
             for (j = 0; j < genomeSize; j++) {
                 tmx[i] += rotation[i][j] * genome[j];
+                }
             }
-        }
 
         /* COMPUTATION core */
         for (i = 0; i < NHIGHPEAKS22; i++) {
@@ -1710,19 +1710,19 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             for (j = 0; j < genomeSize; j++) {
                 tmp = (tmx[j] - xLocal[j][i]);
                 tmp2 += arrScales[i][j] * tmp * tmp;
-            }
+                }
             tmp2 = peakvalues[i] * Math.exp(fac * tmp2);
             f = Math.max(f, tmp2);
-        }
+            }
 
         f = 10. - f;
         if (f > 0) {
             value = Math.log(f) / a;
             value = Math.pow(Math.exp(value + 0.49 * (Math.sin(value) + Math.sin(0.79 * value))), a);
-        } else if (f < 0) {
+            } else if (f < 0) {
             value = Math.log(-f) / a;
             value = -Math.pow(Math.exp(value + 0.49 * (Math.sin(0.55 * value) + Math.sin(0.31 * value))), a);
-        } else
+            } else
             value = f;
 
         value *= value;
@@ -1731,7 +1731,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
 
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void katsuura(double fAdd, int genomeSize, double[] genome, double tmp, double tmp2, double[] tmx, double[] tmpvect, double fPen, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -1741,8 +1741,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
         double arr;
         double prod = 1.0;
         double[] ptmx,
-                plinTF,
-                ptmp;
+            plinTF,
+            ptmp;
 
         fAdd = fOpt;
 
@@ -1751,8 +1751,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmp = Math.abs(genome[i]) - 5.;
             if (tmp > 0.) {
                 fPen += tmp * tmp;
+                }
             }
-        }
         fAdd += fPen;
 
         /* TRANSFORMATION IN SEARCH SPACE */
@@ -1768,8 +1768,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             for (j = 0; j < genomeSize; j++) {
                 // *ptmx += *plinTF++ * *ptmp++;
                 ptmx[j] += plinTF[j] * ptmp[j];
+                }
             }
-        }
 
         /*
          * for (i = 0; i < genomeSize; i++) { tmx[i] = 0.0; for (j = 0; j <
@@ -1784,15 +1784,15 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
                 tmp2 = Math.pow(2., (double) j);
                 arr = tmx[i] * tmp2;
                 tmp += Math.abs(arr - Math.round(arr)) / tmp2;
-            }
+                }
             tmp = 1. + tmp * (double) (i + 1);
             prod *= tmp;
-        }
+            }
         value = 10. / (double) genomeSize / (double) genomeSize * (-1. + Math.pow(prod, 10. / Math.pow((double) genomeSize, 1.2)));
         value += fAdd;
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
     void lunacek(double fAdd, int genomeSize, double[] genome, double tmp, double tmp2, double condition, double[] tmx, double fPen, double value, double fit, Individual ind, EvolutionState state, int threadnum) {
         int i, j;
@@ -1801,7 +1801,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
         condition = 100.0;
         double mu1 = 2.5;
         double tmp3,
-                tmp4;
+            tmp4;
         fPen = tmp2 = tmp3 = tmp4 = 0.0;
         double s = 1. - 0.5 / (Math.sqrt((double) (genomeSize + 20)) - 4.1);
         double d = 1.;
@@ -1814,8 +1814,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmp = Math.abs(genome[i]) - 5.;
             if (tmp > 0.) {
                 fPen += tmp * tmp;
+                }
             }
-        }
         fAdd += 1e4 * fPen;
 
         /* TRANSFORMATION IN SEARCH SPACE */
@@ -1823,7 +1823,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmx[i] = 2. * genome[i];
             if (xOpt[i] < 0.)
                 tmx[i] *= -1.;
-        }
+            }
 
         /* COMPUTATION core */
         tmp = 0.0;
@@ -1833,14 +1833,14 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             tmp4 = 0.0;
             for (j = 0; j < genomeSize; j++) {
                 tmp4 += linearTF[i][j] * (tmx[j] - mu1);
-            }
+                }
             tmp += Math.cos(2 * Math.PI * tmp4);
-        }
+            }
         value = Math.min(tmp2, d * (double) genomeSize + s * tmp3) + 10. * ((double) genomeSize - tmp);
         value += fAdd;
         fit = (-value);
         ((SimpleFitness) (ind.fitness)).setFitness(state, fit, fit == 0.0);
-    }
+        }
 
 
     final static public double TOL = 1e-8;
@@ -1859,9 +1859,9 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             g[i] = Math.sqrt(-2 * Math.log(uniftmp[i])) * Math.cos(2 * Math.PI * uniftmp[g.length + i]);
             if (g[i] == 0.0)
                 g[i] = 1e-99;
-        }
+            }
         return;
-    }
+        }
 
     void gauss(double[] g, MersenneTwisterFast random, int n) {
         /*
@@ -1876,9 +1876,9 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             g[i] = Math.sqrt(-2 * Math.log(uniftmp[i])) * Math.cos(2 * Math.PI * uniftmp[n + i]);
             if (g[i] == 0.0)
                 g[i] = 1e-99;
-        }
+            }
         return;
-    }
+        }
 
     void computeXopt(double[] xOpt, MersenneTwisterFast random) {
         int i;
@@ -1887,8 +1887,8 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             xOpt[i] = 8 * (int) Math.floor(1e4 * nextDoubleClosedInterval(random)) / 1e4 - 4;
             if (xOpt[i] == 0.0)
                 xOpt[i] = -1e-5;
+            }
         }
-    }
 
     void monotoneTFosc(double[] f) {
         double a = 0.1;
@@ -1898,22 +1898,22 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
             if (f[i] > 0) {
                 f[i] = Math.log(f[i]) / a;
                 f[i] = Math.pow(Math.exp(f[i] + 0.49 * (Math.sin(f[i]) + Math.sin(0.79 * f[i]))), a);
-            } else if (f[i] < 0) {
+                } else if (f[i] < 0) {
                 f[i] = Math.log(-f[i]) / a;
                 f[i] = -Math.pow(Math.exp(f[i] + 0.49 * (Math.sin(0.55 * f[i]) + Math.sin(0.31 * f[i]))), a);
+                }
             }
         }
-    }
 
     double[][] reshape(double[][] b, double[] vector, int m, int n) {
         int i, j;
         for (i = 0; i < m; i++) {
             for (j = 0; j < n; j++) {
                 b[i][j] = vector[j * m + i];
+                }
             }
-        }
         return b;
-    }
+        }
 
     void computeRotation(double[][] b, MersenneTwisterFast random, int genomeSize) {
         double[] gvect = new double[genomeSize * genomeSize];
@@ -1929,38 +1929,38 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
                 prod = 0;
                 for (k = 0; k < genomeSize; k++) {
                     prod += b[k][i] * b[k][j];
-                }
+                    }
                 for (k = 0; k < genomeSize; k++) {
                     b[k][i] -= prod * b[k][j];
+                    }
                 }
-            }
             prod = 0;
             for (k = 0; k < genomeSize; k++) {
                 prod += b[k][i] * b[k][i];
-            }
+                }
             for (k = 0; k < genomeSize; k++) {
                 b[k][i] /= Math.sqrt(prod);
+                }
             }
         }
-    }
 
     double fGauss(double fTrue, double beta, MersenneTwisterFast random) {
         double fVal = fTrue * Math.exp(beta * nextDoubleClosedInterval(random));
         fVal += 1.01 * TOL;
         if (fTrue < TOL) {
             fVal = fTrue;
-        }
+            }
         return fVal;
-    }
+        }
 
     double fUniform(double fTrue, double alpha, double beta, MersenneTwisterFast random) {
         double fVal = Math.pow(nextDoubleClosedInterval(random), beta) * fTrue * Math.max(1.0, Math.pow(1e9 / (fTrue + 1e-99), alpha * nextDoubleClosedInterval(random)));
         fVal += 1.01 * TOL;
         if (fTrue < TOL) {
             fVal = fTrue;
-        }
+            }
         return fVal;
-    }
+        }
 
     double fCauchy(double fTrue, double alpha, double p, MersenneTwisterFast random) {
         double fVal;
@@ -1977,9 +1977,9 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
         fVal += 1.01 * TOL;
         if (fTrue < TOL) {
             fVal = fTrue;
-        }
+            }
         return fVal;
-    }
+        }
 
     double computeFopt(MersenneTwisterFast random) {
         double[] gval = new double[1];
@@ -1987,12 +1987,12 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
         gauss(gval, random, 1);
         gauss(gval2, random, 1);
         return Math.min(1000.0, Math.max(-1000.0, (Math.round(100.0 * 100.0 * gval[0] / gval2[0]) / 100.0)));
-    }
+        }
 
     double nextDoubleClosedInterval(MersenneTwisterFast random) {
         double tmp = random.nextDouble() * 2.0;
         while (tmp > 1.0)
             tmp = random.nextDouble() * 2.0;
         return tmp;
+        }
     }
-}

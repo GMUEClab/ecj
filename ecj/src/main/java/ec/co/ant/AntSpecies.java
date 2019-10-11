@@ -32,7 +32,7 @@ import java.util.ArrayList;
  * @see ec.app.knapsack
  */
 public class AntSpecies extends Species
-{
+    {
     public final static Parameter DEFAULT_BASE = new Parameter("constructive");
     public final static String SPECIES_NAME = "constructive-species";
 
@@ -48,7 +48,7 @@ public class AntSpecies extends Species
 
     @Override
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         setupSuper(state, base); // Calling a custom replacement for super.setup(), because Species.setup() looks for parameters that we don't need for ACO.
         assert(state != null);
         assert(base != null);
@@ -70,14 +70,14 @@ public class AntSpecies extends Species
             localUpdateRule.setup(state, base.push(P_LOCAL_UPDATE_RULE));
             }
         assert(repOK());
-    }
+        }
 
     /** A custom setup method for Species that skips the initialization of the
      * breeding pipeline.  We call this in place of super.setup(), since this
      * Species doesn't use a pipeline.
      */
     private void setupSuper(final EvolutionState state, final Parameter base)
-    {
+        {
         assert(state != null);
         assert(base != null);
         Parameter def = defaultBase();
@@ -91,63 +91,63 @@ public class AntSpecies extends Species
 
         // load our fitness
         f_prototype = (Fitness) state.parameters.getInstanceForParameter(
-                base.push(P_FITNESS),def.push(P_FITNESS),
-                Fitness.class);
+            base.push(P_FITNESS),def.push(P_FITNESS),
+            Fitness.class);
         f_prototype.setup(state,base.push(P_FITNESS));
-    }
+        }
 
     /** Apply a global update rule to the pheromone table.
      *
      *  @param subpop The Subpopulation to use as the input of the global update. */
     @Override
     public void updateSubpopulation(final EvolutionState state, final Subpopulation subpop)
-    {
+        {
         updateRule.updatePheromones(state, pheromones, subpop.individuals);
         assert(repOK());
-    }
+        }
 
     /** Apply a local update rule to the pheromone table.
      *
      * @param ind The Individual to use as the input of the local update. */
     @Override
     public void updateIndividual(final EvolutionState state, final Individual ind)
-    {
+        {
         if (localUpdateRule != null)
             localUpdateRule.updatePheromones(state, pheromones, new ArrayList() {{ add(ind); }});
-    }
+        }
 
     @Override
     public ConstructiveIndividual newIndividual(final EvolutionState state, final int thread)
-    {
+        {
         assert(state != null);
         assert(thread >= 0);
 
         final ConstructiveIndividual ind = (ConstructiveIndividual)(super.newIndividual(state, thread));
         assert(repOK());
         return constructionRule.constructSolution(state, ind, pheromones, thread);
-    }
+        }
 
     @Override
     public Parameter defaultBase()
-    {
+        {
         return DEFAULT_BASE.push(SPECIES_NAME);
-    }
+        }
 
     /** Representation invariant, used for verification.
      *
      * @return true if the class is found to be in an erroneous state.
      */
     public final boolean repOK()
-    {
+        {
         return DEFAULT_BASE != null
-                && SPECIES_NAME != null
-                && !SPECIES_NAME.isEmpty()
-                && P_UPDATE_RULE != null
-                && !P_UPDATE_RULE.isEmpty()
-                && P_CONSTRUCTION_RULE != null
-                && !P_CONSTRUCTION_RULE.isEmpty()
-                && constructionRule != null
-                && updateRule != null
-                && pheromones != null;
+            && SPECIES_NAME != null
+            && !SPECIES_NAME.isEmpty()
+            && P_UPDATE_RULE != null
+            && !P_UPDATE_RULE.isEmpty()
+            && P_CONSTRUCTION_RULE != null
+            && !P_CONSTRUCTION_RULE.isEmpty()
+            && constructionRule != null
+            && updateRule != null
+            && pheromones != null;
+        }
     }
-}

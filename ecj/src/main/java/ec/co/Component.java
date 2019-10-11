@@ -33,4 +33,4 @@ public abstract class Component {
         state.output.fatal(String.format("%s: readComponent() is not implemented.  This method is required in order to use a %s with ECJ's distributed evaluation or island model mechanisms.", this.getClass().getSimpleName(), Component.class.getSimpleName()));
         return null;
         }   
-}
+    }

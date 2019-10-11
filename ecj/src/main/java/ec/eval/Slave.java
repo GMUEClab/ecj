@@ -168,7 +168,7 @@ public class Slave
     public static int slaveNum = -1;
 
     public static void main(String[] args)
-    	{
+        {
         EvolutionState state = null;
         ParameterDatabase parameters = null;
         Output output = null;
@@ -450,7 +450,7 @@ public class Slave
                                 storage.transferAdditionalData(newState);  // load the arbitrary data again
                                 }
                         
-                           // 0 means to shut down
+                            // 0 means to shut down
                             int problemType = dataIn.readByte();
                             switch (problemType)
                                 {
