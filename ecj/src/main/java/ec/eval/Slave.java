@@ -168,7 +168,7 @@ public class Slave
     public static int slaveNum = -1;
 
     public static void main(String[] args)
-        {
+    	{
         EvolutionState state = null;
         ParameterDatabase parameters = null;
         Output output = null;
@@ -430,13 +430,13 @@ public class Slave
                     final MasterProblem storage = state.evaluator.masterproblem;
                     storage.receiveAdditionalData(state, dataIn);
                     storage.transferAdditionalData(state);
-                                
+                    
                     try
                         {
                         while (true)
                             {
                             EvolutionState newState = state;
-                        
+
                             if (runEvolve) 
                                 {
                                 // Construct and use a new EvolutionState.  This will be inefficient the first time around
@@ -450,7 +450,7 @@ public class Slave
                                 storage.transferAdditionalData(newState);  // load the arbitrary data again
                                 }
                         
-                            // 0 means to shut down
+                           // 0 means to shut down
                             int problemType = dataIn.readByte();
                             switch (problemType)
                                 {
@@ -557,8 +557,6 @@ public class Slave
         boolean[] updateFitness = new boolean[numInds];
         final Individual[] inds = new Individual[numInds];
         
-                        
-                        
         // Either evaluate all the individuals once and return them immediately
         // (we'll do so in a steady-state-ish fashion, firing off threads as soon as we read in individuals,
         // and returning them as soon as they come in, albeit in the proper order)
