@@ -148,7 +148,7 @@ public class SteadyStateBreeder extends SimpleBreeder
         {
         for(int x = 0 ; x < deselectors.length; x++)
             {
-                if (bp[x] != null)
+            if (bp[x] != null)
                 {
                 bp[x].finishProducing(state,x,0);
                 deselectors[x].finishProducing(state,x,0);

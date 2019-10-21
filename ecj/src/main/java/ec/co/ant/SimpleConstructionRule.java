@@ -28,14 +28,14 @@ public class SimpleConstructionRule implements ConstructionRule, Setup {
     
     @Override
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         assert(state != null);
         assert(base != null);
         startComponent = state.parameters.getString(base.push(P_START), null);
         selector = (ComponentSelector) state.parameters.getInstanceForParameter(base.push(P_SELECTOR), null, ComponentSelector.class);
         selector.setup(state, base.push(P_SELECTOR));
         assert(repOK());
-    }
+        }
 
     /** Constructs a solution by greedily adding the lowest-desirability component at
      * each step until a complete solution is formed.  The pheromone matrix
@@ -43,7 +43,7 @@ public class SimpleConstructionRule implements ConstructionRule, Setup {
      */
     @Override
     public ConstructiveIndividual constructSolution(final EvolutionState state, final ConstructiveIndividual ind, final PheromoneTable pheromones, final int thread)
-    {
+        {
         assert(state != null);
         assert(ind != null);
         assert(ind.isEmpty());
@@ -68,14 +68,14 @@ public class SimpleConstructionRule implements ConstructionRule, Setup {
         
         assert(repOK());
         return ind;
-    }
+        }
     
     public final boolean repOK()
-    {
+        {
         return P_SELECTOR != null
-                && !P_SELECTOR.isEmpty()
-                && P_START != null
-                && !P_START.isEmpty()
-                && selector != null;
+            && !P_SELECTOR.isEmpty()
+            && P_START != null
+            && !P_START.isEmpty()
+            && selector != null;
+        }
     }
-}

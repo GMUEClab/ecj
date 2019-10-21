@@ -109,7 +109,7 @@ public class SimpleEvolutionState extends EvolutionState
             return R_SUCCESS;
             }
 
-    	/// GLOBAL STATE UPDATE (used by some algorithms like ACO to EDAS to update auxiliary state)
+        /// GLOBAL STATE UPDATE (used by some algorithms like ACO to EDAS to update auxiliary state)
         evaluator.postEvaluationGlobalUpdate(this);
         
         // BREEDING

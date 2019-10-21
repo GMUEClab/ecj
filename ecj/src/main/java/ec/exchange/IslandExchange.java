@@ -662,6 +662,7 @@ public class IslandExchange extends Exchanger
             mailbox = new IslandExchangeMailbox( state, clientPort, fromServer.readInt(),
                 fromServer.readInt(), ownId, chatty, compressedCommunication );
             mailboxThread = new Thread( mailbox );
+            mailboxThread.setDaemon(true);
             mailboxThread.start();
 
             // record that the mailbox has been created
@@ -2265,6 +2266,7 @@ class IslandExchangeServer implements Runnable
     public Thread spawnThread()
         {
         Thread thread = new Thread( this );
+        thread.setDaemon(true);
         thread.start();
         return thread;
         }

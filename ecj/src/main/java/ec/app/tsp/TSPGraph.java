@@ -34,23 +34,23 @@ public class TSPGraph {
     private Map<Integer, double[]> nodes;
     
     public EdgeWeightType weightType()
-    {
+        {
         return edgeWeightType;
-    }
+        }
     
     public TSPGraph(final File file) throws IOException
-    {
+        {
         assert(file != null);
         final BufferedReader r = new BufferedReader(new FileReader(file));
         loadHeader(r);
         nodes = loadNodes(r);
         assert(repOK());
-    }
+        }
     
     /** Read the dimensionality of problem from a file in TSPLIB formate by
      * looking for the 'DIMENSION' attribute. */
     private void loadHeader(final BufferedReader tspReader) throws IOException
-    {
+        {
         assert(tspReader != null);
         String line;
         while ( (line = tspReader.readLine()) != null && !line.trim().toUpperCase().equals(TSPKeyword.NODE_COORD_SECTION.toString()))
@@ -59,10 +59,10 @@ public class TSPGraph {
             }
         if (dimension == 0)
             throw new IllegalStateException("No valid 'DIMENSION' attribute found in TSP file.  Are you sure this file is in TSPLIB format?");
-    }
+        }
     
     private void readLine(final String line)
-    {
+        {
         assert(line != null);
         final String[] keyValue = line.split(":");
         if (keyValue.length != 2)
@@ -110,13 +110,13 @@ public class TSPGraph {
             default:
                 throw new UnsupportedOperationException(String.format("%s: no logic has been implemented to handle the '%s' attribute.", this.getClass().getSimpleName(), keyword));
             }
-    }
+        }
     
     /** Load a TSP problem from a file and store it as a Map from IDs to points. 
      * The reader should already be advanced one line beyond the occurrence of 
      * A_NODE_COORD_SECTION, so that the next line is the first node in the list. */
     private Map<Integer, double[]> loadNodes(final BufferedReader r) throws IOException
-    {
+        {
         assert(r != null);
         final Map<Integer, double[]> nodes = new HashMap<Integer, double[]>();
         String line;
@@ -133,25 +133,25 @@ public class TSPGraph {
         if (nodes.size() != dimension)
             throw new IllegalStateException(String.format("%s: TSP problem 'DIMENSION' is specified to be %d, but %d nodes were found.", TSPProblem.class.getSimpleName(), dimension, nodes.size()));
         return nodes;
-    }
+        }
     
     public int numNodes()
-    {
+        {
         return nodes.size();
-    }
+        }
     
     public Set<Integer> getNodes()
-    {
+        {
         return nodes.keySet();
-    }
+        }
     
     public int numEdges()
-    {
+        {
         return (int) Math.pow(nodes.size(), 2); // For a directed graph, the adajency matrix is full, with n^2 entries.
-    }
+        }
     
     public List<TSPComponent> getAllEdges()
-    {
+        {
         final List<TSPComponent> result = new ArrayList<TSPComponent>();
         for (int i = 0; i < nodes.size(); i++)
             for (int j = 0; j < nodes.size(); j++)
@@ -159,34 +159,34 @@ public class TSPGraph {
         assert(repOK());
         assert(result.size() == numEdges());
         return result;
-    }
+        }
     
     public TSPComponent getEdge(final int from, final int to)
-    {
+        {
         return new TSPComponent(from, to);
-    }
+        }
     
     public class TSPComponent extends Component
-    {
+        {
         private int fromNode;
         private int toNode;
         private double[] from;
         private double[] to;
         
         public int from()
-        {
+            {
             assert(repOK());
             return fromNode;
-        }
+            }
         
         public int to()
-        {
+            {
             assert(repOK());
             return toNode;
-        }
+            }
         
         public TSPComponent(final int from, final int to)
-        {
+            {
             assert(from >= 0);
             assert(from < numNodes());
             assert(to >= 0);
@@ -196,21 +196,21 @@ public class TSPGraph {
             this.from = nodes.get(fromNode);
             this.to = nodes.get(toNode);
             assert(repOK());
-        }
+            }
         
         @Override
         public double desirability()
-        {
+            {
             final double eta = 1.0/distance();
             assert(!Double.isInfinite(eta));
             assert(!Double.isNaN(eta));
             return eta;
-        }
+            }
 
         public double distance()
-        {
-            switch (weightType())
             {
+            switch (weightType())
+                {
                 default:
                 case EUC_2D:
                     return euclideanDistance();
@@ -218,12 +218,12 @@ public class TSPGraph {
                     return attDistance();
                 case GEO:
                     return geoDistance();
+                }
             }
-        }
         
         /** Euclidean distance, rounded to the nearest integer. */
         private double euclideanDistance()
-        {
+            {
             final double dist = Math.sqrt(Math.pow(from[0] - to[0], 2) + Math.pow(from[1] - to[1], 2));
 
             // TSPLIB's Euclidean distance metric rounds to the nearest integer.  Most (all?) TSPLIB benchmark tasks
@@ -232,11 +232,11 @@ public class TSPGraph {
             if (dist == 0.0)
                 return 0.0;
             else return Math.max(1.0, Math.rint(dist));
-        }
+            }
 
         /** A "pseudo-Euclidean" distance, used in some TSPLIB instances. */
         private double attDistance()
-        {
+            {
             final double xd = from[0] - to[0];
             final double yd = from[1] - to[1];
             final double rft = Math.sqrt((xd*xd + yd*yd) / 10.0);
@@ -245,66 +245,66 @@ public class TSPGraph {
                 return tft + 1;
             else
                 return tft;
-        }
+            }
 
         /** A geographical distance based on latitude and longitude. */
         private double geoDistance()
-        {
+            {
             final double rrr = 6378.388;
             final double q1 = Math.cos(longitude(from) - longitude(to));
             final double q2 = Math.cos(latitude(from) - latitude(to));
             final double q3 = Math.cos(latitude(from) + latitude(to));
             return (int) (rrr * Math.acos(0.5 * ((1.0 + q1)*q2 - (1.0 - q1)*q3) ) + 1.0);
-        }
+            }
         
         @Override
         public void writeComponent(final EvolutionState state, final DataOutput output) throws IOException
-        {
+            {
             assert(output != null);
             output.writeInt(fromNode);
             output.writeInt(toNode);
             assert(repOK());
-        }
+            }
         
         @Override
         public TSPComponent readComponent(final EvolutionState state, final DataInput input) throws IOException
-        {
+            {
             assert(input != null);
             final int fromNode = input.readInt();
             final int toNode = input.readInt();
             assert(repOK());
             return new TSPComponent(fromNode, toNode);
-        }
+            }
         
         public final boolean repOK()
-        {
+            {
             return fromNode >= 0
-                    && fromNode < nodes.size()
-                    && toNode >= 0
-                    && toNode < nodes.size()
-                    && from != null
-                    && to != null
-                    && from.length == 2
-                    && to.length == 2;
-        }
+                && fromNode < nodes.size()
+                && toNode >= 0
+                && toNode < nodes.size()
+                && from != null
+                && to != null
+                && from.length == 2
+                && to.length == 2;
+            }
         
         @Override
         public String toString()
-        {
+            {
             return String.format("%s[from=%d, to=%d]", this.getClass().getSimpleName(), fromNode, toNode);
-        }
+            }
         
         @Override
         public boolean equals(final Object o)
-        {
+            {
             if (!(o instanceof TSPComponent))
                 return false;
             final TSPComponent ref = (TSPComponent)o;
             return from == ref.from
-                    && to == ref.to
-                    && Misc.doubleEquals(toNode, ref.toNode, 0.000001)
-                    && Misc.doubleEquals(fromNode, ref.fromNode, 0.000001);
-        }
+                && to == ref.to
+                && Misc.doubleEquals(toNode, ref.toNode, 0.000001)
+                && Misc.doubleEquals(fromNode, ref.fromNode, 0.000001);
+            }
 
         @Override
         public int hashCode() {
@@ -314,63 +314,63 @@ public class TSPGraph {
             hash = 11 * hash + Arrays.hashCode(this.from);
             hash = 11 * hash + Arrays.hashCode(this.to);
             return hash;
+            }
         }
-    }
 
     /** Latitude is encoded in DDD.MM format by the first element of a point,
      * where DDD is degrees and MM is minutes.
      */
     private static double latitude(final double[] p)
-    {
+        {
         assert(p != null);
         assert(p.length == 2);
         final double deg = Math.rint(p[0]);
         final double min = p[0] - deg;
         return Math.PI * (deg + 5.0 * min / 3.0) / 180.0;
-    }
+        }
 
     /** Longitude is encoded in DDD.MM format by the first element of a point,
      * where DDD is degrees and MM is minutes.
      */
     private static double longitude(final double[] p)
-    {
+        {
         assert(p != null);
         assert(p.length == 2);
         final double deg = Math.rint(p[1]);
         final double min = p[1] - deg;
         return Math.PI * (deg + 5.0 * min / 3.0) / 180.0;
-    }
+        }
     
     /** Representation invariant, used for verification.
      * 
      * @return true if the class is found to be in an erroneous state.
      */
     public final boolean repOK()
-    {
+        {
         return nodes != null
-                && nodes.size() == dimension
-                && !containsNullKey(nodes)
-                && !containsNullValue(nodes)
-                && !pointsInvalid(nodes.values());
-    }
+            && nodes.size() == dimension
+            && !containsNullKey(nodes)
+            && !containsNullValue(nodes)
+            && !pointsInvalid(nodes.values());
+        }
     
     private static boolean containsNullKey(final Map map)
-    {
+        {
         assert(map != null);
         for (Object o : map.keySet())
             if (o == null)
                 return true;
         return false;
-    }
+        }
     
     private static boolean containsNullValue(final Map map)
-    {
+        {
         assert(map != null);
         for (Object o : map.values())
             if (o == null)
                 return true;
         return false;
-    }
+        }
     
     private static boolean pointsInvalid(final Collection<double[]> points) {
         assert(points != null);
@@ -378,5 +378,5 @@ public class TSPGraph {
             if (a.length != 2 || Double.isNaN(a[0])|| Double.isInfinite(a[0]) || Double.isNaN(a[1]) || Double.isInfinite(a[1]))
                 return true;
         return false;
+        }
     }
-}

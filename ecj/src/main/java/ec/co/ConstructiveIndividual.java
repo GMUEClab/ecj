@@ -29,7 +29,7 @@ import java.util.Set;
  * @author Eric O. Scott
  */
 public class ConstructiveIndividual<T extends Component> extends Individual implements Iterable<T>
-{
+    {
     
     public static final String P_DEFAULTBASE = "constr-ind";
     private List<T> components = new ArrayList<T>();
@@ -76,7 +76,7 @@ public class ConstructiveIndividual<T extends Component> extends Individual impl
         }
     
     public void add(final EvolutionState state, final T component)
-    {
+        {
         assert(component != null);
         components.add(component);
         componentsSet.add(component);
@@ -161,10 +161,10 @@ public class ConstructiveIndividual<T extends Component> extends Individual impl
     public boolean repOK()
         {
         return P_DEFAULTBASE != null
-                && !P_DEFAULTBASE.isEmpty()
-                && components != null
-                && !Misc.containsNulls(components)
-                && componentsSet.size() == new HashSet<T>(components).size()
-                && componentsSet.equals(new HashSet<T>(components));
+            && !P_DEFAULTBASE.isEmpty()
+            && components != null
+            && !Misc.containsNulls(components)
+            && componentsSet.size() == new HashSet<T>(components).size()
+            && componentsSet.equals(new HashSet<T>(components));
         }
-}
+    }

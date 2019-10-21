@@ -95,4 +95,4 @@ public interface ConstructiveProblemForm {
      * @return An component selected arbitrarily from the problem domain
      */
     public abstract Component getArbitraryComponent(final EvolutionState state, final int thread);
-}
+    }

@@ -33,4 +33,4 @@ public interface PheromoneTable extends Setup {
      * @param value The value to set its concentration to
      */
     public abstract void set(final Component c, final double value);
-}
+    }

@@ -28,19 +28,19 @@ public class ProportionateComponentSelector implements ComponentSelector, Setup 
     private double beta;
     
     public double getAlpha()
-    {
+        {
         return alpha;
-    }
+        }
     
     public double getBeta()
-    {
+        {
         return beta;
-    }
+        }
     
     public ProportionateComponentSelector() { }
     
     public ProportionateComponentSelector(final double alpha, final double beta)
-    {
+        {
         if (!Double.isFinite(alpha))
             throw new IllegalArgumentException(String.format("%s: alpha is %f, but must be finite.", this.getClass().getSimpleName(), alpha));
         if (!Double.isFinite(beta))
@@ -48,7 +48,7 @@ public class ProportionateComponentSelector implements ComponentSelector, Setup 
         this.alpha = alpha;
         this.beta = beta;
         assert(repOK());
-    }
+        }
     
     @Override
     public void setup(final EvolutionState state, final Parameter base) {
@@ -57,7 +57,7 @@ public class ProportionateComponentSelector implements ComponentSelector, Setup 
         alpha = state.parameters.getDouble(base.push(P_ALPHA), null, 0);
         beta = state.parameters.getDouble(base.push(P_BETA), null, 0);
         assert(repOK());
-    }
+        }
 
     @Override
     public Component choose(final EvolutionState state, final List<Component> components, final PheromoneTable pheromones, final int thread) {
@@ -71,13 +71,13 @@ public class ProportionateComponentSelector implements ComponentSelector, Setup 
         double denominator = 0.0;
         final List<Double> scores = new ArrayList<Double>();
         for (final Component c : components)
-        {
+            {
             final double tau = pheromones.get(state, c, thread);
             final double eta = c.desirability();
             final double score = Math.pow(tau, alpha)*Math.pow(eta, beta);
             scores.add(score);
             denominator += score;
-        }
+            }
         assert(!Double.isInfinite(denominator));
         assert(!Double.isNaN(denominator));
         assert(denominator >= 0);
@@ -90,17 +90,17 @@ public class ProportionateComponentSelector implements ComponentSelector, Setup 
         assert(i < components.size());
         assert(repOK());
         return components.get(i);
-    }
+        }
     
     public final boolean repOK()
-    {
+        {
         return P_ALPHA != null
-                && !P_ALPHA.isEmpty()
-                && P_BETA != null
-                && !P_BETA.isEmpty()
-                && !Double.isInfinite(alpha)
-                && !Double.isNaN(alpha)
-                && !Double.isInfinite(beta)
-                && !Double.isNaN(beta);
+            && !P_ALPHA.isEmpty()
+            && P_BETA != null
+            && !P_BETA.isEmpty()
+            && !Double.isInfinite(alpha)
+            && !Double.isNaN(alpha)
+            && !Double.isInfinite(beta)
+            && !Double.isNaN(beta);
+        }
     }
-}

@@ -430,13 +430,13 @@ public class Slave
                     final MasterProblem storage = state.evaluator.masterproblem;
                     storage.receiveAdditionalData(state, dataIn);
                     storage.transferAdditionalData(state);
-                                
+                    
                     try
                         {
                         while (true)
                             {
                             EvolutionState newState = state;
-                        
+
                             if (runEvolve) 
                                 {
                                 // Construct and use a new EvolutionState.  This will be inefficient the first time around
@@ -557,8 +557,6 @@ public class Slave
         boolean[] updateFitness = new boolean[numInds];
         final Individual[] inds = new Individual[numInds];
         
-                        
-                        
         // Either evaluate all the individuals once and return them immediately
         // (we'll do so in a steady-state-ish fashion, firing off threads as soon as we read in individuals,
         // and returning them as soon as they come in, albeit in the proper order)

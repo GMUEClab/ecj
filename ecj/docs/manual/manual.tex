@@ -8295,7 +8295,7 @@ gp.fs.0.func.4.nc = nc1
 Also we're using the \class{MyProblem} and \class{MyData} classes defined in Section~\ref{definingtherepresentation} as our Problem.  Even though we're not using ADFs (see Section~\ref{ec.gp.ADF}), we need to define a few items here as well.
 
 \params{%
-\# Our Problem
+\# Our Problem\\
 eval.problem = ec.app.myapp.MyProblem\\
 eval.problem.data = ec.app.myapp.MyData\\
 gp.problem.stack = ec.gp.ADFStack\\
@@ -11392,21 +11392,23 @@ eval.masterproblem = ec.app.myapp.MyMasterProblem
 
 An instance of this MasterProblem subclass is used by the Master.  When a Slave shows up, the Master will call the method \method{sendAdditionalData(...)} on that instance to give you the chance to send data down the stream to the Slave before any evaluation occurs.  The Slave receives this data by calling the method \method{receiveAdditionalData(...)} on a dummy instance of this same subclass.  This dummy instance will not be used for any purpose except to handle the data reception. That method must store away the transferred data, typically as instance variable in your subclass which you have created for this purpose.  Finally, each time the Slave creates a new EvolutionState (and it may do so many times), it calls \method{transferAdditionalData(...)} on that dummy instance to give it a chance to modify and set up EvolutionState appropriately to reflect the data it had received from the Master.
 
+The default setting of MasterProblem is to just call \method{sendAdditionalData(...)}, \method{receiveAdditionalData(...)}, and method{transferAdditionalData(...)} on its subsidiary Problem class, so you can just override the Problem to implement things there if you like.
+
 \method{sendAdditionalData(...)} will be called once on the Master for each Slave that shows up. \method{receiveAdditionalData(...)} will only be called once on the Slave side.  \method{transferAdditionalData(...)} may be called multiple times on the Slave side, every time a new EvolutionState is loaded and set up.  It is entirely up to you to handle the protocol for sending and receiving this data: if you mess up (write more data than you read on the other side, say), it's undefined what'll happen. Probably something bad.
 
-\begin{methods}{ec.eval.MasterProblem}
+\begin{methods}{Additional ec.Problem}
 \mthd{public void sendAdditionalData(EvolutionState {\it state}, DataOutputStream {\it dataOut})}
 	Called from the SlaveMonitor's \method{accept()} method to optionally send additional data to the
 		Slave via the dataOut stream.  By default it does nothing. 
 \mthd{public void receiveAdditionalData(EvolutionState {\it state}, DataInputStream {\it dataIn})}
-	Called on a dummy MasterProblem by the Slave.  You should use this method to store away
+	Called on a dummy MasterProblem (and the Problem) by the Slave.  You should use this method to store away
 		received data via the dataIn stream for later transferring to the current EvolutionState via the
 		\method{transferAdditionalData(...)} method.  You should NOT expect this MasterProblem to be used for by the Slave
 		for evolution (though it might).  By default this method does nothing, which is the usual situation. 
 		The EvolutionState is provided solely for you to be able to output warnings and errors: do not rely
 		on it for any other purpose (including access of the random number generator or storing any data).
 \mthd{public void transferAdditionalData(EvolutionState {\it state})}
-	Called on a dummy MasterProblem by the Slave to transfer data previously loaded via 
+	Called on a dummy MasterProblem (and then Problem) by the Slave to transfer data previously loaded via 
 		\method{receiveAdditionalData(...)} to
 		a running EvolutionState at the beginning of evolution.  This method may be called multiple times if multiple
 		EvolutionStates are created. By default this method does nothing, which is the usual situation.  Unlike

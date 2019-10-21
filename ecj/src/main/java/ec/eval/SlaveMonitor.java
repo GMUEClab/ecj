@@ -223,6 +223,7 @@ public class SlaveMonitor
                 debug( Thread.currentThread().getName() + " The monitor is shutting down." );
                 }
             });
+        thread.setDaemon(true);
         thread.start();
         }
 

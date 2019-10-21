@@ -232,7 +232,7 @@ public abstract class Species implements Prototype
      */
     public void updateIndividual(final EvolutionState state, final Individual ind)
         {
-            // Do nothing by default
+        // Do nothing by default
         }
 
     /**
@@ -243,7 +243,7 @@ public abstract class Species implements Prototype
      */
     public void updateSubpopulation(final EvolutionState state, final Subpopulation subpop)
         {
-            // Do nothing by default
+        // Do nothing by default
         }
     }
 

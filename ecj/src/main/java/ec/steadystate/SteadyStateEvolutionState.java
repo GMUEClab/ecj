@@ -78,7 +78,7 @@ public class SteadyStateEvolutionState extends EvolutionState
      */
     public boolean emptyAtGenerationBoundary;
 
-        //int[] individualCount;
+    //int[] individualCount;
         
     /** Hash table to check for duplicate individuals */ 
     HashMap[] individualHash; 

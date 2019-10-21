@@ -27,21 +27,21 @@ public class TSPIndividual extends ConstructiveIndividual<TSPComponent> {
     private int lastNodeVisited = -1;
     
     public boolean visited(final int node)
-    {
+        {
         assert(node >= 0);
         assert(repOK());
         return visitedNodes.contains(node);
-    }
+        }
     
     public int getLastNodeVisited()
-    {
+        {
         assert(repOK());
         return lastNodeVisited;
-    }
+        }
     
     @Override
     public void add(final EvolutionState state, final TSPComponent component)
-    {
+        {
         super.add(state, component);
         assert(component != null);
         if (!(component instanceof TSPComponent))
@@ -64,30 +64,30 @@ public class TSPIndividual extends ConstructiveIndividual<TSPComponent> {
         visitedNodes.add(e.from());
         visitedNodes.add(e.to());
         assert(repOK());
-    }
+        }
     
     @Override
     public void readGenotype(final EvolutionState state, final DataInput dataInput) throws IOException
         {
-            visitedNodes = new HashSet<Integer>();
-            super.readGenotype(state, dataInput);
+        visitedNodes = new HashSet<Integer>();
+        super.readGenotype(state, dataInput);
         }
     
     @Override
     public Object clone()
-    {
+        {
         TSPIndividual myobj = (TSPIndividual) (super.clone());
         
         myobj.visitedNodes = new HashSet<Integer>(visitedNodes);
         
         assert(repOK());
         return myobj;
-    } 
+        } 
     
     @Override
     public boolean repOK()
-    {
+        {
         return super.repOK()
-                && visitedNodes != null;
+            && visitedNodes != null;
+        }
     }
-}

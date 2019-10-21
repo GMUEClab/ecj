@@ -35,13 +35,13 @@ public class ACSLocalUpdateRule implements UpdateRule {
 
     @Override
     public void setup(final EvolutionState state, final Parameter base)
-    {
+        {
         assert(state != null);
         assert(base != null);
         rho = state.parameters.getDouble(base.push(P_RHO), null, 0.0);
         minimumPheromone = state.parameters.getDouble(base.push(P_RHO), null, 0.0);
         assert(repOK());
-    }
+        }
 
     @Override
     public void updatePheromones(final EvolutionState state, final PheromoneTable pheromones, final List individuals) {
@@ -50,26 +50,26 @@ public class ACSLocalUpdateRule implements UpdateRule {
         assert(!individuals.isEmpty());
 
         for (final Object ind : individuals)
-        {
-            for (final Object oo : (ConstructiveIndividual)ind)
             {
+            for (final Object oo : (ConstructiveIndividual)ind)
+                {
                 assert(oo instanceof Component);
                 final Component c = (Component) oo;
 
                 final double oldPheromone = pheromones.get(state, c, 0); // Using thread 0 because we are in a single-threaded function
                 pheromones.set(c, (1-rho)*oldPheromone + rho*minimumPheromone);
+                }
             }
-        }
 
         assert(repOK());
-    }
+        }
 
     public final boolean repOK()
-    {
+        {
         return P_RHO != null
-                && !P_RHO.isEmpty()
-                && !Double.isInfinite(rho)
-                && !Double.isNaN(rho)
-                && rho >= 0.0;
+            && !P_RHO.isEmpty()
+            && !Double.isInfinite(rho)
+            && !Double.isNaN(rho)
+            && rho >= 0.0;
+        }
     }
-}

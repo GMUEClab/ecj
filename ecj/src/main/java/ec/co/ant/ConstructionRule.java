@@ -17,6 +17,6 @@ import ec.co.ConstructiveIndividual;
  * @author Eric O. Scott
  */
 public interface ConstructionRule extends Setup
-{
+    {
     public abstract ConstructiveIndividual constructSolution(EvolutionState state, ConstructiveIndividual ind, PheromoneTable pheromones, int thread);
-}
+    }

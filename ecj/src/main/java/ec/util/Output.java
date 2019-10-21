@@ -932,9 +932,9 @@ public class Output implements Serializable
         {
         // to do this, we're going to use reflection.  But here's the equivalent code:
         /*
-            com.jcraft.jzlib.DeflaterOutputStream stream = new com.jcraft.jzlib.DeflaterOutputStream(out);
-            stream.setSyncFlush(true);
-            return stream;
+          com.jcraft.jzlib.DeflaterOutputStream stream = new com.jcraft.jzlib.DeflaterOutputStream(out);
+          stream.setSyncFlush(true);
+          return stream;
         */
 
         try
@@ -945,7 +945,22 @@ public class Output implements Serializable
             return (OutputStream) outi;
             }
         // just in case of RuntimeExceptions
-        catch (Exception e) { return null; } // failed, probably doesn't have JZLib on the system
+        catch (Exception e) 
+            { 
+            try
+                {
+                Class outz = Class.forName("com.jcraft.jzlib.JZlib");
+                int Z_BEST_SPEED = outz.getField("Z_BEST_SPEED").getInt(null);
+                int Z_SYNC_FLUSH = outz.getField("Z_SYNC_FLUSH").getInt(null);
+                        
+                Class outc = Class.forName("com.jcraft.jzlib.ZOutputStream");
+                Object outi = outc.getConstructor(new Class[] { OutputStream.class, Integer.TYPE }).newInstance(new Object[] { out, Integer.valueOf(Z_BEST_SPEED) });
+                outc.getMethod("setFlushMode", new Class[] { Integer.TYPE }).invoke(outi, new Object[] { new Integer(Z_SYNC_FLUSH) });
+                return (OutputStream) outi;
+                }
+            catch (Exception e2)
+                { return null; } // failed, probably doesn't have JZLib on the system
+            }
         }
 
 
