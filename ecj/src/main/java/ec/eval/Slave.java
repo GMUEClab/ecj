@@ -408,6 +408,7 @@ public class Slave
                         slaveName = socket.getLocalAddress().toString() + "/" + slaveNum;
                         if (!silent) Output.initialMessage("No slave name specified.  Using: " + slaveName);
                         }
+                    Output.initialMessage("I am slave " + slaveName);
                                 
                     dataOut.writeUTF(slaveName);
                     dataOut.flush();
