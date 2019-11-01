@@ -163,7 +163,7 @@ public class Evolve
 
 
     /** Optionally prints the help message. */
-    public static void checkForHelp(String[] args) 
+    public static void checkForHelp(String[] args, String classname, boolean checkpoint) 
         {
         for(int x=0;x<args.length;x++)
             if (args[x].equals(A_HELP))
@@ -171,11 +171,11 @@ public class Evolve
                 Output.initialMessage(Version.message());
                 Output.initialMessage(
                     "Format:\n\n" + 
-                    "    java ec.Evolve -file FILE [-p PARAM=VALUE] [-p PARAM=VALUE] ...\n" +
-                    "    java ec.Evolve -from FILE [-p PARAM=VALUE] [-p PARAM=VALUE] ...\n" + 
-                    "    java ec.Evolve -from FILE -at CLASS [-p PARAM=VALUE] [-p PARAM=VALUE] ...\n" + 
-                    "    java ec.Evolve -checkpoint CHECKPOINT\n" + 
-                    "    java ec.Evolve -help\n\n" +
+                    "    java " + classname + " -file FILE [-p PARAM=VALUE] [-p PARAM=VALUE] ...\n" +
+                    "    java " + classname + " -from FILE [-p PARAM=VALUE] [-p PARAM=VALUE] ...\n" + 
+                    "    java " + classname + " -from FILE -at CLASS [-p PARAM=VALUE] [-p PARAM=VALUE] ...\n" + 
+                    "    java " + classname + " -checkpoint CHECKPOINT\n" + 
+                    "    java " + classname + " -help\n\n" +
                     "-help                   Shows this message and exits.\n\n" +
                     "-file FILE              Launches ECJ using the provided parameter FILE.\n\n" +
                     "-from FILE              Launches ECJ using the provided parameter FILE\n" + 
@@ -195,7 +195,8 @@ public class Evolve
                     "                        file, setting it to the value VALUE instead.  You\n" + 
                     "                        can override as many parameters as you like on\n" + 
                     "                        the command line.\n\n" +
-                    "-checkpoint CHECKPOINT  Launches ECJ from the provided CHECKPOINT file.\n"
+                    (checkpoint ? 
+                    	"-checkpoint CHECKPOINT  Launches ECJ from the provided CHECKPOINT file.\n" : "")
                     );
                 System.exit(1);
                 }
@@ -681,7 +682,7 @@ public class Evolve
         ParameterDatabase parameters;
         
         // should we print the help message and quit?
-        checkForHelp(args);
+        checkForHelp(args, "ec.Evolve", true);
                 
         // if we're loading from checkpoint, let's finish out the most recent job
         state = possiblyRestoreFromCheckpoint(args);

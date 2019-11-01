@@ -117,6 +117,12 @@ import ec.util.*;
  
 public class Slave 
     {
+    public final static String P_EVALNODELAY = "eval.no-delay";
+
+    public final static String P_EVALSENDBUFER = "eval.send-buffer";
+
+    public final static String P_EVALRECVBUFFER = "eval.recv-buffer";
+
     public final static String P_EVALSLAVENAME = "eval.slave.name";
         
     public final static String P_EVALMASTERHOST = "eval.master.host";
@@ -262,7 +268,7 @@ public class Slave
         silent = silent || parameters.getBoolean(new Parameter(P_MUZZLE), null, false);
 
                 
-        // 6. Open a server socket and listen for requests
+        // 6. Open a socket and listen for requests
         String slaveName = parameters.getString(
             new Parameter(P_EVALSLAVENAME),null);
                 
@@ -274,13 +280,18 @@ public class Slave
             new Parameter(P_EVALMASTERPORT),null, 0);
         if (masterPort == -1)
             Output.initialError("Master Port missing", new Parameter(P_EVALMASTERPORT));
-        boolean useCompression = parameters.getBoolean(new Parameter(P_EVALCOMPRESSION),null,false);
                 
         runTime = parameters.getInt(new Parameter(P_RUNTIME), null, 0); 
                 
         runEvolve = parameters.getBoolean(new Parameter(P_RUNEVOLVE),null,false); 
 
         oneShot = parameters.getBoolean(new Parameter(P_ONESHOT),null,true); 
+        
+        final int noDelay = parameters.exists(new Parameter(P_EVALNODELAY), null) ? 
+        	(parameters.getBoolean(new Parameter(P_EVALNODELAY), null, true) ? 1 : 0) : -1;
+
+        final int sendbuffer = parameters.getInt(new Parameter(P_EVALSENDBUFER), null, -1); 
+        final int recvbuffer = parameters.getInt(new Parameter(P_EVALRECVBUFFER), null, -1); 
         
         if (runEvolve && !returnIndividuals)
             {
@@ -332,8 +343,39 @@ public class Slave
 
                     try
                         {
+                        if (noDelay == 1)
+                        	{
+                        	socket.setTcpNoDelay(true);
+                        	if (!silent) 
+                        	Output.initialMessage("NoDelay -> ON");
+                        	}
+                        else if (noDelay == 0)
+                        	{
+                        	socket.setTcpNoDelay(false);
+                        	if (!silent) 
+                        	Output.initialMessage("NoDelay -> OFF");
+                        	}
+
+                        if (sendbuffer >= 0)
+                        	{
+                        	if (!silent) 
+                        	Output.initialMessage("SendBuffer -> " + sendbuffer + " was " + socket.getSendBufferSize());
+                        	socket.setSendBufferSize(sendbuffer);
+                        	}
+                        
+                        if (recvbuffer >= 0)
+                        	{
+                        	if (!silent) 
+                        	Output.initialMessage("RecvBuffer -> " + recvbuffer + " was " + socket.getReceiveBufferSize());
+                        	socket.setReceiveBufferSize(recvbuffer);
+                        	}
+                        	
                         InputStream tmpIn = socket.getInputStream();
                         OutputStream tmpOut = socket.getOutputStream();
+                        
+                        // The first thing we do is read a single byte telling us whether to use compression or nt
+                        boolean useCompression = (tmpIn.read() != 0);
+                        
                         if (useCompression)
                             {
                             tmpIn = Output.makeCompressingInputStream(tmpIn);
@@ -565,33 +607,39 @@ public class Slave
             ThreadPool.Worker[] threads = new ThreadPool.Worker[state.evalthreads];
             final SimpleProblemForm[] problems = new SimpleProblemForm[state.evalthreads];
             int[] indForThread = new int[state.evalthreads];
-                        
+           
+           	// build the problems
+           	for(int i = 0; i < problems.length; i++)
+           		{
+           		problems[i] = ((SimpleProblemForm)(state.evaluator.p_problem.clone()));
+           		}
+           		
+            int t = 0;              // thread index            
             try
                 {
-                int t = 0;              // thread index
-                        
-                // start up all the threads
                 for(int i = 0 ; i < numInds; i++)
                     {
                     // load individual
                     inds[i] = state.population.subpops.get(subpops[i]).species.newIndividual(state, dataIn);
                     updateFitness[i] = dataIn.readBoolean(); 
 
-                    // fire up evaluation thread on individual
+                    // get next thread index
                     if (t >= state.evalthreads) t = 0;       // we can only be here if evalthreads > numInds
+                    
+                    // Does a thread exist?  Wait for him and process
                     if (threads[t] != null)
                         {
                         pool.join(threads[t]);  // ran out of threads, wait for new ones
                         returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, indForThread[t]);  // return just that individual
                         }
-                    if (problems[t] == null) problems[t] = ((SimpleProblemForm)(state.evaluator.p_problem.clone()));
 
-                    final int j = i;
-                    final int s = t;
+					// Assign new thread to problem
+                    final int _i = i;
+                    final int _t = t;
                     indForThread[t] = i;
                     threads[t] = pool.start(new Runnable()
                         {
-                        public void run() { problems[s].evaluate( state, inds[j], subpops[j], 0 ); }
+                        public void run() { problems[_t].evaluate( state, inds[_i], subpops[_i], _t ); }
                         }, "Evaluation of individual " + i);
                     t++;
                     }
