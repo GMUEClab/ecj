@@ -5356,6 +5356,8 @@ evaluations = 10000
 
 ECJ will still treat a ``generation'' as \(p\) worth of individuals being evaluated.  Note that, unlike was the case for generational evolution, the number of evaluations does not have to be a multiple of \(p\): when \parameter{evaluations} number of individuals have been evaluated, the process terminates.  However, \parameter{evaluations}, if you set it, does have to be at least as big as the total initial population size.
 
+Normally in generational EC, ECJ will terminate when the number of generations has been reached.  In steady-state EC, ECJ will terminate when {\it either} the number of evaluations (if defined) {\it or} the number of generations (if defined) have been reached, whichever is sooner.
+
 
 Steady-State evolution in ECJ works in two stages:
 

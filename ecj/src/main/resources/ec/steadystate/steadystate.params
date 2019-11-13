@@ -10,7 +10,7 @@
 # ec.Evolve
 # ==============================
 
-# simple generational evolution
+# basic steady-state evolution
 state = 				ec.steadystate.SteadyStateEvolutionState
 
 # We can EITHER say to run for N evaluations of subpopulation 0
