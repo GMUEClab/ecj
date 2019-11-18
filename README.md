@@ -15,7 +15,7 @@ This is ECJ's repository, but [ECJ's official website](http://cs.gmu.edu/~eclab/
 For instructions on how to begin using the ECJ binary distribution and/or build the source package, take a look at the readme in the '[ecj/](ecj/)' subdirectory.
 
 Going forward, you may also want to avail yourself of
- * the extensive [ECJ Manual](https://cs.gmu.edu/~eclab/projects/ecj/docs/manual/manual.pdf), which explains most of ECJ's features and algorims in detail, with instructions on how to use them,
+ * the extensive [ECJ Manual](https://cs.gmu.edu/~eclab/projects/ecj/manual.pdf), which explains most of ECJ's features and algorims in detail, with instructions on how to use them,
  * the [ECJ tutorials](ecj/docs/tutorials),
  * and the built-in collectin of example applications (source code [here](ecj/src/main/java/ec/app), parameter files [here](ecj/src/main/resources/ec/app)).
 
