@@ -52,7 +52,7 @@ eval.masterproblem.job-size = 1
 # Compression requires the zlib library.
 # See the ECJ main webpage or http://www.jcraft.com/jzlib/
 
-eval.compression=true
+eval.compression=false
 
 
 # This defines the socket port that the master listens in

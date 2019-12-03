@@ -154,7 +154,7 @@ public class KozaFitness extends Fitness
         throws IOException
         {
         DecodeReturn d = Code.checkPreamble(FITNESS_PREAMBLE, state, reader);
-        
+
         // extract fitness
         Code.decode(d);
         if (d.type!=DecodeReturn.T_DOUBLE)

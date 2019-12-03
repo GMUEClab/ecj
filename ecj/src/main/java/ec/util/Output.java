@@ -914,13 +914,15 @@ public class Output implements Serializable
      * your system, this method will return null. */
     public static InputStream makeCompressingInputStream(InputStream in)
         {
-        // to do this, we're going to use reflection.  But here's the equivalent code:
+        // We're going to use reflection here, because we want to be able to compile even if users don't have JZlib on
+        // their system.  But here's the equivalent code:
         /*
           return new com.jcraft.jzlib.ZInputStream(in);
         */
         try
             {
-            return (InputStream)(Class.forName("com.jcraft.jzlib.ZInputStream").getConstructor(new Class[] { InputStream.class } ).newInstance(new Object[] { in }));
+            return (InputStream)(Class.forName("com.jcraft.jzlib.InflaterInputStream").getConstructor(new Class[] { InputStream.class } ).newInstance(new Object[] { in }));
+            //return (InputStream)(Class.forName("com.jcraft.jzlib.ZInputStream").getConstructor(new Class[] { InputStream.class } ).newInstance(new Object[] { in }));
             }
         // just in case of RuntimeExceptions
         catch (Exception e) { return null; }  // failed, probably doesn't have JZLib on the system
@@ -930,7 +932,8 @@ public class Output implements Serializable
      * your system, this method will return null. */
     public static OutputStream makeCompressingOutputStream(OutputStream out)
         {
-        // to do this, we're going to use reflection.  But here's the equivalent code:
+        // We're going to use reflection here, because we want to be able to compile even if users don't have JZlib on
+        // their system.  But here's the equivalent code:
         /*
           com.jcraft.jzlib.DeflaterOutputStream stream = new com.jcraft.jzlib.DeflaterOutputStream(out);
           stream.setSyncFlush(true);

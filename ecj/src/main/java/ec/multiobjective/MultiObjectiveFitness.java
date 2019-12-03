@@ -116,10 +116,10 @@ public class MultiObjectiveFitness extends Fitness
     public static final String P_NUMOBJECTIVES = "num-objectives";
 
     /** parameter for max fitness values */
-    public static final String P_MAXOBJECTIVES = "max";
+    public static final String P_maxObjective = "max";
 
     /** parameter for min fitness values */
-    public static final String P_MINOBJECTIVES = "min";
+    public static final String P_minObjective = "min";
 
     /** Is higher better? */
     public static final String P_MAXIMIZE = "maximize";
@@ -200,7 +200,7 @@ public class MultiObjectiveFitness extends Fitness
                 }
             else if (_f > maxObjective[i] || _f < minObjective[i])
                 {
-                state.output.warnOnce(String.format("%s: The value of objective #%d is outside the expected bounds [%f, %f].  Did you configure the '%s' and '%s' parameters correctly?", this.getClass().getSimpleName(), i, minObjective[i], maxObjective[i], P_MINOBJECTIVES, P_MAXOBJECTIVES));
+                state.output.warnOnce(String.format("%s: The value of objective #%d is outside the expected bounds [%f, %f].  Did you configure the '%s' and '%s' parameters correctly?", this.getClass().getSimpleName(), i, minObjective[i], maxObjective[i], P_minObjective, P_maxObjective));
                 }
             }
         objectives = newObjectives;
@@ -216,7 +216,10 @@ public class MultiObjectiveFitness extends Fitness
         MultiObjectiveFitness f = (MultiObjectiveFitness) (super.clone());
         f.objectives = (double[]) (objectives.clone()); // cloning an array
 
-        // note that we do NOT clone max and min fitness, or maximizing -- they're shared
+		// Sadly we have to clone the min/max objective values
+        f.maxObjective = (double[]) (maxObjective.clone()); // cloning an array
+        f.minObjective = (double[]) (minObjective.clone()); // cloning an array
+        f.maximize = (boolean[]) (maximize.clone()); // cloning an array
         return f;
         }
 
@@ -258,13 +261,13 @@ public class MultiObjectiveFitness extends Fitness
         for (int i = 0; i < numFitnesses; i++)
             {
             // load default globals
-            minObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_MINOBJECTIVES), def.push(P_MINOBJECTIVES), 0.0);
-            maxObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_MAXOBJECTIVES), def.push(P_MAXOBJECTIVES), 1.0);
+            minObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_minObjective), def.push(P_minObjective), 0.0);
+            maxObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_maxObjective), def.push(P_maxObjective), 1.0);
             maximize[i] = state.parameters.getBoolean(base.push(P_MAXIMIZE), def.push(P_MAXIMIZE), true);
 
             // load specifics if any
-            minObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_MINOBJECTIVES).push("" + i), def.push(P_MINOBJECTIVES).push("" + i), minObjective[i]);
-            maxObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_MAXOBJECTIVES).push("" + i), def.push(P_MAXOBJECTIVES).push("" + i), maxObjective[i]);
+            minObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_minObjective).push("" + i), def.push(P_minObjective).push("" + i), minObjective[i]);
+            maxObjective[i] = state.parameters.getDoubleWithDefault(base.push(P_maxObjective).push("" + i), def.push(P_maxObjective).push("" + i), maxObjective[i]);
             maximize[i] = state.parameters.getBoolean(base.push(P_MAXIMIZE).push("" + i), def.push(P_MAXIMIZE).push("" + i), maximize[i]);
             
             // test for validity
@@ -616,6 +619,12 @@ public class MultiObjectiveFitness extends Fitness
         dataOutput.writeInt(objectives.length);
         for (int x = 0; x < objectives.length; x++)
             dataOutput.writeDouble(objectives[x]);
+        for (int x = 0; x < objectives.length; x++)
+            dataOutput.writeDouble(maxObjective[x]);
+        for (int x = 0; x < objectives.length; x++)
+            dataOutput.writeDouble(minObjective[x]);
+        for (int x = 0; x < objectives.length; x++)
+            dataOutput.writeBoolean(maximize[x]);
         writeTrials(state, dataOutput);
         }
 
@@ -623,9 +632,20 @@ public class MultiObjectiveFitness extends Fitness
         {
         int len = dataInput.readInt();
         if (objectives == null || objectives.length != len)
+            {
             objectives = new double[len];
+            maxObjective = new double[len];
+            minObjective = new double[len];
+            maximize = new boolean[len];
+            }
         for (int x = 0; x < objectives.length; x++)
             objectives[x] = dataInput.readDouble();
+        for (int x = 0; x < objectives.length; x++)
+            maxObjective[x] = dataInput.readDouble();
+        for (int x = 0; x < objectives.length; x++)
+            minObjective[x] = dataInput.readDouble();
+        for (int x = 0; x < objectives.length; x++)
+            maximize[x] = dataInput.readBoolean();
         readTrials(state, dataInput);
         }
 
