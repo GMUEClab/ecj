@@ -115,10 +115,10 @@ public class GlobalUpdateRuleTest {
 
         final List<Component> pComponents = problem.getAllComponents();
         assertEquals(0.000001, pheromones.get(state, pComponents.get(0), 0), 0.00000001);
-        assertEquals(0.0006006999999999999, pheromones.get(state, pComponents.get(1), 0), 0.00000001);
-        assertEquals(0.0006006999999999999, pheromones.get(state, pComponents.get(2), 0), 0.00000001);
-        assertEquals(0.0006006999999999999, pheromones.get(state, pComponents.get(3), 0), 0.00000001);
-        assertEquals(0.0006006999999999999, pheromones.get(state, pComponents.get(4), 0), 0.00000001);
+        assertEquals(300.0000007, pheromones.get(state, pComponents.get(1), 0), 0.00000001);
+        assertEquals(300.0000007, pheromones.get(state, pComponents.get(2), 0), 0.00000001);
+        assertEquals(300.0000007, pheromones.get(state, pComponents.get(3), 0), 0.00000001);
+        assertEquals(300.0000007, pheromones.get(state, pComponents.get(4), 0), 0.00000001);
         assertEquals(0.000001, pheromones.get(state, pComponents.get(5), 0), 0.00000001);
         assertEquals(0.000001, pheromones.get(state, pComponents.get(6), 0), 0.00000001);
         assertEquals(0.000001, pheromones.get(state, pComponents.get(7), 0), 0.00000001);
