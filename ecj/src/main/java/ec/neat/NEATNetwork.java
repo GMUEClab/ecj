@@ -243,7 +243,7 @@ public class NEATNetwork implements Prototype
         for (int i = 0; i < inputs.size(); ++i)
             {
             // only load values into SENSORS (not BIASes)
-            if (inputs.get(i).type == NodeType.SENSOR)
+            if (inputs.get(i).type == NodeType.SENSOR && inputs.get(i).geneticNodeLabel != NodePlace.BIAS)
                 {
                 inputs.get(i).sensorLoad(vals[counter++]);
                 }
