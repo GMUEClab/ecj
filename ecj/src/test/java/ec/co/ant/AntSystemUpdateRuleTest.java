@@ -128,16 +128,16 @@ public class AntSystemUpdateRuleTest
         instance.updatePheromones(state, pheromones, subpop.individuals);
 
         final List<Component> pComponents = problem.getAllComponents();
-        assertEquals(pheromones.get(state, pComponents.get(0), 0), 0.0014290714285714286, 0.00000001);
-        assertEquals(pheromones.get(state, pComponents.get(1), 0), 0.0055005, 0.00000001);
-        assertEquals(pheromones.get(state, pComponents.get(2), 0), 0.0030005, 0.00000001);
-        assertEquals(pheromones.get(state, pComponents.get(3), 0), 0.005679071428571429, 0.00000001);
-        assertEquals(pheromones.get(state, pComponents.get(4), 0), 0.0030005, 0.00000001);
-        assertEquals(pheromones.get(state, pComponents.get(5), 0), 0.0000005, 0.00000001);
-        assertEquals(pheromones.get(state, pComponents.get(6), 0), 0.0014290714285714286, 0.00000001);
-        assertEquals(pheromones.get(state, pComponents.get(7), 0), 0.0000005, 0.00000001);
-        assertEquals(pheromones.get(state, pComponents.get(8), 0), 0.0014290714285714286, 0.00000001);
-        assertEquals(pheromones.get(state, pComponents.get(9), 0), 0.0012505, 0.00000001);
+        assertEquals(700.0000005, pheromones.get(state, pComponents.get(0), 0), 0.00000001);
+        assertEquals(3100.0000005, pheromones.get(state, pComponents.get(1), 0), 0.00000001);
+        assertEquals(1500.0000005, pheromones.get(state, pComponents.get(2), 0), 0.00000001);
+        assertEquals(3000.0000005, pheromones.get(state, pComponents.get(3), 0), 0.00000001);
+        assertEquals(1500.0000005, pheromones.get(state, pComponents.get(4), 0), 0.00000001);
+        assertEquals(0.0000005, pheromones.get(state, pComponents.get(5), 0), 0.00000001);
+        assertEquals(700.0000005, pheromones.get(state, pComponents.get(6), 0), 0.00000001);
+        assertEquals(0.0000005, pheromones.get(state, pComponents.get(7), 0), 0.00000001);
+        assertEquals(700.0000005, pheromones.get(state, pComponents.get(8), 0), 0.00000001);
+        assertEquals(800.0000005, pheromones.get(state, pComponents.get(9), 0), 0.00000001);
     }
 
     /** Applying ANT_DENSITY once to a set of ConstructiveIndividuals whose fitness
@@ -195,14 +195,14 @@ public class AntSystemUpdateRuleTest
 
         final List<Component> pComponents = problem.getAllComponents();
         assertEquals(pheromones.get(state, pComponents.get(0), 0), 1.0000005, 0.00000001);
-        assertEquals(pheromones.get(state, pComponents.get(1), 0), 2.0000005, 0.00000001);
-        assertEquals(pheromones.get(state, pComponents.get(2), 0), 0.6666671666666666, 0.00000001);
-        assertEquals(pheromones.get(state, pComponents.get(3), 0), 1.0000005, 0.00000001);
-        assertEquals(pheromones.get(state, pComponents.get(4), 0), 0.4000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(1), 0), 8.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(2), 0), 6.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(3), 0), 16.0000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(4), 0), 10.0000005, 0.00000001);
         assertEquals(pheromones.get(state, pComponents.get(5), 0), 0.0000005, 0.00000001);
-        assertEquals(pheromones.get(state, pComponents.get(6), 0), 0.2500005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(6), 0), 4.0000005, 0.00000001);
         assertEquals(pheromones.get(state, pComponents.get(7), 0), 0.0000005, 0.00000001);
-        assertEquals(pheromones.get(state, pComponents.get(8), 0), 0.5000005, 0.00000001);
+        assertEquals(pheromones.get(state, pComponents.get(8), 0), 2.0000005, 0.00000001);
         assertEquals(pheromones.get(state, pComponents.get(9), 0), 1.0000005, 0.00000001);
     }
 
