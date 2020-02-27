@@ -27,6 +27,7 @@ import java.util.*;
 
 public class SPEA2Breeder extends SimpleBreeder
     {
+    private static final long serialVersionUID = 1;
     public final static String P_K = "k";
     public final static String P_NORMALIZE = "normalize-fitnesses";
     

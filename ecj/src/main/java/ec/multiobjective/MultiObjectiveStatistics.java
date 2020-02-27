@@ -48,7 +48,9 @@ import java.io.*;
  */
 
 public class MultiObjectiveStatistics extends SimpleStatistics
-    {   
+    {
+    private static final long serialVersionUID = 1;
+
     /** front file parameter */
     public static final String P_PARETO_FRONT_FILE = "front";
     public static final String P_SILENT_FRONT_FILE = "silent.front";

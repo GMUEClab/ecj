@@ -30,6 +30,8 @@ import ec.*;
 
 public class SPEA2MultiObjectiveFitness extends MultiObjectiveFitness
     {
+    private static final long serialVersionUID = 1;
+
     public static final String SPEA2_FITNESS_PREAMBLE = "Fitness: ";
     public static final String SPEA2_STRENGTH_PREAMBLE = "Strength: ";
     public static final String SPEA2_DISTANCE_PREAMBLE = "Distance: ";

@@ -9,7 +9,6 @@ package ec.multiobjective.nsga3;
 
 import ec.*;
 import ec.util.*;
-import ec.simple.*;
 import java.util.*;
 import ec.multiobjective.*;
 import ec.multiobjective.nsga2.*;
@@ -34,6 +33,8 @@ import ec.multiobjective.nsga2.*;
 
 public class NSGA3Breeder extends NSGA2Breeder
     {
+    private static final long serialVersionUID = 1;
+    
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state, base);

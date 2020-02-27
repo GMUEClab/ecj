@@ -24,11 +24,7 @@
 package ec.multiobjective.nsga3;
 
 import ec.*;
-import ec.util.*;
-import ec.simple.*;
 import java.util.*;
-import ec.multiobjective.*;
-import ec.multiobjective.nsga3.NSGA3MultiObjectiveFitness;
 
 /*
   SelectorTools is a class designed to get a list of the individuals selected from the last front called
@@ -45,9 +41,6 @@ import ec.multiobjective.nsga3.NSGA3MultiObjectiveFitness;
   The jMetal git implementation:
   https://github.com/jMetal/jMetal/blob/master/jmetal-algorithm/src/main/java/org/uma/jmetal/algorithm/multiobjective/nsgaiii/util/EnvironmentalSelection.java
 */
-
-import java.util.*;
-
 public class SelectorTools
     {
     List<ArrayList<Individual>> fronts;

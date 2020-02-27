@@ -32,6 +32,8 @@ import ec.multiobjective.*;
 
 public class NSGA2Breeder extends SimpleBreeder
     {
+    private static final long serialVersionUID = 1;
+
     /** We use a state variable to make sure that the nextSubpopulationSize() method
      * is only called at the appropriate time.
      */
@@ -87,7 +89,7 @@ public class NSGA2Breeder extends SimpleBreeder
         
         for(int i = 0; i < newpop.subpops.size(); i++)
             {
-            ArrayList list = buildArchive(state, i);
+            ArrayList<Individual> list = buildArchive(state, i);
             numElites[i] = list.size();
             newpop.subpops.get(i).individuals.addAll(list);
             }
@@ -124,7 +126,7 @@ public class NSGA2Breeder extends SimpleBreeder
         }
     
     /** Build the auxiliary fitness data and reduce the subpopulation to just the archive, which is returned. */
-    ArrayList<Individual> buildArchive(final EvolutionState state, int subpop)
+    public ArrayList<Individual> buildArchive(final EvolutionState state, int subpop)
         {
         ArrayList<ArrayList<Individual>> ranks = assignFrontRanks(state.population.subpops.get(subpop));
         

@@ -6,8 +6,6 @@
 
 
 package ec.es;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import ec.*;
 
@@ -32,6 +30,8 @@ import ec.*;
 
 public class MuPlusLambdaBreeder extends MuCommaLambdaBreeder
     {
+    private static final long serialVersionUID = 1;
+    
     public int maximumMuLambdaDivisor() { return 1; }
  
     /** Sets all subpopulations in pop to the expected mu+lambda size.  Does not fill new slots with individuals. */

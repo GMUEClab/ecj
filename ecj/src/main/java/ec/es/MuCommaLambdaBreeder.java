@@ -7,7 +7,6 @@
 
 package ec.es;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import ec.*;
 import ec.util.*;
@@ -72,6 +71,8 @@ import ec.util.*;
 
 public class MuCommaLambdaBreeder extends Breeder
     {    
+    private static final long serialVersionUID = 1;
+    
     public static final String P_MU = "mu";
     public static final String P_MU_FRACTION = "mu-fraction";
     public static final String P_LAMBDA = "lambda";

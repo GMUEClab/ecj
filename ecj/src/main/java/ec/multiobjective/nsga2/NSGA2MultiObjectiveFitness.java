@@ -29,6 +29,8 @@ import ec.Fitness;
 
 public class NSGA2MultiObjectiveFitness extends MultiObjectiveFitness
     {
+    private static final long serialVersionUID = 1;
+    
     public static final String NSGA2_RANK_PREAMBLE = "Rank: ";
     public static final String NSGA2_SPARSITY_PREAMBLE = "Sparsity: ";
 

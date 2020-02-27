@@ -109,6 +109,8 @@ import ec.util.*;
 
 public class MultiObjectiveFitness extends Fitness
     {
+    private static final long serialVersionUID = 1;
+
     public static final String MULTI_FITNESS_POSTAMBLE = "[";
     public static final String FITNESS_POSTAMBLE = "]";
 

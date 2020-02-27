@@ -37,6 +37,8 @@ import java.util.*;
 
 public class NSGA3MultiObjectiveFitness extends NSGA2MultiObjectiveFitness
     {
+    private static final long serialVersionUID = 1;
+
     // This is used in NSGA-3
     public ArrayList<Double> normalizedFitness;
         
@@ -87,7 +89,6 @@ public class NSGA3MultiObjectiveFitness extends NSGA2MultiObjectiveFitness
 
     public boolean equivalentTo(Fitness _fitness)
         {
-        NSGA3MultiObjectiveFitness other = (NSGA3MultiObjectiveFitness) _fitness;
         return (rank == ((NSGA3MultiObjectiveFitness) _fitness).rank);
         }
 
@@ -99,7 +100,6 @@ public class NSGA3MultiObjectiveFitness extends NSGA2MultiObjectiveFitness
     // I think this selection needs to be redone? Im not sure
     public boolean betterThan(Fitness _fitness)
         {
-        NSGA3MultiObjectiveFitness other = (NSGA3MultiObjectiveFitness) _fitness;
         // Rank should always be minimized.
         return (rank < ((NSGA3MultiObjectiveFitness) _fitness).rank);
         }

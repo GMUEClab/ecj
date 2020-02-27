@@ -43,6 +43,8 @@ import java.util.*;
 
 public class ESSelection extends SelectionMethod 
     {
+    private static final long serialVersionUID = 1;
+    
     public static final String P_ESSELECT = "select";
 
     public Parameter defaultBase()

@@ -25,6 +25,8 @@ import java.util.Arrays;
  */
 public class HypervolumeStatistics extends SimpleStatistics
     {
+    private static final long serialVersionUID = 1;
+    
     public final static String P_REFERENCE_POINT = "reference-point";
     private double[] referencePoint;
     

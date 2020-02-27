@@ -24,12 +24,11 @@
 package ec.multiobjective.nsga3;
 
 import ec.*;
-import ec.util.*;
-import ec.simple.*;
+
+import java.io.Serializable;
 import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
-import ec.multiobjective.*;
 
 /*
   The reference point object is used in NSGA-3 as a way of finding the last set of children from front L for the new population.
@@ -40,8 +39,9 @@ import ec.multiobjective.*;
   "https://github.com/jMetal/jMetal/blob/master/jmetal-algorithm/src/main/java/org/uma/jmetal/algorithm/multiobjective/nsgaiii/util/ReferencePoint.java"
 */
 
-public class ReferencePoint 
+public class ReferencePoint implements Serializable
     {
+    private static final long serialVersionUID = 1;
 
     ArrayList<Entry<Double, Individual>> associates;
     int associations;
@@ -61,7 +61,7 @@ public class ReferencePoint
         position = new ArrayList<Double>(point.size());
         for (Double d : point) 
             {
-            position.add(new Double(d));
+            position.add(d);
             }
         associations = 0;
         associates = new ArrayList<Entry<Double, Individual>>();
