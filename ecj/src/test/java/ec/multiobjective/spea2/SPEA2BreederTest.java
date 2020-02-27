@@ -54,8 +54,8 @@ public class SPEA2BreederTest
         //state.parameters.set(new Parameter(Initializer.P_POP).push(Population.P_SUBPOP).push("0").push(Subpopulation.P_SUBPOPSIZE), "20");
         state.parameters.set(BASE.push(SPEA2Breeder.P_ELITE).push("0"), "10");
         state.parameters.set(FITNESS_BASE.push(MultiObjectiveFitness.P_NUMOBJECTIVES), "2");
-        state.parameters.set(FITNESS_BASE.push(MultiObjectiveFitness.P_MAXOBJECTIVES).push("0"), "100");
-        state.parameters.set(FITNESS_BASE.push(MultiObjectiveFitness.P_MAXOBJECTIVES).push("1"), "0.5");
+        state.parameters.set(FITNESS_BASE.push(MultiObjectiveFitness.P_MAXOBJECTIVE).push("0"), "100");
+        state.parameters.set(FITNESS_BASE.push(MultiObjectiveFitness.P_MAXOBJECTIVE).push("1"), "0.5");
         state.random = new MersenneTwisterFast[] { new MersenneTwisterFast() }; // PRNG is used for an internal algorithm, but the result is deterministic.
         p_fitness = new SPEA2MultiObjectiveFitness();
         p_fitness.setup(state, FITNESS_BASE);

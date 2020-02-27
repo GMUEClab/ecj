@@ -48,8 +48,8 @@ public class NSGA2BreederTest
         state.parameters = new ParameterDatabase();
         state.parameters.set(new Parameter(Initializer.P_POP).push(Population.P_SIZE), "1");
         state.parameters.set(FITNESS_BASE.push(MultiObjectiveFitness.P_NUMOBJECTIVES), "2");
-        state.parameters.set(FITNESS_BASE.push(MultiObjectiveFitness.P_MAXOBJECTIVES).push("0"), "100");
-        state.parameters.set(FITNESS_BASE.push(MultiObjectiveFitness.P_MAXOBJECTIVES).push("1"), "0.5");
+        state.parameters.set(FITNESS_BASE.push(MultiObjectiveFitness.P_MAXOBJECTIVE).push("0"), "100");
+        state.parameters.set(FITNESS_BASE.push(MultiObjectiveFitness.P_MAXOBJECTIVE).push("1"), "0.5");
         p_fitness = new NSGA2MultiObjectiveFitness();
         p_fitness.setup(state, FITNESS_BASE);
         }
@@ -174,8 +174,8 @@ public class NSGA2BreederTest
         // If we change the bounds of the objectives, then it changes the sparsity
         // calculation (because the objective values are now normalized differently,
         // and the cuboids have different relative sizes.
-        state.parameters.set(FITNESS_BASE.push(MultiObjectiveFitness.P_MAXOBJECTIVES).push("0"), "200");
-        state.parameters.set(FITNESS_BASE.push(MultiObjectiveFitness.P_MAXOBJECTIVES).push("1"), "1.0");
+        state.parameters.set(FITNESS_BASE.push(MultiObjectiveFitness.P_MAXOBJECTIVE).push("0"), "200");
+        state.parameters.set(FITNESS_BASE.push(MultiObjectiveFitness.P_MAXOBJECTIVE).push("1"), "1.0");
         final double[] expectedRank3Sparsities = new double[] { Double.POSITIVE_INFINITY, 0.25, 0.165, 0.2, 0.28, Double.POSITIVE_INFINITY };
         testSparisities(expectedRank3Sparsities);
         }
