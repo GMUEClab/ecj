@@ -64,6 +64,8 @@ import ec.*;
 
 public class AnnealedSelection extends SelectionMethod 
     {
+    private static final long serialVersionUID = 1;
+
     /** Default base */
     public static final String P_ANNEALED = "annealed";
     public static final String P_CACHE = "cache";

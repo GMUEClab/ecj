@@ -66,6 +66,8 @@ import ec.util.*;
 
 public class GreedyOverselection extends SelectionMethod
     {
+    private static final long serialVersionUID = 1;
+
     public double[] sortedFitOver;
     public double[] sortedFitUnder;
     /** Sorted population -- since I *have* to use an int-sized

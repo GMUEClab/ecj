@@ -59,6 +59,8 @@ import ec.*;
 
 public class BoltzmannSelection extends FitProportionateSelection
     {
+    private static final long serialVersionUID = 1;
+    
     /** Default base */
     public static final String P_BOLTZMANN = "boltzmann";
                 

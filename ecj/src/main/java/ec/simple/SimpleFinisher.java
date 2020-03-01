@@ -28,6 +28,7 @@ import ec.util.Parameter;
 
 public class SimpleFinisher extends Finisher
     {
+    private static final long serialVersionUID = 1;
 
     public void setup(final EvolutionState state, final Parameter base) { }
 

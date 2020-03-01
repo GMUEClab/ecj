@@ -9,9 +9,6 @@ package ec.select;
 import ec.*;
 import ec.util.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 /* 
  * MultiSelection.java
  * 

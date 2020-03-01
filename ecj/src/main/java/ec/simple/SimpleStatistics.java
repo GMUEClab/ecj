@@ -68,6 +68,8 @@ import java.io.File;
 
 public class SimpleStatistics extends Statistics implements SteadyStateStatisticsForm //, ec.eval.ProvidesBestSoFar
     {
+    private static final long serialVersionUID = 1;
+
     public Individual[] getBestSoFar() { return best_of_run; }
 
     /** log file parameter */

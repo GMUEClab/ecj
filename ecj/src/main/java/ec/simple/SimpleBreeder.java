@@ -60,6 +60,8 @@ import java.util.*;
 
 public class SimpleBreeder extends Breeder
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_ELITE = "elite";
     public static final String P_ELITE_FRAC = "elite-fraction";
     public static final String P_REEVALUATE_ELITES = "reevaluate-elites";
@@ -77,7 +79,7 @@ public class SimpleBreeder extends Breeder
     // This is a DOUBLE ARRAY of ARRAYLISTS of <INDIVIDUALS>
     // Individuals are stored here by the breed pop chunk methods, and afterwards
     // we coalesce them into the new population. 
-    public ArrayList newIndividuals[/*subpop*/][/*thread*/];
+    public ArrayList<Individual> newIndividuals[/*subpop*/][/*thread*/];
         
     public static final int NOT_SET = -1;
     

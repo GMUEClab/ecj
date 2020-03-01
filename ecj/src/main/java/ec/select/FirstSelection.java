@@ -36,6 +36,8 @@ import java.util.HashMap;
 
 public class FirstSelection extends SelectionMethod implements SteadyStateBSourceForm
     {
+    private static final long serialVersionUID = 1;
+    
     /** default base */
     public static final String P_FIRST = "first";
 

@@ -43,6 +43,8 @@ import ec.util.*;
  */
 public class Spatial1DSubpopulation extends Subpopulation implements Space
     {
+    private static final long serialVersionUID = 1;
+    
     /**
        This parameter stipulates whether the world is toroidal or not.
        If missing, its default value is true.

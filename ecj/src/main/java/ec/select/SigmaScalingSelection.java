@@ -54,6 +54,8 @@ import ec.*;
 
 public class SigmaScalingSelection extends FitProportionateSelection
     {
+    private static final long serialVersionUID = 1;
+
     /** Default base */
     public static final String P_SIGMA_SCALING = "sigma-scaling";
                 

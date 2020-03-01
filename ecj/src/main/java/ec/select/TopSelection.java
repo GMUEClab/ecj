@@ -45,6 +45,8 @@ import ec.*;
 
 public class TopSelection extends SelectionMethod 
     {
+    private static final long serialVersionUID = 1;
+
     /** Default base */
     public static final String P_TOP = "top";
     public static final String P_CACHE = "cache";

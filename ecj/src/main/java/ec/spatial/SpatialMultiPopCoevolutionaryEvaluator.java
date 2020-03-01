@@ -27,6 +27,8 @@ import ec.coevolve.*;
 
 public class SpatialMultiPopCoevolutionaryEvaluator extends MultiPopCoevolutionaryEvaluator
     {
+    private static final long serialVersionUID = 1;
+    
     protected Individual produce(SelectionMethod method, int subpopulation, int individual, EvolutionState state, int thread)
         {
         if (!(state.population.subpops.get(subpopulation) instanceof Space))

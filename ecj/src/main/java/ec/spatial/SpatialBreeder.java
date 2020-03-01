@@ -38,6 +38,8 @@ import java.util.*;
 
 public class SpatialBreeder extends SimpleBreeder
     {
+    private static final long serialVersionUID = 1;
+    
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state, base);

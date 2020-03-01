@@ -40,6 +40,8 @@ import ec.util.Checkpoint;
 
 public class SimpleEvolutionState extends EvolutionState
     {
+    private static final long serialVersionUID = 1;
+
     public void startFresh() 
         {
         output.message("Setting up");

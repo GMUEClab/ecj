@@ -15,6 +15,8 @@ import ec.*;
 
 public class QueueIndividual implements java.io.Serializable
     { 
+    private static final long serialVersionUID = 1;
+    
     public Individual ind;
     public int subpop; 
     public  QueueIndividual(Individual i, int s)

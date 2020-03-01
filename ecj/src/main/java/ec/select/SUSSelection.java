@@ -70,6 +70,8 @@ import ec.*;
 
 public class SUSSelection extends SelectionMethod
     {
+    private static final long serialVersionUID = 1;
+    
     /** Default base */
     public static final String P_SUS = "sus";
     public static final String P_SHUFFLE = "shuffle";

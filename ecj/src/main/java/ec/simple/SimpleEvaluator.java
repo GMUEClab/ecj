@@ -34,6 +34,8 @@ import ec.util.*;
 
 public class SimpleEvaluator extends Evaluator
     {
+    private static final long serialVersionUID = 1;
+    
     public static final String P_CLONE_PROBLEM = "clone-problem";
     public static final String P_NUM_TESTS = "num-tests";
     public static final String P_MERGE = "merge";

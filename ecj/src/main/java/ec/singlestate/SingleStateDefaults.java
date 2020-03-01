@@ -6,7 +6,6 @@
 
 package ec.singlestate;
 
-import ec.simple.*;
 import ec.util.Parameter;
 import ec.*;
 

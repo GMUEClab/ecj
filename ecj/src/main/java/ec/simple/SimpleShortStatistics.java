@@ -86,6 +86,8 @@ import ec.util.*;
 
 public class SimpleShortStatistics extends Statistics
     {
+    private static final long serialVersionUID = 1;
+    
     public static final String P_STATISTICS_MODULUS = "modulus";
     public static final String P_DELIMITER = "delimiter";
     public static final String P_COMPRESS = "gzip";
@@ -275,8 +277,6 @@ public class SimpleShortStatistics extends Statistics
 
         // gather timings
         if (output && doTime) {
-            Runtime r = Runtime.getRuntime();
-            long curU = r.totalMemory() - r.freeMemory();
             state.output.print(delimiter + (System.currentTimeMillis() - lastTime), statisticslog);
             }
 

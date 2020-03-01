@@ -53,6 +53,8 @@ import ec.select.TournamentSelection;
  */
 public class SpatialTournamentSelection extends TournamentSelection
     {
+    private static final long serialVersionUID = 1;
+    
     /**
        The size of the neighborhood from where parents are selected.  Small neighborhood sizes
        enforce a local selection pressure, while larger values for this parameters allow further-away

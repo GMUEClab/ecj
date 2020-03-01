@@ -62,6 +62,8 @@ import ec.*;
 
 public class BestSelection extends SelectionMethod 
     {
+    private static final long serialVersionUID = 1;
+    
     /** Default base */
     public static final String P_BEST = "best";
     

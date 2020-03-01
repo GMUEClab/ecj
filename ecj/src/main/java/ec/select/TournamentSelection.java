@@ -65,6 +65,8 @@ import ec.steadystate.*;
 
 public class TournamentSelection extends SelectionMethod implements SteadyStateBSourceForm
     {
+    private static final long serialVersionUID = 1;
+
     /** default base */
     public static final String P_TOURNAMENT = "tournament";
 

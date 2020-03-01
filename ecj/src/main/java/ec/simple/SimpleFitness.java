@@ -39,6 +39,8 @@ import java.io.*;
 
 public class SimpleFitness extends Fitness
     {
+    private static final long serialVersionUID = 1;
+    
     private double fitness;
     protected boolean isIdeal;
 

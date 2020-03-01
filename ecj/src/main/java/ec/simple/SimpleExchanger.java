@@ -34,6 +34,8 @@ import ec.steadystate.*;
 
 public final class SimpleExchanger extends Exchanger implements SteadyStateExchangerForm
     {
+    private static final long serialVersionUID = 1;
+
     public void setup(final EvolutionState state, final Parameter base) { }
 
     /** Doesn't do anything. */

@@ -46,7 +46,9 @@ import ec.eval.MasterProblem;
 
 public class SteadyStateEvaluator extends SimpleEvaluator
     {
-    LinkedList queue = new LinkedList();
+    private static final long serialVersionUID = 1;
+
+    LinkedList<QueueIndividual> queue = new LinkedList<>();
     
     /** Holds the subpopulation currently being evaluated.  */ 
     int subpopulationBeingEvaluated = -1;

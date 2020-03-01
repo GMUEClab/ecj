@@ -9,7 +9,6 @@ package ec.steadystate;
 import ec.*;
 import ec.util.Parameter;
 import ec.util.Checkpoint;
-//import ec.eval.MasterProblem;
 import java.util.*; 
 
 /* 
@@ -60,6 +59,8 @@ import java.util.*;
 
 public class SteadyStateEvolutionState extends EvolutionState
     {
+    private static final long serialVersionUID = 1;
+    
     public static final String P_REPLACEMENT_PROBABILITY = "replacement-probability";
     public static final String P_EMPTY_AT_GEN = "empty-at-generation-boundary";
         

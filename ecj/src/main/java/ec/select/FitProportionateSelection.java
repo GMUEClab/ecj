@@ -42,6 +42,8 @@ import ec.*;
 
 public class FitProportionateSelection extends SelectionMethod
     {
+    private static final long serialVersionUID = 1;
+
     /** Default base */
     public static final String P_FITNESSPROPORTIONATE = "fitness-proportionate";
     /** Normalized, totalized fitnesses for the population */

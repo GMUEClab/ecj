@@ -11,6 +11,8 @@ import ec.util.*;
 
 public class SingleStateEvolutionState extends EvolutionState
     {
+    private static final long serialVersionUID = 1;
+    
     /** In how many iterations do we collect statistics */
     public int statisticsModulo = 1;
     

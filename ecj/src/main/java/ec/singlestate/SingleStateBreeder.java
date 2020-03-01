@@ -7,9 +7,7 @@
 package ec.singlestate;
 
 import ec.*;
-import ec.simple.*;
 import ec.util.*;
-import ec.vector.*;
 import java.util.*;
 
 
@@ -53,6 +51,8 @@ import java.util.*;
 
 public class SingleStateBreeder extends Breeder
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_ELITE = "elite";
     public static final String P_EXPANDED_SUBPOP_SIZE = "expanded-subpop-size";
     public static final int V_SUBPOP_NOT_RESIZED = -1;
@@ -136,7 +136,7 @@ public class SingleStateBreeder extends Breeder
             newlen = expandedSubpopSize[index];
             }
         
-        newIndividuals = new ArrayList();
+        newIndividuals = new ArrayList<>();
         
         ArrayList<Individual> individuals = subpop.individuals;
         int len = individuals.size();
