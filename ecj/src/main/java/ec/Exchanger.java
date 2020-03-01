@@ -27,6 +27,8 @@ package ec;
 
 public abstract class Exchanger implements Singleton
     {
+    private static final long serialVersionUID = 1;
+
     /** Initializes contacts with other processes, if that's what you're doing. Called at the beginning of an evolutionary run, before a population is set up. */
     public void initializeContacts(EvolutionState state) { }
 

@@ -35,6 +35,8 @@ import java.util.HashMap;
 
 public abstract class SelectionMethod extends BreedingSource
     {
+    private static final long serialVersionUID = 1;
+
     public static final int INDS_PRODUCED = 1;
     public static final String KEY_PARENTS = "parents";
 

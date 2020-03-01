@@ -8,10 +8,7 @@
 package ec;
 import ec.util.*;
 
-import java.util.ArrayList;
-
 import ec.steadystate.*;
-import java.util.HashMap;
 
 /* 
  * BreedingPipeline.java
@@ -70,6 +67,8 @@ import java.util.HashMap;
 
 public abstract class BreedingPipeline extends BreedingSource implements SteadyStateBSourceForm
     {
+    private static final long serialVersionUID = 1;
+
     /** Indicates that a source is the exact same source as the previous source. */
     public static final String V_SAME = "same";
     

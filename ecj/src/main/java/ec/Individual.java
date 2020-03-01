@@ -72,8 +72,10 @@ import ec.util.*;
  * @version 1.0
  */
 
-public abstract class Individual implements Prototype, Comparable
+public abstract class Individual implements Prototype, Comparable<Individual>
     {
+    private static final long serialVersionUID = 1;
+
     /** A reasonable parameter base element for individuals*/
     public static final String P_INDIVIDUAL = "individual";
 
@@ -371,7 +373,7 @@ public abstract class Individual implements Prototype, Comparable
        and 0 if we are equivalent.  The default implementation assumes BETTER means FITTER, by simply calling
        compareTo on the fitnesses themse.ves
     */
-    public int compareTo(Object o)
+    public int compareTo(Individual o)
         {
         Individual other = (Individual) o;
         return fitness.compareTo(other.fitness);

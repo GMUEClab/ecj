@@ -50,8 +50,10 @@ import java.util.*;
  */
 
 
-public abstract class Fitness implements Prototype, Comparable
+public abstract class Fitness implements Prototype, Comparable<Object>
     {
+    private static final long serialVersionUID = 1;
+
     /** Auxiliary variable, used by coevolutionary processes, to compute the
         number of trials used to compute this Fitness value.  By default trials=null and stays that way. 
         If you set this variable, all of the elements of the ArrayList must be immutable -- once they're

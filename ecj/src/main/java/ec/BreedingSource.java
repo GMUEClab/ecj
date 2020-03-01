@@ -54,6 +54,8 @@ import java.util.HashMap;
 
 public abstract class BreedingSource implements Prototype, RandomChoiceChooserD
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_PROB = "prob";
     public static final double NO_PROBABILITY = -1.0;
     

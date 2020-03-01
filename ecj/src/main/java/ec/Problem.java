@@ -60,6 +60,8 @@ import java.io.*;
 
 public abstract class Problem implements Prototype
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_PROBLEM = "problem";
     
     /** Here's a nice default base for you -- you can change it if you like */

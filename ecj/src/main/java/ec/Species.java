@@ -77,6 +77,8 @@ import java.util.*;
 
 public abstract class Species implements Prototype
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_INDIVIDUAL = "ind";
     public static final String P_PIPE = "pipe";
     public static final String P_FITNESS = "fitness";

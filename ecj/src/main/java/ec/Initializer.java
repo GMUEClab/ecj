@@ -38,6 +38,8 @@ package ec;
 
 public abstract class Initializer implements Singleton
     {
+    private static final long serialVersionUID = 1;
+
     /** parameter for a new population */
     public static final String P_POP = "pop";
 

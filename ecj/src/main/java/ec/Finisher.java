@@ -26,6 +26,8 @@ package ec;
 
 public abstract class Finisher implements Singleton
     {
+    private static final long serialVersionUID = 1;
+
     /** Cleans up the population after the run has completed. result is either ec.EvolutionState.R_SUCCESS or ec.EvolutionState.R_FAILURE, indicating whether or not an ideal individual was found. */
     public abstract void finishPopulation(EvolutionState state, int result);
     }

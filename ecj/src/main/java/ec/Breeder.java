@@ -41,6 +41,8 @@ package ec;
 
 public abstract class Breeder implements Singleton
     {
+    private static final long serialVersionUID = 1;
+    
     /** Breeds state.population, returning a new population.  In general,
         state.population should not be modified. */
 
