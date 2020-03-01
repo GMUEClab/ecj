@@ -69,6 +69,8 @@ import java.io.*;
 
 public class IntegerVectorIndividual extends VectorIndividual
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_INTEGERVECTORINDIVIDUAL = "int-vect-ind";
     public int[] genome;
     

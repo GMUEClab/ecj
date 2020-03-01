@@ -68,6 +68,8 @@ import java.util.*;
 
 public class BitVectorIndividual extends VectorIndividual
     {
+    private static final long serialVersionUID = 1;
+    
     public static final String P_BITVECTORINDIVIDUAL = "bit-vect-ind";
     public boolean[] genome;
     

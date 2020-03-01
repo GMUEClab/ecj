@@ -70,6 +70,8 @@ import java.io.*;
 
 public class ByteVectorIndividual extends VectorIndividual
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_BYTEVECTORINDIVIDUAL = "byte-vect-ind";
     public byte[] genome;
     

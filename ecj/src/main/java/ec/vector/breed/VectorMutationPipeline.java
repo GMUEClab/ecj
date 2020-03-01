@@ -44,6 +44,8 @@ import java.util.HashMap;
 
 public class VectorMutationPipeline extends BreedingPipeline
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_MUTATION = "mutate";
     public static final int NUM_SOURCES = 1;
 

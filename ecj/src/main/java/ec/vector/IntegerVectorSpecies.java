@@ -88,6 +88,8 @@ import ec.util.*;
  
 public class IntegerVectorSpecies extends VectorSpecies
     {
+    private static final long serialVersionUID = 1;
+
     public final static String P_MINGENE = "min-gene";
     public final static String P_MAXGENE = "max-gene";
     

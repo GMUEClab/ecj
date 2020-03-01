@@ -70,6 +70,8 @@ import java.io.*;
 
 public class ShortVectorIndividual extends VectorIndividual
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_SHORTVECTORINDIVIDUAL = "short-vect-ind";
     public short[] genome;
     

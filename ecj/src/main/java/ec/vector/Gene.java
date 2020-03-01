@@ -64,6 +64,8 @@ import java.io.*;
  
 public abstract class Gene implements Prototype
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_GENE = "gene";
 
     /** @deprecated */

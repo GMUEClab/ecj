@@ -67,6 +67,8 @@ import java.io.*;
 
 public class FloatVectorIndividual extends VectorIndividual
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_FloatVectorIndividual = "float-vect-ind";
 
     public static final double MAXIMUM_SHORT_IN_FLOAT = 1.6777216E7f;

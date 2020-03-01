@@ -72,6 +72,8 @@ import java.io.*;
 
 public class GeneVectorIndividual extends VectorIndividual
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_GENEVECTORINDIVIDUAL = "gene-vect-ind";
     public Gene[] genome;
     

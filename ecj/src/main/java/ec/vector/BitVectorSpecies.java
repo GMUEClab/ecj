@@ -8,7 +8,6 @@
 package ec.vector;
 
 import ec.util.*;
-import java.io.*;
 import ec.*;
 
 /* 
@@ -60,6 +59,8 @@ import ec.*;
 
 public class BitVectorSpecies extends VectorSpecies
     {
+    private static final long serialVersionUID = 1;
+
     public final static String P_MUTATIONTYPE = "mutation-type";
     public final static String V_RESET_MUTATION = "reset";
     public final static String V_FLIP_MUTATION = "flip";

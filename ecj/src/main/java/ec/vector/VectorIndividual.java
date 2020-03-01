@@ -86,6 +86,8 @@ import ec.*;
 
 public abstract class VectorIndividual extends Individual
     {
+    private static final long serialVersionUID = 1;
+
     /** Destructively crosses over the individual with another in some default manner.  In most
         implementations provided in ECJ, one-, two-, and any-point crossover is done with a 
         for loop, rather than a possibly more efficient approach like arrayCopy().  The disadvantage

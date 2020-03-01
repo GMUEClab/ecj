@@ -11,7 +11,6 @@ import ec.*;
 import ec.util.Parameter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -51,7 +50,9 @@ import java.util.HashMap;
 // case, and instead use faster per-array operations.
 
 
-public class MultipleVectorCrossoverPipeline extends BreedingPipeline {
+public class MultipleVectorCrossoverPipeline extends BreedingPipeline
+    {
+    private static final long serialVersionUID = 1;
 
     /** default base */
     public static final String P_CROSSOVER = "multixover";

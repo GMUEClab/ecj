@@ -8,7 +8,6 @@
 package ec.vector;
 
 import ec.util.*;
-import java.io.*;
 import ec.*;
 
 /* 
@@ -164,6 +163,8 @@ import ec.*;
 
 public class VectorSpecies extends Species
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_VECTORSPECIES = "species";
         
     public final static String P_CROSSOVERTYPE = "crossover-type";

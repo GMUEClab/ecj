@@ -71,6 +71,8 @@ import java.io.*;
 
 public class LongVectorIndividual extends VectorIndividual
     {
+    private static final long serialVersionUID = 1;
+    
     public static final String P_LONGVECTORINDIVIDUAL = "long-vect-ind";
     public long[] genome;
     

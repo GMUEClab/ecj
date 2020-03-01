@@ -18,7 +18,6 @@ import ec.*;
 import ec.util.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -78,6 +77,8 @@ import java.util.HashMap;
 
 public class ListCrossoverPipeline extends BreedingPipeline
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_TOSS = "toss";
     public static final String P_LIST_CROSSOVER = "list-xover";
     public static final String P_MIN_CHILD_SIZE = "min-child-size";

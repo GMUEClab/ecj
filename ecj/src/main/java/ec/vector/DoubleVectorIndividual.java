@@ -66,7 +66,9 @@ import java.io.*;
  */
 
 public class DoubleVectorIndividual extends VectorIndividual
-    {
+    {    
+    private static final long serialVersionUID = 1;
+
     public static final String P_DOUBLEVECTORINDIVIDUAL = "double-vect-ind";
 
     public static final double MAXIMUM_INTEGER_IN_DOUBLE = 9.007199254740992E15;
