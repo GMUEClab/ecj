@@ -19,7 +19,6 @@ import ec.Statistics;
 import ec.util.Parameter;
 
 /**
- * @author spaus
  */
 public abstract class ChartableStatistics
     extends Statistics
@@ -28,10 +27,12 @@ public abstract class ChartableStatistics
     public static final String P_TITLE = "title";
     public static final String P_XAXIS = "x-axis-label";
     public static final String P_YAXIS = "y-axis-label";
+    public static final String PDF = "print-pdf";
     
     public String title;
     public String xlabel;
     public String ylabel;
+    public String pdf;
     
     public void setup(EvolutionState state, Parameter base)
         {
@@ -40,6 +41,7 @@ public abstract class ChartableStatistics
         title = state.parameters.getStringWithDefault(base.push(P_TITLE),null,"Title");
         xlabel = state.parameters.getStringWithDefault(base.push(P_XAXIS),null,"x");
         ylabel = state.parameters.getStringWithDefault(base.push(P_YAXIS),null,"y");
+        pdf = state.parameters.getStringWithDefault(base.push(PDF),null,"");
         }
     
     public abstract JFreeChart makeChart();

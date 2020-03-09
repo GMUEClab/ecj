@@ -73,6 +73,7 @@ public class StatisticsChartPane
             JFreeChart chart = chartStats.makeChart();
 
             chart.setBackgroundPaint(Color.white);
+            chart.getPlot().setBackgroundPaint(Color.white);
             ChartPanel chartPanel = new ChartPanel(chart);
             StatisticsChartPaneTab chartPaneTab = new StatisticsChartPaneTab(chartPanel);
             this.addTab("Chart "+(numCharts++),chartPaneTab);
