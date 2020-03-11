@@ -37,14 +37,13 @@ import javax.swing.JTree;
 /**
  * @author spaus
  */
-public class SubpopulationPanel
-    extends JPanel
-    implements EvolutionStateListener, Setup
+public class SubpopulationPanel extends JPanel implements EvolutionStateListener, Setup
     {
+    private static final long serialVersionUID = 1;
     
     private final Console console;
     private final int subPopNum;
-    private JList individualsList = null;
+    private JList<Integer> individualsList = null;
     private JScrollPane individualListPane = null;
     private JSplitPane subpopPane = null;
     private JSplitPane individualDisplayPane = null;
@@ -92,11 +91,11 @@ public class SubpopulationPanel
      *  
      * @return javax.swing.JList        
      */    
-    private JList getIndividualsList()
+    private JList<Integer> getIndividualsList()
         {
         if (individualsList == null)
             {
-            individualsList = new JList();
+            individualsList = new JList<>();
             individualsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
             int size = -1;
             if (console.parameters.exists(new Parameter("pop.subpop."+subPopNum+".size"),null))
@@ -111,7 +110,7 @@ public class SubpopulationPanel
                     size = console.parameters.getInt(new Parameter("pop.subpop." + defaultsub + ".size"), null);
                     }
                 }
-            DefaultListModel model = new DefaultListModel();
+            DefaultListModel<Integer> model = new DefaultListModel<>();
             for (int i = 0; i < size; ++i)
                 {
                 model.add(i,Integer.valueOf(i));
@@ -123,7 +122,7 @@ public class SubpopulationPanel
                     {
                     if (evt.getValueIsAdjusting() == false)
                         {
-                        JList source = (JList)evt.getSource();
+                        JList<Integer> source = (JList)evt.getSource();
                         int idx = source.getSelectedIndex();
                         inspectionTree.setModel(new ReflectedObject(console.state.population.subpops.get(subPopNum).individuals.get(idx)));
                         portrayal.portrayIndividual(console.state,console.state.population.subpops.get(subPopNum).individuals.get(idx));

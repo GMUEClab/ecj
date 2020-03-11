@@ -28,6 +28,8 @@ import java.io.Serializable;
 
 public abstract class LogRestarter implements Serializable
     {
+    private static final long serialVersionUID = 1;
+
     /* recreate the writer for, and properly reopen a log
        upon a system restart from a checkpoint */
     public abstract Log restart(Log l) throws IOException;

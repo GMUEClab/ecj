@@ -7,6 +7,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.DefaultPieDataset;
 
 public class PieChartStatistics extends ChartableStatistics {
+    private static final long serialVersionUID = 1;
 
     public DefaultPieDataset dataset;
 

@@ -58,6 +58,7 @@ import javax.swing.BoxLayout;
  */
 public class Console extends JFrame 
     {
+    private static final long serialVersionUID = 1;
     
     static final int DEFAULT_HEIGHT = 500;
     static final int DEFAULT_WIDTH = 975;
@@ -837,7 +838,7 @@ public class Console extends JFrame
         
         Runnable run = new Runnable() 
             {
-            Vector listeners = new Vector();
+            Vector<EvolutionStateListener> listeners = new Vector<>();
             boolean restoreFromCheckpoint = rfc;
             
             void addListener(EvolutionStateListener l) 
@@ -850,10 +851,10 @@ public class Console extends JFrame
             void firePostEvolutionStep() 
                 {
                 EvolutionStateEvent evt = new EvolutionStateEvent(this);
-                Iterator it = listeners.iterator();
+                Iterator<EvolutionStateListener> it = listeners.iterator();
                 while (it.hasNext()) 
                     {
-                    EvolutionStateListener l = (EvolutionStateListener)it.next();
+                    EvolutionStateListener l = it.next();
                     l.postEvolution(evt);
                     }
                 }
@@ -893,9 +894,7 @@ public class Console extends JFrame
                 
                 int breedthreads = Evolve.determineThreads(output, parameters, new Parameter(Evolve.P_BREEDTHREADS));
                 int evalthreads = Evolve.determineThreads(output, parameters, new Parameter(Evolve.P_EVALTHREADS));
-                boolean auto = (Evolve.V_THREADS_AUTO.equalsIgnoreCase(parameters.getString(new Parameter(Evolve.P_BREEDTHREADS),null)) ||
-                    Evolve.V_THREADS_AUTO.equalsIgnoreCase(parameters.getString(new Parameter(Evolve.P_EVALTHREADS),null)));  // at least one thread is automatic.  Seeds may need to be dynamic.
-
+                
                 // 3. create the Mersenne Twister random number generators,
                 // one per thread
                 MersenneTwisterFast[] random = new MersenneTwisterFast[breedthreads > evalthreads ? 

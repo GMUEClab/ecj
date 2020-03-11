@@ -17,9 +17,9 @@ import java.util.EventObject;
 /**
  * @author spaus
  */
-public class EvolutionStateEvent
-    extends EventObject 
+public class EvolutionStateEvent extends EventObject 
     {
+    private static final long serialVersionUID = 1;
 
     /**
      * @param source

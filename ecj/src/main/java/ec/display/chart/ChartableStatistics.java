@@ -20,9 +20,9 @@ import ec.util.Parameter;
 
 /**
  */
-public abstract class ChartableStatistics
-    extends Statistics
+public abstract class ChartableStatistics extends Statistics
     {
+    private static final long serialVersionUID = 1;
     
     public static final String P_TITLE = "title";
     public static final String P_XAXIS = "x-axis-label";

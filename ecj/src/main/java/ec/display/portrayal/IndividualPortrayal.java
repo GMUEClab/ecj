@@ -23,10 +23,10 @@ import ec.Setup;
 /**
  * @author spaus
  */
-public abstract class IndividualPortrayal
-    extends JPanel
-    implements Setup
+public abstract class IndividualPortrayal extends JPanel implements Setup
     {
+    private static final long serialVersionUID = 1;
+    
     IndividualPortrayal(LayoutManager layout)
         {
         super(layout);

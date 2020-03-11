@@ -91,6 +91,8 @@ import ec.util.*;
 
 public class CompetitiveEvaluator extends Evaluator
     {
+    private static final long serialVersionUID = 1;
+
     public static final int STYLE_SINGLE_ELIMINATION=1;
     public static final int STYLE_ROUND_ROBIN=2;
     public static final int STYLE_N_RANDOM_COMPETITORS_ONEWAY=3;

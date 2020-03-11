@@ -39,9 +39,9 @@ import ec.display.StatisticsChartPane;
 /**
  * @author spaus
  */
-public class StatisticsChartPaneTab
-    extends JPanel
+public class StatisticsChartPaneTab extends JPanel
     {
+    private static final long serialVersionUID = 1;
     
     private JPanel jPanel = null;
     private JButton printButton = null;

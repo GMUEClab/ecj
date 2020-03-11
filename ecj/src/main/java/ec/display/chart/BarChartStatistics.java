@@ -23,9 +23,9 @@ import ec.util.Parameter;
 /**
  * @author spaus
  */
-public class BarChartStatistics
-    extends ChartableStatistics
+public class BarChartStatistics extends ChartableStatistics
     {
+    private static final long serialVersionUID = 1;
     
     public DefaultCategoryDataset dataset;
     

@@ -9,7 +9,6 @@ package ec.display;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
@@ -26,9 +25,9 @@ import ec.util.*;
 /**
  * @author spaus
  */
-public class ParametersPanel
-    extends JPanel
+public class ParametersPanel extends JPanel
     {
+    private static final long serialVersionUID = 1;
     
     private final Console console;
     

@@ -37,7 +37,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 
 import ec.EvolutionState;
@@ -51,6 +50,7 @@ import java.awt.event.FocusListener;
  */
 public class ControlPanel extends JPanel 
     {
+    private static final long serialVersionUID = 1;
 
     final Console console;
 

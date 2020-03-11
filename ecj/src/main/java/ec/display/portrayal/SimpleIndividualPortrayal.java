@@ -22,7 +22,6 @@ import ec.EvolutionState;
 import ec.Individual;
 import ec.util.Log;
 import ec.util.LogRestarter;
-import ec.util.Output;
 import ec.util.Parameter;
 /**
  * This portrayal uses a text pane to display the results of 
@@ -30,10 +29,10 @@ import ec.util.Parameter;
  * 
  * @author spaus
  */
-public class SimpleIndividualPortrayal
-    extends IndividualPortrayal
+public class SimpleIndividualPortrayal extends IndividualPortrayal
     {
-    
+    private static final long serialVersionUID = 1;
+
     private static final LogRestarter restarter = new LogRestarter()
         {
         public Log reopen(Log l)

@@ -30,10 +30,10 @@ import ec.util.Parameter;
 /**
  * @author spaus
  */
-public class StatisticsChartPane
-    extends JTabbedPane
-    implements Setup
+public class StatisticsChartPane extends JTabbedPane implements Setup
     {
+    private static final long serialVersionUID = 1;
+    
     public int numCharts;
     
     /**

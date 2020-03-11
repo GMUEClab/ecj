@@ -24,9 +24,9 @@ import ec.util.Parameter;
 /**
  * @author spaus
  */
-public abstract class XYSeriesChartStatistics
-    extends ChartableStatistics 
+public abstract class XYSeriesChartStatistics extends ChartableStatistics 
     {
+    private static final long serialVersionUID = 1;
     
     public XYSeriesCollection seriesCollection;
     

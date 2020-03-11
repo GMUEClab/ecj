@@ -5,6 +5,7 @@ import ec.util.Parameter;
 import org.jfree.data.time.TimeSeriesCollection;
 
 public class TimeSeriesStatistics extends XYSeriesChartStatistics {
+    private static final long serialVersionUID = 1;
 
     public TimeSeriesCollection timeCollection;
 
