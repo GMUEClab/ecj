@@ -123,7 +123,7 @@ public class MuCommaLambdaBreeder extends Breeder
                 }
             else
                 {
-                state.output.warning("lambda not specified for subpopulation " + x + ", setting it to the subopulation size, that is, " + ppval + ".", 
+                state.output.warning("lambda not specified for subpopulation " + x + ", setting it to the subpopulation size, that is, " + ppval + ".", 
                     ESDefaults.base().push(P_LAMBDA).push(""+x),null);
                 lambda[x] = ppval;
                 if (lambda[x] == 0)
@@ -178,32 +178,6 @@ public class MuCommaLambdaBreeder extends Breeder
             }
         state.output.exitIfErrors();
         }
-
-
-
-    /** Sets all subpopulations in pop to the expected lambda size.  Does not fill new slots with individuals. */
-    //    public Population setToLambda(Population pop, EvolutionState state)
-    //        {
-    //        for(int x = 0; x< pop.subpops.size(); x++)
-    //            {
-    //            int s = lambda[x];
-    //            
-    //            System.out.println("size of s is "+s);
-    //            System.out.println("size of size is "+pop.subpops.get(x).individuals.size());
-    //            
-    //            // check to see if the array's not the right size
-    //            if (pop.subpops.get(x).individuals.size() != s)
-    //                // need to increase
-    //                {
-    //                Individual[] newinds = new Individual[s];
-    //                System.arraycopy(pop.subpops.get(x).individuals,0,newinds,0,
-    //                    s < pop.subpops.get(x).individuals.size() ?
-    //                    s : pop.subpops.get(x).individuals.size());
-    //                pop.subpops.get(x).individuals = new ArrayList<Individual>(Arrays.asList(newinds));
-    //                }
-    //            }
-    //        return pop;
-    //        }
                 
 
     public Population breedPopulation(EvolutionState state) 
@@ -281,18 +255,12 @@ public class MuCommaLambdaBreeder extends Breeder
 
         // now the subpops are sorted so that the best individuals appear in the lowest indexes.
 
-        // by Ermo, it seems we no longer need setToLambda, so I am comment them out, if it works, we will delete them later
-        //Population newpop = setToLambda((Population) state.population.emptyClone(),state);
         Population newpop = (Population) state.population.emptyClone();
         
         // create the count array
         count = new int[state.breedthreads];
 
         // divvy up the lambda individuals to create
-
-
-
-
         // how many threads do we really need?  No more than the maximum number of individuals in any subpopulation
         int numThreads = 0;
         for(int x = 0; x < state.population.subpops.size(); x++)
@@ -343,28 +311,7 @@ public class MuCommaLambdaBreeder extends Breeder
                 currentFrom += numinds[y][x];
                 }
             }
-
-        /*
-
-          for(int y=0;y<state.breedthreads;y++)
-          for(int x=0;x<state.population.subpops.length;x++)
-          {
-          // figure numinds
-          if (y<state.breedthreads-1) // not last one
-          numinds[y][x]=
-          lambda[x]/state.breedthreads;
-          else // in case we're slightly off in division
-          numinds[y][x]=
-          lambda[x]/state.breedthreads +
-          (lambda[x] - (lambda[x] / state.breedthreads)  // note integer division
-          *state.breedthreads);                   
-                
-          // figure from
-          from[y][x]=
-          (lambda[x]/
-          state.breedthreads) * y;
-          }
-        */           
+                     
         if (numThreads==1)
             {
             breedPopChunk(newpop,state,numinds[0],from[0],0);
