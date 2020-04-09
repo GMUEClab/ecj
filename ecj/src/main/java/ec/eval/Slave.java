@@ -13,7 +13,6 @@ package ec.eval;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -178,8 +177,6 @@ public class Slave
         EvolutionState state = null;
         ParameterDatabase parameters = null;
         Output output = null;
-        
-        boolean store;
                 
         // 0. find the parameter database
         for (int x = 0; x < args.length - 1; x++)
@@ -563,8 +560,6 @@ public class Slave
     public static void evaluateSimpleProblemForm( final EvolutionState state, boolean returnIndividuals,
         DataInputStream dataIn, DataOutputStream dataOut, String[] args )
         {
-        ParameterDatabase params=null; 
-        
         // first load the individuals
         int numInds=1; 
         try
@@ -706,8 +701,8 @@ public class Slave
                 state.population.subpops.get(subpops[i]).individuals.set(counts[subpops[i]]++,inds[i]);
             
             // Evaluate the population until time is up, or the evolution stops
-            int result = state.R_NOTDONE; 
-            while (result == state.R_NOTDONE) 
+            int result = EvolutionState.R_NOTDONE; 
+            while (result == EvolutionState.R_NOTDONE) 
                 { 
                 result = state.evolve(); 
                 endTime = System.currentTimeMillis(); 

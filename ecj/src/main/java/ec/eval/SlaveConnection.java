@@ -59,7 +59,7 @@ class SlaveConnection
 
     // given that we expect the slave to return the evaluated individuals in the exact same order,
     // the jobs need to be represented as a queue.
-    LinkedList jobs = new LinkedList();
+    LinkedList<Job> jobs = new LinkedList<>();
 
     /**
        The constructor also creates the queue storing the jobs that the slave
@@ -172,10 +172,10 @@ class SlaveConnection
         
         // This all could have been O(1) if we had used two queues, but we're being
         // intentionally lazy to keep this from getting to complex.
-        Iterator i = jobs.iterator();
+        Iterator<Job> i = jobs.iterator();
         while(i.hasNext())
             {
-            Job job = (Job)(i.next());
+            Job job = i.next();
             if (!job.sent) { job.sent = true; return job; }
             }
         return null;

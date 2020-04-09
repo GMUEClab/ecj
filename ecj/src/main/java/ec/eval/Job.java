@@ -8,9 +8,6 @@
 package ec.eval;
 
 import ec.*;
-import java.io.*;
-import ec.util.*;
-import java.util.*;
 
 /**
  * Job.java

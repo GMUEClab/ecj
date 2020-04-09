@@ -13,7 +13,6 @@ import java.io.*;
 import java.util.*;
 import java.net.*;
 import ec.util.*;
-import ec.steadystate.SteadyStateEvolutionState;
 import ec.steadystate.QueueIndividual;
 
 /**
@@ -104,10 +103,10 @@ public class SlaveMonitor
         }
 
     // the slaves (not really a queue)
-    LinkedList allSlaves = new LinkedList();
+    LinkedList<SlaveConnection> allSlaves = new LinkedList<>();
 
     // the available slaves
-    LinkedList availableSlaves = new LinkedList();
+    LinkedList<SlaveConnection> availableSlaves = new LinkedList<>();
 
     // the maximum number of jobs per slave
     int maxJobsPerSlave;
@@ -409,10 +408,10 @@ public class SlaveMonitor
         {
         synchronized(allSlaves)
             {
-            Iterator iter = allSlaves.iterator();
+            Iterator<SlaveConnection> iter = allSlaves.iterator();
             while( iter.hasNext() )
                 {
-                SlaveConnection slaveConnection = (SlaveConnection)(iter.next());
+                SlaveConnection slaveConnection = iter.next();
                 try { slaveConnection.dataOut.flush(); } catch (java.io.IOException e) {} // we'll catch this error later....
                 }
             notifyMonitor(allSlaves);
@@ -424,10 +423,10 @@ public class SlaveMonitor
             while( shouldCycle )
                 {
                 shouldCycle = false;
-                Iterator iter = allSlaves.iterator();
+                Iterator<SlaveConnection> iter = allSlaves.iterator();
                 while( iter.hasNext() )
                     {
-                    SlaveConnection slaveConnection = (SlaveConnection)(iter.next());
+                    SlaveConnection slaveConnection = iter.next();
                     int jobs = slaveConnection.numJobs();
                     if( jobs != 0 )
                         {
@@ -493,7 +492,7 @@ public class SlaveMonitor
             }
         }
 
-    LinkedList evaluatedIndividuals =  new LinkedList();
+    LinkedList<QueueIndividual> evaluatedIndividuals =  new LinkedList<>();
 
     public boolean evaluatedIndividualAvailable()
         {

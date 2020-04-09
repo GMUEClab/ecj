@@ -263,6 +263,8 @@ import java.util.*;
 
 public class MetaProblem extends Problem implements SimpleProblemForm
     {
+    private static final long serialVersionUID = 1;
+
     public static final String P_FILE = "file";
     public static final String P_RUNS = "runs";
     public static final String P_REEVALUATE_INDIVIDUALS = "reevaluate";
@@ -499,7 +501,7 @@ public class MetaProblem extends Problem implements SimpleProblemForm
         {
         if (ind.evaluated && !reevaluateIndividuals) return;
         
-        ArrayList fits = new ArrayList();
+        ArrayList<Fitness> fits = new ArrayList<>();
         
         Individual bestOfRuns = null;
         for(int run = 0; run < runs; run++)
