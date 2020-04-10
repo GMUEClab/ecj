@@ -63,13 +63,9 @@ public class SimpleEvaluator extends Evaluator
         
     public ThreadPool pool = new ThreadPool();
 
-    // checks to make sure that the Problem implements SimpleProblemForm
     public void setup(final EvolutionState state, final Parameter base)
         {
         super.setup(state,base);
-        if (!(p_problem instanceof SimpleProblemForm))
-            state.output.fatal("" + this.getClass() + " used, but the Problem is not of SimpleProblemForm",
-                base.push(P_PROBLEM));
 
         cloneProblem =state.parameters.getBoolean(base.push(P_CLONE_PROBLEM), null, true);
         if (!cloneProblem && (state.breedthreads > 1)) // uh oh, this can't be right
@@ -195,11 +191,11 @@ public class SimpleEvaluator extends Evaluator
                 from[i] = 0;
                 }
                                 
-            SimpleProblemForm prob = null;
+            Problem prob = null;
             if (cloneProblem)
-                prob = (SimpleProblemForm)(p_problem.clone());
+                prob = (Problem)(p_problem.clone());
             else 
-                prob = (SimpleProblemForm)(p_problem);  // just use the prototype
+                prob = (Problem)(p_problem);  // just use the prototype
             evalPopChunk(state, numinds, from, 0, prob);
             }
         else
@@ -210,7 +206,7 @@ public class SimpleEvaluator extends Evaluator
                 SimpleEvaluatorThread run = new SimpleEvaluatorThread();
                 run.threadnum = i;
                 run.state = state;
-                run.prob = (SimpleProblemForm)(p_problem.clone());
+                run.prob = (Problem)p_problem.clone();
                 threads[i] = pool.start(run, "ECJ Evaluation Thread " + i);
                 }
                         
@@ -246,9 +242,12 @@ public class SimpleEvaluator extends Evaluator
         Although this method is declared
         protected, you should not call it. */
 
-    protected void evalPopChunk(EvolutionState state, int[] numinds, int[] from, int threadnum, SimpleProblemForm p)
+    protected void evalPopChunk(EvolutionState state, int[] numinds, int[] from, int threadnum, Problem p)
         {
         ((ec.Problem)p).prepareToEvaluate(state,threadnum);
+
+        if (!(p instanceof SimpleProblemForm))
+            state.output.fatal("" + this.getClass() + " used, but the Problem is not of SimpleProblemForm");
         
         ArrayList<Subpopulation> subpops = state.population.subpops;
         int len = subpops.size();
@@ -260,7 +259,7 @@ public class SimpleEvaluator extends Evaluator
             int upperbound = fp+numinds[pop];
             ArrayList<Individual> inds = subpops.get(pop).individuals;
             for (int x=fp;x<upperbound;x++)
-                p.evaluate(state,inds.get(x), pop, threadnum);
+                ((SimpleProblemForm)p).evaluate(state,inds.get(x), pop, threadnum);
             state.incrementEvaluations(upperbound - fp);
             }
                         
@@ -290,7 +289,7 @@ public class SimpleEvaluator extends Evaluator
         {
         public int threadnum;
         public EvolutionState state;
-        public SimpleProblemForm prob = null;
+        public Problem prob = null;
         
         public void run() 
             {
