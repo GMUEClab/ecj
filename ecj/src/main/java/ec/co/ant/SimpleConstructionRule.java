@@ -6,7 +6,6 @@
 package ec.co.ant;
 
 import ec.EvolutionState;
-import ec.Setup;
 import ec.co.Component;
 import ec.co.ConstructiveIndividual;
 import ec.co.ConstructiveProblemForm;
@@ -19,7 +18,9 @@ import java.util.List;
  * 
  * @author Eric O. Scott
  */
-public class SimpleConstructionRule implements ConstructionRule, Setup {
+public class SimpleConstructionRule implements ConstructionRule {
+    private static final long serialVersionUID = 1;
+
     public final static String P_SELECTOR = "component-selector";
     public final static String P_START = "start-component";
 

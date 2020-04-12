@@ -6,12 +6,9 @@
 package ec.co.ant;
 
 import ec.EvolutionState;
-import ec.Individual;
-import ec.Subpopulation;
 import ec.co.Component;
 import ec.co.ConstructiveIndividual;
 import ec.util.Parameter;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,6 +20,8 @@ import java.util.List;
  * @author Eric O. Scott
  */
 public class ACSLocalUpdateRule implements UpdateRule {
+    private static final long serialVersionUID = 1;
+
     final public static String P_RHO = "rho";
     final public static String P_MINIMUM_PHEROMONE = "minimum-pheromone";
 
@@ -51,7 +50,7 @@ public class ACSLocalUpdateRule implements UpdateRule {
 
         for (final Object ind : individuals)
             {
-            for (final Object oo : (ConstructiveIndividual)ind)
+            for (final Object oo : (ConstructiveIndividual<?>)ind)
                 {
                 assert(oo instanceof Component);
                 final Component c = (Component) oo;

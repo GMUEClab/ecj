@@ -7,7 +7,6 @@ package ec.co;
 
 import ec.EvolutionState;
 import ec.Individual;
-import ec.co.ant.AntSpecies;
 import ec.util.Misc;
 import ec.util.Parameter;
 import java.io.DataInput;
@@ -30,6 +29,7 @@ import java.util.Set;
  */
 public class ConstructiveIndividual<T extends Component> extends Individual implements Iterable<T>
     {
+    private static final long serialVersionUID = 1;
     
     public static final String P_DEFAULTBASE = "constr-ind";
     private List<T> components = new ArrayList<T>();
@@ -50,7 +50,7 @@ public class ConstructiveIndividual<T extends Component> extends Individual impl
     @Override
     public Object clone()
         {
-        ConstructiveIndividual myobj = (ConstructiveIndividual) (super.clone());
+        ConstructiveIndividual<T> myobj = (ConstructiveIndividual<T>) (super.clone());
 
         myobj.components = new ArrayList<T>(components);
         myobj.componentsSet = new HashSet<T>(componentsSet);
@@ -113,7 +113,7 @@ public class ConstructiveIndividual<T extends Component> extends Individual impl
             return true;
         if (!(ind instanceof ConstructiveIndividual))
             return false;
-        final ConstructiveIndividual ref = (ConstructiveIndividual)ind;
+        final ConstructiveIndividual<T> ref = (ConstructiveIndividual<T>)ind;
         return components.equals(ref.components);
         }
 
@@ -149,8 +149,8 @@ public class ConstructiveIndividual<T extends Component> extends Individual impl
         
         // Read in the new contents
         final int numComponents = dataInput.readInt();
-        final ConstructiveProblemForm problem = (ConstructiveProblemForm) state.evaluator.p_problem;
-        final Component p_component = problem.getArbitraryComponent(state, 0);
+        final ConstructiveProblemForm<T> problem = (ConstructiveProblemForm<T>) state.evaluator.p_problem;
+        final T p_component = problem.getArbitraryComponent(state, 0);
         
         for (int i = 0; i < numComponents; i++)
             add(state, (T) p_component.readComponent(state, dataInput));

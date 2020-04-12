@@ -33,6 +33,8 @@ import java.util.ArrayList;
  */
 public class AntSpecies extends Species
     {
+    private static final long serialVersionUID = 1;
+
     public final static Parameter DEFAULT_BASE = new Parameter("constructive");
     public final static String SPECIES_NAME = "constructive-species";
 
@@ -113,16 +115,20 @@ public class AntSpecies extends Species
     public void updateIndividual(final EvolutionState state, final Individual ind)
         {
         if (localUpdateRule != null)
-            localUpdateRule.updatePheromones(state, pheromones, new ArrayList() {{ add(ind); }});
+            {
+            final ArrayList<Individual> inds = new ArrayList<>();
+            inds.add(ind);
+            localUpdateRule.updatePheromones(state, pheromones, inds);
+            }
         }
 
     @Override
-    public ConstructiveIndividual newIndividual(final EvolutionState state, final int thread)
+    public ConstructiveIndividual<?> newIndividual(final EvolutionState state, final int thread)
         {
         assert(state != null);
         assert(thread >= 0);
 
-        final ConstructiveIndividual ind = (ConstructiveIndividual)(super.newIndividual(state, thread));
+        final ConstructiveIndividual<?> ind = (ConstructiveIndividual<?>)(super.newIndividual(state, thread));
         assert(repOK());
         return constructionRule.constructSolution(state, ind, pheromones, thread);
         }

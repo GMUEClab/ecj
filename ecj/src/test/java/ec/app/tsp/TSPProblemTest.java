@@ -220,12 +220,12 @@ public class TSPProblemTest
             add(instance.getComponent(0, 1));
         }});
         
-        final List<Component> expected = new ArrayList<Component>() {{
+        final List<TSPComponent> expected = new ArrayList<TSPComponent>() {{
             add(instance.getComponent(1, 2));
             add(instance.getComponent(1, 3));
         }};
         
-        final List<Component> result = instance.getAllowedComponents(ind);
+        final List<TSPComponent> result = instance.getAllowedComponents(ind);
         
         assertTrue(result.containsAll(expected));
         assertTrue(expected.containsAll(result));
@@ -246,12 +246,12 @@ public class TSPProblemTest
             add(instance.getComponent(1, 0));
         }});
         
-        final List<Component> expected = new ArrayList<Component>() {{
+        final List<TSPComponent> expected = new ArrayList<TSPComponent>() {{
             add(instance.getComponent(0, 2));
             add(instance.getComponent(0, 3));
         }};
         
-        final List<Component> result = instance.getAllowedComponents(ind);
+        final List<TSPComponent> result = instance.getAllowedComponents(ind);
         
         assertTrue(result.containsAll(expected));
         assertTrue(expected.containsAll(result));
@@ -270,7 +270,7 @@ public class TSPProblemTest
         final TSPIndividual ind = new TSPIndividual();
         ind.setComponents(state, new ArrayList<TSPComponent>());
         
-        final List<Component> expected = new ArrayList<Component>() {{
+        final List<TSPComponent> expected = new ArrayList<TSPComponent>() {{
             add(instance.getComponent(0, 1));
             add(instance.getComponent(0, 2));
             add(instance.getComponent(0, 3));
@@ -285,7 +285,7 @@ public class TSPProblemTest
             add(instance.getComponent(3, 2));
         }};
         
-        final List<Component> result = instance.getAllowedComponents(ind);
+        final List<TSPComponent> result = instance.getAllowedComponents(ind);
         
         assertTrue(result.containsAll(expected));
         assertTrue(expected.containsAll(result));

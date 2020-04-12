@@ -354,19 +354,19 @@ public class TSPGraph {
             && !pointsInvalid(nodes.values());
         }
     
-    private static boolean containsNullKey(final Map map)
+    private static <T> boolean containsNullKey(final Map<T, ?> map)
         {
         assert(map != null);
-        for (Object o : map.keySet())
+        for (T o : map.keySet())
             if (o == null)
                 return true;
         return false;
         }
     
-    private static boolean containsNullValue(final Map map)
+    private static <T> boolean containsNullValue(final Map<?, T> map)
         {
         assert(map != null);
-        for (Object o : map.values())
+        for (T o : map.values())
             if (o == null)
                 return true;
         return false;

@@ -19,6 +19,7 @@ import ec.util.Parameter;
  */
 public class ConstructiveBreeder extends Breeder
     {
+    private static final long serialVersionUID = 1;
 
     @Override
     public void setup(final EvolutionState state, final Parameter base)

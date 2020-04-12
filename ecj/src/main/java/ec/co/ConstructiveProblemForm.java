@@ -36,7 +36,7 @@ import java.util.List;
  * @see ec.app.tsp
  * @see ec.app.knapsack
  */
-public interface ConstructiveProblemForm {
+public interface ConstructiveProblemForm<T extends Component> {
     
     /**
      * @return The total number of components that exist in the problem.
@@ -49,7 +49,7 @@ public interface ConstructiveProblemForm {
      * @param solution A partial or complete solution to this ConstructiveProblemForm.
      * @return True iff the solution is complete (as opposed to partial).
      */
-    public abstract boolean isCompleteSolution(final ConstructiveIndividual solution);
+    public abstract boolean isCompleteSolution(final ConstructiveIndividual<T> solution);
  
     /** 
      * @param partialSolution A partial solution to this ConstructiveProblemForm.
@@ -58,7 +58,7 @@ public interface ConstructiveProblemForm {
      * @return True iff the constraint allows component to be added to the given
      * partialSolution.
      */
-    public abstract boolean isViolated(final ConstructiveIndividual partialSolution, final Component component);
+    public abstract boolean isViolated(final ConstructiveIndividual<T> partialSolution, final Component component);
     
     /**
      * Return the allowable "neighborhood" of components that 
@@ -69,17 +69,17 @@ public interface ConstructiveProblemForm {
      * @return The set of all components that can be added to the given partial 
      * solution without causing a constraint violation.
      */
-    public abstract List<Component> getAllowedComponents(final ConstructiveIndividual partialSolution);
+    public abstract List<T> getAllowedComponents(final ConstructiveIndividual<T> partialSolution);
     
     /** @return all components that exist in the problem definition. */
-    public abstract List<Component> getAllComponents();
+    public abstract List<T> getAllComponents();
     
     /** Decode a String representation of a solution component.
      * 
      * @param s A String representing a component.
      * @return A component matching the provided String.
      */
-    public abstract Component getComponentFromString(final String s);
+    public abstract T getComponentFromString(final String s);
     
     
     /**
@@ -94,5 +94,5 @@ public interface ConstructiveProblemForm {
      * @param thread The thread the caller is operating on.  If the caller is single-threaded, just set this to zero.
      * @return An component selected arbitrarily from the problem domain
      */
-    public abstract Component getArbitraryComponent(final EvolutionState state, final int thread);
+    public abstract T getArbitraryComponent(final EvolutionState state, final int thread);
     }

@@ -22,6 +22,8 @@ import java.util.Set;
  * @author Eric O. Scott
  */
 public class TSPIndividual extends ConstructiveIndividual<TSPComponent> {
+    private static final long serialVersionUID = 1;
+    
     private Set<Integer> visitedNodes = new HashSet<Integer>();
     
     private int lastNodeVisited = -1;

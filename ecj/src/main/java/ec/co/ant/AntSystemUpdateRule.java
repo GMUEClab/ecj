@@ -6,8 +6,6 @@
 package ec.co.ant;
 
 import ec.EvolutionState;
-import ec.Individual;
-import ec.Subpopulation;
 import ec.co.Component;
 import ec.co.ConstructiveIndividual;
 import ec.co.ConstructiveProblemForm;
@@ -25,6 +23,8 @@ import java.util.Map;
  */
 public class AntSystemUpdateRule implements UpdateRule
     {
+    private static final long serialVersionUID = 1;
+
     public final static String P_DECAY_RATE = "decay-rate";
     public final static String P_DEPOSIT_RULE = "deposit-rule";
     public final static String P_Q = "Q";
@@ -87,11 +87,11 @@ public class AntSystemUpdateRule implements UpdateRule
 
         decayPheromones(state, pheromones);
 
-        final Map<Component, Double> contributions = new HashMap();
+        final Map<Component, Double> contributions = new HashMap<>();
         // Loop through every individual and record its pheremone contributions (scores) for each edge
         for (final Object o : individuals)
             {
-            final ConstructiveIndividual ind = (ConstructiveIndividual) o;
+            final ConstructiveIndividual<?> ind = (ConstructiveIndividual<?>) o;
             assert(ind.size() > 0);
             for (final Object oo : ind)
                 {
@@ -118,12 +118,12 @@ public class AntSystemUpdateRule implements UpdateRule
         {
         assert(state != null);
         assert(pheromones != null);
-        final List<Component> components = ((ConstructiveProblemForm)state.evaluator.p_problem).getAllComponents();
+        final List<? extends Component> components = ((ConstructiveProblemForm<?>)state.evaluator.p_problem).getAllComponents();
         for (final Component c : components)
             pheromones.set(c, (1.0-decayRate)*pheromones.get(state, c, 0)); // Using thread 0 because we are in a single-threaded function
         }
 
-    private double pheromoneContribution(final ConstructiveIndividual ind, final Component component)
+    private double pheromoneContribution(final ConstructiveIndividual<?> ind, final Component component)
         {
         assert(ind != null);
         assert(component != null);

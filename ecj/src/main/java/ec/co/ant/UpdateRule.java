@@ -7,8 +7,6 @@ package ec.co.ant;
 
 import ec.EvolutionState;
 import ec.Setup;
-import ec.Subpopulation;
-import ec.co.ConstructiveIndividual;
 
 import java.util.List;
 

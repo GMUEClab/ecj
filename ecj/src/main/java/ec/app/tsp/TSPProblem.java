@@ -30,7 +30,9 @@ import java.util.Set;
  * 
  * @author Eric O. Scott
  */
-public class TSPProblem extends Problem implements SimpleProblemForm, ConstructiveProblemForm {
+public class TSPProblem extends Problem implements SimpleProblemForm, ConstructiveProblemForm<TSPComponent> {
+    private static final long serialVersionUID = 1;
+
     public final static String P_FILE = "file";
     public final static String P_ALLOW_CYCLES = "allow-cycles";
 
@@ -114,7 +116,7 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         assert(repOK());
         }
 
-    public boolean isViolated(final ConstructiveIndividual partialSolution, final Component component) {
+    public boolean isViolated(final ConstructiveIndividual<TSPComponent> partialSolution, final Component component) {
         assert(partialSolution != null);
         if (!(component instanceof TSPComponent))
             throw new IllegalArgumentException(String.format("%s: attempted to verify a component of type %s, but must be %s.", this.getClass().getSimpleName(), component.getClass().getSimpleName(), TSPComponent.class.getSimpleName()));
@@ -162,19 +164,19 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
         }
 
     @Override
-    public List<Component> getAllComponents() {
-        return new ArrayList<Component>(graph.getAllEdges());
+    public List<TSPComponent> getAllComponents() {
+        return new ArrayList<TSPComponent>(graph.getAllEdges());
         }
     
     @Override
-    public List<Component> getAllowedComponents(final ConstructiveIndividual partialSolution) {
+    public List<TSPComponent> getAllowedComponents(final ConstructiveIndividual<TSPComponent> partialSolution) {
         assert(partialSolution != null);
         
         if (!(partialSolution instanceof TSPIndividual))
             throw new IllegalStateException(String.format("%s: received an individual of type %s, but must be %s.", this.getClass().getSimpleName(), partialSolution.getClass().getSimpleName(), TSPIndividual.class.getSimpleName()));
         final TSPIndividual tspSol = (TSPIndividual) partialSolution;
         
-        final List<Component> allowedComponents = new ArrayList<Component>();
+        final List<TSPComponent> allowedComponents = new ArrayList<>();
         
         // If the solution is empty, then any non-self-loop component is allowed
         if (partialSolution.isEmpty())
@@ -203,14 +205,14 @@ public class TSPProblem extends Problem implements SimpleProblemForm, Constructi
 
     /** Check whether a solution forms a valid tour of all the nodes. */
     @Override
-    public boolean isCompleteSolution(final ConstructiveIndividual solution) {
+    public boolean isCompleteSolution(final ConstructiveIndividual<TSPComponent> solution) {
         final Set<Integer> visited = nodesVisited(solution);
         return visited.size() == graph.numNodes()
             && visited.containsAll(graph.getNodes())
             && graph.getNodes().containsAll(visited);
         }
         
-    private Set<Integer> nodesVisited(final ConstructiveIndividual partialSolution) {
+    private Set<Integer> nodesVisited(final ConstructiveIndividual<TSPComponent> partialSolution) {
         assert(partialSolution != null);
         final Set<Integer> nodesVisited = new HashSet<Integer>();
         for (final Object c : partialSolution) {
