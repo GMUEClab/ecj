@@ -46,6 +46,7 @@ public class SimpleBreederTest
         }
     
     /** Check that elitism defaults to false. */
+    @Test
     public void testUsingElitism1()
         {
         SimpleBreeder instance = new SimpleBreeder();
