@@ -57,6 +57,9 @@ public class MaxMinUpdateRule implements UpdateRule {
         {
             bestString = bestString.replace('-', '_');
             bestStrategy = BestStrategy.valueOf(bestString);
+            if(min >= max ){
+                state.output.fatal("Max must be greater than min");
+            }
         }
         catch (final NullPointerException e)
         {

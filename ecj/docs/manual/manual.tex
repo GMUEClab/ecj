@@ -13699,9 +13699,10 @@ Ant Colony Optimization algorithms and related methods for combinatorial optimiz
 
 ECJ offers a flexible framework for combinatorial optimization in the \package{ec/co} package.  It's distinguishing feature is a special \class{ConstructiveProblemForm}, which enforces the idea that to define a combinatorial optimization problem you must define not only a {\it fitness function} for evaluating whole solutions, but also a {\it neighborhood} of candidate components that solutions can be built from, and a means of assigning a {\it heuristic value} to individual components.  Describing problems in this abstract way allows us to implement a variety of combinatorial optimization algorithms without making domain-specific assumptions (like assuming that solutions represent paths on a connected graph---a limiting assumption that tends to be built into most implementations of Ant Colony algorithms).
 
-Here we describe how to use three combinatorial optimization methods offered by ECJ:
+Here we describe how to use four combinatorial optimization methods offered by ECJ:
 \begin{itemize}
         \item Ant System (AS)
+        \item Max-Min Ant System (MMAS)
         \item Ant Colony System (ACS)
         \item Greedy Randomized Adaptive Search Procedure (GRASP)
 \end{itemize}
@@ -13810,6 +13811,29 @@ eval.problem =                                  ec.app.knapsack.KnapsackProblem
 eval.problem.knapsack-size =                    165
 eval.problem.sizes =                            23 31 29 44 53 38 63 85 89 82
 eval.problem.values =                           92 57 49 68 60 43 67 84 87 72
+\end{verbatim}
+
+\subsection{Max-Min Ant System}
+
+Max-Min Ant System{MMAS} \cite{mmas} has three key differences from Ant System:
+\begin{itemize}
+        \item Only a single any lays down pheromones this may be either iteration-best or global-best,
+        \item the range of possible pheromones is bounded, and
+        \item the pheromone trails are initially set to their max allowed value.
+\end{itemize}
+
+Max-Min Ant System shares most of its parameters with Ant System but switches out its update rule and includes a maximum and minimum.
+Additionally the pheromone table is given its initial concentration.
+
+\begin{verbatim}
+##############################
+# Max-Min Ant System details
+##############################
+pop.subpop.0.species.update-rule =              ec.co.ant.MaxMinUpdateRule
+pop.subpop.0.species.update-rule.max-value =              100.0
+pop.subpop.0.species.update-rule.min-value =              0.0
+
+pop.subpop.0.species.pheromone-table.initial-concentration =	100.0
 \end{verbatim}
 
 
