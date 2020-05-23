@@ -8,8 +8,8 @@ package ec.simple;
 import ec.EvolutionState;
 import ec.Evolve;
 import ec.Individual;
-import ec.Initializer;
 import ec.Population;
+import ec.Subpopulation;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
 import ec.vector.DoubleVectorIndividual;
@@ -28,7 +28,7 @@ public class SimpleGroupedEvaluatorTest
     {
     private final static Parameter BASE = new Parameter("base");
     private EvolutionState state;
-    
+
     public SimpleGroupedEvaluatorTest()
         {
         }
@@ -41,6 +41,7 @@ public class SimpleGroupedEvaluatorTest
         state.output = Evolve.buildOutput();
         state.output.setThrowsErrors(true);
         state.parameters = new ParameterDatabase();
+        state.evalthreads = 1;
 
         // Parameters for our constructor
         state.parameters.set(BASE.push(SimpleGroupedEvaluator.P_PROBLEM), "ec.test.StubGroupedProblem");
@@ -54,6 +55,9 @@ public class SimpleGroupedEvaluatorTest
         }
     
 
+    /** After calling evaluate() on a population, their fitnesses should all have the 
+     * value determiend by the objective function.
+     */
     @Test
     public void testEvaluate()
         {
@@ -62,20 +66,29 @@ public class SimpleGroupedEvaluatorTest
 
             state.population = getPopulation1();
             instance.evaluatePopulation(state);
+
+            final ArrayList<Individual> inds = state.population.subpops.get(0).individuals;
+            for (final Individual ind : inds)
+                assertEquals(ind.fitness.fitness(), ((DoubleVectorIndividual)ind).genome[0], 0.00001);
         }
     
     /** Create a test population of real-vector individuals. */
-    private ArrayList<Individual> getPopulation1()
+    private Population getPopulation1()
         {
-        return new ArrayList<Individual>() {{
-        add(createTestIndividual(new double[] { 0, 0.25 }));
-        add(createTestIndividual(new double[] { 5, 0.23 }));
-        add(createTestIndividual(new double[] { 10, 0.20 }));
-        add(createTestIndividual(new double[] { 15, 0.17 }));
-        add(createTestIndividual(new double[] { 20, 0.15 }));
-        add(createTestIndividual(new double[] { 25, 0.14 }));
-        add(createTestIndividual(new double[] { 30, 0.1 }));
-        }};
+        final Subpopulation subpop = new Subpopulation();
+        subpop.individuals = new ArrayList<>();
+        subpop.individuals.add(createTestIndividual(new double[] { 0, 0.25 }));
+        subpop.individuals.add(createTestIndividual(new double[] { 5, 0.23 }));
+        subpop.individuals.add(createTestIndividual(new double[] { 10, 0.20 }));
+        subpop.individuals.add(createTestIndividual(new double[] { 15, 0.17 }));
+        subpop.individuals.add(createTestIndividual(new double[] { 20, 0.15 }));
+        subpop.individuals.add(createTestIndividual(new double[] { 25, 0.14 }));
+        subpop.individuals.add(createTestIndividual(new double[] { 30, 0.1 }));
+
+        final Population pop = new Population();
+        pop.subpops = new ArrayList<Subpopulation>();
+        pop.subpops.add(subpop);
+        return pop;
         }
 
     /** Create a DoubleVectorIndividual with the given genome. */
@@ -88,24 +101,4 @@ public class SimpleGroupedEvaluatorTest
         ind.fitness.setup(state, new Parameter(""));
         return ind;
         }
-
-    /** Check that elitism defaults to false. */
-    // @Test
-    // public void testUsingElitism1()
-    //     {
-    //     SimpleBreeder instance = new SimpleBreeder();
-    //     instance.setup(state, BASE);
-    //     assertEquals(false, instance.usingElitism(0));
-    //     assertEquals(false, instance.usingElitism(1));
-    //     }
-
-    // /** Try to check elitism for a subpopulation that doesn't exist. */
-    // @Test (expected = ArrayIndexOutOfBoundsException.class)
-    // public void testUsingElitism2()
-    //     {
-    //     SimpleBreeder instance = new SimpleBreeder();
-    //     instance.setup(state, BASE);
-    //     instance.usingElitism(2);
-    //     }
-    
     }

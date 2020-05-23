@@ -34,7 +34,7 @@ public class StubGroupedProblem extends Problem implements GroupedProblemForm
         for (int i = 0; i < ind.length; i++)
             {
             final double first = ((DoubleVectorIndividual) ind[i]).genome[0];
-            ((SimpleFitness) ind[i].fitness).setFitness(state, first + i, false);
+            ((SimpleFitness) ind[i].fitness).setFitness(state, first, false);
             ind[i].evaluated = true;
             }
         }
