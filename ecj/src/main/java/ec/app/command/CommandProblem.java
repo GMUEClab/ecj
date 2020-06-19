@@ -19,6 +19,10 @@ import ec.simple.SimpleProblemForm;
 import ec.util.Parameter;
 import ec.vector.DoubleVectorIndividual;
 
+/**
+ * A problem that ferries real-valued genomes out to an external shell command to have their 
+ * fitnesses evaluated.
+ */
 public class CommandProblem extends Problem implements SimpleProblemForm, GroupedProblemForm
     {
     private static final long serialVersionUID = 1;
@@ -48,6 +52,16 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
 		return 0;
 	    }
 
+    /**
+     * Evaluate a chunk of individuals by sending them all at once to an external command.
+     * 
+     * @param state The algorithm's state
+     * @param individuals Array of DoubleVectorIndividuals to be evaluated
+     * @param updateFitness Ignored
+     * @param countVictoriesOnly Ignored
+     * @param subpops Ignored
+     * @param threadnum The ID of the thread this job is run on
+     */
 	@Override
 	public void evaluate(EvolutionState state, Individual[] individuals, boolean[] updateFitness, boolean countVictoriesOnly,
             int[] subpops, int threadnum)
@@ -78,12 +92,25 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
             }
 	    }
 
+    /** Evaluate a single individual by sending its genome to an external command. */
 	@Override
     public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum)
         {
 		evaluate(state, new Individual[] { ind }, null, false, null, threadnum);
         }
 
+    /**
+     * Run an external program, writing genomes to its stdin and receiving a response String back
+     * on its stdout.
+     * 
+     * We assume that the external program will return exactly the same number of lines of output as
+     * it is given.
+     * 
+     * @param individuals Array of DoubleVectorIndividuals to be sent to the command.
+     * @return The results the command writes back.
+     * @throws IOException
+     * @throws InterruptedException
+     */
     private String runCommand(final Individual[] individuals) throws IOException, InterruptedException
         {
         final Process p = Runtime.getRuntime().exec(commandPath);
@@ -128,6 +155,10 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
             }
         }
 
+    /**
+     * Parse the String of results that we get back from the external command by
+     * interpreting it as a list of fitness values, one per line.
+     */
     public static List<Double> parseFitnesses(final String simResult)
         {
             final String[] lines = simResult.split("\n");

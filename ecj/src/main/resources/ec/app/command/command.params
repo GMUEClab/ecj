@@ -1,0 +1,69 @@
+# Copyright 2020 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+############################################################
+# This example shows how to use CommandProblem to optimize a
+# fitness function that is defined by an external program.
+############################################################
+
+parent.0 = ../../simple/simple.params
+
+##############################
+# Logging
+##############################
+stat =					                        ec.simple.SimpleStatistics
+stat.file = 			                        $out.stat
+
+
+##############################
+# Problem
+##############################
+eval.problem =                                  ec.app.command.CommandProblem
+eval.problem.command-path =                     python -c "import sys; print(sum([float(x)**2 for x in line] for line in sys.stdin))"
+
+
+##############################
+# Population Model
+##############################
+generations =				                    1000
+quit-on-run-complete =			                true
+breed =					                        ec.es.MuCommaLambdaBreeder
+es.mu.0 = 				                        2
+es.lambda.0 =                                   20
+
+
+##############################
+# Representation
+##############################
+pop.subpop.0.size =			                    1000
+pop.subpop.0.species =                          ec.vector.FloatVectorSpecies
+pop.subpop.0.species.fitness =		            ec.simple.SimpleFitness
+pop.subpop.0.species.ind =		                ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.genome-size = 	            100
+pop.subpop.0.species.min-gene =	                -5.12
+pop.subpop.0.species.max-gene =	                5.12
+
+
+##############################
+# Operator Pipeline
+##############################
+pop.subpop.0.species.pipe = 		            ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0 = 	        ec.vector.breed.VectorCrossoverPipeline
+pop.subpop.0.species.pipe.source.0.source.0 =   ec.es.ESSeletion
+pop.subpop.0.species.pipe.source.0.source.1 =   same
+
+# Mutation parameters
+pop.subpop.0.species.mutation-prob =            0.01
+pop.subpop.0.species.mutation-stdev =           1.0
+pop.subpop.0.species.mutation-type =            gauss
+pop.subpop.0.species.mutation-bounded =	        true
+
+# Crossover parameters
+# ECJ will complain if this isn't set even if we don't use it, so here's a default
+pop.subpop.0.species.crossover-type =           one
+
+# Selection parameters
+select.tournament.size = 		                2
+
+
