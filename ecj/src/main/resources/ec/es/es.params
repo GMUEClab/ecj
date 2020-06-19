@@ -36,9 +36,9 @@ parent.0 = ../simple/simple.params
 # We'll default the lambda to 10.  What the heck.
 # ================================================================
 
-es.mu.0 =				1
+es.mu.0 =				    1
 es.lambda.0 =				10
-breed =					ec.es.MuCommaLambdaBreeder
+breed =					    ec.es.MuCommaLambdaBreeder
 
 # you'll need to remember to set up the system so that one, and exactly
 # one, selection method called each time is an ESSelectionMethod.  Here's

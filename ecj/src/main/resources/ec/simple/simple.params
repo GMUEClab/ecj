@@ -16,7 +16,7 @@ parent.0 = ../ec.params
 # ==============================
 
 # simple generational evolution
-state = 				ec.simple.SimpleEvolutionState
+state = 				    ec.simple.SimpleEvolutionState
 
 
 
@@ -24,33 +24,33 @@ state = 				ec.simple.SimpleEvolutionState
 # ==============================
 
 # We're using the standard initialization method
-init = 					ec.simple.SimpleInitializer
+init = 					    ec.simple.SimpleInitializer
 
 # We're using the standard (empty) finalization method
-finish = 	        		ec.simple.SimpleFinisher
+finish = 	        	    ec.simple.SimpleFinisher
 
 # We're using the standard (empty) exchange method
-exch = 					ec.simple.SimpleExchanger
+exch = 					    ec.simple.SimpleExchanger
 
 # We're using standard breeding -- no cross-population breeding
-breed =					ec.simple.SimpleBreeder
+breed =					    ec.simple.SimpleBreeder
 
 # We're using standard evaluation -- no coevolution
-eval =					ec.simple.SimpleEvaluator
+eval =					    ec.simple.SimpleEvaluator
 
 # We're using simple statistics
-stat =					ec.simple.SimpleStatistics
+stat =					    ec.simple.SimpleStatistics
 
 # run for 51 generations, quit prematurely if I find something ideal
 generations =				51
-quit-on-run-complete =			true
+quit-on-run-complete =		true
 
 
 
 # ec.Initializer
 # ==============================
 
-pop = 					ec.Population
+pop = 					    ec.Population
 
 
 # ec.Population
@@ -86,6 +86,6 @@ pop.subpop.0.duplicate-retries =	0
 
 # output statistics to the file "out.stat" in the directory
 # the run was started in
-stat.file				$out.stat
+stat.file =				    $out.stat
 
 
