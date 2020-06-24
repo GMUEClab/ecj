@@ -83,6 +83,7 @@ public class ESSelection extends SelectionMethod
         int parent = pos / (breeder.lambda[subpopulation] / breeder.mu[subpopulation]); // note outer integer division
 
         // increment our count
+        // XXX What's this?  Why is it commented out? --Siggy
         //breeder.count[thread]++;
         
         return parent;
