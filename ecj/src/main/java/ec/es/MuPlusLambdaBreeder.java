@@ -33,29 +33,7 @@ public class MuPlusLambdaBreeder extends MuCommaLambdaBreeder
     private static final long serialVersionUID = 1;
     
     public int maximumMuLambdaDivisor() { return 1; }
- 
-    /** Sets all subpopulations in pop to the expected mu+lambda size.  Does not fill new slots with individuals. */
-    //    public Population setToMuPlusLambda(Population pop, EvolutionState state)
-    //        {
-    //        for(int x = 0; x< pop.subpops.size(); x++)
-    //            {
-    //            int s = mu[x]+lambda[x];
-    //            
-    //            // check to see if the array's big enough
-    //            if (pop.subpops.get(x).individuals.size() != s)
-    //                // need to increase
-    //                {
-    //                Individual[] newinds = new Individual[s];
-    //                System.arraycopy(pop.subpops.get(x).individuals,0,newinds,0,
-    //                    s < pop.subpops.get(x).individuals.size() ?
-    //                    s : pop.subpops.get(x).individuals.size());
-    //                pop.subpops.get(x).individuals = new ArrayList<Individual>(Arrays.asList(newinds));
-    //                }
-    //            }
-    //        return pop;
-    //        }
 
-    // by Ermo. I guess the method on the top is useless now, and accordingly, I changed the method at the bottom to this form
     public Population postProcess(Population newpop, Population oldpop, EvolutionState state)
         {
         // now we need to dump the old population into the high end of the new population
@@ -68,22 +46,4 @@ public class MuPlusLambdaBreeder extends MuCommaLambdaBreeder
             }
         return newpop;
         }
-    
-    //    public Population postProcess(Population newpop, Population oldpop, EvolutionState state)
-    //        {
-    //        // first we need to expand newpop to mu+lambda in size
-    //        newpop = setToMuPlusLambda(newpop,state);
-    //        
-    //        // now we need to dump the old population into the high end of the new population
-    //         
-    //        for(int x = 0; x< newpop.subpops.size(); x++)
-    //            {
-    //            for(int y=0;y<mu[x];y++)
-    //                {
-    //                newpop.subpops.get(x).individuals.set(y+lambda[x],
-    //                    (Individual)(oldpop.subpops.get(x).individuals.get(y).clone()));
-    //                }
-    //            }
-    //        return newpop;
-    //        }
     }
