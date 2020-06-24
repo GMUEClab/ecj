@@ -2520,3 +2520,15 @@ Version		Change Log
 	Unit test coverage improved to 13%
 	System test coverage improved to 41%
 	
+28 Viva la prerelease!
+	Resolved a lot of linter warnings in various packages
+	Maven pom.xml fixes to resolve issues with JDK12+
+	JZlib compression now defaults to off in ec/eval/master.params
+			because the version available in Maven causes obscure errors
+	Implemented max-min ant system
+	Fixed a bug in NEATNetwork
+	Added a new pie chart and time series chart to the GUI
+	Added some socket-related parameters to master-slave evaluation
+	Added ec.simple.SimpleGroupedEvaluator
+	Added ec.app.command.CommandProblem and examples
+	Expanded BBOB benchmarks
