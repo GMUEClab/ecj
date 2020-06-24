@@ -1,8 +1,10 @@
 package ec.app.command;
 
+import java.lang.ProcessBuilder;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -27,14 +29,17 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
     {
     private static final long serialVersionUID = 1;
 
-    public final static String P_COMMAND_PATH = "command-path";
+    public final static String P_COMMAND = "command";
     public final static String DELIMITER = ",";
 
-    private String commandPath;
+    private ProcessBuilder processBuilder;
 
     public void setup(final EvolutionState state, final Parameter base)
         {
-        this.commandPath = state.parameters.getString(base.push(P_COMMAND_PATH), null);
+        final String command = state.parameters.getString(base.push(P_COMMAND), null);
+        if (command == null)
+            state.output.fatal(String.format("%s: no value given for parameter '%s', but we need a command to run.", this.getClass().getSimpleName(), base.push(P_COMMAND)));
+        this.processBuilder = new ProcessBuilder(command);
         }
 
 	@Override
@@ -76,7 +81,7 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
             final List<Double> fitnesses = parseFitnesses(simulationResult);
 
             if (fitnesses.size() != individuals.length)
-                    throw new IllegalStateException(String.format("%s: Sent %d individuals to external command %s, but the returned simulation results had %d lines.", CommandProblem.class.getSimpleName(), individuals.length, commandPath, fitnesses.size()));
+                    throw new IllegalStateException(String.format("Sent %d individuals to external command, but the returned simulation results had %d lines.", CommandProblem.class.getSimpleName(), individuals.length, fitnesses.size()));
                 
             for (int i = 0; i < individuals.length; i++)
                 {
@@ -88,7 +93,7 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
             }
         catch (final Exception e)
             {
-            state.output.fatal(e.toString());
+            state.output.fatal(String.format("%s: %s", this.getClass().getSimpleName(), e));
             }
 	    }
 
@@ -113,17 +118,21 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
      */
     private String runCommand(final Individual[] individuals) throws IOException, InterruptedException
         {
-        final Process p = Runtime.getRuntime().exec(commandPath);
+        processBuilder.redirectError(new File("problem_err.txt"));
+        final Process p = processBuilder.start();
 
         // Write genomes to the command's stdin
         final Writer carlsimInput = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
         writeIndividuals(individuals, carlsimInput);
         carlsimInput.close(); // Sends EOF
-        p.waitFor();
+        final int exitCode = p.waitFor();
+
+        if (exitCode != 0)
+            throw new IllegalStateException(String.format("External command terminated with exit code %d.", exitCode));
 
         // Read the output from the command's stdout
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
         final StringBuilder sb = new StringBuilder();
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String line = "";			
         while ((line = reader.readLine())!= null) {
             sb.append(line).append("\n");
@@ -161,13 +170,20 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
      */
     public static List<Double> parseFitnesses(final String simResult)
         {
-            final String[] lines = simResult.split("\n");
-            final List<Double> fitnesses = new ArrayList<>();
-            for (final String f : lines)
-                {
-                final double realFitness = Double.valueOf(f);
-                fitnesses.add(realFitness);
-                }
-            return fitnesses;
+            if (simResult.isEmpty())
+                throw new IllegalArgumentException(String.format("%s: response from external fitness command was empty.", CommandProblem.class.getSimpleName()));
+
+            try {
+                final String[] lines = simResult.split("\n");
+                final List<Double> fitnesses = new ArrayList<>();
+                for (final String f : lines)
+                    {
+                    final double realFitness = Double.valueOf(f);
+                    fitnesses.add(realFitness);
+                    }
+                return fitnesses;
+            } catch (Exception e) {
+                throw new IllegalArgumentException(String.format("%s: error (%s) while parsing fitness response \"%s\"", CommandProblem.class.getSimpleName(), e, simResult));
+            }
         }
     }
