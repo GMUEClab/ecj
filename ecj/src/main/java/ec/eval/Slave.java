@@ -415,7 +415,7 @@ public class Slave
                 
                     if (output != null) output.close();
                     output = new Output(false);              // do not store messages, just print them
-                    output.setThrowsErrors(true);  // don't do System.exit(1);
+                    output.setThrowsErrors(true);  			 // don't do System.exit(1);
                 
                     // stdout is always log #0. stderr is always log #1.
                     // stderr accepts announcements, and both are fully verbose
@@ -540,19 +540,22 @@ public class Slave
                 {
                 // here we restart if necessary
                 try { socket.close(); } catch (Exception e2) { }
-                if (oneShot) System.exit(0);
+                if (oneShot) { throw e; }
                 }
             catch (OutOfMemoryError e)
                 {
-                // Let's try fixing things
+                try { socket.close(); } catch (Exception e2) { }
+                if (oneShot) { throw e; }
+                
+                // Otherwise let's try fixing things.  This will probably fail
+                socket = null;
                 state = null;
                 System.gc();
-                try { socket.close(); } catch (Exception e2) { }
-                socket = null;
-                System.gc();
                 System.err.println(e);
-                if (oneShot) System.exit(0);
                 }
+                
+            if (oneShot) { if (!silent) Output.initialMessage("\n\nExiting Slave: this shouldn't have happened"); }		// we shouldn't be able to get here
+            
             if (!silent) Output.initialMessage("\n\nResetting Slave");
             }
         }

@@ -375,12 +375,13 @@ public class Evolve
 
     /** Constructs and sets up an Output object. */
     
-    public static Output buildOutput()
+    public static Output buildOutput(boolean throwsErrors)
         {
         Output output;
         // 1. create the output
 
         output = new Output(true);
+        output.setThrowsErrors(throwsErrors);
 
         // stdout is always log #0.  stderr is always log #1.
         // stderr accepts announcements, and both are fully verbose 
@@ -402,7 +403,7 @@ public class Evolve
                 
     public static EvolutionState initialize(ParameterDatabase parameters, int randomSeedOffset)
         {
-        return initialize(parameters, randomSeedOffset, buildOutput());
+        return initialize(parameters, randomSeedOffset, buildOutput(false));
         }
 
 

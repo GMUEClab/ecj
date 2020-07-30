@@ -473,8 +473,7 @@ public class Output implements Serializable
         String er = "STARTUP ERROR:\n" + s;
         System.err.println(er);
 
-        //System.exit(1);
-        exitWithError(null, er, false);
+        exitWithError(null, er, throwsErrors);
         }
 
     /** Prints an initial error to System.err.  This is only to
@@ -489,8 +488,7 @@ public class Output implements Serializable
             System.err.println("PARAMETER: " + p1);
             }
 
-        //System.exit(1);
-        exitWithError(null, er, false);
+        exitWithError(null, er, throwsErrors);
         }
 
     /** Prints an initial error to System.err.  This is only to
@@ -511,8 +509,7 @@ public class Output implements Serializable
             System.err.println("     ALSO: " + p2);
             }
 
-        //System.exit(1);
-        exitWithError(null, er, false);
+        exitWithError(null, er, throwsErrors);
         }
 
     /** Prints an initial message to System.err.  This is only to

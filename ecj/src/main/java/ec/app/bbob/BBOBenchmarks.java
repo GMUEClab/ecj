@@ -157,8 +157,7 @@ public class BBOBenchmarks extends Problem implements SimpleProblemForm {
 
         state = new EvolutionState();
         state.parameters = params;
-        state.output = Evolve.buildOutput();
-        state.output.setThrowsErrors(true);
+        state.output = Evolve.buildOutput(true);
         state.random = new MersenneTwisterFast[] { new MersenneTwisterFast() };
 
         BBOBenchmarks instance = new BBOBenchmarks();
