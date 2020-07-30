@@ -195,7 +195,7 @@ public class Slave
                 catch(Exception e)
                     {
                     e.printStackTrace();
-                    Output.initialError("An exception was generated upon reading the parameter file \"" + args[x+1] + "\".\nHere it is:\n" + e); 
+                    Output.initialError("An exception was generated upon reading the parameter file \"" + args[x+1] + "\".\nHere it is:\n" + e, true); 
                     }
         
         // search for a resource class (we may or may not use this)
@@ -205,7 +205,7 @@ public class Slave
                 try
                     {
                     if (parameters != null)  // uh oh
-                        Output.initialError("Both -from and -at arguments provided.  This is not permitted.\nFor help, try:  java ec.Evolve -help");
+                        Output.initialError("Both -from and -at arguments provided.  This is not permitted.\nFor help, try:  java ec.Evolve -help", true);
                     else 
                         cls = Class.forName(args[x+1]);
                     break;
@@ -215,7 +215,7 @@ public class Slave
                     e.printStackTrace();
                     Output.initialError(
                         "An exception was generated upon extracting the class to load the parameter file relative to: " + args[x+1] + 
-                        "\nFor help, try:  java ec.Evolve -help\n\n" + e);
+                        "\nFor help, try:  java ec.Evolve -help\n\n" + e, true);
                     }
                     
         // search for a resource (we may or may not use this)
@@ -224,7 +224,7 @@ public class Slave
                 try
                     {
                     if (parameters != null)  // uh oh
-                        Output.initialError("Both -file and -from arguments provided.  This is not permitted.\nFor help, try:  java ec.Evolve -help");
+                        Output.initialError("Both -file and -from arguments provided.  This is not permitted.\nFor help, try:  java ec.Evolve -help", true);
                     else 
                         {
                         if (cls == null)  // no -at
@@ -242,13 +242,13 @@ public class Slave
                     {
                     e.printStackTrace();
                     Output.initialError(
-                        "The parameter file is missing at the resource location: " + args[x+1] + " relative to the class: " + cls + "\n\nFor help, try:  java ec.Evolve -help");
+                        "The parameter file is missing at the resource location: " + args[x+1] + " relative to the class: " + cls + "\n\nFor help, try:  java ec.Evolve -help", true);
                     }
 
         
         
         if (parameters == null)
-            Output.initialError("No parameter file was specified." ); 
+            Output.initialError("No parameter file was specified.", true ); 
                 
         // 5. Determine whether or not to return entire Individuals or just Fitnesses
         //    (plus whether or not the Individual has been evaluated).
@@ -272,11 +272,11 @@ public class Slave
         String masterHost = parameters.getString(
             new Parameter(P_EVALMASTERHOST),null );
         if (masterHost == null)
-            Output.initialError("Master Host missing", new Parameter(P_EVALMASTERHOST));
+            Output.initialError("Master Host missing", new Parameter(P_EVALMASTERHOST), true);
         int masterPort = parameters.getInt(
             new Parameter(P_EVALMASTERPORT),null, 0);
         if (masterPort == -1)
-            Output.initialError("Master Port missing", new Parameter(P_EVALMASTERPORT));
+            Output.initialError("Master Port missing", new Parameter(P_EVALMASTERPORT), true);
                 
         runTime = parameters.getInt(new Parameter(P_RUNTIME), null, 0); 
                 
@@ -293,7 +293,7 @@ public class Slave
         if (runEvolve && !returnIndividuals)
             {
             Output.initialError("You have the slave running in 'evolve' mode, but it's only returning fitnesses to the master, not whole individuals.  This is almost certainly wrong.",
-                new Parameter(P_RUNEVOLVE), new Parameter(P_RETURNINDIVIDUALS));
+                new Parameter(P_RUNEVOLVE), new Parameter(P_RETURNINDIVIDUALS), true);
             }
         
         if (!silent) 
@@ -527,13 +527,13 @@ public class Slave
                     {
                     if (state != null)
                         state.output.fatal(e.getMessage());
-                    else if (!silent) Output.initialError("FATAL ERROR (EvolutionState not created yet): " + e.getMessage());
+                    else if (!silent) Output.initialError("FATAL ERROR (EvolutionState not created yet): " + e.getMessage(), true);
                     }
                 catch (IOException e)
                     {
                     if (state != null)
                         state.output.fatal("Unable to connect to master:\n" + e);
-                    else if (!silent) Output.initialError("FATAL ERROR (EvolutionState not created yet): " + e);
+                    else if (!silent) Output.initialError("FATAL ERROR (EvolutionState not created yet): " + e, true);
                     }
                 }
             catch (Output.OutputExitException e)

@@ -2532,3 +2532,11 @@ Version		Change Log
 	Added ec.simple.SimpleGroupedEvaluator
 	Added ec.app.command.CommandProblem and examples
 	Expanded BBOB benchmarks
+	Tweaks to buildOutput to allow throwing errors on initialError
+		rather than System.exit(...).  This facilitates using
+		Evolve inside an outer tool.
+	Slaves, Console, IslandExchange, etc., always throw exceptions on
+		exit now.  This facilitates using these tools inside 
+		outer tools without a System.exit(...).
+	SlaveMonitor now throws a fatal rather than an initialError.
+

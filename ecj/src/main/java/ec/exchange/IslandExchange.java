@@ -425,16 +425,16 @@ public class IslandExchange extends Exchanger
                     { Output.initialError(
                             "A File Not Found Exception was generated upon" +
                             "reading the parameter file \"" + args[x+1] + 
-                            "\".\nHere it is:\n" + e); }
+                            "\".\nHere it is:\n" + e, true); }
                 catch(IOException e)
                     { Output.initialError(
                             "An IO Exception was generated upon reading the" +
                             "parameter file \"" + args[x+1] +
-                            "\".\nHere it is:\n" + e); } 
+                            "\".\nHere it is:\n" + e, true); } 
                 }
         if (parameters==null)
             Output.initialError(
-                "No parameter file was specified." ); 
+                "No parameter file was specified.", true); 
 
         // 1. create the output
         //store = (parameters.getBoolean(new Parameter(Evolve.P_STORE),null,false));

@@ -742,19 +742,19 @@ public class Console extends JFrame
             Output.initialError(
                 "A File Not Found Exception was generated upon " +
                 "reading the parameter file \"" + f.getPath() + 
-                "\".\nHere it is:\n" + ex);
+                "\".\nHere it is:\n" + ex, true);
             }
         catch (IOException ex) 
             {
             Output.initialError(
                 "An IO Exception was generated upon reading the " +
                 "parameter file \"" + f.getPath() + 
-                "\".\nHere it is:\n" + ex);
+                "\".\nHere it is:\n" + ex, true);
             }
         
         if (parameters == null) 
             {
-            Output.initialError("No parameter file was loaded");
+            Output.initialError("No parameter file was loaded", true);
             } else 
             {
             paramPanel.loadParameters();
@@ -780,21 +780,21 @@ public class Console extends JFrame
             Output.initialError(
                 "A ClassNotFoundException was generated upon" +
                 "starting up from a checkpoint." +
-                "\nHere it is:\n" + e); 
+                "\nHere it is:\n" + e, true); 
             }
         catch(ClassNotFoundException e) 
             {
             Output.initialError(
                 "A ClassNotFoundException was generated upon" +
                 "starting up from a checkpoint." +
-                "\nHere it is:\n" + e); 
+                "\nHere it is:\n" + e, true); 
             }
         catch (IOException e) 
             { 
             Output.initialError(
                 "An IO Exception was generated upon" +
                 "starting up, probably in setting up a log" +
-                "\nHere it is:\n" + e); 
+                "\nHere it is:\n" + e, true); 
             }
         }
     
@@ -883,13 +883,13 @@ public class Console extends JFrame
                   new Parameter(Evolve.P_BREEDTHREADS),null,1);
                   if (breedthreads < 1)
                   Output.initialError("Number of breeding threads should be an integer >0.",
-                  new Parameter(Evolve.P_BREEDTHREADS));
+                  new Parameter(Evolve.P_BREEDTHREADS), true);
                 
                   int evalthreads = parameters.getInt(
                   new Parameter(Evolve.P_EVALTHREADS),null,1);
                   if (evalthreads < 1)
                   Output.initialError("Number of eval threads should be an integer >0.",
-                  new Parameter(Evolve.P_EVALTHREADS));
+                  new Parameter(Evolve.P_EVALTHREADS), true);
                 */
                 
                 int breedthreads = Evolve.determineThreads(output, parameters, new Parameter(Evolve.P_BREEDTHREADS));
@@ -917,7 +917,7 @@ public class Console extends JFrame
                         if (seeds[x]==seeds[y])
                             
                             {
-                            Output.initialError(Evolve.P_SEED+"."+x+" ("+seeds[x]+") and "+Evolve.P_SEED+"."+y+" ("+seeds[y]+") ought not be the same seed."); 
+                            Output.initialError(Evolve.P_SEED+"."+x+" ("+seeds[x]+") and "+Evolve.P_SEED+"."+y+" ("+seeds[y]+") ought not be the same seed.", true); 
                             }
                     random[x] = Evolve.primeGenerator(new MersenneTwisterFast(seeds[x]));   // we prime the generator to be more sure of randomness.
                     }

@@ -241,7 +241,7 @@ public class SlaveMonitor
 				tmpIn = Output.makeCompressingInputStream(tmpIn);
 				tmpOut = Output.makeCompressingOutputStream(tmpOut);
 				if (tmpIn == null || tmpOut == null)
-					Output.initialError("You do not appear to have JZLib installed on your system, and so must set eval.compression=false. " +
+					state.output.fatal("You do not appear to have JZLib installed on your system, and so must set eval.compression=false. " +
 						"To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/");
 				}
 																				

@@ -215,7 +215,7 @@ public class Evolve
                     }
                 catch(Exception e)
                     {
-                    Output.initialError("An exception was generated upon starting up from a checkpoint.\nFor help, try:  java ec.Evolve -help\n\n" + e);
+                    Output.initialError("An exception was generated upon starting up from a checkpoint.\nFor help, try:  java ec.Evolve -help\n\n" + e, true);
                     }
                 }
         return null;  // should never happen
@@ -238,7 +238,7 @@ public class Evolve
                 catch(Exception e)
                     {
                     e.printStackTrace();
-                    Output.initialError("An exception was generated upon reading the parameter file \"" + args[x+1] + "\".\nHere it is:\n" + e); 
+                    Output.initialError("An exception was generated upon reading the parameter file \"" + args[x+1] + "\".\nHere it is:\n" + e, true); 
                     }
                     
         // search for a resource class (we may or may not use this)
@@ -248,7 +248,7 @@ public class Evolve
                 try
                     {
                     if (parameters != null)  // uh oh
-                        Output.initialError("Both -from and -at arguments provided.  This is not permitted.\nFor help, try:  java ec.Evolve -help");
+                        Output.initialError("Both -from and -at arguments provided.  This is not permitted.\nFor help, try:  java ec.Evolve -help", true);
                     else 
                         cls = Class.forName(args[x+1]);
                     break;
@@ -258,7 +258,7 @@ public class Evolve
                     e.printStackTrace();
                     Output.initialError(
                         "An exception was generated upon extracting the class to load the parameter file relative to: " + args[x+1] + 
-                        "\nFor help, try:  java ec.Evolve -help\n\n" + e);
+                        "\nFor help, try:  java ec.Evolve -help\n\n" + e, true);
                     }
                     
         // search for a resource (we may or may not use this)
@@ -267,7 +267,7 @@ public class Evolve
                 try
                     {
                     if (parameters != null)  // uh oh
-                        Output.initialError("Both -file and -from arguments provided.  This is not permitted.\nFor help, try:  java ec.Evolve -help");
+                        Output.initialError("Both -file and -from arguments provided.  This is not permitted.\nFor help, try:  java ec.Evolve -help", true);
                     else 
                         {
                         if (cls == null)  // no -at
@@ -281,11 +281,11 @@ public class Evolve
                     {
                     e.printStackTrace();
                     Output.initialError(
-                        "The parameter file is missing at the resource location: " + args[x+1] + " relative to the class: " + cls + "\n\nFor help, try:  java ec.Evolve -help");
+                        "The parameter file is missing at the resource location: " + args[x+1] + " relative to the class: " + cls + "\n\nFor help, try:  java ec.Evolve -help", true);
                     }
 
         if (parameters == null)
-            Output.initialError("No parameter or checkpoint file was specified.\nFor help, try:   java ec.Evolve -help" );
+            Output.initialError("No parameter or checkpoint file was specified.\nFor help, try:   java ec.Evolve -help", true);
         return parameters;
         }
     
@@ -699,13 +699,13 @@ public class Evolve
             try
                 {
                 if (state.runtimeArguments == null)
-                    Output.initialError("Checkpoint completed from job started by foreign program (probably GUI).  Exiting...");
+                    Output.initialError("Checkpoint completed from job started by foreign program (probably GUI).  Exiting...", true);
                 args = state.runtimeArguments;                          // restore runtime arguments from checkpoint
                 currentJob = ((Integer)(state.job[0])).intValue() + 1;  // extract next job number
                 }
             catch (Exception e)
                 {
-                Output.initialError("EvolutionState's jobs variable is not set up properly.  Exiting...");
+                Output.initialError("EvolutionState's jobs variable is not set up properly.  Exiting...", true);
                 }
 
             state.run(EvolutionState.C_STARTED_FROM_CHECKPOINT);
@@ -722,11 +722,11 @@ public class Evolve
         if (currentJob == 0)  // no current job number yet
             currentJob = parameters.getIntWithDefault(new Parameter("current-job"), null, 0);
         if (currentJob < 0)
-            Output.initialError("The 'current-job' parameter must be >= 0 (or not exist, which defaults to 0)");
+            Output.initialError("The 'current-job' parameter must be >= 0 (or not exist, which defaults to 0)", true);
             
         int numJobs = parameters.getIntWithDefault(new Parameter("jobs"), null, 1);
         if (numJobs < 1)
-            Output.initialError("The 'jobs' parameter must be >= 1 (or not exist, which defaults to 1)");
+            Output.initialError("The 'jobs' parameter must be >= 1 (or not exist, which defaults to 1)", true);
                 
                 
         // Now we know how many jobs remain.  Let's loop for that many jobs.  Each time we'll

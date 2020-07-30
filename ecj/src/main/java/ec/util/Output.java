@@ -468,7 +468,7 @@ public class Output implements Serializable
 
     /** Prints an initial error to System.err.  This is only to
         be used by ec.Evolve in starting up the system. */
-    public static void initialError(String s)
+    public static void initialError(String s, boolean throwsErrors)
         {
         String er = "STARTUP ERROR:\n" + s;
         System.err.println(er);
@@ -478,7 +478,7 @@ public class Output implements Serializable
 
     /** Prints an initial error to System.err.  This is only to
         be used by ec.Evolve in starting up the system. */
-    public static void initialError(String s, Parameter p1)
+    public static void initialError(String s, Parameter p1, boolean throwsErrors)
         {
         String er = "STARTUP ERROR:\n" + s;
         System.err.println(er);
@@ -493,7 +493,7 @@ public class Output implements Serializable
 
     /** Prints an initial error to System.err.  This is only to
         be used by ec.Evolve in starting up the system. */
-    public static void initialError(String s, Parameter p1, Parameter p2)
+    public static void initialError(String s, Parameter p1, Parameter p2, boolean throwsErrors)
         {
         String er = "STARTUP ERROR:\n" + s;
         System.err.println(er);
