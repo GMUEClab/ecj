@@ -349,7 +349,7 @@ public class SimpleShortStatistics extends Statistics
             // hook for KozaShortStatistics etc.
             if (output && doSubpops) printExtraSubpopStatisticsAfter(state, x);
             }
-        if(!somethingevaluated) { state.output.fatal("There are no individuals with a valid fitness; Cannot compute best-so-far statistics"); }
+        if(!somethingevaluated) { state.output.fatal("There are no individuals with a valid fitness (that is, with their evaluated set); Cannot compute best-so-far statistics"); }
   
   
         // Now gather per-Population statistics
