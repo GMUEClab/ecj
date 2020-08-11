@@ -373,8 +373,14 @@ public class Evolve
         }
 
 
-    /** Constructs and sets up an Output object. */
-    
+    /** Constructs and sets up an Output object which always issues errors in the traditional fashion rather than throwing them. */    
+    public static Output buildOutput()
+		{
+		return buildOutput(false);
+		}
+		
+		
+    /** Constructs and sets up an Output object. */    
     public static Output buildOutput(boolean throwsErrors)
         {
         Output output;
