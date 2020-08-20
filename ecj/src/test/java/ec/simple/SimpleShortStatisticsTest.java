@@ -7,16 +7,13 @@ package ec.simple;
 
 import ec.EvolutionState;
 import ec.Evolve;
-import ec.Initializer;
 import ec.Population;
 import ec.Individual;
 import ec.Subpopulation;
 import ec.util.Output;
-import ec.util.OutputException;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
 import ec.vector.IntegerVectorIndividual;
-import ec.vector.IntegerVectorSpecies;
 import java.util.ArrayList;
 import java.util.Arrays;
 import ec.test.TestStatistics;
@@ -44,9 +41,11 @@ public class SimpleShortStatisticsTest
         state = new EvolutionState();
 	    state.output = Evolve.buildOutput();
         state.output.setThrowsErrors(true);
+        state.output.getLog(0).silent = true;
+        state.output.getLog(1).silent = true;
 	    state.parameters = new ParameterDatabase();
 	    state.population = new Population();
-	    state.population.subpops = new ArrayList();
+	    state.population.subpops = new ArrayList<>();
         state.population.subpops.add(new Subpopulation());
 	    state.population.subpops.get(0).individuals = getTestPopulation();
 	    state.parameters.set(BASE.push(TestStatistics.P_STATISTICS_FILE), "/tmp/a.txt");
@@ -61,8 +60,9 @@ public class SimpleShortStatisticsTest
 	    statInd.doHeader = true;
 	    statInd.preInitializationStatistics(state);
 	    state.output.flush();
-	    BufferedReader Buff = new BufferedReader(new FileReader("/tmp/a.txt"));
-        String text = Buff.readLine();
+	    BufferedReader buff = new BufferedReader(new FileReader("/tmp/a.txt"));
+        String text = buff.readLine();
+        buff.close();
         assertEquals("generation meanFitness bestOfGenFitness bestSoFarFitness", text);
 	}
 	
@@ -81,8 +81,9 @@ public class SimpleShortStatisticsTest
 	    statInd.postInitializationStatistics(state);
 	    statInd.postEvaluationStatistics(state);
         state.output.flush();
-        BufferedReader Buff = new BufferedReader(new FileReader("/tmp/a.txt"));
-        String text = Buff.readLine();
+        BufferedReader buff = new BufferedReader(new FileReader("/tmp/a.txt"));
+        String text = buff.readLine();
+        buff.close();
         assertEquals("0 0.55 1.0 1.0", text);
         }
 
@@ -108,18 +109,18 @@ public class SimpleShortStatisticsTest
 
     private ArrayList<Individual> getTestPopulation()
         {
-        return new ArrayList<Individual>()  {{
-        	add(createTestIndividual(new int[] { 1, 1, 1 }, 0.7));
-        	add(createTestIndividual(new int[] { 4, 3, 3 }, 0.2));
-        	add(createTestIndividual(new int[] { 1, 0, 1 }, 0.3));
-        	add(createTestIndividual(new int[] { 2, 4, 2 }, 0.6));
-        	add(createTestIndividual(new int[] { 3, 3, 3 }, 0.8));
-        	add(createTestIndividual(new int[] { 1, 1, 2 }, 0.1));
-        	add(createTestIndividual(new int[] { 9, 9, 9 }, 1.0));
-        	add(createTestIndividual(new int[] { 3, 4, 2 }, 0.5));
-        	add(createTestIndividual(new int[] { 2, 2, 0 }, 0.4));
-        	add(createTestIndividual(new int[] { 7, 7, 7 }, 0.9));
-	    }};
+        final ArrayList<Individual> inds = new ArrayList<>();
+        inds.add(createTestIndividual(new int[] { 1, 1, 1 }, 0.7));
+        inds.add(createTestIndividual(new int[] { 4, 3, 3 }, 0.2));
+        inds.add(createTestIndividual(new int[] { 1, 0, 1 }, 0.3));
+        inds.add(createTestIndividual(new int[] { 2, 4, 2 }, 0.6));
+        inds.add(createTestIndividual(new int[] { 3, 3, 3 }, 0.8));
+        inds.add(createTestIndividual(new int[] { 1, 1, 2 }, 0.1));
+        inds.add(createTestIndividual(new int[] { 9, 9, 9 }, 1.0));
+        inds.add(createTestIndividual(new int[] { 3, 4, 2 }, 0.5));
+        inds.add(createTestIndividual(new int[] { 2, 2, 0 }, 0.4));
+        inds.add(createTestIndividual(new int[] { 7, 7, 7 }, 0.9));
+        return inds;
         }
 
     private IntegerVectorIndividual createTestIndividual(final int[] genome, final double fitness)

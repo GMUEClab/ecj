@@ -41,6 +41,8 @@ public class HypervolumeStatisticsTest
         state = new EvolutionState();
         state.output = Evolve.buildOutput();
         state.output.setThrowsErrors(true);
+        state.output.getLog(0).silent = true;
+        state.output.getLog(1).silent = true;
         state.parameters = new ParameterDatabase();
         state.parameters.set(BASE.push(HypervolumeStatistics.P_REFERENCE_POINT), "0 0 0");
         }

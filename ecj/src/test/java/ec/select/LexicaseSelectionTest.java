@@ -39,6 +39,8 @@ public class LexicaseSelectionTest
         state = new EvolutionState();
         state.output = Evolve.buildOutput();
         state.output.setThrowsErrors(true);
+        state.output.getLog(0).silent = true;
+        state.output.getLog(1).silent = true;
         state.random = new MersenneTwisterFast[] { new MersenneTwisterFast() };
         state.parameters = new ParameterDatabase();
         state.population = new Population();
@@ -49,7 +51,6 @@ public class LexicaseSelectionTest
     @Test
     public void testProduce()
         {
-        System.out.println("produce");
         final LexicaseSelection instance = new LexicaseSelection();
         instance.setup(state, BASE);
         
