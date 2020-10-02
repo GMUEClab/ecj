@@ -43,6 +43,8 @@ public class PBILSpeciesTest
         state = new EvolutionState();
         state.output = Evolve.buildOutput();
         state.output.setThrowsErrors(true);
+        state.output.getLog(0).silent = true;
+        state.output.getLog(1).silent = true;
         state.parameters = new ParameterDatabase();
         state.parameters.set(BASE.push(PBILSpecies.P_INDIVIDUAL), IntegerVectorIndividual.class.getCanonicalName());
         state.parameters.set(BASE.push(PBILSpecies.P_FITNESS), SimpleFitness.class.getCanonicalName());

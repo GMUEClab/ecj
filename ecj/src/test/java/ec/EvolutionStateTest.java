@@ -50,6 +50,8 @@ public class EvolutionStateTest
         instance.parameters = params;
         instance.output = Evolve.buildOutput();
         instance.output.setThrowsErrors(true);
+        instance.output.getLog(0).silent = true;
+        instance.output.getLog(1).silent = true;
         instance.random = new MersenneTwisterFast[] {};
         instance.evalthreads = 1;
     }
@@ -57,7 +59,6 @@ public class EvolutionStateTest
     @Test
     public void testSetup()
     {
-        System.out.println("setup");
         instance.setup(instance, null);
         assertEquals(instance.checkpointModulo, 1);
         assertEquals(instance.checkpointPrefix, "ec");

@@ -88,8 +88,6 @@ public class Subpopulation implements Cloneable, Setup
 
     /** The species for individuals in this subpopulation. */
     public Species species;
-
-    public IntBag[] parents;
         
     /** The subpopulation's individuals. */
     public ArrayList<Individual> individuals;

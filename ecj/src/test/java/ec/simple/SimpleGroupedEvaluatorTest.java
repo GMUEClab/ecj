@@ -40,6 +40,8 @@ public class SimpleGroupedEvaluatorTest
         state = new EvolutionState();
         state.output = Evolve.buildOutput();
         state.output.setThrowsErrors(true);
+        state.output.getLog(0).silent = true;
+        state.output.getLog(1).silent = true;
         state.parameters = new ParameterDatabase();
         state.evalthreads = 1;
 

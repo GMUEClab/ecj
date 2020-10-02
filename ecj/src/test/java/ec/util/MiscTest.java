@@ -73,7 +73,6 @@ public class MiscTest
     // <editor-fold defaultstate="collapsed" desc="doubleEquals">
     @Test
     public void testDoubleEquals1() {
-        System.out.println("doubleEquals");
         final double a = Math.sqrt(2);
         final double b = Math.sqrt(3)*Math.sqrt(2)/Math.sqrt(3);
         assert(a != b);
@@ -82,7 +81,6 @@ public class MiscTest
     
     @Test
     public void testDoubleEquals2() {
-        System.out.println("doubleEquals");
         final double a = 1;
         final double b = 2;
         assertFalse(Misc.doubleEquals(a, b, 0.00001));
@@ -90,7 +88,6 @@ public class MiscTest
     
     @Test
     public void testDoubleEquals3() {
-        System.out.println("doubleEquals");
         final double a = 0.00001;
         final double b = 0.00001;
         assertTrue(Misc.doubleEquals(a, b, 0.00001));
@@ -98,7 +95,6 @@ public class MiscTest
     
     @Test
     public void testDoubleEquals4() {
-        System.out.println("doubleEquals");
         final double a = 0.000000000001;
         final double b = 0.000000000002;
         assertTrue(Misc.doubleEquals(a, b, 0.001));
@@ -107,7 +103,6 @@ public class MiscTest
     
     @Test
     public void testDoubleEquals5() {
-        System.out.println("doubleEquals");
         final double a = Double.POSITIVE_INFINITY;
         final double b = 10.0;
         assertFalse(Misc.doubleEquals(a, b, 0.00001));
@@ -115,7 +110,6 @@ public class MiscTest
     
     @Test
     public void testDoubleEquals6() {
-        System.out.println("doubleEquals");
         final double a = Double.POSITIVE_INFINITY;
         final double b = Double.POSITIVE_INFINITY;
         assert(a == b);
@@ -124,7 +118,6 @@ public class MiscTest
     
     @Test
     public void testDoubleEquals7() {
-        System.out.println("doubleEquals");
         final double a = Double.NEGATIVE_INFINITY;
         final double b = Double.NEGATIVE_INFINITY;
         assert(a == b);
@@ -133,7 +126,6 @@ public class MiscTest
     
     @Test
     public void testDoubleEquals8() {
-        System.out.println("doubleEquals");
         final double a = Double.NEGATIVE_INFINITY;
         final double b = Double.POSITIVE_INFINITY;
         assert(a != b);

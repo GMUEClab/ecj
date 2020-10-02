@@ -45,6 +45,8 @@ public class NSGA2BreederTest
         state = new EvolutionState();
         state.output = Evolve.buildOutput();
         state.output.setThrowsErrors(true);
+        state.output.getLog(0).silent = true;
+        state.output.getLog(1).silent = true;
         state.parameters = new ParameterDatabase();
         state.parameters.set(new Parameter(Initializer.P_POP).push(Population.P_SIZE), "1");
         state.parameters.set(FITNESS_BASE.push(MultiObjectiveFitness.P_NUMOBJECTIVES), "2");
