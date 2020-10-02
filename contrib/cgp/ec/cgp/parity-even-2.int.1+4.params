@@ -12,7 +12,7 @@ stat.file = $parity-even-2.int.1+4.params.out.stat
 #================================================================================
 # Set up 1+4 evolutionary strategy
 #================================================================================
-parent.1 = ecj/ecj/ec/es/es.params
+parent.1 = @ec.Evolve es/es.params
 breed = ec.cgp.MuLambdaBreederCGP
 es.mu.0 = 1
 es.lambda.0 = 4

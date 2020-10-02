@@ -19,7 +19,7 @@
 stat.file = $parity-even-2.float.pop50.convex.params.out.stat
 
 parent.0 = simple-cgp.params
-parent.1 = ecj/ecj/ec/simple/simple.params
+parent.1 = @ec.Evolve simple/simple.params
 breed = ec.cgp.Breeder
 
 

@@ -2,7 +2,7 @@ parent.0 = simple-cgp.params
 
 stat.file = $iris.float.pop50.params.out.stat
 
-parent.1 = ecj/ecj/ec/simple/simple.params
+parent.1 = @ec.Evolve simple/simple.params
 breed = ec.cgp.Breeder
 
 
