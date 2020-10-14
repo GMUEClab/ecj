@@ -2539,4 +2539,5 @@ Version		Change Log
 		exit now.  This facilitates using these tools inside 
 		outer tools without a System.exit(...).
 	SlaveMonitor now throws a fatal rather than an initialError.
+	Fixes to contrib.cgp package
 
