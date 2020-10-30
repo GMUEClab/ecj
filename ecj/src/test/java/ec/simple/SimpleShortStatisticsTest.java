@@ -48,7 +48,7 @@ public class SimpleShortStatisticsTest
 	    state.population.subpops = new ArrayList<>();
         state.population.subpops.add(new Subpopulation());
 	    state.population.subpops.get(0).individuals = getTestPopulation();
-	    state.parameters.set(BASE.push(TestStatistics.P_STATISTICS_FILE), "/tmp/a.txt");
+	    state.parameters.set(BASE.push(TestStatistics.P_STATISTICS_FILE), System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + "a.txt");
         }
     
     @Test
@@ -60,7 +60,7 @@ public class SimpleShortStatisticsTest
 	    statInd.doHeader = true;
 	    statInd.preInitializationStatistics(state);
 	    state.output.flush();
-	    BufferedReader buff = new BufferedReader(new FileReader("/tmp/a.txt"));
+	    BufferedReader buff = new BufferedReader(new FileReader(System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + "a.txt"));
         String text = buff.readLine();
         buff.close();
         assertEquals("generation meanFitness bestOfGenFitness bestSoFarFitness", text);
@@ -81,7 +81,7 @@ public class SimpleShortStatisticsTest
 	    statInd.postInitializationStatistics(state);
 	    statInd.postEvaluationStatistics(state);
         state.output.flush();
-        BufferedReader buff = new BufferedReader(new FileReader("/tmp/a.txt"));
+        BufferedReader buff = new BufferedReader(new FileReader(System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + "a.txt"));
         String text = buff.readLine();
         buff.close();
         assertEquals("0 0.55 1.0 1.0", text);
