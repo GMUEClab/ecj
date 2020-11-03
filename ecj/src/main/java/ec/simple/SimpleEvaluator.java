@@ -255,16 +255,23 @@ public class SimpleEvaluator extends Evaluator
         
         for(int pop=0;pop<len;pop++)
             {
-            // start evaluatin'!
+            // Get the chunk of individuals we're meant to evaluate
             int fp = from[pop];
             int upperbound = fp+numinds[pop];
             ArrayList<Individual> inds = subpops.get(pop).individuals;
-            if (p instanceof SimpleProblemForm)  // Evaluate each individual in the chunk sequentially
-                for (int x=fp;x<upperbound;x++)
-                    ((SimpleProblemForm)p).evaluate(state,inds.get(x), pop, threadnum);
-            else {
-                assert(p instanceof GroupedProblemForm);
-                ((GroupedProblemForm)p).evaluate(state, )
+            final Individual[] chunk = new Individual[numinds[pop]];
+            int i = 0;
+            for (int x=fp; x < upperbound; x++)
+                chunk[i++] = inds.get(x);
+
+            // start evaluatin'!
+            if (p instanceof GroupedProblemForm) { // Evaluate the chunk all at once
+                ((GroupedProblemForm)p).evaluate(state, chunk, null, false, null, threadnum);
+            }
+            else {  // Evaluate each individual in the chunk sequentially
+                assert(p instanceof SimpleProblemForm);
+                for (Individual ind : chunk)
+                    ((SimpleProblemForm)p).evaluate(state, ind, pop, threadnum);
             }
             state.incrementEvaluations(upperbound - fp);
             }

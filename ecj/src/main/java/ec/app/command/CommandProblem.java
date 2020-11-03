@@ -118,7 +118,7 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
      */
     private String runCommand(final Individual[] individuals) throws IOException, InterruptedException
         {
-        processBuilder.redirectError(new File("problem_err.txt"));
+        processBuilder.redirectError(new File("problem_err.txt"));  // TODO Make this filename a parameter
         final Process p = processBuilder.start();
 
         // Write genomes to the command's stdin
@@ -135,7 +135,7 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
         final BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String line = "";			
         while ((line = reader.readLine())!= null) {
-            sb.append(line).append("\n");
+            sb.append(line).append(System.getProperty("line.separator"));
         }
         return sb.toString();
         }
@@ -174,7 +174,7 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
                 throw new IllegalArgumentException(String.format("%s: response from external fitness command was empty.", CommandProblem.class.getSimpleName()));
 
             try {
-                final String[] lines = simResult.split("\n");
+                final String[] lines = simResult.split("\\r?\\n");  // Split on either Windows or UNIX line endings
                 final List<Double> fitnesses = new ArrayList<>();
                 for (final String f : lines)
                     {
