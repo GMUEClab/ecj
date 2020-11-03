@@ -9,6 +9,7 @@ package ec.simple;
 import java.util.ArrayList;
 
 import ec.*;
+import ec.coevolve.GroupedProblemForm;
 import ec.util.*;
 
 /* 
@@ -246,8 +247,8 @@ public class SimpleEvaluator extends Evaluator
         {
         ((ec.Problem)p).prepareToEvaluate(state,threadnum);
 
-        if (!(p instanceof SimpleProblemForm))
-            state.output.fatal("" + this.getClass() + " used, but the Problem is not of SimpleProblemForm");
+        if (!((p instanceof SimpleProblemForm) || (p instanceof GroupedProblemForm)))
+            state.output.fatal(String.format("%s used, but the Problem must be of either %s or %s", this.getClass().getSimpleName(), SimpleProblemForm.class.getSimpleName(), GroupedProblemForm.class.getSimpleName()));
         
         ArrayList<Subpopulation> subpops = state.population.subpops;
         int len = subpops.size();
@@ -258,8 +259,13 @@ public class SimpleEvaluator extends Evaluator
             int fp = from[pop];
             int upperbound = fp+numinds[pop];
             ArrayList<Individual> inds = subpops.get(pop).individuals;
-            for (int x=fp;x<upperbound;x++)
-                ((SimpleProblemForm)p).evaluate(state,inds.get(x), pop, threadnum);
+            if (p instanceof SimpleProblemForm)  // Evaluate each individual in the chunk sequentially
+                for (int x=fp;x<upperbound;x++)
+                    ((SimpleProblemForm)p).evaluate(state,inds.get(x), pop, threadnum);
+            else {
+                assert(p instanceof GroupedProblemForm);
+                ((GroupedProblemForm)p).evaluate(state, )
+            }
             state.incrementEvaluations(upperbound - fp);
             }
                         

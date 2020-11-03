@@ -122,9 +122,9 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
         final Process p = processBuilder.start();
 
         // Write genomes to the command's stdin
-        final Writer carlsimInput = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
-        writeIndividuals(individuals, carlsimInput);
-        carlsimInput.close(); // Sends EOF
+        final Writer commandInput = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
+        writeIndividuals(individuals, commandInput);
+        commandInput.close(); // Sends EOF
         final int exitCode = p.waitFor();
 
         if (exitCode != 0)
