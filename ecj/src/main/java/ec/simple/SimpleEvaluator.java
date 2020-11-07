@@ -23,9 +23,17 @@ import ec.util.*;
  * The SimpleEvaluator is a simple, non-coevolved generational evaluator which
  * evaluates every single member of every subpopulation individually in its
  * own problem space.  One Problem instance is cloned from p_problem for
- * each evaluating thread.  The Problem must implement SimpleProblemForm.
+ * each evaluating thread, and chunks of individuals are sent to each thread
+ * for evaluation.
+ * 
+ * The Problem must implement either SimpleProblemForm or GroupedProblemForm.  
+ * If a GroupedProblemForm is provided, then an entire chunk of individuals is 
+ * sent to the problem to be evaluated together in a batch.  If a SimpleProblemForm
+ * is provided, then each thread sends individuals sequentially to be evaluated
+ * one-at-a-time.
  *
  * @author Sean Luke
+ * @author Eric Scott
  * @version 2.0 
  *
  * Thanks to Ralf Buschermohle <lobequadrat@googlemail.com> for early versions

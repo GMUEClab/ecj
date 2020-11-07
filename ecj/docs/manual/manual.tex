@@ -3328,6 +3328,19 @@ If you're doing \class{ec.simple.SimpleProblemForm} may wish to also implement t
 
 Notice that \method{describe(...)} basically looks the same as \method{evaluate(...)}, except that you always do evaluation (why wouldn't you?), and don't set the fitness (why would you?).
 
+
+\subsection{Grouped Evaluation}
+
+Problems that implement \class{ec.simple.SimpleProblemForm} as described above can only evaluate individuals one-at-a-time.  This doesn't stop us from using multiple Problem instances to do multithreading  (see Section~\ref{threads}) and/or distributed evaluation (Chapter~\ref{ch_parallel}).  But in some cases it is helpful to define a problem that explicitly takes an array of multiple individuals to evaluate in a single function call.
+
+For example, \class{ec.app.command.CommandProblem} implements a fitness function that sends real-vectored genomes to an external process to be evaluated.  This could be used to, say, evaluate subsets of a population in parallel in a GPU-accelerated simulator.
+
+Most algorithms using ECJ will use \class{ec.simple.SimpleEvaluator} to perform fitness evaluation.  This class can make use of either a SimpleProblemForm or a GroupedProblemForm to evaluate chunks of individuals.
+
+Grouped evaluation also plays a role in ECJ's coevolutionary algorithms---see Section~\ref{ec.coevolve}.
+
+
+
 \section{Breeders}
 \label{breeders}
 
@@ -11079,6 +11092,7 @@ rule.xover.toss = true
 
 
 \chapter{Parallel Processes}
+\label{ch_parallel}
 
 ECJ has various built-in methods for parallelism, and they can be used in combination with one another:
 
