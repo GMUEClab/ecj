@@ -2540,4 +2540,6 @@ Version		Change Log
 		outer tools without a System.exit(...).
 	SlaveMonitor now throws a fatal rather than an initialError.
 	Fixes to contrib.cgp package
+	ec.simple.SimpleBreeder now accepts a GroupedProblemForm for 
+		applications that benefit from chunked evaluation
 
