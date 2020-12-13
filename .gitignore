@@ -23,3 +23,8 @@ ecj/src/main/resources/ec/app/mona/1-MonaLisaOut.png
 *.synctex.gz
 *.pdf
 *~
+manual.fls
+manual.ind
+manual.fdb_latexmk
+manual.ilg
+problem_err.txt

@@ -118,7 +118,7 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
      */
     private String runCommand(final Individual[] individuals) throws IOException, InterruptedException
         {
-        processBuilder.redirectError(new File("problem_err.txt"));  // TODO Make this filename a parameter
+        processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
         final Process p = processBuilder.start();
 
         // Write genomes to the command's stdin
