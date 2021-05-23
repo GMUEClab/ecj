@@ -92,7 +92,7 @@ public class BufferedBreedingPipeline extends BreedingPipeline
         if (bufSize == 0)
             state.output.fatal("BufferedBreedingPipeline's number of individuals must be >= 1.",base.push(P_BUFSIZE),def.push(P_BUFSIZE));
         
-        buffer = new ArrayList<Individual>();
+        //buffer = new ArrayList<Individual>();
 
         // declare that likelihood isn't used
         if (likelihood < 1.0)
@@ -107,7 +107,8 @@ public class BufferedBreedingPipeline extends BreedingPipeline
         {
         super.prepareToProduce(state,subpopulation,thread);
         // reset my number of individuals to 0
-        buffer.clear();
+        System.err.println("Yo mama");
+        buffer = new ArrayList<Individual>();
         }
 
 
