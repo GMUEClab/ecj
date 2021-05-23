@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import ec.*;
 import ec.coevolve.GroupedProblemForm;
 import ec.util.*;
+import ec.gp.ge.*;
 
 /* 
  * SimpleEvaluator.java
@@ -273,14 +274,28 @@ public class SimpleEvaluator extends Evaluator
                 chunk[i++] = inds.get(x);
 
             // start evaluatin'!
-            if (p instanceof GroupedProblemForm) { // Evaluate the chunk all at once
+            if (p instanceof GEProblem)			// need to check the subproblem
+            	{
+            	Problem subproblem = (((GEProblem)p).problem);
+             	if (subproblem instanceof GroupedProblemForm)  // Evaluate the chunk all at once
+           	 		{
+                	((GroupedProblemForm)p).evaluate(state, chunk, null, false, null, threadnum);
+            		}
+            	else // Evaluate each individual in the chunk sequentially
+            		{
+                	for (Individual ind : chunk)
+                	    ((SimpleProblemForm)p).evaluate(state, ind, pop, threadnum);
+            		}
+            	} 
+            else if (p instanceof GroupedProblemForm)  // Evaluate the chunk all at once
+            	{
                 ((GroupedProblemForm)p).evaluate(state, chunk, null, false, null, threadnum);
-            }
-            else {  // Evaluate each individual in the chunk sequentially
-                assert(p instanceof SimpleProblemForm);
+            	}
+            else // Evaluate each individual in the chunk sequentially
+            	{
                 for (Individual ind : chunk)
                     ((SimpleProblemForm)p).evaluate(state, ind, pop, threadnum);
-            }
+            	}
             state.incrementEvaluations(upperbound - fp);
             }
                         
