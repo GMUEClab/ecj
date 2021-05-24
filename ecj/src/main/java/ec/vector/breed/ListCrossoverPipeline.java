@@ -376,7 +376,8 @@ public class ListCrossoverPipeline extends BreedingPipeline
             inds.add(parents.get(0));
             if (preserveParents != null)
                 {
-                parentparents[0].addAll(parentparents[1]);
+                if(valid_children == true)
+                    parentparents[0].addAll(parentparents[1]);
                 preserveParents[q] = parentparents[0];
                 }
             q++;
