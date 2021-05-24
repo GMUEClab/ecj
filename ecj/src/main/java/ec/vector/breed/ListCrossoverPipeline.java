@@ -317,7 +317,7 @@ public class ListCrossoverPipeline extends BreedingPipeline
                                 split[i][1] = temp;
                                 }
                                         
-                            int len = split[i][0] - split[i][1];
+                            int len = split[i][1] - split[i][0];
                             if (len >= min_chunks[i] && len <= max_chunks[i])  // okay
                                 {
                                 split[i][0] *= chunk_size;
