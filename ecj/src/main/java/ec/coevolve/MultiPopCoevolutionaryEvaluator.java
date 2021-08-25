@@ -214,6 +214,11 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
             preAssessFitness[i] = postAssessFitness[i] || (state.generation == 0);  // always prepare (set up trials) on generation 0
             }
 
+		// are we grouped?
+		if (!p_problem.isGroupedProblem())
+			{
+			state.output.fatal("Problem " +  p_problem + " is not a grouped problem.");
+			}
                 
         // do evaluation
         beforeCoevolutionaryEvaluation( state, state.population, (GroupedProblemForm)p_problem );

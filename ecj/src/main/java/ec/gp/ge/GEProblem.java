@@ -110,12 +110,14 @@ public class GEProblem extends Problem implements SimpleProblemForm, GroupedProb
     public void preprocessPopulation(final EvolutionState state, Population pop, final boolean[] prepareForFitnessAssessment, boolean countVictoriesOnly)
         {
         if (!(problem instanceof GroupedProblemForm))
-            state.output.fatal("GEProblem's underlying Problem is not a GroupedProblemForm");
+            state.output.fatal("GEProblem's underlying Problem is not a grouped problem");
         ((GroupedProblemForm)problem).preprocessPopulation(state, pop, prepareForFitnessAssessment, countVictoriesOnly);
         }
 
     public int postprocessPopulation(final EvolutionState state, Population pop, boolean[] assessFitness, final boolean countVictoriesOnly)
         {
+        if (!(problem instanceof GroupedProblemForm))
+            state.output.fatal("GEProblem's underlying Problem is not a grouped problem");
         return ((GroupedProblemForm)problem).postprocessPopulation(state, pop, assessFitness, countVictoriesOnly);
         }
 
@@ -131,6 +133,9 @@ public class GEProblem extends Problem implements SimpleProblemForm, GroupedProb
         final int[] subpops,
         final int threadnum)
         {
+        if (!(problem instanceof GroupedProblemForm))
+            state.output.fatal("GEProblem's underlying Problem is not a grouped problem");
+
         // the default version assumes that every subpopulation is a GE Individual
         Individual[] gpi = new Individual[ind.length];
         for(int i = 0; i < gpi.length; i++)
@@ -245,4 +250,9 @@ public class GEProblem extends Problem implements SimpleProblemForm, GroupedProb
             state.output.fatal("Individual passed to describe(...) was neither a GP nor GE Individual: " + ind);
             }
         }
+
+    public boolean isGroupedProblem()
+    	{
+    	return (problem.isGroupedProblem());
+    	}
     }

@@ -232,9 +232,9 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
      */
     public void preprocessPopulation(final EvolutionState state, Population pop, final boolean[] prepareForFitnessAssessment, boolean countVictoriesOnly)
         {
-        if (!(problem instanceof GroupedProblemForm)) 
+        if (!(problem.isGroupedProblem()))
             {
-            state.output.fatal("MasterProblem.preprocessPopulation(...) invoked, but the underlying Problem is not of GroupedProblemForm");
+            state.output.fatal("MasterProblem.preprocessPopulation(...) invoked, but the underlying Problem is not a grouped problem");
             }
                 
         ((GroupedProblemForm) problem).preprocessPopulation(state, pop, prepareForFitnessAssessment, countVictoriesOnly);
@@ -245,9 +245,9 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
      */
     public int postprocessPopulation(EvolutionState state, Population pop, boolean[] assessFitness, boolean countVictoriesOnly) 
         {
-        if (!(problem instanceof GroupedProblemForm)) 
+        if (!(problem.isGroupedProblem()))
             {
-            state.output.fatal("MasterProblem.postprocessPopulation(...) invoked, but the underlying Problem is not of GroupedProblemForm");
+            state.output.fatal("MasterProblem.postprocessPopulation(...) invoked, but the underlying Problem is not a grouped problem");
             }
                 
         return ((GroupedProblemForm) problem).postprocessPopulation(state, pop, assessFitness, countVictoriesOnly);
@@ -259,6 +259,11 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
         {
         if(showDebugInfo)
             state.output.message("Starting a GroupedProblemForm evaluation.");
+
+        if (!(problem.isGroupedProblem()))
+            {
+            state.output.fatal("MasterProblem.evaluate(...) invoked, but the underlying Problem is not a grouped problem");
+            }
 
         // Acquire a slave socket
         Job job = new Job();
@@ -438,4 +443,11 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
                 
         return ((ConstructiveProblemForm) problem).getArbitraryComponent(state, thread);
         }
+    
+    
+    /** Returns true if the underlying class returns true for isGroupedProblem() */
+    public boolean isGroupedProblem()
+    	{
+    	return (problem.isGroupedProblem());
+    	}
     }

@@ -12,6 +12,7 @@ import java.io.*;
 import java.util.*;
 import javax.swing.tree.*;
 import java.net.*;
+import java.lang.reflect.*;
 
 /* 
  * ParameterDatabase.java
@@ -511,7 +512,25 @@ public class ParameterDatabase implements Serializable
                     + parameter
                     + (defaultParameter == null ? "" : "\n     ALSO: "
                         + defaultParameter));
-            return c.newInstance();
+            return c.getDeclaredConstructor().newInstance();
+            } 
+        catch (NoSuchMethodException e) 
+            {
+            throw new ParamClassLoadException("Class not found: "
+                + getParam(p)
+                + "\nPARAMETER: "
+                + parameter
+                + (defaultParameter == null ? "" : "\n     ALSO: "
+                    + defaultParameter) + "\nEXCEPTION: \n\n" + e);
+            } 
+        catch (InvocationTargetException e) 
+            {
+            throw new ParamClassLoadException("Class not found: "
+                + getParam(p)
+                + "\nPARAMETER: "
+                + parameter
+                + (defaultParameter == null ? "" : "\n     ALSO: "
+                    + defaultParameter) + "\nEXCEPTION: \n\n" + e);
             } 
         catch (ClassNotFoundException e) 
             {
@@ -593,7 +612,25 @@ public class ParameterDatabase implements Serializable
                     + "\n     ALSO: "
                     + (defaultParameter == null ? "" : "\n     ALSO: "
                         + defaultParameter));
-            return c.newInstance();
+            return c.getDeclaredConstructor().newInstance();
+            } 
+        catch (NoSuchMethodException e) 
+            {
+            throw new ParamClassLoadException("Class not found: "
+                + getParam(p)
+                + "\nPARAMETER: "
+                + parameter
+                + (defaultParameter == null ? "" : "\n     ALSO: "
+                    + defaultParameter) + "\nEXCEPTION: \n\n" + e);
+            } 
+        catch (InvocationTargetException e) 
+            {
+            throw new ParamClassLoadException("Class not found: "
+                + getParam(p)
+                + "\nPARAMETER: "
+                + parameter
+                + (defaultParameter == null ? "" : "\n     ALSO: "
+                    + defaultParameter) + "\nEXCEPTION: \n\n" + e);
             } 
         catch (ClassNotFoundException e) 
             {

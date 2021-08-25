@@ -384,6 +384,7 @@ The \file{ec} (\file{ecj/src/main/java/ec/}) directory is ECJ's top-level packag
 
 Because \file{ec} is the top-level package, you can compile ECJ, more or less, by just sticking its parent directory (the \file{ecj/target/} directory), in your CLASSPATH.  You will also need to add certain {\bf jar files} in order to compile ECJ's distributed evaluation and island model facilities, and its GUI.  You can get these jar files from the ECJ main website (http://cs.gmu.edu/\(\sim\)eclab/projects/ecj/).  Note that none of these libraries is required.  For example, if the libraries for the distributed evaluator and island model are missing, ECJ will compile but will complain if you try to run those packages with compression turned on (a feature of the packages).  The GUI library is optional to ECJ, so if you don't install its libraries, you can still compile ECJ by just deleting the \file{ec/display} directory.
 
+
 \subsubsection{The \file{ec/display} Directory: ECJ's GUI}
 
 This directory contains ECJ's GUI.  It's in a state of disrepair and I suggest you do not use it.  ECJ is really best as a command line program.  In fact, as mentioned above, you can simply delete the directory and ECJ will compile just fine.
@@ -391,6 +392,23 @@ This directory contains ECJ's GUI.  It's in a state of disrepair and I suggest y
 \subsubsection{The \file{ec/app} Directory: Demo Applications}
 
 This directory contains all the demo applications.  We have quite a number of demo applications, many sharing the same subdirectories.  Read the provided README file for some guidance.
+
+\subsubsection{Managing Jar files in your CLASPATH}  Most people who develop with ECJ will use an IDE like Eclipse or NetBeans: and so to set up your project you just need to stick the library jar files, and \text{ecj.jar}, in your model project. But if you're an old fogey like myself, you might want to build MASON manually using its Makefile.  To do this you will need a place to stick the various jar files so that they're automatically dumped in your CLASSPATH.
+
+It used to be that any jar file you placed in Java's ``Resource directory'' would get put in the CLASSPATH automatically.  This was a public location where you could drop jar files an be done with them: for example, on the Mac, the resource directories were \file{/Library/Java/Extensions/} and \file{{\textasciitilde}/Library/Java/Extensions}.  However as of Java 9, resource directories have been eliminated. So what to do?
+
+Historically, I have always set up two directories in my home directory: \file{{\textasciitilde}/java/} and  \file{{\textasciitilde}/java/jar}.   The directories ``\file{.}'' and ``\file{{\textasciitilde}/java/}`` were placed in the CLASSPATH, and a script would place every single Jar file in  \file{{\textasciitilde}/java/jar} in the CLASSPATH as well.  Here's what it would look like in bash:
+
+\begin{verbatim}
+export CLASSPATH=.:~/java/
+for i in `ls ~/java/jar`       # a ` is a backquote
+    do
+    export CLASSPATH=${CLASSPATH}:$i
+    done
+\end{verbatim}  
+
+You could then stick this in your \file{.bashrc} file.  Then just dump JAR files in \file{{\textasciitilde}/java/jar} and they'd automatically be added to your CLASSPATH as needed.
+
 
 \subsection{The \file{docs} Directory}
 
@@ -9689,7 +9707,7 @@ Computes and returns the number of ints that would be consumed to produce a GPIn
 
 \paragraph{Handling ADFs and Multiple Trees}  Recall that the GESpecies maintains a separate grammar for each tree in the GPIndividual (and thus for each separate ADF).  However there's only a single int array in the GEIndividual.  This is handled straightforwardly the array is used to build the first tree; then the unused remainder of the array is used to build the second tree; and so on.  If not all trees were able to be built, evaluation of the GPIndividual is bypassed and the fitness is set to the (\variable{Double.MAX\_VALUE}).
 
-\paragraph{Grammatical Evolution Does Not Support GroupedProblemForm}  GroupedProblemForm (Section~\ref{ec.coevolve.GroupedProblemForm}) evaluates several Individuals together.  What if at least one of them is a GEIndividual, and the GEIndividual cannot generate a valid GPIndividual?  This creates a number of hassles.  For example, if we're doing cooperative coevolution, and one Individual can't be generated, what's the fitness of the group?  Is it fair to penalize the group thusly?  Likewise if we're doing competitive coevolution, and one of the competitors can't be generated, what's the resulting fitness of the other?  For this reason, at present Grammatical Evolution does not support GroupedProblemForm.
+%\paragraph{Grammatical Evolution Does Not Support GroupedProblemForm}  GroupedProblemForm (Section~\ref{ec.coevolve.GroupedProblemForm}) evaluates several Individuals together.  What if at least one of them is a GEIndividual, and the GEIndividual cannot generate a valid GPIndividual?  This creates a number of hassles.  For example, if we're doing cooperative coevolution, and one Individual can't be generated, what's the fitness of the group?  Is it fair to penalize the group thusly?  Likewise if we're doing competitive coevolution, and one of the competitors can't be generated, what's the resulting fitness of the other?  For this reason, at present Grammatical Evolution does not support GroupedProblemForm.
 
 \subsection{Printing}
 
@@ -12016,6 +12034,8 @@ eval.problem = ec.myapp.MyCoevolutionaryProblem
 It's important to note that the \variable{trials} variable doesn't have to store an ArrayList of {\it numbers}\,---\,it can store any object reflecting the outcome of a trial that you'd like to invent.  It's available for you to use.
 
 Generally the \variable{trials} variable should never need to be cloned\,---\,it'll be set up, used during Evaluation, and then destroyed.  The default implementation of the \method{Fitness.cloneTrials()} method, called by \method{Fitness.clone()}, simply throws an exception if \variable{trials} is null.
+
+\paragraph{About the isGroupedProblem() Method}  The Problem class has a special method called \method{isGroupedProblem()}.  This method by default simply returns true if the subclass implements GroupedProblemForm.  What is its purpose then?  There are certain Problem subclasses, such as MasterProblem or GEProblem, which contain inner Problem classes.  These classes must implement GroupedProblemForm so that they can pass methods to their inner inner class in the case that the inner class implements GroupedProblemForm and is being used that way.  But what if it doesn't?  Bad things happen then.  This is the purpose of isGroupedProblem().  These classes override this method to call isGroupedProblem() on their subsidiary classes.  That way you can dynamically determine if a Problem, or if its inner Problem, is a grouped problem.  Thus don't call \variable{instanceof~GroupedProblem} to determine if a class is a grouped problem; rather call \variable{isGroupedProblem()}.  (You'll never normally need to {\it override} this method).
 
 \subsection{One-Population Competitive Coevolution}
 

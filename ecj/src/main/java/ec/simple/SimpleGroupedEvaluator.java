@@ -31,7 +31,7 @@ public class SimpleGroupedEvaluator extends SimpleEvaluator
         {
             ((ec.Problem)p).prepareToEvaluate(state,threadnum);
         
-            if (!(p instanceof GroupedProblemForm))
+            if (!(p.isGroupedProblem()))
             state.output.fatal("" + this.getClass() + " used, but the Problem is not of GroupedProblemForm");
 
             ArrayList<Subpopulation> subpops = state.population.subpops;

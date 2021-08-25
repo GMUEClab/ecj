@@ -9,6 +9,7 @@ package ec;
 
 import ec.util.*;
 import java.io.*;
+import ec.coevolve.*;
 
 /* 
  * Problem.java
@@ -175,6 +176,16 @@ public abstract class Problem implements Prototype
         {
         // do nothing
         }
+        
+    /** Returns true if this method is meant to be a grouped problem.  You should not override this
+    	method: by default it simply returns (this instanceof GroupedProblemForm), but some wrapper
+    	problems override it to query their underlying Problems.  The purpose of this method is to
+    	enable objects to dynamically indicate that they support GroupedProblemForm (perhaps they
+    	are a wrapper object around an underlying object which might or might not support it).*/
+    public boolean isGroupedProblem()
+    	{
+    	return (this instanceof GroupedProblemForm);
+    	}
     }
 
 

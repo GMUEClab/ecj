@@ -107,7 +107,6 @@ public class BufferedBreedingPipeline extends BreedingPipeline
         {
         super.prepareToProduce(state,subpopulation,thread);
         // reset my number of individuals to 0
-        System.err.println("Yo mama");
         buffer = new ArrayList<Individual>();
         }
 

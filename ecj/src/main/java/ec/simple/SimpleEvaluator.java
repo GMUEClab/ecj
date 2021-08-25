@@ -256,7 +256,7 @@ public class SimpleEvaluator extends Evaluator
         {
         ((ec.Problem)p).prepareToEvaluate(state,threadnum);
 
-        if (!((p instanceof SimpleProblemForm) || (p instanceof GroupedProblemForm)))
+        if (!((p instanceof SimpleProblemForm) || (p.isGroupedProblem())))
             state.output.fatal(String.format("%s used, but the Problem must be of either %s or %s", this.getClass().getSimpleName(), SimpleProblemForm.class.getSimpleName(), GroupedProblemForm.class.getSimpleName()));
         
         ArrayList<Subpopulation> subpops = state.population.subpops;
@@ -273,21 +273,7 @@ public class SimpleEvaluator extends Evaluator
             for (int x=fp; x < upperbound; x++)
                 chunk[i++] = inds.get(x);
 
-            // start evaluatin'!
-            if (p instanceof GEProblem)			// need to check the subproblem
-            	{
-            	Problem subproblem = (((GEProblem)p).problem);
-             	if (subproblem instanceof GroupedProblemForm)  // Evaluate the chunk all at once
-           	 		{
-                	((GroupedProblemForm)p).evaluate(state, chunk, null, false, null, threadnum);
-            		}
-            	else // Evaluate each individual in the chunk sequentially
-            		{
-                	for (Individual ind : chunk)
-                	    ((SimpleProblemForm)p).evaluate(state, ind, pop, threadnum);
-            		}
-            	} 
-            else if (p instanceof GroupedProblemForm)  // Evaluate the chunk all at once
+            if (p.isGroupedProblem())  // Evaluate the chunk all at once
             	{
                 ((GroupedProblemForm)p).evaluate(state, chunk, null, false, null, threadnum);
             	}

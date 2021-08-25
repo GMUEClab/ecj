@@ -19,6 +19,14 @@ import ec.*;
  vector-parameter (updateFitness) marks which individual
  fitnesses need to be updated during the evaluation process.
 
+ <p>Note that if you want to test to see if a problem is a grouped
+ problem, you should not do <tt>foo instanceof GroupedProblemForm</tt>
+ but rather <tt>foo.isGroupedProblem()</tt>.  The reason for this is
+ that some Problems (such as MasterProblem and GEProblem) are actually
+ wrappers around subsidiary Problems, and so even though they implement
+ GroupedProblemForm, their subsidiary may not.  You don't need to ever
+ override <tt>isGroupedProblem()</tt> as by default it just returns
+ <tt>this instanceof GroupedProblemForm</tt>.
  *
  * @author Sean Luke & Liviu Panait
  * @version 1.0
