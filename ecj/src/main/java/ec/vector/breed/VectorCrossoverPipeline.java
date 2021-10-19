@@ -69,7 +69,6 @@ public class VectorCrossoverPipeline extends BreedingPipeline
     public VectorCrossoverPipeline() 
         {
         // by Ermo. get rid of asList
-        //parents = new ArrayList<Individual>(Arrays.asList(new VectorIndividual[2]));;
         parents = new ArrayList<Individual>();
         }
     public Parameter defaultBase() { return VectorDefaults.base().push(P_CROSSOVER); }

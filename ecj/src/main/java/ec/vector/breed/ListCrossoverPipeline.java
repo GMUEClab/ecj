@@ -99,8 +99,6 @@ public class ListCrossoverPipeline extends BreedingPipeline
 
     public ListCrossoverPipeline() 
         { 
-        // by Ermo. Get rid of asList
-        //parents = new ArrayList<Individual>(Arrays.asList(new VectorIndividual[2]));
         parents = new ArrayList<Individual>();
         }
     public Parameter defaultBase() { return VectorDefaults.base().push(P_LIST_CROSSOVER); }
@@ -230,7 +228,7 @@ public class ListCrossoverPipeline extends BreedingPipeline
         
         IntBag[] parentparents = null;
         IntBag[] preserveParents = null;
-        if (misc!=null&&misc.get(KEY_PARENTS) != null)
+        if (misc!=null && misc.containsKey(KEY_PARENTS))
             {
             preserveParents = (IntBag[])misc.get(KEY_PARENTS);
             parentparents = new IntBag[2];
