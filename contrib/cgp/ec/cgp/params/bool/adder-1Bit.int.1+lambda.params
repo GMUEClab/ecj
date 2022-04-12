@@ -1,0 +1,118 @@
+
+# Parameter file for the 1 bit adder problem
+
+# Representation: Integer-based Cartesian Genetic Programming.
+
+# Algorithm: 1+lambda ES.  Parent is selected uniformly at random
+# from set of individuals with fitness equal to top fitness of
+# generation.
+
+# We use a setting of lambda = 1. 
+# According to Kalkreuth [1], the 1+1-ES turned out to be more effective than the 
+# 1+4-ES for various boolean functions.
+
+# Kaufmann and Kalkreuth [2] also demonstrated that a lower setting of lambda performs
+# more effective for various Boolean functions.
+ 
+# References: 
+# [1] Kalkreuth (2021) http://dx.doi.org/10.17877/DE290R-22504
+# [2] Kaufmann and Kalkreuth (2017) http://dx.doi.org/10.1007/978-3-319-67190-1_26
+
+
+jobs=1
+generations=100000000
+
+silent = true
+print-params = false
+
+#================================================================================
+# Set up 1+lambda evolutionary strategy
+#================================================================================
+parent.0 = ../simple-cgp.params
+parent.1 = @ec.Evolve es/es.params
+
+breed = ec.cgp.MuLambdaBreederCGP
+es.mu.0 = 1
+es.lambda.0 = 1
+
+
+#================================================================================
+# Set up population
+#================================================================================
+pop.subpops = 1
+pop.subpop.0 = ec.Subpopulation
+
+#================================================================================
+# Initial population size is set to mu+lambda.  Be sure to change this if you 
+# modify es.mu and es.lambda.
+#================================================================================
+pop.subpop.0.size = 2
+pop.subpop.0.species = ec.cgp.representation.AdvancedIntegerVectorSpecies
+pop.subpop.0.species.ind = ec.cgp.representation.AdvancedIntegerVectorIndividual
+
+#================================================================================
+# Our own fitness.  A simple modification that makes smaller fitnesses better.
+#================================================================================
+pop.subpop.0.species.fitness = ec.cgp.FitnessCGP
+
+#================================================================================
+Mutation type and probabilities
+#================================================================================
+pop.subpop.0.species.mutation-type = point
+pop.subpop.0.species.mutation-prob = .01
+
+pop.subpop.0.species.inversion-prob = 0.00
+pop.subpop.0.species.max-inversion-depth = 2
+
+pop.subpop.0.species.duplication-prob = 0.00
+pop.subpop.0.species.max-duplication-depth = 2
+
+pop.subpop.0.species.mutate-active-genes = 1
+
+#================================================================================
+# Function lookup table class for use by the CGP function evaluator.
+# This class is expected to implement CGPFunctions.
+#================================================================================
+pop.subpop.0.species.functions = ec.cgp.functions.FunctionsBooleanInteger
+
+# number of functions in your lookup table
+pop.subpop.0.species.num-functions = 4
+
+# number of nodes in your CGP, not including inputs and outputs.
+pop.subpop.0.species.nodes = 1000
+
+# number of input nodes in your CGP.  Your problem class feeds these inputs to the CGPEvaluator. 
+pop.subpop.0.species.inputs = 3
+
+# number of output nodes in your CGP.  Your problem class extracts these outputs from the CGPEvaluator.
+pop.subpop.0.species.outputs = 2
+
+# max number of inputs for all functions in your function lookup table.
+pop.subpop.0.species.maxArity = 2  
+
+#================================================================================
+# The breeding pipeline is a simple mu+lambda ES.  First, the best individual is 
+# selected uniformly at random from all individuals sharing the top fitness.  
+# This is done via ESSelectionCGP, our customization of ESSelection that performs
+# the random selection.  This individual becomes the parent from which the next 
+# generation's children are bred.  The children are generated via mutations of 
+# the parent.  No crossover is used.
+#================================================================================
+pop.subpop.0.species.pipe = ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0 = ec.cgp.ESSelectionCGP
+
+#================================================================================
+# Class that sets up the Boolean problem.  Invokes the CGPEvaluator on all
+# possible boolean inputs.  The CGPEvaluator computes the output value of the 
+# function represented by the genome.  
+#================================================================================
+eval.problem = ec.cgp.problems.bool.ProblemAdder1Bit
+
+#================================================================================
+# Our custom stats class prints out newly discovered best-of run individuals
+# as they are discovered.
+#================================================================================
+stat = ec.cgp.Stats
+stat.file = $adder-1.int.1+lambda.params.out.stat
+stat.silent = true
+

@@ -26,7 +26,7 @@ public abstract class ProblemCGP extends Problem implements SimpleProblemForm {
 	 * Constants randomly initialized at setup for some problems. Once the
 	 * constants are created, they are kept throughout the run.
 	 */
-	static float[] constants;
+	protected static float[] constants;
 
 	/** number of constants to use */
 	static int numConstants;
@@ -40,6 +40,8 @@ public abstract class ProblemCGP extends Problem implements SimpleProblemForm {
 	static String P_CONSTANTS = "constants";
 	static String P_CONSTANT_MIN = "constant-min";
 	static String P_CONSTANT_MAX = "constant-max";
+	
+	public static int NUM_BITS;
 
 	/**
 	 * Currently does nothing except enforce the SimpleProblemForm contract.
