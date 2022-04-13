@@ -21,8 +21,8 @@
 jobs=1
 generations=100000000
 
-silent = true
-print-params = false
+silent = false
+print-params = true
 
 #================================================================================
 # Set up 1+lambda evolutionary strategy
@@ -44,6 +44,8 @@ pop.subpop.0 = ec.Subpopulation
 #================================================================================
 # Initial population size is set to mu+lambda.  Be sure to change this if you 
 # modify es.mu and es.lambda.
+# We use AdvancedIntegerVectorIndividual and AdvancedIntegerVectorSpecies here to 
+# evaluate advanced mutation techniques
 #================================================================================
 pop.subpop.0.size = 2
 pop.subpop.0.species = ec.cgp.representation.IntegerVectorSpecies

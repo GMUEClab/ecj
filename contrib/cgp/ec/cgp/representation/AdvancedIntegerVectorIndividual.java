@@ -13,8 +13,8 @@ import ec.vector.VectorIndividual;
 
 /**
  * This class is an extension of the CGP IntegerVectorIndividual class. 
- * Contains a set of advanced genetic operators which have been proposed
- * over the last years. 
+ * It contains a set of advanced genetic operators which have been proposed
+ * recently. 
  * 
  * @author Roman Kalkreuth, roman.kalkreuth@tu-dortmund.de,
  *         https://orcid.org/0000-0003-1449-5131,
@@ -50,7 +50,7 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 	}
 
 	/**
-	 * Checks wether a certain gene is active or not. 
+	 * Checks whether a certain gene is active or not. 
 	 */
 	public boolean geneActive(ArrayList<Integer> activeFunctionNodes, AdvancedIntegerVectorSpecies s, int nodeNum,
 			int genePos) {
@@ -116,10 +116,14 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 	
 	/*
 	 * Block crossover swaps blocks of active function genes between two individuals.
+	 * The block crossover uses a parameter blockSize which defines the maximum block size.
+	 * You can set this parameter in your parameter file with pop.subpop.0.species.block-size
 	 * 
-	 *  References: 
-	 *  Husa and Kalkreuth (2018) http://dx.doi.org/10.1007/978-3-319-77553-1_13
-	 *  Kalkreuth (2021) http://dx.doi.org/10.17877/DE290R-22504
+	 * Reasonable results were obtained on several symbolic regression benchmarks (Kalkreuth (2021))
+	 * 
+	 * References: 
+	 * Husa and Kalkreuth (2018) http://dx.doi.org/10.1007/978-3-319-77553-1_13
+	 * Kalkreuth (2021) http://dx.doi.org/10.17877/DE290R-22504
 	 */
 	public void blockCrossover(EvolutionState state, int thread, AdvancedIntegerVectorIndividual ind, int blockSize) {
 		int swapNode1 = 0;
@@ -387,6 +391,10 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 	}
 
 
+	/**
+	 * First the primary mutation is selected and then the additional advanced mutation(s) is/are executed.
+	 * It is highly recommended to use inversion and duplication with probabilistic point or active gene mutation.
+	 */
 	public void defaultMutate(EvolutionState state, int thread) {
 		
 		AdvancedIntegerVectorSpecies s = (AdvancedIntegerVectorSpecies) species;
