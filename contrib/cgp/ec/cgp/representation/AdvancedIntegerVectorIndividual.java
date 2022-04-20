@@ -59,7 +59,7 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 
 
 	/*
-	 * Simple genotypic one point crossover technique. Did not work very well in the past. 
+	 *  Simple genotypic one point crossover technique. Did not work very well in the past. 
 	 * 
 	 *  References: 
 	 *  Miller (1999) http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.47.5554
@@ -90,7 +90,7 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 	
 
 	/*
-	 * Determines a set of active function node by chance with respect to the predefined 
+	 * Determines a set of active function node by chance in accordance to the predefined 
 	 * maximum block size.
 	 */
 	public void determineSwapNodes(int blockSize, ArrayList<Integer> swapNodesList,
@@ -117,6 +117,7 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 	/*
 	 * Block crossover swaps blocks of active function genes between two individuals.
 	 * The block crossover uses a parameter blockSize which defines the maximum block size.
+	 * 
 	 * You can set this parameter in your parameter file with pop.subpop.0.species.block-size
 	 * 
 	 * Reasonable results were obtained on several symbolic regression benchmarks (Kalkreuth (2021))
@@ -128,10 +129,8 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 	public void blockCrossover(EvolutionState state, int thread, AdvancedIntegerVectorIndividual ind, int blockSize) {
 		int swapNode1 = 0;
 		int swapNode2 = 0;
-		int id1_parent = 0;
-		int id2_parent = 0;
-
-		boolean debug = false;
+		int swapIndex1 = 0;
+		int swapIndex2 = 0;
 
 		int j = 0;
 		int temp = 0; // used to store values during swapping
@@ -143,10 +142,11 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 		ArrayList<Integer> swapNodesList1 = new ArrayList<Integer>();
 		ArrayList<Integer> swapNodesList2 = new ArrayList<Integer>();
 
+		// Determine activve nodes
 		s.determineActiveFunctionNodes(activeFunctionNodes, s, genome);
 		s.determineActiveFunctionNodes(i.activeFunctionNodes, s, genome);
 
-
+		// Validate the phenotype length before the recombination process
 		if ((activeFunctionNodes.size() == 0) || (i.activeFunctionNodes.size() == 0)) {
 			return;
 		}
@@ -155,22 +155,23 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 			blockSize = Math.min(activeFunctionNodes.size(), i.activeFunctionNodes.size());
 		}
 		
-
+		// Deterrmine the numbers of function nodes which will be swapped
 		determineSwapNodes(blockSize, swapNodesList1, activeFunctionNodes, state, thread);
 		determineSwapNodes(blockSize, swapNodesList2, i.activeFunctionNodes, state, thread);
 
 		for (j = 0; j < blockSize; j++) {
+			// Get the node numbers selected for the swap
 			swapNode1 = swapNodesList1.get(j);
 			swapNode2 = swapNodesList2.get(j);
 
-			// calculate the swap indexes
-			id1_parent = (swapNode1 - s.numInputs) * (1 + s.maxArity);
-			id2_parent = (swapNode2 - s.numInputs) * (1 + s.maxArity);
+			// Calculate the function node indexes 
+			swapIndex1 = (swapNode1 - s.numInputs) * (1 + s.maxArity);
+			swapIndex2 = (swapNode2 - s.numInputs) * (1 + s.maxArity);
 		
 			// perform the swaps
-			temp = genome[id1_parent];
-			genome[id1_parent] = i.genome[id2_parent];
-			i.genome[id2_parent] = temp;
+			temp = genome[swapIndex1];
+			genome[swapIndex1] = i.genome[swapIndex2];
+			i.genome[swapIndex2] = temp;
 
 		}
 	}
@@ -178,7 +179,7 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 
 
 	/*
-	 * Single active gene mutation strategy. The genome is randomly mutated by point mutation until
+	 * Single active gene mutation strategy (SAM). The genome is randomly mutated by point mutation until
 	 * exactly one active gene has been hit. 
 	 * 
 	 * References: 
@@ -188,20 +189,29 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 	public void singleActiveGeneMutation(EvolutionState state, int thread) {
 		AdvancedIntegerVectorSpecies s = (AdvancedIntegerVectorSpecies) species;
 		ArrayList<Integer> activeFunctionNodes = new ArrayList<Integer>();
+		
+		// Determine the active function nodes
 		s.determineActiveFunctionNodes(activeFunctionNodes, s, genome);
+		
 		int nodeNum;
 		int genePos;
 		int geneVal;
+		
 		boolean hitActiveGene = false;
 
 		do {
+			// Select a gene by chance within the genotype
 			genePos = state.random[thread].nextInt(genome.length);
 			geneVal = genome[genePos];
+			
+			// Mutate the gene by resetting its value
 			genome[genePos] = randomValueFromClosedInterval(0, s.computeMaxGene(genePos, genome), geneVal,
 					state.random[thread]);
 
+			// Get the node number
 			nodeNum = s.nodeNumber(genePos, genome);
 
+			// Check if the mutated gene is an active one
 			if (geneActive(activeFunctionNodes, s, nodeNum, genePos)) {
 				hitActiveGene = true;
 			}
@@ -210,8 +220,11 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 	}
 	
 	/**
-	 * Multi active gene mutation strategy. The genome is randomly mutated by point mutation until
-	 * the predefined number of active genes have been hit. 
+	 * This is an extension of the single active gene mutation strategy. 
+	 * The genome is randomly mutated by point mutation until the predefined number of 
+	 * active genes have been hit. 
+	 * 
+	 * You can set the number of active genes in your parameter file with pop.subpop.0.species.mutate-active-genes 
 	 */
 	public void multiActiveGeneMutation(EvolutionState state, int thread, int num) {
 		AdvancedIntegerVectorSpecies s = (AdvancedIntegerVectorSpecies) species;
@@ -233,7 +246,8 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 			if (geneActive(activeFunctionNodes, s, nodeNum, genePos)) {
 				activeGenesHit++;
 			}
-
+		// The strategy is equal to SAM but here we mutate active genes 
+		// until a predefined number of genes has been hit
 		} while (activeGenesHit < num);
 
 	}
@@ -317,19 +331,25 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 		boolean debug = false;
 		
 		int numactiveFunctionNodes = activeFunctionNodes.size();
-
+		
+		
 		Collections.sort(activeFunctionNodes);
 
+		// We need at least two active function nodes
 		if (numactiveFunctionNodes <= 1) {
 			return;
 		}
 
+		// Determine a valid inversion depth by chance and get a suitable start index
 		depth = stochasticDepth(state, thread, s.maxInversionDepth, numactiveFunctionNodes);
 		start = startIndex(state, thread, numactiveFunctionNodes, depth);
-
+		
+		// Calculate end point and middle for the set of nodes which will be mutated
 		end = start + depth;
 		middle = (int) Math.round(depth / 2.0);
 
+		// Perform the inversion by iterating until the middle is reached and pairwise exchanging 
+		// the function genes
 		for (int i = 0; i < middle; i++) {
 			leftNode = activeFunctionNodes.get(start + i);
 			rightNode = activeFunctionNodes.get(end - i);
@@ -371,18 +391,26 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 		
 		Collections.sort(activeFunctionNodes);
 
+		// We need at least two active function nodes
 		if (numactiveFunctionNodes <= 1) {
 			return;
 		}
-
+		
+		// Determine a valid inversion depth by chance and get a suitable start index
 		depth = stochasticDepth(state, thread, s.maxDuplicationDepth, numactiveFunctionNodes);
 		start = startIndex(state, thread, numactiveFunctionNodes, depth);
 		end = start + depth;
 
+		// Get the node number with respect to the determined start index
 		node = activeFunctionNodes.get(start);
+		
+		// Get the position of the function gene
 		position = s.positionFromNodeNumber(node);
+		
+		// Get the function gene value 
 		function = genome[position];
 
+		// Finally duplicate the gene with the respective depth
 		for (int i = start + 1; i <= end; i++) {
 			node = activeFunctionNodes.get(i);
 			position = s.positionFromNodeNumber(node);
@@ -420,6 +448,22 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 		}
 
 	}
+	
+	/** Make a full copy of this individual. */
+	public Object clone() {
+		AdvancedIntegerVectorIndividual myobj = (AdvancedIntegerVectorIndividual) (super.clone());
+
+		if (activeFunctionNodes != null) {
+			myobj.activeFunctionNodes = new ArrayList<Integer>();
+		}
+		
+		if (passiveFunctionNodes != null) {
+			myobj.passiveFunctionNodes = new ArrayList<Integer>();
+		}
+
+		return myobj;
+	}
+	
 	
 	public void setup(final EvolutionState state, final Parameter base) {
 		super.setup(state, base); // actually unnecessary unless
