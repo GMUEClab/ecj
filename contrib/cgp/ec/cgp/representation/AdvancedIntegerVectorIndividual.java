@@ -29,8 +29,8 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 
 	int maxActiveGenes;
 
-	ArrayList<Integer> activeFunctionNodes;
-	ArrayList<Integer> passiveFunctionNodes;
+	public ArrayList<Integer> activeFunctionNodes;
+	public ArrayList<Integer> passiveFunctionNodes;
 
 	/**
 	 * TODO Check if the overflow case is really needed
@@ -88,6 +88,87 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 
 	}
 	
+	/*
+	 * Adaption of discrete/uniform recombination in CGP. This is a phenotypic variation 
+	 * method for discrete recombination in CGP. 
+	 * 
+	 * It adapts discrete recombination in CGP by means of phenotypic functional variation 
+	 * which is performed through the exchange of function genes of active function nodes.
+	 * 
+	 * References: 
+	 * Kalkreuth (2022): Towards Discrete Phenotypic Recombination in Cartesian Genetic Programming 
+	 * (accepted for publication the seventeenth International Conference on Parallel Problem Solving from Nature (PPSN XVII) 
+	 * 
+	*/
+	public void discreteCrossover(EvolutionState state, int thread, AdvancedIntegerVectorIndividual ind)
+	{
+		AdvancedIntegerVectorSpecies s = (AdvancedIntegerVectorSpecies) species; // the current species, same for both parents
+		AdvancedIntegerVectorIndividual i = (AdvancedIntegerVectorIndividual) ind;// the second parent
+		
+		// Determine active nodes
+		s.determineActiveFunctionNodes(activeFunctionNodes, s, genome);
+		s.determineActiveFunctionNodes(i.activeFunctionNodes, s, genome);
+		
+		// Sort the nodes in ascending order 
+		Collections.sort(activeFunctionNodes);
+		Collections.sort(i.activeFunctionNodes);
+		
+		int tmp = 0;
+		
+		// Node numbers are stored if two nodes are selected for the swap of the function gene 
+		int swapNode1 = 0;
+		int swapNode2 = 0;
+		
+		// Indices for the function genes
+		int index1 = 0;
+		int index2 = 0;
+				
+		boolean boundaryExpansion = true;
+		
+		// Determine the phenotypic length
+		int len1 = activeFunctionNodes.size();
+		int len2 = i.activeFunctionNodes.size();
+
+		// check that the chromosomes are equally long (true in most cases)
+		int min = Math.min(len1, len2);
+		int max = Math.max(len1, len2);
+	
+		// Iterate over the minimum phenotype length
+		for (int x = 0; x < min; x++) 
+		{
+			if(state.random[thread].nextBoolean()) {
+				
+				if(boundaryExpansion && x == (min - 1) && len1 != len2  ) {
+					
+					int r = state.random[thread].nextInt(max - x);
+					
+					if(len1 < len2) {
+						swapNode1 = activeFunctionNodes.get(x);
+						swapNode2 = i.activeFunctionNodes.get(x + r);
+					} else {
+						swapNode1 = activeFunctionNodes.get(x + r);
+						swapNode2 = i.activeFunctionNodes.get(x);
+					}
+				
+					
+				} else {
+					swapNode1 = activeFunctionNodes.get(x);
+					swapNode2 = i.activeFunctionNodes.get(x);
+				}
+				
+				// calculate the swap indexes
+				index1 = (swapNode1 - s.numInputs) * (1 + s.maxArity);
+				index2 = (swapNode2 - s.numInputs) * (1 + s.maxArity);
+				
+				// perform the swaps
+				tmp = genome[index1];
+				genome[index1] = i.genome[index2];
+				i.genome[index2] = tmp;
+			}			
+		}
+	}
+	
+	
 
 	/*
 	 * Determines a set of active function node by chance in accordance to the predefined 
@@ -112,6 +193,7 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 			j++;
 		}
 	}
+	
 
 	
 	/*
@@ -142,7 +224,7 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 		ArrayList<Integer> swapNodesList1 = new ArrayList<Integer>();
 		ArrayList<Integer> swapNodesList2 = new ArrayList<Integer>();
 
-		// Determine activve nodes
+		// Determine active nodes
 		s.determineActiveFunctionNodes(activeFunctionNodes, s, genome);
 		s.determineActiveFunctionNodes(i.activeFunctionNodes, s, genome);
 

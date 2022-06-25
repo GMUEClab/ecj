@@ -13,6 +13,7 @@ import ec.util.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 
@@ -61,9 +62,11 @@ public class VectorCrossoverPipeline extends BreedingPipeline {
 	public static final String P_BLOCKSIZE = "blocksize";
 	public static final String V_ONEPOINT = "onepoint";
 	public static final String V_BLOCK = "block";
+	public static final String V_UNIFORM = "uniform";
 	
 	public final static int C_ONEPOINT = 0;
 	public final static int C_BLOCK = 1;
+	public final static int C_UNIFORM = 2;
 	
 	public int crossoverType;// integer value selected bysed on the text input by user //public int
 	public int blockSize;
@@ -116,6 +119,8 @@ public class VectorCrossoverPipeline extends BreedingPipeline {
 			crossoverType = C_ONEPOINT; // redundant
 		else if (ctype.equalsIgnoreCase(V_BLOCK))
 			crossoverType = C_BLOCK;
+		else if (ctype.equalsIgnoreCase(V_UNIFORM))
+			crossoverType = C_UNIFORM;
 
 		else
 			state.output.fatal("AdvancedVectorCrossoverPipeline given a bad crossover type: " + ctype,
@@ -190,6 +195,9 @@ public class VectorCrossoverPipeline extends BreedingPipeline {
 				break;
 			case C_BLOCK:
 				p1.blockCrossover(state, thread, p2, blockSize);
+				break;
+			case C_UNIFORM:		
+				p1.discreteCrossover(state, thread, p2);
 				break;
 			default:// this shoudl never happen and default crossover is therefore obsolete!
 				p1.defaultCrossover(state, thread, p2);
