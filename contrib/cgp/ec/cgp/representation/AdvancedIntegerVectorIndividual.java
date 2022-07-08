@@ -97,7 +97,7 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 	 * 
 	 * References: 
 	 * Kalkreuth (2022): Towards Discrete Phenotypic Recombination in Cartesian Genetic Programming 
-	 * (accepted for publication the seventeenth International Conference on Parallel Problem Solving from Nature (PPSN XVII) 
+	 * (accepted for publication at the seventeenth International Conference on Parallel Problem Solving from Nature (PPSN XVII) 
 	 * 
 	*/
 	public void discreteCrossover(EvolutionState state, int thread, AdvancedIntegerVectorIndividual ind)
@@ -123,7 +123,8 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 		int index1 = 0;
 		int index2 = 0;
 				
-		boolean boundaryExpansion = true;
+		// Boundary extension is activated by default  
+		boolean boundaryExtension = true;
 		
 		// Determine the phenotypic length
 		int len1 = activeFunctionNodes.size();
@@ -133,13 +134,18 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 		int min = Math.min(len1, len2);
 		int max = Math.max(len1, len2);
 	
-		// Iterate over the minimum phenotype length
+		// Iterate over the minimum phenotypic length
 		for (int x = 0; x < min; x++) 
 		{
+			// Decide uniformly at random whether a gene swap will be performed or not 
 			if(state.random[thread].nextBoolean()) {
 				
-				if(boundaryExpansion && x == (min - 1) && len1 != len2  ) {
+				// If boundary extension is activated, we select a swap node for
+				// the phenotypically larger parent beyond the minimum number of 
+				// active nodes of both parents
+				if(boundaryExtension && x == (min - 1) && len1 != len2  ) {
 					
+					// Choose the extension by chance
 					int r = state.random[thread].nextInt(max - x);
 					
 					if(len1 < len2) {
@@ -150,7 +156,7 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 						swapNode2 = i.activeFunctionNodes.get(x);
 					}
 				
-					
+				// Just choose the swap nodes "in-line" without any extension  	
 				} else {
 					swapNode1 = activeFunctionNodes.get(x);
 					swapNode2 = i.activeFunctionNodes.get(x);
@@ -257,6 +263,230 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 
 		}
 	}
+	
+	
+	/*
+	 * Both sections are connected with a special step that is called neighbourhood connect. 
+	 * The step refers to the first active node of the section
+	 * behind the crossover point which is connected to the last active node
+	 * of the section in front of the crossover point. This is done by adjusting
+	 * the connection gene of the first active node of the section behind the
+	 * crossover point.
+	 */
+	public void mergeParts(ArrayList<Integer> legalNodes, ArrayList<Integer> activeNodesPart1,
+			ArrayList<Integer> activeNodesPart2, int crossoverPosition, int crossoverPoint, int[] genomePart1,
+			int[] genomePart2, int[] newGenome, MersenneTwisterFast rand) {
+
+		AdvancedIntegerVectorSpecies s = (AdvancedIntegerVectorSpecies) species;
+		
+	
+		boolean connectedNeighborNode = false;
+		
+		// Copy the genetic material from both parents with respect 
+		// to crossover point. Forming of the new genome. 
+
+		for (int i = 0; i < crossoverPosition; i++) {
+			newGenome[i] = genomePart1[i];
+		}
+
+		for (int i = crossoverPosition; i < genomePart1.length; i++) {
+			newGenome[i] = genomePart2[i];
+		}
+		
+		// Connect both sections of the new genome 
+		for (int i = crossoverPosition; i < newGenome.length; i++) {
+			if (s.phenotype(i, newGenome) == s.GENE_FUNCTION) {
+				int nodeNum = s.nodeNumber(i, newGenome);
+
+				// Check wether the node is active 
+				if (activeNodesPart2.contains(nodeNum)) {
+					for (int j = 1; j <= s.maxArity; j++) {
+						int randArg; 
+						
+						// If the neighbor node has not been directly connected yet
+						if (s.connectNeighborNode && !connectedNeighborNode) {
+							// Perform the neighborhood connect
+							if (crossoverPoint >= 1) {
+								newGenome[i + j] = activeNodesPart1.get(crossoverPoint);
+							} else {
+								newGenome[i + j] = activeNodesPart1.get(0);
+							}
+							connectedNeighborNode = true;
+						// Otherwise, perform the random active connect
+						} else if (!legalNodes.contains(newGenome[i + j])) {
+							
+							// Chose between a connection to an previous function node
+							// or input by chance
+							if (rand.nextBoolean(0.5)) {
+								randArg = rand.nextInt(s.numInputs);
+							} else {
+
+								int max = legalNodes.indexOf(nodeNum);
+								int min = s.numInputs;
+								randArg = rand.nextInt((max - min)) + min;
+
+							}
+
+							newGenome[i + j] = legalNodes.get(randArg);
+						}
+					}
+				}
+			}
+		}
+		reconnectOutputs(newGenome, legalNodes, rand);
+	}
+
+	/*
+	 * Ensures that all outputs of the offspring are connected to legal nodes. Reconnects all outputs
+	 * that are not connected with a legal node. 
+	 */ 
+	public void reconnectOutputs(int[] genome, ArrayList<Integer> legalNodes, MersenneTwisterFast rand) {
+
+		IntegerVectorSpecies s = (IntegerVectorSpecies) species;
+		
+		// Perform an random active connect for all outputs that currently connected 
+		// to illegal (inactive) nodes. 
+		for (int i = 0; i < s.numOutputs; i++) {
+			int nodeNum = s.nodeNumber(genome.length - i - 1, genome);
+			int randArg;
+
+			if (!legalNodes.contains(genome[genome.length - i - 1])) {
+				int max = legalNodes.size();
+				int min = s.numInputs;
+				randArg = rand.nextInt((max - min)) + min;
+
+				genome[genome.length - i - 1] = randArg;
+
+			}
+
+		}
+	}
+
+	/*
+	 * 	To ensure that active nodes of the section behind the crossover point do
+	 * 	not refer to previous inactive nodes of the section in front of the crossover point,
+	 *	the subgraph crossover perform a step which is called random active connect. All connection
+	 *	genes of the active nodes of the section behind the crossover point are
+	 *	adjusted to the active nodes of the section in front of the crossover point,
+	 *	previous active nodes of input nodes. The nodes which are suitable
+	 *	for a random active connection are named as legal nodes. 
+	 */
+	public void createLegalNodes(ArrayList<Integer> legalNodes, ArrayList<Integer> activeNodesPart1,
+			ArrayList<Integer> activeNodesPart2, int crossoverNode) {
+		IntegerVectorSpecies s = (IntegerVectorSpecies) species;
+
+		// Add the input nodes to the set of legal nodes
+		for (int i = 0; i < s.numInputs; i++) {
+			legalNodes.add(i);
+		}
+
+		// Add the active nodes representing the first phenotype 
+		for (int i = 0; i < activeNodesPart1.size(); i++) {
+			if (activeNodesPart1.get(i) <= crossoverNode) {
+				legalNodes.add(activeNodesPart1.get(i));
+			}
+		}
+
+		// Add the active nodes representing the second phenotype 
+		for (int i = 0; i < activeNodesPart2.size(); i++) {
+			if (activeNodesPart2.get(i) > crossoverNode) {
+				legalNodes.add(activeNodesPart2.get(i));
+			}
+		}
+
+	}
+	
+	/**
+	 * The subgraph crossover exclusively recombines 
+	 * genetic material of the active paths which represent the phenotypes of the individuals.
+	 * Therefore the active function nodes of both parents are determined and a suitable crossover point 
+	 * is chosen afterwards. 
+	 */
+	public void subgraphCrossover(EvolutionState state, int thread, VectorIndividual ind) {
+		
+		AdvancedIntegerVectorIndividual ind2 = (AdvancedIntegerVectorIndividual) ind;
+		AdvancedIntegerVectorSpecies s = (AdvancedIntegerVectorSpecies) species;
+
+		int[] genome1 = genome;
+		int[] genome2 = ind2.genome;
+
+		ArrayList<Integer> activeFunctionNodes1 = new ArrayList<Integer>();
+		ArrayList<Integer> activeFunctionNodes2 = new ArrayList<Integer>();
+		ArrayList<Integer> legalNodes = new ArrayList<Integer>();
+		
+
+		s.determineActiveFunctionNodes(activeFunctionNodes1, s, genome1);
+		s.determineActiveFunctionNodes(activeFunctionNodes2, s, genome2);
+		
+		// Discard the crossover if at least one parent has no active function nodes
+		if (activeFunctionNodes1.size() == 0)
+			return;
+
+		if (activeFunctionNodes2.size() == 0)
+			return;
+		
+		MersenneTwisterFast rand = state.random[thread];
+
+		Collections.sort(activeFunctionNodes1);
+		Collections.sort(activeFunctionNodes2);
+
+		int c1;
+		int c2;
+		
+		// Choose two potential crossover point by chance 
+		c1 = rand.nextInt(activeFunctionNodes1.size());
+		c2 = rand.nextInt(activeFunctionNodes2.size());
+		
+		
+		// Array for the genome of the offspring
+		int[] offspring = new int[(s.numNodes * (s.maxArity + 1)) + s.numOutputs];
+		subgraphCrossover(c1, c2, activeFunctionNodes1, activeFunctionNodes2, legalNodes, genome1, genome2, offspring, state,
+				thread);
+		
+		genome = offspring;
+	}
+	
+	
+	/*
+	 * Subgraph recombination determines the active paths of both parents and randomly selects subgraphs of active function nodes
+	 * from the phenotype. The selected subgraphs are than recombined to produce an offspring. 
+	 * 
+	 * References: 
+	 * Kalkreuth et al.(2017) http://dx.doi.org/10.1007/978-3-319-55696-3_19
+	 * Kalkreuth (2020) http://dx.doi.org/10.5220/0010110700590070
+	 * Kalkreuth (2021)  http://dx.doi.org/10.5220/0010110700590070
+	 */
+	public void subgraphCrossover(int c1, int c2, ArrayList<Integer> activeFunctionNodes1,
+			ArrayList<Integer> activFunctioneNodes2, ArrayList<Integer> legalNodes, int[] genome1, int[] genome2,
+			int[] offspring, EvolutionState state, int thread) {
+
+		IntegerVectorSpecies s = (IntegerVectorSpecies) species;
+		MersenneTwisterFast rand = state.random[thread];
+
+		int c1Node = activeFunctionNodes1.get(c1);
+		int c2Node = activFunctioneNodes2.get(c2);
+		int c1Pos = ((activeFunctionNodes1.get(c1) + 1) - s.numInputs) * (s.maxArity + 1);
+		int c2Pos = ((activFunctioneNodes2.get(c2) + 1) - s.numInputs) * (s.maxArity + 1);
+		
+		
+		// A general crossover point is defined by choosing the smaller crossover
+		// point. The reason for this is that the subgraphs of the parents which will
+		// be placed in front of or behind the crossover point of the offspring genome should be balanced. 
+		// The representation of CGP allows active paths of an individual which can start in the middle
+		// or back of the graph. The subgraph which will be placed in front of the crossover point has
+		// to start at more leading active nodes. 
+		if (c1Node <= c2Node) {
+
+			createLegalNodes(legalNodes, activeFunctionNodes1, activFunctioneNodes2, c1Node);
+			mergeParts(legalNodes, activeFunctionNodes1, activFunctioneNodes2, c1Pos, c1, genome1, genome2, offspring,
+					rand);
+		} else {
+
+			createLegalNodes(legalNodes, activFunctioneNodes2, activeFunctionNodes1, c2Node);
+			mergeParts(legalNodes, activFunctioneNodes2, activeFunctionNodes1, c2Pos, c2, genome2, genome1, offspring,
+					rand);
+		}
+	}
 
 
 
@@ -345,6 +575,214 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 			if (state.random[thread].nextBoolean(s.mutationProbability(x))) {
 				genome[x] = randomValueFromClosedInterval(0, s.computeMaxGene(x, genome), state.random[thread]);
 			}
+	}
+	
+	
+	/*
+	 * Insertion mutation activates exactly one inactive function node by rewiring connection genes 
+	 * in the genotype. 
+	 * 
+	 * References: Kalkreuth (2019) http://dx.doi.org/10.5220/0008070100820092
+	 * Kalkreuth (2021) http://dx.doi.org/10.1007/978-3-030-70594-7_4
+	 */
+	public void insertion(EvolutionState state, int thread, int[] genome) {
+		AdvancedIntegerVectorSpecies s = (AdvancedIntegerVectorSpecies) species;
+		MersenneTwisterFast rand = state.random[thread];
+
+		s.determineActiveFunctionNodes(activeFunctionNodes, s, genome);
+
+		// Discard the mutation if the number of active nodes is higher or equal than the predefined upper
+		// limit of active nodes
+		if (activeFunctionNodes.size() >= s.maxNodeInsertion) {
+			return;
+		}
+
+		passiveFunctionNodes.clear();
+		
+		
+		// Determine the set of passive nodes 
+		for (int i = (s.numInputs); i <= (s.numNodes + s.numInputs - 1); i++) {
+			if (!activeFunctionNodes.contains(i)) {
+				passiveFunctionNodes.add(i);
+			}
+		}
+
+		// If all nodes are already active, discard the mutation
+		if (passiveFunctionNodes.size() == 0)
+			return;
+
+		// Chose a passive node by chance
+		int j = rand.nextInt(passiveFunctionNodes.size());
+
+		// Determine the node number and position
+		int mNodeNumber = passiveFunctionNodes.get(j);
+		int mNodePosition = s.positionFromNodeNumber(mNodeNumber);
+		
+	
+		boolean hasLeftNode = false;
+		boolean hasRightNode = false;
+
+		int rightNodeNumber = -1;
+		int rightNodePosition = -1;
+
+		Collections.sort(activeFunctionNodes);
+		
+		// Check if the selected passive nodes has neighbor nodes
+		if (activeFunctionNodes.size() > 0) {
+			if (mNodeNumber > activeFunctionNodes.get(0))
+				hasLeftNode = true;
+
+			if (mNodeNumber < (activeFunctionNodes.get(activeFunctionNodes.size() - 1)))
+				hasRightNode = true;
+		}
+
+		// Case distinction for neighbors of the selected passive node
+		
+		if (hasRightNode) {
+			// Get the node number of the neighbor to the right 
+			int i = 0;
+			int currentNode = activeFunctionNodes.get(i);
+			while (currentNode < mNodeNumber) {
+				currentNode = activeFunctionNodes.get(i);
+				i++;
+			}
+
+			rightNodeNumber = currentNode;
+			rightNodePosition = s.positionFromNodeNumber(rightNodeNumber);
+
+		}
+
+		if (hasRightNode) {
+			int currentPosition;
+			// Overtake the connection genes of the following neighbor node
+			for (int i = 1; i <= s.maxArity; i++) {
+				currentPosition = mNodePosition + i;
+				genome[currentPosition] = genome[rightNodePosition + i];
+			}
+			
+			// Connect the neighbor with the selected passive node, the node now becomes active 
+			int randomInputNumber = rand.nextInt(s.maxArity);
+			genome[rightNodePosition + randomInputNumber + 1] = mNodeNumber;
+
+		} else if (hasLeftNode) {
+			int leftNodeNumber = activeFunctionNodes.get(activeFunctionNodes.size() - 1);
+			
+			// Adjust at least one output if the previous active node is directly connected 
+			// with the output 
+			for (int i = 1; i <= s.numOutputs; i++) {
+				if (genome[genome.length - i] == leftNodeNumber) {
+					genome[genome.length - i] = mNodeNumber;
+					break;
+				}
+			}
+
+			int currentPosition;
+
+
+			for (int i = 1; i <= s.maxArity; i++) {
+				currentPosition = mNodePosition + i;
+
+				if (i == 1) {
+					// Adjust one connection gene to the previous function node 
+					genome[currentPosition] = leftNodeNumber;
+				} else {
+					// Adjust the remaining genes to inputs or previous active function nodes
+					if (rand.nextBoolean()) {
+						genome[currentPosition] = activeFunctionNodes.get(rand.nextInt(activeFunctionNodes.size()));
+					} else {
+						genome[currentPosition] = rand.nextInt(s.numInputs);
+					}
+				}
+
+			}
+		// If the selected passive node has no neighbors connect the output to it 
+		} else {
+			int output = (rand.nextInt(s.numOutputs)) + 1;
+			genome[genome.length - output] = mNodeNumber;
+			
+			// Adjust the inputs of the node to the inputs
+			int currentPosition;
+			for (int i = 1; i <= s.maxArity; i++) {
+				currentPosition = mNodePosition + i;
+				genome[currentPosition] = rand.nextInt(s.numInputs);
+			}
+		}
+
+		passiveFunctionNodes.remove(j);
+		activeFunctionNodes.add(mNodeNumber);
+
+	}
+
+	/*
+	 * Deletion mutation deactivates the first active function node 
+	 * 
+	 * References: 
+	 * Kalkreuth (2019) http://dx.doi.org/10.5220/0008070100820092
+	 * Kalkreuth (2021) http://dx.doi.org/10.1007/978-3-030-70594-7_4
+	 */
+	public void deletion(EvolutionState state, int thread, int[] genome) {
+
+		AdvancedIntegerVectorSpecies s = (AdvancedIntegerVectorSpecies) species;
+		MersenneTwisterFast rand = state.random[thread];
+
+		s.determineActiveFunctionNodes(activeFunctionNodes, s, genome);
+
+		// Discard the mutation if the number of active nodes is lower or equal than the predefined lower 
+		// limit of active function nodes
+		if (activeFunctionNodes.size() <= s.minNodeDeletion) {
+			return;
+		}
+
+		Collections.sort(activeFunctionNodes);
+		
+		// First active function node is going to be deactivated
+		int mNode = activeFunctionNodes.get(0);
+		activeFunctionNodes.remove(0);
+
+		int currentNode;
+		int currentIndex;
+		int randIndex;
+
+		// Reset all connections that refer to the first function node by chance
+		// Distinguish between connection and output genes
+		for (int i = 0; i < genome.length; i++) {
+			if (s.phenotype(i, genome) == s.GENE_ARGUMENT) {
+				currentNode = s.nodeNumber(i, genome);
+				if (activeFunctionNodes.contains(currentNode) && genome[i] == mNode) {
+					// Binary decision by chance if a function node is connected to
+					// an input or active function node
+					if (rand.nextBoolean()) {
+						currentIndex = activeFunctionNodes.indexOf(currentNode);
+						// The new first active function node will be randomly connected to an input
+						if (currentIndex == 0) {
+							genome[i] = rand.nextInt(s.numInputs);
+						} else {
+						// Otherwise, connect the node to a previous active function node
+							randIndex = rand.nextInt(currentIndex);
+							genome[i] = activeFunctionNodes.get(randIndex);
+						}
+					
+					} else {
+						genome[i] = rand.nextInt(s.numInputs);
+					}
+				}
+			}
+
+			// The outputs are reconnected in a similar way with a binary decision by chance 
+			// if an output is connected to an input or active function node
+			if (s.phenotype(i, genome) == s.GENE_OUTPUT) {
+				if (genome[i] == mNode) {
+					if (rand.nextBoolean()) {
+						randIndex = rand.nextInt(activeFunctionNodes.size());
+						genome[i] = activeFunctionNodes.get(randIndex);
+					} else {
+						genome[i] = rand.nextInt(s.numInputs);
+					}
+				}
+			}
+
+		}
+
 	}
 
 
@@ -515,6 +953,14 @@ public class AdvancedIntegerVectorIndividual extends IntegerVectorIndividual {
 			singleActiveGeneMutation(state, thread);
 		} else if (s.mutationType == s.C_MULTI) {
 			multiActiveGeneMutation(state, thread, s.mutateActiveGenes);
+		}
+		
+		if(s.insertionProbability > 0.0f) {
+			insertion(state, thread, genome);
+		}
+		
+		if(s.deletionProbability > 0.0f) {
+			deletion(state, thread, genome);	
 		}
 		
 		if(s.inversionProbability > 0.0f || s.duplicationProbability > 0.0f) {

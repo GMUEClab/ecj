@@ -12,12 +12,18 @@ import ec.util.Parameter;
  *         https://twitter.com/RomanKalkreuth
  */
 public class AdvancedIntegerVectorSpecies extends IntegerVectorSpecies {
+	public static final String P_INSERTION_PROB = "insertion-prob";
+	public static final String P_DELETION_PROB = "deletion-prob";
 	public static final String P_MUTATION_RATE = "mutation-rate";
+	public static final String P_MAX_INSERTION = "max-node-insertion";
+	public static final String P_MIN_DELETION = "min-node-deletion";
 	public static final String P_INVERSION_PROB = "inversion-prob";
 	public static final String P_MAX_INVERSION_DEPTH = "max-inversion-depth";
 	public static final String P_DUPLICATION_PROB = "duplication-prob";
 	public static final String P_MAX_DUPLICATION_DEPTH = "max-duplication-depth";
+	public static final String P_CNN = "connect-neighbour-node";
 	public static final String P_MUTATE_ACTIVE_GENES = "num-active-genes";
+	public static final String P_CONNECT_NEIGHBOUR_NODE = "connect-neighbour-node";
 	
 	public final static String P_MUTATIONTYPE = "mutation-type";
 	
@@ -25,7 +31,6 @@ public class AdvancedIntegerVectorSpecies extends IntegerVectorSpecies {
     public final static String V_MULTI = "multi";
     public final static String V_POINT = "point";
     
-
     public final static int C_SINGLE = 0;
     public final static int C_MULTI = 1;
     public final static int C_POINT = 2;
@@ -43,7 +48,7 @@ public class AdvancedIntegerVectorSpecies extends IntegerVectorSpecies {
 	public float duplicationProbability;
 	public int maxDuplicationDepth;
 	
-	public boolean connectNeighbourNode;
+	public boolean connectNeighborNode;
 	public int mutateActiveGenes;
 	
 	protected int mutationType;
@@ -116,8 +121,20 @@ public class AdvancedIntegerVectorSpecies extends IntegerVectorSpecies {
 		
 		Parameter def = defaultBase();
 		
-		/// MUTATION PARAMETERS
-	
+		// MUTATION PARAMETERS
+		
+		insertionProbability = state.parameters.getFloatWithDefault(base.push(P_INSERTION_PROB), def
+				.push(P_INSERTION_PROB), 0.0f);
+		
+		deletionProbability =state.parameters.getFloatWithDefault(base.push(P_DELETION_PROB), def
+				.push(P_DELETION_PROB), 0.0f);
+
+		maxNodeInsertion = state.parameters.getIntWithDefault(base.push(P_MAX_INSERTION), def
+				.push(P_MAX_INSERTION), 10);
+		
+		minNodeDeletion = state.parameters.getIntWithDefault(base.push(P_MIN_DELETION), def
+				.push(P_MIN_DELETION), 2);
+		
 		inversionProbability = state.parameters.getFloatWithDefault(base.push(P_INVERSION_PROB), def
 				.push(P_INVERSION_PROB), 0.0f);
 		
@@ -132,6 +149,10 @@ public class AdvancedIntegerVectorSpecies extends IntegerVectorSpecies {
 		
 		mutateActiveGenes = state.parameters.getIntWithDefault(base.push(P_MUTATE_ACTIVE_GENES), def
 				.push(P_MUTATE_ACTIVE_GENES), 1);
+		
+		connectNeighborNode = state.parameters.getBoolean(base.push(P_CONNECT_NEIGHBOUR_NODE ), def
+				.push(P_CONNECT_NEIGHBOUR_NODE ), false);
+		
 		
 		
 	     /// MUTATION TYPE
@@ -152,7 +173,8 @@ public class AdvancedIntegerVectorSpecies extends IntegerVectorSpecies {
         else {
         	 state.output.error("IntegerVectorSpecies given a bad mutation type");
         }
-	
+        
+        connectNeighborNode =state.parameters.getBoolean(base.push(P_CNN),def.push(P_CNN), false);
 	}
 
 }
