@@ -42,9 +42,20 @@ package ec;
 public abstract class Breeder implements Singleton
     {
     private static final long serialVersionUID = 1;
+    /** The flag to let the coevolutionary system know that we're doing sequential breeding.
+    	You shouldn't play with this flag unless you're SimpleBreeder -- keep it at false otherwise. */
+    public boolean sequentialBreeding = false;
     
     /** Breeds state.population, returning a new population.  In general,
         state.population should not be modified. */
 
     public abstract Population breedPopulation(final EvolutionState state) ;
+
+    /** Returns true if we're doing sequential breeding and it's the subpopulation's turn (round robin,
+        one subpopulation per generation).  See SimpleBreeder for more information.  By default
+        this method just returns TRUE (which should be fine in most cases).*/
+    public boolean shouldBreedSubpop(EvolutionState state, int subpop, int threadnum)
+        {
+        return true;
+        }
     }

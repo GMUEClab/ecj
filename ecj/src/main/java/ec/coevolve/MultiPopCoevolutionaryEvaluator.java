@@ -125,8 +125,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         super.setup( state, base );
                 
         // evaluators are set up AFTER breeders, so I can check this now
-        if (state.breeder instanceof SimpleBreeder &&
-            ((SimpleBreeder)(state.breeder)).sequentialBreeding)  // we're going sequentil
+        if (state.breeder.sequentialBreeding)  // we're going sequential
             state.output.message("The Breeder is breeding sequentially, so the MultiPopCoevolutionaryEvaluator is also evaluating sequentially.");
                                 
         // at this point, we do not know the number of subpopulations, so we read it as well from the parameters file
@@ -199,8 +198,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         believes that the subpopulation should be breed afterwards. */
     public boolean shouldEvaluateSubpop(EvolutionState state, int subpop, int threadnum)
         {
-        return (state.breeder instanceof SimpleBreeder &&
-            ((SimpleBreeder)(state.breeder)).shouldBreedSubpop(state, subpop, threadnum));
+        return state.breeder.shouldBreedSubpop(state, subpop, threadnum);
         }
 
     public void evaluatePopulation(final EvolutionState state)

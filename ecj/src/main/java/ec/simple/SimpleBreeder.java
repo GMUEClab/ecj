@@ -72,7 +72,6 @@ public class SimpleBreeder extends Breeder
     /** An array[subpop] of the *fraction* of elites to keep for that subpopulation */
     public double[] eliteFrac;
     public boolean[] reevaluateElites;
-    public boolean sequentialBreeding;
     public boolean clonePipelineAndPopulation;
     public Population backupPopulation = null;
     
