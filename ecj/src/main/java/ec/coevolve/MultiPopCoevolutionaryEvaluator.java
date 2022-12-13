@@ -443,7 +443,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
 
     protected void afterCoevolutionaryEvaluation( final EvolutionState state, final GroupedProblemForm prob )
         {
-        if( numGuru > 0 )
+        if (numGuru > 0)
             {
             for(int i = 0; i < state.population.subpops.size(); i++)
                 if (shouldEvaluateSubpop(state, i, 0))          // only load gurus for subpopulations which are actually changing
@@ -454,8 +454,8 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         if (numPrev > 0)
             {
             previousPopulation = (Population)(state.population.emptyClone());
-            for(int i = 0; i < previousPopulation.subpops.size(); i++ )
-                for(int j = 0; j < previousPopulation.subpops.get(i).individuals.size() ; j++ )
+            for(int i = 0; i < state.population.subpops.size(); i++ )
+                for(int j = 0; j < state.population.subpops.get(i).individuals.size() ; j++ )
                     previousPopulation.subpops.get(i).individuals.add(j, (Individual)(state.population.subpops.get(i).individuals.get(j).clone()));
             }
         }
