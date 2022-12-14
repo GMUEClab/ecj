@@ -46,7 +46,7 @@ public class MultiPopCoevolutionaryEvaluatorTest {
         params.set(BASE.push(MultiPopCoevolutionaryEvaluator.P_NUM_SHUFFLED), "1");
         params.set(BASE.push(MultiPopCoevolutionaryEvaluator.P_NUM_RAND_IND), "0");
         params.set(BASE.push(MultiPopCoevolutionaryEvaluator.P_NUM_GURU), "0");
-        params.set(BASE.push(MultiPopCoevolutionaryEvaluator.P_NUM_IND), "0");
+        params.set(BASE.push(MultiPopCoevolutionaryEvaluator.P_NUM_IND), "1");
         params.set(BASE.push(MultiPopCoevolutionaryEvaluator.P_SELECTION_METHOD_CURRENT), "ec.select.RandomSelection");
         params.set(BASE.push(MultiPopCoevolutionaryEvaluator.P_SELECTION_METHOD_PREV), "ec.select.RandomSelection");
         params.set(new Parameter(Initializer.P_POP).push(Population.P_SIZE), "3");
@@ -67,8 +67,13 @@ public class MultiPopCoevolutionaryEvaluatorTest {
         state.population.subpops.add(new Subpopulation());
     }
     
+    /**
+     * When calling afterCoevolutionaryEvaluation(), if NUM_IND = 0,
+     * then the curent population is not copied into the previousPopulation variable.
+     */
     @Test
     public void testAfterCoevolutionaryEvaluation1() {
+        params.set(BASE.push(MultiPopCoevolutionaryEvaluator.P_NUM_IND), "0");
         final MultiPopCoevolutionaryEvaluator instance = new MultiPopCoevolutionaryEvaluator();
         instance.setup(state, BASE);
         state.population = getTestPop(); // Input population
@@ -78,9 +83,12 @@ public class MultiPopCoevolutionaryEvaluatorTest {
         assertEquals(null, instance.previousPopulation);
     }
     
+    /**
+     * When calling afterCoevolutionaryEvaluation(), if NUM_IND > 0,
+     * then the curent population is copied into the previousPopulation variable.
+     */
     @Test
     public void testAfterCoevolutionaryEvaluation2() {
-        params.set(BASE.push(MultiPopCoevolutionaryEvaluator.P_NUM_IND), "1");
         final MultiPopCoevolutionaryEvaluator instance = new MultiPopCoevolutionaryEvaluator();
         instance.setup(state, BASE);
         state.population = getTestPop(); // Input population
@@ -89,9 +97,11 @@ public class MultiPopCoevolutionaryEvaluatorTest {
         instance.afterCoevolutionaryEvaluation(state, null);
         assertNotNull(instance.previousPopulation);
         assertNotNull(instance.previousPopulation.subpops);
+        // Since getTestPop() gives us 2 subpopulations with 2 and 3 individuals, respectively,
+        //   the copy in previousPopulation should have those sizes as well.
         assertEquals(2, instance.previousPopulation.subpops.size());
-        assertTrue(instance.previousPopulation.subpops.get(0).individuals.isEmpty());
-        assertTrue(instance.previousPopulation.subpops.get(1).individuals.isEmpty());
+        assertEquals(2, instance.previousPopulation.subpops.get(0).individuals.size());
+        assertEquals(3, instance.previousPopulation.subpops.get(1).individuals.size());
     }
     
     /**
