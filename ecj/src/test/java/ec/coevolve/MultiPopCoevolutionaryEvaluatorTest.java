@@ -12,6 +12,7 @@ import ec.Initializer;
 import ec.Population;
 import ec.Subpopulation;
 import ec.app.coevolve2.CoevolutionaryECSuite;
+import ec.simple.SimpleBreeder;
 import ec.simple.SimpleFitness;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
@@ -36,6 +37,8 @@ public class MultiPopCoevolutionaryEvaluatorTest {
     
     @Before
     public void setUp() {
+
+        // Parameters for the system under test
         params = new ParameterDatabase();
         params.set(BASE, "mtecj.MultiPopCoevolutionaryEvaluatorTest");
         params.set(BASE.push(MultiPopCoevolutionaryEvaluator.P_PROBLEM), "ec.app.coevolve2.CoevolutionaryECSuite");
@@ -47,7 +50,13 @@ public class MultiPopCoevolutionaryEvaluatorTest {
         params.set(BASE.push(MultiPopCoevolutionaryEvaluator.P_SELECTION_METHOD_CURRENT), "ec.select.RandomSelection");
         params.set(BASE.push(MultiPopCoevolutionaryEvaluator.P_SELECTION_METHOD_PREV), "ec.select.RandomSelection");
         params.set(new Parameter(Initializer.P_POP).push(Population.P_SIZE), "3");
+
+        // Manually set up state of other components we need without calling setup() on them
         state = new EvolutionState();
+        // MultiPopCoevolutionaryEvaluatorTest assumes that the breeder is already setup
+        //   (or, more specifically, that we can read its sequentialBreeding paramater)
+        state.breeder = new SimpleBreeder();
+        state.breeder.sequentialBreeding = false;
         state.parameters = params;
         state.output = Evolve.buildOutput();
         state.output.setThrowsErrors(true);
@@ -85,6 +94,9 @@ public class MultiPopCoevolutionaryEvaluatorTest {
         assertTrue(instance.previousPopulation.subpops.get(1).individuals.isEmpty());
     }
     
+    /**
+     * Creates a test population to use in tests.
+     */
     private Population getTestPop() {
         final Population result = new Population();
         result.subpops = new ArrayList<Subpopulation>();
