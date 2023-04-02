@@ -92,7 +92,8 @@ public class PSOBreeder extends Breeder
     public double informantCoeff = 0.5 ;            //  coefficient for informants/neighbours
     public double globalCoeff = 0.5 ;               //  coefficient for global best, this is not done in the standard PSO
     public int neighborhoodSize = 3 ; 
-    public boolean includeSelf = false;         
+    public boolean includeSelf = false;
+    public boolean usePersonalBest = false;     // use fitness or personal best to calculate the neighborhood best
 
     public double[][] globalBest = null ; // one for each subpopulation
     public Fitness[] globalBestFitness = null;
@@ -149,6 +150,7 @@ public class PSOBreeder extends Breeder
         // update global best, neighborhood best, and personal best 
         for(int subpop = 0; subpop < state.population.subpops.size(); subpop++)
             {
+            // update global best and personal best
             for(int ind = 0; ind < state.population.subpops.get(subpop).individuals.size() ; ind++)
                 {
                 if (globalBestFitness[subpop] == null ||
@@ -159,6 +161,11 @@ public class PSOBreeder extends Breeder
                     }
                 ((Particle) state.population.subpops.get(subpop).individuals.get(ind)).update(state, subpop, ind, 0);
                 }
+
+            // update neighborhood best
+            for(int ind = 0; ind < state.population.subpops.get(subpop).individuals.size() ; ind++)
+                ((Particle) state.population.subpops.get(subpop).individuals.get(ind)).updateNeighborhood(state, subpop, ind, 0, usePersonalBest);
+                
             // clone global best
             globalBest[subpop] = (double[])(globalBest[subpop].clone());
             globalBestFitness[subpop] = (Fitness)(globalBestFitness[subpop].clone());
