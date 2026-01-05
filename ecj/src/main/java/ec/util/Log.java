@@ -67,12 +67,14 @@ public class Log implements Serializable
     /** Specifies that the log should write to stderr (System.err) */
     public final static int D_STDERR = 1;
 
+/*
     protected void finalize() throws Throwable 
         { 
         // rarely happens though... :-(
         super.finalize();
         if (writer!=null && !isLoggingToSystemOut) writer.close();
         }
+*/
 
     /** Creates a log to a given filename; this file may or may not
         be appended to on restart, depending on _appendOnRestart.  If
