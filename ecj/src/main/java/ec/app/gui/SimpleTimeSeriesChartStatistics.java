@@ -18,7 +18,7 @@ import ec.Fitness;
 import ec.util.Parameter;
 
 public class SimpleTimeSeriesChartStatistics
-        extends TimeSeriesStatistics {
+    extends TimeSeriesStatistics {
 
     private int[] seriesID;
 
@@ -29,8 +29,8 @@ public class SimpleTimeSeriesChartStatistics
 
         for (int i = 0; i < numSubPops; ++i) {
             seriesID[i] = addSeries("SubPop "+i);
+            }
         }
-    }
 
     public void postEvaluationStatistics(EvolutionState state) {
         super.postEvaluationStatistics(state);
@@ -41,9 +41,9 @@ public class SimpleTimeSeriesChartStatistics
                 Fitness fit = state.population.subpops.get(subPop).individuals.get(i).fitness;
                 if (fit.betterThan(bestFit))
                     bestFit = fit;
-            }
+                }
 
             addDataPoint(seriesID[subPop], state.generation, bestFit.fitness());
+            }
         }
     }
-}

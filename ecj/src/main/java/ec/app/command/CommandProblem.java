@@ -42,20 +42,20 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
         this.processBuilder = new ProcessBuilder(command);
         }
 
-	@Override
-	public void preprocessPopulation(EvolutionState state, Population pop, boolean[] prepareForFitnessAssessment,
-            boolean countVictoriesOnly)
+    @Override
+    public void preprocessPopulation(EvolutionState state, Population pop, boolean[] prepareForFitnessAssessment,
+        boolean countVictoriesOnly)
         {
-		// Do nothing
-	    }
+        // Do nothing
+        }
 
-	@Override
-	public int postprocessPopulation(EvolutionState state, Population pop, boolean[] assessFitness,
-            boolean countVictoriesOnly)
+    @Override
+    public int postprocessPopulation(EvolutionState state, Population pop, boolean[] assessFitness,
+        boolean countVictoriesOnly)
         {
-		// Do nothing
-		return 0;
-	    }
+        // Do nothing
+        return 0;
+        }
 
     /**
      * Evaluate a chunk of individuals by sending them all at once to an external command.
@@ -67,9 +67,9 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
      * @param subpops Ignored
      * @param threadnum The ID of the thread this job is run on
      */
-	@Override
-	public void evaluate(EvolutionState state, Individual[] individuals, boolean[] updateFitness, boolean countVictoriesOnly,
-            int[] subpops, int threadnum)
+    @Override
+    public void evaluate(EvolutionState state, Individual[] individuals, boolean[] updateFitness, boolean countVictoriesOnly,
+        int[] subpops, int threadnum)
         {
         assert(state != null);
         assert(individuals != null);
@@ -81,7 +81,7 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
             final List<Double> fitnesses = parseFitnesses(simulationResult);
 
             if (fitnesses.size() != individuals.length)
-                    throw new IllegalStateException(String.format("Sent %d individuals to external command, but the returned simulation results had %d lines.", CommandProblem.class.getSimpleName(), individuals.length, fitnesses.size()));
+                throw new IllegalStateException(String.format("Sent %d individuals to external command, but the returned simulation results had %d lines.", CommandProblem.class.getSimpleName(), individuals.length, fitnesses.size()));
                 
             for (int i = 0; i < individuals.length; i++)
                 {
@@ -95,13 +95,13 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
             {
             state.output.fatal(String.format("%s: %s", this.getClass().getSimpleName(), e));
             }
-	    }
+        }
 
     /** Evaluate a single individual by sending its genome to an external command. */
-	@Override
+    @Override
     public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum)
         {
-		evaluate(state, new Individual[] { ind }, null, false, null, threadnum);
+        evaluate(state, new Individual[] { ind }, null, false, null, threadnum);
         }
 
     /**
@@ -133,10 +133,10 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
         // Read the output from the command's stdout
         final StringBuilder sb = new StringBuilder();
         final BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line = "";			
+        String line = "";                       
         while ((line = reader.readLine())!= null) {
             sb.append(line).append(System.getProperty("line.separator"));
-        }
+            }
         return sb.toString();
         }
     
@@ -170,20 +170,20 @@ public class CommandProblem extends Problem implements SimpleProblemForm, Groupe
      */
     public static List<Double> parseFitnesses(final String simResult)
         {
-            if (simResult.isEmpty())
-                throw new IllegalArgumentException(String.format("%s: response from external fitness command was empty.", CommandProblem.class.getSimpleName()));
+        if (simResult.isEmpty())
+            throw new IllegalArgumentException(String.format("%s: response from external fitness command was empty.", CommandProblem.class.getSimpleName()));
 
-            try {
-                final String[] lines = simResult.split("\\r?\\n");  // Split on either Windows or UNIX line endings
-                final List<Double> fitnesses = new ArrayList<>();
-                for (final String f : lines)
-                    {
-                    final double realFitness = Double.valueOf(f);
-                    fitnesses.add(realFitness);
-                    }
-                return fitnesses;
+        try {
+            final String[] lines = simResult.split("\\r?\\n");  // Split on either Windows or UNIX line endings
+            final List<Double> fitnesses = new ArrayList<>();
+            for (final String f : lines)
+                {
+                final double realFitness = Double.valueOf(f);
+                fitnesses.add(realFitness);
+                }
+            return fitnesses;
             } catch (Exception e) {
-                throw new IllegalArgumentException(String.format("%s: error (%s) while parsing fitness response \"%s\"", CommandProblem.class.getSimpleName(), e, simResult));
+            throw new IllegalArgumentException(String.format("%s: error (%s) while parsing fitness response \"%s\"", CommandProblem.class.getSimpleName(), e, simResult));
             }
         }
     }

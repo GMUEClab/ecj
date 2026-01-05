@@ -12,23 +12,23 @@ public class PieChartStatistics extends ChartableStatistics {
     public DefaultPieDataset dataset;
 
     public void setup(EvolutionState state, Parameter base)
-    {
+        {
         super.setup(state, base);
         dataset = new DefaultPieDataset();
 
-    }
+        }
 
     public JFreeChart makeChart(){
         JFreeChart chart = ChartFactory.createPieChart(this.title, this.dataset, true, true, false);
 
         return chart;
-    }
+        }
 
     public void makeSector(int seriesID, double[] genes)
-    {
-        for (int i = 0; i < genes.length; i++)
         {
+        for (int i = 0; i < genes.length; i++)
+            {
             dataset.setValue("Genome "+seriesID, genes[i]);
+            }
         }
     }
-}

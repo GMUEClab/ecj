@@ -285,7 +285,7 @@ public class Slave
         oneShot = parameters.getBoolean(new Parameter(P_ONESHOT),null,true); 
         
         final int noDelay = parameters.exists(new Parameter(P_EVALNODELAY), null) ? 
-        	(parameters.getBoolean(new Parameter(P_EVALNODELAY), null, true) ? 1 : 0) : -1;
+            (parameters.getBoolean(new Parameter(P_EVALNODELAY), null, true) ? 1 : 0) : -1;
 
         final int sendbuffer = parameters.getInt(new Parameter(P_EVALSENDBUFER), null, -1); 
         final int recvbuffer = parameters.getInt(new Parameter(P_EVALRECVBUFFER), null, -1); 
@@ -341,32 +341,32 @@ public class Slave
                     try
                         {
                         if (noDelay == 1)
-                        	{
-                        	socket.setTcpNoDelay(true);
-                        	if (!silent) 
-                        	Output.initialMessage("NoDelay -> ON");
-                        	}
+                            {
+                            socket.setTcpNoDelay(true);
+                            if (!silent) 
+                                Output.initialMessage("NoDelay -> ON");
+                            }
                         else if (noDelay == 0)
-                        	{
-                        	socket.setTcpNoDelay(false);
-                        	if (!silent) 
-                        	Output.initialMessage("NoDelay -> OFF");
-                        	}
+                            {
+                            socket.setTcpNoDelay(false);
+                            if (!silent) 
+                                Output.initialMessage("NoDelay -> OFF");
+                            }
 
                         if (sendbuffer >= 0)
-                        	{
-                        	if (!silent) 
-                        	Output.initialMessage("SendBuffer -> " + sendbuffer + " was " + socket.getSendBufferSize());
-                        	socket.setSendBufferSize(sendbuffer);
-                        	}
+                            {
+                            if (!silent) 
+                                Output.initialMessage("SendBuffer -> " + sendbuffer + " was " + socket.getSendBufferSize());
+                            socket.setSendBufferSize(sendbuffer);
+                            }
                         
                         if (recvbuffer >= 0)
-                        	{
-                        	if (!silent) 
-                        	Output.initialMessage("RecvBuffer -> " + recvbuffer + " was " + socket.getReceiveBufferSize());
-                        	socket.setReceiveBufferSize(recvbuffer);
-                        	}
-                        	
+                            {
+                            if (!silent) 
+                                Output.initialMessage("RecvBuffer -> " + recvbuffer + " was " + socket.getReceiveBufferSize());
+                            socket.setReceiveBufferSize(recvbuffer);
+                            }
+                                
                         InputStream tmpIn = socket.getInputStream();
                         OutputStream tmpOut = socket.getOutputStream();
                         
@@ -415,7 +415,7 @@ public class Slave
                 
                     if (output != null) output.close();
                     output = new Output(false);              // do not store messages, just print them
-                    output.setThrowsErrors(true);  			 // don't do System.exit(1);
+                    output.setThrowsErrors(true);                        // don't do System.exit(1);
                 
                     // stdout is always log #0. stderr is always log #1.
                     // stderr accepts announcements, and both are fully verbose
@@ -495,13 +495,13 @@ public class Slave
                             switch (problemType)
                                 {
                                 case V_SHUTDOWN:
-                                    {
-                                    socket.close();
-                                    if (oneShot)
-                                        return;  // we're outa here
-                                    else
-                                        throw new Output.OutputExitException("SHUTDOWN");
-                                    }
+                                {
+                                socket.close();
+                                if (oneShot)
+                                    return;  // we're outa here
+                                else
+                                    throw new Output.OutputExitException("SHUTDOWN");
+                                }
                                 case V_EVALUATESIMPLE:
                                     evaluateSimpleProblemForm(newState, returnIndividuals, dataIn, dataOut, args);
                                     break;
@@ -554,7 +554,7 @@ public class Slave
                 System.err.println(e);
                 }
                 
-            if (oneShot) { if (!silent) Output.initialMessage("\n\nExiting Slave: this shouldn't have happened"); }		// we shouldn't be able to get here
+            if (oneShot) { if (!silent) Output.initialMessage("\n\nExiting Slave: this shouldn't have happened"); }             // we shouldn't be able to get here
             
             if (!silent) Output.initialMessage("\n\nResetting Slave");
             }
@@ -607,12 +607,12 @@ public class Slave
             final SimpleProblemForm[] problems = new SimpleProblemForm[state.evalthreads];
             int[] indForThread = new int[state.evalthreads];
            
-           	// build the problems
-           	for(int i = 0; i < problems.length; i++)
-           		{
-           		problems[i] = ((SimpleProblemForm)(state.evaluator.p_problem.clone()));
-           		}
-           		
+            // build the problems
+            for(int i = 0; i < problems.length; i++)
+                {
+                problems[i] = ((SimpleProblemForm)(state.evaluator.p_problem.clone()));
+                }
+                        
             int t = 0;              // thread index            
             try
                 {
@@ -632,7 +632,7 @@ public class Slave
                         returnIndividualsToMaster(state, inds, updateFitness, dataOut, returnIndividuals, indForThread[t]);  // return just that individual
                         }
 
-					// Assign new thread to problem
+                    // Assign new thread to problem
                     final int _i = i;
                     final int _t = t;
                     indForThread[t] = i;

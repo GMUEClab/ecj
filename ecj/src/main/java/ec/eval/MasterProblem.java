@@ -447,7 +447,7 @@ public class MasterProblem extends Problem implements SimpleProblemForm, Grouped
     
     /** Returns true if the underlying class returns true for isGroupedProblem() */
     public boolean isGroupedProblem()
-    	{
-    	return (problem.isGroupedProblem());
-    	}
+        {
+        return (problem.isGroupedProblem());
+        }
     }

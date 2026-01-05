@@ -195,8 +195,8 @@ public class Evolve
                     "                        file, setting it to the value VALUE instead.  You\n" + 
                     "                        can override as many parameters as you like on\n" + 
                     "                        the command line.\n\n" +
-                    (checkpoint ? 
-                    	"-checkpoint CHECKPOINT  Launches ECJ from the provided CHECKPOINT file.\n" : "")
+                        (checkpoint ? 
+                        "-checkpoint CHECKPOINT  Launches ECJ from the provided CHECKPOINT file.\n" : "")
                     );
                 System.exit(1);
                 }
@@ -375,11 +375,11 @@ public class Evolve
 
     /** Constructs and sets up an Output object which always issues errors in the traditional fashion rather than throwing them. */    
     public static Output buildOutput()
-		{
-		return buildOutput(false);
-		}
-		
-		
+        {
+        return buildOutput(false);
+        }
+                
+                
     /** Constructs and sets up an Output object. */    
     public static Output buildOutput(boolean throwsErrors)
         {

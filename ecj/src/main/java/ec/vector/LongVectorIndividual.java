@@ -163,48 +163,48 @@ public class LongVectorIndividual extends VectorIndividual
                     }
                 break;
             case VectorSpecies.C_TWO_POINT: 
+            {
+            //                int point0 = state.random[thread].nextInt((len / s.chunksize)+1);
+            //                point = state.random[thread].nextInt((len / s.chunksize)+1);
+            // we want to go from 0 to len-1
+            // so that the only NO-OP crossover possible is point == point0
+            // example; len = 4
+            // possibilities: a=0 b=0       NOP                             [0123]
+            //                                a=0 b=1       swap 0                  [for 1, 2, 3]
+            //                                a=0 b=2       swap 0, 1               [for 2, 3]
+            //                                a=0 b=3       swap 0, 1, 2    [for 3]
+            //                                a=1 b=1       NOP                             [1230]
+            //                                a=1 b=2       swap 1                  [for 2, 3, 0]
+            //                                a=1 b=3       swap 1, 2               [for 3, 0]
+            //                                a=2 b=2       NOP                             [2301]
+            //                                a=2 b=3       swap 2                  [for 3, 0, 1]
+            //                                a=3 b=3   NOP                         [3012]
+            // All intervals: 0, 01, 012, 0123, 1, 12, 123, 1230, 2, 23, 230, 2301, 3, 30, 301, 3012
+            point = state.random[thread].nextInt((len / s.chunksize));
+            int point0 = state.random[thread].nextInt((len / s.chunksize));
+            if (point0 > point) { int p = point0; point0 = point; point = p; }
+            for(int x=point0*s.chunksize;x<point*s.chunksize;x++)
                 {
-                //                int point0 = state.random[thread].nextInt((len / s.chunksize)+1);
-                //                point = state.random[thread].nextInt((len / s.chunksize)+1);
-                // we want to go from 0 to len-1
-                // so that the only NO-OP crossover possible is point == point0
-                // example; len = 4
-                // possibilities: a=0 b=0       NOP                             [0123]
-                //                                a=0 b=1       swap 0                  [for 1, 2, 3]
-                //                                a=0 b=2       swap 0, 1               [for 2, 3]
-                //                                a=0 b=3       swap 0, 1, 2    [for 3]
-                //                                a=1 b=1       NOP                             [1230]
-                //                                a=1 b=2       swap 1                  [for 2, 3, 0]
-                //                                a=1 b=3       swap 1, 2               [for 3, 0]
-                //                                a=2 b=2       NOP                             [2301]
-                //                                a=2 b=3       swap 2                  [for 3, 0, 1]
-                //                                a=3 b=3   NOP                         [3012]
-                // All intervals: 0, 01, 012, 0123, 1, 12, 123, 1230, 2, 23, 230, 2301, 3, 30, 301, 3012
-                point = state.random[thread].nextInt((len / s.chunksize));
-                int point0 = state.random[thread].nextInt((len / s.chunksize));
-                if (point0 > point) { int p = point0; point0 = point; point = p; }
-                for(int x=point0*s.chunksize;x<point*s.chunksize;x++)
-                    {
-                    tmp = i.genome[x];
-                    i.genome[x] = genome[x];
-                    genome[x] = tmp;
-                    }
+                tmp = i.genome[x];
+                i.genome[x] = genome[x];
+                genome[x] = tmp;
                 }
+            }
             break;
             case VectorSpecies.C_TWO_POINT_NO_NOP: 
+            {
+            point = state.random[thread].nextInt((len / s.chunksize));
+            int point0 = 0;
+            do { point0 = state.random[thread].nextInt((len / s.chunksize)); }
+            while (point0 == point);  // NOP
+            if (point0 > point) { int p = point0; point0 = point; point = p; }
+            for(int x=point0*s.chunksize;x<point*s.chunksize;x++)
                 {
-                point = state.random[thread].nextInt((len / s.chunksize));
-                int point0 = 0;
-                do { point0 = state.random[thread].nextInt((len / s.chunksize)); }
-                while (point0 == point);  // NOP
-                if (point0 > point) { int p = point0; point0 = point; point = p; }
-                for(int x=point0*s.chunksize;x<point*s.chunksize;x++)
-                    {
-                    tmp = i.genome[x];
-                    i.genome[x] = genome[x];
-                    genome[x] = tmp;
-                    }
+                tmp = i.genome[x];
+                i.genome[x] = genome[x];
+                genome[x] = tmp;
                 }
+            }
             break;
             case VectorSpecies.C_ANY_POINT:
                 for(int x=0;x<len/s.chunksize;x++) 
@@ -217,44 +217,44 @@ public class LongVectorIndividual extends VectorIndividual
                             }
                 break;
             case VectorSpecies.C_LINE_RECOMB:
+            {
+            double alpha = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
+            double beta = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
+            long t,u;
+            long min, max;
+            for (int x = 0; x < len; x++)
                 {
-                double alpha = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
-                double beta = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
-                long t,u;
-                long min, max;
-                for (int x = 0; x < len; x++)
+                min = s.minGene(x);
+                max = s.maxGene(x);
+                t = longFloor(alpha * genome[x] + (1 - alpha) * i.genome[x] + 0.5);
+                u = longFloor(beta * i.genome[x] + (1 - beta) * genome[x] + 0.5);
+                if (!(t < min || t > max || u < min || u > max))
                     {
-                    min = s.minGene(x);
-                    max = s.maxGene(x);
-                    t = longFloor(alpha * genome[x] + (1 - alpha) * i.genome[x] + 0.5);
-                    u = longFloor(beta * i.genome[x] + (1 - beta) * genome[x] + 0.5);
-                    if (!(t < min || t > max || u < min || u > max))
-                        {
-                        genome[x] = t;
-                        i.genome[x] = u; 
-                        }
-                    }
-                }
-            break;
-            case VectorSpecies.C_INTERMED_RECOMB:
-                {
-                long t,u;
-                long min, max;
-                for (int x = 0; x < len; x++)
-                    {
-                    do
-                        {
-                        double alpha = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
-                        double beta = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
-                        min = s.minGene(x);
-                        max = s.maxGene(x);
-                        t = longFloor(alpha * genome[x] + (1 - alpha) * i.genome[x] + 0.5);
-                        u = longFloor(beta * i.genome[x] + (1 - beta) * genome[x] + 0.5);
-                        } while (t < min || t > max || u < min || u > max);
                     genome[x] = t;
                     i.genome[x] = u; 
                     }
                 }
+            }
+            break;
+            case VectorSpecies.C_INTERMED_RECOMB:
+            {
+            long t,u;
+            long min, max;
+            for (int x = 0; x < len; x++)
+                {
+                do
+                    {
+                    double alpha = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
+                    double beta = state.random[thread].nextDouble() * (1 + 2*s.lineDistance) - s.lineDistance;
+                    min = s.minGene(x);
+                    max = s.maxGene(x);
+                    t = longFloor(alpha * genome[x] + (1 - alpha) * i.genome[x] + 0.5);
+                    u = longFloor(beta * i.genome[x] + (1 - beta) * genome[x] + 0.5);
+                    } while (t < min || t > max || u < min || u > max);
+                genome[x] = t;
+                i.genome[x] = u; 
+                }
+            }
             break;
             }
         }

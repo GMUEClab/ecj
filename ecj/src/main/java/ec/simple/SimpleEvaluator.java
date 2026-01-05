@@ -274,14 +274,14 @@ public class SimpleEvaluator extends Evaluator
                 chunk[i++] = inds.get(x);
 
             if (p.isGroupedProblem())  // Evaluate the chunk all at once
-            	{
+                {
                 ((GroupedProblemForm)p).evaluate(state, chunk, null, false, null, threadnum);
-            	}
+                }
             else // Evaluate each individual in the chunk sequentially
-            	{
+                {
                 for (Individual ind : chunk)
                     ((SimpleProblemForm)p).evaluate(state, ind, pop, threadnum);
-            	}
+                }
             state.incrementEvaluations(upperbound - fp);
             }
                         

@@ -113,14 +113,14 @@ public class Output implements Serializable
     public synchronized boolean getThrowsErrors() { return throwsErrors; }
 
 /*
-    protected void finalize() throws Throwable
-        {
-        // flush the logs
-        close();
+  protected void finalize() throws Throwable
+  {
+  // flush the logs
+  close();
 
-        // do super.finalize, just for good style
-        super.finalize();
-        }
+  // do super.finalize, just for good style
+  super.finalize();
+  }
 */
 
     private static void exitWithError(Output output, String message, boolean throwException)

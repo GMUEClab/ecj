@@ -29,42 +29,42 @@ public class SimpleGroupedEvaluator extends SimpleEvaluator
     @Override
     protected void evalPopChunk(EvolutionState state, int[] numinds, int[] from, int threadnum, Problem p)
         {
-            ((ec.Problem)p).prepareToEvaluate(state,threadnum);
+        ((ec.Problem)p).prepareToEvaluate(state,threadnum);
         
-            if (!(p.isGroupedProblem()))
+        if (!(p.isGroupedProblem()))
             state.output.fatal("" + this.getClass() + " used, but the Problem is not of GroupedProblemForm");
 
-            ArrayList<Subpopulation> subpops = state.population.subpops;
-            int len = subpops.size();
+        ArrayList<Subpopulation> subpops = state.population.subpops;
+        int len = subpops.size();
             
-            for(int pop=0;pop<len;pop++)
-                {
-                // start evaluatin'!
-                int fp = from[pop];
-                int upperbound = fp+numinds[pop];
-                ArrayList<Individual> inds = new ArrayList<>(subpops.get(pop).individuals.subList(fp, upperbound));
-                ((GroupedProblemForm)p).evaluate(state, toArray(inds), repeat(true, inds.size()), false, new int[] { pop }, threadnum);
-                state.incrementEvaluations(upperbound - fp);
-                }
+        for(int pop=0;pop<len;pop++)
+            {
+            // start evaluatin'!
+            int fp = from[pop];
+            int upperbound = fp+numinds[pop];
+            ArrayList<Individual> inds = new ArrayList<>(subpops.get(pop).individuals.subList(fp, upperbound));
+            ((GroupedProblemForm)p).evaluate(state, toArray(inds), repeat(true, inds.size()), false, new int[] { pop }, threadnum);
+            state.incrementEvaluations(upperbound - fp);
+            }
                             
-            ((ec.Problem)p).finishEvaluating(state,threadnum); 
+        ((ec.Problem)p).finishEvaluating(state,threadnum); 
         }
 
     /** Convert an ArrayList<Individual> to an Individual[] */
     private static Individual[] toArray(final ArrayList<Individual> inds)
         {
-            final Individual[] result = new Individual[inds.size()];
-            for (int i = 0; i < inds.size(); i++)
-                result[i] = inds.get(i);
-            return result;
+        final Individual[] result = new Individual[inds.size()];
+        for (int i = 0; i < inds.size(); i++)
+            result[i] = inds.get(i);
+        return result;
         }
 
     /** Repeat a Boolean element `length` times. */
     private boolean[] repeat(final boolean value, final int length)
         {
-            final boolean[] array = new boolean[length];
-            for (int i = 0; i < length; i++)
-                array[i] = value;
-            return array;
+        final boolean[] array = new boolean[length];
+        for (int i = 0; i < length; i++)
+            array[i] = value;
+        return array;
         }
     }

@@ -68,12 +68,12 @@ public class Log implements Serializable
     public final static int D_STDERR = 1;
 
 /*
-    protected void finalize() throws Throwable 
-        { 
-        // rarely happens though... :-(
-        super.finalize();
-        if (writer!=null && !isLoggingToSystemOut) writer.close();
-        }
+  protected void finalize() throws Throwable 
+  { 
+  // rarely happens though... :-(
+  super.finalize();
+  if (writer!=null && !isLoggingToSystemOut) writer.close();
+  }
 */
 
     /** Creates a log to a given filename; this file may or may not

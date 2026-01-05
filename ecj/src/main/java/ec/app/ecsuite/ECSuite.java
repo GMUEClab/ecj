@@ -473,103 +473,103 @@ public class ECSuite extends Problem implements SimpleProblemForm
                 return value;                                                                   // note positive
 
             case PROB_ROTATED_RASTRIGIN:
+            {
+            synchronized(rotationMatrix)            // synchronizations are rare in ECJ.  :-(
                 {
-                synchronized(rotationMatrix)            // synchronizations are rare in ECJ.  :-(
-                    {
-                    if (rotationMatrix[0] == null)
-                        rotationMatrix[0] = buildRotationMatrix(state, seed, (int)len);
-                    }
-
-                // now we know the matrix exists rotate the matrix and return its value
-                double[] val = mul(rotationMatrix[0], genome);
-                return function(state, PROB_RASTRIGIN, val, threadnum);
+                if (rotationMatrix[0] == null)
+                    rotationMatrix[0] = buildRotationMatrix(state, seed, (int)len);
                 }
+
+            // now we know the matrix exists rotate the matrix and return its value
+            double[] val = mul(rotationMatrix[0], genome);
+            return function(state, PROB_RASTRIGIN, val, threadnum);
+            }
 
             case PROB_ROTATED_SCHWEFEL:
+            {
+            synchronized(rotationMatrix)            // synchronizations are rare in ECJ.  :-(
                 {
-                synchronized(rotationMatrix)            // synchronizations are rare in ECJ.  :-(
-                    {
-                    if (rotationMatrix[0] == null)
-                        rotationMatrix[0] = buildRotationMatrix(state, seed, (int)len);
-                    }
-
-                // now we know the matrix exists rotate the matrix and return its value
-                double[] val = mul(rotationMatrix[0], genome);
-                return function(state, PROB_SCHWEFEL, val, threadnum);
+                if (rotationMatrix[0] == null)
+                    rotationMatrix[0] = buildRotationMatrix(state, seed, (int)len);
                 }
+
+            // now we know the matrix exists rotate the matrix and return its value
+            double[] val = mul(rotationMatrix[0], genome);
+            return function(state, PROB_SCHWEFEL, val, threadnum);
+            }
 
             case PROB_ROTATED_GRIEWANK:
+            {
+            synchronized(rotationMatrix)            // synchronizations are rare in ECJ.  :-(
                 {
-                synchronized(rotationMatrix)            // synchronizations are rare in ECJ.  :-(
-                    {
-                    if (rotationMatrix[0] == null)
-                        rotationMatrix[0] = buildRotationMatrix(state, seed, (int)len);
-                    }
-
-                // now we know the matrix exists rotate the matrix and return its value
-                double[] val = mul(rotationMatrix[0], genome);
-                return function(state, PROB_GRIEWANK, val, threadnum);
+                if (rotationMatrix[0] == null)
+                    rotationMatrix[0] = buildRotationMatrix(state, seed, (int)len);
                 }
+
+            // now we know the matrix exists rotate the matrix and return its value
+            double[] val = mul(rotationMatrix[0], genome);
+            return function(state, PROB_GRIEWANK, val, threadnum);
+            }
 
             case PROB_LANGERMAN:
-                {
-                return 0.0 - langerman(genome);
-                }
+            {
+            return 0.0 - langerman(genome);
+            }
 
             case PROB_LENNARDJONES:
+            {
+            int numAtoms = genome.length / 3;
+            double v = 0.0 ;
+
+            for(int i = 0 ; i < numAtoms - 1 ; i++ )
                 {
-                int numAtoms = genome.length / 3;
-                double v = 0.0 ;
-
-                for(int i = 0 ; i < numAtoms - 1 ; i++ )
+                for(int j = i + 1 ; j < numAtoms ; j++ )
                     {
-                    for(int j = i + 1 ; j < numAtoms ; j++ )
-                        {
-                        // double d = dist(genome, i, j);
-                        double a = genome[i * 3] - genome[j * 3];
-                        double b = genome[i * 3 + 1] - genome[j * 3 + 1];
-                        double c = genome[i * 3 + 2] - genome[j * 3 + 2];
+                    // double d = dist(genome, i, j);
+                    double a = genome[i * 3] - genome[j * 3];
+                    double b = genome[i * 3 + 1] - genome[j * 3 + 1];
+                    double c = genome[i * 3 + 2] - genome[j * 3 + 2];
 
-                        double d = Math.sqrt(a * a + b * b + c * c);
+                    double d = Math.sqrt(a * a + b * b + c * c);
 
-                        double r12 = Math.pow(d, -12.0);
-                        double r6 = Math.pow(d, -6.0);
-                        double e = r12 - r6 ;
-                        v += e ;
-                        }
+                    double r12 = Math.pow(d, -12.0);
+                    double r6 = Math.pow(d, -6.0);
+                    double e = r12 - r6 ;
+                    v += e ;
                     }
-                v *= -4.0 ;
-                return v;
                 }
+            v *= -4.0 ;
+            return v;
+            }
 
             case PROB_LUNACEK:
-                {
-                // Lunacek function: for more information, please see --
-                // http://arxiv.org/pdf/1207.4318.pdf
-                // http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.154.1657
-                // http://www.cs.unm.edu/~neal.holts/dga/benchmarkFunction/lunacek.html
-                // http://www.cs.colostate.edu/sched/pubs/ppsn08impact.pdf
+            {
+            // Lunacek function: for more information, please see --
+            // http://arxiv.org/pdf/1207.4318.pdf
+            // http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.154.1657
+            // http://www.cs.unm.edu/~neal.holts/dga/benchmarkFunction/lunacek.html
+            // http://www.cs.colostate.edu/sched/pubs/ppsn08impact.pdf
                                 
-                double s = 1.0 - (1.0 / (2.0 * Math.sqrt(genome.length + 20.0) - 8.2)) ;
+            double s = 1.0 - (1.0 / (2.0 * Math.sqrt(genome.length + 20.0) - 8.2)) ;
                 
-                // depth of the sphere, could be 1, 2, 3, or 4. 1 is deeper than 4
-                // this could be also be a fraction I guess.
-                double d = 1.0 ; 
-                double mu1 = 2.5 ;
-                double mu2 = -1.0 * Math.sqrt(Math.abs((mu1 * mu1 - d) / s));  // probably don't need the abs
-                double sum1 = 0.0;
-                double sum2 = 0.0;
-                double sum3 = 0.0;
+            // depth of the sphere, could be 1, 2, 3, or 4. 1 is deeper than 4
+            // this could be also be a fraction I guess.
+            double d = 1.0 ; 
+            double mu1 = 2.5 ;
+            double mu2 = -1.0 * Math.sqrt(Math.abs((mu1 * mu1 - d) / s));  // probably don't need the abs
+            double sum1 = 0.0;
+            double sum2 = 0.0;
+            double sum3 = 0.0;
 
-                for(int i = 0 ; i < genome.length ; i++)
-                    {
-                    double genomei = genome[i];
-                    sum1 += (genomei - mu1)*(genomei - mu1) ;
-                    sum2 += (genomei - mu2)*(genomei - mu2) ;
-                    sum3 += 1.0 - Math.cos(2.0 * Math.PI * (genomei - mu1));
-                    }
-                return Math.min(sum1, d * genome.length + s * sum2) + 10.0 * sum3 ;
+            for(int i = 0 ; i < genome.length ; i++)
+                {
+                double genomei = genome[i];
+                sum1 += (genomei - mu1)*(genomei - mu1) ;
+                sum2 += (genomei - mu2)*(genomei - mu2) ;
+                sum3 += 1.0 - Math.cos(2.0 * Math.PI * (genomei - mu1));
                 }
+            return Math.min(sum1, d * genome.length + s * sum2) + 10.0 * sum3 ;
+            }
                         
             default:
                 state.output.fatal( "ec.app.ecsuite.ECSuite has an invalid problem -- how on earth did that happen?" );

@@ -43,7 +43,7 @@ public abstract class Breeder implements Singleton
     {
     private static final long serialVersionUID = 1;
     /** The flag to let the coevolutionary system know that we're doing sequential breeding.
-    	You shouldn't play with this flag unless you're SimpleBreeder -- keep it at false otherwise. */
+        You shouldn't play with this flag unless you're SimpleBreeder -- keep it at false otherwise. */
     public boolean sequentialBreeding = false;
     
     /** Breeds state.population, returning a new population.  In general,

@@ -143,7 +143,7 @@ public class SlaveMonitor
         useCompression = state.parameters.getBoolean(new Parameter(P_EVALCOMPRESSION),null,false);
                 
         final int noDelay = state.parameters.exists(new Parameter(P_EVALNODELAY), null) ? 
-        	(state.parameters.getBoolean(new Parameter(P_EVALNODELAY), null, true) ? 1 : 0) : -1;
+            (state.parameters.getBoolean(new Parameter(P_EVALNODELAY), null, true) ? 1 : 0) : -1;
 
         final int sendBuffer = state.parameters.getInt(new Parameter(P_EVALSENDBUFER), null, -1); 
         final int recvBuffer = state.parameters.getInt(new Parameter(P_EVALRECVBUFFER), null, -1); 
@@ -179,16 +179,16 @@ public class SlaveMonitor
                         catch( IOException e ) { slaveSock = null; }
                         }
                     if (slaveSock == null)
-                    	break;
+                        break;
 
                     debug(Thread.currentThread().getName() + " Slave attempts to connect." );
-						state.output.systemMessage( " Slave attempts to connect." );
+                    state.output.systemMessage( " Slave attempts to connect." );
 
-					Object connection = registerSlave(state, slaveSock, problemPrototype, useCompression, noDelay, sendBuffer, recvBuffer);
+                    Object connection = registerSlave(state, slaveSock, problemPrototype, useCompression, noDelay, sendBuffer, recvBuffer);
                     if (connection instanceof SlaveConnection)
                         state.output.systemMessage( "Slave " + ((SlaveConnection)connection).slaveName + " connected successfully." );
-					else
-						state.output.systemMessage( "Slave " + ((String)connection) + " not permitted to connect." );
+                    else
+                        state.output.systemMessage( "Slave " + ((String)connection) + " not permitted to connect." );
                     }
 
                 debug( Thread.currentThread().getName() + " The monitor is shutting down." );
@@ -203,94 +203,94 @@ public class SlaveMonitor
     */
     public Object registerSlave( EvolutionState state, Socket socket, Problem problemPrototype, boolean useCompression, int noDelay, int sendBuffer, int recvBuffer)
         {
-		try
-			{
-			if (noDelay == 1)
-				{
-				socket.setTcpNoDelay(true);
-				Output.initialMessage("NoDelay -> ON");
-				}
-			else if (noDelay == 0)
-				{
-				socket.setTcpNoDelay(false);
-				Output.initialMessage("NoDelay -> OFF");
-				}
+        try
+            {
+            if (noDelay == 1)
+                {
+                socket.setTcpNoDelay(true);
+                Output.initialMessage("NoDelay -> ON");
+                }
+            else if (noDelay == 0)
+                {
+                socket.setTcpNoDelay(false);
+                Output.initialMessage("NoDelay -> OFF");
+                }
 
-			if (sendBuffer >= 0)
-				{
-				Output.initialMessage("SendBuffer Changed from " + socket.getSendBufferSize() + " to " + sendBuffer);
-				socket.setSendBufferSize(sendBuffer);
-				}
+            if (sendBuffer >= 0)
+                {
+                Output.initialMessage("SendBuffer Changed from " + socket.getSendBufferSize() + " to " + sendBuffer);
+                socket.setSendBufferSize(sendBuffer);
+                }
 
-			if (recvBuffer >= 0)
-				{
-				Output.initialMessage("RecvBuffer Changed from " + socket.getReceiveBufferSize() + " to " + recvBuffer);
-				socket.setReceiveBufferSize(recvBuffer);
-				}
-							
-			DataInputStream dataIn = null;
-			DataOutputStream dataOut = null;
-			InputStream tmpIn = socket.getInputStream();
-			OutputStream tmpOut = socket.getOutputStream();
-			
-			// The first thing we do is send a single byte indicating whether we're using compression or not
-			tmpOut.write((byte)(useCompression ? 1 : 0));
-			
-			if (useCompression)
-				{
-				tmpIn = Output.makeCompressingInputStream(tmpIn);
-				tmpOut = Output.makeCompressingOutputStream(tmpOut);
-				if (tmpIn == null || tmpOut == null)
-					state.output.fatal("You do not appear to have JZLib installed on your system, and so must set eval.compression=false. " +
-						"To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/");
-				}
-																				
-			dataIn = new DataInputStream(tmpIn);
-			dataOut = new DataOutputStream(tmpOut);
+            if (recvBuffer >= 0)
+                {
+                Output.initialMessage("RecvBuffer Changed from " + socket.getReceiveBufferSize() + " to " + recvBuffer);
+                socket.setReceiveBufferSize(recvBuffer);
+                }
+                                                        
+            DataInputStream dataIn = null;
+            DataOutputStream dataOut = null;
+            InputStream tmpIn = socket.getInputStream();
+            OutputStream tmpOut = socket.getOutputStream();
+                        
+            // The first thing we do is send a single byte indicating whether we're using compression or not
+            tmpOut.write((byte)(useCompression ? 1 : 0));
+                        
+            if (useCompression)
+                {
+                tmpIn = Output.makeCompressingInputStream(tmpIn);
+                tmpOut = Output.makeCompressingOutputStream(tmpOut);
+                if (tmpIn == null || tmpOut == null)
+                    state.output.fatal("You do not appear to have JZLib installed on your system, and so must set eval.compression=false. " +
+                        "To get JZLib, download from the ECJ website or from http://www.jcraft.com/jzlib/");
+                }
+                                                                                                                                                                
+            dataIn = new DataInputStream(tmpIn);
+            dataOut = new DataOutputStream(tmpOut);
 
-			// write unique integer
-			dataOut.writeInt(slaveNum++);
-			dataOut.flush();
+            // write unique integer
+            dataOut.writeInt(slaveNum++);
+            dataOut.flush();
 
-			// read slave name
-			String slaveName = dataIn.readUTF();
+            // read slave name
+            String slaveName = dataIn.readUTF();
 
-			dataOut.writeInt(randomSeed);
-			randomSeed+=SEED_INCREMENT;
+            dataOut.writeInt(randomSeed);
+            randomSeed+=SEED_INCREMENT;
 
-			// write out additional data as necessary
-			problemPrototype.sendAdditionalData(state, dataOut);
-			dataOut.flush();
-		
-			if (isShutdownInProgress())  // no more registrations.  Kill the socket
-				{
-				try { dataOut.writeByte(Slave.V_SHUTDOWN); } catch (Exception e) { }  // exception, not IOException, because JZLib throws some array exceptions
-				try { dataOut.flush(); } catch (Exception e) { }
-				try { dataOut.close(); } catch (Exception e) { }
-				try { dataIn.close(); } catch (Exception e) { }
-				try { socket.close(); } catch (IOException e) { }
-				return slaveName;
-				}
+            // write out additional data as necessary
+            problemPrototype.sendAdditionalData(state, dataOut);
+            dataOut.flush();
+                
+            if (isShutdownInProgress())  // no more registrations.  Kill the socket
+                {
+                try { dataOut.writeByte(Slave.V_SHUTDOWN); } catch (Exception e) { }  // exception, not IOException, because JZLib throws some array exceptions
+                try { dataOut.flush(); } catch (Exception e) { }
+                try { dataOut.close(); } catch (Exception e) { }
+                try { dataIn.close(); } catch (Exception e) { }
+                try { socket.close(); } catch (IOException e) { }
+                return slaveName;
+                }
 
-			SlaveConnection newSlave = new SlaveConnection( state, slaveName, socket, dataOut, dataIn, this );
-		
-			synchronized(allSlaves)
-				{
-				allSlaves.addLast(newSlave);
-				notifyMonitor(allSlaves);
-				}
-			synchronized(availableSlaves)
-				{
-				availableSlaves.addLast(newSlave);
-				notifyMonitor(availableSlaves);
-				}
-			return newSlave;
-			}
-		catch (IOException ex)
-			{
-			System.err.println(ex);
-			return "UNKNOWN";
-			}
+            SlaveConnection newSlave = new SlaveConnection( state, slaveName, socket, dataOut, dataIn, this );
+                
+            synchronized(allSlaves)
+                {
+                allSlaves.addLast(newSlave);
+                notifyMonitor(allSlaves);
+                }
+            synchronized(availableSlaves)
+                {
+                availableSlaves.addLast(newSlave);
+                notifyMonitor(availableSlaves);
+                }
+            return newSlave;
+            }
+        catch (IOException ex)
+            {
+            System.err.println(ex);
+            return "UNKNOWN";
+            }
         
         }
 

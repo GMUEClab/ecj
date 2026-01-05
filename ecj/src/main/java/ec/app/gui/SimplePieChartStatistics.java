@@ -18,8 +18,8 @@ public class SimplePieChartStatistics extends PieChartStatistics {
 
         for (int i = 0; i < numSubPops; ++i) {
             seriesID[i] = i; //series id identifies each sub pop
+            }
         }
-    }
 
     public void postEvaluationStatistics(EvolutionState state) {
         super.postEvaluationStatistics(state);
@@ -33,7 +33,7 @@ public class SimplePieChartStatistics extends PieChartStatistics {
 
                 //Best individual is found, make a PieChart
                 makeSector(seriesID[subPop], ((DoubleVectorIndividual) state.population.subpops.get(subPop).individuals.get(i)).genome);
+                }
             }
         }
     }
-}

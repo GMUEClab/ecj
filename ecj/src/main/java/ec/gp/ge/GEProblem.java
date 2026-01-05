@@ -252,7 +252,7 @@ public class GEProblem extends Problem implements SimpleProblemForm, GroupedProb
         }
 
     public boolean isGroupedProblem()
-    	{
-    	return (problem.isGroupedProblem());
-    	}
+        {
+        return (problem.isGroupedProblem());
+        }
     }

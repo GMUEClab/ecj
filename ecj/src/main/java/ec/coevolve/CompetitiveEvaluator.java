@@ -210,11 +210,11 @@ public class CompetitiveEvaluator extends Evaluator
         
         randomizeOrder( state, state.population.subpops.get(0).individuals );
         
-		// are we grouped?
-		if (!p_problem.isGroupedProblem())
-			{
-			state.output.fatal("Problem " +  p_problem + " is not a grouped problem.");
-			}
+        // are we grouped?
+        if (!p_problem.isGroupedProblem())
+            {
+            state.output.fatal("Problem " +  p_problem + " is not a grouped problem.");
+            }
                 
         GroupedProblemForm prob = (GroupedProblemForm)(p_problem.clone());
 
