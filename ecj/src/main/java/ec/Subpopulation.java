@@ -302,7 +302,7 @@ public class Subpopulation implements Cloneable, Setup
     
         
     /** Prints an entire subpopulation in a form readable by humans. 
-        @deprecated Verbosity no longer has meaning
+        @Deprecated Verbosity no longer has meaning
     */
     public final void printSubpopulationForHumans(final EvolutionState state,
         final int log, 
@@ -312,7 +312,7 @@ public class Subpopulation implements Cloneable, Setup
         }
         
     /** Prints an entire subpopulation in a form readable by humans but also parseable by the computer using readSubpopulation(EvolutionState, LineNumberReader). 
-        @deprecated Verbosity no longer has meaning
+        @Deprecated Verbosity no longer has meaning
     */
     public final void printSubpopulation(final EvolutionState state,
         final int log, 

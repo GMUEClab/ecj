@@ -373,7 +373,7 @@ public class RuleSet implements Prototype
                 
     /**
        Prints out the rule set in a readable fashion.
-       @deprecated Verbosity no longer has an effect
+       @Deprecated Verbosity no longer has an effect
     */
     public void printRuleSetForHumans(final EvolutionState state, final int log,
         final int verbosity)
@@ -397,7 +397,7 @@ public class RuleSet implements Prototype
                 
     /**
        Prints the rule set such that the computer can read it later
-       @deprecated Verbosity no longer has an effect
+       @Deprecated Verbosity no longer has an effect
     */
     public void printRuleSet(final EvolutionState state,
         final int log, final int verbosity)

@@ -384,7 +384,7 @@ public class RandomChoice
         they should get normalized and summed by the outside owners
         as: {0.3, 0.5, 0.6, 1.0}.  If probabilities.length < checkboundary,
         then a linear search is used, else a binary search is used.
-        @deprecated
+        @Deprecated
     */
     public static int pickFromDistribution(final float[] probabilities,
         final float prob, final int checkboundary)
@@ -450,7 +450,7 @@ public class RandomChoice
         they should get normalized and summed by the outside owners
         as: {0.3, 0.5, 0.6, 1.0}.  If probabilities.length < checkboundary,
         then a linear search is used, else a binary search is used.
-        @deprecated
+        @Deprecated
     */
     
     public static int pickFromDistribution(final double[] probabilities,
@@ -522,7 +522,7 @@ public class RandomChoice
         they should get normalized and summed by the outside owners
         as: {0.3, 0.5, 0.6, 1.0}.  If probabilities.length < checkboundary,
         then a linear search is used, else a binary search is used.
-        @deprecated
+        @Deprecated
     */
     
     public static int pickFromDistribution(final Object[] objs, 
@@ -595,7 +595,7 @@ public class RandomChoice
         they should get normalized and summed by the outside owners
         as: {0.3, 0.5, 0.6, 1.0}.  If probabilities.length < checkboundary,
         then a linear search is used, else a binary search is used.
-        @deprecated
+        @Deprecated
     */
     
     public static int pickFromDistribution(final Object[] objs, 

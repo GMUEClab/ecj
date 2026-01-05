@@ -149,7 +149,7 @@ public class MultiObjectiveFitness extends Fitness
     public double[] getAuxilliaryFitnessValues() { return new double[] { }; }
 
     /** 
-        @deprecated Use isMaximizing(objective).  This function now just returns whether the first objective is maximizing.
+        @Deprecated Use isMaximizing(objective).  This function now just returns whether the first objective is maximizing.
     */
     public boolean isMaximizing()
         {

@@ -334,7 +334,7 @@ public class GPTree implements GPNodeParent, Prototype
         in later by computer. O(n). 
         The default version of this method simply calls child's 
         printRootedTree(...) method. 
-        @deprecated Verbosity no longer has an effect
+        @Deprecated Verbosity no longer has an effect
     */
 
     public void printTree(final EvolutionState state, final int log,
@@ -406,7 +406,7 @@ public class GPTree implements GPNodeParent, Prototype
     /** Prints out the tree in a readable Lisp-like fashion. O(n). 
         The default version of this method simply calls child's 
         printRootedTreeForHumans(...) method. 
-        @deprecated Verbosity no longer has an effect.
+        @Deprecated Verbosity no longer has an effect.
     */
     
     public void printTreeForHumans(final EvolutionState state, final int log,

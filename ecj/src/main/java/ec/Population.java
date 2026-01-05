@@ -171,7 +171,7 @@ public class Population implements Cloneable, Setup
         
         
     /** Prints an entire population in a form readable by humans. 
-        @deprecated Verbosity no longer has meaning
+        @Deprecated Verbosity no longer has meaning
     */
     public final void printPopulationForHumans(final EvolutionState state,
         final int log, 
@@ -181,7 +181,7 @@ public class Population implements Cloneable, Setup
         }
         
     /** Prints an entire population in a form readable by humans but also parseable by the computer using readPopulation(EvolutionState, LineNumberReader).
-        @deprecated Verbosity no longer has meaning
+        @Deprecated Verbosity no longer has meaning
     */
     public final void printPopulation(final EvolutionState state,
         final int log, 

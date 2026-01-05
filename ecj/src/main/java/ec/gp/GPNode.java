@@ -662,7 +662,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
         node's parent and argposition.  This method is identical to
         cloneReplacing for historical reasons, except that it returns
         the object as a GPNode, not an Object. 
-        @deprecated use clone() instead.
+        @Deprecated use clone() instead.
     */    
  
     public final GPNode cloneReplacing() 
@@ -968,7 +968,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
         to the log (use print(),
         not println()).  The default version gets the atom from
         toStringForHumans(). 
-        @deprecated Verbosity no longer has an effect. 
+        @Deprecated Verbosity no longer has an effect. 
     */
     public int printNodeForHumans(final EvolutionState state,
         final int log, 
@@ -998,7 +998,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
         the number of bytes in the string that you sent to the log (use print(),
         not println()).  The default version gets the atom from toString().
         O(1). 
-        @deprecated Verbosity no longer has an effect. 
+        @Deprecated Verbosity no longer has an effect. 
     */
     public int printNode(final EvolutionState state, final int log, 
         final int verbosity)
@@ -1185,7 +1185,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
     /** Prints out the tree on a single line, with no ending \n, in a fashion that can
         be read in later by computer. O(n).  
         You should call this method with printbytes == 0. 
-        @deprecated Verbosity no longer has an effect.
+        @Deprecated Verbosity no longer has an effect.
     */
     
     public int printRootedTree(final EvolutionState state,
@@ -1237,7 +1237,7 @@ public abstract class GPNode implements GPNodeParent, Prototype
     /** Prints out the tree in a readable Lisp-like multi-line fashion. O(n).  
         You should call this method with tablevel and printbytes == 0.  
         No ending '\n' is printed.  
-        @deprecated Verbosity no longer has an effect.
+        @Deprecated Verbosity no longer has an effect.
     */
     
     public int printRootedTreeForHumans(final EvolutionState state, final int log,

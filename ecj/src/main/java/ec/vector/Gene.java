@@ -68,7 +68,7 @@ public abstract class Gene implements Prototype
 
     public static final String P_GENE = "gene";
 
-    /** @deprecated */
+    /** @Deprecated */
     private static final String P_VECTOR_GENE = "vect-gene";
 
     public void setup(final EvolutionState state, final Parameter base)

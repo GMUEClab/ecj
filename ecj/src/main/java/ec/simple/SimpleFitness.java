@@ -53,7 +53,7 @@ public class SimpleFitness extends Fitness
        Deprecated -- now redefined to set the fitness but ALWAYS say that it's not ideal.
        If you need to specify that it's ideal, you should use the new function 
        setFitness(final EvolutionState state, double _f, boolean _isIdeal).
-       @deprecated
+       @Deprecated
     */
     public void setFitness(final EvolutionState state, double _f)
         {

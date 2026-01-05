@@ -185,7 +185,7 @@ public abstract class Individual implements Prototype, Comparable<Individual>
         individual has been evaluated, its fitness, and then calls Individual.genotypeToStringForHumans().
         Feel free to override this to produce more sophisticated behavior, 
         though it is rare to need to -- instead you could just override genotypeToStringForHumans().
-        @deprecated Verbosity no longer used.
+        @Deprecated Verbosity no longer used.
     */
 
     public final void printIndividualForHumans(final EvolutionState state,
@@ -217,7 +217,7 @@ public abstract class Individual implements Prototype, Comparable<Individual>
         individual has been evaluated, its fitness, and then calls Individual.genotypeToString().
         Feel free to override this to produce more sophisticated behavior, 
         though it is rare to need to -- instead you could just override genotypeToString().
-        @deprecated Verbosity no longer used.
+        @Deprecated Verbosity no longer used.
     */
 
     public final void printIndividual(final EvolutionState state,

@@ -60,7 +60,7 @@ public class KozaFitness extends Fitness
        Do not use this function.  Use the identical setStandardizedFitness() instead.
        The reason for the name change is that fitness() returns a differently-defined
        value than setFitness() sets, ugh.
-       @deprecated
+       @Deprecated
     */
     public void setFitness(final EvolutionState state, final double _f)
         {
@@ -93,7 +93,7 @@ public class KozaFitness extends Fitness
         }
 
     /** Returns the raw fitness metric.  
-        @deprecated use standardizedFitness()
+        @Deprecated use standardizedFitness()
     */
     public double rawFitness()
         {

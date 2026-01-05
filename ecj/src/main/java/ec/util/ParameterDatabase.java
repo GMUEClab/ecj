@@ -1185,7 +1185,7 @@ public class ParameterDatabase implements Serializable
      * minvalue-1, else it returns the parameter value. The parameter chosen is
      * marked "used" if it exists.
      *
-     * @deprecated Use getFloatWithMax instead
+     * @Deprecated Use getFloatWithMax instead
      */
 
     public float getFloat(Parameter parameter,
@@ -1343,7 +1343,7 @@ public class ParameterDatabase implements Serializable
      * minvalue-1, else it returns the parameter value. The parameter chosen is
      * marked "used" if it exists.
      *
-     * @deprecated use getDoubleWithMax instead
+     * @Deprecated use getDoubleWithMax instead
      */
 
     public double getDouble(Parameter parameter,
@@ -1938,7 +1938,7 @@ public class ParameterDatabase implements Serializable
      * parameter value. The parameter chosen is marked "used" if it exists.
      * Longs may be in decimal or (if preceded with an X or x) in hexadecimal.
      * 
-     * @deprecated
+     * @Deprecated
      */
     public long getLong(Parameter parameter, Parameter defaultParameter,
         long minValue, long maxValue) 
@@ -1953,7 +1953,7 @@ public class ParameterDatabase implements Serializable
      * maxValue. If not, this method returns errValue, else it returns the
      * parameter value. The parameter chosen is marked "used" if it exists.
      * 
-     * @deprecated
+     * @Deprecated
      */
     long getLong(Parameter parameter, long minValue, long maxValue) 
         {
@@ -2347,7 +2347,7 @@ public class ParameterDatabase implements Serializable
         }
 
     /** Returns true if parameter exist in the database
-        @deprecated use exists(Parameter, null) 
+        @Deprecated use exists(Parameter, null) 
     */
     public synchronized boolean exists(Parameter parameter) 
         {
@@ -2780,7 +2780,7 @@ public class ParameterDatabase implements Serializable
      * which holds a given parameter. Returns the filename or null if not
      * found.
      *
-     * @deprecated You probably want to use getLocation
+     * @Deprecated You probably want to use getLocation
      */
     /*
       public File fileFor(Parameter parameter) 
@@ -2822,7 +2822,7 @@ public class ParameterDatabase implements Serializable
 
     /*
       Removes a parameter from the database and all its parent databases. 
-      @deprecated  You shouldn't modify parent databases
+      @Deprecated  You shouldn't modify parent databases
     */
     public synchronized void removeDeeply(Parameter parameter) 
         {
