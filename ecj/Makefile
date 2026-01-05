@@ -17,7 +17,7 @@
 JAVAC = javac ${JAVACFLAGS}
 
 CLASSROOT = target/classes
-JAVACFLAGS = -target 1.7 -source 1.7 ${FLAGS} -d ${CLASSROOT}
+JAVACFLAGS = ${FLAGS} -d ${CLASSROOT}
 FLAGS = -g -Xlint:deprecation
 
 VERSION = 27
