@@ -26,7 +26,7 @@ import ec.util.*;
  *
  * <p>Luke, Sean. 2000. Two fast tree-creation algorithms for genetic programming. In <i>IEEE Transactions on Evolutionary Computation</i> 4:3 (September 2000), 274-283. IEEE. 
  *
- * <p> Both can be found at <a href="http://www.cs.gmu.edu/~sean/papers/">http://www.cs.gmu.edu/~sean/papers/</a>
+ * <p> Both can be found at <a href="http://people.cs.gmu.edu/~sean/papers/">http://people.cs.gmu.edu/~sean/papers/</a>
  * 
  * <p> PTC2 requires that your function set to implement PTCFunctionSetForm.  The
  * provided function set, PTCFunctionSet, does exactly this.

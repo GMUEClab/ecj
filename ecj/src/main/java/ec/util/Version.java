@@ -39,7 +39,7 @@ public class Version
     public static final String authorEmail0 = "ecj-help";
     public static final String authorEmail1 = "cs.gmu.edu";
     public static final String authorEmail2 = "(better: join ECJ-INTEREST at URL above)";
-    public static final String authorURL = "http://cs.gmu.edu/~eclab/projects/ecj/";
+    public static final String authorURL = "http://people.cs.gmu.edu/~eclab/projects/ecj/";
     public static final String date = "July 1, 2017";
     public static final String minimumJavaVersion = "1.5";
 
