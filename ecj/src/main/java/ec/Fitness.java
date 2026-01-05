@@ -178,7 +178,7 @@ public abstract class Fitness implements Prototype, Comparable<Object>
         using state.output.println(...,verbosity,log).  The default version
         of this method calls fitnessToStringForHumans(), adds context (collaborators) if any,
         and printlns the resultant string.
-        @deprecated Verbosity no longer has meaning
+        @Deprecated Verbosity no longer has meaning
     */
     public void printFitnessForHumans(EvolutionState state, int log, 
         int verbosity)
@@ -221,7 +221,7 @@ public abstract class Fitness implements Prototype, Comparable<Object>
         ec.util.Code to encode fitness values.  The default version
         of this method calls fitnessToString() and println's the
         resultant string.
-        @deprecated Verbosity no longer has meaning
+        @Deprecated Verbosity no longer has meaning
     */
     public void printFitness(EvolutionState state, int log, 
         int verbosity)
@@ -316,7 +316,7 @@ public abstract class Fitness implements Prototype, Comparable<Object>
             {
             trials = new ArrayList(len);
             for(int i = 0; i < len; i++)
-                trials.add(new Double(dataInput.readDouble()));
+                trials.add(Double.valueOf(dataInput.readDouble()));
             }
         }
 

@@ -682,7 +682,7 @@ public class SizeFairCrossoverPipeline extends GPBreedingPipeline
         if (listForSize == null) 
             {
             listForSize = new LinkedList();
-            sizeToNodes.put(new Integer(nodeInfo.numberOfSubTreesBeneath), listForSize);
+            sizeToNodes.put(Integer.valueOf(nodeInfo.numberOfSubTreesBeneath), listForSize);
             }
         // add it to the list no matter what
         listForSize.add(nodeInfo);

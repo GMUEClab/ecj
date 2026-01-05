@@ -83,7 +83,7 @@ public class CompetitiveMaxOnes extends Problem implements GroupedProblemForm
         if( updateFitness[0] )
             {
             SimpleFitness fit = ((SimpleFitness)(ind[0].fitness));
-            fit.trials.add(new Double(score));
+            fit.trials.add(Double.valueOf(score));
                         
             // set the fitness because if we're doing Single Elimination Tournament, the tournament
             // needs to know who won this time around.  Don't bother declaring the ideal here.
@@ -93,7 +93,7 @@ public class CompetitiveMaxOnes extends Problem implements GroupedProblemForm
         if( updateFitness[1] )
             {
             SimpleFitness fit = ((SimpleFitness)(ind[1].fitness));
-            fit.trials.add(new Double(-score));
+            fit.trials.add(Double.valueOf(-score));
 
             // set the fitness because if we're doing Single Elimination Tournament, the tournament
             // needs to know who won this time around.

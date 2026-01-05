@@ -112,6 +112,7 @@ public class Output implements Serializable
         
     public synchronized boolean getThrowsErrors() { return throwsErrors; }
 
+/*
     protected void finalize() throws Throwable
         {
         // flush the logs
@@ -120,6 +121,7 @@ public class Output implements Serializable
         // do super.finalize, just for good style
         super.finalize();
         }
+*/
 
     private static void exitWithError(Output output, String message, boolean throwException)
         {
@@ -165,7 +167,7 @@ public class Output implements Serializable
         }
 
     /** Creates a new, verbose, empty Output object. 
-        @deprecated Verbosity no longer has an effect.
+        @Deprecated Verbosity no longer has an effect.
     */
     public Output(boolean storeAnnouncementsInMemory, int _verbosity)
         {
@@ -180,7 +182,7 @@ public class Output implements Serializable
         }
 
     /** Sets whether the Output flushes its announcements.
-        @deprecated We now always flush 
+        @Deprecated We now always flush 
     */
     public synchronized void setFlush(boolean v)
         {
@@ -188,7 +190,7 @@ public class Output implements Serializable
         }
     
     /* Returns the Output's flushing behavior. 
-       @deprecated We now always flush 
+       @Deprecated We now always flush 
     */
     public synchronized boolean getFlush()
         {
@@ -209,7 +211,7 @@ public class Output implements Serializable
         }
     
     /** Sets the Output object's general verbosity to <i>v</i>. 
-        @deprecated Verbosity no longer has an effect.
+        @Deprecated Verbosity no longer has an effect.
     */
     public synchronized void setVerbosity(int v)
         {
@@ -217,7 +219,7 @@ public class Output implements Serializable
         }
     
     /** Returns the Output object's general verbosity
-        @deprecated Verbosity no longer has an effect.
+        @Deprecated Verbosity no longer has an effect.
     */
     public synchronized int getVerbosity()
         {
@@ -236,7 +238,7 @@ public class Output implements Serializable
         never store the log itself, which may go away upon a system restart.
         The log can be compressed with gzip, but you cannot appendOnRestart
         and compress at the same time.
-        @deprecated Verbosity no longer has an effect.
+        @Deprecated Verbosity no longer has an effect.
     */
 
     public synchronized int addLog(File file,
@@ -261,7 +263,7 @@ public class Output implements Serializable
         from a checkpoint. Returns the position of the log in Output's 
         collection of logs -- you should use this to access the log always;
         never store the log itself, which may go away upon a system restart. 
-        @deprecated Verbosity no longer has an effect
+        @Deprecated Verbosity no longer has an effect
     */
 
     public synchronized int addLog(File file,
@@ -337,7 +339,7 @@ public class Output implements Serializable
         log in Output's 
         collection of logs -- you should use this to access the log always;
         never store the log itself, which may go away upon a system restart. 
-        @deprecated Verbosity no longer has an effect
+        @Deprecated Verbosity no longer has an effect
     */
     
     public synchronized int addLog(int descriptor,
@@ -371,7 +373,7 @@ public class Output implements Serializable
         <i>restarter</i>. Returns the position of the log in Output's 
         collection of logs -- you should use this to access the log always;
         never store the log itself, which may go away upon a system restart. 
-        @deprecated Verbosity no longer has an effect
+        @Deprecated Verbosity no longer has an effect
     */
 
     public synchronized int addLog(Writer writer,
@@ -674,7 +676,7 @@ public class Output implements Serializable
     /** Prints a message to a given log, with a certain verbosity.  
         <i>_announcement</i> indicates that the message is an announcement. 
         If the log is null, nothing is printed.
-        @deprecated Verbosity no longer has an effect
+        @Deprecated Verbosity no longer has an effect
     */
 
     synchronized void println(String s,
@@ -703,7 +705,7 @@ public class Output implements Serializable
     /** Prints a message to a given log, 
         with a certain verbosity.  If log==ALL_MESSAGE_LOGS, posted to all logs which accept announcements. 
         If the log is NO_LOGS, nothing is printed.
-        @deprecated Verbosity no longer has an effect
+        @Deprecated Verbosity no longer has an effect
     */
     synchronized void println(String s,
         int _verbosity,
@@ -740,7 +742,7 @@ public class Output implements Serializable
     /** Prints a non-announcement message to the given logs, 
         with a certain verbosity. 
         If a log is NO_LOGS, nothing is printed to that log.
-        @deprecated Verbosity no longer has an effect
+        @Deprecated Verbosity no longer has an effect
     */
     public synchronized void println(String s,
         int _verbosity,
@@ -757,7 +759,7 @@ public class Output implements Serializable
     /** Prints a non-announcement message to the given logs, 
         with a certain verbosity. 
         If the log is NO_LOGS, nothing is printed.
-        @deprecated Verbosity no longer has an effect
+        @Deprecated Verbosity no longer has an effect
     */
     public synchronized void println(String s,
         int _verbosity,
@@ -836,7 +838,7 @@ public class Output implements Serializable
     /** Prints a non-announcement message to the given logs, 
         with a certain verbosity. No '\n' is printed.  
         If a log is NO_LOGS, nothing is printed to that log.
-        @deprecated Verbosity no longer has any effect 
+        @Deprecated Verbosity no longer has any effect 
     */
     public synchronized void print(String s,
         int _verbosity,
@@ -955,7 +957,7 @@ public class Output implements Serializable
                         
                 Class outc = Class.forName("com.jcraft.jzlib.ZOutputStream");
                 Object outi = outc.getConstructor(new Class[] { OutputStream.class, Integer.TYPE }).newInstance(new Object[] { out, Integer.valueOf(Z_BEST_SPEED) });
-                outc.getMethod("setFlushMode", new Class[] { Integer.TYPE }).invoke(outi, new Object[] { new Integer(Z_SYNC_FLUSH) });
+                outc.getMethod("setFlushMode", new Class[] { Integer.TYPE }).invoke(outi, new Object[] { Integer.valueOf(Z_SYNC_FLUSH) });
                 return (OutputStream) outi;
                 }
             catch (Exception e2)

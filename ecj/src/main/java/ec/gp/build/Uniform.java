@@ -266,7 +266,7 @@ public class Uniform extends GPNodeBuilder
                 if (maxarity < tmpn.children.length) 
                     maxarity = tmpn.children.length;
                 if (!funcnodes.containsKey(tmpn))  // don't remap the node; it'd make holes
-                    funcnodes.put(tmpn,new Integer(count++));
+                    funcnodes.put(tmpn,Integer.valueOf(count++));
                 }
             }
         

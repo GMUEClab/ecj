@@ -720,7 +720,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
                             out = scan.nextDouble();
                         else state.output.fatal("Non-normal number of data points in training file ", base.push(P_TRAINING_FILE), null);
                         input.add(in);
-                        output.add(new Double(out));
+                        output.add(Double.valueOf(out));
                         }
                                         
                     // dump to arrays
@@ -759,7 +759,7 @@ public class Benchmarks extends GPProblem implements SimpleProblemForm
                             out = scan.nextDouble();
                         else state.output.fatal("Non-normal number of data points in testing file ", base.push(P_TESTING_FILE), null);
                         input.add(in);
-                        output.add(new Double(out));
+                        output.add(Double.valueOf(out));
                         }
                                         
                     // dump to arrays

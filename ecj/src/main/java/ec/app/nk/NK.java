@@ -89,7 +89,7 @@ public class NK extends Problem implements SimpleProblemForm
                     if (tmpInd[j]) tmp += 1 << j; 
                 val = tmp /  Integer.MAX_VALUE; 
                                                                 
-                oldValues.put(tmpInd, new Double(val)); 
+                oldValues.put(tmpInd, Double.valueOf(val)); 
                 }
                         
             fitness += val; 

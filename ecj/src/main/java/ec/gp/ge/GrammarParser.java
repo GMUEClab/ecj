@@ -351,13 +351,13 @@ public class GrammarParser implements Prototype
             }
         // Now to the absolute index to relative index mapping
         String oldHead = ((GrammarNode)indexToRule.get(Integer.valueOf(0))).getHead();
-        absIndexToRelIndex.put(new Integer(0), new Integer(0));
+        absIndexToRelIndex.put(Integer.valueOf(0), Integer.valueOf(0));
         for(int absIndex = 1, relIndex = 1 ; absIndex < indexToRule.size() ; absIndex++)
             {
-            String currentHead = ((GrammarNode)indexToRule.get(new Integer(absIndex))).getHead();
+            String currentHead = ((GrammarNode)indexToRule.get(Integer.valueOf(absIndex))).getHead();
             if(!currentHead.equals(oldHead))
                 relIndex = 0 ;
-            absIndexToRelIndex.put(new Integer(absIndex), new Integer(relIndex++));
+            absIndexToRelIndex.put(Integer.valueOf(absIndex), Integer.valueOf(relIndex++));
             oldHead = currentHead ;
             }
         }

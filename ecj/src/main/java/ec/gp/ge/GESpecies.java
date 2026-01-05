@@ -475,7 +475,7 @@ public class GESpecies extends IntegerVectorSpecies
         if (ERCList == null)
             {
             ERCList = new ArrayList();
-            ERCBank.put(new Integer(genomeVal), ERCList);
+            ERCBank.put(Integer.valueOf(genomeVal), ERCList);
             }
 
         GPNode dummy = null;
@@ -489,7 +489,7 @@ public class GESpecies extends IntegerVectorSpecies
             if (dummy.nodeEquivalentTo(node))
                 {
                 if (ercMapsForFancyPrint != null) 
-                    ercMapsForFancyPrint.put(new Integer(genomeVal), dummy);                              
+                    ercMapsForFancyPrint.put(Integer.valueOf(genomeVal), dummy);                              
                 return dummy.lightClone();
                 }
             }
@@ -498,7 +498,7 @@ public class GESpecies extends IntegerVectorSpecies
         node = node.lightClone();
         node.resetNode(state, threadnum);
         ERCList.add(node);
-        if (ercMapsForFancyPrint != null) ercMapsForFancyPrint.put(new Integer(genomeVal), node);               
+        if (ercMapsForFancyPrint != null) ercMapsForFancyPrint.put(Integer.valueOf(genomeVal), node);               
         return node;
         }
 
@@ -679,14 +679,14 @@ public class GESpecies extends IntegerVectorSpecies
                     {
                     int rIndex = ((Integer)gp.ruleHeadToIndex.get(stack.peek())).intValue();
                     int fIndex = ((Integer)gp.functionHeadToIndex.get(token)).intValue();
-                    Integer ruleIndex = new Integer(gp.predictiveParseTable[rIndex][fIndex]);
+                    Integer ruleIndex = Integer.valueOf(gp.predictiveParseTable[rIndex][fIndex]);
                     // get the action (rule) to expand
                     GrammarNode action = (GrammarNode)gp.indexToRule.get(ruleIndex);
                     // if the index is still in the range of minGene.length, use it.
                     // otherwise use the minGene[0] value.
                     int minIndex = 0 ; if(index < minGene.length) minIndex = index ;
                     // now add
-                    intList.add(new Integer(((Integer)gp.absIndexToRelIndex.get(ruleIndex)).intValue() + (int)minGene[minIndex]));
+                    intList.add(Integer.valueOf(((Integer)gp.absIndexToRelIndex.get(ruleIndex)).intValue() + (int)minGene[minIndex]));
                     index++;
                     stack.pop();
                     action = action.children.get(0);

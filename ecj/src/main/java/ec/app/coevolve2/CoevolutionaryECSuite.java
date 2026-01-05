@@ -107,14 +107,14 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
                 if (len == 0)  // easy
                     {
                     if (shouldSetContext) coind.fitness.setContext(ind, i);
-                    coind.fitness.trials.add(new Double(trial));
+                    coind.fitness.trials.add(Double.valueOf(trial));
                     }
                 else if (((Double)(coind.fitness.trials.get(0))).doubleValue() < trial)  // best trial is presently #0
                     {
                     if (shouldSetContext) coind.fitness.setContext(ind, i);
                     // put me at position 0
                     Double t = (Double)(coind.fitness.trials.get(0));
-                    coind.fitness.trials.set(0, new Double(trial));  // put me at 0
+                    coind.fitness.trials.set(0, Double.valueOf(trial));  // put me at 0
                     coind.fitness.trials.add(t);  // move him to the end
                     }
                                                                         
