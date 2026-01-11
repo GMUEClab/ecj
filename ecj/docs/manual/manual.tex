@@ -165,7 +165,7 @@ George Mason University}
 
 \vspace{5.6in}
 \noindent\Large\bf Where to Obtain ECJ\\
-\large\rm http:/\!/cs.gmu.edu/\!\(\sim\)eclab/projects/ecj/
+\large\rm http:/\!/people.cs.gmu.edu/\!\(\sim\)eclab/projects/ecj/
 
 \clearpage
 
@@ -179,7 +179,7 @@ George Mason University}
 
 \noindent {\Large\bf Get the latest version of this document or suggest improvements here:}
 
-\reference{http:/\!/cs.gmu.edu/\!\(\sim\)eclab/projects/ecj/}
+\reference{http:/\!/people.cs.gmu.edu/\!\(\sim\)eclab/projects/ecj/}
 
 \vspace{0.15in}
 
@@ -382,7 +382,7 @@ After unpacking ECJ, you're left with one directory called \file{ecj} where you 
 
 The \file{ec} (\file{ecj/src/main/java/ec/}) directory is ECJ's top-level package.  Every subdirectory is a subpackage, and most of them are headed by helpful README files which describe the contents of the directory.  Most packages contain not only Java files and class files but also parameter files and occasional data files: ECJ was designed originally for the class files to be compiled and stored right alongside the Java files in these directories, though it can be used with the separate-build-area approach taken by IDEs like Eclipse.
 
-Because \file{ec} is the top-level package, you can compile ECJ, more or less, by just sticking its parent directory (the \file{ecj/target/} directory), in your CLASSPATH.  You will also need to add certain {\bf jar files} in order to compile ECJ's distributed evaluation and island model facilities, and its GUI.  You can get these jar files from the ECJ main website (http://cs.gmu.edu/\(\sim\)eclab/projects/ecj/).  Note that none of these libraries is required.  For example, if the libraries for the distributed evaluator and island model are missing, ECJ will compile but will complain if you try to run those packages with compression turned on (a feature of the packages).  The GUI library is optional to ECJ, so if you don't install its libraries, you can still compile ECJ by just deleting the \file{ec/display} directory.
+Because \file{ec} is the top-level package, you can compile ECJ, more or less, by just sticking its parent directory (the \file{ecj/target/} directory), in your CLASSPATH.  You will also need to add certain {\bf jar files} in order to compile ECJ's distributed evaluation and island model facilities, and its GUI.  You can get these jar files from the ECJ main website (http://people.cs.gmu.edu/\(\sim\)eclab/projects/ecj/).  Note that none of these libraries is required.  For example, if the libraries for the distributed evaluator and island model are missing, ECJ will compile but will complain if you try to run those packages with compression turned on (a feature of the packages).  The GUI library is optional to ECJ, so if you don't install its libraries, you can still compile ECJ by just deleting the \file{ec/display} directory.
 
 
 \subsubsection{The \file{ec/display} Directory: ECJ's GUI}
@@ -1644,7 +1644,7 @@ Whenever a checkpoint is written, this fact is also added as an announcement.  H
 | Contributors: L. Panait, G. Balan, S. Paus, Z. Skolicki, R. Kicinger, E. Popovici,
 |               K. Sullivan, J. Harrison, J. Bassett, R. Hubley, A. Desai, A. Chircop,
 |               J. Compton, W. Haddon, S. Donnelly, B. Jamil, and J. O'Beirne
-| URL: http://cs.gmu.edu/~eclab/projects/ecj/
+| URL: http://people.cs.gmu.edu/~eclab/projects/ecj/
 | Mail: ecj-help@cs.gmu.edu
 |       (better: join ECJ-INTEREST at URL above)
 | Date: July 10, 2009
@@ -1691,7 +1691,7 @@ Restoring from Checkpoint ec.4.gz
 | Contributors: L. Panait, G. Balan, S. Paus, Z. Skolicki, R. Kicinger, E. Popovici,
 |               K. Sullivan, J. Harrison, J. Bassett, R. Hubley, A. Desai, A. Chircop,
 |               J. Compton, W. Haddon, S. Donnelly, B. Jamil, and J. O'Beirne
-| URL: http://cs.gmu.edu/~eclab/projects/ecj/
+| URL: http://people.cs.gmu.edu/~eclab/projects/ecj/
 | Mail: ecj-help@cs.gmu.edu
 |       (better: join ECJ-INTEREST at URL above)
 | Date: July 10, 2009
@@ -1889,7 +1889,7 @@ MersenneTwisterFast (which ECJ uses) and its sibling MersenneTwisterFast have id
 \subsection{Selecting Randomly from Distributions}
 \label{ec.util.RandomChoice}
 
-Selecting from distributions is a common task in stochastic optimization.\footnote{These are just histogram distributions.  If what you need is to pick random numbers under some mathematical distribution (Poisson, say), ECJ doesn't have support for that.  However ECJ's sister package, MASON, has support for it in its utilities.  See MASON's \package{sim.util.distribution} package.  You can remove this package from MASON and just use it with ECJ with no problems: it comes with MASON but is independent of it. See http:/\!/cs.gmu.edu/\(\sim\)eclab/projects/mason/} ECJ has a utility class, \class{ec.util.RandomChoice}, which makes it easy to set up and select from histogram-style (arbitrary) distributions, such as selecting randomly from a Population by Fitness.
+Selecting from distributions is a common task in stochastic optimization.\footnote{These are just histogram distributions.  If what you need is to pick random numbers under some mathematical distribution (Poisson, say), ECJ doesn't have support for that.  However ECJ's sister package, MASON, has support for it in its utilities.  See MASON's \package{sim.util.distribution} package.  You can remove this package from MASON and just use it with ECJ with no problems: it comes with MASON but is independent of it. See http:/\!/people.cs.gmu.edu/\(\sim\)eclab/projects/mason/} ECJ has a utility class, \class{ec.util.RandomChoice}, which makes it easy to set up and select from histogram-style (arbitrary) distributions, such as selecting randomly from a Population by Fitness.
 
 The distributions in question come in the form of arrays of floats, doubles, or special objects which can provide their own float or double values.  The values in these arrays are expected to form a probability density function (PDF).  The objective is to select indexes in this array proportional to their value.  To begin, you call one of the following methods on your array to have RandomChoice convert it into a Cumulative Density Function (CDF) to make selection easier:
 
@@ -3563,7 +3563,7 @@ You can put whatever you want in this HashMap.  But ECJ currently reserves exact
 public static final String KEY\_PARENTS = "parents";
 }
 
-Associated with this string in the HashMap is an array of \class{ec.util.IntBag} objects.  An IntBag is very much like an ArrayList but it holds ordinary integers, not objects.\footnote{IntBag comes from ECJ's sister project, MASON https:/\!/cs.gmu.edu/\(\sim\)eclab/projects/mason}.  For a given individual number \(x\) returned in the ArrayList, the IntBag number \(x\) in the parents array holds indexes to all the parents of that Individual in the old Subpopulation.
+Associated with this string in the HashMap is an array of \class{ec.util.IntBag} objects.  An IntBag is very much like an ArrayList but it holds ordinary integers, not objects.\footnote{IntBag comes from ECJ's sister project, MASON https:/\!/people.cs.gmu.edu/\(\sim\)eclab/projects/mason}.  For a given individual number \(x\) returned in the ArrayList, the IntBag number \(x\) in the parents array holds indexes to all the parents of that Individual in the old Subpopulation.
  
 \subsection{SelectionMethods}
 \label{selectionmethods}
@@ -4797,7 +4797,7 @@ This causes ECJ to start printing to the screen something along these lines:
 | Contributors: L. Panait, G. Balan, S. Paus, Z. Skolicki, R. Kicinger, E. Popovici,
 |               K. Sullivan, J. Harrison, J. Bassett, R. Hubley, A. Desai, A. Chircop,
 |               J. Compton, W. Haddon, S. Donnelly, B. Jamil, and J. O'Beirne
-| URL: http://cs.gmu.edu/~eclab/projects/ecj/
+| URL: http://people.cs.gmu.edu/~eclab/projects/ecj/
 | Mail: ecj-help@cs.gmu.edu
 |       (better: join ECJ-INTEREST at URL above)
 | Date: July 10, 2009

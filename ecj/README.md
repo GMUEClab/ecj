@@ -6,9 +6,9 @@ you are bound to if you wish to use this software.
 
 Additionally, please see the following important files:
 
-  * [docs/index.html](https://cs.gmu.edu/~eclab/projects/ecj/docs/)         
+  * [docs/index.html](https://people.cs.gmu.edu/~eclab/projects/ecj/docs/)         
 	ECJ documentation.  Start here.
-  * [docs/manual/manual.pdf](https://cs.gmu.edu/~eclab/projects/ecj/docs/manual/manual.pdf)	
+  * [docs/manual/manual.pdf](https://people.cs.gmu.edu/~eclab/projects/ecj/docs/manual/manual.pdf)	
 	The ECJ Owner's Manual.  A large reference work describing ECJ in 
 	detail.  Go through the tutorials before bothering with this one. 
   * [LICENSE](LICENSE)			
@@ -59,13 +59,13 @@ responsible for manually installing ECJ's dependencies and adding them
 to your `CLASSPATH` environment variable.
 
 ```Bash
-wget https://cs.gmu.edu/~eclab/projects/ecj/libraries.tar.gz && tar -xzvf libraries.tar.gz
+wget https://people.cs.gmu.edu/~eclab/projects/ecj/libraries.tar.gz && tar -xzvf libraries.tar.gz
 export CLASSPATH=$(pwd)/libraries/*
 ```
 
 ECJ has two modules which rely on external libraies
 which you can download as JAR files from the ECJ website
-(here:  http://cs.gmu.edu/~eclab/projects/ecj/libraries.zip ).
+(here:  http://people.cs.gmu.edu/~eclab/projects/ecj/libraries.zip ).
 None of the libraries are required, but if you don't install
 them you need to tweak ECJ a bit in order to get it to compile:
 
@@ -137,14 +137,14 @@ java ec.Evolve -file target/classes/ec/app/tutorial3/tutorial3.params
 To continue familiarizing yourself with ECJ's features, and to learn how to use
 it to write your own problems and algorithms, take a look at
   * the [tutorials](docs/tutorials) and
-  * the extensive [ECJ Manual](https://cs.gmu.edu/~eclab/projects/ecj/docs/manual/manual.pdf).
+  * the extensive [ECJ Manual](https://people.cs.gmu.edu/~eclab/projects/ecj/docs/manual/manual.pdf).
 
 If you're really stuck, try the ECJ-INTEREST mailing list.  
-(see "Mailing Lists" at http://cs.gmu.edu/~eclab/projects/ecj/ )
+(see "Mailing Lists" at http://people.cs.gmu.edu/~eclab/projects/ecj/ )
 
-ECJ:	http://cs.gmu.edu/~eclab/projects/ecj/
+ECJ:	http://people.cs.gmu.edu/~eclab/projects/ecj/
 
-ECLab:	http://cs.gmu.edu/~eclab/
+ECLab:	http://people.cs.gmu.edu/~eclab/
 
 Happy Evolving!
 
