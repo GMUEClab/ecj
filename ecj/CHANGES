@@ -2542,4 +2542,5 @@ Version		Change Log
 	Fixes to contrib.cgp package
 	ec.simple.SimpleBreeder now accepts a GroupedProblemForm for 
 		applications that benefit from chunked evaluation
+	updated cs.gmu.edu -> people.cs.gmu.edu
 
