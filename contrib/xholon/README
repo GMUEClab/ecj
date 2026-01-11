@@ -1,7 +1,7 @@
 Xholon contrib for ECJ
 =============
 Xholon (http://www.primordion.com/Xholon/) is a general purpose modeling and simulation
-tool written in Java. ECJ (http://cs.gmu.edu/~eclab/projects/ecj/) is a research
+tool written in Java. ECJ (http://people.cs.gmu.edu/~eclab/projects/ecj/) is a research
 evolutionary computation (EC) system written in Java.
 
 Users of Xholon can make use of the ECJ software to do genetic programming. This involves
@@ -39,7 +39,7 @@ ecj16_xholon.jar
 If you use this approach, then no special setup is required. By default, Xholon uses ECJ 16.
 
 Alternatively, you can download ECJ version 15 or 16 from:
-http://cs.gmu.edu/~eclab/projects/ecj/
+http://people.cs.gmu.edu/~eclab/projects/ecj/
 Install it on your computer, and include it in your classpath when running Xholon.
 You will need to make several modifications to the standard ECJ Java files. Copy the following
 files from the org.primordion.ealontro.gp folder to the indicated "copy to ECJ folder" below.
@@ -71,7 +71,7 @@ How Xholon 0.3 and ECJ 15 work together
 Ken Webb
 ken@primordion.com
 Xholon project: http://www.primordion.com/Xholon/
-ECJ project:    http://cs.gmu.edu/~eclab/projects/ecj/
+ECJ project:    http://people.cs.gmu.edu/~eclab/projects/ecj/
 XholonECJ.txt
 July 24, 2006
 ---------------------------------------
