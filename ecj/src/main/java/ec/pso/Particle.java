@@ -164,7 +164,10 @@ public class Particle extends DoubleVectorIndividual
             personalBestFitness = (Fitness)(fitness.clone());
             personalBestGenome = (double[])(genome.clone());
             }
-        
+        }
+
+    public void updateNeighborhood(final EvolutionState state, int subpop, int myindex, int thread, boolean usePersonalBest) 
+        {
         // initialize neighborhood if it's not been created yet
         PSOBreeder psob = (PSOBreeder)(state.breeder);
         if (neighborhood == null || psob.neighborhood == psob.C_NEIGHBORHOOD_RANDOM_EACH_TIME)
@@ -180,16 +183,35 @@ public class Particle extends DoubleVectorIndividual
             }
 
         // identify neighborhood best
-        neighborhoodBestFitness = fitness;  // initially me
-        neighborhoodBestGenome = genome;
-        for(int i = 0 ; i < neighborhood.length ; i++)
+        if (!usePersonalBest)
             {
-            int ind = neighborhood[i] ;
-            if (state.population.subpops.get(subpop).individuals.get(ind).fitness.betterThan(fitness))
+            // using the current fitness
+            neighborhoodBestFitness = state.population.subpops.get(subpop).individuals.get(neighborhood[0]).fitness;  // initially the first neighbor
+            neighborhoodBestGenome = ((DoubleVectorIndividual)(state.population.subpops.get(subpop).individuals.get(neighborhood[0]))).genome;        
+            for(int i = 1 ; i < neighborhood.length ; i++)
                 {
-                neighborhoodBestFitness = state.population.subpops.get(subpop).individuals.get(ind).fitness;
-                neighborhoodBestGenome = ((DoubleVectorIndividual)(state.population.subpops.get(subpop).individuals.get(ind))).genome;
+                int ind = neighborhood[i] ;
+                if (state.population.subpops.get(subpop).individuals.get(ind).fitness.betterThan(neighborhoodBestFitness))
+                    {
+                    neighborhoodBestFitness = state.population.subpops.get(subpop).individuals.get(ind).fitness;
+                    neighborhoodBestGenome = ((DoubleVectorIndividual)(state.population.subpops.get(subpop).individuals.get(ind))).genome;
+                    }
                 }
+            } 
+            else
+            {
+            // using the personal best
+            neighborhoodBestFitness = ((Particle) state.population.subpops.get(subpop).individuals.get(neighborhood[0])).personalBestFitness;  // initially the first neighbor
+            neighborhoodBestGenome = ((Particle) state.population.subpops.get(subpop).individuals.get(neighborhood[0])).personalBestGenome;
+            for(int i = 1 ; i < neighborhood.length ; i++)
+                {
+                int ind = neighborhood[i] ;
+                if (((Particle) state.population.subpops.get(subpop).individuals.get(ind)).personalBestFitness.betterThan(neighborhoodBestFitness))
+                    {
+                    neighborhoodBestFitness = ((Particle) state.population.subpops.get(subpop).individuals.get(ind)).personalBestFitness;
+                    neighborhoodBestGenome = ((Particle) state.population.subpops.get(subpop).individuals.get(ind)).personalBestGenome;
+                    }
+                }            
             }
                 
         // clone neighborhood best
@@ -239,10 +261,12 @@ public class Particle extends DoubleVectorIndividual
             {
             neighbors = new int[neighborhoodSize + 1];
             neighbors[neighborhoodSize] = myIndex;  // put me at the top
-            already.add(Integer.valueOf(myIndex));
             }
         else
             neighbors = new int[neighborhoodSize];
+        
+        // exclude me from the random selection
+        already.add(Integer.valueOf(myIndex));
         
         Integer n = null;
         for(int i = 0; i < neighborhoodSize; i++)
@@ -278,7 +302,7 @@ public class Particle extends DoubleVectorIndividual
             neighbors[pos++] = ((i % popsize) + popsize) % popsize;
             }
                 
-        for(int i = myindex + 1; i < neighborhoodSize - (neighborhoodSize / 2) + 1; i++)
+        for(int i = myindex + 1; i < myindex + (neighborhoodSize / 2) + 1 + neighborhoodSize%2; i++)
             {
             neighbors[pos++] = ((i % popsize) + popsize) % popsize;
             }
